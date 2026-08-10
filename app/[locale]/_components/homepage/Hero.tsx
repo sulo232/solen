@@ -31,7 +31,7 @@ import { getSessionUser } from "@/lib/supabase";
  *   - Body-wide atmosphere wash (currently hero-only — body wash is a
  *     separate page-level concern, not Hero's responsibility).
  */
-export default async function Hero() {
+export default async function Hero({ locale }: { locale: string }) {
   // V2-D66 (2026-05-16, Hayden move #14): personalized greeting for authed users.
   // Fallback chain: profile.display_name → email local part (capitalized) → no
   // greeting. Anon visitors see the h1-only hero as before — no fake "Hallo".
@@ -151,7 +151,11 @@ export default async function Hero() {
           largest off-grid cascade): px-[18px] -> px-4 (16), matching the
           site's standard mobile section inset (WalkInBand, BentoBusiness,
           business page sections all use px-4). */}
-      <div className="relative z-[1] mx-auto flex w-full max-w-[1280px] flex-col justify-center px-4 pt-10 pb-2 md:px-8 md:pt-14 md:pb-16">
+      {/* V3-D (2026-08-01, owner "why is homepage still that bro"): this whole block (wordmark
+          row lives in Header.tsx, hidden the same way, headline, subline, 3-field SearchBar) is
+          the "old hero" the task named. Mobile now renders HomeSearchPill below instead, matching
+          the category-page chrome; desktop is untouched. */}
+      <div className="max-md:hidden relative z-[1] mx-auto flex w-full max-w-[1280px] flex-col justify-center px-4 pt-10 pb-2 md:px-8 md:pt-14 md:pb-16">
         <div className="w-full">
           {displayName && (
             // V2-D70 (2026-05-18): greeting weight bumped 500 medium → still 500
@@ -233,6 +237,20 @@ export default async function Hero() {
             spec line itself was withdrawn. Conversion-lever concern voiced
             in chat; user proceeded with removal. */}
       </div>
+      {/* mockup-ok: structural move, no appearance change, see comment below.
+          V3-D (2026-08-01): mobile-only search pill lives in page.tsx now, directly below this
+          </Hero>. See HomeSearchPill.tsx for the full rationale, desktop keeps the block above
+          unchanged.
+          FIX B (2026-08-01, owner "it should be search bar instead of category bar"): the sticky
+          wrapper MOVED out of this file into page.tsx (a sibling of the whole <Hero/>, right
+          below it), not rendered here. Measured: this <section> carries `overflow-hidden` and on
+          mobile is only as tall as the pill itself (the desktop block above is `max-md:hidden`),
+          so a sticky child nested inside it could only stay pinned for the ~80px scroll distance
+          of the section's OWN box, then scroll away with the rest of the page well before the
+          feed the owner actually scrolls through. page.tsx's root wrapper spans the ENTIRE home
+          page (Hero + FeedZone), so the identical sticky div nested there stays pinned for the
+          whole scroll, matching SearchTemplate's own pill (whose sticky ancestor also spans its
+          full results list, never a short local section). */}
     </section>
   );
 }
@@ -339,7 +357,7 @@ function SearchRow({
       {/* Value column — left-padded so text sits "a little away" from the line */}
       <span
         className={`
-          font-body min-w-0 flex-1 truncate text-base text-s-ink-3 pl-4
+          font-body min-w-0 flex-1 truncate text-base text-s-ink-2 pl-4
           ${isPlaceholder ? "font-normal" : "font-medium"}
         `}
       >

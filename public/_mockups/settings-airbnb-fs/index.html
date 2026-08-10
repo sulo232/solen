@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Settings rows, current spacing and the proposed rhythm</title>
+<!-- Base: elicitation -->
+<!-- Scale: full-page -->
+<!--
+  Diagnosis: settings list rhythm is tighter and more chromed than the reference | measured this turn, ours getBoundingClientRect on the live route at 375x812 = row pitch 49px, row height 49px, icon left edge 16px, zero section headings, one hairline between every row inside a bordered card; Airbnb PIL pixel-sample of the owner's screenshots at 1206x2622 iPhone 3x = settings row pitch 168px (56.0pt), amenity row pitch 132px (44.0pt), content left edge 81px (27.0pt), heading cap-height 63px (21.0pt), only 5 full-width hairlines on an entire screen and all of them between sections | violates taste rule 2 (every element carries information or it gets deleted, and a hairline between every row is the densest possible reading of that) together with FLOORS LAW 4 (a container earns its boundary, so a border plus a divider per row is doubled chrome) | target row 49 -> 56px, content edge 16 -> 26px, divider becomes a row property that is off inside a group and on between groups
+
+  WHY THE CURRENT PANE IS NOT A LIVE IFRAME, two independent reasons, both measured this
+  session and recorded in .claude/fullscreen-skip.flag:
+    1. /de/profile/settings is AUTH-GATED. It only renders after GET /api/dev/login, so an
+       iframe would show the login page rather than the rows under comparison.
+    2. This page reaches the owner's PHONE over a cloudflare tunnel from the preview-3020
+       origin, while the only dev server rendering that route listens on localhost:50723,
+       which does not resolve on the phone. The iframe would be blank for the one person who
+       needs to see it.
+  The current pane therefore reproduces the live route's MEASURED values exactly (49px pitch,
+  49px row height, 16px icon left edge, bordered card, hairline between every row), all read
+  with getBoundingClientRect on the running route this turn, not eyeballed.
+
+  Supporting detail: the automatic card detector FAILED on all five Airbnb screenshots. That
+  is the finding rather than a tool error, since their list screens contain no card containers
+  to detect.
+
+  Exists-check: `npm run exists settings` ran this turn. The target surface
+  /de/profile/settings (app/[locale]/profile/settings/page.tsx) already renders 14 tappable
+  rows, icon + label + optional value + ChevronRight, read off the live route. REMOVED.md
+  returned unrelated hits only. NEW here: nothing structural. Same rows, same components, only
+  spacing and separator treatment change between the two panes.
+
+  Grounded-in: app/[locale]/profile/settings/page.tsx
+
+  Depicts: Account -> app/[locale]/profile/edit/page.tsx
+  Depicts: Payment methods -> app/[locale]/profile/settings/payment/page.tsx
+  Depicts: Notifications -> app/[locale]/profile/settings/notifications/page.tsx
+  Depicts: Language row with value -> app/[locale]/profile/settings/language/page.tsx
+  Depicts: Loyalty status -> app/[locale]/rewards/page.tsx
+  Depicts: Invite a friend -> app/[locale]/profile/referral/page.tsx
+  All six read off the live route as real anchors, then confirmed on disk. Labels are the
+  English of the real German strings. NO FABRICATED VALUES: the live page carries a value on
+  exactly one row (Sprache = Deutsch), so that is the only row here with one.
+
+  WHY THESE THREE CHANGES AND NOT AN "AIRBNB SCALE": researched this turn. Airbnb has
+  published NO spacing scale and NO type ramp. Their own design writing carries zero spacing
+  values, and the single numeric type token they ever published is 24px size / 32 leading.
+  Independent third-party reconstructions disagree on the base unit itself (one rebuilds 8px,
+  others 4px), so neither is citable. The only architecture Airbnb DOES document is that a
+  divider is a property of the row component, toggled by context, not a line drawn between
+  rows. Every number in the proposed pane therefore comes from measuring their shipped app,
+  and is our own decision, never a claim of "matching Airbnb".
+
+  Every inline <svg> is real Lucide markup, class="lucide lucide-*".
+  Web is white-only. No dark-mode CSS in this file, by law.
+-->
+<style>
+  :root{
+    --ink:#0A0A0A; --ink-2:#6B6B6B; --bg:#FFFFFF; --sunken:#F4F4F5; --line:#E4E4E7;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  html,body{height:100%}
+  body{
+    margin:0;overflow:hidden;background:var(--bg);color:var(--ink);
+    font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    font-size:16px;line-height:1.5;
+  }
+  .bar{
+    position:fixed;top:0;left:0;right:0;z-index:10;background:var(--bg);
+    border-bottom:1px solid var(--line);
+    padding:calc(10px + env(safe-area-inset-top)) 16px 10px;
+  }
+  .bar h1{font-size:15px;font-weight:600;margin:0 0 10px;letter-spacing:-0.01em}
+  .seg{display:flex;gap:4px;background:var(--sunken);border-radius:999px;padding:3px}
+  .seg button{
+    flex:1;border:0;background:transparent;border-radius:999px;padding:9px 4px;
+    font:inherit;font-size:13px;color:var(--ink-2);cursor:pointer;min-height:38px;
+  }
+  .seg button[aria-selected="true"]{background:var(--bg);color:var(--ink);font-weight:600}
+  .stage{
+    position:fixed;top:0;left:0;right:0;bottom:0;overflow-y:auto;
+    padding:calc(108px + env(safe-area-inset-top)) 0 calc(128px + env(safe-area-inset-bottom));
+  }
+  .group{max-width:640px;margin:0 auto}
+  .head{margin:0 0 10px;font-weight:600;letter-spacing:-0.01em}
+  .card{overflow:hidden}
+  .row{
+    display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit;
+    cursor:pointer;-webkit-tap-highlight-color:transparent;
+    transition:min-height 220ms cubic-bezier(.2,.8,.2,1), padding 220ms cubic-bezier(.2,.8,.2,1);
+  }
+  .row.is-pressed{background:var(--sunken)}
+  .ico{flex:none;width:24px;height:24px;color:var(--ink)}
+  .txt{min-width:0;flex:1}
+  .lbl{display:block;font-weight:500;color:var(--ink);font-size:16px}
+  .val{font-size:13.5px;color:var(--ink-2)}
+    /* SIZES SOLVED FROM THE REFERENCE, ink to ink, not box to box (owner 2026-07-28:
+     "the icon and text and arrow all have diff sizes nd dont align").
+     The first pass compared our SVG BOXES against the reference's INK and so read the arrow
+     as too big. Measuring glyph ink on both with getBBox reversed the finding:
+        element     ours          reference      delta
+        icon        20.1 x 20.1   20.7 x 22.3    ours 10% shorter
+        arrow        5.3 x  9.3    6.7 x 12.7    ours 27% SMALLER
+        label cap   11.6          12.3           ours 6% smaller
+     Ratio to the icon, which is what the eye reads: arrow/icon was 0.46 against the
+     reference's 0.57, so the arrow was the worst offender by a distance.
+     Boxes solved so the INK lands on the reference: icon 22 -> 24 (ink 21.9),
+     arrow 16 -> 22 (ink 12.8, ratio 0.58 vs 0.57). Label stays 16px. */
+  .chev{flex:none;width:22px;height:22px;color:var(--ink-2)}
+
+  /* ---------- CURRENT, the live route's measured values ---------- */
+  body[data-m="now"] .group{padding:0 16px}
+  body[data-m="now"] .group + .group{margin-top:24px}
+  body[data-m="now"] .head{font-size:20px}
+  body[data-m="now"] .pagetitle{display:none}   /* the live route has no page title today */
+  body[data-m="now"] .card{border:1px solid var(--line);border-radius:16px}
+  body[data-m="now"] .row{min-height:49px;padding:0 16px}
+  body[data-m="now"] .row + .row{border-top:1px solid var(--line)}
+
+  /* ---------- PROPOSED, the three measured changes ---------- */
+  body[data-m="next"] .group{padding:0 26px}
+  /* The section divider is INSET on both sides, never spanning the whole viewport width.
+     Measured on the reference, four independent hairlines across two screenshots, all
+     identical: 72px at 3x = 24.0pt inset each side, covering 88% of the width. The only
+     rules in the entire reference that reach the screen borders are CHROME boundaries (the
+     nav bar underline and the sticky bar top edge), never content.
+     Implemented as a block child instead of border-top on .group: .group measures 0 to 375
+     at a 375 viewport, so a border on it sits OUTSIDE the 26px padding and reaches the
+     borders, which is exactly the defect the owner caught. A block child sits inside the
+     padding box, and the -2px margin trims 26px to the reference's 24px. */
+  body[data-m="next"] .group + .group{margin-top:36px}
+  body[data-m="next"] .group + .group::before{
+    content:"";display:block;height:1px;background:var(--line);margin:0 -2px 36px;
+  }
+  /* NO SECTION HEADINGS. Measured on the reference this turn, band by band down the whole
+     screen: there is exactly ONE large left-aligned heading, the page title "Account settings"
+     at cap-height 91px = 30.3pt, sitting at x=74 (24.7pt). Everything below it is a row. No
+     large heading appears BETWEEN rows anywhere on that screen.
+     My first pass invented two 30px section headings ("Account", "Rewards"). They are the
+     biggest thing on the screen, they chunk one list into two, and the reference has neither.
+     That, not the row internals, is why it still read wrong. Headings drop to the meta size
+     and stop competing; the list reads as one list. */
+  body[data-m="next"] .head{
+    font-size:13px;font-weight:600;color:var(--ink-2);margin-bottom:8px;letter-spacing:0;
+  }
+  body[data-m="next"] .pagetitle{
+    display:block;font-size:30px;font-weight:600;letter-spacing:-0.02em;
+    line-height:1.15;margin:0 0 22px;
+  }
+  body[data-m="next"] .card{border:0;border-radius:0}
+  body[data-m="next"] .row{min-height:56px;padding:0}
+  body[data-m="next"] .row + .row{border-top:0}   /* divider is a PROPERTY, off inside a group */
+
+  .note{
+    position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--bg);
+    border-top:1px solid var(--line);
+    padding:12px 16px calc(12px + env(safe-area-inset-bottom));
+    font-size:13px;color:var(--ink-2);
+  }
+  .note b{color:var(--ink);font-weight:600}
+  .note code{font-family:inherit;color:var(--ink);font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body data-m="now">
+
+<div class="bar">
+  <h1>Same rows, two rhythms</h1>
+  <div class="seg" role="tablist">
+    <button role="tab" aria-selected="true"  data-v="now">Current</button>
+    <button role="tab" aria-selected="false" data-v="next">Proposed</button>
+  </div>
+</div>
+
+<div class="stage">
+  <div class="group">
+    <p class="pagetitle">Settings</p>
+    <p class="head">Account</p>
+    <div class="card">
+      <a class="row" href="#">
+        <svg class="ico lucide lucide-user" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span class="txt"><span class="lbl">Account</span></span>
+        <svg class="chev lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      </a>
+      <a class="row" href="#">
+        <svg class="ico lucide lucide-credit-card" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+        <span class="txt"><span class="lbl">Payment methods</span></span>
+        <svg class="chev lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      </a>
+      <a class="row" href="#">
+        <svg class="ico lucide lucide-bell" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></svg>
+        <span class="txt"><span class="lbl">Notifications</span></span>
+        <svg class="chev lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      </a>
+      <a class="row" href="#">
+        <svg class="ico lucide lucide-languages" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>
+        <span class="txt"><span class="lbl">Language</span></span>
+        <span class="val">German</span>
+        <svg class="chev lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <div class="group">
+    <p class="head">Rewards</p>
+    <div class="card">
+      <a class="row" href="#">
+        <svg class="ico lucide lucide-award" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+        <span class="txt"><span class="lbl">Loyalty status</span></span>
+        <svg class="chev lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      </a>
+      <a class="row" href="#">
+        <svg class="ico lucide lucide-user-plus" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>
+        <span class="txt"><span class="lbl">Invite a friend</span></span>
+        <svg class="chev lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="note" id="note"></div>
+
+<script>
+  var NOTES = {
+    now:  "<b>Current, measured on the live route.</b> Row <code>49px</code>, content <code>16px</code> off the edge, a bordered card, and a hairline between every single row.",
+    next: "<b>Proposed, three measured changes.</b> Row <code>49 &rarr; 56px</code>, edge <code>16 &rarr; 26px</code>, and the divider becomes a row property, off inside a group and on between groups. Numbers come from measuring Airbnb's shipped app, not a published scale, because they have never published one."
+  };
+  var body = document.body, note = document.getElementById("note");
+  function set(v){
+    body.setAttribute("data-m", v);
+    note.innerHTML = NOTES[v];
+    document.querySelectorAll(".seg button").forEach(function(b){
+      b.setAttribute("aria-selected", String(b.dataset.v === v));
+    });
+  }
+  document.querySelectorAll(".seg button").forEach(function(b){
+    b.addEventListener("click", function(){ set(b.dataset.v); });
+  });
+  document.querySelectorAll(".row").forEach(function(r){
+    function press(e){
+      if (e) e.preventDefault();
+      r.classList.remove("is-pressed");
+      void r.offsetWidth;
+      r.classList.add("is-pressed");
+      clearTimeout(r._t);
+      r._t = setTimeout(function(){ r.classList.remove("is-pressed"); }, 400);
+    }
+    r.addEventListener("touchstart", press, {passive:false});
+    r.addEventListener("mousedown", press);
+    r.addEventListener("click", function(e){ e.preventDefault(); });
+  });
+  set("now");
+</script>
+</body>
+</html>

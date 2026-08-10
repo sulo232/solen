@@ -9,6 +9,8 @@ import { DashStatusPill } from "@/app/[locale]/_components/dashboard/DashboardUI
 import Spinner from "@/components-legacy/ui/Spinner";
 import ClientTags from "@/components-legacy/chat/ClientTags";
 import { formatCurrency } from "@/lib/format-currency";
+import { resolveSwissLocale } from "@/lib/format";
+import { avGrad } from "@/lib/avatar-gradients";
 import type { Booking, BookingStatus } from "@/lib/types";
 
 interface EnrichedBooking extends Booking {
@@ -47,12 +49,6 @@ const initials = (n: string) => {
   const p = n.trim().split(/\s+/);
   return ((p[0]?.[0] ?? "") + (p[1]?.[0] ?? "")).toUpperCase() || "—";
 };
-const AV_GRADS = [
-  "from-[#276EF1] to-[#1B4DCB]", "from-[#F0A868] to-[#C0524A]",
-  "from-[#16A34A] to-[#0E7A37]", "from-[#8B5CF6] to-[#6D28D9]", "from-[#EC4899] to-[#BE185D]",
-];
-const avGrad = (s: string) => AV_GRADS[[...s].reduce((a, c) => a + c.charCodeAt(0), 0) % AV_GRADS.length];
-
 // ─────────────────────────────────────────
 // Cancel Modal (salon-initiated)
 // ─────────────────────────────────────────
@@ -144,7 +140,7 @@ function BookingActionSheet({
           </span>
           <div className="min-w-0">
             <p className="font-heading font-bold text-[15px] text-s-ink leading-tight">
-              {booking.customer_name} {new Date(booking.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
+              {booking.customer_name} {new Date(booking.starts_at).toLocaleTimeString(resolveSwissLocale(locale), { hour: "2-digit", minute: "2-digit" })}
             </p>
             <p className="text-[12px] text-s-ink-2 truncate mt-0.5">
               {booking.service_name}{booking.staff_name ? ` ${booking.staff_name}` : ""} {formatCurrency(Number(booking.price_paid), locale)}
@@ -274,7 +270,7 @@ export default function BookingsPage() {
       {loading ? (
         <div className="flex justify-center py-12"><Spinner size="lg" /></div>
       ) : bookings.length === 0 ? (
-        <div className="text-center py-12 text-s-ink-3">
+        <div className="text-center py-12 text-s-ink-2">
           <p className="text-sm">{t("emptyState")}</p>
         </div>
       ) : (
@@ -288,10 +284,10 @@ export default function BookingsPage() {
                 {/* Time */}
                 <div className="w-[46px] shrink-0">
                   <p className="font-heading font-bold text-[13.5px] text-s-ink tabular-nums leading-none">
-                    {new Date(b.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
+                    {new Date(b.starts_at).toLocaleTimeString(resolveSwissLocale(locale), { hour: "2-digit", minute: "2-digit" })}
                   </p>
-                  <p className="text-[12px] font-semibold text-s-ink-3 tabular-nums mt-1">
-                    {new Date(b.starts_at).toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit" })}
+                  <p className="text-[12px] font-semibold text-s-ink-2 tabular-nums mt-1">
+                    {new Date(b.starts_at).toLocaleDateString(resolveSwissLocale(locale), { day: "2-digit", month: "2-digit" })}
                   </p>
                 </div>
                 {/* Avatar */}
@@ -305,7 +301,7 @@ export default function BookingsPage() {
                     {b.is_first_visit && (
                       <span className="shrink-0 text-[12px] font-bold px-[7px] py-px rounded-full bg-s-accent-bright/10 text-s-accent-bright">{t("badgeNew")}</span>
                     )}
-                    {b.is_recurring && <RotateCcw size={11} className="shrink-0 text-s-ink-3" aria-label={t("recurring")} />}
+                    {b.is_recurring && <RotateCcw size={11} className="shrink-0 text-s-ink-2" aria-label={t("recurring")} />}
                   </div>
                   <p className="text-[12.5px] text-s-ink-2 truncate mt-0.5">
                     {b.service_name}{b.staff_name ? ` ${b.staff_name}` : ""}

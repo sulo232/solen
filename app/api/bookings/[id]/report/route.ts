@@ -32,6 +32,13 @@ const REFUND_TERMINAL_OR_REJECTED = new Set([
   "refunded", "charged", "void", "closed", "salon_rejected", "admin_rejected",
 ]);
 
+// trust-04: reporting window (REFUND_APPEAL_PLAN.md section 11 flagged this as open
+// since 2026-06-01: "proposed default 14 days for appointments, owner to confirm".
+// No resolution found, so a completed booking stayed an open financial liability
+// forever. 14 days matches the plan's own proposed default; the ToS (section 13.1a)
+// states the same number so the two never drift apart.
+const REPORTING_WINDOW_DAYS = 14;
+
 /** Rate-limit key: userId for an authenticated actor, IP for a guest. */
 function rateLimitId(userId: string | null, req: NextRequest) {
   return userId ? { userId } : { ip: getClientIp(req) };
@@ -197,6 +204,24 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       { error: "Can only report a problem on a completed booking" },
       { status: 400 },
     );
+  }
+
+  // trust-04: reporting window. starts_at is the appointment time; a booking older
+  // than REPORTING_WINDOW_DAYS from its own appointment can no longer open a NEW
+  // case. Only gates creation (this POST); an already-open case keeps running through
+  // review/escalation regardless of how old it gets.
+  if (booking.starts_at) {
+    const ageMs = Date.now() - new Date(booking.starts_at as string).getTime();
+    const windowMs = REPORTING_WINDOW_DAYS * 24 * 60 * 60 * 1000;
+    if (ageMs > windowMs) {
+      return NextResponse.json(
+        {
+          error: `The reporting window has closed. Cases must be opened within ${REPORTING_WINDOW_DAYS} days of the appointment.`,
+          code: "REPORTING_WINDOW_CLOSED",
+        },
+        { status: 400 },
+      );
+    }
   }
 
   // Remaining refundable (Rappen). NEVER read price_paid (CHF — the 100x bug).
@@ -367,6 +392,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
                    <p><strong>Typ:</strong> ${reasonCode}</p>
                    <p>Bitte loggen Sie sich in Ihr Dashboard ein, um zu antworten.</p>`,
           }),
+          // api-contracts-06: bound the outbound call so a hung Resend request
+          // can't hold the function's whole wall-clock budget.
+          signal: AbortSignal.timeout(8000),
         });
       } catch (e) {
         console.error("[booking-disputes] Failed to send dispute email to salon owner", e);

@@ -28,6 +28,7 @@ import { getPublicEnv } from "@/lib/env";
 import { Skeleton, Sheet, SheetHeader, SheetBody } from "@/app/[locale]/_components/primitives";
 import EmptyState from "@/components-legacy/ui/EmptyState";
 import Spinner from "@/components-legacy/ui/Spinner";
+import { CARD_BRAND_NAME } from "@/lib/payment-brand";
 
 // Singleton, loadStripe must run once, outside render (same pattern as WalkInPaymentForm.tsx).
 const STRIPE_KEY = getPublicEnv().NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
@@ -41,18 +42,8 @@ interface PaymentMethod {
   exp_year?: number | null;
 }
 
-// Standard card-network display names + short badge codes. Not per-user data, these are the
-// same fixed set of networks Stripe itself returns in `brand` (visa/mastercard/amex/...), a
-// presentation lookup, same shape as the locale-label maps used elsewhere in the app.
-const BRAND_NAME: Record<string, string> = {
-  visa: "Visa",
-  mastercard: "Mastercard",
-  amex: "American Express",
-  discover: "Discover",
-  diners: "Diners Club",
-  jcb: "JCB",
-  unionpay: "UnionPay",
-};
+// Short badge codes (this file's own concern). The brand display name (Visa/Mastercard/...)
+// now lives in lib/payment-brand.ts, shared with AccountHub's Wallet row (2026-08-02).
 const BRAND_BADGE: Record<string, string> = {
   visa: "VISA",
   mastercard: "MC",
@@ -66,7 +57,7 @@ const BRAND_BADGE: Record<string, string> = {
 function CardRow({ method, endsInLabel, validUntilLabel }: { method: PaymentMethod; endsInLabel: string; validUntilLabel: string }) {
   const brandKey = method.brand?.toLowerCase() ?? "";
   const badge = BRAND_BADGE[brandKey] ?? (brandKey.slice(0, 4).toUpperCase() || "CARD");
-  const name = BRAND_NAME[brandKey] ?? (brandKey ? brandKey.charAt(0).toUpperCase() + brandKey.slice(1) : "Karte");
+  const name = CARD_BRAND_NAME[brandKey] ?? (brandKey ? brandKey.charAt(0).toUpperCase() + brandKey.slice(1) : "Karte");
   const exp = method.exp_month && method.exp_year
     ? `${String(method.exp_month).padStart(2, "0")}/${String(method.exp_year).slice(-2)}`
     : null;
@@ -78,7 +69,7 @@ function CardRow({ method, endsInLabel, validUntilLabel }: { method: PaymentMeth
       </div>
       <div className="min-w-0 flex-1">
         <div className="truncate text-[15px] font-semibold text-s-ink">{name}</div>
-        <div className="mt-px text-[12.5px] text-s-ink-3">
+        <div className="mt-px text-[12.5px] text-s-ink-2">
           {endsInLabel} {method.last4}
           {exp ? `, ${validUntilLabel} ${exp}` : ""}
         </div>

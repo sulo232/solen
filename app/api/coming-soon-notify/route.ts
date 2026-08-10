@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
+import { validateBody, comingSoonNotifySchema } from "@/lib/validations";
 
 // POST /api/coming-soon-notify: Email capture for Coming Soon pages
 // Does NOT require authentication: anyone can sign up for notifications
@@ -10,19 +11,20 @@ export async function POST(request: NextRequest) {
   const rl = await applyRateLimit(generalLimiter, { ip: getClientIp(request) });
   if (rl) return rl;
 
-  let body: { email?: string; feature?: string };
+  let rawBody: unknown;
   try {
-    body = await request.json();
+    rawBody = await request.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const email = (body.email ?? "").trim().toLowerCase();
-  const feature = (body.feature ?? "default").slice(0, 64);
-
-  if (!email.includes("@") || email.length < 5) {
+  const { data: validated, error: validationError } = validateBody(comingSoonNotifySchema, rawBody);
+  if (validationError) {
     return NextResponse.json({ error: "Invalid email" }, { status: 400 });
   }
+
+  const email = validated.email.trim().toLowerCase();
+  const feature = (validated.feature ?? "default").slice(0, 64);
 
   try {
     // coming_soon_signups is a phantom table: it does not exist in lib/database.types.ts, in any

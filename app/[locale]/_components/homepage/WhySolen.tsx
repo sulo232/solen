@@ -110,8 +110,8 @@ export default function SalonRegister() {
                 with the giant h2 below. Sentence-case medium at slightly larger
                 size keeps the leading-dot motif but reads as soft caption. */}
             {/* V3-D331: dropped pseudo-element dot + accent color per LOCKFILE §2.5. Eyebrow text alone. */}
-            <span className="mb-3 inline-flex items-center gap-2 font-body text-[14px] font-medium text-s-ink-3">
-              Für Salons
+            <span className="mb-3 inline-flex items-center gap-2 font-body text-[14px] font-medium text-s-ink-2">
+              Für Stores
             </span>
             {/* V3-D330: font-black 900 → font-bold 700 per §2 Geist weight scale ("NEVER 800/900 — Geist 800 is heavy + clumsy"). Stars orange #F3A864 → s-star #FFC32B yellow per universal-color rule (rating = yellow). */}
             <h2 className="font-display text-[clamp(26px,7vw,30px)] font-bold leading-[1.0] tracking-normal text-s-ink">
@@ -121,7 +121,7 @@ export default function SalonRegister() {
             <p className="mt-5 font-body text-[15px] md:text-[17px] leading-[1.55] text-s-ink-2 max-w-[480px]">
               Mehr Buchungen, weniger Aufwand. Solen bringt die richtigen
               Kund:innen zu dir &mdash; automatisiert, transparent, fair.
-              Schweizer Salon-Plattform Nr. 1 in Basel.
+              Schweizer Store-Plattform Nr. 1 in Basel.
             </p>
 
             <Link
@@ -141,8 +141,8 @@ export default function SalonRegister() {
                   ★★★★★
                 </span>
               </div>
-              <p className="font-body text-[13px] text-s-ink-3">
-                Über 1&apos;200 Salons buchen schon mit Solen
+              <p className="font-body text-[13px] text-s-ink-2">
+                Über 1&apos;200 Stores buchen schon mit Solen
               </p>
             </div>
           </div>
@@ -167,14 +167,14 @@ export default function SalonRegister() {
                   <span className="rounded-md bg-[#F2F0EB] text-s-ink-2 px-[11px] py-[5px] text-[12px] font-semibold">Mitarbeiter</span>
                   <span className="rounded-md bg-[#F2F0EB] text-s-ink-2 px-[11px] py-[5px] text-[12px] font-semibold">Woche</span>
                   <span className="flex-1" />
-                  <span className="text-[12px] text-s-ink-3 font-semibold">Di 14. Mai 2026</span>
+                  <span className="text-[12px] text-s-ink-2 font-semibold">Di 14. Mai 2026</span>
                 </div>
                 {/* Calendar grid */}
                 <div className="grid gap-1 flex-1" style={{ gridTemplateColumns: "50px repeat(5, 1fr)" }}>
                   {/* Time column */}
                   <div className="flex flex-col gap-1 pt-3">
                     {["9:00", "10:00", "11:00", "12:00", "13:00", "14:00"].map((t) => (
-                      <div key={t} className="text-[12px] text-s-ink-3 h-7 flex items-start">{t}</div>
+                      <div key={t} className="text-[12px] text-s-ink-2 h-7 flex items-start">{t}</div>
                     ))}
                   </div>
                   {/* Day columns */}
@@ -210,7 +210,7 @@ export default function SalonRegister() {
                     <span style={{ color: "#F3A864" }} className="text-[12px] tracking-[0.06em]">★★★★★</span>
                     <span>5.0 247 Bewertungen</span>
                   </div>
-                  <div className="text-[12px] text-s-ink-3 mt-[2px]">2.0 km Kleinbasel</div>
+                  <div className="text-[12px] text-s-ink-2 mt-[2px]">2.0 km Kleinbasel</div>
                   <span className="inline-flex items-center gap-1 mt-1.5 px-2 py-[3px] rounded-full bg-s-ink text-white text-[12px] font-bold">
                     <Store size={9} aria-hidden />
                     Sofort buchbar

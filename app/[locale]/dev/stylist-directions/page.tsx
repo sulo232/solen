@@ -254,7 +254,7 @@ function DirectionC({ selected, onSelect }: { selected: string; onSelect: (id: s
           );
         })}
       </div>
-      <p className="mt-2 flex items-center gap-1 text-[12px] text-s-ink-3">
+      <p className="mt-2 flex items-center gap-1 text-[12px] text-s-ink-2">
         <ChevronLeft size={12} aria-hidden />Swipe for more<ChevronRight size={12} aria-hidden />
       </p>
     </div>
@@ -293,7 +293,7 @@ export default function StylistDirectionsPage() {
           </TabPill>
         ))}
       </div>
-      <p className="mt-2 font-body text-[12.5px] text-s-ink-3">{active.note}</p>
+      <p className="mt-2 font-body text-[12.5px] text-s-ink-2">{active.note}</p>
 
       <div className="mt-5 rounded-card bg-white p-4">
         {tab === "a" && <DirectionA selected={selA} onSelect={setSelA} />}

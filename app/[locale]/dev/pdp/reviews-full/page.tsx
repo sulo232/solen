@@ -38,7 +38,7 @@ export default async function ReviewsFullPage({
     <main className="min-h-screen bg-white">
       <div className="border-b border-s-border bg-s-bg-sunken px-4 py-4 md:px-6">
         <div className="mx-auto max-w-[720px]">
-          <p className="font-body text-[12px] font-semibold text-s-ink-3">Solen , /dev/pdp/reviews-full</p>
+          <p className="font-body text-[12px] font-semibold text-s-ink-2">Solen , /dev/pdp/reviews-full</p>
           <h1 className="mt-1 font-display text-[18px] font-semibold tracking-[-0.01em] text-s-ink">
             Full reviews page (R8) , rebuilt to the owner&apos;s Fresha reference screenshots
           </h1>
@@ -70,7 +70,7 @@ export default async function ReviewsFullPage({
           <span className="font-display text-[20px] font-bold leading-none text-s-ink tabular-nums">
             {salon.average_rating?.toFixed(1) ?? "-"}
           </span>
-          <span className="font-body text-[13px] text-s-ink-3">({salon.review_count})</span>
+          <span className="font-body text-[13px] text-s-ink-2">({salon.review_count})</span>
         </div>
 
         <div className="mt-7">

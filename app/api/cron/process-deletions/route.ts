@@ -8,6 +8,7 @@ import { deletePostHogPerson } from "@/lib/posthog-api";
 import { alertAdmin } from "@/lib/alert-admin";
 import { purgeClientPhotoStorage } from "@/lib/gdpr/purge-client-photo-storage";
 import { purgeReviewPhotoStorage } from "@/lib/gdpr/purge-review-photo-storage";
+import { purgeStripeCustomers } from "@/lib/gdpr/purge-stripe-customer";
 
 export async function GET(request: NextRequest) {
   const cronSecret = getServerEnv().CRON_SECRET;
@@ -139,6 +140,41 @@ export async function GET(request: NextRequest) {
     const reviewPhotoPurge = await purgeReviewPhotoStorage(admin, userIds);
     if (reviewPhotoPurge.errors.length) batchErrors.push(...reviewPhotoPurge.errors.map((e) => `review-photos storage: ${e}`));
 
+    // privacy-compliance-06: Stripe holds a separate copy of this user's PII
+    // (name/email/payment methods on the Customer object) that nothing in
+    // this pipeline touched before. See lib/gdpr/purge-stripe-customer.ts.
+    const stripePurge = await purgeStripeCustomers(admin, userIds);
+    if (stripePurge.errors.length) batchErrors.push(...stripePurge.errors.map((e) => `stripe customer purge: ${e}`));
+
+    // privacy-compliance-06: audit_log.actor_id is SET NULL by an FK
+    // (031_audit_log.sql) but metadata is caller-supplied arbitrary JSON and
+    // can carry a plaintext email (app/api/profile/delete/route.ts logs
+    // { email: user.email } on the delete-request event). Scrub it BEFORE
+    // deleteUser() below nulls actor_id, otherwise these rows become
+    // unreachable by actor_id and the email survives indefinitely.
+    const { data: auditRowsToScrub, error: auditFetchErr } = await admin
+      .from("audit_log")
+      .select("id, metadata")
+      .in("actor_id", userIds);
+    if (auditFetchErr) {
+      batchErrors.push(`audit_log fetch: ${auditFetchErr.message}`);
+    } else if (auditRowsToScrub && auditRowsToScrub.length > 0) {
+      const rowsWithEmail = auditRowsToScrub
+        .map((row) => ({ id: row.id as string, metadata: row.metadata as Record<string, unknown> | null }))
+        .filter((row) => !!row.metadata && typeof row.metadata === "object" && !Array.isArray(row.metadata) && "email" in row.metadata);
+      const scrubResults = await Promise.all(
+        rowsWithEmail.map((row) =>
+          admin
+            .from("audit_log")
+            .update({ metadata: { ...(row.metadata as Record<string, unknown>), email: "[redacted:gdpr-erasure]" } })
+            .eq("id", row.id),
+        ),
+      );
+      scrubResults.forEach((result, i) => {
+        if (result.error) batchErrors.push(`audit_log metadata scrub (${rowsWithEmail[i].id}): ${result.error.message}`);
+      });
+    }
+
     const { error: credErr } = await admin.from("credit_redemptions").delete().in("user_id", userIds);
     if (credErr) batchErrors.push(`credit_redemptions: ${credErr.message}`);
 
@@ -178,6 +214,15 @@ export async function GET(request: NextRequest) {
       if (purgeErrors.length) {
         void alertAdmin("GDPR erasure: photo-storage purge failed", {
           errors: purgeErrors,
+          dueUsers: userIds.length,
+        });
+      }
+      const processorErrors = batchErrors.filter(
+        (e) => e.startsWith("stripe customer purge:") || e.startsWith("audit_log"),
+      );
+      if (processorErrors.length) {
+        void alertAdmin("GDPR erasure: processor purge / audit_log scrub failed", {
+          errors: processorErrors,
           dueUsers: userIds.length,
         });
       }

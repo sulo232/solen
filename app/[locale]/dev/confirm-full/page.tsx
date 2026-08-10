@@ -24,7 +24,7 @@ function BottomNav() {
       {[[Home, "Home", false], [Search, "Search", false], [Sparkles, "Inspo", false], [CalendarDays, "Bookings", true], [User, "Profile", false]].map(([Icon, label, on], i) => {
         const I = Icon as typeof Home;
         return (
-          <span key={i} className={`flex flex-col items-center gap-0.5 text-[12px] ${on ? "font-semibold text-s-ink" : "text-s-ink-3"}`}>
+          <span key={i} className={`flex flex-col items-center gap-0.5 text-[12px] ${on ? "font-semibold text-s-ink" : "text-s-ink-2"}`}>
             <I size={21} strokeWidth={on ? 2.4 : 2} /> {label as string}
           </span>
         );
@@ -61,16 +61,16 @@ function Done({ replay }: { replay: () => void }) {
               <span className="block truncate font-heading text-[15px] font-bold text-s-ink">Maison Lumiere</span>
               <span className="block truncate text-[12.5px] text-s-ink-2">Bahnhofstrasse 21, Zurich</span>
             </span>
-            <ChevronRight size={18} className="shrink-0 text-s-ink-3" />
+            <ChevronRight size={18} className="shrink-0 text-s-ink-2" />
           </button>
           {/* 3 sections: date, service, staff (with name + profile avatar) , owner 2026-07-02 */}
           <div className="divide-y divide-s-border">
             <div className="flex items-center gap-3 p-4">
-              <Calendar size={18} className="shrink-0 text-s-ink-3" />
+              <Calendar size={18} className="shrink-0 text-s-ink-2" />
               <div className="min-w-0"><p className="text-[14px] font-semibold text-s-ink">Sunday, 14 June</p><p className="text-[12.5px] text-s-ink-2">15:30 to 16:30</p></div>
             </div>
             <div className="flex items-center gap-3 p-4">
-              <Scissors size={18} className="shrink-0 text-s-ink-3" />
+              <Scissors size={18} className="shrink-0 text-s-ink-2" />
               <div className="min-w-0"><p className="text-[14px] font-semibold text-s-ink">Women&apos;s cut &amp; blow-dry</p><p className="text-[12.5px] text-s-ink-2">60 min</p></div>
             </div>
             <div className="flex items-center gap-3 p-4">
@@ -104,7 +104,7 @@ function Done({ replay }: { replay: () => void }) {
           <button className="text-[13px] font-semibold text-s-accent">Manage booking</button>
         </div>
 
-        <button onClick={replay} className="mx-auto mt-6 flex items-center gap-1.5 text-[12px] font-medium text-s-ink-3">
+        <button onClick={replay} className="mx-auto mt-6 flex items-center gap-1.5 text-[12px] font-medium text-s-ink-2">
           <RotateCcw size={13} /> Replay the loading beat
         </button>
       </div>

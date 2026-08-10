@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { checkUserBanned } from "@/lib/feature-flags";
+import { requireUploadHeader, verifyAndStripImage, isPdfSignature } from "@/lib/upload-security";
 
 export const dynamic = "force-dynamic";
 
@@ -21,6 +22,12 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  // A15-upload-hardening (2026-07-27): this route authenticates via the ambient Supabase
+  // session cookie, which a cross-site multipart form POST rides automatically. Require a
+  // header only same-origin fetch() code can set (see lib/upload-security.ts).
+  const csrfBlocked = requireUploadHeader(req);
+  if (csrfBlocked) return csrfBlocked;
+
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -46,14 +53,39 @@ export async function POST(req: NextRequest) {
   const allowedTypes = ['trade_license', 'professional_cert', 'hygiene_cert', 'id_proof', 'address_proof', 'other'];
   if (!allowedTypes.includes(document_type)) return NextResponse.json({ error: "Invalid document type" }, { status: 400 });
 
-  const allowedMime = ['application/pdf', 'image/jpeg', 'image/png']
-  if (!allowedMime.includes(file.type)) return NextResponse.json({ error: "Invalid file type. Only PDF, JPG, PNG allowed." }, { status: 400 });
   if (file.size > 10 * 1024 * 1024) return NextResponse.json({ error: "File too large. Max 10MB." }, { status: 400 });
 
+  // A15-upload-hardening (2026-07-27): the old `allowedMime.includes(file.type)` check only
+  // trusted the client-supplied file.type string, and the storage extension came from the
+  // client-supplied filename. This route accepts two real formats (PDF or an image), each
+  // verified against its actual bytes: a PDF must start with the real %PDF- magic-byte
+  // signature, an image is verified and re-encoded via verifyAndStripImage (which also
+  // strips any EXIF/GPS metadata the file carries). Anything else is rejected.
+  const rawBytes = Buffer.from(await file.arrayBuffer());
+  let uploadBuffer: Buffer;
+  let uploadContentType: string;
+  let ext: string;
+
+  if (isPdfSignature(rawBytes)) {
+    uploadBuffer = rawBytes;
+    uploadContentType = "application/pdf";
+    ext = "pdf";
+  } else {
+    try {
+      const processed = await verifyAndStripImage(rawBytes, ["jpeg", "png"]);
+      uploadBuffer = processed.buffer;
+      uploadContentType = processed.contentType;
+      ext = processed.ext;
+    } catch {
+      return NextResponse.json({ error: "Invalid file type. Only PDF, JPG, PNG allowed." }, { status: 400 });
+    }
+  }
+
   // Upload to Supabase Storage
-  const ext = file.name.split('.').pop();
   const fileName = `${salonId}/${Date.now()}-${Math.random().toString(36).substring(7)}.${ext}`;
-  const { data: uploadData, error: uploadErr } = await supabase.storage.from("salon-documents").upload(fileName, file);
+  const { data: uploadData, error: uploadErr } = await supabase.storage
+    .from("salon-documents")
+    .upload(fileName, uploadBuffer, { contentType: uploadContentType });
 
   if (uploadErr) return NextResponse.json({ error: uploadErr.message }, { status: 500 });
   const pathUrl = uploadData.path;

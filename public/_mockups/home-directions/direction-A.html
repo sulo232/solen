@@ -1,0 +1,619 @@
+<!--
+  Direction A, "Dense feed". Static picture, 390x844. One of four side-by-side options.
+
+  Grounded-in: _design-system/sections/home-feed/CORPUS.md
+  Grounded-in: app/[locale]/_components/homepage/SalonCard.tsx
+  Grounded-in: app/[locale]/_components/homepage/MobileCategoriesRow.tsx
+  Grounded-in: app/[locale]/_components/homepage/SectionHeader.tsx
+
+  Exists-check: app/[locale]/page.tsx already renders Hero (SearchBar inside, md:min-h-[92dvh]),
+  MobileCategoriesRow, SalonOfMonth, ForYouSalonRows, RecentlyViewed, Nearby, WalkInBand, Entdecken
+  and Reviews. Run 2026-07-29: `npm run exists "home feed"` = 0 hits, `"home directions"` = 0 hits,
+  `"hero"` = 10 hits (all read, none duplicated), `"angebote"` = 4 hits and every one is a graveyard
+  entry. This fragment reuses the shipped anatomy rather than redrawing it (see Depicts below).
+  Graveyard hits deliberately not re-proposed: the homepage hero image (owner rejected 3x, last
+  2026-07-25), the full-bleed direction (denied 2026-07-16), the top-rated photo-overlay hero
+  carousel (removed 2026-07-02), Coiffeur.tsx + FeaturedSalonCarousel.tsx (deleted 2026-06-30,
+  fabricated data), the last-minute homepage strip (removed 2026-06-11), and the standalone deals
+  page (deleted 2026-06-29, so this file draws a home rail over the live deals filter, not that
+  page). Hero.tsx is read and deliberately dropped, per the brief's "you may reorder, merge or drop
+  bands".
+  The one thing that is actually new: the vertical budget. The category strip becomes a single
+  horizontal row instead of the shipped 3x2 grid, and the tall headline hero is dropped entirely, so
+  the first SalonCard row starts at y=262 of 844 instead of below the fold.
+
+  Language note: the brief said German copy was fine here. The dated owner rule of 2026-07-24
+  ("the mockup is in german, always in english") says otherwise for mockup and comparison surfaces
+  and the mockup-english gate enforces it, so every string below is English. The shipped locale
+  strings are named in the Depicts lines instead of being rendered.
+
+  Depicts: city anchor + chevron -> app/[locale]/_components/homepage/SearchBar.tsx:489 (the shipped
+           location field). Promoting it to a standalone top-zone anchor is new; the value it shows
+           is the same city SearchBar already collects.
+  Depicts: search field -> app/[locale]/_components/homepage/SearchBar.tsx (rendered inside
+           Hero.tsx). Drawn collapsed to one tap-target row; the segmented service/location/date
+           panel it opens is the shipped one, not redrawn here.
+  Depicts: category strip, 6 tiles + the real 3D icons -> app/[locale]/_components/homepage/MobileCategoriesRow.tsx:41-48
+           (the same six slugs hair, barbershop, nails, map, walk-in, spa, and the same icon files
+           under public/icons/categories/). Changed: one horizontal row, not the 3x2 grid.
+  Depicts: section header 18px/600 + inline chevron -> app/[locale]/_components/homepage/SectionHeader.tsx:144
+           (SectionTitle, "every section title 18px/600").
+  Depicts: "Nearby" rail -> app/[locale]/_components/homepage/Nearby.tsx:106 (the shipped section
+           title, rendered in English here per the mockup-english rule).
+  Depicts: "Top on Solen" rail -> app/[locale]/_components/homepage/RecentlyViewed.tsx:132 (the
+           shipped logged-out fallback title, rendered in English here).
+  Depicts: "Deals" rail -> lib/search-filter-pills.ts (the `deals` pill) + /api/salons?deals=true,
+           with the see-all chevron pointing at /search?deals=true.
+  Depicts: salon card, 5/4 photo + radius 22 + 3-row text stack -> app/[locale]/_components/homepage/SalonCard.tsx
+           (photo block aspect-[5/4] rounded-[22px] shadow-elevation-2, text rows 508-545).
+  Depicts: rating, star + value and no review count -> app/[locale]/_components/homepage/SalonCard.tsx:506-514.
+           Two gates collide here and both are named rather than hidden. The mockup-resurrection gate
+           blocks a review count on a salon card (CARD_REDESIGN_2026-07-13 C11 removed it from Row 1
+           by dated owner decision); the psychology gate's law 6 requires a count beside any star.
+           The shipped component resolves this exact conflict at SalonCard.tsx:507 with a psych-ok
+           citing C11, and this file mirrors that resolution rather than inventing a third answer.
+           The brief cites "star + value + count, 11 of 16" from the corpus; a dated owner decision
+           outranks a corpus frequency, so the count is not drawn.
+  Depicts: save heart, 44px hit box over a 28px frost disc, 16px glyph -> app/[locale]/_components/homepage/HeartButton.tsx:177-198
+           (the FROST_GLASS recipe from lib/frost-glass.ts, verbatim).
+  Depicts: discount pill "-20%" top-left -> app/[locale]/_components/homepage/SalonCard.tsx:238.
+           hue-ok: DiscountBadge ships bg-s-love-soft over text-s-love-deep, both locked in
+           tailwind.config.js:166, rounded-[10px] at left-2 top-2, 12px/600. Not pale green: the
+           green and yellow discount variants were retired by V3-D85-semantic.
+  Depicts: "Cut from 65 CHF" -> app/[locale]/_components/primitives/PriceFrom.tsx:27-33 (label in
+           ink-2 then "{amount} CHF"), label composed exactly as SalonCard.tsx:541 does. The service
+           name is mandatory: Art. 13 PBV, SECO Wegleitung 2025 p.17.
+  Depicts: no-photo fallback tile -> app/[locale]/_components/homepage/SalonCard.tsx (the initial
+           tile rendered when photoUrl is absent), plus a category icon beside the initial so the
+           tile says what kind of place it is.
+  Depicts: card name at weight 400 -> NET-NEW: the shipped CardName primitive bakes font-medium
+           (500), but the mockup type-budget gate caps a mockup at 2 distinct weights, so 500 is
+           spent on nothing and the name carries size plus ink colour instead. This matches the
+           Airbnb calibration recorded in _design-system/research/AXIS_FONT.md section 4, where the
+           card title is deliberately not bold. Flagged so nobody reads it as a proposed change.
+  Depicts: salon names, prices and ratings -> NET-NEW: illustrative target-state values, not wired to
+           a live query in a static picture. The photography is real: 8 DISTINCT seeded product
+           images from public/_mockups/_assets/salon-photos/ (p01, p02, p03, p04, p06, p07, p09,
+           p12), one per card with zero repeats, and the 9th card renders the no-photo fallback on
+           purpose. Subject matches category on every card: salon interior and stylist team for
+           hair, a barbershop floor for the barber, a treatment close-up for spa, product shots for
+           beauty. The set was 4 images when this was first built and grew to 12 the same day, but
+           only 8 subjects are distinct: p05 is byte-identical to p04 (md5), and p08, p10 and p11
+           are re-encodes of the same shots as p02, p01 and p09 (their hashes differ, the pictures
+           do not).
+-->
+
+<style>
+/* ==========================================================================
+   Direction A, "Dense feed". Fresha + DoorDash shape. 390 x 844.
+   Every class is prefixed dA- so four directions can share one page.
+   Static picture. No interaction, no motion, no hover, no transition.
+   Type budget: 3 body sizes (18/14/12) + 1 display size (28), 2 weights (400/600).
+   ========================================================================== */
+
+.dA-root {
+  /* Token literals from the design lockfile. Scoped to this direction only. */
+  --dA-ink:      #0A0A0A;
+  --dA-ink-2:    #6B6B6B;
+  --dA-border:   #E4E4E7;
+  --dA-sunken:   #F4F4F5;
+  --dA-star:     #FFC32B;
+  --dA-love-soft:#FAD2DA;
+  --dA-love-deep:#A23548; /* hue-ok: locked token s-love.deep, tailwind.config.js:166, the shipped DiscountBadge text colour */
+
+  /* Inter Tight (display, 24px and up only) plus Inter (body). Never Geist.
+     Font files are loaded by the composing page, not by this fragment:
+     _mockups/_BASE.md forbids remote deps inside a mockup. */
+  --dA-body:    "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --dA-display: "Inter Tight", "Inter", system-ui, -apple-system, sans-serif;
+
+  width: 390px;
+  background: #FFFFFF;
+  color: var(--dA-ink);
+  font-family: var(--dA-body);
+  -webkit-text-size-adjust: 100%;
+  overflow: hidden;
+  position: relative;
+}
+.dA-root *, .dA-root *::before, .dA-root *::after { box-sizing: border-box; }
+
+/* The 844 line. Everything above it is the first viewport, unscrolled. */
+.dA-fold {
+  position: absolute; left: 0; right: 0; top: 844px; height: 0;
+  border-top: 1px dashed rgba(10,10,10,0.18);
+  z-index: 5; pointer-events: none;
+}
+.dA-fold::after {
+  content: "Fold 844";
+  position: absolute; right: 8px; top: 4px;
+  font-family: var(--dA-body); font-size: 12px; font-weight: 400;
+  color: var(--dA-ink-2);
+}
+
+/* Top zone.
+   No hero. 0 of 34 corpus home feeds open with a decorative hero photograph.
+   City anchor plus one search field, 100px of vertical spend in total. */
+.dA-top { padding: 14px 16px 0; }
+
+.dA-loc {
+  display: flex; align-items: center; gap: 4px;
+  height: 44px;                      /* touch floor; the glyph itself is 28px */
+}
+.dA-loc-city {
+  font-family: var(--dA-display);    /* Inter Tight at 28px, i.e. 24 and up only */
+  font-size: 28px; font-weight: 600; line-height: 1.1;
+  letter-spacing: -0.025em; color: var(--dA-ink);
+}
+.dA-loc svg { display: block; }
+
+.dA-search {
+  margin-top: 10px;
+  display: flex; align-items: center; gap: 10px;
+  height: 46px; padding: 0 14px;
+  background: var(--dA-sunken);      /* filled grey input at rest, lockfile 3.5 */
+  border-radius: 12px;               /* input radius 12, corrected 2026-07-17 */
+  color: var(--dA-ink-2);
+}
+.dA-search-ph { font-size: 14px; font-weight: 400; line-height: 1; }
+
+/* Category strip.
+   24 of 34. Sub-form: icon tile with a label under (Angi, Square Go, DoorDash,
+   Uber Eats web, Eventbrite). One horizontal row, not the shipped 3x2 grid:
+   the grid costs about 200px of the fold, the row costs 78px. */
+.dA-cats {
+  margin-top: 16px;
+  display: flex; gap: 10px;
+  padding: 0 16px;
+  overflow: hidden;                  /* the 5th tile crops = the scroll promise */
+}
+.dA-cat { width: 68px; flex: 0 0 68px; text-align: center; }
+.dA-cat-tile {
+  width: 56px; height: 56px; margin: 0 auto;
+  border-radius: 18px; background: var(--dA-sunken);
+  display: grid; place-items: center;
+}
+.dA-cat-tile img { width: 34px; height: 34px; object-fit: contain; display: block; }
+.dA-cat-label {
+  margin-top: 6px;
+  font-size: 12px; font-weight: 400; line-height: 16px;
+  color: var(--dA-ink);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* Section header.
+   18px/600 with an inline chevron, exactly SectionHeader.tsx's shipped treatment.
+   No tracked all-caps eyebrow: 0 of 25 corpus headers carry one. */
+.dA-sec { margin-top: 20px; }
+.dA-sec + .dA-sec { margin-top: 26px; }
+.dA-sec-head {
+  display: flex; align-items: center; gap: 2px;
+  height: 26px; padding: 0 16px;
+}
+.dA-sec-title {
+  font-family: var(--dA-body);       /* Inter: 18px is below the Inter Tight floor */
+  font-size: 18px; font-weight: 600; line-height: 26px;
+  letter-spacing: -0.01em; color: var(--dA-ink);
+}
+.dA-sec-head svg { display: block; color: var(--dA-ink); } /* see-all arrow is ink, never blue */
+
+/* Rail.
+   2.19 cards per viewport with the next one cropped. The corpus band is 1.7 to
+   2.1 (Airbnb 1.9, Fresha 1.8, TheFork 1.8, Uber Eats 1.7, ClassPass 2.1) and
+   this direction sits at the dense end on purpose. Gutter 12px, fixed. */
+.dA-rail {
+  margin-top: 8px;
+  display: flex; gap: 12px;
+  padding: 0 16px;
+  overflow: hidden;
+}
+.dA-card { width: 165px; flex: 0 0 165px; }
+
+.dA-photo {
+  position: relative;
+  width: 165px; height: 132px;       /* 5/4, the shipped SalonCard ratio */
+  border-radius: 22px;               /* CARD_REDESIGN_2026-07-13 C1 */
+  overflow: hidden;
+  background: var(--dA-sunken);
+  box-shadow: 0 2px 8px rgba(50,47,44,0.09);   /* shadow-elevation-2 */
+}
+.dA-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* Spec'd fallback when a salon has no photo: sunken tile, category icon and the
+   initial. Never a bare grey box. */
+.dA-photo-fb {
+  position: absolute; inset: 0;
+  display: grid; place-items: center;
+  background: var(--dA-sunken);
+}
+.dA-photo-fb img { width: 40px; height: 40px; object-fit: contain; opacity: 0.75; }
+.dA-photo-fb-initial {
+  /* 18px, not the shipped 64px: at 28px it would be a SECOND element tying the
+     screen's one display anchor, and the rail can scroll it into the same
+     viewport as the city line. Stays inside the 4-size ladder. */
+  position: absolute; left: 0; right: 0; bottom: 12px;
+  font-family: var(--dA-body); font-size: 18px; font-weight: 600;
+  line-height: 1; text-align: center; color: var(--dA-ink-2);
+}
+
+/* Save control, top-right on the photo: 8 of 11 corpus cards that carry one.
+   44px hit box, 28px frost disc, 16px glyph, HeartButton.tsx verbatim. */
+.dA-heart {
+  position: absolute; right: 2px; top: 2px;
+  width: 44px; height: 44px;
+  display: grid; place-items: center;
+}
+.dA-heart-disc {
+  width: 28px; height: 28px; border-radius: 999px;
+  display: grid; place-items: center;
+  background: rgba(255,255,255,0.80);
+  -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+  border: 1px solid rgba(255,255,255,0.6);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.4);
+  color: var(--dA-ink);
+}
+
+/* One badge slot, top-left. 0 of 19 corpus cards carry two. */
+.dA-badge {
+  position: absolute; left: 8px; top: 8px;
+  display: inline-flex; align-items: center;
+  padding: 6px 12px; border-radius: 10px;
+  background: var(--dA-love-soft);
+  border: 1px solid rgba(204,74,96,0.22);
+  box-shadow: 0 1px 3px rgba(26,28,25,0.04);
+  font-size: 12px; font-weight: 600; line-height: 1;
+  color: var(--dA-love-deep);        /* 4.88:1 on the soft pink, passes AA */
+  font-variant-numeric: tabular-nums;
+}
+
+/* Card text: 3 rows, the shipped C11 count. No card in the corpus carried more
+   than four text lines. */
+.dA-txt { margin-top: 8px; padding: 0 2px; }
+
+.dA-name {
+  font-size: 14px; font-weight: 400; line-height: 18px;
+  letter-spacing: -0.01em; color: var(--dA-ink);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.dA-meta {
+  margin-top: 2px;
+  display: flex; align-items: center; justify-content: space-between; gap: 6px;
+  height: 16px;
+  font-size: 12px; line-height: 16px;
+}
+/* Rating is star glyph plus value. No count: C11 (2026-07-13) removed it from
+   this card by dated owner decision, which outranks a corpus tally. */
+.dA-rate { display: inline-flex; align-items: center; gap: 3px; flex: 0 0 auto; }
+.dA-rate svg { display: block; }
+.dA-rate-val {
+  font-weight: 400; color: var(--dA-ink);
+  font-variant-numeric: tabular-nums;
+}
+.dA-dist {
+  font-weight: 400; color: var(--dA-ink-2);
+  min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* Art. 13 PBV: an advertised minimum price is lawful only when the copy names
+   the concrete offer it buys. The service name is not optional here. */
+.dA-price {
+  margin-top: 2px;
+  height: 16px;
+  font-size: 12px; line-height: 16px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  font-variant-numeric: tabular-nums;
+}
+.dA-price-svc { font-weight: 400; color: var(--dA-ink-2); }
+.dA-price-amt { font-weight: 600; color: var(--dA-ink); }
+
+/* Footer note. */
+.dA-note {
+  margin-top: 26px;
+  padding: 14px 16px 18px;
+  border-top: 1px solid var(--dA-border);
+  background: var(--dA-sunken);
+  font-size: 12px; font-weight: 400; line-height: 1.5;
+  color: var(--dA-ink-2);
+}
+.dA-note-h {
+  margin: 0 0 4px;
+  font-family: var(--dA-body);
+  font-size: 12px; font-weight: 600; line-height: 1.5;
+  color: var(--dA-ink);
+}
+.dA-note b { font-weight: 600; color: var(--dA-ink); }
+</style>
+
+<div class="dA-root">
+
+  <div class="dA-fold" aria-hidden="true"></div>
+
+  <!-- top zone -->
+  <div class="dA-top">
+
+    <!-- The one display anchor, 28px = 2.0x the 14px body. It is the city the
+         whole feed is scoped to, so it earns its place under FLOORS LAW 10. -->
+    <div class="dA-loc">
+      <span class="dA-loc-city">Zurich</span>
+      <svg class="lucide lucide-chevron-down" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+    </div>
+
+    <div class="dA-search">
+      <svg class="lucide lucide-search" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+      <span class="dA-search-ph">Treatment, salon or area</span>
+    </div>
+  </div>
+
+  <!-- category strip -->
+  <div class="dA-cats">
+    <div class="dA-cat">
+      <div class="dA-cat-tile"><img src="/icons/categories/scissors.png" alt=""></div>
+      <div class="dA-cat-label">Hair</div>
+    </div>
+    <div class="dA-cat">
+      <div class="dA-cat-tile"><img src="/icons/categories/clippers.png" alt=""></div>
+      <div class="dA-cat-label">Barber</div>
+    </div>
+    <div class="dA-cat">
+      <div class="dA-cat-tile"><img src="/icons/categories/nails.png" alt=""></div>
+      <div class="dA-cat-label">Nails</div>
+    </div>
+    <div class="dA-cat">
+      <div class="dA-cat-tile"><img src="/icons/categories/spa.png" alt=""></div>
+      <div class="dA-cat-label">Spa</div>
+    </div>
+    <div class="dA-cat">
+      <div class="dA-cat-tile"><img src="/icons/categories/walkin.png" alt=""></div>
+      <div class="dA-cat-label">Walk-in</div>
+    </div>
+    <div class="dA-cat">
+      <div class="dA-cat-tile"><img src="/icons/categories/map.png" alt=""></div>
+      <div class="dA-cat-label">Map</div>
+    </div>
+  </div>
+
+  <!-- section 1: Nearby -->
+  <div class="dA-sec">
+    <div class="dA-sec-head">
+      <span class="dA-sec-title">Nearby</span>
+      <svg class="lucide lucide-chevron-right" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+    </div>
+
+    <div class="dA-rail">
+
+      <div class="dA-card">
+        <div class="dA-photo">
+          <img src="/_mockups/_assets/salon-photos/p01.jpg" alt="Hair salon">
+          <span class="dA-heart"><span class="dA-heart-disc">
+            <svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+          </span></span>
+        </div>
+        <div class="dA-txt">
+          <div class="dA-name">Bellevue Hair</div>
+          <div class="dA-meta">
+            <span class="dA-rate"><!-- psych-ok: CARD_REDESIGN_2026-07-13 C11, the owner-approved converged card drops the review count from this row by dated decision, mirroring SalonCard.tsx:507 -->
+              <svg class="lucide lucide-star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="#FFC32B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+              <span class="dA-rate-val">4.9</span>
+            </span>
+            <span class="dA-dist">District 1</span>
+          </div>
+          <div class="dA-price"><span class="dA-price-svc">Cut from</span> <span class="dA-price-amt">65 CHF</span></div>
+        </div>
+      </div>
+
+      <div class="dA-card">
+        <div class="dA-photo">
+          <img src="/_mockups/_assets/salon-photos/p03.jpg" alt="Barbershop">
+          <span class="dA-heart"><span class="dA-heart-disc">
+            <svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+          </span></span>
+        </div>
+        <div class="dA-txt">
+          <div class="dA-name">Langstrasse Barbers</div>
+          <div class="dA-meta">
+            <span class="dA-rate"><!-- psych-ok: C11 2026-07-13, the count is dropped from this row by dated owner decision -->
+              <svg class="lucide lucide-star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="#FFC32B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+              <span class="dA-rate-val">4.8</span>
+            </span>
+            <span class="dA-dist">District 4</span>
+          </div>
+          <div class="dA-price"><span class="dA-price-svc">Beard trim from</span> <span class="dA-price-amt">39 CHF</span></div>
+        </div>
+      </div>
+
+      <div class="dA-card">
+        <div class="dA-photo">
+          <img src="/_mockups/_assets/salon-photos/p02.jpg" alt="Beauty studio">
+          <span class="dA-heart"><span class="dA-heart-disc">
+            <svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+          </span></span>
+        </div>
+        <div class="dA-txt">
+          <div class="dA-name">Seefeld Studio</div>
+          <div class="dA-meta">
+            <span class="dA-rate"><!-- psych-ok: C11 2026-07-13, the count is dropped from this row by dated owner decision -->
+              <svg class="lucide lucide-star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="#FFC32B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+              <span class="dA-rate-val">4.7</span>
+            </span>
+            <span class="dA-dist">District 8</span>
+          </div>
+          <div class="dA-price"><span class="dA-price-svc">Make-up from</span> <span class="dA-price-amt">89 CHF</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- section 2: Top on Solen -->
+  <div class="dA-sec">
+    <div class="dA-sec-head">
+      <span class="dA-sec-title">Top on Solen</span>
+      <svg class="lucide lucide-chevron-right" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+    </div>
+
+    <div class="dA-rail">
+
+      <div class="dA-card">
+        <div class="dA-photo">
+          <img src="/_mockups/_assets/salon-photos/p12.jpg" alt="Salon team">
+          <span class="dA-heart"><span class="dA-heart-disc">
+            <svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+          </span></span>
+        </div>
+        <div class="dA-txt">
+          <!-- worst-case content: the longest plausible salon name, truncating -->
+          <div class="dA-name">Niederdorf Hair &amp; Beauty Studio</div>
+          <div class="dA-meta">
+            <span class="dA-rate"><!-- psych-ok: C11 2026-07-13, the count is dropped from this row by dated owner decision -->
+              <svg class="lucide lucide-star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="#FFC32B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+              <span class="dA-rate-val">4.9</span>
+            </span>
+            <span class="dA-dist">District 1</span>
+          </div>
+          <div class="dA-price"><span class="dA-price-svc">Colour from</span> <span class="dA-price-amt">95 CHF</span></div>
+        </div>
+      </div>
+
+      <div class="dA-card">
+        <div class="dA-photo">
+          <img src="/_mockups/_assets/salon-photos/p09.jpg" alt="Hair styling">
+          <span class="dA-heart"><span class="dA-heart-disc">
+            <svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+          </span></span>
+        </div>
+        <div class="dA-txt">
+          <div class="dA-name">Oerlikon Hair Works</div>
+          <div class="dA-meta">
+            <span class="dA-rate"><!-- psych-ok: C11 2026-07-13, the count is dropped from this row by dated owner decision -->
+              <svg class="lucide lucide-star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="#FFC32B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+              <span class="dA-rate-val">4.6</span>
+            </span>
+            <span class="dA-dist">District 11</span>
+          </div>
+          <div class="dA-price"><span class="dA-price-svc">Blow-dry from</span> <span class="dA-price-amt">45 CHF</span></div>
+        </div>
+      </div>
+
+      <div class="dA-card">
+        <div class="dA-photo">
+          <!-- the spec'd no-photo fallback: sunken tile, category icon, initial -->
+          <span class="dA-photo-fb">
+            <img src="/icons/categories/nails.png" alt="Nail studio">
+            <span class="dA-photo-fb-initial">E</span>
+          </span>
+          <span class="dA-heart"><span class="dA-heart-disc">
+            <svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+          </span></span>
+        </div>
+        <div class="dA-txt">
+          <div class="dA-name">Enge Nail Studio</div>
+          <div class="dA-meta">
+            <span class="dA-rate"><!-- psych-ok: C11 2026-07-13, the count is dropped from this row by dated owner decision -->
+              <svg class="lucide lucide-star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="#FFC32B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+              <span class="dA-rate-val">5.0</span>
+            </span>
+            <span class="dA-dist">District 2</span>
+          </div>
+          <div class="dA-price"><span class="dA-price-svc">Manicure from</span> <span class="dA-price-amt">55 CHF</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- section 3: Deals -->
+  <div class="dA-sec">
+    <div class="dA-sec-head">
+      <span class="dA-sec-title">Deals</span>
+      <svg class="lucide lucide-chevron-right" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+    </div>
+
+    <div class="dA-rail">
+
+      <div class="dA-card">
+        <div class="dA-photo">
+          <img src="/_mockups/_assets/salon-photos/p07.jpg" alt="Beauty products">
+          <span class="dA-badge">&#8722;20%</span>
+          <span class="dA-heart"><span class="dA-heart-disc">
+            <svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+          </span></span>
+        </div>
+        <div class="dA-txt">
+          <div class="dA-name">Wiedikon Beauty Bar</div>
+          <div class="dA-meta">
+            <span class="dA-rate"><!-- psych-ok: C11 2026-07-13, the count is dropped from this row by dated owner decision -->
+              <svg class="lucide lucide-star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="#FFC32B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+              <span class="dA-rate-val">4.7</span>
+            </span>
+            <span class="dA-dist">District 3</span>
+          </div>
+          <div class="dA-price"><span class="dA-price-svc">Brows from</span> <span class="dA-price-amt">42 CHF</span></div>
+        </div>
+      </div>
+
+      <div class="dA-card">
+        <div class="dA-photo">
+          <img src="/_mockups/_assets/salon-photos/p06.jpg" alt="Beauty products">
+          <span class="dA-heart"><span class="dA-heart-disc">
+            <svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+          </span></span>
+        </div>
+        <div class="dA-txt">
+          <div class="dA-name">Limmatquai Beauty</div>
+          <div class="dA-meta">
+            <span class="dA-rate"><!-- psych-ok: C11 2026-07-13, the count is dropped from this row by dated owner decision -->
+              <svg class="lucide lucide-star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="#FFC32B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+              <span class="dA-rate-val">4.8</span>
+            </span>
+            <span class="dA-dist">District 1</span>
+          </div>
+          <div class="dA-price"><span class="dA-price-svc">Facial from</span> <span class="dA-price-amt">120 CHF</span></div>
+        </div>
+      </div>
+
+      <div class="dA-card">
+        <div class="dA-photo">
+          <img src="/_mockups/_assets/salon-photos/p04.jpg" alt="Spa treatment">
+          <span class="dA-heart"><span class="dA-heart-disc">
+            <svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+          </span></span>
+        </div>
+        <div class="dA-txt">
+          <div class="dA-name">Hardbruecke Spa</div>
+          <div class="dA-meta">
+            <span class="dA-rate"><!-- psych-ok: C11 2026-07-13, the count is dropped from this row by dated owner decision -->
+              <svg class="lucide lucide-star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="#FFC32B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+              <span class="dA-rate-val">4.8</span>
+            </span>
+            <span class="dA-dist">District 5</span>
+          </div>
+          <div class="dA-price"><span class="dA-price-svc">Body peel from</span> <span class="dA-price-amt">72 CHF</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- footer note -->
+  <div class="dA-note">
+    <h1 class="dA-note-h">Direction A, dense feed</h1>
+    Driven by: a decorative hero photograph <b>0 of 34</b>, which is why this opens with a city line
+    and a search field and nothing else; search entry in the top zone <b>29 of 34</b>; category
+    shortcut strip <b>24 of 34</b>; titled sections as horizontal carousels <b>26 of 34</b>; provider
+    card photo above text <b>16 of 19</b>; one overlay badge is the ceiling <b>0 of 19 carry two</b>;
+    no tracked all-caps eyebrow <b>0 of 25</b>. One corpus fact is deliberately not followed: star +
+    value + count (11 of 16). The 2026-07-13 C11 decision removed the count from this card, a dated
+    owner decision outranks a tally, so the rating is star and value only. Rail density is 2.19 cards
+    per viewport, the dense end of the measured band (Uber Eats 1.7, Fresha 1.8, Airbnb 1.9,
+    ClassPass 2.1), with the next card cropped as the scroll promise. The first card top sits at
+    y=262 of 844, so roughly 6 salons and 3 section titles are above the fold. Type ladder 28 / 18 /
+    14 / 12, anchor 2.0x body, two weights only. Photography is real and every card gets its own:
+    8 distinct seeded images, no photo used twice, plus one card showing the no-photo fallback on
+    purpose. Copy is English per the 2026-07-24 mockup rule, not because the product is. Target
+    state: names, prices and ratings are illustrative until wired; the Art. 13 PBV service name is
+    rendered with every from-price because a bare from-price is not lawful. No blue anywhere, on
+    purpose: nothing inside a card is separately tappable, so nothing inside a card may look like a
+    link.
+  </div>
+
+</div>

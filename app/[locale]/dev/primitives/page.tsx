@@ -115,9 +115,9 @@ function PrimitivesDevPageInner() {
               <span className="w-1.5 h-1.5 rounded-full bg-s-ink" />
               Solen V3 Phase 0 React
             </span>
-            <span className="text-s-ink-3">§F.1 2026-05-08 /dev/primitives</span>
+            <span className="text-s-ink-2">§F.1 2026-05-08 /dev/primitives</span>
           </div>
-          <h1 className="font-display font-black text-[64px] leading-[0.95] tracking-[-0.02em] text-s-ink">
+          <h1 className="font-display font-bold text-[64px] leading-[0.95] tracking-[-0.02em] text-s-ink">
             Form primitives
           </h1>
           <p className="font-body font-normal text-[15px] text-s-ink-2 mt-4 max-w-[720px]">
@@ -860,7 +860,7 @@ function PrimitivesDevPageInner() {
                   <button
                     type="button"
                     onClick={() => setSheetFilterTypes(new Set())}
-                    className="font-body font-medium text-[14px] text-s-ink-3 hover:text-s-ink transition-colors"
+                    className="font-body font-medium text-[14px] text-s-ink-2 hover:text-s-ink transition-colors"
                   >
                     Zurücksetzen
                   </button>
@@ -886,7 +886,7 @@ function PrimitivesDevPageInner() {
               <Sheet isOpen={shareSheetOpen} onOpenChange={setShareSheetOpen} height="auto">
                 <SheetHeader title="Salon teilen" onClose={() => setShareSheetOpen(false)} />
                 <SheetBody>
-                  <p className="text-s-ink-3 text-[14px] mb-3.5">Salon Maria Kleinbasel</p>
+                  <p className="text-s-ink-2 text-[14px] mb-3.5">Salon Maria Kleinbasel</p>
                   <PillGroup mode="multi" aria-label="Share targets">
                     <PillToggle>Link kopieren</PillToggle>
                     <PillToggle>WhatsApp</PillToggle>
@@ -916,19 +916,19 @@ function PrimitivesDevPageInner() {
               <div className="flex flex-col gap-8">
                 <div className="flex items-baseline gap-2">
                   <Logo size="xl" />
-                  <span className="text-s-ink-3 text-[12px] tracking-[0.16em] uppercase font-semibold">xl 64px</span>
+                  <span className="text-s-ink-2 text-[12px] tracking-[0.16em] uppercase font-semibold">xl 64px</span>
                 </div>
                 <div className="flex items-baseline gap-2">
                   <Logo size="lg" />
-                  <span className="text-s-ink-3 text-[12px] tracking-[0.16em] uppercase font-semibold">lg 40px</span>
+                  <span className="text-s-ink-2 text-[12px] tracking-[0.16em] uppercase font-semibold">lg 40px</span>
                 </div>
                 <div className="flex items-baseline gap-2">
                   <Logo size="md" />
-                  <span className="text-s-ink-3 text-[12px] tracking-[0.16em] uppercase font-semibold">md 28px (default)</span>
+                  <span className="text-s-ink-2 text-[12px] tracking-[0.16em] uppercase font-semibold">md 28px (default)</span>
                 </div>
                 <div className="flex items-baseline gap-2">
                   <Logo size="sm" />
-                  <span className="text-s-ink-3 text-[12px] tracking-[0.16em] uppercase font-semibold">sm 18px</span>
+                  <span className="text-s-ink-2 text-[12px] tracking-[0.16em] uppercase font-semibold">sm 18px</span>
                 </div>
               </div>
             </Card>
@@ -963,7 +963,7 @@ function PrimitivesDevPageInner() {
 
             <Card tag="without dot accent (alt)">
               <Logo size="lg" noDot />
-              <p className="font-body text-[13px] text-s-ink-3 mt-2">
+              <p className="font-body text-[13px] text-s-ink-2 mt-2">
                 Use <code className="bg-s-bg-sunken px-1.5 py-0.5 rounded">noDot</code> prop for contexts where the dot
                 competes with adjacent UI (e.g. inside a button, next to other dots).
               </p>
@@ -992,7 +992,7 @@ function PrimitivesDevPageInner() {
               <p className="font-body text-[14px] text-s-ink-2">
                 Cooper Black via cdnfonts.com is currently HTTP 500 — page silently uses the Sansita 900 fallback in the chain. Brand integrity preserved.
               </p>
-              <p className="font-body text-[13px] text-s-ink-3 mt-3">
+              <p className="font-body text-[13px] text-s-ink-2 mt-3">
                 Display: Cooper BT → Sansita → Georgia Body: Avant Garde Gothic → League Spartan → Inter Tight → system-ui
               </p>
             </Card>
@@ -1029,7 +1029,7 @@ function PrimitivesDevPageInner() {
         </Section>
 
         {/* FOOT */}
-        <footer className="mt-24 pt-6 border-t border-s-ink flex justify-between font-body text-[14px] uppercase tracking-[0.16em] text-s-ink-3 tabular-nums">
+        <footer className="mt-24 pt-6 border-t border-s-ink flex justify-between font-body text-[14px] uppercase tracking-[0.16em] text-s-ink-2 tabular-nums">
           <span>Solen V3 Phase 0 COMPLETE 8 of 8 primitives /dev/primitives</span>
           <span>2026-05-09 V2-D31</span>
         </footer>
@@ -1059,9 +1059,9 @@ function Section({
           <span className="w-1.5 h-1.5 rounded-full bg-s-ink" />
           {eyebrow}
         </span>
-        <span className="text-s-ink-3">{meta}</span>
+        <span className="text-s-ink-2">{meta}</span>
       </div>
-      <h2 className="font-display font-black text-[36px] leading-none tracking-[-0.02em] text-s-ink mb-4">
+      <h2 className="font-display font-bold text-[36px] leading-none tracking-[-0.02em] text-s-ink mb-4">
         {title}
       </h2>
       <div className="mt-8">{children}</div>
@@ -1087,7 +1087,7 @@ function Grid({ cols, children }: { cols: 2 | 3; children: React.ReactNode }) {
 function Card({ tag, children }: { tag: string; children: React.ReactNode }) {
   return (
     <div className="bg-white border border-s-ink/[0.06] rounded-2xl p-[22px] flex flex-col gap-1.5">
-      <div className="font-body font-bold text-[12px] uppercase tracking-[0.16em] text-s-ink-3 mb-3.5">
+      <div className="font-body font-bold text-[12px] uppercase tracking-[0.16em] text-s-ink-2 mb-3.5">
         {tag}
       </div>
       {children}
@@ -1288,7 +1288,7 @@ function ToastDemo() {
             onClick={() => {
               toast.dismissAll();
             }}
-            className="font-body font-semibold text-[14px] px-4 py-2.5 rounded-full bg-s-bg-base text-s-ink-3 border border-s-border hover:text-s-ink transition-colors"
+            className="font-body font-semibold text-[14px] px-4 py-2.5 rounded-full bg-s-bg-base text-s-ink-2 border border-s-border hover:text-s-ink transition-colors"
           >
             Dismiss all
           </button>

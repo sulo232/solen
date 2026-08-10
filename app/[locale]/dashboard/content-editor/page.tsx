@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale as useAppLocale, useTranslations } from "next-intl";
 import { motion } from "motion/react";
 import { FileEdit, Save, Check } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { containerVariants, itemVariants } from "@/lib/animations";
+import { resolveSwissLocale } from "@/lib/format";
 
 /* ─── Types ─── */
 interface ContentRow {
@@ -39,6 +40,7 @@ function ContentField({
   onSaved: () => void;
 }) {
   const t = useTranslations("dashboard.contentEditorPage");
+  const appLocale = useAppLocale();
   const [locale, setLocale] = useState<"de" | "en">("de");
   const [valueDe, setValueDe] = useState(row.value_de ?? "");
   const [valueEn, setValueEn] = useState(row.value_en ?? "");
@@ -93,7 +95,7 @@ function ContentField({
           value={currentValue}
           onChange={(e) => setCurrentValue(e.target.value)}
           rows={3}
-          className="w-full px-3 py-2.5 text-sm font-body text-s-ink focus:outline-none resize-y" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
+          className="w-full prose-measure px-3 py-2.5 text-sm font-body text-s-ink focus:outline-none resize-y" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
         />
       ) : (
         <input
@@ -107,7 +109,7 @@ function ContentField({
       <div className="flex items-center justify-between mt-2">
         <p className="text-[12px] text-s-ink/25">
           {t("lastChanged", {
-            date: new Date(row.updated_at).toLocaleDateString("de-CH", {
+            date: new Date(row.updated_at).toLocaleDateString(resolveSwissLocale(appLocale), {
               day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit",
             }),
           })}

@@ -291,6 +291,11 @@ export interface SalonCardProps extends VariantProps<typeof curationVariants> {
   service?: string;
   /** Variant=service: lowest price (CHF) — renders "ab CHF [price]". */
   priceFromCHF?: number | null;
+  /** Name of the service that priceFromCHF belongs to. Art. 13 PBV: a from-price is lawful
+   *  advertising ONLY when the copy says which concrete offer it buys (SECO Wegleitung 2025
+   *  p.17). Omitted -> the card renders the bare price with no "from", which is the safe
+   *  fallback rather than an unlawful unqualified from-price. */
+  priceFromService?: string | null;
   /** CARD_REDESIGN_2026-07-13 (C2): the availability badge + Row 3 next-slot text
    *  were removed from the converged card. Kept in the interface unused-by-render
    *  so existing callers compile unchanged. */
@@ -315,6 +320,13 @@ export interface SalonCardProps extends VariantProps<typeof curationVariants> {
    *  classes below (both would survive, source order decides). Every existing caller
    *  passes no widthClassName, so their output is byte-identical to before. */
   widthClassName?: string;
+  /** performance-05: opts this card's photo into next/image's `priority` (eager
+   *  load + preload hint, skips lazy-load's IntersectionObserver wait). Set true
+   *  ONLY on the single card a caller knows renders above-the-fold on first paint
+   *  (e.g. index 0 of the first visible row), never on every card in a rail, or
+   *  every card competes for preload bandwidth and the point is lost. Defaults to
+   *  false/absent so every existing caller keeps today's lazy-load behavior. */
+  priority?: boolean;
 }
 
 export function SalonCard({
@@ -332,6 +344,7 @@ export function SalonCard({
   variant,
   service,
   priceFromCHF,
+  priceFromService,
   nextSlotLabel,
   address,
   postalCode,
@@ -339,6 +352,7 @@ export function SalonCard({
   citySelected,
   className,
   widthClassName,
+  priority,
 }: SalonCardProps) {
   // Locale-prefixed href (2026-06-11): the bare `/salon/x` href relied on the
   // next-intl middleware to guess a locale — which (a) could land on the wrong
@@ -415,12 +429,22 @@ export function SalonCard({
           "group-hover:-translate-y-[3px] group-hover:scale-[1.015]",
           "group-hover:shadow-elevation-3",
         )}
+        // S2 (2026-08-03): the name is CARRIED here, not APPLIED here. It used to be an inline
+        // `viewTransitionName: vt-salon-${slug}` on every card, and the comment that sat here
+        // claimed a repeated slug merely "falls back to the default cross-fade (harmless)".
+        // Measured on /de: 20 slugs rendered more than once (atelier-haarwerk 4x, glow-lab-basel
+        // 3x, pink-petal-nails 3x, blade-and-stone 3x), and the real browser behaviour is not a
+        // harmless fallback , Chrome logs "Unexpected duplicate view-transition-name: ..." and
+        // ABORTS the whole transition with "InvalidStateError: Transition was aborted"
+        // (reproduced 2/2 on /de -> open overlay -> type "cut" -> tap a card -> history.back()).
+        // A view-transition-name must be unique per document, so no card claims one at rest;
+        // PageTransition.tsx puts it on the ONE card being activated, in the click's capture
+        // phase, before next-view-transitions calls startViewTransition. Exactly one element can
+        // then carry it, so the card the user actually tapped still morphs into the PDP hero
+        // (SalonHero.tsx, same `vt-salon-${slug}`) and no other card can collide with it.
+        data-vt-salon={`vt-salon-${slug}`}
         style={{
           backgroundColor: cat.bg,
-          // 16.3: shared-element name; PDP hero carries the same name. Unique per
-          // slug — if a salon appears twice on one page, the browser skips that
-          // name's morph and falls back to the default cross-fade (harmless).
-          viewTransitionName: `vt-salon-${slug}`,
         }}
       >
         {/* V3-D101 (2026-05-22): stock photos restored per user. Falls back to
@@ -428,14 +452,20 @@ export function SalonCard({
         {photoUrl ? (
           <Image
             src={photoUrl}
-            alt={photoAlt ?? `Foto von ${name}`}
+            // accessibility-06 (2026-07-27): the old fallback ("Foto von {name}") just
+            // echoed the name already read by CardName next to it, conveying nothing new
+            // to a screen-reader user. Uses the one real piece of photo-adjacent metadata
+            // this card actually has, the salon's category, so the alt text says WHAT kind
+            // of place the photo shows, not just whose photo it is again.
+            alt={photoAlt ?? `${name}, ${CATEGORY_LABEL[category]}`}
             fill
             sizes="(max-width: 768px) 160px, 180px"
             className="object-cover"
+            priority={priority}
           />
         ) : (
           <span
-            className="absolute inset-0 grid place-items-center font-display font-black leading-none text-[64px] tracking-[-0.03em] md:text-[80px]"
+            className="absolute inset-0 grid place-items-center font-display font-bold leading-none text-[64px] tracking-[-0.03em] md:text-[80px]"
             style={{ color: cat.initial }}
             aria-hidden
           >
@@ -482,7 +512,9 @@ export function SalonCard({
       <div className="mt-2 px-[2px] flex flex-col gap-[2px]">
         <div className="flex items-baseline gap-2">
           {/* V3-D348: name anchor via <CardName> primitive (bakes text-s-ink font-medium). */}
-          <CardName as="h3" className="text-[14px] leading-[1.25] tracking-[-0.01em] truncate min-w-0 flex-1">
+          {/* OWNER PICK 2026-08-06, direction D: tracking off, name weight up to 600. The global
+              heading rule cannot reach this arbitrary utility, so the card name carries it here. */}
+          <CardName as="h3" className="text-[14px] font-semibold leading-[1.25] truncate min-w-0 flex-1">
             {name}
           </CardName>
           {/* V3-D348: rating meta via <CardMeta> primitive (bakes text-s-ink-2 font-normal). */}
@@ -497,7 +529,7 @@ export function SalonCard({
         </div>
 
         {/* Row 2 - category label, always (address moved to Row 3, C11). */}
-        <div className="font-body text-[12px] font-normal leading-[1.35] text-s-ink-3 truncate">
+        <div className="font-body text-[12px] font-normal leading-[1.35] text-s-ink-2 truncate">
           {CATEGORY_LABEL[category]}
         </div>
 
@@ -512,7 +544,14 @@ export function SalonCard({
             )}
             {priceFromCHF != null && (
               <CardMeta as="span" className="shrink-0 text-[12px] leading-[1.35]">
-                <PriceFrom amount={priceFromCHF} label={fromLabel} />
+                {/* The "from" word only appears when the service it refers to is named. SECO
+                    Wegleitung 2025 p.17: an advertised minimum price must describe the concrete
+                    offer. Without a name we show the bare number instead of an unqualified
+                    from-price, because the bare number claims less, not more. */}
+                <PriceFrom
+                  amount={priceFromCHF}
+                  label={priceFromService ? `${priceFromService} ${fromLabel}` : undefined}
+                />
               </CardMeta>
             )}
           </div>

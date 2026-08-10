@@ -10,6 +10,7 @@ import ErrorState from "@/components-legacy/ui/ErrorState";
 import WalkInModal from "@/components-legacy/dashboard/WalkInModal";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import type { AvailabilitySlot } from "@/lib/types";
+import { resolveSwissLocale } from "@/lib/format";
 
 // ─────────────────────────────────────────
 // Helpers
@@ -105,7 +106,7 @@ function SlotCreateModal({ date, startTime, services, staff, onClose, onCreated 
       <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-sm p-6">
         <div className="flex items-start justify-between mb-4">
           <h3 className="font-heading text-base">{t("createSlotTitle")}</h3>
-          <button onClick={onClose} className="transition-transform active:scale-[0.94] active:duration-[80ms] active:ease-glide"><X size={18} className="text-s-ink/30" /></button>
+          <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
         </div>
         <p className="text-sm text-s-ink-2 mb-4">{t("dateAtTime", { date, time: startTime })}</p>
         <div className="space-y-3 mb-5">
@@ -127,9 +128,9 @@ function SlotCreateModal({ date, startTime, services, staff, onClose, onCreated 
           </div>
         </div>
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2 transition-transform active:scale-[0.97] active:duration-[80ms] active:ease-glide">{t("cancel")}</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2">{t("cancel")}</button>
           <button onClick={handleCreate} disabled={!serviceId || loading}
-            className="flex-1 py-2.5 rounded-btn bg-s-ink text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2 transition-transform active:scale-[0.97] active:duration-[80ms] active:ease-glide">
+            className="flex-1 py-2.5 rounded-btn bg-s-ink text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
             {loading && <Spinner size="sm" invert />}{t("create")}
           </button>
         </div>
@@ -187,7 +188,7 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
       <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-md p-6 overflow-y-auto max-h-[90vh]">
         <div className="flex items-start justify-between mb-4">
           <h3 className="font-heading text-base">{t("createWeekScheduleTitle")}</h3>
-          <button onClick={onClose} className="transition-transform active:scale-[0.94] active:duration-[80ms] active:ease-glide"><X size={18} className="text-s-ink/30" /></button>
+          <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
         </div>
         <div className="space-y-4 mb-5">
           <div>
@@ -214,7 +215,7 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
                 return (
                   <div key={key} className="flex items-center gap-3">
                     <button type="button" onClick={() => toggleDay(key)}
-                      className={["w-9 text-center text-xs font-medium py-1.5 rounded-btn transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide", // mockup-ok: C2 fix, locked TabPill treatment (approved public/_mockups/fixes-refined)
+                      className={["w-9 text-center text-xs font-medium py-1.5 rounded-btn transition-colors", // mockup-ok: C2 fix, locked TabPill treatment (approved public/_mockups/fixes-refined)
                         slot ? "bg-s-bg-sunken text-s-ink font-semibold" : "bg-s-bg-sunken text-s-ink/40"].join(" ")}>
                       {DAY_LABELS[i]}
                     </button>
@@ -237,7 +238,7 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
             <div className="flex gap-2">
               {([1, 2, 4] as const).map((w) => (
                 <button key={w} type="button" onClick={() => setWeeks(w)}
-                  className={["flex-1 py-2 rounded-btn border text-sm font-medium transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide", // mockup-ok: C2 fix, locked TabPill treatment (approved public/_mockups/fixes-refined)
+                  className={["flex-1 py-2 rounded-btn border text-sm font-medium transition-colors", // mockup-ok: C2 fix, locked TabPill treatment (approved public/_mockups/fixes-refined)
                     weeks === w ? "bg-s-bg-sunken text-s-ink font-semibold border-s-border" : "border-s-border text-s-ink-2"].join(" ")}>
                   {w} {w === 1 ? t("weekSingular") : t("weekPlural")}
                 </button>
@@ -246,9 +247,9 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
           </div>
         </div>
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2 transition-transform active:scale-[0.97] active:duration-[80ms] active:ease-glide">{t("cancel")}</button>
+          <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2">{t("cancel")}</button>
           <button onClick={handleCreate} disabled={!serviceId || loading}
-            className="flex-1 py-2.5 rounded-btn bg-s-ink text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2 transition-transform active:scale-[0.97] active:duration-[80ms] active:ease-glide">
+            className="flex-1 py-2.5 rounded-btn bg-s-ink text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2">
             {loading && <Spinner size="sm" invert />}{t("create")}
           </button>
         </div>
@@ -271,14 +272,15 @@ interface SlotDetailModalProps {
 
 function SlotDetailModal({ slot, staff, onClose, onReschedule, onDelete }: SlotDetailModalProps) {
   const t = useTranslations("dashboard.calendarPage");
+  const locale = useLocale();
   const [rescheduleMode, setRescheduleMode] = useState(false);
   const [newDate, setNewDate] = useState(slot.starts_at.split("T")[0]);
   const [newTime, setNewTime] = useState(new Date(slot.starts_at).toTimeString().slice(0, 5));
   const [loading, setLoading] = useState(false);
 
   const staffName = staff.find((s) => s.id === slot.staff_member_id)?.name || t("anyStaff");
-  const startTime = new Date(slot.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" });
-  const endTime = new Date(slot.ends_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" });
+  const startTime = new Date(slot.starts_at).toLocaleTimeString(resolveSwissLocale(locale), { hour: "2-digit", minute: "2-digit" });
+  const endTime = new Date(slot.ends_at).toLocaleTimeString(resolveSwissLocale(locale), { hour: "2-digit", minute: "2-digit" });
 
   const handleReschedule = async () => {
     setLoading(true);
@@ -297,7 +299,7 @@ function SlotDetailModal({ slot, staff, onClose, onReschedule, onDelete }: SlotD
           <h3 className="font-heading text-base">
             {rescheduleMode ? t("rescheduleTitle") : t("detailsTitle")}
           </h3>
-          <button onClick={onClose} className="transition-transform active:scale-[0.94] active:duration-[80ms] active:ease-glide"><X size={18} className="text-s-ink/30" /></button>
+          <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
         </div>
 
         {rescheduleMode ? (
@@ -314,9 +316,9 @@ function SlotDetailModal({ slot, staff, onClose, onReschedule, onDelete }: SlotD
             </div>
             <div className="flex gap-2 mt-4">
               <button onClick={() => setRescheduleMode(false)}
-                className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2 transition-transform active:scale-[0.97] active:duration-[80ms] active:ease-glide">{t("back")}</button>
+                className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2">{t("back")}</button>
               <button onClick={handleReschedule} disabled={loading}
-                className="flex-1 py-2.5 rounded-btn bg-s-ink text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-1 transition-transform active:scale-[0.97] active:duration-[80ms] active:ease-glide">
+                className="flex-1 py-2.5 rounded-btn bg-s-ink text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-1">
                 {loading && <Spinner size="sm" invert />}
                 <ArrowRight size={14} /> {t("reschedule")}
               </button>
@@ -327,18 +329,18 @@ function SlotDetailModal({ slot, staff, onClose, onReschedule, onDelete }: SlotD
             <div className="space-y-2 mb-5 text-sm text-s-ink/70">
               <p><span className="text-s-ink/40">{t("statusLabel")}</span> <span className="font-medium">{slot.status === "booked" ? t("statusBooked") : slot.status === "blocked" ? t("statusBlocked") : t("statusFree")}</span></p>
               <p><span className="text-s-ink/40">{t("timeLabel")}</span> {startTime} - {endTime}</p>
-              <p><span className="text-s-ink/40">{t("dateLabel")}</span> {new Date(slot.starts_at).toLocaleDateString("de-CH")}</p>
+              <p><span className="text-s-ink/40">{t("dateLabel")}</span> {new Date(slot.starts_at).toLocaleDateString(resolveSwissLocale(locale))}</p>
               <p><span className="text-s-ink/40">{t("staffDetailLabel")}</span> {staffName}</p>
             </div>
             <div className="flex gap-2">
               {slot.status !== "blocked" && (
                 <button onClick={() => setRescheduleMode(true)}
-                  className="flex-1 py-2.5 rounded-btn border border-s-accent-bright text-s-coral text-sm font-medium flex items-center justify-center gap-1 hover:bg-s-coral/5 transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide">
+                  className="flex-1 py-2.5 rounded-btn border border-s-accent-bright text-s-coral text-sm font-medium flex items-center justify-center gap-1 hover:bg-s-coral/5 transition-colors">
                   <Clock size={14} /> {t("reschedule")}
                 </button>
               )}
               <button onClick={() => { onDelete(slot.id); onClose(); }}
-                className="flex-1 py-2.5 rounded-btn border border-s-accent-bright text-s-coral text-sm font-medium hover:bg-s-coral/5 transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide">
+                className="flex-1 py-2.5 rounded-btn border border-s-accent-bright text-s-coral text-sm font-medium hover:bg-s-coral/5 transition-colors">
                 {t("delete")}
               </button>
             </div>
@@ -697,22 +699,22 @@ export default function CalendarPage() {
           const renderAgenda = (forDate: Date) => {
             const dayIso = ymdLocal(forDate);
             const daySlots = slots.filter((s) => s.starts_at.startsWith(dayIso)).sort((a, b) => a.starts_at.localeCompare(b.starts_at));
-            if (daySlots.length === 0) return <div className="text-center py-12 text-s-ink-3 text-sm">{t("noSlotsThisDay")}</div>;
+            if (daySlots.length === 0) return <div className="text-center py-12 text-s-ink-2 text-sm">{t("noSlotsThisDay")}</div>;
             return (
               <div className="rounded-[16px] border border-s-border bg-white p-3 space-y-2">
                 {daySlots.map((s) => {
-                  const time = new Date(s.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" });
+                  const time = new Date(s.starts_at).toLocaleTimeString(resolveSwissLocale(locale), { hour: "2-digit", minute: "2-digit" });
                   const svc = services.find((sv) => sv.id === s.service_id)?.name;
                   const stf = staff.find((st) => st.id === s.staff_member_id)?.name?.split(" ")[0];
                   const cat = s.service_id ? serviceCategoryMap.get(s.service_id) : undefined;
                   let bg = "bg-[#EAEFFE]", lab = svc ?? t("statusBooked"), labCls = "text-s-ink";
                   let det: string | undefined = stf;
-                  if (s.status === "blocked") { bg = "bg-s-bg-sunken"; lab = t("statusBlocked"); labCls = "text-s-ink-3"; det = undefined; }
+                  if (s.status === "blocked") { bg = "bg-s-bg-sunken"; lab = t("statusBlocked"); labCls = "text-s-ink-2"; det = undefined; }
                   else if (s.status === "available") { bg = "bg-s-success-bg"; lab = t("statusFree"); labCls = "text-s-success"; det = undefined; }
                   else { bg = (cat && CAT_AGENDA_BG[cat]) || "bg-[#EAEFFE]"; }
                   return (
-                    <button key={s.id} onClick={() => setDetailSlot(s)} className="w-full flex items-stretch gap-3 text-left transition-transform active:scale-[0.98] active:duration-[80ms] active:ease-glide">
-                      <span className="font-heading font-semibold text-[12px] text-s-ink-3 w-[40px] shrink-0 pt-3 tabular-nums">{time}</span>
+                    <button key={s.id} onClick={() => setDetailSlot(s)} className="w-full flex items-stretch gap-3 text-left">
+                      <span className="font-heading font-semibold text-[12px] text-s-ink-2 w-[40px] shrink-0 pt-3 tabular-nums">{time}</span>
                       <span className={`flex-1 rounded-[12px] px-3 py-2.5 min-h-[44px] flex flex-col justify-center ${bg}`}>
                         <span className={`font-heading font-semibold text-[13.5px] ${labCls}`}>{lab}</span>
                         {det && <span className="text-[12px] text-s-ink-2 mt-0.5">{det}</span>}
@@ -729,8 +731,8 @@ export default function CalendarPage() {
           const goNext = () => mobileView === "monat" ? (() => { const d = new Date(currentDate); d.setMonth(d.getMonth() + 1); setCurrentDate(d); })() : goDay(1);
           const goTodayMobile = () => { const t = new Date(); setCurrentDate(t); setWeekStart(startOfWeek(t)); };
           const headerLabel = mobileView === "monat"
-            ? currentDate.toLocaleDateString("de-CH", { month: "long", year: "numeric" })
-            : currentDate.toLocaleDateString("de-CH", { weekday: "long", day: "numeric", month: "long" });
+            ? currentDate.toLocaleDateString(resolveSwissLocale(locale), { month: "long", year: "numeric" })
+            : currentDate.toLocaleDateString(resolveSwissLocale(locale), { weekday: "long", day: "numeric", month: "long" });
 
           // Week strip days (Mon–Sun of the selected week).
           const stripDays = Array.from({ length: 7 }, (_, i) => addDays(startOfWeek(currentDate), i));
@@ -739,17 +741,17 @@ export default function CalendarPage() {
             <>
               {/* Header: chevrons + label + Heute */}
               <div className="flex items-center gap-2 mb-3">
-                <button onClick={goPrev} aria-label={t("previous")} className="w-9 h-9 grid place-items-center text-s-ink transition-transform active:scale-[0.94] active:duration-[80ms] active:ease-glide"><ChevronLeft size={18} /></button>
+                <button onClick={goPrev} aria-label={t("previous")} className="w-9 h-9 grid place-items-center text-s-ink"><ChevronLeft size={18} /></button>
                 <span className="flex-1 font-heading font-bold text-[17px] tracking-[-0.01em] text-s-ink">{headerLabel}</span>
-                <button onClick={goTodayMobile} className="text-[12px] font-semibold text-s-accent transition-transform active:scale-[0.98] active:duration-[80ms] active:ease-glide">{t("today")}</button>
-                <button onClick={goNext} aria-label={t("next")} className="w-9 h-9 grid place-items-center text-s-ink transition-transform active:scale-[0.94] active:duration-[80ms] active:ease-glide"><ChevronRight size={18} /></button>
+                <button onClick={goTodayMobile} className="text-[12px] font-semibold text-s-accent">{t("today")}</button>
+                <button onClick={goNext} aria-label={t("next")} className="w-9 h-9 grid place-items-center text-s-ink"><ChevronRight size={18} /></button>
               </div>
 
               {/* Segmented control (Tag / Woche / Monat) */}
               <div className="flex bg-s-bg-sunken rounded-full p-[3px] gap-[2px] mb-3.5">
                 {([["tag", t("viewDay")], ["woche", t("viewWeek")], ["monat", t("viewMonth")]] as const).map(([key, lab]) => (
                   <button key={key} onClick={() => setMobileView(key)}
-                    className={["flex-1 font-heading font-semibold text-[12.5px] py-[7px] rounded-full transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide",
+                    className={["flex-1 font-heading font-semibold text-[12.5px] py-[7px] rounded-full transition-colors",
                       mobileView === key ? "bg-white text-s-ink shadow-[0_1px_3px_rgba(0,0,0,0.09)]" : "text-s-ink-2"].join(" ")}>
                     {lab}
                   </button>
@@ -765,9 +767,9 @@ export default function CalendarPage() {
                     const has = slots.some((s) => s.starts_at.startsWith(dIso));
                     return (
                       <button key={i} onClick={() => { setCurrentDate(d); setWeekStart(startOfWeek(d)); }}
-                        className={["w-[46px] shrink-0 rounded-[13px] py-2 text-center border transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide",
+                        className={["w-[46px] shrink-0 rounded-[13px] py-2 text-center border transition-colors",
                           on ? "bg-s-ink border-s-ink" : "bg-white border-s-border"].join(" ")}>
-                        <div className={`text-[12px] font-semibold ${on ? "text-white/60" : "text-s-ink-3"}`}>{DAYS_LABEL[i].toUpperCase()}</div>
+                        <div className={`text-[12px] font-semibold ${on ? "text-white/60" : "text-s-ink-2"}`}>{DAYS_LABEL[i].toUpperCase()}</div>
                         <div className={`font-heading font-bold text-[16px] mt-0.5 ${on ? "text-white" : "text-s-ink"}`}>{d.getDate()}</div>
                         {has
                           ? <div className={`w-[5px] h-[5px] rounded-full mx-auto mt-1 ${on ? "bg-white" : "bg-s-accent"}`} />
@@ -787,7 +789,7 @@ export default function CalendarPage() {
                 <div className="rounded-[16px] border border-s-border bg-white p-3.5">
                   <div className="grid grid-cols-7 gap-1">
                     {["M", "D", "M", "D", "F", "S", "S"].map((h, i) => (
-                      <div key={i} className="text-[12px] text-s-ink-3 text-center font-semibold pb-1">{h}</div>
+                      <div key={i} className="text-[12px] text-s-ink-2 text-center font-semibold pb-1">{h}</div>
                     ))}
                     {getMonthCalendarDays(currentDate).map((d, i) => {
                       const dIso = ymdLocal(d);
@@ -798,8 +800,8 @@ export default function CalendarPage() {
                       return (
                         <button key={i}
                           onClick={() => { setCurrentDate(d); setWeekStart(startOfWeek(d)); setMobileView("tag"); }}
-                          className={["aspect-square rounded-[10px] flex flex-col items-center justify-center gap-[3px] font-heading font-semibold text-[12.5px] transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide",
-                            today ? "bg-s-ink text-white" : out ? "bg-transparent text-s-ink-3" : "bg-s-bg-sunken text-s-ink"].join(" ")}>
+                          className={["aspect-square rounded-[10px] flex flex-col items-center justify-center gap-[3px] font-heading font-semibold text-[12.5px] transition-colors",
+                            today ? "bg-s-ink text-white" : out ? "bg-transparent text-s-ink-2" : "bg-s-bg-sunken text-s-ink"].join(" ")}>
                           {d.getDate()}
                           <span className="flex gap-[2px] h-1">
                             {Array.from({ length: dots }).map((_, k) => (
@@ -817,9 +819,9 @@ export default function CalendarPage() {
 
               {/* Slot / Walk-in / Plan — unchanged, kept under the views */}
               <div className="flex gap-2 mt-3">
-                <button onClick={() => setCreateModal({ date: ymdLocal(currentDate), time: "09:00" })} className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-[12px] bg-s-ink text-white font-heading font-semibold text-[13.5px] py-2.5 transition-transform active:scale-[0.97] active:duration-[80ms] active:ease-glide"><Plus size={15} strokeWidth={2.4} /> {t("slot")}</button>
-                <button onClick={() => setWalkInModal(true)} className="inline-flex items-center justify-center rounded-[12px] bg-white border border-s-border text-s-ink font-heading font-semibold text-[13.5px] px-4 py-2.5 transition-transform active:scale-[0.97] active:duration-[80ms] active:ease-glide">{t("walkIn")}</button>
-                <button onClick={() => setBulkModal(true)} className="inline-flex items-center justify-center rounded-[12px] bg-white border border-s-border text-s-ink font-heading font-semibold text-[13.5px] px-4 py-2.5 transition-transform active:scale-[0.97] active:duration-[80ms] active:ease-glide">{t("plan")}</button>
+                <button onClick={() => setCreateModal({ date: ymdLocal(currentDate), time: "09:00" })} className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-[12px] bg-s-ink text-white font-heading font-semibold text-[13.5px] py-2.5"><Plus size={15} strokeWidth={2.4} /> {t("slot")}</button>
+                <button onClick={() => setWalkInModal(true)} className="inline-flex items-center justify-center rounded-[12px] bg-white border border-s-border text-s-ink font-heading font-semibold text-[13.5px] px-4 py-2.5">{t("walkIn")}</button>
+                <button onClick={() => setBulkModal(true)} className="inline-flex items-center justify-center rounded-[12px] bg-white border border-s-border text-s-ink font-heading font-semibold text-[13.5px] px-4 py-2.5">{t("plan")}</button>
               </div>
             </>
           );
@@ -835,26 +837,26 @@ export default function CalendarPage() {
             if (viewMode === "week") setWeekStart((w) => addDays(w, -7));
             else if (viewMode === "day") { setCurrentDate((d) => addDays(d, -1)); setWeekStart(startOfWeek(addDays(currentDate, -1))); }
             else { const d = new Date(currentDate); d.setMonth(d.getMonth() - 1); setCurrentDate(d); setWeekStart(startOfWeek(d)); }
-          }} className="p-2 rounded-btn border border-s-border hover:border-s-accent-bright transition-[colors,transform] active:scale-[0.94] active:duration-[80ms] active:ease-glide">
+          }} className="p-2 rounded-btn border border-s-border hover:border-s-accent-bright transition-colors">
             <ChevronLeft size={16} className="text-s-ink" />
           </button>
           <button onClick={() => { const today = new Date(); setCurrentDate(today); setWeekStart(startOfWeek(today)); }}
-            className="px-3 py-1.5 rounded-btn border border-s-border text-sm text-s-ink hover:border-s-accent-bright transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide">
+            className="px-3 py-1.5 rounded-btn border border-s-border text-sm text-s-ink hover:border-s-accent-bright transition-colors">
             {t("today")}
           </button>
           <button onClick={() => {
             if (viewMode === "week") setWeekStart((w) => addDays(w, 7));
             else if (viewMode === "day") { setCurrentDate((d) => addDays(d, 1)); setWeekStart(startOfWeek(addDays(currentDate, 1))); }
             else { const d = new Date(currentDate); d.setMonth(d.getMonth() + 1); setCurrentDate(d); setWeekStart(startOfWeek(d)); }
-          }} className="p-2 rounded-btn border border-s-border hover:border-s-accent-bright transition-[colors,transform] active:scale-[0.94] active:duration-[80ms] active:ease-glide">
+          }} className="p-2 rounded-btn border border-s-border hover:border-s-accent-bright transition-colors">
             <ChevronRight size={16} className="text-s-ink" />
           </button>
           <span className="text-sm font-medium text-s-ink ml-2">
             {viewMode === "day"
-              ? currentDate.toLocaleDateString("de-CH", { weekday: "long", day: "numeric", month: "long", year: "numeric" })
+              ? currentDate.toLocaleDateString(resolveSwissLocale(locale), { weekday: "long", day: "numeric", month: "long", year: "numeric" })
               : viewMode === "month"
-              ? currentDate.toLocaleDateString("de-CH", { month: "long", year: "numeric" })
-              : `${weekStart.toLocaleDateString("de-CH", { day: "numeric", month: "long" })} bis ${addDays(weekStart, 6).toLocaleDateString("de-CH", { day: "numeric", month: "long", year: "numeric" })}`
+              ? currentDate.toLocaleDateString(resolveSwissLocale(locale), { month: "long", year: "numeric" })
+              : `${weekStart.toLocaleDateString(resolveSwissLocale(locale), { day: "numeric", month: "long" })} bis ${addDays(weekStart, 6).toLocaleDateString(resolveSwissLocale(locale), { day: "numeric", month: "long", year: "numeric" })}`
             }
           </span>
         </div>
@@ -863,21 +865,21 @@ export default function CalendarPage() {
           <div className="flex rounded-btn border border-s-border overflow-hidden">
             {(["day", "week", "month"] as ViewMode[]).map((mode) => (
               <button key={mode} onClick={() => setViewMode(mode)} // mockup-ok: C2 fix, locked TabPill treatment (approved public/_mockups/fixes-refined)
-                className={`px-3 py-1.5 text-xs font-medium transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide ${viewMode === mode ? "bg-s-bg-sunken text-s-ink font-semibold" : "text-s-ink-2 hover:bg-s-coral/5"}`}>
+                className={`px-3 py-1.5 text-xs font-medium transition-colors ${viewMode === mode ? "bg-s-bg-sunken text-s-ink font-semibold" : "text-s-ink-2 hover:bg-s-coral/5"}`}>
                 {mode === "day" ? t("viewDay") : mode === "week" ? t("viewWeek") : t("viewMonth")}
               </button>
             ))}
           </div>
           <button onClick={() => setWalkInModal(true)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-btn border border-s-border text-sm text-s-ink-2 hover:border-s-accent-bright hover:text-s-coral transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide">
+            className="flex items-center gap-1.5 px-3 py-2 rounded-btn border border-s-border text-sm text-s-ink-2 hover:border-s-accent-bright hover:text-s-coral transition-colors">
             <UserPlus size={14} /> {t("walkIn")}
           </button>
           <button onClick={() => setBulkModal(true)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-btn border border-s-border text-sm text-s-ink-2 hover:border-s-accent-bright hover:text-s-coral transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide">
+            className="flex items-center gap-1.5 px-3 py-2 rounded-btn border border-s-border text-sm text-s-ink-2 hover:border-s-accent-bright hover:text-s-coral transition-colors">
             {t("weekSchedule")}
           </button>
           <button onClick={() => setCreateModal({ date: ymdLocal(new Date()), time: "09:00" })}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-btn bg-s-ink text-white text-sm font-medium transition-transform active:scale-[0.97] active:duration-[80ms] active:ease-glide">
+            className="flex items-center gap-1.5 px-3 py-2 rounded-btn bg-s-ink text-white text-sm font-medium">
             <Plus size={14} /> {t("slot")}
           </button>
         </div>
@@ -900,11 +902,11 @@ export default function CalendarPage() {
                   <div key={i} className="py-3 px-2 text-center border-l border-s-ink/5">
                     <p className={`text-xs font-medium ${isToday ? "text-s-coral" : "text-s-ink-2"}`}>{DAYS_LABEL[i]}</p>
                     <button onClick={() => { setCurrentDate(d); setViewMode("day"); }}
-                      className={`text-sm font-bold mt-0.5 hover:text-s-coral transition-[colors,transform] active:scale-[0.94] active:duration-[80ms] active:ease-glide ${isToday ? "text-s-coral" : "text-s-ink"}`}>
+                      className={`text-sm font-bold mt-0.5 hover:text-s-coral transition-colors ${isToday ? "text-s-coral" : "text-s-ink"}`}>
                       {d.getDate()}
                     </button>
                     <button onClick={() => blockDay(dateStr)} title={t("blockDay")}
-                      className="mt-1 w-4 h-4 flex items-center justify-center mx-auto text-s-ink/20 hover:text-s-coral transition-[colors,transform] active:scale-[0.94] active:duration-[80ms] active:ease-glide">
+                      className="mt-1 w-4 h-4 flex items-center justify-center mx-auto text-s-ink/20 hover:text-s-coral transition-colors">
                       <Lock size={10} />
                     </button>
                   </div>
@@ -948,7 +950,7 @@ export default function CalendarPage() {
                                         title={staffMember ? staffMember.name : undefined}>
                                         {staffMember ? staffMember.name.split(" ")[0] : s.status === "booked" ? t("statusBooked") : s.status === "blocked" ? t("statusBlocked") : t("statusFree")}
                                         <button onClick={(e) => { e.stopPropagation(); deleteSlot(s.id); }}
-                                          className="absolute top-0 right-0 opacity-0 group-hover/slot:opacity-100 p-0.5 text-current transition-transform active:scale-[0.94] active:duration-[80ms] active:ease-glide"><X size={8} /></button>
+                                          className="absolute top-0 right-0 opacity-100 md:opacity-0 group-hover/slot:md:opacity-100 p-0.5 text-current"><X size={8} /></button>
                                       </div>
                                     )}
                                   </Draggable>
@@ -956,7 +958,7 @@ export default function CalendarPage() {
                               })}
                               {provided.placeholder}
                               {cellSlots.length === 0 && !snapshot.isDraggingOver && (
-                                <div className="opacity-0 group-hover:opacity-100 text-[12px] text-s-coral absolute inset-0 flex items-center justify-center"><Plus size={10} /></div>
+                                <div className="opacity-100 md:opacity-0 group-hover:md:opacity-100 text-[12px] text-s-coral absolute inset-0 flex items-center justify-center"><Plus size={10} /></div>
                               )}
                             </div>
                           )}
@@ -1027,14 +1029,14 @@ export default function CalendarPage() {
                                     style={{ ...dragProvided.draggableProps.style }}>
                                     {s.status === "booked" ? t("statusBooked") : s.status === "blocked" ? t("statusBlocked") : t("statusFree")}
                                     <button onClick={(e) => { e.stopPropagation(); deleteSlot(s.id); }}
-                                      className="absolute top-0 right-0 opacity-0 group-hover/slot:opacity-100 p-0.5 text-current transition-transform active:scale-[0.94] active:duration-[80ms] active:ease-glide"><X size={8} /></button>
+                                      className="absolute top-0 right-0 opacity-100 md:opacity-0 group-hover/slot:md:opacity-100 p-0.5 text-current"><X size={8} /></button>
                                   </div>
                                 )}
                               </Draggable>
                             ))}
                             {provided.placeholder}
                             {cellSlots.length === 0 && !snapshot.isDraggingOver && (
-                              <div className="opacity-0 group-hover:opacity-100 text-[12px] text-s-coral absolute inset-0 flex items-center justify-center"><Plus size={10} /></div>
+                              <div className="opacity-100 md:opacity-0 group-hover:md:opacity-100 text-[12px] text-s-coral absolute inset-0 flex items-center justify-center"><Plus size={10} /></div>
                             )}
                           </div>
                         )}
@@ -1101,7 +1103,7 @@ export default function CalendarPage() {
                 return (
                   <div key={i}
                     onClick={() => { setCurrentDate(d); setViewMode("day"); }}
-                    className={`min-h-[80px] p-1.5 border-b border-r border-s-ink/5 cursor-pointer hover:bg-s-coral/5 transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide ${!isCurrentMonth ? "opacity-40" : ""}`}>
+                    className={`min-h-[80px] p-1.5 border-b border-r border-s-ink/5 cursor-pointer hover:bg-s-coral/5 transition-colors ${!isCurrentMonth ? "opacity-40" : ""}`}>
                     <p className={`text-xs font-medium mb-1 ${isToday ? "w-5 h-5 rounded-full bg-s-accent-bright text-white flex items-center justify-center" : "text-s-ink"}`}>
                       {d.getDate()}
                     </p>

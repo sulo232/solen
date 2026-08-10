@@ -137,7 +137,7 @@ export default function ProfileSetupModal({ open, onClose, onSave }: ProfileSetu
         <div className="px-6 pt-6 pb-4 border-b border-s-ink/[0.06] flex items-start justify-between">
           <div>
             {/* V3-D346 (2026-05-29): eyebrow accent→ink-3 (A9), .20em→.08em (A8); pills swept to ink. */}
-            <p className="text-[12px] font-heading uppercase tracking-[.08em] text-s-ink-3 mb-1">
+            <p className="text-[12px] font-heading uppercase tracking-[.08em] text-s-ink-2 mb-1">
               Profil einrichten
             </p>
             <h2 className="font-heading text-lg text-s-ink">{t.title}</h2>

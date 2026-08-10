@@ -9,6 +9,8 @@ import { SalonLightbox } from "./SalonLightbox";
 import type { StaffMember } from "./_shared";
 import { cn } from "@/lib/utils";
 import { getPortfolioCategoriesForSalon, getPortfolioCategoryLabel, PORTFOLIO_CATEGORY_ALL_LABEL, type PortfolioLocale } from "@/lib/portfolio-categories";
+import ReportButton from "@/components-legacy/discovery/ReportButton";
+import { useTranslations } from "next-intl";
 
 /**
  * SalonImageGallery: full-screen photo browser (Fresha "Image gallery" pattern,
@@ -49,12 +51,13 @@ export function SalonImageGallery({
   venuePhotos: string[];
   staff: StaffMember[];
 }) {
+  const tBack = useTranslations("common");
   const locale = useLocale();
   const [tab, setTab] = React.useState<"salon" | "team">("salon");
   const [activeStylist, setActiveStylist] = React.useState<string | null>(null);
   const [activeCategory, setActiveCategory] = React.useState<string>("all");
   const [portfolios, setPortfolios] = React.useState<Record<string, string[]>>({});
-  const [salonPhotos, setSalonPhotos] = React.useState<Array<{ url: string; category: string | null }>>([]);
+  const [salonPhotos, setSalonPhotos] = React.useState<Array<{ id: string; url: string; category: string | null }>>([]);
   const [loaded, setLoaded] = React.useState(false);
   const [lb, setLb] = React.useState<{ open: boolean; photos: string[]; index: number }>({
     open: false,
@@ -94,12 +97,14 @@ export function SalonImageGallery({
       try {
         const { data, error } = await supabase
           .from("salon_portfolio_images")
-          .select("image_url, category, sort_order")
+          // `id` added 2026-07-27: a photo report targets the salon_portfolio_images ROW, never the
+          // url , a url can change or be reused across salons, a row id cannot.
+          .select("id, image_url, category, sort_order")
           .eq("salon_id", salonId)
           .order("sort_order", { ascending: true });
         if (error) throw error;
         if (!cancelled) {
-          setSalonPhotos((data ?? []).map((row) => ({ url: row.image_url as string, category: row.category as string | null })));
+          setSalonPhotos((data ?? []).map((row) => ({ id: row.id as string, url: row.image_url as string, category: row.category as string | null })));
         }
       } catch (err) {
         console.error("[SalonImageGallery] salon portfolio fetch failed:", err);
@@ -149,6 +154,27 @@ export function SalonImageGallery({
   const activePhotos =
     tab === "salon" ? filteredSalonPhotos : activeStylist ? portfolios[activeStylist] ?? [] : [];
 
+  // accessibility-06: the active stylist's name, so team-portfolio alt text can say WHOSE
+  // work a photo shows instead of alt="" (these are evaluative haircut-result photos, the
+  // exact content 1.1.1 does not let a gallery mark decorative).
+  const activeStylistName = staff.find((s) => s.id === activeStylist)?.name ?? null;
+
+  // accessibility-06 (2026-07-27): url -> category lookup so the grid's alt text can name
+  // WHAT the photo shows (its portfolio category) instead of just a bare index. Real
+  // metadata already fetched into `salonPhotos`, just never threaded through to alt=.
+  const categoryByUrl = React.useMemo(() => {
+    const m = new Map<string, string | null>();
+    for (const p of salonPhotos) m.set(p.url, p.category);
+    return m;
+  }, [salonPhotos]);
+
+  // Same shape as categoryByUrl above: the grid renders urls, but a report must name the row.
+  const idByUrl = React.useMemo(() => {
+    const m = new Map<string, string>();
+    for (const p of salonPhotos) m.set(p.url, p.id);
+    return m;
+  }, [salonPhotos]);
+
   const openLb = (photos: string[], i: number) => setLb({ open: true, photos, index: i });
 
   return createPortal(
@@ -157,7 +183,7 @@ export function SalonImageGallery({
       <div className="flex items-center gap-3 border-b border-s-border px-4 py-3">
         <button
           type="button"
-          aria-label="Zurück"
+          aria-label={tBack("back")}
           onClick={onClose}
           className="-ml-1 grid h-9 w-9 shrink-0 place-items-center rounded-full text-s-ink transition-transform active:scale-95 active:duration-[80ms] active:ease-glide"
         >
@@ -167,7 +193,7 @@ export function SalonImageGallery({
           <div className="font-display text-[16px] font-semibold leading-tight tracking-[-0.01em] text-s-ink">
             Galerie
           </div>
-          <div className="truncate font-body text-[12px] text-s-ink-3">{salonName}</div>
+          <div className="truncate font-body text-[12px] text-s-ink-2">{salonName}</div>
         </div>
       </div>
 
@@ -179,7 +205,7 @@ export function SalonImageGallery({
             grammar. Never two stacked rows or the old underline content-tab treatment. */}
         <div className="flex items-center gap-2 overflow-x-auto border-b border-s-border px-4 py-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <Pill active={tab === "salon"} onClick={() => setTab("salon")}>
-            Salon ({venuePhotos.length})
+            Store ({venuePhotos.length})
           </Pill>
           {teamTotal > 0 && (
             <Pill active={tab === "team"} onClick={() => setTab("team")}>
@@ -222,15 +248,43 @@ export function SalonImageGallery({
           {tab === "salon" ? (
             <div className="grid grid-cols-3 gap-1.5 md:gap-2.5">
               {filteredSalonPhotos.map((u, i) => (
+                // The tile is a <button> that opens the lightbox, so the report control cannot
+                // live inside it (nested buttons are invalid and the click would fight the
+                // lightbox). It is a SIBLING inside this positioned wrapper. Owner 2026-07-27:
+                // "also being able to report pictures", and "report signed in ... cz ppl can
+                // mass report etc" , ReportButton already bounces an anonymous visitor to login,
+                // and content_reports' insert policy (auth.role() = 'authenticated') is the
+                // real enforcement behind that.
+                <div key={u} className="relative">
                 <button
-                  key={u}
                   type="button"
                   onClick={() => openLb(filteredSalonPhotos, i)}
-                  className="relative aspect-square overflow-hidden rounded-md bg-s-bg-sunken transition-transform hover:scale-[0.99] active:scale-[0.98] active:duration-[80ms] active:ease-glide md:rounded-lg"
+                  className="relative aspect-square w-full overflow-hidden rounded-md bg-s-bg-sunken transition-transform hover:scale-[0.99] active:scale-[0.98] active:duration-[80ms] active:ease-glide md:rounded-lg"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={u} alt={`${salonName} – ${i + 1}`} className="h-full w-full object-cover" loading="lazy" /> {/* em-dash-ok */}
+                  <img
+                    src={u}
+                    // accessibility-06: name the portfolio category (Frisur, Farbe, etc.) when
+                    // known, real metadata already fetched into salonPhotos, instead of a bare
+                    // "{salonName} - {index}" that describes nothing about the photo itself.
+                    alt={
+                      categoryByUrl.get(u)
+                        ? `${getPortfolioCategoryLabel(categoryByUrl.get(u)!, locale)}, ${salonName}`
+                        : `${salonName} – ${i + 1}` // em-dash-ok
+                    }
+                    className="h-full w-full object-cover"
+                    loading="lazy"
+                  />
                 </button>
+                {/* Only a photo that HAS a salon_portfolio_images row can be reported: the
+                    report names that row id, never the url. Venue-photo fallbacks and staff
+                    portfolios have no row here, so they render no control rather than a dead one. */}
+                {idByUrl.get(u) ? (
+                  <div className="absolute right-1.5 top-1.5 z-10">
+                    <ReportButton type="photo" targetId={idByUrl.get(u)!} variant="frost" />
+                  </div>
+                ) : null}
+                </div>
               ))}
             </div>
           ) : (
@@ -240,7 +294,9 @@ export function SalonImageGallery({
                 <img
                   key={i}
                   src={u}
-                  alt=""
+                  // accessibility-06: a stylist portfolio photo is evaluative content (past
+                  // haircut/work), never decorative; name whose portfolio it is instead of "".
+                  alt={activeStylistName ? `${activeStylistName}, ${i + 1}` : `${salonName} – ${i + 1}`} // em-dash-ok
                   onClick={() => openLb(activePhotos, i)}
                   // ig4 (owner-approved 2026-07-16): object-top (was center) on the square
                   // grid so a portrait crop keeps the face/wrists, not the feet.

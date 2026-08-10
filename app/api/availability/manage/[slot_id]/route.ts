@@ -2,8 +2,9 @@ export const dynamic = "force-dynamic";
 export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
-import { sendEmail, bookingCancellation } from "@/lib/email";
+import { sendEmail, bookingCancellation, type EmailLocale } from "@/lib/email";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
+import { resolveSwissLocale } from "@/lib/format";
 
 export async function DELETE(
   _request: NextRequest,
@@ -40,15 +41,18 @@ export async function DELETE(
 
     // Notify the customer (use admin client, RLS restricts profiles to own data)
     const admin = createAdminSupabaseClient();
-    const { data: bookedUser } = await admin.from("profiles").select("id").eq("id", slot.booked_by ?? "").single();
+    // locale added 2026-07-26 (de-CH literal sweep): was select("id") only, unused, and the
+    // email below hardcoded German + de-CH regardless of the customer's actual locale.
+    const { data: bookedUser } = await admin.from("profiles").select("id, locale").eq("id", slot.booked_by ?? "").single();
     const { data: authUser } = await admin.auth.admin.getUserById(slot.booked_by ?? "");
     if (authUser?.user?.email) {
+      const custLocale = (bookedUser?.locale ?? "de") as EmailLocale;
       try {
         await sendEmail(bookingCancellation(authUser.user.email, {
           service: slot.services?.name_de ?? "Service",
           salon: slot.salons?.name ?? "Salon",
-          date: new Date(slot.starts_at).toLocaleDateString("de-CH"),
-        }, "de"));
+          date: new Date(slot.starts_at).toLocaleDateString(resolveSwissLocale(custLocale)),
+        }, custLocale));
       } catch (err) { console.error("[availability/manage] cancellation email failed:", err); }
     }
 

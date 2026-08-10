@@ -83,6 +83,7 @@ All translated strings (tab labels, search placeholder, empty-state copy, the he
 - Keep all three tabs' tile shape uniform (4/3 photo, `rounded-card`, name below), it is the one visual language across the grid regardless of which tab is active.
 - Route new tab-bar-shaped UI through this component. It is the one tabbed content hub on `/profile`.
 - Reuse `EmptyStateDiscovery` for any future tab that is genuinely, permanently empty (mirrors the Looks tab's reasoning): a rich discovery pane earns its footprint there specifically because there is nothing else to show yet.
+- Keep the ARIA contract (accessibility-07, 2026-07-27): the tab row is `role="tablist"`, each `TabButton` is `role="tab"` + `aria-selected` + `aria-controls="profile-tabpanel"`, and the shared content container is `id="profile-tabpanel"` `role="tabpanel"` `aria-labelledby={activeTabId}` (this component only ever renders ONE tab's content at a time, so one shared panel container labeled by the active tab is correct, not two hidden/shown panels). A fourth tab keeps this pattern, not `aria-pressed` (that's `TabPill`'s filter/segment semantics, wrong here because these buttons switch which content exists, not which filters apply).
 
 ### Don't
 - Don't reintroduce the old management row list (Haarprofil, Formulare, Treue, Stempel, Einladen, Hilfe, Einstellungen, sign-out) on this page, those live at `/profile/settings` now.

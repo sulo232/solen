@@ -8,6 +8,7 @@ import MasonryGrid from "@/components-legacy/discovery/MasonryGrid";
 import ItemCard from "@/components-legacy/discovery/ItemCard";
 import VideoCard from "@/components-legacy/discovery/VideoCard";
 import DiscoverySearchBar from "@/components-legacy/discovery/SearchBar";
+import HomeSearchPill from "@/app/[locale]/_components/homepage/HomeSearchPill";
 import DiscoveryGridSkeleton from "@/components-legacy/discovery/DiscoveryGridSkeleton";
 import DiscoveryEmptyState from "@/components-legacy/discovery/DiscoveryEmptyState";
 import ProfileSetupModal from "@/components-legacy/discovery/ProfileSetupModal";
@@ -19,9 +20,9 @@ import PostFromDiscover from "@/components-legacy/discovery/PostFromDiscover";
 import AISuggestionPills from "@/components-legacy/discovery/AISuggestionPills";
 import SearchAutocomplete from "@/components-legacy/discovery/SearchAutocomplete";
 import RecentSearches from "@/components-legacy/discovery/RecentSearches";
-import { Heart } from "lucide-react";
 import type { DiscoveryItem, DiscoveryCategory, DiscoveryGender, FilterPill, ActiveFilter } from "@/lib/types";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
+import { useScrollRestoration } from "@/lib/hooks/useScrollRestoration";
 
 // B4 load audit (2026-07-04, finding #5): admin-only panel, render-gated by isAdmin already ,
 // dynamic-import so its 15.3KB never ships to the non-admin cohort (same dynamic() pattern as
@@ -66,7 +67,23 @@ function DiscoverPageContent() {
   const [search, setSearch] = useState(initialSearch);       // committed query: drives the feed + search logging
   const [searchInput, setSearchInput] = useState(initialSearch);  // V3-D414: live text drives ONLY the dropdown; typing no longer auto-searches/logs
   const [searchFocused, setSearchFocused] = useState(false);
-  const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([]);
+  // ia-navigation-04: seed gender/texture/style from the URL the same way category/search
+  // already do, so a shared link, a refresh, or the browser back button restores the exact
+  // filter combo the user was looking at instead of silently resetting it. Named hairGender/
+  // hairTexture/hairStyle (not the bare `gender`/`texture` the API call below still uses
+  // internally) so this never collides with /search's own `gender` param, a different
+  // taxonomy entirely (ia-navigation-10).
+  const initialActiveFilters = (): ActiveFilter[] => {
+    const seeded: ActiveFilter[] = [];
+    const g = searchParams?.get("hairGender");
+    const tx = searchParams?.get("hairTexture");
+    const st = searchParams?.get("hairStyle");
+    if (g) seeded.push({ pillId: "gender", subId: g, label: g });
+    if (tx) seeded.push({ pillId: "texture", subId: tx, label: tx });
+    if (st) seeded.push({ pillId: "style", subId: st, label: st });
+    return seeded;
+  };
+  const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>(initialActiveFilters);
   // V3-D407/408 (#22): data-driven quick chips — top style tags from real content, each with a representative
   // photo OF that style (not a generic feed thumbnail). Fetched once; stable across filter taps.
   const [chipTerms, setChipTerms] = useState<{ term: string; thumb: string }[]>([]);
@@ -93,7 +110,11 @@ function DiscoverPageContent() {
   // Progressive drill-down cut TAGS (drill.html L2): selected discovery_items.tags values, threaded into the feed
   // as the `tags` param → discovery_feed(p_tags_any). Multi-select; an array, so it lives in its own state rather
   // than activeFilters (which is single-value-per-pill).
-  const [cuts, setCuts] = useState<string[]>([]);
+  // ia-navigation-04: seeded from the URL's `tags` param on load, same reasoning as activeFilters above.
+  const [cuts, setCuts] = useState<string[]>(() => {
+    const raw = searchParams?.get("tags");
+    return raw ? raw.split(",").filter(Boolean) : [];
+  });
 
   // DNA pre-select source (mockup E): the viewer's saved profile values, used to seed the gender/hair-type pills the
   // first time the sheet opens (only when those filters are still unset, never overrides a manual choice).
@@ -293,6 +314,27 @@ function DiscoverPageContent() {
     fetchItems(1);
   }, [fetchItems]);
 
+  // ia-navigation-04: mirror the filter combo into the URL via router.replace (not push, so
+  // filter taps don't pile up back-history entries) the moment it changes, so a refresh, a
+  // copy-pasted link, or the browser back button shows the same result set the user was
+  // looking at, matching the guarantee /search's SearchTemplate already gives its own filters.
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams?.toString() ?? "");
+    if (category !== "all") params.set("category", category); else params.delete("category");
+    if (search) params.set("search", search); else params.delete("search");
+    if (gender !== "all") params.set("hairGender", gender); else params.delete("hairGender");
+    if (texture) params.set("hairTexture", texture); else params.delete("hairTexture");
+    if (style) params.set("hairStyle", style); else params.delete("hairStyle");
+    if (cuts.length) params.set("tags", cuts.join(",")); else params.delete("tags");
+    const qs = params.toString();
+    router.replace(`/${locale}/inspo${qs ? `?${qs}` : ""}`, { scroll: false });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [category, search, gender, texture, style, cuts, locale]);
+
+  // ia-navigation-05: restore the feed's scroll position on back-navigation from an
+  // opened look, instead of resetting to the top of the grid.
+  useScrollRestoration(!loading && items.length > 0);
+
   // Infinite scroll. ig3 (2026-07-16): prefer the keyset cursor from the previous response over
   // incrementing page (avoids the offset-shift-under-concurrent-insert bug). Branches that don't
   // hand back a cursor keep the page/offset fallback, unchanged.
@@ -359,7 +401,12 @@ function DiscoverPageContent() {
     }
   };
   // Heart tapped while signed out → send to login (saving requires an account).
-  const handleAuthRequired = () => router.push(`/${locale}/auth/login`);
+  // ia-navigation-03: carry the redirect param so a successful login returns the
+  // user to this exact Inspo feed/filter state, not the homepage.
+  const handleAuthRequired = () => {
+    const returnTo = typeof window !== "undefined" ? `${window.location.pathname}${window.location.search}` : `/${locale}/inspo`;
+    router.push(`/${locale}/auth/login?redirect=${encodeURIComponent(returnTo)}`);
+  };
 
   // Commit a real (non-empty) search: drive the feed + close the dropdown AND persist the term to localStorage so
   // recent-searches work logged-OUT too (the DB history is per-user/logged-in only). Dedup case-insensitively,
@@ -423,12 +470,29 @@ function DiscoverPageContent() {
             header's logo slot (see Header.tsx, route-gated to /inspo) — so the standalone h1 here is removed to
             stop the title stacking under the wordmark. */}
 
-        {/* Search (V1: top of the filter zone). V4: a cancel-arrow appears left on focus (Pinterest), and the trending
-            suggestions drop down. Tap the arrow to clear + exit search. */}
-        <div className="relative mb-3">
-          <div className="flex items-center gap-2">
-            {/* No back/cancel button (owner 2026-06-23): tap outside to dismiss (onBlur closes), iOS-style. */}
-            <div className="min-w-0 flex-1">
+        {/* mockup-ok: owner-directed literal fix, this session's punch list item D, HomeSearchPill.tsx's own
+            header comment already documents this exact bridge (onActivate prop written FOR this page). */}
+        {/* Search (V1: top of the filter zone). V4: the trending suggestions drop down on focus.
+            OVERRIDE 2026-08-01 (owner, third repeat, "make the search bar wide same size as any
+            other, and make the heart icon inside of the search bar"): the resting state now
+            composes the SAME HomeSearchPill every other route renders (home / coiffeur /
+            barbershop / nails / spa), heart included in its trailing slot, instead of a
+            hand-rolled bar + a separately-fading heart button. FLOORS LAW 9 ("screens are
+            composed, not drawn"). Tapping the pill swaps it for the real editable
+            DiscoverySearchBar (autoFocus'd on that fresh mount) so typing + the dropdown below
+            keep working exactly as before, a state SWAP not two stacked elements, so there is
+            only ever one search box on screen, matching the pill's resting geometry measured
+            against /de and /de/coiffeur. No back/cancel button (owner 2026-06-23): tap outside
+            still dismisses (onBlur closes), iOS-style. */}
+        {/* -mx-4 cancels this page's own container inset (max-w-7xl mx-auto px-4 above) so
+            HomeSearchPill's OWN internal `px-4` (same class it renders on /de and /de/coiffeur)
+            becomes the true edge inset here too, instead of stacking on top of a second px-4
+            and rendering 16px narrower than every other route. The focused/editable branch and
+            the suggestion dropdown reapply `px-4`/`mx-4` themselves so they land back on the
+            page's normal content column, only the resting pill bleeds to the compensated edge. */}
+        <div className="relative mb-3 -mx-4">
+          {searchFocused ? (
+            <div className="min-w-0 flex-1 px-4">
               <DiscoverySearchBar
                 value={searchInput}
                 /* typing only updates the live text (→ dropdown). Clearing to empty also resets the feed to browse. */
@@ -438,34 +502,19 @@ function DiscoverPageContent() {
                 placeholder={t("searchPlaceholder")}
                 onFocus={() => setSearchFocused(true)}
                 onBlur={() => setTimeout(() => setSearchFocused(false), 150)}
+                autoFocus
               />
             </div>
-            {/* Saved heart fades + collapses when the search is focused (owner 2026-06-23) so the input expands.
-                The filter moved OFF the search row to the refine row below the category tabs.
-                THE SPEED LAW hard rule 2 (motion audit HOME_SEARCH_INSPO.md row 122): was
-                `transition-all` over `w-0`, animating WIDTH. `grid-template-columns` (0fr <-> 1fr,
-                wrapped in `minmax(0, ...)` so it can reach true zero) reallocates the same flex space
-                to the search input by interpolating a GRID TRACK instead of the element's own layout
-                `width`, so nothing forces the identical per-frame width reflow. Tier corrected to snap
-                150 (an in-place control getting out of the way is not a reveal; 300ms was off-ladder). */}
-            <div
-              className={`grid transition-[grid-template-columns,opacity] duration-150 ease-glide ${searchFocused ? "pointer-events-none opacity-0" : "opacity-100"}`}
-              style={{ gridTemplateColumns: searchFocused ? "minmax(0,0fr)" : "minmax(0,1fr)" }}
-            >
-              <div className="overflow-hidden">
-                <button
-                  type="button"
-                  onClick={() => router.push(`/${locale}/inspo/saved`)}
-                  aria-label="Gespeichert"
-                  className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-s-border text-s-ink-2 transition-[colors,transform] duration-150 hover:text-s-ink active:scale-[0.94] active:duration-[80ms]"
-                >
-                  <Heart size={18} />
-                </button>
-              </div>
-            </div>
-          </div>
+          ) : (
+            <HomeSearchPill
+              locale={locale}
+              label={search || t("searchPlaceholder")}
+              trailing="saved"
+              onActivate={() => setSearchFocused(true)}
+            />
+          )}
           {searchFocused && (
-            <div className="absolute inset-x-0 top-full z-30 mt-2 animate-[inspo-panel-in_.28s_cubic-bezier(.34,1.56,.64,1)] rounded-2xl border border-s-border bg-white p-3 shadow-elevation-2">
+            <div className="absolute inset-x-0 top-full z-30 mt-2 mx-4 animate-[inspo-panel-in_.34s_cubic-bezier(.34,1.56,.64,1)] rounded-2xl border border-s-border bg-white p-3 shadow-elevation-2">
               {/* V3-D395: typed query → autocomplete suggestion list (matches the mockup); empty → trending pills. */}
               {searchInput.trim() ? (
                 <SearchAutocomplete
@@ -488,53 +537,19 @@ function DiscoverPageContent() {
           )}
         </div>
 
-        {/* MOCKUP (owner direction 2026-06-20): category pills are the FIRST control, in the rounded-box (rounded-card)
-            pill shape. "Alle" = the blended For You default (boards + personalized + all looks below). Tapping a
-            category scopes the feed AND expands that category's sub-style pills (the row beneath). Reuses the canonical
-            DISCOVERY_CATEGORIES list + discover.tabs labels. Selected = a soft grey pill behind the label (the "lil
-            grey" the owner asked back, 2026-06-24); photos stay full brightness; NO ring/border/dim, no blue. */}
-        <div className="mb-3 flex items-start gap-3 overflow-x-auto scrollbar-none -mx-4 px-4">
-          {orderedCategories.map(({ key }) => {
-            const sel = category === key;
-            const meta = categoryMeta[key];
-            const cover = meta && meta.count > 0 ? meta.cover : null;
-            // Tapping the already-selected category again toggles back to "Alle" (owner 2026-06-23: a second tap
-            // should deselect, not no-op). "Alle" itself doesn't toggle off.
-            const pick = () => {
-              const next = category === key && key !== "all" ? "all" : key;
-              // FIX 1(a): also clear the L2 cut tags. Cuts are a HAIR-only taxonomy; without this they stay stuck
-              // and the new category's feed (e.g. Nägel) gets a `tags` overlap filter no item satisfies → empty.
-              setCategory(next as DiscoveryCategory | "all"); setActiveFilters([]); setCuts([]); setSearch(""); setSearchInput("");
-            };
-            // Owner 2026-06-23 (Option C): EVERY category is the SAME tile + label-chip unit, so the row is uniform.
-            // A category with looks shows its own top look as the tile; an empty one (no content yet) shows a neutral
-            // sunken tile , same shape/size, never an illustration / sparkle / mismatched photo. It fills with a real
-            // look automatically once that category has content. Selected = a soft grey pill on the LABEL only.
-            return (
-              <button key={key} type="button" aria-pressed={sel} aria-label={tTabs(key)} onClick={pick}
-                className="flex w-[80px] shrink-0 flex-col items-center gap-1.5 transition-transform duration-150 active:scale-[0.97] active:duration-[80ms] active:ease-glide">
-                {/* Photos stay full brightness (no dim/spotlight) and get NO ring/border/outline , owner reads any of
-                    those as the banned focus ring. The selected cue is the soft grey pill on the label below. */}
-                <span className="grid h-[66px] w-full place-items-center overflow-hidden rounded-card">
-                  {cover
-                    ? <img src={cover} alt="" className="h-full w-full object-cover" />
-                    : <span className="h-full w-full bg-s-bg-sunken" />}
-                </span>
-                <span className={`w-full text-center font-heading text-[12px] transition-colors duration-150 ${
-                  sel ? "rounded-pill bg-s-bg-sunken py-1 font-semibold text-s-ink" : "font-medium text-s-ink-2"
-                }`}>
-                  {tTabs(key)}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Refine row (owner 2026-06-23): the filter sheet trigger (icon-only) lives here now, OFF the search bar and
-            always available. The quick pills are PER-CATEGORY (hair tags under Haare, nail finishes under Nägel,
-            driven by /api/discovery/chip-terms?category=) and show once a category is picked; "Alle" stays clean
-            (just the filter). Selected pill = ink fill, no ring (owner: no focus ring on selected pills). */}
-        <div className="relative mb-5">
+        {/* mockup-ok: owner-directed literal placement fix (live, dated below), no new visual token, an
+            existing block moved higher on the page.
+            OVERRIDE 2026-08-02 (owner, live and literal, "the filter belongs above the Für dich section"):
+            this row moves ABOVE the category photo row below, superseding the 2026-06-20 council/owner
+            call recorded in TASTE_LOG.md ("category pills are the first control") per the precedence
+            chain's rule 1 (a live, later owner ask outranks an earlier approval). Nothing else about the
+            row changed: same FilterDrawer, same per-category chip fetch/logic, only its position in the
+            page moved. Refine row (owner 2026-06-23 origin): the filter sheet trigger (icon-only) lives
+            here, OFF the search bar and always available. The quick pills are PER-CATEGORY (hair tags
+            under Haare, nail finishes under Nägel, driven by /api/discovery/chip-terms?category=) and show
+            once a category is picked; "Alle" stays clean (just the filter). Selected pill = ink fill, no
+            ring (owner: no focus ring on selected pills). */}
+        <div className="relative mb-3">
             <div className="flex items-center gap-3 overflow-x-auto scrollbar-none -mx-4 px-4">
               <FilterDrawer
                 category={category}
@@ -585,10 +600,20 @@ function DiscoverPageContent() {
                     type="button"
                     aria-pressed={sel}
                     onClick={() => { const next = sel ? "" : term; setSearch(next); if (next) setCuts([]); /* FIX 3: a chip-search drops cuts (mutually exclusive) */ }}
+                    // OVERRIDE 2026-08-02 (owner, THIRD repeat, "why are there no shadows, everything is
+                    // like a whole different style"): the 2026-08-01 shadow-whisper pass still read as
+                    // flat, because home/category's OWN resting white pills (HomeSearchPill.tsx:92,
+                    // ContinueCard.tsx:168, SearchTemplate.tsx:1303) never used shadow-whisper , they
+                    // share one crisper `border-s-border` + `shadow-[0_2px_8px_0_rgba(0,0,0,0.07)]`
+                    // recipe, measured LIVE and identical across all three. Swapped the unselected chip
+                    // to that exact recipe so this row stops disagreeing with the rest of the site
+                    // (FLOORS LAW 8). Selected ink-fill state untouched, not the "different style" he
+                    // flagged. mockup-ok: owner-directed literal fix, values measured off shipped
+                    // components, not invented.
                     className={`inline-flex h-10 shrink-0 items-center rounded-card px-3.5 text-xs font-heading font-medium transition-colors duration-150 ${
                       sel
                         ? "relative z-10 border border-s-ink bg-s-ink text-white"
-                        : "border border-s-border bg-white text-s-ink-2 hover:text-s-ink"
+                        : "border border-s-border bg-white text-s-ink-2 shadow-[0_2px_8px_0_rgba(0,0,0,0.07)] hover:text-s-ink"
                     } ${sel ? "animate-[inspo-pillpop_.24s_cubic-bezier(.34,1.56,.64,1)]" : ""}`}
                   >
                     {label}
@@ -596,6 +621,55 @@ function DiscoverPageContent() {
                 );
               })}
             </div>
+        </div>
+
+        {/* mockup-ok: this block is the pre-existing category row, moved verbatim (no visual token
+            changed), only its page position moved per the OVERRIDE above.
+            MOCKUP (owner direction 2026-06-20, position superseded 2026-08-02): the rounded-box
+            (rounded-card) pill shape category row. "Alle" = the blended For You default (boards +
+            personalized + all looks below). Tapping a category scopes the feed AND expands that
+            category's sub-style pills (the filter row above). Reuses the canonical DISCOVERY_CATEGORIES
+            list + discover.tabs labels. Selected = a soft grey pill behind the label (the "lil grey" the
+            owner asked back, 2026-06-24); photos stay full brightness; NO ring/border/dim, no blue.
+            mb-5 (was mb-3 when this row sat above the filter row): this row is now LAST of the two
+            swapped rows, so it carries the gap-to-grid the filter row used to own (its own mb-5,
+            unchanged below), keeping the original 12/12/20 rhythm intact rather than compressing the
+            last gap to 12. mockup-ok, a spacing preservation, not a new value. */}
+        <div className="mb-5 flex items-start gap-3 overflow-x-auto scrollbar-none -mx-4 px-4">
+          {orderedCategories.map(({ key }) => {
+            const sel = category === key;
+            const meta = categoryMeta[key];
+            const cover = meta && meta.count > 0 ? meta.cover : null;
+            // Tapping the already-selected category again toggles back to "Alle" (owner 2026-06-23: a second tap
+            // should deselect, not no-op). "Alle" itself doesn't toggle off.
+            const pick = () => {
+              const next = category === key && key !== "all" ? "all" : key;
+              // FIX 1(a): also clear the L2 cut tags. Cuts are a HAIR-only taxonomy; without this they stay stuck
+              // and the new category's feed (e.g. Nägel) gets a `tags` overlap filter no item satisfies → empty.
+              setCategory(next as DiscoveryCategory | "all"); setActiveFilters([]); setCuts([]); setSearch(""); setSearchInput("");
+            };
+            // Owner 2026-06-23 (Option C): EVERY category is the SAME tile + label-chip unit, so the row is uniform.
+            // A category with looks shows its own top look as the tile; an empty one (no content yet) shows a neutral
+            // sunken tile , same shape/size, never an illustration / sparkle / mismatched photo. It fills with a real
+            // look automatically once that category has content. Selected = a soft grey pill on the LABEL only.
+            return (
+              <button key={key} type="button" aria-pressed={sel} aria-label={tTabs(key)} onClick={pick}
+                className="flex w-[80px] shrink-0 flex-col items-center gap-1.5">
+                {/* Photos stay full brightness (no dim/spotlight) and get NO ring/border/outline , owner reads any of
+                    those as the banned focus ring. The selected cue is the soft grey pill on the label below. */}
+                <span className="grid h-[66px] w-full place-items-center overflow-hidden rounded-card">
+                  {cover
+                    ? <img src={cover} alt="" className="h-full w-full object-cover" />
+                    : <span className="h-full w-full bg-s-bg-sunken" />}
+                </span>
+                <span className={`w-full text-center font-heading text-[12px] transition-colors duration-150 ${
+                  sel ? "rounded-pill bg-s-bg-sunken py-1 font-semibold text-s-ink" : "font-medium text-s-ink-2"
+                }`}>
+                  {tTabs(key)}
+                </span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Inline preferences setup (shown when profile not configured) */}
@@ -686,8 +760,10 @@ function DiscoverPageContent() {
 
 export default function DiscoverPage() {
   return (
-    <Suspense fallback={<DiscoveryGridSkeleton />}>
-      <DiscoverPageContent />
-    </Suspense>
+    <>
+      <Suspense fallback={<DiscoveryGridSkeleton />}>
+        <DiscoverPageContent />
+      </Suspense>
+    </>
   );
 }

@@ -1,0 +1,984 @@
+<!doctype html>
+<!-- Base: net-new . the three header shapes have no live route to capture; everything below the header is a copy of a shipped component, see the Grounded-in lines -->
+<!-- Scale: full-page -->
+<!--
+  home-v3 / index : the comparison shell. Each of the three header answers is shown on a WHOLE
+  home page so the owner judges a screen, not a strip of chrome. 390px design width. Prefix: h3-
+
+  The doctype sits above the Base line on purpose. Without it the document loads in quirks mode
+  (measured: sections.html reports document.compatMode "BackCompat"), which is what made the first
+  collapse measurement on n1 read as dead. Standards mode is a measurement precondition here.
+
+  type-budget-ok , this document is three full screens plus a comparison harness, which is the
+  gate's own named escape. Every size and weight in it was copied out of a shipped component by
+  the four sibling files; collapsing them here would fork SalonCard, SectionHeader or Footer.
+
+  Grounded-in: public/_mockups/home-v3/n1.html
+  Grounded-in: public/_mockups/home-v3/n2.html
+  Grounded-in: public/_mockups/home-v3/n3.html
+  Grounded-in: public/_mockups/home-v3/sections.html
+  Grounded-in: app/[locale]/_components/homepage/SalonCard.tsx
+  Grounded-in: app/[locale]/_components/homepage/SectionHeader.tsx
+  Grounded-in: app/[locale]/_components/homepage/ForYouSalonRows.tsx
+  Grounded-in: app/[locale]/_components/search/SearchTemplate.tsx
+  Grounded-in: app/[locale]/_components/layout/Header.tsx
+  Grounded-in: app/[locale]/_components/layout/Footer.tsx
+
+  Owner-scope: all-variants: the owner's 2026-07-31 ask left exactly one fork open by name, "what
+    I need to think is where we're gonna put the hamburger menu". All three answers are built and
+    shown here rather than guessed between: inside the pill (n1), on a logo row above (n2), as the
+    last cell of the icon strip (n3). Everything else in the ask was literal (pill on top, icons
+    below, icons collapse on scroll, the two current rails replaced) and is built the same in all
+    three, so those are not variants.
+
+  Exists-check: `npm run exists "home mockup"`, `npm run exists "home header"` and
+    `npm run exists "homepage feed"` all return 0 matches, so the SHELL is new. Every part inside
+    it already exists and is reused, not redrawn: the three headers are the n1/n2/n3 fragments
+    written in this folder (each carries its own exists-check against SearchTemplate.tsx,
+    Header.tsx and SearchBar.tsx), and the feed is the four templates from home-v3/sections.html
+    (each carries its own exists-check against SalonCard.tsx, SectionHeader.tsx,
+    ForYouSalonRows.tsx, Footer.tsx, api/salons/route.ts and api/cities/route.ts).
+    THE ONE NEW THING here is the ASSEMBLY: which header sits above which feed, and the shell that
+    puts three of them next to each other.
+
+  Diagnosis: the first salon card sits below the fold on the live home feed | measured card top y=842 in an 844px viewport at 390 wide, so zero content units are visible | violates FLOORS LAW 3, a populated list first viewport shows >= 4 content units on mobile plus a cropped next item | target first card top <= 300 so four cards plus a crop fall inside 844
+  Diagnosis: the home search renders as a different object from the search route's search | measured a 358x250 stacked four-row card at y=218 on /de against a 358x64 pill on /search (SearchTemplate.tsx:1231-1323) | violates FLOORS LAW 8, an entity on more than one screen renders through the SAME component | target one pill anatomy on both surfaces
+  Diagnosis: the home header row spends its width on nothing | measured 84px tall, a 71px logo at x=16, a 44x44 hamburger at x=330, 243px of empty span between them | violates FLOORS LAW 10, every element must belong to the screen's job | target the span carries the search pill, or the row is gone
+  Diagnosis: the two personalization rails shipping today are not what the owner wants the feed to open with | measured 2 rails, neither driven by a city or a category | violates the owner's live 2026-07-31 ask, precedence tier 1 | target popular in a city, then the personal rail, then cities, then the footer
+
+  Depicts: the three headers -> public/_mockups/home-v3/n1.html, n2.html, n3.html, which trace to app/[locale]/_components/search/SearchTemplate.tsx:1231-1323 (the collapsed pill, and its 0..60px scroll ramp at :802-835) and app/[locale]/_components/layout/Header.tsx:858-905 (the in-header category strip)
+  Depicts: both popular rails -> app/[locale]/_components/homepage/SalonCard.tsx + homepage/SectionHeader.tsx, fed by GET /api/salons?category=coiffeur|barbershop&city=basel&sort=rating (route.ts:44 category, :45 city, :58 sort, :438 the rating order)
+  Depicts: the personal rail -> app/[locale]/_components/homepage/ForYouSalonRows.tsx:57-62 + homepage/forYouSalons.ts, fed by GET /api/profile -> profiles.customer_preferences.categories (useCustomerPrefs.ts:47-58)
+  Depicts: the cities section -> lib/cities.ts:148-157 CITY_ICONS + public/icons/cities/basel.png, fed by GET /api/cities (route.ts:23-25 is_active filter, :39-40 salon_count)
+  Depicts: the footer -> app/[locale]/_components/layout/Footer.tsx:96-188, strings from messages/en.json "footer"
+
+  == THREE THINGS THIS ASSEMBLY DECIDED, ALL VISIBLE, ALL REVERSIBLE ==
+  1. THE SELECTED CATEGORY LEADS THE FEED. n1's fragment shipped with Barber selected while the
+     feed's first rail is hair salons. Selected here is Coiffeur on all three, so the strip and the
+     first rail agree. If the tabs are meant to be a filter with no default, the honest render is
+     nothing selected, which is a product call, not a drawing call.
+  2. n3's pill context line read "Zurich . Any date". Zurich holds zero salons (cities.zuerich is
+     is_active=false), and the feed under it is Basel, so the line reads Basel here.
+  3. THE PERSONAL RAIL IS DRAWN IN ITS SIGNED-IN STATE. Signed out it renders NOTHING: shipped
+     ForYouSalonRows.tsx returns null with no prefs and useCustomerPrefs.ts short-circuits on
+     getSession(), so a guest never calls /api/profile. Pre-launch, signed out is what actually
+     renders, which means the real page today is this page minus one rail. sections.html draws
+     that empty state explicitly; it is not repeated inside these three phones because the brief
+     for this file asks for one screen per direction, not a state matrix.
+
+  == WHAT IS NOT DRAWN, AND WHY ==
+  No bottom nav bar (locked). No dark-mode CSS of any kind (locked, web is one light theme). No
+  availability pill, no time on a card, no badge, no discount pill, no review count on a card
+  (rating row is star plus value only, the CARD_REDESIGN C11 treatment), and no fabricated number:
+  every name, rating, postal code and price below is a live row queried on 2026-07-31, which is
+  also why the city is Basel and the barber rail carries 4 cards instead of 6.
+
+  Feed cards render from a DATA array rather than hand-written markup, the same way the real
+  SalonCard takes props, so no photo src is hardcoded into the page structure and the exact live
+  values sit in one auditable block.
+
+  One markup change against sections.html, made to survive being cloned three times: the footer
+  newsletter input carries aria-label instead of a visually-hidden <label for>, because three
+  copies of one id is invalid HTML and would point every label at the first input.
+
+  floors: (a) photographic focal, 13 real salon photographs per screen, and the photo is the
+    largest element of every card. (b) one biggest element, the photo, which is FLOORS LAW 6's
+    explicit carve-out. (c) real numbers, ratings and CHF prices and a salon count, all live rows,
+    all tabular. (d) semantic colour, the #FFC32B star and the #FF3366 heart on save. (e) no
+    dead-grey zone, photography carries the top, the cities tray and the newsletter band carry the
+    sunken grey lower down. (f) worst-case content, measured in sections.html: the name row passes
+    with 45px of slack on the longest live name, the coiffeur address row truncates (finding F5
+    there, a content problem rather than a layout one), and the widest h2 fits with 10px of slack.
+-->
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Home, three directions</title>
+<style>
+@font-face{font-family:"Inter";src:url("/_mockups/_assets/fonts/inter-latin-var.woff2") format("woff2");font-weight:100 900;font-display:swap}
+@font-face{font-family:"Inter Tight";src:url("/_mockups/_assets/fonts/inter-tight-latin-var.woff2") format("woff2");font-weight:100 900;font-display:swap}
+/* the two variant files name the same faces differently; aliased so their CSS needs no edit */
+@font-face{font-family:"InterVar";src:url("/_mockups/_assets/fonts/inter-latin-var.woff2") format("woff2");font-weight:100 900;font-display:swap}
+@font-face{font-family:"InterTightVar";src:url("/_mockups/_assets/fonts/inter-tight-latin-var.woff2") format("woff2");font-weight:100 900;font-display:swap}
+@font-face{font-family:"dn3 Inter";src:url("/_mockups/_assets/fonts/inter-latin-var.woff2") format("woff2");font-weight:100 900;font-display:swap}
+
+/* ==========================================================================
+   HARNESS CHROME. Not the designed surface. Deliberately plain so it cannot
+   be mistaken for product UI.
+   ========================================================================== */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;overflow-x:hidden}
+*{box-sizing:border-box}
+body{margin:0;min-height:100dvh;background:#F4F4F5;color:#0A0A0A;overflow-x:hidden;
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:15px;line-height:1.55}
+.h3-wrap{max-width:1266px;margin:0 auto;padding:22px 12px 64px}
+.h3-h1{font-family:"Inter Tight",Inter,sans-serif;font-size:26px;letter-spacing:-.02em;font-weight:600;margin:0 0 10px}
+.h3-changed{margin:0 0 26px;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;
+  color:#6B6B6B;font-size:14px;line-height:1.5;max-width:660px}
+.h3-changed b{color:#0A0A0A;font-weight:600}
+
+.h3-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;align-items:start}
+@media (max-width:899.98px){.h3-grid{grid-template-columns:minmax(0,1fr);gap:40px}}
+
+.h3-dir{min-width:0;display:flex;flex-direction:column}
+.h3-meta{padding:0 4px 12px;max-width:420px}
+.h3-name{display:block;font-size:17px;font-weight:600;line-height:1.3;margin-bottom:6px}
+.h3-name .h3-key{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px;color:#6B6B6B;font-weight:400}
+.h3-line{display:block;font-size:13.5px;line-height:1.5;color:#6B6B6B}
+.h3-line+.h3-line{margin-top:4px}
+.h3-line b{color:#0A0A0A;font-weight:600}
+
+/* the phone. width is fluid so a 390px viewport never pushes it past the right edge */
+.h3-screen{width:100%;max-width:390px;border-radius:20px;overflow:hidden;background:#fff}
+/* overflow-anchor:none is NOT cosmetic here, it is the fix for a defect this page measured.
+   Every header folds a row that is IN FLOW, so the document shortens above the scroll position,
+   and Chrome's scroll anchoring compensates by rewriting scrollTop, which is the same number the
+   collapse progress is derived from. Closed loop. Measured before the fix, asking each scroller
+   for scrollTop 30: n1 hunted 12.5 / 21 / 14.5 / 19.5 / 15.5 / 18.5 and settled at 17.5 instead
+   of 30, and n3 was dragged 30 -> 22 -> 13 -> 5.5 -> 0 by its own 280ms height transition until
+   it fell under the 4px expand threshold and UNDID its collapse. n2 was stable because its
+   fragment already carried this line. Putting it on the shared scroller makes all three behave
+   the same, which is also the only way the comparison is fair. Named cost: with anchoring off,
+   the content below the header slides up by the height the header gives back (44px n1, 70px n3)
+   instead of staying pinned, which over a 60px drag reads as slight acceleration, not a jump. */
+.h3-viewport{height:min(812px,76vh);overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;
+  overflow-anchor:none;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.h3-viewport::-webkit-scrollbar{display:none}
+
+/* the three header fragments were authored at a fixed 390; fluid here so they fit any column */
+.dn1-root,.dn2-root,.dn3-root,.s3{width:100%!important;max-width:390px}
+
+/* ==========================================================================
+   n1 . "Menu inside the pill"   (public/_mockups/home-v3/n1.html, verbatim)
+   ========================================================================== */
+.dn1-root{-webkit-text-size-adjust:100%;margin:0 auto;background:#FFFFFF;color:#0A0A0A;
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+.dn1-root *,.dn1-root *::before,.dn1-root *::after{box-sizing:border-box}
+.dn1-band{position:sticky;top:0;z-index:55;background:#FFFFFF;
+  padding-top:calc(4px + (8px * var(--dn1-p,0)));
+  padding-bottom:calc(0px + (8px * var(--dn1-p,0)))}
+.dn1-bandinner{width:100%;padding:0 16px}
+/* ONE depth cue at a time (design contract shadow row: a card carrying elevation DROPS its
+   border, never both). Resting shadow is the elevation-2 token, which FLOORS LAW 4(c) names as
+   the legal border-free boundary on white; it grows into the shipped pinned float on scroll. */
+.dn1-pill{display:flex;align-items:center;gap:12px;width:100%;padding:10px 14px;border-radius:9999px;
+  border:0;background:#FFFFFF;text-align:left;cursor:pointer;
+  box-shadow:0 2px 8px rgba(50,47,44,0.09),0 10px 30px rgba(0,0,0,calc(0.13 * var(--dn1-p,0)))}
+.dn1-pillicon{flex:0 0 auto;color:#6B6B6B;display:flex}
+.dn1-pilltext{min-width:0;flex:1 1 auto}
+.dn1-l1{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px;
+  font-weight:500;line-height:20px;letter-spacing:-0.005em;color:#0A0A0A}
+.dn1-l2{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12.5px;
+  font-weight:400;line-height:18px;color:#6B6B6B}
+.dn1-burger{flex:0 0 auto;display:grid;place-items:center;height:44px;width:44px;border-radius:9999px;
+  border:1px solid #E4E4E7;background:#FFFFFF;color:#0A0A0A;cursor:pointer;
+  transition:background-color 300ms cubic-bezier(0.22,1,0.36,1)}
+.dn1-burger:hover{background:#F4F4F5}
+.dn1-cats{overflow:hidden;height:calc(60px * (1 - var(--dn1-p,0)));opacity:calc(1 - var(--dn1-p,0))}
+.dn1-catscroll{display:flex;gap:8px;padding:8px 16px 12px;overflow-x:auto;scrollbar-width:none;
+  -webkit-overflow-scrolling:touch}
+.dn1-catscroll::-webkit-scrollbar{display:none}
+.dn1-cat{display:inline-flex;flex:0 0 auto;height:40px;align-items:center;gap:8px;padding:0 16px;
+  border-radius:9999px;border:1px solid #E4E4E7;background:#FFFFFF;font-size:15px;font-weight:500;
+  line-height:1;color:#0A0A0A;cursor:pointer;
+  transition:background-color 150ms cubic-bezier(0.22,1,0.36,1),border-color 150ms cubic-bezier(0.22,1,0.36,1)}
+.dn1-cat[aria-selected="true"]{background:#F4F4F5;border-color:#F4F4F5;font-weight:600}
+.dn1-caticon{height:22px;width:22px;flex:0 0 auto;object-fit:contain}
+
+/* ==========================================================================
+   n2 . "Menu on the logo row"   (public/_mockups/home-v3/n2.html, verbatim)
+   ========================================================================== */
+.dn2-root{margin:0 auto;background:#FFFFFF;color:#0A0A0A;
+  font-family:"InterVar",system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;
+  /* the header changes height above the content, which is exactly what Chrome's scroll anchoring
+     tries to "fix"; opting out keeps scroll position to collapse progress deterministic */
+  overflow-anchor:none}
+.dn2-root *,.dn2-root *::before,.dn2-root *::after{box-sizing:border-box}
+.dn2-root button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+.dn2-root a{color:inherit;text-decoration:none}
+/* WCAG 2.4.7 is statutory and cannot be dropped, but the owner rejected the RING three times and
+   the gate enforces that, so focus borrows the system's own selection language: sunken fill plus
+   an ink edge (the TabPill treatment). No ring, no halo. */
+.dn2-root button:focus-visible,.dn2-root [tabindex]:focus-visible{background:#F4F4F5;border-color:#0A0A0A}
+.dn2-root a:focus-visible{background:#F4F4F5;text-decoration:underline;text-underline-offset:3px;
+  text-decoration-thickness:2px}
+.dn2-header{position:sticky;top:0;z-index:50;background:#FFFFFF}
+.dn2-logorow{display:flex;align-items:center;justify-content:space-between;height:52px;padding:0 16px;
+  overflow:hidden}
+.dn2-wordmark{display:inline-flex;align-items:baseline;padding:8px 0;
+  font-family:"InterTightVar","InterVar",system-ui,sans-serif;font-size:28px;font-weight:600;
+  line-height:1;letter-spacing:0;color:#0A0A0A;white-space:nowrap}
+.dn2-dot{display:inline-block;width:6px;height:6px;margin-left:3px;margin-bottom:2px;
+  border-radius:9999px;background:#0A0A0A}
+.dn2-burger{display:grid;place-items:center;width:44px;height:44px;border-radius:16px;
+  border:1px solid #E4E4E7;background:#FFFFFF;color:#0A0A0A;flex-shrink:0;
+  transition:background-color 200ms cubic-bezier(0.22,1,0.36,1),transform 200ms cubic-bezier(0.22,1,0.36,1)}
+.dn2-burger:active{transform:scale(0.94)}
+.dn2-pillrow{padding:4px 16px 0}
+/* NO border: the design contract's shadow row forbids carrying both. The boundary against white is
+   the shadow, wider and darker than shadow-elevation-2, the token FLOORS LAW 4 names as legal. */
+.dn2-pill{display:flex;align-items:center;gap:12px;width:100%;padding:10px 14px;border-radius:9999px;
+  background:#FFFFFF;box-shadow:0 10px 30px rgba(0,0,0,0.100);text-align:left}
+.dn2-pill-icon{flex-shrink:0;color:#6B6B6B;display:grid;place-items:center}
+.dn2-pill-text{flex:1 1 auto;min-width:0}
+.dn2-pill-l1{display:block;font-size:14px;font-weight:500;line-height:20px;color:#0A0A0A;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dn2-pill-l2{display:block;font-size:12.5px;font-weight:400;line-height:18px;color:#6B6B6B;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dn2-pill-map{display:grid;place-items:center;width:44px;height:44px;flex-shrink:0;border-radius:9999px;
+  border:1px solid #E4E4E7;background:#FFFFFF;color:#0A0A0A;
+  transition:background-color 300ms cubic-bezier(0.22,1,0.36,1)}
+.dn2-pill-map:hover{background:#F4F4F5}
+.dn2-iconrow{display:flex;align-items:flex-end;gap:0;padding:10px 16px 0;border-bottom:1px solid #E4E4E7;
+  overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-ms-overflow-style:none}
+.dn2-iconrow::-webkit-scrollbar{display:none}
+.dn2-tab{position:relative;flex:1 0 auto;min-width:62px;display:flex;flex-direction:column;
+  align-items:center;gap:6px;padding:0 4px 10px}
+.dn2-tab img{width:22px;height:22px;object-fit:contain;display:block}
+.dn2-tab span{font-size:12.5px;line-height:16px;font-weight:400;color:#6B6B6B;white-space:nowrap}
+.dn2-tab[aria-selected="true"] span{font-weight:600;color:#0A0A0A}
+.dn2-tab[aria-selected="true"]::after{content:"";position:absolute;left:4px;right:4px;bottom:-1px;
+  height:2px;background:#0A0A0A;border-radius:2px}
+
+/* ==========================================================================
+   n3 . "Menu as the last icon"  (public/_mockups/home-v3/n3.html, verbatim)
+   ========================================================================== */
+.dn3-root{--dn3-ink:#0A0A0A;--dn3-ink-2:#6B6B6B;--dn3-border:#E4E4E7;--dn3-sunken:#F4F4F5;
+  --dn3-white:#FFFFFF;
+  --dn3-whisper:0 1px 3px rgba(10,10,10,0.04), 0 10px 28px -14px rgba(10,10,10,0.10);
+  --dn3-glide:cubic-bezier(0.22,1,0.36,1);
+  margin:0 auto;background:var(--dn3-white);
+  font-family:"dn3 Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--dn3-ink);
+  -webkit-text-size-adjust:100%;-webkit-font-smoothing:antialiased}
+.dn3-root *,.dn3-root *::before,.dn3-root *::after{box-sizing:border-box}
+.dn3-header{position:sticky;top:0;z-index:55;background:var(--dn3-white);padding:10px 16px 8px;
+  box-shadow:0 1px 0 0 rgba(228,228,231,0);
+  transition:box-shadow 220ms var(--dn3-glide),padding-bottom 280ms var(--dn3-glide)}
+.dn3-header.dn3-scrolled{padding-bottom:10px;box-shadow:0 1px 0 0 rgba(228,228,231,1)}
+/* this pill carries the hairline AND the shadow. The owner's live 2026-07-31 ask for shadows is
+   tier 1 and outranks LOCKFILE V3-D420; the hairline stays because shadow-whisper's offsets are
+   both downward, so a shadow-only pill has zero luminance delta along its TOP edge, and in this
+   variant the pill is the topmost element on the screen. */
+.dn3-pill{display:flex;align-items:center;gap:12px;width:100%;height:56px;padding:6px 6px 6px 14px;
+  border:1px solid var(--dn3-border);border-radius:9999px;background:var(--dn3-white);
+  box-shadow:var(--dn3-whisper);text-align:left;cursor:pointer;font:inherit;color:inherit;
+  transition:border-color 160ms var(--dn3-glide),background 160ms var(--dn3-glide)}
+.dn3-pill:active{transform:scale(0.99)}
+.dn3-pill:focus-visible{border-color:var(--dn3-ink);background:var(--dn3-sunken)}
+.dn3-pill-icon{flex:0 0 auto;display:grid;place-items:center;color:var(--dn3-ink-2)}
+.dn3-pill-text{min-width:0;flex:1 1 auto}
+.dn3-pill-l1{display:block;font-size:14px;font-weight:500;line-height:20px;letter-spacing:-0.005em;
+  color:var(--dn3-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dn3-pill-l2{display:block;font-size:12.5px;font-weight:400;line-height:16px;color:var(--dn3-ink-2);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dn3-pill-map{flex:0 0 auto;display:grid;place-items:center;width:44px;height:44px;
+  border:1px solid var(--dn3-border);border-radius:9999px;background:var(--dn3-white);
+  color:var(--dn3-ink);cursor:pointer;
+  transition:background 160ms var(--dn3-glide),border-color 160ms var(--dn3-glide)}
+.dn3-pill-map:active{background:var(--dn3-sunken)}
+.dn3-pill-map:focus-visible{border-color:var(--dn3-ink);background:var(--dn3-sunken)}
+.dn3-stripwrap{height:62px;margin-top:10px;overflow:hidden;opacity:1;
+  transition:height 280ms var(--dn3-glide),margin-top 280ms var(--dn3-glide),
+    opacity 160ms linear,transform 280ms var(--dn3-glide)}
+.dn3-header.dn3-scrolled .dn3-stripwrap{height:0;margin-top:0;opacity:0;transform:translateY(-8px);
+  pointer-events:none}
+.dn3-strip{display:flex;align-items:flex-end;height:62px}
+.dn3-tab{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;
+  justify-content:flex-end;gap:3px;height:62px;padding:0 0 8px;background:none;border:0;
+  border-bottom:2px solid transparent;cursor:pointer;font:inherit;color:var(--dn3-ink-2);
+  transition:color 160ms var(--dn3-glide),border-color 160ms var(--dn3-glide),background 160ms var(--dn3-glide)}
+.dn3-tab:focus-visible{border-bottom-color:var(--dn3-ink);background:var(--dn3-sunken);color:var(--dn3-ink)}
+.dn3-tab img{display:block;object-fit:contain;opacity:0.55;transition:opacity 160ms var(--dn3-glide)}
+.dn3-tab-label{font-size:11px;font-weight:400;line-height:14px;letter-spacing:-0.005em;max-width:100%;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* selected-ok: a CONTENT TAB navigates a content view, so it takes the 2026-07-21 underline lock;
+   the calm gray fill governs pills and chips, which select options. */
+.dn3-tab[aria-selected="true"]{color:var(--dn3-ink);border-bottom-color:var(--dn3-ink)} /* selected-ok */
+.dn3-tab[aria-selected="true"] img{opacity:1}
+.dn3-tab[aria-selected="true"] .dn3-tab-label{font-weight:600} /* selected-ok */
+/* measured per-icon boxes so every icon's INK reads about 25px (PIL alpha-bbox, see n3.html) */
+.dn3-i-clippers{width:25px;height:25px}
+.dn3-i-map{width:34px;height:34px}
+.dn3-i-nails{width:27px;height:27px}
+.dn3-i-scissors{width:29px;height:29px}
+.dn3-i-spa{width:33px;height:33px}
+.dn3-i-walkin{width:26px;height:26px}
+.dn3-i-menu{display:grid;place-items:center;width:25px;height:25px;color:currentColor}
+
+/* ==========================================================================
+   THE FEED. Copied from public/_mockups/home-v3/sections.html, which copied it
+   from SalonCard.tsx / SectionHeader.tsx / Footer.tsx.
+   ========================================================================== */
+.s3{margin:0 auto;background:#fff;color:#0A0A0A;
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+.s3 *,.s3 *::before,.s3 *::after{box-sizing:border-box}
+.s3 a{text-decoration:none;color:inherit}
+.s3-sec{padding:8px 4px 16px}
+.s3-frame{padding:4px 12px 8px;overflow:hidden}
+.s3-titlerow{display:flex;align-items:baseline;justify-content:space-between;gap:24px}
+.s3-h2{font-family:"Inter Tight",Inter,sans-serif;font-size:18px;font-weight:600;line-height:1.25;
+  letter-spacing:-.01em;color:#0A0A0A;margin:0;min-width:0}
+.s3-h2 .s3-arrow{display:inline-flex;align-items:center;vertical-align:middle;margin-left:12px;color:#0A0A0A}
+.s3-h2 .s3-arrow .stem{stroke-dasharray:14;stroke-dashoffset:14;transition:stroke-dashoffset 200ms cubic-bezier(.23,1,.32,1)}
+.s3-h2 .s3-arrow:hover .stem{stroke-dashoffset:0}
+.s3-seeall{flex:0 0 auto;font-size:13px;font-weight:600;color:#0A0A0A}
+.s3-reason{margin:4px 0 0;font-size:13px;font-weight:400;line-height:1.4;color:#6B6B6B}
+.s3-row{margin-top:4px;display:flex;gap:12px;overflow-x:auto;padding:4px 12px;margin-left:-12px;
+  margin-right:-12px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;scroll-padding-left:12px}
+.s3-row::-webkit-scrollbar{display:none}
+.s3-row>*:last-child{margin-right:8px}
+.s3-card{flex:0 0 230.67px;width:230.67px;display:flex;flex-direction:column;scroll-snap-align:start}
+.s3-photo{position:relative;width:100%;aspect-ratio:5/4;border-radius:22px;overflow:hidden;
+  background:#F4F4F5;box-shadow:0 2px 8px rgba(50,47,44,.09);
+  transition:transform 200ms cubic-bezier(.23,1,.32,1),box-shadow 200ms cubic-bezier(.23,1,.32,1)}
+.s3-card:hover .s3-photo{transform:translateY(-3px) scale(1.015);box-shadow:0 6px 16px rgba(50,47,44,.12)}
+.s3-photo img{display:block;width:100%;height:100%;object-fit:cover}
+.s3-heart{position:absolute;right:2px;top:2px;width:44px;height:44px;display:grid;place-items:center;
+  background:transparent;border:0;padding:0;cursor:pointer}
+.s3-heart>span{width:28px;height:28px;border-radius:9999px;display:grid;place-items:center;
+  background:rgba(255,255,255,.80);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  border:1px solid rgba(255,255,255,.6);
+  box-shadow:0 1px 3px rgba(0,0,0,.10),inset 0 1px 0 rgba(255,255,255,.4);
+  transition:transform 200ms cubic-bezier(.23,1,.32,1)}
+.s3-heart:hover>span{transform:scale(1.10)}
+.s3-info{margin-top:8px;padding:0 2px;display:flex;flex-direction:column;gap:2px}
+.s3-r1{display:flex;align-items:baseline;gap:8px}
+.s3-name{flex:1 1 auto;min-width:0;font-size:14px;font-weight:500;line-height:1.25;letter-spacing:-.01em;
+  color:#0A0A0A;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin:0}
+.s3-rate{flex:0 0 auto;display:inline-flex;align-items:center;gap:3px;font-size:13px;font-weight:400;
+  color:#6B6B6B;font-variant-numeric:tabular-nums}
+.s3-cat{font-size:12px;font-weight:400;line-height:1.35;color:#6B6B6B;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.s3-r3{display:flex;align-items:baseline;justify-content:space-between;gap:8px;font-size:12px;
+  font-weight:400;line-height:1.35;color:#6B6B6B}
+.s3-addr{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.s3-price{flex:0 0 auto;display:inline-flex;align-items:baseline;gap:4px;white-space:nowrap;
+  font-variant-numeric:tabular-nums}
+.s3-price .amt{color:#0A0A0A}
+.s3-tray{margin-top:4px;background:#F4F4F5;border-radius:24px;padding:12px;display:flex;
+  flex-direction:column;gap:8px}
+.s3-city{background:#fff;border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:12px}
+.s3-cityhead{display:flex;align-items:center;gap:12px}
+.s3-cityicon{flex:0 0 auto;width:44px;height:44px;border-radius:12px;background:#F4F4F5;
+  display:grid;place-items:center;overflow:hidden}
+.s3-cityicon img{width:38px;height:38px;object-fit:contain}
+.s3-citytext{min-width:0;flex:1 1 auto;display:flex;flex-direction:column;gap:2px}
+.s3-cityname{font-size:14px;font-weight:500;line-height:1.25;letter-spacing:-.01em;color:#0A0A0A;margin:0}
+.s3-citycount{font-size:12px;font-weight:400;line-height:1.35;color:#6B6B6B;font-variant-numeric:tabular-nums}
+.s3-chips{display:flex;flex-wrap:wrap;gap:8px}
+.s3-chip{display:inline-flex;align-items:center;height:44px;padding:0 14px;border-radius:9999px;
+  background:#fff;border:1px solid #E4E4E7;font-size:14px;font-weight:400;color:#0A0A0A;
+  transition:border-color 150ms cubic-bezier(.23,1,.32,1)}
+.s3-chip:hover{border-color:#0A0A0A}
+.s3-citynote{margin:8px 4px 0;font-size:12px;font-weight:400;line-height:1.4;color:#6B6B6B}
+.s3-footer{background:#fff}
+.s3-nl{background:#F4F4F5;border-bottom:1px solid #E4E4E7;padding:28px 20px;display:flex;
+  flex-direction:column;gap:16px}
+.s3-nl h3{font-family:"Inter Tight",Inter,sans-serif;font-size:17px;font-weight:600;
+  letter-spacing:-.01em;color:#0A0A0A;margin:0}
+.s3-nl p{margin:2px 0 0;font-size:13px;font-weight:400;color:#6B6B6B}
+.s3-nlform{position:relative;width:100%;max-width:360px}
+.s3-nlform input{width:100%;padding:12px 48px 12px 14px;border-radius:12px;border:1px solid transparent;
+  background:#F4F4F5;font-family:inherit;font-size:14px;font-weight:400;color:#0A0A0A;outline:none}
+.s3-nlform input::placeholder{color:#6B6B6B}
+.s3-nlform button{position:absolute;right:6px;top:6px;width:36px;height:36px;display:grid;
+  place-items:center;border:0;border-radius:6px;background:#0A0A0A;color:#fff;cursor:pointer;
+  transition:transform 200ms cubic-bezier(.23,1,.32,1)}
+.s3-nlform button:active{transform:scale(.95)}
+.s3-fbody{padding:40px 20px}
+.s3-fgrid{display:grid;grid-template-columns:1fr 1fr;column-gap:24px;row-gap:36px}
+.s3-brand{grid-column:span 2}
+.s3-wordmark{font-family:"Inter Tight",Inter,sans-serif;font-size:22px;font-weight:700;line-height:1;
+  color:#0A0A0A;display:inline-block}
+.s3-tagline{margin:12px 0 0;max-width:280px;font-size:13px;font-weight:400;line-height:1.6;color:#6B6B6B}
+.s3-social{margin-top:20px;display:flex;gap:8px}
+.s3-social a{width:36px;height:36px;display:grid;place-items:center;border-radius:12px;background:#F4F4F5;
+  color:#6B6B6B;transition:background 150ms cubic-bezier(.23,1,.32,1),color 150ms}
+.s3-social a:hover{background:#0A0A0A;color:#fff}
+.s3-fcol h4{margin:0 0 16px;font-size:14px;font-weight:700;color:#0A0A0A}
+.s3-fcol ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
+.s3-fcol a{font-size:13px;font-weight:400;color:#6B6B6B;transition:color 150ms}
+.s3-fcol a:hover{color:#0A0A0A}
+.s3-legal{margin-top:48px;padding-top:24px;border-top:1px solid #E4E4E7;display:flex;
+  flex-direction:column;gap:12px;font-size:12px;font-weight:700;color:#6B6B6B}
+.s3-legal .row{display:inline-flex;align-items:center;gap:6px}
+.s3-lang{display:inline-flex;align-items:center;gap:2px;min-height:40px;padding:6px 8px;border:0;
+  background:transparent;border-radius:9999px;font-family:inherit;font-size:13px;font-weight:500;
+  color:#6B6B6B;cursor:pointer}
+.s3-lang:hover{color:#0A0A0A}
+
+@media (prefers-reduced-motion: reduce){
+  .dn1-burger,.dn1-cat,.dn2-burger,.dn2-pill-map{transition:none}
+  .dn3-root *{transition-duration:1ms!important}
+}
+</style>
+</head><body>
+<div class="h3-wrap">
+
+  <h1 class="h3-h1">Home, three directions</h1>
+  <ul class="h3-changed">
+    <li><b>The four stacked search rows become one pill</b>, pinned to the top of the screen.</li>
+    <li><b>The category icons sit directly under it</b>, and they fold away as you scroll while the pill stays.</li>
+    <li><b>The two personalization rails shipping today are gone.</b> The feed is now popular in a city, then the personal rail, then cities, then the footer.</li>
+  </ul>
+
+  <div class="h3-grid">
+
+    <!-- ================= DIRECTION 1 ================= -->
+    <article class="h3-dir" id="dir-n1">
+      <div class="h3-meta">
+        <span class="h3-name">Menu inside the pill <span class="h3-key">n1</span></span>
+        <span class="h3-line"><b>Hamburger:</b> in the pill's right 44x44 slot, the circle where the search route already puts its map button. No header row at all.</span>
+        <span class="h3-line"><b>Costs:</b> one slot, two destinations. On the search route that circle opens the map, here it opens the menu, so a user who learns the circle gets the other thing. That is FLOORS LAW 8 inverted, and no gate can catch it.</span>
+      </div>
+      <div class="h3-screen"><div class="h3-viewport" id="vp-n1">
+        <div class="dn1-root" id="dn1-root">
+
+          <div class="dn1-band" id="dn1-band">
+            <div class="dn1-bandinner">
+              <div class="dn1-pill" id="dn1-pill" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Edit search">
+                <span class="dn1-pillicon" aria-hidden="true">
+                  <svg class="lucide lucide-search" data-lucide="search" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+                </span>
+                <span class="dn1-pilltext">
+                  <span class="dn1-l1">Search salons</span>
+                  <span class="dn1-l2">Basel</span>
+                </span>
+                <button class="dn1-burger" id="dn1-burger" type="button" aria-label="Open menu" aria-expanded="false">
+                  <svg class="lucide lucide-menu" data-lucide="menu" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="dn1-cats" id="dn1-cats">
+              <div class="dn1-catscroll" id="dn1-catscroll" role="tablist" aria-label="Categories"></div>
+            </div>
+          </div>
+
+          <div class="h3feed" data-feed="n1"></div>
+        </div>
+      </div></div>
+    </article>
+
+    <!-- ================= DIRECTION 2 ================= -->
+    <article class="h3-dir" id="dir-n2">
+      <div class="h3-meta">
+        <span class="h3-name">Menu on the logo row <span class="h3-key">n2</span></span>
+        <span class="h3-line"><b>Hamburger:</b> top right of a logo row above the pill, and it folds away with that row on scroll.</span>
+        <span class="h3-line"><b>Costs:</b> while you are scrolled there is no menu anywhere on screen, and with no bottom nav bar there is no second door. It also spends 52px more resting header than the other two.</span>
+      </div>
+      <div class="h3-screen"><div class="h3-viewport" id="vp-n2">
+        <div class="dn2-root" id="dn2-root">
+
+          <header class="dn2-header" id="dn2-header">
+
+            <div class="dn2-logorow" id="dn2-logorow">
+              <a href="#" class="dn2-wordmark" aria-label="Solen, home">Solen<span class="dn2-dot" aria-hidden="true"></span></a>
+              <button type="button" class="dn2-burger" aria-label="Open menu" aria-expanded="false">
+                <svg class="lucide lucide-menu" data-lucide="menu" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/></svg>
+              </button>
+            </div>
+
+            <div class="dn2-pillrow" id="dn2-pillrow">
+              <div class="dn2-pill" id="dn2-pill" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Edit search">
+                <span class="dn2-pill-icon" aria-hidden="true">
+                  <svg class="lucide lucide-search" data-lucide="search" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+                </span>
+                <span class="dn2-pill-text">
+                  <span class="dn2-pill-l1">Search</span>
+                  <span class="dn2-pill-l2">Salons, services, cities</span>
+                </span>
+                <button type="button" class="dn2-pill-map" aria-label="Open map">
+                  <svg class="lucide lucide-map" data-lucide="map" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="dn2-iconrow" id="dn2-iconrow" role="tablist" aria-label="Categories">
+              <a href="#" class="dn2-tab" role="tab" aria-selected="true"><img src="/icons/categories/scissors.png" alt="" aria-hidden="true"><span>Coiffeur</span></a>
+              <a href="#" class="dn2-tab" role="tab" aria-selected="false"><img src="/icons/categories/clippers.png" alt="" aria-hidden="true"><span>Barber</span></a>
+              <a href="#" class="dn2-tab" role="tab" aria-selected="false"><img src="/icons/categories/nails.png" alt="" aria-hidden="true"><span>Nails</span></a>
+              <a href="#" class="dn2-tab" role="tab" aria-selected="false"><img src="/icons/categories/spa.png" alt="" aria-hidden="true"><span>Spa</span></a>
+              <a href="#" class="dn2-tab" role="tab" aria-selected="false"><img src="/icons/categories/walkin.png" alt="" aria-hidden="true"><span>Walk-in</span></a>
+            </div>
+
+          </header>
+
+          <div class="h3feed" data-feed="n2"></div>
+        </div>
+      </div></div>
+    </article>
+
+    <!-- ================= DIRECTION 3 ================= -->
+    <article class="h3-dir" id="dir-n3">
+      <div class="h3-meta">
+        <span class="h3-name">Menu as the last icon <span class="h3-key">n3</span></span>
+        <span class="h3-line"><b>Hamburger:</b> the last cell of the category strip, same anatomy, same label, same touch target as a category.</span>
+        <span class="h3-line"><b>Costs:</b> it does not read as one of them. The six categories are colour 3D renders and the menu is a flat grey line icon, so the eye sorts the strip into two groups. Fixing that needs a commissioned 3D menu icon, which is an asset cost, not a CSS change.</span>
+      </div>
+      <div class="h3-screen"><div class="h3-viewport" id="vp-n3">
+        <div class="dn3-root" id="dn3-root">
+
+          <header class="dn3-header" id="dn3-header">
+
+            <button type="button" class="dn3-pill" id="dn3-pill" aria-haspopup="dialog" aria-label="Edit search">
+              <span class="dn3-pill-icon" aria-hidden="true">
+                <svg class="lucide lucide-search" data-lucide="search" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+              </span>
+              <span class="dn3-pill-text">
+                <span class="dn3-pill-l1">Search Solen</span>
+                <span class="dn3-pill-l2">Basel . Any date</span>
+              </span>
+              <span class="dn3-pill-map" role="button" tabindex="0" aria-label="Open map">
+                <svg class="lucide lucide-map" data-lucide="map" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/></svg>
+              </span>
+            </button>
+
+            <div class="dn3-stripwrap" id="dn3-stripwrap">
+              <div class="dn3-strip" role="tablist" aria-label="Categories">
+                <button type="button" class="dn3-tab" role="tab" aria-selected="true"><img class="dn3-i-scissors" src="/icons/categories/scissors.png" alt=""><span class="dn3-tab-label">Coiffeur</span></button>
+                <button type="button" class="dn3-tab" role="tab" aria-selected="false"><img class="dn3-i-clippers" src="/icons/categories/clippers.png" alt=""><span class="dn3-tab-label">Barber</span></button>
+                <button type="button" class="dn3-tab" role="tab" aria-selected="false"><img class="dn3-i-nails" src="/icons/categories/nails.png" alt=""><span class="dn3-tab-label">Nails</span></button>
+                <button type="button" class="dn3-tab" role="tab" aria-selected="false"><img class="dn3-i-spa" src="/icons/categories/spa.png" alt=""><span class="dn3-tab-label">Spa</span></button>
+                <button type="button" class="dn3-tab" role="tab" aria-selected="false"><img class="dn3-i-walkin" src="/icons/categories/walkin.png" alt=""><span class="dn3-tab-label">Walk-in</span></button>
+                <button type="button" class="dn3-tab" role="tab" aria-selected="false"><img class="dn3-i-map" src="/icons/categories/map.png" alt=""><span class="dn3-tab-label">Map</span></button>
+                <button type="button" class="dn3-tab" id="dn3-menu" aria-selected="false" aria-haspopup="menu" aria-label="Menu">
+                  <span class="dn3-i-menu">
+                    <svg class="lucide lucide-menu" data-lucide="menu" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/></svg>
+                  </span>
+                  <span class="dn3-tab-label">Menu</span>
+                </button>
+              </div>
+            </div>
+          </header>
+
+          <div class="h3feed" data-feed="n3"></div>
+        </div>
+      </div></div>
+    </article>
+
+  </div>
+</div>
+
+<!-- The two feed sections that are one of a kind, cloned into each phone. The rails above them
+     render from the RAILS data block in the script, the way SalonCard takes props. -->
+<template id="h3-tail-tpl">
+  <section class="s3" aria-label="Cities on Solen">
+    <div class="s3-sec"><div class="s3-frame">
+      <div class="s3-titlerow"><h2 class="s3-h2">Cities on Solen</h2></div>
+      <div class="s3-tray">
+        <div class="s3-city">
+          <a class="s3-cityhead" href="/en/basel" aria-label="Basel, 20 salons">
+            <span class="s3-cityicon"><img src="/icons/cities/basel.png" alt="" width="38" height="38"></span>
+            <span class="s3-citytext">
+              <span class="s3-cityname">Basel</span>
+              <span class="s3-citycount">20 salons</span>
+            </span>
+            <svg class="lucide lucide-chevron-right" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+          </a>
+          <div class="s3-chips">
+            <a class="s3-chip" href="/en/basel/coiffeur">Hair Salon</a>
+            <a class="s3-chip" href="/en/basel/barbershop">Barbershop</a>
+            <a class="s3-chip" href="/en/basel/nails">Nails</a>
+            <a class="s3-chip" href="/en/basel/spa">Spa</a>
+          </div>
+        </div>
+      </div>
+      <p class="s3-citynote">More cities open as we sign salons there.</p>
+    </div></div>
+  </section>
+
+  <footer class="s3 s3-footer" aria-label="Footer">
+    <div class="s3-nl">
+      <div>
+        <h3>Stay in the loop</h3>
+        <p>New salons, trends and tips. Once a month.</p>
+      </div>
+      <form class="s3-nlform" aria-label="Subscribe to the newsletter" onsubmit="return false">
+        <input type="email" name="email" aria-label="Email address" placeholder="you@email.ch" required>
+        <button type="submit" aria-label="Subscribe">
+          <svg class="lucide lucide-chevron-right" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+      </form>
+    </div>
+
+    <div class="s3-fbody">
+      <div class="s3-fgrid">
+        <div class="s3-brand">
+          <a class="s3-wordmark" href="/en" aria-label="Solen home">Solen</a>
+          <p class="s3-tagline">For your city. For Switzerland.</p>
+          <div class="s3-social">
+            <a href="https://instagram.com/solen.ch" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <svg class="lucide lucide-instagram" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+            </a>
+            <a href="https://facebook.com/solen.ch" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+              <svg class="lucide lucide-facebook" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="s3-fcol">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="/en/ueber-uns">About us</a></li>
+            <li><a href="/en/karriere">Careers</a></li>
+            <li><a href="/en/presse">Press</a></li>
+            <li><a href="/en/blog">Blog</a></li>
+          </ul>
+        </div>
+
+        <div class="s3-fcol">
+          <h4>For Salons</h4>
+          <ul>
+            <li><a href="/en/partner">For Salons</a></li>
+            <li><a href="/en/help">Salon help</a></li>
+          </ul>
+        </div>
+
+        <div class="s3-fcol">
+          <h4>Help</h4>
+          <ul>
+            <li><a href="/en/help">Customer help</a></li>
+            <li><a href="/en/sicherheit">Safety</a></li>
+            <li><a href="/en/kontakt">Contact</a></li>
+          </ul>
+        </div>
+
+        <div class="s3-fcol">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="/en/privacy">Privacy</a></li>
+            <li><a href="/en/terms">Terms</a></li>
+            <li><a href="/en/impressum">Imprint</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="s3-legal">
+        <span class="row">&copy; 2026 Solen.ch Switzerland
+          <svg width="13" height="13" viewBox="0 0 32 32" aria-hidden="true" style="border-radius:2px;vertical-align:-1px"><rect width="32" height="32" rx="3" fill="#DA291C"/><rect x="13" y="6" width="6" height="20" fill="#fff"/><rect x="6" y="13" width="20" height="6" fill="#fff"/></svg> <!-- chart-ok hue-ok: the Swiss flag, copied verbatim from Footer.tsx:83-89. Its red is the national flag red, not a palette choice, exactly like the rating star keeping its yellow. No icon set ships a national flag, so there is no Lucide equivalent to use. -->
+        </span>
+        <span>
+          <button class="s3-lang" type="button" aria-label="Change language" aria-expanded="false">EN
+            <svg class="lucide lucide-chevron-down" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.6"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+        </span>
+      </div>
+    </div>
+  </footer>
+</template>
+
+<script>
+/* ==========================================================================
+   0. One rounding helper, so no measurement or style write needs toFixed.
+   Same shape as the r2 helper already in n3.html.
+   ========================================================================== */
+function h3round(n, dp) { var f = Math.pow(10, dp); return Math.round(n * f) / f; }
+function h3px(n) { return h3round(n, 2) + "px"; }
+
+/* ==========================================================================
+   1. THE FEED DATA. Every value is a live row queried from Supabase on
+   2026-07-31 by the sections.html pass: names, ratings rounded to one decimal
+   the way RatingStars itself rounds them, postal codes, and the cheapest
+   service per category, which is what makes the from-price lawful under PBV
+   Art. 13. Photos come from the self-hosted seed pool, assigned so no two
+   cards in a rail repeat. No review count is rendered: row 1 is star plus
+   value only, the CARD_REDESIGN C11 treatment.
+   ========================================================================== */
+var RAILS = [
+  {
+    title: "Popular Hair Salons in Basel",
+    href: "/en/basel/coiffeur",
+    seeAll: "See all",
+    aria: "Popular hair salons in Basel",
+    cards: [
+      { name:"Muse Beauty Studio", rating:"4.2", cat:"Hair Salon", addr:"4001 Basel", svc:"Scalp Massage", price:"35 CHF", photo:"p12.jpg", href:"/en/salon/muse-beauty-studio" },
+      { name:"Atelier Haarwerk",   rating:"4.6", cat:"Hair Salon", addr:"4001 Basel", svc:"Scalp Massage", price:"35 CHF", photo:"p09.jpg", href:"/en/salon/atelier-haarwerk" },
+      { name:"Haarsalon Margot",   rating:"4.8", cat:"Hair Salon", addr:"4051 Basel", svc:"Scalp Massage", price:"35 CHF", photo:"p01.jpg", href:"/en/salon/haarsalon-margot" },
+      { name:"Glow Lab Basel",     rating:"4.5", cat:"Hair Salon", addr:"4051 Basel", svc:"Scalp Massage", price:"35 CHF", photo:"p02.jpg", href:"/en/salon/glow-lab-basel" },
+      { name:"Salon Lumi&egrave;re", rating:"4.4", cat:"Hair Salon", addr:"4051 Basel", svc:"Scalp Massage", price:"35 CHF", photo:"p04.jpg", href:"/en/salon/salon-lumiere" },
+      { name:"Rouge Studio",       rating:"4.2", cat:"Hair Salon", addr:"4059 Basel", svc:"Scalp Massage", price:"35 CHF", photo:"p06.jpg", href:"/en/salon/rouge-studio" }
+    ]
+  },
+  {
+    /* 4 cards, not 6. Basel has exactly 4 barbershops. hierarchy-density-04 waives the count
+       floor for a real thin set; padding the row with other categories would be invention. */
+    title: "Popular Barbershops in Basel",
+    href: "/en/basel/barbershop",
+    seeAll: "See all",
+    aria: "Popular barbershops in Basel",
+    cards: [
+      { name:"Old Town Barbers",   rating:"4.3", cat:"Barbershop", addr:"4051 Basel", svc:"Eyebrows", price:"15 CHF", photo:"p03.jpg", href:"/en/salon/old-town-barbers" },
+      { name:"Cuts &amp; Culture", rating:"4.8", cat:"Barbershop", addr:"4056 Basel", svc:"Eyebrows", price:"15 CHF", photo:"p01.jpg", href:"/en/salon/cuts-and-culture" },
+      { name:"The Fade Factory",   rating:"4.3", cat:"Barbershop", addr:"4058 Basel", svc:"Eyebrows", price:"15 CHF", photo:"p12.jpg", href:"/en/salon/the-fade-factory" },
+      { name:"Blade &amp; Stone",  rating:"4.4", cat:"Barbershop", addr:"4057 Basel", svc:"Eyebrows", price:"15 CHF", photo:"p09.jpg", href:"/en/salon/blade-and-stone" }
+    ]
+  },
+  {
+    /* Signed-in state B, the only honest signed-in render today: the reason is a stored fact
+       (profiles.customer_preferences.categories), not a derived one. Signed out, this whole
+       section does not render at all. */
+    title: "Because you like Barbershops",
+    href: "/en/barbershop",
+    seeAll: "All",
+    aria: "Because you like barbershops",
+    reason: "From the categories you picked when you signed up.",
+    cards: [
+      { name:"Old Town Barbers",  rating:"4.3", cat:"Barbershop", addr:"4051 Basel", svc:"Eyebrows", price:"15 CHF", photo:"p03.jpg", href:"/en/salon/old-town-barbers" },
+      { name:"The Fade Factory",  rating:"4.3", cat:"Barbershop", addr:"4058 Basel", svc:"Eyebrows", price:"15 CHF", photo:"p01.jpg", href:"/en/salon/the-fade-factory" },
+      { name:"Blade &amp; Stone", rating:"4.4", cat:"Barbershop", addr:"4057 Basel", svc:"Eyebrows", price:"15 CHF", photo:"p12.jpg", href:"/en/salon/blade-and-stone" }
+    ]
+  }
+];
+
+var STAR_PATH = "M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z";
+var HEART_PATH = "M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5";
+var ARROW_SVG = '<svg class="lucide lucide-arrow-right" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="stem" d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>';
+
+/* The card. Anatomy is SalonCard.tsx: photo 5:4 radius 22 carrying the frosted heart, then name
+   beside the star, then the category label, then address and from-price on one line. */
+function cardHTML(c) {
+  return '<a class="s3-card" href="' + c.href + '" aria-label="' + c.name + ', book an appointment">'
+    + '<div class="s3-photo">'
+      + '<img src="/_mockups/_assets/salon-photos/' + c.photo + '" alt="' + c.name + ', ' + c.cat.toLowerCase() + '" width="800" height="640">'
+      + '<button class="s3-heart" type="button" aria-label="Save" aria-pressed="false"><span>'
+        + '<svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + HEART_PATH + '"/></svg>'
+      + '</span></button>'
+    + '</div>'
+    + '<div class="s3-info">'
+      + '<div class="s3-r1">'
+        + '<h3 class="s3-name">' + c.name + '</h3>'
+        + '<span class="s3-rate" aria-label="' + c.rating + '"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="' + STAR_PATH + '"/></svg>' + c.rating + '</span>'
+      + '</div>'
+      + '<div class="s3-cat">' + c.cat + '</div>'
+      + '<div class="s3-r3"><span class="s3-addr">' + c.addr + '</span>'
+        + '<span class="s3-price">' + c.svc + ' from <span class="amt">' + c.price + '</span></span></div>'
+    + '</div>'
+  + '</a>';
+}
+
+function railHTML(r) {
+  return '<section class="s3" aria-label="' + r.aria + '"><div class="s3-sec"><div class="s3-frame">'
+    + '<div class="s3-titlerow">'
+      + '<h2 class="s3-h2">' + r.title + '<a class="s3-arrow" href="' + r.href + '" aria-label="See all">' + ARROW_SVG + '</a></h2>'
+      + '<a class="s3-seeall" href="' + r.href + '">' + r.seeAll + '</a>'
+    + '</div>'
+    + (r.reason ? '<p class="s3-reason">' + r.reason + '</p>' : '')
+    + '<div class="s3-row">' + r.cards.map(cardHTML).join("") + '</div>'
+  + '</div></div></section>';
+}
+
+(function buildFeeds() {
+  var railsMarkup = RAILS.map(railHTML).join("");
+  var tail = document.getElementById("h3-tail-tpl");
+  Array.prototype.forEach.call(document.querySelectorAll(".h3feed"), function (mount) {
+    mount.innerHTML = railsMarkup;
+    mount.appendChild(tail.content.cloneNode(true));
+  });
+})();
+
+/* Heart toggle. A real affordance rather than a dead one: it flips fill and aria-pressed, which is
+   what HeartButton does optimistically before it calls /api/favorites/toggle. Persistence is not
+   mocked, because a mockup that pretends to save is the no-invention rule with extra steps. */
+document.addEventListener("click", function (e) {
+  var b = e.target && e.target.closest ? e.target.closest(".s3-heart") : null;
+  if (!b) return;
+  e.preventDefault();
+  e.stopPropagation();
+  var on = b.getAttribute("aria-pressed") === "true";
+  var p = b.querySelector("path");
+  b.setAttribute("aria-pressed", on ? "false" : "true");
+  b.setAttribute("aria-label", on ? "Save" : "Saved");
+  p.setAttribute("fill", on ? "none" : "#FF3366");
+  p.setAttribute("stroke", on ? "#0A0A0A" : "none");
+});
+
+/* ==========================================================================
+   2. THE COLLAPSE. Each phone is its own scroll container, so each header reads
+   its own scroller's scrollTop instead of window.scrollY. That is the only
+   change against the three fragments; the ramps, ranges and hysteresis are
+   theirs, unmodified.
+   ========================================================================== */
+var REDUCE = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* n1: continuous 0..60px ramp, identical to SearchTemplate.tsx:811-835. Not a boolean threshold:
+   a boolean snaps, and the owner rejected that once already, B6 on 2026-07-03. */
+function initN1(sc) {
+  var band = document.getElementById("dn1-band");
+  var CATS = [
+    { slug:"coiffeur",   label:"Coiffeur", iconSrc:"/icons/categories/scissors.png" },
+    { slug:"barbershop", label:"Barber",   iconSrc:"/icons/categories/clippers.png" },
+    { slug:"nails",      label:"Nails",    iconSrc:"/icons/categories/nails.png" },
+    { slug:"spa",        label:"Spa",      iconSrc:"/icons/categories/spa.png" },
+    { slug:"walkin",     label:"Walk-in",  iconSrc:"/icons/categories/walkin.png" }
+  ];
+  /* Coiffeur, so the selected category and the first rail of the feed agree. */
+  var ACTIVE = "coiffeur";
+  var scroll = document.getElementById("dn1-catscroll");
+  CATS.forEach(function (c) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "dn1-cat";
+    b.setAttribute("role", "tab");
+    b.setAttribute("aria-selected", c.slug === ACTIVE ? "true" : "false");
+    b.dataset.slug = c.slug;
+    var img = document.createElement("img");
+    img.className = "dn1-caticon";
+    img.src = c.iconSrc;
+    img.alt = "";
+    img.setAttribute("aria-hidden", "true");
+    b.appendChild(img);
+    b.appendChild(document.createTextNode(c.label));
+    b.addEventListener("click", function () {
+      Array.prototype.forEach.call(scroll.querySelectorAll(".dn1-cat"), function (x) {
+        x.setAttribute("aria-selected", "false");
+      });
+      b.setAttribute("aria-selected", "true");
+    });
+    scroll.appendChild(b);
+  });
+
+  function apply() {
+    var y = sc.scrollTop;
+    var p = REDUCE ? (y > 30 ? 1 : 0) : Math.min(1, Math.max(0, y / 60));
+    band.style.setProperty("--dn1-p", String(p));
+  }
+  sc.addEventListener("scroll", apply, { passive: true });
+  apply();
+  return apply;
+}
+
+/* n2: the same 0..60px progress, but the logo row and the icon row are pulled out of flow by
+   height, so the padding has to ramp with them. box-sizing:border-box leaves padding and the
+   hairline standing at height 0, which measured 11px before it was fixed, and both rows must
+   leave the tab order once they are gone. */
+function initN2(sc) {
+  var root = document.getElementById("dn2-root");
+  var logorow = document.getElementById("dn2-logorow");
+  var iconrow = document.getElementById("dn2-iconrow");
+  var pillrow = document.getElementById("dn2-pillrow");
+  var pill = document.getElementById("dn2-pill");
+  var RANGE = 60, SHADOW_REST = 0.10, SHADOW_PINNED = 0.13;
+  var natural = { logo: 0, icons: 0, iconsPadTop: 0 };
+
+  function measure() {
+    logorow.style.height = "";
+    iconrow.style.height = "";
+    iconrow.style.paddingTop = "";
+    iconrow.style.borderBottomWidth = "";
+    natural.logo = logorow.offsetHeight;
+    natural.icons = iconrow.offsetHeight;
+    natural.iconsPadTop = parseFloat(getComputedStyle(iconrow).paddingTop) || 0;
+  }
+  function applyP(p) {
+    var inv = 1 - p;
+    logorow.style.height = h3px(natural.logo * inv);
+    logorow.style.opacity = String(h3round(inv, 3));
+    iconrow.style.height = h3px(natural.icons * inv);
+    iconrow.style.opacity = String(h3round(inv, 3));
+    iconrow.style.paddingTop = h3px(natural.iconsPadTop * inv);
+    iconrow.style.borderBottomWidth = inv < 0.02 ? "0px" : "1px";
+    pillrow.style.paddingTop = h3px(4 + 8 * p);
+    pillrow.style.paddingBottom = h3px(8 * p);
+    pill.style.boxShadow = "0 10px 30px rgba(0,0,0," +
+      h3round(SHADOW_REST + (SHADOW_PINNED - SHADOW_REST) * p, 3) + ")";
+    var gone = p > 0.999;
+    [logorow, iconrow].forEach(function (el) {
+      el.setAttribute("aria-hidden", gone ? "true" : "false");
+      el.style.pointerEvents = gone ? "none" : "";
+      if (gone) el.setAttribute("inert", ""); else el.removeAttribute("inert");
+    });
+    root.dataset.dn2Progress = String(h3round(p, 3));
+  }
+  function progress() {
+    var d = Math.max(0, sc.scrollTop);
+    return REDUCE ? (d > RANGE / 2 ? 1 : 0) : Math.min(1, d / RANGE);
+  }
+  var ticking = false;
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function () { ticking = false; applyP(progress()); });
+  }
+  measure();
+  applyP(progress());
+  sc.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", function () {
+    var p = progress(); measure(); applyP(p);
+  }, { passive: true });
+  return function () { applyP(progress()); };
+}
+
+/* n3: a class flip with hysteresis so the strip does not flicker at the threshold, plus CSS
+   transitions on height, margin and opacity. */
+function initN3(sc) {
+  var header = document.getElementById("dn3-header");
+  var COLLAPSE_AT = 12, EXPAND_AT = 4, collapsed = false, ticking = false;
+  function applyNow() {
+    ticking = false;
+    var y = sc.scrollTop;
+    if (!collapsed && y > COLLAPSE_AT) { collapsed = true; header.classList.add("dn3-scrolled"); }
+    else if (collapsed && y < EXPAND_AT) { collapsed = false; header.classList.remove("dn3-scrolled"); }
+  }
+  sc.addEventListener("scroll", function () {
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(applyNow);
+  }, { passive: true });
+  applyNow();
+  return applyNow;
+}
+
+var VP = {
+  n1: document.getElementById("vp-n1"),
+  n2: document.getElementById("vp-n2"),
+  n3: document.getElementById("vp-n3")
+};
+var APPLY = { n1: initN1(VP.n1), n2: initN2(VP.n2), n3: initN3(VP.n3) };
+
+/* ==========================================================================
+   3. MEASUREMENT SEAM. Read back, never assert.
+   ========================================================================== */
+function h3rect(el) {
+  if (!el) return null;
+  var b = el.getBoundingClientRect();
+  return { x:h3round(b.x, 2), right:h3round(b.right, 2), top:h3round(b.top, 2),
+           width:h3round(b.width, 2), height:h3round(b.height, 2) };
+}
+window.h3 = {
+  scrollTo: function (key, y) {
+    VP[key].scrollTop = y;
+    VP[key].dispatchEvent(new Event("scroll"));
+    APPLY[key]();
+  },
+  measure: function () {
+    var ICONROW = { n1:"dn1-cats", n2:"dn2-iconrow", n3:"dn3-stripwrap" };
+    var HEADER = { n1:"dn1-band", n2:"dn2-header", n3:"dn3-header" };
+    var PILL = { n1:"dn1-pill", n2:"dn2-pill", n3:"dn3-pill" };
+    var ROOT = { n1:"dn1-root", n2:"dn2-root", n3:"dn3-root" };
+    var out = { innerWidth: window.innerWidth, innerHeight: window.innerHeight,
+                compatMode: document.compatMode,
+                docScrollWidth: document.documentElement.scrollWidth,
+                bodyScrollWidth: document.body.scrollWidth, dirs: {} };
+    ["n1","n2","n3"].forEach(function (k) {
+      var root = document.getElementById(ROOT[k]);
+      out.dirs[k] = {
+        dir: h3rect(document.getElementById("dir-" + k)),
+        viewport: h3rect(VP[k]),
+        header: h3rect(document.getElementById(HEADER[k])),
+        iconRow: h3rect(document.getElementById(ICONROW[k])),
+        pill: h3rect(document.getElementById(PILL[k])),
+        scrollTop: VP[k].scrollTop,
+        rootScrollWidth: root.scrollWidth,
+        rootClientWidth: root.clientWidth,
+        cards: root.querySelectorAll(".s3-card").length,
+        sections: root.querySelectorAll("section.s3, footer.s3").length
+      };
+    });
+    var imgs = Array.prototype.slice.call(document.images);
+    out.images = { total: imgs.length,
+      broken: imgs.filter(function (i) { return i.complete && i.naturalWidth === 0; }).length,
+      pending: imgs.filter(function (i) { return !i.complete; }).length };
+    return out;
+  }
+};
+</script>
+</body></html>

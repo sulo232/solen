@@ -129,7 +129,15 @@
     /* 2026-05-30: Inter Tight display, Geist (V3-D317) reverted per user. */
     font-family: var(--font-inter-tight), "Inter Tight", system-ui, -apple-system, sans-serif;
     color: var(--color-heading);
-    letter-spacing: -0.025em;
+    /* OWNER PICK 2026-08-06, direction D from the four-way type chooser
+       (public/_mockups/home-type/index.html), answered with a single "D". He said the home page
+       fonts were "nothing like Airbnb rounded welcome type stuff". D was the direction that KEEPS
+       Inter Tight and attacks the coldness where it actually lives, in the tracking, rather than
+       swapping the typeface. That matters because the face is set once in app/layout.tsx and
+       applies to every screen, so B or C would have moved the PDP, booking and dashboard too, and
+       the font row is frozen in the design contract. Tightened tracking is what reads clipped and
+       technical; at 0 the same face reads open and welcoming. Was -0.025em. */
+    letter-spacing: 0;
   }
 
   /* ── Global button press feedback ─────────────────────────── */
@@ -380,7 +388,12 @@
 
 /* ── V3-D189 (2026-05-26, QUESTIONS.md#q5): focus-visible ring teal #043338 → s-ink #0A0A0A.
      Pre-B&W pivot teal is retired; B&W pivot means chrome is ink-only. 2px ink on
-     white = ~5.8:1 contrast (passes WCAG 1.4.11 / 2.4.7 AA Normal). Originally
+     white = 19.80:1 contrast (comfortably clears WCAG 1.4.11's 3:1 non-text floor).
+       CORRECTED 2026-07-28: this said "~5.8:1" from 2026-05-26 until today. That number
+       matched nothing , not s-ink #0A0A0A (19.80:1), not the retired teal #043338
+       (13.67:1). Recomputed from the sRGB relative-luminance formula. The conclusion it
+       supported was right, so no rule changes, but an uncited number in a comment is how
+       a wrong figure gets inherited. Originally
      locked as Q47 2026-05-02; supersedes that. ─ */
 @layer base {
   /* Owner 2026-07-01 (furious, repeated): NO focus ring on interactive chrome, on ANY device.
@@ -427,6 +440,39 @@
        not duplicated anywhere else. */
   }
 }
+
+/* ── D1-focus-visible (2026-07-27): keyboard-only focus cue, still no ring.
+   CLAUDE.md precedence chain tier 2 (statutory/a11y floor): satisfy the WCAG 2.4.7 keyboard-
+   focus-indicator floor WITHOUT reopening the owner's no-ring taste call above (that block is
+   untouched, outline stays none on :focus AND :focus-visible, on all chrome, all devices).
+   Treatment: a 3px ink INSET LEFT EDGE (inset box-shadow, not an outline, not a spread glow
+   halo, so no-focus-ring-gate.py stays satisfied , its own regex was run against this exact
+   rule before commit and found no hit). Fires on :focus-visible ONLY, never plain :focus, and
+   Fires on :focus-visible ONLY, never plain :focus.
+
+   SCOPE WIDENED 2026-07-28 (design-principle research, contract lens). It was
+   (hover: hover) and (pointer: fine), i.e. desktop only, which left EVERY touch device with no
+   keyboard-focus indicator at all , and mobile is this product's primary surface. The desktop
+   scoping was belt-and-braces against a tap showing the cue, but that risk does not exist:
+   :focus-visible is NEVER fired by a tap. The block immediately above proves it in this
+   codebase's own words , iOS Safari classifies a tap as plain :focus WITHOUT :focus-visible,
+   which is exactly why that block kills plain :focus separately. So the touch carve-out on
+   :focus-visible was suppressing nothing a tap would ever have shown; it only removed the cue
+   for someone driving a phone or iPad with an external keyboard or a switch device.
+   Widening this is therefore NOT a reopening of the no-ring taste call: the ring stays dead,
+   outline stays none on :focus and :focus-visible on all chrome on all devices, taps still show
+   nothing, and no spread halo is introduced (this is an inset edge, which no-focus-ring-gate.py
+   does not match). It only closes a WCAG 2.4.7 AA gap on the surface that had it worst.
+   Per the precedence chain, tier 2 statutory floors outrank tier 5 taste, and the chain's own
+   prescribed resolution is a treatment that satisfies the floor while honouring the taste
+   intent, which is precisely what this is. */
+  a:focus-visible,
+  button:focus-visible,
+  [role="button"]:focus-visible,
+  [tabindex]:focus-visible,
+  summary:focus-visible {
+    box-shadow: inset 3px 0 0 0 #0A0A0A; /* drift-ok: s-ink literal, raw CSS focus cue not a Tailwind utility */
+  }
 
 /* ── B.7: Override global coral focus ring inside GuidedSearch sheet ── */
 #gs-sheet input:focus-visible,
@@ -544,6 +590,11 @@ input.discovery-searchbar {
 .salon-card-stagger > *:nth-child(6) { animation-delay: 250ms; }
 .salon-card-stagger > *:nth-child(7) { animation-delay: 300ms; }
 .salon-card-stagger > *:nth-child(8) { animation-delay: 350ms; }
+/* motion-03: ceiling. Past 8 items the container ran out of enumerated delays and every
+   later child inherited the undeclared default (0ms, same as :nth-child(1)), so a 12-item
+   page (SearchTemplate PAGE_SIZE) entered cards 9-12 simultaneously with card 1, ahead of
+   cards 2-8. Cap every item past the ceiling at the LAST defined delay instead. */
+.salon-card-stagger > *:nth-child(n+9) { animation-delay: 350ms; }
 @media (prefers-reduced-motion: reduce) {
   .salon-card-stagger > * { animation: none; opacity: 1; transform: none; }
 }
@@ -909,6 +960,22 @@ html {
 }
 .scrollbar-none::-webkit-scrollbar {
   display: none;
+}
+
+/* ── Scroll-stable gutter utility (layout-geometry-08) ───────────────
+   A scroll container whose content height is variable (a modal body, a
+   bottom sheet, a sidebar list fed by live data the user can grow - reviews,
+   staff lists, service lists) can cross its own scrolling threshold at
+   runtime. When it does, the browser's scrollbar appears and takes
+   ~15-17px of width from the content box, shifting everything inside
+   sideways. `scrollbar-gutter: stable` reserves that width up front so the
+   appearance/disappearance of the scrollbar never shifts content. Invisible
+   on macOS' overlay scrollbars (which is plausibly most design review here),
+   real on Windows/Linux Chrome and many embedded webviews - add this class
+   alongside `overflow-y-auto` on any such container instead of relying on
+   `overflow-y-auto` alone. See _design-system/LOCKFILE.md section 7. */
+.scroll-stable-gutter {
+  scrollbar-gutter: stable;
 }
 
 /* ── V5 Heart bounce animation ────────────────────────────────────── */
@@ -1294,5 +1361,40 @@ select:focus-visible {
   select:focus-visible {
     outline: none;
     border-color: var(--color-border) !important;
+  }
+}
+
+/* Forced-colors mode (Windows/Edge High Contrast). color-tokens-10, 2026-07-27.
+   forced-colors: active fires when the OS has a forced-colors theme on
+   (practically, Windows High Contrast Mode). The browser already remaps most
+   author colors to a small system palette automatically; this block covers
+   the two places that breaks for Solen specifically, without disabling the
+   feature (never a blanket forced-color-adjust: none on the page):
+   1. State signalled by a BACKGROUND FILL ALONE collapses once forced-colors
+      normalizes backgrounds (the "selected = calm grey sunken fill" law,
+      CLAUDE.md taste rule 3). Give any element already marked selected/active
+      via a real ARIA attribute a visible system-color border too, so the
+      distinction survives the remap.
+   2. A semantic color that IS the message (star rating, success check, error
+      state) is exempted from forced-colors, the same carve-out WCAG's own
+      forced-colors guidance recommends for meaningful non-text graphics
+      (color never the sole carrier, RATIONALE.md section 2 T1). */
+@media (forced-colors: active) {
+  [aria-selected="true"],
+  [aria-checked="true"],
+  [aria-current="true"],
+  [aria-current="page"] {
+    border: 1px solid Highlight;
+  }
+
+  .text-s-star,
+  .fill-s-star,
+  .text-s-success,
+  .fill-s-success,
+  .bg-s-success,
+  .text-s-error,
+  .fill-s-error,
+  .bg-s-error {
+    forced-color-adjust: none;
   }
 }

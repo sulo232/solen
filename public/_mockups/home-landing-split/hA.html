@@ -1,0 +1,496 @@
+<!-- Exists-check: `npm run exists "home landing split"` = 0 matches. `npm run exists "SearchBar"` = the
+     real one at app/[locale]/_components/homepage/SearchBar.tsx (plus a legacy discovery copy);
+     `npm run exists "SalonCard"` = app/[locale]/_components/homepage/SalonCard.tsx. BOTH EXIST AND
+     BOTH ARE REUSED HERE, not reinvented. `npm run exists "landing"` = 4 incl. ONE GRAVEYARD hit
+     (makeup-waxing category landing pages, owner-removed 2026-06-13) which this mockup does not
+     touch or re-propose. The target surface /de already renders: Hero (h1 + SearchBar),
+     MobileCategoriesRow, SalonOfMonth, ForYouSalonRows, RecentlyViewed, Nearby, WalkInBand,
+     Entdecken, Reviews, BusinessTeaser. The ONE thing that is actually new: the entry control is
+     re-geometried from the 358x250 stacked card into a single 358x56 row on its own line beneath
+     the logo row, and the h1 promise headline is deleted.
+
+     Depicts: logo and hamburger header row -> app/[locale]/_components/layout/Header.tsx
+     Depicts: entry control, Service Stadt Zeit segments plus ink commit -> app/[locale]/_components/homepage/SearchBar.tsx
+     Depicts: salon card, photo name category city rating and from-price -> app/[locale]/_components/homepage/SalonCard.tsx
+     Depicts: the home feed of salon cards -> app/[locale]/page.tsx
+     Depicts: category chip strip -> app/[locale]/_components/homepage/MobileCategoriesRow.tsx
+     Depicts: seeded salon photography -> lib/stock-photos.ts
+     Depicts: everything else -> NET-NEW: nothing is invented, only geometry and section order change
+
+     Notes on those traces, so none of them is a claim I did not check:
+       Header.tsx line 34 reads "Mobile: Logo + hamburger only (desktop nav hidden < md)" and its
+       hamburger opens app/[locale]/_components/layout/MobileMenu.tsx. SearchBar.tsx ships three
+       CollapsedRow instances (lines 309-330) plus the ink CTA (331-379); HEIGHT.mobile is 250
+       (line 100) and becomes 56 here, which is the only change. page.tsx already composes
+       ForYouSalonRows / Nearby / Entdecken out of SalonCard, so only the ORDER changes: the feed
+       moves above the category grid. MobileCategoriesRow.tsx is a 3x2 md:hidden grid of six
+       pick-ordered tiles today, drawn here as a one-row chip strip and moved below the first
+       viewport, which is the fix WHY_IT_LOOKS_CHEAP defect 7 costed at 251px. lib/stock-photos.ts
+       is the module that assigns salon photography in the product; the mockup's own image files are
+       the self-hosted seed copies under public/_mockups/_assets/salon-photos per _BASE.md, no
+       remote assets. Category labels use the English members of the live taxonomy (barbershop /
+       hair / nails / spa), and city names use their English exonyms (Zurich, Geneva), per the
+       mockup English rule.
+
+     A RULE COLLISION, surfaced rather than resolved silently. Two live gates disagree about the
+     review count on a salon card. The resurrection gate blocks a count, citing CARD_REDESIGN
+     2026-07-13 C11 (owner-approved converged card: rating = star + value only). The psychology
+     gate blocks a bare star, citing PSYCHOLOGY.md law 6 (a rating always carries its count).
+     Evidence decided it: SalonCard.tsx line 492 describes the shipped card as "gold star rating
+     with no count", and line 268 documents `reviewCount` as removed by C11 by name. The component
+     that actually renders today is bare-star by a dated owner decision, so this mockup matches it
+     and carries the psychology gate's own documented per-line `psych-ok:` escape. This is worth an
+     owner sentence: one of the two gates is enforcing a superseded rule and should be narrowed.
+
+     Grounded-in: app/[locale]/_components/homepage/SearchBar.tsx
+     Grounded-in: app/[locale]/_components/homepage/Hero.tsx
+     Grounded-in: app/[locale]/_components/homepage/SalonCard.tsx
+     Grounded-in: app/[locale]/_components/homepage/MobileCategoriesRow.tsx
+
+     measured: every y, width and percentage in the note below was taken with
+     getBoundingClientRect on this exact file rendered at 390 wide on 2026-07-31, not computed on
+     paper. Two defects were found by that pass and fixed, both recorded inline where they happened.
+     Direction hA of several. Static, no motion. Design width 390. -->
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+/* ============================================================================
+   hA , "Stacked, Airbnb proper" , HOME at /de
+   Single light theme. White + #F4F4F5 only. No dark mode. Nothing docked to the
+   bottom edge. Every class prefixed hA-.
+   ========================================================================== */
+
+@font-face{
+  font-family:'Inter Var';
+  src:url('/_mockups/_assets/fonts/inter-latin-var.woff2') format('woff2');
+  font-weight:100 900; font-style:normal; font-display:swap;
+}
+@font-face{
+  font-family:'Inter Tight Var';
+  src:url('/_mockups/_assets/fonts/inter-tight-latin-var.woff2') format('woff2');
+  font-weight:100 900; font-style:normal; font-display:swap;
+}
+
+/* the body IS the screen, no drawn phone frame (_BASE.md). Without this reset the
+   UA's default 8px body margin pushes the header to y=8 and every downstream y
+   with it. Found by measuring, 2026-07-31. */
+html,body{margin:0;padding:0;background:#fff;-webkit-text-size-adjust:100%;}
+
+.hA-root,.hA-root *{box-sizing:border-box;margin:0;padding:0;}
+.hA-root{
+  -webkit-text-size-adjust:100%;
+  width:390px;
+  margin:0 auto;
+  background:#fff;
+  font-family:'Inter Var',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  color:#0A0A0A;
+  -webkit-font-smoothing:antialiased;
+}
+.hA-root a{text-decoration:none;color:inherit;display:block;}
+.hA-root button{font:inherit;background:none;border:0;cursor:pointer;color:inherit;}
+.hA-root img{display:block;max-width:100%;}
+
+/* ---------- ROW 1: the logo row. Logo left, hamburger right. 64px. ---------- */
+.hA-header{
+  height:64px;
+  padding:10px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.hA-logo{
+  font-family:'Inter Tight Var',-apple-system,sans-serif;
+  font-size:24px;
+  font-weight:600;
+  letter-spacing:-0.03em;
+  color:#0A0A0A;
+  line-height:1;
+}
+.hA-burger{
+  width:44px;height:44px;              /* a11y touch floor */
+  display:flex;align-items:center;justify-content:center;
+  margin-right:-10px;                  /* optical: glyph edge lands on the 16px gutter */
+}
+.hA-burger svg{width:22px;height:22px;stroke:#0A0A0A;stroke-width:2;}
+
+/* ---------- ROW 2: the search row. Measured 358 x 56 at y=64. ----------
+   This is the whole bet. Sandwiched between logo and burger the control gets 243px.
+   On its own row it gets 358px. The parts are the real SearchBar parts; only the
+   geometry changed: three stacked 46px rows became three inline segments. */
+.hA-searchrow{padding:0 16px;}
+.hA-search{
+  width:358px;height:56px;
+  border-radius:28px;                  /* pill */
+  background:#fff;
+  box-shadow:0 2px 8px rgba(50,47,44,.09);   /* elevation-2, the live single-layer value */
+  display:flex;align-items:center;
+  padding:0 6px 0 18px;
+}
+.hA-seg{
+  height:56px;
+  display:flex;align-items:center;gap:7px;
+  min-width:0;
+  text-align:left;
+}
+/* segments are weighted, not equal: Service carries the longest real values.
+   Measured widths at 390: Service 95.2, Stadt 76.2, Zeit 68.6. */
+.hA-seg--service{flex:1.25 1 0;}
+.hA-seg--stadt{flex:1 1 0;}
+.hA-seg--zeit{flex:.9 1 0;}
+.hA-seg svg{width:16px;height:16px;flex:none;stroke:#6B6B6B;stroke-width:2;}
+.hA-seg span{
+  font-size:14px;font-weight:400;line-height:1;
+  color:#6B6B6B;                       /* 5.33:1 on white, AA */
+  letter-spacing:-0.005em;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.hA-segdiv{width:1px;height:24px;background:#E4E4E7;flex:none;margin:0 10px;}
+/* NOTE the descendant selector. `.hA-root button{background:none}` above is
+   specificity 0-1-1 and silently beat a bare `.hA-go{background:#0A0A0A}` (0-1-0),
+   so the ONE commit control computed rgba(0,0,0,0) and rendered invisible. The
+   numbers all passed while it was broken; only the screenshot caught it. 2026-07-31. */
+.hA-root .hA-go{
+  width:44px;height:44px;flex:none;    /* a11y touch floor */
+  margin-left:8px;
+  border-radius:9999px;
+  background:#0A0A0A;                  /* the ONE commit CTA, ink */
+  display:flex;align-items:center;justify-content:center;
+}
+.hA-go svg{width:18px;height:18px;stroke:#fff;stroke-width:2.2;}
+
+/* ---------- THE FEED. Measured first card top = y 134. ---------- */
+.hA-grid{
+  margin-top:14px;
+  padding:0 16px;
+  display:grid;
+  grid-template-columns:repeat(2,171px);
+  column-gap:16px;                     /* between-group */
+  row-gap:24px;                        /* between-group */
+}
+.hA-photo{
+  width:171px;height:137px;            /* 1.248, the locked 1.25 salon ratio */
+  border-radius:16px;                  /* card radius */
+  object-fit:cover;
+  background:#F4F4F5;                  /* never a bare grey box: real photo in every slot */
+}
+.hA-name{
+  margin-top:7px;                      /* in-group. 16/7 = 2.3x, 24/7 = 3.4x, floor is 2x */
+  font-size:14px;font-weight:600;line-height:18px;
+  color:#0A0A0A;                       /* the card's single anchor */
+  letter-spacing:-0.01em;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.hA-place{
+  margin-top:2px;
+  font-size:12px;font-weight:400;line-height:16px;color:#6B6B6B;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.hA-meta{
+  margin-top:2px;
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:12px;font-weight:400;line-height:16px;
+}
+/* C11 converged card: rating is star + value ONLY, matching SalonCard.tsx:492. */
+.hA-rate{display:flex;align-items:center;gap:3px;color:#6B6B6B;white-space:nowrap;}
+.hA-rate svg{width:11px;height:11px;flex:none;}
+.hA-price{
+  color:#0A0A0A;      /* body WEIGHT (400) as briefed, one COLOUR step. Swiss PBV Art. 13 */
+  font-variant-numeric:tabular-nums;
+  white-space:nowrap;
+}
+
+/* ---------- Below the first viewport: where the category grid went ---------- */
+.hA-catwrap{margin-top:32px;padding:0 16px;}
+.hA-cathead{
+  font-family:'Inter Tight Var',-apple-system,sans-serif;
+  font-size:18px;font-weight:600;letter-spacing:-0.02em;line-height:24px;
+  color:#0A0A0A;
+  margin-bottom:12px;
+}
+.hA-cats{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;}
+.hA-cats::-webkit-scrollbar{display:none;}
+.hA-root .hA-chip{                     /* same specificity trap as .hA-go above */
+  height:44px;                         /* a11y touch floor */
+  flex:none;
+  padding:0 16px;
+  border-radius:9999px;
+  border:1px solid #E4E4E7;
+  background:#fff;
+  font-size:14px;font-weight:400;line-height:42px;
+  color:#0A0A0A;
+  white-space:nowrap;
+}
+/* selected = calm gray sunken fill, never ink, never blue */
+.hA-root .hA-chip--on{background:#F4F4F5;border-color:#F4F4F5;font-weight:600;}
+.hA-tail{height:40px;}
+
+/* ---------- the fold marker + the annotation. NOT part of the UI. ---------- */
+.hA-foldline{
+  position:relative;width:390px;margin:0 auto;height:0;
+  border-top:1px dashed #276EF1;
+}
+.hA-foldtag{
+  position:absolute;right:0;top:2px;
+  font-size:10px;font-weight:600;color:#276EF1;letter-spacing:.02em;
+  background:#fff;padding:0 4px;
+}
+.hA-note{
+  width:390px;margin:0 auto;
+  padding:20px 16px 40px;
+  background:#F4F4F5;
+  font-family:'Inter Var',-apple-system,sans-serif;
+  font-size:13px;line-height:19px;color:#0A0A0A;
+}
+.hA-note h3{
+  font-family:'Inter Tight Var',-apple-system,sans-serif;
+  font-size:16px;font-weight:600;letter-spacing:-0.02em;margin-bottom:10px;
+}
+.hA-note h4{font-size:13px;font-weight:600;margin:14px 0 4px;}
+.hA-note p{color:#3F3F46;}
+.hA-note b{font-weight:600;color:#0A0A0A;}
+.hA-note ul{margin:4px 0 0 16px;}
+.hA-note li{color:#3F3F46;margin-bottom:3px;}
+</style>
+
+<div class="hA-root">
+
+  <!-- ============ ROW 1 : logo + hamburger. Measured y 0, h 64 ============ -->
+  <header class="hA-header">
+    <div class="hA-logo">solen</div>
+    <button class="hA-burger" type="button" aria-label="Menu">
+      <svg class="lucide lucide-menu" data-lucide="menu" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/>
+      </svg>
+    </button>
+  </header>
+
+  <!-- ============ ROW 2 : the search row. Measured y 64, 358 x 56 ============ -->
+  <div class="hA-searchrow">
+    <div class="hA-search">
+      <button class="hA-seg hA-seg--service" type="button" aria-label="Choose a service">
+        <svg class="lucide lucide-search" data-lucide="search" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/>
+        </svg>
+        <span>Service</span>
+      </button>
+
+      <div class="hA-segdiv"></div>
+
+      <button class="hA-seg hA-seg--stadt" type="button" aria-label="Choose a city">
+        <svg class="lucide lucide-map-pin" data-lucide="map-pin" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+        <span>Stadt</span> <!-- german-ok: real SearchBar field label, mandated verbatim by the brief -->
+      </button>
+
+      <div class="hA-segdiv"></div>
+
+      <button class="hA-seg hA-seg--zeit" type="button" aria-label="Choose a time">
+        <svg class="lucide lucide-calendar" data-lucide="calendar" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M8 2v4"/><path d="M16 2v4"/>
+          <rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>
+        </svg>
+        <span>Zeit</span> <!-- german-ok: real SearchBar field label, mandated verbatim by the brief -->
+      </button>
+
+      <button class="hA-go" type="button" aria-label="Search">
+        <svg class="lucide lucide-search" data-lucide="search" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ============ THE FEED. Measured rows at y 134 / 356 / 578 / 800 ============ -->
+  <div class="hA-grid">
+
+    <a href="#" class="hA-card">
+      <!-- scene: barbershop interior , one distinct scene per card, zero visual reuse -->
+      <img class="hA-photo" src="/_mockups/_assets/salon-photos/p01.jpg" alt="Cuts & Culture">
+      <div class="hA-name">Cuts &amp; Culture</div>
+      <div class="hA-place">Barbershop, Basel</div>
+      <div class="hA-meta">
+        <!-- psych-ok: law 6 wants a count, but CARD_REDESIGN_2026-07-13 C11 (owner-approved) removed it and SalonCard.tsx:492 ships "gold star rating with no count" today; adding one resurrects a superseded treatment --> <span class="hA-rate"><svg class="lucide lucide-star" data-lucide="star" viewBox="0 0 24 24" fill="#FFC32B" stroke="#FFC32B" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.8</span>
+        <span class="hA-price">ab CHF 45</span>
+      </div>
+    </a>
+
+    <a href="#" class="hA-card">
+      <!-- scene: three stylists with tools , one distinct scene per card, zero visual reuse -->
+      <img class="hA-photo" src="/_mockups/_assets/salon-photos/p12.jpg" alt="Haarsalon Margot">
+      <div class="hA-name">Haarsalon Margot</div>
+      <div class="hA-place">Hair, Basel</div>
+      <div class="hA-meta">
+        <!-- psych-ok: law 6 wants a count, but CARD_REDESIGN_2026-07-13 C11 (owner-approved) removed it and SalonCard.tsx:492 ships "gold star rating with no count" today; adding one resurrects a superseded treatment --> <span class="hA-rate"><svg class="lucide lucide-star" data-lucide="star" viewBox="0 0 24 24" fill="#FFC32B" stroke="#FFC32B" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.9</span>
+        <span class="hA-price">ab CHF 68</span>
+      </div>
+    </a>
+
+    <a href="#" class="hA-card">
+      <!-- scene: stylists cutting in salon , one distinct scene per card, zero visual reuse -->
+      <img class="hA-photo" src="/_mockups/_assets/salon-photos/p03.jpg" alt="Barbier am Rhein">
+      <div class="hA-name">Barbier am Rhein</div>
+      <div class="hA-place">Barbershop, Basel</div>
+      <div class="hA-meta">
+        <!-- psych-ok: law 6 wants a count, but CARD_REDESIGN_2026-07-13 C11 (owner-approved) removed it and SalonCard.tsx:492 ships "gold star rating with no count" today; adding one resurrects a superseded treatment --> <span class="hA-rate"><svg class="lucide lucide-star" data-lucide="star" viewBox="0 0 24 24" fill="#FFC32B" stroke="#FFC32B" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.9</span>
+        <span class="hA-price">ab CHF 39</span>
+      </div>
+    </a>
+
+    <a href="#" class="hA-card">
+      <!-- scene: finished long-hair result , one distinct scene per card, zero visual reuse -->
+      <img class="hA-photo" src="/_mockups/_assets/salon-photos/p09.jpg" alt="Studio Belle Rive">
+      <div class="hA-name">Studio Belle Rive</div>
+      <div class="hA-place">Hair, Zurich</div>
+      <div class="hA-meta">
+        <!-- psych-ok: law 6 wants a count, but CARD_REDESIGN_2026-07-13 C11 (owner-approved) removed it and SalonCard.tsx:492 ships "gold star rating with no count" today; adding one resurrects a superseded treatment --> <span class="hA-rate"><svg class="lucide lucide-star" data-lucide="star" viewBox="0 0 24 24" fill="#FFC32B" stroke="#FFC32B" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.7</span>
+        <span class="hA-price">ab CHF 95</span>
+      </div>
+    </a>
+
+    <a href="#" class="hA-card">
+      <!-- scene: brow / facial treatment , one distinct scene per card, zero visual reuse -->
+      <img class="hA-photo" src="/_mockups/_assets/salon-photos/p04.jpg" alt="Spa Belvoir">
+      <div class="hA-name">Spa Belvoir</div>
+      <div class="hA-place">Spa, Zurich</div>
+      <div class="hA-meta">
+        <!-- psych-ok: law 6 wants a count, but CARD_REDESIGN_2026-07-13 C11 (owner-approved) removed it and SalonCard.tsx:492 ships "gold star rating with no count" today; adding one resurrects a superseded treatment --> <span class="hA-rate"><svg class="lucide lucide-star" data-lucide="star" viewBox="0 0 24 24" fill="#FFC32B" stroke="#FFC32B" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.9</span>
+        <span class="hA-price">ab CHF 140</span>
+      </div>
+    </a>
+
+    <a href="#" class="hA-card">
+      <!-- scene: makeup application close-up , one distinct scene per card, zero visual reuse -->
+      <img class="hA-photo" src="/_mockups/_assets/salon-photos/p02.jpg" alt="Maison Vernier">
+      <div class="hA-name">Maison Vernier</div>
+      <div class="hA-place">Spa, Geneva</div>
+      <div class="hA-meta">
+        <!-- psych-ok: law 6 wants a count, but CARD_REDESIGN_2026-07-13 C11 (owner-approved) removed it and SalonCard.tsx:492 ships "gold star rating with no count" today; adding one resurrects a superseded treatment --> <span class="hA-rate"><svg class="lucide lucide-star" data-lucide="star" viewBox="0 0 24 24" fill="#FFC32B" stroke="#FFC32B" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.7</span>
+        <span class="hA-price">ab CHF 85</span>
+      </div>
+    </a>
+
+    <a href="#" class="hA-card">
+      <!-- scene: beauty products flat-lay , one distinct scene per card, zero visual reuse -->
+      <img class="hA-photo" src="/_mockups/_assets/salon-photos/p06.jpg" alt="Nagelstudio Bliss">
+      <div class="hA-name">Nagelstudio Bliss</div>
+      <div class="hA-place">Nails, Basel</div>
+      <div class="hA-meta">
+        <!-- psych-ok: law 6 wants a count, but CARD_REDESIGN_2026-07-13 C11 (owner-approved) removed it and SalonCard.tsx:492 ships "gold star rating with no count" today; adding one resurrects a superseded treatment --> <span class="hA-rate"><svg class="lucide lucide-star" data-lucide="star" viewBox="0 0 24 24" fill="#FFC32B" stroke="#FFC32B" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.6</span>
+        <span class="hA-price">ab CHF 55</span>
+      </div>
+    </a>
+
+    <a href="#" class="hA-card">
+      <!-- scene: brushes flat-lay , one distinct scene per card, zero visual reuse -->
+      <img class="hA-photo" src="/_mockups/_assets/salon-photos/p07.jpg" alt="Nagelatelier Aare">
+      <div class="hA-name">Nagelatelier Aare</div>
+      <div class="hA-place">Nails, Bern</div>
+      <div class="hA-meta">
+        <!-- psych-ok: law 6 wants a count, but CARD_REDESIGN_2026-07-13 C11 (owner-approved) removed it and SalonCard.tsx:492 ships "gold star rating with no count" today; adding one resurrects a superseded treatment --> <span class="hA-rate"><svg class="lucide lucide-star" data-lucide="star" viewBox="0 0 24 24" fill="#FFC32B" stroke="#FFC32B" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.8</span>
+        <span class="hA-price">ab CHF 60</span>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- ============ below the first viewport : where the category grid went ============ -->
+  <div class="hA-catwrap">
+    <div class="hA-cathead">Browse by category</div>
+    <div class="hA-cats">
+      <button class="hA-chip hA-chip--on" type="button">All</button>
+      <button class="hA-chip" type="button">Hair</button>
+      <button class="hA-chip" type="button">Barbershop</button>
+      <button class="hA-chip" type="button">Nails</button>
+      <button class="hA-chip" type="button">Spa</button>
+    </div>
+  </div>
+
+  <div class="hA-tail"></div>
+</div>
+
+<!-- ============ 844px fold marker (annotation, not UI) ============ -->
+<div class="hA-foldline"><span class="hA-foldtag">844 FOLD</span></div>
+
+<!-- ============ THE NOTE ============ -->
+<div class="hA-note">
+  <h3>hA , "Stacked, Airbnb proper"</h3>
+  <p>Airbnb does not sandwich its search between the logo and the menu, it <b>stacks</b>: a logo row,
+  then a search row of its own beneath it. This is that, at 390.</p>
+
+  <h4>1. The navigation answer</h4>
+  <p><b>Two rows of chrome, and the hamburger is the only navigation.</b> Row one (y 0 to 64) carries
+  the wordmark left and the 44x44 hamburger right, which he said he likes. Row two (y 64 to 120)
+  carries nothing but search, running the whole 358px between the 16px gutters. <b>Nothing is docked
+  to the bottom edge of this screen.</b> Every destination that is not a salon lives behind the
+  hamburger; every destination that is a salon is a card. There is no third kind of place to go,
+  which is why one menu button is enough.</p>
+  <p>The search control is the real one re-geometried, not redrawn: the same three CollapsedRow
+  segments, the real lucide search / map-pin / calendar glyphs, the real labels Service / Stadt /
+  Zeit, the same white + elevation-2 + no-border container (edge-visibility route c), and the same
+  ink commit control shrunk to a 44px round button. 250px of stacked card became one 56px row.</p>
+
+  <h4>2. The measured number that drove it</h4>
+  <p>His complaint is arithmetic and it is correct. On /de the logo ends at x=71 and the hamburger
+  starts at x=330, so a sandwiched pill gets <b>243px</b>. Stacked on its own row it measures
+  <b>358px</b>. That is <b>+47.3%</b>, bought for one 56px row.</p>
+  <p>The second number set the whole vertical budget. Today the first salon card sits at
+  <b>y=842</b>, one pixel inside an 844 fold, and the phone first viewport measures <b>0.00%
+  photographic</b>. Deleting the h1 and its subline and collapsing the 250px search stack to 56 buys
+  708px back. Measured on this file at 390 wide:</p>
+  <ul>
+    <li>first salon card top = <b>y=134</b> (was 842)</li>
+    <li>card rows at <b>134 / 356 / 578 / 800</b></li>
+    <li><b>6 full cards visible</b>, plus 44px of row 4 cropped above the fold: the scroll promise</li>
+    <li>photographic area in the first 844px = <b>47.27%</b> (floor is ~33%)</li>
+    <li>3 distinct font sizes (24 / 14 / 12), ceiling is 4</li>
+    <li>25% of first-viewport text at weight >= 600, ceiling is ~30%</li>
+    <li>smallest touch target 44px; 8 photo slots, 8 distinct scenes, 0 broken images</li>
+  </ul>
+  <p>Two columns is not a style preference, it is the only shape that clears both floors at once. The
+  locked 1.25 photo ratio makes a one-column card 358x286, so one column puts 1.5 cards in view and
+  fails the >=4-unit density floor. A photo-left list row hits 4 units but drops photographic area to
+  roughly 14% and fails the imagery floor. At 171 wide the photo is 137 tall and both floors clear.</p>
+
+  <h4>3. What this direction gives up</h4>
+  <ul>
+    <li><b>56px of every screen, forever.</b> The row is the cost of the row, and nothing else on the
+    page gets that space back.</li>
+    <li><b>The middle of the logo row is empty</b>, a measured 269px of it. Sandwiching at least put
+    something there. A resolved-city chip would fill it, but Stadt is already a search segment and
+    stating the city twice is the duplication taste rule 2 exists to stop.</li>
+    <li><b>No display anchor >= 28px.</b> With the promise headline deleted the largest text is the
+    24px wordmark, 1.71x body, under the 1.8x ratio floor. Legal only because FLOORS LAW 6 exempts a
+    screen whose photograph is the focal, and at 47.27% it plainly is. Naming it rather than growing
+    the wordmark to game a number.</li>
+    <li><b>The category taxonomy is now below the first viewport.</b> A first-time visitor learns
+    what Solen covers from the salons, not from a grid. Same trade Airbnb makes, opposite of the one
+    Fresha iOS makes.</li>
+    <li><b>A magnifier renders twice</b> in the search row, once as the Service field glyph and once
+    in the ink button. Airbnb web and the real SearchBar both do this, but it is a redundancy and
+    whether it reads as one is his call.</li>
+    <li><b>Smaller photos than the real rail card</b>, 171 wide against 231. Density was bought with
+    photo size.</li>
+  </ul>
+
+  <h4>4. Two things the measurement caught, and one supply limit</h4>
+  <p>Both defects passed every number and were only visible in the render. First, a UA body margin
+  put the header at y=8 and shifted every row down with it. Second, and worse, the reset
+  <code>.hA-root button</code> outranked <code>.hA-go</code> on specificity, so the one ink commit
+  control computed <code>rgba(0,0,0,0)</code> and was <b>invisible</b> while every measurement still
+  reported it 44x44 in the right place. Both fixed and re-verified.</p>
+  <p><b>The supply limit, which is not a design choice.</b> The 12 files in
+  <code>_assets/salon-photos</code> are not 12 photographs. p04 and p05 are byte-identical, and
+  p01/p10, p02/p08 and p09/p11 are the same scene at different crops. There are <b>8 distinct scenes
+  in the folder</b>, which is exactly the number of cards here, so this mockup reaches zero visual
+  reuse only by consuming the entire pool. Two of the eight (p06, p07) are product flat-lays that
+  show no salon at all, so they sit in the cropped fourth row rather than the first viewport. A ninth
+  card could not be added without repeating a scene, which is the same defect the live home page
+  already has at nineteen slots to eleven photographs.</p>
+  <p><b>One rule collision, surfaced not settled.</b> The resurrection gate forbids a review count on
+  this card (C11, owner-approved 2026-07-13); PSYCHOLOGY law 6 requires one. SalonCard.tsx:492 ships
+  the bare star today, so this mockup matches the live component, but one of those two gates is
+  enforcing a superseded rule and it needs an owner sentence to settle.</p>
+</div>

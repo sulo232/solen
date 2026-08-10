@@ -224,7 +224,7 @@ function RatingSheet() {
         className="w-full accent-s-ink"
       />
       {/* Tick labels under the track , one per stop, >= 12px */}
-      <div className="mt-1.5 flex justify-between font-body text-[12px] text-s-ink-3">
+      <div className="mt-1.5 flex justify-between font-body text-[12px] text-s-ink-2">
         {RATING_STOPS.map((s, i) => (
           <span key={s} className={i === idx ? "font-semibold text-s-ink" : undefined}>
             {s}
@@ -252,7 +252,7 @@ function PriceSheet() {
         aria-label="Maximum price"
         className="w-full accent-s-ink"
       />
-      <div className="mt-1.5 flex justify-between font-body text-[12px] text-s-ink-3">
+      <div className="mt-1.5 flex justify-between font-body text-[12px] text-s-ink-2">
         <span>CHF 20</span>
         <span>CHF 300+</span>
       </div>
@@ -356,7 +356,7 @@ export default function FilterMenusMockup() {
       <div className="mx-auto w-full max-w-[440px] px-4">
         <div className="pb-5 text-center">
           <p className="font-heading text-[17px] font-bold text-s-ink">Filter sheets</p>
-          <p className="mt-1 font-body text-[12.5px] text-s-ink-3">
+          <p className="mt-1 font-body text-[12.5px] text-s-ink-2">
             Each filter chip opens its OWN compact bottom sheet, not one big panel. Selected = gray,
             Apply = neutral outline (no black).
           </p>
@@ -364,7 +364,7 @@ export default function FilterMenusMockup() {
         <div className="flex flex-col gap-6">
           {sheets.map((s) => (
             <div key={s.key}>
-              <p className="mb-2 pl-1 font-body text-[12.5px] font-semibold text-s-ink-3">{s.note}</p>
+              <p className="mb-2 pl-1 font-body text-[12.5px] font-semibold text-s-ink-2">{s.note}</p>
               {s.node}
             </div>
           ))}
@@ -372,12 +372,12 @@ export default function FilterMenusMockup() {
           {/* Inline pills (no sheet) , Open now + Deals are TOGGLE_PILLS in the real
               app, so they live inline in the chip row, not behind a bottom sheet. */}
           <div>
-            <p className="mb-2 pl-1 font-body text-[12.5px] font-semibold text-s-ink-3">
+            <p className="mb-2 pl-1 font-body text-[12.5px] font-semibold text-s-ink-2">
               Inline pills (no sheet)
             </p>
             <div className="rounded-[20px] border border-s-border bg-white p-4">
               <InlinePills />
-              <p className="mt-3 font-body text-[12px] text-s-ink-3">
+              <p className="mt-3 font-body text-[12px] text-s-ink-2">
                 Open now and Deals are single toggle chips in the filter row (no bottom sheet), matching the real app.
               </p>
             </div>

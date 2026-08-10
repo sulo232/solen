@@ -44,10 +44,51 @@ export async function GET(req: NextRequest) {
   const { data: salons, error } = await query;
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  // Enrich with owner emails
+  // trust-10: possible-duplicate signal, computed at READ time (never stored, always
+  // fresh, needs no new column/migration). Never blocks approval, only surfaces on the
+  // approval screen; salon_groups (legitimate multi-location chains) is exactly why this
+  // stays a soft warning, not a hard reject. Phone match is exact (already normalized at
+  // write time); address match is trimmed + case-insensitive since free-text address
+  // strings vary in casing/whitespace, not in wording.
+  const phones = [...new Set((salons ?? []).map((s) => s.phone).filter((p): p is string => !!p))];
+  const addresses = [...new Set((salons ?? []).map((s) => s.address).filter((a): a is string => !!a))];
+
+  // Phone is an exact-string match, expressible in one .in() call. Address is free
+  // text (casing/whitespace vary, wording doesn't), so an exact .in() would miss real
+  // duplicates; fetch all salons with a non-null address once and compare normalized
+  // strings in memory. At ~28 salons total this is one extra query, not an N+1: fine
+  // at this scale, revisit if the salon count grows an order of magnitude (same
+  // trigger convention as the rest of this codebase's scale caveats).
+  const [phoneMatchesRes, allWithAddressRes] = await Promise.all([
+    phones.length
+      ? admin.from("salons").select("id, name, phone").in("phone", phones)
+      : Promise.resolve({ data: [] as Array<{ id: string; name: string; phone: string | null }> }),
+    addresses.length
+      ? admin.from("salons").select("id, name, address").not("address", "is", null)
+      : Promise.resolve({ data: [] as Array<{ id: string; name: string; address: string | null }> }),
+  ]);
+  const phoneMatches = phoneMatchesRes.data ?? [];
+  const allWithAddress = allWithAddressRes.data ?? [];
+  const normalizedAddresses = new Map(addresses.map((a) => [a, a.trim().toLowerCase()]));
+
+  // Enrich with owner emails + the duplicate signal
   const enriched = await Promise.all((salons ?? []).map(async (salon) => {
     const { data: ownerAuth } = await admin.auth.admin.getUserById(salon.owner_id);
-    return { ...salon, owner_email: ownerAuth?.user?.email ?? null };
+
+    const dupByPhone = salon.phone
+      ? phoneMatches.find((m) => m.id !== salon.id && m.phone === salon.phone)
+      : undefined;
+    const normalizedSelf = salon.address ? normalizedAddresses.get(salon.address) : undefined;
+    const dupByAddress = normalizedSelf
+      ? allWithAddress.find((m) => m.id !== salon.id && m.address?.trim().toLowerCase() === normalizedSelf)
+      : undefined;
+    const duplicate = dupByPhone ?? dupByAddress;
+
+    return {
+      ...salon,
+      owner_email: ownerAuth?.user?.email ?? null,
+      possible_duplicate_of: duplicate ? { id: duplicate.id, name: duplicate.name } : null,
+    };
   }));
 
   return NextResponse.json({ salons: enriched });

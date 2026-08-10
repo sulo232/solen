@@ -28,6 +28,7 @@
     "saveProfile": "Enregistrer",
     "savedToast": "Modifications enregistrées",
     "saveError": "Échec de l'enregistrement — réessayez",
+    "sessionExpired": "Votre session a expiré. Reconnectez-vous pour continuer.",
     "emailSentToast": "E-mail de confirmation envoyé — vérifiez votre boîte",
     "avatarUploadError": "Impossible d'envoyer la photo, veuillez réessayer",
     "passwordChangedToast": "Mot de passe mis à jour",
@@ -143,7 +144,9 @@
     "mobileNavigation": "Navigation",
     "loginToSave": "Connectez-vous pour enregistrer des salons",
     "loginToProfile": "Connectez-vous pour voir votre profil",
-    "loginCta": "Se connecter"
+    "loginCta": "Se connecter",
+    "aboutUs": "À propos",
+    "myAccount": "Mon compte"
   },
   "home": {
     "hero_title": "Votre salon à Bâle",
@@ -423,6 +426,7 @@
   },
   "common": {
     "save": "Enregistrer",
+    "skipToContent": "Aller au contenu",
     "saving": "Enregistrement...",
     "saved": "Enregistré",
     "cancel": "Annuler",
@@ -769,7 +773,17 @@
     "forSalonsTitle": "Pour les salons",
     "forSalonsPartner": "Devenir partenaire",
     "forSalonsDashboard": "Tableau de bord",
-    "legalTitle": "Mentions légales"
+    "legalTitle": "Mentions légales",
+    "newsletterTitle": "Restez informé",
+    "newsletterSub": "Nouveaux stores, tendances et conseils. Une fois par mois.",
+    "careers": "Carrières",
+    "press": "Presse",
+    "blog": "Blog",
+    "salonHelp": "Aide stores",
+    "customerHelp": "Aide clients",
+    "safety": "Sécurité",
+    "contact": "Contact",
+    "aboutUs": "À propos"
   },
   "cookie": {
     "title": "Nous utilisons des cookies",
@@ -801,7 +815,8 @@
         "schedule": "Horaires de travail",
         "payments": "Paiements",
         "go_live": "C'est parti !"
-      }
+      },
+      "saveAndContinue": "Enregistrer et continuer"
     },
     "profile": {
       "title": "Votre salon",
@@ -812,7 +827,10 @@
       "descPlaceholder": "Décrivez votre salon pour les clients...",
       "descriptionEn": "Description (EN)",
       "phone": "Téléphone",
-      "coverUrl": "URL de la photo de couverture"
+      "coverUrl": "URL de la photo de couverture",
+      "categories": "Catégories",
+      "multipleChoice": "(choix multiple)",
+      "atLeastOneCategory": "Au moins une catégorie requise."
     },
     "services": {
       "title": "Ajouter des services",
@@ -824,6 +842,8 @@
       "namePlaceholder": "ex. Coupe homme",
       "add": "Ajouter un service",
       "added": "ajouté(s)",
+      "aiSuggestions": "✨ Suggestions IA",
+      "addButton": "Ajouter",
       "addMoreLater": "Vous pourrez en ajouter d'autres plus tard."
     },
     "team": {
@@ -832,12 +852,18 @@
       "sendInvite": "Envoyer l'invitation",
       "inviteSent": "Invitation envoyée",
       "firstName": "Prénom",
+      "emailLabel": "E-mail *",
+      "nameLabel": "Nom",
+      "errorLabel": "Erreur",
       "soloHint": "Vous travaillez seul(e) ? Pas de problème — passez cette étape. Vous pourrez inviter du personnel plus tard."
     },
     "hours": {
       "title": "Horaires d'ouverture",
       "subtitle": "Quand votre salon est-il ouvert ?",
       "closed": "Fermé",
+      "addBreak": "+ Pause",
+      "removeBreak": "Supprimer",
+      "breakLabel": "Pause",
       "days": {
         "mon": "Lundi",
         "tue": "Mardi",
@@ -854,6 +880,7 @@
       "description": "Vous pouvez gérer les horaires de travail et les pauses à tout moment dans le tableau de bord sous Calendrier. Par défaut, le personnel hérite des horaires d'ouverture du salon.",
       "autoConfigured": "Configuré automatiquement",
       "autoConfiguredDesc": "Vos horaires d'ouverture sont utilisés comme horaires de travail par défaut.",
+      "applyHours": "Reprendre les horaires d'ouverture",
       "individualHint": "Vous pouvez définir des horaires individuels par collaborateur après la configuration dans le tableau de bord."
     },
     "payments": {
@@ -906,6 +933,10 @@
     "availableToday": "Disponible aujourd'hui",
     "removeFromFavorites": "Retirer des favoris",
     "addToFavorites": "Ajouter aux favoris",
+    "appointmentsToday": "Réservé aujourd'hui",
+    "topSalon": "Store Top",
+    "solenTopPick": "Coup de cœur Solen",
+    "partOfBrand": "Fait partie de",
     "bookedTimesThisWeek": "{count}× réservé cette semaine",
     "nextAppointmentToday": "Prochain rendez-vous: Aujourd'hui {time}",
     "nextAppointmentTomorrow": "Prochain rendez-vous: Demain {time}",
@@ -1602,6 +1633,7 @@
       "marketing": "Marketing",
       "analytics": "Statistiques",
       "reviews": "Avis",
+      "gallery": "Galerie",
       "posts": "Mes publications",
       "nailClients": "Clients ongles",
       "barberClients": "Clients barbier",
@@ -2317,11 +2349,6 @@
       "setUp": "Configurer",
       "more": "+{n} de plus"
     },
-    "approvalStatus": {
-      "pendingTitle": "En attente de validation",
-      "pendingBody": "Solen examine votre salon. Il n'est pas encore visible publiquement.",
-      "rejectedTitle": "Salon non validé"
-    },
     "promoManager": {
       "title": "Codes promo",
       "newCode": "Nouveau code",
@@ -2454,10 +2481,12 @@
       "activate": "Activer",
       "freeze": "Geler",
       "edit": "Modifier",
+      "viewStorefront": "Voir",
       "activateTitle": "Activer le salon",
       "freezeTitle": "Geler le salon",
       "activateMessage": "Activer le salon \"{name}\" ? Il deviendra visible pour les clients.",
-      "freezeMessage": "Êtes-vous sûr ? Le salon \"{name}\" ne sera plus visible pour les clients."
+      "freezeMessage": "Êtes-vous sûr ? Le salon \"{name}\" ne sera plus visible pour les clients.",
+      "adminFreezeReason": "Gelé par l'administrateur"
     },
     "allUsersPage": {
       "title": "Tous les utilisateurs",
@@ -2492,7 +2521,15 @@
       "cancel": "Annuler",
       "rejectAndSendEmail": "Refuser et envoyer l'e-mail",
       "approveError": "Échec de la validation. Veuillez réessayer.",
-      "rejectError": "Échec du refus. Veuillez réessayer."
+      "rejectError": "Échec du refus. Veuillez réessayer.",
+      "checklistTitle": "Avant de valider, vérifier :",
+      "checklistItems": [
+        "Le nom et l'adresse correspondent à une vraie entreprise (site web, présence sur un site d'avis, ou entrée au registre du commerce sur zefix.ch)",
+        "Le numéro de téléphone est réel et répond",
+        "L'adresse correspond à un véritable local commercial (Street View)",
+        "Les documents téléchargés (le cas échéant) sont lisibles et correspondent au nom du store",
+        "Aucun avertissement de doublon affiché ci-dessous"
+      ]
     },
     "badgeManagerPage": {
       "pageTitle": "Gestion des badges",
@@ -2821,10 +2858,12 @@
       "targetSalon": "Salon",
       "targetReview": "Avis",
       "targetUser": "Utilisateur",
+      "targetPhoto": "Photo",
       "reasonInappropriate": "Inapproprié",
       "reasonSpam": "Spam",
       "reasonFake": "Faux",
       "reasonIpViolation": "Violation de droits",
+      "reasonHarassment": "Harcèlement",
       "reasonOther": "Autre",
       "emptyTitle": "Aucun signalement",
       "emptyMessage": "Aucun signalement ne correspond à ce filtre.",
@@ -2890,6 +2929,11 @@
       "errorTitle": "Échec du chargement",
       "errorMessage": "Impossible de charger les candidats.",
       "retry": "Réessayer"
+    },
+    "approvalStatus": {
+      "pendingTitle": "En attente de validation",
+      "pendingBody": "Solen examine votre salon. Il n'est pas encore visible publiquement.",
+      "rejectedTitle": "Salon non validé"
     }
   },
   "salonAboutEditor": {
@@ -3756,6 +3800,7 @@
     "noPastBookings": "Aucun rendez-vous passé",
     "favorites": "Favoris",
     "noFavorites": "Pas encore de favoris",
+    "salonsCount": "{count, plural, one {# store} other {# stores}}",
     "discoverSalons": "Découvrir les salons",
     "removeFromFavorites": "Retirer des favoris",
     "stampCards": "Vos cartes de fidélité",
@@ -3919,7 +3964,6 @@
       "namePlaceholder": "p. ex. Salon Lumière",
       "email": "E-mail *",
       "emailPlaceholder": "votre@salon.ch",
-      "emailUse": "Nous utilisons cette adresse uniquement pour vous contacter au sujet de votre salon.",
       "categories": "Catégories *",
       "quartier": "Quartier *",
       "selectPlaceholder": "Veuillez choisir…",
@@ -3928,7 +3972,8 @@
       "phone": "Téléphone (optionnel)",
       "tosPrefix": "J'accepte les",
       "tosLink": "Conditions générales",
-      "privacyLink": "Politique de confidentialité"
+      "privacyLink": "Politique de confidentialité",
+      "emailUse": "Nous utilisons cette adresse uniquement pour vous contacter au sujet de votre salon."
     },
     "step2": {
       "title": "Profil du salon",
@@ -4522,7 +4567,8 @@
     "openNow": "Ouvert maintenant",
     "instantBookable": "Réservable instantanément",
     "deals": "Offres",
-    "walkIn": "Sans rendez-vous"
+    "walkIn": "Sans rendez-vous",
+    "salonsFoundCount": "{count, plural, one {# store trouvé} other {# stores trouvés}}"
   },
   "discover": {
     "title": "Inspo",
@@ -4572,11 +4618,13 @@
     "targetTypeSalon": "le salon",
     "targetTypeReview": "l'avis",
     "targetTypeUser": "l'utilisateur",
+    "targetTypePhoto": "Photo",
     "reasonLabel": "Pourquoi signalez-vous ce contenu ?",
     "reasonInappropriate": "Inapproprié",
     "reasonSpam": "Spam",
     "reasonFake": "Faux",
     "reasonIpViolation": "Violation de droits",
+    "reasonHarassment": "Harcèlement",
     "reasonOther": "Autre",
     "detailsLabel": "Détails (facultatif)",
     "detailsPlaceholder": "Ajouter des précisions (facultatif)...",
@@ -5102,7 +5150,12 @@
     "testimonial6": "Comparer les prix, lire les avis, réserver directement — tout dans une seule app.",
     "testimonial7": "Ma collègue m'a recommandé Solen — maintenant je n'utilise rien d'autre.",
     "testimonial8": "J'ai même trouvé des offres de dernière minute avec des réductions. Génial !",
-    "whatUsersSay": "Ce que disent nos utilisateurs"
+    "whatUsersSay": "Ce que disent nos utilisateurs",
+    "translatedFrom": "Traduit de l'allemand",
+    "showOriginal": "Voir l'original",
+    "showTranslation": "Voir la traduction",
+    "replyFrom": "Réponse de {salon}",
+    "replyFromSalon": "Réponse du store"
   },
   "reviewsPage": {
     "metaTitle": "Avis · Solen",
@@ -5632,6 +5685,7 @@
     "filterBy": "Filtrer par",
     "filterAllCount": "Tous ({count})",
     "reviewsCount": "{count} avis",
+    "reviewsCountPlural": "{count, plural, one {# avis} other {# avis}}",
     "sortHighest": "Meilleurs",
     "sortLowest": "Moins bien notés",
     "replyFrom": "Réponse de {name}",
@@ -5684,6 +5738,36 @@
     "bundlesSave": "économisé",
     "bundlesError": "Impossible de charger les forfaits.",
     "minutesUnit": "min",
+    "additionalInfo": "Informations complémentaires",
+    "reviewsHeading": "Avis",
+    "discoverMoreSalons": "Découvrir d'autres stores",
+    "noReviewsYet": "Pas encore d'avis.",
+    "noReviewsInGroup": "Pas encore d'avis dans ce groupe.",
+    "allNReviews": "Tous les {count} avis",
+    "showNReviews": "Afficher {count} avis",
+    "showOpeningHours": "Afficher les horaires",
+    "contact": "Contact",
+    "discoverMore": "Découvrir d'autres stores",
+    "bundles": "Forfaits",
+    "showLocation": "Afficher l'emplacement",
+    "openInGoogleMaps": "{name} : ouvrir dans Google Maps",
+    "amInstant": "Confirmation immédiate",
+    "amOnlinePay": "Payer en ligne",
+    "amFreeCancel": "Annulation gratuite jusqu'à {hours}h avant",
+    "amPets": "Animaux acceptés",
+    "amKids": "Adapté aux enfants",
+    "amWifi": "Wi-Fi gratuit",
+    "amWheelchair": "Accès fauteuil roulant",
+    "amTransit": "Proche des transports",
+    "amLgbtq": "LGBTQ+ bienvenus",
+    "amWomanOwned": "Dirigé par une femme",
+    "amFamilyOwned": "Entreprise familiale",
+    "amStudent": "Réduction étudiants",
+    "selectCity": "Choisir une ville",
+    "selectLanguage": "Choisir la langue",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu",
+    "reviewTextsComing": "Les avis rédigés arrivent bientôt.",
     "alreadyReviewed": "Vous avez déjà évalué ce salon."
   },
   "comingSoon": {
@@ -6126,7 +6210,6 @@
     "toastEscalated": "Sent to Solen",
     "toastEscalateError": "Couldn't escalate. Please try again",
     "toastSendError": "Couldn't send. Please try again",
-    "_todo_translate": true,
     "upTitle": "Approve an extra charge",
     "upFromSalon": "From {salon}",
     "upTheSalon": "The salon",
@@ -6179,7 +6262,8 @@
     "upKvRequestedExtra": "Requested extra",
     "upKvYouPaid": "You paid",
     "upNoneTitle": "No extra to review",
-    "upNoneBody": "There's no open request on this booking. It may have already been handled."
+    "upNoneBody": "There's no open request on this booking. It may have already been handled.",
+    "_todo_translate": true
   },
   "authRegister": {
     "roleHeading": "Comment voulez-vous commencer ?",
@@ -6379,5 +6463,30 @@
     "perk_slots_s": "Réservez les meilleurs horaires en premier",
     "perk_angebote48_t": "48 heures d'avance",
     "perk_angebote48_s": "Accès encore plus tôt aux offres et créneaux"
+  },
+  "brandPage": {
+    "locationsCount": "{count, plural, one {# emplacement} other {# emplacements}}"
+  },
+  "unsubscribe": {
+    "title": "Se désabonner des e-mails",
+    "description": "Désabonner {email} des futurs e-mails de solen.ch ?",
+    "confirmButton": "Confirmer la désinscription",
+    "confirmedTitle": "Désabonné",
+    "confirmedDescription": "{email} a été désabonné des futurs e-mails.",
+    "invalidEmail": "Aucune adresse e-mail valide n'a été fournie.",
+    "errorDescription": "Ta demande de désinscription n'a pas pu être traitée. Réessaie plus tard ou contacte support@solen.ch."
+  },
+  "api": {
+    "goLive": {
+      "frozen": "Ce store a été suspendu par un administrateur. Veuillez contacter le support.",
+      "pendingApproval": "Le store attend encore la validation d'un administrateur.",
+      "stripeRequired": "Stripe Connect doit d'abord être entièrement configuré (KYC, compte bancaire).",
+      "coverPhotoRequired": "Une photo de couverture est requise.",
+      "serviceRequired": "Au moins un service doit être actif."
+    },
+    "salonRejected": {
+      "title": "Store refusé",
+      "body": "Votre store {salon} n'a malheureusement pas été approuvé. Motif : {reason}"
+    }
   }
 }

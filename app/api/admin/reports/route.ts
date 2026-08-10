@@ -40,6 +40,13 @@ export async function GET(req: NextRequest) {
   const offset = (page - 1) * limit;
 
   const admin = createAdminSupabaseClient();
+
+  // trust-06: harassment/safety reports (ToS section 7.3 "zero tolerance ... immediate
+  // account suspension") must surface first, not wait behind ordinary billing/quality
+  // complaints in created_at order. PostgREST has no CASE-ordering via supabase-js, so
+  // this pulls a buffer well above any realistic queue size at this scale (content_reports
+  // has 0 rows live as of 2026-07-27), priority-sorts in application code, then paginates.
+  const PRIORITY_BUFFER = 200;
   let query = admin
     .from("content_reports")
     .select(
@@ -47,7 +54,7 @@ export async function GET(req: NextRequest) {
       { count: "exact" }
     )
     .order("created_at", { ascending: false })
-    .range(offset, offset + limit - 1);
+    .range(0, PRIORITY_BUFFER - 1);
 
   if (statusParam && (REPORT_STATUSES as readonly string[]).includes(statusParam)) {
     query = query.eq("status", statusParam);
@@ -59,7 +66,17 @@ export async function GET(req: NextRequest) {
   const { data, error, count } = await query;
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  const rows = (data ?? []) as unknown as Array<{
+  const sortedRows = ((data ?? []) as unknown as Array<{ reason: string; created_at: string | null }>)
+    .slice()
+    .sort((a, b) => {
+      const aPriority = a.reason === "harassment" ? 0 : 1;
+      const bPriority = b.reason === "harassment" ? 0 : 1;
+      if (aPriority !== bPriority) return aPriority - bPriority;
+      return (b.created_at ?? "").localeCompare(a.created_at ?? "");
+    });
+  const pagedRows = sortedRows.slice(offset, offset + limit);
+
+  const rows = pagedRows as unknown as Array<{
     id: string;
     reporter_id: string | null;
     target_type: string;

@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 import { FROST_GLASS } from "@/lib/frost-glass";
 import { shareOrCopy } from "@/lib/share";
 import ReportButton from "@/components-legacy/discovery/ReportButton";
+import { useTranslations } from "next-intl";
 
 /**
  * SalonHero — V2-D53.3 (2026-05-11).
@@ -40,6 +41,7 @@ export function SalonHero({
   onOpenLightbox: (startIndex: number) => void;
   onOpenGallery: () => void;
 }) {
+  const tBack = useTranslations("common");
   const router = useRouter();
   const photos = salon.gallery_urls?.length
     ? salon.gallery_urls
@@ -92,7 +94,7 @@ export function SalonHero({
           </div>
         ) : (
           <div className="grid aspect-[4/3] w-full place-items-center bg-s-bg-sunken">
-            <span className="font-display text-[120px] font-black text-s-ink-disabled">
+            <span className="font-display text-[120px] font-bold text-s-ink-disabled">
               {salon.name.charAt(0)}
             </span>
           </div>
@@ -104,7 +106,7 @@ export function SalonHero({
             back/share/heart read as one consistent icon group. */}
         <BackButton
           variant="glass"
-          aria-label="Zurück"
+          aria-label={tBack("back")}
           label="Zurück"
           onClick={() => router.back()}
           className="absolute left-4 top-4"
@@ -113,7 +115,7 @@ export function SalonHero({
         <div className="absolute right-4 top-4 flex items-center gap-3">
           <button
             type="button"
-            aria-label="Salon teilen"
+            aria-label="Store teilen"
             onClick={() => shareOrCopy(salon.name, window.location.href)}
             className="group grid h-11 w-11 place-items-center bg-transparent focus-visible:rounded-full focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2"
           >
@@ -189,7 +191,7 @@ function DesktopGallery({
     // V3-D336 (T4 conservative): rounded-card-lg → rounded-none on hero placeholder per LOCKFILE §11 non-negotiable "all images use border-radius 0 (flush rectangles)".
     return (
       <div className="grid aspect-[16/7] w-full place-items-center bg-s-bg-sunken">
-        <span className="font-display text-[140px] font-black text-s-ink-disabled">
+        <span className="font-display text-[140px] font-bold text-s-ink-disabled">
           {salonName.charAt(0)}
         </span>
       </div>
@@ -197,6 +199,14 @@ function DesktopGallery({
   }
 
   if (photos.length === 1) {
+    // layout-geometry-09: this hero frame (and the 66/33/33 split frames below) still default
+    // to CSS object-position:center (blind center), unlike SalonImageGallery's square grid /
+    // SalonPortfolio's square grid, which both now use the owner-approved object-top crop anchor
+    // (TASTE_LOG.md:326, ig4, 2026-07-16). Hero frames are a different aspect ratio (16:7 / 2:1)
+    // and the single most prominent above-the-fold photo, so generalizing the same object-top
+    // value here without a fresh owner look is a visible imagery-treatment change on the highest-
+    // traffic surface, not a same-shape apply like the two grids above; left as object-cover
+    // (unchanged) pending that decision, flagged instead of silently changed.
     return (
       <button
         type="button"

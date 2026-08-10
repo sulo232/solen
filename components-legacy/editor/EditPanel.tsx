@@ -66,7 +66,7 @@ function guessPageArea(el: ElementSelectedData): string {
   if (s.includes("nav") || s.includes("header") || s.includes("logo")) return "Navigation / Header";
   if (s.includes("footer")) return "Footer";
   if (s.includes("hero") || s.includes("banner")) return "Hero Section";
-  if (s.includes("card") || s.includes("salon")) return "Salon Card / Listing";
+  if (s.includes("card") || s.includes("salon")) return "Store Card / Listing";
   if (s.includes("button") || s.includes("cta") || s.includes("btn")) return "Button / CTA";
   if (s.includes("form") || s.includes("input") || s.includes("textarea")) return "Form / Input";
   if (s.includes("sidebar") || s.includes("aside")) return "Sidebar";

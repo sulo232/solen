@@ -21,6 +21,7 @@
 // need a shared store (Redis), not attempted here.
 
 import { alertAdmin } from "@/lib/alert-admin";
+import { captureServerException } from "@/lib/posthog-server";
 
 const THROTTLE_MS = 15 * 60 * 1000; // 15 minutes
 
@@ -46,6 +47,14 @@ export async function reportError(
   alertFn: (subject: string, details: string | Record<string, unknown>) => Promise<void> = alertAdmin,
 ): Promise<void> {
   console.error(`[${scope}]`, err, context ?? "");
+
+  // observability-5: PostHog is already a paid, wired dependency; capturing every
+  // reportError() call groups repeat failures into one PostHog issue with an
+  // occurrence count, instead of console lines that age out of Netlify's log
+  // window. Every call site (webhook, all 26 crons via withCronRun) gets this
+  // for free. Synchronous + self-catching (see captureServerException), never
+  // awaited so it can't slow down or fail this already-best-effort path.
+  captureServerException(scope, err, context);
 
   try {
     const now = Date.now();

@@ -30,7 +30,7 @@ export default async function FlatnessPage() {
   return (
     <main className="min-h-screen bg-white pb-24">
       <div className="mx-auto max-w-[760px] px-5 pt-10 md:px-8">
-        <p className="font-body text-[12px] font-semibold text-s-ink-3">Solen, /dev/flatness</p>
+        <p className="font-body text-[12px] font-semibold text-s-ink-2">Solen, /dev/flatness</p>
         <h1 className="mt-1 font-display text-[28px] font-bold leading-[1.15] tracking-[-0.02em] text-s-ink">
           Why the design looks flat
         </h1>
@@ -86,12 +86,12 @@ function ResultRow({ surface, metric, measured, target, pass }: ResultRowData) {
   return (
     <div className="flex items-center justify-between gap-3 border-t border-s-border py-2.5 first:border-t-0">
       <div>
-        <p className="font-body text-[12px] font-semibold text-s-ink-3">{surface}</p>
+        <p className="font-body text-[12px] font-semibold text-s-ink-2">{surface}</p>
         <p className="font-body text-[13px] text-s-ink">{metric}</p>
       </div>
       <div className="flex shrink-0 items-center gap-2">
         <p className="font-body text-[12px] tabular-nums text-s-ink-2">
-          {measured} <span className="text-s-ink-3">({target})</span>
+          {measured} <span className="text-s-ink-2">({target})</span>
         </p>
         <StatusPill pass={pass} />
       </div>
@@ -151,7 +151,7 @@ function DemoColumn({
 }) {
   return (
     <div>
-      <p className="mb-2 font-body text-[12px] font-semibold text-s-ink-3">{label}</p>
+      <p className="mb-2 font-body text-[12px] font-semibold text-s-ink-2">{label}</p>
       <div className={cn("overflow-hidden rounded-panel border border-s-border bg-white", !flush && "p-3")}>
         {children}
       </div>
@@ -185,11 +185,11 @@ function EmphasisDemo() {
             real PDP), not a UI meant to ship. */}
         <div className="flex flex-col gap-2">
           <p className="font-body truncate text-[15px] font-semibold text-s-ink">{REVIEW.name}</p>
-          <p className="font-body text-[13px] font-semibold text-s-ink-3">{REVIEW.date}</p>
+          <p className="font-body text-[13px] font-semibold text-s-ink-2">{REVIEW.date}</p>
           <div className="flex items-center gap-1">
             <Star size={14} stroke="none" aria-hidden className="fill-s-star" />
             <span className="font-body text-[14px] font-semibold text-s-ink">{REVIEW.rating}</span>
-            <span className="font-body text-[13px] font-normal text-s-ink-3">{REVIEW.count}</span>
+            <span className="font-body text-[13px] font-normal text-s-ink-2">{REVIEW.count}</span>
           </div>
           <p className="font-body line-clamp-2 text-[14px] font-semibold leading-snug text-s-ink-2">
             {REVIEW.comment}
@@ -199,11 +199,11 @@ function EmphasisDemo() {
       <DemoColumn label="With range">
         <div className="flex flex-col gap-2">
           <p className="font-body truncate text-[19px] font-semibold text-s-ink">{REVIEW.name}</p>
-          <p className="font-body text-[13px] font-normal text-s-ink-3">{REVIEW.date}</p>
+          <p className="font-body text-[13px] font-normal text-s-ink-2">{REVIEW.date}</p>
           <div className="flex items-center gap-1">
             <Star size={14} stroke="none" aria-hidden className="fill-s-star" />
             <span className="font-body text-[13px] font-normal text-s-ink">{REVIEW.rating}</span>
-            <span className="font-body text-[13px] font-normal text-s-ink-3">{REVIEW.count}</span>
+            <span className="font-body text-[13px] font-normal text-s-ink-2">{REVIEW.count}</span>
           </div>
           <p className="font-body line-clamp-2 text-[13px] font-normal leading-snug text-s-ink-2">
             {REVIEW.comment}
@@ -302,7 +302,7 @@ function MiniCard({ className }: { className?: string }) {
       <div className="h-8 w-8 shrink-0 rounded-[8px] bg-s-bg-sunken" />
       <div className="min-w-0">
         <p className="font-body truncate text-[13px] font-semibold text-s-ink">Deep conditioning</p>
-        <p className="font-body text-[12px] text-s-ink-3">50 min</p>
+        <p className="font-body text-[12px] text-s-ink-2">50 min</p>
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { getServerEnv } from "@/lib/env";
 import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
+import { constantTimeStringEqual } from "@/lib/cron-auth";
 
 /**
  * POST /api/admin/solen-score/recalculate
@@ -14,7 +15,7 @@ export async function POST(req: NextRequest) {
   // Auth: cron secret or admin
   const expectedCronSecret = getServerEnv().CRON_SECRET;
   const cronSecret = req.headers.get("authorization")?.replace("Bearer ", "");
-  const isCron = Boolean(expectedCronSecret && cronSecret === expectedCronSecret);
+  const isCron = Boolean(expectedCronSecret && cronSecret && (await constantTimeStringEqual(cronSecret, expectedCronSecret)));
 
   if (!isCron) {
     // Check admin auth

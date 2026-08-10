@@ -45,7 +45,10 @@ export default function MyIntakeFormsPage() {
         const { data: { session } } = await supabase.auth.getSession();
         if (cancelled) return;
         if (!session?.user) {
-          router.push(`/${locale}/auth/login`);
+          // ia-navigation-03: return here after login instead of dropping the
+          // user on the homepage, matching the redirect= convention every
+          // other /profile/* page already uses.
+          router.push(`/${locale}/auth/login?redirect=${encodeURIComponent(`/${locale}/profile/intake-forms`)}`);
           return;
         }
 
@@ -95,7 +98,7 @@ export default function MyIntakeFormsPage() {
                 </h2>
                 <div className="grid gap-3">
                   {templateForms.map((form) => {
-                    const localeFmt = locale === "de" ? "de-CH" : locale;
+                    const localeFmt = locale === "de" ? "de-CH" : locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : locale === "en" ? "en-CH" : locale;
                     const isExpanded = expanded === form.id;
                     const responses = form.responses as Record<string, string>;
 

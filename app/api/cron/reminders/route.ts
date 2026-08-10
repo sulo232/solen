@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { getServerEnv } from "@/lib/env";
+import { verifyCronSecret } from "@/lib/cron-auth";
 
 /**
  * DEPRECATED (2026-06-03): superseded by /api/cron/sms-reminders.
@@ -18,7 +19,7 @@ import { getServerEnv } from "@/lib/env";
 export async function GET(req: NextRequest) {
   const env = getServerEnv();
   const authHeader = req.headers.get("authorization");
-  if (!env.CRON_SECRET || authHeader !== `Bearer ${env.CRON_SECRET}`) {
+  if (!env.CRON_SECRET || !(await verifyCronSecret(authHeader, env.CRON_SECRET))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   console.warn("[reminders] deprecated no-op invoked — use /api/cron/sms-reminders");

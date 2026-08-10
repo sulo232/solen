@@ -51,10 +51,19 @@ export interface AvatarProps {
   size?: AvatarSize | number;
   /** Staff variant: floating star-rating badge at the bottom edge. */
   badge?: { rating: number };
-  /** This circle sits directly next to a same-box SQUARE element (e.g. PayConfirmStep's
-   *  salon photo tile above the stylist Avatar row). Applies the owner-approved 2026-07-15
-   *  circle-next-to-square overshoot (lib/optical.ts, RATIONALE.md:144) so the two read as
-   *  the same size. Opt-in: most avatars have no adjacent square and must stay exact. */
+  /** Pass true ONLY when this circle sits directly beside a same-box-height SQUARE element
+   *  (a photo tile, an icon chip) in the same row, so the two need to read as equal size.
+   *  Applies the owner-approved 2026-07-15 circle-next-to-square overshoot (lib/optical.ts,
+   *  RATIONALE.md:144). Opt-in: most avatars have no adjacent square and must stay exact.
+   *  layout-geometry-01 (2026-07-27): this prop existed with zero real call sites passing it
+   *  (grep -rn opticalOvershoot app confirmed) and the previous doc-comment example named a
+   *  "PayConfirmStep" component that does not exist anywhere in this codebase under that name,
+   *  so it never named a real, checkable trigger. Until scripts/check-geometry.mjs gains an
+   *  asymmetric-pairs check that flags a circle rendered next to an equal-box-height square with
+   *  no overshoot (see the finding), the trigger condition is this: BEFORE placing an Avatar as
+   *  a direct flex/grid sibling of a square photo/icon element at the same box height, check
+   *  whether this prop needs to be true. Do not add it speculatively where no such sibling
+   *  exists; that reintroduces the drift this note is meant to stop. */
   opticalOvershoot?: boolean;
   className?: string;
 }

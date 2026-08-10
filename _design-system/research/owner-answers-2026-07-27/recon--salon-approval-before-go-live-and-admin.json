@@ -1,0 +1,189 @@
+{
+  "area": "Salon approval before go-live, and admin review visibility",
+  "summary": "The approval flow is NOT \"columns with no UI\" — the premise in the ask is wrong, and that is the most important thing to say first. There are two admin pages (/dashboard/approvals, /dashboard/all-salons), a list API, approve + reject endpoints that really write approved_at/approved_by/rejection_reason, audit logging, owner emails, an owner-facing go-live gate, and a DB trigger (guard_salon_activation) that blocks is_active=true when approved_at is null. What is broken is the QUEUE FEED: the pending query requires salons.registration_completed = true, and the only code in the repo that ever writes that column true is the admin test-salon seeder. The real signup path (POST /api/salons) never sets it and the column defaults to false, so a genuinely registered salon never appears in the approvals list, is never approved, and POST /api/salon/go-live 403s it forever. Visibility for customers is gated on is_active AND listed_on_marketplace AND is_test=false (all three, consistently, in ~15 query sites), so an unapproved salon is correctly invisible — the failure is that it can never become visible. Separately, the review surface is thin: the admin sees name, owner email, address, created_at and category chips, and nothing else. The cover photo is fetched but never rendered, a duplicate-salon signal is computed with an extra full-table query and rendered nowhere, the owner's uploaded verification documents (trade license, ID proof, hygiene cert) have no admin read path at all, and an admin cannot even open a pending salon's PDP because lib/salon-detail.ts blocks it despite a comment claiming admins are exempt.",
+  "findings": [
+    {
+      "claim": "The approval columns ARE written by real code. PATCH /api/admin/salons/[id]/approve sets is_active=true, approved_at=now, approved_by=user.id, rejection_reason=null, then audit-logs and emails the owner in the owner's own profile.locale.",
+      "evidence": "app/api/admin/salons/[id]/approve/route.ts:30-35 (update), :39 (logAuditEvent 'salon.approve'), :43-53 (salonApproved email)",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "PATCH /api/admin/salons/[id]/reject sets is_active=false, rejection_reason=<reason>, and deliberately clears approved_at so a deactivated salon must be re-approved before it can self-activate again.",
+      "evidence": "app/api/admin/salons/[id]/reject/route.ts:37-45; the intent is stated in the comment at :40-43",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "BLOCKING BUG. The pending queue filters .eq(\"registration_completed\", true), and the ONLY writer of registration_completed=true anywhere in the repo is the admin test-salon seeder. The real creation path never sets it and the DB default is false, so a real registered salon is永 invisible to the approvals queue.",
+      "evidence": "filter: app/api/admin/salons/route.ts:29. Only writer: app/api/admin/test-salon/route.ts:100. Real insert omits it: app/api/salons/route.ts:682-720 (insert object, sets is_active:false at :716, no registration_completed key). Default false: supabase/migrations/015_admin_approval.sql:4. Exhaustive grep over *.ts/*.tsx/*.sql/*.mjs returned exactly those three sites plus type defs.",
+      "confidence": "verified",
+      "wired": "partially-wired"
+    },
+    {
+      "claim": "That bug closes the loop into a permanent deadlock: with approved_at never set, POST /api/salon/go-live returns 403 forever, and the DB trigger independently raises check_violation on any non-service_role attempt to set is_active=true.",
+      "evidence": "app/api/salon/go-live/route.ts:56-58 (403 'wartet noch auf die Freigabe'); supabase/migrations/20260714144715_harden_salon_activation_requires_approval.sql:19-26 (guard_salon_activation)",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "Customer visibility is gated on three predicates together — is_active AND listed_on_marketplace AND is_test=false — not on approved_at. The gate is applied consistently across every listing surface I checked.",
+      "evidence": "app/api/salons/route.ts:153-156; also by-category/route.ts:59, nearby/route.ts:57, similar/route.ts:34, trending/route.ts:32, recommendations/route.ts:34,68,89, quartier-counts/route.ts:13, quartier-featured/route.ts:12, walkin/nearby/route.ts:51, search/treatments/route.ts:83, slots/last-minute/route.ts:30, lib/search/filter-availability.ts:72",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "A salon created via signup is is_active=false at that instant, so it is NOT customer-visible on creation. listed_on_marketplace is not set by the insert at all (left to DB default), so is_active alone is what holds the door shut.",
+      "evidence": "app/api/salons/route.ts:716 `is_active: false, // Pending approval`; no listed_on_marketplace key anywhere in the insert object at :682-720",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "SILENT NO-OP. The list API computes a possible-duplicate signal (exact phone match plus a normalized full-table address scan, an extra query on every load) and returns possible_duplicate_of. Nothing renders it — a repo-wide grep finds exactly one occurrence, the write site itself.",
+      "evidence": "computed app/api/admin/salons/route.ts:45-84, returned at :82. grep -rn possible_duplicate over *.ts/*.tsx = 1 hit (that line). The consuming interface omits it: app/[locale]/dashboard/approvals/page.tsx:11-20",
+      "confidence": "verified",
+      "wired": "dead-code"
+    },
+    {
+      "claim": "SILENT NO-OP. cover_photo_url is selected by the admin API but the approvals page's PendingSalon type omits it and no img/Image renders on that page, so an admin approves a salon without ever seeing its photo.",
+      "evidence": "selected app/api/admin/salons/route.ts:25; absent from the interface at app/[locale]/dashboard/approvals/page.tsx:11-20; the card body at :107-139 renders only name, owner_email, address, created_at, categories",
+      "confidence": "verified",
+      "wired": "dead-code"
+    },
+    {
+      "claim": "DEAD COLUMN. salons.rejected_at exists live but has zero writers and zero readers in application code, and no migration in this repo creates it. The reject route writes rejection_reason and never rejected_at, so 'when was this rejected' is unanswerable.",
+      "evidence": "present in _inventory/_db-columns.json salons list; grep rejected_at over *.ts/*.tsx hits only lib/database.types.ts:6188,6294,6400,8916; grep over supabase/migrations/ returns nothing; reject writes only the three keys at app/api/admin/salons/[id]/reject/route.ts:37-45",
+      "confidence": "verified",
+      "wired": "dead-code"
+    },
+    {
+      "claim": "The owner uploads real verification documents (trade_license, professional_cert, hygiene_cert, id_proof, address_proof) and NO admin can read them. /api/salon/documents GET is scoped to the caller's own salon by owner_id, and no admin route touches salon_documents. Its reviewed_by / reviewed_at / status / admin_note columns are never written — reviewed_by is only ever NULLed by the deletion cron.",
+      "evidence": "doc types app/[locale]/dashboard/verification/page.tsx:20-27; owner-scoped read app/api/salon/documents/route.ts:14-18; columns from _inventory/_db-columns.json salon_documents = [admin_note, document_type, file_name, file_url, id, reviewed_at, reviewed_by, salon_id, status, uploaded_at]; only reviewed_by write is app/api/cron/process-deletions/route.ts:197 (set null)",
+      "confidence": "verified",
+      "wired": "dead-code"
+    },
+    {
+      "claim": "An admin cannot open a pending salon's PDP. The loader returns null for anyone who is not the owner when is_active is false; there is no admin branch. The comment one line above claims 'Owner/Admin can see pending ones' — the comment is wrong.",
+      "evidence": "lib/salon-detail.ts:74 (comment) vs :75-76 `const isOwner = user?.id === salon.owner_id; if (!isOwner && !salon.is_active) return null;`; the page just 404s on null at app/[locale]/salon/[slug]/page.tsx:34",
+      "confidence": "verified",
+      "wired": "partially-wired"
+    },
+    {
+      "claim": "The admin preview-as-salon escape hatch cannot be used for review: it hard-refuses any salon whose name does not start with [TEST].",
+      "evidence": "app/api/admin/preview-salon/route.ts:33-42 (.ilike(\"name\", \"[TEST]%\") then 404 'Not a test salon or not found')",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "There is no per-salon admin detail endpoint. Under app/api/admin/salons/[id]/ there are only approve, freeze, reject and warn — no GET route.",
+      "evidence": "ls -R app/api/admin/salons/ => [id]/{approve,freeze,reject,warn}/route.ts plus the collection route.ts; no [id]/route.ts",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "SILENT NO-OP. PATCH /api/admin/salons/[id]/freeze writes only frozen_at and frozen_reason, never is_active=false, and no marketplace query filters on frozen_at. A frozen salon therefore stays fully listed and bookable. The route also has zero UI callers — the all-salons 'Freeze' button calls /reject instead.",
+      "evidence": "updateData app/api/admin/salons/[id]/freeze/route.ts:40-45 (only frozen_at, frozen_reason); frozen_at appears in no listing predicate (grep frozen_at over app/lib = dashboard/settings display, warn, freeze, solen-score, salon-detail select only); the UI calls reject: app/[locale]/dashboard/all-salons/page.tsx:128-133",
+      "confidence": "verified",
+      "wired": "partially-wired"
+    },
+    {
+      "claim": "Same shape in the 3-strike path: warn sets frozen_at + frozen_reason at warning_count >= 3 and leaves is_active untouched, so a 3-strike salon keeps taking bookings.",
+      "evidence": "app/api/admin/salons/[id]/warn/route.ts:39-48",
+      "confidence": "verified",
+      "wired": "partially-wired"
+    },
+    {
+      "claim": "An is_admin helper exists — lib/auth/require.ts:72 requireAdmin(), returning {user, supabase, admin} — and it has ZERO importers. Roughly 50 routes under app/api/admin hand-roll the profiles.role check instead, and seed-test-salons defines a third, shadowing local requireAdmin() that reads the role through the RLS-bypassing admin client rather than the session client.",
+      "evidence": "helper lib/auth/require.ts:72-100, re-exported lib/auth/index.ts:1; grep for an import of requireAdmin across app+lib returns nothing; hand-rolled pattern e.g. app/api/admin/salons/route.ts:13-15, approve/route.ts:17-19, reject/route.ts:19-21; local shadow app/api/admin/seed-test-salons/route.ts:20-33",
+      "confidence": "verified",
+      "wired": "dead-code"
+    },
+    {
+      "claim": "Both admin pages are reachable and admin-gated in the UI: approvals and all-salons are the first two entries of ADMIN_NAV, rendered only when role === 'admin', and the rail shows exactly the first six.",
+      "evidence": "components-legacy/dashboard/DashboardLayout.tsx:37-40 (ADMIN_NAV), :303-306 (role === 'admin' && ADMIN_NAV.slice(0, 6))",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "The two admin pages duplicate the same approve/reject calls against the same endpoints, and all-salons reuses /reject as its 'deactivate/freeze' action with a hardcoded German reason string.",
+      "evidence": "app/[locale]/dashboard/all-salons/page.tsx:126-133 vs app/[locale]/dashboard/approvals/page.tsx:42 and :57-61; hardcoded reason \"Vom Admin eingefroren\" at all-salons/page.tsx:132",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "No admin is notified when a salon registers. /api/admin/notify-new-salon exists, is admin-gated, and is documented in its own source as having no caller — and it is admin-gated, so it could not serve as a signup-time notification even if called.",
+      "evidence": "app/api/admin/notify-new-salon/route.ts:18-20 (\"No caller in the codebase\") and :21-34 (admin role check); no fetch to that path exists in app/",
+      "confidence": "verified",
+      "wired": "dead-code"
+    },
+    {
+      "claim": "The data an admin needs to judge a salon mostly exists and is fetchable, just not assembled anywhere: identity+address+categories+photos+opening_hours+lat/lng on salons, services and staff_members inserted at signup, vat_number/vat_registered/vat_rate on salons, documents in salon_documents, owner email via admin.auth.admin.getUserById.",
+      "evidence": "salons columns in _inventory/_db-columns.json (vat_number, vat_registered, vat_rate, gallery_urls, cover_photo_url, opening_hours, verification_token, last_verified_at); services+staff inserted app/api/salons/route.ts:741-775; owner email lookup app/api/admin/salons/route.ts:68",
+      "confidence": "verified",
+      "wired": "partially-wired"
+    },
+    {
+      "claim": "I did not query the live database for row values, so I cannot say how many of the 28 salon rows currently have registration_completed true. The snapshot records row counts only (salons: 28 rows), not column values or defaults.",
+      "evidence": "_inventory/_db-snapshot.json tables entry: {\"name\": \"salons\", \"rows\": 28, \"rls\": true}",
+      "confidence": "verified",
+      "wired": "n/a"
+    }
+  ],
+  "gaps": [
+    {
+      "what": "registration_completed is never set true on the real signup path, so the approvals queue is structurally empty",
+      "why_it_matters": "This is the whole feature failing closed. No real salon can ever be approved, and therefore no real salon can ever go live. Everything else in this report is cosmetic next to it.",
+      "size": "S",
+      "existing_thing_to_extend": "app/api/salons/route.ts:716 — add registration_completed: true beside the existing is_active: false in the insert object. Alternative if the column is meant to track a later onboarding step: drop the predicate at app/api/admin/salons/route.ts:29."
+    },
+    {
+      "what": "No per-salon admin detail view. The admin decides approve/reject from five text fields.",
+      "why_it_matters": "The owner's literal ask is 'we can see all details n stuff'. Today the reviewer sees name, owner email, address, registration date, category chips. Not the cover photo (fetched, unrendered), not the gallery, not the services and prices the salon will sell, not the staff, not the VAT number, not the opening hours, not the uploaded trade licence. That is not enough to judge a business.",
+      "size": "M",
+      "existing_thing_to_extend": "New GET app/api/admin/salons/[id]/route.ts (the [id] folder already exists with approve/freeze/reject/warn), joining services + staff_members + salon_documents, plus a detail drawer in app/[locale]/dashboard/approvals/page.tsx. Reuse the enrichment pattern already at app/api/admin/salons/route.ts:67-84."
+    },
+    {
+      "what": "Verification documents are write-only — uploaded by the owner, unreadable by any admin, with review columns that nothing writes",
+      "why_it_matters": "The docs are the actual evidence for approval (trade licence, ID, hygiene certificate), and salon_documents ships status/reviewed_by/reviewed_at/admin_note columns clearly designed for an admin review step that was never built. Approving without them makes the whole gate ceremonial.",
+      "size": "M",
+      "existing_thing_to_extend": "app/api/salon/documents/route.ts holds the storage + signed-URL logic to mirror; add an admin-scoped read (and a PATCH writing status/reviewed_by/reviewed_at/admin_note) rather than a parallel system."
+    },
+    {
+      "what": "Admin cannot preview a pending salon's storefront",
+      "why_it_matters": "The fastest way to judge a salon is to look at the page the customer will see. Today that 404s for admins, and the existing preview escape hatch refuses anything not named [TEST].",
+      "size": "S",
+      "existing_thing_to_extend": "lib/salon-detail.ts:75-76 — add the admin branch the comment at :74 already promises. Second option: relax the [TEST] constraint at app/api/admin/preview-salon/route.ts:37, which already sets an httpOnly preview cookie and audit-logs."
+    },
+    {
+      "what": "The duplicate-salon signal is computed and thrown away",
+      "why_it_matters": "It costs an extra full-table address scan on every queue load and delivers nothing. Either render it (it is genuinely useful for catching a chain re-registering) or delete the computation.",
+      "size": "S",
+      "existing_thing_to_extend": "app/api/admin/salons/route.ts:45-84 produces it; app/[locale]/dashboard/approvals/page.tsx:11-20 and :107-139 need the field and a warning row."
+    },
+    {
+      "what": "rejected_at is never written, so rejection has no timestamp",
+      "why_it_matters": "approve records both who and when; reject records neither a time nor an actor. There is no way to see how long a salon has been sitting rejected, and no rejected-status tab is possible without it (the current 'frozen' tab infers state from is_active=false AND approved_at NOT NULL, which reject itself makes impossible by nulling approved_at).",
+      "size": "S",
+      "existing_thing_to_extend": "app/api/admin/salons/[id]/reject/route.ts:37-45 — add rejected_at to the update. Note the tab predicate at app/api/admin/salons/route.ts:33 is self-defeating today for exactly this reason."
+    },
+    {
+      "what": "Freeze does not freeze",
+      "why_it_matters": "Both freeze paths (the explicit route and the 3-strike auto-freeze in warn) stamp frozen_at and leave is_active=true, and no listing query filters frozen_at. A salon an admin believes is suspended keeps appearing in search and taking bookings. This is a money-touching silent no-op, not a cosmetic one.",
+      "size": "S",
+      "existing_thing_to_extend": "app/api/admin/salons/[id]/freeze/route.ts:40-43 and app/api/admin/salons/[id]/warn/route.ts:43-46 — add is_active: false to updateData. The freeze route also has no UI caller, so decide whether to wire it into all-salons or delete it in favour of reject."
+    },
+    {
+      "what": "requireAdmin() is dead code while ~50 routes hand-roll the same check three different ways",
+      "why_it_matters": "Not currently a hole — all three variants check profiles.role === 'admin' — but one of them reads the role through the RLS-bypassing service client, and divergent copies of an authorization check is how a hole eventually appears. Consolidating also removes the missing error-branch: the hand-rolled version treats a failed profile fetch as 'not admin' silently, while the helper returns an explicit 503 ROLE_CHECK_FAILED.",
+      "size": "M",
+      "existing_thing_to_extend": "lib/auth/require.ts:72 requireAdmin(); start with the four salon routes under app/api/admin/salons/ since they are the ones being touched anyway."
+    },
+    {
+      "what": "No admin notification when a salon registers",
+      "why_it_matters": "Approval is pull-only. Nobody learns a salon is waiting unless an admin opens the page. The email template and route already exist but the route is admin-gated and uncalled, so it cannot fire at signup time.",
+      "size": "S",
+      "existing_thing_to_extend": "lib/email adminNewSalonNotification is already written; call sendEmail directly at the end of the successful insert in app/api/salons/route.ts rather than going through the admin-gated app/api/admin/notify-new-salon/route.ts."
+    }
+  ],
+  "recommendation": "Do not build a new approval system — one exists and is mostly correct. Fix the feed, then deepen the review surface, in this order.\n\nStep 1, one line, unblocks everything: add `registration_completed: true` to the insert object in app/api/salons/route.ts at :716 (next to the existing `is_active: false, // Pending approval`). Verify by proving the queue DISCRIMINATES, not that it 200s: create a salon through POST /api/salons, then confirm it appears in GET /api/admin/salons?status=pending and disappears after PATCH .../approve. If the intent was that registration_completed marks a later onboarding milestone rather than \"the signup form was submitted\", the alternative fix is to drop `.eq(\"registration_completed\", true)` from app/api/admin/salons/route.ts:29 — but pick one deliberately, because today neither is true and the queue is silently empty.\n\nStep 2, the owner's actual ask (\"see all details\"): add GET app/api/admin/salons/[id]/route.ts (the [id] directory already holds approve/freeze/reject/warn, so this is an extension, not a new surface), returning the salon row plus services, staff_members, salon_documents, gallery_urls and the owner email — reuse the getUserById enrichment already at app/api/admin/salons/route.ts:68. Then render it as a detail drawer in app/[locale]/dashboard/approvals/page.tsx, whose PendingSalon interface at :11-20 must gain cover_photo_url and possible_duplicate_of (both already returned by the API and both currently discarded).\n\nStep 3, let the admin look at the storefront: add the admin branch at lib/salon-detail.ts:75-76 that the comment on :74 already claims exists.\n\nStep 4, close the audit holes while in the files: write rejected_at in app/api/admin/salons/[id]/reject/route.ts:37-45, and add is_active: false to the freeze updates at app/api/admin/salons/[id]/freeze/route.ts:40-43 and app/api/admin/salons/[id]/warn/route.ts:43-46 — a frozen salon is currently still bookable, which is the one finding here that touches money.\n\nStep 5, optional in the same pass: give the four routes under app/api/admin/salons/ the shared lib/auth/require.ts:72 requireAdmin() instead of three hand-rolled variants, and fire adminNewSalonNotification from the successful insert in app/api/salons/route.ts so approval stops being pull-only.\n\nOne contradiction to flag explicitly, per the brief's instruction not to build on a wrong premise: the ask assumed the approval flow might be \"columns with no UI\". It is not — the UI, the endpoints, the emails, the audit log and a DB-level guard trigger all exist and work. The defect is narrower and worse: one missing field on insert makes the whole working machine unreachable from the real signup path."
+}

@@ -95,7 +95,7 @@ export default async function DevFlowsHub({ params }: { params: Promise<{ locale
   return (
     <main className="min-h-screen bg-white pb-24">
       <div className="mx-auto max-w-[560px] px-5 pb-16 pt-8">
-        <p className="text-[12px] font-semibold text-s-ink-3">Solen, dev flow harness</p>
+        <p className="text-[12px] font-semibold text-s-ink-2">Solen, dev flow harness</p>
         <h1 className="mt-1 font-heading text-[22px] font-bold text-s-ink">Walk a flow</h1>
         <p className="mt-1 text-[13px] text-s-ink-2">
           No login needed. Every wired card opens the real route and the real
@@ -124,7 +124,7 @@ export default async function DevFlowsHub({ params }: { params: Promise<{ locale
                   <span className="block truncate text-[15px] font-semibold text-s-ink">{flow.name}</span>
                   <span className="block truncate text-[12.5px] text-s-ink-2">{flow.desc}</span>
                   {flow.status === "wired" && flow.boundary ? (
-                    <span className="mt-0.5 block text-[12px] text-s-ink-3">{flow.boundary}</span>
+                    <span className="mt-0.5 block text-[12px] text-s-ink-2">{flow.boundary}</span>
                   ) : null}
                 </span>
               );

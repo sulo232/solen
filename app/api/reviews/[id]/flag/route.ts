@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
+import { validateBody, reviewFlagSchema } from "@/lib/validations";
 
 // POST /api/reviews/[id]/flag
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -21,17 +22,18 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
   if (rateLimited) return rateLimited;
 
-  let body;
+  let rawBody;
   try {
-    body = await req.json();
+    rawBody = await req.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const { reason } = body;
-  if (!reason || typeof reason !== "string") {
+  const { data: body, error: validationError } = validateBody(reviewFlagSchema, rawBody);
+  if (validationError) {
     return NextResponse.json({ error: "Reason is required" }, { status: 400 });
   }
+  const { reason } = body;
 
   // 1. Fetch review to confirm existence and get salon_id
   const { data: review, error: reviewErr } = await supabase

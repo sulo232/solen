@@ -92,7 +92,7 @@ export default function HelpArticlePage() {
           {article.title}
         </h1>
         <p className="text-xs font-body text-s-ink-2 mb-8">
-          Aktualisiert: {new Date(article.updated_at).toLocaleDateString("de-CH")}
+          Aktualisiert: {new Date(article.updated_at).toLocaleDateString(locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : locale === "en" ? "en-CH" : "de-CH")}
         </p>
 
         {/* Markdown-like content rendering */}

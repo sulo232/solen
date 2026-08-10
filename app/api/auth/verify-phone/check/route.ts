@@ -6,6 +6,7 @@ import { applyRateLimit, authLimiter, getClientIp } from "@/lib/ratelimit";
 import { Redis } from "@upstash/redis";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { getServerEnv } from "@/lib/env";
+import { validateBody, verifyPhoneCheckSchema } from "@/lib/validations";
 
 const env = getServerEnv();
 const redis = (env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN)
@@ -20,10 +21,12 @@ export async function POST(request: NextRequest) {
   if (rateLimited) return rateLimited;
 
   try {
-    const { phone, code } = await request.json();
-    if (!phone || !code) {
+    const rawBody = await request.json();
+    const { data: validated, error: validationError } = validateBody(verifyPhoneCheckSchema, rawBody);
+    if (validationError) {
       return NextResponse.json({ message: "Fehlende Parameter" }, { status: 400 });
     }
+    const { phone, code } = validated;
 
     // Also rate limit on the TARGET phone number, not just the caller IP. IP-only limiting
     // lets an attacker brute-force the 6-digit code for one victim number by rotating IPs; a
@@ -53,14 +56,24 @@ export async function POST(request: NextRequest) {
     // Success! Delete the OTP from Redis
     await redis.del(`phone_otp:${phone}`);
 
-    // If user is authenticated, we could update their profile here 
-    // but the salon might not be created yet. 
-    // The safest way is to just return success and let the frontend pass the verified status 
-    // when they finally submit the create salon payload.
-    // Wait, it says "Update salons.phone_verified = true". 
-    // They will do that in the POST /api/salons handler when they submit the form.
-    
-    return NextResponse.json({ message: "Erfolgreich verifiziert", verified: true });
+    // 2026-07-27: this endpoint used to return a bare `verified: true` implying
+    // the OTP check result gets recorded somewhere. It does not. The plan was
+    // "POST /api/salons writes salons.phone_verified", but that column was never
+    // created (checked against the live information_schema, 2026-07-27: public.salons
+    // has no phone_verified column at all) and app/api/salons/route.ts has had the
+    // write commented out ever since. TODO (named dependency, needs an owner-approved
+    // migration, not writable from this workstream): add the column with
+    //   ALTER TABLE public.salons ADD COLUMN phone_verified boolean NOT NULL DEFAULT false;
+    // then wire app/api/salons/route.ts:696 back up and drop `persisted: false` below.
+    // Until that lands, the OTP check itself is real (Redis-backed, one-time code),
+    // but its result is NOT stored anywhere. `persisted: false` makes that explicit
+    // so a caller can't mistake this for "the phone is now on record as verified."
+    return NextResponse.json({
+      message: "Erfolgreich verifiziert",
+      verified: true,
+      persisted: false,
+      persistedNote: "OTP check passed but is not stored; no phone_verified column exists on salons yet.",
+    });
 
   } catch (error) {
     console.error("Phone check error:", error);

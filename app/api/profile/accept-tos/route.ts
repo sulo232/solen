@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { logAuditEvent } from "@/lib/audit";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
+import { validateBody, profileAcceptTosSchema } from "@/lib/validations";
 
 export async function POST(req: NextRequest) {
   try {
@@ -15,11 +16,12 @@ export async function POST(req: NextRequest) {
     const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
     if (rateLimited) return rateLimited;
 
-    const { tos_version } = await req.json();
-
-    if (!tos_version) {
-      return NextResponse.json({ message: "Missing TOS version" }, { status: 400 });
+    const rawBody = await req.json().catch(() => ({}));
+    const { data: validated, error: validationError } = validateBody(profileAcceptTosSchema, rawBody);
+    if (validationError) {
+      return NextResponse.json({ message: validationError.message }, { status: 400 });
     }
+    const { tos_version } = validated;
 
     const { error } = await supabase
       .from("profiles")

@@ -74,7 +74,7 @@ export default function PdpCtaDirectionsPage() {
   return (
     <div className="min-h-screen bg-s-bg-sunken px-4 py-10">
       <div className="mx-auto max-w-[460px]">
-        <p className="font-body text-[12px] font-semibold text-s-ink-3">Solen — /dev/pdp/cta</p>
+        <p className="font-body text-[12px] font-semibold text-s-ink-2">Solen — /dev/pdp/cta</p>
         <h1 className="mt-1 font-heading text-[22px] font-bold tracking-[-0.01em] text-s-ink">
           PDP-Buchen-CTA — 3 Richtungen
         </h1>

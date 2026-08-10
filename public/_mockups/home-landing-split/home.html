@@ -1,0 +1,2613 @@
+<!-- Base: net-new page shapes, no live route to capture -->
+<!-- Scale: full-page -->
+<!--
+  Exists-check: composes the four home fragments hA-hD already written into this directory. Adds no
+  new research. Supersedes nothing; the landing set is still building.
+  Diagnosis: a search pill sandwiched between logo and hamburger | measured 243px of gap on /de at
+  390x844 (header 84px, logo 71px wide at x=16, hamburger 44x44 at x=330) | violates nothing written
+  down, it is the owner's own prediction confirmed by measurement | target a full-width search row
+  Diagnosis: no salon visible on first paint | measured first salon card at y=842 on /de at 390x844,
+  one pixel below the fold | violates FLOORS LAW 3 density | target a card inside the first 844px
+  Depicts: hA/hB/hC/hD -> each a different answer to where search and navigation live, traced to
+  _design-system/research/WHY_ENTRY.md
+-->
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Home, four directions</title><style>
+:root{--ink:#0A0A0A;--ink2:#6B6B6B;--line:#E4E4E7;--sunken:#F4F4F5;--accent:#276EF1}
+*{box-sizing:border-box;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--sunken);color:var(--ink);
+ font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:15px;line-height:1.55}
+.wrap{max-width:1760px;margin:0 auto;padding:24px 20px 80px}
+h1{font-size:29px;line-height:1.15;letter-spacing:-.025em;font-weight:600;margin:0 0 8px}
+.lede{color:var(--ink2);max-width:62ch;margin:0 0 16px}
+.prob{background:#fff;border-radius:16px;padding:14px 16px;margin:0 0 26px;max-width:62ch;font-size:14px}
+.prob b{font-variant-numeric:tabular-nums}
+.row{display:grid;grid-auto-flow:column;grid-auto-columns:390px;width:max-content}
+.rowwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:18px}
+.cell{width:390px}
+.meta{padding:0 14px 12px}
+.k{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:99px;background:var(--ink);
+ color:#fff;font-size:12.5px;font-weight:600;margin-bottom:7px}
+.nm{display:block;font-size:17px;font-weight:600;letter-spacing:-.015em;margin-bottom:4px}
+.bt{display:block;font-size:13.5px;color:var(--ink2)}
+.screen{background:#fff;border-radius:20px;overflow:hidden;margin:0 8px}
+@media(max-width:899px){
+ .wrap{padding:20px 0 70px}
+ h1,.lede,.prob{margin-left:16px;margin-right:16px}
+ .rowwrap{overflow-x:visible}
+ .row{display:block;width:100%}
+ .cell{width:100%;max-width:420px;margin:0 auto 40px}
+ .cell+.cell{border-top:1px solid var(--line);padding-top:28px}
+ .screen{margin:0 16px}
+}
+</style></head><body><div class="wrap">
+<h1>Home, four directions</h1>
+<p class="lede">Four answers to one question: where do search and navigation live. Each drops the
+promise headline and none has a bottom bar.</p>
+<div class="prob">
+<b>Measured on /de at 390x844.</b> Header 84px. Logo 71px wide at x=16. Hamburger 44x44 at x=330.
+That leaves <b>243px</b> between them, so a pill in that gap is small, exactly as you predicted.
+The first salon card currently sits at <b>y=842</b> in an 844px viewport, one pixel below the fold.
+</div>
+<div class="rowwrap"><div class="row">
+<div class="cell">
+ <div class="meta"><span class="k">A</span><span class="nm">Stacked, Airbnb proper</span>
+ <span class="bt">Logo row on top, then a FULL-WIDTH search row beneath it. Search gets 358px instead of 243px. Costs one row of height.</span></div>
+ <div class="screen"><!-- Exists-check: `npm run exists "home landing split"` = 0 matches. `npm run exists "SearchBar"` = the
+     real one at app/[locale]/_components/homepage/SearchBar.tsx (plus a legacy discovery copy);
+     `npm run exists "SalonCard"` = app/[locale]/_components/homepage/SalonCard.tsx. BOTH EXIST AND
+     BOTH ARE REUSED HERE, not reinvented. `npm run exists "landing"` = 4 incl. ONE GRAVEYARD hit
+     (makeup-waxing category landing pages, owner-removed 2026-06-13) which this mockup does not
+     touch or re-propose. The target surface /de already renders: Hero (h1 + SearchBar),
+     MobileCategoriesRow, SalonOfMonth, ForYouSalonRows, RecentlyViewed, Nearby, WalkInBand,
+     Entdecken, Reviews, BusinessTeaser. The ONE thing that is actually new: the entry control is
+     re-geometried from the 358x250 stacked card into a single 358x56 row on its own line beneath
+     the logo row, and the h1 promise headline is deleted.
+
+     Depicts: logo and hamburger header row -> app/[locale]/_components/layout/Header.tsx
+     Depicts: entry control, Service Stadt Zeit segments plus ink commit -> app/[locale]/_components/homepage/SearchBar.tsx
+     Depicts: salon card, photo name category city rating and from-price -> app/[locale]/_components/homepage/SalonCard.tsx
+     Depicts: the home feed of salon cards -> app/[locale]/page.tsx
+     Depicts: category chip strip -> app/[locale]/_components/homepage/MobileCategoriesRow.tsx
+     Depicts: seeded salon photography -> lib/stock-photos.ts
+     Depicts: everything else -> NET-NEW: nothing is invented, only geometry and section order change
+
+     Notes on those traces, so none of them is a claim I did not check:
+       Header.tsx line 34 reads "Mobile: Logo + hamburger only (desktop nav hidden < md)" and its
+       hamburger opens app/[locale]/_components/layout/MobileMenu.tsx. SearchBar.tsx ships three
+       CollapsedRow instances (lines 309-330) plus the ink CTA (331-379); HEIGHT.mobile is 250
+       (line 100) and becomes 56 here, which is the only change. page.tsx already composes
+       ForYouSalonRows / Nearby / Entdecken out of SalonCard, so only the ORDER changes: the feed
+       moves above the category grid. MobileCategoriesRow.tsx is a 3x2 md:hidden grid of six
+       pick-ordered tiles today, drawn here as a one-row chip strip and moved below the first
+       viewport, which is the fix WHY_IT_LOOKS_CHEAP defect 7 costed at 251px. lib/stock-photos.ts
+       is the module that assigns salon photography in the product; the mockup's own image files are
+       the self-hosted seed copies under public/_mockups/_assets/salon-photos per _BASE.md, no
+       remote assets. Category labels use the English members of the live taxonomy (barbershop /
+       hair / nails / spa), and city names use their English exonyms (Zurich, Geneva), per the
+       mockup English rule.
+
+     A RULE COLLISION, surfaced rather than resolved silently. Two live gates disagree about the
+     review count on a salon card. The resurrection gate blocks a count, citing CARD_REDESIGN
+     2026-07-13 C11 (owner-approved converged card: rating = star + value only). The psychology
+     gate blocks a bare star, citing PSYCHOLOGY.md law 6 (a rating always carries its count).
+     Evidence decided it: SalonCard.tsx line 492 describes the shipped card as "gold star rating
+     with no count", and line 268 documents `reviewCount` as removed by C11 by name. The component
+     that actually renders today is bare-star by a dated owner decision, so this mockup matches it
+     and carries the psychology gate's own documented per-line `psych-ok:` escape. This is worth an
+     owner sentence: one of the two gates is enforcing a superseded rule and should be narrowed.
+
+     Grounded-in: app/[locale]/_components/homepage/SearchBar.tsx
+     Grounded-in: app/[locale]/_components/homepage/Hero.tsx
+     Grounded-in: app/[locale]/_components/homepage/SalonCard.tsx
+     Grounded-in: app/[locale]/_components/homepage/MobileCategoriesRow.tsx
+
+     measured: every y, width and percentage in the note below was taken with
+     getBoundingClientRect on this exact file rendered at 390 wide on 2026-07-31, not computed on
+     paper. Two defects were found by that pass and fixed, both recorded inline where they happened.
+     Direction hA of several. Static, no motion. Design width 390. -->
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+/* ============================================================================
+   hA , "Stacked, Airbnb proper" , HOME at /de
+   Single light theme. White + #F4F4F5 only. No dark mode. Nothing docked to the
+   bottom edge. Every class prefixed hA-.
+   ========================================================================== */
+
+@font-face{
+  font-family:'Inter Var';
+  src:url('/_mockups/_assets/fonts/inter-latin-var.woff2') format('woff2');
+  font-weight:100 900; font-style:normal; font-display:swap;
+}
+@font-face{
+  font-family:'Inter Tight Var';
+  src:url('/_mockups/_assets/fonts/inter-tight-latin-var.woff2') format('woff2');
+  font-weight:100 900; font-style:normal; font-display:swap;
+}
+
+/* the body IS the screen, no drawn phone frame (_BASE.md). Without this reset the
+   UA's default 8px body margin pushes the header to y=8 and every downstream y
+   with it. Found by measuring, 2026-07-31. */
+html,body{margin:0;padding:0;background:#fff;-webkit-text-size-adjust:100%;}
+
+.hA-root,.hA-root *{box-sizing:border-box;margin:0;padding:0;}
+.hA-root{
+  -webkit-text-size-adjust:100%;
+  width:390px;
+  margin:0 auto;
+  background:#fff;
+  font-family:'Inter Var',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  color:#0A0A0A;
+  -webkit-font-smoothing:antialiased;
+}
+.hA-root a{text-decoration:none;color:inherit;display:block;}
+.hA-root button{font:inherit;background:none;border:0;cursor:pointer;color:inherit;}
+.hA-root img{display:block;max-width:100%;}
+
+/* ---------- ROW 1: the logo row. Logo left, hamburger right. 64px. ---------- */
+.hA-header{
+  height:64px;
+  padding:10px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.hA-logo{
+  font-family:'Inter Tight Var',-apple-system,sans-serif;
+  font-size:24px;
+  font-weight:600;
+  letter-spacing:-0.03em;
+  color:#0A0A0A;
+  line-height:1;
+}
+.hA-burger{
+  width:44px;height:44px;              /* a11y touch floor */
+  display:flex;align-items:center;justify-content:center;
+  margin-right:-10px;                  /* optical: glyph edge lands on the 16px gutter */
+}
+.hA-burger svg{width:22px;height:22px;stroke:#0A0A0A;stroke-width:2;}
+
+/* ---------- ROW 2: the search row. Measured 358 x 56 at y=64. ----------
+   This is the whole bet. Sandwiched between logo and burger the control gets 243px.
+   On its own row it gets 358px. The parts are the real SearchBar parts; only the
+   geometry changed: three stacked 46px rows became three inline segments. */
+.hA-searchrow{padding:0 16px;}
+.hA-search{
+  width:358px;height:56px;
+  border-radius:28px;                  /* pill */
+  background:#fff;
+  box-shadow:0 2px 8px rgba(50,47,44,.09);   /* elevation-2, the live single-layer value */
+  display:flex;align-items:center;
+  padding:0 6px 0 18px;
+}
+.hA-seg{
+  height:56px;
+  display:flex;align-items:center;gap:7px;
+  min-width:0;
+  text-align:left;
+}
+/* segments are weighted, not equal: Service carries the longest real values.
+   Measured widths at 390: Service 95.2, Stadt 76.2, Zeit 68.6. */
+.hA-seg--service{flex:1.25 1 0;}
+.hA-seg--stadt{flex:1 1 0;}
+.hA-seg--zeit{flex:.9 1 0;}
+.hA-seg svg{width:16px;height:16px;flex:none;stroke:#6B6B6B;stroke-width:2;}
+.hA-seg span{
+  font-size:14px;font-weight:400;line-height:1;
+  color:#6B6B6B;                       /* 5.33:1 on white, AA */
+  letter-spacing:-0.005em;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.hA-segdiv{width:1px;height:24px;background:#E4E4E7;flex:none;margin:0 10px;}
+/* NOTE the descendant selector. `.hA-root button{background:none}` above is
+   specificity 0-1-1 and silently beat a bare `.hA-go{background:#0A0A0A}` (0-1-0),
+   so the ONE commit control computed rgba(0,0,0,0) and rendered invisible. The
+   numbers all passed while it was broken; only the screenshot caught it. 2026-07-31. */
+.hA-root .hA-go{
+  width:44px;height:44px;flex:none;    /* a11y touch floor */
+  margin-left:8px;
+  border-radius:9999px;
+  background:#0A0A0A;                  /* the ONE commit CTA, ink */
+  display:flex;align-items:center;justify-content:center;
+}
+.hA-go svg{width:18px;height:18px;stroke:#fff;stroke-width:2.2;}
+
+/* ---------- THE FEED. Measured first card top = y 134. ---------- */
+.hA-grid{
+  margin-top:14px;
+  padding:0 16px;
+  display:grid;
+  grid-template-columns:repeat(2,171px);
+  column-gap:16px;                     /* between-group */
+  row-gap:24px;                        /* between-group */
+}
+.hA-photo{
+  width:171px;height:137px;            /* 1.248, the locked 1.25 salon ratio */
+  border-radius:16px;                  /* card radius */
+  object-fit:cover;
+  background:#F4F4F5;                  /* never a bare grey box: real photo in every slot */
+}
+.hA-name{
+  margin-top:7px;                      /* in-group. 16/7 = 2.3x, 24/7 = 3.4x, floor is 2x */
+  font-size:14px;font-weight:600;line-height:18px;
+  color:#0A0A0A;                       /* the card's single anchor */
+  letter-spacing:-0.01em;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.hA-place{
+  margin-top:2px;
+  font-size:12px;font-weight:400;line-height:16px;color:#6B6B6B;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.hA-meta{
+  margin-top:2px;
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:12px;font-weight:400;line-height:16px;
+}
+/* C11 converged card: rating is star + value ONLY, matching SalonCard.tsx:492. */
+.hA-rate{display:flex;align-items:center;gap:3px;color:#6B6B6B;white-space:nowrap;}
+.hA-rate svg{width:11px;height:11px;flex:none;}
+.hA-price{
+  color:#0A0A0A;      /* body WEIGHT (400) as briefed, one COLOUR step. Swiss PBV Art. 13 */
+  font-variant-numeric:tabular-nums;
+  white-space:nowrap;
+}
+
+/* ---------- Below the first viewport: where the category grid went ---------- */
+.hA-catwrap{margin-top:32px;padding:0 16px;}
+.hA-cathead{
+  font-family:'Inter Tight Var',-apple-system,sans-serif;
+  font-size:18px;font-weight:600;letter-spacing:-0.02em;line-height:24px;
+  color:#0A0A0A;
+  margin-bottom:12px;
+}
+.hA-cats{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;}
+.hA-cats::-webkit-scrollbar{display:none;}
+.hA-root .hA-chip{                     /* same specificity trap as .hA-go above */
+  height:44px;                         /* a11y touch floor */
+  flex:none;
+  padding:0 16px;
+  border-radius:9999px;
+  border:1px solid #E4E4E7;
+  background:#fff;
+  font-size:14px;font-weight:400;line-height:42px;
+  color:#0A0A0A;
+  white-space:nowrap;
+}
+/* selected = calm gray sunken fill, never ink, never blue */
+.hA-root .hA-chip--on{background:#F4F4F5;border-color:#F4F4F5;font-weight:600;}
+.hA-tail{height:40px;}
+
+/* ---------- the fold marker + the annotation. NOT part of the UI. ---------- */
+.hA-foldline{
+  position:relative;width:390px;margin:0 auto;height:0;
+  border-top:1px dashed #276EF1;
+}
+.hA-foldtag{
+  position:absolute;right:0;top:2px;
+  font-size:10px;font-weight:600;color:#276EF1;letter-spacing:.02em;
+  background:#fff;padding:0 4px;
+}
+.hA-note{
+  width:390px;margin:0 auto;
+  padding:20px 16px 40px;
+  background:#F4F4F5;
+  font-family:'Inter Var',-apple-system,sans-serif;
+  font-size:13px;line-height:19px;color:#0A0A0A;
+}
+.hA-note h3{
+  font-family:'Inter Tight Var',-apple-system,sans-serif;
+  font-size:16px;font-weight:600;letter-spacing:-0.02em;margin-bottom:10px;
+}
+.hA-note h4{font-size:13px;font-weight:600;margin:14px 0 4px;}
+.hA-note p{color:#3F3F46;}
+.hA-note b{font-weight:600;color:#0A0A0A;}
+.hA-note ul{margin:4px 0 0 16px;}
+.hA-note li{color:#3F3F46;margin-bottom:3px;}
+</style>
+
+<div class="hA-root">
+
+  <!-- ============ ROW 1 : logo + hamburger. Measured y 0, h 64 ============ -->
+  
+    <div class="hA-logo">solen</div>
+    <button class="hA-burger" type="button" aria-label="Menu">
+      <svg class="lucide lucide-menu" data-lucide="menu" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/>
+      </svg>
+    </button>
+  
+
+  <!-- ============ ROW 2 : the search row. Measured y 64, 358 x 56 ============ -->
+  <div class="hA-searchrow">
+    <div class="hA-search">
+      <button class="hA-seg hA-seg--service" type="button" aria-label="Choose a service">
+        <svg class="lucide lucide-search" data-lucide="search" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/>
+        </svg>
+        <span>Service</span>
+      </button>
+
+      <div class="hA-segdiv"></div>
+
+      <button class="hA-seg hA-seg--stadt" type="button" aria-label="Choose a city">
+        <svg class="lucide lucide-map-pin" data-lucide="map-pin" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+        <span>Stadt</span> <!-- german-ok: real SearchBar field label, mandated verbatim by the brief -->
+      </button>
+
+      <div class="hA-segdiv"></div>
+
+      <button class="hA-seg hA-seg--zeit" type="button" aria-label="Choose a time">
+        <svg class="lucide lucide-calendar" data-lucide="calendar" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M8 2v4"/><path d="M16 2v4"/>
+          <rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>
+        </svg>
+        <span>Zeit</span> <!-- german-ok: real SearchBar field label, mandated verbatim by the brief -->
+      </button>
+
+      <button class="hA-go" type="button" aria-label="Search">
+        <svg class="lucide lucide-search" data-lucide="search" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ============ THE FEED. Measured rows at y 134 / 356 / 578 / 800 ============ -->
+  <div class="hA-grid">
+
+    <a href="#" class="hA-card">
+      <!-- scene: barbershop interior , one distinct scene per card, zero visual reuse -->
+      <img class="hA-photo" src="/_mockups/_assets/salon-photos/p01.jpg" alt="Cuts & Culture">
+      <div class="hA-name">Cuts &amp; Culture</div>
+      <div class="hA-place">Barbershop, Basel</div>
+      <div class="hA-meta">
+        <!-- psych-ok: law 6 wants a count, but CARD_REDESIGN_2026-07-13 C11 (owner-approved) removed it and SalonCard.tsx:492 ships "gold star rating with no count" today; adding one resurrects a superseded treatment --> <span class="hA-rate"><svg class="lucide lucide-star" data-lucide="star" viewBox="0 0 24 24" fill="#FFC32B" stroke="#FFC32B" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.8</span>
+        <span class="hA-price">ab CHF 45</span>
+      </div>
+    </a>
+
+    <a href="#" class="hA-card">
+      <!-- scene: three stylists with tools , one distinct scene per card, zero visual reuse -->
+      <img class="hA-photo" src="/_mockups/_assets/salon-photos/p12.jpg" alt="Haarsalon Margot">
+      <div class="hA-name">Haarsalon Margot</div>
+      <div class="hA-place">Hair, Basel</div>
+      <div class="hA-meta">
+        <!-- psych-ok: law 6 wants a count, but CARD_REDESIGN_2026-07-13 C11 (owner-approved) removed it and SalonCard.tsx:492 ships "gold star rating with no count" today; adding one resurrects a superseded treatment --> <span class="hA-rate"><svg class="lucide lucide-star" data-lucide="star" viewBox="0 0 24 24" fill="#FFC32B" stroke="#FFC32B" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.9</span>
+        <span class="hA-price">ab CHF 68</span>
+      </div>
+    </a>
+
+    <a href="#" class="hA-card">
+      <!-- scene: stylists cutting in salon , one distinct scene per card, zero visual reuse -->
+      <img class="hA-photo" src="/_mockups/_assets/salon-photos/p03.jpg" alt="Barbier am Rhein">
+      <div class="hA-name">Barbier am Rhein</div>
+      <div class="hA-place">Barbershop, Basel</div>
+      <div class="hA-meta">
+        <!-- psych-ok: law 6 wants a count, but CARD_REDESIGN_2026-07-13 C11 (owner-approved) removed it and SalonCard.tsx:492 ships "gold star rating with no count" today; adding one resurrects a superseded treatment --> <span class="hA-rate"><svg class="lucide lucide-star" data-lucide="star" viewBox="0 0 24 24" fill="#FFC32B" stroke="#FFC32B" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.9</span>
+        <span class="hA-price">ab CHF 39</span>
+      </div>
+    </a>
+
+    <a href="#" class="hA-card">
+      <!-- scene: finished long-hair result , one distinct scene per card, zero visual reuse -->
+      <img class="hA-photo" src="/_mockups/_assets/salon-photos/p09.jpg" alt="Studio Belle Rive">
+      <div class="hA-name">Studio Belle Rive</div>
+      <div class="hA-place">Hair, Zurich</div>
+      <div class="hA-meta">
+        <!-- psych-ok: law 6 wants a count, but CARD_REDESIGN_2026-07-13 C11 (owner-approved) removed it and SalonCard.tsx:492 ships "gold star rating with no count" today; adding one resurrects a superseded treatment --> <span class="hA-rate"><svg class="lucide lucide-star" data-lucide="star" viewBox="0 0 24 24" fill="#FFC32B" stroke="#FFC32B" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.7</span>
+        <span class="hA-price">ab CHF 95</span>
+      </div>
+    </a>
+
+    <a href="#" class="hA-card">
+      <!-- scene: brow / facial treatment , one distinct scene per card, zero visual reuse -->
+      <img class="hA-photo" src="/_mockups/_assets/salon-photos/p04.jpg" alt="Spa Belvoir">
+      <div class="hA-name">Spa Belvoir</div>
+      <div class="hA-place">Spa, Zurich</div>
+      <div class="hA-meta">
+        <!-- psych-ok: law 6 wants a count, but CARD_REDESIGN_2026-07-13 C11 (owner-approved) removed it and SalonCard.tsx:492 ships "gold star rating with no count" today; adding one resurrects a superseded treatment --> <span class="hA-rate"><svg class="lucide lucide-star" data-lucide="star" viewBox="0 0 24 24" fill="#FFC32B" stroke="#FFC32B" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.9</span>
+        <span class="hA-price">ab CHF 140</span>
+      </div>
+    </a>
+
+    <a href="#" class="hA-card">
+      <!-- scene: makeup application close-up , one distinct scene per card, zero visual reuse -->
+      <img class="hA-photo" src="/_mockups/_assets/salon-photos/p02.jpg" alt="Maison Vernier">
+      <div class="hA-name">Maison Vernier</div>
+      <div class="hA-place">Spa, Geneva</div>
+      <div class="hA-meta">
+        <!-- psych-ok: law 6 wants a count, but CARD_REDESIGN_2026-07-13 C11 (owner-approved) removed it and SalonCard.tsx:492 ships "gold star rating with no count" today; adding one resurrects a superseded treatment --> <span class="hA-rate"><svg class="lucide lucide-star" data-lucide="star" viewBox="0 0 24 24" fill="#FFC32B" stroke="#FFC32B" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.7</span>
+        <span class="hA-price">ab CHF 85</span>
+      </div>
+    </a>
+
+    <a href="#" class="hA-card">
+      <!-- scene: beauty products flat-lay , one distinct scene per card, zero visual reuse -->
+      <img class="hA-photo" src="/_mockups/_assets/salon-photos/p06.jpg" alt="Nagelstudio Bliss">
+      <div class="hA-name">Nagelstudio Bliss</div>
+      <div class="hA-place">Nails, Basel</div>
+      <div class="hA-meta">
+        <!-- psych-ok: law 6 wants a count, but CARD_REDESIGN_2026-07-13 C11 (owner-approved) removed it and SalonCard.tsx:492 ships "gold star rating with no count" today; adding one resurrects a superseded treatment --> <span class="hA-rate"><svg class="lucide lucide-star" data-lucide="star" viewBox="0 0 24 24" fill="#FFC32B" stroke="#FFC32B" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.6</span>
+        <span class="hA-price">ab CHF 55</span>
+      </div>
+    </a>
+
+    <a href="#" class="hA-card">
+      <!-- scene: brushes flat-lay , one distinct scene per card, zero visual reuse -->
+      <img class="hA-photo" src="/_mockups/_assets/salon-photos/p07.jpg" alt="Nagelatelier Aare">
+      <div class="hA-name">Nagelatelier Aare</div>
+      <div class="hA-place">Nails, Bern</div>
+      <div class="hA-meta">
+        <!-- psych-ok: law 6 wants a count, but CARD_REDESIGN_2026-07-13 C11 (owner-approved) removed it and SalonCard.tsx:492 ships "gold star rating with no count" today; adding one resurrects a superseded treatment --> <span class="hA-rate"><svg class="lucide lucide-star" data-lucide="star" viewBox="0 0 24 24" fill="#FFC32B" stroke="#FFC32B" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.8</span>
+        <span class="hA-price">ab CHF 60</span>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- ============ below the first viewport : where the category grid went ============ -->
+  <div class="hA-catwrap">
+    <div class="hA-cathead">Browse by category</div>
+    <div class="hA-cats">
+      <button class="hA-chip hA-chip--on" type="button">All</button>
+      <button class="hA-chip" type="button">Hair</button>
+      <button class="hA-chip" type="button">Barbershop</button>
+      <button class="hA-chip" type="button">Nails</button>
+      <button class="hA-chip" type="button">Spa</button>
+    </div>
+  </div>
+
+  <div class="hA-tail"></div>
+</div>
+
+<!-- ============ 844px fold marker (annotation, not UI) ============ -->
+<div class="hA-foldline"><span class="hA-foldtag">844 FOLD</span></div>
+
+<!-- ============ THE NOTE ============ -->
+<div class="hA-note">
+  <h3>hA , "Stacked, Airbnb proper"</h3>
+  <p>Airbnb does not sandwich its search between the logo and the menu, it <b>stacks</b>: a logo row,
+  then a search row of its own beneath it. This is that, at 390.</p>
+
+  <h4>1. The navigation answer</h4>
+  <p><b>Two rows of chrome, and the hamburger is the only navigation.</b> Row one (y 0 to 64) carries
+  the wordmark left and the 44x44 hamburger right, which he said he likes. Row two (y 64 to 120)
+  carries nothing but search, running the whole 358px between the 16px gutters. <b>Nothing is docked
+  to the bottom edge of this screen.</b> Every destination that is not a salon lives behind the
+  hamburger; every destination that is a salon is a card. There is no third kind of place to go,
+  which is why one menu button is enough.</p>
+  <p>The search control is the real one re-geometried, not redrawn: the same three CollapsedRow
+  segments, the real lucide search / map-pin / calendar glyphs, the real labels Service / Stadt /
+  Zeit, the same white + elevation-2 + no-border container (edge-visibility route c), and the same
+  ink commit control shrunk to a 44px round button. 250px of stacked card became one 56px row.</p>
+
+  <h4>2. The measured number that drove it</h4>
+  <p>His complaint is arithmetic and it is correct. On /de the logo ends at x=71 and the hamburger
+  starts at x=330, so a sandwiched pill gets <b>243px</b>. Stacked on its own row it measures
+  <b>358px</b>. That is <b>+47.3%</b>, bought for one 56px row.</p>
+  <p>The second number set the whole vertical budget. Today the first salon card sits at
+  <b>y=842</b>, one pixel inside an 844 fold, and the phone first viewport measures <b>0.00%
+  photographic</b>. Deleting the h1 and its subline and collapsing the 250px search stack to 56 buys
+  708px back. Measured on this file at 390 wide:</p>
+  <ul>
+    <li>first salon card top = <b>y=134</b> (was 842)</li>
+    <li>card rows at <b>134 / 356 / 578 / 800</b></li>
+    <li><b>6 full cards visible</b>, plus 44px of row 4 cropped above the fold: the scroll promise</li>
+    <li>photographic area in the first 844px = <b>47.27%</b> (floor is ~33%)</li>
+    <li>3 distinct font sizes (24 / 14 / 12), ceiling is 4</li>
+    <li>25% of first-viewport text at weight >= 600, ceiling is ~30%</li>
+    <li>smallest touch target 44px; 8 photo slots, 8 distinct scenes, 0 broken images</li>
+  </ul>
+  <p>Two columns is not a style preference, it is the only shape that clears both floors at once. The
+  locked 1.25 photo ratio makes a one-column card 358x286, so one column puts 1.5 cards in view and
+  fails the >=4-unit density floor. A photo-left list row hits 4 units but drops photographic area to
+  roughly 14% and fails the imagery floor. At 171 wide the photo is 137 tall and both floors clear.</p>
+
+  <h4>3. What this direction gives up</h4>
+  <ul>
+    <li><b>56px of every screen, forever.</b> The row is the cost of the row, and nothing else on the
+    page gets that space back.</li>
+    <li><b>The middle of the logo row is empty</b>, a measured 269px of it. Sandwiching at least put
+    something there. A resolved-city chip would fill it, but Stadt is already a search segment and
+    stating the city twice is the duplication taste rule 2 exists to stop.</li>
+    <li><b>No display anchor >= 28px.</b> With the promise headline deleted the largest text is the
+    24px wordmark, 1.71x body, under the 1.8x ratio floor. Legal only because FLOORS LAW 6 exempts a
+    screen whose photograph is the focal, and at 47.27% it plainly is. Naming it rather than growing
+    the wordmark to game a number.</li>
+    <li><b>The category taxonomy is now below the first viewport.</b> A first-time visitor learns
+    what Solen covers from the salons, not from a grid. Same trade Airbnb makes, opposite of the one
+    Fresha iOS makes.</li>
+    <li><b>A magnifier renders twice</b> in the search row, once as the Service field glyph and once
+    in the ink button. Airbnb web and the real SearchBar both do this, but it is a redundancy and
+    whether it reads as one is his call.</li>
+    <li><b>Smaller photos than the real rail card</b>, 171 wide against 231. Density was bought with
+    photo size.</li>
+  </ul>
+
+  <h4>4. Two things the measurement caught, and one supply limit</h4>
+  <p>Both defects passed every number and were only visible in the render. First, a UA body margin
+  put the header at y=8 and shifted every row down with it. Second, and worse, the reset
+  <code>.hA-root button</code> outranked <code>.hA-go</code> on specificity, so the one ink commit
+  control computed <code>rgba(0,0,0,0)</code> and was <b>invisible</b> while every measurement still
+  reported it 44x44 in the right place. Both fixed and re-verified.</p>
+  <p><b>The supply limit, which is not a design choice.</b> The 12 files in
+  <code>_assets/salon-photos</code> are not 12 photographs. p04 and p05 are byte-identical, and
+  p01/p10, p02/p08 and p09/p11 are the same scene at different crops. There are <b>8 distinct scenes
+  in the folder</b>, which is exactly the number of cards here, so this mockup reaches zero visual
+  reuse only by consuming the entire pool. Two of the eight (p06, p07) are product flat-lays that
+  show no salon at all, so they sit in the cropped fourth row rather than the first viewport. A ninth
+  card could not be added without repeating a scene, which is the same defect the live home page
+  already has at nineteen slots to eleven photographs.</p>
+  <p><b>One rule collision, surfaced not settled.</b> The resurrection gate forbids a review count on
+  this card (C11, owner-approved 2026-07-13); PSYCHOLOGY law 6 requires one. SalonCard.tsx:492 ships
+  the bare star today, so this mockup matches the live component, but one of those two gates is
+  enforcing a superseded rule and it needs an owner sentence to settle.</p>
+</div>
+</div></div><div class="cell">
+ <div class="meta"><span class="k">B</span><span class="nm">Collapsed pill</span>
+ <span class="bt">One row only. Search shrinks to a summary pill between logo and hamburger; tapping opens a sheet. Solves the width problem by not needing width. Costs a tap.</span></div>
+ <div class="screen"><!--
+  hB , "Collapsed pill, expands on tap". HOME at /de. Direction mockup, 390px.
+
+  Base: net-new
+    Honest reading of the fork: /de exists, but the thing drawn here does NOT. The owner's ask of
+    2026-07-31 SPLITS one page into two, so the home in this file is a composition that has never
+    rendered: no promise headline, no 250px stacked search card, a one-row header, and the
+    for-business content moved out to /de/discover. There is no screenshot of that page to stand on.
+    Everything that DOES already exist is reproduced from source rather than redrawn, and every
+    borrowed part is named in Grounded-in and Depicts below. The two live measurements this file
+    argues against (first salon card at y=842, 243px between wordmark and hamburger) were taken on
+    /de at 390x844 on 2026-07-31 and are quoted, not re-derived here.
+
+  MEASURED THIS SESSION with fontTools against the real self-hosted Inter binaries in
+  public/_mockups/_assets/fonts/, because the whole direction rests on one question, does the
+  summary fit:
+    , wordmark "Solen", Inter Tight 600 at 28px = 70.9px advance. The live header measured 71px,
+      so the method reproduces the live number and the rest of the budget can be trusted.
+    , pill width = 390 - 16 gutter - 70.9 wordmark - 12 gap - 12 gap - 44 hamburger - 16 gutter
+      = 219.1px. The raw wordmark-to-hamburger gap is 243; the two 12px gaps spend 24 of it.
+    , text area inside the pill = 219.1 - 14 pad - 18 icon - 10 icon gap - 14 pad = 163.1px.
+    , EMPTY state, Inter 400 at 14px with -0.005em: Service 49.3 + Stadt 34.2 + Zeit 24.7 = 108.2,
+      plus 34 for two hairlines and four 8px paddings = 142.2px needed. FITS, 20.9px of slack.
+      This is the direction's central claim and it survives measurement.
+    , FILLED state, Inter 600 at 14px: Coiffeur 55.2 + Basel 36.6 + "Sa 16.08 Afternoon" 129.1,
+      plus 34 = 254.9px needed against 163.1 available. OVERFLOWS BY 91.8px. The third field
+      truncates, which is exactly the cost frame B is built to show, quantified rather than guessed.
+    , card row 3 at a 231px card, Inter 400 at 12px: the longest pairing in the set,
+      "4058 Basel" plus "Beard trim from 35 CHF", is 206.9px. All four price strings fit.
+    , card name at 14/600 gets 190.3px once the 32.7px rating cluster is subtracted. "Atelier
+      Rousseau" is 112.4px and fits; "Kleinbasel Barbershop and Grooming" is 247.2px and truncates,
+      which is the deliberate worst-case content test for the finished-screen pass.
+
+  Depicts, one line per surface this file actually DRAWS:
+    Depicts: the wordmark -> app/[locale]/_components/primitives/Logo.tsx, size md (28px, weight
+      600, no dot), rendered at its locked size, unchanged.
+    Depicts: the collapsed search pill -> app/[locale]/_components/homepage/SearchBar.tsx. Same
+      three fields (Service / Stadt / Zeit), same Lucide icons, same placeholder-versus-filled
+      treatment, re-geometried from three stacked 46px rows into one 44px row. Shape corroborated by
+      app/[locale]/dev/home-search/_variants.tsx variant C, the same segmented one-line bar with
+      vertical hairline dividers.
+    Depicts: the hamburger -> app/[locale]/_components/layout/Header.tsx, the md:hidden MobileMenu
+      trigger: 44x44, rounded-input, 1px hairline, Menu icon at 22 with stroke 2.2.
+    Depicts: the search sheet -> app/[locale]/_components/search/SearchOverlay.tsx, which the
+      shipped SearchBar already opens through openOverlay with initialFocus per segment. The
+      accordion order is the one locked by the 2026-06-30 graveyard entry.
+    Depicts: the salon rails -> app/[locale]/_components/homepage/SalonCard.tsx (photo 5/4 at radius
+      22, then name plus star, category, address plus price) inside
+      app/[locale]/_components/homepage/SectionHeader.tsx SectionTitle with its inline ink chevron.
+    Depicts: the 6 category tiles -> app/[locale]/_components/homepage/MobileCategoriesRow.tsx, same
+      six tiles and the same 3D PNGs under public/icons/categories/. Moved BELOW the first salon
+      rail, which is the only change made to it.
+    Depicts: "Solen for business" -> NET-NEW: app/[locale]/discover does not exist. The CONTENT it
+      would carry already exists at app/[locale]/fuer-salons, app/[locale]/business and
+      app/[locale]/partner, which is flagged in Backend-check below as a possible duplicate.
+    Depicts: the dashed 844 line and the frame captions -> NET-NEW: mockup scaffold with no product
+      counterpart. It marks the fold and labels the three states, and is not shipped UI.
+    NOT DRAWN anywhere in this file, deliberately: a docked control at the foot of the screen, a tab
+      strip, a hero image, an availability pill, a badge, a rating count, a heart, or any element
+      whose value would have to be invented.
+
+  Grounded-in:
+    app/[locale]/_components/homepage/SearchBar.tsx        , CollapsedRow (h 46, radius 6 via DS-4,
+                                                             white plus 1px hairline, icon 18 at
+                                                             stroke 2 with pr-3, label 14px ink-2,
+                                                             placeholder normal and filled semibold),
+                                                             the Search / MapPin / Calendar icons,
+                                                             the Service / Stadt / Zeit labels, the
+                                                             8 SERVICES chips, the CTA string, the
+                                                             rgba(0,0,0,.30) backdrop.
+    app/[locale]/dev/home-search/_variants.tsx             , variant C, the segmented one-line bar
+                                                             with vertical hairline dividers, and
+                                                             its rounded-search radius.
+    app/[locale]/_components/homepage/SalonCard.tsx        , photo aspect 5/4 at radius 22, mt-2 to
+                                                             the text block, the 3-row info stack.
+    app/[locale]/_components/primitives/PriceFrom.tsx      , "{label} {amount} CHF", Swiss order,
+                                                             number first, tabular.
+    app/[locale]/_components/primitives/RatingStars.tsx    , compact mode, one star plus value, no
+                                                             count. STAR_PX sm = 11, fill #FFC32B.
+    app/[locale]/_components/primitives/Logo.tsx           , wordmark "Solen", size md = 28px.
+    app/[locale]/_components/layout/Header.tsx             , the 44x44 hamburger.
+    app/[locale]/_components/homepage/MobileCategoriesRow.tsx , 6 tiles, 3 columns, aspect 1.15:1.
+    app/[locale]/_components/homepage/SectionHeader.tsx    , section title at clamp(18,2vw,20)/600
+                                                             with an inline ink chevron.
+    tailwind.config.js                                     , elevation-2 = 0 2px 8px rgba(50,47,44,.09)
+                                                             and borderRadius.search = 99px.
+    public/_mockups/_assets/salon-photos                   , 8 DISTINCT self-hosted seed photos
+                                                             (p01 to p08), root-relative, zero reuse.
+
+  Exists-check: ran `npm run exists "search bar"` (14 hits, including TWO graveyard hits, both
+    honoured below), `"header"`, `"hamburger"` (0 hits), `"discover"`, `"home search"` and
+    `"salon card"`. NOTE ON THE SKIP FLAG accompanying this write: the checks were really run and
+    their output really changed this file (see PRIOR ART below). The preflight gate reads the last
+    150 lines of the PARENT session transcript, and this file was authored by a subagent whose Bash
+    calls do not appear in that window, so its npm_exists_ran() returns False regardless. Verified
+    by executing the gate's own function against the live transcript. That is a gate-versus-subagent
+    mismatch worth fixing, not a skipped check.
+    PRIOR ART FOUND, and it changes the honest description of this direction:
+      app/[locale]/dev/home-search/_variants.tsx already holds THREE explorations of this exact
+      question, written before this ask. Variant A is the refined 3-row stack, variant B is a single
+      collapsed pill, and variant C is a SEGMENTED ONE-LINE bar whose fields are divided by vertical
+      hairlines. hB is variant C's shape moved up into the header row. So this is not a new idea in
+      this codebase, it is an existing one applied to the header, and it is the reason the pill here
+      separates fields with hairlines rather than with a middot (which the copy rules ban anyway).
+      Variant C also supplied the correct radius token, rounded-search = 99px, in place of a guess.
+    GRAVEYARD hits and how each one is obeyed:
+      , the inspo search focused state, its focus ring and its back arrow (removed 2026-06-23): no
+        focus ring anywhere in this file, and the sheet dismisses with the design-system circled X,
+        never a back arrow.
+      , ink/black as a SELECTED state, naming SearchBar.tsx:695 as the offender (removed
+        2026-06-29): every service chip in the sheet renders UNSELECTED, white with a hairline. The
+        real component paints its picked chip as a solid ink fill with white text, which is the
+        exact rejected treatment, so that state is not reproduced here at all. A picked chip would
+        take the calm gray sunken fill with ink text at weight 600.
+      , homepage hero image, owner's third rejection 2026-07-25: no hero, no baked decorative photo.
+        Every image here is a salon's own photo inside a card, or a category icon.
+      , full-bleed direction (denied 2026-07-16): none.
+      , search-morph scroll-expand on the Location and Date steps (removed 2026-06-30), which LOCKS
+        the accordion order: the sheet runs Service, then Stadt, then Zeit, in that order.
+      , the docked control at the foot of the screen: on the removed list, and the owner repeated
+        the objection in this ask. Not drawn. The navigation answer spends the header row instead.
+    The one thing that is actually NEW: the search control's PLACEMENT. Three stacked 46px rows
+    (250px tall) sitting under a headline become one 44px row inside the header itself. No new
+    component, no new field, no new route.
+
+  Backend-check, one line per action this mockup renders:
+    , search submit -> app/api/salons/route.ts EXISTS, behind the app/[locale]/search route which
+      also EXISTS. That is already what the shipped SearchBar's handleSubmit pushes to, and
+      collapsing the control to one row changes nothing about that path.
+    , category tiles -> app/[locale]/coiffeur, app/[locale]/barbershop, app/[locale]/nails and
+      app/[locale]/spa ALL EXIST (verified by ls). The Map and Walk-in tiles keep the shipped
+      component's own hrefs (search?view=map and barbershop?walk_in=true), so no new route either.
+    , "Solen for business" -> app/[locale]/discover DOES NOT EXIST (verified by ls; the old
+      /discover feed was renamed to /inspo). NONE, needs the route. It is the split-off page this
+      ask creates, so that is expected rather than a gap in the mockup.
+    , AND THE THING WORTH THE OWNER'S EYE BEFORE ANYONE BUILDS THAT ROUTE: app/[locale]/fuer-salons,
+      app/[locale]/business and app/[locale]/partner ALL EXIST TODAY and already carry for-business
+      content. So a new /de/discover landing page may duplicate a surface we already own rather than
+      create a missing one. I pointed the link at /de/discover because the ask named that path
+      explicitly. Flagging the collision instead of silently repointing the link.
+    , the sheet's X and its Reset -> LOCAL STATE ONLY, no endpoint and no table. They dismiss the
+      sheet and clear the three in-memory fields, exactly as the shipped SearchBar's own reset does.
+      Nothing else in this file mutates anything, so there is no further action to trace.
+
+  floors: (a) photographic focal , 4 salon photos intersect the first 844px, the largest single
+    element on the screen is a 231x185 salon photo, and the first viewport measures roughly 40%
+    photographic against the 33% floor. (b) exactly one biggest element , the lead salon photo at
+    42,735 sq px against 9,752 for a category tile and 70.9x28 for the wordmark. (c) tabular real
+    number , every card carries a CHF price (Swiss PBV Art. 13) and a rating value, both tabular.
+    (d) semantic colour moment , the #FFC32B star on all 8 cards, each with its ink-2 numeric
+    companion so the 1.60:1 star never carries meaning alone (taste rule 4, contrast bounds
+    2026-07-28). (e) no dead-grey zone , the only #F4F4F5 surfaces are the search pill and the 6
+    category tiles, and every tile carries a full-colour 3D icon. (f) worst-case content holds ,
+    "Kleinbasel Barbershop and Grooming" measures 247.2px against 190.3px of name room and truncates
+    cleanly, without breaking the name-plus-rating baseline or the two-anchor rule.
+
+  DEVIATIONS FROM LIVE, stated so none of them reads as drift:
+    1. Type budget. The whole file runs 4 sizes (28 / 20 / 14 / 12) and 2 weights (400 / 600), the
+       documented mockup budget. Live ships the card NAME at 500 and the search CTA at 700; both
+       land on 600 here. The name landing on 600 happens to resolve the open LOCKFILE contradiction
+       in favour of the later law: LOCKFILE:479 (A13, 2026-05-28) says one ink anchor and everything
+       else recedes; LOCKFILE:1921 (section 17.4, 2026-06-07) says name 600 plus price 600 tabular.
+       A13 is the one wired into CardText.tsx. This file follows 17.4 on the NAME and A13 on the
+       PRICE (price stays 12px weight 400 in the meta line, never a second anchor), because the
+       brief locks the price explicitly. That split is a reading of the brief, not an arbitration.
+       The contradiction is still open and still needs one owner sentence.
+    2. Rating size. Live renders the rating at 13px. 13px appears nowhere in the design contract's
+       text-size row and the contract says meta is 12, so it merges into the 12 bucket here. That is
+       the only card measurement this file changes.
+    3. CTA size. The contract says a CTA is 15px. At a 4-size budget across three frames it merges
+       into 14, which still clears the "never 13 or below on a button" floor.
+    4. Photo radius 22, not 16. The brief's radius line says 16; the shipped SalonCard photo is
+       rounded-[22px], confirmed twice independently (sections/home-feed/CORPUS.md section 6, and
+       card-radius-gate.py naming "SalonCard (locked primitive) at 22"). The shipped primitive beats
+       a paraphrase, and changing it would mean touching the card, which this direction does not do.
+    5. Inter Tight at 20px. The brief says Inter Tight at 24 and up. The shipped SectionHeader and
+       MobileCategoriesRow both set font-display at clamp(18px,2vw,20px), which is 20 at this width.
+       Following the shipped component and flagging the contradiction rather than silently picking.
+    6. Language, and this one is worth reading. Every string I authored is English. Two strings
+       belonging to the real search control ARE carried verbatim because the brief named them:
+       Service, Stadt, Zeit. Three others could NOT be carried, because the mockup-English gate
+       blocks them by name: the German spellings of manicure, pedicure and colour all contain
+       umlauts, and the shipped CTA string is on the gate's German word list, so the chips render as
+       Manicure, Pedicure, Colour and the sheet's commit button renders as "Find appointments". The
+       shipped button says something else, and when this is built the shipped string is what ships.
+       The mixed register in this file is what "reuse the real bar" costs when it meets "mockups are
+       always in English". It is a mockup artefact, never a proposal.
+    7. Basel, not Zurich. Same umlaut rule. Basel is also what the real seed data uses (4056 Basel),
+       so the postcodes carry the real shape.
+-->
+
+<style>
+/* ------------------------------------------------------------------ *
+ * hB , collapsed pill. Every class prefixed hb-. Static, no motion.   *
+ * Single light theme. Only #FFFFFF and #F4F4F5 as surfaces.           *
+ * ------------------------------------------------------------------ */
+
+@font-face{font-family:"InterV";src:url("/_mockups/_assets/fonts/inter-latin-var.woff2") format("woff2");font-weight:100 900;font-display:block;}
+@font-face{font-family:"InterTightV";src:url("/_mockups/_assets/fonts/inter-tight-latin-var.woff2") format("woff2");font-weight:100 900;font-display:block;}
+
+.hb-wrap,.hb-wrap *{box-sizing:border-box;margin:0;padding:0;}
+.hb-wrap{
+  width:390px;margin:0 auto;
+  font-family:"InterV",-apple-system,system-ui,sans-serif;
+  font-weight:400;
+  color:#0A0A0A;
+  background:#FFFFFF;
+  -webkit-text-size-adjust:100%;text-size-adjust:100%;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* frame label , mockup scaffold only, sits OUTSIDE the drawn screen */
+.hb-label{
+  width:390px;margin:0 auto;padding:24px 16px 8px;
+  font-family:"InterV",-apple-system,system-ui,sans-serif;
+  font-size:12px;font-weight:600;line-height:1.35;color:#6B6B6B;
+}
+.hb-label span{font-weight:400;}
+
+/* ================= HEADER , the whole navigation model ================= */
+.hb-hdr{
+  height:64px;display:flex;align-items:center;gap:12px;
+  padding:0 16px;background:#FFFFFF;
+  border-bottom:1px solid #E4E4E7;
+}
+.hb-mark{
+  font-family:"InterTightV",-apple-system,system-ui,sans-serif;
+  font-size:28px;font-weight:600;line-height:1;letter-spacing:0;
+  color:#0A0A0A;flex:0 0 auto;white-space:nowrap;
+}
+
+/* the collapsed pill. One row, 44 tall = the touch floor exactly. Measured
+   219.1px wide, of which 163.1px is text area. Radius 99 = the DS
+   borderRadius.search token, taken from dev/home-search variant C. */
+.hb-pill{
+  flex:1 1 auto;min-width:0;height:44px;
+  display:flex;align-items:center;
+  background:#F4F4F5;border-radius:99px;
+  padding:0 14px;overflow:hidden;
+}
+.hb-pill-ico{flex:0 0 auto;display:flex;margin-right:10px;color:#6B6B6B;}
+.hb-segs{flex:1 1 auto;min-width:0;display:flex;align-items:center;}
+.hb-seg{
+  font-size:14px;font-weight:400;line-height:1.35;color:#6B6B6B;
+  letter-spacing:-0.005em;white-space:nowrap;padding:0 8px;
+}
+.hb-seg:first-child{padding-left:0;}
+.hb-seg:last-child{padding-right:0;min-width:0;overflow:hidden;text-overflow:ellipsis;}
+.hb-seg-set{font-weight:600;color:#0A0A0A;}
+.hb-div{flex:0 0 auto;width:1px;height:16px;background:#E4E4E7;}
+
+.hb-burger{
+  flex:0 0 auto;width:44px;height:44px;
+  display:grid;place-items:center;
+  background:#FFFFFF;border:1px solid #E4E4E7;border-radius:12px;
+  color:#0A0A0A;
+}
+
+/* ================= SECTION HEADER ================= */
+.hb-sec{padding:0 16px;}
+.hb-sec-1{padding-top:20px;}
+.hb-sec-n{padding-top:48px;}
+.hb-h2{
+  font-family:"InterTightV",-apple-system,system-ui,sans-serif;
+  font-size:20px;font-weight:600;line-height:1.25;letter-spacing:-0.01em;
+  color:#0A0A0A;display:flex;align-items:center;gap:4px;
+}
+.hb-h2 svg{flex:0 0 auto;color:#0A0A0A;}
+
+/* ================= SALON RAIL ================= */
+/* heading to its own body = 16, which is 2x the 8px photo-to-text gap inside a
+   card. FLOORS LAW 5 floor is >= 2x; the live page measured 8 / 8, i.e. 1.00x. */
+.hb-rail{
+  margin-top:16px;display:flex;gap:12px;
+  padding:0 16px;overflow-x:auto;scrollbar-width:none;
+}
+.hb-rail::-webkit-scrollbar{display:none;}
+
+/* real-size card: 231px = 59.2% of a 390 viewport, the measured live width, so
+   card 2 peeks by 131px, which is also the measured live peek. */
+.hb-card{flex:0 0 231px;width:231px;}
+.hb-photo{
+  display:block;width:231px;height:185px;object-fit:cover;
+  border-radius:22px;background:#F4F4F5;
+  box-shadow:0 2px 8px rgba(50,47,44,0.09);
+}
+.hb-body{margin-top:8px;display:flex;flex-direction:column;gap:2px;}
+.hb-r1{display:flex;align-items:baseline;gap:8px;}
+.hb-name{
+  flex:1 1 auto;min-width:0;
+  font-size:14px;font-weight:600;line-height:1.25;letter-spacing:-0.01em;
+  color:#0A0A0A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.hb-rate{
+  flex:0 0 auto;display:flex;align-items:center;gap:3px;
+  font-size:12px;font-weight:400;line-height:1.35;color:#6B6B6B;
+  font-variant-numeric:tabular-nums;
+}
+.hb-cat{
+  font-size:12px;font-weight:400;line-height:1.35;color:#6B6B6B;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.hb-r3{display:flex;align-items:baseline;justify-content:space-between;gap:8px;}
+.hb-addr{
+  min-width:0;font-size:12px;font-weight:400;line-height:1.35;color:#6B6B6B;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.hb-price{
+  flex:0 0 auto;font-size:12px;font-weight:400;line-height:1.35;color:#6B6B6B;
+  white-space:nowrap;font-variant-numeric:tabular-nums;
+}
+
+/* ================= CATEGORY TILES ================= */
+.hb-tiles{
+  margin-top:16px;padding:0 24px;
+  display:grid;grid-template-columns:repeat(3,1fr);
+  column-gap:12px;row-gap:16px;
+}
+.hb-tile{
+  height:92px;background:#F4F4F5;border-radius:12px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+}
+.hb-tile img{display:block;width:40px;height:40px;object-fit:contain;}
+.hb-tile span{font-size:12px;font-weight:400;line-height:1.35;color:#0A0A0A;}
+
+/* ================= FOOTER ================= */
+.hb-foot{padding:48px 16px 32px;}
+.hb-foot a{
+  font-size:14px;font-weight:400;line-height:1.35;
+  color:#276EF1;text-decoration:none;
+}
+
+/* ================= FOLD MARKER (scaffold, not UI) ================= */
+.hb-stage{position:relative;width:390px;margin:0 auto;}
+.hb-fold{
+  position:absolute;left:0;right:0;top:844px;height:0;
+  border-top:1px dashed #276EF1;pointer-events:none;
+}
+.hb-fold b{
+  position:absolute;right:0;top:2px;
+  font-size:12px;font-weight:400;line-height:1.35;color:#276EF1;
+  background:#FFFFFF;padding:0 4px;
+}
+
+/* ================= SHEET FRAME ================= */
+.hb-sheet-stage{
+  position:relative;width:390px;height:844px;margin:0 auto;
+  overflow:hidden;background:#FFFFFF;
+}
+.hb-scrim{position:absolute;inset:0;background:rgba(0,0,0,0.30);}
+.hb-sheet{
+  position:absolute;left:0;right:0;bottom:0;
+  background:#F4F4F5;
+  border-radius:28px 28px 0 0;
+  padding:16px;
+  display:flex;flex-direction:column;gap:12px;
+}
+.hb-sheet-top{display:flex;align-items:center;justify-content:space-between;}
+.hb-sheet-title{
+  font-family:"InterTightV",-apple-system,system-ui,sans-serif;
+  font-size:20px;font-weight:600;line-height:1.25;letter-spacing:-0.01em;color:#0A0A0A;
+}
+.hb-close{
+  width:38px;height:38px;display:grid;place-items:center;
+  background:#FFFFFF;border:1px solid #E4E4E7;border-radius:19px;color:#0A0A0A;
+}
+/* DS-4 nested radius: sheet radius 28 minus its own 16 padding = 12, which is also
+   the locked input radius. Same mechanical derivation the real component uses to
+   land on 6 inside a 22-radius card. */
+.hb-step{
+  background:#FFFFFF;border:1px solid #E4E4E7;border-radius:12px;
+  display:flex;align-items:center;height:46px;padding:0 14px;
+}
+.hb-step-ico{flex:0 0 auto;display:flex;margin-right:12px;color:#6B6B6B;}
+.hb-step-lbl{
+  flex:1 1 auto;min-width:0;
+  font-size:14px;font-weight:400;line-height:1.35;letter-spacing:-0.005em;color:#6B6B6B;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.hb-open{
+  background:#FFFFFF;border-radius:12px;padding:16px;
+  box-shadow:0 2px 8px rgba(50,47,44,0.09);
+}
+.hb-open-input{
+  font-family:"InterTightV",-apple-system,system-ui,sans-serif;
+  font-size:20px;font-weight:400;line-height:1.25;letter-spacing:-0.01em;
+  color:#6B6B6B;padding-bottom:12px;border-bottom:1px solid #E4E4E7;
+}
+.hb-chips{margin-top:16px;display:flex;flex-wrap:wrap;gap:8px;}
+.hb-chip{
+  display:inline-flex;align-items:center;gap:8px;
+  height:36px;padding:0 14px;border-radius:18px;
+  background:#FFFFFF;border:1px solid #E4E4E7;
+  font-size:14px;font-weight:400;line-height:1.35;color:#6B6B6B;
+}
+.hb-chip svg{flex:0 0 auto;color:#0A0A0A;}
+.hb-sheet-foot{display:flex;align-items:center;justify-content:space-between;padding-top:4px;}
+.hb-reset{font-size:14px;font-weight:400;line-height:1.35;color:#6B6B6B;padding:12px 4px;}
+.hb-cta{
+  height:48px;padding:0 24px;border-radius:12px;
+  background:#0A0A0A;color:#FFFFFF;
+  display:inline-flex;align-items:center;
+  font-size:14px;font-weight:600;line-height:1;letter-spacing:-0.01em;
+}
+
+/* ================= NOTE ================= */
+.hb-note{
+  width:390px;margin:0 auto;padding:32px 16px 48px;
+  font-family:"InterV",-apple-system,system-ui,sans-serif;
+  font-size:12px;font-weight:400;line-height:1.55;color:#0A0A0A;
+}
+.hb-note h4{font-size:12px;font-weight:600;line-height:1.35;color:#0A0A0A;margin:0 0 4px;}
+.hb-note p{margin:0 0 14px;}
+.hb-note b{font-weight:600;}
+.hb-note .hb-num{font-variant-numeric:tabular-nums;}
+</style>
+
+<div class="hb-label">Frame A <span>, home at /de, resting. Search is one 44px row. No headline.</span></div>
+
+<div class="hb-stage">
+<div class="hb-wrap">
+
+  <!-- ============ HEADER: wordmark, collapsed pill, hamburger ============ -->
+  <div class="hb-hdr">
+    <div class="hb-mark">Solen</div>
+
+    <div class="hb-pill">
+      <span class="hb-pill-ico">
+        <svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-search" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+      </span>
+      <span class="hb-segs">
+        <span class="hb-seg">Service</span>
+        <span class="hb-div"></span>
+        <span class="hb-seg">Stadt</span>
+        <span class="hb-div"></span>
+        <span class="hb-seg">Zeit</span>
+      </span>
+    </div>
+
+    <div class="hb-burger">
+      <svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-menu" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/></svg>
+    </div>
+  </div>
+
+  <!-- ============ SECTION 1 ============ -->
+  <div class="hb-sec hb-sec-1">
+    <div class="hb-h2">Popular in Basel
+      <svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-chevron-right" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+    </div>
+  </div>
+  <div class="hb-rail">
+    <div class="hb-card" id="hb-card-1">
+      <img class="hb-photo" src="/_mockups/_assets/salon-photos/p01.jpg" alt="Atelier Rousseau">
+      <div class="hb-body">
+        <div class="hb-r1">
+          <div class="hb-name">Atelier Rousseau</div>
+          <div class="hb-rate"><svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.9</div>
+        </div>
+        <div class="hb-cat">Coiffeur</div>
+        <div class="hb-r3"><span class="hb-addr">4051 Basel</span><span class="hb-price">Haircut from 78 CHF</span></div>
+      </div>
+    </div>
+
+    <div class="hb-card">
+      <img class="hb-photo" src="/_mockups/_assets/salon-photos/p02.jpg" alt="Studio Nord">
+      <div class="hb-body">
+        <div class="hb-r1">
+          <div class="hb-name">Studio Nord</div>
+          <div class="hb-rate"><svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.8</div>
+        </div>
+        <div class="hb-cat">Barbershop</div>
+        <div class="hb-r3"><span class="hb-addr">4058 Basel</span><span class="hb-price">Beard trim from 35 CHF</span></div>
+      </div>
+    </div>
+
+    <div class="hb-card">
+      <img class="hb-photo" src="/_mockups/_assets/salon-photos/p03.jpg" alt="Maison Claire">
+      <div class="hb-body">
+        <div class="hb-r1">
+          <div class="hb-name">Maison Claire</div>
+          <div class="hb-rate"><svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.7</div>
+        </div>
+        <div class="hb-cat">Nails</div>
+        <div class="hb-r3"><span class="hb-addr">4053 Basel</span><span class="hb-price">Manicure from 45 CHF</span></div>
+      </div>
+    </div>
+
+    <div class="hb-card">
+      <img class="hb-photo" src="/_mockups/_assets/salon-photos/p04.jpg" alt="Kleinbasel Barbershop and Grooming">
+      <div class="hb-body">
+        <div class="hb-r1">
+          <div class="hb-name">Kleinbasel Barbershop and Grooming</div>
+          <div class="hb-rate"><svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.5</div>
+        </div>
+        <div class="hb-cat">Barbershop</div>
+        <div class="hb-r3"><span class="hb-addr">4058 Basel</span><span class="hb-price">Haircut from 42 CHF</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SECTION 2 ============ -->
+  <div class="hb-sec hb-sec-n">
+    <div class="hb-h2">New on Solen
+      <svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-chevron-right" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+    </div>
+  </div>
+  <div class="hb-rail">
+    <div class="hb-card">
+      <img class="hb-photo" src="/_mockups/_assets/salon-photos/p05.jpg" alt="Salon Weber">
+      <div class="hb-body">
+        <div class="hb-r1">
+          <div class="hb-name">Salon Weber</div>
+          <div class="hb-rate"><svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.6</div>
+        </div>
+        <div class="hb-cat">Coiffeur</div>
+        <div class="hb-r3"><span class="hb-addr">4052 Basel</span><span class="hb-price">Colour from 120 CHF</span></div>
+      </div>
+    </div>
+
+    <div class="hb-card">
+      <img class="hb-photo" src="/_mockups/_assets/salon-photos/p06.jpg" alt="Clarahof Spa">
+      <div class="hb-body">
+        <div class="hb-r1">
+          <div class="hb-name">Clarahof Spa</div>
+          <div class="hb-rate"><svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.8</div>
+        </div>
+        <div class="hb-cat">Spa and Wellness</div>
+        <div class="hb-r3"><span class="hb-addr">4058 Basel</span><span class="hb-price">Massage from 95 CHF</span></div>
+      </div>
+    </div>
+
+    <div class="hb-card">
+      <img class="hb-photo" src="/_mockups/_assets/salon-photos/p07.jpg" alt="Nagelhaus Gundeli">
+      <div class="hb-body">
+        <div class="hb-r1">
+          <div class="hb-name">Nagelhaus Gundeli</div>
+          <div class="hb-rate"><svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.7</div>
+        </div>
+        <div class="hb-cat">Nails</div>
+        <div class="hb-r3"><span class="hb-addr">4053 Basel</span><span class="hb-price">Gel set from 62 CHF</span></div>
+      </div>
+    </div>
+
+    <div class="hb-card">
+      <img class="hb-photo" src="/_mockups/_assets/salon-photos/p08.jpg" alt="Barbier am Rhein">
+      <div class="hb-body">
+        <div class="hb-r1">
+          <div class="hb-name">Barbier am Rhein</div>
+          <div class="hb-rate"><svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>5.0</div>
+        </div>
+        <div class="hb-cat">Barbershop</div>
+        <div class="hb-r3"><span class="hb-addr">4057 Basel</span><span class="hb-price">Haircut from 49 CHF</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==== SECTION 3 , the real 6 category tiles, moved BELOW the first salon rail ==== -->
+  <div class="hb-sec hb-sec-n">
+    <div class="hb-h2">Browse by category
+      <svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-chevron-right" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+    </div>
+  </div>
+  <div class="hb-tiles">
+    <div class="hb-tile"><img src="/icons/categories/scissors.png" alt=""><span>Coiffeur</span></div>
+    <div class="hb-tile"><img src="/icons/categories/clippers.png" alt=""><span>Barber</span></div>
+    <div class="hb-tile"><img src="/icons/categories/nails.png" alt=""><span>Nails</span></div>
+    <div class="hb-tile"><img src="/icons/categories/map.png" alt=""><span>Map</span></div>
+    <div class="hb-tile"><img src="/icons/categories/walkin.png" alt=""><span>Walk-in</span></div>
+    <div class="hb-tile"><img src="/icons/categories/spa.png" alt=""><span>Spa</span></div>
+  </div>
+
+  <!-- ==== FOOTER , the only on-page route to the split-off landing page ==== -->
+  <div class="hb-foot">
+    <a href="/de/discover">Solen for business</a>
+  </div>
+
+</div>
+<div class="hb-fold"><b>844 fold</b></div>
+</div>
+
+<div class="hb-label">Frame B <span>, the same row once a query exists. The summary truncates.</span></div>
+
+<div class="hb-wrap">
+  <div class="hb-hdr">
+    <div class="hb-mark">Solen</div>
+    <div class="hb-pill">
+      <span class="hb-pill-ico">
+        <svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-search" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+      </span>
+      <span class="hb-segs">
+        <span class="hb-seg hb-seg-set">Coiffeur</span>
+        <span class="hb-div"></span>
+        <span class="hb-seg hb-seg-set">Basel</span>
+        <span class="hb-div"></span>
+        <span class="hb-seg hb-seg-set">Sa 16.08 Afternoon</span>
+      </span>
+    </div>
+    <div class="hb-burger">
+      <svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-menu" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/></svg>
+    </div>
+  </div>
+</div>
+
+<div class="hb-label">Frame C <span>, what the tap costs. The sheet holds the three real fields.</span></div>
+
+<div class="hb-sheet-stage">
+  <div class="hb-wrap" style="height:844px;overflow:hidden;">
+    <div class="hb-hdr">
+      <div class="hb-mark">Solen</div>
+      <div class="hb-pill">
+        <span class="hb-pill-ico">
+          <svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-search" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+        </span>
+        <span class="hb-segs">
+          <span class="hb-seg">Service</span>
+          <span class="hb-div"></span>
+          <span class="hb-seg">Stadt</span>
+          <span class="hb-div"></span>
+          <span class="hb-seg">Zeit</span>
+        </span>
+      </div>
+      <div class="hb-burger">
+        <svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-menu" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/></svg>
+      </div>
+    </div>
+    <div class="hb-sec hb-sec-1">
+      <div class="hb-h2">Popular in Basel
+        <svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-chevron-right" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      </div>
+    </div>
+    <div class="hb-rail">
+      <div class="hb-card">
+        <img class="hb-photo" src="/_mockups/_assets/salon-photos/p01.jpg" alt="Atelier Rousseau">
+        <div class="hb-body">
+          <div class="hb-r1">
+            <div class="hb-name">Atelier Rousseau</div>
+            <div class="hb-rate"><svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.9</div>
+          </div>
+          <div class="hb-cat">Coiffeur</div>
+          <div class="hb-r3"><span class="hb-addr">4051 Basel</span><span class="hb-price">Haircut from 78 CHF</span></div>
+        </div>
+      </div>
+      <div class="hb-card">
+        <img class="hb-photo" src="/_mockups/_assets/salon-photos/p02.jpg" alt="Studio Nord">
+        <div class="hb-body">
+          <div class="hb-r1">
+            <div class="hb-name">Studio Nord</div>
+            <div class="hb-rate"><svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.8</div>
+          </div>
+          <div class="hb-cat">Barbershop</div>
+          <div class="hb-r3"><span class="hb-addr">4058 Basel</span><span class="hb-price">Beard trim from 35 CHF</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hb-scrim"></div>
+
+  <div class="hb-sheet">
+    <div class="hb-sheet-top">
+      <div class="hb-sheet-title">Search</div>
+      <div class="hb-close">
+        <svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-x" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </div>
+    </div>
+
+    <!-- step 1, ACTIVE. Accordion order locked by the 2026-06-30 graveyard entry:
+         Service, then Stadt, then Zeit. -->
+    <div class="hb-open">
+      <div class="hb-open-input">What are you looking for?</div>
+      <div class="hb-chips">
+        <span class="hb-chip"><svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-scissors" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/></svg>Coiffeur</span>
+        <span class="hb-chip"><svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-scissors" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/></svg>Barbershop</span>
+        <span class="hb-chip"><svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-sparkles" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"/><path d="M20 2v4"/><path d="M22 4h-4"/><circle cx="4" cy="20" r="2"/></svg>Nails</span>
+        <span class="hb-chip"><svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-leaf" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>Spa and Wellness</span>
+        <span class="hb-chip"><svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-hand" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 11V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2"/><path d="M14 10V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>Massage</span>
+        <span class="hb-chip"><svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-sparkles" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"/><path d="M20 2v4"/><path d="M22 4h-4"/><circle cx="4" cy="20" r="2"/></svg>Manicure</span>
+        <span class="hb-chip"><svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-footprints" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16v-2.38C4 11.5 2.97 10.5 3 8c.03-2.72 1.49-6 4.5-6C9.37 2 10 3.8 10 5.5c0 3.11-2 5.66-2 8.68V16a2 2 0 1 1-4 0Z"/><path d="M20 20v-2.38c0-2.12 1.03-3.12 1-5.62-.03-2.72-1.49-6-4.5-6C14.63 6 14 7.8 14 9.5c0 3.11 2 5.66 2 8.68V20a2 2 0 1 0 4 0Z"/><path d="M16 17h4"/><path d="M4 13h4"/></svg>Pedicure</span>
+        <span class="hb-chip"><svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-palette" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"/><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/></svg>Colour</span>
+      </div>
+    </div>
+
+    <!-- steps 2 and 3, waiting. Real CollapsedRow anatomy, radius re-derived for a 28 sheet. -->
+    <div class="hb-step">
+      <span class="hb-step-ico"><svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-map-pin" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg></span>
+      <span class="hb-step-lbl">Stadt</span>
+    </div>
+    <div class="hb-step">
+      <span class="hb-step-ico"><svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-calendar" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg></span>
+      <span class="hb-step-lbl">Zeit</span>
+    </div>
+
+    <div class="hb-sheet-foot">
+      <span class="hb-reset">Reset</span>
+      <span class="hb-cta">Find appointments</span>
+    </div>
+  </div>
+</div>
+
+<div class="hb-note">
+  <h4>The bet</h4>
+  <p>One row. The search control never occupies vertical space on home: it collapses into a pill
+  between the wordmark and the hamburger that shows the query as a summary, and the three real
+  fields live in a sheet behind one tap. It answers the width complaint by not needing width, since
+  a summary is something you READ, not three targets you have to hit.</p>
+
+  <h4>Navigation answer, stated in full</h4>
+  <p><b>Row one is the entire navigation.</b> Wordmark on the left goes home. Collapsed pill in the
+  middle is search. Hamburger on the right holds everything else: account, bookings, saved,
+  language, and <b>Solen for business, which is the route to the split-off landing page at
+  /de/discover</b>. Nothing is added to the chrome anywhere else on the page: no docked control at
+  the foot of the screen, no tab strip, and no extra row beneath the header. The only other route
+  off this screen is the one quiet blue text link in the footer, which duplicates the hamburger's
+  business entry and exists because a link a first-time visitor can see beats one they have to open
+  a menu to find.</p>
+  <p><b>The pill is three tap targets, not one.</b> Each segment opens the sheet focused on its own
+  field, which is exactly what the shipped SearchBar already does through its
+  <span class="hb-num">initialFocus</span> prop, so this is a geometry change and not a new
+  mechanism.</p>
+
+  <h4>The measured numbers that drove it</h4>
+  <p>Live on /de at 390x844 the gap between the wordmark and the hamburger is
+  <b class="hb-num">243px</b>, and the first salon card sits at <b class="hb-num">y = 842</b> against
+  an <span class="hb-num">844</span> fold, so a phone's first screen carries
+  <span class="hb-num">0.00%</span> photographic area. The 250px stacked search card is what costs
+  that. Against it, every mobile entry control in the 24-app corpus is ONE row or absent: Airbnb
+  <span class="hb-num">55pt</span>, Square Go <span class="hb-num">51pt</span>, Uber Eats
+  <span class="hb-num">41pt</span>, Fresha iOS <span class="hb-num">0pt</span>. Not one of the 19
+  iOS home screens stacks three segments. This direction is that finding applied literally.</p>
+  <p><b>Does the summary actually fit? Measured with fontTools against the real Inter binary, not
+  eyeballed.</b> The pill lands at <b class="hb-num">219.1px</b> wide, because the two 12px gaps
+  spend 24 of the 243. Inside it, <span class="hb-num">163.1px</span> is text area. The empty state
+  needs <b class="hb-num">142.2px</b>, so it <b>FITS with 20.9px to spare</b>. The filled state
+  needs <b class="hb-num">254.9px</b> and <b>overflows by 91.8px</b>, which is frame B.</p>
+  <p><b>What this file renders at:</b> first salon photo top at
+  <b class="hb-num" id="hb-out-card">y = 125</b>, header
+  <span class="hb-num" id="hb-out-hdr">64px</span>, pill
+  <span class="hb-num" id="hb-out-pill">219px</span> wide against the 243px that was available,
+  <span class="hb-num" id="hb-out-cards">4</span> salon photos intersecting the fold, and
+  <span class="hb-num" id="hb-out-img">40.7%</span> photographic area in the first viewport.</p>
+
+  <h4>What it gives up</h4>
+  <p><b>1. A tap before the query language exists.</b> A first-time visitor in Basel never sees that
+  Solen indexes by TIME until they open the sheet. That is the named cost of the collapsed pill in
+  the corpus, and it lands hardest on us because we are pre-launch, so every visitor is a
+  first-timer and none of them has a saved query the summary could display.</p>
+  <p><b>2. The summary truncates, and the overflow is 91.8px.</b> Frame B shows it: the third field,
+  the one that decides whether a booking is even possible, is the one that gets cut. Fresha iOS
+  ships the identical truncation on its own summary pill. This is the direction's real weakness and
+  it is worth rejecting on purpose rather than discovering later.</p>
+  <p><b>3. Two of the three icons leave the home screen.</b> Only the magnifier survives above the
+  fold. The map pin and the calendar exist only inside the sheet.</p>
+  <p><b>4. No room for a returning-user slot.</b> The strongest returning-user pattern in the corpus
+  is a state block directly under the entry control, held independently by Zocdoc, Airbnb and
+  Fresha. This direction spends the whole top zone on one row, so an upcoming-appointment or
+  book-again block would have to push the first salon card back down. That costs nothing today,
+  because there is no booking history to show, and it costs real estate the day there is.</p>
+
+  <h4>What it deliberately does not touch</h4>
+  <p>The feed. Same horizontal rails, same real-size 231px cards, same three-row card, same 48px
+  section rhythm. The only change on this page is the header, so the first-card number is
+  attributable to the header alone and is directly comparable against the other directions.</p>
+</div>
+
+<script>
+(function(){
+  function px(n){ return Math.round(n * 10) / 10; }
+  var stage = document.querySelector('.hb-stage');
+  if (!stage) return;
+  var box = stage.getBoundingClientRect();
+  var card = document.getElementById('hb-card-1');
+  var hdr  = stage.querySelector('.hb-hdr');
+  var pill = stage.querySelector('.hb-pill');
+  if (card) document.getElementById('hb-out-card').textContent =
+    'y = ' + px(card.getBoundingClientRect().top - box.top);
+  if (hdr) document.getElementById('hb-out-hdr').textContent =
+    px(hdr.getBoundingClientRect().height) + 'px';
+  if (pill) document.getElementById('hb-out-pill').textContent =
+    px(pill.getBoundingClientRect().width) + 'px';
+  var n = 0, area = 0;
+  stage.querySelectorAll('.hb-photo').forEach(function(p){
+    var r = p.getBoundingClientRect();
+    var vh = Math.max(0, Math.min(r.bottom - box.top, 844) - Math.max(r.top - box.top, 0));
+    var vw = Math.max(0, Math.min(r.right, box.right) - Math.max(r.left, box.left));
+    if (vh > 0 && vw > 0) { n++; area += vh * vw; }
+  });
+  document.getElementById('hb-out-cards').textContent = String(n);
+  document.getElementById('hb-out-img').textContent = px(area / (390 * 844) * 100) + '%';
+})();
+</script>
+</div></div><div class="cell">
+ <div class="meta"><span class="k">C</span><span class="nm">Search owns the bar</span>
+ <span class="bt">The search bar IS the header. Hamburger moves inside it, logo shrinks to a mark. Maximum search width. Costs the spelled-out wordmark.</span></div>
+ <div class="screen"><!--
+  Grounded-in: app/[locale]/_components/homepage/SearchBar.tsx
+  Grounded-in: app/[locale]/_components/homepage/Hero.tsx
+  Grounded-in: app/[locale]/_components/homepage/MobileCategoriesRow.tsx
+  Grounded-in: app/[locale]/page.tsx
+
+  Depicts: the three-segment search entry (Service / Stadt / Zeit) -> app/[locale]/_components/homepage/SearchBar.tsx (three CollapsedRow instances + openOverlay per segment)
+  Depicts: what a segment tap opens -> app/[locale]/_components/search/SearchOverlay.tsx (segment tabs, ink submit in the footer)
+  Depicts: the hamburger and the menu sheet it opens -> app/[locale]/_components/layout/MobileMenu.tsx (+ layout/Header.tsx, the real header row this bar absorbs)
+  Depicts: salon card anatomy, photo + name + rating value + category + city + from-price -> app/[locale]/_components/homepage/SalonCard.tsx
+  Depicts: the salon feed rows -> app/[locale]/page.tsx (ForYouSalonRows, Nearby, Entdecken) with app/[locale]/_components/homepage/salonCardData.ts
+  Depicts: the "Open now" section -> lib/salon-hours.ts isOpenNow + app/api/salons/route.ts `open_now` param. The PREDICATE is real and wired; promoting it to its own home section is the net-new part.
+  Depicts: the category tiles -> app/[locale]/_components/homepage/MobileCategoriesRow.tsx (six tiles, md:hidden, pick-ordered by customer prefs), relocated below the salon rows
+  Depicts: the "Solen for business" menu entry -> app/[locale]/_components/homepage/BusinessTeaser.tsx (the for-business content this split moves off home)
+  Depicts: /de/discover -> NET-NEW: owner-specified route 2026-07-31. It does not exist yet and nothing here draws it.
+
+  Exists-check: `npm run exists "search bar"` (14 hits), `npm run exists "home feed"` (0 hits) and
+  `npm run exists "homepage search"` (1 hit) run 2026-07-31. The target surface ALREADY renders
+  SearchBar.tsx: three stacked CollapsedRow segments plus an ink submit button,
+  HEIGHT.mobile.collapsed = 250, wrapped by Hero.tsx which adds the h1 above it. This file REUSES
+  that component's real parts rather than redrawing them: its real Lucide icons (search, map-pin,
+  calendar), its real field labels, its real tokens (hairline #E4E4E7, ink #0A0A0A, ink-2 #6B6B6B,
+  sunken #F4F4F5), its real placeholder weight split (normal placeholder vs semibold value) and
+  its real DESKTOP segmented geometry (md:flex-row with md:border-r hairline dividers) at 390.
+  GRAVEYARD hits honoured: no focus ring on the search input (removed 2026-06-23); no ink fill as
+  a selected state (removed 2026-06-29), the only ink fill here is the brand mark; no homepage
+  hero image (owner's 3rd rejection 2026-07-25); no full-bleed treatment (denied 2026-07-16); and
+  nothing nav-shaped is pinned to the bottom edge (owner, 2026-07-31, by name).
+  CARD_REDESIGN_2026-07-13 honoured, all three: C1 photo ratio is the locked 5/4, so 173 by 138
+  and 231 by 185, never the superseded landscape one; C2 no availability badge and no next-slot
+  row; C11 the rating row is star + value ONLY, the review count is gone. Rating and price share
+  one row and are separated by justification, never by a dot.
+  PALETTE: every colour here is a locked token, ink #0A0A0A, ink-2 #6B6B6B, hairline #E4E4E7,
+  sunken #F4F4F5, star #FFC32B. The star carries no stroke: taste rule 4 allows the 1.60:1 star
+  when a darker companion carries the meaning, and the ink-2 rating value beside it is that
+  companion. An invented darker amber was tried here and removed, the palette is closed.
+  LANGUAGE NOTE: the mockup-english rule (owner 2026-07-24, three wired gates) outranks the
+  brief's "Swiss names stay", so all chrome AND the place names here are ASCII English. The three
+  search field labels are the one exception and are carried verbatim from SearchBar.tsx, because
+  the brief named them explicitly to stop a re-invented bar (DRIFT_LEDGER 2026-07-03).
+  The ONE thing that is actually new: the search control stops being an object placed between the
+  logo and the hamburger, and becomes the header itself, with both of them as tenants inside it.
+-->
+
+<div class="hc-root">
+
+  <!-- ============================================================
+       HEADER. This bar IS the search control. There is no header row
+       above or below it. Logo mark and hamburger live INSIDE it.
+       ============================================================ -->
+  
+    <div class="hc-bar">
+
+      <!-- the wordmark, shrunk to a mark. This is what the direction spends. -->
+      <span class="hc-mark" aria-label="Solen">S</span>
+
+      <!-- the three real CollapsedRow segments, laid out in the real desktop
+           geometry (flex row + hairline dividers) brought down to 390. -->
+      <div class="hc-fields">
+
+        <button type="button" class="hc-field hc-field--service" aria-label="Search a service">
+          <svg class="lucide lucide-search hc-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/>
+          </svg>
+          <span class="hc-fieldval hc-ph">Service</span>
+        </button>
+
+        <span class="hc-div" aria-hidden="true"></span>
+
+        <button type="button" class="hc-field" aria-label="Choose a city">
+          <svg class="lucide lucide-map-pin hc-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>
+          </svg>
+          <span class="hc-fieldval hc-ph">Stadt</span>
+        </button>
+
+        <span class="hc-div" aria-hidden="true"></span>
+
+        <button type="button" class="hc-field" aria-label="Choose a time">
+          <svg class="lucide lucide-calendar hc-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>
+          </svg>
+          <span class="hc-fieldval hc-ph">Zeit</span>
+        </button>
+
+      </div>
+
+      <!-- the ONLY navigation object on this screen. Opens MobileMenu. -->
+      <button type="button" class="hc-burger" aria-label="Menu">
+        <svg class="lucide lucide-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/>
+        </svg>
+      </button>
+
+    </div>
+  
+
+
+  <!-- ============================================================
+       SECTION 1. The feed starts here. No headline, no hero.
+       ============================================================ -->
+  <section class="hc-sec">
+    <h2 class="hc-h1">Salons in Zurich</h2>
+
+    <div class="hc-grid">
+
+      <a class="hc-card">
+        <img class="hc-photo" src="/_mockups/_assets/salon-photos/p01.jpg" alt="Salon Matter">
+        <span class="hc-name">Salon Matter</span>
+        <span class="hc-meta">
+          <span class="hc-rate"><svg class="lucide lucide-star hc-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.9</span>
+          <span class="hc-price">from CHF 55</span>
+        </span>
+        <span class="hc-sub">Hair in Zurich</span>
+      </a>
+
+      <a class="hc-card">
+        <img class="hc-photo" src="/_mockups/_assets/salon-photos/p02.jpg" alt="Salon Bleu">
+        <span class="hc-name">Salon Bleu</span>
+        <span class="hc-meta">
+          <span class="hc-rate"><svg class="lucide lucide-star hc-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.7</span>
+          <span class="hc-price">from CHF 68</span>
+        </span>
+        <span class="hc-sub">Makeup in Zurich</span>
+      </a>
+
+      <!-- worst-case name, deliberately: the longest plausible name in the set.
+           It must truncate cleanly rather than wrap or push the card taller. -->
+      <a class="hc-card">
+        <img class="hc-photo" src="/_mockups/_assets/salon-photos/p03.jpg" alt="Barbershop Limmatplatz">
+        <span class="hc-name">Barbershop Limmatplatz</span>
+        <span class="hc-meta">
+          <span class="hc-rate"><svg class="lucide lucide-star hc-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.8</span>
+          <span class="hc-price">from CHF 42</span>
+        </span>
+        <span class="hc-sub">Barber in Zurich</span>
+      </a>
+
+      <a class="hc-card">
+        <img class="hc-photo" src="/_mockups/_assets/salon-photos/p04.jpg" alt="Studio Lumiere">
+        <span class="hc-name">Studio Lumiere</span>
+        <span class="hc-meta">
+          <span class="hc-rate"><svg class="lucide lucide-star hc-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.6</span>
+          <span class="hc-price">from CHF 49</span>
+        </span>
+        <span class="hc-sub">Facial in Zurich</span>
+      </a>
+
+      <a class="hc-card">
+        <img class="hc-photo" src="/_mockups/_assets/salon-photos/p06.jpg" alt="Beauty Loft Seefeld">
+        <span class="hc-name">Beauty Loft Seefeld</span>
+        <span class="hc-meta">
+          <span class="hc-rate"><svg class="lucide lucide-star hc-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.9</span>
+          <span class="hc-price">from CHF 75</span>
+        </span>
+        <span class="hc-sub">Beauty in Zurich</span>
+      </a>
+
+      <a class="hc-card">
+        <img class="hc-photo" src="/_mockups/_assets/salon-photos/p07.jpg" alt="Studio Nord">
+        <span class="hc-name">Studio Nord</span>
+        <span class="hc-meta">
+          <span class="hc-rate"><svg class="lucide lucide-star hc-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.8</span>
+          <span class="hc-price">from CHF 60</span>
+        </span>
+        <span class="hc-sub">Makeup in Zurich</span>
+      </a>
+
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       SECTION 2. Sunken tray. Same card anatomy, wider density variant.
+       ============================================================ -->
+  <section class="hc-sec hc-sec--sunken">
+    <div class="hc-head">
+      <h3 class="hc-h2">Open now</h3>
+      <button type="button" class="hc-see" aria-label="See all open now">
+        <svg class="lucide lucide-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      </button>
+    </div>
+    <div class="hc-rail">
+      <a class="hc-card hc-card--wide">
+        <img class="hc-photo" src="/_mockups/_assets/salon-photos/p09.jpg" alt="Salon Rive">
+        <span class="hc-name">Salon Rive</span>
+        <span class="hc-meta">
+          <span class="hc-rate"><svg class="lucide lucide-star hc-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.8</span>
+          <span class="hc-price">from CHF 110</span>
+        </span>
+        <span class="hc-sub">Colour in Lausanne</span>
+      </a>
+      <a class="hc-card hc-card--wide">
+        <img class="hc-photo" src="/_mockups/_assets/salon-photos/p12.jpg" alt="Haarwerk Basel">
+        <span class="hc-name">Haarwerk Basel</span>
+        <span class="hc-meta">
+          <span class="hc-rate"><svg class="lucide lucide-star hc-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.9</span>
+          <span class="hc-price">from CHF 38</span>
+        </span>
+        <span class="hc-sub">Hair in Basel</span>
+      </a>
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       SECTION 3. Category grid, placed BELOW the first salon rows.
+       WHY_IT_LOOKS_CHEAP defect 7 measured that the live grid sits
+       ABOVE them and costs 251px of the first viewport.
+       ============================================================ -->
+  <section class="hc-sec">
+    <div class="hc-head">
+      <h3 class="hc-h2">Browse by category</h3>
+      <button type="button" class="hc-see" aria-label="See all categories">
+        <svg class="lucide lucide-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      </button>
+    </div>
+    <div class="hc-cats">
+      <button type="button" class="hc-cat">
+        <svg class="lucide lucide-scissors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/></svg>
+        <span>Hair</span>
+      </button>
+      <button type="button" class="hc-cat">
+        <svg class="lucide lucide-scissors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/></svg>
+        <span>Barber</span>
+      </button>
+      <button type="button" class="hc-cat">
+        <svg class="lucide lucide-sparkles" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"/><path d="M20 2v4"/><path d="M22 4h-4"/><circle cx="4" cy="20" r="2"/></svg>
+        <span>Nails</span>
+      </button>
+      <button type="button" class="hc-cat">
+        <svg class="lucide lucide-leaf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+        <span>Spa</span>
+      </button>
+      <button type="button" class="hc-cat">
+        <svg class="lucide lucide-hand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 11V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2"/><path d="M14 10V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>
+        <span>Massage</span>
+      </button>
+      <button type="button" class="hc-cat">
+        <svg class="lucide lucide-palette" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"/><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/></svg>
+        <span>Colour</span>
+      </button>
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       THE NOTE
+       ============================================================ -->
+  <div class="hc-note">
+    <p class="hc-note-k">hC, search owns the bar, nav moves inside it</p>
+
+    <p><b>Navigation answer.</b> There is no header row. The search control IS the header: one
+    sticky 358 by 56 pill, and the logo mark and the hamburger are tenants INSIDE it, not walls
+    around it. The wordmark shrinks to a 26px ink mark on the left. The hamburger stays on the
+    right where he likes it, 44 by 44, and it is the ONLY navigation object on the screen: it
+    opens the existing MobileMenu sheet holding account, bookings, saved, language and "Solen for
+    business", which is the single link out to /de/discover. Nothing else navigates: no stacked
+    chrome row, no tab strip, and nothing pinned along the bottom edge. Tapping any of the three
+    segments opens the existing SearchOverlay at that segment, which is exactly what the real
+    SearchBar already does (openOverlay(seg)), so there is no inline submit button: the ink commit
+    lives in the overlay footer. Home carries no paid commit action, so the one-ink-CTA rule has no
+    site on this screen.</p>
+
+    <p><b>The measured number that drove it.</b> On the live /de at 390 by 844 the gap between the
+    logo, which ends at x=87, and the hamburger, which starts at x=330, is 243px. A pill dropped
+    into that gap is 227px wide, so the search occupies <b>58.2%</b> of the row and reads as the
+    smallest of three objects. That is the arithmetic behind "the search is too small", and he is
+    right. Here the control is the full 358px bar: <b>91.8%</b> of screen width. <b>The honest
+    caveat, stated rather than buried:</b> this direction does NOT win on text pixels. One field in
+    the sandwich pill gets about 173px of text run; here three fields share about 162px between
+    them. The win is the RATIO, not the character count. The search stops looking small because it
+    stops being an object inside a row and becomes the row.</p>
+
+    <p><b>First salon card: photo top edge at y = 140</b>, which is the 76px header plus a 64px
+    heading block, against y = 842 today. All six cards of section 1 sit fully inside the 844 fold,
+    the last card bottom lands at y = 768, and the sunken band of section 2 crops in at y = 800.
+    Photographic share of the first viewport <b>43.5%</b>, against the roughly one third floor and
+    against 0.00% today.</p>
+
+    <p><b>What it gives up.</b> First, <b>the spelled-out wordmark, permanently.</b> A 26px "S" is
+    all the brand a first-time visitor sees above the fold, and in a market where nobody has heard
+    of Solen that is a real cost, not a rounding error. Second, and this is the direction's real
+    problem rather than a nuisance, <b>the bar is legible only while it is empty.</b> Measured on
+    the render, the three text runs are 85.9, 55.1 and 55.1px. The empty placeholders fit easily at
+    50.1, 34.8 and 24.9px, which is the state drawn above and it looks fine. Filled, it stops
+    fitting: canvas-measured at the real 14px semibold value weight, the time field clips on <b>all
+    four</b> of the period labels its own picker offers, the shortest of which already measures
+    60px against a 55.1px run, the city field clips on Lausanne at 65.7 and Winterthur at 73.1 and
+    on the live "current location" value at 123.4, and the service field clips on the longest entry
+    in the live service list at 103.8 against an 85.9px run. So this bar shows a beautiful
+    invitation and then truncates the answer, which is the exact opposite of the one rule every app
+    in WHY_ENTRY agrees on, that the control shows the query when a query exists. If this direction
+    is picked, that has to be solved, most likely by letting the filled bar collapse to a single
+    summary line and give up the three-way split. Third, <b>the inline submit.</b> Nothing on home
+    says "find appointments", so the commit sits one screen further away than it does today.
+    Fourth, <b>the scroll promise is a band, not a cropped card.</b> The density floor asks for a
+    visibly cropped next ITEM; what crops at y=800 is section 2's sunken tray. That is deliberate,
+    and the reason is the next paragraph.</p>
+
+    <p><b>A finding, not a design choice: the mockup photo pool is 8 photographs, not 12.</b>
+    PIL-measured this session, MD5 plus a 64 by 64 perceptual diff over
+    /_mockups/_assets/salon-photos: p04 and p05 are byte-identical, same MD5, and p01/p10,
+    p02/p08, p09/p11 are the same shot re-encoded, at mean absolute difference 0.10, 0.18 and 0.16
+    on a 0 to 255 scale. So the folder README's "12 self-hosted product seed photos" is really 8.
+    This page therefore carries <b>8 salon cards on 8 distinct photographs, zero reuse</b>, and
+    stops at three sections rather than the four the home-feed density floor asks for, because a
+    fourth salon section would have forced the same photo under two business names. That is
+    WHY_IT_LOOKS_CHEAP defect 2, which measured 19 slots against 11 photographs, reproduced inside
+    the asset folder we build every mockup from. It needs more photography, not more layout.</p>
+
+    <p><b>Second half of the same finding: what the eight photographs are actually OF.</b> I opened
+    every one rather than trusting the filenames, and the first render had a card labelled Barber
+    showing a tray of makeup brushes and a card labelled Nails showing a facial. Every label here
+    is now set to what its own photograph shows: three hair, one barbershop, two makeup, one
+    beauty flat lay, one facial. <b>The pool contains no nails, no spa and no massage photography
+    at all</b>, so those three category tiles can be navigated to but cannot be illustrated by any
+    card. A real label sitting over an unrelated photograph is the most recognisable placeholder
+    tell there is, and it is worth naming that the constraint is the asset folder, not the design.</p>
+
+    <p><b>floors:</b> a, photographic focal present, 8 distinct photos in 8 slots. b, exactly one
+    biggest element, the 28px section title. c, real numbers on every card, the rating value and
+    the CHF price. d, a semantic-colour moment, the #FFC32B star, carried by its ink-2 numeric
+    companion because the star alone computes 1.60:1 and sits below the 3:1 graphical floor. e, no
+    dead-grey zone, white and #F4F4F5 alternate across the three sections. f, worst case holds, and
+    the measurement corrected me here: I expected the long names to truncate and <b>none of them
+    does</b>. Canvas-measured at the real 14px semibold, the longest name in the set,
+    "Barbershop Limmatplatz", is 165.7px inside a 173px card, so it fits whole with about 7px to
+    spare, and every card keeps the same 214px pitch. The honest reading of that is the card is at
+    its limit rather than comfortable: one more character clips.</p>
+
+    <p><b>measured</b>, all of it read off the render at 390 by 844 with getBoundingClientRect, not
+    computed on paper: header 76; bar 358 by 56 radius 28; mark 26 at x=22; burger 44 by 44 at
+    x=324; the three segments 107.9 / 77.1 / 77.1, which is the intended 1.4/1/1, over a 264px
+    field run; grid card 173 wide with a 173 by 138 photo measuring ratio 1.254, the 5/4 C1 locked,
+    radius 16; rail card 231 wide with a 231 by 185 photo; row pitch 214; first card photo top
+    y=140; last grid card bottom y=768; section 2 crops in at y=800; six cards fully inside the
+    fold; photographic share of the first viewport 43.5%; all eight photos load; document height
+    3331. <b>Two numbers sit exactly ON their ceiling rather than under it, and I am flagging that
+    rather than rounding it away.</b> Text sizes in the first viewport are 28 / 18 / 14 / 12, which
+    is <b>four</b> distinct against a ceiling of four, not the three I first claimed, because
+    section 2's 18px heading crosses the fold. Weight 600 or above lands on <b>9 of 30</b>
+    first-viewport text leaves, so <b>30.0%</b> against the roughly 30% ceiling, not the 27.6% I
+    first claimed. Both pass and neither has headroom, and both move the moment section 2's heading
+    enters the fold, which is the same y=800 crop the scroll promise depends on. Crop survival of
+    the eight photos into the 1.254 slot runs 79.8% to 94.0%, so no photo loses more than a fifth
+    of its frame.</p>
+  </div>
+
+</div>
+
+<style>
+/* ---- self-hosted faces only, no remote deps ---- */
+@font-face{font-family:'hcInter';src:url('/_mockups/_assets/fonts/inter-latin-var.woff2') format('woff2');font-weight:100 900;font-display:swap}
+@font-face{font-family:'hcInterTight';src:url('/_mockups/_assets/fonts/inter-tight-latin-var.woff2') format('woff2');font-weight:100 900;font-display:swap}
+
+.hc-root{
+  width:390px;margin:0 auto;background:#fff;color:#0A0A0A;
+  font-family:'hcInter',system-ui,sans-serif;
+  -webkit-text-size-adjust:100%;
+  min-height:100dvh;
+  padding-bottom:40px;
+}
+.hc-root *{box-sizing:border-box}
+.hc-root button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+.hc-root a{color:inherit;text-decoration:none;cursor:pointer}
+
+/* ================= HEADER = THE SEARCH BAR ================= */
+.hc-header{
+  position:sticky;top:0;z-index:20;
+  background:#fff;
+  padding:10px 16px;                 /* header total height 76 */
+}
+.hc-bar{
+  display:flex;align-items:center;
+  width:358px;height:56px;
+  padding:0 5px;
+  background:#fff;
+  border:1px solid #E4E4E7;          /* edge-visibility route c: hairline on white */
+  border-radius:28px;
+}
+
+/* the wordmark, shrunk to a mark */
+.hc-mark{
+  flex:0 0 26px;width:26px;height:26px;
+  display:grid;place-items:center;
+  border-radius:50%;
+  background:#0A0A0A;color:#fff;
+  font-family:'hcInterTight','hcInter',system-ui,sans-serif;
+  font-size:14px;font-weight:700;line-height:1;
+  letter-spacing:-0.01em;
+}
+
+/* the three real CollapsedRow segments, real desktop geometry at 390 */
+.hc-fields{display:flex;align-items:center;flex:1;min-width:0;margin-left:8px}
+.hc-field{
+  flex:1 1 0;
+  display:flex;align-items:center;gap:6px;min-width:0;
+  height:44px;padding:0 6px;         /* 44 = the touch-target floor */
+  color:#6B6B6B;text-align:left;
+}
+.hc-field--service{flex-grow:1.4}    /* the field most likely to hold a long value */
+.hc-i{flex:0 0 16px;width:16px;height:16px}
+.hc-fieldval{
+  min-width:0;flex:1;
+  font-size:14px;line-height:18px;
+  letter-spacing:-0.005em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.hc-ph{font-weight:400;color:#6B6B6B}   /* the real placeholder weight; a value is 600 ink */
+.hc-div{flex:0 0 1px;width:1px;height:22px;background:#E4E4E7}
+
+/* the only navigation on the screen */
+.hc-burger{
+  flex:0 0 44px;width:44px;height:44px;margin-left:4px;
+  display:grid;place-items:center;color:#0A0A0A;
+}
+.hc-burger svg{width:20px;height:20px}
+
+/* ================= SECTIONS ================= */
+.hc-sec{padding:16px 16px 0}
+.hc-sec + .hc-sec{margin-top:32px}         /* 2x the 16 heading-to-body gap */
+.hc-sec--sunken{background:#F4F4F5;padding-top:20px;padding-bottom:20px}
+
+.hc-h1{
+  margin:0 0 16px;
+  font-family:'hcInterTight','hcInter',system-ui,sans-serif;
+  font-size:28px;line-height:32px;font-weight:600;
+  letter-spacing:-0.02em;color:#0A0A0A;
+}
+.hc-head{display:flex;align-items:center;justify-content:space-between;margin:0 0 16px}
+.hc-h2{
+  margin:0;
+  font-family:'hcInterTight','hcInter',system-ui,sans-serif;
+  font-size:18px;line-height:24px;font-weight:600;
+  letter-spacing:-0.015em;color:#0A0A0A;
+}
+.hc-see{width:44px;height:44px;margin:-10px -13px -10px 0;display:grid;place-items:center;color:#0A0A0A}
+.hc-see svg{width:18px;height:18px}
+
+/* ================= CARDS ================= */
+.hc-grid{display:grid;grid-template-columns:repeat(2,173px);gap:14px 12px}
+.hc-rail{display:flex;gap:12px;overflow-x:auto;margin:0 -16px;padding:0 16px 2px;scrollbar-width:none}
+.hc-rail::-webkit-scrollbar{display:none}
+
+.hc-card{display:flex;flex-direction:column;width:173px;min-width:0}
+.hc-card--wide{flex:0 0 231px;width:231px}
+
+.hc-photo{
+  display:block;width:100%;height:138px;   /* 173 by 138 = the C1-locked 5/4 */
+  object-fit:cover;border-radius:16px;background:#F4F4F5;
+}
+.hc-card--wide .hc-photo{height:185px}     /* 231 by 185, same 5/4 */
+
+.hc-name{
+  margin-top:8px;                          /* in-group gap 8 */
+  font-size:14px;line-height:18px;font-weight:600;color:#0A0A0A;
+  letter-spacing:-0.01em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+/* C11: the rating is star + value only. Rating left, price right, and the
+   justification IS the separator, so there is no dot between them. */
+.hc-meta{
+  margin-top:3px;
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  font-size:12px;line-height:15px;font-weight:400;color:#6B6B6B;
+  font-variant-numeric:tabular-nums;
+}
+.hc-rate{display:flex;align-items:center;gap:4px;min-width:0;white-space:nowrap}
+.hc-price{white-space:nowrap;flex:0 0 auto}   /* body weight, never a second anchor */
+/* locked star token, fill only. The ink-2 value beside it is the darker
+   companion taste rule 4 requires, so no stroke is needed or invented. */
+.hc-star{flex:0 0 12px;width:12px;height:12px;fill:#FFC32B;stroke:none}
+.hc-sub{
+  margin-top:3px;
+  font-size:12px;line-height:15px;font-weight:400;color:#6B6B6B;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+
+/* ================= CATEGORY TILES ================= */
+.hc-cats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.hc-cat{
+  height:76px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+  background:#fff;border:1px solid #E4E4E7;border-radius:16px;
+  font-size:12px;line-height:15px;font-weight:400;color:#0A0A0A;
+}
+.hc-cat svg{width:22px;height:22px;color:#0A0A0A}
+
+/* ================= NOTE ================= */
+.hc-note{
+  margin:32px 16px 0;padding:16px;
+  background:#F4F4F5;border-radius:16px;
+  font-size:12px;line-height:18px;color:#0A0A0A;
+}
+.hc-note p{margin:0 0 12px}
+.hc-note p:last-child{margin-bottom:0}
+.hc-note b{font-weight:600}
+.hc-note-k{font-weight:600;font-size:14px;line-height:18px}
+</style>
+</div></div><div class="cell">
+ <div class="meta"><span class="k">D</span><span class="nm">Category-led</span>
+ <span class="bt">No persistent search at all, just an icon. Opens on categories and salons. Refuses the premise: if search is not in the header, nothing is too small.</span></div>
+ <div class="screen"><!--
+  hD , HOME at /de , "No persistent search, category-led"
+
+  Grounded-in: app/[locale]/_components/homepage/SearchBar.tsx
+  Grounded-in: app/[locale]/_components/homepage/Hero.tsx
+  Grounded-in: app/[locale]/_components/homepage/SalonCard.tsx
+  Grounded-in: app/[locale]/_components/homepage/MobileCategoriesRow.tsx
+  Grounded-in: app/[locale]/page.tsx
+
+  Depicts: sticky header, wordmark + search glyph + hamburger -> app/[locale]/_components/layout/Header.tsx
+           (the live header already carries the wordmark at x=16 and a 44x44 hamburger at x=330;
+           this direction ADDS one 44x44 search icon button as the hamburger's peer, and removes
+           nothing else from it)
+  Depicts: category strip, 7 icon tiles in one scrolling row -> app/[locale]/_components/homepage/MobileCategoriesRow.tsx
+           (exists, 6 tiles, md:hidden, already pick-ordered by customer prefs; the delta is
+           7 tiles in one horizontal row instead of a 3x2 grid)
+  Depicts: salon cards, 5:4 photo + name + rating meta + from-price -> app/[locale]/_components/homepage/SalonCard.tsx
+  Depicts: the save control on the photo -> app/[locale]/_components/homepage/HeartButton.tsx,
+           treatment from lib/frost-glass.ts FROST_GLASS
+  Depicts: section titles with a trailing ink chevron -> app/[locale]/_components/homepage/SectionHeader.tsx
+           (SectionTitle appends the chevron at all viewports)
+  Depicts: the two titled feed sections -> app/[locale]/page.tsx
+           (already composes ForYouSalonRows, RecentlyViewed, Nearby, Entdecken as titled sections;
+           this draws two of that same kind, not a new section type)
+  Depicts: the three-field search sheet behind the icon -> app/[locale]/_components/homepage/SearchBar.tsx
+           collapsed layer, opening into app/[locale]/_components/search/SearchOverlay.tsx
+  Depicts: the for-business link at the foot -> app/[locale]/_components/homepage/BusinessTeaser.tsx
+           (exists on /de today and points at app/[locale]/fuer-salons, which exists)
+  Depicts: /de/discover as that link's target -> NET-NEW. Verified absent: there is no
+           app/[locale]/discover directory. This is the owner's 2026-07-31 answer, the landing page
+           gets a new path while the customer home stays at /de. Nothing else in this file is new.
+
+  Exists-check: `npm run exists "home feed"` = 0 matches.
+  `npm run exists "search bar"` = SearchBar at app/[locale]/_components/homepage/SearchBar.tsx
+  plus a legacy copy, with a graveyard warning. `npm run exists "salon card"` = SalonCard at
+  app/[locale]/_components/homepage/SalonCard.tsx plus a legacy and a dev-overhaul copy. Both are
+  REUSED here, never re-invented.
+  GRAVEYARD and REJECTED-TREATMENT hits honoured, none re-proposed: homepage hero image (owner's
+  3rd rejection 2026-07-25), full-bleed direction (denied 2026-07-16), search-morph scroll-expand
+  on Location and Date (removed 2026-06-30), "Top bewertet" photo-overlay carousel (removed
+  2026-07-02), FeaturedSalonCarousel (deleted 2026-06-30, fabricated data), last-minute strip
+  (removed 2026-06-11), ink/black selected state (removed 2026-06-29), search focus ring + back
+  arrow (removed 2026-06-23), the 2026-07-18 revert recorded at REMOVED.md:85 , every card here
+  carries its whisper shadow in BOTH sections and keeps that chrome intact on the tray exactly as
+  on white , the second nav-shaped bar at the foot of a screen, which this file does not draw and
+  which the owner ruled out again on 2026-07-31 , and the card review count, superseded by the
+  converged card C11 (CARD_REDESIGN_2026-07-13: a card's rating is star + value ONLY, the count
+  belongs to results pages). Corroborated independently by CORPUS.md's named dissent: Airbnb shows
+  the value with no count on home cards and adds the count only on results.
+  The one thing that is actually NEW: the home screen carries no search FIELD at all. The 250px
+  three-field stack moves off /de and behind a 44x44 icon in a sticky header.
+
+  measured: every geometry below comes from a number someone took, never eyeballed.
+  M1. Live /de at 390x844, getBoundingClientRect, 2026-07-31: header 84 tall, logo 28px type /
+      71px wide at x=16, hamburger 44x44 at x=330, gap between them 243, h1 31.2px/700 at y=124,
+      subline 18px at y=170, search stack 358x250 at y=218, four 46px rows, FIRST SALON CARD AT
+      y=842 against an 844 fold.
+  M2. Source constants read on disk 2026-07-31: SearchBar.tsx HEIGHT.mobile.collapsed = 250,
+      line 99; CollapsedRow h-[46px] rounded-[6px] px-[14px] border-s-border, line 690;
+      submit h-12 rounded-[6px] text-[15px] font-bold bg-s-ink, line 371; Search / MapPin /
+      Calendar size={18} strokeWidth={2}, lines 310 / 318 / 325; SalonCard aspect-[5/4],
+      CORPUS.md section 6; tailwind.config.js:275 whisper, :279 elevation-2; lib/frost-glass.ts
+      FROST_GLASS verbatim.
+  M3. PIL pixel-sample of the shared mockup photo pool, run this session. Width x height, then
+      w/h: p01 800x600 = 1.333 . p02 800x533 = 1.501 . p03 800x533 . p04 800x533 . p05 800x533 .
+      p06 800x523 = 1.530 . p07 800x800 = 1.000 . p08 800x533 . p09 800x534 . p10 800x600 .
+      p11 800x534 . p12 800x534.
+      A 64x64 mean-absolute-difference across all 66 pairs found FOUR collisions:
+      p01 vs p10 MAD 0.10 . p02 vs p08 MAD 0.18 . p04 vs p05 MAD 0.00, byte-identical, md5
+      6dedd4f04585ecb69b7aacf50fe2bc7d . p09 vs p11 MAD 0.16.
+      TWELVE FILES, EIGHT DISTINCT PHOTOGRAPHS. This mockup therefore renders EIGHT salon cards,
+      one per distinct photograph, zero reuse. Rendering more would reproduce the second-ranked
+      defect in WHY_IT_LOOKS_CHEAP, nineteen slots filled by eleven photographs with the same
+      interior under three business names, the most visible cheapness tell on the live page.
+  M4. Reference bands from _design-system/sections/home-feed/CORPUS.md, a 34-screen tally set, and
+      research/WHY_ENTRY.md, four PIL-measured mobile entry-control heights.
+
+  floors: (a) photographic focal = yes, 43.3% of the first viewport is salon photography across six
+  cards. (b) one element clearly the biggest = the photo band; no text competes with it, which is
+  the FLOORS LAW 6 escape clause that Airbnb iOS, Airbnb web and Fresha iOS all exercise, CORPUS
+  section 4. Within the chrome the 28px wordmark is unambiguously the largest text, so the >=28px
+  absolute and the >=1.8x ratio, 28/14 = 2.0x, also pass on their own terms. (c) tabular real
+  number = every card carries a from-price, tabular-nums, Art. 13 PBV. (d) semantic-color moment =
+  the #FFC32B rating star, given a darker companion, the numeric value at #6B6B6B, because its own
+  contrast is 1.60:1 on white and fails the 3:1 graphical floor when it carries meaning alone.
+  (e) no dead-grey zone = the only #F4F4F5 areas are the seven category tiles and the "New in
+  Basel" tray, both carrying content. (f) worst-case content = "Coiffeur Steinenvorstadt" at 24
+  characters and "Muse Beauty Studio" at 18 set in the real 14px/500 in a 172px column, truncating
+  on the name line only; the price line never truncates and the two-ink-anchor rule is not broken
+  because the price is a colour step, not a size or weight step.
+-->
+
+<style>
+@font-face {
+  font-family: "InterVar";
+  src: url("/_mockups/_assets/fonts/inter-latin-var.woff2") format("woff2");
+  font-weight: 100 900; font-display: swap; font-style: normal;
+}
+@font-face {
+  font-family: "InterTightVar";
+  src: url("/_mockups/_assets/fonts/inter-tight-latin-var.woff2") format("woff2");
+  font-weight: 100 900; font-display: swap; font-style: normal;
+}
+
+.hD-root {
+  /* LOCKED tokens, literal values only. */
+  --hD-ink: #0A0A0A;
+  --hD-ink2: #6B6B6B;
+  --hD-border: #E4E4E7;
+  --hD-sunken: #F4F4F5;
+  --hD-accent: #276EF1;
+  --hD-star: #FFC32B;
+  --hD-whisper: 0 1px 3px rgba(10,10,10,0.04), 0 10px 28px -14px rgba(10,10,10,0.10);
+  --hD-elev2: 0 2px 8px rgba(50,47,44,0.09);
+
+  width: 390px;
+  margin: 0 auto;
+  background: #ffffff;
+  color: var(--hD-ink);
+  font-family: "InterVar", -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+}
+body { margin: 0; }   /* so the reported y values are absolute, not offset by the UA's 8px */
+.hD-root *, .hD-root *::before, .hD-root *::after { box-sizing: border-box; }
+.hD-root img { display: block; max-width: 100%; }
+
+/* ============================================================
+   HEADER . 64px, sticky. logo left, search icon + hamburger right.
+   The measured 243px gap between logo and burger is left EMPTY on
+   purpose: this direction refuses to put a control there at all.
+   ============================================================ */
+.hD-header {
+  position: sticky; top: 0; z-index: 20;
+  height: 64px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--hD-border);
+  background: #ffffff;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.hD-logo {
+  font-family: "InterTightVar", "InterVar", sans-serif;
+  font-size: 28px; line-height: 28px; font-weight: 700;
+  letter-spacing: -0.03em; color: var(--hD-ink);
+}
+.hD-navgroup { display: flex; align-items: center; gap: 4px; }
+.hD-iconbtn {
+  width: 44px; height: 44px;          /* touch-target floor, both of them */
+  border: 0; padding: 0; background: transparent;
+  border-radius: 999px;
+  display: grid; place-items: center;
+  color: var(--hD-ink); cursor: pointer;
+}
+
+/* ============================================================
+   CATEGORY STRIP . 104px, one row, scrolls. This is the entry.
+   ============================================================ */
+.hD-cats {
+  height: 104px;
+  padding: 14px 16px;
+  display: flex; gap: 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.hD-cats::-webkit-scrollbar { display: none; }
+.hD-cat { width: 68px; flex: 0 0 68px; text-align: center; text-decoration: none; color: inherit; }
+.hD-cat-tile {
+  width: 54px; height: 54px; margin: 0 auto;
+  border-radius: 999px;
+  background: var(--hD-sunken);
+  display: grid; place-items: center;
+  color: var(--hD-ink);
+}
+.hD-cat-label {
+  margin-top: 6px;
+  font-size: 12px; line-height: 16px; font-weight: 400;
+  color: var(--hD-ink);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* ============================================================
+   SECTION HEADING . 56px block, 20 + 24 + 12
+   ============================================================ */
+.hD-sechead {
+  padding: 20px 16px 12px;
+  display: flex; align-items: center; gap: 4px;
+}
+.hD-sechead h2 {
+  margin: 0;
+  font-size: 18px; line-height: 24px; font-weight: 600;
+  letter-spacing: -0.015em; color: var(--hD-ink);
+}
+.hD-sechead svg { color: var(--hD-ink); }   /* see-all arrow stays ink, never blue */
+
+/* ============================================================
+   SALON CARD . ONE anatomy, IDENTICAL in both sections, chrome
+   included: the whisper shadow rides the card onto the tray too.
+   photo 172x138 at 5:4 . name 14/500 . meta 12/400 . price 12/400 ink
+   Rating is star + value only, no count, per the converged card C11.
+   card height = 138 + 8 + 20 + 2 + 17 + 2 + 17 = 204
+   ============================================================ */
+.hD-grid {
+  padding: 0 16px;
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  column-gap: 14px; row-gap: 16px;
+}
+.hD-card { display: block; text-decoration: none; color: inherit; }
+.hD-photo {
+  position: relative;
+  height: 138px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--hD-sunken);
+  box-shadow: var(--hD-whisper);
+}
+.hD-photo img { width: 100%; height: 100%; object-fit: cover; }
+.hD-heart {
+  position: absolute; top: 0; right: 0;
+  width: 44px; height: 44px;              /* 44px target, 32px visible disc */
+  border: 0; padding: 0; background: transparent;
+  display: grid; place-items: center; cursor: pointer;
+}
+.hD-heart span {
+  width: 32px; height: 32px; border-radius: 999px;
+  display: grid; place-items: center;
+  /* lib/frost-glass.ts FROST_GLASS, verbatim */
+  background: rgba(255,255,255,0.80);
+  backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+  border: 1px solid rgba(255,255,255,0.6);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.4);
+  color: var(--hD-ink);
+}
+.hD-name {
+  margin-top: 8px;
+  font-size: 14px; line-height: 20px; font-weight: 500;
+  letter-spacing: -0.005em; color: var(--hD-ink);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.hD-meta {
+  margin-top: 2px;
+  display: flex; align-items: center; gap: 3px;
+  font-size: 12px; line-height: 17px; font-weight: 400;
+  color: var(--hD-ink2);
+  white-space: nowrap; overflow: hidden;
+}
+.hD-meta svg { flex: 0 0 12px; }
+.hD-meta span { overflow: hidden; text-overflow: ellipsis; }
+.hD-price {
+  margin-top: 2px;
+  font-size: 12px; line-height: 17px; font-weight: 400;
+  color: var(--hD-ink);                     /* colour step, not a size or weight step */
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ============================================================
+   TRAY SECTION . the one background step down the page.
+   The tray adds ground UNDER the cards; the cards keep their own
+   chrome unchanged, FLOORS LAW 8, the same thing looks the same
+   everywhere.
+   ============================================================ */
+.hD-tray { margin-top: 32px; padding: 24px 0; background: var(--hD-sunken); }
+.hD-tray .hD-sechead { padding: 0 16px 12px; }
+
+/* ============================================================
+   BUSINESS BAND . the doorway to /de/discover
+   ============================================================ */
+.hD-biz {
+  padding: 28px 16px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.hD-biz p { margin: 0; font-size: 14px; line-height: 20px; color: var(--hD-ink2); }
+.hD-biz a {
+  display: inline-flex; align-items: center; gap: 2px;
+  min-height: 44px;
+  font-size: 14px; line-height: 20px; font-weight: 500;
+  color: var(--hD-accent); text-decoration: none;
+}
+
+/* ============================================================
+   ANNOTATION . everything below here is NOT the home screen
+   ============================================================ */
+.hD-annot {
+  margin-top: 8px;
+  border-top: 1px solid var(--hD-border);
+  padding: 28px 16px 12px;
+}
+.hD-annot-k { font-size: 12px; line-height: 17px; font-weight: 600; color: var(--hD-ink); }
+.hD-annot-v { margin-top: 4px; font-size: 12px; line-height: 17px; color: var(--hD-ink2); }
+
+/* the REAL search bar, reused not redrawn. destination of the header icon. */
+.hD-sheetwrap { padding: 12px 16px 0; }
+.hD-sheet {
+  background: #ffffff;
+  border-radius: 22px;
+  box-shadow: var(--hD-elev2);
+  padding: 16px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.hD-field {
+  height: 46px;
+  border-radius: 6px;
+  background: #ffffff;
+  border: 1px solid var(--hD-border);
+  padding: 0 14px;
+  display: flex; align-items: center;
+}
+.hD-field-icon { display: flex; align-items: center; padding-right: 12px; color: var(--hD-ink2); }
+.hD-field-val {
+  font-size: 14px; line-height: 20px; font-weight: 400;
+  letter-spacing: -0.005em; color: var(--hD-ink2);
+  min-width: 0; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.hD-submit {
+  height: 48px;
+  border: 0; border-radius: 6px;
+  background: var(--hD-ink); color: #ffffff;
+  font-family: "InterTightVar", "InterVar", sans-serif;
+  font-size: 15px; font-weight: 700; letter-spacing: -0.01em;
+  cursor: pointer;
+}
+
+/* ============================================================
+   NOTE
+   ============================================================ */
+.hD-note {
+  margin: 24px 0 0;
+  padding: 20px 16px 28px;
+  border-top: 1px solid var(--hD-border);
+  background: var(--hD-sunken);
+  font-size: 13px; line-height: 19px; color: var(--hD-ink);
+}
+.hD-note h3 {
+  margin: 0 0 4px; font-size: 13px; line-height: 19px; font-weight: 600;
+  color: var(--hD-ink);
+}
+.hD-note h3:not(:first-child) { margin-top: 16px; }
+.hD-note p { margin: 0 0 8px; color: var(--hD-ink2); }
+.hD-note p:last-child { margin-bottom: 0; }
+.hD-note b { color: var(--hD-ink); font-weight: 600; }
+.hD-note code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px; color: var(--hD-ink);
+}
+</style>
+
+<div class="hD-root">
+
+  <!-- ========================== HEADER . y 0 to 64 ========================== -->
+  
+    <div class="hD-logo">solen</div>
+    <div class="hD-navgroup">
+      <button class="hD-iconbtn" type="button" aria-label="Search">
+        <svg class="lucide lucide-search" data-lucide="search" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/>
+        </svg>
+      </button>
+      <button class="hD-iconbtn" type="button" aria-label="Menu">
+        <svg class="lucide lucide-menu" data-lucide="menu" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/>
+        </svg>
+      </button>
+    </div>
+  
+
+  <!-- ================== CATEGORY STRIP . y 64 to 168 ================== -->
+  <nav class="hD-cats" aria-label="Categories">
+    <a class="hD-cat" href="#">
+      <span class="hD-cat-tile">
+        <svg class="lucide lucide-scissors" data-lucide="scissors" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/>
+        </svg>
+      </span>
+      <div class="hD-cat-label">Coiffeur</div>
+    </a>
+    <a class="hD-cat" href="#">
+      <span class="hD-cat-tile">
+        <!-- same scissors glyph as Coiffeur, exactly as SearchBar.tsx ships it; the labels disambiguate -->
+        <svg class="lucide lucide-scissors" data-lucide="scissors" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/>
+        </svg>
+      </span>
+      <div class="hD-cat-label">Barbershop</div>
+    </a>
+    <a class="hD-cat" href="#">
+      <span class="hD-cat-tile">
+        <svg class="lucide lucide-sparkles" data-lucide="sparkles" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"/><path d="M20 2v4"/><path d="M22 4h-4"/><circle cx="4" cy="20" r="2"/>
+        </svg>
+      </span>
+      <div class="hD-cat-label">Nails</div>
+    </a>
+    <a class="hD-cat" href="#">
+      <span class="hD-cat-tile">
+        <svg class="lucide lucide-leaf" data-lucide="leaf" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+        </svg>
+      </span>
+      <div class="hD-cat-label">Spa</div>
+    </a>
+    <a class="hD-cat" href="#">
+      <span class="hD-cat-tile">
+        <svg class="lucide lucide-hand" data-lucide="hand" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M18 11V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2"/><path d="M14 10V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/>
+        </svg>
+      </span>
+      <div class="hD-cat-label">Massage</div>
+    </a>
+    <a class="hD-cat" href="#">
+      <span class="hD-cat-tile">
+        <svg class="lucide lucide-palette" data-lucide="palette" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"/><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/>
+        </svg>
+      </span>
+      <div class="hD-cat-label">Colour</div>
+    </a>
+    <a class="hD-cat" href="#">
+      <span class="hD-cat-tile">
+        <svg class="lucide lucide-footprints" data-lucide="footprints" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 16v-2.38C4 11.5 2.97 10.5 3 8c.03-2.72 1.49-6 4.5-6C9.37 2 10 3.8 10 5.5c0 3.11-2 5.66-2 8.68V16a2 2 0 1 1-4 0Z"/><path d="M20 20v-2.38c0-2.12 1.03-3.12 1-5.62-.03-2.72-1.49-6-4.5-6C14.63 6 14 7.8 14 9.5c0 3.11 2 5.66 2 8.68V20a2 2 0 1 0 4 0Z"/><path d="M16 17h4"/><path d="M4 13h4"/>
+        </svg>
+      </span>
+      <div class="hD-cat-label">Pedicure</div>
+    </a>
+  </nav>
+
+  <!-- =============== SECTION 1 heading . y 168 to 224 =============== -->
+  <div class="hD-sechead">
+    <h2>Popular in Basel</h2>
+    <svg class="lucide lucide-chevron-right" data-lucide="chevron-right" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+  </div>
+
+  <!-- ============ SALON GRID . first card top = y 224 ============ -->
+  <div class="hD-grid">
+
+    <a class="hD-card" href="#">
+      <div class="hD-photo">
+        <img src="/_mockups/_assets/salon-photos/p01.jpg" alt="Cuts &amp; Culture">
+        <button class="hD-heart" type="button" aria-label="Save Cuts and Culture"><span>
+          <svg class="lucide lucide-heart" data-lucide="heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+        </span></button>
+      </div>
+      <div class="hD-name">Cuts &amp; Culture</div>
+      <div class="hD-meta">
+        <svg class="lucide lucide-star" data-lucide="star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+        <span>4.8</span>
+      </div>
+      <div class="hD-price">from CHF 15</div>
+    </a>
+
+    <a class="hD-card" href="#">
+      <div class="hD-photo">
+        <img src="/_mockups/_assets/salon-photos/p02.jpg" alt="Glow Lab Basel">
+        <button class="hD-heart" type="button" aria-label="Save Glow Lab Basel"><span>
+          <svg class="lucide lucide-heart" data-lucide="heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+        </span></button>
+      </div>
+      <div class="hD-name">Glow Lab Basel</div>
+      <div class="hD-meta">
+        <svg class="lucide lucide-star" data-lucide="star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+        <span>4.9</span>
+      </div>
+      <div class="hD-price">from CHF 89</div>
+    </a>
+
+    <a class="hD-card" href="#">
+      <div class="hD-photo">
+        <img src="/_mockups/_assets/salon-photos/p03.jpg" alt="Haarsalon Margot">
+        <button class="hD-heart" type="button" aria-label="Save Haarsalon Margot"><span>
+          <svg class="lucide lucide-heart" data-lucide="heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+        </span></button>
+      </div>
+      <div class="hD-name">Haarsalon Margot</div>
+      <div class="hD-meta">
+        <svg class="lucide lucide-star" data-lucide="star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+        <span>4.7</span>
+      </div>
+      <div class="hD-price">from CHF 55</div>
+    </a>
+
+    <a class="hD-card" href="#">
+      <div class="hD-photo">
+        <img src="/_mockups/_assets/salon-photos/p04.jpg" alt="Nail Studio Bliss">
+        <button class="hD-heart" type="button" aria-label="Save Nail Studio Bliss"><span>
+          <svg class="lucide lucide-heart" data-lucide="heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+        </span></button>
+      </div>
+      <div class="hD-name">Nail Studio Bliss</div>
+      <div class="hD-meta">
+        <svg class="lucide lucide-star" data-lucide="star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+        <span>4.9</span>
+      </div>
+      <div class="hD-price">from CHF 39</div>
+    </a>
+
+    <a class="hD-card" href="#">
+      <div class="hD-photo">
+        <img src="/_mockups/_assets/salon-photos/p06.jpg" alt="Velvet Face">
+        <button class="hD-heart" type="button" aria-label="Save Velvet Face"><span>
+          <svg class="lucide lucide-heart" data-lucide="heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+        </span></button>
+      </div>
+      <div class="hD-name">Velvet Face</div>
+      <div class="hD-meta">
+        <svg class="lucide lucide-star" data-lucide="star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+        <span>4.6</span>
+      </div>
+      <div class="hD-price">from CHF 95</div>
+    </a>
+
+    <a class="hD-card" href="#">
+      <div class="hD-photo">
+        <img src="/_mockups/_assets/salon-photos/p07.jpg" alt="Muse Beauty Studio">
+        <button class="hD-heart" type="button" aria-label="Save Muse Beauty Studio"><span>
+          <svg class="lucide lucide-heart" data-lucide="heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+        </span></button>
+      </div>
+      <div class="hD-name">Muse Beauty Studio</div>
+      <div class="hD-meta">
+        <svg class="lucide lucide-star" data-lucide="star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+        <span>4.8</span>
+      </div>
+      <div class="hD-price">from CHF 62</div>
+    </a>
+
+  </div>
+
+  <!-- ============= SECTION 2 . the one background step ============= -->
+  <section class="hD-tray">
+    <div class="hD-sechead">
+      <h2>New in Basel</h2>
+      <svg class="lucide lucide-chevron-right" data-lucide="chevron-right" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+    </div>
+    <div class="hD-grid">
+
+      <a class="hD-card" href="#">
+        <div class="hD-photo">
+          <img src="/_mockups/_assets/salon-photos/p09.jpg" alt="Rouge Studio">
+          <button class="hD-heart" type="button" aria-label="Save Rouge Studio"><span>
+            <svg class="lucide lucide-heart" data-lucide="heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+          </span></button>
+        </div>
+        <div class="hD-name">Rouge Studio</div>
+        <div class="hD-meta">
+          <svg class="lucide lucide-star" data-lucide="star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+          <span>4.7</span>
+        </div>
+        <div class="hD-price">from CHF 48</div>
+      </a>
+
+      <a class="hD-card" href="#">
+        <div class="hD-photo">
+          <img src="/_mockups/_assets/salon-photos/p12.jpg" alt="Coiffeur Steinenvorstadt">
+          <button class="hD-heart" type="button" aria-label="Save Coiffeur Steinenvorstadt"><span>
+            <svg class="lucide lucide-heart" data-lucide="heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+          </span></button>
+        </div>
+        <div class="hD-name">Coiffeur Steinenvorstadt</div>
+        <div class="hD-meta">
+          <svg class="lucide lucide-star" data-lucide="star" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+          <span>5.0</span>
+        </div>
+        <div class="hD-price">from CHF 58</div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ============= SECTION 3 . the doorway to the other page ============= -->
+  <div class="hD-biz">
+    <p>Are you a salon?</p>
+    <a href="/de/discover">See how Solen works
+      <svg class="lucide lucide-chevron-right" data-lucide="chevron-right" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+    </a>
+  </div>
+
+  <!-- ===================================================================
+       NOT THE HOME SCREEN. This is what the header search icon opens.
+       Shown only to prove the real SearchBar was reused, not redrawn.
+       =================================================================== -->
+  <div class="hD-annot">
+    <div class="hD-annot-k">Behind the search icon. Not part of the home scroll.</div>
+    <div class="hD-annot-v">
+      The real SearchBar collapsed layer, unchanged: three CollapsedRow fields at h-[46px]
+      rounded-[6px] with the real Search / MapPin / Calendar glyphs at 18px, and the real ink
+      commit button. It renders at 248px here against the shipped HEIGHT.mobile.collapsed of 250,
+      the 2px slack the source already carries. This direction does not shrink it. It moves it.
+      Field labels and the commit label are shown in English because mockup chrome is English; the
+      shipped strings are the German ones the brief named.
+    </div>
+  </div>
+  <div class="hD-sheetwrap">
+    <div class="hD-sheet">
+      <div class="hD-field">
+        <span class="hD-field-icon">
+          <svg class="lucide lucide-search" data-lucide="search" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+        </span>
+        <span class="hD-field-val">Service</span>
+      </div>
+      <div class="hD-field">
+        <span class="hD-field-icon">
+          <svg class="lucide lucide-map-pin" data-lucide="map-pin" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+        </span>
+        <span class="hD-field-val">City</span>
+      </div>
+      <div class="hD-field">
+        <span class="hD-field-icon">
+          <svg class="lucide lucide-calendar" data-lucide="calendar" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+        </span>
+        <span class="hD-field-val">Time</span>
+      </div>
+      <button class="hD-submit" type="button">Find appointments</button>
+    </div>
+  </div>
+
+  <!-- ============================== NOTE ============================== -->
+  <div class="hD-note">
+    <h3>hD . No persistent search, category-led. HOME at /de.</h3>
+    <p>
+      The bet: refuse the premise of the complaint. If nothing tries to sit between the logo and the
+      hamburger, nothing is too small. The 250px three-field stack leaves the home screen entirely
+      and the screen opens on what we actually have.
+    </p>
+
+    <h3>Navigation answer, stated so it is not implied</h3>
+    <p>
+      <b>Search is a 44x44 icon button in a 64px sticky header, immediately left of the hamburger.
+      It is a peer of the hamburger, not a field.</b> Tapping it opens the real SearchBar collapsed
+      layer full width, the panel above, which is Solen's existing <code>SearchOverlay</code>
+      mechanism, so this is a geometry change and not a new system. The measured 243px gap between
+      logo and burger stays deliberately empty. Category navigation lives in the 104px strip
+      directly under the header, seven tiles with about 4.6 visible plus a cropped fifth, so the
+      taxonomy is browsable without opening anything. City is resolved silently and then PROVEN in
+      the section title "Popular in Basel", the Square Go move; changing it costs one tap on the
+      search icon. <b>The foot of the screen carries nothing at all.</b> The sticky header is the
+      only chrome on the page, which is exactly why the search glyph has to live in it: it is the
+      one thing that never scrolls away.
+    </p>
+
+    <h3>The measured number that drove it</h3>
+    <p>
+      <b>The first salon card on live /de sits at y=842 against an 844px fold.</b> One pixel of
+      salon inside the whole first screen. Removing the 84px header's 20px of slack, the 31.2px
+      promise headline, the 18px subline and the 358x250 search stack is what buys it back.
+      Secondary: WHY_ENTRY's four measured mobile entry controls are 55pt Airbnb, 51pt Square Go,
+      41pt Uber Eats and 0pt Fresha iOS. Every mobile entry control in that 24-app sample is one row
+      or absent. Ours is 250. This direction takes the Fresha iOS end of that range.
+    </p>
+
+    <h3>Where things land, at 390x844</h3>
+    <p>
+      Header 0 to 64. Category strip 64 to 168. Section title 168 to 224.
+      <b>First salon card top: y = 224.</b> That is 618px earlier than today.
+      Row 2 at 444, row 3 at 664 with its price line cropping at the fold, which is the scroll
+      promise. Six salon cards inside the first viewport against a floor of four.
+      Photography 142,416 of 329,160 px = <b>43.3%</b> against the roughly 33% imagery floor; the
+      same viewport measures 0.00% today. Four type sizes exactly, 28 / 18 / 14 / 12, spread 2.33x.
+      Weight 600 or heavier on 2 of 25 visible text leaves = <b>8.0%</b> against the roughly 30%
+      ceiling, near Airbnb's measured 3.1%, and the range is kept by a size step, a weight step of
+      name 500 against meta 400, and a colour step of price ink against meta grey, so this is not
+      the flattening rejected 2026-07-29. Zero controls under 44px.
+    </p>
+    <p>
+      <b>None of the numbers in this block are arithmetic.</b> They were taken off the rendered page
+      at 390x844 with getBoundingClientRect and getComputedStyle after the file was written, which
+      is also how the 8px the browser adds by default got caught and zeroed. Eight images requested,
+      eight loaded, zero broken, eight distinct sources.
+    </p>
+
+    <h3>Why there are eight cards and not twelve</h3>
+    <p>
+      I pixel-sampled the shared mockup photo pool before building. <b>Twelve files, eight distinct
+      photographs.</b> p04 and p05 are byte-identical, md5 6dedd4f04585ecb69b7aacf50fe2bc7d, and
+      p01/p10, p02/p08, p09/p11 each register a 64x64 mean-absolute-difference under 0.2, which is
+      the same photograph re-encoded. Filling more slots would have put one interior under two
+      business names on one screen, which is the second-ranked defect in WHY_IT_LOOKS_CHEAP and the
+      most recognisable "marketplace with no supply" tell there is. So this renders eight cards,
+      eight photographs, zero reuse. <b>The asset pool is the constraint, not the layout.</b> If
+      other directions are being built from this same folder, they are all working with eight.
+    </p>
+
+    <h3>What this direction gives up</h3>
+    <p>
+      <b>1. Discoverability of search, and the corpus puts a number on it.</b> 29 of 34 home feeds
+      put a search field or pill in the top zone. The 5 that demote it to an icon or a tab
+      destination are Fresha, Resy, ClassPass, Skip and Nike, and every one is an iOS app whose user
+      already installed it. Solen is pre-launch and is all-new-visitors by definition, WHY_ENTRY
+      4c. That is exactly the population that most needs the query language taught, and this is the
+      direction that teaches it least. It is the sharpest cost in the set and I am not softening it.
+    </p>
+    <p>
+      <b>2. The time constraint disappears from the home screen.</b> A grid cannot express
+      "Saturday morning". Someone whose binding constraint is when, not what, has to find the icon
+      first. For an appointment marketplace that is the constraint deciding whether a result exists
+      at all.
+    </p>
+    <p>
+      <b>3. It loads the whole burden onto feed quality and ranking.</b> Removing the search field
+      removes the exit, so the first viewport now has to be good enough to browse. That is real
+      backend ranking work, not a layout change.
+    </p>
+    <p>
+      <b>4. It reads "put the search on the top" most loosely of any direction here.</b> The only
+      thing at the top is a 22px glyph in a 44px button. If he meant a visible bar, this is the
+      direction that misses.
+    </p>
+
+    <h3>Six things surfaced rather than smoothed over</h3>
+    <p>
+      <b>0. The card shows no category word, and that was a gate's call, not mine.</b> I first wrote
+      the meta line as the rating value, a small separator, then the category. The separator gate
+      refused it and named the rule: when two bits do not differ in colour or weight, they go on
+      separate lines, never on one line joined by a dot. Rather than spend a fourth text line I cut
+      the category, because on a photo-first card the photograph already says barbershop or nail
+      studio, and the category strip at the top of this very screen is the categorical navigation,
+      so the word was repeating what two other things already say. <b>The cost, named:</b> a
+      screen-reader user now hears the salon name and a price and no category at all, so if this
+      direction is picked the category belongs in the link's accessible name even though it is off
+      the visible card.
+    </p>
+    <p>
+      <b>A. The brief's LOCKED list says card radius 16; the shipped SalonCard photo is
+      <code>rounded-[22px]</code></b>, CORPUS.md section 6, confirmed in SalonCard.tsx. I followed
+      the brief's 16 literally. If the intent was to match the shipped card, this is a one-value
+      change needing one sentence to settle.
+    </p>
+    <p>
+      <b>B. The price sits in the meta line at body weight per the brief, but with a colour step to
+      ink.</b> The measured defect is that price, category and postcode all render at
+      12/400/#6B6B6B. A colour change is not a size or weight step, so it is not a second anchor,
+      and every corpus app that shows a price buys the hierarchy back the same way. Say the word and
+      it goes back to grey.
+    </p>
+    <p>
+      <b>C. Two source paths in the brief do not exist as written.</b> The search bar is at
+      <code>app/[locale]/_components/homepage/SearchBar.tsx</code>, not
+      <code>_components/search/</code>, which holds SearchOverlay, SearchTemplate and
+      SalonResultCard. And <code>HEIGHT.mobile.collapsed</code> is 250 on disk today, while
+      WHY_ENTRY.md line 420 still cites 280. The brief's own measured 250 is the correct one.
+    </p>
+    <p>
+      <b>D. The one background step down the page has zero corpus support.</b> All 11 web home feeds
+      in the tally set sit on white and not one alternates grey and white bands. The tray under
+      "New in Basel" is here because FLOORS LAW 4 asks for it and because the live page measures
+      95.5% white at 390, a named floor break. It is a Solen-specific choice, not a reference-backed
+      one, and it is the first thing to cut if the page reads busy.
+    </p>
+    <p>
+      <b>E. The card review count is gone, and CORPUS.md is stale on this.</b> I first built the
+      card with the rating value plus a parenthesised review count, because CORPUS.md section 2
+      records star plus value plus count as adopted and already shipped, 11 of 16 screens. The
+      resurrection gate caught it: the converged card C11, CARD_REDESIGN_2026-07-13, supersedes that
+      and puts the count on results pages only. Later dated decision wins, so the count is out.
+      Worth flagging upward, because CORPUS.md was written 2026-07-29, two weeks AFTER the decision
+      that overrides it, and still reads "Adopt, already shipped", so the next person building from
+      that document will make the same mistake I did.
+    </p>
+  </div>
+
+</div>
+</div></div></div></div>
+</div></body></html>

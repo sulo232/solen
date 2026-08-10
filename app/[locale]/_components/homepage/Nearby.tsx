@@ -1,10 +1,7 @@
 "use client";
 
-import * as React from "react";
 import { useLocale } from "next-intl";
-import { Section, SectionTitle, SectionFrame, ScrollRow } from "./SectionHeader";
-import { SalonCard, type SalonCardProps } from "./SalonCard";
-import { useCustomerPrefs, sortByCategoryPicks, type CustomerPrefs } from "./useCustomerPrefs";
+import { Section, SectionTitle, SectionFrame } from "./SectionHeader";
 import NearbyMap, { type NearbyMapSalon } from "./NearbyMap";
 // NEARBY_SALON_IDS is a plain value module (no server-only imports), legal
 // to import directly into this "use client" file. salonCardData.ts stays a
@@ -14,49 +11,40 @@ import { NEARBY_SALON_IDS } from "./nearbySalonIds";
 import type { SalonCardDataMap } from "./salonCardData";
 
 /**
- * In der Nähe - V3 (LIVE_TRUTH §Q51.2 + V2-D34 cards).
+ * In der Nähe - V3 (LIVE_TRUTH §Q51.2), MAP ONLY since 2026-08-05.
  *
- * "use client" (reads prefs after hydration, same seam as ForYouSalonRows).
- * NEARBY_SALON_IDS (nearbySalonIds.ts) is the curated source of truth for
- * WHICH salons show here; name/category/photo/rating/review count/postal
- * code/price all come live from salonData (getSalonCardDataMap, batch-
- * fetched server-side in page.tsx). An id with no matching (or incomplete)
- * salonData entry renders nothing, never an invented card.
+ * A4 (owner 2026-08-05, verbatim): "I want to actually remove the in your near, make it just a
+ * map, so people just gonna click on the map and open it". The horizontal SalonCard rail that
+ * used to sit under the map is REMOVED (15 cards, 249.6px tall at 375 / 264px at 402). He
+ * overruled the objection that the bookable per-salon tap-through goes with it. The map is the
+ * tap target and always was: NearbyMap.tsx renders the whole tile as one `<a href>` to
+ * `/{locale}/search?view=map` (measured live before this change: 343x156 at 375, 370x156 at 402),
+ * so nothing new had to be wired for "click on the map and open it".
  *
- * V3-D348: bends toward the user's onboarding category picks via
- * sortByCategoryPicks, picked-category salons lead, the rest keep list order.
+ * Three things went WITH the cards because the cards were their only consumer, and leaving them
+ * would be exactly the silent no-op this project's CLAUDE.md names as its #1 failure mode:
+ *   1. `ScrollRow` + its `scrollRef` (SectionTitle renders desktop scroll-circle buttons only
+ *      when a scrollRef is passed; with no row to scroll those would be dead affordances).
+ *   2. The V3-D348 `sortByCategoryPicks` bend and the `useCustomerPrefs` fetch that fed it. Its
+ *      only remaining output would have been the ORDER of the map's salon array, and NearbyMap
+ *      re-sorts that array itself by review count for its de-collide pass while its centre is a
+ *      plain mean, so the pref order provably changed nothing on screen.
+ *   3. The `prefsOverride` test seam (no caller anywhere; RecentlyViewed.tsx and
+ *      MobileCategoriesRow.tsx keep their own, untouched).
  *
- * Real geo-distance ordering + per-salon next-slot resolution (both dropped
- * with the 2026-07-13 converged card, which has no availability/next-slot
- * row) remain Phase 2 work.
+ * NEARBY_SALON_IDS (nearbySalonIds.ts) is still the curated source of truth for WHICH salons are
+ * here; coordinates/rating/review count come live from salonData (getSalonCardDataMap, batch-
+ * fetched server-side in page.tsx). The name/slug/category validity gate below is kept verbatim
+ * from the card rail on purpose, so the set of markers is identical to what shipped before.
+ *
+ * Real geo-distance ordering remains Phase 2 work.
  */
 
-interface NearbyRow {
-  /** Real salon UUID, threaded to SalonCard -> HeartButton so the save persists. */
-  id: string;
-  slug: string;
-  name: string;
-  category: SalonCardProps["category"];
-  photoUrl: string | null;
-  rating: number | null;
-  reviewCount: number | null;
-  postalCode: string | null;
-  city: string | null;
-  priceFromCHF: number | null;
-  /** Real coordinates (salons.latitude/longitude), for the NearbyMap teaser.
-   *  Null when the salon has none, in which case it gets no marker. */
-  latitude: number | null;
-  longitude: number | null;
-}
-
 export default function Nearby({
-  prefsOverride,
   salonData = {},
   nearbyCount = null,
 }: {
-  /** Test seam. Bypasses the live fetch when provided (dev previews). */
-  prefsOverride?: CustomerPrefs | null;
-  /** Real rating/address/price per salon id, batch-fetched server-side in page.tsx. */
+  /** Real coordinates/rating per salon id, batch-fetched server-side in page.tsx. */
   salonData?: SalonCardDataMap;
   /** Real count of active salons with coordinates (getNearbyTeaserCount in
    *  page.tsx), for the map-teaser label. Null/absent renders the count-free
@@ -64,37 +52,21 @@ export default function Nearby({
   nearbyCount?: number | null;
 } = {}) {
   const locale = useLocale();
-  const fetched = useCustomerPrefs();
-  const prefs = prefsOverride !== undefined ? prefsOverride : fetched;
-  // NEARBY_SALON_IDS is the curated list; an id with no salonData entry (or
-  // missing name/slug/category) is skipped, never rendered with invented
-  // values.
-  const rows: NearbyRow[] = NEARBY_SALON_IDS.map((id) => {
+  // Real coordinates only; a salon with no lat/lng gets no marker, never a fake one. The
+  // name/slug/category check is the same completeness gate the removed card rail applied, kept
+  // so the marker set does not change with the cards.
+  const mapSalons: NearbyMapSalon[] = NEARBY_SALON_IDS.map((id) => {
     const real = salonData[id];
     if (!real || !real.name || !real.slug || !real.category) return null;
+    if (real.latitude == null || real.longitude == null) return null;
     return {
       id,
-      slug: real.slug,
-      name: real.name,
-      category: real.category,
-      photoUrl: real.photoUrl,
-      rating: real.rating,
-      reviewCount: real.reviewCount,
-      postalCode: real.postalCode,
-      city: real.city,
-      priceFromCHF: real.priceFromCHF,
       latitude: real.latitude,
       longitude: real.longitude,
+      rating: real.rating,
+      reviewCount: real.reviewCount,
     };
-  }).filter((row): row is NearbyRow => row !== null);
-  // V3-D348: bend toward the user's picks, picked-category salons lead, the
-  // rest keep their list order. Logged-out (no prefs) = unchanged.
-  const entries = sortByCategoryPicks(rows, prefs?.categories ?? []);
-  // Real coordinates only; a salon with no lat/lng gets no marker, never a fake one.
-  const mapSalons: NearbyMapSalon[] = entries
-    .filter((e): e is NearbyRow & { latitude: number; longitude: number } => e.latitude != null && e.longitude != null)
-    .map((e) => ({ id: e.id, latitude: e.latitude, longitude: e.longitude, rating: e.rating, reviewCount: e.reviewCount }));
-  const scrollRef = React.useRef<HTMLDivElement>(null);
+  }).filter((s): s is NearbyMapSalon => s !== null);
 
   return (
     // V3-D120 (2026-05-24): section bg tint REMOVED per user "remove these
@@ -102,10 +74,16 @@ export default function Nearby({
     // teal section-arrow buttons + typography rhythm carry section breaks.
     <Section>
       <SectionFrame>
+        {/* linkPlacement="inline": with the card rail gone there is nothing to scroll, so this
+            section has no scrollRef, and without one SectionTitle's right-hand slot would print
+            the "Alle in deiner Nähe" text link at EVERY width. Measured at 402x874 before this
+            line was added: the row showed the title chevron and that text link, both pointing at
+            the same href, where every other rail on the page shows the chevron alone. The header
+            now renders exactly as it did before the cards were removed. */}
         <SectionTitle
           title="In der Nähe"
           link={{ label: "Alle in deiner Nähe →", href: `/${locale}/search?nearby=true` }}
-          scrollRef={scrollRef}
+          linkPlacement="inline"
         />
         {/* mockup-ok: real Mapbox teaser (NearbyMap.tsx), owner-approved 2026-07-15
             per that component's header. Replaces the fabricated CSS-grid plus 3
@@ -113,28 +91,9 @@ export default function Nearby({
         <NearbyMap
           salons={mapSalons}
           href={`/${locale}/search?view=map`}
-          ariaLabel="Salons in der Nähe auf der Karte ansehen"
-          countLabel={nearbyCount != null ? `${nearbyCount} Salons in der Nähe` : "Karte öffnen"}
+          ariaLabel="Stores in der Nähe auf der Karte ansehen"
+          countLabel={nearbyCount != null ? `${nearbyCount} Stores in der Nähe` : "Karte öffnen"}
         />
-        <ScrollRow ref={scrollRef}>
-        {entries.map((e) => (
-          <SalonCard
-            key={e.id}
-            slug={e.slug}
-            salonId={e.id}
-            name={e.name}
-            rating={e.rating}
-            reviewCount={e.reviewCount}
-            category={e.category}
-            photoUrl={e.photoUrl ?? undefined}
-            variant="service"
-            citySelected={false}
-            postalCode={e.postalCode ?? undefined}
-            city={e.city ?? undefined}
-            priceFromCHF={e.priceFromCHF}
-          />
-        ))}
-        </ScrollRow>
       </SectionFrame>
     </Section>
   );

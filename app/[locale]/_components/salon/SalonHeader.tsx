@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useLocale } from "next-intl";
 import { MapPin, Share } from "lucide-react";
 import { RatingStars } from "../primitives";
 import { HeartButton } from "../homepage/HeartButton";
@@ -8,6 +9,8 @@ import { StatusInline } from "./StatusInline";
 import type { SalonDetail, OpenStatus } from "./_shared";
 import { shareOrCopy } from "@/lib/share";
 import ReportButton from "@/components-legacy/discovery/ReportButton";
+import { formatCount } from "@/lib/format";
+import { useTranslations } from "next-intl";
 
 /**
  * SalonHeader — V3-D232 (2026-05-27, hero austerity strip per Fresha capture).
@@ -52,8 +55,10 @@ export function SalonHeader({
    * computeOpenStatus()/new Date() again here. See lib/salon-detail.ts. */
   openStatus: OpenStatus;
 }) {
+  const t = useTranslations("salonDetail");
   const status = openStatus;
   const fullAddress = salon.address;
+  const locale = useLocale();
 
   // V3-D232: scroll to reviews on (N) click. Same anchor SalonSidebar uses.
   const scrollToReviews = React.useCallback(() => {
@@ -109,10 +114,10 @@ export function SalonHeader({
               <button
                 type="button"
                 onClick={scrollToReviews}
-                aria-label={`${salon.review_count} Bewertungen anzeigen`}
+                aria-label={t("showNReviews", { count: salon.review_count })}
                 className="text-s-accent transition-[opacity,transform] hover:opacity-80 active:scale-[0.98] active:duration-[80ms] active:ease-glide"
               >
-                ({salon.review_count.toLocaleString("de-CH")})
+                {formatCount(salon.review_count, locale)}
               </button>
             </div>
 
@@ -120,7 +125,7 @@ export function SalonHeader({
             <button
               type="button"
               onClick={scrollToHours}
-              aria-label="Öffnungszeiten anzeigen"
+              aria-label={t("showOpeningHours")}
               className="block text-left transition-[opacity,transform] hover:opacity-80 active:scale-[0.98] active:duration-[80ms] active:ease-glide"
             >
               <StatusInline isOpen={status.isOpen} label={status.label} size="md" />
@@ -130,10 +135,10 @@ export function SalonHeader({
             <button
               type="button"
               onClick={scrollToLocation}
-              aria-label="Standort anzeigen"
+              aria-label={t("showLocation")}
               className="inline-flex items-center gap-1 text-left text-s-ink-2 transition-[colors,transform] hover:text-s-ink active:scale-[0.98] active:duration-[80ms] active:ease-glide"
             >
-              <MapPin size={14} className="shrink-0 text-s-ink-3" strokeWidth={2} />
+              <MapPin size={14} className="shrink-0 text-s-ink-2" strokeWidth={2} />
               {fullAddress}
             </button>
           </div>
@@ -147,7 +152,7 @@ export function SalonHeader({
         <div className="hidden shrink-0 items-center gap-3 md:flex">
           <button
             type="button"
-            aria-label="Salon teilen"
+            aria-label="Store teilen"
             onClick={() => shareOrCopy(salon.name, window.location.href)}
             className="grid h-11 w-11 place-items-center rounded-full border border-s-border bg-white transition-transform hover:scale-105 active:scale-95 active:duration-[80ms] active:ease-glide"
           >

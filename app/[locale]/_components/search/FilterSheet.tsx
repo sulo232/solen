@@ -132,7 +132,7 @@ function PriceSlider({
           style={{ left: `${pct}%` }}
         />
       </div>
-      <div className="mt-2 flex justify-between font-body text-[12px] text-s-ink-3">
+      <div className="mt-2 flex justify-between font-body text-[12px] text-s-ink-2">
         <span>CHF {MIN}</span>
         <span>CHF {MAX}+</span>
       </div>
@@ -250,7 +250,7 @@ function RatingBar({
         </motion.div>
       </div>
       {/* Tick labels under the track - one per stop, >= 12px. */}
-      <div className="mt-2 flex justify-between font-body text-[12px] text-s-ink-3">
+      <div className="mt-2 flex justify-between font-body text-[12px] text-s-ink-2">
         {RATING_STOPS.map((s, i) => (
           <span key={i} className={i === idx ? "font-semibold text-s-ink" : undefined}>
             {s == null ? anyLabel : String(s)}
@@ -608,6 +608,11 @@ export function FilterSheet(props: FilterSheetProps) {
     <button
       type="button"
       onClick={onClose}
+      // accessibility-08 (2026-07-27): resultCount already updates this button's own text
+      // live as the user toggles filter options, but a screen-reader user's focus usually
+      // stays ON the checkbox/toggle they just touched, not this button, so the count change
+      // went unheard. aria-live="polite" on the button announces it without moving focus.
+      aria-live="polite"
       className={cn(
         "flex-1 rounded-pill border border-s-border bg-white px-6 py-3 text-center",
         "font-body text-[15px] font-medium leading-none tracking-[-0.005em] text-s-ink tabular-nums",

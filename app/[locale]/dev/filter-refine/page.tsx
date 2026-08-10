@@ -43,7 +43,7 @@ function Sheet({ refined }: { refined?: boolean }) {
             <span className="absolute inset-0 rounded-full bg-s-ink" />
             <span className="absolute right-0 top-1/2 h-4 w-4 -translate-y-1/2 rounded-full border-2 border-s-ink bg-white" />
           </div>
-          <div className="mt-1 flex justify-between text-[12px] text-s-ink-3"><span>CHF 20</span><span>CHF 300+</span></div>
+          <div className="mt-1 flex justify-between text-[12px] text-s-ink-2"><span>CHF 20</span><span>CHF 300+</span></div>
         </div>
         <div>
           <p className="mb-2.5 text-[13px] font-semibold text-s-ink">For whom</p>
@@ -59,7 +59,7 @@ export default function FilterRefineMockup() {
   return (
     <main className="min-h-screen bg-white">
       <div className="mx-auto max-w-[760px] px-4 pb-16 pt-6">
-        <p className="text-[12px] font-semibold text-s-ink-3">Mockup , filter sheet (#5) v2</p>
+        <p className="text-[12px] font-semibold text-s-ink-2">Mockup , filter sheet (#5) v2</p>
         <h1 className="mt-1 font-heading text-[19px] font-bold text-s-ink">Selected = gray, price untouched</h1>
         <p className="mt-1 max-w-[620px] text-[13px] text-s-ink-2">Selected chip is now calm GRAY sunken (no blue, no ink border). Price control left exactly as-is , no min-max range.</p>
 

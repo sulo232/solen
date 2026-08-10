@@ -22,7 +22,7 @@ const inputVariants = cva( // mockup-ok: dead-class removal only, base input law
     // here (removed 2026-07-17): globals.css's base input law already renders them with
     // higher specificity than these plain utilities, so re-declaring them here was a lie.
     // The `tone` variants below still own their border-color/ring on top of that base.
-    "placeholder:text-s-ink-3",
+    "placeholder:text-s-ink-2",
     "selection:bg-s-ink/20",
     "transition-[border-color,background-color,box-shadow,color] duration-150 ease-snap",
     "caret-s-brand",
@@ -30,8 +30,17 @@ const inputVariants = cva( // mockup-ok: dead-class removal only, base input law
     // ring (box-shadow) + ink border; a second `outline` here was the double-outline the
     // owner flagged (V3-D449). Border tint kept; the single ring comes from globals.
     "focus-visible:border-s-ink focus-visible:bg-s-bg-base",
-    // disabled — opacity .5, sunken bg, ink-3 text, not-allowed
-    "disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-s-bg-sunken disabled:text-s-ink-3",
+    // disabled: opacity .5, sunken bg, ink-3 text, not-allowed. Distinct from read-only below:
+    // disabled = "not available right now" (removed from tab order, unfocusable, unselectable);
+    // read-only = "this value is fixed by design" (still focusable + selectable, so its value
+    // can be copied). Collapsing both into one state loses that distinction for sighted AND
+    // assistive-tech users (states-forms-10). Full opacity, default cursor, no dimming.
+    "disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-s-bg-sunken disabled:text-s-ink-2",
+    // mockup-ok: reuses the exact disabled-state tokens (bg-s-bg-sunken / text-s-ink-2, both
+    // already LOCKFILE-approved), no new hex. Not wired into any page yet (0 call-sites), so
+    // this changes zero pixels on any live customer surface today, it is a primitive-API
+    // addition per the finding's own enforcement note (states-forms-10).
+    "read-only:cursor-default read-only:bg-s-bg-sunken read-only:text-s-ink-2 read-only:focus-visible:border-s-border read-only:focus-visible:bg-s-bg-sunken",
   ),
   {
     variants: {

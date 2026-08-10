@@ -1,14 +1,16 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { motion } from "motion/react";
 import { Star, MessageCircle, Flag } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import Spinner from "@/components-legacy/ui/Spinner";
 import EmptyState from "@/components-legacy/ui/EmptyState";
 import ErrorState from "@/components-legacy/ui/ErrorState";
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "@/app/[locale]/_components/primitives/Modal";
 import { containerVariants, itemVariants } from "@/lib/animations";
+import { resolveSwissLocale } from "@/lib/format";
 import type { ReviewReply } from "@/app/[locale]/_components/salon/_shared";
 
 interface Review {
@@ -49,6 +51,7 @@ function Stars({ rating }: { rating: number }) {
 
 export default function SalonReviewsPage() {
   const t = useTranslations("dashboard.reviewsPage") as any;
+  const locale = useLocale();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   // H2: distinguish a failed fetch (error state + retry) from genuinely-empty (empty state),
@@ -60,6 +63,8 @@ export default function SalonReviewsPage() {
   const [responseText, setResponseText] = useState("");
   const [respondError, setRespondError] = useState(false);
   const [deleteErrorId, setDeleteErrorId] = useState<string | null>(null);
+  // states-forms-06: Modal primitive replaces window.confirm() for this destructive action
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [flagging, setFlagging] = useState<string | null>(null);
   const [flagReason, setFlagReason] = useState("");
   const [saving, setSaving] = useState(false);
@@ -134,7 +139,7 @@ export default function SalonReviewsPage() {
   };
 
   const handleDeleteReply = async (reviewId: string) => {
-    if (!window.confirm(t("deleteReplyConfirm"))) return;
+    setDeleteConfirmId(null);
     setSaving(true);
     setDeleteErrorId(null);
     try {
@@ -198,7 +203,7 @@ export default function SalonReviewsPage() {
                       <Stars rating={r.rating} />
                     </div>
                     <p className="text-[12px] text-s-ink/30">
-                      {new Date(r.created_at).toLocaleDateString("de-CH", {
+                      {new Date(r.created_at).toLocaleDateString(resolveSwissLocale(locale), {
                         day: "2-digit", month: "2-digit", year: "numeric",
                       })}
                     </p>
@@ -216,7 +221,7 @@ export default function SalonReviewsPage() {
 
               {/* Comment */}
               {r.comment && (
-                <p className="text-sm text-s-ink/70 mb-3">&ldquo;{r.comment}&rdquo;</p>
+                <p className="text-sm text-s-ink/70 mb-3 prose-measure">&ldquo;{r.comment}&rdquo;</p>
               )}
 
               {/* Existing salon response, plus edit/delete (round 10 Y3: create-only before,
@@ -235,7 +240,7 @@ export default function SalonReviewsPage() {
                       {t("editReply")}
                     </button>
                     <button
-                      onClick={() => handleDeleteReply(r.id)}
+                      onClick={() => setDeleteConfirmId(r.id)}
                       className="text-[12px] font-medium text-s-error hover:brightness-110 transition-[filter]"
                     >
                       {t("deleteReply")}
@@ -326,6 +331,34 @@ export default function SalonReviewsPage() {
           ))}
         </motion.div>
       )}
+      {/* states-forms-06: destructive-action confirm via the shared Modal, never window.confirm().
+          mockup-ok: verbatim reuse of the already-shipped, owner-approved confirm-footer treatment
+          from app/[locale]/queue/[token]/page.tsx:589-613 (same Modal + rounded-full button pair),
+          not a new design choice. */}
+      <Modal isOpen={!!deleteConfirmId} onOpenChange={(open) => { if (!open) setDeleteConfirmId(null); }} size="sm" keyboardDismissDisabled={saving} isDismissable={!saving}>
+        <ModalHeader title={t("deleteReply")} closeButton={!saving} />
+        <ModalBody>
+          <p>{t("deleteReplyConfirm")}</p>
+        </ModalBody>
+        <ModalFooter>
+          <button
+            type="button"
+            onClick={() => setDeleteConfirmId(null)}
+            disabled={saving}
+            className="rounded-full border border-s-border bg-white px-5 py-2.5 text-[14px] font-semibold text-s-ink transition-colors hover:bg-s-bg-sunken disabled:opacity-50" // mockup-ok
+          >
+            {t("cancel")}
+          </button>
+          <button
+            type="button"
+            onClick={() => { if (deleteConfirmId) void handleDeleteReply(deleteConfirmId); }}
+            disabled={saving}
+            className="rounded-full bg-s-error px-5 py-2.5 text-[14px] font-semibold text-white transition-colors hover:brightness-[1.06] disabled:opacity-50" // mockup-ok
+          >
+            {saving ? <Spinner size="sm" invert /> : t("deleteReply")}
+          </button>
+        </ModalFooter>
+      </Modal>
     </DashboardLayout>
   );
 }

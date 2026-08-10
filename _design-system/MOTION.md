@@ -144,11 +144,12 @@ from 0.98. Needs an owner call before either normalising them or adding two rung
 | Money value changes | roll/odometer tick | `key={value}` + `.animate-value-roll` |
 | Choice reveals a set (slots, options) | cascade in | container `.slot-cascade`, re-mount with key |
 | Live position/number updates | departure-board flip | `key={n}` + `.animate-num-flip` |
+| Live REORDER (a row's rank changes, same valid data, no error, no refetch) | FLIP transform, snap tier (150ms) | framer-motion `layout` / `layoutId`, LoadingStates.md Pattern 6 |
 | Live status dot (REAL state only) | ping | `animate-ping` twin dot (StatusPill pattern) |
 | Saving/favoriting | pop + 6-particle burst | HeartButton pattern (`.heart-burst` ×6, keyed) |
 | Adding to a cart | fly-dot to the cart anchor | `.cart-fly-dot` + `[data-cart-anchor]` (ServicesStaffStep pattern) |
 | Success peak | SuccessMark + `.celebrate-rise` staggers | never a static check |
-| List first-load | stagger rise-in | `.salon-card-stagger` |
+| List first-load | stagger rise-in, capped at item 8 (motion-03: items 9+ inherit item 8's delay, never 0ms, so a 12-item page never jumps the queue) | `.salon-card-stagger` |
 | People/avatars first in view | wave hello once | `.team-wave` + IntersectionObserver (SalonTeam pattern) |
 | Empty-state icon | breathe | `.animate-breathe` |
 | Toasts | tilt-settle enter | Toast primitive owns it |
@@ -203,6 +204,13 @@ change: a 420ms tab switch reads as the UI thinking, not as the UI keeping up.
 2. **Never animate width, height or top.** Transform, opacity and filter only, so nothing reflows mid-motion.
 3. **`prefers-reduced-motion` applies the END STATE with no animation**, and attaches no scroll listener.
 4. **Interruptible.** A user acting again mid-motion must not be made to wait for the first one to finish.
+   **The technical contract (added 2026-07-27, motion-01):** any `AnimatePresence` wrapping a
+   step-swap, tab-swap, or other frequently-retriggered transition must use `mode="popLayout"`
+   (or unmounted-immediately exits), never `mode="wait"`. `mode="wait"` holds the incoming child
+   off the DOM until the outgoing child's exit animation fully finishes, the literal opposite of
+   this rule. A one-shot, non-retriggerable surface (a confirm modal with nothing to interrupt)
+   may keep `mode="wait"` with a `motion-ok: <reason>` note. Enforced by
+   `~/.claude/hooks/motion-recipe-gate.py` (extended 2026-07-27 to flag net-new `mode="wait"`).
 5. **Repeated actions get the fastest tier that still reads.** Motion the user will see fifty times a
    session must not cost them fifty delays.
 
@@ -221,6 +229,16 @@ shape Material, Microsoft Fluent and Atlassian all specify. It has **one call si
 the wrong shape: Sheet exit, Modal exit and Sheet-backdrop exit use `snap`, and Toast exit uses `glide`,
 which is the DECELERATE curve, so a dismissed toast visibly slows down on its way out.
 
+**A fifth site, missed by the first audit (motion-02, found 2026-07-27):** `useStepSwapMotion`
+(`app/[locale]/_components/primitives/motion.ts`), the shared step-swap primitive that
+`BookingWizard.tsx` calls for every step transition in the booking flow, reused ONE `Transition`
+object for both `animate` and `exit`, so every booking step decelerated on the way OUT too. Fixed
+by splitting it into `stepSwapEnterTransition` (`glide`) and `stepSwapExitTransition` (`thud`),
+set per-variant so a variant's own `transition` wins over whatever a call site passes as a prop.
+The durable lesson: a shared enter/exit `Transition` reference is itself the defect pattern behind
+all five sites, not just a coincidence , split enter and exit transitions even when every other
+number (duration, scale) stays identical.
+
 The root cause is that this file had no by-direction rule at all, which is why `glide` accumulated **132
 call sites** doing entrances, presses, colour flips and exits alike. The system defines five decelerate
 shapes and three spring shapes against exactly ONE accelerate, and then almost never used it.
@@ -233,3 +251,27 @@ Owner-approved 2026-07-25 as a MODEL. The visual it was approved from is `/de/de
 paired demos + the evidence table). The empirical backing is above; the PRINCIPLES backing (where motion
 helps vs hurts, easing, and the shadow/elevation half of the owner's ask) is being researched into
 `research/TASTE_MOTION.md`, and this section gets amended if that research contradicts it.
+
+## Motion scales for DEVICE CAPABILITY, not only user opt-in (added 2026-07-27, motion-09)
+
+`prefers-reduced-motion` is the ONLY motion-scaling lever documented or built anywhere in this file today,
+and it answers a different question than the one below. Reduced-motion is a user's explicit request
+(vestibular sensitivity, "I don't want this"). It says nothing about a device that never asked for less
+motion but genuinely cannot afford THE ENTER RECIPE's full cost: a blur filter, a scale transform, and
+opacity, animated across a 12-item stagger, is real compositor and paint work. THE ENTER RECIPE and THE
+SPEED LAW were both captured and tuned on an iPhone-class UA in a Playwright 390x844 viewport, a
+mid-to-high-end reference device; Solen's own positioning (mid-market, price-sensitive Swiss salons and
+their customers) does not guarantee that device class on the customer side.
+
+**The rule:** on top of `prefers-reduced-motion`, read one coarse, cheap capability signal once per
+session (`navigator.hardwareConcurrency` and `navigator.deviceMemory`, both Chrome/Android-only, both
+`undefined` on Safari/iOS which never trips the low tier) and, below 4 logical cores or 4GB reported
+memory, drop the EXPENSIVE tier (blur on entrance, simultaneous stagger, non-essential spring physics)
+while KEEPING the cheap tier (opacity/transform press feedback, snap-tier state flips). A capable,
+unbothered device keeps the full recipe; a genuinely low-end device gets a lighter one even if the user
+never touched an accessibility setting, so the device adapts on its own instead of the user needing to
+know a system setting exists.
+
+**Shared primitive:** `useLowMotionCapability()`, `app/[locale]/_components/primitives/motion.ts`, sibling
+to `useReducedMotion`. No call site consumes it yet, this is the primitive a first reference
+implementation builds against; candidate for a design-verifier check once one exists.

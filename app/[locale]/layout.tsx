@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages, unstable_setRequestLocale } from "next-intl/server";
+import { getMessages, getTranslations, unstable_setRequestLocale } from "next-intl/server";
 import { locales } from "@/i18n";
 import { PostHogProvider } from "@/components-legacy/PostHogProvider";
 // V3-D195 (2026-05-26): primitives Toast singleton + portal. The legacy
@@ -52,6 +52,10 @@ export default async function LocaleLayout({
   // to the de default and every en/fr/it client component renders German).
   unstable_setRequestLocale(locale);
   const messages = await getMessages();
+  // A1-html-lang (2026-07-26): the skip link used to be a literal German string
+  // ("Zum Inhalt springen") rendered inside this locale-aware tree, so it stayed
+  // German on en/fr/it too. Pull it from messages/common.skipToContent instead.
+  const t = await getTranslations("common");
 
   return (
     <MotionProvider>
@@ -59,12 +63,14 @@ export default async function LocaleLayout({
       <PostHogProvider>
         <CookieConsentProvider>
           {/* Skip-to-content: first focusable element for keyboard users.
-              V3-D312 (W9 follow-up): retired focus:bg-s-ink → focus:bg-s-ink per LOCKFILE §0 rule 2 (primary CTA = ink). */}
+              V3-D312 (W9 follow-up): retired focus:bg-s-ink → focus:bg-s-ink per LOCKFILE §0 rule 2 (primary CTA = ink).
+              A1-html-lang (2026-07-26): copy now comes from common.skipToContent (was a
+              hardcoded German string, so it never localized on en/fr/it). */}
           <a
             href="#main-content"
             className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-s-ink focus:text-white focus:rounded-btn focus:shadow-elevation-2 focus:text-sm focus:font-medium"
           >
-            Zum Inhalt springen
+            {t("skipToContent")}
           </a>
           {/* V3-D92 (2026-05-21): Hims-style top promo banner — dimensions
               measured from live hims.com mobile @ 393 viewport via Playwright

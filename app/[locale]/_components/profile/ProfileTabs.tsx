@@ -44,6 +44,9 @@ export interface ProfilePastBookingTile {
   salonSlug: string | null;
   salonName: string;
   salonPhoto: string | null;
+  /** imagery-icons-03 (2026-07-27): salon category label ("Coiffeur" etc), real
+   *  structured metadata for the thumb's alt text, not just the name repeated. */
+  salonCategory: string | null;
   serviceName: string;
   /** Pre-formatted "11. Juni" style (locale month name), never a time (project rule). */
   dateLabel: string;
@@ -56,6 +59,8 @@ export interface ProfileSavedSalonTile {
   /** Cover photo first, then up to 2 gallery photos. Empty = the sunken fallback. */
   photos: string[];
   city: string | null;
+  /** imagery-icons-03 (2026-07-27): salon category label for the collage tile's alt text. */
+  category?: string | null;
 }
 
 export type ProfileSuggestedSalon = ProfileSavedSalonTile;
@@ -170,12 +175,16 @@ export default function ProfileTabs({
         </Link>
       </div>
 
-      {/* Content tabs: sanctioned underline treatment, hairline below the row. */}
-      <div className="mt-1.5 flex items-center justify-center gap-6">
-        <TabButton active={tab === "saved"} onClick={() => setTab("saved")}>
+      {/* Content tabs: sanctioned underline treatment, hairline below the row.
+          accessibility-07 (2026-07-27): role=tablist/tab + aria-selected, the WAI-ARIA
+          tabs pattern (not aria-pressed, that's for toggle/filter pills per TabPill).
+          A screen-reader user tabbing through this previously heard "button, Gespeichert"
+          / "button, Termine" with no indication which one was already showing. */}
+      <div role="tablist" aria-label={t("tabSaved") + " / " + t("tileAppointments")} className="mt-1.5 flex items-center justify-center gap-6">
+        <TabButton id="profile-tab-saved" active={tab === "saved"} onClick={() => setTab("saved")}>
           {t("tabSaved")}
         </TabButton>
-        <TabButton active={tab === "appointments"} onClick={() => setTab("appointments")}>
+        <TabButton id="profile-tab-appointments" active={tab === "appointments"} onClick={() => setTab("appointments")}>
           {t("tileAppointments")}
         </TabButton>
       </div>
@@ -183,14 +192,27 @@ export default function ProfileTabs({
 
       {/* Search: real client-side filter over the active tab's items */}
       <label className="mt-4 flex h-11 items-center gap-2.5 rounded-[12px] border border-s-border px-[14px]">
-        <Search size={20} strokeWidth={1.9} className="shrink-0 text-s-ink-3" aria-hidden />
+        <Search size={20} strokeWidth={1.9} className="shrink-0 text-s-ink-2" aria-hidden />
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={t("searchPlaceholder")}
           aria-label={t("searchPlaceholder")}
-          className="min-w-0 flex-1 bg-transparent font-body text-[14px] text-s-ink outline-none placeholder:text-s-ink-3"
+          // mockup-ok: DEFECT REPAIR to the owner's existing 2026-07-17 input decision, not a new
+          // look, so there is nothing to choose between and nothing to approve.
+          // The `!` prefixes are load-bearing. The base rule in globals.css
+          // (`input:not([...10 native types])`) out-specifies plain Tailwind utilities, so an
+          // unprefixed `bg-transparent` LOSES and the input paints its own 48px filled grey box
+          // with a 12px radius INSIDE this 44px bordered pill: two boxes, the taller overhanging
+          // the shorter. Measured on /de/profile at a 402px viewport: wrapper 370x44, input
+          // 310x48, a 4px overhang, which is the doubled outline visible on the screen.
+          // globals.css names this exact failure and its carve-out list verbatim ("Widening this
+          // selector to bare inputs would now win on specificity and paint a second box inside
+          // the wrapper ... protected with Tailwind `!important` prefixes on the specific
+          // instance"). This input was simply missed from that list. Same pattern already ships
+          // at SearchOverlay.tsx:553 and on the dashboard search fields. Do not remove the `!`.
+          className="min-w-0 flex-1 !border-0 !bg-transparent !min-h-0 !px-0 font-body !text-[14px] text-s-ink outline-none placeholder:text-s-ink-2"
         />
       </label>
 
@@ -210,15 +232,18 @@ export default function ProfileTabs({
         </button>
       </div>
 
-      {/* Tab content: collage grid (Gespeichert) or the rebook list (Termine). */}
-      <div className="mt-4">
+      {/* Tab content: collage grid (Gespeichert) or the rebook list (Termine).
+          accessibility-07: one tabpanel container (the two tab contents are already
+          mutually-exclusive `tab === ... &&` branches, never both in the DOM), labeled
+          by whichever tab is currently active. */}
+      <div id="profile-tabpanel" role="tabpanel" aria-labelledby={tab === "saved" ? "profile-tab-saved" : "profile-tab-appointments"} className="mt-4">
         {tab === "saved" &&
           (visibleSalons.length > 0 ? (
             <div className="grid grid-cols-2 gap-x-2 gap-y-5">
               {visibleSalons.map((s) => (
                 <Link key={s.slug} href={p(`/salon/${s.slug}`)} className="min-w-0">
-                  <CollageTile photos={s.photos} aspectClass="aspect-[195/131]" />
-                  <p className="mt-2 truncate text-[16px] font-semibold text-s-ink">{s.name}</p>
+                  <CollageTile photos={s.photos} aspectClass="aspect-[195/131]" name={s.name} category={s.category} />
+                  <p className="mt-2 truncate text-[16px] font-medium text-s-ink">{s.name}</p>
                   {s.city ? <p className="mt-0.5 truncate text-[12px] text-s-ink-2">{s.city}</p> : null}
                 </Link>
               ))}
@@ -246,26 +271,26 @@ export default function ProfileTabs({
                       aria-label={b.salonName}
                       className="h-14 w-14 flex-none overflow-hidden rounded-[12px] bg-s-bg-sunken"
                     >
-                      <BookingThumb photo={b.salonPhoto} />
+                      <BookingThumb photo={b.salonPhoto} name={b.salonName} category={b.salonCategory} />
                     </Link>
                   ) : (
                     <div className="h-14 w-14 flex-none overflow-hidden rounded-[12px] bg-s-bg-sunken">
-                      <BookingThumb photo={b.salonPhoto} />
+                      <BookingThumb photo={b.salonPhoto} name={b.salonName} category={b.salonCategory} />
                     </div>
                   )}
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-[16px] font-semibold text-s-ink">{b.salonName}</p>
+                    <p className="truncate text-[16px] font-medium text-s-ink">{b.salonName}</p>
                     {b.serviceName ? <p className="truncate text-[14px] text-s-ink-2">{b.serviceName}</p> : null}
                     <p className="mt-0.5 flex items-center gap-2.5 text-[12px] text-s-ink-2">
                       <span>{b.dateLabel}</span>
-                      {b.price != null ? <b className="font-semibold text-s-ink">{formatCurrency(b.price, locale)}</b> : null}
+                      {b.price != null ? <b className="font-medium text-s-ink">{formatCurrency(b.price, locale)}</b> : null}
                     </p>
                   </div>
                   <button
                     type="button"
                     onClick={() => handleRebook(b)}
                     disabled={rebookingId === b.id}
-                    className="flex-none text-[14px] font-semibold text-s-ink disabled:opacity-50"
+                    className="flex-none text-[14px] font-medium text-s-ink disabled:opacity-50"
                   >
                     {tb("rebook")}
                   </button>
@@ -289,14 +314,14 @@ export default function ProfileTabs({
           the page never dies into a blank/grey zone. */}
       {suggestedSalons.length > 0 && (
         <section className="mt-8">
-          <h2 className="font-heading text-[18px] font-semibold tracking-[-0.01em] text-s-ink">
+          <h2 className="font-heading text-[18px] font-medium tracking-[-0.01em] text-s-ink">
             {t("discoverySectionTitle")}
           </h2>
           <div className="-mx-4 mt-3 flex gap-3 overflow-x-auto px-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {suggestedSalons.map((s) => (
               <Link key={s.slug} href={p(`/salon/${s.slug}`)} className="w-[148px] flex-none">
-                <CollageTile photos={s.photos} aspectClass="aspect-[148/101]" />
-                <p className="mt-2 truncate text-[14px] font-semibold text-s-ink">{s.name}</p>
+                <CollageTile photos={s.photos} aspectClass="aspect-[148/101]" name={s.name} category={s.category} />
+                <p className="mt-2 truncate text-[14px] font-medium text-s-ink">{s.name}</p>
                 {s.city ? <p className="mt-0.5 truncate text-[12px] text-s-ink-2">{s.city}</p> : null}
               </Link>
             ))}
@@ -308,17 +333,24 @@ export default function ProfileTabs({
 }
 
 function TabButton({
+  id,
   active,
   onClick,
   children,
 }: {
+  id: string;
   active: boolean;
   onClick: () => void;
   children: React.ReactNode;
 }) {
   return (
     <button
+      id={id}
       type="button"
+      role="tab"
+      aria-selected={active}
+      aria-controls="profile-tabpanel"
+      tabIndex={active ? 0 : -1}
       onClick={onClick}
       className={cn(
         "relative shrink-0 py-2.5 font-body text-[18px] transition-colors",
@@ -331,13 +363,16 @@ function TabButton({
   );
 }
 
-function BookingThumb({ photo }: { photo: string | null }) {
+function BookingThumb({ photo, name, category }: { photo: string | null; name?: string | null; category?: string | null }) {
+  // accessibility-06: describe WHAT the photo shows (the salon's category), not
+  // just whose it is, since the name is already read as adjacent text (line 264).
+  const alt = category ? (name ? `${name}, ${category}` : category) : name ? `${name}` : "Store-Foto";
   return photo ? (
     // eslint-disable-next-line @next/next/no-img-element -- arbitrary Supabase Storage URL, matches SalonPhotoTile convention
-    <img src={photo} alt="" className="h-full w-full object-cover" />
+    <img src={photo} alt={alt} className="h-full w-full object-cover" />
   ) : (
     <div className="grid h-full w-full place-items-center">
-      <Scissors size={18} strokeWidth={1.9} className="text-s-ink-3" aria-hidden />
+      <Scissors size={18} strokeWidth={1.9} className="text-s-ink-2" aria-hidden />
     </div>
   );
 }
@@ -345,11 +380,17 @@ function BookingThumb({ photo }: { photo: string | null }) {
 /** Collage tile (mockup-ok, pinterest-ref-solen): main photo left 66%, up to 2 stacked
  *  thumbs right. 1 photo = a plain full-bleed cover. 0 photos = the sunken fallback with
  *  a category icon, never a bare grey box. */
-function CollageTile({ photos, aspectClass }: { photos: string[]; aspectClass: string }) {
+function CollageTile({ photos, aspectClass, name, category }: { photos: string[]; aspectClass: string; name?: string | null; category?: string | null }) {
+  // accessibility-06: describe WHAT the photo shows (the salon's category), not
+  // just whose it is, since the name already renders as adjacent text (lines 228/306).
+  const altFor = (i: number) => {
+    const base = category ? (name ? `${name}, ${category}` : category) : name ? name : "Store-Foto";
+    return `${base}, ${i}/${photos.length}`;
+  };
   if (photos.length === 0) {
     return (
       <div className={cn("flex w-full items-center justify-center overflow-hidden rounded-card bg-s-bg-sunken", aspectClass)}>
-        <Scissors size={22} strokeWidth={1.9} className="text-s-ink-3" aria-hidden />
+        <Scissors size={22} strokeWidth={1.9} className="text-s-ink-2" aria-hidden />
       </div>
     );
   }
@@ -357,7 +398,7 @@ function CollageTile({ photos, aspectClass }: { photos: string[]; aspectClass: s
     return (
       <div className={cn("w-full overflow-hidden rounded-card bg-s-bg-sunken", aspectClass)}>
         {/* eslint-disable-next-line @next/next/no-img-element -- arbitrary Supabase Storage URL */}
-        <img src={photos[0]} alt="" className="h-full w-full object-cover" />
+        <img src={photos[0]} alt={altFor(1)} className="h-full w-full object-cover" />
       </div>
     );
   }
@@ -367,14 +408,14 @@ function CollageTile({ photos, aspectClass }: { photos: string[]; aspectClass: s
     <div className={cn("flex w-full gap-[2px] overflow-hidden rounded-card bg-s-bg-sunken", aspectClass)}>
       <div className={thumbs.length > 0 ? "flex-[0_0_66%]" : "flex-1"}>
         {/* eslint-disable-next-line @next/next/no-img-element -- arbitrary Supabase Storage URL */}
-        <img src={main} alt="" className="h-full w-full object-cover" />
+        <img src={main} alt={altFor(1)} className="h-full w-full object-cover" />
       </div>
       {thumbs.length > 0 && (
         <div className="flex flex-1 flex-col gap-[2px]">
           {thumbs.map((url, i) => (
             <div key={i} className="flex-1">
               {/* eslint-disable-next-line @next/next/no-img-element -- arbitrary Supabase Storage URL */}
-              <img src={url} alt="" className="h-full w-full object-cover" />
+              <img src={url} alt={altFor(i + 2)} className="h-full w-full object-cover" />
             </div>
           ))}
         </div>
@@ -407,7 +448,7 @@ function EmptyTray({
         // eslint-disable-next-line @next/next/no-img-element -- local sanctioned 3D category icon asset
         <img src={iconSrc} alt="" className="mx-auto h-16 w-16 object-contain" aria-hidden />
       ) : null}
-      <p className={cn("font-heading text-[18px] font-semibold text-s-ink", iconSrc ? "mt-3" : undefined)}>{title}</p>
+      <p className={cn("font-heading text-[18px] font-medium text-s-ink", iconSrc ? "mt-3" : undefined)}>{title}</p>
       <p className="mt-1 text-[14px] text-s-ink-2">{message}</p>
       {ctaLabel && ctaHref ? (
         <Link

@@ -128,7 +128,7 @@ export default async function SettingsPage({ params }: { params: Promise<{ local
 }
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
-  return <div className="px-4 pb-1.5 pt-[18px] text-[12.5px] font-semibold text-s-ink-3">{children}</div>;
+  return <div className="px-4 pb-1.5 pt-[18px] text-[12.5px] font-semibold text-s-ink-2">{children}</div>;
 }
 
 function Hairline() {
@@ -141,10 +141,10 @@ function Row({ href, icon: Icon, label, sub, value }: { href: string; icon: Luci
       <Icon size={22} strokeWidth={1.9} className="shrink-0 text-s-ink" aria-hidden />
       <span className="min-w-0 flex-1">
         <span className="block text-[15px] font-medium text-s-ink">{label}</span>
-        {sub ? <span className="mt-px block text-[12.5px] text-s-ink-3">{sub}</span> : null}
+        {sub ? <span className="mt-px block text-[12.5px] text-s-ink-2">{sub}</span> : null}
       </span>
-      {value ? <span className="mr-0.5 text-[13.5px] text-s-ink-3">{value}</span> : null}
-      <ChevronRight size={16} className="shrink-0 text-s-ink-3" aria-hidden />
+      {value ? <span className="mr-0.5 text-[13.5px] text-s-ink-2">{value}</span> : null}
+      <ChevronRight size={16} className="shrink-0 text-s-ink-2" aria-hidden />
     </Link>
   );
 }
@@ -159,7 +159,7 @@ function ExternalRow({ href, label }: { href: string; label: string }) {
   return (
     <Link href={href} className="flex items-center gap-[14px] bg-white px-4 py-[13px] transition-transform duration-150 active:scale-[0.98] active:duration-[80ms] active:ease-glide">
       <span className="min-w-0 flex-1 text-[15px] font-medium text-s-ink">{label}</span>
-      <ArrowUpRight size={16} className="shrink-0 text-s-ink-3" aria-hidden />
+      <ArrowUpRight size={16} className="shrink-0 text-s-ink-2" aria-hidden />
     </Link>
   );
 }
@@ -183,7 +183,7 @@ function IdentityBlock({ locale, name, avatarSrc, subtitle, viewLabel, editLabel
         </div>
         <div className="min-w-0">
           <div className="truncate text-[20px] font-bold tracking-[-0.02em] text-s-ink">{name}</div>
-          <div className="mt-px text-[13px] text-s-ink-3">{subtitle}</div>
+          <div className="mt-px text-[13px] text-s-ink-2">{subtitle}</div>
         </div>
       </div>
       <div className="mt-[14px] flex gap-[10px]">

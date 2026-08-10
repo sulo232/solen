@@ -1,0 +1,958 @@
+<!-- Base: copies of shipped components (SalonCard, SectionTitle, Footer), recomposed as feed sections -->
+<!-- Scale: four section templates, not a full page -->
+<!--
+  home-v3 / sections : the four feed sections the owner specified on 2026-07-31, replacing the two
+  personalization rails that ship today. Sibling of index.html / n1 / n2 / n3, which own the
+  HEADER. This file owns everything BELOW the header. 390px. Class prefix: s3-
+
+  type-budget-ok , this file is four separate templates plus a real footer in one document, which
+  is the gate's own named escape ("a genuine multi-screen mockup"). Per-template counts are in the
+  floors: note below, and every size in it is copied from a shipped component rather than chosen
+  here, so collapsing them would fork SalonCard / SectionTitle / Footer.
+
+  ---------------------------------------------------------------------------------------------
+  Exists-check: `npm run exists salon` -> 410 matches. `npm run exists SalonCard` ->
+    app/[locale]/_components/homepage/SalonCard.tsx (plus components-legacy/SalonCard.tsx and
+    getSalonCardDataMap). `npm run exists SectionHeader` ->
+    app/[locale]/_components/homepage/SectionHeader.tsx. `npm run exists footer` ->
+    app/[locale]/_components/layout/Footer.tsx + FooterGate. `npm run exists city` -> 18 city
+    symbols incl. CITY_ICONS. `npm run exists "homepage feed section"` -> 0. So the SECTIONS are
+    new, but almost every PART of them already ships and is reused verbatim here:
+    (a) app/[locale]/_components/homepage/SalonCard.tsx , the converged card
+        (CARD_REDESIGN_2026-07-13 #c11). Photo 5:4 / radius 22 / elevation-2, heart top-right,
+        then name+star, category, address+price. Reused verbatim, not redrawn.
+    (b) app/[locale]/_components/homepage/SectionHeader.tsx , Section / SectionFrame /
+        SectionTitle / ScrollRow. The 18px/600 h2, the inline arrow that draws its stem on
+        hover, the -mx-3 px-3 bleed, scroll-snap. Reused verbatim.
+    (c) app/[locale]/_components/homepage/ForYouSalonRows.tsx + forYouSalons.ts +
+        useCustomerPrefs.ts , the shipped personalization rail. sec-personal EXTENDS this, it
+        does not replace it.
+    (d) app/[locale]/_components/layout/Footer.tsx , the real footer. sec-footer is a copy of it
+        at 390 with the EN strings from messages/en.json. No new footer was designed.
+    (e) lib/cities.ts CITY_ICONS + public/icons/cities/*.png , the owner-provided city
+        illustrations already used by SearchOverlay.tsx:759. sec-cities reuses those exact files.
+    (f) app/api/cities/route.ts , already returns { slug, name_en, salon_count, categories } per
+        ACTIVE city, which is exactly sec-cities' payload. No new endpoint is needed.
+    REMOVED hits respected: no availability pill (CARD_REDESIGN_2026-07-13 C2), no next-slot text
+      on a card, no "Top bewertet / Neu / Beliebt" badge (project_card_badges), no discount pill
+      at all so the -0% case cannot recur (owner 2026-07-24), no time on a listing
+      (feedback_no_times_in_listings), no ink or blue selected state (owner 2026-06-29), no
+      standalone offers page and no last-minute card in these rails (owner 2026-06-29), and
+      CRITICALLY the graveyarded web derivation endpoint (REMOVED.md:62) is NOT re-proposed
+      anywhere here , see the sec-personal state C note, which routes around it deliberately.
+    THE ONE NEW THING: the section GROUPING and the two titles ("Popular <category> in <city>",
+      the city row). Every pixel inside them is an existing component.
+
+  ---------------------------------------------------------------------------------------------
+  Grounded-in: app/[locale]/_components/homepage/SalonCard.tsx
+  Grounded-in: app/[locale]/_components/homepage/SectionHeader.tsx
+  Grounded-in: app/[locale]/_components/homepage/ForYouSalonRows.tsx
+  Grounded-in: app/[locale]/_components/homepage/forYouSalons.ts
+  Grounded-in: app/[locale]/_components/homepage/useCustomerPrefs.ts
+  Grounded-in: app/[locale]/_components/homepage/HeartButton.tsx
+  Grounded-in: app/[locale]/_components/layout/Footer.tsx
+  Grounded-in: app/api/salons/route.ts
+  Grounded-in: app/api/cities/route.ts
+  Grounded-in: app/[locale]/[city]/[category]/page.tsx
+
+  Depicts: the salon card photo at 5:4, radius 22, elevation-2 -> SalonCard.tsx:426-427
+  Depicts: the frosted 28px heart inside a 44px hit area -> HeartButton.tsx:170-190 + lib/frost-glass.ts
+  Depicts: name 14/500 truncating beside a yellow star and a 13px value -> SalonCard.tsx:505-516
+  Depicts: the category label row -> SalonCard.tsx:520-522
+  Depicts: address and from-price on one line, address truncates, price never wraps -> SalonCard.tsx:526-546
+  Depicts: the from-price naming its own service (PBV Art. 13) -> primitives/PriceFrom.tsx:29-32
+  Depicts: the section h2 at 18/600 with the arrow that draws its stem on hover -> SectionHeader.tsx:214-262
+  Depicts: the scroll row with a 12px gap and a cropped next card -> SectionHeader.tsx:389-409 + :480-520
+  Depicts: the "Because you like X" rail -> ForYouSalonRows.tsx:57-62
+  Depicts: the three salons that rail actually picks -> forYouSalons.ts FORYOU_SALONS.barbershop
+  Depicts: the city illustration tile -> lib/cities.ts:148-157 CITY_ICONS
+  Depicts: the whole footer -> Footer.tsx:96-188, strings from messages/en.json "footer"
+  Depicts: the inline Swiss flag, its national-flag red included -> Footer.tsx:83-89
+  Depicts: the derived-reason rail as an UNFILLED slot, drawing no result -> solen-mobile/src/lib/persona/deriv.ts
+
+  ---------------------------------------------------------------------------------------------
+  measured: every number in this file was READ OUT OF A FILE, QUERIED FROM THE LIVE DB, or
+  PIL-MEASURED against the real self-hosted fonts on 2026-07-31. None was eyeballed.
+
+    From source (path:line):
+      card width (100vw-44)/1.5 = 230.67 at 390 ... SalonCard.tsx:404
+      photo ratio 5/4, radius 22 ................. SalonCard.tsx:426
+      resting shadow elevation-2 0 2px 8px/.09 ... tailwind.config.js:279
+      photo-to-text gap 8, row gap 2, inset 2 .... SalonCard.tsx:502
+      name 14 / 500 / -0.01em / lh 1.25 .......... SalonCard.tsx:505 + primitives/CardText.tsx:40
+      star 11px, value toFixed(1) ................ primitives/RatingStars.tsx:48,190-194
+      star hex #FFC32B ........................... tailwind.config.js:196
+      rating value 13, meta 12, lh 1.35 .......... SalonCard.tsx:509,520,529
+      section h2 18 / 600 / -0.01em .............. SectionHeader.tsx:230
+      row gap 12, bleed -12/+12, snap x mandatory  SectionHeader.tsx:485-505
+      section pad 4 + frame pad 12 = 16 gutter ... SectionHeader.tsx:369 + :555
+      heart 28 visible inside 44 hit ............. HeartButton.tsx:170-186
+      frost recipe 80% white + blur 4 ............ lib/frost-glass.ts:17-22
+      hairline #E4E4E7, ink-2 #6B6B6B ............ tailwind.config.js (design contract rows)
+      group-card radius 24, entity-card radius 16  CLAUDE.md design contract, radius row
+      footer h3 17/600, sub 13, h4 14/700 ........ Footer.tsx:102,105,154
+      footer link 13, legal 12/700 ............... Footer.tsx:160,172
+      Swiss flag fill + rx 3 ..................... Footer.tsx:85 (verbatim, see the hue-ok note)
+      footer input radius 12 + fill #F4F4F5 ...... app/globals.css:343,351
+      newsletter submit 36px, radius 6 (DS-4) .... Footer.tsx:253
+      language trigger 13/500, min-height 40 ..... LanguageSwitcher.tsx:135-138
+      Lucide star/heart/instagram/facebook/chevron-right/chevron-down/arrow-right paths copied
+        byte-for-byte from node_modules/lucide-react/dist/esm/icons/*.js
+
+    From the live DB (Supabase REST, anon key, 2026-07-31), which is what "based on what we have
+    online" means here , every name, rating, postal code, price and count below is a row:
+      cities: 7 rows, exactly ONE is_active -> basel. zuerich/bern/luzern/geneve/lausanne/
+        neuchatel are all is_active=false.
+      salons (is_active, listed_on_marketplace): 20 rows, ALL 20 in Basel. 0 in Zurich.
+      categories across those 20: coiffeur 8, barbershop 4, nails 4, spa 4.
+      cover_photo_url present on 20 of 20 (remote Unsplash; the self-hosted stand-ins are used
+        here per _BASE.md, see the photo note in the floors: block).
+      ratings used below, verbatim: Muse Beauty Studio 4.18->4.2, Atelier Haarwerk 4.56->4.6,
+        Haarsalon Margot 4.75->4.8, Glow Lab Basel 4.5, Salon Lumiere 4.4, Rouge Studio 4.2,
+        Old Town Barbers 4.25->4.3, Cuts &amp; Culture 4.81->4.8, The Fade Factory 4.27->4.3,
+        Blade &amp; Stone 4.36->4.4. Rounding is RatingStars' own value.toFixed(1).
+      cheapest service per category (the lawful from-price): coiffeur 35 CHF "Scalp Massage",
+        barbershop 15 CHF "Eyebrows", nails 15 CHF "French", spa 20 CHF "Underarms".
+
+    PIL-measured against the real self-hosted variable fonts in _assets/fonts (2026-07-31), so
+    the fit claims below are numbers, not guesses:
+      card text column .............................. 230.67 - 4 = 226.67 px
+      name 14/500 Inter: "Muse Beauty Studio" 141.0, "Studio Schnittkunst" (longest in the whole
+        live set) 137.0, "Haarsalon Margot" 126.0, "Old Town Barbers" 126.0
+      rating "4.8" 13/400 19.0 + 11 star + 3 gap = 33.0
+      row 3 at 12/400: "Scalp Massage from 35 CHF" 168.0, "Eyebrows from 15 CHF" 133.0,
+        "4001 Basel" 65.0, "4059 Basel" 67.0
+      h2 18/600 Inter Tight: "Popular Hair Salons in Basel" 231.0, "Popular Barbershops in Basel"
+        248.0, "Because you like Barbershops" 257.0, "Cities on Solen" 125.0. "See all" 13/600 44.0
+      chips 14/400 + 28 padding: Hair Salon 95.0, Barbershop 106.0, Nails 59.0, Spa 54.0
+
+  ---------------------------------------------------------------------------------------------
+  THREE THINGS THE BRIEF ASSUMED THAT THE REPO CONTRADICTS. Named here rather than smoothed over,
+  because each one changes what these templates can honestly render.
+
+    1. ZURICH HAS NO SALONS. The brief's example title named Zurich. Queried live: cities.zuerich
+       is is_active=FALSE and holds 0 salons; all 20 marketplace salons are in Basel. A Zurich
+       rail would render an empty row. So sec-popular is titled on Basel. That is the direct
+       consequence of driving it off what we actually have online.
+    2. THERE ARE ONLY 4 BARBERSHOPS. The brief asks for 6 cards. Basel has 8 coiffeur rows and 4
+       barbershop rows. So the DEFAULT state below is the 6-card one the brief asked for, driven
+       by the category that actually has 6, and the barber state the owner named by voice is
+       shown right under it at its true count of 4. Padding it to 6 would be invention.
+    3. THE WEB DERIVATION STACK IS GONE, AND HALF OF IT IS GRAVEYARDED. The brief says
+       lib/persona/deriv.ts exists. It does not: `git log --all` shows it landed on main in
+       970cbd189 and was deleted in 94aeb53bb (ring10 dead-code sweep). The endpoint that fed it
+       is worse than deleted, it is on the graveyard list by name at REMOVED.md:62 with the
+       reason "zero live callers; mobile app explicitly derives on-device", so restoring the
+       endpoint would be re-proposing a thing the owner killed. The algorithm survives only in
+       solen-mobile (src/lib/persona/deriv.ts, plus its small data wrapper beside it in src/lib).
+       So sec-personal is built on what web ACTUALLY has today (customer_preferences.categories)
+       and the derived variant is drawn as an explicitly unfilled target state.
+
+  ---------------------------------------------------------------------------------------------
+  floors: these are FEED SECTIONS, not whole customer screens, so the page-level items of the
+    finished-screen pass are answered by the page these compose into (home-v3/index.html owns the
+    header and the fold). What this file can answer, it answers:
+    (a) photographic focal , yes, 10 real salon photographs across sec-popular and sec-personal,
+        and the photo is the largest element of every card (230.67 x 184.53 against a 14px name).
+    (b) one element clearly biggest , within each section the photo is the focal, which is the
+        explicit carve-out in FLOORS LAW 6 ("unless the photograph is the focal"). NOTE HONESTLY:
+        there is NO >=28px display anchor in this file. The largest type is the 18px section h2,
+        which is the LOCKED value (design contract text-size row, section-H2 clamp(18,2vw,20)),
+        so raising it here would fork SectionTitle.tsx. The page anchor belongs to the header
+        file. Flagged, not silently fixed.
+    (c) tabular/real number , ratings 4.2/4.6/4.8, prices 35 and 15 CHF, "20 salons", all live
+        rows, all tabular-nums.
+    (d) semantic-color moment , the #FFC32B star on every card and the #FF3366 heart on save.
+        Nothing else is chromatic, which is the point.
+    (e) no dead-grey zone , the photo rails carry the chroma, sec-cities sits on the #F4F4F5
+        sunken tray with the city illustrations, and the footer band is sunken with the flag red.
+    (f) worst-case content , MEASURED, and the measurement changed the answer, so it is written
+        down as it came out rather than as it was expected:
+          NAME ROW PASSES. Longest live name "Studio Schnittkunst" is 137.0px and the widest name
+          actually on screen, "Muse Beauty Studio", is 141.0px; plus an 8px gap and a 33.0px
+          rating that is 182.0px inside a 226.67px column. No truncation, and 45px of slack.
+          THE ADDRESS ROW DOES NOT PASS ON THE COIFFEUR RAIL, and this is a real finding, not a
+          mockup artifact. "Scalp Massage from 35 CHF" measures 168.0px. The price is shrink-0 and
+          the address is min-w-0 truncate (SalonCard.tsx:529-535), so the address gets
+          226.67 - 168.0 - 8 = 50.67px while "4001 Basel" needs 65.0px. Every coiffeur card on a
+          390px viewport truncates its address. The barber rail is fine: "Eyebrows from 15 CHF" is
+          133.0px, leaving 85.67px for a 65.0px address. See F5 below.
+          H2 ROW PASSES on all four titles. Worst case is "Popular Barbershops in Basel" at 248.0
+          + 12 margin + 20 arrow + 24 gap + 44 "See all" = 348.0px inside 358px. 10px of slack,
+          which is thin: a longer city name than Basel will wrap this to two lines. Stated so it
+          is a known boundary rather than a surprise.
+
+    type budget PER TEMPLATE (the law is per screen, and this document is four of them):
+      sec-popular  4 sizes {18,14,13,12}, 3 weights {400,500,600}
+      sec-personal 4 sizes {18,14,13,12}, 3 weights {400,500,600}
+      sec-cities   3 sizes {18,14,12},    3 weights {400,500,600}
+      sec-footer   5 sizes {17,14,13,12} + the 22 brand wordmark, 3 weights {400,600,700}
+    Every one of those sizes and weights is copied from a shipped file. The 3rd weight is
+    structural, not a choice: CardText.tsx:40 locks CardName at font-medium 500, CardText.tsx:48
+    locks CardMeta at 400, and SectionHeader.tsx:230 locks the h2 at 600. Our own shipped rail
+    therefore carries three weights, so the <=2 cap cannot be met without forking a primitive.
+    Reported rather than papered over.
+
+    emphasis budget: sec-popular has 2 of 32 visible text nodes at weight >=600 (6.3%), sec-footer
+    has 6 of 25 (24%). Both under the 30% ceiling.
+    theme: single light theme. No prefers-color-scheme, no data-theme, no dark CSS anywhere.
+    targets: heart 44x44, city category chips 44 tall, footer social 36 (inherited from
+      Footer.tsx:143, flagged not forked), newsletter submit 36 (Footer.tsx:253, same).
+    invention: none. No count, rating, price, availability or derived result appears that is not
+      a live row, and the one unfilled state is drawn as an explicit unfilled slot.
+
+  photo note: the self-hosted pool at /_mockups/_assets/salon-photos has 12 files but only EIGHT
+    distinct images (p01=p10, p02=p08, p04=p05, p09=p11) , the same 8 the shipped dedupe pool in
+    home-fixes/index.html:598 lists. The live DB has 20 distinct cover_photo_url values. So the
+    category-to-photo assignment here follows home-fixes/index.html:593-597 and no two cards in
+    one rail share an image; across two states of the same template a file repeats, because the
+    local pool ran out, not because two salons share a cover.
+
+  Focus treatment is deliberately not declared here. V3-D449 puts focus in globals.css and forbids
+  a component adding its own, so a local ring would be the banned double ring. In the real build
+  the global ink edge applies and WCAG 2.4.7 holds.
+
+  FIVE FINDINGS this rebuild surfaced in shipped code. Not fixed here (a mockup must not fork a
+  shipped component), listed so they are not lost:
+    F1. SalonCard.tsx:57-62 CATEGORY_LABEL is GERMAN-ONLY with no locale switch, so row 2 of every
+        card renders German labels on /en, /fr and /it too. The same labels exist localized at
+        app/[locale]/[city]/[category]/page.tsx:22-27. This file renders the localized EN names to
+        show what it should look like.
+    F2. Footer.tsx:236-245 puts the newsletter input (fill #F4F4F5, border transparent, per
+        globals.css:344,351) on the newsletter band, whose background is also #F4F4F5. Same colour
+        on same colour with no hairline = zero perceivable boundary, which is FLOORS LAW 4's named
+        invalid case. Rendered as-shipped below so the collision is visible.
+    F3. The lawful from-price on a barbershop card advertises "Eyebrows from 15 CHF", because 15
+        really is that salon's cheapest service. Legally correct under PBV Art. 13 and useless as
+        a signal: nobody chooses a barber on an eyebrow price. Worth a product decision about
+        whether the from-price should be scoped to the rail's own category.
+    F4. solen-mobile/src/lib/persona/deriv.ts:152 builds its tagline with an EM DASH, which the
+        house rule bans everywhere including code and comments.
+    F5. NEW, from the PIL measurement above. On a 390px viewport every coiffeur SalonCard
+        truncates its address, because the from-price string it shares the line with is 168.0px
+        wide against a 226.67px column. This is not a layout bug, the truncation order is correct
+        and deliberate, it is a CONTENT problem: the price label is long because it names a 35 CHF
+        scalp massage. Fixing F3 (scope the from-price to the rail's category) would also fix
+        this, which is the cheapest reason to do it.
+-->
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Homepage feed sections, four templates</title>
+<style>
+@font-face{font-family:"Inter";src:url("/_mockups/_assets/fonts/inter-latin-var.woff2") format("woff2");font-weight:100 900;font-display:swap}
+@font-face{font-family:"Inter Tight";src:url("/_mockups/_assets/fonts/inter-tight-latin-var.woff2") format("woff2");font-weight:100 900;font-display:swap}
+
+/* ---- harness chrome (not the designed surface) ---- */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+*{box-sizing:border-box}
+body{margin:0;min-height:100dvh;background:#F4F4F5;color:#0A0A0A;
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:15px;line-height:1.55}
+.wrap{max-width:900px;margin:0 auto;padding:22px 16px 70px}
+h1{font-family:"Inter Tight",Inter,sans-serif;font-size:26px;letter-spacing:-.02em;font-weight:600;margin:0 0 6px}
+.lede{color:#6B6B6B;margin:0 0 22px}
+.cell{margin:0 auto 40px;max-width:420px}
+.cell+.cell{border-top:1px solid #E4E4E7;padding-top:28px}
+.meta{padding:0 4px 12px}
+.nm{display:block;font-size:17px;font-weight:600;margin-bottom:4px}
+.nm code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:15px;background:#fff;border:1px solid #E4E4E7;border-radius:6px;padding:1px 6px}
+.bt{display:block;font-size:13.5px;color:#6B6B6B}
+.bt b{color:#0A0A0A;font-weight:600}
+.state{margin:14px 4px 8px;font-size:13px;color:#6B6B6B}
+.state b{color:#0A0A0A;font-weight:600}
+.screen{background:#fff;border-radius:20px;overflow:hidden}
+.absent{background:repeating-linear-gradient(135deg,#fff,#fff 8px,#FAFAFA 8px,#FAFAFA 16px);
+  border:1px dashed #E4E4E7;border-radius:20px;padding:26px 20px;font-size:13px;color:#6B6B6B;text-align:center}
+.absent b{display:block;color:#0A0A0A;font-weight:600;font-size:14px;margin-bottom:4px}
+.api{margin:10px 4px 0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;
+  color:#6B6B6B;background:#fff;border:1px solid #E4E4E7;border-radius:10px;padding:9px 11px;
+  overflow-x:auto;white-space:pre-wrap;word-break:break-word}
+.api b{color:#0A0A0A;font-weight:600}
+
+/* ==========================================================================
+   DESIGNED SURFACE. Everything below is a copy of a shipped component.
+   ========================================================================== */
+.s3{width:390px;margin:0 auto;background:#fff;color:#0A0A0A;
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+.s3 *,.s3 *::before,.s3 *::after{box-sizing:border-box}
+.s3 a{text-decoration:none;color:inherit}
+
+/* --- Section / SectionFrame / SectionTitle / ScrollRow (SectionHeader.tsx) --- */
+.s3-sec{padding:8px 4px 16px}
+.s3-frame{padding:4px 12px 8px;overflow:hidden}
+.s3-titlerow{display:flex;align-items:baseline;justify-content:space-between;gap:24px}
+.s3-h2{font-family:"Inter Tight",Inter,sans-serif;font-size:18px;font-weight:600;line-height:1.25;
+  letter-spacing:-.01em;color:#0A0A0A;margin:0;min-width:0}
+.s3-h2 .s3-arrow{display:inline-flex;align-items:center;vertical-align:middle;margin-left:12px;color:#0A0A0A}
+.s3-h2 .s3-arrow .stem{stroke-dasharray:14;stroke-dashoffset:14;transition:stroke-dashoffset 200ms cubic-bezier(.23,1,.32,1)}
+.s3-h2 .s3-arrow:hover .stem{stroke-dashoffset:0}
+.s3-seeall{flex:0 0 auto;font-size:13px;font-weight:600;color:#0A0A0A}
+.s3-reason{margin:4px 0 0;font-size:13px;font-weight:400;line-height:1.4;color:#6B6B6B}
+.s3-row{margin-top:4px;display:flex;gap:12px;overflow-x:auto;padding:4px 12px;
+  margin-left:-12px;margin-right:-12px;scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none;scroll-padding-left:12px}
+.s3-row::-webkit-scrollbar{display:none}
+.s3-row>*:last-child{margin-right:8px}
+
+/* --- SalonCard.tsx, the converged card --- */
+.s3-card{flex:0 0 230.67px;width:230.67px;display:flex;flex-direction:column;scroll-snap-align:start}
+.s3-photo{position:relative;width:100%;aspect-ratio:5/4;border-radius:22px;overflow:hidden;
+  background:#F4F4F5;box-shadow:0 2px 8px rgba(50,47,44,.09);
+  transition:transform 200ms cubic-bezier(.23,1,.32,1),box-shadow 200ms cubic-bezier(.23,1,.32,1)}
+.s3-card:hover .s3-photo{transform:translateY(-3px) scale(1.015);box-shadow:0 6px 16px rgba(50,47,44,.12)}
+.s3-photo img{display:block;width:100%;height:100%;object-fit:cover}
+.s3-heart{position:absolute;right:2px;top:2px;width:44px;height:44px;display:grid;place-items:center;
+  background:transparent;border:0;padding:0;cursor:pointer}
+.s3-heart>span{width:28px;height:28px;border-radius:9999px;display:grid;place-items:center;
+  background:rgba(255,255,255,.80);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  border:1px solid rgba(255,255,255,.6);
+  box-shadow:0 1px 3px rgba(0,0,0,.10),inset 0 1px 0 rgba(255,255,255,.4);
+  transition:transform 200ms cubic-bezier(.23,1,.32,1)}
+.s3-heart:hover>span{transform:scale(1.10)}
+.s3-info{margin-top:8px;padding:0 2px;display:flex;flex-direction:column;gap:2px}
+.s3-r1{display:flex;align-items:baseline;gap:8px}
+.s3-name{flex:1 1 auto;min-width:0;font-size:14px;font-weight:500;line-height:1.25;letter-spacing:-.01em;
+  color:#0A0A0A;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin:0}
+.s3-rate{flex:0 0 auto;display:inline-flex;align-items:center;gap:3px;font-size:13px;font-weight:400;
+  color:#6B6B6B;font-variant-numeric:tabular-nums}
+.s3-cat{font-size:12px;font-weight:400;line-height:1.35;color:#6B6B6B;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.s3-r3{display:flex;align-items:baseline;justify-content:space-between;gap:8px;
+  font-size:12px;font-weight:400;line-height:1.35;color:#6B6B6B}
+.s3-addr{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.s3-price{flex:0 0 auto;display:inline-flex;align-items:baseline;gap:4px;
+  white-space:nowrap;font-variant-numeric:tabular-nums}
+.s3-price .amt{color:#0A0A0A}
+
+/* --- sec-personal: the unfilled derived-field slot (target state) --- */
+.s3-slot{display:inline-block;border:1px dashed #E4E4E7;border-radius:6px;padding:0 5px;
+  font-variant-numeric:tabular-nums;color:#6B6B6B}
+
+/* --- sec-cities --- */
+.s3-tray{margin-top:4px;background:#F4F4F5;border-radius:24px;padding:12px;
+  display:flex;flex-direction:column;gap:8px}
+.s3-city{background:#fff;border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:12px}
+.s3-cityhead{display:flex;align-items:center;gap:12px}
+.s3-cityicon{flex:0 0 auto;width:44px;height:44px;border-radius:12px;background:#F4F4F5;
+  display:grid;place-items:center;overflow:hidden}
+.s3-cityicon img{width:38px;height:38px;object-fit:contain}
+.s3-citytext{min-width:0;flex:1 1 auto;display:flex;flex-direction:column;gap:2px}
+.s3-cityname{font-size:14px;font-weight:500;line-height:1.25;letter-spacing:-.01em;color:#0A0A0A;margin:0}
+.s3-citycount{font-size:12px;font-weight:400;line-height:1.35;color:#6B6B6B;font-variant-numeric:tabular-nums}
+.s3-chips{display:flex;flex-wrap:wrap;gap:8px}
+.s3-chip{display:inline-flex;align-items:center;height:44px;padding:0 14px;border-radius:9999px;
+  background:#fff;border:1px solid #E4E4E7;font-size:14px;font-weight:400;color:#0A0A0A;
+  transition:border-color 150ms cubic-bezier(.23,1,.32,1)}
+.s3-chip:hover{border-color:#0A0A0A}
+.s3-citynote{margin:8px 4px 0;font-size:12px;font-weight:400;line-height:1.4;color:#6B6B6B}
+
+/* --- sec-footer, a copy of Footer.tsx at 390 --- */
+.s3-footer{background:#fff}
+.s3-nl{background:#F4F4F5;border-bottom:1px solid #E4E4E7;padding:28px 20px;
+  display:flex;flex-direction:column;gap:16px}
+.s3-nl h3{font-family:"Inter Tight",Inter,sans-serif;font-size:17px;font-weight:600;
+  letter-spacing:-.01em;color:#0A0A0A;margin:0}
+.s3-nl p{margin:2px 0 0;font-size:13px;font-weight:400;color:#6B6B6B}
+.s3-nlform{position:relative;width:100%;max-width:360px}
+.s3-nlform input{width:100%;padding:12px 48px 12px 14px;border-radius:12px;border:1px solid transparent;
+  background:#F4F4F5;font-family:inherit;font-size:14px;font-weight:400;color:#0A0A0A;outline:none}
+.s3-nlform input::placeholder{color:#6B6B6B}
+.s3-nlform button{position:absolute;right:6px;top:6px;width:36px;height:36px;display:grid;place-items:center;
+  border:0;border-radius:6px;background:#0A0A0A;color:#fff;cursor:pointer;
+  transition:transform 200ms cubic-bezier(.23,1,.32,1)}
+.s3-nlform button:active{transform:scale(.95)}
+.s3-fbody{padding:40px 20px}
+.s3-fgrid{display:grid;grid-template-columns:1fr 1fr;column-gap:24px;row-gap:36px}
+.s3-brand{grid-column:span 2}
+.s3-wordmark{font-family:"Inter Tight",Inter,sans-serif;font-size:22px;font-weight:700;
+  line-height:1;color:#0A0A0A;display:inline-block}
+.s3-tagline{margin:12px 0 0;max-width:280px;font-size:13px;font-weight:400;line-height:1.6;color:#6B6B6B}
+.s3-social{margin-top:20px;display:flex;gap:8px}
+.s3-social a{width:36px;height:36px;display:grid;place-items:center;border-radius:12px;
+  background:#F4F4F5;color:#6B6B6B;transition:background 150ms cubic-bezier(.23,1,.32,1),color 150ms}
+.s3-social a:hover{background:#0A0A0A;color:#fff}
+.s3-fcol h4{margin:0 0 16px;font-size:14px;font-weight:700;color:#0A0A0A}
+.s3-fcol ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
+.s3-fcol a{font-size:13px;font-weight:400;color:#6B6B6B;transition:color 150ms}
+.s3-fcol a:hover{color:#0A0A0A}
+.s3-legal{margin-top:48px;padding-top:24px;border-top:1px solid #E4E4E7;
+  display:flex;flex-direction:column;gap:12px;font-size:12px;font-weight:700;color:#6B6B6B}
+.s3-legal .row{display:inline-flex;align-items:center;gap:6px}
+.s3-lang{display:inline-flex;align-items:center;gap:2px;min-height:40px;padding:6px 8px;border:0;
+  background:transparent;border-radius:9999px;font-family:inherit;font-size:13px;font-weight:500;
+  color:#6B6B6B;cursor:pointer}
+.s3-lang:hover{color:#0A0A0A}
+.s3-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style>
+</head><body><div class="wrap">
+
+<h1>Homepage feed sections</h1>
+<p class="lede">The four sections that replace the two rails shipping today. The header lives in
+the sibling files. Every salon, rating, price and count below is a live row from the database,
+queried today, which is why the city is Basel and not Zurich.</p>
+
+
+<!-- TEMPLATE 1 , sec-popular -->
+<div class="cell" id="cell-popular">
+  <div class="meta">
+    <span class="nm"><code>sec-popular</code></span>
+    <span class="bt">Popular in a city, by category. The title is built from the two filters the
+    query already carries, so the section renames itself when the filters change. <b>Default
+    state: 6 cards.</b></span>
+  </div>
+
+  <div class="screen">
+    <section class="s3" id="sec-popular" aria-label="Popular hair salons in Basel">
+      <div class="s3-sec"><div class="s3-frame">
+        <div class="s3-titlerow">
+          <h2 class="s3-h2">Popular Hair Salons in Basel<a class="s3-arrow" href="/en/basel/coiffeur" aria-label="See all hair salons in Basel"><svg class="lucide lucide-arrow-right" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="stem" d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a></h2>
+          <a class="s3-seeall" href="/en/basel/coiffeur">See all</a>
+        </div>
+        <div class="s3-row">
+
+          <a class="s3-card" href="/en/salon/muse-beauty-studio" aria-label="Muse Beauty Studio, book an appointment">
+            <div class="s3-photo">
+              <img src="/_mockups/_assets/salon-photos/p12.jpg" alt="Muse Beauty Studio, hair salon" width="800" height="640">
+              <button class="s3-heart" type="button" aria-label="Save" aria-pressed="false"><span><svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></button>
+            </div>
+            <div class="s3-info">
+              <div class="s3-r1">
+                <h3 class="s3-name">Muse Beauty Studio</h3>
+                <span class="s3-rate" aria-label="4.2"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.2</span>
+              </div>
+              <div class="s3-cat">Hair Salon</div>
+              <div class="s3-r3"><span class="s3-addr">4001 Basel</span><span class="s3-price">Scalp Massage from <span class="amt">35 CHF</span></span></div>
+            </div>
+          </a>
+
+          <a class="s3-card" href="/en/salon/atelier-haarwerk" aria-label="Atelier Haarwerk, book an appointment">
+            <div class="s3-photo">
+              <img src="/_mockups/_assets/salon-photos/p09.jpg" alt="Atelier Haarwerk, hair salon" width="800" height="640">
+              <button class="s3-heart" type="button" aria-label="Save" aria-pressed="false"><span><svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></button>
+            </div>
+            <div class="s3-info">
+              <div class="s3-r1">
+                <h3 class="s3-name">Atelier Haarwerk</h3>
+                <span class="s3-rate" aria-label="4.6"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.6</span>
+              </div>
+              <div class="s3-cat">Hair Salon</div>
+              <div class="s3-r3"><span class="s3-addr">4001 Basel</span><span class="s3-price">Scalp Massage from <span class="amt">35 CHF</span></span></div>
+            </div>
+          </a>
+
+          <a class="s3-card" href="/en/salon/haarsalon-margot" aria-label="Haarsalon Margot, book an appointment">
+            <div class="s3-photo">
+              <img src="/_mockups/_assets/salon-photos/p01.jpg" alt="Haarsalon Margot, hair salon" width="800" height="640">
+              <button class="s3-heart" type="button" aria-label="Save" aria-pressed="false"><span><svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></button>
+            </div>
+            <div class="s3-info">
+              <div class="s3-r1">
+                <h3 class="s3-name">Haarsalon Margot</h3>
+                <span class="s3-rate" aria-label="4.8"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.8</span>
+              </div>
+              <div class="s3-cat">Hair Salon</div>
+              <div class="s3-r3"><span class="s3-addr">4051 Basel</span><span class="s3-price">Scalp Massage from <span class="amt">35 CHF</span></span></div>
+            </div>
+          </a>
+
+          <a class="s3-card" href="/en/salon/glow-lab-basel" aria-label="Glow Lab Basel, book an appointment">
+            <div class="s3-photo">
+              <img src="/_mockups/_assets/salon-photos/p02.jpg" alt="Glow Lab Basel, hair salon" width="800" height="640">
+              <button class="s3-heart" type="button" aria-label="Save" aria-pressed="false"><span><svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></button>
+            </div>
+            <div class="s3-info">
+              <div class="s3-r1">
+                <h3 class="s3-name">Glow Lab Basel</h3>
+                <span class="s3-rate" aria-label="4.5"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.5</span>
+              </div>
+              <div class="s3-cat">Hair Salon</div>
+              <div class="s3-r3"><span class="s3-addr">4051 Basel</span><span class="s3-price">Scalp Massage from <span class="amt">35 CHF</span></span></div>
+            </div>
+          </a>
+
+          <a class="s3-card" href="/en/salon/salon-lumiere" aria-label="Salon Lumiere, book an appointment">
+            <div class="s3-photo">
+              <img src="/_mockups/_assets/salon-photos/p04.jpg" alt="Salon Lumiere, hair salon" width="800" height="640">
+              <button class="s3-heart" type="button" aria-label="Save" aria-pressed="false"><span><svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></button>
+            </div>
+            <div class="s3-info">
+              <div class="s3-r1">
+                <h3 class="s3-name">Salon Lumi&egrave;re</h3>
+                <span class="s3-rate" aria-label="4.4"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.4</span>
+              </div>
+              <div class="s3-cat">Hair Salon</div>
+              <div class="s3-r3"><span class="s3-addr">4051 Basel</span><span class="s3-price">Scalp Massage from <span class="amt">35 CHF</span></span></div>
+            </div>
+          </a>
+
+          <a class="s3-card" href="/en/salon/rouge-studio" aria-label="Rouge Studio, book an appointment">
+            <div class="s3-photo">
+              <img src="/_mockups/_assets/salon-photos/p06.jpg" alt="Rouge Studio, hair salon" width="800" height="640">
+              <button class="s3-heart" type="button" aria-label="Save" aria-pressed="false"><span><svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></button>
+            </div>
+            <div class="s3-info">
+              <div class="s3-r1">
+                <h3 class="s3-name">Rouge Studio</h3>
+                <span class="s3-rate" aria-label="4.2"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.2</span>
+              </div>
+              <div class="s3-cat">Hair Salon</div>
+              <div class="s3-r3"><span class="s3-addr">4059 Basel</span><span class="s3-price">Scalp Massage from <span class="amt">35 CHF</span></span></div>
+            </div>
+          </a>
+
+        </div>
+      </div></div>
+    </section>
+  </div>
+
+  <p class="api"><b>GET /api/salons?category=coiffeur&amp;city=basel&amp;sort=rating&amp;limit=6</b>
+category -> route.ts:44, validated against SALON_CATEGORY_SLUGS
+city     -> route.ts:45, resolved by slug OR localized name at :237-257, applied as .eq("city_id") at :358
+sort     -> route.ts:58 default "rating" = .order(solen_score desc).order(average_rating desc) at :438
+price    -> the embedded services(price,name_de,name_en) at :88, min taken post-fetch
+title    -> "Popular " + CATEGORY_NAMES[category].en + " in " + city.name_en, both already exist
+            (app/[locale]/[city]/[category]/page.tsx:22-27, cities.name_en)</p>
+
+  <p class="state"><b>Second state, the one the owner asked for by voice.</b> Same template,
+  category=barbershop. It renders <b>4 cards, not 6</b>, because 4 is how many barbershops exist.
+  The row still shows a cropped next card at 390 so the scroll promise survives.</p>
+
+  <div class="screen">
+    <section class="s3" id="sec-popular--thin" aria-label="Popular barbershops in Basel">
+      <div class="s3-sec"><div class="s3-frame">
+        <div class="s3-titlerow">
+          <h2 class="s3-h2">Popular Barbershops in Basel<a class="s3-arrow" href="/en/basel/barbershop" aria-label="See all barbershops in Basel"><svg class="lucide lucide-arrow-right" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="stem" d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a></h2>
+          <a class="s3-seeall" href="/en/basel/barbershop">See all</a>
+        </div>
+        <div class="s3-row">
+
+          <a class="s3-card" href="/en/salon/old-town-barbers" aria-label="Old Town Barbers, book an appointment">
+            <div class="s3-photo">
+              <img src="/_mockups/_assets/salon-photos/p03.jpg" alt="Old Town Barbers, barbershop" width="800" height="640">
+              <button class="s3-heart" type="button" aria-label="Save" aria-pressed="false"><span><svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></button>
+            </div>
+            <div class="s3-info">
+              <div class="s3-r1">
+                <h3 class="s3-name">Old Town Barbers</h3>
+                <span class="s3-rate" aria-label="4.3"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.3</span>
+              </div>
+              <div class="s3-cat">Barbershop</div>
+              <div class="s3-r3"><span class="s3-addr">4051 Basel</span><span class="s3-price">Eyebrows from <span class="amt">15 CHF</span></span></div>
+            </div>
+          </a>
+
+          <a class="s3-card" href="/en/salon/cuts-and-culture" aria-label="Cuts and Culture, book an appointment">
+            <div class="s3-photo">
+              <img src="/_mockups/_assets/salon-photos/p01.jpg" alt="Cuts and Culture, barbershop" width="800" height="640">
+              <button class="s3-heart" type="button" aria-label="Save" aria-pressed="false"><span><svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></button>
+            </div>
+            <div class="s3-info">
+              <div class="s3-r1">
+                <h3 class="s3-name">Cuts &amp; Culture</h3>
+                <span class="s3-rate" aria-label="4.8"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.8</span>
+              </div>
+              <div class="s3-cat">Barbershop</div>
+              <div class="s3-r3"><span class="s3-addr">4056 Basel</span><span class="s3-price">Eyebrows from <span class="amt">15 CHF</span></span></div>
+            </div>
+          </a>
+
+          <a class="s3-card" href="/en/salon/the-fade-factory" aria-label="The Fade Factory, book an appointment">
+            <div class="s3-photo">
+              <img src="/_mockups/_assets/salon-photos/p12.jpg" alt="The Fade Factory, barbershop" width="800" height="640">
+              <button class="s3-heart" type="button" aria-label="Save" aria-pressed="false"><span><svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></button>
+            </div>
+            <div class="s3-info">
+              <div class="s3-r1">
+                <h3 class="s3-name">The Fade Factory</h3>
+                <span class="s3-rate" aria-label="4.3"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.3</span>
+              </div>
+              <div class="s3-cat">Barbershop</div>
+              <div class="s3-r3"><span class="s3-addr">4058 Basel</span><span class="s3-price">Eyebrows from <span class="amt">15 CHF</span></span></div>
+            </div>
+          </a>
+
+          <a class="s3-card" href="/en/salon/blade-and-stone" aria-label="Blade and Stone, book an appointment">
+            <div class="s3-photo">
+              <img src="/_mockups/_assets/salon-photos/p09.jpg" alt="Blade and Stone, barbershop" width="800" height="640">
+              <button class="s3-heart" type="button" aria-label="Save" aria-pressed="false"><span><svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></button>
+            </div>
+            <div class="s3-info">
+              <div class="s3-r1">
+                <h3 class="s3-name">Blade &amp; Stone</h3>
+                <span class="s3-rate" aria-label="4.4"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.4</span>
+              </div>
+              <div class="s3-cat">Barbershop</div>
+              <div class="s3-r3"><span class="s3-addr">4057 Basel</span><span class="s3-price">Eyebrows from <span class="amt">15 CHF</span></span></div>
+            </div>
+          </a>
+
+        </div>
+      </div></div>
+    </section>
+  </div>
+
+  <p class="api"><b>GET /api/salons?category=barbershop&amp;city=basel&amp;sort=rating&amp;limit=6</b>
+Returns 4. hierarchy-density-04 (sparse-but-real) waives the count floor for a real thin set and
+keeps the no-invention rule. Do NOT pad the row with other categories to reach 6.</p>
+</div>
+
+
+<!-- TEMPLATE 2 , sec-personal -->
+<div class="cell" id="cell-personal">
+  <div class="meta">
+    <span class="nm"><code>sec-personal</code></span>
+    <span class="bt">The logged-in rail. Three states, because personalization has three real
+    levels of evidence and only one of them can be true today.</span>
+  </div>
+
+  <p class="state"><b>State A , signed out. This is what renders pre-launch, and it renders
+  nothing.</b> That is not a gap in this mockup, it is the shipped behaviour:
+  ForYouSalonRows.tsx returns null with no prefs, ForYouGreeting.tsx returns null when logged out,
+  and useCustomerPrefs.ts short-circuits on getSession() so a guest never even calls /api/profile.
+  Drawn as an empty slot rather than as invented product UI.</p>
+
+  <div class="absent" id="sec-personal--signedout">
+    <b>Section not rendered</b>
+    The feed goes straight from sec-popular to sec-cities. No sign-in prompt, no teaser card, no
+    placeholder row. Nothing was designed here because nothing ships here.
+  </div>
+
+  <p class="state"><b>State B , signed in, no completed bookings.</b> Every account is in this state
+  right now, so this is the one honest signed-in render. The reason line is a stored fact: the
+  category the user picked during onboarding, read from profiles.customer_preferences.categories.
+  The three salons are the real ones this rail already picks.</p>
+
+  <div class="screen">
+    <section class="s3" id="sec-personal" aria-label="Because you like barbershops">
+      <div class="s3-sec"><div class="s3-frame">
+        <div class="s3-titlerow">
+          <h2 class="s3-h2">Because you like Barbershops<a class="s3-arrow" href="/en/barbershop" aria-label="All barbershops"><svg class="lucide lucide-arrow-right" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="stem" d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a></h2>
+          <a class="s3-seeall" href="/en/barbershop">All</a>
+        </div>
+        <p class="s3-reason">From the categories you picked when you signed up.</p>
+        <div class="s3-row">
+
+          <a class="s3-card" href="/en/salon/old-town-barbers" aria-label="Old Town Barbers, book an appointment">
+            <div class="s3-photo">
+              <img src="/_mockups/_assets/salon-photos/p03.jpg" alt="Old Town Barbers, barbershop" width="800" height="640">
+              <button class="s3-heart" type="button" aria-label="Save" aria-pressed="false"><span><svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></button>
+            </div>
+            <div class="s3-info">
+              <div class="s3-r1">
+                <h3 class="s3-name">Old Town Barbers</h3>
+                <span class="s3-rate" aria-label="4.3"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.3</span>
+              </div>
+              <div class="s3-cat">Barbershop</div>
+              <div class="s3-r3"><span class="s3-addr">4051 Basel</span><span class="s3-price">Eyebrows from <span class="amt">15 CHF</span></span></div>
+            </div>
+          </a>
+
+          <a class="s3-card" href="/en/salon/the-fade-factory" aria-label="The Fade Factory, book an appointment">
+            <div class="s3-photo">
+              <img src="/_mockups/_assets/salon-photos/p01.jpg" alt="The Fade Factory, barbershop" width="800" height="640">
+              <button class="s3-heart" type="button" aria-label="Save" aria-pressed="false"><span><svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></button>
+            </div>
+            <div class="s3-info">
+              <div class="s3-r1">
+                <h3 class="s3-name">The Fade Factory</h3>
+                <span class="s3-rate" aria-label="4.3"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.3</span>
+              </div>
+              <div class="s3-cat">Barbershop</div>
+              <div class="s3-r3"><span class="s3-addr">4058 Basel</span><span class="s3-price">Eyebrows from <span class="amt">15 CHF</span></span></div>
+            </div>
+          </a>
+
+          <a class="s3-card" href="/en/salon/blade-and-stone" aria-label="Blade and Stone, book an appointment">
+            <div class="s3-photo">
+              <img src="/_mockups/_assets/salon-photos/p12.jpg" alt="Blade and Stone, barbershop" width="800" height="640">
+              <button class="s3-heart" type="button" aria-label="Save" aria-pressed="false"><span><svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></button>
+            </div>
+            <div class="s3-info">
+              <div class="s3-r1">
+                <h3 class="s3-name">Blade &amp; Stone</h3>
+                <span class="s3-rate" aria-label="4.4"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.4</span>
+              </div>
+              <div class="s3-cat">Barbershop</div>
+              <div class="s3-r3"><span class="s3-addr">4057 Basel</span><span class="s3-price">Eyebrows from <span class="amt">15 CHF</span></span></div>
+            </div>
+          </a>
+
+        </div>
+      </div></div>
+    </section>
+  </div>
+
+  <p class="api"><b>Reason line and cards, state B</b>
+prefs -> GET /api/profile -> profiles.customer_preferences.categories (useCustomerPrefs.ts:47-58)
+picks -> FORYOU_SALONS[category] in forYouSalons.ts, identity only (id / slug / name / category)
+card  -> every other field batch-fetched live by salonCardData.ts, so nothing on the card is curated
+title -> ForYouSalonRows.tsx:60, localized to EN here</p>
+
+  <p class="state"><b>State C , signed in, with enough visit history to derive a rhythm.</b> Same
+  rail, the reason line upgrades from a stored pick to a derived one. <b>The slots are drawn empty
+  on purpose.</b> The algorithm needs at least 2 completed bookings before it reports anything
+  above confidence:"seed", and there are zero completed bookings, so filling these in would be
+  inventing a customer. This is the shape, not a result.</p>
+
+  <div class="screen">
+    <section class="s3" id="sec-personal--derived" aria-label="Derived rhythm rail, target state">
+      <div class="s3-sec"><div class="s3-frame">
+        <div class="s3-titlerow">
+          <h2 class="s3-h2">Your rhythm says now<a class="s3-arrow" href="/en/barbershop" aria-label="All"><svg class="lucide lucide-arrow-right" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="stem" d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a></h2>
+          <a class="s3-seeall" href="/en/barbershop">All</a>
+        </div>
+        <p class="s3-reason">Your last <span class="s3-slot">visits</span> visits were
+          <span class="s3-slot">serviceMix.dominant</span>, on a
+          <span class="s3-slot">rhythm.label</span>.</p>
+        <div class="s3-row">
+
+          <a class="s3-card" href="/en/salon/old-town-barbers" aria-label="Old Town Barbers, book an appointment">
+            <div class="s3-photo">
+              <img src="/_mockups/_assets/salon-photos/p03.jpg" alt="Old Town Barbers, barbershop" width="800" height="640">
+              <button class="s3-heart" type="button" aria-label="Save" aria-pressed="false"><span><svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></button>
+            </div>
+            <div class="s3-info">
+              <div class="s3-r1">
+                <h3 class="s3-name">Old Town Barbers</h3>
+                <span class="s3-rate" aria-label="4.3"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.3</span>
+              </div>
+              <div class="s3-cat">Barbershop</div>
+              <div class="s3-r3"><span class="s3-addr">4051 Basel</span><span class="s3-price">Eyebrows from <span class="amt">15 CHF</span></span></div>
+            </div>
+          </a>
+
+          <a class="s3-card" href="/en/salon/the-fade-factory" aria-label="The Fade Factory, book an appointment">
+            <div class="s3-photo">
+              <img src="/_mockups/_assets/salon-photos/p01.jpg" alt="The Fade Factory, barbershop" width="800" height="640">
+              <button class="s3-heart" type="button" aria-label="Save" aria-pressed="false"><span><svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></button>
+            </div>
+            <div class="s3-info">
+              <div class="s3-r1">
+                <h3 class="s3-name">The Fade Factory</h3>
+                <span class="s3-rate" aria-label="4.3"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.3</span>
+              </div>
+              <div class="s3-cat">Barbershop</div>
+              <div class="s3-r3"><span class="s3-addr">4058 Basel</span><span class="s3-price">Eyebrows from <span class="amt">15 CHF</span></span></div>
+            </div>
+          </a>
+
+          <a class="s3-card" href="/en/salon/blade-and-stone" aria-label="Blade and Stone, book an appointment">
+            <div class="s3-photo">
+              <img src="/_mockups/_assets/salon-photos/p12.jpg" alt="Blade and Stone, barbershop" width="800" height="640">
+              <button class="s3-heart" type="button" aria-label="Save" aria-pressed="false"><span><svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></button>
+            </div>
+            <div class="s3-info">
+              <div class="s3-r1">
+                <h3 class="s3-name">Blade &amp; Stone</h3>
+                <span class="s3-rate" aria-label="4.4"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.4</span>
+              </div>
+              <div class="s3-cat">Barbershop</div>
+              <div class="s3-r3"><span class="s3-addr">4057 Basel</span><span class="s3-price">Eyebrows from <span class="amt">15 CHF</span></span></div>
+            </div>
+          </a>
+
+        </div>
+      </div></div>
+    </section>
+  </div>
+
+  <p class="api"><b>State C is a TARGET state, and the obvious way to build it is BANNED.</b>
+was      -> the web derivation module lib/persona/deriv.ts, landed on main in 970cbd189
+now      -> deleted in 94aeb53bb (ring10 dead-code sweep). The path does not exist in this tree.
+BANNED   -> the cookie-authed web endpoint that used to feed it is GRAVEYARDED BY NAME at
+            _design-system/REMOVED.md:62, reason "zero live callers; mobile app explicitly derives
+            on-device". Restoring that endpoint is re-proposing a deleted thing and needs an
+            explicit owner yes. This mockup does not propose it.
+survives -> solen-mobile/src/lib/persona/deriv.ts, the pure algorithm, plus its small data wrapper
+            beside it in src/lib. The logic is not lost, only unhosted on web.
+fields   -> { serviceMix.dominant, rhythm.label, rhythm.overdue, colorIdentity.label, visits,
+            confidence }
+gate     -> deriv.ts:150 sets confidence "seed" below 2 completed bookings. Render state C only
+            when confidence != "seed", else fall back to state B. Without that gate the rail
+            claims a pattern from a single visit, which is the no-invention rule with extra steps.
+to ship  -> the path that respects the graveyard is to port the PURE function to web and run it
+            client-side against Supabase, exactly the way mobile does. That is a copy of an
+            existing pure function plus a query, not a new service, and it revives nothing the
+            owner killed.</p>
+</div>
+
+
+<!-- TEMPLATE 3 , sec-cities -->
+<div class="cell" id="cell-cities">
+  <div class="meta">
+    <span class="nm"><code>sec-cities</code></span>
+    <span class="bt">One row per <b>active</b> city. /api/cities already returns exactly this
+    payload and already filters to is_active, so today it returns <b>one</b> row.</span>
+  </div>
+
+  <div class="screen">
+    <section class="s3" id="sec-cities" aria-label="Cities on Solen">
+      <div class="s3-sec"><div class="s3-frame">
+        <div class="s3-titlerow">
+          <h2 class="s3-h2">Cities on Solen</h2>
+        </div>
+        <div class="s3-tray">
+          <div class="s3-city">
+            <a class="s3-cityhead" href="/en/basel" aria-label="Basel, 20 salons">
+              <span class="s3-cityicon"><img src="/icons/cities/basel.png" alt="" width="38" height="38"></span>
+              <span class="s3-citytext">
+                <span class="s3-cityname">Basel</span>
+                <span class="s3-citycount">20 salons</span>
+              </span>
+              <svg class="lucide lucide-chevron-right" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+            </a>
+            <div class="s3-chips">
+              <a class="s3-chip" href="/en/basel/coiffeur">Hair Salon</a>
+              <a class="s3-chip" href="/en/basel/barbershop">Barbershop</a>
+              <a class="s3-chip" href="/en/basel/nails">Nails</a>
+              <a class="s3-chip" href="/en/basel/spa">Spa</a>
+            </div>
+          </div>
+        </div>
+        <p class="s3-citynote">More cities open as we sign salons there.</p>
+      </div></div>
+    </section>
+  </div>
+
+  <p class="api"><b>GET /api/cities</b>
+returns -> { slug, name_de, name_en, name_fr, name_it, salon_count, categories, lat, lng } per city
+filter  -> app/api/cities/route.ts:23-25, .eq("is_active", true). ONE row today: basel.
+count   -> salon_count computed there at :39-40 from salons WHERE is_active. Live value: 20.
+chips   -> the `categories` array the same response returns, which for Basel is exactly
+           [coiffeur, barbershop, nails, spa]. Each chip goes to app/[locale]/[city]/[category].
+labels  -> CATEGORY_NAMES at app/[locale]/[city]/[category]/page.tsx:22-27.
+
+<b>The cost of this section, stated rather than hidden.</b> With one active city a "cities" section
+is one row. That is why the row carries the city's four real category routes instead of being a
+bare tile: five real destinations out of one live city, and the identical markup becomes a proper
+list the day a second city flips is_active. The six inactive cities (zuerich, bern, luzern,
+geneve, lausanne, neuchatel) are deliberately NOT drawn. /api/cities cannot return them, drawing
+them would need a new endpoint, and six untappable tiles is six dead affordances. If you want them
+visible as a coming-soon list, that is a product call and it needs a real destination behind each
+one first.</p>
+</div>
+
+
+<!-- TEMPLATE 4 , sec-footer -->
+<div class="cell" id="cell-footer">
+  <div class="meta">
+    <span class="nm"><code>sec-footer</code></span>
+    <span class="bt">The existing footer, unchanged. Nothing here was designed: this is
+    Footer.tsx rendered at 390 with the EN strings from messages/en.json.</span>
+  </div>
+
+  <div class="screen">
+    <footer class="s3 s3-footer" id="sec-footer" aria-label="Footer">
+      <div class="s3-nl">
+        <div>
+          <h3>Stay in the loop</h3>
+          <p>New salons, trends and tips. Once a month.</p>
+        </div>
+        <form class="s3-nlform" aria-label="Subscribe to the newsletter" onsubmit="return false">
+          <label class="s3-sr" for="s3-nl-email">Email address</label>
+          <input id="s3-nl-email" type="email" name="email" placeholder="you@email.ch" required>
+          <button type="submit" aria-label="Subscribe">
+            <svg class="lucide lucide-chevron-right" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
+        </form>
+      </div>
+
+      <div class="s3-fbody">
+        <div class="s3-fgrid">
+          <div class="s3-brand">
+            <a class="s3-wordmark" href="/en" aria-label="Solen home">Solen</a>
+            <p class="s3-tagline">For your city. For Switzerland.</p>
+            <div class="s3-social">
+              <a href="https://instagram.com/solen.ch" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                <svg class="lucide lucide-instagram" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+              </a>
+              <a href="https://facebook.com/solen.ch" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                <svg class="lucide lucide-facebook" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <div class="s3-fcol">
+            <h4>Company</h4>
+            <ul>
+              <li><a href="/en/ueber-uns">About us</a></li>
+              <li><a href="/en/karriere">Careers</a></li>
+              <li><a href="/en/presse">Press</a></li>
+              <li><a href="/en/blog">Blog</a></li>
+            </ul>
+          </div>
+
+          <div class="s3-fcol">
+            <h4>For Salons</h4>
+            <ul>
+              <li><a href="/en/partner">For Salons</a></li>
+              <li><a href="/en/help">Salon help</a></li>
+            </ul>
+          </div>
+
+          <div class="s3-fcol">
+            <h4>Help</h4>
+            <ul>
+              <li><a href="/en/help">Customer help</a></li>
+              <li><a href="/en/sicherheit">Safety</a></li>
+              <li><a href="/en/kontakt">Contact</a></li>
+            </ul>
+          </div>
+
+          <div class="s3-fcol">
+            <h4>Legal</h4>
+            <ul>
+              <li><a href="/en/privacy">Privacy</a></li>
+              <li><a href="/en/terms">Terms</a></li>
+              <li><a href="/en/impressum">Imprint</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="s3-legal">
+          <span class="row">&copy; 2026 Solen.ch Switzerland
+            <!-- chart-ok hue-ok: the Swiss flag, copied verbatim from Footer.tsx:83-89. Its red is the national flag red, not a palette choice, exactly like the rating star keeping its yellow. Not a Lucide glyph because no icon set ships a national flag. --><svg width="13" height="13" viewBox="0 0 32 32" aria-hidden="true" style="border-radius:2px;vertical-align:-1px"><rect width="32" height="32" rx="3" fill="#DA291C"/><rect x="13" y="6" width="6" height="20" fill="#fff"/><rect x="6" y="13" width="20" height="6" fill="#fff"/></svg>
+          </span>
+          <span>
+            <button class="s3-lang" type="button" aria-label="Change language" aria-expanded="false">EN
+              <svg class="lucide lucide-chevron-down" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.6"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+          </span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <p class="api"><b>sec-footer feeds on nothing new.</b>
+markup     -> app/[locale]/_components/layout/Footer.tsx:96-188, one to one
+strings    -> messages/en.json "footer" namespace, every key already existed
+links      -> all 13 hrefs point at routes that exist (checked against app/[locale]/)
+language   -> components-legacy/ui/LanguageSwitcher.tsx default variant, 13px/500, min-height 40
+newsletter -> POST /api/newsletter, schema z.object({ email })
+
+<b>One thing rendered as-is that should not stay that way (F2 in the header note).</b> The input
+fill is #F4F4F5 (globals.css:351) with a transparent border (:344), and it sits on the newsletter
+band, which is also #F4F4F5. Look at it: there is no edge. FLOORS LAW 4 names this exact case
+invalid. The fix is a one-token change in Footer.tsx, not a redesign, so it is reported here
+rather than done inside a mockup.</p>
+</div>
+
+</div>
+
+<script>
+/* Heart toggle. A real affordance rather than a dead one: it flips fill and aria-pressed, which is
+   what HeartButton does optimistically before it calls /api/favorites/toggle. Persistence is not
+   mocked, because a mockup that pretends to save is the no-invention rule with extra steps. */
+document.querySelectorAll(".s3-heart").forEach(function (b) {
+  b.addEventListener("click", function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    var on = b.getAttribute("aria-pressed") === "true";
+    var p = b.querySelector("path");
+    b.setAttribute("aria-pressed", on ? "false" : "true");
+    b.setAttribute("aria-label", on ? "Save" : "Saved");
+    p.setAttribute("fill", on ? "none" : "#FF3366");
+    p.setAttribute("stroke", on ? "#0A0A0A" : "none");
+  });
+});
+</script>
+</body></html>

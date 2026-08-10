@@ -415,3 +415,34 @@ the whole app. fr/it/en currently see German chips. Fix later as ONE guarded pas
 - B. Distribution-led: 5-bar star histogram + one featured review. NOTE: a code comment says the histogram was dropped per owner , needs an explicit un-drop.
 - C. Featured-voice: one hero review + a chrome-less horizontal peek row.
 **Recommendation:** A — kills both named defects (bare count, too long) with zero re-proposal risk.
+
+### Q25 — French register: `tu` (matching German/Italian) or `vous` (current default)? (copy-i18n-03)
+**Severity:** HIGH (brand-voice decision, touches messages/fr.json site-wide)
+**SOURCE.md anchor:** §18 (Voice register), §20 locked-decisions table
+**Question:** German is locked `du` (informal) "per audience research" (§18) and Italian independently converged the same way (245 informal `tuo/tua/tu` tokens vs 1 formal `Suo`). French never got an explicit decision and defaulted to formal: `messages/fr.json` measures 229 formal (`votre`/`vos`) tokens vs 46 informal (`tu`/`ton`/`ta`/`tes`), the inverse ratio of German and Italian, including on core marketing surfaces (home.hero_title "Votre salon a Bale", home.partner.subtitle). Does the same warmth/distance rationale that locked German and Italian to informal apply to French, or is there a real reason (French `tu` can read more presumptuous to a French-Swiss audience than German `du` does) that French should stay `vous`?
+**Options:**
+- A. Switch French to `tu`, matching German/Italian and the stated warmth rationale (RATIONALE.md:524, "informal address reads warmer and faster; formality signals distance"). Requires a full pass over `messages/fr.json` (5669 leaf keys) converting `votre/vos/vous` to `ton/ta/tes/tu`, the same scale of work as the German du-not-Sie sweep but across the WHOLE file, not a handful of drifted keys.
+- B. Keep French `vous`, decide it is a deliberate, named exception (French-Swiss audience research or a different distance convention), and record that reasoning in §18/§20 so it stops looking like undecided drift.
+**Recommendation:** A, on the evidence (both other non-English locales converged there independently, and the app's own stated rationale for the choice is audience-general, not German-specific) , but this is a real brand-voice call, not a mechanical fix: it changes how ~5,600 French strings sound and is the kind of decision rule 5 (goal, not action) and the verifier-loop's "brand voice needs owner sign-off" carve-out both flag as needing the owner's yes before a site-wide rewrite, not an agent's unilateral judgment call.
+**Status:** OPEN, queued for owner (2026-07-27, copy-i18n-03). Not implemented pending the decision.
+
+### Q26 — "ab CHF X" on a single flat-priced service: legal, or needs a data gate? (copy-i18n-11)
+**Severity:** MEDIUM (Swiss consumer-protection exposure once salons enter live prices, pre-launch today)
+**SOURCE.md anchor:** N/A (LOCKFILE "ab CHF" typography rows, `_rules/LEGAL_COPY.md`)
+**Question:** `app/[locale]/_components/search/SearchOverlay.tsx:667` shows "ab {price}" for ONE named service's single flat `price` (e.g. "Herrenschnitt, ab CHF 45") in the search-suggestion list. The Service row has no price-tier array; a salon's `PricingRule` rows (weekend/peak/holiday surcharge, last-minute/off-peak discount) can move the final charged price up or down from that base. Does Swiss price-display law (Preisbekanntgabeverordnung) require this to be data-gated (only show "ab" when a discount PricingRule could make it cheaper; otherwise show a flat "CHF 45", no "ab"), or is showing "ab" uniformly fine given surcharge/discount rules already introduce real variance?
+**Options:**
+- A. Data-gate: "ab" only when the service has an applicable discount-type PricingRule; otherwise flat price, no prefix. Needs a backend join (service -> its salon's active discount PricingRules) before render.
+- B. Keep uniform "ab": PricingRule-driven variance (surcharges can push price up, discounts can pull it down) is treated as sufficient "the floor can move" justification for every priced service.
+- C. Get actual legal read (not an agent guess) on whether the PBV cares about the DIRECTION of variance (a floor that can only go UP via surcharge is arguably NOT a legitimate "from" price) before picking A or B.
+**Recommendation:** C first, this turns on a real regulatory reading this codebase cannot resolve by itself (confidence: assume, not verified, per the original research finding); A is the safer default if a decision is needed without legal review, since it never OVERSTATES a floor that surcharges could push above the displayed number.
+**Status:** OPEN, queued for owner (2026-07-27, copy-i18n-11). Not implemented pending the decision; full writeup in `_rules/LEGAL_COPY.md`.
+
+### Q27 — SMS/email reminder window (23.5-24.5h, 0.5-1.5h): parked as a global constant until a real per-salon need shows up (seo-comms-11)
+**Severity:** LOW (deliberately parked, not a bug)
+**SOURCE.md anchor:** N/A
+**Question:** `app/api/cron/sms-reminders/route.ts:44-45` hardcodes the 24h reminder window (`win24hStart`/`win24hEnd`, 23.5h-24.5h before the booking) and the matching 1h window (0.5h-1.5h, line 21 comment) as literal numeric constants, not a `salons.*` column. Whether-to-send-at-all is already a per-salon toggle (`sms_reminder_24h`/`sms_reminder_1h`); only the timing itself is global. Should this become a per-salon or per-category configurable window?
+**Options:**
+- A. Leave it a global constant. At 28 seed salons with no evidence any category wants a different cadence, a settings UI for reminder timing is premature machinery.
+- B. Add a `salons.sms_reminder_window_hours` (or per-category default) column now, ahead of any demonstrated need.
+**Recommendation:** A. This is a scale-discipline call, not a criticism of the current value: build the settings column the moment a salon owner asks for a different window, or once a category (spa/nails with longer service times wanting more notice) or booking-cancellation-due-to-late-reminder complaints appear in support data. Until one of those triggers fires, the global constant is correct, not merely tolerated.
+**Status:** PARKED (2026-07-27, seo-comms-11). No code change; this note names the trigger so the next person who touches sms-reminders/route.ts does not have to re-derive whether the hardcoding was a decision or an oversight.

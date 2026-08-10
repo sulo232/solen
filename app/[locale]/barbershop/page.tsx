@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import SearchTemplate from "@/app/[locale]/_components/search/SearchTemplate";
 import { createAdminSupabaseClient } from "@/lib/supabase";
-import { generateCategoryListSchema, buildAlternates, generateBreadcrumbSchema, generateFaqSchema, CATEGORY_FAQS } from "@/lib/seo";
+import { generateCategoryListSchema, buildAlternates, generateBreadcrumbSchema, generateFaqSchema, CATEGORY_FAQS, safeJsonLd } from "@/lib/seo";
 import { getFilterAvailability } from "@/lib/search/filter-availability";
 
 export async function generateMetadata({
@@ -63,7 +63,7 @@ export default async function Page({
     { name: "Solen", item: `https://solen.ch/${loc}` },
     { name: "Barbershop" },
   ]);
-  const faq = generateFaqSchema(CATEGORY_FAQS.barbershop);
+  const faq = generateFaqSchema(CATEGORY_FAQS.barbershop[loc] ?? CATEGORY_FAQS.barbershop.de);
   try {
     const supabase = createAdminSupabaseClient();
     const { data: salons } = await supabase
@@ -83,16 +83,18 @@ export default async function Page({
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(breadcrumb) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(faq) }}
       />
+      {/* A4-jsonld-escape (2026-07-27): jsonLd carries salon.name/slug read
+          straight from the DB. safeJsonLd escapes </script> breakout. */}
       {jsonLd && (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }}
         />
       )}
       {/* V3-D350 (2026-05-28): unified Airbnb-style search is the default render

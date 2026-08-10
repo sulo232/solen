@@ -8,6 +8,7 @@ import { HeartButton } from "../homepage/HeartButton";
 import { TAB_SECTIONS, type TabKey, type SalonDetail } from "./_shared";
 import { cn } from "@/lib/utils";
 import { shareOrCopy } from "@/lib/share";
+import { useTranslations } from "next-intl";
 
 /**
  * SalonStickyTabNav — V2-D53.3 (2026-05-11).
@@ -34,6 +35,8 @@ export function SalonStickyTabNav({
   scrollAnchorRef: React.RefObject<HTMLElement | null>;
   salon: SalonDetail;
 }) {
+  const tBack = useTranslations("common");
+  const tr = useTranslations("salonDetail");
   const router = useRouter();
   // V3-D421 (Hero B): share action mirrors SalonHero's, for the mobile scroll-header.
   const shareSalon = React.useCallback(() => {
@@ -150,7 +153,7 @@ export function SalonStickyTabNav({
   const nav = (
     <nav
       ref={navRef}
-      aria-label="Salon-Abschnitte"
+      aria-label="Store-Abschnitte"
       className={cn(
         // V2-D53.3 fix (round 2): switched from `sticky` to `fixed` so the
         // nav is always anchored to viewport top:0 once visible. `sticky`
@@ -178,7 +181,7 @@ export function SalonStickyTabNav({
         <div className="flex items-center gap-3 py-2 md:hidden">
           <button
             type="button"
-            aria-label="Zurück"
+            aria-label={tBack("back")}
             onClick={() => router.back()}
             className="-ml-1 grid h-9 w-9 shrink-0 place-items-center rounded-full text-s-ink transition-transform active:scale-95 active:duration-[80ms] active:ease-glide"
           >
@@ -195,7 +198,7 @@ export function SalonStickyTabNav({
           </span>
           <button
             type="button"
-            aria-label="Salon teilen"
+            aria-label="Store teilen"
             onClick={shareSalon}
             className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-s-ink transition-transform active:scale-95 active:duration-[80ms] active:ease-glide"
           >
@@ -209,6 +212,13 @@ export function SalonStickyTabNav({
               key={t.key}
               type="button"
               onClick={() => handleClick(t.key)}
+              // accessibility-07 (2026-07-27): NOT role="tab"/aria-selected, this is a
+              // scroll-spy anchor nav, not a tabs widget, every section stays in the DOM
+              // and reachable by normal scrolling regardless of which tab is "active".
+              // role=tab would wrongly imply the other sections are hidden. aria-current
+              // is the correct ARIA for "which nav item matches the current position"
+              // (same pattern as a table-of-contents highlighting the current section).
+              aria-current={activeTab === t.key ? "true" : undefined}
               // mockup-ok: RANGE LAW A1 (2026-07-25), owner-approved via /dev/flatness
               // ("go apply evrth"). Weight now follows the 2026-07-21 TASTE_LOG "content-tab
               // selected state" lock (active = 600 ink + underline, inactive = 400 ink-2)
@@ -217,10 +227,10 @@ export function SalonStickyTabNav({
                 "font-body relative shrink-0 py-3.5 text-[14px] transition-[colors,transform] active:scale-[0.98] active:duration-[80ms] active:ease-glide md:py-4",
                 activeTab === t.key
                   ? "font-semibold text-s-ink"
-                  : "font-normal text-s-ink-3 hover:text-s-ink"
+                  : "font-normal text-s-ink-2 hover:text-s-ink"
               )}
             >
-              {t.label}
+              {tr(t.labelKey)}
               {activeTab === t.key && (
                 <span className="absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-s-ink" />
               )}

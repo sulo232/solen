@@ -1,0 +1,349 @@
+<style>
+/* hdr , Header variants (mockup part, id prefix "hdr").
+
+   Diagnosis: header middle slot carries nothing | measured 243px of empty space between the logo right edge x=87 (28px type, 71px wide, from x=16) and the hamburger left edge x=330 (44x44), /de at 390x844 via getBoundingClientRect 2026-07-31 | violates FLOORS LAW 10 (every element must belong to the screen's job , here the inverse: a slot occupying 62% of the header width that carries no element at all) | target 0px unused, the middle slot either carries the search or the header collapses to its controls
+   Diagnosis: first salon card renders below the fold | measured first card top y=842 on an 844px viewport, /de at 390x844 via getBoundingClientRect 2026-07-31 | violates FLOORS LAW 3 density floor (a populated list first viewport shows >=4 content units mobile plus a visibly cropped next item) | target first card top <= 620px so one full card plus the crop of the next is inside the fold
+   Diagnosis: chrome above the feed consumes the whole fold | measured 84px sticky header + a 31.2px/700 promise headline at y=124 + a 358x250 four-row search stack at y=218 = 592px before any content, /de at 390x844 via getBoundingClientRect 2026-07-31 | violates FLOORS LAW 3 (the populated state is the design target, not the chrome) | target <= 130px of header-resident chrome, headline removed, search reshaped to one row
+
+   Grounded-in: app/[locale]/_components/layout/Header.tsx , the real hdr chrome:
+     logo slot (Logo primitive, font-display 28px/600, no dot), the h-11 w-11
+     rounded-input hairline tile, Menu at size 22 / stroke 2.2 (lib/icon-stroke.ts).
+   Grounded-in: app/[locale]/_components/homepage/SearchBar.tsx , the real search
+     grammar: Search / MapPin / Calendar Lucide set, three fields, and the resting
+     state rendered as PLACEHOLDER (weight 400, ink-2), not semibold.
+
+   Exists-check: `npm run exists header` , 46 matches; `npm run exists "search bar"`
+     , 14 matches. The real global header is app/[locale]/_components/layout/Header.tsx
+     and the real search is app/[locale]/_components/homepage/SearchBar.tsx; these
+     variants RESHAPE those two, they do not introduce a second header or a second
+     search. SalonHeader / SalonHeaderOverhaul / SectionHeader are other surfaces,
+     untouched. REMOVED.md hits reviewed and honoured: "in-page back-button" (the
+     global header IS the back, V3-D461) , no variant adds a back control or a bottom
+     bar; "inspo search focus ring" and "selected state black ink" , no focus ring
+     and no ink fill on any resting/selected control here (the ink disc is the commit
+     action, not a selected state). Net-new: only the ARRANGEMENT of existing parts.
+
+   Tokens are literal so the part is self-contained: ink #0A0A0A, ink-2 #6B6B6B,
+   hairline #E4E4E7, sunken #F4F4F5. Fonts are named, not @font-face'd (the
+   assembler owns the page scaffolding): Inter Tight >= 24px, Inter for body.
+   Focus treatment is intentionally NOT declared here , the page-level global ink
+   edge owns it, and a part-local ring would double it. */
+
+.hdr-root {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  width: 100%;
+  background: #fff;
+  border-bottom: 1px solid #E4E4E7;
+  padding-top: env(safe-area-inset-top, 0px);
+  -webkit-text-size-adjust: 100%;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
+  color: #0A0A0A;
+  box-sizing: border-box;
+}
+.hdr-root *,
+.hdr-root *::before,
+.hdr-root *::after { box-sizing: border-box; }
+
+.hdr-inner {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* ── the real Logo primitive: font-display, 28px, 600, tracking-normal, no dot ── */
+.hdr-logo {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  font-family: "Inter Tight", Inter, ui-sans-serif, system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 1;
+  letter-spacing: 0;
+  color: #0A0A0A;
+  text-decoration: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.hdr-logo-sm { font-size: 18px; }         /* Logo size="sm" , the locked small variant */
+.hdr-logo-tap { min-height: 44px; }
+
+/* ── the real header tile: h-11 w-11, rounded-input 16, hairline, white, ink glyph ── */
+.hdr-tile {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 16px;
+  border: 1px solid #E4E4E7;
+  background: #fff;
+  color: #0A0A0A;
+  padding: 0;
+  cursor: pointer;
+  transition: border-color 200ms cubic-bezier(0.22, 1, 0.36, 1),
+              background-color 200ms cubic-bezier(0.22, 1, 0.36, 1),
+              transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.hdr-tile:hover { border-color: #0A0A0A; }
+.hdr-tile:active { transform: scale(0.94); }
+/* naked variant , used INSIDE the search bar where the bar already carries the edge */
+.hdr-tile-bare { border-color: transparent; background: transparent; }
+.hdr-tile-bare:hover { border-color: transparent; background: #F4F4F5; }
+
+/* ── shared search-field grammar, carried from SearchBar.tsx ──
+   resting state = placeholder, so weight 400 / ink-2, exactly as the real
+   CollapsedRow renders it (isPlaceholder ? font-normal : font-semibold).
+   That also keeps every variant at 1 of 4 text nodes >= weight 600 (the wordmark),
+   i.e. 25%, under the 30% emphasis ceiling. */
+.hdr-field {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  height: 48px;
+  background: #fff;
+  border: 1px solid #E4E4E7;
+  border-radius: 999px;
+  padding: 0 6px 0 14px;
+  gap: 10px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 150ms cubic-bezier(0.22, 1, 0.36, 1),
+              background-color 150ms cubic-bezier(0.22, 1, 0.36, 1),
+              transform 150ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.hdr-field:hover { background: #F4F4F5; }
+.hdr-field:active { transform: scale(0.99); }
+.hdr-field-ico { display: flex; flex-shrink: 0; color: #6B6B6B; }
+.hdr-field-labels {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  flex: 1 1 auto;
+  gap: 8px;
+  overflow: hidden;
+}
+.hdr-lab {
+  font-size: 14px;
+  font-weight: 400;
+  color: #6B6B6B;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hdr-lab-2 { font-size: 13px; }
+.hdr-sep {
+  flex-shrink: 0;
+  width: 1px;
+  height: 16px;
+  background: #E4E4E7;
+}
+/* the one commit control, ink */
+.hdr-go {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 999px;
+  background: #0A0A0A;
+  color: #fff;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1),
+              background-color 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.hdr-go:hover { background: #000; }
+.hdr-go:active { transform: scale(0.97); }
+
+.hdr-row {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+}
+.hdr-spacer { flex: 1 1 auto; min-width: 0; }
+
+/* ═══ A. hdr-stacked , logo row over a full-width search row (Airbnb's answer) ═══ */
+.hdr-stacked .hdr-inner { padding-top: 10px; padding-bottom: 10px; }
+.hdr-stacked-searchrow { margin-top: 8px; }
+.hdr-stacked-searchrow .hdr-field { width: 100%; }
+
+/* ═══ B. hdr-pill , one row, compact summary pill sandwiched in the 243px gap ═══ */
+.hdr-pill .hdr-inner { padding-top: 10px; padding-bottom: 10px; }
+.hdr-pill-mid {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0 12px;
+}
+.hdr-pill-mid .hdr-field {
+  width: 100%;
+  height: 44px;
+  padding: 0 14px;
+  gap: 10px;
+}
+
+/* ═══ C. hdr-searchbar , the search bar IS the header ═══ */
+.hdr-searchbar .hdr-inner { padding-top: 8px; padding-bottom: 8px; }
+.hdr-sb-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  height: 56px;
+  padding: 0 6px 0 14px;
+  background: #fff;
+  border: 1px solid #E4E4E7;
+  border-radius: 28px;
+  box-shadow: 0 1px 3px rgba(10, 10, 10, 0.04), 0 10px 28px -14px rgba(10, 10, 10, 0.10);
+}
+.hdr-sb-field {
+  display: flex;
+  align-items: center;
+  flex: 1 1 auto;
+  min-width: 0;
+  gap: 10px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+}
+.hdr-sb-field:active { transform: scale(0.99); }
+
+/* ═══ D. hdr-minimal , logo, search icon, hamburger. No persistent field ═══ */
+.hdr-minimal .hdr-inner { padding-top: 10px; padding-bottom: 10px; }
+.hdr-minimal-actions {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 8px;
+}
+</style>
+
+<template id="hdr-stacked">
+  <header class="hdr-root hdr-stacked">
+    <div class="hdr-inner">
+      <div class="hdr-row">
+        <a class="hdr-logo" href="#" aria-label="Solen, home">Solen</a>
+        <span class="hdr-spacer"></span>
+        <button class="hdr-tile" type="button" aria-label="Open menu">
+          <svg class="lucide lucide-menu" data-lucide="menu" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/></svg>
+        </button>
+      </div>
+      <div class="hdr-stacked-searchrow">
+        <button class="hdr-field" type="button" aria-label="Search by service, city and time">
+          <span class="hdr-field-ico">
+            <svg class="lucide lucide-search" data-lucide="search" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+          </span>
+          <span class="hdr-field-labels">
+            <span class="hdr-lab">Service</span>
+            <span class="hdr-sep"></span>
+            <span class="hdr-lab hdr-lab-2">City</span>
+            <span class="hdr-sep"></span>
+            <span class="hdr-lab hdr-lab-2">Time</span>
+          </span>
+          <span class="hdr-go" role="presentation">
+            <svg class="lucide lucide-search" data-lucide="search" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+          </span>
+        </button>
+      </div>
+    </div>
+  </header>
+</template>
+
+<template id="hdr-pill">
+  <header class="hdr-root hdr-pill">
+    <div class="hdr-inner">
+      <div class="hdr-row">
+        <a class="hdr-logo" href="#" aria-label="Solen, home">Solen</a>
+        <div class="hdr-pill-mid">
+          <button class="hdr-field" type="button" aria-label="Search by service, city and time">
+            <span class="hdr-field-ico">
+              <svg class="lucide lucide-search" data-lucide="search" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+            </span>
+            <span class="hdr-field-labels">
+              <span class="hdr-lab">Service</span>
+              <span class="hdr-sep"></span>
+              <span class="hdr-lab hdr-lab-2">City</span>
+              <span class="hdr-sep"></span>
+              <span class="hdr-lab hdr-lab-2">Time</span>
+            </span>
+          </button>
+        </div>
+        <button class="hdr-tile" type="button" aria-label="Open menu">
+          <svg class="lucide lucide-menu" data-lucide="menu" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+</template>
+
+<template id="hdr-searchbar">
+  <header class="hdr-root hdr-searchbar">
+    <div class="hdr-inner">
+      <div class="hdr-sb-bar">
+        <a class="hdr-logo hdr-logo-sm hdr-logo-tap" href="#" aria-label="Solen, home">Solen</a>
+        <button class="hdr-sb-field" type="button" aria-label="Search by service, city and time">
+          <span class="hdr-field-ico">
+            <svg class="lucide lucide-search" data-lucide="search" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+          </span>
+          <span class="hdr-field-labels">
+            <span class="hdr-lab">Service</span>
+            <span class="hdr-sep"></span>
+            <span class="hdr-lab hdr-lab-2">City</span>
+            <span class="hdr-sep"></span>
+            <span class="hdr-lab hdr-lab-2">Time</span>
+          </span>
+        </button>
+        <button class="hdr-tile hdr-tile-bare" type="button" aria-label="Open menu">
+          <svg class="lucide lucide-menu" data-lucide="menu" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+</template>
+
+<template id="hdr-minimal">
+  <header class="hdr-root hdr-minimal">
+    <div class="hdr-inner">
+      <div class="hdr-row">
+        <a class="hdr-logo" href="#" aria-label="Solen, home">Solen</a>
+        <span class="hdr-spacer"></span>
+        <div class="hdr-minimal-actions">
+          <button class="hdr-tile" type="button" aria-label="Search">
+            <svg class="lucide lucide-search" data-lucide="search" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+          </button>
+          <button class="hdr-tile" type="button" aria-label="Open menu">
+            <svg class="lucide lucide-menu" data-lucide="menu" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+</template>
+
+<!-- hdr , 4 templates: hdr-stacked, hdr-pill, hdr-searchbar, hdr-minimal.
+
+     Depicts: Solen wordmark in the far-left slot -> app/[locale]/_components/primitives/Logo.tsx (font-display 28px/600, dot removed V3-D146), rendered by app/[locale]/_components/layout/Header.tsx isHome branch
+     Depicts: hamburger tile at the right edge -> app/[locale]/_components/layout/Header.tsx (h-11 w-11 rounded-input, border-s-border, Menu size 22 stroke 2.2 via lib/icon-stroke.ts)
+     Depicts: three-field search Service / City / Time -> app/[locale]/_components/homepage/SearchBar.tsx CollapsedRow x3 (Search, MapPin, Calendar lucide icons; resting placeholder weight 400)
+     Depicts: ink circular submit inside the search field -> app/[locale]/_components/homepage/SearchBar.tsx bg-s-ink primary CTA, the same single commit action, reshaped from a text pill to a disc because a header row has no width for a text button
+     Depicts: search icon-only button (hdr-minimal) -> app/[locale]/_components/homepage/SearchBar.tsx openOverlay entry point into app/[locale]/_components/search/SearchOverlay.tsx, the real full-page search surface
+     Depicts: reduced 18px wordmark (hdr-searchbar) -> app/[locale]/_components/primitives/Logo.tsx size="sm" variant (locked V2-D27), not a new brand mark
+     NET-NEW in this part: nothing but the arrangement. No control, icon, label, token or route here is invented.
+
+     Assembler notes:
+     1. Fonts are NOT declared here (no @font-face, per the one-style-block contract).
+        Load Inter + Inter Tight from /_mockups/_assets/fonts/ at page level.
+     2. Chrome copy is ENGLISH, enforced by the mockup-english gate. The shipped
+        component localises these three labels through i18n at runtime; a mockup
+        must not hardcode the localised strings.
+     3. Each header is position:sticky top:0 z-index:50. Nothing is fixed, so no
+        bottom bar and no scroll-lock interaction with the page parts.
+     4. Focus is left to the page-level global ink edge on purpose. -->

@@ -6,6 +6,7 @@ import { Users, Info, X, Check } from "lucide-react";
 import { SelectedCheckBadge } from "@/components-legacy/ui/SelectedCheckBadge";
 import { Avatar } from "@/app/[locale]/_components/primitives";
 import { useWalkInQueue } from "@/components-legacy/salon/WalkInQueueContext";
+import { localizedField } from "@/lib/i18n/localized-field";
 
 interface WalkInService {
   id: string;
@@ -129,7 +130,7 @@ export default function SalonWalkInPanel({
   const [activeCat, setActiveCat] = useState<string>("alle");
   const [showAllServices, setShowAllServices] = useState(false); // Termin-style preview + "Alle ansehen"
 
-  const svcName = (s: WalkInService) => (locale === "en" ? s.name_en : s.name_de) || s.name_de || s.name_en || "Service";
+  const svcName = (s: WalkInService) => localizedField(s as unknown as Record<string, unknown>, "name", locale) || "Service";
 
   // Orange only when the salon's configured capacity is exceeded (stats.busy). Until the
   // dashboard exposes max_walkin_queue, busy is never set → stays green. See _tasks/WALKIN_DASHBOARD_NEEDS.md.
@@ -323,7 +324,7 @@ export default function SalonWalkInPanel({
           <div className="w-full max-w-sm rounded-3xl bg-white p-6 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.4)]" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-start justify-between gap-4">
               <h3 className="font-display text-[17px] font-bold tracking-[-.01em] text-s-ink">{l.howTitle}</h3>
-              <button type="button" onClick={() => setInfoOpen(false)} aria-label={l.close} className="-mr-1 -mt-1 grid h-8 w-8 shrink-0 place-items-center rounded-full text-s-ink-3 transition active:scale-[0.94] active:duration-[80ms] active:ease-glide">
+              <button type="button" onClick={() => setInfoOpen(false)} aria-label={l.close} className="-mr-1 -mt-1 grid h-8 w-8 shrink-0 place-items-center rounded-full text-s-ink-2 transition active:scale-[0.94] active:duration-[80ms] active:ease-glide">
                 <X size={20} />
               </button>
             </div>
@@ -369,7 +370,7 @@ function WalkInServiceRow({
       <div className="flex items-center justify-between gap-4">
         <div className="min-w-0 flex-1">
           <div className="font-body text-[15px] font-semibold text-s-ink">{name}</div>
-          <div className="font-body mt-0.5 text-[13px] text-s-ink-3">
+          <div className="font-body mt-0.5 text-[13px] text-s-ink-2">
             {service.duration_minutes ? `${service.duration_minutes} ${l.min}, ` : ""}{l.from} {Number(service.price).toFixed(0)} CHF
           </div>
           {waitLabel && (
@@ -388,7 +389,7 @@ function WalkInServiceRow({
         ) : (
           <span
             aria-disabled="true"
-            className="font-body shrink-0 cursor-not-allowed rounded-full bg-s-bg-sunken px-5 py-2 text-[13px] font-semibold text-s-ink-3 opacity-70"
+            className="font-body shrink-0 cursor-not-allowed rounded-full bg-s-bg-sunken px-5 py-2 text-[13px] font-semibold text-s-ink-2 opacity-70"
           >
             {CLOSED_PILL[locale] ?? CLOSED_PILL.de}
           </span>

@@ -1,9 +1,11 @@
 "use client";
 
 import * as React from "react";
+import { useTranslations } from "next-intl";
 import { Star, MessageSquare } from "lucide-react";
 import type { Review } from "./_shared";
 import { formatReviewDate, publicReply } from "./_shared";
+import { formatNumber } from "@/lib/format";
 import { Avatar, RatingStars, SeeAllButton } from "@/app/[locale]/_components/primitives";
 import { TabPill } from "../primitives/TabPill";
 import { cn } from "@/lib/utils";
@@ -58,6 +60,7 @@ export function SalonReviews({
    */
   layout?: "stack" | "swipe" | "collapsed";
 }) {
+  const t = useTranslations("salonDetail");
   const [fetched, setFetched] = React.useState<Review[] | null>(null);
 
   React.useEffect(() => {
@@ -127,7 +130,7 @@ export function SalonReviews({
       >
         {/* V3-D202 (A9): font-body → font-display + Scale B. */}
         <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
-          Bewertungen
+          {t("reviewsHeading")}
         </h2>
 
         {/* mockup-ok: D3 Segmented summary (owner-approved 2026-07-24, _overhaul/reviews/
@@ -138,20 +141,29 @@ export function SalonReviews({
           <span className="font-display text-[20px] font-bold leading-none text-s-ink tabular-nums">
             {average?.toFixed(1) ?? "-"}
           </span>
-          <span className="font-body text-[13px] text-s-ink-3">
-            {count.toLocaleString("de-CH")} {count === 1 ? "Bewertung" : "Bewertungen"}
+          <span className="font-body text-[13px] text-s-ink-2">
+            {t("reviewsCountPlural", { count })}
           </span>
         </div>
 
-        {all.length === 0 ? (
+        {/* GUARDED ON `rows`, NOT `all` (fixed 2026-07-28). `all` is every loaded review;
+            `rows` is the ones that actually RENDER after the anti-wall filter drops rating-only
+            anonymous entries (owner 2026-06-12). Guarding on `all` meant a salon whose reviews
+            are ALL rating-only fell into the else branch and drew the tier chips anyway, so the
+            page showed "Alle (0)" directly beneath a count of 11, then "no reviews in this
+            group". Two true numbers contradicting each other on screen. Measured on
+            muse-beauty-studio: 11 reviews, zero with a comment or a display name.
+            The branch below already had the right answer for exactly this case; it was simply
+            unreachable. */}
+        {rows.length === 0 ? (
           // Aggregate without bodies (count > 0) softens to "texts coming"; truly-empty (0) stays.
           count > 0 ? (
-            <p className="font-body mt-5 text-[14px] text-s-ink-3">
-              Bewertungstexte folgen.
+            <p className="font-body mt-5 text-[14px] text-s-ink-2">
+              {t("reviewTextsComing")}
             </p>
           ) : (
-            <p className="font-body mt-5 text-[14px] text-s-ink-3">
-              Noch keine Bewertungen.
+            <p className="font-body mt-5 text-[14px] text-s-ink-2">
+              {t("noReviewsYet")}
             </p>
           )
         ) : (
@@ -177,7 +189,7 @@ export function SalonReviews({
 
             <div className="mt-5 flex flex-col">
               {visible.length === 0 ? (
-                <p className="font-body text-[14px] text-s-ink-3">Noch keine Bewertungen in dieser Gruppe.</p>
+                <p className="font-body text-[14px] text-s-ink-2">{t("noReviewsInGroup")}</p>
               ) : (
                 visible.map((r) => (
                   <div key={r.id} className="border-t border-s-border pt-5 first:border-t-0 first:pt-0 [&+&]:mt-5">
@@ -190,7 +202,7 @@ export function SalonReviews({
         )}
       </section>
 
-      {all.length > 0 && salonSlug && locale && (
+      {rows.length > 0 && salonSlug && locale && (
         <div className="mt-5 flex justify-center">
           {/* mockup-ok: SeeAllButton port, byte-identical pill class string, same instance as
               SalonServices/SalonTeam on this page. Always navigates to the real full reviews
@@ -198,7 +210,7 @@ export function SalonReviews({
               2026-07-25: "outside of the reviews group card"); gap matches SalonServices.tsx's
               established card→SeeAllButton mt-5 (both direct children of a non-card wrapper). */}
           <SeeAllButton
-            label={`Alle ${count.toLocaleString("de-CH")} Bewertungen`}
+            label={t("allNReviews", { count: formatNumber(count, locale) })}
             href={`/${locale}/salon/${salonSlug}/reviews`}
           />
         </div>
@@ -208,10 +220,49 @@ export function SalonReviews({
 }
 
 function ReviewCard({ review, salonName, locale }: { review: Review; salonName?: string; locale?: string }) {
-  const text = review.comment ?? review.comment_de ?? review.comment_en ?? "";
+  const t = useTranslations("reviews");
+  const tCommon = useTranslations("common");
+  const original = review.comment ?? review.comment_de ?? review.comment_en ?? "";
   const [showFull, setShowFull] = React.useState(false);
-  const isLong = text.length > 200;
   const reply = publicReply(review.review_replies);
+
+  // ON-READ TRANSLATION (2026-07-27). Reviews are written in German by default and carry no
+  // language column. A visitor reading in another locale gets a translation fetched lazily
+  // from /api/reviews/translate, which caches it (measured: 7.7s cold, 209ms warm).
+  //
+  // THE ORIGINAL IS NEVER REPLACED, only covered. `showOriginal` puts it back in one tap, and
+  // the label always says the text was translated. A machine translation must not silently
+  // become what a customer said about a business , that is somebody's reputation.
+  const [translated, setTranslated] = React.useState<string | null>(null);
+  const [showOriginal, setShowOriginal] = React.useState(false);
+  const needsTranslation = !!original && !!locale && locale !== "de";
+
+  React.useEffect(() => {
+    if (!needsTranslation) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/reviews/translate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ids: [review.id], locale }),
+        });
+        if (!res.ok) return;
+        const json = await res.json();
+        const value = json?.translations?.[review.id];
+        // No translation is not an error state worth surfacing: the original is already
+        // rendered and is true. Fail quiet.
+        if (!cancelled && typeof value === "string" && value.trim()) setTranslated(value);
+      } catch {
+        /* fail quiet, the original stays */
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [needsTranslation, review.id, locale]);
+
+  const showingTranslation = !!translated && !showOriginal;
+  const text = showingTranslation ? translated! : original;
+  const isLong = text.length > 200;
 
   // Reviewer name only when a public profile exists. Anonymous/seed reviews show a
   // "Verifizierte Buchung · date" line instead of a repeated placeholder name.
@@ -223,12 +274,12 @@ function ReviewCard({ review, salonName, locale }: { review: Review; salonName?:
           the grey date stacked under, star row below, text below. Anonymous reviews
           show "Anonym" (the established label on /reviews). */}
       <div className="flex items-start gap-3.5">
-        <Avatar src={review.profiles?.avatar_url} name={displayName ?? "Anonym"} size={56} />
+        <Avatar src={review.profiles?.avatar_url} name={displayName ?? tCommon("anonymous")} size={56} />
         <div className="min-w-0 flex-1">
           <div className="font-body truncate text-[16px] font-semibold text-s-ink">
-            {displayName ?? "Anonym"}
+            {displayName ?? tCommon("anonymous")}
           </div>
-          <div className="font-body mt-0.5 text-[14px] text-s-ink-3">
+          <div className="font-body mt-0.5 text-[14px] text-s-ink-2">
             {formatReviewDate(review.created_at, locale)}
           </div>
         </div>
@@ -260,8 +311,24 @@ function ReviewCard({ review, salonName, locale }: { review: Review; salonName?:
               onClick={() => setShowFull(true)}
               className="font-body mt-1 text-[13px] font-medium text-s-accent transition-[opacity,transform] hover:opacity-80 active:scale-[0.98] active:duration-[80ms] active:ease-glide"
             >
-              Mehr lesen
+              {t("readMore")}
             </button>
+          )}
+          {/* The provenance line renders ONLY when a translation is actually being shown, so a
+              German reader never sees it and a failed fetch never claims something happened.
+              Text link + hover underline per the LOCKFILE link row , it is a small clickable
+              bit of metadata, which is exactly what s-accent is reserved for. */}
+          {translated && (
+            <p className="font-body mt-1.5 text-[12px] text-s-ink-2">
+              {showingTranslation ? t("translatedFrom") : null}{" "}
+              <button
+                type="button"
+                onClick={() => setShowOriginal((v) => !v)}
+                className="font-medium text-s-accent underline-offset-2 transition-opacity hover:underline hover:opacity-80"
+              >
+                {showingTranslation ? t("showOriginal") : t("showTranslation")}
+              </button>
+            </p>
           )}
         </>
       )}
@@ -274,10 +341,10 @@ function ReviewCard({ review, salonName, locale }: { review: Review; salonName?:
         <div className="mt-3 ml-4 rounded-[12px] border border-s-border bg-s-bg-sunken p-3">
           <p className="flex items-center gap-1.5 text-[13px] font-semibold text-s-ink">
             <MessageSquare size={13} aria-hidden />
-            {salonName ? `Antwort von ${salonName}` : "Antwort vom Salon"}
+            {salonName ? t("replyFrom", { salon: salonName }) : t("replyFromSalon")}
           </p>
           <p className="mt-1.5 text-[13px] leading-relaxed text-s-ink-2">{reply.reply_text}</p>
-          <p className="mt-1.5 text-[12px] text-s-ink-3">{formatReviewDate(reply.created_at, locale)}</p>
+          <p className="mt-1.5 text-[12px] text-s-ink-2">{formatReviewDate(reply.created_at, locale)}</p>
         </div>
       )}
     </article>

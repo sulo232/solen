@@ -2,8 +2,9 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
-import { sendEmail } from "@/lib/email";
+import { sendEmail, platformBirthdayEmail, type EmailLocale } from "@/lib/email";
 import { getServerEnv } from "@/lib/env";
+import { verifyCronSecret } from "@/lib/cron-auth";
 import { withCronRun } from "@/lib/cron-run";
 import { runWithConcurrency } from "@/lib/concurrency";
 
@@ -18,7 +19,7 @@ export async function GET(req: NextRequest) {
   const cronSecret = getServerEnv().CRON_SECRET;
   if (!cronSecret) return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 503 });
   const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${cronSecret}`) {
+  if (!(await verifyCronSecret(authHeader, cronSecret))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -34,7 +35,7 @@ export async function GET(req: NextRequest) {
   // date_of_birth column is DATE type, extract month and day
   const { data: profiles } = await admin
     .from("profiles")
-    .select("id, display_name, date_of_birth, staff_salon_id, email")
+    .select("id, display_name, date_of_birth, staff_salon_id, email, locale")
     .not("date_of_birth", "is", null);
 
   const birthdayProfiles = (profiles ?? []).filter((p) => {
@@ -53,30 +54,33 @@ export async function GET(req: NextRequest) {
   // instead of one query per birthday profile. Email now comes straight from
   // the profiles select above instead of a per-row auth.admin.getUserById call.
   const profileIds = birthdayProfiles.map((p) => p.id);
-  const { data: alreadySentRows } = await admin
-    .from("notifications")
-    .select("user_id")
-    .eq("type", "birthday_message")
-    .gte("created_at", yearStart)
-    .in("user_id", profileIds);
+  // seo-comms-06 (2026-07-27): a birthday message is MARKETING (a celebratory,
+  // not-booking-triggered send), not TRANSACTIONAL, so it must honor the same
+  // notification_preferences.deals_enabled check welcome-series and rebooking-nudge
+  // already apply. Batched into the same IN-list query shape those crons use, mirrored
+  // verbatim (see _backend-system/LAW.md section 18 for the full transactional/
+  // marketing classification table this fix closes one row of).
+  const [{ data: alreadySentRows }, { data: prefRows }] = await Promise.all([
+    admin.from("notifications").select("user_id").eq("type", "birthday_message").gte("created_at", yearStart).in("user_id", profileIds),
+    admin.from("notification_preferences").select("user_id, deals_enabled").in("user_id", profileIds),
+  ]);
   const alreadySent = new Set((alreadySentRows ?? []).map((r) => r.user_id));
+  const prefsByUser = new Map((prefRows ?? []).map((p) => [p.user_id, p.deals_enabled]));
 
-  const tasks = birthdayProfiles.filter((p) => !!p.email && !alreadySent.has(p.id));
+  const tasks = birthdayProfiles.filter((p) =>
+    !!p.email && !alreadySent.has(p.id) && prefsByUser.get(p.id) !== false
+  );
 
   // Concurrency-capped sends (cap 5): one recipient's failure never blocks the rest,
   // never one unbounded Promise.all over emails, never fully serial.
   const sendResults = await runWithConcurrency(tasks, 5, async (profile) => {
-    await sendEmail({
-      to: profile.email as string,
-      subject: `Alles Gute zum Geburtstag, ${profile.display_name ?? ""}! 🎂`,
-      html: `<div style="font-family:sans-serif;max-width:400px;margin:0 auto;text-align:center">
-<h2 style="color:#C05038">Happy Birthday!</h2>
-<p>Liebe/r ${profile.display_name ?? "Kunde/in"},</p>
-<p>Wir wünschen dir alles Gute zum Geburtstag! 🎉</p>
-<p>Als kleines Geschenk haben wir eine Überraschung für dich.</p>
-<p><a href="https://www.solen.ch" style="display:inline-block;padding:12px 24px;background:#C05038;color:#fff;border-radius:8px;text-decoration:none">Jetzt entdecken →</a></p>
-</div>`,
-    });
+    // A9-email-locale (2026-07-27): each recipient's own profile.locale, was hardcoded German.
+    const profileLocale = (profile.locale as EmailLocale) ?? "de";
+    await sendEmail(platformBirthdayEmail(
+      profile.email as string,
+      { customerName: profile.display_name ?? "" },
+      profileLocale
+    ));
     return profile;
   });
 

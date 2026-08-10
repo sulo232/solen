@@ -132,7 +132,7 @@ export function fmtDateTime(iso: string | null | undefined, locale: string): str
   if (!iso) return "";
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return "";
-  return new Intl.DateTimeFormat(locale === "en" ? "en-GB" : locale, {
+  return new Intl.DateTimeFormat(locale === "en" ? "en-CH" : locale, {
     day: "numeric",
     month: "short",
     hour: "2-digit",
@@ -145,7 +145,7 @@ export function fmtDate(iso: string | null | undefined, locale: string): string 
   if (!iso) return "";
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return "";
-  return new Intl.DateTimeFormat(locale === "en" ? "en-GB" : locale, {
+  return new Intl.DateTimeFormat(locale === "en" ? "en-CH" : locale, {
     day: "numeric",
     month: "short",
   }).format(d);

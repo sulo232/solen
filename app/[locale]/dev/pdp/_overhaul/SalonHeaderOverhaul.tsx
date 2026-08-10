@@ -88,7 +88,7 @@ export function SalonHeaderOverhaul({
               aria-label="Show location"
               className="inline-flex items-center gap-1 text-left text-s-ink-2 transition-colors hover:text-s-ink"
             >
-              <MapPin size={14} className="shrink-0 text-s-ink-3" strokeWidth={2} />
+              <MapPin size={14} className="shrink-0 text-s-ink-2" strokeWidth={2} />
               {fullAddress}
             </button>
           </div>

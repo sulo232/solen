@@ -81,12 +81,27 @@ export async function evaluateBookingPenalties(
         metadata: { trigger_booking: bookingId }
       });
     } else if (noShowCount >= 5) {
+      const suspensionReason = "5+ No-Shows in 6 Monaten (AGB §4.4)";
       await admin.from("account_warnings").insert({
         user_id: booking.user_id,
-        reason: "5+ No-Shows in 6 Monaten (AGB §4.4)",
+        reason: suspensionReason,
         severity: "suspension",
         metadata: { trigger_booking: bookingId }
       });
+
+      // 2026-07-27: the "suspension" severity used to be write-only, no code
+      // path ever consumed it, so the AGB §4.4 consequence could never fire.
+      // profiles.banned_at / ban_reason IS the live gate already: checkUserBanned()
+      // (lib/feature-flags.ts) reads it and is wired into booking creation across
+      // app/api/bookings/*. Reuse that gate instead of inventing a second one.
+      // .is("banned_at", null) makes this idempotent: a later 6th/7th no-show
+      // re-checks the count but never clobbers an existing ban date/reason (e.g.
+      // one set manually by an admin) with a fresh timestamp.
+      await admin
+        .from("profiles")
+        .update({ banned_at: new Date().toISOString(), ban_reason: suspensionReason })
+        .eq("id", booking.user_id)
+        .is("banned_at", null);
     }
   }
 }

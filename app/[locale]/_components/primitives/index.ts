@@ -134,6 +134,7 @@ export {
 } from "./CookieConsent";
 
 // Consolidation primitives (CONTRADICTIONS.md §4) — collapse hand-rolled duplicates.
+export { SectionErrorBoundary } from "./SectionErrorBoundary";
 export { RatingStars, type RatingStarsProps, type RatingStarsSize } from "./RatingStars";
 export { Avatar, avatarColor, type AvatarProps, type AvatarSize } from "./Avatar";
 export { PriceFrom, type PriceFromProps } from "./PriceFrom";
@@ -155,4 +156,7 @@ export {
   butterPress,
   type PressTier,
   useStepSwapMotion,
+  SPRING_GENTLE,
+  SPRING_SNAPPY,
+  useLowMotionCapability,
 } from "./motion";

@@ -42,6 +42,7 @@
     "app/[locale]/_components/primitives/TabPill.tsx",
     "app/[locale]/layout.tsx",
     "app/[locale]/not-found.tsx",
+    "app/not-found.tsx",
     "app/[locale]/business/page.tsx",
     "app/[locale]/partner/page.tsx",
     "app/[locale]/coiffeur/page.tsx",

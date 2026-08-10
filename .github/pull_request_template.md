@@ -13,6 +13,13 @@
 - [ ] `npx tsc --noEmit` passes (zero new type errors)
 - [ ] Manual check on the affected page(s)
 
+## Performance (only if this PR touches caching or claims a speed win)
+
+- [ ] **New cache layer** (`unstable_cache`, Redis, a materialized view, an extended CDN TTL): paste the measured number that justifies it below (an `EXPLAIN ANALYZE` time for a DB-bound case, a real p95 for a network-bound case). No number = premature, per `_backend-system/LAW.md` section 13.
+- [ ] **Claims a performance improvement** (faster, fewer queries, fewer round trips, smaller bundle): paste the before-number and after-number, with units, below.
+
+<!-- Measured number(s): -->
+
 ## Design Review (mandatory for any `components/` or `app/globals.css` change)
 
 - [ ] Reviewed `DESIGN_SYSTEM.md` §0 (USE THIS, DON'T REBUILD) — no duplicate components created

@@ -3,6 +3,7 @@
 import * as React from "react";
 import { DAY_KEYS, DAY_LABEL, type DayKey } from "./_shared";
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 /**
  * SalonOpeningTimes — V2-D53.3 (2026-05-11).
@@ -22,13 +23,14 @@ export function SalonOpeningTimes({
    * `new Date()` here. See lib/salon-detail.ts. */
   todayKey: DayKey;
 }) {
+  const t = useTranslations("salonDetail");
   if (!hours) return null;
 
   return (
     <section id="section-hours" className="scroll-mt-24">
       {/* V3-D202 (A13): font-body → font-display + Scale B. */}
       <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
-        Öffnungszeiten
+        {t("openingHours")}
       </h2>
 
       <ul className="mt-4 space-y-2.5">
@@ -49,12 +51,12 @@ export function SalonOpeningTimes({
             >
               <span className="inline-flex items-center gap-3">
                 <span
-                  className={cn("h-2 w-2 shrink-0 rounded-full", isOpen ? "bg-s-open" : "bg-s-ink-3/40")}
+                  className={cn("h-2 w-2 shrink-0 rounded-full", isOpen ? "bg-s-open" : "bg-s-ink-2/40")}
                   aria-hidden
                 />
                 {DAY_LABEL[day]}
               </span>
-              <span className={cn(!isOpen && "text-s-ink-3")}>
+              <span className={cn(!isOpen && "text-s-ink-2")}>
                 {dayHours ? `${dayHours.open} bis ${dayHours.close}` : "Geschlossen"}
               </span>
             </li>

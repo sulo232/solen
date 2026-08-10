@@ -70,7 +70,7 @@ export function SeeAllButton({
     variant === "link" ? (
       <>
         {label}
-        <ChevronRight className="h-4 w-4 text-s-ink-3" />
+        <ChevronRight className="h-4 w-4 text-s-ink-2" />
       </>
     ) : (
       label

@@ -167,7 +167,7 @@ function ReviewCard({
           so the person anchors. */}
       <div className="relative mb-3 flex items-center gap-2.5">
         <div
-          className="pointer-events-none font-display grid h-10 w-10 shrink-0 place-items-center rounded-full text-[14px] font-black text-s-ink-2 bg-s-bg-sunken"
+          className="pointer-events-none font-display grid h-10 w-10 shrink-0 place-items-center rounded-full text-[14px] font-bold text-s-ink-2 bg-s-bg-sunken"
           aria-hidden
         >
           {review.initials}
@@ -180,7 +180,7 @@ function ReviewCard({
           <Link
             href={`/${locale}/salon/${review.salonSlug}`}
             onClick={(e) => e.stopPropagation()}
-            aria-label={`Salon ${review.salonName} ansehen`}
+            aria-label={`Store ${review.salonName} ansehen`}
             className={cn(
               "relative z-10 mt-0.5 inline-flex items-center gap-1",
               "font-body text-[12px] font-normal text-s-ink-2",
@@ -208,7 +208,7 @@ function ReviewCard({
             />
           ))}
         </div>
-        <span className="shrink-0 font-body text-[12px] font-normal text-s-ink-3 tabular-nums">
+        <span className="shrink-0 font-body text-[12px] font-normal text-s-ink-2 tabular-nums">
           {dateText}
         </span>
       </div>

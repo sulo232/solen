@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
+import { validateBody, profileNotificationsMarkReadSchema } from "@/lib/validations";
 
 /**
  * CUSTOMER notifications (audit gap #4) — the READ side of the long-existing write path
@@ -49,12 +50,16 @@ export async function PATCH(request: NextRequest) {
   const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
   if (rateLimited) return rateLimited;
 
-  const body = await request.json().catch(() => ({}));
+  const rawBody = await request.json().catch(() => ({}));
+  const { data: body, error: validationError } = validateBody(profileNotificationsMarkReadSchema, rawBody);
+  if (validationError) {
+    return NextResponse.json({ message: "Provide ids[] or all:true", code: "BAD_REQUEST" }, { status: 400 });
+  }
   let query = supabase.from("notifications").update({ read: true }).eq("user_id", user.id);
-  if (body?.all === true) {
+  if (body.all === true) {
     query = query.eq("read", false);
-  } else if (Array.isArray(body?.ids) && body.ids.length > 0 && body.ids.length <= 100) {
-    query = query.in("id", body.ids.map(String));
+  } else if (body.ids && body.ids.length > 0) {
+    query = query.in("id", body.ids);
   } else {
     return NextResponse.json({ message: "Provide ids[] or all:true", code: "BAD_REQUEST" }, { status: 400 });
   }

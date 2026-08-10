@@ -10,6 +10,7 @@ import { FieldLabel } from "@/app/[locale]/_components/primitives/FieldLabel";
 import { Avatar } from "@/app/[locale]/_components/primitives/Avatar";
 import { toast } from "@/app/[locale]/_components/primitives/Toast";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "@/app/[locale]/_components/primitives/Modal";
+import { useSubmitGuard } from "@/lib/hooks/useSubmitGuard";
 import { LOCALES, type SettingsLocale } from "./locales";
 
 // Client-side downscale before the avatar POST (owner spec, 2026-07-20): browsers can decode
@@ -108,6 +109,14 @@ export default function SettingsForm({
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         console.error("[Settings] save failed:", err?.message ?? res.status);
+        // states-forms-08: a 401 mid-form is a session-expiry, not a generic save
+        // failure, name the real cause and send them back to login with a return
+        // path instead of the undifferentiated saveError toast.
+        if (res.status === 401) {
+          toast.error(t("sessionExpired"));
+          router.push(`/${locale}/auth/login?redirect=${encodeURIComponent(window.location.pathname)}`);
+          return;
+        }
         toast.error(t("saveError"));
         return;
       }
@@ -136,7 +145,13 @@ export default function SettingsForm({
       const downscaled = await downscaleAvatar(file);
       const body = new FormData();
       body.append("file", downscaled);
-      const res = await fetch("/api/profile/avatar", { method: "POST", body });
+      // A15-upload-hardening (2026-07-27): required by the route's CSRF guard, see
+      // lib/upload-security.ts requireUploadHeader.
+      const res = await fetch("/api/profile/avatar", {
+        method: "POST",
+        headers: { "x-solen-upload": "1" },
+        body,
+      });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         console.error("[Settings] avatar upload failed:", err?.error ?? res.status);
@@ -211,8 +226,12 @@ export default function SettingsForm({
   // Type-to-confirm KILLED (owner 2026-07-20): a plain confirm dialog replaces it.
   const [deleteConfirmOpen, setDeleteConfirmOpen] = React.useState(false);
   const [deleting, setDeleting] = React.useState(false);
+  // states-forms-05: account deletion is a non-idempotent write; a synchronous
+  // ref guard (not just the `deleting` state flag) closes the double-tap race.
+  const deleteGuard = useSubmitGuard();
 
   const deleteAccount = async () => {
+    if (!deleteGuard.tryEnter()) return; // a delete is already in flight, drop the duplicate
     setDeleting(true);
     try {
       // The canonical full deletion flow (app/api/profile/request-deletion):
@@ -238,6 +257,7 @@ export default function SettingsForm({
       toast.error(t("saveError"));
       setDeleteConfirmOpen(false);
     } finally {
+      deleteGuard.release();
       setDeleting(false);
     }
   };
@@ -279,7 +299,7 @@ export default function SettingsForm({
           <Field label={tp("bio")} htmlFor="bio" optional>
             <textarea id="bio" rows={3} maxLength={500} value={form.bio}
               onChange={(e) => set("bio", e.target.value)}
-              className={cn("block w-full font-body font-normal text-[16px] text-s-ink px-4 py-3 placeholder:text-s-ink-3 transition-colors duration-150", WHITE_INPUT)} />
+              className={cn("block w-full font-body font-normal text-[16px] text-s-ink px-4 py-3 placeholder:text-s-ink-2 transition-colors duration-150", WHITE_INPUT)} />
           </Field>
           <Field label={t("changeEmail")} htmlFor="new_email">
             <div className="flex gap-2">
@@ -451,7 +471,7 @@ export default function SettingsForm({
                 (LOCKFILE V3-D449, no double ring), so both are dead (V3-D-input-fill-2026-07-17). */}
             <textarea id="bio" rows={3} maxLength={500} value={form.bio}
               onChange={(e) => set("bio", e.target.value)}
-              className="block w-full font-body font-normal text-[16px] text-s-ink px-4 py-3 placeholder:text-s-ink-3 transition-colors duration-150" />
+              className="block w-full font-body font-normal text-[16px] text-s-ink px-4 py-3 placeholder:text-s-ink-2 transition-colors duration-150" />
           </Field>
           <div className="space-y-1.5">
             <FieldLabel>{tp("language")}</FieldLabel>

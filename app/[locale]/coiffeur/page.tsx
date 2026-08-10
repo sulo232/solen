@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import SearchTemplate from "@/app/[locale]/_components/search/SearchTemplate";
 import { createAdminSupabaseClient } from "@/lib/supabase";
-import { generateCategoryListSchema, buildAlternates, generateBreadcrumbSchema, generateFaqSchema, CATEGORY_FAQS } from "@/lib/seo";
+import { generateCategoryListSchema, buildAlternates, generateBreadcrumbSchema, generateFaqSchema, CATEGORY_FAQS, safeJsonLd } from "@/lib/seo";
 import { getFilterAvailability } from "@/lib/search/filter-availability";
 
 export async function generateMetadata({
@@ -26,15 +26,15 @@ export async function generateMetadata({
 
   const titles: Record<string, string> = {
     de: "Beste Coiffeure in Basel — Online buchen | Solen",
-    en: "Best Hair Salons in Basel — Book Online | Solen",
+    en: "Best Hair Salons in Basel — Book Online | Solen", // em-dash-ok: pre-existing title dash, unrelated to this edit
     fr: "Meilleurs coiffeurs à Bâle — Réserver en ligne | Solen",
     it: "Migliori parrucchieri a Basilea — Prenota online | Solen",
   };
   const descriptions: Record<string, string> = {
-    de: `${count > 0 ? `${count} ` : ""}Coiffeur-Salons in Basel. Vergleiche Preise, lies ★ Bewertungen und buche online. Sofort bestätigt.`,
+    de: `${count > 0 ? `${count} ` : ""}Coiffeur-Stores in Basel. Vergleiche Preise, lies ★ Bewertungen und buche online. Sofort bestätigt.`,
     en: `${count > 0 ? `${count} ` : ""}hair salons in Basel. Compare prices, read ★ reviews and book online. Instant confirmation.`,
-    fr: `${count > 0 ? `${count} ` : ""}salons de coiffure à Bâle. Comparez les prix, lisez les ★ avis et réservez en ligne.`,
-    it: `${count > 0 ? `${count} ` : ""}saloni di parrucchiere a Basilea. Confronta prezzi, leggi ★ recensioni e prenota online.`,
+    fr: `${count > 0 ? `${count} ` : ""}stores de coiffure à Bâle. Comparez les prix, lisez les ★ avis et réservez en ligne.`,
+    it: `${count > 0 ? `${count} ` : ""}store di parrucchiere a Basilea. Confronta prezzi, leggi ★ recensioni e prenota online.`,
   };
 
   return {
@@ -63,7 +63,7 @@ export default async function Page({
     { name: "Solen", item: `https://solen.ch/${loc}` },
     { name: "Coiffeur" },
   ]);
-  const faq = generateFaqSchema(CATEGORY_FAQS.coiffeur);
+  const faq = generateFaqSchema(CATEGORY_FAQS.coiffeur[loc] ?? CATEGORY_FAQS.coiffeur.de);
   try {
     const supabase = createAdminSupabaseClient();
     const { data: salons } = await supabase
@@ -83,16 +83,18 @@ export default async function Page({
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(breadcrumb) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(faq) }}
       />
+      {/* A4-jsonld-escape (2026-07-27): jsonLd carries salon.name/slug read
+          straight from the DB. safeJsonLd escapes </script> breakout. */}
       {jsonLd && (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }}
         />
       )}
       {/* V3-D350 (2026-05-28): the unified Airbnb-style search IS the default

@@ -204,6 +204,71 @@ Previous V5 spec archived at `_tasks/completed/rules-locked-design-tokens-2026-0
 
 ---
 
+## Rule 48: STATE OWNERSHIP ORDER (fe-03, 2026-07-27)
+
+> **WHY THIS RULE EXISTS**: 296 of 799 `.ts`/`.tsx` files under `app/` are `"use client"` (37%),
+> and 171 files combine `useEffect` with `fetch(` for client-side data loading, against only 190
+> files that call `fetch(` anywhere in the whole tree, meaning almost every fetch call in the
+> codebase is a client-side one, not a server-fetched prop. Rule 42's file-tree template already
+> implies server-fetch-then-pass-props for a BRAND NEW feature page, and it is a real, working
+> pattern on the salon PDP and the booking-wizard shell (both RSC-fetch-then-client-render, see
+> `_docs/FRONTEND.md`) — but nothing generalizes it into a standing rule for EXISTING surfaces,
+> so each new client component re-derives its own fetch/loading/error boilerplate independently
+> instead of reading data the server already fetched.
+
+State picks exactly **one** owner, in this priority order:
+
+1. **URL (`searchParams`)** — anything that should be shareable, back-button-safe, or survive a
+   refresh: a filter, an active tab, a search query, a selected date. Never hold this in
+   component state.
+2. **Server Component prop** — anything known at request time and not re-computed per
+   interaction is fetched ONCE in the nearest Server Component and passed down as a prop. Never
+   re-fetch it client-side with `useEffect` just because the consuming component happens to be
+   `"use client"`.
+3. **Page-scoped Context/reducer** — anything shared by more than two sibling client components
+   on one page (the existing `BookingProvider` pattern, `lib/booking-context.tsx`). Never
+   duplicate the same fetched value across sibling components instead of sharing one source.
+4. **Local `useState`** — everything else.
+
+**The violation to watch for**: a new client component that calls `fetch()` inside `useEffect`
+for data that was ALREADY available on the server at request time. This is a violation unless
+the file states why in a comment (e.g. it genuinely depends on a client-only value like
+geolocation, or data produced by a just-completed client action that the server never saw).
+
+```tsx
+// ❌ VIOLATION — client component re-fetches data the server already had
+"use client";
+function SalonHoursWidget({ salonId }: { salonId: string }) {
+  const [hours, setHours] = useState(null);
+  useEffect(() => {
+    fetch(`/api/salons/${salonId}/hours`).then(r => r.json()).then(setHours);
+  }, [salonId]);
+  // ...
+}
+
+// ✅ CORRECT — server fetches once, passes down as a prop
+// page.tsx (Server Component)
+const salon = await getSalon(slug); // includes opening_hours
+return <SalonHoursWidget hours={salon.opening_hours} />;
+
+// ✅ CORRECT — a client-only value is a stated exception
+"use client";
+function NearbySalons() {
+  // Exception: geolocation is only available client-side, cannot be
+  // fetched server-side at request time.
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition((pos) => fetchNearby(pos.coords));
+  }, []);
+}
+```
+
+This is a checklist item today (part of Rule 40/46's pre-commit review), not yet a lint rule.
+A future gate could flag `useEffect` + `fetch(` in a client component whose parent Server
+Component already has access to the same data, but that needs per-case judgment (is the parent
+actually a Server Component with the data in scope?) that a mechanical grep can't safely make.
+
+---
+
 ## Established Patterns (MANDATORY)
 
 ### Pattern A: Coming Soon Page
@@ -232,6 +297,26 @@ fetch("/api/profile")
   });
 ```
 
+### Pattern B.1: Auth-Required Interrupt Preserves the Destination (ia-navigation-03, 2026-07-27)
+Every place that redirects an unauthenticated user to `/auth/login` because they attempted a
+gated action (heart a look, look up a booking by code, open an intake form, and Pattern B's
+profile fetches) MUST append `?redirect=<the current path>`, URL-encoded, exactly like Pattern
+B above. `components-legacy/auth/SignIn.tsx` already reads it back and validates it's an
+internal relative path before honoring it (open-redirect protection is solved once, centrally).
+
+```tsx
+// CORRECT — any auth-required interrupt, not just profile fetches
+router.push(`/${locale}/auth/login?redirect=${encodeURIComponent(currentPathAndQuery)}`);
+```
+
+A login redirect with no `redirect=` param is acceptable ONLY when the user explicitly
+navigated to a generic auth entry point (a "Log in" menu link), never when their own
+in-context action is what triggered the redirect. This generalizes Pattern B beyond
+`/api/profile` fetches because the same defect (bounce to homepage after login, losing
+the action that prompted it) recurred 3 separate times outside Pattern B's scope: Inspo's
+save-while-logged-out heart, the guest booking lookup's "log in instead" link, and the
+intake-forms page's session check, all fixed in the same pass this rule was written in.
+
 ### Pattern C: Page Transition Crossfade
 Use `PageTransitionWrapper` to add smooth opacity crossfade (200ms) between route navigations.
 - **Location**: `components/layout/PageTransitionWrapper.tsx` + `components/layout/PageTransition.tsx`
@@ -250,3 +335,86 @@ For destructive or sensitive profile actions, use a dedicated modal component ra
 - Create a separate memo component accepting `open` and `onClose` props
 - Manage modal state in parent component
 - Render modal after all other UI elements to maintain layering
+
+---
+
+## Rule 49: SALON SLUG STABILITY (ia-navigation-06, 2026-07-27)
+
+> **STATUS**: a landmine, not a live defect. `app/api/salons/[slug]/route.ts`'s PATCH handler
+> performs no slug regeneration today, and no salon-name-edit UI exists yet (grepped, no
+> `app/api/dashboard/salon/settings` route, no `salon_slug_redirects`-equivalent table). This
+> rule exists so the FIRST such feature is built correctly instead of 404ing every external
+> reference to a renamed salon on day one.
+
+A salon's slug, once published, is the load-bearing identifier for every customer-facing
+surface: bookmarked PDPs, shared booking links, walk-in queue QR codes, tip-sheet deep links,
+and every review/SEO backlink pointing at `/salon/[slug]`. Before ANY feature ships that lets
+an owner rename their business, the slug question must be answered as one of exactly two options:
+
+1. **Immutable**: the slug never changes once published, full stop (renaming the display name
+   does NOT regenerate the slug), or
+2. **Editable with a redirect trail**: an edit flow writes the OLD slug into a
+   `salon_slug_redirects` table (old_slug, salon_id, created_at) and every request to an old
+   slug serves a 301/`permanentRedirect()` to the current one, forever.
+
+Do not let a `slugify(newName)` default silently regenerate the slug on a name-edit save. This
+is the same principle Rule 32 (`_rules/I18N_ROUTING.md`) already applies to killed discovery
+routes, extended from route-level URLs to entity-level ones. Enforcement: this is a doc-only
+law until a salon-name-edit endpoint exists; that PR must cite this rule and state which of
+the two options it implements before it can merge.
+
+---
+
+## Rule 50: REDIRECT OUTCOME IS A NAMED CHOICE, NOT AN ACCIDENT (ia-navigation-08, 2026-07-27)
+
+> **INCIDENT**: three killed Solen features got three different URL outcomes with no record of
+> why. `app/[locale]/inspo/nails/page.tsx:9` uses `permanentRedirect()` to the new location
+> (matches Rule 32). `app/[locale]/profile/gift-cards/page.tsx:13` uses a plain `redirect()` to
+> a parent page. The Pakete/packages feature (`_design-system/REMOVED.md:29`) has no surviving
+> page anywhere and falls through to the bare 404 chain with zero explicit routing decision ever
+> made for it, just deletion. Rule 32 already mandates `permanentRedirect()`, but only for
+> discovery-category routes; nothing generalized it.
+
+When a route is killed, its outcome is chosen from exactly ONE decision tree, not improvised:
+
+- **(a) The concept moved and still exists under a new URL** -> `permanentRedirect()` (308) to
+  the new location. This is Rule 32's existing case, generalized beyond discovery categories.
+- **(b) The concept is gone but a nearby page is still the right landing spot** -> a plain
+  `redirect()` to that page.
+- **(c) The concept is entirely gone with no landing spot** -> the route is deleted outright and
+  MUST produce the locked 404 page (`app/[locale]/not-found.tsx`, Rule 36), never a bare
+  unstyled Next.js default 404 and never silent fall-through with no record of the choice.
+
+Every `_design-system/REMOVED.md` entry for a route deletion must state which of the three
+outcomes it chose and why, as a required field in the `npm run removed -- ...` template (see
+`_design-system/REMOVED.md`'s entry-format header). Enforcement: the `pre-commit-graveyard.sh`
+hook that already blocks a route deletion without a REMOVED.md line should also require that
+line to name its redirect outcome.
+
+---
+
+## Rule 51: FILE-SIZE / COMPONENT-SIZE CEILING (fe-05, 2026-07-27)
+
+> **WHY THIS RULE EXISTS**: nothing anywhere in the system stated a size ceiling, and the
+> largest files in the tree are 3-6x the size of the next tier down (`SearchTemplate.tsx` at
+> ~2400 lines, `dashboard/settings/page.tsx` at ~1580, `dev/primitives/page.tsx` at ~1300) — the
+> classic shape of a file that started focused and had every subsequent feature bolted onto the
+> same file instead of decomposed. A single file with no stopping point accumulates
+> responsibilities indefinitely, and it gets progressively harder for any agent (bounded context
+> window) to safely edit without regressions.
+
+A page or component file **exceeding 400 lines** must either:
+- be split into named sub-components with single responsibilities (the same way the old
+  1145-line salon-detail monolith was split into `SalonDetailV3.tsx` + 17 colocated section
+  files, each under 200 lines — see that file's own header comment), or
+- carry a one-line comment at the top of the file naming WHY it stays one file (e.g. "this
+  composes N tightly-coupled layout regions that share local state X").
+
+A file **exceeding 800 lines** gets its own line in `_tasks/INCOMPLETE_FEATURES.md` as
+decomposition debt, with an owner and the reason it hasn't been split yet — the same way any
+other incomplete-feature gap is tracked today. Do not silently let an 800+ line file exist with
+no record.
+
+This is a checklist item today (part of Rule 40/46's pre-commit review). A future gate could be
+a simple `wc -l` check in a PreToolUse hook or CI step that WARNS (not blocks, given the existing
+outliers above 800 lines already in the tree) once a file crosses 800.

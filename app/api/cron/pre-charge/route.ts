@@ -2,19 +2,22 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
-import { sendEmail } from "@/lib/email";
+import { sendEmail, type EmailLocale } from "@/lib/email";
+import { paymentFailedNotification } from "@/lib/email-templates/booking-notifications";
 import { toRappen } from "@/lib/stripe";
 import { chargeOffSession } from "@/lib/bookings/off-session-charge";
 import { getServerEnv } from "@/lib/env";
+import { verifyCronSecret } from "@/lib/cron-auth";
 import { DEFAULT_COMMISSION_RATE_PERCENT } from "@/lib/constants/billing";
 import { withCronRun } from "@/lib/cron-run";
+import { resolveSwissLocale } from "@/lib/format";
 
 // Cron: Pre-charge saved cards 5 days before appointment. Daily.
 export async function GET(req: NextRequest) {
   const cronSecret = getServerEnv().CRON_SECRET;
   if (!cronSecret) return NextResponse.json({ error: "Cron not configured" }, { status: 503 });
   const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${cronSecret}`) {
+  if (!(await verifyCronSecret(authHeader, cronSecret))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -89,7 +92,12 @@ export async function GET(req: NextRequest) {
         );
       }
 
-      await admin
+      // Re-assert status=confirmed (TXN-03 / data-money-02): the Stripe charge above
+      // already succeeded, but the booking may have been cancelled between the SELECT
+      // that found it and this UPDATE (a concurrent cron overlap or a customer
+      // cancellation racing the batch). Confirm the update actually matched a row
+      // before counting it as charged, mirroring app/api/cron/no-show/route.ts.
+      const { data: updatedRows } = await admin
         .from("bookings")
         .update({
           payment_status: "paid",
@@ -97,7 +105,14 @@ export async function GET(req: NextRequest) {
           paid_amount: amountRappen,
           platform_fee: platformFee,
         })
-        .eq("id", booking.id);
+        .eq("id", booking.id)
+        .eq("status", "confirmed")
+        .select("id");
+
+      if (!updatedRows || updatedRows.length === 0) {
+        console.error(`[pre-charge] booking ${booking.id} no longer confirmed after charge (changed between select and update); charged in Stripe but not marked paid, needs reconciliation`);
+        continue;
+      }
 
       charged++;
     } catch (err: any) {
@@ -110,11 +125,22 @@ export async function GET(req: NextRequest) {
         : { data: null };
       if (userAuth?.user?.email) {
         try {
-          await sendEmail({
-            to: userAuth.user.email,
-            subject: `Zahlung fehlgeschlagen — ${(booking.salons as any)?.name ?? "Salon"}`,
-            html: `<p>Die Vorab-Belastung für deinen Termin am ${new Date(booking.starts_at).toLocaleDateString("de-CH")} konnte nicht durchgeführt werden.</p><p>Bitte aktualisiere deine Zahlungsmethode oder kontaktiere den Salon.</p>`,
-          });
+          // A9-email-locale (2026-07-27): the customer's own profile.locale, was hardcoded
+          // German + de-CH; routed through the existing paymentFailedNotification builder
+          // instead of inline HTML (was raw German-only HTML with no locale mechanism).
+          const { data: declinedProfile } = booking.user_id
+            ? await admin.from("profiles").select("locale").eq("id", booking.user_id).maybeSingle()
+            : { data: null };
+          const declinedLocale = (declinedProfile?.locale as EmailLocale) ?? "de";
+          await sendEmail(paymentFailedNotification(
+            userAuth.user.email,
+            {
+              service: (booking.services as any)?.name_de ?? "Service",
+              salon: (booking.salons as any)?.name ?? "Salon",
+              date: new Date(booking.starts_at).toLocaleDateString(resolveSwissLocale(declinedLocale)),
+            },
+            declinedLocale
+          ));
         } catch (err) { console.error("[cron/pre-charge] decline notification email failed:", err); }
       }
     }

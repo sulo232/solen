@@ -24,6 +24,7 @@ import { SalonOtherLocations } from "./SalonOtherLocations";
 import { SalonVenuesNearby } from "./SalonVenuesNearby";
 import { SalonSidebar } from "./SalonSidebar";
 import { SalonMobileBookBar } from "./SalonMobileBookBar";
+import { SectionErrorBoundary } from "../primitives/SectionErrorBoundary";
 import SalonModeToggle from "@/components-legacy/salon/SalonModeToggle";
 import SalonWalkInPanel from "@/components-legacy/salon/SalonWalkInPanel";
 import { WalkInQueueProvider } from "@/components-legacy/salon/WalkInQueueContext";
@@ -31,7 +32,8 @@ import type { SalonDetail, TabKey, OpenStatus, DayKey } from "./_shared";
 import { postalToCity } from "./_shared";
 import { usePostHog } from "posthog-js/react";
 import { trackSalonView } from "@/components-legacy/RecentlyViewed";
-import { generateSalonSchema } from "@/lib/seo";
+import { generateSalonSchema, safeJsonLd } from "@/lib/seo";
+import { CATEGORY_LABEL } from "../search/SalonResultCard";
 
 // B4 load audit (2026-07-04, finding #2): click-triggered overlays, loaded only
 // when opened (same dynamic() pattern as SalonTeam.tsx:12's StaffProfilePage).
@@ -171,17 +173,20 @@ export function SalonDetailV3({
   // computeOpenStatus() again here (hydration fix, see page.tsx).
   const salonOpen = openStatus.isOpen;
 
-  // V3-D344 (2026-05-28): JSON-LD structured data — parity with legacy salon
+  // V3-D344 (2026-05-28): JSON-LD structured data, parity with legacy salon
   // render (generateSalonSchema). Required before V3 became the default so salon
-  // pages keep their SEO structured data. Hardened vs the legacy version: escape
-  // `<` to `<` so a salon name containing "</script>" can't break out of the
-  // script tag (XSS-safe; standard Next.js JSON-LD sanitization).
+  // pages keep their SEO structured data.
+  // A4-jsonld-escape (2026-07-27, supersedes the ad hoc `<` -> < replace
+  // this line used to do inline): now routed through the shared safeJsonLd
+  // helper (lib/seo.ts) so every JSON-LD site escapes `<`, `>` AND `&`
+  // consistently, not just `<`, so a salon name containing "</script>" can't
+  // break out of the script tag (XSS-safe, standard JSON-LD sanitization).
   // SalonDetail is a structural superset of the fields generateSalonSchema reads
   // (the schema only touches name/address/rating/photos). Cast matches legacy
-  // behavior — same runtime object the legacy JsonLd component passed.
-  const salonJsonLd = JSON.stringify(
+  // behavior, same runtime object the legacy JsonLd component passed.
+  const salonJsonLd = safeJsonLd(
     generateSalonSchema(salon as unknown as Parameters<typeof generateSalonSchema>[0], locale)
-  ).replace(/</g, "\\u003c");
+  );
 
   return (
     // V2-D53.3 fix: pt was meant to push content below the (then-believed-fixed)
@@ -265,46 +270,60 @@ export function SalonDetailV3({
             )}
 
             <div className="mt-8 space-y-10 md:mt-10 md:space-y-12">
-              {!walkinMode && <SalonServices services={salon.services} locale={locale} slug={slug} salon={salon} />}
+              {!walkinMode && (
+                <SectionErrorBoundary section="SalonServices">
+                  <SalonServices services={salon.services} locale={locale} slug={slug} salon={salon} />
+                </SectionErrorBoundary>
+              )}
 
             {/* A5 B-3: bundles between services and products (renders null until active bundles load). */}
             {!walkinMode && (
-              <SalonBundles
-                salonId={salon.id}
-                slug={slug}
-                locale={locale}
-                onLoaded={setHasBundles}
-              />
+              <SectionErrorBoundary section="SalonBundles">
+                <SalonBundles
+                  salonId={salon.id}
+                  slug={slug}
+                  locale={locale}
+                  onLoaded={setHasBundles}
+                />
+              </SectionErrorBoundary>
             )}
 
             {/* A5 A-3: retail products after services (renders null until active products load). */}
             {!walkinMode && (
-              <SalonProducts
-                salonId={salon.id}
-                category={primaryCategory}
-                locale={locale}
-                onLoaded={setHasProducts}
-              />
+              <SectionErrorBoundary section="SalonProducts">
+                <SalonProducts
+                  salonId={salon.id}
+                  category={primaryCategory}
+                  locale={locale}
+                  onLoaded={setHasProducts}
+                />
+              </SectionErrorBoundary>
             )}
 
             {/* Termin-only: walk-in has its OWN single selectable stylist section (the deduped
                 "Dein Barber" = #section-team, inside SalonWalkInPanel) per owner 2026-07-24, so
                 rendering browse-profile SalonTeam here too would be a SECOND stylist section. */}
             {!walkinMode && salon.staff.length > 0 && (
-              <SalonTeam staff={salon.staff} salonAverageRating={salon.average_rating} slug={slug} locale={locale} />
+              <SectionErrorBoundary section="SalonTeam">
+                <SalonTeam staff={salon.staff} salonAverageRating={salon.average_rating} slug={slug} locale={locale} />
+              </SectionErrorBoundary>
             )}
 
-            <SalonReviews
-              average={salon.average_rating}
-              count={salon.review_count}
-              reviews={salon.reviews}
-              salonId={salon.id}
-              salonSlug={salon.slug}
-              salonName={salon.name}
-              locale={locale}
-            />
+            <SectionErrorBoundary section="SalonReviews">
+              <SalonReviews
+                average={salon.average_rating}
+                count={salon.review_count}
+                reviews={salon.reviews}
+                salonId={salon.id}
+                salonSlug={salon.slug}
+                salonName={salon.name}
+                locale={locale}
+              />
+            </SectionErrorBoundary>
 
-            <SalonPortfolio urls={salon.gallery_urls ?? []} staff={salon.staff} onOpen={() => openGallery()} />
+            <SectionErrorBoundary section="SalonPortfolio">
+              <SalonPortfolio urls={salon.gallery_urls ?? []} staff={salon.staff} onOpen={() => openGallery()} salonName={salon.name} categoryLabel={CATEGORY_LABEL[primaryCategory] ?? null} />
+            </SectionErrorBoundary>
 
             {/* Mobile + tablet Buy card (gift card) HIDDEN from customers
                 (owner, 2026-06-14) in favour of a Solen-wide loyalty card.

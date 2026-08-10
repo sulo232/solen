@@ -25,6 +25,7 @@ export default function FavoritesList({
   locale: string;
 }) {
   const t = useTranslations("toasts");
+  const tProfile = useTranslations("Profile");
   const [salons, setSalons] = React.useState<FavoriteSalon[]>(initial);
 
   const removeFavorite = React.useCallback(
@@ -95,7 +96,7 @@ export default function FavoritesList({
   return (
     <>
       <p className="font-body text-[13px] text-s-ink-2">
-        {salons.length} {salons.length === 1 ? "Salon" : "Salons"}
+        {tProfile("salonsCount", { count: salons.length })}
       </p>
       <section className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
         {salons.map((s) => (

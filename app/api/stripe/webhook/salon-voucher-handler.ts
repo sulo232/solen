@@ -19,7 +19,8 @@
  */
 
 import { createAdminSupabaseClient } from "@/lib/supabase";
-import { sendEmail } from "@/lib/email";
+import { sendEmail, salonVoucherDeliveryEmail, type EmailLocale } from "@/lib/email";
+import { resolveSwissLocale } from "@/lib/format";
 
 export async function handleSalonVoucherPaid(pi: any): Promise<boolean> {
   if (pi.metadata?.type !== "voucher") {
@@ -31,7 +32,7 @@ export async function handleSalonVoucherPaid(pi: any): Promise<boolean> {
   try {
     const { data: voucher } = await admin
       .from("vouchers")
-      .select("id, amount, code, recipient_email, recipient_name, message, expires_at, remaining_amount, salons(name_de)")
+      .select("id, amount, code, recipient_email, recipient_name, message, expires_at, remaining_amount, buyer_id, salons(name_de)")
       .eq("stripe_payment_intent_id", pi.id)
       .maybeSingle();
 
@@ -64,22 +65,27 @@ export async function handleSalonVoucherPaid(pi: any): Promise<boolean> {
 
     if (recipientEmail) {
       try {
-        await sendEmail({
-          to: recipientEmail,
-          subject: `Du hast einen Gutschein von ${salonName} erhalten!`,
-          html: `<div style="font-family:sans-serif;max-width:400px;margin:0 auto;text-align:center">
-<h2 style="color:#0A0A0A">Gutschein</h2>
-<p>Hallo ${(voucher as any).recipient_name ?? ""},</p>
-<p>Du hast einen Gutschein für <strong>${salonName}</strong> erhalten!</p>
-<div style="background:#F4F4F5;border-radius:12px;padding:20px;margin:16px 0">
-<p style="font-size:24px;font-weight:bold;color:#0A0A0A;margin:0">CHF ${amountChf.toFixed(2)}</p>
-<p style="font-size:14px;color:#999;margin:4px 0 0">Code: <strong>${(voucher as any).code}</strong></p>
-</div>
-${(voucher as any).message ? `<p style="color:#666;font-style:italic">"${(voucher as any).message}"</p>` : ""}
-<p><a href="https://www.solen.ch" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none">Jetzt einlösen →</a></p>
-<p style="font-size:11px;color:#999">Gültig bis ${new Date((voucher as any).expires_at).toLocaleDateString("de-CH")}</p>
-</div>`,
-        });
+        // A9-email-locale (2026-07-27): the recipient has no profile of their own (a gift
+        // voucher can go to a non-Solen email address); the buyer's own profile.locale is
+        // the best-available signal in scope (they picked the recipient + wrote the message
+        // in their own language). Was hardcoded German + de-CH regardless of either party.
+        const buyerId = (voucher as any).buyer_id as string | null;
+        const { data: buyerProfile } = buyerId
+          ? await admin.from("profiles").select("locale").eq("id", buyerId).maybeSingle()
+          : { data: null };
+        const voucherLocale = (buyerProfile?.locale as EmailLocale) ?? "de";
+        await sendEmail(salonVoucherDeliveryEmail(
+          recipientEmail,
+          {
+            recipientName: (voucher as any).recipient_name ?? undefined,
+            salonName,
+            amountChf: amountChf.toFixed(2),
+            code: (voucher as any).code,
+            message: (voucher as any).message ?? undefined,
+            expiresDate: new Date((voucher as any).expires_at).toLocaleDateString(resolveSwissLocale(voucherLocale)),
+          },
+          voucherLocale
+        ));
       } catch (err) {
         // Non-fatal: the voucher is already usable; don't fail the webhook (a re-delivery
         // won't re-send anyway, since remaining_amount is now set).

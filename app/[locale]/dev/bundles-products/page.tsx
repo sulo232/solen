@@ -144,7 +144,7 @@ function BundleCard({
       </div>
       <div className="flex items-center justify-between border-t border-s-border px-4 py-3.5">
         <div className="flex items-baseline gap-2">
-          <span className="font-body text-[13px] text-s-ink-3 line-through tabular-nums">{oldPrice}</span>
+          <span className="font-body text-[13px] text-s-ink-2 line-through tabular-nums">{oldPrice}</span>
           <span className="font-body text-[16px] font-bold text-s-ink tabular-nums">{bundlePrice}</span>
         </div>
         {/* pale-green −X% pill , DiscountBadge / project_card_badges grammar */}

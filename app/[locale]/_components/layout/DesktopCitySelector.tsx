@@ -12,6 +12,7 @@ import {
   setPersistedCity,
 } from "@/lib/city-cookie";
 import { useActiveCities } from "@/hooks/useActiveCities";
+import { useTranslations } from "next-intl";
 
 /**
  * DesktopCitySelector — V3-D157 (2026-05-25).
@@ -39,6 +40,7 @@ interface Props {
 const DEFAULT_CITY: CitySlug = "basel";
 
 export default function DesktopCitySelector({ locale }: Props) {
+  const tSD = useTranslations("salonDetail");
   const [mounted, setMounted] = React.useState(false);
   const [city, setCity] = React.useState<CitySlug>(DEFAULT_CITY);
   const [open, setOpen] = React.useState(false);
@@ -93,7 +95,7 @@ export default function DesktopCitySelector({ locale }: Props) {
         onClick={() => setOpen((o) => !o)}
         aria-haspopup="listbox"
         aria-expanded={open}
-        aria-label="Stadt wählen"
+        aria-label={tSD("selectCity")}
         className={cn(
           "inline-flex items-center gap-1.5 rounded-full border border-s-border bg-white",
           "px-3 py-[7px] font-body text-[13.5px] font-medium text-s-ink",
@@ -117,7 +119,7 @@ export default function DesktopCitySelector({ locale }: Props) {
       {open && (
         <div
           role="listbox"
-          aria-label="Stadt wählen"
+          aria-label={tSD("selectCity")}
           className={cn(
             "absolute right-0 top-full mt-2 w-[160px] overflow-hidden",
             "rounded-xl border border-s-border bg-white",

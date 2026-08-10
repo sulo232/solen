@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
@@ -15,6 +15,12 @@ import { useBooking } from '@/lib/booking-context';
  * raises a full-screen confirm ("All selections will be lost") before
  * leaving. With nothing selected there's nothing to lose, so it exits
  * straight to the salon page.
+ *
+ * ia-navigation-01: the browser/gesture back button and a tab close are the
+ * SAME "leave this booking" action as the X, just triggered a different way,
+ * so they get the same guard. A sentinel history entry is pushed on mount;
+ * popstate re-arms it and raises this component's own confirm instead of
+ * silently discarding the cart. beforeunload covers a tab close / hard refresh.
  */
 export default function BookingExitButton({ slug }: { slug: string }) {
   const t = useTranslations('booking.leave');
@@ -26,6 +32,46 @@ export default function BookingExitButton({ slug }: { slug: string }) {
   useEffect(() => setMounted(true), []);
 
   const exitTo = `/${locale}/salon/${slug}`;
+
+  // Read inside the popstate/beforeunload handlers via a ref so the listeners
+  // (armed once, on mount) always see the current cart, not a stale closure.
+  const servicesCountRef = useRef(formData.services.length);
+  useEffect(() => {
+    servicesCountRef.current = formData.services.length;
+  }, [formData.services.length]);
+
+  useEffect(() => {
+    // One sentinel entry so the FIRST back press hits our popstate handler
+    // instead of leaving the route outright.
+    window.history.pushState({ bookingGuard: true }, '', window.location.href);
+
+    const handlePopState = () => {
+      if (servicesCountRef.current > 0) {
+        // Cancel the native back (re-arm the sentinel) and show the same
+        // confirm the X button uses, so back and X protect progress equally.
+        window.history.pushState({ bookingGuard: true }, '', window.location.href);
+        setConfirming(true);
+      } else {
+        router.replace(exitTo);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (servicesCountRef.current > 0) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+    // Armed once on mount; the ref (not a dependency) carries the live cart size.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleX = () => {
     // replace (not push): leaving the booking should REMOVE it from history, otherwise the

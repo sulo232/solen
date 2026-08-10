@@ -4,6 +4,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
+import { validateBody, favoriteToggleSchema } from "@/lib/validations";
 
 /**
  * POST /api/favorites/toggle
@@ -38,17 +39,19 @@ export async function POST(request: NextRequest) {
   const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
   if (rateLimited) return rateLimited;
 
-  let body: { salon_id?: string };
+  let rawBody: unknown;
   try {
-    body = await request.json();
+    rawBody = await request.json();
   } catch {
     return NextResponse.json({ message: "Invalid JSON body", code: "BAD_REQUEST" }, { status: 400 });
   }
 
-  const salonId = body.salon_id?.trim();
-  if (!salonId) {
-    return NextResponse.json({ message: "Missing salon_id", code: "BAD_REQUEST" }, { status: 400 });
+  const { data: body, error: validationError } = validateBody(favoriteToggleSchema, rawBody);
+  if (validationError) {
+    return NextResponse.json({ message: validationError.message, code: "BAD_REQUEST" }, { status: 400 });
   }
+
+  const salonId = body.salon_id.trim();
 
   // Check if favorite already exists
   const { data: existing, error: lookupError } = await supabase

@@ -1,0 +1,7146 @@
+{
+ "generated_from": "live source scan of app/**/*.tsx and components/**/*.tsx",
+ "total_instances": 888,
+ "distinct_sizes": 26,
+ "by_size": {
+  "8": 3,
+  "9": 3,
+  "10": 18,
+  "11": 34,
+  "12": 78,
+  "13": 75,
+  "14": 125,
+  "15": 66,
+  "16": 131,
+  "17": 32,
+  "18": 126,
+  "19": 22,
+  "20": 68,
+  "21": 8,
+  "22": 32,
+  "24": 25,
+  "26": 3,
+  "28": 10,
+  "30": 6,
+  "32": 8,
+  "34": 3,
+  "36": 6,
+  "38": 1,
+  "40": 2,
+  "44": 1,
+  "48": 2
+ },
+ "role_targets": {
+  "meta": 16,
+  "row": 20,
+  "nav": 24
+ },
+ "would_change": 795,
+ "already_on_target": 93,
+ "instances": [
+  {
+   "file": "app/[locale]/salon/[slug]/team/page.tsx",
+   "line": 78,
+   "icon": "ArrowLeft",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/salon/[slug]/team/page.tsx",
+   "line": 88,
+   "icon": "Shuffle",
+   "size": 22,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/salon/[slug]/team/page.tsx",
+   "line": 155,
+   "icon": "Star",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/staff-invite/page.tsx",
+   "line": 92,
+   "icon": "Check",
+   "size": 24,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/staff-invite/page.tsx",
+   "line": 104,
+   "icon": "AlertTriangle",
+   "size": 24,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/staff-invite/page.tsx",
+   "line": 112,
+   "icon": "Users",
+   "size": 22,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/warum-solen/page.tsx",
+   "line": 228,
+   "icon": "MessageCircle",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/warum-solen/page.tsx",
+   "line": 280,
+   "icon": "Camera",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/warum-solen/page.tsx",
+   "line": 312,
+   "icon": "BarChart3",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/warum-solen/page.tsx",
+   "line": 334,
+   "icon": "Star",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/warum-solen/page.tsx",
+   "line": 378,
+   "icon": "MapPin",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/auth/register/page.tsx",
+   "line": 34,
+   "icon": "User",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/auth/register/page.tsx",
+   "line": 40,
+   "icon": "ChevronRight",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/auth/register/page.tsx",
+   "line": 47,
+   "icon": "Building2",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/auth/register/page.tsx",
+   "line": 53,
+   "icon": "ChevronRight",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/auth/register/page.tsx",
+   "line": 155,
+   "icon": "Mail",
+   "size": 24,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/auth/reset-password/page.tsx",
+   "line": 83,
+   "icon": "Check",
+   "size": 28,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/auth/reset-password/page.tsx",
+   "line": 121,
+   "icon": "Lock",
+   "size": 24,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/auth/reset-password/page.tsx",
+   "line": 135,
+   "icon": "AlertCircle",
+   "size": 22,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/auth/reset-password/page.tsx",
+   "line": 169,
+   "icon": "EyeOff",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/auth/reset-password/page.tsx",
+   "line": 169,
+   "icon": "Eye",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/booking/lookup/page.tsx",
+   "line": 264,
+   "icon": "X",
+   "size": 19,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/booking/lookup/page.tsx",
+   "line": 266,
+   "icon": "ArrowLeft",
+   "size": 19,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/booking/lookup/page.tsx",
+   "line": 375,
+   "icon": "CircleAlert",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/booking/lookup/page.tsx",
+   "line": 409,
+   "icon": "CircleAlert",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/booking/lookup/page.tsx",
+   "line": 421,
+   "icon": "Lock",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/booking/lookup/page.tsx",
+   "line": 431,
+   "icon": "Send",
+   "size": 17,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/booking/lookup/page.tsx",
+   "line": 465,
+   "icon": "Mail",
+   "size": 32,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/booking/lookup/page.tsx",
+   "line": 475,
+   "icon": "Clock",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/booking/lookup/page.tsx",
+   "line": 536,
+   "icon": "ShieldAlert",
+   "size": 32,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/booking/lookup/page.tsx",
+   "line": 547,
+   "icon": "Send",
+   "size": 17,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/booking/lookup/page.tsx",
+   "line": 613,
+   "icon": "Check",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/booking/lookup/page.tsx",
+   "line": 615,
+   "icon": "Copy",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/booking/lookup/page.tsx",
+   "line": 622,
+   "icon": "Clock",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/booking/lookup/page.tsx",
+   "line": 632,
+   "icon": "TriangleAlert",
+   "size": 17,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/booking/lookup/page.tsx",
+   "line": 637,
+   "icon": "TriangleAlert",
+   "size": 17,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/booking/resend-link/page.tsx",
+   "line": 170,
+   "icon": "ArrowLeft",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/booking/resend-link/page.tsx",
+   "line": 295,
+   "icon": "ChevronLeft",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/booking/resend-link/page.tsx",
+   "line": 349,
+   "icon": "CircleAlert",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/booking/resend-link/page.tsx",
+   "line": 421,
+   "icon": "CircleAlert",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/booking/resend-link/page.tsx",
+   "line": 435,
+   "icon": "Send",
+   "size": 17,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/booking/resend-link/page.tsx",
+   "line": 468,
+   "icon": "Send",
+   "size": 30,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/booking/resend-link/page.tsx",
+   "line": 480,
+   "icon": "Mail",
+   "size": 19,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/booking/resend-link/page.tsx",
+   "line": 490,
+   "icon": "Lock",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/booking/resend-link/page.tsx",
+   "line": 529,
+   "icon": "Clock",
+   "size": 28,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/booking/resend-link/page.tsx",
+   "line": 537,
+   "icon": "AlertTriangle",
+   "size": 19,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/booking/resend-link/page.tsx",
+   "line": 575,
+   "icon": "Lock",
+   "size": 17,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/booking/resend-link/page.tsx",
+   "line": 623,
+   "icon": "Lock",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/booking/resend-link/page.tsx",
+   "line": 654,
+   "icon": "Lock",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/rewards/RewardsView.tsx",
+   "line": 77,
+   "icon": "Icon",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/rewards/RewardsView.tsx",
+   "line": 83,
+   "icon": "Icon",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/rewards/RewardsView.tsx",
+   "line": 136,
+   "icon": "Crown",
+   "size": 24,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/rewards/RewardsView.tsx",
+   "line": 138,
+   "icon": "Award",
+   "size": 24,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/rewards/RewardsView.tsx",
+   "line": 178,
+   "icon": "Clock",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/rewards/RewardsView.tsx",
+   "line": 215,
+   "icon": "Check",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/rewards/RewardsView.tsx",
+   "line": 219,
+   "icon": "Lock",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/rewards/RewardsView.tsx",
+   "line": 241,
+   "icon": "Search",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/business/page.tsx",
+   "line": 207,
+   "icon": "ArrowRight",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/business/page.tsx",
+   "line": 294,
+   "icon": "ArrowRight",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/loyalty/stamp/page.tsx",
+   "line": 81,
+   "icon": "Award",
+   "size": 30,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/loyalty/stamp/page.tsx",
+   "line": 114,
+   "icon": "Check",
+   "size": 28,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/loyalty/stamp/page.tsx",
+   "line": 143,
+   "icon": "AlertCircle",
+   "size": 28,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/inspo/page.tsx",
+   "line": 509,
+   "icon": "Heart",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/inspo/saved/page.tsx",
+   "line": 71,
+   "icon": "ArrowLeft",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/inspo/saved/[id]/page.tsx",
+   "line": 60,
+   "icon": "ArrowLeft",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/inspo/board/[id]/page.tsx",
+   "line": 73,
+   "icon": "ArrowLeft",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/page.tsx",
+   "line": 47,
+   "icon": "ArrowUpRight",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/page.tsx",
+   "line": 48,
+   "icon": "ArrowDownRight",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/page.tsx",
+   "line": 64,
+   "icon": "ArrowUpRight",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/page.tsx",
+   "line": 65,
+   "icon": "ArrowDownRight",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/page.tsx",
+   "line": 149,
+   "icon": "CheckCircle2",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/page.tsx",
+   "line": 170,
+   "icon": "Plus",
+   "size": 17,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/page.tsx",
+   "line": 266,
+   "icon": "Calendar",
+   "size": 26,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dashboard/all-salons/page.tsx",
+   "line": 75,
+   "icon": "X",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/all-salons/page.tsx",
+   "line": 199,
+   "icon": "Search",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/all-salons/page.tsx",
+   "line": 236,
+   "icon": "Store",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/all-salons/page.tsx",
+   "line": 311,
+   "icon": "ExternalLink",
+   "size": 10,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/clients/page.tsx",
+   "line": 141,
+   "icon": "Search",
+   "size": 17,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/clients/page.tsx",
+   "line": 324,
+   "icon": "ChevronLeft",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/settings/page.tsx",
+   "line": 147,
+   "icon": "Check",
+   "size": 10,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/settings/page.tsx",
+   "line": 332,
+   "icon": "Check",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/settings/page.tsx",
+   "line": 333,
+   "icon": "X",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/settings/page.tsx",
+   "line": 338,
+   "icon": "Pencil",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/settings/page.tsx",
+   "line": 339,
+   "icon": "Trash2",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/settings/page.tsx",
+   "line": 348,
+   "icon": "Plus",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/settings/page.tsx",
+   "line": 518,
+   "icon": "Eye",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/settings/page.tsx",
+   "line": 652,
+   "icon": "AlertTriangle",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/settings/page.tsx",
+   "line": 733,
+   "icon": "Palmtree",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/settings/page.tsx",
+   "line": 743,
+   "icon": "Palmtree",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/settings/page.tsx",
+   "line": 1002,
+   "icon": "ShieldCheck",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/settings/page.tsx",
+   "line": 1003,
+   "icon": "AlertTriangle",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/settings/page.tsx",
+   "line": 1083,
+   "icon": "Plus",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/settings/page.tsx",
+   "line": 1097,
+   "icon": "Trash2",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/settings/page.tsx",
+   "line": 1410,
+   "icon": "Icon",
+   "size": 19,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/settings/page.tsx",
+   "line": 1413,
+   "icon": "ChevronRight",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/settings/page.tsx",
+   "line": 1480,
+   "icon": "AlertTriangle",
+   "size": 32,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dashboard/settings/page.tsx",
+   "line": 1552,
+   "icon": "ChevronRight",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/calendar/page.tsx",
+   "line": 109,
+   "icon": "X",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/calendar/page.tsx",
+   "line": 191,
+   "icon": "X",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/calendar/page.tsx",
+   "line": 302,
+   "icon": "X",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/calendar/page.tsx",
+   "line": 323,
+   "icon": "ArrowRight",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/calendar/page.tsx",
+   "line": 339,
+   "icon": "Clock",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/calendar/page.tsx",
+   "line": 744,
+   "icon": "ChevronLeft",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/calendar/page.tsx",
+   "line": 747,
+   "icon": "ChevronRight",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/calendar/page.tsx",
+   "line": 822,
+   "icon": "Plus",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/calendar/page.tsx",
+   "line": 841,
+   "icon": "ChevronLeft",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/calendar/page.tsx",
+   "line": 852,
+   "icon": "ChevronRight",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/calendar/page.tsx",
+   "line": 875,
+   "icon": "UserPlus",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/calendar/page.tsx",
+   "line": 883,
+   "icon": "Plus",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/calendar/page.tsx",
+   "line": 910,
+   "icon": "Lock",
+   "size": 10,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/calendar/page.tsx",
+   "line": 953,
+   "icon": "X",
+   "size": 8,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/calendar/page.tsx",
+   "line": 961,
+   "icon": "Plus",
+   "size": 10,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/calendar/page.tsx",
+   "line": 1032,
+   "icon": "X",
+   "size": 8,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/calendar/page.tsx",
+   "line": 1039,
+   "icon": "Plus",
+   "size": 10,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/all-users/page.tsx",
+   "line": 60,
+   "icon": "X",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/all-users/page.tsx",
+   "line": 180,
+   "icon": "Search",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/all-users/page.tsx",
+   "line": 251,
+   "icon": "RoleIcon",
+   "size": 10,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/all-users/page.tsx",
+   "line": 273,
+   "icon": "CheckCircle",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/all-users/page.tsx",
+   "line": 281,
+   "icon": "Ban",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/bookings/page.tsx",
+   "line": 88,
+   "icon": "X",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/bookings/page.tsx",
+   "line": 156,
+   "icon": "Check",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/bookings/page.tsx",
+   "line": 162,
+   "icon": "UserX",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/bookings/page.tsx",
+   "line": 168,
+   "icon": "X",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/bookings/page.tsx",
+   "line": 304,
+   "icon": "RotateCcw",
+   "size": 11,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/coiffeur-crm/page.tsx",
+   "line": 98,
+   "icon": "Icon",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/nail-admin/page.tsx",
+   "line": 70,
+   "icon": "Icon",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/setup/page.tsx",
+   "line": 64,
+   "icon": "Store",
+   "size": 48,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dashboard/loyalty/page.tsx",
+   "line": 94,
+   "icon": "QrCode",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/barber-ops/page.tsx",
+   "line": 70,
+   "icon": "Icon",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/badge-manager/page.tsx",
+   "line": 99,
+   "icon": "X",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/badge-manager/page.tsx",
+   "line": 137,
+   "icon": "Ic",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/badge-manager/page.tsx",
+   "line": 168,
+   "icon": "IconPreview",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/badge-manager/page.tsx",
+   "line": 370,
+   "icon": "Plus",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/badge-manager/page.tsx",
+   "line": 404,
+   "icon": "Ic",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/badge-manager/page.tsx",
+   "line": 423,
+   "icon": "Edit2",
+   "size": 11,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/badge-manager/page.tsx",
+   "line": 431,
+   "icon": "Trash2",
+   "size": 11,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/badge-manager/page.tsx",
+   "line": 449,
+   "icon": "Search",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/badge-manager/page.tsx",
+   "line": 489,
+   "icon": "Ic",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/badge-manager/page.tsx",
+   "line": 495,
+   "icon": "X",
+   "size": 10,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/verification/page.tsx",
+   "line": 81,
+   "icon": "ShieldCheck",
+   "size": 28,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dashboard/verification/page.tsx",
+   "line": 131,
+   "icon": "Upload",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/verification/page.tsx",
+   "line": 150,
+   "icon": "File",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/verification/page.tsx",
+   "line": 164,
+   "icon": "CheckCircle2",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/verification/page.tsx",
+   "line": 165,
+   "icon": "Clock",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/verification/page.tsx",
+   "line": 166,
+   "icon": "AlertCircle",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/verification/page.tsx",
+   "line": 177,
+   "icon": "Trash2",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/help-editor/page.tsx",
+   "line": 118,
+   "icon": "BookOpen",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/help-editor/page.tsx",
+   "line": 129,
+   "icon": "Plus",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/help-editor/page.tsx",
+   "line": 240,
+   "icon": "Eye",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/help-editor/page.tsx",
+   "line": 240,
+   "icon": "EyeOff",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/help-editor/page.tsx",
+   "line": 246,
+   "icon": "Pencil",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/help-editor/page.tsx",
+   "line": 252,
+   "icon": "Trash2",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/cities-admin/page.tsx",
+   "line": 95,
+   "icon": "Loader2",
+   "size": 24,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dashboard/cities-admin/page.tsx",
+   "line": 115,
+   "icon": "AlertTriangle",
+   "size": 17,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/discovery-admin/page.tsx",
+   "line": 184,
+   "icon": "Search",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/discovery-admin/page.tsx",
+   "line": 187,
+   "icon": "Download",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/discovery-admin/page.tsx",
+   "line": 194,
+   "icon": "CheckCircle",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/discovery-admin/page.tsx",
+   "line": 197,
+   "icon": "XCircle",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/discovery-admin/page.tsx",
+   "line": 225,
+   "icon": "CheckCircle",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/discovery-admin/page.tsx",
+   "line": 315,
+   "icon": "Video",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/discovery-admin/page.tsx",
+   "line": 319,
+   "icon": "CheckCircle",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/discovery-admin/page.tsx",
+   "line": 320,
+   "icon": "AlertTriangle",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/discovery-admin/page.tsx",
+   "line": 321,
+   "icon": "Eye",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/discovery-admin/page.tsx",
+   "line": 322,
+   "icon": "XCircle",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/discovery-admin/page.tsx",
+   "line": 390,
+   "icon": "Upload",
+   "size": 32,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dashboard/discovery-admin/page.tsx",
+   "line": 400,
+   "icon": "CheckCircle",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/discovery-admin/page.tsx",
+   "line": 471,
+   "icon": "RefreshCw",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/discovery-admin/page.tsx",
+   "line": 481,
+   "icon": "CheckCircle",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/discovery-admin/page.tsx",
+   "line": 484,
+   "icon": "XCircle",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/discovery-admin/page.tsx",
+   "line": 507,
+   "icon": "Video",
+   "size": 24,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dashboard/discovery-admin/page.tsx",
+   "line": 517,
+   "icon": "CheckCircle",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/discovery-admin/page.tsx",
+   "line": 559,
+   "icon": "Video",
+   "size": 24,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dashboard/discovery-admin/page.tsx",
+   "line": 563,
+   "icon": "GripVertical",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/discovery-admin/page.tsx",
+   "line": 568,
+   "icon": "Trash2",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/discovery-admin/page.tsx",
+   "line": 649,
+   "icon": "RefreshCw",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/discovery-admin/page.tsx",
+   "line": 654,
+   "icon": "GripVertical",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/discovery-admin/page.tsx",
+   "line": 706,
+   "icon": "RefreshCw",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/discovery-admin/page.tsx",
+   "line": 718,
+   "icon": "AlertTriangle",
+   "size": 24,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dashboard/discovery-admin/page.tsx",
+   "line": 727,
+   "icon": "AlertTriangle",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/discovery-admin/page.tsx",
+   "line": 731,
+   "icon": "CheckCircle",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/discovery-admin/page.tsx",
+   "line": 734,
+   "icon": "Trash2",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/earnings/page.tsx",
+   "line": 99,
+   "icon": "Wallet",
+   "size": 24,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dashboard/earnings/page.tsx",
+   "line": 110,
+   "icon": "DollarSign",
+   "size": 24,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dashboard/earnings/page.tsx",
+   "line": 142,
+   "icon": "Calendar",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/earnings/page.tsx",
+   "line": 165,
+   "icon": "FileText",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/earnings/page.tsx",
+   "line": 175,
+   "icon": "Clock",
+   "size": 32,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dashboard/earnings/page.tsx",
+   "line": 184,
+   "icon": "Users",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/spa-admin/page.tsx",
+   "line": 69,
+   "icon": "Icon",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/content-editor/page.tsx",
+   "line": 122,
+   "icon": "Check",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/content-editor/page.tsx",
+   "line": 122,
+   "icon": "Save",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/content-editor/page.tsx",
+   "line": 189,
+   "icon": "FileEdit",
+   "size": 32,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dashboard/homepage-admin/page.tsx",
+   "line": 89,
+   "icon": "Loader2",
+   "size": 24,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dashboard/homepage-admin/page.tsx",
+   "line": 99,
+   "icon": "LayoutGrid",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/homepage-admin/page.tsx",
+   "line": 133,
+   "icon": "Loader2",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/homepage-admin/page.tsx",
+   "line": 138,
+   "icon": "Check",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/commission-admin/page.tsx",
+   "line": 103,
+   "icon": "Loader2",
+   "size": 24,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dashboard/commission-admin/page.tsx",
+   "line": 162,
+   "icon": "Check",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/commission-admin/page.tsx",
+   "line": 173,
+   "icon": "AlertTriangle",
+   "size": 17,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/commission-admin/page.tsx",
+   "line": 196,
+   "icon": "Loader2",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/commission-admin/page.tsx",
+   "line": 201,
+   "icon": "Check",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/commission-admin/page.tsx",
+   "line": 206,
+   "icon": "AlertTriangle",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/commission-admin/page.tsx",
+   "line": 211,
+   "icon": "Save",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/platform-analytics/page.tsx",
+   "line": 68,
+   "icon": "Icon",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/platform-analytics/page.tsx",
+   "line": 124,
+   "icon": "BarChart3",
+   "size": 36,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dashboard/review-moderation/page.tsx",
+   "line": 246,
+   "icon": "Check",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/review-moderation/page.tsx",
+   "line": 253,
+   "icon": "EyeOff",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/review-moderation/page.tsx",
+   "line": 260,
+   "icon": "Trash2",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/refunds/page.tsx",
+   "line": 240,
+   "icon": "Check",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/refunds/page.tsx",
+   "line": 258,
+   "icon": "X",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/staff/page.tsx",
+   "line": 162,
+   "icon": "X",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/staff/page.tsx",
+   "line": 182,
+   "icon": "Plus",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/staff/page.tsx",
+   "line": 274,
+   "icon": "ToggleRight",
+   "size": 22,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dashboard/staff/page.tsx",
+   "line": 274,
+   "icon": "ToggleLeft",
+   "size": 22,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dashboard/staff/page.tsx",
+   "line": 330,
+   "icon": "Mail",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/staff/page.tsx",
+   "line": 334,
+   "icon": "X",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/staff/page.tsx",
+   "line": 353,
+   "icon": "Send",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/staff/page.tsx",
+   "line": 438,
+   "icon": "ClockIcon",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/staff/page.tsx",
+   "line": 529,
+   "icon": "Mail",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/staff/page.tsx",
+   "line": 533,
+   "icon": "Plus",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/staff/page.tsx",
+   "line": 599,
+   "icon": "ToggleRight",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/staff/page.tsx",
+   "line": 599,
+   "icon": "ToggleLeft",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/staff/page.tsx",
+   "line": 603,
+   "icon": "Pencil",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/staff/page.tsx",
+   "line": 607,
+   "icon": "Trash2",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/feature-flags-admin/page.tsx",
+   "line": 135,
+   "icon": "Loader2",
+   "size": 24,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dashboard/feature-flags-admin/page.tsx",
+   "line": 157,
+   "icon": "AlertTriangle",
+   "size": 17,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/approvals/page.tsx",
+   "line": 77,
+   "icon": "ShieldCheck",
+   "size": 22,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dashboard/approvals/page.tsx",
+   "line": 102,
+   "icon": "ShieldCheck",
+   "size": 36,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dashboard/approvals/page.tsx",
+   "line": 115,
+   "icon": "Mail",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/approvals/page.tsx",
+   "line": 121,
+   "icon": "MapPin",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/approvals/page.tsx",
+   "line": 126,
+   "icon": "Calendar",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/approvals/page.tsx",
+   "line": 147,
+   "icon": "Check",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/approvals/page.tsx",
+   "line": 155,
+   "icon": "X",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/admin-sandbox/page.tsx",
+   "line": 192,
+   "icon": "FlaskConical",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/admin-sandbox/page.tsx",
+   "line": 228,
+   "icon": "Loader2",
+   "size": 11,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/admin-sandbox/page.tsx",
+   "line": 228,
+   "icon": "Plus",
+   "size": 11,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/admin-sandbox/page.tsx",
+   "line": 236,
+   "icon": "Loader2",
+   "size": 11,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/admin-sandbox/page.tsx",
+   "line": 236,
+   "icon": "Trash2",
+   "size": 11,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/admin-sandbox/page.tsx",
+   "line": 262,
+   "icon": "FlaskConical",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/admin-sandbox/page.tsx",
+   "line": 272,
+   "icon": "Plus",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/admin-sandbox/page.tsx",
+   "line": 310,
+   "icon": "Loader2",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/admin-sandbox/page.tsx",
+   "line": 310,
+   "icon": "FlaskConical",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/admin-sandbox/page.tsx",
+   "line": 334,
+   "icon": "FlaskConical",
+   "size": 24,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dashboard/admin-sandbox/page.tsx",
+   "line": 352,
+   "icon": "FlaskConical",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/admin-sandbox/page.tsx",
+   "line": 381,
+   "icon": "Loader2",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/admin-sandbox/page.tsx",
+   "line": 382,
+   "icon": "RefreshCw",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/admin-sandbox/page.tsx",
+   "line": 395,
+   "icon": "Loader2",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/admin-sandbox/page.tsx",
+   "line": 396,
+   "icon": "Trash2",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/admin-sandbox/page.tsx",
+   "line": 406,
+   "icon": "ChevronUp",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/admin-sandbox/page.tsx",
+   "line": 406,
+   "icon": "ChevronDown",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/admin-sandbox/page.tsx",
+   "line": 435,
+   "icon": "Loader2",
+   "size": 11,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/admin-sandbox/page.tsx",
+   "line": 436,
+   "icon": "Icon",
+   "size": 11,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/admin-sandbox/page.tsx",
+   "line": 464,
+   "icon": "ExternalLink",
+   "size": 10,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/admin-sandbox/page.tsx",
+   "line": 475,
+   "icon": "Tag",
+   "size": 10,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/admin-sandbox/page.tsx",
+   "line": 479,
+   "icon": "Scissors",
+   "size": 10,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/admin-sandbox/page.tsx",
+   "line": 493,
+   "icon": "FlaskConical",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/revenue/page.tsx",
+   "line": 280,
+   "icon": "Gift",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/revenue/page.tsx",
+   "line": 291,
+   "icon": "Heart",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/discovery-posts/page.tsx",
+   "line": 128,
+   "icon": "Plus",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/discovery-posts/page.tsx",
+   "line": 130,
+   "icon": "BarChart",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/discovery-posts/page.tsx",
+   "line": 148,
+   "icon": "Upload",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/discovery-posts/page.tsx",
+   "line": 151,
+   "icon": "LinkIcon",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/discovery-posts/page.tsx",
+   "line": 187,
+   "icon": "Loader2",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/discovery-posts/page.tsx",
+   "line": 210,
+   "icon": "Eye",
+   "size": 10,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/discovery-posts/page.tsx",
+   "line": 210,
+   "icon": "EyeOff",
+   "size": 10,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/salon-of-month-admin/page.tsx",
+   "line": 147,
+   "icon": "Crown",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/salon-of-month-admin/page.tsx",
+   "line": 223,
+   "icon": "Star",
+   "size": 11,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/salon-of-month-admin/page.tsx",
+   "line": 233,
+   "icon": "Check",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/salon-of-month-admin/page.tsx",
+   "line": 244,
+   "icon": "Loader2",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/services/page.tsx",
+   "line": 89,
+   "icon": "X",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/services/page.tsx",
+   "line": 160,
+   "icon": "X",
+   "size": 8,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/services/page.tsx",
+   "line": 166,
+   "icon": "Camera",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/services/page.tsx",
+   "line": 206,
+   "icon": "Check",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/services/page.tsx",
+   "line": 219,
+   "icon": "Check",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/services/page.tsx",
+   "line": 228,
+   "icon": "ToggleRight",
+   "size": 22,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dashboard/services/page.tsx",
+   "line": 228,
+   "icon": "ToggleLeft",
+   "size": 22,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dashboard/services/page.tsx",
+   "line": 237,
+   "icon": "Trash2",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/services/page.tsx",
+   "line": 301,
+   "icon": "ChevronDown",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/services/page.tsx",
+   "line": 324,
+   "icon": "Clock",
+   "size": 10,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/services/page.tsx",
+   "line": 332,
+   "icon": "Check",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/services/page.tsx",
+   "line": 334,
+   "icon": "Plus",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/services/page.tsx",
+   "line": 470,
+   "icon": "FileUp",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/services/page.tsx",
+   "line": 474,
+   "icon": "Plus",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/services/page.tsx",
+   "line": 494,
+   "icon": "Search",
+   "size": 17,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/services/page.tsx",
+   "line": 563,
+   "icon": "GripVertical",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/services/page.tsx",
+   "line": 570,
+   "icon": "ChevronDown",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/services/page.tsx",
+   "line": 602,
+   "icon": "Pencil",
+   "size": 19,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/services/page.tsx",
+   "line": 639,
+   "icon": "X",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/services/page.tsx",
+   "line": 672,
+   "icon": "Upload",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/segments/page.tsx",
+   "line": 102,
+   "icon": "Icon",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/segments/page.tsx",
+   "line": 124,
+   "icon": "ChevronUp",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/segments/page.tsx",
+   "line": 124,
+   "icon": "ChevronDown",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/ai-limits-admin/page.tsx",
+   "line": 96,
+   "icon": "Loader2",
+   "size": 24,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dashboard/ai-limits-admin/page.tsx",
+   "line": 137,
+   "icon": "Check",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/ai-limits-admin/page.tsx",
+   "line": 148,
+   "icon": "AlertTriangle",
+   "size": 17,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/ai-limits-admin/page.tsx",
+   "line": 171,
+   "icon": "Loader2",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/ai-limits-admin/page.tsx",
+   "line": 176,
+   "icon": "Check",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/ai-limits-admin/page.tsx",
+   "line": 181,
+   "icon": "AlertTriangle",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/ai-limits-admin/page.tsx",
+   "line": 186,
+   "icon": "Save",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/analytics/page.tsx",
+   "line": 156,
+   "icon": "ToggleRight",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/analytics/page.tsx",
+   "line": 156,
+   "icon": "ToggleLeft",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/analytics/page.tsx",
+   "line": 209,
+   "icon": "TrendingUp",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/reports/page.tsx",
+   "line": 270,
+   "icon": "Loader2",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/reports/page.tsx",
+   "line": 270,
+   "icon": "Eye",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/reports/page.tsx",
+   "line": 278,
+   "icon": "X",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/reports/page.tsx",
+   "line": 287,
+   "icon": "EyeOff",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/reports/page.tsx",
+   "line": 303,
+   "icon": "Loader2",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/bundles/page.tsx",
+   "line": 174,
+   "icon": "X",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/bundles/page.tsx",
+   "line": 217,
+   "icon": "Clock",
+   "size": 11,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/bundles/page.tsx",
+   "line": 230,
+   "icon": "Info",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/bundles/page.tsx",
+   "line": 315,
+   "icon": "Trash2",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/bundles/page.tsx",
+   "line": 339,
+   "icon": "Package",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/bundles/page.tsx",
+   "line": 349,
+   "icon": "Clock",
+   "size": 11,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/bundles/page.tsx",
+   "line": 545,
+   "icon": "Plus",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/bundles/page.tsx",
+   "line": 566,
+   "icon": "Package",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/bundles/page.tsx",
+   "line": 586,
+   "icon": "Pencil",
+   "size": 19,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dashboard/reviews/page.tsx",
+   "line": 46,
+   "icon": "Star",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/reviews/page.tsx",
+   "line": 218,
+   "icon": "Flag",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dashboard/reviews/page.tsx",
+   "line": 293,
+   "icon": "MessageCircle",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/booking-action/page.tsx",
+   "line": 52,
+   "icon": "AlertTriangle",
+   "size": 24,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/booking-action/page.tsx",
+   "line": 60,
+   "icon": "Check",
+   "size": 24,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/booking-action/page.tsx",
+   "line": 68,
+   "icon": "X",
+   "size": 24,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/profile/settings/page.tsx",
+   "line": 141,
+   "icon": "Icon",
+   "size": 22,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/profile/settings/page.tsx",
+   "line": 147,
+   "icon": "ChevronRight",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/profile/settings/page.tsx",
+   "line": 162,
+   "icon": "ArrowUpRight",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/profile/settings/BeautyProfileForm.tsx",
+   "line": 115,
+   "icon": "Check",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/profile/settings/BeautyProfileForm.tsx",
+   "line": 149,
+   "icon": "Check",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/profile/stamps/page.tsx",
+   "line": 210,
+   "icon": "Check",
+   "size": 9,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/profile/intake-forms/page.tsx",
+   "line": 117,
+   "icon": "Clock",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/profile/intake-forms/page.tsx",
+   "line": 132,
+   "icon": "Sparkles",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/profile/vouchers/page.tsx",
+   "line": 134,
+   "icon": "Wallet",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/profile/vouchers/page.tsx",
+   "line": 246,
+   "icon": "StatusIcon",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonSidebar.tsx",
+   "line": 196,
+   "icon": "MapPin",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonMobileBookBar.tsx",
+   "line": 81,
+   "icon": "ChevronRight",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonReviews.tsx",
+   "line": 140,
+   "icon": "Star",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonReviews.tsx",
+   "line": 182,
+   "icon": "Star",
+   "size": 11,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonReviews.tsx",
+   "line": 343,
+   "icon": "MessageSquare",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonHeader.tsx",
+   "line": 141,
+   "icon": "MapPin",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonHeader.tsx",
+   "line": 159,
+   "icon": "Share",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonBreadcrumb.tsx",
+   "line": 81,
+   "icon": "ChevronRight",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonHero.tsx",
+   "line": 123,
+   "icon": "Share",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonLoyalty.tsx",
+   "line": 75,
+   "icon": "Icon",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonTeam.tsx",
+   "line": 137,
+   "icon": "Star",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonAdditionalInfo.tsx",
+   "line": 86,
+   "icon": "Icon",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonBundles.tsx",
+   "line": 140,
+   "icon": "Package",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonBundles.tsx",
+   "line": 156,
+   "icon": "Clock",
+   "size": 11,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonStickyTabNav.tsx",
+   "line": 188,
+   "icon": "ArrowLeft",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonStickyTabNav.tsx",
+   "line": 205,
+   "icon": "Share",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonVenuesNearby.tsx",
+   "line": 162,
+   "icon": "ChevronLeft",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonVenuesNearby.tsx",
+   "line": 171,
+   "icon": "ChevronRight",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonContact.tsx",
+   "line": 40,
+   "icon": "Phone",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonContact.tsx",
+   "line": 53,
+   "icon": "Globe",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonContact.tsx",
+   "line": 57,
+   "icon": "ExternalLink",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonContact.tsx",
+   "line": 69,
+   "icon": "Instagram",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonContact.tsx",
+   "line": 75,
+   "icon": "ExternalLink",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonLocation.tsx",
+   "line": 244,
+   "icon": "MapPin",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonLocation.tsx",
+   "line": 258,
+   "icon": "Footprints",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonLocation.tsx",
+   "line": 288,
+   "icon": "MapPin",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonLocation.tsx",
+   "line": 297,
+   "icon": "Navigation",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonLocation.tsx",
+   "line": 323,
+   "icon": "MapPin",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonLocation.tsx",
+   "line": 332,
+   "icon": "Navigation",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonLocation.tsx",
+   "line": 424,
+   "icon": "Icon",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonLocation.tsx",
+   "line": 440,
+   "icon": "Icon",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonLocation.tsx",
+   "line": 454,
+   "icon": "Icon",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonProducts.tsx",
+   "line": 199,
+   "icon": "Store",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonProducts.tsx",
+   "line": 279,
+   "icon": "Package",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonProducts.tsx",
+   "line": 314,
+   "icon": "Check",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonProducts.tsx",
+   "line": 314,
+   "icon": "Plus",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonLightbox.tsx",
+   "line": 129,
+   "icon": "X",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonLightbox.tsx",
+   "line": 149,
+   "icon": "ChevronLeft",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonLightbox.tsx",
+   "line": 150,
+   "icon": "ChevronLeft",
+   "size": 22,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonLightbox.tsx",
+   "line": 168,
+   "icon": "ChevronRight",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonLightbox.tsx",
+   "line": 169,
+   "icon": "ChevronRight",
+   "size": 22,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonImageGallery.tsx",
+   "line": 190,
+   "icon": "ArrowLeft",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonBuy.tsx",
+   "line": 63,
+   "icon": "Gift",
+   "size": 24,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/_components/salon/SalonBuy.tsx",
+   "line": 73,
+   "icon": "ChevronRight",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/homepage/Hero.tsx",
+   "line": 259,
+   "icon": "Search",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/homepage/Hero.tsx",
+   "line": 268,
+   "icon": "MapPin",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/homepage/Hero.tsx",
+   "line": 275,
+   "icon": "Calendar",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/homepage/MobileCategoriesRow.tsx",
+   "line": 109,
+   "icon": "Check",
+   "size": 11,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/homepage/WhySolen.tsx",
+   "line": 205,
+   "icon": "Scissors",
+   "size": 36,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/_components/homepage/WhySolen.tsx",
+   "line": 215,
+   "icon": "Store",
+   "size": 9,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/homepage/BusinessTeaser.tsx",
+   "line": 80,
+   "icon": "ArrowRight",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/homepage/SearchBar.tsx",
+   "line": 310,
+   "icon": "Search",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/homepage/SearchBar.tsx",
+   "line": 318,
+   "icon": "MapPin",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/homepage/SearchBar.tsx",
+   "line": 325,
+   "icon": "Calendar",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/homepage/SearchBar.tsx",
+   "line": 423,
+   "icon": "X",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/homepage/SearchBar.tsx",
+   "line": 508,
+   "icon": "Navigation",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/homepage/FeaturedStylists.tsx",
+   "line": 263,
+   "icon": "Star",
+   "size": 11,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/homepage/FeaturedStylists.tsx",
+   "line": 286,
+   "icon": "Clock",
+   "size": 10,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/homepage/SectionHeader.tsx",
+   "line": 258,
+   "icon": "Icon",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/homepage/Entdecken.tsx",
+   "line": 269,
+   "icon": "Play",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/homepage/Entdecken.tsx",
+   "line": 409,
+   "icon": "ArrowRight",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/homepage/WalkInBand.tsx",
+   "line": 137,
+   "icon": "Star",
+   "size": 11,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/homepage/WalkInBand.tsx",
+   "line": 160,
+   "icon": "ArrowRight",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/homepage/SolenStory.tsx",
+   "line": 128,
+   "icon": "Play",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/homepage/SolenStory.tsx",
+   "line": 130,
+   "icon": "Pause",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/homepage/HeroDuo.tsx",
+   "line": 171,
+   "icon": "ArrowRight",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/homepage/NearbyMap.tsx",
+   "line": 186,
+   "icon": "MapPin",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/homepage/BentoBusiness.tsx",
+   "line": 80,
+   "icon": "Check",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/homepage/BentoBusiness.tsx",
+   "line": 367,
+   "icon": "ArrowRight",
+   "size": 10,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/homepage/BentoBusiness.tsx",
+   "line": 527,
+   "icon": "ChevronRight",
+   "size": 22,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/_components/homepage/BentoBusiness.tsx",
+   "line": 540,
+   "icon": "Star",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/homepage/BentoBusiness.tsx",
+   "line": 588,
+   "icon": "Check",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/homepage/BentoBusiness.tsx",
+   "line": 650,
+   "icon": "ArrowRight",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/homepage/Reviews.tsx",
+   "line": 191,
+   "icon": "Store",
+   "size": 11,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/homepage/Reviews.tsx",
+   "line": 193,
+   "icon": "ChevronRight",
+   "size": 11,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/layout/OfflineBanner.tsx",
+   "line": 97,
+   "icon": "WifiOff",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/layout/OfflineBanner.tsx",
+   "line": 99,
+   "icon": "Wifi",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/layout/NotificationBell.tsx",
+   "line": 46,
+   "icon": "Bell",
+   "size": 21,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/layout/Footer.tsx",
+   "line": 145,
+   "icon": "Icon",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/layout/Footer.tsx",
+   "line": 223,
+   "icon": "Check",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/layout/Footer.tsx",
+   "line": 255,
+   "icon": "ChevronRight",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/layout/CityTopBar.tsx",
+   "line": 187,
+   "icon": "X",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/layout/CityTopBar.tsx",
+   "line": 260,
+   "icon": "ArrowRight",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/layout/DesktopCitySelector.tsx",
+   "line": 106,
+   "icon": "MapPin",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/layout/Header.tsx",
+   "line": 297,
+   "icon": "MapPin",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/layout/Header.tsx",
+   "line": 626,
+   "icon": "Home",
+   "size": 22,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/_components/layout/Header.tsx",
+   "line": 649,
+   "icon": "ArrowLeft",
+   "size": 22,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/_components/layout/Header.tsx",
+   "line": 837,
+   "icon": "Menu",
+   "size": 22,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/_components/layout/Header.tsx",
+   "line": 847,
+   "icon": "X",
+   "size": 22,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/_components/layout/MobileMenu.tsx",
+   "line": 266,
+   "icon": "LayoutDashboard",
+   "size": 17,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/layout/MobileMenu.tsx",
+   "line": 273,
+   "icon": "ChevronRight",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/layout/MobileMenu.tsx",
+   "line": 285,
+   "icon": "User",
+   "size": 22,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/_components/layout/MobileMenu.tsx",
+   "line": 291,
+   "icon": "Award",
+   "size": 22,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/_components/layout/MobileMenu.tsx",
+   "line": 297,
+   "icon": "Users",
+   "size": 22,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/_components/layout/MobileMenu.tsx",
+   "line": 303,
+   "icon": "HelpCircle",
+   "size": 22,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/_components/layout/MobileMenu.tsx",
+   "line": 317,
+   "icon": "LogIn",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/layout/MobileMenu.tsx",
+   "line": 325,
+   "icon": "Info",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/layout/MobileMenu.tsx",
+   "line": 333,
+   "icon": "Globe",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/layout/MobileMenu.tsx",
+   "line": 395,
+   "icon": "ArrowRight",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/business/MarketplaceVisual.tsx",
+   "line": 61,
+   "icon": "Heart",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/business/MarketplaceVisual.tsx",
+   "line": 70,
+   "icon": "Star",
+   "size": 11,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/search/SearchOverlay.tsx",
+   "line": 532,
+   "icon": "ArrowLeft",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/search/SearchOverlay.tsx",
+   "line": 536,
+   "icon": "Search",
+   "size": 19,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/search/SearchOverlay.tsx",
+   "line": 557,
+   "icon": "X",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/search/SearchOverlay.tsx",
+   "line": 611,
+   "icon": "Loader2",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/search/SearchOverlay.tsx",
+   "line": 651,
+   "icon": "ChevronRight",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/search/SearchOverlay.tsx",
+   "line": 768,
+   "icon": "Search",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/search/SearchOverlay.tsx",
+   "line": 784,
+   "icon": "X",
+   "size": 17,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/search/SearchOverlay.tsx",
+   "line": 835,
+   "icon": "Search",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/search/SearchOverlay.tsx",
+   "line": 843,
+   "icon": "X",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/search/SearchOverlay.tsx",
+   "line": 876,
+   "icon": "ChevronLeft",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/search/SearchOverlay.tsx",
+   "line": 880,
+   "icon": "ChevronRight",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/search/SearchOverlay.tsx",
+   "line": 1053,
+   "icon": "Search",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/search/SearchOverlay.tsx",
+   "line": 1055,
+   "icon": "ArrowUpLeft",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/search/SearchOverlay.tsx",
+   "line": 1111,
+   "icon": "Icon",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/search/SearchOverlay.tsx",
+   "line": 1121,
+   "icon": "X",
+   "size": 17,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/search/FilterSheet.tsx",
+   "line": 210,
+   "icon": "Star",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/search/FilterSheet.tsx",
+   "line": 547,
+   "icon": "Icon",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/search/MapSalonDetail.tsx",
+   "line": 131,
+   "icon": "ChevronLeft",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/search/MapSalonDetail.tsx",
+   "line": 149,
+   "icon": "HeartButton",
+   "size": 36,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/_components/search/SearchTemplate.tsx",
+   "line": 1259,
+   "icon": "Search",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/search/SearchTemplate.tsx",
+   "line": 1321,
+   "icon": "MapIcon",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/search/SearchTemplate.tsx",
+   "line": 1422,
+   "icon": "ChevronDown",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/search/SearchTemplate.tsx",
+   "line": 1501,
+   "icon": "ChevronDown",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/search/SearchTemplate.tsx",
+   "line": 1865,
+   "icon": "ArrowLeft",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/search/SearchTemplate.tsx",
+   "line": 1874,
+   "icon": "Search",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/search/SearchTemplate.tsx",
+   "line": 1947,
+   "icon": "ChevronDown",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/search/SearchTemplate.tsx",
+   "line": 2067,
+   "icon": "ListIcon",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/search/SearchTemplate.tsx",
+   "line": 2069,
+   "icon": "MapIcon",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/search/SearchTemplate.tsx",
+   "line": 2225,
+   "icon": "Icon",
+   "size": 30,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/_components/search/SearchTemplate.tsx",
+   "line": 2376,
+   "icon": "AlertCircle",
+   "size": 28,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/_components/search/SalonResultCard.tsx",
+   "line": 292,
+   "icon": "Store",
+   "size": 22,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/_components/search/SalonResultCard.tsx",
+   "line": 312,
+   "icon": "MapPin",
+   "size": 11,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/search/SalonResultCard.tsx",
+   "line": 322,
+   "icon": "ArrowRight",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/search/SalonResultCard.tsx",
+   "line": 369,
+   "icon": "Calendar",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/search/SalonResultCard.tsx",
+   "line": 507,
+   "icon": "HeartButton",
+   "size": 36,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/_components/search/SalonResultCard.tsx",
+   "line": 611,
+   "icon": "HeartButton",
+   "size": 36,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/_components/search/SalonResultCard.tsx",
+   "line": 685,
+   "icon": "Calendar",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/primitives/BackButton.tsx",
+   "line": 41,
+   "icon": "ArrowLeft",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/primitives/CookieConsent.tsx",
+   "line": 270,
+   "icon": "Cookie",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/primitives/CookieConsent.tsx",
+   "line": 297,
+   "icon": "Settings2",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/primitives/Avatar.tsx",
+   "line": 102,
+   "icon": "Star",
+   "size": 9,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/primitives/Toast.tsx",
+   "line": 353,
+   "icon": "Glyph",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/dashboard/DashboardUI.tsx",
+   "line": 109,
+   "icon": "ArrowRight",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/dashboard/DashboardUI.tsx",
+   "line": 152,
+   "icon": "ArrowUpRight",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/dashboard/DashboardUI.tsx",
+   "line": 153,
+   "icon": "ArrowDownRight",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/dashboard/DashboardUI.tsx",
+   "line": 154,
+   "icon": "Minus",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/dashboard/DashboardUI.tsx",
+   "line": 198,
+   "icon": "Icon",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/profile/EmptyStateDiscovery.tsx",
+   "line": 111,
+   "icon": "ChevronRight",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/profile/EmptyStateDiscovery.tsx",
+   "line": 127,
+   "icon": "Star",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/profile/ProfileTabs.tsx",
+   "line": 165,
+   "icon": "Avatar",
+   "size": 48,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/_components/profile/ProfileTabs.tsx",
+   "line": 174,
+   "icon": "Settings",
+   "size": 24,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/_components/profile/ProfileTabs.tsx",
+   "line": 195,
+   "icon": "Search",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/profile/ProfileTabs.tsx",
+   "line": 217,
+   "icon": "ArrowUpDown",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/profile/ProfileTabs.tsx",
+   "line": 362,
+   "icon": "Scissors",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/profile/ProfileTabs.tsx",
+   "line": 380,
+   "icon": "Scissors",
+   "size": 22,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/_components/profile/PaymentMethods.tsx",
+   "line": 241,
+   "icon": "Plus",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/tips/TipFlow.tsx",
+   "line": 192,
+   "icon": "Star",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/tips/TipFlow.tsx",
+   "line": 261,
+   "icon": "CreditCard",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/tips/TipFlow.tsx",
+   "line": 277,
+   "icon": "AlertCircle",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/_components/tips/TipFlow.tsx",
+   "line": 295,
+   "icon": "AlertCircle",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/_components/tips/TipSheet.tsx",
+   "line": 62,
+   "icon": "X",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/queue/[token]/page.tsx",
+   "line": 191,
+   "icon": "TicketX",
+   "size": 34,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/queue/[token]/page.tsx",
+   "line": 230,
+   "icon": "Check",
+   "size": 28,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/queue/[token]/page.tsx",
+   "line": 241,
+   "icon": "Scissors",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/queue/[token]/page.tsx",
+   "line": 252,
+   "icon": "Star",
+   "size": 38,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/queue/[token]/page.tsx",
+   "line": 290,
+   "icon": "HelpCircle",
+   "size": 19,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/queue/[token]/page.tsx",
+   "line": 292,
+   "icon": "ChevronRight",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/queue/[token]/page.tsx",
+   "line": 298,
+   "icon": "Send",
+   "size": 17,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/queue/[token]/page.tsx",
+   "line": 314,
+   "icon": "AlertCircle",
+   "size": 34,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/queue/[token]/page.tsx",
+   "line": 375,
+   "icon": "ArrowLeft",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/queue/[token]/page.tsx",
+   "line": 384,
+   "icon": "HelpCircle",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/queue/[token]/page.tsx",
+   "line": 397,
+   "icon": "MapPin",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/queue/[token]/page.tsx",
+   "line": 496,
+   "icon": "Scissors",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/queue/[token]/page.tsx",
+   "line": 501,
+   "icon": "ArrowRight",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/queue/[token]/page.tsx",
+   "line": 518,
+   "icon": "Scissors",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/queue/[token]/page.tsx",
+   "line": 525,
+   "icon": "Star",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/queue/[token]/page.tsx",
+   "line": 552,
+   "icon": "MapPin",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/queue/[token]/page.tsx",
+   "line": 554,
+   "icon": "ChevronRight",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/queue/[token]/page.tsx",
+   "line": 560,
+   "icon": "Ticket",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/queue/[token]/page.tsx",
+   "line": 570,
+   "icon": "Navigation",
+   "size": 17,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/queue/[token]/page.tsx",
+   "line": 579,
+   "icon": "X",
+   "size": 22,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/queue/[token]/page.tsx",
+   "line": 584,
+   "icon": "RefreshCw",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/recently-viewed/RecentlyViewedClient.tsx",
+   "line": 82,
+   "icon": "Clock",
+   "size": 30,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/recently-viewed/RecentlyViewedClient.tsx",
+   "line": 112,
+   "icon": "Star",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/recently-viewed/RecentlyViewedClient.tsx",
+   "line": 120,
+   "icon": "ChevronRight",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/scroll-motion/_parts/CondenseBar.tsx",
+   "line": 159,
+   "icon": "Share",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-bar/page.tsx",
+   "line": 41,
+   "icon": "ArrowLeft",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-bar/page.tsx",
+   "line": 44,
+   "icon": "Search",
+   "size": 17,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-bar/page.tsx",
+   "line": 52,
+   "icon": "ArrowLeft",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-bar/page.tsx",
+   "line": 54,
+   "icon": "Search",
+   "size": 17,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-bar/page.tsx",
+   "line": 61,
+   "icon": "ArrowLeft",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-bar/page.tsx",
+   "line": 62,
+   "icon": "Search",
+   "size": 17,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-bar/page.tsx",
+   "line": 70,
+   "icon": "ArrowLeft",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-bar/page.tsx",
+   "line": 72,
+   "icon": "Search",
+   "size": 17,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/checkout-confirm/page.tsx",
+   "line": 45,
+   "icon": "Loader2",
+   "size": 17,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/checkout-confirm/page.tsx",
+   "line": 66,
+   "icon": "CreditCard",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/checkout-confirm/page.tsx",
+   "line": 70,
+   "icon": "Hash",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/checkout-confirm/page.tsx",
+   "line": 74,
+   "icon": "Clock",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/checkout-confirm/page.tsx",
+   "line": 80,
+   "icon": "UserPlus",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/checkout-confirm/page.tsx",
+   "line": 83,
+   "icon": "CalendarPlus",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/checkout-confirm/page.tsx",
+   "line": 99,
+   "icon": "Users",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/checkout-confirm/page.tsx",
+   "line": 108,
+   "icon": "CreditCard",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/checkout-confirm/page.tsx",
+   "line": 120,
+   "icon": "SuccessMark",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-rich/page.tsx",
+   "line": 27,
+   "icon": "Search",
+   "size": 19,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-rich/page.tsx",
+   "line": 44,
+   "icon": "Scissors",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-rich/page.tsx",
+   "line": 54,
+   "icon": "Star",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/search-rich/page.tsx",
+   "line": 71,
+   "icon": "Scissors",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-rich/page.tsx",
+   "line": 80,
+   "icon": "ChevronRight",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-rich/page.tsx",
+   "line": 88,
+   "icon": "Scissors",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-rich/page.tsx",
+   "line": 117,
+   "icon": "Search",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-rich/page.tsx",
+   "line": 119,
+   "icon": "ArrowUpLeft",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-rich/page.tsx",
+   "line": 129,
+   "icon": "Scissors",
+   "size": 22,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dev/search-rich/page.tsx",
+   "line": 135,
+   "icon": "MapPin",
+   "size": 11,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/search-rich/page.tsx",
+   "line": 139,
+   "icon": "ArrowRight",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-rich/page.tsx",
+   "line": 143,
+   "icon": "ChevronRight",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-rich/page.tsx",
+   "line": 151,
+   "icon": "Scissors",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-rich/page.tsx",
+   "line": 183,
+   "icon": "Scissors",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-rich/page.tsx",
+   "line": 196,
+   "icon": "Scissors",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/bundle-builder/page.tsx",
+   "line": 116,
+   "icon": "Package",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/bundle-builder/page.tsx",
+   "line": 153,
+   "icon": "Clock",
+   "size": 11,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/bundle-builder/page.tsx",
+   "line": 166,
+   "icon": "Info",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/bundle-builder/page.tsx",
+   "line": 241,
+   "icon": "ToggleRight",
+   "size": 24,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dev/bundle-builder/page.tsx",
+   "line": 241,
+   "icon": "ToggleLeft",
+   "size": 24,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dev/bundle-builder/page.tsx",
+   "line": 271,
+   "icon": "Package",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/bundle-builder/page.tsx",
+   "line": 283,
+   "icon": "Clock",
+   "size": 11,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/motion-recipe/page.tsx",
+   "line": 68,
+   "icon": "Star",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/motion-recipe/page.tsx",
+   "line": 89,
+   "icon": "Star",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/motion-recipe/page.tsx",
+   "line": 107,
+   "icon": "Plus",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/motion-recipe/page.tsx",
+   "line": 132,
+   "icon": "Plus",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/motion-recipe/page.tsx",
+   "line": 226,
+   "icon": "RotateCcw",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/motion-recipe/page.tsx",
+   "line": 280,
+   "icon": "Scissors",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/motion-recipe/page.tsx",
+   "line": 285,
+   "icon": "MapPin",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/results-browse/page.tsx",
+   "line": 26,
+   "icon": "Heart",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/results-browse/page.tsx",
+   "line": 37,
+   "icon": "Star",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/results-browse/page.tsx",
+   "line": 51,
+   "icon": "ArrowLeft",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/results-browse/page.tsx",
+   "line": 52,
+   "icon": "Search",
+   "size": 17,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/results-browse/page.tsx",
+   "line": 54,
+   "icon": "MapIcon",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/results-browse/page.tsx",
+   "line": 57,
+   "icon": "SlidersHorizontal",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/results-browse/page.tsx",
+   "line": 59,
+   "icon": "ChevronDown",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/results-browse/page.tsx",
+   "line": 60,
+   "icon": "ChevronDown",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/results-browse/page.tsx",
+   "line": 61,
+   "icon": "ChevronDown",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-motion/page.tsx",
+   "line": 59,
+   "icon": "Heart",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-motion/page.tsx",
+   "line": 65,
+   "icon": "Star",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-motion/page.tsx",
+   "line": 80,
+   "icon": "Heart",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-motion/page.tsx",
+   "line": 85,
+   "icon": "Star",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-motion/page.tsx",
+   "line": 144,
+   "icon": "ArrowLeft",
+   "size": 21,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-motion/page.tsx",
+   "line": 146,
+   "icon": "Search",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-motion/page.tsx",
+   "line": 151,
+   "icon": "MapIcon",
+   "size": 19,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-motion/page.tsx",
+   "line": 159,
+   "icon": "Star",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-motion/page.tsx",
+   "line": 169,
+   "icon": "Search",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-motion/page.tsx",
+   "line": 184,
+   "icon": "ChevronLeft",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-motion/page.tsx",
+   "line": 234,
+   "icon": "Layers",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/filter-refine/page.tsx",
+   "line": 31,
+   "icon": "X",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/no-results/page.tsx",
+   "line": 35,
+   "icon": "Icon",
+   "size": 30,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dev/no-results/page.tsx",
+   "line": 41,
+   "icon": "CtaIcon",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/reports-view/page.tsx",
+   "line": 66,
+   "icon": "Info",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/reports-view/_parts/R3SplitInbox.tsx",
+   "line": 76,
+   "icon": "TargetIconBadge",
+   "size": 28,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dev/reports-view/_parts/R3SplitInbox.tsx",
+   "line": 86,
+   "icon": "Check",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/reports-view/_parts/R3SplitInbox.tsx",
+   "line": 104,
+   "icon": "ArrowLeft",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/reports-view/_parts/R2CaseCard.tsx",
+   "line": 45,
+   "icon": "ArrowLeft",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/reports-view/_parts/R2CaseCard.tsx",
+   "line": 57,
+   "icon": "ArrowRight",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/reports-view/_parts/R2CaseCard.tsx",
+   "line": 81,
+   "icon": "ArrowRight",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/reports-view/_parts/R1Triage.tsx",
+   "line": 50,
+   "icon": "TargetIconBadge",
+   "size": 32,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dev/reports-view/_parts/R1Triage.tsx",
+   "line": 60,
+   "icon": "Chevron",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/reports-view/_parts/TargetPreview.tsx",
+   "line": 53,
+   "icon": "Store",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/reports-view/_parts/Chips.tsx",
+   "line": 53,
+   "icon": "Icon",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/reports-view/_parts/ReportActions.tsx",
+   "line": 69,
+   "icon": "Eye",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/reports-view/_parts/ReportActions.tsx",
+   "line": 77,
+   "icon": "EyeOff",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/reports-view/_parts/ReportActions.tsx",
+   "line": 86,
+   "icon": "AlertTriangle",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/reports-view/_parts/ReportActions.tsx",
+   "line": 105,
+   "icon": "Check",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-single/page.tsx",
+   "line": 47,
+   "icon": "Star",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-single/page.tsx",
+   "line": 57,
+   "icon": "ChevronLeft",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-single/page.tsx",
+   "line": 65,
+   "icon": "Heart",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-single/page.tsx",
+   "line": 78,
+   "icon": "Star",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-single/page.tsx",
+   "line": 117,
+   "icon": "Clock",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-single/page.tsx",
+   "line": 119,
+   "icon": "Star",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-single/page.tsx",
+   "line": 120,
+   "icon": "ChevronRight",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-single/page.tsx",
+   "line": 134,
+   "icon": "Clock",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-single/page.tsx",
+   "line": 137,
+   "icon": "Icon",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-single/page.tsx",
+   "line": 145,
+   "icon": "Star",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-single/page.tsx",
+   "line": 173,
+   "icon": "ArrowLeft",
+   "size": 21,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-single/page.tsx",
+   "line": 174,
+   "icon": "Search",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-single/page.tsx",
+   "line": 179,
+   "icon": "MapIcon",
+   "size": 19,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/filter-menus/page.tsx",
+   "line": 78,
+   "icon": "X",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/filter-menus/page.tsx",
+   "line": 211,
+   "icon": "Star",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/filter-menus/page.tsx",
+   "line": 308,
+   "icon": "Icon",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/home-search/_variants.tsx",
+   "line": 51,
+   "icon": "Icon",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/home-search/_variants.tsx",
+   "line": 78,
+   "icon": "Search",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/home-search/_variants.tsx",
+   "line": 84,
+   "icon": "ArrowRight",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/home-search/_variants.tsx",
+   "line": 110,
+   "icon": "Icon",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/home-search/_variants.tsx",
+   "line": 120,
+   "icon": "Search",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/home-search/_variants.tsx",
+   "line": 141,
+   "icon": "Icon",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/report-flow/_parts/ReviewPreviewCard.tsx",
+   "line": 25,
+   "icon": "Avatar",
+   "size": 44,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dev/report-flow/_parts/ReviewPreviewCard.tsx",
+   "line": 38,
+   "icon": "Flag",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/report-flow/_parts/Confirmation.tsx",
+   "line": 78,
+   "icon": "Icon",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/report-flow/_parts/ReviewLine.tsx",
+   "line": 17,
+   "icon": "Flag",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/report-flow/_parts/D3FullPage.tsx",
+   "line": 55,
+   "icon": "ArrowLeft",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-v2/page.tsx",
+   "line": 36,
+   "icon": "Star",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-v2/page.tsx",
+   "line": 58,
+   "icon": "ArrowLeft",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-v2/page.tsx",
+   "line": 63,
+   "icon": "MapIcon",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-v2/page.tsx",
+   "line": 71,
+   "icon": "X",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-v2/page.tsx",
+   "line": 79,
+   "icon": "Star",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-v2/page.tsx",
+   "line": 95,
+   "icon": "X",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-v2/page.tsx",
+   "line": 101,
+   "icon": "Tag",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-v2/page.tsx",
+   "line": 102,
+   "icon": "Users",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-v2/page.tsx",
+   "line": 103,
+   "icon": "Clock",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-v2/page.tsx",
+   "line": 126,
+   "icon": "ArrowLeft",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-v2/page.tsx",
+   "line": 128,
+   "icon": "Search",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-v2/page.tsx",
+   "line": 131,
+   "icon": "SlidersHorizontal",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-v2/page.tsx",
+   "line": 136,
+   "icon": "Heart",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-v2/page.tsx",
+   "line": 141,
+   "icon": "Star",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-v2/page.tsx",
+   "line": 163,
+   "icon": "ArrowLeft",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-v2/page.tsx",
+   "line": 174,
+   "icon": "Search",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-trending/page.tsx",
+   "line": 33,
+   "icon": "TrendingUp",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-trending/page.tsx",
+   "line": 37,
+   "icon": "ImageIcon",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-trending/page.tsx",
+   "line": 49,
+   "icon": "TrendingUp",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-trending/page.tsx",
+   "line": 55,
+   "icon": "ArrowUpRight",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-full/page.tsx",
+   "line": 33,
+   "icon": "Star",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-full/page.tsx",
+   "line": 47,
+   "icon": "Heart",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-full/page.tsx",
+   "line": 55,
+   "icon": "Star",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-full/page.tsx",
+   "line": 82,
+   "icon": "ArrowLeft",
+   "size": 21,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-full/page.tsx",
+   "line": 83,
+   "icon": "Search",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-full/page.tsx",
+   "line": 88,
+   "icon": "MapIcon",
+   "size": 19,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-full/page.tsx",
+   "line": 93,
+   "icon": "Loader2",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-full/page.tsx",
+   "line": 106,
+   "icon": "SlidersHorizontal",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-full/page.tsx",
+   "line": 108,
+   "icon": "ChevronDown",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-full/page.tsx",
+   "line": 109,
+   "icon": "ChevronDown",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-full/page.tsx",
+   "line": 110,
+   "icon": "ChevronDown",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/motion/_parts/ModeToggleCopy.tsx",
+   "line": 32,
+   "icon": "Footprints",
+   "size": 19,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/motion/_parts/BlurSpeedDemo.tsx",
+   "line": 80,
+   "icon": "RotateCcw",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/motion/_parts/BlurSpeedDemo.tsx",
+   "line": 156,
+   "icon": "RotateCcw",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/motion/_parts/SpeedLadder.tsx",
+   "line": 68,
+   "icon": "Play",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/motion/_parts/MotionGallery.tsx",
+   "line": 41,
+   "icon": "RotateCcw",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/motion/_parts/DemoCard.tsx",
+   "line": 55,
+   "icon": "Play",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/motion/_parts/TitleSlideDemo.tsx",
+   "line": 58,
+   "icon": "Avatar",
+   "size": 28,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dev/map-interact/page.tsx",
+   "line": 39,
+   "icon": "Star",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-interact/page.tsx",
+   "line": 60,
+   "icon": "Star",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-interact/page.tsx",
+   "line": 67,
+   "icon": "Clock",
+   "size": 11,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-interact/page.tsx",
+   "line": 72,
+   "icon": "X",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-interact/page.tsx",
+   "line": 91,
+   "icon": "Heart",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-interact/page.tsx",
+   "line": 96,
+   "icon": "Star",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-interact/page.tsx",
+   "line": 142,
+   "icon": "ArrowLeft",
+   "size": 21,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-interact/page.tsx",
+   "line": 143,
+   "icon": "Search",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-interact/page.tsx",
+   "line": 148,
+   "icon": "MapIcon",
+   "size": 19,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-interact/page.tsx",
+   "line": 173,
+   "icon": "SlidersHorizontal",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-interact/page.tsx",
+   "line": 175,
+   "icon": "ChevronDown",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-interact/page.tsx",
+   "line": 176,
+   "icon": "ChevronDown",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/confirm-full/page.tsx",
+   "line": 28,
+   "icon": "I",
+   "size": 21,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/confirm-full/page.tsx",
+   "line": 39,
+   "icon": "Loader2",
+   "size": 40,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dev/confirm-full/page.tsx",
+   "line": 64,
+   "icon": "ChevronRight",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/confirm-full/page.tsx",
+   "line": 69,
+   "icon": "Calendar",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/confirm-full/page.tsx",
+   "line": 73,
+   "icon": "Scissors",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/confirm-full/page.tsx",
+   "line": 88,
+   "icon": "CreditCard",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/confirm-full/page.tsx",
+   "line": 92,
+   "icon": "Hash",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/confirm-full/page.tsx",
+   "line": 100,
+   "icon": "UserPlus",
+   "size": 17,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/confirm-full/page.tsx",
+   "line": 108,
+   "icon": "RotateCcw",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/seeall/_parts/SeeAllDirections.tsx",
+   "line": 182,
+   "icon": "Star",
+   "size": 11,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/seeall/_parts/SeeAllDirections.tsx",
+   "line": 210,
+   "icon": "Avatar",
+   "size": 40,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dev/search-model-b/page.tsx",
+   "line": 133,
+   "icon": "Home",
+   "size": 22,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dev/search-model-b/page.tsx",
+   "line": 144,
+   "icon": "MapPin",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-model-b/page.tsx",
+   "line": 146,
+   "icon": "ChevronDown",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/search-model-b/page.tsx",
+   "line": 155,
+   "icon": "Menu",
+   "size": 22,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dev/search-model-b/page.tsx",
+   "line": 205,
+   "icon": "Search",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-model-b/page.tsx",
+   "line": 240,
+   "icon": "MapIcon",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-model-b/page.tsx",
+   "line": 252,
+   "icon": "SlidersHorizontal",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-model-b/page.tsx",
+   "line": 265,
+   "icon": "ChevronDown",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/search-model-b/page.tsx",
+   "line": 283,
+   "icon": "ChevronDown",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/search-model-b/page.tsx",
+   "line": 311,
+   "icon": "Heart",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-model-b/page.tsx",
+   "line": 322,
+   "icon": "Star",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/bundles-products/page.tsx",
+   "line": 42,
+   "icon": "Icon",
+   "size": 17,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/bundles-products/page.tsx",
+   "line": 53,
+   "icon": "Plus",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/bundles-products/page.tsx",
+   "line": 102,
+   "icon": "Store",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/bundles-products/page.tsx",
+   "line": 115,
+   "icon": "Clock",
+   "size": 11,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/bundles-products/page.tsx",
+   "line": 137,
+   "icon": "Package",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/bundles-products/page.tsx",
+   "line": 208,
+   "icon": "Check",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/bundles-products/page.tsx",
+   "line": 240,
+   "icon": "Clock",
+   "size": 11,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/flatness/page.tsx",
+   "line": 190,
+   "icon": "Star",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/flatness/page.tsx",
+   "line": 204,
+   "icon": "Star",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-browse/page.tsx",
+   "line": 28,
+   "icon": "Star",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-browse/page.tsx",
+   "line": 40,
+   "icon": "Heart",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-browse/page.tsx",
+   "line": 51,
+   "icon": "Star",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-browse/page.tsx",
+   "line": 68,
+   "icon": "ArrowLeft",
+   "size": 21,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-browse/page.tsx",
+   "line": 69,
+   "icon": "Search",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-browse/page.tsx",
+   "line": 74,
+   "icon": "MapIcon",
+   "size": 19,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-browse/page.tsx",
+   "line": 79,
+   "icon": "Loader2",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-browse/page.tsx",
+   "line": 90,
+   "icon": "SlidersHorizontal",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-browse/page.tsx",
+   "line": 92,
+   "icon": "ChevronDown",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-browse/page.tsx",
+   "line": 93,
+   "icon": "ChevronDown",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-browse/page.tsx",
+   "line": 94,
+   "icon": "ChevronDown",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/search-fixes/page.tsx",
+   "line": 16,
+   "icon": "ImageIcon",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-fixes/page.tsx",
+   "line": 17,
+   "icon": "Heart",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-fixes/page.tsx",
+   "line": 33,
+   "icon": "Search",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-fixes/page.tsx",
+   "line": 39,
+   "icon": "Search",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-fixes/page.tsx",
+   "line": 39,
+   "icon": "ArrowUpLeft",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-fixes/page.tsx",
+   "line": 47,
+   "icon": "Store",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-fixes/page.tsx",
+   "line": 50,
+   "icon": "Star",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/search-fixes/page.tsx",
+   "line": 53,
+   "icon": "ArrowRight",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-fixes/page.tsx",
+   "line": 58,
+   "icon": "ChevronRight",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-fixes/page.tsx",
+   "line": 83,
+   "icon": "Clock",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-extras/page.tsx",
+   "line": 36,
+   "icon": "X",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-extras/page.tsx",
+   "line": 39,
+   "icon": "Star",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-extras/page.tsx",
+   "line": 47,
+   "icon": "Clock",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-extras/page.tsx",
+   "line": 67,
+   "icon": "MapPin",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-behavior/page.tsx",
+   "line": 94,
+   "icon": "ArrowLeft",
+   "size": 21,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-behavior/page.tsx",
+   "line": 95,
+   "icon": "Search",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-behavior/page.tsx",
+   "line": 100,
+   "icon": "MapIcon",
+   "size": 19,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-behavior/page.tsx",
+   "line": 108,
+   "icon": "Star",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-behavior/page.tsx",
+   "line": 124,
+   "icon": "ChevronLeft",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-behavior/page.tsx",
+   "line": 139,
+   "icon": "Heart",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-behavior/page.tsx",
+   "line": 145,
+   "icon": "Star",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-behavior/page.tsx",
+   "line": 161,
+   "icon": "Heart",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-behavior/page.tsx",
+   "line": 166,
+   "icon": "Star",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-behavior/page.tsx",
+   "line": 170,
+   "icon": "Clock",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-behavior/page.tsx",
+   "line": 175,
+   "icon": "Icon",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-behavior/page.tsx",
+   "line": 189,
+   "icon": "Star",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/card-ratio/page.tsx",
+   "line": 45,
+   "icon": "Heart",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/card-ratio/page.tsx",
+   "line": 50,
+   "icon": "Star",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/suggest-full/page.tsx",
+   "line": 31,
+   "icon": "ArrowLeft",
+   "size": 19,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/suggest-full/page.tsx",
+   "line": 33,
+   "icon": "Search",
+   "size": 17,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/suggest-full/page.tsx",
+   "line": 44,
+   "icon": "Scissors",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/suggest-full/page.tsx",
+   "line": 59,
+   "icon": "Star",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/suggest-full/page.tsx",
+   "line": 64,
+   "icon": "ChevronRight",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-balance/page.tsx",
+   "line": 22,
+   "icon": "Search",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-balance/page.tsx",
+   "line": 33,
+   "icon": "Search",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-balance/page.tsx",
+   "line": 35,
+   "icon": "ArrowUpLeft",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-balance/page.tsx",
+   "line": 50,
+   "icon": "Store",
+   "size": 22,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dev/search-balance/page.tsx",
+   "line": 55,
+   "icon": "Star",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/search-balance/page.tsx",
+   "line": 56,
+   "icon": "MapPin",
+   "size": 11,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/search-balance/page.tsx",
+   "line": 60,
+   "icon": "ArrowRight",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-balance/page.tsx",
+   "line": 69,
+   "icon": "ImageIcon",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-balance/page.tsx",
+   "line": 84,
+   "icon": "ChevronRight",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-balance/page.tsx",
+   "line": 89,
+   "icon": "ImageIcon",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-balance/page.tsx",
+   "line": 104,
+   "icon": "ChevronRight",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/search-balance/page.tsx",
+   "line": 111,
+   "icon": "ArrowRight",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-balance/page.tsx",
+   "line": 131,
+   "icon": "ChevronLeft",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-balance/page.tsx",
+   "line": 131,
+   "icon": "ChevronRight",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/results-full/page.tsx",
+   "line": 32,
+   "icon": "Heart",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/results-full/page.tsx",
+   "line": 38,
+   "icon": "Star",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/results-full/page.tsx",
+   "line": 63,
+   "icon": "ArrowLeft",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/results-full/page.tsx",
+   "line": 64,
+   "icon": "Search",
+   "size": 17,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/results-full/page.tsx",
+   "line": 66,
+   "icon": "MapIcon",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/results-full/page.tsx",
+   "line": 69,
+   "icon": "SlidersHorizontal",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/results-full/page.tsx",
+   "line": 71,
+   "icon": "ChevronDown",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/results-full/page.tsx",
+   "line": 72,
+   "icon": "ChevronDown",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/results-full/page.tsx",
+   "line": 73,
+   "icon": "ChevronDown",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/category-flow/page.tsx",
+   "line": 52,
+   "icon": "Search",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/category-flow/page.tsx",
+   "line": 61,
+   "icon": "AlertTriangle",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/category-flow/page.tsx",
+   "line": 73,
+   "icon": "Icon",
+   "size": 17,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/category-flow/page.tsx",
+   "line": 80,
+   "icon": "Search",
+   "size": 17,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/category-flow/page.tsx",
+   "line": 88,
+   "icon": "Search",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/category-flow/page.tsx",
+   "line": 99,
+   "icon": "Icon",
+   "size": 22,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dev/category-flow/page.tsx",
+   "line": 101,
+   "icon": "ChevronRight",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-zoom/page.tsx",
+   "line": 66,
+   "icon": "Star",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/map-zoom/page.tsx",
+   "line": 130,
+   "icon": "ZoomIn",
+   "size": 19,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/map-zoom/page.tsx",
+   "line": 132,
+   "icon": "ZoomOut",
+   "size": 19,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/spec-chip/page.tsx",
+   "line": 94,
+   "icon": "Heart",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/spec-chip/page.tsx",
+   "line": 100,
+   "icon": "Star",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/spec-chip/page.tsx",
+   "line": 105,
+   "icon": "ChevronRight",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/spec-chip/page.tsx",
+   "line": 174,
+   "icon": "BadgeCheck",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/spec-chip/page.tsx",
+   "line": 175,
+   "icon": "BadgeCheck",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/pin-label/page.tsx",
+   "line": 22,
+   "icon": "Star",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/pdp/_overhaul/SalonVenuesNearbyOverhaul.tsx",
+   "line": 152,
+   "icon": "ChevronLeft",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/pdp/_overhaul/SalonVenuesNearbyOverhaul.tsx",
+   "line": 161,
+   "icon": "ChevronRight",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/pdp/_overhaul/SalonImageGalleryOverhaul.tsx",
+   "line": 138,
+   "icon": "ArrowLeft",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/pdp/_overhaul/SalonHeaderOverhaul.tsx",
+   "line": 91,
+   "icon": "MapPin",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/pdp/_overhaul/SalonHeaderOverhaul.tsx",
+   "line": 104,
+   "icon": "Share",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/pdp/_overhaul/TeamAllOverhaul.tsx",
+   "line": 40,
+   "icon": "ArrowLeft",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/pdp/_overhaul/TeamAllOverhaul.tsx",
+   "line": 47,
+   "icon": "X",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/pdp/_overhaul/TeamAllOverhaul.tsx",
+   "line": 58,
+   "icon": "Shuffle",
+   "size": 22,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dev/pdp/_overhaul/TeamAllOverhaul.tsx",
+   "line": 113,
+   "icon": "Star",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/pdp/_overhaul/SalonTeamOverhaul.tsx",
+   "line": 100,
+   "icon": "Star",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/pdp/_overhaul/SalonMobileBookBarOverhaul.tsx",
+   "line": 52,
+   "icon": "ChevronRight",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/pdp/_overhaul/SalonHeroOverhaul.tsx",
+   "line": 110,
+   "icon": "Share",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/pdp/_overhaul/reviews/DirectionSegmented.tsx",
+   "line": 52,
+   "icon": "Star",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/pdp/_overhaul/reviews/DirectionSegmented.tsx",
+   "line": 64,
+   "icon": "Star",
+   "size": 11,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/pdp/_overhaul/reviews/FilterBlockDirections.tsx",
+   "line": 84,
+   "icon": "Star",
+   "size": 10,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/pdp/_overhaul/reviews/FilterBlockDirections.tsx",
+   "line": 125,
+   "icon": "Star",
+   "size": 11,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/pdp/_overhaul/reviews/DirectionFeatured.tsx",
+   "line": 65,
+   "icon": "Quote",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/pdp/_overhaul/reviews/ReviewsFullFilterList.tsx",
+   "line": 64,
+   "icon": "Star",
+   "size": 11,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/pdp/_overhaul/reviews/ReviewsFullFilterList.tsx",
+   "line": 82,
+   "icon": "ChevronDown",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/pdp/_overhaul/reviews/RatingDistribution.tsx",
+   "line": 39,
+   "icon": "Star",
+   "size": 11,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/pdp/reviews-full/page.tsx",
+   "line": 63,
+   "icon": "ArrowLeft",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/pdp/reviews-full/page.tsx",
+   "line": 69,
+   "icon": "Star",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/pdp/portfolio/page.tsx",
+   "line": 128,
+   "icon": "ImageIcon",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/flows/page.tsx",
+   "line": 119,
+   "icon": "Icon",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/flows/_components/FlowBar.tsx",
+   "line": 29,
+   "icon": "ArrowLeft",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/flows/_components/FlowBar.tsx",
+   "line": 38,
+   "icon": "RotateCcw",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-morph/page.tsx",
+   "line": 224,
+   "icon": "ArrowLeft",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-morph/page.tsx",
+   "line": 226,
+   "icon": "Search",
+   "size": 19,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-morph/page.tsx",
+   "line": 236,
+   "icon": "X",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-morph/page.tsx",
+   "line": 256,
+   "icon": "Search",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-morph/page.tsx",
+   "line": 268,
+   "icon": "Search",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-morph/page.tsx",
+   "line": 297,
+   "icon": "X",
+   "size": 17,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-morph/page.tsx",
+   "line": 352,
+   "icon": "Search",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-morph/page.tsx",
+   "line": 358,
+   "icon": "X",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-morph/page.tsx",
+   "line": 380,
+   "icon": "ChevronLeft",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-morph/page.tsx",
+   "line": 382,
+   "icon": "ChevronRight",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-morph/page.tsx",
+   "line": 471,
+   "icon": "Icon",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/search-morph/page.tsx",
+   "line": 480,
+   "icon": "X",
+   "size": 17,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/dev/stylist-directions/page.tsx",
+   "line": 68,
+   "icon": "Star",
+   "size": 11,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/stylist-directions/page.tsx",
+   "line": 77,
+   "icon": "Check",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/stylist-directions/page.tsx",
+   "line": 100,
+   "icon": "Users",
+   "size": 26,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dev/stylist-directions/page.tsx",
+   "line": 148,
+   "icon": "Users",
+   "size": 22,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dev/stylist-directions/page.tsx",
+   "line": 206,
+   "icon": "Users",
+   "size": 30,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/dev/stylist-directions/page.tsx",
+   "line": 239,
+   "icon": "Sparkles",
+   "size": 10,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/stylist-directions/page.tsx",
+   "line": 258,
+   "icon": "ChevronLeft",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/dev/stylist-directions/page.tsx",
+   "line": 258,
+   "icon": "ChevronRight",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/coming-soon/page.tsx",
+   "line": 65,
+   "icon": "FeatureIcon",
+   "size": 32,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/coming-soon/page.tsx",
+   "line": 90,
+   "icon": "Bell",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/coming-soon/page.tsx",
+   "line": 96,
+   "icon": "Sparkles",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/coming-soon/page.tsx",
+   "line": 105,
+   "icon": "ArrowLeft",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/walk-in-pay/page.tsx",
+   "line": 362,
+   "icon": "ArrowLeft",
+   "size": 22,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/walk-in-pay/page.tsx",
+   "line": 376,
+   "icon": "Check",
+   "size": 24,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/walk-in-pay/page.tsx",
+   "line": 392,
+   "icon": "AlertTriangle",
+   "size": 26,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/walk-in-pay/page.tsx",
+   "line": 409,
+   "icon": "AlertTriangle",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/walk-in-pay/page.tsx",
+   "line": 437,
+   "icon": "Star",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/walk-in-pay/page.tsx",
+   "line": 457,
+   "icon": "MapPin",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/walk-in-pay/page.tsx",
+   "line": 482,
+   "icon": "Star",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/walk-in-pay/page.tsx",
+   "line": 499,
+   "icon": "Scissors",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/walk-in-pay/page.tsx",
+   "line": 506,
+   "icon": "Info",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/walk-in-pay/page.tsx",
+   "line": 520,
+   "icon": "Clock",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/walk-in-pay/page.tsx",
+   "line": 588,
+   "icon": "ArrowRight",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/walk-in-pay/page.tsx",
+   "line": 591,
+   "icon": "Lock",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/notifications/NotificationsClient.tsx",
+   "line": 120,
+   "icon": "Icon",
+   "size": 19,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/onboarding/beautyFields.tsx",
+   "line": 89,
+   "icon": "Star",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/onboarding/beautyFields.tsx",
+   "line": 90,
+   "icon": "Zap",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/onboarding/beautyFields.tsx",
+   "line": 91,
+   "icon": "Heart",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/onboarding/beautyFields.tsx",
+   "line": 92,
+   "icon": "Droplet",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/onboarding/OnboardingFlow.tsx",
+   "line": 161,
+   "icon": "ArrowLeft",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/onboarding/OnboardingFlow.tsx",
+   "line": 205,
+   "icon": "Check",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/onboarding/OnboardingFlow.tsx",
+   "line": 225,
+   "icon": "Check",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/onboarding/salon/page.tsx",
+   "line": 242,
+   "icon": "Loader2",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/onboarding/salon/page.tsx",
+   "line": 248,
+   "icon": "Sparkles",
+   "size": 10,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/onboarding/salon/page.tsx",
+   "line": 288,
+   "icon": "Sparkles",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/onboarding/salon/page.tsx",
+   "line": 332,
+   "icon": "Camera",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/onboarding/salon/page.tsx",
+   "line": 597,
+   "icon": "PartyPopper",
+   "size": 34,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/onboarding/salon/page.tsx",
+   "line": 699,
+   "icon": "AlertCircle",
+   "size": 15,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/onboarding/salon/page.tsx",
+   "line": 714,
+   "icon": "ArrowLeft",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/onboarding/salon/page.tsx",
+   "line": 724,
+   "icon": "ChevronRight",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/help/page.tsx",
+   "line": 61,
+   "icon": "BookOpen",
+   "size": 28,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/help/page.tsx",
+   "line": 72,
+   "icon": "Search",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/help/page.tsx",
+   "line": 109,
+   "icon": "Icon",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/help/page.tsx",
+   "line": 168,
+   "icon": "ChevronRight",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/fuer-salons/page.tsx",
+   "line": 230,
+   "icon": "ArrowRight",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "app/[locale]/fuer-salons/page.tsx",
+   "line": 260,
+   "icon": "Star",
+   "size": 12,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/fuer-salons/page.tsx",
+   "line": 310,
+   "icon": "ArrowRight",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/reviews/page.tsx",
+   "line": 101,
+   "icon": "MessageSquare",
+   "size": 22,
+   "role": "nav",
+   "target": 24
+  },
+  {
+   "file": "app/[locale]/reviews/_components/MarketplaceReviewsList.tsx",
+   "line": 82,
+   "icon": "Store",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "app/[locale]/reviews/_components/MarketplaceReviewsList.tsx",
+   "line": 84,
+   "icon": "ChevronRight",
+   "size": 13,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "components/WeatherBanner.tsx",
+   "line": 99,
+   "icon": "Icon",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "components/WeatherBanner.tsx",
+   "line": 114,
+   "icon": "X",
+   "size": 14,
+   "role": "meta",
+   "target": 16
+  },
+  {
+   "file": "components/ui/animated-testimonials.tsx",
+   "line": 252,
+   "icon": "ChevronLeft",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "components/ui/animated-testimonials.tsx",
+   "line": 260,
+   "icon": "ChevronRight",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "components/ui/animated-testimonials.tsx",
+   "line": 297,
+   "icon": "X",
+   "size": 18,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "components/ui/animated-testimonials.tsx",
+   "line": 435,
+   "icon": "ArrowRight",
+   "size": 16,
+   "role": "row",
+   "target": 20
+  },
+  {
+   "file": "components/core/morphing-dialog.tsx",
+   "line": 400,
+   "icon": "XIcon",
+   "size": 20,
+   "role": "row",
+   "target": 20
+  }
+ ]
+}

@@ -183,7 +183,7 @@ export function SalonCardOverhaul({
           />
         ) : (
           <span
-            className="absolute inset-0 grid place-items-center font-display font-black leading-none text-[64px] tracking-[-0.03em] md:text-[80px]"
+            className="absolute inset-0 grid place-items-center font-display font-bold leading-none text-[64px] tracking-[-0.03em] md:text-[80px]"
             style={{ color: cat.initial }}
             aria-hidden
           >
@@ -210,7 +210,7 @@ export function SalonCardOverhaul({
           </CardMeta>
         </div>
 
-        <div className="font-body text-[12px] font-normal leading-[1.35] text-s-ink-3 truncate">
+        <div className="font-body text-[12px] font-normal leading-[1.35] text-s-ink-2 truncate">
           {CATEGORY_LABEL[category]}
         </div>
 

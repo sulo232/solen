@@ -9,6 +9,7 @@ import { getStripe } from "@/lib/stripe";
 import { calculateNoShowFee } from "@/lib/cancellation-policy";
 import { notifyNoShowFee } from "@/lib/bookings/notify-no-show-fee";
 import type { Database } from "@/lib/database.types";
+import { constantTimeStringEqual } from "@/lib/cron-auth";
 
 // PATCH /api/walkin/queue/[id] — Salon owner/staff: update queue entry status
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -192,7 +193,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       serviceName,
       salonName: salonRow?.name ?? "Salon",
       feeCents: noShowFeeCaptured,
-      dateStr: new Date().toLocaleDateString("de-CH"),
+      date: new Date(),
       logPrefix: "walkin/queue",
     }).catch((err) => console.error("[walkin/queue PATCH] no-show fee notification failed:", err));
   }
@@ -219,7 +220,9 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     .eq("id", id).single();
 
   if (!entry) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  if (entry.tracking_token !== token) return NextResponse.json({ error: "Invalid token" }, { status: 403 });
+  if (!entry.tracking_token || !(await constantTimeStringEqual(entry.tracking_token, token))) {
+    return NextResponse.json({ error: "Invalid token" }, { status: 403 });
+  }
   if (entry.status !== "waiting") return NextResponse.json({ error: "Cannot cancel — already in progress" }, { status: 400 });
 
   // Atomic compare-and-swap: gate the update on status still being "waiting" so two concurrent

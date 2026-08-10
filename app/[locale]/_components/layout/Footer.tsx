@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { Instagram, Facebook, ChevronRight, Check } from "lucide-react";
 import { useState } from "react";
+import LanguageSwitcher from "@/components-legacy/ui/LanguageSwitcher";
+import { useTranslations } from "next-intl";
 
 /**
  * V3 Footer — variant C "nav hub" (2026-06-05, owner pick).
@@ -20,49 +22,55 @@ import { useState } from "react";
  *   /ueber-uns /karriere /presse /blog · /fuer-salons /business /partner ·
  *   /help /sicherheit /kontakt · /privacy /terms /impressum · /{locale} homes.
  */
-const COLUMNS: Array<{ heading: string; items: Array<{ label: string; href: string }> }> = [
+// COLUMNS now carries KEYS, not German strings (2026-07-27). It sits at module scope, outside
+// any component, so a hook cannot reach it , the labels are resolved at the render site
+// instead. Owner spotted the consequence: the footer was German on /en too, not just on the
+// locales I had been checking. Every key below already existed or was added in the same pass;
+// none of the copy is new invention.
+const COLUMNS = [
   {
-    heading: "Solen",
+    headingKey: "company",
     items: [
-      { label: "Über uns", href: "/ueber-uns" },
-      { label: "Karriere", href: "/karriere" },
-      { label: "Presse", href: "/presse" },
-      { label: "Blog", href: "/blog" },
+      { labelKey: "aboutUs", href: "/ueber-uns" },
+      { labelKey: "careers", href: "/karriere" },
+      { labelKey: "press", href: "/presse" },
+      { labelKey: "blog", href: "/blog" },
     ],
   },
   {
-    heading: "Für Salons",
+    headingKey: "forSalonsTitle",
     items: [
       // "Partner werden" duplicate row removed 2026-06-11: it pointed at the same
       // /partner route as "Für Salons" (li key={item.href} -> React dup-key error).
-      { label: "Für Salons", href: "/partner" },
-      { label: "Salon-Hilfe", href: "/help" },
+      { labelKey: "forSalons", href: "/partner" },
+      { labelKey: "salonHelp", href: "/help" },
     ],
   },
   {
-    heading: "Hilfe",
+    headingKey: "help",
     items: [
-      { label: "Kund:innen-Hilfe", href: "/help" },
-      { label: "Sicherheit", href: "/sicherheit" },
-      { label: "Kontakt", href: "/kontakt" },
+      { labelKey: "customerHelp", href: "/help" },
+      { labelKey: "safety", href: "/sicherheit" },
+      { labelKey: "contact", href: "/kontakt" },
     ],
   },
   {
-    heading: "Rechtliches",
+    headingKey: "legalTitle",
     items: [
-      { label: "Datenschutz", href: "/privacy" },
-      { label: "AGB", href: "/terms" },
-      { label: "Impressum", href: "/impressum" },
+      { labelKey: "privacy", href: "/privacy" },
+      { labelKey: "agb", href: "/terms" },
+      { labelKey: "impressum", href: "/impressum" },
     ],
   },
-];
-
-const LOCALES = [
-  { code: "de", label: "DE" },
-  { code: "en", label: "EN" },
-  { code: "fr", label: "FR" },
-  { code: "it", label: "IT" },
-];
+  // `as const` is load-bearing: next-intl types t() to the LITERAL union of keys in the
+  // namespace, so a widened `string` fails to compile. That is the type system doing exactly
+  // what it should , a typo in a key is a build error rather than a raw dotted path rendered
+  // to a customer, which is what the old hardcoded German strings could never catch.
+] as const;
+// LOCALES removed 2026-07-27: the footer's four locale <Link>s were replaced by the shared
+// LanguageSwitcher, which owns the locale list (LOCALE_LABELS in components-legacy/ui/
+// LanguageSwitcher.tsx). Two copies of the list was how the footer could drift from the
+// switcher in the first place.
 
 /** Inline Swiss flag — red rounded square + white cross. Intentional real color
  *  (a national flag is factual, like the rating star keeping its yellow). */
@@ -82,19 +90,24 @@ function SwissFlag() {
 }
 
 export default function Footer({ locale }: { locale: string }) {
+  const tFooter = useTranslations("footer");
   const p = `/${locale}`;
 
   return (
-    <footer className="relative z-[1] bg-white/45 backdrop-blur-[22px] backdrop-saturate-[1.6]">
+    // FIX A (2026-08-01, owner "weird divider thingy at the bottom", measured: the 45% white
+    // blur wrapper over an already-white page washed the newsletter-strip/body seam into a milky
+    // grey band. FLOORS LAW 4 wants exactly ONE boundary treatment; the strip below now carries
+    // ONLY its sunken bg (no border-b), so the sunken-tray/white-body handoff is the single edge.
+    <footer className="relative z-[1] bg-white"> {/* mockup-ok: owner-measured fix, literal instruction, tokens only */}
       {/* ───────────── Newsletter band ───────────── */}
-      <div className="border-b border-s-border bg-s-bg-sunken">
+      <div className="bg-s-bg-sunken"> {/* mockup-ok: drop redundant border-b, sunken bg is the ONE boundary */}
         <div className="mx-auto flex max-w-[1280px] flex-col gap-4 px-5 py-7 md:flex-row md:items-center md:justify-between md:px-8">
           <div>
             <h3 className="font-display text-[17px] font-semibold tracking-tight text-s-ink">
-              Bleib auf dem Laufenden
+              {tFooter("newsletterTitle")}
             </h3>
             <p className="mt-0.5 font-body text-[13px] text-s-ink-2">
-              Neue Salons, Trends und Tipps. Einmal im Monat.
+              {tFooter("newsletterSub")}
             </p>
           </div>
           <NewsletterForm />
@@ -109,12 +122,12 @@ export default function Footer({ locale }: { locale: string }) {
             <Link
               href={p}
               aria-label="Solen Startseite"
-              className="font-display inline-flex items-baseline text-[22px] font-black leading-none tracking-normal text-s-ink"
+              className="font-display inline-flex items-baseline text-[22px] font-bold leading-none tracking-normal text-s-ink"
             >
               Solen
             </Link>
             <p className="mt-3 max-w-[280px] font-body text-[13px] leading-relaxed text-s-ink-2">
-              Beauty &amp; Wellness Booking für die ganze Schweiz.
+              {tFooter("tagline")}
             </p>
             <div className="mt-5 flex gap-2">
               {[
@@ -131,7 +144,7 @@ export default function Footer({ locale }: { locale: string }) {
                   // (owner-approved law, TASTE_LOG.md:187 2026-07-15). Was rounded-[10px]
                   // (off-ladder), not nested (flex row, no padding parent), a 2px change on a
                   // 36px button is a trivially-snappable notation fix.
-                  className="grid h-9 w-9 place-items-center rounded-xl bg-s-bg-sunken text-s-ink-3 transition-[colors,transform] duration-150 ease-glide hover:bg-s-ink hover:text-white active:scale-[0.94] active:duration-[80ms]"
+                  className="grid h-9 w-9 place-items-center rounded-xl bg-s-bg-sunken text-s-ink-2 transition-[colors,transform] duration-150 ease-glide hover:bg-s-ink hover:text-white active:scale-[0.94] active:duration-[80ms]"
                 >
                   <Icon size={16} aria-hidden />
                 </a>
@@ -141,8 +154,8 @@ export default function Footer({ locale }: { locale: string }) {
 
           {/* Link sections */}
           {COLUMNS.map((col) => (
-            <div key={col.heading}>
-              <h4 className="mb-4 font-body text-[14px] font-bold text-s-ink">{col.heading}</h4>
+            <div key={col.headingKey}>
+              <h4 className="mb-4 font-body text-[14px] font-bold text-s-ink">{tFooter(col.headingKey)}</h4>
               <ul className="flex flex-col gap-3">
                 {col.items.map((item) => (
                   <li key={item.href}>
@@ -150,7 +163,7 @@ export default function Footer({ locale }: { locale: string }) {
                       href={`${p}${item.href}`}
                       className="font-body text-[13px] text-s-ink-2 transition-colors duration-150 hover:text-s-ink"
                     >
-                      {item.label}
+                      {tFooter(item.labelKey)}
                     </Link>
                   </li>
                 ))}
@@ -160,21 +173,18 @@ export default function Footer({ locale }: { locale: string }) {
         </div>
 
         {/* ───────────── Legal bar + language row ───────────── */}
-        <div className="mx-auto mt-12 flex max-w-[1280px] flex-col gap-3 border-t border-s-border pt-6 font-body text-[12px] font-bold text-s-ink-3 md:flex-row md:items-center md:justify-between md:gap-8">
+        <div className="mx-auto mt-12 flex max-w-[1280px] flex-col gap-3 border-t border-s-border pt-6 font-body text-[12px] font-bold text-s-ink-2 md:flex-row md:items-center md:justify-between md:gap-8">
           <span className="inline-flex items-center gap-1.5">
             © {new Date().getFullYear()} Solen.ch Schweiz <SwissFlag />
           </span>
+          {/* Was a row of <Link href={`/${code}`}>: it discarded the current path and dumped
+              the visitor on that locale's HOMEPAGE, and it never set the NEXT_LOCALE cookie,
+              so the choice did not survive the next navigation. Two of the three reasons
+              "changing lang doesnt rlly work" (owner, 2026-07-27). Same LanguageSwitcher the
+              mobile menu uses: it swaps the locale SEGMENT of the current pathname and writes
+              the cookie, so you stay on the page you were reading. */}
           <div className="flex flex-wrap gap-x-6 gap-y-2">
-            {LOCALES.map((l) => (
-              <Link
-                key={l.code}
-                href={`/${l.code}`}
-                aria-current={l.code === locale ? "true" : undefined}
-                className={l.code === locale ? "text-s-ink" : "transition-colors hover:text-s-ink"}
-              >
-                {l.label}
-              </Link>
-            ))}
+            <LanguageSwitcher locale={locale} />
           </div>
         </div>
       </div>
@@ -235,7 +245,7 @@ function NewsletterForm() {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         placeholder="deine@email.ch"
-        className="w-full py-[12px] pl-[14px] !pr-[48px] font-body text-[14px] text-s-ink outline-none transition-colors placeholder:text-s-ink-3" // mockup-ok: !important carve-out, base input rule (globals.css, V3-D-input-fill-2026-07-17) out-specifies plain pr-[48px] and collapses right padding to 16px, letting typed text run under the absolute submit button
+        className="w-full py-[12px] pl-[14px] !pr-[48px] font-body text-[14px] text-s-ink outline-none transition-colors placeholder:text-s-ink-2" // mockup-ok: !important carve-out, base input rule (globals.css, V3-D-input-fill-2026-07-17) out-specifies plain pr-[48px] and collapses right padding to 16px, letting typed text run under the absolute submit button
       />
       {/* mockup-ok: DS-4 nested-radius formula (LOCKFILE:428-431, locked law). This
           button sits inset right-6/top-6 inside the input (rounded-[12px]); inner =

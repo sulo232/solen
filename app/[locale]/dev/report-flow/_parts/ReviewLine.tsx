@@ -14,7 +14,7 @@ import type { ReportedReview } from "./types";
 export function ReviewLine({ review }: { review: ReportedReview }) {
   return (
     <div className="flex items-center gap-2.5 rounded-[12px] bg-s-bg-sunken px-3 py-2.5">
-      <Flag size={14} strokeWidth={2} className="shrink-0 text-s-ink-3" aria-hidden />
+      <Flag size={14} strokeWidth={2} className="shrink-0 text-s-ink-2" aria-hidden />
       <p className="min-w-0 truncate text-[14px] text-s-ink-2">
         Reporting a review by <span className="font-semibold text-s-ink">{review.authorName}</span>
       </p>

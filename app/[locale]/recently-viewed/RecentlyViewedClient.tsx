@@ -67,7 +67,7 @@ export default function RecentlyViewedClient() {
         <div className="mx-auto flex max-w-2xl flex-col px-4 py-3.5">
           <h1 className="truncate font-heading text-[20px] font-bold tracking-[-0.01em] text-s-ink">{t("title")}</h1>
           {!loading && list.length > 0 && (
-            <p className="text-[13px] text-s-ink-3">{t("count", { count: list.length })}</p>
+            <p className="text-[13px] text-s-ink-2">{t("count", { count: list.length })}</p>
           )}
         </div>
       </header>
@@ -78,7 +78,7 @@ export default function RecentlyViewedClient() {
         ) : list.length === 0 ? (
           // Empty state — sunken clock disc + ink CTA (mockup)
           <div className="flex flex-col items-center px-8 pb-14 pt-16 text-center">
-            <div className="mb-6 grid h-16 w-16 place-items-center rounded-full bg-s-bg-sunken text-s-ink-3">
+            <div className="mb-6 grid h-16 w-16 place-items-center rounded-full bg-s-bg-sunken text-s-ink-2">
               <Clock size={30} strokeWidth={1.8} aria-hidden />
             </div>
             <h2 className="font-heading text-[22px] font-bold tracking-[-0.02em] text-s-ink">{t("emptyTitle")}</h2>

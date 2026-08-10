@@ -115,6 +115,9 @@ export async function POST(req: NextRequest) {
                      <p><a href="${link}">Buchung öffnen</a></p>
                      <p>Dieser Link ist 30 Tage gültig. Teilen Sie ihn nicht.</p>`,
             }),
+            // api-contracts-06: an unbounded fetch can hold the serverless
+            // function's whole wall-clock budget hostage on a hung third party.
+            signal: AbortSignal.timeout(8000),
           });
         } catch (e) {
           // Log without the token. Still return the opaque 200.

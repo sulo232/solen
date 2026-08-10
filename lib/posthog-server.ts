@@ -142,6 +142,37 @@ export async function identifyServerUser(
 }
 
 /**
+ * observability-5: report an unexpected server exception to PostHog error tracking
+ * (posthog-node's captureException), so the same recurring bug groups into one
+ * PostHog issue with an occurrence count instead of N disconnected console.error
+ * lines that age out of Netlify's log retention window within days. Called from
+ * the ONE central reportError chokepoint (lib/error-report.ts), so every cron,
+ * webhook rejection, and route catch that already calls reportError gets this
+ * for free with no per-call-site change.
+ *
+ * NOT gated on hasAnalyticsConsent: distinctId is the fixed literal "system"
+ * (never a real end user), so this is operational/system telemetry, not personal
+ * analytics tied to a data subject. `scope` becomes the PostHog event name so
+ * occurrences of the SAME failing call site group into one issue; the caller's
+ * context object is whatever reportError/alertAdmin already send (ids, not raw
+ * PII, per the no-pii-in-logs convention).
+ */
+export function captureServerException(
+  scope: string,
+  error: unknown,
+  properties?: Record<string, unknown>,
+): void {
+  try {
+    const client = getPostHogClient();
+    if (!client) return;
+    client.captureException(error, "system", { scope, ...(properties ?? {}) });
+  } catch (captureErr) {
+    // Never let error REPORTING itself throw and mask the original error.
+    console.error("[posthog-server] captureServerException failed:", captureErr);
+  }
+}
+
+/**
  * Flush any pending events (useful before a lambda exits).
  */
 export async function flushPostHog() {

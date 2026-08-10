@@ -67,13 +67,13 @@ export function TargetPreview({ target, className }: { target: TargetContent; cl
             <Avatar name={target.userDisplayName ?? "?"} size="xs" />
             <p className="truncate text-[14px] font-semibold text-s-ink">{target.userDisplayName}</p>
           </div>
-          <p className={cn("mt-3 text-[14px] leading-relaxed", target.userBio ? "text-s-ink" : "text-s-ink-3")}>
+          <p className={cn("mt-3 text-[14px] leading-relaxed", target.userBio ? "text-s-ink" : "text-s-ink-2")}>
             {target.userBio || "No bio."}
           </p>
         </>
       )}
 
-      <p className="mt-3 font-mono-code text-[12px] text-s-ink-3">{target.refCode}</p>
+      <p className="mt-3 font-mono-code text-[12px] text-s-ink-2">{target.refCode}</p>
     </div>
   );
 }

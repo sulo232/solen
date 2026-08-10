@@ -44,6 +44,10 @@ export interface SalonResultCardProps {
   city?: string | null;
   distanceMeters?: number | null;
   priceFromCHF?: number | null;
+  /** Name of the service priceFromCHF belongs to. Art. 13 PBV: an advertised from-price is
+   *  lawful only when the copy names the concrete offer it buys (SECO Wegleitung 2025 p.17).
+   *  Absent -> the bare price renders with no "from" word, which claims less, not more. */
+  priceFromService?: string | null;
   /** V3-D372: review count shown as "(124)" beside the rating - Fresha's category
    *  list shows "N reviews"; Solen keeps it grey/recessive (A13: name stays the one
    *  ink anchor). Hidden when 0/absent. */
@@ -111,6 +115,11 @@ export interface SalonResultCardProps {
    *  main tappable area FOCUSES the salon (calls onSelect(salonId)) instead of navigating
    *  to the PDP. Heart + everything else stays identical. Absent -> unchanged Link behavior. */
   onSelect?: (id: string) => void;
+  /** performance-05: opts this card's photo into next/image's `priority`. Set true
+   *  ONLY on the first card of the first above-the-fold results grid/list (index 0),
+   *  never on every card, or every card competes for preload bandwidth. Defaults to
+   *  false/absent so every existing caller keeps today's lazy-load behavior. */
+  priority?: boolean;
 }
 
 // Exported (V3-D453) so MapSalonDetail.tsx reuses the same category slug->label
@@ -149,21 +158,32 @@ function formatDistance(m?: number | null): string | null {
   return m < 1000 ? `${Math.round(m)} m` : `${(m / 1000).toFixed(1)} km`;
 }
 
-// V3-D376 (2026-05-30): "Std." German hours unit for the featured-service row.
-function formatDuration(mins?: number | null): string | null {
+// V3-D376 (2026-05-30): hours/minutes unit for the featured-service row.
+// copy-i18n-04 (2026-07-27): was hardcoded German ("Std."/"Min.") for every locale;
+// the h===1 ternary was dead code (both branches produced the same string), the real
+// bug was the missing locale switch, same pattern as WALKIN_LABEL above.
+export const DURATION_UNIT: Record<string, { h: string; m: string }> = {
+  de: { h: "Std.", m: "Min." },
+  en: { h: "h", m: "min" },
+  fr: { h: "h", m: "min" },
+  it: { h: "h", m: "min" },
+};
+
+function formatDuration(mins?: number | null, locale: string = "de"): string | null {
   if (!mins || mins <= 0) return null;
-  if (mins < 60) return `${mins} Min.`;
+  const u = DURATION_UNIT[locale] ?? DURATION_UNIT.de;
+  if (mins < 60) return `${mins} ${u.m}`;
   const h = Math.floor(mins / 60);
   const m = mins % 60;
-  const hPart = h === 1 ? "1 Std." : `${h} Std.`;
-  return m === 0 ? hPart : `${hPart} ${m} Min.`;
+  const hPart = `${h} ${u.h}`;
+  return m === 0 ? hPart : `${hPart} ${m} ${u.m}`;
 }
 
 // ISO slot timestamp → "14:30" in the locale's CH formatting.
 function formatSlotTime(iso: string, locale: string): string {
   try {
     return new Date(iso).toLocaleTimeString(
-      locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : locale === "en" ? "en-GB" : "de-CH",
+      locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : locale === "en" ? "en-CH" : "de-CH",
       { hour: "2-digit", minute: "2-digit" },
     );
   } catch {
@@ -192,11 +212,12 @@ export const REVIEWS_LABEL: Record<string, string> = {
 function SalonResultCardInner(props: SalonResultCardProps) {
   const {
     slug, name, locale, rating, reviewCount, photoUrl, category,
-    city, address, distanceMeters, priceFromCHF, isSaved, salonId,
+    city, address, distanceMeters, priceFromCHF, priceFromService, isSaved, salonId,
     nextSlot, services, variant = "grid", matchQuery,
     galleryCount, hasServiceQuery, matchChip,
     walkInWaitMin, walkInQueue,
     onSelect, date,
+    priority,
   } = props;
 
   // GAP #5: carry the searched date onto the PDP link (dropped silently if malformed).
@@ -235,13 +256,14 @@ function SalonResultCardInner(props: SalonResultCardProps) {
             : "(max-width: 640px) 50vw, 200px" // copy-ok
       }
       className="object-cover"
+      priority={priority}
     />
   ) : (
     <span
       className={
         variant === "list"
-          ? "absolute inset-0 grid place-items-center font-display font-black leading-none text-[40px] tracking-[-0.03em] text-s-ink-3"
-          : "absolute inset-0 grid place-items-center font-display font-black leading-none text-[64px] tracking-[-0.03em] text-s-ink-3 md:text-[80px]"
+          ? "absolute inset-0 grid place-items-center font-display font-bold leading-none text-[40px] tracking-[-0.03em] text-s-ink-2"
+          : "absolute inset-0 grid place-items-center font-display font-bold leading-none text-[64px] tracking-[-0.03em] text-s-ink-2 md:text-[80px]"
       }
       aria-hidden
     >
@@ -266,7 +288,7 @@ function SalonResultCardInner(props: SalonResultCardProps) {
           {photoUrl ? (
             <Image src={photoUrl} alt={`Foto von ${name}`} fill sizes="70px" className="object-cover" />
           ) : (
-            <span className="grid h-full w-full place-items-center text-s-ink-3" aria-hidden>
+            <span className="grid h-full w-full place-items-center text-s-ink-2" aria-hidden>
               <Store size={22} strokeWidth={1.5} />
             </span>
           )}
@@ -293,7 +315,7 @@ function SalonResultCardInner(props: SalonResultCardProps) {
           </CardMeta>
           {priceFromCHF != null && (
             <CardMeta as="div" className="mt-1 text-[13px] leading-[1.35]">
-              <PriceFrom amount={priceFromCHF} label={fromLabel} emphasis />
+              <PriceFrom amount={priceFromCHF} label={priceFromService ? `${priceFromService} ${fromLabel}` : undefined} emphasis />
             </CardMeta>
           )}
         </div>
@@ -338,7 +360,7 @@ function SalonResultCardInner(props: SalonResultCardProps) {
             )}
             {priceFromCHF != null && (
               <CardMeta as="div" className="mt-0.5 text-[12.5px] leading-[1.35]">
-                <PriceFrom amount={priceFromCHF} label={fromLabel} emphasis />
+                <PriceFrom amount={priceFromCHF} label={priceFromService ? `${priceFromService} ${fromLabel}` : undefined} emphasis />
               </CardMeta>
             )}
             {nextSlot && (
@@ -410,7 +432,7 @@ function SalonResultCardInner(props: SalonResultCardProps) {
                 {priceFromCHF != null && (
                   <>
                     {metaBits ? " " : ""}
-                    <PriceFrom amount={priceFromCHF} label={fromLabel} emphasis />
+                    <PriceFrom amount={priceFromCHF} label={priceFromService ? `${priceFromService} ${fromLabel}` : undefined} emphasis />
                   </>
                 )}
               </CardMeta>
@@ -428,7 +450,7 @@ function SalonResultCardInner(props: SalonResultCardProps) {
                 </CardMeta>
                 {priceFromCHF != null && (
                   <CardMeta as="div" className="shrink-0 text-[13px] leading-[1.4]">
-                    <PriceFrom amount={priceFromCHF} label={fromLabel} emphasis />
+                    <PriceFrom amount={priceFromCHF} label={priceFromService ? `${priceFromService} ${fromLabel}` : undefined} emphasis />
                   </CardMeta>
                 )}
               </div>
@@ -531,12 +553,12 @@ function SalonResultCardInner(props: SalonResultCardProps) {
                 <div className="mt-2.5 space-y-1.5">
                   {rows.map((s) => {
                     const svcName = (locale === "en" && s.name_en ? s.name_en : s.name_de) ?? "";
-                    const dur = formatDuration(s.duration_minutes);
+                    const dur = formatDuration(s.duration_minutes, locale);
                     return (
                       <div key={s.id} className="flex items-center justify-between gap-3 rounded-xl bg-s-bg-sunken px-3.5 py-2.5 text-[13.5px]">
                         <span className="min-w-0">
                           <span className="block truncate text-s-ink">{svcName}</span>
-                          {dur && <span className="text-[12px] text-s-ink-3">{dur}</span>}
+                          {dur && <span className="text-[12px] text-s-ink-2">{dur}</span>}
                         </span>
                         <span className="shrink-0 font-semibold tabular-nums text-s-ink">{s.price} CHF</span>
                       </div>
@@ -568,7 +590,7 @@ function SalonResultCardInner(props: SalonResultCardProps) {
               )}
               {priceFromCHF != null && (
                 <CardMeta as="span" className="text-[13.5px] font-semibold text-s-ink">
-                  <PriceFrom amount={priceFromCHF} label={fromLabel} emphasis />
+                  <PriceFrom amount={priceFromCHF} label={priceFromService ? `${priceFromService} ${fromLabel}` : undefined} emphasis />
                 </CardMeta>
               )}
             </div>
@@ -640,8 +662,8 @@ function SalonResultCardInner(props: SalonResultCardProps) {
         </div>
 
         {/* Row 2 — grey meta line: category · city · distance.
-            NOTE (V3-D352): the homepage Row 2 uses s-ink-3, but in this B&W config
-            s-ink-2 === s-ink-3 (both the same grey), so CardMeta's baked s-ink-2 already
+            NOTE (V3-D352): the homepage Row 2 uses s-ink-2, but in this B&W config
+            s-ink-2 === s-ink-2 (both the same grey), so CardMeta's baked s-ink-2 already
             matches the homepage exactly - no override / raw div needed. */}
         {metaBits && (
           <CardMeta as="div" className="mt-0.5 truncate text-[12px] leading-[1.35]">
@@ -654,7 +676,7 @@ function SalonResultCardInner(props: SalonResultCardProps) {
           <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1">
             {priceFromCHF != null && (
               <CardMeta as="span" className="text-[12px] leading-[1.35]">
-                <PriceFrom amount={priceFromCHF} label={fromLabel} emphasis />
+                <PriceFrom amount={priceFromCHF} label={priceFromService ? `${priceFromService} ${fromLabel}` : undefined} emphasis />
               </CardMeta>
             )}
             {nextSlot && (

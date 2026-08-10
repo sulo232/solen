@@ -449,6 +449,35 @@ commits, so the next pass cannot re-litigate or revert them by following stale l
 Standing rule extracted: **a walk-in number states what the salon COMMITS to, not what it fears.** Floor over
 range, per-service over lumped, and never a number the queue data cannot actually support.
 
+## 2026-07-26 , SalonCard imagery: the A3 photo lock is superseded by FLOORS LAW 2 (owner: "the mock up is approved that you made")
+
+Two of the owner's own decisions contradicted each other on the exact same slot and nobody had
+reconciled them: `components-legacy/SalonCard.tsx:152`'s **A3 LOCKED 2026-05-03** ("photos killed
+pre-launch, solid category color + Anton name only") versus **FLOORS LAW 2** (2026-07-21, roughly
+>= 1/3 photographic area on every browse viewport, imagery = the largest element of every
+SalonCard). Line 94 of the same file was already building `allPhotos` from `cover_photo_url` +
+`gallery_urls` + a `photos` prop and then deliberately not using it, which is what made the
+contradiction visible rather than theoretical.
+
+Shown as a before/after mockup on the real `/de/basel` city page (structure untouched, only the
+cover slot's treatment changed):
+`_design-system/captures/principles/saloncard-before-after/index.html` (mirrored from the
+solen-mobile repo where it was authored). Approved verbatim: **"the mock up is approved that you
+made."**
+
+| Decision | Shipped as | Why |
+|---|---|---|
+| Photos ON for the default-variant card cover (the 5:4 slot on browse/discovery grids) | `SalonCard.tsx`: `allPhotos[photoIndex]` renders via `next/image` (`BLUR_PLACEHOLDER`, existing carousel dots/arrows kept) | FLOORS LAW 2 is dated after the A3 lock and was owner-approved on the exact surface it conflicts with; the later, more specific decision wins per the CLAUDE.md precedence chain. |
+| No-photo fallback = **sunken bg + category icon + initial**, not the old 47px Anton placeholder | `SalonCard.tsx` default variant: `bg-s-bg-sunken` + a Lucide category icon (Scissors/Gem/Sparkles by category) + the salon name's first letter at 15px | This is the fallback the LOCKFILE imagery row already specifies ("NEVER a bare grey box, fallback = sunken + category icon + initial"); the old block-plus-47px-name treatment was not closer to that spec, and the 47px placeholder was also the FLATNESS-diagnosis-flagged largest element on the whole screen. Currently unverified live: none of the 20 seeded Basel salons has a null `cover_photo_url` in this dev DB, so the branch is proven by tsc + code review, not a live screenshot. |
+| Compact variant (dashboard settings preview, not a customer surface) is **unchanged** | `SalonCard.tsx` compact variant keeps `ImageFallback` + the solid-color cover | Out of scope for this pass: not rendered on any customer browse surface, and `ImageFallback.tsx` is shared with `RecentlyViewed.tsx` (a different, untouched surface), so editing the shared component would ripple beyond the two surfaces this pass covers. |
+| Card name (both variants), category filter pills, and the city eyebrow lose the all-caps transform | `SalonCard.tsx` h3/p, `CityPage.tsx` pill `Link`s and eyebrow `span`: `uppercase` (+ compensating `tracking-[...]`) removed; eyebrow font-bold to font-semibold, pills gain explicit font-semibold to hold legibility without caps | No-caps gate (project CLAUDE.md taste rule #10); sizes kept on the existing LOCKFILE ramp (14/12) rather than inventing a new value. |
+| Distinct font sizes on the rendered `/de/basel` first viewport: 6 to 4 | Removing the 47px placeholder (subsumed by the photo/fallback change) was sufficient; 25 (h1) / 15 (name) / 14 (body: subtitle, pills, meta, price, rating) / 12 (eyebrow, rating count, "Neu" badge) already sit on the LOCKFILE ramp | The pre-fix "13px" the orchestrator's own baseline measurement implied needed merging with 14 turned out to be the cookie-consent banner's paragraph text (`text-[13px] md:text-[14px]`), a separate shared component outside this pass's scope, not a SalonCard/CityPage size. Confirmed by toggling the banner and re-measuring: content-only sizes were already 5 (then 4) without it. |
+| The `★ Top` / `Walk-in` badges (`components-legacy/ui/SalonBadge.tsx`) **keep** their all-caps transform | Untouched | Out of the two-item "other two" scope the owner's ask named (category pills + city eyebrow); `SalonBadge` is a separate shared component also used on the owner's `/dashboard/badge-manager` page. Measured result: caps count on `/de/basel` dropped from 56 to 10, and all 10 remaining are this badge (7x "Top", 3x "Walk-in"). Flagged, not silently fixed. |
+| Dot/arrow carousel click handlers | Untouched (still call `scrollContainerRef.current?.scrollTo(...)` against a ref that is never attached to any element, and never call `setPhotoIndex`) | Pre-existing dead state from the A3-era orphan comment, not a regression from turning photos on; fixing it is a structural change outside this pass's "treatment only" scope. Flagged as a follow-up. |
+
+Measured on the rendered `/de/basel` page at 390x844 (banner dismissed, matching the content-only
+comparison): imagery 0.0% to ~44%, sizes [47,25,15,14,13,12] to [25,15,14,12] (6 to 4), caps 56 to
+10 (all 10 remaining are the out-of-scope SalonBadge).
 ## 2026-07-24 to 07-26 , the motion + consistency week, recorded by the weekly law pass
 
 These are dated owner decisions that were APPLIED in code and written into the file that owns each axis,

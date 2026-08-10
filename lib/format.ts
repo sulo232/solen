@@ -12,30 +12,70 @@ import { formatCurrency } from "./format-currency";
 export { formatCurrency };
 
 /**
- * Format a CHF price with `CHF ` prefix (Q43 lock — prefix, not suffix).
+ * Force the Swiss apostrophe/period grouping convention (CLAUDE.md: "Swiss uses an
+ * apostrophe: 1'000") regardless of which locale reaches formatPrice/formatNumber.
+ *
+ * copy-i18n-06 (2026-07-27): de-CH/it-CH/en-CH all apostrophe-group in this runtime's
+ * ICU data, but fr-CH does NOT: it space-groups with a comma decimal (verified via
+ * `(1234567).toLocaleString("fr-CH")` giving "1 234 567", not "1'234'567"). The call
+ * site that correctly threads a per-locale tag into formatPrice (SearchOverlay.tsx)
+ * was therefore silently producing space-grouped French prices next to apostrophe-
+ * grouped counts on the same page. Numbers (unlike dates, which stay locale-native
+ * via resolveSwissLocale below) are formatted identically across all four UI locales.
+ */
+function swissNumberFormat(amount: number, options: Intl.NumberFormatOptions): string {
+  return new Intl.NumberFormat("de-CH", options).format(amount);
+}
+
+/**
+ * Format a CHF price with `CHF ` prefix (Q43 lock, prefix not suffix).
  * Whole-number prices drop the decimals; fractional prices keep two.
+ * The `locale` param is accepted for call-site compatibility but no longer affects
+ * the digit grouping (copy-i18n-06, see swissNumberFormat above).
  *
  * formatPrice(85)        → "CHF 85"
  * formatPrice(85.5)      → "CHF 85.50"
- * formatPrice(85, "fr")  → "CHF 85"
+ * formatPrice(1250, "fr-CH") → "CHF 1'250" (apostrophe, not "1 250")
  */
 export function formatPrice(amount: number, locale: string = "de-CH"): string {
-  const intl = new Intl.NumberFormat(locale, {
+  void locale; // kept for call-site compatibility; grouping is locale-invariant, see swissNumberFormat
+  const intl = swissNumberFormat(amount, {
     style: "decimal",
     minimumFractionDigits: Number.isInteger(amount) ? 0 : 2,
     maximumFractionDigits: 2,
-  }).format(amount);
+  });
   return `CHF ${intl}`;
+}
+
+/**
+ * Locale-aware grouped-number string, no parens (added 2026-07-26 alongside the
+ * de-CH literal sweep so review-count / total-count call sites that don't want
+ * formatCount's parens have one shared resolver instead of re-deriving the Swiss
+ * tag inline). Accepts bare app locale keys ("de", "fr") or a full BCP-47 tag.
+ * The `locale` param no longer affects grouping (copy-i18n-06): every UI locale
+ * shows the same Swiss apostrophe grouping, since fr-CH's real Intl behavior is
+ * space-grouping, not apostrophe.
+ *
+ * formatNumber(1270)       → "1'270"
+ * formatNumber(1270, "fr") → "1'270" (forced Swiss apostrophe grouping, not "1 270")
+ */
+export function formatNumber(n: number, locale: string = "de"): string {
+  void locale; // kept for call-site compatibility; grouping is locale-invariant, see swissNumberFormat
+  return swissNumberFormat(n, {});
 }
 
 /**
  * Format a count with parentheses (per Q43 / SOLEN_DESIGN.md §17 voice rule):
  * ratings show count in parens, e.g. "★ 4.8 (127)".
+ * Accepts bare app locale keys ("de", "fr") or a full BCP-47 tag. Grouping is the
+ * forced Swiss apostrophe convention for every locale (copy-i18n-06, see
+ * swissNumberFormat above); the `locale` param no longer changes the digits.
  *
  * formatCount(127) → "(127)"
+ * formatCount(1270, "fr") → "(1'270)" (forced apostrophe grouping, not "(1 270)")
  */
-export function formatCount(n: number): string {
-  return `(${n.toLocaleString("de-CH")})`;
+export function formatCount(n: number, locale: string = "de"): string {
+  return `(${formatNumber(n, locale)})`;
 }
 
 /**
@@ -68,6 +108,23 @@ const SWISS_DATE_LOCALES: Record<string, string> = {
 };
 
 /**
+ * Resolve an app locale key ("de"/"en"/"fr"/"it", or an already-full BCP-47 tag) to
+ * its Swiss regional Intl tag. Exported (2026-07-26, de-CH literal sweep) so call
+ * sites that need a raw toLocaleDateString/toLocaleTimeString/Intl.NumberFormat tag
+ * (not one of this file's higher-level formatters) share one resolver instead of
+ * re-deriving their own de/en/fr/it ternary, which is how the codebase ended up
+ * with 116 hardcoded "de-CH" literals and inconsistent en-GB/en-CH mappings.
+ *
+ * resolveSwissLocale("fr")     → "fr-CH"
+ * resolveSwissLocale("de-CH")  → "de-CH"
+ * resolveSwissLocale(undefined)→ "de-CH"
+ */
+export function resolveSwissLocale(locale?: string | null): string {
+  if (!locale) return "de-CH";
+  return SWISS_DATE_LOCALES[locale] ?? SWISS_DATE_LOCALES[locale.split("-")[0]] ?? "de-CH";
+}
+
+/**
  * Format an ISO date string (YYYY-MM-DD) as a short weekday + day + month label.
  * The locale param accepts both bare app keys ("de", "fr") and full BCP-47 tags
  * ("de-CH") and maps them to the correct Swiss regional variant so FR/IT users
@@ -80,7 +137,7 @@ const SWISS_DATE_LOCALES: Record<string, string> = {
  */
 export function formatDateLabel(iso: string, locale: string = "de"): string {
   try {
-    const resolved = SWISS_DATE_LOCALES[locale] ?? SWISS_DATE_LOCALES[locale.split("-")[0]] ?? "de-CH";
+    const resolved = resolveSwissLocale(locale);
     return new Intl.DateTimeFormat(resolved, {
       weekday: "short",
       day: "numeric",
@@ -122,13 +179,18 @@ export function nextAvailableSlotLabel(
     }
   }
   if (!earliest) return null;
+  // Resolve the caller's locale to its Swiss regional variant (mirrors formatDateLabel above);
+  // was hardcoded to "de-CH" here, silently ignoring the `locale` param on FR/IT/EN callers.
+  const resolvedLocale = resolveSwissLocale(locale);
   // Use Zurich timezone so late-evening slots are attributed to the correct day.
-  const hhmm = earliest.toLocaleTimeString("de-CH", {
+  // hourCycle forced to h23: Swiss convention is 24h time regardless of UI language.
+  const hhmm = earliest.toLocaleTimeString(resolvedLocale, {
     timeZone: "Europe/Zurich",
     hour: "2-digit",
     minute: "2-digit",
+    hourCycle: "h23",
   });
-  const tzFormatter = new Intl.DateTimeFormat("de-CH", { timeZone: "Europe/Zurich", dateStyle: "short" });
+  const tzFormatter = new Intl.DateTimeFormat(resolvedLocale, { timeZone: "Europe/Zurich", dateStyle: "short" });
   const todayStr = tzFormatter.format(new Date());
   const tomorrowDate = new Date();
   tomorrowDate.setDate(tomorrowDate.getDate() + 1);

@@ -66,7 +66,7 @@ export default async function ScrollMotionPage({
     <main className="min-h-screen bg-white">
       <div className="border-b border-s-border">
         <div className="mx-auto max-w-[600px] px-4 py-6">
-          <p className="font-body text-[12px] font-semibold text-s-ink-3">Solen , /dev/scroll-motion</p>
+          <p className="font-body text-[12px] font-semibold text-s-ink-2">Solen , /dev/scroll-motion</p>
           <h1 className="mt-1 font-display text-[20px] font-semibold tracking-[-0.01em] text-s-ink">
             Scroll-linked condensing top bar , 3 directions
           </h1>

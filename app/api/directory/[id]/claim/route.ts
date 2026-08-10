@@ -2,10 +2,11 @@ export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { createHash, randomInt } from "crypto";
 import { createAdminSupabaseClient } from "@/lib/supabase";
-import { sendEmail } from "@/lib/email";
+import { sendEmail, directoryClaimCode, type EmailLocale } from "@/lib/email";
 import { applyRateLimit, authLimiter, getClientIp } from "@/lib/ratelimit";
 import { Redis } from "@upstash/redis";
 import { getServerEnv } from "@/lib/env";
+import { validateBody, directoryClaimSchema } from "@/lib/validations";
 
 function hashCode(code: string): string {
   return createHash("sha256").update(code).digest("hex");
@@ -46,7 +47,11 @@ export async function POST(
     return NextResponse.json({ error: "This listing has already been claimed" }, { status: 409 });
   }
 
-  const body = await req.json().catch(() => ({}));
+  const rawBody = await req.json().catch(() => ({}));
+  const { data: body, error: validationError } = validateBody(directoryClaimSchema, rawBody);
+  if (validationError) {
+    return NextResponse.json({ error: validationError.message }, { status: 400 });
+  }
   const clientIp = getClientIp(req);
 
   // -- Step 2: Verify code -------------------------------------------------
@@ -140,18 +145,12 @@ export async function POST(
   if (redis) await redis.del(`directory:claim-attempts:${id}`);
 
   try {
-    await sendEmail({
-      to: entry.email,
-      subject: `Ihr Bestätigungscode für solen.ch: ${code}`,
-      html: `
-        <p>Guten Tag,</p>
-        <p>Sie haben beantragt, den Salon <strong>${entry.name}</strong> auf solen.ch zu beanspruchen.</p>
-        <p>Ihr Bestätigungscode lautet: <strong style="font-size:24px;letter-spacing:4px">${code}</strong></p>
-        <p>Der Code ist 15 Minuten gültig.</p>
-        <p>Falls Sie diese Anfrage nicht gestellt haben, können Sie diese E-Mail ignorieren.</p>
-        <p>Das solen.ch Team</p>
-      `,
-    });
+    // A9-email-locale (2026-07-27): the directory entry has no registered profile (unclaimed
+    // listing) so there is no locale to resolve from data already in scope; threaded through
+    // from the caller (the locale-prefixed claim page) instead, defaulting to "de" if omitted.
+    // directoryClaimSchema's locale field is already a validated "de"|"en"|"fr"|"it" enum.
+    const claimLocale: EmailLocale = body.locale ?? "de";
+    await sendEmail(directoryClaimCode(entry.email, { salonName: entry.name, code }, claimLocale));
   } catch (err) {
     console.error("[directory/claim] verification code email failed:", err, { listingId: id });
     return NextResponse.json({ error: "Failed to send verification code" }, { status: 500 });

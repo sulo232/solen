@@ -151,7 +151,7 @@ export default function MapZoomMockup() {
   return (
     <main className="min-h-screen bg-s-bg-sunken py-4">
       <div className="mx-auto w-full max-w-[390px] px-3">
-        <p className="pb-2 text-center text-[12.5px] font-semibold text-s-ink-3">Zoom in = cluster opens into pins. Zoom out = pins merge back. Pick a motion + a cluster look.</p>
+        <p className="pb-2 text-center text-[12.5px] font-semibold text-s-ink-2">Zoom in = cluster opens into pins. Zoom out = pins merge back. Pick a motion + a cluster look.</p>
         <div className="mb-2 flex items-center justify-center gap-2">
           {[1, 2, 3].map((n) => (
             <button key={n} onClick={() => setVariant(n as 1 | 2 | 3)} className={`rounded-full border px-3.5 py-1.5 text-[13px] font-semibold ${variant === n ? "border-transparent bg-s-bg-sunken text-s-ink" : "border-s-border bg-white text-s-ink-2"}`}>

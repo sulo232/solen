@@ -53,12 +53,12 @@ export function SalonOpeningTimesOverhaul({
             >
               <span className="inline-flex items-center gap-3">
                 <span
-                  className={cn("h-2 w-2 shrink-0 rounded-full", isOpen ? "bg-s-success" : "bg-s-ink-3/40")}
+                  className={cn("h-2 w-2 shrink-0 rounded-full", isOpen ? "bg-s-success" : "bg-s-ink-2/40")}
                   aria-hidden
                 />
                 {DAY_LABEL_EN[day]}
               </span>
-              <span className={cn(!isOpen && "text-s-ink-3")}>
+              <span className={cn(!isOpen && "text-s-ink-2")}>
                 {dayHours ? `${dayHours.open} to ${dayHours.close}` : "Closed"}
               </span>
             </li>

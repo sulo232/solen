@@ -7,6 +7,7 @@ import { sendNotification } from "@/lib/notifications";
 import { resolveBookingActor } from "@/lib/bookings/authorize";
 import { applyRateLimit, bookingLimiter } from "@/lib/ratelimit";
 import { completeReferralForFirstBooking } from "@/lib/referral/complete-referral";
+import { resolveSwissLocale } from "@/lib/format";
 
 // POST /api/bookings/[id]/confirm
 // Called by salon owner to confirm a pending booking, INCLUDING the manual-approval
@@ -74,8 +75,8 @@ export async function POST(
     const { data: authUser } = await admin.auth.admin.getUserById(fullBookingUserId);
     const email = authUser?.user?.email;
     if (email) {
-      const dateStr = new Date(fullBooking.starts_at).toLocaleDateString("de-CH", { weekday: "long", day: "numeric", month: "long" });
-      const timeStr = new Date(fullBooking.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" });
+      const dateStr = new Date(fullBooking.starts_at).toLocaleDateString(resolveSwissLocale(locale), { weekday: "long", day: "numeric", month: "long" });
+      const timeStr = new Date(fullBooking.starts_at).toLocaleTimeString(resolveSwissLocale(locale), { hour: "2-digit", minute: "2-digit" });
       const serviceName = (fullBooking.services as any)?.name_de ?? "Service";
       const salonName = (fullBooking.salons as any)?.name ?? "Salon";
       await sendNotification({

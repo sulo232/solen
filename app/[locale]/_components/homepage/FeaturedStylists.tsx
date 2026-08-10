@@ -228,7 +228,7 @@ export default function FeaturedStylists() {
                         />
                       ) : (
                         <span
-                          className="font-display text-[28px] font-black"
+                          className="font-display text-[28px] font-bold"
                           style={{ color: tokens.initial }}
                           aria-hidden
                         >
@@ -262,7 +262,7 @@ export default function FeaturedStylists() {
                       <span className="inline-flex shrink-0 items-baseline gap-1 font-body text-[13px] font-normal text-s-ink-2 tabular-nums">
                         <Star size={11} stroke="none" aria-hidden className="translate-y-[1.5px] fill-s-star" />
                         {s.rating.toFixed(1)}
-                        <span className="font-normal text-[12px] text-s-ink-3">({s.reviewCount})</span>
+                        <span className="font-normal text-[12px] text-s-ink-2">({s.reviewCount})</span>
                       </span>
                     </div>
                     {/* Row 2 — distance · specialty · city, ALL one flat grey meta line.
@@ -280,7 +280,7 @@ export default function FeaturedStylists() {
                         /* V3-D346: pill text 600→500; the bg already gives it presence, no need to
                            add a 4th heavy ink element. */
                         "font-body text-[12px] font-medium",
-                        s.availability.state === "open" ? "text-s-ink-2" : "text-s-ink-3",
+                        s.availability.state === "open" ? "text-s-ink-2" : "text-s-ink-2",
                       )}
                     >
                       <Clock size={10} strokeWidth={2.5} aria-hidden />

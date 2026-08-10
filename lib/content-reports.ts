@@ -62,10 +62,20 @@ export function isLegalReportStatusTransition(from: ReportStatus, to: ReportStat
 
 // ─── Target types ────────────────────────────────────────────────────────────
 // Mirrors the DB CHECK constraint on content_reports.target_type (078_content_reports.sql:4).
-export const REPORT_TARGET_TYPES = ["salon", "review", "user"] as const;
+// 'photo' added 2026-07-27 (owner: "also being able to report pictures"). content_reports
+// .target_id is already a bare polymorphic uuid, so only the taxonomy and the DB CHECK needed
+// widening , see 20260727180000_salon_review_toggles_and_photo_report_target.sql. The reported
+// id is the salon_portfolio_images row id, NOT the URL: a url can change or repeat across
+// salons, a row id cannot.
+export const REPORT_TARGET_TYPES = ["salon", "review", "user", "photo"] as const;
 export type ReportTargetType = (typeof REPORT_TARGET_TYPES)[number];
 
 // ─── Reasons ─────────────────────────────────────────────────────────────────
-// Mirrors the DB CHECK constraint on content_reports.reason (078_content_reports.sql:6-8).
-export const REPORT_REASONS = ["inappropriate", "spam", "fake", "ip_violation", "other"] as const;
+// Mirrors the DB CHECK constraint on content_reports.reason, widened by
+// supabase/migrations/20260727_content_reports_harassment_reason.sql (078_content_reports.sql:6-8
+// plus that follow-up). 'harassment' backs ToS section 7.3's "zero tolerance ... immediate
+// account suspension" promise (trust-06): this endpoint already accepts target_type='user',
+// so a salon owner reporting a customer for harassment already routes through here once the
+// migration lands, no new endpoint needed.
+export const REPORT_REASONS = ["inappropriate", "spam", "fake", "ip_violation", "harassment", "other"] as const;
 export type ReportReason = (typeof REPORT_REASONS)[number];

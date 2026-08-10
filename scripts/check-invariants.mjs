@@ -299,6 +299,170 @@ function checkWorkflowsActuallyRun() {
   report("D. Workflows actually run", pass, lines);
 }
 
+function checkSalonPhotoIntegrity() {
+  // Invariant E (2026-07-27). The imagery floor asks for roughly a third of every browse viewport
+  // to be photographic, and the SalonCard now renders cover_photo_url to satisfy it. That makes the
+  // PHOTO DATA load-bearing, and it is currently not trustworthy: measured this session against the
+  // live database, salon_photos holds 0 rows for 28 salons, every cover is a remote stock URL, and
+  // one Unsplash image is the cover for FOUR different salons (plus another shared by four, one by
+  // three, one by two). A stock photo presented as a named business's premises is a truth problem
+  // the no-fabrication rule never covered, because the field is populated and looks fine.
+  //
+  // This check cannot fix that: only real photographs of the real businesses can, and that is the
+  // owner's to commission (workstream 42, D2b). What it CAN do is make the condition impossible to
+  // forget, and catch the moment a duplicate creeps back in after real photos land.
+  //
+  // Reads the committed inventory snapshot, never the live database, so it stays offline and
+  // deterministic in CI. That is also why it reports rather than fails: the snapshot cannot see
+  // cover_photo_url values today, so the strict duplicate test needs the live read that
+  // scripts/salon-photo-audit does. Wire it to FAIL once the snapshot carries the column.
+  const lines = [];
+  const snapshotPath = join(PROJECT_ROOT, "_inventory", "_db-snapshot.json");
+
+  if (!existsSync(snapshotPath)) {
+    report("E. Salon photo integrity", true, ["SKIP: no _inventory/_db-snapshot.json on disk"]);
+    return;
+  }
+
+  let snap;
+  try {
+    snap = JSON.parse(readFileSync(snapshotPath, "utf8"));
+  } catch (err) {
+    report("E. Salon photo integrity", false, ["FAIL: snapshot is not parseable JSON: " + err.message]);
+    return;
+  }
+
+  const tables = Array.isArray(snap.tables) ? snap.tables : [];
+  const photos = tables.find((t) => t && t.name === "salon_photos");
+  const salons = tables.find((t) => t && t.name === "salons");
+
+  if (!photos || !salons) {
+    report("E. Salon photo integrity", true, ["SKIP: salons or salon_photos missing from the snapshot"]);
+    return;
+  }
+
+  lines.push("snapshot captured " + (snap.capturedAt || "unknown") + ": salons=" + salons.rows + ", salon_photos=" + photos.rows);
+
+  if (photos.rows === 0 && salons.rows > 0) {
+    lines.push(
+      "REPORT: salon_photos is EMPTY for " + salons.rows + " salons, so every card is falling back to " +
+      "salons.cover_photo_url, which is stock imagery shared across several salons. The imagery floor " +
+      "is satisfied by pixels but not by truth. Owner action, workstream 42 D2b: commission real " +
+      "photographs. See _plans/PRINCIPLES_IMPLEMENTATION.md."
+    );
+  } else if (photos.rows > 0) {
+    lines.push("salon_photos has rows: re-run the live duplicate audit before trusting card imagery");
+  }
+
+  // Report-only by design, see the header comment.
+  report("E. Salon photo integrity", true, lines);
+}
+
+// ---------------------------------------------------------------------------
+// Invariant F: LOCKFILE hex vs drift-check ALLOWED_HEX reconciliation
+// ---------------------------------------------------------------------------
+function checkColorTokenReconciliation() {
+  // Finding doc-to-gate-drift-reconciliation (2026-07-27): the drift-check gate hardcodes a
+  // literal ALLOWED_HEX allowlist mirroring LOCKFILE.md's token table. Twice now (2026-07-18,
+  // then again 2026-07-25) a human audit re-derived that mapping by hand and got a different
+  // wrong answer the first time (a naive grep counted commented-out/prose hexes as live). This
+  // runs on every push instead of waiting for the next manual pass.
+  //
+  // Scope, deliberately conservative: only flags a NAME-MATCHED mismatch (an ALLOWED_HEX entry
+  // whose inline comment names a specific LOCKFILE token, where that token's LOCKFILE hex
+  // differs from the ALLOWED_HEX literal). It does NOT fail on "hex present in one file but not
+  // matched by name in the other": LOCKFILE documents many token hexes that legitimately never
+  // need an inline-allowlist entry (most code reaches them via a Tailwind class, not raw hex),
+  // so a blind full-set diff reproduces exactly the false-positive flood the 2026-07-18 audit
+  // already hit. A high-confidence named mismatch is a real, actionable finding either way.
+  const lockfilePath = join(PROJECT_ROOT, "_design-system", "LOCKFILE.md");
+  const checkPyPath = join(PROJECT_ROOT, ".claude", "skills", "solen-drift-check", "scripts", "check.py");
+
+  if (!existsSync(lockfilePath) || !existsSync(checkPyPath)) {
+    report("F. Color token reconciliation", true, ["SKIP: LOCKFILE.md or check.py not found"]);
+    return;
+  }
+
+  const normalize = (s) => s.toLowerCase().replace(/[^a-z0-9]/g, "");
+
+  // 1. LOCKFILE token -> hex pairs, from markdown table rows only (backtick-wrapped cells).
+  const lockfileText = readFileSync(lockfilePath, "utf8");
+  const tokenHexPairs = []; // { token, normToken, hex }
+  for (const line of lockfileText.split("\n")) {
+    if (!line.trim().startsWith("|")) continue;
+    const cells = allMatches(line, /`([^`]+)`/g).map((m) => m[1]);
+    let pendingTokens = [];
+    for (const cell of cells) {
+      if (/^#[0-9A-Fa-f]{3,8}$/.test(cell)) {
+        for (const tok of pendingTokens) {
+          tokenHexPairs.push({ token: tok, normToken: normalize(tok), hex: cell.toUpperCase() });
+        }
+        pendingTokens = [];
+      } else if (/^[a-zA-Z][\w.-]*$/.test(cell)) {
+        pendingTokens.push(cell);
+      }
+    }
+  }
+
+  // 2. check.py ALLOWED_HEX block: hex literal + same-line comment text.
+  const checkPyText = readFileSync(checkPyPath, "utf8");
+  const allowedHexBlockMatch = checkPyText.match(/ALLOWED_HEX\s*=\s*\{([\s\S]*?)\n\}/);
+  const lines = [];
+  let pass = true;
+  let confirmedMatches = 0;
+
+  if (!allowedHexBlockMatch) {
+    lines.push("SKIP: could not locate ALLOWED_HEX = { ... } block in check.py");
+  } else {
+    const blockText = allowedHexBlockMatch[1];
+    for (const rawLine of blockText.split("\n")) {
+      // a whole-line python comment (retired/removed entry, e.g. "# "#9A3412" removed...")
+      // is not a LIVE ALLOWED_HEX literal, skip it entirely.
+      if (rawLine.trim().startsWith("#")) continue;
+      const hexMatch = rawLine.match(/"(#[0-9A-Fa-f]{3,8})"/);
+      if (!hexMatch) continue;
+      const allowedHex = hexMatch[1].toUpperCase();
+      // strip quoted hex literals before looking for the python "#" comment marker, so the
+      // literal's own leading "#" is never mistaken for the comment delimiter.
+      const withoutStrings = rawLine.replace(/"#[0-9A-Fa-f]{3,8}"/g, '""');
+      const commentIdx = withoutStrings.indexOf("#");
+      const comment = commentIdx === -1 ? "" : withoutStrings.slice(commentIdx + 1);
+      const candidateTokens = allMatches(comment, /s-[a-zA-Z0-9][\w.-]*/g);
+      for (const m of candidateTokens) {
+        const cand = m[0];
+        // a "NOT the X token" disclaimer names the token to explicitly rule it out, not to
+        // assert it: skip a candidate whose preceding ~20 chars contain a negation.
+        const before = comment.slice(Math.max(0, m.index - 40), m.index);
+        if (/\bnot\b/i.test(before)) continue;
+        const normCand = normalize(cand);
+        if (normCand.length < 4) continue;
+        for (const pair of tokenHexPairs) {
+          // Exact match only (plus the ".DEFAULT" collapse, e.g. comment "s-ink" vs table
+          // `s-ink.DEFAULT`). A prefix match (e.g. "s-accent" vs "s-accent-deep") was tried
+          // and rejected: two DIFFERENT sibling tokens are not the same token with a stale
+          // value, and a prefix match cross-matched them, producing pure false positives.
+          const matches = pair.normToken === normCand || pair.normToken === normCand + "default";
+          if (!matches) continue;
+          if (pair.hex === allowedHex) {
+            confirmedMatches++;
+          } else {
+            pass = false;
+            lines.push(
+              "FAIL: check.py ALLOWED_HEX has " + allowedHex + " commented '" + cand.trim() +
+              "', but LOCKFILE.md's `" + pair.token + "` is " + pair.hex + " (stale hex citation)"
+            );
+          }
+        }
+      }
+    }
+  }
+
+  if (lines.length === 0) {
+    lines.push("no name-matched hex mismatch (" + confirmedMatches + " token-hex pairs confirmed in sync)");
+  }
+  report("F. Color token reconciliation", pass, lines);
+}
+
 // ---------------------------------------------------------------------------
 if (!REPO_ONLY) {
   checkHooksWiredVsDisk();
@@ -306,6 +470,8 @@ if (!REPO_ONLY) {
 }
 checkDocPathsAlive();
 checkWorkflowsActuallyRun();
+checkSalonPhotoIntegrity();
+checkColorTokenReconciliation();
 
 console.log("");
 for (const r of results) {

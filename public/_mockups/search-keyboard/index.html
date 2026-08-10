@@ -1,0 +1,663 @@
+<!doctype html>
+<!-- Base: capture _assets/home-375.png -->
+<!-- Scale: full-page -->
+<!-- Grounded-in: app/[locale]/_components/search/SearchOverlay.tsx -->
+<!-- Grounded-in: app/[locale]/_components/homepage/searchFeatured.ts -->
+<!-- Grounded-in: app/[locale]/_components/homepage/searchCategories.ts -->
+<!-- Grounded-in: _plans/SEARCH_MORPH.md -->
+<!-- Real-source: app/[locale]/_components/search/SearchOverlay.tsx -->
+<!-- all-variants: K-A scrolls under, K-B shrinks above, F-A filled grey, F-B white with hairline. All four combinations are reachable from the two switchers, none is hidden or preferred by the markup. The recommendation is written out in plain text under the screen, not enforced by which state loads first. -->
+<!-- Owner-scope: all-variants -->
+
+<!-- The BEFORE is a selectable state, not a separate pane: K-B plus F-B is exactly what ships
+     today, rebuilt at its live-measured geometry. A live iframe cannot serve as the before here,
+     because the state under review only exists while a software keyboard is up and a desktop
+     iframe has no way to raise one. Same reason recorded in .claude/fullscreen-skip.flag. -->
+
+<!-- Depicts: the blurred page behind the sheet -> app/[locale]/page.tsx, captured live at 375x812 into _assets/home-375.png this turn -->
+<!-- Depicts: the ink scrim over it -> app/[locale]/_components/search/SearchOverlay.tsx, the key="scrim" motion.div, bg-s-ink/10 backdrop-blur-xl -->
+<!-- Depicts: the white sheet -> app/[locale]/_components/search/SearchOverlay.tsx, the key="sheet" motion.div driven by cropTop / sheetLeft / sheetWidth / sheetHeight -->
+<!-- Depicts: the query field with a back arrow and two fixed right-hand slots -> app/[locale]/_components/search/SearchOverlay.tsx, the serviceBar block, ArrowLeft while inputFocused, the clear-X slot and the loader-dots slot -->
+<!-- Depicts: the suggestion scroller -> app/[locale]/_components/search/SearchOverlay.tsx, the listRef div and serviceSuggestions() idle branch -->
+<!-- Depicts: the Beliebte Stores rows -> app/[locale]/_components/homepage/searchFeatured.ts for the three real seeded salons, plus the live address from the /api/salons?ids= fetch SearchOverlay.tsx already runs -->
+<!-- Depicts: the Kategorien rows -> app/[locale]/_components/homepage/searchCategories.ts, the four shipped CATEGORIES with their Lucide icons -->
+<!-- Depicts: the row grammar, 48px icon tile plus name and sub-line -> app/[locale]/_components/search/SearchOverlay.tsx, the SuggestRow sub-component -->
+<!-- Depicts: the software keyboard -> NET-NEW: no keyboard exists in the codebase, this is a simulation of the iOS keyboard at the 336px height every previous round of this investigation simulated -->
+<!-- Depicts: option K-A, the sheet running to the screen bottom under the keyboard -> NET-NEW: not in the codebase today, derived from SearchOverlay.tsx topFor() and sheetHeight with the kbInset term removed from the top only -->
+<!-- Depicts: option F-A, the grey field fill -> NET-NEW on this surface, but not net-new as a rule: it is the input fill already locked in LOCKFILE 3.5 and shipped by the global input law in app/globals.css -->
+
+<!-- Diagnosis: query field fill in the search composer | measured white rgb(255,255,255) with a 1px rgb(228,228,231) border, getComputedStyle on the live overlay at 375x812 with the keyboard up | violates LOCKFILE 3.5 depth system and the design-contract focus row, an input is filled grey at rest (V3-D-input-fill 2026-07-17), and the reference measures rgb(247,247,247) | target #F4F4F5 fill with no border ring -->
+<!-- Diagnosis: sheet top edge with the keyboard up | measured y6, getBoundingClientRect on the live overlay at 375x812 with a 336px keyboard, against 51.0pt for our own card without a keyboard and 62.3pt on the reference, both PIL | violates _plans/SEARCH_MORPH.md K2, the Suche row cut off at the top by the status bar | target y50, the focusedTop the same transform already computes -->
+<!-- Diagnosis: the suggestion row sitting on the keyboard line | measured 55 of 68px of the Barbershop row cut by a hard white sheet edge, list viewport 0,74,375x402 ending at 476 with that row spanning 421 to 489 | violates _plans/SEARCH_MORPH.md K2, content hard-clipped mid-row, the owner defect in IMG_6909 and IMG_6914 | target the row is covered by the keyboard instead, 0px cut by an edge -->
+
+<!-- Exists-check: ran `npm run exists` this turn on "search-keyboard" (0 matches), "keyboard"
+     (1 match, an unrelated SkipLink note in the primitives dev page) and "SearchOverlay"
+     (SearchOverlay.tsx plus the dev/search-morph and dev/search-model-b clones). WHAT ALREADY
+     EXISTS and is NOT rebuilt here: (1) the real composer,
+     app/[locale]/_components/search/SearchOverlay.tsx, whose keyboard behaviour today is exactly
+     option K-B on this page, measured live, not guessed; (2) the locked single-state clone at
+     app/[locale]/dev/search-morph/page.tsx, which renders one behaviour at a time and cannot put
+     two side by side; (3) public/_mockups/search-curve/index.html, the curve chooser the owner
+     picked C from, whose harness shape this page follows; (4) public/_mockups/input-decision/,
+     where the input fill was settled at filled grey. _design-system/REMOVED.md carries no hit for
+     a keyboard-behaviour or input-fill chooser. THE ONE GENUINELY NEW THING: the two keyboard
+     geometries on one screen with a flip between them. This page changes no product code. -->
+
+<!-- measured: nothing on this page is eyeballed.
+     LIVE, Playwright getBoundingClientRect on the running build at 375x812 with the software
+     keyboard simulated at 336px (visualViewport height forced to 476, resize dispatched), overlay
+     open, query field focused, service step:
+       sheet          x0  y6   375 x 470   (bottom edge 476, exactly the keyboard top)
+       query field    x12 y22  351 x 48    radius 16, fill rgb(255,255,255), border 1px rgb(228,228,231)
+       input          font-size 16px, colour rgb(10,10,10)
+       list viewport  x0  y74  375 x 402   padding 4 top / 16 sides / 16 bottom
+       section label  13px / 600, margin 12 top / 4 bottom, height 19.5
+       suggestion row 68 high, x16, width 343
+       card radius    18 top, 0 bottom
+       first label    y90, rows y113.5 / y181.5 / y249.5, second label y329.5, rows y353 / y421 / y489 / y557
+     PIL on the owner's two focused screenshots, both 1206 wide at 3x, carried in from
+     _plans/SEARCH_MORPH.md and not re-derived here:
+       Airbnb card top edge 62.3pt, ours 51.0pt
+       Airbnb field interior fill rgb(247,247,247), ours white with a 1px #E4E4E7 hairline
+     DERIVED from the same SearchOverlay arithmetic for K-A (top stops being reduced by the
+     keyboard inset, so focusedTop stands): sheet y50, height 762, list viewport y118 height 694 of
+     which 358 sits above the keyboard line at 476. -->
+
+<!-- width-cal-ok: this page does not copy a reference screenshot's type. Every font size in the
+     depicted screen is a locked Solen token read off the live render (16 input, 15 row name, 13
+     label and sub-line), so word-width calibration against a reference has nothing to calibrate
+     against here. The two reference numbers this page does use are a card top edge and a fill
+     colour, both PIL-measured and both quoted above. -->
+
+<!-- lang-ok -->
+<!-- locale-copy-mockup: de , the depicted screen is the /de locale of the live product and every
+     German string inside the phone is real data, three seeded salon rows with their live addresses
+     from /api/salons and the four shipped category labels, plus the shipped placeholder. Every word
+     of chrome authored for this page, the title, the switchers, the readout and the notes, is
+     English. Translating the depicted screen would make it a screen the owner has never seen and
+     would break the comparison with his own screenshots, which are /de. -->
+
+<!-- floors: (a) photographic focal, the layer behind the sheet is the real /de home page capture,
+     photographic, though in both options the sheet and the keyboard cover nearly all of it, which
+     is itself part of what is being judged. This state is a form, the search composer with the
+     keyboard up, and forms are exempt by name from the imagery floor. (b) exactly one biggest
+     element, the page title at 28px on the harness. INSIDE the phone the biggest text is the 16px
+     field, because at full expand the 24px heading is folded away by the shipped transform. That is
+     the real screen and no anchor was added that the real screen does not have. (c) real numbers,
+     the measured readout under the screen is live tabular output of the state on show. (d) semantic
+     colour, the only one in this state is the iOS return key, which is device chrome, not ours. The
+     Solen part of this screen carries no semantic colour moment, and none was invented to tick this
+     line. (e) no dead grey zone, the folded footer means the last row IS the sheet bottom in both
+     options, which is the fix already shipped for the blurred band in IMG_6911. -->
+
+<!-- type: the depicted screen holds 3 body sizes (16 field, 15 row name, 13 label and sub) and 2
+     weights (400, 600), inside the 4 size / 2 weight budget. The harness adds one 28px display
+     anchor, which sits outside the body budget by LOCKFILE 17.4. The simulated iOS keyboard is
+     operating-system chrome, not a Solen surface, so its key lettering is not counted. -->
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Search with the keyboard up</title>
+<style>
+  :root {
+    --ink: #0A0A0A;
+    --ink-2: #6B6B6B;
+    --border: #E4E4E7;
+    --sunken: #F4F4F5;
+    --white: #FFFFFF;
+  }
+  * { box-sizing: border-box; }
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    background: #FFFFFF;
+  }
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    background: var(--white);
+    color: var(--ink);
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.45;
+  }
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px 12px calc(56px + env(safe-area-inset-bottom));
+  }
+  h1 {
+    margin: 0 0 8px;
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+  }
+  .lede {
+    margin: 0 0 14px;
+    max-width: 640px;
+    color: var(--ink-2);
+  }
+  .switchers {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 18px;
+    padding: 10px 0 12px;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+  .group { min-width: 0; }
+  .glabel {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--ink-2);
+  }
+  .seg {
+    display: inline-flex;
+    gap: 6px;
+  }
+  .opt {
+    height: 44px;
+    padding: 0 14px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--white);
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 400;
+    cursor: pointer;
+  }
+  .opt[aria-pressed="true"] {
+    background: var(--sunken);
+    font-weight: 600;
+    border-color: var(--sunken);
+  }
+  .stageWrap {
+    position: relative;
+    width: 375px;
+    height: 812px;
+    max-width: 100%;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--white);
+  }
+  .stage {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 375px;
+    height: 812px;
+    transform-origin: top left;
+    overflow: hidden;
+    background: var(--white);
+  }
+
+  /* the real /de home page under the scrim, the same bg-s-ink/10 backdrop-blur-xl the overlay ships */
+  .bgShot {
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    width: 415px;
+    height: 852px;
+    object-fit: cover;
+    filter: blur(24px);
+  }
+  .scrim {
+    position: absolute;
+    inset: 0;
+    background: rgba(10, 10, 10, 0.10);
+  }
+
+  /* the sheet */
+  .sheet {
+    position: absolute;
+    left: 0;
+    width: 375px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--white);
+    border-top-left-radius: 18px;
+    border-top-right-radius: 18px;
+    box-shadow: 0 18px 50px rgba(10, 10, 10, 0.13);
+  }
+  .stage.k-a .sheet { top: 50px; height: 762px; }
+  .stage.k-b .sheet { top: 6px;  height: 470px; }
+
+  .fieldRow {
+    flex: 0 0 auto;
+    padding: 16px 12px 4px;
+  }
+  .field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 48px;
+    padding: 0 16px;
+    border: 1px solid transparent;
+    border-radius: 16px;
+  }
+  .stage.f-a .field { background: var(--sunken); border-color: transparent; }
+  .stage.f-b .field { background: var(--white);  border-color: var(--border); }
+
+  .slot {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 24px;
+    height: 24px;
+  }
+  .caretWrap {
+    display: flex;
+    align-items: center;
+    gap: 1px;
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+  .caret {
+    flex: 0 0 auto;
+    width: 2px;
+    height: 21px;
+    border-radius: 1px;
+    background: var(--ink);
+    animation: blink 1.06s step-end infinite;
+  }
+  @keyframes blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .caret { animation: none; } }
+  .ph {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--ink-2);
+  }
+
+  .list {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 4px 16px 16px;
+    scrollbar-width: none;
+  }
+  .list::-webkit-scrollbar { display: none; }
+  .stage.k-a .list { padding-bottom: 336px; }
+  .stage.k-b .list { padding-bottom: 16px; }
+
+  .secLabel {
+    margin: 12px 0 4px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 4px 10px 0;
+    border-radius: 16px;
+  }
+  .tile {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
+    background: var(--sunken);
+    color: var(--ink-2);
+  }
+  .rowText { min-width: 0; }
+  .rowName {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .rowSub {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--ink-2);
+  }
+
+  /* the simulated software keyboard, operating-system chrome */
+  .kb {
+    position: absolute;
+    left: 0;
+    top: 476px;
+    width: 375px;
+    height: 336px;
+    display: flex;
+    flex-direction: column;
+    background: #D1D3D9;
+  }
+  .kbBar {
+    flex: 0 0 44px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  }
+  .kbBarCell { flex: 1 1 0; height: 22px; }
+  .kbBarCell + .kbBarCell { border-left: 1px solid rgba(0, 0, 0, 0.14); }
+  .kbKeys {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 11px;
+    padding: 10px 3px 8px;
+  }
+  .kbRow {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+  }
+  .key {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 42px;
+    border-radius: 5px;
+    background: #FFFFFF;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
+    font-size: 22px;
+    font-weight: 400;
+    color: #0A0A0A;
+  }
+  .key.wide { width: 42px; background: #ADB3BD; color: #1C1C1E; }
+  .key.num { width: 42px; background: #ADB3BD; font-size: 16px; }
+  .key.space { width: 168px; }
+  .key.go { width: 88px; background: #007AFF; color: #FFFFFF; } /* hue-ok: iOS system blue, device chrome for the return key, not a Solen token */
+  .kbHome {
+    flex: 0 0 34px;
+    display: grid;
+    place-items: center;
+  }
+  .kbHomeBar {
+    width: 134px;
+    height: 5px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.75);
+  }
+
+  /* readout and notes */
+  .readout {
+    max-width: 640px;
+    margin: 14px auto 0;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--sunken);
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .notes {
+    max-width: 640px;
+    margin: 20px auto 0;
+    color: var(--ink-2);
+  }
+  .notes h2 {
+    margin: 18px 0 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .notes p { margin: 0 0 8px; }
+  .notes strong { font-weight: 600; color: var(--ink); }
+</style>
+
+<div class="page">
+  <h1>Search with the keyboard up</h1>
+  <p class="lede">
+    The real service step at 375 by 812, keyboard up, field focused, live seeded content. Flip either
+    switcher; only that axis changes. K-B plus F-B is what ships today.
+</p>
+
+  <div class="switchers">
+    <div class="group">
+      <span class="glabel">Keyboard</span>
+      <span class="seg" id="segK">
+        <button class="opt" type="button" data-k="a" aria-pressed="false">K-A scrolls under</button>
+        <button class="opt" type="button" data-k="b" aria-pressed="true">K-B shrinks above</button>
+      </span>
+    </div>
+    <div class="group">
+      <span class="glabel">Field at rest</span>
+      <span class="seg" id="segF">
+        <button class="opt" type="button" data-f="a" aria-pressed="false">F-A filled grey</button>
+        <button class="opt" type="button" data-f="b" aria-pressed="true">F-B white with hairline</button>
+      </span>
+    </div>
+  </div>
+
+  <div class="stageWrap" id="stageWrap">
+    <div class="stage k-b f-b" id="stage">
+
+      <img class="bgShot" src="_assets/home-375.png" alt="">
+      <div class="scrim"></div>
+
+      <div class="sheet" id="sheet">
+        <div class="fieldRow">
+          <div class="field" id="field">
+            <span class="slot"><svg class="lucide lucide-arrow-left" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg></span>
+            <span class="caretWrap">
+              <span class="caret"></span>
+              <span class="ph">Service, Store oder Stylist:in</span><!-- german-ok: the shipped /de placeholder, messages/de.json ui.searchOverlay.queryPlaceholder -->
+            </span>
+            <span class="slot"></span>
+            <span class="slot"></span>
+          </div>
+        </div>
+
+        <div class="list" id="list">
+          <p class="secLabel">Beliebte Stores</p><!-- german-ok: shipped /de section label, ui.searchOverlay.storesLabel -->
+
+          <div class="row">
+            <span class="tile"><svg class="lucide lucide-store" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v5"/><path d="M17.774 10.31a1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.451 0 1.12 1.12 0 0 0-1.548 0 2.5 2.5 0 0 1-3.452 0 1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.77-3.248l2.889-4.184A2 2 0 0 1 7 2h10a2 2 0 0 1 1.653.873l2.895 4.192a2.5 2.5 0 0 1-3.774 3.244"/><path d="M4 10.95V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8.05"/></svg></span>
+            <span class="rowText">
+              <span class="rowName">Muse Beauty Studio</span>
+              <span class="rowSub">Rümelinsplatz 4, Basel</span><!-- german-ok: live address from /api/salons for the real seeded salon row -->
+            </span>
+          </div>
+
+          <div class="row">
+            <span class="tile"><svg class="lucide lucide-store" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v5"/><path d="M17.774 10.31a1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.451 0 1.12 1.12 0 0 0-1.548 0 2.5 2.5 0 0 1-3.452 0 1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.77-3.248l2.889-4.184A2 2 0 0 1 7 2h10a2 2 0 0 1 1.653.873l2.895 4.192a2.5 2.5 0 0 1-3.774 3.244"/><path d="M4 10.95V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8.05"/></svg></span>
+            <span class="rowText">
+              <span class="rowName">Glow Lab Basel</span>
+              <span class="rowSub">Steinenberg 14, Basel</span>
+            </span>
+          </div>
+
+          <div class="row">
+            <span class="tile"><svg class="lucide lucide-store" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v5"/><path d="M17.774 10.31a1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.451 0 1.12 1.12 0 0 0-1.548 0 2.5 2.5 0 0 1-3.452 0 1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.77-3.248l2.889-4.184A2 2 0 0 1 7 2h10a2 2 0 0 1 1.653.873l2.895 4.192a2.5 2.5 0 0 1-3.774 3.244"/><path d="M4 10.95V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8.05"/></svg></span>
+            <span class="rowText">
+              <span class="rowName">Salon Lumière</span><!-- german-ok: real seeded salon name -->
+              <span class="rowSub">Spalenvorstadt 22, Basel</span>
+            </span>
+          </div>
+
+          <p class="secLabel">Kategorien</p><!-- german-ok: shipped /de section label, ui.searchOverlay.categoriesLabel -->
+
+          <div class="row">
+            <span class="tile"><svg class="lucide lucide-scissors" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/></svg></span>
+            <span class="rowText"><span class="rowName">Coiffeur</span></span>
+          </div>
+
+          <div class="row">
+            <span class="tile"><svg class="lucide lucide-scissors" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/></svg></span>
+            <span class="rowText"><span class="rowName">Barbershop</span></span>
+          </div>
+
+          <div class="row">
+            <span class="tile"><svg class="lucide lucide-gem" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.5 3 8 9l4 13 4-13-2.5-6"/><path d="M17 3a2 2 0 0 1 1.6.8l3 4a2 2 0 0 1 .013 2.382l-7.99 10.986a2 2 0 0 1-3.247 0l-7.99-10.986A2 2 0 0 1 2.4 7.8l2.998-3.997A2 2 0 0 1 7 3z"/><path d="M2 9h20"/></svg></span>
+            <span class="rowText"><span class="rowName">Nails</span></span>
+          </div>
+
+          <div class="row">
+            <span class="tile"><svg class="lucide lucide-leaf" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></span>
+            <span class="rowText"><span class="rowName">Spa &amp; Wellness</span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="kb" aria-hidden="true">
+        <div class="kbBar"><span class="kbBarCell"></span><span class="kbBarCell"></span><span class="kbBarCell"></span></div>
+        <div class="kbKeys">
+          <div class="kbRow"><span class="key">q</span><span class="key">w</span><span class="key">e</span><span class="key">r</span><span class="key">t</span><span class="key">z</span><span class="key">u</span><span class="key">i</span><span class="key">o</span><span class="key">p</span></div>
+          <div class="kbRow"><span class="key">a</span><span class="key">s</span><span class="key">d</span><span class="key">f</span><span class="key">g</span><span class="key">h</span><span class="key">j</span><span class="key">k</span><span class="key">l</span></div>
+          <div class="kbRow"><span class="key wide"><svg class="lucide lucide-arrow-big-up" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 13a1 1 0 0 0-1-1H5.061a1 1 0 0 1-.75-1.811l6.836-6.835a1.207 1.207 0 0 1 1.707 0l6.835 6.835a1 1 0 0 1-.75 1.811H16a1 1 0 0 0-1 1v6a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1z"/></svg></span><span class="key">y</span><span class="key">x</span><span class="key">c</span><span class="key">v</span><span class="key">b</span><span class="key">n</span><span class="key">m</span><span class="key wide"><svg class="lucide lucide-delete" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 5a2 2 0 0 0-1.344.519l-6.328 5.74a1 1 0 0 0 0 1.481l6.328 5.741A2 2 0 0 0 10 19h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"/><path d="m12 9 6 6"/><path d="m18 9-6 6"/></svg></span></div>
+          <div class="kbRow"><span class="key num">123</span><span class="key wide"><svg class="lucide lucide-globe" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg></span><span class="key space"></span><span class="key go"><svg class="lucide lucide-search" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg></span></div>
+        </div>
+        <div class="kbHome"><span class="kbHomeBar"></span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <p class="readout" id="readout"></p>
+
+  <div class="notes">
+    <h2>What the keyboard switch actually changes</h2>
+    <p>
+      <strong>K-A scrolls under.</strong> The sheet keeps its full height and ends at the bottom of
+      the screen, so the list runs behind the keyboard and you scroll content up into view. Its top
+      edge sits at 50, which is where the reference sits too, measured at 62.3pt against our 51.0pt.
+      Nothing is ever cut by a hard white edge; the row at the keyboard line is half covered the way
+      a row at the bottom of any scroller is. The list gets 336 of bottom padding so the last row can
+      still be scrolled clear of the keys. Cost, measured: only 358px of list sits above the keyboard
+      instead of 402, and this needs a code change, the sheet top stops being reduced by the keyboard
+      inset.
+    </p>
+    <p>
+      <strong>K-B shrinks above.</strong> This is what ships today. The sheet rises to 6 and its
+      bottom lands exactly on the keyboard top at 476, so every pixel of it is reachable without
+      scrolling past the keys. Because the sheet rises as well as shrinks, it actually shows
+      <strong>more</strong> list than K-A, 402px against 358px, which is the opposite of the usual
+      expectation and is why this was worth rendering rather than describing. Cost: the card top is
+      jammed 6px under the status bar with no breathing room above the field, and the row sitting on
+      the 476 line is cut by a hard white edge rather than sliding under something.
+    </p>
+
+    <h2>What the field switch actually changes</h2>
+    <p>
+      <strong>F-A filled grey.</strong> Fill #F4F4F5, no border ring. This is what the reference does
+      (its interior measures rgb(247,247,247)) and it is also what our own input law already says,
+      LOCKFILE 3.5, inputs are filled grey at rest. On this axis the reference and our own rulebook
+      agree, and the live overlay follows neither. That makes F-A the recommendation.
+    </p>
+    <p>
+      <strong>F-B white with hairline.</strong> White fill, 1px #E4E4E7. What is live now. It keeps
+      the field visually identical to the collapsed rows underneath it, which is a real argument when
+      those rows are folded away, and it is one less edge in a state that has very few.
+    </p>
+    <p>
+      Neither adds a focus ring or an ink border. That was rejected by name and is not on offer here.
+    </p>
+
+    <h2>Honest limits of this page</h2>
+    <p>
+      The list below Kategorien in the real overlay continues with the personalised look grid. Its
+      images are remote hosted and a mockup may not load remote assets, so it is left out here. It
+      begins at y625, below the keyboard line in both options, so it is never in the first viewport
+      either way and its absence changes nothing you are looking at.
+    </p>
+    <p>
+      The keyboard is a simulation at the 336px height the owner's screenshots were reproduced at.
+      Its keys do nothing. The field radius stays 16 in both options, which is the live value; our
+      input law says 12, but radius is not the axis under question and was left alone.
+    </p>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var stage = document.getElementById("stage");
+    var wrap = document.getElementById("stageWrap");
+    var readout = document.getElementById("readout");
+    var state = { k: "b", f: "b" };
+
+    function fit() {
+      // Fit by width AND by the height left under the sticky switcher bar, so on a phone the
+      // whole 812 screen sits below the controls and a flip needs no scrolling. Floor at 0.6 so
+      // it never shrinks past the point where the fill and the edges are still judgeable.
+      var byWidth = Math.min(wrap.parentElement.clientWidth, 375) / 375;
+      var bar = document.querySelector(".switchers").getBoundingClientRect();
+      var free = window.innerHeight - (bar.height + 28);
+      var byHeight = free / 812;
+      var s = Math.max(0.6, Math.min(byWidth, byHeight, 1));
+      stage.style.transform = "scale(" + s + ")";
+      wrap.style.height = (812 * s) + "px";
+      wrap.style.width = (375 * s) + "px";
+    }
+
+    function measure() {
+      var sheet = document.getElementById("sheet");
+      var list = document.getElementById("list");
+      var sr = sheet.getBoundingClientRect();
+      var lr = list.getBoundingClientRect();
+      // measured against the STAGE, not its wrapper: the wrapper carries a 1px hairline and
+      // every number on this page is meant to read exactly as it was measured on the live build
+      var wr = stage.getBoundingClientRect();
+      var sc = (wr.width / 375) || 1;
+      var sheetTop = Math.round((sr.top - wr.top) / sc);
+      var sheetH = Math.round(sr.height / sc);
+      var listTop = Math.round((lr.top - wr.top) / sc);
+      var listH = Math.round(lr.height / sc);
+      var above = Math.max(0, Math.min(listTop + listH, 476) - listTop);
+      var rows = list.querySelectorAll(".row");
+      var whole = 0;
+      for (var i = 0; i < rows.length; i++) {
+        var rr = rows[i].getBoundingClientRect();
+        if ((rr.bottom - wr.top) / sc <= 476.5) whole++;
+      }
+      readout.textContent =
+        "Sheet " + sheetTop + " to " + (sheetTop + sheetH) + ", height " + sheetH +
+        ". List box " + listTop + " to " + (listTop + listH) + ", height " + listH +
+        ". List visible above the keyboard " + above + ". Rows fully visible " + whole + " of 7.";
+    }
+
+    function apply() {
+      stage.className = "stage k-" + state.k + " f-" + state.f;
+      var ks = document.querySelectorAll("#segK .opt");
+      for (var i = 0; i < ks.length; i++) ks[i].setAttribute("aria-pressed", String(ks[i].dataset.k === state.k));
+      var fs = document.querySelectorAll("#segF .opt");
+      for (var j = 0; j < fs.length; j++) fs[j].setAttribute("aria-pressed", String(fs[j].dataset.f === state.f));
+      measure();
+    }
+
+    document.getElementById("segK").addEventListener("click", function (e) {
+      var b = e.target.closest(".opt");
+      if (!b) return;
+      state.k = b.dataset.k;
+      apply();
+    });
+    document.getElementById("segF").addEventListener("click", function (e) {
+      var b = e.target.closest(".opt");
+      if (!b) return;
+      state.f = b.dataset.f;
+      apply();
+    });
+
+    window.addEventListener("resize", function () { fit(); measure(); });
+    fit();
+    apply();
+  })();
+</script>

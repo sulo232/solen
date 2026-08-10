@@ -10,6 +10,7 @@ import { DashStatusPill } from "@/app/[locale]/_components/dashboard/DashboardUI
 import Spinner from "@/components-legacy/ui/Spinner";
 import EmptyState from "@/components-legacy/ui/EmptyState";
 import { containerVariants, itemVariants } from "@/lib/animations";
+import { resolveSwissLocale } from "@/lib/format";
 
 type StatusFilter = "active" | "pending" | "frozen";
 
@@ -128,7 +129,11 @@ export default function AllSalonsPage() {
         await fetch(`/api/admin/salons/${salon.id}/reject`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ reason: "Vom Admin eingefroren" }),
+          // Was the hardcoded German "Vom Admin eingefroren". This string is not internal:
+          // it lands in salons.rejection_reason and is shown back to the salon owner, so it
+          // was rendering German to a French or Italian operator. (council hardcode lens,
+          // 2026-07-27)
+          body: JSON.stringify({ reason: t("adminFreezeReason") }),
         });
       }
       setConfirmTarget(null);
@@ -260,7 +265,7 @@ export default function AllSalonsPage() {
                   {/* Right: date */}
                   <div className="text-right shrink-0">
                     <p className="text-[12px] text-s-ink/30">
-                      {new Date(salon.created_at).toLocaleDateString("de-CH", {
+                      {new Date(salon.created_at).toLocaleDateString(resolveSwissLocale(locale), {
                         day: "2-digit",
                         month: "2-digit",
                         year: "numeric",
@@ -291,12 +296,19 @@ export default function AllSalonsPage() {
                       </button>
                     )}
 
-                    {/* Edit link */}
+                    {/* Open the salon's public storefront. Until 2026-07-27 this linked to
+                        `/${locale}/dashboard/settings` with no salon identifier, so an admin
+                        clicking "Edit" on ANY row landed on their OWN salon's settings page ,
+                        a silent no-op that looked like a working per-row control. There is no
+                        admin-scoped salon editor to link to, so this now goes where the admin
+                        actually needs to look when judging a salon: the storefront itself. */}
                     <a
-                      href={`/${locale}/dashboard/settings`}
+                      href={`/${locale}/salon/${salon.slug}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 px-3 py-1.5 rounded-btn bg-s-bg-sunken text-s-ink-2 text-xs font-medium hover:bg-s-border transition-colors"
                     >
-                      {t("edit")} <ExternalLink size={10} />
+                      {t("viewStorefront")} <ExternalLink size={10} />
                     </a>
                   </div>
                 </div>

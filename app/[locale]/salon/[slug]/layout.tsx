@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import { cache } from "react";
 import { createServerSupabaseClient } from "@/lib/supabase";
-import { buildAlternates, generateBreadcrumbSchema } from "@/lib/seo";
+import { buildAlternates, generateBreadcrumbSchema, safeJsonLd } from "@/lib/seo";
 import { postalToCity } from "@/app/[locale]/_components/salon/_shared";
 
 const CATEGORY_LABELS: Record<string, Record<string, string>> = {
   de: { coiffeur: "Coiffeur", barbershop: "Barbershop", nails: "Nagelstudio", spa: "Spa" },
   en: { coiffeur: "Hair Salon", barbershop: "Barbershop", nails: "Nail Studio", spa: "Spa" },
-  fr: { coiffeur: "Coiffeur", barbershop: "Barbershop", nails: "Salon d'ongles", spa: "Spa" },
+  fr: { coiffeur: "Coiffeur", barbershop: "Barbershop", nails: "Store d'ongles", spa: "Spa" },
   it: { coiffeur: "Parrucchiere", barbershop: "Barbiere", nails: "Studio unghie", spa: "Spa" },
 };
 
@@ -39,13 +39,13 @@ export async function generateMetadata({
   const salon = await getSalonMeta(slug);
 
   if (!salon) {
-    return { title: "Salon — solen.ch" };
+    return { title: "Store — solen.ch" };
   }
 
   const firstCat = Array.isArray(salon.categories) && salon.categories.length > 0
     ? salon.categories[0]
     : "salon";
-  const catLabel = CATEGORY_LABELS[loc]?.[firstCat] ?? CATEGORY_LABELS.de[firstCat] ?? "Salon";
+  const catLabel = CATEGORY_LABELS[loc]?.[firstCat] ?? CATEGORY_LABELS.de[firstCat] ?? "Store";
   // live-data-ok: real city derived from the salon's own postal_code (same
   // helper SalonDetailV3/SalonBreadcrumb use on this route), null when the
   // salon has no postal_code so no city gets guessed.
@@ -133,9 +133,12 @@ export default async function SalonLayout({
 
   return (
     <>
+      {/* A4-jsonld-escape (2026-07-27): breadcrumb's last item name is
+          salon?.name, a DB-sourced value editable by the salon owner from
+          their own dashboard. safeJsonLd escapes </script> breakout. */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(breadcrumb) }}
       />
       {children}
     </>

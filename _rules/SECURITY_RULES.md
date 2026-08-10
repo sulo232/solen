@@ -140,3 +140,59 @@ if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, 
 if (req.headers.get("x-role") !== "admin") return ...
 ```
 
+### Rule S7: PUBLIC LOOKUP-BY-CODE ENDPOINTS (input-abuse-08, 2026-07-27)
+
+Any endpoint that looks up a resource by a client-supplied code or token and is reachable
+without authentication (gift voucher codes, loyalty/walk-in tokens, referral codes,
+booking reference lookups) MUST:
+
+1. **Exact-match only.** Use `.eq()`, never `.ilike()`/`.like()`. `.ilike()` treats `%`
+   and `_` as wildcards, so an unvalidated code turns the lookup into a binary-search
+   oracle over every real code in the table.
+2. **One identical generic message for every failure branch.** Not found, expired,
+   already redeemed, wrong owner all return the SAME message/status. Distinct messages
+   per branch let an attacker tell "code doesn't exist" apart from "code exists but is
+   unpaid/redeemed/expired" without ever seeing the code's real state.
+3. **A tight IP-keyed rate limiter sized to the token's entropy**, not the general
+   limiter. A 6-digit or short alphanumeric code is brute-forceable within a permissive
+   window.
+
+This pattern already exists correctly, independently re-derived with its own comment,
+in `app/api/referral/validate/route.ts`, `app/api/referral/complete/route.ts`,
+`app/api/bookings/guest-lookup/route.ts`, `app/api/search/event/route.ts`, and
+`app/api/vouchers/validate/route.ts` (the `GENERIC_INVALID_MESSAGE` constant there names
+the exact oracle it closes). Codified here so the next such endpoint (Solen's product
+surface keeps adding vouchers/loyalty/walk-in/referral codes) inherits the rule by
+reading it once, instead of an author re-deriving it from first principles or
+copy-pasting a sibling route's comment. Not gate-able by grep (verifying "every failure
+branch returns the identical message" needs semantic understanding, not a pattern
+match) so this is a code-review checklist item, not an automated check.
+
+### Rule S8: EVERY USER PHOTO/VIDEO UPLOAD ROUTE GOES THROUGH THE SHARED PROCESSOR (imagery-icons-01/06, 2026-07-27)
+
+Any route accepting a user-supplied image file (salon gallery, review photo, service
+photo, client progress photo, avatar, formula photo, salon document) MUST call
+`verifyAndStripImage()` (`lib/upload-security.ts`) before `.storage.from(...).upload()`,
+never write the raw uploaded bytes to Storage directly. One call does three things at
+once: sniffs the REAL format from magic bytes (never trusts the client's `file.type` or
+filename), strips EXIF/GPS/ICC metadata (sharp drops all metadata on re-encode unless
+`.withMetadata()` is called, which this helper never does), and bounds the served weight
+(resizes the longest edge to `maxDimension`, default 2000px, tighter for avatars, before
+encoding). A phone photo carries GPS coordinates and device identifiers by default; a
+salon owner or customer uploading from their own phone can otherwise unknowingly publish
+their home address to a public bucket anyone can download and inspect. Every one of the
+7 current upload routes calls this helper; a new one must too.
+
+### Rule S9: A PUBLIC-READ PHOTO TABLE NEEDS A PRE-PUBLISH MODERATION GATE (imagery-icons-02, 2026-07-27)
+
+`salon_portfolio_images` and `review_photos` currently have no `moderation_status` column
+and no RLS predicate gating what's publicly visible: a POST to the gallery or review-photo
+upload route inserts straight into a public-read table, live the instant it succeeds. This
+is the same trust-and-safety shape Discovery content already solved
+(`app/api/admin/discovery/moderation/route.ts`), just never extended to these two tables.
+**Known, named launch-risk gap, not yet closed**: closing it needs a migration (a
+`moderation_status` column + an RLS predicate on the public SELECT policy so an unmoderated
+row cannot render even if application code forgets to filter it) plus extending the
+Discovery moderation admin page to cover both tables. Full writeup:
+`_design-system/PHOTO_STRATEGY.md` section 6.
+

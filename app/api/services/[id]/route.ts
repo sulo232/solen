@@ -5,6 +5,7 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 import { validateBody, serviceUpdateSchema } from "@/lib/validations";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import type { Database } from "@/lib/database.types";
+import { translateToLocales } from "@/lib/ai/translate";
 
 // GET /api/services/[id] — Get a single service
 export async function GET(
@@ -67,6 +68,25 @@ export async function PATCH(
 
   if (Object.keys(updates).length === 0) {
     return NextResponse.json({ error: "No updates" }, { status: 400 });
+  }
+
+  // RE-TRANSLATE ON EDIT (2026-07-27). Without this, changing the German name leaves the OLD
+  // French and Italian attached to it, and a stale translation is worse than a missing one: it
+  // looks authoritative, and the fallback chain in lib/i18n/localized-field.ts will happily
+  // serve it because it is non-empty. Only fires when the German source actually changed, so
+  // editing a price or a duration costs nothing.
+  //
+  // A salon's OWN fr/it edit wins: if this request carries name_fr or name_it explicitly, the
+  // machine does not overwrite it. Nothing auto-translated is authoritative over a human.
+  if (typeof updates.name_de === "string" && updates.name_de.trim()) {
+    const t = await translateToLocales(updates.name_de, "de", "name");
+    if (t.fr && updates.name_fr === undefined) updates.name_fr = t.fr;
+    if (t.it && updates.name_it === undefined) updates.name_it = t.it;
+  }
+  if (typeof updates.description_de === "string" && updates.description_de.trim()) {
+    const t = await translateToLocales(updates.description_de, "de", "description");
+    if (t.fr && updates.description_fr === undefined) updates.description_fr = t.fr;
+    if (t.it && updates.description_it === undefined) updates.description_it = t.it;
   }
 
   // `updates` is built from validateBody(serviceUpdateSchema, ...) key-by-key above, so every

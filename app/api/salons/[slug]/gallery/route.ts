@@ -5,6 +5,8 @@ import { checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 import { validateBody, salonPortfolioCategorySchema } from "@/lib/validations";
 import { isValidPortfolioCategoryForSalon } from "@/lib/portfolio-categories";
+import { verifyAndStripImage } from "@/lib/upload-security";
+import { logAuditEvent } from "@/lib/audit";
 import type { Database } from "@/lib/database.types";
 
 const getSupabase = () => createClient<Database>(
@@ -56,6 +58,12 @@ export async function POST(
     const file = formData.get("file") as File;
     const sessionToken = req.headers.get("Authorization")?.split("Bearer ")[1];
 
+    // A15-upload-hardening (2026-07-27): unlike the other 8 formData routes, this one
+    // authenticates via an explicit Authorization: Bearer header, not the ambient session
+    // cookie. A plain HTML form cannot set that header, so a cross-site multipart form post
+    // cannot forge a request here the way it can against a cookie-authenticated route. No
+    // extra CSRF header is needed on this route for that reason; see lib/upload-security.ts
+    // requireUploadHeader for the cookie-authenticated routes that do need it.
     if (!sessionToken) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -99,15 +107,7 @@ export async function POST(
       category = rawCategory;
     }
 
-    // Verify constraints
-    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
-    if (!allowedTypes.includes(file.type)) {
-      return NextResponse.json(
-        { error: "Invalid file type. Only JPG, PNG and WEBP allowed." },
-        { status: 400 }
-      );
-    }
-    
+    // Size cap on the raw upload, before the (more expensive) byte-level decode below.
     if (file.size > 5 * 1024 * 1024) {
       return NextResponse.json(
         { error: "File exceeds 5MB size limit." },
@@ -124,16 +124,33 @@ export async function POST(
       );
     }
 
-    const fileExt = file.name.split(".").pop();
-    const fileName = `${slug}-${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+    // A15-upload-hardening (2026-07-27): the old check only trusted the client-supplied
+    // `file.type` string and derived the storage extension from the client-supplied
+    // filename, neither of which is verified server-side. verifyAndStripImage reads the
+    // real magic-byte signature (rejects anything that is not actually a decodable
+    // jpeg/png/webp, e.g. a renamed .txt) and re-encodes the file, which strips any
+    // EXIF/GPS metadata a salon owner's phone photo might carry.
+    let processed;
+    try {
+      processed = await verifyAndStripImage(Buffer.from(await file.arrayBuffer()), ["jpeg", "png", "webp"]);
+    } catch {
+      return NextResponse.json(
+        { error: "Invalid file type. Only JPG, PNG and WEBP allowed." },
+        { status: 400 }
+      );
+    }
+
+    const fileName = `${slug}-${Date.now()}-${Math.random().toString(36).substring(7)}.${processed.ext}`;
     const filePath = `${slug}/${fileName}`;
 
-    // Upload to Supabase Storage
+    // Upload to Supabase Storage. Uploads the re-encoded (EXIF-stripped) buffer, and sets
+    // contentType from the detected format, not the client-supplied file.type.
     const { data: uploadData, error: uploadError } = await getSupabase().storage
       .from("salon-gallery")
-      .upload(filePath, file, {
+      .upload(filePath, processed.buffer, {
         cacheControl: "3600",
         upsert: false,
+        contentType: processed.contentType,
       });
 
     if (uploadError) {
@@ -194,7 +211,10 @@ export async function POST(
 }
 
 export async function DELETE(
-  req: Request,
+  // NextRequest, not Request: logAuditEvent reads the forwarded IP and user agent off it
+  // for the admin-takedown entry below. NextRequest extends Request, so every existing
+  // req.json()/req.headers call in this handler is unaffected.
+  req: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
@@ -218,7 +238,27 @@ export async function DELETE(
       .eq("id", slug)
       .single();
 
-    if (salonError || !salon || salon.owner_id !== user.id) {
+    if (salonError || !salon) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
+    // Admin takedown branch (owner ask 2026-07-27: "we need to be able to temove but also
+    // salon to be able to temove their own pics"). Before this, the ONLY person who could
+    // remove a salon photo was that salon's own owner, so a reported or illegal photo could
+    // not be taken down by the platform at all , nothing under app/api/admin/** touches
+    // gallery_urls, salon_portfolio_images or the salon-gallery bucket either. Same shape as
+    // the ownership check at app/api/salons/[slug]/route.ts:61-64. DELETE only: upload (POST)
+    // and re-categorise (PATCH) stay owner-only, an admin has no business adding a salon's
+    // photos. The storage-path guard below still pins the object to this salon's own prefix,
+    // so an admin cannot reach another salon's folder through this route.
+    const isOwner = salon.owner_id === user.id;
+    let isAdminActor = false;
+    if (!isOwner) {
+      const { data: actorProfile } = await getSupabase()
+        .from("profiles").select("role").eq("id", user.id).maybeSingle();
+      isAdminActor = actorProfile?.role === "admin";
+    }
+    if (!isOwner && !isAdminActor) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
@@ -288,6 +328,13 @@ export async function DELETE(
 
     if (portfolioDeleteError) {
       console.error("[gallery DELETE] salon_portfolio_images delete failed:", portfolioDeleteError);
+    }
+
+    // A platform takedown is an action ON someone else's business, so it goes in the audit
+    // log the same way approve/reject/freeze already do. An owner deleting their own photo
+    // is ordinary self-service and is not logged.
+    if (isAdminActor) {
+      await logAuditEvent(req, user.id, "salon.photo.takedown", "salon", slug, { url });
     }
 
     return NextResponse.json({ success: true });

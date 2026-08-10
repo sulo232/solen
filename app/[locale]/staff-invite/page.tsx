@@ -58,7 +58,7 @@ export default function StaffInvitePage() {
   const labels = {
     de: {
       title: "Team-Einladung",
-      desc: "Du wurdest eingeladen, einem Salon-Team beizutreten.",
+      desc: "Du wurdest eingeladen, einem Store-Team beizutreten.",
       accept: "Einladung annehmen",
       success: "Willkommen im Team!",
       successDesc: "Du kannst jetzt auf das Dashboard zugreifen.",
@@ -68,7 +68,7 @@ export default function StaffInvitePage() {
     },
     en: {
       title: "Team Invitation",
-      desc: "You have been invited to join a salon team.",
+      desc: "You have been invited to join a store team.",
       accept: "Accept Invitation",
       success: "Welcome to the team!",
       successDesc: "You can now access the dashboard.",

@@ -144,6 +144,84 @@ export async function GET(req: NextRequest) {
       .select("*")
       .eq("user_id", user.id);
 
+    // privacy-compliance-02: salon-authored client records about this user.
+    // These are personal data ABOUT the data subject (GDPR Art. 15 / nFADP
+    // Art. 25 right of access), not just data the user typed themselves, so
+    // they belong in the export even though a salon staffer wrote the row.
+    // Same 13 tables the erasure cron (process-deletions/route.ts) already
+    // treats as this user's personal data; export must match that list.
+
+    // Fetch client notes (explicit column list, not "*": client_notes is a
+    // sensitive table per no-select-star-sensitive.py). Includes BOTH
+    // note_type values ("booking" and "permanent") since the export
+    // endpoint bypasses the customer-facing RLS partition intentionally,
+    // the right of access covers data about the subject regardless of who
+    // wrote it or which app surface would normally show it.
+    const { data: clientNotes } = await admin
+      .from("client_notes")
+      .select("booking_id, created_at, created_by, customer_id, id, note, note_type, salon_id, updated_at")
+      .eq("customer_id", user.id);
+
+    const { data: consultationNotes } = await admin
+      .from("consultation_notes")
+      .select("*")
+      .eq("client_id", user.id);
+
+    const { data: clientFormulas } = await admin
+      .from("client_formulas")
+      .select("*")
+      .eq("customer_id", user.id);
+
+    const { data: nailClientPreferences } = await admin
+      .from("nail_client_preferences")
+      .select("*")
+      .eq("customer_id", user.id);
+
+    const { data: handChartNotes } = await admin
+      .from("hand_chart_notes")
+      .select("*")
+      .eq("customer_id", user.id);
+
+    const { data: barberCutHistory } = await admin
+      .from("barber_cut_history")
+      .select("*")
+      .eq("customer_id", user.id);
+
+    const { data: clientPhotos } = await admin
+      .from("client_photos")
+      .select("*")
+      .eq("customer_id", user.id);
+
+    const { data: spaTreatmentOutcomes } = await admin
+      .from("spa_treatment_outcomes")
+      .select("*")
+      .eq("client_id", user.id);
+
+    const { data: waxingSensitivityLog } = await admin
+      .from("waxing_sensitivity_log")
+      .select("*")
+      .eq("client_id", user.id);
+
+    const { data: wellnessJournals } = await admin
+      .from("wellness_journals")
+      .select("*")
+      .eq("client_id", user.id);
+
+    const { data: makeupFaceCharts } = await admin
+      .from("makeup_face_charts")
+      .select("*")
+      .eq("client_id", user.id);
+
+    const { data: bridalWorkflows } = await admin
+      .from("bridal_workflows")
+      .select("*")
+      .eq("client_id", user.id);
+
+    const { data: fadeBlueprints } = await admin
+      .from("fade_blueprints")
+      .select("*")
+      .eq("client_id", user.id);
+
     const exportData = {
       exported_at: new Date().toISOString(),
       user: {
@@ -170,7 +248,20 @@ export async function GET(req: NextRequest) {
       recurring_booking_rules: recurringBookingRules || [],
       push_subscriptions: pushSubscriptions || [],
       voucher_redemptions: voucherRedemptions || [],
-      tips: tips || []
+      tips: tips || [],
+      client_notes: clientNotes || [],
+      consultation_notes: consultationNotes || [],
+      client_formulas: clientFormulas || [],
+      nail_client_preferences: nailClientPreferences || [],
+      hand_chart_notes: handChartNotes || [],
+      barber_cut_history: barberCutHistory || [],
+      client_photos: clientPhotos || [],
+      spa_treatment_outcomes: spaTreatmentOutcomes || [],
+      waxing_sensitivity_log: waxingSensitivityLog || [],
+      wellness_journals: wellnessJournals || [],
+      makeup_face_charts: makeupFaceCharts || [],
+      bridal_workflows: bridalWorkflows || [],
+      fade_blueprints: fadeBlueprints || []
     };
 
     // Log the export action
@@ -192,7 +283,20 @@ export async function GET(req: NextRequest) {
       (recurringBookingRules?.length || 0) +
       (pushSubscriptions?.length || 0) +
       (voucherRedemptions?.length || 0) +
-      (tips?.length || 0);
+      (tips?.length || 0) +
+      (clientNotes?.length || 0) +
+      (consultationNotes?.length || 0) +
+      (clientFormulas?.length || 0) +
+      (nailClientPreferences?.length || 0) +
+      (handChartNotes?.length || 0) +
+      (barberCutHistory?.length || 0) +
+      (clientPhotos?.length || 0) +
+      (spaTreatmentOutcomes?.length || 0) +
+      (waxingSensitivityLog?.length || 0) +
+      (wellnessJournals?.length || 0) +
+      (makeupFaceCharts?.length || 0) +
+      (bridalWorkflows?.length || 0) +
+      (fadeBlueprints?.length || 0);
     await logAuditEvent(req, user.id, "account.data_export", "user", user.id, { record_count: recordCount });
 
     return new NextResponse(JSON.stringify(exportData, null, 2), {

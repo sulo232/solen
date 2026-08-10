@@ -33,6 +33,9 @@ export default function FormulaPhotoUpload({
 
       const res = await fetch("/api/dashboard/coiffeur/formula-photo", {
         method: "POST",
+        // Required since 962fd4c65 (see ReviewForm.tsx for the why). Without it every coiffeur
+        // formula before/after photo upload 403s.
+        headers: { "x-solen-upload": "1" },
         body: formData,
       });
       if (res.ok) {

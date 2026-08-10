@@ -215,8 +215,8 @@ export default function WarumSolenPage() {
 
       {/* ── Section 1: Chat ──
           V3-D330: drop chatEyebrow per §2.5 (max 1/surface = 0 on this surface);
-          pill bg s-accent-pale → s-bg-sunken + icon text-s-accent → text-s-ink-3
-          per §1.5 forbidden (decorative accent); bullet check icons → s-ink-3
+          pill bg s-accent-pale → s-bg-sunken + icon text-s-accent → text-s-ink-2
+          per §1.5 forbidden (decorative accent); bullet check icons → s-ink-2
           (was s-accent decorative tint); H2 tracking -0.02 → -0.01 per Section
           H2 recipe in §2.5. */}
       <Section id="section-chat" className="bg-s-bg-sunken">
@@ -225,8 +225,8 @@ export default function WarumSolenPage() {
             <div>
               <div className="mb-5">
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-pill mb-4 bg-s-bg-sunken border border-s-border">
-                  <MessageCircle size={14} className="text-s-ink-3" />
-                  <SolenExclusiveBadge featureDescription="Chatte direkt mit deinem Salon, nur bei Solen." />
+                  <MessageCircle size={14} className="text-s-ink-2" />
+                  <SolenExclusiveBadge featureDescription="Chatte direkt mit deinem Store, nur bei Solen." />
                 </div>
                 <h2 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.25] tracking-[-0.01em] text-s-ink">
                   {t("chatTitle")}
@@ -234,15 +234,15 @@ export default function WarumSolenPage() {
               </div>
               <div className="space-y-3 text-s-ink-2 font-body font-normal">
                 <p className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-s-ink-3 shrink-0 mt-0.5" />
+                  <Check className="w-4 h-4 text-s-ink-2 shrink-0 mt-0.5" />
                   {t("chatBullet1")}
                 </p>
                 <p className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-s-ink-3 shrink-0 mt-0.5" />
+                  <Check className="w-4 h-4 text-s-ink-2 shrink-0 mt-0.5" />
                   {t("chatBullet2")}
                 </p>
                 <p className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-s-ink-3 shrink-0 mt-0.5" />
+                  <Check className="w-4 h-4 text-s-ink-2 shrink-0 mt-0.5" />
                   {t("chatBullet3")}
                 </p>
               </div>
@@ -266,10 +266,10 @@ export default function WarumSolenPage() {
                 </div>
                 {/* Price offer card */}
                 <div className="animate-price-appear absolute -bottom-4 -right-4 bg-white rounded-[12px] border border-s-border px-4 py-3 w-44 shadow-elevation-2">
-                  {/* V3-D330: "Preisangebot" stays as Tag/Status role (semantic "this is a quote"). Tracking 0.16 → 0.08 canonical. "Balayage + Pflege" text-s-accent → text-s-ink-3 per §1.5 forbidden. */}
-                  <p className="text-[12px] md:text-[12px] font-body font-semibold uppercase tracking-[0.08em] text-s-ink-3">Preisangebot</p>
+                  {/* V3-D330: "Preisangebot" stays as Tag/Status role (semantic "this is a quote"). Tracking 0.16 → 0.08 canonical. "Balayage + Pflege" text-s-accent → text-s-ink-2 per §1.5 forbidden. */}
+                  <p className="text-[12px] md:text-[12px] font-body font-semibold uppercase tracking-[0.08em] text-s-ink-2">Preisangebot</p>
                   <p className="data-text font-bold text-xl text-s-ink">CHF 120</p>
-                  <p className="text-xs font-heading text-s-ink-3">Balayage + Pflege</p>
+                  <p className="text-xs font-heading text-s-ink-2">Balayage + Pflege</p>
                 </div>
               </div>
             </div>
@@ -277,7 +277,7 @@ export default function WarumSolenPage() {
             <div className="order-1 md:order-2">
               <div className="mb-5">
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-pill mb-4 bg-s-bg-sunken border border-s-border">
-                  <Camera size={14} className="text-s-ink-3" />
+                  <Camera size={14} className="text-s-ink-2" />
                   <SolenExclusiveBadge featureDescription="Schick ein Foto und erhalte einen individuellen Preis." />
                 </div>
                 <h2 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.25] tracking-[-0.01em] text-s-ink">
@@ -286,15 +286,15 @@ export default function WarumSolenPage() {
               </div>
               <div className="space-y-3 text-s-ink-2 font-body font-normal">
                 <p className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-s-ink-3 shrink-0 mt-0.5" />
+                  <Check className="w-4 h-4 text-s-ink-2 shrink-0 mt-0.5" />
                   {t("photoBullet1")}
                 </p>
                 <p className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-s-ink-3 shrink-0 mt-0.5" />
+                  <Check className="w-4 h-4 text-s-ink-2 shrink-0 mt-0.5" />
                   {t("photoBullet2")}
                 </p>
                 <p className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-s-ink-3 shrink-0 mt-0.5" />
+                  <Check className="w-4 h-4 text-s-ink-2 shrink-0 mt-0.5" />
                   {t("photoBullet3")}
                 </p>
               </div>
@@ -309,8 +309,8 @@ export default function WarumSolenPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-10">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-pill mb-4 bg-s-bg-sunken border border-s-border">
-              <BarChart3 size={14} className="text-s-ink-3" />
-              <SolenExclusiveBadge featureDescription="Vergleiche bis zu 3 Salons, nur bei Solen." />
+              <BarChart3 size={14} className="text-s-ink-2" />
+              <SolenExclusiveBadge featureDescription="Vergleiche bis zu 3 Stores, nur bei Solen." />
             </div>
             <h2 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.25] tracking-[-0.01em] text-s-ink mb-3">
               {t("compareTitle")}
@@ -331,7 +331,7 @@ export default function WarumSolenPage() {
             <div>
               <div className="mb-5">
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-pill mb-4 bg-s-bg-sunken border border-s-border">
-                  <Star size={14} className="text-s-ink-3" />
+                  <Star size={14} className="text-s-ink-2" />
                   <SolenExclusiveBadge featureDescription="Sammle Stempel bei jedem Besuch." />
                 </div>
                 <h2 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.25] tracking-[-0.01em] text-s-ink">
@@ -340,15 +340,15 @@ export default function WarumSolenPage() {
               </div>
               <div className="space-y-3 text-s-ink-2 font-body font-normal">
                 <p className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-s-ink-3 shrink-0 mt-0.5" />
+                  <Check className="w-4 h-4 text-s-ink-2 shrink-0 mt-0.5" />
                   {t("loyaltyBullet1")}
                 </p>
                 <p className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-s-ink-3 shrink-0 mt-0.5" />
+                  <Check className="w-4 h-4 text-s-ink-2 shrink-0 mt-0.5" />
                   {t("loyaltyBullet2")}
                 </p>
                 <p className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-s-ink-3 shrink-0 mt-0.5" />
+                  <Check className="w-4 h-4 text-s-ink-2 shrink-0 mt-0.5" />
                   {t("loyaltyBullet3")}
                 </p>
               </div>
@@ -375,7 +375,7 @@ export default function WarumSolenPage() {
             <div>
               <div className="mb-5">
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-pill mb-4 bg-s-bg-sunken border border-s-border">
-                  <MapPin size={14} className="text-s-ink-3" />
+                  <MapPin size={14} className="text-s-ink-2" />
                   <SolenExclusiveBadge featureDescription="Sieh Preise direkt auf der Karte." />
                 </div>
                 <h2 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.25] tracking-[-0.01em] text-s-ink">
@@ -384,15 +384,15 @@ export default function WarumSolenPage() {
               </div>
               <div className="space-y-3 text-s-ink-2 font-body font-normal">
                 <p className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-s-ink-3 shrink-0 mt-0.5" />
+                  <Check className="w-4 h-4 text-s-ink-2 shrink-0 mt-0.5" />
                   {t("mapBullet1")}
                 </p>
                 <p className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-s-ink-3 shrink-0 mt-0.5" />
+                  <Check className="w-4 h-4 text-s-ink-2 shrink-0 mt-0.5" />
                   {t("mapBullet2")}
                 </p>
                 <p className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-s-ink-3 shrink-0 mt-0.5" />
+                  <Check className="w-4 h-4 text-s-ink-2 shrink-0 mt-0.5" />
                   {t("mapBullet3")}
                 </p>
               </div>

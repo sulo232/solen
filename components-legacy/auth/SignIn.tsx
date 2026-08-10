@@ -179,6 +179,8 @@ export default function SignIn() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder={t("email_placeholder")}
             required
+            autoComplete="email"
+            inputMode="email"
             className="w-full px-4 py-3.5 bg-[--raised] text-sm font-body text-s-ink placeholder:text-s-ink/30 transition-colors" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
           />
           <button
@@ -208,6 +210,8 @@ export default function SignIn() {
           onChange={(e) => setEmail(e.target.value)}
           placeholder={t("email_placeholder")}
           required
+          autoComplete="email"
+          inputMode="email"
           className="w-full h-14 px-5 text-[15px] text-s-ink placeholder:text-s-ink-2 focus:outline-none transition-colors" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
         />
         <div className="relative">
@@ -217,6 +221,7 @@ export default function SignIn() {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Passwort"
             required
+            autoComplete="current-password"
             className="w-full h-14 px-5 !pr-12 text-[15px] text-s-ink placeholder:text-s-ink-2 focus:outline-none transition-colors" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
           />
           <button

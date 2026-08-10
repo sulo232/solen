@@ -191,11 +191,11 @@ export default function AdminSandboxPage() {
         <div className="flex items-center gap-2">
           <FlaskConical size={14} className="text-s-star" />
           <p className="text-[12px] font-heading uppercase tracking-[.18em] text-s-star">
-            Platform Test-Salons
+            Platform Test-Stores
           </p>
         </div>
         <p className="text-[12px] text-s-ink-2">
-          Seeded salons appear on the public site only when no real salons exist for that city+category.
+          Seeded stores appear on the public site only when no real stores exist for that city+category.
           They include services &amp; availability and are fully editable.
         </p>
 

@@ -1,0 +1,285 @@
+<style>
+/* ── tok, Token sheet ──────────────────────────────────────────────────────────
+   Every sibling part inherits these names. Values are transcribed from the live
+   source of truth, not invented: tailwind.config.js (colours, shadows) and
+   app/[locale]/_components/homepage/SearchBar.tsx (easing, tracking, icon
+   stroke). Provenance is noted per token below.
+   `:root` and the `@font-face` at-rules are the only unprefixed selectors in
+   this file, and they must be: the whole point of the part is that siblings
+   resolve `var(--s-*)` from their own prefixed scopes. Everything else is
+   `.tok-`-prefixed.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+/* Self-hosted, root-relative. The static server drops the trailing slash, so a
+   relative ../ resolves one level too high; absolute paths only. */
+@font-face{font-family:"InterV";src:url("/_mockups/_assets/fonts/inter-latin-var.woff2") format("woff2");font-weight:100 900;font-display:block;}
+@font-face{font-family:"InterTightV";src:url("/_mockups/_assets/fonts/inter-tight-latin-var.woff2") format("woff2");font-weight:100 900;font-display:block;}
+
+:root{
+  color-scheme: light only;   /* single light theme, positively asserted so no
+                                 browser auto-darkens the mockup */
+
+  /* ── PALETTE, from tailwind.config.js ──
+     The two ratios after each hex are the contrast values already computed in
+     CLAUDE.md, "against white / against --s-sunken". They decide each token's
+     LEGAL ROLE, so they live inline right where you reach for the token. */
+  --s-white:  #FFFFFF;
+  --s-ink:    #0A0A0A;   /* 20.4 / 18.6
+                            body, headings, the one commit CTA */
+  --s-ink2:   #6B6B6B;   /* 5.33 / 4.85, AA on both.
+                            The ONLY grey legal as text: meta, placeholders,
+                            chevrons, hints. Tertiary #9CA3AF is chart-only. */
+  --s-line:   #E4E4E7;   /* hairline, one token for every divider */
+  --s-sunken: #F4F4F5;   /* the cool tray, no warm cream anywhere */
+  --s-accent: #276EF1;   /* 4.58 / 4.17, AA on WHITE only.
+                            FAILS AA as text on --s-sunken.
+                            Small clickable bits: text links, small chips,
+                            review counts. Never a big CTA, never a bare count. */
+  --s-star:   #FFC32B;   /* 1.60 / 1.46, fails even the 3:1 graphic floor.
+                            Icon fill only, and never the sole carrier of
+                            meaning without an ink companion value. */
+  --s-ok:     #16A34A;   /* 3.30 / 3.00, icon or disc fill only, never body text */
+
+  /* ── TYPE RAMP ──
+     Six steps. This is a PALETTE, not a per-screen set: the type-budget gate
+     caps ONE screen at 4 body sizes (under 28px) plus 1 display size (28px and
+     up). Five body steps are offered so directions can differ from each other;
+     any single assembled direction must drop one. */
+  --s-t12:  12px;     /* eyebrow, legal, tabular meta */
+  --s-t13:  13.5px;   /* dense meta */
+  --s-t135: 13.5px;   /* alias of --s-t13, same value */
+  --s-t14:  13.5px;   /* alias of --s-t13, same value */
+  --s-t15:  15px;     /* BODY, see the ratio note below before changing */
+  --s-t17:  17px;     /* lead, card title */
+  --s-t20:  20px;     /* section H2 */
+  --s-t28:  28px;     /* display anchor, one per screen */
+
+  /* EMPHASIS BUDGET, the arithmetic that constrains the ramp.
+     The anchor must be at least 1.8x body.
+       28/15 = 1.867 PASS
+       28/17 = 1.647 FAIL
+     So body is --s-t15. A direction that promotes --s-t17 to body breaks the
+     floor unless its anchor also grows past 30.6px. */
+
+  /* ── WEIGHT ──
+     The gate caps one screen at 2 distinct weights, so a direction picks two of
+     these three. Airbnb's PDP carries its emphasis at 500, not 600, so 600 is
+     the exception rather than the default. Ceiling: at most ~30% of visible
+     text at weight 600 or above. */
+  --s-w4: 400;
+  --s-w5: 500;
+  --s-w6: 600;
+
+  /* ── FAMILY ── Inter Tight from 24px up, Inter for body. Never Geist. */
+  --s-font-body:    "InterV", -apple-system, system-ui, sans-serif;
+  --s-font-display: "InterTightV", -apple-system, system-ui, sans-serif;
+
+  /* tracking, measured off SearchBar.tsx (CTA -0.01em, row label -0.005em) */
+  --s-tr-tight: -0.01em;
+  --s-tr-body:  -0.005em;
+
+  /* line-height, NOT LOCKED ANYWHERE in the system. These are derived defaults,
+     offered so six parts do not each invent a different one. Treat as soft: a
+     measured reference beats them. */
+  --s-lh-tight: 1.15;
+  --s-lh-snug:  1.30;
+  --s-lh-body:  1.45;
+
+  /* ── RADII, the locked ladder ── */
+  --s-r12:    12px;   /* input */
+  --s-r16:    16px;   /* individual entity card, form or summary card */
+  --s-r24:    24px;   /* grouped list card */
+  --s-rpill:  999px;  /* button, chip */
+  --s-r22:    22px;   /* the LIVE salon-card photo radius, SalonCard.tsx:426
+                         renders a 22px corner. It diverges from the locked 16px
+                         entity card above, and the brief measured the same 22 on
+                         /de. Both values are real, so both are named here rather
+                         than one being quietly dropped. A card part picks one
+                         deliberately and says which. */
+
+  /* ── DEPTH, verbatim from tailwind.config.js lines 275 and 279 ──
+     A card carrying elevation DROPS its border, never both. */
+  --s-shadow-whisper: 0 1px 3px rgba(10,10,10,0.04), 0 10px 28px -14px rgba(10,10,10,0.10);
+  --s-shadow-e2:      0 2px 8px rgba(50,47,44,0.09);
+
+  /* ── SPACE, 4-pt scale ──
+     --s-gut is the measured page edge on live /de (logo starts at x=16). */
+  --s-gut:   16px;
+  --s-pad:   16px;
+  --s-gap:   12px;
+  --s-gap-s:  8px;
+  --s-tap:   44px;   /* touch-target floor */
+  --s-safe-b: env(safe-area-inset-bottom, 0px);
+
+  /* ── MOTION ──
+     SearchBar.tsx islandTransition, ease [0.22, 1, 0.36, 1]. NOTE this is NOT
+     tailwind's `ease-glide` (0.16, 1, 0.3, 1); both curves exist in the estate.
+     Parts use this one so the assembled page moves as a single thing. */
+  --s-glide: cubic-bezier(.22,1,.36,1);
+  --s-dur:   .5s;
+  --s-dur-s: .25s;
+
+  /* ── ICON ──
+     Lucide, stroke 2 as in SearchBar. Real Lucide markup only, never a
+     hand-drawn path. */
+  --s-icon-sw: 2;
+  --s-icon:    18px;
+}
+
+/* ── BASE ──
+   The frame every direction sits in. 390px is the measurement viewport the
+   floors are graded at. */
+.tok-vp,
+.tok-vp *{box-sizing:border-box;margin:0;padding:0;}
+
+.tok-vp{
+  width:390px;
+  margin:0 auto;
+  background:var(--s-white);
+  color:var(--s-ink);
+  font-family:var(--s-font-body);
+  font-size:15px;
+  font-weight:400;
+  line-height:var(--s-lh-body);
+  letter-spacing:var(--s-tr-body);
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+  -webkit-font-smoothing:antialiased;
+  -webkit-tap-highlight-color:transparent;
+}
+
+.tok-vp h1,.tok-vp h2,.tok-vp h3{
+  font-family:var(--s-font-display);
+  line-height:var(--s-lh-tight);
+  letter-spacing:var(--s-tr-tight);
+  font-weight:inherit;
+}
+
+.tok-vp button,.tok-vp input,.tok-vp select,.tok-vp textarea{
+  font:inherit;color:inherit;background:none;border:0;
+}
+.tok-vp button{cursor:pointer;}
+.tok-vp img{display:block;max-width:100%;}
+.tok-vp svg{display:block;flex:none;}
+.tok-vp ul,.tok-vp ol{list-style:none;}
+.tok-vp a{color:inherit;text-decoration:none;}
+
+/* FOCUS.
+   A statutory floor (WCAG 2.4.7 and 2.4.11) meets a thrice-rejected ring. The
+   resolution is neither a ring nor nothing: ONE 2px ink bottom edge inside the
+   control. 21:1 against white, so it is perceivable, and it is not the halo the
+   owner rejected.
+   Divergence worth knowing: SalonCard.tsx:410 still ships a 2px ink outline as
+   its focus treatment, a shape the current gate would refuse if written today. */
+.tok-vp :focus-visible{
+  outline:none;
+  box-shadow:inset 0 -2px 0 var(--s-ink);
+}
+
+/* photo fallback, because a missing photo is never a bare grey box */
+.tok-ph{
+  background:var(--s-sunken);
+  display:grid;place-items:center;
+  color:var(--s-ink2);
+}
+
+/* screen-reader-only, for icon-only controls that still need a name */
+.tok-sr{
+  position:absolute;width:1px;height:1px;overflow:hidden;
+  clip-path:inset(50%);white-space:nowrap;
+}
+</style>
+
+<template id="tok-reset">
+  <style>
+    @font-face{font-family:"InterV";src:url("/_mockups/_assets/fonts/inter-latin-var.woff2") format("woff2");font-weight:100 900;font-display:block;}
+    @font-face{font-family:"InterTightV";src:url("/_mockups/_assets/fonts/inter-tight-latin-var.woff2") format("woff2");font-weight:100 900;font-display:block;}
+    :root{
+      color-scheme: light only;
+      --s-white:#FFFFFF; --s-ink:#0A0A0A; --s-ink2:#6B6B6B; --s-line:#E4E4E7;
+      --s-sunken:#F4F4F5; --s-accent:#276EF1; --s-star:#FFC32B; --s-ok:#16A34A;
+      --s-t12:12px; --s-t13:13.5px; --s-t135:13.5px; --s-t14:13.5px;
+      --s-t15:15px; --s-t17:17px; --s-t20:20px; --s-t28:28px;
+      --s-w4:400; --s-w5:500; --s-w6:600;
+      --s-font-body:"InterV",-apple-system,system-ui,sans-serif;
+      --s-font-display:"InterTightV",-apple-system,system-ui,sans-serif;
+      --s-tr-tight:-0.01em; --s-tr-body:-0.005em;
+      --s-lh-tight:1.15; --s-lh-snug:1.30; --s-lh-body:1.45;
+      --s-r12:12px; --s-r16:16px; --s-r22:22px; --s-r24:24px; --s-rpill:999px;
+      --s-shadow-whisper:0 1px 3px rgba(10,10,10,0.04), 0 10px 28px -14px rgba(10,10,10,0.10);
+      --s-shadow-e2:0 2px 8px rgba(50,47,44,0.09);
+      --s-gut:16px; --s-pad:16px; --s-gap:12px; --s-gap-s:8px; --s-tap:44px;
+      --s-safe-b:env(safe-area-inset-bottom, 0px);
+      --s-glide:cubic-bezier(.22,1,.36,1); --s-dur:.5s; --s-dur-s:.25s;
+      --s-icon-sw:2; --s-icon:18px;
+    }
+    html,body{background:var(--s-white);}
+    body{margin:0;}
+    .tok-vp,.tok-vp *{box-sizing:border-box;margin:0;padding:0;}
+    .tok-vp{
+      width:390px;margin:0 auto;background:var(--s-white);color:var(--s-ink);
+      font-family:var(--s-font-body);font-size:15px;font-weight:400;
+      line-height:var(--s-lh-body);letter-spacing:var(--s-tr-body);
+      -webkit-text-size-adjust:100%;text-size-adjust:100%;
+      -webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;
+    }
+    .tok-vp h1,.tok-vp h2,.tok-vp h3{font-family:var(--s-font-display);line-height:var(--s-lh-tight);letter-spacing:var(--s-tr-tight);font-weight:inherit;}
+    .tok-vp button,.tok-vp input,.tok-vp select,.tok-vp textarea{font:inherit;color:inherit;background:none;border:0;}
+    .tok-vp button{cursor:pointer;}
+    .tok-vp img{display:block;max-width:100%;}
+    .tok-vp svg{display:block;flex:none;}
+    .tok-vp ul,.tok-vp ol{list-style:none;}
+    .tok-vp a{color:inherit;text-decoration:none;}
+    .tok-vp :focus-visible{outline:none;box-shadow:inset 0 -2px 0 var(--s-ink);}
+    .tok-ph{background:var(--s-sunken);display:grid;place-items:center;color:var(--s-ink2);}
+    .tok-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;}
+  </style>
+</template>
+
+<template id="tok-vp">
+  <div class="tok-vp"></div>
+</template>
+
+<!--
+  tok, the token sheet. type-budget-ok (this is a token PALETTE, not a designed
+  screen: the 6-step ramp is declared for siblings to draw 4+1 from, and the only
+  rendered type here is the 15px/400 body base).
+
+  Grounded-in: app/[locale]/_components/homepage/SearchBar.tsx
+  Grounded-in: app/[locale]/_components/homepage/SalonCard.tsx
+
+  This part draws NO product surface. It renders no header, no card, no salon, no
+  price, no count. Each Depicts line below therefore traces a TOKEN GROUP to the
+  real file that already owns its value.
+
+  Depicts: colour palette ink/ink-2/hairline/sunken/accent -> tailwind.config.js:129,130,152, consumed live by app/[locale]/_components/homepage/SearchBar.tsx (text-s-ink-2, border-s-border, bg-s-bg-sunken)
+  Depicts: depth tokens whisper and elevation-2 -> tailwind.config.js:275,279, rendering live at app/[locale]/_components/homepage/SalonCard.tsx:427
+  Depicts: font stacks display and body -> tailwind.config.js:234-236, actually loaded by app/layout.tsx:22-23 (Inter_Tight + Inter via next/font, variables --font-inter-tight and --font-inter)
+  Depicts: the two self-hosted @font-face files -> public/_mockups/_assets/fonts/inter-latin-var.woff2 and inter-tight-latin-var.woff2, the mockup-side mirror of app/layout.tsx next/font, both verified on disk
+  Depicts: motion curve and letter-spacing -> app/[locale]/_components/homepage/SearchBar.tsx (islandTransition ease [0.22,1,0.36,1]; tracking -0.01em on the CTA, -0.005em on the row label)
+  Depicts: icon stroke width 2 at size 18 -> app/[locale]/_components/homepage/SearchBar.tsx (Search, MapPin and Calendar all rendered size={18} strokeWidth={2})
+  Depicts: radius ladder 12/16/24/pill plus the live 22 -> app/[locale]/_components/homepage/SalonCard.tsx:426 renders a 22px photo corner, which DIVERGES from the locked 16px entity card, so both are declared and neither is silently dropped
+  Depicts: focus treatment -> app/[locale]/_components/homepage/SalonCard.tsx:410 still ships a 2px ink outline, a shape the current gate would refuse today, so this sheet uses an inset ink edge instead and records the divergence
+  Depicts: CSS custom property NAMING (--s-*) -> NET-NEW: no mockup token sheet exists. `npm run exists tokens` returned 2 unrelated graveyard hits (legacy ProfilePage, Chinese subagent prompts) and 1 DB table calendar_tokens. The names are the only net-new thing here
+  Depicts: line-height scale -> NET-NEW: not locked anywhere in the system, so it is flagged soft in the token block and a measured reference overrides it
+
+  Exists-check: tailwind.config.js already defines every colour, shadow and font
+  stack transcribed here, and SearchBar.tsx owns the real easing and tracking, so
+  this part transcribes the locked system rather than minting a parallel one.
+  REMOVED hits: none relevant.
+
+  Template ids: tok-reset, tok-vp
+
+  Assembler notes.
+  1. tok-reset carries a full duplicate of the :root block on purpose, so the
+     tokens land whether you inline this file's style block or only clone
+     templates. Duplicate identical declarations are idempotent, so keeping both
+     is safe.
+  2. --s-glide is SearchBar's real curve (.22,1,.36,1), which is NOT tailwind's
+     ease-glide (0.16,1,0.3,1). Deliberate.
+  3. The type-budget gate counts literal `font-size:Npx` and `font-weight:N`
+     declarations. Every sibling writing `font-size:var(--s-t15)` is invisible to
+     it, so that gate will pass the assembled page no matter how many sizes it
+     actually carries. Count sizes on the RENDERED page. Do not read a green gate
+     as a pass.
+-->

@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import type { SalonDetail } from "./_shared";
+import { useTranslations } from "next-intl";
 
 /**
  * SalonAbout — venue DESCRIPTION only (V3-D389, Fresha 1:1 PDP capture).
@@ -14,6 +15,7 @@ import type { SalonDetail } from "./_shared";
  * V3-D209: pick one text in the active locale, fall back de → en.
  */
 export function SalonAbout({ salon, locale }: { salon: SalonDetail; locale: string }) {
+  const t = useTranslations("salonDetail");
   const localized = (key: string) => (salon as unknown as Record<string, string | undefined>)[key];
   const text =
     localized(`about_text_${locale}`) ??
@@ -30,7 +32,7 @@ export function SalonAbout({ salon, locale }: { salon: SalonDetail; locale: stri
     <section id="section-about">
       {/* V3-D202 (A12): font-body → font-display + Scale B. */}
       <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
-        Über uns
+        {t("aboutUs")}
       </h2>
       {/* ig7 (owner-approved 2026-07-16): shared .prose-measure (68ch) replaces the
           hand-rolled max-w-3xl for a readable line length. */}

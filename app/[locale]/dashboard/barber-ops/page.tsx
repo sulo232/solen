@@ -105,7 +105,7 @@ export default function BarberOpsPage() {
             <div className="space-y-4">
               {/* Client selector — required to save/load blueprints */}
               <div className="bg-white rounded-[16px] border border-s-border p-4">
-                <p className="text-[12px] font-heading uppercase tracking-[.15em] text-s-ink-3 mb-2">
+                <p className="text-[12px] font-heading uppercase tracking-[.15em] text-s-ink-2 mb-2">
                   {t("selectClient")}
                 </p>
                 <ClientSelectorDropdown

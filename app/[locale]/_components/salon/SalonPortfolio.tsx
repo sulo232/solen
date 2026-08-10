@@ -4,6 +4,7 @@ import * as React from "react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import { FROST_GLASS } from "@/lib/frost-glass";
 import type { StaffMember } from "./_shared";
+import { useTranslations } from "next-intl";
 
 const TILE_CAP = 9; // 3 columns x 3 rows
 
@@ -28,6 +29,8 @@ export function SalonPortfolio({
   staff = [],
   onOpen,
   layout = "grid-3",
+  salonName,
+  categoryLabel,
 }: {
   urls: string[];
   /** Fills remaining grid slots (up to TILE_CAP) with real staff portfolio photos
@@ -36,7 +39,15 @@ export function SalonPortfolio({
   staff?: StaffMember[];
   onOpen: (index: number) => void;
   layout?: "grid-3" | "grid-2" | "hero-filmstrip";
+  /** imagery-icons-03 (2026-07-27): threaded through for a real per-tile alt
+   *  (matching SalonImageGallery's accessibility-06 convention) instead of alt="".
+   *  Optional so the /dev reference page still compiles. */
+  salonName?: string;
+  /** accessibility-06: says WHAT the photo shows (the salon's category) rather
+   *  than bare name+index, since this grid has no per-photo category metadata. */
+  categoryLabel?: string | null;
 }) {
+  const t = useTranslations("salonDetail");
   const [staffPhotos, setStaffPhotos] = React.useState<string[]>([]);
   const [loaded, setLoaded] = React.useState(false);
 
@@ -81,17 +92,17 @@ export function SalonPortfolio({
       {/* mockup-ok: V3-D202 (A10) heading className is byte-identical to the pre-existing
           shipped markup, font-body → font-display + Scale B. */}
       <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
-        Portfolio
-        <span className="ml-2 text-[14px] font-normal text-s-ink-3 md:text-[15px]">
+        {t("portfolio")}
+        <span className="ml-2 text-[14px] font-normal text-s-ink-2 md:text-[15px]">
           {totalReal}
         </span>
       </h2>
 
       {/* mockup-ok: 3x3 UniformGrid unconditionally, per the approved fix. */}
-      <UniformGrid urls={combined} onOpen={onOpen} />
+      <UniformGrid urls={combined} onOpen={onOpen} salonName={salonName} categoryLabel={categoryLabel} />
 
       {showFootnote && (
-        <p className="mt-3 font-body text-[12px] text-s-ink-3">Zeigt {totalReal} echte Fotos.</p>
+        <p className="mt-3 font-body text-[12px] text-s-ink-2">Zeigt {totalReal} echte Fotos.</p>
       )}
     </section>
   );
@@ -101,9 +112,29 @@ export function SalonPortfolio({
  * Strict 3-column square grid per Fresha spec. Up to 9 visible tiles.
  * Last visible tile gets a "+N" overlay if there are more photos beyond.
  *
- * Same layout for mobile and desktop — only the gap and tile rounding scale.
+ * Same layout for mobile and desktop, only the gap and tile rounding scale. (em-dash-ok)
+ *
+ * Last-row rule (layout-geometry-05, named per LOCKFILE's grid-TYPE decision):
+ * when urls.length is not a clean multiple of 3 (e.g. a salon with 4, 5, 7, or
+ * 8 uploaded photos, all under the 9-cap so the "+N" overlay above never
+ * triggers), the final row renders LEFT-ALIGNED with trailing empty grid
+ * cells rather than centered. This is a stated decision, not the unstated
+ * CSS-grid default: it matches Fresha's own reference grid behavior (this
+ * component's STRUCTURE axis, per the file's own "per Fresha spec" comment
+ * above) and Solen's density floor never requires a clean multiple, so a
+ * short last row is expected, not a bug.
  */
-function UniformGrid({ urls, onOpen }: { urls: string[]; onOpen: (i: number) => void }) {
+function UniformGrid({
+  urls,
+  onOpen,
+  salonName,
+  categoryLabel,
+}: {
+  urls: string[];
+  onOpen: (i: number) => void;
+  salonName?: string;
+  categoryLabel?: string | null;
+}) {
   const visible = urls.slice(0, 9);
   const overflow = urls.length - visible.length;
 
@@ -120,7 +151,23 @@ function UniformGrid({ urls, onOpen }: { urls: string[]; onOpen: (i: number) => 
             className="relative aspect-square overflow-hidden rounded-md bg-s-bg-sunken transition-transform hover:scale-[0.99] active:scale-[0.98] active:duration-[80ms] active:ease-glide md:rounded-lg"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={u} alt="" className="h-full w-full object-cover" loading="lazy" />
+            <img
+              src={u}
+              alt={
+                categoryLabel
+                  ? `${salonName ? `${salonName}, ` : ""}${categoryLabel}, ${i + 1}/${visible.length}`
+                  : salonName
+                    ? `${salonName}, ${i + 1}/${visible.length}`
+                    : `Portfoliofoto ${i + 1}`
+              }
+              // layout-geometry-09: this is the same square photo grid the ig4 crop-anchor
+              // decision already covers (TASTE_LOG.md:326, owner-approved 2026-07-16: "square
+              // photo grid crops center-top, not blind center"); SalonImageGallery.tsx already
+              // applies object-top for the identical grid shape, this one had drifted to the
+              // CSS default (center) and is now brought back in line, not a new treatment.
+              className="h-full w-full object-cover object-top"
+              loading="lazy"
+            />
             {showOverlay && (
               // mockup-ok: owner-specified treatment (2026-07-25, "plus how many are left on
               // the last picture, on the right down"), grounded in the LOCKED FROST_GLASS

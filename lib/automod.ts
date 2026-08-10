@@ -112,6 +112,26 @@ export async function checkReview(review: ReviewInput): Promise<ModResult> {
     }
   }
 
-  // Rule 6: No issues
+  // Rule 7 (trust-09): one real, established account manufacturing repeat "verified"
+  // review signal for the SAME salon. Distinct fraud shape from rules 4/5 above, which
+  // both key on NEW-account clustering (created within the last 48h) and so are blind
+  // to an older account doing this deliberately. Flag only, never hide: a genuine
+  // repeat customer within 30 days (a standing appointment, a touch-up visit) is a
+  // real, if unusual, case an admin should glance at, not auto-suppress.
+  if (review.user_id && review.user_id !== "guest") {
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+    const { count: recentForSalon } = await admin
+      .from("reviews")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", review.user_id)
+      .eq("salon_id", review.salon_id)
+      .gte("created_at", thirtyDaysAgo);
+
+    if ((recentForSalon ?? 0) >= 1) {
+      return { flagged: true, hidden: false, reason: "Mehrfache Bewertung desselben Salons innerhalb von 30 Tagen" };
+    }
+  }
+
+  // Rule 8: No issues
   return { flagged: false, hidden: false, reason: null };
 }

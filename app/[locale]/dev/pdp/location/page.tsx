@@ -83,7 +83,7 @@ export default function PdpLocationMockup() {
   return (
     <main className="min-h-screen bg-s-bg-sunken px-4 py-10">
       <div className="mx-auto max-w-[430px]">
-        <p className="text-[12px] font-semibold uppercase tracking-[0.06em] text-s-ink-3">Mockup — PDP "Standort" section, 3 directions</p>
+        <p className="text-[12px] font-semibold uppercase tracking-[0.06em] text-s-ink-2">Mockup — PDP "Standort" section, 3 directions</p>
         <h1 className="mt-1 font-heading text-[20px] font-bold text-s-ink">The real SalonLocation component, 3 treatments</h1>
         <p className="mt-1.5 text-[13.5px] leading-snug text-s-ink-2">
           Every frame below renders the actual shipping <code className="rounded bg-white px-1 py-0.5 text-[12px]">SalonLocation</code> component

@@ -115,7 +115,7 @@ export default function LiveQueuePanel({ salonId }: LiveQueuePanelProps) {
   if (loading) {
     return (
       <div className="rounded-[16px] border border-s-border bg-white p-4">
-        <p className="text-sm text-s-ink-3 text-center py-4">
+        <p className="text-sm text-s-ink-2 text-center py-4">
           {t("loading")}
         </p>
       </div>
@@ -138,7 +138,7 @@ export default function LiveQueuePanel({ salonId }: LiveQueuePanelProps) {
 
       {queue.length === 0 ? (
         <div className="rounded-[16px] border border-s-border bg-white p-4">
-          <p className="text-sm text-s-ink-3 text-center py-6">
+          <p className="text-sm text-s-ink-2 text-center py-6">
             {t("queue_empty")}
           </p>
         </div>
@@ -158,7 +158,7 @@ export default function LiveQueuePanel({ salonId }: LiveQueuePanelProps) {
               >
                 <span
                   className={`w-6 shrink-0 grid place-items-center font-heading font-bold text-lg tabular-nums ${
-                    inChair ? "text-s-success" : "text-s-ink-3"
+                    inChair ? "text-s-success" : "text-s-ink-2"
                   }`}
                 >
                   {inChair ? <Scissors size={18} /> : waitingPos}

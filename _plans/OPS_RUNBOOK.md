@@ -2,6 +2,133 @@
 
 One page: how the backend is monitored, backed up, restored, and what it costs. Refresh the cost + size numbers monthly (the loop protocol's monthly re-measure).
 
+## Incident response (owner ask 2026-07-27: "9 yr we need whole principle for that")
+
+Closes `observability-9`, the last BLOCKED line in `_plans/PRINCIPLES_LOOP.md`. It lives here,
+not in a new file, because this runbook is what you already open when something is wrong.
+Research and sources: `_design-system/research/owner-answers-2026-07-27/incident-principle.md`.
+
+### The principle
+
+> When something is broken in production you are doing two jobs, and only one at a time:
+> **deciding** (what severity, what do I press) and **doing** (typing the fix). Stop the
+> bleeding before you understand it. Write down what happened while it is happening, not
+> after. Anything that reached a customer, cost money, or that you learned about from a human
+> instead of from the digest gets one page written within 48 hours, and every action item in
+> it carries a name and a date.
+
+Role separation matters even at n=1: the reason Google SRE splits incident commander from
+ops lead is that the person with their hands in the code stops making good decisions about
+scope. Alone, you do it in time slices, not in parallel. That is what "only one at a time"
+means above.
+
+### Severity, named against Solen's actual flows
+
+**Rule zero, borrowed verbatim from PagerDuty because it is the one that saves the most time:
+if you are unsure between two levels it is the higher one. Do not debate severity during an
+incident.**
+
+**SEV1 , money or data is wrong. Act now, whatever time it is.**
+- A customer was charged and no booking exists, or a booking exists and no charge does.
+  Signal: the `reconcile` cron mismatch email, or a repeating `stripe-webhook-signature` /
+  `stripe-webhook-claim` alert from `app/api/stripe/webhook/route.ts:43,71`.
+- Stripe webhook delivery failing more than about an hour. A rotated `STRIPE_WEBHOOK_SECRET`
+  is the named cause.
+- `/api/health` returning 503 on two consecutive 15-minute checks, or the DB unreachable.
+- Any data loss or corruption, at any scale. One row counts.
+- A walk-in customer paid and got no queue number. That person is physically standing in a shop.
+
+**SEV2 , a core flow is broken, no money at risk, no workaround.**
+- Booking creation failing (`app/api/bookings/route.ts`).
+- Slots empty or wrong platform-wide (`app/api/slots/route.ts`, the `generate-slots` cron).
+  This is the silent one: an empty slots response is indistinguishable from "fully booked".
+- Login or signup broken. Site up but unusable.
+
+**SEV3 , degraded, or a workaround exists.** One salon's data wrong, emails or SMS delayed,
+a single missed cron, a page rendering badly. Handle in working hours. Gets a worklog line;
+gets a postmortem only on the third recurrence.
+
+### The 9pm ladder
+
+Ordered so the first three steps need no diagnosis. Diagnosis is step 6.
+
+```
+1. WRITE THE CLOCK. Open a scratch file. First line: time + what you saw + how you found out.
+   Keep appending. This becomes the postmortem.
+
+2. SEVERITY. Money or data wrong = SEV1. Core flow dead with no workaround = SEV2. Else SEV3.
+   Unsure = the higher one.
+
+3. STOP THE BLEEDING, in this order. Do NOT diagnose first.
+   a. Did you deploy in the last hour? Netlify -> Deploys -> last good -> Publish deploy.
+      (_rules/RELEASE.md). Under a minute, no commit needed.
+   b. Not a deploy? Kill the flow with a flag: /dashboard/feature-flags-admin
+      payments | bookings | maintenance_mode. Live within 30s (lib/feature-flags.ts FLAG_TTL_MS).
+      KNOW THIS: the flag read fails OPEN, so if Supabase is down the switch does nothing.
+      KNOW THIS: maintenance_mode gates API mutations, not page rendering.
+   c. NEVER disable the Stripe webhook ENDPOINT. If it is disabled when Stripe retries, those
+      events are gone forever. Let it return 5xx; Stripe retries for 3 days.
+
+4. SNAPSHOT BEFORE YOU CLEAN. Copy the request id, the Stripe event id, the error text.
+   Netlify function logs age out in 24h to 7d.
+
+5. CHECK IT STOPPED. /api/health, then the actual flow in a browser.
+
+6. ONLY NOW diagnose.
+
+7. MONEY CHECK before closing any SEV1: run reconcile, compare Stripe against the DB for the
+   whole window, replay missed events with
+   GET /v1/events?delivery_success=false&ending_before=<last good event id>  (30-day window).
+   Handlers are idempotent via processed_webhook_events, so replay is safe.
+
+8. Within 48h: _plans/POSTMORTEMS/YYYY-MM-DD-<slug>.md
+```
+
+Time to mitigate beats time to fix. Rolling back a deploy you do not yet understand is the
+correct move, not a shortcut.
+
+### When a postmortem is required
+
+Any SEV1 or SEV2. Any data loss at any scale. Any incident that needed a rollback or a flag
+flip. The third recurrence of the same SEV3. And, the one that matters most here: **any
+incident you learned about from a human rather than from the digest, a red Actions run, or an
+alert email** , that detection gap is itself the finding. Template and field list:
+`_plans/POSTMORTEMS/_TEMPLATE.md`. Blameless: contributing causes are plural, and each one
+explains what made the wrong thing look reasonable at the time.
+
+### The honest gaps this principle does NOT close
+
+Named so they read as decisions rather than omissions.
+
+1. **Nothing pages.** Verified: no `ADMIN_PHONE`, no ntfy/Pushover/Telegram/PagerDuty
+   anywhere; Sentry was removed on purpose. The fastest automated signal is a 15-minute health
+   check that emails through GitHub; everything else waits for the 05:15 UTC digest. A SEV1
+   that starts at 6pm Friday and does not take the site down is invisible until Saturday
+   morning. **Recommendation: a free ntfy or Pushover topic wired as a second sink inside
+   `lib/alert-admin.ts`, gated to SEV1-class scopes.** It is the only option buildable end to
+   end without an account purchase, and it turns a 24h blind window into minutes.
+2. **No customer communication path.** No status page, no salon broadcast, no template. The
+   comms role has nothing to speak into.
+3. **No Stripe replay script.** Step 7 is a hand-written curl at 9pm today.
+4. **24h RPO, no PITR.** For a SEV1 data incident, "restore" means losing up to a day.
+5. `app/api/bookings/route.ts` does not `reportError` on a booking-creation failure, only on
+   the confirmation email, so a SEV2 booking outage surfaces only in the next morning's
+   failure-rate SLI.
+
+### Four decisions only the owner can make
+
+1. **Does anything page you, and are you willing to be woken?** See recommendation above.
+2. **When does the severity clock start?** Solen is pre-launch with seed data, so today
+   nothing is genuinely SEV1: no real customer can be harmed. State a condition , "from the
+   first real paid booking" is the natural one , after which these definitions bind. Without
+   it this section is theatre from day one.
+3. **The honest response-time floor.** "I respond to SEV1 within X" where X is a number you
+   will actually hit alone. Everything downstream follows from it.
+4. **Who tells the salons, through what channel?** Even a two-line WhatsApp template plus a
+   rule about which severity triggers it would close the comms gap.
+
+---
+
 ## Monitoring (built in Ring 1, 2026-07-11)
 - Every cron logs {ok, processed, duration_ms, errors} to the `cron_runs` table (live). A failing cron turns the GitHub Actions run RED (ping-cron hard-asserts ok:true) and GitHub emails the owner.
 - Backend errors on money/cron/webhook paths email ADMIN_EMAIL via `lib/error-report.ts` (throttled per scope, 15 min).

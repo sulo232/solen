@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { checkFeatureEnabled } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
+import { validateBody, discoveryCollectionCreateSchema } from "@/lib/validations";
 
 /**
  * Saved collections (V3-D414, Phase 2). The user's boards.
@@ -74,14 +75,15 @@ export async function POST(req: NextRequest) {
     const rateLimited = await applyRateLimit(generalLimiter, { userId });
     if (rateLimited) return rateLimited;
 
-    const body = await req.json().catch(() => ({}));
-    const name = (body?.name ?? "").toString().trim().slice(0, 60);
-    if (!name) return NextResponse.json({ error: "name required" }, { status: 400 });
+    const rawBody = await req.json().catch(() => ({}));
+    const { data: validated, error: validationError } = validateBody(discoveryCollectionCreateSchema, rawBody);
+    if (validationError) return NextResponse.json({ error: "name required" }, { status: 400 });
+    const { name, is_public } = validated;
 
     const admin = createAdminSupabaseClient();
     const { data, error } = await admin
       .from("discovery_collections")
-      .insert({ user_id: userId, name, is_public: !!body?.is_public })
+      .insert({ user_id: userId, name, is_public: !!is_public })
       .select("id, name, is_public")
       .single();
     if (error) { console.error("[collections] create failed:", error); return NextResponse.json({ error: error.message }, { status: 500 }); }

@@ -3,6 +3,7 @@
 import * as React from "react";
 import { ExternalLink, Globe, Instagram, Phone } from "lucide-react";
 import type { SalonDetail } from "./_shared";
+import { useTranslations } from "next-intl";
 
 /**
  * SalonContact — V2-D53.3 fix (2026-05-11) for mobile-vs-desktop info parity.
@@ -18,6 +19,7 @@ import type { SalonDetail } from "./_shared";
  * on which links exist.
  */
 export function SalonContact({ salon }: { salon: SalonDetail }) {
+  const t = useTranslations("salonDetail");
   const hasAny = Boolean(salon.phone || salon.website_url || salon.instagram_url);
   if (!hasAny) return null;
 
@@ -25,7 +27,7 @@ export function SalonContact({ salon }: { salon: SalonDetail }) {
     <section className="lg:hidden">
       {/* V3-D202 (A15): font-body → font-display + Scale B. */}
       <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
-        Kontakt
+        {t("contact")}
       </h2>
 
       <ul className="mt-3 space-y-3">
@@ -35,7 +37,7 @@ export function SalonContact({ salon }: { salon: SalonDetail }) {
               href={`tel:${salon.phone}`}
               className="font-body flex items-center gap-3 text-[14px] text-s-ink transition-colors hover:text-s-ink"
             >
-              <Phone size={16} strokeWidth={2} className="shrink-0 text-s-ink-3" />
+              <Phone size={16} strokeWidth={2} className="shrink-0 text-s-ink-2" />
               <span>{salon.phone}</span>
             </a>
           </li>
@@ -48,11 +50,11 @@ export function SalonContact({ salon }: { salon: SalonDetail }) {
               rel="noreferrer noopener"
               className="font-body flex items-center gap-3 text-[14px] text-s-ink transition-colors hover:text-s-ink"
             >
-              <Globe size={16} strokeWidth={2} className="shrink-0 text-s-ink-3" />
+              <Globe size={16} strokeWidth={2} className="shrink-0 text-s-ink-2" />
               <span className="flex-1 truncate">
                 {salon.website_url.replace(/^https?:\/\//, "").replace(/\/$/, "")}
               </span>
-              <ExternalLink size={12} strokeWidth={2} className="shrink-0 text-s-ink-3 opacity-60" />
+              <ExternalLink size={12} strokeWidth={2} className="shrink-0 text-s-ink-2 opacity-60" />
             </a>
           </li>
         )}
@@ -64,13 +66,13 @@ export function SalonContact({ salon }: { salon: SalonDetail }) {
               rel="noreferrer noopener"
               className="font-body flex items-center gap-3 text-[14px] text-s-ink transition-colors hover:text-s-ink"
             >
-              <Instagram size={16} strokeWidth={2} className="shrink-0 text-s-ink-3" />
+              <Instagram size={16} strokeWidth={2} className="shrink-0 text-s-ink-2" />
               <span className="flex-1 truncate">
                 {salon.instagram_url
                   .replace(/^https?:\/\/(www\.)?instagram\.com\//, "@")
                   .replace(/\/$/, "")}
               </span>
-              <ExternalLink size={12} strokeWidth={2} className="shrink-0 text-s-ink-3 opacity-60" />
+              <ExternalLink size={12} strokeWidth={2} className="shrink-0 text-s-ink-2 opacity-60" />
             </a>
           </li>
         )}

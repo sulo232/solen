@@ -1,0 +1,363 @@
+{
+  "verdict_summary": "Adopt about 40 of the 264 findings, not the list. Adding 264 rules to an estate whose named disease is that rules get forgotten or outranked would make the disease worse, and the run's own law-layer-roi-test finding says so. The single highest-value move is making the repository true: the remote main is 1,603 commits and 66 days behind local, three of the four workflow files have never existed on the remote default branch, the one workflow that is deployed has failed its last five scheduled runs, and the e2e job is written so that missing secrets produce a green check. Until that is fixed, roughly a third of the recommendations in this list (every gate, ratchet, lint, axe, audit and contract-test item) are proposals to arm a weapon that is not loaded. The second cluster worth this week is the set of things that are cheap now and impossible later: a consent record for health data that is already being stored, one money representation instead of two, a slug policy, and neutralising the two replay landmines in the migration folder. Calibration matters here: the estate is not broken. RLS is on 150 of 150 tables with 322 policies and no bare true write policy, double booking is prevented by a gist exclusion constraint rather than application code, the booking money path is integer Rappen, hreflang including x-default is correct, and translations are 99.5 percent complete. The failures cluster in three places only: things nobody measures on a shipped artifact, things that only bite on a replay or restore, and legal text that the code does not keep.",
+  "do_now": [
+    {
+      "id": "ci-is-fiction",
+      "title": "Make the remote repository and CI real, and make a skippable job fail loud (testing-release-01, orchestrator section 11)",
+      "why_first": "Verified live: origin/main is at 2026-05-21, local main at 2026-07-26, 1,603 commits apart. The GitHub repo contains exactly one workflow file, cron-jobs.yml; quality.yml, db-migrate.yml, invariants.yml and inventory-freshness.yml have never run because they are not on the default branch. gh run list returns 404 for quality.yml. The e2e job's own comment admits it always reports SUCCESS when secrets are absent, and STRIPE_SECRET_KEY is not in the repo secrets. This is first because it is the precondition for about a third of every other item here: secret scanning, npm audit ratchet, axe, target-size, contract tests, visual regression and the lint ratchet are all proposals to add jobs to a CI that has produced zero results, ever.",
+      "damage_if_skipped": "Every sentence in the estate that says CI protects this is false, and the owner does not know it. Once live, the first regression that a typecheck or e2e run would have caught reaches production unopposed, and the postmortem finding is that the protection was imaginary the whole time.",
+      "effort": "S for the code change (push, plus one fail-on-missing-secret line). The push itself is owner-only per the estate's own rule, so this is a decision plus five minutes, not a project."
+    },
+    {
+      "id": "cron-heartbeat",
+      "title": "Alert on a cron that never ran, not only on one that ran and failed (observability-1)",
+      "why_first": "The daily digest only queries cron_runs for ok:false, so a cron that never fires renders as 0 failures. That is not theoretical: the five most recent scheduled runs of the one deployed workflow all failed in 5 to 7 seconds and nobody found out for six days. This is the purest silent failure in the run, and the fix is one EXPECTED_CRON_NAMES map plus one assertion per name at 2x its interval.",
+      "damage_if_skipped": "Once live, the crons that send reminders, settle no-shows, release deposits and reconcile payments stop silently. Customers do not get reminded, money does not move, and the dashboard says everything is fine because zero rows failed.",
+      "effort": "S. One query and one map in an existing route, plus one free external dead-man's-switch heartbeat."
+    },
+    {
+      "id": "migrations-are-history",
+      "title": "A claim about the database is made against the live database; the migration folder only answers what a replay would produce (orchestrator sections 2 and 13, data-money-03)",
+      "why_first": "This is the best-evidenced principle in the entire run and it was proven by the run itself. Two independent agents on two unrelated topics filed CRITICAL findings that were migration-file truths presented as live truths: the permissive reviews UPDATE policy (does not exist live, four correctly scoped policies do) and the hashtext-fabricated amenity flags (live count is zero true for wheelchair_accessible, lgbtq_friendly, woman_owned, kid_friendly, pet_friendly across 20 active salons). Two agents, one error class, so it is one missing principle rather than two mistakes. It also produces two concrete one-time actions: neutralise the hashtext seed migration and the orphan policy so a replay cannot recreate them.",
+      "damage_if_skipped": "Both landmines are invisible to every existing check because nothing in this estate ever replays migrations onto a clean database. The first restore, branch or fresh environment invents wheelchair-access and identity claims for every active salon, which is a fabricated-accessibility-claim exposure, not a cosmetic seed. Separately, every future audit keeps producing confident false criticals.",
+      "effort": "S. One sentence of evidence law, plus two migration edits."
+    },
+    {
+      "id": "tos-claims-need-a-test",
+      "title": "Every Terms of Service claim about verification, enforcement or consequence needs an end-to-end test; a clause with no test is not shippable (trust-01, trust-02, trust-03)",
+      "why_first": "Three verified instances, all silent, all in the place a silent no-op costs most: a legal representation to users. Phone verification returns verified:true and writes nothing; the live schema has no phone_verified column at all, so the code comment claiming it defaults to false in the DB is itself wrong. account_warnings has three inserts and zero readers, so the ToS-promised strike and suspension consequences cannot fire. The cancellation fee is validated against percentage <= 100 while the ToS fixes the platform ceiling at 50 percent and a 24h free window.",
+      "damage_if_skipped": "The product makes written promises to salons and customers that the code cannot keep. The first dispute where a salon points at section 4.2 or a customer points at section 2.4 is unwinnable, and pre-launch is the only time these are free to fix.",
+      "effort": "S each. One column plus one write, one reader job or admin queue, one numeric ceiling in the validator."
+    },
+    {
+      "id": "special-category-consent-record",
+      "title": "Record a versioned, timestamped consent event for health-category data before collecting more of it (privacy-compliance-03, orchestrator section 7)",
+      "why_first": "Measured against the live schema, not a doc: 62 personal-data columns across 37 of 150 tables, and health data is already stored in consultation_notes.allergies, nail_client_preferences.allergies/allergy_notes/allergy_severity, salon_clients.allergies, waxing_sensitivity_log.notes, wellness_journals.notes/aftercare_notes and spa_treatment_outcomes.follow_up_notes. Zero consent, retention or DSAR tables exist. Analytics consent is a boolean on profiles with no version, no timestamp, no record of what text was shown. Health is named explicitly in nFADP Art. 5 lit. c and is a GDPR Art. 9 special category. This ranks here purely on lock-in: consent cannot be backdated. Data collected today without a consent record is permanently tainted; a consent table written today costs one migration.",
+      "damage_if_skipped": "Every health-category row collected between now and the fix has no lawful-basis record, and the only remedies later are deleting the data or re-asking every affected person. At 28 seeded salons that is nothing. At 500 real clients it is a project.",
+      "effort": "M. One consent-events table, one write on the collection paths, one line in the privacy policy."
+    },
+    {
+      "id": "privacy-doc-vs-schema",
+      "title": "Fix the two live defects in the only customer-facing legal document, and diff the export list against the erasure list (privacy-compliance-04, privacy-compliance-02)",
+      "why_first": "The privacy policy states Stripe's transfer basis as Privacy Shield, a mechanism the CJEU invalidated in July 2020. That is a six-year-stale statement in the one document a regulator or a customer actually reads. Separately, GET /api/profile/export returns 18 tables keyed on user_id and omits every salon-authored record about that same person (client notes, consultation notes, the category-specific note and photo tables), which is exactly the data a subject-access request is about. Both are cheap, both are text-and-list work, and both are pure legal exposure with no product tradeoff.",
+      "damage_if_skipped": "A wrong transfer mechanism is the single easiest thing for a complainant to point at. An incomplete export is a failed DSAR, and the estate cannot claim it did not know because the erasure cascade already lists the tables the export misses.",
+      "effort": "S. One paragraph rewrite plus one list diff and the missing selects."
+    },
+    {
+      "id": "jsonld-xss",
+      "title": "Escape every DB-sourced value that reaches dangerouslySetInnerHTML through one shared helper (input-abuse-03)",
+      "why_first": "app/[locale]/salon/[slug]/layout.tsx builds a BreadcrumbList whose name is salons.name, a field the salon owner edits from their own dashboard, and passes raw JSON.stringify into dangerouslySetInnerHTML. A name containing a closing script tag terminates the block early. This is the only finding in the run that is a live, reachable, stored-injection vector rather than a missing control, the attacker is a semi-trusted party the product deliberately gives an editable text field to, and the fix is a five-line helper applied at a handful of call sites.",
+      "damage_if_skipped": "Any salon owner, or anyone who compromises one salon account, executes script in the context of solen.ch on a public page for every visitor. There is currently no CSP behind it, so nothing catches the miss.",
+      "effort": "S. One safeJsonLdStringify helper plus the call sites."
+    },
+    {
+      "id": "csp-report-only",
+      "title": "Ship Content-Security-Policy in Report-Only for one deploy cycle, then enforce (input-abuse-05, secrets-webhooks-01)",
+      "why_first": "netlify.toml sets HSTS with preload, X-Content-Type-Options, X-Frame-Options, Referrer-Policy and Permissions-Policy. CSP is the one missing header, and it is the backstop for the item above: today a single missed escape has no second line of defense. The research is already done, including the allowlist and the report-only rollout, so this is execution not investigation. It sits below the XSS fix because a backstop for a known live hole is worth less than closing the hole.",
+      "damage_if_skipped": "Every future escaping mistake, third-party script compromise or injected inline handler runs unopposed. Report-only also has a pre-launch advantage that disappears later: an empty violation report is easy to achieve with 28 salons and no real traffic.",
+      "effort": "M. Mostly config, one deploy cycle of watching."
+    },
+    {
+      "id": "floors-on-shipped-pages",
+      "title": "Measure the design floors against a shipped route on real data, not only against mockups (hierarchy-density-01, hierarchy-density-02, orchestrator section 9)",
+      "why_first": "Measured live at 390x844 on main: /de home is 4.4 percent imagery against a 33 percent floor, 7 distinct font sizes against a ceiling of 4, 42.1 percent of text at weight 600 or heavier against a 30 percent ceiling. /de/basel, a browse surface the imagery floor names by name, has zero images of any kind across a 9,325px page, and renders 56 uppercase elements including the tracked eyebrow the mockup copy rules ban. The PDP, the one surface that got a dedicated workstream, passes three of five. So design quality tracks attention, not enforcement, because check-geometry.mjs and gate:floors only ever run against mockups. This also surfaces a wiring bug worth more than the rule: 20 of 28 salons have cover_photo_url set and the browse page still renders no photography. This is the owner's most-repeated complaint category and the tool already exists.",
+      "damage_if_skipped": "The floors keep getting refined weekly while the two most-visited customer surfaces stay at 4.4 and 0 percent imagery. Every mockup passes and every shipped page fails, which is the exact shape of wasted governance.",
+      "effort": "M. Point the existing checker at three real routes, plus fix the cover-photo render path."
+    },
+    {
+      "id": "law-must-match-runtime",
+      "title": "A law sentence that names a hook file is checked against the settings files; a mismatch is a violation (orchestrator section 6)",
+      "why_first": "CLAUDE.md line 67 and REMOVED.md line 99 both cite no-decorative-image-gate.py as the gate that blocks a hardcoded image src. It appears in zero settings files and has never run. The owner rejected decorative hero imagery three times, the third time verbatim, and the gate written to prevent the fourth rejection is on disk being quoted as if it were live. Seven other hooks are in the same state. This is the highest-leverage meta item because it directly attacks the owner's actual complaint, which is not too few rules but rules that are believed to be enforced and are not. system-health-check.py already finds orphaned hooks; it just does not check the claims made about them in prose.",
+      "damage_if_skipped": "The estate's own law text is unreliable, so every future session either over-trusts a dead gate or re-derives enforcement by hand. The specific cost here is a fourth decorative-imagery rejection.",
+      "effort": "S. Extend an existing health check with a grep of law text against the settings files."
+    },
+    {
+      "id": "shipped-means-reachable-from-main",
+      "title": "A workstream may not be recorded as DONE or SHIPPED while its commits are unreachable from main (orchestrator section 5)",
+      "why_first": "85 local branches, 40 never merged, 1,686 commits off main against 2,416 on it. Memory records npm run consistency as SHIPPED 2026-07-24 with four detectors and two live gates; the commit that adds it exists on exactly one unmerged branch that is 267 commits ahead of main. Aurora V2 is the same shape and already known. This corrupts the input to every exists-check, which is the estate's primary anti-duplication mechanism, so it compounds: the next session searches, does not find, and rebuilds.",
+      "damage_if_skipped": "The estate's record of what exists is wrong in at least two known places and an unknown number of others. Duplicate systems are the owner's own named most-expensive failure mode, and this is the mechanism that produces them.",
+      "effort": "S. Branch count and unmerged-commit count into the weekly health check, plus one rule."
+    },
+    {
+      "id": "html-lang-and-skip-link",
+      "title": "Anything rendered above the [locale] segment is locale-independent or reads the locale from the request (accessibility-02, orchestrator section 10)",
+      "why_first": "Verified on the rendered page: /en/basel serves English body copy with document.documentElement.lang set to de, and the skip link still reads Zum Inhalt springen. Same for fr and it, because app/layout.tsx:39 hardcodes lang=de above the locale tree. That is a WCAG 3.1.1 Level A failure on three of four languages, and for a marketplace whose acquisition is organic search it also mis-signals page language to search engines on 75 percent of the site. The hreflang set including x-default is already correct, which is the hard part, so this is the cheap half of a job already mostly done.",
+      "damage_if_skipped": "Screen readers pronounce three of four locales with German phonetics, and the site tells Google that its English, French and Italian pages are German at exactly the moment it starts trying to rank in four languages.",
+      "effort": "S. One attribute derived from the route segment, one string moved inside the locale tree."
+    },
+    {
+      "id": "pinch-zoom",
+      "title": "Never set userScalable:false or maximumScale:1 on the document viewport (accessibility-03, typography-01)",
+      "why_first": "app/layout.tsx disables pinch-zoom for the entire site, with a comment framing it as intentional layout protection. A low-vision user cannot enlarge text anywhere in the product. The stated goal, stopping accidental zoom on specific chrome, is achievable with touch-action on that chrome. One line, no design tradeoff, and it contradicts the estate's own written WCAG 1.4.4 rationale.",
+      "damage_if_skipped": "The product is unusable for a defined group of users, and the estate holds a written rule saying so while shipping the opposite.",
+      "effort": "S. One line, plus touch-action on any element that actually needed the protection."
+    },
+    {
+      "id": "money-cas-retroactive-sweep",
+      "title": "A new blocking gate ships with a one-time sweep of every pre-existing instance (data-money-02)",
+      "why_first": "The money compare-and-set gate blocks future edits and was never swept backwards, so a live instance of exactly the bug it exists to block sits in app/api/cron/pre-charge/route.ts:92-100, updating payment_status, payment_intent_id, paid_amount and platform_fee with no status precondition. This is a money path in a cron, which means it is both silent and unattended. The general principle generalises to every gate in a 164-hook estate: a lock on the door with the burglar already inside.",
+      "damage_if_skipped": "A concurrent or repeated pre-charge run can mark a booking paid against stale state, and the class recurs wherever else a gate was added without a sweep.",
+      "effort": "S. One grep, one precondition, one rule about how gates ship."
+    },
+    {
+      "id": "one-money-representation",
+      "title": "Pick one money representation and write the rule before another column copies the wrong one (data-money-05, orchestrator section 3)",
+      "why_first": "Verified live: bookings.paid_amount, platform_fee and net_amount are integer Rappen with the unit named in the migration comment, while services.price and bookings.price_paid are numeric(8,2) and salon_payouts uses numeric(10,2). Two representations coexist with no law choosing one. This is textbook lock-in: a money type is among the most expensive things in any product to change after real rows exist, and today there are almost none. The rule is one line and it stops the next column from picking the loser.",
+      "damage_if_skipped": "Every new money column is a coin flip, rounding differences accumulate between the two families, and the eventual migration has to be done against live financial records instead of seed data.",
+      "effort": "S for the rule and the gate. Migrating the legacy numeric columns is separate and can wait."
+    },
+    {
+      "id": "upload-trust-boundary",
+      "title": "One pass over the five upload routes: magic bytes, EXIF and GPS stripping, multipart CSRF (input-abuse-02, imagery-icons-01, input-abuse-01)",
+      "why_first": "The same five routes carry three defects, so this is one afternoon rather than three. Every route trusts the client-declared file.type with the storage extension derived unsanitised from the client filename; no route strips EXIF, so GPS coordinates and device identifiers from a stylist's or a client's phone are published to a public bucket; and eight of nine multipart routes authenticate on the session cookie with no CSRF defense. The EXIF half is the one that ranks it here: publishing a location is silent, irreversible once indexed, and is personal data about people who never agreed to it.",
+      "damage_if_skipped": "Home addresses leak in salon and review photos, a polyglot file can be served with an attacker-chosen content type, and a cross-site form can upload as an authenticated user.",
+      "effort": "M. One shared upload helper applied at five call sites."
+    },
+    {
+      "id": "webhook-rejection-alerts",
+      "title": "Route the Stripe webhook signature and claim failure branches through reportError, not console.error (observability-2)",
+      "why_first": "The throttled admin-alert path already exists and is already wired for handler-body exceptions in the same file. Only the two top-level rejection branches bypass it. A rotated or misconfigured STRIPE_WEBHOOK_SECRET means every payment event is silently dropped with a 400 while the product looks healthy, and the daily digest cannot see it because the handler never ran.",
+      "damage_if_skipped": "Payments confirm at Stripe and never confirm in Solen. Bookings sit unpaid, refunds do not register, and the first signal is a customer complaint.",
+      "effort": "S. Two call sites."
+    },
+    {
+      "id": "claim-hygiene-sample-and-source",
+      "title": "Every sweep claim names N of M and how the sample was chosen; every database claim names live-or-migration-file (orch-output-02, orchestrator section 4)",
+      "why_first": "This run is its own proof. Three agents wrote conclusions of the shape every upload route trusts client file.type having read four or five, and two agents filed CRITICAL findings from migration files that the live database contradicted. Both classes are free to prevent and expensive to consume: the owner acts on a false critical exactly as fast as on a true one. It is in this tier despite being a reporting rule because it costs nothing and it protects the value of everything else on this list.",
+      "damage_if_skipped": "The owner cannot distinguish a measured claim from a confident one, so either every finding gets re-verified by hand, which defeats the delegation, or false criticals get acted on.",
+      "effort": "S. Two sentences of report doctrine, zero code."
+    },
+    {
+      "id": "slug-immutability-decision",
+      "title": "Decide now whether a published salon slug is immutable or redirect-backed (ia-navigation-06)",
+      "why_first": "This is in the do-now tier purely on lock-in, not on damage today. There is no slug-edit UI yet, which is exactly why the decision is free: a sentence today, versus a salon_slug_redirects table plus a backfill plus permanent 404s once real URLs are indexed and shared. The finding is honestly marked as not able to bite today, and it belongs here anyway because URL grammar is the cheapest thing to fix before launch and one of the most expensive after.",
+      "damage_if_skipped": "The first business rename after launch either breaks every shared link and indexed URL, or forces the redirect machinery to be built retroactively against live traffic.",
+      "effort": "XS. One decision, written down. The redirect table only if option b is chosen."
+    }
+  ],
+  "do_next": [
+    {
+      "id": "refundflow-i18n",
+      "title": "Ship real de/fr/it for the refundFlow namespace and fail CI on a sentinel key (copy-i18n-01)",
+      "why": "261 of 264 keys in the refund flow are byte-identical English in de, fr and it, with a literal _todo_translate:true marker sitting in de.json ignored for weeks. The refund path is the single worst place for a German-speaking customer to hit raw English, because it is where trust is already strained. It is only in the second tier because it is loud: the first user to open it reports it immediately."
+    },
+    {
+      "id": "discriminate-proof-blocking",
+      "title": "Make the project's named number one failure mode blocking, not advisory (api-contracts-03)",
+      "why": "api-route-discriminate-reminder.py fires PostToolUse, prints, and exits 0 by design. The estate calls silent no-ops its number one backend failure and enforces it with a note the author can ignore. Requiring a discriminate-proof (a test that calls the endpoint with and without the filter and asserts the counts differ) turns the doctrine into evidence. Second tier only because it needs CI to be real first."
+    },
+    {
+      "id": "api-envelope",
+      "title": "Freeze one error shape and one success envelope across app/api (api-contracts-01, api-contracts-02)",
+      "why": "Five distinct top-level error shapes and seven success shapes are live, with two of them inside the same file. This matters more than usual here because solen-mobile is a second consumer already: an envelope change after the iOS app ships means coordinating two clients. Cheap now, coordinated later."
+    },
+    {
+      "id": "freeze-only-decision-bearing-rows",
+      "title": "Freeze the dozen backend decisions that already have a stated recommendation, and do not build a 15-topic law layer (data-money-01, authz-rls-04, observability-7, api-contracts-10, privacy-compliance-01)",
+      "why": "Five agents independently found the same hole: _backend-system has 15 research files and 8 audit files and none of the four root files its own README promises. The right response is not the fifth doctrine directory. It is copying the rows that already say recommended for Solen into one short file so a future session stops re-deriving them, and explicitly declining the rest. The run's own law-layer-roi-test finding is the argument for the smaller version."
+    },
+    {
+      "id": "restore-drill",
+      "title": "Run one real restore drill against a throwaway branch and record the measured minutes (data-money-07)",
+      "why": "An untested backup is not a backup, and the runbook currently states an RTO nobody has measured. It also happens to be the only procedure that would surface a replay landmine, which is the class the do-now migrations item names. One drill converts a guess into a number and validates the FK restore order."
+    },
+    {
+      "id": "double-submit-mutex",
+      "title": "A synchronous ref lock before any non-idempotent write, not a React state flag (states-forms-05)",
+      "why": "PayConfirmStep already does this correctly and comments why; everywhere else relies on a disabled button, which races a fast double-tap ahead of the re-render. The failure mode is a duplicate booking or a duplicate charge, which is money and is embarrassing rather than merely wrong. The correct pattern exists in-repo, so this is propagation not invention."
+    },
+    {
+      "id": "error-boundaries",
+      "title": "A section-level error boundary around any client component that fetches its own data (fe-02)",
+      "why": "Zero componentDidCatch or getDerivedStateFromError anywhere in the codebase, against 171 files that combine useEffect with fetch. One malformed API response in one widget blanks the whole route. ErrorState already exists as a locked primitive, so this is one small wrapper plus placement."
+    },
+    {
+      "id": "audit-log-automatic-money",
+      "title": "Automatic money movement writes an audit_log row in the same code path (observability-3)",
+      "why": "logAuditEvent is used at 29 admin call sites and zero automatic ones: refunds from the dispute engine, cron payout releases and off-session charges all move money with no trail. When a salon disputes a payout, the human-clicked actions are reconstructable and the machine-driven ones are not."
+    },
+    {
+      "id": "focus-visible-non-ring",
+      "title": "Pick one non-ring focus treatment for keyboard users, and report back on the overruled decision (accessibility-01, orch-output-04)",
+      "why": "globals.css sets outline:none unconditionally on links, buttons, role=button, tabindex and summary, for all devices, so keyboard focus is invisible product-wide while SOURCE.md section 16.2 still asserts the opposite as law. I am flagging one overstatement in the audit: it frames this as a legal exposure via the EAA and BehiG, and for a Swiss sole proprietorship serving Swiss customers that binding is weaker than claimed. The real argument is simpler and does not need a statute: a keyboard user cannot see where they are. The owner killed focus rings three times, so the deliverable is one approved non-ring treatment (an ink underline, a background step, a border swap), not a re-litigation."
+    },
+    {
+      "id": "forms-pass",
+      "title": "One pass on the two highest-stakes forms: validate on blur, inline field errors, autofill tokens (states-forms-01, states-forms-02, states-forms-03)",
+      "why": "auth/login and auth/register have zero autoComplete tokens, so password managers do not fill them, and register runs every check inside handleSubmit and reports single-field errors as toasts, which LOCKFILE section 14.4 already forbids by name with the exact password example. Registration is the narrowest funnel the product has and all three defects sit on it."
+    },
+    {
+      "id": "i18n-parity-and-locale-tags",
+      "title": "Key-parity CI across the four locale files, and route every de-CH literal through lib/format (copy-i18n-07, copy-i18n-05)",
+      "why": "A missing key currently renders the raw dotted path to the customer, and the measured gaps are small enough (11 keys in en, 29 worst case) that a check locks in a nearly-clean state instead of chasing one. Separately 112 call sites hardcode de-CH into Intl calls, a bug the codebase already found and fixed once in a lessons file and then repeated, which is the recurrence signal that justifies a gate over advice."
+    },
+    {
+      "id": "secret-and-dependency-gates",
+      "title": "Secret scanning and an npm audit ratchet, once CI exists (secrets-webhooks-06, secrets-webhooks-02)",
+      "why": "The estate's founding security incident was exposed credentials in git, which is the strongest recurrence signal in the run, and npm audit currently reports 1 critical and 5 high with no gate and no Dependabot. Both are one workflow file each. They are second tier only because they are physically impossible until the do-now CI item lands."
+    },
+    {
+      "id": "credential-expiry-table",
+      "title": "One machine-readable table of credentials with known expiry dates (secrets-webhooks-03)",
+      "why": "The Apple OAuth client secret expires 2026-12-30 and that fact lives in a memory file, with the re-mint command, and nowhere that fires a reminder. A dated landmine with a known date and a known one-line fix is exactly what a table plus a scheduled reminder is for. Also covers rotation cadence, which currently exists nowhere (secrets-webhooks-04)."
+    },
+    {
+      "id": "webhook-default-and-tests",
+      "title": "A default case in the Stripe event switch, plus at least one test per handled event type (secrets-webhooks-09, testing-release-11)",
+      "why": "912 lines dispatching every payment outcome, zero tests, and no catch-all branch, so enabling a new event type in the Stripe dashboard produces a permanent silent no-op that still returns 200. The default case is one line and is worth shipping immediately; the tests are the larger half."
+    },
+    {
+      "id": "motion-interruptibility",
+      "title": "Ban AnimatePresence mode=wait on retriggerable transitions, and wire the motion check that already exists (motion-01, motion-04)",
+      "why": "All nine mode= usages in the app are mode=wait, including the search overlay and the register flow, which directly violates the estate's own written interruptibility rule; the rule never named the prop, so it was unfalsifiable. Separately check:motion exists, is proven to work, found a bug in itself, and is invoked by nothing."
+    },
+    {
+      "id": "wire-smoke-and-kill-test-lifecycle",
+      "title": "Wire npm run smoke into CI and give kill-tests a 30-day lifecycle (testing-release-03, testing-release-04)",
+      "why": "api-smoke.ts was written specifically to catch PostgREST silently returning null on a renamed column, which is the project's named number one failure mode, and it is referenced by zero workflows. Meanwhile 21 disposable kill-test scripts outnumber the 6 real tests 3.5 to 1 with no rule about whether any of them still pass."
+    },
+    {
+      "id": "wizard-state-survival",
+      "title": "The booking wizard survives a back gesture and a refresh (ia-navigation-01, states-forms-04)",
+      "why": "The wizard is in-memory context only, so a browser or gesture back exits the flow entirely and a refresh resets it, with no popstate guard and no persistence. This is a conversion defect on the single flow the entire product exists for, and it is the flow where users are most likely to switch apps mid-task."
+    },
+    {
+      "id": "route-removal-grammar",
+      "title": "One 404, one redirect decision tree, one meaning per query param (ia-navigation-02, ia-navigation-08, ia-navigation-10, api-contracts-07)",
+      "why": "Two contradictory not-found.tsx files ship in the same tree, one with a literal em dash and no locale awareness. Three killed features produced three different URL outcomes. category means two different things on two surfaces, and both singular and plural resource namespaces are live. This is URL grammar, which is cheap to fix before real inbound links exist and never cheap afterwards."
+    },
+    {
+      "id": "emails-and-invoices-in-the-system",
+      "title": "Bring lib-authored HTML inside the token and type law (color-tokens-02, color-tokens-03, typography-02)",
+      "why": "The salon payout invoice, a document partners are meant to print, uses #333 and a generic font stack, and transactional emails still render pre-pivot teal #38B2AC and coral #FF6B6B. A gift-card email renders the code in font-family:monospace, which the type law retired by name. These are the surfaces a partner keeps a copy of, and they are currently the least on-brand thing the product produces."
+    },
+    {
+      "id": "dashboard-desktop-basics",
+      "title": "Cap dashboard content width and stop hiding functional controls behind hover (responsive-desktop-02, responsive-desktop-03)",
+      "why": "The dashboard main has no max-width anywhere in its chain, so KPI grids and tables stretch across an ultra-wide monitor, and the calendar's slot delete and add controls are opacity-0 group-hover with no pointer gate, which makes them permanently invisible on a touch device. Salon owners on iPads are a real segment of this product's operators."
+    },
+    {
+      "id": "query-shape-ratchets",
+      "title": "A select(*) ratchet and one systematic N+1 sweep (performance-01, performance-06)",
+      "why": "107 live select(*) calls under app/api against a documented history of fixing exactly this by hand, and the concurrency audit states plainly that its N+1 check sampled 4 files and left about 165 unread. A ratchet costs one CI step and stops the count growing; the sweep is a one-time read."
+    },
+    {
+      "id": "admin-approval-checklist",
+      "title": "Write the one-page checklist of what the admin actually looks at before approving a salon (trust-05)",
+      "why": "The finding itself argues correctly against building KYC at this scale, and then names the zero-engineering half that is due now: today the approve endpoint never reads salon_documents and nothing is written down about what a human should verify. One page, no code, and it is the difference between a judgment call and an undocumented one."
+    },
+    {
+      "id": "gate-skip-rate-forces-rescope",
+      "title": "A gate skip-flagged past a set rate is re-scoped or retired, not left live and ignored (gate-mute-forces-rescope)",
+      "why": "The mockup gate family was skip-flagged 72 times in 6 days. That is not a gate, it is a toll booth, and it is the mechanism by which a legitimate law becomes something worth routing around. Tying an automatic REQUIRES-DECISION flag to a number is the only version of this that survives contact with a busy week."
+    },
+    {
+      "id": "report-negative-space",
+      "title": "Every report names what it did not check, leads with the item that changes the next action, and says which subagent findings were discarded (orch-output-01, orch-output-08, orch-output-06)",
+      "why": "A report with a Verified section and no Not-checked section reads as all clear, which is a false statement made by omission. This run is again the evidence: 264 findings ordered by domain would have buried the fact that CI has never run about two thirds of the way down, and two agent criticals were correctly discarded in a way the owner would never have seen."
+    }
+  ],
+  "defer_with_trigger": [
+    {
+      "id": "api-contracts-04",
+      "title": "Integration/contract tests for every customer-facing route",
+      "trigger": "When solen-mobile reaches TestFlight or the App Store, so a second independently-versioned client depends on the shapes. Until then the web client and the API ship together and a break is caught in the same commit."
+    },
+    {
+      "id": "fe-03",
+      "title": "A full state-ownership doctrine (URL vs server props vs context vs local)",
+      "trigger": "A second person writing code, or the third distinct bug caused by filter/tab state not being in the URL. Two are already recorded (inspo filters, scroll restoration); at three it is a pattern, not incidents."
+    },
+    {
+      "id": "fe-04",
+      "title": "A jscpd-class structural duplication detector in CI",
+      "trigger": "The sixth confirmed duplicate-component incident. Five are documented in COMPONENT_REGISTRY, all caught by manual sweep, which is currently working."
+    },
+    {
+      "id": "authz-rls-02",
+      "title": "Modelling and enforcing the staff role at both the route and RLS layers",
+      "trigger": "The first salon that asks for a second login. Today the role can be assigned, is enforced nowhere, and is locked out of the dashboard by middleware, so nobody is relying on it."
+    },
+    {
+      "id": "authz-rls-08",
+      "title": "Step-up re-authentication before payout-account, email/password and staff-invite changes",
+      "trigger": "The first real CHF sitting in a salon's Stripe Connect balance, or 50 salons, whichever comes first. Blast radius is currently zero real money."
+    },
+    {
+      "id": "authz-rls-05",
+      "title": "A recurring sampling audit of the 270 service-role call sites",
+      "trigger": "300 call sites (currently 270), or the first confirmed object-level authorization miss found in the wild. The live RLS posture measured this run (150 of 150 tables, 322 policies, no bare true write policy) is materially better than the migration folder suggested, which lowers the urgency."
+    },
+    {
+      "id": "data-money-08",
+      "title": "Advisory locks on money-touching crons",
+      "trigger": "Any cron interval dropping below 15 minutes, or the first overlapping run visible in cron_runs. At the current cadence with short GitHub Actions timeouts, per-row idempotency is holding."
+    },
+    {
+      "id": "performance-02",
+      "title": "Lighthouse CI, bundle budgets and web-vitals thresholds (with performance-08 and fe-09)",
+      "trigger": "1,000 real sessions recorded in PostHog, or a p75 LCP measured above 2.5s on any real route. Budgets against zero traffic optimise a guess. The one exception worth doing early is the priority prop on the first above-fold image, which is a one-line change (performance-05)."
+    },
+    {
+      "id": "observability-9",
+      "title": "SLO/error-budget policy and postmortem discipline",
+      "trigger": "The third real incident that reaches the owner, or 100 bookings per week. One-line runbook entries for booking creation, payment capture and payout release are worth writing at launch; the burn-rate machinery is not."
+    },
+    {
+      "id": "privacy-compliance-05",
+      "title": "A Record of Processing Activities",
+      "trigger": "The first non-seed customer record, which is launch day. This is a short deferral, not a long one: the small-scale exemption does not survive health-category processing, so a RoPA becomes due the moment real personal data exists rather than at some later headcount."
+    },
+    {
+      "id": "privacy-compliance-09",
+      "title": "Deciding whether a salon is controller, joint controller or processor for the notes it writes, and whether clients can see permanent staff notes (with privacy-compliance-10)",
+      "trigger": "The first real salon writing the first real client note about a real person. Both questions are about live rows, and there are none."
+    },
+    {
+      "id": "privacy-compliance-08",
+      "title": "Minimum age and guardian-consent policy",
+      "trigger": "The first real booking. One sentence in the ToS is enough at that point; enforcement against date_of_birth only if a minor actually books."
+    },
+    {
+      "id": "trust-04",
+      "title": "Refund reporting window and post-payout clawback policy (with trust-07)",
+      "trigger": "The first real paid booking. Both are business-policy decisions with no code prerequisite, and neither can be wrong before money moves."
+    },
+    {
+      "id": "imagery-icons-02",
+      "title": "Pre-publish moderation for salon-gallery and review photos",
+      "trigger": "The first customer-uploaded review photo, or 100 salons. With 28 hand-approved seeded salons and zero customer uploads, a post-hoc report path is proportionate. The EXIF stripping half of this is in the do-now tier and should not wait for the moderation half."
+    },
+    {
+      "id": "hook-sprawl-ceiling",
+      "title": "A one-in-one-out consolidation budget on hooks",
+      "trigger": "150 wired hooks. The count is 134 in the global directory plus 30 in the project, so this is close; the serial-gate-count-cap sibling finding (more than 3 gates able to deny the same action) is the better first cut when it arrives."
+    },
+    {
+      "id": "canonical-doc-size-ceiling",
+      "title": "Splitting LOCKFILE.md and SOURCE.md into a thin always-read index plus on-demand detail",
+      "trigger": "Two observed cases in one month of a session shipping a LOCKFILE violation while claiming to have read it. The diagnosis is right (19,637 and 13,258 words, and CLAUDE.md admits in its own voice that they are not re-read), but a split rewrites every cross-reference in the estate and risks a worse failure than the one it fixes."
+    },
+    {
+      "id": "responsive-desktop-01",
+      "title": "Re-thresholding the FLOORS LAW for tablet and desktop viewports",
+      "trigger": "Desktop exceeding 20 percent of real sessions. Correct in principle, but a mobile-first product with no traffic should finish failing its mobile floors first: /de/basel is at 0 percent imagery at 390x844 today."
+    },
+    {
+      "id": "ethics-psychology-10",
+      "title": "Sponsored/promoted-listing disclosure rules",
+      "trigger": "The first paid-visibility feature proposal. Purely preventive today; grep confirms no such code exists."
+    },
+    {
+      "id": "imagery-icons-09",
+      "title": "A salon-uploaded video policy",
+      "trigger": "The first salon that asks to upload video. The graveyard already anticipates it, which is the right amount of preparation."
+    },
+    {
+      "id": "no-second-operator-onboarding-bound",
+      "title": "A timed, cold-start onboarding path through the doctrine",
+      "trigger": "Onboarding a second human operator. Worth naming now because the estate's size makes it inevitable, but a solo owner who wrote the rules is not the person it protects."
+    }
+  ],
+  "ordering_logic": "I ranked on expected damage prevented once live, divided by cost to adopt, with four multipliers applied in this order. First, SILENT beats LOUD: a cron that never fires, a verification endpoint that persists nothing, a strike table with no reader and a webhook whose signature failures only console.error all outrank things that break visibly, because a loud failure has a free detector (the owner's eyes) and a silent one has none. That is why the English refund-flow copy, which is genuinely bad, sits in the second tier: the first user to open it reports it. Second, LOCK-IN beats REVERSIBLE: a consent record, a money representation, a URL/slug grammar and an API envelope cost one sentence today and a migration against live records later, so they earn a do-now slot even where today's damage is zero. Third, LEGAL and SAFETY exposure for a Swiss company taking payments and storing health data gets a hard promotion, but only where the binding is real: I promoted the health-data consent record, the Privacy Shield citation and the ToS-versus-code gaps, and I demoted the accessibility items that were argued from the EAA and BehiG, because that binding on a Swiss sole proprietorship serving Swiss customers is weaker than the audit implies. Those items stay on the list on their merits (a keyboard user cannot see focus, a low-vision user cannot zoom), not on a statute. Fourth, RECURRENCE is the strongest single signal available, because the estate's own history is evidence rather than prediction: the owner rejected decorative imagery three times and the gate cited as preventing it has never run; exposed credentials in git is the founding security incident and there is still no scanner; the de-CH locale bug was found, fixed, documented and then repeated at 112 sites. Each of those beat a theoretically larger risk that has never actually happened here. Cross-cutting all four, I gave a bonus to anything that makes every future session cheaper (a doc-versus-runtime reconciliation, floors measured on shipped pages, shipped-means-on-main) over anything that fixes one screen, and I applied a hard precedence rule at the top: CI ranks first not because it is the biggest risk but because roughly a third of the other recommendations are gates, ratchets and tests that cannot exist until it does. Ordering a dependency below its dependents would have made the list look longer and do less. Finally, I deliberately did not adopt about 200 findings. In an estate whose named disease is that rules get forgotten or outranked, the marginal rule has negative value, so everything not in these three tiers should be treated as a searchable reference for the session that hits that specific problem, not as a backlog."
+}

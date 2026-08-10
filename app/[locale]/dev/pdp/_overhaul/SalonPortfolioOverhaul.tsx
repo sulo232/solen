@@ -79,7 +79,7 @@ export function SalonPortfolioOverhaul({
     <section id="section-portfolio">
       <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
         Portfolio
-        <span className="ml-2 text-[14px] font-normal text-s-ink-3 md:text-[15px]">
+        <span className="ml-2 text-[14px] font-normal text-s-ink-2 md:text-[15px]">
           {totalReal}
         </span>
       </h2>
@@ -108,7 +108,7 @@ export function SalonPortfolioOverhaul({
       </div>
 
       {showFootnote && (
-        <p className="mt-3 text-[12px] text-s-ink-3">Showing {totalReal} real photos.</p>
+        <p className="mt-3 text-[12px] text-s-ink-2">Showing {totalReal} real photos.</p>
       )}
     </section>
   );

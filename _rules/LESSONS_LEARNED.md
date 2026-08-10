@@ -40,6 +40,15 @@
 
 ---
 
+### A migration file describes a replay, not the live database
+- **Date**: 2026-07-27
+- **File(s)**: `supabase/migrations`, `_inventory/_db-snapshot.json`
+- **What happened**: Two independent research agents each filed a CRITICAL finding straight off the migration folder. One read `005_reviews_trust.sql:29` (creates a permissive `FOR UPDATE USING (true)` policy) plus `009_verified_reviews_rls.sql:30` (drops a differently-named policy) and concluded the permissive policy survives live; querying `pg_policies` directly showed the `reviews` table has exactly four correctly scoped policies and the permissive one does not exist. The other read `20260530_seed_salon_amenities.sql`, which fabricates nine amenity booleans (including `wheelchair_accessible`) from a hash of the salon id, and reported them as live data; counting live returned 0 true across all 20 active salons; the seed was never applied, or was reverted. A third finding had the same shape one level out: email builders were reported as ignoring their locale parameter from reading the builder source, when all 27 use it correctly and the real defect was at the call sites.
+- **Why it happened**: A migration file reads exactly like a schema description, and nothing about its syntax marks it as historical intent rather than current state. Two migrations naming different policy names on the same table look, on paper, like the earlier one survives; only a live catalog query resolves which policy actually exists. Nothing in this estate ever replays the migration folder onto a clean database, so a replay-only landmine (or a reverted one) is invisible to every check except a direct live query.
+- **Fix / What to do instead**: Any claim about current schema, policy, or data state is made against the LIVE database: a read-only SQL query first (`pg_policies`, `information_schema.columns`, or the Supabase MCP `execute_sql`), then `_inventory/_db-snapshot.json` / `_db-columns.json` as a fast but staleness-prone second check (14 days and 4 tables stale when this was written: 146 recorded vs 150 live tables, and `_db-columns.json` carries column names only, no types), and the migration files LAST, as evidence only about what a replay would produce. State explicitly which question an audit answers: "is this true now" or "would a restore make this true". Full rule: `_rules/DB_SCHEMA.md` section 9.
+
+---
+
 ## Component Architecture
 
 ### Removing a section from the page also removes its sheet/modal
@@ -97,6 +106,12 @@
   window.scrollTo(0, scrollY);
   ```
   This is already implemented in `GuidedSearch.tsx` — use it as the reference.
+
+### An ancestor `overflow` value other than `visible` can silently strip a descendant's `sticky` pin (layout-geometry-03)
+- **Date**: 2026-07-27
+- **File(s)**: `app/[locale]/_components/salon/SalonDetailV3.tsx:194-201` (the original fix, V3-D229, 2026-05-27)
+- **What happened**: Setting `overflow-hidden` (or `overflow-x-clip` / `overflow-y-auto` / `overflow-scroll`) on ANY ancestor of a `position: sticky` element creates a new containing block for that ancestor's subtree. The sticky descendant's own `sticky`/`top` declaration is untouched, but it silently stops being able to pin against the viewport because it is now scoped to the wrong containing block. On `SalonDetailV3`, the desktop sidebar wrapper had `sticky top-24` but an ancestor carried `overflow-hidden` for an unrelated reason; the sidebar scrolled away with the page instead of staying pinned, hiding the "Termin buchen" CTA.
+- **Fix**: Before adding `overflow-hidden`/`overflow-x-clip`/`overflow-y-auto`/`overflow-scroll` to any container, grep its subtree for a `sticky` descendant (`grep -rln sticky app --include=*.tsx` currently returns 55 files, so the collision surface is wide). If a `sticky` descendant exists, either move the `overflow` rule to a narrower wrapper that does not sit between the sticky element and the viewport, or re-verify after the change that the sticky element still pins. If it stopped pinning, the `overflow` value on the ancestor is the cause, not the `sticky` rule itself. See `_design-system/LOCKFILE.md`'s sticky-header-offset subsection for the separate (and already-locked) z-index/stacking-order rule; that rule is a DIFFERENT failure class from this containing-block trap.
 
 ---
 
@@ -327,6 +342,7 @@
 - **File(s)**: `components/BookingSuccess.tsx:112`
 - **What happened**: `toLocaleDateString("de-CH")` was hardcoded regardless of the user's locale, showing German date format to English/French/Italian users.
 - **Fix**: Derive `localeCode` from `useLocale()` → `de-CH / fr-CH / it-CH / en-GB`. Apply to all date/time formatting in user-facing components.
+- **copy-i18n-05 (2026-07-27)**: this exact bug recurred at 112 call sites months after the fix above, because the fix was prose-only with no mechanical check. `eslint.config.mjs` now has a `no-restricted-syntax` rule that blocks any literal BCP-47 tag (`de-CH`/`fr-CH`/`it-CH`/`en-CH`) passed directly to `toLocale*String`/`Intl.*Format` outside `lib/format.ts`, so the next occurrence fails lint instead of shipping silently a third time.
 
 ---
 
@@ -434,6 +450,121 @@ Copying UI from a component file into a mockup reproduced a discount badge that 
 - **Why it happened**: Gate messages cost a retry each; mass-flagging made the loop "smooth". But the smoothness WAS the failure: each gate that would have fired mapped to a real owner rejection that then happened live instead.
 - **Fix / What to do instead**: A skip flag is a PER-GATE, PER-INCIDENT override with its own reason, set only AFTER that gate fired and the block was verified a false positive. `flag-spam-gate.py` (global PreToolUse Bash, self-test 4/4, live-fire proven) now BLOCKS any command setting flags in a loop or 3+ flags at once. When several gates fire on one write, satisfy them or fix the gate , never mute the system.
 
+### Handing over a link that was never opened (the 'link' recurrence)
+- **Date**: 2026-07-26
+- **File(s)**: public/_research/missing-principles/index.html, .claude/launch.json
+- **Match**: trycloudflare, localhost:3210, preview link, tunnel, serve dir
+- **What happened**: Links kept reaching the owner dead. Three distinct causes in one session: a
+  page written into the worktree's `public/` while the running dev server on :3000 served the MAIN
+  repo's `public/` (the file 500s), a cloudflared hostname handed over before the tunnel had
+  connected (it never did), and a browser tab showing a cached older build while I read numbers
+  off it.
+- **Why it happened**: four link gates exist (clickable-link, LAN-IP, branch-naming, tunnel-relink)
+  and every one of them checks how the link is WRITTEN. None checks whether the URL RESPONDS. A
+  link can satisfy all four and still be dead on arrival.
+- **Fix / What to do instead**: Before handing over any localhost / 127.0.0.1 / trycloudflare URL,
+  OPEN that exact URL in the same turn (browser navigate + get_page_text or a screenshot, or curl)
+  and confirm it returns the page you mean. If it does not resolve, say so instead of shipping the
+  link. Enforced by `~/.claude/pending-hooks/link-verified-gate.py` (Stop hook, self-tested 11/11:
+  4 block cases, 7 pass cases incl. backticked and fenced URLs and public https as out of scope).
+  ARM IT WITH: `bash ~/.claude/pending-hooks/arm-link-verified-gate.sh` from a non-sandboxed shell.
+  It is NOT armed yet: `~/.claude/settings.json` and the whole `~/.claude/hooks` directory are
+  read-only under SANDBOX_RUNTIME=1 (`open(path,"r+")` -> PermissionError Errno 1, measured).
+- **Trap for the next session**: to test write permission here use `open(p,"r+")` or
+  `os.access(p, os.W_OK)`. Append mode `open(p,"a")` returns a FALSE POSITIVE and reports
+  read-only paths as writable; that mistake cost a wrong claim in this session's own report.
+
+### Handing a localhost preview link instead of a cloudflare tunnel
+- **Date**: 2026-07-26
+- **File(s)**: .claude/launch.json, public/_research/missing-principles/index.html
+- **Match**: localhost:3210, localhost:3000, preview link, trycloudflare, tunnel
+- **What happened**: The delivery link for a finished page went out as
+  `http://localhost:3210/principles/`. On the owner's phone `localhost` resolves to the phone
+  itself, so that link can never work for them. It is a worse failure than the LAN IP rule 0.5 was
+  written to stop, because a LAN IP at least points at the right machine.
+- **Why it happened**: `lan-ip-preview-gate.py` enforces rule 0.5 and blocks 10.x, 192.168.x and
+  172.16-31.x. It does not match `localhost` or `127.0.0.1`, so the localhost form sailed past
+  every existing link gate (clickable-link, LAN-IP, branch-naming, tunnel-relink).
+- **Fix / What to do instead**: A preview link is a `https://<name>.trycloudflare.com/...` URL, or
+  it is not a preview link. If the tunnel genuinely cannot connect, say so in the same message with
+  cloudflared's own evidence next to the link (its connectivity pre-check, blocked port 7844, or
+  hard_fail=true), because that evidence only exists if you actually ran it. Enforced by
+  `~/.claude/pending-hooks/cloudflare-link-gate.py` (Stop hook, self-tested 12/12: 4 block cases
+  including a vague "the tunnel did not work" excuse and evidence placed too far from the link, 8
+  pass cases including backticked and fenced URLs). ARM IT WITH:
+  `bash ~/.claude/pending-hooks/arm-link-verified-gate.sh` from a non-sandboxed shell; the same
+  script also arms link-verified-gate.py.
+
+### A "cosmetic facet" seed migration fabricated accessibility and identity data
+- **Date**: 2026-07-26
+- **File(s)**: supabase/migrations/20260530_seed_salon_amenities.sql
+- **Match**: wheelchair_accessible, lgbtq_friendly, woman_owned, hashtext, amenity, cosmetic facet, seed migration
+- **What happened**: This migration set nine boolean columns on every active salon from
+  `abs(hashtext(id::text || salt)) % 100 < N`, calling them "cosmetic facets" in its own header.
+  Three of the nine are not cosmetic: `wheelchair_accessible` is an accessibility claim,
+  `lgbtq_friendly` and `woman_owned` are identity claims about a real business. The live DB shows 0
+  true across all nine columns on all 20 active salons (verified 2026-07-26 via
+  `execute_sql`), so the UPDATE never actually ran against live data, it sat inert. But a migration
+  replay (a restore drill, a fresh environment, a `supabase db reset`) would run it and invent
+  those claims from a hash with no source of truth behind it.
+- **Why it happened**: Grouping a real accessibility flag and two identity flags in with genuinely
+  decorative ones (wifi, pet-friendly, student discount) under one "cosmetic" label made a
+  hash-seed pattern look safe to apply to all nine, when it should only ever apply to the truly
+  decorative ones.
+- **Fix / What to do instead**: Never derive an accessibility or identity claim about a real
+  business from a hash or any synthetic hashtext hash. Those need a real source (owner-entered
+  profile data) or they stay unset. The migration's UPDATE is now commented out in place (with a
+  dated block explaining why) rather than deleted or rewritten, per the never-edit-a-historical-
+  migration's-effect rule. Before writing any new seed migration that touches a boolean/enum flag,
+  check by name whether that flag is a decorative facet or an accessibility/identity/eligibility
+  claim, only decorative facets may be hash-seeded.
+- **Enforcement (2026-07-27)**: `.claude/hooks/migration-fabrication-gate.py` blocks a new/edited
+  `supabase/migrations/*.sql` file that writes to a non-test-scoped table using `hashtext(`,
+  `random()`, or `md5(...) %`, unless a `fabricated-data-ok: <owner, date, plan>` comment is
+  present. Self-tested 8/8. Built in a sandboxed worktree session where `.claude/settings.json`
+  is not writable, so it is NOT YET ARMED as a live PreToolUse hook, wire it from a
+  non-sandboxed session before it actually blocks anything.
+
+### `touch-action: pan-x` on a horizontal scroller BLOCKS vertical page scroll (I shipped it to 6 elements)
+- **Date**: 2026-07-31
+- **File(s)**: public/_mockups/home-v3/search-a.html
+- **Match**: touch-action, pan-x, cannot scroll, can't scroll, blocked from scrolling, horizontal scroller, rail, scroll-snap
+- **What happened**: The owner said three times he could not scroll a mockup on his phone. Every
+  test available in the browser pane passed: `scrollTo()` moved the page, a real wheel gesture over
+  a rail moved it 0 -> 532, `document.scrollHeight` was 1849 against an 844 viewport. So I
+  diagnosed CSS and put `touch-action: pan-x` on the category row, the filter row and all four
+  section rails, reasoning it would "give those elements the horizontal axis and let vertical pass
+  through to the page". That is not what the property does. `touch-action` declares the COMPLETE
+  set of gestures permitted for a touch that STARTS on the element, so `pan-x` permits horizontal
+  panning and FORBIDS VERTICAL. Those six elements cover most of the screen, so a vertical swipe
+  starting almost anywhere was refused by the browser, by my own rule. Owner, immediately after:
+  "im blocked from scrolling bro". My second attempt, `pan-x pan-y`, permits both scroll axes but
+  silently kills pinch-zoom, which is wrong on a phone mockup.
+- **Why it happened**: Two compounding causes. (1) The property was read as a hint about axis
+  OWNERSHIP rather than a whitelist of PERMITTED gestures. (2) A wheel gesture and `scrollTo()`
+  are not touch, and `touch-action` is only consulted for touch, so the entire local test suite is
+  structurally blind to this bug. A CSS property that only manifests under a real finger cannot be
+  validated by any tool in the browser pane.
+- **Fix / What to do instead**: Do not set `touch-action` on a horizontal scroller. The default
+  (`auto`) already routes a sideways drag to the scroller and a vertical drag to the page by
+  gesture direction, and keeps pinch-zoom. Only reach for `touch-action` to suppress a specific
+  browser gesture you have measured interfering (double-tap zoom on a custom control), never as a
+  scroll "fix". If a scroll complaint cannot be reproduced with a wheel, the cause is not CSS,
+  instrument the owner's device instead of guessing again.
+
+### A static-server 301 to the extensionless path DROPS the query string
+- **Date**: 2026-07-31
+- **File(s)**: public/_mockups/home-v3/search-a.html
+- **Match**: 301, query string, debug=1, mockup link, trycloudflare, extensionless, redirect
+- **What happened**: A diagnostic panel was gated on `?debug=1`. Opening
+  `/_mockups/home-v3/search-a.html?debug=1` 301s to `/_mockups/home-v3/search-a`, and the query is
+  gone after the redirect, so the panel never rendered and the gate silently read as "the feature
+  does not work".
+- **Why it happened**: The extensionless-URL redirect is invisible in normal use, so a query param
+  is assumed to survive a same-origin 301. It does not, here.
+- **Fix / What to do instead**: Gate any mockup debug/variant switch on `location.hash`, which
+  survives the redirect, not on a query param. If a query param is genuinely required, link the
+  extensionless path directly (`/_mockups/<dir>/<name>?x=1`) so no redirect happens.
 ### A view is INVISIBLE to row level security by default , the rule only ever said "tables"
 - **Date**: 2026-07-29
 - **File(s)**: `_rules/SECURITY_RULES.md` (rule S3), `supabase/migrations/20260728155748_availability_slots_public_security_invoker.sql`, live DB views `availability_slots_public`, `staff_ratings_view`

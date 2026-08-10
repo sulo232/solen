@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { Search, Tag, StickyNote, ChevronLeft, Calendar, Beaker, Camera, ClipboardList } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
@@ -10,6 +10,8 @@ import Spinner from "@/components-legacy/ui/Spinner";
 import FormulaTab from "@/components-legacy/dashboard/FormulaTab";
 import ClientPhotosTab from "@/components-legacy/dashboard/ClientPhotosTab";
 import IntakeFormTab from "@/components-legacy/dashboard/IntakeFormTab";
+import { resolveSwissLocale } from "@/lib/format";
+import { avGrad } from "@/lib/avatar-gradients";
 
 // ─────────────────────────────────────────
 // Types
@@ -51,21 +53,13 @@ const initials = (n: string) => {
   const p = (n || "").trim().split(/\s+/);
   return ((p[0]?.[0] ?? "") + (p[1]?.[0] ?? "")).toUpperCase() || "—";
 };
-const AV_GRADS = [
-  "from-[#276EF1] to-[#1B4DCB]",
-  "from-[#F0A868] to-[#C0524A]",
-  "from-[#16A34A] to-[#0E7A37]",
-  "from-[#8B5CF6] to-[#6D28D9]",
-  "from-[#EC4899] to-[#BE185D]",
-];
-const avGrad = (s: string) => AV_GRADS[[...(s || "")].reduce((a, c) => a + c.charCodeAt(0), 0) % AV_GRADS.length];
-
 // ─────────────────────────────────────────
 // Client List
 // ─────────────────────────────────────────
 
 export default function ClientsPage() {
   const t = useTranslations("dashboard.clientsPage");
+  const locale = useLocale();
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -143,7 +137,7 @@ export default function ClientsPage() {
       </div>
 
       {/* Search */}
-      <div className="flex items-center gap-2 border border-s-border rounded-[14px] px-3.5 py-2.5 text-s-ink-3 mb-4">
+      <div className="flex items-center gap-2 border border-s-border rounded-[14px] px-3.5 py-2.5 text-s-ink-2 mb-4">
         <Search size={17} className="shrink-0" />
         {/* mockup-ok: !important prevents a look change, not a new one. The wrapper div owns
             the visible chrome (border+radius+padding); this input must stay invisible AND
@@ -155,7 +149,7 @@ export default function ClientsPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder={t("searchPlaceholder")}
-          className="flex-1 min-w-0 !border-0 !bg-transparent !min-h-0 !px-0 !text-[13.5px] text-s-ink placeholder:text-s-ink-3 focus:outline-none"
+          className="flex-1 min-w-0 !border-0 !bg-transparent !min-h-0 !px-0 !text-[13.5px] text-s-ink placeholder:text-s-ink-2 focus:outline-none"
         />
       </div>
 
@@ -202,7 +196,7 @@ export default function ClientsPage() {
                 {/* meta row */}
                 <div className="text-[12.5px] text-s-ink-2 flex gap-1.5 flex-wrap">
                   <span><b className="font-heading font-semibold text-s-ink">{c.total_bookings}</b> {t("appointments")}</span>
-                  {c.last_visit && <span>| {t("lastVisit", { date: new Date(c.last_visit).toLocaleDateString("de-CH") })}</span>}
+                  {c.last_visit && <span>| {t("lastVisit", { date: new Date(c.last_visit).toLocaleDateString(resolveSwissLocale(locale)) })}</span>}
                   {c.total_spent != null && <span>| <b className="font-heading font-semibold text-s-ink">CHF {c.total_spent}</b></span>}
                 </div>
                 {/* tags row */}
@@ -246,6 +240,7 @@ function tagColor(color: string): string {
 
 function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: string; onBack: () => void }) {
   const t = useTranslations("dashboard.clientsPage");
+  const locale = useLocale();
   const [tab, setTab] = useState<DetailTab>("termine");
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [notes, setNotes] = useState<ClientNote[]>([]);
@@ -377,7 +372,7 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
                   <div>
                     <p className="text-sm font-medium text-s-ink">{b.service_name || t("serviceFallback")}</p>
                     <p className="text-xs text-s-ink/40">
-                      {new Date(b.starts_at).toLocaleDateString("de-CH")} {new Date(b.starts_at).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" })}
+                      {new Date(b.starts_at).toLocaleDateString(resolveSwissLocale(locale))} {new Date(b.starts_at).toLocaleTimeString(resolveSwissLocale(locale), { hour: "2-digit", minute: "2-digit" })}
                     </p>
                   </div>
                   <div className="text-right flex flex-col items-end">
@@ -416,7 +411,7 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
                 {notes.map((n) => (
                   <div key={n.id} className="bg-white rounded-2xl border border-s-border p-3">
                     <p className="text-sm text-s-ink">{n.note}</p>
-                    <p className="text-[12px] text-s-ink/20 mt-1">{new Date(n.created_at).toLocaleDateString("de-CH")}</p>
+                    <p className="text-[12px] text-s-ink/20 mt-1">{new Date(n.created_at).toLocaleDateString(resolveSwissLocale(locale))}</p>
                   </div>
                 ))}
               </div>

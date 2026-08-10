@@ -292,6 +292,11 @@ _Compute the active step sequence, render the current step, own the back-arrow +
 - Go back one step (goToStep(STEPS[currentIndex-1]))
 - On step-1 back: router.back() to the true origin (Inspo/search/PDP), fallback to the salon page
 - Exit the wizard via the X
+- **(ia-navigation-01, fixed 2026-07-27)** Physical/gesture back and a tab close are guarded the SAME
+  way the X is: `BookingExitButton.tsx` pushes a sentinel history entry on mount, a `popstate` re-arms
+  it and raises its own "leave this booking?" confirm when the cart is non-empty (instead of silently
+  discarding the step state the browser's own history stack never saw), and `beforeunload` covers a
+  hard refresh/tab close the same way.
 
 **Data wiring:**
 - STEPS array computed from data: staff step only if staffList.length>1 (BookingWizard.tsx:121); hair step only if a cart service's category is in HAIR_CATEGORIES {coiffeur,barbershop} (BookingWizard.tsx:118-128) — data-driven, not a component category branch
@@ -1690,6 +1695,16 @@ _An older standalone checkout with promo/voucher inputs and a 'Guthaben verfügb
 ---
 
 ## 10. Inspo / discovery feed
+
+**(ia-navigation-05, fixed 2026-07-27):** both the Inspo feed and `/search` restore scroll
+position on back-navigation from a detail page via `lib/hooks/useScrollRestoration.ts`, a
+shared hook keyed by pathname + querystring in sessionStorage, sourced from the NN/g
+"return-to-spot" fix flagged (never implemented) in `_design-system/research/PSYCH_CONVERSION.md:160`.
+
+**(ia-navigation-04, fixed 2026-07-27):** the Inspo feed's gender/texture/style/cuts drill-down
+filters are now URL-synced (`hairGender`/`hairTexture`/`hairStyle`/`tags` params, `router.replace`),
+matching the guarantee `/search`'s SearchTemplate already gave its own filters. Param names are
+deliberately disambiguated from `/search`'s own `gender` (a different taxonomy, see `_rules/I18N_ROUTING.md` Rule 32b).
 
 The Inspo flow is Solen's Pinterest-style content-discovery surface: a masonry feed of "looks" (hair/nail/beauty photos + imported TikTok videos) at /de/inspo, a full-bleed dark look-detail page at /de/inspo/[id], and a flat saved grid at /de/inspo/saved. Its product purpose is top-of-funnel inspiration that bridges into booking: a user browses/searches/filters looks, saves the ones they like, opens a look to see AI-generated details (style, upkeep, products, cut guide), and taps "Diesen Look buchen" on a real, category-matched salon — which hands the pre-selected service AND the AI cut-script into the booking wizard as a pre-filled note. The feed is genuinely data-driven (Supabase RPCs discovery_feed_v2 / discovery_feed_for_you / search_discovery, category-meta, chip-terms) with per-user DNA affinity ranking, and it is disciplined about never fabricating booking signals (rating/price/availability render only when backend-fed). The main structural weakness is a stranded "boards/collections" layer: the board and saved-collection detail routes and their APIs are live, but nothing in the current feed or saved page links to them (the named-collections UI was deliberately removed 2026-06-23), so those two routes are orphaned.
 

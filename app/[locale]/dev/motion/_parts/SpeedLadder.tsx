@@ -36,7 +36,7 @@ function LadderRow({ ms, who, playKey }: { ms: number; who: string; playKey: num
           Card
         </motion.div>
       </div>
-      <p className="w-[132px] shrink-0 font-body text-[12px] leading-[1.3] text-s-ink-3">{who}</p>
+      <p className="w-[132px] shrink-0 font-body text-[12px] leading-[1.3] text-s-ink-2">{who}</p>
     </div>
   );
 }
@@ -52,7 +52,7 @@ export function SpeedLadder({
     <section className="rounded-2xl border border-s-border bg-white p-4">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="font-body text-[12px] font-semibold text-s-ink-3">Section 1</p>
+          <p className="font-body text-[12px] font-semibold text-s-ink-2">Section 1</p>
           <h2 className="mt-0.5 font-display text-[18px] font-semibold tracking-[-0.01em] text-s-ink">
             The speed ladder
           </h2>

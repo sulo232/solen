@@ -8,6 +8,8 @@ import { motion, AnimatePresence } from "motion/react";
 import { User, Building2, ChevronRight, Mail } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { toast } from "@/app/[locale]/_components/primitives/Toast";
+import { FieldHelper } from "@/app/[locale]/_components/primitives/FieldHelper";
+import { useSubmitGuard } from "@/lib/hooks/useSubmitGuard";
 import { slideSwitch } from "@/lib/animations";
 import { scorePassword } from "@/lib/password-strength";
 
@@ -68,6 +70,14 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
   const [salonName, setSalonName] = useState("");
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
+  // states-forms-02: single-field validation errors render inline under the field
+  // (LOCKFILE §14.4), never as a toast. toast.error stays reserved for the
+  // account-exists / server / network branches below.
+  const [ageError, setAgeError] = useState<string | null>(null);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  // states-forms-05: account creation is a non-idempotent write; a synchronous
+  // ref guard (not just the `saving` state flag) closes the double-tap race.
+  const submitGuard = useSubmitGuard();
 
   const strength = useMemo(() => scorePassword(password, { email }), [password, email]);
 
@@ -78,36 +88,40 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
     return Math.abs(new Date(ageDifMs).getUTCFullYear() - 1970);
   };
 
+  // states-forms-01: fires on blur (first pass) and, once a field is already in
+  // error, again on every keystroke so the error clears the moment it's fixed.
+  // Never fires while the user is still typing a first pass.
+  const ageErrorFor = (dateStr: string) =>
+    !isSalon && calcAge(dateStr) < 16 ? t("errorMinAge") : null;
+
+  // LOCKFILE 14.4 (2026-06-11): errors name the exact cause BEFORE the server
+  // gets a chance to answer generically. Mirrors the placeholder's stated policy.
+  // ig1 (2026-07-16): the server (lib/validations.ts signupSchema) only enforces
+  // min(8).max(200); gate on that plus a real entropy score, never composition.
+  const passwordErrorFor = (pw: string) => {
+    if (pw.length < 8) return t("errorPasswordMin");
+    const s = scorePassword(pw, { email });
+    // strength.cause is never "clear" once score < 2 (see lib/password-strength.ts),
+    // the fallback only satisfies the type since next-intl needs a real message key.
+    if (s.score < 2) return tp(s.cause === "clear" ? "addLength" : s.cause);
+    return null;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSaving(true);
-    
-    if (!isSalon && calcAge(birthday) < 16) {
-      toast.error(t("errorMinAge"));
-      setSaving(false);
-      return;
-    }
 
-    // LOCKFILE 14.4 (2026-06-11): errors name the exact cause BEFORE the server
-    // gets a chance to answer generically. Mirrors the placeholder's stated policy.
-    // ig1 (2026-07-16): the server (lib/validations.ts signupSchema) only enforces
-    // min(8).max(200); gate on that plus a real entropy score, never composition.
-    if (password.length < 8) {
-      toast.error(t("errorPasswordMin"));
-      setSaving(false);
-      return;
-    }
-    if (strength.score < 2) {
-      // strength.cause is never "clear" once score < 2 (see lib/password-strength.ts),
-      // the fallback only satisfies the type since next-intl needs a real message key.
-      toast.error(tp(strength.cause === "clear" ? "addLength" : strength.cause));
-      setSaving(false);
-      return;
-    }
+    const ageErr = ageErrorFor(birthday);
+    const pwErr = passwordErrorFor(password);
+    setAgeError(ageErr);
+    setPasswordError(pwErr);
+    if (ageErr || pwErr) return;
+
+    if (!submitGuard.tryEnter()) return; // a signup is already in flight, drop the duplicate
+    setSaving(true);
 
     try {
-      const payload = isSalon 
-        ? { email, password, salon_name: salonName } 
+      const payload = isSalon
+        ? { email, password, salon_name: salonName }
         : { email, password, birthday };
 
       const res = await fetch("/api/auth/signup", {
@@ -119,19 +133,19 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
 
       if (res.status === 409) {
         toast.error(t("errorAccountExists"));
-        setSaving(false);
         return;
       }
       if (!res.ok) {
         toast.error(data.message || tc("errorProcessing"));
-        setSaving(false);
         return;
       }
       setSuccess(true);
     } catch {
       toast.error(tc("networkError"));
+    } finally {
+      submitGuard.release();
+      setSaving(false);
     }
-    setSaving(false);
   };
 
   if (success) {
@@ -162,6 +176,8 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
         type="email"
         placeholder={t("emailPlaceholder")}
         required
+        autoComplete="email"
+        inputMode="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         className="w-full px-4 py-3.5 text-sm font-body text-s-ink placeholder:text-s-ink/30 transition-colors" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
@@ -170,13 +186,22 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
         type="password"
         placeholder={t("passwordPlaceholder")}
         required
+        autoComplete="new-password"
+        aria-invalid={passwordError ? true : undefined}
         value={password}
-        onChange={(e) => setPassword(e.target.value)}
+        onChange={(e) => {
+          const v = e.target.value;
+          setPassword(v);
+          // states-forms-01: already-errored field re-validates live to clear fast;
+          // a clean field never gets a first-pass error mid-keystroke.
+          if (passwordError) setPasswordError(passwordErrorFor(v));
+        }}
+        onBlur={() => setPasswordError(passwordErrorFor(password))}
         className="w-full px-4 py-3.5 text-sm font-body text-s-ink placeholder:text-s-ink/30 transition-colors" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
       />
-      
+
       {/* mockup-ok: ig1, owner-approved TASTE_LOG.md 2026-07-16 "IG-principles round 1". Strength bar reuses ImageUpload.tsx:265-273 geometry (slim pill, ink fill). */}
-      {password.length > 0 && (
+      {password.length > 0 && !passwordError && (
         <div className="flex flex-col gap-1 -mt-1.5">
           <div className="h-1.5 w-full rounded-pill bg-s-bg-sunken overflow-hidden">
             {/* mockup-ok: hard-rule-2 conformance fix, treatment-only (fill looks
@@ -194,6 +219,11 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
           </p>
         </div>
       )}
+      {/* states-forms-02: single-field validation error, inline under the field
+          per LOCKFILE §14.4, never a toast. */}
+      {passwordError && (
+        <FieldHelper tone="error" className="-mt-1.5">{passwordError}</FieldHelper>
+      )}
 
       {isSalon ? (
         <div>
@@ -207,6 +237,7 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
           <input
             type="text"
             required
+            autoComplete="organization"
             placeholder={t("salonNamePlaceholder")}
             value={salonName}
             onChange={(e) => setSalonName(e.target.value)}
@@ -225,10 +256,19 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
           <input
             type="date"
             required
+            autoComplete="bday"
+            aria-invalid={ageError ? true : undefined}
             value={birthday}
-            onChange={(e) => setBirthday(e.target.value)}
+            onChange={(e) => {
+              const v = e.target.value;
+              setBirthday(v);
+              if (ageError) setAgeError(ageErrorFor(v));
+            }}
+            onBlur={() => setAgeError(ageErrorFor(birthday))}
             className="w-full px-4 py-3.5 text-sm font-body text-s-ink placeholder:text-s-ink/30 transition-colors" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
           />
+          {/* states-forms-02: single-field validation error, inline under the field. */}
+          {ageError && <FieldHelper tone="error">{ageError}</FieldHelper>}
         </div>
       )}
 

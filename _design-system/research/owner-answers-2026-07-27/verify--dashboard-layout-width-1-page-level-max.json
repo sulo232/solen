@@ -1,0 +1,97 @@
+{
+  "area": "Dashboard layout width: (1) page-level max-width cap on the operator dashboard shell, (2) extending the 68ch `.prose-measure` cap to dashboard free-text surfaces",
+  "confirmed_count": 22,
+  "corrections": [
+    {
+      "original_claim": "Q2: ZERO dashboard pages set a page-level container width. Every max-w hit in the dashboard is a modal, drawer, panel, or narrow form column.",
+      "verdict": "WRONG",
+      "truth": "Seven shell-wrapped pages set a page-level container width as the DIRECT child of <DashboardLayout>. The recon's own next finding lists them, so finding 6 self-contradicts finding 7.",
+      "evidence": "app/[locale]/dashboard/refunds/page.tsx:167 `<DashboardLayout ...>` immediately followed by :168 `<div className=\"max-w-4xl mx-auto\">`. Same shape at loyalty/page.tsx:81->:82 (max-w-3xl mx-auto), cases/page.tsx:221 (max-w-4xl mx-auto), upcharge/page.tsx:182 (max-w-4xl mx-auto), discovery-posts/page.tsx:116 (max-w-2xl mx-auto), salon-of-month-admin/page.tsx:128 (max-w-2xl, no mx-auto), verification/page.tsx:78 (max-w-3xl, no mx-auto)."
+    },
+    {
+      "original_claim": "Distinct max-w values in use: max-w-sm (~14 total sites), max-w-md (~12), max-w-4xl (4), max-w-2xl (4), max-w-3xl (3), max-w-xl (3), max-w-lg (3), max-w-xs (2), max-w-5xl (1), max-w-6xl (1)",
+      "verdict": "WRONG",
+      "truth": "The two largest counts are off by roughly 2x and two others are swapped. Real counts: max-w-md 22, max-w-sm 21, max-w-xl 4, max-w-4xl 4, max-w-lg 3, max-w-3xl 3, max-w-2xl 3, max-w-xs 2, max-w-6xl 1, max-w-5xl 1, plus [85vw], [560px], [300px], [260px].",
+      "evidence": "`grep -rho 'max-w-[a-z0-9]*\\|max-w-\\[[^]]*\\]' app/[locale]/dashboard components-legacy/dashboard app/[locale]/_components/dashboard | sort | uniq -c | sort -rn` run in the worktree root. All three directories exist."
+    },
+    {
+      "original_claim": "Grep for max-w across DashboardLayout.tsx returns only :261 (loading skeleton) and :347 (mobile drawer) - neither in the content chain.",
+      "verdict": "WRONG",
+      "truth": "`grep -n 'max-w' components-legacy/dashboard/DashboardLayout.tsx` returns exactly ONE line: 347. Line 261 carries `w-[240px]`, not a max-w. The recon's conclusion (zero max-w in the 287->431->473 content chain) is right and actually stronger than its evidence stated, but the evidence as written is false.",
+      "evidence": "components-legacy/dashboard/DashboardLayout.tsx:261 `<div className=\"hidden md:flex flex-col w-[240px] border-r border-s-ink/[0.06] p-3 gap-4\">`; :347 `className=\"absolute left-0 top-0 h-full w-[300px] max-w-[85vw] bg-white ...\"` is the only max-w in the 482-line file."
+    },
+    {
+      "original_claim": "Q3: the table-heavy pages are analytics, revenue, earnings, StaffComparison - but none is hurt, because every one of their tables is already inside an overflow-x-auto wrapper.",
+      "verdict": "WRONG",
+      "truth": "One of the five named tables is NOT in an overflow-x-auto wrapper. revenue/page.tsx's top-salons table sits inside `overflow-hidden`, which clips instead of scrolling. The practical risk is low (that table has only 3 columns), but the blanket safety claim is false, and `overflow-hidden` is the opposite of the property the claim relies on.",
+      "evidence": "app/[locale]/dashboard/revenue/page.tsx:206 `<motion.div variants={itemVariants} className=\"bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md overflow-hidden\">` then :210 `<table className=\"w-full text-sm\">` with no intervening wrapper (verified by reading 200-236 contiguously). The second revenue table at :246 IS wrapped at :245."
+    },
+    {
+      "original_claim": "Column counts: analytics 3 th; revenue 11 th across :210 and :246; earnings 13 th total; StaffComparison 6 th.",
+      "verdict": "WRONG",
+      "truth": "The counts include `<thead>` lines because `grep -c '<th'` matches `<thead`. Real th counts: analytics 2, revenue 9 (3 at :213-215 + 6 at :249-254), earnings 11 (6 at :130-135 + 5 at :198-202), StaffComparison 5. Direction of the argument is unchanged.",
+      "evidence": "`grep -n '<th' app/[locale]/dashboard/revenue/page.tsx` returns 211 (thead), 213, 214, 215, 247 (thead), 249-254. Same pattern in earnings (128, 196 are theads) and analytics (380 is a thead; only 382, 383 are th)."
+    },
+    {
+      "original_claim": "`.prose-measure` has 11 usage sites, ALL customer-side or dev.",
+      "verdict": "OVERSTATED",
+      "truth": "There are 10 class-application sites across 10 files. The number 11 is the file count from `grep -rl` including app/globals.css itself, which is the DEFINITION, not a usage. The recon's own evidence list enumerates exactly 10, and its summary says 9 customer surfaces (correct: 10 minus the one dev file).",
+      "evidence": "`grep -rn 'prose-measure' app components-legacy` returns className usages at privacy/page.tsx:56, terms/page.tsx:60, terms/discovery/page.tsx:20, impressum/page.tsx:12, legal/privacy/page.tsx:11, legal/terms/page.tsx:11, sicherheit/page.tsx:17, _components/salon/SalonAbout.tsx:37, _components/salon/SalonReviews.tsx:254, dev/report-flow/_parts/ReviewPreviewCard.tsx:45; plus the definition at app/globals.css:224. Zero hits under any dashboard path (confirms the brief's premise)."
+    },
+    {
+      "original_claim": "LOCKFILE cites 'the Dashboard content max-width row above' three times (lines 437, 439, 443).",
+      "verdict": "OVERSTATED",
+      "truth": "There are TWO dangling citations, not three. Line 439 contains the word max-width but is a different sentence, about mockup-first, not a reference to a nonexistent row. The load-bearing finding (no Dashboard row exists in the container-widths table, and the table sits below the citations) is fully confirmed.",
+      "evidence": "_design-system/LOCKFILE.md:437 'width (see the Dashboard content max-width row above)'; :443 'during the dashboard max-width sweep (LOCKFILE.md Dashboard content row)'; :439 reads 'owner-visible change (any max-width applied to a live dashboard field is a visual change under the' - no row reference. Container widths table at :939-947 lists Page outer 1280, Hero content 1280, Salon PDP grid 1180, /business hero 1400, Search bar 820, SearchBar mobile 540, FAQ 820. No Dashboard row."
+    },
+    {
+      "original_claim": "In the recommended `<main className=\"flex-1 w-full max-w-[1440px] mx-auto ...\">`, `w-full` 'makes the intent explicit and survives a future flex-col refactor'.",
+      "verdict": "WRONG",
+      "truth": "`w-full` is MANDATORY, not explicitness. `<main>` is a flex item in a column container (DashboardLayout.tsx:431 `flex flex-col`), so width is the CROSS axis. Per CSS Flexbox 9.6, `align-self: stretch` applies only when neither cross-axis margin is auto; `mx-auto` suppresses the stretch, so without an explicit width `<main>` would collapse to shrink-to-fit content width instead of filling up to 1440px. The recon's recommended class string is correct; its stated reason is wrong, which invites a future editor to drop the class.",
+      "evidence": "components-legacy/dashboard/DashboardLayout.tsx:431 `<div className=\"flex-1 md:ml-[64px] flex flex-col min-h-screen\">` is the parent; :473 `<main className=\"flex-1 px-4 pt-6 pb-10 sm:px-6 md:py-8\">` is the child. `flex-1` here resolves flex-basis on the MAIN (vertical) axis and has no effect on width."
+    },
+    {
+      "original_claim": "Change 2 priority list (f) includes app/[locale]/dashboard/discovery-admin/page.tsx:303.",
+      "verdict": "WRONG",
+      "truth": "That textarea is not prose. It is a newline-separated TikTok URL bulk-paste field, rows={8}, font-mono, with URLs as the placeholder. A 68ch reading-measure cap on a URL list makes long URLs wrap mid-string and buys nothing. LOCKFILE's own candidate list at :441 names discovery-admin, so the LOCKFILE list is imprecise here too and should not be applied without reading each field.",
+      "evidence": "app/[locale]/dashboard/discovery-admin/page.tsx:303-309: `<textarea value={urls} ... rows={8} aria-label={t(\"tiktokUrlsAria\")} placeholder={\"https://www.tiktok.com/@user/video/123...\\nhttps://www.tiktok.com/@user/video/456...\"} className=\"w-full px-4 py-3 text-sm text-s-ink placeholder:text-s-ink/30 font-mono\" />`"
+    },
+    {
+      "original_claim": "Change 2's highest-value target is SalonAboutEditor.tsx:121, and the change is a safe class-token addition because `.prose-measure` only sets max-width.",
+      "verdict": "OVERSTATED",
+      "truth": "The composition claim is true in CSS terms but the recon missed a real visual break at its own #1 target. That textarea sits in a `relative` wrapper whose absolutely-positioned character counter is pinned to the WRAPPER's right edge. Narrowing the textarea to 68ch leaves the counter floating in empty space to the right of the field. The fix needs the cap on the wrapper (:120), not the textarea (:121), or the counter re-anchored. That makes it not a pure class-token addition.",
+      "evidence": "components-legacy/dashboard/SalonAboutEditor.tsx:120 `<div className=\"relative\">`; :121-127 the textarea with `w-full h-32 p-4 ...`; :128 `<div className=\"absolute bottom-3 right-3 text-[12px] font-medium text-s-ink/30\">` rendering `{texts[activeLang]?.length || 0} / {maxLength}`; :131 closes the relative div."
+    },
+    {
+      "original_claim": "Change 2 applies to refunds:232 and upcharge:264 but SKIPS reviews:304 (flag reason) as a 'short single-purpose note field'.",
+      "verdict": "OVERSTATED",
+      "truth": "The apply/skip split is not derived from a consistent criterion. refunds:232 is rows={2}, upcharge:264 is rows={2} maxLength={500}, and the skipped reviews:304 is rows={2} maxLength={250}. Three rows={2} note fields, two applied and one skipped, with no stated distinguishing property. The skip list needs a real rule (e.g. maxLength threshold, or 'lives inside a max-w-md panel') or the three should be treated the same.",
+      "evidence": "app/[locale]/dashboard/refunds/page.tsx:232 `rows={2} className=\"w-full ...\"`; upcharge/page.tsx:264-270 `rows={2} maxLength={500} className=\"w-full px-3 py-2 mb-4 text-[13px] resize-none\"`; reviews/page.tsx:304-311 `rows={2} maxLength={250} className=\"w-full px-3 py-2 text-s-ink text-xs focus:outline-none resize-none\"`."
+    },
+    {
+      "original_claim": "The 8 pages that already self-cap ... they only gain outer centring.",
+      "verdict": "OVERSTATED",
+      "truth": "Only 7 of the 8 gain anything. gallery/page.tsx bypasses DashboardLayout entirely, so a cap at :473 never reaches it, which the recon itself states in a later finding. Additionally 3 of the 7 (salon-of-month-admin, verification, and gallery) carry no `mx-auto`, so their inner card stays left-hugging inside the newly centred column rather than centring.",
+      "evidence": "app/[locale]/dashboard/gallery/page.tsx read in full (79 lines): no DashboardLayout import or JSX; :56 `<main className=\"max-w-5xl\">` is the outermost node. salon-of-month-admin/page.tsx:128 `<div className=\"max-w-2xl space-y-6\">` and verification/page.tsx:78 `<div className=\"max-w-3xl\">` both lack mx-auto."
+    },
+    {
+      "original_claim": "Gap 2: the topbar's right-hand controls would sit ~560px right of the content's right edge on a 2560px monitor.",
+      "verdict": "OVERSTATED",
+      "truth": "~504px by the file's own numbers. Content region is 2560-64 = 2496; a 1440 cap leaves (2496-1440)/2 = 528 per side, putting the content's right edge at 2032; the topbar's px-6 puts its right control edge at 2536. The gap is real and the design concern stands; the number is inflated.",
+      "evidence": "components-legacy/dashboard/DashboardLayout.tsx:289 `w-[64px]` fixed aside; :433 topbar `... h-[56px] items-center gap-3 px-6`; :441 `<NotificationCenter ...>` is the last control. The recon's companion figure of 1056px of dead space without mx-auto (2496-1440) is exactly right."
+    },
+    {
+      "original_claim": "Finding 5 tagged wired: 'dead-code' for the non-existent collapsible rail.",
+      "verdict": "OVERSTATED",
+      "truth": "The substance is confirmed (no collapse/peek/pin state exists anywhere) but 'dead-code' is the wrong tag: there is no unreachable code, the feature was simply never built. The only `collapsed` hit is an unrelated services template-list toggle that is fully live.",
+      "evidence": "`grep -rnE 'railOpen|collapsed|isPinned|peek|expandRail|w-\\[240px\\]' components-legacy/dashboard app/[locale]/dashboard` returns only DashboardLayout.tsx:261 (the w-[240px] skeleton) and services/page.tsx:263,297,300,301,303,555 (a live show/hide-templates toggle). DashboardLayout.tsx:289 hardcodes w-[64px] with no state variable."
+    },
+    {
+      "original_claim": "(not raised by the recon) The source research JSON's line citations are trustworthy.",
+      "verdict": "WRONG",
+      "truth": "responsive-desktop-02's own local_evidence and absence_proof carry stale line numbers, which matters because the recon and any follow-up work quote that JSON. Its DashboardLayout.tsx:473 citation is the one that is still exact. Separately, typography.json's absence_proof claim that prose-measure has 'zero hits in LOCKFILE itself' is now stale.",
+      "evidence": "responsive-desktop.json cites \"LOCKFILE.md's 'Max width' surface table (lines 820-828)\" but the table is at _design-system/LOCKFILE.md:939-947; it cites \"dashboard/refunds/page.tsx:164 max-w-4xl\" but the class is at :168; it cites \"dashboard/staff/page.tsx:162/331\" but the modals are at :158/:327. typography.json:87 claims zero prose-measure hits in LOCKFILE; `grep -n 'prose-measure' _design-system/LOCKFILE.md` now returns 421, 425, 436, 442."
+    }
+  ],
+  "net_picture": "The recon's structural spine survives the attack. Everything load-bearing for the two changes is confirmed by direct re-reading: there is no dashboard layout.tsx (only 5 layout files in the whole app tree, none under dashboard, no route groups); the shell is components-legacy/dashboard/DashboardLayout.tsx, manually wrapped by exactly 44 of 49 dashboard pages with 5 bypassing it (editor, messages, gallery, setup, queue-display); its content chain 287 -> 431 -> 473 carries no max-width at all; the 64px rail at :289 is position:fixed and therefore outside anything a cap at :473 would constrain, with the column offset by md:ml-[64px] at :431; the sticky topbar at :433 is a sibling of <main> inside that column, so capping :431 instead of :473 would visibly cap the topbar's white background, exactly as the recon warns. `.prose-measure { max-width: 68ch }` exists at app/globals.css:224-226 inside the @layer utilities block opened at :177, is live on 10 call sites (9 customer plus 1 dev page), and has zero dashboard usages. There is no email-template editor in the dashboard (zero hits). LOCKFILE's container-widths table at :939-947 genuinely has no Dashboard row while the prose-measure section cites one; the research's recommended max-w-[1440px] genuinely misquotes its own precedent, since /business hero is locked at 1400 (LOCKFILE:944); and both changes are genuinely still marked AWAITING OWNER in _plans/PRINCIPLES_LOOP.md:362,368 and _plans/CONTEXT_SNAPSHOT.md:60,61.\n\nWhat does not survive: the recon's numbers are unreliable wherever it counted rather than read. It claimed zero dashboard pages set a page-level width while its very next finding lists seven that do (refunds:168, loyalty:82, cases:221, upcharge:182, discovery-posts:116, salon-of-month-admin:128, verification:78, each the direct child of <DashboardLayout>). Its max-w frequency table understates the two commonest values by about half (max-w-md is 22 not ~12, max-w-sm is 21 not ~14). Its th counts are inflated because grep -c '<th' also matches '<thead'. Its claim that every table on the width-sensitive pages is inside an overflow-x-auto wrapper is false: revenue/page.tsx:210's table sits inside overflow-hidden at :206, which clips rather than scrolls. Its \"grep for max-w returns :261 and :347\" is wrong on :261 (that is w-[240px]). It says 11 prose-measure usage sites and lists 10. It says three dangling LOCKFILE citations and there are two.\n\nTwo things change the recommendation itself. First, `w-full` in the proposed class string is mandatory, not a nicety: <main> is a flex item in a column container, so width is the cross axis, and mx-auto suppresses align-self:stretch, meaning the element would shrink-to-fit without it. The recon's string is right; its rationale would let a future editor delete the class. Second, change 2 as scoped will break its own top-priority target and includes one wrong target. SalonAboutEditor.tsx:121 lives inside a relative wrapper at :120 whose absolutely-positioned character counter at :128 is pinned to the wrapper, so capping the textarea leaves the counter stranded to its right; the cap belongs on the wrapper. And discovery-admin/page.tsx:303 is a rows={8} font-mono newline-separated TikTok URL paste field, not prose, so a reading-measure cap is the wrong tool there, which also means LOCKFILE's own candidate list at :441 must be read field by field rather than applied wholesale. The apply-vs-skip split among the rows={2} note fields (refunds:232 and upcharge:264 in, reviews:304 out) has no stated criterion and needs one.\n\nOne addition the recon did not make: the research JSON it leans on carries stale line numbers of its own (LOCKFILE table cited at 820-828 rather than 939-947, refunds at 164 rather than 168, staff at 162/331 rather than 158/327), and typography.json's \"zero prose-measure hits in LOCKFILE\" absence proof is now false (4 hits). Quote DashboardLayout.tsx:473 from that JSON, verify anything else against the files."
+}

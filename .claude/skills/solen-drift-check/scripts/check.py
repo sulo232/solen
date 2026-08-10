@@ -114,15 +114,51 @@ RETIRED_TOKENS = {
     "s-droplet",
     # s-pop removed 2026-07-11: LOCKFILE un-retired it (V3-D424); a live urgency-badge token, not drift.
     "s-cool",
-    # Atmosphere family
-    "s-atm-warm",
-    "s-atm-cool",
-    "s-atm-base",
-    # Category family
+    # color-tokens-01 (2026-07-27): the rest of the V3-D332 (2026-05-28) "dashboard
+    # rescue" back-compat alias block, same bucket as s-coral above -- LOCKFILE.md's
+    # RETIRED section named s-amber as "PERMANENTLY KILLED... NO alias added" but a
+    # live grep found 19 files still using it (the alias was added one day after the
+    # kill and nobody updated the doc). s-blue/s-plum/s-sand/s-amber-subtle were the
+    # same alias block and were never flagged at all. See LOCKFILE.md's RETIRED
+    # section for the per-token migration target (s-warning/s-accent/s-ink-2/s-bg.sunken).
+    "s-amber",
+    "s-blue",
+    "s-plum",
+    "s-sand",
+    "s-amber-subtle",
+    # color-tokens-04 (2026-07-27): s-ink-3 / s-ink-secondary / s-ink-tertiary were
+    # THREE extra live spellings of the exact same #6B6B6B hex as s-ink-2. Deleted
+    # from tailwind.config.js in the same change; flag any new callsite as drift.
+    "s-ink-3",
+    "s-ink-secondary",
+    "s-ink-tertiary",
+    # Atmosphere family (color-tokens-01, 2026-07-27: this used to read s-atm-warm/
+    # s-atm-cool/s-atm-base, three names that never existed in tailwind.config.js --
+    # enforcing nothing. The 5 real historical keys are these, all now DELETED from
+    # tailwind.config.js by color-tokens-06; kept here so a stray old callsite that
+    # copy-pasted the class name still gets flagged even though the token is gone.)
+    "s-atm-cream",
+    "s-atm-terra",
+    "s-atm-sage",
+    "s-atm-bone",
+    "s-atm-butter",
+    # Category family (color-tokens-01, 2026-07-27: the -text variants were missing
+    # too -- tailwind.config.js's own color-tokens-06 comment names all 4 base +
+    # 4 -text tokens as deleted together, but only the 4 base names had been added here)
     "s-cat-coiffeur",
     "s-cat-barbershop",
     "s-cat-nails",
     "s-cat-spa",
+    "s-cat-coiffeur-text",
+    "s-cat-barbershop-text",
+    "s-cat-nails-text",
+    "s-cat-spa-text",
+    # color-tokens-01 (2026-07-27): s-chart-1 and s-amber-text were both DELETED
+    # from tailwind.config.js by color-tokens-06 (zero live callsites) and named
+    # RETIRED in LOCKFILE.md, but neither had ever been added here -- the same
+    # doc/enforcement gap this finding is about, just two more instances of it.
+    "s-chart-1",
+    "s-amber-text",
     # V3-D221 (2026-05-26, overnight Q33 resolution): s-accent family REMOVED
     # from RETIRED. V3-D204 made `s-accent` the LIVE Solen brand accent
     # (royal blue #276EF1). The previous list flagged every legitimate Layer 2
@@ -142,6 +178,12 @@ DEFAULT_SCAN_GLOBS = [
     # control-elevation (A14) + the other rules cover it. INFO rules stay non-blocking.
     "components-legacy/**/*.tsx",
     "components/**/*.tsx",
+    # typography-02 (2026-07-27): lib/email*.ts and lib/email-templates/**/*.ts
+    # render raw HTML strings (transactional + lifecycle emails) that carry
+    # font-family declarations same as any .tsx — a live font-family:monospace
+    # violation shipped here undetected because these globs were absent.
+    "lib/email.ts",
+    "lib/email-templates/**/*.ts",
 ]
 
 # Exclusion paths — never scan these.
@@ -243,6 +285,48 @@ HAIRLINE_OPACITY_RE = re.compile(r"(?<!:)\bborder-s-ink/(?:[0-9.]+|\[[0-9.]+\])"
 # is unaffected. This is the one "don't re-open a locked decision" guard wired as
 # a gate rule instead of a doc.
 A18_AVAIL_SIGNAL_RE = re.compile(r"<Clock|\b\d{1,2}:\d{2}\b|heute|morgen|Frei in|nextSlot", re.IGNORECASE)
+
+# A23 — ungated functional hover-reveal (responsive-desktop-03/09, 2026-07-27).
+# `opacity-0` -> `group-hover(/name)?:opacity-100` with no `md:` (or other
+# pointer) gate makes a control PERMANENTLY UNREACHABLE on touch/no-hover input
+# -  a dead click by omission, not the graceful decorative-hover-lift loss
+# SOURCE.md §6.5 already covers. Found live in
+# app/[locale]/dashboard/calendar/page.tsx (slot-delete + add-slot controls);
+# fixed there to `opacity-100 md:opacity-0 group-hover:md:opacity-100` (visible
+# by default, hover-hidden only at md+, see Entdecken.tsx for the source
+# pattern). The negative lookbehind on `opacity-0` and the requirement that
+# `opacity-100` NOT be immediately preceded by `md:` both skip the already-
+# gated form. Decorative-only reveals (no functional marker nearby) are not
+# flagged - scan_text below only raises this when a `<button`, `onClick=`, or
+# `role="button"` marker appears within a small surrounding-line window.
+UNGATED_HOVER_REVEAL_RE = re.compile(r"(?<!md:)\bopacity-0\b[^\"]*\bgroup-hover(?:/[\w-]+)?:opacity-100\b")
+A23_FUNCTIONAL_MARKER_RE = re.compile(r"<button\b|onClick=|role=[\"']button[\"']", re.IGNORECASE)
+
+# A24 — banned font-family (typography-02, 2026-07-27). No font-family drift rule
+# existed at all before this: the finding that named this gap assumed A-something
+# already caught `font-family:monospace`/Geist and just needed wider scan globs to
+# reach lib/email.ts. Re-checked: no such rule existed (grep for "monospace" or
+# "font-family" in this file returned nothing), so the live monospace-code-face
+# violation in lib/email.ts's gift-card email would have kept passing even with
+# the globs widened. Added for real, not just the glob extension.
+FONT_FAMILY_BAN_RE = re.compile(r"font-family\s*:\s*['\"]?(monospace|Geist|JetBrains Mono)\b", re.IGNORECASE)
+
+# A22 — banned font-weight (typography-03, 2026-07-27). LOCKFILE §2 line 276 bans
+# 800/900 ("NEVER 800/extrabold — clumsy"); V3-D317 already swept font-extrabold
+# out of the codebase once, but with no gate the ban re-drifted to 24 live
+# callsites by 2026-07-26. HARD from the start (unlike A7/A8, this ban already
+# has a completed sweep behind it, so there is no legacy backlog to phase in).
+FONT_WEIGHT_BAN_RE = re.compile(r"\bfont-(?:extrabold|black)\b|\bfont-\[(?:800|900)\]\b")
+
+# A23 — non-canonical line-height (typography-04, 2026-07-27). LOCKFILE §2's
+# per-role Scale table names roughly 8 line-height values; a 2026-07-26 sweep
+# found 21 distinct leading-[*] values live (1.35, 1.42, 1.45, 1.08, 1.18, 1.04,
+# 1.02, 0.95 map to no named role). INFO to start, mirroring A7/A8's phase-in —
+# flip to STRICT once _pending-migration.md's queue is swept.
+LEADING_TW_RE = re.compile(r"\bleading-\[([0-9.]+)\]")
+CANONICAL_LEADING = {
+    "1.0", "1", "1.05", "1.1", "1.15", "1.2", "1.25", "1.3", "1.4", "1.55",
+}
 
 # A7-A11 — Type Role Registry + Imagery Pattern Registry (V3-D330, INFORMATIONAL)
 # These are NEW rules added 2026-05-28 per LOCKFILE §1.5 / §2.5 / §11.
@@ -820,6 +904,25 @@ def scan_text(text: str, rel: str, respect_inline_skip: bool = False) -> list[Fi
                 recommendation="Middle-dot `·` is forbidden as a separator (LOCKFILE §2.5 A12, V3-D463). NO separator glyph — use <MetaDot /> (a no-glyph gap) or an em-space (U+2003). Not a `·`, not a `|`.",
             ))
 
+        # A24 — banned font-family (HARD, typography-02 2026-07-27). Codes render
+        # Inter Tight tabular, never a literal monospace face (LOCKFILE §13.4,
+        # V3-D470); Geist and JetBrains Mono are separately retired (LOCKFILE §2).
+        if FONT_FAMILY_BAN_RE.search(line):
+            findings.append(Finding(
+                file=rel, line=ln_no, rule="A24: banned font-family",
+                snippet=line,
+                recommendation="Per LOCKFILE §13.4: codes are NOT a monospace. Use Inter Tight 600-700 + font-variant-numeric:tabular-nums (the .num recipe), or the app font stack for prose. Geist and JetBrains Mono are separately retired.",
+            ))
+
+        # A22 — banned font-weight (HARD, typography-03 2026-07-27). font-extrabold
+        # (800) / font-black (900) / font-[800] / font-[900] are banned outright.
+        if FONT_WEIGHT_BAN_RE.search(line):
+            findings.append(Finding(
+                file=rel, line=ln_no, rule="A22: banned font-weight (800/900)",
+                snippet=line,
+                recommendation="Per LOCKFILE §2: NEVER 800/extrabold or 900/black (\"clumsy\"). app/layout.tsx's Inter Tight weight array only loads 400-700, so this class either renders wrong (browser falls back to 700) or is a no-op. Use font-bold (700).",
+            ))
+
         # A3 — non-canonical durations
         for m in DURATION_TW_NUM_RE.finditer(line):
             n = int(m.group(1))
@@ -903,6 +1006,21 @@ def scan_text(text: str, rel: str, respect_inline_skip: bool = False) -> list[Fi
                 snippet=line,
                 recommendation="The green availability pill was REMOVED by the owner (V3-D443). Card availability = plain ink text (Clock + time in text-s-ink). Do not re-add a green pill.",
             ))
+
+        # A23 — ungated functional hover-reveal (responsive-desktop-03/09, 2026-07-27).
+        # Only fires when a functional marker (<button, onClick=, role="button") is
+        # found within a small window around the match - a decorative-only reveal
+        # (SOURCE.md §6.5's already-covered case) is not flagged.
+        if UNGATED_HOVER_REVEAL_RE.search(code_line):
+            window_start = max(0, ln_no - 3)
+            window_end = min(len(all_lines), ln_no + 1)
+            window_text = "\n".join(all_lines[window_start:window_end])
+            if A23_FUNCTIONAL_MARKER_RE.search(window_text):
+                findings.append(Finding(
+                    file=rel, line=ln_no, rule="A23: ungated functional hover-reveal (unreachable on touch)",
+                    snippet=line,
+                    recommendation="`opacity-0` -> `group-hover:opacity-100` with no `md:`/pointer gate makes this control PERMANENTLY UNREACHABLE on touch. Use `opacity-100 md:opacity-0 group-hover:md:opacity-100` (visible by default, hover-hidden only at md+ - see app/[locale]/_components/homepage/Entdecken.tsx). If this reveal is purely decorative (no functional control inside), add `drift-ok`.",
+                ))
 
         # B1 — dead onClick
         if EMPTY_ONCLICK_RE.search(line):
@@ -1055,6 +1173,16 @@ def scan_text(text: str, rel: str, respect_inline_skip: bool = False) -> list[Fi
                 snippet=line,
                 recommendation="Per CONTROL_ELEVATION.md (V3-D420): white+shadow is reserved for glass-over-photo (FROST_GLASS, lib/frost-glass.ts) and the one ink CTA. A calm control on white / s-bg-sunken casts NO shadow: text -> bg-s-bg-sunken no shadow; icon-only -> bg-white border-s-border no shadow. If this control IS over a photo, ignore (the line scanner can't see the background).",
             ))
+
+        # A23 — non-canonical line-height (INFO, typography-04 2026-07-27).
+        for m in LEADING_TW_RE.finditer(line):
+            val = m.group(1)
+            if val not in CANONICAL_LEADING:
+                findings.append(Finding(
+                    file=rel, line=ln_no, rule="INFO A23: non-canonical line-height",
+                    snippet=line,
+                    recommendation=f"`leading-[{val}]` not in canonical set {sorted(CANONICAL_LEADING)}. Per LOCKFILE §2 Scale table, pick the nearest canonical role line-height.",
+                ))
 
         # ─────────────────────────────────────────────────────────────
         # C1-C7 - anti-hardcode family (2026-06-28).

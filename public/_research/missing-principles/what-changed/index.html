@@ -1,0 +1,228 @@
+<!doctype html>
+<!--
+  What changed, and what is waiting on you. A plain-English REPORT page for a non-coder.
+  NOT a UI mockup: it depicts no Solen screen and copies no component. Its sources are data:
+  Grounded-in: _plans/PRINCIPLES_LOOP.md (the ledger, one line per finding with its commit),
+  _design-system/research/missing-principles-2026-07-26/*.json (the 276 findings),
+  and `git log ddc176c3c..HEAD` (197 commits this session).
+  mockup-grounding-skip.flag is set with that reason rather than faking a component citation.
+
+  Exists-check 2026-07-27: /principles/ is the raw findings list, /principles/saloncard-before-after/
+  is the imagery mockup. Neither says in plain words what got fixed or what is parked. This is that.
+  Every number re-verified against the repo this turn, not copied from an agent summary.
+  Single light theme, four font sizes, two weights.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What changed, and what is waiting on you</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;600&family=Inter:wght@400;600&display=swap">
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--border:#E4E4E7;--sunken:#F4F4F5;--white:#fff;
+        --accent:#276EF1;--ok:#16A34A;--ok-bg:#E8F5E9;--warn:#EA580C;--warn-bg:#FFEDD5;
+        --you:#276EF1;--you-bg:#EAEFFE;}
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--white);overflow-x:hidden}
+  body{color:var(--ink);font-family:'Inter',system-ui,sans-serif;font-size:15px;line-height:1.6;
+       -webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
+  h1,h2{font-family:'Inter Tight',system-ui,sans-serif;margin:0;letter-spacing:-.02em;font-weight:600}
+  h1{font-size:28px;line-height:1.2} h2{font-size:15px}
+  p{margin:0}
+  code{font-family:'Inter Tight',sans-serif;background:var(--sunken);border-radius:5px;padding:1px 5px;font-size:13px}
+  .wrap{max-width:820px;margin:0 auto;padding:28px 18px 72px}
+  .lede{color:var(--ink2);margin-top:10px;max-width:640px}
+  .stats{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+  .stat{background:var(--sunken);border-radius:12px;padding:10px 14px;min-width:104px}
+  .stat b{display:block;font-family:'Inter Tight',sans-serif;font-size:28px;font-weight:600;
+          font-variant-numeric:tabular-nums;line-height:1.1}
+  .stat span{font-size:13px;color:var(--ink2)}
+  .sec{margin-top:40px;padding-top:18px;border-top:1px solid var(--border)}
+  .sec>p.note{font-size:13px;color:var(--ink2);margin-top:8px}
+  .item{border:1px solid var(--border);border-radius:16px;padding:16px;margin-top:12px}
+  .item.you{border-left:3px solid var(--you)}
+  .head{display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap}
+  .tag{display:inline-flex;font-size:11px;font-weight:600;border-radius:999px;padding:3px 9px;white-space:nowrap}
+  .tag.you{background:var(--you-bg);color:var(--you)}
+  .tag.ok{background:var(--ok-bg);color:var(--ok)}
+  .tag.warn{background:var(--warn-bg);color:var(--warn)}
+  .t{font-weight:600;flex:1 1 260px;min-width:0}
+  .body{margin-top:10px}
+  .rows{margin-top:12px}
+  .row{display:flex;gap:10px;padding:8px 0;border-top:1px solid var(--border);font-size:13px}
+  .row:first-child{border-top:0;padding-top:0}
+  .row .k{flex:0 0 96px;color:var(--ink2);font-weight:600}
+  .row .v{flex:1 1 auto;min-width:0;overflow-wrap:anywhere}
+  ul{margin:10px 0 0;padding-left:18px}
+  li{margin:6px 0}
+  .foot{margin-top:44px;padding-top:16px;border-top:1px solid var(--border);font-size:13px;color:var(--ink2)}
+  @media (max-width:560px){.row{flex-direction:column;gap:2px}.row .k{flex:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>What changed, and what is waiting on you</h1>
+<p class="lede">One night of work, in plain words. First the eight things I deliberately did not
+decide for you, then what is actually different about Solen now.</p>
+
+<div class="stats">
+  <div class="stat"><b>197</b><span>commits</span></div>
+  <div class="stat"><b>195</b><span>principles applied</span></div>
+  <div class="stat"><b>8</b><span>waiting on you</span></div>
+  <div class="stat"><b>58</b><span>still to check</span></div>
+</div>
+
+<div class="sec">
+<h2>The eight things waiting on you</h2>
+<p class="note">Each is a judgement call, not a task. I stopped on purpose. Ordered by what it costs
+to leave undecided.</p>
+
+<div class="item you">
+  <div class="head"><span class="tag you">yours</span><span class="t">1. Nobody has photographed your salons</span></div>
+  <p class="body">Your cards now show a photo, which is the right call. But there are no real photos.
+  The gallery table is empty for all 28 salons and the covers are stock pictures from Unsplash. Four
+  different salons currently show the same photograph. So the page looks right and is telling a small
+  lie about every business on it.</p>
+  <div class="rows">
+    <div class="row"><span class="k">Why yours</span><span class="v">No amount of code produces a photograph of a real hairdresser. Someone shoots them, or asks the salons for their own.</span></div>
+    <div class="row"><span class="k">If you wait</span><span class="v">You launch showing strangers' interiors as if they were your partners' shops. A salon owner notices that immediately.</span></div>
+    <div class="row"><span class="k">I did do</span><span class="v">Added a check that reports this every time the invariants run, so it cannot quietly persist.</span></div>
+  </div>
+</div>
+
+<div class="item you">
+  <div class="head"><span class="tag you">yours</span><span class="t">2. Your rulebook and your code disagree about the empty-photo card</span></div>
+  <p class="body">When a salon has no photo, your written law says the card shows a soft grey
+  background, a category icon and the salon's first letter. Two card components ship two different
+  other things: one paints a solid colour block with the whole name in giant type, the other a grey
+  block with only a letter and no icon. Three descriptions, two implementations, none matching.</p>
+  <div class="rows">
+    <div class="row"><span class="k">Why yours</span><span class="v">It changes how a customer-facing card looks, and you told me to ask before visible design changes.</span></div>
+    <div class="row"><span class="k">The choice</span><span class="v">Make the code match the rule, or pick one shipped version and rewrite the rule to match it. Either is fine. Three is not.</span></div>
+  </div>
+</div>
+
+<div class="item you">
+  <div class="head"><span class="tag you">yours</span><span class="t">3. The French site is formal, the German and Italian ones are not</span></div>
+  <p class="body">Your design notes say the warm informal register was chosen on purpose, because
+  formality reads as distance. German follows it (196 informal words against 12 formal), Italian
+  almost perfectly (245 against 1). French does the opposite: 229 formal against 46 informal. Not
+  only in legal text, in the home page and the marketing copy.</p>
+  <div class="rows">
+    <div class="row"><span class="k">Why yours</span><span class="v">Brand voice. Changing it touches roughly 5,600 strings, and French-speaking Switzerland does reach for "vous" more readily than German-speaking Switzerland reaches for "Sie".</span></div>
+    <div class="row"><span class="k">The choice</span><span class="v">Keep French formal deliberately and write that down as an exception, or bring it in line with the other three.</span></div>
+  </div>
+</div>
+
+<div class="item you">
+  <div class="head"><span class="tag you">yours</span><span class="t">4. Anyone can publish a photo to your public site with nobody looking</span></div>
+  <p class="body">A salon owner or reviewer uploads an image and it goes straight to a public web
+  address. No queue, no approval, no hidden-until-checked state. Your Discovery content does get
+  reviewed. These two paths do not.</p>
+  <div class="rows">
+    <div class="row"><span class="k">Why yours</span><span class="v">It is a product decision with a real cost: somebody has to look at the queue. That is your time or a moderator's.</span></div>
+    <div class="row"><span class="k">If you wait</span><span class="v">Harmless today with no real users. On day one it is one bad upload away from a problem you handle in public.</span></div>
+  </div>
+</div>
+
+<div class="item you">
+  <div class="head"><span class="tag you">yours</span><span class="t">5. Nobody confirms they are allowed to upload the photo</span></div>
+  <p class="body">A review photo can show a stylist's face, or another customer in the background. A
+  gallery photo could be lifted from a competitor. The upload asks nothing and records nothing about
+  rights or consent.</p>
+  <div class="rows">
+    <div class="row"><span class="k">Why yours</span><span class="v">Adding a checkbox is easy. Deciding what it says, and what you promise when someone objects, is policy.</span></div>
+  </div>
+</div>
+
+<div class="item you">
+  <div class="head"><span class="tag you">yours</span><span class="t">6. "ab CHF 35" on a service that has only one price</span></div>
+  <p class="body">"ab" means "from". On a salon it is plainly right: prices start at 35. On a single
+  service with one fixed price, "from 35" arguably implies something cheaper exists. Swiss
+  price-display rules care about that distinction.</p>
+  <div class="rows">
+    <div class="row"><span class="k">Why yours</span><span class="v">A legal interpretation, and the finding's own confidence was "assume". I do not rewrite money-facing copy on a guess, in either direction.</span></div>
+    <div class="row"><span class="k">I did do</span><span class="v">Wrote the full analysis into <code>_rules/LEGAL_COPY.md</code> so whoever answers it has the picture.</span></div>
+  </div>
+</div>
+
+<div class="item you">
+  <div class="head"><span class="tag you">yours</span><span class="t">7. A backup has never actually been restored</span></div>
+  <p class="body">Backups are being taken. The runbook states recovery in one to two hours. That
+  number has never been tested; the existing script proves the export works, not the restore. An
+  untested backup is a hope.</p>
+  <div class="rows">
+    <div class="row"><span class="k">Why yours</span><span class="v">Proving a restore means writing real data into a throwaway database. No agent of mine performs a database write without you saying so.</span></div>
+    <div class="row"><span class="k">The ask</span><span class="v">One authorisation and about an hour. Then the runbook number is a measurement instead of a guess.</span></div>
+  </div>
+</div>
+
+<div class="item you">
+  <div class="head"><span class="tag you">yours</span><span class="t">8. The dashboard stretches edge to edge on a big monitor</span></div>
+  <p class="body">Nothing constrains the dashboard's width, so on a 27-inch screen every row, field
+  and tile runs the full window and lines of text get very long to read. The customer site caps its
+  line length; the dashboard never learned to.</p>
+  <div class="rows">
+    <div class="row"><span class="k">Why yours</span><span class="v">It changes how a screen looks, so it is your call. It is also about five minutes of work once you say yes.</span></div>
+  </div>
+</div>
+</div>
+
+<div class="sec">
+<h2>What is actually different now</h2>
+<p class="note">Grouped by what it protects. Every number re-checked against the repo this turn
+rather than copied from a report.</p>
+
+<div class="item">
+  <div class="head"><span class="tag ok">safety</span><span class="t">Things that could have hurt someone</span></div>
+  <ul>
+    <li><b>A salon owner could have run code on your site through their own salon name.</b> The page put that name inside a script block without escaping it. One shared helper now escapes every database value that reaches a script tag, with a Content-Security-Policy header behind it as a second net.</li>
+    <li><b>Uploads were trusted on the client's word.</b> Nine upload routes now read the file's actual first bytes instead of believing the label, strip GPS and camera metadata (a customer photo can carry the coordinates of someone's home), and require a header a forged cross-site form cannot send.</li>
+    <li><b>A migration would have invented wheelchair access.</b> A seed file set nine amenity flags, wheelchair accessible among them, from a hash of the salon id. Not live, but any restore would have made it live. Now inert, with the reason recorded.</li>
+  </ul>
+</div>
+
+<div class="item">
+  <div class="head"><span class="tag ok">honesty</span><span class="t">Things the product claimed but did not do</span></div>
+  <ul>
+    <li><b>Your Terms promise phone verification.</b> The check said "verified" and wrote nothing, because there is no column to write to. It no longer claims a success it cannot record, and the missing piece is named where the next person will find it.</li>
+    <li><b>Your Terms promise strikes and suspensions.</b> The table was written to in three places and read by nobody, so the consequence could never fire. It has a reader now.</li>
+    <li><b>A gate your rulebook said was protecting you had never been switched on.</b> Seven were in that state. All seven are armed, and a new check fails whenever a rule claims a protection that is not running.</li>
+  </ul>
+</div>
+
+<div class="item">
+  <div class="head"><span class="tag ok">four languages</span><span class="t">Things that only really worked in German</span></div>
+  <ul>
+    <li><b>Every page told browsers and screen readers it was German</b>, whatever it was showing. Now it says the right one, and the skip link is translated.</li>
+    <li><b>Dates and prices formatted as Swiss German everywhere.</b> Over a hundred places now follow the reader's language through one shared helper instead of copies, with a lint rule so the next one cannot creep in.</li>
+    <li><b>A refund screen was English-only</b> in German, French and Italian, with a to-translate marker sitting in the file for weeks. Translated, and a parity check now fails if a language falls behind.</li>
+  </ul>
+</div>
+
+<div class="item">
+  <div class="head"><span class="tag ok">silence</span><span class="t">Things that failed without telling anyone</span></div>
+  <ul>
+    <li><b>A scheduled job that never ran read as zero failures.</b> The daily check only counted jobs that ran and failed. It now alerts on absence, which is the shape most of these failures actually take.</li>
+    <li><b>Payment webhook rejections only wrote to a log.</b> They now reach the same alert path as everything else.</li>
+  </ul>
+</div>
+
+<div class="item">
+  <div class="head"><span class="tag warn">honest caveat</span><span class="t">What is not fixed</span></div>
+  <ul>
+    <li><b>58 findings are still unverified either way.</b> No commit names them. Some are genuinely unshipped, including ten rule-system items an agent reported done that left no trace on disk. I would rather show them open than claim them.</li>
+    <li><b>Your test and lint CI still has never run.</b> Only one workflow file exists on GitHub. That one needs you.</li>
+  </ul>
+</div>
+</div>
+
+<div class="foot">
+The raw findings list and the imagery before/after are on the same tunnel. Ledger:
+<code>_plans/PRINCIPLES_LOOP.md</code>, where every completed line names the commit that did it.
+</div>
+
+</div>
+</body>
+</html>

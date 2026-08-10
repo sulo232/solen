@@ -192,7 +192,7 @@ function CarouselInner({
               transition={{ duration: 0.32, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
               className="pointer-events-none absolute inset-x-4 bottom-4 z-[60] rounded-[20px] border border-white/45 bg-white/35 px-4 py-2.5 shadow-[0_10px_28px_rgba(0,0,0,0.14)] backdrop-blur-xl backdrop-saturate-150"
             >
-              <div className="font-display text-[15px] font-extrabold leading-tight text-s-ink truncate">
+              <div className="font-display text-[15px] font-bold leading-tight text-s-ink truncate">
                 {current.name}
               </div>
               <div className="mt-0.5 font-body text-[12px] font-medium text-s-ink-2 truncate">
@@ -319,7 +319,7 @@ function ArtistProfileDialog({ testimonial }: { testimonial: Testimonial }) {
             />
             <div className="absolute bottom-6 left-6 right-6">
               <h2
-                className="font-display font-extrabold text-white"
+                className="font-display font-bold text-white"
                 style={{
                   fontSize: "clamp(28px, 5vw, 42px)",
                   letterSpacing: "-0.025em",
@@ -352,7 +352,7 @@ function ArtistProfileDialog({ testimonial }: { testimonial: Testimonial }) {
 
               {testimonial.bio && (
                 <div className="mt-6">
-                  <h4 className="font-body text-[12px] font-bold uppercase tracking-[0.15em] text-s-ink-3">
+                  <h4 className="font-body text-[12px] font-bold uppercase tracking-[0.15em] text-s-ink-2">
                     Über {firstName}
                   </h4>
                   <p className="mt-2 font-body text-[15px] leading-[1.55] text-s-ink-2">
@@ -363,7 +363,7 @@ function ArtistProfileDialog({ testimonial }: { testimonial: Testimonial }) {
 
               {testimonial.specialties && testimonial.specialties.length > 0 && (
                 <div className="mt-6">
-                  <h4 className="font-body text-[12px] font-bold uppercase tracking-[0.15em] text-s-ink-3">
+                  <h4 className="font-body text-[12px] font-bold uppercase tracking-[0.15em] text-s-ink-2">
                     Spezialitäten
                   </h4>
                   <div className="mt-3 flex flex-wrap gap-2">
@@ -381,7 +381,7 @@ function ArtistProfileDialog({ testimonial }: { testimonial: Testimonial }) {
 
               {testimonial.portfolio && testimonial.portfolio.length > 0 && (
                 <div className="mt-6">
-                  <h4 className="font-body text-[12px] font-bold uppercase tracking-[0.15em] text-s-ink-3">
+                  <h4 className="font-body text-[12px] font-bold uppercase tracking-[0.15em] text-s-ink-2">
                     Arbeiten
                   </h4>
                   <div className="mt-3 -mx-6 flex gap-3 overflow-x-auto px-6 pb-2 md:-mx-8 md:px-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -417,7 +417,7 @@ function ArtistProfileDialog({ testimonial }: { testimonial: Testimonial }) {
 
               {testimonial.whySelected && (
                 <div className="mt-6 rounded-[16px] bg-s-bg-sunken p-4">
-                  <h4 className="font-body text-[12px] font-bold uppercase tracking-[0.15em] text-s-ink-3">
+                  <h4 className="font-body text-[12px] font-bold uppercase tracking-[0.15em] text-s-ink-2">
                     Warum Solen-Favorit
                   </h4>
                   <p className="mt-2 font-body text-[14px] leading-[1.55] text-s-ink">

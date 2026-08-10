@@ -35,7 +35,7 @@ export async function generateMetadata({
     .single();
   return {
     title: salon ? `Bewertungen ${salon.name}` : "Bewertungen",
-    description: "Alle Bewertungen für diesen Salon",
+    description: "Alle Bewertungen für diesen Store",
   };
 }
 

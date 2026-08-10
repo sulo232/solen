@@ -3,6 +3,7 @@ export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
+import { validateBody, profileFavoritesSchema } from "@/lib/validations";
 
 // Explicit public column list, same as app/api/salons/route.ts's salonCols (the
 // public card fields, never stripe_account_id / owner_id / search_doc / score_details).
@@ -74,14 +75,10 @@ export async function POST(req: NextRequest) {
   const rateLimitResponse = await applyRateLimit(generalLimiter, { userId: user.id });
   if (rateLimitResponse) return rateLimitResponse;
 
-  let salonId: string | null = null;
-  try {
-    const body = await req.json();
-    salonId = typeof body?.salon_id === "string" ? body.salon_id : null;
-  } catch {
-    salonId = null;
-  }
-  if (!salonId) return NextResponse.json({ error: "salon_id required" }, { status: 400 });
+  const rawBody = await req.json().catch(() => ({}));
+  const { data: validated, error: validationError } = validateBody(profileFavoritesSchema, rawBody);
+  if (validationError) return NextResponse.json({ error: "salon_id required" }, { status: 400 });
+  const salonId = validated.salon_id;
 
   const { error } = await supabase
     .from("favorites")

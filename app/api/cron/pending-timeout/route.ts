@@ -4,13 +4,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { sendEmail, bookingCancellation } from "@/lib/email";
 import { getServerEnv } from "@/lib/env";
+import { verifyCronSecret } from "@/lib/cron-auth";
 import { withCronRun } from "@/lib/cron-run";
+import { resolveSwissLocale } from "@/lib/format";
 
 export async function GET(req: NextRequest) {
   const cronSecret = getServerEnv().CRON_SECRET;
   if (!cronSecret) return NextResponse.json({ error: "Cron not configured" }, { status: 503 });
   const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${cronSecret}`) {
+  if (!(await verifyCronSecret(authHeader, cronSecret))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -56,7 +58,7 @@ export async function GET(req: NextRequest) {
             {
               service: booking.services?.name_de ?? "Service",
               salon: booking.salons?.name ?? "Salon",
-              date: new Date(booking.starts_at).toLocaleDateString("de-CH"),
+              date: new Date(booking.starts_at).toLocaleDateString(resolveSwissLocale(locale)),
             },
             locale
           )

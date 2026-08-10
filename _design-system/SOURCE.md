@@ -64,6 +64,10 @@ Swiss-first beauty & wellness booking marketplace. The "30 Sekunden" claim is th
 - **Locale priority**: German first, then English, then French, then Italian (UI defaults `de`)
 - **Devices**: Mobile-first design (≥75% of expected traffic). Desktop is a secondary surface — every feature must work on mobile before desktop work begins.
 
+**Desktop-considered vs mobile-stretched (responsive-desktop-04, 2026-07-27):** a screen that renders identically at 375px and 1280px except for a wider centered container is NOT "desktop-considered", it is mobile-stretched, and the two must be distinguishable, never left implicit. For any screen with a real desktop layout, name explicitly what changes at `>= lg` (1024px): column count, whether secondary metadata hidden/truncated on mobile becomes visible, and whether a mobile bottom-sheet action promotes to inline/sidebar. Individual components already do this and are the reference examples: `SalonSidebar` (desktop-only contact/hours panel), `SalonHero`'s photo gallery, `SalonBreadcrumb`. Where a screen is intentionally mobile-stretched (owner accepted, not unbuilt), say so in its component doc or a code comment, so silence stops reading as an unmade decision. `WORK_TYPES.md`'s screenshot conditional ("desktop, if route has a desktop layout") should read from a real per-route table (desktop-considered / mobile-stretched-by-design / not-yet-built), not an eyeballed guess at screenshot time.
+
+**Tablet (768-1024px) design intent (responsive-desktop-05, 2026-07-27):** tablet has an automated regression project (`playwright.config.ts`, 768x1024) that catches PIXEL DRIFT but never verifies the tablet render was ever an intentional design choice. Any screen where tablet renders materially differently from both mobile and desktop (not a pure interpolation of the two) must name that layout here or in the relevant component doc, same as mobile/desktop treatments are named. Where tablet is deliberately "just a wider mobile" or "just a narrower desktop", that inheritance is also a stated decision, not a default nobody chose. A regression baseline passing forever is not proof a human ever looked at or approved that layout.
+
 ### The color law — three-layer system (V3-D197, 2026-05-26)
 
 **Supersedes the V3-D192 "80/17/3 + signals" framing.** That model was correct for chrome but didn't account for **semantic UI** — surfaces where color IS the meaning. This caused a recurring bug (Toast V3-D196 patch, would have hit StatusPill / AlertBanner / FormFieldError next). V3-D197 introduces a third layer that codifies the entire class.
@@ -178,7 +182,7 @@ on the page too.
 | `s-accent.deep` | `-> LOCKFILE` | `bg-s-accent-deep` / `text-s-accent-deep` | Link `:hover`, accent-on-bg `:hover` (DS-6 2026-06-11 re-activation; corrected 2026-07-12, was stale #0F2A99) |
 | `s-accent.pale` | `-> LOCKFILE` | `bg-s-accent-pale` | "Selected" row bg, focus-glow tint, NEW pill bg-light variant |
 
-**Contrast vs white** (`text-s-accent #276EF1` on white) ≈ **3.7 : 1** — passes WCAG AA for LARGE text (≥18px / ≥14px bold) and UI components, but **FAILS AA for normal-size body**. So blue links/labels must be ≥18px or bold, or lean on the link's icon/position affordance; do NOT use #276EF1 for 11px metadata text. (The old #1638C4 was ~9.6:1 / AAA; v2's brighter #276EF1 trades contrast for vibrancy.)
+**Contrast vs white** (`text-s-accent #276EF1` on white) = **4.58 : 1** (recomputed 2026-07-27 via `node scripts/check-contrast.mjs --self-test`, matches RATIONALE.md §4's measured table; the older `3.7:1` figure printed here was a stale hand calculation, corrected) — passes WCAG AA for normal-size text, but with almost no headroom. On `bg-s-bg-sunken` the SAME token drops to 4.17:1 and FAILS AA (RATIONALE.md §4), so blue links/labels on a sunken tray still need to lean large/bold or on-white; do NOT use #276EF1 for 11px metadata text on a sunken surface. (The old #1638C4 was ~9.6:1 / AAA; v2's brighter #276EF1 trades contrast for vibrancy.) Any NEW text/bg pairing should be checked with `scripts/check-contrast.mjs`, not assumed from this paragraph.
 
 **Where to use:** text links (Mehr lesen →), see-all/view-all, active tab/segment state, ghost & secondary buttons, tappable row affordances, inline action labels, the chevron→arrow next to section titles. NOT eyebrows or decorative bullets — those stay text-s-ink-3 with no leading dot (v2 rule 2).
 
@@ -355,7 +359,11 @@ The canonical roles. Pick a role; use its exact spec. Don't invent new sizes.
 
 ### Numerics
 
-Use `tabular-nums` on prices, ratings, counts, dates, times so digits don't jitter when values change. Always.
+Use `tabular-nums` on prices, ratings, counts, dates, times so digits don't jitter when values change. Always. The general test (typography-08, 2026-07-27): any numeral that updates live, ticks down, or sits in a repeating column where digits must stay aligned across sibling rows (a countdown timer, a queue-position counter, a dashboard KPI/stat tile, a calendar day grid, a star-rating value) needs `tabular-nums` for the same physical reason codes and prices do, proportional digits have variable per-digit width, so an un-tabular number re-flows its own width on every tick and a column of numbers doesn't stay aligned. This is a behavior test (does the number change, or sit beside a sibling it must align with), not a fixed list of contexts, codes and prices are the worked examples, not the whole rule. See LOCKFILE §13.4 for the code-specific recipe.
+
+### Long-form measure
+
+Any body-copy block whose rendered width would otherwise exceed roughly 75 characters per line (salon descriptions, review text, legal prose, help-center answers, empty-state explanations) uses the shared `.prose-measure` utility (`app/globals.css`, 68ch), not an ad hoc `max-w-*` value or no width constraint at all. Reach for it the moment a new long-form-copy component is built, don't wait for a retrofit pass.
 
 ### Inline emphasis
 
@@ -545,6 +553,23 @@ These are non-negotiable across the system. Drift-checker can flag deviations.
 - ❌ Auto-playing motion (carousel auto-advance, hero zoom) without user input — users hate hijacked attention
 - ❌ Hover lift on touch-only devices — covered by `@media (hover: hover)` if needed (most Tailwind hover utilities handle this automatically)
 
+**Pointer vs touch, the house rule (responsive-desktop-09, 2026-07-27):** the line above and the
+media-first-card line below (§6.7) are both special cases of ONE rule, named here so a new component
+gets checked against the rule instead of each author re-deciding: pointer-fine/hover-hover input gets
+progressive enhancement (hover-lift, hover-reveal decoration, cursor-tracked tilt); pointer-coarse/
+hover-none input gets an ALWAYS-VISIBLE or tap-triggered equivalent for anything FUNCTIONAL. The two
+existing lines cover the decorative case, where losing the effect on touch costs nothing. They do not
+cover a control whose only way to become clickable is a hover reveal starting from `opacity-0` — that
+is a dead click by omission on any touch device, not a graceful degradation, and is a DISTINCT,
+higher-severity case (responsive-desktop-03, 2026-07-27; found live and fixed in
+`app/[locale]/dashboard/calendar/page.tsx`'s slot-delete and add-slot controls, which shipped
+hover-only with no `md:`/pointer gate — contrast the correct pattern already at
+`app/[locale]/_components/homepage/Entdecken.tsx`: `opacity-100 md:opacity-0 group-hover:md:opacity-100`,
+visible by default, hover-hidden only at `md` and up). Rule: any `opacity-0` → `group-hover:opacity-100`
+reveal on an element containing a functional control (`onClick`, a `<button>`, `role="button"`) must be
+gated the same way — visible-by-default, hover-hidden only at `md:` and up — never hover-only with no
+touch fallback.
+
 ### §6.6 · GPU-compositing rules (mobile perf)
 
 Required hints for smooth motion:
@@ -708,6 +733,28 @@ one-line footer naming what is not yet wired. Root cause + evidence:
 
 **Every Supabase-backed surface must define all four states.** Card grammar only covers the populated case.
 
+### §10.0a · Sparse-but-real state (hierarchy-density-04)
+
+A fifth case sits between §10.0 (populated) and §10.2 (empty): a production salon page with REAL,
+non-fabricated content that is genuinely thin , a newly onboarded salon with 2 photos and 0 reviews,
+below every §10.0 density number. This is NOT EmptyState (the data is not zero) and it is NOT covered
+by the target-state mockup boundary above (that boundary is scoped to design ARTIFACTS, not to what a
+real production page renders for a real thin salon). It is also not on the exemption list (forms,
+checkout payment, legal, receipts) that the imagery/density floors name.
+
+State plainly which floors still bind and which waive, so no engineer has to invent a special case:
+
+- **Still bind (non-negotiable even when thin):** no-fabrication (never pad with placeholder photos,
+  invented reviews, or a fake count); the missing-photo fallback (`s-bg-sunken` + 3D category icon +
+  salon initial, never a bare grey box); the two-ink-anchor card rule; no dead-grey zone.
+- **Waived (cannot be met honestly with real data):** the >= 5 gallery / >= 3 reviews / >= 6 services
+  COUNTS. A page may legitimately show 2 photos and 0 reviews. Render what exists; do not stretch the
+  layout to fake a floor-sized set.
+- **New requirement this state adds:** below-floor sections get a one-line honest sub-state, not
+  silent omission , e.g. a reviews section with 0 reviews renders "Noch keine Bewertungen" (not the
+  full `EmptyState` component, which is scoped to a whole-page zero-data case) rather than disappearing
+  entirely, so the salon still reads as a real, growing listing rather than a broken one.
+
 ### §10.1 · Loading state
 
 Skeletons mirror the eventual layout. Use `bg-s-bg-sunken` (#F4F4F5) with `animate-shimmer` for a subtle background-position loop.
@@ -792,6 +839,7 @@ For mutations (save heart, post review):
 The drift-checker catches LITERAL patterns. It cannot catch:
 - `salonId={salon?.id}` that's syntactically present but `salon` is null at runtime (false negative — passes static, fails real)
 - `onClick={handleClick}` where `handleClick` is defined but is a no-op function
+- **A computed/templated href whose static prefix points at a route that was never built** (ia-navigation-07, 2026-07-27). `_docs/FRONTEND.md:778` and `:2051` document a live instance found by hand: `RefundCaseView` + `UpchargeApproveView` both receive `receiptHref = /[locale]/bookings/[id]`, but there is no `app/[locale]/bookings/[id]/page.tsx`, so the link falls through to the home shell. The drift-checker only greps literal `href="/x"` JSX strings; a prop built from a template literal (`` `/${locale}/bookings/${id}` ``) never matches that pattern even though its static prefix (`/bookings/`) is checkable against the route manifest. Extend `solen-drift-check` to build a route manifest from `app/**/page.tsx` and flag any string-template `href`/`receiptHref`/`redirectTo` prop whose static prefix does not match a manifest entry.
 
 Runtime probes via Playwright catch these. The static checker is one layer; visual/functional verification is another.
 
@@ -1007,7 +1055,17 @@ Same numbering scheme. When a decision changes the design system itself (not jus
 
 ## §16 · Accessibility rules
 
-WCAG 2.1 AA is the floor.
+**WCAG 2.2 level A and AA is the floor** (accessibility-10, 2026-07-27: corrected from "2.1 AA"
+here, which had drifted out of sync with CLAUDE.md's precedence-chain statutory-floors tier
+already naming 2.2 A+AA; one number now, not two). This is also where Solen's legal accessibility
+exposure beyond WCAG-as-taste lives, named explicitly instead of assumed: Switzerland's BehiG
+(Behindertengleichstellungsgesetz) sets eCH-0059/WCAG 2.1 AA as the national standard today, mainly
+binding on federal/public bodies, with a pending revision extending comprehensive private-company
+obligations (accessibility statement, conformance declaration) from 2027; the EU Accessibility Act
+(EN 301 549 / WCAG 2.1 AA baseline) has applied to covered digital services since 28 June 2025 but
+only reaches Solen once it actually offers services to, or targets, EU-domiciled consumers, and its
+microenterprise exemption does not cover e-commerce/booking services regardless of size. Full
+sourcing: `_design-system/research/PSYCH_BUSINESS_IMPACT.md`'s BehiG/EAA rows.
 
 ### §16.1 · Landmarks
 
@@ -1016,6 +1074,18 @@ Every page MUST have:
 - `<header>` element for the Header component (already present)
 - `<footer>` element for the Footer (already present)
 - `<nav>` element for the MobileMenu and any other nav (currently missing — Q in QUESTIONS)
+
+**This rule is NOT customer-only (accessibility-04, 2026-07-27).** It binds the dashboard the
+same way: salon owners and staff are real end users of a 49-page admin surface, not an exempt
+internal tool. `DashboardLayout.tsx` (`components-legacy/dashboard/`, used by 44 of 49 dashboard
+`page.tsx` files) already wraps its children in `<main>`; both its desktop icon-rail `<nav>` and
+mobile slide-out `<nav>` now carry `aria-label="Dashboard-Navigation"`. The 5 dashboard pages that
+render OUTSIDE `DashboardLayout` (`editor`, `gallery`, `queue-display`, `setup`, plus `messages`
+which is a server redirect with no UI) each got their own root `<main>` landmark at the component
+that owns their real page shell (`EditorPage.tsx`, `gallery/page.tsx`, `queue-display/page.tsx`,
+`SetupWizard.tsx`). Not yet swept: icon-only buttons inside individual dashboard pages missing
+`aria-label` (§16.3 already states the rule; 33 of 49 dashboard `page.tsx` files carry zero
+`aria-*` at all, this needs a dedicated per-page pass, not a landmark-level fix).
 
 ### §16.2 · Focus management
 
@@ -1036,8 +1106,19 @@ Every page MUST have:
   <button aria-pressed={isSaved} aria-label={isSaved ? "Gespeichert" : "Speichern"}>
   ```
 - Multi-select uses `aria-pressed` on each option (NOT `aria-selected` which is for listbox patterns)
-- Live regions for dynamic content updates: `<span aria-live="polite">` for save toggles
+- Live regions for dynamic content updates: `<span aria-live="polite">` for save toggles, and (accessibility-08, 2026-07-27) for any result COUNT that re-renders in place on a filter/keystroke change without a page navigation — `SearchTemplate.tsx` now carries a persistent `sr-only` `aria-live="polite"` region mirroring its visible count (not `aria-live` directly on the visible element, since that element unmounts/remounts across a loading/error/total ternary and wouldn't reliably fire), and `FilterSheet.tsx`'s Apply button (whose own label text already carries the live count) carries `aria-live="polite"` directly since focus during filtering usually stays on the toggle/checkbox just touched, not that button.
 - `aria-hidden` on purely decorative SVGs
+
+**Alt text content policy (accessibility-06, 2026-07-27).** A salon/portfolio photo whose entire
+on-screen purpose is customer evaluation (a haircut result, salon interior, stylist's past work) is
+NEVER `alt=""` and never a bare index (`"{salonName} - {i}"`) or generic filler (`"Foto von
+{name}"`) — those describe nothing a screen-reader user can act on when the whole point of the
+gallery is helping a sighted user judge a hairstyle before booking. Use whatever structured metadata
+already exists (portfolio `category`, the stylist's name) to say WHAT the photo shows, not just whose
+it is: `SalonImageGallery.tsx` now reads its category-labeled photos this way (`getPortfolioCategoryLabel`)
+and names the active stylist for team-tab photos instead of `alt=""`; `SalonCard.tsx`'s fallback names
+the salon's category instead of echoing the name already read by `CardName` next to it. Only chrome,
+pattern, or purely repeated-elsewhere images qualify as decorative under WCAG 1.1.1.
 
 ### §16.4 · Color contrast
 
@@ -1049,8 +1130,14 @@ Every page MUST have:
 | `outline-s-ink` on white (focus ring) | ~5.8:1 | AA — Q5 resolved |
 | ~~`text-white` on `bg-s-brand #16A34A`~~ | 3.6:1 | **Retired V3-D189** — CTAs use `bg-s-ink` |
 | Pill borders (`rgba(154, 52, 18, 0.22)`) | n/a | Decorative — don't rely on for content |
+| `text-s-chart-2 #9CA3AF` on white | 2.54:1 | **FAIL, even large-text (3:1)** — chart-only (§1 data-vis rows), never text (accessibility-05) |
+| `text-s-chart-2 #9CA3AF` on `bg-s-bg-sunken` | 2.31:1 | **FAIL** — same restriction |
 
-Test all new color pairings before shipping. Tools: WebAIM Contrast Checker.
+Test all new color pairings before shipping, and RECORD the computed ratio in the SAME commit that
+authorizes a token for text use (accessibility-05, 2026-07-27) — a token not re-verified against
+this table is not authorized for prose, no matter what a later rule elsewhere implies. Tools: WebAIM
+Contrast Checker, or `node scripts/check-contrast.mjs --self-test` (color-tokens-05; extend
+`TOKEN_HEX` there when a new token enters text use, self-test its ratio against this table).
 
 ### §16.5 · Touch targets
 
@@ -1064,6 +1151,23 @@ Test all new color pairings before shipping. Tools: WebAIM Contrast Checker.
 - `Escape` closes overlays (consistent across MobileMenu, modals, sheets)
 - `Arrow keys` navigate within composite widgets (when applicable — e.g. radio groups, tab lists)
 - Avoid `tabindex={X}` with positive integers — disrupts natural flow
+
+### §16.7 · Text spacing (WCAG 1.4.12) — typography-09, 2026-07-27
+
+Content must survive a user's stylesheet forcing: line-height to at least 1.5x the font size, paragraph
+spacing to at least 2x the font size, letter spacing to at least 0.12x the font size, and word spacing to
+at least 0.16x the font size. At the 14px body role that is a 21px line-height and a 28px paragraph gap.
+No content may clip, overlap, or lose functionality under these forced values.
+
+Highest-risk pattern: fixed-height containers with clamped or line-clamped text (`line-clamp-*`, a
+fixed-height card, a truncated review preview). These must not clip at forced spacing, if a
+line-clamp block would clip, the container needs to grow with content rather than crop it, or the
+truncation needs to happen at the character/word level (an ellipsis a user can expand) rather than by
+cutting off a now-taller block.
+
+This closes a gap that was already decided and never applied: `RATIONALE.md` line 138 (dated
+2026-07-17) named this exact requirement and its destination ("add to the a11y checklist in SOURCE
+section 16") nine days before this subsection existed.
 
 ### Anti-patterns
 
@@ -1112,6 +1216,8 @@ t("results", { count: salons.length })
 // messages/de.json: "results": "{count, plural, one {# Salon} other {# Salons}}"
 ```
 
+**Never a hardcoded ternary** (`count === 1 ? "Salon" : "Salons"`) as a substitute for the pattern above: it freezes the text in whatever language the author typed and drops the locale's real plural grammar (French treats 0 as singular; German/French/Italian all differ at higher counts). copy-i18n-04 (2026-07-27) found and fixed 7 live instances of this exact anti-pattern (brand/[slug]/page.tsx, FavoritesList.tsx, SalonReviews.tsx, SalonResultCard.tsx, MapSalonDetail.tsx, queue/[token]/page.tsx, behandlungen/[...slug]/*.tsx). **Enforced**: `~/.claude/hooks/copy-lint-gate.py`'s 6th check (`NO-HARDCODED-PLURAL-TERNARY`) blocks any new `.tsx`/`.jsx` edit introducing `=== 1 ? "..."` / `== 1 ? "..."`.
+
 ### §17.5 · Date / time / currency
 
 Use Swiss formats:
@@ -1119,6 +1225,12 @@ Use Swiss formats:
 - Time: 24-hour `14:30`
 - Date: `21. Mai 2026` or `21.05.2026`
 - Relative time: `vor 2 Wochen`, `gestern`, `heute`
+
+### §17.6 · Long unbroken German compound words inside fixed-width, single-line atoms
+
+§17.3's "always allow text to wrap" only works when a string has spaces to break at. A single German compound word has none (`Stornierungsbedingungen`, `Stornierungsrichtlinie`, `Handelsregistereintrag`, `Zahlungsinformationen`, all 20-23 chars, live in `messages/de.json`), so the same overflow failure §17.3 exists to prevent reappears the moment the string is one long word instead of a short phrase, and it hits hardest inside a component that is single-line **by design** (a TabPill, filter chip, category tag, button label, badge) where wrapping the label would break the component's own visual contract.
+
+Rule: any such fixed-width single-line atom sets `overflow-wrap: break-word` on its text, never `hyphens: auto` (German needs correctly placed dictionary breaks to avoid mangling a word like `Stornierungsbedingungen` mid-syllable; the CSS auto-hyphenator does not reliably know German hyphenation points). If the component cannot tolerate a mid-word break either, it must be explicitly exempted with a documented fallback (truncate + a tooltip or the full text on tap), not silently left to overflow its container. Before shipping a new fixed-width chip/pill/tab component, check its longest live `de.json` string against this rule.
 
 ### Anti-patterns
 
@@ -1143,6 +1255,8 @@ Use Swiss formats:
 ### Voice register
 
 - **Direct** — say what the user can do, not how they should feel
+- **Conversational** — German `du` not `Sie` (per audience research), everywhere in `messages/de.json` EXCEPT the `legal.*` and `discovery_tos.*` namespaces, where formal register is the conventional (and here, deliberately kept) register for legal/contract text. **Enforced (copy-i18n-02, 2026-07-27)**: `~/.claude/hooks/copy-lint-gate.py`'s 5th check (`NO-FORMAL-REGISTER-IN-DE`) blocks any Write/Edit to `messages/de.json` that introduces a formal token (`Ihre`/`Ihren`/`Ihrer`/`Ihnen`/`Ihr`/`Sie`) outside those two namespaces. A full sweep on 2026-07-27 found and fixed 17 pre-existing drift instances (dashboard.settings, dashboard.disputes, dashboard.verificationPage, dashboard.messagesPage, discovery.admin, report.\*, common.\*) that had crept in exactly where a formal template read easiest to copy-paste.
+- **Owner-facing chrome vs. owner-to-customer templates (copy-i18n-10, 2026-07-27):** a dashboard translation key is one of two different audiences, and nothing structural told them apart before this note. Most `dashboard.*` keys are Solen UI CHROME speaking TO the salon owner (`dashboard.settings.vatNumberHint`, "Deine Schweizer..."). A small set are TEMPLATES the owner sends onward TO their own customer (`dashboard.settings.quickReplyDefault1/2`, `dashboard.messagesPage.quickReplyThanks`/`quickReplyConfirmed`, the pre-filled quick-reply message text) — a genuinely different audience that could, in principle, carry its own register decision. The 2026-07-27 register sweep (copy-i18n-02) resolved the immediate collision by converting those 4 keys to `du` too, matching every other Solen-to-owner string in the same namespace, so today there is no register split to get wrong. The naming convention that marks a key as "sent onward to the owner's own customer" going forward: a `quickReply*` (or, for a net-new feature, an explicit `*Template`) key name. If a future key needs a genuinely different register from the rest of its namespace, name it with that suffix so the register-gate's allowlist (copy-i18n-02) and any translator editing the file can tell the audience apart at a glance, instead of guessing from surrounding keys.
 - ~~**Conversational** — German `du` not `Sie` (per audience research)~~ **DEAD 2026-07-29** — the
   owner chose formal `Sie` (de), `Lei` (it), `vous` (fr). See `COPY_LAW.md` §1. Warmth inside the
   formal register is COPY_LAW.md §3, which exists precisely so formal does not read institutional.
@@ -1228,10 +1342,21 @@ Server components check session; redirect to `/auth/login` with `?from=<current-
 
 Client components use a `useSession` hook (TBD — currently checks done in server components only).
 
+**Session-expiry mid-form (states-forms-08, added 2026-07-27):** until the `useSession` hook above
+ships, any client-side write that can fail on an expired session (a 401, distinct from a validation
+4xx or a network failure) must branch on `res.status === 401` specifically and show a message naming
+that cause ("Deine Sitzung ist abgelaufen…"), not the same generic save-failed toast as every other
+error, then redirect to `/auth/login?redirect=<current-path>` (existing return-path infra, §19.4
+above) so the user lands back where they were after re-auth. Reference implementation: `saveProfile`
+in `app/[locale]/profile/settings/SettingsForm.tsx`. Full draft-value preservation through the
+re-login round trip is still TBD (needs the `useSession` hook or a form-draft persistence layer,
+§14.7 in LOCKFILE.md); the path-return is the interim floor every write-handler should meet now.
+
 ### Anti-patterns
 
 - ❌ Blocking UI on Supabase calls (always optimistic, see §10.4)
-- ❌ Generic "Network error" toast for everything — distinguish RLS / 4xx / 5xx / network
+- ❌ Generic "Network error" toast for everything — distinguish RLS / 4xx / 5xx / network. Positive
+  content template (what failed + why/next-step, states-forms-09): `_design-system/LOCKFILE.md` §14.11.
 - ❌ Silent failure (no console.error, no toast)
 - ❌ Auto-retry without exponential backoff
 
@@ -1249,6 +1374,7 @@ The running list of "we already decided this, don't re-litigate." If you find yo
 | 80 / 17 surfaces+ink; interactive blue NOT budgeted (the old "3%" accent cap reversed, v2 2026-06-09) | V3-D138 + v2 | This doc §1 |
 | Blue `s-accent` #276EF1 = the HYPERLINK accent, sparse (v3 2026-06-11; the v2 "generous on all tappable" row is RETIRED) | v3 | LOCKFILE §1.5 v3 + SOURCE §1/§2.1 |
 | "Termin in 30 Sekunden" is THE positioning | V3-D86 | This doc §1 |
+| German `du` not `Sie`, except `legal.*`/`discovery_tos.*` which stay formal | (since launch; exception + gate added copy-i18n-02, 2026-07-27) | This doc §18 |
 | ~~German `du` not `Sie`~~ , **REVERSED 2026-07-29: formal `Sie` / `Lei` / `vous`** (supersedes this row) | owner, *"make it the Sie instead of the du"* | `COPY_LAW.md` §1 |
 | `card` radius = 16px | V4 era | This doc §5 |
 | `ease-glide` is the default easing | V2-D16 | This doc §6 |

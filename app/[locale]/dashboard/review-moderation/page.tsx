@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { motion } from "motion/react";
 import { Star, MessageSquareWarning, Check, EyeOff, Trash2, X } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
@@ -9,6 +9,7 @@ import { DashStatusPill } from "@/app/[locale]/_components/dashboard/DashboardUI
 import Spinner from "@/components-legacy/ui/Spinner";
 import EmptyState from "@/components-legacy/ui/EmptyState";
 import { containerVariants, itemVariants } from "@/lib/animations";
+import { resolveSwissLocale } from "@/lib/format";
 
 interface Review {
   id: string;
@@ -73,6 +74,7 @@ function DeleteModal({
 /* ─── Main Page ─── */
 export default function ReviewModerationPage() {
   const t = useTranslations("dashboard.reviewModerationPage");
+  const locale = useLocale();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<"flagged" | "all">("flagged");
@@ -188,7 +190,7 @@ export default function ReviewModerationPage() {
                 </span>
                 <span className="text-xs text-s-ink/30">|</span>
                 <span className="text-xs text-s-ink/30">
-                  {new Date(r.created_at).toLocaleDateString("de-CH")}
+                  {new Date(r.created_at).toLocaleDateString(resolveSwissLocale(locale))}
                 </span>
               </div>
 

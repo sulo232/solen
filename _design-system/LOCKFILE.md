@@ -17,7 +17,7 @@
 3. **No category branches** in components — `if (category === 'X')` is forbidden. Same component renders for Coiffeur / Barber / Nails / Spa / Makeup / Waxing without conditionals. (Drift-checker rule B5.)
 4. **No new semantic hues invented.** Use the §3 universal-color table. Success=green / error=red / warning=amber / info=blue / rating=yellow / save=pink / urgency=burnt-amber / disabled=ink-3. Don't pick a "nice teal" for a status. (V3-D197.)
 5. **No `onClick={() => {}}` dead clicks.** Every interactive surface has a working handler OR uses `<ComingSoon>` wrapper.
-6. **No hardcoded hex in JSX/TSX.** Use the Tailwind tokens below. Only exceptions: the per-token literal definitions in `tailwind.config.js` itself and the universal-color star/heart values that ARE the spec.
+6. **No hardcoded hex in JSX/TSX.** Use the Tailwind tokens below. Only exceptions: the per-token literal definitions in `tailwind.config.js` itself and the universal-color star/heart values that ARE the spec. **Scope-exclusion caveat (color-tokens-07, 2026-07-27):** a route listed in `_design-system/_rebuilt_routes.json` as un-rebuilt is exempt from the drift-check REPORT, not from this rule. Silencing the report does not authorize new hardcoded hex in that route, and pre-existing hex there is tech debt to fix when the route is next touched, not permanent cover. A literal value (color, gradient pair, spacing constant) that appears identically in more than one file is promoted to a single shared exported constant in the same change that introduces the second copy, whether or not the route is in the exclusion list.
 7. **Strict TypeScript.** No `any` without justification comment. No `// @ts-ignore`.
 8. **No `git commit` or `git push` automatically** — user controls all commits.
 9. **No `.env.local` edits** without explicit ask.
@@ -93,6 +93,8 @@ the locked FROST_GLASS/scrim recipes are the only sanctioned alpha uses). Ad-hoc
 
 | Token | Hex | Usage |
 |---|---|---|
+| `s-ink` | `#0A0A0A` | Primary chart row (use `s-ink` directly for the Solen brand bar in any competitor-comparison chart; the `s-chart-1` alias was deleted in color-tokens-06, 2026-07-27, zero live callsites) |
+| `s-chart-2` | `#9CA3AF` | Secondary chart row (e.g. main competitor / Treatwell bar in /partner pricing chart) |
 | `s-chart-1` | `#0A0A0A` | Primary chart row (alias of `s-ink` — use for the Solen brand bar in any competitor-comparison chart) |
 | `s-chart-2` | `#9CA3AF` | Secondary chart row (e.g. main competitor / Treatwell bar in /partner pricing chart) **PLUS, since the owner-approved FLOORS LAW of 2026-07-21 (§17.4 below), the reinstated TERTIARY TEXT grey: chevrons, placeholders, timestamps, hints. NON-load-bearing text ONLY , forbidden on any copy the user has to read to decide.** This row previously named only the chart role, so the text role read as an undefined token. |
 | `s-chart-3` | `#D1D5DB` | Tertiary chart row (e.g. competitor range / "others" bar in /partner pricing chart) |
@@ -105,17 +107,55 @@ hue stepped +25–30 per series (perceptually even, no neon-green-next-to-dull-b
 keep the grey scale above. Legibility rules for every chart: visible axis labels, FLAT bar tops (no
 rounded caps that hide the value), bar count = datum count. "Dribbble-pretty but unreadable" is drift.
 
+**Reference implementation (color-tokens-08, 2026-07-27):** call `chartSeriesColors(n)` from
+`lib/chart-colors.ts`, never hand-compute OKLCH. It fixes L/C from `s-accent` and steps hue 27.5deg
+(the midpoint of the range above) per series. Worked example, `chartSeriesColors(4)`:
+
+| Series | Hex | Role |
+|---|---|---|
+| 1 | `#276EF1` | s-accent itself (hue 261.4deg) |
+| 2 | `#7A57E9` | hue 288.9deg |
+| 3 | `#A743C8` | hue 316.4deg |
+| 4 | `#C53096` | hue 343.9deg |
+
+`lib/chart-colors.ts` also exports `hexToOklch` / `oklchToHex` for any other OKLCH need; its self-test
+round-trips 5 live Solen tokens and re-derives this exact worked example.
+
 ### RETIRED — never use in new code
 
-- `s-coral`, `s-cream`, `s-butter`, `s-sage`, `s-wasabi`, `s-droplet`, `s-cool`
+- `s-coral`, `s-sage`, `s-wasabi`, `s-droplet`, `s-cool` (still defined, back-compat alias or in occasional use). `s-cream`, `s-butter` — **DELETED from `tailwind.config.js` (color-tokens-06, 2026-07-27),** zero live callsites found; RETIRED-in-prose here since before this doc existed but never actually removed until now.
 - ~~`s-pop`~~ — **UN-RETIRED V3-D424 (2026-06-02):** it's a vivid vermilion `#C03001`, actively used as the escalated/urgency badge dot+text (dashboard `DashStatusPill` `urgent` tone). Distinct from `s-surcharge` orange + `s-error` red. Tailwind keeps it ("urgency badges only") — this reconciles the doc with reality.
-- `s-amber` — **PERMANENTLY KILLED V3-D320 (2026-05-27)** per user pick on Q-W7-A. Was an orphan reference rendering invisible. All callsites swept: star/rating context → `s-star` (#FFC32B yellow), warning/alert context → `s-warning` (#F1AE27 amber per LOCKFILE §1 universal-color table). NO alias added — drift-checker will reject any new `s-amber` usage. If you need amber for warnings use `s-warning`; if for rating-yellow use `s-star`.
-- `s-atm-*` family (warm / cool / cream / terra / sage / bone / butter)
-- `s-cat-*` family (coiffeur / barbershop / nails / spa — and their `-text` variants)
-- `s-love` family (replaced by `--heart-active` for save, `s-error` for error)
+- `s-amber`, `s-blue`, `s-plum`, `s-sand`, `s-amber-subtle` — the full V3-D332 (2026-05-28) "dashboard rescue" back-compat alias block (`tailwind.config.js` §1, alongside `s-coral`): each re-aliases a token killed earlier the same week to its closest live semantic (`s-amber`→`s-warning` DEFAULT, `s-blue`→`s-accent` DEFAULT, `s-plum`→`s-ink-2`, `s-sand`→`s-bg.sunken`, `s-amber-subtle`→`s-warning.bg`) so un-rebuilt dashboard routes keep rendering. **color-tokens-01 (2026-07-27):** `s-amber`'s own bullet used to claim "PERMANENTLY KILLED... NO alias added", which was stale the day after V3-D332 shipped; a live grep found 19 files still using it (13/`s-blue`, 3/`s-plum`, 14/`s-sand`, 9/`s-amber-subtle`), none of the five flagged by the drift-checker. All five are RETIRED for new code the same way `s-coral` is: the alias exists so old callsites keep rendering, but `check.py`'s `RETIRED_TOKENS` now rejects any NEW usage. If you need amber for warnings use `s-warning` directly; rating-yellow use `s-star`; blue accent use `s-accent`; secondary grey use `s-ink-2`; sunken bg use `s-bg.sunken`.
+- `s-atm-*` family (cream / terra / sage / bone / butter) — **DELETED from `tailwind.config.js` (color-tokens-06, 2026-07-27)**, zero live callsites. (color-tokens-01, 2026-07-27: this bullet used to also list "warm / cool", two sub-names that were never real `tailwind.config.js` keys; check.py's `RETIRED_TOKENS` had copied those fictional names verbatim instead of the 5 real ones, so it was enforcing nothing for this family. Fixed here and in check.py together.)
+- `s-cat-*` family (coiffeur / barbershop / nails / spa, and their `-text` variants) — **DELETED from `tailwind.config.js` (color-tokens-06, 2026-07-27)**, zero live callsites.
+- `s-chart-1` — **DELETED (color-tokens-06, 2026-07-27)**, zero live callsites; it was an alias of `s-ink` anyway, use `s-ink` directly for the primary chart row.
+- `s-amber-text` — **DELETED (color-tokens-06, 2026-07-27)**, zero live callsites.
+- ~~`s-love` family (replaced by `--heart-active` for save, `s-error` for error)~~ — **STALE, corrected (color-tokens-01, 2026-07-27):** `s-love` is live, not retired. `tailwind.config.js` §1 (V3-D85-semantic, 2026-05-19) has it doing deliberate "double duty": heart-saved AND sale/discount chips (`s-love-soft`/`s-love-deep`), with 6+ live callsites (`HeartButton.tsx`, `SalonCard.tsx`, `SearchTemplate.tsx`). This bullet was never updated when that decision landed; it is not in `check.py`'s `RETIRED_TOKENS` and must not be added there.
+- `s-ink-3`, `s-ink-secondary`, `s-ink-tertiary` — **COLLAPSED V3-color-tokens-04 (2026-07-27):** all three were live spellings of the exact same `#6B6B6B` hex as `s-ink-2`, with zero semantic difference. Every callsite now reads `s-ink-2`; the extra keys are deleted from `tailwind.config.js`, not just commented.
 - `Geist` — **REJECTED 2026-05-30** ("no Geist anywhere"); V3-D317 swap reverted. `Hanken Grotesk` — **REPLACED by `Inter` V3-D410 (2026-05-31)**. `JetBrains Mono` — **RETIRED 2026-06-10 (V3-D470)** for codes (owner: "the W-047 font is different"); codes now Inter Tight tabular (§13.4). Active type = Inter Tight + Inter only. See §2.
 
 Drift-check `RETIRED_TOKENS` list flags any new usage.
+
+### Prune, don't just retire (color-tokens-06, 2026-07-27)
+
+RETIRED tokens are DELETED from `tailwind.config.js`, not left defined with a comment
+saying "don't use this." A token with zero matches across `app/`, `components/`,
+`components-legacy/`, and `lib/` for two consecutive quarterly design-system audits gets
+removed from the config in the same pass this file marks it RETIRED. A definition that
+nothing renders is not neutral: it is a landmine for the next agent who greps
+`tailwind.config.js`, sees a plausible-sounding name, and assumes it is safe to use. 17
+zero-usage tokens (`s-amber-text`, the `s-atm-*` and `s-cat-*` families, `s-chart-1`,
+`s-cream`, `s-butter`) were found and deleted in this pass; add a token-pruning line item
+to whatever periodic design-system audit runs next.
+
+### Token naming grammar (color-tokens-04, 2026-07-27)
+
+A token variant (secondary / hover / deep / muted) is spelled exactly ONE way per token
+family: either a nested Tailwind object key (`s-ink.secondary`) or a flat hyphen-suffix
+sibling token (`s-ink-2`) — never both for the same hex. When a variant is renamed or
+collapsed onto another value, the old spelling is deleted from `tailwind.config.js` in
+the same change, not left defined as a second live name nobody uses on purpose. One value,
+one name — a future recolor only has to find and edit that one name.
 
 ---
 
@@ -216,6 +256,10 @@ body:    ["'Inter'", "system-ui", "-apple-system", "sans-serif"]
 **NEVER:** Geist (rejected by user — "no Geist anywhere"), Hanken Grotesk (replaced by Inter, V3-D410), JetBrains Mono / any monospace for codes (rejected V3-D470 2026-06-10 — codes → Inter Tight tabular per §13.4), Peace Sans (retired), Plus Jakarta Sans (retired V3-D189), Bricolage Grotesque (retired V3-D190), system-default-only (must specify family).
 **ACTIVE:** Inter Tight (display/headings + codes-as-tabular) · Inter (body). Two optical cuts of one family — no third face.
 
+### Font loading (never regress) — typography-07, 2026-07-27
+
+Every self-hosted family loads exclusively through `next/font` (never a manual `@font-face`, never a `<link>` to a font CDN), keeps Next's automatic fallback-metric adjustment enabled (the default, never pass `adjustFontFallback:false`), and sets `display: "swap"` explicitly (`app/layout.tsx` lines 3-14 do this correctly today for both families). This combination is what keeps a font swap from causing layout shift: the fallback font is metric-matched to the real font, so nothing reflows when Inter Tight / Inter finish downloading. Stated here as a requirement, not left implicit in the one file that happens to be correct, so a future edit (adding a third family via a plain `<link>`, or disabling the fallback adjustment to "fix" a rendering quirk) has a named rule to check against.
+
 ### Scale (role × size × weight × line-height × tracking)
 
 **V3-D325 (2026-05-27): Uber-aligned scale** — applied to Page H2, Section H2, Subsection H3, body, eyebrow, CTA. All heading weights uniformly 600 EXCEPT Hero H1 (see next note).
@@ -290,9 +334,18 @@ Hierarchy uses **size** + **position** + **tracking** — NOT compound family co
 
 ### The 11 roles
 
+**typography-10 (2026-07-27): Hero H1 mobile floor reconciled.** This table used to give
+`clamp(28,7vw,64)px` while §2's Scale table + its "Common clamp() patterns" code block both give
+`text-[clamp(40px,10vw,64px)]` for the same role, same V3-D327 citation, in the same document. At
+375px mobile, 7vw clamps to the 28px floor, 12px smaller than §2's 40px floor. §2's value is the one
+corroborated twice (the table row AND the literal Tailwind class in the code-pattern block below it),
+so it is canonical; this row is struck through and points there instead of asserting a second,
+disagreeing number. If Hero H1's mobile floor changes, update §2 first and this row second, in the
+same turn, so the two never drift apart again.
+
 | Role | Size (mobile→desktop) | Weight | Case | Tracking | Color | Max/surface |
 |---|---|---|---|---|---|---|
-| **Hero H1** | clamp(28,7vw,64)px | 700 | sentence | -0.02em | `s-ink` | 1 |
+| **Hero H1** | ~~clamp(28,7vw,64)px~~ **superseded, see §2** | 700 | sentence | -0.02em | `s-ink` | 1 |
 | **Hero sub** | clamp(15,4vw,22)px | 400 | sentence | -0.005em | `s-ink-2` | 1 |
 | **Page H2** | clamp(22,2.8vw,26)px | 600 | sentence | -0.015em | `s-ink` | unlimited |
 | **Section H2** | clamp(18,2vw,20)px | 600 | sentence | -0.01em | `s-ink` | unlimited |
@@ -336,10 +389,62 @@ The 11 roles above are the full set; **day-to-day, ~90% of text is just these 6.
 
 Everything else (`.04em`, `.07em`, `.10em`, `.12em`, `.14em`, `.15em`, `.16em`, `.18em`, `.1em`, `.20em`, `.22em` — currently 20 distinct values in use) → drift rule A8 logs to `_pending-migration.md`. Phase 2 sweep collapses callsites onto canonical set.
 
+### Canonical line-height values (rule A23 enforces this set)
+
+```
+1.0    — tight display numerals, single-glyph avatars
+1.05   — Hero H1 tight display
+1.1    — Hero H1 (§2 Scale table)
+1.15   — Page H2 tight
+1.2    — Section H2 / display-type recipe upper bound
+1.25   — Subsection H3
+1.3    — Body large / card title
+1.4    — Body default
+1.55   — Long-form prose (reviews, descriptions, legal)
+```
+
+typography-04 (2026-07-27): line-height had a per-role Scale table (§2 above) but,
+unlike tracking, no pulled-out canonical-values list and no drift rule — a
+2026-07-26 sweep found 21 distinct `leading-[*]` values live (`leading-[1.35]`,
+`leading-[1.42]`, `leading-[1.45]`, `leading-[1.08]`, `leading-[1.18]`,
+`leading-[1.04]`, `leading-[1.02]`, `leading-[0.95]` map to no named role at
+all). Rule **A23** (`.claude/skills/solen-drift-check/scripts/check.py`) now
+flags any `leading-[*]` value outside this set, INFO to start (mirrors A7/A8's
+phase-in) logging to `_pending-migration.md`; flip to STRICT once the sweep
+clears the queue. `leading-none` / `leading-tight` / `leading-snug` /
+`leading-normal` / `leading-relaxed` / `leading-loose` (Tailwind's named
+classes) are unaffected by this rule; only the bracketed arbitrary-value form
+is checked, since the named classes map to fixed values already.
+
 **Display-type recipe (DS-A1, video-audit 2026-06-11):** any text ≥22px takes `-0.02em` tracking +
 line-height 110–120% (`leading-[1.1]`–`leading-tight`) as ONE recipe — no per-page improvising.
 Dashboard surfaces cap at 24px (information density); customer marketing/heroes may go larger.
 
+### Measure (rule: `.prose-measure`, 68ch)
+
+Any body-copy block whose rendered width would otherwise exceed roughly 75 characters per line
+(salon descriptions, review text, legal prose, help-center answers, empty-state explanations) uses
+the shared `.prose-measure` utility (`app/globals.css`, `max-width: 68ch`), not an ad hoc `max-w-*`
+value or no width constraint at all. This binds at the moment a new long-form-copy component is
+built, not only when an existing one is retrofitted (typography-06, 2026-07-27: the cap sat
+"already-approved" per TASTE_LOG before it was applied to SalonAbout — a live PDP surface — some
+nonzero window later, because nothing stated WHEN a new component must reach for it). Baymard /
+practitioner convention for comfortable reading is 45-75 characters per line; 68ch keeps a paragraph
+inside that band across the app's type sizes.
+
+**Dashboard scope (responsive-desktop-08, 2026-07-27):** this rule binds the DASHBOARD too, not only
+customer-facing manuscript surfaces. Operator-authored free text (service descriptions, staff bios,
+review-moderation excerpts, refund notes, help-editor/content-editor bodies) reaches the same
+`.prose-measure` utility, rather than inheriting the dashboard's currently-unbounded main container
+width (see the Dashboard content max-width row above). German compounds make an unconstrained line
+worse, not better, on an operator's text field than on a customer's. As of 2026-07-27 this is a QUEUED,
+owner-visible change (any max-width applied to a live dashboard field is a visual change under the
+mockup-first rule): candidate surfaces found by `grep -rln "textarea\|Textarea" app/*/dashboard*/*.tsx`
+include settings, upcharge, help-editor, discovery-admin, content-editor, refunds, approvals,
+discovery-posts, services, reports, reviews. Apply `.prose-measure` to each long-text field discovered
+during the dashboard max-width sweep (LOCKFILE.md Dashboard content row), same turn as that fix.
+
+### Uppercase application policy (rule A7)
 ### Uppercase application policy (rule A7) — **SUPERSEDED 2026-06-18: uppercase is banned outright**
 
 **Current law (owner, 2026-06-18, emphatic, verbatim): "stop using caps... use them fucking text.
@@ -452,6 +557,43 @@ One-off campaign-style decorative type → use `style={{}}` inline + `// V3-D{n}
 | `rounded-3xl` | 24px | Bento cards, larger surfaces |
 | grouped list-card | 24px (`rounded-[24px]`) | The **grouped LIST-card grammar for CATEGORY MEMBERS**: `overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper`, rows hairline-divided (`border-t first:border-t-0`). Salon services / Produkte / Pakete / staff / dashboard (owner-confirmed 2026-07-19, "pick whichever the services use"). ONE radius, gate-enforced (`.claude/hooks/card-radius-gate.py`, whisper-only). For a list of DISTINCT ENTITIES (a stylist, a salon) use the individual entity-card below, NOT this. Do NOT confuse with `rounded-card` (16) = FORM/summary card (`shadow-elevation-1`). |
 | individual entity-card | 16px (`rounded-card`) | ONE card per DISTINCT ENTITY (a person/stylist, a salon): `rounded-card border border-s-border bg-white`, FLAT, gap-separated (`SalonResultCard` grammar). Selected = `bg-s-bg-sunken`. Use for the stylist picker, salon result lists , anything where each item is its own entity, NOT a category member. GROUP card = category members in one card; INDIVIDUAL card = one card per entity. Owner 2026-07-19: "stylists are individual not groups." Enforced by `.claude/hooks/entity-card-gate.py`. |
+
+### THE CONTAINER TEST , when a group gets a box at all (owner 2026-07-28)
+
+The two rows above answer **which** card shape to use. They never answered **whether** there
+should be a card, so the estate defaulted to "always", and the owner called it: *"in our design
+system we have like almost always grouping thingy... I do like this proposal better with like
+more space instead of like each one grouping, because it looks like more like a clutter."*
+
+**A container is earned only when it does something whitespace cannot.** Exactly three cases:
+
+1. **It sits on a non-white surface.** On a photo, a tint, or `s-bg-sunken`, whitespace has no
+   boundary to read against, so the group needs its own edge (this is FLOORS LAW 4).
+2. **It is one of several PEER items competing in one scroll.** A list of salons or stylists,
+   where the reader must see where one entity ends and the next begins. That is the
+   individual entity-card row above.
+3. **The container is itself tappable as a unit**, i.e. the whole box navigates somewhere.
+
+**If none of the three apply, use whitespace and an inset hairline. No border, no card.**
+Named surfaces that therefore get NO container: a settings or preferences list, a single-column
+form section, a menu of destinations, an account hub. Every row on those screens goes to the
+same kind of place, so the box is decoration and taste rule 2 deletes it.
+
+**Never both.** A container plus a hairline between every row is doubled chrome: two separate
+devices claiming the same boundary. Pick one. Inside a container, rows may be hairline-divided
+(the grouped list-card grammar above). Outside one, they may not.
+
+**Divider inset, MEASURED not chosen (reference pixel-sample 2026-07-28, four independent
+hairlines across two screenshots, all identical): a content divider is inset `24px` on BOTH
+sides, spanning about 88% of the width.** The only rules permitted to reach the screen borders
+are CHROME boundaries: the nav-bar underline and the sticky-bar top edge. A content hairline
+that touches both borders is a bug, and it is usually the same bug: `border-top` on a
+full-width wrapper sits OUTSIDE that wrapper's padding, so the padding cannot inset it. Put the
+rule on a block child (or a `::before`) so it lives inside the padding box.
+
+**Row rhythm when the box goes away.** Removing borders without adding air just yields cramped
+rows with no boundary, which reads worse than the box did. Measured pairing: list row pitch
+goes to `56px`, content sits `26px` off the edge, and the section heading steps up to `28px`.
 
 ### Nested radius formula (DS-4, video-audit 2026-06-11, owner-approved)
 
@@ -608,7 +750,13 @@ The matrix above covers rest/hover/pressed/selected/focus/disabled. Two more are
 | Select toggle / scrim swap | 200ms | `snap` |
 | Color / focus ring | 150ms | `snap` |
 
-Animate `transform` + `box-shadow` only (compositor-friendly). Honor §4 anti-patterns (no will-change at rest; gate backdrop-blur on scroll containers).
+Animate `transform`, `opacity`, and `filter` only, compositor-friendly. **`box-shadow` is EXCLUDED**
+(corrected 2026-07-27, motion-06): drawing a shadow is a multi-pass paint operation, not a compositor
+job, so transitioning it repaints every frame, unlike opacity/transform which the compositor handles
+without touching layout or paint (`research/TASTE_MOTION.md` finding 25, sourced from web.dev's
+paint-cost docs). A hover-lift wants the LOOK of a growing shadow, get it by animating a pre-rendered
+shadow layer's opacity plus a `translateY` transform, never `box-shadow` itself. Honor §4 anti-patterns
+(no will-change at rest; gate backdrop-blur on scroll containers).
 
 ### Enforcement (how this survives — anti-drift)
 
@@ -634,6 +782,16 @@ Animate `transform` + `box-shadow` only (compositor-friendly). Honor §4 anti-pa
 "glide":  cubic-bezier(0.16, 1, 0.3, 1)       // long-distance smooth (sheet open)
 "thud":   cubic-bezier(0.7, 0, 0.84, 0)       // press-down feel (button scale)
 ```
+
+**"spring" is TWO DIFFERENT MECHANISMS under one word (disambiguated 2026-07-27, motion-07).**
+The CSS `ease-spring` token above is a FIXED, deterministic bezier curve, no velocity, no
+interruption, used for an in-place flip (toggle, check). A framer-motion `type: "spring"`
+transition (`SPRING_GENTLE` / `SPRING_SNAPPY`, `app/[locale]/_components/primitives/motion.ts`,
+and every gesture-release spring in §16.5.4) is a REAL physics simulation with velocity,
+overshoot, and settle time. Reading `ease-spring` in a `className` and `type:"spring"` in a
+`.tsx` transition object are NOT the same mechanism tuned two ways; do not assume swapping one
+for the other is neutral. (Flagged as a parked, unresolved finding in an earlier audit pass;
+this note is the resolution, not just the flag.)
 
 ### Fresha-measured motion patterns
 
@@ -849,6 +1007,7 @@ Duration format (German): `"{n} Min."` if <60, `"{h} Std."` if exact hours, `"{h
 - Urgency badge: `"Nur noch {N} heute"` (with lucide `Flame` icon)
 - Featured: `"EMPFOHLEN"` — ONLY in listings, NOT on PDP hero
 - Price line on card: `"ab CHF {N}"` (note: card uses "CHF N" prefix, service-row uses "ab N CHF" suffix — different surfaces, different patterns)
+- **Legal note (copy-i18n-11, 2026-07-27):** this is a TYPOGRAPHY lock only, it does not say when "ab" may prefix a price. See `_rules/LEGAL_COPY.md` for the Swiss price-display (Preisbekanntgabeverordnung) question queued for owner/legal review.
 
 ### Tab nav (PDP sticky)
 
@@ -880,7 +1039,22 @@ Always German: `Fotos · Über uns · Services · Bewertungen · Portfolio · Tr
 | Hero content | `max-w-[1280px]` | `px-7` | `md:px-8` |
 | Salon PDP grid | `max-w-[1180px]` | `px-4` | `md:px-6` |
 | /business hero | `max-w-[1400px]` | `px-4` | `md:px-8` |
+| **Dashboard content** | `max-w-[1400px]` + `mx-auto` + `w-full` | `px-4` | `sm:px-6` |
 | Search bar (collapsed, desktop) | `md:max-w-[820px]` | — | — |
+<!-- Dashboard content row added 2026-07-27 (owner "6/7 ye fix"), resolving the two dangling
+"see the Dashboard content max-width row above" citations that pointed at a row which had never
+been written. Applied at components-legacy/dashboard/DashboardLayout.tsx:473, the <main> of the
+shell that 44 of the 49 dashboard pages wrap themselves in. MEASURED before: 2136px of content
+at a 2200px viewport with max-width:none. After: 1400px, gutters 368/368 inside the region right
+of the fixed 64px rail. 1400 REUSES the /business hero value rather than adding a fourth
+container width; a dashboard is denser than a customer page, so it takes the widest row the
+system already holds. w-full is mandatory, not decorative: <main> is a flex item in a flex-col
+parent, so width is the cross axis, and CSS Flexbox 9.6 suppresses align-self:stretch as soon as
+a cross-axis margin is auto. The sticky topbar is a SIBLING of <main> and stays viewport-pinned,
+matching the rail. Five pages bypass the shell and are therefore uncapped: editor, messages,
+gallery, setup, queue-display. Of those, gallery is a BUG not a decision (it is missing the whole
+shell including the rail) and is filed separately. -->
+
 | SearchBar (mobile) | `max-w-[540px]` | — | — |
 | FAQ section | `max-w-[820px]` | `px-4` | `md:px-8` |
 
@@ -891,6 +1065,12 @@ Always German: `Fotos · Über uns · Services · Bewertungen · Portfolio · Tr
 - Salon sticky tab nav: `fixed top-0`, h=~52px, z-[60] (above site header per V3-D206)
 - Sidebar sticky-pinned: `sticky top-24` (24 = 6rem = 96px clearance for site header + breathing room)
 - Scroll-margin for anchor jumps: `scroll-mt-24`
+- CSS mechanic (layout-geometry-03): before adding `overflow-hidden`/`overflow-x-clip`/
+  `overflow-y-auto`/`overflow-scroll` to any ancestor of a `sticky` element, grep its subtree for
+  `sticky` first, that overflow value creates a new containing block and can silently strip the
+  descendant's ability to pin (cost a real fix cycle once, V3-D229). Full writeup and re-verify
+  procedure: `_rules/LESSONS_LEARNED.md` (CSS / Tailwind section). Distinct from the z-index
+  stacking-order rule below, a different failure class.
 
 ### Breakpoints
 
@@ -899,6 +1079,19 @@ sm: 640px / md: 768px / lg: 1024px / xl: 1280px / 2xl: 1536px
 ```
 
 Mobile = below md (768). Desktop = md and up. Most components mobile-first.
+
+**Chrome switch-point alignment (responsive-desktop-07, 2026-07-27):** desktop-CHROME decisions (sidebar
+collapse/promotion, nav layout, contact-block placement, any "show the desktop version of this whole
+block" call) must all key off ONE breakpoint, so a browser window between 1024 and 1279px (a common
+unmaximized laptop width) never renders a HALF-promoted hybrid, some chrome already switched to its
+desktop form while a sibling block is still waiting for a later breakpoint. Found live: `DashboardLayout.tsx`
+promotes the sidebar at `md:` (768px) while `SalonContact` hides its mobile block at `lg:` (1024px),
+expecting `SalonSidebar` to carry the desktop replacement, so between 768 and 1024px the page shows desktop
+sidebar chrome next to a mobile contact block whose own desktop replacement hasn't switched on yet. This
+does NOT bind content-reflow decisions (grid column counts, image aspect ratio) which may legitimately vary
+breakpoint by breakpoint; it binds only chrome-level "which whole treatment is showing" switches. Pick one
+value (md or lg) for new chrome components and match whichever the surface's existing siblings already use;
+do not introduce a third switch point.
 
 ### Grid TYPE classification (owner-approved 2026-07-16, "all approves", IG round 1 ig10)
 
@@ -921,6 +1114,76 @@ Rule: if you cannot name the type, you do not know the content shape yet, go loo
 - Photo gallery (3+ photos): 1 big left + 2 stacked right (1+2 layout)
 - Photo gallery (2 photos): 1+1 horizontal split
 - Bento (4-card feature grid): `grid-cols-1 md:grid-cols-2 lg:grid-cols-2`
+
+### Optical overshoot: when a circle must reach for it (layout-geometry-01)
+
+`lib/optical.ts` defines `CIRCLE_OVERSHOOT` (3%) and `opticalCircleSize()`, and `Avatar`'s
+`opticalOvershoot` prop applies it, but a full sweep of every `<Avatar` call site (23 files)
+found zero passing it. The rule: pass `opticalOvershoot` when, and only when, an `Avatar` renders
+as a direct flex/grid sibling of a SQUARE element (a photo tile, an icon chip) at the SAME box
+height, so the two need to read as equal size. Do not add it speculatively where no such sibling
+exists, that reintroduces the drift this row is meant to stop. Enforcement target: extend
+`scripts/check-geometry.mjs`'s asymmetric-pairs class to flag a circle rendered next to an
+equal-box-height square with no overshoot applied, citing `lib/optical.ts` by name; not yet built
+(the script is mid-edit elsewhere this session, deferred, not skipped).
+
+### Mirror-diff for claimed symmetry (layout-geometry-04)
+
+A claimed-mirrored pair (a card's left vs right padding, an icon pair flanking a title, twin
+controls) must pass a reflect-and-diff check: read `getComputedStyle` on both sides, reflect one
+about the candidate vertical axis, and assert the resulting padding/margin/position values match
+within 1px. A failing pair is either a real bug (fix it) or was never meant to be symmetric (say so
+explicitly so it stops being flagged as broken). `check-geometry.mjs`'s existing broken-axis class
+only compares sibling EDGE alignment, never left-vs-right padding/margin symmetry, so this is not
+covered by the shipped checker yet; until it is, `solen-taste-diagnosis`'s measured walk (Step 3.6)
+runs it by hand.
+
+### Checker-to-gate promotion clause (layout-geometry-02)
+
+`scripts/check-geometry.mjs`'s off-grid and broken-axis classes report raw, unfiltered counts
+(1233 / 159 on a 3-route sample) at roughly 1.2% actionable signal; a checker cited at that
+signal-to-noise ratio trains people to ignore it, which is worse than no checker. Rule: no PR,
+mockup, or design-verifier report may cite a RAW `check-geometry.mjs` off-grid/broken-axis count as
+proof of alignment or grid conformance. Only a run with the exclusion rules applied (structural
+false positives: 1px hairlines, text-driven leaf heights, intrinsic image/svg/video dimensions,
+and the nested-radius corner-window logic already coded) counts as evidence. A class graduates from
+report-only to a hard CI gate (`maxFindings=0` wired into `.github/workflows/quality.yml`) only once
+its own exclusion rules are coded into the script itself, not layered on top in a separate triage
+doc. Not yet done for off-grid/broken-axis (the FLOORS section already has a working `--gate` mode
+as the template to copy).
+
+### Scroll containers (layout-geometry-08)
+
+Any scroll container whose content height is variable and can cross its own scrolling threshold (a
+modal body, a bottom sheet, a sidebar list fed by live/growable data such as reviews, staff, or
+service lists) must add the `.scroll-stable-gutter` utility (`app/globals.css`, `scrollbar-gutter:
+stable`) alongside `overflow-y-auto`, not rely on `overflow-y-auto` alone. Without it, a scrollbar
+appearing/disappearing shifts the visible content sideways by roughly 15-17px; invisible on macOS'
+overlay scrollbars, real on Windows/Linux Chrome and many embedded webviews. Applied so far to the
+dashboard staff and service edit modals; extend to any new variable-content scroll container.
+
+### Photo crop anchor (layout-geometry-09)
+
+Every fixed-aspect photo frame states its crop anchor rather than silently taking the CSS default
+(`object-position: center`). The one approved value in the system: a SQUARE photo grid crops
+`object-top` (ig4, owner-approved 2026-07-16, TASTE_LOG.md:326, "square photo grid crops
+center-top, not blind center"), applied on `SalonImageGallery.tsx` and `SalonPortfolio.tsx`'s
+`UniformGrid`. A frame with a DIFFERENT aspect ratio (the PDP hero's `aspect-[16/7]` / 2:1 splits)
+is a different content shape and needs its own owner-reviewed anchor decision before it changes,
+since a visible crop change on the single most prominent above-the-fold customer photo is an
+imagery-treatment call, not a same-shape apply of the existing rule; `SalonHero.tsx` still defaults
+to center pending that decision (flagged in-file, unchanged).
+
+### Grid last-row rule (layout-geometry-05)
+
+A grid classified above as `modular`, fed a dynamic/variable-length collection, names its own
+last-row behavior rather than leaving a partial final row to the unstated CSS-grid default. Default
+for Solen's photo grids (Fresha's own reference behavior, this axis is STRUCTURE per §10): a short
+last row renders LEFT-ALIGNED with trailing empty cells, not centered; `SalonPortfolio.tsx`'s
+`UniformGrid` now states this explicitly for salons whose photo count isn't a clean multiple of 3.
+A component reaching for a different behavior (centered short row, single-column fallback below a
+stated item-count floor) must name that choice in its own doc comment instead of inheriting
+whichever the grid engine happens to render.
 
 ---
 
@@ -1184,6 +1447,7 @@ This single test catches 80% of axis-confusion mistakes.
 
 ## §11 — Imagery Pattern Registry (V3-D330, 2026-05-28)
 
+**Rule:** All imagery on Solen surfaces uses one of 5 enumerated patterns + obeys 6 non-negotiable rules. Inspired by measured Uber inventory (`public/_pixel-refs/uber/imagery/UBER-IMAGERY-PATTERN.md` — 116 desktop images across 8 surfaces). Sourced finding: Uber is illustration-first (34%), photo-as-trust-layer (28%), chrome (38%). Zero video. 0px border-radius on every image.
 **Rule:** All imagery on Solen surfaces uses one of 5 enumerated patterns + obeys 5 non-negotiable rules. Inspired by measured Uber inventory (cited as `public/_pixel-refs/uber/imagery/UBER-IMAGERY-PATTERN.md` — 116 desktop images across 8 surfaces; **same 2026-08-03 flag: the file is not on disk and not in git history. The 5 patterns + 5 rules stay locked; the numbers below are quoted from a source no one can currently re-open**). Sourced finding: Uber is illustration-first (34%), photo-as-trust-layer (28%), chrome (38%). Zero video. 0px border-radius on every image.
 
 ### The 5 patterns
@@ -1205,6 +1469,7 @@ This single test catches 80% of axis-confusion mistakes.
 | **No `<video>` on marketing surfaces** | Uber's 8 surfaces use zero. Stills + Lottie illustrations only. (Carve-out: `/entdecken` TikTok-stream feature exempt — that's content, not chrome.) |
 | **Single image-CDN pipeline** | All images route through `next/image` + Supabase Storage. Mirror Uber's `cn-geo1.uber.com/image-proc` pattern. |
 | **Same images mobile + desktop, stacked** | Don't hide images on mobile. Crop/resize the same asset. Hero photos resize from 1440×700 desktop → 375×480 mobile (same image, different crop). |
+| **A person-photo forced to a fixed aspect ratio crops face-safe, never blind-center** | A CSS center crop on a portrait source systematically cuts off the top of a person's head, the single most noticeable defect a user spots on a staff or avatar photo. See dedicated subsection below (imagery-icons-08, 2026-07-27). |
 
 ### Text-on-photo scrim recipe (DS-10, video-audit 2026-06-11, owner-approved)
 
@@ -1221,6 +1486,25 @@ background: linear-gradient(180deg, rgba(0,0,0,0) 38%, rgba(0,0,0,.62) 100%);
 - Never a flat full wash (kills the photo), never text on a bare photo (fails on bright uploads, DS-9).
 - Small floating controls over photos keep using `FROST_GLASS` discs (CONTROL_ELEVATION A) — the scrim
   is for text/indicator ZONES, the disc is for tappable CONTROLS.
+
+### Face-safe crop (generalizes TASTE_LOG ig4, imagery-icons-08, 2026-07-27)
+
+TASTE_LOG line 326 (`ig4 dp-crop-bone-shaft-not-joint`, owner-approved) already fixed this in
+ONE place: `SalonImageGallery.tsx`'s uploader grid uses `object-cover object-top` (the code
+comment there notes "was center"), never blind `object-cover` alone. That fix was scoped to its
+own component and never generalized. The rule, generalized: **any photo of a person that is
+force-cropped by aspect ratio uses `object-top` (or a computed focal point), never bare
+`object-cover`'s default center position**, unless the source was already pre-cropped square by
+the uploader. This applies to every person-photo crop in the codebase, not just the one that
+happened to get fixed first: `Avatar.tsx`, `SalonHero.tsx` galleries, `SalonTeam.tsx`'s staff
+carousel, `SalonResultCard.tsx`, `CategoryHeroCarousel.tsx`. **Not yet applied to those
+components** (queued: changing an already-shipped photo's crop position is a visible imagery-
+treatment change on live customer surfaces, so it goes through the mockup-first law like any
+other visual change, not a silent CSS edit). Long-term, a computed focal-point (a simple
+face-detection pass at upload time storing a y-offset) would make this measurable instead of a
+manual `object-position` guess; until then, `object-top` is the default for any NEW person-photo
+crop, and the design-verifier checklist flags a bare `object-cover` on a person-photo component
+as a finding.
 
 ### Sourcing policy (V3-D330)
 
@@ -1339,6 +1623,10 @@ The booking flow indicator (Service → Zeit → Haare → Bezahlen) and the wal
 
 Owner 2026-06-10 rejected the code font hard: _"the font is not correct about … W-047 … that w thingy the font is different."_ Ticket numbers (`W-047`), voucher/gift codes (`GIFT-7K2M`), booking refs render in **`Inter Tight`, weight 600–700, `font-variant-numeric: tabular-nums`, slight `-0.01em`** — the `.num`/`.mono` mock-kit class now points at Inter Tight, NOT JetBrains Mono. JetBrains Mono is **RETIRED** (see §2 + §1 retired list). Rationale: a mono code-face was a foreign texture against an all-Inter-Tight UI; tabular Inter Tight gives aligned digits + a code feel without the texture clash.
 
+**Rule generalizes beyond codes (typography-08, 2026-07-27).** The `.num` recipe's `tabular-nums` piece is not a codes-only rule, it is the fix for a general behavior: any numeral that updates live, ticks down, or sits in a repeating column where digits must stay aligned across sibling rows (a countdown timer, a queue-position counter, a dashboard KPI/stat tile, a calendar day grid, a star-rating value) needs `font-variant-numeric: tabular-nums` for the identical physical reason, proportional digits are variable-width per glyph, so an un-tabular live number re-flows its own width on every tick. Codes and prices are the worked examples that motivated the rule, not its full scope; a new numeral-displaying component (a countdown, a queue counter, a KPI tile) applies the same test.
+
+**Scope explicitly includes `lib/email.ts` + `lib/email-templates/**/*.ts` (typography-02, 2026-07-27).** These files render raw HTML strings for transactional and lifecycle emails outside the app/components tree; a live `font-family:monospace` violation shipped in the gift-card email's voucher-code span (all 4 locales) because this scope statement never named them and the static drift-checker's scan globs never reached them. Fixed: the gift-card code span now uses the shared `EMAIL_FONT_STACK` (a system-font stack, since email clients cannot load next/font) + `font-weight:700` + `tabular-nums`, matching the `.num` recipe as closely as email HTML allows. `.claude/skills/solen-drift-check/scripts/check.py` now scans `lib/email.ts` + `lib/email-templates/**/*.ts` and hard-flags `font-family:monospace`/Geist/JetBrains Mono anywhere (rule A24).
+
 ### §13.5 — Drift signals (you are violating §13 if…)
 - a chevron / disclosure glyph is anything other than `text-s-ink-3` grey;
 - a decorative row icon is `text-s-accent` blue (blue is only for an icon that IS the tap target);
@@ -1421,6 +1709,114 @@ is a bug, not a design choice.
 don't match." / "Password needs at least 8 characters." — never a generic "Invalid input"/"Error". One
 sentence: the cause, and when not obvious, the fix. Field errors sit UNDER the field (red border + 11.5px
 red line w/ alert icon); banner errors only for whole-form failures (wrong password).
+
+**Enforcement (states-forms-02, added 2026-07-27):** the field-vs-banner split above has caught at
+least one live breach (`app/[locale]/auth/register/page.tsx` toasting single-field age/password
+errors instead of rendering `FieldHelper` under the field, fixed the same day this line was added).
+Any new `toast.error(...)` call whose immediately-preceding check tests ONE named form field
+(length, format, range, a single business-rule on that field) is a rule violation, not a style
+choice — use `FieldHelper tone="error"` under that field instead. `toast.error` stays reserved for
+whole-form / server / network failures (account-exists, 5xx, fetch throw). No static gate exists yet
+for this (see states-forms-02 in `_design-system/research/missing-principles-2026-07-26/states-forms.json`);
+until one does, this is a required code-review check on any diff touching a form's submit handler.
+
+### §14.5 — Validation timing (states-forms-01, added 2026-07-27)
+
+Every form field validates **on blur** (first pass) and, once a field is already showing an error,
+**on every keystroke thereafter** (live-clear, so the error disappears the moment it's fixed). No
+field may show a validation error while the user is still typing into it for the first time (that's
+the premature-validation anti-pattern already named for checkout in
+`_design-system/research/TASTE_CHECKOUT.md` item 10 — this promotes it to every form, not just
+checkout). Submit runs one final full-field validation pass and blocks on any error, but submit is
+never the FIRST time an error may appear if the field was already blurred once.
+Reference implementation: `StepRegister` in `app/[locale]/auth/register/page.tsx` (`ageErrorFor` /
+`passwordErrorFor` + `onBlur` + error-gated `onChange` re-validation).
+**Enforcement:** no static gate (requires interaction simulation) — a design-verifier scorecard row
+for any form: "does an error appear before the field is blurred once?" must be No.
+
+### §14.6 — Autofill + input purpose (states-forms-03, added 2026-07-27)
+
+Every input mapping to a known browser/password-manager autofill category carries the matching
+WHATWG `autocomplete` token: `email`, `current-password` (login), `new-password` (signup/change),
+`name`, `tel`, `bday`, `organization`, `one-time-code`. Every input whose ideal keyboard differs from
+default text carries the matching `inputMode` (`email`, `tel`, `numeric`). This binds hardest on
+`auth/login` (`components-legacy/auth/SignIn.tsx`) and `auth/register`
+(`app/[locale]/auth/register/page.tsx`) — the two forms every account holder must pass through, and
+where a missing token silently kills the password-manager save/fill prompt. This is also WCAG 2.2 SC
+1.3.5 (Identify Input Purpose, Level AA), not just a nicety.
+**Enforcement:** gate `autofill-attr-gate` (static grep on new/edited
+`<input type="email"|"password"|"tel">` literals lacking a sibling `autoComplete=` on the same JSX
+element) — not yet wired (settings.json unwritable from a worktree session); until wired this is a
+code-review check.
+
+### §14.7 — Multi-step state survives a refresh (states-forms-04, added 2026-07-27)
+
+Any wizard/multi-step flow longer than 2 steps must survive an accidental hard refresh or tab close:
+persist step state (sessionStorage/localStorage keyed per-flow), write completed steps to the server
+incrementally (the dashboard setup wizard at `app/[locale]/dashboard/setup/page.tsx` already does
+this — it is the reference pattern), or at minimum warn via `beforeunload` when unsaved multi-step
+progress would be lost silently. The booking wizard's in-memory-only `useReducer`
+(`lib/booking-context.tsx`, documented gap: `_docs/FRONTEND.md:438,451`) and the customer onboarding
+flow (`app/[locale]/onboarding/OnboardingFlow.tsx`) are the two known un-persisted flows; new
+multi-step surfaces must not repeat the pattern.
+**Enforcement:** design-verifier scorecard row for any new multi-step surface; longer-term a shared
+`usePersistedWizardState` hook, registered in `COMPONENT_REGISTRY.md` once built.
+
+### §14.8 — Double-submit guard (states-forms-05, added 2026-07-27)
+
+Any control that triggers a non-idempotent write (create booking, create payment intent, submit a
+review, send a refund request) guards against a double-fire with a synchronous `useRef` lock checked
+and set BEFORE the async call starts — a React state flag (`disabled={loading}`) alone is not
+enough, because it depends on a re-render landing before a fast double-click/double-tap, which is not
+guaranteed. Reference implementation: `chargeRef` in
+`components-legacy/booking/PayConfirmStep.tsx:111-112,217`. Generalized into a shared hook,
+`lib/hooks/useSubmitGuard.ts` (added 2026-07-27): `const guard = useSubmitGuard(); if
+(!guard.tryEnter()) return; try { ... } finally { guard.release(); }`. Live call sites: account
+creation (`app/[locale]/auth/register/page.tsx` `handleSubmit`) and account deletion
+(`app/[locale]/profile/settings/SettingsForm.tsx` `deleteAccount`). Any new financial or write-once
+mutation uses this hook, not a bare state boolean.
+**Enforcement:** not statically gateable (needs semantic understanding of "financial/write-once");
+required code-review check for any new POST-triggering handler on a financial or write-once action.
+
+### §14.9 — Destructive-action confirmation (states-forms-06, added 2026-07-27)
+
+A destructive action that cannot be undone in the same view (delete, cancel, refund, remove) uses the
+shared `Modal` primitive with an explicit two-button confirm/cancel footer stating the specific
+consequence — **never `window.confirm()`**, which cannot be styled, blocks the JS thread, and reads
+as a raw browser dialog. A destructive action that can be trivially undone in place (removing one
+chip from a multi-select before submitting) does not need a blocking dialog at all. Every page
+hand-rolling its own local confirm modal instead of the shared `Modal` primitive is consolidation
+debt to close, not a second acceptable pattern.
+**Enforcement:** gate `no-window-confirm-gate` (static grep blocking new `window.confirm(` in
+`app/**`, `components-legacy/**`) — not yet wired; until wired, a code-review check. One known
+pre-existing call site remains: `app/[locale]/dashboard/reviews/page.tsx` (`deleteReplyConfirm`).
+
+### §14.10 — Undo vs. confirm policy (states-forms-07, added 2026-07-27)
+
+A blocking confirm dialog (§14.9) is reserved for actions that are irreversible, financial, or affect
+another party (refunds, a decline that notifies the other side). A toast-with-undo window is the
+right pattern for actions that are reversible, single-party, and low-cost (unfavoriting, removing a
+draft line item, dismissing a notification) — using a blocking confirm for these dilutes the
+effectiveness of confirmation dialogs everywhere else (NN/g). **Scope note:** `REMOVED.md`'s one
+undo-pattern rejection (booking-request approve/decline morphing to a committed pill with an undo
+window, owner verbatim "The p three, no. P three, I don't want that.") is a rejection of that
+specific morph/collapse motion treatment on that specific salon-owner screen — a decline notifies the
+customer, so it is correctly a confirm case under this policy. It is NOT a blanket rejection of
+undo-as-a-pattern; a future favoriting/unfavoriting or draft-removal undo-toast is not re-litigating
+that decision.
+**Enforcement:** doc-only, not mechanically gateable.
+
+### §14.11 — Error message content (states-forms-09, added 2026-07-27; extends the §19 anti-pattern)
+
+No user-facing error string is a bare category label with no cause and no next step ("Netzwerkfehler",
+"Aktion fehlgeschlagen", "Fehler beim Speichern" with nothing else). Every error string names WHAT
+failed, and either WHY (if known and safe to show) or WHAT TO DO next (retry, check connection,
+contact support). This is the positive template for the anti-pattern SOURCE.md §19 already names
+("Generic 'Network error' toast for everything, distinguish RLS / 4xx / 5xx / network") — that bullet
+banned the pattern but never stated what a compliant message contains; this section is that content
+template, cross-linked here and from SOURCE.md §19.
+**Enforcement:** manual review of new `error-*` / `*Error` i18n keys; a lint proxy (flag error-* keys
+under ~20 characters as likely bare labels) is a plausible cheap follow-up gate, not yet built.
 
 ---
 
@@ -1559,7 +1955,22 @@ Source + evidence: `research/UNFINISHED_AUDIT_2026-07-21.md`. Co-equal with ever
   photographic area; the photo is the largest element of every SalonCard; a missing photo renders the
   spec'd fallback (s-bg-sunken + 3D category icon + salon initial), NEVER a bare grey box, never
   slot-omission. Mockups use real seeded photography. Exempt by name: forms, checkout payment step,
-  legal, receipts.
+  SCOPE, pinned 2026-07-27 after imagery-icons-05 was investigated rather than assumed: this
+  fallback binds the CUSTOMER-FACING salon cover. Two other renders exist and neither is a
+  contradiction. (a) `components-legacy/SalonCard.tsx:122` uses the colour-block `ImageFallback`
+  in its `variant === "compact"` branch ONLY, which is the dashboard settings preview, not a
+  customer surface, and the file already says so at :116-119. (b)
+  `components-legacy/RecentlyViewed.tsx:106` also uses it, but that component is never rendered
+  anywhere , its only importer takes the `trackSalonView` helper (`SalonDetailV3.tsx:34`), so
+  that render path is dead. The customer default variant at `SalonCard.tsx:195-205` already
+  renders exactly this rule: `bg-s-bg-sunken` + the category icon + the salon initial.
+  The finding claimed code and docs disagreed three ways. They do not; the reading did not
+  separate the variant branches.
+  legal, receipts. **LCP reconciliation (hierarchy-density-09):** the first/largest image satisfying
+  this floor (the hero SalonCard photo, the PDP gallery's first photo) carries `next/image`'s
+  `priority` prop (no lazy) so meeting the imagery floor does not blow the LCP <=2.5s gate
+  (`WORK_TYPES.md` Axis-2 per-wave gate); every image below it stays lazy-loaded (next/image default).
+  Satisfying one floor by breaking the other is not a pass.
 - **§17.2 Depth table (supersedes §3 "sparingly" + §3.5 "both fine"):** SalonCard = photo +
   shadow-whisper + NO border · grouped list card = whisper · PDP/booking sidebar card = hairline only ·
   tile on a gray tray = white, no shadow · overlays/sheets/dropdowns = elevation-2/3 · a card carrying
@@ -1574,12 +1985,28 @@ Source + evidence: `research/UNFINISHED_AUDIT_2026-07-21.md`. Co-equal with ever
 - **§17.4 Card two-anchor rule (V3-D442 adopted as THE card-emphasis law):** TWO ink anchors per card ,
   name (larger, 600) + price (600, tabular); rating value ink-2 beside the yellow star; card titles/H3
   are s-ink, not grey. Display floor: one display anchor >= 28px per customer screen unless the
-  photograph is the focal. Tertiary grey #9CA3AF (s-chart-2) reinstated for NON-load-bearing text only
-  (chevrons, placeholders, timestamps, hints); forbidden on load-bearing copy.
+  photograph is the focal. Tertiary grey #9CA3AF (s-chart-2) is CHART-ONLY (§1 secondary/tertiary
+  data-vis rows), never text of any kind (accessibility-05, 2026-07-27: 2.54:1 on white / 2.31:1 on
+  `s-bg-sunken`, under WCAG 1.4.3 even at the 3:1 large-text floor , no size makes it legal for prose).
+  Chevrons, placeholders, timestamps, hints use `s-ink-2` (5.33:1 / 4.85:1, AA) instead; that token
+  stays forbidden on load-bearing copy.
 - **§17.5 The finished-screen pass (ship condition):** (1) photographic focal present, (2) exactly one
-  biggest element, (3) >= 1 tabular/real number, (4) >= 1 semantic-color moment, (5) no dead-grey zone.
-  All five = Pass before a customer screen or mockup reaches the owner; mockups carry a `floors:` note
-  answering all five.
+  biggest element, (3) >= 1 tabular/real number, (4) >= 1 semantic-color moment, (5) no dead-grey zone,
+  (6) worst-case content holds (hierarchy-density-08): render against a named worst-case fixture
+  (longest real/plausible salon name, a full-length review, a maximally long service name) and confirm
+  the two-ink-anchor card rule, the >= 28px display anchor, and no-truncation-of-load-bearing-copy all
+  still hold, not just the comfortably-sized seed strings. This item is NOT optional the way the
+  generic verifier-loop's "long content (only when in scope)" bullet is , it binds every FLOORS-covered
+  screen. All six = Pass before a customer screen or mockup reaches the owner; mockups carry a
+  `floors:` note answering all six.
+- **§17.6 Trust floor for commit actions (hierarchy-density-05):** any screen carrying a paid commit
+  action (a Bezahlen/pay button, a booking confirmation) passes a sixth, separate Pass/Fail gate before
+  the five/six-question pass matters at all: (1) the total price is broken down (base + surcharge + VAT
+  where applicable), (2) the cancellation/refund term renders in the DOM above the commit button, not
+  merely defined in a labels/i18n object, (3) who the user is booking with (salon/stylist name, not
+  just a category) is visible above the commit action. Case that shipped without it: `app/[locale]/
+  walk-in-pay/page.tsx` defined `cancelPolicy` in all four locale objects with zero JSX render sites,
+  fixed 2026-07-27.
 
 ---
 
@@ -1591,7 +2018,7 @@ RENDERED first viewport at 390x844, not on source.
 
 | literal | value | why |
 |---|---|---|
-| max share of visible text at weight >= 600 | **30%** | measured PDP was 86%; above ~30% weight stops being a signal |
+| max share of visible text at weight >= 600 | **30%** | RE-MEASURED 2026-07-28: the PDP now renders **17.6%** (16 of 91 elements on `/de/salon/cuts-and-culture` at 402x874). The 86% that justified this row was measured 2026-07-25 and no longer describes the page, so never quote it as current. The ceiling still stands and the page now passes it comfortably. For calibration, Airbnb's PDP measures **3.1%** (7 of 388), so the honest target is far below 30 rather than just under it. |
 | min anchor-to-body size ratio | **1.8x** | measured PDP was 1.57x; below ~1.8 the step reads as a wobble |
 | min display anchor | **28px** | already law (FLOORS LAW 6); this table sets the RATIO that pairs with it |
 | min imagery share, browse/discovery/PDP first viewport | **33%** | already law (FLOORS LAW 2); measured home was 4.7% |
@@ -1617,6 +2044,27 @@ must be the screen's largest single element and must show the THING being bought
 
 These are FLOORS, not targets. Nothing here licenses decoration, fake data, or a second ink CTA; the
 existing ceilings (4 sizes, 2 weights, sparse blue, no decorative artifacts) all still bind.
+
+**Enforced by (hierarchy-density-01):** `npm run check:floors` (`scripts/check-geometry.mjs
+--floors-only`) measures every literal in this table on the RENDERED page (imagery share, weight
+share, anchor ratio, elevation steps); report-only today (exit 0), same as the geometry pass it
+extends. `~/.claude/hooks/mockup-floors-gate.py` only checks that a mockup's PR note MENTIONS a
+`floors:` answer, it does not itself measure any of these five numbers , the two are complementary,
+not duplicates.
+
+**VIEWPORT SCOPE (responsive-desktop-01, 2026-07-27): this table is MOBILE-ONLY, named explicitly.** Every
+number above was measured at 390x844 and `scripts/check-geometry.mjs --floors-only` (the enforcing script)
+can now also run at tablet (768x1024) and desktop (1280x900) via `npm run check:floors:tablet` / `check:floors:desktop`,
+but it reuses these SAME mobile numbers at the wider viewports rather than re-derived ones. That reuse is a
+placeholder, not a claim the thresholds transfer: a photo at a fixed px size is a smaller share of a
+1280px-wide viewport than a 390px one, so the desktop imagery-share floor is almost certainly too lenient
+as-is, and the display-anchor/weight-share/anchor-ratio numbers have never been checked against a desktop
+screen at all before this. Re-deriving real desktop/tablet thresholds is a visual/design judgment call for
+the owner (new percentages and px values, not a mechanical fix) and is explicitly OUT OF SCOPE for this
+entry; only the density floor (CLAUDE.md FLOORS LAW 3, `>= 6 desktop` vs `>= 4 mobile`) has an
+owner-approved desktop-specific number today. `check:floors:desktop`/`check:floors:tablet` are report-only
+(no `gate:` variant) for exactly this reason: gating on a threshold nobody has actually approved for that
+viewport would be enforcing a guess.
 
 
 

@@ -83,7 +83,7 @@ function VisualBooking() {
             <div className="text-[12px] font-bold leading-tight text-s-ink">
               Lara K.
             </div>
-            <div className="text-[12px] text-s-ink-3">
+            <div className="text-[12px] text-s-ink-2">
               Schnitt + Föhn 14:00
             </div>
           </div>
@@ -164,15 +164,15 @@ function VisualCustomerDM() {
             {/* mockup-ok: WCAG 2.2.2, bounded to 2 cycles (4s incl. stagger), see tailwind.config.js. */}
             <div className="flex items-center gap-1" aria-label="Kund:in tippt">
               <span
-                className="block h-1.5 w-1.5 animate-pulse-bounded rounded-full bg-s-ink-3"
+                className="block h-1.5 w-1.5 animate-pulse-bounded rounded-full bg-s-ink-2"
                 style={{ animationDelay: "0ms" }}
               />
               <span
-                className="block h-1.5 w-1.5 animate-pulse-bounded rounded-full bg-s-ink-3"
+                className="block h-1.5 w-1.5 animate-pulse-bounded rounded-full bg-s-ink-2"
                 style={{ animationDelay: "200ms" }}
               />
               <span
-                className="block h-1.5 w-1.5 animate-pulse-bounded rounded-full bg-s-ink-3"
+                className="block h-1.5 w-1.5 animate-pulse-bounded rounded-full bg-s-ink-2"
                 style={{ animationDelay: "400ms" }}
               />
             </div>
@@ -354,7 +354,7 @@ function VisualAnalyticsTabbed() {
           <div className="font-display text-[26px] font-semibold leading-none tracking-[-0.02em] text-s-ink md:text-[28px]">
             {active.count}
           </div>
-          <div className="mt-1 font-body text-[13px] font-semibold text-s-ink-3">
+          <div className="mt-1 font-body text-[13px] font-semibold text-s-ink-2">
             {active.countLabel}
           </div>
         </div>
@@ -362,7 +362,7 @@ function VisualAnalyticsTabbed() {
           <div className="font-display text-[18px] font-semibold leading-none tracking-[-0.01em] text-s-ink md:text-[19px]">
             {active.revenue}
           </div>
-          <div className="mt-1.5 flex items-center gap-1 font-body text-[13px] font-semibold text-s-ink-3">
+          <div className="mt-1.5 flex items-center gap-1 font-body text-[13px] font-semibold text-s-ink-2">
             <span className="inline-flex items-center gap-0.5 text-s-ink">
               <ArrowRight size={10} className="rotate-[-45deg]" aria-hidden />
               {active.trend}
@@ -388,7 +388,7 @@ function VisualAnalyticsTabbed() {
                   // §2.1 "selected tab state" is exactly the accent use case from V3-D192.
                   isActive
                     ? "border-s-ink bg-s-ink text-white"
-                    : "border-s-border text-s-ink-3 hover:border-s-ink/30",
+                    : "border-s-border text-s-ink-2 hover:border-s-ink/30",
                 )}
               >
                 {p.label.charAt(0)}
@@ -444,7 +444,7 @@ function VisualAnalyticsTabbed() {
       </div>
 
       {/* ── X-axis labels ── */}
-      <div className="mt-1.5 flex justify-between font-body text-[13px] font-semibold text-s-ink-3">
+      <div className="mt-1.5 flex justify-between font-body text-[13px] font-semibold text-s-ink-2">
         {active.labels.map((l) => (
           <span key={l}>{l}</span>
         ))}
@@ -516,7 +516,7 @@ export function JoinUsCard() {
               </MorphingDialogTitle>
               {/* V3-D219: drop md:text-[17px] step (out-of-Scale-B). Use clamp(14,3.5vw,16). */}
               <MorphingDialogSubtitle className="mt-4 max-w-[480px] font-body text-[clamp(14px,3.5vw,16px)] font-normal leading-[1.55] text-white/85">
-                Über 1&apos;200 Salons buchen schon mit Solen. Trag dich in 60
+                Über 1&apos;200 Stores buchen schon mit Solen. Trag dich in 60
                 Sekunden ein — wir melden uns innerhalb von 24 Stunden.
               </MorphingDialogSubtitle>
             </div>
@@ -541,7 +541,7 @@ export function JoinUsCard() {
               ))}
             </span>
             <span className="font-body text-[13px] font-normal text-white/70">
- von 1&apos;200+ Salon-Partnern
+ von 1&apos;200+ Store-Partnern
             </span>
           </div>
         </div>
@@ -566,7 +566,7 @@ export function JoinUsCard() {
                   Werde Solen-Partner.
                 </MorphingDialogTitle>
                 <MorphingDialogSubtitle className="mt-4 max-w-[480px] font-body text-[clamp(14px,3.5vw,16px)] font-normal leading-[1.55] text-white/85">
-                  Über 1&apos;200 Salons buchen schon mit Solen. Trag dich in
+                  Über 1&apos;200 Stores buchen schon mit Solen. Trag dich in
                   60 Sekunden ein — wir melden uns innerhalb von 24 Stunden.
                 </MorphingDialogSubtitle>
               </div>
@@ -607,28 +607,28 @@ export function JoinUsCard() {
                     name="name"
                     placeholder="Dein Name"
                     required
-                    className="h-11 px-4 font-body text-[15px] font-normal text-s-ink placeholder:text-s-ink-3 outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.4)]" // mockup-ok: dead-class removal only, type=text/email already caught before this change (V3-D-input-fill-2026-07-17)
+                    className="h-11 px-4 font-body text-[15px] font-normal text-s-ink placeholder:text-s-ink-2 outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.4)]" // mockup-ok: dead-class removal only, type=text/email already caught before this change (V3-D-input-fill-2026-07-17)
                   />
                   <input
                     type="email"
                     name="email"
                     placeholder="E-Mail"
                     required
-                    className="h-11 px-4 font-body text-[15px] font-normal text-s-ink placeholder:text-s-ink-3 outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.4)]" // mockup-ok: dead-class removal only, type=text/email already caught before this change (V3-D-input-fill-2026-07-17)
+                    className="h-11 px-4 font-body text-[15px] font-normal text-s-ink placeholder:text-s-ink-2 outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.4)]" // mockup-ok: dead-class removal only, type=text/email already caught before this change (V3-D-input-fill-2026-07-17)
                   />
                   <input
                     type="text"
                     name="salon"
-                    placeholder="Salon-Name"
+                    placeholder="Store-Name"
                     required
-                    className="h-11 px-4 font-body text-[15px] font-normal text-s-ink placeholder:text-s-ink-3 outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.4)]" // mockup-ok: dead-class removal only, type=text/email already caught before this change (V3-D-input-fill-2026-07-17)
+                    className="h-11 px-4 font-body text-[15px] font-normal text-s-ink placeholder:text-s-ink-2 outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.4)]" // mockup-ok: dead-class removal only, type=text/email already caught before this change (V3-D-input-fill-2026-07-17)
                   />
                   <input
                     type="text"
                     name="city"
                     placeholder="Stadt"
                     required
-                    className="h-11 px-4 font-body text-[15px] font-normal text-s-ink placeholder:text-s-ink-3 outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.4)]" // mockup-ok: dead-class removal only, type=text/email already caught before this change (V3-D-input-fill-2026-07-17)
+                    className="h-11 px-4 font-body text-[15px] font-normal text-s-ink placeholder:text-s-ink-2 outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.4)]" // mockup-ok: dead-class removal only, type=text/email already caught before this change (V3-D-input-fill-2026-07-17)
                   />
                   {errorMsg ? (
                     <p role="alert" className="font-body text-[13px] font-normal text-white md:col-span-2">

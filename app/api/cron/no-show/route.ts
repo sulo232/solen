@@ -3,6 +3,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { getServerEnv } from "@/lib/env";
+import { verifyCronSecret } from "@/lib/cron-auth";
 import { toRappen } from "@/lib/stripe";
 import { calculateNoShowFee } from "@/lib/cancellation-policy";
 import { chargeFee, FeeError } from "@/lib/bookings/charge-fee";
@@ -14,7 +15,7 @@ export async function GET(req: NextRequest) {
   const cronSecret = getServerEnv().CRON_SECRET;
   if (!cronSecret) return NextResponse.json({ error: "Cron not configured" }, { status: 503 });
   const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${cronSecret}`) {
+  if (!(await verifyCronSecret(authHeader, cronSecret))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -111,9 +112,7 @@ export async function GET(req: NextRequest) {
             serviceName: services?.name_de ?? services?.name_en ?? "Service",
             salonName: salon?.name ?? "Salon",
             feeCents: result.chargedCents ?? feeCents,
-            dateStr: booking.starts_at
-              ? new Date(booking.starts_at as string).toLocaleDateString("de-CH")
-              : "",
+            date: (booking.starts_at as string | null) ?? new Date().toISOString(),
             logPrefix: "no-show",
           }).catch((err) => console.error(`[no-show] fee notification failed for booking ${booking.id}:`, err));
         }

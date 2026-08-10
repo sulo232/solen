@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getStripe } from "@/lib/stripe";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
+import { validateBody, voucherConfirmSchema } from "@/lib/validations";
 
 /**
  * POST /api/vouchers/confirm
@@ -22,14 +23,15 @@ export async function POST(req: NextRequest) {
 
   // Initialize Stripe
   const stripe = getStripe();
-  const { payment_intent_id, voucher_id } = await req.json();
-
-  if (!payment_intent_id || !voucher_id) {
+  const rawBody = await req.json().catch(() => ({}));
+  const { data: validated, error: validationError } = validateBody(voucherConfirmSchema, rawBody);
+  if (validationError) {
     return NextResponse.json(
       { error: "Missing payment_intent_id or voucher_id" },
       { status: 400 }
     );
   }
+  const { payment_intent_id, voucher_id } = validated;
 
   try {
     const supabase = await createServerSupabaseClient();

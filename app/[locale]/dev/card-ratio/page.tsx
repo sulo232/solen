@@ -49,7 +49,7 @@ function RailCard({ widthPx, ratio, name, meta }: { widthPx: number; ratio: "squ
           <p className="truncate font-heading text-[14px] font-bold text-s-ink">{name}</p>
           <span className="flex shrink-0 items-center gap-0.5 text-[13px] font-semibold text-s-ink"><Star size={12} className="fill-s-star text-s-star" strokeWidth={0} /> 4.9</span>
         </div>
-        <p className="mt-0.5 truncate text-[12px] text-s-ink-3">{meta}</p>
+        <p className="mt-0.5 truncate text-[12px] text-s-ink-2">{meta}</p>
       </div>
     </div>
   );

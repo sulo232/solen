@@ -15,15 +15,14 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { getPublicEnv } from "@/lib/env";
 import Spinner from "@/components-legacy/ui/Spinner";
+import { formatCurrency } from "@/lib/format";
 
 const STRIPE_KEY = getPublicEnv().NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 const stripePromise = STRIPE_KEY ? loadStripe(STRIPE_KEY) : null;
 
-// Swiss prefix format: "CHF 10", "CHF 12.50".
-const chf = (rappen: number) =>
-  Number.isFinite(rappen)
-    ? `CHF ${(rappen / 100).toLocaleString("de-CH", { minimumFractionDigits: rappen % 100 === 0 ? 0 : 2, maximumFractionDigits: 2 })}`
-    : "CHF 0";
+// Swiss prefix format: "CHF 10", "CHF 12.50". Routed through the shared
+// lib/format.ts formatCurrency (2026-07-26, was a local de-CH-only duplicate).
+const chf = (rappen: number, locale: string) => (Number.isFinite(rappen) ? formatCurrency(rappen / 100, locale) : "CHF 0");
 
 type Copy = Record<string, string>;
 const COPY: Record<string, Copy> = {
@@ -52,10 +51,10 @@ export interface TipFlowProps {
 // The send button lives inside <Elements> so it can confirm the card. It charges the PaymentIntent's
 // server-side amount, which the parent keeps synced to `amount` (and disables send while syncing).
 function SendButton({
-  amount, label, disabled, errText, onSuccess, onError,
+  amount, label, disabled, errText, onSuccess, onError, locale,
 }: {
   amount: number; label: string; disabled: boolean; errText: string;
-  onSuccess: () => void; onError: (m: string) => void;
+  onSuccess: () => void; onError: (m: string) => void; locale: string;
 }) {
   const stripe = useStripe();
   const elements = useElements();
@@ -84,7 +83,7 @@ function SendButton({
       className="mt-4 flex w-full items-center justify-center gap-2 rounded-btn bg-s-ink py-3.5 font-heading text-sm font-semibold text-white transition-[transform,filter] hover:brightness-[1.06] active:scale-[0.98] disabled:opacity-50"
     >
       {submitting && <Spinner size="sm" invert />}
-      {chf(amount)} {label}
+      {chf(amount, locale)} {label}
     </button>
   );
 }
@@ -171,7 +170,7 @@ export default function TipFlow({
           <SuccessMark size={64} />
         </div>
         <p className="celebrate-rise mb-1.5 font-heading text-[13px] font-semibold text-s-success" style={{ animationDelay: "0.46s" }}>
-          {chf(amount)} {l.sent}
+          {chf(amount, locale)} {l.sent}
         </p>
         <h1 className="celebrate-rise font-heading text-[20px] font-semibold text-s-ink" style={{ animationDelay: "0.56s" }}>{l.thanks}</h1>
         <p className="celebrate-rise mt-1.5 max-w-[15rem] text-[13px] text-s-ink-2" style={{ animationDelay: "0.66s" }}>{recipientName} {l.sub}</p>
@@ -213,7 +212,7 @@ export default function TipFlow({
                   sel ? "border-s-ink bg-s-ink text-white" : "border-s-border text-s-ink hover:border-s-ink"
                 }`}
               >
-                {chf(p)}
+                {chf(p, locale)}
               </button>
             );
           })}
@@ -250,7 +249,7 @@ export default function TipFlow({
                  Reviewer-measured. Every other wrapper-owns-chrome carve-out already pairs
                  !bg-transparent with !border-0 (SearchOverlay.tsx:542,829;
                  ClientSelectorDropdown.tsx:88); this input was the only one missing it. */
-              className="w-full !border-0 !min-h-0 !bg-transparent !px-0 text-[16px] tabular-nums text-s-ink placeholder:text-s-ink-3 focus:outline-none"
+              className="w-full !border-0 !min-h-0 !bg-transparent !px-0 text-[16px] tabular-nums text-s-ink placeholder:text-s-ink-2 focus:outline-none"
             />
           </div>
         )}
@@ -266,7 +265,7 @@ export default function TipFlow({
               onClick={() => setDone(true)}
               className="mt-4 flex w-full items-center justify-center gap-2 rounded-btn bg-s-ink py-3.5 font-heading text-sm font-semibold text-white transition-[transform,filter] hover:brightness-[1.06] active:scale-[0.98]"
             >
-              {chf(amount)} {l.send}
+              {chf(amount, locale)} {l.send}
             </button>
           </div>
         ) : clientSecret && stripePromise ? (
@@ -285,6 +284,7 @@ export default function TipFlow({
                 errText={l.err}
                 onSuccess={() => setDone(true)}
                 onError={setError}
+                locale={locale}
               />
             </div>
           </Elements>

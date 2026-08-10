@@ -97,3 +97,4 @@ node_modules_old/
 _shot*.cjs
 /Untitled*
 supabase/.temp/
+scratchpad/

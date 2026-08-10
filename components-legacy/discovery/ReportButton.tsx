@@ -48,7 +48,7 @@ interface ReportButtonProps {
 
 const VARIANT_CLASS: Record<NonNullable<ReportButtonProps["variant"]>, string> = {
   subtle: "text-s-ink/20 hover:text-s-ink transition-colors ml-auto",
-  row: "grid h-11 w-11 shrink-0 place-items-center rounded-full text-s-ink-3 transition-colors duration-150 hover:bg-s-bg-sunken hover:text-s-ink-2",
+  row: "grid h-11 w-11 shrink-0 place-items-center rounded-full text-s-ink-2 transition-colors duration-150 hover:bg-s-bg-sunken hover:text-s-ink-2",
   header: "grid h-11 w-11 place-items-center rounded-full border border-s-border bg-white transition-transform hover:scale-105 active:scale-95 active:duration-[80ms] active:ease-glide",
   // focus-visible:outline below is a solid 2px ink outline (LOCKFILE focus row:
   // "buttons/links: the global 2px ink outline"), copied verbatim from HeartButton.tsx.
@@ -64,6 +64,7 @@ const REASON_LABEL_KEY = {
   spam: "reasonSpam",
   fake: "reasonFake",
   ip_violation: "reasonIpViolation",
+  harassment: "reasonHarassment",
   other: "reasonOther",
 } as const satisfies Record<ReportReason, string>;
 
@@ -71,6 +72,7 @@ const TARGET_TYPE_LABEL_KEY = {
   salon: "targetTypeSalon",
   review: "targetTypeReview",
   user: "targetTypeUser",
+  photo: "targetTypePhoto",
 } as const satisfies Record<ReportTargetType, string>;
 
 export default function ReportButton({ type, targetId, variant = "subtle" }: ReportButtonProps) {

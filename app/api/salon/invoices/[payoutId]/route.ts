@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
+import { BRAND_HTML_COLORS, BRAND_HTML_FONT_STACK } from "@/lib/brand-html-constants";
 
 // GET /api/salon/invoices/[payoutId]
 export async function GET(
@@ -40,15 +41,15 @@ export async function GET(
       <meta charset="UTF-8">
       <title>Rechnung - ${payoutId}</title>
       <style>
-        body { font-family: sans-serif; padding: 40px; color: #333; }
-        .header { display: flex; justify-content: space-between; border-bottom: 2px solid #C05038; padding-bottom: 20px; margin-bottom: 30px; }
-        .logo { font-size: 24px; font-weight: bold; color: #C05038; }
+        body { font-family: ${BRAND_HTML_FONT_STACK}; padding: 40px; color: ${BRAND_HTML_COLORS.ink}; }
+        .header { display: flex; justify-content: space-between; border-bottom: 2px solid ${BRAND_HTML_COLORS.ink}; padding-bottom: 20px; margin-bottom: 30px; }
+        .logo { font-size: 24px; font-weight: bold; color: ${BRAND_HTML_COLORS.ink}; }
         table { width: 100%; border-collapse: collapse; margin-top: 30px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
-        th { background: #f9f9f9; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid ${BRAND_HTML_COLORS.border}; }
+        th { background: ${BRAND_HTML_COLORS.bgSunken}; }
         .totals { margin-top: 30px; width: 50%; float: right; }
-        .totals-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
-        .totals-row.final { font-weight: bold; font-size: 1.1em; border-top: 2px solid #C05038; border-bottom: none; }
+        .totals-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid ${BRAND_HTML_COLORS.border}; }
+        .totals-row.final { font-weight: bold; font-size: 1.1em; border-top: 2px solid ${BRAND_HTML_COLORS.ink}; border-bottom: none; }
         @media print {
           .no-print { display: none; }
         }
@@ -56,7 +57,7 @@ export async function GET(
     </head>
     <body>
       <div class="no-print" style="margin-bottom: 20px;">
-        <button onclick="window.print()" style="padding: 10px 20px; background: #C05038; color: white; border: none; border-radius: 6px; cursor: pointer;">Drucken / PDF speichern</button>
+        <button onclick="window.print()" style="padding: 10px 20px; background: ${BRAND_HTML_COLORS.ink}; color: white; border: none; border-radius: 6px; cursor: pointer;">Drucken / PDF speichern</button>
       </div>
 
       <div class="header">
@@ -107,11 +108,11 @@ export async function GET(
         </div>
         <div class="totals-row">
           <span>Plattformkommission (${payout.commission_percent}%)</span>
-          <span style="color: #C05038;">- CHF ${payout.commission_amount.toFixed(2)}</span>
+          <span style="color: ${BRAND_HTML_COLORS.ink2};">- CHF ${payout.commission_amount.toFixed(2)}</span>
         </div>
         <div class="totals-row">
           <span>Stripe Gateway Gebühren</span>
-          <span style="color: #C05038;">(durch Stripe abgezogen)</span>
+          <span style="color: ${BRAND_HTML_COLORS.ink2};">(durch Stripe abgezogen)</span>
         </div>
         <div class="totals-row final">
           <span>Netto-Auszahlungsbetrag</span>
@@ -119,7 +120,7 @@ export async function GET(
         </div>
       </div>
 
-      <div style="clear: both; margin-top: 80px; font-size: 0.9em; color: #666;">
+      <div style="clear: both; margin-top: 80px; font-size: 0.9em; color: ${BRAND_HTML_COLORS.ink2};">
         <p>Diese Abrechnung wurde maschinell erstellt und ist ohne Unterschrift gültig.</p>
         <p>Der Netto-Auszahlungsbetrag wurde für Ihren Stripe Connect Account vorgemerkt und wird gemäss Ihrem Payout-Schedule (Standard: wöchentlich) auf Ihr Bankkonto überwiesen.</p>
       </div>

@@ -4,6 +4,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
+import { validateBody, nailAiHistoryPatchSchema } from "@/lib/validations";
 
 // GET /api/dashboard/nail/ai-history?salon_id=...
 export async function GET(request: NextRequest) {
@@ -44,10 +45,10 @@ export async function PATCH(request: NextRequest) {
   const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
   if (rateLimited) return rateLimited;
 
-  const body = await request.json();
-  const { id, salon_id: salonId } = body as { id: string; salon_id: string; is_saved: boolean };
-  if (!id) return NextResponse.json({ error: "id required" }, { status: 400 });
-  if (!salonId) return NextResponse.json({ error: "salon_id required" }, { status: 400 });
+  const rawBody = await request.json();
+  const { data: validated, error: validationError } = validateBody(nailAiHistoryPatchSchema, rawBody);
+  if (validationError) return NextResponse.json({ error: validationError.message }, { status: 400 });
+  const { id, salon_id: salonId } = validated;
 
   // Ownership guard (defense-in-depth, BACKEND_HEALTH_AUDIT_2026-07-14 #7): the
   // caller-supplied `id` alone never proved the row belongs to them. This check is

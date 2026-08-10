@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { buildAlternates } from "@/lib/seo";
 import Hero from "./_components/homepage/Hero";
+import HomeSearchPill from "./_components/homepage/HomeSearchPill";
 import { FeedZone } from "./_components/homepage/SectionHeader";
 // V3-D82 (2026-05-19): hero atmosphere now lives inline inside Hero.tsx
 // as a CSS double-radial-gradient (locked from V1 variant of the
@@ -31,7 +32,26 @@ import ForYouSalonRows from "./_components/homepage/ForYouSalonRows";
 // server batch query, no per-salon round-trips, no client-side fetch waterfall.
 import { FORYOU_SALONS } from "./_components/homepage/forYouSalons";
 import { NEARBY_SALON_IDS } from "./_components/homepage/nearbySalonIds";
-import { getSalonCardDataMap, getTopSalonIds, getNearbyTeaserCount } from "./_components/homepage/salonCardData";
+import {
+  getSalonCardDataMap,
+  getTopSalonIds,
+  getNearbyTeaserCount,
+  getTopSalonIdsByCategory,
+  getBaselShopCount,
+} from "./_components/homepage/salonCardData";
+// I4/I5 (2026-08-01, home rails reconciliation with public/_mockups/home-v3/search-a.html): the
+// mockup's 4-across "Recently viewed" tile grid (real localStorage view history, city cell) and
+// "Popular looks" photo tile grid (real seeded discovery items with a real price). Both compose
+// existing Section/SectionFrame/SectionTitle primitives; neither touches the existing
+// RecentlyViewed.tsx rail or Entdecken.tsx (this task's own no-touch list).
+import RecentlyViewedTiles from "./_components/homepage/RecentlyViewedTiles";
+import PopularLooks from "./_components/homepage/PopularLooks";
+// I7 (2026-08-01, home rails reconciliation with public/_mockups/home-v3/search-a.html
+// continuationCard()): the home's FIRST element, mounted ahead of MobileCategoriesRow per the
+// mockup's own render order (continuationCard() is appended to #sa-list before recentlyViewed()
+// and every rail; MobileCategoriesRow has no mockup equivalent to defer to). Self-hides to null
+// with no real state to show. See components/ContinueCard.md for the per-state real-data audit.
+import ContinueCard from "./_components/homepage/ContinueCard";
 // Salon of the Month (2026-07-13): real editorial pick from the admin picker
 // (dashboard/salon-of-month-admin -> salon_of_month_winners table), gated on
 // the salon_of_month feature_flags toggle. Server component, renders null
@@ -55,7 +75,22 @@ import RecentlyViewed from "./_components/homepage/RecentlyViewed";
 // re-add the import + the <ArtistOfTheMonth /> usage in FeedZone below.
 // import ArtistOfTheMonth from "./_components/homepage/ArtistOfTheMonth";
 import Nearby from "./_components/homepage/Nearby";
-// V3-D348 (tweak #5): dark full-bleed feature band — breaks the run of
+// I3 (2026-08-01, home rails reconciliation with public/_mockups/home-v3/search-a.html): real
+// 7-day slot availability + the four per-category "Top X" rails, both new sections between Nearby
+// and WalkInBand. See salonCardData.ts / components/AvailableThisWeek.md / components/TopCategoryRails.md.
+//
+// A6 (owner 2026-08-05, "remove the Bald frei section"): AvailableThisWeek is UNMOUNTED. Measured
+// before: 9 real salon cards, section 304.1px tall at 375 / 318.5px at 402, sitting between Nearby
+// and Top Coiffeur. Its server fetch (getAvailableThisWeekSalonIds, a salons_with_slot_in_hours
+// RPC round trip on every home render) and its ids' contribution to the salonCardData batch went
+// with it, otherwise the query would keep running for a section nobody renders. The component
+// file, its data function, its doc and its registry row stay on disk, the way every earlier
+// homepage removal in this file did (V3-D104 ArtistOfTheMonth, V3-D106 HeroDuo, V3-D150
+// CategoryPromos): re-add the import + the <AvailableThisWeek /> line + the fetch to revive it.
+// Graveyard: _design-system/REMOVED.md.
+// import AvailableThisWeek from "./_components/homepage/AvailableThisWeek";
+import TopCategoryRails from "./_components/homepage/TopCategoryRails";
+// V3-D348 (tweak #5): dark full-bleed feature band, breaks the run of
 // identical card carousels mid-feed + surfaces Walk-in.
 import WalkInBand from "./_components/homepage/WalkInBand";
 // V3-D150 (2026-05-25): CategoryPromos ("Stöber nach Kategorie." swipeable
@@ -93,17 +128,17 @@ import BusinessTeaser from "./_components/homepage/BusinessTeaser";
 import Reviews from "./_components/homepage/Reviews";
 
 const TITLES: Record<string, string> = {
-  de: "Solen — Finde & buche die besten Salons in der Schweiz",
-  en: "Solen — Discover & Book the Best Salons in Switzerland",
-  fr: "Solen — Trouve & réserve les meilleurs salons en Suisse",
-  it: "Solen — Trova e prenota i migliori saloni in Svizzera",
+  de: "Solen — Finde & buche die besten Stores in der Schweiz", // em-dash-ok: pre-existing title dash, unrelated to this edit
+  en: "Solen — Discover & Book the Best Stores in Switzerland", // em-dash-ok: pre-existing title dash, unrelated to this edit
+  fr: "Solen — Trouve & réserve les meilleurs stores en Suisse", // em-dash-ok: pre-existing title dash, unrelated to this edit
+  it: "Solen — Trova e prenota i migliori store in Svizzera", // em-dash-ok: pre-existing title dash, unrelated to this edit
 };
 
 const DESCRIPTIONS: Record<string, string> = {
-  de: "Entdecke Top-Salons für Coiffeur, Nails, Spa & mehr in Basel, Zürich und Bern. Online buchen, sofort bestätigt. ★ Bewertungen & Preise vergleichen.",
-  en: "Discover top salons for haircuts, nails, spa & more in Basel, Zurich and Bern. Book online, instant confirmation. ★ Compare reviews & prices.",
-  fr: "Découvre les meilleurs salons pour coiffeur, ongles, spa & plus à Bâle, Zurich et Berne. Réservation en ligne, confirmation immédiate. ★ Comparer.",
-  it: "Scopri i migliori saloni per parrucchiere, unghie, spa e altro a Basilea, Zurigo e Berna. Prenota online, conferma immediata. ★ Confronta.",
+  de: "Entdecke Top-Stores für Coiffeur, Nails, Spa & mehr in Basel, Zürich und Bern. Online buchen, sofort bestätigt. ★ Bewertungen & Preise vergleichen.",
+  en: "Discover top stores for haircuts, nails, spa & more in Basel, Zurich and Bern. Book online, instant confirmation. ★ Compare reviews & prices.",
+  fr: "Découvre les meilleurs stores pour coiffeur, ongles, spa & plus à Bâle, Zurich et Berne. Réservation en ligne, confirmation immédiate. ★ Comparer.",
+  it: "Scopri i migliori store per parrucchiere, unghie, spa e altro a Basilea, Zurigo e Berna. Prenota online, conferma immediata. ★ Confronta.",
 };
 
 export async function generateMetadata({
@@ -146,7 +181,7 @@ export async function generateMetadata({
  *   2. Hero                      — H1 + sub-line + search form + CTA + trust
  *   3. MobileCategoriesRow       — "Für dich" 3 icon tiles (Coiffeur/Barber/Nails)
  *   4. RecentlyViewed            — falls back to "Top auf Solen" curated list
- *   5. Nearby                    — "In der Nähe" location-based salon cards
+ *   5. Nearby                    - "In der Nähe" map teaser (A4, 2026-08-05: cards removed)
  *   6. FeaturedStylists          — "Lass dich verwöhnen." stylist avatars (resized)
  *   7. CategoryPromos            — "Stöber nach Kategorie." 3 large cat cards
  *   8. Entdecken                 — "Finde deine Inspiration." vertical look cards
@@ -168,10 +203,17 @@ export default async function Page({
   const { locale } = await params;
   // topSalonIds (RecentlyViewed's "Top auf Solen" fallback) and nearbyCount
   // (the Nearby map-teaser count) are independent live fetches, run in
-  // parallel before the id union below needs topSalonIds.
-  const [topSalonIds, nearbyCount] = await Promise.all([
+  // parallel before the id union below needs topSalonIds. I3 (2026-08-01):
+  // topByCategory (TopCategoryRails' four per-category rails) joins the same
+  // parallel batch, same reasoning. (A6, 2026-08-05: availableThisWeekIds left this batch with
+  // the "Bald frei" section it fed, see the import-site comment above.)
+  // I4 (2026-08-01): baselShopCount joins the same parallel batch, same reasoning as the I3 ids
+  // above , RecentlyViewedTiles' city cell needs a real active-salon count, never a fabricated one.
+  const [topSalonIds, nearbyCount, topByCategory, baselShopCount] = await Promise.all([
     getTopSalonIds(4),
     getNearbyTeaserCount(),
+    getTopSalonIdsByCategory(10),
+    getBaselShopCount(),
   ]);
   // One combined batch fetch (2 bulk Supabase queries inside
   // getSalonCardDataMap, not one per salon) for every real salon id the
@@ -180,13 +222,38 @@ export default async function Page({
     ...Object.values(FORYOU_SALONS).flatMap((list) => list.map((s) => s.id)),
     ...NEARBY_SALON_IDS,
     ...topSalonIds,
+    ...Object.values(topByCategory).flat(),
   ]);
   return (
-    <div className="relative overflow-hidden bg-white">
-      {/* V3-D137 sunset halo SCRAPPED 2026-05-25 — user ditched, reverted
+    <>
+      {/* FIX B (2026-08-01, owner "it should be search bar instead of category bar"): the sticky
+          search-pill wrapper is a sibling BEFORE the page's root div, not nested inside it.
+          Measured: that root div carries `overflow-hidden` (below), and ANY ancestor with a
+          non-visible overflow (even just overflow-x) becomes the containing block CSS uses to
+          compute `position: sticky`, so a sticky child nested inside it never actually pins, it
+          just scrolls away with the rest of the page (verified live: rect.top went to -1500 at
+          scroll 1500 while nested, 0 once moved outside). Placing it here instead, outside that
+          div, escapes the clip entirely. Visually identical either way on mobile: Hero's own
+          mobile block is empty (`max-md:hidden`, see Hero.tsx), so this is still the first
+          visible thing under Header.tsx's category row. Header.tsx's category row folds away on
+          scroll on home too (categoryCollapsed widened to isHome), so this pill is the one thing
+          left pinned. Solid bg (token only) so page content never shows through once it is pinned.
+          A2 (owner 2026-08-05, red circle on his home screenshot, "remove the dividing line under
+          the search bar"): the `border-b border-s-border` this wrapper used to carry is GONE.
+          Measured before: a 1px solid s-border hairline running the full viewport width (375 and
+          402), bottom edge at y=157. It was the only full-width horizontal edge in the top 400px.
+          What the screen KEEPS as the pinned-chrome boundary (FLOORS LAW 5, deletion names what it
+          keeps): the pill's own `border border-s-border` + `shadow-[0_2px_8px_0_rgba(0,0,0,0.07)]`
+          one level in, so the bar still reads as an object over the scrolled feed. The wrapper's
+          opaque white fill is untouched, so nothing shows through. */}
+      <div className="md:hidden sticky top-0 z-[55] bg-white"> {/* mockup-ok: owner-measured fix, literal instruction, tokens only */}
+        <HomeSearchPill locale={locale} />
+      </div>
+      <div className="relative overflow-hidden bg-white">
+      {/* V3-D137 sunset halo SCRAPPED 2026-05-25, user ditched, reverted
           to pre-halo state. Mockup at public/solen-header-light-variants.html
           kept on disk for revival reference. */}
-      <Hero />
+      <Hero locale={locale} />
       {/* V3-D143 (2026-05-25): MobileCategoriesRow moved INSIDE FeedZone
           to fix the 8px overlap where the rising-panel's negative margin
           (-mt-6/-mt-8, designed for Hero-overlap) was eating into the
@@ -197,11 +264,27 @@ export default async function Page({
         {/* ForYouGreeting ("Willkommen zurück, {name}") removed 2026-06-04:
             redundant with the hero's "Hallo, {name}" — two name-greetings on
             one page. Hero greeting is the single greeting now. */}
+        {/* I7: the home's first element (search-a.html continuationCard()). Self-hides to
+            nothing for a logged-out visitor with no persisted search. Mounted ahead of
+            MobileCategoriesRow, matching the mockup's own render order. */}
+        <ContinueCard />
         <MobileCategoriesRow />
         <SalonOfMonth locale={locale} />
         <ForYouSalonRows salonData={salonCardData} />
+        {/* I4: real localStorage view-history tile row, search-a.html's own position (directly
+            above the "Top on Solen" rail RecentlyViewed.tsx's fallback title renders below). Builds
+            nothing when there is no real history , never a fabricated substitute. */}
+        <RecentlyViewedTiles baselShopCount={baselShopCount} />
         <RecentlyViewed salonData={salonCardData} topSalonIds={topSalonIds} />
+        {/* A4 (owner 2026-08-05): map only, the SalonCard rail under it is gone. */}
         <Nearby salonData={salonCardData} nearbyCount={nearbyCount} />
+        {/* I3 (2026-08-01, home rails reconciliation with search-a.html): the four per-category
+            Top rails, self-hiding on thin data. The "Bald frei" rail that used to lead this pair
+            is unmounted, A6 above. */}
+        <TopCategoryRails salonData={salonCardData} idsByCategory={topByCategory} />
+        {/* I5: real seeded discovery photo tiles with a real starting price, search-a.html's own
+            position (after the rails, before Walk-in). */}
+        <PopularLooks />
         <WalkInBand />
         {/* FeaturedStylists pulled (V3-D436) — its cards linked to a
             non-existent /stylist/[slug] route and its demo data has no salon
@@ -212,6 +295,7 @@ export default async function Page({
         <Reviews />
         <BusinessTeaser />
       </FeedZone>
-    </div>
+      </div>
+    </>
   );
 }

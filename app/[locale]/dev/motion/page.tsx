@@ -48,7 +48,7 @@ export default async function MotionPage({
     <main className="min-h-screen bg-white pb-8">
       <div className="border-b border-s-border">
         <div className="mx-auto max-w-[600px] px-4 py-6">
-          <p className="font-body text-[12px] font-semibold text-s-ink-3">Solen , /dev/motion</p>
+          <p className="font-body text-[12px] font-semibold text-s-ink-2">Solen , /dev/motion</p>
           <h1 className="mt-1 font-display text-[20px] font-semibold tracking-[-0.01em] text-s-ink">
             Motion gallery: snap vs glide
           </h1>

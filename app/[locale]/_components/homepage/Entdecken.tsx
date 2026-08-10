@@ -250,7 +250,7 @@ export default function Entdecken() {
                         className="absolute top-2 left-2 z-10 flex items-center gap-1"
                       >
                         <span className="h-1.5 w-1.5 rounded-full bg-white" />
-                        <span className="font-display text-[12px] font-extrabold leading-none text-white/90">
+                        <span className="font-display text-[12px] font-bold leading-none text-white/90">
                           Solen
                         </span>
                       </div>
@@ -411,7 +411,7 @@ export default function Entdecken() {
               <h3 className="font-body text-[16px] font-semibold leading-tight text-s-ink">
                 Alle entdecken
               </h3>
-              <p className="mt-2 font-body text-[12px] text-s-ink-3">
+              <p className="mt-2 font-body text-[12px] text-s-ink-2">
                 Lass dich von tausenden Looks inspirieren
               </p>
             </div>

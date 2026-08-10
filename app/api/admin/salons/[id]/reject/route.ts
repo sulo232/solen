@@ -37,6 +37,9 @@ export async function PATCH(
   const { error } = await admin.from("salons").update({
     is_active: false,
     rejection_reason: reason,
+    // salons.rejected_at existed with no writer, so a rejection carried a reason but no
+    // timestamp and "when was this rejected" was unanswerable. Paired with approved_at.
+    rejected_at: new Date().toISOString(),
     // Clear the admin-approval marker so a deactivated salon must be RE-approved before
     // its owner can self-activate again via POST /api/salon/go-live (which gates on
     // approved_at). Without this, a once-approved salon keeps a stale approved_at and can
@@ -52,14 +55,25 @@ export async function PATCH(
   const { data: ownerAuth } = await admin.auth.admin.getUserById(salon.owner_id);
   if (ownerAuth?.user?.email) {
     const { sendNotification } = await import("@/lib/notifications");
+    // Localised to the OWNER's own language, not hardcoded German (council hardcode lens,
+    // 2026-07-27). This is the message telling someone their business was rejected, which is
+    // the worst possible one to deliver in a language they may not read. The sibling approve
+    // route already reads profiles.locale for its email; this route now does the same, and
+    // passes it to emailParams too, which it previously left unset (so the email defaulted).
+    const { data: ownerProfile } = await admin
+      .from("profiles").select("locale").eq("id", salon.owner_id).maybeSingle();
+    const ownerLocale = (ownerProfile?.locale as "de" | "en" | "fr" | "it") ?? "de";
+    const { getTranslations } = await import("next-intl/server");
+    const t = await getTranslations({ locale: ownerLocale, namespace: "api.salonRejected" });
     await sendNotification({
       userId: salon.owner_id,
       type: "salon_rejected",
-      title: "Salon abgelehnt",
-      body: `Dein Salon ${salon.name} wurde leider nicht genehmigt. Grund: ${reason}`,
+      title: t("title"),
+      body: t("body", { salon: salon.name, reason }),
       data: { salon_id: id },
       emailParams: {
         to: ownerAuth.user.email,
+        locale: ownerLocale,
         vars: { salon: salon.name, reason }
       }
     });

@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { motion } from "motion/react";
 import { Users, Search, ShieldCheck, Scissors, User, X, Ban, CheckCircle } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
@@ -11,6 +11,7 @@ import Spinner from "@/components-legacy/ui/Spinner";
 import EmptyState from "@/components-legacy/ui/EmptyState";
 import { toast } from "@/app/[locale]/_components/primitives/Toast";
 import { containerVariants, itemVariants } from "@/lib/animations";
+import { resolveSwissLocale } from "@/lib/format";
 import type { UserRole } from "@/lib/types";
 
 interface AdminUser {
@@ -80,6 +81,7 @@ function ConfirmModal({
 /* ─── Main Page ─── */
 export default function AllUsersPage() {
   const t = useTranslations("dashboard.allUsersPage");
+  const locale = useLocale();
   const roleLabel = (role: UserRole): string => {
     switch (role) {
       case "customer": return t("roleCustomer");
@@ -232,7 +234,7 @@ export default function AllUsersPage() {
                     )}
                     <p className="text-[12px] text-s-ink/30 mt-0.5">
                       {t("registeredOn", {
-                        date: new Date(u.created_at).toLocaleDateString("de-CH", {
+                        date: new Date(u.created_at).toLocaleDateString(resolveSwissLocale(locale), {
                           day: "2-digit",
                           month: "2-digit",
                           year: "numeric",

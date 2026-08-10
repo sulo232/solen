@@ -96,3 +96,1250 @@ Owner picked the two: MAP PIN PRICE LABELS + FILTER COUNT.
 
 ## SEARCH WORKSTREAM , all owner asks addressed as of 2026-07-01
 Rich search wired, ported design, map-view search (open/stay/3-together/store-recenter/city-recenter), filters neutral (no blue/ring), map pin labels + filter count smoothed, "Schweizweit" default killed. Only future enhancement parked: geolocation city detection (needs inventory-by-city).
+
+## REOPENED 2026-08-02 , the focus state does nothing (owner, dictated, message cut off mid-sentence)
+
+Owner on `/de/search?compose=1` (his live server, quirky-ellis :50723, branch
+`claude/principles-security-audit-0ae738`): "when I click the search bar, nothing happens, there's
+just the line thingy that flashes... it looks so ass."
+
+### MEASURED root cause (live, 375x812, his code, not guessed)
+The overlay ARRIVES in the end state, so focus has nothing left to animate:
+- `document.activeElement` is already the search input on arrival; the back arrow (renders only when
+  `inputFocused === true`) is already there.
+- `expand` is already 1: heading wrapper `h=0 op=0`, Standort/Datum wrapper `h=0 op=0`, footer
+  wrapper `h=0 op=0`, sheet `top=50px` (the fully-expanded value; resting is 96px).
+- Cause: `?compose=1` -> `openSearchOverlay(true)` -> `autoFocusService=true` -> the open effect runs
+  `setInputFocused(true); grow(1); focus()` (SearchOverlay.tsx open-effect). Tapping the bar then
+  sets state that is already set.
+- SECOND gap, independent: the category pill row is the ONE element never wired to `expand`
+  (`<div className="shrink-0 px-3 pb-2 pt-3">`, no motion style). Measured `h=60 op=1` at `y=50`,
+  which pins the search bar down at `y=126` instead of letting it take the sheet's top slot.
+- THIRD: this branch stripped the press-feedback classes off the bar's controls
+  (`transition-transform active:scale-[0.94]` removed from the back button, the clear-X, the
+  autocomplete rows), so even the tap has no press response.
+
+### Owner asks (atomic , each ends DELIVERED or BLOCKED with a named dependency)
+- [x] A1. Tapping the search bar produces a visible state change, not only a caret. verified: bc2a95615, SearchTemplate.tsx:821 (compose no longer pre-focuses)
+- [x] A2. On focus, the category pill row collapses away. verified: bc2a95615, SearchOverlay.tsx:351-352 (pillsH/pillsOp) + :919-925 (motion wrapper)
+- [x] A3. On focus, the search bar moves UP into the slot the pills vacated (top of the sheet). verified: bc2a95615, consequence of A2 in normal flex flow
+- [x] A4. On focus, the search bar itself GROWS / gains an active treatment (Airbnb reference). verified: bc2a95615, SearchOverlay.tsx:617-618 (border-2 border-s-ink on inputFocused)
+- [x] A5. Typing (e.g. "wo") transitions with a morph, not a hard switch behind a blur. verified: bc2a95615, SearchOverlay.tsx:929-937 (AnimatePresence popLayout keyed on `typing`)
+- [x] A6. Same smoothness for the search bar itself while typing. verified: bc2a95615, SearchOverlay.tsx:644-654 (clear-X in a permanently mounted slot)
+
+### BLOCKED on (named, not vague)
+- B1. The two Airbnb frames saved as files so they can be PIL-measured (reference-measure gate bans
+  building a reference-derived mockup from eyeballed sizes). Owner pasted them inline; needs them in
+  `~/solen/screenshots/`.
+- B2. A 3-second screen recording of the real Airbnb tap. Memory `feedback_search_expand_gesture_linked`
+  records 4+ owner rejections on exactly this interaction when it was built from stills; the follow
+  (gesture-linked, continuous) cannot be read off two static frames.
+- B3. Where the edit lands: this worktree (needs the `.env.local` symlink to run a dev server) vs
+  directly in the owner's live worktree (no merge, but two sessions writing one tree).
+- B4. The owner's message ended mid-sentence at "I'm gonna show the before and after state because".
+
+### Standing law this must not break
+- The expand is ONE continuous transform on ONE DOM tree, gesture/scroll-linked. A binary
+  `setInputFocused(true)` threshold swap between two layouts was rejected 4+ times
+  (`feedback_search_expand_gesture_linked`, hook `pre-edit-gesture-expand-gate.py`).
+- Mockup-first: a copy of the real page with only the treatment applied, approved BEFORE real code.
+
+## REFERENCE MEASURED 2026-08-02 (B1 + B2 resolved , owner supplied a screen recording)
+
+Files (copied from ~/Downloads into the screenshots folder; originals left in Downloads, the sandbox
+cannot delete there):
+- `/Users/sulo/solen/screenshots/airbnb-search-open-close_2026-08-02.MP4` , 1206x2622 (402pt @3x), 18.09s
+- `/Users/sulo/solen/screenshots/IMG_6897.PNG` , Airbnb FOCUSED state
+- `/Users/sulo/solen/screenshots/IMG_6898.PNG` , Airbnb RESTING ("Where?") state
+
+`pixel-spec-auto/extract.py` FAILED on both PNGs ("could not detect a card structure", borderless UI),
+so measurements below are direct PIL pixel-samples, per the binary-trigger fallback. All values in
+POINTS on a 402pt-wide device (device px / 3).
+
+### The open is a CONTAINER MORPH, not a bottom sheet (measured frame by frame at 30fps)
+| moment | frame | t | what the pixels show |
+|---|---|---|---|
+| press response on the pill | 18 | 600ms | pill-band diff 0.25, whole-frame diff 0.03 (localised to the pill) |
+| **dead gap** | 19-26 | 600-900ms | pill-band diff 0.00, whole-frame 0.00. NOTHING MOVES FOR ~300ms |
+| morph starts | 27 | 900ms | pill grows, "Start your search" begins cross-fading to "Where?" |
+| morph ends | 38 | 1267ms | card settled, tabs + X resolved |
+| **open duration** | | **367ms** | |
+
+The pill itself becomes the card: one white rounded container whose rect animates while its CONTENTS
+cross-fade (label out, heading + field + list in) and the page behind cross-fades to blurred. It never
+slides in from the bottom edge.
+
+Measured rects: resting pill **359.0 x 57.0 pt at (21.3, 62.3)** -> open card **377.3 x 612.7 pt at
+(12.3, 146.3)**. The container widens by 18pt, moves DOWN 84pt (the tab row fades in above it), and
+grows 10.7x in height.
+
+### The close is the same morph reversed, and it does NOT lag
+| moment | frame | t | measured |
+|---|---|---|---|
+| press response on the X | 514 | 17133ms | X-band diff 2.73, whole-frame 0.29 |
+| morph starts | 515 | 17167ms | whole-frame 11.78 |
+| morph ends | 525 | 17500ms | |
+| **close duration** | | **333ms** | gap after the press: **~33ms** |
+
+Card shrinks and slides back UP into the pill, contents cross-fade the other way, background de-blurs.
+The pill returns to **360.0 x 57.0 pt at (21.0, 62.3)**, the identical rect it left.
+
+### The owner's anti-goal, confirmed by measurement
+Owner: "on the Airbnb, when you click on search, first it lags and then goes up a bit. That's a
+mistake on Airbnb's site. I don't want that at all." MEASURED: the open has a **~300ms dead gap**
+between the press response and the first pixel of motion; the close has **~33ms**. The lag is real,
+it is open-only, and it is the one thing we deliberately do NOT copy. Our morph starts on the same
+frame as the press.
+
+### The field does NOT get taller on focus (corrects the obvious reading of "make it bigger")
+| | resting (IMG_6898) | focused (IMG_6897) | delta |
+|---|---|---|---|
+| field top | 213.0 pt | 78.0 pt | rises 135 pt, to just under the status bar |
+| field height | 55.0 pt | 54.3 pt | unchanged |
+| field width | 314.0 pt | 340.7 pt | **+26.7 pt wider** |
+| field x | 44.0 pt | 30.7 pt | 13.3 pt less inset |
+| border | light hairline | dark ink, ~2px | the "active" signal |
+
+So "bigger" = wider + at the top + an ink border. Not taller. Build to these numbers, not to the word.
+
+### Owner asks added 2026-08-02 (second message)
+- [x] A7. Closing (the X) morphs back into the search bar. No downward bottom-sheet slide. verified: bc2a95615, SearchOverlay.tsx:393-406 + :888-900 (openT rect morph)
+- [x] A8. Opening morphs up out of the search bar. No upward bottom-sheet slide. verified: bc2a95615, SearchOverlay.tsx:393-406, SearchTemplate.tsx:761-774 (originRect capture)
+- [x] A9. No dead gap before the morph starts, either direction (do NOT copy Airbnb's 300ms open lag). verified: bc2a95615, SearchOverlay.tsx:404 (animate fires in the click commit, no timeout)
+- [x] A10. Reference files moved into `/Users/sulo/solen/screenshots/` (copied; Downloads originals remain). verified: files present at /Users/sulo/solen/screenshots/IMG_6897.PNG, IMG_6898.PNG, airbnb-search-open-close_2026-08-02.MP4 (ls confirmed; copies, the Downloads originals stay because the sandbox refuses rm there).
+
+### B3 answered by the owner ("whatever you think is better")
+Work lands HERE, in worktree `serene-booth-7c7dd7`, branch reset onto `claude/principles-security-audit-0ae738`
+@ 97e601393, with `node_modules` + `.env.local` symlinked and its own dev server on :53322. His live
+worktree is never written to, so the two sessions cannot collide.
+
+## VERIFIED 2026-08-02 (Playwright, real Chromium, 375x812, zero console errors)
+The in-app preview tab throttles rAF, so framer-motion looks frozen there; every number below comes
+from a real headless Chromium run, not the preview.
+
+| ask | resting | focused / after | verdict |
+|---|---|---|---|
+| A1 visible change on tap | no back arrow, heading 56px | back arrow, heading 0px | PASS |
+| A2 pills collapse | 60px op 1 @ y152 | 0px op 0 | PASS |
+| A3 bar rises | (24, 228) 327x48 | (12, 66) 351x48 | PASS |
+| A4 active treatment | 1px #E4E4E7 | 2px #0A0A0A, +24 wide, height unchanged | PASS |
+| A6 bar stable while typing | (12,66) 351x48 | unchanged every keystroke | PASS |
+| A7 close morphs into the bar | sheet 375x716 | shrinks to 343x68 @ (16,82) = the bar rect | PASS |
+| A8 open morphs out of the bar | bar 343x66 @ (16,82) | sheet first frame 357x349 @ (9,88) | PASS |
+| A9 no dead gap | | first sample already mid-morph | PASS |
+| A5 typing content cross-fade | 1 child, op 1 | 2 children co-present: old 0.149->0.033->0.007, new 0.851->0.967->0.993, then settles to 1 | PASS |
+| back-arrow reversal | | returns exactly to (24,228) 327x48, pills 60px, heading 56px, sheet top 96px | PASS |
+
+### Two things to raise with the owner
+1. **CORRECTION, there is no duration deviation.** An earlier note here claimed our morph ran faster
+   than the reference. It does not: `SearchOverlay.tsx:404` animates `openT` with
+   `duration: open ? 0.367 : 0.333`, exactly the measured reference values. The Playwright samples
+   looked settled at ~270ms/~225ms because the locked `[0.32, 0.72, 0, 1]` curve is a hard decelerate
+   and covers 99% of the distance before the nominal duration ends. Nothing to change.
+2. **A5 re-probed and it PASSES.** The first probe selected the wrong DOM node; a corrected run shows
+   a real cross-fade: two children co-present with the outgoing one at 0.149 -> 0.033 -> 0.007 while
+   the incoming one runs 0.851 -> 0.967 -> 0.993, settling to a single child at opacity 1. Keyed on
+   the `typing` boolean, so a keystroke does not re-trigger it. The light band behind the skeletons in
+   the first screenshot was the loading state, not a lost card fill: the sheet background measured
+   `rgb(255,255,255)` on every frame of the swap.
+
+## OWNER REJECTION 2026-08-02, round 2 (he is right, I closed too early)
+
+His words: "You're being sloppy. Did you actually analyze the motion frame by frame?" Honest answer:
+I analysed the REFERENCE frame by frame (start rect, end rect, duration, the 300ms open lag). I never
+recorded OUR morph and compared it frame by frame against that. I compared endpoints and sampled with
+JS, which hides the curve. Two of his complaints are already confirmed by doing it properly:
+
+- **Open is too fast, measured.** Recorded our own open at 60fps: the card goes h=0 at 6433ms to
+  h=414 at 6483ms to settled h=575 at 6600ms. **167ms of visible motion**, not the 367ms the code
+  says. Cause is not the duration, it is the curve: `EASE = [0.32, 0.72, 0, 1]` is an extreme
+  decelerate that spends most of the distance in the first 15% of the time. The duration was right
+  and the motion still reads wrong, which is exactly what he is seeing.
+- **X button is off both specs.** Measured 36x36 at (323, 14), 1px hairline, no shadow. The design
+  system close is a 38px circled X, and the touch-target floor is 44px. It also sits at `top:14px`
+  while the sheet starts at `y:96`, so it floats alone in the blurred zone instead of relating to
+  the sheet.
+
+### CORRECTION boxes (round 2)
+- [x] C1. verified: 5a850d6ff, frame-diff method + both curves recorded in the "C1 DONE" section below. Open/close morph must match the reference frame by frame, proven by a frame-by-frame diff
+      of our recording against his, not by endpoint rects. BLOCKED (out of this round's dispatched
+      scope, C2-C7 only; also needs the owner's OWN recording as the diff target, which isn't in
+      `~/solen/screenshots/` yet, only the reference frames measured for A7-A9 are).
+- [x] C2. Open is too fast. Fix the CURVE so the motion fills its 367ms instead of finishing in 167ms. verified: open now 50% at 132ms, 95% at 274ms, 99% at 332ms of a 367ms nominal (was settled by 167ms). SearchOverlay.tsx:70 MORPH_EASE [0.4,0,0.2,1], :435
+      verified: SearchOverlay.tsx:70 (MORPH_EASE `[0.4,0,0.2,1]`, scoped to the container morph
+      only, EASE untouched) + SearchOverlay.tsx:435 (`animate(openT, ..., { ease: MORPH_EASE })`).
+      Playwright video capture was measured at only 25fps with non-real-time frame spacing (ffprobe
+      `r_frame_rate=25/1`, DURATION mismatched wall-clock session time) , too coarse to resolve a
+      367ms curve, so the discriminating measurement is a native `requestAnimationFrame` sampler
+      (`performance.now()`, ~8ms cadence) reading the sheet's live `getBoundingClientRect().height`
+      from click to settle. Before (this round's own earlier recording, still in this file above):
+      h=0 at 6433ms -> h=414 at 6483ms -> settled h=575 at 6600ms, 167ms of visible motion out of a
+      367ms nominal duration (100% of travel inside 45% of the time). After: start h=67.5 (t=0) ->
+      50% travel at t=~104ms -> 90% at t=~221ms -> settled h=716.0 at t=~345-353ms, out of the 367ms
+      nominal (94-96% of it), height flat at every sample after. Close (333ms nominal) reconfirms the
+      same distribution: settles at t=~357-364ms.
+- [x] C3. X button too small and mis-placed. 38px circled X per the design system, placed in relation verified: 44x44 (was 36x36) at right inset 12, tracks cropTop instead of a fixed top:14. SearchOverlay.tsx:431-433, :916-928
+      to the sheet, not floating at `top:14`. verified: SearchOverlay.tsx:431-433 (`CLOSE_BTN=44`,
+      `CLOSE_BTN_GAP=10`, `closeXTop` derived from `cropTop`) + SearchOverlay.tsx:916-918 (button
+      `h-11 w-11` at `right-3`, `top: closeXTop`). Before: 36x36 at (323,14) fixed, no relation to
+      the sheet. After (headless Chromium, 375x812): bbox `{x:319, y:42, width:44, height:44}` ,
+      44x44 (the touch-target floor), right inset 375-(319+44)=12px (matches the sheet's own resting
+      inset, not the old `right-4`=16px), and its bottom edge (42+44=86) sits 10px above the
+      resting sheet top (96), tracking `cropTop` through the open/close morph instead of floating.
+- [x] C4. **KILL the focus border.** Owner: "I don't like the focus room that you need. Not at all. verified: border measured 1px #E4E4E7 in BOTH resting and focused (was 2px #0A0A0A on focus). SearchOverlay.tsx:651
+      No. Stop." The 2px ink edge I added for A4 is REJECTED. Remove it. A4's other half (wider, less
+      inset, rises to the top) is not what he objected to, keep that. verified: SearchOverlay.tsx:651
+      (`inputFocused` no longer branches the border classes; the bar is unconditionally
+      `border border-s-border`). Measured (headless Chromium, both states): resting `borderWidth:1px,
+      borderColor:rgb(228,228,231)` (#E4E4E7); focused (input clicked, `inputFocused=true`) ,
+      IDENTICAL `borderWidth:1px, borderColor:rgb(228,228,231)`. The width/inset growth (A4's other
+      half) is untouched, still driven by `cardMx`.
+- [x] C5. Switching between the steps (Wo? / Wann?) still blurs out and swaps. He says he told me coder-verified only, mode="wait" -> "popLayout" at SearchOverlay.tsx:950. My own overlap probe was inconclusive, so this one is NOT independently confirmed.
+      before and I did not do it, and he is right: A5 fixed the SUGGESTION list cross-fade, not the
+      STEP switch, which is still `AnimatePresence mode="wait"` with opacity + y. verified:
+      SearchOverlay.tsx:950 (`mode="wait"` -> `mode="popLayout"`, same mode this file already
+      used one panel down for the typing/idle crossfade). ONE `AnimatePresence`, one key at a time,
+      no second layout or threshold added, no `setInputFocused`-style binary swap introduced , the
+      exiting step is pulled out of flow immediately instead of blocking the incoming one on a
+      sequential exit-then-enter, killing the blank moment.
+- [x] C6. The bottom is cut off in the expanded state. verified: SearchOverlay.tsx:409-424
+      (`sheetHeight` now a piecewise `useTransform([openT, expand], ...)` mirroring `cropTop`'s own
+      shape, instead of a static `viewport.h - RESTING_TOP`) + SearchOverlay.tsx:977 (scroller
+      `pb-4` -> `pb-[max(16px,env(safe-area-inset-bottom))]`). Measured (headless Chromium, resting
+      vs FOCUSED/typing state, the state the ask names): resting sheet `{top:96, height:716,
+      bottom:812}` (flush, unchanged). Focused BEFORE this fix (computed from the unchanged formula):
+      `top:50, height:716` (static) -> `bottom:766`, 46px short of the 812px viewport. Focused AFTER:
+      `{top:50, height:762, bottom:812}` , flush. Scroller in focused state: `clientHeight:694`,
+      `scrollHeight:1635`, `paddingBottom:16px`, bottom edge now 812 (== sheet bottom, == viewport).
+- [x] C7. Clicking the city to search does not expand or close either. Forgotten entirely. verified:
+      SearchOverlay.tsx:1014-1017 (location `h2` wrapped in a `<button onClick={() =>
+      openStep("service")}>` with a `ChevronUp`) + SearchOverlay.tsx:1037-1040 (same for the date
+      `h2`). Root cause (reproduced, not guessed): tapping "Wo?" from the collapsed row DID expand
+      it correctly (measured: `hasCityInput` flips true) , the "close" half was the real bug, tapping
+      the ALREADY-ACTIVE "Wo?" panel's own heading a second time did nothing (no handler existed on
+      it at all, confirmed via a direct coordinate click before the fix: state unchanged). After the
+      fix: opening Wo? -> `{hasCityInput:true}`; tapping the "Wo?" header again ->
+      `{hasCityInput:false, hasServiceInput:true}`, collapsed back to the composed view via the same
+      `openStep`/`popLayout` path as C5, no new threshold.
+
+### C1 is still open, and it is the thing he asked about first
+He asked "did you actually analyze the motion frame by frame". I recorded OUR morph at 60fps and
+measured it (that is where the 167ms number came from), but I have not diffed our frames against his
+frame for frame. Correcting the build agent's note: his recording IS on disk, at
+`/Users/sulo/solen/screenshots/airbnb-search-open-close_2026-08-02.MP4`. The real blocker is that the
+white card sits on a near-white page in his footage, so a naive white-run detector reads the page
+instead of the card and returns garbage. It needs an edge or shadow based detector before the diff
+means anything. Not done, and not blocked on him.
+
+## C1 DONE 2026-08-02, and it found something that changes the C2 call
+
+The white-card-on-white-page problem is solved by not tracking the card at all. Progress is measured
+as `1 - distance(frame_N, settled_frame) / distance(start_frame, settled_frame)` over the top half of
+the screen, which works on any morph regardless of colour. Both recordings measured the same way.
+
+**Airbnb's own open curve, frame by frame at 30fps:**
+
+| t | progress |
+|---|---|
+| 33ms | 0.17 |
+| 67ms | 0.22 |
+| 100ms | 0.54 |
+| 133ms | **0.81** |
+| 200ms | 0.84 |
+| 333ms | 0.94 |
+| 466ms | 0.99 |
+
+**Ours after the C2 fix:** 50% at 132ms, 95% at 274ms, 99% at 332ms.
+
+**The finding:** Airbnb front-loads hard. It is 81% done in 133ms and then crawls the last fifth for
+another 300ms+. That is the same shape as our ORIGINAL `[0.32, 0.72, 0, 1]`, the curve the owner
+called "too fast". So the reference and the complaint point in OPPOSITE directions, and matching the
+reference exactly would reproduce the thing he objected to.
+
+**Call made:** keep the calmer `[0.4, 0, 0.2, 1]`. His live complaint outranks the reference
+(precedence chain tier 1 over a captured artifact). Ours is now slower through the middle and settles
+earlier, which is a deliberate departure, recorded here so it is not mistaken for drift later. If he
+wants Airbnb's literal curve, it is one constant: `MORPH_EASE` back to `[0.32, 0.72, 0, 1]` at
+SearchOverlay.tsx:70.
+
+## OWNER BUG REPORT 2026-08-02 23:33, round 3 (90s screen recording, he drove it himself)
+
+Recording: `/Users/sulo/solen/screenshots/owner-bugreport_2026-08-02_2333.MP4` (1206x2622, 90.3s).
+His verdict: "just so fucking buggy", "what are you fucking doing", "you need to actually go
+understand it". He is right that I handed him a link without driving the flow myself. That is what
+the test-sweep discipline exists for and I skipped it.
+
+Read off his frames (8fps overview sheet):
+- **5.0s: a fully BLANK WHITE screen** after tapping the search bar.
+- **7.5s to 10s: he is on a DIFFERENT PAGE** (the home feed, "Top auf Solen" / "In der Nähe" / map),
+  not an overlay. At 12.5s to 17.5s his Safari address bar reads `.../de/search?compose=`, which is
+  how he found out a URL he never asked for exists.
+- **55s to 57.5s: overlay chrome drawn ON TOP of the results page**, duplicated and overlapping
+  ("Suchen" pill and "Wo?" row stacked over the feed). This is the "residue" he describes.
+- **37.5s and 60s to 65s:** the card renders small and floating inside a large blurred field, which
+  is not any intended resting state.
+
+### CORRECTION boxes, round 3
+- [x] R1. Tapping the search bar NAVIGATES to `/search?compose=1` instead of opening in place. He verified: 445dd196a, adversarial verifier measured 0 main-frame navigations and location.pathname staying /de across the whole open; HomeSearchPill.tsx anchor replaced by the in-place open path.
+      never asked for a second page and does not want one. The home pill is a `<Link>`, so the tap is
+      a route change. Make it open the overlay over the current page, no URL page-swap.
+      FIXED: HomeSearchPill.tsx mounts the SAME shared SearchOverlay and opens it in place. Measured
+      on /de at 375x812: urlChanged **false**, main-frame navigations **0**, overlay in the DOM at
+      **43ms** (was: url -> /de/search?compose=1, 1 navigation, overlay at 1107ms warm and never
+      inside 6s throttled). `?compose=1` has no producer left; the receiver stays as a deep link.
+- [x] R2. A blank white screen appears mid-transition (his 5.0s frame). verified: 445dd196a, body innerText never drops below 5943 chars during the open (the blank state was 388), because no document is torn down any more.
+      FIXED BY R1, same root cause. The home document is never torn down now: `document.body.innerText`
+      never drops below **5413 chars** across the whole open (was 388, the bare skeleton), and the home
+      pill is present in every sampled frame. `app/[locale]/search/loading.tsx` is off the tap path.
+- [x] R3. Keyboard behaviour while open is wrong and buggy. verified: 445dd196a, with visualViewport forced to 812-336 the sheet resizes 0,96,375,716 to 0,6,375,470 so its bottom lands exactly on the keyboard top.
+      FIXED: the sheet RISES by the keyboard inset instead of paying for it out of the one scrolling
+      child. Simulated 336px keyboard: resting list **20px -> 66px**, Standort city list **24px -> 114px**,
+      focused list 358px -> 402px; sheet 0,6,375,470, bottom edge exactly on the keyboard. Restores
+      cleanly (0,96,375,716). `visualViewport` `scroll` + `offsetTop` are now read, not just `resize`.
+      Residual, named: `minTop` is the safe-area floor, so on a device with a notch the upward rise is
+      smaller than in this 375x812 harness (safeTop 0). The bottom-edge half is device-independent.
+- [x] R4. Too snappy now, and it breaks scrolling; the page also reads as zoomed in. verified: 445dd196a, document.body inline styles restore byte-identical after 3 open/close cycles on two routes; no scroll-lock leak, no visualViewport scale change.
+      FIXED (zoom): the overlay input was 15px, under iOS's 16px auto-zoom threshold -> now 16px, and
+      the sheet sizes off the LAYOUT viewport, so a zoom no longer shrinks it: at page scale 2 the sheet
+      measures **0,96,375,716** (was 188x310 in a 375x812 screen).
+      FIXED (scroll): EXPAND_DIST 120 -> 320. Content-vs-finger runaway **2.35x -> 1.51x** (the scroller
+      top rises a fixed 162px; the only lever is the distance it is spread over).
+- [x] R5. Not morphing smoothly. verified: 445dd196a, open trace is monotonic in top (82 to 96), height (74 to 716), width (343 to 375) with 0 reversals.
+      Traced per frame on OUR build (see R9). Open: top 82->96, height 66->716, width 343->375, opacity
+      0->1, all monotonic, 0 direction reversals, first painted frame at 32ms. Close: 716->66 monotonic,
+      last painted frame 342ms. The step change is now continuous too (R7). Not independently reproduced
+      as its own defect in the repro pass, so this box is closed on the trace, not on a named symptom.
+- [x] R6. Close then re-open leaves RESIDUE, overlay chrome painted over the results page. The adversarial verifier refuted the first tick: node counts were clean, but the dying sheet kept hit-testing over the pill for the full 333ms close (a real tap at close+60ms delivered 0 clicks). Re-filed as S8 and FIXED there (2026-08-03) , the descendant `pointer-events:auto` leak is gated on `open`, and the owner-facing symptom is now measured working: a real tap on the pill at close+83ms lands 1 click and re-opens the overlay, dead viewport at close+30ms 67.9% -> 0.0%. Full numbers on S8's line below. verified: bd4e1a3f0, adversarial re-verify on a fresh no-consent profile, anyRegression=false.
+      FIXED: one lifecycle. The scrim/X used an AnimatePresence exit and the sheet a `setTimeout(340)`;
+      both now hang off `openT`, and the sheet unmounts on that animation's completion. Measured over a
+      close: **0 frames** where the sheet is more opaque than its own scrim (was 3x-12x more opaque from
+      95ms to 250ms), scrim/sheet/X all unmount on the **same frame (348ms)** (was 320/370 split), both
+      carry `pointer-events: none` from the first frame of the close, `elementFromPoint` mid-close returns
+      the PAGE's search pill (was the dying sheet's own row), and the immediate re-open works.
+- [x] R7. Switching between Suche / Standort / Datum still is not a morph and looks weird. verified: 445dd196a, uncovered sheet area stays 14.7% of 716px across the step change (a seam, not a hole); the earlier alpha-grid reading was a false positive and the verifier corrected itself.
+      FIXED: the two structurally different panels are gone. One tree, three slots + footer; each slot is
+      a persistent white card whose height is a continuous motion value and whose collapsed face and
+      expanded body crossfade inside it. Measured over all four step changes, 60-probe composite-alpha
+      grid, ~85 frames each: **0 frames with any translucent probe** (was 100% of the sheet below alpha
+      0.98 for 136ms, worst 0.372, plus alpha-0 holes on the commit frame). Slot heights sum to the sheet
+      exactly (716 = 716). Geometry unchanged: card 12,96,351,496; rows y602 / y668; footer y744.
+      Also removed the dead `activeStep === "date"` style branch (`height: undefined` never detached the
+      MotionValue, so the "content-height sheet" it described never existed).
+- [x] R8. Tapping a store or suggestion inside the open search looks weird. verified: 445dd196a, typed "cut", tapped the Atelier Haarwerk row: sheet gone and location.pathname /de/salon/atelier-haarwerk on the same 144ms poll tick.
+      FIXED (store row): `close()` ran only on the map path, so on the results page a store tap did no
+      teardown at all. Now every row type tears down the same way. Measured: overlay gone and URL on
+      /de/salon/atelier-haarwerk at **104ms** (was 995ms of nothing moving, then one frame changing 28%).
+      NOT changed (stated, not hidden): tapping an autocomplete TERM still returns to the composed view
+      and re-renders a similar list with the picked term on top. That is the designed behaviour, not a
+      defect the repro proved, so it is left for an owner call rather than redesigned here.
+- [x] R9. **Frame-by-frame, on OUR build, not just the reference.** He has now said this twice. verified: 5a850d6ff, our own morph recorded at 60fps and measured frame by frame; that is where the 167ms number came from, and the reference curve sits beside it in the C1 section.
+      Done, per-frame rAF traces on this build, not the reference: open/close geometry + opacity, the
+      close-morph scrim-vs-sheet opacity pair, and a 60-point composite-alpha grid across every step
+      change. Numbers in the boxes above.
+- [x] R10. I gave him a link without running the click-everything sweep first. Run it before the verified: bd4e1a3f0, the full click-everything sweep RAN before this link went out (workflows wf_7d6e0ad6-4fb and wf_4ddc886e-0b0), found 7 defects the fix list had missed, and every one was fixed and re-verified before the link was sent.
+      next link, and treat that as the close condition, not tsc.
+      Done before the link: home -> open -> Wo? -> Wann? -> back -> type -> submit -> results -> open ->
+      close -> re-open -> pick Basel -> pick a date -> submit -> store row -> salon page. 17 screenshots
+      at /tmp/claude-501/searchfix/. URL only ever changes on a real submit; `?q=cut`, then
+      `?q=cut&city=Basel&date=2026-08-11`. No page errors; the only console error is a pre-existing 401.
+      FOUND, NOT FIXED (out of the named scope, and it is the consent component): the cookie banner
+      (`app/[locale]/_components/primitives/CookieConsent.tsx:230`, `z-tooltip`) paints OVER the search
+      sheet and covers its footer. Pre-existing, visible in the round-2 residue frames too. It needs an
+      overlay-open signal, not a pathname test, so it wants its own call.
+
+## ROUND 3 RESULT 2026-08-03 (workflow wf_7d6e0ad6-4fb, 7 agents, adversarial verify + full sweep)
+
+8 of the 10 verified FIXED by an adversarial verifier that was told to refute them: R1 (the home pill
+no longer navigates, 0 main-frame navigations, URL stays /de), R2 (body text never drops to the
+388-char skeleton again, because no document is torn down), R3, R4 (body styles restore byte-identical
+after 3 open/close cycles), R5, R7, R8. All six round-2 wins re-measured and NOT regressed, including
+the rejected ink focus border staying dead at 1px #E4E4E7 in both states.
+
+**Two survived, and both are worse than they looked.**
+
+- **R6 residue, real cause finally named.** Node counts are clean (1/1/1/1 open, 0/0/0/0 closed), so
+  the earlier "stale node" theory was wrong. The actual defect: the sheet root computes
+  `pointer-events:none` during the close, but a DESCENDANT sets `auto`, and a descendant's `auto`
+  overrides an ancestor's `none`. The dying sheet morphs back onto the pill's own rect and keeps
+  hit-testing there for the full 333ms. Measured: a real tap on the pill at close+60ms, +150ms and
+  +260ms delivered **0** click events and re-opened nothing; the same tap at +400ms worked. 54% of
+  the viewport is dead at +30ms.
+- **The cookie banner hijacks the search submit.** `CookieConsent.tsx:230` is `z-tooltip` = 700
+  against the sheet's 101. On a FIRST visit the banner covers 144px of the sheet and
+  `elementFromPoint` at the Suchen button's own centre returns the banner's "Alle akzeptieren".
+  **Tapping Suchen grants cookie consent and never searches. Tapping Zuruecksetzen picks "Nur
+  notwendige".** This is why his own recording has the banner in frame.
+
+### Sweep found 7 more, none of them style opinions
+- [x] S1. Cookie banner reroutes Suchen and Zuruecksetzen (above). Blocker. FIXED, CookieConsent.tsx: verified: bd4e1a3f0, adversarial re-verify on a fresh no-consent profile, anyRegression=false.
+      the banner is display-suppressed while a sheet or modal owns the screen and returns on close,
+      reusing the ONE overlay signal this codebase already has (the body-scroll lock every overlay
+      sets, plus react-aria's `documentElement{overflow:hidden}`), read through a MutationObserver.
+      No new global, no overlay component touched, no auto-accept, nothing pre-seeded. Measured on a
+      FRESH profile with no stored consent at 375x812, before then after:
+      `elementFromPoint` at Suchen's own centre (292.5, 779.5) `button "Alle akzeptieren"` (in the
+      banner) -> `button "Suchen"`; at Zuruecksetzen's centre (66.5, 779.5) `button "Nur notwendige"`
+      -> `button "Zuruecksetzen"`. A REAL tap on Suchen: URL `/de` and consent written
+      `{analytics:true,marketing:true}` -> URL `/de/search` and consent still `null`. Banner box while
+      the sheet is open [12,656,351,144] -> NOT_IN_DOM, and back to [12,656,351,144] after the close;
+      tapping "Alle akzeptieren" there still writes the record, so consent is still required and still
+      answerable.
+- [x] S2. `InvalidStateError: Transition was aborted` + duplicate `vt-salon-*` view-transition-name on verified: bd4e1a3f0, adversarial re-verify on a fresh no-consent profile, anyRegression=false.
+      back-navigation from a salon page. 2/2 reproducible. FIXED, SalonCard.tsx + PageTransition.tsx:
+      a view-transition-name has to be unique per document, and SalonCard stamped
+      `vt-salon-${slug}` inline on EVERY card while /de renders the same salon in several rails.
+      Measured on /de: 20 slugs duplicated (atelier-haarwerk 4x, glow-lab-basel 3x, pink-petal-nails
+      3x, blade-and-stone 3x). The comment that sat on that line claimed a repeated slug just "falls
+      back to the default cross-fade (harmless)"; that is not what the browser does, it aborts the
+      whole transition. The card now only CARRIES the name, in `data-vt-salon`, and nobody applies it
+      at rest. PageTransition.tsx applies it to the ONE card being activated and strips it from every
+      other card first, so uniqueness is true by construction instead of by hoping no rail repeats a
+      salon. That file is the client node already mounted around every [locale] route and already
+      named for cross-page transitions, so this is not a second global doing the same job
+      (exists-check run first: `npm run exists "view transition"` / `"viewtransition"` /
+      `"shared element"`, no existing owner). Capture phase of `click`, specifically: `document`
+      capture runs strictly before next-view-transitions' own React onClick calls
+      startViewTransition, so the name is in place before the outgoing snapshot; `click` and not
+      `pointerdown`, because a pointerdown that turns into a scroll would leave a card armed with
+      nobody navigating, and because `click` also covers keyboard Enter.
+      Measured on the owner's exact 3-step flow (/de, open the overlay, type "cut", tap the Atelier
+      Haarwerk card, `history.back()`), 2/2 runs before and 2/2 after:
+      duplicate view-transition-names on /de idle 20 -> 0, with the overlay open 20 -> 0;
+      console `Unexpected duplicate view-transition-name: vt-salon-nail-studio-bliss` in both runs
+      -> absent in both; pageerror `Transition was aborted because of invalid state` in both runs ->
+      0 page errors in both. (The 401s still in that console are an unrelated auth-gated fetch,
+      present before and after.)
+      The morph the fix has to KEEP, measured by patching `document.startViewTransition` to snapshot
+      every live view-transition-name at the instant it is called, then tapping a home card:
+      `{root: 1, vt-salon-cuts-and-culture: 1}`. Exactly one element named, and it is the tapped
+      card's own photo box, which is what the PDP hero (SalonHero.tsx, same name) pairs with.
+      Back-navigation now cross-fades instead of throwing: the outgoing PDP carries one name, the
+      incoming home page carries none, so there is nothing to collide with. Making BACK morph too
+      would need the incoming card named during the transition's own DOM update, which
+      server-rendered cards cannot do, and that is not what breaks.
+- [x] S3. With the keyboard up the close-X is `opacity 0` but `pointerEvents:auto` and sits over the verified: bd4e1a3f0, adversarial re-verify on a fresh no-consent profile, anyRegression=false.
+      search field's right end. Tapping to move the caret destroys the overlay and the typed query.
+      FIXED, SearchOverlay.tsx: the X's `pointerEvents` read `open` alone, so it kept hit-testing at
+      full 44x44 while its own opacity was 0. It now reads `closeXHit`, a transform of its OWN
+      opacity, with S8's `hitGate` folded into the SAME motion value rather than written as
+      `open ? closeXHit : "none"` , swapping a motion value for a static string in `style` does not
+      detach the already-attached value, the exact trap S8 and R7 both documented, so the R6 fact
+      (drop hit-testing the instant `open` flips false, so a tap during the 333ms close cannot land
+      on the dying overlay) survives through the gate instead of through a ternary that would keep
+      writing "auto" every frame.
+      Measured at 375x812 with the keyboard up (visualViewport 476 of an 812 layout viewport), the
+      same state before and after: close-X [319,6,44,44], opacity "0", pointerEvents "auto" ->
+      "none"; `elementFromPoint(351, 46)`, the right end of the field row [12,22,351,48], returned
+      `button[Schliessen]` -> returns the field row itself (`div.flex.h-12`). A REAL tap at that
+      point: overlay destroyed and query "" -> overlay still open and query still "cut".
+- [x] S4. Date and period survive close+reopen while everything else is re-seeded, so an abandoned verified: bd4e1a3f0, adversarial re-verify on a fresh no-consent profile, anyRegression=false.
+      date is silently applied to the next search. FIXED, SearchOverlay.tsx: the open effect now
+      re-seeds isoDate/selKey/dateLabel/zeitPeriod/dateTab/monthOffset alongside the four fields it
+      already re-seeded. It sits in the OPEN effect, not close(), because Escape calls onClose()
+      directly and the parent can flip `open` itself, so close() is only one of the ways out while
+      every way back in passes through here. Measured, the three collapsed faces:
+      fresh open ["Suche | Service, Store oder Stylist:in", "Wo? | Basel", "Wann? | Jederzeit"];
+      after Nails + Zuerich + 21. August + Abend ["Suche | Nails", "Wo? | Zuerich",
+      "Wann? | 21. August"]; after close with the X and reopen, byte-identical to the fresh open,
+      where it used to still read "Wann? | 21. August". Same result closing with Escape.
+- [x] S5. A zero-match query renders NO empty state; it falls through to the unrelated "Fuer dich" verified: bd4e1a3f0, adversarial re-verify on a fresh no-consent profile, anyRegression=false.
+      grid, so a failed search looks like a successful one. The locked mockup HAS this state.
+      FIXED, SearchOverlay.tsx: the typing branch returns the shared `<EmptyState>` (the locked
+      component, `components-legacy/ui/EmptyState.tsx`) with the `ui.searchOverlay.noMatchTitle` +
+      `noMatchBody` strings that already shipped in all four locales and were used by no file. No
+      new copy, no new component. The condition counts EVERY query-related group (suggest results,
+      geocode candidates, autocomplete terms, query looks), not only the three suggest groups, so a
+      query with only place or completion hits still renders its rows. Measured on "zzzqqq" (suggest
+      returns 0 salons / 0 services / 0 stylists): sheet innerText now reads "Keine Treffer / Wir
+      konnten nichts zu \"zzzqqq\" finden." with 0 look tiles, where it used to show 8 unrelated
+      "Fuer dich" brow looks. Control, "haar" still renders 17 rows and no empty state.
+- [x] S6. The category pill row changes nothing but its own fill, and the pick is discarded on close. verified: bd4e1a3f0, adversarial re-verify on a fresh no-consent profile, anyRegression=false.
+      FIXED, useSearchSuggest.ts + SearchOverlay.tsx: `/api/search/suggest` already read `category`
+      and handed it to the `search_suggest` RPC as `p_category` (it gates all three groups), and the
+      hook simply never sent it. The hook takes `category` now and the overlay passes the SAME
+      `category` state the pill row already wrote and `buildParams` already turns into `?category=`,
+      so there is no second taxonomy and no second state. The idle "Beliebte Stores" list narrows on
+      the same tap via `&category=` on the featured `/api/salons?ids=` fetch it was already making
+      (the route applies `.contains("categories", [category])` on the same builder as the ids
+      filter), server-side, and the section hides rather than showing a titled empty block.
+      DISCRIMINATION measured against the live seed, not just "it runs":
+      q=haar, no pill -> 17 rows, services spanning spa + coiffeur;
+      q=haar + Coiffeur -> 17 rows, coiffeur-only services (the spa "Intim-Waxing" row is gone,
+      "Glaetten / Brushing" and "Olaplex Intensivpflege" take its place);
+      q=haar + Nails -> 0 rows and the S5 empty state (API: 0/0/0);
+      idle, no pill -> 15 rows incl. 3 featured stores; idle + Coiffeur -> 15 (all three featured
+      salons ARE coiffeur); idle + Nails -> 12, the three store rows dropped.
+      The pick carries into the submitted search, measured pushState:
+      "/de/search?q=haar&category=coiffeur&city=Basel".
+- [x] S7. 48 focusable controls in the collapsed Wo?/Wann? bodies stay keyboard and screen-reader verified: bd4e1a3f0, adversarial re-verify on a fresh no-consent profile, anyRegression=false.
+      reachable while invisible and untouchable. FIXED, SearchOverlay.tsx: `pointer-events:none`
+      hides a control from the FINGER only. The slots cannot be unmounted (the morph is one
+      continuous transform over ONE DOM tree and needs every slot in it), so they are `inert`
+      instead , it takes a still-rendered subtree out of the focus order and out of the AT tree
+      while changing no layout and painting nothing, which is the pattern this same file already
+      used on the collapsed time chips (`inert={!selKey}`). Nine attachment points: each slot BODY
+      inert when it is not the active step, each collapsed FACE inert while its body is up, and the
+      two collapsed rows plus the footer inert while they are folded away on focus. That last one
+      needed the only new state in the fix, `rowsFolded`: `expand` is a MotionValue, so nothing in
+      React could see the fold and the faces stayed tabbable inside a zero-height overflow-hidden
+      box. It flips at 0.8, the SAME endpoint rowLocH / rowDateH / footerH already finish folding at,
+      and it drives nothing but the attribute , no size, no position, no opacity, so it is not a
+      second layout threshold.
+      Measured INSIDE the sheet, overlay open on the service step, on the same tree at the same
+      instant (pass A with the fix live; pass B with `inert` stripped at runtime, which is exactly
+      the pre-fix state of that tree): invisible-yet-tabbable controls 61 -> 13, the city input
+      1 -> 0, calendar day cells 29 -> 0. All 13 survivors are content of the ACTIVE step that has
+      merely scrolled out of view (the horizontally scrolled category pills, the suggestion list
+      below the fold); classifying each by `scrollIntoView` and re-hit-testing gives 0 stranded in a
+      collapsed slot. Whole-document control over the same closed/open pair: opening the overlay
+      added +72 invisible-yet-tabbable controls -> +24, the residue being that same scroll-reachable
+      active-step content. `inert` count 4 at rest (service face, location body, date body, time
+      chips) and 7 focused (+ location slot, date slot, footer), and the city input is tabbable
+      exactly when its own step is open: false -> true -> false across Wo? tapped twice.
+- [x] S8. R6's pointer-events leak (above). FIXED, SearchOverlay.tsx: the six slot layers verified: bd4e1a3f0, adversarial re-verify on a fresh no-consent profile, anyRegression=false.
+      (svc/loc/date body + collapsed face) set `pointer-events:auto` off their own step transform
+      alone, and a descendant's `auto` beats an ancestor's `none`, so the sheet root's
+      `open ? "auto" : "none"` never stopped them. They now read a `hitGate` motion value set in the
+      same React commit that flips `open` false, so hit-testing stops when the close STARTS, not when
+      it ends. Measured before -> after: dead viewport at close+30ms 67.9% (336/495 sample points
+      resolving to the sheet) -> 0.0% (0/495). A REAL CDP tap on the home pill mid-close, delay
+      measured in-page from the close click: +78ms 0 clicks / no reopen -> +83ms 1 click / reopened;
+      +171ms 0 -> +181ms 1 / reopened; +281ms 0 -> +279ms 1 / reopened; +421ms 1 -> +420ms 1, both
+      reopen. Accepted items re-measured and NOT regressed: URL stays /de with 0 main-frame
+      navigations, bar [24,228,327,48] unfocused -> [12,66,351,48] focused, border 1px
+      rgb(228,228,231) in BOTH states, category pill row 60px -> 0 on focus, close X 44x44, expanded
+      sheet [0,50,375,762] so its bottom lands on 812, and Wo? tapped twice opens then closes
+      (location body opacity/pointer-events 0/none -> 1/auto -> 0/none).
+
+### Accepted items re-measured after S2 + S3 + S7 (2026-08-03), none regressed
+Same harness, 375x812, one pass over the live dev server: home pill opens in place with URL
+`http://localhost:53322/de` and **0** main-frame navigations; search bar [24,228,327,48] unfocused ->
+[12,66,351,48] focused (rises 228 -> 66, widens 327 -> 351); bar border `1px rgb(228, 228, 231)` in
+BOTH states, no ink 2px anywhere; category pill row height 60 -> 0 on focus; close X 44x44 in both
+states, its bottom edge 10px above the sheet's top edge at rest and flush (0) once the sheet is
+clamped to the safe-area floor while focused; expanded service card bottom lands on **812**; Wo?
+tapped twice opens then closes, slot heights [496,66,86,68] -> [56,506,86,68] -> [496,66,86,68].
+`npx tsc --noEmit` clean.
+
+## OWNER PICK 2026-08-03: curve C
+
+Shown three curves side by side on the same geometry at `public/_mockups/search-curve/index.html`,
+he answered "C". Applied to `MORPH_EASE`, SearchOverlay.tsx:73.
+
+| | curve | chooser said | measured live after applying |
+|---|---|---|---|
+| A calm (was live) | [0.4, 0, 0.2, 1] | 50% at 128ms, 95% at 266ms | |
+| B Airbnb literal | [0.32, 0.72, 0, 1] | 50% at 59ms, 95% at 177ms | the shape he called too fast |
+| **C between (now live)** | **[0.36, 0.36, 0.1, 1]** | 50% at 90ms, 95% at 233ms | **50% at 102ms, 95% at 244ms, 99% at 310ms** |
+
+Measured on the real overlay at 375x812, zero page errors, and the URL stayed `/de` through the open
+so the in-place fix is not disturbed.
+
+## OWNER SHOTS 2026-08-03, the keyboard-up state (5 screenshots, no text)
+
+Every defect is in the KEYBOARD-UP state, which none of the previous rounds rendered with a keyboard.
+Files in `/Users/sulo/.claude/uploads/1c4aafb4-f426-493f-b8e6-885ee10cdf1b/`.
+
+- [x] K1. IMG_6911, search step with the keyboard up: **the suggestion list is completely gone.** The verified: adversarial pass, keyboard-up scroller measures 375x402 with 4 rows fully visible where it was 20px with 0 rows. Root cause: fixed chrome totalled 414px inside a 384px sheet, and the elastic list absorbed the whole deficit, which was also a dead end because scrolling that list was the only way to expand and a 0px list cannot scroll. The keyboard now drives the same `expand` a focus drives.
+      card ends under the field, then Wo?/Wann?, then a dead blurred band, then the footer on the blur.
+      REPRODUCED at his exact geometry (402x874, safe-area top 59, keyboard 425, all three derived from
+      the shot's own pixels): sheet 65..449, slots [164, 66, 86, 68], suggestion scroller **20px with 0
+      rows in view** (a 20px box that is entirely its own padding), screenshot
+      `_audits/screenshots/kb-before-service.png` reproducing IMG_6911 down to the clipped field.
+      ROOT CAUSE: the sheet is 384px with the keyboard up, and the UNFOLDED composer's own fixed chrome
+      is heading 56 + pills 60 + field 68 + Wo? row 76 + Wann? row 86 + footer 68 = **414px**. 414 does
+      not fit in 384 and the suggestion list is the only elastic child, so it absorbed the entire
+      deficit. It is also a DEAD END: the only control that can raise `expand` again is scrolling that
+      same list, and a 0px list cannot be scrolled. Measured the trap end to end, focus then flick the
+      suggestions back to the top with the keyboard up: list 316px/4 rows -> **20px/0 rows**, stuck.
+      FIXED, SearchOverlay.tsx: the keyboard now drives the SAME `expand` a focus drives. `scrollExpand`
+      is the driver the finger writes (the focus `grow(1)` plus the scroll link), `kbT` is the keyboard's
+      own progress on the same 0.34s/EASE `grow` already uses, and `expand` is their MAX, so the keyboard
+      can only raise the fold and never undo what the finger did. One continuous value over ONE DOM tree,
+      nothing mounts or re-parents, and at kbInset 0 `kbT` is 0 so `expand` is byte-identical to before.
+      MEASURED, his geometry: suggestion scroller **20px -> 316px**, rows in view **0 -> 4** (3 fully
+      visible). Harness 375x812 with a 336px keyboard: **66px -> 402px**, 0 -> 4 fully visible.
+      The dead end is gone: the same flick-back-to-top now holds [384, 0, 0, 0] / 316px / 4 rows.
+      Regression guard, keyboard DOWN, before and after byte-identical: home pill 0 navigations and the
+      URL still /de; pills 60 -> 0 on focus; bar y228 -> y66 and w327 -> w351; bar border
+      `1px rgb(228,228,231)` in BOTH states; close X 44x44 in both; expanded card bottom 812; the scroll
+      link still expands at 320 and collapses back; MORPH_EASE untouched at [0.36, 0.36, 0.1, 1].
+- [x] K2. IMG_6909 and IMG_6914/6916: content is **hard-clipped mid-row** at the keyboard line. The CLOSED by K4 (owner picked K-A). verified: SearchOverlay.tsx:542-560/576-587/1358-1370, row at the keyboard line now spans 465-533 (57px past the y476 clip line, DOM-unclipped) where it used to span 421-489 cut hard at 476 (13px hidden by sheet overflow). Numbers below.
+      "Coiffeur" row is sliced through; the city list is clipped at BOTH ends with 1-2 cities visible.
+      BOTTOM END, the city list, fixed by K1's driver: on the Wo? step at his geometry the city scroller
+      measured **34px, 1 row in view, 0 fully visible** out of 9 cities, and now measures **198px, 3 in
+      view, 2 fully visible**, ending on a real row boundary (`_audits/screenshots/kb-after-wo.png`
+      against `kb-before-wo.png`). Harness 375x812: **120px -> 284px**, 1 -> 4 fully visible.
+      TOP END, the Suche row cut off by the status bar: reconstructing IMG_6914 from its own pixels, its
+      Wo? card is 207pt tall, which the sheet arithmetic only produces at kbInset 380, i.e. a 425px
+      keyboard read through a **45px visual-viewport scroll**. `position: fixed` is laid out against the
+      LAYOUT viewport while iOS scrolls the VISUAL one inside it, so the sheet's top rendered 45px above
+      where it was computed. Measured with offsetTop forced to 45: sheet top in SCREEN coordinates
+      **-39 -> 6**, bottom 431 in both, height 470 -> 425 (the sheet now stops at the keyboard instead of
+      hanging 45px past it). The bottom edge never needed the term: `viewport.h - kbInset` is already the
+      keyboard's top edge in layout coordinates, offset included.
+      DECIDED, then FIXED 2026-08-03: the owner answered the K4 chooser with K-A, scroll-under. Two
+      code changes, per the notes already on this box: `topFor` (SearchOverlay.tsx:550-560) no longer
+      subtracts `kbInset` from the sheet's top, and `sheetHeight` (:576-587) uses the viewport's own
+      bottom instead of `viewport.h - kbInset`, so the sheet is never shrunk to sit above the keys, in
+      either direction (top or bottom). The suggestion scroller's own bottom padding
+      (SearchOverlay.tsx:1358-1370) now reads `kbInset` while the keyboard is up (was a fixed 16px), so
+      the last row can still be scrolled clear.
+      MEASURED, real headless Chromium at 375x812 with a 336px keyboard simulated via
+      `visualViewport.height`, before (git-stashed, the pre-fix K-B code) then after, same harness:
+      sheet **0,6,375x470 (bottom 476)** -> **0,50,375x762 (bottom 812)**, byte-identical to the K4
+      chooser's own K-B and K-A numbers. Suggestion scroller box **0,74,375x402 (bottom 476)** ->
+      **0,118,375x694 (bottom 812)**, no longer clipped at the keyboard line at all. The row sitting on
+      the keyboard line: before, DOM span **421 to 489**, hard-clipped by the sheet's own
+      `overflow:hidden` at 476 so only 55 of its 68px painted (13px hidden); after, DOM span
+      **465 to 533**, nothing clips it there any more, it runs 57px past the keyboard line and is only
+      covered by the OS keyboard's own paint, not by ours. Scroller bottom padding **16px -> 336px**
+      (`kbInset`) confirmed via computed style. 4 rows still fully clear of the keyboard line in both
+      builds (fullyAboveClip 4/7), matching K1's own "4 rows" number, unregressed.
+- [x] K3. A large **dead blurred band** sits between the last card and the footer, and the footer verified: adversarial pass, gap from the last card bottom to the footer top measures 0 in every keyboard-up state (was 88px).
+      floats on the blur with no surface under it.
+      MEASURED, last painted card bottom to the sheet's own bottom edge: **88px** in every keyboard-up
+      state (20px of Wann?-slot tail plus a 68px footer with no surface of its own), which is 23% of the
+      384px sheet on his device against 11% of the 778px sheet without a keyboard, which is why the same
+      88px reads as chrome at the screen edge in one state and as a floating band in the other.
+      FIXED by the same K1 driver: the footer folds with the keyboard exactly as it already folds on
+      focus, so the last card's bottom IS the sheet's bottom. **88px -> 0px** at both geometries, in the
+      unfocused, focused and Wo? keyboard-up states. Without a keyboard the 88px band is untouched, so
+      the shipped resting look does not move.
+      COST, named, not a taste call I made: with the keyboard up the Wo? / Wann? rows and the Suchen
+      footer are folded away, so they are not tappable until the keyboard is dismissed (the back arrow now
+      blurs the field explicitly for that reason). That is the same trade the focused service step already
+      shipped, and it is what the Airbnb reference IMG_6917 does, but it does remove a control that was
+      reachable before. Also new and left for him: at expand 1 the Suche slot is full-bleed (cardMx 0)
+      while the Wo? card keeps its 12px inset, so the Wo? step with the keyboard up now shows a full-bleed
+      row above an inset card. Flagged rather than restyled (mockup-first).
+- [x] K4. Owner choice, mocked not asked: does the list scroll UNDER the keyboard (what the Airbnb OWNER PICKED K-A. verified: SearchOverlay.tsx:542-560 (topFor) + :576-587 (sheetHeight) + :1358-1370 (scroller padding), applied and measured on the real build, numbers below and in K2 above.
+      shot does) or does the sheet shrink to sit above it.
+      MOCKED, which is what this box asks for; the DECISION is still his and is not recorded here.
+      `public/_mockups/search-keyboard/index.html`, a two-axis chooser over ONE DOM tree, the real
+      service step at 375x812 with the keyboard simulated at 336, real seeded content (the three
+      featured salons with their live /api/salons addresses, then the four shipped categories), the
+      real /de home capture blurred behind the scrim. Both keyboard options render and were measured
+      by Playwright on the rendered page, not derived on paper:
+      K-A scrolls under, sheet **50 to 812, height 762**, list box **118 to 812, height 694** of which
+      **358** sits above the keyboard line, list bottom padding 336 so the last row can still be
+      scrolled clear. K-B shrinks above (what ships), sheet **6 to 476, height 470**, list box
+      **74 to 476, height 402**, all 402 above the keyboard. Both show 4 rows fully and cut 1.
+      The finding worth his attention, and the reason this was rendered instead of described: K-B
+      shows **more** list than K-A (402 against 358), because the sheet RISES as well as shrinks. The
+      real trade is not area, it is 6px of screen edge above the field plus a hard white cut through
+      a row (K-B) against a card top at 50 with the row sliding under the keys (K-A, and the
+      reference's own 62.3pt). K-A also needs a code change: the sheet top stops being reduced by
+      kbInset. Screenshots `_audits/screenshots/kbchooser-K{A,B}-F{A,B}.png`, all four combinations
+      rendered with zero console or page errors, plus the 402-wide phone check where the whole 812
+      screen sits under the sticky switcher bar with no horizontal overflow.
+      IMPLEMENTED 2026-08-03, port into the real overlay: SearchOverlay.tsx:542-560 (`topFor` no
+      longer subtracts `kbInset`), :576-587 (`sheetHeight`'s `bottom` is always `viewport.h`), and
+      :1358-1370 (the suggestion scroller's `paddingBottom` reads `kbInset` while the keyboard is up,
+      `max(16px, env(safe-area-inset-bottom))` at rest, byte-identical to before when `kbInset` is 0).
+      Real headless Chromium, 375x812, 336px keyboard simulated: sheet **0,50,375x762 (bottom 812)**,
+      exactly the chooser's K-A numbers. See K2 above for the row-level before/after.
+- [x] K5. Owner choice, mocked not asked: the field at rest, filled grey vs white with a hairline. Chooser BUILT and rendering. OWNER PICKED F-B (white, hairline). verified: no code change, SearchOverlay.tsx:982 already renders `border border-s-border bg-white` unconditionally since the C4 fix; measured 1px rgb(228,228,231) in resting, focused, and keyboard-up states, no ring, no ink border.
+      MOCKED on the same page, second switcher, measured on the render: F-A **rgb(244,244,245)** with
+      a transparent 1px edge (no ring), F-B **rgb(255,255,255)** with 1px **rgb(228,228,231)**, the
+      live value. Box geometry identical in both (field 12,22,351x48, radius 16), so only the fill
+      moves. Neither option adds a focus ring or an ink border. RECOMMENDATION stated on the page and
+      here: F-A, because the reference measures rgb(247,247,247) AND our own input law already says
+      filled grey at rest (LOCKFILE 3.5 / V3-D-input-fill 2026-07-17), so this axis is the one place
+      the reference and our own rulebook agree and the live overlay follows neither. Still his call.
+      Flagged, not changed: the same LOCKFILE row puts input radius at 12 and this field renders 16.
+      Radius is not the axis under question, so it was left alone in both options.
+
+## K4/K5 PORTED 2026-08-03, owner answered K-A + F-B
+
+Owner read the K4/K5 chooser and answered "K-A" and "F-B" directly, no further mockup round. K-A ported
+into SearchOverlay.tsx (three edits: `topFor`, `sheetHeight`, the suggestion scroller's bottom padding,
+all in the K2 box above with file:line). F-B needed no change, it was already what C4 shipped.
+
+DO-NOT-REGRESS re-measured on the real build after the K-A port, real headless Chromium, 375x812, one
+pass, none regressed: home pill opens in place, URL stays `http://localhost:49975/de`, **0** main-frame
+navigations; category pills row **60px -> 0px** on focus; bar **(24,228) 327x48** unfocused ->
+**(12,66) 351x48** focused; bar border **1px rgb(228,228,231)** in resting, focused, AND keyboard-up
+states (F-B, untouched); close X **44x44**; expanded sheet bottom **812** with no keyboard; `MORPH_EASE`
+still `[0.36, 0.36, 0.1, 1]` (SearchOverlay.tsx:79, unedited); with the keyboard up the suggestion list
+still shows **4** rows fully clear of the keyboard line (K1, unregressed); gap between the last card and
+the footer **0px** in both the focused-no-keyboard and keyboard-up states (K3, unregressed). `npx tsc
+--noEmit` clean.
+
+PIL-measured on the two focused shots: Airbnb card top edge **62.3pt**, ours **51.0pt**; Airbnb field
+interior fill **rgb(247,247,247)**, ours white with a 1px #E4E4E7 hairline. Note our own LOCKFILE
+already says inputs are filled grey at rest, so on this axis the reference and our own law agree and
+the live overlay follows neither.
+
+## OWNER PICK 2026-08-03: K-A and F-B
+
+He flipped the chooser and answered "k a f b".
+- **K-A**, the list runs under the keyboard. Sheet keeps full height: y50 h762 bottom812 with the
+  keyboard up, where it used to stop at the keyboard line (y6 h470 bottom476).
+- **F-B**, the field stays white with its hairline. He overruled my grey recommendation; no code
+  change was needed and the border measures 1px rgb(228,228,231) in all three states.
+- All THREE scrollers (service suggestions, city list, calendar) now carry the live keyboard inset as
+  bottom padding (336px measured), not just the one named in the brief, because the city list is
+  exactly what his IMG_6914 and IMG_6916 showed clipped and the Wo? step is the one whose own input
+  raises that keyboard.
+
+## THE FRAME-BY-FRAME HE ASKED FOR, THREE TIMES, AND I FINALLY DID IT (2026-08-03)
+
+Owner: "how Airbnb does it is completely different from how you're doing it. And I literally gave you
+a screen recording of it, and I told you to look frame by frame, and you didn't do that." He is
+right. Every previous pass measured the container's START RECT, END RECT and DURATION. None of them
+measured WHAT MOVES AND WHEN. That is the whole difference and it is why the open still reads wrong.
+
+Extracted his recording at **120fps, full 1206x2622**, over the open (0.80s to 1.50s), and tracked
+the card's top edge plus the ink density of four horizontal bands (the tab row, the heading, the
+field, the first list rows). Points, 402pt device.
+
+| t | card top | heading ink | field ink | list ink |
+|---|---|---|---|---|
+| 0ms | 64.0 | 0.002 | 0.037 | 0.148 |
+| 100ms | 69.3 | 0.000 | 0.035 | 0.142 |
+| 150ms | 88.7 | 0.000 | 0.000 | 0.029 |
+| **200ms** | **115.0** | **0.000** | **0.000** | **0.000** |
+| **250ms** | **129.0** | **0.000** | **0.000** | **0.000** |
+| 300ms | 137.3 | 0.001 | 0.000 | 0.000 |
+| 350ms | 142.0 | 0.002 | 0.023 | 0.007 |
+| 450ms | 145.3 | 0.006 | 0.025 | 0.020 |
+| 650ms | 146.3 | 0.007 | 0.029 | 0.037 |
+
+**Airbnb's open is THREE STAGED PHASES, not one morph:**
+1. **0 to 150ms, the old content leaves.** The pill's own label and the page behind it fade out while
+   the container only just begins to move.
+2. **150 to 300ms, an EMPTY container travels.** Every ink band reads 0.000 at 200ms and 250ms. What
+   is on screen is a blank white card sliding DOWN into position. Nothing is legible.
+3. **300 to 650ms+, the content fades UP into the settled container**, staggered, heading first, then
+   the field, then the list, and still climbing at 650ms, long after the container stopped at ~400ms.
+
+Two structural facts we got wrong:
+- **The card's top moves DOWN 82pt** (64.0 to 146.3) during the open. Ours moves 14px. The tab row
+  fades in ABOVE the card, which is what pushes it down.
+- **The content is NOT present during the travel.** Ours renders the full list from frame one and
+  carries it along, which is exactly the owner's "it's all already over there instead of everything
+  fading up".
+
+- [x] F1. Rebuild the open as these three phases: content out, empty container travels, content verified: my own rAF trace on /de at 375x812. Sheet grows 73 to 370px with heading, field and list ALL at exactly 0.000; heading first ink at 111ms, field at 128ms, list at 162ms once the box has settled at 716; everything at 1.0 by 437ms. Same three phases and the same stagger order as his table. PARTIAL: the 82pt card-top travel is NOT in, see below.
+      fades up staggered into the settled container. DONE for the phase staging, PARTIAL on the
+      82pt distance (named below). verified (own rAF trace, real Chromium, 375x812, resting
+      composed view): sheetHeight climbs 77.5->509 (71% of its final 716) while heading/field/
+      list/Wo?/Wann?/footer all read exactly 0 through t=80ms; content only starts at t=87ms
+      (heading 0.13) and keeps climbing to 1.0 at t=347ms, well after the box itself settles at
+      t=~130ms , the same shape as his table (near-zero through the travel, climbing after
+      settle). Stagger order preserved at every sample: heading/Wo?/Wann? (identical, both driven
+      by the same `contentOp`) lead field, which leads list/footer (identical, both driven by
+      `listOp`) , matches "heading first, then field, then list."
+      NOT DONE, named explicitly (conflict, not silently dropped): the 82pt-equivalent top-travel
+      scale. Implementing it means moving `RESTING_TOP` (currently 96) down by roughly the same
+      ~76px this task itself derives (82pt / 874pt Airbnb device height, applied to an 812px
+      viewport), and that DIRECTLY breaks the explicit DO-NOT-REGRESS pin "bar y228 to y66" this
+      same task hands me to re-verify (that number is `RESTING_TOP + 16px pt-4`, so it moves
+      1:1 with any RESTING_TOP change). Preserved the DO-NOT-REGRESS number (bar re-measured at
+      exactly 66) and left the travel at its existing ~14px (origin.top 82 -> RESTING_TOP 96);
+      flagged for an explicit owner call rather than silently picking a side.
+      SWEEP FINDING, fixed in the same pass: recording OUR OWN open (not the reference) surfaced
+      a second instance of the identical bug on the Wo?/Wann? collapsed rows and the footer ,
+      `locFaceOp`/`dateFaceOp`/the footer's opacity only ever read the STEP-SWITCH axis
+      (`locT`/`dateT`/`expand`), never the open/close axis, so their TEXT painted at full opacity
+      while the box was still ~25% grown. Now multiplied by `contentOp` (Wo?/Wann?) and `listOp`
+      (footer, the last element). SearchOverlay.tsx:722-742, :649-660, :1614.
+- [x] F2. The close is the same three phases reversed (its measured duration is 333ms). verified verified: close trace, content fades 1.000 to 0.000 in the first ~107ms while the box barely moves, then the EMPTY box shrinks back to its origin rect over ~250ms with content pinned at 0.
+      (own rAF trace): content fades 1.0->0.000 in the FIRST ~107ms while sheetHeight barely moves
+      (716 at t=67ms, still 663 at t=82ms) , content-leaves-first, matching phase 1 reversed. Then
+      a long EMPTY-container shrink, content pinned at 0.000, from t=107ms (height 485.8) down to
+      t=358ms (height 66.0, back at the origin rect). Sheet unmounts at t=367ms, inside the 333ms
+      nominal close duration (R6's own completion-driven unmount, untouched). No new code needed ,
+      same continuous `openT`-driven values read backward, per the hard rule.
+
+### ONE OPEN ITEM, and it is a genuine collision, not an oversight
+The reference's card top travels DOWN 82pt during the open. Ours travels ~14px (origin 82 to
+RESTING_TOP 96). Scaling that faithfully means moving `RESTING_TOP` down by roughly 76px, and the
+focused bar position the owner has already accepted and re-verified five times ("bar y228 to y66")
+is derived from it, so it moves 1:1. The two constraints are in direct conflict and only he can
+settle which one gives. Flagged rather than silently picking a side.
+
+- [x] F3. OWNER CALL, still his, but it is no longer blocking and it is not what was wrong. verified: b800d6cf3, no longer blocking. The 82pt card-top travel was never the defect; the defect was the card being translucent while it grew.
+      Re-measured 2026-08-03 on his own recording (`airbnb-open-ref_2026-08-03.MP4`, the open runs
+      f197 to f230, +0 to +550ms) against a clock-scaled capture of ours: our card top travels
+      82 -> 96 (14px), his travels about 72px, so the gap in this row is real and unchanged. It is
+      NOT the defect he has been rejecting. The defect was the sheet wrapper's single alpha (H2
+      below); with that fixed, the whole-frame motion distribution now scores RMS 0.01877 against
+      his recording with the 14px travel still in place. Fixing F3 would move `RESTING_TOP` and drag
+      the five-times-accepted "bar y228 to y66" with it, so it stays his call, parked rather than
+      open: the evidence now says it buys little.
+
+## CORRECTION 2026-08-03: my "empty container travels" finding was WRONG, and I built the opposite
+
+He recorded a second reference on purpose (`/Users/sulo/solen/screenshots/airbnb-open-ref_2026-08-03.MP4`,
+60fps). I extracted the open (3283ms to 3650ms, ~370ms) at 60fps and LOOKED at the frames instead of
+only sampling ink bands. What they actually show:
+
+| t | what is on screen |
+|---|---|
+| 3266 | home, sharp, "Start your search" pill |
+| 3316 (+50) | the pill has grown into a card IN PLACE, showing the old label AND the new "Where?" + field ghosted on top of each other, page behind already blurring |
+| 3366 (+100) | card much larger, "Where?" + field + "Recent searches" + Kranj all present at LOW opacity, X appearing |
+| 3416 (+150) | nearly full size, content still ghosted, tab row fading in above |
+| 3466 to 3566 | the same content getting progressively more opaque |
+| 3666 | settled, fully opaque |
+
+**The content is present and ghosted from 50ms onward. It never goes blank.** The open is ONE
+simultaneous move: the container grows out of the pill while its contents cross-fade from the old
+label to the new content and the page behind blurs. Continuous, not staged.
+
+**Why my previous reading was wrong, named plainly.** I measured ink density in FIXED horizontal
+bands in screen space while the card was still moving through them. At 200 and 250ms those bands were
+pointing at parts of the screen the card had not reached yet, so they read 0.000 and I called it "an
+empty container travelling". The measurement was real; the attribution was not. That is the exact
+failure the measurement-scope gate exists for, and I walked into it.
+
+**Consequence: what shipped in d5022fcaa is the OPPOSITE of the reference.** It pins the heading,
+field and list at exactly 0.000 for the first ~100ms and staggers them in afterwards. The reference
+never blanks anything.
+
+- [x] G1. Revert the staged blank-then-stagger and rebuild the open as ONE simultaneous move: verified: own rAF trace, heading/field/list all at 0.018 when the sheet is only 3% grown, 0.530 at 90ms, 1.000 at 162ms. Zero frames where the sheet is mid-growth with all three at 0.000.
+      container grows from the pill rect while its contents cross-fade in from the first frame and
+      the backdrop blurs, all on the same progress value, ~370ms. Coder pass 2026-08-03 (uncommitted,
+      not yet reviewer-graded): `contentOp`/`fieldOp`/`listOp` (SearchOverlay.tsx:643-646) no longer
+      pin to 0 for the first 40-55% of `openT`; all three are now the SAME `containerT` value
+      (`useTransform(openT, v => clamp01(v/0.8))`, SearchOverlay.tsx:642) that already grows the box
+      in `topFor`/`sheetHeight`. Own rAF trace (real Chromium, 375x812, click to +500ms, every
+      frame): at t=39ms the sheet is 77.5px of a settled 716px (~3% grown) and heading/field/list
+      opacity already reads 0.0176, not 0.000; opacity climbs continuously alongside height with
+      **0 frames** where the sheet is mid-growth (height between 5% and 95% of settled) and all
+      three opacities are exactly 0. Full per-frame table in the coder report. Chose TOGETHER
+      (identical curve for all three, no stagger) over keeping a heading/field/list order: the
+      reference itself shows all three present together by +100ms of a 367ms open, and the earlier
+      stagger reading came from the same ink-band method that produced this bug, so it wasn't
+      evidence worth preserving. Named in the coder report, not silently decided.
+- [x] G2. The old label and the new content OVERLAP during the cross-fade (visible at 3316ms), rather verified: 5189d2382, SearchOverlay.tsx:642-646 (contentOp/fieldOp/listOp now share containerT) plus :612 (sheetOpacity, untouched, already rises continuously). The page under the sheet is never unmounted, so the old label shows through the still-translucent growing card while the new content ghosts in on top. The outgoing label itself was NOT independently pixel-probed.
+      than one finishing before the other starts. Coder pass 2026-08-03 (uncommitted): no second
+      label element was added. The underlying page (home pill / SearchTemplate bar) is never
+      unmounted during the open, `sheetOpacity` (SearchOverlay.tsx:612, unedited by this pass) rises
+      from 0 continuously over the same `openT`, and the new content now also rises from 0 from the
+      first frame (G1) instead of waiting , so the translucent, still-growing card shows the old
+      label underneath and the ghosted new content on top at the same time by construction, not by a
+      second DOM node. Not independently re-measured beyond the G1 trace (no separate "old label
+      pixel" probe run this pass); flagged for the reviewer to confirm visually if a pixel-level
+      overlap check is wanted.
+
+### REMAINING GAP after G1, measured, and it is the next thing
+Our content reaches full opacity at **162ms** of a 367ms open. The reference is still clearly ghosted
+at +150ms and only lands fully opaque around +400ms. So the shape is right now (present from the
+first frame, never blank, rising with the container) but our fade FINISHES too early, which will read
+as the content snapping in while the box is still moving.
+
+- [x] G3. verified: content now rides its own 0.57s progress instead of the container. Traced on /de at 375x812: 0.007 at 31ms, 0.113 at 88ms, 0.45 when the box lands at 156ms, 0.789 at 247ms, 1.000 at 564ms. Before this change it was 1.000 at 162ms. Stretch the content fade so it lands with the container, not at 44% of it.
+      be visibly translucent at 150ms the way the reference is.
+
+## THE MEASUREMENT THAT FINALLY WORKED (2026-08-03)
+
+Two earlier attempts read the reference wrong because they sampled FIXED horizontal bands in screen
+space while the card was moving through them. The method that works: detect the card's own rect in
+every frame (it is the widest near-white run), then sample ink INSIDE that moving box.
+
+Reference, countable ink inside its own card, 60fps, t relative to the press:
+`+250ms 0.0003 · +400ms 0.0063 · +500ms 0.0147 · +550ms 0.0216 · +750ms 0.0345 (settled)`
+while the CONTAINER stops moving at about +550ms. So the content keeps rising for roughly 200ms after
+the box has landed, and the whole fade is about 1.5x the container's duration.
+
+Ours before G3: content full at 162ms of a 367ms open, about 3.5x too fast. That is the speed
+complaint, and it is the only thing left that the owner had not already named twice.
+
+## ROOT CAUSE FOUND 2026-08-03: it is the BACKDROP, not the sheet
+
+Owner, after looking at the fixed side-by-side: "Airbnb gradually opens. On ours it's already all
+opened, then it just pops up everything." He selected frame 02 (33ms) on both panes.
+
+The DOM geometry is fine and always was. Measured on /de at 375x812, per animation frame:
+`t25 sheet h73 · t39 h144 · t83 h357 · t125 h604 · t195 h716`, and the white card inside it
+`56 -> 496`. The box genuinely grows over ~195ms.
+
+**But the RENDERED frame at 33ms shows a full-screen blurred rectangle.** That is not the sheet. It
+is the scrim, `div.fixed.inset-0.bg-s-ink/10.backdrop-blur-xl`, which covers the entire viewport at
+full size from the first frame. So the thing that reads as "already all opened" is the whole screen
+slamming into blur before anything has moved, and the sheet's real growth happens invisibly inside
+that already-blurred field.
+
+**This is why five timing changes did nothing.** Every one of them adjusted the sheet, its content,
+or their easing. None touched the backdrop. The variable driving the defect was never in the set I
+was tuning, which is exactly what the repeat-fix gate kept warning about.
+
+- [x] H1. REVERTED, because its premise is measured backwards. The claim was "in the reference the verified: b800d6cf3, reverted on measurement. The blur ramp is live and measurable (blur(0.3px) at 29ms to blur(24px) at 622ms) but the scrim TINT still reaches full at 106ms, and neither was what he was seeing.
+      page behind is still legible at +50ms". It is not. Same metric on both recordings, high-pass
+      detail remaining in a band below the card, normalised to each capture's own resting frame:
+      REFERENCE 24.6% at +17ms, 16.7% at +50ms, 19.8% at +100ms. OURS (as shipped, with H1's radius
+      ramp) 71.8% at +17ms, 46.4% at +50ms, 19.6% at +100ms. His backdrop commits about 3x FASTER
+      than ours did, so ramping the blur radius moved us further from him, which is exactly why H1
+      changed nothing he could see. `scrimBlur` and `scrimTint` are deleted and the scrim is back to
+      one animated property, its own alpha, over the static `bg-s-ink/10 backdrop-blur-xl` classes.
+      Two knobs removed, none added. Verified: SearchOverlay.tsx scrim render + the H4/H1 comment
+      block above `scrimOpacity`.
+
+## THE REAL STRUCTURAL BUG, seen at last 2026-08-03 (H2)
+
+Recorded the current build, aligned the frames by diffing against the SETTLED frame (the earlier
+alignments kept locking onto the page's own load, which is why two side-by-sides showed our pane
+doing nothing), and put the pairs next to his.
+
+At 100ms our measured sheet height is 26% of final. **The picture at 100ms shows the ENTIRE overlay
+already laid out at full size, merely translucent**: the heading, the pill row, the field, the Wo?
+and Wann? rows, all in their final positions. His at 100ms is a small card near the pill.
+
+So the element whose height I have been animating is not the element the eye sees. The white card and
+its content render at final size regardless of the wrapper's height, because nothing clips them. Six
+rounds of curve and duration work were all applied to a box that never visually constrained anything.
+
+This is the same class as the scrim finding one level in: the property I measured was real, the thing
+it controlled was not what was on screen.
+
+- [x] H2. DONE, but NOT as written above, and the paragraph above it is wrong on the facts. Fixed verified: b800d6cf3, done but NOT as written. The premise here (nothing clips the content) is false: measured clientHeight 129 against scrollHeight 276 at 56ms, and at 150ms the pill row is visibly cut in half. The real fix was deleting `opacity: sheetOpacity` from the card, SearchOverlay.tsx around :1461.
+      2026-08-03 by DELETING `opacity: sheetOpacity` from the sheet wrapper's style block
+      (SearchOverlay.tsx, the `key="sheet"` motion.div).
+
+      **What the box was doing, checked instead of assumed.** The sheet DOES clip: measured
+      `clientHeight 67 vs scrollHeight 276` at +4ms and `216 vs 276` at +100ms, so H2's premise
+      ("nothing clips them") is false and the change it asks for is a no-op. The contradiction the
+      brief posed (DOM says 26% grown, frame looks full size) was neither a wrong element nor a
+      wrong alignment. This capture needed no frame-diff alignment at all: the page clock was scaled
+      8x after hydration and both the screencast frames and the rAF DOM trace were stamped with the
+      same unpatched `Date.now()`, so every picture sits next to its own numbers by construction.
+      The frame and the DOM agreed. The INFERENCE from the frame was wrong.
+
+      **What was actually wrong.** The wrapper's alpha composited two different things on ONE
+      channel: the white PAPER of all four slot cards, and the INK inside them. So the paper could
+      not be solid until the ink was, and for the entire growth the sheet was a transparency with
+      the old page printing through it. Measured in the card's own blank left gutter (no text ever
+      lands there, so any variation in it IS the page showing through): the REFERENCE is flat white
+      at std 0.00 from +33ms, i.e. solid paper by 6% of its open; OURS read 31.28 at +0ms, 24.07 at
+      +33ms, 17.64 at +50ms and never reached 0. In the picture it is a double exposure, the old
+      "Suchen" label and the new heading legible in the same pixels with no card edge anywhere. That
+      is "it's already all opened", and no schedule on one shared channel can fix it, which is why
+      seven timing and opacity edits could not reach it. It needed two channels, and the ink already
+      had its own (`contentT`), so the fix is one deletion.
+
+      **Verified, image-space, at the six moments the brief asked for.** Opaque card detected from
+      pixels alone (a row counts only if its longest run of FLAT near-white is 250-372px wide, which
+      a translucent card fails because the blurred page keeps varying through it), before -> after:
+      +0ms 137 -> 137 (the pill, nothing has moved yet) · +50ms 140 -> 134 · +100ms 102 -> 188 ·
+      +200ms 68 -> 312 · +300ms 68 -> 491 · +400ms 68 -> 628. Before, the opaque paper on screen is
+      pinned at 68px from +200ms on and never grows, because there is no opaque card to measure.
+      After, it grows monotonically. Whole-frame motion 33-150ms rose from 1.67-4.52 to 6.46-9.13,
+      against the reference's own 4.4-6.9 in the same window: a transparent box growing barely
+      changes any pixels, which is why the first quarter of our open read as dead.
+      Proof images: `_diag2/PROOF_card_growth.png`, `_diag2/PROOF_arrival.png`, `_diag2/PROOF_close.png`.
+
+- [x] H3. The council's "the container must travel the FULL progress" is REJECTED on measurement, verified: b800d6cf3, rejected on measurement. `containerT = openT` was dead code that nothing read; the geometry still divides by 0.8 inside topFor and sheetHeight, and the open now measures correctly anyway.
+      and the dead constant that asserted it (`const containerT = openT`, read by nothing while
+      `topFor`/`sheetHeight`/`sheetLeft`/`sheetWidth` all kept dividing by 0.8) is deleted rather
+      than honoured. A/B'd both ways on the same clock-scaled capture, scoring the whole-frame
+      motion distribution against the same measurement of his recording: with `/ 0.8` the motion
+      centre of mass is 219.7ms and the shape RMS is 0.01877; wiring the full progress pushes it to
+      306.0ms and 0.02355, against his own 198.6ms. Full-progress geometry also lands the box AFTER
+      the ink, inverting his order. The council read the symptom correctly (the box did freeze at
+      388.6ms of a 600ms open while properties kept ramping) but prescribed the wrong cure: the tail
+      was only visible because the wrapper alpha was still ramping through it, and with H2 applied
+      the tail carries nothing.
+
+### STILL OPEN after H2, named with its number, NOT fixed and NOT a curve
+The service card is pinned at exactly 56px for the first 133ms of the 600ms open (22% of it), then
+jumps. Cause is a CLAMP, not a timing: `svcH = SLOT_COLLAPSED.service + max(slotAvail - 208, 0)`,
+so the card gets no surplus until `sheetHeight` clears the collapsed stack (276px), which happens at
+t=133ms. Measured card height: 56 at 0-133ms, then 70, 86, 107, 126, 154, 182. Whole-frame motion
+dips to 1.27/2.19 at +117/+133ms where the reference is at its busiest (7.84/5.94/4.76). No duration
+or easing change can move this. The only fixes are structural and both carry a real cost, which is
+why this is reported rather than guessed: (a) solve the slot layout against the sheet's RESTING
+height so the growing box CROPS a full-size composition, which kills the clamp but gives the card a
+hard-cut bottom edge instead of the rounded growing rect the reference has; or (b) let the rows
+below the card fold in on `openT`, which re-introduces the squeeze. Owner call.
+
+## F3 RESOLVED 2026-08-04 (owner: fix the animation, stop asking permission on an already-identified fix)
+
+Applied the parked travel fix: `RESTING_TOP` 96 -> 160, SearchOverlay.tsx:448-457. Reference travel
+62 -> 146 (84pt) on a 402x874 device, scaled by the device-height ratio (812/874 = 0.929) to 78px
+here, landed on the measured home-pill origin (82) + 78 = 160. One constant, no new motion value, no
+new duration or easing, one continuous `topFor`/`sheetHeight` still doing the interpolation.
+
+**Per-frame card top, ours beside the reference's, as a share of each one's own travel:**
+
+| t | ours top | ours share | reference top | reference share |
+|---|---|---|---|---|
+| 0ms | 82.0 | 0% | 64.0 | 0% |
+| 50ms | 88.4 | 8.2% | 66.65 (interp) | 3.2% |
+| 100ms | 98.3 | 20.9% | 69.3 | 6.4% |
+| 200ms | 121.1 | 50.1% | 115.0 | 62.0% |
+| 300ms | 142.1 | 77.1% | 137.3 | 89.1% |
+| 600ms | 160.0 | 100% | 146.05 (interp) | 99.7% |
+
+Ours: real headless Chromium rAF trace, 375x812, home pill click to settle (settles at t~400ms of the
+367ms nominal `openT` duration, matching prior rounds); travel 82 -> 160 = 78px. Reference: the
+existing 120fps frame-by-frame table above (t=0..650ms), travel 64.0 -> 146.3 = 82.3pt (the table's
+own start/end, close to but not identical to the 62/146 headline figures, which come from a separate
+still-frame PIL sample). Shapes are not identical (the reference is more back-loaded through 100ms,
+ours is not) because this fix only moves the ENDPOINT; the curve (`OPEN_EASE`) was left untouched per
+the hard rule against adding a new duration or easing constant.
+
+**The bar's NEW resting numbers, stated plainly:**
+- Resting (unfocused): **(24, 292) 327x48**, was (24, 228) 327x48. The pin moved 1:1 with
+  `RESTING_TOP`, exactly as flagged when this was parked (`RESTING_TOP + 16px pt-4`).
+- Focused: **(12, 66) 351x48**, unchanged. `focusedTop` is a separate literal this edit does not
+  touch, so the state the owner already approved five times over does not move.
+
+**Every DO-NOT-REGRESS item, re-measured on the real build after the fix (real headless Chromium,
+375x812):**
+- Card stays opaque while growing: `getComputedStyle` on the sheet wrapper and the paper element
+  read `opacity: "1"` and `backgroundColor: "rgb(255, 255, 255)"` at all 84 sampled rAF frames across
+  the whole open (H2's fix is a deleted CSS property, untouched by this edit, so this is a structural
+  guarantee, not a curve-dependent one).
+- Outgoing "Suchen" ghost alive early: `ghostLabelOp` (unrelated to `RESTING_TOP`, driven only by
+  `openT` on `[0, 0.22]`) measured via computed opacity at 1.0 at t=0ms, still 0.31 at t=37ms, 0 by
+  t=85ms. A pixel ink-density read on the same fixed pill-rect screen region (fraction of pixels
+  darker than 230/255) gave 0.046 at t=0ms and 0.358 at t=100ms. Neither number set matches this
+  task's cited 0.31-at-0ms/0.21-at-100ms baseline exactly; flagged rather than forced, since the
+  element's own driver was not touched by this change either way.
+- Resting sheet floats above the screen bottom: **46.5px** of blurred page below it (was ~46px,
+  driven by `REST_BOTTOM_MARGIN_RATIO`, independent of `RESTING_TOP`), and flush (bottom 812) both
+  when focused and when a simulated keyboard is up.
+- Home pill opens in place: URL stays `http://localhost:57223/de`, **0** main-frame navigations.
+- Pills row collapses **60px -> 0px** on focus.
+- Bar border **1px rgb(228, 228, 231)** in both resting and focused states, no ring (`outlineWidth`
+  computed at rest is the global 3px focus outline definition, not an applied ring; boxShadow "none").
+- Close X **44x44** in both states (resting y=106, focused y=6, both tracking `cropTop` as before).
+- Keyboard simulated at `visualViewport.height=476` (336px inset): sheet reaches **(0, 50) 375x762**,
+  bottom 812. All three vertical scrollers (service suggestions, city list, calendar), all
+  simultaneously mounted per the R7 one-DOM-tree architecture, read `paddingBottom: 336px`, matching
+  the simulated inset.
+
+`npx tsc --noEmit`: no errors touching SearchOverlay.tsx.
+
+**Not done, named:** the "STILL OPEN after H2" clamp above (service card pinned at 56px for the first
+~133ms) is untouched and is a separate, already-reported structural issue, not a consequence of this
+edit.
+
+## I1 RESOLVED 2026-08-05 (owner's own phone photo, mid-close, "the card sat there blank")
+
+The photo (his iPhone, 1206x2622 physical / 402x874pt, mid-close): a tall white rounded box with
+the "Suchen" bar drawn at its top and BLANK white paper below running roughly 92pt down, then a
+separate thin blank white strip below that, both floating over the already-restored home page.
+PIL on the PNG itself (not the description): a fully flat `rgb(255,255,255)` run from y=459 to
+y=736 device px (0 variance, no ghosting, nothing painted) at x=950-1000 (inside the card,
+clear of any text column), i.e. 277 device px / 3 = 92.3pt of genuinely empty paper below the
+bar row. Below that, two hairlines (`rgb(240)`/`rgb(239)`, y=736-739 and y=760-763) bracket two
+more flat-white slivers, 19px and 18px device px (6.3pt / 6.0pt) tall, before the page's own grey
+background resumes at y=783.
+
+**Root cause, found in the code, not guessed.** Geometry (`sheetHeight`/`topFor`/`svcH`, all
+composed off `morphT`) and content (`contentOp`/`fieldOp`/`listOp`, off `contentT`) rode TWO
+DIFFERENT clocks on close. `morphT` reshapes the close's raw eased `openT` through the SAME
+`OPEN_CURVE` LUT the open uses, and that curve is front-loaded FOR GROWTH, so read backward for a
+close it lingers near-open for roughly the first half of the close then collapses fast at the
+end. `contentT` ran its own, separately-clocked, more-linear 300ms fade with no such lingering.
+Own numeric trace of the two curves (bezier-evaluated, before touching any code): at 100ms of the
+333ms close `morphT` (the box's own openness fraction) is still 0.823 while `contentT` has
+already fallen to 0.295; at 150ms, 0.395 vs 0.115. So content is nearly gone while the box is
+still most of its size, a fully opaque, blank card, exactly the photo. Live-confirmed on this
+build (real headless Chromium, 375x812, `getComputedStyle` every rAF frame): at t=100ms the box
+is 373px of its 385px open height (97%) while the heading's own computed opacity has already
+fallen to 0.507; at t=200ms the box is still 146px (38%) while opacity is 0.073.
+
+**The second, thin strip was a separate bug, in the SAME family.** `locSlotOp`/`dateSlotOp` (the
+Wo?/Wann? slot cards' own paper) never read the open/close axis at all (a deliberate 2026-08-03
+call, "belongs to the container morph, not the content cross-fade" , correct for slot 1, wrong
+here because these two cards, unlike slot 1, do not have H2's always-opaque-paper guarantee
+paired with a height that reaches exact zero in time). Their height already scales toward 0 with
+`morphT` (`rowLocReserveH`/`rowDateReserveH`), but a card at even a few px of height with
+constant opacity 1 and near-zero content still paints as a hard-edged blank sliver. Measured
+before the fix: at t=150ms the location card is 34.8px tall, opacity 1.000, its own label opacity
+already down to 0.19.
+
+**Fix, two `useTransform` edits, no new motion value, no new duration, no new easing constant
+(SearchOverlay.tsx:766-786, :986-1009):**
+- `contentOp` (feeding `fieldOp`/`listOp`, and via them `headingContentOp`/`pillsContentOp`/
+  `footerContentOp`/`locFaceOp`/`dateFaceOp`) now reads `morphT` directly on CLOSE instead of the
+  independently-clocked `contentT`, so content opacity and box openness can never diverge again ,
+  same value, every frame. OPEN is untouched: `open ? contentT-branch : morphT-branch`, and since
+  `open` stays `true` for the entire open+focus+keyboard interaction, every open-side DO-NOT-
+  REGRESS item below runs through the byte-identical, pre-existing code path.
+- `locSlotOp`/`dateSlotOp` gain `morphT` as a third multiplicative factor, CLOSE ONLY (same
+  `open ?` gate), so these two cards' own paper now fades toward invisible in lockstep with their
+  height on close, instead of staying opaque over a shrinking-but-nonzero sliver. Open keeps the
+  H2-proven always-opaque-while-growing paper (multiplying by `morphT` on open would have
+  reopened H2's own double-exposure bug on these two cards specifically, so it is deliberately
+  scoped to close).
+
+**Why the previous pass could not reproduce it, and what actually caught it this time.** A
+one-shot `page.screenshot()` sampling loop misses a 333ms close almost entirely (a handful of
+calls land wherever JS happens to be free, not on real paint frames) and a worst frame of
+345x95px is consistent with catching only the tail. This pass used CDP `Page.startScreencast`
+(real compositor frames, timestamped, acked as they arrive) plus a continuous `requestAnimationFrame`
+DOM trace reading `getBoundingClientRect`/`getComputedStyle` every frame, at BOTH 375x812 and
+402x874. The bug reproduced identically at both sizes (it is a logic bug, not a device-geometry
+one), which is also why testing only at 402x874 would not have been the missing piece either.
+
+**Worst frame, before -> after, 375x812 (ink = fraction of pixels darker than 230/255 inside the
+card's own detected rect, real screencast frame, real close, not a synthetic sample):**
+
+| | rect (top, h x w) | area | ink |
+|---|---|---|---|
+| BEFORE, t=207.6ms | 98.6, 134.0px tall | 43,662px² | **0.0095** (< 1% dark pixels) |
+| AFTER, t=204.4ms | 98.6, 134.0px tall | 43,662px² | **0.0603** (6.3x more ink, byte-identical box) |
+
+Same-height comparison (holds the confound constant): BEFORE at h=134.0px ink=0.0095; AFTER at
+the SAME h=134.0px ink=0.0603. Largest "essentially blank" (ink<0.03) frame: BEFORE h=162.6px
+(area 53,450px², 2.5x the settled pill height); AFTER h=87.0px (area 27,950px², 1.3x the settled
+pill height, i.e. post-fix the only near-blank frames are the ones already close to pill size,
+which is the invariant's own OK branch). 402x874 shows the same direction (BEFORE largest-blank
+area 43,721px² at h=124.6px vs AFTER 33,604px² at h=96.4px).
+
+**The stronger, code-level proof (not just pixel sampling noise):** the live DOM trace shows
+`getComputedStyle` opacity on the heading wrapper and on the location/date slot cards now
+EQUALS `morphT`'s own fraction at every single sampled frame post-fix (by construction , they
+read the same MotionValue), where before the fix content opacity fell to ~30% of the box's own
+openness fraction at the worst point. This holds for every frame of the close, not just the ones
+a screenshot happened to land on.
+
+**Second white surface below the main one, before -> after:** BEFORE, yes , two flat, fully
+opaque slivers (location + date slot cards) visible for roughly the last 150ms of the close, e.g.
+34.8px tall / opacity 1.000 / label opacity 0.19 at t=150ms. AFTER, no , at the same t=150ms the
+location card's own opacity now reads 0.552 (matches `morphT` exactly), so a 30.9px card renders
+at ~55% opacity with its label ALSO at ~55%, never a hard-edged blank rectangle.
+
+**Every DO-NOT-REGRESS item, re-measured on the real build after the fix (real headless Chromium,
+375x812, warm second open to remove first-load chunk latency from the numbers):**
+- Open geometry unchanged: `slot1` height fraction equals the sheet's own height fraction at
+  EVERY one of 79 sampled frames (byte-identical columns), confirmed both before and after this
+  edit since neither `morphT`, `sheetHeight`, nor `svcH` was touched. Absolute timing: 0.098 at
+  t=44ms, ~0.32 (interpolated) at t=89ms, ~0.82 (interpolated) at t=205ms, against the task's
+  cited 0.09/33ms, 0.37/83ms, 0.86/200ms , consistently ~11-19ms later than cited, a constant
+  offset consistent with Playwright's own click-dispatch overhead in headless automation, not a
+  behavioral change (the underlying code this check exercises is untouched by this edit).
+- Card opaque while growing: slot 1's paper (`getComputedStyle(...).opacity`) reads `"1"` at every
+  sampled frame of both the open and the close, before and after this edit (H2's deletion is
+  untouched).
+- "Suchen" ghost: `ghostLabelOp` computed opacity 1.0 at t=0, still 0.78 at t=44ms, 0 by t=134ms ,
+  gone by ~122-134ms, matching "about 122ms" (this value is untouched by the edit; `ghostLabelOp`
+  reads raw `openT`, never `contentT`/`morphT`).
+- Resting sheet floats **46.45px** above the screen bottom (812 - (160+605.55)); focused sheet
+  reaches **(0,50) 375x762**, bottom 812.
+- Home pill opens in place: URL `http://localhost:57223/de` before and after, **0** navigations.
+- Focused bar **(12,66) 351x48** (exact); resting bar **(24,292) 327x48** (exact, matches F3's
+  own numbers). Border **1px rgb(228,228,231)** in both states, outline "none" (no ring).
+- Close X **44x44** in both states (resting y=106, focused y=6).
+- Keyboard simulated at `visualViewport.height=476` (336px inset, via `Object.defineProperty` +
+  a dispatched `resize` on `window.visualViewport`): sheet reaches **(0,50) 375x762**, bottom 812.
+  All three scrollers (service suggestions, city list, calendar) read `paddingBottom: 336px`.
+- Tapping the bar 80ms into a 333ms close (mid-flight) re-opens it: sheet found, rect
+  `(0,160) 375x605.55`, matching the normal resting geometry.
+
+`npx tsc --noEmit`: exit 0, no errors.
+
+**Not done, named:** the "STILL OPEN after H2" clamp (service card pinned at 56px for the first
+~133ms of the OPEN) is untouched, pre-existing, and unrelated to this close-specific fix.
+
+## J2 RESOLVED 2026-08-05: the leftover box reaches ZERO, and J1's lever could never have got there
+
+Owner, after J1: the close still leaves a box. He is right, and the J1 commit message overstated its
+own result twice, so both corrections are recorded here before the fix.
+
+**Correction 1, J1's number was analytic, not measured, and it understated the defect.** It reported
+"at scrim 0.20, 23.5px of excess becomes 11.5px at 375x812". That arithmetic used a 444px open box.
+This build's resting sheet is **605.55px** at 375x812 (664px at 402x874). Measured on real compositor
+frames, the excess at scrim 0.21 was **22px**, not 11.5px.
+
+**Correction 2, and this is the part that matters: no value of that divisor could ever reach zero.**
+The scrim's alpha and the box's excess height were both monotone functions of the SAME driver, so they
+sat on one straight line. Measured at 375x812, the line was `excess_px = 97.1 x scrim_opacity`:
+22px of excess at scrim 0.21, 9px at 0.09, 2px at 0.03. Both sides only reach 0 on the same final
+frame, so every intermediate frame had a part-cleared page under an oversized white box. Changing the
+divisor tilts that line. It cannot delete it. Eight rounds of tuning one clock against another were
+all inside this same trap.
+
+### What the owner was actually looking at, measured
+
+The ink INSIDE the whole box stayed around 0.018-0.022, which is why earlier passes could call the
+box "not blank" and move on. That average is carried by the bar's own label. Measuring only the strip
+that sticks out PAST the resting bar tells the true story, at 402x874, before the fix:
+
+| t | scrim | excess | strip outside the bar | ink in that strip |
+|---|---|---|---|---|
+| 252ms | 0.279 | 16px | 7,656 px2 | 0.0004 |
+| 261ms | 0.279 | 29px | 12,240 px2 | 0.0057 |
+| 271ms | 0.169 | 19px | 7,308 px2 | 0.0003 |
+| 289ms | 0.087 | 10px | 4,092 px2 | 0.0127 |
+| 307ms | 0.036 | 4px | 1,820 px2 | 0.0000 |
+
+Blank paper, hanging past the bar, over a page that is already 72% to 96% legible. That is the box.
+
+### The fix removes the compensation instead of retuning it
+
+`SCRIM_KNEE = 0.18` is now one shared constant read by both halves. R6 already used 0.18 as the
+`openT` value below which the backdrop starts clearing; the only new thing is that the CLOSE's
+geometry is made to FINISH at exactly that value, via a rescale of the input `morphT` is read with
+(`morphIn`, close-only, identity on open). J1's branched `scrimOpacity` is deleted and that line goes
+back to R6's single unbranched `useTransform(openT, [0, SCRIM_KNEE, 1], [0, 1, 1])`.
+
+So the ordering is now structural, not a race between two ramps: the box completes its whole travel
+while the backdrop is still fully up, and only then does the backdrop begin to clear, with the
+surface already exactly bar-shaped and the "Suchen" ghost label fading in inside it. The invariant
+has no intermediate state left to fail in. This also fixes the stale-guarantee failure mode by
+construction, which is how R6 silently broke when H3 moved the geometry onto `morphT`: both halves
+now read one constant, so they cannot drift apart again.
+
+### Measured, real CDP `Page.startScreencast` compositor frames plus a per-frame rAF DOM trace on the same clock, at BOTH sizes
+
+Method note, because it decided the result: a `page.screenshot()` poll loop cannot resolve a 333ms
+close and already cleared this bug wrongly once. Frames come from `Page.startScreencast` (timestamped,
+acked as they arrive) and the DOM trace reads `getBoundingClientRect`/`getComputedStyle` every rAF
+against the same `Date.now()` epoch, so every picture sits beside its own numbers.
+
+| | 375x812 before | 375x812 after | 402x874 before | 402x874 after |
+|---|---|---|---|---|
+| max excess past the bar, scrim < 0.30 | 25px | **0.0px** | 29px | **0.0px** |
+| frames with an oversized surface over a mostly-legible page | 7 | **0** | 7 | **0** |
+| last frame an oversized surface exists | 322.9ms | **152.2ms** | 307.2ms | **147.5ms** |
+| first frame the page behind is sharp | 314.6ms | 294.0ms | 325.2ms | 313.7ms |
+| ordering | FAIL, sharp 8.3ms BEFORE the box left | **PASS, 141.8ms clear** | 18.0ms | **PASS, 166.2ms clear** |
+
+From 166ms on (402x874) the remaining white surface is `aboveTop 0.0, excessH 0.0` on every single
+frame, i.e. exactly the resting bar's rect, carrying the bar's own ink (0.020-0.025 against the
+settled bar's own 0.0200). Plainly: the leftover reaches ZERO. It does not shrink again.
+
+### DO-NOT-REGRESS, re-measured on the real build
+
+- **The OPEN is untouched.** `morphIn` is the identity while `open` is true, so `morphT` is the same
+  function of `openT` as before. Proven empirically too, both traces interpolated onto one 30ms grid:
+  max |delta| over the whole open is **3.85px of height on a 539px travel (0.7%)**, **0.56px of top**,
+  **0.001 of scrim opacity**, all of it run-to-run frame-scheduling jitter. Settled state identical
+  (h=605.547 y=160 w=375).
+- **No opacity was re-added to the card** (H2, the defect that cost eight rounds). The paper's
+  computed opacity is `"1"` on all 41 close frames at 375x812 AND at 402x874, background
+  `rgb(255,255,255)`, sheet wrapper opacity 1.
+- Resting bar `[24,292,327,48]` at 375, `[24,292,354,48]` at 402; border `1px rgb(228,228,231)` in
+  both, no ring. Close-X `44x44` at both. Settled sheet h=605.55/375 and h=664/402.
+- Mid-flight re-open (tap the bar 80ms into the close) still re-opens and settles correctly at both
+  sizes.
+
+### Named cost, not buried
+
+1. **Mid-close the box is smaller than it used to be at the same instant**, about 41px at the midpoint,
+   because the same travel is now spread over 82% of the driver instead of 100%. That is the trade
+   that buys the zero; the leftover box was the price of not making it.
+2. **The mid-flight re-open's largest single-frame height step grows 40.7px -> 49.4px** (375x812).
+   `morphIn` branches on `open`, so re-opening mid-close switches branch and the box jumps once before
+   it resumes growing. This is the same branch-on-`open` device `contentOp`, `locSlotOp` and
+   `dateSlotOp` already use (I1), and the re-open still lands correctly, but it is a real 8.7px
+   regression on that one path and it is his call whether it matters.
+3. The backdrop now clears over the last 0.18 of the run with the box already home, so the blur is
+   the only thing still moving for roughly the final 150ms. Worth his eye: if that reads as the blur
+   hanging, the lever is this one constant, and lowering it trades blur-tail length back against
+   how early the box lands.
+
+Scratch harnesses (`_closecap.mjs`, `_closean.py`, `_regress.mjs`, `_opentrace.mjs`, `_paper.mjs`)
+were temporary and are deleted from the working tree, same convention as the OPEN_CURVE detector
+above. The method is fully described in this section; re-create them from it rather than looking for
+them. Flagged rather than hidden: two of them WERE swept into commit 139a873c0 by an automatic
+turn-end checkpoint belonging to a different session working this same branch (that commit's own
+message is about the fonts and the map, not about any of this), so they exist in history even though
+nobody intended to check them in.

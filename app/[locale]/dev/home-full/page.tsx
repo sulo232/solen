@@ -45,7 +45,7 @@ export default async function HomeFullPreview({
   return (
     <div className="relative overflow-hidden bg-white">
       <div className="sticky top-0 z-[200] flex items-center gap-2 border-b border-s-border bg-white/95 px-4 py-2.5 backdrop-blur">
-        <span className="font-body text-[12px] font-semibold text-s-ink-3">Preview</span>
+        <span className="font-body text-[12px] font-semibold text-s-ink-2">Preview</span>
         {(["a", "b", "c"] as const).map((key) => (
           <Link
             key={key}
@@ -58,7 +58,7 @@ export default async function HomeFullPreview({
             {key.toUpperCase()}
           </Link>
         ))}
-        <span className="ml-auto truncate font-body text-[12px] text-s-ink-3">{LABELS[v]}</span>
+        <span className="ml-auto truncate font-body text-[12px] text-s-ink-2">{LABELS[v]}</span>
       </div>
 
       <section className="relative overflow-hidden">

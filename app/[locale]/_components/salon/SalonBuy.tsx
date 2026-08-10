@@ -39,7 +39,7 @@ export function SalonBuy({
           <div className="font-body text-[14px] font-medium text-s-ink">
             Gutscheine
           </div>
-          <div className="font-body mt-0.5 text-[12px] leading-snug text-s-ink-3">
+          <div className="font-body mt-0.5 text-[12px] leading-snug text-s-ink-2">
             Verschenke einen Tag Wohlbefinden bei {salonName}.
           </div>
         </div>
@@ -66,11 +66,11 @@ export function SalonBuy({
           <h3 className="font-body text-[15px] font-medium tracking-tight text-s-ink md:text-[16px]">
             Gutscheine
           </h3>
-          <p className="mt-0.5 text-[13px] text-s-ink-3 md:text-[14px]">
+          <p className="mt-0.5 text-[13px] text-s-ink-2 md:text-[14px]">
             Verschenke einen Tag Wohlbefinden bei {salonName}.
           </p>
         </div>
-        <ChevronRight size={18} strokeWidth={2.5} className="shrink-0 text-s-ink-3 transition-transform group-hover:translate-x-1" />
+        <ChevronRight size={18} strokeWidth={2.5} className="shrink-0 text-s-ink-2 transition-transform group-hover:translate-x-1" />
       </Link>
     </section>
   );

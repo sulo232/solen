@@ -198,6 +198,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
                    <p>Sie müssen ausdrücklich zustimmen, bevor etwas berechnet wird. Wenn Sie nicht reagieren, passiert nichts.</p>
                    <p><a href="${upchargeUrl}">Aufpreis prüfen und zustimmen oder ablehnen</a></p>`,
           }),
+          // api-contracts-06: bound the outbound call so a hung Resend request
+          // can't hold the function's whole wall-clock budget.
+          signal: AbortSignal.timeout(8000),
         });
       } catch (e) {
         console.error("[booking-disputes] Failed to send upcharge email to customer", e);

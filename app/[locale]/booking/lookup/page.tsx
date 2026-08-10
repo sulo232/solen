@@ -433,7 +433,9 @@ function FormView(props: {
         {t("submit")}
       </button>
       <Link
-        href={`/${locale}/auth/login`}
+        // ia-navigation-03: preserve the return destination so a signed-in guest
+        // lands back on the lookup page instead of the homepage after auth.
+        href={`/${locale}/auth/login?redirect=${encodeURIComponent(`/${locale}/booking/lookup`)}`}
         className="w-full py-3 text-center font-body text-[13.5px] font-medium text-s-ink"
       >
         {t("loginInstead")}

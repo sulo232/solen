@@ -47,6 +47,23 @@ export interface RatingStarsProps {
 // (grey-regular on cards, darker on the PDP header) without overrides.
 const STAR_PX: Record<RatingStarsSize, number> = { sm: 11, md: 13, lg: 16 };
 
+// A7 (owner 2026-08-05): "make the star bigger so it matches the number beside it."
+// mockup-ok: a measured correction to an existing ratio, not a new appearance decision.
+//
+// compact mode ONLY, because that is the mode where a star sits next to a numeral and has
+// something to match. `five` and `interactive` stars stand alone and keep STAR_PX.
+//
+// Grounded in what this system already ships, not in a taste call. The lucide star paints
+// 0.7947 of its box height (measured getBBox on the live 24x24 viewBox: y 2.000 -> 21.072),
+// so the honest comparison is painted-ink height vs the numeral's cap height (measured with
+// canvas actualBoundingBoxAscent in the number's own computed font), NOT box vs font-size:
+//   search card + PDP header : 13px star, 14px numeral, cap 10.19 -> ink/cap 1.014  (fine)
+//   home SalonCard  (sm)     : 11px star, 13px numeral, cap  9.46 -> ink/cap 0.924  (his flag)
+// Two independent shipped surfaces agree on ~1.01, so that is the target. At a 13px numeral
+// it needs a 12px box (ink 9.54 / cap 9.46 = 1.008); 13px would overshoot to 1.092 and make
+// the home star read LARGER, relative to its number, than the search card's does.
+const COMPACT_STAR_PX: Record<RatingStarsSize, number> = { sm: 12, md: 13, lg: 16 };
+
 // Interactive star default sizes (larger than display stars).
 const INTERACTIVE_STAR_PX: Record<RatingStarsSize, number> = { sm: 24, md: 32, lg: 40 };
 
@@ -192,7 +209,8 @@ export function RatingStars({
       className={cn("inline-flex items-center gap-[3px]", className)}
       aria-label={count != null ? `${value}, ${count} reviews` : `${value}`}
     >
-      <Star size={px} stroke="none" aria-hidden className="fill-s-star" />
+      {/* COMPACT_STAR_PX, not STAR_PX: this is the one mode with a numeral to match (A7). */}
+      <Star size={COMPACT_STAR_PX[size]} stroke="none" aria-hidden className="fill-s-star" />
       <span>{value.toFixed(1)}</span>
       {count != null && <span className="text-s-accent">({count})</span>}
     </span>

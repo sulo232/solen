@@ -19,13 +19,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { EmailLocale } from "@/lib/email";
 import { formatCurrency } from "@/lib/format-currency";
-
-const LOCALE_BCP47: Record<EmailLocale, string> = {
-  de: "de-CH",
-  en: "en-CH",
-  fr: "fr-CH",
-  it: "it-CH",
-};
+import { resolveSwissLocale } from "@/lib/format";
 
 /**
  * Send the `refund_processed` notification to a purchase's buyer.
@@ -57,7 +51,7 @@ export async function notifyPurchaseRefundProcessed(
 
   const { data: profile } = await admin.from("profiles").select("locale").eq("id", userId).single();
   const locale: EmailLocale = (profile?.locale as EmailLocale) ?? "de";
-  const amountStr = formatCurrency(amountCents / 100, LOCALE_BCP47[locale] ?? "de-CH");
+  const amountStr = formatCurrency(amountCents / 100, resolveSwissLocale(locale));
 
   const { data: authUser } = await admin.auth.admin.getUserById(userId);
   const email = authUser?.user?.email;

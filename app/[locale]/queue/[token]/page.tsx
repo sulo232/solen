@@ -45,10 +45,19 @@ interface QueueStatus {
 
 type Copy = Record<string, string>;
 const COPY: Record<string, Copy> = {
-  de: { live: "Live", minLeft: "Noch", min: "Min", soon: "Gleich bist du dran", aheadLine: "vor dir in der Schlange", youreUp: "Du bist dran!", goToChair: "Geh zum Stuhl", whileYouWait: "Während du wartest", inspoTitle: "Brauchst du Inspiration?", inspoSub: "Stöber durch die Arbeiten und zeig deinen Lieblingslook direkt am Stuhl.", seeLooks: "Looks ansehen", yourBarber: "Dein Barber", directions: "Wegbeschreibung", ticketNr: "Ticket Nr", st_paid: "Bezahlt", st_queue: "In der Schlange", st_almost: "Fast dran", st_chair: "Dran", done: "Fertig!", doneSub: "Wir hoffen, der Schnitt sitzt. Schon bezahlt, alles erledigt.", noTip: "Kein Trinkgeld, danke", cancelled: "Storniert", cancelledSub: "Dieses Ticket ist nicht mehr aktiv", noShow: "Nummer verpasst", noShowSub: "Diese Nummer wurde aufgerufen, aber niemand war da", notFound: "Ticket nicht gefunden", notFoundSub: "Dieses Walk-in-Ticket ist abgelaufen oder wurde bereits eingelöst. Prüfe den Link oder sichere dir einen neuen Platz.", autoUpdate: "Aktualisiert sich automatisch", home: "Zur Startseite", help: "Hilfe", cancel: "Stornieren", cancelConfirm: "Stornieren und Erstattung erhalten?", keepTicket: "Ticket behalten", tip: "Trinkgeld geben", ask: "Wie war dein Schnitt?", r1: "Schlecht", r2: "Nicht so gut", r3: "Okay", r4: "Gut", r5: "Ausgezeichnet!", lowTitle: "Das tut uns leid.", lowSub: "Was lief schief? Dein Feedback geht direkt an den Salon.", fbPlaceholder: "Erzähl uns mehr (optional)", helpTitle: "Brauchst du Hilfe?", helpSub: "Salon kontaktieren", fbSend: "Feedback senden", skip2: "Überspringen" },
-  en: { live: "Live", minLeft: "About", min: "min", soon: "You're up soon", aheadLine: "ahead of you in line", youreUp: "You're up!", goToChair: "Head to the chair", whileYouWait: "While you wait", inspoTitle: "Need some inspiration?", inspoSub: "Browse the work and show your favourite look right at the chair.", seeLooks: "See looks", yourBarber: "Your barber", directions: "Directions", ticketNr: "Ticket No", st_paid: "Paid", st_queue: "In queue", st_almost: "Almost up", st_chair: "Your turn", done: "All done!", doneSub: "Hope the cut's perfect. Already paid, all sorted.", noTip: "No tip, thanks", cancelled: "Cancelled", cancelledSub: "This ticket is no longer active", noShow: "Number missed", noShowSub: "This number was called but no one was there", notFound: "Ticket not found", notFoundSub: "This walk-in ticket has expired or was already redeemed. Check the link or grab a new spot.", autoUpdate: "Updates automatically", home: "Go home", help: "Help", cancel: "Cancel", cancelConfirm: "Cancel and get a refund?", keepTicket: "Keep ticket", tip: "Leave a tip", ask: "How was your cut?", r1: "Poor", r2: "Not great", r3: "Okay", r4: "Good", r5: "Excellent!", lowTitle: "We're sorry.", lowSub: "What went wrong? Your feedback goes straight to the salon.", fbPlaceholder: "Tell us more (optional)", helpTitle: "Need help?", helpSub: "Contact the salon", fbSend: "Send feedback", skip2: "Skip" },
-  fr: { live: "Live", minLeft: "Encore", min: "min", soon: "Bientôt à vous", aheadLine: "devant vous dans la file", youreUp: "À vous !", goToChair: "Rendez-vous au fauteuil", whileYouWait: "En attendant", inspoTitle: "Besoin d'inspiration ?", inspoSub: "Parcourez les réalisations et montrez votre look préféré au fauteuil.", seeLooks: "Voir les looks", yourBarber: "Votre coiffeur", directions: "Itinéraire", ticketNr: "N° de ticket", st_paid: "Payé", st_queue: "Dans la file", st_almost: "Bientôt", st_chair: "À vous", done: "Terminé !", doneSub: "On espère que la coupe est parfaite. Déjà payé, tout est réglé.", noTip: "Pas de pourboire, merci", cancelled: "Annulé", cancelledSub: "Ce ticket n'est plus actif", noShow: "Numéro manqué", noShowSub: "Ce numéro a été appelé mais personne n'était là", notFound: "Ticket introuvable", notFoundSub: "Ce ticket walk-in a expiré ou a déjà été utilisé. Vérifie le lien ou réserve une nouvelle place.", autoUpdate: "Mise à jour automatique", home: "Accueil", help: "Aide", cancel: "Annuler", cancelConfirm: "Annuler et être remboursé ?", keepTicket: "Garder le ticket", tip: "Laisser un pourboire", ask: "Comment était ta coupe ?", r1: "Mauvais", r2: "Moyen", r3: "Correct", r4: "Bien", r5: "Excellent !", lowTitle: "Nous sommes désolés.", lowSub: "Qu'est-ce qui n'a pas été ? Ton retour va directement au salon.", fbPlaceholder: "Dis-nous en plus (facultatif)", helpTitle: "Besoin d'aide ?", helpSub: "Contacter le salon", fbSend: "Envoyer", skip2: "Passer" },
-  it: { live: "Live", minLeft: "Ancora", min: "min", soon: "Presto tocca a te", aheadLine: "prima di te in coda", youreUp: "Tocca a te!", goToChair: "Vai alla poltrona", whileYouWait: "Mentre aspetti", inspoTitle: "Cerchi ispirazione?", inspoSub: "Sfoglia i lavori e mostra il tuo look preferito direttamente in poltrona.", seeLooks: "Vedi i look", yourBarber: "Il tuo barbiere", directions: "Indicazioni", ticketNr: "N. ticket", st_paid: "Pagato", st_queue: "In coda", st_almost: "Quasi", st_chair: "Tocca a te", done: "Fatto!", doneSub: "Speriamo che il taglio sia perfetto. Già pagato, tutto a posto.", noTip: "Nessuna mancia, grazie", cancelled: "Annullato", cancelledSub: "Questo ticket non è più attivo", noShow: "Numero saltato", noShowSub: "Questo numero è stato chiamato ma non c'era nessuno", notFound: "Ticket non trovato", notFoundSub: "Questo ticket walk-in è scaduto o è già stato usato. Controlla il link o prenota un nuovo posto.", autoUpdate: "Si aggiorna automaticamente", home: "Home", help: "Aiuto", cancel: "Annulla", cancelConfirm: "Annullare e ricevere il rimborso?", keepTicket: "Mantieni il ticket", tip: "Lascia una mancia", ask: "Com'è andato il taglio?", r1: "Scarso", r2: "Così così", r3: "Okay", r4: "Bene", r5: "Eccellente!", lowTitle: "Ci dispiace.", lowSub: "Cosa non è andato? Il tuo feedback va dritto al salone.", fbPlaceholder: "Dicci di più (facoltativo)", helpTitle: "Serve aiuto?", helpSub: "Contatta il salone", fbSend: "Invia feedback", skip2: "Salta" },
+  de: { live: "Live", minLeft: "Noch", min: "Min", soon: "Gleich bist du dran", aheadLine: "vor dir in der Schlange", youreUp: "Du bist dran!", goToChair: "Geh zum Stuhl", whileYouWait: "Während du wartest", inspoTitle: "Brauchst du Inspiration?", inspoSub: "Stöber durch die Arbeiten und zeig deinen Lieblingslook direkt am Stuhl.", seeLooks: "Looks ansehen", yourBarber: "Dein Barber", directions: "Wegbeschreibung", ticketNr: "Ticket Nr", st_paid: "Bezahlt", st_queue: "In der Schlange", st_almost: "Fast dran", st_chair: "Dran", done: "Fertig!", doneSub: "Wir hoffen, der Schnitt sitzt. Schon bezahlt, alles erledigt.", noTip: "Kein Trinkgeld, danke", cancelled: "Storniert", cancelledSub: "Dieses Ticket ist nicht mehr aktiv", noShow: "Nummer verpasst", noShowSub: "Diese Nummer wurde aufgerufen, aber niemand war da", notFound: "Ticket nicht gefunden", notFoundSub: "Dieses Walk-in-Ticket ist abgelaufen oder wurde bereits eingelöst. Prüfe den Link oder sichere dir einen neuen Platz.", autoUpdate: "Aktualisiert sich automatisch", home: "Zur Startseite", help: "Hilfe", cancel: "Stornieren", cancelConfirm: "Stornieren und Erstattung erhalten?", keepTicket: "Ticket behalten", tip: "Trinkgeld geben", ask: "Wie war dein Schnitt?", r1: "Schlecht", r2: "Nicht so gut", r3: "Okay", r4: "Gut", r5: "Ausgezeichnet!", lowTitle: "Das tut uns leid.", lowSub: "Was lief schief? Dein Feedback geht direkt an den Store.", fbPlaceholder: "Erzähl uns mehr (optional)", helpTitle: "Brauchst du Hilfe?", helpSub: "Store kontaktieren", fbSend: "Feedback senden", skip2: "Überspringen" }, // copy-ok: pre-existing "(optional)" placeholder, unrelated to this edit
+  en: { live: "Live", minLeft: "About", min: "min", soon: "You're up soon", aheadLine: "ahead of you in line", youreUp: "You're up!", goToChair: "Head to the chair", whileYouWait: "While you wait", inspoTitle: "Need some inspiration?", inspoSub: "Browse the work and show your favourite look right at the chair.", seeLooks: "See looks", yourBarber: "Your barber", directions: "Directions", ticketNr: "Ticket No", st_paid: "Paid", st_queue: "In queue", st_almost: "Almost up", st_chair: "Your turn", done: "All done!", doneSub: "Hope the cut's perfect. Already paid, all sorted.", noTip: "No tip, thanks", cancelled: "Cancelled", cancelledSub: "This ticket is no longer active", noShow: "Number missed", noShowSub: "This number was called but no one was there", notFound: "Ticket not found", notFoundSub: "This walk-in ticket has expired or was already redeemed. Check the link or grab a new spot.", autoUpdate: "Updates automatically", home: "Go home", help: "Help", cancel: "Cancel", cancelConfirm: "Cancel and get a refund?", keepTicket: "Keep ticket", tip: "Leave a tip", ask: "How was your cut?", r1: "Poor", r2: "Not great", r3: "Okay", r4: "Good", r5: "Excellent!", lowTitle: "We're sorry.", lowSub: "What went wrong? Your feedback goes straight to the store.", fbPlaceholder: "Tell us more (optional)", helpTitle: "Need help?", helpSub: "Contact the store", fbSend: "Send feedback", skip2: "Skip" }, // copy-ok: pre-existing "(optional)" placeholder, unrelated to this edit
+  fr: { live: "Live", minLeft: "Encore", min: "min", soon: "Bientôt à vous", aheadLine: "devant vous dans la file", youreUp: "À vous !", goToChair: "Rendez-vous au fauteuil", whileYouWait: "En attendant", inspoTitle: "Besoin d'inspiration ?", inspoSub: "Parcourez les réalisations et montrez votre look préféré au fauteuil.", seeLooks: "Voir les looks", yourBarber: "Votre coiffeur", directions: "Itinéraire", ticketNr: "N° de ticket", st_paid: "Payé", st_queue: "Dans la file", st_almost: "Bientôt", st_chair: "À vous", done: "Terminé !", doneSub: "On espère que la coupe est parfaite. Déjà payé, tout est réglé.", noTip: "Pas de pourboire, merci", cancelled: "Annulé", cancelledSub: "Ce ticket n'est plus actif", noShow: "Numéro manqué", noShowSub: "Ce numéro a été appelé mais personne n'était là", notFound: "Ticket introuvable", notFoundSub: "Ce ticket walk-in a expiré ou a déjà été utilisé. Vérifie le lien ou réserve une nouvelle place.", autoUpdate: "Mise à jour automatique", home: "Accueil", help: "Aide", cancel: "Annuler", cancelConfirm: "Annuler et être remboursé ?", keepTicket: "Garder le ticket", tip: "Laisser un pourboire", ask: "Comment était ta coupe ?", r1: "Mauvais", r2: "Moyen", r3: "Correct", r4: "Bien", r5: "Excellent !", lowTitle: "Nous sommes désolés.", lowSub: "Qu'est-ce qui n'a pas été ? Ton retour va directement au store.", fbPlaceholder: "Dis-nous en plus (facultatif)", helpTitle: "Besoin d'aide ?", helpSub: "Contacter le store", fbSend: "Envoyer", skip2: "Passer" }, // copy-ok: pre-existing "(facultatif)" placeholder, unrelated to this edit
+  it: { live: "Live", minLeft: "Ancora", min: "min", soon: "Presto tocca a te", aheadLine: "prima di te in coda", youreUp: "Tocca a te!", goToChair: "Vai alla poltrona", whileYouWait: "Mentre aspetti", inspoTitle: "Cerchi ispirazione?", inspoSub: "Sfoglia i lavori e mostra il tuo look preferito direttamente in poltrona.", seeLooks: "Vedi i look", yourBarber: "Il tuo barbiere", directions: "Indicazioni", ticketNr: "N. ticket", st_paid: "Pagato", st_queue: "In coda", st_almost: "Quasi", st_chair: "Tocca a te", done: "Fatto!", doneSub: "Speriamo che il taglio sia perfetto. Già pagato, tutto a posto.", noTip: "Nessuna mancia, grazie", cancelled: "Annullato", cancelledSub: "Questo ticket non è più attivo", noShow: "Numero saltato", noShowSub: "Questo numero è stato chiamato ma non c'era nessuno", notFound: "Ticket non trovato", notFoundSub: "Questo ticket walk-in è scaduto o è già stato usato. Controlla il link o prenota un nuovo posto.", autoUpdate: "Si aggiorna automaticamente", home: "Home", help: "Aiuto", cancel: "Annulla", cancelConfirm: "Annullare e ricevere il rimborso?", keepTicket: "Mantieni il ticket", tip: "Lascia una mancia", ask: "Com'è andato il taglio?", r1: "Scarso", r2: "Così così", r3: "Okay", r4: "Bene", r5: "Eccellente!", lowTitle: "Ci dispiace.", lowSub: "Cosa non è andato? Il tuo feedback va dritto allo store.", fbPlaceholder: "Dicci di più (facoltativo)", helpTitle: "Serve aiuto?", helpSub: "Contatta lo store", fbSend: "Invia feedback", skip2: "Salta" }, // copy-ok: pre-existing "(facoltativo)" placeholder, unrelated to this edit
+};
+
+// copy-i18n-04 (2026-07-27): the star-rating aria-label was hardcoded German
+// ("Stern"/"Sterne") regardless of locale via an n===1 ternary. Locale-keyed like COPY above.
+const STAR_LABEL: Record<string, (n: number) => string> = {
+  de: (n) => `${n} ${n === 1 ? "Stern" : "Sterne"}`,
+  en: (n) => `${n} ${n === 1 ? "star" : "stars"}`,
+  fr: (n) => `${n} ${n === 1 ? "étoile" : "étoiles"}`,
+  it: (n) => `${n} ${n === 1 ? "stella" : "stelle"}`,
 };
 
 type NodeState = "done" | "current" | "future";
@@ -179,7 +188,7 @@ export default function QueueTrackingPage() {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-white px-6 text-center">
         <div className="mb-6 grid h-20 w-20 place-items-center rounded-full bg-s-bg-sunken">
-          <TicketX size={34} strokeWidth={1.8} className="text-s-ink-3" aria-hidden />
+          <TicketX size={34} strokeWidth={1.8} className="text-s-ink-2" aria-hidden />
         </div>
         <h1 className="font-heading text-[20px] font-bold text-s-ink">{l.notFound}</h1>
         <p className="mt-1.5 max-w-[300px] text-[14px] leading-relaxed text-s-ink-2">{l.notFoundSub}</p>
@@ -239,13 +248,13 @@ export default function QueueTrackingPage() {
           {/* interactive stars */}
           <div className="mt-3 flex gap-2">
             {[1, 2, 3, 4, 5].map((n) => (
-              <button key={n} type="button" onClick={() => onRate(n)} aria-label={`${n} ${n === 1 ? "Stern" : "Sterne"}`} className="p-1 transition-transform active:scale-90">
+              <button key={n} type="button" onClick={() => onRate(n)} aria-label={(STAR_LABEL[locale] ?? STAR_LABEL.de)(n)} className="p-1 transition-transform active:scale-90">
                 <Star size={38} className={n <= rating ? "fill-s-star text-s-star" : "fill-s-border text-s-border"} />
               </button>
             ))}
           </div>
           {rating > 0 && <div className={`mt-3 font-heading text-[16px] font-bold ${sentiColor}`}>{senti[rating - 1]}</div>}
-          {rating === 0 && <p className="mt-2.5 text-[12.5px] text-s-ink-3">{locale === "en" ? "Tap to rate" : locale === "fr" ? "Touchez pour noter" : locale === "it" ? "Tocca per votare" : "Tippe zum Bewerten"}</p>}
+          {rating === 0 && <p className="mt-2.5 text-[12.5px] text-s-ink-2">{locale === "en" ? "Tap to rate" : locale === "fr" ? "Touchez pour noter" : locale === "it" ? "Tocca per votare" : "Tippe zum Bewerten"}</p>}
 
           {/* >=3 → tip (reuses the real Stripe-wired TipFlow) */}
           {rating >= 3 && (
@@ -262,7 +271,7 @@ export default function QueueTrackingPage() {
                   onClose={() => { void sendReview(ratingRef.current, false); router.push(`/${locale}`); }}
                 />
               </div>
-              <button type="button" onClick={() => exitHome(false)} className="mt-4 text-[13.5px] font-medium text-s-ink-3 transition-colors hover:text-s-ink-2">{l.noTip}</button>
+              <button type="button" onClick={() => exitHome(false)} className="mt-4 text-[13.5px] font-medium text-s-ink-2 transition-colors hover:text-s-ink-2">{l.noTip}</button>
             </>
           )}
 
@@ -274,13 +283,13 @@ export default function QueueTrackingPage() {
                 <div className="mt-1 text-[13px] leading-[1.4] text-s-ink-2">{l.lowSub}</div>
                 <textarea
                   value={feedback} onChange={(e) => setFeedback(e.target.value)} placeholder={l.fbPlaceholder}
-                  className="mt-3 min-h-[74px] w-full resize-none p-3 text-[13.5px] text-s-ink placeholder:text-s-ink-3" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
+                  className="mt-3 min-h-[74px] w-full resize-none p-3 text-[13.5px] text-s-ink placeholder:text-s-ink-2" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
                 />
                 {data.salonSlug && (
                   <Link href={`/${locale}/salon/${data.salonSlug}`} className="mt-3 flex items-center gap-3 rounded-[14px] border border-s-border p-3 transition-transform active:scale-[0.98]">
                     <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-[9px] bg-s-accent-pale text-s-accent"><HelpCircle size={19} /></span>
-                    <div className="flex-1"><div className="text-[13.5px] font-semibold text-s-ink">{l.helpTitle}</div><div className="mt-0.5 text-[11.5px] text-s-ink-3">{l.helpSub}</div></div>
-                    <ChevronRight size={18} className="text-s-ink-3" />
+                    <div className="flex-1"><div className="text-[13.5px] font-semibold text-s-ink">{l.helpTitle}</div><div className="mt-0.5 text-[11.5px] text-s-ink-2">{l.helpSub}</div></div>
+                    <ChevronRight size={18} className="text-s-ink-2" />
                   </Link>
                 )}
               </div>
@@ -288,7 +297,7 @@ export default function QueueTrackingPage() {
                 <button type="button" onClick={() => exitHome(true)} className="flex w-full items-center justify-center gap-2 rounded-full bg-s-accent py-3.5 font-heading text-[14px] font-semibold text-white transition-transform active:scale-[0.98]">
                   <Send size={17} /> {l.fbSend}
                 </button>
-                <button type="button" onClick={() => exitHome(false)} className="mt-3 block w-full text-center text-[13.5px] font-medium text-s-ink-3">{l.skip2}</button>
+                <button type="button" onClick={() => exitHome(false)} className="mt-3 block w-full text-center text-[13.5px] font-medium text-s-ink-2">{l.skip2}</button>
               </div>
             </>
           )}
@@ -302,7 +311,7 @@ export default function QueueTrackingPage() {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-white px-6 text-center">
         <div className="mb-6 grid h-20 w-20 place-items-center rounded-full bg-s-bg-sunken">
-          <AlertCircle size={34} strokeWidth={1.8} className="text-s-ink-3" aria-hidden />
+          <AlertCircle size={34} strokeWidth={1.8} className="text-s-ink-2" aria-hidden />
         </div>
         <h1 className="font-heading text-[20px] font-bold text-s-ink">{isCancelled ? l.cancelled : l.noShow}</h1>
         <p className="mt-1.5 max-w-[300px] text-[14px] leading-relaxed text-s-ink-2">{isCancelled ? l.cancelledSub : l.noShowSub}</p>
@@ -351,7 +360,7 @@ export default function QueueTrackingPage() {
           >
             {photos.map((u, i) => (
               // eslint-disable-next-line @next/next/no-img-element
-              <img key={i} src={u} alt="" className="h-full w-full shrink-0 snap-center object-cover" />
+              <img key={i} src={u} alt={data.salonName ? `${data.salonName}, Foto ${i + 1}` : `Store-Foto ${i + 1}`} className="h-full w-full shrink-0 snap-center object-cover" />
             ))}
           </div>
         ) : (
@@ -382,7 +391,7 @@ export default function QueueTrackingPage() {
           </div>
         )}
         <div className="pointer-events-none absolute bottom-8 left-[18px] text-white">
-          <div className="font-heading text-[19px] font-bold tracking-[-.015em]">{data.salonName ?? "Salon"}</div>
+          <div className="font-heading text-[19px] font-bold tracking-[-.015em]">{data.salonName ?? "Store"}</div>
           {data.salonAddress && (
             <div className="mt-0.5 flex items-center gap-1.5 text-[12.5px] opacity-90">
               <MapPin size={13} />{data.salonAddress}
@@ -438,7 +447,7 @@ export default function QueueTrackingPage() {
                   style={{ transform: `scaleX(${pct / 100})` }}
                 />
               </div>
-              <p className="mt-1.5 text-[12px] tabular-nums text-s-ink-3">
+              <p className="mt-1.5 text-[12px] tabular-nums text-s-ink-2">
                 {elapsedMin} / ~{totalMin} {l.min}
               </p>
             </div>
@@ -458,13 +467,13 @@ export default function QueueTrackingPage() {
                       "flex h-[42px] w-[42px] items-center justify-center rounded-full",
                       st === "done" ? "bg-s-accent text-white" : "",
                       st === "current" ? "bg-white text-s-accent walkin-ring-pulse" : "",
-                      st === "future" ? "bg-s-bg-sunken text-s-ink-3" : "",
+                      st === "future" ? "bg-s-bg-sunken text-s-ink-2" : "",
                     ].join(" ")}
                   >
                     {/* ig9 (owner-approved 2026-07-16): calibrated size-to-stroke table, lib/icon-stroke.ts */}
                     <s.Icon size={18} strokeWidth={strokeForSize(18)} />
                   </div>
-                  <span className={`text-center text-[10.5px] font-semibold leading-[1.2] ${st === "future" ? "text-s-ink-3" : "text-s-ink"}`}>{s.label}</span>
+                  <span className={`text-center text-[10.5px] font-semibold leading-[1.2] ${st === "future" ? "text-s-ink-2" : "text-s-ink"}`}>{s.label}</span>
                 </div>
                 {i < STEPS.length - 1 && (
                   <div className={`mt-[19px] h-[2px] min-w-[8px] flex-1 rounded-full ${lineDone ? "bg-s-accent" : "bg-s-border"}`} />
@@ -511,7 +520,7 @@ export default function QueueTrackingPage() {
                 )}
                 <div>
                   <div className="font-heading text-[15.5px] font-bold text-s-ink">{data.recipientName}</div>
-                  <div className="mt-0.5 flex items-center gap-[5px] text-[12.5px] text-s-ink-3">
+                  <div className="mt-0.5 flex items-center gap-[5px] text-[12.5px] text-s-ink-2">
                     {data.recipientRating != null && (
                       <><Star size={13} className="fill-s-star text-s-star" /><span className="font-heading font-bold tabular-nums text-s-ink">{data.recipientRating.toFixed(1)}</span></>
                     )}
@@ -524,7 +533,7 @@ export default function QueueTrackingPage() {
               <div className={`flex items-center gap-3 ${data.recipientName ? "mt-3.5 border-t border-s-border pt-3.5" : ""}`}>
                 <div className="flex-1">
                   <div className="font-heading text-[14.5px] font-semibold text-s-ink">{data.serviceName}</div>
-                  {data.serviceDuration != null && <div className="mt-0.5 text-[12.5px] text-s-ink-3"><span className="tabular-nums">{data.serviceDuration}</span> {l.min}</div>}
+                  {data.serviceDuration != null && <div className="mt-0.5 text-[12.5px] text-s-ink-2"><span className="tabular-nums">{data.serviceDuration}</span> {l.min}</div>}
                 </div>
                 {data.servicePrice != null && (
                   <span className="font-heading text-[15px] font-bold tabular-nums text-s-ink">CHF {data.servicePrice}</span>
@@ -542,12 +551,12 @@ export default function QueueTrackingPage() {
           >
             <MapPin size={18} className="text-s-ink-2" />
             <div className="flex-1 font-heading text-[14px] font-semibold text-s-ink">{data.salonAddress}</div>
-            <ChevronRight size={18} className="text-s-ink-3" />
+            <ChevronRight size={18} className="text-s-ink-2" />
           </a>
         )}
 
         {/* small, support-only ticket reference */}
-        <div className="mt-[18px] flex items-center justify-center gap-[7px] text-[12px] text-s-ink-3">
+        <div className="mt-[18px] flex items-center justify-center gap-[7px] text-[12px] text-s-ink-2">
           <Ticket size={13} /> {l.ticketNr} <span className="font-heading font-semibold tabular-nums text-s-ink-2">{data.customerName}</span>
         </div>
 

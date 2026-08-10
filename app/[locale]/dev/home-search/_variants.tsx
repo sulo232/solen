@@ -49,7 +49,7 @@ export function VariantA() {
               )}
             >
               <Icon size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" />
-              <span className="font-body text-[15px] font-normal text-s-ink-3">{f.value}</span>
+              <span className="font-body text-[15px] font-normal text-s-ink-2">{f.value}</span>
             </button>
           );
         })}
@@ -78,7 +78,7 @@ export function VariantB() {
         <Search size={20} strokeWidth={2} className="shrink-0 text-s-ink" />
         <span className="min-w-0 flex-1">
           <span className="block font-body text-[15px] font-semibold leading-tight text-s-ink">Search</span>
-          <span className="block font-body text-[12px] leading-tight text-s-ink-3">Service, location, time</span>
+          <span className="block font-body text-[12px] leading-tight text-s-ink-2">Service, location, time</span>
         </span>
         <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-s-ink text-white">
           <ArrowRight size={18} strokeWidth={2.2} />

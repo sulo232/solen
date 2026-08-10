@@ -53,7 +53,7 @@ export default function GalleryPage() {
   if (!salon) return null;
 
   return (
-    <div className="max-w-5xl">
+    <main className="max-w-5xl">
       <div className="mb-8">
         <h1 className="font-heading text-[28px] text-s-ink tracking-[0.01em]">
           {t("title")}
@@ -70,10 +70,10 @@ export default function GalleryPage() {
         onUpdate={fetchSalon}
       />
 
-      <SalonAboutEditor 
+      <SalonAboutEditor
         salon={salon}
         onUpdate={fetchSalon}
       />
-    </div>
+    </main>
   );
 }

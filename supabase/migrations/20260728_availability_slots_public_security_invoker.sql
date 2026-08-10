@@ -1,0 +1,34 @@
+-- exists-check: net-new vs 042_off_peak_slots.sql, 004_salon_photos.sql, 053_salon_groups.sql,
+-- 080_salon_drafts.sql, 020_site_content.sql, 061_service_gender.sql, 034_service_addons.sql
+-- and 077_salon_documents.sql, because every one of those CREATES a table or column, while
+-- this alters an existing VIEW's execution context and creates nothing. 042_off_peak_slots is
+-- the closest neighbour (it touches availability_slots), and it adds discount columns rather
+-- than changing any security property, so there is nothing there to extend. A migration that
+-- already ran must never be edited in place either way.
+--
+-- availability_slots_public ran as its owner (postgres), so it bypassed row level security on
+-- availability_slots entirely. The table already carries the right policy,
+-- availability_slots_select_public_available, using (status = 'available'), but the view never
+-- consulted it. Surfaced by the Supabase security advisor as ERROR-level security_definer_view.
+--
+-- MEASURED BEFORE CHANGING ANYTHING, 2026-07-28:
+--   grants     : anon, authenticated, postgres, service_role
+--   reloptions : security_barrier=true, and NO security_invoker
+--   row counts : 1281 available, 833 booked
+--   callers    : ZERO. grep over app, lib, components, scripts and supabase found no reference
+--                to this view anywhere in the codebase.
+-- So an anonymous caller could read all 2114 rows through it, including every booked slot with
+-- its staff_member_id and exact start and end times. That discloses each salon's real booking
+-- rate and staff schedule to anyone holding the public anon key.
+--
+-- security_invoker makes the view run as the CALLER, so the existing policy applies. Additive
+-- and reversible: the view, its columns and its grants are untouched, and nothing in the
+-- product reads it, so there was no caller to break.
+--
+-- PROVEN TO DISCRIMINATE (not merely applied), with the real anon key over PostgREST:
+--   status=available -> content-range 0-0/1281   (unchanged, still public)
+--   status=booked    -> content-range */0        (was 833)
+-- Behaviour differs, which is the standard this estate requires over "the code exists".
+--
+-- To revert: alter view public.availability_slots_public set (security_invoker = false);
+alter view public.availability_slots_public set (security_invoker = true);

@@ -122,3 +122,173 @@ This keeps `supabase/migrations/` a faithful, re-appliable record of the live sc
 environment, even though the day-to-day apply path (MCP `apply_migration`) does not write local files
 on its own.
 
+## 8. Money representation: integer minor units (Rappen), no exceptions on new columns
+
+**Chosen representation, written down 2026-07-26 (was previously only implied by migration
+comments, never a project rule): every money column is `integer`, storing the amount in Rappen
+(CHF minor units, 1 CHF = 100 Rappen), never `numeric`.** This was already the stated intent for
+`bookings.paid_amount` / `refunded_amount` / `vat_amount` and the `retail_purchases` /
+`package_purchases` tables (their migration headers say "UNIT CONTRACT: integer Rappen
+end-to-end", see `supabase/migrations/20260602100000_purchase_refunds.sql:12`), but it lived only
+in scattered comments, not a rule a session would actually read. Two representations with no
+written rule means the next new money column is a coin flip.
+
+**Why integer Rappen and not `numeric(10,2)`:** float/decimal CHF math accumulates rounding error
+across VAT splits, refunds, and commission cuts; integer minor units make every arithmetic step
+exact and match the unit Stripe itself uses (Stripe amounts are integer minor units). Converting at
+the UI/API boundary via `lib/stripe.ts toRappen()` / `fromRappen()` keeps the DB layer exact and
+pushes the CHF-decimal formatting to display code only.
+
+**Deviation list, current live schema** (checked 2026-07-26 via `information_schema.columns` on
+the live project; 90 columns matched a money-keyword scan of all 146 public tables, of which 58
+are real currency-amount columns after excluding rate/percent/multiplier columns like `vat_rate`,
+`commission_rate`, `commission_percent`, `price_modifier`, `member_commission_waiver_rate`, and
+`late_cancel_fee_percent`, which are not currency amounts and are out of scope for this rule).
+24 of the 58 already follow the integer-Rappen rule (`bookings.paid_amount` / `net_amount` /
+`refunded_amount` / `vat_amount` / `fee_charged_amount`, `retail_purchases.*`,
+`package_purchases.*`, `booking_disputes.requested_amount` / `resolved_amount`, `gift_cards.*`,
+`group_bookings.total_amount`, `retail_sales.*`, `service_packages.price`,
+`staff_services.price_override`, `tips.amount`, `case_events.amount`,
+`discovery_items.price_min` / `price_max`, `nail_retail_products.price`). The other 34 are
+`numeric(x,2)` and deviate from the rule, grouped by table:
+
+| Table | Deviating column(s) | Live type |
+|---|---|---|
+| `bookings` | `deposit_amount`, `estimated_price`, `final_price`, `platform_fee`, `price_paid`, `tier_discount_amount` | `numeric(10,2)` / `numeric(8,2)` |
+| `salon_payouts` | `gross_amount`, `commission_amount`, `net_amount` | `numeric(10,2)` |
+| `price_disputes` | `original_amount`, `requested_amount`, `admin_amount` | `numeric(10,2)` |
+| `salons` | `cancellation_fee_value`, `no_show_deposit_amount`, `no_show_fee_value` | `numeric(8,2)` / `numeric(10,2)` |
+| `vouchers` | `amount`, `remaining_amount` | `numeric(8,2)` |
+| `salon_analytics` | `avg_booking_price`, `total_revenue` | `numeric(10,2)` |
+| `services` | `price` | `numeric(8,2)` |
+| `service_options` | `price` | `numeric(10,2)` |
+| `service_bundles` | `custom_price` | `numeric(8,2)` |
+| `addons` | `price` | `numeric(10,2)` |
+| `availability_slots` | `price_override` | `numeric(8,2)` |
+| `inventory` | `price` | `numeric(10,2)` |
+| `makeup_kit_items` | `cost_per_unit` | `numeric(10,2)` |
+| `sale_line_items` | `price` | `numeric(10,2)` |
+| `sales` | `total` | `numeric(10,2)` |
+| `user_credits` | `amount` | `numeric(10,2)` |
+| `credit_redemptions` | `amount_redeemed` | `numeric` (unscaled) |
+| `voucher_purchases` | `amount_paid` | `numeric(10,2)` |
+| `voucher_redemptions` | `amount_redeemed` | `numeric` (unscaled) |
+| `price_offers` | `amount_chf` | `numeric(10,2)` |
+| `promo_codes` | `min_booking_amount` | `numeric(10,2)` |
+| `referrals` | `reward_amount` | `numeric(10,2)` |
+
+**Correction to a common assumption:** `bookings.platform_fee` is frequently assumed to be integer
+Rappen alongside `paid_amount` / `net_amount` on the same row (migration `068_megabuild_foundation.sql:25` declared it `INTEGER`, but that migration's own money-column block was never
+applied live, per the note in `20260601_refund_appeal_foundation.sql:41`). The live column is
+`numeric(10,2)`. Any code that reads `bookings.paid_amount` and `bookings.platform_fee` in the same
+expression is mixing Rappen and CHF-decimal today; check the actual arithmetic before trusting a
+"they're both Rappen" assumption.
+
+**What to do when writing a new money column:** `integer`, name it `_amount` or `_fee` or similar,
+comment it `-- Rappen` inline (match the existing convention in `20260602100000_purchase_refunds.sql`), and convert at the boundary with `lib/stripe.ts`. Never add a new `numeric(x,2)`
+money column. The 34 columns above are existing debt, not a precedent; fixing them is a separate,
+deliberate migration (each one needs its call sites audited for the unit they assume), not
+something to do opportunistically while touching an unrelated file.
+
+## 9. `supabase/migrations` is a history of intents, not a description of the database
+
+**Written down 2026-07-27 after two independent research agents each filed a CRITICAL finding
+that was a migration-file truth presented as a live-database truth.** The `supabase/migrations`
+folder is a HISTORY: it records what was intended to run, in what order, at what time. It is not,
+and must never be read as, a live description of the current schema, policies, or data. A file
+present in the folder tells you what a fresh replay would produce, nothing about what exists now.
+
+**Any claim about current schema, policy, or data state is made against the LIVE database.**
+Authorities, in order, highest first:
+1. A read-only SQL query against the live project (Supabase MCP `execute_sql`, or `pg_policies` /
+   `information_schema.columns` directly). This is ground truth.
+2. `_inventory/_db-snapshot.json` and `_db-columns.json`. A recent, generated snapshot of the live
+   state, good for a fast check, not a substitute for a query when the finding is load-bearing.
+3. The migration files under `supabase/migrations/`. Last, and evidence only about what a REPLAY
+   would produce, never about what is true now. A later file can rename, drop, or leave untouched
+   a policy the reader assumes an earlier file still controls; the only way to know which survived
+   is to query `pg_policies` (or the equivalent live catalog) directly.
+
+**"Is this true now" and "would a restore make this true" are two different questions.** Every
+audit, finding, or migration-folder read states explicitly which one it is answering. "Migration
+`005_reviews_trust.sql:29` creates a permissive `FOR UPDATE USING (true)` policy" is a true and
+useful sentence about the replay case; it is a false and dangerous sentence if presented as "the
+reviews table currently has a permissive UPDATE policy" without having queried `pg_policies` to
+confirm the later migration that touched the same table didn't drop or replace it. Two ring
+findings in this run made exactly that substitution: a permissive RLS policy read off migration
+`005` and `009` (different policy names, so the drop in `009` looked like it missed the one from
+`005`) turned out not to exist on the live `reviews` table at all, which has exactly four
+correctly scoped policies when queried directly. Nine `wheelchair_accessible`-style amenity
+booleans fabricated from a hash of the salon id in `20260530_seed_salon_amenities.sql` counted 0
+true across all 20 active salons live: the seed was never applied, or was reverted, and the file
+alone gave no way to tell.
+
+**The corollary that makes this dangerous, not just imprecise:** a replay-only landmine (a
+migration whose SQL, if replayed today, would create a bad policy, a fabricated column, a
+permissive default) is invisible to every current check in this estate, because nothing here ever
+replays the migration folder onto a clean database to prove what it would actually produce. There
+is no CI step, no local script, no scheduled job that does this. So a bad statement can sit in
+`supabase/migrations/` indefinitely, contradicted or superseded by later live-only changes (see
+section 7: `apply_migration` writes live and to `schema_migrations` but not to a local file, so
+live and file history already diverge in the other direction too), and nothing will ever flag it
+until someone actually tries a fresh-environment restore. Treat a migration-derived finding as
+provisional until checked against the live catalog, precisely because there is no safety net that
+would catch the gap for you.
+
+**The freshness trap, so "check the snapshot" isn't quietly treated as "check the database":**
+`_db-columns.json` records column NAMES only, no types, no defaults, no constraints, so it cannot
+answer a type or nullability question at all. And the snapshot drifts: as of this writing it was
+14 days stale and undercounted by 4 tables (146 recorded vs 150 live). A snapshot hit is a good
+first pass, never the final word on a load-bearing claim, always confirm with a live query before
+a finding is filed as CRITICAL or a fix is shipped against it.
+
+## 10. Migration lock hygiene: `NOT VALID`/`VALIDATE`, `CONCURRENTLY`, `lock_timeout`
+
+**Written down 2026-07-27 (data-money-04).** A DDL statement takes an `ACCESS EXCLUSIVE` lock for
+its duration; against a table with real rows, a bare `ADD CONSTRAINT ... CHECK`/`NOT NULL` or a
+non-`CONCURRENTLY` `CREATE (UNIQUE) INDEX` blocks every other query on that table for as long as
+the full-table scan takes, and queues behind any long-running query already holding a weaker lock.
+At Solen's current scale this has caused zero incidents (audited 2026-07-16), but the pattern is
+free to apply and expensive to discover you needed only after a migration hangs behind a slow
+query in production.
+
+**The rule, with a stated floor so "premature at our scale" has a number instead of a guess:** for
+any table whose live row count (check via a read-only `execute_sql` count, or the `_inventory`
+snapshot) exceeds **2,000 rows**, a new migration must:
+- Add a `CHECK`/`NOT NULL` constraint as `NOT VALID` first, then `VALIDATE CONSTRAINT` in a
+  follow-up statement (the `VALIDATE` step still scans the table, but takes only a `SHARE UPDATE
+  EXCLUSIVE` lock, which does not block concurrent reads/writes the way the plain form's
+  `ACCESS EXCLUSIVE` does).
+- Add a `CREATE INDEX` as `CREATE INDEX CONCURRENTLY` (a `UNIQUE` index too, same keyword).
+- Precede every DDL statement in the migration with `SET LOCAL lock_timeout = '5s';` so a lock
+  that can't be acquired promptly fails loud instead of queuing invisibly behind other traffic.
+
+Below 2,000 rows the plain form is fine and should not be forced; most of Solen's tables are well
+under this today, so this is a floor for the tables that matter (`bookings`, `profiles`,
+`booking_disputes`, `nail_retail_products`, `promo_codes` and any future high-row-count table), not
+a blanket rule to retrofit everywhere.
+
+**Current state (audited 2026-07-16, migration count re-verified 2026-07-27 at 269 files, three
+more than the audit's 264):** the correct two-step pattern is used in exactly 2 files / 3
+constraints; at least 9 other `ADD CONSTRAINT ... CHECK` statements across 7 files ran as bare
+adds against tables confirmed to hold rows; 0 of 161 `CREATE (UNIQUE) INDEX` statements use
+`CONCURRENTLY`; 0 of 264 files set `lock_timeout` or `statement_timeout`. This is existing debt,
+not something to retrofit opportunistically; the rule binds new migrations going forward.
+
+## 11. Backup coverage: a new table decides its `BACKUP_TABLES` membership at creation time
+
+**Written down 2026-07-27 (data-money-06).** `lib/backup/export.ts`'s `BACKUP_TABLES` is a
+hardcoded array (line 26) that the nightly export backs up; nothing else in the repo references
+it, so it does not grow automatically as the schema grows. As of the 2026-07-16 audit it covered
+24 of the DB's 146 live tables (16%), a deliberate business-critical subset for those 24, not a
+statement about the ~120 tables added since.
+
+**The rule:** any migration that `CREATE TABLE`s a new table holding user-generated content,
+business state, or data not reconstructible from Stripe's own ledger must, in the same change,
+either add the table name to `BACKUP_TABLES` in `lib/backup/export.ts`, or leave a comment in the
+migration explaining why it is exempt (pure cache/derived view, ephemeral analytics, or a table
+Stripe's ledger already makes reconstructible). A backup list that silently falls behind schema
+growth looks complete (the cron still reports success every night) while its real coverage shrinks
+as a fraction of the schema, which is worse than an honestly-incomplete backup because nobody goes
+looking for a gap that isn't reporting an error.
+

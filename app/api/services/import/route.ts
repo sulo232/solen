@@ -3,10 +3,18 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
+import { requireUploadHeader } from "@/lib/upload-security";
 import type { Database } from "@/lib/database.types";
 
-// POST /api/services/import — CSV import for services
+// POST /api/services/import - CSV import for services
 export async function POST(req: NextRequest) {
+  // A15-upload-hardening (2026-07-27): this route authenticates via the ambient Supabase
+  // session cookie, which a cross-site multipart form POST rides automatically, and it
+  // inserts real DB rows on the caller's behalf. Require a header only same-origin
+  // fetch() code can set (see lib/upload-security.ts).
+  const csrfBlocked = requireUploadHeader(req);
+  if (csrfBlocked) return csrfBlocked;
+
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

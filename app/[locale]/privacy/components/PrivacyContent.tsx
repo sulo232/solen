@@ -1,4 +1,29 @@
-export default function PrivacyContent() {
+"use client";
+
+import * as React from "react";
+
+// privacy-compliance-04: this page is hand-maintained prose, not generated from the
+// schema, so it goes stale silently. Re-check section 2.1 (data inventory) and section
+// 4 (processor transfer basis) whenever a migration adds a note/allergy/skin/hair/health/
+// photo-shaped column to a new table, or adds/changes a third-party processor. Bump the
+// "Letzte Aktualisierung" date below every time the underlying processing actually changed.
+// LOCALE-AWARE, same model as TermsContent (2026-07-28). Before this, every visitor in every
+// locale got the German paragraph AND the English one stacked underneath, so a French reader
+// got two languages and neither was theirs. German is the binding version; English is the
+// existing convenience translation; fr/it see the binding German with an explicit notice on
+// the page rather than a machine translation of a PRIVACY NOTICE, which is the document a data
+// subject relies on to exercise a right.
+const LocaleCtx = React.createContext<string>("de");
+
+export default function PrivacyContent({ locale = "de" }: { locale?: string }) {
+  return (
+    <LocaleCtx.Provider value={locale}>
+      <PrivacyBody />
+    </LocaleCtx.Provider>
+  );
+}
+
+function PrivacyBody() {
   return (
     <div className="prose prose-s-ink max-w-none w-full space-y-12">
       <Section id="section-1" titleDe="1. Verantwortliche Stelle" titleEn="1. Data Controller">
@@ -15,7 +40,7 @@ export default function PrivacyContent() {
           <ParEn>We collect and process the following categories of personal data:</ParEn>
           <ul className="list-disc pl-5 space-y-2 text-sm md:text-base text-s-ink opacity-90">
             <li><strong>Kontodaten / Account Data:</strong> Name, E-Mail-Adresse, Telefonnummer, Profilbild / Name, email address, phone number, profile picture.</li>
-            <li><strong>Buchungsdaten / Booking Data:</strong> Dienstleistungen, Termine, Salonpartner, Kundennotizen, Präferenzen, Allergien / Services, appointments, Salon Partners, client notes, preferences, allergies.</li>
+            <li><strong>Buchungsdaten / Booking Data:</strong> Dienstleistungen, Termine, Store-Partner, Kundennotizen, Präferenzen, Allergien, Beratungs- und Behandlungsnotizen (z.B. Haar-/Hautzustand, Formeln, Sensibilitäten), Vorher-/Nachher-Fotos / Services, appointments, Store Partners, client notes, preferences, allergies, consultation and treatment notes (e.g. hair/skin condition, formulas, sensitivities), before/after photos.</li>
             <li><strong>Zahlungsdaten / Payment Data:</strong> Transaktionsdetails (verarbeitet von Stripe) / Transaction details (processed by Stripe).</li>
             <li><strong>Nutzungsdaten / Usage Data:</strong> Interaktionen mit der Plattform (verarbeitet von PostHog), IP-Adresse, Gerätetyp, Browserty / Interactions with the platform (processed by PostHog), IP address, device type, browser.</li>
             <li><strong>Kommunikation / Communication:</strong> Chatnachrichten und E-Mails zwischen Nutzern und Plattform / Chat messages and emails between users and platform.</li>
@@ -28,7 +53,7 @@ export default function PrivacyContent() {
           <ParDe>Ihre Daten werden zu folgenden Zwecken verarbeitet:</ParDe>
           <ParEn>Your data is processed for the following purposes:</ParEn>
           <ul className="list-disc pl-5 space-y-2 text-sm md:text-base text-s-ink opacity-90">
-            <li><strong>Buchungsabwicklung / Booking Management:</strong> Vermittlung und Verwaltung von Dienstleistungen zwischen Kunden und Salonpartnern. / Facilitating and managing services between Customers and Salon Partners.</li>
+            <li><strong>Buchungsabwicklung / Booking Management:</strong> Vermittlung und Verwaltung von Dienstleistungen zwischen Kunden und Store-Partnern. / Facilitating and managing services between Customers and Store Partners.</li>
             <li><strong>Zahlungsabwicklung / Payment Processing:</strong> Abwicklung der Bezahlung über unseren Zahlungsdienstleister Stripe. / Processing payments via our payment provider Stripe.</li>
             <li><strong>Kundenservice / Customer Support:</strong> Beantwortung von Benutzeranfragen und Beilegung von Streitigkeiten. / Responding to user inquiries and resolving disputes.</li>
             <li><strong>Sicherheit / Security:</strong> Betrugsprävention und Missbrauchsschutz. / Fraud prevention and protection against abuse.</li>
@@ -56,7 +81,7 @@ export default function PrivacyContent() {
                 <tr>
                   <td className="px-4 py-2"><strong>Stripe</strong></td>
                   <td className="px-4 py-2">Zahlungsabwicklung / Payment processing</td>
-                  <td className="px-4 py-2">Global (Stripe Privacy Shield)</td>
+                  <td className="px-4 py-2">Global (EU-US Data Privacy Framework / Standardvertragsklauseln)</td>
                 </tr>
                 <tr>
                   <td className="px-4 py-2"><strong>Supabase</strong></td>
@@ -131,7 +156,7 @@ export default function PrivacyContent() {
         <Article titleDe="8.1 Letzte Aktualisierung und anwendbares Recht" titleEn="8.1 Last Updated and Governing Law">
           <ParDe>Diese Datenschutzerklärung unterliegt <strong>Schweizer Recht</strong>. Solen.ch behält sich das Recht vor, diese Erklärung bei der Einführung neuer Funktionen oder wegen veränderter Rechtslage anzupassen. Vorab registrierte Benutzer werden rechtzeitig informiert.</ParDe>
           <ParEn>This Privacy Policy is governed by <strong>Swiss law</strong>. Solen.ch reserves the right to amend this statement upon introducing new features or due to changes in legislation. Pre-registered users will be informed in due time.</ParEn>
-          <ParDe className="mt-4 font-semibold">Letzte Aktualisierung / Last updated: 23. März 2026</ParDe>
+          <ParDe className="mt-4 font-semibold">Letzte Aktualisierung / Last updated: 27. Juli 2026</ParDe>
         </Article>
       </Section>
     </div>
@@ -141,19 +166,32 @@ export default function PrivacyContent() {
 // Helper components for consistent layout
 
 // V3-D304: border-s-border → border-s-border (canonical hairline per LOCKFILE §1); muted ink opacities → s-ink-2
+function SectionHeading({ titleDe, titleEn }: { titleDe: string; titleEn: string }) {
+  const locale = React.useContext(LocaleCtx);
+  return (
+    <h2 className="font-display text-xl md:text-2xl font-semibold tracking-tight text-s-ink mb-6">
+      {locale === "en" ? titleEn : titleDe}
+    </h2>
+  );
+}
+
 function Section({ id, titleDe, titleEn, children }: { id: string, titleDe: string, titleEn: string, children: React.ReactNode }) {
   return (
     <section id={id} className="scroll-mt-32 pb-8 border-b border-s-border last:border-0 relative">
-      <h2 className="font-display text-xl md:text-2xl font-semibold tracking-tight text-s-ink mb-1">
-        {titleDe}
-      </h2>
-      <h3 className="font-display text-lg text-s-ink-2 mb-6 italic">
-        {titleEn}
-      </h3>
+      <SectionHeading titleDe={titleDe} titleEn={titleEn} />
       <div className="space-y-8">
         {children}
       </div>
     </section>
+  );
+}
+
+function ArticleHeading({ titleDe, titleEn }: { titleDe: string; titleEn: string }) {
+  const locale = React.useContext(LocaleCtx);
+  return (
+    <h3 className="font-display text-lg font-semibold text-s-ink">
+      {locale === "en" ? (titleEn || titleDe) : titleDe}
+    </h3>
   );
 }
 
@@ -162,10 +200,9 @@ function Article({ titleDe, titleEn, children }: { titleDe: string, titleEn: str
     <div className="space-y-3">
       {(titleDe || titleEn) && (
         <div className="mb-4">
-          <h3 className="font-display text-lg font-semibold text-s-ink">
-            {titleDe}
-            {titleEn && <span className="text-s-ink-2 font-normal ml-2">/ {titleEn}</span>}
-          </h3>
+          {/* One language, not "German / English" jammed into one heading. That inline slash
+              was the last place both languages still appeared on every locale. */}
+          <ArticleHeading titleDe={titleDe} titleEn={titleEn} />
         </div>
       )}
       <div className="space-y-4">
@@ -176,6 +213,8 @@ function Article({ titleDe, titleEn, children }: { titleDe: string, titleEn: str
 }
 
 function ParDe({ children, className = "" }: { children: React.ReactNode, className?: string }) {
+  const locale = React.useContext(LocaleCtx);
+  if (locale === "en") return null;
   return (
     <p className={`text-sm md:text-base text-s-ink leading-relaxed ${className}`}>
       {children}
@@ -184,11 +223,12 @@ function ParDe({ children, className = "" }: { children: React.ReactNode, classN
 }
 
 function ParEn({ children }: { children: React.ReactNode }) {
+  // Main text for an English reader, not a small italic aside under German they cannot read.
+  const locale = React.useContext(LocaleCtx);
+  if (locale !== "en") return null;
   return (
-    <div className="flex items-start gap-3 pl-4 border-l-2 border-s-border mt-2 mb-4">
-      <p className="text-xs md:text-sm text-s-ink-2 italic leading-relaxed">
-        {children}
-      </p>
-    </div>
+    <p className="text-sm md:text-base text-s-ink leading-relaxed">
+      {children}
+    </p>
   );
 }

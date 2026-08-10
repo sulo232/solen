@@ -1,0 +1,360 @@
+<!--
+  home-v3 / n1 : "Hamburger inside the pill, right"
+  Header template only. 390px. Prefix: dn1-
+  This file is a FRAGMENT, one of several header variants. The live BEFORE iframe
+  and the Before/After toggle belong in the parent comparison shell, not here.
+
+  Grounded-in: app/[locale]/_components/search/SearchTemplate.tsx
+  Grounded-in: app/[locale]/_components/layout/Header.tsx
+  Grounded-in: app/[locale]/_components/homepage/SearchBar.tsx
+
+  Depicts: the search pill with a Lucide search icon left, two stacked lines, and a 44x44 circle right -> app/[locale]/_components/search/SearchTemplate.tsx:1231
+  Depicts: the sticky band that pins and morphs its padding on scroll -> app/[locale]/_components/search/SearchTemplate.tsx:811
+  Depicts: the hamburger that opens the mobile drawer -> app/[locale]/_components/layout/MobileMenu.tsx
+  Depicts: the category pill row with a 22px icon and a gray selected fill -> app/[locale]/_components/layout/Header.tsx:880
+  Depicts: the Coiffeur and Barber and Nails and Spa category icons -> app/[locale]/_components/layout/Header.tsx:100
+  Depicts: the Walk-in category tile -> app/api/salons/route.ts:195
+  Depicts: the gray feed slot blocks below the header -> NET-NEW: not a product surface, they are scroll runway so the collapse can be measured, and drawing SalonCard in a header-only file would fork a shipped component
+
+  Diagnosis (all four measured on the live /de at 390x844 with getBoundingClientRect,
+  2026-07-31; this mockup exists to fix these, not to restyle for taste):
+    Diagnosis: first salon card is below the fold on the home feed | measured top y=842 in an 844px viewport, so 0 content units are visible | violates FLOORS LAW 3, a populated list first viewport must show >= 4 content units on mobile plus a cropped next item | target first card top <= 200
+    Diagnosis: the same search control renders as two different objects on two live surfaces | measured 358x250 stacked card at y=218 on /de vs a 358x64 pill on /search (SearchTemplate.tsx:1231-1323) | violates FLOORS LAW 8, an entity appearing on more than one screen renders through the SAME component | target one pill anatomy on both, /de adopts the shipped /search pill
+    Diagnosis: the header row spends its full width on nothing | measured 84px tall, 71px logo at x=16, 44x44 hamburger at x=330, 243px of empty span between them | violates FLOORS LAW 10, every element must belong to the screen's job, and that span carries no element at all | target 0 dedicated header row, the hamburger moves into the pill's existing 44x44 right slot
+    Diagnosis: a promise headline consumes the top of the fold | measured 31.2px at weight 700 at y=124, pushing the search stack down to y=218 | violates FLOORS LAW 10, every element must belong to the screen's job, and the owner struck this element by name on 2026-07-31 | target 0px, removed
+
+  Exists-check: `npm run exists searchbar` + `npm run exists "category row"` +
+    `npm run exists mobilemenu` gave: the target surface ALREADY renders
+    (a) app/[locale]/_components/homepage/SearchBar.tsx, the homepage 3-row stacked
+        card (Service / Stadt / Zeit + a commit CTA), measured 358x250 at y=218 on
+        /de. THIS is what the pill replaces.
+    (b) app/[locale]/_components/search/SearchTemplate.tsx:1231-1323, the COLLAPSED
+        PILL that already ships on /search: rounded-pill, white, border-s-border,
+        Lucide Search 18/2 left, two stacked lines (14px/500 ink + 12.5px ink-2),
+        44x44 circled icon right, sticky band on a continuous 0..60px scroll ramp
+        (SearchTemplate.tsx:811-835). Reused verbatim, not redrawn.
+    (c) app/[locale]/_components/layout/Header.tsx:99-905, HEADER_CATEGORIES, the
+        real category row: h-10 rounded-full pill, 22px PNG icon, 15px label,
+        active = bg-s-bg-sunken + font-semibold. Reused verbatim, not redrawn.
+    REMOVED hits, all respected here:
+      1. SearchBar focus ring, back-arrow and Trending icon (owner 2026-06-23). Absent.
+      2. Ink/black as a selected state (owner 2026-06-29). The selected category is
+         the gray #F4F4F5 fill, never ink.
+      3. Underline content-tab category row (owner 2026-07-24, "two stacked selector
+         rows is a double thing, keep the FILTER pill style only"). So the category
+         row here is PILLS, NOT the reference's icon-above-label underline tabs. That
+         is a deliberate, owner-dated deviation from the reference.
+    THE ONE NEW THING: the pill's right 44x44 slot carries the hamburger on home,
+    and the pill's resting depth flips from hairline-no-shadow to shadow-no-hairline.
+    Nothing else is net-new.
+
+  Grounded values, every one copied from a real file (no invented hex/size/shadow):
+    pill radius/px/py/gap ....... SearchTemplate.tsx:1245,1251
+    Search icon 18 / stroke 2 ... SearchTemplate.tsx:1259
+    line 1 = 14px / 500 / ink ... SearchTemplate.tsx:1261
+    line 2 = 12.5px / ink-2 ..... SearchTemplate.tsx:1280
+    right circle 44x44 + border . SearchTemplate.tsx:1311-1319
+    scroll ramp 0..60px ......... SearchTemplate.tsx:820
+    band padding 4 to 12 / 0 to 8  SearchTemplate.tsx:828-829
+    pinned shadow 0 10px 30px ... SearchTemplate.tsx:834
+    elevation-2 resting shadow .. tailwind.config.js:279
+    hairline #E4E4E7 ............ tailwind.config.js:130
+    ink-2 #6B6B6B ............... tailwind.config.js:129
+    category pill anatomy ....... Header.tsx:888-903
+    walk-in is a real filter .... app/api/salons/route.ts:52,195-196
+    Lucide paths ................ node_modules/lucide-react/dist/esm/icons/{search,menu}.js
+
+  Focus treatment is deliberately NOT declared in this fragment. The design contract
+  (V3-D449) puts focus in globals.css and forbids a component adding its own, so a
+  local ring here would be the banned double ring. In the real build the global ink
+  edge applies and WCAG 2.4.7 holds; in this isolated fragment nothing renders.
+
+  floors: this is a chrome template, not a customer screen, so the finished-screen
+    pass does not fully apply. What does: 3 text sizes on screen (15 / 14 / 12.5),
+    under the 4 ceiling. Weight >= 600 on 1 of 8 text nodes = 12.5%, under the 30%
+    ceiling. Single light theme, no dark-mode CSS. No fabricated numbers. Touch
+    targets: pill 64, hamburger 44, category pills 40 tall. The 40 is under the 44
+    floor and is INHERITED from the shipped Header.tsx h-10. Flagged, not silently
+    "fixed" here, because fixing it in a mockup would fork a shipped control.
+-->
+
+<style>
+  .dn1-root {
+    -webkit-text-size-adjust: 100%;
+    width: 390px;
+    margin: 0 auto;
+    background: #FFFFFF;
+    color: #0A0A0A;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  .dn1-root *, .dn1-root *::before, .dn1-root *::after { box-sizing: border-box; }
+
+  /* ===== STICKY BAND =======================================================
+     Direct child of the scroll root so it stays pinned for the whole page, the
+     same containing-block trick as SearchTemplate.tsx's max-md:sticky band. */
+  .dn1-band {
+    position: sticky;
+    top: 0;
+    z-index: 55;
+    background: #FFFFFF;
+    /* padding morphs 4 to 12 top, 0 to 8 bottom, driven by --dn1-p (0..1) */
+    padding-top: calc(4px + (8px * var(--dn1-p, 0)));
+    padding-bottom: calc(0px + (8px * var(--dn1-p, 0)));
+  }
+
+  .dn1-bandinner { width: 100%; padding: 0 16px; }
+
+  /* ===== THE PILL ==========================================================
+     Our real collapsed pill. ONE depth cue at a time (design contract, shadow
+     row: "a card carrying elevation DROPS its border, never both"), so the
+     border is gone and the shadow carries the edge. Resting shadow is the
+     elevation-2 token, which FLOORS LAW 4(c) names as the legal border-free
+     boundary on white; it grows into the shipped pinned float on scroll. */
+  .dn1-pill {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 9999px;
+    border: 0;
+    background: #FFFFFF;
+    text-align: left;
+    cursor: pointer;
+    box-shadow:
+      0 2px 8px rgba(50,47,44,0.09),
+      0 10px 30px rgba(0,0,0,calc(0.13 * var(--dn1-p, 0)));
+  }
+
+  .dn1-pillicon { flex: 0 0 auto; color: #6B6B6B; display: flex; }
+
+  .dn1-pilltext { min-width: 0; flex: 1 1 auto; }
+  .dn1-l1 {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    letter-spacing: -0.005em;
+    color: #0A0A0A;
+  }
+  .dn1-l2 {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 12.5px;
+    font-weight: 400;
+    line-height: 18px;
+    color: #6B6B6B;
+  }
+
+  /* The right 44x44 slot. On /search this circle is the map toggle; here it is
+     the hamburger. Same geometry, same hairline, same hover sink. */
+  .dn1-burger {
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    height: 44px;
+    width: 44px;
+    border-radius: 9999px;
+    border: 1px solid #E4E4E7;
+    background: #FFFFFF;
+    color: #0A0A0A;
+    cursor: pointer;
+    transition: background-color 300ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .dn1-burger:hover { background: #F4F4F5; }
+
+  /* ===== CATEGORY ROW ======================================================
+     Collapses on scroll. Height and opacity ramp on the same --dn1-p as the
+     pill, so pill float-in and row fold-out are one continuous gesture in BOTH
+     directions (the B6 fix in SearchTemplate.tsx, reused not reinvented). */
+  .dn1-cats {
+    overflow: hidden;
+    height: calc(60px * (1 - var(--dn1-p, 0)));
+    opacity: calc(1 - var(--dn1-p, 0));
+  }
+  .dn1-catscroll {
+    display: flex;
+    gap: 8px;
+    padding: 8px 16px 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .dn1-catscroll::-webkit-scrollbar { display: none; }
+
+  .dn1-cat {
+    display: inline-flex;
+    flex: 0 0 auto;
+    height: 40px;
+    align-items: center;
+    gap: 8px;
+    padding: 0 16px;
+    border-radius: 9999px;
+    border: 1px solid #E4E4E7;
+    background: #FFFFFF;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1;
+    color: #0A0A0A;
+    cursor: pointer;
+    transition: background-color 150ms cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 150ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .dn1-cat[aria-selected="true"] {
+    background: #F4F4F5;
+    border-color: #F4F4F5;
+    font-weight: 600;
+  }
+  .dn1-caticon { height: 22px; width: 22px; flex: 0 0 auto; object-fit: contain; }
+
+  /* ===== SPACER ============================================================
+     Scroll runway only. Deliberately empty gray blocks: this file is the header
+     template, so putting salon cards here would fork SalonCard for no reason. */
+  .dn1-spacer { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+  .dn1-slot {
+    height: 180px;
+    border-radius: 16px;
+    background: #F4F4F5;
+    display: grid;
+    place-items: center;
+    font-size: 12.5px;
+    color: #6B6B6B;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dn1-burger, .dn1-cat { transition: none; }
+  }
+</style>
+
+<div class="dn1-root" id="dn1-root">
+
+  <div class="dn1-band" id="dn1-band">
+    <div class="dn1-bandinner">
+      <div class="dn1-pill" id="dn1-pill" role="button" tabindex="0" aria-haspopup="dialog" aria-label="Edit search">
+        <span class="dn1-pillicon" aria-hidden="true">
+          <svg class="lucide lucide-search" data-lucide="search" xmlns="http://www.w3.org/2000/svg"
+               width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m21 21-4.34-4.34"/>
+            <circle cx="11" cy="11" r="8"/>
+          </svg>
+        </span>
+        <span class="dn1-pilltext">
+          <span class="dn1-l1" id="dn1-l1">Search salons</span>
+          <span class="dn1-l2" id="dn1-l2">Basel</span>
+        </span>
+        <button class="dn1-burger" id="dn1-burger" type="button" aria-label="Open menu" aria-expanded="false">
+          <svg class="lucide lucide-menu" data-lucide="menu" xmlns="http://www.w3.org/2000/svg"
+               width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 5h16"/>
+            <path d="M4 12h16"/>
+            <path d="M4 19h16"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="dn1-cats" id="dn1-cats">
+      <div class="dn1-catscroll" id="dn1-catscroll" role="tablist" aria-label="Categories"></div>
+    </div>
+  </div>
+
+  <div class="dn1-spacer" id="dn1-spacer"></div>
+</div>
+
+<script>
+(function () {
+  var root = document.getElementById("dn1-root");
+  if (!root || root.dataset.dn1Init === "1") return;
+  root.dataset.dn1Init = "1";
+
+  // Same shape as Header.tsx HEADER_CATEGORIES, plus the walk-in filter that
+  // /api/salons already supports (route.ts:52,195). Rendered from data, never a
+  // hardcoded src attribute in the markup.
+  var CATS = [
+    { slug: "coiffeur",   label: "Coiffeur", iconSrc: "/icons/categories/scissors.png" },
+    { slug: "barbershop", label: "Barber",   iconSrc: "/icons/categories/clippers.png" },
+    { slug: "nails",      label: "Nails",    iconSrc: "/icons/categories/nails.png" },
+    { slug: "spa",        label: "Spa",      iconSrc: "/icons/categories/spa.png" },
+    { slug: "walkin",     label: "Walk-in",  iconSrc: "/icons/categories/walkin.png" }
+  ];
+  var ACTIVE = "barbershop";
+
+  var scroll = document.getElementById("dn1-catscroll");
+  CATS.forEach(function (c) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "dn1-cat";
+    b.setAttribute("role", "tab");
+    b.setAttribute("aria-selected", c.slug === ACTIVE ? "true" : "false");
+    b.dataset.slug = c.slug;
+    var img = document.createElement("img");
+    img.className = "dn1-caticon";
+    img.src = c.iconSrc;
+    img.alt = "";
+    img.setAttribute("aria-hidden", "true");
+    b.appendChild(img);
+    b.appendChild(document.createTextNode(c.label));
+    b.addEventListener("click", function () {
+      scroll.querySelectorAll(".dn1-cat").forEach(function (x) { x.setAttribute("aria-selected", "false"); });
+      b.setAttribute("aria-selected", "true");
+    });
+    scroll.appendChild(b);
+  });
+
+  // Scroll runway.
+  var spacer = document.getElementById("dn1-spacer");
+  for (var i = 0; i < 8; i++) {
+    var s = document.createElement("div");
+    s.className = "dn1-slot";
+    s.textContent = "feed slot " + (i + 1);
+    spacer.appendChild(s);
+  }
+
+  // ===== THE COLLAPSE =====================================================
+  // Continuous 0..60px ramp, identical to SearchTemplate.tsx:811-835. Not a
+  // boolean threshold: a boolean snaps, and the owner already rejected that
+  // once ("make the morphing smooth BOTH directions", B6 2026-07-03).
+  var band = document.getElementById("dn1-band");
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function scrollTop() {
+    return window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+  }
+  function onScroll() {
+    var y = scrollTop();
+    var p = reduce ? (y > 30 ? 1 : 0) : Math.min(1, Math.max(0, y / 60));
+    band.style.setProperty("--dn1-p", String(p));
+  }
+  onScroll();
+  window.addEventListener("scroll", onScroll, { passive: true });
+  document.addEventListener("scroll", onScroll, { passive: true });
+
+  // Measurement hook for the verification pass.
+  window.dn1Measure = function () {
+    var r = function (id) {
+      var e = document.getElementById(id);
+      if (!e) return null;
+      var b = e.getBoundingClientRect();
+      return { top: +b.top.toFixed(1), height: +b.height.toFixed(1), width: +b.width.toFixed(1) };
+    };
+    var pillEl = document.getElementById("dn1-pill");
+    return {
+      scrollY: scrollTop(),
+      p: +(band.style.getPropertyValue("--dn1-p") || 0),
+      band: r("dn1-band"),
+      pill: r("dn1-pill"),
+      cats: r("dn1-cats"),
+      burger: r("dn1-burger"),
+      pillShadow: getComputedStyle(pillEl).boxShadow,
+      pillBorderWidth: getComputedStyle(pillEl).borderTopWidth
+    };
+  };
+})();
+</script>

@@ -3782,6 +3782,8 @@ export type Database = {
           id: string
           is_active: boolean | null
           label_de: string | null
+          label_fr: string | null
+          label_it: string | null
           label_en: string | null
           price_modifier: number
           rule_type: string
@@ -3795,6 +3797,8 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           label_de?: string | null
+          label_fr?: string | null
+          label_it?: string | null
           label_en?: string | null
           price_modifier: number
           rule_type: string
@@ -3808,6 +3812,8 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           label_de?: string | null
+          label_fr?: string | null
+          label_it?: string | null
           label_en?: string | null
           price_modifier?: number
           rule_type?: string
@@ -4993,6 +4999,41 @@ export type Database = {
           },
         ]
       }
+      review_translations: {
+        Row: {
+          created_at: string
+          id: string
+          locale: string
+          review_id: string
+          source_locale: string
+          translated: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          locale: string
+          review_id: string
+          source_locale?: string
+          translated: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          locale?: string
+          review_id?: string
+          source_locale?: string
+          translated?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "review_translations_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "reviews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       review_photos: {
         Row: {
           created_at: string
@@ -5451,6 +5492,8 @@ export type Database = {
           id: string
           is_system: boolean | null
           name_de: string
+          name_fr: string | null
+          name_it: string | null
           name_en: string
         }
         Insert: {
@@ -5462,6 +5505,8 @@ export type Database = {
           id?: string
           is_system?: boolean | null
           name_de: string
+          name_fr?: string | null
+          name_it?: string | null
           name_en: string
         }
         Update: {
@@ -5473,6 +5518,8 @@ export type Database = {
           id?: string
           is_system?: boolean | null
           name_de?: string
+          name_fr?: string | null
+          name_it?: string | null
           name_en?: string
         }
         Relationships: []
@@ -6143,6 +6190,8 @@ export type Database = {
           deposit_min: number | null
           deposit_percent: number | null
           description_de: string | null
+          description_fr: string | null
+          description_it: string | null
           description_en: string | null
           email: string | null
           explore_score: number | null
@@ -6187,6 +6236,8 @@ export type Database = {
           postal_code: string | null
           quartier: string | null
           registration_completed: boolean | null
+          review_photos_enabled: boolean
+          reviews_enabled: boolean
           rejected_at: string | null
           rejection_reason: string | null
           review_count: number | null
@@ -6251,6 +6302,8 @@ export type Database = {
           deposit_min?: number | null
           deposit_percent?: number | null
           description_de?: string | null
+          description_fr?: string | null
+          description_it?: string | null
           description_en?: string | null
           email?: string | null
           explore_score?: number | null
@@ -6295,6 +6348,8 @@ export type Database = {
           postal_code?: string | null
           quartier?: string | null
           registration_completed?: boolean | null
+          review_photos_enabled?: boolean
+          reviews_enabled?: boolean
           rejected_at?: string | null
           rejection_reason?: string | null
           review_count?: number | null
@@ -6359,6 +6414,8 @@ export type Database = {
           deposit_min?: number | null
           deposit_percent?: number | null
           description_de?: string | null
+          description_fr?: string | null
+          description_it?: string | null
           description_en?: string | null
           email?: string | null
           explore_score?: number | null
@@ -6403,6 +6460,8 @@ export type Database = {
           postal_code?: string | null
           quartier?: string | null
           registration_completed?: boolean | null
+          review_photos_enabled?: boolean
+          reviews_enabled?: boolean
           rejected_at?: string | null
           rejection_reason?: string | null
           review_count?: number | null
@@ -6868,6 +6927,8 @@ export type Database = {
           duration_minutes: number
           id: string
           name_de: string
+          name_fr: string | null
+          name_it: string | null
           name_en: string
           price: number
           service_id: string
@@ -6888,6 +6949,8 @@ export type Database = {
           duration_minutes?: number
           id?: string
           name_de?: string
+          name_fr?: string | null
+          name_it?: string | null
           name_en?: string
           price?: number
           service_id?: string
@@ -6962,6 +7025,8 @@ export type Database = {
           curing_minutes: number | null
           daily_limit_per_staff: number | null
           description_de: string | null
+          description_fr: string | null
+          description_it: string | null
           description_en: string | null
           duration_minutes: number
           finishing_minutes: number | null
@@ -6969,6 +7034,8 @@ export type Database = {
           is_active: boolean | null
           material_type: string | null
           name_de: string
+          name_fr: string | null
+          name_it: string | null
           name_en: string
           photo_urls: string[] | null
           price: number
@@ -6989,6 +7056,8 @@ export type Database = {
           curing_minutes?: number | null
           daily_limit_per_staff?: number | null
           description_de?: string | null
+          description_fr?: string | null
+          description_it?: string | null
           description_en?: string | null
           duration_minutes: number
           finishing_minutes?: number | null
@@ -6996,6 +7065,8 @@ export type Database = {
           is_active?: boolean | null
           material_type?: string | null
           name_de: string
+          name_fr?: string | null
+          name_it?: string | null
           name_en: string
           photo_urls?: string[] | null
           price: number
@@ -7016,6 +7087,8 @@ export type Database = {
           curing_minutes?: number | null
           daily_limit_per_staff?: number | null
           description_de?: string | null
+          description_fr?: string | null
+          description_it?: string | null
           description_en?: string | null
           duration_minutes?: number
           finishing_minutes?: number | null
@@ -7023,6 +7096,8 @@ export type Database = {
           is_active?: boolean | null
           material_type?: string | null
           name_de?: string
+          name_fr?: string | null
+          name_it?: string | null
           name_en?: string
           photo_urls?: string[] | null
           price?: number
@@ -7057,6 +7132,7 @@ export type Database = {
           updated_at: string | null
           updated_by: string | null
           value_de: string | null
+          value_it: string | null
           value_en: string | null
           value_fr: string | null
         }
@@ -7070,6 +7146,7 @@ export type Database = {
           updated_at?: string | null
           updated_by?: string | null
           value_de?: string | null
+          value_it?: string | null
           value_en?: string | null
           value_fr?: string | null
         }
@@ -7083,6 +7160,7 @@ export type Database = {
           updated_at?: string | null
           updated_by?: string | null
           value_de?: string | null
+          value_it?: string | null
           value_en?: string | null
           value_fr?: string | null
         }
@@ -8919,6 +8997,8 @@ export type Database = {
           postal_code: string | null
           quartier: string | null
           registration_completed: boolean | null
+          review_photos_enabled: boolean
+          reviews_enabled: boolean
           rejected_at: string | null
           rejection_reason: string | null
           review_count: number | null

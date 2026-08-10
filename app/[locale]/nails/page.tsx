@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import SearchTemplate from "@/app/[locale]/_components/search/SearchTemplate";
 import { createAdminSupabaseClient } from "@/lib/supabase";
-import { generateCategoryListSchema, buildAlternates, generateBreadcrumbSchema, generateFaqSchema, CATEGORY_FAQS } from "@/lib/seo";
+import { generateCategoryListSchema, buildAlternates, generateBreadcrumbSchema, generateFaqSchema, CATEGORY_FAQS, safeJsonLd } from "@/lib/seo";
 import { getFilterAvailability } from "@/lib/search/filter-availability";
 
 export async function generateMetadata({
@@ -27,13 +27,13 @@ export async function generateMetadata({
   const titles: Record<string, string> = {
     de: "Beste Nagelstudios in Basel — Online buchen | Solen",
     en: "Best Nail Studios in Basel — Book Online | Solen",
-    fr: "Meilleurs salons d'ongles à Bâle — Réserver en ligne | Solen",
+    fr: "Meilleurs stores d'ongles à Bâle — Réserver en ligne | Solen",
     it: "Migliori studi unghie a Basilea — Prenota online | Solen",
   };
   const descriptions: Record<string, string> = {
     de: `${count > 0 ? `${count} ` : ""}Nagelstudios in Basel. Gel-Nägel, Maniküre, Nail Art & mehr. Vergleiche Preise, lies ★ Bewertungen und buche online. Sofort bestätigt.`,
     en: `${count > 0 ? `${count} ` : ""}nail studios in Basel. Gel nails, manicure, nail art & more. Compare prices, read ★ reviews and book online.`,
-    fr: `${count > 0 ? `${count} ` : ""}salons d'ongles à Bâle. Ongles gel, manucure, nail art & plus. Comparez les prix et réservez en ligne.`,
+    fr: `${count > 0 ? `${count} ` : ""}stores d'ongles à Bâle. Ongles gel, manucure, nail art & plus. Comparez les prix et réservez en ligne.`,
     it: `${count > 0 ? `${count} ` : ""}studi unghie a Basilea. Unghie gel, manicure, nail art e altro. Confronta prezzi e prenota online.`,
   };
 
@@ -63,7 +63,7 @@ export default async function Page({
     { name: "Solen", item: `https://solen.ch/${loc}` },
     { name: "Nails" },
   ]);
-  const faq = generateFaqSchema(CATEGORY_FAQS.nails);
+  const faq = generateFaqSchema(CATEGORY_FAQS.nails[loc] ?? CATEGORY_FAQS.nails.de);
   try {
     const supabase = createAdminSupabaseClient();
     const { data: salons } = await supabase
@@ -83,16 +83,18 @@ export default async function Page({
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(breadcrumb) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(faq) }}
       />
+      {/* A4-jsonld-escape (2026-07-27): jsonLd carries salon.name/slug read
+          straight from the DB. safeJsonLd escapes </script> breakout. */}
       {jsonLd && (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }}
         />
       )}
       {/* V3-D350 (2026-05-28): unified Airbnb-style search is the default render

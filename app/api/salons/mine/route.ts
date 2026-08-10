@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { getActiveSalonId } from "@/lib/active-salon";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
+import { validateBody, salonsMinePatchSchema } from "@/lib/validations";
 import type { Database } from "@/lib/database.types";
 
 // GET /api/salons/mine — returns the current user's ACTIVE salon (cookie-selected
@@ -26,12 +27,7 @@ export async function GET() {
   return NextResponse.json({ salon: active, salons: salons ?? [] });
 }
 
-// Swiss UID / MWST number — loose shape check (CHE-###.###.### [MWST]).
-// Salons enter it with or without the "MWST" suffix and with optional spaces;
-// we only sanity-check the structure, not Mod11 checksum. Empty/null clears it.
-const SWISS_UID_RE = /^CHE-?\d{3}\.?\d{3}\.?\d{3}(\s*(MWST|TVA|IVA|VAT))?$/i;
-
-// PATCH /api/salons/mine — update about_text + VAT/MWST settings (owner-only)
+// PATCH /api/salons/mine: update about_text + VAT/MWST settings (owner-only)
 export async function PATCH(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -40,31 +36,26 @@ export async function PATCH(req: NextRequest) {
   const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
   if (rateLimited) return rateLimited;
 
-  const body = await req.json();
-  const updateFields: Database["public"]["Tables"]["salons"]["Update"] = {};
-  if (typeof body.about_text_de === "string") updateFields.about_text_de = body.about_text_de;
-  if (typeof body.about_text_en === "string") updateFields.about_text_en = body.about_text_en;
-  if (typeof body.about_text_fr === "string") updateFields.about_text_fr = body.about_text_fr;
-  if (typeof body.about_text_it === "string") updateFields.about_text_it = body.about_text_it;
+  const rawBody = await req.json();
+  const { data: body, error: validationError } = validateBody(salonsMinePatchSchema, rawBody);
+  if (validationError) {
+    return NextResponse.json({ error: validationError.message }, { status: 400 });
+  }
 
-  // VAT/MWST registration. vat_registered toggles whether VAT is charged at
-  // all; vat_number is the salon's Swiss UID. Per-salon model (the salon is
-  // the merchant). vat_rate is intentionally NOT owner-editable here — the
-  // 8.1% standard lives in the schema default; surface a rate override only
-  // if/when a salon legitimately needs one.
-  if (typeof body.vat_registered === "boolean") updateFields.vat_registered = body.vat_registered;
-  if ("vat_number" in body) {
+  const updateFields: Database["public"]["Tables"]["salons"]["Update"] = {};
+  if (body.about_text_de !== undefined) updateFields.about_text_de = body.about_text_de;
+  if (body.about_text_en !== undefined) updateFields.about_text_en = body.about_text_en;
+  if (body.about_text_fr !== undefined) updateFields.about_text_fr = body.about_text_fr;
+  if (body.about_text_it !== undefined) updateFields.about_text_it = body.about_text_it;
+
+  // VAT/MWST registration. vat_registered toggles whether VAT is charged at all; vat_number
+  // is the salon's Swiss UID. Per-salon model (the salon is the merchant). vat_rate is
+  // intentionally NOT owner-editable here: the 8.1% standard lives in the schema default,
+  // surface a rate override only if/when a salon legitimately needs one.
+  if (body.vat_registered !== undefined) updateFields.vat_registered = body.vat_registered;
+  if (body.vat_number !== undefined) {
     const raw = body.vat_number;
-    if (raw === null || (typeof raw === "string" && raw.trim() === "")) {
-      updateFields.vat_number = null; // explicit clear.
-    } else if (typeof raw === "string" && SWISS_UID_RE.test(raw.trim())) {
-      updateFields.vat_number = raw.trim();
-    } else {
-      return NextResponse.json(
-        { error: "Invalid VAT number — expected a Swiss UID like CHE-123.456.789 MWST." },
-        { status: 400 },
-      );
-    }
+    updateFields.vat_number = raw === null || raw.trim() === "" ? null : raw.trim();
   }
 
   if (Object.keys(updateFields).length === 0) {

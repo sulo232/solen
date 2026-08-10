@@ -306,7 +306,9 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
       const response = await fetch(`/api/bookings/${props.bookingId}/cancel`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({}),
+        // A9-email-locale: thread the page's own locale through so a guest cancel (no
+        // profiles row to resolve locale from server-side) still gets its email in-language.
+        body: JSON.stringify({ locale }),
       });
       if (!response.ok) {
         const data = await response.json().catch(() => ({}));
@@ -457,7 +459,7 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
                     {props.durationMinutes ? <span>{props.durationMinutes} min</span> : null}
                   </div>
                 </div>
-                <ChevronRight size={17} className="shrink-0 text-s-ink-3" aria-hidden />
+                <ChevronRight size={17} className="shrink-0 text-s-ink-2" aria-hidden />
               </button>
             ) : (
               <div className="flex items-center gap-3 p-4">
@@ -514,10 +516,10 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
             {props.remainingAtSalonLabel && isPaid ? (
               <>
                 <div className="flex items-center justify-between gap-3">
-                  <span className="inline-flex items-center gap-1.5 text-[13px] text-s-ink-3">
+                  <span className="inline-flex items-center gap-1.5 text-[13px] text-s-ink-2">
                     {t("paidOnlineNow")}
                   </span>
-                  <span className="shrink-0 text-[13px] text-s-ink-3 tabular-nums">{props.paidNowLabel}</span>
+                  <span className="shrink-0 text-[13px] text-s-ink-2 tabular-nums">{props.paidNowLabel}</span>
                 </div>
                 <div className="mt-3 flex items-end justify-between gap-3 border-t border-s-border pt-3">
                   <span className="font-display text-[14.5px] font-semibold tracking-[-0.01em] text-s-ink">

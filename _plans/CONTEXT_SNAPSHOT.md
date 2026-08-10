@@ -2,22 +2,41 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-09T12:52:24 (trigger: auto)
-- branch: claude/agent-flow-design-overhaul-2af2c2
+- taken: 2026-08-01T19:32:14 (trigger: auto)
+- branch: claude/principles-security-audit-0ae738
 
 ## git
 ```
-405613578 What has to be committed and what has to be said, from what survived today
-5d0077fe0 He got the same thing three times, and the check for it switched itself off on the third
-f18e38ff4 The whole enforcement estate sits in one folder with no version control and no backup
-1eafccf90 Forms is written down now, so the design system covers all of it
-967b43128 The comparison page shows what actually shipped, not what it looked like this morning
+5354b0ec2 Home matches the mockup: grid out, Inspo pill in, teaser off mobile
+888c1dd1e I4 and I5, plus a real silent no-op found on the way
+b547aec3d Evidence on the I2-contradiction box: measured, with commit shas
+46a3ed064 Home gets the mockup chrome, and the clipped category row is fixed
+cdb3391dc I3: home page section list reconciled with the mockup
+```
+```
+M _design-system/COMPONENT_REGISTRY.md
+ M _design-system/components/CategoryMobileRails.md
+ M _design-system/components/HomeSearchPill.md
+ M _plans/HOME_V3_CATEGORY_MAP.md
+ M app/[locale]/_components/homepage/HomeSearchPill.tsx
+ M app/[locale]/_components/layout/Header.tsx
+ M app/[locale]/_components/search/CategoryMobileRails.tsx
+ M app/[locale]/inspo/page.tsx
+ M app/[locale]/page.tsx
+?? _design-system/components/ContinueCard.md
+?? app/[locale]/_components/homepage/ContinueCard.tsx
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
-44 | SYSTEM OVERHAUL , seven overhauls + a two-phase working protocol (owner dictation 2026-08-07: agent/mockup flow depth, "make sets", research flow as a new system, the design system + all its documents, the repetition problem, other-overhaul suggestions, and a system for OUTPUT + QUESTIONS + the two-phase flow) | **ACTIVE** (2026-08-07)
-43 | COPY + VOICE LAW , how we write, in four languages (owner 2026-07-29 "research everything and make a whole principle about when you're writing something, how to do it") | **ACTIVE** (2026-07-29)
-42 | PRINCIPLE RESEARCH , deep-research every non-design principle we already have (backend, security, silent-no-op, psychology, i18n, motion, the rest of `_rules/*`) | **ACTIVE** (2026-07-29)
+54 | HOME V3 , cities out, cards matched to real, category 3D grid + floating map, walk-in inside Barber, Inspo | **ACTIVE** (2026-07-31)
+53 | HOME V3 mockup rebuilt from the REAL home page sections (owner 10-ask dictation + 4 annotated shots) | **ACTIVE** (2026-07-31)
+52 | SCREEN RESEARCH , wide corpus sweep of real booking apps, every screen archetype, then the change list | **ACTIVE** (2026-07-29)
+46 | ALL-LANGUAGE SWEEP (de/en/fr/it), running unattended | **ACTIVE** (2026-07-27)
+45 | THE 9, RUN AS A LOOP (owner: "fix each 9 autonomously continuously jst park ones u cant do") | **ACTIVE** (2026-07-27)
+44 | OWNER ANSWERS to the 9 open items (moderation + translation + price law + stock photos + ToS photo rights + dashboard layout + restore drill + incident principle) | **ACTIVE** (2026-07-27)
+43 | THE LOOP: implement every remaining finding (owner correction) | **ACTIVE** (2026-07-27)
+42 | IMPLEMENT the missing principles (owner approved, full control except big design changes) | **ACTIVE** (2026-07-26)
+41 | MISSING PRINCIPLES research (whole estate: design + backend + security + my output + meta) | **ACTIVE** (2026-07-26)
 40 | MOTION + SHADOW LAW (research-first, then build as a loop) | **ACTIVE** (2026-07-25)
 33 | PDP consistency + motion (dates, reviews system, buttons, portfolio +N, frosted scroll) | **ACTIVE** (2026-07-25)
 31 | Home page overhaul (owner 10-ask dictation) , PIVOTED to whiteness/emptiness fix | **ACTIVE** (2026-07-24)
@@ -42,38 +61,11 @@ f18e38ff4 The whole enforcement estate sits in one folder with no version contro
 37 | Mockup ROOT-CAUSE + principles (owner 2026-07-19, 5th-round fury: "step back, use subagents") | **ACTIVE** (2026-07-19)
 36 | Mockup QUALITY system , stop shipping unchecked/unbalanced mockups (owner 2026-07-19, FURIOUS recurrence) | **ACTIVE** (2026-07-19)
 35 | Full frontend sweep , audit every surface vs the design system + mockup improvements (owner 2026-07-19, LOOP) | **ACTIVE** (2026-07-19)
+47 | POLISH DIAGNOSIS , why Airbnb reads finished and ours reads unfinished | **ACTIVE** (2026-07-28)
+48 | PRINCIPLE DEEP-RESEARCH , re-test every principle we already have against external evidence | **ACTIVE** (design) + handoff (rest) 2026-07-28
+50 | DESIGN principle deep-research (the rules we ALREADY have) | **ACTIVE** (2026-07-28)
+51 | DESIGN RE-ENGINEER , improve the system we have, measured against live Airbnb | **ACTIVE** (2026-07-28)
 
-## SYSTEM_OVERHAUL_2026-08-07.md
+## HOME_V3_CATEGORY_MAP.md
 Open boxes:
-- [ ] A4g-old Hole in the existing gate: `instrument-corroboration-gate.py` is armed and covers the "serve / render / preview" category, but NOT tunnel, DNS or file-permission claims, which is why it stayed silent while I made all three. Extending its category list is the fix, not a new gate. Blocked on the owner's answer to question 1 on the page.
-- [ ] Q1 Freeze new gates. **DISPATCHED**, drafter running in wf_3bc05071-7ad.
-- [ ] Q3 Mockup-first is over-enforced. Three atomic fixes:
-  - [ ] Q3c Collapse the mockup gate family into one aggregated deny. **STARTED, not finished.**
-- [ ] Q4 Sets. Owner chose **start it now, in parallel**, not a later session. **DISPATCHED.**
-- [ ] Q6 When measurement and his report disagree: **show him BOTH and let him decide.** Not "his eyes win". My recommendation was wrong. **DISPATCHED.**
-- [ ] Q8 One canon file per concern.
-- [ ] Q9 **The reply itself.** Three bans plus a research task:
-- [ ] Q13 Park it, keep going, surface at the end. Plus:
-  - [ ] Q13a A parked item must be WRITTEN INTO THE PLAN in the same turn
-- [ ] Q14 **I orchestrate design, I do not build it.** Two rules:
-- [ ] Q16 **Every stop-for-an-answer is lettered options, never prose** (owner 2026-08-07, decision 16).
-- [ ] B3 Design the replacement flow. **Re-scoped 2026-08-08:** the set-definition half is gone with C2. Still waiting on the gate decision in P6.
-- [ ] C3 Design the set pipeline. **Re-scoped 2026-08-08 after C2 was removed:** no longer waiting on a definition. It waits on the next real multi-screen job he names, and the pipeline for that shape gets used from `SETS.md`.
-- [ ] F5 **NOT built, and named honestly rather than ticked.** Redundancy INSIDE one reply (saying the same thing twice in one message) has no check. `reply-repeat-gate` was retired by his "replace, don't stack" decision, and it compared two SEPARATE messages anyway, so it never covered this. Today's word-overlap method would work within a message too, but it has not been done.
-- [ ] G1 Map what governs reply shape today
-- [ ] H1 Reconstruct the approved Taste Lab elicitation format precisely
-- [ ] I5 Define what happens to a NEW question that appears mid-loop (park or break)
-- [ ] J1 Ranked list of at most 8 candidates outside A-I, with evidence and cost-of-leaving-it
-- [ ] J2 Owner picks which ones enter scope
-- [ ] K0e **The rest of the Stop chain is the same problem, unfixed:** 64 hooks, 23 of which blocked me in this session alone. The link family and this one are two families out of however many. LAW_SYSTEM 6.2 requires the consolidation and it has now been applied twice.
-- [ ] R3 **THE OBJECTION, and it is the strongest one available, so it goes before the build.** A router IS a judgment call: "which checks apply here?" And this estate's routing decisions are exactly what failed today, every one of them made by hand and every one wrong:
-- [ ] R4 **So the design constraints, if we build it:** route CONSERVATIVELY (when unsure, include the check); make the routing VISIBLE (say which were selected and which were skipped, so a wrong route is catchable); and record every miss, so the routing improves instead of ossifying like the four above.
-- [ ] R5 Owner decision on this is R-PARKED below.
-- [ ] PARKED 2026-08-08 · Build the check ROUTER (think first, then select which checks apply to this incident) instead of running all 57 every time? · from: his 2026-08-08 proposal. My recommendation: YES, and it replaces the delete-or-consolidate question below rather than sitting beside it, because a router that skips irrelevant checks gets the same relief as deleting them without losing the check. Condition: it must route conservatively, name which checks it skipped, and log its misses, because every hand-made routing decision in this estate failed today by being too narrow.
-...(+20 more open boxes)
-
-## COPY_VOICE_LAW.md
-Open boxes:
-- [ ] D4 , the branch collision. **BLOCKED on OWNER DECISION D5**, which is what to do with
-- [ ] E2 , delete them. **BLOCKED on owner sign-off**, destructive and irreversible. (Checked this
-- [ ] F2 , **OWNER DECISION.** Pick one of the three closures above. My lean: option 1, a human read,
+- [ ] **CORRECTION (owner 2026-08-01, "i told you its loop harden"):** he said "integrate/wire

@@ -40,7 +40,7 @@ function OptA() {
   return (
     <div className={PILL}>
       <span className="inline-flex shrink-0 items-center gap-2"><Dot /><span className="font-display text-[14px] font-semibold" style={{ color: GREEN }}>Open</span></span>
-      <span className="mx-1 text-s-ink-3">·</span>
+      <span className="mx-1 text-s-ink-2">·</span>
       <span className="font-display text-[15px] font-semibold tabular-nums tracking-[-.01em] text-s-ink">{S.low}–{S.high} min</span>
       <span className="font-body text-[13px] text-s-ink-2">wait</span>
     </div>
@@ -142,7 +142,7 @@ export default function WalkinStatusBarOptions() {
         is what makes it read like a real app instead of a cramped label.
       </p>
       <div className="mt-6">
-        <p className="mb-2 font-body text-[12px] font-semibold uppercase tracking-wide text-s-ink-3">Now (too busy)</p>
+        <p className="mb-2 font-body text-[12px] font-semibold uppercase tracking-wide text-s-ink-2">Now (too busy)</p>
         <Current />
       </div>
       <Row tag="A" name="Minimal" note="Status + wait only. Drops the '5 ahead' count and the info icon; queue detail lives in the info popup you already have.">

@@ -28,7 +28,7 @@ import PartnerSignupForm from "@/components-legacy/partner/PartnerSignupForm";
  *     weight font-bold → font-semibold.
  *   - Hero overlay eyebrow: text-white/85 STAYS — overlay-on-image is the
  *     documented Hero variant exception (§5 Q25), white reads better on
- *     dark gradient than s-ink-3.
+ *     dark gradient than s-ink-2.
  *   - Eyebrows above sections (Marktplatz, So funktioniert's): accent blue
  *     → ink-3 grey (was text-s-accent decorative — §1.5 forbidden).
  *   - Pricing section h2: clamp(16,1.6vw,18) → Section H2 spec
@@ -69,10 +69,10 @@ const TITLES: Record<string, string> = {
 };
 
 const DESCRIPTIONS: Record<string, string> = {
-  de: "Werde Solen-Partner. Über 1'200 Schweizer Salons nutzen Solen für sofortige Bestätigungen, Direkt-Chat, einen vollen Kalender und tiefere Insights. In 60 Sekunden anmelden.",
-  en: "Become a Solen partner. Over 1,200 Swiss salons use Solen for instant bookings, direct chat, a full calendar, and deeper insights. Sign up in 60 seconds.",
-  fr: "Devenez partenaire Solen. Plus de 1 200 salons suisses utilisent Solen.",
-  it: "Diventa partner di Solen. Oltre 1.200 saloni svizzeri usano Solen.",
+  de: "Werde Solen-Partner. Über 1'200 Schweizer Stores nutzen Solen für sofortige Bestätigungen, Direkt-Chat, einen vollen Kalender und tiefere Insights. In 60 Sekunden anmelden.",
+  en: "Become a Solen partner. Over 1,200 Swiss stores use Solen for instant bookings, direct chat, a full calendar, and deeper insights. Sign up in 60 seconds.",
+  fr: "Devenez partenaire Solen. Plus de 1 200 stores suisses utilisent Solen.",
+  it: "Diventa partner di Solen. Oltre 1.200 store svizzeri usano Solen.",
 };
 
 export async function generateMetadata({
@@ -100,7 +100,7 @@ export async function generateMetadata({
           url: "/illustrations/business/business-hero.png",
           width: 1672,
           height: 941,
-          alt: "Solen für Salons — Modernes Hairsalon-Interieur bei goldener Stunde",
+          alt: "Solen für Stores — Modernes Store-Interieur bei goldener Stunde",
         },
       ],
     },
@@ -120,7 +120,7 @@ const STEPS = [
   {
     n: "01",
     title: "Anmelden",
-    copy: "60 Sekunden Formular. Name, Salon, Stadt — fertig.",
+    copy: "60 Sekunden Formular. Name, Store, Stadt — fertig.",
   },
   {
     n: "02",
@@ -155,7 +155,7 @@ const FAQS: { q: string; a: string }[] = [
   },
   {
     q: "Kann ich meine bestehende Kalender-Software importieren?",
-    a: "Ja. Wir unterstützen Imports aus den gängigen Schweizer Salon-Systemen. Sprich uns nach der Anmeldung an.",
+    a: "Ja. Wir unterstützen Imports aus den gängigen Schweizer Store-Systemen. Sprich uns nach der Anmeldung an.",
   },
   {
     q: "Wer kümmert sich um Zahlungen?",
@@ -198,7 +198,7 @@ export default async function FuerSalonsPage({
             <div className="relative aspect-[4/5] w-full md:aspect-[16/9]">
               <Image
                 src="/illustrations/business/business-hero.png"
-                alt="Modernes Hairsalon-Interieur bei goldener Stunde — eine Salonbesitzerin steht am Empfangstresen, im Hintergrund eine Stylistin bei der Arbeit mit einer Kundin."
+                alt="Modernes Store-Interieur bei goldener Stunde — eine Store-Besitzerin steht am Empfangstresen, im Hintergrund eine Stylistin bei der Arbeit mit einer Kundin."
                 fill
                 priority
                 sizes="(max-width: 768px) 100vw, (max-width: 1400px) 100vw, 1400px"
@@ -211,14 +211,14 @@ export default async function FuerSalonsPage({
               <div className="absolute inset-x-0 bottom-0 p-5 md:bottom-0 md:left-0 md:right-auto md:max-w-[640px] md:p-12 lg:p-16">
                 {/* Hero eyebrow — white-on-image variant. Tracking 0.16 → 0.08 canonical (§2.5). */}
                 <p className="mb-3 font-body text-[12px] font-semibold uppercase tracking-[0.08em] text-white/85">
-                  Für Salons
+                  Für Stores
                 </p>
                 <h1 className="font-display text-[clamp(26px,7vw,30px)] font-bold leading-[1.1] tracking-[-0.02em] text-white">
                   Solen für<br />dein Geschäft.
                 </h1>
                 <p className="mt-4 max-w-[460px] font-body text-[clamp(14px,3.5vw,16px)] font-normal leading-[1.4] tracking-[-0.005em] text-white/85">
                   Mehr Buchungen, weniger Aufwand. Vier Werkzeuge, eine Plattform.
-                  Über 1&apos;200 Salons buchen schon mit Solen.
+                  Über 1&apos;200 Stores buchen schon mit Solen.
                 </p>
                 <div className="mt-6 flex flex-wrap items-center gap-3 md:mt-8">
                   {/* Primary CTA — white overlay variant per §5 Q25. Recipe: 15px / 500 / sentence / -0.005em. */}
@@ -251,11 +251,11 @@ export default async function FuerSalonsPage({
         <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-center font-body text-[13px] font-medium text-s-ink-2 md:gap-x-10 md:text-[14px]">
           <span>
             <strong className="font-semibold text-s-ink">1&apos;200+</strong>{" "}
-            Schweizer Salons
+            Schweizer Stores
           </span>
-          <span aria-hidden className="h-1 w-1 rounded-full bg-s-ink-3" />
+          <span aria-hidden className="h-1 w-1 rounded-full bg-s-ink-2" />
           <span>Basel · Zürich · Bern · Lugano</span>
-          <span aria-hidden className="h-1 w-1 rounded-full bg-s-ink-3" />
+          <span aria-hidden className="h-1 w-1 rounded-full bg-s-ink-2" />
           <span className="inline-flex items-center gap-1.5">
             <Star size={12} fill="#FFC32B" stroke="none" aria-hidden />
             <strong className="font-semibold text-s-ink">4.9</strong>
@@ -300,7 +300,7 @@ export default async function FuerSalonsPage({
               Du musst nicht akquirieren.
             </h2>
             <p className="mt-5 max-w-[460px] font-body text-[clamp(14px,3.5vw,16px)] font-normal leading-[1.55] text-s-ink-2">
-              Über 1&apos;200 Schweizer Salons sind auf solen.ch sichtbar. Jeden Tag suchen Tausende Kund:innen nach Terminen — in Basel, Zürich, Bern, Lugano.
+              Über 1&apos;200 Schweizer Stores sind auf solen.ch sichtbar. Jeden Tag suchen Tausende Kund:innen nach Terminen — in Basel, Zürich, Bern, Lugano.
             </p>
             <Link
               href="/"

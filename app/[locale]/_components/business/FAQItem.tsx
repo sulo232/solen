@@ -37,7 +37,7 @@ export function FAQItem({ q, a, defaultOpen = false }: FAQItemProps) {
           size={18}
           strokeWidth={2.5}
           aria-hidden
-          className="shrink-0 text-s-ink-3 transition-transform duration-200 ease-glide group-open:rotate-180"
+          className="shrink-0 text-s-ink-2 transition-transform duration-200 ease-glide group-open:rotate-180"
         />
       </summary>
       <div className="mt-3 font-body text-[14px] font-normal leading-[1.55] text-s-ink-2">

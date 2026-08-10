@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Owner decisions, what is left for you</title>
+<!--
+  NOT a product UI mockup, so it does not live in public/_mockups/ and there is no route to
+  capture as a BEFORE. This is a readout of the owner's own open decisions, built because the
+  owner said "im on my phone cant open any file" and every item had been handed to them as a
+  file path they cannot tap.
+
+  Grounded-in: _plans/OWNER_ANSWERS_BATCH.md
+  Every line on this page is transcribed from a real ledger row, none of it invented:
+    item 1  , _plans/PRINCIPLES_LOOP.md line 295 (imagery-icons-02, AWAITING OWNER)
+    item 2  , _plans/MOCKUP_QUEUE.md line 79 (sweep-nail-tech-dup, BLOCKED-ON-OWNER)
+    items 3,4 , _plans/FOLDER_CLEANUP_HANDOFF.md line 80 (OWNER DECISIONS OUTSTANDING)
+    item 5  , _plans/BACKEND_FIX_TRACKER.md line 32 (no-show cron auto-charge basis)
+    item 6  , _plans/BOOKING_POLISH.md line 31 (B18, schema fork A/B)
+    item 7  , _plans/BOOKING_POLISH.md line 53 (B3, arrows)
+    item 8  , this session, launchctl refused 3 ways, plist written and plutil clean
+    item 9  , _plans/BACKEND_HEALTH_AUDIT_2026-07-14.md line 134
+    parked  , _plans/OWNER_ANSWERS_BATCH.md H2, parked by the owner 2026-07-28
+  Exists-check: `npm run exists decisions` ran this turn (1 hit, an unrelated graveyard row);
+  `npm run exists status` returns only salon-state chips, no readout surface exists.
+  The _plans files stay the source of truth; this page renders them, it does not replace them.
+  Web is white-only. No dark-mode CSS in this file, by law.
+  Type: 30 anchor / 17 item / 15 body / 13 meta = four sizes, anchor 2.0x body.
+-->
+<style>
+  :root{
+    --ink:#0A0A0A; --ink-2:#6B6B6B; --bg:#FFFFFF; --sunken:#F4F4F5;
+    --line:#E4E4E7; --good:#16A34A; --money:#EA580C;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    font-size:15px; line-height:1.5;
+    padding-bottom:calc(32px + env(safe-area-inset-bottom));
+  }
+  .wrap{max-width:640px;margin:0 auto;padding:0 16px}
+  header{padding:32px 0 20px}
+  h1{font-size:30px;line-height:1.15;margin:0 0 8px;font-weight:600;letter-spacing:-0.02em}
+  .sub{color:var(--ink-2);margin:0}
+  .band{
+    background:var(--sunken);border-radius:16px;padding:14px 16px;margin:0 0 28px;
+    display:flex;gap:20px;flex-wrap:wrap
+  }
+  .stat b{display:block;font-size:17px;font-weight:600;font-variant-numeric:tabular-nums}
+  .stat span{color:var(--ink-2);font-size:13px}
+  h2{
+    font-size:13px;font-weight:600;color:var(--ink-2);margin:28px 0 12px;
+    padding-bottom:8px;border-bottom:1px solid var(--line)
+  }
+  .item{padding:16px 0;border-bottom:1px solid var(--line)}
+  .item:last-child{border-bottom:0}
+  .n{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:24px;height:24px;border-radius:999px;background:var(--sunken);
+    font-size:13px;font-variant-numeric:tabular-nums;margin-right:8px;flex:none
+  }
+  .q{font-size:17px;font-weight:600;margin:0 0 6px;line-height:1.35}
+  .item p{margin:0 0 8px;color:var(--ink-2)}
+  .rec{
+    display:block;background:var(--sunken);border-radius:12px;
+    padding:10px 12px;margin-top:10px;color:var(--ink)
+  }
+  .rec b{color:var(--good)}
+  .rec.money b{color:var(--money)}
+  .fork{margin:8px 0 0;padding-left:18px;color:var(--ink-2)}
+  .fork li{margin:2px 0}
+  .done{color:var(--ink-2)}
+  .done b{color:var(--ink);font-weight:600}
+  footer{margin-top:32px;padding-top:16px;border-top:1px solid var(--line);color:var(--ink-2);font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>What is left for you</h1>
+  <p class="sub">Nine things. All of them need you, not me.</p>
+</header>
+
+<div class="band">
+  <div class="stat"><b>7</b><span>decisions</span></div>
+  <div class="stat"><b>2</b><span>only you can run</span></div>
+  <div class="stat"><b>41/41</b><span>mockups built</span></div>
+  <div class="stat"><b>2,468</b><span>rows backed up</span></div>
+</div>
+
+<h2>Decisions</h2>
+
+<div class="item">
+  <p class="q"><span class="n">1</span>Should photos be checked before they go live?</p>
+  <p>Salon and review photos: wait for approval, or appear instantly?</p>
+  <span class="rec"><b>My rec: instantly</b>, with fast takedown. The report button and admin removal already work. A queue means somebody checks it every day, forever, and if nobody does, salons upload and see nothing. Worth revisiting around 50 salons.</span>
+</div>
+
+<div class="item">
+  <p class="q"><span class="n">2</span>Do you still want tier badges for nail techs?</p>
+  <p>Junior, senior, master. There is a separate nail tech profile page that duplicates the normal staff page. Nothing links to it and its switch is off, so it is dead twice over.</p>
+  <span class="rec"><b>Yes</b> and I fold the badge into the staff page. <b>No</b> and I delete the page. Either way one page disappears.</span>
+</div>
+
+<div class="item">
+  <p class="q"><span class="n">3</span>Where do your screenshots live permanently?</p>
+  <span class="rec"><b>My rec: leave them exactly where they are.</b> Renaming a folder that works buys nothing and breaks paths.</span>
+</div>
+
+<div class="item">
+  <p class="q"><span class="n">4</span>The old duplicate code folder: rename or delete?</p>
+  <span class="rec"><b>My rec: rename.</b> Reversible, and the disk space is not worth something you cannot undo.</span>
+</div>
+
+<div class="item">
+  <p class="q"><span class="n">5</span>No shows: charge automatically, or only when the salon says so?</p>
+  <p>Right now a timer charges automatically.</p>
+  <span class="rec money"><b>My rec: only when the salon marks it.</b> A timer takes real money for an appointment that may have been cancelled by phone.</span>
+</div>
+
+<div class="item">
+  <p class="q"><span class="n">6</span>Multi service bookings: a fixed cap, or salon rules?</p>
+  <ul class="fork">
+    <li><b>A</b> Each salon sets a maximum number of services per appointment.</li>
+    <li><b>B</b> Each salon says which services cannot go together. The rest grey out.</li>
+  </ul>
+  <span class="rec"><b>My rec: B.</b> A flat number is arbitrary and would block cut plus colour plus treatment, which is one real appointment. Your pick decides the database shape, so I cannot start without it.</span>
+</div>
+
+<div class="item">
+  <p class="q"><span class="n">7</span>The arrows on tappable rows: animate them or remove them?</p>
+  <span class="rec"><b>My rec: remove.</b> Once the whole row is tappable, the arrow says nothing.</span>
+</div>
+
+<h2>Only you can run these</h2>
+
+<div class="item">
+  <p class="q"><span class="n">8</span>Switch on the nightly backup</p>
+  <p>One command on your Mac. I tried three ways this session and all three were refused. Everything else is finished and verified.</p>
+  <span class="rec"><b>Already backed up today:</b> 24 tables, 2,468 rows, on disk and in storage.</span>
+</div>
+
+<div class="item">
+  <p class="q"><span class="n">9</span>Turn on leaked password protection</p>
+  <p>A switch in the Supabase dashboard, about ten seconds. Flagged 14 July. I cannot see the dashboard, so I cannot confirm whether it is still off.</p>
+</div>
+
+<h2>Parked by you</h2>
+<div class="item"><p class="done">The restore drill.</p></div>
+
+<h2>Two errors in my own lists</h2>
+<div class="item">
+  <p class="done"><b>Fabricated salon amenities</b> is still listed as your decision. It was fixed weeks ago.</p>
+  <p class="done"><b>Three booking items</b> show as done and open at the same time. The work shipped, the list did not follow. I will clean both up.</p>
+</div>
+
+<footer>
+  Fastest to answer: number 2. One word, and a dead page goes away.
+</footer>
+
+</div>
+</body>
+</html>

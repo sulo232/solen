@@ -7,6 +7,7 @@ import { X } from 'lucide-react';
 import { motion } from 'motion/react';
 import { formatCurrency } from '@/lib/format-currency';
 import ToggleCircle from './ToggleCircle';
+import { localizedField, localizedFieldOrNull } from "@/lib/i18n/localized-field";
 
 export interface SheetService {
   id: string;
@@ -75,8 +76,8 @@ export default function ServiceDetailSheet({
   optionIdRef.current = optionId;
 
   const name = (s: { name_de: string; name_en: string }) =>
-    locale === 'en' ? s.name_en : s.name_de;
-  const desc = locale === 'en' ? service.description_en : service.description_de;
+    localizedField(s as unknown as Record<string, unknown>, 'name', locale);
+  const desc = localizedFieldOrNull(service as unknown as Record<string, unknown>, 'description', locale);
 
   const hasOptions = options.length > 0;
   const chosenOption = optionId ? options.find((o) => o.id === optionId) ?? null : null;

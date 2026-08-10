@@ -20,6 +20,7 @@ import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { formatQuartier } from "@/lib/basel-neighborhoods";
+import { CATEGORY_LABEL } from "@/app/[locale]/_components/search/SalonResultCard";
 import ProfileTabs, {
   type ProfilePastBookingTile,
   type ProfileSavedSalonTile,
@@ -35,7 +36,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
 // Joined shapes. Supabase types to-one joins loosely (object | array); `one()` below
 // normalizes both, same pattern the rest of the codebase uses for these joins.
-type PastBookingSalon = { name?: string | null; slug?: string | null; cover_photo_url?: string | null };
+type PastBookingSalon = { name?: string | null; slug?: string | null; cover_photo_url?: string | null; categories?: string[] | null };
 type PastBookingService = { name_de?: string | null; name_en?: string | null };
 type PastBookingRow = {
   id: string;
@@ -53,6 +54,7 @@ type SalonRow = {
   cover_photo_url: string | null;
   gallery_urls: string[] | null;
   quartier: string | null;
+  categories: string[] | null;
 };
 
 function one<T>(v: T | T[] | null | undefined): T | null {
@@ -72,7 +74,16 @@ function buildTilePhotos(cover: string | null, gallery: string[] | null): string
   return out;
 }
 
-function toSalonTile(s: SalonRow): { slug: string; name: string; photos: string[]; city: string | null } {
+// imagery-icons-03 (2026-07-27): real content-descriptive alt text for the collage
+// tiles needs SOME structured metadata beyond the name already shown as adjacent
+// text (accessibility-06's rule); the salon's own category is what's actually
+// available here, reusing SalonResultCard's shared label map.
+function categoryLabel(categories: string[] | null): string | null {
+  const first = categories?.[0];
+  return first ? (CATEGORY_LABEL[first] ?? null) : null;
+}
+
+function toSalonTile(s: SalonRow): { slug: string; name: string; photos: string[]; city: string | null; category: string | null } {
   return {
     slug: s.slug,
     name: s.name,
@@ -80,6 +91,7 @@ function toSalonTile(s: SalonRow): { slug: string; name: string; photos: string[
     // formatQuartier, not a local capitalize: the raw slug ("st_johann") leaked on cards before,
     // and the shared helper exists exactly for that (reviewer catch 2026-07-21).
     city: s.quartier ? formatQuartier(s.quartier) : null,
+    category: categoryLabel(s.categories),
   };
 }
 
@@ -106,7 +118,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
     supabase
       .from("bookings")
       .select(
-        "id, salon_id, service_id, starts_at, price_paid, salon:salons(name, slug, cover_photo_url), service:services(name_de, name_en)",
+        "id, salon_id, service_id, starts_at, price_paid, salon:salons(name, slug, cover_photo_url, categories), service:services(name_de, name_en)",
       )
       .eq("user_id", userId)
       .in("status", ["completed", "confirmed", "no_show"])
@@ -120,7 +132,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
     // shape as the search API's public listing so no fabricated data ever renders.
     supabase
       .from("salons")
-      .select("slug, name, cover_photo_url, gallery_urls, quartier")
+      .select("slug, name, cover_photo_url, gallery_urls, quartier, categories")
       .eq("is_active", true)
       .order("average_rating", { ascending: false })
       .limit(8),
@@ -153,6 +165,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
         salonSlug: salon.slug ?? null,
         salonName: salon.name ?? "",
         salonPhoto: salon.cover_photo_url ?? null,
+        salonCategory: categoryLabel(salon.categories ?? null),
         serviceName: svcName,
         dateLabel,
         price: b.price_paid,
@@ -166,7 +179,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
   if (favIds.length > 0) {
     const { data: salonRows, error } = await supabase
       .from("salons")
-      .select("id, slug, name, cover_photo_url, gallery_urls, quartier")
+      .select("id, slug, name, cover_photo_url, gallery_urls, quartier, categories")
       .in("id", favIds)
       .eq("is_active", true);
     if (error) console.error("[ProfileHub] saved salons fetch error:", error.message);

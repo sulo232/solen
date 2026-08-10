@@ -12,6 +12,7 @@ import { DAY_KEYS, DAY_LABEL, withDateParam, type DayKey } from "./_shared";
 import { StatusInline } from "./StatusInline";
 import { RatingStars } from "../primitives";
 import { cn } from "@/lib/utils";
+import { formatCount } from "@/lib/format";
 
 /**
  * SalonSidebar — V3-D230 (2026-05-27, austerity strip per real Fresha capture).
@@ -133,7 +134,7 @@ export function SalonSidebar({
           // 2026-05-30: links → saturated blue (s-accent), no underline (user direction; reverses V3-D335).
           className="font-body text-[18px] font-medium leading-none text-s-accent transition-[colors,transform] hover:text-s-accent-deep active:scale-[0.98] active:duration-[80ms] active:ease-glide md:text-[20px]"
         >
-          ({salon.review_count.toLocaleString("de-CH")})
+          {formatCount(salon.review_count, locale)}
         </button>
       </div>
 
@@ -162,7 +163,7 @@ export function SalonSidebar({
             size={15}
             strokeWidth={2.25}
             className={cn(
-              "ml-auto shrink-0 text-s-ink-3 transition-transform duration-150",
+              "ml-auto shrink-0 text-s-ink-2 transition-transform duration-150",
               showHours && "rotate-180",
             )}
           />
@@ -192,7 +193,7 @@ export function SalonSidebar({
 
       {/* 6. Address + Route */}
       <div className="font-body mt-3 flex items-start gap-2 text-[15px] text-s-ink-2">
-        <MapPin size={16} className="mt-0.5 shrink-0 text-s-ink-3" strokeWidth={2} />
+        <MapPin size={16} className="mt-0.5 shrink-0 text-s-ink-2" strokeWidth={2} />
         <div className="min-w-0 flex-1">
           <span>{fullAddress}</span>
           {" "}
@@ -249,7 +250,7 @@ function BuyRow({ title, subtitle, href }: { title: string; subtitle: string; hr
         <div className="font-body text-[15px] font-medium text-s-ink md:text-[16px]">
           {title}
         </div>
-        <div className="font-body mt-1 text-[13px] leading-snug text-s-ink-3 md:text-[14px]">
+        <div className="font-body mt-1 text-[13px] leading-snug text-s-ink-2 md:text-[14px]">
           {subtitle}
         </div>
       </div>

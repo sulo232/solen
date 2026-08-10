@@ -76,7 +76,7 @@ function Screen() {
         </div>
 
         <div className={`absolute left-1/2 top-[86px] z-10 flex -translate-x-1/2 items-center gap-1.5 rounded-full px-3 py-1.5 text-[12.5px] font-medium text-s-ink-2 ${FROST}`}>
-          <Loader2 size={13} className="animate-spin text-s-ink-3" /> Updating this area
+          <Loader2 size={13} className="animate-spin text-s-ink-2" /> Updating this area
         </div>
 
         <Pin top="230px" left="90px" />

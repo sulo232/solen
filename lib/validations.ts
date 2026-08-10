@@ -23,6 +23,18 @@ export const tosAcceptSchema = z.object({
   version: z.string().min(1).max(100),
 });
 
+// seo-comms-08: the salon_directory outreach unsubscribe link's own body.
+export const unsubscribeSchema = z.object({
+  email: z.string().email().max(320),
+});
+
+// POST /api/profile/accept-tos: a second, separately-named TOS-accept route (field is
+// `tos_version`, not `version`, so it is its own schema rather than a duplicate of the
+// one above). input-abuse-07 (2026-07-27).
+export const profileAcceptTosSchema = z.object({
+  tos_version: z.string().min(1).max(100),
+});
+
 // POST /api/me/consent: mirrors the "necessary, analytics, marketing" shape CookieConsent.tsx
 // already collects client-side, but only `analytics` has a server-side mirror (profiles.
 // analytics_consent) since that is the only category lib/posthog-server.ts gates on.
@@ -829,6 +841,14 @@ export const flagReviewSchema = z.object({
 // review, or user. Enum values mirror the live content_reports CHECK constraints
 // (supabase/migrations/078_content_reports.sql) via lib/content-reports.ts, the single
 // source of truth for the report taxonomy.
+// POST /api/reviews/translate: on-read translation of review text into one of the four app
+// locales. `ids` is bounded here as well as in the route , an unbounded list would fan out
+// into an unbounded number of model calls, which is the abuse case for this endpoint.
+export const reviewTranslateSchema = z.object({
+  ids: z.array(uuid).min(1).max(20),
+  locale: z.enum(["de", "en", "fr", "it"]),
+});
+
 export const reportSubmitSchema = z.object({
   targetType: z.enum(REPORT_TARGET_TYPES),
   targetId: uuid,
@@ -910,6 +930,10 @@ export const adminNailGenerateSchema = z.object({
 
 export const bookingCancelSchema = z.object({
   reason: z.string().max(500).optional(),
+  // Added 2026-07-27 (A9-email-locale): a guest canceller has no profiles row to resolve a
+  // locale from, so the locale-prefixed page they are on threads its own locale through here
+  // for the guest-branch cancellation email (falls back to "de" server-side if omitted).
+  locale: z.enum(["de", "en", "fr", "it"]).optional(),
 });
 
 // "cancelled" retired (audit finding #15, 2026-07-09): PATCH /api/bookings/[id] used to also
@@ -956,17 +980,27 @@ export const adminPurchaseRefundSchema = purchaseRefundSchema.extend({
 // CHF at the settings boundary (the executor converts to Rappen). percentage fees are
 // capped at 100 (you can never charge more than the customer paid). All fields optional
 // so the PATCH can update a single control; the allowlist in the route filters keys.
+//
+// trust-02 (2026-07-27): ToS §4.2 fixes the LATE-cancellation fee platform-wide at 50%
+// of booking value, and §4.3 lets a salon be MORE LENIENT than §4.1/§4.2 but "not
+// stricter". §4.1's free-cancellation window is 24h; §4.3's own worked example of
+// leniency is "free cancellation up to 2 hours before" i.e. a SMALLER free_cancel_hours
+// is more lenient (less notice required), a LARGER one is stricter (more notice
+// required than the platform promises). So the ceiling is cancellation_fee_value<=50
+// and free_cancel_hours<=24; there is no floor on either (a salon can always be more
+// generous). no_show_fee stays capped at 100 per §4.4, which explicitly charges the
+// full booking value on no-show, a different (and correctly higher) ceiling.
 export const salonPolicyUpdateSchema = z
   .object({
     cancellation_fee_type: z.enum(["free", "flat", "percentage"]).optional(),
     cancellation_fee_value: z.number().min(0).optional(),
     no_show_fee_type: z.enum(["free", "flat", "percentage"]).optional(),
     no_show_fee_value: z.number().min(0).optional(),
-    free_cancel_hours: z.number().int().min(1).max(168).optional(),
+    free_cancel_hours: z.number().int().min(1).max(24).optional(),
   })
   .refine(
-    (d) => d.cancellation_fee_type !== "percentage" || (d.cancellation_fee_value ?? 0) <= 100,
-    { message: "cancellation_fee_value must be <= 100 when type is percentage", path: ["cancellation_fee_value"] },
+    (d) => d.cancellation_fee_type !== "percentage" || (d.cancellation_fee_value ?? 0) <= 50,
+    { message: "cancellation_fee_value must be <= 50 when type is percentage (ToS §4.2 platform ceiling)", path: ["cancellation_fee_value"] },
   )
   .refine(
     (d) => d.no_show_fee_type !== "percentage" || (d.no_show_fee_value ?? 0) <= 100,
@@ -985,7 +1019,7 @@ export const salonPolicyUpdateSchema = z
 export const createCaseSchema = z.object({
   reason_code: z.enum([
     'salon_cancelled', 'no_show_salon', 'not_delivered',
-    'wrong_amount', 'double_charge', 'quality', 'other',
+    'wrong_amount', 'double_charge', 'quality', 'harassment', 'other',
   ]),
   description: z.string().min(20, 'Description must be at least 20 characters').max(1000),
   // Rappen; omitted/null with wants_refund=true => full refund of remaining.
@@ -1137,6 +1171,11 @@ export const serviceCreateSchema = z.object({
   duration_minutes: z.number().int().min(5).max(480),
   price: z.number().min(0).max(100000),
   description_de: z.string().max(1000).optional(),
+  // fr/it added 2026-07-27 alongside the DB columns. name_fr/name_it were already here; their
+  // description siblings were not, so a salon could correct a machine-translated NAME but not a
+  // machine-translated DESCRIPTION. A human must always be able to overwrite the machine.
+  description_fr: z.string().max(1000).optional(),
+  description_it: z.string().max(1000).optional(),
   buffer_minutes: z.number().int().min(0).max(120).optional(),
   processing_minutes: z.number().int().min(0).max(120).optional(),
   finishing_minutes: z.number().int().min(0).max(120).optional(),
@@ -1266,8 +1305,14 @@ export const quartierSubscribeSchema = z.object({
   quartier: z.string().min(1).max(100),
 });
 
+// POST /api/directory/[id]/claim is a 2-step flow on the same endpoint: step 1 sends no
+// `code` (mints + emails one), step 2 sends `code` to verify it. Both fields are optional
+// here for that reason; the route itself decides which step ran based on `code`'s presence.
+// input-abuse-07 (2026-07-27): this schema previously used a `claim_code` field name that
+// matched no actual route (dead code), while the real route took `code` unvalidated.
 export const directoryClaimSchema = z.object({
-  claim_code: z.string().min(4).max(20),
+  code: z.string().min(4).max(20).optional(),
+  locale: z.enum(["de", "en", "fr", "it"]).optional(),
 });
 
 export const trackViewSchema = z.object({
@@ -1343,4 +1388,217 @@ export const resendAccessSchema = z
   .refine((d) => (d.email ? 1 : 0) + (d.phone ? 1 : 0) === 1, {
     message: "Provide exactly one of email or phone",
   });
+
+// ─── input-abuse-07 batch (2026-07-27) ────────────────────────────────────────
+// Body schemas for routes that previously hand-rolled an inline check instead of
+// going through validateBody, per _rules/SECURITY_RULES.md Rule S4/S5.
+
+export const voucherValidateSchema = z.object({
+  code: z.string().min(4).max(40),
+  salon_id: uuid,
+});
+
+export const voucherConfirmSchema = z.object({
+  payment_intent_id: z.string().min(1).max(200),
+  voucher_id: uuid,
+});
+
+export const walkinConfirmSchema = z.object({
+  payment_intent_id: z.string().min(1).max(200),
+  token: z.string().min(1).max(500).optional(),
+});
+
+export const servicesReorderSchema = z.object({
+  salon_id: uuid,
+  order: z
+    .array(z.object({ id: uuid, sort_order: z.number().int().min(0) }))
+    .min(1)
+    .max(200),
+});
+
+export const staffUpdateSchema = z.object({
+  name: z.string().min(1).max(200).optional(),
+  avatar_url: z.string().url().max(2000).nullable().optional(),
+  specialties: z.array(z.string().max(100)).max(50).optional(),
+  is_active: z.boolean().optional(),
+  commission_rate: z.number().min(0).max(100).nullable().optional(),
+  languages: z.array(z.string().max(50)).max(20).optional(),
+  instagram_url: z.string().url().max(500).nullable().optional(),
+  years_experience: z.number().int().min(0).max(80).nullable().optional(),
+  permissions: z.record(z.string(), z.unknown()).optional(),
+});
+
+export const reviewFlagSchema = z.object({
+  reason: z.string().min(1).max(500),
+});
+
+export const comingSoonNotifySchema = z.object({
+  email: z.string().email().max(320),
+  feature: z.string().max(64).optional(),
+});
+
+export const profileNotificationsMarkReadSchema = z.object({
+  all: z.boolean().optional(),
+  ids: z.array(uuid).min(1).max(100).optional(),
+});
+
+export const profileFavoritesSchema = z.object({
+  salon_id: uuid,
+});
+
+// PATCH /api/slots/[id]: two accepted body shapes (new drag-and-drop starts_at/ends_at,
+// or legacy date/start_time), plus an optional staff_member_id reassignment.
+export const salonsActiveSchema = z.object({
+  salon_id: uuid,
+});
+
+export const staffScheduleAutoApplySchema = z.object({
+  salon_id: uuid,
+});
+
+// api-contracts-08: BATCH_KEYS bounds the array length AND the enum, so an unbounded
+// request array (resource-exhaustion vector) is rejected here rather than in the route.
+const DASHBOARD_BATCH_KEYS = ["bookings_today", "revenue_month", "reviews_pending", "walkin_queue", "activity_feed"] as const;
+// Matches DEFAULT_SECTIONS keys in app/api/admin/homepage-sections/route.ts. A partial
+// object is fine (only changed keys need to be sent); an unknown key is rejected rather
+// than silently persisted into platform_settings.value.
+export const adminTestSalonSeedSchema = z.object({
+  salon_id: uuid,
+  feature: z.enum(["walkin_queue", "bookings", "reviews", "reset"]),
+});
+
+export const adminTestSalonCreateSchema = z.object({
+  categories: z.array(z.string().max(30)).max(10).optional(),
+  name: z.string().min(1).max(100).optional(),
+});
+
+export const adminSeedTestSalonsSchema = z.object({
+  cities: z.array(z.string().max(50)).max(20).optional(),
+});
+
+export const adminPreviewSalonSchema = z.object({
+  salon_id: uuid,
+});
+
+export const adminHomepageSectionsSchema = z.object({
+  sections: z
+    .object({
+      quartier: z.boolean().optional(),
+      trending: z.boolean().optional(),
+      nearby: z.boolean().optional(),
+      new_salons: z.boolean().optional(),
+      rebook: z.boolean().optional(),
+      reviews: z.boolean().optional(),
+      last_minute: z.boolean().optional(),
+      featured: z.boolean().optional(),
+      social_proof: z.boolean().optional(),
+      partner_cta: z.boolean().optional(),
+    })
+    .strict(),
+});
+
+export const adminContentPutSchema = z.object({
+  value_de: z.string().max(20000).optional(),
+  value_en: z.string().max(20000).optional(),
+  value_fr: z.string().max(20000).optional(),
+  // auto_override is a string override VALUE (see app/api/content/route.ts), not a flag.
+  auto_override: z.string().max(20000).nullable().optional(),
+});
+
+export const adminBadgePatchSchema = z.object({
+  name_de: z.string().min(1).max(60).optional(),
+  name_en: z.string().min(1).max(60).optional(),
+  icon: z.string().min(1).max(60).optional(),
+  color: z.string().min(1).max(60).optional(),
+  bg_color: z.string().min(1).max(60).optional(),
+});
+
+export const salonsAiInfoSchema = z.object({
+  field: z.enum(["description", "atmosphere", "expertise"]).optional(),
+});
+
+export const verifyPhoneSendSchema = z.object({
+  phone: z.string().min(6).max(20),
+});
+
+export const verifyPhoneCheckSchema = z.object({
+  phone: z.string().min(6).max(20),
+  code: z.string().min(4).max(10),
+});
+
+export const nailHandChartSchema = z.object({
+  clientId: z.string().min(1).max(200),
+  notes: z.record(z.string(), z.unknown()).optional(),
+});
+
+export const nailAiHistoryPatchSchema = z.object({
+  id: uuid,
+  salon_id: uuid,
+  is_saved: z.boolean().optional(),
+});
+
+export const dashboardBatchSchema = z.object({
+  salonId: uuid,
+  requests: z.array(z.enum(DASHBOARD_BATCH_KEYS)).min(1).max(DASHBOARD_BATCH_KEYS.length),
+});
+
+// Swiss UID / MWST number, loose shape check (structure only, not Mod11 checksum).
+// null or "" clears the field; a non-empty string must match the shape.
+const SWISS_UID_RE = /^CHE-?\d{3}\.?\d{3}\.?\d{3}(\s*(MWST|TVA|IVA|VAT))?$/i;
+export const salonsMinePatchSchema = z.object({
+  about_text_de: z.string().max(5000).optional(),
+  about_text_en: z.string().max(5000).optional(),
+  about_text_fr: z.string().max(5000).optional(),
+  about_text_it: z.string().max(5000).optional(),
+  vat_registered: z.boolean().optional(),
+  vat_number: z
+    .string()
+    .nullable()
+    .refine((v) => v == null || v.trim() === "" || SWISS_UID_RE.test(v.trim()), {
+      message: "Invalid VAT number: expected a Swiss UID like CHE-123.456.789 MWST.",
+    })
+    .optional(),
+});
+
+export const notifyReviewPostedSchema = z.object({
+  review_id: uuid,
+});
+
+export const notifyReviewRepliedSchema = z.object({
+  review_id: uuid,
+  reply_text: z.string().max(2000).optional(),
+});
+
+export const discoveryCollectionCreateSchema = z.object({
+  name: z.string().trim().min(1).max(60),
+  is_public: z.boolean().optional(),
+});
+
+export const discoveryCollectionPatchSchema = z
+  .object({
+    name: z.string().trim().min(1).max(60).optional(),
+    is_public: z.boolean().optional(),
+  })
+  .refine((d) => d.name !== undefined || d.is_public !== undefined, {
+    message: "Provide name and/or is_public",
+  });
+
+export const discoveryCollectionItemSchema = z.object({
+  item_id: uuid,
+});
+
+export const slotPatchSchema = z.object({
+  starts_at: z.string().datetime({ offset: true }).optional(),
+  ends_at: z.string().datetime({ offset: true }).optional(),
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  start_time: z.string().regex(/^\d{1,2}:\d{2}$/).optional(),
+  staff_member_id: uuid.nullable().optional(),
+});
+
+export const lastMinuteSettingsSchema = z.object({
+  salon_id: uuid,
+  enabled: z.boolean().optional(),
+  global_discount_percent: z.number().min(0).max(90).optional(),
+  service_overrides: z.record(z.string(), z.unknown()).optional(),
+});
 

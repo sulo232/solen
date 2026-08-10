@@ -17,9 +17,9 @@ That is a precise diagnosis. A fresh session opening this repo can learn *how ou
 | (`_plans/*_AUDIT.md`) | **`AUDIT_2026-07-16.md`** + `audit/<slug>.md` | Solen today vs each law: MATCH / PARTIAL / GAP / UNKNOWN, with evidence and a ranked recommendation |
 | `_design-system/QUESTIONS.md` | **`QUESTIONS.md`** | The forks only the owner can settle |
 
-## The 15 topics (owner's list, verbatim scope)
+## The 16 topics (owner's original 15, plus `privacy-data-protection` added 2026-07-27 per privacy-compliance-01: the owner's own diagnosis for why this folder exists, "it keeps making stuff up when I open a new session," applied with full force to privacy and had no topic file at all)
 
-`data-modeling` · `transactions-concurrency` · `migrations` · `backup-recovery` · `authn` · `authz` · `api-design` · `security` · `rate-limiting` · `file-storage` · `jobs-async` · `webhooks` · `caching` · `observability` · `reliability`
+`data-modeling` · `transactions-concurrency` · `migrations` · `backup-recovery` · `authn` · `authz` · `api-design` · `security` · `rate-limiting` · `file-storage` · `jobs-async` · `webhooks` · `caching` · `observability` · `reliability` · `privacy-data-protection`
 
 ## Evidence tiers (same vocabulary as `_design-system/RATIONALE.md` section 0)
 

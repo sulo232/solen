@@ -4,6 +4,7 @@ import * as React from "react";
 import { Star } from "lucide-react";
 import type { StaffMember } from "./_shared";
 import { Avatar, SeeAllButton } from "@/app/[locale]/_components/primitives";
+import { useTranslations } from "next-intl";
 
 /**
  * SalonTeam — V3-D234 (2026-05-27, austerity rebuild per real Fresha capture).
@@ -49,6 +50,7 @@ export function SalonTeam({
   slug: string;
   locale: string;
 }) {
+  const t = useTranslations("salonDetail");
   const openProfile = (id: string) => {
     // Owner 2026-07-24: a full focused profile PAGE, not a bottom-sheet over the PDP
     // ("I wish I didn't do that... just a focus on the person, not the bottom-sheet thing").
@@ -70,7 +72,7 @@ export function SalonTeam({
       {/* Title row + "Alle ansehen" → opens the booking flow's stylist picker */}
       <div className="flex items-baseline justify-between">
         <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
-          Team
+          {t("team")}
         </h2>
         {/* mockup-ok: link variant, ink text + chevron per owner 2026-07-19 (Team sits next
             to the busy avatar-scroll row and read too big/unbalanced as a pill); Services and

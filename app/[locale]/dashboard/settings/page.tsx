@@ -18,6 +18,7 @@ import SalonCard from "@/components-legacy/SalonCard";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { useLocale, useTranslations } from "next-intl";
 import { formatCurrency } from "@/lib/format-currency";
+import { resolveSwissLocale } from "@/lib/format";
 import type { Salon } from "@/lib/types";
 import { parseDate, today, getLocalTimeZone } from "@internationalized/date";
 import { DateTimePickerRange, type DateRangeValue } from "@/app/[locale]/_components/primitives/DateTimePicker";
@@ -162,13 +163,13 @@ function ProfileTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon
         <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("descriptionDeLabel")}</label>
         <textarea value={form.description_de} onChange={(e) => setForm({ ...form, description_de: e.target.value })}
           rows={3} maxLength={500}
-          className="w-full px-3 py-2 text-sm resize-none" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
+          className="w-full prose-measure px-3 py-2 text-sm resize-none" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
       </div>
       <div>
         <label className="block text-xs font-medium text-s-ink-2 mb-1">{t("descriptionEnLabel")}</label>
         <textarea value={form.description_en} onChange={(e) => setForm({ ...form, description_en: e.target.value })}
           rows={2} maxLength={500}
-          className="w-full px-3 py-2 text-sm resize-none" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
+          className="w-full prose-measure px-3 py-2 text-sm resize-none" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
@@ -514,7 +515,7 @@ function CancellationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
 
       {/* Guest preview */}
       <div className="flex items-start gap-2 bg-s-bg-sunken rounded-[12px] px-3.5 py-3">
-        <Eye size={15} className="text-s-ink-3 shrink-0 mt-0.5" />
+        <Eye size={15} className="text-s-ink-2 shrink-0 mt-0.5" />
         <p className="text-xs text-s-ink-2 leading-relaxed">
           <span className="font-semibold text-s-ink">{t("customersSee")}</span> {previewText}
         </p>
@@ -632,6 +633,7 @@ function VatRegistrationTab({ salon, onSave }: { salon: Salon; onSave: (d: Parti
 
 function VerificationTab({ salon }: { salon: Salon }) {
   const t = useTranslations("dashboard.settings");
+  const locale = useLocale();
   const [confirming, setConfirming] = useState(false);
 
   const handleVerify = async () => {
@@ -664,7 +666,7 @@ function VerificationTab({ salon }: { salon: Salon }) {
         </div>
       )}
       <div className="bg-s-bg-surface rounded-[12px] px-4 py-3 text-sm text-s-ink-2 space-y-1">
-        <p><span className="font-medium">{t("lastVerification")}</span> {salon.last_verified_at ? new Date(salon.last_verified_at).toLocaleDateString("de-CH") : "–"}</p>
+        <p><span className="font-medium">{t("lastVerification")}</span> {salon.last_verified_at ? new Date(salon.last_verified_at).toLocaleDateString(resolveSwissLocale(locale)) : "–"}</p> {/* em-dash-ok: pre-existing "no data" placeholder, not new copy */}
         <p><span className="font-medium">{t("cancellationPolicyLabel")}</span> {t("cancellationPolicyValue")}</p>
       </div>
     </div>
@@ -677,6 +679,7 @@ function VerificationTab({ salon }: { salon: Salon }) {
 
 function VacationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salon>) => Promise<void> }) {
   const t = useTranslations("dashboard.settings");
+  const locale = useLocale();
   const ext = salon as Salon & { vacation_start?: string | null; vacation_end?: string | null };
   const [start, setStart] = useState(ext.vacation_start ?? "");
   const [end, setEnd] = useState(ext.vacation_end ?? "");
@@ -739,7 +742,7 @@ function VacationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
         <div className="bg-s-amber-subtle border border-s-amber/20 rounded-[12px] px-4 py-3 flex items-center gap-3">
           <Palmtree size={16} className="text-s-star shrink-0" />
           <p className="text-sm text-s-star-text">
-            {t("vacationActive", { start: new Date(start).toLocaleDateString("de-CH"), end: new Date(end).toLocaleDateString("de-CH") })}
+            {t("vacationActive", { start: new Date(start).toLocaleDateString(resolveSwissLocale(locale)), end: new Date(end).toLocaleDateString(resolveSwissLocale(locale)) })}
           </p>
         </div>
       )}
@@ -1031,6 +1034,7 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
 
 function ClosuresTab({ salon }: { salon: Salon }) {
   const t = useTranslations("dashboard.settings");
+  const locale = useLocale();
   const [closures, setClosures] = useState<{ id: string; date: string; reason: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [date, setDate] = useState("");
@@ -1086,7 +1090,7 @@ function ClosuresTab({ salon }: { salon: Salon }) {
           {closures.map((c) => (
             <div key={c.id} className="flex items-center justify-between py-2 px-3 bg-s-bg-surface/50 rounded-btn border border-s-ink/5">
               <div>
-                <span className="text-sm data-text text-s-ink">{new Date(c.date).toLocaleDateString("de-CH")}</span>
+                <span className="text-sm data-text text-s-ink">{new Date(c.date).toLocaleDateString(resolveSwissLocale(locale))}</span>
                 {c.reason && <span className="text-xs text-s-ink/40 ml-2">{c.reason}</span>}
               </div>
               <button onClick={() => removeClosure(c.id)} className="text-s-ink/30 hover:text-s-coral transition-colors">
@@ -1390,7 +1394,7 @@ function MobileSettingsIndex({
     <div>
       {groups.map((group) => (
         <div key={group.label}>
-          <p className="text-[12px] font-bold uppercase tracking-[0.09em] text-s-ink-3 mt-4 mb-2 first:mt-0">
+          <p className="text-[12px] font-bold uppercase tracking-[0.09em] text-s-ink-2 mt-4 mb-2 first:mt-0">
             {group.label}
           </p>
           <div className="rounded-[16px] border border-s-border bg-white overflow-hidden">
@@ -1406,7 +1410,7 @@ function MobileSettingsIndex({
                   <Icon size={19} className="text-s-ink shrink-0" />
                   <span className="flex-1 font-heading font-semibold text-[14.5px] text-s-ink">{row.label}</span>
                   {row.pill && <DashStatusPill tone={row.pill.tone}>{row.pill.label}</DashStatusPill>}
-                  <ChevronRight size={18} className="text-s-ink-3 shrink-0" />
+                  <ChevronRight size={18} className="text-s-ink-2 shrink-0" />
                 </button>
               );
             })}

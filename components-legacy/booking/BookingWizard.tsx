@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'motion/react'; // mockup-ok: applying o
 import { useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
 import { ArrowLeft } from 'lucide-react';
-import { useStepSwapMotion } from '@/app/[locale]/_components/primitives';
+import { useStepSwapMotion, SectionErrorBoundary } from '@/app/[locale]/_components/primitives';
 import {
   ServicesStaffStep,
   StaffStep,
@@ -225,7 +225,9 @@ export default function BookingWizard({ services, staffList, salon, staffService
           exit="exit"
           transition={stepSwapTransition}
         >
-          {renderStep()}
+          <SectionErrorBoundary section={`BookingWizard:${normalizedStep}`}>
+            {renderStep()}
+          </SectionErrorBoundary>
         </motion.div>
       </AnimatePresence>
     </div>

@@ -2,10 +2,12 @@ export const dynamic = "force-dynamic";
 export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
-import { sendEmail, bookingCancellation, bookingReschedule } from "@/lib/email";
+import { sendEmail, bookingCancellation, bookingReschedule, type EmailLocale } from "@/lib/email";
 import { zurichWallClockToUtc } from "@/lib/time/zurich";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
+import { resolveSwissLocale } from "@/lib/format";
 import type { Database } from "@/lib/database.types";
+import { validateBody, slotPatchSchema } from "@/lib/validations";
 
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -29,7 +31,11 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     const admin = createAdminSupabaseClient();
     const { data: authUser } = await admin.auth.admin.getUserById(slot.booked_by ?? "");
     if (authUser?.user?.email) {
-      try { await sendEmail(bookingCancellation(authUser.user.email, { service: slot.services?.name_de ?? "Service", salon: slot.salons?.name ?? "Salon", date: new Date(slot.starts_at).toLocaleDateString("de-CH") }, "de")); } catch (err) { console.error("[slots/[id]] DELETE cancellation email failed:", err); }
+      // locale added 2026-07-26 (de-CH literal sweep): was hardcoded "de" for both the
+      // email language and the embedded date, regardless of the customer's own locale.
+      const { data: bookedProfile } = await admin.from("profiles").select("locale").eq("id", slot.booked_by ?? "").maybeSingle();
+      const custLocale = (bookedProfile?.locale ?? "de") as EmailLocale;
+      try { await sendEmail(bookingCancellation(authUser.user.email, { service: slot.services?.name_de ?? "Service", salon: slot.salons?.name ?? "Salon", date: new Date(slot.starts_at).toLocaleDateString(resolveSwissLocale(custLocale)) }, custLocale)); } catch (err) { console.error("[slots/[id]] DELETE cancellation email failed:", err); }
     }
     const { error: freeError } = await supabase.from("availability_slots").update({ status: "available", booking_id: null, booked_by: null }).eq("id", id);
     if (freeError) return NextResponse.json({ message: freeError.message, code: "DB_ERROR" }, { status: 500 });
@@ -43,7 +49,9 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
 
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const body = await request.json();
+  const rawBody = await request.json();
+  const { data: body, error: validationError } = validateBody(slotPatchSchema, rawBody);
+  if (validationError) return NextResponse.json({ message: validationError.message, code: "VALIDATION_ERROR" }, { status: 400 });
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 401 });
@@ -108,7 +116,11 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     const admin = createAdminSupabaseClient();
     const { data: authUser } = await admin.auth.admin.getUserById(slot.booked_by ?? "");
     if (authUser?.user?.email) {
-      try { await sendEmail(bookingReschedule(authUser.user.email, { service: slot.services?.name_de ?? "Service", salon: slot.salons?.name ?? "Salon", oldDate: slot.starts_at, newDate: startsAt }, "de")); } catch (err) { console.error("[slots/[id]] PATCH reschedule email failed:", err); }
+      // locale added 2026-07-26 (de-CH literal sweep): was hardcoded "de"; bookingReschedule
+      // already formats oldDate/newDate per its locale param internally, so this alone fixes it.
+      const { data: bookedProfile } = await admin.from("profiles").select("locale").eq("id", slot.booked_by ?? "").maybeSingle();
+      const custLocale = (bookedProfile?.locale ?? "de") as EmailLocale;
+      try { await sendEmail(bookingReschedule(authUser.user.email, { service: slot.services?.name_de ?? "Service", salon: slot.salons?.name ?? "Salon", oldDate: slot.starts_at, newDate: startsAt }, custLocale)); } catch (err) { console.error("[slots/[id]] PATCH reschedule email failed:", err); }
     }
   }
 

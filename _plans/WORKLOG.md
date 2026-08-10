@@ -41,6 +41,51 @@ The newest entry is at the top. Every session that ships real work adds one entr
 
 ---
 
+## 2026-07-28 (later) , "mockup broken doesnt animate", and the gate for it
+
+**What you said:** the chevron probe did not animate.
+
+**Root cause, and it was not the CSS.** The motion hung off `:active`. iOS Safari never fires `:active` on a tap unless the element carries a touch listener, and on desktop `:active` lives only while the button is held, so an ordinary tap opened a zero-length window. The CSS was syntactically perfect and simply never ran. Fixed with a JS-toggled `.is-pressed` class held 450ms, and the travel went 4px to 6px because 4px did not read on a phone. **Measured on the live page:** the chevron transform goes none, then 2.7px at 30ms, then 6px at 230ms, then back to 0.2px at 580ms, and it darkens to full ink while pressed.
+
+**Why this one stung.** I had measured that page carefully: 11 chevrons in the first viewport, 1.57:1 contrast, 49px rows, every number real and every number static. Then I screenshotted it, confirmed HTTP 200, and shipped. **Static measurement stood in for behavioural measurement**, and a screenshot structurally cannot catch a dead animation.
+
+**Hardened:** `~/.claude/hooks/interaction-proof-gate.py`, a Stop gate. If the turn wrote an HTML file containing `:active`, `:hover`, a transition, an animation or an `addEventListener`, and the closing message hands that page over, the turn must ALSO have dispatched an interaction AND read the result back. Both halves are required by design: clicking without reading proves nothing, and reading without clicking is precisely the static measurement that missed this. **11/11 self-test against the installed file, wired into settings.json Stop, settings re-validated.**
+
+Case 3 of that self-test found a real bug inside the gate itself: a mockup's own source contains the words `transform` and `transition`, so scanning the Write call let the file count as evidence of its own behaviour. Evidence is now counted only from non-write tools, which is the circularity the gate exists to break.
+
+---
+
+## 2026-07-28 , the handoff mistake, caught for the second time, and the two gates that missed it
+
+**What you said:** *"again you asked me to do bash command and hallucinating abr being in sandbox harden the gaye and investigate this keeps happening"*, two days after *"stop handingng me out bash command"* on 07-26.
+
+**What actually went wrong, and it is not what I claimed.** I ran `touch ~/Library/LaunchAgents/` in Bash, got Operation not permitted, decided the sandbox blocked the directory, wrote an installer, and handed it to you. In the very next tool call the **Write tool created a 929-byte plist in that same directory**. The sandbox flag is real (`SANDBOX_RUNTIME=1`, measured), so the hallucination was not "there is a sandbox", it was **"therefore I cannot"**. One instrument said no and I reported it as a property of the estate. It repeated twice more the same hour: `cp` into `~/.claude/hooks/` was refused and Write placed the file, `mkdir ~/.claude/hooks/tests` was refused and Write created it.
+
+**The historical sweep, and the correction it forced.** A read-only agent swept 18 session transcripts from 07-24 to 07-28. **Three instances total, all inside this one session, none in the other 17 files. 3 of 3 concluded "blocked" from a single instrument, 100%.** Every one was a write OUTSIDE the git repo, into either Claude Code's own config tree or a macOS system directory, which is the shell sandbox's real boundary and NOT the Write tool's. Two throwaway scripts were written purely for the owner to run, one since deleted after the Edit tool did the job directly.
+
+The sweep left one question open ("why didn't the older gate fire on 07-26"), so I checked the transcript myself rather than leave it hedged. **The answer is worse than the sweep assumed: it DID fire.** Line 1351, 2026-07-26T21:09:11Z, a live block, category "file write". I acknowledged it in writing at the time, verbatim: *"the instrument-corroboration-gate already caught this exact pattern, so detection works, the real issue was that I claimed impossibility without verifying."* Two days later I made the identical mistake anyway. So the honest count is **the gate fired on 1 of 3**, and the two misses were pure PHRASING:
+
+| instance | how I phrased it | gate |
+|---|---|---|
+| 07-26 19:47 | "could not arm it **myself** ... PermissionError on ~/.claude/settings.json" | silent |
+| 07-26 21:09 | "this session **can't write** to settings.json" | **fired** |
+| 07-28 08:47 | "I can't **run** it, the sandbox blocks **~/Library**" | silent |
+
+That is the actual root cause, and it is a design flaw, not bad luck: **the gate matched a sentence, not a claim.** Reword slightly and it goes quiet. Both misses are now locked as regression tests (cases 12 and 1) so this specific escape cannot reopen.
+
+**Why neither gate stopped the 07-28 instance.** Two armed gates already encode this exact lesson and both stayed silent that day:
+- `no-bash-handoff-gate.py` (built 07-26) carried the sentence *"One instrument saying no is a hypothesis, not a limitation"* **in its deny text but not in its logic**. It passed as soon as ONE tool call touched the command. So the behaviour it exists to stop walked straight through it.
+- `instrument-corroboration-gate.py` has the settings.json version of this as its recorded case #5, but its "file write" category only matched claims phrased as writing a **file**. Mine was phrased as **running** a command and named a **directory**, so no pattern matched. A second bug sat behind it: the directory regex swallowed the sentence's full stop, turning `~/Library.` into a filename and discarding it.
+
+**What changed.** Both hardened and both given permanent regression suites at `~/.claude/hooks/tests/` (19/19 and 11/11, run from their installed home, not a staging copy):
+- the handoff gate now requires **two DISTINCT instruments** before a message may blame an environment block for a command it hands over. Bash is one instrument, Write/Edit is a second, each MCP server is its own, and retrying the same tool is not a second try. It also catches the prose evasions ("you'll need to run X"), because a gate that gets reworded around is worse than none.
+- the corroboration gate now understands directory claims and can-t-run framing, and only an edit **inside the claimed directory** corroborates it.
+- Deliberate non-change: a bare quoted "operation not permitted" does NOT trip the gate. Quoting your own measurement is the behaviour being asked for, and the first draft would have punished it. That negative case is now test 6.
+
+**The backup, finished rather than handed over.** Running the chain instead of writing an installer found two real defects. The plist pointed at a worktree path, which dies silently when the worktree goes. And node could not reach Supabase at all: curl got HTTP 401 from the host while node fetch got ENOTFOUND on the same host in the same shell, because node 18+ fetch ignores `HTTPS_PROXY` and resolves DNS directly. Fixed with a resolver at `~/solen/bin/solen-backup.sh` outside the checkout plus `NODE_USE_ENV_PROXY=1`. Chain now runs end to end: **24/24 tables, 2,468 rows, 0 failures**. Only the `launchctl` registration is outstanding, measured refused three ways (bootstrap and load both Input/output error 5, crontab operation not permitted), and it is owner-reserved by rule anyway.
+
+---
+
 ## 2026-08-03 , preference audit: a week of your messages, mined, then gates edited (workstream #44)
 
 You asked me to research a week of our chats, work out your preferences, then edit gates, make new

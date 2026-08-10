@@ -50,7 +50,7 @@ export default function SolenStory() {
           {/* ─── LEFT: text block ─── */}
           <div className="order-2 md:order-1">
             {/* De-eyebrowed 2026-06-11 (owner ban on tracked-uppercase): normal-case kicker. */}
-            <p className="mb-4 font-body text-[13px] font-semibold text-s-ink-3">
+            <p className="mb-4 font-body text-[13px] font-semibold text-s-ink-2">
               Die Solen-App
             </p>
             <h2 className="mb-5 font-display text-[clamp(26px,7vw,30px)] font-semibold leading-[1.04] tracking-[-0.025em] text-s-ink">

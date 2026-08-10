@@ -61,7 +61,10 @@ export async function loadSalonDetailWithAccess(
   const { data: salon, error } = await supabase
     .from("salons")
     .select(
-      "id, owner_id, is_active, name, slug, description_de, description_en, about_text_de, about_text_en, about_text_fr, about_text_it, categories, quartier, address, postal_code, latitude, longitude, phone, website_url, instagram_url, tiktok_url, cover_photo_url, gallery_urls, opening_hours, average_rating, review_count, last_minute_discount_percent, accepts_online_payment, free_cancel_hours, booking_confirmation_mode, instant_booking_enabled, pet_friendly, kid_friendly, wheelchair_accessible, near_public_transport, lgbtq_friendly, woman_owned, family_owned, student_discount, wifi_friendly, is_featured, parent_salon_id, walkin_enabled, timezone, verification_warnings, warning_count, frozen_at, frozen_reason"
+      // city_id + cities(...) added for A6-address-locality (2026-07-27): the
+      // salon's real city, joined via the salons.city_id -> cities.id FK, so
+      // lib/seo.ts generateSalonSchema can stop hardcoding "Basel".
+      "id, owner_id, is_active, name, slug, description_de, description_en, about_text_de, about_text_en, about_text_fr, about_text_it, categories, quartier, address, postal_code, city_id, cities(name_de, name_en, name_fr, name_it), latitude, longitude, phone, website_url, instagram_url, tiktok_url, cover_photo_url, gallery_urls, opening_hours, average_rating, review_count, last_minute_discount_percent, accepts_online_payment, free_cancel_hours, booking_confirmation_mode, instant_booking_enabled, pet_friendly, kid_friendly, wheelchair_accessible, near_public_transport, lgbtq_friendly, woman_owned, family_owned, student_discount, wifi_friendly, is_featured, parent_salon_id, walkin_enabled, timezone, verification_warnings, warning_count, frozen_at, frozen_reason"
     )
     .eq(isUuid ? "id" : "slug", slug)
     .single();
@@ -70,7 +73,18 @@ export async function loadSalonDetailWithAccess(
 
   // Regular users can only see active salons. Owner/Admin can see pending ones.
   const isOwner = user?.id === salon.owner_id;
-  if (!isOwner && !salon.is_active) return null;
+  // The comment above promised an admin branch since this function was written, but the
+  // check was owner-only, so an admin could not open a pending salon's storefront , the
+  // fastest way to judge a signup, and the owner's ask on 2026-07-27 ("as admin we can see
+  // all details n stuff"). One extra query, and only for a signed-in user looking at a
+  // salon that is not theirs and not yet live, so the public path is untouched.
+  let isAdminViewer = false;
+  if (!isOwner && !salon.is_active && user?.id) {
+    const { data: viewerProfile } = await createAdminSupabaseClient()
+      .from("profiles").select("role").eq("id", user.id).maybeSingle();
+    isAdminViewer = viewerProfile?.role === "admin";
+  }
+  if (!isOwner && !isAdminViewer && !salon.is_active) return null;
 
   // Fetch related data in parallel
   const [servicesRes, staffRes, reviewsRes] = await Promise.all([

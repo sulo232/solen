@@ -164,6 +164,27 @@ export async function handlePurchasePaid(pi: any): Promise<boolean> {
                   actor: "system",
                   reason: `stock unavailable for product ${productId} after payment succeeded`,
                 });
+                // observability-3: this is an AUTOMATIC money-movement (no human review,
+                // the webhook decided the refund), so write the audit_log row here since
+                // there is no human "caller" upstream to own it. actor_id null (mirrors
+                // the chargeback_opened/closed inserts in webhook/route.ts: "not a human,
+                // opened this"). Best-effort: a failed audit write must never undo or
+                // re-throw past a refund that already succeeded on Stripe.
+                const { error: auditErr } = await admin.from("audit_log").insert({
+                  actor_id: null,
+                  action: "purchase_refunded_stock_unavailable",
+                  target_type: "retail_purchase",
+                  target_id: settledRow.id,
+                  metadata: {
+                    pi: pi.id,
+                    product_id: productId,
+                    amount_cents: paidAmount,
+                    reason: `stock unavailable for product ${productId} after payment succeeded`,
+                  },
+                });
+                if (auditErr) {
+                  console.error("[purchase-handler] audit_log write failed after stock-failure refund:", auditErr.message, { retail_purchase_id: settledRow.id });
+                }
               } catch (refundErr) {
                 if (refundErr instanceof PurchaseRefundError) {
                   console.error(

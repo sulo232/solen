@@ -78,7 +78,7 @@ export function ScrollMotionDemo({
           <Image src={photos[0]} alt={salon.name} fill sizes="100vw" className="object-cover" priority />
         ) : (
           <div className="grid h-full place-items-center">
-            <span className="font-display text-[96px] font-black text-s-ink-disabled">
+            <span className="font-display text-[96px] font-bold text-s-ink-disabled">
               {salon.name.charAt(0)}
             </span>
           </div>

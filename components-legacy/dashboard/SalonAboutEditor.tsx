@@ -116,8 +116,11 @@ export default function SalonAboutEditor({ salon, onUpdate }: SalonAboutEditorPr
         ))}
       </div>
 
-      {/* Editor Area */}
-      <div className="relative">
+      {/* Editor Area , prose-measure sits on the WRAPPER, not the textarea. The character
+          counter below is absolutely positioned against this element's right edge, so
+          capping the textarea alone would leave the counter floating in empty space beside
+          it. Capping the wrapper moves both together. (2026-07-27, owner "6/7 ye fix") */}
+      <div className="relative prose-measure">
         <textarea
           value={texts[activeLang]}
           onChange={(e) => setTexts({ ...texts, [activeLang]: e.target.value })}

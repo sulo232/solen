@@ -96,7 +96,7 @@ function StepCard({
             >
               <div className="min-w-0 flex-1">
                 <h5 className="truncate font-body text-[15px] font-semibold text-s-ink">{s.name}</h5>
-                <p className="mt-0.5 font-body text-[13px] text-s-ink-3 tabular-nums">{s.durationMinutes} min</p>
+                <p className="mt-0.5 font-body text-[13px] text-s-ink-2 tabular-nums">{s.durationMinutes} min</p>
                 <div className="mt-1.5 font-body text-[14px] font-bold text-s-ink">
                   <PriceFrom amount={s.price} />
                 </div>
@@ -137,7 +137,7 @@ export function BlurSpeedDemo({
     <section className="rounded-2xl border border-s-border bg-white p-4">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="font-body text-[12px] font-semibold text-s-ink-3">Demo 7</p>
+          <p className="font-body text-[12px] font-semibold text-s-ink-2">Demo 7</p>
           <h3 className="mt-0.5 font-display text-[17px] font-semibold tracking-[-0.01em] text-s-ink">
             Enter recipe vs speed law , DECIDED: 280ms, blur kept
           </h3>

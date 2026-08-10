@@ -89,7 +89,10 @@ export default function GalleryManager({
 
       const res = await fetch(`/api/salons/${salonId}/gallery`, {
         method: "POST",
-        headers: authHeaders,
+        // Required since 962fd4c65 (see ReviewForm.tsx for the why). The reviewer's punch list
+        // named three broken callers; this was a fourth it missed, found by enumerating every
+        // client FormData uploader against the nine guarded routes.
+        headers: { ...authHeaders, "x-solen-upload": "1" },
         body: formData,
       });
 

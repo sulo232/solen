@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Settings rows, chevron now vs animated vs removed</title>
+<!-- Base: elicitation -->
+<!-- Scale: full-page -->
+<!--
+  Base is ELICITATION on purpose: this is a three-way probe to settle open decision B3, not a
+  redesign of the settings page. It rebuilds no existing surface and proposes no new layout,
+  the only variable is the chevron. A screenshot base would also be the wrong instrument here,
+  because the choice is between a STATIC chevron and an ANIMATED one and a still image cannot
+  show a 220ms press transition.
+
+  Grounded-in: app/[locale]/profile/settings/page.tsx
+
+  Depicts: Account -> app/[locale]/profile/edit/page.tsx
+  Depicts: Payment methods -> app/[locale]/profile/settings/payment/page.tsx
+  Depicts: Notifications -> app/[locale]/profile/settings/notifications/page.tsx
+  Depicts: Language row with value -> app/[locale]/profile/settings/language/page.tsx
+  Depicts: Loyalty status -> app/[locale]/rewards/page.tsx
+  Depicts: Invite a friend -> app/[locale]/profile/referral/page.tsx
+
+  Each of those six was read off the LIVE rendered route (dev :50723, /de/profile/settings via
+  /api/dev/login) as a real anchor with a real href, then the target file was confirmed on
+  disk. Labels are the English of the real German strings (Konto, Zahlungsmethoden,
+  Benachrichtigungs-Einstellungen, Sprache, Treue-Status, Freunde einladen) because mockups are
+  reviewed in English.
+  Rows that exist but are deliberately NOT drawn: Passwort, Empfehlungen anpassen, Haarprofil,
+  Formulare, Stempel, Hilfe-Center, AGB, Datenschutz. Six rows is enough to judge a chevron.
+  NO FABRICATED VALUES: the live page carries a value on exactly one row (Sprache = Deutsch),
+  so that is the only row here with one. No invented card counts, tiers or sub-labels, because
+  the real rows have none.
+
+  Diagnosis: decorative chevrons on tappable settings rows |
+    measured LIVE at viewport 375x812 with getBoundingClientRect + getComputedStyle:
+      13 chevrons on the page, 11 of them inside the FIRST viewport
+      every one carries aria-hidden="true"
+      computed color = rgba(10, 10, 10, 0.2), compositing to #CECECE on white = 1.57:1
+      label font-size 15px, weight 500, row height 49px, both matching source
+    | violates two things at once: (a) CLAUDE.md taste rule 2, no decorative artifacts,
+    "Every element carries information or it gets deleted", and 11 identical
+    screen-reader-hidden marks in one viewport is the textbook case; (b) a TOKEN DRIFT, source
+    says className="text-s-ink-2" which is #6B6B6B at 5.33:1, but the rendered value is ink at
+    20% alpha at 1.57:1, so the chevron is already nearly invisible and is not the affordance
+    the code thinks it is
+    | target: either the mark earns its place by carrying motion feedback on press, or it goes
+    and the press tint is the surviving cue, per FLOORS LAW 5, a deletion must name what it
+    keeps.
+
+  NOTE for whoever picks: because of that drift, "Now" is not really a visible chevron today.
+  The Now pane reproduces the MEASURED rgba(10,10,10,0.2), not the documented token, so the
+  comparison is honest about what actually ships.
+
+  Row markup transcribed VERBATIM from app/[locale]/profile/settings/page.tsx lines 141-148.
+
+  Exists-check: `npm run exists chevron` ran this turn. Two existing inline sections came back,
+  partner/page.tsx:179 desktop connector chevrons and dashboard/calendar/page.tsx:742 header
+  chevrons. Neither is a tappable LIST row, which is what B3 is about, so this duplicates
+  neither.
+
+  Every inline <svg> is real Lucide markup, class="lucide lucide-*", the same viewBox, stroke
+  settings and path data the live page emits. The chevron path is literally "m9 18 6-6-6-6" as
+  read off the running route. No hand-drawn glyphs.
+  Web is white-only. No dark-mode CSS in this file, by law.
+  Type: 15 label / 13.5 value / 13 chrome = three sizes.
+-->
+<style>
+  :root{
+    --ink:#0A0A0A; --ink-2:#6B6B6B; --bg:#FFFFFF; --sunken:#F4F4F5; --line:#E4E4E7;
+    --chev-now:rgba(10,10,10,0.2); /* the MEASURED rendered colour, not the documented token */
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  html,body{height:100%}
+  body{
+    margin:0;overflow:hidden;background:var(--bg);color:var(--ink);
+    font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    font-size:15px;line-height:1.5;
+  }
+  .bar{
+    position:fixed;top:0;left:0;right:0;z-index:10;background:var(--bg);
+    border-bottom:1px solid var(--line);
+    padding:calc(10px + env(safe-area-inset-top)) 16px 10px;
+  }
+  .bar h1{font-size:15px;font-weight:600;margin:0 0 10px;letter-spacing:-0.01em}
+  .seg{display:flex;gap:4px;background:var(--sunken);border-radius:999px;padding:3px}
+  .seg button{
+    flex:1;border:0;background:transparent;border-radius:999px;padding:8px 4px;
+    font:inherit;font-size:13px;color:var(--ink-2);cursor:pointer;min-height:36px;
+  }
+  .seg button[aria-selected="true"]{background:var(--bg);color:var(--ink);font-weight:600}
+  .stage{
+    position:fixed;top:0;left:0;right:0;bottom:0;overflow-y:auto;
+    padding:calc(112px + env(safe-area-inset-top)) 0 calc(112px + env(safe-area-inset-bottom));
+  }
+  .group{max-width:640px;margin:0 auto;padding:0 16px}
+  .label{font-size:13px;font-weight:600;color:var(--ink-2);margin:0 0 8px;padding-left:4px}
+  .card{background:var(--bg);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+  .row{
+    display:flex;align-items:center;gap:12px;padding:14px 16px;min-height:49px;
+    border-bottom:1px solid var(--line);text-decoration:none;color:inherit;cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .row:last-child{border-bottom:0}
+  .row .ico{flex:none;width:22px;height:22px;color:var(--ink)}
+  .row .txt{min-width:0;flex:1}
+  .row .lbl{display:block;font-size:15px;font-weight:500;color:var(--ink)}
+  .row .val{margin-right:2px;font-size:13.5px;color:var(--ink-2)}
+  .chev{flex:none;width:16px;height:16px;color:var(--chev-now)}
+  /* Press feedback is driven by a JS-toggled .is-pressed class, NOT :active.
+     Measured cause of the dead first version: iOS Safari does not fire :active on a tap
+     unless the element carries a touch listener, and even on desktop :active lives only
+     while the button is held, so a normal tap showed nothing at all. The class is held for
+     450ms so the 220ms transition is actually visible. */
+  .row.is-pressed{background:var(--sunken)}
+
+  body[data-mode="now"] .chev{transform:none;transition:none}
+
+  body[data-mode="anim"] .chev{
+    color:var(--ink-2);
+    transition:transform 220ms cubic-bezier(.2,.8,.2,1), color 220ms ease;
+  }
+  body[data-mode="anim"] .row.is-pressed .chev{transform:translateX(6px);color:var(--ink)}
+  @media (hover:hover){
+    body[data-mode="anim"] .row:hover .chev{transform:translateX(3px)}
+  }
+
+  body[data-mode="none"] .chev{display:none}
+
+  .note{
+    position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--bg);
+    border-top:1px solid var(--line);
+    padding:12px 16px calc(12px + env(safe-area-inset-bottom));
+    font-size:13px;color:var(--ink-2);
+  }
+  .note b{color:var(--ink);font-weight:600}
+</style>
+</head>
+<body data-mode="now">
+
+<div class="bar">
+  <h1>Tap any row to feel it</h1>
+  <div class="seg" role="tablist">
+    <button role="tab" aria-selected="true"  data-m="now">Now</button>
+    <button role="tab" aria-selected="false" data-m="anim">Animated</button>
+    <button role="tab" aria-selected="false" data-m="none">Removed</button>
+  </div>
+</div>
+
+<div class="stage">
+  <div class="group">
+    <p class="label">Account</p>
+    <div class="card">
+      <a class="row" href="#">
+        <svg class="ico lucide lucide-user" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span class="txt"><span class="lbl">Account</span></span>
+        <svg class="chev lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      </a>
+      <a class="row" href="#">
+        <svg class="ico lucide lucide-credit-card" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+        <span class="txt"><span class="lbl">Payment methods</span></span>
+        <svg class="chev lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      </a>
+      <a class="row" href="#">
+        <svg class="ico lucide lucide-bell" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></svg>
+        <span class="txt"><span class="lbl">Notifications</span></span>
+        <svg class="chev lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      </a>
+      <a class="row" href="#">
+        <svg class="ico lucide lucide-languages" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>
+        <span class="txt"><span class="lbl">Language</span></span>
+        <span class="val">German</span>
+        <svg class="chev lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <div class="group" style="margin-top:28px">
+    <p class="label">Rewards</p>
+    <div class="card">
+      <a class="row" href="#">
+        <svg class="ico lucide lucide-award" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+        <span class="txt"><span class="lbl">Loyalty status</span></span>
+        <svg class="chev lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      </a>
+      <a class="row" href="#">
+        <svg class="ico lucide lucide-user-plus" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>
+        <span class="txt"><span class="lbl">Invite a friend</span></span>
+        <svg class="chev lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="note" id="note"></div>
+
+<script>
+  var NOTES = {
+    now:  "<b>Now, measured.</b> 11 chevrons in the first viewport, all aria-hidden, all at rgba(10,10,10,.2), which is 1.57:1 on white. The code says s-ink-2 at 5.33:1. It already drifted almost invisible.",
+    anim: "<b>Animated.</b> Restores the real token and slides 4px right on press, so the mark finally does something. Still 11 of them.",
+    none: "<b>Removed.</b> The press tint is the surviving cue. Rows go quieter, and the right-hand value (German) reads faster with nothing after it."
+  };
+  var body = document.body, note = document.getElementById("note");
+  function set(m){
+    body.setAttribute("data-mode", m);
+    note.innerHTML = NOTES[m];
+    document.querySelectorAll(".seg button").forEach(function(b){
+      b.setAttribute("aria-selected", String(b.dataset.m === m));
+    });
+  }
+  document.querySelectorAll(".seg button").forEach(function(b){
+    b.addEventListener("click", function(){ set(b.dataset.m); });
+  });
+  document.querySelectorAll(".row").forEach(function(r){
+    function press(e){
+      if (e) e.preventDefault();
+      r.classList.remove("is-pressed");
+      void r.offsetWidth;              // restart the transition on a repeat tap
+      r.classList.add("is-pressed");
+      clearTimeout(r._t);
+      r._t = setTimeout(function(){ r.classList.remove("is-pressed"); }, 450);
+    }
+    r.addEventListener("touchstart", press, {passive:false});
+    r.addEventListener("mousedown", press);
+    r.addEventListener("click", function(e){ e.preventDefault(); });
+  });
+  set("now");
+</script>
+</body>
+</html>

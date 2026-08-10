@@ -29,7 +29,7 @@ export default function FlowBar({ locale }: { locale: string }) {
         <ArrowLeft size={15} strokeWidth={2.2} aria-hidden />
         All flows
       </Link>
-      <span className="text-[12px] text-s-ink-3">dev flow harness</span>
+      <span className="text-[12px] text-s-ink-2">dev flow harness</span>
       <button
         type="button"
         onClick={() => router.refresh()}

@@ -44,6 +44,12 @@ export type RailSalon = {
   city?: string;
   quartier?: string | null;
   avg_price?: number | null;
+  // /api/salons has always returned min_price beside avg_price; only the type was
+  // missing it, which is why the cards reached for the average. Its service name came
+  // with it on 2026-07-27 so a from-price can name the offer it buys (PBV Art. 13).
+  min_price?: number | null;
+  min_price_service_de?: string | null;
+  min_price_service_en?: string | null;
   distance_meters?: number | null;
   last_minute_discount_percent?: number | null;
   services?: {
@@ -56,7 +62,9 @@ export type RailSalon = {
 
 // Per-locale rail titles (inline-record pattern, mirrors Header SEARCH_PLACEHOLDER).
 // German umlauts allowed (matches homepage "In der Nähe"); no ß, no em-dash.
-const TITLES = {
+// Exported: CategoryMobileRails.tsx (the mobile 3-rail set, owner 2026-08-01) reuses the
+// `nearby` / `soon` copy here rather than re-declaring the same locale strings a second time.
+export const TITLES = {
   top: { de: "Top auf Solen", en: "Top on Solen", fr: "Top sur Solen", it: "Top su Solen" },
   deals: { de: "Angebote", en: "Deals", fr: "Offres", it: "Offerte" },
   nearby: { de: "In der Nähe", en: "Nearby", fr: "À proximité", it: "Nelle vicinanze" },
@@ -65,7 +73,7 @@ const TITLES = {
   color: { de: "Coloration", en: "Color", fr: "Coloration", it: "Colore" },
 } as const;
 
-const pick = (rec: Record<string, string>, locale: string) => rec[locale] ?? rec.de;
+export const pick = (rec: Record<string, string>, locale: string) => rec[locale] ?? rec.de;
 
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
@@ -109,7 +117,9 @@ function Rail({
               category={cat}
               photoUrl={s.cover_photo_url ?? undefined}
               variant="availability"
-              priceFromCHF={s.avg_price ?? undefined}
+              // min_price, not avg_price , an average under a "from" label advertises a
+              // starting price the customer can never actually get (PBV Art. 13).
+              priceFromCHF={s.min_price ?? undefined}
               nextSlotLabel={nextAvailableSlotLabel(s.services, locale) ?? undefined}
               address={s.address}
               city={(s.quartier ? cap(s.quartier) : undefined) || s.city}

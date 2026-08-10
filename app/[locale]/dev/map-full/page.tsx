@@ -59,7 +59,7 @@ function StoreCard({ s }: { s: (typeof STORES)[number] }) {
         <div className="mt-2.5 space-y-1.5">
           {s.services.slice(0, 3).map(([n, d, p]) => (   /* RULE: max 3 service rows per card */
             <div key={n} className="flex items-center justify-between gap-3 rounded-xl bg-s-bg-sunken px-3.5 py-2.5 text-[13.5px]">
-              <span className="min-w-0"><span className="block truncate text-s-ink">{n}</span><span className="text-[12px] text-s-ink-3">{d}</span></span>
+              <span className="min-w-0"><span className="block truncate text-s-ink">{n}</span><span className="text-[12px] text-s-ink-2">{d}</span></span>
               <span className="shrink-0 font-semibold tabular-nums text-s-ink">{p}</span>
             </div>
           ))}
@@ -90,7 +90,7 @@ function Screen() {
         </div>
 
         <div className={`absolute left-1/2 top-[86px] z-10 flex -translate-x-1/2 items-center gap-1.5 rounded-full px-3 py-1.5 text-[12.5px] font-medium text-s-ink-2 ${FROST}`}>
-          <Loader2 size={13} className="animate-spin text-s-ink-3" /> Updating this area
+          <Loader2 size={13} className="animate-spin text-s-ink-2" /> Updating this area
         </div>
 
         <Pin top="230px" left="90px" />

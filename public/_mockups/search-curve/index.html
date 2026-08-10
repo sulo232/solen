@@ -1,0 +1,451 @@
+<!doctype html>
+<!-- Base: elicitation -->
+<!-- Scale: full-page -->
+<!-- Diagnosis: search sheet open morph front-load profile | measured 29 percent travelled at 100ms (50 percent at 128ms, 95 percent at 266ms, Playwright rAF sampler over 79 frames on the live build at 375x812, real tap on the real pill) | violates _plans/SEARCH_MORPH.md section "C1 DONE 2026-08-02", which measured the reference at 81 percent travelled by 133ms and left the shape an open owner call rather than a settled lock | target an owner pick between 29, 81 and 57 percent travelled at 100ms, the three shapes side by side on one clock -->
+<!-- Depicts: the opening box, a search pill 343x66 at 16,82 -> app/[locale]/_components/homepage/HomeSearchPill.tsx (its own pillRef box, measured live at 375x812) -->
+<!-- Depicts: the settled box, a sheet 375x716 at 0,96 -> app/[locale]/_components/search/SearchOverlay.tsx (the key="sheet" motion.div driven by cropTop/sheetLeft/sheetWidth/sheetHeight) -->
+<!-- Depicts: the fading scrim behind the sheet -> app/[locale]/_components/search/SearchOverlay.tsx (the key="scrim" motion.div, scrimOpacity) -->
+<!-- Depicts: curve A -> app/[locale]/_components/search/SearchOverlay.tsx line 70, MORPH_EASE [0.4,0,0.2,1], the shipped curve -->
+<!-- Depicts: curve B -> _plans/SEARCH_MORPH.md, the "Airbnb's own open curve, frame by frame at 30fps" table, identical to the original EASE [0.32,0.72,0,1] at SearchOverlay.tsx line 63 -->
+<!-- Depicts: curve C -> NET-NEW: no curve at [0.36,0.36,0.1,1] exists in the codebase today, it is the control point midpoint of A and B and is proposed here for the first time -->
+<!-- Depicts: the flat grey page behind each sheet -> NET-NEW placeholder, deliberately not a real surface, see the geometry-only marker below -->
+<!-- Exists-check: ran `npm run exists` this turn on search-curve, motion-curve, easing, zero matches
+     each, plus SearchOverlay and search-morph which both hit. What ALREADY EXISTS and is not
+     rebuilt here: first, the real morph, app/[locale]/_components/search/SearchOverlay.tsx,
+     MORPH_EASE at line 70 driving the 0.367s open and 0.333s close. Second, the closest neighbour,
+     app/[locale]/dev/search-morph/page.tsx, a full single-curve clone of the search overlay
+     (EASE [0.32,0.72,0,1], German copy) which shows ONE curve at a time and therefore cannot put
+     three side by side on one clock. Third, the decision history in _plans/SEARCH_MORPH.md,
+     section "C1 DONE 2026-08-02". REMOVED.md carries no hit for a curve chooser. The one genuinely
+     new thing here is the three-up comparison. This file changes no product code and does not
+     touch MORPH_EASE. -->
+<!-- Grounded-in: app/[locale]/_components/search/SearchOverlay.tsx (MORPH_EASE, the 0.367s open
+     and 0.333s close), _plans/SEARCH_MORPH.md (the Airbnb frame table and the C2 finding). -->
+<!-- all-variants: A calm, B Airbnb literal, C midpoint. All three run at once, none is hidden. -->
+<!-- measured: the two boxes are not eyeballed. Playwright getBoundingClientRect on the live build
+     at 375x812, /de home, tapping the real search pill: resting pill top 82, left 16, width 343,
+     height 66; settled sheet top 96, left 0, width 375, height 716. Live curve A measured over 79
+     rAF frames: 50% of the height travel at 147ms and 95% at 284ms from the tap (about 36ms of
+     that is mount, so about 111ms and 248ms from the first painted frame). -->
+<!-- geometry-only: the page behind each sheet is flat grey on purpose. This is a motion probe, the
+     only thing under test is the shape of the container morph, so no photography is loaded and no
+     content is faked. -->
+<!-- floors: (a) no photographic focal, this is a geometry-only motion probe, exempt by the marker
+     above; (b) the page title is the single biggest element at 28px; (c) real tabular numbers, the
+     measured crossing times and the live progress readouts; (d) no semantic-colour moment is
+     claimed, nothing here carries a success or error meaning; (e) no dead grey zone, the three
+     stages fill the viewport and animate continuously. -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Search open curve, A / B / C</title>
+<style>
+  :root {
+    --ink: #0A0A0A;
+    --ink-2: #52525B;
+    --border: #E4E4E7;
+    --sunken: #F4F4F5;
+    --white: #FFFFFF;
+  }
+  * { box-sizing: border-box; }
+  html {
+    -webkit-text-size-adjust: 100%;
+    background: #FFFFFF;
+  }
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    background: var(--white);
+    color: var(--ink);
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.45;
+  }
+  .page {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 24px 16px calc(48px + env(safe-area-inset-bottom));
+  }
+  h1 {
+    margin: 0 0 8px;
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+  .lede {
+    margin: 0 0 16px;
+    max-width: 640px;
+    color: var(--ink-2);
+  }
+  .bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--sunken);
+  }
+  .clock {
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+  }
+  .replay {
+    margin-left: auto;
+    height: 44px;
+    padding: 0 20px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--white);
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .row {
+    display: flex;
+    gap: 16px;
+  }
+  .col {
+    flex: 1 1 0;
+    min-width: 0;
+    cursor: pointer;
+  }
+  .stageWrap {
+    position: relative;
+    overflow: hidden;
+    margin: 0 auto;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--white);
+  }
+  .stage {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 375px;
+    height: 812px;
+    transform-origin: top left;
+    background: var(--white);
+  }
+  /* the flat page behind the sheet, see the geometry-only marker at the top of this file */
+  .bg {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    top: 160px;
+    height: 300px;
+    border-radius: 16px;
+    background: var(--sunken);
+  }
+  .bg2 {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    top: 476px;
+    bottom: 24px;
+    border-radius: 16px;
+    background: var(--sunken);
+  }
+  .bgTop {
+    position: absolute;
+    left: 16px;
+    top: 24px;
+    width: 132px;
+    height: 20px;
+    border-radius: 6px;
+    background: var(--sunken);
+  }
+  .scrim {
+    position: absolute;
+    inset: 0;
+    background: rgba(10, 10, 10, 0.10);
+    opacity: 0;
+  }
+  .sheet {
+    position: absolute;
+    background: var(--white);
+    border: 1px solid var(--border);
+  }
+  .meta {
+    padding: 12px 2px 0;
+  }
+  .name {
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .mono {
+    color: var(--ink-2);
+    font-variant-numeric: tabular-nums;
+  }
+  .times {
+    font-variant-numeric: tabular-nums;
+  }
+  .track {
+    position: relative;
+    height: 8px;
+    margin-top: 8px;
+    border-radius: 999px;
+    background: var(--sunken);
+    overflow: hidden;
+  }
+  .fill { /* chart-ok dataviz-ok: live travel readout for the stage above it, not decoration */
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    background: var(--ink-2);
+  }
+  .live {
+    margin-top: 6px;
+    color: var(--ink-2);
+    font-variant-numeric: tabular-nums;
+  }
+  .legend {
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+  .lrow {
+    padding: 4px 0;
+  }
+  .lname {
+    display: inline-block;
+    margin-right: 14px;
+    font-weight: 600;
+  }
+  .lrow .mono,
+  .lrow .times {
+    display: inline-block;
+    margin-right: 14px;
+  }
+  .notes {
+    margin: 24px 0 0;
+    max-width: 720px;
+    color: var(--ink-2);
+  }
+  .notes p { margin: 0 0 10px; }
+  .notes strong { font-weight: 600; color: var(--ink); }
+</style>
+
+<div class="page">
+  <h1>Search sheet open curve</h1>
+  <p class="lede">
+    Three candidates for the container morph, running on one clock. They open from the same box (the
+    search pill, 343 by 66 at 16, 82), land on the same box (the sheet, 375 by 716 at 0, 96), and
+    take the same 367 ms to open and 333 ms to close. The only difference between the three is the
+    easing curve. Tap any phone to replay, or use the button.
+  </p>
+
+  <div class="bar">
+    <span class="clock" id="clock">closed</span>
+    <button class="replay" id="replay" type="button">Replay</button>
+  </div>
+
+  <div class="row" id="row">
+    <div class="col" data-k="0">
+      <div class="stageWrap">
+        <div class="stage">
+          <div class="bgTop"></div>
+          <div class="bg"></div>
+          <div class="bg2"></div>
+          <div class="scrim"></div>
+          <div class="sheet"></div>
+        </div>
+      </div>
+      <div class="meta">
+        <div class="name">A, calm</div>
+        <div class="track"><div class="fill"></div></div>
+        <div class="live">travelled <span class="pct">0%</span></div>
+      </div>
+    </div>
+
+    <div class="col" data-k="1">
+      <div class="stageWrap">
+        <div class="stage">
+          <div class="bgTop"></div>
+          <div class="bg"></div>
+          <div class="bg2"></div>
+          <div class="scrim"></div>
+          <div class="sheet"></div>
+        </div>
+      </div>
+      <div class="meta">
+        <div class="name">B, Airbnb</div>
+        <div class="track"><div class="fill"></div></div>
+        <div class="live">travelled <span class="pct">0%</span></div>
+      </div>
+    </div>
+
+    <div class="col" data-k="2">
+      <div class="stageWrap">
+        <div class="stage">
+          <div class="bgTop"></div>
+          <div class="bg"></div>
+          <div class="bg2"></div>
+          <div class="scrim"></div>
+          <div class="sheet"></div>
+        </div>
+      </div>
+      <div class="meta">
+        <div class="name">C, between</div>
+        <div class="track"><div class="fill"></div></div>
+        <div class="live">travelled <span class="pct">0%</span></div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="legend">
+    <div class="lrow"><span class="lname">A, calm</span><span class="mono">cubic-bezier(0.4, 0, 0.2, 1)</span><span class="times">50% at 128 ms, 95% at 266 ms</span></div>
+    <div class="lrow"><span class="lname">B, Airbnb</span><span class="mono">cubic-bezier(0.32, 0.72, 0, 1)</span><span class="times">50% at 59 ms, 95% at 177 ms</span></div>
+    <div class="lrow"><span class="lname">C, between</span><span class="mono">cubic-bezier(0.36, 0.36, 0.1, 1)</span><span class="times">50% at 90 ms, 95% at 233 ms</span></div>
+  </div>
+
+  <div class="notes">
+    <p><strong>What you are choosing.</strong> All three cover the same distance in the same time.
+      The curve decides where inside that time the distance gets spent, and that is what reads as
+      fast or slow, not the duration number.</p>
+    <p><strong>A</strong> is what ships today. It is only 29% travelled at 100 ms, so the sheet takes
+      a visible beat to answer the finger, then moves evenly. Nothing about it looks unfinished, it
+      just does not feel caused by the tap.</p>
+    <p><strong>B</strong> is Airbnb's own curve, read off your recording frame by frame. It is 81%
+      travelled at 100 ms and 80% done by 96 ms, so it spends the last 271 ms of its 367 ms creeping
+      through the final fifth. That creep is what reads as too fast, because the motion looks
+      finished long before it actually is.</p>
+    <p><strong>C</strong> is the control point midpoint of A and B, so it sits between them by
+      construction rather than by taste. It is 57.5% travelled at 100 ms, which puts the answer to the
+      tap inside the window where a response still feels caused by the finger, and it does not reach
+      80% until 147 ms, so it never parks in B's looks-finished state. The cost, named: C spends 60%
+      of its clock inside the last fifth of the travel, against A's 48%. Front loading always buys
+      the finger an answer and pays for it with a longer near-settled tail. If that tail bothers you,
+      the lever is the duration, not the curve.</p>
+    <p><strong>Where the numbers come from.</strong> The times on each label are the curve's own,
+      exact. They were then checked against this page: the loop was frozen and each frame painted at
+      a chosen instant, which gives at 100 ms a travel of 29% for A, 81% for B and 57.5% for C, and
+      free-running rAF sampling at 60 Hz puts every crossing within one frame of its label.</p>
+    <p>Two honest gaps in this page. The scrim here is a flat tint rather than the live blurred
+      backdrop, so three stages can hold 60 fps and the timings stay trustworthy. The sheet is an
+      empty white box, because its contents do not change between the three candidates and would
+      only distract from the shape of the morph.</p>
+  </div>
+</div>
+
+<script>
+  // motion-ok: this whole page IS the motion probe. Three curves, one rAF clock, one continuous
+  // transform over one DOM tree per stage. No layout is swapped at a threshold.
+  var OPEN_MS = 367;
+  var CLOSE_MS = 333;
+  var HOLD_OPEN = 900;
+  var HOLD_SHUT = 700;
+  var CYCLE = OPEN_MS + HOLD_OPEN + CLOSE_MS + HOLD_SHUT;
+
+  // measured on the live build, see the measured: marker at the top of this file
+  var FROM = { top: 82, left: 16, w: 343, h: 66, r: 33, sy: 2, sb: 8, sa: 0.07 };
+  var TO = { top: 96, left: 0, w: 375, h: 716, r: 28, sy: 18, sb: 50, sa: 0.13 };
+
+  var CURVES = [
+    [0.4, 0, 0.2, 1],
+    [0.32, 0.72, 0, 1],
+    [0.36, 0.36, 0.1, 1]
+  ];
+
+  function bezier(x1, y1, x2, y2) {
+    function cx(s) { return 3 * (1 - s) * (1 - s) * s * x1 + 3 * (1 - s) * s * s * x2 + s * s * s; }
+    function cy(s) { return 3 * (1 - s) * (1 - s) * s * y1 + 3 * (1 - s) * s * s * y2 + s * s * s; }
+    return function (t) {
+      if (t <= 0) return 0;
+      if (t >= 1) return 1;
+      var lo = 0, hi = 1, m = t;
+      for (var i = 0; i < 32; i++) {
+        m = (lo + hi) / 2;
+        if (cx(m) < t) { lo = m; } else { hi = m; }
+      }
+      return cy((lo + hi) / 2);
+    };
+  }
+
+  var eases = CURVES.map(function (c) { return bezier(c[0], c[1], c[2], c[3]); });
+
+  var cols = [].slice.call(document.querySelectorAll(".col"));
+  var stages = cols.map(function (c) { return c.querySelector(".stage"); });
+  var wraps = cols.map(function (c) { return c.querySelector(".stageWrap"); });
+  var sheets = cols.map(function (c) { return c.querySelector(".sheet"); });
+  var scrims = cols.map(function (c) { return c.querySelector(".scrim"); });
+  var fills = cols.map(function (c) { return c.querySelector(".fill"); });
+  var pcts = cols.map(function (c) { return c.querySelector(".pct"); });
+  var clockEl = document.getElementById("clock");
+
+  function round1(v) { return Math.round(v * 10) / 10; }
+  function round3(v) { return Math.round(v * 1000) / 1000; }
+
+  function layout() {
+    var row = document.getElementById("row");
+    var avail = row.clientWidth - 32; // two 16px gaps between three columns
+    // cap the height too, so a phone and its own label fit one viewport together
+    var s = Math.min(1, (avail / 3) / 375, 520 / 812);
+    stages.forEach(function (st, i) {
+      st.style.transform = "scale(" + s + ")";
+      wraps[i].style.height = Math.round(812 * s) + "px";
+      wraps[i].style.width = Math.round(375 * s) + "px";
+    });
+  }
+  window.addEventListener("resize", layout);
+
+  function paint(i, p) {
+    var el = sheets[i];
+    el.style.top = (FROM.top + (TO.top - FROM.top) * p) + "px";
+    el.style.left = (FROM.left + (TO.left - FROM.left) * p) + "px";
+    el.style.width = (FROM.w + (TO.w - FROM.w) * p) + "px";
+    el.style.height = (FROM.h + (TO.h - FROM.h) * p) + "px";
+    el.style.borderRadius = (FROM.r + (TO.r - FROM.r) * p) + "px";
+    var sy = round1(FROM.sy + (TO.sy - FROM.sy) * p);
+    var sb = round1(FROM.sb + (TO.sb - FROM.sb) * p);
+    var sa = round3(FROM.sa + (TO.sa - FROM.sa) * p);
+    el.style.boxShadow = "0 " + sy + "px " + sb + "px rgba(10,10,10," + sa + ")";
+    scrims[i].style.opacity = p;
+    fills[i].style.width = round1(p * 100) + "%";
+    pcts[i].textContent = Math.round(p * 100) + "%";
+  }
+
+  var origin = 0;
+  function frame(now) {
+    if (!origin) { origin = now; }
+    var e = (now - origin) % CYCLE;
+    var opening, t, label;
+    if (e < OPEN_MS) {
+      opening = true;
+      t = e / OPEN_MS;
+      label = "opening, " + Math.round(e) + " ms of " + OPEN_MS;
+    } else if (e < OPEN_MS + HOLD_OPEN) {
+      opening = true;
+      t = 1;
+      label = "open";
+    } else if (e < OPEN_MS + HOLD_OPEN + CLOSE_MS) {
+      opening = false;
+      t = (e - OPEN_MS - HOLD_OPEN) / CLOSE_MS;
+      label = "closing, " + Math.round(e - OPEN_MS - HOLD_OPEN) + " ms of " + CLOSE_MS;
+    } else {
+      opening = false;
+      t = 1;
+      label = "closed";
+    }
+    clockEl.textContent = label;
+    for (var i = 0; i < 3; i++) {
+      var travelled = eases[i](t);
+      paint(i, opening ? travelled : 1 - travelled);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  function replay() { origin = 0; }
+  document.getElementById("replay").addEventListener("click", replay);
+  cols.forEach(function (c) { c.addEventListener("click", replay); });
+
+  layout();
+  requestAnimationFrame(frame);
+</script>

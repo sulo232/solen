@@ -48,6 +48,10 @@ export default async function SalonOfMonth({ locale }: { locale: string }) {
             curation="solen-favorit"
             variant="service"
             address={winner.salon.quartier ?? undefined}
+            // performance-05: this is the single card in the first content section
+            // rendered after the hero, so its photo is the page's likely LCP element
+            // whenever the salon_of_month flag is on and a winner is set.
+            priority
           />
         </ScrollRow>
       </SectionFrame>

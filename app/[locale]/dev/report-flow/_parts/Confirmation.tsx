@@ -87,7 +87,7 @@ export function Confirmation({
       )}
 
       {density === "full" && (
-        <p className="font-mono-code mt-5 text-[14px] text-s-ink-3">
+        <p className="font-mono-code mt-5 text-[14px] text-s-ink-2">
           Sample reference {sampleReference(review.id)} (illustrative only)
         </p>
       )}

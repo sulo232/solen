@@ -127,6 +127,9 @@ async function sendAlmostThereEmail(
           </div>
         `,
       }),
+      // api-contracts-06: bound the outbound call so a hung Resend request
+      // can't hold the function's whole wall-clock budget.
+      signal: AbortSignal.timeout(8000),
     });
   } catch (err) {
     console.error("[loyalty/award] Failed to send almost-there email:", err);

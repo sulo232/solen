@@ -62,7 +62,7 @@ export default async function ReviewsFilterPage({
     <main className="min-h-screen bg-white">
       <div className="border-b border-s-border bg-s-bg-sunken px-4 py-4 md:px-6">
         <div className="mx-auto max-w-[720px]">
-          <p className="font-body text-[12px] font-semibold text-s-ink-3">Solen , /dev/pdp/reviews-filter</p>
+          <p className="font-body text-[12px] font-semibold text-s-ink-2">Solen , /dev/pdp/reviews-filter</p>
           <h1 className="mt-1 font-display text-[18px] font-semibold tracking-[-0.01em] text-s-ink">
             Reviews &quot;Filter by&quot; block , 3 directions
           </h1>

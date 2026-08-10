@@ -26,15 +26,24 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
+import { requireUploadHeader, verifyAndStripImage } from "@/lib/upload-security";
 
 const MAX_BYTES = 100 * 1024 * 1024; // 100MB input cap, per spec
 // Storage-layer allowlist mirrors client-photos/service-photos (jpeg/png/webp), plus gif;
 // deliberately excludes image/svg+xml even though the brief says "image/* mime" generically,
 // per the documented service-photos incident (BACKEND.md gotcha 7): an unfiltered file.type
 // passed through as Storage contentType on a public bucket is a stored-XSS vector for SVG/HTML.
-const ALLOWED_MIME = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+// A15-upload-hardening (2026-07-27): this allowlist now lives as the `allowed` array passed
+// into verifyAndStripImage below (the actual enforcement point, checked against real bytes,
+// not this string), so the old ALLOWED_MIME constant was removed as dead code.
 
 export async function POST(req: NextRequest) {
+  // A15-upload-hardening (2026-07-27): this route authenticates via the ambient Supabase
+  // session cookie, which a cross-site multipart form POST rides automatically. Require a
+  // header only same-origin fetch() code can set (see lib/upload-security.ts).
+  const csrfBlocked = requireUploadHeader(req);
+  if (csrfBlocked) return csrfBlocked;
+
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -49,20 +58,35 @@ export async function POST(req: NextRequest) {
   const file = formData.get("file") as File | null;
   if (!file) return NextResponse.json({ error: "File required" }, { status: 400 });
 
-  if (!file.type.startsWith("image/") || !ALLOWED_MIME.includes(file.type)) {
-    return NextResponse.json({ error: "Only JPEG, PNG, WebP, or GIF images are allowed" }, { status: 400 });
-  }
   if (file.size > MAX_BYTES) {
     return NextResponse.json({ error: "Max 100MB" }, { status: 413 });
   }
 
-  const ext = file.name.split(".").pop()?.toLowerCase() || file.type.split("/").pop() || "jpg";
-  const path = `${user.id}/${Date.now()}.${ext}`;
+  // A15-upload-hardening (2026-07-27): the ALLOWED_MIME check above this used to trust the
+  // client-supplied file.type string and derived the storage extension from the
+  // client-supplied filename. verifyAndStripImage reads the real magic-byte signature
+  // (blocking anything that is not actually a decodable jpeg/png/webp/gif) and re-encodes,
+  // which strips EXIF/GPS metadata; "gif" stays in the allowlist with { animated: true }
+  // read semantics so an animated avatar GIF keeps its frames through the re-encode.
+  let processed;
+  try {
+    processed = await verifyAndStripImage(
+      Buffer.from(await file.arrayBuffer()),
+      ["jpeg", "png", "webp", "gif"],
+      // imagery-icons-06: an avatar never renders above a few hundred px anywhere
+      // in the product; 512 is generous headroom over every current call site.
+      512
+    );
+  } catch {
+    return NextResponse.json({ error: "Only JPEG, PNG, WebP, or GIF images are allowed" }, { status: 400 });
+  }
+
+  const path = `${user.id}/${Date.now()}.${processed.ext}`;
 
   const admin = createAdminSupabaseClient();
   const { error: uploadError } = await admin.storage
     .from("avatars")
-    .upload(path, file, { contentType: file.type, upsert: true });
+    .upload(path, processed.buffer, { contentType: processed.contentType, upsert: true });
 
   if (uploadError) {
     console.error("[ProfileAvatar] storage upload failed:", uploadError.message);

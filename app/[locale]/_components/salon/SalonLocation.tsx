@@ -7,6 +7,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import type { Marker as MapboxMarker } from "mapbox-gl";
 import type { SalonDetail } from "./_shared";
 import { SOLEN_MAP_STYLE, toStaticStylePath, applySolenBasemapConfig, SOLEN_BASEMAP_CONFIG } from "@/lib/map-style";
+import { useTranslations } from "next-intl";
 
 /**
  * SalonLocation — V3-D389 (2026-05-31, Fresha 1:1 PDP capture).
@@ -159,6 +160,7 @@ export function SalonLocation({
    *  was explicitly "in-map" design directions, not a card redesign. */
   mapDesign?: "current" | "clean-white" | "ink-glyph" | "sunken";
 }) {
+  const t = useTranslations("salonDetail");
   const hasCoords = Boolean(salon.latitude && salon.longitude);
 
   // Nearest public-transport stop — replaces the old hardcoded `walkTimeMinutes`
@@ -206,7 +208,7 @@ export function SalonLocation({
     return (
       <section id="section-location">
         <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
-          Standort
+          {t("location")}
         </h2>
 
         {canRenderMap && (
@@ -231,7 +233,7 @@ export function SalonLocation({
               href={directionsHref}
               target="_blank"
               rel="noreferrer noopener"
-              aria-label={`${salon.name}: In Google Maps öffnen`}
+              aria-label={t("openInGoogleMaps", { name: salon.name })}
               className={`absolute inset-x-3 bottom-3 z-10 flex ${
                 transitChipVariant === "inline-pill" ? "items-end" : "items-center"
               } justify-between gap-3 rounded-2xl bg-white p-3.5 shadow-elevation-3 transition-opacity hover:opacity-90`}
@@ -239,7 +241,7 @@ export function SalonLocation({
               <span className="min-w-0">
                 <span className="block truncate font-body text-[14px] font-semibold text-s-ink">{salon.name}</span>
                 <span className="mt-0.5 flex items-center gap-1 text-[12.5px] text-s-ink-2">
-                  <MapPin size={12} className="shrink-0 text-s-ink-3" strokeWidth={2} />
+                  <MapPin size={12} className="shrink-0 text-s-ink-2" strokeWidth={2} />
                   <span className="truncate">{salon.address}</span>
                 </span>
               </span>
@@ -272,7 +274,7 @@ export function SalonLocation({
     return (
       <section id="section-location">
         <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
-          Standort
+          {t("location")}
         </h2>
 
         <div className="mt-5 flex items-center gap-4">
@@ -283,7 +285,7 @@ export function SalonLocation({
           )}
           <div className="min-w-0 flex-1 font-body text-[14px]">
             <span className="flex items-start gap-1.5 text-s-ink-2">
-              <MapPin size={14} className="mt-0.5 shrink-0 text-s-ink-3" strokeWidth={2} />
+              <MapPin size={14} className="mt-0.5 shrink-0 text-s-ink-2" strokeWidth={2} />
               <span className="leading-snug">{salon.address}</span>
             </span>
             <a
@@ -306,7 +308,7 @@ export function SalonLocation({
   return (
     <section id="section-location">
       <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
-        Standort
+        {t("location")}
       </h2>
 
       {canRenderMap && (
@@ -318,7 +320,7 @@ export function SalonLocation({
       {/* Street stays plain ink; "Wegbeschreibung" is the link BESIDE it (no blue street). */}
       <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 font-body text-[14px]">
         <span className="inline-flex items-center gap-1.5 text-s-ink-2">
-          <MapPin size={14} className="shrink-0 text-s-ink-3" strokeWidth={2} />
+          <MapPin size={14} className="shrink-0 text-s-ink-2" strokeWidth={2} />
           {salon.address}
         </span>
         <a
@@ -448,7 +450,7 @@ function TransitChip({
   // "what is this" twice over (glyph + word), not just once.
   return (
     <span className="flex shrink-0 flex-col items-end gap-0.5 text-right">
-      <span className="flex items-center gap-1 text-s-ink-3">
+      <span className="flex items-center gap-1 text-s-ink-2">
         <Icon size={13} strokeWidth={2.25} className="shrink-0" />
         <span className="text-[9.5px] font-bold uppercase tracking-[0.08em]">{transitTypeLabel(stop.type)}</span>
       </span>

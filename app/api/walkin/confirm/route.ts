@@ -6,6 +6,7 @@ import { getStripe } from "@/lib/stripe";
 import { applyRateLimit, paymentLimiter, getClientIp } from "@/lib/ratelimit";
 import { getServerEnv } from "@/lib/env";
 import { createWalkinTicket } from "@/lib/barber/walkin-ticket";
+import { validateBody, walkinConfirmSchema } from "@/lib/validations";
 import crypto from "crypto";
 import type Stripe from "stripe";
 
@@ -36,12 +37,12 @@ export async function POST(req: NextRequest) {
   const rateLimited = await applyRateLimit(paymentLimiter, { ip: getClientIp(req) });
   if (rateLimited) return rateLimited;
 
-  const body = await req.json().catch(() => null);
-  const token: string | undefined = body?.token;
-  const paymentIntentId: string | undefined = body?.payment_intent_id;
-  if (!paymentIntentId) {
+  const rawBody = await req.json().catch(() => ({}));
+  const { data: validated, error: validationError } = validateBody(walkinConfirmSchema, rawBody);
+  if (validationError) {
     return NextResponse.json({ error: "payment_intent_id is required" }, { status: 400 });
   }
+  const { token, payment_intent_id: paymentIntentId } = validated;
 
   // Retrieve + validate the PaymentIntent. Manual-capture hold lands on "requires_capture".
   let pi: Stripe.PaymentIntent;

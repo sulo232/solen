@@ -56,7 +56,7 @@ export default function SetupWizard({ salonId, initialSteps, children, locale, o
   };
 
   return (
-    <div className="min-h-screen bg-s-bg-surface">
+    <main className="min-h-screen bg-s-bg-surface">
       {/* Step indicator */}
       <div className="bg-white/95 backdrop-blur-sm border-b border-s-ink/5 sticky top-0 z-30">
         <div className="max-w-3xl mx-auto px-4 py-4">
@@ -164,6 +164,6 @@ export default function SetupWizard({ salonId, initialSteps, children, locale, o
           </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

@@ -116,7 +116,7 @@ function SizeStrip({ size, note, rec }: { size: ChipSize; note: string; rec: boo
         <span className={`font-body text-[13px] font-bold ${rec ? "text-s-accent" : "text-s-ink"}`}>
           {size}{rec ? " (recommended)" : ""}
         </span>
-        <span className="font-body text-[12px] text-s-ink-3">{note}</span>
+        <span className="font-body text-[12px] text-s-ink-2">{note}</span>
       </div>
       <div
         className="relative flex aspect-[3/2] w-full items-end justify-start overflow-hidden rounded-2xl p-3 shadow-elevation-2"
@@ -177,7 +177,7 @@ export default function SpecChipMockup() {
             <p className="pl-3 text-s-ink-2">match found, chip = the matched real term. No match, no chip.</p>
           </div>
           <div className="mt-3 border-t border-s-border pt-3">
-            <p className="mb-2 text-[12px] font-semibold text-s-ink-3">No match, no chip (control)</p>
+            <p className="mb-2 text-[12px] font-semibold text-s-ink-2">No match, no chip (control)</p>
             <FeedCard
               name="Studio Bellevue"
               meta="Coiffeur, Bern"

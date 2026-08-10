@@ -354,7 +354,7 @@ function BundleForm({
                   <div className="flex items-center justify-between gap-3 border-t border-s-border px-4 py-3.5">
                     <div className="flex min-w-0 items-baseline gap-2">
                       {showStruck && (
-                        <span className="font-body text-[13px] text-s-ink-3 line-through tabular-nums">
+                        <span className="font-body text-[13px] text-s-ink-2 line-through tabular-nums">
                           {formatCurrency(sumChf, locale)}
                         </span>
                       )}

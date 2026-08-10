@@ -8,6 +8,7 @@ import { buildNailPrompt, type NailShotType } from "@/lib/nail/ai-prompts";
 import { checkBudget, recordGeneration, getBudgetStatus } from "@/lib/nail/ai-budget";
 import { validateBody, adminNailGenerateSchema } from "@/lib/validations";
 import { getServerEnv } from "@/lib/env";
+import { assertSafeFetchUrl } from "@/lib/security/ssrf-guard";
 
 // POST /api/admin/nail/generate — Admin-only AI nail art generation with budget tracking
 export async function POST(req: NextRequest) {
@@ -87,6 +88,11 @@ export async function POST(req: NextRequest) {
         image_size: "square_hd",
         num_images: 1,
       }),
+      // api-contracts-06: bound the outbound call so a hung fal.ai request
+      // can't consume the whole serverless function wall-clock budget. This
+      // is a stopgap timeout guard, not the 202+poll architecture the
+      // reliability research recommends for AI-generation routes long-term.
+      signal: AbortSignal.timeout(25000),
     });
 
     if (!response.ok) {
@@ -105,6 +111,9 @@ export async function POST(req: NextRequest) {
     const stagingSourceId = `ai-gen-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
     let storedUrl = imageUrl;
     try {
+      // input-abuse-04 (2026-07-27): imageUrl is fal.ai's own generation-response URL, not
+      // a hardcoded host, so guard against SSRF before the server-side fetch fires.
+      await assertSafeFetchUrl(imageUrl);
       const imgRes = await fetch(imageUrl);
       if (imgRes.ok) {
         const imgBuffer = Buffer.from(await imgRes.arrayBuffer());

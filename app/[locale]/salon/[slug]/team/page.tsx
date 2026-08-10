@@ -1,3 +1,5 @@
+"use client";
+
 // exists-check: `npm run exists team` (2026-07-24, this turn) , only hit is the dev-only
 // /dev/pdp/team-all route + the SalonTeam/SalonTeamOverhaul/TeamAllOverhaul components (all
 // referenced below, not duplicated) + the graveyard "ink black select button" entry (confirms
@@ -51,6 +53,7 @@ export default async function SalonTeamPage({
 }: {
   params: Promise<{ locale: string; slug: string }>;
 }) {
+  const tBack = await getTranslations("common");
   const { locale, slug } = await params;
   const result = await loadSalonDetailWithStatus(slug);
   if (!result) notFound();
@@ -69,7 +72,7 @@ export default async function SalonTeamPage({
       <div className="mx-auto max-w-[480px] px-4 pt-6">
         <Link
           href={`/${locale}/salon/${slug}#section-team`}
-          aria-label="Zurück"
+          aria-label={tBack("back")}
           className="grid h-11 w-11 place-items-center rounded-full border border-s-border bg-white transition-[colors,transform] hover:bg-s-bg-sunken active:scale-[0.94] active:duration-[80ms] active:ease-glide"
         >
           <ArrowLeft size={20} strokeWidth={2.1} aria-hidden className="text-s-ink" />

@@ -14,6 +14,8 @@ import {
 } from "@/app/[locale]/_components/dashboard/DashboardUI";
 import DashboardAdvicePanel from "@/app/[locale]/_components/dashboard/DashboardAdvice";
 import { cn } from "@/lib/utils";
+import { resolveSwissLocale } from "@/lib/format";
+import { avGrad } from "@/lib/avatar-gradients";
 import type { Booking } from "@/lib/types";
 import type { DashboardAdvice } from "@/lib/dashboard-advice";
 
@@ -34,7 +36,7 @@ interface StaffStat { id: string; name: string; revenue?: number; bookings?: num
 
 // mockup-ok: hook-enforced no-caps compliance fix (CLAUDE.md rule 10), ported from reviewed commit 37e703762
 const Eyebrow = ({ children }: { children: React.ReactNode }) => (
-  <p className="text-[12px] font-semibold text-s-ink-3 mb-3">{children}</p>
+  <p className="text-[12px] font-semibold text-s-ink-2 mb-3">{children}</p>
 );
 
 // D4 fix (owner-approved 2026-07-15, fixes-refined): compareLabel turns the inline delta into a
@@ -45,10 +47,10 @@ function Delta({ v, compareLabel, className }: { v?: number; compareLabel?: stri
   if (v === undefined) return null;
   const up = v > 0, flat = v === 0;
   return (
-    <span className={cn("inline-flex items-center gap-0.5 text-[12px] font-semibold", up ? "text-s-success" : flat ? "text-s-ink-3" : "text-s-error", className)}>
+    <span className={cn("inline-flex items-center gap-0.5 text-[12px] font-semibold", up ? "text-s-success" : flat ? "text-s-ink-2" : "text-s-error", className)}>
       {up && <ArrowUpRight size={12} strokeWidth={2.4} />}
       {!up && !flat && <ArrowDownRight size={12} strokeWidth={2.4} />}
-      {Math.abs(v)}%{compareLabel ? <span className="text-s-ink-3 font-medium ml-1">{compareLabel}</span> : null}
+      {Math.abs(v)}%{compareLabel ? <span className="text-s-ink-2 font-medium ml-1">{compareLabel}</span> : null}
     </span>
   );
 }
@@ -62,7 +64,7 @@ function StatTile({ label, children, delta }: { label: string; children: React.R
       <p className="text-[12px] font-semibold text-s-ink-2 mb-2">{label}</p>
       <div className="text-[22px] font-semibold tracking-[-0.02em] leading-none text-s-ink flex items-baseline">{children}</div>
       {delta !== undefined && (
-        <span className={cn("inline-flex items-center gap-0.5 text-[12px] font-semibold mt-2", up ? "text-s-success" : flat ? "text-s-ink-3" : "text-s-error")}>
+        <span className={cn("inline-flex items-center gap-0.5 text-[12px] font-semibold mt-2", up ? "text-s-success" : flat ? "text-s-ink-2" : "text-s-error")}>
           {up && <ArrowUpRight size={12} strokeWidth={2.4} />}
           {!up && !flat && <ArrowDownRight size={12} strokeWidth={2.4} />}
           {Math.abs(delta)}%
@@ -84,14 +86,10 @@ const initials = (name: string) => {
   const p = name.trim().split(/\s+/);
   return ((p[0]?.[0] ?? "") + (p[1]?.[0] ?? "")).toUpperCase() || "—";
 };
-// Deterministic avatar gradient (consistent colour per person) — approved mobile skin.
-const AV_GRADS = [
-  "from-[#276EF1] to-[#1B4DCB]", "from-[#F0A868] to-[#C0524A]",
-  "from-[#16A34A] to-[#0E7A37]", "from-[#8B5CF6] to-[#6D28D9]", "from-[#EC4899] to-[#BE185D]",
-];
-const avGrad = (s: string) => AV_GRADS[[...s].reduce((a, c) => a + c.charCodeAt(0), 0) % AV_GRADS.length];
-const fmtTime = (iso: string) => new Date(iso).toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" });
-const fmtChf = (n: number) => n.toLocaleString("de-CH");
+// locale param added 2026-07-26 (de-CH literal sweep): both were hardcoded de-CH; default
+// keeps prior behavior for any caller that still doesn't pass one.
+const fmtTime = (iso: string, locale: string = "de") => new Date(iso).toLocaleTimeString(resolveSwissLocale(locale), { hour: "2-digit", minute: "2-digit" });
+const fmtChf = (n: number, locale: string = "de") => n.toLocaleString(resolveSwissLocale(locale));
 
 export default function DashboardPage() {
   const locale = useLocale();
@@ -144,7 +142,7 @@ export default function DashboardPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  const today = new Date().toLocaleDateString("de-CH", { weekday: "long", day: "numeric", month: "long" });
+  const today = new Date().toLocaleDateString(resolveSwissLocale(locale), { weekday: "long", day: "numeric", month: "long" });
   const prior = stats?.trends_vs_prior;
   const daily = stats?.daily ?? [];
 
@@ -168,7 +166,7 @@ export default function DashboardPage() {
       <div className="flex items-end justify-between gap-4 mb-6">
         <div>
           {/* mockup-ok: D2 fix, sentence case 13px semibold (approved public/_mockups/fixes-refined) */}
-          <p className="text-[13px] font-semibold text-s-ink-3 mb-2">{today}</p>
+          <p className="text-[13px] font-semibold text-s-ink-2 mb-2">{today}</p>
           <h1 className="text-[26px] font-semibold tracking-[-0.015em] text-s-ink leading-none">{t("title")}</h1>
         </div>
         <Link
@@ -189,7 +187,7 @@ export default function DashboardPage() {
           {/* Mobile stat tiles — same data as the desktop charts, glanceable on small screens */}
           <div className="grid grid-cols-2 gap-2.5 lg:hidden">
             <StatTile label={t("revenue")} delta={prior?.revenue}>
-              <span className="text-[13px] font-semibold text-s-ink-2 mr-1">CHF</span>{fmtChf(Math.round(stats?.total_revenue ?? 0))}
+              <span className="text-[13px] font-semibold text-s-ink-2 mr-1">CHF</span>{fmtChf(Math.round(stats?.total_revenue ?? 0), locale)}
             </StatTile>
             <StatTile label={t("bookings")} delta={prior?.bookings}>{stats?.total_bookings ?? 0}</StatTile>
             <StatTile label={t("newCustomers")} delta={prior?.new_customers}>{stats?.new_customers ?? 0}</StatTile>
@@ -204,10 +202,10 @@ export default function DashboardPage() {
             <div className="flex items-end justify-between mb-3">
               <div>
                 <p className="text-[14.5px] font-semibold tracking-[-0.01em] text-s-ink">{t("revenue")}</p>
-                <p className="text-[12px] text-s-ink-3 mt-0.5">{t("last7Days")}</p>
+                <p className="text-[12px] text-s-ink-2 mt-0.5">{t("last7Days")}</p>
               </div>
               <p className="text-[20px] font-semibold tabular-nums tracking-[-0.02em] leading-none text-s-ink">
-                <span className="text-[13px] font-semibold text-s-ink-2 mr-1">CHF</span>{fmtChf(Math.round(stats?.total_revenue ?? 0))}
+                <span className="text-[13px] font-semibold text-s-ink-2 mr-1">CHF</span>{fmtChf(Math.round(stats?.total_revenue ?? 0), locale)}
               </p>
             </div>
             <DashBarChart height={90} data={daily.map((d) => ({ primary: d.revenue }))} primaryClassName="fill-s-accent-bright" />
@@ -227,10 +225,10 @@ export default function DashboardPage() {
             <div className="rounded-card-lg border border-s-border bg-white p-5 lg:col-span-2">
               <div className="flex items-center justify-between mb-1">
                 <h2 className="text-[15px] font-semibold tracking-[-0.01em] text-s-ink">{t("revenue")}</h2>
-                <span className="text-[12px] text-s-ink-3">{t("thisWeek")}</span>
+                <span className="text-[12px] text-s-ink-2">{t("thisWeek")}</span>
               </div>
               <p className="text-[34px] font-semibold tracking-[-0.02em] leading-none text-s-ink">
-                <span className="text-[16px] font-semibold text-s-ink-2 mr-1">CHF</span>{fmtChf(Math.round(stats?.total_revenue ?? 0))}
+                <span className="text-[16px] font-semibold text-s-ink-2 mr-1">CHF</span>{fmtChf(Math.round(stats?.total_revenue ?? 0), locale)}
               </p>
               <Delta v={prior?.revenue} compareLabel={t("vsPriorWeek")} className="mt-1.5" />
               <div className="mt-4">
@@ -247,7 +245,7 @@ export default function DashboardPage() {
             <div className="rounded-card-lg border border-s-border bg-white p-5 lg:col-span-1">
               <div className="flex items-center justify-between mb-1">
                 <h2 className="text-[14px] font-semibold tracking-[-0.01em] text-s-ink-2">{t("bookings")}</h2>
-                <span className="text-[12px] text-s-ink-3">{t("thisWeek")}</span>
+                <span className="text-[12px] text-s-ink-2">{t("thisWeek")}</span>
               </div>
               <p className="text-[24px] font-semibold tracking-[-0.02em] leading-none text-s-ink">
                 {stats?.total_bookings ?? 0}<span className="text-[13px] font-semibold text-s-ink-2 ml-1">{t("booked")}</span>
@@ -271,14 +269,14 @@ export default function DashboardPage() {
             <DashPanel title={t("today")} actionLabel={t("viewAll")} actionHref={`/${locale}/dashboard/bookings`}>
               {bookings.length === 0 ? (
                 <div className="px-5 py-12 text-center">
-                  <Calendar size={26} className="mx-auto mb-3 text-s-ink-3" strokeWidth={1.6} />
+                  <Calendar size={26} className="mx-auto mb-3 text-s-ink-2" strokeWidth={1.6} />
                   <p className="text-[14px] text-s-ink-2">{t("noBookingsToday")}</p>
                 </div>
               ) : (
                 <div>
                   {bookings.slice(0, 6).map((b) => (
                     <DashRow key={b.id} href={`/${locale}/dashboard/bookings`}>
-                      <span className="text-[14px] font-semibold tracking-[-0.01em] text-s-ink w-[52px] shrink-0">{fmtTime(b.starts_at)}</span>
+                      <span className="text-[14px] font-semibold tracking-[-0.01em] text-s-ink w-[52px] shrink-0">{fmtTime(b.starts_at, locale)}</span>
                       <span className={`grid place-items-center w-[30px] h-[30px] rounded-full bg-gradient-to-br ${avGrad(b.customer_name)} text-white text-[12px] font-semibold shrink-0`}>{initials(b.customer_name)}</span>
                       <span className="flex-1 min-w-0">
                         <span className="block text-[15px] font-semibold tracking-[-0.005em] text-s-ink truncate">{b.customer_name}</span>
@@ -314,7 +312,7 @@ export default function DashboardPage() {
                 <div>
                   {stats!.popular_services!.map((s, i) => (
                     <DashRow key={s.id}>
-                      <span className="text-[13px] font-semibold text-s-ink-3 w-5 shrink-0">{i + 1}</span>
+                      <span className="text-[13px] font-semibold text-s-ink-2 w-5 shrink-0">{i + 1}</span>
                       <span className="flex-1 text-[15px] font-semibold tracking-[-0.005em] text-s-ink truncate">{s.name}</span>
                       <span className="text-[13px] text-s-ink-2">{t("timesBooked", { n: s.count })}</span>
                     </DashRow>
@@ -331,7 +329,7 @@ export default function DashboardPage() {
                     <DashRow key={m.id}>
                       <span className={`grid place-items-center w-[30px] h-[30px] rounded-full bg-gradient-to-br ${avGrad(m.name)} text-white text-[12px] font-semibold shrink-0`}>{initials(m.name)}</span>
                       <span className="flex-1 text-[15px] font-semibold tracking-[-0.005em] text-s-ink truncate">{m.name}</span>
-                      {m.revenue !== undefined && <span className="text-[13px] font-semibold text-s-ink">CHF {fmtChf(Math.round(m.revenue))}</span>}
+                      {m.revenue !== undefined && <span className="text-[13px] font-semibold text-s-ink">CHF {fmtChf(Math.round(m.revenue), locale)}</span>}
                       {m.bookings !== undefined && <span className="text-[13px] text-s-ink-2 w-14 text-right">{t("bookingsShort", { n: m.bookings })}</span>}
                     </DashRow>
                   ))}

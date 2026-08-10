@@ -5,6 +5,7 @@ import { applyRateLimit, discoveryAdminLimiter } from "@/lib/ratelimit";
 import { z } from "zod";
 import { validateBody } from "@/lib/validations";
 import { getServerEnv } from "@/lib/env";
+import { wrapUntrustedInput } from "@/lib/ai/untrusted";
 
 const schema = z.object({ item_id: z.string().uuid() });
 
@@ -54,11 +55,14 @@ export async function POST(req: NextRequest) {
     item.occasion && `Occasion: ${item.occasion}`,
   ].filter(Boolean).join(". ");
 
+  // input-abuse-06 (2026-07-27): context is built from discovery_items fields the TikTok
+  // import/auto-tagging pipeline populates, i.e. content that originates outside Solen's
+  // own trust boundary. Wrap it so an injected instruction reads as data, not a directive.
   const prompt = `You are a beauty & wellness content writer for solen.ch (Basel, Switzerland).
 Generate a short, engaging description (2-3 sentences) for this beauty/wellness item in 4 languages.
-Also generate a "salon script" — what the customer should say to their stylist to get this look.
+Also generate a "salon script": what the customer should say to their stylist to get this look.
 
-Context: ${context}
+${wrapUntrustedInput("ITEM_CONTEXT", context)}
 
 Return ONLY valid JSON:
 {

@@ -5,6 +5,7 @@ import SearchTemplate from "@/app/[locale]/_components/search/SearchTemplate";
 import type { SalonCategory } from "@/lib/types";
 import { getActiveCityBySlug, getActiveCities, getCityName, type CitySlug } from "@/lib/cities";
 import { getFilterAvailability } from "@/lib/search/filter-availability";
+import { buildAlternates } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 // DB `cities WHERE is_active` is the runtime gate (2026-07-04 city-rollout refactor); a city
@@ -55,6 +56,7 @@ export async function generateMetadata({
 
   const cityName = getCityName(city, locale, row);
   const categoryName = CATEGORY_NAMES[category]?.[locale] || category;
+  const alternates = buildAlternates(`${city}/${category}`, locale);
 
   const titles: Record<string, string> = {
     de: `Beste ${categoryName} in ${cityName} - Termin buchen | Solen`,
@@ -73,46 +75,119 @@ export async function generateMetadata({
   return {
     title: titles[locale] || titles.de,
     description: descriptions[locale] || descriptions.de,
+    alternates,
   };
 }
 
-function CityCategoryFaq({ cityName, categoryName }: { cityName: string; categoryName: string }) {
+// A7-city-category-seo (2026-07-27): the FAQ used to be German-only literal copy served
+// verbatim under /en/, /fr/, /it/ too. Content is now built per locale + interpolated with
+// the real city/category name, never a hardcoded "Basel". A locale with no entry here falls
+// back to de rather than rendering mismatched text.
+const CITY_CATEGORY_FAQ_COPY: Record<
+  string,
+  {
+    heading: string;
+    items: (cityName: string, categoryName: string) => { q: string; a: string }[];
+  }
+> = {
+  de: {
+    heading: "Häufig gestellte Fragen",
+    items: (cityName, categoryName) => [
+      {
+        q: `Wie viel kostet ein Besuch bei einem ${categoryName} in ${cityName}?`,
+        a: "Die Preise variieren je nach Store und Service. Nutze unsere Filterfunktion um Stores nach Preisbereich zu vergleichen.",
+      },
+      {
+        q: `Wie finde ich den besten ${categoryName} in ${cityName}?`,
+        a: "Schau dir die Bewertungen an, vergleiche die Preise und lese die Erfahrungen anderer Kunden.",
+      },
+      {
+        q: "Kann ich online einen Termin buchen?",
+        a: "Ja. Alle Stores auf Solen ermöglichen Online-Buchungen.",
+      },
+    ],
+  },
+  en: {
+    heading: "Frequently asked questions",
+    items: (cityName, categoryName) => [
+      {
+        q: `How much does a visit to a ${categoryName} in ${cityName} cost?`,
+        a: "Prices vary by store and service. Use our filter to compare stores by price range.",
+      },
+      {
+        q: `How do I find the best ${categoryName} in ${cityName}?`,
+        a: "Check the reviews, compare prices and read other customers' experiences.",
+      },
+      {
+        q: "Can I book an appointment online?",
+        a: "Yes. Every store on Solen supports online booking.",
+      },
+    ],
+  },
+  fr: {
+    heading: "Questions fréquentes",
+    items: (cityName, categoryName) => [
+      {
+        q: `Combien coûte une visite chez un ${categoryName} à ${cityName}?`,
+        a: "Les prix varient selon le store et le service. Utilise notre filtre pour comparer les stores par fourchette de prix.",
+      },
+      {
+        q: `Comment trouver le meilleur ${categoryName} à ${cityName}?`,
+        a: "Consulte les avis, compare les prix et lis les expériences des autres clients.",
+      },
+      {
+        q: "Puis-je réserver un rendez-vous en ligne?",
+        a: "Oui. Tous les stores sur Solen permettent la réservation en ligne.",
+      },
+    ],
+  },
+  it: {
+    heading: "Domande frequenti",
+    items: (cityName, categoryName) => [
+      {
+        q: `Quanto costa una visita da un ${categoryName} a ${cityName}?`,
+        a: "I prezzi variano in base allo store e al servizio. Usa il nostro filtro per confrontare gli store per fascia di prezzo.",
+      },
+      {
+        q: `Come trovo il miglior ${categoryName} a ${cityName}?`,
+        a: "Guarda le recensioni, confronta i prezzi e leggi le esperienze degli altri clienti.",
+      },
+      {
+        q: "Posso prenotare un appuntamento online?",
+        a: "Sì. Tutti gli store su Solen permettono la prenotazione online.",
+      },
+    ],
+  },
+};
+
+function CityCategoryFaq({
+  locale,
+  cityName,
+  categoryName,
+}: {
+  locale: string;
+  cityName: string;
+  categoryName: string;
+}) {
+  const copy = CITY_CATEGORY_FAQ_COPY[locale] || CITY_CATEGORY_FAQ_COPY.de;
+  const items = copy.items(cityName, categoryName);
+
   return (
     <section className="px-5 md:px-6 lg:px-10 xl:px-20 py-12 border-t border-s-border max-w-[800px] mx-auto">
       {/* V3-D262 (W4, 2026-05-27): FAQ h2 to LOCKFILE Section spec (20-24px / 600 / -0.02em) */}
       <h2 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink mb-6">
-        Häufig gestellte Fragen
+        {copy.heading}
       </h2>
       {/* mockup-ok: S1 fix, one grouped list card (rounded-card + border-s-border), rows share
           a hairline instead of each carrying its own border/rounded/padding chrome (approved
           public/_mockups/fixes-refined) */}
       <div className="rounded-card border border-s-border bg-white overflow-hidden">
-        <details className="border-t border-s-border p-4 cursor-pointer first:border-t-0">
-          <summary className="font-body font-semibold text-base text-s-ink">
-            Wie viel kostet ein Besuch bei einem {categoryName} in {cityName}?
-          </summary>
-          <p className="font-body text-sm text-s-ink-2 mt-3">
-            Die Preise variieren je nach Salon und Service. Nutze unsere Filterfunktion um Salons nach Preisbereich zu vergleichen.
-          </p>
-        </details>
-
-        <details className="border-t border-s-border p-4 cursor-pointer first:border-t-0">
-          <summary className="font-body font-semibold text-base text-s-ink">
-            Wie finde ich den besten {categoryName} in {cityName}?
-          </summary>
-          <p className="font-body text-sm text-s-ink-2 mt-3">
-            Schau dir die Bewertungen an, vergleiche die Preise und lese die Erfahrungen anderer Kunden.
-          </p>
-        </details>
-
-        <details className="border-t border-s-border p-4 cursor-pointer first:border-t-0">
-          <summary className="font-body font-semibold text-base text-s-ink">
-            Kann ich online einen Termin buchen?
-          </summary>
-          <p className="font-body text-sm text-s-ink-2 mt-3">
-            Ja. Alle Salons auf Solen ermöglichen Online-Buchungen.
-          </p>
-        </details>
+        {items.map((item) => (
+          <details key={item.q} className="border-t border-s-border p-4 cursor-pointer first:border-t-0">
+            <summary className="font-body font-semibold text-base text-s-ink">{item.q}</summary>
+            <p className="font-body text-sm text-s-ink-2 mt-3">{item.a}</p>
+          </details>
+        ))}
       </div>
     </section>
   );
@@ -153,7 +228,7 @@ export default async function Page({
         title: `${categoryName} in ${cityName}`,
         subtitle: `Entdecke die besten ${categoryName} in ${cityName}. Vergleiche Bewertungen, Preise und Verfügbarkeit.`,
       }}
-      belowSlot={<CityCategoryFaq cityName={cityName} categoryName={categoryName} />}
+      belowSlot={<CityCategoryFaq locale={locale} cityName={cityName} categoryName={categoryName} />}
     />
   );
 }

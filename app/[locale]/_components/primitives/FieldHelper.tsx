@@ -67,7 +67,7 @@ export function FieldHelper({
       aria-live={ariaLive}
       className={cn(
         "font-body leading-[1.4] text-[13px] flex items-start gap-[6px] mt-[6px]",
-        tone === "default" && "font-normal text-s-ink-3",
+        tone === "default" && "font-normal text-s-ink-2",
         tone === "error" && "font-medium text-s-error",
         tone === "warning" && "font-medium text-s-warning",
         tone === "success" && "font-medium text-s-success",

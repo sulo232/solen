@@ -9,10 +9,11 @@
 // Admin-only: the endpoint is role-gated (403); this page also reflects the gate.
 
 import { useCallback, useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Scale, Search, X, ChevronDown } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import { DashStatusPill } from "@/app/[locale]/_components/dashboard/DashboardUI";
+import { resolveSwissLocale } from "@/lib/format";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { caseChipClasses } from "@/components-legacy/refund/shared";
 
@@ -56,13 +57,17 @@ const STATUS_TONE: Record<string, { tone: Tone; pulse?: boolean }> = {
 };
 const TERMINAL = new Set(["admin_approved", "admin_rejected", "refunded", "charged", "void", "closed"]);
 const chf = (r: number | null | undefined) => `CHF ${((r ?? 0) / 100).toFixed(2)}`;
-const fmtDate = (iso: string | null | undefined) =>
-  iso ? new Date(iso).toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit", year: "numeric" }) : "";
-const fmtWhen = (iso: string) =>
-  new Date(iso).toLocaleString("de-CH", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
+// locale param added 2026-07-26 (de-CH literal sweep): both were hardcoded de-CH with
+// no way for a caller to pass the active locale; default keeps old behavior for any
+// caller that still doesn't pass one.
+const fmtDate = (iso: string | null | undefined, locale: string = "de") =>
+  iso ? new Date(iso).toLocaleDateString(resolveSwissLocale(locale), { day: "2-digit", month: "2-digit", year: "numeric" }) : "";
+const fmtWhen = (iso: string, locale: string = "de") =>
+  new Date(iso).toLocaleString(resolveSwissLocale(locale), { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
 
 export default function AdminCasesPage() {
   const t = useTranslations("admin.cases") as any;
+  const locale = useLocale();
 
   const [salonName, setSalonName] = useState<string | undefined>();
   const [role, setRole] = useState<string | null>(null);
@@ -289,7 +294,7 @@ export default function AdminCasesPage() {
                         <div className="min-w-0">
                           <p className="text-[13px] font-semibold text-s-ink font-heading">{c.bookings?.salons?.name || t("unknownSalon")}</p>
                           <p className="text-[16px] font-semibold text-s-ink font-heading tracking-[-0.01em] mt-0.5">{c.reporter?.display_name || t("unknown")}</p>
-                          <p className="text-[12px] text-s-ink-2 mt-0.5">{fmtDate(c.bookings?.starts_at)} {ref}</p>
+                          <p className="text-[12px] text-s-ink-2 mt-0.5">{fmtDate(c.bookings?.starts_at, locale)} {ref}</p>
                         </div>
                         <div className="flex flex-col items-end gap-1.5 shrink-0">
                           <span className="text-[12px] font-bold uppercase tracking-[0.05em] rounded-full px-2.5 py-1 bg-s-bg-sunken text-s-ink-2">{isUpcharge ? t("dirUpcharge") : t("dirRefund")}</span>
@@ -335,7 +340,7 @@ export default function AdminCasesPage() {
                                       <span className={"absolute inset-0 rounded-full border-2 " + (pulse ? "bg-s-accent border-s-accent" : "bg-white border-[#BBB8B5]")} />
                                     </span>
                                     <p className="text-[13px] font-medium text-s-ink">{ev.to_status ? t(`status.${ev.to_status}`) : ev.action}</p>
-                                    <p className="text-[12px] text-s-ink-2 mt-0.5">{[ev.actor_name || ev.actor_type, fmtWhen(ev.at)].filter(Boolean).join(" ")}</p>
+                                    <p className="text-[12px] text-s-ink-2 mt-0.5">{[ev.actor_name || ev.actor_type, fmtWhen(ev.at, locale)].filter(Boolean).join(" ")}</p>
                                   </div>
                                 );
                               })}

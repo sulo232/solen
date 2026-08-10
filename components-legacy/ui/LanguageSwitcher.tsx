@@ -4,6 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import { ChevronDown, ChevronRight, Globe } from "lucide-react";
 import { Sheet } from "@/app/[locale]/_components/primitives/Sheet";
+import { useTranslations } from "next-intl";
 
 const LOCALE_LABELS: Record<string, string> = {
   de: "DE",
@@ -22,6 +23,7 @@ const LOCALE_FULL: Record<string, { name: string; code: string }> = {
 };
 
 export default function LanguageSwitcher({ locale, variant = "header" }: { locale: string; variant?: "header" | "footer" | "menu" | "sheet" }) {
+  const tSD = useTranslations("salonDetail");
   const pathname = usePathname() ?? "/";
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -66,16 +68,16 @@ export default function LanguageSwitcher({ locale, variant = "header" }: { local
         <button
           type="button"
           onClick={() => setOpen(true)}
-          aria-label="Sprache wählen"
+          aria-label={tSD("selectLanguage")}
           className="flex items-center gap-1.5 text-[14px] font-medium text-s-ink-2 transition-colors hover:text-s-ink"
         >
           <Globe size={16} strokeWidth={2.1} className="text-s-ink-2" aria-hidden />
           <span>{LOCALE_FULL[locale]?.name ?? "Deutsch"}</span>
-          <ChevronRight size={15} className="text-s-ink-3" aria-hidden />
+          <ChevronRight size={15} className="text-s-ink-2" aria-hidden />
         </button>
-        <Sheet isOpen={open} onOpenChange={setOpen} height="auto" aria-label="Sprache wählen">
+        <Sheet isOpen={open} onOpenChange={setOpen} height="auto" aria-label={tSD("selectLanguage")}>
           <div className="px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-1">
-            <h2 className="font-heading text-[20px] font-bold tracking-[-0.01em] text-s-ink">Sprache wählen</h2>
+            <h2 className="font-heading text-[20px] font-bold tracking-[-0.01em] text-s-ink">{tSD("selectLanguage")}</h2>
             <div className="mt-2">
               {Object.entries(LOCALE_FULL).map(([key, v]) => (
                 <button
@@ -133,7 +135,7 @@ export default function LanguageSwitcher({ locale, variant = "header" }: { local
       <button
         onClick={() => setOpen((v) => !v)}
         className="flex items-center gap-0.5 px-2 py-1.5 min-h-10 rounded-pill text-[13px] font-medium text-s-ink-2 hover:text-s-ink transition-colors"
-        aria-label="Sprache wählen"
+        aria-label={tSD("selectLanguage")}
         aria-expanded={open}
       >
         <span>{LOCALE_LABELS[locale] ?? "DE"}</span>

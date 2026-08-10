@@ -4,6 +4,7 @@ import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { applyRateLimit, discoveryAdminLimiter } from "@/lib/ratelimit";
 import { validateBody, discoveryStagingSchema } from "@/lib/validations";
 import { logAuditEvent } from "@/lib/audit";
+import { assertSafeFetchUrl } from "@/lib/security/ssrf-guard";
 
 export async function GET(req: NextRequest) {
   const disabled = await checkFeatureEnabled("discovery");
@@ -76,7 +77,10 @@ export async function PUT(req: NextRequest) {
 
     if (item.media_type === "photo" && item.image_url) {
       // Download and convert to WebP, upload to Supabase Storage
+      // input-abuse-04 (2026-07-27): image_url is a discovery_staging column populated
+      // by the import/ingest pipeline, not a hardcoded host. Guard before the fetch.
       try {
+        await assertSafeFetchUrl(item.image_url);
         const sharp = (await import("sharp")).default;
         const imgRes = await fetch(item.image_url);
         const buffer = await imgRes.arrayBuffer();

@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
 import type { Database } from "@/lib/database.types";
+import { validateBody, adminContentPutSchema } from "@/lib/validations";
 
 // PUT /api/admin/content/[key] — admin only, update content
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ key: string }> }) {
@@ -19,7 +20,10 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ key:
   const rateLimited = await applyRateLimit(adminLimiter, { userId: user.id });
   if (rateLimited) return rateLimited;
 
-  const body = await req.json();
+  const rawBody = await req.json();
+  const { data: body, error: validationError } = validateBody(adminContentPutSchema, rawBody);
+  if (validationError) return NextResponse.json({ error: validationError.message }, { status: 400 });
+
   const updates: Database["public"]["Tables"]["site_content"]["Update"] = {
     updated_at: new Date().toISOString(),
     updated_by: user.id,

@@ -1,0 +1,171 @@
+{
+  "area": "Dashboard layout width: (1) page-level max-width cap on the operator dashboard shell, (2) extending the 68ch `.prose-measure` cap to dashboard free-text surfaces",
+  "summary": "The premise \"read app/[locale]/dashboard/layout.tsx\" is wrong: no dashboard layout.tsx exists anywhere in the app tree. The dashboard shell is a per-page-imported client component, components-legacy/dashboard/DashboardLayout.tsx, wrapped manually by 44 of 49 dashboard pages; 5 pages bypass it entirely. Its content chain (lines 287 -> 431 -> 473) carries zero max-w classes, so `<main>` at line 473 is the single correct insertion point for change 1. The 64px sidebar is `position: fixed` (line 289), sitting entirely OUTSIDE the capped container, with the content column offset by `md:ml-[64px]` (line 431) — so a cap plus `mx-auto` centres content inside the region right of the rail, which is what you want. For change 2, `.prose-measure { max-width: 68ch }` already exists at app/globals.css:224-226 inside `@layer utilities`, is live on 9 customer surfaces, and has zero dashboard usages. Two things contradict the brief: LOCKFILE.md references a \"Dashboard content max-width row above\" three times (lines 437, 439, 443) but that row does not exist in the container-widths table at lines 939-947, so no width value is actually locked; and there is no email-template editor in the dashboard at all (templates are server-side generators in lib/email-templates/).",
+  "findings": [
+    {
+      "claim": "No app/[locale]/dashboard/layout.tsx exists. The entire app tree contains exactly 5 layout files, none under dashboard, and no route groups under dashboard either.",
+      "evidence": "`find app -name 'layout.tsx'` returns only: app/layout.tsx, app/[locale]/layout.tsx, app/[locale]/partner/layout.tsx, app/[locale]/salon/[slug]/layout.tsx, app/[locale]/dev/flows/layout.tsx. `find app -name 'layout.tsx' -path '*dash*'` returns nothing. `find app/[locale]/dashboard -type d -name '(*)'` returns nothing.",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "The dashboard shell is components-legacy/dashboard/DashboardLayout.tsx, imported and wrapped MANUALLY by each page. 44 of 49 dashboard pages use it; 5 do not.",
+      "evidence": "components-legacy/dashboard/DashboardLayout.tsx:151 `export default function DashboardLayout(...)`. Usage e.g. app/[locale]/dashboard/calendar/page.tsx:653, analytics/page.tsx:143, settings/page.tsx:1476. Per-file loop over all 49 page.tsx: the 5 without it are editor, messages, gallery, setup, queue-display.",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "CHANGE 1 TARGET. The shell's content chain has zero max-w. `<main>` at DashboardLayout.tsx:473 is the only correct insertion point: `<main className=\"flex-1 px-4 pt-6 pb-10 sm:px-6 md:py-8\">`",
+      "evidence": "components-legacy/dashboard/DashboardLayout.tsx:287 `<div className=\"min-h-screen bg-s-bg-sunken flex\">`; :431 `<div className=\"flex-1 md:ml-[64px] flex flex-col min-h-screen\">`; :473 `<main className=\"flex-1 px-4 pt-6 pb-10 sm:px-6 md:py-8\">{children}</main>`. Grep for max-w across the file returns only :261 (loading skeleton) and :347 (mobile drawer) — neither in the content chain.",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "ANSWER TO Q5: the sidebar sits OUTSIDE the container being capped. It is `position: fixed`, therefore out of normal flow; the content column reserves space with `md:ml-[64px]`. A cap applied at :473 therefore centres content within the viewport-minus-64px region, not the full viewport.",
+      "evidence": "components-legacy/dashboard/DashboardLayout.tsx:289 `<aside className=\"hidden md:flex fixed left-0 top-0 h-full w-[64px] bg-white border-r border-s-border flex-col items-center py-3 z-30\">` paired with :431 `md:ml-[64px]`.",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "The design note's 'collapsible rail (64px -> peek + pin)' is NOT built. The rail is a static fixed 64px icon strip with hover tooltips; there is no collapse, peek, pin, or expand state anywhere in the dashboard.",
+      "evidence": "Grep for `railOpen|collapsed|isPinned|peek|expandRail|w-[240px]` across components-legacy/dashboard and app/[locale]/dashboard: the only hits are DashboardLayout.tsx:261 (a w-[240px] loading skeleton) and services/page.tsx:263 (an unrelated template-list `collapsed`). DashboardLayout.tsx:289 hardcodes w-[64px] with no state.",
+      "confidence": "verified",
+      "wired": "dead-code"
+    },
+    {
+      "claim": "Q2: ZERO dashboard pages set a page-level container width. Every max-w hit in the dashboard is a modal, drawer, panel, or narrow form column. Distinct values in use: max-w-sm (x3 of the raw count, ~14 total sites), max-w-md (~12), max-w-4xl (4), max-w-2xl (4), max-w-3xl (3), max-w-xl (3), max-w-lg (3), max-w-xs (2), max-w-5xl (1), max-w-6xl (1), plus arbitrary [85vw], [560px], [300px], [260px].",
+      "evidence": "Full `rg -n 'max-w-...'` over app/[locale]/dashboard + components-legacy/dashboard + app/[locale]/_components/dashboard. Modals: bundles/page.tsx:170,516; calendar/page.tsx:106,188,297; services/page.tsx:86,451,636; staff/page.tsx:158,327,387. Narrow form columns: settings/page.tsx:117,253,317,450,571,649,730,847,1074,1140,1267.",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "NO CONFLICT with a shell-level cap. The 8 pages that already self-cap all use values far narrower than any plausible page cap (1440px), so the inner value keeps winning; they only gain outer centring.",
+      "evidence": "loyalty/page.tsx:82 `max-w-3xl mx-auto` (768px); refunds/page.tsx:168 `max-w-4xl mx-auto` (896px); cases/page.tsx:221 `max-w-4xl mx-auto`; upcharge/page.tsx:182 `max-w-4xl mx-auto`; discovery-posts/page.tsx:116 `max-w-2xl mx-auto`; salon-of-month-admin/page.tsx:128 `max-w-2xl`; verification/page.tsx:78 `max-w-3xl`; gallery/page.tsx:56 `max-w-5xl` (1024px).",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "Q3: the calendar is the ONLY page genuinely hurt by a narrow cap. Its default view is a 8-column week grid (time gutter + 7 days). It degrades safely though — it is already wrapped in overflow-x-auto with a min-w floor, so a cap costs column width, never breaks layout.",
+      "evidence": "app/[locale]/dashboard/calendar/page.tsx:395 `useState<ViewMode>(\"week\")` (week is the default); :894 `<div className=\"overflow-x-auto rounded-[12px] border border-s-ink/5 bg-white shadow-warm-md\">`; :895 `<div className=\"min-w-[600px]\">`; :896 `grid grid-cols-8`. Month view at :1089/:1094 uses grid-cols-7. Desktop views are gated `hidden lg:block` at :832.",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "Q3: the table-heavy pages are analytics, revenue, earnings, and StaffComparison — but none is hurt, because every one of their tables is already inside an overflow-x-auto wrapper.",
+      "evidence": "analytics/page.tsx:378 `<div className=\"hidden sm:block overflow-x-auto\">` wrapping :379 `<table className=\"w-full text-xs\">` (3 th). revenue/page.tsx:245 overflow-x-auto wrapping :246 table (11 th across :210 and :246). earnings/page.tsx:126 and :194 overflow-x-auto wrapping tables at :127/:195 (13 th total). components-legacy/dashboard/StaffComparison.tsx:86 overflow-x-auto wrapping :87 table (6 th).",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "Q4: the prose cap already exists as a shared utility and is documented. `.prose-measure { max-width: 68ch }`, defined in @layer utilities.",
+      "evidence": "app/globals.css:224-226 `.prose-measure { max-width: 68ch; }`, inside the `@layer utilities {` block opened at app/globals.css:177. Comment at :219-223 states the rationale and 'Use on any hand-rolled prose/description block instead of an arbitrary max-w-* value.'",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "`.prose-measure` composes cleanly with the dashboard textareas' existing `w-full`: it sets max-width, they set width, and none of the target textareas carries a competing max-w-* utility. No specificity fight.",
+      "evidence": "app/globals.css:177 opens @layer utilities, :225 sets only `max-width`. Every target textarea className was read (reviews/page.tsx:260,304; settings/page.tsx:164,170; help-editor/page.tsx:163; content-editor/page.tsx:94; refunds/page.tsx:232; reports/page.tsx:253; services/page.tsx:127; SalonAboutEditor.tsx:121) — all use `w-full` with no max-w-*.",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "Q4: `.prose-measure` has 11 usage sites, ALL customer-side or dev. Zero dashboard usages, confirming the brief's premise.",
+      "evidence": "sicherheit/page.tsx:17, legal/terms/page.tsx:11, legal/privacy/page.tsx:11, privacy/page.tsx:56, terms/page.tsx:60, terms/discovery/page.tsx:20, impressum/page.tsx:12, _components/salon/SalonAbout.tsx:37, _components/salon/SalonReviews.tsx:254, dev/report-flow/_parts/ReviewPreviewCard.tsx:45. No hit under app/[locale]/dashboard or components-legacy/dashboard.",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "Q4: the dashboard long-free-text surfaces are 24 textareas plus 3 read-only prose renders. The highest-value targets (operator-authored or customer-authored manuscript text) are listed in evidence.",
+      "evidence": "Editors: components-legacy/dashboard/SalonAboutEditor.tsx:121 (the salon description editor, 4-language tabbed, h-32); settings/page.tsx:164 + :170 (description_de / description_en, maxLength 500); help-editor/page.tsx:163 (rows={10}, help-article body — the longest); content-editor/page.tsx:94 (CMS text rows, only rendered when value length > 80); discovery-admin/page.tsx:303; services/page.tsx:127 (service description_de). Notes: refunds/page.tsx:232; reports/page.tsx:253 (admin_notes); approvals/page.tsx:176; upcharge/page.tsx:264; reviews/page.tsx:260 (reply) and :304 (flag reason); discovery-posts/page.tsx:180; components-legacy/dashboard/coiffeur/ConsultationNotes.tsx:142, FormulaBook.tsx:224, FormulaTab.tsx:119, spa/WellnessJournal.tsx:280,294, spa/TreatmentOutcome.tsx:120,125,136, barber/FadeBlueprint.tsx:345, nail/NailPreferencesForm.tsx:179. Read-only prose: reviews/page.tsx:224 `<p className=\"text-sm text-s-ink/70 mb-3\">` rendering the customer's full review comment with no width bound; services/page.tsx:609 and :610 rendering service descriptions with leading-relaxed and no bound.",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "The brief's 'email templates' dashboard surface DOES NOT EXIST. There is no email-template editor under /dashboard; templates are server-side HTML generator modules.",
+      "evidence": "`rg -li 'email.?template' app/[locale]/dashboard components-legacy/dashboard` returns zero files. Repo-wide the hits are lib/email-templates/booking-notifications.ts, lib/email-templates/audit-notifications.ts, lib/email.ts, lib/notifications.ts, and API/cron routes. dashboard/marketing/page.tsx contains no textarea at all.",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "LOCKFILE.md contains a DANGLING FORWARD REFERENCE: it cites 'the Dashboard content max-width row above' three times, but the container-widths table has no Dashboard row, and the table sits BELOW those citations, not above. No dashboard width value is actually locked.",
+      "evidence": "_design-system/LOCKFILE.md:437 'width (see the Dashboard content max-width row above)', :439 and :443 'the dashboard max-width sweep (LOCKFILE.md Dashboard content row)'. The Container widths table is at :939-947 and lists exactly: Page outer max-w-[1280px], Hero content max-w-[1280px], Salon PDP grid max-w-[1180px], /business hero max-w-[1400px], Search bar md:max-w-[820px], SearchBar mobile max-w-[540px], FAQ section max-w-[820px]. No dashboard row.",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "Change 2 is already fully specified and locked in LOCKFILE as responsive-desktop-08, including the exact candidate surface list. Change 1's VALUE is not locked anywhere.",
+      "evidence": "_design-system/LOCKFILE.md:433-443 '**Dashboard scope (responsive-desktop-08, 2026-07-27):** this rule binds the DASHBOARD too... Operator-authored free text (service descriptions, staff bios, review-moderation excerpts, refund notes, help-editor/content-editor bodies) reaches the same `.prose-measure` utility' and names 'settings, upcharge, help-editor, discovery-admin, content-editor, refunds, approvals, discovery-posts, services, reports, reviews'.",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "The source research recommends max-w-[1440px] but justifies it by 'match the /business hero's already-locked ceiling' — and that locked ceiling is 1400px, not 1440. The recommended number does not match its own stated rationale, so 1440 is an unlocked invented value.",
+      "evidence": "_design-system/research/missing-principles-2026-07-26/responsive-desktop.json finding responsive-desktop-02, principle field: 'recommend max-w-[1440px] to match the /business hero's already-locked ceiling, or a dashboard-specific value the owner picks'. LOCKFILE.md:944 records `/business hero | max-w-[1400px]`.",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "The research's where_it_should_live and local_evidence independently confirm my line-473 target, and its finding is tagged confidence=verified, severity=high, effort=S.",
+      "evidence": "responsive-desktop.json responsive-desktop-02 local_evidence: 'components-legacy/dashboard/DashboardLayout.tsx:473 renders the shared content wrapper as `<main className=\"flex-1 px-4 pt-6 pb-10 sm:px-6 md:py-8\">`, no max-w class anywhere in that file's main/content chain.' where_it_should_live: 'add a Dashboard content row... applied at components-legacy/dashboard/DashboardLayout.tsx's main wrapper.'",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "SHELL BYPASS BUG (pre-existing, adjacent). app/[locale]/dashboard/gallery/page.tsx renders no DashboardLayout, so /dashboard/gallery ships with NO icon rail, NO topbar, NO salon switcher, and none of the shell's auth guard. It is also therefore unreachable by a shell-level cap.",
+      "evidence": "app/[locale]/dashboard/gallery/page.tsx read in full (79 lines): imports only Skeleton, GalleryManager, SalonAboutEditor; returns `<main className=\"max-w-5xl\">` at :56 as its outermost node. No dashboard layout.tsx exists to supply the shell. Contrast DashboardLayout.tsx:226-255, the auth guard the page therefore skips (it does its own /api/salons/mine check at :19 instead).",
+      "confidence": "verified",
+      "wired": "partially-wired"
+    },
+    {
+      "claim": "The shell's loading skeleton renders a 240px sidebar while the real rail is 64px, so every dashboard page shifts content 176px left when auth resolves. Separately, dashboard/loading.tsx uses a third width (max-w-6xl) and renders with no rail at all.",
+      "evidence": "components-legacy/dashboard/DashboardLayout.tsx:261 `<div className=\"hidden md:flex flex-col w-[240px] border-r border-s-ink/[0.06] p-3 gap-4\">` vs :289 `w-[64px]`. app/[locale]/dashboard/loading.tsx:5 `<div className=\"max-w-6xl mx-auto px-4 py-8\">`.",
+      "confidence": "verified",
+      "wired": "wired"
+    },
+    {
+      "claim": "Both changes are still recorded as AWAITING OWNER in the plan files, contradicting the brief's 'owner-APPROVED'. If the approval is real, these two lines are now stale and need flipping in the same turn.",
+      "evidence": "_plans/PRINCIPLES_LOOP.md and _plans/CONTEXT_SNAPSHOT.md both carry `- [ ] **AWAITING OWNER** OWNER QUESTION: cap the ... on wide and ... monitors` and `- [ ] **AWAITING OWNER** OWNER QUESTION: apply the 68ch line-length cap to dashboard free text as well?`",
+      "confidence": "verified",
+      "wired": "n/a"
+    },
+    {
+      "claim": "Nested <main> landmark violation, pre-existing and unrelated to but touched by change 1. Every dashboard page renders a <main> inside the locale layout's <main>.",
+      "evidence": "app/[locale]/layout.tsx:114 `<main id=\"main-content\" tabIndex={-1} className=\"pb-[env(safe-area-inset-bottom)] isolate\">` wraps {children} at :118. components-legacy/dashboard/DashboardLayout.tsx:473 renders a second `<main>` inside it. gallery/page.tsx:56 does the same.",
+      "confidence": "verified",
+      "wired": "wired"
+    }
+  ],
+  "gaps": [
+    {
+      "what": "No locked value for the dashboard content max-width. LOCKFILE cites a 'Dashboard content max-width row' that was never written, and the research's suggested 1440px misquotes its own cited precedent (the locked /business hero is 1400px).",
+      "why_it_matters": "Per taste rule 9 and global rule 1, an unlocked value must not be filled from memory. Picking 1440 vs 1400 vs 1280 is a one-word decision but it is the owner's, and it will be copied by every future dashboard surface. Shipping an invented number also re-creates the exact 'a fourth width nobody chose' problem the container-widths table exists to prevent.",
+      "existing_thing_to_extend": "_design-system/LOCKFILE.md:939-947 Container widths table — add the missing Dashboard content row so the three dangling citations at :437/:439/:443 resolve.",
+      "size": "S"
+    },
+    {
+      "what": "The sticky topbar (DashboardLayout.tsx:433) is a sibling of <main> and stays full-bleed when <main> is capped. Its right-hand controls (search button :438, NotificationCenter :441) would then sit ~560px right of the content's right edge on a 2560px monitor.",
+      "why_it_matters": "This is the one thing a naive one-line cap gets visually wrong, and it is exactly the kind of 'unbalanced' result the owner rejects on sight. Two defensible answers exist: leave the bar viewport-pinned (consistent with the rail, which is also viewport-pinned chrome — this is what Fresha/Stripe do) or cap the bar's inner content to the same width, which needs an added wrapper div and is therefore no longer a one-line change. It should be shown in the mockup rather than decided silently.",
+      "existing_thing_to_extend": "components-legacy/dashboard/DashboardLayout.tsx:433 (desktop topbar) and :444 (mobile topbar).",
+      "size": "S"
+    },
+    {
+      "what": "5 dashboard pages bypass DashboardLayout entirely, so a shell-level cap cannot reach them: editor, gallery, setup, queue-display, messages.",
+      "why_it_matters": "Four are legitimately exempt (messages is a pure redirect; setup is a full-screen onboarding flow; queue-display is a full-bleed dark TV board; editor is the visual editor). Gallery is NOT intentional — it is missing the whole shell including the rail, which is a separate bug that a width sweep will make visible but not fix.",
+      "existing_thing_to_extend": "app/[locale]/dashboard/gallery/page.tsx:56 — should be wrapped in DashboardLayout like the other 44 pages.",
+      "size": "S"
+    },
+    {
+      "what": "No enforcement for either change. Nothing measures dashboard content width at a wide viewport, and nothing checks that a new dashboard textarea reaches for .prose-measure.",
+      "why_it_matters": "This estate's own retro concluded gates work and advice does not. Both rules will drift back on the next new dashboard page without a check. The research entry itself proposes a geometry rule: measure main content width at 1920px and fail if it equals viewport width minus only the fixed padding.",
+      "existing_thing_to_extend": "scripts/check-geometry.mjs (already runs FLOORS passes at tablet 768x1024 and desktop 1280x900 per LOCKFILE:1930) — add a 1920px dashboard width assertion.",
+      "size": "M"
+    },
+    {
+      "what": "The dashboard calendar week view will lose real estate under any cap and has no named exemption.",
+      "why_it_matters": "It defaults to the 8-column week grid and is the one surface where more width genuinely buys information. It will not break (overflow-x-auto plus min-w-[600px] already handle narrowing), but at a 1440 cap each day column lands around 165px versus about 310px unbounded on a 2560px screen. This needs to be a stated decision, not a side effect.",
+      "existing_thing_to_extend": "app/[locale]/dashboard/calendar/page.tsx:894-895, the existing overflow-x-auto + min-w-[600px] wrapper.",
+      "size": "S"
+    }
+  ],
+  "recommendation": "CHANGE 1 — exactly one line, one file. components-legacy/dashboard/DashboardLayout.tsx:473. Replace `<main className=\"flex-1 px-4 pt-6 pb-10 sm:px-6 md:py-8\">` with `<main className=\"flex-1 w-full max-w-[1440px] mx-auto px-4 pt-6 pb-10 sm:px-6 md:py-8\">`. Three notes on that string: `mx-auto` is load-bearing (without it the content hugs the 64px rail and dumps the entire slack into a single right gutter, about 1056px of dead space on a 2560px monitor, which is worse than no cap); `w-full` is needed because the element is a flex child, so `flex-1` alone plus a max-width is fine but `w-full` makes the intent explicit and survives a future `flex-col` refactor; and the 1440 value is NOT locked — see gaps, confirm it with the owner or write the LOCKFILE row first. This one line reaches 44 of 49 pages. Do NOT put the cap on line 431 (the column div) — that would cap the sticky topbar's white background too and leave sunken grey either side of it, which reads as broken.\n\nCHANGE 2 — add the `prose-measure` class token to each site; no new CSS, the utility already exists at app/globals.css:224. Priority order, highest value first: (a) components-legacy/dashboard/SalonAboutEditor.tsx:121, the salon description editor, the single most important one; (b) app/[locale]/dashboard/help-editor/page.tsx:163, rows={10}, the longest body in the dashboard; (c) app/[locale]/dashboard/reviews/page.tsx:224, the read-only customer review comment, currently fully unbounded prose; (d) app/[locale]/dashboard/settings/page.tsx:164 and :170, description_de / description_en; (e) app/[locale]/dashboard/services/page.tsx:127 (editor) plus :609 and :610 (read-only service descriptions); (f) content-editor/page.tsx:94, discovery-admin/page.tsx:303, reports/page.tsx:253, refunds/page.tsx:232, approvals/page.tsx:176, upcharge/page.tsx:264, discovery-posts/page.tsx:180, reviews/page.tsx:260. It composes safely — `.prose-measure` sets only max-width, every target sets only `w-full`, and none carries a competing max-w-*.\n\nSKIP in change 2: the short single-purpose note fields (reviews/page.tsx:304 flag reason, and the coiffeur/spa/nail/barber per-client note widgets at ConsultationNotes.tsx:142, FormulaBook.tsx:224, FormulaTab.tsx:119, WellnessJournal.tsx:280/294, TreatmentOutcome.tsx:120/125/136, FadeBlueprint.tsx:345, NailPreferencesForm.tsx:179). They are rows={2} inside already-narrow panels (several sit inside max-w-md containers), so the cap buys nothing and adds churn. Also drop \"email templates\" from the brief entirely — no such dashboard surface exists.\n\nEXEMPT from change 1, name these explicitly: app/[locale]/dashboard/calendar/page.tsx (the 8-column week grid at :894-896 is the one surface where width buys information; either accept the narrowing, which is safe because overflow-x-auto plus min-w-[600px] already absorb it, or give the week/day view a named `max-w-none` opt-out — owner's call, show both in the mockup). Auto-exempt because they bypass the shell and need no edit: editor, setup, queue-display, messages. Gallery is auto-exempt for the same mechanical reason but that is a bug, not a decision — file it separately.\n\nSEQUENCING. Write the LOCKFILE Dashboard content row at _design-system/LOCKFILE.md:947 in the same turn as the code change, so the three dangling citations at :437/:439/:443 stop pointing at nothing, and flip the two AWAITING OWNER lines in _plans/PRINCIPLES_LOOP.md and _plans/CONTEXT_SNAPSHOT.md. Both changes are visual and land on live operator surfaces, so the mockup-first rule binds: LOCKFILE:439 says so by name for change 2. Verify at 1920px and 2560px, not at 1280px, where a 1440 cap is invisible and would produce a false PASS."
+}

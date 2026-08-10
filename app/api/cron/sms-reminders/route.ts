@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { sendSMS } from "@/lib/sms";
 import { getServerEnv } from "@/lib/env";
+import { verifyCronSecret } from "@/lib/cron-auth";
 import { withCronRun } from "@/lib/cron-run";
 
 // RING 3a: caps a per-item errors[] array so a bad batch never floods cron_runs.
@@ -23,7 +24,7 @@ export async function GET(req: NextRequest) {
   const env = getServerEnv();
   if (!env.CRON_SECRET) return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 503 });
   const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${env.CRON_SECRET}`) {
+  if (!(await verifyCronSecret(authHeader, env.CRON_SECRET))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -53,7 +54,7 @@ export async function GET(req: NextRequest) {
   const { data: bookings24h } = await supabase
     .from("bookings")
     .select(
-      "id, starts_at, profiles!bookings_user_id_fkey(display_name, phone_number), salons!bookings_salon_id_fkey(name, address, sms_reminder_24h)"
+      "id, starts_at, profiles!bookings_user_id_fkey(display_name, phone_number, notification_sms), salons!bookings_salon_id_fkey(name, address, sms_reminder_24h)"
     )
     .eq("status", "confirmed")
     .eq("sms_sent_24h", false)
@@ -66,6 +67,7 @@ export async function GET(req: NextRequest) {
     const salon = booking.salons as any;
     const phone = profile?.phone_number;
     if (!phone) continue;
+    if (profile?.notification_sms === false) continue; // honor the user's own SMS-notification toggle (ethics-psychology-02)
     if (!salon?.sms_reminder_24h) continue; // honor the per-salon 24h-reminder toggle
 
     // Claim before send: flip the flag with a conditional update so a second concurrent
@@ -109,7 +111,7 @@ export async function GET(req: NextRequest) {
   const { data: bookings1h } = await supabase
     .from("bookings")
     .select(
-      "id, starts_at, profiles!bookings_user_id_fkey(display_name, phone_number), salons!bookings_salon_id_fkey(name, sms_reminder_1h)"
+      "id, starts_at, profiles!bookings_user_id_fkey(display_name, phone_number, notification_sms), salons!bookings_salon_id_fkey(name, sms_reminder_1h)"
     )
     .eq("status", "confirmed")
     .eq("sms_sent_1h", false)
@@ -122,6 +124,7 @@ export async function GET(req: NextRequest) {
     const salon = booking.salons as any;
     const phone = profile?.phone_number;
     if (!phone) continue;
+    if (profile?.notification_sms === false) continue; // honor the user's own SMS-notification toggle (ethics-psychology-02)
     if (!salon?.sms_reminder_1h) continue; // honor the per-salon 1h-reminder toggle
 
     // Claim before send: flip the flag with a conditional update so a second concurrent

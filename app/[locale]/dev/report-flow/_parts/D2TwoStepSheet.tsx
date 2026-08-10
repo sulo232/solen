@@ -74,7 +74,7 @@ export function D2TwoStepSheet({
         {inner === "reason" && (
           <>
             <SheetHeader title="Report this review" onClose={() => setOpen(false)} closeAriaLabel="Close">
-              <span className="text-[14px] text-s-ink-3">Step 1 of 2, reason</span>
+              <span className="text-[14px] text-s-ink-2">Step 1 of 2, reason</span>
             </SheetHeader>
             <SheetBody>
               <ReviewLine review={review} />
@@ -91,7 +91,7 @@ export function D2TwoStepSheet({
                     className={reason === r.value ? "bg-s-bg-sunken" : undefined}
                   >
                     <span className="block">{r.label}</span>
-                    <span className="block font-normal text-[14px] text-s-ink-3">{r.hint}</span>
+                    <span className="block font-normal text-[14px] text-s-ink-2">{r.hint}</span>
                   </Radio>
                 ))}
               </RadioGroup>
@@ -112,7 +112,7 @@ export function D2TwoStepSheet({
         {inner === "detail" && (
           <>
             <SheetHeader title="Report this review" onClose={() => setOpen(false)} closeAriaLabel="Close">
-              <span className="text-[14px] text-s-ink-3">Step 2 of 2, detail</span>
+              <span className="text-[14px] text-s-ink-2">Step 2 of 2, detail</span>
             </SheetHeader>
             <SheetBody>
               <ReviewPreviewCard review={review} />

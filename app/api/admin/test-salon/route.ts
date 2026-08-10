@@ -4,6 +4,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
+import { validateBody, adminTestSalonCreateSchema } from "@/lib/validations";
 
 const TEST_PREFIX = "[TEST]";
 
@@ -75,9 +76,10 @@ export async function POST(request: NextRequest) {
   const rateLimited = await applyRateLimit(adminLimiter, { userId: user.id });
   if (rateLimited) return rateLimited;
 
-  const body = await request.json().catch(() => ({}));
-  const categories: string[] = body.categories ?? rand(CATEGORIES_OPTIONS);
-  const baseName = body.name ?? rand(FAKE_NAMES);
+  const rawBody = await request.json().catch(() => ({}));
+  const { data: validated } = validateBody(adminTestSalonCreateSchema, rawBody);
+  const categories: string[] = validated?.categories ?? rand(CATEGORIES_OPTIONS);
+  const baseName = validated?.name ?? rand(FAKE_NAMES);
   const name = `${TEST_PREFIX} ${baseName}`;
   const slug = `test-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
   const address = rand(FAKE_ADDRESSES);

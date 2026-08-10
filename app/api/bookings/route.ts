@@ -13,6 +13,7 @@ import { pickSlotForAnyStaff, countStaffBookingsOnDay } from "@/lib/bookings/aut
 import { loadPricedBundle } from "@/lib/pricing/bundle";
 import { completeReferralForFirstBooking } from "@/lib/referral/complete-referral";
 import { reportError } from "@/lib/error-report";
+import { resolveSwissLocale } from "@/lib/format";
 import type { Database } from "@/lib/database.types";
 
 export async function GET(request: NextRequest) {
@@ -180,7 +181,7 @@ export async function POST(request: NextRequest) {
   // Kept as ONE string literal (not concatenated) so PostgREST's TS types infer the embedded shape.
   let slotQuery = db
     .from("availability_slots")
-    .select("id, salon_id, service_id, starts_at, ends_at, staff_member_id, price_override, status, salons(id, owner_id, name, auto_assign_method, daily_limit_enabled, daily_limit, online_booking_enabled, vacation_start, vacation_end, payment_mode, booking_confirmation_mode, cancellation_fee_type, cancellation_fee_value, free_cancel_hours, no_show_fee_type, no_show_fee_value, vat_registered, vat_rate, vat_number), services(price, name_de, name_en)")
+    .select("id, salon_id, service_id, starts_at, ends_at, staff_member_id, price_override, status, salons(id, owner_id, name, address, auto_assign_method, daily_limit_enabled, daily_limit, online_booking_enabled, vacation_start, vacation_end, payment_mode, booking_confirmation_mode, cancellation_fee_type, cancellation_fee_value, free_cancel_hours, no_show_fee_type, no_show_fee_value, vat_registered, vat_rate, vat_number), services(price, name_de, name_en)")
     .eq("status", "available");
 
   if (slot_id) {
@@ -281,11 +282,13 @@ export async function POST(request: NextRequest) {
   }
 
   // 2. Get user profile for is_first_visit (logged-in only — a guest has no profile row).
-  let profile: { is_first_visit_default?: boolean | null; locale?: string | null } | null = null;
+  // seo-comms-05: also select notification_email so step 7 below can honor the
+  // customer's own "E-Mail-Benachrichtigungen" toggle before sending the confirmation.
+  let profile: { is_first_visit_default?: boolean | null; locale?: string | null; notification_email?: boolean | null } | null = null;
   if (user) {
     const { data } = await db
       .from("profiles")
-      .select("is_first_visit_default, locale")
+      .select("is_first_visit_default, locale, notification_email")
       .eq("id", user.id)
       .single();
     profile = data;
@@ -563,11 +566,15 @@ export async function POST(request: NextRequest) {
   const serviceNameKey = locale === "de" ? "name_de" : "name_en";
   const serviceName = slot.services?.[serviceNameKey] ?? "Service";
   const salonName = slot.salons?.name ?? "Salon";
-  const bookingDate = new Date(slot.starts_at).toLocaleDateString(locale === "de" ? "de-CH" : "en-GB");
-  const bookingTime = new Date(slot.starts_at).toLocaleTimeString(locale === "de" ? "de-CH" : "en-GB", { hour: "2-digit", minute: "2-digit" });
+  const bookingDate = new Date(slot.starts_at).toLocaleDateString(resolveSwissLocale(locale));
+  const bookingTime = new Date(slot.starts_at).toLocaleTimeString(resolveSwissLocale(locale), { hour: "2-digit", minute: "2-digit" });
 
   const customerEmail = user?.email ?? guest_email ?? null;
-  if (!isOnlinePay && customerEmail) {
+  // seo-comms-05: profile.notification_email defaults to true (matches the ?? true fallback
+  // used everywhere else this column is read); a guest has no profile row and always gets
+  // the confirmation, since a guest has no toggle to have set in the first place.
+  const customerWantsEmail = profile?.notification_email !== false;
+  if (!isOnlinePay && customerEmail && customerWantsEmail) {
     try {
       // Price + VAT-inclusive breakdown (registered salon → Netto/MWST/Gesamt + UID; else just
       // the total). slot.salons carries vat_registered/vat_rate/vat_number (selected explicitly above).
@@ -577,6 +584,11 @@ export async function POST(request: NextRequest) {
       const evb = salonVat?.vat_registered && grossRappen > 0
         ? computeVat(grossRappen, { registered: true, ratePercent: salonVat.vat_rate ?? 8.1 })
         : null;
+      // seo-comms-09: manage link differs for a logged-in customer (their own bookings
+      // list) vs. a guest (the code-based lookup page, they have no account to log into).
+      const manageUrl = user
+        ? `https://solen.ch/${locale}/profile/bookings`
+        : `https://solen.ch/${locale}/booking/lookup`;
       const emailData = bookingConfirmation(
         customerEmail,
         {
@@ -588,6 +600,11 @@ export async function POST(request: NextRequest) {
             rate: evb.ratePercent % 1 === 0 ? String(evb.ratePercent) : evb.ratePercent.toFixed(1),
             vatNumber: salonVat?.vat_number ?? undefined,
           } : {}),
+          address: (slot.salons as { address?: string } | null)?.address ?? undefined,
+          manageUrl,
+          icsStartsAt: slot.starts_at,
+          icsEndsAt: slot.ends_at,
+          bookingId: booking.id,
         },
         locale
       );
@@ -606,24 +623,28 @@ export async function POST(request: NextRequest) {
       const admin = createAdminSupabaseClient();
       const { data: ownerProfile } = await admin
         .from("profiles")
-        .select("id")
+        .select("id, locale")
         .eq("id", ownerId)
         .single();
       // Fetch the owner's auth email via admin auth API
       const { data: ownerAuthUser } = await admin.auth.admin.getUserById(ownerId);
       const ownerEmail = ownerAuthUser?.user?.email;
       if (ownerEmail && ownerProfile) {
+        // Fixed 2026-07-27 (A9-email-locale): the owner's own profile.locale is now fetched
+        // (was id-only), replacing the hardcoded "de" default so a non-German salon owner
+        // gets the new-booking notification in their own language.
+        const ownerLocale = (ownerProfile.locale ?? "de") as "de" | "en" | "fr" | "it";
         const ownerEmailData = salonNewBooking(
           ownerEmail,
           {
-            // SP-1: guest has no session email — fall back to the guest name, then "Gast".
+            // SP-1: guest has no session email, fall back to the guest name, then "Gast".
             customerName: user?.email ?? guest_name ?? "Gast",
             service: serviceName,
             date: bookingDate,
             time: bookingTime,
             price,
           },
-          "de" // salon owners use DE by default; profile locale not fetched here
+          ownerLocale
         );
         await sendEmail(ownerEmailData);
       }

@@ -38,6 +38,30 @@ export const GLIDE_EASE = [0.16, 1, 0.3, 1] as const;
 /** Locked enter duration, 280ms (owner pick, Demo 7, 2026-07-26: 280ms with blur kept). */
 export const ENTER_DURATION = 0.28;
 
+/**
+ * Locked non-gesture physics-spring presets (motion-07, 2026-07-27). Before this, six-plus
+ * `type: "spring"` call sites (HeroDuo.tsx, BentoCard.tsx, BentoBusiness.tsx, TipSheet.tsx,
+ * dev/map-zoom) each hand-picked their own stiffness/damping pair, so every "bouncy reveal"
+ * in the app had a different bounce/settle by accident of who wrote that file, the same
+ * inconsistency THE ENTER RECIPE was built to kill for opacity/scale/blur. These two presets
+ * are NOT invented: they are LOCKFILE SS16.5.4's own two gesture-release rows, exposed as
+ * named constants so a non-gesture spring can draw from the same locked house values instead
+ * of a fresh guess per file. Uses the `motion` package's `duration`+`bounce` pair (its
+ * Apple-style response/damping-ratio model), matching SS16.5.4's own "damping ratio +
+ * response, not mass/stiffness" framing.
+ *   SPRING_GENTLE  = SS16.5.4 "Return home / any default UI spring" (damping 1.0, response .38s)
+ *   SPRING_SNAPPY  = SS16.5.4 "Momentum release" (damping ~0.8, response .3s)
+ * A third "bouncy" celebratory tier is deliberately NOT added here: no locked celebratory
+ * spring value exists yet outside SuccessMark's CSS `spring` bezier token (a different
+ * mechanism, see the disambiguation note in LOCKFILE SS4), and inventing one is out of scope
+ * for a rule-consolidation fix. Existing hand-tuned call sites are NOT retrofitted to these
+ * presets here, that changes a live customer-facing animation's felt physics (hero letter
+ * drift, bento tilt, tip sheet entrance) and needs its own owner-approved pass; only NEW
+ * non-gesture springs should import from here.
+ */
+export const SPRING_GENTLE: Transition = { type: "spring", duration: 0.38, bounce: 0 };
+export const SPRING_SNAPPY: Transition = { type: "spring", duration: 0.3, bounce: 0.2 };
+
 const enterTransition: Transition = { duration: ENTER_DURATION, ease: GLIDE_EASE };
 
 /** The locked recipe as plain from/to objects, opacity + scale + blur together. */
@@ -144,7 +168,14 @@ export function butterPress(tier: PressTier = "cta"): string {
  */
 const STEP_SWAP_SCALE_FROM = 0.99;
 const STEP_SWAP_DURATION = 0.26;
-const stepSwapTransition: Transition = { duration: STEP_SWAP_DURATION, ease: GLIDE_EASE };
+/** Locked "thud" ease, cubic-bezier(0.7,0,0.84,0), accelerate, exits only (THE CURVE RULE). */
+const THUD_EASE = [0.7, 0, 0.84, 0] as const;
+/** THE CURVE RULE (motion-02): entering = glide (decelerate), exiting = thud (accelerate).
+ * Two separate Transition objects on purpose, never one shared reference reused for both
+ * directions, that reuse is what let the step-swap exit animate on the wrong curve. */
+const stepSwapEnterTransition: Transition = { duration: STEP_SWAP_DURATION, ease: GLIDE_EASE };
+const stepSwapExitTransition: Transition = { duration: STEP_SWAP_DURATION, ease: THUD_EASE };
+const stepSwapTransition: Transition = stepSwapEnterTransition;
 
 /**
  * useStepSwapMotion, a gentler opacity+scale tier (0.99 / 260ms / glide) for
@@ -171,6 +202,12 @@ const stepSwapTransition: Transition = { duration: STEP_SWAP_DURATION, ease: GLI
  * `exit`) collapse to the same final state (opacity 1, scale 1) with
  * `duration: 0`, so a reduced-motion user never sees the animated
  * opacity/scale swap.
+ *
+ * THE CURVE RULE (motion-02, 2026-07-27): `enter`/`center` animate on `glide`
+ * (decelerate, arriving), `exit` animates on `thud` (accelerate, leaving). The
+ * per-variant `transition` below is what makes this stick regardless of what
+ * `transition` prop a call site passes to the `<motion.div>` , Framer Motion
+ * gives a variant's own `transition` key priority over the component prop.
  */
 export function useStepSwapMotion(): { variants: Variants; transition: Transition } {
   const reduce = useReducedMotion();
@@ -184,7 +221,41 @@ export function useStepSwapMotion(): { variants: Variants; transition: Transitio
     };
   }
   return {
-    variants: { enter: initialState, center: finalState, exit: initialState },
+    variants: {
+      enter: { ...initialState, transition: stepSwapEnterTransition },
+      center: { ...finalState, transition: stepSwapEnterTransition },
+      exit: { ...initialState, transition: stepSwapExitTransition },
+    },
     transition: stepSwapTransition,
   };
+}
+
+/**
+ * useLowMotionCapability (motion-09, 2026-07-27). `prefers-reduced-motion` is a USER'S
+ * explicit request; this is a SEPARATE, cheap device-capability read for a device that
+ * never asked for less motion but genuinely cannot afford the full recipe (blur filter +
+ * scale + a 12-item stagger is real compositor/paint work). THE ENTER RECIPE was tuned
+ * against an iPhone-class capture device; Solen's own positioning (mid-market,
+ * price-sensitive Swiss salons and their customers) does not guarantee that device class
+ * on the customer side.
+ *
+ * Reads `navigator.hardwareConcurrency` and `navigator.deviceMemory` (Chrome/Edge/Android
+ * only, both undefined on Safari/iOS, which is fine, undefined never triggers the low tier)
+ * once, synchronously, on mount. Below 4 logical cores OR below 4GB reported memory, the
+ * expensive tier (blur filter, simultaneous stagger) should be dropped while the CHEAP tier
+ * (opacity/transform press feedback, snap-tier flips) stays. This does NOT replace
+ * `useReducedMotion`, callers combine both: a capable, unbothered device gets the full
+ * recipe; a genuinely low-end device gets a lighter one even if the user never touched an
+ * accessibility setting.
+ *
+ * No call site consumes this yet, it is the shared primitive a first reference
+ * implementation builds against (MOTION.md, sibling section to THE SPEED LAW).
+ */
+export function useLowMotionCapability(): boolean {
+  if (typeof navigator === "undefined") return false;
+  const cores = (navigator as { hardwareConcurrency?: number }).hardwareConcurrency;
+  const memory = (navigator as { deviceMemory?: number }).deviceMemory;
+  if (typeof cores === "number" && cores > 0 && cores < 4) return true;
+  if (typeof memory === "number" && memory > 0 && memory < 4) return true;
+  return false;
 }

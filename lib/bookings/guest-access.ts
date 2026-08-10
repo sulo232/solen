@@ -17,8 +17,10 @@ import type { NextRequest, NextResponse } from "next/server";
  *
  * What we deliberately do NOT copy from the walk-in `tracking_token`
  * (`lib/barber/walkin-ticket.ts` + `app/api/walkin/queue/[id]/route.ts`): that token
- * is stored AND compared in plaintext with `!==` (non-constant-time + secret at rest)
- * and is only ~71 bits. SP-2 fixes all three: hash-at-rest, `timingSafeEqual`, 256-bit.
+ * is only ~71 bits and stored in plaintext (secret at rest). Its `!==` compare was
+ * itself fixed to `constantTimeStringEqual` (secrets-webhooks-10), but the 256-bit
+ * size and hash-at-rest gaps remain open, this route's own three-part fix
+ * (hash-at-rest, `timingSafeEqual`, 256-bit) is still the higher bar.
  */
 
 const TOKEN_BYTES = 32; // 256-bit

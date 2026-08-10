@@ -68,7 +68,7 @@ const DUO: [DuoCard, DuoCard] = [
     href: "/de/search?sort=top-rated",
     mark: "T",
     title: "Top bewertet\nin der Schweiz.",
-    cta: "4.8★ Salons",
+    cta: "4.8★ Stores",
     bg: "#E9DFC8",
     ink: "#E58840",
     pillBg: "#1A1A1A",
@@ -149,7 +149,7 @@ function MagneticDuoCard({ card }: { card: DuoCard }) {
             x: letterX,
             y: letterY,
           }}
-          className="absolute -right-2 -bottom-2 font-display font-black leading-none tracking-[-0.05em]"
+          className="absolute -right-2 -bottom-2 font-display font-bold leading-none tracking-[-0.05em]"
         >
           {card.mark}
         </motion.span>

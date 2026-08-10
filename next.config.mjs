@@ -1,7 +1,14 @@
 // Next.js + next-intl configuration
 import createNextIntlPlugin from "next-intl/plugin";
+import bundleAnalyzer from "@next/bundle-analyzer";
 
 const withNextIntl = createNextIntlPlugin("./i18n.ts");
+// performance-08: `ANALYZE=true npm run build` opens an interactive treemap of
+// every route's bundle. next.config.mjs recorded exactly one deliberate
+// bundle-size decision ever made (the Phosphor-icons tree-shake below) with no
+// way to SEE the bundle since. No-op (identity wrapper) unless ANALYZE is set,
+// so a normal build is byte-identical to before.
+const withBundleAnalyzer = bundleAnalyzer({ enabled: process.env.ANALYZE === "true" });
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -52,6 +59,13 @@ const nextConfig = {
     ];
   },
   images: {
+    // performance-10: pin explicitly to Next 15.3's own current default
+    // (confirmed live in node_modules/next/dist/shared/lib/image-config.js,
+    // `formats: ['image/webp']`, no avif). No behavior change today, this
+    // exists so a future Next major bump cannot silently change the output
+    // format Solen's photo-heavy surfaces depend on without a deliberate,
+    // reviewed decision. Quality stays Next's own unset default (75).
+    formats: ["image/webp"],
     remotePatterns: [
       {
         protocol: "https",
@@ -115,5 +129,5 @@ const nextConfig = {
   },
 };
 
-export default withNextIntl(nextConfig);
+export default withBundleAnalyzer(withNextIntl(nextConfig));
 // cache buster: 1774127642

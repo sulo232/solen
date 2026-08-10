@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient, createServerSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
 import type { Database } from "@/lib/database.types";
+import { validateBody, adminSeedTestSalonsSchema } from "@/lib/validations";
 
 type AvailabilitySlotInsert = Database["public"]["Tables"]["availability_slots"]["Insert"];
 
@@ -120,8 +121,9 @@ export async function POST(req: NextRequest) {
   const rateLimited = await applyRateLimit(adminLimiter, { userId });
   if (rateLimited) return rateLimited;
 
-  const body = await req.json().catch(() => ({}));
-  const selectedCities: string[] = body.cities ?? ["basel", "zuerich", "bern"];
+  const rawBody = await req.json().catch(() => ({}));
+  const { data: validated } = validateBody(adminSeedTestSalonsSchema, rawBody);
+  const selectedCities: string[] = validated?.cities ?? ["basel", "zuerich", "bern"];
 
   // Resolve city_ids from DB
   const { data: cityRows } = await admin

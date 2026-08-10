@@ -45,7 +45,7 @@ export default function MapV2Mockup() {
   return (
     <main className="min-h-screen bg-white">
       <div className="mx-auto max-w-[1100px] px-4 pb-16 pt-6">
-        <p className="text-[12px] font-semibold text-s-ink-3">Mockup , map experience v2 (from your references)</p>
+        <p className="text-[12px] font-semibold text-s-ink-2">Mockup , map experience v2 (from your references)</p>
         <h1 className="mt-1 font-heading text-[20px] font-bold text-s-ink">Map, preview, filters , Solen skin</h1>
         <p className="mt-1 max-w-[680px] text-[13px] text-s-ink-2">Fresha structure, Solen aesthetic: white pills (never black), yellow star, sparse blue for the one clickable link. Photos are placeholders.</p>
 
@@ -145,7 +145,7 @@ export default function MapV2Mockup() {
                   <div className="mt-3 space-y-1">
                     {[["Buzz Cut", "20 min", "50"], ["Shampoo, Cut & Style", "45 min", "100"]].map(([n, d, p]) => (
                       <div key={n} className="flex items-center justify-between rounded-xl bg-s-bg-sunken px-3 py-2 text-[13px]">
-                        <span className="min-w-0"><span className="block truncate text-s-ink">{n}</span><span className="text-[12px] text-s-ink-3">{d}</span></span>
+                        <span className="min-w-0"><span className="block truncate text-s-ink">{n}</span><span className="text-[12px] text-s-ink-2">{d}</span></span>
                         <span className="shrink-0 font-semibold text-s-ink">CHF {p}</span>
                       </div>
                     ))}
@@ -171,7 +171,7 @@ export default function MapV2Mockup() {
               <p className="mb-2 text-[13px] font-semibold text-s-ink">Treatments</p>
               <div className="space-y-1">
                 {["Buzz Cut", "Haircut", "Wet cut", "Dry cut"].map((t) => (
-                  <div key={t} className="flex items-center gap-3 py-2 text-[13.5px] text-s-ink"><Search size={16} className="text-s-ink-3" /> {t}</div>
+                  <div key={t} className="flex items-center gap-3 py-2 text-[13.5px] text-s-ink"><Search size={16} className="text-s-ink-2" /> {t}</div>
                 ))}
               </div>
               <button className="mt-1 text-[13px] font-semibold text-s-accent">Show more</button>
@@ -181,7 +181,7 @@ export default function MapV2Mockup() {
                   <div key={n} className="flex items-center gap-3">
                     <span className="h-10 w-10 shrink-0 rounded-full bg-s-bg-sunken" />
                     <div className="min-w-0 flex-1"><p className="truncate text-[13.5px] font-medium text-s-ink">{n}</p><p className="truncate text-[12px] text-s-ink-2">{s}</p></div>
-                    <span className="shrink-0 text-[12px] text-s-ink-3">{d}</span>
+                    <span className="shrink-0 text-[12px] text-s-ink-2">{d}</span>
                   </div>
                 ))}
               </div>

@@ -120,7 +120,7 @@ export default function PdpMapDesignMockup() {
   return (
     <main className="min-h-screen bg-s-bg-sunken px-4 py-10">
       <div className="mx-auto max-w-[430px]">
-        <p className="text-[12px] font-semibold uppercase tracking-[0.06em] text-s-ink-3">
+        <p className="text-[12px] font-semibold uppercase tracking-[0.06em] text-s-ink-2">
           Mockup — PDP map INTERIOR, round 3, 3 in-map design directions
         </p>
         <h1 className="mt-1 font-heading text-[20px] font-bold text-s-ink">

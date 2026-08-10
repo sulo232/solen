@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
-import { sendEmail, bookingCancellation } from "@/lib/email";
+import { sendEmail, bookingCancellation, waitlistSlotFreed } from "@/lib/email";
 import { calculateCancellationFee } from "@/lib/cancellation-policy";
 import { validateBody, bookingCancelSchema } from "@/lib/validations";
 import { toRappen } from "@/lib/stripe";
@@ -10,6 +10,7 @@ import { issueRefund, RefundError } from "@/lib/bookings/issue-refund";
 import { applyCustomerCancelMoney } from "@/lib/bookings/customer-cancel-money";
 import { logAuditEvent } from "@/lib/audit";
 import { applyRateLimit, bookingLimiter, getClientIp } from "@/lib/ratelimit";
+import { resolveSwissLocale } from "@/lib/format";
 import { resolveBookingActor } from "@/lib/bookings/authorize";
 
 // Read-only refund preview for the cancel-confirm sheet (audit #7). Runs the SAME
@@ -311,11 +312,19 @@ export async function POST(
     const { data: waitlistUser } = await adminForWaitlist.auth.admin.getUserById(entry.user_id);
     if (waitlistUser?.user?.email) {
       try {
-        await sendEmail({
-          to: waitlistUser.user.email,
-          subject: `Ein Termin ist frei geworden bei ${booking.salons?.name ?? "einem Salon"}!`,
-          html: `<p>Ein Termin für <strong>${booking.services?.name_de ?? "deinen Service"}</strong> am <strong>${new Date(booking.starts_at).toLocaleDateString("de-CH")}</strong> ist jetzt verfügbar.</p><p><a href="https://solen.ch">Jetzt buchen →</a></p>`,
-        });
+        // A9-email-locale (2026-07-27): each waitlisted person gets THEIR OWN profile.locale,
+        // not the cancelling customer's; was hardcoded German + de-CH regardless of recipient.
+        const { data: waitlistProfile } = await adminForWaitlist.from("profiles").select("locale").eq("id", entry.user_id).maybeSingle();
+        const waitlistLocale = (waitlistProfile?.locale as "de" | "en" | "fr" | "it") ?? "de";
+        await sendEmail(waitlistSlotFreed(
+          waitlistUser.user.email,
+          {
+            service: booking.services?.name_de ?? "Service",
+            salon: booking.salons?.name ?? "Salon",
+            date: new Date(booking.starts_at).toLocaleDateString(resolveSwissLocale(waitlistLocale)),
+          },
+          waitlistLocale
+        ));
       } catch (err) { console.error("[bookings/cancel] waitlist notification email failed:", err); }
     }
     await adminForWaitlist.from("waitlist").update({ notified_at: new Date().toISOString() }).eq("id", entry.id);
@@ -326,15 +335,18 @@ export async function POST(
   // neither a profiles row nor an auth.users row, so both lookups below branch on it instead
   // of the old unconditional `user.id`/`user.email` reads (reuses the `admin` client created
   // above for the relational booking fetch, no second instance).
-  let locale: "de" | "en" | "fr" = "de";
+  // A9-email-locale (2026-07-27): a logged-in actor's own profile.locale is the source of
+  // truth; a guest has no profiles row, so fall back to the locale threaded through the
+  // request body (the page the guest is cancelling from), then "de" if neither is present.
+  let locale: "de" | "en" | "fr" | "it" = validated?.locale ?? "de";
   let actingEmail: string | null = null;
   if (userId) {
     const { data: profile } = await admin.from("profiles").select("locale").eq("id", userId).maybeSingle();
-    locale = (profile?.locale as "de" | "en" | "fr") ?? "de";
+    locale = (profile?.locale as "de" | "en" | "fr" | "it") ?? "de";
     const { data: actingAuth } = await admin.auth.admin.getUserById(userId);
     actingEmail = actingAuth?.user?.email ?? null;
   }
-  const dateStr = new Date(booking.starts_at).toLocaleDateString("de-CH");
+  const dateStr = new Date(booking.starts_at).toLocaleDateString(resolveSwissLocale(locale));
   const serviceName = booking.services?.name_de ?? "Service";
   const salonName = booking.salons?.name ?? "Salon";
   const customerId = booking.user_id;
@@ -364,7 +376,7 @@ export async function POST(
     // auth.users row at all), so send the SAME cancellation email straight to
     // bookings.guest_email (mirrors lib/bookings/notify-refund.ts's established guest branch).
     promises.push(
-      sendEmail(bookingCancellation(booking.guest_email as string, { service: serviceName, salon: salonName, date: dateStr }, "de")),
+      sendEmail(bookingCancellation(booking.guest_email as string, { service: serviceName, salon: salonName, date: dateStr }, locale)),
     );
   }
 

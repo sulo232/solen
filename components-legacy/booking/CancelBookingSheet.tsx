@@ -110,7 +110,7 @@ export default function CancelBookingSheet({
           </div>
         ) : hasRefund ? (
           <div className="mt-4 rounded-card bg-s-bg-sunken p-[18px]">
-            <div className="font-body text-[11.5px] font-semibold uppercase tracking-[0.07em] text-s-ink-3">
+            <div className="font-body text-[11.5px] font-semibold uppercase tracking-[0.07em] text-s-ink-2">
               {t("refundEyebrow")}
             </div>
             <div className="mt-1.5 font-heading text-[34px] font-bold leading-[1.05] tracking-[-0.02em] tabular-nums text-s-ink">
@@ -121,7 +121,7 @@ export default function CancelBookingSheet({
               <span>{t("refundEta")}</span>
             </div>
             {hasFee && (
-              <div className="mt-2 text-[12.5px] text-s-ink-3">
+              <div className="mt-2 text-[12.5px] text-s-ink-2">
                 {t("cancelFeeNote", { fee: formatCurrency(feeChf) })}
               </div>
             )}

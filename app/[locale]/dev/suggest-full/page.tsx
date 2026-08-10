@@ -61,7 +61,7 @@ function Screen() {
                   </span>
                   <span className="mt-0.5 block text-[12.5px] font-medium text-s-ink">from CHF {s.from}</span>
                 </span>
-                <ChevronRight size={18} className="shrink-0 self-center text-s-ink-3" />
+                <ChevronRight size={18} className="shrink-0 self-center text-s-ink-2" />
               </button>
             ))}
           </div>

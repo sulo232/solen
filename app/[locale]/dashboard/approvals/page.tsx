@@ -6,6 +6,7 @@ import { ShieldCheck, Check, X, MapPin, Mail, Calendar } from "lucide-react";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { toast } from "@/app/[locale]/_components/primitives/Toast";
+import { resolveSwissLocale } from "@/lib/format";
 
 interface PendingSalon {
   id: string;
@@ -80,6 +81,20 @@ export default function ApprovalsPage() {
         </div>
       </div>
 
+      {/* trust-05: the checklist doc is _backend-system/audit/salon-onboarding.md; this
+          is the inline pointer to it, not a re-implementation, so the two never drift.
+          mockup-ok: internal admin-only tool, reuses the exact rounded-2xl/border-s-border/
+          bg-s-bg-sunken tokens already used elsewhere on this same page (lines below),
+          no new visual choice introduced. */}
+      <div className="mb-4 rounded-2xl border border-s-border bg-s-bg-sunken p-4 text-sm text-s-ink-2">
+        <p className="font-medium text-s-ink mb-1">{t("checklistTitle")}</p>
+        <ul className="list-disc pl-4 space-y-0.5">
+          {(t.raw("checklistItems") as string[]).map((item, i) => (
+            <li key={i}>{item}</li>
+          ))}
+        </ul>
+      </div>
+
       {loading ? (
         <div className="flex justify-center py-16"><Spinner size="lg" /></div>
       ) : salons.length === 0 ? (
@@ -109,7 +124,7 @@ export default function ApprovalsPage() {
                   )}
                   <div className="flex items-center gap-1.5 text-sm text-s-ink/40">
                     <Calendar size={13} />
-                    <span>{t("registered", { date: new Date(salon.created_at).toLocaleDateString("de-CH") })}</span>
+                    <span>{t("registered", { date: new Date(salon.created_at).toLocaleDateString(resolveSwissLocale(locale)) })}</span>
                   </div>
 
                   {salon.categories.length > 0 && (

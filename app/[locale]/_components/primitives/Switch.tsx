@@ -116,7 +116,7 @@ export const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
         <span className="flex flex-col">
           <span className="font-body font-normal text-[16px] text-s-ink">{label}</span>
           {subLabel && (
-            <span className="font-body font-normal text-[13px] text-s-ink-3 mt-1">
+            <span className="font-body font-normal text-[13px] text-s-ink-2 mt-1">
               {subLabel}
             </span>
           )}

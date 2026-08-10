@@ -1,0 +1,41 @@
+name: orphan-sweep
+
+# fe-07: Rule 40's zero-importer detection loop (_rules/STRUCTURAL_RULES.md) existed only as a
+# manual bash snippet nobody was forced to run. components-legacy is explicitly "legacy" yet had
+# no cadence forcing its dead weight out; every past deletion happened via an irregularly-named
+# manual pass. This runs the corrected loop (scripts/orphan-census.mjs) on a monthly schedule,
+# writes _design-system/ORPHAN_REPORT.md, and commits it directly to main (a report, not a gate,
+# so it never fails a PR). Also runnable on demand via workflow_dispatch.
+
+on:
+  schedule:
+    # 1st of every month, 06:00 UTC.
+    - cron: "0 6 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  orphan-report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+      - run: npm ci
+      - name: orphan-census --write
+        run: node scripts/orphan-census.mjs --write
+      - name: commit report if changed
+        run: |
+          if ! git diff --quiet -- _design-system/ORPHAN_REPORT.md; then
+            git config user.name "orphan-sweep bot"
+            git config user.email "actions@users.noreply.github.com"
+            git add _design-system/ORPHAN_REPORT.md
+            git commit -m "orphan-sweep: refresh _design-system/ORPHAN_REPORT.md ($(date -u +%Y-%m-%d))"
+            git push
+          else
+            echo "No change in orphan report, nothing to commit."
+          fi

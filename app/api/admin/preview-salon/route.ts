@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient, createServerSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
+import { logAuditEvent } from "@/lib/audit";
+import { validateBody, adminPreviewSalonSchema } from "@/lib/validations";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -21,9 +23,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: "Forbidden" }, { status: 403 });
   }
 
-  const body = await request.json();
-  const { salon_id } = body ?? {};
-  if (!salon_id) return NextResponse.json({ message: "salon_id required" }, { status: 400 });
+  const rawBody = await request.json();
+  const { data: validated, error: validationError } = validateBody(adminPreviewSalonSchema, rawBody);
+  if (validationError) return NextResponse.json({ message: "salon_id required" }, { status: 400 });
+  const { salon_id } = validated;
 
   // Verify it's a test salon (must have [TEST] prefix)
   const adminClient = createAdminSupabaseClient();
@@ -37,6 +40,8 @@ export async function POST(request: NextRequest) {
   if (!salon) {
     return NextResponse.json({ message: "Not a test salon or not found" }, { status: 404 });
   }
+
+  await logAuditEvent(request, user.id, "preview_salon", "salon", salon_id);
 
   const response = NextResponse.json({ ok: true, salon_name: salon.name });
   response.cookies.set(PREVIEW_COOKIE, salon_id, {

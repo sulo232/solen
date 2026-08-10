@@ -32,7 +32,7 @@ export default function PinLabelMockup() {
   return (
     <main className="min-h-screen bg-white">
       <div className="mx-auto max-w-[460px] px-4 pb-16 pt-6">
-        <p className="text-[12px] font-semibold text-s-ink-3">Mockup , map pin label (#3) , SETTLED</p>
+        <p className="text-[12px] font-semibold text-s-ink-2">Mockup , map pin label (#3) , SETTLED</p>
         <h1 className="mt-1 font-heading text-[19px] font-bold text-s-ink">White pill, star + rating, no count</h1>
         <p className="mt-1 text-[13px] text-s-ink-2">Dropping the count made A and B identical, so it is one design now. White resting, blue when selected (never black like Fresha).</p>
 

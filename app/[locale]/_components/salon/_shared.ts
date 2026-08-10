@@ -106,6 +106,11 @@ export interface SalonDetail {
   quartier: string;
   address: string;
   postal_code: string;
+  // A6-address-locality (2026-07-27): joined from salons.city_id -> cities.id
+  // so JSON-LD (lib/seo.ts generateSalonSchema) can render the salon's real
+  // city instead of a hardcoded "Basel". Null when a salon has no city set.
+  city_id?: string | null;
+  cities?: { name_de: string; name_en: string; name_fr: string; name_it: string } | null;
   latitude: number;
   longitude: number;
   phone: string | null;
@@ -374,7 +379,9 @@ export { avatarColor } from "../primitives/Avatar";
  * (e.g. app/[locale]/walk-in-pay/page.tsx LOCALE_TAG). Defaults to "de-CH"
  * for an unrecognised or missing value.
  */
-const DATE_LOCALE_TAG: Record<string, string> = { de: "de-CH", en: "en-GB", fr: "fr-CH", it: "it-CH" };
+// Routed through the sweep's own resolver 2026-07-26 (was en-GB here, en-CH there; the
+// resolveSwissLocale docstring names that exact inconsistency as the thing it exists to kill).
+const DATE_LOCALE_TAG: Record<string, string> = { de: "de-CH", en: "en-CH", fr: "fr-CH", it: "it-CH" };
 
 /**
  * Pretty date for review timestamps: DATE ONLY (owner, 2026-07-25, verbatim
@@ -421,14 +428,19 @@ export function formatReviewDate(iso: string, locale?: string | null): string {
 // Labels are the German fallback the other tabs use; the section components themselves
 // render fully i18n'd headings via useTranslations("salonDetail"). Both auto-hide when
 // the salon has no active bundles/products (availableSections gating in SalonDetailV3).
+// labelKey resolves against the salonDetail namespace at the render site
+// (SalonStickyTabNav.tsx). The old German `label` strings shipped to every locale , the sticky
+// tab nav said "Bewertungen" on the English PDP, which is what the owner spotted on 2026-07-28.
+// A constant at module scope cannot call a hook, so it carries the KEY and the component
+// resolves it.
 export const TAB_SECTIONS = [
-  { key: "photos", label: "Fotos" },
-  { key: "about", label: "Über uns" },
-  { key: "services", label: "Services" },     // identical in German
-  { key: "bundles", label: "Pakete" },
-  { key: "products", label: "Produkte" },
-  { key: "team", label: "Team" },             // identical in German
-  { key: "reviews", label: "Bewertungen" },
+  { key: "photos", labelKey: "photos" },
+  { key: "about", labelKey: "aboutUs" },
+  { key: "services", labelKey: "services" },
+  { key: "bundles", labelKey: "bundles" },
+  { key: "products", labelKey: "products" },
+  { key: "team", labelKey: "team" },
+  { key: "reviews", labelKey: "reviews" },
 ] as const;
 
 export type TabKey = typeof TAB_SECTIONS[number]["key"];

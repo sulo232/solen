@@ -4,6 +4,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
+import { validateBody, adminTestSalonSeedSchema } from "@/lib/validations";
 
 const TEST_PREFIX = "[TEST]";
 
@@ -38,8 +39,10 @@ export async function POST(request: NextRequest) {
   const rateLimited = await applyRateLimit(adminLimiter, { userId: user.id });
   if (rateLimited) return rateLimited;
 
-  const { salon_id, feature } = await request.json();
-  if (!salon_id || !feature) return NextResponse.json({ error: "salon_id and feature required" }, { status: 400 });
+  const rawBody = await request.json();
+  const { data: validated, error: validationError } = validateBody(adminTestSalonSeedSchema, rawBody);
+  if (validationError) return NextResponse.json({ error: "salon_id and feature required" }, { status: 400 });
+  const { salon_id, feature } = validated;
 
   // Verify test salon ownership
   const { data: salon } = await admin.from("salons").select("owner_id, name, categories").eq("id", salon_id).single();

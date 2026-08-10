@@ -28,6 +28,7 @@ const REASON_LABEL: Record<ReportReason, string> = {
   spam: "Spam",
   fake: "Fake",
   ip_violation: "IP violation",
+  harassment: "Harassment",
   other: "Other",
 };
 
@@ -36,6 +37,7 @@ const REASON_HINT: Record<ReportReason, string> = {
   spam: "Promotional, repetitive, or irrelevant content",
   fake: "Does not read like a genuine visit or experience",
   ip_violation: "Uses photos or text that are not the reviewer's own",
+  harassment: "Threats, abuse, or unsafe behavior toward a person",
   other: "Something else not covered above",
 };
 

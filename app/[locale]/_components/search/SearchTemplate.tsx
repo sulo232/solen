@@ -49,6 +49,7 @@ import {
   Map as MapIcon,
   List as ListIcon,
   Search,
+  Menu,
   // V3-D388: amenity facet icons — same lucide set SalonAdditionalInfo uses on
   // the PDP, so the filter sheet and the salon page read as one icon language.
   Accessibility,
@@ -84,10 +85,12 @@ import { cn } from "@/lib/utils";
 import { SalonResultCard } from "./SalonResultCard";
 import { MapSalonDetail } from "./MapSalonDetail";
 import { CategoryBrowseRails } from "./CategoryBrowseRails";
+import { CategoryMobileRails } from "./CategoryMobileRails";
 import type { SalonCategory } from "@/lib/types";
 import { getCityName, getCityCoords, slugFromCity, DEFAULT_CITY_SLUG, ALL_CITIES_PARAM, type CitySlug } from "@/lib/cities";
 import { formatDateLabel, nextAvailableSlotLabel } from "@/lib/format";
 import { useActiveCities } from "@/hooks/useActiveCities";
+import { useScrollRestoration } from "@/lib/hooks/useScrollRestoration";
 
 type LucideIcon = React.ComponentType<{ size?: number; strokeWidth?: number }>;
 
@@ -152,9 +155,19 @@ type Salon = {
   gallery_urls?: string[] | null;
   address?: string;
   city?: string;
+  // Real column (lib/salons/public-columns.ts SALON_PUBLIC_COLS), already returned by
+  // /api/salons; only the local type was missing it. Feeds CategoryMobileRails' "<postcode>
+  // <city>" Row 3 (owner 2026-08-01 mobile-rails ask).
+  postal_code?: string | null;
   categories?: string[];
   last_minute_discount_percent?: number | null;
   avg_price?: number | null;
+  // /api/salons has always returned min_price beside avg_price; only the type was
+  // missing it, which is why the cards reached for the average. Its service name came
+  // with it on 2026-07-27 so a from-price can name the offer it buys (PBV Art. 13).
+  min_price?: number | null;
+  min_price_service_de?: string | null;
+  min_price_service_en?: string | null;
   distance_meters?: number | null;
   latitude?: number | null;
   longitude?: number | null;
@@ -425,6 +438,10 @@ export default function SearchTemplate({
   const tChrome = useTranslations("ui.searchChrome");
   const tFilter = useTranslations("ui.filterSheet");
   const tToast = useTranslations("toasts");
+  // 2026-08-01: search pill's trailing button now opens the global MobileMenu instead of the
+  // map (see the button below). Reuses Header.tsx's own openMenu/closeMenu copy (salonDetail
+  // namespace) rather than inventing a new key for the identical action.
+  const tSD = useTranslations("salonDetail");
   // V3-D451: previously-hardcoded German chrome strings (sort labels, filter pills,
   // amenity facets, section titles, counts, empty/error states, map-sheet copy) now
   // resolve via next-intl. Keys live under the `searchUi` namespace.
@@ -536,6 +553,12 @@ export default function SearchTemplate({
   // Walk-in live availability per salon — only fetched when the walk_in filter is on.
   const [walkinAvail, setWalkinAvail] = React.useState<Record<string, { waitMinutes: number; waitMinutesMax: number; queueLength: number }>>({});
   const [mobileView, setMobileView] = React.useState<"list" | "map">("list");
+
+  // ia-navigation-05: restore the results' scroll position on back-navigation from a
+  // salon PDP, instead of resetting to the top of the list. Covers the default
+  // window-scroll list/grid layout; the map bottom-sheet's own inner scroll container
+  // is a separate scroll context and is out of scope here.
+  useScrollRestoration(!loading && salons.length > 0);
   // V3-D380: mobile map sheet — DRAG the handle to resize (snaps to peek/expanded
   // on release); a plain tap toggles. sheetTopPx = the sheet's viewport top in px
   // (null = the 55% peek default). Pointer events cover touch + mouse.
@@ -735,7 +758,14 @@ export default function SearchTemplate({
   // The main results bar opens without auto-focus so the applied search stays visible (B).
   const searchInputRef = React.useRef<HTMLInputElement>(null);
   const [autoFocusSearch, setAutoFocusSearch] = React.useState(false);
+  // A7/A8/A9 (2026-08-02 REOPENED): the tapped pill's own rect (bigSearchRef), captured
+  // synchronously before the overlay mounts, so it can grow OUT OF the bar instead of
+  // sliding up from the bottom of the screen. Absent (compose deep link, no tap) -> the
+  // overlay falls back to a plausible near-top rect (SearchOverlay.tsx `origin`).
+  const [searchOriginRect, setSearchOriginRect] = React.useState<{ top: number; left: number; width: number; height: number } | null>(null);
   const openSearchOverlay = React.useCallback((withKeyboard: boolean) => {
+    const r = bigSearchRef.current?.getBoundingClientRect();
+    if (r) setSearchOriginRect({ top: r.top, left: r.left, width: r.width, height: r.height });
     if (withKeyboard) {
       flushSync(() => { setAutoFocusSearch(true); setSearchOverlayOpen(true); });
       searchInputRef.current?.focus({ preventScroll: true });
@@ -749,6 +779,54 @@ export default function SearchTemplate({
   // mobile that means "open the full-screen map view" (mobileView state); on
   // desktop the `mapOpen` derivation above already opens the split panel from the
   // same param. Fire once on mount so a later filter change can't re-trigger it.
+  // FIX C (2026-08-01, owner repeating "the search bar doesn't work"): arriving here from the
+  // home pill used to land on a page whose query input is still inside a CLOSED overlay, so the
+  // tap read as dead , you navigate, and nothing pops up. The home pill now appends `?compose=1`
+  // to say "this user came here to TYPE", and that opens the overlay WITH the keyboard.
+  // This does not change the in-page bar at line ~1251, which still opens without focus on
+  // purpose so an already-applied search stays readable behind the overlay.
+  // R1 (2026-08-02 round 3, owner: "it must open in place, the URL must not change on tap"):
+  // the home pill NO LONGER produces `?compose=1`. It mounts this same overlay and opens it
+  // over the home page, so nothing about a search tap is a navigation any more. This receiver
+  // stays as a DEEP-LINK entry only (`/de/search?compose=1` opens the composer on arrival);
+  // it is no longer on any tap path, which is what made it a page load in the first place.
+  const composeApplied = React.useRef(false);
+  React.useEffect(() => {
+    if (composeApplied.current) return;
+    if (searchParams.get("compose") !== "1") return;
+    composeApplied.current = true;
+    // FIX 2026-08-01 (owner, third repeat, "when you click, it still doesn't fucking open"):
+    // calling `openSearchOverlay(true)` (which runs `flushSync`) directly inside THIS effect
+    // threw "flushSync was called from inside a lifecycle method. React cannot flush when
+    // React is already rendering" in the console on every load, because this effect can fire
+    // while React is still mid-flush for the initial mount's OWN passive effects (this page
+    // is reached via a client navigation from the home pill, landing inside a Suspense
+    // boundary). React's own fix, named in that warning: move the flushSync call to a real
+    // scheduler task. `setTimeout(0)` (not a microtask, which can still land inside the same
+    // flush) guarantees this runs in a fresh task, after React has fully finished committing,
+    // so flushSync is safe and `searchOverlayOpen` actually flips. Confirmed live: without
+    // this, `searchOverlayOpen` never became true at all (no scrim, activeElement stayed
+    // BODY); the console error was not cosmetic; it meant the whole state update was dropped.
+    // CORRECTED 2026-08-02. The setTimeout+flushSync version above worked on a HARD load of
+    // /search?compose=1 and silently did nothing on the SOFT navigation from the home pill,
+    // which is the only path a real user takes. Measured: direct load opened the overlay
+    // (scrim z-100 + panel z-101 present); three consecutive taps from /de left activeElement
+    // on BODY with no scrim. The home pill navigates through `next-view-transitions`, whose
+    // Link wraps the route change in `document.startViewTransition`, so a flushSync scheduled
+    // into that window is dropped along with the state update.
+    // Plain state, no flushSync, no scheduler games. Focus is handed to the overlay's own
+    // `autoFocusSearch` path, which owns the input and can focus it once it has actually
+    // mounted, instead of this component reaching for a ref that does not exist yet.
+    // A1 fix (2026-08-02 REOPENED, owner: "when I click the search bar, nothing happens,
+    // there's just the line thingy that flashes"): auto-focusing here made the overlay ARRIVE
+    // in its end state (input already focused, expand already 1), so the user's own tap on the
+    // bar had nothing left to animate. compose=1 now opens the overlay RESTING (pills + heading
+    // visible, no keyboard) so the tap itself drives the focus morph. autoFocusService/
+    // autoFocusSearch stay wired for any other caller that still wants the old behavior.
+    setAutoFocusSearch(false);
+    setSearchOverlayOpen(true);
+  }, [searchParams]);
+
   const viewMapApplied = React.useRef(false);
   React.useEffect(() => {
     if (viewMapApplied.current) return;
@@ -814,7 +892,10 @@ export default function SearchTemplate({
   }, [scrollProgress, reduce]);
   // mockup-ok: same B6 mechanics fix, values below match the prior locked end-states.
   const bandPaddingTop = useTransform(scrollProgress, [0, 1], [4, 12]);
-  const bandPaddingBottom = useTransform(scrollProgress, [0, 1], [0, 8]);
+  // I2 mockup-ok (public/_mockups/home-v3/search-a.html .sa-band, "padding 4px 0 8px"):
+  // bottom was 0 at rest, approved chrome wants a constant 8. Range collapsed to
+  // [8, 8] so the value matches without touching the scrollProgress mechanism itself.
+  const bandPaddingBottom = useTransform(scrollProgress, [0, 1], [8, 8]); // mockup-ok
   const pillShadowOpacity = useTransform(scrollProgress, [0, 1], [0, 0.13]);
   const pillBoxShadow = useTransform(
     pillShadowOpacity,
@@ -1050,6 +1131,9 @@ export default function SearchTemplate({
   // city outside the static CITIES fallback (e.g. Luzern) still shows its real name.
   const activeCityRow = activeCity ? activeCities.find((c) => c.slug === activeCity) : undefined;
   const cityName = activeCity ? getCityName(activeCity, locale, activeCityRow) : t("countrywide");
+  // CategoryMobileRails' "Top <Category>" rail title , reuses the same CATEGORY_PILLS label
+  // the filter pills / header pills already render (e.g. "Coiffeur"), not new copy.
+  const categoryLabel = CATEGORY_PILLS.find((p) => p.slug === activeCategory)?.label ?? "";
   const sortLabel =
     SORT_OPTIONS.find((s) => s.value === sort)?.label ?? t("sort_rating");
   // V3-D451: title of the FOCUSED filter sheet (the category whose pill opened it).
@@ -1230,23 +1314,23 @@ export default function SearchTemplate({
             aria-haspopup="dialog"
             className={cn(
               "flex w-full cursor-pointer items-center gap-3 rounded-pill border border-s-border bg-white px-3.5 text-left",
-              "transition-transform active:scale-[0.98] active:duration-[80ms]",
-              // V3-D421L (council 3/3): FLAT at rest, no resting/hover shadow on white
-              // chrome (CONTROL_ELEVATION rule 3). The pill lifts ONLY when pinned, i.e.
-              // floating over scrolled content (the one earned shadow, now driven
-              // continuously by the `style.boxShadow` motionValue below, B6 fix).
+              // I2 mockup-ok (public/_mockups/home-v3/search-a.html .sa-pill --lift): the
+              // V3-D421L "flat at rest, lift only when pinned" scroll-driven shadow is
+              // replaced by the approved chrome's constant elevation, so the pill always
+              // carries the same outline + shadow pair (the search bar is "the way in").
+              "shadow-[0_2px_8px_0_rgba(0,0,0,0.07)]", // mockup-ok
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               "py-2.5", // V3-D421d: keep the pinned bar the SAME size as normal (no shrink, owner)
             )}
-            // B6: continuous shadow-opacity morph (replaces the old scrolled &&
-            // "max-md:!shadow-[...]" class toggle) so the float-lift eases in/out
-            // instead of popping on at the old 60px threshold. `scrollProgress` itself
-            // snaps (no ramp) under prefers-reduced-motion, so this style always applies.
-            style={{ boxShadow: pillBoxShadow }}
+            // I2 mockup-ok: dynamic boxShadow style removed, the shadow-[...] class above
+            // now carries the constant approved value. `pillBoxShadow`/`pillShadowOpacity`
+            // stay declared (untouched state per the I2 brief) but are no longer consumed here.
           >
             <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" />
             <span className="min-w-0 flex-1">
-              <span className="block truncate font-body text-[14px] font-medium text-s-ink">
+              {/* I2 mockup-ok (search-a.html .sa-l1): 14px -> 16px, the approved chrome's
+                  first-line size. */}
+              <span className="block truncate font-body text-[16px] font-medium text-s-ink">
                 {/* A2/Model B (2026-07-04): category + query are independent, so line 1 shows
                     BOTH when both are set, not one clobbering the other. */}
                 {[activeCategory ? CATEGORY_PILLS.find((c) => c.slug === activeCategory)?.label : null, q]
@@ -1262,24 +1346,51 @@ export default function SearchTemplate({
                   {" "}{cityName}
                 </span>
               </span>
-              {/* line 2 collapses on scroll */}
-              <span
-                className={cn(
-                  "block truncate font-body text-[12.5px] text-s-ink-2 overflow-hidden transition-all duration-300 ease-glide",
-                  "max-h-5 opacity-100", // V3-D421d: keep line 2 (city/date) visible when pinned
-                )}
-              >
-                {date ? formatDateLabel(date, locale) : null}
-                {date ? <span className="text-s-ink-3"> </span> : null}
-                {cityName}
-                {period && (
-                  <>
-                    <span className="text-s-ink-3"> </span>
-                    {periodLabel(period, tx)}
-                  </>
-                )}
-              </span>
+              {/* I2 mockup-ok (search-a.html .sa-l2, "THE SECOND LINE MUST GO"): the
+                  date/city subtitle is removed. One line only, per the approved chrome. */}
             </span>
+            {/* Owner 2026-08-01 ("we put the hamburger where the map view is"): MOBILE ONLY,
+                this trailing slot is the hamburger now, matching search-a.html's `#sa-menu`.
+                The map toggle is NOT lost, the bottom-centre "Karte" FAB (below,
+                MAP_FAB_LABEL) already does that job on every breakpoint and remains a map
+                affordance; this button fires the shared `solen:open-menu` window event
+                Header.tsx listens for (opens the same MobileMenu the removed top-row
+                hamburger used to open, city selector included). Split into two md:-gated
+                siblings rather than one shared element: this trailing slot was NOT
+                previously breakpoint-split, so swapping it in place would have silently
+                changed desktop too (MobileMenu is itself `md:hidden`, so a single-element
+                swap would make this button do nothing on desktop). Desktop keeps its
+                original map icon + handleMapToggle sibling below, unchanged. */}
+            <span
+              role="button"
+              tabIndex={0}
+              aria-label={tSD("openMenu")}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                window.dispatchEvent(new CustomEvent("solen:open-menu"));
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  window.dispatchEvent(new CustomEvent("solen:open-menu"));
+                }
+              }}
+              className={cn(
+                // FIX D (2026-08-01, owner "the circle thingy is in other categories", repeating
+                // the same call already applied to HomeSearchPill.tsx's trailing hamburger): bare,
+                // no circle, no border. Hover moves from a bg fill to a text-tone change.
+                "md:hidden grid shrink-0 place-items-center", // mockup-ok
+                "text-s-ink transition-all duration-300 ease-glide hover:text-s-ink-2", // mockup-ok
+                "h-11 w-11", // mockup-ok: S3 fix, 36px -> 44px floor (approved fixes-refined); was V3-D421d "map icon stays full size when pinned"
+              )}
+            >
+              <Menu size={16} strokeWidth={2} aria-hidden />
+            </span>
+            {/* Desktop sibling, untouched behavior: original map icon + handleMapToggle, just
+                now gated `hidden md:grid` so it only takes over at md+ where the mobile
+                hamburger sibling above is hidden. */}
             <span
               role="button"
               tabIndex={0}
@@ -1297,13 +1408,9 @@ export default function SearchTemplate({
                 }
               }}
               className={cn(
-                "grid shrink-0 place-items-center rounded-full border border-s-border",
-                // mockup-ok + owner-requested (2026-07-02): the "ring on hover" the owner sees on the map
-                // icon was hover:border-s-ink darkening the circular border to ink (iOS keeps :hover after a
-                // tap = a STUCK ink ring). Locked V3-D450 bans it -> sink the bg instead. Also drop the dead
-                // focus-ring utility (globals.css base already kills the outline; it was invisible anyway).
-                "text-s-ink transition-all duration-150 ease-glide hover:bg-s-bg-sunken active:scale-[0.94] active:duration-[80ms]",
-                "h-11 w-11", // mockup-ok: S3 fix, 36px -> 44px floor (approved fixes-refined); was V3-D421d "map icon stays full size when pinned"
+                "hidden md:grid shrink-0 place-items-center rounded-full border border-s-border",
+                "text-s-ink transition-all duration-300 ease-glide hover:bg-s-bg-sunken",
+                "h-11 w-11",
               )}
             >
               <MapIcon size={16} strokeWidth={2} aria-hidden />
@@ -1317,8 +1424,13 @@ export default function SearchTemplate({
 
       {/* CHROME row: filter chips + Fuer-dich. The search band moved OUT (above) so it
           can stay pinned over the full results list; this container holds the rest of
-          the in-page chrome, centered + constrained (max-w-[680px]). */}
-      <div className="mx-auto w-full max-w-[680px] px-4">
+          the in-page chrome, centered + constrained (max-w-[680px]).
+          Owner 2026-08-01 ("remove cz we made it carousel right did u forget"): hidden on
+          MOBILE only, desktop untouched. A filter row belongs to a flat result list, not to
+          the carousels the mobile category page now renders (CategoryMobileRails below); the
+          filter STATE/logic stays fully intact (URL params, FilterSheet, activeFilterCount),
+          only this row stops rendering under 768px. */}
+      <div className="mx-auto hidden w-full max-w-[680px] px-4 md:block">
         {/* D. Filter chips row + pinned round filter button. Selected chips turn
             ink + show a check AND sort to the LEFT (active group, thin divider,
             then inactive). The round SlidersHorizontal button is pinned right,
@@ -1353,7 +1465,7 @@ export default function SearchTemplate({
                 size={16}
                 strokeWidth={2}
                 className={cn(
-                  "absolute transition-all duration-150 ease-glide",
+                  "absolute transition-all duration-300 ease-glide",
                   activeFilterCount > 0
                     ? "scale-50 rotate-90 opacity-0"
                     : "scale-100 rotate-0 opacity-100",
@@ -1363,7 +1475,7 @@ export default function SearchTemplate({
                 size={16}
                 strokeWidth={2.5}
                 className={cn(
-                  "absolute transition-all duration-150 ease-glide",
+                  "absolute transition-all duration-300 ease-glide",
                   activeFilterCount > 0
                     ? "scale-100 rotate-0 opacity-100"
                     : "scale-50 -rotate-90 opacity-0",
@@ -1434,10 +1546,15 @@ export default function SearchTemplate({
         <CategoryBrowseRails salons={salons} locale={locale} category={activeCategory} />
       )}
 
-      {/* Result count row — count LEFT, sort dropdown RIGHT (Airbnb/Fresha
+      {/* Result count row, count LEFT, sort dropdown RIGHT (Airbnb/Fresha
           pattern). V3-D350: sort moved here from the (removed) chip strip so the
-          Uber icon row stays clean; sorting still fully works via the dropdown. */}
-      <div className="mx-auto flex w-full max-w-[1280px] items-center justify-between gap-3 px-4 pt-5 md:px-6">
+          Uber icon row stays clean; sorting still fully works via the dropdown.
+          Owner (2026-08-01, category-rails ask): "we don't need this how many
+          stores there is and also the sort button", hidden on MOBILE only,
+          same hidden/md: pattern as the filter row above; desktop unchanged.
+          Sort state/logic is untouched, the dropdown just isn't rendered on
+          mobile (no bespoke mobile sort entry point was asked for). */}
+      <div className="mx-auto hidden w-full max-w-[1280px] items-center justify-between gap-3 px-4 pt-5 md:flex md:px-6">
         {loading ? (
           <div
             className="h-4 w-44 rounded bg-s-bg-sunken skeleton-shimmer"
@@ -1454,6 +1571,15 @@ export default function SearchTemplate({
         ) : (
           <span />
         )}
+        {/* accessibility-08 (2026-07-27): a sighted user sees this count update in place on
+            every filter/keystroke; a screen-reader user tabbing the filter controls got total
+            silence and had to manually re-traverse the whole results grid to find out whether
+            anything changed. One persistent sr-only region (same pattern as HeartButton's save
+            announcement) instead of putting aria-live on the visible <p>, which unmounts/
+            remounts across the loading/error/total ternary above and so wouldn't reliably fire. */}
+        <span className="sr-only" aria-live="polite" aria-atomic="true">
+          {!loading && !error && total > 0 ? `${total} ${pluralSalons(total, tx)}` : ""}
+        </span>
         {!loading && !error && total > 0 && (
           <div ref={sortBtnRef} className="relative shrink-0">
             <button
@@ -1499,7 +1625,7 @@ export default function SearchTemplate({
                     }}
                     className={cn(
                       "block w-full rounded-[10px] px-3 py-2 text-left",
-                      "font-body text-[14px] transition-[colors,transform] duration-150 active:scale-[0.98] active:duration-[80ms]",
+                      "font-body text-[14px] transition-colors duration-150",
                       opt.value === sort
                         ? "bg-s-bg-sunken font-semibold text-s-ink"
                         : "text-s-ink hover:bg-s-bg-sunken",
@@ -1571,39 +1697,64 @@ export default function SearchTemplate({
                   grid below is untouched. Escape hatches (?layout=list / ?layout=grid)
                   keep their existing behavior on every breakpoint (skip the feed).
                   walk_in stays on the "card" variant (desktop-grid block below, shown
-                  on mobile too in this mode) so the queue busyness bar/tier is not lost. */}
+                  on mobile too in this mode) so the queue busyness bar/tier is not lost.
+                  Owner 2026-08-01 ("remove cz we made it carousel right did u forget"): on a
+                  CATEGORY route (activeCategory set), this flat feed is replaced by
+                  CategoryMobileRails (Top <Category> / Nearby / Available this week). /search
+                  (no activeCategory) keeps this exact flat feed unchanged. */}
               {!listLayout && !gridLayout && !walkIn && (
-                <div className="flex flex-col gap-6 md:hidden">
-                  {salons.map((s) => (
-                    <SalonResultCard
-                      key={s.id}
-                      variant="feed"
-                      slug={s.slug}
-                      name={s.name}
+                <div className="md:hidden">
+                  {activeCategory ? (
+                    <CategoryMobileRails
+                      salons={salons}
                       locale={locale}
-                      rating={s.average_rating}
-                      photoUrl={s.cover_photo_url ?? undefined}
-                      galleryCount={s.gallery_urls?.length ?? 0}
-                      hasServiceQuery={q.length > 0}
-                      matchChip={q.length > 0 ? matchChipLabel(s, q, tx) : null}
-                      category={activeCategory ? undefined : safeCategory(s.categories)}
-                      city={
-                        s.address ||
-                        (s.quartier
-                          ? s.quartier.charAt(0).toUpperCase() + s.quartier.slice(1)
-                          : undefined) ||
-                        (activeCity ? cityName : undefined)
-                      }
-                      address={s.address}
-                      distanceMeters={s.distance_meters ?? null}
-                      priceFromCHF={s.avg_price ?? null}
-                      reviewCount={s.review_count ?? null}
-                      services={s.services}
-                      isSaved={favoriteIds.has(s.id)}
-                      salonId={s.id}
-                      date={date}
+                      category={activeCategory}
+                      categoryLabel={categoryLabel}
+                      cityName={cityName}
+                      favoriteIds={favoriteIds}
                     />
-                  ))}
+                  ) : (
+                    <div className="flex flex-col gap-6">
+                      {salons.map((s, i) => (
+                        <SalonResultCard
+                          key={s.id}
+                          variant="feed"
+                          slug={s.slug}
+                          name={s.name}
+                          locale={locale}
+                          rating={s.average_rating}
+                          photoUrl={s.cover_photo_url ?? undefined}
+                          galleryCount={s.gallery_urls?.length ?? 0}
+                          hasServiceQuery={q.length > 0}
+                          matchChip={q.length > 0 ? matchChipLabel(s, q, tx) : null}
+                          category={safeCategory(s.categories)}
+                          city={
+                            s.address ||
+                            (s.quartier
+                              ? s.quartier.charAt(0).toUpperCase() + s.quartier.slice(1)
+                              : undefined) ||
+                            (activeCity ? cityName : undefined)
+                          }
+                          address={s.address}
+                          distanceMeters={s.distance_meters ?? null}
+                          // min_price, not avg_price (2026-07-27): this renders under a "from"
+                          // label, and an AVERAGE is not a floor , half the salon's services cost
+                          // less than it, so the advertised starting price was unreachable. PBV
+                          // Art. 13 requires a from-price to be the genuine lower limit.
+                          priceFromCHF={s.min_price ?? null}
+                          priceFromService={locale === "en" ? (s.min_price_service_en ?? s.min_price_service_de ?? null) : (s.min_price_service_de ?? null)}
+                          reviewCount={s.review_count ?? null}
+                          services={s.services}
+                          isSaved={favoriteIds.has(s.id)}
+                          salonId={s.id}
+                          date={date}
+                          // performance-05: first card of the mobile above-the-fold feed
+                          // is the LCP candidate on a fresh search-results load.
+                          priority={i === 0}
+                        />
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -1639,7 +1790,7 @@ export default function SearchTemplate({
                         ),
                 )}
               >
-                {salons.map((s) => (
+                {salons.map((s, i) => (
                   <SalonResultCard
                     key={s.id}
                     variant={listLayout ? "list" : gridLayout ? "grid" : "card"}
@@ -1664,7 +1815,9 @@ export default function SearchTemplate({
                       (activeCity ? cityName : undefined)
                     }
                     distanceMeters={s.distance_meters ?? null}
-                    priceFromCHF={s.avg_price ?? null}
+                    // min_price, not avg_price , see the note on the sibling card above.
+                    priceFromCHF={s.min_price ?? null}
+                    priceFromService={locale === "en" ? (s.min_price_service_en ?? s.min_price_service_de ?? null) : (s.min_price_service_de ?? null)}
                     // V3-D373 (Fresha-match): review count -> its own "category · N
                     // reviews" line; location is "area, town" (built in city= above).
                     reviewCount={s.review_count ?? null}
@@ -1676,6 +1829,9 @@ export default function SearchTemplate({
                     walkInWaitMax={walkinAvail[s.id]?.waitMinutesMax ?? null}
                     walkInQueue={walkinAvail[s.id]?.queueLength ?? null}
                     date={date}
+                    // performance-05: first card of the desktop above-the-fold grid
+                    // is the LCP candidate on a fresh search-results load.
+                    priority={i === 0}
                   />
                 ))}
               </div>
@@ -1772,7 +1928,9 @@ export default function SearchTemplate({
             (s.quartier ? s.quartier.charAt(0).toUpperCase() + s.quartier.slice(1) : undefined) ||
             (activeCity ? cityName : undefined),
           distanceMeters: s.distance_meters ?? null,
-          priceFromCHF: s.avg_price ?? null,
+          // min_price, not avg_price , an average under a "from" label is not a floor.
+          priceFromCHF: s.min_price ?? null,
+          priceFromService: locale === "en" ? (s.min_price_service_en ?? s.min_price_service_de ?? null) : (s.min_price_service_de ?? null),
           reviewCount: s.review_count ?? null,
           nextSlot: nextSlotLabel(s.services, locale),
           services: s.services,
@@ -1824,7 +1982,7 @@ export default function SearchTemplate({
                   type="button"
                   onClick={() => setMobileView("list")}
                   aria-label={t("backToList")}
-                  className="-my-2.5 grid h-11 w-8 shrink-0 place-items-center text-s-ink transition-transform active:scale-95 active:duration-[80ms]"
+                  className="-my-2.5 grid h-11 w-8 shrink-0 place-items-center text-s-ink transition-transform active:scale-95"
                 >
                   <ArrowLeft size={20} strokeWidth={2} aria-hidden />
                 </button>
@@ -1833,7 +1991,7 @@ export default function SearchTemplate({
                   onClick={() => openSearchOverlay(false)}
                   aria-label={tChrome("editSearch")}
                   aria-haspopup="dialog"
-                  className="flex min-w-0 flex-1 items-center gap-2.5 text-left transition-transform active:scale-[0.98] active:duration-[80ms]"
+                  className="flex min-w-0 flex-1 items-center gap-2.5 text-left"
                 >
                   <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" />
                   {/* Two lines (query/category + city), matching the normal bar's content; the pill's
@@ -2135,6 +2293,7 @@ export default function SearchTemplate({
         initialCity={activeCity ? cityName : ""}
         autoFocusService={autoFocusSearch}
         serviceInputRef={searchInputRef}
+        originRect={searchOriginRect}
         extraParams={mapOpen ? { map: "1" } : undefined}
         // A2/Model B: results/category pages get the persistent category pill row; the
         // homepage hero (SearchBar.tsx) omits this prop (defaults to false).
@@ -2194,7 +2353,7 @@ function C1State({
       <button
         type="button"
         onClick={primary.onClick}
-        className="mt-6 flex w-full max-w-xs items-center justify-center gap-2 rounded-btn bg-s-ink px-6 py-3.5 font-body text-[15px] font-semibold text-white transition-[colors,transform] duration-150 hover:bg-black active:scale-[0.97] active:duration-[80ms]"
+        className="mt-6 flex w-full max-w-xs items-center justify-center gap-2 rounded-btn bg-s-ink px-6 py-3.5 font-body text-[15px] font-semibold text-white transition-colors duration-150 hover:bg-black"
       >
         {primary.Icon ? <primary.Icon size={18} strokeWidth={2} /> : null}
         {primary.label}
@@ -2352,7 +2511,7 @@ function ErrorState({
         className={cn(
           "mt-5 inline-flex items-center gap-2 rounded-btn bg-s-ink px-5 py-2.5",
           "font-body text-[14px] font-semibold text-white",
-          "transition-[colors,transform] duration-150 hover:bg-black active:scale-[0.97] active:duration-[80ms]",
+          "transition-colors duration-150 hover:bg-black",
           "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
         )}
       >
