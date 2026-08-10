@@ -78,6 +78,22 @@ Reference CAPTURED: `_design-system/references/qonto--onboarding.md`, live from 
       I edited the real header three times today without showing him anything first. The mockup now
       exists at `/de/dev/auth-flow` and nothing in it is wired.
 
+- [x] **CORRECTION 2026-08-10, the screenshots and the grey.** Verbatim: *"I literally attached
+      screenshots from the mobbin, but you didn't even look at it and just fucking make the shit
+      up... why the fuck did you make the background fucking grey? Did you look at the fucking
+      screenshot?"* `verified: 9cbac0fc8  ~/.claude/hooks/save-owner-images.py`
+      **The mechanical cause, measured:** his images arrive as inline data with NO file path, and
+      the reference rule names a script that takes a path, so it was never runnable. Twelve images
+      this session, twelve with no path. They are written to disk on arrival now. Used immediately:
+      their page is **#F6F6F6** with white cards and white dominates; my mockup had grey dominant.
+- [x] **CORRECTION 2026-08-10, the glyph.** Verbatim: *"not, like, an arrow. Like, I want, like, a
+      good triangle."* It is a CHEVRON. The capture said "bare chevron" in writing and I built an
+      arrow. `verified: 9cbac0fc8  app/[locale]/dev/auth-flow/page.tsx:33`
+- [ ] **CORRECTION 2026-08-10, use subagents.** Verbatim: *"He uses sub agents accounts so why the
+      fuck are you not doing that?"* Open: a council is running on this turn's changes, and the
+      standing answer is that a reference should go to a reader BEFORE I build from it, not after
+      he rejects it.
+
 ## C. The design system half
 
 - [ ] C1 Write the button treatment into the frozen values so it stops drifting, since the drift is
