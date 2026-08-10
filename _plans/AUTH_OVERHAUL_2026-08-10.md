@@ -20,7 +20,7 @@ His words, the load-bearing parts kept verbatim:
 > "we have to really fix up the principal design system and data because you keep boxing stuff or,
 > like, writing unnecessary text."
 
-Reference captured to `_design-system/references/` (Qonto onboarding, in flight at time of writing).
+Reference CAPTURED: `_design-system/references/qonto--onboarding.md`, live from Mobbin and qonto.com, measured not recalled.
 
 ---
 
@@ -29,8 +29,13 @@ Reference captured to `_design-system/references/` (Qonto onboarding, in flight 
 - [ ] A1 One entry screen: **Continue with Google**, **Continue with Apple**, then a divider, then
       an email field and one commit button. Google and Apple are already integrated
       (`project_money_features_shipped`), so this is wiring, not new backend.
-- [ ] A2 After the email is entered, the path SPLITS on whether that address already has an account.
-      That check does not exist yet and is the one genuinely new piece of backend.
+- [ ] **A2 BLOCKED ON HIM, and the capture is why.** He described the path SPLITTING after the email.
+      **Qonto does not do that.** Sign-up and log-in are two separate doors chosen at the first tap,
+      and log-in puts email and password on ONE screen. His version needs a lookup Qonto never
+      performs: given an address, does an account exist. That endpoint does not exist here, and it
+      publicly leaks whether an address is registered, which is the account-enumeration tradeoff.
+      TWO WAYS: (a) his split, one email field, we build the lookup and accept the leak;
+      (b) Qonto's, two doors on the first screen, no lookup, no leak, one more tap at the start.
 - [ ] A3 **Existing account** goes to a password screen and logs in.
 - [ ] A4 **New account** goes to a separate PIN screen: a 6-digit code sent to the address, entered
       in boxes, with a resend affordance.
