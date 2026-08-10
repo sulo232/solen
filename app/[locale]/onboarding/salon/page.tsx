@@ -11,6 +11,7 @@ import InteractiveHoverButton from "@/components-legacy/ui/interactive-hover-but
 import { slideSwitch } from "@/lib/animations";
 import AddressAutocomplete from "@/components-legacy/ui/AddressAutocomplete";
 import ImageUpload from "@/components-legacy/ui/ImageUpload";
+import { FieldHelper } from "@/app/[locale]/_components/primitives";
 import type { SalonCategory } from "@/lib/types";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 
@@ -38,7 +39,7 @@ function StepContainer({ title, subtitle, children }: { title: string; subtitle?
         style={{ boxShadow: "0 1px 3px rgba(26,18,9,.05), 0 4px 16px rgba(26,18,9,.06)" }}
         role="form">
         {subtitle && (
-          <p className="text-[12px] font-heading uppercase tracking-[.20em] text-s-ink-2 mb-1.5">
+          <p className="text-[12px] font-heading tracking-[0.08em] text-s-ink-2 mb-1.5">
             {subtitle}
           </p>
         )}
@@ -80,7 +81,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
     <StepContainer title={t("step1.title")} subtitle={t("step1.subtitle")}>
       <div className="space-y-4">
         <div>
-          <label className="block text-[12px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">{t("step1.name")}</label>
+          <label className="block text-[12px] font-heading tracking-[0.08em] text-s-ink/40 mb-1.5">{t("step1.name")}</label>
           <input // mockup-ok: dead-class removal only, base input law (globals.css) already renders fill/border/radius; !border-s-accent keeps the error edge visible under the widened base rule (V3-D-input-fill-2026-07-17)
             value={data.name}
             onChange={(e) => onChange({ ...data, name: e.target.value })}
@@ -91,19 +92,24 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
         </div>
 
         <div>
-          <label className="block text-[12px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">{t("step1.email")}</label>
+          <label className="block text-[12px] font-heading tracking-[0.08em] text-s-ink/40 mb-1.5">{t("step1.email")}</label>
           <input // mockup-ok: dead-class removal only, base input law already renders fill/border/radius for type=email; !border-s-accent keeps the error edge visible (V3-D-input-fill-2026-07-17)
             type="email"
             value={data.email}
             onChange={(e) => onChange({ ...data, email: e.target.value })}
             className={`w-full px-4 py-3 text-sm text-s-ink transition-[border-color,box-shadow] shadow-warm-sm ${errors.email ? "!border-s-accent" : ""}`}
             placeholder={t("step1.emailPlaceholder")}
+            aria-describedby="salon-email-use"
           />
+          {/* Purpose-at-point-of-entry line. The taste-log condition attached to owner decision 1
+              (2026-08-09) is that a stored contact email must say what it is used for where it is
+              typed. Locked FieldHelper primitive (COMPONENT_REGISTRY), default tone. */}
+          <FieldHelper id="salon-email-use" className="mt-1">{t("step1.emailUse")}</FieldHelper>
           {errors.email && <p className="text-xs text-s-error mt-0.5">{errors.email}</p>}
         </div>
 
         <div>
-          <label className="block text-[12px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-2">{t("step1.categories")}</label>
+          <label className="block text-[12px] font-heading tracking-[0.08em] text-s-ink/40 mb-2">{t("step1.categories")}</label>
           <div className="flex flex-wrap gap-2">
             {CATEGORY_OPTIONS.map((c) => (
               <button
@@ -111,7 +117,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
                 type="button"
                 onClick={() => toggleCat(c.value)}
                 className={[
-                  "px-4 py-2.5 rounded-pill text-[12px] font-heading uppercase tracking-[.06em] border transition-[colors,transform] active:scale-[0.97]",
+                  "px-4 py-2.5 rounded-pill text-[12px] font-heading tracking-[0.08em] border transition-[colors,transform] active:scale-[0.97]",
                   data.categories.includes(c.value)
                     ? "bg-s-ink text-white border-s-ink shadow-elevation-2"
                     : "border-s-ink/[0.08] text-s-ink-2 hover:border-s-ink/40",
@@ -126,7 +132,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
 
         <div className="grid grid-cols-1 gap-4">
           <div>
-            <label className="block text-[12px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">{/* will add translations later if needed */} Stadt</label>
+            <label className="block text-[12px] font-heading tracking-[0.08em] text-s-ink/40 mb-1.5">{/* will add translations later if needed */} Stadt</label>
             <select // mockup-ok: dead-class removal only, base input law already renders fill/border/radius for select; !border-s-accent keeps the error edge visible (V3-D-input-fill-2026-07-17)
               value={data.city}
               onChange={(e) => onChange({ ...data, city: e.target.value })}
@@ -142,7 +148,7 @@ function Step1({ data, onChange, errors, t, locale }: { data: BasicsData; onChan
         </div>
 
         <div>
-          <label className="block text-[12px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">{t("step1.address")}</label>
+          <label className="block text-[12px] font-heading tracking-[0.08em] text-s-ink/40 mb-1.5">{t("step1.address")}</label>
           <AddressAutocomplete
             value={data.address}
             onChange={(val) => onChange({ ...data, address: val })}
@@ -226,7 +232,7 @@ function Step3({ data, onChange, category, t }: {
     <StepContainer title={t("step3Quick.title")} subtitle={t("step3Quick.subtitle")}>
       <div className="space-y-4">
         <div>
-          <label className="block text-[12px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">
+          <label className="block text-[12px] font-heading tracking-[0.08em] text-s-ink/40 mb-1.5">
             {t("step3Quick.serviceName")}
           </label>
           <div className="relative">
@@ -246,7 +252,7 @@ function Step3({ data, onChange, category, t }: {
           {suggested && data.service_name && (
             <div className="flex items-center gap-1.5 mt-1.5">
               <Sparkles size={10} className="text-s-ink-2" />
-              <p className="text-[12px] font-heading uppercase tracking-[.12em] text-s-ink/45">
+              <p className="text-[12px] font-heading tracking-[0.08em] text-s-ink/45">
                 KI-Vorschlag anpassbar
               </p>
             </div>
@@ -255,7 +261,7 @@ function Step3({ data, onChange, category, t }: {
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-[12px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">
+            <label className="block text-[12px] font-heading tracking-[0.08em] text-s-ink/40 mb-1.5">
               {t("step3Quick.duration")}
             </label>
             <select // mockup-ok: dead-class removal only, base input law already renders this fill/border/radius (V3-D-input-fill-2026-07-17)
@@ -269,7 +275,7 @@ function Step3({ data, onChange, category, t }: {
             </select>
           </div>
           <div>
-            <label className="block text-[12px] font-heading uppercase tracking-[.14em] text-s-ink/40 mb-1.5">
+            <label className="block text-[12px] font-heading tracking-[0.08em] text-s-ink/40 mb-1.5">
               {t("step3Quick.price")}
             </label>
             <input // mockup-ok: dead-class removal only, base input law already renders this fill/border/radius (V3-D-input-fill-2026-07-17)
@@ -607,11 +613,11 @@ export default function SalonOnboardingPage() {
                 <p className="text-xs font-body text-s-ink/45 max-w-xs mt-2 leading-relaxed">
                   {t("done.subtitle")}
                 </p>
-                <p className="text-[12px] font-heading uppercase tracking-[.10em] text-s-ink-2 mt-3">
+                <p className="text-[12px] font-heading tracking-[0.08em] text-s-ink-2 mt-3">
                   {t("done.dashboardHint")}
                 </p>
                 <Link href={`/${locale}/dashboard?onboarded=1`}
-                  className="mt-4 px-6 py-3 rounded-btn bg-s-ink text-white text-xs font-heading uppercase tracking-[.06em] hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-elevation-2">
+                  className="mt-4 px-6 py-3 rounded-btn bg-s-ink text-white text-xs font-heading tracking-[0.08em] hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-elevation-2">
                   Zum Dashboard →
                 </Link>
               </div>
@@ -639,7 +645,7 @@ export default function SalonOnboardingPage() {
             <span className="font-heading text-base text-s-ink">
               solen<span className="text-s-accent">.</span>ch
             </span>
-            <span className="text-[12px] font-heading uppercase tracking-[.14em] text-s-ink/45">
+            <span className="text-[12px] font-heading tracking-[0.08em] text-s-ink/45">
               {t("header.stepOf", { step, total: TOTAL_STEPS })}
             </span>
           </div>
@@ -655,7 +661,7 @@ export default function SalonOnboardingPage() {
               />
             ))}
           </div>
-          <p className="text-[12px] font-heading uppercase tracking-[.16em] text-s-ink/45 mt-2 text-center">
+          <p className="text-[12px] font-heading tracking-[0.08em] text-s-ink/45 mt-2 text-center">
             {t(`progress.${STEP_META[step - 1]?.label}` as any)}
           </p>
         </div>
@@ -709,7 +715,7 @@ export default function SalonOnboardingPage() {
             <button
               type="button"
               onClick={goPrev}
-              className="flex items-center gap-1.5 px-4 py-3 rounded-btn border border-s-ink/[0.08] text-xs font-heading uppercase tracking-[.06em] text-s-ink-2 hover:bg-s-bg-sunken hover:border-s-border active:translate-y-[1px] active:shadow-pressed transition-[transform,filter]"
+              className="flex items-center gap-1.5 px-4 py-3 rounded-btn border border-s-ink/[0.08] text-xs font-heading tracking-[0.08em] text-s-ink-2 hover:bg-s-bg-sunken hover:border-s-border active:translate-y-[1px] active:shadow-pressed transition-[transform,filter]"
             >
               <ArrowLeft size={16} /> {t("nav.back")}
             </button>
@@ -718,7 +724,7 @@ export default function SalonOnboardingPage() {
             <button
               type="button"
               onClick={goNext}
-              className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 rounded-btn bg-s-ink text-white text-xs font-heading uppercase tracking-[.04em] hover:brightness-[1.06] active:translate-y-[1px] active:shadow-pressed transition-[transform,filter] group shadow-elevation-2"
+              className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 rounded-btn bg-s-ink text-white text-xs font-heading tracking-[0.08em] hover:brightness-[1.06] active:translate-y-[1px] active:shadow-pressed transition-[transform,filter] group shadow-elevation-2"
             >
               <span>{t("nav.next")}</span>
               <ChevronRight size={16} className="transition-transform group-hover:translate-x-1" />

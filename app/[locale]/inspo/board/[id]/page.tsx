@@ -72,7 +72,7 @@ export default function BoardDetailPage() {
         </button>
         {board && (
           <div className="absolute inset-x-4 bottom-4 text-white">
-            <p className="font-heading text-[12px] font-semibold uppercase tracking-[0.06em] opacity-90">Kollektion</p>
+            <p className="font-heading text-[12px] font-semibold tracking-[0.08em] opacity-90">Kollektion</p>
             {/* !text-white: a globals.css base `h1{color}` rule beats inherited text-white (same specificity quirk as the search input) */}
             <h1 className="font-heading text-[26px] font-bold leading-tight tracking-[-0.02em] !text-white">{localName}</h1>
           </div>

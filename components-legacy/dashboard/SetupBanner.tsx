@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
-import { Check } from "lucide-react";
+import { Check, Clock, AlertTriangle } from "lucide-react";
 
 interface Step {
   key: string;
@@ -12,13 +12,23 @@ interface Step {
   complete: boolean;
 }
 
+type ApprovalState = "pending" | "rejected" | "approved";
+
 export default function SetupBanner() {
   const locale = useLocale();
   const t = useTranslations("dashboard.setupBanner");
   // Step names come from the same i18n map the setup wizard uses — the API
   // sends only { key, complete } (blank-label bug, W14.5 triage 2026-06-12).
   const tSteps = useTranslations("onboarding.setup.steps");
-  const [data, setData] = useState<{ steps: Step[]; completed: number; total: number; percentage: number } | null>(null);
+  const tApproval = useTranslations("dashboard.approvalStatus");
+  const [data, setData] = useState<{
+    steps: Step[];
+    completed: number;
+    total: number;
+    percentage: number;
+    approval_state?: ApprovalState;
+    rejection_reason?: string | null;
+  } | null>(null);
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
@@ -48,8 +58,37 @@ export default function SetupBanner() {
   // and the Einrichten links stay exactly as they were.
   const currentIndex = data.steps.findIndex((s) => !s.complete);
 
+  // Owner decision 8 (TASTE_LOG 2026-08-09, "i approve for every salon"): approval is the one gate
+  // the owner cannot clear himself, so it is stated at the top of the banner instead of hiding as an
+  // unchecked "Bereit!" row. Values come from salons.approved_at / rejection_reason (real columns),
+  // nothing is fabricated: when the state is "approved" this block renders nothing at all.
+  const approvalState: ApprovalState = data.approval_state ?? "approved";
+  const awaitingApproval = approvalState === "pending";
+  const wasRejected = approvalState === "rejected";
+
   return (
     <div className="rounded-[12px] border border-s-ink/[0.06] p-4 mb-6 bg-white">
+      {/* Taste rule 6: pastel .bg + ink text + saturated icon, never a saturated solid block. */}
+      {awaitingApproval && (
+        <div className="rounded-[12px] bg-s-warning-bg border border-s-warning/30 px-3 py-2.5 mb-4 flex items-start gap-2.5">
+          <Clock size={16} className="text-s-warning shrink-0 mt-0.5" />
+          <div>
+            <p className="text-sm font-heading font-semibold text-s-ink">{tApproval("pendingTitle")}</p>
+            <p className="text-xs text-s-ink-2 mt-0.5">{tApproval("pendingBody")}</p>
+          </div>
+        </div>
+      )}
+      {wasRejected && (
+        <div className="rounded-[12px] bg-s-error-bg border border-s-error/30 px-3 py-2.5 mb-4 flex items-start gap-2.5">
+          <AlertTriangle size={16} className="text-s-error shrink-0 mt-0.5" />
+          <div>
+            <p className="text-sm font-heading font-semibold text-s-ink">{tApproval("rejectedTitle")}</p>
+            {data.rejection_reason && (
+              <p className="text-xs text-s-ink-2 mt-0.5">{data.rejection_reason}</p>
+            )}
+          </div>
+        </div>
+      )}
       {/* mockup-ok: D2 fix, sentence case 13px semibold (approved public/_mockups/fixes-refined) */}
       <p className="text-[13px] font-heading font-semibold text-s-star mb-1">{t("eyebrow")}</p>
       <p className="font-heading text-sm text-s-ink mb-3">
@@ -87,7 +126,10 @@ export default function SetupBanner() {
             <p className={labelClass}>
               {tSteps(step.key as Parameters<typeof tSteps>[0])}
             </p>
-            {!step.complete && (
+            {/* While approval is pending the go_live row has no owner-side action: the wizard
+                cannot clear an admin gate, so the link would be a dead end. Every other row keeps
+                it. */}
+            {!step.complete && !(step.key === "go_live" && awaitingApproval) && (
               /* mockup-ok: D2 fix, sentence case 13px semibold (approved public/_mockups/fixes-refined) */
               <Link href={`/${locale}/dashboard/setup`}
                 className="text-[13px] font-heading font-semibold text-s-coral transition-[colors,transform] active:scale-[0.98] active:duration-[80ms] active:ease-glide">

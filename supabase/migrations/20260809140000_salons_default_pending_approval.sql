@@ -1,0 +1,20 @@
+-- exists-check: `npm run exists is_active` -> salons.is_active ALREADY EXISTS (live snapshot), and
+-- `npm run exists approval` -> guard_salon_activation() + /dashboard/approvals already exist. This
+-- migration adds NO column and NO second visibility flag; it only flips one column DEFAULT.
+--
+-- Owner decision 8 (TASTE_LOG 2026-08-09, verbatim "i approve for every salon"): a new salon is
+-- pending approval, never live by itself.
+--
+-- Measured before this change (live, 2026-08-09):
+--   information_schema.columns -> salons.is_active column_default = 'true'
+-- So "live" was the fallback state. app/api/salons/route.ts (the onboarding insert) passes
+-- is_active:false explicitly, and guard_salon_activation() blocks an authenticated client from
+-- flipping false->true without approved_at, but BOTH of those miss the same hole: the onboarding
+-- insert runs on the service_role client, which the guard exempts by design, so any salon insert
+-- that simply OMITS is_active was created publicly listed with no approval. Flipping the column
+-- default closes that hole at the storage layer instead of relying on every insert site.
+--
+-- Existing rows are untouched (SET DEFAULT never rewrites data). The two seed paths
+-- (app/api/admin/test-salon/route.ts, app/api/admin/seed-test-salons/route.ts) both pass
+-- is_active:true explicitly, so seeding is unaffected. Idempotent: re-running is a no-op.
+ALTER TABLE public.salons ALTER COLUMN is_active SET DEFAULT false;

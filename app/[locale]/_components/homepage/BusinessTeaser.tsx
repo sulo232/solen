@@ -55,7 +55,10 @@ export default function BusinessTeaser() {
         {/* Text block — headline + sub + CTA stacked. On desktop, sits in the
             right grid cell, vertically centered with the image. */}
         <div>
-          <p className="font-body text-[13px] font-semibold text-s-ink-3">
+          {/* mockup-ok: owner decision 5A (2026-08-09) , the section eyebrow stays,
+              at the SAME size as the small grey text on a salon card. Measured on
+              the live homepage: card meta = 12px, this eyebrow was 13px. */}
+          <p className="font-body text-[12px] font-semibold text-s-ink-3">
             Für Salons
           </p>
           {/* V3-D193 (2026-05-26): Page H2 weight 900 → 800 per "too bold" sweep.

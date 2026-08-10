@@ -38,7 +38,12 @@ export function FieldLabel({
     <label
       {...props}
       className={cn(
-        "font-body font-semibold text-[14px] leading-[1.3] text-s-ink",
+        // owner 2026-08-09, decision 7 of ten, verbatim "7C": the label above a field becomes a
+        // larger ink question instead of small text, the Uber shape he picked from the three on
+        // /dev/form-labels. 14 to 16, and the weight drops because size now carries it , two
+        // emphasis signals on one element is what the emphasis budget calls flat.
+        // mockup-ok: he picked C from three variants, TASTE_LOG 2026-08-09.
+        "font-body text-[16px] leading-[1.3] text-s-ink",
         "inline-flex items-center gap-[6px]",
         className,
       )}

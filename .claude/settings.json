@@ -37,6 +37,10 @@
           {
             "type": "command",
             "command": "python3 $CLAUDE_PROJECT_DIR/scripts/hooks/recurrence-harden-gate.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 $CLAUDE_PROJECT_DIR/scripts/hooks/plan-park-gate.py"
           }
         ]
       },
@@ -128,10 +132,6 @@
           },
           {
             "type": "command",
-            "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/mockup-english-gate.py"
-          },
-          {
-            "type": "command",
             "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/pre-edit-psychology-gate.py"
           },
           {
@@ -177,6 +177,10 @@
           {
             "type": "command",
             "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/mockup-diagnosis-gate.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 $CLAUDE_PROJECT_DIR/scripts/hooks/canon-archive-gate.py"
           }
         ]
       },
@@ -209,10 +213,6 @@
           },
           {
             "type": "command",
-            "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/mockup-english-gate.py"
-          },
-          {
-            "type": "command",
             "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/pre-edit-psychology-gate.py"
           },
           {
@@ -258,6 +258,10 @@
           {
             "type": "command",
             "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hooks/mockup-diagnosis-gate.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 $CLAUDE_PROJECT_DIR/scripts/hooks/canon-archive-gate.py"
           }
         ]
       },
@@ -315,6 +319,10 @@
           {
             "type": "command",
             "command": "python3 $CLAUDE_PROJECT_DIR/scripts/hooks/fabricated-value-gate.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 $CLAUDE_PROJECT_DIR/scripts/hooks/canon-archive-gate.py"
           }
         ]
       },

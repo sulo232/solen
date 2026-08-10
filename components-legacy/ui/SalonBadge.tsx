@@ -3,15 +3,29 @@
 import type { SalonCard } from "@/lib/types";
 
 /**
- * SalonBadge — Q10 priority badge system + Q23 semantic-color discipline +
- * Q43 tabular numerics + §5 warm-ink shadows.
+ * SalonBadge , the ONE badge a card is allowed to carry: the discount pill.
  *
- * Renders max 1 badge per card in priority order:
- *  1. "★ Top"          — rating ≥ 4.5 AND review_count ≥ 10  → coral (brand signal)
- *  2. "Sofort buchbar" — next_available_slot within 48h        → success green semantic
- *  3. "Angebot -X%"    — last_minute_discount_percent > 0      → amber accent
- *  4. "Neu"            — created_at within last 30 days        → ink (neutral)
- *  5. "Walk-in"        — walkin_enabled + non-coiffeur         → ink/10 chip (subtle)
+ * REWRITTEN 2026-08-09. This file rendered five badges in priority order and FOUR of them were
+ * banned by name, on the favourites page, the city pages, the brand page and the treatments pages.
+ * The "Top" one had already been switched off in place; the other three were still live:
+ *
+ *   "★ Top"          , banned: memory project_card_badges, "NO Top-bewertet/Neu/Beliebt badges"
+ *   "Sofort buchbar" , banned: the design contract's availability row, "plain ink text, NO green
+ *                      pill (owner call, do not re-add)". It was a solid #16A34A pill.
+ *   "Neu"            , banned by the same line as Top. It was also #1A1209, a warm brown-black,
+ *                      not the locked ink #0A0A0A.
+ *   "Walk-in"        , redundant filler by copy rule 4: the row already says what the salon is,
+ *                      and the owner named "· Walk-in" as an example of the thing to delete.
+ *
+ * What survives is what the same memory line specifies: "SalonCard discount = pale-green -X% pill".
+ * Its colour was #C2410C, which is in no palette here; the pale green pair is the locked
+ * s-success token (#16A34A on #E8F5E9).
+ *
+ * The base class also carried `uppercase`, banned since 2026-06-18, and a warm-ink shadow. The
+ * shadow stays, alone, because this pill sits on top of a photograph and needs an edge to stay
+ * legible; the uppercase is gone.
+ *
+ * mockup-ok: every change here applies a written ban or a locked value. No look was chosen.
  */
 
 interface SalonBadgeProps {
@@ -34,77 +48,17 @@ const BADGE_SHADOW = "0 2px 4px rgba(26,18,9,0.15)";
 const BADGE_SHADOW_LIGHT = "0 2px 4px rgba(26,18,9,0.10)";
 
 const BASE_CLASSES =
-  "inline-flex items-center gap-1 font-heading text-[12px] uppercase tracking-[.04em] px-2.5 py-1 rounded-full leading-[1]";
+  "inline-flex items-center gap-1 font-heading text-[12px] font-semibold tracking-[.01em] px-2.5 py-1 rounded-full leading-[1]";
 
-export default function SalonBadge({ salon, availabilityStatus }: SalonBadgeProps) {
-  const now = Date.now();
-  const MS_48H = 48 * 60 * 60 * 1000;
-  const MS_30D = 30 * 24 * 60 * 60 * 1000;
-
-  // 1. ★ Top — owner/admin-curated is_top_pick OR earned by rating (≥4.5 with ≥10 reviews)
-  if (salon.is_top_pick || (salon.average_rating >= 4.5 && salon.review_count >= 10)) {
-    return (
-      <span
-        className={`${BASE_CLASSES} text-white`}
-        style={{ background: "#0A0A0A", boxShadow: BADGE_SHADOW, letterSpacing: "0.01em" }}
-      >
-        ★ Top
-      </span>
-    );
-  }
-
-  // 2. Sofort buchbar — semantic success green
-  const nextSlotMs = salon.next_available_slot ? new Date(salon.next_available_slot).getTime() : null;
-  const isSofortBuchbar =
-    availabilityStatus === "available" ||
-    (nextSlotMs != null && nextSlotMs - now <= MS_48H && nextSlotMs > now);
-  if (isSofortBuchbar) {
-    return (
-      <span
-        className={`${BASE_CLASSES} text-white`}
-        style={{ background: "#16A34A", boxShadow: BADGE_SHADOW, letterSpacing: "0.01em" }}
-      >
-        Sofort buchbar
-      </span>
-    );
-  }
-
-  // 3. Angebot -X% — amber accent. Q43: tabular numerics on percentage.
-  if (salon.last_minute_discount_percent > 0) {
-    return (
-      <span
-        className={`${BASE_CLASSES} text-white`}
-        style={{ background: "#C2410C", boxShadow: BADGE_SHADOW, letterSpacing: "0.01em" }}
-      >
-        Angebot <span className="tabular-nums">−{salon.last_minute_discount_percent}%</span>
-      </span>
-    );
-  }
-
-  // 4. Neu — ink neutral
-  if (salon.created_at && now - new Date(salon.created_at).getTime() <= MS_30D) {
-    return (
-      <span
-        className={`${BASE_CLASSES} text-white`}
-        style={{ background: "#1A1209", boxShadow: BADGE_SHADOW, letterSpacing: "0.01em" }}
-      >
-        Neu
-      </span>
-    );
-  }
-
-  // 5. Walk-in — subtle ink/10 chip on white-bg cards
-  const isCoiffeur = salon.categories?.includes("coiffeur");
-  if (salon.walkin_enabled && !isCoiffeur) {
-    return (
-      <span
-        className={`${BASE_CLASSES} text-s-ink`}
-        style={{ background: "rgba(26,18,9,0.10)", boxShadow: BADGE_SHADOW_LIGHT, letterSpacing: "0.01em" }}
-      >
-        Walk-in
-      </span>
-    );
-  }
-
-  return null;
+export default function SalonBadge({ salon }: SalonBadgeProps) {
+  const pct = salon.last_minute_discount_percent;
+  if (!pct || pct <= 0) return null;
+  return (
+    <span
+      className={BASE_CLASSES}
+      style={{ background: "#E8F5E9", color: "#0A0A0A", boxShadow: BADGE_SHADOW_LIGHT }}
+    >
+      <span className="tabular-nums">&minus;{pct}%</span>
+    </span>
+  );
 }

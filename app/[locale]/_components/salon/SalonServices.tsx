@@ -5,7 +5,7 @@ import Link from "next/link";
 import type { Service, SalonDetail } from "./_shared";
 import { capitalize } from "./_shared";
 import { TabPill } from "../primitives/TabPill";
-import { PriceFrom, SeeAllButton } from "../primitives";
+import { PriceFrom, SeeAllButton, ServiceDisclosureRow } from "../primitives";
 import { cn } from "@/lib/utils";
 
 /**
@@ -145,7 +145,9 @@ function ServiceRow({
 }) {
   // V3-D227 (2026-05-27, user-paste Fresha service-row spec):
   //   - 3-row stack: name (16/700) / duration grey (14/400 "30 Min.") / price (15/700 "ab N CHF")
-  //   - NO description line in the list view (Fresha doesn't show it — keeps density)
+  //   - NO description line in the list view (Fresha doesn't show it, keeps density). SUPERSEDED
+  //     2026-08-09 by owner decision 10: the description is not printed in the row, it OPENS on
+  //     tap, so the collapsed row keeps exactly the density this line was protecting.
   //   - NO Clock icon next to duration (Fresha is text-only)
   //   - Price format "ab {N} CHF" (German "ab" prefix, currency suffix)
   //   - BOTH mobile AND desktop variants get the same bordered card treatment now
@@ -165,19 +167,33 @@ function ServiceRow({
   // bold (the price value, kept per A1) while the "ab" prefix recedes to the div's own
   // (now-normal) inherited weight, its colour (text-s-ink-2 inside PriceFrom) already
   // marks it as a qualifier, not part of the number+currency unit (taste rule 5).
+  // Owner decision 10 (2026-08-09), verbatim "A like short n if its too long tap to expand yk":
+  // the row stays short and the salon's own description opens on tap, the same way the booking
+  // service step has behaved since 2026-07-18. Both surfaces now render the ONE
+  // <ServiceDisclosureRow> primitive (this was the salon-page half of the rollout parked in
+  // _plans/BOOKING_SVC_TIERED.md, mockup public/_mockups/liftup-salon-services-expand/index.html).
+  // Type stays exactly as locked here (name 500, duration 13/14 grey, PriceFrom emphasis); only the
+  // disclosure comes from the primitive. "Buchen" stays a SIBLING, so tapping the row never books.
   const inner = (
     <div className="flex items-center justify-between gap-4">
-      <div className="min-w-0 flex-1">
-        <div className="font-body text-[15px] font-medium text-s-ink md:text-[16px]">
-          {service.name_de}
-        </div>
-        <div className="font-body mt-1 text-[13px] text-s-ink-3 md:text-[14px]">
-          {formatDurationDE(service.duration_minutes)}
-        </div>
-        <div className="font-body mt-3 text-[14px] text-s-ink md:text-[15px]">
-          <PriceFrom amount={service.price} label="ab" emphasis />
-        </div>
-      </div>
+      <ServiceDisclosureRow
+        title={
+          <div className="font-body text-[15px] font-medium text-s-ink md:text-[16px]">
+            {service.name_de}
+          </div>
+        }
+        meta={
+          <div className="font-body mt-1 text-[13px] text-s-ink-3 md:text-[14px]">
+            {formatDurationDE(service.duration_minutes)}
+          </div>
+        }
+        description={service.description_de}
+        price={
+          <div className="font-body mt-3 text-[14px] text-s-ink md:text-[15px]">
+            <PriceFrom amount={service.price} label="ab" emphasis />
+          </div>
+        }
+      />
       <Link
         href={`/${locale}/salon/${slug}/booking?service=${service.id}`}
         className="font-body shrink-0 rounded-full border border-s-border bg-white px-5 py-2 text-[13px] font-medium text-s-ink transition-[colors,transform] hover:bg-s-bg-sunken active:scale-[0.97] active:duration-[80ms] active:ease-glide md:px-6 md:py-2.5 md:text-[14px]"

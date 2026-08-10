@@ -6144,6 +6144,7 @@ export type Database = {
           deposit_percent: number | null
           description_de: string | null
           description_en: string | null
+          email: string | null
           explore_score: number | null
           facebook_url: string | null
           family_owned: boolean | null
@@ -6151,6 +6152,7 @@ export type Database = {
           frozen_at: string | null
           frozen_reason: string | null
           gallery_urls: string[] | null
+          google_place_id: string | null
           group_id: string | null
           id: string
           instagram_url: string | null
@@ -6250,6 +6252,7 @@ export type Database = {
           deposit_percent?: number | null
           description_de?: string | null
           description_en?: string | null
+          email?: string | null
           explore_score?: number | null
           facebook_url?: string | null
           family_owned?: boolean | null
@@ -6257,6 +6260,7 @@ export type Database = {
           frozen_at?: string | null
           frozen_reason?: string | null
           gallery_urls?: string[] | null
+          google_place_id?: string | null
           group_id?: string | null
           id?: string
           instagram_url?: string | null
@@ -6356,6 +6360,7 @@ export type Database = {
           deposit_percent?: number | null
           description_de?: string | null
           description_en?: string | null
+          email?: string | null
           explore_score?: number | null
           facebook_url?: string | null
           family_owned?: boolean | null
@@ -6363,6 +6368,7 @@ export type Database = {
           frozen_at?: string | null
           frozen_reason?: string | null
           gallery_urls?: string[] | null
+          google_place_id?: string | null
           group_id?: string | null
           id?: string
           instagram_url?: string | null

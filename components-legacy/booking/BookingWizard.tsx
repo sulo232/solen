@@ -175,13 +175,18 @@ export default function BookingWizard({ services, staffList, salon, staffService
     <div className="w-full">
       {/* Mockup 20 nav — back + X on the sunken body (no bar, no salon name,
           no progress UI; exactly the captured Fresha anatomy) */}
+      {/* 2026-08-10: matched to the top bar. This was a 40px bare glyph, no fill, no border,
+          no shadow, while the header drew a 44px control , two shapes for one job, which is
+          half of what he meant by "multiple design styles". Now the same circle: 44, white,
+          hairline plus whisper shadow. The `-ml-1` pull is gone with it; it existed to hide
+          the fact that a bare glyph has no box to align. */}
       <div className="flex items-center justify-between pt-1 pb-1">
         {canGoBack ? (
           <button
             type="button"
             onClick={handleBack}
             aria-label={t('back')}
-            className="-ml-1 grid h-10 w-10 place-items-center rounded-full transition-[colors,transform] hover:bg-s-ink/5 active:scale-[0.94] active:duration-[80ms] active:ease-glide"
+            className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-s-border bg-white shadow-whisper transition-[colors,transform] hover:border-s-ink active:scale-[0.94] active:duration-[80ms] active:ease-glide"
           >
             <ArrowLeft size={22} strokeWidth={2.2} className="text-s-ink" />
           </button>
@@ -196,7 +201,7 @@ export default function BookingWizard({ services, staffList, salon, staffService
               else router.push(`/${locale}/salon/${salon.slug}`);
             }}
             aria-label={t('back')}
-            className="-ml-1 grid h-10 w-10 place-items-center rounded-full transition-[colors,transform] hover:bg-s-ink/5 active:scale-[0.94] active:duration-[80ms] active:ease-glide"
+            className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-s-border bg-white shadow-whisper transition-[colors,transform] hover:border-s-ink active:scale-[0.94] active:duration-[80ms] active:ease-glide"
           >
             <ArrowLeft size={22} strokeWidth={2.2} className="text-s-ink" />
           </button>

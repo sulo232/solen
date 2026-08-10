@@ -47,7 +47,7 @@ export default function NailAdminPage() {
   return (
     <DashboardLayout salonName={salonName} salonCategories={salonCategories}>
       <div className="mb-6">
-        <p className="text-[12px] font-heading uppercase tracking-[.20em] text-s-ink-2 mb-1">Nails</p>
+        <p className="text-[12px] font-heading tracking-[0.08em] text-s-ink-2 mb-1">Nails</p>
         <h1 className="font-heading text-[28px] text-s-ink leading-none">
           {t("pageTitle")}
         </h1>

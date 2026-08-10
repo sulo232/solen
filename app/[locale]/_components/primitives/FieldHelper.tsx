@@ -11,6 +11,12 @@ interface FieldHelperProps {
   children: React.ReactNode;
   className?: string;
   /**
+   * Optional DOM id so the field above can point at this line with `aria-describedby`
+   * (a helper that explains what a value is used for is only reachable by screen readers
+   * once it is associated). Additive: existing call-sites that omit it render unchanged.
+   */
+  id?: string;
+  /**
    * Render as an `aria-live="polite"` region. Defaults to `polite` for `error`/`warning` tones
    * (so screen readers announce validation changes without interrupting). Override with `false`
    * to suppress (e.g. when the parent already wraps multiple helpers in one live region).
@@ -38,6 +44,7 @@ export function FieldHelper({
   tone = "default",
   live,
   className,
+  id,
   children,
 }: FieldHelperProps) {
   const Icon =
@@ -55,6 +62,7 @@ export function FieldHelper({
 
   return (
     <p
+      id={id}
       role={tone === "error" ? "alert" : undefined}
       aria-live={ariaLive}
       className={cn(

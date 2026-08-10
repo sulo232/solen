@@ -2,43 +2,20 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-01T00:10:10 (trigger: auto)
-- branch: claude/airbnb-animated-icons-ee4329
+- taken: 2026-08-09T12:52:24 (trigger: auto)
+- branch: claude/agent-flow-design-overhaul-2af2c2
 
 ## git
 ```
-56ff3b9f4 Cite the sha and the exact line for the stale-frame guard
-cfa17d2ff Put the air back where he approved it, and stop the renderer eating stale frames
-6624bf282 Cite the shas, and close the constraint box that round 27 superseded
-d64a1a069 I fixed the teleport by deleting the air, and he caught it
-d3ca76765 Stop the air being cut, and name the constraint that limits it
-```
-```
-M public/_pixel-refs/solen-icons/frames/set-barber/026.png
- M public/_pixel-refs/solen-icons/frames/set-barber/027.png
- M public/_pixel-refs/solen-icons/frames/set-barber/028.png
- M public/_pixel-refs/solen-icons/frames/set-barber/029.png
- M public/_pixel-refs/solen-icons/frames/set-barber/030.png
- M public/_pixel-refs/solen-icons/frames/set-barber/031.png
- M public/_pixel-refs/solen-icons/frames/set-barber/032.png
- M public/_pixel-refs/solen-icons/frames/set-barber/033.png
- M public/_pixel-refs/solen-icons/frames/set-barber/034.png
- M public/_pixel-refs/solen-icons/frames/set-barber/035.png
- M public/_pixel-refs/solen-icons/frames/set-barber/036.png
- M public/_pixel-refs/solen-icons/frames/set-barber/037.png
- M public/_pixel-refs/solen-icons/frames/set-barber/038.png
- M public/_pixel-refs/solen-icons/frames/set-barber/039.png
- M public/_pixel-refs/solen-icons/frames/set-barber/040.png
- M public/_pixel-refs/solen-icons/frames/set-barber/041.png
- M public/_pixel-refs/solen-icons/frames/set-barber/042.png
- M public/_pixel-refs/solen-icons/frames/set-barber/043.png
- M public/_pixel-refs/solen-icons/frames/set-barber/044.png
- M public/_pixel-refs/solen-icons/frames/set-barber/045.png
+405613578 What has to be committed and what has to be said, from what survived today
+5d0077fe0 He got the same thing three times, and the check for it switched itself off on the third
+f18e38ff4 The whole enforcement estate sits in one folder with no version control and no backup
+1eafccf90 Forms is written down now, so the design system covers all of it
+967b43128 The comparison page shows what actually shipped, not what it looked like this morning
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
-45 | ANIMATED ICONS ROUND 2 , owner feedback on build 1 (2026-07-31: brighter lighting, the red is not vibrant, the chair does not face straight, and a coiffeur version that is NOT the same chair) | **ACTIVE** (2026-07-31)
-44 | AIRBNB ANIMATED ICONS , capture the real reference, then build a Solen animated icon (owner 2026-07-31 "go actually research", scoped by the owner mid-turn to research FIRST) | **ACTIVE** (2026-07-31)
+44 | SYSTEM OVERHAUL , seven overhauls + a two-phase working protocol (owner dictation 2026-08-07: agent/mockup flow depth, "make sets", research flow as a new system, the design system + all its documents, the repetition problem, other-overhaul suggestions, and a system for OUTPUT + QUESTIONS + the two-phase flow) | **ACTIVE** (2026-08-07)
 43 | COPY + VOICE LAW , how we write, in four languages (owner 2026-07-29 "research everything and make a whole principle about when you're writing something, how to do it") | **ACTIVE** (2026-07-29)
 42 | PRINCIPLE RESEARCH , deep-research every non-design principle we already have (backend, security, silent-no-op, psychology, i18n, motion, the rest of `_rules/*`) | **ACTIVE** (2026-07-29)
 40 | MOTION + SHADOW LAW (research-first, then build as a loop) | **ACTIVE** (2026-07-25)
@@ -65,6 +42,35 @@ M public/_pixel-refs/solen-icons/frames/set-barber/026.png
 37 | Mockup ROOT-CAUSE + principles (owner 2026-07-19, 5th-round fury: "step back, use subagents") | **ACTIVE** (2026-07-19)
 36 | Mockup QUALITY system , stop shipping unchecked/unbalanced mockups (owner 2026-07-19, FURIOUS recurrence) | **ACTIVE** (2026-07-19)
 35 | Full frontend sweep , audit every surface vs the design system + mockup improvements (owner 2026-07-19, LOOP) | **ACTIVE** (2026-07-19)
+
+## SYSTEM_OVERHAUL_2026-08-07.md
+Open boxes:
+- [ ] A4g-old Hole in the existing gate: `instrument-corroboration-gate.py` is armed and covers the "serve / render / preview" category, but NOT tunnel, DNS or file-permission claims, which is why it stayed silent while I made all three. Extending its category list is the fix, not a new gate. Blocked on the owner's answer to question 1 on the page.
+- [ ] Q1 Freeze new gates. **DISPATCHED**, drafter running in wf_3bc05071-7ad.
+- [ ] Q3 Mockup-first is over-enforced. Three atomic fixes:
+  - [ ] Q3c Collapse the mockup gate family into one aggregated deny. **STARTED, not finished.**
+- [ ] Q4 Sets. Owner chose **start it now, in parallel**, not a later session. **DISPATCHED.**
+- [ ] Q6 When measurement and his report disagree: **show him BOTH and let him decide.** Not "his eyes win". My recommendation was wrong. **DISPATCHED.**
+- [ ] Q8 One canon file per concern.
+- [ ] Q9 **The reply itself.** Three bans plus a research task:
+- [ ] Q13 Park it, keep going, surface at the end. Plus:
+  - [ ] Q13a A parked item must be WRITTEN INTO THE PLAN in the same turn
+- [ ] Q14 **I orchestrate design, I do not build it.** Two rules:
+- [ ] Q16 **Every stop-for-an-answer is lettered options, never prose** (owner 2026-08-07, decision 16).
+- [ ] B3 Design the replacement flow. **Re-scoped 2026-08-08:** the set-definition half is gone with C2. Still waiting on the gate decision in P6.
+- [ ] C3 Design the set pipeline. **Re-scoped 2026-08-08 after C2 was removed:** no longer waiting on a definition. It waits on the next real multi-screen job he names, and the pipeline for that shape gets used from `SETS.md`.
+- [ ] F5 **NOT built, and named honestly rather than ticked.** Redundancy INSIDE one reply (saying the same thing twice in one message) has no check. `reply-repeat-gate` was retired by his "replace, don't stack" decision, and it compared two SEPARATE messages anyway, so it never covered this. Today's word-overlap method would work within a message too, but it has not been done.
+- [ ] G1 Map what governs reply shape today
+- [ ] H1 Reconstruct the approved Taste Lab elicitation format precisely
+- [ ] I5 Define what happens to a NEW question that appears mid-loop (park or break)
+- [ ] J1 Ranked list of at most 8 candidates outside A-I, with evidence and cost-of-leaving-it
+- [ ] J2 Owner picks which ones enter scope
+- [ ] K0e **The rest of the Stop chain is the same problem, unfixed:** 64 hooks, 23 of which blocked me in this session alone. The link family and this one are two families out of however many. LAW_SYSTEM 6.2 requires the consolidation and it has now been applied twice.
+- [ ] R3 **THE OBJECTION, and it is the strongest one available, so it goes before the build.** A router IS a judgment call: "which checks apply here?" And this estate's routing decisions are exactly what failed today, every one of them made by hand and every one wrong:
+- [ ] R4 **So the design constraints, if we build it:** route CONSERVATIVELY (when unsure, include the check); make the routing VISIBLE (say which were selected and which were skipped, so a wrong route is catchable); and record every miss, so the routing improves instead of ossifying like the four above.
+- [ ] R5 Owner decision on this is R-PARKED below.
+- [ ] PARKED 2026-08-08 · Build the check ROUTER (think first, then select which checks apply to this incident) instead of running all 57 every time? · from: his 2026-08-08 proposal. My recommendation: YES, and it replaces the delete-or-consolidate question below rather than sitting beside it, because a router that skips irrelevant checks gets the same relief as deleting them without losing the check. Condition: it must route conservatively, name which checks it skipped, and log its misses, because every hand-made routing decision in this estate failed today by being too narrow.
+...(+20 more open boxes)
 
 ## COPY_VOICE_LAW.md
 Open boxes:

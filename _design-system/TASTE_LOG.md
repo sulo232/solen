@@ -172,6 +172,40 @@ prior LOCKFILE conventions, scoped to filter sheets only:
   confirmed gray (`SheetChip` was already `bg-s-bg-sunken`, unchanged). i18n keys `ratingAndUp` /
   `ratingAria` added de/en/fr/it.
 
+## 2026-08-09 , input fields go white with a hairline, and the focus line is removed
+
+Owner verbatim, in order: *"is this style even correct how does airbnb n uber do"* , then, on being
+shown the measurements, *"make like airbnb but without the focus line when tapped in"*.
+
+**What was measured first, on the live sites the same day, before anything changed:**
+
+| | height | corner | fill | line |
+|---|---|---|---|---|
+| Solen, before | 48 | 12 | grey `#F4F4F5` | `1px solid transparent` |
+| Airbnb | 60 | 12 | none (white) | 1px grey `rgb(140,140,140)` |
+| Uber | 48 | 8 | grey `rgb(246,246,246)` | 2px black on focus only |
+
+**The decision, applied to the base input rule in `app/globals.css`:**
+
+- fill `#F4F4F5` to **white**, because Airbnb has no fill and a grey fill under a grey line reads as
+  two competing boundaries.
+- the resting line from `transparent` to **`#E4E4E7`**. It is worth naming that the line was ALREADY
+  THERE and invisible, so this is a colour change and not a new element.
+- height stays **48**, not their 60. He asked for the look, not the size, and 48 is locked.
+- **the ink focus line is REMOVED by his instruction.** Tapping a field now changes nothing visible.
+
+**The cost, stated once at the time and then his call (rule 3, and he decided after hearing it):**
+this removes the only visible focus indicator. On a phone the caret and keyboard cover it. On a
+laptop, anyone moving through a form with a keyboard cannot see where they are, and WCAG 2.4.7 asks
+for a visible focus indicator. The smallest thing that would satisfy both is the line darkening to
+`s-ink-2` instead of jumping to black, and that remains available if he wants it later.
+
+**Supersedes:** the 2026-07-17 input-fill decision (filled grey at rest, white on focus) and the
+LOCKFILE §3.5 depth note that describes inputs as filled-grey. Both are now history; this row wins.
+
+Verified live at 390 on `/de/booking/resend-link`: white fill, 1px `rgb(228,228,231)` line, and
+identical at rest and when tapped.
+
 ## 2026-07-06 , data-state filters: hide while empty (owner approved)
 - Decision: filter surfaces that point at data which cannot discriminate are HIDDEN, not shown-but-empty. Applied to the Angebote pill + FilterSheet group + deals sort + Angebote rail (while 0 listed salons carry a deal) and the Fuer-wen pill + group (while every active service is tagged for all genders). They reappear automatically when the data changes (cached availability check, ~5 min).
 - Why: a filter that always yields 0 results or never narrows is a dead control; showing it violates the no-fabricated-affordance principle (same family as taste rule 1). Seeding fake deals was rejected as data fabrication.
@@ -460,6 +494,115 @@ was applied as the default rather than parked, because the alternative had no de
 waiting would have blocked the sweep. **It is awaiting a yes or a no**; reversing it is 559 mechanical
 edits and §6b is the record of why it was not done.
 
+
+## 2026-08-09, the ten open decisions, answered in one message (owner verbatim)
+
+His words: *"1 A but is it legal 2 A 3A 4B like google maps 5A 6 C 7C 8A i approve for every salon
+9 a 10 A like short n if its too long tap to expand yk"*
+
+| # | decision | his answer | mine was |
+|---|---|---|---|
+| 1 | salon sign-up: keep the contact email and the Google listing it finds | **A, save both** (asked: is it legal) | A |
+| 2 | dashboard home revenue card: add a week/month switch | **A, stay weekly**, the Umsatz page keeps the switch | A |
+| 3 | search-as-you-type price under a salon | **A, price of the searched treatment**, none when nothing matched | A |
+| 4 | who can leave a star rating | **B, anyone signed in, like Google Maps** | A (visit-gated) , OVERRULED |
+| 5 | the small label above a section heading | **A, keep it, card-meta size** | A |
+| 6 | discount-code box on the payment screen | **C, only for salons with a live code** | C |
+| 7 | the small text above a form input | **C, drop the label, bigger black question above the box (Uber)** | A (keep as today) , OVERRULED |
+| 8 | does a new salon go live by itself | **A, he approves every salon**, verbatim *"i approve for every salon"* | A |
+| 9 | advice panel on the salon owner dashboard | **A, build it now** | C (park until real history) , OVERRULED |
+| 10 | service descriptions on the salon page | **A, tap to open**, verbatim *"short n if its too long tap to expand"* | C (salon page first) |
+
+**Three overrules, and they point the same way.** On 4, 7 and 9 I picked the cautious option and he
+picked the one that ships something. 4 and 9 I argued from a risk that has not happened yet (fake
+ratings, invented advice); 7 I argued from an existing lock. His pattern across all three is to
+prefer the version a user can see over the version that is safe to defend.
+
+**Decision 4 carries a real cost he accepted by choosing it**, stated once here so it is on the
+record: open ratings on a small salon list means one wave of fake ones moves the number people book
+on. I offered the containment twice, and he refused it twice. Asked again in a follow-up whether to
+add a "Verified visit" mark, the answer was verbatim: *"no no real visit check jst normal su bro"*.
+
+**So the rating is plain and open. No visit check, no verified mark, no gating of the score.**
+Anyone signed in can rate any salon, exactly like Google Maps, which is the reference he named. This
+line exists so a future session does not helpfully re-add the containment he has now rejected twice.
+Re-opening it needs him saying so by name.
+
+**Decision 7 supersedes the input-label row by his own instruction.** The field itself stays as
+locked on 2026-08-09 (white fill, grey resting line, nothing on tap). What changes is the LABEL
+above it: gone, replaced by a larger ink question.
+
+
+## 2026-08-09, decision 1 answered: yes it is legal, with two conditions
+
+He picked A (save both the salon's contact email and the Google listing) and asked *"but is it
+legal"*. Checked against the source rather than answered from memory:
+
+**The Google listing: storing the place ID is explicitly allowed, indefinitely.** Google's own
+Places policy says the place ID *"is exempt from the caching restrictions"* and *"you can therefore
+store place ID values indefinitely"*. Everything else from Places (the name, address, phone,
+rating) may only be cached about 30 days. So the rule for us is simple: **store the ID, never the
+copied details.** Anything else we show has to be fetched fresh or be our own data.
+
+**The contact email: ordinary business data, and lawful on the basis he is already on.** It is
+given by a salon to be contacted about their own listing, which is the contract they are entering.
+Under Swiss revDSG and GDPR that needs three things we control: say what it is for at the point they
+type it, do not use it for marketing without a separate opt-in, and delete it when the salon leaves.
+
+**Not legal advice, and the boundary is worth stating**: the Google term is quoted from Google's
+published policy and is checkable; the Swiss and EU part is the standard reading of a B2B contact
+field and is not a lawyer's sign-off.
+
+Sources: [Places API policies](https://developers.google.com/maps/documentation/places/web-service/policies) ,
+[Maps Platform service terms](https://cloud.google.com/maps-platform/terms/maps-service-terms)
+
+## 2026-08-09, his standing ask: stop re-asking what is already settled
+
+Verbatim: *"you actually, like, remember my preferences? It seems like you estimate every time,
+like, it becomes, like, a big exhausting."*
+
+**Measured, and part of it is a check of mine rather than forgetfulness.** `ask-before-loop-gate`
+demands a question before any fan-out, and it accepted exactly one proof: asking him again. It has
+forced a question **40 times across sessions, 7 in this one, twice in a single turn**. On anything
+already settled in writing, that converts "I looked it up" into "I made him answer it twice".
+
+**Changed the same turn: reading the record now satisfies it too.** Opening TASTE_LOG, PREFERENCES,
+the graveyard, LOCKFILE or the decisions record counts as having done the work. Asking is still
+correct for something genuinely unsettled; it is no longer the only way through.
+
+**Where his settled answers live, so a future session looks before it asks:** this file for taste
+and product decisions, `REMOVED.md` for things he has killed, `LOCKFILE.md` for frozen values,
+`PREFERENCES.md` for how he wants work done.
+
+
+## 2026-08-10, the three top-bar controls, settled by him after I guessed wrong
+
+His words: *"the back button maybe, like, a circle, or the x button, that, like, the circle too and
+just an x button. And, yeah, and also, like, shadow. And, also, the hamburger menu too."*
+
+I read "and the hamburger menu too" as "a circle too" and made all three circles. His correction,
+verbatim: *"hamburger mini, make it, keep it fucking square. Are you dumb? And I told to make
+fucking shadows."*
+
+**LOCKED, so nobody re-guesses it:**
+
+| control | shape | fill | edge |
+|---|---|---|---|
+| back | **circle** | white | hairline + whisper shadow |
+| close / X | **circle** | white | hairline + whisper shadow |
+| hamburger | **SQUARE** (`rounded-input`) | white | hairline + whisper shadow |
+
+**The shadow is on all three.** That was the part of "the hamburger too" that he did mean.
+
+**Why the hairline stays under the shadow, measured:** Qonto's circles carry no border because they
+sit on a grey page (#F6F6F6) and the shadow separates them. Ours sit on white, where a low soft
+shadow is nearly invisible, which is the grey haze the contract bans by name. Reference:
+`_design-system/references/qonto--onboarding.md`.
+
+**The reading error worth keeping, because it is the general case:** he listed three controls with
+DIFFERENT treatments in one sentence, and I collapsed them into one treatment. When an instruction
+names several things at once, the readback has to carry his words per thing, not my summary of all
+of them.
 ---
 
 ## 2026-08-03 to 2026-08-10 , the account-hub week, recorded off UNMERGED branches

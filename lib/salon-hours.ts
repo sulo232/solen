@@ -17,9 +17,53 @@ export type OpenNowResult = {
 const DAY_KEYS_SHORT = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"] as const;
 const DAY_KEYS_LONG = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"] as const;
 
-function toMinutes(time: string): number {
+// Short weekday name -> JS day number (0=Sun). Shared by the open-now check and
+// the Zurich civil-time reader below.
+const WEEKDAY_MAP: Record<string, number> = {
+  Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6,
+};
+
+export function timeToMinutes(time: string): number {
   const [h, m] = time.split(":").map(Number);
   return h * 60 + (m ?? 0);
+}
+
+const toMinutes = timeToMinutes;
+
+/**
+ * The day's opening entry, accepting both the short (live) and long (legacy) key
+ * conventions. `dayOfWeek` is a JS getDay() index (0=Sun).
+ */
+export function hoursForDay(
+  opening_hours: OpeningHours | null | undefined,
+  dayOfWeek: number,
+): { open: string; close: string } | null {
+  if (!opening_hours) return null;
+  return opening_hours[DAY_KEYS_SHORT[dayOfWeek]] ?? opening_hours[DAY_KEYS_LONG[dayOfWeek]] ?? null;
+}
+
+/**
+ * Civil (wall-clock) Zurich parts for an instant. Booking timestamps are stored in
+ * UTC and the server runs in UTC, so `new Date(x).getDay()/.getHours()` is 1-2
+ * hours off the salon's real day and hour. Anything that names a weekday or a
+ * time of day to the salon owner must read the clock through this.
+ */
+export function zurichCivil(at: Date): { dateKey: string; dayOfWeek: number; hour: number } {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Europe/Zurich",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    weekday: "short",
+    hourCycle: "h23",
+  }).formatToParts(at);
+  const get = (type: string) => parts.find((p) => p.type === type)?.value ?? "";
+  return {
+    dateKey: `${get("year")}-${get("month")}-${get("day")}`,
+    dayOfWeek: WEEKDAY_MAP[get("weekday")] ?? 0,
+    hour: parseInt(get("hour"), 10) || 0,
+  };
 }
 
 function getZurichNow(): { dayOfWeek: number; currentMinutes: number } {
@@ -37,10 +81,6 @@ function getZurichNow(): { dayOfWeek: number; currentMinutes: number } {
   const hourStr    = parts.find((p) => p.type === "hour")?.value ?? "0";
   const minuteStr  = parts.find((p) => p.type === "minute")?.value ?? "0";
 
-  // Map short weekday to JS day number (0=Sun)
-  const WEEKDAY_MAP: Record<string, number> = {
-    Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6,
-  };
   const dayOfWeek = WEEKDAY_MAP[weekdayStr] ?? new Date().getDay();
   const currentMinutes = parseInt(hourStr) * 60 + parseInt(minuteStr);
 

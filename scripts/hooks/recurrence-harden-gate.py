@@ -44,6 +44,29 @@ HARNESS_PAT = re.compile(
 NOT_HOOKABLE_PAT = re.compile(
     r"not mechanically hookable because\s+(?=\S)(?:\w+\W+){3,}", re.I)
 
+# 2026-08-07, owner: "you tell me this problem, right, and your behavioral problems, but then you
+# don't make any fix, you don't make any hooks, you don't make any gates... that's also something
+# we need a gate for."
+#
+# The original gate fires only when HE names a recurrence. This arm fires when *I* diagnose my own
+# behaviour in the closing message and ship nothing that changes it. That was the whole shape of
+# 2026-08-07: several long, accurate self-diagnoses handed over as prose, with the diagnosis itself
+# presented as the deliverable. A named problem with no enforcement change is a confession, not a
+# fix, and it costs him a turn to discover that.
+#
+# Deliberately narrow so it stays objective: it needs a FIRST-PERSON statement about my own
+# pattern, not any admission of a one-off mistake. "I got that wrong" does not trip it. "I keep
+# doing X" does.
+SELF_DIAGNOSIS_PAT = re.compile(
+    r"\b(i|my)\b[^.\n]{0,60}\b("
+    r"keep (doing|making|writing|sending|treating|reading|stopping|repeating|forgetting)"
+    r"|kept (doing|treating|reading|repeating)"
+    r"|(have|had|has) been (treating|using|reading|doing|writing|sending)"
+    r"|the (loop|pattern|behaviou?r|failure mode) (is|was)"
+    r"|that is (the|my) (pattern|behaviou?r|failure)"
+    r"|root cause (is|was) (me|my|mine)"
+    r")", re.I)
+
 def project_dir():
     return os.environ.get("CLAUDE_PROJECT_DIR") or os.getcwd()
 
@@ -93,34 +116,102 @@ def parse_ts(ts):
     except Exception:
         return None
 
-def enforcement_changed_since(pdir, since_epoch):
-    roots = [
-        os.path.join(pdir, "scripts", "hooks"),
-        os.path.join(pdir, ".claude", "hooks"),
-        os.path.expanduser("~/.claude/hooks"),
-    ]
-    singles = [
-        os.path.join(pdir, "_design-system", "REJECTED_TREATMENTS.json"),
-        os.path.join(pdir, ".claude", "settings.json"),
-        os.path.expanduser("~/.claude/settings.json"),
-    ]
-    for root in roots:
-        if not os.path.isdir(root):
-            continue
-        for fn in os.listdir(root):
-            p = os.path.join(root, fn)
-            try:
-                if os.path.isfile(p) and os.stat(p).st_mtime > since_epoch:
-                    return os.path.relpath(p, pdir) if p.startswith(pdir) else p
-            except OSError:
-                continue
-    for p in singles:
+PENDING_ARM_REL = os.path.join("_plans", "PENDING_ARM.md")
+
+
+def _settings_blobs(pdir):
+    """Every settings file that can arm a hook, as raw text. Missing files are skipped."""
+    out = []
+    for p in (os.path.expanduser("~/.claude/settings.json"),
+              os.path.expanduser("~/.claude/settings.local.json"),
+              os.path.join(pdir, ".claude", "settings.json"),
+              os.path.join(pdir, ".claude", "settings.local.json")):
         try:
-            if os.path.isfile(p) and os.stat(p).st_mtime > since_epoch:
-                return p
+            out.append(open(p, encoding="utf-8").read())
         except OSError:
             continue
-    return None
+    return out
+
+
+def is_armed(basename, pdir):
+    """A hook file is enforcement only if some settings.json actually runs it."""
+    return any(basename in blob for blob in _settings_blobs(pdir))
+
+
+def recorded_pending_arm(pdir, basename):
+    """An un-armable gate counts ONLY if it is written down where the next session will see it."""
+    try:
+        return basename in open(os.path.join(pdir, PENDING_ARM_REL), encoding="utf-8").read()
+    except OSError:
+        return False
+
+
+def enforcement_built_since(pdir, since_epoch):
+    """What enforcement did THIS session actually build, and is it live?
+
+    Returns (path, armed) or (None, False).
+
+    Rewritten 2026-08-07 after the owner asked why hardening never sticks. Three measured holes
+    in the mtime version this replaces:
+
+      1. RELEVANCE WAS NEVER CHECKED, AND THE DIRS ARE SHARED. It accepted any file in
+         scripts/hooks, .claude/hooks or ~/.claude/hooks whose mtime beat the message. This repo
+         has 33 live worktrees all sharing ~/.claude/hooks, so a completely unrelated edit in
+         another session silently satisfied this gate here. A sibling's work is not my harden.
+      2. MTIME IS NOT AUTHORSHIP. Same bug found the same day in visual-deliverable-gate and
+         mockup-lang-stop-gate: a worktree checkout restamps every file, so 9 files in
+         .claude/hooks carried an identical fresh stamp nobody had written. Project-side
+         detection now comes from git via _session_files.
+      3. IT NEVER CHECKED THE GATE WAS ARMED. This is the actual answer to "we keep forgetting".
+         A hook file on disk that no settings.json runs enforces NOTHING, and 48 of the 211
+         global hooks are in exactly that state. The old gate accepted the file and let the turn
+         close, so the pattern recurred in the next session with a dead gate sitting next to it.
+
+    A sandboxed session cannot write settings.json at all (PermissionError, measured on both the
+    global and the project file). So an un-armable gate is not treated as a failure. It is only
+    accepted once it is recorded in _plans/PENDING_ARM.md, which is committed and therefore
+    reaches the session that CAN arm it. Silent loss is the thing being removed, not the
+    sandbox limitation.
+    """
+    sys.path.insert(0, os.path.join(pdir, "scripts", "hooks"))
+    try:
+        from _session_files import files_written_this_session
+        written = files_written_this_session(pdir, since_epoch)
+    except Exception:
+        written = set()
+
+    # Collect every candidate, then PREFER a live one. Returning the first alphabetical match
+    # would report an unrelated helper as "the harden, unarmed" while a properly wired gate sat
+    # further down the list, which is how a correct turn would get blocked.
+    ENFORCEMENT = ("scripts/hooks/", ".claude/hooks/", ".claude/settings")
+    candidates = []
+    for rel in sorted(written):
+        if not (rel.endswith("REJECTED_TREATMENTS.json") or rel.startswith(ENFORCEMENT)):
+            continue
+        if rel.startswith(".claude/settings") or rel.endswith("REJECTED_TREATMENTS.json"):
+            return rel, True
+        base = os.path.basename(rel)
+        if base.startswith("_") or base.startswith("test"):
+            continue  # a shared helper or a test probe is not itself enforcement
+        candidates.append((rel, is_armed(base, pdir) or recorded_pending_arm(pdir, base)))
+    for rel, live in candidates:
+        if live:
+            return rel, True
+    if candidates:
+        return candidates[0]
+
+    # ~/.claude/hooks is not a git repo, so git cannot attribute it. mtime is the only signal
+    # available there, and it stays gated on being armed so a dead file cannot close the turn.
+    home_hooks = os.path.expanduser("~/.claude/hooks")
+    if os.path.isdir(home_hooks):
+        for fn in sorted(os.listdir(home_hooks)):
+            p = os.path.join(home_hooks, fn)
+            try:
+                if os.path.isfile(p) and os.stat(p).st_mtime > since_epoch:
+                    return p, is_armed(fn, pdir) or recorded_pending_arm(pdir, fn)
+            except OSError:
+                continue
+    return None, False
 
 def main():
     try:
@@ -134,6 +225,27 @@ def main():
     if not tp:
         return 0
     recur_ts, final = scan_transcript(tp)
+
+    # ARM 2 (2026-08-07): I diagnosed my OWN behaviour pattern in the closing message. Same demand
+    # as when he names it, because a named problem with no enforcement change is a confession and
+    # not a fix. Anchored to the last user message rather than to a recurrence flag, since there
+    # may not be one.
+    self_diag = bool(SELF_DIAGNOSIS_PAT.search(final or ""))
+    if not recur_ts and self_diag:
+        last_user_ts = None
+        try:
+            for line in open(tp, encoding="utf-8"):
+                try:
+                    j = json.loads(line)
+                except Exception:
+                    continue
+                m = j.get("message") or {}
+                if m.get("role") == "user" and j.get("timestamp"):
+                    last_user_ts = j["timestamp"]
+        except OSError:
+            pass
+        recur_ts = last_user_ts
+
     if not recur_ts:
         return 0
     since = parse_ts(recur_ts)
@@ -143,16 +255,30 @@ def main():
         return 0  # stale flag from an old part of a long transcript, do not re-litigate forever
     if NOT_HOOKABLE_PAT.search(final or ""):
         return 0
-    hit = enforcement_changed_since(pdir, since)
-    if hit:
+    hit, armed = enforcement_built_since(pdir, since)
+    if hit and armed:
         return 0
+    if hit and not armed:
+        print(
+            "RECURRENCE-HARDEN GATE, HALF DONE: you built enforcement (" + str(hit) + ") but NOTHING "
+            "RUNS IT. No settings.json references it, so it sits on disk enforcing zero, which is how "
+            "the pattern comes back next session with a dead gate beside it (48 of the 211 global "
+            "hooks are already in that state). Either (1) wire it into a settings.json hooks array, "
+            "or (2) if this session cannot write settings.json, add one line naming the file to "
+            "_plans/PENDING_ARM.md and COMMIT it, so the session that can arm it will see it. A gate "
+            "nobody runs is a promise with a .py extension. Escape: "
+            'echo "<reason>" > .claude/recurrence-harden-skip.flag (30-min).',
+            file=sys.stderr,
+        )
+        return 2
     print(
         "RECURRENCE-HARDEN GATE (owner 2026-07-15: 'you didn't even make a hook or a gate'): the owner "
-        "flagged a RECURRING pattern this turn, and no enforcement surface changed since that message "
-        "(scripts/hooks/**, .claude/hooks/**, ~/.claude/hooks/**, REJECTED_TREATMENTS.json, settings "
-        "hooks). A memory file or a promise is NOT a harden: advice gets outranked under task focus, a "
-        "gate does not. Either (1) build/extend the gate NOW, self-test it (one should-block + one "
-        "should-pass), and wire it, or (2) state in the closing message: 'not mechanically hookable "
+        "flagged a RECURRING pattern this turn, and THIS SESSION built no enforcement since that "
+        "message (git-proven changes under scripts/hooks/**, .claude/hooks/**, .claude/settings*, "
+        "REJECTED_TREATMENTS.json, or a fresh ~/.claude/hooks file). A memory file or a promise is NOT "
+        "a harden: advice gets outranked under task focus, a gate does not. Either (1) build/extend "
+        "the gate NOW, self-test it (one should-block + one should-pass), and wire it or record it in "
+        "_plans/PENDING_ARM.md, or (2) state in the closing message: 'not mechanically hookable "
         "because <concrete reason>' plus the non-gate reinforcement you did instead. Escape: "
         'echo "<reason>" > .claude/recurrence-harden-skip.flag (30-min).',
         file=sys.stderr,
@@ -177,23 +303,64 @@ def selftest():
         env = {**os.environ, "CLAUDE_PROJECT_DIR": extra_env or pdir}
         r = subprocess.run([sys.executable, __file__], input=payload, capture_output=True, text=True, env=env)
         return r.returncode
-    # Case 1 SHOULD BLOCK: recurrence flagged NOW, empty project (no enforcement files newer than the message)
-    empty = tempfile.mkdtemp()
+    def git_project():
+        """A real git repo, because enforcement is now proven by git and not by mtime."""
+        d = tempfile.mkdtemp()
+        for a in (["init", "-q"], ["config", "user.email", "t@t.t"], ["config", "user.name", "t"]):
+            subprocess.run(["git", "-C", d, *a], capture_output=True)
+        os.makedirs(os.path.join(d, "scripts", "hooks"), exist_ok=True)
+        os.makedirs(os.path.join(d, ".claude"), exist_ok=True)
+        open(os.path.join(d, "readme.md"), "w").write("x")
+        subprocess.run(["git", "-C", d, "add", "-A"], capture_output=True)
+        subprocess.run(["git", "-C", d, "commit", "-q", "-m", "base"], capture_output=True)
+        # the helper must be importable from the fake project
+        import shutil
+        shutil.copy(os.path.join(pdir, "scripts", "hooks", "_session_files.py"),
+                    os.path.join(d, "scripts", "hooks", "_session_files.py"))
+        subprocess.run(["git", "-C", d, "add", "-A"], capture_output=True)
+        subprocess.run(["git", "-C", d, "commit", "-q", "-m", "helper"], capture_output=True)
+        return d
+
+    # Case 1 SHOULD BLOCK: recurrence flagged NOW, no enforcement built
+    empty = git_project()
     c1 = run("this is a reccuring pattern, you keep doing it", "sorry, I saved a memory so next time is better", extra_env=empty)
-    # Case 2 SHOULD PASS: same, but an enforcement file in the fake project is newer than the message
-    hooks_dir = os.path.join(empty, "scripts", "hooks"); os.makedirs(hooks_dir, exist_ok=True)
-    time.sleep(0.05); open(os.path.join(hooks_dir, "new-gate.py"), "w").write("# gate")
+    # Case 1b SHOULD BLOCK (the hole this rewrite closes): a gate file written but ARMED NOWHERE
+    open(os.path.join(empty, "scripts", "hooks", "new-gate.py"), "w").write("# gate")
+    c1b = run("this is a reccuring pattern, you keep doing it", "gate built", extra_env=empty)
+    # Case 2 SHOULD PASS: the same gate, now actually referenced by a settings.json
+    with open(os.path.join(empty, ".claude", "settings.json"), "w") as fh:
+        json.dump({"hooks": {"Stop": [{"hooks": [{"command": "python3 scripts/hooks/new-gate.py"}]}]}}, fh)
     c2 = run("this is a reccuring pattern, you keep doing it", "gate built and wired", extra_env=empty)
+    # Case 2c SHOULD PASS: un-armable session, but the gate is recorded in the committed PENDING_ARM list
+    empty4 = git_project()
+    open(os.path.join(empty4, "scripts", "hooks", "pending-gate.py"), "w").write("# gate")
+    os.makedirs(os.path.join(empty4, "_plans"), exist_ok=True)
+    with open(os.path.join(empty4, "_plans", "PENDING_ARM.md"), "w") as fh:
+        fh.write("- pending-gate.py : Stop, needs arming\n")
+    c2c = run("this is a reccuring pattern, you keep doing it", "gate built, cannot arm here", extra_env=empty4)
     # Case 2b SHOULD PASS: harness feedback quoting recurrence language is NOT an owner flag
-    empty3 = tempfile.mkdtemp()
+    empty3 = git_project()
     c2b = run("Stop hook feedback: CHECKBOX WITHOUT EVIDENCE, this is the mechanism behind you keep forgetting", "boxes fixed", extra_env=empty3)
     # Case 3 SHOULD PASS: no recurrence language at all
     c3 = run("looks good, continue with the next item", "done", extra_env=empty)
     # Case 4 SHOULD PASS: recurrence + explicit not-hookable declaration
-    empty2 = tempfile.mkdtemp()
+    empty2 = git_project()
     c4 = run("you keep forgetting this, recurring pattern", "this one is not mechanically hookable because it is a judgment call; reinforced via the reviewer checklist instead", extra_env=empty2)
-    print(f"flagged+no-gate: {'BLOCK' if c1 == 2 else 'MISS'} | flagged+gate-built: {'PASS' if c2 == 0 else 'FALSE-POSITIVE'} | harness-feedback: {'PASS' if c2b == 0 else 'FALSE-POSITIVE'} | no-flag: {'PASS' if c3 == 0 else 'FALSE-POSITIVE'} | declared-unhookable: {'PASS' if c4 == 0 else 'FALSE-POSITIVE'}")
-    good = c1 == 2 and c2 == 0 and c2b == 0 and c3 == 0 and c4 == 0
+
+    cases = [
+        ("flagged, nothing built", c1, 2),
+        ("flagged, gate built but ARMED NOWHERE", c1b, 2),
+        ("flagged, gate built and wired", c2, 0),
+        ("flagged, un-armable but in PENDING_ARM.md", c2c, 0),
+        ("harness feedback, not an owner flag", c2b, 0),
+        ("no recurrence language", c3, 0),
+        ("declared not mechanically hookable", c4, 0),
+    ]
+    good = True
+    for name, got, want in cases:
+        hit = got == want
+        good = good and hit
+        print(f"{name}: exit {got} (want {want}) {'ok' if hit else ('MISS' if want == 2 else 'FALSE-POSITIVE')}")
     print("SELFTEST", "OK" if good else "FAILED")
     return 0 if good else 1
 

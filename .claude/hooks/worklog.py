@@ -37,6 +37,18 @@ def git(proj, args):
         return ""
 
 
+def git_ok(proj, args):
+    """True when the command exits 0. `git` above returns stdout and swallows the exit code, which
+    is fine for `log` but useless for `merge-base --is-ancestor`, whose whole answer IS the exit
+    code and whose stdout is empty either way."""
+    try:
+        r = subprocess.run(["git", "-C", proj] + args,
+                           capture_output=True, text=True, timeout=5)
+        return r.returncode == 0
+    except Exception:
+        return False
+
+
 def main():
     mode = sys.argv[1] if len(sys.argv) > 1 else "start"
     data = read_stdin()
@@ -91,6 +103,18 @@ def main():
                 start_head = open(headfile, encoding="utf-8").read().strip()
             if not start_head:
                 sys.exit(0)  # no baseline -> cannot tell -> allow
+            # 2026-08-08. The baseline is stashed once at SessionStart and reused all session, but
+            # `proj` is re-resolved on every fire from CLAUDE_PROJECT_DIR / cwd / getcwd. This
+            # machine runs 30 worktrees off ONE shared object store, so a hash stashed in worktree A
+            # still resolves in worktree B and quietly measures the divergence between two unrelated
+            # branches. An audit reproduced it: "this session shipped 101 commit(s)".
+            #
+            # 101 is the dangerous kind of wrong, because it is not impossible. The impossible-number
+            # gate would never catch it, and neither would I. So the check is not a ceiling here, it
+            # is a provenance test: the baseline has to actually be an ancestor of this HEAD, or it
+            # is not a baseline for this history and the count means nothing.
+            if not git_ok(proj, ["merge-base", "--is-ancestor", start_head, "HEAD"]):
+                sys.exit(0)  # baseline belongs to another history: no honest count, so no claim
             commits = git(proj, ["log", f"{start_head}..HEAD", "--oneline"])
             if not commits:
                 sys.exit(0)  # no work shipped this session -> nothing to log

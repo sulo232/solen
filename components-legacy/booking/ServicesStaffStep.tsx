@@ -3,10 +3,10 @@
 import { useState, useRef, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { useLocale } from 'next-intl';
-import { ArrowUp, ArrowRight, ShoppingCart, ChevronDown } from 'lucide-react'; // mockup-ok: public/_mockups/liftup-booking-services-tiered/index.html (owner-approved 2026-07-18)
+import { ArrowUp, ArrowRight, ShoppingCart } from 'lucide-react'; // ChevronDown moved with the row into primitives/ServiceDisclosureRow.tsx (2026-08-09)
 import { motion, AnimatePresence } from 'motion/react';
 import { useBooking } from '@/lib/booking-context';
-import { useEnterMotion, useStaggerVariants, butterPress, PriceFrom, ENTER_DURATION, GLIDE_EASE } from '@/app/[locale]/_components/primitives'; // mockup-ok: shared ENTER RECIPE module (MOTION.md, owner-approved 2026-07-09), not new design exploration
+import { useEnterMotion, useStaggerVariants, butterPress, PriceFrom, ENTER_DURATION, ServiceDisclosureRow } from '@/app/[locale]/_components/primitives'; // mockup-ok: shared ENTER RECIPE module (MOTION.md, owner-approved 2026-07-09), not new design exploration
 import ToggleCircle from './ToggleCircle';
 import CountUpNumber from './CountUpNumber';
 import ServiceDetailSheet from './ServiceDetailSheet';
@@ -90,17 +90,10 @@ export default function ServicesStaffStep({
   const [isChecking, setIsChecking] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sheetServiceId, setSheetServiceId] = useState<string | null>(null);
-  // Row body tap expands its description in place (never a select); a plain
-  // Set of expanded row ids, mirroring the mockup's per-row `.row.open` state.
-  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
-  const toggleExpanded = (id: string) => {
-    setExpandedIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  };
+  // Row body tap expands its description in place (never a select). The open/closed state moved
+  // into <ServiceDisclosureRow> on 2026-08-09 when the row became shared with the salon PDP; it was
+  // read nowhere else, and per-row state is what the Set of ids already modelled (rows open and
+  // close independently, several can be open at once).
   // B17 (owner 2026-07-09, "why is there still this pill even though I'm not
   // scrolled down") -> owner 2026-07-19 follow-up ("still always there"): a
   // fixed 120px scroll threshold showed the pill even on a short list where the
@@ -411,7 +404,6 @@ export default function ServicesStaffStep({
   // button on the right and is the ONLY select control.
   const renderServiceRow = (service: Service) => {
     const inCart = selectedServiceIds.has(service.id);
-    const isExpanded = expandedIds.has(service.id);
     const desc = serviceDesc(service);
     const gLabel = genderLabel(service);
     const ownOptions = serviceOptions.filter((o) => o.service_id === service.id);
@@ -432,50 +424,30 @@ export default function ServicesStaffStep({
           inCart ? 'bg-s-bg-sunken/60' : ''
         }`}
       >
-        <button
-          type="button"
-          onClick={() => toggleExpanded(service.id)}
-          aria-expanded={isExpanded}
-          className={`min-w-0 flex-1 text-left ${butterPress('row')}`}
-        >
-          <div className="flex items-center gap-1.5">
+        {/* mockup-ok: public/_mockups/liftup-booking-services-tiered/index.html (owner-approved
+            2026-07-18). This row's chevron + description accordion moved into the shared
+            <ServiceDisclosureRow> primitive on 2026-08-09 so the salon PDP could render the SAME
+            row (owner decision 10) instead of a second copy. Nothing about the treatment changed:
+            same 18px chevron, same 0.18s + GLIDE_EASE accordion, same type. */}
+        <ServiceDisclosureRow
+          title={
             <h4 className="font-body text-[15px] font-semibold text-s-ink md:text-[16px]">
               {serviceName(service)}
             </h4>
-            <ChevronDown
-              size={18}
-              aria-hidden
-              className={`shrink-0 text-s-ink-3 transition-transform duration-[260ms] ease-glide ${
-                isExpanded ? 'rotate-180' : ''
-              }`}
-            />
-          </div>
-          <p className="mt-1 text-[14px] text-s-ink-3 tabular-nums">
-            {formatDuration(service.duration_minutes)}
-            {gLabel && <> {gLabel}</>}
-          </p>
-          {/* mockup-ok: public/_mockups/liftup-booking-services-tiered/index.html (owner-approved 2026-07-18) */}
-          <AnimatePresence initial={false}>
-            {isExpanded && desc && (
-              // motion-ok: accordion height-auto disclosure (row description collapse), not a
-              // card ENTER, matches the mockup's max-height transition; reuses locked
-              // ENTER_DURATION/GLIDE_EASE for timing only. mockup-ok
-              <motion.div
-                key="desc"
-                initial={{ height: 0, opacity: 0 }} // motion-ok: accordion collapse, not a card entrance
-                animate={{ height: 'auto', opacity: 1 }} // motion-ok: accordion collapse, not a card entrance
-                exit={{ height: 0, opacity: 0 }} // motion-ok: accordion collapse, not a card entrance
-                transition={{ duration: 0.18, ease: GLIDE_EASE }} // mockup-ok: owner 2026-07-18 live fix + approved liftup-booking-services-tiered mockup, faster description-expand only
-                className="overflow-hidden"
-              >
-                <p className="pr-2 pt-2.5 text-[14px] leading-relaxed text-s-ink-2">{desc}</p>
-              </motion.div>
-            )}
-          </AnimatePresence>
-          <div className="mt-3 text-[15px] font-bold text-s-ink">
-            <PriceFrom amount={rowPrice} label={t('from')} />
-          </div>
-        </button>
+          }
+          meta={
+            <p className="mt-1 text-[14px] text-s-ink-3 tabular-nums">
+              {formatDuration(service.duration_minutes)}
+              {gLabel && <> {gLabel}</>}
+            </p>
+          }
+          description={desc}
+          price={
+            <div className="mt-3 text-[15px] font-bold text-s-ink">
+              <PriceFrom amount={rowPrice} label={t('from')} />
+            </div>
+          }
+        />
         <button
           type="button"
           onClick={(e) => {

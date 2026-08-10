@@ -21,6 +21,9 @@ import re
 import sys
 import time
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from _session_files import files_written_this_session  # noqa: E402
+
 LOOKBACK_S = 3600  # only files written this turn-ish window matter; refined by transcript ts when available
 KNOWLEDGE_PAT = re.compile(r"_design-system/(research/.*\.md|RATIONALE|TASTE_LOG|PSYCHOLOGY|CONSISTENCY|.*AUDIT)", re.I)
 LINK_PAT = re.compile(r"(trycloudflare\.com|/_mockups/|localhost:\d+|/dev/[a-z-]+|\.png\)|\.png\])", re.I)
@@ -79,22 +82,28 @@ def last_assistant_text(transcript_path):
         return None
     return text
 
-def knowledge_written_recently(pdir):
+def knowledge_written_recently(pdir, since_epoch=None):
+    """Knowledge files THIS SESSION actually wrote, proven by git rather than by mtime.
+
+    Corrected 2026-08-07 after a measured false positive: this used filesystem mtime inside a
+    3600s window, which in a worktree measures when the checkout stamped the file, not who wrote
+    it. `_design-system/RATIONALE.md`, `TASTE_LOG.md`, `research/PRINCIPLES_50.md` and
+    `research/TASTE_RANGE.md` all read mtime 11:23:57 while `git status` reported every one CLEAN,
+    so the gate blocked a turn over four files nobody had touched, and would have kept doing it
+    on every turn for an hour of every worktree session. A gate that cannot prove its trigger
+    must not fire, so the trigger now comes from git and fails open to empty.
+    """
+    touched = files_written_this_session(pdir, since_epoch)
     hits = []
-    now = time.time()
-    base = os.path.join(pdir, "_design-system")
-    for root, _dirs, files in os.walk(base):
-        for fn in files:
-            p = os.path.join(root, fn)
-            rel = os.path.relpath(p, pdir)
-            if not KNOWLEDGE_PAT.search(rel):
+    for rel in sorted(touched):
+        if not KNOWLEDGE_PAT.search(rel):
+            continue
+        try:
+            if os.stat(os.path.join(pdir, rel)).st_size <= 2048:
                 continue
-            try:
-                st = os.stat(p)
-            except OSError:
-                continue
-            if now - st.st_mtime < LOOKBACK_S and st.st_size > 2048:
-                hits.append(rel)
+        except OSError:
+            continue
+        hits.append(rel)
     return hits
 
 def main():
@@ -162,48 +171,79 @@ def main():
     return 2
 
 def selftest():
-    import tempfile
-    pdir = project_dir()
-    tf = tempfile.NamedTemporaryFile("w", suffix=".jsonl", delete=False)
-    def transcript(text):
-        tf2 = tempfile.NamedTemporaryFile("w", suffix=".jsonl", delete=False)
-        tf2.write(json.dumps({"message": {"role": "assistant", "content": [{"type": "text", "text": text}]}}) + "\n")
-        tf2.close()
-        return tf2.name
+    """Five cases. The fifth is the false positive this gate shipped with for three weeks.
+
+    Cases 1-3 run in a throwaway git repo with a REAL dirty knowledge file, so the trigger is
+    genuine. Case 4 proves a clean-but-restamped tree does not fire. Case 5 runs against the live
+    project, where every knowledge file is committed and clean: it must stay silent.
+    """
     import subprocess
-    def run(text):
+    import tempfile
+
+    def transcript(text):
+        tf = tempfile.NamedTemporaryFile("w", suffix=".jsonl", delete=False)
+        tf.write(json.dumps({"message": {"role": "assistant", "content": [{"type": "text", "text": text}]}}) + "\n")
+        tf.close()
+        return tf.name
+
+    def run(text, pdir):
         payload = json.dumps({"transcript_path": transcript(text)})
         r = subprocess.run([sys.executable, __file__], input=payload, capture_output=True, text=True,
                            env={**os.environ, "CLAUDE_PROJECT_DIR": pdir})
         return r.returncode
-    # research files were modified this session, so knowledge_written_recently is truthy right now
-    block = run("Here are the researched rules, see _design-system/research/TASTE_GROUPING.md for details.")
-    ok_link = run("Here it is: https://generation-barn-houses-greater.trycloudflare.com/_mockups/taste-book/index.html")
-    ok_escape = run("This is a large build, nothing viewable yet, the round is the build session.")
-    print(f"no-link close: {'BLOCK' if block == 2 else 'MISS'} | link close: {'PASS' if ok_link == 0 else 'FALSE-POSITIVE'} | escape close: {'PASS' if ok_escape == 0 else 'FALSE-POSITIVE'}")
 
-    # v3 PROMISED-VISUAL arm. The blocking case is the real one measured on 2026-08-10.
-    promise_block = run("My recommendation: build the reviews A/B/C directions mockup first. "
-                        "Want me to start there, or rebuild all 40 in v2 as originally written?")
-    promise_ok = run("Built all three reviews directions: "
-                     "https://wood-sing-clicking-deaf.trycloudflare.com/_mockups/reviews-abc/index.html")
-    # The knowledge arm is truthy for the whole of any session that touched a law file, so an
-    # innocent sentence cannot be tested end-to-end , it would be blocked by the OTHER arm, which is
-    # correct behaviour and proves nothing about this one. Assert the new pattern directly instead.
+    results = []
+    with tempfile.TemporaryDirectory() as d:
+        subprocess.run(["git", "-C", d, "init", "-q"], capture_output=True)
+        subprocess.run(["git", "-C", d, "config", "user.email", "t@t.t"], capture_output=True)
+        subprocess.run(["git", "-C", d, "config", "user.name", "t"], capture_output=True)
+        os.makedirs(os.path.join(d, "_design-system", "research"), exist_ok=True)
+        knowledge = os.path.join(d, "_design-system", "research", "TASTE_GROUPING.md")
+        with open(knowledge, "w") as fh:
+            fh.write("x" * 4096)
+        subprocess.run(["git", "-C", d, "add", "-A"], capture_output=True)
+        subprocess.run(["git", "-C", d, "commit", "-q", "-m", "base"], capture_output=True)
+
+        # 4. committed and merely restamped: must NOT fire
+        os.utime(knowledge, None)
+        results.append(("restamped-clean close", run("Wrote the rules down.", d), 0))
+
+        # now genuinely dirty it, so 1-3 have a real trigger
+        with open(knowledge, "a") as fh:
+            fh.write("\nreal edit\n")
+        results.append(("no-link close", run("See _design-system/research/TASTE_GROUPING.md.", d), 2))
+        results.append(("link close", run("Here: https://x.trycloudflare.com/_mockups/taste-book/index.html", d), 0))
+        results.append(("escape close", run("Large build, nothing viewable yet, the round is the build session.", d), 0))
+
+    # 5. the live project, where knowledge files are committed and clean
+    results.append(("live-clean project close", run("Wrote the rules down.", project_dir()), 0))
+
+    # v3 PROMISED-VISUAL arm, added 2026-08-10. It fires on the MESSAGE alone, so it needs no dirty
+    # knowledge file, and the live project is the honest place to run it.
+    live = project_dir()
+    results.append(("promised-visual, no link",
+                    run("My recommendation: build the reviews A/B/C directions mockup first. "
+                        "Want me to start there, or rebuild all 40 in v2 as originally written?", live), 2))
+    results.append(("promised-visual, with link",
+                    run("Built all three reviews directions: "
+                        "https://x.trycloudflare.com/_mockups/reviews-abc/index.html", live), 0))
+    # An innocent sentence cannot be tested end to end whenever the other arm is truthy, so the
+    # pattern is asserted directly instead.
     innocent = [
         "The register decision is recorded and the two stale pointers are fixed.",
         "Main took two commits this week, both of them checkpoints.",
         "I would build on the existing table rather than adding a second one.",
         "The account hub page renders no bell now.",
-        "Six of the eleven are the same screen, corrected six times.",
     ]
-    over = [s for s in innocent if PROMISE_PAT.search(s) and VISUAL_NOUN_PAT.search(s)]
-    print(f"promised-visual no link: {'BLOCK' if promise_block == 2 else 'MISS'} | "
-          f"promised + link: {'PASS' if promise_ok == 0 else 'FALSE-POSITIVE'} | "
-          f"innocent sentences quiet: {'PASS' if not over else 'FALSE-POSITIVE on ' + repr(over)}")
+    over = [x for x in innocent if PROMISE_PAT.search(x) and VISUAL_NOUN_PAT.search(x)]
+    print("innocent sentences quiet: " + ("ok" if not over else "FALSE-POSITIVE on " + repr(over)))
 
-    good = (block == 2 and ok_link == 0 and ok_escape == 0
-            and promise_block == 2 and promise_ok == 0 and not over)
+    good = not over
+    for name, got, want in results:
+        hit = got == want
+        good = good and hit
+        verdict = "ok" if hit else ("MISS" if want == 2 else "FALSE-POSITIVE")
+        print(f"{name}: exit {got} (want {want}) {verdict}")
     print("SELFTEST", "OK" if good else "FAILED")
     return 0 if good else 1
 

@@ -890,7 +890,10 @@
       "warning": "Bitte füllen Sie mindestens Profil, Öffnungszeiten und Services aus.",
       "live": "Ihr Salon ist live!",
       "liveSubtitle": "Kunden können ab jetzt buchen",
-      "activate": "Salon aktivieren"
+      "activate": "Salon aktivieren",
+      "awaitingTitle": "Warten auf Freigabe",
+      "awaitingBody": "Solen prüft Ihren Salon. Sobald er freigegeben ist, können Sie ihn aktivieren.",
+      "rejectedTitle": "Salon nicht freigegeben"
     }
   },
   "salon": {
@@ -2332,6 +2335,11 @@
       "setUp": "Einrichten",
       "more": "+{n} weitere"
     },
+    "approvalStatus": {
+      "pendingTitle": "Warten auf Freigabe",
+      "pendingBody": "Solen prüft Ihren Salon. Er ist noch nicht öffentlich sichtbar.",
+      "rejectedTitle": "Salon nicht freigegeben"
+    },
     "promoManager": {
       "title": "Promo-Codes",
       "newCode": "Neuer Code",
@@ -2761,7 +2769,30 @@
       "topStaff": "Top Mitarbeiter",
       "noData": "Noch keine Daten",
       "timesBooked": "{n}× gebucht",
-      "bookingsShort": "{n} Term."
+      "bookingsShort": "{n} Term.",
+      "adviceTitle": "Empfehlungen",
+      "adviceWindow": "Grundlage: letzte {weeks} Wochen",
+      "adviceSlotMorning": "{day}vormittag",
+      "adviceSlotAfternoon": "{day}nachmittag",
+      "adviceSlotEvening": "{day}abend",
+      "adviceEmptyTitle": "{slot} ist leer",
+      "adviceEmptyBody": "Kein einziger Termin. Andere Zeitfenster haben im Schnitt {average}.",
+      "adviceQuietTitle": "{slot} ist Ihre ruhigste Zeit",
+      "adviceQuietBody": "{count} Termine, im Schnitt sind es {average} pro Zeitfenster.",
+      "adviceBusyTitle": "{slot} ist Ihre stärkste Zeit",
+      "adviceBusyBody": "{count} Termine, im Schnitt sind es {average} pro Zeitfenster.",
+      "adviceCancelTitle": "{percent}% Ihrer Termine fallen aus",
+      "adviceCancelBody": "{count} von {total} Terminen storniert oder nicht wahrgenommen.",
+      "adviceActionOffpeak": "Rabatt für Randzeiten",
+      "adviceActionStaff": "Besetzung prüfen",
+      "adviceActionCancellation": "Stornoregeln prüfen",
+      "adviceActionHours": "Öffnungszeiten eintragen",
+      "adviceNotEnoughTitle": "Noch zu wenig Verlauf",
+      "adviceNotEnoughBody": "{count} Termine. Ab {min} zeigen wir hier Empfehlungen.",
+      "adviceNoHoursTitle": "Öffnungszeiten fehlen",
+      "adviceNoHoursBody": "Ohne hinterlegte Öffnungszeiten lässt sich nicht sagen, welche Zeiten bei Ihnen ruhig sind.",
+      "adviceNothingTitle": "Nichts sticht heraus",
+      "adviceNothingBody": "{count} Termine, keine Zeit weicht deutlich vom Durchschnitt ab."
     },
     "platformAnalyticsPage": {
       "title": "Plattform Statistiken",
@@ -3906,6 +3937,7 @@
       "namePlaceholder": "z. B. Salon Lumière",
       "email": "E-Mail *",
       "emailPlaceholder": "max@salon.ch",
+      "emailUse": "Wir verwenden diese Adresse nur, um Sie zu Ihrem Salon zu kontaktieren.",
       "categories": "Kategorien *",
       "quartier": "Quartier *",
       "selectPlaceholder": "Bitte wählen…",
@@ -5669,7 +5701,8 @@
     "bundlesBook": "Buchen",
     "bundlesSave": "gespart",
     "bundlesError": "Pakete konnten nicht geladen werden.",
-    "minutesUnit": "Min"
+    "minutesUnit": "Min",
+    "alreadyReviewed": "Sie haben diesen Salon bereits bewertet."
   },
   "comingSoon": {
     "title": "Kommt bald",

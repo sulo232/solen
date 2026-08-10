@@ -3,8 +3,15 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { fetchPostHogProfileViews } from "@/lib/posthog-api";
+import { computeDashboardAdvice, ADVICE_WINDOW_WEEKS, type DashboardAdvice } from "@/lib/dashboard-advice";
+import type { OpeningHours } from "@/lib/salon-hours";
 
-// GET /api/analytics/salon/[id]?period=week|month|quarter|year
+// GET /api/analytics/salon/[id]?period=week|month|quarter|year[&advice=1]
+//
+// `advice=1` adds the dashboard-home advice block (owner decision 9, 2026-08-09).
+// It is opt-in because it needs its own whole-week lookback: the home page reads
+// period=week, and one Tuesday is not enough to say anything about Tuesdays.
+// Only the dashboard home asks for it, so no other analytics caller pays for it.
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -30,7 +37,7 @@ export async function GET(
 
   const { data: salon } = await admin
     .from("salons")
-    .select("owner_id")
+    .select("owner_id, opening_hours")
     .eq("id", id)
     .single();
 
@@ -208,6 +215,32 @@ export async function GET(
     return Math.round(((current - prior) / prior) * 100);
   }
 
+  // Dashboard-home advice (opt-in). Its own lookback, because the weekday pattern
+  // it reports cannot be read off a 7-day period: one Tuesday is one sample.
+  let advice: DashboardAdvice | undefined;
+  if (searchParams.get("advice") === "1") {
+    const adviceStart = new Date(now.getTime() - (ADVICE_WINDOW_WEEKS * 7 + 1) * 24 * 60 * 60 * 1000).toISOString();
+    const { data: adviceBookings, error: adviceError } = await admin
+      .from("bookings")
+      .select("starts_at, status")
+      .eq("salon_id", id)
+      .gte("starts_at", adviceStart)
+      .lt("starts_at", now.toISOString());
+    if (adviceError) {
+      console.error("[AnalyticsSalon] advice lookback query failed:", adviceError);
+    } else {
+      // The admin client is untyped here, so every selected row widens to `never` in this
+      // file (31 pre-existing errors above). Read the column through an explicit shape so
+      // this line does not add a 32nd.
+      const salonHours = (salon as { opening_hours?: unknown } | null)?.opening_hours ?? null;
+      advice = computeDashboardAdvice({
+        bookings: adviceBookings ?? [],
+        openingHours: salonHours as OpeningHours | null,
+        now,
+      });
+    }
+  }
+
   return NextResponse.json({
     salon_id: id,
     period,
@@ -237,6 +270,7 @@ export async function GET(
     }, {} as Record<string, Record<string, number>>),
     popular_services: popularServices,
     daily,
+    ...(advice ? { advice } : {}),
     retention_rate: retentionRate,
     new_vs_returning: { new: firstVisits, returning: returningCount },
     acquisition_sources: acquisitionSources,

@@ -1424,9 +1424,13 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(true);
   // Lifted active-tab state — the desktop ExpandableTabs bar AND the mobile
   // index both drive this single setter. "profile" is the default panel.
-  const [activeTab, setActiveTab] = useState("profile");
-  // On mobile, a row tap reveals its panel; this gates the index-vs-panel view.
-  const [mobilePanelOpen, setMobilePanelOpen] = useState(false);
+  // `?tab=<id>` deep-links a panel, so a link that says "check your cancellation rules"
+  // lands on those rules instead of on Profil. An unknown id falls back below, where the
+  // tab list is the single source of valid ids (no second list to drift).
+  const [activeTab, setActiveTab] = useState(params.get("tab") ?? "profile");
+  // On mobile, a row tap reveals its panel; this gates the index-vs-panel view. A deep
+  // link opens straight into the panel rather than the index.
+  const [mobilePanelOpen, setMobilePanelOpen] = useState(params.get("tab") != null);
   const [toast, setToast] = useState(params.get("verified") === "1" ? t("verifiedToast") : "");
 
   useEffect(() => {
@@ -1523,7 +1527,10 @@ export default function SettingsPage() {
             { id: "vat", label: t("tabVat"), content: <VatRegistrationTab salon={salon} onSave={handleSave} /> },
             { id: "offpeak", label: t("tabOffpeak"), content: <OffPeakManager salonId={salon.id} /> },
           ];
-          const activeLabel = tabs.find((t) => t.id === activeTab)?.label ?? "";
+          // An unrecognised ?tab= value (stale link, typo) falls back to the first panel
+          // rather than rendering an empty card.
+          const activeEntry = tabs.find((t) => t.id === activeTab) ?? tabs[0];
+          const activeLabel = activeEntry.label;
           return (
             <>
               {/* ── Mobile (lg:hidden): grouped-card index → tap a row → that panel ── */}
@@ -1550,7 +1557,7 @@ export default function SettingsPage() {
                     </button>
                     <h2 className="font-heading text-[22px] font-bold tracking-[-0.02em] text-s-ink leading-none mb-2">{activeLabel}</h2>
                     <div className="bg-white rounded-[16px] border border-s-border overflow-hidden px-1">
-                      {tabs.find((t) => t.id === activeTab)?.content}
+                      {activeEntry.content}
                     </div>
                   </>
                 )}
@@ -1563,7 +1570,7 @@ export default function SettingsPage() {
                 </div>
                 <div className="bg-white rounded-[12px] shadow-warm-md">
                   <ExpandableTabs
-                    activeTab={activeTab}
+                    activeTab={activeEntry.id}
                     onTabChange={setActiveTab}
                     tabs={tabs}
                   />

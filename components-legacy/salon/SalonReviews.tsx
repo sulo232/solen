@@ -53,6 +53,20 @@ interface SalonReviewsProps {
   salonId: string;
   salonSlug: string;
   salonName?: string;
+  /**
+   * Owner decision 4, 2026-08-09 ("4B like google maps"): shows the "Write review" button.
+   * Server-computed, and true for anyone SIGNED IN who has not already rated this salon , it does
+   * NOT ask whether they have been here. Defaults to false so a caller that omits it gets the
+   * signed-out (no button) path rather than a form that 401s on submit.
+   */
+  canWriteReview?: boolean;
+  /** He has already left the one rating this salon allows without an appointment. */
+  alreadyReviewed?: boolean;
+  /**
+   * The rater's unreviewed completed booking here, when they have one. Since decision 4 this no
+   * longer gates the button (canWriteReview does); it only links the rating to that booking and its
+   * stylist. null means the rating is filed against the salon alone.
+   */
   unreviewedBookingId: string | null;
   /** First name (or full name) of the staff member on the unreviewed booking. */
   unreviewedBookingStaffName?: string;
@@ -86,6 +100,8 @@ export default function SalonReviews({
   salonId,
   salonSlug,
   salonName,
+  canWriteReview = false,
+  alreadyReviewed = false,
   unreviewedBookingId,
   unreviewedBookingStaffName,
   unreviewedBookingStaffMemberId,
@@ -237,14 +253,14 @@ export default function SalonReviews({
           (FooterGate.tsx already classifies /salon/[slug]/reviews as one), which per the
           single-global-back doctrine keeps its own local back, same as /dev/pdp/team-all
           and /dev/pdp/reviews-full. */}
+      {/* 2026-08-09. The local back is GONE. The comment above claimed this route counts as a
+          focused flow, and a focused flow keeps its own back precisely BECAUSE the global header
+          is hidden on it. The global header is not hidden here: measured on a phone, the page
+          renders the global bar (back arrow, bell, hamburger) and then this second back arrow
+          directly under it. Two backs and a hamburger on a detail page is what he was looking at.
+          The doctrine is one back per screen and the global header IS that back, so the page adds
+          none. mockup-ok: removing a duplicate control, no new design. */}
       <div className="flex items-center gap-3">
-        <Link
-          href={`/${locale}/salon/${salonSlug}#section-reviews`}
-          aria-label="Zurück"
-          className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-s-border bg-white transition-[colors,transform] hover:bg-s-bg-sunken active:scale-[0.94] active:duration-[80ms] active:ease-glide"
-        >
-          <ArrowLeft size={20} strokeWidth={2.1} aria-hidden className="text-s-ink" />
-        </Link>
         <h2 className="font-display text-[30px] font-semibold tracking-[-0.02em] text-s-ink">
           {t("reviews")}
         </h2>
@@ -298,8 +314,8 @@ export default function SalonReviews({
               </div>
             </div>
 
-            {/* Write Review Button */}
-            {unreviewedBookingId && (
+            {/* Write Review Button , signed in is the whole gate (owner decision 4, 2026-08-09) */}
+            {canWriteReview && (
               <div className="mt-4">
                 <motion.button
                   whileHover={{ scale: 1.02 }}
@@ -312,17 +328,34 @@ export default function SalonReviews({
               </div>
             )}
 
+            {/* 2026-08-09, he asked how the one-per-salon limit behaves: "is there pop up or jst
+                silent delete or what". It was silent. The button simply vanished and he would have
+                had no idea why, which is a dead affordance one step earlier. One quiet line takes
+                its place, at the size and colour the meta text on this row already uses, so it adds
+                no new size or weight to the screen.
+                mockup-ok: not a design choice. It replaces a control that disappeared with no
+                explanation, and reuses existing type rather than inventing any. */}
+            {!canWriteReview && alreadyReviewed && (
+              <p className="mt-4 text-[14px] text-s-ink-2">{t("alreadyReviewed")}</p>
+            )}
+
             {/* Sort trigger (Fresha: "Best ▾" → sheet). PDP-grammar transfer (owner round
                 10 Y1): dropped the "N Bewertungen" label this row used to carry , the
                 summary line above already renders that exact count once, so this row was
                 showing the same number twice in one header. */}
             <div className="mb-4 mt-6 flex items-center justify-end border-t border-s-border pt-5">
-              {/* mockup-ok: floating sort pill sizing (h-11 + shadow-whisper), matching the
-                  approved reviews-full page's pill. */}
+              {/* 2026-08-09, he asked "why does one use shadow" and whether there is a rule for
+                  it. There is, in the design contract's surface table: a control carrying
+                  elevation DROPS its border, never both. This pill had both, which is why it read
+                  as a different grammar from the filter pills sitting directly above it on the
+                  same screen. The shadow goes and the hairline stays, so the row matches them.
+                  Supersedes the note that used to sit here justifying h-11 + shadow-whisper by
+                  copying another page: that page has the same fault, so it was not authority.
+                  mockup-ok: applying a written rule, not choosing a look. */}
               <button
                 type="button"
                 onClick={() => setSortSheetOpen(true)}
-                className="flex h-11 items-center gap-1.5 rounded-full border border-s-border bg-white px-4 font-body text-[13px] font-semibold text-s-ink shadow-whisper transition active:scale-[0.98] active:duration-[80ms] active:ease-glide"
+                className="flex h-11 items-center gap-1.5 rounded-full border border-s-border bg-white px-4 font-body text-[13px] font-semibold text-s-ink transition active:scale-[0.98] active:duration-[80ms] active:ease-glide"
               >
                 {sortLabel}
                 <ChevronDown size={16} className="text-s-ink-2" />
@@ -511,11 +544,11 @@ export default function SalonReviews({
 
       {/* Review form bottom sheet */}
       <AnimatePresence>
-        {showReviewForm && unreviewedBookingId && (
+        {showReviewForm && canWriteReview && (
           <ReviewForm
             salonId={salonId}
             salonName={salonName}
-            bookingId={unreviewedBookingId}
+            bookingId={unreviewedBookingId ?? undefined}
             staffName={unreviewedBookingStaffName}
             staffMemberId={unreviewedBookingStaffMemberId}
             staffPhotoUrl={unreviewedBookingStaffPhotoUrl}

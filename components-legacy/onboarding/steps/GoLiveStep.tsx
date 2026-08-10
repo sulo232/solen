@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Rocket, Check, X, PartyPopper, AlertTriangle } from "lucide-react";
+import { Rocket, Check, X, PartyPopper, AlertTriangle, Clock } from "lucide-react";
 import { motion } from "motion/react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import { useTranslations, useLocale } from "next-intl";
@@ -22,16 +22,30 @@ export default function GoLiveStep({ onGoLive, steps, goTo }: GoLiveStepProps) {
   const [going, setGoing] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [canGoLive, setCanGoLive] = useState(false);
+  const [readiness, setReadiness] = useState<{
+    has_stripe: boolean;
+    has_cover_photo: boolean;
+    has_services: boolean;
+    approval_state: "pending" | "rejected" | "approved";
+    rejection_reason: string | null;
+    can_go_live: boolean;
+  } | null>(null);
 
   const completedCount = steps.filter((s) => s.complete).length;
-  // isCoreReady mirrors the go-live POST requirements: stripe + cover photo + at least 1 service
-  const isCoreReady = canGoLive;
+  // isCoreReady = the three requirements the OWNER can clear himself: stripe + cover photo +
+  // at least 1 active service. Kept separate from can_go_live, which since owner decision 8
+  // (TASTE_LOG 2026-08-09, "i approve for every salon") also requires admin approval. Collapsing
+  // the two is what made the activate button enable itself into a 403.
+  const isCoreReady = !!(readiness?.has_stripe && readiness?.has_cover_photo && readiness?.has_services);
+  const approvalState = readiness?.approval_state ?? "approved";
+  const awaitingApproval = approvalState === "pending";
+  const wasRejected = approvalState === "rejected";
+  const canActivate = !!readiness?.can_go_live;
 
   useEffect(() => {
     fetch("/api/salon/go-live")
       .then((r) => r.json())
-      .then((d) => setCanGoLive(!!d.can_go_live))
+      .then((d) => setReadiness(d))
       .catch((err) => console.error("[GoLiveStep] failed to fetch readiness:", err));
   }, []);
 
@@ -42,7 +56,9 @@ export default function GoLiveStep({ onGoLive, steps, goTo }: GoLiveStepProps) {
       const res = await fetch("/api/salon/go-live", { method: "POST" });
       const data = await res.json();
       if (!res.ok) {
-        setErrorMsg(data.error ?? "Unbekannter Fehler");
+        // The route answers a stable code for the approval gate so it reads in the user's own
+        // locale; every other message it returns is still a de-only literal (pre-existing).
+        setErrorMsg(data.code === "AWAITING_APPROVAL" ? t("goLive.awaitingBody") : (data.error ?? "Unbekannter Fehler"));
         setGoing(false);
         return;
       }
@@ -112,6 +128,30 @@ export default function GoLiveStep({ onGoLive, steps, goTo }: GoLiveStepProps) {
         </div>
       )}
 
+      {/* Owner decision 8 (TASTE_LOG 2026-08-09, "i approve for every salon"): the last gate is not
+          the owner's to clear, so it is named here instead of leaving a dead activate button. */}
+      {awaitingApproval && ( // mockup-ok: no new treatment, reuses the shipped warning block directly above verbatim (same bg/border/radius/padding), applied to a new state; taste rule 6 keeps the copy ink and the icon saturated
+        <div className="bg-s-warning-bg border border-s-warning/30 rounded-[12px] px-4 py-3 flex items-start gap-2"> {/* mockup-ok: same as above */}
+          <Clock size={16} className="text-s-warning shrink-0 mt-0.5" />
+          <div>
+            <p className="text-sm font-semibold text-s-ink">{t("goLive.awaitingTitle")}</p>
+            <p className="text-sm text-s-ink-2 mt-0.5">{t("goLive.awaitingBody")}</p>
+          </div>
+        </div>
+      )}
+
+      {wasRejected && ( // mockup-ok: locked s-error token, mirrors the existing error block in this same file (line pattern ported from reviewed commit 869287867)
+        <div className="bg-s-error-bg border border-s-error/30 rounded-[12px] px-4 py-3 flex items-start gap-2"> {/* mockup-ok: same as the errorMsg block below */}
+          <AlertTriangle size={16} className="text-s-error shrink-0 mt-0.5" />
+          <div>
+            <p className="text-sm font-semibold text-s-ink">{t("goLive.rejectedTitle")}</p>
+            {readiness?.rejection_reason && (
+              <p className="text-sm text-s-ink-2 mt-0.5">{readiness.rejection_reason}</p>
+            )}
+          </div>
+        </div>
+      )}
+
       {errorMsg && ( // mockup-ok: locked s-error token, mirrors existing warning block pattern above, ported from reviewed commit 869287867
         <div className="bg-s-error/10 border border-s-error/30 rounded-[12px] px-4 py-3 flex items-center gap-2">
           <AlertTriangle size={16} className="text-s-error shrink-0" />
@@ -150,7 +190,7 @@ export default function GoLiveStep({ onGoLive, steps, goTo }: GoLiveStepProps) {
 
       <button
         onClick={handleGoLive}
-        disabled={!isCoreReady || going}
+        disabled={!canActivate || going}
         className="w-full py-4 rounded-btn active:scale-[0.97] bg-s-ink text-white text-base font-bold disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] transition-[transform,filter] shadow-warm-sm"
       >
         {going ? <Spinner size="sm" invert /> : <PartyPopper size={18} />}

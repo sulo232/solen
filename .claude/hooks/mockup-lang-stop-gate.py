@@ -20,7 +20,7 @@ No in-file marker escape (the marker is exactly what gets abused). Escape only v
 skip flag: echo "<why>" > .claude/mockup-lang-skip.flag (10-min TTL, must be non-empty).
 Fail-open on any error.
 """
-import os, re, sys, time, glob, json, subprocess
+import os, re, sys, time, glob, json
 
 GERMAN = re.compile(
     r"\b(keine?|suchen|anzeigen|nichts|vorschl\w*|zurücksetzen|treffer|geöffnet|"
@@ -54,38 +54,36 @@ def main():
     except Exception:
         pass
 
-    now = time.time()
-    patterns = [
-        os.path.join(proj, "public", "_mockups", "**", "*.htm*"),
-        os.path.join(proj, "**", "dev", "**", "*.tsx"),
-        os.path.join(proj, "**", "dev", "**", "*.jsx"),
-        os.path.join(proj, "**", "dev", "**", "*.htm*"),
-    ]
+    # "a mockup you touched this session" was measured by mtime inside a 180-minute window until
+    # 2026-08-07. In a worktree that measures the checkout, not authorship: this gate named
+    # app/[locale]/dev/pdp/cta/page.tsx and .../reviews/page.tsx on a turn that never opened them,
+    # both stamped 11:23:57 by the worktree sync and both CLEAN in git. Same root cause as the
+    # visual-deliverable-gate false positive found the same day. Ask git instead; fail open to
+    # empty, because a gate that cannot prove its trigger must not fire.
+    sys.path.insert(0, os.path.join(proj, "scripts", "hooks"))
+    try:
+        from _session_files import files_written_this_session
+        touched = files_written_this_session(proj)
+    except Exception:
+        touched = set()
+    if not touched:
+        sys.exit(0)
+
+    SUFFIXES = (".htm", ".html", ".tsx", ".jsx")
     offenders = []
-    for pat in patterns:
-        for fp in glob.glob(pat, recursive=True):
-            try:
-                if now - os.path.getmtime(fp) > 180 * 60:
-                    continue
-                # v2, 2026-08-05, owner: "remove those gates thats maiking u stop". mtime is not
-                # authorship. Creating a git worktree rewrites every file on disk, so a fresh
-                # worktree made every mockup in the repo look "touched this session" and this gate
-                # named six files the session had never opened, on every single stop. Git knows
-                # the difference: if the file is unmodified against HEAD, this session did not
-                # write it, whatever its timestamp says.
-                try:
-                    _st = subprocess.run(["git", "-C", proj, "status", "--porcelain", "--", fp],
-                                         capture_output=True, text=True, timeout=8)
-                    if _st.returncode == 0 and not _st.stdout.strip():
-                        continue          # clean against HEAD: not this session's work
-                except Exception:
-                    pass                  # git unavailable: fall back to the old mtime behaviour
-                txt = open(fp, encoding="utf-8", errors="ignore").read()
-            except Exception:
-                continue
-            hits = sorted({m.group(0).lower() for m in GERMAN.finditer(visible_text(txt))})
-            if len(hits) >= 3:
-                offenders.append((os.path.relpath(fp, proj), hits[:6]))
+    for rel in sorted(touched):
+        if not rel.endswith(SUFFIXES):
+            continue
+        if not (rel.startswith("public/_mockups/") or "/dev/" in rel or rel.startswith("dev/")):
+            continue
+        fp = os.path.join(proj, rel)
+        try:
+            txt = open(fp, encoding="utf-8", errors="ignore").read()
+        except Exception:
+            continue
+        hits = sorted({m.group(0).lower() for m in GERMAN.finditer(visible_text(txt))})
+        if len(hits) >= 3:
+            offenders.append((rel, hits[:6]))
     if offenders:
         lines = ["MOCKUP-LANG (owner 2026-07-17, FURIOUS second recurrence): a mockup you touched",
                  "this session has GERMAN in the visible chrome. Mockups are ALWAYS English , the",

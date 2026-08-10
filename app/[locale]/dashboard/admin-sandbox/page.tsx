@@ -256,7 +256,7 @@ export default function AdminSandboxPage() {
 
       {/* Header */}
       <div className="mb-6">
-        <p className="text-[12px] font-heading uppercase tracking-[.20em] text-s-ink-2 mb-1">Admin</p>
+        <p className="text-[12px] font-heading tracking-[0.08em] text-s-ink-2 mb-1">Admin</p>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <FlaskConical size={20} className="text-s-coral" />
