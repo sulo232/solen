@@ -41,6 +41,46 @@ The newest entry is at the top. Every session that ships real work adds one entr
 
 ---
 
+## 2026-08-03 , preference audit: a week of your messages, mined, then gates edited (workstream #44)
+
+You asked me to research a week of our chats, work out your preferences, then edit gates, make new
+gates, and write principles. I pulled 218 messages you actually typed between 27 July and 3 August
+out of 103 transcripts, had ten agents mine them, and then re-checked every claim against the live
+gate files myself.
+
+**The answer is not more gates, and the numbers are not close.** Of 81 distinct preferences found in
+your own words, **four** had no rule anywhere. Twenty have a rule whose gate was written and never
+switched on. Seventeen have a gate that now says the opposite of something you decided later. Not
+one cluster came back needing a brand-new gate for an ungated class.
+
+**The behaviour root cause you asked for on 3 August** ("what you did wrong of this behavior
+pattern... make a gate, hook, or edit current hook that's making you act like this") is measurable.
+62 Stop hooks run on every reply I write. They fire one at a time and know nothing about each other.
+In the window there were 402 blocked attempts, **76% of them blocked by two or more gates at once**,
+181 by three or more, and the worst single attempt denied by nine. Each denial costs one more reply
+attempt. That is the repetition you named thirteen times, and it is why hardening another gate made
+it worse rather than better.
+
+Four changes, all self-tested, net **157 wired hooks down to 150**: `reply-repeat-gate` v4 (v3 only
+ever compared a reply against the one immediately before it, so a verbatim re-send two replies apart
+scored 0.02 and passed); `link-family-aggregator` (eleven link gates now return one combined message
+instead of up to eleven serial denials); `no-plumbing-in-reply-gate` armed after sitting orphan since
+26 July because it shipped without a self-test, which is the gate for "become silent, I already see
+the fucking text"; and one genuinely new one, `owner-correction-ledger`, which lets YOUR corrections
+move the mistake counter , until now it only ever counted mistakes I admitted in writing.
+
+Principles: LAW_SYSTEM 6.2 extended to the Stop event, new 6.9 (a recurring mistake that already has
+a gate is a binding failure, not a missing-gate problem), new REPORT_SYSTEM 4.5 (after a gate block,
+send only what changed), two new T1 preference entries.
+
+**Nothing is armed yet.** This session is sandboxed and cannot write `~/.claude/hooks/` or either
+settings.json, measured. One command from a normal shell:
+`python3 ~/.claude/pending-gates/install.py`. Full report:
+[_gates/preference-audit-2026-08-03/README.md](../_gates/preference-audit-2026-08-03/README.md) and
+the page at `public/_analysis/preference-audit-2026-08-03.html`.
+
+---
+
 ## 2026-08-03 , weekly design-law improvement pass (workstream #41 LAW, standing loop)
 
 **Auto-triggered.** Harvested 5 dated owner decisions, 7 contradictions open, 5 duplications, **8 safe

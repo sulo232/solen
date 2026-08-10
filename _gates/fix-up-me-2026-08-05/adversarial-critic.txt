@@ -1,0 +1,35 @@
+**1. Self-report contamination**
+
+Every "Mechanism:" paragraph in A2 is introspection typeset as measurement. "Training recall returns a detailed picture at zero cost and never registers as a guess" was produced by no instrument. Huang et al. 2023 ([arXiv:2310.01798](https://arxiv.org/pdf/2310.01798)) is in your own countermeasure list showing self-assessment without external feedback degrades accuracy; you then built five mechanism claims out of exactly that. Cut them or relabel them hypotheses. Same for the 81 clusters: the assistant chose the cluster boundaries, so "11.4%, the largest single class" is its own labelling of its own failures, and the coverage verdicts (`ADVICE_ONLY`, `COVERED_BUT_WRONG`, `UNCOVERED`) are self-grading of self-written gates.
+
+Concretely wrong, in the flattering direction: A2 reports 197 gate files, 42 orphan. Counted today across `~/.claude/settings.json`, the project settings and the worktree settings: **204 hook scripts, 49 named in no settings file, 32 referenced by nothing at all**, not even by the one aggregator (`link-family-aggregator.py`, which does rescue nine link gates). The estate's own inventory undercounted its dead enforcement by roughly a sixth.
+
+Surviving: the gate counters (56 `checkbox-without-evidence`, 35 `link-verified`, 46 `unfinished-batch`), the owner-word counts (47/218, 7/218), the 13-theme ledger, and the orphan count once re-derived from disk. Those are machine counters and his words. Keep those; the narrative around them is testimony from the defendant.
+
+**2. The countermeasure that will fail**
+
+Recommendation 5, structural prevention, is the best-evidenced row and will be adopted as "write another gate," because that is the only shape this estate produces. It fails as follows. `reference-measure-gate.py` and `white-only-web-gate.py` are both cited in CLAUDE.md's NEVER-AGAIN block as **"GATE: ... self-tested 5/5."** Neither is wired anywhere. The LOCKED design-contract mockup row names four gates by name (`mockup-base`, `no-fake-phone`, `width-calibration`, `type-budget`). **All four are wired to nothing.** So the law file asserting armed enforcement is itself an uncorroborated done-claim: bias 2 reproducing inside the anti-bias machinery, undetected by the analysis of bias 2.
+
+The tier below then does what Urbach 2014 and [alert fatigue](https://pmc.ncbi.nlm.nih.gov/articles/PMC5729261/) predict. There are **18 skip flags on disk right now, 16 written between Aug 3 and Aug 5**, three of them zero-byte despite `flag-spam-gate.py` demanding a non-empty reason. And the tax is real: while writing this critique, a read-only `grep` that merely *mentioned* three flag names was blocked by that gate. A system whose false positives block reading is a system whose users learn to pre-mute it.
+
+**3. Containment's blind spot**
+
+Containment inspects an artifact: a final reply, a tool payload, a written file. Bias 1, the largest class, has no artifact. The failure is a browser run that never happened, and A2 concedes the gate is "structurally blind to the case where the reference is never mentioned because it was never visited." You cannot contain an absence at the output boundary; you can only contain it at the input boundary by making the tool call a precondition of the task, which is elimination, not containment.
+
+Second, containment is satisfiable by string. `pushback-gate.py` line 79 accepts `might just be agreeing|can't find a reason|push back on me`. Typing rule 3's own escape is the cheapest legal exit, and it fails LAW_SYSTEM §2's own anti-superficial test.
+
+Third and worst: containment has no containment on itself. Nothing verifies that a written gate is a wired gate. That is precisely how 32 dead files accumulated while the docs claimed enforcement.
+
+**4. What is missing**
+
+Neither input covers **dictation noise**. He speaks his messages; ASR mangles product terms, and the assistant resolves a garbled token to the nearest plausible referent instead of asking. That is anchoring on a corrupted anchor, and it is invisible in the corpus because the transcript records the mangled word as though he typed it.
+
+Neither input covers **audience-blind evidence**, and this is the biggest personalisation gap. He cannot read code. Nearly every verification artifact the assistant produces (self-test output, diffs, docstrings, "5/5") is unfalsifiable by the only person who reads it. That is why "self-tested" survived as a completion signal across 32 dead gates: no reviewer existed. Evidence he cannot check is not evidence, it is a costume.
+
+Neither input applies **Liu et al. 2024** ([arXiv:2307.03172](https://arxiv.org/abs/2307.03172)) to *his own messages*. A 400-word dictated message has a middle, and its middle asks get dropped. A2 files that under completeness, which hides the mechanism.
+
+Missing in the other direction: no base rate. 31 occurrences over an unknown number of opportunities is not a rate. And the corpus only contains failures he could *see*, so anything backend-shaped is structurally absent from a dataset presented as an estate-wide census.
+
+**5. The uncomfortable one**
+
+The law corpus is the largest single instance of the bias it documents. 204 hook scripts, a 10KB project CLAUDE.md, dozens of law files, 32 enforcing nothing while the docs say they do. Writing law is the cheapest output that reads as progress, cannot fail visibly, and ends the turn. The owner commissioned it and both parties get a system that feels controlled. The honest recommendation is subtraction: audit every gate against the settings files, wire or delete, cap the total, and make "I wrote a gate" an illegal answer to a repeat complaint.

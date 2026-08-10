@@ -1,0 +1,43 @@
+**THE YIELD: two bugs, from applying LAW_SYSTEM.md:53-56 to the reporting law's one wired gate**
+
+`~/.claude/hooks/report-summary-gate.py` is the only enforcement the file list has (REPORT_SYSTEM.md:175-177 claims it live; confirmed wired as a Stop hook in settings.json, one of 55).
+
+**Bug 1 , the gate instructs the agent to strip the only part the owner can use.** REPORT_SYSTEM.md:58-66 requires "EVERY file created/edited/deleted this turn, as clickable links, **one line of WHY each**", plus a pasted diff for changes under ~15 lines. The gate's own deny message, `report-summary-gate.py:168`, says the opposite verbatim:
+
+> "a bare basename list is enough, the why-per-file belongs in the plan files, not this message."
+
+The check at line 152 is `b.lower() in text`. Pure substring. I ran it: a turn editing `auth.ts`, `pay.ts`, `mail.ts` whose entire closing reply is the string `auth.ts pay.ts mail.ts` **passes** (no output = allow). Zero why, zero diff, zero outcome. This is the anti-superficial test failing exactly as LAW_SYSTEM.md:55 describes , the check is satisfied by writing a string. And because a gate's deny message outranks doctrine under task focus (LAW_SYSTEM.md:14-19, the estate's own thesis), the gate is actively training the agent toward the noise version. The WHY and the diff , the only two parts of item 2 a non-coder can act on , are the parts the enforcement tells you to delete.
+
+**Bug 2 , basename collapse hides work in exactly this repo's shape.** Line 151 sets `basenames = {os.path.basename(f) ...}`. Distinct paths with the same filename collapse to one member. Tested: editing `app/api/salons/route.ts`, `app/api/bookings/route.ts`, `app/api/pay/route.ts` and writing the single sentence "I touched route.ts." **passes**. Five different `page.tsx` files, reply = the word `page.tsx`, **passes**. Solen is Next.js App Router; `page.tsx` and `route.ts` are the two most common filenames on disk. The gate is weakest precisely where the estate edits most. Control case (names nothing) blocks correctly, so the gate is not dead , it is calibrated to catch only the laziest failure.
+
+Both are `report-summary-gate.py` fixes, not new gates (LAW_SYSTEM.md:192-208): match full relative paths, and require a WHY clause or diff adjacent to each.
+
+**IS THE FILENAME LIST INFORMATION OR NOISE FOR HIM**
+
+Noise, and he has said so in his own words twice.
+
+2026-07-28T12:47, in full: **"im on my phone cant open any file"**. That single line kills half of item 2. "Clickable links" to `/Users/sulo/Documents/solen/...` open nothing on an iPhone. The clickability floor (REPORT_SYSTEM.md:100-101) is satisfied and delivers zero.
+
+2026-07-31T10:15, dictated: **"I'm not gonna read all of that... And it's a measurement of from slash a v four three eighty eight four... I'm... I don't know what the fuck that is. Like, give me important stuff and structure it so it's easier to read in the eyes."** He is reading a path-shaped token aloud and naming it as the thing he cannot parse. He dictates his messages; a filename list is read to him as syllables.
+
+The rule's stated justification (REPORT_SYSTEM.md:59) is "silent edits are how trust dies" and the list is "the owner's only 'why did you edit that' trace." That justification is sound and the implementation inverts it: a basename carries no why. What he actually asks for, repeatedly: 2026-08-03T16:37 **"What changed or what doesn't in other screens too? And why it changed and everything? I need to see that."** 2026-07-27T12:15 **"explain each one parked in plain english and how all the stuff u did improved like in plain english."** "Plain english" appears 9 times in the four owner files.
+
+**What would be better:** report the *behavior* that changed, one line each, in his words, not the file that carried it. "The login page now rejects passwords under 8 characters" instead of "`app/(auth)/login/actions.ts`". Keep the diff for small changes , five lines of literal text is checkable on a phone and is the anti-superficial-proof version of the WHY. Move the exhaustive path list to the plan file, which is where the gate's own deny message already says the why-per-file belongs; it just put the wrong half there. The audit-trail function is preserved (git already holds it perfectly), the phone-readable function is gained.
+
+**WHAT SERVES HIM**
+
+- **4.5, the repeat law (:125-152)** , his #1 complaint, correctly diagnosed to gate density rather than forgetfulness.
+- **Item 1, outcome first line (:37-46)** , matches "give me important stuff and structure it so it's easier to read in the eyes."
+- **Item 4, Not checked (:91-94)** , the direct defense against "you didn't fix anything... and then you say it's fakes even though it's not" (2026-08-03T16:25).
+- **Item 5, parked with a recommendation (:95-99)** , he asked for it by name 2026-07-27T12:15.
+- **Item 3's sample-size clause (:84-87)** , born from his own 2026-07-29 /harden on scope errors.
+- **Register block (:113-123)** , plain English, jargon translated.
+- **5, audit goes to a file, chat gets ≤5 lines (:158-162)** , the correct response to "I'm not gonna read all that."
+
+**WHAT SERVES THE ESTATE'S COMPLETENESS AT HIS EXPENSE**
+
+- **Item 2, the file list** , as above.
+- **Item 3's `measured:` method clause (:80-83)**: "the exact command, selector, or a `file:line` to the script that produced it." That is the literal generator of "slash a v four three eighty eight four... I don't know what the fuck that is." Falsifiability is a real need; the reproducible command belongs in the artifact, with the chat carrying the number and the one-phrase method ("measured on the rendered page at 390 wide").
+- **Item 8, loop depth (:105-111)** , process telemetry he never asked for. He asks about wall time ("did you really spend two hours for absolutely nothing?") and agent count, not review rounds.
+
+**NOTHING WRONG:** sections 2 (readback), 3 (quiet mid-turn), and 6 (enforcement map) are accurate and serve him; I found no defect in them.
