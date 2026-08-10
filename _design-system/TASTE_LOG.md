@@ -573,3 +573,33 @@ correct for something genuinely unsettled; it is no longer the only way through.
 **Where his settled answers live, so a future session looks before it asks:** this file for taste
 and product decisions, `REMOVED.md` for things he has killed, `LOCKFILE.md` for frozen values,
 `PREFERENCES.md` for how he wants work done.
+
+
+## 2026-08-10, the three top-bar controls, settled by him after I guessed wrong
+
+His words: *"the back button maybe, like, a circle, or the x button, that, like, the circle too and
+just an x button. And, yeah, and also, like, shadow. And, also, the hamburger menu too."*
+
+I read "and the hamburger menu too" as "a circle too" and made all three circles. His correction,
+verbatim: *"hamburger mini, make it, keep it fucking square. Are you dumb? And I told to make
+fucking shadows."*
+
+**LOCKED, so nobody re-guesses it:**
+
+| control | shape | fill | edge |
+|---|---|---|---|
+| back | **circle** | white | hairline + whisper shadow |
+| close / X | **circle** | white | hairline + whisper shadow |
+| hamburger | **SQUARE** (`rounded-input`) | white | hairline + whisper shadow |
+
+**The shadow is on all three.** That was the part of "the hamburger too" that he did mean.
+
+**Why the hairline stays under the shadow, measured:** Qonto's circles carry no border because they
+sit on a grey page (#F6F6F6) and the shadow separates them. Ours sit on white, where a low soft
+shadow is nearly invisible, which is the grey haze the contract bans by name. Reference:
+`_design-system/references/qonto--onboarding.md`.
+
+**The reading error worth keeping, because it is the general case:** he listed three controls with
+DIFFERENT treatments in one sentence, and I collapsed them into one treatment. When an instruction
+names several things at once, the readback has to carry his words per thing, not my summary of all
+of them.
