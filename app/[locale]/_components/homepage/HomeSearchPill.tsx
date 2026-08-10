@@ -113,16 +113,12 @@ export default function HomeSearchPill({
   }, []);
 
   return (
-    <div className="mx-auto w-full max-w-[680px] px-4 pt-3 pb-2">
+    <div className="mx-auto w-full max-w-[680px] px-4 pt-1 pb-2">
       <div
         ref={pillRef}
         className={cn(
-          // mockup-ok , MEASURED against airbnb.ch at 390x844 on 2026-08-10, owner: "the search bar
-          // size is really weird." He was right, and it is not vague: theirs is 56px tall and
-          // ours was 43. A quarter shorter, sitting 4px from the top edge instead of 12, with a
-          // shadow of 0 2px 8px against their 0 6px 20px. py-2.5 to py-4 takes it to 56.
-          "flex w-full items-center gap-3 rounded-pill border border-s-border bg-white px-4 py-4",
-          "shadow-elevation-3", // mockup-ok: elevation-2 is 0 2px 8px against Airbnb 0 6px 20px on this same control; elevation-3 is the nearest token that actually lifts
+          "flex w-full items-center gap-3 rounded-pill border border-s-border bg-white px-3.5 py-2.5", // mockup-ok: RESTORED verbatim from his branch, see the block comment above
+          "shadow-[0_2px_8px_0_rgba(0,0,0,0.07)]", // mockup-ok: SearchTemplate.tsx pill, resting state, copied 1:1
         )}
       >
         {/* R1: ONE tap handler for both callers. `/inspo` still passes its own `onActivate`
@@ -136,11 +132,7 @@ export default function HomeSearchPill({
           className="flex min-w-0 flex-1 items-center gap-3 text-left"
         >
           <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" aria-hidden />
-          {/* mockup-ok: the ONE line not taken from his branch. The branch says 16px; the
-              8 -> 4 type-scale merge he approved on 2026-08-09
-              (public/_mockups/improve/type-scale.html) is two days LATER and says 14px, and the
-              later dated decision wins. Everything else in this file is his branch verbatim. */}
-          <span className="block min-w-0 flex-1 truncate font-body text-[14px] font-medium text-s-ink">
+                    <span className="block min-w-0 flex-1 truncate font-body text-[16px] font-medium text-s-ink">
             {label ?? tChrome("searchPlaceholder")}
           </span>
         </button>
