@@ -1,8 +1,13 @@
 "use client";
 
 import { useLocale } from "next-intl";
-import { Section, SectionTitle, SectionFrame } from "./SectionHeader";
+import { Section, SectionFrame } from "./SectionHeader";
 import NearbyMap, { type NearbyMapSalon } from "./NearbyMap";
+// The city name comes from the ONE canonical city table (lib/cities.ts), read through the same
+// DEFAULT_CITY_SLUG every other surface resolves against, rather than a second "Basel" typed into
+// a component. RecentlyViewedTiles.tsx hardcodes its own "Basel" string; that one is pre-existing
+// and left alone here, but this new label does not add a third source of truth for the same fact.
+import { CITIES, DEFAULT_CITY_SLUG } from "@/lib/cities";
 // NEARBY_SALON_IDS is a plain value module (no server-only imports), legal
 // to import directly into this "use client" file. salonCardData.ts stays a
 // type-only import: it's a Server module (next/headers via createServerSupabaseClient),
@@ -52,6 +57,14 @@ export default function Nearby({
   nearbyCount?: number | null;
 } = {}) {
   const locale = useLocale();
+  // Localised city name off the canonical table. `name_de` is the fallback for the three locales
+  // that do not have their own key rather than an invented string.
+  const cityRow = CITIES[DEFAULT_CITY_SLUG];
+  const CITY =
+    (locale === "en" ? cityRow?.name_en
+      : locale === "fr" ? cityRow?.name_fr
+      : locale === "it" ? cityRow?.name_it
+      : cityRow?.name_de) ?? cityRow?.name_de ?? "";
   // Real coordinates only; a salon with no lat/lng gets no marker, never a fake one. The
   // name/slug/category check is the same completeness gate the removed card rail applied, kept
   // so the marker set does not change with the cards.
@@ -74,25 +87,35 @@ export default function Nearby({
     // teal section-arrow buttons + typography rhythm carry section breaks.
     <Section>
       <SectionFrame>
-        {/* linkPlacement="inline": with the card rail gone there is nothing to scroll, so this
-            section has no scrollRef, and without one SectionTitle's right-hand slot would print
-            the "Alle in deiner Nähe" text link at EVERY width. Measured at 402x874 before this
-            line was added: the row showed the title chevron and that text link, both pointing at
-            the same href, where every other rail on the page shows the chevron alone. The header
-            now renders exactly as it did before the cards were removed. */}
-        <SectionTitle
-          title="In der Nähe"
-          link={{ label: "Alle in Ihrer Nähe →", href: `/${locale}/search?nearby=true` }}
-          linkPlacement="inline"
-        />
-        {/* mockup-ok: real Mapbox teaser (NearbyMap.tsx), owner-approved 2026-07-15
-            per that component's header. Replaces the fabricated CSS-grid plus 3
-            fixed MapPins block that shipped before it (V3-D348 tweak #2 origin). */}
+        {/* mockup-ok , owner 2026-08-10, verbatim: "in your near thing, like, remove and just make
+            it maps... I don't even want an arrow. I just want, like, a map. Like, just like a box,
+            click on it, and it just opens the map. And I also want it to be more like city and,
+            like, it shows, like, which city it is."
+
+            So the SectionTitle is gone: no heading, no arrow. This is his SECOND pass on this
+            section. On 2026-08-05 (A4) he took the salon card rail out and kept the map; now the
+            chrome around the map goes too and the box carries its own label.
+
+            The heading is not replaced with anything, and that is a decision rather than an
+            oversight. FLOORS LAW 5 says a deletion must name what the screen KEEPS: it keeps 156px
+            of live Mapbox tiles with real markers on them, plus a chip that now names the city. A
+            map does not need a word above it saying it is a map. The one real cost, named rather
+            than hidden: this section stops contributing a text anchor to the page's heading
+            rhythm, so the sections above and below it sit closer in visual weight than before.
+
+            "Click it and it opens the map" already held and still does: NearbyMap renders the
+            whole tile as a single <a href> (measured 343x156 at 375 wide), so nothing new is
+            wired here, the chrome around it is simply gone. */}
         <NearbyMap
           salons={mapSalons}
           href={`/${locale}/search?view=map`}
-          ariaLabel="Stores in der Nähe auf der Karte ansehen"
-          countLabel={nearbyCount != null ? `${nearbyCount} Stores in der Nähe` : "Karte öffnen"}
+          ariaLabel={`Stores in ${CITY} auf der Karte ansehen`}
+          // The CITY leads, because naming the city is the thing he asked for. The count follows
+          // as a real number (getNearbyTeaserCount, page.tsx) and drops out entirely when that is
+          // null rather than being invented. No separator dot between them: they already differ in
+          // weight, and taste rule 2 says that contrast IS the separator.
+          countLabel={CITY}
+          countSubLabel={nearbyCount != null ? `${nearbyCount} Stores` : null}
         />
       </SectionFrame>
     </Section>

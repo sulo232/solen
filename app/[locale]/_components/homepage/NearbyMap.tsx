@@ -85,6 +85,7 @@ export default function NearbyMap({
   href,
   ariaLabel,
   countLabel,
+  countSubLabel = null,
 }: {
   /** Only salons with real coordinates; the caller filters. */
   salons: NearbyMapSalon[];
@@ -92,6 +93,10 @@ export default function NearbyMap({
   ariaLabel: string;
   /** Real count string built from live data by the caller. Never a hardcoded number. */
   countLabel: string;
+  /** Added 2026-08-10 (owner: "I want it to show which city it is"). The chip now leads with the
+   *  CITY and this carries the count under it. Null omits the line entirely rather than printing
+   *  a placeholder, same no-fabrication contract `countLabel` already had. */
+  countSubLabel?: string | null;
 }) {
   const holder = React.useRef<HTMLDivElement>(null);
 
@@ -195,7 +200,17 @@ export default function NearbyMap({
         style={FROST_GLASS}
         className="pointer-events-none absolute bottom-3 left-3 z-[3] inline-flex items-center gap-1.5 rounded-pill px-3 py-1.5 text-[12.5px] font-semibold text-s-ink"
       >
-        <MapPin size={13} className="text-s-ink" aria-hidden /> {countLabel}
+        {/* mockup-ok , owner 2026-08-10: "I also want it to be more like city and it shows which
+            city it is." The city is the label now; the count sits beside it in the same chip at a
+            lighter weight. Two spans, and deliberately NO separator glyph between them: they
+            already differ in weight, and taste rule 2 says that contrast IS the separator, so
+            adding one would be the decorative artifact that rule bans. Chip geometry, frost recipe
+            and font size are untouched from A5. */}
+        <MapPin size={13} className="text-s-ink" aria-hidden />
+        <span>{countLabel}</span>
+        {countSubLabel ? (
+          <span className="font-normal text-s-ink-2">{countSubLabel}</span>
+        ) : null}
       </span>
     </a>
   );

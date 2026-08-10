@@ -2,22 +2,21 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-05T12:38:20 (trigger: auto)
-- branch: claude/principles-security-audit-0ae738
+- taken: 2026-08-10T17:07:50 (trigger: auto)
+- branch: claude/agent-flow-design-overhaul-2af2c2
 
 ## git
 ```
-29a979e0b Type-scale strip rebuilt: real words at both sizes, no pixel table
-563fa7011 Type-scale decision mockup: 8 sizes down to 4, with the one real cost named
-1dd393d45 All three page mockups landed: home, category, inspo
-0a3cce29a Category mockup landed
-aeaf44d00 Inspo mockup: the menu is unreachable there, and the cause is two lines
-```
-```
-M _plans/DESIGN_SYSTEM_RENEWAL_2026-08-02.md
+66217cdc4 The category row is back on the phone, and a reader is finding which one he meant
+7f112dcb6 Nothing is lost. One was switched off, two were diagnosed and never built
+42ee4f35c Direction C without the boxes, and the check caught its own bad rule first
+3f774b17d The boxing you keep flagging now has a check; it never had one
+18ef26cdf Ran the gate's own detector instead of guessing what it would object to
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
+58 | HOME REGRESSIONS , why his home edits look gone (owner 2026-08-10: "everything is now lost... what's the core cause of this?") | **ACTIVE** (2026-08-10)
+56 | HOME + CLOSE FIXES (owner 2026-08-05, annotated shots) | **ACTIVE** (2026-08-05)
 55 | HOME + INSPO CHROME , sticky search, Airbnb-smooth category switch, chrome sits too low, dead search tap, hamburger (no X / too low / circled), Inspo bar+heart+filters, "make a new homepage" | **ACTIVE** (2026-08-01)
 55 | DESIGN SYSTEM RENEWAL , rows out of boxes, lines not cards, bare icons, bigger type, from 5 Airbnb screenshots | **ACTIVE** (2026-08-02)
 53 | HOME V3 mockup rebuilt from the REAL home page sections (owner 10-ask dictation + 4 annotated shots) | **ACTIVE** (2026-07-31)
@@ -28,11 +27,21 @@ M _plans/DESIGN_SYSTEM_RENEWAL_2026-08-02.md
 43 | THE LOOP: implement every remaining finding (owner correction) | **ACTIVE** (2026-07-27)
 42 | IMPLEMENT the missing principles (owner approved, full control except big design changes) | **ACTIVE** (2026-07-26)
 41 | MISSING PRINCIPLES research (whole estate: design + backend + security + my output + meta) | **ACTIVE** (2026-07-26)
+51 | AUTH + CHROME OVERHAUL , the sign-up/sign-in flow rebuilt on the Qonto reference, plus the back/close/hamburger controls he called "a weird thing inside of a box" (owner dictation 2026-08-10) | **ACTIVE** (2026-08-10)
+50 | RESUME 2026-08-09 , the state to pick up from when this context ends (his ten decisions, what shipped, what needs him, my 22 checked items) | **ACTIVE** (2026-08-09)
+49 | SYSTEM OVERHAUL , seven overhauls + a two-phase working protocol (owner dictation 2026-08-07: agent/mockup flow depth, "make sets", research flow as a new system, the design system + all its documents, the repetition problem, other-overhaul suggestions, and a system for OUTPUT + QUESTIONS + the two-phase flow) | **ACTIVE** (2026-08-07)
+48 | ANIMATED ICONS ROUND 2 , owner feedback on build 1 (2026-07-31: brighter lighting, the red is not vibrant, the chair does not face straight, and a coiffeur version that is NOT the same chair) | **ACTIVE** (2026-07-31)
+47 | AIRBNB ANIMATED ICONS , capture the real reference, then build a Solen animated icon (owner 2026-07-31 "go actually research", scoped by the owner mid-turn to research FIRST) | **ACTIVE** (2026-07-31)
+46 | FIX UP ME , audit everything about how I work and repair what a sentence can beat (owner 2026-08-05 "i dont want u ti edit sites i want u to refine n fixbup you") | **ACTIVE** (2026-08-05)
+45 | ASSISTANT BIAS , analyse the behavioural biases that distort my work with the owner, then CONTAIN them (owner 2026-08-05 "lets analyze ai bias and hiw we can eliminate that with you") | **ACTIVE** (2026-08-05)
+43 | COPY + VOICE LAW , how we write, in four languages (owner 2026-07-29 "research everything and make a whole principle about when you're writing something, how to do it") | **ACTIVE** (2026-07-29)
+42 | PRINCIPLE RESEARCH , deep-research every non-design principle we already have (backend, security, silent-no-op, psychology, i18n, motion, the rest of `_rules/*`) | **ACTIVE** (2026-07-29)
 40 | MOTION + SHADOW LAW (research-first, then build as a loop) | **ACTIVE** (2026-07-25)
 33 | PDP consistency + motion (dates, reviews system, buttons, portfolio +N, frosted scroll) | **ACTIVE** (2026-07-25)
 31 | Home page overhaul (owner 10-ask dictation) , PIVOTED to whiteness/emptiness fix | **ACTIVE** (2026-07-24)
 30 | PDP overhaul (salon vision page) — owner 7-ask batch | **ACTIVE** (2026-07-24, round 3 delivered)
 29 | Folder cleanup (two "solen" folders) | **ACTIVE** (2026-07-24)
+4 | Search redesign (Airbnb-style) | **ACTIVE** (owner bug report round 3, 2026-08-02 23:33)
 19 | Taste/gate audit + underline-tab proposal + Solen-law profile mockup | **ACTIVE** (2026-07-21)
 7 | Admin Cities toggle | **ACTIVE**
 13 | Full-estate frontend audit (psychology + design-system + consistency) + mockups | **ACTIVE** (2026-07-17: customer-overhaul mockup pass)
@@ -57,11 +66,18 @@ M _plans/DESIGN_SYSTEM_RENEWAL_2026-08-02.md
 50 | DESIGN principle deep-research (the rules we ALREADY have) | **ACTIVE** (2026-07-28)
 51 | DESIGN RE-ENGINEER , improve the system we have, measured against live Airbnb | **ACTIVE** (2026-07-28)
 
+## HOME_REGRESSIONS_2026-08-10.md
+Open boxes:
+- [ ] The search-bar open and close ANIMATION, separately from H6's navigation bug.
+- [ ] The logo.
+- [ ] Salon card photos render as grey boxes on the live home page. Not something he raised, found
+- [ ] The page title says "Stores" rather than "Salons" in several places, which no decision on
+
+## HOME_FIXES_2026-08-05.md
+Open boxes:
+- [ ] A3. MOCKUPS FIRST, he asked to SEE options ("can you show me different mockups"). Fix the fonts on the home page. He says he never approved them and they are nothing like BLOCKED on his call, and A8 now gives him the four directions to answer it with.
+
 ## HOME_INSPO_CHROME_2026-08-01.md
 Open boxes:
 - [ ] **H2. HALF DONE, and the remaining half is mine, not a decision for him.** Commit
 - [ ] V2. **DECIDED AND IN FLIGHT. Owner 2026-08-02: "konto hub better".** Building
-
-## DESIGN_SYSTEM_RENEWAL_2026-08-02.md
-Open boxes:
-- [ ] **A10. STILL BLOCKED, and re-verified this turn rather than assumed.** Both `mockup-fullscreen-gate.py` and `mockup-depicts-gate.py` are confirmed ARMED in `.claude/settings.json` (each registered twice). `~/.claude/hooks/overlay-is-not-a-match-gate.py` exists on disk at 7289 bytes but is NOT wired, which is why three separate agents this session hit the fullscreen gate's injection REQUIREMENT and had to use its skip valve. The fix needs an edit to `$CLAUDE_PROJECT_DIR/.claude/hooks`, which is not writable in this sandbox. Concrete blocker, not a deferral.

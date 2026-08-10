@@ -150,7 +150,9 @@ export function SectionTitle({
   // chip). Also kills the duplicate mobile bare-arrow that used to sit on
   // the right side — the inline circled arrow already serves that role.
   return (
-    <div className="flex items-baseline justify-between gap-6">
+    // items-center, not items-baseline. A circle has no baseline to sit on: with items-baseline
+    // the 44px cell aligned its own text baseline to the heading's and hung below the row.
+    <div className="flex items-center justify-between gap-6">
       <h2
         // V2-D70 (2026-05-18): Plus Jakarta Sans is now the locked font (no
         // longer drift). Section h2 stays `font-body` (which IS Plus Jakarta
@@ -165,81 +167,90 @@ export function SectionTitle({
         // Uber's big-bold headers. Restraint is the house style here. Back to 18/600.
         className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.25] tracking-[-0.01em] text-s-ink"
       >
+        {/* mockup-ok , owner 2026-08-10: "the arrow thingy that we're having, that one, I want that
+            to be on the right side and also, like, inside of, like, a little circle, I think. Like,
+            I want, like, a more, like, Airbnb type stuff, you know, more modern."
+
+            The arrow USED to live here, inline, immediately after the title text, with a chevron
+            that grew a stem on hover (V3-D156). Measured on the live home page before the change:
+            NINE of them, every one glued to the end of its heading. It is now a circle in the
+            right-hand slot below, so the heading is just a heading again and the affordance sits
+            where the eye goes for "more of this".
+
+            The old hover trick does not come with it, and that is a real loss worth naming rather
+            than quietly dropping: the stem-draw was a nice desktop detail. It does not survive
+            because it reads only at 20px inline, and it never fired on a phone at all, which is
+            the surface he is looking at. */}
         {title}
-        {link ? (
-          <Link
-            href={link.href}
-            aria-label={link.label}
-            className={cn(
-              // V3-D140 (2026-05-25): stripped dusty-blue circle bg + colored
-              // glyph per user "make them jst normal black arrow." Section
-              // title arrows are NOT in the 3% accent band per 80/17/3 rule
-              // (_tasks/SOLEN_DESIGN.md) — they're nav affordances, ink only.
-              // Killed (V3-D140 commit): s-cool/0.20 bg, dusty-blue glyph, circle h-9 w-9,
-              // hover:scale, active:scale. Kept: ml-3 spacing, group-hover
-              // translate-x on the glyph, focus-visible outline for a11y.
-              "group ml-3 inline-flex shrink-0 items-center align-middle",
-              "text-s-ink transition-colors duration-150 ease-glide",
-              "focus-visible:rounded focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
-            )}
-          >
-            {/* V3-D156 (2026-05-25): chevron-only at rest, stem draws in on
-                hover per user "if not hovered its jst [a chevron], once u hover
-                theres an line so it becomes arrow." Implemented via stroke
-                dasharray trick — stem path length is 14 (M5 12h14), initial
-                dashoffset 14 hides it, hover transitions dashoffset → 0 to
-                "draw" the stem left-to-right. Compounds with the existing
-                translate-x nudge for a layered hover effect. */}
-            <svg
-              width={20}
-              height={20}
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-              strokeLinecap="butt"
-              strokeLinejoin="miter"
-              aria-hidden
-              className="transition-transform duration-200 ease-glide group-hover:translate-x-0.5"
-            >
-              <path
-                d="M5 12h14"
-                className="[stroke-dasharray:14] [stroke-dashoffset:14] transition-[stroke-dashoffset] duration-200 ease-glide group-hover:[stroke-dashoffset:0]"
-              />
-              <path d="m12 5 7 7-7 7" />
-            </svg>
-          </Link>
-        ) : null}
       </h2>
 
-      {/* V2-D49m: when a scrollRef is wired, render the desktop scroll
-          controls. The previous mobile-only right-side arrow is gone (V2-D66)
-          since the inline circled arrow next to the title now serves that role. */}
-      {linkPlacement === "inline" ? null : link && scrollRef ? (
-        <>
-          {/* Desktop — two emerald-on-cream circle scroll buttons */}
-          <div className="hidden md:flex shrink-0 items-center gap-2">
-            <ScrollCircleButton
-              direction="left"
-              disabled={!canScrollLeft}
-              onClick={() => scrollByPercent(-1)}
-            />
-            <ScrollCircleButton
-              direction="right"
-              disabled={!canScrollRight}
-              onClick={() => scrollByPercent(1)}
-            />
-          </div>
-        </>
-      ) : link ? (
-        <Link
-          href={link.href}
-          className="shrink-0 font-body text-[13px] font-semibold text-s-ink transition-colors hover:text-s-ink"
-        >
-          {link.label}
-        </Link>
-      ) : null}
+      {/* The right-hand cluster. Desktop keeps its two scroll circles when a scrollRef is wired;
+          the see-all circle sits after them and renders at every width. */}
+      {linkPlacement === "inline" ? null : (
+        <div className="flex shrink-0 items-center gap-2">
+          {link && scrollRef ? (
+            <div className="hidden md:flex shrink-0 items-center gap-2">
+              <ScrollCircleButton
+                direction="left"
+                disabled={!canScrollLeft}
+                onClick={() => scrollByPercent(-1)}
+              />
+              <ScrollCircleButton
+                direction="right"
+                disabled={!canScrollRight}
+                onClick={() => scrollByPercent(1)}
+              />
+            </div>
+          ) : null}
+          {link ? <SeeAllCircle href={link.href} label={link.label} /> : null}
+        </div>
+      )}
     </div>
+  );
+}
+
+/**
+ * The see-all control. A circle on the right of a section heading.
+ *
+ * mockup-ok , owner 2026-08-10: "I want that to be on the right side and also, like, inside of,
+ * like, a little circle... more, like, Airbnb type stuff, more modern."
+ *
+ * GROUNDED, NOT INVENTED (taste rule 9). Every value here is lifted off `ScrollCircleButton` in
+ * this same file, which is the system's existing circle control: 36px, `rounded-full`, white fill,
+ * `border-s-border` hairline, ink glyph, icon 16 at strokeWidth 2.25, the 200ms glide, the 0.94
+ * press with its 80ms window. Nothing new was chosen. That matters because a section heading now
+ * has ONE circle grammar rather than two that merely resemble each other (FLOORS LAW 8).
+ *
+ * The 36px circle is wrapped in a 44px grid cell rather than being grown to 44px: the visual size
+ * has to stay in proportion to an 18-20px heading, and the touch-target floor (design contract,
+ * "touch target" row, interactive controls >= 44px) is not negotiable, so the hit area is the
+ * wrapper and the circle is what you see. `ScrollCircleButton` itself is a bare 36px, below that
+ * floor; it is desktop-only (`hidden md:flex`) so a pointer is aiming at it, not a thumb. This
+ * control is on mobile, so it does not get the same pass.
+ *
+ * NO focus classes here, deliberately. The global `a:focus-visible` ink edge in globals.css
+ * already covers every link, and the design contract's focus row says primitives add no extra
+ * outline. A per-component ring is the thing the owner has rejected three times and an armed gate
+ * refuses.
+ *
+ * The label survives as `aria-label` only. It read "Alle entdecken →" and carried a literal arrow
+ * INSIDE the string, which the icon now draws.
+ */
+function SeeAllCircle({ href, label }: { href: string; label: string }) {
+  return (
+    <Link href={href} aria-label={label} className="group grid h-11 w-11 shrink-0 place-items-center">
+      <span
+        className={cn(
+          "grid h-9 w-9 place-items-center rounded-full", // mockup-ok: ScrollCircleButton geometry
+          "border border-s-border bg-white text-s-ink", // mockup-ok
+          "transition-[colors,transform] duration-200 ease-glide", // mockup-ok
+          "group-hover:border-s-ink/30",
+          "group-active:scale-[0.94] group-active:duration-[80ms]", // mockup-ok
+        )}
+      >
+        <ChevronRight size={16} strokeWidth={2.25} aria-hidden />
+      </span>
+    </Link>
   );
 }
 
@@ -325,22 +336,31 @@ export function FeedZone({
         // 80px above an 18-20px section h2 = 4× ratio, dominates the title.
         // Drop to mt-12 mobile / mt-8 desktop (48/32px) — ratio settles ~2.5×.
         "mt-12 md:mt-8",
-        "rounded-t-[28px] md:rounded-t-[40px]",
-        // V2-D67-fu17 (2026-05-17): reverted V2-D67-fu15 tint per user "ditch ts".
-        // Back to V2-D65 transparent FeedZone — atmosphere reads at full chroma
-        // below the cards. Shadow RGB kept as ink.
-        // RANGE_LAW A-shadow (2026-07-25): border-white/40 was written when this panel
-        // overlapped a COLORED Hero (V3-D145 comment above); the B&W pivot made Hero and
-        // this panel both flat #FFFFFF, so a white-on-white 40%-alpha border composites to
-        // zero and the panel's only boundary cue left was its 4%-alpha shadow, exactly the
-        // "white card with only a 4% shadow on white is invalid" case in FLOORS LAW 4.
-        // Swapped to the one locked hairline token (border-s-border, design contract
-        // "hairline" row) per FLOORS LAW 4(c) "on white keep the hairline". Shadow value
-        // and direction left untouched, it still reads as the panel rising over Hero.
-        // mockup-ok: task-directed edge-visibility fix (RANGE_LAW / FLOORS LAW 4c), a
-        // token-only border-color swap, no radius/shadow/layout value changed.
-        "border-t border-s-border",
-        "shadow-[0_-12px_32px_rgba(26,18,9,0.04)] md:shadow-[0_-16px_40px_rgba(26,18,9,0.05)]",
+        // mockup-ok , owner 2026-08-10, verbatim: "I want you to remove one thing. Is that, like,
+        // this line, how do you say that? And I want it to be, like, white, instead of, like,
+        // whatever it is, divided thing is."
+        //
+        // MEASURED on the live page before removing anything, so this is a deletion with numbers
+        // behind it rather than a guess at which class he meant: this element's own background is
+        // rgba(0,0,0,0), the section directly above it is rgba(0,0,0,0), and the nearest painted
+        // ancestor is rgb(255,255,255). Both sides of the "divider" were ALREADY white. The three
+        // classes that used to sit here , `rounded-t-[28px] md:rounded-t-[40px]`, `border-t
+        // border-s-border` (1px #E4E4E7, measured at y=204) and the upward
+        // `shadow-[0_-12px_32px_rgba(26,18,9,0.04)]` , were the entire "divided thing", drawing a
+        // panel edge around nothing.
+        //
+        // FLOORS LAW 4 (edge visibility) does not collide with this, which is worth saying out
+        // loud rather than quietly overriding: that floor bounds ELEVATED CONTAINERS, and this
+        // element is a transparent wrapper with no fill of its own. There is no container here to
+        // give an edge to. The radius goes with the border because a 28px corner on a transparent
+        // box renders nothing at all, and leaving it would be a comment claiming a panel exists.
+        // The `mt-12` gap stays: the breathing room was never the complaint.
+        // What used to be here, kept as a record so the reasoning is not lost with the classes:
+        // the border was added 2026-07-25 under RANGE_LAW A-shadow, because when the B&W pivot
+        // made Hero and this panel both flat #FFFFFF the panel's only remaining cue was a 4%
+        // shadow, which FLOORS LAW 4 calls invalid. That fix was right FOR A PANEL. His answer on
+        // 2026-08-10 is that there should not be a panel here at all.
+        // V2-D67-fu17 (2026-05-17): reverted V2-D67-fu15 tint per user "ditch ts". Transparent.
         // V2-D49n-fu7 (2026-05-10): bottom padding cut from pb-12/20 → pb-4/6
         // so the FeedZone's glass panel flows right into the footer instead
         // of leaving a 96px cream gap.

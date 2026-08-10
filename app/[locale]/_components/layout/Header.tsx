@@ -100,24 +100,11 @@ const CATEGORY_SEARCH_SEGMENTS = [
 ] as const;
 type CategorySearchSegment = (typeof CATEGORY_SEARCH_SEGMENTS)[number];
 
-// V3-D364 (2026-05-29): the category bar that lives IN the header's mobile middle
-// slot (between the logo and the hamburger) at the top of category routes - per
-// repeated user request ("the red box"). Mirrors SearchTemplate's CATEGORY_PILLS
-// (coiffeur / barbershop / nails / spa; icons under /public/icons/categories).
-// "home" entry, first and pinned (mockup public/_mockups/home-v3/search-a.html:902-906,
-// owner: "we need to have a home or something all the way on the left, so there is a
-// home page, so they can actually go to the home page instead of being stuck in
-// whatever category"). No PNG exists for it, it renders the real Lucide house glyph.
-const HEADER_CATEGORIES: { slug: string; route: string; label: string; iconSrc?: string; home?: boolean }[] = [
-  { slug: "home", route: "", label: "All", home: true },
-  { slug: "coiffeur", route: "coiffeur", label: "Coiffeur", iconSrc: "/icons/categories/scissors.png" },
-  { slug: "barbershop", route: "barbershop", label: "Barber", iconSrc: "/icons/categories/clippers.png" },
-  { slug: "nails", route: "nails", label: "Nails", iconSrc: "/icons/categories/nails.png" },
-  { slug: "spa", route: "spa", label: "Spa", iconSrc: "/icons/categories/spa.png" },
-  // 2026-08-01 (home-v3 mockup, search-a.html:915): last pill, same icon-treatment (31x31 PNG,
-  // no restyle). Mockup reuses the existing map.png rather than a new asset; matched literally.
-  { slug: "inspo", route: "inspo", label: "Inspo", iconSrc: "/icons/categories/map.png" },
-];
+// V3-D364 (2026-05-29): the category bar that used to live IN the header's mobile middle
+// slot. MOVED 2026-08-10 (owner ask, pill row now renders below the search bar, not above
+// it): HEADER_CATEGORIES + the row's JSX now live in ./CategoryPillRow.tsx, mounted directly
+// after the search pill on each route that owns one (page.tsx, search/SearchTemplate.tsx,
+// inspo/page.tsx) instead of as a sibling of this header. See that file's header comment.
 
 /**
  * DropdownMenu, header dropdown nav item with hover-to-open behavior.
@@ -370,17 +357,9 @@ export default function Header({ locale }: { locale: string }) {
   // header switches to dark navy with light text. Matches the Hims pattern
   // the user pointed at in IMG_4285 ("header color changes too").
   const [tone, setTone] = React.useState<"light" | "dark">("light");
-  // mockup-ok: public/_mockups/home-v3/search-a.html .sa-cat.is-pressed / the pointerdown handler
-  // beneath it. JS-held press state for the category pill, NOT :active (iOS Safari never fires
-  // :active on a tap unless the element carries a touch listener, so a CSS-only press window is
-  // zero-length). Held for 220ms to match the pill's own transition duration.
-  const [pressedCategory, setPressedCategory] = React.useState<string | null>(null);
-  const handleCategoryPress = (slug: string) => {
-    setPressedCategory(slug);
-    window.setTimeout(() => {
-      setPressedCategory((prev) => (prev === slug ? null : prev));
-    }, 220);
-  };
+  // The category-pill press state (pressedCategory/handleCategoryPress) moved to
+  // ./CategoryPillRow.tsx 2026-08-10 along with the row itself, see the note above
+  // HEADER_CATEGORIES used to sit.
 
   // V3-D215 (verifier #1): pathname guard, only hide-on-scroll on salon-detail
   // PDPs (path matches `/{locale}/salon/{slug}`). Computed once per render.
@@ -987,148 +966,6 @@ export default function Header({ locale }: { locale: string }) {
         </div>
       </div>
     </header>
-      {/* V3-D421k: category-tab row, full-width scrollable pills on their OWN row
-          below the utility row (home, city, menu). Mobile only (desktop uses the
-          dropdown nav). Right-edge fade signals "more categories scroll".
-          OVERRIDE 2026-08-01 (owner, live and literal, "why is the category pills still
-          sticky? What the fuck are you doing bro? No."): this row used to render INSIDE the
-          sticky header above, so it stayed pinned to the top through the whole 0-60px
-          pre-collapse scroll window, which IS being sticky regardless of the eventual fold.
-          It is now a plain, non-sticky SIBLING of the header instead, rendered in normal
-          document flow, so it scrolls away with the page from the very first pixel of
-          scroll like any other content. The header itself is forced to position:static on
-          mobile for every route that shows this row (see the
-          `showCategoryChrome && "max-md:!static"` class on the header above), so there is
-          exactly one pinned element left on these routes: the search pill
-          (HomeSearchPill.tsx / SearchTemplate.tsx's own sticky top-0). This supersedes both
-          the old "folds away with the whole header" note and the "home stays permanently
-          sticky, intentional deviation" note this comment used to carry, neither applies
-          now that the row does not pin at all. */}
-      {showCategoryChrome && (
-        <div
-          className={cn(
-            "md:hidden mx-auto mt-3 max-w-[1280px] px-4",
-            // This row is no longer a child of the sticky header (moved out per the
-            // override above), so there is no ancestor pointer-events:none box to opt back
-            // into, but the menuOpen-hide behavior it always had stays unchanged.
-            menuOpen ? "pointer-events-none opacity-0" : "pointer-events-auto",
-          )}
-        >
-          <div
-            role="tablist"
-            aria-label="Kategorien"
-            className="flex items-center gap-3 overflow-x-auto scrollbar-none pt-3 pb-3.5"
-            style={{
-              scrollbarWidth: "none",
-              WebkitMaskImage: "linear-gradient(90deg, #000 90%, transparent)",
-              maskImage: "linear-gradient(90deg, #000 90%, transparent)",
-            }}
-          >
-            {HEADER_CATEGORIES
-              // No .sort() to the front here (was here, removed): an entity that appears on
-              // more than one screen must render the same way on each, so a row that
-              // reshuffles the active pill to the front puts the same pill in a different
-              // place every time, which is the cross-screen inconsistency FLOORS LAW 8 exists
-              // to stop. Literal array order, always.
-              .map((c) => {
-                // I8: "inspo" is deliberately outside CATEGORY_SEARCH_SEGMENTS (that union also
-                // drives category/search-route-only behavior, see the showCategoryChrome comment
-                // above), so categorySegment never equals "inspo". isDiscover is the real
-                // /inspo-route check; without this branch the Inspo pill could never show
-                // selected on its own page.
-                const isActive = c.home ? isHome : c.slug === "inspo" ? isDiscover : c.slug === categorySegment;
-                return (
-                  <Link
-                    key={c.slug}
-                    href={c.home ? `/${locale}` : `/${locale}/${c.route}`}
-                    role="tab"
-                    aria-selected={isActive}
-                    onPointerDown={() => handleCategoryPress(c.slug)}
-                    onMouseDown={() => handleCategoryPress(c.slug)}
-                    onTouchStart={() => handleCategoryPress(c.slug)}
-                    className={cn(
-                      // mockup-ok: public/_mockups/home-v3/search-a.html .sa-cat. 1:1 STRUCTURE,
-                      // not just 1:1 values: the pill itself carries no fill and no shadow, only
-                      // position + isolation, so it can host two absolutely-positioned overlay
-                      // spans (below) at z-[-1] that hold the actual raised/sunken fills and
-                      // cross-fade on opacity. Border stays fully removed per the owner's last
-                      // pass: a control carrying elevation drops its border, never both.
-                      "relative isolate inline-flex h-10 shrink-0 items-center gap-1 rounded-[40px] px-3.5 bg-transparent", // mockup-ok
-                      "font-body text-[14px] font-normal leading-none text-s-ink", // mockup-ok
-                      "transition-transform duration-[220ms] ease-[cubic-bezier(0.1,0.9,0.2,1)]", // mockup-ok
-                      "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
-                      // NO WEIGHT CHANGE ON SELECT. Owner 2026-07-31: "I don't really like how the
-                      // text gets bold once you click it, it looks so weird and off. Don't never
-                      // do that shit ever again." Measured on airbnb.ch at vw=390 the same day:
-                      // their SELECTED tab renders font-weight 400, identical to its unselected
-                      // siblings. They never change weight on selection. So font-semibold stays
-                      // out; the fill cross-fade below is the whole selection signal, which is
-                      // what the design contract locked anyway (selected = bg-s-bg-sunken +
-                      // text-s-ink). The contract's trailing "+ semibold" clause is the part he
-                      // rejected, and this line is the dated supersession of it.
-                      //
-                      // Press feedback, JS-held for the full 220ms via handleCategoryPress above.
-                      // A CSS-only press window on an iOS tap with no touch listener is zero-length,
-                      // so a held class is the fix that worked on an earlier chevron probe with the
-                      // identical symptom.
-                      pressedCategory === c.slug && "scale-[0.96]", // mockup-ok
-                    )}
-                  >
-                    {/* mockup-ok: the two overlay layers, copied 1:1 off search-a.html
-                        .sa-cat::before / .sa-cat::after. They cross-fade on opacity over the same
-                        220ms curve as the press, so selecting a pill is one shadow dissolving into
-                        another rather than a box-shadow swap. Shadow values copied VERBATIM off
-                        the mockup's --lift-raised / --lift-sunken, not retyped or simplified.
-                        Raised: 7 layers, 3 inset. Sunken: 9 layers, 5 inset. */}
-                    <span
-                      aria-hidden
-                      className={cn(
-                        "pointer-events-none absolute inset-0 z-[-1] rounded-[inherit] bg-white transition-opacity duration-[220ms] ease-[cubic-bezier(0.1,0.9,0.2,1)]", // mockup-ok
-                        isActive ? "opacity-0" : "opacity-100", // mockup-ok
-                      )}
-                      style={{
-                        boxShadow:
-                          "rgba(0,0,0,0.10) 0 3px 2.5px 0, rgba(0,0,0,0.15) 0 1px 1px 0, rgba(0,0,0,0.15) 0 0.8px 0.4px 0, rgb(255,255,255) 0 1px 1.5px 0 inset, rgba(58,58,58,0.02) 0 10px 15px 0 inset, rgba(255,255,255,0.6) 0 -1.5px 0.8px 0 inset, rgba(0,0,0,0.30) 0 -1.5px 0.75px 0 inset",
-                      }}
-                    />
-                    <span
-                      aria-hidden
-                      className={cn(
-                        "pointer-events-none absolute inset-0 z-[-1] rounded-[inherit] bg-s-bg-sunken transition-opacity duration-[220ms] ease-[cubic-bezier(0.1,0.9,0.2,1)]", // mockup-ok
-                        isActive ? "opacity-100" : "opacity-0", // mockup-ok
-                      )}
-                      style={{
-                        boxShadow:
-                          "rgb(255,255,255) 0 1px 0.5px 0, rgba(0,0,0,0.15) 0 -0.5px 1px 0, rgba(0,0,0,0.05) 0 -1.2px 0.5px 1px, rgba(0,0,0,0.05) 0 8px 16px 0, rgb(255,255,255) -0.2px -1px 1px 0 inset, rgba(0,0,0,0.20) 0.5px 0.7px 2.5px 0 inset, rgba(0,0,0,0.05) -1px -3px 8px 0 inset, rgba(0,0,0,0.10) 0.5px 2px 4px 0 inset, rgba(0,0,0,0.10) 1px 6px 6px 2px inset",
-                      }}
-                    />
-                    {c.home ? (
-                      // Lucide house glyph, not a PNG (mockup search-a.html:906,944-949).
-                      // lucide-react's `Home` export IS house.js under the hood, same glyph
-                      // the mockup inlines. Boxed to 31x31, the same footprint as the PNG
-                      // category icons beside it, so the row's icons stay one size.
-                      <span
-                        aria-hidden
-                        className="grid h-[31px] w-[31px] shrink-0 place-items-center"
-                      >
-                        <Home size={24} strokeWidth={strokeForSize(24)} />
-                      </span>
-                    ) : (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={c.iconSrc}
-                        alt=""
-                        className="h-[31px] w-[31px] shrink-0 object-contain"
-                        aria-hidden
-                      />
-                    )}
-                    {c.label}
-                  </Link>
-                );
-              })}
-          </div>
-        </div>
-      )}
     <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} locale={locale} loggedIn={loggedIn} />
     </>
   );

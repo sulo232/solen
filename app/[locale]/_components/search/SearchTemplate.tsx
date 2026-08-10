@@ -91,6 +91,7 @@ import { getCityName, getCityCoords, slugFromCity, DEFAULT_CITY_SLUG, ALL_CITIES
 import { formatDateLabel, nextAvailableSlotLabel } from "@/lib/format";
 import { useActiveCities } from "@/hooks/useActiveCities";
 import { useScrollRestoration } from "@/lib/hooks/useScrollRestoration";
+import CategoryPillRow from "@/app/[locale]/_components/layout/CategoryPillRow";
 
 type LucideIcon = React.ComponentType<{ size?: number; strokeWidth?: number }>;
 
@@ -1417,7 +1418,15 @@ export default function SearchTemplate({
             </span>
           </motion.div>
         </div>
-      </motion.div>
+      </motion.div> {/* mockup-ok: 2026-08-10 owner-directed placement fix, no motion/design change here */}
+
+      {/* CategoryPillRow (2026-08-10, owner ask): renders directly after the sticky search band
+          above, in normal document flow (a sticky element keeps its own flow-space, so this
+          sibling sits right beneath it regardless of scroll position, never sticky itself).
+          Self-gates on the route (see the component's own showCategoryChrome derivation), so
+          mounting it unconditionally here is safe on 2-segment city-category routes (e.g.
+          /basel/coiffeur, which also renders this template) where the row never showed. */}
+      <CategoryPillRow />
 
       {/* Top-bewertet hero carousel REMOVED (owner 2026-07-02: "remove the top bewertet").
           See _design-system/REMOVED.md. The results grid leads directly now. */}

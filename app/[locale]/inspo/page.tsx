@@ -9,6 +9,7 @@ import ItemCard from "@/components-legacy/discovery/ItemCard";
 import VideoCard from "@/components-legacy/discovery/VideoCard";
 import DiscoverySearchBar from "@/components-legacy/discovery/SearchBar";
 import HomeSearchPill from "@/app/[locale]/_components/homepage/HomeSearchPill";
+import CategoryPillRow from "@/app/[locale]/_components/layout/CategoryPillRow";
 import DiscoveryGridSkeleton from "@/components-legacy/discovery/DiscoveryGridSkeleton";
 import DiscoveryEmptyState from "@/components-legacy/discovery/DiscoveryEmptyState";
 import ProfileSetupModal from "@/components-legacy/discovery/ProfileSetupModal";
@@ -535,6 +536,17 @@ function DiscoverPageContent() {
               )}
             </div>
           )}
+        </div>
+
+        {/* CategoryPillRow (2026-08-10, owner ask): directly after the search pill above, both in
+            the focused and resting state (the row itself was never gated on this page's local
+            search-focus state, it lived at a different layout level entirely before this
+            extraction, so this placement preserves that always-visible behavior). `-mx-4` cancels
+            this page's own `max-w-7xl mx-auto px-4` container inset, matching the same
+            compensation the HomeSearchPill block above already uses, so the row lands at the same
+            16px edge inset as every other route instead of doubling up to 32px. */}
+        <div className="-mx-4">
+          <CategoryPillRow />
         </div>
 
         {/* mockup-ok: owner-directed literal placement fix (live, dated below), no new visual token, an
