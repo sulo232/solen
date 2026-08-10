@@ -78,7 +78,7 @@ Reference CAPTURED: `_design-system/references/qonto--onboarding.md`, live from 
       I edited the real header three times today without showing him anything first. The mockup now
       exists at `/de/dev/auth-flow` and nothing in it is wired.
 
-- [x] **CORRECTION 2026-08-10, the screenshots and the grey.** Verbatim: *"I literally attached
+- [x] **CORRECTION 2026-08-10, the screenshots and the grey.** `verified: 7d632d86f  app/[locale]/dev/auth-flow/page.tsx:60` Verbatim: *"I literally attached
       screenshots from the mobbin, but you didn't even look at it and just fucking make the shit
       up... why the fuck did you make the background fucking grey? Did you look at the fucking
       screenshot?"* `verified: 9cbac0fc8  ~/.claude/hooks/save-owner-images.py`
@@ -89,7 +89,7 @@ Reference CAPTURED: `_design-system/references/qonto--onboarding.md`, live from 
 - [x] **CORRECTION 2026-08-10, the glyph.** Verbatim: *"not, like, an arrow. Like, I want, like, a
       good triangle."* It is a CHEVRON. The capture said "bare chevron" in writing and I built an
       arrow. `verified: 9cbac0fc8  app/[locale]/dev/auth-flow/page.tsx:33`
-- [ ] **CORRECTION 2026-08-10, use subagents.** Verbatim: *"He uses sub agents accounts so why the
+- [x] **CORRECTION 2026-08-10, use subagents.** `verified: 0955431a6` , a reader measured the mockup against his screenshots and found seven differences plus one invented control. It should have run before I built, not after two rejections. Verbatim: *"He uses sub agents accounts so why the
       fuck are you not doing that?"* Open: a council is running on this turn's changes, and the
       standing answer is that a reference should go to a reader BEFORE I build from it, not after
       he rejects it.

@@ -1614,3 +1614,36 @@ must be the screen's largest single element and must show the THING being bought
 These are FLOORS, not targets. Nothing here licenses decoration, fake data, or a second ink CTA; the
 existing ceilings (4 sizes, 2 weights, sparse blue, no decorative artifacts) all still bind.
 
+
+
+---
+
+## NAV CONTROLS , back, close, menu (LOCKED 2026-08-10, owner, measured)
+
+Frozen because we shipped TWO shapes for one control and he had to catch it. The header drew a 44px
+square with 16px corners; the booking flow drew a 40px bare glyph with no fill, no border and no
+shadow. Neither matched the reference he sent.
+
+| control | shape | size | glyph | fill | edge |
+|---|---|---|---|---|---|
+| **back** | circle | 44 | **`ChevronLeft`, NEVER `ArrowLeft`** | white | shadow only |
+| **close** | **pill with the word**, never a bare X | 68 x 44 | the word "Close" | white | shadow only |
+| **menu** | **SQUARE** (`rounded-input`) | 44 | `Menu` | white | shadow |
+
+**His words, so it is not re-derived:** *"the back button maybe, like, a circle... and, also, like,
+shadow"*, then *"hamburger mini, make it, keep it fucking square"*, then *"I wanna get, like, not,
+like, an arrow. Like, I want, like, a good triangle"*, then *"the close button to not be an X close,
+like, written close and also like a shadow and like a pill"*.
+
+**THE SHADOW CLASS IS `shadow-elevation-2`.** There is no `shadow-elevation`. It is not a real class
+here and Tailwind resolves it to NOTHING, silently: on 2026-08-10 the back button shipped with no
+shadow and no border because of that one missing suffix, and it read as a bare glyph floating on
+white. The real names are `whisper`, `elevation-1`, `elevation-2`, `elevation-3`.
+
+**The page underneath decides whether a shadow is enough.** Measured off his own reference: their
+page is **#F6F6F6** and white covers only 6 to 20 percent of a screen. A shadow separates a white
+circle from grey. On our white pages it is close to invisible, which is the grey-haze the surface
+table already bans. So: shadow alone on a grey or photographic surface, and on plain white either
+add the hairline or move the surface to sunken.
+
+Reference, measured not recalled: `_design-system/references/qonto--onboarding.md`.
