@@ -107,3 +107,24 @@ Build order = HIGH impact first. (arch/behavior/copy items are DECISIONS, not A/
 ## Notes
 - Mechanical/objective drift (token/radius/shadow/em-dash/states/touch-target) is NOT a mockup , it's a fix-now (see FRONTEND_SWEEP.md). Only genuine DESIGN CHOICES get a mockup.
 - Each mockup = an A/B(/C) probe with a recommendation, for the owner to pick, then apply the pick.
+
+---
+
+## V3 REMAINDER (opened 2026-08-10, after the disk was checked instead of the checkboxes)
+
+The v2 list above reads 41 done / 1 open. The DISK says something else: 51 `sweep-*` mockups exist and
+only **11** carry the v2 injection format. The other 40 are still the sparse hand-drawn After the owner
+rejected. Many v2 ticks above are honest but mean "this item was RESOLVED", usually by rerouting it to a
+straight code fix, not "the mockup was rebuilt". `MOCKUP_FORMAT_CORRECTION.md:22` has been carrying
+"REBUILD ALL 39 in FORMAT v2" open since 2026-07-19.
+
+- [ ] V3-A. **Reviews directions A/B/C, built and shown.** Owner asked by name: *"where are the
+  directions mockup?"* (`MOCKUP_ROOTCAUSE.md:6`). Only direction A exists
+  (`sweep-reviews-direction`, v2). B and C were described in prose and never drawn.
+  `review-directions.html` predates this (2026-06-29) and carries no A/B/C.
+- [ ] V3-B. **Triage the 40 non-v2 sweeps: still-open question, or closed?** For each, decide REBUILD
+  (the question is still live) or RETIRE-BY-NAME (the decision already shipped, so a rebuilt mockup
+  would re-ask something settled). Every retire is listed by name in this file, never dropped quietly.
+- [ ] V3-C. **Rebuild the REBUILD subset in v2 format**, one at a time, each committed.
+- [ ] V3-D. Close `MOCKUP_FORMAT_CORRECTION.md:22` once V3-B and V3-C land, since that box is the
+  same work stated a month earlier.
