@@ -601,7 +601,21 @@ export default function Header({ locale }: { locale: string }) {
               // lifts on scroll, not the buttons).
               // mockup-ok: S3 fix, 40px -> 44px floor, icon glyph size unchanged (approved fixes-refined)
               // mockup-ok: rounded snapped, punch-list geometry sweep, TASTE_LOG.md:187 2026-07-15
-              "grid h-11 w-11 shrink-0 place-items-center rounded-input border",
+              // OVERHAULED 2026-08-10, owner: "the back button and the hamburger menu too and the close
+              // too, because it was a weird fucking inside of a box thing, and I don't really like
+              // that. I want it like in the screenshot. The back button maybe a circle, or the x
+              // button, the circle too. And also, like, shadow."
+              //
+              // MEASURED before changing it: this was `rounded-input`, a 44px SQUARE with 16px
+              // corners and a hairline. That is the box. The booking flow meanwhile drew a 40px
+              // bare glyph with no fill and no border, so we shipped TWO shapes for one control.
+              //
+              // Now: a circle, white, with the whisper shadow instead of the hairline, matching
+              // the Qonto reference he attached. THE COST, put to him and unanswered: a shadowed
+              // white circle on a white page is a weaker edge than the bordered box, which is why
+              // the border is kept as well rather than swapped out. His words were "and also,
+              // like, shadow", not "instead of the border".
+              "grid h-11 w-11 shrink-0 place-items-center rounded-full border shadow-whisper",
               "transition-[opacity,border-color,background-color,transform] duration-200 ease-glide active:scale-[0.94] active:duration-[80ms]",
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               menuOpen && "opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto",
@@ -625,7 +639,21 @@ export default function Header({ locale }: { locale: string }) {
             className={cn(
               // mockup-ok: S3 fix, 40px -> 44px floor, icon glyph size unchanged (approved fixes-refined)
               // mockup-ok: rounded snapped, punch-list geometry sweep, TASTE_LOG.md:187 2026-07-15
-              "grid h-11 w-11 shrink-0 place-items-center rounded-input border",
+              // OVERHAULED 2026-08-10, owner: "the back button and the hamburger menu too and the close
+              // too, because it was a weird fucking inside of a box thing, and I don't really like
+              // that. I want it like in the screenshot. The back button maybe a circle, or the x
+              // button, the circle too. And also, like, shadow."
+              //
+              // MEASURED before changing it: this was `rounded-input`, a 44px SQUARE with 16px
+              // corners and a hairline. That is the box. The booking flow meanwhile drew a 40px
+              // bare glyph with no fill and no border, so we shipped TWO shapes for one control.
+              //
+              // Now: a circle, white, with the whisper shadow instead of the hairline, matching
+              // the Qonto reference he attached. THE COST, put to him and unanswered: a shadowed
+              // white circle on a white page is a weaker edge than the bordered box, which is why
+              // the border is kept as well rather than swapped out. His words were "and also,
+              // like, shadow", not "instead of the border".
+              "grid h-11 w-11 shrink-0 place-items-center rounded-full border shadow-whisper",
               "transition-[opacity,border-color,background-color,transform] duration-200 ease-glide active:scale-[0.94] active:duration-[80ms]",
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               menuOpen && "opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto",
@@ -799,7 +827,7 @@ export default function Header({ locale }: { locale: string }) {
               // V3-D421k (2026-06-06): rounded-SQUARE tile matching the home button.
               // V3-D421L (council 3/3): FLAT - no shadow (CONTROL_ELEVATION rule 3). Tap
               // target 40px; folds with the header on category-route scroll.
-              "md:hidden relative grid h-11 w-11 place-items-center rounded-input border transition-[transform,background-color,border-color] duration-200 ease-glide active:scale-[0.94] active:duration-[80ms] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
+              "md:hidden relative grid h-11 w-11 place-items-center rounded-full border shadow-whisper transition-[transform,background-color,border-color] duration-200 ease-glide active:scale-[0.94] active:duration-[80ms] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               isDark ? "border-white/30 bg-white/10 text-white" : "border-s-border bg-white text-s-ink",
             )}
           >
