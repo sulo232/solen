@@ -163,16 +163,16 @@ export async function GET(req: NextRequest) {
   };
   const T: Record<"de" | "en" | "fr" | "it", LangPack> = {
     de: {
-      salonFallback: "deinem Salon",
-      googleSubject: (salonName: string) => `Teile deine Erfahrung bei ${salonName} auf Google`,
-      googleTitle: "Danke für deine Bewertung!",
-      googleBody1: (salonName: string) => `Schön, dass dir dein Besuch bei <strong>${salonName}</strong> gefallen hat! Hilf anderen, diesen Salon zu entdecken, eine Google-Bewertung macht einen grossen Unterschied.`,
+      salonFallback: "Ihrem Salon",
+      googleSubject: (salonName: string) => `Teilen Sie Ihre Erfahrung bei ${salonName} auf Google`,
+      googleTitle: "Danke für Ihre Bewertung!",
+      googleBody1: (salonName: string) => `Schön, dass Ihnen Ihr Besuch bei <strong>${salonName}</strong> gefallen hat! Helfen Sie anderen, diesen Salon zu entdecken, eine Google-Bewertung macht einen grossen Unterschied.`,
       googleBtn: "Auf Google bewerten",
-      solenSubject: (salonName: string) => `Wie war dein Besuch bei ${salonName}?`,
-      solenTitle: "Wie war dein Besuch?",
-      solenBody1: (salonName: string) => `Wir hoffen, du hattest einen tollen Besuch bei <strong>${salonName}</strong>. Dein Feedback hilft anderen bei der Entscheidung!`,
+      solenSubject: (salonName: string) => `Wie war Ihr Besuch bei ${salonName}?`,
+      solenTitle: "Wie war Ihr Besuch?",
+      solenBody1: (salonName: string) => `Wir hoffen, Sie hatten einen tollen Besuch bei <strong>${salonName}</strong>. Ihr Feedback hilft anderen bei der Entscheidung!`,
       solenBtn: "Jetzt bewerten",
-      signature: "Dein Solen Team",
+      signature: "Ihr Solen Team",
       greeting: (name: string) => `Hallo ${name},`,
     },
     en: {

@@ -95,11 +95,11 @@ const CITY_CATEGORY_FAQ_COPY: Record<
     items: (cityName, categoryName) => [
       {
         q: `Wie viel kostet ein Besuch bei einem ${categoryName} in ${cityName}?`,
-        a: "Die Preise variieren je nach Store und Service. Nutze unsere Filterfunktion um Stores nach Preisbereich zu vergleichen.",
+        a: "Die Preise variieren je nach Store und Service. Nutzen Sie unsere Filterfunktion, um Stores nach Preisbereich zu vergleichen.",
       },
       {
         q: `Wie finde ich den besten ${categoryName} in ${cityName}?`,
-        a: "Schau dir die Bewertungen an, vergleiche die Preise und lese die Erfahrungen anderer Kunden.",
+        a: "Schauen Sie sich die Bewertungen an, vergleichen Sie die Preise und lesen Sie die Erfahrungen anderer Kunden.",
       },
       {
         q: "Kann ich online einen Termin buchen?",

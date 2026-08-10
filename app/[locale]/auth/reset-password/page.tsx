@@ -87,7 +87,7 @@ export default function ResetPasswordPage() {
           </p>
           <p className="font-heading text-xl text-s-ink">Passwort geändert</p>
           <p className="text-xs font-body text-s-ink-2 mt-2">
-            Du wirst zur Anmeldung weitergeleitet…
+            Sie werden zur Anmeldung weitergeleitet…
           </p>
         </div>
       </div>
@@ -125,7 +125,7 @@ export default function ResetPasswordPage() {
             </p>
             <p className="font-heading text-lg text-s-ink">Neues Passwort</p>
             <p className="text-xs font-body text-s-ink-2 mt-1">
-              Wähle ein neues Passwort für dein Konto.
+              Wählen Sie ein neues Passwort für Ihr Konto.
             </p>
           </div>
 

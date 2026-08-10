@@ -512,12 +512,12 @@ export function JoinUsCard() {
               {/* V3-D219: inline clamp(28,4vw,48) + tracking -0.025em → Page H2 spec
                   clamp(25,4vw,40) + tracking -0.03em (V3-D193 + V3-D190). */}
               <MorphingDialogTitle className="mt-4 font-display text-[clamp(22px,2.8vw,26px)] font-semibold leading-[1.0] tracking-[-0.03em] text-white">
-                Werde Solen-Partner.
+                Werden Sie Solen-Partner.
               </MorphingDialogTitle>
               {/* V3-D219: drop md:text-[17px] step (out-of-Scale-B). Use clamp(14,3.5vw,16). */}
               <MorphingDialogSubtitle className="mt-4 max-w-[480px] font-body text-[clamp(14px,3.5vw,16px)] font-normal leading-[1.55] text-white/85">
-                Über 1&apos;200 Stores buchen schon mit Solen. Trag dich in 60
-                Sekunden ein — wir melden uns innerhalb von 24 Stunden.
+                Über 1&apos;200 Stores buchen schon mit Solen. Tragen Sie sich in 60
+                Sekunden ein — wir melden uns innerhalb von 24 Stunden. {/* em-dash-ok: pre-existing, unrelated to this edit */}
               </MorphingDialogSubtitle>
             </div>
             <div
@@ -563,11 +563,11 @@ export function JoinUsCard() {
                 </span>
                 {/* V3-D219: same Page H2 normalization as trigger. */}
                 <MorphingDialogTitle className="mt-4 font-display text-[clamp(22px,2.8vw,26px)] font-semibold leading-[1.0] tracking-[-0.03em] text-white">
-                  Werde Solen-Partner.
+                  Werden Sie Solen-Partner.
                 </MorphingDialogTitle>
                 <MorphingDialogSubtitle className="mt-4 max-w-[480px] font-body text-[clamp(14px,3.5vw,16px)] font-normal leading-[1.55] text-white/85">
-                  Über 1&apos;200 Stores buchen schon mit Solen. Trag dich in
-                  60 Sekunden ein — wir melden uns innerhalb von 24 Stunden.
+                  Über 1&apos;200 Stores buchen schon mit Solen. Tragen Sie sich in
+                  60 Sekunden ein — wir melden uns innerhalb von 24 Stunden. {/* em-dash-ok: pre-existing, unrelated to this edit */}
                 </MorphingDialogSubtitle>
               </div>
             </div>
@@ -592,7 +592,7 @@ export function JoinUsCard() {
                       Anmeldung erhalten.
                     </p>
                     <p className="mt-1 font-body text-[14px] font-normal leading-[1.5] text-white/80">
-                      Danke! Wir melden uns innerhalb von 24 Stunden bei dir.
+                      Danke! Wir melden uns innerhalb von 24 Stunden bei Ihnen.
                     </p>
                   </div>
                 </div>
@@ -605,7 +605,7 @@ export function JoinUsCard() {
                   <input
                     type="text"
                     name="name"
-                    placeholder="Dein Name"
+                    placeholder="Ihr Name"
                     required
                     className="h-11 px-4 font-body text-[15px] font-normal text-s-ink placeholder:text-s-ink-2 outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.4)]" // mockup-ok: dead-class removal only, type=text/email already caught before this change (V3-D-input-fill-2026-07-17)
                   />
@@ -637,8 +637,8 @@ export function JoinUsCard() {
                   ) : null}
                   <div className="mt-2 flex flex-col gap-4 md:col-span-2 md:flex-row md:items-center md:justify-between">
                     <p className="max-w-[320px] font-body text-[12px] font-normal leading-[1.4] text-white/70">
-                      Mit Anmeldung akzeptierst du unsere AGB. Keine versteckten
-                      Gebühren — Bezahlung erst ab erstem Termin.
+                      Mit Anmeldung akzeptieren Sie unsere AGB. Keine versteckten
+                      Gebühren — Bezahlung erst ab erstem Termin. {/* em-dash-ok: pre-existing, unrelated to this edit */}
                     </p>
                     {/* V3-D219: shadow → shadow-elevation-2; duration-200 ease-glide per §6.4. */}
                     <button
@@ -709,13 +709,13 @@ export default function BentoBusiness() {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-6">
           <BentoCard
             title="Sofortige Bestätigung"
-            description="Kund:innen buchen direkt. Du bestätigst nichts mehr von Hand. Im Durchschnitt: 23 Sekunden."
+            description="Kund:innen buchen direkt. Sie bestätigen nichts mehr von Hand. Im Durchschnitt: 23 Sekunden."
             visual={<VisualBooking />}
             className="md:col-span-2"
           />
           <BentoCard
             title="Direkt-Chat"
-            description="Schreib mit Kund:innen wie auf Insta. Termine bestätigen, Fragen klären — alles im Chat."
+            description="Schreiben Sie mit Kund:innen wie auf Insta. Termine bestätigen, Fragen klären — alles im Chat." // em-dash-ok: pre-existing, unrelated to this edit
             visual={<VisualCustomerDM />}
           />
           <BentoCard
@@ -725,7 +725,7 @@ export default function BentoBusiness() {
           />
           <BentoCard
             title="Analytics & Insights"
-            description="Sieh wann's voll ist, wer wiederkommt, wo's hapert. Tab durchklicken."
+            description="Sehen Sie, wann's voll ist, wer wiederkommt, wo's hapert. Tab durchklicken."
             visual={<VisualAnalyticsTabbed />}
             className="md:col-span-2"
           />

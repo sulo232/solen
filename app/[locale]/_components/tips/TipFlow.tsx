@@ -26,7 +26,7 @@ const chf = (rappen: number, locale: string) => (Number.isFinite(rappen) ? forma
 
 type Copy = Record<string, string>;
 const COPY: Record<string, Copy> = {
-  de: { choose: "Betrag wählen", custom: "Eigener", send: "Trinkgeld senden", to100: "100% geht an deinen Coiffeur", thanks: "Danke!", sent: "gesendet", sub: "freut sich. Schönen Tag!", err: "Etwas ist schiefgelaufen. Bitte erneut versuchen.", noTip: "Kein Trinkgeld diesmal" },
+  de: { choose: "Betrag wählen", custom: "Eigener", send: "Trinkgeld senden", to100: "100% geht an Ihren Coiffeur", thanks: "Danke!", sent: "gesendet", sub: "freut sich. Schönen Tag!", err: "Etwas ist schiefgelaufen. Bitte erneut versuchen.", noTip: "Kein Trinkgeld diesmal" },
   en: { choose: "Choose an amount", custom: "Custom", send: "Send tip", to100: "100% goes to your stylist", thanks: "Thank you!", sent: "sent", sub: "appreciates it. Have a great day!", err: "Something went wrong. Please try again.", noTip: "No tip this time" },
   fr: { choose: "Choisir un montant", custom: "Autre", send: "Envoyer", to100: "100% va à votre coiffeur", thanks: "Merci !", sent: "envoyé", sub: "vous remercie. Bonne journée !", err: "Une erreur est survenue. Veuillez réessayer.", noTip: "Pas de pourboire cette fois" },
   it: { choose: "Scegli un importo", custom: "Altro", send: "Invia", to100: "100% va al tuo parrucchiere", thanks: "Grazie!", sent: "inviata", sub: "ti ringrazia. Buona giornata!", err: "Qualcosa è andato storto. Riprova.", noTip: "Niente mancia stavolta" },

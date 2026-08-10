@@ -46,7 +46,7 @@ export default async function ProfileLooksPage({
         <EmptyStateDiscovery
           locale={locale}
           title="Noch keine Looks."
-          lead="Sammle Inspiration aus Store-Profilen und Inspo, hier findest du sie wieder."
+          lead="Sammeln Sie Inspiration aus Store-Profilen und Inspo, hier finden Sie sie wieder."
           bannerImg={topSalons?.[0]?.cover_photo_url ?? null}
           bannerTitle="Inspo öffnen"
           bannerSub="Frische Looks aus Basler Stores"

@@ -50,13 +50,13 @@ export default function WalkinTipPage() {
   if (expired) {
     const x =
       ({
-        de: { title: "Dieser Trinkgeld-Link ist abgelaufen.", body: "Trinkgeld bleibt 7 Tage nach deinem Besuch möglich. Beim nächsten Mal findest du es auf deinem Warteschlangen-Screen.", cta: "Zur Startseite" },
+        de: { title: "Dieser Trinkgeld-Link ist abgelaufen.", body: "Trinkgeld bleibt 7 Tage nach Ihrem Besuch möglich. Beim nächsten Mal finden Sie es auf Ihrem Warteschlangen-Screen.", cta: "Zur Startseite" },
         en: { title: "This tip link has expired.", body: "Tips stay open for 7 days after your visit. Next time it's on your queue screen.", cta: "Back to home" },
         fr: { title: "Ce lien de pourboire a expiré.", body: "Le pourboire reste possible 7 jours après ta visite. La prochaine fois, tu le trouveras sur ton écran de file d'attente.", cta: "Retour à l'accueil" },
         it: { title: "Questo link per la mancia è scaduto.", body: "La mancia resta possibile per 7 giorni dopo la tua visita. La prossima volta la trovi sulla schermata della coda.", cta: "Torna alla home" },
       } as const)[locale as "de" | "en" | "fr" | "it"] ?? {
         title: "Dieser Trinkgeld-Link ist abgelaufen.",
-        body: "Trinkgeld bleibt 7 Tage nach deinem Besuch möglich.",
+        body: "Trinkgeld bleibt 7 Tage nach Ihrem Besuch möglich.",
         cta: "Zur Startseite",
       };
     return (
@@ -76,9 +76,9 @@ export default function WalkinTipPage() {
   }
 
   const fallback =
-    ({ de: "dein Coiffeur", en: "your stylist", fr: "votre coiffeur", it: "il tuo parrucchiere" } as Record<string, string>)[
+    ({ de: "Ihr Coiffeur", en: "your stylist", fr: "votre coiffeur", it: "il tuo parrucchiere" } as Record<string, string>)[
       locale
-    ] ?? "dein Coiffeur";
+    ] ?? "Ihr Coiffeur";
   const recipientName = demo ? "Marco Bianchi" : (info?.recipientName ?? fallback);
   const contextLine = demo
     ? "Herrenschnitt Barber Brothers"

@@ -99,7 +99,7 @@ async function sendAlmostThereEmail(
     .eq("id", customerId)
     .single();
 
-  const salonName = card.salons?.name ?? "deinem Salon";
+  const salonName = card.salons?.name ?? "Ihrem Salon";
   const displayName = profile?.display_name ?? "";
 
   try {
@@ -112,18 +112,18 @@ async function sendAlmostThereEmail(
       body: JSON.stringify({
         from: "Solen <noreply@solen.ch>",
         to: email,
-        subject: `⭐ Noch 1 Besuch bis zu deiner Belohnung bei ${salonName}!`,
+        subject: `⭐ Noch 1 Besuch bis zu Ihrer Belohnung bei ${salonName}!`,
         html: `
           <div style="font-family: 'DM Sans', sans-serif; max-width: 480px; margin: 0 auto; padding: 24px;">
             <h2 style="font-family: Syne, sans-serif; color: #1A1209;">Fast geschafft!</h2>
             <p style="color: #666;">Hallo ${displayName},</p>
-            <p style="color: #666;">Du hast <strong>${card.stamps_needed - 1} von ${card.stamps_needed}</strong> Stempel bei <strong>${salonName}</strong> gesammelt.</p>
-            <p style="color: #666;">Noch <strong>1 Besuch</strong> und du bekommst: <em>${card.reward_text}</em></p>
+            <p style="color: #666;">Sie haben <strong>${card.stamps_needed - 1} von ${card.stamps_needed}</strong> Stempel bei <strong>${salonName}</strong> gesammelt.</p>
+            <p style="color: #666;">Noch <strong>1 Besuch</strong> und Sie bekommen: <em>${card.reward_text}</em></p>
             <a href="https://www.solen.ch/de/coiffeur"
               style="display: inline-block; background: #C05038; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-top: 16px;">
               Jetzt Termin buchen
             </a>
-            <p style="color: #999; font-size: 12px; margin-top: 24px;">— Dein Solen Team</p>
+            <p style="color: #999; font-size: 12px; margin-top: 24px;">— Ihr Solen Team</p>
           </div>
         `,
       }),

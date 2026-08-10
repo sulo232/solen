@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
               style="display: inline-block; background: #C05038; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-top: 16px;">
               Jetzt Termin buchen
             </a>
-            <p style="color: #999; font-size: 12px; margin-top: 24px;">— Dein Solen Team</p>
+            <p style="color: #999; font-size: 12px; margin-top: 24px;">— Ihr Solen Team</p>
           </div>
         `,
       }),

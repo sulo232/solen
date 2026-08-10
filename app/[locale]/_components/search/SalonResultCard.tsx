@@ -147,7 +147,7 @@ const WALKIN_LABEL: Record<
   string,
   { now: string; free: string; unit: string; ahead: (n: number) => string; join: string; none: string }
 > = {
-  de: { now: "Jetzt frei", free: "Frei in", unit: "Min", ahead: (n) => `${n} vor dir`, join: "Anstehen", none: "Niemand wartet" },
+  de: { now: "Jetzt frei", free: "Frei in", unit: "Min", ahead: (n) => `${n} vor Ihnen`, join: "Anstehen", none: "Niemand wartet" },
   en: { now: "Free now", free: "Free in", unit: "min", ahead: (n) => `${n} ahead`, join: "Join", none: "No one waiting" },
   fr: { now: "Libre maintenant", free: "Libre dans", unit: "min", ahead: (n) => `${n} devant`, join: "Rejoindre", none: "Personne en attente" },
   it: { now: "Libero ora", free: "Libero tra", unit: "min", ahead: (n) => `${n} prima`, join: "In fila", none: "Nessuno in attesa" },

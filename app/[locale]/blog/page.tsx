@@ -26,7 +26,7 @@ export default async function BlogPage({ params }: { params: Promise<{ locale: s
               Bald hier
             </h2>
             <p className="text-sm text-s-ink-2 leading-relaxed">
-              Unser Blog ist in Arbeit. Schon bald findest du hier Beauty-Tipps,
+              Unser Blog ist in Arbeit. Schon bald finden Sie hier Beauty-Tipps,
               Trend-Guides und Geschichten aus Stores in der ganzen Schweiz.
             </p>
           </section>

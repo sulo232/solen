@@ -38,14 +38,14 @@ import { MarketplaceVisual } from "../_components/business/MarketplaceVisual";
  */
 
 const TITLES: Record<string, string> = {
-  de: "Solen für dein Geschäft — Mehr Buchungen, weniger Aufwand",
+  de: "Solen für Ihr Geschäft — Mehr Buchungen, weniger Aufwand", // em-dash-ok: pre-existing, unrelated to this edit
   en: "Solen for your business — More bookings, less hassle",
   fr: "Solen pour ton commerce — Plus de réservations, moins d'efforts",
   it: "Solen per la tua attività — Più prenotazioni, meno fatica",
 };
 
 const DESCRIPTIONS: Record<string, string> = {
-  de: "Werde Solen-Partner. Über 1'200 Schweizer Stores nutzen Solen für sofortige Bestätigungen, Direkt-Chat, einen vollen Kalender und tiefere Insights. In 60 Sekunden anmelden.",
+  de: "Werden Sie Solen-Partner. Über 1'200 Schweizer Stores nutzen Solen für sofortige Bestätigungen, Direkt-Chat, einen vollen Kalender und tiefere Insights. In 60 Sekunden anmelden.",
   en: "Become a Solen partner. Over 1,200 Swiss stores use Solen for instant bookings, direct chat, a full calendar, and deeper insights. Sign up in 60 seconds.",
   fr: "Devenez partenaire Solen. Plus de 1 200 stores suisses utilisent Solen.",
   it: "Diventa partner di Solen. Oltre 1.200 store svizzeri usano Solen.",
@@ -106,7 +106,7 @@ const STEPS = [
   {
     n: "03",
     title: "Buchungen empfangen",
-    copy: "Kund:innen finden dich, buchen direkt. Du bestätigst nichts mehr.",
+    copy: "Kund:innen finden Sie, buchen direkt. Sie bestätigen nichts mehr.",
   },
 ];
 
@@ -119,7 +119,7 @@ const PRICING_CHECKS = [
 const FAQS: { q: string; a: string }[] = [
   {
     q: "Wie viel kostet Solen?",
-    a: "Kostenlose Anmeldung, keine Setup-Gebühr, keine monatliche Grundgebühr. Du zahlst nur pro vermitteltem Termin — fair und transparent.",
+    a: "Kostenlose Anmeldung, keine Setup-Gebühr, keine monatliche Grundgebühr. Sie zahlen nur pro vermitteltem Termin — fair und transparent.", // em-dash-ok: pre-existing, unrelated to this edit
   },
   {
     q: "Wann zahle ich?",
@@ -127,15 +127,15 @@ const FAQS: { q: string; a: string }[] = [
   },
   {
     q: "Wie lange dauert das Onboarding?",
-    a: "Anmelden in 60 Sekunden, Onboarding in 7 Tagen. Wir melden uns binnen 24 Stunden nach deiner Anmeldung.",
+    a: "Anmelden in 60 Sekunden, Onboarding in 7 Tagen. Wir melden uns binnen 24 Stunden nach Ihrer Anmeldung.",
   },
   {
     q: "Kann ich meine bestehende Kalender-Software importieren?",
-    a: "Ja. Wir unterstützen Imports aus den gängigen Schweizer Store-Systemen. Sprich uns nach der Anmeldung an.",
+    a: "Ja. Wir unterstützen Imports aus den gängigen Schweizer Store-Systemen. Sprechen Sie uns nach der Anmeldung an.",
   },
   {
     q: "Wer kümmert sich um Zahlungen?",
-    a: "Solen verarbeitet die Zahlungen sicher via Stripe. Du erhältst eine monatliche Auszahlung — Anteil deiner Wahl.",
+    a: "Solen verarbeitet die Zahlungen sicher via Stripe. Sie erhalten eine monatliche Auszahlung — Anteil Ihrer Wahl.", // em-dash-ok: pre-existing, unrelated to this edit
   },
   {
     q: "In welchen Städten ist Solen verfügbar?",
@@ -143,7 +143,7 @@ const FAQS: { q: string; a: string }[] = [
   },
   {
     q: "Muss ich Mindestkund:innen vermitteln?",
-    a: "Nein. Solen ist ein Marktplatz — du nimmst nur die Termine an, die dir passen.",
+    a: "Nein. Solen ist ein Marktplatz — Sie nehmen nur die Termine an, die Ihnen passen.", // em-dash-ok: pre-existing, unrelated to this edit
   },
 ];
 
@@ -192,7 +192,7 @@ export default async function BusinessPage() {
                   Für Stores
                 </p>
                 <h1 className="font-display text-[clamp(26px,7vw,30px)] font-semibold leading-[1.0] tracking-[-0.03em] text-white">
-                  Solen für<br />dein Geschäft.
+                  Solen für<br />Ihr Geschäft.
                 </h1>
                 <p className="mt-4 max-w-[460px] font-body text-[clamp(14px,3.5vw,16px)] font-normal leading-[1.4] tracking-[-0.025em] text-white/85">
                   Mehr Buchungen, weniger Aufwand. Vier Werkzeuge, eine Plattform.
@@ -280,8 +280,8 @@ export default async function BusinessPage() {
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2 md:items-center md:gap-16">
           <div>
             <h2 className="font-display text-[clamp(22px,2.8vw,26px)] font-semibold leading-[1.0] tracking-[-0.03em] text-s-ink">
-              Kund:innen finden dich.<br />
-              Du musst nicht akquirieren.
+              Kund:innen finden Sie.<br />
+              Sie müssen nicht akquirieren.
             </h2>
             <p className="mt-5 max-w-[460px] font-body text-[clamp(14px,3.5vw,16px)] font-normal leading-[1.55] text-s-ink-2">
               Über 1&apos;200 Schweizer Stores sind auf solen.ch sichtbar. Jeden Tag suchen Tausende Kund:innen nach Terminen — in Basel, Zürich, Bern, Lugano. {/* em-dash-ok: pre-existing, unrelated to this edit */}
@@ -290,7 +290,7 @@ export default async function BusinessPage() {
               href="/"
               className="mt-6 inline-flex items-center gap-1 font-body text-[14px] font-semibold text-s-accent transition-colors duration-150 ease-glide hover:text-s-accent-deep"
             >
-              So findest du Solen-Kund:innen
+              So finden Sie Solen-Kund:innen
               <ArrowRight size={14} strokeWidth={2.5} aria-hidden />
             </Link>
           </div>

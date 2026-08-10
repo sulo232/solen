@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     it: "Cerca store a Basilea | solen.ch",
   };
   const descriptions: Record<string, string> = {
-    de: "Finde deinen perfekten Store in Basel. Filter nach Kategorie, Verfügbarkeit und Preis.",
+    de: "Finden Sie Ihren perfekten Store in Basel. Filter nach Kategorie, Verfügbarkeit und Preis.",
     en: "Find your perfect store in Basel. Filter by category, availability and price.",
     fr: "Trouvez votre store idéal à Bâle. Filtrez par catégorie, disponibilité et prix.",
     it: "Trova il tuo store perfetto a Basilea. Filtra per categoria, disponibilità e prezzo.",

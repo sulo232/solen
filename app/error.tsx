@@ -32,8 +32,8 @@ export default function Error({
         Das war unser Fehler.
       </h1>
       <p className="mx-auto mt-3 max-w-[320px] font-body text-[14.5px] leading-relaxed text-s-ink-2">
-        Bei uns ist etwas kaputtgegangen. Deine Buchungen sind sicher, versuch
-        es gleich nochmal.
+        Bei uns ist etwas kaputtgegangen. Ihre Buchungen sind sicher, versuchen
+        Sie es gleich nochmal.
       </p>
       <div className="mt-7 flex flex-col items-center gap-4">
         <button

@@ -68,12 +68,12 @@ export default function BusinessTeaser() {
             style={{ fontSize: "clamp(25px, 4vw, 40px)" }}
           >
             Solen für<br />
-            dein Geschäft.
+            Ihr Geschäft.
           </h2>
           {/* V3-D220 (2026-05-26, /business rebuild): dropped md:text-[17px] step (out of Scale B).
               Use clamp(14,3.5vw,16) hero-sub spec from SOURCE.md §3. */}
           <p className="mt-5 max-w-[460px] font-body text-[clamp(14px,3.5vw,16px)] font-normal leading-[1.55] text-s-ink-2">
-            Mehr Buchungen, weniger Aufwand, für dein Salon-Team.
+            Mehr Buchungen, weniger Aufwand, für Ihr Salon-Team.
           </p>
           <Link
             href="/partner"

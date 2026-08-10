@@ -35,27 +35,27 @@ type Step =
 const STEPS: Step[] = [
   {
     id: "gender", kind: "chips", field: "gender",
-    q: "Wie identifizierst du dich?", sub: "Damit wir Stylist:innen & Leistungen auf dich abstimmen.",
+    q: "Wie identifizieren Sie sich?", sub: "Damit wir Stylist:innen & Leistungen auf Sie abstimmen.",
     opts: GENDER_OPTS,
   },
   {
     id: "hair", kind: "chips", field: "hair_type",
-    q: "Wie sind deine Haare?", sub: "Hilft uns, dich mit den richtigen Profis zu matchen.",
+    q: "Wie sind Ihre Haare?", sub: "Hilft uns, Sie mit den richtigen Profis zu matchen.",
     opts: HAIR_OPTS,
   },
   {
     id: "skin", kind: "chips", field: "skinType",
-    q: "Und deine Haut?", sub: "Für Gesichtsbehandlungen, Waxing & empfindliche Haut.",
+    q: "Und Ihre Haut?", sub: "Für Gesichtsbehandlungen, Waxing & empfindliche Haut.",
     opts: SKIN_OPTS,
   },
   {
     id: "categories", kind: "grid",
-    q: "Was suchst du?", sub: "Wähle, was du buchst — wir bauen deine Startseite darum.",
+    q: "Was suchen Sie?", sub: "Wählen Sie, was Sie buchen — wir bauen Ihre Startseite darum.", // em-dash-ok: pre-existing, unrelated to this edit
     opts: CATEGORY_OPTS,
   },
   {
     id: "interests", kind: "cards",
-    q: "Was interessiert dich?", sub: "Das zeigen wir dir zuerst auf deiner Startseite.",
+    q: "Was interessiert Sie?", sub: "Das zeigen wir Ihnen zuerst auf Ihrer Startseite.",
     opts: INTEREST_OPTS,
   },
 ];
@@ -112,7 +112,7 @@ export default function OnboardingFlow({ locale, redirect, customerPreferences }
       if (!res.ok) {
         const e = await res.json().catch(() => ({}));
         console.error("[Onboarding] save failed:", e?.message ?? res.status);
-        toast.error("Speichern fehlgeschlagen — du kannst es später im Profil ergänzen.");
+        toast.error("Speichern fehlgeschlagen — Sie können es später im Profil ergänzen."); // em-dash-ok: pre-existing, unrelated to this edit
       }
     } catch (err) {
       console.error("[Onboarding] save exception:", err);
@@ -137,7 +137,7 @@ export default function OnboardingFlow({ locale, redirect, customerPreferences }
             consistent with booking / walk-in / gift-card celebrations. */}
         <SuccessMark size={58} className="mb-5" />
         <h1 className="celebrate-rise text-[24px] font-semibold tracking-[-0.02em] text-s-ink" style={{ animationDelay: "0.46s" }}>Alles bereit</h1>
-        <p className="celebrate-rise text-[15px] text-s-ink-2 mt-2 max-w-[300px] leading-[1.4]" style={{ animationDelay: "0.56s" }}>Deine Solen-Startseite ist auf das zugeschnitten, was du gewählt hast.</p>
+        <p className="celebrate-rise text-[15px] text-s-ink-2 mt-2 max-w-[300px] leading-[1.4]" style={{ animationDelay: "0.56s" }}>Ihre Solen-Startseite ist auf das zugeschnitten, was Sie gewählt haben.</p>
         {picks.length > 0 && (
           <div className="flex flex-wrap justify-center gap-2 mt-5">
             {picks.map((p) => (

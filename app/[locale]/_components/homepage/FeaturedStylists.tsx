@@ -198,7 +198,7 @@ export default function FeaturedStylists() {
         {/* V3-D140-fix (2026-05-25): "Alle ansehen →" link removed per user.
             Section now caps at 4 cards with no overflow escape. If discovery
             of more stylists is needed later, re-add: link={{ label: "Alle ansehen →", href: "/stylists" }} */}
-        <SectionTitle title="Profis in deiner Nähe" />
+        <SectionTitle title="Profis in Ihrer Nähe" />
         <ul className="mt-3 flex flex-col gap-2">
           {DEMO.map((s) => {
             const tokens = CATEGORY_TOKENS[s.specialty];

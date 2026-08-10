@@ -19,7 +19,7 @@ const L: Record<string, {
   short: string; medium: string; long: string;
 }> = {
   de: {
-    banner: "Personalisiere deinen Feed", bannerSub: "Wähle deine Präferenzen für bessere Empfehlungen",
+    banner: "Personalisieren Sie Ihren Feed", bannerSub: "Wählen Sie Ihre Präferenzen für bessere Empfehlungen",
     expand: "Einrichten", genderLabel: "Styles für", textureLabel: "Haartyp", lengthLabel: "Länge",
     save: "Speichern", dismiss: "Später",
     female: "Frauen", male: "Männer", allPref: "Alle",

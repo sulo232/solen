@@ -33,7 +33,7 @@ export default async function KarrierePage({ params }: { params: Promise<{ local
               Initiativbewerbung
             </h2>
             <p className="text-sm text-s-ink-2 leading-relaxed">
-              Du willst trotzdem mit uns arbeiten? Schreib uns, woran du arbeiten möchtest,
+              Sie wollen trotzdem mit uns arbeiten? Schreiben Sie uns, woran Sie arbeiten möchten,
               an{" "}
               <a href="mailto:hallo@solen.ch" className="text-s-accent">
                 hallo@solen.ch

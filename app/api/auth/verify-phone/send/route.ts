@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: "SMS gesendet (Simuliert - Key fehlt)" });
     }
 
-    const text = `Dein solen.ch Bestätigungscode lautet: ${otp}. Er ist für 10 Minuten gültig.`;
+    const text = `Ihr solen.ch Bestätigungscode lautet: ${otp}. Er ist für 10 Minuten gültig.`;
     
     const response = await fetch("https://gateway.seven.io/api/sms", {
       method: "POST",

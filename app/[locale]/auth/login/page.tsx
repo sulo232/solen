@@ -13,7 +13,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
           Willkommen zurück
         </h1>
         <p className="text-[15px] text-s-ink-2 mt-2 leading-[1.4]">
-          Melde dich an, um Termine zu buchen und zu verwalten.
+          Melden Sie sich an, um Termine zu buchen und zu verwalten.
         </p>
 
         <div className="mt-8">

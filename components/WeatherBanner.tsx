@@ -28,7 +28,7 @@ function getWeatherType(code: number, temp: number): WeatherType {
 const WEATHER_CONFIG = {
   rain: {
     Icon: CloudRain,
-    text: "Regentag? Gönn dir was Gutes.",
+    text: "Regentag? Gönnen Sie sich was Gutes.",
     link: "spa",
   },
   snow: {
@@ -38,7 +38,7 @@ const WEATHER_CONFIG = {
   },
   cold: {
     Icon: Thermometer,
-    text: "Kalt draussen? Wärm dich auf mit Wellness.",
+    text: "Kalt draussen? Wärmen Sie sich auf mit Wellness.",
     link: "spa",
   },
 };

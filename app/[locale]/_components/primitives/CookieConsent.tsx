@@ -315,7 +315,7 @@ function CookieBanner() {
               Wir verwenden Cookies
             </div>
             <p className="font-body font-normal text-[13px] md:text-[14px] leading-[1.45] text-s-ink-2">
-              Analyse &amp; Marketing nur mit deinem OK.
+              Analyse &amp; Marketing nur mit Ihrem OK.
             </p>
           </div>
           {/* V2-D49o-fu: Anpassen text → Settings icon button on the far
@@ -423,7 +423,7 @@ function CookieSettingsModal({ isOpen, onOpenChange }: CookieSettingsModalProps)
       <ModalBody size="lg">
         <p className="text-s-ink-2 mb-4">
           Wir nutzen Cookies und ähnliche Technologien, um Solen zu betreiben und zu verbessern.
-          Notwendige Cookies sind immer aktiv. Du entscheidest, ob wir auch Analyse + Marketing-Cookies
+          Notwendige Cookies sind immer aktiv. Sie entscheiden, ob wir auch Analyse + Marketing-Cookies
           setzen dürfen.
         </p>
 
@@ -463,7 +463,7 @@ function CookieSettingsModal({ isOpen, onOpenChange }: CookieSettingsModalProps)
         </div>
 
         <p className="text-[13px] text-s-ink-2 mt-4">
-          Du kannst deine Einstellungen jederzeit über den Footer-Link
+          Sie können Ihre Einstellungen jederzeit über den Footer-Link
           "Cookie-Einstellungen" ändern. Mehr in unserer{" "}
           <a href="/datenschutz" className="text-s-ink hover:text-s-ink transition-colors">
             Datenschutzerklärung

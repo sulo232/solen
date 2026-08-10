@@ -62,7 +62,7 @@ export default function SolenStory() {
               <span className="block text-s-ink">Direkt aus der Tasche.</span>
             </h2>
             <p className="mb-7 max-w-[42ch] font-body text-[14px] leading-[1.55] text-s-ink-2 md:text-[15px]">
-              Kein Anrufen, kein &laquo;wir melden uns&raquo;. Preis siehst du
+              Kein Anrufen, kein &laquo;wir melden uns&raquo;. Preis sehen Sie
               direkt &mdash; fertig.
             </p>
             <Link

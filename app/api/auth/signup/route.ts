@@ -28,7 +28,7 @@ const signupSchema = z.object({
   if (data.birthday) return calcAge(data.birthday) >= 16;
   return true;
 }, {
-  message: "Du musst mindestens 16 Jahre alt sein.",
+  message: "Sie müssen mindestens 16 Jahre alt sein.",
 });
 
 export async function POST(request: NextRequest) {

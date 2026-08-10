@@ -22,7 +22,7 @@ export default async function PressePage({ params }: { params: Promise<{ locale:
               Pressekontakt
             </h2>
             <p className="text-sm text-s-ink-2 leading-relaxed">
-              Für Medienanfragen erreichst du uns unter{" "}
+              Für Medienanfragen erreichen Sie uns unter{" "}
               <a href="mailto:hallo@solen.ch" className="text-s-accent">
                 hallo@solen.ch
               </a>

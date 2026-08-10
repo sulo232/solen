@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Sicherheit — Solen",
-  description: "Wie Solen dich schützt: sichere Zahlungen über Stripe, geprüfte Stores, Melde-Funktion.",
+  description: "Wie Solen Sie schützt: sichere Zahlungen über Stripe, geprüfte Stores, Melde-Funktion.",
 };
 
 export default async function SicherheitPage({ params }: { params: Promise<{ locale: string }> }) {
@@ -18,7 +18,7 @@ export default async function SicherheitPage({ params }: { params: Promise<{ loc
         <h1 className="font-display text-4xl md:text-5xl font-semibold tracking-tight text-s-ink mb-2">
           Sicherheit
         </h1>
-        <p className="text-sm text-s-ink-2 mb-10">Wie wir dich auf Solen schützen.</p>
+        <p className="text-sm text-s-ink-2 mb-10">Wie wir Sie auf Solen schützen.</p>
 
         <div className="space-y-8">
           <section>
@@ -46,7 +46,7 @@ export default async function SicherheitPage({ params }: { params: Promise<{ loc
               Etwas melden
             </h2>
             <p className="text-sm text-s-ink-2 leading-relaxed">
-              Unangemessene Inhalte, Profile oder Bewertungen kannst du jederzeit{" "}
+              Unangemessene Inhalte, Profile oder Bewertungen können Sie jederzeit{" "}
               <Link href={`${p}/report`} className="text-s-accent">
                 melden
               </Link>
@@ -56,10 +56,10 @@ export default async function SicherheitPage({ params }: { params: Promise<{ loc
 
           <section>
             <h2 className="font-display text-s-ink text-lg font-semibold mb-3 pb-2 border-b border-s-border">
-              Deine Daten
+              Ihre Daten
             </h2>
             <p className="text-sm text-s-ink-2 leading-relaxed">
-              Wie wir mit deinen Daten umgehen, steht in der{" "}
+              Wie wir mit Ihren Daten umgehen, steht in der{" "}
               <Link href={`${p}/privacy`} className="text-s-accent">
                 Datenschutzerklärung
               </Link>

@@ -438,7 +438,7 @@ export function SearchBar() {
                   <input
                     type="text"
                     autoFocus
-                    placeholder="Was suchst du?"
+                    placeholder="Was suchen Sie?"
                     value={service}
                     onChange={(e) => setService(e.target.value)}
                     className="w-full border-b pb-3 font-display text-[22px] font-bold text-s-ink placeholder:text-s-ink-2 focus:outline-none" // mockup-ok: dead-class removal only, type=text already caught before this change (V3-D-input-fill-2026-07-17)

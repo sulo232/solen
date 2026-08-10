@@ -226,7 +226,7 @@ export default function WarumSolenPage() {
               <div className="mb-5">
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-pill mb-4 bg-s-bg-sunken border border-s-border">
                   <MessageCircle size={14} className="text-s-ink-2" />
-                  <SolenExclusiveBadge featureDescription="Chatte direkt mit deinem Store, nur bei Solen." />
+                  <SolenExclusiveBadge featureDescription="Chatten Sie direkt mit Ihrem Store, nur bei Solen." />
                 </div>
                 <h2 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.25] tracking-[-0.01em] text-s-ink">
                   {t("chatTitle")}

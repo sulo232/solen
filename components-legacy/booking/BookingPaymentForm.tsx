@@ -37,9 +37,9 @@ const PAY_COPY: Record<
   de: {
     pay: "bezahlen",
     processing: "Zahlung wird bestätigt…",
-    processingHint: "Einen Moment — deine Karte wird sicher belastet. Schliesse die App nicht.",
+    processingHint: "Einen Moment — Ihre Karte wird sicher belastet. Schliessen Sie die App nicht.",
     secure: "Sichere Zahlung über Stripe.",
-    failed: "Deine Karte wurde abgelehnt. Es wurde nichts belastet.",
+    failed: "Ihre Karte wurde abgelehnt. Es wurde nichts belastet.",
     notConfirmed: "Zahlung nicht bestätigt. Es wurde nichts belastet.",
   },
   en: {

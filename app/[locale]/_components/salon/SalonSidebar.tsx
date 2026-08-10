@@ -219,7 +219,7 @@ export function SalonSidebar({
             <div>
               <BuyRow
                 title="Geschenkgutschein kaufen"
-                subtitle={`Mach dir selbst oder jemand anderem eine Freude.`}
+                subtitle={`Machen Sie sich selbst oder jemand anderem eine Freude.`}
                 href={`/${locale}/salon/${salon.slug}/gift-card`}
               />
             </div>

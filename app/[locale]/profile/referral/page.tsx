@@ -38,7 +38,7 @@ export default function ReferralPage() {
   };
 
   const shareWhatsApp = () => {
-    const text = `Hey! Buche deinen nächsten Termin auf Solen und erhalte CHF 10 Guthaben mit meinem Code: ${data?.referral_code}\n${shareUrl}`;
+    const text = `Hey! Buchen Sie Ihren nächsten Termin auf Solen und erhalten Sie CHF 10 Guthaben mit meinem Code: ${data?.referral_code}\n${shareUrl}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
   };
 
@@ -66,7 +66,7 @@ export default function ReferralPage() {
         <EmptyState
           icon={LogIn}
           title="Anmelden erforderlich"
-          message="Bitte melde dich an, um deine Empfehlungen zu sehen."
+          message="Bitte melden Sie sich an, um Ihre Empfehlungen zu sehen."
           action={
             <Link
               href={`/${locale}/auth/login?redirect=${encodeURIComponent(`/${locale}/profile/referral`)}`}
@@ -92,13 +92,13 @@ export default function ReferralPage() {
           </div>
           {/* Title sits beside the global back tile (Header deepPageTitle). */}
           <p className="text-sm text-s-ink-2 max-w-xs mx-auto">
-            Teile deinen Code und erhalte CHF 10 Guthaben, dein Freund bekommt auch CHF 10!
+            Teilen Sie Ihren Code und erhalten Sie CHF 10 Guthaben, Ihr Freund bekommt auch CHF 10!
           </p>
         </div>
 
         {/* Referral code card */}
         <div className="bg-white/80 rounded-[12px] border border-s-ink/5 shadow-elevation-1 p-5">
-          <p className="text-xs font-medium text-s-ink-2 mb-2">Dein Empfehlungscode</p>
+          <p className="text-xs font-medium text-s-ink-2 mb-2">Ihr Empfehlungscode</p>
           <div className="flex items-center gap-2">
             <div className="flex-1 bg-s-bg-surface border border-s-border rounded-btn px-4 py-3 data-text font-bold text-lg text-s-ink tracking-wider text-center">
               {data.referral_code}
@@ -133,7 +133,7 @@ export default function ReferralPage() {
 
         {/* Stats */}
         <div className="bg-white/80 rounded-[12px] border border-s-ink/5 shadow-elevation-1 p-5">
-          <h2 className="font-heading text-base text-s-ink mb-3">Deine Statistiken</h2>
+          <h2 className="font-heading text-base text-s-ink mb-3">Ihre Statistiken</h2>
           <div className="grid grid-cols-2 gap-4">
             <div className="text-center p-3 bg-s-bg-surface rounded-btn">
               <Users className="w-5 h-5 text-s-ink-2 mx-auto mb-1" />
@@ -153,9 +153,9 @@ export default function ReferralPage() {
           <h2 className="font-heading text-base text-s-ink mb-3">So funktioniert&apos;s</h2>
           <div className="space-y-3">
             {[
-              { step: "1", text: "Teile deinen Empfehlungscode mit Freunden" },
-              { step: "2", text: "Dein Freund registriert sich und bucht einen Termin" },
-              { step: "3", text: "Ihr beide erhaltet CHF 10 Guthaben!" },
+              { step: "1", text: "Teilen Sie Ihren Empfehlungscode mit Freunden" },
+              { step: "2", text: "Ihr Freund registriert sich und bucht einen Termin" },
+              { step: "3", text: "Sie beide erhalten CHF 10 Guthaben!" },
             ].map((item) => (
               <div key={item.step} className="flex items-start gap-3">
                 <span className="w-6 h-6 rounded-full bg-s-ink/10 text-s-ink text-xs font-bold flex items-center justify-center shrink-0">

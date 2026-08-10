@@ -84,7 +84,7 @@ export default function WalkInBand() {
                 Walk-in
               </h2>
               <p className="mt-1 font-body text-[13px] leading-[1.3] text-s-ink-2">
-                Ohne Termin. Sieh die Wartezeit und sichere dir deinen Platz.
+                Ohne Termin. Sehen Sie die Wartezeit und sichern Sie sich Ihren Platz.
               </p>
               {/* B "live board" (owner pick 2026-06-29): wait/queue are real-time (GET
                   /api/walkin/nearby), so a "Live" marker is honest signal, not decoration. */}
@@ -144,7 +144,7 @@ export default function WalkInBand() {
                         <div className="mt-[3px] truncate font-body text-[12px] text-s-ink-2">{s.address}</div>
                       )}
                       <div className="mt-[3px] font-body text-[12px] text-s-ink-2">
-                        {s.queueLength === 0 ? "Niemand wartet" : `${s.queueLength} vor dir`}
+                        {s.queueLength === 0 ? "Niemand wartet" : `${s.queueLength} vor Ihnen`}
                       </div>
                     </a>
                   );

@@ -233,7 +233,7 @@ export async function GET(_request: NextRequest) {
           kind: "rebook",
           eyebrow: "Bereit?",
           headline: b.salons?.name ?? "Wieder buchen",
-          meta: `${daysSince} Tage seit deinem letzten Termin`,
+          meta: `${daysSince} Tage seit Ihrem letzten Termin`,
           href: `/salon/${b.salons?.slug ?? ""}`,
         });
       }

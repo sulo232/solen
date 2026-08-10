@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
 
   // Prevent self-referral
   if (referral.referrer_id === user.id) {
-    return NextResponse.json({ error: "Du kannst dich nicht selbst empfehlen" }, { status: 400 });
+    return NextResponse.json({ error: "Sie können sich nicht selbst empfehlen" }, { status: 400 });
   }
 
   // Check if this user was already referred
@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
     .single();
 
   if (existingReferral) {
-    return NextResponse.json({ error: "Du hast bereits einen Empfehlungscode verwendet" }, { status: 409 });
+    return NextResponse.json({ error: "Sie haben bereits einen Empfehlungscode verwendet" }, { status: 409 });
   }
 
   // Require a qualifying action before crediting (mirrors the booking-flow gate in
@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
 
   if (!qualifyingBookingCount || qualifyingBookingCount < 1) {
     return NextResponse.json(
-      { error: "Schliesse zuerst eine Buchung ab, um deine Empfehlung zu aktivieren" },
+      { error: "Schliessen Sie zuerst eine Buchung ab, um Ihre Empfehlung zu aktivieren" },
       { status: 400 }
     );
   }

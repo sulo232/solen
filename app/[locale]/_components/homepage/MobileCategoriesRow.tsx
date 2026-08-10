@@ -84,7 +84,7 @@ export default function MobileCategoriesRow({
     <section aria-label="Kategorien" className="relative z-[1] mb-4 hidden">
       <div className="mx-auto max-w-[1280px] px-6 py-2">
         <h2 className="mb-3 font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.25] tracking-[-0.01em] text-s-ink">
-          Für dich
+          Für Sie
         </h2>
 
         <div className="grid grid-cols-3 gap-x-3 gap-y-4">

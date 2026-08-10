@@ -92,7 +92,7 @@ export async function GET(req: NextRequest) {
 
     const ok = await sendSMS(
       phone,
-      `Erinnerung: Morgen um ${time} bei ${salon?.name ?? "deinem Salon"}. Adresse: ${salon?.address ?? "—"}`
+      `Erinnerung: Morgen um ${time} bei ${salon?.name ?? "Ihrem Salon"}. Adresse: ${salon?.address ?? "—"}`
     );
 
     if (ok) {
@@ -149,7 +149,7 @@ export async function GET(req: NextRequest) {
 
     const ok = await sendSMS(
       phone,
-      `In 1 Stunde: Termin bei ${salon?.name ?? "deinem Salon"} um ${time}.`
+      `In 1 Stunde: Termin bei ${salon?.name ?? "Ihrem Salon"} um ${time}.`
     );
 
     if (ok) {

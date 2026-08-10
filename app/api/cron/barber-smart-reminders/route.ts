@@ -144,7 +144,7 @@ export async function GET(req: NextRequest) {
         const weeks = cycle.avgCycleDays ? Math.round(cycle.avgCycleDays / 7) : 3;
         const ok = await sendSMS(
           phone,
-          `Hey ${profile?.display_name ?? ""}, dein letzter Besuch bei ${salon.name} war vor ${weeks} Wochen. Buch deinen nächsten Termin: https://www.solen.ch/de/barbershop`
+          `Hey ${profile?.display_name ?? ""}, Ihr letzter Besuch bei ${salon.name} war vor ${weeks} Wochen. Buchen Sie Ihren nächsten Termin: https://www.solen.ch/de/barbershop`
         );
         if (ok) smsSent++;
       }

@@ -87,8 +87,8 @@ export default function SignIn() {
         const m = (error.message || "").toLowerCase();
         toast.error(
           /invalid login credentials/.test(m) ? "E-Mail oder Passwort stimmt nicht"
-          : /email not confirmed/.test(m) ? "Bitte bestätige zuerst deine E-Mail"
-          : /rate|too many|after \d+ second|security purposes/.test(m) ? "Zu viele Versuche. Bitte warte einen Moment."
+          : /email not confirmed/.test(m) ? "Bitte bestätigen Sie zuerst Ihre E-Mail"
+          : /rate|too many|after \d+ second|security purposes/.test(m) ? "Zu viele Versuche. Bitte warten Sie einen Moment."
           : "Anmeldung fehlgeschlagen"
         );
         setLoading(false);
@@ -122,8 +122,8 @@ export default function SignIn() {
         const rateLimited = res.status === 429 || /rate limit|too many|after \d+ second|security purposes/.test(raw);
         toast.error(
           rateLimited
-            ? "Zu viele Anfragen. Bitte warte einen Moment und versuche es erneut."
-            : "Fehler beim Senden. Bitte versuche es erneut."
+            ? "Zu viele Anfragen. Bitte warten Sie einen Moment und versuchen Sie es erneut."
+            : "Fehler beim Senden. Bitte versuchen Sie es erneut."
         );
       } else {
         setResetSent(true);
@@ -147,7 +147,7 @@ export default function SignIn() {
           </p>
           <p className="font-heading text-lg text-s-ink">Link gesendet</p>
           <p className="text-xs font-body text-s-ink-2 mt-1 leading-relaxed">
-            Schau in deinem Postfach nach einem Link zum Zurücksetzen.
+            Schauen Sie in Ihrem Postfach nach einem Link zum Zurücksetzen.
           </p>
         </div>
         <button
@@ -169,7 +169,7 @@ export default function SignIn() {
           </p>
           <p className="font-heading text-lg text-s-ink">Passwort vergessen?</p>
           <p className="text-xs font-body text-s-ink-2 mt-1">
-            Gib deine E-Mail ein und wir senden dir einen Reset-Link.
+            Geben Sie Ihre E-Mail ein und wir senden Ihnen einen Reset-Link.
           </p>
         </div>
         <form onSubmit={handlePasswordReset} className="flex flex-col gap-3">

@@ -46,10 +46,10 @@ export default async function UeberUnsPage({ params }: { params: Promise<{ local
 
           <section>
             <h2 className="font-display text-s-ink text-lg font-semibold mb-3 pb-2 border-b border-s-border">
-              Bist du ein Store?
+              Sind Sie ein Store?
             </h2>
             <p className="text-sm text-s-ink-2 leading-relaxed">
-              Mit Solen verwaltest du Termine, Walk-ins und Zahlungen an einem Ort.{" "}
+              Mit Solen verwalten Sie Termine, Walk-ins und Zahlungen an einem Ort.{" "}
               <Link href={`${p}/partner`} className="text-s-accent">
                 Mehr für Stores
               </Link>

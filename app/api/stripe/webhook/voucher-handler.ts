@@ -86,7 +86,7 @@ export async function handleVoucherPurchase(pi: any): Promise<boolean> {
         userId: customerId,
         type: "voucher_purchased",
         title: isGift ? "Gutschein versendet" : "Gutschein gekauft",
-        body: `Dein Gutschein-Code: ${voucherCode}`,
+        body: `Ihr Gutschein-Code: ${voucherCode}`,
         data: { voucherCode, promoCodeId },
         emailParams: {
           to: email,

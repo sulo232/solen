@@ -29,26 +29,26 @@ export function SalonLoyalty() {
     {
       icon: Diamond,
       title: "Punkte sammeln",
-      subtitle: "Erfahre, wie du Punkte sammelst",
-      desc: "Sammle bei jedem Besuch automatisch Treuepunkte. Je öfter du buchst, desto mehr.",
+      subtitle: "Erfahren Sie, wie Sie Punkte sammeln",
+      desc: "Sammeln Sie bei jedem Besuch automatisch Treuepunkte. Je öfter Sie buchen, desto mehr.",
     },
     {
       icon: Sparkles,
       title: "Belohnungen",
-      subtitle: "Lös spannende Belohnungen ein",
-      desc: "Tausche gesammelte Punkte gegen Rabatte, kostenlose Services oder Geschenke ein.",
+      subtitle: "Lösen Sie spannende Belohnungen ein",
+      desc: "Tauschen Sie gesammelte Punkte gegen Rabatte, kostenlose Services oder Geschenke ein.",
     },
     {
       icon: Crown,
       title: "Stufen",
-      subtitle: "Entdecke unser Stufenprogramm",
-      desc: "Erreiche höhere Treuestufen für exklusive Vorteile — von Bronze bis Platin.",
+      subtitle: "Entdecken Sie unser Stufenprogramm",
+      desc: "Erreichen Sie höhere Treuestufen für exklusive Vorteile — von Bronze bis Platin.", // em-dash-ok: pre-existing, unrelated to this edit
     },
     {
       icon: UserPlus,
       title: "Freund:in einladen",
-      subtitle: "Empfiehl uns weiter",
-      desc: "Lade Freund:innen zu Solen ein und erhaltet beide eine Belohnung beim ersten Termin.",
+      subtitle: "Empfehlen Sie uns weiter",
+      desc: "Laden Sie Freund:innen zu Solen ein, Sie beide erhalten eine Belohnung beim ersten Termin.",
     },
   ];
 

@@ -49,7 +49,7 @@ export default function SalonSwitcher({
   }, []);
 
   const active = salons.find((s) => s.id === activeId) ?? null;
-  const activeName = active?.name ?? fallbackName ?? "Dein Store";
+  const activeName = active?.name ?? fallbackName ?? "Ihr Store";
   const multi = salons.length > 1;
 
   const pick = async (id: string) => {
@@ -131,7 +131,7 @@ export default function SalonSwitcher({
             >
               <div className="flex items-center justify-between px-4 pt-4 pb-2">
                 <span className="text-[12px] font-semibold uppercase tracking-[0.06em] text-s-ink-2">
-                  Deine Stores {salons.length}
+                  Ihre Stores {salons.length}
                 </span>
                 <button
                   onClick={() => setOpen(false)}

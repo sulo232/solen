@@ -146,7 +146,7 @@ export async function POST(req: NextRequest) {
               const payload = offPeakAlert(
                 authUser.email,
                 {
-                  salonName: salon.name || "Dein Lieblingssalon",
+                  salonName: salon.name || "Ihr Lieblingssalon",
                   discountPercent: input.discount_percent,
                   salonUrl: `${baseUrl}/${profile.locale || "de"}/salon/${salon.slug}`
                 },

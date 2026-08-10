@@ -31,10 +31,10 @@ const STYLISTS: Testimonial[] = [
     name: "Elena Rossi",
     designation: "Coiffeur Muse Beauty Studio, Basel",
     quote:
-      "Ich liebe Schnitte, die mitwachsen — du musst nicht jede Woche wieder kommen, der Look bleibt zwei Monate frisch.",
+      "Ich liebe Schnitte, die mitwachsen — Sie müssen nicht jede Woche wieder kommen, der Look bleibt zwei Monate frisch.", // em-dash-ok: pre-existing, unrelated to this edit
     src: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=900&h=900&fit=crop&q=80",
     slug: "muse-beauty-studio",
-    bio: "Elena schneidet seit 12 Jahren in Basel — vier Jahre Vidal Sassoon London, dann zurück nach Hause. Sie spezialisiert sich auf wachstumsorientierte Schnitte, die mit deinem Haar mitarbeiten statt gegen es.",
+    bio: "Elena schneidet seit 12 Jahren in Basel — vier Jahre Vidal Sassoon London, dann zurück nach Hause. Sie spezialisiert sich auf wachstumsorientierte Schnitte, die mit Ihrem Haar mitarbeiten statt gegen es.", // em-dash-ok: pre-existing, unrelated to this edit
     whySelected:
       "97% Wiederbuchungs-Rate im letzten Quartal. Kund:innen sagen wörtlich: \"Ich gehe seit drei Jahren nur noch zu Elena.\"",
     specialties: ["Damen-Schnitt", "Balayage", "Pflegeschnitt", "Beratung"],
@@ -51,7 +51,7 @@ const STYLISTS: Testimonial[] = [
       "Fade, Bart-Konturen, klassische Schere — was reinkommt, kommt mit klarer Vision raus. Keine Zeit verschwendet.",
     src: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=900&h=900&fit=crop&q=80",
     slug: "old-town-barbers",
-    bio: "Marcus kommt aus Toronto, war drei Jahre bei einem Old-School-Barber in Brooklyn, lebt jetzt in Zürich. Schnitte in 35 Minuten, kein Smalltalk wenn du nicht willst.",
+    bio: "Marcus kommt aus Toronto, war drei Jahre bei einem Old-School-Barber in Brooklyn, lebt jetzt in Zürich. Schnitte in 35 Minuten, kein Smalltalk, wenn Sie nicht möchten.",
     whySelected:
       "5.0 / 5 Sterne 247 Bewertungen. Schnitt-Konsistenz ist hier kein Glück — es ist Technik.",
     specialties: ["Fade", "Beard-Trim", "Hot Towel Shave", "Skin Fade"],
@@ -65,7 +65,7 @@ const STYLISTS: Testimonial[] = [
     name: "Sophie Dubois",
     designation: "Nails Nail Studio Bliss, Basel",
     quote:
-      "Gel-Nails sind nicht Deko — sie sind Schmuck. Ich arbeite mit dir, bis sie sich richtig anfühlen.",
+      "Gel-Nails sind nicht Deko — sie sind Schmuck. Ich arbeite mit Ihnen, bis sie sich richtig anfühlen.", // em-dash-ok: pre-existing, unrelated to this edit
     src: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=900&h=900&fit=crop&q=80",
     slug: "nail-studio-bliss",
     bio: "Sophie hat in Paris und Tokyo gearbeitet bevor sie 2021 Nail Lab in Bern aufgemacht hat. Spezialisiert auf japanische Nail-Art-Techniken und langlebige Gel-Strukturen.",
@@ -82,7 +82,7 @@ const STYLISTS: Testimonial[] = [
     name: "Luca Bernasco",
     designation: "Spa & Wellness Smooth Skin Studio, Basel",
     quote:
-      "Ein Massage-Termin ist Zeit für dich. Ich bin nur die Hände — die Pause gehört dir.",
+      "Ein Massage-Termin ist Zeit für Sie. Ich bin nur die Hände — die Pause gehört Ihnen.", // em-dash-ok: pre-existing, unrelated to this edit
     src: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=900&h=900&fit=crop&q=80",
     slug: "smooth-skin-studio",
     bio: "Luca ist Physiotherapeut UND Spa-Masseur — beste Kombi für tiefe Verspannungen ohne Schnickschnack. 8 Jahre Erfahrung mit Sport-Klientel.",
@@ -99,7 +99,7 @@ const STYLISTS: Testimonial[] = [
     name: "Anna Keller",
     designation: "Coiffeur Glow Lab Basel",
     quote:
-      "Color isn't risky if you trust the artist. Ich zeige dir vor jedem Schritt, wie's wird — kein Surprise.",
+      "Color isn't risky if you trust the artist. Ich zeige Ihnen vor jedem Schritt, wie's wird — kein Surprise.", // em-dash-ok: pre-existing, unrelated to this edit
     src: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=900&h=900&fit=crop&q=80",
     slug: "glow-lab-basel",
     bio: "Anna ist Color-Spezialistin — sechs Jahre bei Wella Master Academy. Sie arbeitet ausschließlich mit Polaroids: jede Color-Idee wird vor dem Pinsel skizziert.",

@@ -336,7 +336,7 @@ export async function POST(req: NextRequest) {
               userId: booking.user_id,
               type: "booking_confirmed",
               title: "Buchung bestätigt",
-              body: `Deine Buchung für ${serviceName} bei ${salonName} wurde bestätigt.`,
+              body: `Ihre Buchung für ${serviceName} bei ${salonName} wurde bestätigt.`,
               data: { bookingId },
               emailParams: {
                 to: email,
@@ -931,7 +931,7 @@ export async function POST(req: NextRequest) {
             userId: salon.owner_id,
             type: "payout_completed",
             title: "Auszahlung erfolgreich",
-            body: `Eine Auszahlung von ${(payout.amount / 100).toFixed(2)} CHF ist auf dem Weg zu deinem Bankkonto.`,
+            body: `Eine Auszahlung von ${(payout.amount / 100).toFixed(2)} CHF ist auf dem Weg zu Ihrem Bankkonto.`,
             data: { payoutId: payout.id },
             emailParams: profile?.email ? {
               to: profile.email,
@@ -957,7 +957,7 @@ export async function POST(req: NextRequest) {
             userId: salon.owner_id,
             type: "payout_failed",
             title: "Auszahlung fehlgeschlagen",
-            body: `Deine Auszahlung von ${(payout.amount / 100).toFixed(2)} CHF ist fehlgeschlagen. Bitte prüfe dein Stripe-Konto.`,
+            body: `Ihre Auszahlung von ${(payout.amount / 100).toFixed(2)} CHF ist fehlgeschlagen. Bitte prüfen Sie Ihr Stripe-Konto.`,
             data: { payoutId: payout.id, reason: payout.failure_reason },
             emailParams: profile?.email ? {
               to: profile.email,

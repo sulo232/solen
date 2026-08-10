@@ -439,7 +439,7 @@ export async function POST(request: NextRequest) {
     const { data: dup } = await dupQuery;
     if (dup?.length) {
       return NextResponse.json(
-        { message: "Du hast diesen Termin bereits gebucht.", code: "DUPLICATE_BOOKING" },
+        { message: "Sie haben diesen Termin bereits gebucht.", code: "DUPLICATE_BOOKING" },
         { status: 409 },
       );
     }

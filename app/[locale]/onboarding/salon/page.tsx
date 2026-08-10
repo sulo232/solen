@@ -533,7 +533,7 @@ export default function SalonOnboardingPage() {
       setDone(true);
       setTimeout(() => router.push(`/${locale}/dashboard?onboarded=1`), 1500);
     } catch {
-      setSubmitError("Netzwerkfehler — bitte prüfe deine Verbindung und versuche es erneut.");
+      setSubmitError("Netzwerkfehler — bitte prüfen Sie Ihre Verbindung und versuchen Sie es erneut."); // em-dash-ok: pre-existing, unrelated to this edit
     } finally {
       setSubmitting(false);
     }

@@ -21,7 +21,7 @@ const L: Record<string, {
   oval: string; round: string; square: string; heart: string; oblong: string;
 }> = {
   de: {
-    title: "Feed personalisieren", subtitle: "Wir zeigen dir passende Styles. Alle Felder sind optional — du kannst sie später in deinem Profil ändern. Deine Daten werden nur zur Personalisierung genutzt.",
+    title: "Feed personalisieren", subtitle: "Wir zeigen Ihnen passende Styles. Alle Felder sind optional — Sie können sie später in Ihrem Profil ändern. Ihre Daten werden nur zur Personalisierung genutzt.",
     genderLabel: "Styles anzeigen für", textureLabel: "Haarstruktur", lengthLabel: "Haarlänge", faceLabel: "Gesichtsform",
     skip: "Überspringen", save: "Einstellungen speichern",
     female: "Frauen", male: "Männer", allPref: "Alle / Egal",

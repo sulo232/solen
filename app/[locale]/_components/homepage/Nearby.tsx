@@ -82,7 +82,7 @@ export default function Nearby({
             now renders exactly as it did before the cards were removed. */}
         <SectionTitle
           title="In der Nähe"
-          link={{ label: "Alle in deiner Nähe →", href: `/${locale}/search?nearby=true` }}
+          link={{ label: "Alle in Ihrer Nähe →", href: `/${locale}/search?nearby=true` }}
           linkPlacement="inline"
         />
         {/* mockup-ok: real Mapbox teaser (NearbyMap.tsx), owner-approved 2026-07-15

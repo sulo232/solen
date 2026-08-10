@@ -127,7 +127,7 @@ export default async function ProfileStampsPage({
           <EmptyStateDiscovery
             locale={locale}
             title="Noch keine Stempel."
-            lead="Buche bei einem Store mit Treuekarte und sammle Stempel für deine nächste Belohnung."
+            lead="Buchen Sie bei einem Store mit Treuekarte und sammeln Sie Stempel für Ihre nächste Belohnung."
             bannerImg={topSalons?.[0]?.cover_photo_url ?? null}
             bannerTitle="So funktioniert's"
             bannerSub="Pro Besuch ein Stempel, volle Karte = Belohnung"

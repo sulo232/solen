@@ -420,7 +420,7 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
             >
               <span className="min-w-0 flex-1">
                 <span className="block font-body text-[15px] font-bold text-s-ink">
-                  Werde Solen-Partner
+                  Werden Sie Solen-Partner
                 </span>
                 <span className="mt-0.5 block font-body text-[12px] font-medium text-s-ink-2">
                   In 60 Sekunden eintragen, kostenlos starten

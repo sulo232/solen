@@ -22,7 +22,7 @@ import { useActiveCities } from "@/hooks/useActiveCities";
  * Visual = Variant B from `public/solen-city-top-bar-variants.html`:
  *   - light grey bg (`bg-s-bg-sunken`) blending into the page
  *   - small ✕ dismiss on the left
- *   - inline message "Du siehst gerade <City>. Stadt wechseln…"
+ *   - inline message "Sie sehen gerade <City>. Stadt wechseln…"
  *   - dropdown button with Swiss flag + city name + chevron
  *   - brand-ink round arrow CTA on the right
  *
@@ -63,7 +63,7 @@ const COPY: Record<
   }
 > = {
   de: {
-    sentence_pre: "Du siehst gerade",
+    sentence_pre: "Sie sehen gerade",
     sentence_post: "Stadt wechseln für lokale Inhalte:",
     aria_close: "Banner schließen",
     aria_dropdown: "Stadt wählen",

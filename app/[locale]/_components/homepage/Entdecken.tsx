@@ -163,7 +163,7 @@ export default function Entdecken() {
     <Section>
       <SectionFrame>
         <SectionTitle
-          title="Finde deine Inspiration."
+          title="Finden Sie Ihre Inspiration."
           link={{ label: "Alle entdecken →", href: `/${locale}/inspo` }}
           scrollRef={scrollRef}
         />
@@ -416,7 +416,7 @@ export default function Entdecken() {
                 Alle entdecken
               </h3>
               <p className="mt-2 font-body text-[12px] text-s-ink-2">
-                Lass dich von tausenden Looks inspirieren
+                Lassen Sie sich von tausenden Looks inspirieren
               </p>
             </div>
           </Link>
