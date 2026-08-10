@@ -136,11 +136,28 @@ export default function HomeSearchPill({
     };
   }, []);
 
-  // px-6, not px-4. Measured: their pill is 342 wide in a 390 viewport, which is 24px of gutter each
-  // side; ours was 358, i.e. 16px. Sixteen pixels of extra width is why it read as sitting wider and
-  // flatter than theirs.
+  // BACK TO px-4, AND THIS IS THE BALANCE FIX. Owner 2026-08-10: "can u balance evrth on the top
+  // search category."
+  //
+  // MEASURED before touching anything, at 390 wide:
+  //     search bar    left edge 24
+  //     category pill left edge 16
+  //     section head  left edge 16
+  // Three elements stacked vertically, two of them on one column and the search bar 8px off it.
+  // That misalignment IS the thing he can see. Nothing else in the top area was wrong.
+  //
+  // How it got there, named because it was my own trade and it was the wrong one: I set px-6 last
+  // turn so our pill would measure 342 wide, matching Airbnb's exactly. But their whole page runs
+  // on a 24px gutter, so 342 keeps THEIR column. Ours runs on 16, so copying their absolute width
+  // broke our own. Matching an absolute number from another product beat aligning with our own
+  // content, which is backwards: the pill is 358 again and it sits on the same left edge as
+  // everything under it.
+  //
+  // pb-1 rather than pb-2: with the pill row's own mt-3 that makes the search-to-pills gap 16
+  // exactly, instead of the 20 it measured, so the vertical rhythm reads 16 / 32 rather than
+  // 20 / 31.
   return (
-    <div className="mx-auto w-full max-w-[680px] px-6 pt-3 pb-2">
+    <div className="mx-auto w-full max-w-[680px] px-4 pt-3 pb-1">
       {/* B AT REST, C ONCE HE SCROLLS. Owner 2026-08-10, correcting my first read of his "c":
           "b normal state or scrolled up, c once scrolled down a bit, you know, gets smaller."
 
