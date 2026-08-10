@@ -127,7 +127,11 @@ def main():
     if LINK_PAT.search(final):
         return 0
     if ESCAPE_PAT.search(final):
-        ledger = os.path.expanduser("~/.claude/state/visual-escape-ledger.json")
+        # Overridable so the self-test cannot be decided by how many real escapes happened this
+        # week. Found the hard way on 2026-08-10: the escape case passed, then failed on a re-run
+        # with no code change, purely because the live ledger had filled up in between. A check
+        # whose result depends on unrelated history cannot tell you whether it works.
+        ledger = os.environ.get("VISUAL_ESCAPE_LEDGER") or os.path.expanduser("~/.claude/state/visual-escape-ledger.json")
         now = time.time()
         try:
             used = [t for t in json.load(open(ledger)) if now - t <= 7 * 86400]
@@ -186,10 +190,16 @@ def selftest():
         tf.close()
         return tf.name
 
+    # Each run gets its own empty escape ledger, so the escape case tests the CODE and not how many
+    # escapes the real week happened to contain.
+    _ledger_dir = tempfile.mkdtemp(prefix="visual-escape-selftest-")
+
     def run(text, pdir):
         payload = json.dumps({"transcript_path": transcript(text)})
+        ledger = os.path.join(_ledger_dir, "ledger-%d.json" % len(os.listdir(_ledger_dir)))
         r = subprocess.run([sys.executable, __file__], input=payload, capture_output=True, text=True,
-                           env={**os.environ, "CLAUDE_PROJECT_DIR": pdir})
+                           env={**os.environ, "CLAUDE_PROJECT_DIR": pdir,
+                                "VISUAL_ESCAPE_LEDGER": ledger})
         return r.returncode
 
     results = []
