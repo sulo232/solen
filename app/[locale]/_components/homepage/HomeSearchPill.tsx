@@ -163,14 +163,25 @@ export default function HomeSearchPill({
           invention. */}
       <div
         ref={pillRef}
-        style={shrunk ? undefined : { border: "1px solid #000000", boxShadow: "0 6px 20px rgba(0,0,0,0.10)" }} // mockup-ok: variant B, measured off airbnb.ch live at 390 wide, 2026-08-10
+        // GREY, NOT BLACK. Owner 2026-08-10: "why is it black outline bro just make it gray or
+        // something." The black came straight off Airbnb's own measurement, which is why it was
+        // there, but a ring at 19.8:1 on white is the single heaviest mark on the home page and he
+        // saw that immediately.
+        //
+        // Picked by measuring the ladder we already own rather than inventing a grey:
+        //   s-ink        #0A0A0A  19.80:1   what it was, too heavy
+        //   s-ink-2      #6B6B6B   5.33:1   what this now uses at rest
+        //   s-border     #E4E4E7   1.27:1   the scrolled state, deliberately faint
+        // s-ink-2 keeps the two states clearly different (the ring is still visible at rest and
+        // recedes to the hairline once he scrolls) without the ring shouting. No new hex.
+        style={shrunk ? undefined : { boxShadow: "0 6px 20px rgba(0,0,0,0.10)" }} // mockup-ok: variant B lift, measured off airbnb.ch live at 390 wide, 2026-08-10
         className={cn(
           "flex w-full items-center justify-center gap-2 rounded-[40px] bg-white px-[19px]", // mockup-ok: owner pick, /dev/search-bar, 2026-08-10
           // The morph. Height and weight are the only things that move.
           "transition-[height,box-shadow,border-color] duration-200 ease-glide", // mockup-ok
           shrunk
             ? "h-[44px] border border-s-border shadow-elevation-2" // mockup-ok: C, scrolled, smaller and calmer
-            : "h-[54px] border", // mockup-ok: B at rest, Airbnb measured 54 with their black ring
+            : "h-[54px] border border-s-ink-2", // mockup-ok: B at rest, Airbnb's measured 54 with a GREY ring, his call 2026-08-10
         )}
       >
         {/* R1: ONE tap handler for both callers. `/inspo` still passes its own `onActivate`

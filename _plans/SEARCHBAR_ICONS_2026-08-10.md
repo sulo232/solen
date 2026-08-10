@@ -78,3 +78,11 @@ and already shipping on the map chip. One value changed, the blur, 4px to 20px, 
 56px band with a whole page moving under it rather than a 24px chip over a single photo, and at 4px
 the content behind reads as smear instead of glass. Saying that plainly beats claiming a capture I
 do not have.
+
+- [x] C6. CORRECTION, the ring is grey not black. Owner: "why is it black outline bro just make it
+      gray or something." verified: HomeSearchPill.tsx, rest state now `border-s-ink-2`; measured
+      live at 390, scrollY 0 reads `1px rgb(107,107,107)` and scrollY 200 still reads
+      `1px rgb(228,228,231)`, so the two states stay clearly different.
+      Picked by measuring the ladder we already own rather than inventing a grey: s-ink #0A0A0A at
+      19.80:1 on white (what it was, and the heaviest mark on the page), s-ink-2 #6B6B6B at 5.33:1
+      (now), s-border #E4E4E7 at 1.27:1 (the scrolled state). No new hex.
