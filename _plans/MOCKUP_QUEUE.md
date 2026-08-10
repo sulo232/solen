@@ -161,9 +161,14 @@ ProfileTabs and the settings B2 direction are the built result).
 **INFRA, not a design question (2):** `sweep-gallery`, `sweep-gallery-v2` are the index pages.
 
 **REBUILD , still a live question (8), each its own box:**
-- [ ] V3-C1 `sweep-result-card-variants` , the search card: does the price stay bold ink (locked) or go
-  recessive grey as this mockup proposes, and does the review count stay? The mockup's After argues
-  against a locked row, so it is a real question, not drift.
+- [x] V3-C1 REBUILT as `public/_mockups/sweep-card-count-dupe/`, commit dda50f687. The price question
+  answered itself on measurement: the card ALREADY ships recessive grey rgb(107,107,107) while the
+  locked row says bold ink, so the code quietly won and nobody noticed. Measuring also turned up a
+  defect nobody had reported: **the review count renders TWICE on every one of the 32 cards**, a long
+  spelled-out line at 13px grey (154x20px) and a short parenthesised one at 14px blue (29x21px). Plus
+  the name at font-weight 500, a third weight. All three undone in the After pane, verified by a
+  dispatched click with the values read back. AWAITING HIS PICK on price ink vs grey; the duplicate
+  count is a straight bug, not a taste question.
 - [ ] V3-C2 `sweep-booking-payment-selected` , the payment step's selected state: gray fill like every
   other pill, or the ink border this mockup says you approved in "mockup 24d". That approval could not
   be found in writing and the four named ink exceptions do not include payment.
