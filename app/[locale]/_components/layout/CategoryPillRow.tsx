@@ -186,7 +186,7 @@ export default function CategoryPillRow() {
         // category, it's already good, it only looks good how it is." So the raised/sunken
         // shadow overlays, the radius, the 14px text and the no-weight-change-on-select rule
         // all stay exactly as they are. Only geometry moved.
-        className="flex items-center gap-2 overflow-x-auto scrollbar-none pt-3 pb-3" // mockup-ok: 14 -> 12 bottom padding, symmetric with the top, balance pass 2026-08-10
+        className="flex items-center gap-2 overflow-x-auto scrollbar-none pt-5 pb-5" // mockup-ok: 20/20, their measured row height 80 against our 64; same 40px pill with more air so it stops dominating. Balance pass 2026-08-11
         style={{
           scrollbarWidth: "none",
           WebkitMaskImage: "linear-gradient(90deg, #000 90%, transparent)",

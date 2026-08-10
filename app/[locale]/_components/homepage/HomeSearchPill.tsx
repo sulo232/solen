@@ -136,6 +136,27 @@ export default function HomeSearchPill({
     };
   }, []);
 
+  // BALANCE PASS 2026-08-11. Owner: "search is too small and category pills are too big, look at
+  // balance of airbnb."
+  //
+  // MEASURED BOTH SIDES FIRST, and the surprise is that the raw numbers already matched:
+  //     search height   theirs 56   ours 56
+  //     pill height     theirs 40   ours 40
+  //     height ratio    theirs 1.40 ours 1.40
+  //     icon ratio      theirs 0.43 ours 0.43
+  // So it was never the sizes. Two other things differ, and both are exactly what he described:
+  //
+  //   1. OUR BAR IS FLATTER. Their pill is 342 wide, ours is 358, because their page runs on a
+  //      24px gutter and ours on 16. Same height across a wider box is a lower aspect: theirs
+  //      6.11:1, ours 6.39:1. A flatter bar reads smaller. Rather than break our own column again
+  //      (that was last turn's mistake), the height moves to hold THEIR aspect at OUR width:
+  //      358 / 6.11 = 58.6, so 59.
+  //   2. OUR LABEL IS LIGHTER. Theirs is 14px/500, ours had dropped to 400. A lighter word in a
+  //      big bar leaves it looking emptier, which is the other half of "too small". Back to 500.
+  //
+  // And the pills: same 40px as theirs, but sitting in a 64px row against their 80, so the same
+  // pill fills more of its own row and dominates. The row gets their 20/20 padding in
+  // CategoryPillRow.tsx, which is the "too big" half.
   // BACK TO px-4, AND THIS IS THE BALANCE FIX. Owner 2026-08-10: "can u balance evrth on the top
   // search category."
   //
@@ -208,7 +229,7 @@ export default function HomeSearchPill({
           "border border-s-border", // mockup-ok: the light grey hairline, their measured painted #DDDDDD, ours #E4E4E7
           shrunk
             ? "h-[44px] shadow-elevation-2" // mockup-ok: C, scrolled, smaller and settled
-            : "h-[56px]", // mockup-ok: B at rest, their measured 56 (the pill is 342x56 at 390 wide)
+            : "h-[59px]", // mockup-ok: THEIR ASPECT at OUR width, see the note above, balance pass 2026-08-11
         )}
       >
         {/* R1: ONE tap handler for both callers. `/inspo` still passes its own `onActivate`
@@ -222,7 +243,8 @@ export default function HomeSearchPill({
           className="flex min-w-0 items-center justify-center gap-2"
         >
           <Search size={12} strokeWidth={2.4} className="shrink-0 text-s-ink" aria-hidden />
-          <span className="block min-w-0 truncate font-body text-[14px] font-normal text-s-ink">
+          {/* mockup-ok: font-medium = 500, their measured label weight. Balance pass 2026-08-11. */}
+          <span className="block min-w-0 truncate font-body text-[14px] font-medium text-s-ink">
             {label ?? tChrome("searchPlaceholder")}
           </span>
         </button>
