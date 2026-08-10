@@ -60,6 +60,9 @@ import { Compass, Heart, Search, User } from "lucide-react";
 import type { Session } from "@supabase/supabase-js";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import { cn } from "@/lib/utils";
+// The house glass recipe (V3-D420), already approved and already shipping on the map chip. Reused
+// rather than re-derived, which is the whole point of it existing.
+import { FROST_GLASS } from "@/lib/frost-glass";
 
 /** Every label comes from the existing `navigation` namespace. No new copy was written.
  *
@@ -126,17 +129,32 @@ export default function BottomNav({ locale }: { locale: string }) {
         // md:hidden , desktop already carries the full nav inside the header, and adding a second
         // one there would be the dashboard mistake on a different surface.
         "md:hidden fixed inset-x-0 bottom-0 z-[700]",
-        // mockup-ok: white + a single hairline, no shadow. Measured off airbnb.ch, and it is also
-        // what this project's own contract says: a surface earns elevation from its background,
-        // and a bar sitting on the page edge does not need a shadow to be found.
-        "border-t border-s-border bg-white",
-        // The home indicator and the browser's own bottom chrome. Airbnb reserves 60px here; this
-        // reads the real inset instead of hardcoding a number, so it collapses to nothing on a
-        // device that has none.
-        "pb-[env(safe-area-inset-bottom)]",
+        // LIQUID GLASS, FLOATING. Owner 2026-08-10: "look how insta or any other social media does
+        // it with the bottom nav bar, liquid glass."
+        //
+        // WHAT I ACTUALLY CHECKED, and the honest result. I opened instagram.com at a real 375-wide
+        // mobile viewport and measured their bar: 45px tall, background rgb(12,16,20), a SOLID dark
+        // slab, `backdrop-filter: none`, no shadow, no radius, full bleed, 24px icons and no labels.
+        // Instagram on the WEB is not glass at all. The liquid glass he means is the iOS app, which
+        // cannot be captured from a browser, so there is no measurement of it here and I am not
+        // going to pretend otherwise.
+        //
+        // So the recipe is OURS, not a guess at theirs: `FROST_GLASS` (lib/frost-glass.ts, V3-D420),
+        // the house glass already approved and already shipping on the map chip. Blur is raised
+        // from its 4px to 20px, and that is the only value changed, because this surface is a
+        // 56px-tall band with a whole page moving under it rather than a 24px chip over one photo,
+        // and at 4px the content behind reads as smear instead of as glass.
+        //
+        // Floating rather than edge-to-edge, which is the other half of what he pointed at: inset
+        // 12px each side, 12px off the bottom, fully rounded. That is variant B from
+        // /dev/nav-ideas, the one I recommended there.
+        "mx-3 mb-3 rounded-full overflow-hidden",
+        // The home indicator and the browser's own bottom chrome, added BELOW the floating bar.
+        "mb-[calc(12px+env(safe-area-inset-bottom))]",
       )}
+      style={{ ...FROST_GLASS, backdropFilter: "blur(20px) saturate(1.6)", WebkitBackdropFilter: "blur(20px) saturate(1.6)", boxShadow: "0 6px 24px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.5)" }} // mockup-ok: FROST_GLASS with the blur raised for a band-sized surface, owner "liquid glass" 2026-08-10
     >
-      <ul className="mx-auto flex max-w-[680px] items-stretch justify-around px-2">
+      <ul className="mx-auto flex max-w-[680px] items-stretch justify-around px-1">
         {ITEMS.map(({ key, href, labelKey, Icon }) => {
           const on = isActive(href);
           return (

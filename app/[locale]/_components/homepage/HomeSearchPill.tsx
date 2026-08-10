@@ -112,13 +112,65 @@ export default function HomeSearchPill({
     setOverlayOpen(true);
   }, []);
 
+  // B AT REST, C ONCE HE SCROLLS DOWN A BIT (owner 2026-08-10). `shrunk` is the whole state: false
+  // is B, true is C. The threshold is deliberately LOW at 24px, because his words were "scrolled
+  // down a bit", not "scrolled past the hero". Hysteresis (24 down, 8 up) so a pill sitting exactly
+  // on the boundary cannot flicker between the two treatments on a jittery scroll, which is the
+  // failure mode of a single threshold.
+  const [shrunk, setShrunk] = React.useState(false);
+  React.useEffect(() => {
+    let raf = 0;
+    const read = () => {
+      raf = 0;
+      const y = window.scrollY || 0;
+      setShrunk((was) => (was ? y > 8 : y > 24));
+    };
+    const onScroll = () => {
+      if (!raf) raf = window.requestAnimationFrame(read);
+    };
+    read();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (raf) window.cancelAnimationFrame(raf);
+    };
+  }, []);
+
   return (
-    <div className="mx-auto w-full max-w-[680px] px-4 pt-1 pb-2">
+    <div className="mx-auto w-full max-w-[680px] px-4 pt-3 pb-2">
+      {/* B AT REST, C ONCE HE SCROLLS. Owner 2026-08-10, correcting my first read of his "c":
+          "b normal state or scrolled up, c once scrolled down a bit, you know, gets smaller."
+
+          So it is not one of the two, it is a morph between them, driven by scroll:
+            at the top / scrolled back up   B, their measurement exactly, black ring, 54 tall
+            after a little downward scroll  C, smaller and calmer, our hairline and lift
+
+          C is Airbnb's MEASURED shape with our ink. Their bar was read live off airbnb.ch at a real
+          390-wide mobile viewport with getComputedStyle, not judged off a screenshot:
+              340 x 54, top 13, radius 40px, border 1px BLACK, shadow 0 6px 20px rgba(0,0,0,0.10),
+              padding 19 a side, justify-content CENTER, label 14px/500, icon 12x12, 8px gap
+          Ours before this change, same method: 358 x 46, top 4, hairline, 0 2px 8px 7%, padding 14,
+          LEFT aligned, label 16px/500, icon 18 with a 12px gap.
+
+          Both hold the same anatomy, so only weight and size move: centred content, 40px radius,
+          12px icon, 14px/500 label. Keeping the anatomy fixed is what makes it read as ONE control
+          settling rather than two controls swapping.
+
+          Worth naming because I got this wrong twice earlier the same day. First I decided the
+          problem was height and made ours taller, which moved almost nothing: the look is carried
+          by the ring, the centring and the icon size, and I had touched none of them. Then, when he
+          pushed back, I reverted the whole thing and threw away the look he wanted along with the
+          invention. */}
       <div
         ref={pillRef}
+        style={shrunk ? undefined : { border: "1px solid #000000", boxShadow: "0 6px 20px rgba(0,0,0,0.10)" }} // mockup-ok: variant B, measured off airbnb.ch live at 390 wide, 2026-08-10
         className={cn(
-          "flex w-full items-center gap-3 rounded-pill border border-s-border bg-white px-3.5 py-2.5", // mockup-ok: RESTORED verbatim from his branch, see the block comment above
-          "shadow-[0_2px_8px_0_rgba(0,0,0,0.07)]", // mockup-ok: SearchTemplate.tsx pill, resting state, copied 1:1
+          "flex w-full items-center justify-center gap-2 rounded-[40px] bg-white px-[19px]", // mockup-ok: owner pick, /dev/search-bar, 2026-08-10
+          // The morph. Height and weight are the only things that move.
+          "transition-[height,box-shadow,border-color] duration-200 ease-glide", // mockup-ok
+          shrunk
+            ? "h-[44px] border border-s-border shadow-elevation-2" // mockup-ok: C, scrolled, smaller and calmer
+            : "h-[54px] border", // mockup-ok: B at rest, Airbnb measured 54 with their black ring
         )}
       >
         {/* R1: ONE tap handler for both callers. `/inspo` still passes its own `onActivate`
@@ -129,10 +181,10 @@ export default function HomeSearchPill({
           onClick={onActivate ?? openOverlay}
           aria-label={tChrome("editSearch")}
           aria-haspopup={onActivate ? undefined : "dialog"}
-          className="flex min-w-0 flex-1 items-center gap-3 text-left"
+          className="flex min-w-0 items-center justify-center gap-2"
         >
-          <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" aria-hidden />
-                    <span className="block min-w-0 flex-1 truncate font-body text-[16px] font-medium text-s-ink">
+          <Search size={12} strokeWidth={2.4} className="shrink-0 text-s-ink" aria-hidden />
+          <span className="block min-w-0 truncate font-body text-[14px] font-medium text-s-ink">
             {label ?? tChrome("searchPlaceholder")}
           </span>
         </button>

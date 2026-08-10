@@ -9,7 +9,7 @@ like a recurring pattern."*
 
 ## Atomic asks
 
-- [x] C1. The search bar should look like the Airbnb one. RESEARCH it, do not guess.
+- [x] C1. The search bar should look like the Airbnb one, researched not guessed. verified: commit 24927506e built /dev/search-bar from a live getComputedStyle read of airbnb.ch at 390 wide; he then picked B-at-rest/C-on-scroll and it is applied at HomeSearchPill.tsx:141-160, measured live as 54 tall with a 1px black ring at scrollY 0 and 44 tall with our hairline at scrollY 200.
       verified: read off airbnb.ch live at a real 390-wide mobile viewport with getComputedStyle,
       not from a screenshot: box 340x54, top 13, radius 40px, border 1px rgb(0,0,0), shadow
       0 6px 20px rgba(0,0,0,0.10), padding 19 a side, justify-content CENTER, label 14px/500, icon
@@ -24,7 +24,7 @@ like a recurring pattern."*
       alpha, cropped and squared to 168px, saved to `public/icons/categories/v2/`, wired into
       CategoryPillRow.tsx:94-97. Measured live on /de at 390: the row renders coiffeur/barber/nails
       from v2. Old files kept for revert.
-- [x] C3. Bottom bar variations.
+- [x] C3. Bottom bar variations. verified: /dev/nav-ideas returns HTTP 200 through the tunnel with all four shells (checked this turn, h1 "The sizes, and four bottom bars"); built in commit ffb5eec8b.
       verified: they exist at /dev/nav-ideas (four shells: flat, floating pill, floating capsule,
       hide-on-scroll), returning HTTP 200 and rendering, built last turn. NOT a new build this turn.
       Root cause of him not seeing them is named below.
@@ -52,3 +52,29 @@ He is right that it recurs. The specific failure, twice today on one control:
 
 Both are the same underlying move: changing shipped values instead of putting a measured option in
 front of him. Hence this turn: measured, four variations, nothing applied.
+
+## His correction, same turn: it is BOTH, not one of them
+
+*"b normal state or scrolled up, c once scrolled down a bit, you know, gets smaller. Look how insta
+or any other social media does it with the bottom nav bar, liquid glass."*
+
+- [x] C4. Search bar: B at rest, C once scrolled. verified: HomeSearchPill.tsx, a scroll listener
+      with hysteresis (shrink past 24px, restore under 8px, so it cannot flicker on the boundary).
+      Measured live: scrollY 0 gives height 54 / border 1px rgb(0,0,0) / shadow 0 6px 20px at 10%;
+      scrollY 200 gives height 44 / border 1px hairline / soft shadow. Anatomy is identical in both,
+      only weight and height move, so it reads as one control settling rather than two swapping.
+- [x] C5. Bottom nav in liquid glass, floating. verified: BottomNav.tsx, measured live at 390 as
+      inset 12px each side, 12px off the bottom, radius 9999px, `backdrop-filter: blur(20px)
+      saturate(1.6)`, background rgba(255,255,255,0.8).
+
+**WHAT I CHECKED ABOUT INSTAGRAM, AND THE HONEST RESULT.** I opened instagram.com at a real 375-wide
+mobile viewport and measured their bar rather than picturing it: **45px tall, background
+rgb(12,16,20), a solid dark slab, `backdrop-filter: none`, no shadow, no radius, full bleed, 24px
+icons, no labels.** Instagram on the WEB is not glass at all. The liquid glass he means is the iOS
+app, which a browser cannot capture, so there is no measurement of it here.
+
+So the recipe is OURS: `FROST_GLASS` (lib/frost-glass.ts, V3-D420), the house glass already approved
+and already shipping on the map chip. One value changed, the blur, 4px to 20px, because this is a
+56px band with a whole page moving under it rather than a 24px chip over a single photo, and at 4px
+the content behind reads as smear instead of glass. Saying that plainly beats claiming a capture I
+do not have.

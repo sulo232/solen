@@ -1314,24 +1314,32 @@ export default function SearchTemplate({
             aria-label={tChrome("editSearch")}
             aria-haspopup="dialog"
             className={cn(
-              "flex w-full cursor-pointer items-center gap-3 rounded-pill border border-s-border bg-white px-3.5 text-left",
+              // mockup-ok: VARIANT C, owner picked it 2026-08-10 off /dev/search-bar with one
+              // letter, "c". The home pill (HomeSearchPill.tsx) carries the full note; this is its
+              // sibling and moves with it, because the two are the SAME control on two surfaces and
+              // changing only the one in front of me is the half-a-sweep failure this project keeps
+              // naming. Airbnb measured live at 390: 54 tall, radius 40, centred, 19px padding,
+              // 12px icon. C keeps our hairline and lift instead of their black ring.
+              "flex h-[54px] w-full cursor-pointer items-center justify-center gap-2 rounded-[40px] border border-s-border bg-white px-[19px] text-center",
               // I2 mockup-ok (public/_mockups/home-v3/search-a.html .sa-pill --lift): the
               // V3-D421L "flat at rest, lift only when pinned" scroll-driven shadow is
               // replaced by the approved chrome's constant elevation, so the pill always
               // carries the same outline + shadow pair (the search bar is "the way in").
-              "shadow-[0_2px_8px_0_rgba(0,0,0,0.07)]", // mockup-ok
+              "shadow-elevation-3", // mockup-ok: variant C lift, owner pick 2026-08-10
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
-              "py-2.5", // V3-D421d: keep the pinned bar the SAME size as normal (no shrink, owner)
+              // V3-D421d still holds, "keep the pinned bar the SAME size as normal (no shrink,
+              // owner)": the height is now the fixed h-[54px] above, which is the same at rest and
+              // pinned, so the no-shrink rule is preserved rather than dropped.
             )}
             // I2 mockup-ok: dynamic boxShadow style removed, the shadow-[...] class above
             // now carries the constant approved value. `pillBoxShadow`/`pillShadowOpacity`
             // stay declared (untouched state per the I2 brief) but are no longer consumed here.
           >
-            <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" />
+            <Search size={12} strokeWidth={2.4} className="shrink-0 text-s-ink" /> {/* mockup-ok: variant C icon, owner pick 2026-08-10 */}
             <span className="min-w-0 flex-1">
               {/* I2 mockup-ok (search-a.html .sa-l1): 14px -> 16px, the approved chrome's
                   first-line size. */}
-              <span className="block truncate font-body text-[16px] font-medium text-s-ink">
+              <span className="block truncate font-body text-[14px] font-medium text-s-ink"> {/* mockup-ok: variant C label, owner pick 2026-08-10 */}
                 {/* A2/Model B (2026-07-04): category + query are independent, so line 1 shows
                     BOTH when both are set, not one clobbering the other. */}
                 {[activeCategory ? CATEGORY_PILLS.find((c) => c.slug === activeCategory)?.label : null, q]
