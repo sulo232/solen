@@ -122,9 +122,51 @@ export default function BottomNav({ locale }: { locale: string }) {
   };
   const profileActive = /^\/(profile|account|auth)(\/|$)/.test(rest);
 
+  // GETS OUT OF THE WAY ON THE WAY DOWN, COMES BACK ON THE WAY UP. Owner 2026-08-10, the half of
+  // his complaint I had not built yet: "when you scroll down and up on the phones, it doesn't
+  // really look that great." Floating glass fixed how it LOOKS standing still; this is how it
+  // behaves while he moves, which is the part he actually described.
+  //
+  // Direction, not position: it hides when he scrolls DOWN (he is reading, give him the screen)
+  // and returns the moment he scrolls UP (he is looking for a way out). That is the pattern every
+  // social app uses and the reason the bar never feels in the way.
+  //
+  // Three guards, each for a real failure rather than for neatness:
+  //   - a 6px dead zone, so a thumb resting on the glass cannot toggle it
+  //   - always visible in the top 80px, so it can never be hidden when there is nowhere to scroll
+  //     back to
+  //   - always visible within 60px of the bottom, so it is there when he reaches the end
+  const [hidden, setHidden] = React.useState(false);
+  React.useEffect(() => {
+    let raf = 0;
+    let last = window.scrollY || 0;
+    const read = () => {
+      raf = 0;
+      const y = window.scrollY || 0;
+      const dy = y - last;
+      const atTop = y < 80;
+      const atBottom = y + window.innerHeight >= document.documentElement.scrollHeight - 60;
+      if (atTop || atBottom) setHidden(false);
+      else if (dy > 6) setHidden(true);
+      else if (dy < -6) setHidden(false);
+      last = y;
+    };
+    const onScroll = () => {
+      if (!raf) raf = window.requestAnimationFrame(read);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (raf) window.cancelAnimationFrame(raf);
+    };
+  }, []);
+
   return (
     <nav
       aria-label={t("mobileNavigation")}
+      // aria-hidden while it is off-screen so a screen reader does not offer links that are not
+      // there; it comes straight back on any upward scroll.
+      aria-hidden={hidden || undefined}
       className={cn(
         // md:hidden , desktop already carries the full nav inside the header, and adding a second
         // one there would be the dashboard mistake on a different surface.
@@ -151,6 +193,10 @@ export default function BottomNav({ locale }: { locale: string }) {
         "mx-3 mb-3 rounded-full overflow-hidden",
         // The home indicator and the browser's own bottom chrome, added BELOW the floating bar.
         "mb-[calc(12px+env(safe-area-inset-bottom))]",
+        // The hide/return. Transform only, so it never causes a layout pass while he is scrolling.
+        // It slides its own full height plus the bottom gap, so nothing peeks.
+        "transition-[transform,opacity] duration-300 ease-glide will-change-transform",
+        hidden ? "translate-y-[calc(100%+16px)] opacity-0" : "translate-y-0 opacity-100",
       )}
       style={{ ...FROST_GLASS, backdropFilter: "blur(20px) saturate(1.6)", WebkitBackdropFilter: "blur(20px) saturate(1.6)", boxShadow: "0 6px 24px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.5)" }} // mockup-ok: FROST_GLASS with the blur raised for a band-sized surface, owner "liquid glass" 2026-08-10
     >
