@@ -24,13 +24,13 @@
  * Dev-only, notFound() in production.
  */
 import { notFound } from "next/navigation";
-import { ChevronLeft, Menu } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 
 /** Back: circle, CHEVRON, shadow, no border. Qonto's exact treatment. */
 function Back() {
   return (
-    <span className="grid h-11 w-11 place-items-center rounded-full bg-white shadow-elevation">
-      <ChevronLeft size={22} strokeWidth={2.4} className="text-s-ink" aria-hidden />
+    <span className="grid h-11 w-11 place-items-center rounded-full bg-white shadow-elevation-2">
+      <ChevronLeft size={28} strokeWidth={1.9} className="text-s-ink" aria-hidden />
     </span>
   );
 }
@@ -38,7 +38,7 @@ function Back() {
 /** Close: a PILL with the word, not an X. ~68 x 46pt in the reference. */
 function Close() {
   return (
-    <span className="flex h-11 items-center rounded-full bg-white px-5 text-[15px] text-s-ink shadow-elevation">
+    <span className="flex h-11 items-center rounded-full bg-white px-5 text-[15px] text-s-ink shadow-elevation-2">
       Close
     </span>
   );
@@ -57,7 +57,7 @@ function Screen({ label, children }: { label: string; children: React.ReactNode 
   return (
     <section className="mb-10">
       <p className="mb-2 text-[13px] text-s-ink-2">{label}</p>
-      <div className="w-[390px] overflow-hidden rounded-[20px] border border-s-border bg-white">
+      <div className="w-[390px] overflow-hidden rounded-[20px] border border-s-border bg-[#F6F6F6]"> {/* drift-ok: sampled from his Mobbin screenshots, Qonto page grey */}
         <div className="flex h-[760px] flex-col">{children}</div>
       </div>
     </section>
@@ -68,7 +68,7 @@ function Field({ label, placeholder }: { label: string; placeholder: string }) {
   return (
     <label className="block">
       <span className="mb-1.5 block text-[13px] text-s-ink-2">{label}</span>
-      <span className="flex h-11 items-center rounded-[8px] bg-black/[0.05] px-3.5 text-[15px] text-s-ink-2">
+      <span className="flex h-[58px] items-center rounded-[11px] bg-black/[0.05] px-3.5 text-[15px] text-s-ink-2">
         {placeholder}
       </span>
     </label>
@@ -78,7 +78,7 @@ function Field({ label, placeholder }: { label: string; placeholder: string }) {
 function Primary({ children, muted = false }: { children: React.ReactNode; muted?: boolean }) {
   return (
     <span
-      className={`flex h-[52px] items-center justify-center rounded-full bg-s-ink text-[15px] text-white ${
+      className={`flex h-[58px] items-center justify-center rounded-full bg-s-ink text-[15px] text-white ${
         muted ? "opacity-50" : ""
       }`}
     >
@@ -99,18 +99,18 @@ export default function AuthFlowMockup() {
   if (process.env.NODE_ENV === "production") notFound();
 
   return (
-    <main className="mx-auto max-w-[430px] px-5 py-8 pb-24">
-      <h1 className="font-display text-[28px] font-semibold tracking-[-0.02em] text-s-ink">
+    <main className="mx-auto max-w-[390px] px-0 py-8 pb-24">
+      <h1 className="px-5 font-display text-[28px] font-semibold tracking-[-0.02em] text-s-ink">
         Sign up and sign in
       </h1>
-      <p className="mt-2 text-[15px] text-s-ink-2">
-        Full size, nothing wired. Chevron not arrow, Close as a pill. Measured off your screenshots: their page is #F6F6F6 and the cards are white, and white covers most of the screen.
+      <p className="mt-2 px-5 text-[15px] text-s-ink-2">
+        Full size, nothing wired. Measured against your screenshots, then corrected: the page is their grey #F6F6F6 with white cards on it, the chevron is their height, the shadow is a real one, and the invented menu button is gone.
       </p>
 
       <div className="mt-8">
         <Screen label="1. Start">
           <Bar />
-          <div className="flex flex-1 flex-col gap-3 px-5 pt-10">
+          <div className="flex flex-1 flex-col gap-3 px-5 pt-5">
             <h2 className="mb-3 text-center font-display text-[26px] font-semibold text-s-ink">
               Sign up for Solen
             </h2>
@@ -132,7 +132,7 @@ export default function AuthFlowMockup() {
 
         <Screen label="2a. Email we know, so: password">
           <Bar />
-          <div className="flex flex-1 flex-col gap-4 px-5 pt-10">
+          <div className="flex flex-1 flex-col gap-4 px-5 pt-5">
             <h2 className="font-display text-[26px] font-semibold text-s-ink">Welcome back</h2>
             <p className="text-[15px] text-s-ink-2">name@example.ch</p>
             <div className="rounded-[12px] bg-white p-4">
@@ -147,7 +147,7 @@ export default function AuthFlowMockup() {
 
         <Screen label="2b. Email we do not know, so: code">
           <Bar />
-          <div className="flex flex-1 flex-col gap-3 px-5 pt-10">
+          <div className="flex flex-1 flex-col gap-3 px-5 pt-5">
             <h2 className="font-display text-[26px] font-semibold text-s-ink">
               Confirm your email address
             </h2>
@@ -169,7 +169,7 @@ export default function AuthFlowMockup() {
 
         <Screen label="3. Then: create a password">
           <Bar />
-          <div className="flex flex-1 flex-col gap-4 px-5 pt-10">
+          <div className="flex flex-1 flex-col gap-4 px-5 pt-5">
             <h2 className="font-display text-[26px] font-semibold text-s-ink">
               Create your password
             </h2>
@@ -194,12 +194,12 @@ export default function AuthFlowMockup() {
             <Close />
             <p className="mt-2 text-[13px] text-s-ink-2">Close</p>
           </div>
-          <div className="text-center">
-            <span className="grid h-11 w-11 place-items-center rounded-input bg-white shadow-elevation">
-              <Menu size={20} strokeWidth={2.2} className="text-s-ink" aria-hidden />
-            </span>
-            <p className="mt-2 text-[13px] text-s-ink-2">Menu, square</p>
-          </div>
+          {/* The MENU button that stood here is gone. A reader checked the mockup against his
+              screenshots and found it was invented: there is no menu anywhere in his images, and
+              the written capture says so in as many words, "menu: there is none during account
+              creation". Inventing a control is the specific thing he is angry about, so it is
+              removed rather than kept for completeness. The square-menu decision still stands for
+              the app's own top bar; it just has no business on a sign-up screen. */}
         </div>
         <p className="mt-4 text-[13px] text-s-ink-2">
           This strip is their exact page grey, #F6F6F6, sampled from your screenshot. The controls read on it. On plain white the shadow alone nearly disappears.
