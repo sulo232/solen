@@ -128,3 +128,45 @@ straight code fix, not "the mockup was rebuilt". `MOCKUP_FORMAT_CORRECTION.md:22
 - [ ] V3-C. **Rebuild the REBUILD subset in v2 format**, one at a time, each committed.
 - [ ] V3-D. Close `MOCKUP_FORMAT_CORRECTION.md:22` once V3-B and V3-C land, since that box is the
   same work stated a month earlier.
+
+### V3-B RESULT , the 40 triaged 2026-08-10 (30 retired by name, 8 rebuild, 2 infra)
+
+Retired means: the question that mockup asked has since been ANSWERED in writing, so rebuilding it
+would re-ask a settled decision. Each is named here rather than quietly dropped, with what answers it.
+If any of these is still a live question for you, say the name and it comes straight back.
+
+**RETIRED , the law already answers it (30):**
+`sweep-booking-panel-radii` (form/summary card radius 16 is locked) · `sweep-bookings-skeleton`,
+`sweep-queue-skeleton`, `sweep-profile-loading` (loading is locked to Skeleton shaped like the final
+layout, never a spinner) · `sweep-categories-tile` (selected = calm gray fill, locked) ·
+`sweep-dash-selected-state` (dashboard keeps the blue skin by name) · `sweep-help-rows`,
+`sweep-notif-grouping` (list content on white with no photo anchor requires the sunken tray, FLOORS 4) ·
+`sweep-partner-faq` (a locked FAQItem accordion already exists) · `sweep-nail-tech-badge` (category tags
+are neutral, no per-category colour) · `sweep-referral-buttons`, `sweep-queue-feedback`,
+`sweep-products-cta` (one ink commit CTA, secondary neutral outline) · `sweep-profile-loyalty-meta`
+(density floor: render the full stack when the data exists) · `sweep-help-h1` (one locked page-title
+scale) · `sweep-warum-badge` (a badge repeated identically five times adds nothing) · `sweep-search-empty`
+(use the locked EmptyState, do not hand-roll) · `sweep-stampcard-generation` (tracked-uppercase is
+banned) · `sweep-empty-consolidation`, `sweep-city-picker-selected`, `sweep-modal-scrim`,
+`sweep-nav-hover`, `sweep-voucher-status-chip`, `sweep-dash-status-pill`, `sweep-dash-card-signature`
+(all rerouted to code fixes above, no A/B left) · `sweep-payment-methods`, `sweep-profile-pinterest`,
+`sweep-settings-pinterest`, `sweep-profile-faithful`, `sweep-profile-rebook` (owner-picked and SHIPPED;
+ProfileTabs and the settings B2 direction are the built result).
+
+**INFRA, not a design question (2):** `sweep-gallery`, `sweep-gallery-v2` are the index pages.
+
+**REBUILD , still a live question (8), each its own box:**
+- [ ] V3-C1 `sweep-result-card-variants` , the search card: does the price stay bold ink (locked) or go
+  recessive grey as this mockup proposes, and does the review count stay? The mockup's After argues
+  against a locked row, so it is a real question, not drift.
+- [ ] V3-C2 `sweep-booking-payment-selected` , the payment step's selected state: gray fill like every
+  other pill, or the ink border this mockup says you approved in "mockup 24d". That approval could not
+  be found in writing and the four named ink exceptions do not include payment.
+- [ ] V3-C3 `sweep-rewards-tier-ladder` , loyalty rank ladder: ink ladder or green stepper. The stepper
+  law covers progress trackers and bans green on a node; a rank ladder is neither side of that.
+- [ ] V3-C4 `sweep-rewards-hero-gradient` , rewards hero: ink or the current saturated gradient.
+- [ ] V3-C5 `sweep-referral-hero` , referral hero: gradient or flat white cards.
+- [ ] V3-C6 `sweep-partner-cards` , partner page: do the feature grid and category grid share sunken
+  chrome or white plus hairline.
+- [ ] V3-C7 `sweep-brand-hero` , brand directory page: full PDP-scale hero or a lighter section title.
+- [ ] V3-C8 `sweep-ueber-uns` , the About page: nothing pins it beyond the general type scale.
