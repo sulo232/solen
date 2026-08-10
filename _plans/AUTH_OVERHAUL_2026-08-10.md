@@ -67,13 +67,13 @@ Reference CAPTURED: `_design-system/references/qonto--onboarding.md`, live from 
       before he had seen any plan, and his hamburger correction went into the code and the taste log
       but never into this file. This section exists so a correction lands HERE first from now on.
 
-- [x] **CORRECTION 2026-08-10, the arrow and the close button.** Verbatim: *"I wanted it to be like
+- [x] **CORRECTION 2026-08-10, the arrow and the close button.** `verified: ace28fc23  app/[locale]/_components/layout/Header.tsx:618` Verbatim: *"I wanted it to be like
       everyone, like not, like without the line. And also I wanted to have, like, a shadow instead
       of whatever the fuck you're doing. And I want the close button to not be an X close, like,
       written close and also like a shadow and like a pill."* The line is off the back circle and
       the shadow stepped up so it can be seen. The CLOSE-AS-A-PILL half is NOT built: our top bar
       has no close control at all today, so it is a new control, and it sits in the mockup instead.
-- [x] **CORRECTION 2026-08-10, mockup first.** Verbatim: *"I told you to overhaul the fucking sign
+- [x] **CORRECTION 2026-08-10, mockup first.** `verified: ace28fc23  app/[locale]/dev/auth-flow/page.tsx:1` Verbatim: *"I told you to overhaul the fucking sign
       up sign in page, and what you should have done is just give me a fucking mock up."* Correct.
       I edited the real header three times today without showing him anything first. The mockup now
       exists at `/de/dev/auth-flow` and nothing in it is wired.
