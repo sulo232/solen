@@ -18,6 +18,60 @@ DEFER = re.compile(r"(i'?ll\s+(build|make|do|create|put together|mock)|i will\s+
     r"build\s+(them|the mock\w*)\s+next|do\s+(this|that|it|them|the mock\w*)\s+next|"
     r"as\s+mock\w*\s*[—-]?\s*next|coming\s+(up\s+)?next)", re.I)
 LINK = re.compile(r"(trycloudflare\.com|/_mockups/|localhost:\d+|127\.0\.0\.1:\d+|/dev/[a-z0-9-]+)", re.I)
+# ARM 2, added 2026-08-11. Owner: "u repeated urself stop skipping abt what im saying and also
+# mockup i told you", after asking TWICE for a mockup of the search field and getting a
+# panel-layout mockup the first time and a bug fix the second.
+#
+# Arm 1 only ever fired on DEFERRAL LANGUAGE ("I'll build it next"), and it was right not to fire
+# here: nothing was deferred, something ELSE was simply built and the ask fell on the floor in
+# silence. That is the shape the owner-correction ledger records seven times in fourteen days under
+# "promised-visual", and no check could see it.
+#
+# So: if HE asked for a mockup this turn, and the turn produced no mockup artifact, and the reply
+# carries no mockup link, block. Decidable straight off the transcript.
+ASKED = re.compile(
+    r"\b(make|build|give|show|want|need)\b[^.\n]{0,40}\b(mock ?ups?|variations?|design directions?)\b"
+    r"|\bmock ?ups?\b[^.\n]{0,30}\b(i (told|asked)|pls|please)\b"
+    r"|\bmock ?up\s+i\s+told\s+you\b", re.I)
+
+
+def last_owner_text(tp):
+    """His most recent message, so ARM 2 can see what he actually asked for."""
+    try:
+        with open(tp, encoding="utf-8") as f:
+            lines = f.readlines()
+    except OSError:
+        return ""
+    for line in reversed(lines):
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            o = json.loads(line)
+        except Exception:
+            continue
+        if o.get("type") != "user":
+            continue
+        c = o.get("message", {}).get("content", [])
+        if isinstance(c, list):
+            if any(isinstance(b, dict) and b.get("type") == "tool_result" for b in c):
+                continue
+            c = " ".join(b.get("text", "") for b in c if isinstance(b, dict) and b.get("type") == "text")
+        if isinstance(c, str) and c.strip() and "hook" not in c[:60].lower():
+            return c
+    return ""
+
+
+def wrote_mockup_route():
+    """A /dev route written this session counts: that is where mockups actually live now, not
+    public/_mockups, which is where arm 1 was still looking."""
+    written = _written()
+    if not written:
+        return False
+    return any(("/dev/" in f or f.startswith("public/_mockups/"))
+               and f.endswith((".tsx", ".jsx", ".html")) for f in written)
+
+
 def last_assistant_text(tp):
     txt=""
     try:
@@ -65,6 +119,15 @@ def main():
     if not tp or not os.path.isfile(tp): sys.exit(0)
     text=last_assistant_text(tp)
     if not text or flag_ok() or wrote_recent(): sys.exit(0)
+    owner = last_owner_text(tp)
+    if ASKED.search(owner) and not LINK.search(text) and not wrote_mockup_route():
+        sys.stderr.write("HE ASKED FOR A MOCKUP AND THIS TURN BUILT NONE. His message asks for a "
+            "mockup / variations / directions, the turn wrote no mockup file (a /dev route or "
+            "public/_mockups), and the reply carries no link to one. Fixing something else instead "
+            "is exactly what he means by 'stop skipping abt what im saying'. BUILD it this turn: "
+            "real tokens, side by side, one column per direction, ending with the link. "
+            "Escape: echo '<why>' > .claude/mockup-defer-skip.flag\n")
+        sys.exit(2)
     if MOCKUP.search(text) and DEFER.search(text) and not LINK.search(text):
         sys.stderr.write("MOCKUP-DEFER GATE: your reply defers a mockup/variation ('next' / 'after "
             "your confirmation' / 'want me to build') without building it and without a link. BUILD "
