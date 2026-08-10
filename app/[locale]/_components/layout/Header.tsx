@@ -615,14 +615,25 @@ export default function Header({ locale }: { locale: string }) {
               // white circle on a white page is a weaker edge than the bordered box, which is why
               // the border is kept as well rather than swapped out. His words were "and also,
               // like, shadow", not "instead of the border".
-              "grid h-11 w-11 shrink-0 place-items-center rounded-full border shadow-whisper",
+// CORRECTED AGAIN 2026-08-10, his words: "I wanted it to be like everyone, without the
+              // line, you know. And also I wanted to have a shadow instead of whatever the fuck
+              // you're doing."
+              //
+              // I kept the hairline AND added the shadow, and argued the cost: a shadowed white
+              // circle on a white page is a weaker edge than a bordered one. He heard that and
+              // overruled it, twice. So the line is gone and the shadow carries the edge alone,
+              // which is what the Qonto capture measured (no border, soft low shadow). Rule 10:
+              // the objection was made once, he decided, and it is not re-argued here.
+              // The shadow is stepped from whisper to elevation so it can actually be seen on
+              // white, since that was the whole basis of the objection.
+              "grid h-11 w-11 shrink-0 place-items-center rounded-full shadow-elevation",
               "transition-[opacity,border-color,background-color,transform] duration-200 ease-glide active:scale-[0.94] active:duration-[80ms]",
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               menuOpen && "opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto",
               // V3-D101: invert over dark sections.
               isDark
-                ? "border-white/30 bg-white/10 text-white hover:bg-white/20"
-                : "border-s-border bg-white text-s-ink hover:border-s-ink",
+                ? "bg-white/10 text-white hover:bg-white/20"
+                : "bg-white text-s-ink hover:bg-s-bg-sunken",
             )}
           >
             <Home size={22} strokeWidth={2.2} aria-hidden />
@@ -653,13 +664,13 @@ export default function Header({ locale }: { locale: string }) {
               // white circle on a white page is a weaker edge than the bordered box, which is why
               // the border is kept as well rather than swapped out. His words were "and also,
               // like, shadow", not "instead of the border".
-              "grid h-11 w-11 shrink-0 place-items-center rounded-full border shadow-whisper",
+              "grid h-11 w-11 shrink-0 place-items-center rounded-full shadow-elevation",
               "transition-[opacity,border-color,background-color,transform] duration-200 ease-glide active:scale-[0.94] active:duration-[80ms]",
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               menuOpen && "opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto",
               isDark
-                ? "border-white/30 bg-white/10 text-white hover:bg-white/20"
-                : "border-s-border bg-white text-s-ink hover:border-s-ink",
+                ? "bg-white/10 text-white hover:bg-white/20"
+                : "bg-white text-s-ink hover:bg-s-bg-sunken",
             )}
           >
             <ArrowLeft size={22} strokeWidth={2.2} aria-hidden />
