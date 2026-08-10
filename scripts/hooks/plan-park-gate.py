@@ -99,6 +99,43 @@ PLAN_DIR = "_plans"
 #
 # So every alternative below is anchored to an ACT: first person, or an explicit address to him,
 # or a line-initial label. A mention of parking in the abstract matches nothing.
+# He is telling me I got something wrong. Deliberately narrow: these are the shapes he actually
+# uses, taken from his own messages, not a general complaint detector. A vague "hmm" is not a
+# correction and must not demand a plan line.
+OWNER_CORRECTION_RE = re.compile(
+    r"\b(?:i (?:told|said)|told you|i already (?:told|said))\b"
+    # his real sentence was "That is not what I fucking ask", so the verb is bare and a swear can
+    # sit between "i" and it. Written from what he types, not from what grammar expects.
+    r"|\b(?:that (?:is|'s)|this is) not what i\b[^.\n]{0,20}\b(?:ask|asked|said|meant|want|wanted)\b"
+    r"|\bnot what i\b[^.\n]{0,20}\b(?:ask|asked|meant|wanted)\b"
+    r"|\bkeep it\b.{0,20}\b(?:square|round|circle|black|white|grey|gray)\b"
+    r"|\b(?:no|nope) not (?:at all|like that|what)\b"
+    r"|\bwhy (?:do|did) you (?:keep|not|never)\b"
+    r"|\byou (?:keep|kept) (?:not )?(?:forgetting|repeating|ignoring)\b"
+    r"|\bwe did ?n'?t do that\b"
+    r"|\bagain\b.{0,30}\b(?:told|said|asked)\b",
+    re.IGNORECASE)
+
+
+def owner_message(records) -> str:
+    """His last real message, skipping hook feedback and machine entries."""
+    for rec in reversed(records or []):
+        if rec.get("type") != "user":
+            continue
+        content = (rec.get("message") or {}).get("content")
+        text = content if isinstance(content, str) else " ".join(
+            b.get("text", "") for b in (content or [])
+            if isinstance(b, dict) and b.get("type") == "text")
+        if not text.strip():
+            continue
+        low = text.lower()
+        if ("hook feedback" in low or "<task-notification" in low
+                or "[system notification" in low or "hook additional context" in low):
+            continue
+        return text
+    return ""
+
+
 PARK_CLAIM_RE = re.compile(
     r"(\bi(?:'ve| have)? parked\b"
     r"|\bi(?:'m| am) parking\b"
@@ -432,12 +469,50 @@ def main() -> int:
         return 0  # cannot see the message: fail open, never brick a turn on a blind guess
 
     claims = park_sentences(final)
-    if not claims:
+
+    # 2026-08-10, owner: "literally told you about making plan before you actually go further
+    # because it keep forgetting, and you can add stuff to the plan when I tell you to. We didn't
+    # do that either."
+    #
+    # SECOND ARM, same gate rather than a new one. This file already enforces "a decision that only
+    # lives in a reply dies with the context window". A CORRECTION from him is the same thing from
+    # the other direction: he tells me I got something wrong, I fix the code, and the correction
+    # itself is never written down, so the next session re-derives the wrong reading. That happened
+    # today with the hamburger: it went into the code and the taste log and never into the plan.
+    #
+    # So a turn where HE corrected me must also leave a line in a plan file.
+    corrected = bool(OWNER_CORRECTION_RE.search(owner_message(records)))
+    if not claims and not corrected:
         return 0
 
     added = plan_lines_added(pdir, turn_start_epoch(records))
     if added is None:
         return 0  # git could not answer, so this gate has no proof and does not speak
+
+    if corrected and not claims:
+        # any new plan line at all satisfies this arm: the point is that it is written down,
+        # not that it carries the PARKED marker, which is for open questions rather than settled
+        # corrections.
+        if added:
+            return 0
+        print(
+            "HIS CORRECTION IS NOT IN THE PLAN (owner 2026-08-10: \"literally told you about making\n"
+            "plan before you actually go further because it keep forgetting, and you can add stuff\n"
+            "to the plan when I tell you to. We didn't do that either\").\n\n"
+            "He corrected you this turn and no file under _plans gained a line (checked with git,\n"
+            "not timestamps).\n\n"
+            "THE CASE, from the day he said it: he corrected the hamburger from a circle back to a\n"
+            "square. It went into the code and into the taste log, and never into the plan, so the\n"
+            "plan still described the version he had just rejected.\n\n"
+            "FIX: add one line to the plan this work belongs to, in his words, then continue:\n\n"
+            "    - [x] CORRECTION <date> · <what he said, quoted> · <what changed because of it>\n",
+            file=sys.stderr,
+        )
+        record_block(session_id)
+        return 2
+
+    if not claims:
+        return 0
 
     park_lines = [ln for ln in added if PARK_LINE_RE.search(ln)]
 

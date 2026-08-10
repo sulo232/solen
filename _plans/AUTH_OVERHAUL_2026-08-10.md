@@ -55,6 +55,18 @@ Reference CAPTURED: `_design-system/references/qonto--onboarding.md`, live from 
 - [x] B5 ONE treatment in the top bar, DONE. STILL OPEN and named rather than swept in: the booking flow draws its own 40px bare glyph, a second shape in a different file, left until he has seen this one. We currently ship two: the 44px box above, and a 40px bare glyph
       with no fill, no border and no shadow in the booking flow.
 
+## His corrections, added as they arrive
+
+- [x] **CORRECTION 2026-08-10, the hamburger.** Verbatim: *"hamburger mini, make it, keep it fucking
+      square. Are you dumb? And I told to make fucking shadows."* I had made all three circles. Back
+      and close are circles, the hamburger is a SQUARE, all three carry the shadow. Locked as
+      literals in `_design-system/TASTE_LOG.md` so it is read next time, not inferred.
+- [x] **CORRECTION 2026-08-10, the plan itself.** Verbatim: *"literally told you about making plan
+      before you actually go further because it keep forgetting, and you can add stuff to the plan
+      when I tell you to. We didn't do that either."* Correct on both counts: I built B1 to B5
+      before he had seen any plan, and his hamburger correction went into the code and the taste log
+      but never into this file. This section exists so a correction lands HERE first from now on.
+
 ## C. The design system half
 
 - [ ] C1 Write the button treatment into the frozen values so it stops drifting, since the drift is
