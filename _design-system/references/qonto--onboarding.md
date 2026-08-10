@@ -48,8 +48,8 @@ live.
 
 | control | shape | size | fill | border | shadow |
 |---|---|---|---|---|---|
-| back, app | **circle** | ~45pt | white | **none** | soft, low, offset down, page grey darkens to about #E9E9E9 beneath it and fades over ~20pt |
-| back, web | circle | 48px | transparent | none | **none** |
+| back, app | **circle, with a CHEVRON inside, not an arrow** | ~45pt | white | **none** | soft, low, offset down, page grey darkens to about #E9E9E9 beneath it and fades over ~20pt |
+| back, web | circle, **chevron** | 48px | transparent | none | **none** |
 | close, app | **a PILL with the word "Close"**, ~68 x 46pt | | white | none | same soft shadow |
 | close, post-login | circle with an X, ~45pt | | white | none | same |
 | menu | **there is none** during account creation |
@@ -76,3 +76,15 @@ renders at desktop width, and that page is near-black. Do not copy the dark trea
 light-only. The code boxes and strength bars were not measured in real pixels because the only
 source is a downscaled image, and opening those screens for real would have meant submitting an
 address.
+
+
+## The glyph, spelled out because I got it wrong
+
+The capture said "bare chevron inside, no box around the glyph" and I built an arrow anyway. His
+correction, verbatim: *"I told you I wanna get, like, not, like, an arrow. Like, I want, like, a
+good triangle."*
+
+**Back is a CHEVRON (`ChevronLeft`), never an arrow (`ArrowLeft`).** A chevron is the bare angle,
+the triangle shape with no shaft. Every Qonto screen in the reference uses it, and so does the
+close-adjacent chrome. This line exists because the measurement was already on the page and I
+still built from memory.
