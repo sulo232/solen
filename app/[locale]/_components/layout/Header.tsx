@@ -827,7 +827,11 @@ export default function Header({ locale }: { locale: string }) {
               // V3-D421k (2026-06-06): rounded-SQUARE tile matching the home button.
               // V3-D421L (council 3/3): FLAT - no shadow (CONTROL_ELEVATION rule 3). Tap
               // target 40px; folds with the header on category-route scroll.
-              "md:hidden relative grid h-11 w-11 place-items-center rounded-full border shadow-whisper transition-[transform,background-color,border-color] duration-200 ease-glide active:scale-[0.94] active:duration-[80ms] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
+              // CORRECTED 2026-08-10, his words: "hamburger mini, make it, keep it fucking square."
+              // I turned all three into circles. He asked for the BACK and the X as circles, and for
+              // the hamburger to get the same overhaul, meaning the shadow. Not the shape. Square
+              // stays, shadow added.
+              "md:hidden relative grid h-11 w-11 place-items-center rounded-input border shadow-whisper transition-[transform,background-color,border-color] duration-200 ease-glide active:scale-[0.94] active:duration-[80ms] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               isDark ? "border-white/30 bg-white/10 text-white" : "border-s-border bg-white text-s-ink",
             )}
           >
