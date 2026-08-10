@@ -252,7 +252,7 @@ export default function SearchMorphPreviewPage() {
   );
   const footerInner = (
     <div className="flex items-center justify-between px-5 pb-[max(14px,env(safe-area-inset-bottom))] pt-3">
-      <button onClick={reset} className="text-[14px] font-semibold text-s-ink underline-offset-4 hover:underline">Zurücksetzen</button>
+      <button onClick={reset} className="text-[14px] font-semibold text-s-ink underline-offset-4 hover:underline">Reset</button>
       <button onClick={close} className={COMMIT_BTN}><Search size={16} strokeWidth={2.2} /> Search</button>
     </div>
   );

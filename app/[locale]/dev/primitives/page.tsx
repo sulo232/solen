@@ -181,7 +181,7 @@ function PrimitivesDevPageInner() {
             <Card tag="State 09 loading">
               <FieldLabel htmlFor="ti-09">E-Mail-Adresse</FieldLabel>
               <TextInput id="ti-09" type="email" defaultValue="lara@example.ch" loading={!emailLoading} />
-              <FieldHelper>Prüfe Verfügbarkeit…</FieldHelper>
+              <FieldHelper>Checking availability…</FieldHelper>
             </Card>
           </Grid>
 
@@ -324,7 +324,7 @@ function PrimitivesDevPageInner() {
               <FieldLabel htmlFor="sel-default">Stadt</FieldLabel>
               <Select id="sel-default" defaultValue="">
                 <option value="" disabled>
-                  Stadt wählen
+                  Pick a city
                 </option>
                 <option value="basel">Basel</option>
                 <option value="zurich">Zürich</option>
@@ -433,7 +433,7 @@ function PrimitivesDevPageInner() {
                   checked={sortBy === "distance"}
                   onChange={(e) => setSortBy(e.target.value)}
                 >
-                  Distanz (am nächsten zuerst)
+                  Distance (nearest first)
                 </Radio>
                 <Radio
                   name="sort"
@@ -441,7 +441,7 @@ function PrimitivesDevPageInner() {
                   checked={sortBy === "rating"}
                   onChange={(e) => setSortBy(e.target.value)}
                 >
-                  Bewertung (höchste zuerst)
+                  Rating (highest first)
                 </Radio>
                 <Radio
                   name="sort"
@@ -449,7 +449,7 @@ function PrimitivesDevPageInner() {
                   checked={sortBy === "availability"}
                   onChange={(e) => setSortBy(e.target.value)}
                 >
-                  Verfügbarkeit (heute frei)
+                  Availability (free today)
                 </Radio>
                 <Radio
                   name="sort"
@@ -776,7 +776,7 @@ function PrimitivesDevPageInner() {
                       checked={sheetSortBy === "distance"}
                       onChange={(e) => setSheetSortBy(e.target.value)}
                     >
-                      Distanz (am nächsten zuerst)
+                      Distance (nearest first)
                     </Radio>
                     <Radio
                       name="sheet-sort"
@@ -784,7 +784,7 @@ function PrimitivesDevPageInner() {
                       checked={sheetSortBy === "rating"}
                       onChange={(e) => setSheetSortBy(e.target.value)}
                     >
-                      Bewertung (höchste zuerst)
+                      Rating (highest first)
                     </Radio>
                     <Radio
                       name="sheet-sort"
@@ -792,7 +792,7 @@ function PrimitivesDevPageInner() {
                       checked={sheetSortBy === "availability"}
                       onChange={(e) => setSheetSortBy(e.target.value)}
                     >
-                      Verfügbarkeit (heute frei)
+                      Availability (free today)
                     </Radio>
                     <Radio
                       name="sheet-sort"
@@ -862,7 +862,7 @@ function PrimitivesDevPageInner() {
                     onClick={() => setSheetFilterTypes(new Set())}
                     className="font-body font-medium text-[14px] text-s-ink-2 hover:text-s-ink transition-colors"
                   >
-                    Zurücksetzen
+                    Reset
                   </button>
                   <button
                     type="button"
@@ -955,7 +955,7 @@ function PrimitivesDevPageInner() {
                 <Logo size="md" />
                 <div className="flex items-center gap-4 text-[14px] text-s-ink-2 font-medium">
                   <span>Entdecken</span>
-                  <span>Städte</span>
+                  <span>Cities</span>
                   <button className="bg-s-ink text-white px-4 py-2 rounded-full font-semibold text-[14px]">Anmelden</button>
                 </div>
               </div>
