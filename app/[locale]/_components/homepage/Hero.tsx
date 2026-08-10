@@ -200,7 +200,7 @@ export default async function Hero({ locale }: { locale: string }) {
           {/* V3-D348 (tweak #1): H1 clamp 40/64 -> 30/44, leading 1.1 -> 1.08.
               Still the page's biggest type, but stops bullying the fold so the
               search is reachable without scrolling. */}
-          <h1 className="mb-3 font-display text-[clamp(30px,8vw,44px)] font-bold leading-[1.08] tracking-[-0.02em] text-s-ink">
+          <h1 className="mb-3 font-display text-[clamp(30px,8vw,44px)] font-semibold leading-[1.08] tracking-[-0.02em] text-s-ink">
             Termine, sofort bestätigt.
           </h1>
           {/* V3-D327: Fresha sub 16px mobile / 22px desktop, weight 400, lh 1.3-1.4 */}

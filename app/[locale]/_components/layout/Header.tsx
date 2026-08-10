@@ -729,7 +729,7 @@ export default function Header({ locale }: { locale: string }) {
               // lifts on scroll, not the buttons).
               // mockup-ok: S3 fix, 40px -> 44px floor, icon glyph size unchanged (approved fixes-refined)
               // mockup-ok: rounded snapped, punch-list geometry sweep, TASTE_LOG.md:187 2026-07-15
-              "grid h-11 w-11 shrink-0 place-items-center rounded-full border shadow-whisper", // mockup-ok: owner 2026-08-10, back and close are circles with a shadow (LOCKFILE NAV CONTROLS)
+              "grid h-11 w-11 shrink-0 place-items-center rounded-full shadow-elevation-2", // mockup-ok: LOCKFILE NAV CONTROLS (2026-08-10). Shadow, NO border: the design contract says a control carrying elevation drops its border, never both, and this file states that rule itself 300 lines down on the category pill. whisper was too faint to be the only edge on white, so it is elevation-2, which is what that table froze.
               "transition-[opacity,border-color,background-color,transform] duration-200 ease-glide active:scale-[0.94]",
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               menuOpen && "opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto",
@@ -753,7 +753,7 @@ export default function Header({ locale }: { locale: string }) {
             className={cn(
               // mockup-ok: S3 fix, 40px -> 44px floor, icon glyph size unchanged (approved fixes-refined)
               // mockup-ok: rounded snapped, punch-list geometry sweep, TASTE_LOG.md:187 2026-07-15
-              "grid h-11 w-11 shrink-0 place-items-center rounded-full border shadow-whisper", // mockup-ok: owner 2026-08-10, back and close are circles with a shadow (LOCKFILE NAV CONTROLS)
+              "grid h-11 w-11 shrink-0 place-items-center rounded-full shadow-elevation-2", // mockup-ok: LOCKFILE NAV CONTROLS (2026-08-10). Shadow, NO border: the design contract says a control carrying elevation drops its border, never both, and this file states that rule itself 300 lines down on the category pill. whisper was too faint to be the only edge on white, so it is elevation-2, which is what that table froze.
               "transition-[opacity,border-color,background-color,transform] duration-200 ease-glide active:scale-[0.94]",
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               menuOpen && "opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto",
@@ -938,7 +938,7 @@ export default function Header({ locale }: { locale: string }) {
               // V3-D421k (2026-06-06): rounded-SQUARE tile matching the home button.
               // V3-D421L (council 3/3): FLAT - no shadow (CONTROL_ELEVATION rule 3). Tap
               // target 40px; folds with the header on category-route scroll.
-              "md:hidden relative grid h-11 w-11 place-items-center rounded-input border shadow-whisper transition-[transform,background-color,border-color] duration-200 ease-glide active:scale-[0.94] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
+              "md:hidden relative grid h-11 w-11 place-items-center rounded-input shadow-elevation-2 transition-[transform,background-color,border-color] duration-200 ease-glide active:scale-[0.94] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               isDark ? "border-white/30 bg-white/10 text-white" : "border-s-border bg-white text-s-ink",
             )}
           >

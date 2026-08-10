@@ -34,7 +34,7 @@ export default function CategoryTabs() {
         <Link
           key={slug}
           href={`/de/${slug}`}
-          className="font-body text-[15px] font-bold text-s-ink transition-colors duration-150 hover:text-s-ink focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-4 focus-visible:rounded-sm md:text-[16px]"
+          className="font-body text-[15px] font-semibold text-s-ink transition-colors duration-150 hover:text-s-ink focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-4 focus-visible:rounded-sm md:text-[16px]"
         >
           {label}
         </Link>

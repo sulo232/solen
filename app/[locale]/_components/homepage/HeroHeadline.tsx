@@ -121,7 +121,7 @@ export default function HeroHeadline({ className }: { className?: string }) {
       {slogan.cta && (
         <Link
           href={slogan.cta.href}
-          className="group -mt-3 mb-6 inline-flex items-center gap-1.5 font-body text-[14px] font-bold text-s-ink transition-colors hover:text-s-ink-mid md:-mt-4 md:text-[15px]"
+          className="group -mt-3 mb-6 inline-flex items-center gap-1.5 font-body text-[14px] font-semibold text-s-ink transition-colors hover:text-s-ink-mid md:-mt-4 md:text-[15px]"
         >
           {slogan.cta.label}
           <ArrowRight

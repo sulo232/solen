@@ -15,7 +15,7 @@ import { ArrowRight, ImageIcon } from "lucide-react";
  *
  * Spec measurements from Uber ref:
  *   - Image to headline gap: 88px
- *   - Headline 28-32px font-bold, 2 lines
+ *   - Headline 28-32px font-semibold, 2 lines
  *   - Headline to sub gap: 24px
  *   - Sub 16-18px, 2-3 lines
  *   - Sub to CTA gap: 35px
@@ -77,7 +77,7 @@ export default function BusinessTeaser() {
           </p>
           <Link
             href="/partner"
-            className="mt-8 inline-flex items-center gap-2 rounded-full bg-s-ink px-7 py-3.5 font-body text-[14px] font-bold text-white shadow-[0_4px_14px_rgba(0,0,0,0.10)] transition-all duration-200 ease-glide hover:-translate-y-[1px] hover:bg-black hover:shadow-[0_6px_20px_rgba(0,0,0,0.18)] active:scale-[0.97] active:duration-[80ms] md:text-[15px]"
+            className="mt-8 inline-flex items-center gap-2 rounded-full bg-s-ink px-7 py-3.5 font-body text-[14px] font-semibold text-white shadow-[0_4px_14px_rgba(0,0,0,0.10)] transition-all duration-200 ease-glide hover:-translate-y-[1px] hover:bg-black hover:shadow-[0_6px_20px_rgba(0,0,0,0.18)] active:scale-[0.97] active:duration-[80ms] md:text-[15px]"
           >
             Mehr erfahren
             <ArrowRight size={16} strokeWidth={2.5} aria-hidden />

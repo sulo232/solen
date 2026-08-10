@@ -119,7 +119,7 @@ export default function HomeSearchPill({
         ref={pillRef}
         className={cn(
           "flex w-full items-center gap-3 rounded-pill border border-s-border bg-white px-3.5 py-2.5",
-          "shadow-[0_2px_8px_0_rgba(0,0,0,0.07)]", // mockup-ok: SearchTemplate.tsx pill, resting state, copied 1:1
+          "shadow-elevation-2", // mockup-ok: same 0 2px 8px geometry this shipped as an arbitrary value, now the token
         )}
       >
         {/* R1: ONE tap handler for both callers. `/inspo` still passes its own `onActivate`

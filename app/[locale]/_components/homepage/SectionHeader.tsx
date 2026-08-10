@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
@@ -55,7 +55,7 @@ export function SectionMeta({ eyebrow }: { eyebrow: string }) {
     // V3-D192 (2026-05-26): SectionMeta bullet + text → s-accent (royal blue).
     //   (historical: was text-s-ink-3 + before:bg-s-ink-3 ink-grey before that.)
     // V3-D330: Eyebrow recipe normalized — tracking 0.18em → 0.08em canonical,
-    //   weight font-bold → font-semibold.
+    //   weight font-semibold → font-semibold.
     // V3-D331 (2026-05-28): dropped the pseudo-element accent-dot prefix
     //   (before-pseudo + rounded-full + accent bg) per LOCKFILE §2.5 Eyebrow decoration policy
     //   (no leading dot, no leading icon). Color dropped from s-accent → s-ink-3
@@ -215,18 +215,29 @@ export function SectionTitle({
  * mockup-ok , owner 2026-08-10: "I want that to be on the right side and also, like, inside of,
  * like, a little circle... more, like, Airbnb type stuff, more modern."
  *
- * GROUNDED, NOT INVENTED (taste rule 9). Every value here is lifted off `ScrollCircleButton` in
- * this same file, which is the system's existing circle control: 36px, `rounded-full`, white fill,
- * `border-s-border` hairline, ink glyph, icon 16 at strokeWidth 2.25, the 200ms glide, the 0.94
- * press with its 80ms window. Nothing new was chosen. That matters because a section heading now
- * has ONE circle grammar rather than two that merely resemble each other (FLOORS LAW 8).
+ * GROUNDED, NOT INVENTED, AND CORRECTED ONCE (taste rule 9, FLOORS LAW 8). The first version used
+ * `ScrollCircleButton`'s geometry from further down this file. That was wrong: a reader sweeping
+ * the estate found THIS EXACT CONTROL ALREADY SHIPS, as `RailHeading` in
+ * app/[locale]/_components/search/CategoryMobileRails.tsx:82-98, built from the approved mockup
+ * public/_mockups/home-v3/search-a.html (.sa-secheadrow / .sa-h2arrow). Title left,
+ * justify-between row, circle pinned right. A second, slightly different circle for the home page
+ * would have been the precise failure FLOORS LAW 8 names: one thing, two implementations,
+ * drifting apart alone.
  *
- * The 36px circle is wrapped in a 44px grid cell rather than being grown to 44px: the visual size
- * has to stay in proportion to an 18-20px heading, and the touch-target floor (design contract,
- * "touch target" row, interactive controls >= 44px) is not negotiable, so the hit area is the
- * wrapper and the circle is what you see. `ScrollCircleButton` itself is a bare 36px, below that
- * floor; it is desktop-only (`hidden md:flex`) so a pointer is aiming at it, not a thumb. This
- * control is on mobile, so it does not get the same pass.
+ * So every value below is RailHeading's, verbatim: 32px, gray sunken fill, NO border, ink glyph,
+ * ArrowRight at size 20 strokeWidth 2. The fill IS the edge, which is why there is no hairline (a
+ * control carrying a fill does not also take a border), and it clears the edge-visibility floor on
+ * a white page without one.
+ *
+ * ONE difference from RailHeading, and it is a contract difference rather than a style one: theirs
+ * is `aria-hidden` and inert, because that rail set had no see-all destination and the mockup made
+ * it decorative chrome. This one is a REAL link with a real href, so it carries the section's
+ * label as `aria-label` instead of being hidden.
+ *
+ * The 32px circle sits in a 44px grid cell rather than being grown to 44px: the visual size has to
+ * stay in proportion to an 18-20px heading, and the touch-target floor (design contract, "touch
+ * target" row, interactive controls >= 44px) is not negotiable. So the hit area is the wrapper and
+ * the circle is what you see.
  *
  * NO focus classes here, deliberately. The global `a:focus-visible` ink edge in globals.css
  * already covers every link, and the design contract's focus row says primitives add no extra
@@ -241,14 +252,14 @@ function SeeAllCircle({ href, label }: { href: string; label: string }) {
     <Link href={href} aria-label={label} className="group grid h-11 w-11 shrink-0 place-items-center">
       <span
         className={cn(
-          "grid h-9 w-9 place-items-center rounded-full", // mockup-ok: ScrollCircleButton geometry
-          "border border-s-border bg-white text-s-ink", // mockup-ok
-          "transition-[colors,transform] duration-200 ease-glide", // mockup-ok
-          "group-hover:border-s-ink/30",
+          // mockup-ok: RailHeading (CategoryMobileRails.tsx:90-95), itself copied from
+          // search-a.html .sa-h2arrow. Copied, not retyped from a description.
+          "grid h-8 w-8 shrink-0 place-items-center rounded-full bg-s-bg-sunken text-s-ink", // mockup-ok
+          "transition-transform duration-200 ease-glide", // mockup-ok
           "group-active:scale-[0.94] group-active:duration-[80ms]", // mockup-ok
         )}
       >
-        <ChevronRight size={16} strokeWidth={2.25} aria-hidden />
+        <ArrowRight size={20} strokeWidth={2} aria-hidden />
       </span>
     </Link>
   );

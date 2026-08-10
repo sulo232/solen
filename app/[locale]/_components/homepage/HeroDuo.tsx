@@ -149,7 +149,7 @@ function MagneticDuoCard({ card }: { card: DuoCard }) {
             x: letterX,
             y: letterY,
           }}
-          className="absolute -right-2 -bottom-2 font-display font-bold leading-none tracking-[-0.05em]"
+          className="absolute -right-2 -bottom-2 font-display font-semibold leading-none tracking-[-0.05em]"
         >
           {card.mark}
         </motion.span>
@@ -164,7 +164,7 @@ function MagneticDuoCard({ card }: { card: DuoCard }) {
 
         {/* Bottom-left CTA pill */}
         <span
-          className="absolute bottom-4 left-4 z-10 inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 font-body text-[12px] font-bold transition-transform duration-200 ease-out group-hover:translate-x-1 md:bottom-5 md:left-5"
+          className="absolute bottom-4 left-4 z-10 inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 font-body text-[12px] font-semibold transition-transform duration-200 ease-out group-hover:translate-x-1 md:bottom-5 md:left-5"
           style={{ background: card.pillBg, color: card.pillInk }}
         >
           {card.cta}

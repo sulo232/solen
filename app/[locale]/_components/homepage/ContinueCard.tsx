@@ -165,7 +165,7 @@ function ContinueShell({
           (shadow-[0_2px_8px_0_rgba(0,0,0,0.07)], HomeSearchPill.tsx's own copy of it). */}
       <Link
         href={href}
-        className="flex w-full items-center gap-3.5 rounded-[18px] border border-s-border bg-white p-3 shadow-[0_2px_8px_0_rgba(0,0,0,0.07)] transition-transform duration-150 ease-glide active:scale-[0.99]"
+        className="flex w-full items-center gap-3.5 rounded-[18px] border border-s-border bg-white p-3 shadow-elevation-2 transition-transform duration-150 ease-glide active:scale-[0.99]"
       >
         <span className="min-w-0 flex-1">
           {eyebrow && (

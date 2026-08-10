@@ -228,7 +228,7 @@ export default function FeaturedStylists() {
                         />
                       ) : (
                         <span
-                          className="font-display text-[28px] font-bold"
+                          className="font-display text-[28px] font-semibold"
                           style={{ color: tokens.initial }}
                           aria-hidden
                         >

@@ -198,7 +198,7 @@ export default function NearbyMap({
       <span
         // mockup-ok: owner-dictated exact values (A5), not a fresh appearance decision.
         style={FROST_GLASS}
-        className="pointer-events-none absolute bottom-3 left-3 z-[3] inline-flex items-center gap-1.5 rounded-pill px-3 py-1.5 text-[12.5px] font-semibold text-s-ink"
+        className="pointer-events-none absolute bottom-3 left-3 z-[3] inline-flex items-center gap-1.5 rounded-pill px-3 py-1.5 text-[12px] font-semibold text-s-ink"
       >
         {/* mockup-ok , owner 2026-08-10: "I also want it to be more like city and it shows which
             city it is." The city is the label now; the count sits beside it in the same chip at a

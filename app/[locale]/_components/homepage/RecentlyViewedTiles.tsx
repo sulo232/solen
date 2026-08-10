@@ -126,7 +126,7 @@ export default function RecentlyViewedTiles({
                   />
                 ) : (
                   <span
-                    className="absolute inset-0 grid place-items-center font-display text-[20px] font-bold text-s-ink-2"
+                    className="absolute inset-0 grid place-items-center font-display text-[20px] font-semibold text-s-ink-2"
                     aria-hidden
                   >
                     {e.name.charAt(0).toUpperCase()}

@@ -43,6 +43,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import { Link } from "next-view-transitions";
 import { usePathname } from "next/navigation";
 import { useLocale } from "next-intl";
@@ -263,15 +264,36 @@ export default function CategoryPillRow() {
                   >
                     <Home size={24} strokeWidth={strokeForSize(24)} />
                   </span>
-                ) : (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
+                ) : c.iconSrc ? (
+                  // THE ICON OVERHAUL, the half of it that is a measured fact rather than a taste
+                  // call. Owner 2026-08-10: "I want to overhaul the icons... on top here."
+                  //
+                  // MEASURED, not guessed. `sips` on public/icons/categories/: every one of the six
+                  // PNGs is 1254x1254. The five this row renders weigh 6,873,594 bytes together
+                  // (scissors 1,160,725 / clippers 1,286,367 / nails 1,292,845 / spa 1,628,858 /
+                  // map 1,504,799). They were being served RAW through a plain <img> with an
+                  // eslint-disable on top, so Next's optimizer never saw them, and every phone
+                  // downloaded 6.9 MB of image to draw five 26px glyphs. At 26px on a 3x screen the
+                  // raster actually needed is 78px.
+                  //
+                  // This is not a new pattern, it is the one the rest of the codebase already uses
+                  // on these exact files: WalkInBand.tsx:73 renders /icons/categories/walkin.png
+                  // through next/image, and MobileCategoriesRow.tsx imports next/image for the same
+                  // six. Header was the outlier. Commit 4d85acfe4 (2026-07-04) even converted the
+                  // account avatar in that same file to next/image and walked past this one.
+                  //
+                  // 64 is the intrinsic hint, not the render size: the class still draws it at
+                  // 26px, and `sizes` tells the optimizer a 3x phone needs about 78px.
+                  <Image
                     src={c.iconSrc}
                     alt=""
+                    width={64}
+                    height={64}
+                    sizes="78px"
                     className="h-[26px] w-[26px] shrink-0 object-contain"
                     aria-hidden
                   />
-                )}
+                ) : null}
                 {c.label}
               </Link>
             );
