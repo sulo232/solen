@@ -94,6 +94,7 @@ export function SectionTitle({
   link,
   scrollRef,
   linkPlacement = "auto",
+  subtitle,
 }: {
   title: string;
   link?: { label: string; href: string };
@@ -113,6 +114,20 @@ export function SectionTitle({
    * have the prop, while its caller Nearby.tsx came from the side that did. Typecheck caught it.
    */
   linkPlacement?: "auto" | "inline";
+  /**
+   * A description line under the title. Owner 2026-08-10: "in a few places Airbnb has, like,
+   * descriptions. Maybe we can add something similar."
+   *
+   * MEASURED off airbnb.ch at 390 wide the same day, so the recipe is theirs and not invented:
+   * 12px, weight 400, colour #6C6C6C, line-height 16, sitting directly under the heading and
+   * spanning the text column rather than the full row. Ours maps that to the nearest tokens we
+   * already own: 12px / `text-s-ink-2` (#6B6B6B, 4.85:1 on sunken, AA) / leading-4.
+   *
+   * NO CALLER PASSES IT YET, on purpose. Section copy is his voice, and inventing five marketing
+   * sublines would be exactly the fabrication the house rules ban. The slot is here; the words are
+   * his. Shown live at /dev/nav-ideas.
+   */
+  subtitle?: string;
 }) {
   const [canScrollLeft, setCanScrollLeft] = React.useState(false);
   const [canScrollRight, setCanScrollRight] = React.useState(true);
@@ -153,6 +168,7 @@ export function SectionTitle({
     // items-center, not items-baseline. A circle has no baseline to sit on: with items-baseline
     // the 44px cell aligned its own text baseline to the heading's and hung below the row.
     <div className="flex items-center justify-between gap-6">
+      <div className="min-w-0">
       <h2
         // V2-D70 (2026-05-18): Plus Jakarta Sans is now the locked font (no
         // longer drift). Section h2 stays `font-body` (which IS Plus Jakarta
@@ -183,6 +199,14 @@ export function SectionTitle({
             the surface he is looking at. */}
         {title}
       </h2>
+      {subtitle ? (
+        // mockup-ok: Airbnb's own recipe, measured at 390 wide on 2026-08-10 (12px / 400 /
+        // #6C6C6C / line-height 16), mapped to the tokens we already own. It sits under the
+        // title in the text column, not across the whole row, so the right-hand circle stays
+        // aligned to the title rather than to a two-line block.
+        <p className="mt-1 font-body text-[12px] font-normal leading-4 text-s-ink-2">{subtitle}</p>
+      ) : null}
+      </div>
 
       {/* The right-hand cluster. Desktop keeps its two scroll circles when a scrollRef is wired;
           the see-all circle sits after them and renders at every width. */}
@@ -346,7 +370,20 @@ export function FeedZone({
         // V3-D326 (2026-05-27): "unbalanced" after Uber type-scale B sweep —
         // 80px above an 18-20px section h2 = 4× ratio, dominates the title.
         // Drop to mt-12 mobile / mt-8 desktop (48/32px) — ratio settles ~2.5×.
-        "mt-12 md:mt-8",
+        // mockup-ok , MEASURED 2026-08-10, owner: "everything is unbalanced, it does not look
+        // organized. In Airbnb, how everything has spacing, I believe we do not have that
+        // really correctly." He is right and it is one number: the gap between the category
+        // pill row and the first section heading measured 79px here against 0 on airbnb.ch at
+        // the same 390px width. Seventy-nine pixels of nothing is what reads as unorganized.
+        //
+        // ROOT CAUSE, not a nudge: this 48px margin was tuned in May to drop a RISING PANEL
+        // clear of a coloured Hero, and the comment history above says so in five entries. The
+        // panel was deleted earlier today, at his own request, along with its border, shadow
+        // and radius. The margin outlived the thing it was spacing. Mobile goes to 0 and the
+        // rhythm is then carried by the pill row own pb-3.5 plus this element pt-2, about 22px,
+        // which is close to Airbnb effective 20. Desktop keeps md:mt-8 untouched: the
+        // complaint and the measurement are both mobile.
+        "mt-0 md:mt-8",
         // mockup-ok , owner 2026-08-10, verbatim: "I want you to remove one thing. Is that, like,
         // this line, how do you say that? And I want it to be, like, white, instead of, like,
         // whatever it is, divided thing is."

@@ -205,7 +205,7 @@ export default function CategoryPillRow() {
                   // spans (below) at z-[-1] that hold the actual raised/sunken fills and
                   // cross-fade on opacity. Border stays fully removed per the owner's last
                   // pass: a control carrying elevation drops its border, never both.
-                  "relative isolate inline-flex h-9 shrink-0 items-center gap-1 rounded-[40px] px-2.5 bg-transparent", // mockup-ok: 2026-08-10 geometry shrink, px-3 -> px-2.5 (see row comment above)
+                  "relative isolate inline-flex h-10 shrink-0 items-center gap-1 rounded-[40px] px-3.5 bg-transparent", // mockup-ok: 2026-08-10 geometry shrink, px-3 -> px-2.5 (see row comment above)
                   "font-body text-[14px] font-normal leading-none text-s-ink", // mockup-ok
                   "transition-transform duration-[220ms] ease-[cubic-bezier(0.1,0.9,0.2,1)]", // mockup-ok
                   // NO WEIGHT CHANGE ON SELECT. Owner 2026-07-31: "I don't really like how the
@@ -260,7 +260,7 @@ export default function CategoryPillRow() {
                   // category icons beside it, so the row's icons stay one size.
                   <span
                     aria-hidden
-                    className="grid h-[26px] w-[26px] shrink-0 place-items-center"
+                    className="grid h-[28px] w-[28px] shrink-0 place-items-center"
                   >
                     <Home size={24} strokeWidth={strokeForSize(24)} />
                   </span>
@@ -289,8 +289,8 @@ export default function CategoryPillRow() {
                     alt=""
                     width={64}
                     height={64}
-                    sizes="78px"
-                    className="h-[26px] w-[26px] shrink-0 object-contain"
+                    sizes="84px"
+                    className="h-[28px] w-[28px] shrink-0 object-contain"
                     aria-hidden
                   />
                 ) : null}

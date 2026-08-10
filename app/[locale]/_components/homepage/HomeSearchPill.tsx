@@ -113,12 +113,16 @@ export default function HomeSearchPill({
   }, []);
 
   return (
-    <div className="mx-auto w-full max-w-[680px] px-4 pt-1 pb-2">
+    <div className="mx-auto w-full max-w-[680px] px-4 pt-3 pb-2">
       <div
         ref={pillRef}
         className={cn(
-          "flex w-full items-center gap-3 rounded-pill border border-s-border bg-white px-3.5 py-2.5",
-          "shadow-elevation-2", // mockup-ok: same 0 2px 8px geometry this shipped as an arbitrary value, now the token
+          // mockup-ok , MEASURED against airbnb.ch at 390x844 on 2026-08-10, owner: "the search bar
+          // size is really weird." He was right, and it is not vague: theirs is 56px tall and
+          // ours was 43. A quarter shorter, sitting 4px from the top edge instead of 12, with a
+          // shadow of 0 2px 8px against their 0 6px 20px. py-2.5 to py-4 takes it to 56.
+          "flex w-full items-center gap-3 rounded-pill border border-s-border bg-white px-4 py-4",
+          "shadow-elevation-3", // mockup-ok: elevation-2 is 0 2px 8px against Airbnb 0 6px 20px on this same control; elevation-3 is the nearest token that actually lifts
         )}
       >
         {/* R1: ONE tap handler for both callers. `/inspo` still passes its own `onActivate`
