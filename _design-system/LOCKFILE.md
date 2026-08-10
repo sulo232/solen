@@ -858,7 +858,11 @@ Always German: `Fotos · Über uns · Services · Bewertungen · Portfolio · Tr
 
 ### Brand voice (always)
 
-- `"du"` not `"Sie"` (informal Swiss)
+- ~~`"du"` not `"Sie"` (informal Swiss)~~ , **DEAD, superseded by name** by the owner decision of
+  2026-07-29 (*"make it the Sie instead of the du"*), which took the whole product formal: `Sie` (de),
+  `Lei` (it), `vous` (fr). Register is owned by `COPY_LAW.md` §1 and stated nowhere else, so there is
+  one place to change it. 491 German strings, plus the Italian and French sweeps, already shipped
+  formal (commits `69fc74d65`, `a0423867d`). Struck rather than deleted so the reversal stays legible.
 - No exclamation marks (confidence over enthusiasm)
 - No emoji (V3-D203 hard rule)
 - No over-cap (don't shout)

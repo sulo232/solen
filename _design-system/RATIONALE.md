@@ -520,6 +520,14 @@ MECHANIC: section 9 covers locale numerics generally (tabular figures, CHF forma
 SOURCE: LOCKFILE:780; RATIONALE.md section 9
 
 ### Brand voice register (LOCKFILE:801-807)
+> **REVERSED 2026-07-29, supersedes the register half of this entry.** The owner took the product
+> FORMAL: *"make it the Sie instead of the du"* , `Sie` (de), `Lei` (it), `vous` (fr). The live law is
+> `COPY_LAW.md` §1, which also carries the measured starting point and the counter-evidence, so it is
+> not re-argued here. The ADR below is KEPT UNCHANGED as the record of what the informal call had been
+> reasoned from , the SACRIFICES line in particular named the exact failure (formal categories reading
+> `du` as under-formal for the price point) that the reversal acted on. The no-exclamation, no-emoji
+> and no-over-capitalization halves of this entry are UNTOUCHED and still live.
+
 DECISION: Copy always uses `"du"` (never `"Sie"`), no exclamation marks, no emoji, no over-capitalization; speed and urgency get dedicated patterns ("Termin in 30 Sek." for speed, "Nur noch X heute" for urgency).
 FORCES: informal address reads warmer and faster; formality signals distance in Swiss German consumer contexts; restraint (no exclamation, no caps) reads as confidence rather than salesmanship; speed/urgency copy has to stay honest rather than hyped.
 OPTIMIZES FOR: a calm, informal, confident tone held constant across every surface.

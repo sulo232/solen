@@ -733,7 +733,7 @@ Each list/grid section needs a designed empty state. Pattern:
 [ Button: "Andere Stadt wählen" ]  ← CTA, primary action
 ```
 
-Empty states are FRIENDLY (German `du` voice), NEVER apologetic ("Sorry, no results"). Always actionable.
+Empty states are FRIENDLY, NEVER apologetic ("Sorry, no results"). Always actionable. (~~German `du` voice~~ , register went FORMAL 2026-07-29, supersedes it; `COPY_LAW.md` §1 owns it. Warmth inside formality is the point, and COPY_LAW §1 says how , formal address does not make a string cold.)
 
 ### §10.3 · Error state
 
@@ -1241,7 +1241,7 @@ The running list of "we already decided this, don't re-litigate." If you find yo
 | 80 / 17 surfaces+ink; interactive blue NOT budgeted (the old "3%" accent cap reversed, v2 2026-06-09) | V3-D138 + v2 | This doc §1 |
 | Blue `s-accent` #276EF1 = the HYPERLINK accent, sparse (v3 2026-06-11; the v2 "generous on all tappable" row is RETIRED) | v3 | LOCKFILE §1.5 v3 + SOURCE §1/§2.1 |
 | "Termin in 30 Sekunden" is THE positioning | V3-D86 | This doc §1 |
-| German `du` not `Sie` | (since launch) | This doc §18 |
+| ~~German `du` not `Sie`~~ , **REVERSED 2026-07-29: formal `Sie` / `Lei` / `vous`** (supersedes this row) | owner, *"make it the Sie instead of the du"* | `COPY_LAW.md` §1 |
 | `card` radius = 16px | V4 era | This doc §5 |
 | `ease-glide` is the default easing | V2-D16 | This doc §6 |
 | 4 categories on homepage: Coiffeur / Barber / Nails / Karte / Walk-in / Spa | V3-D154 | MobileCategoriesRow.tsx + this doc §21 |
@@ -1337,7 +1337,7 @@ Example: Fresha's "stylist availability" view (per-staff calendar) — not curat
 - Section h2s → Section Title pattern with chevron-stem-draw on hover
 - Vertical rhythm → `mb-2 md:mb-3` between sections
 - Highlight words → no terracotta heartbeat (retired); use bold weight + ink color for emphasis
-- All copy in German `du` voice per §18
+- ~~All copy in German `du` voice per §18~~ , register went FORMAL 2026-07-29 (supersedes this line); see `COPY_LAW.md` §1
 
 ### §21.7 · Open IA questions
 
