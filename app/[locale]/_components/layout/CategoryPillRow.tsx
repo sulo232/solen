@@ -75,10 +75,26 @@ type CategorySearchSegment = (typeof CATEGORY_SEARCH_SEGMENTS)[number];
 // glyph.
 const HEADER_CATEGORIES: { slug: string; route: string; label: string; iconSrc?: string; home?: boolean }[] = [
   { slug: "home", route: "", label: "All", home: true },
-  { slug: "coiffeur", route: "coiffeur", label: "Coiffeur", iconSrc: "/icons/categories/scissors.png" },
-  { slug: "barbershop", route: "barbershop", label: "Barber", iconSrc: "/icons/categories/clippers.png" },
-  { slug: "nails", route: "nails", label: "Nails", iconSrc: "/icons/categories/nails.png" },
-  { slug: "spa", route: "spa", label: "Spa", iconSrc: "/icons/categories/spa.png" },
+  // HIS OWN NEW ICONS, 2026-08-10. Owner: "I also gave you a fucking branch name for the icons,
+  // right, that I made new icons, but you still did not do anything."
+  //
+  // He was right and my earlier answer was wrong twice over. I reported that only 2 of 5 categories
+  // had artwork, because I looked in `public/_pixel-refs/solen-icons/out/` and counted the files
+  // there. The icons were not there. They are embedded as base64 video INSIDE
+  // `public/_research/solen-icon-motion.html`, the page he was actually shown, and there are FOUR
+  // of them: the barber chair, the hair dryer, the nail polish and the spa stones. That is every
+  // category, not two. Extracted the first frame of each with alpha, cropped to the artwork, and
+  // squared, so all four sit in the same box.
+  //
+  // These replace the old set he had been looking at for months. The old files are NOT deleted,
+  // they stay in `public/icons/categories/` for revert.
+  //
+  // As a side effect the row got 5.3 MB lighter: the old PNGs are 1254x1254 originals weighing
+  // 1.2 to 1.6 MB each to draw a 28px glyph; these are 168px, 13 to 27 KB.
+  { slug: "coiffeur", route: "coiffeur", label: "Coiffeur", iconSrc: "/icons/categories/v2/coiffeur.png" },
+  { slug: "barbershop", route: "barbershop", label: "Barber", iconSrc: "/icons/categories/v2/barber.png" },
+  { slug: "nails", route: "nails", label: "Nails", iconSrc: "/icons/categories/v2/nails.png" },
+  { slug: "spa", route: "spa", label: "Spa", iconSrc: "/icons/categories/v2/spa.png" },
   // 2026-08-01 (home-v3 mockup, search-a.html:915): last pill, same icon-treatment (31x31 PNG,
   // no restyle). Mockup reuses the existing map.png rather than a new asset; matched literally.
   { slug: "inspo", route: "inspo", label: "Inspo", iconSrc: "/icons/categories/map.png" },
