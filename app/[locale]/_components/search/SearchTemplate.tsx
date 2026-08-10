@@ -1350,45 +1350,22 @@ export default function SearchTemplate({
               {/* I2 mockup-ok (search-a.html .sa-l2, "THE SECOND LINE MUST GO"): the
                   date/city subtitle is removed. One line only, per the approved chrome. */}
             </span>
-            {/* Owner 2026-08-01 ("we put the hamburger where the map view is"): MOBILE ONLY,
-                this trailing slot is the hamburger now, matching search-a.html's `#sa-menu`.
-                The map toggle is NOT lost, the bottom-centre "Karte" FAB (below,
-                MAP_FAB_LABEL) already does that job on every breakpoint and remains a map
-                affordance; this button fires the shared `solen:open-menu` window event
-                Header.tsx listens for (opens the same MobileMenu the removed top-row
-                hamburger used to open, city selector included). Split into two md:-gated
-                siblings rather than one shared element: this trailing slot was NOT
-                previously breakpoint-split, so swapping it in place would have silently
-                changed desktop too (MobileMenu is itself `md:hidden`, so a single-element
-                swap would make this button do nothing on desktop). Desktop keeps its
-                original map icon + handleMapToggle sibling below, unchanged. */}
-            <span
-              role="button"
-              tabIndex={0}
-              aria-label={tSD("openMenu")}
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                window.dispatchEvent(new CustomEvent("solen:open-menu"));
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  window.dispatchEvent(new CustomEvent("solen:open-menu"));
-                }
-              }}
-              className={cn(
-                // FIX D (2026-08-01, owner "the circle thingy is in other categories", repeating
-                // the same call already applied to HomeSearchPill.tsx's trailing hamburger): bare,
-                // no circle, no border. Hover moves from a bg fill to a text-tone change.
-                "md:hidden grid shrink-0 place-items-center", // mockup-ok
-                "text-s-ink transition-all duration-300 ease-glide hover:text-s-ink-2", // mockup-ok
-                "h-11 w-11", // mockup-ok: S3 fix, 36px -> 44px floor (approved fixes-refined); was V3-D421d "map icon stays full size when pinned"
-              )}
-            >
-              <Menu size={16} strokeWidth={2} aria-hidden />
-            </span>
+            {/* mockup-ok , THE TRAILING HAMBURGER IS GONE FROM HERE TOO. Owner 2026-08-10:
+                "I don't think this hamburger menu should be here because it's really
+                inconsistent." He then picked option C off /dev/menu-placement.
+
+                This was the SIBLING of the one in HomeSearchPill.tsx, put here on 2026-08-01
+                ("we put the hamburger where the map view is"). Removing only the home one and
+                leaving this would have left the same control in the search bar on all four
+                category routes, which is the half-a-sweep failure this project keeps naming: the
+                instance in front of you gets fixed and its siblings do not.
+
+                Its job moved to BottomNav.tsx, whose fourth item fires the identical
+                `solen:open-menu` event, so MobileMenu keeps its one trigger contract. The desktop
+                map-toggle sibling below is untouched.
+
+                The `md:hidden` split this block introduced still earns its keep: without it the
+                desktop map icon would have been swapped too. */}
             {/* Desktop sibling, untouched behavior: original map icon + handleMapToggle, just
                 now gated `hidden md:grid` so it only takes over at md+ where the mobile
                 hamburger sibling above is hidden. */}

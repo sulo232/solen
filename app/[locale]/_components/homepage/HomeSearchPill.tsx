@@ -14,7 +14,7 @@
 import * as React from "react";
 import dynamic from "next/dynamic";
 import { Link } from "next-view-transitions";
-import { Heart, Menu, Search } from "lucide-react";
+import { Heart, Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 
@@ -92,7 +92,6 @@ export default function HomeSearchPill({
   onActivate?: () => void;
 }) {
   const tChrome = useTranslations("ui.searchChrome");
-  const tSD = useTranslations("salonDetail");
   // common.savedLabel ("Gespeichert"/"Saved"/"Enregistré"/"Salvato") is the closest existing key
   // for the saved-heart's aria-label; discover's own namespace has no dedicated aria string, and
   // DiscoverPageContent's own heart button (page.tsx) hardcodes "Gespeichert" un-i18n'd, which
@@ -156,25 +155,22 @@ export default function HomeSearchPill({
           >
             <Heart size={16} strokeWidth={2} aria-hidden />
           </Link>
-        ) : (
-          // Trailing hamburger, matching SearchTemplate.tsx's mobile trailing slot: fires the
-          // shared `solen:open-menu` window event Header.tsx listens for, opening the same
-          // MobileMenu the removed top-row hamburger used to open (city selector included).
-          <button
-            type="button"
-            aria-label={tSD("openMenu")}
-            onClick={() => window.dispatchEvent(new CustomEvent("solen:open-menu"))}
-            // mockup-ok , not a new design choice. Owner 2026-08-01, repeating an earlier call:
-            // "the hamburger menu why is it like circled? I told you that you don't want it
-            // circled in the search bar, just make it bare". Ring removed, 44px hit area kept.
-            className={cn(
-              "grid h-11 w-11 shrink-0 place-items-center", // mockup-ok
-              "text-s-ink transition-all duration-300 ease-glide hover:text-s-ink-2", // mockup-ok
-            )}
-          >
-            <Menu size={16} strokeWidth={2} aria-hidden />
-          </button>
-        )}
+        ) : null}
+        {/* mockup-ok , THE HAMBURGER IS GONE FROM HERE. Owner 2026-08-10: "I don't think this
+            hamburger menu should be here because it's really inconsistent. Not really like it."
+            He then picked option C off /dev/menu-placement.
+
+            It could not simply be deleted last turn, and the reason was measured rather than
+            assumed: on /de the header's own hamburger renders at width 0, hidden by
+            `showCategoryChrome && "max-md:hidden"` (Header.tsx:706), which is true on home, on all
+            four category routes and on /inspo. So this glyph was the ONLY visible trigger for
+            MobileMenu across most of the customer surface, and MobileMenu carries the city
+            selector and the language switcher.
+
+            What made the deletion safe is `BottomNav.tsx`, mounted in layout.tsx this turn. Its
+            fourth item fires the SAME `solen:open-menu` event this button used to, so the menu
+            keeps its one trigger contract and simply moved to the thumb with a label on it.
+            Nothing was rewired. */}
       </div>
       {/* R1: mounted ALWAYS (not gated on `overlayOpen`) so its open-morph animates from
           `openT = 0`; a conditionally-mounted copy would arrive already-open and skip the
