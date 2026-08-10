@@ -26,6 +26,27 @@ KNOWLEDGE_PAT = re.compile(r"_design-system/(research/.*\.md|RATIONALE|TASTE_LOG
 LINK_PAT = re.compile(r"(trycloudflare\.com|/_mockups/|localhost:\d+|/dev/[a-z-]+|\.png\)|\.png\])", re.I)
 ESCAPE_PAT = re.compile(r"(large build.{0,40}nothing viewable|nothing viewable yet|not visuali[sz]able because|no visual form)", re.I)
 
+# v3, 2026-08-10 , the PROMISED-VISUAL arm.
+# The v2 gate only fired when this turn happened to WRITE a design-knowledge file. That left the
+# commoner failure wide open: the closing message OFFERS to build a mockup / page / direction and
+# ships no link, so the owner gets a question instead of something to look at. Measured this
+# session: "Want me to start there, or rebuild all 40 in v2 as originally written?" , a promised
+# visual, zero files written, gate silent.
+# It also closes the permission-asking hole the finish-autonomously gate keeps catching from the
+# other side: an offer to build a visual is not a deliverable, and the fix for both is the same ,
+# build the thing and paste the link.
+PROMISE_PAT = re.compile(
+    r"("
+    r"(want|would you like|should) (me |i )?(to )?\w{0,12} ?(build|mock|draw|make|do|start)"
+    r"|(i('| w)?(ll|d| will| can| could| should)|let me|next up,? i)\s+\w{0,18}\s*"
+    r"(build|mock|draw|render|put together|show you)"
+    r"|(build|mock|draw)(ing)? (out )?(the|a|3|three|two|both|all) [\w\s-]{0,30}"
+    r"(mockup|mock-up|direction|variant|version|page|screen|preview)"
+    r")",
+    re.I,
+)
+VISUAL_NOUN_PAT = re.compile(r"(mock ?-?up|mock the|direction[s]?\b|variant|preview|screen|page|visual)", re.I)
+
 def project_dir():
     return os.environ.get("CLAUDE_PROJECT_DIR") or os.getcwd()
 
@@ -111,6 +132,21 @@ def main():
                 pass
             return 0
         # over budget: it has become the exit, not the exception , fall through and block
+
+    # v3 arm: a PROMISED visual with no link is its own failure, independent of file writes.
+    if PROMISE_PAT.search(final) and VISUAL_NOUN_PAT.search(final):
+        print(
+            "PROMISED-VISUAL (visual-deliverable-gate v3, 2026-08-10): your closing message offers to "
+            "build a mockup / direction / page and contains NO link to look at. To him that is a "
+            "question, not a deliverable, and he has to spend a turn saying yes before anything "
+            "exists. BUILD IT THIS TURN and paste the link. If it genuinely cannot be built yet, say "
+            "which specific thing you are missing (a pick between two options he has already been "
+            "shown, a credential, a destructive op) , not 'want me to'. "
+            "Escape: echo \"<reason>\" > .claude/visual-deliverable-skip.flag (30-min).",
+            file=sys.stderr,
+        )
+        return 2
+
     hits = knowledge_written_recently(pdir)
     if not hits:
         return 0
@@ -145,7 +181,29 @@ def selftest():
     ok_link = run("Here it is: https://generation-barn-houses-greater.trycloudflare.com/_mockups/taste-book/index.html")
     ok_escape = run("This is a large build, nothing viewable yet, the round is the build session.")
     print(f"no-link close: {'BLOCK' if block == 2 else 'MISS'} | link close: {'PASS' if ok_link == 0 else 'FALSE-POSITIVE'} | escape close: {'PASS' if ok_escape == 0 else 'FALSE-POSITIVE'}")
-    good = block == 2 and ok_link == 0 and ok_escape == 0
+
+    # v3 PROMISED-VISUAL arm. The blocking case is the real one measured on 2026-08-10.
+    promise_block = run("My recommendation: build the reviews A/B/C directions mockup first. "
+                        "Want me to start there, or rebuild all 40 in v2 as originally written?")
+    promise_ok = run("Built all three reviews directions: "
+                     "https://wood-sing-clicking-deaf.trycloudflare.com/_mockups/reviews-abc/index.html")
+    # The knowledge arm is truthy for the whole of any session that touched a law file, so an
+    # innocent sentence cannot be tested end-to-end , it would be blocked by the OTHER arm, which is
+    # correct behaviour and proves nothing about this one. Assert the new pattern directly instead.
+    innocent = [
+        "The register decision is recorded and the two stale pointers are fixed.",
+        "Main took two commits this week, both of them checkpoints.",
+        "I would build on the existing table rather than adding a second one.",
+        "The account hub page renders no bell now.",
+        "Six of the eleven are the same screen, corrected six times.",
+    ]
+    over = [s for s in innocent if PROMISE_PAT.search(s) and VISUAL_NOUN_PAT.search(s)]
+    print(f"promised-visual no link: {'BLOCK' if promise_block == 2 else 'MISS'} | "
+          f"promised + link: {'PASS' if promise_ok == 0 else 'FALSE-POSITIVE'} | "
+          f"innocent sentences quiet: {'PASS' if not over else 'FALSE-POSITIVE on ' + repr(over)}")
+
+    good = (block == 2 and ok_link == 0 and ok_escape == 0
+            and promise_block == 2 and promise_ok == 0 and not over)
     print("SELFTEST", "OK" if good else "FAILED")
     return 0 if good else 1
 
