@@ -105,10 +105,14 @@ for m in (re.finditer(r"shadow-whisper", blob) if rule1_applies else []):
 # never both) and the no-container section (a container PLUS a hairline between every row is two
 # devices claiming one boundary). This fires when a container edge and per-row dividers land within
 # a few lines of each other in the SAME added block.
+# Setting a border or a radius to ZERO is the OPPOSITE of boxing, so every numeric branch below
+# requires a non-zero value. Caught on the first real edit after this rule shipped: removing the
+# boxing from the reviews mockup wrote `borderRadius = '0'` and the rule blocked the fix it existed
+# to encourage. A check that blocks the correction is worse than no check.
 CONTAINER = re.compile(
     r"(border\s+border-s-border"
-    r"|border\s*[:=]\s*['\"]?\s*1px"          # CSS `border: 1px` AND JS `style.border = "1px ...`
-    r"|borderRadius\s*=\s*['\"]?\s*\d"        # the JS form a mockup injection uses
+    r"|border\s*[:=]\s*['\"]?\s*[1-9]\d*px"      # CSS `border: 1px` AND JS `style.border = "1px ...`
+    r"|borderRadius\s*[:=]\s*['\"]?\s*[1-9]"     # the JS form a mockup injection uses
     r"|rounded-\[?2[04]px\]?|rounded-card"
     r"|shadow-whisper|shadow-elevation)", re.I)
 ROWLINES = re.compile(r"(divide-y|divide-s-border|border-b[\s\"'`]|borderBottom|border-t[\s\"'`])", re.I)

@@ -181,15 +181,22 @@
     row.style.marginRight = '-16px';   // run to the screen edge so the crop is real, not padded away
     row.style.paddingRight = '16px';
 
+    // NO BOX. Owner, 2026-08-10: "i dont like how evrth is boxed yk i told you you keep doing that".
+    // The first version put a 1px #E4E4E7 border, a 16px radius and 14px padding on every card,
+    // measured live before removing them. That is the boxing, and it was doubled: the reviews
+    // section already sits in its own rounded white container, so each card drew a second edge
+    // inside an existing one. The cards need none. The measured 211px of overflow crops the next
+    // card at the right edge and the gap separates them, so the boundary is already drawn.
     [].forEach.call(row.children, function(k){
       k.style.flex = '0 0 84%';
       k.style.scrollSnapAlign = 'start';
       k.style.minWidth = '0';
+      k.style.border = '0';
       k.style.borderBottom = '0';
-      k.style.border = '1px solid #E4E4E7';
-      k.style.borderRadius = '16px';
-      k.style.padding = '14px';
-      k.style.background = '#fff';
+      k.style.borderRadius = '0';
+      k.style.padding = '0';
+      k.style.paddingRight = '14px';
+      k.style.background = 'transparent';
     });
     sec.setAttribute('data-dir-c','1');
     try{ sec.scrollIntoView({block:'start'}); }catch(e){}
