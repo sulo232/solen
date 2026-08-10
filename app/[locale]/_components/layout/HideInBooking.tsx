@@ -77,16 +77,24 @@ export default function HideInBooking({
     // bar + footer.
     /\/bookings\/[^/]+\/(report|refund|upcharge)\/?$/.test(pathname) ||
     /\/onboarding(\/|$)/.test(pathname) ||
-    // 2026-08-09. The rest of the TASK screens, added after capturing what Airbnb and Uber Eats
-    // actually do at phone width (_design-system/references/chrome-by-page-type.md). Both strip
-    // the bar completely on a screen where someone is doing ONE job: Uber Eats leaves a single X
-    // and puts the action at the bottom, Airbnb hands the bottom bar to the commit button. The
-    // list above already had that instinct and was applied one route at a time by hand, which is
-    // why these seven were missed. Every one is a single job with its own commit button:
-    /\/(walk-in-join|walk-in-tip|confirmation|staff-invite)(\/|$)/.test(pathname) ||
-    /\/tip\/[^/]+\/?$/.test(pathname) ||
-    /\/vouchers\/buy\/?$/.test(pathname) ||
-    /\/gift-card\/?$/.test(pathname)
+    // REVERTED 2026-08-09, same day, by the owner: "we should keep the back. how else are they
+    // gonna go back?"
+    //
+    // Seven more routes were added here after capturing how Airbnb and Uber Eats strip the bar on
+    // a task screen (_design-system/references/chrome-by-page-type.md). The capture was right and
+    // the application was wrong, because I copied HALF the pattern. Both references remove the bar
+    // AND leave one control: Uber Eats an X, Airbnb a floating back arrow. I removed the bar and
+    // left nothing.
+    //
+    // Measured after he objected, on all seven: `walk-in-join`, `walk-in-tip`, `confirmation`,
+    // `staff-invite`, `tip/[id]`, `vouchers/buy` and `gift-card` contain ZERO back, close, or
+    // router.back controls between them. Stripping the header took away their only way out.
+    //
+    // The routes above keep their exemption because each one does carry its own back: the booking
+    // wizard draws an arrow on every step (BookingWizard.tsx:186), and the rest were checked when
+    // they were added. Any of these seven can rejoin that list the day it grows its own control,
+    // not before.
+    false
   ) {
     return null;
   }
