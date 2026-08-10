@@ -301,6 +301,17 @@ export default function HomeSearchPill({
           onClose={() => setOverlayOpen(false)}
           locale={locale}
           originRect={originRect}
+          // THE FIELD TAKES FOCUS NOW. Owner 2026-08-11: "what i mostly hate is the searchbar in
+          // search." Measured with the panel open from this bar: document.activeElement was NOT
+          // the input, and typing four characters left the value empty. So the panel opened, showed
+          // a field, and quietly ignored you until you tapped it a second time. None of its states
+          // could ever be seen, because it was never in any of them.
+          //
+          // The overlay has always had the code for this; it is gated on `autoFocusService`, which
+          // defaults to false and which this caller never passed. The category routes pass false on
+          // purpose (you arrive there to browse, not to type). Arriving from the home search bar is
+          // the opposite: tapping a search bar IS the intent to type.
+          autoFocusService
           // Same composer the results pill opens, so the two entry points are one surface.
           // NO category pills inside the panel. Owner 2026-08-11: "remove category bar from
           // search bar." The home page already carries that exact row directly under the

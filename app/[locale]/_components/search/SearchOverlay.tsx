@@ -494,9 +494,14 @@ export function SearchOverlay({
       if (autoFocusService && initialFocus === "service") {
         setInputFocused(true);
         grow(1);
-        // preventScroll: stop iOS from scrolling the focused input into view (that was the
-        // "opens then scrolls down" jank). The input already sits at the top of the sheet.
-        requestAnimationFrame(() => serviceRef.current?.focus({ preventScroll: true }));
+        // Routed through `pendingFocus` (see the effect further down) instead of a bare rAF.
+        // 2026-08-11: measured with the panel open from the home bar, document.activeElement was
+        // NOT this input and four typed characters left the value empty. A requestAnimationFrame
+        // scheduled from inside this effect can still land before the input is focusable, and when
+        // it does, `.focus()` fails silently and the field just sits there looking ready. The exact
+        // same failure was found and fixed on the city input in the step above. One mechanism now,
+        // and it runs after the commit.
+        setPendingFocus("service");
       } else {
         setInputFocused(false);
       }
