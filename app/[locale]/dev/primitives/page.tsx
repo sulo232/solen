@@ -278,7 +278,7 @@ function PrimitivesDevPageInner() {
         <Section eyebrow="Textarea" meta="§F.1.2 multiline" title="Textarea">
           <Grid cols={2}>
             <Card tag="Default empty">
-              <FieldLabel htmlFor="ta-empty">Deine Bewertung</FieldLabel>
+              <FieldLabel htmlFor="ta-empty">Your review</FieldLabel>
               <Textarea
                 id="ta-empty"
                 placeholder="Was hat dir gefallen? Worauf können andere achten?"
@@ -286,7 +286,7 @@ function PrimitivesDevPageInner() {
               <FieldHelper>Mindestens 20 Zeichen.</FieldHelper>
             </Card>
             <Card tag="Filled with counter (live)">
-              <FieldLabel htmlFor="ta-filled">Deine Bewertung</FieldLabel>
+              <FieldLabel htmlFor="ta-filled">Your review</FieldLabel>
               <Textarea
                 id="ta-filled"
                 value={reviewText}
@@ -296,7 +296,7 @@ function PrimitivesDevPageInner() {
               <TextareaCounter current={reviewText.length} max={1000} />
             </Card>
             <Card tag="Approaching limit (warn at 80%)">
-              <FieldLabel htmlFor="ta-warn">Deine Bewertung</FieldLabel>
+              <FieldLabel htmlFor="ta-warn">Your review</FieldLabel>
               <Textarea
                 id="ta-warn"
                 defaultValue="Dies ist eine längere Bewertung — ich versuche möglichst viel Detail zu geben weil andere Solen-Nutzerinnen davon profitieren sollen. Der Service war durchwegs sehr gut, von der Begrüssung bis zur Verabschiedung. Maria hat alle Wünsche aufgenommen…"
@@ -306,7 +306,7 @@ function PrimitivesDevPageInner() {
             </Card>
             <Card tag="Error too short">
               <FieldLabel htmlFor="ta-err" required>
-                Deine Bewertung
+                Your review
               </FieldLabel>
               <Textarea id="ta-err" defaultValue="Top." tone="error" />
               <FieldHelper tone="error">
@@ -590,10 +590,10 @@ function PrimitivesDevPageInner() {
                 onClick={() => setConfirmOpen(true)}
                 className="font-body font-semibold text-[14px] px-5 py-3 rounded-full bg-s-ink text-white hover:bg-black transition-colors duration-150 ease-snap"
               >
-                Termin bestätigen öffnen
+                Confirm appointment öffnen
               </button>
               <Modal isOpen={confirmOpen} onOpenChange={setConfirmOpen} size="sm">
-                <ModalHeader title="Termin bestätigen" eyebrow="Buchung" size="sm" onClose={() => setConfirmOpen(false)} />
+                <ModalHeader title="Confirm appointment" eyebrow="Booking" size="sm" onClose={() => setConfirmOpen(false)} />
                 <ModalBody size="sm">
                   <p className="text-s-ink-2">
                     Du buchst <strong className="text-s-ink font-semibold">Damen-Schnitt &amp; Föhnen</strong> bei
@@ -631,7 +631,7 @@ function PrimitivesDevPageInner() {
                 <ModalHeader title="Willkommen zurück" eyebrow="Anmelden" size="md" onClose={() => setLoginOpen(false)} />
                 <ModalBody size="md">
                   <p className="text-s-ink-2 mb-4">
-                    Melde dich mit deiner E-Mail-Adresse an, um deine Buchung abzuschliessen.
+                    Sign in with your email address to complete your booking.
                   </p>
                   <div className="flex flex-col gap-3">
                     <div className="flex flex-col gap-1.5">
@@ -725,7 +725,7 @@ function PrimitivesDevPageInner() {
                 <ModalHeader title="Konto wirklich löschen?" size="sm" onClose={() => setDestructiveOpen(false)} />
                 <ModalBody size="sm">
                   <p className="text-s-ink-2">
-                    Diese Aktion kann nicht rückgängig gemacht werden. Alle Buchungen und Favoriten werden gelöscht.
+                    This action cannot be undone. All bookings and favourites will be deleted.
                   </p>
                 </ModalBody>
                 <ModalFooter size="sm">
@@ -869,7 +869,7 @@ function PrimitivesDevPageInner() {
                     onClick={() => setFilterSheetOpen(false)}
                     className="font-body font-semibold text-[14px] px-5 py-3 rounded-full bg-s-ink text-white hover:bg-black transition-colors"
                   >
-                    47 Salons anzeigen
+                    Show 47 salons
                   </button>
                 </SheetCTARow>
               </Sheet>
@@ -1222,7 +1222,7 @@ function ToastDemo() {
             onClick={() =>
               toast.warning({
                 title: "Internetverbindung instabil",
-                description: "Deine Buchung wird gespeichert sobald die Verbindung zurück ist.",
+                description: "Your booking is saved as soon as the connection is back.",
               })
             }
             className="font-body font-semibold text-[14px] px-4 py-2.5 rounded-full bg-s-warning text-white hover:opacity-90 transition-opacity"
@@ -1233,7 +1233,7 @@ function ToastDemo() {
             type="button"
             onClick={() =>
               toast.error({
-                title: "Buchung fehlgeschlagen",
+                title: "Booking failed",
                 description: "Der Termin wurde inzwischen gebucht. Wähle einen anderen Slot.",
                 action: "Erneut versuchen",
                 onAction: () => alert("Retry booking"),

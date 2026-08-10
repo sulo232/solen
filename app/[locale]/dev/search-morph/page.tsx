@@ -59,7 +59,7 @@ export default function SearchMorphPreviewPage() {
   // It is never set by scroll position -- scroll only drives the expand motion value.
   const [inputFocused, setInputFocused] = useState(false);
   const [service, setService] = useState("");
-  const [city, setCity] = useState("Keine Präferenz"); // location default = no preference (Egal)
+  const [city, setCity] = useState("No preference"); // location default = no preference (Egal)
   const [date, setDate] = useState("");
   const [serviceQ, setServiceQ] = useState("");
   const [cityQ, setCityQ] = useState("");
@@ -142,7 +142,7 @@ export default function SearchMorphPreviewPage() {
   };
   const close = () => { setOpen(false); setInputFocused(false); setActiveStep("service"); setServiceQ(""); setCityQ(""); expand.set(0); };
   const reset = () => {
-    setService(""); setCity("Keine Präferenz"); setDate(""); setServiceQ(""); setCityQ(""); setSelKey(null); setPeriod("");
+    setService(""); setCity("No preference"); setDate(""); setServiceQ(""); setCityQ(""); setSelKey(null); setPeriod("");
     setActiveStep("service"); setInputFocused(false); collapse();
   };
 
@@ -203,7 +203,7 @@ export default function SearchMorphPreviewPage() {
 
   const cityList = (): ReactNode => (
     <>
-      <SuggestRow name="Keine Präferenz" sub="Überall in der Schweiz" Icon={Globe} onClick={() => { setCity("Keine Präferenz"); setCityQ(""); advance("location"); }} />
+      <SuggestRow name="No preference" sub="Anywhere in Switzerland" Icon={Globe} onClick={() => { setCity("No preference"); setCityQ(""); advance("location"); }} />
       {cities.map((c) => (
         <SuggestRow key={c} name={c} img={CITY_ICONS[c]} Icon={MapPin} onClick={() => { setCity(c); setCityQ(""); advance("location"); }} />
       ))}
@@ -216,7 +216,7 @@ export default function SearchMorphPreviewPage() {
     const q = isS ? serviceQ : cityQ;
     const setQ = isS ? setServiceQ : setCityQ;
     const ref = isS ? serviceRef : cityRef;
-    const ph = isS ? "Service, Salon oder Stylist:in" : "Stadt suchen";
+    const ph = isS ? "Service, salon or stylist" : "Search city";
     return (
       <div className="flex h-12 items-center gap-2.5 rounded-[16px] border border-s-border bg-white px-4">
         {inputFocused ? (
@@ -353,7 +353,7 @@ export default function SearchMorphPreviewPage() {
                         {/* mockup-ok: !important preserves the existing look
                             (V3-D-input-fill-2026-07-17). english-ok: placeholder text unchanged,
                             pre-existing German copy mirroring the real German-locale UI. */}
-                        <input ref={cityRef} value={cityQ} onChange={(e) => setCityQ(e.target.value)} placeholder="Stadt suchen"
+                        <input ref={cityRef} value={cityQ} onChange={(e) => setCityQ(e.target.value)} placeholder="Search city"
                           className="min-w-0 flex-1 !border-0 !bg-transparent !min-h-0 !px-0 !text-[15px] text-s-ink placeholder:text-s-ink-2 focus:outline-none focus-visible:outline-none" />
                         {cityQ.length > 0 && <button onClick={() => { setCityQ(""); cityRef.current?.focus(); }} aria-label="Eingabe löschen" className="shrink-0 text-s-ink-2"><X size={18} strokeWidth={2.2} /></button>}
                       </div>

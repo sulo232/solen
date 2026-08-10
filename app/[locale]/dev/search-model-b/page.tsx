@@ -35,7 +35,7 @@
  *     bg-s-bg-sunken font-semibold, 22px PNG icon + 15px label, right-edge mask fade)
  *   - SearchTemplate.tsx L1210-1301 (the search band: max-w-[680px] wrapper, the pill
  *     itself `flex w-full items-center gap-3 rounded-pill border border-s-border bg-white
- *     px-3.5 py-2.5`, Search icon 18px, line1 14px font-medium "Suchen"/query, line2
+ *     px-3.5 py-2.5`, Search icon 18px, line1 14px font-medium "Search"/query, line2
  *     12.5px text-s-ink-2 city/date, trailing map icon-button h-9 w-9 rounded-full border)
  *     , MEASURED live: 380 x 66.75px box at 412px viewport, matches the ~380x67 target.
  *   - SearchTemplate.tsx L1309-1400 (filter-pill row: far-left circle h-9 w-9 rounded-full
@@ -43,7 +43,7 @@
  *     text-[13.5px], selected = bg-s-bg-sunken text-s-ink font-semibold no border , owner
  *     2026-07-01 neutral-not-blue)
  *   - SearchTemplate.tsx L1421-1463 (count + sort row, its OWN row below filters, NOT
- *     inline with them: "{n} Salons" 16px semibold LEFT, sort dropdown pill 13px RIGHT)
+ *     inline with them: "{n} salons" 16px semibold LEFT, sort dropdown pill 13px RIGHT)
  *   - SalonResultCard.tsx variant="card" (the DEFAULT render on /coiffeur per L513-519 +
  *     L1626 `variant={listLayout ? "list" : gridLayout ? "grid" : "card"}`): aspect-[3/2]
  *     rounded-[22px] photo + HeartButton (28px glass circle, 16px icon) top-right, name
@@ -69,8 +69,8 @@
  * reinvent-ok: gradient photo stand-ins + sample salon names/photos are placeholder
  *   content for the results feed, not a new data source (matches the prior version's
  *   convention). Real tokens, Lucide, no CDN, no em-dash, no middot, >=12px.
- * lang-ok: the de-DE chrome strings inside the page ("Jetzt geöffnet", "Preis", "Für wen",
- *   "Bewertung", "Beliebteste", "Suchen", "Basel") are the REAL production copy, verbatim ,
+ * lang-ok: the de-DE chrome strings inside the page ("Open now", "Price", "For whom",
+ *   "Bewertung", "Beliebteste", "Search", "Basel") are the REAL production copy, verbatim ,
  *   this mockup's whole point is proving it copies the real bar exactly. The English
  *   review commentary (this header comment + the one caption line) stays English per the
  *   mockup convention.
@@ -112,9 +112,9 @@ const CATEGORIES = [
 // the separate count+sort row below). Static labels/actives , enough pills to prove the
 // row scrolls exactly like the real one (Playwright-measured 4 pills fit the 412px frame).
 const FILTER_PILLS = [
-  { key: "open_now", label: "Jetzt geöffnet", active: false },
-  { key: "price", label: "Preis", active: false, chevron: true },
-  { key: "gender", label: "Für wen", active: false, chevron: true },
+  { key: "open_now", label: "Open now", active: false },
+  { key: "price", label: "Price", active: false, chevron: true },
+  { key: "gender", label: "For whom", active: false, chevron: true },
   { key: "rating", label: "Bewertung", active: false, chevron: true },
 ];
 
@@ -232,7 +232,7 @@ function SearchBar({ line1, value, onChange }: { line1: string; value: string; o
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder="Balayage, Bart, Maniküre..."
-          aria-label="Service suchen"
+          aria-label="Search service"
           className="block w-full truncate !border-0 !bg-transparent !min-h-0 !p-0 font-body !text-[12.5px] text-s-ink-2 outline-none placeholder:text-s-ink-2 focus:text-s-ink"
         />
       </span>
