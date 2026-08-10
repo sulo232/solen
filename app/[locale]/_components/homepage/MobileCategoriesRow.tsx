@@ -81,12 +81,7 @@ export default function MobileCategoriesRow({
     // `md:hidden` (mobile-only, already invisible on desktop); now `hidden` outright so desktop
     // stays exactly as it was (never rendered there) and mobile matches it. Component kept intact,
     // not deleted, for revert.
-    // RESTORED 2026-08-10, owner: "I also made, like, a category thingy, also really gone."
-    // It was not gone. On 2026-08-01 this one class went from `md:hidden` (visible on a phone,
-    // hidden on desktop) to `hidden` outright, to match a mockup, with the component left on disk
-    // for revert. This is that revert. Back to `md:hidden`: he sees it on his phone, desktop stays
-    // exactly as it has been, which is what the 08-01 change was protecting.
-    <section aria-label="Kategorien" className="relative z-[1] mb-4 md:hidden">
+    <section aria-label="Kategorien" className="relative z-[1] mb-4 hidden">
       <div className="mx-auto max-w-[1280px] px-6 py-2">
         <h2 className="mb-3 font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.25] tracking-[-0.01em] text-s-ink">
           Für Sie
