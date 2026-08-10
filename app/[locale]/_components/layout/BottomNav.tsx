@@ -56,23 +56,54 @@ import * as React from "react";
 import { Link } from "next-view-transitions";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Bookmark, Compass, Menu, Search } from "lucide-react";
+import { Compass, Heart, Search, User } from "lucide-react";
+import type { Session } from "@supabase/supabase-js";
+import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import { cn } from "@/lib/utils";
 
-/** Every label comes from the existing `navigation` namespace. No new copy was written. */
+/** Every label comes from the existing `navigation` namespace. No new copy was written.
+ *
+ * HIS THREE CORRECTIONS, 2026-08-10, applied here and not only to the mockups:
+ *   "there shouldn't be, like, hamburger menu. There should be a profile."
+ *   "and then saved maybe, like, a heart icon."
+ *   "instead of search, like, home about that... No. No. Not home. No. Home is ass."
+ *
+ * The third one resolves itself on a re-read rather than needing him: he floated replacing Search
+ * with Home and then rejected Home in the same breath. Nothing was said against Search, so Search
+ * survives by his own elimination. Saying that out loud because guessing at a garbled word is how
+ * the last four rounds went wrong.
+ *
+ * THE HAMBURGER COULD GO WITHOUT STRANDING ANYTHING, checked rather than assumed. Removing the
+ * Menu item removes the last trigger for `MobileMenu`, so both things that lived only in that
+ * sheet were traced to a second home first:
+ *   language  -> /profile/settings/language, linked from /profile/settings:95 (`hubLanguage`)
+ *   city      -> the search overlay's own "Wo?" field, on every search entry point
+ * Neither is reachable only through the sheet, so nothing is lost. MobileMenu itself still exists
+ * and Header keeps its own trigger on deep pages.
+ */
 const ITEMS = [
   { key: "search", href: "", labelKey: "search", Icon: Search },
-  // Compass, not Sparkles. Sparkles is banned by name in this project's icon rules, and
-  // Compass is the app's OWN prior answer for this destination: the deprecated
+  // Compass, not Sparkles. Sparkles is banned by name in this project's icon rules, and Compass is
+  // the app's OWN prior answer for this destination: the deprecated
   // components-legacy/layout/BottomTabBar.tsx used `Compass` for `/inspo` before web dropped its
   // bar. Reusing it rather than picking a fresh glyph.
   { key: "inspo", href: "/inspo", labelKey: "discover", Icon: Compass },
-  { key: "saved", href: "/inspo/saved", labelKey: "saved", Icon: Bookmark },
+  // Heart, not Bookmark. His words: "saved maybe, like, a heart icon." It also matches the heart
+  // already on every SalonCard, so the save action and the saved list finally use one glyph.
+  { key: "saved", href: "/inspo/saved", labelKey: "saved", Icon: Heart },
 ] as const;
 
 export default function BottomNav({ locale }: { locale: string }) {
   const pathname = usePathname() ?? "/";
   const t = useTranslations("navigation");
+  const [session, setSession] = React.useState<Session | null>(null);
+  React.useEffect(() => {
+    const supabase = createBrowserSupabaseClient();
+    supabase.auth.getSession().then(({ data }) => setSession(data.session));
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, sess) => setSession(sess));
+    return () => subscription.unsubscribe();
+  }, []);
+  const loggedIn = !!session;
 
   const base = `/${locale}`;
   const rest = pathname.startsWith(base) ? pathname.slice(base.length) || "/" : pathname;
@@ -86,6 +117,7 @@ export default function BottomNav({ locale }: { locale: string }) {
     }
     return rest === href || rest.startsWith(href + "/");
   };
+  const profileActive = /^\/(profile|account|auth)(\/|$)/.test(rest);
 
   return (
     <nav
@@ -134,18 +166,34 @@ export default function BottomNav({ locale }: { locale: string }) {
           );
         })}
         <li className="flex-1">
-          {/* The menu. Fires the same `solen:open-menu` window event the search-bar hamburger used
-              to, so MobileMenu keeps its one existing trigger contract and nothing new is wired.
-              This is the item that makes removing the hamburger safe: the city selector and the
-              language switcher live in that sheet and have no other way in. */}
-          <button
-            type="button"
-            onClick={() => window.dispatchEvent(new CustomEvent("solen:open-menu"))}
-            className="flex h-14 w-full flex-col items-center justify-center gap-1 text-s-ink-2 transition-colors duration-150 ease-glide"
+          {/* PROFILE, replacing the hamburger. Owner 2026-08-10: "there shouldn't be a hamburger
+              menu. There should be a profile." And: "once logged out, then the icon should be
+              logged in or something", so the label and the destination both flip on real auth
+              state rather than always saying Profil to a signed-out visitor.
+
+              Session detection copies Header.tsx:543-550 verbatim (getSession then
+              onAuthStateChange on the browser client), which is the pattern already proven on this
+              surface, rather than a second mechanism. The brief signed-out flash on first paint is
+              the same tradeoff Header already accepts and documents. */}
+          <Link
+            href={loggedIn ? `${base}/profile` : `${base}/auth/login`}
+            aria-current={profileActive ? "page" : undefined}
+            className={cn(
+              "flex h-14 flex-col items-center justify-center gap-1",
+              "transition-colors duration-150 ease-glide",
+              profileActive ? "text-s-ink" : "text-s-ink-2",
+            )}
           >
-            <Menu size={24} strokeWidth={1.8} aria-hidden />
-            <span className="font-body text-[12px] font-normal leading-none">{t("menu")}</span>
-          </button>
+            <User size={24} strokeWidth={profileActive ? 2.2 : 1.8} aria-hidden />
+            <span
+              className={cn(
+                "font-body text-[12px] leading-none",
+                profileActive ? "font-semibold" : "font-normal",
+              )}
+            >
+              {loggedIn ? t("account") : t("login")}
+            </span>
+          </Link>
         </li>
       </ul>
     </nav>
