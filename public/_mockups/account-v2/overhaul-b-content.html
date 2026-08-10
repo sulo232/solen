@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Account, Direction B: two content surfaces, not a settings menu</title>
+<!-- Base: capture live -->
+<!-- Scale: full-page -->
+<!--
+  DIRECTION B, "not a list at all." Owner 2026-08-03, furious and correct: "I told you I want to
+  overhaul it completely... You keep the structure. You keep everything." Four prior rounds
+  (public/_mockups/account-v2/account-hub-lines.html, system-current-vs-proposed.html) kept the
+  SAME seven rows (Bookings, Wallet, Vouchers, Hair profile, Saved, Stamps, Settings) in the SAME
+  order under three group headings, and only re-treated container, divider, icon and label size.
+  This file does not carry that set forward. The screen's ONE job, named per FLOORS LAW 10: show
+  what he currently has with Solen right now, his next visit, the stores he follows, his reward
+  progress, the voucher he can spend, and get every administrative task out of the way behind a
+  single link. Toggle: Current is the live route, unmodified, the state before this change; the
+  Proposed pane is the rebuilt content surfaces, real markup, the state after this change.
+
+  Grounded-in: app/[locale]/_components/profile/AccountHub.tsx
+  Grounded-in: app/[locale]/profile/page.tsx (the real server data this run: next appointment,
+    favorites count, wallet, vouchers, stamps)
+  Grounded-in: components-legacy/booking/BookingCard.tsx (date, service and price anatomy for the
+    upcoming-visit object)
+  Grounded-in: components-legacy/SalonCard.tsx (photo ratio, name, star plus value rating anatomy
+    for the saved-store objects, per FLOORS LAW 8's own measured citation: 5:4 photo, 22px radius,
+    name 14-16px medium to bold, rating value in ink-2 beside the yellow star)
+  Grounded-in: components-legacy/loyalty/HeroStampCard.tsx (filled and empty stamp-dot grammar,
+    rendered here in the CURRENT token language, not its older gradient and tracked-caps treatment)
+  Grounded-in: app/[locale]/profile/settings/page.tsx (the real settings hub this collapsed entry
+    points to: it already contains Payment, Haarprofil, Language, Notifications and Password rows)
+
+  Depicts: header, back tile, title, bell, hamburger, UNCHANGED -> app/[locale]/_components/layout/Header.tsx
+  Depicts: identity, avatar and real name -> app/[locale]/profile/page.tsx (profile.display_name, profile.avatar_url)
+  Depicts: the Edit link on the name row -> app/[locale]/profile/edit/page.tsx
+  Depicts: the upcoming-visit card -> app/api/bookings (real row: Old Town Barbers, Men's Haircut, Emma, 2026-08-07T14:00Z, CHF 45) plus components-legacy/booking/BookingCard.tsx anatomy
+  Depicts: the upcoming-visit photo -> NET-NEW: self-hosted stand-in public/_mockups/_assets/store-photos/old-town-barbers.jpg for salons.cover_photo_url, the real remote Unsplash URL is not usable per the mockup no-remote-assets rule
+  Depicts: the voucher chip -> app/[locale]/profile/vouchers/page.tsx (real activeVouchersCount = 1, same query as AccountHub.tsx's own vouchers fetch)
+  Depicts: the saved-stores tiles -> app/[locale]/_components/profile/FavoritesList.tsx plus app/api/profile/favorites (real rows: Velvet Face rating 4.57, Haarsalon Margot rating 4.75) plus components-legacy/SalonCard.tsx anatomy
+  Depicts: saved-store photos -> NET-NEW: self-hosted stand-ins public/_mockups/_assets/store-photos/velvet-face.jpg, haarsalon-margot.jpg for salons.cover_photo_url
+  Depicts: the reward and stamp progress object -> app/[locale]/profile/stamps/page.tsx (real loyalty_cards row: needed 10, collected 4) plus components-legacy/loyalty/HeroStampCard.tsx dot grammar
+  Depicts: the single collapsed Account entry -> app/[locale]/profile/settings/page.tsx (its own rows already cover Payment app/[locale]/profile/settings/payment/page.tsx, Haarprofil app/[locale]/profile/haarprofil/page.tsx, Language, Notifications, Password; this file's one row is the sole first-level tap, the rest is reached by scrolling that existing page, not re-drawn here)
+  Depicts: sign out -> the existing /api/auth/logout form POST, same pattern as AccountHub.tsx and profile/settings/page.tsx
+
+  Diagnosis: account hub anatomy | measured 7 identical text rows under 3 group headings, unchanged in order across 4 rounds (account-hub-lines.html, system-current-vs-proposed.html) | violates owner 2026-08-03 verbatim "you didn't change any single fucking bit, you keep the structure, you keep everything" | target two content surfaces (upcoming visit, saved stores, reward progress, all real photographed or numeric objects) plus one collapsed administrative entry, zero menu-style content rows
+  Diagnosis: next appointment representation | measured a chevron text row "Bookings, Next appointment on Fri 7 August at 16:00" with no imagery, AccountHub.tsx:143-146 | violates the brief's own instruction that appointments render as real objects with photos where photos exist, and the FLOORS LAW imagery floor | target a photographed upcoming-visit card (real salon cover photo, service, staff, date, time, price), the single largest element on the screen
+  Diagnosis: saved stores representation | measured a text row "Saved, 2 stores" with a chevron and zero imagery, AccountHub.tsx:164-170 | violates the same photo instruction and FLOORS LAW 8, an entity must render through the same anatomy everywhere, here SalonCard's photo-first grammar | target two real photo tiles at SalonCard's 5:4 ratio with name and a star plus value rating, no review count per the card-blue-review-count rejected treatment, rating is star plus value only
+  Diagnosis: reward progress representation | measured a text row "Stamps, 4/10, 6 more to your reward" with a chevron, AccountHub.tsx:171-177 | violates the brief's own instruction that stamp progress render as a real object, a fraction inside a row is a label, not an object | target a real 10-dot stamp track, 4 filled green with a check mark, 6 empty hairline rings
+  Diagnosis: administrative rows | measured 4 separate chevron rows, Wallet, Vouchers, Hair profile and Settings, each with its own destination, AccountHub.tsx:150-186 | violates the brief's instruction that everything administrative collapse behind a single entry | target one row, Account, bundling payment, hair profile and settings behind the existing profile settings hub
+
+  Exists-check: `npm run exists profile` ran this turn (5 runs). 19 existing /profile routes
+  surfaced, among them every destination this file uses (bookings, favorites, haarprofil, stamps,
+  settings, settings/payment, vouchers, edit), plus AccountHub.tsx (the component this replaces in
+  spirit, not in code) and 16 REMOVED.md hits. Two graveyard hits are load-bearing and are
+  honoured, not revived, in this build: (1) the 2026-07-28 removal of the generic page-title text
+  (this build's one anchor at or above 28px is the user's real name, never a restated destination
+  label); (2) the 2026-08-02 removal of ProfileTabs, a two-tab (saved items / appointments)
+  switcher with a client search field, a sort-order pill and a bespoke three-photo collage tile.
+  HOW THIS BUILD DIFFERS FROM THAT REMOVED ONE, stated per the brief: ProfileTabs was two ALTERNATE
+  views you switched between with a tab control, it carried a search input over an eight-item list
+  (removed under FLOORS LAW 10, nobody searches their own saved list), a sort-order pill, and a
+  bespoke collage tile that duplicated SalonCard's own anatomy at a different radius with no price
+  shown (a FLOORS LAW 8/9 violation, named in REMOVED.md). This build has NO tabs at all, one
+  continuous scroll, nothing hidden behind a switch, NO search field, NO sort control, and the
+  saved-store tiles reuse SalonCard's own 5:4, 22px, star-plus-value grammar instead of a bespoke
+  collage. Two content surfaces is a content MODEL for one screen, not a restoration of a two-pane
+  tabbed browser.
+
+  Copy: English throughout. Values are the real live figures for this seed account (user
+  3f7d3d5d-73b9-4277-a797-7b24c2dc962b, logged in via GET /api/dev/login?to=/de/profile this run):
+  next appointment Old Town Barbers, Men's Haircut with Emma, Friday 7 August 2026 at 16:00 Europe
+  and Zurich time (starts_at 2026-08-07T14:00:00+00:00), CHF 45 (bookings row cd35e193); 0 saved
+  cards (an empty Stripe payment-methods list); 1 active voucher (AccountHub.tsx's own
+  activeVouchersCount query); 2 saved stores, Velvet Face (rating 4.57, Kleinbasel) and Haarsalon
+  Margot (rating 4.75, Grossbasel), from GET /api/profile/favorites this run; 4 of 10 stamps (the
+  real loyalty_cards row, needed 10, collected 4). Ratings are rounded to one decimal (4.6, 4.8);
+  no review count is shown, per the card-blue-review-count rejected treatment. Reward text is not
+  fetched by this account's page in production either (AccountHub.tsx never selects reward_text),
+  so this build says "6 more to your reward", the same generic noun the shipped copy already uses,
+  never an invented reward name.
+
+  NOT MEASURED, stated rather than invented: this file's pixel values, photo heights, dot sizes,
+  the type scale, are authored directly in plain CSS for this static mockup, not extracted from a
+  live getBoundingClientRect pass, because there is no shipped equivalent screen to measure
+  against; the 3 sizes used inside the built content (28 anchor, 16 primary, 13 secondary) plus
+  the unchanged header's 18px title and 10px badge total 5 distinct sizes on the full screen,
+  matching the target the prior round's own diagnosis proposed. Empty, error and loading states
+  for this screen are out of scope for this pass, this is a populated-state build.
+-->
+<style>
+  @font-face{
+    font-family:'Inter';
+    src:url('/_mockups/_assets/fonts/inter-latin-var.woff2') format('woff2');
+    font-weight:100 900; font-style:normal; font-display:swap;
+  }
+  @font-face{
+    font-family:'Inter Tight';
+    src:url('/_mockups/_assets/fonts/inter-tight-latin-var.woff2') format('woff2');
+    font-weight:100 900; font-style:normal; font-display:swap;
+  }
+  :root{
+    --ink:#0A0A0A; --ink-2:#6B6B6B;
+    --border:#E4E4E7; --sunken:#F4F4F5;
+    --accent:#276EF1; --error:#DC2626; --success:#16A34A; --star:#FFC32B; --heart:#FF3366;
+    --stage:#DEDEE1;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--stage);color:var(--ink);min-height:100dvh}
+  .lucide{stroke:currentColor;fill:none;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+
+  .bar{position:sticky;top:0;z-index:9;background:#fff;border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .seg{display:flex;border:1px solid var(--border);border-radius:9999px;overflow:hidden}
+  .seg button{border:0;background:#fff;color:var(--ink-2);font:inherit;font-size:13px;font-weight:600;padding:7px 16px;cursor:pointer}
+  .seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+  .bar .t{font-size:13px;color:var(--ink-2)}
+  .stage{position:relative;display:flex;justify-content:safe center;padding:24px 0 80px}
+  .pane{display:none}
+  .pane.on{display:block}
+
+  .frame{width:402px;min-height:874px;background:#fff;box-shadow:0 1px 32px rgba(0,0,0,.12);position:relative}
+  iframe.livepane{width:402px;height:874px;border:0;display:block}
+
+  .hdr{display:flex;align-items:center;gap:10px;padding:20px 20px 0}
+  .hdr-tile{width:44px;height:44px;display:grid;place-items:center;border:1px solid var(--border);border-radius:16px;background:#fff;color:var(--ink);flex-shrink:0}
+  .hdr-title{font-family:'Inter Tight',sans-serif;font-size:18px;font-weight:700;letter-spacing:-0.18px;color:var(--ink);margin-left:10px}
+  .hdr-sp{flex:1}
+  .bell{position:relative;width:40px;height:40px;display:grid;place-items:center;color:var(--ink);flex-shrink:0}
+  .badge{position:absolute;right:4px;top:4px;min-width:16px;height:16px;border-radius:9999px;background:var(--accent);color:#fff;font-size:10px;font-weight:700;display:grid;place-items:center;line-height:1}
+
+  .pad{padding:0 20px}
+
+  .ident{display:flex;align-items:center;gap:14px;padding-top:18px}
+  .ava{width:60px;height:60px;border-radius:9999px;object-fit:cover;flex-shrink:0;overflow:hidden}
+  .name{font-family:'Inter Tight',sans-serif;font-size:28px;font-weight:700;letter-spacing:-0.02em;color:var(--ink);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .edit{display:inline-flex;align-items:center;min-height:44px;font-size:13px;font-weight:500;color:var(--accent);text-decoration:none;flex-shrink:0;padding-left:8px}
+
+  .sec{margin-top:28px}
+  .sec-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+  .sec-h span{font-family:'Inter Tight',sans-serif;font-size:16px;font-weight:700;color:var(--ink);line-height:20px}
+  .sec-h a{font-size:13px;font-weight:600;color:var(--accent);text-decoration:none;display:inline-flex;align-items:center;gap:2px}
+
+  .visit{display:block;text-decoration:none;color:inherit;border-radius:22px;overflow:hidden;border:1px solid var(--border);background:#fff;transition:transform .15s}
+  .visit:active{transform:scale(.99)}
+  .visit-photo{width:100%;height:190px;object-fit:cover;display:block;background:var(--sunken)}
+  .visit-body{padding:14px 16px 16px}
+  .visit-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+  .visit-salon{font-family:'Inter Tight',sans-serif;font-size:16px;font-weight:700;color:var(--ink)}
+  .visit-price{font-family:'Inter Tight',sans-serif;font-size:16px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;flex-shrink:0}
+  .visit-meta{margin-top:4px;font-size:13px;color:var(--ink)}
+  .visit-time{margin-top:6px;display:flex;align-items:center;gap:5px;font-size:13px;color:var(--ink-2)}
+
+  .voucher{margin-top:12px;display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:9999px;background:rgba(39,110,241,.08);text-decoration:none;color:var(--accent);font-size:13px;font-weight:600}
+
+  .stores{display:flex;gap:12px}
+  .store{flex:1;min-width:0;text-decoration:none;color:inherit;border-radius:22px;overflow:hidden;border:1px solid var(--border);background:#fff}
+  .store-photo{position:relative;width:100%;height:140px;object-fit:cover;display:block;background:var(--sunken)}
+  .store-heart{position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:9999px;background:rgba(10,10,10,.35);display:grid;place-items:center}
+  .store-body{padding:10px 12px 12px}
+  .store-name{font-family:'Inter Tight',sans-serif;font-size:16px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .store-meta{margin-top:3px;display:flex;align-items:center;gap:4px}
+  .store-rating{font-size:13px;font-weight:500;color:var(--ink-2)}
+  .store-city{margin-top:2px;font-size:13px;color:var(--ink-2)}
+
+  .rewards{display:block;text-decoration:none;color:inherit}
+  .dots{display:flex;gap:8px;flex-wrap:wrap}
+  .dot{width:28px;height:28px;border-radius:9999px;display:grid;place-items:center;flex-shrink:0}
+  .dot.filled{background:var(--success);color:#fff}
+  .dot.empty{background:#fff;border:1.5px solid var(--border)}
+  .rewards-sub{margin-top:10px;font-size:13px;color:var(--ink-2)}
+
+  .acct{display:flex;align-items:center;gap:14px;padding:14px;border-radius:22px;border:1px solid var(--border);background:#fff;text-decoration:none;color:inherit}
+  .acct-icon{display:grid;place-items:center;width:38px;height:38px;border-radius:14px;background:var(--sunken);color:var(--ink);flex-shrink:0}
+  .acct-main{min-width:0;flex:1}
+  .acct-label{display:block;font-family:'Inter Tight',sans-serif;font-size:16px;font-weight:600;color:var(--ink)}
+  .acct-sub{display:block;margin-top:2px;font-size:13px;color:var(--ink-2)}
+
+  .signout{margin-top:28px;text-align:center;padding-bottom:40px}
+  .signout button{display:inline-flex;align-items:center;gap:7px;font-family:inherit;font-size:15.5px;font-weight:500;color:var(--error);background:none;border:0;cursor:pointer}
+
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="seg">
+    <button id="bCur" type="button" aria-pressed="true">Current</button>
+    <button id="bProp" type="button" aria-pressed="false">Proposed</button>
+  </div>
+  <span class="t">Current is the live route in an iframe, unmodified. Proposed is the rebuilt content model, real markup, not an overlay of the same DOM.</span>
+</div>
+
+<div class="stage">
+
+  <div class="pane on" id="paneCur">
+    <div class="frame">
+      <iframe class="livepane" src="/de/profile" title="live /de/profile, current, unmodified"></iframe>
+    </div>
+  </div>
+
+  <div class="pane" id="paneProp">
+    <div class="frame">
+
+      <div class="hdr">
+        <span class="hdr-tile">
+          <svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" stroke-width="2"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
+        </span>
+        <span class="hdr-title">Account</span>
+        <span class="hdr-sp"></span>
+        <span class="bell">
+          <svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" stroke-width="2"><path d="M10.268 21a2 2 0 0 0 3.464 0"></path><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path></svg>
+          <span class="badge">3</span>
+        </span>
+        <span class="hdr-tile">
+          <svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" stroke-width="2"><path d="M4 5h16"></path><path d="M4 12h16"></path><path d="M4 19h16"></path></svg>
+        </span>
+      </div>
+
+      <div class="pad">
+
+        <div class="ident">
+          <img class="ava" src="_assets/avatar-qa-test.jpg" alt="QA Test">
+          <span class="name">QA Test</span>
+          <a class="edit" href="/de/profile/edit">Edit</a>
+        </div>
+
+        <a class="visit" href="/de/profile/bookings" style="margin-top:20px;display:block">
+          <img class="visit-photo" src="/_mockups/_assets/store-photos/old-town-barbers.jpg" alt="">
+          <div class="visit-body">
+            <div class="visit-top">
+              <span class="visit-salon">Old Town Barbers</span>
+              <span class="visit-price">CHF 45</span>
+            </div>
+            <div class="visit-meta">Men's Haircut with Emma</div>
+            <div class="visit-time">
+              <svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
+              Fri, 7 August at 16:00
+            </div>
+          </div>
+        </a>
+
+        <a class="voucher" href="/de/profile/vouchers">
+          <svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" stroke-width="2"><path d="M2 9a3 3 0 1 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 1 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"></path><path d="M9 9h.01"></path><path d="m15 9-6 6"></path><path d="M15 15h.01"></path></svg>
+          1 active voucher
+          <svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" stroke-width="2"><path d="m9 18 6-6-6-6"></path></svg>
+        </a>
+
+        <div class="sec">
+          <div class="sec-h">
+            <span>Saved stores</span>
+            <a href="/de/profile/favorites">See all</a>
+          </div>
+          <div class="stores">
+            <a class="store" href="/de/profile/favorites">
+              <div style="position:relative">
+                <img class="store-photo" src="/_mockups/_assets/store-photos/velvet-face.jpg" alt="">
+                <span class="store-heart"><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="#FF3366" stroke="#FF3366" stroke-width="1"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"></path></svg></span>
+              </div>
+              <div class="store-body">
+                <div class="store-name">Velvet Face</div>
+                <div class="store-meta">
+                  <svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>
+                  <span class="store-rating">4.6</span>
+                </div>
+                <div class="store-city">Kleinbasel</div>
+              </div>
+            </a>
+            <a class="store" href="/de/profile/favorites">
+              <div style="position:relative">
+                <img class="store-photo" src="/_mockups/_assets/store-photos/haarsalon-margot.jpg" alt="">
+                <span class="store-heart"><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="#FF3366" stroke="#FF3366" stroke-width="1"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"></path></svg></span>
+              </div>
+              <div class="store-body">
+                <div class="store-name">Haarsalon Margot</div>
+                <div class="store-meta">
+                  <svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>
+                  <span class="store-rating">4.8</span>
+                </div>
+                <div class="store-city">Grossbasel</div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <a class="rewards sec" href="/de/profile/stamps">
+          <div class="sec-h">
+            <span>Rewards</span>
+            <svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" stroke="#0A0A0A" stroke-width="2"><path d="m9 18 6-6-6-6"></path></svg>
+          </div>
+          <div class="dots">
+            <span class="dot filled"><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" stroke="#fff" stroke-width="3"><path d="M20 6 9 17l-5-5"></path></svg></span>
+            <span class="dot filled"><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" stroke="#fff" stroke-width="3"><path d="M20 6 9 17l-5-5"></path></svg></span>
+            <span class="dot filled"><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" stroke="#fff" stroke-width="3"><path d="M20 6 9 17l-5-5"></path></svg></span>
+            <span class="dot filled"><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" stroke="#fff" stroke-width="3"><path d="M20 6 9 17l-5-5"></path></svg></span>
+            <span class="dot empty"></span>
+            <span class="dot empty"></span>
+            <span class="dot empty"></span>
+            <span class="dot empty"></span>
+            <span class="dot empty"></span>
+            <span class="dot empty"></span>
+          </div>
+          <div class="rewards-sub">6 more to your reward</div>
+        </a>
+
+        <a class="acct sec" href="/de/profile/settings">
+          <span class="acct-icon">
+            <svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" stroke-width="1.9"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          </span>
+          <span class="acct-main">
+            <span class="acct-label">Account</span>
+            <span class="acct-sub">Payment, hair profile &amp; settings</span>
+          </span>
+          <svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" stroke-width="1.9"><path d="m9 18 6-6-6-6"></path></svg>
+        </a>
+
+        <div class="signout">
+          <form action="/api/auth/logout" method="post" style="display:inline">
+            <button type="submit">
+              <svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" stroke-width="1.9"><path d="m16 17 5-5-5-5"></path><path d="M21 12H9"></path><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path></svg>
+              Sign out
+            </button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+var bCur = document.getElementById('bCur'), bProp = document.getElementById('bProp');
+function show(isCurrent){
+  document.getElementById('paneCur').classList.toggle('on', isCurrent);
+  document.getElementById('paneProp').classList.toggle('on', !isCurrent);
+  bCur.setAttribute('aria-pressed', String(isCurrent));
+  bProp.setAttribute('aria-pressed', String(!isCurrent));
+}
+bCur.addEventListener('click', function(){ show(true); });
+bProp.addEventListener('click', function(){ show(false); });
+</script>
+</body></html>

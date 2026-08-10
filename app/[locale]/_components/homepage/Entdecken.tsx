@@ -341,7 +341,9 @@ export default function Entdecken() {
                     className="absolute top-2 left-2 z-[2] inline-flex items-center rounded-full bg-black/55 px-2.5 py-1 backdrop-blur-[4px] pointer-events-none"
                     aria-hidden
                   >
-                    <span className="font-body text-[11px] font-semibold leading-none text-white">TikTok</span>
+                    {/* mockup-ok: 11px -> 12px, owner-approved public/_mockups/improve/type-scale.html
+                        (8 -> 4 type-scale merge); this is the one merge that grows, not shrinks. */}
+                    <span className="font-body text-[12px] font-semibold leading-none text-white">TikTok</span>
                   </div>
                   )}
 
@@ -408,7 +410,9 @@ export default function Entdecken() {
               >
                 <ArrowRight size={20} strokeWidth={2.5} aria-hidden />
               </div>
-              <h3 className="font-body text-[16px] font-semibold leading-tight text-s-ink">
+              {/* mockup-ok: 16px -> 14px, owner-approved public/_mockups/improve/type-scale.html
+                  (8 -> 4 type-scale merge), the other named real cost of that merge. */}
+              <h3 className="font-body text-[14px] font-semibold leading-tight text-s-ink">
                 Alle entdecken
               </h3>
               <p className="mt-2 font-body text-[12px] text-s-ink-2">

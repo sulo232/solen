@@ -107,7 +107,17 @@
     "tabSavedEmptyLead": "Tap the heart on a salon",
     "emptyStateCta": "Discover salons",
     "noSearchResults": "No results",
-    "noSearchResultsLead": "Try a different search term."
+    "noSearchResultsLead": "Try a different search term.",
+    "nextAppointmentOn": "Next appointment on {date} at {time}",
+    "bookingsRowEmptySub": "View your bookings",
+    "walletRowEmptySub": "Add a card",
+    "walletCardsCount": "{count} cards saved",
+    "couponsRowActive": "{count} active",
+    "couponsRowEmptySub": "No active vouchers",
+    "stampsRowActive": "{remaining} more to your reward",
+    "stampsRowEmptySub": "Collect your first stamp",
+    "haarprofilSub": "Hair type, length, allergies",
+    "settingsRowSub": "Language, notifications, privacy"
   },
   "cities": {
     "label": "City",

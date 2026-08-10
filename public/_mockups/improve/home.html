@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Home feed , seven Airbnb learnings, measured (Current/Proposed toggle)</title>
+<!-- Base: capture live -->
+<!-- Scale: full-page -->
+<!--
+  Grounded-in: app/[locale]/page.tsx (section order + FeedZone composition)
+  Grounded-in: _design-system/AIRBNB_PROFILE_PRINCIPLES.md (principles 2-6, "how each principle applies to
+    our other screens" section names the home feed explicitly)
+  Grounded-in: _design-system/references/airbnb--icons-vs-ours.md (learning 2, icon terminal measurement)
+  Grounded-in: app/[locale]/_components/homepage/RecentlyViewed.tsx
+  Also cited: _design-system/LOCKFILE.md design contract (radius/hairline/type-size rows), CLAUDE.md taste
+  rules 1-10 + FLOORS LAW 1-10.
+
+  Depicts: sticky search pill -> app/[locale]/_components/homepage/HomeSearchPill.tsx
+  Depicts: section header (H2 + see-all chevron) -> app/[locale]/_components/homepage/SectionHeader.tsx (SectionTitle)
+  Depicts: salon card anatomy (photo, rating, category, postal+city, price) -> app/[locale]/_components/homepage/SalonCard.tsx
+  Depicts: Top on Solen rail -> app/[locale]/_components/homepage/RecentlyViewed.tsx
+  Depicts: Nearby map-teaser badge + rail -> app/[locale]/_components/homepage/Nearby.tsx + NearbyMap.tsx
+  Depicts: Walk-in band -> app/[locale]/_components/homepage/WalkInBand.tsx
+  Depicts: real salon seed data (names/ratings/categories/postal/price) -> app/[locale]/_components/homepage/salonCardData.ts (getSalonCardDataMap), read live off /de this session
+  Depicts: measured-numbers panel -> NET-NEW: a page-local reporting panel for this task, not a product surface
+
+  Diagnosis: icon stroke terminal | measured stroke-linecap round on 160/160 stroked lucide icons live on /de this session | violates learning 2, airbnb butt miter (airbnb--icons-vs-ours.md S4) | target stroke-linecap butt stroke-linejoin miter
+  Diagnosis: WalkInBand text weight | measured font-weight 700 on 5 roles WalkInBand.tsx:83,92,125,132,157 | violates learning 3, weight never exceeds 600 | target font-weight 600 max
+  Diagnosis: WalkInBand salon name type | measured weight 700 tracking normal WalkInBand.tsx:132 vs SalonCard.tsx:505 weight 500 tracking -0.01em same role | violates learning 4, one shared tracking value | target weight 500 tracking -0.01em matching SalonCard CardName
+  Diagnosis: WalkInBand price tracking | measured tracking -0.02em WalkInBand.tsx:125 the only -0.02em on the page | violates learning 4, one shared tracking value | target tracking -0.01em matching the page H2 token
+  Diagnosis: Nearby badge size | measured font-size 12.5px Nearby.tsx:117 the only single-instance size on the page | violates learning 5, about three sizes and EMPHASIS BUDGET c | target font-size 12px merged into the existing meta-text bucket
+
+  Reference-checked: _design-system/references/airbnb--icons-vs-ours.md, _design-system/references/airbnb--fonts-vs-ours.md,
+    _design-system/references/AIRBNB_SYSTEM_VS_OURS.md, _design-system/AIRBNB_PROFILE_PRINCIPLES.md
+
+  Exists-check: app/[locale]/_components/homepage/SalonCard.tsx (`npm run exists home` run this session ,
+  38 homepage components + 2 API endpoints + 4 dev routes found: SalonCard, SectionHeader, HomeSearchPill,
+  RecentlyViewed, Nearby, WalkInBand, salonCardData among them). This file extends those, no new component
+  is proposed. MobileCategoriesRow is intentionally NOT depicted: its live code renders `className="... hidden"`
+  (page.tsx / MobileCategoriesRow.tsx), so it is not part of the rendered page today and drawing it would
+  invent UI. ForYouSalonRows, SalonOfMonth, ContinueCard, AvailableThisWeek and TopCategoryRails are real and
+  rendered but state-gated (login / feature-flag / real-time data); this file rebuilds the sections confirmed
+  rendering for the seed session this turn (search pill, Top on Solen, Nearby, Walk-in) rather than guessing
+  at a gated state.
+
+  toggle: Current = the before-state (live, current /de). Proposed = the after-state (real built markup
+  with the fixes applied). Internal pane ids/classes below use before/after as their identifiers; the
+  visible buttons read Current / Proposed per this task's own instruction.
+
+  Fabrication check: every salon name / rating / category / postal code / price on this page was read live
+  off card text on /de this session (Cuts & Culture 4.8 Barbershop 4056 Basel from CHF 15, etc.) , none
+  invented. WalkInBand's reviewCount span is OMITTED rather than filled with a guessed number, matching the
+  real component's own reviewCount>0 gate.
+-->
+<style>
+  @font-face{font-family:'Inter';src:url('/_mockups/_assets/fonts/inter-latin-var.woff2') format('woff2');font-weight:400 700;font-display:swap}
+  @font-face{font-family:'Inter Tight';src:url('/_mockups/_assets/fonts/inter-tight-latin-var.woff2') format('woff2');font-weight:400 700;font-display:swap}
+  :root{
+    --ink:#0A0A0A;--ink-2:#6B6B6B;--border:#E4E4E7;--sunken:#F4F4F5;--white:#FFFFFF;
+    --star:#FFC32B;--success:#16A34A;--accent:#276EF1;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:'Inter',system-ui,-apple-system,sans-serif;background:#fff;color:var(--ink);
+    -webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%;overflow:hidden;
+  }
+  h1,h2,h3{font-family:'Inter Tight',system-ui,-apple-system,sans-serif}
+
+  .top{position:fixed;top:0;left:0;right:0;height:52px;z-index:30;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;padding:0 12px}
+  .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;width:min(300px,80vw)}
+  .seg button{flex:1;border:0;background:transparent;font-family:inherit;font-size:14px;font-weight:600;color:var(--ink-2);padding:8px 0;border-radius:999px;cursor:pointer}
+  .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+
+  .stage{position:fixed;top:52px;left:0;right:0;bottom:0}
+  .pane{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#fff}
+  .pane.hidden{display:none}
+  iframe{width:100%;height:100%;border:0;display:block}
+
+  /* ---- Proposed pane ---- */
+  .wrap{max-width:520px;margin:0 auto;min-height:100%;padding-bottom:48px}
+
+  /* measured-numbers panel */
+  .panel{margin:14px 14px 0;border:1px solid var(--border);border-radius:16px;padding:14px 14px 6px}
+  .panel h2{font-size:15px;font-weight:600;letter-spacing:-0.01em;margin-bottom:2px}
+  .panel .sub{font-size:12px;color:var(--ink-2);margin-bottom:10px}
+  .row-item{display:grid;grid-template-columns:16px 1fr;gap:8px;padding:9px 0;border-top:1px solid var(--border)}
+  .row-item:first-of-type{border-top:none}
+  .row-item .num{font-size:11px;font-weight:600;color:var(--ink-2);line-height:1.7}
+  .row-item .name{font-size:13px;font-weight:600;letter-spacing:-0.01em;margin-bottom:3px}
+  .row-item .ba{display:flex;gap:10px;flex-wrap:wrap;font-size:12px;line-height:1.45}
+  .row-item .before{color:var(--ink-2)}
+  .row-item .before b{color:var(--ink);font-weight:600}
+  .row-item .after{color:var(--success)}
+  .row-item .after b{font-weight:600}
+  .row-item .na{color:var(--ink-2);font-style:normal}
+  .row-item .src{font-size:11px;color:var(--ink-2);margin-top:3px}
+
+  /* search pill */
+  .search{margin:16px 16px 0;border:1px solid var(--border);border-radius:999px;display:flex;align-items:center;height:56px;padding:0 6px 0 16px;gap:10px}
+  .search .sp{flex:1;font-size:14px;font-weight:500;color:var(--ink);display:flex;align-items:center;gap:10px}
+
+  /* section header, matches SectionHeader.tsx SectionTitle exactly: 18px/600/-0.01em */
+  .sh{font-size:18px;font-weight:600;letter-spacing:-0.01em;line-height:1.25;padding:22px 16px 2px;display:flex;align-items:baseline}
+  .sh .all{margin-left:auto;display:inline-flex;align-items:center;color:var(--ink)}
+
+  /* salon card rail, matches SalonCard.tsx: photo 5/4 radius 22, name 14/500/-0.01em, meta 12/400 */
+  .row{display:flex;gap:12px;padding:8px 16px 4px;overflow-x:auto;scrollbar-width:none}
+  .row::-webkit-scrollbar{display:none}
+  .card{flex:0 0 44%;max-width:190px}
+  .card .ph{aspect-ratio:5/4;border-radius:22px;overflow:hidden;position:relative;background:var(--sunken)}
+  .card .ph img{width:100%;height:100%;object-fit:cover;display:block}
+  .card .hb{position:absolute;top:8px;right:8px;width:30px;height:30px;border-radius:999px;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center}
+  .card .nm-row{margin-top:8px;display:flex;align-items:baseline;gap:8px}
+  .card .nm{font-size:14px;font-weight:500;letter-spacing:-0.01em;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
+  .card .st{flex-shrink:0;display:inline-flex;align-items:center;gap:3px;font-size:13px;color:var(--ink-2)}
+  .card .cat{font-size:12px;color:var(--ink-2);margin-top:2px}
+  .card .meta{margin-top:2px;display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--ink-2)}
+  .card .meta .pr{color:var(--ink-2);flex-shrink:0}
+
+  /* map teaser, matches NearbyMap.tsx: bordered rounded-card link + bottom-left badge */
+  .maptile{margin:6px 16px 0;height:156px;border-radius:16px;border:1px solid var(--border);position:relative;overflow:hidden;
+    background-image:radial-gradient(circle at 20% 30%, #EDEDEF 0, #EDEDEF 1px, transparent 1px),
+                      radial-gradient(circle at 60% 65%, #EDEDEF 0, #EDEDEF 1px, transparent 1px),
+                      linear-gradient(#F7F7F8,#F7F7F8);
+    background-size:26px 26px,26px 26px,cover}
+  .maptile .pin{position:absolute;top:44%;left:48%;color:var(--ink)}
+  .maptile .badge{position:absolute;bottom:12px;left:12px;background:rgba(255,255,255,.95);border:1px solid var(--border);border-radius:999px;padding:6px 12px;display:inline-flex;align-items:center;gap:6px;font-weight:600;color:var(--ink)}
+  .badge-before{font-size:12.5px}
+  .badge-after{font-size:12px}
+
+  /* Walk-in band, matches WalkInBand.tsx anatomy: 52px icon tile, H2, live dot, 2 chips, CTA */
+  .wib{margin-top:8px;padding:8px 16px 4px}
+  .wib-head{display:flex;align-items:center;gap:14px}
+  .wib-ic{width:52px;height:52px;border-radius:15px;background:var(--sunken);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .wib-h2{font-size:18px;letter-spacing:-0.01em;line-height:1.05}
+  .wib-sub{margin-top:4px;font-size:13px;line-height:1.3;color:var(--ink-2)}
+  .wib-live{margin-top:4px;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--ink)}
+  .dot{width:7px;height:7px;border-radius:999px;background:var(--success)}
+  .chips{margin-top:16px;display:flex;gap:12px;overflow-x:auto;scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{flex:0 0 42%;min-width:0;border:1px solid var(--border);border-radius:13px;background:#fff;padding:12px}
+  .chip .wait{font-size:20px;letter-spacing:-0.01em;line-height:1;color:var(--success)}
+  .chip .until{margin-top:3px;font-size:12px;font-weight:600;color:var(--ink-2)}
+  .chip .nm{margin-top:10px;font-size:14px;letter-spacing:-0.01em;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .chip .addr{margin-top:3px;font-size:12px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .chip .q{margin-top:3px;font-size:12px;color:var(--ink-2)}
+  .wib-cta{margin-top:16px;display:flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--border);border-radius:13px;background:#fff;padding:12px;font-size:14px;color:var(--ink)}
+
+  .wname-before{font-weight:700;letter-spacing:normal}
+  .wname-after{font-weight:500;letter-spacing:-0.01em}
+  .wweight-before{font-weight:700}
+  .wweight-after{font-weight:600}
+
+  .footnote{margin:22px 16px 0;padding:14px;border:1px solid var(--border);border-radius:16px;font-size:12px;line-height:1.5;color:var(--ink-2)}
+  .footnote b{color:var(--ink);font-weight:600}
+  .footnote ul{margin:6px 0 0 16px}
+  .footnote li{margin-top:4px}
+
+  svg.lucide{display:block;flex-shrink:0}
+  .icon-before .lucide{stroke-linecap:round;stroke-linejoin:round}
+  .icon-after .lucide{stroke-linecap:butt;stroke-linejoin:miter}
+</style>
+</head>
+<body>
+  <div class="top">
+    <div class="seg">
+      <button id="tCur" class="on" onclick="show('cur')">Current</button>
+      <button id="tProp" onclick="show('prop')">Proposed</button>
+    </div>
+  </div>
+  <div class="stage">
+    <div class="pane pane-before" id="pCur"><iframe src="/de" title="live current /de" loading="eager"></iframe></div>
+    <div class="pane pane-after hidden icon-after" id="pProp">
+      <div class="wrap">
+
+        <div class="panel">
+          <h2>Seven Airbnb learnings, measured on this page</h2>
+          <div class="sub">390&times;844, live /de, this session. Before = measured now. After = applied in this Proposed pane.</div>
+
+          <div class="row-item">
+            <div class="num">1</div>
+            <div>
+              <div class="name">Hairline only where a group ends</div>
+              <div class="ba"><span class="na">Not applicable here: 0 violations found.</span></div>
+              <div class="src">The only border+per-row-divider combo in the homepage component set is CategoryStack.tsx, and it is dead code (no import path reaches it from page.tsx). Home's 16 live bordered containers are each an individually-tappable single card (search pill, map teaser, 4 rail cards, 2 Walk-in chips, its CTA), the locked individual-entity-card grammar, not a list.</div>
+            </div>
+          </div>
+
+          <div class="row-item">
+            <div class="num">2</div>
+            <div>
+              <div class="name">Icon terminals, butt/miter not round</div>
+              <div class="ba"><span class="before">Before: <b>round/round</b> on 160 of 160 stroked lucide icons</span><span class="after">After: <b>butt/miter</b></span></div>
+              <div class="src">Live DOM read this session, whole /de. Library default (Lucide), never overridden. Applied here to every stroked icon in this Proposed pane: search glyph, section chevrons, card hearts, stars, walk-in arrow.</div>
+            </div>
+          </div>
+
+          <div class="row-item">
+            <div class="num">3</div>
+            <div>
+              <div class="name">Weight never exceeds 600</div>
+              <div class="ba"><span class="before">Before: <b>700</b> on 5 roles in WalkInBand.tsx</span><span class="after">After: <b>600 max</b></span></div>
+              <div class="src">H2 "Walk-in", the Live badge, the wait-time number, the salon name and the CTA all shipped weight 700 (font-bold). Rest of the feed already caps at 600 (19.3% of feed text at weight&gt;=600, under the 30% ceiling) &mdash; WalkInBand was the one section that broke its own page's convention.</div>
+            </div>
+          </div>
+
+          <div class="row-item">
+            <div class="num">4</div>
+            <div>
+              <div class="name">One letter-spacing value</div>
+              <div class="ba"><span class="before">Before: <b>4 distinct values</b> in the feed (normal, -0.18px, -0.14px, -0.4px)</span><span class="after">After: <b>2</b> (normal for meta/subline, -0.01em for names/headings)</span></div>
+              <div class="src">WalkInBand's salon name used normal tracking while every other card on this page (SalonCard.tsx) uses -0.01em for the same role &mdash; a same-role inconsistency. WalkInBand's price used a bespoke -0.02em nobody else on the page uses; merged into the page's own dominant -0.01em (already used 11 times by every section H2).</div>
+            </div>
+          </div>
+
+          <div class="row-item">
+            <div class="num">5</div>
+            <div>
+              <div class="name">About three text sizes</div>
+              <div class="ba"><span class="before">Before: <b>8 distinct sizes</b> in the feed</span><span class="after">After: <b>7</b> (12.5px merged into 12px)</span></div>
+              <div class="src">The Nearby map badge was the one single-instance size (12.5px) with no shared role &mdash; merged into the existing meta-text bucket, the same move already made once on this page (MobileCategoriesRow.tsx's own 13&rarr;12px tile-label merge). 7 still exceeds "about three": this page composes ~9 structurally different section types (hero copy, rail cards, a live-status band, a map badge) where Airbnb's reference is one homogeneous settings list, so a further collapse to 3 needs a page-wide type-scale decision beyond one section's fix. Named, not hidden: this is also CLAUDE.md's own NEVER-AGAIN floor 2 (&le;4 sizes/screen), which this page fails independently of the Airbnb comparison.</div>
+            </div>
+          </div>
+
+          <div class="row-item">
+            <div class="num">6</div>
+            <div>
+              <div class="name">Almost no colour, ink glyphs otherwise</div>
+              <div class="ba"><span class="na">Not applicable here: 0 violations found.</span></div>
+              <div class="src">Non-neutral colour on this slice: gold star (rating value, universal meaning), green (Walk-in's live wait status, a real-time fact the user must notice, same role as Airbnb's status colour, not decoration). No blue on this slice. Matches Airbnb's own small, role-tied colour budget.</div>
+            </div>
+          </div>
+
+          <div class="row-item">
+            <div class="num">7</div>
+            <div>
+              <div class="name">Row height fixed regardless of content</div>
+              <div class="ba"><span class="na">Not applicable here: 0 violations found.</span></div>
+              <div class="src">Measured 8 rail cards this session: all 250px. 4 RecentlyViewedTiles: all 140px. SalonCard.tsx's Row 3 (address+price) is conditionally rendered when both are null, which could in theory shorten a card, but no card in the live seed data hits that case today.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="search icon-after">
+          <span class="sp">
+            <svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2"><path d="m21 21-4.34-4.34"></path><circle cx="11" cy="11" r="8"></circle></svg>
+            Search
+          </span>
+        </div>
+
+        <div class="sh">Top on Solen <span class="all icon-after"><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25"><path d="m9 18 6-6-6-6"></path></svg></span></div>
+        <div class="row icon-after">
+          <div class="card">
+            <div class="ph"><img src="/_mockups/_assets/salon-photos/p01.jpg" alt=""><span class="hb"><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"></path></svg></span></div>
+            <div class="nm-row"><span class="nm">Cuts &amp; Culture</span><span class="st"><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>4.8</span></div>
+            <div class="cat">Barbershop</div>
+            <div class="meta"><span>4056 Basel</span><span class="pr">from CHF 15</span></div>
+          </div>
+          <div class="card">
+            <div class="ph"><img src="/_mockups/_assets/salon-photos/p02.jpg" alt=""><span class="hb"><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"></path></svg></span></div>
+            <div class="nm-row"><span class="nm">Haarsalon Margot</span><span class="st"><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>4.8</span></div>
+            <div class="cat">Coiffeur</div>
+            <div class="meta"><span>4051 Basel</span><span class="pr">from CHF 35</span></div>
+          </div>
+          <div class="card">
+            <div class="ph"><img src="/_mockups/_assets/salon-photos/p03.jpg" alt=""><span class="hb"><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"></path></svg></span></div>
+            <div class="nm-row"><span class="nm">Atelier Haarwerk</span><span class="st"><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>4.6</span></div>
+            <div class="cat">Coiffeur</div>
+            <div class="meta"><span>4001 Basel</span><span class="pr">from CHF 35</span></div>
+          </div>
+          <div class="card">
+            <div class="ph"><img src="/_mockups/_assets/salon-photos/p04.jpg" alt=""><span class="hb"><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"></path></svg></span></div>
+            <div class="nm-row"><span class="nm">Nail Studio Bliss</span><span class="st"><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>4.5</span></div>
+            <div class="cat">Nails</div>
+            <div class="meta"><span>4051 Basel</span><span class="pr">from CHF 15</span></div>
+          </div>
+        </div>
+
+        <div class="sh">Nearby <span class="all icon-after"><svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25"><path d="m9 18 6-6-6-6"></path></svg></span></div>
+        <div class="maptile">
+          <span class="pin"><svg class="lucide icon-after" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg></span>
+          <span class="badge badge-after">22 stores nearby</span>
+        </div>
+
+        <div class="wib">
+          <div class="wib-head">
+            <span class="wib-ic"><svg class="lucide icon-after" xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8"><path d="M12 3v18M5 8l7-5 7 5M5 8v13M19 8v13"></path></svg></span>
+            <div>
+              <h3 class="wib-h2 wweight-after">Walk-in</h3>
+              <div class="wib-sub">No appointment needed. See the wait and hold your spot.</div>
+              <span class="wib-live"><span class="dot"></span>Live</span>
+            </div>
+          </div>
+          <div class="chips">
+            <div class="chip">
+              <div class="wait wweight-after">70&ndash;98 min</div>
+              <div class="until">until free</div>
+              <div class="nm wname-after">Cuts &amp; Culture</div>
+              <div class="addr">Steinenvorstadt 5</div>
+              <div class="q">3 ahead of you</div>
+            </div>
+            <div class="chip">
+              <div class="wait wweight-after">35&ndash;49 min</div>
+              <div class="until">until free</div>
+              <div class="nm wname-after">The Fade Factory</div>
+              <div class="addr">Gundeldingerstrasse 12</div>
+              <div class="q">1 ahead of you</div>
+            </div>
+          </div>
+          <div class="wib-cta">
+            <span class="wweight-after">All walk-ins</span>
+            <svg class="lucide icon-after" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+          </div>
+        </div>
+
+        <div class="footnote">
+          <b>Not rebuilt in this Proposed pane, real and unchanged:</b> the section order and the sections
+          past Walk-in (Available this week, Top Coiffeur/Barber/Nails/Spa, Popular looks, Get inspired,
+          Reviews, the business teaser). Each already uses the same SalonCard/SectionHeader components shown
+          above, so the icon-terminal fix generalizes to them without a separate rebuild; the WalkInBand
+          weight/tracking fix is scoped to WalkInBand.tsx, the only section measured off this page's own
+          convention.
+          <ul>
+            <li>MobileCategoriesRow is not depicted: its live code renders <code>hidden</code>, it is not on the page today.</li>
+            <li>ForYouSalonRows, SalonOfMonth, ContinueCard: real components, state-gated (login / feature flag), not rendering for this seed session.</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+<script>
+function show(w){
+  document.getElementById('pCur').classList.toggle('hidden', w!=='cur');
+  document.getElementById('pProp').classList.toggle('hidden', w!=='prop');
+  document.getElementById('tCur').classList.toggle('on', w==='cur');
+  document.getElementById('tProp').classList.toggle('on', w==='prop');
+}
+</script>
+</body>
+</html>

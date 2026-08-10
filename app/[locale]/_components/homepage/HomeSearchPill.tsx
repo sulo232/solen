@@ -11,23 +11,10 @@
 // (category tab UI, section chrome), not a search pill.
 "use client";
 
-import * as React from "react";
-import dynamic from "next/dynamic";
 import { Link } from "next-view-transitions";
 import { Heart, Menu, Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
-
-// R1 (owner 2026-08-02, round 3, "it must open in place, the URL must not change on tap"):
-// the SAME shared overlay SearchTemplate mounts, mounted here too so the home pill opens it
-// OVER the home page instead of navigating to /search first. `ssr: false` + always-mounted
-// (never conditionally rendered) is deliberate: the overlay's open/close morph reads its own
-// `openT` motion value from 0 on the first frame after `open` flips, so a component that
-// MOUNTS already-open would skip the morph entirely and just appear.
-const SearchOverlay = dynamic(
-  () => import("@/app/[locale]/_components/search/SearchOverlay").then((m) => m.SearchOverlay),
-  { ssr: false },
-);
 
 /**
  * HomeSearchPill , V3-D (2026-08-01, owner "why is homepage still that bro"): the mobile
@@ -42,13 +29,11 @@ const SearchOverlay = dynamic(
  * Two DELIBERATE differences from SearchTemplate's version, both behavioral, not visual
  * (the task asked to reuse the MARKUP, not the category-page interaction wiring, which is
  * tied to that component's own filter/city/query state):
- *   1. CORRECTED 2026-08-02 (owner, round 3): this pill used to be a real link to
- *      `/{locale}/search?compose=1`, so tapping it changed the URL and tore down the home
- *      document before anything opened. It now mounts the SAME shared SearchOverlay and opens
- *      it IN PLACE over the home page, exactly like SearchTemplate's own pill
- *      (`openSearchOverlay`). The URL only changes when the user actually submits a search
- *      (SearchOverlay's own `navigate`).
- *   2. A real `<button>` instead of SearchTemplate's `role="button"` divs , avoids
+ *   1. SearchTemplate's pill opens an in-place SearchOverlay (`openSearchOverlay`). The home
+ *      page has no overlay/composer mounted, so this pill is a real link to `/{locale}/search`,
+ *      the same "all services, no category" destination Header.tsx's desktop "Alle Services"
+ *      link already points at (SERVICES_MENU in Header.tsx).
+ *   2. A real `<Link>` + `<button>` instead of SearchTemplate's `role="button"` divs , avoids
  *      nesting an interactive trailing button inside a div-as-button, and the native elements
  *      get Enter/Space handling for free instead of manual onKeyDown wiring. Neither carries an
  *      explicit `focus-visible:outline-*` class (unlike SearchTemplate's copy of this pattern,
@@ -99,44 +84,56 @@ export default function HomeSearchPill({
   // this does not copy.
   const tCommon = useTranslations("common");
 
-  // R1: in-place open. `pillRef` is the pill's own visible box, so the overlay's open/close
-  // morph grows out of THIS bar and shrinks back into it (the same `originRect` contract
-  // SearchTemplate.tsx:766-776 already uses for its own pill).
-  const pillRef = React.useRef<HTMLDivElement | null>(null);
-  const [overlayOpen, setOverlayOpen] = React.useState(false);
-  const [originRect, setOriginRect] = React.useState<
-    { top: number; left: number; width: number; height: number } | null
-  >(null);
-  const openOverlay = React.useCallback(() => {
-    const r = pillRef.current?.getBoundingClientRect();
-    if (r) setOriginRect({ top: r.top, left: r.left, width: r.width, height: r.height });
-    setOverlayOpen(true);
-  }, []);
-
   return (
     <div className="mx-auto w-full max-w-[680px] px-4 pt-1 pb-2">
       <div
-        ref={pillRef}
         className={cn(
           "flex w-full items-center gap-3 rounded-pill border border-s-border bg-white px-3.5 py-2.5",
           "shadow-[0_2px_8px_0_rgba(0,0,0,0.07)]", // mockup-ok: SearchTemplate.tsx pill, resting state, copied 1:1
         )}
       >
-        {/* R1: ONE tap handler for both callers. `/inspo` still passes its own `onActivate`
-            (its search lives in-page via DiscoverySearchBar); home has none, so it opens the
-            shared overlay mounted below. Neither path navigates. */}
-        <button
-          type="button"
-          onClick={onActivate ?? openOverlay}
-          aria-label={tChrome("editSearch")}
-          aria-haspopup={onActivate ? undefined : "dialog"}
-          className="flex min-w-0 flex-1 items-center gap-3 text-left"
-        >
-          <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" aria-hidden />
-          <span className="block min-w-0 flex-1 truncate font-body text-[16px] font-medium text-s-ink">
-            {label ?? tChrome("searchPlaceholder")}
-          </span>
-        </button>
+        {onActivate ? (
+          <button
+            type="button"
+            onClick={onActivate}
+            aria-label={tChrome("editSearch")}
+            className="flex min-w-0 flex-1 items-center gap-3 text-left"
+          >
+            <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" aria-hidden />
+            {/* mockup-ok: 16px -> 14px, owner-approved public/_mockups/improve/type-scale.html
+                (8 -> 4 type-scale merge), the one named real cost of that merge. */}
+            <span className="block min-w-0 flex-1 truncate font-body text-[14px] font-medium text-s-ink">
+              {label ?? tChrome("searchPlaceholder")}
+            </span>
+          </button>
+        ) : (
+          <a
+            // FIX C, corrected twice. `?compose=1` tells SearchTemplate this user arrived to
+            // TYPE, so it opens the query composer focused instead of landing them on a page
+            // whose input is still behind a closed overlay. Owner, third repeat: "when you
+            // click, it still doesn't fucking open."
+            // Deliberately a plain <a>, NOT the `next-view-transitions` Link the rest of this
+            // file uses. Measured 2026-08-02, three runs each: a HARD load of
+            // /de/search?compose=1 opens the composer every time (scrim z-100 + panel z-101,
+            // input focused); the SOFT navigation this Link performed left activeElement on
+            // BODY with no scrim, 3 out of 3, both with flushSync and with plain state. The
+            // route change is wrapped in `document.startViewTransition`, and the mount-time
+            // effect that reads `compose` does not survive that window.
+            // The cost, named rather than hidden: this is a full document load, so it is
+            // slower than a client transition. A search box that opens beats a fast one that
+            // does nothing. If the view-transition timing is ever fixed, revert to Link.
+            href={`/${locale}/search?compose=1`}
+            aria-label={tChrome("editSearch")}
+            className="flex min-w-0 flex-1 items-center gap-3"
+          >
+            <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" aria-hidden />
+            {/* mockup-ok: 16px -> 14px, owner-approved public/_mockups/improve/type-scale.html
+                (8 -> 4 type-scale merge), the one named real cost of that merge. */}
+            <span className="block min-w-0 flex-1 truncate font-body text-[14px] font-medium text-s-ink">
+              {label ?? tChrome("searchPlaceholder")}
+            </span>
+          </a>
+        )}
         {trailing === "saved" ? (
           <Link
             href={`/${locale}/inspo/saved`}
@@ -172,21 +169,6 @@ export default function HomeSearchPill({
           </button>
         )}
       </div>
-      {/* R1: mounted ALWAYS (not gated on `overlayOpen`) so its open-morph animates from
-          `openT = 0`; a conditionally-mounted copy would arrive already-open and skip the
-          morph. Closed it renders nothing (portal returns null) and its data hooks stay idle,
-          so the cost is the mount, not a fetch. `/inspo` (onActivate) drives its own in-page
-          search, so it gets no second overlay. */}
-      {!onActivate && (
-        <SearchOverlay
-          open={overlayOpen}
-          onClose={() => setOverlayOpen(false)}
-          locale={locale}
-          originRect={originRect}
-          // Same composer the results pill opens, so the two entry points are one surface.
-          showCategoryPills
-        />
-      )}
     </div>
   );
 }

@@ -57,8 +57,8 @@ export function BellIcon({
       fill="none"
       stroke="currentColor"
       strokeWidth={strokeWidth}
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      strokeLinecap="butt"
+      strokeLinejoin="miter"
       aria-hidden
       className={className}
       style={{ transformOrigin: "50% 4px" }}

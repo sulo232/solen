@@ -2,33 +2,24 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-01T19:32:14 (trigger: auto)
+- taken: 2026-08-05T12:38:20 (trigger: auto)
 - branch: claude/principles-security-audit-0ae738
 
 ## git
 ```
-5354b0ec2 Home matches the mockup: grid out, Inspo pill in, teaser off mobile
-888c1dd1e I4 and I5, plus a real silent no-op found on the way
-b547aec3d Evidence on the I2-contradiction box: measured, with commit shas
-46a3ed064 Home gets the mockup chrome, and the clipped category row is fixed
-cdb3391dc I3: home page section list reconciled with the mockup
+29a979e0b Type-scale strip rebuilt: real words at both sizes, no pixel table
+563fa7011 Type-scale decision mockup: 8 sizes down to 4, with the one real cost named
+1dd393d45 All three page mockups landed: home, category, inspo
+0a3cce29a Category mockup landed
+aeaf44d00 Inspo mockup: the menu is unreachable there, and the cause is two lines
 ```
 ```
-M _design-system/COMPONENT_REGISTRY.md
- M _design-system/components/CategoryMobileRails.md
- M _design-system/components/HomeSearchPill.md
- M _plans/HOME_V3_CATEGORY_MAP.md
- M app/[locale]/_components/homepage/HomeSearchPill.tsx
- M app/[locale]/_components/layout/Header.tsx
- M app/[locale]/_components/search/CategoryMobileRails.tsx
- M app/[locale]/inspo/page.tsx
- M app/[locale]/page.tsx
-?? _design-system/components/ContinueCard.md
-?? app/[locale]/_components/homepage/ContinueCard.tsx
+M _plans/DESIGN_SYSTEM_RENEWAL_2026-08-02.md
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
-54 | HOME V3 , cities out, cards matched to real, category 3D grid + floating map, walk-in inside Barber, Inspo | **ACTIVE** (2026-07-31)
+55 | HOME + INSPO CHROME , sticky search, Airbnb-smooth category switch, chrome sits too low, dead search tap, hamburger (no X / too low / circled), Inspo bar+heart+filters, "make a new homepage" | **ACTIVE** (2026-08-01)
+55 | DESIGN SYSTEM RENEWAL , rows out of boxes, lines not cards, bare icons, bigger type, from 5 Airbnb screenshots | **ACTIVE** (2026-08-02)
 53 | HOME V3 mockup rebuilt from the REAL home page sections (owner 10-ask dictation + 4 annotated shots) | **ACTIVE** (2026-07-31)
 52 | SCREEN RESEARCH , wide corpus sweep of real booking apps, every screen archetype, then the change list | **ACTIVE** (2026-07-29)
 46 | ALL-LANGUAGE SWEEP (de/en/fr/it), running unattended | **ACTIVE** (2026-07-27)
@@ -66,6 +57,11 @@ M _design-system/COMPONENT_REGISTRY.md
 50 | DESIGN principle deep-research (the rules we ALREADY have) | **ACTIVE** (2026-07-28)
 51 | DESIGN RE-ENGINEER , improve the system we have, measured against live Airbnb | **ACTIVE** (2026-07-28)
 
-## HOME_V3_CATEGORY_MAP.md
+## HOME_INSPO_CHROME_2026-08-01.md
 Open boxes:
-- [ ] **CORRECTION (owner 2026-08-01, "i told you its loop harden"):** he said "integrate/wire
+- [ ] **H2. HALF DONE, and the remaining half is mine, not a decision for him.** Commit
+- [ ] V2. **DECIDED AND IN FLIGHT. Owner 2026-08-02: "konto hub better".** Building
+
+## DESIGN_SYSTEM_RENEWAL_2026-08-02.md
+Open boxes:
+- [ ] **A10. STILL BLOCKED, and re-verified this turn rather than assumed.** Both `mockup-fullscreen-gate.py` and `mockup-depicts-gate.py` are confirmed ARMED in `.claude/settings.json` (each registered twice). `~/.claude/hooks/overlay-is-not-a-match-gate.py` exists on disk at 7289 bytes but is NOT wired, which is why three separate agents this session hit the fullscreen gate's injection REQUIREMENT and had to use its skip valve. The fix needs an edit to `$CLAUDE_PROJECT_DIR/.claude/hooks`, which is not writable in this sandbox. Concrete blocker, not a deferral.

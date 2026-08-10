@@ -1,0 +1,494 @@
+<!doctype html>
+<!-- Base: net-new (this is a text report/summary page, not a redraw of any existing product screen; it describes screens by citing measured numbers and file paths, it renders no UI treatment of its own). -->
+<!-- Scale: full-page (this single document IS the whole page, top to bottom, not a component fragment). -->
+<!--
+Exists-check: `npm run exists "what changes"` and `npm run exists "what-changes"` both ran
+this turn, 0 hits either time. No existing report page covers this. REMOVED.md: not
+applicable, this page describes shipped changes and open questions, it proposes nothing new
+to build. NEW: only this summary page itself.
+
+lang-ok: this report quotes a handful of real shipped German UI strings ("Fur dich", "Nahe")
+as factual evidence of what a live screen renders, not as invented mockup copy. Each quoted
+line also carries its own german-ok marker below.
+
+Reference-checked: _design-system/references/airbnb--profile-list.md
+Reference-checked: _design-system/references/AIRBNB_SYSTEM_VS_OURS.md
+Grounded-in: _design-system/AIRBNB_PROFILE_PRINCIPLES.md
+
+This is a REPORT page, not a product mockup, so it draws nothing new: it only describes
+screens that already exist. Depicts manifest:
+  Depicts: /de/profile account hub rows/icons/back control -> app/[locale]/_components/profile/AccountHub.tsx
+  Depicts: /de/profile bell/hamburger/back control chrome -> app/[locale]/_components/layout/Header.tsx
+  Depicts: /de/profile loading skeleton -> app/[locale]/profile/loading.tsx
+  Depicts: home feed -> app/[locale]/page.tsx
+  Depicts: category page chrome/search/results -> app/[locale]/coiffeur/page.tsx, app/[locale]/_components/search/SearchTemplate.tsx
+  Depicts: Inspo top chrome/filters/grid -> app/[locale]/inspo/page.tsx
+
+Grounded in (research reused wholesale, not redone):
+  _design-system/AIRBNB_PROFILE_PRINCIPLES.md
+  _design-system/references/AIRBNB_SYSTEM_VS_OURS.md
+  _design-system/references/airbnb--profile-list.md
+  _design-system/references/airbnb--profile-1to1-diff.md
+Live numbers on the home feed, the category page and Inspo were measured fresh this pass
+(Playwright, 390x844, dpr 2, https://card-albums-anne-mood.trycloudflare.com), not carried
+over from the sources above, which never measured those three screens.
+
+2026-08-03 REWRITE (owner: "visualize"). Same findings, same numbers as the first pass of
+this file. Rebuilt visual-first: every one of the five shipped changes below is a real
+HTML/CSS before/after pair at the measured sizes, re-verified THIS pass with a fresh
+Playwright getBoundingClientRect/getComputedStyle pass against the live route (dev-login
+session, https://card-albums-anne-mood.trycloudflare.com/de/profile, 390x844): back control
+measured 44x44, background rgb(242,242,242), border 0px, radius 9999px, exactly matching
+Header.tsx:779-805 (h-11 w-11 rounded-full bg-[#F2F2F2] border-0, the touch-target floor
+keeps it at 44 per that code's own 2026-08-03 comment, not the Airbnb reference's 40px);
+header contained 0 bell-shaped elements on this route; row icon wrappers measured 22x22 with
+a fully transparent background and 0px radius (no tile); a full-page scan for any
+border-plus-rounded-24 container returned zero matches. Icons are real Lucide path data
+(v0.577.0, node_modules/lucide-react), not hand-drawn glyphs. Prose is compressed to one
+closing paragraph plus the file/mockup list; everything else that can be a picture or a
+number is one.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>What changed after the Airbnb profile principles research</title>
+<style>
+  @font-face{
+    font-family:'Inter';
+    src:url('/_mockups/_assets/fonts/inter-latin-var.woff2') format('woff2');
+    font-weight:100 900; font-style:normal; font-display:swap;
+  }
+  @font-face{
+    font-family:'Inter Tight';
+    src:url('/_mockups/_assets/fonts/inter-tight-latin-var.woff2') format('woff2');
+    font-weight:100 900; font-style:normal; font-display:swap;
+  }
+  :root{
+    --ink:#0A0A0A;
+    --ink2:#6B6B6B;
+    --border:#E4E4E7;
+    --sunken:#F4F4F5;
+    --accent:#276EF1;
+    --green:#16A34A;
+    --green-bg:#DCFCE7;
+    --warn:#F1AE27;
+    --warn-bg:#FDF6E7;
+    --heart:#FF3366;
+    --white:#FFFFFF;
+  }
+  /* hue-ok: #F2F2F2 below is not a Solen token, it is Airbnb's own back-control fill, sampled
+     off their S6901 still (_design-system/references/AIRBNB_SYSTEM_VS_OURS.md, "back control"
+     row) and it is the exact literal value shipped today in Header.tsx:801, re-confirmed this
+     pass by live getComputedStyle (rgb(242,242,242)). #EBEBEB is named once further down, in
+     the "still open" list, as quoted text only (Airbnb's own divider grey, AIRBNB_SYSTEM_VS_OURS.md
+     CONFLICT 3); it is never rendered as a colour on this page. */
+  *{box-sizing:border-box;-webkit-text-size-adjust:100%;text-size-adjust:100%;}
+  html,body{margin:0;padding:0;background:var(--white);color:var(--ink);}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+    font-size:16px;
+    line-height:1.5;
+    overflow-x:hidden;
+  }
+  .lucide{stroke:currentColor;fill:none;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+  .wrap{max-width:640px;margin:0 auto;padding:24px 20px 80px;}
+  h1,h2,h3{font-family:'Inter Tight',sans-serif;color:var(--ink);margin:0 0 8px;}
+  h1{font-size:24px;font-weight:700;letter-spacing:-0.02em;line-height:1.2;}
+  .kicker{font-size:12px;font-weight:600;color:var(--ink2);margin:0 0 8px;}
+  .lede{font-size:14px;color:var(--ink2);margin:0 0 24px;}
+  h2{font-size:18px;font-weight:700;letter-spacing:-0.01em;margin-top:36px;padding-top:18px;border-top:1px solid var(--border);}
+  h2 .num{color:var(--ink2);font-weight:500;margin-right:6px;}
+  h2 .sub{display:block;font-size:13px;font-weight:400;color:var(--ink2);margin-top:4px;}
+  p{margin:0 0 12px;font-size:14px;}
+  code, .mono{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12.5px;background:var(--sunken);border-radius:4px;padding:1px 5px;word-break:break-word;}
+
+  /* ---- section 1: five before/after swatches ---- */
+  .swatch-card{border:1px solid var(--border);border-radius:16px;padding:14px 16px 16px;margin:12px 0;}
+  .swatch-head{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+  .swatch-head h3{margin:0;font-size:15px;font-weight:600;}
+  .tag{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:0.02em;color:var(--green);background:var(--green-bg);border-radius:4px;padding:2px 7px;flex-shrink:0;}
+  .pair-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .pair-tag{font-size:10.5px;font-weight:700;letter-spacing:0.02em;color:var(--ink2);margin:0 0 6px;text-align:center;}
+  .stage{height:64px;background:#fff;border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;justify-content:center;position:relative;}
+  .stage.tall{height:112px;padding:8px 12px;align-items:stretch;}
+  .pair-cap{font-size:11.5px;color:var(--ink2);text-align:center;margin:6px 0 0;line-height:1.35;}
+  .pair-cap .mono{font-size:11px;padding:0 3px;}
+  .swatch-why{font-size:12.5px;color:var(--ink2);margin:12px 0 4px;}
+  .swatch-file{font-size:11px;color:var(--ink2);font-family:'JetBrains Mono',ui-monospace,monospace;margin:0;}
+
+  /* mini header chrome used inside the bell/hamburger stages */
+  .mini-hdr-tile{width:38px;height:38px;display:grid;place-items:center;border:1px solid var(--border);border-radius:14px;background:#fff;color:var(--ink);}
+  .ghost-circle{width:36px;height:36px;border:1.5px dashed var(--ink2);border-radius:9999px;opacity:.5;}
+  .ghost-square{width:38px;height:38px;border:1.5px dashed var(--ink2);border-radius:14px;opacity:.5;}
+  .bell-wrap{position:relative;width:36px;height:36px;display:grid;place-items:center;color:var(--ink);}
+  .bell-badge{position:absolute;right:1px;top:0;min-width:13px;height:13px;border-radius:9999px;background:var(--accent);color:#fff;font-size:8px;font-weight:700;display:grid;place-items:center;line-height:1;}
+
+  /* mini row-card used inside the row-container stage */
+  .mini-card{width:100%;background:#fff;}
+  .mini-card.boxed{border:1px solid var(--border);border-radius:18px;overflow:hidden;}
+  .mini-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 12px;font-family:'Inter Tight',sans-serif;font-size:12.5px;font-weight:500;color:var(--ink);}
+  .mini-card.boxed .mini-row + .mini-row{border-top:1px solid var(--border);}
+  .mini-card.flat .mini-row + .mini-row{margin-top:6px;}
+  .mini-row svg{color:var(--ink2);}
+
+  /* icon-tile stage */
+  .tile-38{width:38px;height:38px;background:var(--sunken);border-radius:14px;display:grid;place-items:center;color:var(--ink);}
+  .glyph-22{width:22px;height:22px;display:grid;place-items:center;color:var(--ink);}
+
+  /* back-control stage */
+  .back-square{width:44px;height:44px;background:#fff;border:1px solid var(--border);border-radius:16px;display:grid;place-items:center;color:var(--ink);}
+  .back-circle{width:44px;height:44px;background:#F2F2F2;border-radius:9999px;display:grid;place-items:center;color:var(--ink);}
+
+  /* ---- section 2: per-screen verdict strip ---- */
+  .verdict-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;border-top:1px solid var(--border);}
+  .verdict-row:first-child{border-top:none;}
+  .verdict-name{font-family:'Inter Tight',sans-serif;font-size:15px;font-weight:600;color:var(--ink);}
+  .verdict-route{display:block;font-size:11.5px;color:var(--ink2);font-family:'JetBrains Mono',ui-monospace,monospace;margin-top:1px;}
+  .pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;letter-spacing:0.01em;padding:6px 11px;border-radius:9999px;white-space:nowrap;flex-shrink:0;}
+  .pill-neutral{background:var(--sunken);color:var(--ink2);}
+  .pill-warn{background:var(--warn-bg);color:var(--ink);}
+  .pill-warn svg{color:var(--warn);}
+  .verdict-note{font-size:12px;color:var(--ink2);margin-top:6px;}
+
+  /* ---- section 3: bars ---- */
+  .bar-group{margin:20px 0 24px;}
+  .bar-group-title{font-size:13.5px;font-weight:600;color:var(--ink);margin:0 0 2px;}
+  .bar-group-ref{font-size:11.5px;color:var(--ink2);margin:0 0 12px;}
+  .bar-field-wrap{display:flex;gap:10px;}
+  .bar-labels{width:64px;flex-shrink:0;display:flex;flex-direction:column;gap:8px;padding-top:1px;}
+  .bar-labels div{font-size:11.5px;font-weight:600;color:var(--ink2);height:16px;display:flex;align-items:center;}
+  .bar-field{flex:1;display:flex;flex-direction:column;gap:8px;}
+  .bar-line{display:flex;align-items:center;gap:8px;}
+  .bar-track{flex:1;position:relative;height:16px;background:var(--sunken);border-radius:999px;}
+  .bar-fill{position:absolute;left:0;top:0;height:100%;border-radius:999px;background:var(--ink);}
+  .ref-tick{position:absolute;top:-3px;bottom:-3px;width:0;border-left:2px dashed var(--ink2);z-index:2;}
+  .flag-dot{position:absolute;top:50%;width:7px;height:7px;border-radius:9999px;background:var(--warn);transform:translate(-50%,-50%);z-index:3;}
+  .bar-val{width:26px;text-align:right;font-size:11.5px;font-weight:700;color:var(--ink);flex-shrink:0;font-variant-numeric:tabular-nums;}
+
+  /* ---- section 4: inspo finding ---- */
+  .finding{border:1px solid var(--border);border-left:4px solid var(--warn);border-radius:14px;padding:14px 16px 16px;margin:14px 0;}
+  .finding-head{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+  .finding-head svg{color:var(--warn);flex-shrink:0;}
+  .finding-head h3{margin:0;font-size:14.5px;font-weight:700;}
+  .finding-sub{font-size:12.5px;color:var(--ink2);margin:0 0 12px;}
+  .finding-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .finding-result{font-size:13px;color:var(--ink);font-weight:600;margin:12px 0 2px;}
+  .finding-file{font-size:11px;color:var(--ink2);font-family:'JetBrains Mono',ui-monospace,monospace;margin:0;}
+
+  /* ---- section 5: still open, one line each ---- */
+  .qline{border-left:3px solid var(--border);padding:2px 0 2px 12px;margin:14px 0;font-size:13px;color:var(--ink);}
+  .qline b{font-weight:700;}
+  .qline .costs{display:block;color:var(--ink2);margin-top:3px;font-size:12.5px;}
+
+  a{color:var(--accent);text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .filepath{font-size:12px;color:var(--ink2);font-family:'JetBrains Mono',ui-monospace,monospace;white-space:nowrap;overflow-x:auto;display:block;margin:2px 0;}
+  hr.sep{border:none;border-top:1px solid var(--border);margin:28px 0;}
+  .foot{font-size:11.5px;color:var(--ink2);margin-top:32px;}
+  .row-label{font-size:11.5px;font-weight:600;color:var(--ink2);margin:14px 0 4px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="kicker">SOLEN, RESEARCH SUMMARY, ONE PAGE</p>
+  <h1>What actually changed, and what did not</h1>
+  <p class="lede">
+    Five things shipped today on the account hub. Everywhere else on the site, almost nothing
+    moved. Look first, the numbers and file paths are underneath every picture.
+  </p>
+
+  <h2><span class="num">1</span>The five shipped changes, before and after<span class="sub">All five live on /de/profile right now. Every size below is quoted from the file, re-checked live this pass.</span></h2>
+
+  <div class="swatch-card">
+    <div class="swatch-head"><span class="tag">SHIPPED</span><h3>Notification bell</h3></div>
+    <div class="pair-grid">
+      <div>
+        <p class="pair-tag">BEFORE</p>
+        <div class="stage">
+          <span class="bell-wrap">
+            <svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" stroke-width="2"><path d="M10.268 21a2 2 0 0 0 3.464 0"></path><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path></svg>
+            <span class="bell-badge">3</span>
+          </span>
+        </div>
+        <p class="pair-cap">Rendered on every route, unconditional.</p>
+      </div>
+      <div>
+        <p class="pair-tag">AFTER</p>
+        <div class="stage"><span class="ghost-circle"></span></div>
+        <p class="pair-cap">Hidden on <span class="mono">/de/profile</span> only. Live scan: 0 bell elements in this header.</p>
+      </div>
+    </div>
+    <p class="swatch-why">A bell is a notice about something happening elsewhere. This screen's job is your own account, so it does not belong in its own top row.</p>
+    <p class="swatch-file">app/[locale]/_components/layout/Header.tsx</p>
+  </div>
+
+  <div class="swatch-card">
+    <div class="swatch-head"><span class="tag">SHIPPED</span><h3>Hamburger menu</h3></div>
+    <div class="pair-grid">
+      <div>
+        <p class="pair-tag">BEFORE</p>
+        <div class="stage">
+          <span class="mini-hdr-tile">
+            <svg class="lucide" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" stroke-width="2"><path d="M4 12h16"></path><path d="M4 18h16"></path><path d="M4 6h16"></path></svg>
+          </span>
+        </div>
+        <p class="pair-cap">Bordered square, opens the sitewide menu, every route.</p>
+      </div>
+      <div>
+        <p class="pair-tag">AFTER</p>
+        <div class="stage"><span class="ghost-square"></span></div>
+        <p class="pair-cap">Hidden with the bell, same condition.</p>
+      </div>
+    </div>
+    <p class="swatch-why">The hub's own rows (Bookings, Wallet, Settings) already are its navigation. A second button opening a different menu belongs to a different screen.</p>
+    <p class="swatch-file">app/[locale]/_components/layout/Header.tsx</p>
+  </div>
+
+  <div class="swatch-card">
+    <div class="swatch-head"><span class="tag">SHIPPED</span><h3>The row container (the box)</h3></div>
+    <div class="pair-grid">
+      <div>
+        <p class="pair-tag">BEFORE</p>
+        <div class="stage tall">
+          <div class="mini-card boxed">
+            <div class="mini-row"><span>Bookings</span><svg class="lucide" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="m9 18 6-6-6-6"></path></svg></div>
+            <div class="mini-row"><span>Wallet</span><svg class="lucide" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="m9 18 6-6-6-6"></path></svg></div>
+          </div>
+        </div>
+        <p class="pair-cap"><span class="mono">rounded-[24px] border</span> + <span class="mono">divide-y</span> between rows.</p>
+      </div>
+      <div>
+        <p class="pair-tag">AFTER</p>
+        <div class="stage tall">
+          <div class="mini-card flat">
+            <div class="mini-row"><span>Bookings</span><svg class="lucide" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="m9 18 6-6-6-6"></path></svg></div>
+            <div class="mini-row"><span>Wallet</span><svg class="lucide" width="13" height="13" viewBox="0 0 24 24" stroke-width="2"><path d="m9 18 6-6-6-6"></path></svg></div>
+          </div>
+        </div>
+        <p class="pair-cap"><span class="mono">bg-white</span> only. Live scan: 0 border-plus-rounded-24 boxes found on the page.</p>
+      </div>
+    </div>
+    <p class="swatch-why">Measured on Airbnb's own screen: zero boxes anywhere. Solen's own written rules already said an account hub gets no container, and never both a box and a per-row line. This was our own rule being broken.</p>
+    <p class="swatch-file">app/[locale]/_components/profile/AccountHub.tsx:207-216</p>
+  </div>
+
+  <div class="swatch-card">
+    <div class="swatch-head"><span class="tag">SHIPPED</span><h3>The grey square behind each icon</h3></div>
+    <div class="pair-grid">
+      <div>
+        <p class="pair-tag">BEFORE</p>
+        <div class="stage">
+          <div class="tile-38">
+            <svg class="lucide" width="18" height="18" viewBox="0 0 24 24" stroke-width="1.9"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path></svg>
+          </div>
+        </div>
+        <p class="pair-cap">38x38 <span class="mono">bg-s-bg-sunken rounded-[14px]</span>.</p>
+      </div>
+      <div>
+        <p class="pair-tag">AFTER</p>
+        <div class="stage">
+          <div class="glyph-22">
+            <svg class="lucide" width="19" height="19" viewBox="0 0 24 24" stroke-width="1.9"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path></svg>
+          </div>
+        </div>
+        <p class="pair-cap">Bare 22x22, live-measured transparent background, 0px radius.</p>
+      </div>
+    </div>
+    <p class="swatch-why">Airbnb's icons sit bare on white. The grey square was also a dead, meaningless grey shape, its own rule violation.</p>
+    <p class="swatch-file">app/[locale]/_components/profile/AccountHub.tsx:235-241</p>
+  </div>
+
+  <div class="swatch-card">
+    <div class="swatch-head"><span class="tag">SHIPPED</span><h3>The back control</h3></div>
+    <div class="pair-grid">
+      <div>
+        <p class="pair-tag">BEFORE</p>
+        <div class="stage">
+          <div class="back-square">
+            <svg class="lucide" width="20" height="20" viewBox="0 0 24 24" stroke-width="2.2"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
+          </div>
+        </div>
+        <p class="pair-cap">44x44, white, 1px <span class="mono">#E4E4E7</span> border, radius 16.</p>
+      </div>
+      <div>
+        <p class="pair-tag">AFTER</p>
+        <div class="stage">
+          <div class="back-circle">
+            <svg class="lucide" width="20" height="20" viewBox="0 0 24 24" stroke-width="2.2"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
+          </div>
+        </div>
+        <p class="pair-cap">44x44 circle, filled <span class="mono">#F2F2F2</span>, no border. Live-measured: rgb(242,242,242), border 0px, radius 9999px.</p>
+      </div>
+    </div>
+    <p class="swatch-why">Measured directly off the owner's own reference screenshot: Airbnb's back control is a filled grey circle at 39.7pt across, no border. The 44px size stays, the touch-target floor outranks matching their smaller 40px.</p>
+    <p class="swatch-file">app/[locale]/_components/layout/Header.tsx:779-805</p>
+  </div>
+
+  <h2><span class="num">2</span>The same research, on three other screens</h2>
+
+  <div class="verdict-row">
+    <div><span class="verdict-name">Home feed</span><span class="verdict-route">/de</span></div>
+    <span class="pill pill-neutral">NO CHANGE</span>
+  </div>
+  <div class="verdict-row">
+    <div><span class="verdict-name">Category page</span><span class="verdict-route">/de/coiffeur</span></div>
+    <span class="pill pill-neutral">NO CHANGE</span>
+  </div>
+  <div class="verdict-row">
+    <div><span class="verdict-name">Inspo</span><span class="verdict-route">/de/inspo</span></div>
+    <span class="pill pill-warn">
+      <svg class="lucide" width="13" height="13" viewBox="0 0 24 24" stroke-width="2.2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>
+      GAP FOUND
+    </span>
+  </div>
+  <p class="verdict-note">Home and Category already fold the sitewide menu into one hamburger icon inside their search pill, no separate bell, the same underlying idea as Airbnb's account screen leaning on its own bottom tab bar instead of repeating navigation. The Inspo gap is its own block below.</p>
+
+  <h2><span class="num">3</span>The numbers that matter<span class="sub">Measured live, 390x844, this pass. Dashed line = the reference point named beside each chart.</span></h2>
+
+  <div class="bar-group">
+    <p class="bar-group-title">Distinct font sizes, first screen</p>
+    <p class="bar-group-ref">Reference (Airbnb's own account screen): 3</p>
+    <div class="bar-field-wrap">
+      <div class="bar-labels"><div>Home</div><div>Category</div><div>Inspo</div></div>
+      <div class="bar-field">
+        <div class="bar-line">
+          <div class="bar-track">
+            <div class="ref-tick" style="left:42.9%"></div>
+            <div class="bar-fill" style="width:85.7%"></div>
+            <div class="flag-dot" style="left:85.7%"></div>
+          </div>
+          <span class="bar-val">6</span>
+        </div>
+        <div class="bar-line">
+          <div class="bar-track">
+            <div class="ref-tick" style="left:42.9%"></div>
+            <div class="bar-fill" style="width:71.4%"></div>
+            <div class="flag-dot" style="left:71.4%"></div>
+          </div>
+          <span class="bar-val">5</span>
+        </div>
+        <div class="bar-line">
+          <div class="bar-track">
+            <div class="ref-tick" style="left:42.9%"></div>
+            <div class="bar-fill" style="width:42.9%"></div>
+          </div>
+          <span class="bar-val">3</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bar-group">
+    <p class="bar-group-title">Share of visible text at bold or semibold weight</p>
+    <p class="bar-group-ref">Ceiling (CLAUDE.md emphasis budget): 30%</p>
+    <div class="bar-field-wrap">
+      <div class="bar-labels"><div>Home</div><div>Category</div><div>Inspo</div></div>
+      <div class="bar-field">
+        <div class="bar-line">
+          <div class="bar-track">
+            <div class="ref-tick" style="left:75%"></div>
+            <div class="bar-fill" style="width:63.75%"></div>
+          </div>
+          <span class="bar-val">25.5%</span>
+        </div>
+        <div class="bar-line">
+          <div class="bar-track">
+            <div class="ref-tick" style="left:75%"></div>
+            <div class="bar-fill" style="width:5.5%"></div>
+          </div>
+          <span class="bar-val">2.2%</span>
+        </div>
+        <div class="bar-line">
+          <div class="bar-track">
+            <div class="ref-tick" style="left:75%"></div>
+            <div class="bar-fill" style="width:19.25%"></div>
+          </div>
+          <span class="bar-val">7.7%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bar-group">
+    <p class="bar-group-title">Bordered elements, first screen</p>
+    <div class="bar-field-wrap">
+      <div class="bar-labels"><div>Home</div><div>Category</div><div>Inspo</div></div>
+      <div class="bar-field">
+        <div class="bar-line"><div class="bar-track"><div class="bar-fill" style="width:66.7%"></div></div><span class="bar-val">2</span></div>
+        <div class="bar-line"><div class="bar-track"><div class="bar-fill" style="width:33.3%"></div></div><span class="bar-val">1</span></div>
+        <div class="bar-line"><div class="bar-track"><div class="bar-fill" style="width:33.3%"></div></div><span class="bar-val">1</span></div>
+      </div>
+    </div>
+  </div>
+  <p class="verdict-note">Font-size count is the one axis over its reference on two of three screens (the amber dot marks it), the same known gap the account hub itself had before today's fix. Bold share and border count are both already under their own ceilings everywhere.</p>
+
+  <h2><span class="num">4</span>The Inspo finding</h2>
+
+  <div class="finding">
+    <div class="finding-head">
+      <svg class="lucide" width="17" height="17" viewBox="0 0 24 24" stroke-width="2.2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>
+      <h3>The menu has no visible way to open on this one screen</h3>
+    </div>
+    <p class="finding-sub">Found while measuring live, not a fix, not chased further this pass.</p>
+    <div class="finding-grid">
+      <div>
+        <p class="pair-tag">WHAT RENDERS THERE</p>
+        <div class="stage">
+          <span class="mini-hdr-tile" style="border:none;background:transparent;">
+            <svg class="lucide" width="19" height="19" viewBox="0 0 24 24" stroke-width="2" style="color:var(--heart)"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"></path></svg>
+          </span>
+        </div>
+        <p class="pair-cap">The save-heart icon, same slot Home and Category use for the hamburger.</p>
+      </div>
+      <div>
+        <p class="pair-tag">WHAT'S MEASURED THERE</p>
+        <div class="stage"><span class="ghost-square" style="width:8px;height:8px;border-width:1.5px;"></span></div>
+        <p class="pair-cap">The hamburger element itself: 0 x 0px, in the page's own markup.</p>
+      </div>
+    </div>
+    <p class="finding-result">Result: unlike Home and Category, Inspo has no visible way to open the sitewide menu from its own top row.</p>
+    <p class="finding-file">app/[locale]/inspo/page.tsx</p>
+  </div>
+
+  <h2><span class="num">5</span>Still open, no call made yet</h2>
+
+  <div class="qline"><b>1. Plain white rows, or a grey block behind the group?</b><span class="costs">Adding a block undoes what removing the card just did; staying plain can read unfinished on a small screen.</span></div>
+  <div class="qline"><b>2. Match Airbnb's divider grey, or keep Solen's own?</b><span class="costs">Their measured <span class="mono">#EBEBEB</span> vs our locked <span class="mono">#E4E4E7</span>. Switching breaks the one-token-every-divider rule; keeping it means this line is never a pixel match.</span></div>
+  <div class="qline"><b>3. Soften body ink to Airbnb's tone, or keep Solen's own?</b><span class="costs">Their <span class="mono">#222222</span> vs our <span class="mono">#0A0A0A</span>. Softening is a sitewide call, that ink is nearly every word plus the one commit button; keeping it, no accessibility rule pushes either way.</span></div>
+  <div class="qline"><b>4. Side margin: 20, 23, or 26px?</b><span class="costs">Three numbers exist on paper and the shipped page currently matches none of them; picking any one is low-risk, but nobody has picked.</span></div>
+  <div class="qline"><b>5. Standardize letter-spacing to normal, or leave it?</b><span class="costs">Standardizing is minor, undecided work with no broken rule behind it; leaving it, the inconsistency stays invisible to every written check.</span></div>
+
+  <hr class="sep">
+
+  <p style="font-size:13.5px;color:var(--ink2);">
+    Airbnb's account screen spends almost no colour or weight: one ink for text, one grey line
+    reserved for group boundaries, their brand colour only on the active tab. Three things stay
+    unmatched on purpose: the bottom tab bar (Solen has none, already turned down on a prior
+    date), their own Cereal typeface (Inter stays), and rows with nothing extra written on them
+    (Solen's rows carry real numbers, like the next appointment date or how many stamps remain,
+    and deleting those to look barer would be hiding real information to chase a look).
+  </p>
+
+  <div class="row-label">Research files (repo paths, not web pages)</div>
+  <p class="filepath">_design-system/AIRBNB_PROFILE_PRINCIPLES.md</p>
+  <p class="filepath">_design-system/references/AIRBNB_SYSTEM_VS_OURS.md</p>
+  <p class="filepath">_design-system/references/airbnb--profile-list.md</p>
+  <p class="filepath">_design-system/references/airbnb--profile-1to1-diff.md</p>
+
+  <div class="row-label" style="margin-top:16px">Mockups that led here (open on your phone)</div>
+  <p><a href="/_mockups/restraint/account-hub.html">restraint/account-hub.html</a>, the owner-approved direction the current row anatomy traces to.</p>
+  <p><a href="/_mockups/account-v2/account-hub-lines.html">account-v2/account-hub-lines.html</a>, the first live-iframe now-comparison of the real page.</p>
+  <p><a href="/_mockups/account-v2/system-current-vs-proposed.html">account-v2/system-current-vs-proposed.html</a>, built straight from the 407-line measured research file.</p>
+  <p><a href="/_mockups/account-v2/overhaul-c-merged.html">account-v2/overhaul-c-merged.html</a>, the merged direction covering the rest of the account hub.</p>
+
+  <p class="foot">
+    Built from research that was already done. Numbers on the home feed, the category page and
+    Inspo were measured fresh for this page; numbers on the account hub are quoted from the four
+    files above and from the current state of the code.
+  </p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Account hub, current vs proposed</title>
+<!-- Base: capture live -->
+<!-- Scale: full-page -->
+<!--
+  WHAT THIS FILE IS. The visual half of _design-system/references/AIRBNB_SYSTEM_VS_OURS.md,
+  written this session, 2026-08-03. That document measured Airbnb's live token layer at 390x844
+  and their account stills at 402pt, put both next to our live /de/profile, and produced an
+  11-item change list plus 7 undecided conflicts. This page renders the change list so the owner
+  can look at it instead of reading a table. Nothing here is a decision: every conflict the
+  document left open is left open here too, named in the note beside the section it affects.
+
+  NOT AN OVERLAY. The Proposed pane is real markup on this page. There is no CSS injection into
+  the iframe, no DOM mutation of a same-origin document, no sweep flag. The overlay approach was
+  retired by name after four rounds, owner verbatim "every single part of it does not look like
+  the reference at all": an overlay can only change what it explicitly overrides, so the chrome,
+  the type family and the header layout stayed ours no matter how many rules were added.
+
+  Grounded-in: app/[locale]/_components/profile/AccountHub.tsx
+  Grounded-in: app/[locale]/_components/layout/Header.tsx
+  Reference-checked: _design-system/references/AIRBNB_SYSTEM_VS_OURS.md
+  Reference-checked: _design-system/references/airbnb--profile-list.md
+  Reference-checked: _design-system/references/airbnb--profile-1to1-diff.md
+
+  Depicts: the account hub screen -> app/[locale]/profile/page.tsx
+  Depicts: the row list, its labels, its live sublines and the sign-out row -> app/[locale]/_components/profile/AccountHub.tsx
+  Depicts: the back tile, the page title, the bell and the hamburger -> app/[locale]/_components/layout/Header.tsx
+  Depicts: the next-appointment subline -> app/[locale]/profile/bookings/page.tsx
+  Depicts: the wallet row and its saved-card state -> app/[locale]/_components/profile/PaymentMethods.tsx
+  Depicts: the vouchers count -> app/[locale]/profile/vouchers/page.tsx
+  Depicts: the saved-store count -> app/[locale]/profile/favorites/page.tsx
+  Depicts: the stamp progress value -> app/[locale]/profile/stamps/page.tsx
+  Depicts: the Edit affordance -> app/[locale]/profile/edit/page.tsx
+  No new feature is drawn. Every row, every value and every destination already exists.
+
+  Exists-check: `npm run exists profile` ran this turn, five times. 97 hits: 19 existing /profile
+  routes, among them /profile/edit, which the Edit link enters rather than duplicating, plus
+  AccountHub.tsx and 13 REMOVED entries. Two graveyard hits are load-bearing and are honoured, not
+  revived: the 2026-07-28 kill of the big "Profile" page title, so no page-title text is re-added to
+  the body and the 18px title stays in the global header where it already lives, and the 2026-08-02
+  kill of ProfileTabs with its tabs, search field, Sortieren pill and collage tile, none of which
+  appear here. A third, `npm run exists "airbnb"` in the source document, returns the 2026-07-31
+  rejection of a pill border copied from Airbnb, carried into the notes below as a precedent risk.
+
+  Diagnosis: row-group container | measured 4 white cards x20 w350 radius 24px border 1px rgb228,228,231 box-shadow none, live /de/profile at 390x844 this run | violates AIRBNB_SYSTEM_VS_OURS.md item 1, where S6900 shows 0 card edges, and LOCKFILE.md:552-560 which names an account hub as a no-container surface and bans container-plus-per-row-hairline | target no container, rows sit on the page
+  Diagnosis: rules per row | measured 1px rgb228,228,231 border-top between rows inside every card, 7 rows, live /de/profile this run | violates item 2, where S6900 carries exactly 1 content rule on the whole screen inset 24.0pt and S6901 at top of scroll carries zero | target 0 rules, the group heading and its 33px gap do the separating
+  Diagnosis: distinct font sizes on one screen | measured 6, being 28 name, 18 header title, 15.5 row label, 13 subline, 12 eyebrow and group labels, 10 bell badge, live /de/profile this run | violates CLAUDE.md NEVER-AGAIN floor 2, max 4 with a floor of 3, our own rule and not an Airbnb number | target 3 inside the hub at 28/16/13, 5 on the whole screen, the residue being the header's 18 and 10
+  Diagnosis: row icon tile | measured 38x38 background rgb244,244,245 radius 14px on 7 of 7 rows, live /de/profile this run | violates item 4, where S6900 row-glyph boxes measure 0.03 to 1.05% non-white pixels, so bare ink on white, and the owner's 2026-08-03 "the icon sh remove" | target no tile and no glyph, label starts at the page margin
+  Diagnosis: row label weight | measured 500, live /de/profile this run, source AccountHub.tsx:232 | violates item 5, where the cap route at 15.96pt and the ink word-width route at 15.97pt only reconcile at weight 400 | target 400
+  Diagnosis: row pitch | measured 74.7 to 75.8px across 7 rows, content-driven, live /de/profile this run | violates item 6, where S6900 deltas 167/168/169/168/168/170px give 56.0pt with zero variance, and LOCKFILE.md:571 which already prescribes 56px | target 56px fixed
+  Diagnosis: letter-spacing | measured 4 values in one viewport, being -0.56px name, -0.18px header title, -0.155px row label and normal, live /de/profile this run | violates item 7, where every Airbnb typography letter-spacing token returns normal | target normal inside the hub, the header's -0.18px is out of scope and stays
+  Diagnosis: page margin | measured 20px container plus 16px card padding, so 36px to the row icon, live /de/profile this run | violates item 8, where S6900 agrees on 24.0pt across banner bbox, all 7 content rules and the chevron inset | target 24px, shown as the reference value while CONFLICT 5 is open between 20, 23.3, 24 and 26
+  Diagnosis: row label size | measured 15.5px, live /de/profile this run | violates item 10, where two independent rulers agree at 15.96 and 15.97pt and 16 is a real named tier in Airbnb's live scale | target 16px
+  Diagnosis: emphasis budget | measured 7 of 21 visible text elements at weight 600 or more, so 33.3%, live /de/profile this run | violates CLAUDE.md EMPHASIS BUDGET a, our own house number and not an Airbnb one | target at or under 30%
+  Diagnosis: group headings | measured 12px weight 600 colour rgb107,107,107, live /de/profile this run | violates nothing measurable, the owner asked for stronger separation by name on 2026-08-03 and Airbnb has no headings at all, so this axis has no reference number | target 16px weight 700 ink, a full weight and colour step over the 16px/400 rows it groups
+  Diagnosis: saved-row heart | measured Lucide Heart at #FF3366, the one chromatic pixel in the row list, AccountHub.tsx:167 | violates the owner's 2026-08-03 "remove pink sh bit looks so out of place" | target gone as a consequence of removing every row icon, the locked save-heart token elsewhere in the product is untouched
+  Diagnosis: edit affordance | measured none, the hub has no way into the existing editor, live /de/profile this run | violates the owner's 2026-08-03 "make a profile section or account yk so they can acc edit" | target a small blue text link on the name row entering the existing app/[locale]/profile/edit/page.tsx, per the LOCKFILE link row of small clickable bits only
+  Diagnosis: anchor ratio, a consequence not on the source list | measured 28px name over a 15.5px label, so 1.81x, live /de/profile this run | violates CLAUDE.md EMPHASIS BUDGET b once item 10 lands, because 28 over 16 is 1.75x, under the 1.8x floor | target undecided, either the anchor moves to 29 or 30px or the floor is read against the 13px subline at 2.15x, flagged for the owner and not picked here
+
+  measured: reference numbers are quoted from AIRBNB_SYSTEM_VS_OURS.md and carry its source tags,
+  S6900/S6901/S6902/S6904 for the stills at 1206x2622 = 402x874pt at 3.0x, AB-LIVE-390 for their
+  live token layer at 390x844, AB-CANVAS for the Cereal metrics. Reference row pitch 56.0pt;
+  reference group-boundary pitch 266px at 3x versus 168px in-group, so the extra whitespace at a
+  boundary is 98px = 32.7pt, rounded to 33px here; reference page margin 24.0pt on four independent
+  agreements; reference divider #EBEBEB 1.0pt, group-end only; reference row label 16px weight 400;
+  reference title tiers 22 collapsed and 32 expanded; reference tracking normal on every tier.
+  Ours, measured by me this run with getBoundingClientRect and getComputedStyle on
+  https://card-albums-anne-mood.trycloudflare.com/de/profile at 390x844, dpr 2, scrollY 0, logged
+  in, document.title "Konto": back tile 44x44 radius 16px border 1px rgb228,228,231 at x16 y20;
+  header title "Profil" Inter Tight 18px weight 700 letter-spacing -0.18px at x70 y28.5; bell 40x40
+  at x278 y22 with a 16x16 badge, background rgb39,110,241, text 10px weight 700; hamburger 44x44
+  radius 16px at x330 y20; eyebrow "Konto" Inter 12px weight 600 rgb107,107,107 at x20 y102;
+  avatar 60x60 at x20 y134; name "QA Test" Inter Tight 28px weight 700 letter-spacing -0.56px at
+  x94 y143; group label "Buchungen" 12px weight 600 rgb107,107,107 at y220; first card x20 y246
+  w350 h76.8 radius 24px border 1px rgb228,228,231 box-shadow none; icon tile 38x38 radius 14px
+  background rgb244,244,245 at x37; row label Inter Tight 15.5px weight 500 letter-spacing
+  -0.155px at x89; subline Inter 13px weight 400 rgb107,107,107; row-end "4/10" 13px weight 500;
+  row tops 375.8, 450.5 and 580.3, 655.0, 730.8 giving in-card pitches of 74.7, 74.7 and 75.8;
+  sign-out "Abmelden" 15.5px weight 500 rgb220,38,38 at y940.3.
+
+  Copy: English, from messages/en.json profileHub keys hubSectionAccount, statBookings, tileWallet,
+  vouchers, hubPersonal, haarprofil, haarprofilSub, tabSaved, tileStamps, settingsTitle,
+  settingsRowSub, signOut, nextAppointmentOn, walletRowEmptySub, couponsRowActive and
+  stampsRowActive, plus Profile.salonsCount. The live route renders German because
+  Header.tsx:463-491 hardcodes the deep-page title map in German on purpose, its own comment
+  explains why; the English "Profile" in the Proposed pane is the honest English rendering of that
+  same slot, and the mismatch is named in the header note rather than smoothed over. Values, being
+  the next appointment, add a card, 1 active, 2 stores, 6 more to your reward, 4/10 and the badge
+  3, are the exact values the live route rendered for this account at the moment of measurement,
+  transcribed, not invented.
+
+  NOT MEASURED, stated rather than filled in: Airbnb's account screens are login-gated and no
+  credentials were entered, so all reference geometry is from the stills; the reference title
+  weights, their icon stroke width, their motion, press, focus and hover states, and every empty,
+  loading and error state of either side.
+-->
+<style>
+  @font-face{
+    font-family:'Inter';
+    src:url('/_mockups/_assets/fonts/inter-latin-var.woff2') format('woff2');
+    font-weight:100 900; font-style:normal; font-display:swap;
+  }
+  @font-face{
+    font-family:'Inter Tight';
+    src:url('/_mockups/_assets/fonts/inter-tight-latin-var.woff2') format('woff2');
+    font-weight:100 900; font-style:normal; font-display:swap;
+  }
+  :root{
+    --ink:#0A0A0A; --ink-2:#6B6B6B;
+    --border:#E4E4E7; --sunken:#F4F4F5;
+    --accent:#276EF1; --error:#DC2626;
+    --stage:#DEDEE1;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--stage);color:var(--ink);min-height:100dvh}
+  .lucide{stroke:currentColor;fill:none;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+
+  /* Page chrome. Everything in this block sits OUTSIDE the 402px canvas and is not part of
+     either screen. */
+  .bar{position:sticky;top:0;z-index:9;background:#fff;border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .seg{display:flex;border:1px solid var(--border);border-radius:9999px;overflow:hidden}
+  .seg button{border:0;background:#fff;color:var(--ink-2);font:inherit;font-size:13px;font-weight:600;padding:7px 16px;cursor:pointer}
+  .seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+  .bar .t{font-size:13px;color:var(--ink-2)}
+  /* `safe center` rather than `center`: the canvas is a fixed 402 and a viewport narrower than
+     that (a 390 test window, a smaller phone) makes plain flex centering overflow on BOTH sides,
+     where the left overflow is unreachable by scrolling. Measured at 390: 402 canvas in a 396
+     container, 3px clipped off each edge. `safe` falls back to flex-start exactly then. */
+  .stage{position:relative;display:flex;justify-content:safe center;padding:24px 0 80px}
+  .pane{display:none}
+  .pane.on{display:block}
+
+  /* Device canvas: fixed 402 CSS px per public/_mockups/_BASE.md. No drawn phone frame. */
+  .frame{width:402px;min-height:874px;background:#fff;box-shadow:0 1px 32px rgba(0,0,0,.12);position:relative}
+  iframe.livepane{width:402px;height:874px;border:0;display:block}
+
+  /* Annotation rail. Absolutely positioned beside the canvas, never inside it, so the canvas
+     stays pixel-clean for measurement. JS aligns each note to the top of its section. */
+  .rail{position:absolute;left:calc(50% + 225px);top:0;width:330px}
+  .note{position:absolute;left:0;width:330px;font-size:12px;line-height:17px;color:#3F3F46;background:#fff;border:1px solid var(--border);border-radius:12px;padding:10px 12px}
+  .note b{display:block;font-size:12px;font-weight:700;color:var(--ink);margin-bottom:3px}
+  .note .src{display:block;margin-top:5px;color:var(--ink-2)}
+  .note.open{border-color:#F1AE27}
+  /* A note is taller than most sections, so once the rail stacks without overlap a note can end
+     up well below the section it describes. The number is what carries the mapping: the same
+     numeral sits in the left gutter at the section's own y, outside the canvas. */
+  .n{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:9999px;background:var(--ink);color:#fff;font-size:10px;font-weight:700;font-style:normal;margin-right:6px;vertical-align:2px}
+  .marks{position:absolute;left:calc(50% - 233px);top:0;width:24px}
+  .mark{position:absolute;left:0;display:grid;place-items:center;width:22px;height:22px;border-radius:9999px;background:var(--ink);color:#fff;font-size:11px;font-weight:700}
+  @media (max-width:1000px){
+    .rail{position:static;width:402px;margin:16px auto 0}
+    .note{position:static;width:402px;margin-bottom:10px}
+    .marks{display:none}
+  }
+
+  /* ---------------- PROPOSED PANE, real built markup ---------------- */
+
+  /* Header: UNCHANGED from the live route. AIRBNB_SYSTEM_VS_OURS.md section 3 proposes no target
+     for the back control, the bell or the hamburger, because S6900 is a tab root and has none of
+     them, so there is no reference measurement to match. Rendered at the live values. */
+  .hdr{display:flex;align-items:center;gap:10px;padding:20px 16px 0}
+  .hdr-tile{width:44px;height:44px;display:grid;place-items:center;border:1px solid var(--border);border-radius:16px;background:#fff;color:var(--ink);flex-shrink:0}
+  .hdr-title{font-family:'Inter Tight',sans-serif;font-size:18px;font-weight:700;letter-spacing:-0.18px;color:var(--ink);margin-left:10px}
+  .hdr-sp{flex:1}
+  .bell{position:relative;width:40px;height:40px;display:grid;place-items:center;color:var(--ink);flex-shrink:0}
+  .badge{position:absolute;right:4px;top:4px;min-width:16px;height:16px;border-radius:9999px;background:var(--accent);color:#fff;font-size:10px;font-weight:700;display:grid;place-items:center;line-height:1}
+
+  /* Page margin 24px. Reference measured 24.0pt on four independent agreements and this canvas is
+     402pt wide, so the number applies 1:1. CONFLICT 5, 20 vs 23.3 vs 24 vs 26, is still open. */
+  .pad{padding:0 24px}
+
+  /* Identity. The 12px "Account" eyebrow is dropped: it restated the destination the header title
+     already names, and its 12px tier was one of the six sizes item 3 has to collapse. */
+  .ident{display:flex;align-items:center;gap:14px;padding-top:18px}
+  .ava{width:60px;height:60px;border-radius:9999px;object-fit:cover;flex-shrink:0}
+  .name{font-family:'Inter Tight',sans-serif;font-size:28px;font-weight:700;letter-spacing:normal;color:var(--ink);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  /* min-height 44 is the a11y touch floor from the design contract; measured at 39.5px on the
+     first render with padding alone, so the floor is set explicitly rather than inferred. */
+  .edit{display:inline-flex;align-items:center;min-height:44px;font-size:13px;font-weight:500;color:var(--accent);text-decoration:none;flex-shrink:0;padding-left:8px}
+
+  /* Group heading. Owner ask: the heading does the separating, so no rule is drawn anywhere on
+     this screen. The step it carries is a full weight step, 700 over the rows' 400, plus a colour
+     step, ink over the old ink-2, which is what FLOORS LAW 5 requires a deletion to keep. The
+     33px gap above it is the reference's own measured group-boundary whitespace. */
+  .grp{margin-top:33px}
+  .grp-h{font-family:'Inter Tight',sans-serif;font-size:16px;font-weight:700;letter-spacing:normal;color:var(--ink);line-height:20px;margin-bottom:8px}
+
+  /* Row: fixed 56px pitch, no icon, no tile, no divider. 9 + 20 + 2 + 16 + 9 = 56. */
+  .row{display:flex;align-items:center;gap:12px;padding:9px 0;min-height:56px;text-decoration:none;color:inherit}
+  .row-main{flex:1;min-width:0}
+  .row-l{display:block;font-family:'Inter Tight',sans-serif;font-size:16px;font-weight:400;line-height:20px;letter-spacing:normal;color:var(--ink)}
+  .row-s{display:block;margin-top:2px;font-size:13px;font-weight:400;line-height:16px;color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .row-e{font-size:13px;font-weight:500;color:var(--ink);font-variant-numeric:tabular-nums;flex-shrink:0}
+  .row-c{color:var(--ink);flex-shrink:0}
+
+  .signout{margin-top:33px;text-align:center;padding-bottom:40px}
+  .signout button{display:inline-flex;align-items:center;gap:7px;font-family:inherit;font-size:16px;font-weight:500;line-height:20px;color:var(--error);background:none;border:0;cursor:pointer}
+
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="seg">
+    <button id="bCur" type="button" aria-pressed="true">Current</button>
+    <button id="bProp" type="button" aria-pressed="false">Proposed</button>
+  </div>
+  <span class="t">Account hub. Current is the live route in an iframe. Proposed is built markup.</span>
+</div>
+
+<div class="stage">
+
+  <!-- CURRENT: the real route, live, unmodified. Nothing is injected into this document. -->
+  <div class="pane on" id="paneCur">
+    <div class="frame">
+      <iframe class="livepane" src="/de/profile" title="live /de/profile, current, unmodified"></iframe>
+    </div>
+  </div>
+
+  <!-- PROPOSED: every element below is markup on THIS page. -->
+  <div class="pane" id="paneProp">
+    <div class="frame" id="canvas">
+
+      <div class="hdr" id="s-hdr">
+        <span class="hdr-tile">
+          <svg class="lucide lucide-arrow-left" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" stroke-width="2"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
+        </span>
+        <span class="hdr-title">Profile</span>
+        <span class="hdr-sp"></span>
+        <span class="bell">
+          <svg class="lucide lucide-bell" xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" stroke-width="2"><path d="M10.268 21a2 2 0 0 0 3.464 0"></path><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path></svg>
+          <span class="badge">3</span>
+        </span>
+        <span class="hdr-tile">
+          <svg class="lucide lucide-menu" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" stroke-width="2"><path d="M4 12h16"></path><path d="M4 18h16"></path><path d="M4 6h16"></path></svg>
+        </span>
+      </div>
+
+      <div class="pad">
+
+        <div class="ident" id="s-ident">
+          <img class="ava" src="_assets/avatar-qa-test.jpg" alt="QA Test">
+          <span class="name">QA Test</span>
+          <a class="edit" href="/de/profile/edit">Edit</a>
+        </div>
+
+        <div class="grp" id="s-book">
+          <div class="grp-h">Bookings</div>
+          <a class="row" href="/de/profile/bookings">
+            <span class="row-main">
+              <span class="row-l">Bookings</span>
+              <span class="row-s">Next appointment on Fri, 7 August at 16:00</span>
+            </span>
+            <span class="row-c"><svg class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" stroke-width="1.9"><path d="m9 18 6-6-6-6"></path></svg></span>
+          </a>
+        </div>
+
+        <div class="grp" id="s-wallet">
+          <div class="grp-h">Wallet</div>
+          <a class="row" href="/de/profile/settings/payment">
+            <span class="row-main">
+              <span class="row-l">Wallet</span>
+              <span class="row-s">Add a card</span>
+            </span>
+            <span class="row-c"><svg class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" stroke-width="1.9"><path d="m9 18 6-6-6-6"></path></svg></span>
+          </a>
+          <a class="row" href="/de/profile/vouchers">
+            <span class="row-main">
+              <span class="row-l">Vouchers</span>
+              <span class="row-s">1 active</span>
+            </span>
+            <span class="row-c"><svg class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" stroke-width="1.9"><path d="m9 18 6-6-6-6"></path></svg></span>
+          </a>
+        </div>
+
+        <div class="grp" id="s-personal">
+          <div class="grp-h">Personal details</div>
+          <a class="row" href="/de/profile/haarprofil">
+            <span class="row-main">
+              <span class="row-l">Hair profile</span>
+              <span class="row-s">Hair type, length, allergies</span>
+            </span>
+            <span class="row-c"><svg class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" stroke-width="1.9"><path d="m9 18 6-6-6-6"></path></svg></span>
+          </a>
+          <a class="row" href="/de/profile/favorites">
+            <span class="row-main">
+              <span class="row-l">Saved</span>
+              <span class="row-s">2 stores</span>
+            </span>
+            <span class="row-c"><svg class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" stroke-width="1.9"><path d="m9 18 6-6-6-6"></path></svg></span>
+          </a>
+          <a class="row" href="/de/profile/stamps">
+            <span class="row-main">
+              <span class="row-l">Stamps</span>
+              <span class="row-s">6 more to your reward</span>
+            </span>
+            <span class="row-e">4/10</span>
+            <span class="row-c"><svg class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" stroke-width="1.9"><path d="m9 18 6-6-6-6"></path></svg></span>
+          </a>
+        </div>
+
+        <div class="grp" id="s-settings">
+          <a class="row" href="/de/profile/settings">
+            <span class="row-main">
+              <span class="row-l">Settings</span>
+              <span class="row-s">Language, notifications, privacy</span>
+            </span>
+            <span class="row-c"><svg class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" stroke-width="1.9"><path d="m9 18 6-6-6-6"></path></svg></span>
+          </a>
+        </div>
+
+        <div class="signout" id="s-out">
+          <button type="button">
+            <svg class="lucide lucide-log-out" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" stroke-width="1.9"><path d="m16 17 5-5-5-5"></path><path d="M21 12H9"></path><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path></svg>
+            Sign out
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="marks" id="marks"></div>
+
+    <div class="rail" id="rail">
+      <div class="note" data-for="s-hdr">
+        <b>Header: no change proposed</b>
+        Back tile 44x44 radius 16, bell 40x40, hamburger 44x44, all left exactly as the live route
+        renders them. S6900 is a tab root with no back control, no hamburger and no page title in
+        that position, so there is no reference number to match any of these against.
+        <span class="src">Source: AIRBNB_SYSTEM_VS_OURS.md section 3, "Not on this list, and why".
+        Open residue: this header owns 2 of the screen's 5 font sizes, the 18px title and the 10px
+        badge, and the one remaining tracking value of -0.18px, so floor 2 stays failed until the
+        header is decided separately. The title reads "Profil" on the live route because
+        Header.tsx:463-491 hardcodes German there on purpose.</span>
+      </div>
+      <div class="note" data-for="s-ident">
+        <b>Identity: eyebrow dropped, Edit added</b>
+        The 12px "Account" eyebrow is gone, it restated the destination the header title already
+        names, and the name stays 28px/700, the screen's one display anchor. Edit is a small blue
+        text link into the editor that already exists.
+        <span class="src">Source: change-list item 3, six sizes down to three inside the hub; the
+        anchor is kept per section 5 item 5; link colour per the LOCKFILE link row, small clickable
+        bits only; destination app/[locale]/profile/edit/page.tsx.</span>
+      </div>
+      <div class="note open" data-for="s-book">
+        <b>Rows: no card, no dividers, 56px pitch, no icons</b>
+        Four changes at once. The card is gone per item 1, every hairline is gone per item 2, the
+        pitch is a fixed 56px instead of a content-driven 74.7 to 75.8 per item 6, and the icon tile
+        is gone per item 4 and the owner's "the icon sh remove". The pink heart goes with the icons.
+        <span class="src">Sources: S6900 shows 0 card edges and exactly 1 content rule on the whole
+        screen; deltas 167/168/169/168/168/170px give 56.0pt with zero variance; LOCKFILE.md:552-560
+        already names an account hub as a no-container surface and LOCKFILE.md:571 already
+        prescribes 56px. OPEN, CONFLICT 1: FLOORS LAW 4 wants grouped content on white to sit on
+        the sunken tray, and dropping the card without adding one is the exact shape it forbids.
+        Not decided here. OPEN, copy: the heading and its only row are the same word, "Bookings",
+        because AccountHub.tsx puts the statBookings row inside a statBookings group. That exists
+        today; the stronger heading just makes it loud. The reference has no headings, so it has no
+        answer for it, and renaming either one is a copy call I am not making unprompted.</span>
+      </div>
+      <div class="note" data-for="s-wallet">
+        <b>Label 16px/400, tracking normal</b>
+        The label moves 15.5 to 16px and, the bigger change, 500 to 400. Tracking goes to normal
+        everywhere inside the hub, down from four values in one viewport.
+        <span class="src">Sources: item 10 and item 5. Two rulers that share no assumption agree:
+        the weight-invariant cap route gives 15.96pt and the ink word-width route gives 15.97pt at
+        weight 400, versus 15.62 at 500 and 15.45 at 600, and 16 is a named tier in Airbnb's live
+        scale. Item 7 covers tracking: every Airbnb typography letter-spacing token returns normal.
+        This is the correction that kills the "row label 16px to 21px" instruction still sitting in
+        airbnb--profile-1to1-diff.md:137, which would ship the label 31% oversized.</span>
+      </div>
+      <div class="note open" data-for="s-personal">
+        <b>Group headings do the separating</b>
+        16px/700 ink over 16px/400 rows, with the reference's own 33px group-boundary gap above.
+        That is a full weight step plus a colour step, which is what a deletion has to keep.
+        <span class="src">Owner 2026-08-03, "we need seperation like category text like wallet etc".
+        Airbnb has no group headings at all, so this axis has no reference number and is a Solen
+        addition by instruction. The 33px comes from the reference's measured boundary, 266px at a
+        boundary versus 168px in-group at 3x, so 98px extra, which is 32.7pt. OPEN: item 2's literal
+        target was 1 rule per group boundary; the heading replaces it here because the owner asked
+        for the heading to do the separating, and drawing both is the doubled chrome he named.</span>
+      </div>
+      <div class="note open" data-for="s-settings">
+        <b>Sublines kept, against the reference</b>
+        No row on S6900, S6901 or S6902 carries a subline. Ours carry live values on 7 of 7. They
+        stay.
+        <span class="src">CONFLICT 2. Airbnb's account rows are pure navigation and have nothing to
+        put there; deleting ours to match a screen with no equivalent data would be copying a
+        constraint as if it were a choice, and FLOORS LAW 3 bans omission for minimalism. The cost
+        is real and named: the subline is why the 56px row has 9px of vertical padding instead of
+        the reference's 18px. This is the one item where the source document recommends the
+        reference should lose.</span>
+      </div>
+      <div class="note open" data-for="s-out">
+        <b>Still open, and not decided by this mockup</b>
+        Page margin is shown at the reference's 24px, but LOCKFILE says 26 and we ship 20, which is
+        CONFLICT 5. Divider hex #EBEBEB versus our locked #E4E4E7 is moot here because no divider is
+        drawn, CONFLICT 3. Their ink #222222 versus our #0A0A0A is palette-wide and untouched,
+        CONFLICT 4. Tracking has no locked rule at all in our system, which is itself the finding,
+        CONFLICT 6. And the last thing we copied from Airbnb, a pill border, was rejected by name on
+        2026-07-31, CONFLICT 7.
+        <span class="src">One consequence the source document did not name: with the label at 16px,
+        the 28px anchor is 1.75x body, under the 1.8x EMPHASIS BUDGET b floor it cleared at 1.81x
+        while the label was 15.5px. Either the anchor moves to 29 or 30px, or the floor is read
+        against the 13px subline at 2.15x. Flagged, not picked.</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+var bCur = document.getElementById('bCur'), bProp = document.getElementById('bProp');
+function show(isCurrent){
+  document.getElementById('paneCur').classList.toggle('on', isCurrent);
+  document.getElementById('paneProp').classList.toggle('on', !isCurrent);
+  bCur.setAttribute('aria-pressed', String(isCurrent));
+  bProp.setAttribute('aria-pressed', String(!isCurrent));
+  if (!isCurrent) placeNotes();
+}
+bCur.addEventListener('click', function(){ show(true); });
+bProp.addEventListener('click', function(){ show(false); });
+
+// Number every note, drop a matching numeral in the left gutter at its section's own y, then
+// align the note itself as close to that y as it fits, pushing down only on overlap. Offsets are
+// measured against the rail's own box, not the canvas, because the rail is positioned against the
+// stage and the stage carries 24px of top padding; measuring against the canvas put every note
+// 24px high on the first build. Runs only while the rail is absolutely positioned, i.e. on wide
+// viewports; below 1000px the CSS stacks the notes under the canvas and the gutter is hidden.
+function placeNotes(){
+  var rail = document.getElementById('rail');
+  var marks = document.getElementById('marks');
+  var notes = rail ? rail.querySelectorAll('.note') : [];
+  for (var k = 0; k < notes.length; k++){
+    if (!notes[k].querySelector('.n')){
+      var chip = document.createElement('i');
+      chip.className = 'n';
+      chip.textContent = String(k + 1);
+      notes[k].querySelector('b').insertBefore(chip, notes[k].querySelector('b').firstChild);
+    }
+  }
+  if (!rail || getComputedStyle(rail).position !== 'absolute') return;
+  marks.innerHTML = '';
+  var railTop = rail.getBoundingClientRect().top;
+  var bottom = 0;
+  for (var i = 0; i < notes.length; i++){
+    var target = document.getElementById(notes[i].getAttribute('data-for'));
+    if (!target) continue;
+    var at = target.getBoundingClientRect().top - railTop;
+    var mark = document.createElement('span');
+    mark.className = 'mark';
+    mark.textContent = String(i + 1);
+    mark.style.top = at + 'px';
+    marks.appendChild(mark);
+    var want = at;
+    if (want < bottom) want = bottom;
+    notes[i].style.top = want + 'px';
+    bottom = want + notes[i].offsetHeight + 12;
+  }
+}
+window.addEventListener('resize', placeNotes);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(placeNotes);
+</script>
+</body>
+</html>

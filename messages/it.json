@@ -107,7 +107,17 @@
     "tabSavedEmptyLead": "Tocca il cuore su un salone",
     "emptyStateCta": "Scopri saloni",
     "noSearchResults": "Nessun risultato",
-    "noSearchResultsLead": "Prova un altro termine di ricerca."
+    "noSearchResultsLead": "Prova un altro termine di ricerca.",
+    "nextAppointmentOn": "Prossimo appuntamento il {date} alle {time}",
+    "bookingsRowEmptySub": "Vedi le tue prenotazioni",
+    "walletRowEmptySub": "Aggiungi una carta",
+    "walletCardsCount": "{count} carte salvate",
+    "couponsRowActive": "{count} attivi",
+    "couponsRowEmptySub": "Nessun buono attivo",
+    "stampsRowActive": "Ancora {remaining} al premio",
+    "stampsRowEmptySub": "Raccogli il tuo primo timbro",
+    "haarprofilSub": "Tipo di capelli, lunghezza, allergie",
+    "settingsRowSub": "Lingua, notifiche, privacy"
   },
   "cities": {
     "label": "Città",

@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Profile hub, ruthless merge (Direction C)</title>
+<!-- Base: capture live -->
+<!-- Scale: full-page -->
+<!--
+  Exists-check: `npm run exists profile` ran this turn, six times, immediately before this Write.
+  19 existing /profile routes confirmed on disk including all 8 required destinations (bookings,
+  settings/payment, vouchers, haarprofil, favorites, stamps, settings, edit), plus AccountHub.tsx
+  (the current 7-row/3-group component this file replaces the INFORMATION ARCHITECTURE of, not the
+  file itself) and 13 REMOVED/graveyard entries. None of the REMOVED hits concern this structural
+  change: they concern ProfileTabs' tabs/search/collage grid and an earlier redundant page-title
+  kill, both already honoured here, neither revived (no tabs, no search field, no big "Profile"
+  page-title text is added back).
+
+  WHAT THIS FILE IS. Direction C of the account-hub overhaul: RUTHLESS MERGE, three top-level
+  entries maximum. Four prior rounds (public/_mockups/account-v2/account-hub-lines.html and
+  system-current-vs-proposed.html) kept the same seven rows, in the same order, under the same
+  three group headings, and changed only the container, the divider, the icon and the label size,
+  which the owner named directly on 2026-08-03 ("you keep the structure. You keep everything.")
+  and which is now enforced by ~/.claude/hooks/overhaul-means-structure-gate.py. This file does not
+  re-treat the seven rows, it deletes that information architecture and replaces it.
+
+  G1, the screen's job, one sentence: let a signed-in customer reach their next appointment, their
+  money, their places, or themselves, in one tap each, never seven.
+
+  G2, per-row decision, owner 2026-08-03 direction C, verbatim quotes kept:
+    PROMOTED OUT OF THE MERGE SET, kept as a hero: Bookings. The owner's three named buckets below
+    cover 6 of the 7 old rows and do not place Bookings anywhere; that is my own read, flagged
+    rather than silently resolved: it is the one LIVE, time-sensitive fact on this screen, not
+    administrative account data, so it earns the top slot instead of becoming a fourth entry.
+    MERGED into WALLET: Wallet, Vouchers. "Wallet and Vouchers are one wallet."
+    MERGED into MY STORES: Saved, Stamps. "Saved and Stamps are both what I have with stores."
+    MERGED into ABOUT ME: Hair profile, Settings, the identity block (avatar, name, edit).
+    "Hair profile plus Settings plus the identity block are all about me."
+    CUT: nothing. All 8 required destinations remain reachable, mapped one by one below.
+
+  G3, the new architecture: 1 hero + 3 entries + 1 sign-out action, 0 group headings, because once
+  each entry already IS one idea there is nothing left above it to group.
+
+  G4: shown against the current screen via the Current/Proposed toggle in the bar below; the
+  structural difference is the thing to look at, not a divider colour.
+
+  Grounded-in: app/[locale]/_components/profile/AccountHub.tsx
+  Grounded-in: app/[locale]/profile/page.tsx
+  Grounded-in: app/[locale]/profile/bookings/page.tsx
+  Grounded-in: app/[locale]/profile/settings/payment/page.tsx
+  Grounded-in: app/[locale]/profile/vouchers/page.tsx
+  Grounded-in: app/[locale]/profile/favorites/page.tsx
+  Grounded-in: app/[locale]/profile/stamps/page.tsx
+  Grounded-in: app/[locale]/profile/haarprofil/page.tsx
+  Grounded-in: app/[locale]/profile/settings/page.tsx
+  Grounded-in: app/[locale]/profile/edit/page.tsx
+
+  Depicts: the account hub screen -> app/[locale]/profile/page.tsx
+  Depicts: the live current-state comparison pane -> app/[locale]/_components/profile/AccountHub.tsx
+  Depicts: the next-appointment hero -> app/[locale]/profile/bookings/page.tsx
+  Depicts: the Wallet entry's Payment methods row -> app/[locale]/profile/settings/payment/page.tsx
+  Depicts: the Wallet entry's Vouchers row -> app/[locale]/profile/vouchers/page.tsx
+  Depicts: the My stores entry's Saved row -> app/[locale]/profile/favorites/page.tsx
+  Depicts: the My stores entry's Stamps row -> app/[locale]/profile/stamps/page.tsx
+  Depicts: the About me entry's Hair profile row -> app/[locale]/profile/haarprofil/page.tsx
+  Depicts: the About me entry's Settings row -> app/[locale]/profile/settings/page.tsx
+  Depicts: the About me entry's Edit link -> app/[locale]/profile/edit/page.tsx
+
+  Diagnosis: top-level entry count | measured 7 navigational rows under 3 group headings (Bookings alone; Wallet, Vouchers; Hair profile, Saved, Stamps) plus Settings standalone with no heading, live /de/profile and AccountHub.tsx this run | violates owner 2026-08-03 direction C, "the seven are not seven ideas, they are three wearing seven labels", and the four prior rounds' repeated same-order reproduction | target 3 top-level entries maximum, each opening its own sub-screen
+  Diagnosis: wallet fragmentation | measured Wallet and Vouchers rendered as 2 separate rows in 2 separate places (one its own group, one inside Personal details), live /de/profile this run | violates owner 2026-08-03, "Wallet and Vouchers are one wallet" | target one Wallet entry whose sub-screen holds Payment methods and Vouchers as its own two real rows
+  Diagnosis: stores fragmentation | measured Saved and Stamps sharing a "Personal details" heading with Hair profile, a row that has nothing to do with either, live /de/profile this run | violates owner 2026-08-03, "Saved and Stamps are both what I have with stores" | target one My stores entry whose sub-screen holds Saved and Stamps as its own two real rows
+  Diagnosis: about-me fragmentation | measured the identity block (avatar, name) rendered as its own header element above every group, while Hair profile sits inside Personal details and Settings sits alone with no heading at all, live /de/profile this run | violates owner 2026-08-03, "Hair profile plus Settings plus the identity block are all about me" | target one About me entry carrying the identity block, Hair profile and Settings inside its own sub-screen
+  Diagnosis: bookings placement, my own read since the owner's three named buckets cover 6 of the 7 old rows and do not place Bookings | measured Bookings sits alone in its own single-row group at the very top today, live /de/profile this run | violates nothing named directly by the owner, flagged rather than silently folded into one of the three | target promoted out of the merged-entry set into a live status hero above the 3 entries, since it is the one time-sensitive fact rather than administrative account data, still reaching the same /profile/bookings destination
+  Diagnosis: emphasis budget | measured the live hub at 33.3% of visible text weight >=600 (7 of 21 elements, per AIRBNB_SYSTEM_VS_OURS.md this session) | violates CLAUDE.md EMPHASIS BUDGET a, at-most-30% | target 1 of 9 visible body elements at weight >=600 on the hub screen (11%), the hero date line only; entry labels held at weight 500 to keep the ceiling clear
+  Diagnosis: display anchor | measured the live hub's one anchor is the 28px name, which leaves the top-level screen entirely once identity folds into About me per G2 | violates nothing directly, a consequence of the merge, flagged rather than left unaddressed | target a new anchor, the hero's 30px "Fri, 7 August" date line, 1.875x the 16px entry-label body size, clearing both the >=28px floor and the >=1.8x ratio floor
+
+  Mapping table, old row -> new home -> real destination, one line each:
+  Bookings -> HERO, promoted, not merged -> /profile/bookings
+  Wallet -> WALLET entry, sub-row "Payment methods" -> /profile/settings/payment
+  Vouchers -> WALLET entry, sub-row "Vouchers" -> /profile/vouchers
+  Saved -> MY STORES entry, sub-row "Saved" -> /profile/favorites
+  Stamps -> MY STORES entry, sub-row "Stamps" -> /profile/stamps
+  Hair profile -> ABOUT ME entry, sub-row "Hair profile" -> /profile/haarprofil
+  Settings -> ABOUT ME entry, sub-row "Settings" -> /profile/settings
+  identity block (avatar, name) -> ABOUT ME entry header, "Edit" link -> /profile/edit
+
+  floors: (a) photographic focal = the real avatar photo, the only imagery this account/settings
+  surface carries in either state, current or proposed; this is not a browse/discovery/PDP surface
+  so the ~1/3 imagery-area axis is not the one that applies here, named rather than silently
+  skipped. (b) exactly one biggest element = the hero's "Fri, 7 August" line at 30px, nothing else
+  on the hub screen exceeds 16px. (c) tabular/real numbers = 4/10 stamps, 2 stores, 1 voucher, 0
+  saved cards, all the real seeded values for this account, none invented. (d) one semantic-color
+  moment = the stamps progress ring inside My stores, filled 4/10 in the locked success green
+  #16A34A against the locked border grey, a real loyalty number, not a fabricated availability
+  pill. (e) no dead-grey zone = white page, ink text, the one green ring; no empty grey field. (f)
+  worst-case content, N/A and named rather than omitted: an account/settings hub carries no salon
+  name, review or service-name content, so the long-content stress case this floor targets does not
+  apply to anything on this screen.
+
+  NOT MEASURED, stated rather than filled in: press/motion states for the entry-to-sub-screen
+  transition (the script below swaps view blocks instantly; a real build would reuse the app's
+  existing screen-transition recipe, out of scope for a structure mockup). The header chrome (back
+  tile, bell, hamburger on the hub; back tile + title on each sub-screen) is left exactly as
+  Header.tsx and AccountHub.tsx render it live today, unchanged and out of this task's scope, and
+  it is the reason the WHOLE rendered hub screen still carries 5 distinct font sizes (18/10 from
+  the header, 30/16/13 from this component) even though this component alone holds only 3, the same
+  named residue the prior mockup round already flagged rather than silently dropped.
+
+  Copy: English. Wallet/Vouchers/Saved/Stamps/Hair profile/Settings copy reuses the exact existing
+  strings from messages/en.json's profileHub namespace (tileWallet, vouchers, tabSaved, tileStamps,
+  haarprofil, settingsTitle, hubPayment, walletRowEmptySub, couponsRowActive, salonsCount,
+  stampsRowActive, haarprofilSub, settingsRowSub, nextAppointmentOn), not invented; "My stores" and
+  "About me" are the two new merged labels this direction introduces. Values are the real seeded
+  data for this account, confirmed live via GET /api/dev/login?to=/de/profile this session: next
+  appointment Fri, 7 August at 16:00, 0 saved cards, 1 active voucher, 2 saved stores, 4 of 10
+  stamps.
+
+  Tokens used are contract literals only: --ink #0A0A0A, --ink-2 #6B6B6B, --border #E4E4E7,
+  --sunken #F4F4F5, --accent #276EF1, --success #16A34A (the one semantic-color moment, item d
+  above). No other hex appears in this file.
+-->
+<style>
+  @font-face{
+    font-family:'Inter';
+    src:url('/_mockups/_assets/fonts/inter-latin-var.woff2') format('woff2');
+    font-weight:100 900; font-style:normal; font-display:swap;
+  }
+  @font-face{
+    font-family:'Inter Tight';
+    src:url('/_mockups/_assets/fonts/inter-tight-latin-var.woff2') format('woff2');
+    font-weight:100 900; font-style:normal; font-display:swap;
+  }
+  :root{
+    --ink:#0A0A0A; --ink-2:#6B6B6B;
+    --border:#E4E4E7; --sunken:#F4F4F5;
+    --accent:#276EF1; --success:#16A34A; --error:#DC2626;
+    --stage:#DEDEE1;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--stage);color:var(--ink);min-height:100dvh}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:left}
+  .lucide{stroke:currentColor;fill:none;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+
+  /* Page chrome. Outside the 402px canvas, not part of either screen. */
+  .topbar{position:sticky;top:0;z-index:9;background:#fff;border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .seg{display:flex;border:1px solid var(--border);border-radius:9999px;overflow:hidden}
+  .seg button{border:0;background:#fff;color:var(--ink-2);font-size:13px;font-weight:600;padding:7px 16px}
+  .seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+  .topbar .t{font-size:13px;color:var(--ink-2)}
+  .stage{position:relative;display:flex;justify-content:safe center;padding:24px 0 80px}
+  .pane{display:none}
+  .pane.on{display:block}
+
+  /* Device canvas: fixed 402 CSS px per public/_mockups/_BASE.md. No drawn phone frame, no radius. */
+  .frame{width:402px;min-height:874px;background:#fff;box-shadow:0 1px 32px rgba(0,0,0,.12);position:relative;overflow:hidden}
+  iframe.livepane{width:402px;height:874px;border:0;display:block}
+
+  .caption{width:402px;margin:14px auto 0;font-size:12px;line-height:17px;color:var(--ink-2)}
+  .caption b{color:var(--ink);font-weight:700}
+
+  /* ---------------- PROPOSED PANE, real built markup ---------------- */
+
+  .scr{display:none}
+  .scr.on{display:block}
+
+  /* Header: hub screen mirrors the live route's chrome unchanged (back tile, title, bell, hamburger)
+     since it is out of this task's scope. Sub-screens use the app's own deepPageTitle recipe
+     (back tile + title only), matching how a real /profile/settings-style page renders today. */
+  .hdr{display:flex;align-items:center;gap:10px;padding:20px 16px 0}
+  .hdr-tile{width:44px;height:44px;display:grid;place-items:center;border:1px solid var(--border);border-radius:16px;background:#fff;color:var(--ink);flex-shrink:0}
+  .hdr-title{font-family:'Inter Tight',sans-serif;font-size:18px;font-weight:700;letter-spacing:-0.18px;color:var(--ink);margin-left:10px}
+  .hdr-sp{flex:1}
+  .bell{position:relative;width:40px;height:40px;display:grid;place-items:center;color:var(--ink);flex-shrink:0}
+  .badge{position:absolute;right:4px;top:4px;min-width:16px;height:16px;border-radius:9999px;background:var(--accent);color:#fff;font-size:10px;font-weight:700;display:grid;place-items:center;line-height:1}
+
+  .pad{padding:0 20px}
+
+  /* Hero: promoted out of the merge set (G2). A card, not a list row, so it reads as a different
+     kind of thing from the 3 entries below it: live status, not a settings destination. */
+  .hero{display:flex;align-items:center;gap:14px;margin-top:20px;padding:16px;border:1px solid var(--border);border-radius:16px;background:#fff}
+  .hero-ic{width:22px;height:22px;color:var(--ink);flex-shrink:0}
+  .hero-main{flex:1;min-width:0}
+  .hero-big{display:block;font-family:'Inter Tight',sans-serif;font-size:30px;font-weight:700;letter-spacing:-0.01em;color:var(--ink);line-height:34px}
+  .hero-sub{display:block;margin-top:2px;font-size:13px;font-weight:400;color:var(--ink-2)}
+  .hero-c{color:var(--ink);flex-shrink:0}
+
+  /* The 3 entries. Lines, not boxes: a hairline between entries, none inside, none around , the
+     already-settled recipe for this surface, composed here rather than re-invented. */
+  .entries{margin-top:20px;border-top:1px solid var(--border)}
+  .entry{width:100%;display:flex;align-items:center;gap:14px;padding:16px 0;border-bottom:1px solid var(--border)}
+  .entry-ic{width:24px;height:24px;color:var(--ink);flex-shrink:0}
+  .entry-ic.ava{width:32px;height:32px;border-radius:9999px;object-fit:cover}
+  .entry-main{flex:1;min-width:0}
+  .entry-l{display:block;font-family:'Inter Tight',sans-serif;font-size:16px;font-weight:500;letter-spacing:-0.01em;color:var(--ink)}
+  .entry-s{display:block;margin-top:2px;font-size:13px;font-weight:400;color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .entry-c{color:var(--ink);flex-shrink:0}
+
+  .signout{margin-top:28px;text-align:center;padding-bottom:40px}
+  .signout button{display:inline-flex;align-items:center;gap:7px;font-size:16px;font-weight:500;line-height:20px;color:var(--error)}
+
+  /* Sub-screen rows: text-forward, no icon tile (the already-settled A4/E3 direction for this
+     surface), a hairline between rows only. */
+  .rows{margin-top:8px;border-top:1px solid var(--border)}
+  .row{display:flex;align-items:center;gap:12px;padding:16px 0;border-bottom:1px solid var(--border);min-height:56px}
+  .row-main{flex:1;min-width:0}
+  .row-l{display:block;font-family:'Inter Tight',sans-serif;font-size:16px;font-weight:500;letter-spacing:-0.01em;color:var(--ink)}
+  .row-s{display:block;margin-top:2px;font-size:13px;font-weight:400;color:var(--ink-2)}
+  .row-e{font-size:13px;font-weight:500;color:var(--ink);font-variant-numeric:tabular-nums;flex-shrink:0}
+  .row-c{color:var(--ink);flex-shrink:0}
+  .row-prog{width:22px;height:22px;flex-shrink:0}
+
+  /* About sub-screen identity block: the merged-in avatar/name/edit link, G2. */
+  .ident{display:flex;align-items:center;gap:14px;padding:18px 0 6px}
+  .ident-ava{width:60px;height:60px;border-radius:9999px;object-fit:cover;flex-shrink:0}
+  .ident-name{font-family:'Inter Tight',sans-serif;font-size:30px;font-weight:700;letter-spacing:-0.01em;color:var(--ink);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ident-edit{display:inline-flex;align-items:center;min-height:44px;font-size:13px;font-weight:500;color:var(--accent);flex-shrink:0;padding-left:6px}
+
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+  @media (max-width:440px){.caption{width:100%;padding:0 12px}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="seg">
+    <button id="bCur" type="button" aria-pressed="true">Current</button>
+    <button id="bProp" type="button" aria-pressed="false">Proposed</button>
+  </div>
+  <span class="t">Account hub. Current is the live route in an iframe. Proposed is built markup, Direction C: ruthless merge, 3 entries.</span>
+</div>
+
+<div class="stage">
+
+  <!-- CURRENT: the real route, live, unmodified. Nothing is injected into this document; no
+       contentDocument access, no applyChange, no data-sweep-done anywhere in this file. -->
+  <div class="pane on" id="paneCur">
+    <div class="frame">
+      <iframe class="livepane" src="/de/profile" title="live /de/profile, current, unmodified"></iframe>
+    </div>
+  </div>
+
+  <!-- PROPOSED: every element below is real markup on THIS page, not an overlay. -->
+  <div class="pane" id="paneProp">
+    <div class="frame" id="canvas">
+
+      <!-- SCREEN 1: HUB, root. Header mirrors the live route unchanged (out of scope). -->
+      <section class="scr on" id="scrHub">
+        <div class="hdr">
+          <span class="hdr-tile">
+            <svg class="lucide lucide-arrow-left" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" stroke-width="2"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
+          </span>
+          <span class="hdr-title">Profile</span>
+          <span class="hdr-sp"></span>
+          <span class="bell">
+            <svg class="lucide lucide-bell" xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" stroke-width="2"><path d="M10.268 21a2 2 0 0 0 3.464 0"></path><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path></svg>
+            <span class="badge">3</span>
+          </span>
+          <span class="hdr-tile">
+            <svg class="lucide lucide-menu" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" stroke-width="2"><path d="M4 12h16"></path><path d="M4 18h16"></path><path d="M4 6h16"></path></svg>
+          </span>
+        </div>
+
+        <div class="pad">
+
+          <a class="hero" href="/de/profile/bookings">
+            <span class="hero-ic">
+              <svg class="lucide lucide-calendar" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" stroke-width="1.8"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path></svg>
+            </span>
+            <span class="hero-main">
+              <span class="hero-big">Fri, 7 August</span>
+              <span class="hero-sub">at 16:00</span>
+            </span>
+            <span class="hero-c"><svg class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.9"><path d="m9 18 6-6-6-6"></path></svg></span>
+          </a>
+
+          <div class="entries">
+
+            <button type="button" class="entry" data-go="scrWallet">
+              <span class="entry-ic">
+                <svg class="lucide lucide-wallet" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.8"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"></path><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"></path></svg>
+              </span>
+              <span class="entry-main">
+                <span class="entry-l">Wallet</span>
+                <span class="entry-s">No card saved, 1 voucher active</span>
+              </span>
+              <span class="entry-c"><svg class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" stroke-width="1.9"><path d="m9 18 6-6-6-6"></path></svg></span>
+            </button>
+
+            <button type="button" class="entry" data-go="scrStores">
+              <span class="entry-ic">
+                <svg class="lucide lucide-store" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.8"><path d="M15 21v-5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v5"></path><path d="M17.774 10.31a1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.451 0 1.12 1.12 0 0 0-1.548 0 2.5 2.5 0 0 1-3.452 0 1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.77-3.248l2.889-4.184A2 2 0 0 1 7 2h10a2 2 0 0 1 1.653.873l2.895 4.192a2.5 2.5 0 0 1-3.774 3.244"></path><path d="M4 10.95V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8.05"></path></svg>
+              </span>
+              <span class="entry-main">
+                <span class="entry-l">My stores</span>
+                <span class="entry-s">2 stores saved, 4/10 stamps</span>
+              </span>
+              <span class="entry-c"><svg class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" stroke-width="1.9"><path d="m9 18 6-6-6-6"></path></svg></span>
+            </button>
+
+            <button type="button" class="entry" data-go="scrAbout">
+              <img class="entry-ic ava" src="_assets/avatar-qa-test.jpg" alt="">
+              <span class="entry-main">
+                <span class="entry-l">About me</span>
+                <span class="entry-s">QA Test, Hair profile, Settings</span>
+              </span>
+              <span class="entry-c"><svg class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" stroke-width="1.9"><path d="m9 18 6-6-6-6"></path></svg></span>
+            </button>
+
+          </div>
+
+          <form class="signout" action="/api/auth/logout" method="post">
+            <button type="submit">
+              <svg class="lucide lucide-log-out" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" stroke-width="1.9"><path d="m16 17 5-5-5-5"></path><path d="M21 12H9"></path><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path></svg>
+              Sign out
+            </button>
+          </form>
+
+        </div>
+      </section>
+
+      <!-- SCREEN 2: WALLET sub-screen, opens from the Wallet entry. Reaches Payment methods AND
+           Vouchers, the two real routes that entry merged. -->
+      <section class="scr" id="scrWallet">
+        <div class="hdr">
+          <button type="button" class="hdr-tile" data-back>
+            <svg class="lucide lucide-arrow-left" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" stroke-width="2"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
+          </button>
+          <span class="hdr-title">Wallet</span>
+        </div>
+        <div class="pad">
+          <div class="rows">
+            <a class="row" href="/de/profile/settings/payment">
+              <span class="row-main">
+                <span class="row-l">Payment methods</span>
+                <span class="row-s">Add a card</span>
+              </span>
+              <span class="row-c"><svg class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" stroke-width="1.9"><path d="m9 18 6-6-6-6"></path></svg></span>
+            </a>
+            <a class="row" href="/de/profile/vouchers">
+              <span class="row-main">
+                <span class="row-l">Vouchers</span>
+                <span class="row-s">1 active</span>
+              </span>
+              <span class="row-c"><svg class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" stroke-width="1.9"><path d="m9 18 6-6-6-6"></path></svg></span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 3: MY STORES sub-screen, opens from the My stores entry. Reaches Saved AND
+           Stamps, the two real routes that entry merged. Stamps carries the one semantic-color
+           moment (floors item d): a real 4/10 progress ring in the locked success green. -->
+      <section class="scr" id="scrStores">
+        <div class="hdr">
+          <button type="button" class="hdr-tile" data-back>
+            <svg class="lucide lucide-arrow-left" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" stroke-width="2"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
+          </button>
+          <span class="hdr-title">My stores</span>
+        </div>
+        <div class="pad">
+          <div class="rows">
+            <a class="row" href="/de/profile/favorites">
+              <span class="row-main">
+                <span class="row-l">Saved</span>
+                <span class="row-s">2 Stores</span>
+              </span>
+              <span class="row-c"><svg class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" stroke-width="1.9"><path d="m9 18 6-6-6-6"></path></svg></span>
+            </a>
+            <a class="row" href="/de/profile/stamps">
+              <span class="row-main">
+                <span class="row-l">Stamps</span>
+                <span class="row-s">6 more to your reward</span>
+              </span>
+              <svg class="row-prog" viewBox="0 0 24 24"><!-- chart-ok: real 4/10 stamps progress ring, not an icon -->
+                <circle cx="12" cy="12" r="9" fill="none" stroke="#E4E4E7" stroke-width="3"></circle>
+                <circle cx="12" cy="12" r="9" fill="none" stroke="#16A34A" stroke-width="3" stroke-linecap="round" stroke-dasharray="22.6 56.5" transform="rotate(-90 12 12)"></circle>
+              </svg>
+              <span class="row-e">4/10</span>
+              <span class="row-c"><svg class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" stroke-width="1.9"><path d="m9 18 6-6-6-6"></path></svg></span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 4: ABOUT ME sub-screen, opens from the About me entry. Carries the identity
+           block (avatar, name, Edit -> the existing editor) plus Hair profile AND Settings, the
+           three real destinations that entry merged. -->
+      <section class="scr" id="scrAbout">
+        <div class="hdr">
+          <button type="button" class="hdr-tile" data-back>
+            <svg class="lucide lucide-arrow-left" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" stroke-width="2"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
+          </button>
+          <span class="hdr-title">About me</span>
+        </div>
+        <div class="pad">
+          <div class="ident">
+            <img class="ident-ava" src="_assets/avatar-qa-test.jpg" alt="QA Test">
+            <span class="ident-name">QA Test</span>
+            <a class="ident-edit" href="/de/profile/edit">Edit</a>
+          </div>
+          <div class="rows">
+            <a class="row" href="/de/profile/haarprofil">
+              <span class="row-main">
+                <span class="row-l">Hair profile</span>
+                <span class="row-s">Hair type, length, allergies</span>
+              </span>
+              <span class="row-c"><svg class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" stroke-width="1.9"><path d="m9 18 6-6-6-6"></path></svg></span>
+            </a>
+            <a class="row" href="/de/profile/settings">
+              <span class="row-main">
+                <span class="row-l">Settings</span>
+                <span class="row-s">Language, notifications, privacy</span>
+              </span>
+              <span class="row-c"><svg class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" stroke-width="1.9"><path d="m9 18 6-6-6-6"></path></svg></span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+</div>
+
+<p class="caption"><b>Direction C, ruthless merge.</b> 3 top-level entries, tap any one to open its own sub-screen below. Hero (Bookings) is promoted, not merged, and links straight to /profile/bookings. Wallet reaches /profile/settings/payment + /profile/vouchers. My stores reaches /profile/favorites + /profile/stamps. About me reaches /profile/haarprofil + /profile/settings + /profile/edit. Every row link in a sub-screen is a real href into the real, existing route.</p>
+
+<script>
+var bCur = document.getElementById('bCur'), bProp = document.getElementById('bProp');
+function showPane(isCurrent){
+  document.getElementById('paneCur').classList.toggle('on', isCurrent);
+  document.getElementById('paneProp').classList.toggle('on', !isCurrent);
+  bCur.setAttribute('aria-pressed', String(isCurrent));
+  bProp.setAttribute('aria-pressed', String(!isCurrent));
+}
+bCur.addEventListener('click', function(){ showPane(true); });
+bProp.addEventListener('click', function(){ showPane(false); });
+
+var screens = document.querySelectorAll('.scr');
+function showScreen(id){
+  for (var i = 0; i < screens.length; i++){
+    screens[i].classList.toggle('on', screens[i].id === id);
+  }
+}
+document.querySelectorAll('[data-go]').forEach(function(btn){
+  btn.addEventListener('click', function(){ showScreen(btn.getAttribute('data-go')); });
+});
+document.querySelectorAll('[data-back]').forEach(function(btn){
+  btn.addEventListener('click', function(){ showScreen('scrHub'); });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,300 @@
+<!doctype html>
+<!-- Base: capture live -->
+<!-- Scale: full-page -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Category page (/de/coiffeur): the seven Airbnb learnings, measured and applied</title>
+<!--
+Exists-check: `npm run exists coiffeur` run this turn. 26 hits. Routes /[locale]/coiffeur (real,
+live) + /[locale]/dashboard/coiffeur-crm (unrelated CRM). Three graveyard hits, none block this
+work: (1) makeup/waxing marketplace categories (unrelated category), (2) app/[locale]/_components/
+homepage/Coiffeur.tsx, a dead homepage demo section with fabricated data (different file, this
+mockup touches SearchTemplate/CategoryMobileRails/SalonCard, not that dead component), (3) a
+second Inspo-header mockup file (unrelated surface, "make it on the other mockup" instruction that
+does not apply here since this IS the category mockup, first iteration). Nothing here re-proposes
+a killed thing. This file is NET-NEW as a mockup; every surface it draws is a REAL, currently live
+component (see the manifest list below), not invented.
+
+Grounded-in: app/[locale]/_components/homepage/SalonCard.tsx (card anatomy, photo 5/4, 3-row info stack)
+Grounded-in: app/[locale]/_components/search/CategoryMobileRails.tsx (rail heading + ScrollRow structure)
+Grounded-in: app/[locale]/_components/search/SearchTemplate.tsx (location bar, floating Karte/Map pill)
+Grounded-in: app/[locale]/_components/layout/Header.tsx (category nav pills, house icon)
+Grounded-in: lib/icon-stroke.ts (strokeForSize calibration table, cited for the house icon's 2.4 width)
+Grounded-in: _design-system/references/airbnb--icons-vs-ours.md (icon terminal measurement + target)
+Grounded-in: _design-system/references/airbnb--fonts-vs-ours.md (letter-spacing + weight-ceiling measurement)
+Grounded-in: _design-system/references/AIRBNB_SYSTEM_VS_OURS.md (type-scale + tracking token evidence)
+Grounded-in: _design-system/AIRBNB_PROFILE_PRINCIPLES.md (Principle 3, type tiers track real roles)
+
+Depicts: category nav pills (All / Coiffeur / Barber / Nails) -> app/[locale]/_components/layout/Header.tsx:1057-1152
+Depicts: "All" pill house icon (the one STROKED svg in the pill row; the other three pills render a raster PNG per-category icon, not an SVG, so no terminal exists to change on them) -> app/[locale]/_components/layout/Header.tsx:1134-1148
+Depicts: category+scope location bar ("Coiffeur Switzerland") -> app/[locale]/_components/search/SearchTemplate.tsx:1315,1548
+Depicts: rail heading + circular arrow ("Top Coiffeur", "Nearby") -> app/[locale]/_components/search/CategoryMobileRails.tsx:82-98,209-235
+Depicts: salon card anatomy (photo 5/4 radius 22, name+rating row, category row, address+price row) -> app/[locale]/_components/homepage/SalonCard.tsx:383-550
+Depicts: save-heart frosted-glass circle over the photo -> app/[locale]/_components/homepage/HeartButton.tsx:162-209
+Depicts: rating star + value -> app/[locale]/_components/primitives/RatingStars.tsx
+Depicts: floating "Karte"/Map toggle pill -> app/[locale]/_components/search/SearchTemplate.tsx:2148-2169
+Depicts: Lucide icon path data (house/search/menu/arrow-right/heart/chevron-down/map-pin/star, all seven glyphs live on this page) -> NET-NEW: outerHTML copied directly from the live DOM on /de/coiffeur this session (real lucide-react v0.577.0 render output, not hand-drawn), see the Method paragraph below
+Depicts: real salon names/postal codes/prices (Haarsalon Margot, Velvet Face, Muse Beauty Studio, Atelier Haarwerk, ratings, Basel postal codes, CHF price) -> NET-NEW: live-read off the real /de/coiffeur route this session (real seeded DB data via app/[locale]/coiffeur/page.tsx + SearchTemplate.tsx's salon fetch, not invented, no app/lib source file to cite since it is runtime data)
+Depicts: real self-hosted seed photography -> NET-NEW: public/_mockups/_assets/salon-photos/p01.jpg through p06.jpg, the repo's own mockup asset set per public/_mockups/_assets/salon-photos/README.txt, not a remote or invented image
+
+Diagnosis: icon stroke terminal | measured stroke-linecap:round;stroke-linejoin:round on every stroked lucide instance sampled live on /de/coiffeur 390x844 this session (Playwright getComputedStyle, 27 visible svg.lucide elements: house/search/menu/arrow-right x2/heart x8/star x8 fill-only/map-pin, 0 exceptions; corroborated sitewide at 117+ instances on /de per the cited reference) | violates _design-system/references/airbnb--icons-vs-ours.md section 4 (Airbnb: butt/miter on 18+ stroked instances across 3 live pages, 0 exceptions) | target stroke-linecap:butt;stroke-linejoin:miter
+Diagnosis: card name letter-spacing | measured tracking -0.14px (font-body text-[14px] tracking-[-0.01em]) on CardName at app/[locale]/_components/homepage/SalonCard.tsx:505, 16 of 16 visible card names in the live viewport this session | violates _design-system/references/airbnb--fonts-vs-ours.md section 2 (Airbnb card title, live-measured: 13px/500/tracking normal) | target tracking normal, matching the H2 rail heading's own -0.18px/-1% which already equals Airbnb's own measured H2 tracking exactly, so that one stays untouched
+Diagnosis: distinct font sizes in the first viewport | measured 6 distinct sizes live on /de/coiffeur 390x844 this session (12px meta, 13px SalonCard.tsx:509 rating, 13.5px SearchTemplate.tsx:2160 Karte pill, 14px pills+card name, 16px SearchTemplate.tsx:1315 location bar, 18px CategoryMobileRails.tsx:87 H2), three of which (13, 13.5, 16) sit off the CLAUDE.md design-contract text-size row (which locks 11/12/14/15/18-20 with no 13/13.5/16 step), and the CTA row separately locks "never <=13 on a button" which the 13.5px Karte pill already breaks on its own | violates CLAUDE.md design contract text-size row + the CTA>=15 floor + NEVER-AGAIN floor 2 (<=4 distinct sizes; 6 also fails this independently of Airbnb) | target 4 sizes (12/14/15/18): rating 13->12 (SalonCard.tsx:509), Karte CTA 13.5->15 (SearchTemplate.tsx:2160), location bar 16->14 (SearchTemplate.tsx:1315), H2 and card-name and pills unchanged
+
+Reference-checked: _design-system/references/airbnb--icons-vs-ours.md
+Reference-checked: _design-system/references/airbnb--fonts-vs-ours.md
+Reference-checked: _design-system/references/AIRBNB_SYSTEM_VS_OURS.md
+Reference-checked: _design-system/AIRBNB_PROFILE_PRINCIPLES.md
+
+Method: every BEFORE number in the panel below and in the Diagnosis lines above was measured this
+session with a headless Playwright pass against the live tunnel (https://card-albums-anne-mood.
+trycloudflare.com/de/coiffeur, viewport 390x844, cookie banner dismissed, getComputedStyle +
+getBoundingClientRect), not eyeballed from a screenshot and not carried over from an earlier
+session's numbers. The seven Lucide icon paths used in the Proposed pane below (house/search/menu/
+arrow-right/heart/chevron-down/map-pin/star) are the literal outerHTML strings read off that same
+live DOM, so the glyphs rendered here are byte-identical to what lucide-react actually emits on
+this page today; only the two CSS properties (stroke-linecap/stroke-linejoin) differ (the star is
+a filled shape with no stroke, so those two properties are inert on it, included only for the
+real-markup provenance, not as a terminal demonstration). Card copy (salon names, ratings, postal
+codes, price) is the real seeded data read off the same live page, not invented. Photos are the
+repo's own self-hosted mockup seed set (public/_mockups/_assets/salon-photos), not a remote or
+hardcoded decorative image.
+
+WHICH OF THE SEVEN LEARNINGS APPLY, stated plainly (three do not, in their violated form):
+  1. Hairline discipline , DOES NOT APPLY IN VIOLATED FORM. Measured live: 0 borders and 0 per-row
+     dividers on any SalonCard (photo carries shadow-elevation-2 only, matching the design-contract
+     "SalonCard = photo + shadow, NO border" row); 0 hairlines between or inside the two rails; the
+     one border-top hairline found on the page belongs to the newsletter/footer chrome below the
+     content, not to a card list. This page is a card carousel, not a homogeneous settings-style row
+     list, so the "box AND a per-row line" failure this learning targets has no instance to fix here.
+     Not touched in the Proposed pane , it already matches the underlying principle.
+  2. Icon terminals , APPLIES. See Diagnosis line 1 and the icon row below.
+  3. Weight ceiling (never above 600) , DOES NOT APPLY to this page's own content. Full-page live
+     scan this session found every weight>=700 instance (6 total: "Solen" wordmark, two footer
+     column headings, copyright line) sits in the GLOBAL SITE FOOTER, a shared component rendered
+     on every route, not category-specific. Every element this page itself owns , pills, location
+     bar, rail H2s, card name/rating/category/price , already tops out at weight 600 (the two rail
+     H2s). Not touched in the Proposed pane , changing the footer is out of this page's scope.
+  4. Letter-spacing , APPLIES. See Diagnosis line 2.
+  5. About three text sizes , APPLIES. See Diagnosis line 3 (collapsed toward 4, this project's own
+     ceiling; a literal 3 is not reachable without breaking either the H2 anchor role or the
+     design-contract's separately-locked CTA=15 floor, both of which are locked law, not this
+     page's choice to relax).
+  6. Almost no colour , DOES NOT APPLY IN VIOLATED FORM. Every glyph on this page is already ink or
+     ink-2 by default (search, menu, arrow, chevron, map-pin, house, unsaved heart). The two
+     chromatic exceptions , the gold star fill and the pink saved-heart fill , are both locked
+     semantic colours per CLAUDE.md ("never monochrome a semantic element") and were already found
+     compliant by the cited icon research (section 9: "Intentional and taste-locked. Not a
+     violation."). Not touched in the Proposed pane.
+  7. Row height fixed regardless of content , DOES NOT APPLY IN VIOLATED FORM. Measured live: all 16
+     real, currently-rendered cards on this page render at an identical 250px height and a 3-row
+     info stack (name+rating / category / address+price), because the live seed data happens to
+     carry a postal code and a price for every salon shown; the card's own layout does drop Row 3
+     when that data is null (a legitimate, FLOORS-LAW-sanctioned omission for missing data, not a
+     bug), but nothing currently renders that shorter state on this route. Not touched in the
+     Proposed pane , not a defect to fix, and forcing a fake uneven-height demo would misrepresent
+     what the live page actually shows today.
+-->
+<style>
+  @font-face{
+    font-family:'Inter';
+    src:url('/_mockups/_assets/fonts/inter-latin-var.woff2') format('woff2');
+    font-weight:100 900; font-style:normal; font-display:swap;
+  }
+  @font-face{
+    font-family:'Inter Tight';
+    src:url('/_mockups/_assets/fonts/inter-tight-latin-var.woff2') format('woff2');
+    font-weight:100 900; font-style:normal; font-display:swap;
+  }
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --border:#E4E4E7; --sunken:#F4F4F5;
+    --accent:#276EF1; --star:#FFC32B; --heart:#FF3366; --white:#FFFFFF;
+  }
+  *{box-sizing:border-box;-webkit-text-size-adjust:100%;text-size-adjust:100%;}
+  html,body{margin:0;padding:0;height:100%;}
+  body{
+    background:#fff; color:var(--ink); overflow:hidden;
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .top{position:fixed;top:0;left:0;right:0;height:52px;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;padding:0 12px;}
+  .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;width:min(300px,80vw);}
+  .seg button{flex:1;border:0;background:transparent;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;color:var(--ink2);padding:8px 0;border-radius:999px;cursor:pointer;}
+  .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12);}
+  .stage{position:fixed;top:52px;left:0;right:0;bottom:0;}
+  .pane{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#fff;}
+  .pane.hidden{display:none;}
+  iframe{width:100%;height:100%;border:0;display:block;}
+  .lucide{stroke:currentColor;fill:none;display:block;flex-shrink:0;}
+  /* the whole diagnosed change for learning #2: butt/miter instead of Lucide's shipped round/round default */
+  .lucide{stroke-linecap:butt;stroke-linejoin:miter;}
+
+  .wrap{max-width:402px;margin:0 auto;padding-bottom:64px;}
+
+  .notice{padding:14px 14px 12px;background:var(--sunken);border-bottom:1px solid var(--border);}
+  /* the legend box reuses the same 4-size scale as the page content below (12/14/15/18), so this
+     mockup's OWN commentary does not itself add a 5th/6th size while claiming to have collapsed to four */
+  .notice .k{font-size:12px;font-weight:600;color:var(--ink2);letter-spacing:normal;margin:0 0 4px;text-transform:none;}
+  .notice .t{font-size:12px;line-height:1.45;color:var(--ink);margin:0;}
+  .notice .t b{font-weight:600;}
+
+  .pillrow{display:flex;gap:8px;padding:16px 12px 8px;overflow-x:auto;scrollbar-width:none;}
+  .pillrow::-webkit-scrollbar{display:none;}
+  .pill{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 14px;border-radius:40px;font-size:14px;font-weight:400;color:var(--ink);white-space:nowrap;flex-shrink:0;}
+  .pill.on{background:var(--sunken);}
+  .pill img{width:22px;height:22px;object-fit:contain;}
+
+  .locbar{display:flex;align-items:center;gap:10px;margin:8px 12px 0;height:52px;padding:0 16px;border:1px solid var(--border);border-radius:999px;}
+  .locbar .lb-t{font-size:14px;font-weight:500;color:var(--ink);flex:1;min-width:0;}
+  /* measured: was 16px (SearchTemplate.tsx:1315), collapsed to 14px , the "name/body" tier, per Diagnosis line 3 */
+
+  .rail{margin-top:24px;}
+  .railhead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 12px 14px;}
+  .railhead h2{font-family:'Inter Tight',sans-serif;font-size:clamp(18px,2vw,20px);font-weight:600;line-height:1.25;letter-spacing:-0.18px;color:var(--ink);margin:0;}
+  /* unchanged , already matches Airbnb's own measured H2 tracking (-0.18px / -1% at 18px/600) */
+  .railarrow{display:grid;place-items:center;width:32px;height:32px;border-radius:999px;background:var(--sunken);color:var(--ink);flex-shrink:0;}
+
+  .scrollrow{display:flex;gap:12px;padding:0 12px;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x proximity;}
+  .scrollrow::-webkit-scrollbar{display:none;}
+  .card{width:231px;flex-shrink:0;scroll-snap-align:start;}
+  .card .ph{position:relative;width:100%;aspect-ratio:5/4;border-radius:22px;overflow:hidden;box-shadow:0 1px 2px rgba(10,10,10,.06),0 4px 10px rgba(10,10,10,.08);background:var(--sunken);}
+  .card .ph img{width:100%;height:100%;object-fit:cover;display:block;}
+  .card .hb{position:absolute;top:2px;right:2px;width:28px;height:28px;border-radius:999px;background:rgba(255,255,255,.82);backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,.9);display:grid;place-items:center;}
+  .card .body{margin-top:8px;padding:0 2px;display:flex;flex-direction:column;gap:2px;}
+  .card .row1{display:flex;align-items:baseline;gap:8px;}
+  .card .name{font-size:14px;font-weight:500;letter-spacing:normal;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1;}
+  /* measured: was tracking -0.14px (SalonCard.tsx:505), collapsed to normal per Diagnosis line 2 , matches Airbnb's own card-title tracking exactly */
+  .card .rating{display:inline-flex;align-items:center;gap:3px;font-size:12px;font-weight:400;color:var(--ink2);flex-shrink:0;font-variant-numeric:tabular-nums;}
+  /* measured: was 13px (SalonCard.tsx:509), collapsed to 12px , same tier as category/address/price, per Diagnosis line 3 */
+  .card .cat{font-size:12px;font-weight:400;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .card .row3{display:flex;align-items:baseline;justify-content:space-between;gap:8px;}
+  .card .addr{font-size:12px;font-weight:400;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
+  .card .price{font-size:12px;font-weight:400;color:var(--ink2);flex-shrink:0;}
+
+  .karte{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:15;display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:#fff;border-radius:999px;padding:11px 18px;font-size:15px;font-weight:500;box-shadow:0 6px 20px rgba(50,47,44,.18),0 2px 6px rgba(50,47,44,.10);}
+  /* measured: was 13.5px (SearchTemplate.tsx:2160), which also independently breaks the design
+     contract's own "CTA never <=13 on a button" floor; target 15px, the locked CTA size */
+  /* the Karte pill only renders inside the Proposed pane (its real fixed-position keeps it off
+     the Current iframe's own layout, and duplicating it there would float over the live iframe) */
+</style>
+</head>
+<body>
+  <div class="top">
+    <div class="seg">
+      <button id="tCur" class="on" onclick="show('cur')">Current</button>
+      <button id="tPro" onclick="show('pro')">Proposed</button>
+    </div>
+  </div>
+  <!-- BEFORE = the live route below, unmodified. AFTER = the real rebuilt markup in #pPro. -->
+  <div class="stage">
+    <div class="pane" id="pCur">
+      <iframe src="/de/coiffeur" title="Current, live /de/coiffeur" loading="eager"></iframe>
+    </div>
+    <div class="pane hidden" id="pPro">
+      <div class="wrap">
+
+        <div class="notice">
+          <p class="k">Proposed , three of seven learnings applied here</p>
+          <p class="t"><b>Icon terminals</b> round&rarr;butt/miter (all 7 stroked glyphs). <b>Letter-spacing</b> card names -0.14px&rarr;normal. <b>Sizes</b> 6&rarr;4 in view (13&rarr;12, 13.5&rarr;15, 16&rarr;14). Hairline, weight-ceiling, colour and row-height already pass , see the file header for the measured proof on each.</p>
+        </div>
+
+        <div class="pillrow">
+          <span class="pill on"><svg class="lucide" width="22" height="22" viewBox="0 0 24 24" stroke-width="2.4" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>All</span>
+          <span class="pill"><img src="/icons/categories/scissors.png" alt="" aria-hidden="true">Coiffeur</span>
+          <span class="pill"><img src="/icons/categories/clippers.png" alt="" aria-hidden="true">Barber</span>
+          <span class="pill"><img src="/icons/categories/nails.png" alt="" aria-hidden="true">Nails</span>
+        </div>
+
+        <div class="locbar">
+          <svg class="lucide" width="18" height="18" viewBox="0 0 24 24" stroke-width="2" style="color:var(--ink2)" aria-hidden="true"><path d="m21 21-4.34-4.34"></path><circle cx="11" cy="11" r="8"></circle></svg>
+          <span class="lb-t">Coiffeur Switzerland</span>
+          <svg class="lucide" width="16" height="16" viewBox="0 0 24 24" stroke-width="2.2" style="color:var(--ink)" aria-hidden="true"><path d="M4 5h16"></path><path d="M4 12h16"></path><path d="M4 19h16"></path></svg>
+        </div>
+
+        <section class="rail">
+          <div class="railhead">
+            <h2>Top Coiffeur</h2>
+            <span class="railarrow" aria-hidden="true"><svg class="lucide" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></span>
+          </div>
+          <div class="scrollrow">
+            <article class="card">
+              <div class="ph">
+                <img src="/_mockups/_assets/salon-photos/p01.jpg" alt="Haarsalon Margot, Coiffeur">
+                <span class="hb" aria-hidden="true"><svg class="lucide" width="16" height="16" viewBox="0 0 24 24" stroke-width="2.25" style="color:var(--ink)" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"></path></svg></span>
+              </div>
+              <div class="body">
+                <div class="row1"><span class="name">Haarsalon Margot</span><span class="rating"><svg class="lucide" width="11" height="11" viewBox="0 0 24 24" fill="var(--star)" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>4.8</span></div>
+                <div class="cat">Coiffeur</div>
+                <div class="row3"><span class="addr">4051 Basel</span><span class="price">35 CHF</span></div>
+              </div>
+            </article>
+            <article class="card">
+              <div class="ph">
+                <img src="/_mockups/_assets/salon-photos/p02.jpg" alt="Velvet Face, Coiffeur">
+                <span class="hb" aria-hidden="true"><svg class="lucide" width="16" height="16" viewBox="0 0 24 24" stroke-width="2.25" style="color:var(--ink)" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"></path></svg></span>
+              </div>
+              <div class="body">
+                <div class="row1"><span class="name">Velvet Face</span><span class="rating"><svg class="lucide" width="11" height="11" viewBox="0 0 24 24" fill="var(--star)" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>4.8</span></div>
+                <div class="cat">Coiffeur</div>
+                <div class="row3"><span class="addr">4058 Basel</span></div>
+              </div>
+            </article>
+            <article class="card" style="opacity:.55;">
+              <div class="ph"><img src="/_mockups/_assets/salon-photos/p03.jpg" alt="More Coiffeur salons"></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="rail">
+          <div class="railhead">
+            <h2>Nearby</h2>
+            <span class="railarrow" aria-hidden="true"><svg class="lucide" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></span>
+          </div>
+          <div class="scrollrow">
+            <article class="card">
+              <div class="ph">
+                <img src="/_mockups/_assets/salon-photos/p04.jpg" alt="Muse Beauty Studio, Coiffeur">
+                <span class="hb" aria-hidden="true"><svg class="lucide" width="16" height="16" viewBox="0 0 24 24" stroke-width="2.25" style="color:var(--ink)" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"></path></svg></span>
+              </div>
+              <div class="body">
+                <div class="row1"><span class="name">Muse Beauty Studio</span><span class="rating"><svg class="lucide" width="11" height="11" viewBox="0 0 24 24" fill="var(--star)" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>4.2</span></div>
+                <div class="cat">Coiffeur</div>
+                <div class="row3"><span class="addr">4001 Basel</span><span class="price">35 CHF</span></div>
+              </div>
+            </article>
+            <article class="card">
+              <div class="ph">
+                <img src="/_mockups/_assets/salon-photos/p05.jpg" alt="Atelier Haarwerk, Coiffeur">
+                <span class="hb" aria-hidden="true"><svg class="lucide" width="16" height="16" viewBox="0 0 24 24" stroke-width="2.25" style="color:var(--ink)" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"></path></svg></span>
+              </div>
+              <div class="body">
+                <div class="row1"><span class="name">Atelier Haarwerk</span><span class="rating"><svg class="lucide" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--ink2)" stroke-width="1.6" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg></span></div>
+                <div class="cat">Coiffeur</div>
+                <div class="row3"><span class="addr">4001 Basel</span></div>
+              </div>
+            </article>
+            <article class="card" style="opacity:.55;">
+              <div class="ph"><img src="/_mockups/_assets/salon-photos/p06.jpg" alt="More nearby salons"></div>
+            </article>
+          </div>
+        </section>
+
+      </div>
+      <div class="karte">
+        <svg class="lucide" width="15" height="15" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"></path><path d="M15 5.764v15"></path><path d="M9 3.236v15"></path></svg>
+        Map
+      </div>
+    </div>
+  </div>
+<script>
+function show(w){
+  document.getElementById('pCur').classList.toggle('hidden', w!=='cur');
+  document.getElementById('pPro').classList.toggle('hidden', w!=='pro');
+  document.getElementById('tCur').classList.toggle('on', w==='cur');
+  document.getElementById('tPro').classList.toggle('on', w==='pro');
+}
+</script>
+</body>
+</html>

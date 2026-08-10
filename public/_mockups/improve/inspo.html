@@ -1,0 +1,284 @@
+<!doctype html>
+<!-- Base: capture live -->
+<!-- Scale: full-page -->
+<!--
+Exists-check: `npm run exists inspo` ran this turn, 45 hits. Confirms /de/inspo (app/[locale]/inspo/page.tsx)
+is the live current build and that Header.tsx already owns its top chrome (isDiscover branch, dated
+2026-08-03/2026-08-01 comments). 11 REMOVED.md hits scanned; ONE is directly relevant and is named here
+rather than quietly skipped: "Inspo-header mockup, separate inspo chrome page" (public/_mockups/home-v3/
+inspo-header.html) was rejected 2026-07-31, owner verbatim "why do you keep iterating on this mockup? We
+have another mockup page ... Make it on the other mockup" (chrome consolidated into search-a.html instead).
+That rejection was about a CHROME-ONLY duplicate competing with an already-iterated file. This file is a
+different kind of document (a measured Current/Proposed diagnosis page in a new public/_mockups/improve/
+directory, dated 2026-08-04, requested this turn by name with this exact path), not a second copy of the
+chrome-elicitation surface search-a.html already owns, but the tension is real and is flagged for the
+orchestrator/owner rather than silently assumed away. The other 10 REMOVED hits (search-focus-ring,
+category-in-filter, collections/boards, ForYouSection, sort chips, nail-legacy) do not apply to chrome/
+type/icon/divider treatment and are not re-proposed here.
+
+CONTRADICTION SURFACED (rule 18, root cause of this file's build mechanism): the task brief stated "A gate
+blocks contentDocument, applyChange and data-sweep-done, so no injection." I read the only wired hook that
+references those three strings, .claude/hooks/mockup-fullscreen-gate.py (confirmed armed in
+.claude/settings.json, both the Write and Edit PreToolUse blocks), and its logic is the OPPOSITE: for a page
+mockup carrying exactly one <iframe> and no injection markers, the `elif not (has_two_iframes and
+has_injection)` branch is unconditionally true, so it BLOCKS with "AFTER IS A HAND-DRAWN REDRAW" and directs
+the build toward the two-iframe-plus-injection pattern (matching public/_mockups/research/
+terminals-and-weight.html and public/_mockups/home-fixes/fix-DUPES.html, both already live in this repo).
+Rather than pick a side silently, this file is built the way the ARMED gate requires (two live iframes of
+the SAME real /de/inspo route, one untouched, one with a scoped injected stylesheet), and the deviation from
+the brief's literal "no injection" instruction is named here plainly, per rule 10, for the orchestrator to
+adjudicate. The injected change is still REAL: it does not hand-draw any replacement chrome, it only (a)
+reveals the ALREADY-CODED, currently `max-md:hidden`-suppressed hamburger row via one display override, and
+(b) flips two CSS properties Lucide bakes in as SVG presentation attributes. No markup is invented.
+
+motion-ok: the Current/Proposed control is a tab/pane switch (which live iframe is visible), the same
+family as account-v2/system-current-vs-proposed.html's own toggle, not a value-resolve interaction
+(add->check, a price or a countdown appearing) that MOTION.md's glide recipe targets. A transition is
+still applied to the toggle buttons themselves (background-color/color/box-shadow, 180ms) below.
+
+Grounded-in: app/[locale]/_components/layout/Header.tsx
+Grounded-in: app/[locale]/inspo/page.tsx
+Grounded-in: app/[locale]/_components/homepage/HomeSearchPill.tsx
+Grounded-in: components-legacy/discovery/FilterDrawer.tsx
+Grounded-in: components-legacy/discovery/ItemCard.tsx
+Grounded-in: components-legacy/discovery/LikeButton.tsx
+Grounded-in: components-legacy/discovery/CardSignals.tsx
+Grounded-in: node_modules/lucide-react (v0.577.0), real path data for the zoomed legend below
+Reference-checked: _design-system/references/airbnb--icons-vs-ours.md
+Reference-checked: _design-system/references/airbnb--fonts-vs-ours.md
+Reference-checked: _design-system/AIRBNB_SYSTEM_VS_OURS.md
+Reference-checked: _design-system/AIRBNB_PROFILE_PRINCIPLES.md
+
+Depicts: the top chrome, category icon row, and the hidden desktop-only utility row -> app/[locale]/_components/layout/Header.tsx:702-718,1031-1155
+Depicts: the search pill with the trailing saved-heart -> app/[locale]/_components/homepage/HomeSearchPill.tsx (trailing="saved" call site app/[locale]/inspo/page.tsx:509-514)
+Depicts: the filter row (sliders trigger + per-category chips) -> components-legacy/discovery/FilterDrawer.tsx:68-74, app/[locale]/inspo/page.tsx:590-622
+Depicts: the category photo row -> app/[locale]/inspo/page.tsx:638-673
+Depicts: the masonry cards (photo, play badge, heart, style chip, creator, price) -> components-legacy/discovery/ItemCard.tsx, LikeButton.tsx, CardSignals.tsx
+No new feature is drawn. Every control, icon and row already exists; the Proposed pane only reveals one
+already-coded row and flips one CSS property pair, both on the real live document.
+
+Diagnosis: hamburger menu access | measured button[aria-label*="menu" i] renders at rect 0x0 at 390x844 on live /de/inspo this run, its ancestor div carries Tailwind max-md:hidden (Header.tsx:718, showCategoryChrome && "max-md:hidden") AND the ONLY other candidate slot, the search pill's trailing button, is wired trailing="saved" for Inspo (inspo/page.tsx:512) which renders a heart Link to /inspo/saved instead of the solen:open-menu dispatcher (HomeSearchPill.tsx:133-166), so no element on the rendered page can open MobileMenu | violates AIRBNB_PROFILE_PRINCIPLES.md Principle 1 (a screen's own chrome must carry a working carrier for site nav when no persistent tab bar exists) and this repo's own already-proven pattern on home/category routes (HomeSearchPill trailing="menu" dispatches solen:open-menu, Header.tsx:546-556) | target a reachable 44px hamburger at 390x844, achieved here by revealing the existing coded row (header > div.pointer-events-auto, display:flex) rather than drawing a new one
+Diagnosis: icon stroke terminal | measured stroke-linecap:round;stroke-linejoin:round on 12 of 12 stroked svg.lucide instances sampled in the first viewport of live /de/inspo at 390x844 this run (search, saved-heart, sliders-horizontal, card hearts) | violates airbnb--icons-vs-ours.md section 4 (Airbnb: butt/miter on 18+ stroked instances across 3 live pages, 0 exceptions) | target stroke-linecap:butt; stroke-linejoin:miter, applied sitewide via one svg.lucide rule
+
+Method: both defects were measured live this run with a headless Playwright pass against
+https://card-albums-anne-mood.trycloudflare.com/de/inspo at exactly 390x844 (getBoundingClientRect +
+getComputedStyle on every visible text and svg node, cookie banner dismissed before sampling), not
+eyeballed from a screenshot. The two iframes below load that SAME live route; the Proposed one gets a
+single injected <style data-sweep-done> after its contentDocument is ready, via the SAME poll+load
+mechanism public/_mockups/research/terminals-and-weight.html already uses. Nothing else on the page moves:
+the masonry feed, the filter LOGIC, the category photo row and DiscoverPageContent's state are untouched
+per this task's hard scope limit (chrome/type/icon/divider treatment only). English copy below is this
+mockup's own prose describing what was measured; the live iframes still render the app's real strings in
+whatever locale the tunnel cookie carries, which is why a "measured, not translated" note sits under each
+iframe (mockup-english-gate scopes hardcoded mockup copy, not a live capture's own DOM).
+
+LEARNINGS THAT DO NOT APPLY, measured this run on the first viewport of live /de/inspo, stated plainly
+rather than silently skipped (no Diagnosis line filed for any of these, since measured already equals
+target and a no-op line is blocked by mockup-diagnosis-gate.py by design):
+  1. ONE hairline only at a group end, never a box+per-row-line: NOT APPLICABLE. Inspo has no rows-in-a-
+     box list on this page (grep for divide-y across components-legacy/discovery/* and inspo/page.tsx
+     returns zero hits); the 15 bordered elements measured are each an individually-tappable control
+     (the search pill, the filter icon button, 9 chips) or a frosted on-photo circle, not a grouped list.
+  3. Weight never above 600: ALREADY COMPLIANT. Measured 1 of 28 visible text runs at weight >=600 (3.6%,
+     the active first-person filter tab), 0 runs at weight 700, well inside CLAUDE.md's ~30% emphasis-
+     budget ceiling and airbnb--fonts-vs-ours.md's 600 weight ceiling.
+  4. ONE letter-spacing value: ALREADY COMPLIANT. Measured exactly 1 distinct value, normal, across all
+     28 sampled text runs.
+  5. About three text sizes: ALREADY COMPLIANT. Measured 3 distinct sizes in the first viewport (12/14/16px),
+     inside CLAUDE.md's <=4 ceiling and matching airbnb--fonts-vs-ours.md's own ~3-size finding.
+  6. Almost no colour, one brand hue only: ALREADY COMPLIANT. Measured 0 chromatic icon fills across 12
+     sampled svgs (search/heart/sliders/play/plus all render ink #0A0A0A, ink-2 #6B6B6B, or white-on-photo);
+     the one taste-locked semantic colour (#FF3366 saved-heart fill) only appears once a look is actually
+     saved, not in the sampled resting state.
+  7. Row height fixed regardless of content: PARTIALLY APPLIES, already compliant where it should be. The
+     category-icon row and every filter chip measured a fixed h-10 (40px) across all 15 sampled pills. The
+     masonry cards intentionally vary height by real photo aspect-ratio (ItemCard.tsx:42,56), which is
+     AIRBNB_PROFILE_PRINCIPLES.md Principle 5's own named counter-case (Recipe B, variable real content),
+     not a defect, and changing it would touch the masonry feed, off-limits per this task's hard scope.
+
+NOT SHOWN, named rather than omitted silently: PostFromDiscover's fixed FAB (Plus icon, 48px ink circle,
+bottom-24 right-4, app/[locale]/inspo/page.tsx:749) is a real Lucide icon that would also receive the
+stroke-terminal treatment if this shipped, but is outside the 390x844 first-viewport crop this file
+measures and is not reproduced here to keep the comparison focused. The FilterDrawer's bottom-sheet overlay
+is a legal LOCKFILE overlay container (Principle 2's earned case 3) and was not opened during measurement;
+it is not part of this diagnosis.
+
+Web is white-only, no dark-mode CSS, by law. Every icon in the zoomed legend below is real Lucide path
+data (node_modules/lucide-react v0.577.0), not hand-drawn. Do NOT commit.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Inspo: chrome, icon and type treatment, current vs proposed</title>
+<style>
+  @font-face{
+    font-family:'Inter';
+    src:url('/_mockups/_assets/fonts/inter-latin-var.woff2') format('woff2');
+    font-weight:100 900; font-style:normal; font-display:swap;
+  }
+  @font-face{
+    font-family:'Inter Tight';
+    src:url('/_mockups/_assets/fonts/inter-tight-latin-var.woff2') format('woff2');
+    font-weight:100 900; font-style:normal; font-display:swap;
+  }
+  :root{
+    --ink:#0A0A0A; --ink-2:#6B6B6B; --border:#E4E4E7; --sunken:#F4F4F5;
+    --accent:#276EF1; --white:#FFFFFF; --stage:#DEDEE1;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    background:var(--stage); color:var(--ink); overflow:hidden; height:100dvh;
+    display:flex; flex-direction:column;
+  }
+  .topbar{
+    flex:none; z-index:20; background:var(--white);
+    border-bottom:1px solid var(--border);
+    padding:calc(14px + env(safe-area-inset-top)) 18px 12px;
+  }
+  .kicker{font-size:11px;font-weight:600;letter-spacing:.02em;color:var(--ink-2);margin-bottom:4px}
+  h1{font-family:'Inter Tight',sans-serif;font-size:19px;font-weight:600;letter-spacing:-0.01em;line-height:1.25;margin-bottom:6px}
+  .lede{font-size:12.5px;color:var(--ink-2);line-height:1.5;max-width:680px;margin-bottom:12px}
+  .toggle{display:inline-flex;gap:4px;background:var(--sunken);border-radius:999px;padding:3px}
+  .toggle button{
+    border:0;background:transparent;border-radius:999px;padding:8px 16px;
+    font:inherit;font-size:13px;font-weight:500;color:var(--ink-2);cursor:pointer;min-height:38px;
+    transition:background-color 180ms ease, color 180ms ease, box-shadow 180ms ease;
+  }
+  .toggle button.on{background:var(--white);color:var(--ink);font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+
+  .legend{
+    flex:none; z-index:19; background:var(--white);
+    border-bottom:1px solid var(--border); padding:10px 18px 12px;
+    display:flex; align-items:center; gap:18px; overflow-x:auto;
+  }
+  .legend-group{display:flex; flex-direction:column; align-items:center; gap:6px; flex-shrink:0}
+  .legend-label{font-size:10px; font-weight:600; color:var(--ink-2); white-space:nowrap}
+  .legend-icons{display:flex; gap:10px; background:var(--sunken); border-radius:12px; padding:8px 10px}
+  .legend svg{display:block; color:var(--ink)}
+  .term-round{stroke-linecap:round;stroke-linejoin:round}
+  .term-sharp{stroke-linecap:butt;stroke-linejoin:miter}
+  .legend-arrow{font-size:13px;color:var(--ink-2);flex-shrink:0}
+  .legend-note{font-size:11px;color:var(--ink-2);flex-shrink:0;max-width:220px;line-height:1.45}
+
+  .stage{flex:1; min-height:0; display:flex; flex-direction:column; align-items:center; overflow-y:auto; background:var(--stage)}
+  .frame-wrap{padding:16px 0 calc(24px + env(safe-area-inset-bottom))}
+  .col-label{font-size:11px;font-weight:600;color:var(--ink-2);text-align:center;margin-bottom:8px}
+  .frame{width:390px;height:844px;border:1px solid var(--border);border-radius:20px;overflow:hidden;background:var(--white);box-shadow:0 8px 28px rgba(0,0,0,.14)}
+  .frame iframe{width:100%;height:100%;border:0;display:block;background:#fff}
+  .measured-note{font-size:11px;color:var(--ink-2);text-align:center;max-width:390px;margin-top:10px;line-height:1.5}
+  .measured-note .cite{font-family:'Inter Tight',sans-serif;font-variant-numeric:tabular-nums;font-weight:600;color:var(--ink-2)}
+  .pane{display:none}
+  .pane.on{display:flex; flex-direction:column; align-items:center}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <p class="kicker">Inspo, chrome, icon and type treatment</p>
+  <h1>Current vs proposed, measured live at 390&times;844</h1>
+  <p class="lede">Two fixes, both real: the hidden hamburger row is revealed (no menu was reachable on this
+    page before), and every stroked icon flips from Lucide's round/round default to Airbnb's measured
+    butt/miter. Weight, letter-spacing, size count and colour were also measured this run and are already
+    compliant, so nothing changes there, before and after are the same on purpose.</p>
+  <div class="toggle" role="tablist" aria-label="Current or proposed">
+    <button id="btnCurrent" class="on" onclick="setView('current')" role="tab" aria-selected="true">Current</button>
+    <button id="btnProposed" onclick="setView('proposed')" role="tab" aria-selected="false">Proposed</button>
+  </div>
+</div>
+
+<div class="legend">
+  <div class="legend-group">
+    <span class="legend-label">Now: round / round</span>
+    <span class="legend-icons">
+      <svg class="lucide term-round" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+      <svg class="lucide term-round" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+      <svg class="lucide term-round" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 5H3"/><path d="M12 19H3"/><path d="M14 3v4"/><path d="M16 17v4"/><path d="M21 12h-9"/><path d="M21 19h-5"/><path d="M21 5h-7"/><path d="M8 10v4"/><path d="M8 12H3"/></svg>
+      <svg class="lucide term-round" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/></svg>
+    </span>
+  </div>
+  <span class="legend-arrow">&rarr;</span>
+  <div class="legend-group">
+    <span class="legend-label">Proposed: butt / miter</span>
+    <span class="legend-icons">
+      <svg class="lucide term-sharp" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+      <svg class="lucide term-sharp" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+      <svg class="lucide term-sharp" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 5H3"/><path d="M12 19H3"/><path d="M14 3v4"/><path d="M16 17v4"/><path d="M21 12h-9"/><path d="M21 19h-5"/><path d="M21 5h-7"/><path d="M8 10v4"/><path d="M8 12H3"/></svg>
+      <svg class="lucide term-sharp" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/></svg>
+    </span>
+  </div>
+  <p class="legend-note">Same real Lucide path data (search, saved-heart, filter sliders, menu), only
+    stroke-linecap and stroke-linejoin differ. Measured on Airbnb: butt/miter, 0 exceptions across 18+
+    instances. Measured on Solen: round/round, 0 exceptions, the shipped Lucide default.</p>
+</div>
+
+<div class="stage">
+  <div class="frame-wrap pane on" id="paneCurrent">
+    <p class="col-label">Current, live and unmodified</p>
+    <div class="frame"><iframe id="currentFrame" src="/de/inspo" title="Inspo, current, unmodified"></iframe></div>
+    <p class="measured-note">Before: <span class="cite">button[aria-label*="menu" i]</span> rect
+      0&times;0 at 390&times;844, no reachable menu trigger anywhere on the page. Icon terminals:
+      <span class="cite">stroke-linecap round, stroke-linejoin round</span>, 12 of 12 sampled. This
+      iframe renders the app's real live strings; it is a live capture, not translated.</p>
+  </div>
+  <div class="frame-wrap pane" id="paneProposed">
+    <p class="col-label">Proposed, same real route, two rules injected</p>
+    <div class="frame"><iframe id="proposedFrame" src="/de/inspo" title="Inspo, proposed, changes applied"></iframe></div>
+    <p class="measured-note">After: the header's existing wordmark+hamburger row (Header.tsx's own
+      max-md:hidden desktop row) is revealed at this width, with a gray fill and a bottom ink edge so it
+      is easy to spot; every other child in that row (the desktop dropdown nav, the About link, the city
+      and language controls, the sign-in link) stays hidden on its own unconditional Tailwind
+      <span class="cite">hidden</span> class, so only the wordmark and the hamburger show through,
+      unchanged markup, one display override. Icon terminals: <span class="cite">stroke-linecap butt,
+      stroke-linejoin miter</span> sitewide within this frame. This injection does not translate the live
+      DOM, only two CSS properties change; any label text shown is the app's real string.</p>
+  </div>
+</div>
+
+<script>
+  function setView(which){
+    document.getElementById('paneCurrent').classList.toggle('on', which === 'current');
+    document.getElementById('paneProposed').classList.toggle('on', which === 'proposed');
+    document.getElementById('btnCurrent').classList.toggle('on', which === 'current');
+    document.getElementById('btnProposed').classList.toggle('on', which === 'proposed');
+    document.getElementById('btnCurrent').setAttribute('aria-selected', which === 'current');
+    document.getElementById('btnProposed').setAttribute('aria-selected', which === 'proposed');
+  }
+
+  // Reveals the ALREADY-CODED hidden row (no new markup) and flips the two icon-terminal CSS
+  // properties. Same poll+load mechanism as public/_mockups/research/terminals-and-weight.html,
+  // idempotent via the data-sweep-done marker.
+  function applyChange(doc){
+    try {
+      if (!doc || !doc.head || doc.head.querySelector('style[data-sweep-done]')) return;
+      var style = doc.createElement('style');
+      style.setAttribute('data-sweep-done', '1');
+      style.textContent =
+        'header > div.pointer-events-auto{display:flex!important;background-color:#F4F4F5!important;border-bottom:2px solid #0A0A0A!important}' +
+        'svg.lucide,svg.lucide *{stroke-linecap:butt!important;stroke-linejoin:miter!important}';
+      doc.head.appendChild(style);
+    } catch (e) {}
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var proposedFrame = document.getElementById('proposedFrame');
+    if (!proposedFrame) return;
+    var tries = 0;
+    var timer = setInterval(function () {
+      tries++;
+      try {
+        if (proposedFrame.contentDocument && proposedFrame.contentDocument.head) {
+          applyChange(proposedFrame.contentDocument);
+        }
+      } catch (e) {}
+      if (tries > 60) clearInterval(timer); // ~18s ceiling
+    }, 300);
+    proposedFrame.addEventListener('load', function () {
+      try { applyChange(proposedFrame.contentDocument); } catch (e) {}
+    });
+  });
+</script>
+</body>
+</html>
