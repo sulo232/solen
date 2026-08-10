@@ -152,7 +152,7 @@ export default function SearchMorphPreviewPage() {
   const serviceSuggestions = (): ReactNode => {
     if (typing) {
       if (loading) return <div className="space-y-2 pt-1">{[0, 1, 2].map((i) => <Skeleton key={i} height={48} rounded={14} />)}</div>;
-      if (!hasResults) return <p className="py-8 text-center text-[14px] text-s-ink-2">Keine Treffer für {serviceQ}</p>;
+      if (!hasResults) return <p className="py-8 text-center text-[14px] text-s-ink-2">No matches for {serviceQ}</p>;
       return (
         <>
           {results.services.map((s) => (
@@ -253,7 +253,7 @@ export default function SearchMorphPreviewPage() {
   const footerInner = (
     <div className="flex items-center justify-between px-5 pb-[max(14px,env(safe-area-inset-bottom))] pt-3">
       <button onClick={reset} className="text-[14px] font-semibold text-s-ink underline-offset-4 hover:underline">Zurücksetzen</button>
-      <button onClick={close} className={COMMIT_BTN}><Search size={16} strokeWidth={2.2} /> Suchen</button>
+      <button onClick={close} className={COMMIT_BTN}><Search size={16} strokeWidth={2.2} /> Search</button>
     </div>
   );
   const footer = () => <div className="shrink-0">{footerInner}</div>;
@@ -261,8 +261,8 @@ export default function SearchMorphPreviewPage() {
   return (
     <div className="min-h-screen bg-white">
       <div className="mx-auto max-w-[430px] px-5 pt-14">
-        <p className="mb-1.5 text-[13px] font-medium text-s-ink-2">Beauty und Wellness in der ganzen Schweiz</p>
-        <h1 className="mb-5 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">Termine, sofort bestätigt.</h1>
+        <p className="mb-1.5 text-[13px] font-medium text-s-ink-2">Beauty and wellness across Switzerland</p>
+        <h1 className="mb-5 font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">Appointments, confirmed instantly.</h1>
         <button type="button" onClick={() => { setActiveStep("service"); setInputFocused(false); expand.set(0); setOpen(true); }}
           className="flex w-full items-center gap-2.5 rounded-full border border-s-border bg-white px-5 py-3.5 text-[15px] text-s-ink-2">
           <Search size={18} strokeWidth={2} /> Service, Stadt, Datum

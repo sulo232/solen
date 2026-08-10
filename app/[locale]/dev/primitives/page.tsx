@@ -62,7 +62,7 @@ function PrimitivesDevPageInner() {
 
   // Live state for interactive demos
   const [reviewText, setReviewText] = React.useState(
-    "Sehr aufmerksamer Service, Maria hat sich Zeit für Beratung genommen. Der Schnitt sitzt nach 4 Wochen immer noch perfekt.",
+    "Very attentive service, Maria took her time with the consultation. The cut still sits perfectly after 4 weeks.",
   );
   const [emailLoading] = React.useState(false);
   const [subscribed, setSubscribed] = React.useState(true);
@@ -157,7 +157,7 @@ function PrimitivesDevPageInner() {
             <Card tag="State 05 error">
               <FieldLabel htmlFor="ti-05" required>E-Mail-Adresse</FieldLabel>
               <TextInput id="ti-05" type="email" defaultValue="lara@" tone="error" />
-              <FieldHelper tone="error">Diese E-Mail-Adresse ist nicht gültig.</FieldHelper>
+              <FieldHelper tone="error">That email address is not valid.</FieldHelper>
             </Card>
 
             <Card tag="State 06 warning">
@@ -169,7 +169,7 @@ function PrimitivesDevPageInner() {
             <Card tag="State 07 success">
               <FieldLabel htmlFor="ti-07">E-Mail-Adresse</FieldLabel>
               <TextInput id="ti-07" type="email" defaultValue="lara@example.ch" tone="success" />
-              <FieldHelper>Verfügbar — keine zusätzliche Meldung.</FieldHelper>
+              <FieldHelper>Available, no extra message.</FieldHelper>
             </Card>
 
             <Card tag="State 08 disabled">
@@ -214,7 +214,7 @@ function PrimitivesDevPageInner() {
               <TextInput id="tv-pw" type="password" defaultValue="myPassword123" revealable />
             </Card>
             <Card tag="type search">
-              <FieldLabel htmlFor="tv-search">Service oder Salon</FieldLabel>
+              <FieldLabel htmlFor="tv-search">Service or salon</FieldLabel>
               <TextInput
                 id="tv-search"
                 type="search"
@@ -223,7 +223,7 @@ function PrimitivesDevPageInner() {
               />
             </Card>
             <Card tag="type number">
-              <FieldLabel htmlFor="tv-num">Preis (CHF)</FieldLabel>
+              <FieldLabel htmlFor="tv-num">Price (CHF)</FieldLabel>
               <TextInput
                 id="tv-num"
                 type="number"
@@ -269,7 +269,7 @@ function PrimitivesDevPageInner() {
                 size="lg"
                 placeholder="Coiffeur, Maniküre, Massage…"
               />
-              <FieldHelper>Reserviert für Hero-Inputs (§13.4).</FieldHelper>
+              <FieldHelper>Reserved for hero inputs (section 13.4).</FieldHelper>
             </Card>
           </Grid>
         </Section>
@@ -470,7 +470,7 @@ function PrimitivesDevPageInner() {
                   checked={duration === "60"}
                   onChange={(e) => setDuration(e.target.value)}
                 >
-                  60 Minuten CHF 89
+                  60 minutes CHF 89
                 </Radio>
                 <Radio
                   name="duration"
@@ -478,14 +478,14 @@ function PrimitivesDevPageInner() {
                   checked={duration === "90"}
                   onChange={(e) => setDuration(e.target.value)}
                 >
-                  90 Minuten CHF 129
+                  90 minutes CHF 129
                 </Radio>
                 <Radio
                   name="duration"
                   value="120"
                   disabled
                 >
-                  120 Minuten CHF 169 (heute nicht verfügbar)
+                  120 minutes CHF 169 (not available today)
                 </Radio>
                 <Radio
                   name="duration"
@@ -678,8 +678,8 @@ function PrimitivesDevPageInner() {
                     Wähle einen Grund. Wir prüfen alle Meldungen innerhalb von 24 Stunden.
                   </p>
                   <RadioGroup aria-label="Meldungsgrund">
-                    <Radio name="report-reason" value="harassment">Belästigung oder Hassrede</Radio>
-                    <Radio name="report-reason" value="spam">Spam oder irreführende Inhalte</Radio>
+                    <Radio name="report-reason" value="harassment">Harassment or hate speech</Radio>
+                    <Radio name="report-reason" value="spam">Spam or misleading content</Radio>
                     <Radio name="report-reason" value="false-info">Falsche Information über einen Salon</Radio>
                     <Radio name="report-reason" value="other">Anderer Grund</Radio>
                   </RadioGroup>
@@ -839,7 +839,7 @@ function PrimitivesDevPageInner() {
                     </PillGroup>
                   </div>
                   <div className="mb-5">
-                    <FieldLabel className="block mb-2.5">Preis</FieldLabel>
+                    <FieldLabel className="block mb-2.5">Price</FieldLabel>
                     <PillGroup mode="single" aria-label="Price filter">
                       <PillToggle>CHF 0-50</PillToggle>
                       <PillToggle active>CHF 50-100</PillToggle>
