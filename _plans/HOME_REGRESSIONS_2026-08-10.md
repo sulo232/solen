@@ -16,8 +16,10 @@ conflicts."*
       desktop stays exactly as it was and mobile matches it."*
       So a session on 2026-08-01 deliberately hid it to match a mockup, and the component was left
       on disk for revert. His work is intact, the row is just switched off.
-- [x] **The empty band under the search bar is that section**, still occupying `mb-4` while
-      rendering nothing.
+- [x] **WRONG, and corrected by measuring.** I claimed the empty band under the search bar was that
+      hidden section still holding its `mb-4`. Measured live: the section is `display: none`, height
+      **0**, so it occupies no space at all and its margin never applies. The gap he can see is
+      something else and is still unexplained. `verified: measured on the live page 2026-08-10`
 
 ## ALREADY DIAGNOSED, in two workstreams, and never built , which IS the core cause
 
