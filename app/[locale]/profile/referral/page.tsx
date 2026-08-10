@@ -38,7 +38,11 @@ export default function ReferralPage() {
   };
 
   const shareWhatsApp = () => {
-    const text = `Hey! Buchen Sie Ihren nächsten Termin auf Solen und erhalten Sie CHF 10 Guthaben mit meinem Code: ${data?.referral_code}\n${shareUrl}`;
+    // The formal register governs how SOLEN addresses the customer. Here the customer is the
+    // speaker, sending this to their own friend, so Solen is not the one talking and "Sie" would
+    // put the customer in a register nobody uses with a friend. Named exception to COPY_LAW section
+    // 1, converted back on 2026-08-10 after the hardcoded-German sweep formalised it by mistake.
+    const text = `Hey! Buch deinen nächsten Termin auf Solen und du bekommst CHF 10 Guthaben mit meinem Code: ${data?.referral_code}\n${shareUrl}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
   };
 
