@@ -113,3 +113,32 @@ existed: `~/.claude/hooks/locked-value-gate.py`, written 2026-07-31 after the sa
    already had one (LAW_SYSTEM 6.9).
 
 Replayed today's actual edit through it: both real changes block, the safe variant passes, 4/4.
+
+### The gate, reviewed by someone whose job was to break it
+
+An independent reviewer was pointed at the first version and told to break it. It did, in **eight
+places**, and the report is worth keeping because the thing looked fine and had passed everything
+I gave it:
+
+| what it did | kind |
+|---|---|
+| two lines in `auth/reset-password/page.tsx` carry the SAME approval note, so editing one let the other's surviving value hide the change | false PASS, on real shipped code |
+| changing the value AND its note in one edit slipped straight through, which is exactly the authoring habit the gate exists to stop | false PASS |
+| an approval note on the line ABOVE its value was invisible | false PASS |
+| `rounded-tr-lg` to `rounded-tr-sm`, `text-red-500` to `600`, `gap-x-4` to `8` all read as unchanged | false PASS |
+| a value moved into a variable, or two lines swapping values | false PASS |
+| reflowing one annotated line into two reported a change that never happened | **false BLOCK**, the worst kind |
+
+Every one of those came from the same choice: identifying a LINE across an edit. Rewritten to count
+values across all annotated regions instead, which reflow and comment edits cannot move.
+
+Re-run against the reviewer's own cases: 9 of 10, then the last one too once the JSX comment form
+`{/* mockup-ok */}` was added, which the first version could not read at all. Swept over all 445
+`.tsx` files in the app: 184 carry an approval note, **0 false blocks**, 0.2s.
+
+**Named limit, not hidden:** two annotated lines that swap values still pass. Catching that needs
+line identity, and line identity produced four of the eight defects above.
+
+**gate-eval says NOT READY and that verdict is about the harness, not the gate:** its relevance pass
+drives hooks over REPLY TEXT, and this one reads FILE CONTENT, so it can only ever report 0%. The
+real relevance proof is the replay above.
