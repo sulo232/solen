@@ -118,7 +118,12 @@ rejected. Many v2 ticks above are honest but mean "this item was RESOLVED", usua
 straight code fix, not "the mockup was rebuilt". `MOCKUP_FORMAT_CORRECTION.md:22` has been carrying
 "REBUILD ALL 39 in FORMAT v2" open since 2026-07-19.
 
-- [ ] V3-A. **Reviews directions A/B/C, built and shown.** Owner asked by name: *"where are the
+- [x] V3-A. **Reviews directions built and shown** , `public/_mockups/reviews-abc/`, commit d2466f942.
+  FINDING: direction A had already SHIPPED (measured live: zero bare parenthesised counts, the see-all
+  already carries the count), so Before IS A and only B and C were open. Both built as live injections
+  on atelier-haarwerk (blade-and-stone renders no review cards at all), verified by screenshot on all
+  three panes. B and C are derived by me from three measured defects, not owner-specified. AWAITING HIS PICK.
+  Original ask: Owner asked by name: *"where are the
   directions mockup?"* (`MOCKUP_ROOTCAUSE.md:6`). Only direction A exists
   (`sweep-reviews-direction`, v2). B and C were described in prose and never drawn.
   `review-directions.html` predates this (2026-06-29) and carries no A/B/C.
