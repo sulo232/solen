@@ -49,21 +49,28 @@ if tool not in ("Edit", "Write", "MultiEdit"):
 inp = data.get("tool_input", {}) or {}
 fp = (inp.get("file_path") or "").replace("\\", "/")
 
-if not fp.endswith((".tsx", ".jsx")):
+if not fp.endswith((".tsx", ".jsx", ".html")):
     sys.exit(0)
 low = fp.lower()
-if not (("/app/" in low or low.startswith("app/")) or "/components" in low or low.startswith("components")):
-    sys.exit(0)
-if any(s in low for s in ("/public/", "_mockups/", "/_audits/", "node_modules", ".d.ts", "/generated", "/dev/")):
+if any(s in low for s in ("node_modules", ".d.ts", "/generated", "/_audits/")):
     sys.exit(0)
 
-# only entity-list components (by filename)
 base = fp.rsplit("/", 1)[-1]
-if not ENTITY_NAME.search(base):
-    sys.exit(0)
-# ...but a "*ProfilePage" / "*Profile" single-entity page legitimately groups its OWN
-# category items (a stylist's services) , don't gate those by default.
-if re.search(r"profile", base, re.I):
+
+# Rule 1 (grouped vs individual) keeps its original narrow scope: real entity-list components only.
+in_app = ("/app/" in low or low.startswith("app/")) or "/components" in low or low.startswith("components")
+rule1_applies = (
+    fp.endswith((".tsx", ".jsx"))
+    and in_app
+    and not any(s in low for s in ("/public/", "_mockups/", "/dev/"))
+    and bool(ENTITY_NAME.search(base))
+    # a "*ProfilePage" / "*Profile" single-entity page legitimately groups its OWN category items
+    and not re.search(r"profile", base, re.I)
+)
+# Rule 2 (doubled chrome) applies to every design surface INCLUDING mockups, because a mockup is
+# where he sees the boxing first and it is the copy he reacts to.
+rule2_applies = in_app or "_mockups/" in low or "/public/" in low
+if not (rule1_applies or rule2_applies):
     sys.exit(0)
 
 # the text being ADDED (net-new only)
@@ -81,7 +88,7 @@ if not blob.strip():
 
 # the GROUPED list-card signature: shadow-whisper co-occurring with overflow-hidden
 offend = False
-for m in re.finditer(r"shadow-whisper", blob):
+for m in (re.finditer(r"shadow-whisper", blob) if rule1_applies else []):
     window = blob[max(0, m.start() - 120):m.end() + 120]
     if "overflow-hidden" not in window:
         continue
@@ -90,6 +97,53 @@ for m in re.finditer(r"shadow-whisper", blob):
         continue
     offend = True
     break
+
+# ---- RULE 2, 2026-08-10: DOUBLED CHROME, the boxing he keeps flagging. ----
+# Owner twice in one week: "why the fuck is this still boxing?" and "i dont like how evrth is boxed
+# yk i told you you keep doing that". The law already said it in two places and nothing enforced it,
+# which is exactly why it kept shipping: LOCKFILE 17.2 (a card carrying elevation drops its border,
+# never both) and the no-container section (a container PLUS a hairline between every row is two
+# devices claiming one boundary). This fires when a container edge and per-row dividers land within
+# a few lines of each other in the SAME added block.
+CONTAINER = re.compile(
+    r"(border\s+border-s-border"
+    r"|border\s*[:=]\s*['\"]?\s*1px"          # CSS `border: 1px` AND JS `style.border = "1px ...`
+    r"|borderRadius\s*=\s*['\"]?\s*\d"        # the JS form a mockup injection uses
+    r"|rounded-\[?2[04]px\]?|rounded-card"
+    r"|shadow-whisper|shadow-elevation)", re.I)
+ROWLINES = re.compile(r"(divide-y|divide-s-border|border-b[\s\"'`]|borderBottom|border-t[\s\"'`])", re.I)
+boxed = None
+if rule2_applies and not offend:
+    for m in CONTAINER.finditer(blob):
+        window = blob[max(0, m.start() - 400):m.end() + 400]
+        if not ROWLINES.search(window):
+            continue
+        if re.search(r"(entity-ok|boxed-ok)\s*:", window, re.I):
+            continue
+        boxed = m.group(0).strip()
+        break
+
+if boxed and not offend:
+    print(json.dumps({
+        "hookSpecificOutput": {
+            "hookEventName": "PreToolUse",
+            "permissionDecision": "deny",
+            "permissionDecisionReason":
+                "DOUBLED CHROME , the boxing he keeps flagging (owner, twice this week: 'why the "
+                "fuck is this still boxing?' and 'i dont like how evrth is boxed yk i told you you "
+                "keep doing that'). This edit puts a container edge (" + boxed + ") within a few "
+                "lines of per-row dividers. Two devices claiming the same boundary, and the law "
+                "already forbids it: LOCKFILE 17.2 says a card carrying elevation drops its border, "
+                "never both, and the no-container section says a container plus a hairline between "
+                "every row is doubled chrome. PICK ONE: either rows sit inside a container and are "
+                "hairline-divided with NO outer border, or they are borderless rows separated by "
+                "whitespace with no container at all. A settings list, a form section, a menu of "
+                "destinations and an account hub are named as surfaces that get NO container. If "
+                "this genuinely needs both, add `boxed-ok: <reason>` on the line, or touch "
+                "~/.claude/entity-card-skip.flag (5-min TTL)."
+        }
+    }))
+    sys.exit(0)
 
 if offend:
     print(json.dumps({
