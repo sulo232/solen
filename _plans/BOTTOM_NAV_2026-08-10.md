@@ -8,19 +8,19 @@ And also the Airbnb still animated icons are on branch claude/airbnb-animated-ic
 
 - [x] A1. My opinion on the bottom nav, asked directly ("how do you think?").
      ANSWERED: yes, do it, and the objection I was going to raise turned out to be false. I was
-     about to say a bottom bar is an APP pattern that mobile web does not use. `verified:` measured
+     about to say a bottom bar is an APP pattern that mobile web does not use. verified: measured
      airbnb.ch live at 375x812 and they DO ship one, three items, fixed, 24px icons. The two real
      costs, both named rather than smoothed over: their 10px label breaks our 12px legibility floor
      so ours is taller, and the PDP already owns the bottom with its Buchen bar so the nav has to
      yield there.
 - [x] A2. Build the bottom navigation bar for mobile web.
-     `verified:` `app/[locale]/_components/layout/BottomNav.tsx`, mounted in layout.tsx. Measured
+     verified: `app/[locale]/_components/layout/BottomNav.tsx`, mounted in layout.tsx. Measured
      live on /de at 375x812: bar 57px pinned 755 to 812, white, 1px #E4E4E7 hairline, no shadow,
      z-700 (below the PDP commit bar at 800). Four items at 90x56, icon 24, label 12px. Active ink
      #0A0A0A at 600, inactive #6B6B6B at 400. On the PDP: exactly ONE fixed bottom bar renders, the
      Buchen one, and the nav measures 0x0.
 - [x] A3. Remove the hamburger from the search bar.
-     `verified:` removed from BOTH sites, not just the one in front of me: HomeSearchPill.tsx and
+     verified: removed from BOTH sites, not just the one in front of me: HomeSearchPill.tsx and
      SearchTemplate.tsx (that one covers all four category routes). Measured live: zero hamburgers
      inside any search pill. The menu is not stranded, and I clicked it to prove it rather than
      assuming: the fourth nav item opens the same sheet, carrying Basel, Profil, Treuekarte,
@@ -28,7 +28,7 @@ And also the Airbnb still animated icons are on branch claude/airbnb-animated-ic
 - [x] A4. The Airbnb animated icons.
      FOUND, and the answer is not what the message assumed. That branch is MERGED, so nothing is
      stranded: the clips are already in main at `public/_pixel-refs/solen-icons/out/`, 12 files,
-     built over 43 rounds of his feedback. `verified:` a grep for `solen-icons` across app/, lib/
+     built over 43 rounds of his feedback. verified: a grep for `solen-icons` across app/, lib/
      and components-legacy/ on main returns **0 render sites**. Finished work that never reached a
      screen.
      NOT WIRED INTO THE LIVE ROW, with a concrete reason rather than a punt: only 2 of the 5 pill
@@ -38,6 +38,12 @@ And also the Airbnb still animated icons are on branch claude/airbnb-animated-ic
      image-to-3D MCP he told me by name to stop spending on, so it is his call.
      DELIVERED instead: `/dev/animated-icons` plays them in the real pill row, on tap, which is the
      trigger our own Airbnb capture measured (their hover does nothing; a click plays once).
+     verified: PLAYBACK measured with Playwright, not with the preview browser, because the preview
+     pane backgrounds its own tab between tool calls and a video read in a hidden tab is not a
+     measurement. Playwright reports visibilityState "visible" and hasFocus true, both looping clips
+     advanced 0.689s across a 700ms wait, and tapping the Barber pill took its video from 0 to
+     0.604s with paused false. A busy-wait attempt before that reported 0 advance and was WRONG:
+     blocking the main thread also blocks the currentTime update, so it measured my own block.
 
 ## Measured before building, not eyeballed
 
