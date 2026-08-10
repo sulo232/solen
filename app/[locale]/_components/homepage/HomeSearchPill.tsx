@@ -136,8 +136,11 @@ export default function HomeSearchPill({
     };
   }, []);
 
+  // px-6, not px-4. Measured: their pill is 342 wide in a 390 viewport, which is 24px of gutter each
+  // side; ours was 358, i.e. 16px. Sixteen pixels of extra width is why it read as sitting wider and
+  // flatter than theirs.
   return (
-    <div className="mx-auto w-full max-w-[680px] px-4 pt-3 pb-2">
+    <div className="mx-auto w-full max-w-[680px] px-6 pt-3 pb-2">
       {/* B AT REST, C ONCE HE SCROLLS. Owner 2026-08-10, correcting my first read of his "c":
           "b normal state or scrolled up, c once scrolled down a bit, you know, gets smaller."
 
@@ -188,7 +191,7 @@ export default function HomeSearchPill({
           "border border-s-border", // mockup-ok: the light grey hairline, their measured painted #DDDDDD, ours #E4E4E7
           shrunk
             ? "h-[44px] shadow-elevation-2" // mockup-ok: C, scrolled, smaller and settled
-            : "h-[54px]", // mockup-ok: B at rest, their measured 54, lift comes from the style below
+            : "h-[56px]", // mockup-ok: B at rest, their measured 56 (the pill is 342x56 at 390 wide)
         )}
       >
         {/* R1: ONE tap handler for both callers. `/inspo` still passes its own `onActivate`
@@ -202,7 +205,7 @@ export default function HomeSearchPill({
           className="flex min-w-0 items-center justify-center gap-2"
         >
           <Search size={12} strokeWidth={2.4} className="shrink-0 text-s-ink" aria-hidden />
-          <span className="block min-w-0 truncate font-body text-[14px] font-medium text-s-ink">
+          <span className="block min-w-0 truncate font-body text-[14px] font-normal text-s-ink">
             {label ?? tChrome("searchPlaceholder")}
           </span>
         </button>
