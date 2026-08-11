@@ -132,8 +132,18 @@ export default async function LocaleLayout({
               so it renders site-wide (not just homepage). Replaces the
               legacy components-legacy/layout/Footer.tsx which was never
               mounted in the V3 rebuild. */}
+          {/* N2 (2026-08-11): the footer needs the same bottom padding `main` above already has.
+              It did not have it, and the footer is OUTSIDE main, so the floating nav sat on top of
+              the last row of the footer permanently. Measured: at maximum scroll the language
+              button ("DE") ran 764 to 804 while the bar ran 774 to 832, so 30px of a 40px control
+              was under the glass and `elementFromPoint` at its exact centre returned the nav's own
+              link. A real tap did nothing at all, at any scroll position, because the button's page
+              coordinates sit inside the bar's page coordinates the whole way down. Same expression
+              as main's, so the two cannot drift apart. */}
           <HideInBooking hideOnFeed hideOnDashboard hideOnAccount>
-            <FooterGate locale={locale} />
+            <div className="pb-[calc(56px+env(safe-area-inset-bottom))] md:pb-0">
+              <FooterGate locale={locale} />
+            </div>
           </HideInBooking>
           {/* THE BOTTOM NAV IS BACK, and this comment is the record of why, because the note that
               used to sit here said the opposite for three months.

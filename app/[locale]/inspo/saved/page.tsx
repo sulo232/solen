@@ -76,9 +76,24 @@ export default function SavedPage() {
       {!loaded ? (
         <div className="px-1.5"><DiscoveryGridSkeleton /></div>
       ) : items.length === 0 ? (
-        <p className="mt-4 max-w-xs px-4 text-[14px] leading-relaxed text-s-ink-2">
-          Tippe bei einem Look auf das Herz, um ihn hier zu speichern.
-        </p>
+        // E1 (2026-08-11): this screen used to be a heading and one line of text, with no control
+        // at all, so the only way out was the bottom bar. The locked empty-state anatomy in this
+        // project asks for a line that says what to do and a filled ink button pointing at the
+        // action that fills the screen. Here that action is the Inspo feed, which is where the
+        // hearts live. No new copy and no new value: the sentence is the one that already shipped,
+        // the button reuses the feed's own name, and its recipe is the same ink pill the search
+        // panel's own submit uses.
+        <div className="mt-4 px-4"> {/* mockup-ok: adds the missing way out to a locked empty state */}
+          <p className="max-w-xs text-[14px] leading-relaxed text-s-ink-2">
+            Tippe bei einem Look auf das Herz, um ihn hier zu speichern.
+          </p>
+          <button
+            onClick={() => router.push(`/${locale}/inspo`)}
+            className="mt-5 inline-flex h-11 items-center rounded-full bg-s-ink px-6 font-heading text-[15px] font-bold text-white transition-transform duration-150 active:scale-[0.98]" /* selected-ok: the one commit action on this screen. mockup-ok */
+          >
+            Inspo
+          </button>
+        </div>
       ) : (
         <div className="-mx-0 px-1.5">
           <MasonryGrid

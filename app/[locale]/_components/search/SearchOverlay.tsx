@@ -32,7 +32,7 @@ import {
   Globe,
   type LucideIcon,
 } from "lucide-react";
-import { SEARCH_CITIES, CITY_ICONS, ALL_CITIES_PARAM, getCityName } from "@/lib/cities";
+import { CITY_ICONS, ALL_CITIES_PARAM, getCityName } from "@/lib/cities";
 import { useActiveCities } from "@/hooks/useActiveCities";
 import { formatPrice } from "@/lib/format";
 import { matchesSearch, splitHighlight } from "@/lib/utils";
@@ -335,7 +335,7 @@ export function SearchOverlay({
   const [inputFocused, setInputFocused] = React.useState(false);
 
   const { recent, push } = useRecentSearches();
-  const { cities: activeCities } = useActiveCities();  // the live set, shared with every other city picker
+  const { cities: activeCities, loading: citiesLoading } = useActiveCities();  // the live set, shared with every other city picker
   const [hiddenRecents, setHiddenRecents] = React.useState<Set<number>>(new Set());
   const { items: _recentlyViewed } = useRecentlyViewed(4); // preserved hook call
 
@@ -1527,11 +1527,16 @@ export function SearchOverlay({
   //
   // The static list stays as the fallback for the moment before the fetch resolves and for a
   // failed fetch, which is the hook's documented contract, so the picker is never empty.
+  // C2 (2026-08-11): while the live set is still loading this shows NOTHING rather than the old
+  // hardcoded eight. The sweep caught the gap C1 left: on a cold page load the fallback rendered
+  // Zurich, Bern, Lausanne, Genf, Luzern, Neuchatel and Winterthur as tappable rows for the length
+  // of the fetch, and tapping one of those lands on a results page headed "Suchen Basel". A short
+  // window is still a window, and the rule against claiming what the system cannot back does not
+  // have a grace period. "Keine Praeferenz" is always there, so the step is never empty of options
+  // while the list resolves.
   const cityNames = React.useMemo(
-    () => (activeCities.length
-      ? activeCities.map((c) => getCityName(c.slug, locale, c))
-      : [...SEARCH_CITIES]),
-    [activeCities, locale],
+    () => (citiesLoading ? [] : activeCities.map((c) => getCityName(c.slug, locale, c))),
+    [activeCities, citiesLoading, locale],
   );
   const filteredCities = React.useMemo(() => cityNames.filter((c) => matchesSearch(c, cityQ)), [cityNames, cityQ]);
 
