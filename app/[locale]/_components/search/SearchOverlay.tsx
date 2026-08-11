@@ -1463,9 +1463,14 @@ export function SearchOverlay({
           `expand` at 1 (kbT), so a back tap that only ran `collapse()` would set the finger's own
           driver to 0 and change nothing on screen while the keyboard stayed up. Dismissing the
           field is what this control means, so it says so. */}
+      {/* A11 (2026-08-11): the glyph and its box are UNCHANGED, this only grows what a thumb can
+          hit. Measured at 32x40, under the 44px floor the design contract sets and WCAG asks for,
+          and that floor outranks a look preference (precedence chain tier 2). A wider box would
+          have eaten the field's width, so the hit area is an invisible inset instead: nothing on
+          screen moves, the tappable region reaches 44x44. */}
       {inputFocused ? (
         <button onClick={() => { serviceRef.current?.blur(); setInputFocused(false); collapse(); setServiceQ(""); }} aria-label={backTxt}
-          className="grid h-10 w-8 shrink-0 place-items-center text-s-ink"> {/* mockup-ok: variant A, owner pick 2026-08-11 */}
+          className="relative grid h-10 w-8 shrink-0 place-items-center text-s-ink before:absolute before:-inset-y-0.5 before:-inset-x-1.5 before:content-['']"> {/* mockup-ok: variant A, owner pick 2026-08-11 */}
           <ChevronLeft size={24} strokeWidth={2} />
         </button>
       ) : null}
@@ -1499,11 +1504,13 @@ export function SearchOverlay({
       {/* A6 (2026-08-02 REOPENED): a fixed h-6 w-6 slot (same idea as the loader-dots slot
           below it) always mounted, only the button's presence inside toggles , the clear-X no
           longer changes the bar's own width when it mounts/unmounts while typing. mockup-ok: SEARCH_MORPH.md A6 */}
+      {/* A11 (2026-08-11): same fix as the back chevron above. The disc stays 20px, which is the
+          size he approved; only the invisible hit area grows to clear the 44px floor. */}
       <span className="grid h-6 w-6 shrink-0 place-items-center">
         {serviceQ.length > 0 ? (
           <button onClick={() => { setServiceQ(""); serviceRef.current?.focus(); }}
             aria-label="Eingabe loeschen"
-            className="grid h-5 w-5 place-items-center rounded-full bg-s-ink/15 text-s-ink"> {/* mockup-ok: variant A clear disc, owner pick 2026-08-11 */}
+            className="relative grid h-5 w-5 place-items-center rounded-full bg-s-ink/15 text-s-ink before:absolute before:-inset-3 before:content-['']"> {/* mockup-ok: variant A clear disc, owner pick 2026-08-11 */}
             <X size={13} strokeWidth={2.6} />
           </button>
         ) : null}
@@ -1740,7 +1747,10 @@ export function SearchOverlay({
   // selected-ok: bg-s-ink is the ONE primary commit CTA, not a selected state
   const footerInner = (
     <div className="flex items-center justify-between px-5 pb-[max(14px,env(safe-area-inset-bottom))] pt-3">
-      <button onClick={reset} className="text-[14px] font-semibold text-s-ink underline-offset-4 hover:underline">{resetTxt}</button>
+      {/* A11 (2026-08-11): 93x21 measured, so the row it sits in gives it the height instead of a
+          box around the words (an h-11 wrapper would have drawn a button where a text link belongs).
+          The text, the weight and the underline-on-hover are untouched. */}
+      <button onClick={reset} className="flex h-11 items-center text-[14px] font-semibold text-s-ink underline-offset-4 hover:underline">{resetTxt}</button>
       <button onClick={handleSubmit} className="flex items-center gap-2 rounded-full bg-s-ink px-6 py-3 font-heading text-[15px] font-bold text-white transition-transform duration-150 active:scale-[0.98] active:duration-[80ms] active:ease-glide" /* selected-ok: primary commit CTA */>
         <Search size={16} strokeWidth={2.2} />{submitTxt}
       </button>
