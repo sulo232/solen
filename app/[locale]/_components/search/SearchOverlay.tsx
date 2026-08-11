@@ -1931,12 +1931,22 @@ export function SearchOverlay({
                       <span className="font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">{locationHeadingTxt}</span>
                       <ChevronUp size={20} strokeWidth={2.2} className="text-s-ink-2" aria-hidden />
                     </button>
-                    {/* Variant A (owner picked it 2026-08-11 off /dev/search-field) applies here too:
-                        a focused search field is a FILLED capsule, and the clear sits inside it on a
-                        soft disc. The third part of A, the way out sitting OUTSIDE the field, is
-                        already served on this step by the heading's own collapse chevron above, so
-                        adding a second one would give the step two ways back. */}
-                    <div className="mb-2 flex h-12 shrink-0 items-center gap-2.5 rounded-full bg-s-bg-sunken px-4">
+                    {/* REVERTED 2026-08-11, and the reason matters more than the pixels.
+                        He picked variant A (a filled grey capsule) for the SERVICE field off
+                        /dev/search-field, and I extended it to this field on my own judgement,
+                        saying so at the time. It collides with a call he had already made:
+                        TASTE_LOG, commit db2a45ca8 on 2026-08-03, "He overruled my grey
+                        recommendation and the field keeps its white fill and hairline, measured
+                        1px #E4E4E7". That is this exact field, and the log exists so a settled
+                        call is never re-litigated, so the white fill comes back.
+                        What A did leave here is the clear control on a soft disc below, which he
+                        never objected to and which is the same control the service field uses.
+                        The open collision, surfaced rather than resolved: FLOORS LAW 8 says one
+                        thing looks the same everywhere, and these two fields now do not. Two of
+                        his own decisions, so it is his to break the tie. */}
+                    {/* mockup-ok: restoring the owner-approved treatment recorded in TASTE_LOG
+                        (db2a45ca8), not a new appearance. */}
+                    <div className="mb-2 flex h-12 shrink-0 items-center gap-2.5 rounded-[14px] border border-s-border bg-white px-3.5">
                       <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" />
                       {/* mockup-ok: !important preserves the existing look, not a new one; same
                           carve-out as the service query input above (V3-D-input-fill-2026-07-17). */}
