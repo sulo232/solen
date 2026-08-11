@@ -301,17 +301,26 @@ export default function HomeSearchPill({
           onClose={() => setOverlayOpen(false)}
           locale={locale}
           originRect={originRect}
-          // THE FIELD TAKES FOCUS NOW. Owner 2026-08-11: "what i mostly hate is the searchbar in
-          // search." Measured with the panel open from this bar: document.activeElement was NOT
-          // the input, and typing four characters left the value empty. So the panel opened, showed
-          // a field, and quietly ignored you until you tapped it a second time. None of its states
-          // could ever be seen, because it was never in any of them.
+          // TWO TAPS, NOT ONE, and this reverses a change made earlier the same day.
           //
-          // The overlay has always had the code for this; it is gated on `autoFocusService`, which
-          // defaults to false and which this caller never passed. The category routes pass false on
-          // purpose (you arrive there to browse, not to type). Arriving from the home search bar is
-          // the opposite: tapping a search bar IS the intent to type.
-          autoFocusService
+          // Owner 2026-08-11, second pass: "i dont like when u click once yk from home search bar
+          // yk once u click its alrdy keyboard mode." Earlier that day I had passed
+          // `autoFocusService` here, because the field genuinely never took focus and typing into
+          // it did nothing. That was a real bug and it is fixed elsewhere (the step that had just
+          // opened was being marked inert). Auto-focus was the wrong cure for it.
+          //
+          // What the reference actually does, captured off real Airbnb screens this day rather
+          // than recalled: tapping the search bar opens a sheet where the field is NOT focused and
+          // no keyboard comes up. Tapping the FIELD is a separate, second step that raises the
+          // keyboard. Two levels, not one.
+          //
+          // It also fixes something measured and never reported: with the keyboard up on open, the
+          // composer folds away, so Wo?, Wann? and the Suchen button sat below the bottom of a
+          // 390x844 screen and the only reachable submit was the keyboard's return key. Opening
+          // unfocused puts all three back on screen.
+          //
+          // No prop is passed now: `autoFocusService` defaults to false, which is what the category
+          // routes have always used and what this bar should have used all along.
           // Same composer the results pill opens, so the two entry points are one surface.
           // NO category pills inside the panel. Owner 2026-08-11: "remove category bar from
           // search bar." The home page already carries that exact row directly under the
