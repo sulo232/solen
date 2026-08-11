@@ -49,7 +49,7 @@ hardcoded src.
 
 ## Boxes
 
-- [x] 1. Commit pending, `app/[locale]/dev/search-color/` , mockup built and rendered, three
+- [x] 1. Commit fdc7d1d7b, `app/[locale]/dev/search-color/` , mockup built and rendered, three
       changes each shown against what ships today, with real salons and the real feed, not drawings.
   - [x] 1a. A, popular stores: the salon's own photo, rating and review count in the tile it
         already has. verified: rendered, 15 real images on the page, the three seeded Basel salons
