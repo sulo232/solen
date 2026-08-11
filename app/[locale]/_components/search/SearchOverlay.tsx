@@ -1664,7 +1664,7 @@ export function SearchOverlay({
   // Airbnb reference, the field does NOT grow on focus (55.0pt to 54.3pt), and the dark 2px focus
   // border was rejected by name. Nothing here reintroduces either.
   const serviceBar = (
-    <div className="flex h-12 items-center gap-2">
+    <div className="flex h-14 items-center">
       {/* The way out, OUTSIDE the capsule. K1: the blur is load-bearing. The keyboard holds
           `expand` at 1 (kbT), so a back tap that only ran `collapse()` would set the finger's own
           driver to 0 and change nothing on screen while the keyboard stayed up. Dismissing the
@@ -1674,16 +1674,29 @@ export function SearchOverlay({
           and that floor outranks a look preference (precedence chain tier 2). A wider box would
           have eaten the field's width, so the hit area is an invisible inset instead: nothing on
           screen moves, the tappable region reaches 44x44. */}
-      {inputFocused ? (
-        <button onClick={() => { serviceRef.current?.blur(); setInputFocused(false); collapse(); setServiceQ(""); }} aria-label={backTxt}
-          className="relative grid h-10 w-8 shrink-0 place-items-center text-s-ink before:absolute before:-inset-y-0.5 before:-inset-x-1.5 before:content-['']"> {/* mockup-ok: variant A, owner pick 2026-08-11 */}
-          <ChevronLeft size={24} strokeWidth={2} />
-        </button>
-      ) : null}
-      <div className="flex h-12 min-w-0 flex-1 items-center gap-2.5 rounded-full bg-s-bg-sunken px-4"> {/* mockup-ok: variant A filled capsule, owner pick 2026-08-11 */}
-        <span className="grid h-6 w-6 shrink-0 place-items-center">
-          <Search size={19} strokeWidth={2} className="text-s-ink-2" />
-        </span>
+      {/* VARIANT B WITH A GREY OUTLINE. Owner 2026-08-11, evening: "B but not black like gray sh yk",
+          picked off /dev/search-field-chrome after he sent his own Airbnb capture.
+          It replaces variant A, which he picked that same morning off /dev/search-field. Both were
+          his and they disagreed, so the mockup put them side by side and this is his answer.
+          Built to the reference's measured numbers rather than to a guess: 56 tall, radius 15,
+          a 1px outline, and the way back INSIDE the box on the left. The one deliberate departure
+          is the one he named: the reference's outline is near-black, ours is the house hairline
+          `s-border`, because a black edge is the heaviest thing on this screen.
+          Two things this also settles for free. The service field and the Wo? field now look the
+          same, which they did not this morning, and that mismatch was written down as an open
+          collision against the rule that one thing looks the same everywhere. And the hit area
+          stays 44x44 through the invisible inset, so the touch floor from A11 survives the change. */}
+      <div className="flex h-14 min-w-0 flex-1 items-center gap-2.5 rounded-[15px] border border-s-border bg-white px-3.5"> {/* mockup-ok: variant B grey outline, owner pick 2026-08-11 */}
+        {inputFocused ? (
+          <button onClick={() => { serviceRef.current?.blur(); setInputFocused(false); collapse(); setServiceQ(""); }} aria-label={backTxt}
+            className="relative grid h-8 w-8 shrink-0 place-items-center text-s-ink before:absolute before:-inset-x-1.5 before:-inset-y-2.5 before:content-['']">
+            <ChevronLeft size={22} strokeWidth={2} />
+          </button>
+        ) : (
+          <span className="grid h-6 w-6 shrink-0 place-items-center">
+            <Search size={19} strokeWidth={2} className="text-s-ink-2" />
+          </span>
+        )}
       {/* R4b (2026-08-02 round 3, owner "it reads zoomed in"): this input computed to 15px.
           iOS Safari auto-zooms the WHOLE page when a field under 16px takes focus, and
           app/layout.tsx deliberately ships no `maximum-scale`/`user-scalable` (an a11y decision
@@ -2200,7 +2213,7 @@ export function SearchOverlay({
                         his own decisions, so it is his to break the tie. */}
                     {/* mockup-ok: restoring the owner-approved treatment recorded in TASTE_LOG
                         (db2a45ca8), not a new appearance. */}
-                    <div className="mb-2 flex h-12 shrink-0 items-center gap-2.5 rounded-[14px] border border-s-border bg-white px-3.5">
+                    <div className="mb-2 flex h-14 shrink-0 items-center gap-2.5 rounded-[15px] border border-s-border bg-white px-3.5"> {/* mockup-ok: same variant B recipe as the service field, owner pick 2026-08-11 */}
                       {/* B1 (2026-08-11): "i wish there was a back button when all the way open".
                           There was none on this step once the keyboard was up: the only way out was
                           the collapse chevron at the top right, which reads as a fold rather than a
