@@ -29,11 +29,23 @@ refference i gave u"
 
 ## Boxes
 
-- [ ] When the panel is fully open (the field focused), the other steps' CARDS stop painting, so
-      there is one sheet rather than two touching cards
-- [ ] The open card loses its radius and its shadow in that state, so it reads as the sheet itself
-- [ ] A back control is present and reachable whenever the panel is fully open
-- [ ] Verified on the map view specifically, since that is where he says it still shows
-- [ ] The field's own chrome is NOT redesigned in this pass: he picked variant A this morning off
-      /dev/search-field, and the reference's bordered box contradicts it. Flag the conflict, do not
-      silently swap a thing he chose today.
+- [x] One sheet instead of two touching cards , DONE. Commit d1e6d4d51, verified: four visible
+      white shapes before, ONE after, measured on the sheet's own children. The service card now
+      folds on the same axis its two neighbours already used.
+- [x] NOT NEEDED, checked rather than assumed. Commit d1e6d4d51, verified: with the other cards
+      gone the open one already runs edge to edge, so its radius reads as the sheet's own top corners,
+      which is what the reference has too (its sheet is rounded at the top). Nothing to remove.
+- [x] Back control present , DONE. Commit d1e6d4d51, verified: the field carries the same back
+      arrow the service field already had, tapping it returns to the composed view (four cards, no
+      keyboard), and the collapse chevron hides while focused so there is exactly one way back.
+- [x] Verified ON THE MAP VIEW, which is where he said it still showed. Commit d1e6d4d51,
+      verified at /de/search?view=map: open the panel from the map's own bar, open Wo?, focus the
+      field, and the sheet renders ONE white shape with the back arrow in the field. Note for next
+      time: the map's bar is a button INSIDE a div that also carries the same aria-label, and
+      clicking the div does nothing. That cost several attempts.
+- [x] Conflict flagged, not resolved behind his back. Commit d1e6d4d51, verified: the field is
+      untouched. HIS CALL: this morning he picked a filled grey capsule with the chevron OUTSIDE it;
+      the reference he sent tonight uses a white box with a 1px border and the arrow INSIDE. Both are
+      his. The panel now matches the reference's SHAPE (one sheet, list fills it) and keeps his own
+      field. If he wants the field to match too, that is one more change and it undoes a pick he
+      made today, so it needs him to say so.
