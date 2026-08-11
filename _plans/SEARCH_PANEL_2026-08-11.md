@@ -17,14 +17,24 @@ nothing is chosen and you submit anyway.
 ## Atomic boxes
 
 ### 1b , tapping the search bar shows ONE list
-- [x] Delete `Beliebte Stores` from the focused body of the service step
-- [x] Delete the `Fuer Sie` look grid from the focused body of the service step
-- [x] Keep `Zuletzt` (recents) as the first block when it has rows
-- [x] Keep `Kategorien` as the fallback block when there are no recents (pre-launch = everyone)
-- [x] Confirm the recents hook is REUSED, not rebuilt (`useRecentSearches.ts`, already imported)
+- [x] Delete `Beliebte Stores` from the focused body of the service step , verified: zero render
+      sites left, `grep storesLabelTxt` returns nothing, only the comments at SearchOverlay.tsx:382
+      and :1710 that record the removal. Commit a5b177c7d.
+- [x] Delete the `Fuer Sie` look grid from the focused body of the service step , verified: both
+      remaining `<LookCard` sites (SearchOverlay.tsx:1684, :1697) sit inside the `if (typing)` block
+      that opens at :1528, so the idle branch has none. Commit a5b177c7d.
+- [x] Keep `Zuletzt` (recents) as the first block when it has rows , verified: SearchOverlay.tsx:1715
+      still guards on `visibleRecents.length > 0` and is the first child of the idle return.
+- [x] Keep `Kategorien` as the fallback block when there are no recents , verified:
+      SearchOverlay.tsx:1722-1723 renders the label plus `categoryRows` unconditionally. Rendered
+      check on the live panel: with no recents the body is 4 category rows and 0 photo tiles.
+- [x] Confirm the recents hook is REUSED, not rebuilt , verified: SearchOverlay.tsx:51-54 imports
+      it and :334 calls it. No new hook or storage key was added anywhere in the diff.
 
 ### 2b , delete the three dots
-- [x] Remove the `SuggestLoaderDots` render site from the service field
+- [x] Remove the `SuggestLoaderDots` render site from the service field , verified: `grep
+      SuggestLoaderDots` returns one line, the pointer comment at SearchOverlay.tsx:2087. Rendered
+      check while typing: 0 dot elements, clear X 18px off the capsule's right edge.
 - [x] Remove the now-unused `SuggestLoaderDots` component
 - [x] Confirm the clear X ends up at the capsule's right edge (measure, do not eyeball)
 - [x] Confirm the skeleton rows still render while a query is in flight
