@@ -807,7 +807,12 @@ export function SearchOverlay({
   // the sheet, so being generous costs a little white and being mean clips the last row, and
   // clipping "Basel" in half is exactly how attempt 1 failed.
   const LOC_ROW_H = 68;
-  const LOC_CHROME_H = 16 + 30 + 12 + 48 + 8 + 16 + 10 + 20 + 32;
+  // 2026-08-11, corrected the same evening: the field went from 48 to 56 tall when he picked
+  // variant B, and this sum still counted 48, so the card came up 8px short and sliced the
+  // Basel row at the bottom edge with the keyboard up. That is the exact failure the +32
+  // headroom exists to prevent, and it did not, because the error was in a term rather than in
+  // the margin. Any future change to the field's height has to move this number with it.
+  const LOC_CHROME_H = 16 + 30 + 12 + 56 + 8 + 16 + 10 + 20 + 32;
   const locNeed = LOC_CHROME_H + LOC_ROW_H * ((citiesLoading ? 0 : activeCities.length) + 1);
   const svcT = useMotionValue(activeStep === "service" ? 1 : 0);
   const locT = useMotionValue(activeStep === "location" ? 1 : 0);
@@ -815,9 +820,27 @@ export function SearchOverlay({
   const locSlackFor = React.useCallback((rawTop: number, ex: number, l: number) => {
     if (l <= 0) return 0;
     const others = 56 + (86 + 68) * (1 - ex); // Suche row, then Wann? row + footer, which fold
-    const spare = (viewport.h - kbInset) - rawTop - locNeed - others;
-    return Math.max(spare, 0) * l;
-  }, [viewport.h, kbInset, locNeed]);
+    // W4 (2026-08-11, owner: "when u click wo n kezboard mode it bugs"). This used to subtract
+    // `kbInset`, which is the height the keyboard covers, and that is what made it move.
+    //
+    // On a phone the keyboard does not resize the page, it slides up over it, and `kbInset` climbs
+    // from 0 to about 330 while it does. Feeding that into the sheet's own TOP meant the whole
+    // panel slid down as the keyboard slid up, every time, on a control he had just tapped. Two
+    // things moving against each other on one gesture is exactly what "it bugs" describes.
+    //
+    // The keyboard is not part of this sum any more. The card keeps the height it had before the
+    // keyboard appeared; the extra sits behind the keys where nobody can see it, which costs
+    // nothing, and the sheet stays still.
+    const spare = viewport.h - rawTop - locNeed - others;
+    // AND IT ONLY APPLIES WHILE THE COMPOSER IS SHOWING. Measured after the keyboard term came out
+    // and it still moved: tapping the field pushed the sheet DOWN by 154px, because folding the
+    // composer frees 154px of room and this handed every one of them straight back as slack. The
+    // panel is supposed to grow UP into that space, which is what it did before any of this, so
+    // the slack is scaled by (1 - ex) and is exactly zero the moment the field takes focus.
+    // What survives is the case he actually complained about first: Wo? open, no keyboard, half a
+    // screen of white under two rows.
+    return Math.max(spare, 0) * l * (1 - ex);
+  }, [viewport.h, locNeed]);
 
   const topFor = React.useCallback(
     (oT: number, ex: number) => {
