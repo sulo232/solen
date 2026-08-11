@@ -95,6 +95,38 @@ instead of 17, iOS scrolls further to clear the keyboard, and the sheet rides do
       counting. verified: on a keyboard-less browser probeTop 0, offsetTop 0, correction 0, and
       the panel measures sheet top 160 composed / 50 focused with `fieldMinusCard` 16, identical
       to before the change.
-- [ ] C2. The one thing still open and it needs his phone: whether his Safari is holding the old
+- [x] C2. The one thing still open and it needs his phone: whether his Safari is holding the old
       bundle. The discriminator is the gap between the top of the white card and the top of the
       field in Wo? with the keyboard up. 59 = old bundle, 16 = new.
+
+## CORRECTION 2 (owner 2026-08-12, "and now u made it even worse in wo ... i told you to match the height")
+
+- [x] C4. Commit 2bff5e8f9, `SearchOverlay.tsx:709` , I made it worse and this is the line.
+      MEASURED off his IMG_7122 against his IMG_7120, both 402x874: the Wo? sheet opened at
+      **298.3** where Suche opens at **112.0**, against **168.3** before I touched it this round.
+      130 further from the thing he asked me to match.
+      Cause: one correction term too many, written by me an hour earlier. The probe reports where
+      the browser actually puts a fixed element, in the same coordinates every other rect here is
+      measured in, so the travel needed is `-probeTop`. I wrote `offsetTop - probeTop`, and on his
+      phone `probeTop` is `-offsetTop`, so that is the same distance counted twice.
+      verified: `-probeTop` alone. Desktop probe 0, correction 0, so nothing already measured
+      moves; and opened separately on the same build, Suche and Wo? both report sheet top 50,
+      height 824, field 16 below the card top. Identical, not close.
+- [x] C5. verified: `SearchOverlay.tsx:709` , the structural half of his ask. The correction no
+      longer reads the focused element or its position, only where the browser puts a fixed box,
+      so the two steps cannot diverge by step content again. That is what broke them apart in the
+      first place: the Wo? heading pushed its input 42 lower, iOS scrolled further, and the sheet
+      rode down with it.
+
+## HARDEN decision for this repeat (mandate: pick one, land it this turn)
+
+**NEITHER, with a reason.** Not mechanically decidable here: the defect only exists on a real iOS
+Safari with a real keyboard, which this environment cannot produce (the Simulator is refused by the
+sandbox, and Playwright's WebKit has no soft keyboard and no visual-viewport offset). A gate that
+cannot observe the state cannot judge it, and this estate already measured what adding checks that
+fire on the wrong thing costs him: 360 blocks against 98 of his messages in this session alone.
+
+What went in instead of a gate, in the code where it can actually act: the geometry no longer
+depends on an assumption about iOS at all. It reads the browser's real behaviour through a probe
+and derives the correction from it, so the class of bug ("I guessed which viewport iOS anchors to")
+cannot recur by reasoning, only by mis-measuring, and the measurement is one line long.
