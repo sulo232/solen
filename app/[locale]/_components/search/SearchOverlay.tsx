@@ -1072,6 +1072,23 @@ export function SearchOverlay({
     const [sh, fh] = latest as [number, number];
     return sh - fh;
   });
+  // W1 (2026-08-11): TRIED AND REVERTED, written down so the next person does not spend the same
+  // hour. The Wo? card takes every leftover pixel whatever it holds, so with the live city set down
+  // to Basel alone it renders two rows and then half a phone of blank paper (measured off his own
+  // screenshot: an unbroken white run of 1386px on a 2622px screen).
+  //
+  // The obvious fix is to cap the location slot at the height it actually needs, which is countable
+  // from the row count rather than measured off the DOM: chrome plus 68px a row. I built exactly
+  // that and it made the screen WORSE in two ways, both visible in one render. The cap was about
+  // 30px tight, so "Basel" was sliced in half by the bottom of its own card. And the height the
+  // slot gave back had to go somewhere: handing it to the open service slot moved the hole from
+  // under the list to above it, which reads worse than the original because it sits between the
+  // heading and the content.
+  //
+  // The space wants to leave the SHEET, not move between slots, and the sheet's height is computed
+  // upstream of this function from the morph progress. That is the change worth making, and it is
+  // not a change to make in the same pass as five unrelated fixes, in a file whose own comments
+  // record eleven rounds of this animation going wrong.
   const slotInputs = [slotAvail, svcT, locT, dateT, rowLocReserveH, rowDateReserveH];
   const slotSizes = (latest: unknown) => {
     const [avail, s, l, d, cl, cd] = latest as number[];

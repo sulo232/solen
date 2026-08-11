@@ -111,11 +111,19 @@ export default function Nearby({
           href={`/${locale}/search?view=map`}
           ariaLabel={`Stores in ${CITY} auf der Karte ansehen`}
           // The CITY leads, because naming the city is the thing he asked for. The count follows
-          // as a real number (getNearbyTeaserCount, page.tsx) and drops out entirely when that is
-          // null rather than being invented. No separator dot between them: they already differ in
-          // weight, and taste rule 2 says that contrast IS the separator.
+          // and drops out entirely rather than being invented. No separator dot between them: they
+          // already differ in weight, and taste rule 2 says that contrast IS the separator.
+          //
+          // M1 (2026-08-11): the tile now counts what it DRAWS. The sweep found three different
+          // numbers for one thing: the label said 20 Stores (a live count of every active salon
+          // carrying coordinates), the tile plotted 15 pins (this id list, filtered for
+          // completeness), and tapping through opened a map showing 12. Each number was honest on
+          // its own and none of them agreed, which is exactly the kind of claim this project bans.
+          // The label reads off `mapSalons` now, the same array handed to the map beside it, so the
+          // number and the picture cannot drift apart. `nearbyCount` stays a prop for any caller
+          // that wants the countrywide figure.
           countLabel={CITY}
-          countSubLabel={nearbyCount != null ? `${nearbyCount} Stores` : null}
+          countSubLabel={mapSalons.length > 0 ? `${mapSalons.length} Stores` : null}
         />
       </SectionFrame>
     </Section>
