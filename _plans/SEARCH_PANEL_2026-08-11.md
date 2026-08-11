@@ -79,3 +79,23 @@ nothing is chosen and you submit anyway.
 - The imagery floor collision from the mockup page: taking the photo grid out drops the search
   panel to zero photographic area, and FLOORS LAW 2 asks a browse surface for roughly a third.
   Picking 1b implies the exemption, but he has not said the word, so it stays listed here.
+
+## Found while verifying, NOT part of his ask, and it needs a decision (2026-08-11)
+
+**The city picker offers eight cities and the product can serve one.** Measured end to end: open
+the panel, tap `Wo?`, pick Zurich, and the results page renders the heading "Suchen Basel" with
+Basel salons under it, while the URL still says `city=Zurich`. Nothing errors and nothing says the
+city is unavailable, so a successful-looking screen answers a question the user did not ask.
+
+Cause, not a bug in the picker: `/api/cities` returns exactly one active city (basel), while the
+picker is driven by the hardcoded `SEARCH_CITIES` list in `lib/cities.ts:139` (Basel, Zurich, Bern,
+Lausanne, Genf, Luzern, Neuchatel, Winterthur). `SearchTemplate.tsx:469-472` cannot resolve a city
+that is not active and falls back to `DEFAULT_CITY_SLUG`, which is Basel.
+
+This is the no-fabrication rule in its quietest form: the screen promises a city the system cannot
+back, and answers with a different one rather than saying so.
+
+- [ ] THE FORK, his call: drive the picker from the live active-cities list so it offers only what
+      we can serve, or keep all eight and mark the ones that are not live yet. The first is honest
+      and makes the picker a one-row list until a second city opens. The second keeps the map of
+      where Solen is going, at the cost of showing seven rows that do nothing today.
