@@ -37,13 +37,13 @@ instead of 17, iOS scrolls further to clear the keyboard, and the sheet rides do
 ## Boxes
 
 - [x] 1. Commit 6ea21eea0 , Wo? sheet top matches the Suche sheet top.
-  - [x] 1a. Commit 6ea21eea0, `SearchOverlay.tsx:2270` , the location heading is wrapped in
+  - [x] 1a. Commit 6ea21eea0, `SearchOverlay.tsx:2290` , the location heading is wrapped in
         `style={{ height: locHeadingH, opacity: headingContentOp }}`, the same fold the service
         heading has always used at `SearchOverlay.tsx:2155`.
   - [x] 1b. Commit 6ea21eea0, `SearchOverlay.tsx:628` , `LOC_HEADING_H = 42` with its own
         transform on the next line, not `HEADING_H = 56` from `SearchOverlay.tsx:202`, whose 56
         includes a `pt-4`/`pb-1` this card does not have.
-  - [x] 1c. verified: `SearchOverlay.tsx:2270` , the same probe run against the working tree and
+  - [x] 1c. verified: `SearchOverlay.tsx:2290` , the same probe run against the working tree and
         against the stashed original, back to back on the running server, both return
         `cardTop 328, fieldTop 400, fieldMinusCard 72`. The unfocused Wo? step did not move.
   - [x] 1d. verified: `SearchOverlay.tsx:629` , Wo? focused measures `fieldMinusCard` 16.0 at
@@ -81,7 +81,7 @@ instead of 17, iOS scrolls further to clear the keyboard, and the sheet rides do
       focused `fieldMinusCard` 16.0 (59.0 on his phone), and the month fitting with nothing to
       scroll at 874 (465/465) and 730 (330/330) with the 31 rendered. Not stale code, not the
       wrong server.
-- [x] C3. Commit pending this turn, `SearchOverlay.tsx:672-690` , the sheet's absolute top,
+- [x] C3. Commit 38ee0cb90, `SearchOverlay.tsx:701-709` , the sheet's absolute top,
       closed by MEASURING instead of picking a side. K2 assumes `position: fixed` stays glued to
       the layout viewport while iOS scrolls the visual one out from under it, and adds the offset
       back. If that were the whole story both steps would sit at `focusedTop`, about 65 on his
