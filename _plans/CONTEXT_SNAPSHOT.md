@@ -2,19 +2,26 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-11T10:19:15 (trigger: auto)
+- taken: 2026-08-12T00:06:47 (trigger: auto)
 - branch: claude/agent-flow-design-overhaul-2af2c2
 
 ## git
 ```
-f4905a364 Variant A is live: the search field is a filled capsule with the way out beside it
-063f07418 The mockup he asked for twice, and the check that could not see it being skipped
-06efd2530 The field in the search panel now takes focus, so its states can actually happen
-f092dd3b3 Four ways the search sheet could look, read off Airbnb first
-394ce4c24 The whole search bar is tappable, and the location step finally opens properly
+0b364162b Tapping the city field made the whole panel jump. Two causes, both mine
+a4e2cde2f The search field is B with a grey outline, and both fields finally match
+86dfa81c3 Three fields to pick from, and the reference one is built to its own measurements
+581ff58d6 Verified on the map view, which is where he said it still showed
+d1e6d4d51 One sheet when it is all the way open, with a back arrow in the field
+```
+```
+M app/[locale]/_components/homepage/HomeSearchPill.tsx
+ M app/[locale]/_components/search/SearchOverlay.tsx
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
+61 | SEARCH FULL-TYPE VIEW , one sheet, a back control, and the overlap on the map (owner 2026-08-11: "want full type ciew bro like in airbnb refference i gave u") | **ACTIVE** (2026-08-11)
+60 | BUG SWEEP , his three phone screenshots plus a full hunt (owner 2026-08-11: "bugs alot go find on yr own n tell me all") | **ACTIVE** (2026-08-11)
+59 | SEARCH PANEL , his three picks off `/dev/search-states` plus the empty-submit question (owner 2026-08-11: "1b 2b 3 b but whatvif nth selected and tapped enter...") | **ACTIVE** (2026-08-11)
 60 | BOTTOM NAV + the animated icons (owner 2026-08-10: "I think I want to have a bottom navigation bar for the web area... and the Airbnb animated icons are on branch claude/airbnb-animated-icons-ee4329") | **DONE** (2026-08-10)
 62 | CORRECTION: search bar researched not guessed + his own new icons + why he never saw the bottom-bar mockups (owner 2026-08-10: "just guessing, I told you to stop") | **ACTIVE** (2026-08-10)
 56 | HOME + CLOSE FIXES (owner 2026-08-05, annotated shots) | **ACTIVE** (2026-08-05)
@@ -66,12 +73,3 @@ f092dd3b3 Four ways the search sheet could look, read off Airbnb first
 48 | PRINCIPLE DEEP-RESEARCH , re-test every principle we already have against external evidence | **ACTIVE** (design) + handoff (rest) 2026-07-28
 50 | DESIGN principle deep-research (the rules we ALREADY have) | **ACTIVE** (2026-07-28)
 51 | DESIGN RE-ENGINEER , improve the system we have, measured against live Airbnb | **ACTIVE** (2026-07-28)
-
-## HOME_FIXES_2026-08-05.md
-Open boxes:
-- [ ] A3. MOCKUPS FIRST, he asked to SEE options ("can you show me different mockups"). Fix the fonts on the home page. He says he never approved them and they are nothing like BLOCKED on his call, and A8 now gives him the four directions to answer it with.
-
-## HOME_INSPO_CHROME_2026-08-01.md
-Open boxes:
-- [ ] **H2. HALF DONE, and the remaining half is mine, not a decision for him.** Commit
-- [ ] V2. **DECIDED AND IN FLIGHT. Owner 2026-08-02: "konto hub better".** Building

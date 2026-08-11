@@ -857,10 +857,25 @@ export function SearchOverlay({
     // resize/orientation change until one of the other deps also happened to change.
     [origin, focusedTop, minTop, vvOffset, viewport.h],
   );
-  const cropTop = useTransform([morphT, expand, locT], (latest) => { // mockup-ok: SEARCH_MORPH.md A7/A8/A9
-    const [oT, ex, l] = latest as [number, number, number];
+  // D1 (2026-08-12, owner: "wann calender is not fully all visable yk", with his own Airbnb capture
+  // of the same step). Measured off that capture at 402x874: their sheet starts 146pt down and the
+  // When card runs from 168pt to about 760pt, so the WHOLE month fits with no scrolling, all six
+  // rows, 1 through 31. Ours starts its sheet at 19% of the screen and the calendar gets a 234pt
+  // window onto 300pt of month, so it cuts mid-row, which is exactly what his screenshot shows.
+  //
+  // So the date step lifts the sheet instead of pushing it down: the same one value the location
+  // step already uses to give height BACK, run the other way, and clamped at the same `minTop`
+  // everything else respects. 0.6 of the distance to that floor puts our sheet at about 7% on his
+  // screen size, which is where the reference has it, and it is multiplied by `dateT` so it is
+  // exactly zero on every other step.
+  const dateLiftFor = React.useCallback((rawTop: number, d: number) => {
+    if (d <= 0) return 0;
+    return Math.max(rawTop - minTop, 0) * 0.6 * d;
+  }, [minTop]);
+  const cropTop = useTransform([morphT, expand, locT, dateT], (latest) => { // mockup-ok: SEARCH_MORPH.md A7/A8/A9
+    const [oT, ex, l, d] = latest as [number, number, number, number];
     const raw = topFor(oT, ex);
-    return raw + locSlackFor(raw, ex, l);
+    return raw + locSlackFor(raw, ex, l) - dateLiftFor(raw, d);
   });
   // Measured on the reference: `left * 2 + width = 402.0` at EVERY frame, to within 0.02pt. The card
   // is centred throughout and expands symmetrically, so left is not an independent property, it is
@@ -878,8 +893,8 @@ export function SearchOverlay({
   // to exist. Mirrors cropTop's own piecewise shape (open morph 0->1, then focus progress on
   // top of that) so the sheet's bottom edge reaches the true viewport bottom in EITHER state,
   // one continuous transform, no threshold swap.
-  const sheetHeight = useTransform([morphT, expand, locT], (latest) => { // mockup-ok: SEARCH_MORPH.md C6, H5
-    const [oT, ex, l] = latest as [number, number, number];
+  const sheetHeight = useTransform([morphT, expand, locT, dateT], (latest) => { // mockup-ok: SEARCH_MORPH.md C6, H5
+    const [oT, ex, l, d] = latest as [number, number, number, number];
     // K-A: the usable bottom edge is always the viewport's own bottom, keyboard up or not, so
     // the sheet is never shrunk to sit above the keys (that was K-B, rejected at the K4
     // chooser). Height is always "bottom minus the top `topFor` just returned", so the sheet's
@@ -895,14 +910,14 @@ export function SearchOverlay({
     if (oT < 1) {
       // W3: the same slack the top takes, so the bottom edge stays pinned where K-A put it.
       const rawResting = topFor(1, ex);
-      const restingHeight = Math.max(bottom - rawResting - locSlackFor(rawResting, ex, l), 200);
+      const restingHeight = Math.max(bottom - rawResting - locSlackFor(rawResting, ex, l) + dateLiftFor(rawResting, d), 200);
       // H3 (2026-08-05): `oT` is `morphT`, the same already-shaped value `topFor` just took, so
       // height and top still settle on the same frame, never a box that is already tall but not yet
       // positioned. The `/ 0.8` that used to sit here is gone for the reason written above `topFor`.
       return origin.height + (restingHeight - origin.height) * oT;
     }
     const raw = topFor(oT, ex);
-    return Math.max(bottom - raw - locSlackFor(raw, ex, l), 200);
+    return Math.max(bottom - raw - locSlackFor(raw, ex, l) + dateLiftFor(raw, d), 200);
   });
   // R6 (2026-08-02 round 3, owner bug report): the scrim used to fade on its OWN
   // AnimatePresence clock while the sheet faded on `openT`. The two curves are not the same
@@ -2539,7 +2554,7 @@ function MonthGrid({ monthDate, now, windowEnd, selKey, onPick, locale }: {
             ) : (
               /* mockup-ok: swaps one existing token for another on the today branch, per his question */
               <button onClick={() => onPick(key, `${d}. ${monthLong}`)}
-                className={`grid h-9 w-9 place-items-center rounded-full text-[14px] transition-colors ${selected ? "bg-s-accent font-bold text-white" /* selected-ok: date cell */ : isToday ? "bg-s-bg-sunken font-bold text-s-ink" : "font-medium text-s-ink hover:bg-s-bg-sunken"}`}>
+                className={`grid h-9 w-9 place-items-center rounded-full text-[14px] transition-colors ${selected ? "bg-s-ink font-bold text-white" /* selected-ok: owner 2026-08-12 "tapped is blue it should be black", overruling the blue date-fill row of the design contract by name */ : isToday ? "bg-s-bg-sunken font-bold text-s-ink" : "font-medium text-s-ink hover:bg-s-bg-sunken"}`}>
                 {d}
               </button>
             )}

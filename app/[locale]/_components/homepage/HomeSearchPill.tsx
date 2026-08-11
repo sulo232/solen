@@ -227,9 +227,13 @@ export default function HomeSearchPill({
           // The morph. Height and weight are the only things that move.
           "transition-[height,box-shadow,border-color] duration-200 ease-glide", // mockup-ok
           "border border-s-border", // mockup-ok: the light grey hairline, their measured painted #DDDDDD, ours #E4E4E7
-          shrunk
-            ? "h-[44px] shadow-elevation-2" // mockup-ok: C, scrolled, smaller and settled
-            : "h-[64px]", // mockup-ok: thicker again on his call, 2026-08-11. Their aspect gave 59; he asked for more, so 64, a 4pt step, aspect 5.6:1
+          // 2026-08-12, owner: "scrolled down why is the search bat collapsed in homepage yk". It
+          // shrank to 44 once he scrolled past 24px, which was HIS OWN ask on 2026-08-10 ("once
+          // scrolled down a bit yk gets smaller"), and he has now looked at it and does not want
+          // it. The later word wins. One height, 64, whatever the scroll position.
+          // `shrunk` is kept and still drives the shadow below, because the lift-at-rest versus
+          // settled-on-scroll half of that decision was never the part he objected to.
+          "h-[64px]", // mockup-ok: one height, owner 2026-08-12
         )}
       >
         {/* R1: ONE tap handler for both callers. `/inspo` still passes its own `onActivate`
