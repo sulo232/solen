@@ -2127,7 +2127,18 @@ export function SearchOverlay({
             </motion.div>
           </motion.div>
 
-          {/* R7 slot 2 of 3: WO?. `mx-3` is the same 12px inset `cardMx` rests at, so the three
+          {/* O1 (2026-08-11, he sent a screenshot and the word was "overlap"). The three cards used
+              to get their side inset two different ways: the service card from `cardMx`, an animated
+              value that collapses 12 to 0 as the composer folds, and the other two from a literal
+              `mx-3`. The comment below said that was fine because 12 equals 12, and it is, right up
+              until `expand` is anything other than zero. Then the top card is full width, edge to
+              edge, while the card under it is still inset by 12, and two stacked cards of different
+              widths with an 8px gap read as one broken shape. Measured on his own screenshot: the
+              Suche card spans the full 1206px of the screen while the Wo? card under it runs 37 to
+              1168.
+              All three slots now take the SAME value, so no state can produce a mismatch: at rest
+              all three are inset, focused all three go full width together.
+              R7 slot 2 of 3: WO?. The old note, kept because it explains the layout: the three
               cards share one left/right edge in every state. */}
           <motion.div style={{ height: locH, paddingTop: rowGapTopReserve }} className="shrink-0 overflow-hidden"> {/* mockup-ok: SEARCH_MORPH.md STILL OPEN after H2 */}
             {/* `rowsFolded && activeStep !== "location"`, not bare `rowsFolded`. THE LAST
@@ -2138,7 +2149,7 @@ export function SearchOverlay({
                 ancestor and document.activeElement was BODY, so no keyboard.
                 The fold is meant to take the OTHER rows out of the tab order, never the one
                 being used. */}
-            <motion.div inert={rowsFolded && activeStep !== "location"} style={{ opacity: locSlotOp }} className="relative mx-3 h-full overflow-hidden rounded-[20px] bg-white shadow-[0_16px_48px_rgba(10,10,10,0.10)]"> {/* S7: whole slot folded away on focus */}
+            <motion.div inert={rowsFolded && activeStep !== "location"} style={{ opacity: locSlotOp, marginLeft: cardMx, marginRight: cardMx }} className="relative h-full overflow-hidden rounded-[20px] bg-white shadow-[0_16px_48px_rgba(10,10,10,0.10)]"> {/* S7: whole slot folded away on focus */}
               <motion.div inert={activeStep !== "location"} style={{ opacity: locT, pointerEvents: locBodyHit }} className="absolute inset-0 flex flex-col p-4"> {/* S7: city input + city rows out of the tab order when collapsed */}
                     {/* C7 (round 2, "does not expand or close"): root cause was that once a
                         step is active, its OWN heading had no click handler , the only way
@@ -2208,7 +2219,7 @@ export function SearchOverlay({
               (ROW_H * 2 + 20) carried, kept so the footer lands on exactly the same y as
               before this rewrite. */}
           <motion.div style={{ height: dateH, paddingTop: rowGapTopReserve, paddingBottom: rowGapBottomReserve }} className="shrink-0 overflow-hidden"> {/* mockup-ok: SEARCH_MORPH.md STILL OPEN after H2 */}
-            <motion.div inert={rowsFolded && activeStep !== "date"} style={{ opacity: dateSlotOp }} className="relative mx-3 h-full overflow-hidden rounded-[20px] bg-white shadow-[0_16px_48px_rgba(10,10,10,0.10)]"> {/* S7: whole slot folded away on focus */}
+            <motion.div inert={rowsFolded && activeStep !== "date"} style={{ opacity: dateSlotOp, marginLeft: cardMx, marginRight: cardMx }} className="relative h-full overflow-hidden rounded-[20px] bg-white shadow-[0_16px_48px_rgba(10,10,10,0.10)]"> {/* S7: whole slot folded away on focus */}
               <motion.div inert={activeStep !== "date"} style={{ opacity: dateT, pointerEvents: dateBodyHit }} className="absolute inset-0 flex flex-col px-4 pb-3 pt-4"> {/* S7: the 29-31 day cells out of the tab order when collapsed */}
                     {/* C7: same accordion-collapse as the location heading above. */}
                     <button type="button" onClick={composeStep}
