@@ -612,6 +612,21 @@ export function SearchOverlay({
   // travel note above `topFor`).
   const REST_BOTTOM_MARGIN_RATIO = 50 / 874;
   const headingH = useTransform(expand, [0, 0.55], [HEADING_H, 0]); // mockup-ok: pre-existing
+  // S1 (2026-08-12, owner with three of his own captures: "u see the diffrence between em the sheet
+  // size between wo and search i like search better"). Measured off those captures at 402x874: the
+  // Suche sheet opens at 112.0, the Wann? sheet at 119.7, the Wo? sheet at 168.3, so Wo? is the one
+  // outlier and it is low by 56.3. `HEADING_H` directly above is 56. That is not a coincidence: the
+  // service heading has folded on this axis since it was written, and the location heading was
+  // never wired to it, so the Wo? card keeps a heading band the Suche card drops the instant the
+  // field takes focus. With the heading present the city input also sits 59pt down the card instead
+  // of 17, iOS scrolls further to clear the keyboard, and the sheet rides down with it.
+  //
+  // Same axis, its OWN measured height. The location heading is a 24px line at leading-tight (30)
+  // plus `mb-3` (12), inside the card's `p-4`; it is not the service heading's 16px-padded box, so
+  // reusing HEADING_H here would push the unfocused Wo? card's content down 14px and change a
+  // screen he did not complain about.
+  const LOC_HEADING_H = 42;
+  const locHeadingH = useTransform(expand, [0, 0.55], [LOC_HEADING_H, 0]); // mockup-ok: the existing focus-fold axis, extended to the one step that was never wired to it; his own measurement is the target, not a new motion
   const headingOp = useTransform(expand, [0, 0.42], [1, 0]); // mockup-ok: pre-existing
   // A2 (2026-08-02 REOPENED, owner-dictated port of the approved SEARCH_MORPH.md spec): the
   // category pill row is now wired into the SAME `expand` transform as the heading, so it
@@ -918,7 +933,17 @@ export function SearchOverlay({
     // bottom edge is the viewport's own bottom in every state, keyboard up or not. `vvOffset` is
     // 0 with no keyboard and on every desktop browser, so this is identity everywhere else, the
     // same way the top's copy of it is.
-    const restMargin = viewport.h * REST_BOTTOM_MARGIN_RATIO * (1 - ex);
+    // D2 (2026-08-12): `* (1 - d)` hands the rest margin back to the DATE step, and only to it.
+    // His IMG_7121 still slices the 31 row, which I had reported fixed off a 780-tall desktop
+    // viewport that has no Safari chrome; re-measured at the heights his phone actually gives the
+    // page, the month needs 300 and the calendar's scroller gets 288 at 730, 262 at 700, 236 at
+    // 670. D1 above has already pulled the sheet's top as far as it may go, so the only space left
+    // is this 40px margin at the BOTTOM, which exists to make the settled composed sheet sit off
+    // the edge and has no job while a step is open and full. Taking it clears the month at 730
+    // (330 against 300) and at 700 (302 against 300). It deliberately does NOT touch the sheet's
+    // TOP, because he measured the Wann? sheet at 119.7 in the same message and put it on the side
+    // he likes; moving the top would "fix" a screen he just approved.
+    const restMargin = viewport.h * REST_BOTTOM_MARGIN_RATIO * (1 - ex) * (1 - d);
     const bottom = viewport.h + vvOffset - restMargin;
     if (oT < 1) {
       // W3: the same slack the top takes, so the bottom edge stays pinned where K-A put it.
@@ -2237,8 +2262,14 @@ export function SearchOverlay({
                         row, which reads as broken (tapping the open row again did nothing).
                         Wiring the accordion-collapse the SEARCH_MORPH.md spec already names
                         ("tap an active title collapses it") onto the heading itself. */}
+                    {/* S1 (2026-08-12): folds on the same `expand` axis the service heading has
+                        always used, which is the 56pt his three captures measured between the two
+                        sheets. `inert` while folded so a zero-height invisible control cannot take
+                        keyboard focus, and the back arrow inside the field is the way out in
+                        exactly that state (B1 above). */}
+                    <motion.div inert={inputFocused} style={{ height: locHeadingH, opacity: headingContentOp }} className="shrink-0 overflow-hidden"> {/* mockup-ok: existing focus-fold axis */}
                     <button type="button" onClick={composeStep}
-                      className="mb-3 flex shrink-0 items-center justify-between text-left">
+                      className="flex w-full items-center justify-between pb-3 text-left">
                       <span className="font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">{locationHeadingTxt}</span>
                       {/* B1 continued: ONE way back, not two. With the field focused the arrow inside
                           it is the way out, so this collapse chevron would be a second control for
@@ -2249,6 +2280,7 @@ export function SearchOverlay({
                         <ChevronUp size={20} strokeWidth={2.2} className="text-s-ink-2" aria-hidden />
                       )}
                     </button>
+                    </motion.div> {/* mockup-ok: closes the S1 fold wrapper opened above */}
                     {/* REVERTED 2026-08-11, and the reason matters more than the pixels.
                         He picked variant A (a filled grey capsule) for the SERVICE field off
                         /dev/search-field, and I extended it to this field on my own judgement,
