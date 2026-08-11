@@ -905,8 +905,21 @@ export function SearchOverlay({
     // DO-NOT-REGRESS) and only opens a gap in the composed, unfocused moment , the exact moment
     // "OURS settled" was measured at. One continuous value, same `ex` this function already
     // takes, no new threshold and no new motion value.
+    // K5 (2026-08-12, owner: "when on keyboard wo why when expanded no full oage on the bottom yk
+    // like sheet is not long enough", with his own shot of the Wo? step, keyboard up, the white
+    // stopping short of it). The cause is an asymmetry in this file, not anything about iOS:
+    // `topFor` ends in `+ vvOffset` (K2 above) so the TOP follows the viewport the user can
+    // actually see, and this line then computes the height as "layout bottom minus that top",
+    // which cancels the term and leaves the BOTTOM edge pinned to the layout viewport. When iOS
+    // scrolls the visual viewport up to clear the keyboard, that bottom edge renders exactly
+    // `vvOffset` above the bottom of what he can see, which is the gap in his screenshot.
+    //
+    // Adding the same term to the bottom is what K-A below already says it wants: the usable
+    // bottom edge is the viewport's own bottom in every state, keyboard up or not. `vvOffset` is
+    // 0 with no keyboard and on every desktop browser, so this is identity everywhere else, the
+    // same way the top's copy of it is.
     const restMargin = viewport.h * REST_BOTTOM_MARGIN_RATIO * (1 - ex);
-    const bottom = viewport.h - restMargin;
+    const bottom = viewport.h + vvOffset - restMargin;
     if (oT < 1) {
       // W3: the same slack the top takes, so the bottom edge stays pinned where K-A put it.
       const rawResting = topFor(1, ex);
