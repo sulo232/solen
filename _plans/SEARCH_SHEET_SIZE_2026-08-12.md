@@ -36,7 +36,7 @@ instead of 17, iOS scrolls further to clear the keyboard, and the sheet rides do
 
 ## Boxes
 
-- [x] 1. Wo? sheet top matches the Suche sheet top. Commit f0e0b7de3.
+- [x] 1. Wo? sheet top matches the Suche sheet top. Commit 6ea21eea0.
   - [x] 1a. The location heading folds on the SAME `expand` axis the service heading already uses.
         `SearchOverlay.tsx:2270`, `style={{ height: locHeadingH, opacity: headingContentOp }}`,
         where `locHeadingH` at `SearchOverlay.tsx:629` is the same `useTransform(expand, [0, 0.55],
@@ -55,7 +55,7 @@ instead of 17, iOS scrolls further to clear the keyboard, and the sheet rides do
       after.
 - [x] 3. Not the reference. Nothing from the Airbnb capture is applied in this pass; the target
       number is his own Suche measurement, 17.0.
-- [x] 4. The calendar clipped through the 31 row on his phone. Commit f0e0b7de3. I had reported
+- [x] 4. The calendar clipped through the 31 row on his phone. Commit 6ea21eea0. I had reported
       this fixed off a 780-tall desktop viewport, which carries no Safari chrome; re-measured at
       the heights his phone actually gives the page, the month needs 300 and the scroller had 288
       at 730, 262 at 700, 236 at 670. D1 from the previous pass had already pulled the sheet's top
