@@ -27,7 +27,6 @@ import {
   MapPin,
   Clock,
   User,
-  Store,
   Scissors,
   Globe,
   type LucideIcon,
@@ -42,7 +41,6 @@ import { SALON_CATEGORY_SLUGS } from "@/lib/validations";
 // `next/dynamic(() => import("./SearchOverlay"))` call inside a callback, so this static
 // import back does not create an eager circular module-init cycle.
 import { CATEGORY_PILLS } from "./SearchTemplate";
-import { FEATURED_SALONS } from "@/app/[locale]/_components/homepage/searchFeatured";
 import { useSearchSuggest } from "../homepage/useSearchSuggest";
 import { useGeocodeSuggest } from "../homepage/useGeocodeSuggest";
 import { useStyleLooks } from "../homepage/useStyleLooks";
@@ -56,9 +54,8 @@ import {
 } from "../homepage/useRecentSearches";
 import { useRecentlyViewed } from "../homepage/useRecentlyViewed";
 import { Skeleton } from "@/app/[locale]/_components/primitives";
-// S5: the locked shared empty state (design contract "states" row, COMPONENT_REGISTRY),
-// the same one 19 other surfaces import. Not a hand-rolled one-off.
-import EmptyState from "@/components-legacy/ui/EmptyState";
+// S8 (2026-08-11): EmptyState import removed, the no-match state below no longer uses it
+// (variant B, owner pick off /dev/search-states).
 import { localizedField } from "@/lib/i18n/localized-field";
 
 // ── Constants ────────────────────────────────────────────────────────────────
@@ -382,50 +379,20 @@ export function SearchOverlay({
   const [mounted, setMounted] = React.useState(false);
   React.useEffect(() => setMounted(true), []);
 
-  // Live address for the idle-state "Beliebte Store" rows (FEATURED_SALONS is
-  // identity-only, see searchFeatured.ts). Reuses the existing /api/salons?ids=
-  // listing endpoint (no new API route) rather than the hardcoded, stale
-  // addresses this used to ship with. One fetch per overlay open; null-safe
-  // (SuggestRow only renders `sub` when it is set), so a slow/failed fetch
-  // just shows the name until it resolves rather than a wrong address.
-  const [featuredAddress, setFeaturedAddress] = React.useState<Record<string, string>>({});
-  // S6 (2026-08-03): the ids this SAME fetch came back with. When a category pill is
-  // active the request also carries `&category=`, which /api/salons already applies as
-  // `.contains("categories", [category])` on the same query builder as the `ids` filter
-  // (route.ts lines 164 + 177), so the server returns the SUBSET of the featured ids that
-  // are actually in that category and the idle "Beliebte Stores" list narrows with the
-  // suggestions instead of contradicting them. Server-side, not a client-side pass over
-  // one page. null = not resolved yet (render the full list rather than flash to empty).
-  const [featuredMatch, setFeaturedMatch] = React.useState<string[] | null>(null);
-  React.useEffect(() => {
-    if (!open) return;
-    let cancelled = false;
-    const sp = new URLSearchParams({
-      ids: FEATURED_SALONS.map((s) => s.id).join(","),
-      limit: String(FEATURED_SALONS.length),
-    });
-    if (category) sp.set("category", category);
-    fetch(`/api/salons?${sp.toString()}`)
-      .then((res) => (res.ok ? res.json() : Promise.reject(new Error(`status ${res.status}`))))
-      .then((data: { items?: { id: string; address?: string | null }[] }) => {
-        if (cancelled) return;
-        const next: Record<string, string> = {};
-        for (const item of data.items ?? []) if (item.address) next[item.id] = item.address;
-        setFeaturedAddress(next);
-        setFeaturedMatch((data.items ?? []).map((item) => item.id));
-      })
-      .catch((err) => {
-        if (cancelled) return;
-        console.error("[SearchOverlay] featured salons address fetch failed:", err);
-      });
-    return () => { cancelled = true; };
-  }, [open, category]);
-  // Only a RESOLVED category response narrows the list; with no pill active, or before
-  // the first response lands, the full featured list renders exactly as it did before.
-  const featuredVisible = React.useMemo(
-    () => (category && featuredMatch ? FEATURED_SALONS.filter((s) => featuredMatch.includes(s.id)) : FEATURED_SALONS),
-    [category, featuredMatch],
-  );
+  // S8 (2026-08-11): the "Beliebte Stores" block is gone from the idle body (variant B, his pick
+  // off /dev/search-states), and with it the state, the memo and the fetch that fed it.
+  //
+  // The fetch had to go WITH the render site, not after it. Left running it would have kept firing
+  // `/api/salons?ids=...` on every overlay open and every category change, resolved a real
+  // response, written it to state that nothing reads, and thrown it away. A request nobody can see
+  // the result of is worse than dead code, because it costs the user the round trip. Caught by the
+  // reviewer on this change, not by me.
+  //
+  // What it used to do, so restoring it is a lookup and not an excavation: it read live addresses
+  // for the FEATURED_SALONS ids through the existing /api/salons listing endpoint, and when a
+  // category pill was active it passed `&category=` so the server returned the subset of those ids
+  // actually in that category (route.ts, the `.contains("categories", [category])` filter on the
+  // same query builder as `ids`). Both halves live in git history at this line.
 
   // iOS-safe body-scroll lock: overflow:hidden alone doesn't lock iOS or preserve position, so
   // the page scrolled under the overlay (opened mid-page) and lost its spot on close, and the
@@ -1344,12 +1311,11 @@ export function SearchOverlay({
     if (!/^[a-z0-9-]+$/.test(slug)) return; // defensive: only ever push a safe slug shape
     router.push(`/${locale}/salon/${slug}`); close();
   }, [router, locale, close]);
-  // Store tap dispatcher: on the MAP (onSalonLocate present) recenter to the pin; otherwise open
-  // the salon page. ONE overlay, context-aware navigation (council 2026-07-01).
-  const goSalon = React.useCallback((id: string, slug: string, name: string) => {
-    if (onSalonLocate) { onSalonLocate({ id, slug, name }); close(); }
-    else openSalon(slug);
-  }, [onSalonLocate, openSalon, close]);
+  // S8 (2026-08-11): the store tap dispatcher went with the "Beliebte Stores" row that was its
+  // only caller (map context recentred to the pin via onSalonLocate, otherwise it opened the
+  // salon page: council 2026-07-01, "ONE overlay, context-aware navigation"). The behaviour it
+  // encoded is not lost, `openSalon` still holds the salon-page half and `onSalonLocate` is still
+  // a prop, so a future store row wires the same two lines back up.
   const openLookItem = React.useCallback((id: string) => { router.push(`/${locale}/inspo/${id}`); close(); }, [router, locale, close]);
   // B3.3: picking a geocode candidate (street/place) selects that candidate's city , the SAME
   // mechanism cityList()'s SuggestRow uses (setStadt to the display name), no hand-rolled city
@@ -1392,7 +1358,6 @@ export function SearchOverlay({
   const closeTxt                = t("close");
   const backTxt                 = t("back");
   const recentLabelTxt          = t("recentLabel");
-  const storesLabelTxt          = t("storesLabel");
   const categoriesLabelTxt      = t("categoriesLabel");
   const groupSalonsTxt          = t("groupSalons");
   const groupServicesTxt        = t("groupServices");
@@ -1499,7 +1464,7 @@ export function SearchOverlay({
           driver to 0 and change nothing on screen while the keyboard stayed up. Dismissing the
           field is what this control means, so it says so. */}
       {inputFocused ? (
-        <button onClick={() => { serviceRef.current?.blur(); setInputFocused(false); collapse(); }} aria-label={backTxt}
+        <button onClick={() => { serviceRef.current?.blur(); setInputFocused(false); collapse(); setServiceQ(""); }} aria-label={backTxt}
           className="grid h-10 w-8 shrink-0 place-items-center text-s-ink"> {/* mockup-ok: variant A, owner pick 2026-08-11 */}
           <ChevronLeft size={24} strokeWidth={2} />
         </button>
@@ -1543,17 +1508,23 @@ export function SearchOverlay({
           </button>
         ) : null}
       </span>
-      {/* P13 (owner-approved 2026-07-16): a quiet three-dot pulse loader while the suggest
-          request is in flight, replacing any spinner at the input's right end. Fixed-size slot
-          always mounted (only the dots' visibility toggles) so it never causes a layout jump. */}
-        <span className="grid h-6 w-6 shrink-0 place-items-center" aria-hidden>
-          {loading && typing ? <SuggestLoaderDots /> : null}
-        </span>
+      {/* S9 (2026-08-11): the three-dot loader that used to sit here, right of the clear X, is
+          deleted. Measured across 30 captured iOS apps: a progress indicator placed past the
+          clear X shows up zero times, while thirteen use skeleton rows with no indicator at
+          all, which is what the skeleton-rows branch above already draws at the same moment. */}
       </div>
     </div>
   );
 
   const serviceSuggestions = () => {
+    // S8: shared between the idle list and the no-result state below, one definition of the
+    // categories rows, not two copies of the same taps.
+    // A2/Model B (2026-07-04): this category shortcut no longer clears the typed query , it
+    // only sets `service` (feeds ?category=/?service= via buildParams, unchanged), same as
+    // picking the pill row never clears `serviceQ`.
+    const categoryRows = CATEGORIES.map((c) => (
+      <SuggestRow key={c.label} name={c.label} Icon={c.icon} onClick={() => { setService(c.label); advance("service"); }} />
+    ));
     if (typing) {
       if (loading && !hasResults && styleTerms.length === 0)
         return <div className="space-y-2 pt-1">{[0,1,2].map((i) => <Skeleton key={i} height={48} rounded={14} />)}</div>;
@@ -1579,12 +1550,16 @@ export function SearchOverlay({
       const nothingMatched =
         !hasResults && !geoLoading && geoCandidates.length === 0 && acTerms.length === 0 && looks.length === 0;
       if (nothingMatched) {
+        // Variant B, owner pick off /dev/search-states 2026-08-11: the grey Lucide disc with
+        // a large void under it is gone. The dead end now leads TOP-down, not centred: the
+        // no-match copy, then the same category rows the idle list renders, so there is a way
+        // forward instead of a wall.
         return (
-          <EmptyState
-            icon={Search}
-            title={noMatchTitleTxt}
-            message={t("noMatchBody", { query: serviceQ.trim() })}
-          />
+          <>
+            <p className="mb-1 text-[15px] font-semibold text-s-ink">{noMatchTitleTxt}</p> {/* mockup-ok: variant B, owner pick off /dev/search-states 2026-08-11 */}
+            <p className="mb-3 text-[14px] text-s-ink-2">{t("noMatchBody", { query: serviceQ.trim() })}</p> {/* mockup-ok: variant B, owner pick off /dev/search-states 2026-08-11 */}
+            {categoryRows}
+          </>
         );
       }
       // P13: locale-native "ab CHF X" price, the same tCommon("fromPrice")+formatPrice pattern
@@ -1727,6 +1702,14 @@ export function SearchOverlay({
         </>
       );
     }
+    // Variant B, owner pick off /dev/search-states 2026-08-11: a tap on the search bar now
+    // shows ONE list, not four stacked sections. Every reference captured for the comparison
+    // subtracts content on focus, it never adds it: Airbnb opens with one list of suggested
+    // destinations, Fresha swaps its own photo grid for a plain category list the moment the
+    // field is focused, Uber Eats drops its chips and rail down to four recent rows. Ours
+    // used to stack Zuletzt, Beliebte Stores, Kategorien and Für dich on the same tap.
+    // Beliebte Stores and Für dich are gone from this branch; Zuletzt and Kategorien stay, in
+    // the same order as before.
     return (
       <>
         {visibleRecents.length > 0 && (<>
@@ -1736,33 +1719,8 @@ export function SearchOverlay({
               onClick={() => handleRecentClick(r)} onRemove={() => setHiddenRecents((prev) => new Set([...prev, i]))} />
           ))}
         </>)}
-        {/* S6: the whole section goes when the active category has no featured store in it,
-            rather than leaving a titled empty block (taste log 2026-07-06, data-state
-            filters hide while empty). */}
-        {featuredVisible.length > 0 && (<>
-          <SectionLabel className="mt-3">{storesLabelTxt}</SectionLabel>
-          {/* A Beliebte Store is a specific salon , tapping JUMPS straight to it (marks it selected
-              + opens the store page), it does NOT advance to the location step (owner). */}
-          {featuredVisible.map((sl) => <SuggestRow key={sl.id} name={sl.name} sub={featuredAddress[sl.id]} Icon={Store}
-            onClick={() => { setService(sl.name); push({ service: sl.name, city: stadt || undefined }); goSalon(sl.id, sl.slug, sl.name); }} />)}
-        </>)}
         <SectionLabel className="mt-3">{categoriesLabelTxt}</SectionLabel>
-        {/* A2/Model B (2026-07-04): this idle-state category shortcut no longer clears the typed
-            query , it only sets `service` (feeds ?category=/?service= via buildParams,
-            unchanged), same as picking the pill row never clears `serviceQ`. */}
-        {CATEGORIES.map((c) => <SuggestRow key={c.label} name={c.label} Icon={c.icon} onClick={() => { setService(c.label); advance("service"); }} />)}
-        {/* Für dich , replaces the old Trending chips with DNA-personalized looks (popular for
-            logged-out). Tapping a look opens it in Inspo. */}
-        {forYouLooks.length > 0 && (
-          <>
-            <SectionLabel className="mt-3">{forYouTxt}</SectionLabel>
-            <div className="grid grid-cols-2 gap-3 pb-2 pt-1">
-              {forYouLooks.map((l) => (
-                <LookCard key={l.id} image={l.image} title={l.title} onClick={() => openLookItem(l.id)} />
-              ))}
-            </div>
-          </>
-        )}
+        {categoryRows}
       </>
     );
   };
@@ -2126,28 +2084,9 @@ function SectionLabel({ children, className = "" }: { children: React.ReactNode;
   return <p className={`mb-1 text-[13px] font-semibold text-s-ink ${className}`}>{children}</p>;
 }
 
-// P13 (owner-approved 2026-07-16): the quiet three-dot pulse loader recipe from
-// taste-round2/search.html (.dots i , 4px dots, s-ink-2, staggered 150ms, ease infinite),
-// replacing any spinner at the input's right end while the suggest request is in flight.
-function SuggestLoaderDots() {
-  return (
-    <span className="flex items-center gap-[3px]">
-      {[0, 1, 2].map((i) => (
-        <motion.span // mockup-ok: P13 owner-approved loader recipe (search.html .dots i)
-          key={i}
-          className="h-1 w-1 rounded-full bg-s-ink-2"
-          animate={{ opacity: [0.25, 1, 0.25], y: [0, -3, 0] }} // mockup-ok: pulse loop, not an entrance
-          // WCAG 2.2.2 (Level A): was `repeat: Infinity`, an auto-starting loop with no bound, the
-          // clearest exposure in the motion audit (HOME_SEARCH_INSPO.md row 97). Bounded to 3 total
-          // cycles so the loop always ends inside 5s (worst case, the last-staggered dot at
-          // i*0.15=0.3s delay + 3*1.2s = 3.9s) even if the suggest request is still pending; it then
-          // holds on the dim static frame rather than looping indefinitely.
-          transition={{ duration: 1.2, repeat: 2, ease: "easeInOut", delay: i * 0.15 }}
-        />
-      ))}
-    </span>
-  );
-}
+// S9 (2026-08-11): SuggestLoaderDots deleted, see the capsule comment where it used to render.
+// No remaining call sites in this file. mockup-ok: variant B loading-dots removal, owner pick
+// off /dev/search-states 2026-08-11
 
 // P13 (owner-approved 2026-07-16): matched-substring highlight inside a Services/Stylists row
 // title. Splitting logic lives in lib/utils (splitHighlight, shared with SalonResultCard's own
