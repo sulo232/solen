@@ -695,18 +695,26 @@ export function SearchOverlay({
       // on top of a browser that already did it. Safari has re-anchored fixed elements to the
       // visual viewport since iOS 16, so on his phone K2 corrects a shift that never happened.
       //
-      // Rather than pick a side of that and be wrong on half the devices, MEASURE it: a probe
-      // pinned at `fixed; top: 0` reports 0 in client coordinates when fixed follows the layout
-      // viewport, and reports the scroll distance itself when it follows the visual one. So
-      // `offsetTop - probeTop` is the correction actually needed, and it is exact in both worlds:
-      // layout-anchored gives back K2 unchanged, visual-anchored gives 0. With no keyboard both
-      // terms are 0, so every state measured on a desktop browser is untouched by construction.
+      // Rather than pick a side of that and be wrong on half the devices, MEASURE it. A probe
+      // pinned at `fixed; top: 0` renders wherever this browser decides fixed elements go, and
+      // reports that place in the SAME coordinates every other rect in this file is measured in.
+      // So the distance the sheet must travel to sit at a wanted `y` is simply `y - probeTop`,
+      // and the correction term is `-probeTop`:
+      //   desktop, no keyboard   probeTop 0    correction 0    identical to before, by construction
+      //   fixed follows the page probeTop -O   correction +O   exactly what K2 added, kept
+      //   fixed follows the eye  probeTop 0    correction 0    no double count
+      //
+      // CORRECTED 2026-08-12 in the same hour it was written, from his own screenshot rather than
+      // from reasoning. The first version of this line added `offsetTop` on top of `-probeTop`,
+      // which on his phone is O + O, and he measured the result: the Wo? sheet went from opening
+      // at 168.3 to opening at 298.3, further from the Suche step's 112.0 instead of nearer. One
+      // term, measured, not two.
       const probe = document.createElement("div");
       probe.style.cssText = "position:fixed;top:0;left:0;width:1px;height:1px;visibility:hidden;pointer-events:none";
       document.body.appendChild(probe);
       const probeTop = probe.getBoundingClientRect().top;
       probe.remove();
-      setVvOffset(Math.max(0, Math.round((vv?.offsetTop ?? 0) - probeTop)));
+      setVvOffset(Math.max(0, Math.round(-probeTop)));
       // The band of the layout viewport the visual viewport no longer covers = the keyboard.
       // `* scale` is what keeps a ZOOM from being misread as a keyboard: zooming to 2x halves
       // visualViewport.height for the same screen, and without the scale term this computed a
