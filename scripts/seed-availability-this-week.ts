@@ -28,7 +28,12 @@
 import { loadEnvConfig } from "@next/env";
 loadEnvConfig(process.cwd());
 
-const DAYS_AHEAD = 9; // floor window is 7 days; +2 for margin
+// 2026-08-11: raised from 9 to 30, the same horizon the cron itself uses. Owner: "fic the days
+// sh too thn". The whole table had gone into the past again (newest slot 2026-08-10 15:45 UTC,
+// measured against a live count of 21,373 rows of which ZERO were in the future), so every date in
+// the picker returned nothing and every availability lookup 404'd. A 9-day window only rescues the
+// first week of a calendar that offers a month.
+const DAYS_AHEAD = 30;
 
 // 8 real active salons, 2 per category, chosen because none of them (unlike Pink Petal
 // Nails) already had forward availability. All verified live: is_active/listed_on_marketplace/
