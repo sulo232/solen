@@ -1309,7 +1309,12 @@ export function SearchOverlay({
     if (s === "date" || s === "location") {
       setInputFocused(false);
       collapse();
-      if (s === "location") setPendingFocus(s);
+      // G3 (2026-08-11): and no auto-focus on the city field either. He said it about the service
+      // field first, "i dont like when u click once its alrdy keyboard mode", and opening Wo? had
+      // the same shape: the step opened, the keyboard came straight up, and the list it exists to
+      // show was pushed behind the keys. Tapping the field is still one tap away if you want to
+      // type; the eight cities were never long enough to need filtering anyway, and today the live
+      // list is one row.
       return;
     }
     setInputFocused(true);
@@ -2117,7 +2122,18 @@ export function SearchOverlay({
                       <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" />
                       {/* mockup-ok: !important preserves the existing look, not a new one; same
                           carve-out as the service query input above (V3-D-input-fill-2026-07-17). */}
+                      {/* G3 (2026-08-11, he sent a screenshot of it): the fold follows the KEYBOARD,
+                          not the step. Opening Wo? no longer folds the composer away, which is what
+                          put the Suchen button back on screen. But tapping INTO this field raises the
+                          keyboard, and without a fold the sheet stayed at its full height while the
+                          list held two rows, so the bottom of the card was a slab of white behind the
+                          keys and the footer was under them. Measured on his shot: 348px of unbroken
+                          white, 13% of the phone, between Basel and the top of the keyboard.
+                          Focus folds, blur restores. That is exactly what this axis has always meant
+                          on the service field; the city field simply never wired it up. */}
                       <input data-bare-input ref={cityRef} value={cityQ} onChange={(e) => setCityQ(e.target.value)}
+                        onFocus={() => { setInputFocused(true); grow(1); }}
+                        onBlur={() => { setInputFocused(false); collapse(); }}
                         placeholder={citySearchPlaceholderTxt} aria-label={citySearchPlaceholderTxt}
                         className="min-w-0 flex-1 !border-0 !bg-transparent !min-h-0 !px-0 !text-[16px] text-s-ink placeholder:text-s-ink-2 focus:outline-none focus-visible:outline-none" />
                       {cityQ.length > 0 && (
