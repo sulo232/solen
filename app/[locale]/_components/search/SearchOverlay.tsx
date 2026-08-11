@@ -1230,6 +1230,22 @@ export function SearchOverlay({
     const [t, so, mt] = latest as [number, number, number];
     return open ? foldOp(t, so) : foldOp(t, so) * mt;
   });
+  // F1 (2026-08-11, his word was overlap and he has now said it three times). The Wo? and Wann?
+  // cards already fade out when the composer folds; the SERVICE card never did, so with the Wo?
+  // step open and the keyboard up his screen carried two white shapes touching each other: the
+  // collapsed Suche card on top and the open Wo? card under it.
+  //
+  // The reference he sent (his own Airbnb capture, measured: sheet top 62.3pt, one white surface,
+  // no card insets, no shadows between sections) is ONE sheet. The list is the screen. So the
+  // service card now folds on exactly the same axis its two neighbours already use, and the three
+  // of them behave identically instead of one being special.
+  //
+  // `foldOp(t, so)` returns 1 whenever that step IS the open one, so the service step's own focused
+  // state is untouched: this only ever hides the card while a DIFFERENT step is open.
+  const svcSlotOp = useTransform([svcT, stepsOp, morphT], (latest) => {
+    const [t, so, mt] = latest as [number, number, number];
+    return open ? foldOp(t, so) : foldOp(t, so) * mt;
+  });
   // S7 (2026-08-03, round 3 audit): `pointer-events:none` hides a control from the FINGER only.
   // Measured before this block existed, overlay open on the service step: 72 controls were
   // invisible on screen yet still tabbable and still in the accessibility tree , the entire Wo?
@@ -2060,7 +2076,7 @@ export function SearchOverlay({
               expanded body crossfade inside it. Height comes from `svcH` (see the slot block
               above), which is where the old `flex-1` used to sit. */}
           <motion.div style={{ height: svcH }} className="shrink-0 overflow-hidden">
-            <motion.div style={{ marginLeft: cardMx, marginRight: cardMx, borderTopLeftRadius: cardRadius, borderTopRightRadius: cardRadius, borderBottomLeftRadius: cardRadiusBottom, borderBottomRightRadius: cardRadiusBottom, boxShadow: "0 18px 50px rgba(10,10,10,0.13)" }}
+            <motion.div style={{ opacity: svcSlotOp, marginLeft: cardMx, marginRight: cardMx, borderTopLeftRadius: cardRadius, borderTopRightRadius: cardRadius, borderBottomLeftRadius: cardRadiusBottom, borderBottomRightRadius: cardRadiusBottom, boxShadow: "0 18px 50px rgba(10,10,10,0.13)" }}
               className="relative h-full overflow-hidden bg-white">
               {/* H5: the outgoing bar's own label, ghosted INSIDE the now-opaque card at the
                   spot its icon+text sat, so the growing box carries visual continuity from the
@@ -2160,7 +2176,14 @@ export function SearchOverlay({
                     <button type="button" onClick={composeStep}
                       className="mb-3 flex shrink-0 items-center justify-between text-left">
                       <span className="font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">{locationHeadingTxt}</span>
-                      <ChevronUp size={20} strokeWidth={2.2} className="text-s-ink-2" aria-hidden />
+                      {/* B1 continued: ONE way back, not two. With the field focused the arrow inside
+                          it is the way out, so this collapse chevron would be a second control for
+                          the same job on the same screen. His reference carries exactly one. It
+                          returns the moment the field is unfocused, where it is still the only way
+                          to fold this step. */}
+                      {inputFocused ? null : (
+                        <ChevronUp size={20} strokeWidth={2.2} className="text-s-ink-2" aria-hidden />
+                      )}
                     </button>
                     {/* REVERTED 2026-08-11, and the reason matters more than the pixels.
                         He picked variant A (a filled grey capsule) for the SERVICE field off
@@ -2178,7 +2201,22 @@ export function SearchOverlay({
                     {/* mockup-ok: restoring the owner-approved treatment recorded in TASTE_LOG
                         (db2a45ca8), not a new appearance. */}
                     <div className="mb-2 flex h-12 shrink-0 items-center gap-2.5 rounded-[14px] border border-s-border bg-white px-3.5">
-                      <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" />
+                      {/* B1 (2026-08-11): "i wish there was a back button when all the way open".
+                          There was none on this step once the keyboard was up: the only way out was
+                          the collapse chevron at the top right, which reads as a fold rather than a
+                          back. His own reference puts a back ARROW inside the field on the left, and
+                          the service field beside it already carries exactly that control, so this
+                          is the same one rather than a new invention. It only appears while the
+                          field is focused, which is the state he called "all the way open". */}
+                      {inputFocused ? (
+                        <button type="button" aria-label={backTxt}
+                          onClick={() => { cityRef.current?.blur(); setInputFocused(false); collapse(); }}
+                          className="relative grid h-8 w-6 shrink-0 place-items-center text-s-ink before:absolute before:-inset-y-1.5 before:-inset-x-3 before:content-['']">
+                          <ChevronLeft size={22} strokeWidth={2} />
+                        </button>
+                      ) : (
+                        <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" />
+                      )}
                       {/* mockup-ok: !important preserves the existing look, not a new one; same
                           carve-out as the service query input above (V3-D-input-fill-2026-07-17). */}
                       {/* G3 (2026-08-11, he sent a screenshot of it): the fold follows the KEYBOARD,
