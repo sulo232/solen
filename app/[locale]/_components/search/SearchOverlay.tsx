@@ -31,7 +31,8 @@ import {
   Globe,
   type LucideIcon,
 } from "lucide-react";
-import { SEARCH_CITIES, CITY_ICONS, ALL_CITIES_PARAM } from "@/lib/cities";
+import { SEARCH_CITIES, CITY_ICONS, ALL_CITIES_PARAM, getCityName } from "@/lib/cities";
+import { useActiveCities } from "@/hooks/useActiveCities";
 import { formatPrice } from "@/lib/format";
 import { matchesSearch, splitHighlight } from "@/lib/utils";
 import { CATEGORIES } from "@/app/[locale]/_components/homepage/searchCategories";
@@ -332,6 +333,7 @@ export function SearchOverlay({
   const [inputFocused, setInputFocused] = React.useState(false);
 
   const { recent, push } = useRecentSearches();
+  const { cities: activeCities } = useActiveCities();  // the live set, shared with every other city picker
   const [hiddenRecents, setHiddenRecents] = React.useState<Set<number>>(new Set());
   const { items: _recentlyViewed } = useRecentlyViewed(4); // preserved hook call
 
@@ -1418,7 +1420,27 @@ export function SearchOverlay({
   }), [fieldServiceLabelTxt, serviceRowValue, queryPlaceholderTxt, locationHeadingTxt, stadt, noPreferenceTxt, fieldAddPlaceholderTxt, dateHeadingTxt, dateLabel, anytimeTxt]);
 
   const visibleRecents = React.useMemo(() => recent.filter((_, i) => !hiddenRecents.has(i)), [recent, hiddenRecents]);
-  const filteredCities = React.useMemo(() => SEARCH_CITIES.filter((c) => matchesSearch(c, cityQ)), [cityQ]);
+  // C1 (2026-08-11): the Wo? list now offers only cities Solen can actually serve.
+  //
+  // Measured before the change: the picker showed eight cities off the hardcoded SEARCH_CITIES
+  // list while /api/cities returned exactly one active city. Picking Zurich rendered a results
+  // page headed "Suchen Basel", full of Basel salons, with the address bar still saying Zurich.
+  // Nothing errored and nothing said the city was not open yet, so a screen that looked like a
+  // successful search quietly answered a different question. Seven of the eight rows did that.
+  //
+  // Not a new system: `useActiveCities` is the shared fetch every OTHER city picker already uses,
+  // and its own docstring records why it exists ("the admin Staedte toggle never actually changed
+  // what a customer saw"). This list was the one that had never been moved onto it.
+  //
+  // The static list stays as the fallback for the moment before the fetch resolves and for a
+  // failed fetch, which is the hook's documented contract, so the picker is never empty.
+  const cityNames = React.useMemo(
+    () => (activeCities.length
+      ? activeCities.map((c) => getCityName(c.slug, locale, c))
+      : [...SEARCH_CITIES]),
+    [activeCities, locale],
+  );
+  const filteredCities = React.useMemo(() => cityNames.filter((c) => matchesSearch(c, cityQ)), [cityNames, cityQ]);
 
   // R7: the collapsed FACE only. The white fill, radius and shadow moved onto the slot that
   // owns it (see the slot block above), because that surface has to survive the crossfade , it

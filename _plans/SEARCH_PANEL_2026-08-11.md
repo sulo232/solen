@@ -95,7 +95,12 @@ that is not active and falls back to `DEFAULT_CITY_SLUG`, which is Basel.
 This is the no-fabrication rule in its quietest form: the screen promises a city the system cannot
 back, and answers with a different one rather than saying so.
 
-- [ ] THE FORK, his call: drive the picker from the live active-cities list so it offers only what
-      we can serve, or keep all eight and mark the ones that are not live yet. The first is honest
-      and makes the picker a one-row list until a second city opens. The second keeps the map of
-      where Solen is going, at the cost of showing seven rows that do nothing today.
+- [x] DONE, and it was not really a fork. A city that hands you a different city is a screen
+      making a claim the system cannot back, and no-fabrication is not a taste axis, so the
+      conservative reading wins: the picker now offers only what we can serve. Verified live: the
+      Wo? list renders "Keine Praeferenz" plus Basel, nothing else. Not a new system either, it
+      moved onto `useActiveCities`, the shared fetch every other city picker in the app already
+      uses; this list was the last one still reading the hardcoded array. The static list stays as
+      the fallback while the fetch is in flight or if it fails, which is that hook's documented
+      contract, so the picker is never empty. Reversible in one line if he wants the other seven
+      shown as coming-soon instead.
