@@ -46,7 +46,7 @@ the calendar owns roughly 590pt of it.
       `vvOffset` is 0 with no keyboard and 0 in every desktop browser, so this is identity
       everywhere else, the same way the top's copy of it is.
 
-      Commit 2c452bcf1, `SearchOverlay.tsx:908` (`const bottom = viewport.h + vvOffset -
+      Commit 2c452bcf1, `SearchOverlay.tsx:922` (`const bottom = viewport.h + vvOffset -
       restMargin`), which is the counterpart of the `+ vvOffset` on `topFor`'s last line at
       `SearchOverlay.tsx:853`. verified: desktop, 402x780, the composed, open and focused states are
       unchanged and the focused sheet sits at top 50 / bottom 780 on a 780 viewport, flush, gap 0.
