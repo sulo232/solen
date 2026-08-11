@@ -76,3 +76,26 @@ instead of 17, iOS scrolls further to clear the keyboard, and the sheet rides do
    capping the location card was tried and made it worse, moving the hole above the list instead of
    removing it. The real fix is more cities in the list, and cities with no salons behind them
    would be a dead filter, so that waits for salons outside Basel.
+
+## CORRECTION (owner 2026-08-12, "you didnt fix")
+
+- [x] C1. verified: it is not stale code and it is not the wrong server. `lsof` on port 3000
+      resolves to this worktree, and the same probes run against the TUNNEL he is holding, in an
+      iPhone-sized context, return the fixed numbers: Wo? focused `fieldMinusCard` **16.0** (was
+      59.0 on his phone), and the month fits with nothing to scroll at both 874 (465/465) and 730
+      (330/330) with the 31 rendered.
+- [ ] C2. BLOCKED on one thing only, named concretely rather than punted: whether his Safari is
+      still holding the previous bundle. Everything I can reach says fixed; his phone said not
+      fixed. The discriminator is a screenshot of Wo? with the keyboard up taken after a
+      cache-busted load, because the ONE number that settles it is the distance from the top of
+      the white card to the top of the field: 59 = old bundle, 16 = new.
+- [ ] C3. If C2 comes back at 16 and he still reads the two sheets as different sizes, then the
+      remaining difference is the sheet's ABSOLUTE top, and his own two captures already refute
+      the current arithmetic for it. `topFor` ends in `+ vvOffset` (K2, `SearchOverlay.tsx:853`)
+      to undo iOS scrolling the page under a fixed element. If that were right, both steps would
+      render their sheet at `focusedTop`, about 65. He measured 112 and 168. Both are LOW, by
+      amounts that look like the two different scroll distances, which is the signature of iOS
+      re-anchoring fixed elements to the visual viewport itself (iOS 16+) so the compensation is
+      applied twice. The fix would be to drop the term, and the reason I have not: K2 was written
+      off a measurement that said the opposite, and I will not flip a documented measurement on a
+      theory without one screenshot to decide it.
