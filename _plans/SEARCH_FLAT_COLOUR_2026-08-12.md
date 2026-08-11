@@ -125,6 +125,16 @@ mockup is `SuggestRow` and `LookCard` copied out of SearchOverlay.tsx with ONE t
 - [x] R6. C, the way into Inspo: ANSWERED. There is none today, tapping a look opens that one look.
       The proposed frame puts it on the section heading in ink with a chevron, never blue, per the
       see-all rule.
-- [ ] R7. HIS CALL AGAIN, and the only thing left: the tint system and the two new icons are a
-      proposal, not applied. Say yes and they replace the values in `searchCategories.ts`, which is
-      the single source, and the three panel changes go into SearchOverlay.tsx.
+- [x] R7. APPLIED, not offered. He had already said yes to all three ("1 proposed", "2 B1", "c
+      proposed") and had asked for the system and the icons himself, so building them is the order,
+      not a guess. `searchCategories.ts` now carries the computed tints and Brush/Hand;
+      `SearchOverlay.tsx` gained three opt-in slots on `SuggestRow` (photo, rating, tint) so every
+      other caller renders byte-identically, keeps the cover and rating from the fetch it already
+      made, and the look card moved to 9:16 with a two-line title and an Inspo link on the heading.
+      verified on the live panel at 402x874: five tile colours where there was one grey, 11 salon
+      photos, 3 gold stars, zero review counts, look ratio 0.563 (the Inspo page's own), and one
+      `/de/inspo` link in the sheet.
+- [ ] R8. ONE HONEST WEAKNESS, his to settle: rendered, the shaving brush reads as a paintbrush.
+      It is the closest thing our icon set has to a barbershop tool and it does end the twin
+      scissors, but if it bothers him the clippers drawing we already own
+      (`/icons/categories/clippers.png`) is a one-line swap for that row alone.

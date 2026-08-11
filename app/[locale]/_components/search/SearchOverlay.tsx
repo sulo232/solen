@@ -6,6 +6,7 @@
 import * as React from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 import {
   motion,
@@ -30,6 +31,7 @@ import {
   User,
   Scissors,
   Globe,
+  Star,
   type LucideIcon,
 } from "lucide-react";
 import { CITY_ICONS, ALL_CITIES_PARAM, getCityName } from "@/lib/cities";
@@ -390,6 +392,9 @@ export function SearchOverlay({
   // (SuggestRow only renders `sub` when it is set), so a slow/failed fetch
   // just shows the name until it resolves rather than a wrong address.
   const [featuredAddress, setFeaturedAddress] = React.useState<Record<string, string>>({});
+  // C1: the SAME response already carries each salon's cover and rating. It used to be dropped on
+  // the floor and the row drew a grey glyph instead. No new request.
+  const [featuredMeta, setFeaturedMeta] = React.useState<Record<string, { photo: string | null; rating: number | null }>>({});
   // S6 (2026-08-03): the ids this SAME fetch came back with. When a category pill is
   // active the request also carries `&category=`, which /api/salons already applies as
   // `.contains("categories", [category])` on the same query builder as the `ids` filter
@@ -408,11 +413,16 @@ export function SearchOverlay({
     if (category) sp.set("category", category);
     fetch(`/api/salons?${sp.toString()}`)
       .then((res) => (res.ok ? res.json() : Promise.reject(new Error(`status ${res.status}`))))
-      .then((data: { items?: { id: string; address?: string | null }[] }) => {
+      .then((data: { items?: { id: string; address?: string | null; cover_photo_url?: string | null; average_rating?: number | null }[] }) => {
         if (cancelled) return;
         const next: Record<string, string> = {};
-        for (const item of data.items ?? []) if (item.address) next[item.id] = item.address;
+        const meta: Record<string, { photo: string | null; rating: number | null }> = {};
+        for (const item of data.items ?? []) {
+          if (item.address) next[item.id] = item.address;
+          meta[item.id] = { photo: item.cover_photo_url ?? null, rating: item.average_rating ?? null };
+        }
         setFeaturedAddress(next);
+        setFeaturedMeta(meta);
         setFeaturedMatch((data.items ?? []).map((item) => item.id));
       })
       .catch((err) => {
@@ -1643,6 +1653,9 @@ export function SearchOverlay({
   const placesLabelTxt          = t("placesLabel");
   const looksLabelTxt           = t("looksLabel");
   const forYouTxt               = t("forYou");
+  // C3: "Inspo" is the product name of that feed in every locale (project memory: the discovery
+  // feed is called Inspo on the front end), so it is not a translated string.
+  const inspoTxt                = "Inspo";
   const seeAllResultsTxt        = t("seeAllResults");
   // S5: both strings already existed in messages/{de,en,fr,it}.json under this same
   // namespace and were unused by any file; no new copy invented. `noMatchBody` takes a
@@ -1853,7 +1866,7 @@ export function SearchOverlay({
     // only sets `service` (feeds ?category=/?service= via buildParams, unchanged), same as
     // picking the pill row never clears `serviceQ`.
     const categoryRows = CATEGORIES.map((c) => (
-      <SuggestRow key={c.label} name={c.label} Icon={c.icon} onClick={() => { setService(c.label); advance("service"); }} />
+      <SuggestRow key={c.label} name={c.label} Icon={c.icon} tintBg={c.bg} tintFg={c.fg} onClick={() => { setService(c.label); advance("service"); }} />
     ));
     if (typing) {
       if (loading && !hasResults && styleTerms.length === 0)
@@ -2021,7 +2034,7 @@ export function SearchOverlay({
           {/* Für dich , DNA-personalized looks fill the bottom so short results never read empty (C). */}
           {forYouLooks.length > 0 && (
             <>
-              <SectionLabel className="mt-5">{forYouTxt}</SectionLabel>
+              <FeedSectionLabel className="mt-5" href={`/${locale}/inspo`} seeAll={inspoTxt}>{forYouTxt}</FeedSectionLabel>
               <div className="grid grid-cols-2 gap-3">
                 {forYouLooks.map((l) => (
                   <LookCard key={l.id} image={l.image} title={l.title} onClick={() => openLookItem(l.id)} />
@@ -2065,6 +2078,7 @@ export function SearchOverlay({
           {/* A Beliebte Store is a specific salon , tapping JUMPS straight to it (marks it selected
               + opens the store page), it does NOT advance to the location step (owner). */}
           {featuredVisible.map((sl) => <SuggestRow key={sl.id} name={sl.name} sub={featuredAddress[sl.id]} Icon={Store}
+            photo={featuredMeta[sl.id]?.photo} rating={featuredMeta[sl.id]?.rating}
             onClick={() => { setService(sl.name); push({ service: sl.name, city: stadt || undefined }); goSalon(sl.id, sl.slug, sl.name); }} />)}
         </>)}
         <SectionLabel className="mt-3">{categoriesLabelTxt}</SectionLabel>
@@ -2073,7 +2087,7 @@ export function SearchOverlay({
             Inspo. This is the "inspo n allat" he asked to have back. */}
         {forYouLooks.length > 0 && (
           <>
-            <SectionLabel className="mt-3">{forYouTxt}</SectionLabel>
+            <FeedSectionLabel className="mt-3" href={`/${locale}/inspo`} seeAll={inspoTxt}>{forYouTxt}</FeedSectionLabel>
             <div className="grid grid-cols-2 gap-3 pb-2 pt-1">
               {forYouLooks.map((l) => (
                 <LookCard key={l.id} image={l.image} title={l.title} onClick={() => openLookItem(l.id)} />
@@ -2508,6 +2522,24 @@ function SectionLabel({ children, className = "" }: { children: React.ReactNode;
   return <p className={`mb-1 text-[13px] font-semibold text-s-ink ${className}`}>{children}</p>;
 }
 
+// C3 (2026-08-12, owner: "how to jump to the inspo page from there"). There was no way: the section
+// showed four looks and tapping one opened that single look, so the feed those looks come from was
+// unreachable from the panel. The heading carries it now. Ink with a chevron, never blue, because
+// see-all controls in this system are ink and only small clickable text is blue.
+function FeedSectionLabel({ children, className = "", href, seeAll }: {
+  children: React.ReactNode; className?: string; href: string; seeAll: string;
+}) {
+  return (
+    <div className={`mb-1 flex items-center justify-between ${className}`}>
+      <p className="text-[13px] font-semibold text-s-ink">{children}</p>
+      <Link href={href} className="flex items-center gap-0.5 text-[13px] font-semibold text-s-ink">
+        {seeAll}
+        <ChevronRight size={15} strokeWidth={2.2} />
+      </Link>
+    </div>
+  );
+}
+
 // S9 (2026-08-11): SuggestLoaderDots deleted, see the capsule comment where it used to render.
 // No remaining call sites in this file. mockup-ok: variant B loading-dots removal, owner pick
 // off /dev/search-states 2026-08-11
@@ -2566,16 +2598,26 @@ function CategoryPillsRow({ active, onSelect, ariaLabel }: { active: string; onS
   );
 }
 
-// Compact Inspo look card: fixed 3:4 photo + style name below, whole card taps to the look.
-// The uniform fixed aspect suits the overlay's strip + 2-col grids (the /inspo feed keeps
-// ItemCard's natural-aspect masonry). No heart here , owner picked the name-below card.
+// Compact Inspo look card: photo + style name below, whole card taps to the look. No heart here,
+// owner picked the name-below card.
+//
+// C2 (2026-08-12, owner asked the question rather than assuming: "is aespectcratio good like does
+// it acc reflect the inspo page"). It did not. Measured the same minute on both surfaces at
+// 402x874: the /inspo feed renders 192x341 and 80x142, ratio 0.563, which is the 9:16 these
+// thumbnails are shot in; this card was a fixed 3:4, ratio 0.75, so every look was cropped by
+// about a quarter top and bottom against how the same look appears on Inspo. Now 9:16, which is
+// FLOORS LAW 8: one thing looks the same on every screen that shows it.
+//
+// The title was `truncate`, one line, and at this width that cut nearly every real style name mid
+// word ("Hybrid Microblading and ..."). Two lines, which costs a little evenness between the two
+// columns and buys a legible name.
 function LookCard({ image, title, onClick }: { image: string; title: string; onClick: () => void }) {
   return (
     <button onClick={onClick} aria-label={title} className="group flex w-full flex-col gap-1.5 text-left transition-transform duration-150 active:scale-[0.99] active:duration-[80ms] active:ease-glide">
-      <span className="block w-full overflow-hidden rounded-[14px] bg-s-bg-sunken" style={{ aspectRatio: "3 / 4" }}>
+      <span className="block w-full overflow-hidden rounded-[14px] bg-s-bg-sunken" style={{ aspectRatio: "9 / 16" }}>
         {image ? <img src={image} alt="" loading="lazy" className="h-full w-full object-cover" /> : null}
       </span>
-      <span className="truncate px-0.5 text-[13px] font-semibold text-s-ink">{title}</span>
+      <span className="line-clamp-2 px-0.5 text-[13px] font-semibold leading-snug text-s-ink">{title}</span>
     </button>
   );
 }
@@ -2641,8 +2683,14 @@ function MonthGrid({ monthDate, now, windowEnd, selKey, onPick, locale }: {
 // P13 (owner-approved 2026-07-16): `name` widened to accept a ReactNode (a <HighlightedText>
 // result) alongside a plain string , local-only component, no other file imports it, so this
 // is a fully backward-compatible widening.
-function SuggestRow({ name, sub, Icon, img, onClick, onRemove }: {
+function SuggestRow({ name, sub, Icon, img, photo, rating, tintBg, tintFg, onClick, onRemove }: {
   name: React.ReactNode; sub?: string; Icon?: LucideIcon; img?: string;
+  // C1 (2026-08-12, owner: "looks flat n no color"). Three optional slots, all opt-in, so every
+  // existing caller renders byte-identically: `photo` puts the salon's OWN cover in the tile it
+  // already had, `rating` puts the gold star and the value beside the name (he asked for the value
+  // WITHOUT the review count), and `tintBg`/`tintFg` let the category rows carry the colour
+  // `searchCategories.ts` has always declared and this row used to throw away.
+  photo?: string | null; rating?: number | null; tintBg?: string; tintFg?: string;
   onClick: () => void; onRemove?: () => void;
 }) {
   return (
@@ -2650,13 +2698,26 @@ function SuggestRow({ name, sub, Icon, img, onClick, onRemove }: {
       <button onClick={onClick} className="flex min-w-0 flex-1 items-center gap-3.5 py-2.5 text-left">
         {img ? (
           <img src={img} alt="" className="h-12 w-12 shrink-0 object-contain" />
+        ) : photo ? (
+          <span className="block h-12 w-12 shrink-0 overflow-hidden rounded-2xl bg-s-bg-sunken">
+            <img src={photo} alt="" loading="lazy" className="h-full w-full object-cover" />
+          </span>
         ) : (
-          <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-s-bg-sunken text-s-ink-2">
+          <span className={`grid h-12 w-12 shrink-0 place-items-center rounded-2xl ${tintBg ?? "bg-s-bg-sunken"} ${tintFg ?? "text-s-ink-2"}`}>
             {Icon ? <Icon size={20} strokeWidth={1.9} /> : null}
           </span>
         )}
         <span className="min-w-0">
-          <span className="block truncate text-[15px] font-semibold text-s-ink">{name}</span>
+          <span className="flex min-w-0 items-baseline gap-2">
+            <span className="min-w-0 truncate text-[15px] font-semibold text-s-ink">{name}</span>
+            {/* The gold star against the grey line under it IS the separation, so no dot. */}
+            {rating != null ? (
+              <span className="flex shrink-0 items-center gap-1 text-[13px] text-s-ink">
+                <Star size={12} strokeWidth={0} fill="currentColor" className="shrink-0 text-s-star" />
+                <span>{rating.toFixed(1)}</span>
+              </span>
+            ) : null}
+          </span>
           {sub ? <span className="block truncate text-[13px] text-s-ink-2">{sub}</span> : null}
         </span>
       </button>
