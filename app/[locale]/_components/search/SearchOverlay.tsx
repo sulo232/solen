@@ -780,6 +780,45 @@ export function SearchOverlay({
   // seven heights this fix was measured against; it exists purely so a viewport shorter than any
   // of those still gets a sheet instead of RESTING_TOP overshooting the available height itself.
   const RESTING_TOP = Math.min(RESTING_TOP_MAX, Math.max(32, viewport.h * (RESTING_TOP_MAX / 844)));
+  // W3 (2026-08-11). Third attempt, and the two before it are worth naming because this one is
+  // their arithmetic corrected rather than a new idea.
+  //
+  // The complaint, twice from his own phone: the Wo? card runs on as blank white under its last
+  // row. With the live city set down to Basel alone the card holds two rows and the rest is paper.
+  //
+  // Attempt 1 capped the CARD and handed the leftover to another slot, which moved the hole above
+  // the list instead of below it, and clipped "Basel" by 30px.
+  // Attempt 2 pushed the SHEET's top down by the leftover, which is the right shape, and got the
+  // sum wrong: it subtracted only what the Wo? card needs and forgot that the sheet also carries
+  // the collapsed Suche row, the collapsed Wann? row and the footer. It over-subtracted by about
+  // 210px, the sheet hit its 200px floor, and the panel collapsed to a strip.
+  //
+  // So: the same push, with every occupant counted. The Suche row is always 56. The Wann? row and
+  // the footer fold away on the focus axis, so they are scaled by (1 - ex), exactly as their own
+  // transforms do. The Wo? card's own need is counted from the row count, not measured off the DOM,
+  // so there is no observer and no re-render loop.
+  //
+  // It only ever REDUCES the sheet, it is multiplied by locT so it is exactly zero on every other
+  // step, and it reads `kbInset` so the keyboard case (his screenshot) is the one it helps most.
+  // MEASURED off the live card rather than estimated, which is what the first two attempts got
+  // wrong: card padding 16 top and 16 bottom, heading 30, a 12 gap, the field 48, an 8 gap, and
+  // the slot's own 10 and 20 gaps around the card. Rows are 68 each, including the one that
+  // carries a subtitle. The +32 on the end is deliberate headroom: this value only ever REDUCES
+  // the sheet, so being generous costs a little white and being mean clips the last row, and
+  // clipping "Basel" in half is exactly how attempt 1 failed.
+  const LOC_ROW_H = 68;
+  const LOC_CHROME_H = 16 + 30 + 12 + 48 + 8 + 16 + 10 + 20 + 32;
+  const locNeed = LOC_CHROME_H + LOC_ROW_H * ((citiesLoading ? 0 : activeCities.length) + 1);
+  const svcT = useMotionValue(activeStep === "service" ? 1 : 0);
+  const locT = useMotionValue(activeStep === "location" ? 1 : 0);
+  const dateT = useMotionValue(activeStep === "date" ? 1 : 0);
+  const locSlackFor = React.useCallback((rawTop: number, ex: number, l: number) => {
+    if (l <= 0) return 0;
+    const others = 56 + (86 + 68) * (1 - ex); // Suche row, then Wann? row + footer, which fold
+    const spare = (viewport.h - kbInset) - rawTop - locNeed - others;
+    return Math.max(spare, 0) * l;
+  }, [viewport.h, kbInset, locNeed]);
+
   const topFor = React.useCallback(
     (oT: number, ex: number) => {
       const settledTop = RESTING_TOP + (focusedTop - RESTING_TOP) * ex;
@@ -795,9 +834,10 @@ export function SearchOverlay({
     // resize/orientation change until one of the other deps also happened to change.
     [origin, focusedTop, minTop, vvOffset, viewport.h],
   );
-  const cropTop = useTransform([morphT, expand], (latest) => { // mockup-ok: SEARCH_MORPH.md A7/A8/A9
-    const [oT, ex] = latest as [number, number];
-    return topFor(oT, ex);
+  const cropTop = useTransform([morphT, expand, locT], (latest) => { // mockup-ok: SEARCH_MORPH.md A7/A8/A9
+    const [oT, ex, l] = latest as [number, number, number];
+    const raw = topFor(oT, ex);
+    return raw + locSlackFor(raw, ex, l);
   });
   // Measured on the reference: `left * 2 + width = 402.0` at EVERY frame, to within 0.02pt. The card
   // is centred throughout and expands symmetrically, so left is not an independent property, it is
@@ -815,8 +855,8 @@ export function SearchOverlay({
   // to exist. Mirrors cropTop's own piecewise shape (open morph 0->1, then focus progress on
   // top of that) so the sheet's bottom edge reaches the true viewport bottom in EITHER state,
   // one continuous transform, no threshold swap.
-  const sheetHeight = useTransform([morphT, expand], (latest) => { // mockup-ok: SEARCH_MORPH.md C6, H5
-    const [oT, ex] = latest as [number, number];
+  const sheetHeight = useTransform([morphT, expand, locT], (latest) => { // mockup-ok: SEARCH_MORPH.md C6, H5
+    const [oT, ex, l] = latest as [number, number, number];
     // K-A: the usable bottom edge is always the viewport's own bottom, keyboard up or not, so
     // the sheet is never shrunk to sit above the keys (that was K-B, rejected at the K4
     // chooser). Height is always "bottom minus the top `topFor` just returned", so the sheet's
@@ -830,13 +870,16 @@ export function SearchOverlay({
     const restMargin = viewport.h * REST_BOTTOM_MARGIN_RATIO * (1 - ex);
     const bottom = viewport.h - restMargin;
     if (oT < 1) {
-      const restingHeight = Math.max(bottom - topFor(1, ex), 200);
+      // W3: the same slack the top takes, so the bottom edge stays pinned where K-A put it.
+      const rawResting = topFor(1, ex);
+      const restingHeight = Math.max(bottom - rawResting - locSlackFor(rawResting, ex, l), 200);
       // H3 (2026-08-05): `oT` is `morphT`, the same already-shaped value `topFor` just took, so
       // height and top still settle on the same frame, never a box that is already tall but not yet
       // positioned. The `/ 0.8` that used to sit here is gone for the reason written above `topFor`.
       return origin.height + (restingHeight - origin.height) * oT;
     }
-    return Math.max(bottom - topFor(oT, ex), 200);
+    const raw = topFor(oT, ex);
+    return Math.max(bottom - raw - locSlackFor(raw, ex, l), 200);
   });
   // R6 (2026-08-02 round 3, owner bug report): the scrim used to fade on its OWN
   // AnimatePresence clock while the sheet faded on `openT`. The two curves are not the same
@@ -1000,9 +1043,6 @@ export function SearchOverlay({
   // location = ROW_H, the row plus its 10px gap; date = the same plus the 20px tail the old
   // `stepsH` literal carried, so the footer keeps its exact y.
   const SLOT_COLLAPSED = { service: ROW_H - 10, location: ROW_H, date: ROW_H + 20 };
-  const svcT = useMotionValue(activeStep === "service" ? 1 : 0);
-  const locT = useMotionValue(activeStep === "location" ? 1 : 0);
-  const dateT = useMotionValue(activeStep === "date" ? 1 : 0);
   React.useEffect(() => {
     const cfg = { duration: reduce ? 0 : 0.3, ease: MORPH_EASE };
     const runs = [
