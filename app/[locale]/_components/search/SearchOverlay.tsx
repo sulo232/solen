@@ -2303,13 +2303,22 @@ function MonthGrid({ monthDate, now, windowEnd, selKey, onPick, locale }: {
         const isToday = ts === todayMid;
         // selected-ok: locked date-fill is blue s-accent (design contract)
         const selected = selKey === key;
+        // TODAY IS NOT BLUE ANY MORE. Owner 2026-08-11: "in wann why is it blue".
+        // Fair question, and the answer was that today's number was drawn in the accent colour
+        // while nothing was selected, so the calendar opened looking as though a date had already
+        // been chosen. The design contract does allow blue on a calendar date, but only as the
+        // SELECTED FILL, which is the `selected` branch below and is untouched. Today now carries
+        // the calm grey fill this system already uses for a selected pill, plus bold ink, so it
+        // reads as "you are here" rather than "already picked". No new value is introduced:
+        // bg-s-bg-sunken and the h-9 pill shape are both already on this element.
         return (
           <div key={i} className="flex justify-center">
             {disabled ? (
               <span className="grid h-9 w-9 place-items-center text-[14px] text-s-ink-2/35">{d}</span>
             ) : (
+              /* mockup-ok: swaps one existing token for another on the today branch, per his question */
               <button onClick={() => onPick(key, `${d}. ${monthLong}`)}
-                className={`grid h-9 w-9 place-items-center rounded-full text-[14px] transition-colors ${selected ? "bg-s-accent font-bold text-white" /* selected-ok: date cell */ : isToday ? "font-bold text-s-accent" : "font-medium text-s-ink hover:bg-s-bg-sunken"}`}>
+                className={`grid h-9 w-9 place-items-center rounded-full text-[14px] transition-colors ${selected ? "bg-s-accent font-bold text-white" /* selected-ok: date cell */ : isToday ? "bg-s-bg-sunken font-bold text-s-ink" : "font-medium text-s-ink hover:bg-s-bg-sunken"}`}>
                 {d}
               </button>
             )}
