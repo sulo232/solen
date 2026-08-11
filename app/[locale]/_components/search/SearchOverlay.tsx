@@ -1455,6 +1455,7 @@ export function SearchOverlay({
   const fieldAddPlaceholderTxt  = t("fieldAddPlaceholder");
   const anytimeTxt              = t("anytime");
   const noPreferenceTxt         = t("noPreference");
+  const allServicesTxt          = t("allServices");
   const noPreferenceSubTxt      = t("noPreferenceSub");
   const citySearchPlaceholderTxt = t("citySearchPlaceholder");
   const tabDatesTxt             = t("tabDates");
@@ -1529,10 +1530,17 @@ export function SearchOverlay({
   const ghostLabelOp = useTransform(openT, [0, 0.22], [1, 0]); // mockup-ok: SEARCH_MORPH.md H5
 
   const stepMeta = React.useMemo((): Record<Step, { label: string; value: string; placeholder: string }> => ({
-    service:  { label: fieldServiceLabelTxt,  value: serviceRowValue, placeholder: queryPlaceholderTxt     },
+    // R1 (2026-08-11, his words: "on top of the wo, once its expanded, there is residue of
+    // search, thats whats fucked"). This row used to fall back to the FIELD'S PLACEHOLDER, so
+    // with nothing typed it read "Suche | Service, Salon oder Stylist:in", an instruction
+    // sitting where the other two rows carry an answer ("Wo? Keine Praeferenz", "Wann?
+    // Jederzeit"). Next to them it reads as a leftover fragment of the step you just left
+    // rather than a summary of it. `allServices` already exists in all four locales and is
+    // answer-shaped, so no copy was written for this.
+    service:  { label: fieldServiceLabelTxt,  value: serviceRowValue, placeholder: allServicesTxt        },
     location: { label: locationHeadingTxt,    value: stadt && stadt !== ALL_CITIES_PARAM ? stadt : noPreferenceTxt, placeholder: fieldAddPlaceholderTxt },
     date:     { label: dateHeadingTxt,        value: dateLabel,  placeholder: anytimeTxt              },
-  }), [fieldServiceLabelTxt, serviceRowValue, queryPlaceholderTxt, locationHeadingTxt, stadt, noPreferenceTxt, fieldAddPlaceholderTxt, dateHeadingTxt, dateLabel, anytimeTxt]);
+  }), [fieldServiceLabelTxt, serviceRowValue, allServicesTxt, locationHeadingTxt, stadt, noPreferenceTxt, fieldAddPlaceholderTxt, dateHeadingTxt, dateLabel, anytimeTxt]);
 
   const visibleRecents = React.useMemo(() => recent.filter((_, i) => !hiddenRecents.has(i)), [recent, hiddenRecents]);
   // C1 (2026-08-11): the Wo? list now offers only cities Solen can actually serve.
