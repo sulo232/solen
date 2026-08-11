@@ -341,14 +341,16 @@ export default function PanelStates() {
       <Block
         n="3. Nothing found, and closing it"
         said="also when searchd n nth comes up n u close it still says nth yk n looks wierd"
-        pick="Two changes. The message moves up and gets somewhere to go, and closing actually leaves: what you typed is cleared, the message goes, and the panel reopens on its one list."
+        pick="Two changes, and both are now live. The message moved up and got somewhere to go, and the back arrow now clears what you typed so the message leaves with it."
         cost="Reopening on a results page will show the placeholder instead of the search that produced those results, which is worse for editing a query. What you typed is the first recent row, so it is one tap back. If that is not good enough the panel can keep it on the results page only, which is more moving parts."
         found={
           <>
             <p>
-              This one is a dead button, not a look. The back arrow only blurs the field, so with a failed
-              search on screen it changes nothing at all. Measured before and after the tap: the field still
-              holds qqqzzz and the message is still there.
+              A correction to what this page said first, because I measured it badly. I drove the back arrow
+              from a script and it appeared to do nothing. Tapped like a finger taps it, it DOES work: it
+              unfocuses the field and brings the Wo?, Wann? and Suchen controls back on screen from below the
+              fold. What it does not do is let go of the search. It keeps what you typed and it keeps the
+              nothing-found message, so the way out leaves the failure sitting there.
             </p>
             <p>
               Of 32 captured no-result screens, 22 give you something to tap. A centred icon with two lines
@@ -369,7 +371,7 @@ export default function PanelStates() {
           </>
         }
       >
-        <Phone label="A. Now" note="Grey disc, two lines, a void, and a back arrow that does nothing.">
+        <Phone label="A. Now" note="Grey disc, two lines, a void, and a back arrow that keeps the search.">
           <EmptyNow />
         </Phone>
         <Phone label="B. A way out and a way on (my pick)" note="Message high, categories under it, closing clears.">

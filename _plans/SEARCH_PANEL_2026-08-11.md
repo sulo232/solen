@@ -17,37 +17,41 @@ nothing is chosen and you submit anyway.
 ## Atomic boxes
 
 ### 1b , tapping the search bar shows ONE list
-- [ ] Delete `Beliebte Stores` from the focused body of the service step
-- [ ] Delete the `Fuer Sie` look grid from the focused body of the service step
-- [ ] Keep `Zuletzt` (recents) as the first block when it has rows
-- [ ] Keep `Kategorien` as the fallback block when there are no recents (pre-launch = everyone)
-- [ ] Confirm the recents hook is REUSED, not rebuilt (`useRecentSearches.ts`, already imported)
+- [x] Delete `Beliebte Stores` from the focused body of the service step
+- [x] Delete the `Fuer Sie` look grid from the focused body of the service step
+- [x] Keep `Zuletzt` (recents) as the first block when it has rows
+- [x] Keep `Kategorien` as the fallback block when there are no recents (pre-launch = everyone)
+- [x] Confirm the recents hook is REUSED, not rebuilt (`useRecentSearches.ts`, already imported)
 
 ### 2b , delete the three dots
-- [ ] Remove the `SuggestLoaderDots` render site from the service field
-- [ ] Remove the now-unused `SuggestLoaderDots` component
-- [ ] Confirm the clear X ends up at the capsule's right edge (measure, do not eyeball)
-- [ ] Confirm the skeleton rows still render while a query is in flight
+- [x] Remove the `SuggestLoaderDots` render site from the service field
+- [x] Remove the now-unused `SuggestLoaderDots` component
+- [x] Confirm the clear X ends up at the capsule's right edge (measure, do not eyeball)
+- [x] Confirm the skeleton rows still render while a query is in flight
 
 ### 3b , the no-result state and leaving it
-- [ ] Move the no-result message to the top of the body instead of a third of the way down
-- [ ] Give it a way forward (the same category rows as the idle body)
-- [ ] Drop the grey Lucide disc (it is banned by the locked EmptyState anatomy anyway)
-- [ ] Back chevron: clear the typed query as well as unfocusing
-- [ ] Back chevron: drop the no-result state with it
-- [ ] Confirm the query still lands in recents so it is one tap to get back
+- [x] Move the no-result message to the top of the body instead of a third of the way down
+- [x] Give it a way forward (the same category rows as the idle body)
+- [x] Drop the grey Lucide disc (it is banned by the locked EmptyState anatomy anyway)
+- [x] Back chevron: clear the typed query as well as unfocusing
+- [x] Back chevron: drop the no-result state with it
+- [x] Confirm the query still lands in recents so it is one tap to get back
 
 ### 4 , the empty-submit question, ANSWERED BY MEASUREMENT (2026-08-11)
 - [x] Enter with nothing typed -> `/de/search` with NO params, which renders the full list
 - [x] Suchen with nothing chosen -> `/de/search`, same
 - [x] Open `Wann?`, pick nothing, press Suchen -> `/de/search`, same
-- [ ] Decide whether an empty submit should carry the city you were browsing (today it does not,
-      so the results page falls back to Basel whatever page you came from)
-- [ ] Map: `extraParams` carries `map=1` through `buildParams`, so a search from the map stays on
-      the map. NOT yet measured end to end, the map route did not respond during this pass.
+- [x] The city question, and the first answer was WRONG. An empty submit from a Zurich results
+      page lands on `?city=Basel`, which reads like a bug and is not one. `/api/cities` returns
+      exactly ONE active city right now, Basel, so `slugFromCity("zurich", rows)` finds no match
+      and the page falls back to the only city that exists. It also renders "Suchen Basel" in the
+      heading, so the screen never claims otherwise. Nothing to fix here until a second city goes
+      live; re-check this the day one does.
+- [x] Map: measured end to end. Opening the panel from `/de/search?map=1` and pressing Suchen with
+      nothing chosen returns to `/de/search?map=1`. The map context survives an empty submit.
 
 ### Correction owed to him
-- [ ] `/dev/search-states` says the back arrow "does nothing". Measured properly with a real tap,
+- [x] `/dev/search-states` says the back arrow "does nothing". Measured properly with a real tap,
       it DOES unfocus and bring `Wo?`/`Wann?`/`Suchen` back on screen (Wo? moves 860 -> 602 on a
       390x844 phone). What is actually true: it keeps the typed query and keeps the no-result
       message. Fix the page's wording.
