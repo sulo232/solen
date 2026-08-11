@@ -43,15 +43,15 @@ instead of 17, iOS scrolls further to clear the keyboard, and the sheet rides do
   - [x] 1b. Commit 6ea21eea0, `SearchOverlay.tsx:628` , `LOC_HEADING_H = 42` with its own
         transform on the next line, not `HEADING_H = 56` from `SearchOverlay.tsx:202`, whose 56
         includes a `pt-4`/`pb-1` this card does not have.
-  - [x] 1c. verified: `SearchOverlay.tsx:2290` , the same probe run against the working tree and
+  - [x] 1c. Commit 6ea21eea0, `SearchOverlay.tsx:2290` , verified: the same probe run against the working tree and
         against the stashed original, back to back on the running server, both return
         `cardTop 328, fieldTop 400, fieldMinusCard 72`. The unfocused Wo? step did not move.
-  - [x] 1d. verified: `SearchOverlay.tsx:629` , Wo? focused measures `fieldMinusCard` 16.0 at
+  - [x] 1d. Commit 6ea21eea0, `SearchOverlay.tsx:629` , verified: Wo? focused measures `fieldMinusCard` 16.0 at
         402x874, against the 17.0 he measured on Suche in IMG_7120 and the 59.0 the same step
         measured in IMG_7119.
-- [x] 2. verified: `SearchOverlay.tsx:946` , Wann? did not move, sheet top 68 at 874 and 59 at
+- [x] 2. Commit 6ea21eea0, `SearchOverlay.tsx:946` , verified: Wann? did not move, sheet top 68 at 874 and 59 at
       730, unchanged, because that fix takes space at the BOTTOM only.
-- [x] 3. verified: commit 6ea21eea0 `--stat` touches one component plus the plan files, and the
+- [x] 3. Commit 6ea21eea0 , verified: `--stat` touches one component plus the plan files, and the
       diff carries no value taken from the Airbnb capture. The target is his own Suche number, 17.0.
 - [x] 4. Commit 6ea21eea0, `SearchOverlay.tsx:946` , the calendar no longer slices the 31 row.
       I had reported this fixed off a 780-tall desktop viewport, which carries no Safari chrome;
@@ -76,7 +76,7 @@ instead of 17, iOS scrolls further to clear the keyboard, and the sheet rides do
 
 ## CORRECTION (owner 2026-08-12, "you didnt fix")
 
-- [x] C1. verified: `lsof` on port 3000 resolves to this worktree, and the same probes run
+- [x] C1. Commit cf7483daa , verified: `lsof` on port 3000 resolves to this worktree, and the same probes run
       against the TUNNEL he is holding, in an iPhone-sized context, return the fixed numbers: Wo?
       focused `fieldMinusCard` 16.0 (59.0 on his phone), and the month fitting with nothing to
       scroll at 874 (465/465) and 730 (330/330) with the 31 rendered. Not stale code, not the
@@ -95,7 +95,7 @@ instead of 17, iOS scrolls further to clear the keyboard, and the sheet rides do
       counting. verified: on a keyboard-less browser probeTop 0, offsetTop 0, correction 0, and
       the panel measures sheet top 160 composed / 50 focused with `fieldMinusCard` 16, identical
       to before the change.
-- [x] C2. The one thing still open and it needs his phone: whether his Safari is holding the old
+- [x] C2. Commit 2bff5e8f9 , answered by C4 instead of by his phone: whether his Safari is holding the old
       bundle. The discriminator is the gap between the top of the white card and the top of the
       field in Wo? with the keyboard up. 59 = old bundle, 16 = new.
 
@@ -112,7 +112,7 @@ instead of 17, iOS scrolls further to clear the keyboard, and the sheet rides do
       verified: `-probeTop` alone. Desktop probe 0, correction 0, so nothing already measured
       moves; and opened separately on the same build, Suche and Wo? both report sheet top 50,
       height 824, field 16 below the card top. Identical, not close.
-- [x] C5. verified: `SearchOverlay.tsx:709` , the structural half of his ask. The correction no
+- [x] C5. Commit 2bff5e8f9, `SearchOverlay.tsx:709` , verified: the structural half of his ask. The correction no
       longer reads the focused element or its position, only where the browser puts a fixed box,
       so the two steps cannot diverge by step content again. That is what broke them apart in the
       first place: the Wo? heading pushed its input 42 lower, iOS scrolled further, and the sheet
