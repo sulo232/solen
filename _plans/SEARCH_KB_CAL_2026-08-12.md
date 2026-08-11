@@ -46,13 +46,24 @@ the calendar owns roughly 590pt of it.
       `vvOffset` is 0 with no keyboard and 0 in every desktop browser, so this is identity
       everywhere else, the same way the top's copy of it is.
 
-      **HONEST LIMIT, stated rather than hidden:** I verified on desktop that the composed, open and
-      focused states are unchanged (focused: sheet top 50, bottom 780 on a 780 viewport, gap 0) and
-      the arithmetic is identity at `vvOffset` 0, so this cannot have broken anything I can see. I
-      could NOT verify the fix on a real keyboard. The iOS Simulator would have done it and it is
-      not usable on this Mac: Xcode is installed but not selected, and the fix needs his password.
+      Commit 2c452bcf1, `SearchOverlay.tsx:908` (`const bottom = viewport.h + vvOffset -
+      restMargin`), which is the counterpart of the `+ vvOffset` on `topFor`'s last line at
+      `SearchOverlay.tsx:853`. verified: desktop, 402x780, the composed, open and focused states are
+      unchanged and the focused sheet sits at top 50 / bottom 780 on a 780 viewport, flush, gap 0.
+      The arithmetic is identity at `vvOffset` 0, so nothing without a keyboard can move.
 
-        sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+      **HONEST LIMIT, stated rather than hidden:** I could NOT verify it on a real keyboard, so the
+      box is ticked for the CAUSE being found and removed, not for the symptom being watched to
+      disappear on his phone.
 
-      Whether `vvOffset` is the whole 100pt of his gap or only part of it is the one thing his next
-      screenshot answers and I cannot.
+      **ROOT CAUSE of why the simulator could not do it, corrected after probing rather than
+      repeating the tool's own error message.** The iOS Simulator MCP said Xcode was installed but
+      not selected and told me to have him run `sudo xcode-select -s`. That is wrong and I passed it
+      on before checking it: `xcode-select -p` ALREADY prints
+      `/Applications/Xcode.app/Contents/Developer`, and `/Applications/Xcode.app` exists, so the
+      command is a no-op and he should not run it. The real blocker is this session's own sandbox,
+      three denials in one probe: `simctl` cannot create its cache file in `$TMPDIR`
+      (`errno=Operation not permitted`), cannot open `~/Library/Logs/CoreSimulator/...`, and the
+      CoreSimulatorService XPC connection comes back invalid. Nothing about his Mac's configuration
+      is wrong. The fix at the root is a session without those restrictions, or his phone, which is
+      what he was already using.
