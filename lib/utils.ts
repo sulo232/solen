@@ -26,6 +26,34 @@ export function slugify(text: string): string {
 }
 
 /**
+ * Substring match for a typed query against a display name, ignoring accents.
+ *
+ * WHY THIS IS NOT `slugify`, which already folds diacritics: slugify maps ü to "ue", so "Zürich"
+ * becomes "zuerich" and a user typing "zur" still matches nothing. German has BOTH conventions
+ * live at once (zurich.ch and zuerich are both read as the same city), so a search has to accept
+ * either. Two folds, and a hit on either one counts:
+ *   plain   ü -> u   so "zur"  matches "zurich"
+ *   german  ü -> ue  so "zue"  matches "zuerich"
+ *
+ * Found 2026-08-11 by typing "Zur" into the live location step and getting an empty list. Three of
+ * the eight cities in the picker carry an accent, and one of them is the largest city in the
+ * country, so the most likely search in the product returned nothing.
+ */
+const foldPlain = (s: string) =>
+  s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+const foldGerman = (s: string) =>
+  s.toLowerCase().replace(/[äöü]/g, (c) => ({ ä: "ae", ö: "oe", ü: "ue" })[c] ?? c).replace(/ß/g, "ss");
+
+export function matchesSearch(candidate: string, query: string): boolean {
+  if (!query.trim()) return true;
+  return (
+    foldPlain(candidate).includes(foldPlain(query)) ||
+    foldGerman(candidate).includes(foldGerman(query))
+  );
+}
+
+/**
  * Format a price in CHF.
  * Example: formatPrice(45.5) → "CHF 45.50"
  */

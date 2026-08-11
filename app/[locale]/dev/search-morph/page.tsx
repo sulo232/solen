@@ -17,6 +17,7 @@ import { Search, MapPin, Navigation, X, Clock, User, ArrowLeft, Store, ChevronLe
 import { CATEGORIES } from "@/app/[locale]/_components/homepage/searchCategories";
 import { FEATURED_SALONS } from "@/app/[locale]/_components/homepage/searchFeatured";
 import { SEARCH_CITIES, CITY_ICONS } from "@/lib/cities";
+import { matchesSearch } from "@/lib/utils";
 import { TRENDING } from "@/app/[locale]/_components/homepage/searchTrending";
 import { useSearchSuggest } from "@/app/[locale]/_components/homepage/useSearchSuggest";
 import { Skeleton } from "@/app/[locale]/_components/primitives";
@@ -126,7 +127,7 @@ export default function SearchMorphPreviewPage() {
   const { results, loading } = useSearchSuggest(open ? serviceQ : "", { city: city || undefined }); // no calls while closed
   const typing = serviceQ.trim().length >= 2;
   const hasResults = results.services.length + results.salons.length + results.stylists.length > 0;
-  const cities = SEARCH_CITIES.filter((c) => c.toLowerCase().includes(cityQ.toLowerCase()));
+  const cities = SEARCH_CITIES.filter((c) => matchesSearch(c, cityQ));
 
   const morphT = reduce ? { duration: 0 } : MORPH_T;
   const openT = reduce ? { duration: 0 } : OPEN_T;

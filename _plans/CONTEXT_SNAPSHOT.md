@@ -2,20 +2,21 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-10T17:07:50 (trigger: auto)
+- taken: 2026-08-11T10:19:15 (trigger: auto)
 - branch: claude/agent-flow-design-overhaul-2af2c2
 
 ## git
 ```
-66217cdc4 The category row is back on the phone, and a reader is finding which one he meant
-7f112dcb6 Nothing is lost. One was switched off, two were diagnosed and never built
-42ee4f35c Direction C without the boxes, and the check caught its own bad rule first
-3f774b17d The boxing you keep flagging now has a check; it never had one
-18ef26cdf Ran the gate's own detector instead of guessing what it would object to
+f4905a364 Variant A is live: the search field is a filled capsule with the way out beside it
+063f07418 The mockup he asked for twice, and the check that could not see it being skipped
+06efd2530 The field in the search panel now takes focus, so its states can actually happen
+f092dd3b3 Four ways the search sheet could look, read off Airbnb first
+394ce4c24 The whole search bar is tappable, and the location step finally opens properly
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
-58 | HOME REGRESSIONS , why his home edits look gone (owner 2026-08-10: "everything is now lost... what's the core cause of this?") | **ACTIVE** (2026-08-10)
+60 | BOTTOM NAV + the animated icons (owner 2026-08-10: "I think I want to have a bottom navigation bar for the web area... and the Airbnb animated icons are on branch claude/airbnb-animated-icons-ee4329") | **DONE** (2026-08-10)
+62 | CORRECTION: search bar researched not guessed + his own new icons + why he never saw the bottom-bar mockups (owner 2026-08-10: "just guessing, I told you to stop") | **ACTIVE** (2026-08-10)
 56 | HOME + CLOSE FIXES (owner 2026-08-05, annotated shots) | **ACTIVE** (2026-08-05)
 55 | HOME + INSPO CHROME , sticky search, Airbnb-smooth category switch, chrome sits too low, dead search tap, hamburger (no X / too low / circled), Inspo bar+heart+filters, "make a new homepage" | **ACTIVE** (2026-08-01)
 55 | DESIGN SYSTEM RENEWAL , rows out of boxes, lines not cards, bare icons, bigger type, from 5 Airbnb screenshots | **ACTIVE** (2026-08-02)
@@ -65,13 +66,6 @@
 48 | PRINCIPLE DEEP-RESEARCH , re-test every principle we already have against external evidence | **ACTIVE** (design) + handoff (rest) 2026-07-28
 50 | DESIGN principle deep-research (the rules we ALREADY have) | **ACTIVE** (2026-07-28)
 51 | DESIGN RE-ENGINEER , improve the system we have, measured against live Airbnb | **ACTIVE** (2026-07-28)
-
-## HOME_REGRESSIONS_2026-08-10.md
-Open boxes:
-- [ ] The search-bar open and close ANIMATION, separately from H6's navigation bug.
-- [ ] The logo.
-- [ ] Salon card photos render as grey boxes on the live home page. Not something he raised, found
-- [ ] The page title says "Stores" rather than "Salons" in several places, which no decision on
 
 ## HOME_FIXES_2026-08-05.md
 Open boxes:

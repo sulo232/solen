@@ -34,7 +34,7 @@ import {
 } from "lucide-react";
 import { SEARCH_CITIES, CITY_ICONS, ALL_CITIES_PARAM } from "@/lib/cities";
 import { formatPrice } from "@/lib/format";
-import { splitHighlight } from "@/lib/utils";
+import { matchesSearch, splitHighlight } from "@/lib/utils";
 import { CATEGORIES } from "@/app/[locale]/_components/homepage/searchCategories";
 import { SALON_CATEGORY_SLUGS } from "@/lib/validations";
 // A2/Model B (2026-07-04): the SAME category triples SearchTemplate's own category-tab row
@@ -1453,7 +1453,7 @@ export function SearchOverlay({
   }), [fieldServiceLabelTxt, serviceRowValue, queryPlaceholderTxt, locationHeadingTxt, stadt, noPreferenceTxt, fieldAddPlaceholderTxt, dateHeadingTxt, dateLabel, anytimeTxt]);
 
   const visibleRecents = React.useMemo(() => recent.filter((_, i) => !hiddenRecents.has(i)), [recent, hiddenRecents]);
-  const filteredCities = React.useMemo(() => SEARCH_CITIES.filter((c) => c.toLowerCase().includes(cityQ.toLowerCase())), [cityQ]);
+  const filteredCities = React.useMemo(() => SEARCH_CITIES.filter((c) => matchesSearch(c, cityQ)), [cityQ]);
 
   // R7: the collapsed FACE only. The white fill, radius and shadow moved onto the slot that
   // owns it (see the slot block above), because that surface has to survive the crossfade , it
@@ -1963,7 +1963,12 @@ export function SearchOverlay({
                       <span className="font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">{locationHeadingTxt}</span>
                       <ChevronUp size={20} strokeWidth={2.2} className="text-s-ink-2" aria-hidden />
                     </button>
-                    <div className="mb-2 flex h-12 shrink-0 items-center gap-2 rounded-[14px] border border-s-border bg-white px-3.5">
+                    {/* Variant A (owner picked it 2026-08-11 off /dev/search-field) applies here too:
+                        a focused search field is a FILLED capsule, and the clear sits inside it on a
+                        soft disc. The third part of A, the way out sitting OUTSIDE the field, is
+                        already served on this step by the heading's own collapse chevron above, so
+                        adding a second one would give the step two ways back. */}
+                    <div className="mb-2 flex h-12 shrink-0 items-center gap-2.5 rounded-full bg-s-bg-sunken px-4">
                       <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" />
                       {/* mockup-ok: !important preserves the existing look, not a new one; same
                           carve-out as the service query input above (V3-D-input-fill-2026-07-17). */}
@@ -1971,8 +1976,9 @@ export function SearchOverlay({
                         placeholder={citySearchPlaceholderTxt} aria-label={citySearchPlaceholderTxt}
                         className="min-w-0 flex-1 !border-0 !bg-transparent !min-h-0 !px-0 !text-[16px] text-s-ink placeholder:text-s-ink-2 focus:outline-none focus-visible:outline-none" />
                       {cityQ.length > 0 && (
-                        <button onClick={() => { setCityQ(""); cityRef.current?.focus(); }} aria-label="Eingabe loeschen" className="shrink-0 text-s-ink-2">
-                          <X size={18} strokeWidth={2.2} />
+                        <button onClick={() => { setCityQ(""); cityRef.current?.focus(); }} aria-label="Eingabe loeschen"
+                          className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-s-ink/15 text-s-ink">
+                          <X size={13} strokeWidth={2.6} />
                         </button>
                       )}
                     </div>
