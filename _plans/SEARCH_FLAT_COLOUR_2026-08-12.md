@@ -51,17 +51,32 @@ hardcoded src.
 
 - [x] 1. Commit fdc7d1d7b, `app/[locale]/dev/search-color/` , mockup built and rendered, three
       changes each shown against what ships today, with real salons and the real feed, not drawings.
-  - [x] 1a. A, popular stores: the salon's own photo, rating and review count in the tile it
+  - [x] 1a. Commit fdc7d1d7b , A, popular stores: the salon's own photo, rating and review count in the tile it
         already has. verified: rendered, 15 real images on the page, the three seeded Basel salons
         with 4.2 (11), 4.5 (10) and 4.4 (15).
-  - [x] 1b. B, categories: two options, tint only and tint plus the drawn icon. verified: rendered,
+  - [x] 1b. Commit fdc7d1d7b , B, categories: two options, tint only and tint plus the drawn icon. verified: rendered,
         five distinct tile colours measured on the page (the grey plus the four category colours)
         against the one grey that ships.
-  - [x] 1c. C, the for-you feed: the titles stop being cut mid-word. verified: rendered, both
+  - [x] 1c. Commit fdc7d1d7b , C, the for-you feed: the titles stop being cut mid-word. verified: rendered, both
         columns side by side on the same four looks.
-  - [x] 1d. Every proposal carries its own cost in the page, in his language, not just its upside.
+  - [x] 1d. Commit fdc7d1d7b , verified: every proposal carries its own cost in the page, in his language, not just its upside.
 - [ ] 2. HIS CALL, and it is a real dependency, not a punt. Three answers: A yes or no; B1, B2 or
       neither; C yes or no. Nothing is applied to the real panel until he picks (mockup-first).
+
+## THE PHOTOS ARE STOCK, and that changes what option A is worth
+
+Checked against the live snapshot rather than assumed: `salon_photos` has **0 rows**, and the
+`cover_photo_url` the API returns for all three of those salons is an `images.unsplash.com` URL. So
+the colour option A adds is SEED PLACEHOLDER photography, not our salons.
+
+That does not make A wrong, because the mechanism is what is being decided: the row renders whatever
+photo that salon has, and it will render the real one the day a salon uploads it. But it does mean
+the mockup's prettiness right now is borrowed, the same borrowed pictures the home page already
+shows, and A should be judged on "should this row carry the salon's photo at all", not on how good
+these particular pictures look.
+
+Options B and C are unaffected: B is our own category colours and our own drawn icons, C is only a
+line-wrap.
 
 ## Not touched on purpose
 

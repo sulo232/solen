@@ -34,6 +34,12 @@ export default function SearchColorPage() {
         changes below, each one rendering something the panel already has and currently throws away.
         Each is shown against what ships today, with real salons and the real feed.
       </p>
+      <p className="mt-2 max-w-[760px] text-[15px] leading-relaxed text-s-ink-2">
+        One thing to know before you judge section A: the salon photos here are stock placeholders.
+        The photo table has no rows, so every cover is an Unsplash seed image, the same ones the
+        home page already shows. What A decides is whether the row carries the salon&apos;s photo at
+        all. The picture it will carry the day a salon uploads one is not this picture.
+      </p>
       <Panel />
     </main>
   );
