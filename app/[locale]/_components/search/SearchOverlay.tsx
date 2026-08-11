@@ -686,7 +686,27 @@ export function SearchOverlay({
       const w = window.innerWidth, h = window.innerHeight;
       setViewport({ w, h });
       const vv = window.visualViewport;
-      setVvOffset(Math.max(0, Math.round(vv?.offsetTop ?? 0)));
+      // K6 (2026-08-12, owner "you didnt fix", and his own two captures are the evidence).
+      // K2 below assumes `position: fixed` stays glued to the LAYOUT viewport while iOS scrolls
+      // the VISUAL one out from under it, so it adds the offset back. If that were the whole
+      // story, both steps would put their sheet at `focusedTop`, about 65 on his phone. He
+      // measured 112 on Suche and 168 on Wo?, both LOW, by two different amounts that look like
+      // two different scroll distances, which is the signature of the compensation being applied
+      // on top of a browser that already did it. Safari has re-anchored fixed elements to the
+      // visual viewport since iOS 16, so on his phone K2 corrects a shift that never happened.
+      //
+      // Rather than pick a side of that and be wrong on half the devices, MEASURE it: a probe
+      // pinned at `fixed; top: 0` reports 0 in client coordinates when fixed follows the layout
+      // viewport, and reports the scroll distance itself when it follows the visual one. So
+      // `offsetTop - probeTop` is the correction actually needed, and it is exact in both worlds:
+      // layout-anchored gives back K2 unchanged, visual-anchored gives 0. With no keyboard both
+      // terms are 0, so every state measured on a desktop browser is untouched by construction.
+      const probe = document.createElement("div");
+      probe.style.cssText = "position:fixed;top:0;left:0;width:1px;height:1px;visibility:hidden;pointer-events:none";
+      document.body.appendChild(probe);
+      const probeTop = probe.getBoundingClientRect().top;
+      probe.remove();
+      setVvOffset(Math.max(0, Math.round((vv?.offsetTop ?? 0) - probeTop)));
       // The band of the layout viewport the visual viewport no longer covers = the keyboard.
       // `* scale` is what keeps a ZOOM from being misread as a keyboard: zooming to 2x halves
       // visualViewport.height for the same screen, and without the scale term this computed a

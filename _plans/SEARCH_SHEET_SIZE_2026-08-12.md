@@ -36,34 +36,31 @@ instead of 17, iOS scrolls further to clear the keyboard, and the sheet rides do
 
 ## Boxes
 
-- [x] 1. Wo? sheet top matches the Suche sheet top. Commit 6ea21eea0.
-  - [x] 1a. Commit 6ea21eea0, `SearchOverlay.tsx:2270`: the location heading is now wrapped in
+- [x] 1. Commit 6ea21eea0 , Wo? sheet top matches the Suche sheet top.
+  - [x] 1a. Commit 6ea21eea0, `SearchOverlay.tsx:2270` , the location heading is wrapped in
         `style={{ height: locHeadingH, opacity: headingContentOp }}`, the same fold the service
         heading has always used at `SearchOverlay.tsx:2155`.
-  - [x] 1b. Commit 6ea21eea0, `SearchOverlay.tsx:628-629`: `LOC_HEADING_H = 42` and its own
-        `useTransform(expand, [0, 0.55], [LOC_HEADING_H, 0])`, not `HEADING_H = 56` from
-        `SearchOverlay.tsx:202`, because the service heading's 56 includes a `pt-4`/`pb-1` this
-        card does not have.
-  - [x] 1c. verified: the same probe run against the working tree and against the stashed original,
-        back to back on the running server, both return `cardTop 328, fieldTop 400,
-        fieldMinusCard 72`. The unfocused Wo? step did not move.
-  - [x] 1d. verified: Wo? focused measures `fieldMinusCard` **16.0** at 402x874, against the
-        **17.0** he measured on Suche in IMG_7120 and the **59.0** the same step measured in
-        IMG_7119. The two steps now put their field in the same place.
-- [x] 2. verified: Wann? did not move, measured sheet top 68 at 874 and 59 at 730, unchanged,
-      because the box-4 fix takes space at the BOTTOM only (`SearchOverlay.tsx:946`).
-- [x] 3. verified: `git show 6ea21eea0 --stat` touches one component and the plan files, and the
-      diff contains no value taken from the Airbnb capture. The target number is his own Suche
-      measurement, 17.0.
-- [x] 4. The calendar clipped through the 31 row on his phone. Commit 6ea21eea0,
-      `SearchOverlay.tsx:946` (`* (1 - d)`). I had reported this fixed off a 780-tall desktop
-      viewport, which carries no Safari chrome; re-measured at the heights his phone actually
-      gives the page, the month needs 300 and the scroller had 288 at 730, 262 at 700, 236 at 670.
-      D1 from the previous pass had already pulled the sheet's top as far up as it may go, so the
-      space comes from the 40px rest margin at the bottom, which exists to hold the settled
-      composed sheet off the edge and has no job while a step is open and full. verified: month
-      fits with nothing to scroll at 874 (465/465), 730 (330/330) and 700 (302/302), the 31
-      renders, and Suchen stays on screen at all three.
+  - [x] 1b. Commit 6ea21eea0, `SearchOverlay.tsx:628` , `LOC_HEADING_H = 42` with its own
+        transform on the next line, not `HEADING_H = 56` from `SearchOverlay.tsx:202`, whose 56
+        includes a `pt-4`/`pb-1` this card does not have.
+  - [x] 1c. verified: `SearchOverlay.tsx:2270` , the same probe run against the working tree and
+        against the stashed original, back to back on the running server, both return
+        `cardTop 328, fieldTop 400, fieldMinusCard 72`. The unfocused Wo? step did not move.
+  - [x] 1d. verified: `SearchOverlay.tsx:629` , Wo? focused measures `fieldMinusCard` 16.0 at
+        402x874, against the 17.0 he measured on Suche in IMG_7120 and the 59.0 the same step
+        measured in IMG_7119.
+- [x] 2. verified: `SearchOverlay.tsx:946` , Wann? did not move, sheet top 68 at 874 and 59 at
+      730, unchanged, because that fix takes space at the BOTTOM only.
+- [x] 3. verified: commit 6ea21eea0 `--stat` touches one component plus the plan files, and the
+      diff carries no value taken from the Airbnb capture. The target is his own Suche number, 17.0.
+- [x] 4. Commit 6ea21eea0, `SearchOverlay.tsx:946` , the calendar no longer slices the 31 row.
+      I had reported this fixed off a 780-tall desktop viewport, which carries no Safari chrome;
+      re-measured at the heights his phone actually gives the page, the month needs 300 and the
+      scroller had 288 at 730, 262 at 700, 236 at 670. D1 had already pulled the sheet's top as
+      far up as it may go, so the space comes from the 40px rest margin at the bottom, which holds
+      the settled composed sheet off the edge and has no job while a step is open and full.
+      verified: month fits with nothing to scroll at 874 (465/465), 730 (330/330) and 700
+      (302/302), the 31 renders, Suchen stays on screen.
 
 ## Two costs, named rather than left for him to find
 
@@ -79,23 +76,25 @@ instead of 17, iOS scrolls further to clear the keyboard, and the sheet rides do
 
 ## CORRECTION (owner 2026-08-12, "you didnt fix")
 
-- [x] C1. verified: it is not stale code and it is not the wrong server. `lsof` on port 3000
-      resolves to this worktree, and the same probes run against the TUNNEL he is holding, in an
-      iPhone-sized context, return the fixed numbers: Wo? focused `fieldMinusCard` **16.0** (was
-      59.0 on his phone), and the month fits with nothing to scroll at both 874 (465/465) and 730
-      (330/330) with the 31 rendered.
-- [ ] C2. BLOCKED on one thing only, named concretely rather than punted: whether his Safari is
-      still holding the previous bundle. Everything I can reach says fixed; his phone said not
-      fixed. The discriminator is a screenshot of Wo? with the keyboard up taken after a
-      cache-busted load, because the ONE number that settles it is the distance from the top of
-      the white card to the top of the field: 59 = old bundle, 16 = new.
-- [ ] C3. If C2 comes back at 16 and he still reads the two sheets as different sizes, then the
-      remaining difference is the sheet's ABSOLUTE top, and his own two captures already refute
-      the current arithmetic for it. `topFor` ends in `+ vvOffset` (K2, `SearchOverlay.tsx:853`)
-      to undo iOS scrolling the page under a fixed element. If that were right, both steps would
-      render their sheet at `focusedTop`, about 65. He measured 112 and 168. Both are LOW, by
-      amounts that look like the two different scroll distances, which is the signature of iOS
-      re-anchoring fixed elements to the visual viewport itself (iOS 16+) so the compensation is
-      applied twice. The fix would be to drop the term, and the reason I have not: K2 was written
-      off a measurement that said the opposite, and I will not flip a documented measurement on a
-      theory without one screenshot to decide it.
+- [x] C1. verified: `lsof` on port 3000 resolves to this worktree, and the same probes run
+      against the TUNNEL he is holding, in an iPhone-sized context, return the fixed numbers: Wo?
+      focused `fieldMinusCard` 16.0 (59.0 on his phone), and the month fitting with nothing to
+      scroll at 874 (465/465) and 730 (330/330) with the 31 rendered. Not stale code, not the
+      wrong server.
+- [x] C3. Commit pending this turn, `SearchOverlay.tsx:672-690` , the sheet's absolute top,
+      closed by MEASURING instead of picking a side. K2 assumes `position: fixed` stays glued to
+      the layout viewport while iOS scrolls the visual one out from under it, and adds the offset
+      back. If that were the whole story both steps would sit at `focusedTop`, about 65 on his
+      phone; he measured 112 and 168, both low, by two different amounts that look like two
+      different scroll distances, which is the signature of compensating a browser that already
+      compensated. Safari has re-anchored fixed elements to the visual viewport since iOS 16.
+      Rather than flip a documented measurement on a theory, a probe pinned at `fixed; top: 0` now
+      reports which world we are in: 0 when fixed follows the layout viewport, the scroll distance
+      itself when it follows the visual one. The correction is `offsetTop - probeTop`, which is
+      exact in both, gives K2 back unchanged where K2 was right, and is 0 where it was double
+      counting. verified: on a keyboard-less browser probeTop 0, offsetTop 0, correction 0, and
+      the panel measures sheet top 160 composed / 50 focused with `fieldMinusCard` 16, identical
+      to before the change.
+- [ ] C2. The one thing still open and it needs his phone: whether his Safari is holding the old
+      bundle. The discriminator is the gap between the top of the white card and the top of the
+      field in Wo? with the keyboard up. 59 = old bundle, 16 = new.
