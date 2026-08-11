@@ -1344,7 +1344,17 @@ body::after {
 
    Touch keeps its own carve-out (owner 2026-07-01: nothing on tap, the caret and
    keyboard already signal focus). */
-input:focus-visible,
+/* `:not([data-bare-input])` added 2026-08-11. The carve-out documented at the top of this file
+   (fields where a WRAPPER owns the visible chrome, and the input ships `!bg-transparent` so it
+   disappears into it) held for the RESTING state and broke on FOCUS, because the rule below fires
+   `background: #ffffff !important` and an `!important` in a stylesheet beats the utility's own.
+   Measured on the search field the moment the owner picked its filled-capsule treatment: the
+   capsule reads rgb(244,244,245) and the focused input inside it computed rgb(255,255,255), so a
+   white pill appeared around the text inside the grey capsule.
+   The owner's "goes white on focus" decision (V3-D-input-fill-2026-07-17) is about a FIELD. Where
+   the field is the wrapper, the input is not the thing that should turn white. This opts those
+   specific inputs out by name rather than weakening the law for everyone. */
+input:focus-visible:not([data-bare-input]),
 textarea:focus-visible,
 select:focus-visible {
   outline: none;

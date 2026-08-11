@@ -1476,22 +1476,38 @@ export function SearchOverlay({
   // at all. No. Stop.") , the bar keeps its normal 1px hairline in BOTH states now. The
   // width/inset growth is still handled by the existing cardMx collapse (12px margin -> 0),
   // untouched here. mockup-ok: SEARCH_MORPH.md C4
+  // VARIANT A, picked by the owner off /dev/search-field 2026-08-11. He replied with one letter.
+  //
+  // Read on Mobbin first, six iOS apps, and they agree with each other: Character AI, Twitch and
+  // KakaoTalk all put a focused search field in a FILLED capsule with the way back OUTSIDE it on
+  // the left and the clear INSIDE it on the right; Bloom uses the same capsule with the word
+  // Cancel beside it; Corner and Opera use the filled capsule too. The through-line is three
+  // things, and ours was the opposite on two of them:
+  //     filled capsule, not a white box with a hairline
+  //     the way out OUTSIDE the field, not sharing the text's own line
+  //     the clear INSIDE it
+  // The white box is why an empty field looked identical to a filled one, which is most of what
+  // he meant by hating its states.
+  //
+  // The A4 note below still holds and is why the height does not move: PIL-measured off his own
+  // Airbnb reference, the field does NOT grow on focus (55.0pt to 54.3pt), and the dark 2px focus
+  // border was rejected by name. Nothing here reintroduces either.
   const serviceBar = (
-    <div className="flex h-12 items-center gap-2.5 rounded-[16px] border border-s-border bg-white px-4">
+    <div className="flex h-12 items-center gap-2">
+      {/* The way out, OUTSIDE the capsule. K1: the blur is load-bearing. The keyboard holds
+          `expand` at 1 (kbT), so a back tap that only ran `collapse()` would set the finger's own
+          driver to 0 and change nothing on screen while the keyboard stayed up. Dismissing the
+          field is what this control means, so it says so. */}
       {inputFocused ? (
-        // K1: the blur is load-bearing now. The keyboard holds `expand` at 1 (kbT), so a back
-        // tap that only ran `collapse()` would set the finger's own driver to 0 and change
-        // nothing on screen while the keyboard stayed up. Dismissing the field is what this
-        // control means, so it says so instead of relying on the platform to infer it.
         <button onClick={() => { serviceRef.current?.blur(); setInputFocused(false); collapse(); }} aria-label={backTxt}
-          className="grid h-6 w-6 shrink-0 place-items-center text-s-ink">
-          <ArrowLeft size={20} strokeWidth={2} />
+          className="grid h-10 w-8 shrink-0 place-items-center text-s-ink"> {/* mockup-ok: variant A, owner pick 2026-08-11 */}
+          <ChevronLeft size={24} strokeWidth={2} />
         </button>
-      ) : (
+      ) : null}
+      <div className="flex h-12 min-w-0 flex-1 items-center gap-2.5 rounded-full bg-s-bg-sunken px-4"> {/* mockup-ok: variant A filled capsule, owner pick 2026-08-11 */}
         <span className="grid h-6 w-6 shrink-0 place-items-center">
           <Search size={19} strokeWidth={2} className="text-s-ink-2" />
         </span>
-      )}
       {/* R4b (2026-08-02 round 3, owner "it reads zoomed in"): this input computed to 15px.
           iOS Safari auto-zooms the WHOLE page when a field under 16px takes focus, and
           app/layout.tsx deliberately ships no `maximum-scale`/`user-scalable` (an a11y decision
@@ -1508,7 +1524,7 @@ export function SearchOverlay({
           chrome; the widened base input law (globals.css, 2026-07-17) now reaches bare inputs
           and also sets min-height:48px/padding:16px/font-size:16px, not just fill/border/radius,
           so all of it needs the `!` prefix or the pill balloons (V3-D-input-fill-2026-07-17). */}
-      <input ref={(el) => { serviceRef.current = el; if (serviceInputRef) serviceInputRef.current = el; }} value={serviceQ}
+      <input data-bare-input ref={(el) => { serviceRef.current = el; if (serviceInputRef) serviceInputRef.current = el; }} value={serviceQ}
         onFocus={() => { setInputFocused(true); grow(1); }}
         onChange={(e) => setServiceQ(e.target.value)}
         onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleSubmit(); } }}
@@ -1521,17 +1537,19 @@ export function SearchOverlay({
       <span className="grid h-6 w-6 shrink-0 place-items-center">
         {serviceQ.length > 0 ? (
           <button onClick={() => { setServiceQ(""); serviceRef.current?.focus(); }}
-            aria-label="Eingabe loeschen" className="text-s-ink-2">
-            <X size={18} strokeWidth={2.2} />
+            aria-label="Eingabe loeschen"
+            className="grid h-5 w-5 place-items-center rounded-full bg-s-ink/15 text-s-ink"> {/* mockup-ok: variant A clear disc, owner pick 2026-08-11 */}
+            <X size={13} strokeWidth={2.6} />
           </button>
         ) : null}
       </span>
       {/* P13 (owner-approved 2026-07-16): a quiet three-dot pulse loader while the suggest
           request is in flight, replacing any spinner at the input's right end. Fixed-size slot
           always mounted (only the dots' visibility toggles) so it never causes a layout jump. */}
-      <span className="grid h-6 w-6 shrink-0 place-items-center" aria-hidden>
-        {loading && typing ? <SuggestLoaderDots /> : null}
-      </span>
+        <span className="grid h-6 w-6 shrink-0 place-items-center" aria-hidden>
+          {loading && typing ? <SuggestLoaderDots /> : null}
+        </span>
+      </div>
     </div>
   );
 
@@ -1949,7 +1967,7 @@ export function SearchOverlay({
                       <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" />
                       {/* mockup-ok: !important preserves the existing look, not a new one; same
                           carve-out as the service query input above (V3-D-input-fill-2026-07-17). */}
-                      <input ref={cityRef} value={cityQ} onChange={(e) => setCityQ(e.target.value)}
+                      <input data-bare-input ref={cityRef} value={cityQ} onChange={(e) => setCityQ(e.target.value)}
                         placeholder={citySearchPlaceholderTxt} aria-label={citySearchPlaceholderTxt}
                         className="min-w-0 flex-1 !border-0 !bg-transparent !min-h-0 !px-0 !text-[16px] text-s-ink placeholder:text-s-ink-2 focus:outline-none focus-visible:outline-none" />
                       {cityQ.length > 0 && (
