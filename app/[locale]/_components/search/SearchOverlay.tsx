@@ -442,6 +442,14 @@ export function SearchOverlay({
     body.style.right = "0";
     body.style.width = "100%";
     body.style.overflow = "hidden";
+    // N1 (2026-08-11, owner: "bottom nav bar is everywhere"). Measured with the panel open: the
+    // floating nav sits at y 774 to 832 while the panel's own Suchen button runs 740 to 786, so the
+    // bar crosses the commit action by 12px. Two fixed bars at the bottom of one phone is the exact
+    // case BottomNav's own header comment already calls out, and the sticky-CTA floor says the
+    // commit action owns that slot. The nav yields while the panel is up and comes straight back on
+    // close. A body attribute rather than a prop because the two components never meet in the tree:
+    // the nav is mounted in the locale layout and this sheet is a portal.
+    body.setAttribute("data-overlay-open", "search");
     return () => {
       body.style.position = prev.position;
       body.style.top = prev.top;
@@ -449,6 +457,7 @@ export function SearchOverlay({
       body.style.right = prev.right;
       body.style.width = prev.width;
       body.style.overflow = prev.overflow;
+      body.removeAttribute("data-overlay-open");
       window.scrollTo(0, scrollY);
     };
   }, [open]);

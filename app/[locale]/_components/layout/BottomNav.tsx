@@ -122,6 +122,7 @@ export default function BottomNav({ locale }: { locale: string }) {
   };
   const profileActive = /^\/(profile|account|auth)(\/|$)/.test(rest);
 
+
   // IT SHRINKS, IT DOES NOT LEAVE. Owner 2026-08-10, correcting the version that slid away:
   // "the bottom bar not being removed and get smaller, i told you go research w mobbin why did u
   // not do it."
@@ -170,6 +171,7 @@ export default function BottomNav({ locale }: { locale: string }) {
     };
   }, []);
 
+
   return (
     <nav
       aria-label={t("mobileNavigation")}
@@ -181,6 +183,11 @@ export default function BottomNav({ locale }: { locale: string }) {
         // md:hidden , desktop already carries the full nav inside the header, and adding a second
         // one there would be the dashboard mistake on a different surface.
         "md:hidden fixed inset-x-0 bottom-0 z-[700]",
+        // N1 (2026-08-11): a full-screen sheet owns the bottom of the phone while it is up.
+        // The search panel sets data-overlay-open on the body, and the nav was crossing its
+        // Suchen button by 12px, measured. This hides rather than unmounts so the bar does not
+        // re-animate its condensed state every time a sheet opens and closes.
+        "[body[data-overlay-open]_&]:hidden",
         // LIQUID GLASS, FLOATING. Owner 2026-08-10: "look how insta or any other social media does
         // it with the bottom nav bar, liquid glass."
         //

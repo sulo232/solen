@@ -95,7 +95,10 @@ that is not active and falls back to `DEFAULT_CITY_SLUG`, which is Basel.
 This is the no-fabrication rule in its quietest form: the screen promises a city the system cannot
 back, and answers with a different one rather than saying so.
 
-- [x] DONE, and it was not really a fork. A city that hands you a different city is a screen
+- [x] DONE , verified: SearchOverlay.tsx:36 imports `useActiveCities`, :338 calls it, and
+      :1471-1477 builds the list from it with the static array only as the fallback. Rendered
+      check on the live panel: the Wo? list is "Keine Praeferenz" plus Basel, nothing else.
+      Commit 7e32d1fa1. And it was not really a fork. A city that hands you a different city is a screen
       making a claim the system cannot back, and no-fabrication is not a taste axis, so the
       conservative reading wins: the picker now offers only what we can serve. Verified live: the
       Wo? list renders "Keine Praeferenz" plus Basel, nothing else. Not a new system either, it
