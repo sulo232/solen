@@ -591,7 +591,15 @@ export function SearchOverlay({
   // the new resting bar number is measured and reported plainly below, not silently kept at the
   // old one. `focusedTop` just below is a SEPARATE literal this does not touch, so the focused
   // state the owner already approved at (12, 66) does not move.
-  const RESTING_TOP = 160; // mockup-ok: named copy of the pre-existing cropTop resting literal below
+  // ROOT CAUSE FIX 2026-08-11 (audit, five defects at short viewports, one cause): 160 stays as
+  // the CEILING this F3 measurement produced, but it is no longer read directly. On any screen
+  // shorter than the 844 this was measured on, a flat 160 held the scrim band at the SAME pixel
+  // count regardless of how little height was left underneath it, so the sheet's floor (200,
+  // `sheetHeight` below) started winning below about 780px. `RESTING_TOP` itself, the value
+  // `topFor` actually reads, is declared further down as a viewport-scaled clamp of this ceiling,
+  // once `viewport.h` exists (it is declared after this point in the component, so reading it
+  // here would run before it is initialised).
+  const RESTING_TOP_MAX = 160; // mockup-ok: named copy of the pre-existing cropTop resting literal below
   const focusedTop = Math.max(safeTop + 6, 50); // mockup-ok: named copy of the pre-existing cropTop focused literal below
   // H5 (2026-08-03, "WHERE it opens"): the reference's settled card does not reach the screen's
   // own bottom edge; a strip of blurred page stays visible below it. Measured directly on
@@ -757,6 +765,21 @@ export function SearchOverlay({
   // so `oT < 1` interpolates from wherever the sheet actually is, ex included, to `origin.top`.
   // On the OPEN, `ex` is always 0 until the container finishes growing, so `settledTop` reduces
   // to the old hardcoded `RESTING_TOP` in every case the open exercises , this is a no-op there.
+  //
+  // ROOT CAUSE FIX 2026-08-11, continued from RESTING_TOP_MAX above. Measured on the unfocused
+  // sheet (ex 0, the state `topFor(1,0)` returns): a flat 160 left `sheetHeight` at 236px on a
+  // 420-tall viewport, short of the 276px the three collapsed rows plus the footer need just to
+  // lay out without clipping (56 + 66 + 86 + 68), which is the actual number behind both "the
+  // footer sits 16px past the bottom edge" and "the calendar scroller has no room for a single
+  // day row" at that height. `RESTING_TOP_MAX / 844` is the ratio 160 already implies against the
+  // device it was measured on, so multiplying it by the real `viewport.h` reproduces 160 exactly
+  // at 844 (the `Math.min` below is then a no-op, so a tall phone is untouched) and shrinks it
+  // below that height instead of holding it constant. At 420 this gives RESTING_TOP ~= 79.8,
+  // which raises `sheetHeight` to ~316px, clear of the 276px floor. `Math.max(32, ...)` only
+  // starts changing that value under ~169px of viewport height, so it never touches any of the
+  // seven heights this fix was measured against; it exists purely so a viewport shorter than any
+  // of those still gets a sheet instead of RESTING_TOP overshooting the available height itself.
+  const RESTING_TOP = Math.min(RESTING_TOP_MAX, Math.max(32, viewport.h * (RESTING_TOP_MAX / 844)));
   const topFor = React.useCallback(
     (oT: number, ex: number) => {
       const settledTop = RESTING_TOP + (focusedTop - RESTING_TOP) * ex;
@@ -767,7 +790,10 @@ export function SearchOverlay({
       // state without a visual-viewport scroll, so this is identity everywhere else.
       return Math.max(minTop, base) + vvOffset;
     },
-    [origin, focusedTop, minTop, vvOffset],
+    // `viewport.h` added (root cause fix): RESTING_TOP now derives from it, and without this
+    // dependency `topFor` would keep returning a value computed from a stale RESTING_TOP after a
+    // resize/orientation change until one of the other deps also happened to change.
+    [origin, focusedTop, minTop, vvOffset, viewport.h],
   );
   const cropTop = useTransform([morphT, expand], (latest) => { // mockup-ok: SEARCH_MORPH.md A7/A8/A9
     const [oT, ex] = latest as [number, number];
@@ -1248,17 +1274,41 @@ export function SearchOverlay({
     setPendingFocus(null);
   }, [pendingFocus, activeStep]);
 
+  // G1 (2026-08-11): only the SERVICE step folds the composer away. A measured sweep found that
+  // opening Wo? left the Suchen button, the Zuruecksetzen link and the close X unreachable at every
+  // screen height tested (at 844 the Suchen rect was [856, 902] against an 844px viewport, 12px past
+  // the bottom edge, and the close X computed opacity 0), and that the Wann? row landed on exactly
+  // innerHeight so you could not go from Wo? to Wann? at all.
+  //
+  // The cause was mine, from earlier the same day. `grow(1)` is the FOCUS axis: it folds the
+  // heading, both collapsed rows and the footer away so a typing list can fill the sheet. I had it
+  // running for the location step too, which folded the footer while that step still needed it.
+  // Wo? does not need the fold: its own card already grows through the slot math (locT), and it has
+  // a short list rather than a full-height one, so there is nothing to make room for.
+  //
+  // The date step already did the right thing here and its line is unchanged.
   const openStep = React.useCallback((s: Step) => {
     setActiveStep(s);
-    if (s === "date") {
+    if (s === "date" || s === "location") {
       setInputFocused(false);
       collapse();
+      if (s === "location") setPendingFocus(s);
       return;
     }
     setInputFocused(true);
     grow(1);
     setPendingFocus(s);
   }, [collapse, grow]);
+  // G2 (2026-08-11): back to the COMPOSED view, which is what every "I have answered this step"
+  // path wants and what the city list's own comment has claimed since 2026-07-01. `openStep`
+  // cannot serve them, because opening the service step means putting the keyboard up, and doing
+  // that after a city pick folded the two rows and the footer straight back off the screen
+  // (measured: both rows jumped to y 844 and 860 on an 844px screen the instant Basel was tapped).
+  const composeStep = React.useCallback(() => {
+    setActiveStep("service");
+    setInputFocused(false);
+    collapse();
+  }, [collapse]);
   const advance = React.useCallback((s: Step) => {
     setInputFocused(false); collapse();
     const next = STEPS[STEPS.indexOf(s) + 1];
@@ -1834,8 +1884,8 @@ export function SearchOverlay({
           collapsed row) instead of AUTO-ADVANCING to the date step , which replaced the city list
           with the calendar and read as "the city selector disappears in the middle". No auto-jump;
           the user taps Wann? or Suchen when ready. */}
-      <SuggestRow name={noPreferenceTxt} sub={noPreferenceSubTxt} Icon={Globe} onClick={() => { setStadt(ALL_CITIES_PARAM); setCityQ(""); openStep("service"); }} />
-      {filteredCities.map((c) => <SuggestRow key={c} name={c} img={CITY_ICONS[c]} Icon={MapPin} onClick={() => { setStadt(c); setCityQ(""); openStep("service"); }} />)}
+      <SuggestRow name={noPreferenceTxt} sub={noPreferenceSubTxt} Icon={Globe} onClick={() => { setStadt(ALL_CITIES_PARAM); setCityQ(""); composeStep(); }} />
+      {filteredCities.map((c) => <SuggestRow key={c} name={c} img={CITY_ICONS[c]} Icon={MapPin} onClick={() => { setStadt(c); setCityQ(""); composeStep(); }} />)}
     </>
   );
 
@@ -2021,7 +2071,7 @@ export function SearchOverlay({
                         row, which reads as broken (tapping the open row again did nothing).
                         Wiring the accordion-collapse the SEARCH_MORPH.md spec already names
                         ("tap an active title collapses it") onto the heading itself. */}
-                    <button type="button" onClick={() => openStep("service")}
+                    <button type="button" onClick={composeStep}
                       className="mb-3 flex shrink-0 items-center justify-between text-left">
                       <span className="font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">{locationHeadingTxt}</span>
                       <ChevronUp size={20} strokeWidth={2.2} className="text-s-ink-2" aria-hidden />
@@ -2075,7 +2125,7 @@ export function SearchOverlay({
             <motion.div inert={rowsFolded && activeStep !== "date"} style={{ opacity: dateSlotOp }} className="relative mx-3 h-full overflow-hidden rounded-[20px] bg-white shadow-[0_16px_48px_rgba(10,10,10,0.10)]"> {/* S7: whole slot folded away on focus */}
               <motion.div inert={activeStep !== "date"} style={{ opacity: dateT, pointerEvents: dateBodyHit }} className="absolute inset-0 flex flex-col px-4 pb-3 pt-4"> {/* S7: the 29-31 day cells out of the tab order when collapsed */}
                     {/* C7: same accordion-collapse as the location heading above. */}
-                    <button type="button" onClick={() => openStep("service")}
+                    <button type="button" onClick={composeStep}
                       className="mb-2 flex shrink-0 items-center justify-between text-left">
                       <span className="font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">{dateHeadingTxt}</span>
                       <ChevronUp size={20} strokeWidth={2.2} className="text-s-ink-2" aria-hidden />
