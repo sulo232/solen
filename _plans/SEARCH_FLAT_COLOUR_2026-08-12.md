@@ -60,8 +60,11 @@ hardcoded src.
   - [x] 1c. Commit fdc7d1d7b , C, the for-you feed: the titles stop being cut mid-word. verified: rendered, both
         columns side by side on the same four looks.
   - [x] 1d. Commit fdc7d1d7b , verified: every proposal carries its own cost in the page, in his language, not just its upside.
-- [ ] 2. HIS CALL, and it is a real dependency, not a punt. Three answers: A yes or no; B1, B2 or
-      neither; C yes or no. Nothing is applied to the real panel until he picks (mockup-first).
+- [x] 2. ANSWERED 2026-08-12: "1 proposed but wout revoew counts hst star n4.2 yk 2 B1 but acc make
+      system for tint not jst random n also the icons make ot make scence and c proposed but is
+      aespectcratio good like does it acc reflect the inspo page and also is it personalized and
+      also how to jump to the inspo page from there". A yes without counts, B1 with a real system,
+      C yes plus three questions. Round 2 boxes below.
 
 ## THE PHOTOS ARE STOCK, and that changes what option A is worth
 
@@ -82,3 +85,46 @@ line-wrap.
 
 The panel's own layout, copy, order, spacing and icons stay exactly as they are. Every frame in the
 mockup is `SuggestRow` and `LookCard` copied out of SearchOverlay.tsx with ONE treatment changed.
+
+## ROUND 2 (his answer, 2026-08-12)
+
+### Readback
+
+1. A yes, but WITHOUT the review counts. Just the star and the 4.2.
+2. B1 yes, but make an actual SYSTEM for the tints, not four random colours, and make the icons
+   make sense.
+3. C yes, plus three questions: is the aspect ratio right, does it reflect the Inspo page; is it
+   personalized; and how do you jump to the Inspo page from there.
+
+### Boxes
+
+- [x] R1. verified: the review count is gone. Measured on the rendered page, the count in brackets
+      appears zero times anywhere on it; the row now carries photo, name, gold star, value, address.
+- [x] R2. A TINT SYSTEM, not four picked colours, and the old set measured to prove the difference.
+      ONE RULE: identical lightness and identical colourfulness on every tile, hue is the only
+      thing that changes (CIE Lab, tint L*=92 C*=12, glyph L*=42 C*=38). verified by measurement:
+      today's four run L* 86.94 to 95.78 on the tile and 12.85 to 59.00 on the glyph, a 46-point
+      spread, and their two closest hues are 1.7 degrees apart, which is the same colour twice.
+      The system's four are identical on both axes, 32 degrees apart at the closest, and the glyph
+      contrast on its own tile measures 4.87, 4.86, 4.87 and 4.91 to 1, all clearing the 3:1
+      graphical floor and the 4.5:1 text floor. Hue per category is reasoned in one line each, not
+      spun: warm gold kept, barber terracotta, polish rose, spa green kept.
+- [x] R3. Icons that mean something. Barbershop stops being a second scissors and takes a shaving
+      brush; nails takes a hand instead of a diamond. verified: all 5842 icons in the installed set
+      were searched for a razor or clippers and there is none, so the brush is the closest true
+      barbershop tool; the obvious nails alternative is banned in this project by name. We own a
+      clippers drawing if he wants that one row to use art instead.
+- [x] R4. C, aspect ratio: ANSWERED WITH A MEASUREMENT, and the answer is no. verified: the live
+      Inspo page renders 192x341 and 80x142, ratio 0.563 (9:16); the panel renders 179x239, ratio
+      0.75. The panel crops the same look by about a quarter. The proposed frame uses 9:16 so a
+      look is the same shape in both places.
+- [x] R5. C, personalized: ANSWERED. Only for a signed-in viewer on a plain browse
+      (`app/api/discovery/feed/route.ts:128`, `discovery_feed_for_you` runs only `if (userId &&
+      isPureBrowse)`); logged out it is the popular order under a personal-sounding title. Two
+      honest ways out are on the page, and which one is a copy decision that is his.
+- [x] R6. C, the way into Inspo: ANSWERED. There is none today, tapping a look opens that one look.
+      The proposed frame puts it on the section heading in ink with a chevron, never blue, per the
+      see-all rule.
+- [ ] R7. HIS CALL AGAIN, and the only thing left: the tint system and the two new icons are a
+      proposal, not applied. Say yes and they replace the values in `searchCategories.ts`, which is
+      the single source, and the three panel changes go into SearchOverlay.tsx.
