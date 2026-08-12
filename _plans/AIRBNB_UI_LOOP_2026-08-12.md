@@ -269,7 +269,19 @@ captured.
       nothing in it.
       NEXT, and it is a bug pass rather than a design one: find why the review cards vanish while
       their counts survive.
-- [ ] C5b. The remaining mockups, one per screen, from the other 50 rows of the list. Each is the
+- [x] C10. FOUR MOCKUPS AND A DOOR, commit pending. He asked what all the tokens bought and the
+      honest answer was one screen, so the shared frame that cost four attempts is now paid for
+      once (`app/[locale]/dev/mock/_shell/MockShell.tsx`) and every further screen is cheap.
+      verified on the rendered screens at 402x874: `home-density` card 165px with the change on and
+      239px with it off; `search-density` card 165px and 6 distinct text sizes on, 239px and 8 off;
+      `salon-reviews` three real reviews with the body switching 14px black / 15px grey;
+      `press-feedback` renders the home screen with the tap-fade removed. `/de/dev/mock` lists them.
+      ONE DROPPED, and why: the bookings tabs mockup needs a signed-in session, so it framed the
+      logged-out shell and showed nothing. Deleted rather than shipped looking broken.
+      ONE BUG FOUND BY THE FRAME: a parent stylesheet cannot reach inside a framed page, which is
+      why the first run of the batch reported the home card still 239px wide with the proposal
+      supposedly applied. The frame injects into its own document now.
+- [ ] C5b. The remaining mockups from the other rows of the list. Each is the
       same shape of work: pick the injectable findings for that screen, build the two panes, name
       the cost. He reviews them one at a time, which is what he asked for.
 
