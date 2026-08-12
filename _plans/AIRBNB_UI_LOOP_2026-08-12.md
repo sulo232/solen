@@ -200,7 +200,7 @@ captured.
         `scripts/capture/record-interaction.mjs`, because a still proves nothing about motion. The
         first capture is already on disk at `public/_pixel-refs/airbnb/motion/search-open/`
         (capture.webm plus animations.json).
-- [x] C4. Commit pending this turn, `app/[locale]/dev/airbnb-findings/` , the whole haul in one
+- [x] C4. Commit a293655cc, `app/[locale]/dev/airbnb-findings/` , the whole haul in one
       place, grouped by screen, in plain words, every row carrying BOTH numbers.
       RESULT of workflow `wf_0f33d9f6-bfc`: 157 agents, 15 lenses, **142 findings in, 91 killed,
       51 out**. verified on the rendered page: 51 rows across 21 real screen groups, the biggest
@@ -218,4 +218,12 @@ captured.
       MOTION WAS CAPTURED, not skipped: press timing, press geometry, scroll snapping and rail
       overscroll all came back with both sides measured, and one finding CORRECTS our own motion
       law's evidence line rather than proposing a change to it.
-- [ ] C5. Mockups per screen from this list, which he reviews one at a time.
+- [x] C5a. SCREEN 3 BUILT, `app/[locale]/dev/airbnb-03-salon/` , the salon page reviews, which is
+      the strongest single finding in the list. Same format as screens 1 and 2: two live iframes of
+      the real salon page, one stylesheet injected into the right one, nothing else touched.
+      verified on the rendered page: left pane review body 15px/400/rgb(107,107,107) with the name
+      16px/600/rgb(10,10,10); right pane body 14px/400/rgb(10,10,10) with the name 14px/500. The
+      ranking is inverted exactly as measured on their listing.
+- [ ] C5b. The remaining mockups, one per screen, from the other 50 rows of the list. Each is the
+      same shape of work: pick the injectable findings for that screen, build the two panes, name
+      the cost. He reviews them one at a time, which is what he asked for.
