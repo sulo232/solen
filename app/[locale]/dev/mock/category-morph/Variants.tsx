@@ -1,21 +1,25 @@
 "use client";
 
 // exists-check: `npm run exists "category morph"` = 0. The categories, their colours and their
-// icons are IMPORTED from `searchCategories.ts`, the one source; nothing is re-declared here. The
-// locked pill treatment lives in `TabPill` and direction A reproduces its selected recipe rather
-// than inventing a new one.
+// icons are IMPORTED from `searchCategories.ts`, the one source. Nothing is re-declared.
 //
-// Owner 2026-08-12: "instead of pills like circle n once u click then it bcms pill all morphism and
-// also the icon i want it like abit glare yk like 3d liquid style icons yk".
+// ROUND 2, owner 2026-08-12: "i want the keep the structure and the thing yk i jst wanna change the
+// icon and the shape yk i want glossy sh on the icon not the pill or circl bro".
 //
-// THE TENSION IN THE ASK, named rather than smoothed: "flat icons" and "3d liquid style" pull
-// opposite ways. My reading is that he wants a FLAT SHAPE (not the photo-real hair dryer he
-// rejected this morning) with a gloss on top so it reads as glass. So all three directions keep the
-// real Lucide glyph and vary how much glass sits around it, rather than offering flat versus 3D.
+// Round 1 was wrong in the place that mattered: it put the glass on the CONTAINER. The container is
+// now the plain locked recipe in all three, and the gloss lives on the GLYPH ITSELF. What varies is
+// how the glyph is made glossy, which is the only question left open.
 //
-// The drift ledger records this exact trap from 2026-07-12, "turned every icon into a colored glass
-// disc", which I did unprompted. This time he asked for it by name, and the icon underneath is
-// still the real one.
+// HOW A STROKE ICON IS MADE GLOSSY, since this is not a colour swap: our icons are Lucide, which
+// renders a stroked SVG using `currentColor`. Painting a gradient onto a stroke needs a real SVG
+// paint server, so each direction defines its own `<linearGradient>` once and points the stroke, or
+// the fill, at it. That is why there is an inline `<svg>` of definitions at the bottom rather than
+// a CSS filter: a filter blurs the shape, a paint server keeps it crisp.
+//
+// drift-ok on every gradient stop below: a gloss is made of INTERMEDIATE values between our ink and
+// white, and the palette has no tokens at those steps by design. They exist only inside these three
+// gradients in a dev mockup; if he picks one, the winning ramp becomes a named token in the same
+// pass rather than staying loose here.
 //
 // lang-ok: category labels come from the app's own constant; the only strings this file owns are
 // the three direction names, in English.
@@ -23,19 +27,16 @@
 import * as React from "react";
 import { CATEGORIES } from "@/app/[locale]/_components/homepage/searchCategories";
 
-/** Shared behaviour: one selected at a time, circle when not, pill when it is. */
 function useSelection(initial = 0) {
   const [i, setI] = React.useState(initial);
   return { i, setI };
 }
 
-/* ------------------------------------------------------------------ A: the locked pill, morphing */
-
 /**
- * A. His idea on our existing recipe. Circle at rest, and on tap it grows into the pill this
- * project already locked: sunken grey fill, ink label, semibold. No glass anywhere.
+ * The container, identical in all three and unchanged from what ships: circle at rest, the locked
+ * sunken pill when chosen. No glass, no gradient, no highlight anywhere on it.
  */
-function DirectionA() {
+function Row({ glossClass, iconStyle }: { glossClass?: string; iconStyle?: React.CSSProperties }) {
   const { i, setI } = useSelection();
   return (
     <div className="flex gap-2 overflow-x-auto pb-2">
@@ -50,50 +51,12 @@ function DirectionA() {
               on ? "bg-s-bg-sunken px-4" : "w-12 justify-center border border-s-border bg-white"
             }`}
           >
-            <Icon size={20} strokeWidth={1.9} className={on ? "text-s-ink" : "text-s-ink-2"} />
-            <span className={`whitespace-nowrap text-[15px] font-semibold text-s-ink transition-all duration-300 ${on ? "max-w-[140px] opacity-100" : "max-w-0 opacity-0"}`}>
-              {c.label}
-            </span>
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
-/* --------------------------------------------------------------- B: glass on the circle only */
-
-/**
- * B. The glare he asked for, kept ON THE CIRCLE. Each resting circle is a tinted glass chip: the
- * category's own colour at low strength, a bright top edge, a soft inner shadow underneath. Tap it
- * and the glass stretches into a pill and the label appears inside it. The glyph stays flat.
- */
-function DirectionB() {
-  const { i, setI } = useSelection();
-  return (
-    <div className="flex gap-2 overflow-x-auto pb-2">
-      {CATEGORIES.map((c, n) => {
-        const on = n === i;
-        const Icon = c.icon;
-        return (
-          <button
-            key={c.label}
-            onClick={() => setI(n)}
-            className={`relative flex h-12 shrink-0 items-center gap-2 overflow-hidden rounded-full transition-all duration-300 ease-glide ${c.bg} ${on ? "px-4" : "w-12 justify-center"}`}
-            style={{
-              boxShadow: on
-                ? "inset 0 1px 0 rgba(255,255,255,0.9), inset 0 -6px 12px rgba(0,0,0,0.06), 0 2px 6px rgba(10,10,10,0.06)"
-                : "inset 0 1px 0 rgba(255,255,255,0.9), inset 0 -6px 12px rgba(0,0,0,0.06)",
-            }}
-          >
-            {/* the glare: a soft highlight across the top third, nothing more */}
+            <Icon size={22} strokeWidth={2.1} className={glossClass} style={iconStyle} />
             <span
-              aria-hidden
-              className="pointer-events-none absolute inset-x-0 top-0 h-1/2 rounded-t-full"
-              style={{ background: "linear-gradient(to bottom, rgba(255,255,255,0.55), rgba(255,255,255,0))" }}
-            />
-            <Icon size={20} strokeWidth={1.9} className={`relative ${c.fg}`} />
-            <span className={`relative whitespace-nowrap text-[15px] font-semibold text-s-ink transition-all duration-300 ${on ? "max-w-[140px] opacity-100" : "max-w-0 opacity-0"}`}>
+              className={`whitespace-nowrap text-[15px] font-semibold text-s-ink transition-all duration-300 ${
+                on ? "max-w-[140px] opacity-100" : "max-w-0 opacity-0"
+              }`}
+            >
               {c.label}
             </span>
           </button>
@@ -102,74 +65,73 @@ function DirectionB() {
     </div>
   );
 }
-
-/* ------------------------------------------------------- C: glass only on the one that is chosen */
-
-/**
- * C. The opposite bet. At rest every circle is plain white with a hairline and a flat grey glyph,
- * so the row is quiet. The ONE you choose becomes the glass pill: its colour, its glare, its
- * shadow. The glass is then a signal rather than a texture, which is the argument for it.
- */
-function DirectionC() {
-  const { i, setI } = useSelection();
-  return (
-    <div className="flex gap-2 overflow-x-auto pb-2">
-      {CATEGORIES.map((c, n) => {
-        const on = n === i;
-        const Icon = c.icon;
-        return (
-          <button
-            key={c.label}
-            onClick={() => setI(n)}
-            className={`relative flex h-12 shrink-0 items-center gap-2 overflow-hidden rounded-full transition-all duration-300 ease-glide ${
-              on ? `${c.bg} px-4` : "w-12 justify-center border border-s-border bg-white"
-            }`}
-            style={
-              on
-                ? {
-                    boxShadow:
-                      "inset 0 1px 0 rgba(255,255,255,0.95), inset 0 -8px 14px rgba(0,0,0,0.07), 0 4px 12px rgba(10,10,10,0.10)",
-                  }
-                : undefined
-            }
-          >
-            {on ? (
-              <span
-                aria-hidden
-                className="pointer-events-none absolute inset-x-0 top-0 h-1/2 rounded-t-full"
-                style={{ background: "linear-gradient(to bottom, rgba(255,255,255,0.6), rgba(255,255,255,0))" }}
-              />
-            ) : null}
-            <Icon size={20} strokeWidth={1.9} className={`relative ${on ? c.fg : "text-s-ink-2"}`} />
-            <span className={`relative whitespace-nowrap text-[15px] font-semibold text-s-ink transition-all duration-300 ${on ? "max-w-[140px] opacity-100" : "max-w-0 opacity-0"}`}>
-              {c.label}
-            </span>
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
-/* ---------------------------------------------------------------------------------- the screen */
 
 const DIRECTIONS = [
-  { key: "A", title: "Our pill, morphing", Comp: DirectionA },
-  { key: "B", title: "Glass on every circle", Comp: DirectionB },
-  { key: "C", title: "Glass only on the chosen one", Comp: DirectionC },
+  {
+    key: "A",
+    title: "Gloss along the stroke",
+    note: "The line itself runs light at the top to deep at the bottom. Subtlest.",
+    props: { iconStyle: { stroke: "url(#gloss-a)" } as React.CSSProperties },
+  },
+  {
+    key: "B",
+    title: "Gloss plus a lift",
+    note: "Same idea, with a white edge above and a soft shadow under the glyph, so it sits off the surface.",
+    props: { glossClass: "mock-gloss-b", iconStyle: { stroke: "url(#gloss-b)" } as React.CSSProperties },
+  },
+  {
+    key: "C",
+    title: "Filled and wet",
+    note: "The glyph is filled as well as drawn, bright at the top and deep at the bottom. Heaviest, most liquid.",
+    props: {
+      glossClass: "mock-gloss-c",
+      iconStyle: { stroke: "url(#gloss-c)", fill: "url(#gloss-c-fill)" } as React.CSSProperties,
+    },
+  },
 ];
 
 export default function Variants() {
   return (
     <div className="space-y-8">
-      {DIRECTIONS.map(({ key, title, Comp }) => (
+      <style>{`
+        .mock-gloss-b { filter: drop-shadow(0 1px 0 rgba(255,255,255,0.95)) drop-shadow(0 1px 1px rgba(10,10,10,0.18)); }
+        .mock-gloss-c { filter: drop-shadow(0 1px 0 rgba(255,255,255,0.9)) drop-shadow(0 2px 3px rgba(10,10,10,0.22)); }
+      `}</style>
+
+      {DIRECTIONS.map(({ key, title, note, props }) => (
         <section key={key}>
-          <p className="mb-3 text-[13px] font-semibold text-s-ink-2">
+          <p className="text-[13px] font-semibold text-s-ink-2">
             {key}. {title}
           </p>
-          <Comp />
+          <p className="mb-3 text-[13px] leading-snug text-s-ink-2">{note}</p>
+          <Row {...props} />
         </section>
       ))}
+
+      {/* The paint servers. One ramp per direction, referenced by the stroke and fill above. */}
+      <svg width="0" height="0" aria-hidden focusable="false" className="absolute">
+        <defs>
+          <linearGradient id="gloss-a" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#6E6E73" /> {/* drift-ok: gloss ramp step, no token at this value */}
+            <stop offset="45%" stopColor="#2B2B2E" /> {/* drift-ok: gloss ramp step */}
+            <stop offset="100%" stopColor="#0A0A0A" />
+          </linearGradient>
+          <linearGradient id="gloss-b" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#9A9AA0" /> {/* drift-ok: gloss ramp step */}
+            <stop offset="35%" stopColor="#3A3A3E" /> {/* drift-ok: gloss ramp step */}
+            <stop offset="100%" stopColor="#0A0A0A" />
+          </linearGradient>
+          <linearGradient id="gloss-c" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#B8B8BE" /> {/* drift-ok: gloss ramp step */}
+            <stop offset="100%" stopColor="#26262A" /> {/* drift-ok: gloss ramp step */}
+          </linearGradient>
+          <linearGradient id="gloss-c-fill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.85" />
+            <stop offset="40%" stopColor="#D5D5DA" stopOpacity="0.75" /> {/* drift-ok: gloss ramp step */}
+            <stop offset="100%" stopColor="#4A4A50" stopOpacity="0.55" /> {/* drift-ok: gloss ramp step */}
+          </linearGradient>
+        </defs>
+      </svg>
     </div>
   );
 }

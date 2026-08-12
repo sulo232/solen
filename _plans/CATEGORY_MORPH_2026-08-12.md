@@ -51,3 +51,29 @@ sits on top, rather than treating it as a choice between flat and 3D.
       grey rather than per-category, because he chose the monochrome 2D set, so B and C differ in
       how much glass rather than in colour. And Coiffeur and Barbershop still carry the same
       scissors, because our flat set has no barber tool. Both are one-line changes once he decides.
+
+## ROUND 2 (owner: "i want the keep the structure ... i want glossy sh on the icon not the pill or circl bro")
+
+Round 1 put the glass on the CONTAINER. Wrong surface, corrected in one sentence. The container is
+now the plain locked recipe in all three, and the only thing that varies is how the GLYPH is glossed.
+
+- [x] R1. `app/[locale]/dev/mock/category-morph/Variants.tsx` , the container is identical in all
+      three and carries no glass. verified on the rendered page: `boxShadow` is "none" on the chips
+      in every row, while the glyph in each row paints from its own gradient (stroke `url(#gloss-a)`,
+      `url(#gloss-b)`, and in C a stroke plus a `url(#gloss-c-fill)` fill).
+- [x] R2. The structure he asked to keep is kept: circle at rest, the locked sunken pill when
+      chosen, same sizes. verified: 121px open, 48px circles, in all three rows.
+- [x] R3. Three genuinely different ways to gloss a glyph rather than one turned up: A paints the
+      LINE with a gradient only; B adds a white edge above and a soft shadow below so the glyph
+      lifts off the surface; C fills the shape as well as drawing it.
+      HOW, since this is not a colour swap: our icons are stroked SVGs using `currentColor`, and a
+      gradient on a stroke needs a real paint server, so each direction defines one gradient and
+      points the stroke, or the fill, at it. A CSS filter was rejected because it blurs the shape.
+- [x] R4. RECOMMENDATION: **B**. The only one that reads as glossy at 22px, which is the size this
+      ships at. A is honest but nearly invisible at icon size. C is genuinely liquid and is also the
+      one that stops looking like our icon set, because a filled scissors is a different mark from a
+      drawn one and nothing else in the product is filled.
+      Costs: B adds two shadows per glyph, cheap, but a treatment nothing else in the app has. C
+      would need every category glyph redrawn as a filled shape to stay consistent.
+- [ ] R5. STILL HIS TO SETTLE: hair salon and barber carry the same scissors, because our flat set
+      has no barber tool. Whichever gloss he picks, that stays until an icon is drawn.
