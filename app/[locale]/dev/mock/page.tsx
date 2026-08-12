@@ -16,6 +16,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 
 const MOCKS = [
+  { href: "category-morph", title: "Category row, three ways", line: "Circles that morph into pills, with the glare on none, all, or only the chosen one." },
   { href: "salon-reviews", title: "Salon reviews", line: "The words a customer wrote take the black and the size." },
   { href: "home-density", title: "Home", line: "Two and a bit stores across the screen instead of one and a half." },
   { href: "search-density", title: "Search results", line: "The same narrower card, and fewer text sizes on it." },
