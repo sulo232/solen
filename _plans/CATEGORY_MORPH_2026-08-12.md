@@ -98,3 +98,34 @@ because I was picking from a general-purpose glyph set that has no barber tool a
 - [ ] G5. HIS CALL: D against B. D is a made-for-us set where every object means its category, in
       one coral. B is our existing glyph set with a gloss on it, which stays consistent with every
       other icon in the product but keeps the twin scissors. He picks one and it becomes real.
+
+## ROUND 4, and it closes the whole thread (owner: "wtf are these colors bro stop maiking dumb sh up make it black flat jst normal icons bro are u dumb")
+
+Black. Flat. Normal. No colour, no gloss, no gradient, no lift, and no options to pick between,
+because he closed the question rather than asking one. The three gloss directions and the coral set
+are DELETED, not parked, and the coral files are gone from the repo.
+
+The only thing kept from the earlier rounds is his own idea, the shape: circle at rest, the locked
+pill when chosen.
+
+- [x] B1. Icons regenerated in solid black, flat. Measured on the chosen sheet before cutting:
+      **0.0% coloured pixels**. Four silhouettes, one per category: shears, clippers, a polish
+      bottle, spa stones. Cut, made transparent, saved at 256px to `public/icons/categories/flat/`.
+- [x] B2. verified on the rendered screen at 402x874: four chips, at rest one is 121px and three are
+      48px circles; tapping the third shrinks the first to 48 and grows the third to 98. All four
+      icons load. **No shadow on any chip and no filter on any icon**, which is the check that the
+      gloss really is gone rather than just turned down.
+- [x] B3. The mockup page is now ONE row, not four. Nothing to compare, because there is nothing
+      left to decide about the treatment.
+- [x] B4. The old coral set and the gloss variants are removed from the repo rather than left lying
+      around to be picked up by mistake.
+- [ ] B5. HIS, and the last thing open on this: whether this goes into the product. It is a mockup
+      until he says so.
+
+## WHAT THIS THREAD COST, recorded because the pattern is the lesson
+
+Four rounds, two of them entirely wasted, and both waste came from the same habit: I answered the
+part of his sentence I found most interesting instead of the whole sentence. He said "glossy sh on
+the icon" and I glossed the container. He said "flat icons" in the same breath as "3d liquid" and I
+built three ways to reconcile that instead of asking which word won. The generated coral set was
+never requested in coral at all; he never named a colour, and I chose one.
