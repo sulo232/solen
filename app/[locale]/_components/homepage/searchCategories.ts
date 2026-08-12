@@ -43,57 +43,58 @@ export type SearchCategory = {
  * plain client-side module); the sub-line may return once that query exists.
  */
 /**
- * THE TINT SYSTEM, SECOND PASS , the colours now come OUT OF THE ICONS instead of out of my head.
+ * THIRD PASS, and this one is a REVERSAL. Owner 2026-08-12: "no ths is 3d i told i to make it 2d
+ * allat". The drawn icons I had just wired in from `/icons/categories/v2/` are 3D renders, a
+ * yellow dryer with a specular highlight, an orange chair with shadow, a polish bottle with a
+ * gradient. He does not want 3D on this surface and says he has said so before. So they are out.
  *
- * Owner 2026-08-12, on the first pass: "the icon palletes dont make any scence and doesnt resemble
- * the icon seta that are made yk". Correct on both counts, and the drift ledger had already logged
- * this exact mistake once ("used onboarding PHOTOS when real category ICONS existed").
+ * WHAT THE 2D SET WE ACTUALLY OWN LOOKS LIKE, sampled out of the SVG source rather than eyeballed:
+ *     public/icons/category/coiffeur.svg    #F4553E on 7 paths, #FB9385 on 1   (hue 7.6, 7.1)
+ *     public/icons/category/nails-test.svg  #E14F42 on 6 paths, #F3A39B on 2   (hue 4.9, 5.5)
+ * Two facts fall out of that, and both matter more than my opinion:
+ *   1. THE 2D SET IS MONOCHROME. Every saturated path in both files is the same coral red, give or
+ *      take three degrees of hue. It was never drawn as one colour per category, so a per-category
+ *      rainbow of tints contradicts the set instead of resembling it, which is the other half of
+ *      what he objected to.
+ *   2. IT IS TWO FILES. There is no barbershop and no spa in 2D. `nails-test.svg` is even named as
+ *      a test. So a full 2D set does not exist yet and cannot be conjured here.
  *
- * WHAT THE ICON SET WE OWN IS ACTUALLY DRAWN IN, measured off the art itself (alpha > 128, pixels
- * with real colour in them, dominant hue weighted by how colourful each pixel is):
- *     v2/coiffeur.png  a YELLOW hair dryer      hue  90, mean C* 63, 37% of the art has colour
- *     v2/barber.png    an ORANGE barber chair   hue  50, mean C* 56, 63%
- *     v2/nails.png     a ROSE polish bottle     hue  20, mean C* 51, 72%
- *     v2/spa.png       dark stones, GREEN leaf  hue 120, mean C* 68, 6% (the leaf is the only colour)
+ * WHAT SHIPS UNTIL IT DOES: 2D line glyphs, which is what Lucide is, on the neutral sunken tile,
+ * carrying the set's own sampled coral. One colour across the four, because that is what the set
+ * is. The `art` field stays on the type and stays empty, so the day the four 2D icons exist they
+ * drop straight in.
  *
- * THE RULE IS UNCHANGED and still holds the set together: one lightness and one colourfulness on
- * every tile (L*=92 C*=12) and on every fallback glyph (L*=42 C*=38). What changed is where the
- * hue comes from. It is no longer reasoned, it is READ OFF THE DRAWING each row shows.
- *
- * MEASURED: fallback glyph against its own tile is 4.91, 4.91, 4.89 and 4.93 to 1, all above the
- * 3:1 graphical floor and the 4.5:1 text floor.
- *
- * FIRST PASS, kept as a record of what was wrong with it: hues 75 / 32 / 0 / 150, argued from
- * "warm gold, barber pole, polish rose, spa green". Close enough to sound right and derived from
- * nothing, which is exactly what he objected to.
+ * KILLED IN THIS PASS, recorded so it is not tried a fourth time: per-category tints. Pass one
+ * argued hues (75/32/0/150), pass two read them off the 3D art (90/50/20/120). Both were rejected,
+ * the second because the art itself was wrong.
  */
 export const CATEGORIES: SearchCategory[] = [
   {
     label: "Coiffeur",
     icon: Scissors,
-    art: "/icons/categories/v2/coiffeur.png",
-    bg: "bg-[#F2E7D1]", // drift-ok: read off v2/coiffeur.png, hue 90, at the system L*=92 C*=12
-    fg: "text-[#756121]", // drift-ok: same hue at L*=42 C*=38, 4.91:1 on its own tile
+    art: "", // the 2D coiffeur.svg exists but its three siblings do not; see the note above
+    bg: "bg-s-bg-sunken",
+    fg: "text-[#D8412B]", // drift-ok: the 2D set's own coral. Sampled #F4553E measures 3.07:1 on the sunken tile, too close to the 3:1 icon floor to trust, so it is darkened to this: measured 4.06:1 on sunken and 4.46:1 on white, same hue
   },
   {
     label: "Barbershop",
     icon: Scissors,
-    art: "/icons/categories/v2/barber.png",
-    bg: "bg-[#FEE3D7]", // drift-ok: read off v2/barber.png, hue 50, at the system L*=92 C*=12
-    fg: "text-[#935234]", // drift-ok: same hue at L*=42 C*=38, 4.91:1 on its own tile
+    art: "",
+    bg: "bg-s-bg-sunken",
+    fg: "text-[#D8412B]", // drift-ok: same sampled coral, the 2D set is monochrome
   },
   {
     label: "Nails",
     icon: Gem,
-    art: "/icons/categories/v2/nails.png",
-    bg: "bg-[#FFE1E1]", // drift-ok: read off v2/nails.png, hue 20, at the system L*=92 C*=12
-    fg: "text-[#9D494F]", // drift-ok: same hue at L*=42 C*=38, 4.89:1 on its own tile
+    art: "",
+    bg: "bg-s-bg-sunken",
+    fg: "text-[#D8412B]", // drift-ok: same sampled coral
   },
   {
     label: "Spa & Wellness",
     icon: Leaf,
-    art: "/icons/categories/v2/spa.png",
-    bg: "bg-[#E5EBD4]", // drift-ok: read off v2/spa.png's leaf, hue 120, at the system L*=92 C*=12
-    fg: "text-[#556A2A]", // drift-ok: same hue at L*=42 C*=38, 4.93:1 on its own tile
+    art: "",
+    bg: "bg-s-bg-sunken",
+    fg: "text-[#D8412B]", // drift-ok: same sampled coral
   },
 ];

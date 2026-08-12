@@ -134,7 +134,7 @@ mockup is `SuggestRow` and `LookCard` copied out of SearchOverlay.tsx with ONE t
       verified on the live panel at 402x874: five tile colours where there was one grey, 11 salon
       photos, 3 gold stars, zero review counts, look ratio 0.563 (the Inspo page's own), and one
       `/de/inspo` link in the sheet.
-- [x] R8. SUPERSEDED by his next message and fixed at the root. He said: "the icon palletes dont
+- [x] R8. Commit 6b71e5e73, `searchCategories.ts` + `SearchOverlay.tsx` , SUPERSEDED by his next message and fixed at the root. He said: "the icon palletes dont
       make any scence and doesnt resemble the icon seta that are made yk", and he is right twice
       over. A Lucide glyph in a tinted box is NOT the icon set this app owns, and a hue I reasoned
       my way to is not the colour that set is drawn in. The drift ledger had logged this exact
@@ -149,3 +149,45 @@ mockup is `SuggestRow` and `LookCard` copied out of SearchOverlay.tsx with ONE t
       four tiles measure rgb(242,231,209), rgb(254,227,215), rgb(255,225,225), rgb(229,235,212).
       The invented pass, kept as a record: hues 75 / 32 / 0 / 150, and a shaving brush that
       rendered as a paintbrush.
+
+### The sampled colours, file by file (not picked, read out of the shipped art)
+
+PIL + colorsys over each icon, saturated pixels only, dominant hue bucket averaged:
+
+| category | file | sampled | the tile built from it | hue delta |
+|---|---|---|---|---|
+| Coiffeur | `public/icons/categories/v2/coiffeur.png` | **#E8C144** | #F2E7D1 | 5.7 |
+| Barbershop | `public/icons/categories/v2/barber.png` | **#D56D42** | #FEE3D7 | 0.9 |
+| Nails | `public/icons/categories/v2/nails.png` | **#F27883** | #FFE1E1 | 5.4 |
+| Spa & Wellness | `public/icons/categories/v2/spa.png` | **#BEE965** | #E5EBD4 | 3.9 |
+
+Worth writing down: the nails sample lands on **#F27883**, and the swatch he attached by hand on
+2026-08-02 for that same icon was #F27A84. Two units apart on a colour that cost that workstream
+eight rounds of adjectives. Sampling gets there on the first try; describing never did.
+
+## ROUND 3, and it is a REVERSAL (owner 2026-08-12: "no ths is 3d i told i to make it 2d allat")
+
+- [x] R9. The 3D art is OUT of the panel. verified on the live panel at 402x874: zero raster
+      category icons remain in the sheet. The `/icons/categories/v2/` files are 3D renders, a
+      yellow dryer with a specular highlight, an orange chair with a cast shadow, a polish bottle
+      with a gradient, and he has said before that this surface is 2D.
+- [x] R10. SAMPLED the 2D set we own instead of choosing again, out of the SVG source:
+      `public/icons/category/coiffeur.svg` is #F4553E on 7 paths and #FB9385 on 1;
+      `public/icons/category/nails-test.svg` is #E14F42 on 6 paths and #F3A39B on 2. Every
+      saturated path in both files is the SAME coral, within 3 degrees of hue.
+      TWO FACTS FALL OUT, and both outrank my opinion: the 2D set is MONOCHROME, so a per-category
+      rainbow contradicts it rather than resembling it, which is the other half of what he
+      objected to; and it is TWO FILES, with no barbershop and no spa, one of them still named
+      `nails-test`. A full 2D set does not exist yet.
+- [x] R11. What ships until it does: 2D line glyphs on the neutral sunken tile, all four carrying
+      the set's own coral. verified on the live panel: every category tile is rgb(244,244,245) and
+      every category glyph is rgb(216,65,43). The sampled #F4553E measures 3.07:1 on that tile,
+      too close to the 3:1 icon floor to trust, so it is darkened one step to #D8412B at the same
+      hue: measured 4.06:1 on sunken, 4.46:1 on white.
+- [x] R12. Per-category tints are DEAD, recorded so this is not tried a fourth time. Pass one
+      argued the hues (75/32/0/150), pass two read them off the 3D art (90/50/20/120). Rejected
+      both times, the second because the art itself was the wrong medium.
+- [ ] R13. THE REAL GAP, his to decide because it needs drawing, not code: two of the four 2D
+      icons do not exist (barbershop, spa), and the nails one is a file called `nails-test`. Until
+      those are drawn in the coral flat style the other two are in, this row uses line glyphs and
+      Coiffeur and Barbershop still share a scissors, because our 2D line set has no barber tool.
