@@ -224,6 +224,28 @@ captured.
       verified on the rendered page: left pane review body 15px/400/rgb(107,107,107) with the name
       16px/600/rgb(10,10,10); right pane body 14px/400/rgb(10,10,10) with the name 14px/500. The
       ranking is inverted exactly as measured on their listing.
+- [x] C6. THE DEFINITION OF A MOCKUP, written down because he had to say it four times. Owner
+      2026-08-12: "what part of mock up do you not fucking understand ... that is not a fucking
+      mock. No. Refine the definition of a mock up ... Harden the fucking gate." Landed at the top
+      of `public/_mockups/_BASE.md`: a mockup is ONE real screen, full-bleed at 402, silent, judged
+      by looking at it on a phone, with before and after on a TOGGLE. Four things that are NOT
+      mockups are named, and all four are things I handed him today: a comparison page with prose,
+      a findings list, a document, and phone-width panes on a desktop layout.
+- [x] C7. THE GATE, `~/.claude/hooks/mockup-must-be-a-screen-gate.py`, built, self-tested 8/8,
+      wired into settings.json (49 Stop commands, valid JSON, confirmed present). verified the way
+      that matters: replayed against the page I called "screen 3" earlier today it returns
+      BLOCKED, "a desktop page wrapper". It would have stopped every one of the three things he
+      rejected before he ever read them.
+- [ ] C8. HONEST STATE of the first real mockup, `app/[locale]/dev/mock/salon-reviews/`: it is
+      full-bleed at 402, silent (zero paragraphs, zero headings on the page), the outer app chrome
+      and cookie banner are hidden, and the toggle flips the real styling, measured: "New" gives
+      review text 14px rgb(10,10,10), "Now" gives 15px rgb(107,107,107). What it does NOT do yet is
+      land on the review CARDS: the frame parks on the reviews heading and the star row, and the
+      newsletter block is painted directly under the filter chips, so the cards themselves are not
+      on screen. Four approaches were tried (hash anchor, scroll-into-view, a re-parking loop, and
+      finally positioning the frame by its own measured offset, which is what ships). The last one
+      is deterministic and correct; the cards not rendering under the chips on that page load looks
+      like a real defect on the salon page rather than a mockup problem, and it needs its own pass.
 - [ ] C5b. The remaining mockups, one per screen, from the other 50 rows of the list. Each is the
       same shape of work: pick the injectable findings for that screen, build the two panes, name
       the cost. He reviews them one at a time, which is what he asked for.
