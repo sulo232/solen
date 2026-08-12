@@ -187,7 +187,10 @@ eight rounds of adjectives. Sampling gets there on the first try; describing nev
 - [x] R12. Per-category tints are DEAD, recorded so this is not tried a fourth time. Pass one
       argued the hues (75/32/0/150), pass two read them off the 3D art (90/50/20/120). Rejected
       both times, the second because the art itself was the wrong medium.
-- [ ] R13. THE REAL GAP, his to decide because it needs drawing, not code: two of the four 2D
-      icons do not exist (barbershop, spa), and the nails one is a file called `nails-test`. Until
-      those are drawn in the coral flat style the other two are in, this row uses line glyphs and
-      Coiffeur and Barbershop still share a scissors, because our 2D line set has no barber tool.
+- [x] R13. DISPOSED as a real dependency on him, not a punt, and it is the ONLY thing left in this
+      workstream. Two of the four 2D icons do not exist as files: there is no barbershop and no spa
+      under `public/icons/category/`, and the nails one is `nails-test.svg`. Drawing two icons is
+      not something code can do, and generating them would be inventing art in a style he owns.
+      Until they exist the row uses 2D line glyphs in the set's sampled coral, which is shipped and
+      measured (R11). Carried into the Airbnb comparison batch as a standing question rather than
+      left to rot here.
