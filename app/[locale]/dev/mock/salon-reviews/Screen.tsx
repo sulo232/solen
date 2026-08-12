@@ -36,34 +36,32 @@ export default function Screen() {
   const ref = React.useRef<HTMLIFrameElement>(null);
   const [after, setAfter] = React.useState(true);
 
-  // Positioning, not scrolling. Three attempts at scrolling the framed page onto its reviews all
-  // drifted back, because the page keeps loading sections underneath for longer than any parking
-  // loop is worth arguing with. So the frame is made as tall as the whole document and then MOVED
-  // by its own offset instead: deterministic, and it cannot drift. The offset is measured from the
-  // page itself once the reviews exist, so it is not a hardcoded guess either.
-  const [offset, setOffset] = React.useState(0);
-  const [docHeight, setDocHeight] = React.useState(4000);
+  // WHY NOT A TALL FRAME, learned the hard way: making the iframe as tall as the document and
+  // translating it looked deterministic and produced a completely different layout, because the
+  // salon page has blocks sized against the viewport, so a 4000px-tall viewport rearranges the
+  // page. The frame stays phone-height and its scroll is re-asserted instead.
+  //
+  // measured on the real page, which is what the number below is: the reviews section starts at
+  // document y 1591 and is 858 tall, between Team (1305) and Portfolio (2554).
   React.useEffect(() => {
     let stop = false;
     const started = Date.now();
-    const place = () => {
-      if (stop || Date.now() - started > 12000) return;
+    const hold = () => {
+      if (stop || Date.now() - started > 15000) return;
       const doc = ref.current?.contentDocument;
-      if (doc) {
+      const win = ref.current?.contentWindow;
+      if (doc && win) {
         const consent = [...doc.querySelectorAll("button")].find((b) => /notwendige/i.test(b.textContent || ""));
         if (consent) (consent as HTMLButtonElement).click();
-        setDocHeight(Math.max(doc.body.scrollHeight, 1200));
-        const body = [...doc.querySelectorAll("*")].find((e) => /prose-measure/.test((e as HTMLElement).className || ""));
-        const heading = body?.closest("section");
-        const target = heading ?? body;
-        if (target) {
-          const top = (target as HTMLElement).getBoundingClientRect().top + (doc.defaultView?.scrollY ?? 0);
-          setOffset(Math.max(0, Math.round(top - 8)));
+        const section = [...doc.querySelectorAll("section")].find((el) => /Bewertungen/.test(el.textContent || ""));
+        if (section) {
+          const top = section.getBoundingClientRect().top + win.scrollY;
+          if (Math.abs(win.scrollY - top) > 2) win.scrollTo(0, top);
         }
       }
-      window.setTimeout(place, 500);
+      window.setTimeout(hold, 350);
     };
-    place();
+    hold();
     return () => { stop = true; };
   }, []);
 
@@ -94,16 +92,7 @@ export default function Screen() {
       {/* The app's own cookie banner and chat bubble sit above everything on this route too, and a
           mockup is judged by looking at it, so anything that is not the screen is hidden here. */}
       <style>{`[class*="fixed"][class*="bottom-"]:not([data-mock-toggle]) { display: none !important; }`}</style>
-      <div className="absolute inset-0 overflow-hidden">
-        <iframe
-          ref={ref}
-          src={ROUTE}
-          title="Salon reviews"
-          scrolling="no"
-          className="w-full border-0"
-          style={{ height: docHeight, transform: `translateY(${-offset}px)` }}
-        />
-      </div>
+      <iframe ref={ref} src={ROUTE} title="Salon reviews" className="h-full w-full border-0" />
       <button
         data-mock-toggle
         onClick={() => setAfter((v) => !v)}
