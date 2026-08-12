@@ -25,7 +25,25 @@
 // the three direction names, in English.
 
 import * as React from "react";
+import Image from "next/image";
 import { CATEGORIES } from "@/app/[locale]/_components/homepage/searchCategories";
+
+// ROUND 3, owner 2026-08-12: "the icons ur choosing doesnt make any scence bro why diamonds etc ik
+// uon got but generate using higgsfield ir smth". He is right: a diamond is not a nail, and the
+// scissors was doing duty for two categories. So a set was GENERATED rather than borrowed.
+//
+// What was generated and how, so the next person does not redo it: four flat coral shapes in one
+// row, one prompt, four variants, 2 credits. Two of the four came back with the gloss on a TILE
+// behind the object, which is the exact surface he told me not to gloss; one came back with the
+// gloss ON the object and no tile, which is what he asked for. That one was cut into four squares,
+// white made transparent, saved at 256px to /icons/categories/gloss/.
+// Each object now means its own category: shears, clippers, a polish bottle, spa stones.
+const GENERATED: Record<string, string> = {
+  Coiffeur: "/icons/categories/gloss/coiffeur.png",
+  Barbershop: "/icons/categories/gloss/barbershop.png",
+  Nails: "/icons/categories/gloss/nails.png",
+  "Spa & Wellness": "/icons/categories/gloss/spa.png",
+};
 
 function useSelection(initial = 0) {
   const [i, setI] = React.useState(initial);
@@ -36,7 +54,7 @@ function useSelection(initial = 0) {
  * The container, identical in all three and unchanged from what ships: circle at rest, the locked
  * sunken pill when chosen. No glass, no gradient, no highlight anywhere on it.
  */
-function Row({ glossClass, iconStyle }: { glossClass?: string; iconStyle?: React.CSSProperties }) {
+function Row({ glossClass, iconStyle, art }: { glossClass?: string; iconStyle?: React.CSSProperties; art?: boolean }) {
   const { i, setI } = useSelection();
   return (
     <div className="flex gap-2 overflow-x-auto pb-2">
@@ -51,7 +69,11 @@ function Row({ glossClass, iconStyle }: { glossClass?: string; iconStyle?: React
               on ? "bg-s-bg-sunken px-4" : "w-12 justify-center border border-s-border bg-white"
             }`}
           >
-            <Icon size={22} strokeWidth={2.1} className={glossClass} style={iconStyle} />
+            {art ? (
+              <Image src={GENERATED[c.label]} alt="" width={26} height={26} className="shrink-0" />
+            ) : (
+              <Icon size={22} strokeWidth={2.1} className={glossClass} style={iconStyle} />
+            )}
             <span
               className={`whitespace-nowrap text-[15px] font-semibold text-s-ink transition-all duration-300 ${
                 on ? "max-w-[140px] opacity-100" : "max-w-0 opacity-0"
@@ -78,6 +100,12 @@ const DIRECTIONS = [
     title: "Gloss plus a lift",
     note: "Same idea, with a white edge above and a soft shadow under the glyph, so it sits off the surface.",
     props: { glossClass: "mock-gloss-b", iconStyle: { stroke: "url(#gloss-b)" } as React.CSSProperties },
+  },
+  {
+    key: "D",
+    title: "Generated set, gloss on the object",
+    note: "Shears, clippers, a polish bottle, spa stones. Made for this, one colour, the shine on the shape itself.",
+    props: { art: true },
   },
   {
     key: "C",

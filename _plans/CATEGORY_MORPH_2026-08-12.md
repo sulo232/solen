@@ -32,10 +32,10 @@ sits on top, rather than treating it as a choice between flat and 3D.
 
 ## Boxes
 
-- [x] 1. Commit pending this turn, `app/[locale]/dev/mock/category-morph/` , three directions:
+- [x] 1. Commit f8a199dcb, `app/[locale]/dev/mock/category-morph/` , three directions:
       A our locked pill morphing with no glass, B glass on every circle, C glass only on the one
       chosen. Genuinely different bets, not one with tweaks.
-- [x] 2. verified: the categories, their colours and their icons are imported from
+- [x] 2. Commit f8a199dcb , verified: the categories, their colours and their icons are imported from
       `searchCategories.ts`; nothing is re-declared and the pill recipe in A is the locked one.
 - [x] 3. verified on the rendered screen at 402x874: at rest chip 1 is 119px wide and the other
       three are 48px circles; after tapping the third chip of row B, chip 1 is back to 48 and chip
@@ -47,7 +47,7 @@ sits on top, rather than treating it as a choice between flat and 3D.
       Costs, each named: C looks plain until you touch it. B is the most "liquid glass" and the
       heaviest. A does not deliver the glare he asked for at all.
 - [x] 5. verified: nothing outside `app/[locale]/dev/` was touched.
-- [ ] 6. TWO THINGS HE SHOULD SEE BEFORE PICKING, both consequences of this morning: the tints are
+- [x] 6. Commit fcbff0e92 , SURFACED TO HIM IN THE REPLY, not left in the file: both consequences of this morning: the tints are
       grey rather than per-category, because he chose the monochrome 2D set, so B and C differ in
       how much glass rather than in colour. And Coiffeur and Barbershop still carry the same
       scissors, because our flat set has no barber tool. Both are one-line changes once he decides.
@@ -57,23 +57,44 @@ sits on top, rather than treating it as a choice between flat and 3D.
 Round 1 put the glass on the CONTAINER. Wrong surface, corrected in one sentence. The container is
 now the plain locked recipe in all three, and the only thing that varies is how the GLYPH is glossed.
 
-- [x] R1. `app/[locale]/dev/mock/category-morph/Variants.tsx` , the container is identical in all
+- [x] R1. Commit fcbff0e92, `app/[locale]/dev/mock/category-morph/Variants.tsx` , the container is identical in all
       three and carries no glass. verified on the rendered page: `boxShadow` is "none" on the chips
       in every row, while the glyph in each row paints from its own gradient (stroke `url(#gloss-a)`,
       `url(#gloss-b)`, and in C a stroke plus a `url(#gloss-c-fill)` fill).
-- [x] R2. The structure he asked to keep is kept: circle at rest, the locked sunken pill when
+- [x] R2. Commit fcbff0e92 , the structure he asked to keep is kept: circle at rest, the locked sunken pill when
       chosen, same sizes. verified: 121px open, 48px circles, in all three rows.
-- [x] R3. Three genuinely different ways to gloss a glyph rather than one turned up: A paints the
+- [x] R3. Commit fcbff0e92 , three genuinely different ways to gloss a glyph rather than one turned up: A paints the
       LINE with a gradient only; B adds a white edge above and a soft shadow below so the glyph
       lifts off the surface; C fills the shape as well as drawing it.
       HOW, since this is not a colour swap: our icons are stroked SVGs using `currentColor`, and a
       gradient on a stroke needs a real paint server, so each direction defines one gradient and
       points the stroke, or the fill, at it. A CSS filter was rejected because it blurs the shape.
-- [x] R4. RECOMMENDATION: **B**. The only one that reads as glossy at 22px, which is the size this
+- [x] R4. Commit fcbff0e92 , RECOMMENDATION: **B**. The only one that reads as glossy at 22px, which is the size this
       ships at. A is honest but nearly invisible at icon size. C is genuinely liquid and is also the
       one that stops looking like our icon set, because a filled scissors is a different mark from a
       drawn one and nothing else in the product is filled.
       Costs: B adds two shadows per glyph, cheap, but a treatment nothing else in the app has. C
       would need every category glyph redrawn as a filled shape to stay consistent.
-- [ ] R5. STILL HIS TO SETTLE: hair salon and barber carry the same scissors, because our flat set
+- [x] R5. DISPOSED as a real dependency on him, and it needs drawing rather than code: hair salon and barber carry the same scissors, because our flat set
       has no barber tool. Whichever gloss he picks, that stays until an icon is drawn.
+
+## ROUND 3 (owner: "the icons ur choosing doesnt make any scence bro why diamonds etc ... generate using higgsfield ir smth")
+
+He is right. A diamond is not a nail, and the same scissors was standing in for two categories,
+because I was picking from a general-purpose glyph set that has no barber tool and no polish bottle.
+
+- [x] G1. GENERATED instead of borrowed, and it is direction D on the same page. One prompt, four
+      variants, **2 credits** preflighted before spending (balance 570, plan plus).
+- [x] G2. verified on the rendered page: four generated images in row D, all loaded, one per
+      category. Every object now means its own thing: shears, clippers, a polish bottle, spa stones.
+      No diamond, and hair salon and barber are finally different marks.
+- [x] G3. THE PICK AMONG THE FOUR GENERATED SETS, and the reason is his own instruction: two of the
+      four put the gloss on a TILE behind the object, which is the exact surface he said not to
+      gloss. One had no tile and the shine on the object itself. That is the one that shipped into
+      the mockup; the other three are kept at `public/_mockups/_assets/gen-icons/` so the choice can
+      be re-judged without spending again.
+- [x] G4. Prepared for use rather than pasted: white made transparent, cut into four squares,
+      centred, saved at 256px to `public/icons/categories/gloss/`.
+- [ ] G5. HIS CALL: D against B. D is a made-for-us set where every object means its category, in
+      one coral. B is our existing glyph set with a gloss on it, which stays consistent with every
+      other icon in the product but keeps the twin scissors. He picks one and it becomes real.
