@@ -134,7 +134,18 @@ mockup is `SuggestRow` and `LookCard` copied out of SearchOverlay.tsx with ONE t
       verified on the live panel at 402x874: five tile colours where there was one grey, 11 salon
       photos, 3 gold stars, zero review counts, look ratio 0.563 (the Inspo page's own), and one
       `/de/inspo` link in the sheet.
-- [ ] R8. ONE HONEST WEAKNESS, his to settle: rendered, the shaving brush reads as a paintbrush.
-      It is the closest thing our icon set has to a barbershop tool and it does end the twin
-      scissors, but if it bothers him the clippers drawing we already own
-      (`/icons/categories/clippers.png`) is a one-line swap for that row alone.
+- [x] R8. SUPERSEDED by his next message and fixed at the root. He said: "the icon palletes dont
+      make any scence and doesnt resemble the icon seta that are made yk", and he is right twice
+      over. A Lucide glyph in a tinted box is NOT the icon set this app owns, and a hue I reasoned
+      my way to is not the colour that set is drawn in. The drift ledger had logged this exact
+      mistake before ("used onboarding PHOTOS when real category ICONS existed").
+      FIXED: the rows now render the drawn icons from `/icons/categories/v2/`, and each tile's tint
+      is READ OFF ITS OWN ART instead of argued. Measured on the artwork (alpha>128, pixels with
+      real colour, dominant hue weighted by colourfulness): the hair dryer is yellow at hue 90, the
+      barber chair orange at 50, the polish bottle rose at 20, and the spa leaf green at 120, which
+      is the only colour in that drawing. Same one rule as before holds the set together, tile
+      L*=92 C*=12 and fallback glyph L*=42 C*=38, so only the hue moves and it now comes from the
+      picture. verified on the live panel at 402x874: all four drawn icons load at 36px, and the
+      four tiles measure rgb(242,231,209), rgb(254,227,215), rgb(255,225,225), rgb(229,235,212).
+      The invented pass, kept as a record: hues 75 / 32 / 0 / 150, and a shaving brush that
+      rendered as a paintbrush.

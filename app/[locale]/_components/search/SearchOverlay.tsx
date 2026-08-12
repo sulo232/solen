@@ -1866,7 +1866,7 @@ export function SearchOverlay({
     // only sets `service` (feeds ?category=/?service= via buildParams, unchanged), same as
     // picking the pill row never clears `serviceQ`.
     const categoryRows = CATEGORIES.map((c) => (
-      <SuggestRow key={c.label} name={c.label} Icon={c.icon} tintBg={c.bg} tintFg={c.fg} onClick={() => { setService(c.label); advance("service"); }} />
+      <SuggestRow key={c.label} name={c.label} Icon={c.icon} art={c.art} tintBg={c.bg} tintFg={c.fg} onClick={() => { setService(c.label); advance("service"); }} />
     ));
     if (typing) {
       if (loading && !hasResults && styleTerms.length === 0)
@@ -2683,14 +2683,14 @@ function MonthGrid({ monthDate, now, windowEnd, selKey, onPick, locale }: {
 // P13 (owner-approved 2026-07-16): `name` widened to accept a ReactNode (a <HighlightedText>
 // result) alongside a plain string , local-only component, no other file imports it, so this
 // is a fully backward-compatible widening.
-function SuggestRow({ name, sub, Icon, img, photo, rating, tintBg, tintFg, onClick, onRemove }: {
+function SuggestRow({ name, sub, Icon, img, photo, rating, tintBg, tintFg, art, onClick, onRemove }: {
   name: React.ReactNode; sub?: string; Icon?: LucideIcon; img?: string;
   // C1 (2026-08-12, owner: "looks flat n no color"). Three optional slots, all opt-in, so every
   // existing caller renders byte-identically: `photo` puts the salon's OWN cover in the tile it
   // already had, `rating` puts the gold star and the value beside the name (he asked for the value
   // WITHOUT the review count), and `tintBg`/`tintFg` let the category rows carry the colour
   // `searchCategories.ts` has always declared and this row used to throw away.
-  photo?: string | null; rating?: number | null; tintBg?: string; tintFg?: string;
+  photo?: string | null; rating?: number | null; tintBg?: string; tintFg?: string; art?: string;
   onClick: () => void; onRemove?: () => void;
 }) {
   return (
@@ -2701,6 +2701,14 @@ function SuggestRow({ name, sub, Icon, img, photo, rating, tintBg, tintFg, onCli
         ) : photo ? (
           <span className="block h-12 w-12 shrink-0 overflow-hidden rounded-2xl bg-s-bg-sunken">
             <img src={photo} alt="" loading="lazy" className="h-full w-full object-cover" />
+          </span>
+        ) : art ? (
+          /* C4 (2026-08-12, owner: "the icon palletes dont make any scence and doesnt resemble the
+             icon seta that are made yk"). The category's OWN drawn icon, which this project has
+             shipped in /icons/categories/v2 all along, on a tile tinted to the hue that art is
+             drawn in. Not a Lucide glyph in a colour I reasoned my way to. */
+          <span className={`grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-2xl ${tintBg ?? "bg-s-bg-sunken"}`}>
+            <img src={art} alt="" className="h-9 w-9 object-contain" />
           </span>
         ) : (
           <span className={`grid h-12 w-12 shrink-0 place-items-center rounded-2xl ${tintBg ?? "bg-s-bg-sunken"} ${tintFg ?? "text-s-ink-2"}`}>

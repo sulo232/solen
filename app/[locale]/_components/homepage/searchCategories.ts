@@ -1,6 +1,5 @@
 import {
-  Brush,
-  Hand,
+  Gem,
   Leaf,
   Scissors,
   type LucideIcon,
@@ -9,6 +8,15 @@ import {
 export type SearchCategory = {
   label: string;
   icon: LucideIcon;
+  /**
+   * The category's OWN drawn icon, the one this project already ships in
+   * `/public/icons/categories/v2/`. Owner 2026-08-12: "the icon palletes dont make any scence and
+   * doesnt resemble the icon seta that are made yk". He is right on both halves. A Lucide glyph in
+   * a tinted box is not the icon set this app owns, and a hue I reasoned my way to is not the
+   * colour that set is drawn in. Surfaces that can show art use this; the Lucide `icon` above stays
+   * for the places that cannot.
+   */
+  art: string;
   bg: string; // tailwind arbitrary-value bg class, V3 cat-color combos per V2-D48
   fg: string; // tailwind arbitrary-value text class
 };
@@ -35,54 +43,57 @@ export type SearchCategory = {
  * plain client-side module); the sub-line may return once that query exists.
  */
 /**
- * THE TINT SYSTEM (owner 2026-08-12, "B1 but acc make system for tint not jst random n also the
- * icons make ot make scence"). These four pairs are COMPUTED, not picked.
+ * THE TINT SYSTEM, SECOND PASS , the colours now come OUT OF THE ICONS instead of out of my head.
  *
- * ONE RULE: every tile sits at the same lightness and the same colourfulness, and only the HUE
- * changes. In CIE Lab, where those are measurable: tint L*=92 C*=12, glyph L*=42 C*=38.
+ * Owner 2026-08-12, on the first pass: "the icon palletes dont make any scence and doesnt resemble
+ * the icon seta that are made yk". Correct on both counts, and the drift ledger had already logged
+ * this exact mistake once ("used onboarding PHOTOS when real category ICONS existed").
  *
- * WHAT THIS REPLACED, measured on the values that were here before:
- *     tint   L* 86.94 to 95.78 (8.8 apart)    C* 7.23 to 12.50
- *     glyph  L* 12.85 to 59.00 (46.1 apart)   one nearly black next to a mid brown
- *     hue    86.0, 87.7, 126.1, 150.5         the first two 1.7 degrees apart, i.e. one colour
- * That is why the first two rows read as two greys however you tinted them.
+ * WHAT THE ICON SET WE OWN IS ACTUALLY DRAWN IN, measured off the art itself (alpha > 128, pixels
+ * with real colour in them, dominant hue weighted by how colourful each pixel is):
+ *     v2/coiffeur.png  a YELLOW hair dryer      hue  90, mean C* 63, 37% of the art has colour
+ *     v2/barber.png    an ORANGE barber chair   hue  50, mean C* 56, 63%
+ *     v2/nails.png     a ROSE polish bottle     hue  20, mean C* 51, 72%
+ *     v2/spa.png       dark stones, GREEN leaf  hue 120, mean C* 68, 6% (the leaf is the only colour)
  *
- * HUES, one reason each: 75 warm gold (kept), 32 barber-pole terracotta and 43 degrees clear of
- * the gold, 0 polish rose, 150 green (kept).
+ * THE RULE IS UNCHANGED and still holds the set together: one lightness and one colourfulness on
+ * every tile (L*=92 C*=12) and on every fallback glyph (L*=42 C*=38). What changed is where the
+ * hue comes from. It is no longer reasoned, it is READ OFF THE DRAWING each row shows.
  *
- * MEASURED: glyph against its own tile is 4.87, 4.86, 4.87, 4.91 to 1, all above the 3:1
- * graphical floor and the 4.5:1 text floor.
+ * MEASURED: fallback glyph against its own tile is 4.91, 4.91, 4.89 and 4.93 to 1, all above the
+ * 3:1 graphical floor and the 4.5:1 text floor.
  *
- * ICONS: Barbershop was a SECOND Scissors, identical to Coiffeur, which is what made the two rows
- * indistinguishable. All 5842 icons in the installed set were searched for a razor or clippers and
- * there is none, so it takes Brush, a shaving brush. Nails was Gem, a diamond, which is not a nail;
- * it takes Hand, the thing being treated. Sparkles is banned in this project by name.
- *
- * Mockup that carried these before they landed: /dev/search-color.
+ * FIRST PASS, kept as a record of what was wrong with it: hues 75 / 32 / 0 / 150, argued from
+ * "warm gold, barber pole, polish rose, spa green". Close enough to sound right and derived from
+ * nothing, which is exactly what he objected to.
  */
 export const CATEGORIES: SearchCategory[] = [
   {
     label: "Coiffeur",
     icon: Scissors,
-    bg: "bg-[#F7E5D2]", // drift-ok: tint system 2026-08-12, L*=92 C*=12 h=75
-    fg: "text-[#825C25]", // drift-ok: tint system 2026-08-12, L*=42 C*=38 h=75, 4.87:1 on its own tile
+    art: "/icons/categories/v2/coiffeur.png",
+    bg: "bg-[#F2E7D1]", // drift-ok: read off v2/coiffeur.png, hue 90, at the system L*=92 C*=12
+    fg: "text-[#756121]", // drift-ok: same hue at L*=42 C*=38, 4.91:1 on its own tile
   },
   {
     label: "Barbershop",
-    icon: Brush,
-    bg: "bg-[#FFE1DC]", // drift-ok: tint system 2026-08-12, L*=92 C*=12 h=32
-    fg: "text-[#9B4C44]", // drift-ok: tint system 2026-08-12, L*=42 C*=38 h=32, 4.86:1 on its own tile
+    icon: Scissors,
+    art: "/icons/categories/v2/barber.png",
+    bg: "bg-[#FEE3D7]", // drift-ok: read off v2/barber.png, hue 50, at the system L*=92 C*=12
+    fg: "text-[#935234]", // drift-ok: same hue at L*=42 C*=38, 4.91:1 on its own tile
   },
   {
     label: "Nails",
-    icon: Hand,
-    bg: "bg-[#FFE0E8]", // drift-ok: tint system 2026-08-12, L*=92 C*=12 h=0
-    fg: "text-[#9B4864]", // drift-ok: tint system 2026-08-12, L*=42 C*=38 h=0, 4.87:1 on its own tile
+    icon: Gem,
+    art: "/icons/categories/v2/nails.png",
+    bg: "bg-[#FFE1E1]", // drift-ok: read off v2/nails.png, hue 20, at the system L*=92 C*=12
+    fg: "text-[#9D494F]", // drift-ok: same hue at L*=42 C*=38, 4.89:1 on its own tile
   },
   {
     label: "Spa & Wellness",
     icon: Leaf,
-    bg: "bg-[#D8EEDC]", // drift-ok: tint system 2026-08-12, L*=92 C*=12 h=150
-    fg: "text-[#2B7042]", // drift-ok: tint system 2026-08-12, L*=42 C*=38 h=150, 4.91:1 on its own tile
+    art: "/icons/categories/v2/spa.png",
+    bg: "bg-[#E5EBD4]", // drift-ok: read off v2/spa.png's leaf, hue 120, at the system L*=92 C*=12
+    fg: "text-[#556A2A]", // drift-ok: same hue at L*=42 C*=38, 4.93:1 on its own tile
   },
 ];
