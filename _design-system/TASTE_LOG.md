@@ -669,3 +669,28 @@ The account hub is the spine of the week. Six of these are one screen, corrected
 only in a commit message on an unmerged branch is not in the law, and the next session will contradict
 it. Six of the eleven rows above are the same screen corrected repeatedly, with *"I told you like ten
 fucking times"* attached to one of them. That is the cost, stated in his words.
+
+## 2026-08-12 , AIRBNB BECOMES THE SOURCE OF TRUTH, replacing Fresha-for-structure / Uber-for-aesthetic
+
+**Owner, verbatim:** "airbnb te is source of truth", and in the same answer "no apply mockups i told
+u". He was answering a question that quoted the rule being replaced and named the precedent against
+it, so this is a decision taken with the collision in front of him, not a stray remark.
+
+**What it replaces.** CLAUDE.md carried a rule labelled THE most important one: structure from
+Fresha via the capture skill, aesthetic from Uber via the LOCKFILE. Airbnb is neither. That line now
+names Airbnb on both axes and says so, with the old text quoted inside it so nobody has to guess
+what changed.
+
+**What it does NOT replace, and he did not ask it to.** A taste source cannot outrank a floor:
+WCAG AA, nFADP/GDPR, the price-indication rule, the FLOORS LAW minimums, no dark mode on web, no
+fabricated data, and any dated decision in this log that he made by name. Where Airbnb collides with
+one of those it is surfaced as a conflict, which is how `references/AIRBNB_SYSTEM_VS_OURS.md`
+already handles its seven.
+
+**The precedent this has to live with.** On 2026-07-31 he killed a pill border that had been copied
+from Airbnb, by name. So "Airbnb is the source of truth" does not mean every Airbnb detail survives
+contact with him; it means Airbnb is where proposals now come FROM, and he still judges each one.
+
+**Scope he set in the same exchange:** all 94 customer screens outside the dashboard, one screen at
+a time, screens with no Airbnb counterpart graded against our own floors, and the design principles
+themselves in scope for improvement, not just the screens.

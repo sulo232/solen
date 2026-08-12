@@ -45,14 +45,23 @@ question 1 rather than resolved behind his back.
 ## Boxes
 
 - [x] Q0. Scope measured and the existing Airbnb work found rather than duplicated (rule 12).
-- [ ] Q1. ASKED: what authority does Airbnb have against our locked Fresha/Uber axes.
-- [ ] Q2. ASKED: which cluster the loop starts on, out of 94 screens.
-- [ ] Q3. ASKED: what to do with screens Airbnb has no counterpart for (walk-in queue, loyalty
-      stamp, hair profile, vouchers).
-- [ ] Q4. ASKED: batch size per review round.
-- [ ] Q5. CARRIED from the colour workstream: two of the four 2D category icons do not exist as
-      files (no barbershop, no spa; the nails one is `nails-test.svg`). Code cannot draw them.
-- [ ] L1. Run the loop once the four answers land: capture, measure, diagnose, mock, review, repeat.
+- [x] Q1. ANSWERED: "airbnb te is source of truth", and "no apply mockups i told u". Airbnb
+      replaces Fresha-for-structure AND Uber-for-aesthetic. Landed in `CLAUDE.md` with the old rule
+      quoted inside the new one, and in `_design-system/TASTE_LOG.md` dated. What did not move,
+      because he did not move it: the statutory tier, the FLOORS LAW minimums, no dark mode, no
+      fabricated data, and his own dated decisions. Collisions get surfaced, not applied.
+- [x] Q2. ANSWERED: "all". Every one of the 94, dashboard excluded.
+- [x] Q3. ANSWERED: screens with no Airbnb counterpart are graded against our own floors.
+- [x] Q4. ANSWERED: "one screen at a time", plus a fifth ask he added unprompted, below.
+- [x] Q5. ADDED BY HIM in the same answer: "i wanna improve design taste and principle etc that has
+      to do w design n ui". The principles and taste documents are in scope for improvement too,
+      not only the screens. That is a second output per screen: what the screen taught us that
+      belongs in the law.
+- [ ] Q6. CARRIED from the colour workstream and still his: two of the four 2D category icons do
+      not exist as files (no barbershop, no spa; nails is `nails-test.svg`). Code cannot draw them.
+- [ ] L1. THE LOOP, one screen at a time: capture Airbnb live in mobile view, measure both sides at
+      the same width, diagnose, mock in the v2 format, hand it over, take his answer, and write
+      what it taught back into the principles. Screen 1 is the home page.
 
 ## The principles I will run it under, so he can veto any of them now instead of after
 

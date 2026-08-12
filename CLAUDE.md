@@ -127,7 +127,13 @@ Frozen single-values. Do NOT re-open any row without the owner saying so by name
 
 **Before design/UI work: `_design-system/SOURCE.md`** (22-section canonical: tokens, motion, spacing, components, voice, a11y). On conflict, **`_design-system/LOCKFILE.md`** wins (frozen literal values; subagents read as immutable, only orchestrator writes).
 
-**DUAL-AXIS (THE most important rule):** STRUCTURE = Fresha source-of-truth (via `fresha-section-capture` → `public/_pixel-refs/fresha/<section>/SPEC.md`). AESTHETIC = Uber via LOCKFILE §1.5/§2.5/§11/§6. Both axes apply to every change. Full decision tree + anti-patterns: `_design-system/LOCKFILE.md` §10.0-§10.8. Read §10.0+§10.8 before any non-trivial edit.
+**SOURCE OF TRUTH = AIRBNB (owner 2026-08-12, verbatim: "airbnb te is source of truth", answering a question that named this exact collision and quoted the rule it replaces).** This SUPERSEDES the dual-axis rule that stood here, which read: *"STRUCTURE = Fresha source-of-truth (via `fresha-section-capture`). AESTHETIC = Uber via LOCKFILE §1.5/§2.5/§11/§6."* Fresha is no longer the structural authority; Airbnb is, on both axes, and `AESTHETIC = Uber` falls with it wherever the two disagree.
+
+What did NOT move, because he did not move it and a taste source cannot outrank a floor: the statutory tier (WCAG AA, nFADP/GDPR, PBV total-price), the FLOORS LAW minimums, no dark mode on web, no fabricated data, and any dated TASTE_LOG decision he made by name. When Airbnb collides with one of those, it is surfaced as a conflict, not applied , the same treatment `_design-system/references/AIRBNB_SYSTEM_VS_OURS.md` already gives its seven.
+
+**MOCKUP FIRST STILL BINDS, and he restated it in the same breath: "no apply mockups i told u".** Airbnb being the reference changes WHAT is proposed, never that it is proposed before it is built.
+
+Capture method, settled by him earlier and unchanged: the live site in mobile view is primary (*"go acc into the airbnb website and in mobile view acc analyze"*), stills secondary, `Skill(reference-lock)` fires on any named brand reference. Prior work to extend rather than redo: eight documents under `_design-system/references/` plus `AIRBNB_PROFILE_PRINCIPLES.md`. Full decision tree + anti-patterns: `_design-system/LOCKFILE.md` §10.0-§10.8.
 
 **`fresha-section-capture` skill fires FIRST** for any Fresha-clone rebuild (live DOM → SPEC.md). Mission lock: exact Fresha anatomy; only exceptions are Solen primitives + tokens + fonts + `bg-s-ink` CTA discipline.
 
