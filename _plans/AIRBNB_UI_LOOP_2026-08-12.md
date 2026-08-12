@@ -200,4 +200,22 @@ captured.
         `scripts/capture/record-interaction.mjs`, because a still proves nothing about motion. The
         first capture is already on disk at `public/_pixel-refs/airbnb/motion/search-open/`
         (capture.webm plus animations.json).
-- [ ] C4. Mockups from whatever survives, which he reviews one at a time.
+- [x] C4. Commit pending this turn, `app/[locale]/dev/airbnb-findings/` , the whole haul in one
+      place, grouped by screen, in plain words, every row carrying BOTH numbers.
+      RESULT of workflow `wf_0f33d9f6-bfc`: 157 agents, 15 lenses, **142 findings in, 91 killed,
+      51 out**. verified on the rendered page: 51 rows across 21 real screen groups, the biggest
+      being the salon page (8), search results (7), sign in (5), home (5) and the booking flow (4).
+      The list is generated from the council's own structured output rather than retyped, so no
+      number passed through my hands.
+      WHAT SURVIVED IS NOT COSMETIC. The strongest ones: our review text is set in the grey we
+      reserve for timestamps while the reviewer's name is the biggest thing on the card; the
+      bookings list renders ZERO photographs while the API already returns the salon's cover; the
+      search page's own sticky bands overlap so the label saying what you searched for drops to
+      1.22:1 contrast, which is a statutory floor and not a taste call; the walk-in tracker carries
+      12 distinct text sizes against our own cap of 4; the salon card presses differently on the
+      home page and the search page for the same salon; the saved-looks screen is hard-coded German
+      in every locale; and eight of nine controls fade to 78% on tap, which their app never does.
+      MOTION WAS CAPTURED, not skipped: press timing, press geometry, scroll snapping and rail
+      overscroll all came back with both sides measured, and one finding CORRECTS our own motion
+      law's evidence line rather than proposing a change to it.
+- [ ] C5. Mockups per screen from this list, which he reviews one at a time.
