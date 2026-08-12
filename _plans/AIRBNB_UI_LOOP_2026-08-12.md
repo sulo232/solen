@@ -175,3 +175,29 @@ the reviewer, not softened.
    implementation is rejected however good it looks (FLOORS LAW 8 and 9).
 6. **Every proposal carries its cost** in his language, next to its upside.
 7. **Nothing is applied without his pick.**
+
+## CORRECTION (owner 2026-08-12: "i told u all screen n ui motion wtf")
+
+He is right on both counts and the cause is mine, named plainly: he answered "one screen at a
+time" to a question about how many MOCKUPS he wants in front of him, and I turned that into one
+screen per turn of WORK. Those are different things. His review cadence is one at a time; the sweep
+was always meant to be all 94. And motion was in the element list I wrote myself and then never
+captured.
+
+- [x] C1 + C2 + C3, all three RUNNING as one wide council, workflow `wf_0f33d9f6-bfc`, after his
+      third correction on the same point: "n welents too i told u everything use subagents n council
+      alot what part did u not fucking understand". Fifteen lenses in parallel, then an adversarial
+      pass over every finding they produce:
+        SCREENS, 8 lenses , the salon page, the booking flow, profile and account, Inspo, auth and
+        onboarding, walk-in and loyalty, the bookings surfaces, and the static long tail. Each one
+        against its real Airbnb counterpart, or against our own floors where no counterpart exists.
+        ELEMENTS, 4 lenses , cards everywhere, chrome and navigation everywhere, inputs and pickers
+        everywhere, and the loading, empty and error states. These cut ACROSS screens, which is what
+        he meant by comparing elements, and the cards lens also answers whether the same entity
+        renders the same way on every screen of ours.
+        MOTION, 3 lenses , opening and transitions, press and tap feedback, scroll behaviour. Their
+        motion is being captured as real video plus animation timings with
+        `scripts/capture/record-interaction.mjs`, because a still proves nothing about motion. The
+        first capture is already on disk at `public/_pixel-refs/airbnb/motion/search-open/`
+        (capture.webm plus animations.json).
+- [ ] C4. Mockups from whatever survives, which he reviews one at a time.
