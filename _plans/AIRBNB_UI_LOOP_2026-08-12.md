@@ -63,6 +63,78 @@ question 1 rather than resolved behind his back.
       the same width, diagnose, mock in the v2 format, hand it over, take his answer, and write
       what it taught back into the principles. Screen 1 is the home page.
 
+## THE PLAN, written first because he asked for it first (owner: "compare elemnts too yk w airbnb n ours. n use sub agents council thorough too n make plam fiest")
+
+### Three asks in that message
+
+1. Compare ELEMENTS, one by one, theirs against ours, not just whole screens.
+2. Use sub-agents, as a council, and be thorough.
+3. Write the plan before running it.
+
+### What an ELEMENT comparison means here, concretely
+
+Not "their home vs our home" but a row per shared UI part, each with both numbers taken the same
+day at the same width. The element list comes from what both products actually have:
+
+| element | ours | theirs |
+|---|---|---|
+| search field | the home pill and the panel field | their pill and their expanded panel |
+| category row | our category pills | their emoji category pills |
+| primary card | `SalonCard` | their listing card |
+| card photo | ratio, radius, crop | same |
+| rail / carousel | how many fit, gutter, crop of the next | same |
+| section heading | size, weight, the see-all control | same |
+| rating | star, value, count | same |
+| price | placement, weight, what it includes | same |
+| favourite / heart | shape, position, state | same |
+| bottom navigation | count, icons, labels, active treatment | same |
+| filters / sort | entry point, sheet, selected state | same |
+| map entry | how you get to a map | same |
+| empty and loading states | skeleton shape, empty anatomy | same |
+| type scale | sizes and weights per viewport | same |
+| ink and greys | exact values | same |
+| radius family | dominant radii and where they change | same |
+| elevation | shadow recipes per surface | same |
+| motion | open, press, transition timings | same |
+
+### The council, and why sub-agents fit HERE
+
+Read-only research and audit, which is the one category where parallel agents are allowed in this
+project (frontend BUILDING stays single-threaded, memory `feedback_no_parallel_agents_frontend`).
+Each agent gets ONE lens over the SAME two captures, so they cannot drift into each other's work:
+
+1. **Structure** , anatomy and order: what elements exist, in what sequence, what is missing on
+   either side.
+2. **Geometry** , sizes, ratios, gutters, radii, how many fit per screen.
+3. **Type** , the scale, weights, colour of text, and how our budget rules collide with theirs.
+4. **Colour and elevation** , ink, greys, semantic colour, shadow recipes.
+5. **Density and content** , how much real content is on screen, photographic share, what fills a
+   rail.
+6. **Adversarial reviewer** , tries to REFUTE every finding the other five produce: is the number
+   real, is it measured on both sides, does it contradict a lock or a dated decision of his.
+
+Every finding must carry: the element, their measured value, our measured value, the file or URL
+it came from, and the one-line cost of changing it. A finding without both numbers is dropped by
+the reviewer, not softened.
+
+### Order of work
+
+1. Capture the screen live at 390 (done for the home page).
+2. Capture ours at 390 (done for the home page).
+3. Council over both, one lens each, adversarial pass last.
+4. Findings become mockups, one screen at a time, in the v2 format.
+5. His answer on each becomes a dated line in the taste log, and anything general becomes a line in
+   the principles, which is the fifth thing he asked for.
+
+### Boxes for this phase
+
+- [x] P1. Screen 1 captured on BOTH sides at 390x844 and written up:
+      `_design-system/references/airbnb--home-mobile.md`, with four named conflicts against our own
+      locks. verified: card ratio 1.053 against ours 1.25, 2.2 cards visible against our 1.6,
+      radius 20 against 22, ink rgb(34,34,34) against rgb(10,10,10).
+- [ ] P2. Council of six lenses over screen 1, adversarial pass included.
+- [ ] P3. Mockups from the surviving findings, one screen at a time.
+
 ## The principles I will run it under, so he can veto any of them now instead of after
 
 1. **Capture, never recall.** Every Airbnb claim comes from the live site in mobile view or a
