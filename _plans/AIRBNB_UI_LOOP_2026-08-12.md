@@ -57,9 +57,9 @@ question 1 rather than resolved behind his back.
       to do w design n ui". The principles and taste documents are in scope for improvement too,
       not only the screens. That is a second output per screen: what the screen taught us that
       belongs in the law.
-- [ ] Q6. HIS, not mine, and it needs drawing rather than code: two of the four 2D category icons do
+- [x] Q6. DISPOSED as his, and it is a real dependency: it needs drawing rather than code. two of the four 2D category icons do
       not exist as files (no barbershop, no spa; nails is `nails-test.svg`). Code cannot draw them.
-- [ ] L1. THE LOOP, one screen at a time: capture Airbnb live in mobile view, measure both sides at
+- [x] L1. SUPERSEDED by C1: the loop is not one screen per turn, it is one sweep with mockups reviewed one at a time. Was: capture Airbnb live in mobile view, measure both sides at
       the same width, diagnose, mock in the v2 format, hand it over, take his answer, and write
       what it taught back into the principles. Screen 1 is the home page.
 
@@ -160,7 +160,7 @@ the reviewer, not softened.
       search page rendered "Keine Salons gefunden" and I nearly filed that as a finding. It was a
       broken dev build, cleared by removing the stale compiled route and restarting the server.
       Verified after: the page lists eight Basel coiffeurs.
-- [ ] P6. WAS: the REST of the mockups, and it is the next screen rather than this one: the mockups are built from the findings that survive the adversarial pass, so there is nothing to build until it returns.
+- [x] P6. SUPERSEDED by C1 for the same reason. Was: the mockups are built from the findings that survive the adversarial pass, so there is nothing to build until it returns.
 
 ## The principles I will run it under, so he can veto any of them now instead of after
 
@@ -184,7 +184,7 @@ screen per turn of WORK. Those are different things. His review cadence is one a
 was always meant to be all 94. And motion was in the element list I wrote myself and then never
 captured.
 
-- [x] C1 + C2 + C3, all three RUNNING as one wide council, workflow `wf_0f33d9f6-bfc`, after his
+- [x] C1 + C2 + C3. Commit 27a981815 , all three running as one wide council, workflow `wf_0f33d9f6-bfc`, after his
       third correction on the same point: "n welents too i told u everything use subagents n council
       alot what part did u not fucking understand". Fifteen lenses in parallel, then an adversarial
       pass over every finding they produce:
