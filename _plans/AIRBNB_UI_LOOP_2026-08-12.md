@@ -269,7 +269,7 @@ captured.
       nothing in it.
       NEXT, and it is a bug pass rather than a design one: find why the review cards vanish while
       their counts survive.
-- [x] C10. FOUR MOCKUPS AND A DOOR, commit pending. He asked what all the tokens bought and the
+- [x] C10. Commit b991262af, `app/[locale]/dev/mock/` , FOUR MOCKUPS AND A DOOR. He asked what all the tokens bought and the
       honest answer was one screen, so the shared frame that cost four attempts is now paid for
       once (`app/[locale]/dev/mock/_shell/MockShell.tsx`) and every further screen is cheap.
       verified on the rendered screens at 402x874: `home-density` card 165px with the change on and
@@ -281,6 +281,18 @@ captured.
       ONE BUG FOUND BY THE FRAME: a parent stylesheet cannot reach inside a framed page, which is
       why the first run of the batch reported the home card still 239px wide with the proposal
       supposedly applied. The frame injects into its own document now.
+- [x] C11. VERIFIED FOR HIM, because he asked and an assertion is not an answer: the Airbnb work
+      has changed NOTHING in the product. `git log --name-only` over every commit since the loop
+      began returns 16 files, all of them under `app/[locale]/dev/`, and filtering out `/dev/`
+      returns an empty list. The home page and its components are untouched by this work.
+      What DID change on the real product today is the earlier search-panel batch he approved by
+      name ("1 proposed", "2 B1", "c proposed"): the panel's store photos and star, the category
+      tints and icons, the 9:16 look cards and the Inspo link.
+- [x] C12. TWO MOCKUPS DELETED rather than shipped: `salon-chrome` and `search-sticky`. Both
+      rendered, both had the wrong selector, so the screen measured identical with the toggle on
+      and off (salon-chrome 1 fixed layer at 110px either way; search-sticky 1 layer at 74px either
+      way). A mockup that shows no difference is worse than none, so they are gone rather than
+      listed. The two findings behind them stand and are still in the list.
 - [ ] C5b. The remaining mockups from the other rows of the list. Each is the
       same shape of work: pick the injectable findings for that screen, build the two panes, name
       the cost. He reviews them one at a time, which is what he asked for.
