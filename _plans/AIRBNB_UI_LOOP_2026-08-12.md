@@ -145,7 +145,22 @@ the reviewer, not softened.
       a new idea, it is an unimplemented spec.
 - [x] P3. Commit 3d91799b8, `app/[locale]/dev/airbnb-01-home/HomeRail.tsx` , mockups built from the surviving findings and the findings themselves written into the same page in plain words, `app/[locale]/dev/airbnb-01-home/`. verified on the rendered page: pane 1 shows 1 full card plus 57% of a second; pane 2 (their geometry) shows 2 full cards plus 12% of a third; pane 3 (plus the rail bleed) shows 2 full plus 15% with the row running 0 to 390 instead of 4 to 386. One honest flaw stated on the page itself: pane 3's first card sits at 12px instead of 16 because the injected padding fights the real one.
 - [x] P4. Commit 3d91799b8, `app/[locale]/dev/airbnb-01-home/HomeRail.tsx` , the two PRINCIPLE corrections the council found, which is the fifth thing he asked for, are written up on the same page for his decision rather than applied to the law behind his back: our 2-weight cap is broken by our own shipped screens and by Airbnb alike (all three use 400/500/600), and our 1.8x anchor rule is unreachable while copying a reference whose own home is 1.5x.
-- [ ] P5. WAS: the REST of the mockups, and it is the next screen rather than this one: the mockups are built from the findings that survive the adversarial pass, so there is nothing to build until it returns.
+- [x] P5. SCREEN 2 DONE, `app/[locale]/dev/airbnb-02-search/` , the search results page, measured
+      on both sides live at 390x844 on 2026-08-12 and mocked. verified on the rendered page: left
+      pane card 231px at ratio 1.25, middle pane 366px at ratio 1.0 with the injection confirmed,
+      right pane their own capture loaded at 388px wide.
+      THE FINDING: their search screen is a MAP from y 310 to y 1040, about 63% of the first screen,
+      with prices on it and the results in a sheet underneath; ours has no map on that screen at all
+      and puts every result in a side-scrolling row. The difference is not a treatment, it is what
+      the page IS, so only the injectable half (one full-width column, square photo) is shown as a
+      live pane and their own screen sits beside it for the rest. Said on the page in those words
+      rather than faked.
+      A BUG FOUND WHILE MEASURING IT, and it was mine to fix, not a product defect: `/api/salons`
+      was returning 500 on every call with `ENOENT .next/server/app/api/salons/route.js`, so the
+      search page rendered "Keine Salons gefunden" and I nearly filed that as a finding. It was a
+      broken dev build, cleared by removing the stale compiled route and restarting the server.
+      Verified after: the page lists eight Basel coiffeurs.
+- [ ] P6. WAS: the REST of the mockups, and it is the next screen rather than this one: the mockups are built from the findings that survive the adversarial pass, so there is nothing to build until it returns.
 
 ## The principles I will run it under, so he can veto any of them now instead of after
 
