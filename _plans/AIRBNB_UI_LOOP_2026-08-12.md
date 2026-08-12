@@ -236,7 +236,22 @@ captured.
       that matters: replayed against the page I called "screen 3" earlier today it returns
       BLOCKED, "a desktop page wrapper". It would have stopped every one of the three things he
       rejected before he ever read them.
-- [x] C8. BLOCKED BY A REAL BUG, found by building the mockup, which is the only reason it was
+- [x] C9. FIXED, commit pending this turn. He said "mockup is comp broken" and he was right: the
+      screen showed a heading, chips and then the site footer painted over everything. TWO causes,
+      both mine, both now understood rather than worked around.
+      (1) The review cards never mounted inside a framed page: they are mounted as the section comes
+      into view, and a frame scrolled by script does not trigger that. So the mockup stopped framing
+      the page and now COMPOSES the real `SalonReviews` component, which fetches its own reviews
+      when handed a salon id, so the data is live and nothing is drawn twice (FLOORS LAW 9).
+      (2) The app's own header, newsletter and footer were painted OVER the panel, not under it: a
+      transformed ancestor traps the stacking context, so a high z-index could never win. Measured
+      symptom: cards at y 288 in the DOM while the newsletter drew from y 330. They are hidden
+      outright now instead of covered.
+      verified on the rendered screen at 402x874: three real review cards at y 288, 622 and 805 with
+      their text, their stars, their dates and the salon's reply; footer gone; and the toggle really
+      switches the styling, "New" = 14px rgb(10,10,10) body with a 14px/500 name, "Now" = 15px
+      rgb(107,107,107) body with a 16px/600 name.
+- [x] C8. WAS: blocked by a real bug, found by building the mockup, which is the only reason it was
       found. The salon page's reviews section renders its star row (4.8, 16 Bewertungen) and its
       filter chips (Alle (7), 5 star (13), 4 star (3)) and then NOTHING: the newsletter block starts
       immediately under the chips. Zero review cards. Confirmed twice and two ways, so it is not a
