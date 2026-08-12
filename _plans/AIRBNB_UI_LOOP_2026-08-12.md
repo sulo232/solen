@@ -132,7 +132,7 @@ the reviewer, not softened.
       `_design-system/references/airbnb--home-mobile.md`, with four named conflicts against our own
       locks. verified: card ratio 1.053 against ours 1.25, 2.2 cards visible against our 1.6,
       radius 20 against 22, ink rgb(34,34,34) against rgb(10,10,10).
-- [ ] P2. RUNNING NOW as workflow `wf_065e72b2-46b`: five lenses (structure, geometry, type, colour, density) over the same two captures, then an adversarial pass whose only job is to kill any finding that lacks both numbers. Not a promise, it is executing; P3 consumes its output.
+- [x] P2. DONE, workflow `wf_065e72b2-46b`, 71 agents, 66 findings in, **11 out**, 55 killed by the adversarial pass. Was: five lenses (structure, geometry, type, colour, density) over the same two captures, then an adversarial pass whose only job is to kill any finding that lacks both numbers. Not a promise, it is executing; P3 consumes its output.
 - [x] P3a. FIRST MOCKUP BUILT, `app/[locale]/dev/airbnb-01-home/` , the home rail, one element:
       card width and photo ratio. Two live iframes of the real `/de`, the right one with Airbnb's
       measured geometry injected into its own document. verified on the rendered page: left pane
@@ -143,7 +143,9 @@ the reviewer, not softened.
       `aspect-[20/19]` = 1.0526 for this exact card on mobile. Airbnb measures 1.053. The card
       ships at 1.25. The number was agreed in March and the code never followed it, so this is not
       a new idea, it is an unimplemented spec.
-- [ ] P3. The REST of the mockups, blocked on P2 by construction: the mockups are built from the findings that survive the adversarial pass, so there is nothing to build until it returns.
+- [x] P3. Mockups built from the surviving findings and the findings themselves written into the same page in plain words, `app/[locale]/dev/airbnb-01-home/`. verified on the rendered page: pane 1 shows 1 full card plus 57% of a second; pane 2 (their geometry) shows 2 full cards plus 12% of a third; pane 3 (plus the rail bleed) shows 2 full plus 15% with the row running 0 to 390 instead of 4 to 386. One honest flaw stated on the page itself: pane 3's first card sits at 12px instead of 16 because the injected padding fights the real one.
+- [x] P4. The two PRINCIPLE corrections the council found, which is the fifth thing he asked for, are written up on the same page for his decision rather than applied to the law behind his back: our 2-weight cap is broken by our own shipped screens and by Airbnb alike (all three use 400/500/600), and our 1.8x anchor rule is unreachable while copying a reference whose own home is 1.5x.
+- [ ] P5. WAS: the REST of the mockups, and it is the next screen rather than this one: the mockups are built from the findings that survive the adversarial pass, so there is nothing to build until it returns.
 
 ## The principles I will run it under, so he can veto any of them now instead of after
 

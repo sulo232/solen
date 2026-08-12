@@ -35,6 +35,27 @@ const AIRBNB_GEOMETRY = `
   [class*="aspect-[5/4]"] { aspect-ratio: 1.053 !important; }
 `;
 
+// The council's third surviving finding, measured on both pages the same minute: their rail
+// scroller is full bleed, clientWidth 390 at left 0, so the cropped next card runs off the glass.
+// Ours sits at left 4 with width 382 and a parent that clips at x=386, leaving a 4px white strip
+// before the edge. The half-visible card stops short of the screen, which quietly cancels the
+// "there is more to the right" promise the crop exists to make.
+// The exact chain, measured on the live page rather than guessed at (a first attempt targeted the
+// wrong two elements and moved nothing, which the rendered numbers caught):
+//   img  ->  photo box  ->  a.snap-start  ->  div.overflow-x-auto (left 4, right 386, pad 12,
+//   margin -12)  ->  div.px-3.overflow-hidden (left 4, right 386, pad 12)  ->  div.px-1 (left 0,
+//   right 390, pad 4)  ->  section
+// So the 4px strip is the `px-1` wrapper's own padding, and the clipping happens one level below
+// it. Zero that padding and drop the clip, and the row reaches the glass while the card keeps its
+// 16px inset. The scroller's padding is 20 rather than 16 because the first attempt measured the
+// card at 12: the wrapper's own padding stays at 12, so the 4 that the zeroed px-1 used to supply
+// has to come from here instead.
+const AIRBNB_GEOMETRY_PLUS_BLEED = `${AIRBNB_GEOMETRY}
+  [class*="px-1"][class*="max-w-[1280px]"] { padding-left: 0 !important; padding-right: 0 !important; }
+  [class*="px-3"][class*="overflow-hidden"] { overflow: visible !important; padding-left: 16px !important; padding-right: 16px !important; }
+  [class*="overflow-x-auto"][class*="salon-card"] { margin-left: -16px !important; margin-right: -16px !important; padding-left: 20px !important; padding-right: 20px !important; }
+`;
+
 function Phone({ label, note, inject }: { label: string; note: string; inject?: string }) {
   const ref = React.useRef<HTMLIFrameElement>(null);
 
@@ -89,6 +110,11 @@ export default function HomeRail() {
           note="Their 165px width and 1.053 photo, on our page. Two and a bit fit, and the third is cropped on purpose."
           inject={AIRBNB_GEOMETRY}
         />
+        <Phone
+          label="Plus the rail reaching the edge"
+          note="The same, and the row now runs off the right side of the screen instead of stopping 4px short of it. One honest flaw in this pane: the first card sits 12px from the left instead of 16, because the injected padding fights the real one. In code that is exact, not approximate."
+          inject={AIRBNB_GEOMETRY_PLUS_BLEED}
+        />
       </div>
 
       <div className="mt-6 max-w-[760px] space-y-3">
@@ -113,6 +139,74 @@ export default function HomeRail() {
           Not touched here on purpose: the corner radius (theirs 20, ours 22), the gutter (both
           12), the type, the colours, the order of the sections.
         </p>
+      </div>
+
+      <div className="mt-10 max-w-[860px]">
+        <h2 className="font-display text-[20px] font-semibold tracking-[-0.01em] text-s-ink">
+          What the whole comparison found, and what it threw out
+        </h2>
+        <p className="mt-1 text-[14px] leading-relaxed text-s-ink-2">
+          Five readers took one angle each over the same two screens, and a sixth tried to kill
+          everything they found. Sixty-six findings went in, eleven came out. A finding died if it
+          had a number for only one side, if the number could have come from memory, if the two
+          sides were measured at different widths, or if it re-opened something you already
+          decided.
+        </p>
+
+        <ol className="mt-5 space-y-4">
+          {[
+            { t: "Your first screen shows two stores. Theirs shows four.", b: "That is the density difference in one number, and it is our own rule we are failing, not theirs: we ask for at least four things on a phone's first screen. Airbnb passes our floor. We do not. This is what the two phones above are about." },
+            { t: "A third of their opening screen is photographs of real places. A fifth of ours is.", b: "Ours reaches 37% only if you count the map tile, and a map is not a store. Salon photography alone is 20.1% against their 32.6%." },
+            { t: "Their first screen carries nearly three times more readable text than ours.", b: "66,673 against 24,022 square pixels of actual painted letters. Ours reads calm partly because there is very little on it to read." },
+            { t: "Our card row stops 4px short of the right edge.", b: "Theirs runs off the glass. The cropped next card is the promise that the row continues, and a white strip before the edge quietly cancels it. That is the third phone above. It costs two changes in shared parts, so every row on the home page and the search page moves together." },
+            { t: "Do NOT shrink our card's text to give the photo more room.", b: "Per card we already give the photo more of the card than they do, 74% against 67%. Their card gives its text more room, not less. This finding exists to stop a wrong fix." },
+            { t: "Their page sits 24px off the edge, ours 16px.", b: "That is why theirs reads calmer while holding more. It is also a frozen value that touches every page in the product, so it is yours to reopen or leave." },
+            { t: "Their black is softer than ours.", b: "Both are far above any readability requirement, so this is tone, not legibility. Changing ours moves every surface at once, so it stays until you say otherwise." },
+            { t: "The 188px between the first and second row on our home carries no store photo at all.", b: "It is the map. Not proposed for change: you asked for exactly that on 5 August, and the row of nearby stores that used to be there was removed on your word." },
+            { t: "Their bottom bar seals the screen edge, ours floats above it.", b: "Recorded, not proposed. You picked the floating one on 10 August." },
+          ].map((f, i) => (
+            <li key={i} className="rounded-[16px] bg-s-bg-sunken p-4">
+              <p className="text-[14px] font-semibold leading-snug text-s-ink">{i + 1}. {f.t}</p>
+              <p className="mt-1 text-[14px] leading-relaxed text-s-ink-2">{f.b}</p>
+            </li>
+          ))}
+        </ol>
+
+        <h2 className="mt-10 font-display text-[20px] font-semibold tracking-[-0.01em] text-s-ink">
+          Two of our own rules turned out to be wrong, and that is the other half of this
+        </h2>
+        <p className="mt-1 text-[14px] leading-relaxed text-s-ink-2">
+          You asked for the taste and the principles to improve, not only the screens. Both of
+          these came out of measuring Airbnb rather than out of an opinion.
+        </p>
+        <div className="mt-4 space-y-4">
+          <div className="rounded-[16px] border border-s-border p-4">
+            <p className="text-[14px] font-semibold text-s-ink">
+              Our rule allows two text weights on a screen. Nobody obeys it, including us.
+            </p>
+            <p className="mt-1 text-[14px] leading-relaxed text-s-ink-2">
+              Airbnb&apos;s home uses three: normal, medium, semibold. Ours uses exactly the same
+              three. Our own weight list defines three roles. So the cap of two has been broken by
+              our own shipped screens since it was written, and the check that enforces it has been
+              wrong rather than the screens. The cost of raising it to three: a looser cap catches
+              less, so a screen could drift to three weights where two would have been better.
+            </p>
+          </div>
+          <div className="rounded-[16px] border border-s-border p-4">
+            <p className="text-[14px] font-semibold text-s-ink">
+              Our rule wants the biggest text on a screen to be 1.8 times the body. Airbnb&apos;s
+              home is 1.5, and ours is 1.29.
+            </p>
+            <p className="mt-1 text-[14px] leading-relaxed text-s-ink-2">
+              Now that Airbnb is the source of truth, that rule is unreachable while we copy them:
+              a photo-led browse screen does not carry a big headline in either product. The rule
+              next to it already has a photograph exemption. Giving this one the same exemption
+              makes it consistent. The cost: a screen with no photographs could hide behind the
+              exemption and end up with no clear anchor at all, so the exemption has to name the
+              photograph condition rather than being general.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
