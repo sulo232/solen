@@ -133,7 +133,17 @@ the reviewer, not softened.
       locks. verified: card ratio 1.053 against ours 1.25, 2.2 cards visible against our 1.6,
       radius 20 against 22, ink rgb(34,34,34) against rgb(10,10,10).
 - [ ] P2. RUNNING NOW as workflow `wf_065e72b2-46b`: five lenses (structure, geometry, type, colour, density) over the same two captures, then an adversarial pass whose only job is to kill any finding that lacks both numbers. Not a promise, it is executing; P3 consumes its output.
-- [ ] P3. BLOCKED on P2 by construction: the mockups are built from the findings that survive the adversarial pass, so there is nothing to build until it returns.
+- [x] P3a. FIRST MOCKUP BUILT, `app/[locale]/dev/airbnb-01-home/` , the home rail, one element:
+      card width and photo ratio. Two live iframes of the real `/de`, the right one with Airbnb's
+      measured geometry injected into its own document. verified on the rendered page: left pane
+      ratio 1.25, card 231px, 1.6 cards across; right pane ratio 1.053, card 165px, 2.2 across,
+      which are Airbnb's own measured numbers.
+      FOUND WHILE DOING THE EXISTS-CHECK, and it is the better half of this finding:
+      `docs/superpowers/specs/2026-03-30-airbnb-image-aspect-ratio.md` already prescribes
+      `aspect-[20/19]` = 1.0526 for this exact card on mobile. Airbnb measures 1.053. The card
+      ships at 1.25. The number was agreed in March and the code never followed it, so this is not
+      a new idea, it is an unimplemented spec.
+- [ ] P3. The REST of the mockups, blocked on P2 by construction: the mockups are built from the findings that survive the adversarial pass, so there is nothing to build until it returns.
 
 ## The principles I will run it under, so he can veto any of them now instead of after
 
