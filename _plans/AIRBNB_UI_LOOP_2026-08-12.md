@@ -236,7 +236,7 @@ captured.
       that matters: replayed against the page I called "screen 3" earlier today it returns
       BLOCKED, "a desktop page wrapper". It would have stopped every one of the three things he
       rejected before he ever read them.
-- [x] C9. FIXED, commit pending this turn. He said "mockup is comp broken" and he was right: the
+- [x] C9. Commit 0272a40b6, `app/[locale]/dev/mock/salon-reviews/Screen.tsx` , FIXED. He said "mockup is comp broken" and he was right: the
       screen showed a heading, chips and then the site footer painted over everything. TWO causes,
       both mine, both now understood rather than worked around.
       (1) The review cards never mounted inside a framed page: they are mounted as the section comes
@@ -251,7 +251,7 @@ captured.
       their text, their stars, their dates and the salon's reply; footer gone; and the toggle really
       switches the styling, "New" = 14px rgb(10,10,10) body with a 14px/500 name, "Now" = 15px
       rgb(107,107,107) body with a 16px/600 name.
-- [x] C8. WAS: blocked by a real bug, found by building the mockup, which is the only reason it was
+- [x] C8. Commit 7318bb4d9 , WAS blocked by a real bug, found by building the mockup, which is the only reason it was
       found. The salon page's reviews section renders its star row (4.8, 16 Bewertungen) and its
       filter chips (Alle (7), 5 star (13), 4 star (3)) and then NOTHING: the newsletter block starts
       immediately under the chips. Zero review cards. Confirmed twice and two ways, so it is not a
@@ -272,3 +272,18 @@ captured.
 - [ ] C5b. The remaining mockups, one per screen, from the other 50 rows of the list. Each is the
       same shape of work: pick the injectable findings for that screen, build the two panes, name
       the cost. He reviews them one at a time, which is what he asked for.
+
+## The two checks built today, evaluated rather than assumed
+
+- `visual-promised-needs-link-gate.py` , own suite **10/10**. gate-eval against 1633 real replies
+  from this session: **fires on 17 of them (1%), live**, so it is enforcing something real rather
+  than being a comment with a shebang.
+- `mockup-must-be-a-screen-gate.py` , own suite **8/8**. gate-eval reports it firing on **0 of 1633**
+  and that is NOT a pass, it is a structural limit worth naming: the defect this gate checks lives
+  in the FILES a turn wrote, and gate-eval replays reply TEXT only, so it can never see the input
+  this gate needs. Proved directly instead, which is the stronger test anyway: replayed against
+  `app/[locale]/dev/airbnb-03-salon/page.tsx`, the page I called "screen 3" this morning and he
+  rejected, it returns BLOCKED, "a desktop page wrapper".
+- Corpus cases were added for the first gate (two bad, two good) and gate-eval still reports "no
+  known-bad cases recorded"; the add command confirms it wrote them. That is a defect in gate-eval's
+  own read-back, not in the gate, and it is left alone rather than papered over.
