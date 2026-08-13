@@ -20,17 +20,25 @@ all like by phase loop think evth out use llm council and sub agents council to 
 ## Ground truth, measured 2026-08-11, not recalled
 
 - `~/Documents/solen-mobile`, Expo, last commit **27 July 2026** (`6da9986`).
-- **107 .tsx files.** Of the 69 under `src/app/`, **35 are `mocks/`** , over half the route tree is
-  old design experiments sitting next to the product.
+- **107 .tsx files.** Of the **66** under `src/app/`, **38 are `mocks/`** , so **57.6%** of the
+  route tree is old design experiments sitting next to the product. (My first pass said 69 and 35.
+  The audit counted them; it is worse than I wrote, not better.) A 39th demo route,
+  `src/app/sheet-demo.tsx`, sits OUTSIDE `mocks/` and so escapes any "delete mocks" rule.
 - Real screens, about 30: 5 tabs (index, entdecken, karte, profil, suche), `salon/[slug]`,
   `booking`, `angebote`, `onboarding`, `auth/{login,welcome}`,
   `profile/{bookings,favorites,hair-profile,preferences,referral,settings}`, `reviews/[slug]`,
   `inspo/[id]`, `discover/saved`, `rewards`, `notifications`, `gallery`, `city-sheet`,
   `search-filters`.
-- **Missing against web:** confirmation, termine, queue, walk-in-join, walk-in-pay, walk-in-tip,
-  tip, vouchers, loyalty, recently-viewed, the category landings
-  (barbershop / coiffeur / nails / spa / behandlungen), search results.
-- Rules today: a 41-line `CLAUDE.md` plus **110KB across 14 `_design-system/*.md`**, of which
+- **Missing against web, CORRECTED after the audit.** Genuinely absent: confirmation (booking ends
+  at an `Alert.alert` stub, `src/app/booking.tsx:174`), the walk-in transaction flow
+  (join / pay / tip), tipping, vouchers as a screen, recently-viewed, and the category landings.
+  **THREE THINGS I WRONGLY CALLED MISSING AND WOULD HAVE REBUILT FROM SCRATCH:**
+  `profile/bookings.tsx` (330 lines) IS termine, with real RLS-scoped data;
+  `rewards.tsx` (341 lines) IS loyalty, with real Solen Status tiers off `loyalty_status`;
+  `(tabs)/suche.tsx` (890 lines) IS search results and is one of the biggest screens in the app.
+  Walk-in also already has real plumbing: `fetchWalkinSalons()`, a `walkin_enabled` column, a live
+  rail on Home and a filter in search. Only the money part is absent.
+- Rules today: a 41-line `CLAUDE.md` plus **107KB across 15 `_design-system/*.md`**, of which
   **seven are about onboarding alone** (ONBOARDING_ABY_SPEC, _DIRECTION_REFS, _PERSONA_DNA,
   _STRATEGY, _STRUCTURE, _STYLE_INTERESTS, plus HAIR_APP_BUILDOUT at 16KB). Two ad-hoc grep checks
   (`check:dots`, `check:haptics`). That sprawl is what he means by "dumb rules".
@@ -72,20 +80,46 @@ all like by phase loop think evth out use llm council and sub agents council to 
 Each phase has a binary close condition. The loop does not advance on a phase whose close condition
 is unproven, and each phase writes its state here so the loop survives a session boundary.
 
-- [ ] **Phase 0 , can we even see it.** Boot the simulator, build the current app, screenshot one
-      existing screen, prove the capture path end to end. CLOSE: a screenshot of the running app in
-      this repo, plus a written statement of which verification path works and which does not.
-- [ ] **Phase 1 , the canon (BLOCKS EVERYTHING).** Resolve "web look + liquid glass" as rendered
-      options on the SAME real screen, not as words. Derive the native motion and glass principles
-      from captured sources (Apple HIG, real captured apps) rather than from memory, because
-      building a named reference from memory is the failure this session already paid for nine
-      times. CLOSE: he picks one, and the pick becomes a single short canon file replacing the 14.
-- [ ] **Phase 2 , demolition.** Delete the 35 mockup routes. Collapse 110KB of design docs into the
-      one canon. Rewrite the mobile CLAUDE.md as rules an autonomous loop can follow.
-      CLOSE: route tree contains no `mocks/`, `_design-system` is one canon plus the registry, and
-      the app still builds.
+- [x] **Phase 0 , can we even see it. CLOSED 2026-08-14.** `verified:` the app builds (typecheck
+      clean, expo 54.0.35 / RN 0.81.5) and RUNS, screenshotted at phone width on its Home tab
+      showing the city header, search, the category row and the Top auf Solen feed.
+      **The simulator path is DEAD and it is not transient:** `xcode-select -p` is correctly set to
+      `/Applications/Xcode.app/Contents/Developer`, but `xcrun simctl` returns
+      `CoreSimulatorService connection became invalid`, so no device can boot from here. The iOS
+      Simulator MCP refuses for the same reason.
+      **The path that WORKS is Expo web on :8081 through the browser pane**, which renders the same
+      React Native components, so every screen this loop builds can still be seen and screenshotted
+      before it advances. That satisfies the council's one hard guardrail without the simulator.
+      TWO THINGS THE FIRST SCREENSHOT ALREADY SHOWED, both real: the app opens in DARK by default
+      (web is light-only by law, so this is a live contradiction for phase 1), and the floating tab
+      bar overlaps the city header at the top of Home.
+- [ ] **Phase 1 , the canon. REWRITTEN after the audit, and it is now a much smaller job.**
+      I had this badly wrong, and so did the external council. Both of us called "web look + liquid
+      glass" an unresolved contradiction and a trap. It is neither: `_design-system/THEMING.md`
+      already resolved it, owner-approved **2026-06-15**, and it is SHIPPED in **13 real screens**.
+      Light theme mirrors the web's white high-contrast look; dark is a separate Revolut charcoal
+      system, not an inversion. Liquid glass already has named rules: the exact API
+      (`expo-glass-effect`, `GlassView`/`GlassCircle`), where it belongs (icon controls over photos,
+      the sticky book bar, the tab bar), a required fallback, and an explicit do-not-glass-everything
+      guard. Neither I nor the council had read the file we were theorising about.
+      So the real question is NOT "derive a canon", it is **"keep this canon or reverse it"**, plus
+      the one thing genuinely open: dark mode, which the app has at ~80% coverage and the web bans.
+      CLOSE: he sees the existing canon rendered on real screens, says keep or change, and the 15
+      docs collapse to that one canon with THEMING's locked values carried forward verbatim.
+- [ ] **Phase 2 , demolition. Now has explicit no-destroy rules, from the audit.**
+      Delete the 38 mockup routes AND `src/app/sheet-demo.tsx`, which sits outside `mocks/` and would
+      have survived the original close condition. Collapse the 15 docs into the one canon.
+      **MUST SURVIVE, named so a loop cannot quietly drop them:** THEMING.md's locked light/dark
+      token table, the button tier system, the liquid-glass usage rules, the web-vs-mobile parity
+      table, the 44pt touch floor and the dated 6-tier haptics table; `CLAUDE.md`'s horizontal-
+      ScrollView-in-a-flex-column trap ("bit twice, 2026-07-03"); and both npm checks, which enforce
+      the no-decorative-separator rule shared with web law and the haptics wrapper.
+      CLOSE: no `mocks/` and no `sheet-demo`, one canon that still contains every value listed above,
+      both checks still pass, and the app still builds.
 - [ ] **Phase 3 , the data layer.** Rebuild how the app talks to Supabase, auth and Stripe, against
-      `_docs/BACKEND.md` as the source of truth. CLOSE: every screen's data comes from a typed
+      `/Users/sulo/Documents/solen/_docs/BACKEND.md` , the ABSOLUTE path, because that file lives in
+      the WEB repo and does not exist inside `solen-mobile`. The audit caught this: an unattended
+      loop working in the mobile repo would have found nothing at the relative path I first wrote. CLOSE: every screen's data comes from a typed
       client with no fabricated values, proven by the silent-no-op discriminate check.
 - [ ] **Phase 4 , the spine.** Home, search, salon page, booking, confirmation. The path that earns
       money. CLOSE: an appointment booked end to end in the simulator, screenshotted.
@@ -142,3 +176,39 @@ with no API key, so Opus did not vote this round.
 - *"It pretends the unattended loop can be trusted to stop or self-correct when the design
   contradiction reappears."* Fair. The screenshot-and-diff gate above is the only thing standing
   between that risk and 40 unseen screens.
+
+## COUNCIL REVIEW 2 , subagent fact-check, 2026-08-14. It found real errors in my plan.
+
+This is the review that earned its keep. A read-only agent checked every factual claim above
+against the actual repo. Six were wrong.
+
+| I claimed | Actually |
+|---|---|
+| 69 files under `src/app/`, 35 mocks | **66 and 38.** 57.6% mock, worse than I said |
+| termine missing | `profile/bookings.tsx`, **330 lines, real data**, ported from web |
+| loyalty missing | `rewards.tsx`, **341 lines**, real Solen Status off `loyalty_status` |
+| search results missing | `(tabs)/suche.tsx`, **890 lines**, one of the biggest screens in the app |
+| 14 docs, 110KB | **15 docs, 107KB** |
+| web + glass unresolved | **resolved 2026-06-15 in THEMING.md and shipped in 13 screens** |
+
+**The one that mattered most.** My premortem called "web look plus liquid glass" a contradiction
+nobody had resolved, and the external council agreed and called it a trap. Both of us were
+theorising about a file neither had opened. `THEMING.md` declares itself THE mobile canon, was
+owner-approved on 2026-06-15, and already answers it: light mirrors the web, dark is its own
+charcoal system, and liquid glass has a named API, named placements, a required fallback and an
+anti-overuse rule. `GlassCircle` / `Glass` are imported in 13 non-mock production screens. Phase 1
+shrank from "derive a canon" to "keep it or reverse it".
+
+**Three things it caught that would have destroyed work.**
+1. The mobile tree was DIRTY: 4 modified files plus two new home components and two new mock screens,
+   none in git history. Phase 2 deletes `mocks/` and cleans the tree. **Fixed this turn, commit
+   `fac3ffa` in solen-mobile**, and `.nm_trash_*` is now gitignored so a blanket add cannot sweep
+   thousands of package-manager leftovers into history (it did, once, and was reset).
+2. `sheet-demo.tsx` lives outside `mocks/`, so "route tree contains no mocks" would have left it.
+3. `_docs/BACKEND.md` does not exist in `solen-mobile`. Phase 3 now cites the absolute path in the
+   web repo.
+
+**And it corrected my read of the owner.** I wrote that his "dumb rules" meant the rules were bad.
+The audit's view: the content is not dumb, it is SPRAWLING. `CLAUDE.md` even documents the working
+simulator process that phase 0 went and rediscovered from scratch. The overhaul is a consolidation,
+not a bonfire.
