@@ -13,6 +13,7 @@ import { pickSlotForAnyStaff, countStaffBookingsOnDay } from "@/lib/bookings/aut
 import { loadPricedBundle } from "@/lib/pricing/bundle";
 import { completeReferralForFirstBooking } from "@/lib/referral/complete-referral";
 import { reportError } from "@/lib/error-report";
+import { resolveRequestUser } from "@/lib/auth/request-user";
 import type { Database } from "@/lib/database.types";
 
 export async function GET(request: NextRequest) {
@@ -120,9 +121,14 @@ export async function POST(request: NextRequest) {
   // SP-1: the route is the auth boundary, NOT a hard 401. A logged-in user keeps the verified
   // G1 path (RLS-backed client, user_id = auth.uid()). A logged-out guest is allowed, but its
   // row (user_id IS NULL) is rejected by RLS `bookings_insert_auth`, so the guest write MUST go
-  // through the service-role admin client (§10b.6 — guest writes never rely on RLS).
-  const supabase = await createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  // through the service-role admin client (§10b.6, guest writes never rely on RLS).
+  // resolveRequestUser (lib/auth/request-user.ts) resolves the caller from EITHER the web
+  // session cookie or an iOS `Authorization: Bearer <token>` header, verifying the token
+  // against the Supabase Auth server rather than trusting it; an invalid/expired Bearer token
+  // returns its own 401 here (`instanceof NextResponse`), never falling through to guest.
+  const resolvedUser = await resolveRequestUser(request);
+  if (resolvedUser instanceof NextResponse) return resolvedUser;
+  const { user, supabase } = resolvedUser;
   const isGuest = !user;
   const db = isGuest ? createAdminSupabaseClient() : supabase;
 
