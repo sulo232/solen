@@ -391,6 +391,39 @@ changes how a booking decides its payment mode, which is money behaviour and his
       it was an interaction with what ships, and that class is exactly what a rescue-only pass
       misses.
 
+- [x] C18. THE 12-AGENT AUDIT of all 11 remaining copies, run 2026-08-14 night, read-only, with a
+      skeptic pass armed against every "safe to delete" verdict. Result: NOT ONE is safely mergeable
+      whole. Verdicts: 3 MERGE_NEEDED (sad-austin, crazy-bose, cranky-bose), 8 RESCUE_THEN_DELETE.
+      Every copy collides with the graveyard, from 3 hits to 24, so a plain merge would resurrect
+      screens he deleted on purpose. 131 files exist nowhere else.
+      IT NAMED THREE LIVE FAULTS. Two were real and are now FIXED (see C19, C20). The third, the
+      time-of-day search filter reading UTC instead of Zurich, is ALREADY FIXED LIVE: read the
+      function definition out of the database and it carries the Zurich cast. Only its migration
+      file was missing, and that file was one of the 62 in C16. Recording this because it is the
+      third audit claim tonight that was true when written and stale by the time it was read.
+      SEVEN GENUINE OWNER QUESTIONS came out of it, none of which I can answer: staff logins, an
+      in-person till, a client record book, whether any to-do list returns after he killed it,
+      shift planning, per-salon-type tools, and whether the homepage keeps falling back to example
+      salons at launch. They are for him, not for me, and they gate roughly 6,000 lines of finished
+      dashboard code.
+      NOT DONE AND DELIBERATELY NOT DONE: the audit's plan ends by deleting all 11 branches. The
+      run's own security review flagged that, correctly. Nothing gets deleted without his yes.
+- [x] C19. THE OVERCHARGE, commit e4ee82be7. Book with a discount code and save your card instead
+      of paying now, and the five-days-before job charged the FULL price. The stored price is the
+      gross on purpose (every promo condition is re-checked at charge time), the pay-now path did
+      that re-check, the cron never did. Fixed on 2026-07-07 on a branch nobody merged. Both paths
+      now run one shared re-validation. Caught while wiring: the cron's query did not even SELECT
+      promo_code, so the fix would have read undefined on every row and discounted nobody, the exact
+      looks-wired-does-nothing shape. Live: 13 active codes, 6 bookings have used one, and the one
+      booking currently awaiting a saved-card charge carries none, so nobody is exposed today.
+- [x] C20. THE BROKEN PHOTOS, commit 77c341ba0. Client before/after photos and colour formula
+      photos are in PRIVATE buckets and the code saved a PUBLIC-style link, so every one of them
+      rendered broken. Paths are stored now and a short-lived link is signed per read. The sibling
+      that would have made this a half-fix is done too: the formulas list endpoint was handing the
+      raw path to the screen. Swept every remaining public-link call site: all seven are on genuinely
+      public buckets. Both buckets are EMPTY live (zero files, zero rows) so nothing needed
+      migrating, and the GDPR erase job already accepted both shapes so a deletion request still
+      erases everything.
 - [x] C16. ALL 62 stranded migration files are on this branch, commits 3f5eca851 and 4a628a351.
       This closes the single largest documentation hole found tonight and it is bigger than C14's
       eight. Found by sweeping all 11 remaining copies for `supabase/migrations/*.sql` absent from
