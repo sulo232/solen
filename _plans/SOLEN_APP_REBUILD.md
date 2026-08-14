@@ -133,11 +133,18 @@ is unproven, and each phase writes its state here so the loop survives a session
       CLOSE, revised: not "rebuild the layer" but "wire real availability into the booking time step
       and remove the SAMPLE slots". Tracked in phase 4.
 
-- [ ] **Phase 4 , the spine.** Home, search, salon page, booking, confirmation. The path that earns
-      money. CLOSE: an appointment booked end to end, screenshotted through Expo web (the simulator
-      does not run here, see phase 0).
-  - [x] **Home, rebuilt fresh. `verified:` commit `74c4497` in solen-mobile, screen at
-        `src/app/(tabs)/index.tsx`, and I re-measured both screenshots MYSELF rather than taking the
+- [~] **Phase 4 , the spine.** Home, search, salon page, booking, confirmation. `verified:` commits
+      `74c4497` and `c87d273` in solen-mobile close the five SCREENS; all five sub-boxes below are
+      ticked with their own proof.
+      **The phase itself stays open on its close condition, deliberately, and this is not a
+      formality.** CLOSE was "an appointment booked end to end". The screens are built and the times
+      are real, but no appointment can be written yet: the mobile layer has zero writes, and the
+      endpoint that does the writing only learned to recognise an app login as of commit `7dc801182`
+      in the web repo, which is one route of eighteen and is still under adversarial security
+      review. Ticking this phase on five finished screens would be exactly the thing this plan's
+      own "EVERYTHING I GOT WRONG" section is about.
+  - [x] **Home, rebuilt fresh.** `verified:` commit `74c4497` in solen-mobile, `src/app/(tabs)/index.tsx:1`.
+        I re-measured both screenshots MYSELF rather than taking the
         agent's word: app 390x844 top-of-screen brightness **242.7** against the web's **245.9**, and
         pure white at **5 of 5** sample points on both. Section order taken from
         the live web page read in full, not remembered. Measured side by side at phone width: six
@@ -145,8 +152,8 @@ is unproven, and each phase writes its state here so the loop survives a session
         web's 245.9, first heading 23px against 22.5. Salon-of-the-month and the curated for-you
         rows deliberately omitted, since both live only in the web repo with no mobile source and a
         stand-in would be fabrication.
-  - [x] **Search screen against the web.** `verified:` `src/app/(tabs)/suche.tsx` +
-        `src/components/SalonCard.tsx` (new `variant="feed"`, additive, other variants
+  - [x] **Search screen against the web.** `verified:` commit `c87d273` in solen-mobile, `src/app/(tabs)/suche.tsx:1`.
+        Also `src/components/SalonCard.tsx` (new `variant="feed"`, additive, other variants
         untouched). Measured against `/de/barbershop` + `/de/search` live at 390x844: card
         width **366px both** (was 358 app / 366 web, page gutter fixed 16px to 12px), card
         grammar now matches (2-col name+address+reviews left / rating+price right, rounded-16
@@ -155,8 +162,8 @@ is unproven, and each phase writes its state here so the loop survives a session
         hamburger masthead has no native equivalent (by design, native tab bar replaces it), so
         top-400-row brightness differs (163 app vs 215 web) for that structural reason, not a
         styling miss.
-  - [x] **Salon page against the web.** `verified:` `src/app/salon/[slug].tsx` unchanged;
-        `src/components/salon/SalonHeaderBlock.tsx` + `SalonServicesSection.tsx` edited. Header:
+  - [x] **Salon page against the web.** `verified:` commit `c87d273` in solen-mobile, `src/components/salon/SalonHeaderBlock.tsx:1`.
+        `src/app/salon/[slug].tsx` itself unchanged; `SalonHeaderBlock.tsx` + `SalonServicesSection.tsx` edited. Header:
         name bumped 22px/700 to 30px/600 (measured glyph height 22px on both web and app, exact
         match), status line dropped its stale "bis HH:MM" tail (web dropped that itself
         2026-07-24), the standalone "ab CHF" header price line removed (web's header never had
@@ -194,6 +201,22 @@ is unproven, and each phase writes its state here so the loop survives a session
       `src/lib/discovery.ts:7,106` fetches `https://solen.ch/api/...`.
       CLOSE: an appointment written through the web endpoint and read back in the app's own
       appointments list.
+  - [x] **Step 1, the endpoint now recognises an app login.** `verified:` commit `7dc801182`,
+        `lib/auth/request-user.ts:40`. A React Native app has no cookie jar, so it sends the
+        Supabase session as a Bearer header; `POST /api/bookings` read cookies only, so a
+        logged-in app customer resolved as a stranger and the row was written through the
+        SERVICE-ROLE client with `user_id` NULL. It returned 201. The customer's own appointments
+        list filters on `user_id`, so their booking was invisible to them permanently, the ban
+        check behind `if (user)` was skipped, and rate limiting fell back to IP. Four paths proven
+        live against :3077 with real DB rows, not just status codes, and the test rows were deleted
+        and their slots reset afterwards. Under adversarial security review now, because the writer
+        of an auth boundary is never its reviewer.
+  - [ ] Step 2, the app calls it. Nothing in solen-mobile posts a booking yet.
+  - [ ] Step 3, the other seventeen routes. Deliberately staged one at a time behind the review.
+        Two adjacent blind spots of the same class are already named: `GET` in that same file is
+        still cookie-only, and `lib/bookings/authorize.ts`'s `resolveBookingActor` carries it into
+        refund, report and upcharge.
+
 ### The whole-frontend fan-out, 2026-08-14
 
 Owner: *"i told you to rebuild the frontned of app from scratch why are youbdoing it one by one its
