@@ -83,3 +83,8 @@ That one carried nine files nobody else had (eight database changes, one setup s
 Kept off it in fecc75b57: four dashboard documents and a variations sheet. Its address-check improvement
 landed separately in 303546df7. Its two components were deleted as dead code months ago (94aeb53bb,
 aa4631e8f), so they are not losses.
+| `claude/magical-swanson-143371` | `0ec593012` | 2026-05-30 | 25 |
+
+Kept off it: the partner-leads record (its table has been live since May with 5 real sign-ups) and five
+business-page pieces including an earnings calculator, saved as reference because its own comment says the
+numbers are invented. Its footer and partner block were deleted as dead code in 94aeb53bb.
