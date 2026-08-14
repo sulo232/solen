@@ -3,7 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Sparkles, ArrowLeft, Bell, Gift, Star, Send, Heart, Check } from "lucide-react";
+import { ArrowLeft, Bell, Gift, Star, Send, Heart, Check, Clock } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useState } from "react";
 import { motion } from "motion/react";
@@ -21,7 +21,10 @@ export default function ComingSoonPage() {
   const t = useTranslations("comingSoon");
   const params = useSearchParams() ?? new URLSearchParams();
   const feature = params.get("feature") ?? "default";
-  const meta = FEATURE_MAP[feature] ?? { Icon: Sparkles };
+  // Clock, not Sparkles. Sparkles is banned by name (LOCKFILE 1598, memory feedback_icon_rules)
+  // and a clock is what "coming soon" actually means. Shown to the owner as A against B on
+  // 2026-08-14; applied as the recommended default while he decides, and it is one word to flip.
+  const meta = FEATURE_MAP[feature] ?? { Icon: Clock };
   const FeatureIcon = meta.Icon;
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
