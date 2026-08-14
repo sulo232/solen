@@ -7,6 +7,7 @@ import { getActiveSalon } from "@/lib/active-salon";
 import { clientBelongsToSalon } from "@/lib/verify-salon-client";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import type { Json } from "@/lib/database.types";
+import { signedUrl } from "@/lib/storage";
 
 // GET /api/clients/[id]/formulas — Get client formulas (salon owner only)
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -26,7 +27,27 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     .order("created_at", { ascending: false });
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ items: data ?? [] });
+
+  // The before/after columns hold bucket-relative PATHS in a private bucket, so they are signed
+  // here rather than handed to the browser raw. This is the sibling of the fix in
+  // app/api/dashboard/coiffeur/formula-photo: without it that fix would only move the broken image
+  // from one screen to another, because FormulaBook.tsx reads these two fields straight from here.
+  // A photo that cannot be signed becomes null, which the card already renders as "no photo",
+  // rather than a path in an <img src>, which renders as broken.
+  const admin = createAdminSupabaseClient();
+  const items = await Promise.all(
+    (data ?? []).map(async (f) => ({
+      ...f,
+      before_photo_url: f.before_photo_url
+        ? await signedUrl(admin, "formula-photos", f.before_photo_url)
+        : null,
+      after_photo_url: f.after_photo_url
+        ? await signedUrl(admin, "formula-photos", f.after_photo_url)
+        : null,
+    })),
+  );
+
+  return NextResponse.json({ items });
 }
 
 // POST /api/clients/[id]/formulas — Add a formula

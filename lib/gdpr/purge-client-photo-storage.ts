@@ -33,9 +33,15 @@ export type PurgeClientPhotoStorageResult = {
 const BUCKET = "client-photos";
 
 /**
- * client_photos.photo_url holds the full public URL from getPublicUrl(); storage.remove() needs a
- * bucket-relative path. Mirrors pathFromPublicUrl in purge-review-photo-storage.ts. Falls back to
- * treating the value as an already-relative path when the marker is absent.
+ * client_photos.photo_url now holds a bucket-relative PATH (changed 2026-08-14: this bucket is
+ * private, so the getPublicUrl() link it used to store resolved to nothing and every client photo
+ * rendered broken). storage.remove() wants exactly that path, so the common case is now the
+ * fallback branch below, which was already written to accept it.
+ *
+ * The public-URL parsing stays because it costs nothing and this function must keep working on any
+ * row written before that change. Deletion is the one path where guessing wrong means a customer
+ * asked for their photos to be erased and they quietly were not, so it accepts BOTH shapes rather
+ * than assuming the new one. Mirrors pathFromPublicUrl in purge-review-photo-storage.ts.
  */
 function pathFromPublicUrl(url: string): string | null {
   const marker = `/object/public/${BUCKET}/`;
