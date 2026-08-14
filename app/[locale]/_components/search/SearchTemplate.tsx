@@ -1542,7 +1542,12 @@ export default function SearchTemplate({
           full grid, ONLY on a category route in browse mode (no query + no active
           filter). Reuses the homepage SalonCard. Revert: set BROWSE_RAILS = false. */}
       {BROWSE_RAILS && activeCategory && activeFilterCount === 0 && q.length === 0 && (
-        <CategoryBrowseRails salons={salons} locale={locale} category={activeCategory} />
+        <CategoryBrowseRails
+          salons={salons}
+          locale={locale}
+          category={activeCategory}
+          citySelected={!!activeCity}
+        />
       )}
 
       {/* Result count row, count LEFT, sort dropdown RIGHT (Airbnb/Fresha

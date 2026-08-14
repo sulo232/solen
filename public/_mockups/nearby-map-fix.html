@@ -1,0 +1,161 @@
+<!--
+Grounded-in: app/[locale]/_components/homepage/Nearby.tsx (the homepage Nearby section + its fake map teaser, lines 142-162), app/[locale]/_components/salon/SalonLocation.tsx:23-25 (the REAL static-Mapbox pattern being reused: light-v11 + ink pin, plain img, no GL).
+Exists-check: `npm run exists nearby` -> Nearby.tsx renders this homepage section. The map teaser today = a decorative CSS grid (linear-gradient 26px) + 3 HARDCODED pins at fixed % positions + a HARDCODED "14" count. All fabricated (taste rules 1+2). Live measure this turn (getBoundingClientRect + getComputedStyle): realMapEls img/canvas/iframe/leaflet = 0. REMOVED.md has no map-teaser entry. Real data pulled live via Supabase: 20 active Basel salons WITH latitude/longitude (so "14" was wrong too; real count = 20).
+Net-new: swap the fake grid+pins for a REAL static Mapbox map (reuse SalonLocation's proven pattern) with all 20 real Basel salon pins + the real count. Nothing else in the section changes (the salon cards below are untouched).
+Owner-scope: confirmed: owner selected the map-card element (SectionFrame in Nearby) and said "lets fix this make me mockups" (2026-07-14).
+german-ok: the only German strings kept are the REAL rendered product copy (the section heading, the see-all link, the map CTA, the count chip, category/address/price on the cards). All editorial/chrome copy is English.
+lucide-ok: every inline svg carries its real class="lucide lucide-<name>" marker (arrow-right, map-pin, chevron-right, heart, star) with the official Lucide path data.
+psych-ok: the "star 4.9" cards intentionally omit the review count , that is the owner-APPROVED converged card (CARD_REDESIGN_2026-07-13 C11, owner: "remove the blue counts weon need that"). The "14 Salons" literal is the CURRENT fabricated bug being contrasted; the fix uses the real live count (20). Static mockup, so count literals are inherent.
+Assets: public/_mockups/_assets/nearby-map-wide.png + nearby-map-tall.png = real api.mapbox.com light-v11 static images with the 20 real Basel pins, downloaded + self-hosted (no CDN, no token in this file).
+-->
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@500;600;700&display=swap');
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--sunken:#F4F4F5;--border:#E4E4E7;--accent:#276EF1;--star:#FFC32B;--green:#16A34A;--red:#DC2626;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);background:#FAFAFA;}
+  .wrap{max-width:1240px;margin:0 auto;padding:28px 20px 60px;}
+  h1{font-family:'Inter Tight';font-size:22px;font-weight:700;letter-spacing:-.02em;margin-bottom:4px;}
+  .lead{color:var(--ink2);font-size:14px;line-height:1.5;margin-bottom:22px;max-width:780px;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;align-items:start;}
+  .col{background:#fff;border:1px solid var(--border);border-radius:20px;padding:16px;}
+  .col.rec{border-color:var(--ink);box-shadow:0 1px 0 var(--ink);}
+  .badge{display:inline-flex;align-items:center;gap:6px;font-family:'Inter Tight';font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;margin-bottom:12px;}
+  .badge.now{background:#FEF2F2;color:var(--red);}
+  .badge.rec{background:var(--ink);color:#fff;}
+  .badge.alt{background:var(--sunken);color:var(--ink);}
+  .note{color:var(--ink2);font-size:12.5px;line-height:1.55;margin-top:12px;}
+  .note b{color:var(--ink);font-weight:600;}
+
+  .section{margin-top:2px;}
+  .shead{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px;}
+  .stitle{font-family:'Inter Tight';font-size:19px;font-weight:600;letter-spacing:-.02em;}
+  .seeall{color:var(--ink);font-size:13px;font-weight:500;display:inline-flex;align-items:center;gap:3px;text-decoration:none;}
+  .seeall svg{width:15px;height:15px;}
+
+  .teaser{position:relative;height:120px;border-radius:16px;overflow:hidden;border:1px solid var(--border);background:var(--sunken);display:block;}
+  .teaser.tall{height:160px;}
+  .teaser img{width:100%;height:100%;object-fit:cover;display:block;}
+
+  .fakegrid{position:absolute;inset:0;background-image:linear-gradient(rgba(10,10,10,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(10,10,10,.05) 1px,transparent 1px);background-size:26px 26px;}
+  .fakepin{position:absolute;color:var(--ink);}
+  .chip{position:absolute;bottom:12px;left:12px;display:inline-flex;align-items:center;gap:6px;background:#fff;border-radius:999px;padding:6px 12px;font-size:13px;font-weight:500;color:var(--ink);box-shadow:0 2px 8px rgba(0,0,0,.12);}
+  .chip svg{width:13px;height:13px;}
+  .cta{position:absolute;bottom:12px;right:12px;display:inline-flex;align-items:center;gap:3px;background:#fff;border-radius:999px;padding:6px 11px;font-size:12.5px;font-weight:600;color:var(--accent);box-shadow:0 2px 8px rgba(0,0,0,.12);text-decoration:none;}
+  .cta svg{width:14px;height:14px;}
+  .barwrap{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:linear-gradient(to top,rgba(255,255,255,.96),rgba(255,255,255,.75) 70%,transparent);}
+  .barwrap .l{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--ink);}
+  .barwrap .l svg{width:14px;height:14px;}
+  .barwrap .r{display:inline-flex;align-items:center;gap:3px;font-size:12.5px;font-weight:600;color:var(--accent);}
+  .barwrap .r svg{width:14px;height:14px;}
+
+  .cards{display:flex;gap:12px;margin-top:12px;overflow:hidden;}
+  .card{flex:0 0 168px;}
+  .photo{height:134px;border-radius:16px;background:var(--sunken);position:relative;overflow:hidden;border:1px solid var(--border);}
+  .heart{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:999px;background:rgba(255,255,255,.92);display:grid;place-items:center;}
+  .heart svg{width:15px;height:15px;color:var(--ink);}
+  .crow{display:flex;align-items:center;justify-content:space-between;margin-top:8px;gap:8px;}
+  .cname{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .crate{display:inline-flex;align-items:center;gap:3px;font-size:12px;font-weight:500;white-space:nowrap;}
+  .crate svg{width:12px;height:12px;color:var(--star);}
+  .ccat{font-size:12px;color:var(--ink2);margin-top:2px;}
+  .caddr{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--ink2);margin-top:1px;gap:8px;}
+  .cprice{font-weight:600;color:var(--ink);white-space:nowrap;}
+  .legend{font-size:11px;color:var(--ink2);margin-top:14px;line-height:1.5;border-top:1px solid var(--border);padding-top:10px;}
+</style>
+<div class="wrap">
+  <h1>Nearby , real map, not a fake grid</h1>
+  <p class="lead">Today the map in this section is invented: a CSS grid with 3 fixed pins and a hardcoded number (14). Live measurement found no real map element at all. The fix reuses the salon page's proven static-Mapbox pattern, with the 20 real Basel salon pins and the real count. Three directions below. The salon cards underneath stay unchanged; only the map tile changes.</p>
+
+  <div class="grid">
+
+    <!-- BEFORE -->
+    <div class="col">
+      <span class="badge now">Now (fabricated)</span>
+      <div class="section">
+        <div class="shead"><span class="stitle" german-ok>In der Nähe</span>
+          <a class="seeall" href="#" german-ok>Alle in deiner Nähe <svg class="lucide lucide-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a></div>
+        <div class="teaser">
+          <span class="fakegrid"></span>
+          <svg class="fakepin lucide lucide-map-pin" style="left:26%;top:24%;width:20px;height:20px" viewBox="0 0 24 24" fill="currentColor" stroke="#fff" stroke-width="1.5"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3" fill="#fff"/></svg>
+          <svg class="fakepin lucide lucide-map-pin" style="left:56%;top:40%;width:22px;height:22px" viewBox="0 0 24 24" fill="currentColor" stroke="#fff" stroke-width="1.5"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3" fill="#fff"/></svg>
+          <svg class="fakepin lucide lucide-map-pin" style="left:40%;top:60%;width:18px;height:18px" viewBox="0 0 24 24" fill="currentColor" stroke="#fff" stroke-width="1.5"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3" fill="#fff"/></svg>
+          <span class="chip"><svg class="lucide lucide-map-pin" viewBox="0 0 24 24" fill="currentColor"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3" fill="#fff"/></svg><span german-ok>14 Salons in der Nähe Karte öffnen</span><!-- psych-ok: depicting the CURRENT fabricated hardcoded count, this is the bug the fix removes (real live count = 20) --></span>
+        </div>
+      </div>
+      <p class="note"><b>Problem:</b> invented grid, 3 pins that mean nothing, the number 14 is wrong (real: 20), and the chip repeats the section title.</p>
+    </div>
+
+    <!-- A: RECOMMENDED -->
+    <div class="col rec">
+      <span class="badge rec">A , Recommended</span>
+      <div class="section">
+        <div class="shead"><span class="stitle" german-ok>In der Nähe</span>
+          <a class="seeall" href="#" german-ok>Alle in deiner Nähe <svg class="lucide lucide-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a></div>
+        <a class="teaser" href="#">
+          <img src="_assets/nearby-map-wide.png" alt="Map of Basel with 20 salon pins">
+          <span class="chip"><svg class="lucide lucide-map-pin" viewBox="0 0 24 24" fill="currentColor"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3" fill="#fff"/></svg><span german-ok>20 Salons in Basel</span><!-- psych-ok: real live count (20 active Basel salons with coords), the honest replacement for the fabricated 14 --></span>
+          <span class="cta" german-ok>Karte öffnen <svg class="lucide lucide-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+        </a>
+        <div class="cards">
+          <div class="card">
+            <div class="photo"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></span></div>
+            <div class="crow"><span class="cname" german-ok>Muse Beauty Studio</span><span class="crate"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="currentColor"><path d="M11.5 2.3a.5.5 0 0 1 .95 0l2.3 4.68 5.17.75a.53.53 0 0 1 .3.9l-3.74 3.64.88 5.14a.53.53 0 0 1-.77.56L12 15.9l-4.62 2.43a.53.53 0 0 1-.77-.56l.88-5.14L3.75 8.99a.53.53 0 0 1 .3-.9l5.16-.76z"/></svg>4.9</span></div><!-- psych-ok: approved converged card CARD_REDESIGN C11 deliberately drops the review count (owner: "remove the blue counts weon need that") -->
+            <div class="ccat" german-ok>Coiffeur</div>
+            <div class="caddr"><span german-ok>4001 Basel</span><span class="cprice" german-ok>ab 35 CHF</span></div>
+          </div>
+          <div class="card">
+            <div class="photo"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></span></div>
+            <div class="crow"><span class="cname" german-ok>Old Town Barbers</span><span class="crate"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="currentColor"><path d="M11.5 2.3a.5.5 0 0 1 .95 0l2.3 4.68 5.17.75a.53.53 0 0 1 .3.9l-3.74 3.64.88 5.14a.53.53 0 0 1-.77.56L12 15.9l-4.62 2.43a.53.53 0 0 1-.77-.56l.88-5.14L3.75 8.99a.53.53 0 0 1 .3-.9l5.16-.76z"/></svg>4.9</span></div><!-- psych-ok: approved converged card CARD_REDESIGN C11 deliberately drops the review count -->
+            <div class="ccat" german-ok>Barbershop</div>
+            <div class="caddr"><span german-ok>4051 Basel</span><span class="cprice" german-ok>ab 15 CHF</span></div>
+          </div>
+        </div>
+      </div>
+      <p class="note"><b>What changes:</b> only the map. A real static Mapbox tile (same pattern as the salon page), 20 real Basel pins, real count. Chip = count (left), action = open map (right, blue, a small clickable bit). Same 120px height, same radius. No invented element left.</p>
+    </div>
+
+    <!-- B: content-led, no map -->
+    <div class="col">
+      <span class="badge alt">B , no map</span>
+      <div class="section">
+        <div class="shead"><span class="stitle" german-ok>In der Nähe</span>
+          <a class="seeall" href="#" german-ok>Alle in deiner Nähe <svg class="lucide lucide-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a></div>
+        <div class="cards">
+          <div class="card">
+            <div class="photo"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></span></div>
+            <div class="crow"><span class="cname" german-ok>Muse Beauty Studio</span><span class="crate"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="currentColor"><path d="M11.5 2.3a.5.5 0 0 1 .95 0l2.3 4.68 5.17.75a.53.53 0 0 1 .3.9l-3.74 3.64.88 5.14a.53.53 0 0 1-.77.56L12 15.9l-4.62 2.43a.53.53 0 0 1-.77-.56l.88-5.14L3.75 8.99a.53.53 0 0 1 .3-.9l5.16-.76z"/></svg>4.9</span></div><!-- psych-ok: approved converged card CARD_REDESIGN C11 deliberately drops the review count -->
+            <div class="ccat" german-ok>Coiffeur</div>
+            <div class="caddr"><span german-ok>4001 Basel</span><span class="cprice" german-ok>ab 35 CHF</span></div>
+          </div>
+          <div class="card">
+            <div class="photo"><span class="heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></span></div>
+            <div class="crow"><span class="cname" german-ok>Old Town Barbers</span><span class="crate"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="currentColor"><path d="M11.5 2.3a.5.5 0 0 1 .95 0l2.3 4.68 5.17.75a.53.53 0 0 1 .3.9l-3.74 3.64.88 5.14a.53.53 0 0 1-.77.56L12 15.9l-4.62 2.43a.53.53 0 0 1-.77-.56l.88-5.14L3.75 8.99a.53.53 0 0 1 .3-.9l5.16-.76z"/></svg>4.9</span></div><!-- psych-ok: approved converged card CARD_REDESIGN C11 deliberately drops the review count -->
+            <div class="ccat" german-ok>Barbershop</div>
+            <div class="caddr"><span german-ok>4051 Basel</span><span class="cprice" german-ok>ab 15 CHF</span></div>
+          </div>
+        </div>
+      </div>
+      <p class="note"><b>Radically honest:</b> drop the map entirely; the section is just the real salon cards. Zero fabrication, simplest. Downside: the location-led identity (the "map" character of the section) is gone.</p>
+    </div>
+
+    <!-- C: real map, taller + bottom bar -->
+    <div class="col">
+      <span class="badge alt">C , bigger map</span>
+      <div class="section">
+        <div class="shead"><span class="stitle" german-ok>In der Nähe</span>
+          <a class="seeall" href="#" german-ok>Alle in deiner Nähe <svg class="lucide lucide-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a></div>
+        <a class="teaser tall" href="#">
+          <img src="_assets/nearby-map-tall.png" alt="Map of Basel with 20 salon pins">
+          <span class="barwrap">
+            <span class="l"><svg class="lucide lucide-map-pin" viewBox="0 0 24 24" fill="currentColor"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3" fill="#fff"/></svg><span german-ok>20 Salons in Basel</span><!-- psych-ok: real live count (20) --></span>
+            <span class="r" german-ok>Karte öffnen <svg class="lucide lucide-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+          </span>
+        </a>
+      </div>
+      <p class="note"><b>A, but larger:</b> same real map, 160px tall, with a white footer bar (count left, action right). More prominent, but costs more vertical space before the cards.</p>
+    </div>
+
+  </div>
+
+  <p class="legend">Map = real api.mapbox.com light-v11 static image (same pattern as SalonLocation.tsx), 20 real Basel pins from salons.latitude/longitude, stored locally (no CDN, no token in this file). Salon data (name/rating/postal code/price) verified live on the homepage. The salon cards are context and stay unchanged; only the map tile changes.</p>
+</div>

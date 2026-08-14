@@ -1,0 +1,69 @@
+<!--
+Base: capture walkin-before.png
+Scale: component
+Grounded-in: app/[locale]/_components/homepage/WalkInBand.tsx (live). Every panel below is a REAL
+Playwright capture of the running /de homepage, not a redraw: `walkin-before.png` is the band as it
+ships today; `walkin-a2.png` / `walkin-b2.png` are that SAME live band with only the treatment applied
+to the live DOM (real fonts, real tokens, real data, real surrounding layout). Replaces the earlier
+hand-drawn walkin-redesign.html / walkin-refined.html, which were approximations and violated the
+mockup-real-base law.
+Exists-check: `npm run exists walkin` ran this turn (76 matches). WalkInBand.tsx + walk-in-join +
+walk-in-pay + queue tracker already exist; this is the design of the EXISTING band only, nothing new.
+Owner-scope: owner: "thinking of either A or B ... too much text ... refine from the ground up", then
+"where is new mockup" (2026-07-15/16).
+Real data: read out of the live DOM at capture time (GET /api/walkin/nearby). Nothing invented.
+german-ok: German strings are the real shipped product copy; editorial chrome is English.
+psych-ok: numbers are live; star always paired with its review count (law 6).
+-->
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@600;700&display=swap');
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--ink3:#8A8F98;--sunken:#F4F4F5;--border:#E4E4E7;--red:#DC2626;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);background:#EDEDEF;}
+  .wrap{max-width:1300px;margin:0 auto;padding:26px 20px 60px;}
+  h1{font-family:'Inter Tight';font-size:22px;font-weight:700;letter-spacing:-.02em;margin-bottom:4px;}
+  .lead{color:var(--ink2);font-size:13.5px;line-height:1.55;margin-bottom:20px;max-width:900px;}
+  .lead b{color:var(--ink);}
+  .row{display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start;}
+  .col{width:404px;}
+  .cap{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+  .tag{font-family:'Inter Tight';font-size:12.5px;font-weight:700;padding:3px 10px;border-radius:999px;}
+  .tag.now{background:#FEF2F2;color:var(--red);}
+  .tag.rec{background:var(--ink);color:#fff;}
+  .tag.alt{background:#fff;color:var(--ink);border:1px solid var(--border);}
+  .capnote{font-size:12px;color:var(--ink2);}
+  .shot{width:404px;border-radius:18px;background:#fff;border:1px solid #D4D4D8;box-shadow:0 8px 24px rgba(0,0,0,.1);overflow:hidden;}
+  .shot img{width:100%;display:block;}
+  .note{font-size:12.5px;color:var(--ink2);margin-top:10px;line-height:1.6;}
+  .note b{color:var(--ink);font-weight:600;}
+  .real{display:inline-block;font-size:11px;font-weight:700;color:#166534;background:#DCFCE7;border-radius:999px;padding:2px 8px;margin-top:8px;}
+</style>
+<div class="wrap">
+  <h1>Walk-in, on the real band</h1>
+  <p class="lead">Every panel is a <b>real capture of the running homepage</b>, not a drawing. The two treatments are that same live band with only the design changed on the live DOM, so what you are judging is your actual component with real fonts, tokens and live data. <b>7 pieces per row became 3</b>: the queue is what causes the wait, so "3 vor dir" and "ab 35 Min" were one fact told twice; the street address does not pick a barber; the label, explainer and Live pip were padding.</p>
+
+  <div class="row">
+
+    <div class="col">
+      <div class="cap"><span class="tag now">Now, live</span><span class="capnote">7 pieces per row</span></div>
+      <div class="shot"><img src="_assets/walkin-before.png" alt="The walk-in band as it ships today"></div>
+      <span class="real">real capture</span>
+      <p class="note">Worst wait leads (70-98 before 35-49), a 28 minute spread shouting in green, the address truncates, and a decorative Live pip.</p>
+    </div>
+
+    <div class="col">
+      <div class="cap"><span class="tag rec">A2 , Recommended</span><span class="capnote">3 pieces per row</span></div>
+      <div class="shot"><img src="_assets/walkin-a2.png" alt="The live walk-in band with the A2 sorted-board treatment applied"></div>
+      <span class="real">real capture, treatment applied live</span>
+      <p class="note"><b>Sorted, stripped.</b> One green column you read straight down: 35, 35, 70, 70. Wait, name, rating. Nothing truncates, nothing repeats, and the soonest shop is the first thing you see.</p>
+    </div>
+
+    <div class="col">
+      <div class="cap"><span class="tag alt">B2</span><span class="capnote">hero + rows</span></div>
+      <div class="shot"><img src="_assets/walkin-b2.png" alt="The live walk-in band with the B2 soonest-hero treatment applied"></div>
+      <span class="real">real capture, treatment applied live</span>
+      <p class="note"><b>One decision.</b> The soonest shop takes the ink CTA (walk-in is pay to hold your number); the rest stay one tap away. More committal, one extra element.</p>
+    </div>
+
+  </div>
+</div>

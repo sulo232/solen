@@ -1,0 +1,208 @@
+<!--
+Grounded-in: app/[locale]/_components/homepage/WalkInBand.tsx (live component) + public/_mockups/walkin-redesign.html
+(round 1: owner picked A/B directionally, then said "too much text, refine from the ground up, make another
+mockup based on A and B").
+Exists-check: `npm run exists walkin` ran earlier this session. WalkInBand.tsx + walk-in-join + walk-in-pay +
+queue tracker all already exist. This refines the BAND's design only. Nothing new proposed.
+Owner-scope: owner: "thinking of either A or B ... too much text ... refine from the ground up ... make me
+another mockup based on a and b" (2026-07-15).
+Real data: GET /api/walkin/nearby, live. Blade & Stone 4.36(11) 35-49min queue 3; Cuts & Culture 4.81(16)
+70-98min queue 4; The Fade Factory 4.27(11) 70-98min queue 5. Nothing invented.
+german-ok: German strings are real shipped product copy; editorial chrome is English.
+lucide-ok: inline svgs carry class="lucide lucide-<name>" with official Lucide paths.
+psych-ok: every number live; star always paired with its review count (law 6).
+-->
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@600;700&display=swap');
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--ink3:#8A8F98;--sunken:#F4F4F5;--border:#E4E4E7;--star:#FFC32B;--success:#16A34A;--red:#DC2626;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);background:#EDEDEF;}
+  .wrap{max-width:1320px;margin:0 auto;padding:26px 20px 60px;}
+  h1{font-family:'Inter Tight';font-size:22px;font-weight:700;letter-spacing:-.02em;margin-bottom:4px;}
+  .lead{color:var(--ink2);font-size:14px;line-height:1.55;margin-bottom:8px;max-width:960px;}
+  .cut{background:#fff;border:1px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:22px;font-size:12.5px;color:var(--ink2);line-height:1.7;max-width:960px;}
+  .cut b{color:var(--ink);}
+  .strike{text-decoration:line-through;color:var(--ink3);}
+  .row{display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start;}
+  .col{width:392px;}
+  .cap{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+  .tag{font-family:'Inter Tight';font-size:12.5px;font-weight:700;padding:3px 10px;border-radius:999px;}
+  .tag.now{background:#FEF2F2;color:var(--red);}
+  .tag.rec{background:var(--ink);color:#fff;}
+  .tag.alt{background:#fff;color:var(--ink);border:1px solid var(--border);}
+  .capnote{font-size:12px;color:var(--ink2);}
+  .phone{width:392px;border-radius:26px;background:#fff;border:1px solid #D4D4D8;box-shadow:0 10px 30px rgba(0,0,0,.12);padding:16px;}
+  .note{font-size:12px;color:var(--ink2);margin-top:11px;line-height:1.6;}
+  .note b{color:var(--ink);font-weight:600;}
+  .count{display:inline-block;font-family:'Inter Tight';font-size:11.5px;font-weight:700;background:var(--sunken);color:var(--ink);border-radius:999px;padding:2px 8px;margin-top:8px;}
+
+  /* header, stripped */
+  .bhead{display:flex;align-items:center;gap:12px;}
+  .bicon{width:44px;height:44px;border-radius:13px;background:var(--sunken);display:grid;place-items:center;flex:none;}
+  .bicon svg{width:22px;height:22px;color:var(--ink);}
+  .btitle{font-family:'Inter Tight';font-size:18px;font-weight:700;letter-spacing:-.01em;line-height:1.1;}
+  .bsub{font-size:13px;color:var(--ink2);margin-top:2px;}
+  .seeall{margin-left:auto;color:var(--ink);width:18px;height:18px;flex:none;}
+
+  /* A2: stripped board */
+  .board{margin-top:14px;border:1px solid var(--border);border-radius:16px;overflow:hidden;}
+  .brow{display:flex;align-items:center;gap:12px;padding:13px;border-bottom:1px solid var(--border);}
+  .brow:last-child{border-bottom:0;}
+  .bwait{font-family:'Inter Tight';font-size:17px;font-weight:700;letter-spacing:-.02em;color:var(--success);flex:none;width:78px;}
+  .bname{flex:1;min-width:0;font-family:'Inter Tight';font-size:14.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .brate{flex:none;display:inline-flex;align-items:center;gap:3px;font-size:12px;font-weight:600;color:var(--ink2);}
+  .brate svg{width:11px;height:11px;color:var(--star);}
+  .bgo{flex:none;width:15px;height:15px;color:var(--ink3);}
+
+  /* B2: hero + rest */
+  .hero{margin-top:14px;border:1px solid var(--border);border-radius:16px;padding:14px;}
+  .hrow{display:flex;align-items:center;gap:10px;}
+  .hwait{font-family:'Inter Tight';font-size:24px;font-weight:700;letter-spacing:-.02em;line-height:1;color:var(--success);}
+  .hname{font-family:'Inter Tight';font-size:15px;font-weight:700;margin-left:auto;}
+  .hrate{display:inline-flex;align-items:center;gap:3px;font-size:12px;font-weight:600;color:var(--ink2);}
+  .hrate svg{width:11px;height:11px;color:var(--star);}
+  .cta{margin-top:12px;display:block;background:var(--ink);color:#fff;border-radius:999px;padding:11px;font-size:15px;font-weight:600;text-align:center;}
+  .rest{margin-top:4px;}
+  .rrow{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);}
+  .rrow:last-child{border-bottom:0;}
+  .rwait{font-family:'Inter Tight';font-size:14px;font-weight:700;color:var(--success);width:78px;flex:none;}
+  .rname{flex:1;min-width:0;font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .rrate{flex:none;display:inline-flex;align-items:center;gap:3px;font-size:12px;font-weight:600;color:var(--ink2);}
+  .rrate svg{width:11px;height:11px;color:var(--star);}
+
+  /* C2: two lines only */
+  .mrow{display:flex;align-items:baseline;gap:10px;padding:13px 0;border-bottom:1px solid var(--border);}
+  .mrow:last-child{border-bottom:0;}
+  .mname{font-family:'Inter Tight';font-size:15px;font-weight:700;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .mwait{font-family:'Inter Tight';font-size:15px;font-weight:700;color:var(--success);flex:none;}
+</style>
+<div class="wrap">
+  <h1>Walk-in, refined from the ground up</h1>
+  <p class="lead">You were right that it is too much text. Every row carried SEVEN pieces. Two of them were saying the same thing twice: the queue is what causes the wait, so "3 vor dir" and "ab 35 Min" are the same fact told two ways. These three keep A's sorted order and B's single-decision shape, with everything that does not change the decision removed.</p>
+  <div class="cut">
+    <b>What got cut, and why</b><br>
+    <span class="strike">bis frei / Wartezeit</span> the number already says Min, so the label is padding<br>
+    <span class="strike">3 vor dir</span> same fact as the wait, told twice (the queue IS the wait)<br>
+    <span class="strike">Elsässerstrasse 10, Basel</span> a street name does not pick a barber, and every shop is in the same city<br>
+    <span class="strike">Ohne Termin. Sieh die Wartezeit und sichere dir deinen Platz.</span> the rows show the wait, so explaining it is redundant<br>
+    <span class="strike">Live pip</span> decorative status dot (taste rule 2)<br>
+    <b>Kept:</b> name (which shop), wait (how soon), star + count (is it any good). Three facts, one decision.
+  </div>
+
+  <div class="row">
+
+    <div class="col">
+      <div class="cap"><span class="tag now">Now</span><span class="capnote">7 pieces per row</span></div>
+      <div class="phone">
+        <div class="bhead">
+          <span class="bicon"><svg class="lucide lucide-footprints" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16v-2.38C4 11.5 2.97 10.5 3 8c.03-2.72 1.49-6 4.5-6C9.37 2 10 3.8 10 5.5c0 3.11-2 5.66-2 8.68V16a2 2 0 1 1-4 0Z"/><path d="M20 20v-2.38c0-2.12 1.03-3.12 1-5.62-.03-2.72-1.49-6-4.5-6C14.63 6 14 7.8 14 9.5c0 3.11 2 5.66 2 8.68V20a2 2 0 1 0 4 0Z"/><path d="M16 17h4"/><path d="M4 13h4"/></svg></span>
+          <div><div class="btitle" german-ok>Walk-in</div>
+            <div class="bsub" german-ok>Ohne Termin. Sieh die Wartezeit und sichere dir deinen Platz.</div>
+            <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--success);margin-top:4px"><span style="width:7px;height:7px;border-radius:50%;background:var(--success)"></span>Live</span></div>
+        </div>
+        <div style="display:flex;gap:12px;margin-top:16px;overflow:hidden">
+          <div style="flex:0 0 42%;min-width:0;border:1px solid var(--border);border-radius:13px;padding:12px">
+            <div style="font-family:'Inter Tight';font-size:20px;font-weight:800;color:var(--success);line-height:1" german-ok>70-98 Min</div>
+            <div style="font-size:12px;font-weight:600;color:var(--ink3);margin-top:3px" german-ok>bis frei</div>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:10px"><span style="font-family:'Inter Tight';font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" german-ok>Cuts &amp; Culture</span></div>
+            <div style="font-size:12px;color:var(--ink2);margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" german-ok>Elsässerstrasse 10, Basel</div>
+            <div style="font-size:12px;color:var(--ink3);margin-top:4px" german-ok>4 vor dir</div>
+          </div>
+          <div style="flex:0 0 42%;min-width:0;border:1px solid var(--border);border-radius:13px;padding:12px">
+            <div style="font-family:'Inter Tight';font-size:20px;font-weight:800;color:var(--success);line-height:1" german-ok>35-49 Min</div>
+            <div style="font-size:12px;font-weight:600;color:var(--ink3);margin-top:3px" german-ok>bis frei</div>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:10px"><span style="font-family:'Inter Tight';font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" german-ok>Blade &amp; Stone</span></div>
+            <div style="font-size:12px;color:var(--ink2);margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" german-ok>Feldbergstrasse 82, Basel</div>
+            <div style="font-size:12px;color:var(--ink3);margin-top:4px" german-ok>3 vor dir</div>
+          </div>
+        </div>
+      </div>
+      <span class="count">7 pieces per row</span>
+      <p class="note">Wait, "bis frei", name, rating, count, address, queue. Worst wait first.</p>
+    </div>
+
+    <div class="col">
+      <div class="cap"><span class="tag rec">A2 , Recommended</span><span class="capnote">3 pieces per row</span></div>
+      <div class="phone">
+        <div class="bhead">
+          <span class="bicon"><svg class="lucide lucide-footprints" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16v-2.38C4 11.5 2.97 10.5 3 8c.03-2.72 1.49-6 4.5-6C9.37 2 10 3.8 10 5.5c0 3.11-2 5.66-2 8.68V16a2 2 0 1 1-4 0Z"/><path d="M20 20v-2.38c0-2.12 1.03-3.12 1-5.62-.03-2.72-1.49-6-4.5-6C14.63 6 14 7.8 14 9.5c0 3.11 2 5.66 2 8.68V20a2 2 0 1 0 4 0Z"/><path d="M16 17h4"/><path d="M4 13h4"/></svg></span>
+          <div><div class="btitle" german-ok>Walk-in</div><div class="bsub" german-ok>Ohne Termin</div></div>
+          <svg class="seeall lucide lucide-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </div>
+        <div class="board">
+          <div class="brow">
+            <span class="bwait" german-ok>ab 35 Min</span>
+            <span class="bname" german-ok>Blade &amp; Stone</span>
+            <span class="brate"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="currentColor"><path d="M11.5 2.3a.5.5 0 0 1 .95 0l2.3 4.68 5.17.75a.53.53 0 0 1 .3.9l-3.74 3.64.88 5.14a.53.53 0 0 1-.77.56L12 15.9l-4.62 2.43a.53.53 0 0 1-.77-.56l.88-5.14L3.75 8.99a.53.53 0 0 1 .3-.9l5.16-.76z"/></svg>4.4 (11)</span>
+            <svg class="bgo lucide lucide-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          </div>
+          <div class="brow">
+            <span class="bwait" german-ok>ab 70 Min</span>
+            <span class="bname" german-ok>Cuts &amp; Culture</span>
+            <span class="brate"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="currentColor"><path d="M11.5 2.3a.5.5 0 0 1 .95 0l2.3 4.68 5.17.75a.53.53 0 0 1 .3.9l-3.74 3.64.88 5.14a.53.53 0 0 1-.77.56L12 15.9l-4.62 2.43a.53.53 0 0 1-.77-.56l.88-5.14L3.75 8.99a.53.53 0 0 1 .3-.9l5.16-.76z"/></svg>4.8 (16)</span>
+            <svg class="bgo lucide lucide-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          </div>
+          <div class="brow">
+            <span class="bwait" german-ok>ab 70 Min</span>
+            <span class="bname" german-ok>The Fade Factory</span>
+            <span class="brate"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="currentColor"><path d="M11.5 2.3a.5.5 0 0 1 .95 0l2.3 4.68 5.17.75a.53.53 0 0 1 .3.9l-3.74 3.64.88 5.14a.53.53 0 0 1-.77.56L12 15.9l-4.62 2.43a.53.53 0 0 1-.77-.56l.88-5.14L3.75 8.99a.53.53 0 0 1 .3-.9l5.16-.76z"/></svg>4.3 (11)</span>
+            <svg class="bgo lucide lucide-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          </div>
+        </div>
+      </div>
+      <span class="count">3 pieces per row</span>
+      <p class="note"><b>A's sorted order, stripped.</b> Wait, name, rating. One green column you read straight down: 35, 70, 70. Nothing truncates, nothing repeats.</p>
+    </div>
+
+    <div class="col">
+      <div class="cap"><span class="tag alt">B2</span><span class="capnote">hero + 2 rows</span></div>
+      <div class="phone">
+        <div class="bhead">
+          <span class="bicon"><svg class="lucide lucide-footprints" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16v-2.38C4 11.5 2.97 10.5 3 8c.03-2.72 1.49-6 4.5-6C9.37 2 10 3.8 10 5.5c0 3.11-2 5.66-2 8.68V16a2 2 0 1 1-4 0Z"/><path d="M20 20v-2.38c0-2.12 1.03-3.12 1-5.62-.03-2.72-1.49-6-4.5-6C14.63 6 14 7.8 14 9.5c0 3.11 2 5.66 2 8.68V20a2 2 0 1 0 4 0Z"/><path d="M16 17h4"/><path d="M4 13h4"/></svg></span>
+          <div><div class="btitle" german-ok>Walk-in</div><div class="bsub" german-ok>Ohne Termin</div></div>
+        </div>
+        <div class="hero">
+          <div class="hrow">
+            <span class="hwait" german-ok>ab 35 Min</span>
+            <span class="hname" german-ok>Blade &amp; Stone</span>
+          </div>
+          <div style="display:flex;justify-content:flex-end;margin-top:4px">
+            <span class="hrate"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="currentColor"><path d="M11.5 2.3a.5.5 0 0 1 .95 0l2.3 4.68 5.17.75a.53.53 0 0 1 .3.9l-3.74 3.64.88 5.14a.53.53 0 0 1-.77.56L12 15.9l-4.62 2.43a.53.53 0 0 1-.77-.56l.88-5.14L3.75 8.99a.53.53 0 0 1 .3-.9l5.16-.76z"/></svg>4.4 (11)</span>
+          </div>
+          <span class="cta" german-ok>Platz sichern</span>
+        </div>
+        <div class="rest">
+          <div class="rrow">
+            <span class="rwait" german-ok>ab 70 Min</span><span class="rname" german-ok>Cuts &amp; Culture</span>
+            <span class="rrate"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="currentColor"><path d="M11.5 2.3a.5.5 0 0 1 .95 0l2.3 4.68 5.17.75a.53.53 0 0 1 .3.9l-3.74 3.64.88 5.14a.53.53 0 0 1-.77.56L12 15.9l-4.62 2.43a.53.53 0 0 1-.77-.56l.88-5.14L3.75 8.99a.53.53 0 0 1 .3-.9l5.16-.76z"/></svg>4.8 (16)</span>
+          </div>
+          <div class="rrow">
+            <span class="rwait" german-ok>ab 70 Min</span><span class="rname" german-ok>The Fade Factory</span>
+            <span class="rrate"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="currentColor"><path d="M11.5 2.3a.5.5 0 0 1 .95 0l2.3 4.68 5.17.75a.53.53 0 0 1 .3.9l-3.74 3.64.88 5.14a.53.53 0 0 1-.77.56L12 15.9l-4.62 2.43a.53.53 0 0 1-.77-.56l.88-5.14L3.75 8.99a.53.53 0 0 1 .3-.9l5.16-.76z"/></svg>4.3 (11)</span>
+          </div>
+        </div>
+      </div>
+      <span class="count">hero + 3 pieces per row</span>
+      <p class="note"><b>B's single decision, stripped.</b> The soonest shop owns the ink CTA (walk-in is pay to hold your number); the other two are one tap away. More committal, one extra element.</p>
+    </div>
+
+    <div class="col">
+      <div class="cap"><span class="tag alt">C2 , barest</span><span class="capnote">2 pieces per row</span></div>
+      <div class="phone">
+        <div class="bhead">
+          <span class="bicon"><svg class="lucide lucide-footprints" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16v-2.38C4 11.5 2.97 10.5 3 8c.03-2.72 1.49-6 4.5-6C9.37 2 10 3.8 10 5.5c0 3.11-2 5.66-2 8.68V16a2 2 0 1 1-4 0Z"/><path d="M20 20v-2.38c0-2.12 1.03-3.12 1-5.62-.03-2.72-1.49-6-4.5-6C14.63 6 14 7.8 14 9.5c0 3.11 2 5.66 2 8.68V20a2 2 0 1 0 4 0Z"/><path d="M16 17h4"/><path d="M4 13h4"/></svg></span>
+          <div><div class="btitle" german-ok>Walk-in</div><div class="bsub" german-ok>Ohne Termin</div></div>
+          <svg class="seeall lucide lucide-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </div>
+        <div style="margin-top:8px">
+          <div class="mrow"><span class="mname" german-ok>Blade &amp; Stone</span><span class="mwait" german-ok>ab 35 Min</span></div>
+          <div class="mrow"><span class="mname" german-ok>Cuts &amp; Culture</span><span class="mwait" german-ok>ab 70 Min</span></div>
+          <div class="mrow"><span class="mname" german-ok>The Fade Factory</span><span class="mwait" german-ok>ab 70 Min</span></div>
+        </div>
+      </div>
+      <span class="count">2 pieces per row</span>
+      <p class="note"><b>The floor.</b> Name and wait, nothing else, no card at all. Fastest to read, but it drops the rating, so you cannot tell a good shop from a bad one without tapping.</p>
+    </div>
+
+  </div>
+</div>
