@@ -242,6 +242,35 @@ to touch git. I commit everything when they land.
     `src/components/salon/GiftCardBanner.tsx` is a complete gift-card banner rendered NOWHERE
     (`grep -rn GiftCardBanner src` returns only its own definition). It should go, and that is a
     deletion so it waits for the owner rather than happening quietly.
+## THE PARITY LOOP (owner 2026-08-14: *"build out evrth as a loop for app so its 1to 1 from web"*)
+
+`verified:` `node scripts/app-parity.mjs`, commit `9f6f7ac0d`. It walks both route trees and prints
+every CUSTOMER web route with no app equivalent. **First run: 67 web customer routes, 26 app routes,
+33 matched, 34 GAPS.** The loop dispatches builders while that number is above zero and stops when
+it is zero. It reads the trees, so it cannot go stale the way a checklist does.
+
+The denominator is honest, and the exclusions are in the script rather than hidden: the owner
+dashboard (his own call, customer bundles only), ~60 internal `dev/*` routes, static legal and
+marketing pages an app links out to, and vouchers, a killed feature.
+
+Round 1 of the loop, all dispatched, all disjoint files, none allowed to touch git:
+
+| builder | gaps it closes |
+|---|---|
+| walk-in | `walk-in-join`, `walk-in-pay`, `queue/[token]`, `walk-in-tip/[token]` |
+| booking-manage | `booking-action`, `booking/lookup`, `booking/resend-link`, `bookings/[id]/{refund,report,upcharge}` |
+| salon-depth | `salon/[slug]/team`, `salon/[slug]/staff/[staffId]`, `nail-tech/[id]`, `behandlungen/[...slug]` |
+| inspo-depth | `inspo/board/[id]`, `inspo/nails`, `inspo/saved/[id]` |
+| support | `account`, `account/messages`, `help`, `help/[slug]`, `kontakt`, `auth/reset-password` |
+
+Held for round 2, because the profile builders are still writing those files: the seven
+`profile/settings/*` leaves, `profile/intake-forms`, `profile/looks`, `tip/[bookingId]`,
+`referral/[code]`.
+
+**1:1 is two conditions, not one.** Route parity is this script. Visual parity is
+`scripts/pair-measure.py`. A screen is done when it exists AND measures the same, and the loop is
+done when both are true for every route.
+
 - [~] **Phase 7 , the pass.** Every screen against the canon, measured. CLOSE: design-verifier PASS
       on every screen, no open punch items.
       **The instrument is built and self-tested, ahead of the screens landing**, because six
