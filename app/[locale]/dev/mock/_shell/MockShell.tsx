@@ -35,6 +35,32 @@ export const HIDE_APP_CHROME = `
   main > section:has(input[type="email"]) { display: none !important; }
 `;
 
+/**
+ * Hide every fixed-position element on the page except the mockup's own toggle.
+ *
+ * Owner 2026-08-14: "cant even click a or b". The CSS rule above targets class names, and the
+ * cookie banner and the bottom tab bar do not match the shapes it guesses at, so both were sitting
+ * on top of the toggle and swallowing his taps. Class names are a guess; the computed position is
+ * the fact, so this walks the DOM and hides anything actually fixed that is not the toggle. It
+ * re-runs for a few seconds because those bars mount late.
+ */
+export function useOwnTheScreen() {
+  React.useEffect(() => {
+    let stop = false;
+    const sweep = () => {
+      if (stop) return;
+      for (const el of Array.from(document.body.querySelectorAll<HTMLElement>("*"))) {
+        if (el.closest("[data-mock-toggle]") || el.closest("[data-mock-root]")) continue;
+        const pos = getComputedStyle(el).position;
+        if (pos === "fixed" || pos === "sticky") el.style.display = "none";
+      }
+      window.setTimeout(sweep, 400);
+    };
+    sweep();
+    return () => { stop = true; };
+  }, []);
+}
+
 export function MockShell({
   proposed,
   options,

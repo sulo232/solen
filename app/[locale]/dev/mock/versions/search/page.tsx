@@ -24,7 +24,7 @@
 
 import * as React from "react";
 import { notFound } from "next/navigation";
-import { HIDE_APP_CHROME } from "../../_shell/MockShell";
+import { HIDE_APP_CHROME, useOwnTheScreen } from "../../_shell/MockShell";
 
 // Short labels on the pills: five long ones ran wider than a 402pt phone and the last two could not
 // be tapped, measured. How many branches carry each version sits on the line above instead.
@@ -39,9 +39,10 @@ const STOPS = [
 export default function SearchVersionsPage() {
   if (process.env.NODE_ENV === "production") notFound();
   const [pick, setPick] = React.useState(0);
+  useOwnTheScreen(); // the cookie banner and the tab bar were eating the taps
   const stop = STOPS[pick]!;
   return (
-    <div className="fixed inset-0 z-[1001] overflow-y-auto bg-white">
+    <div data-mock-root className="fixed inset-0 z-[1001] overflow-y-auto bg-white">
       <style>{HIDE_APP_CHROME}</style>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={stop.src} alt={stop.label} className="block w-full" />
@@ -50,7 +51,7 @@ export default function SearchVersionsPage() {
           one carrying this attribute, and without it this toggle hid itself and no tap landed. */}
       <div
         data-mock-toggle
-        className="fixed bottom-[max(20px,env(safe-area-inset-bottom))] left-1/2 z-[1002] -translate-x-1/2"
+        className="fixed bottom-[max(28px,env(safe-area-inset-bottom))] left-1/2 z-[2147483647] -translate-x-1/2"
       >
         <p className="mb-2 text-center font-body text-[12px] text-s-ink-2">{stop.note}</p>
         <div className="flex gap-1 rounded-full border border-s-border bg-white p-1 shadow-elevation-3">
@@ -60,7 +61,7 @@ export default function SearchVersionsPage() {
               onClick={() => setPick(i)}
               aria-pressed={i === pick}
               className={
-                "h-9 rounded-full px-4 font-heading text-[14px] " +
+                "h-11 rounded-full px-5 font-heading text-[14px] " +
                 (i === pick ? "bg-s-bg-sunken font-semibold text-s-ink" : "font-medium text-s-ink-2")
               }
             >
