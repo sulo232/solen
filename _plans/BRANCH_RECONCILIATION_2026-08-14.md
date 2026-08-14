@@ -139,13 +139,41 @@ Also settled by his other instruction in the same message ("mockups only english
 write is English, the German inside a shot is the product itself. Gate:
 `~/.claude/hooks/mockup-labels-english-gate.py`, 12/12 self-test, wired, gate-eval PASS.
 
-TWO CONFLICTS DECIDED WITHOUT HIM WHILE BUILDING IT, both by his own earlier locks:
-- The home inspiration row (`Entdecken`) is under a PERMANENT no-touch lock in the graveyard
-  ("ANY change to /entdecken page or home discovery section"), so its 11 branch versions cannot be
-  adopted whatever they look like. Main stays. Caught by `pre-edit-removed-check.sh` when the
-  mockup for it was being built, which is the gate doing exactly its job.
+THE LOCK CLAIM ABOVE WAS WRONG, corrected 2026-08-14 after he asked ("eleven no touch lovks
+elaborate thingd chnage"):
+- The no-touch lock on the home inspiration row was set 2026-06-11 and HE LIFTED IT ON 2026-06-13,
+  two days later, reopening discovery for a full redesign (memory project_discovery_redesign, which
+  says so in those words). The graveyard line was never updated, so `pre-edit-removed-check.sh`
+  spent two months refusing edits by quoting a dead lock, and I repeated it to him as current law.
+  Line corrected in `_design-system/REMOVED.md`. What DOES still bind there: the static detail hero
+  (2026-06-13), "Kollektion" as the save word (2026-06-14), TikTok attribution stays.
+- Three of those versions rewrite the heading from "Finden Sie Ihre Inspiration." to the informal
+  "Finde deine Inspiration.", which collides with the formal-Sie register in COPY_LAW.
 - Three of those versions also rewrite the heading from "Finden Sie Ihre Inspiration." to the
   informal "Finde deine Inspiration.", which collides with the formal-Sie register in COPY_LAW.
+
+
+### THE FINDING THAT COLLAPSES THIS WHOLE PILE (measured 2026-08-14)
+
+The versions are not competing designs. They are OLDER SNAPSHOTS of the same file. Measured by
+comparing the last commit date of every branch's copy against main's, over all 55 clashing screens:
+
+**main's version is the newest on 53 of 55.** Two exceptions, and one is not real:
+`SalonServices.tsx` shows this session's own branch as newer (my dead-grey fix from today), and
+`coming-soon/page.tsx` has a genuinely newer branch copy (quirky-ellis 2026-07-23 against main
+2026-07-17).
+
+So there is no 27-screen queue of looks for him to judge. Picking a branch version means going
+BACKWARDS: the inspiration row is the clean case, where the live version is the only one of eleven
+that renders the creator handle and the from-price under each card, and the biggest rival group (28
+branches) is from 17 July without that row and with the wrong register.
+
+Payload: `/tmp/claude/version-ages.json`. Mockup for the row: `/de/dev/mock/versions/inspiration-row`.
+
+- [x] C6d. The queue is re-measured and it is one screen, not 27. `coming-soon/page.tsx` is the only
+      screen where a branch is genuinely newer than main. verified: /tmp/claude/version-ages.json,
+      built by the date comparison above, and the inspiration-row case shown at
+      `app/[locale]/dev/mock/versions/inspiration-row/page.tsx`.
 
 - [ ] C6b. SHOW him each, paced by him, one at a time. Not startable in bulk by design: he said
       "Show me each version, I pick", so the queue moves at his pace, not mine.
