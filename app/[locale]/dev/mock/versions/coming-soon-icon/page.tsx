@@ -5,9 +5,14 @@
  * separately I had applied one of the two on my own, which he refused. Both icons are back to what
  * ships; nothing on that page changes until he picks here.
  *
- * A = sparkles, what the page shows today. B = a clock. Sparkles is banned by name in our own icon
- * rules (LOCKFILE 1598, memory feedback_icon_rules), which is an argument for B, not a decision:
- * this is the page's face and it is his call.
+ * He picked the clock and then said the grey box behind it has to go, everywhere. So the stops
+ * now cover BOTH questions at once: what the icon is, and what sits behind it. Every stop is a
+ * real render of the real page, with the icon size and the container background read back off
+ * the rendered element before each shot.
+ *
+ * measured, on the rendered page: Now = 32px glyph on a #F4F4F5 tile. 1 = same tile, clock.
+ * 2 = 44px clock, no tile (transparent). 3 = 30px clock inside a hairline circle. 4 = 64px
+ * clock, no tile. measure-ok.
  *
  * measured: both shots are the real /de/coming-soon rendered at 402 x 874, deviceScaleFactor 3,
  * stored at 804 wide. The swap was confirmed on the rendered page before each shot, by reading the
@@ -25,8 +30,11 @@ import { notFound } from "next/navigation";
 import { HIDE_APP_CHROME, useOwnTheScreen } from "../../_shell/MockShell";
 
 const STOPS = [
-  { label: "A", note: "sparkles, what ships today", src: "/_mockups/_assets/versions/coming-soon-icon/cs-A.png" },
-  { label: "B", note: "clock", src: "/_mockups/_assets/versions/coming-soon-icon/cs-B.png" },
+  { label: "Now", note: "grey tile, sparkles", src: "/_mockups/_assets/versions/coming-soon-icon/v-A.png" },
+  { label: "1", note: "grey tile, clock", src: "/_mockups/_assets/versions/coming-soon-icon/v-B.png" },
+  { label: "2", note: "no tile, clock 44", src: "/_mockups/_assets/versions/coming-soon-icon/v-C.png" },
+  { label: "3", note: "hairline circle, clock 30", src: "/_mockups/_assets/versions/coming-soon-icon/v-D.png" },
+  { label: "4", note: "no tile, clock 64", src: "/_mockups/_assets/versions/coming-soon-icon/v-E.png" },
 ];
 
 export default function ComingSoonIconVersionsPage() {
