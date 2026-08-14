@@ -335,7 +335,7 @@ changes how a booking decides its payment mode, which is money behaviour and his
 78 branches at the start of the day, 25 now. Every deletion was examined first and recorded in
 `_plans/BRANCHES_RECORDED_2026-08-14.md` with the id that brings it back.
 
-- [x] C11b. HANDS OFF `airbnb-animated-icons-ee4329`, owner 2026-08-14: "leave all commit n eveth
+- [x] C11b. Commit 613fdb974 , HANDS OFF `airbnb-animated-icons-ee4329`, owner 2026-08-14: "leave all commit n eveth
       from ths branch". Nothing on it gets touched, lifted, merged or deleted by me. It stays as it
       is until he says otherwise. verified untouched: 23 commits, open in
       worktrees/inspiring-heyrovsky-6d60db.
