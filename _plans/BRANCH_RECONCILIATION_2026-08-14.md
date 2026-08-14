@@ -175,7 +175,7 @@ Payload: `/tmp/claude/version-ages.json`. Mockup for the row: `/de/dev/mock/vers
       built by the date comparison above, and the inspiration-row case shown at
       `app/[locale]/dev/mock/versions/inspiration-row/page.tsx`.
 
-- [x] C6b. ANSWERED 2026-08-14: "fice version keep now". He flipped the five stops on the search
+- [x] C6b. Commit 612ffa045 , ANSWERED 2026-08-14: "fice version keep now". He flipped the five stops on the search
       results screen and kept what ships. Logged in `_design-system/TASTE_LOG.md` (2026-08-14 entry).
       Combined with C6d, that settles the screen queue: on 53 of 55 screens the live version is the
       newest, so the branch copies are history, not choices, and they are not re-proposed. The one
@@ -212,11 +212,28 @@ rows + disclosure row, partner, reviews, one dashboard card.
       the class that was already dead, plus a hairline swapped off the one locked `s-border` token.
       Nothing to look at, nothing to pick.
 
-- [ ] C7. The 64 behind-the-scenes files with six or more versions. Per his answer: each one comes
-      to him in two sentences plus a recommendation, none decided silently.
-- [ ] C8. The walk-in code half, still stranded across ten files on `quirky-ellis`. The database
-      side is live; the code that reads it is not. Lifting those ten is the same regression risk
-      that bit the booking file, so it needs a version-by-version read, not a copy.
+- [x] C7. MEASURED and reduced, 2026-08-14, same date test as the screens (verified:
+      /tmp/claude/backstage-ages.json). Of the behind-the-scenes files with six or more versions,
+      38 qualify and main is the newest on 24 of them, so those are history like the screens. The
+      14 where a branch is genuinely newer, in plain words:
+      - TWELVE are one branch, `quirky-ellis`, the 17 July backend re-audit. Ten of those are the
+        same cosmetic change: swapping hand-written JSON error bodies for the shared
+        `errorResponse` helper, which main already has. No behaviour change, and main has moved on
+        since July, so copying them wholesale would revert later work for no gain. Recommendation:
+        skip the cosmetic ten, they can be redone on current code any time.
+      - THE TWO SUBSTANTIVE ONES from that branch: `admin/users` records the before values so the
+        audit trail shows old to new instead of only the new state, and `ai/intake-recommendation`
+        plus `services/suggest` add a house-wide daily AI budget cap on top of the per-user limit,
+        which main does not have at all (`getAiGlobalDailyLimiter` is absent from lib/ratelimit.ts).
+        Recommendation: lift those two, they are real and cheap.
+      - TWO are TODAY's work on another branch (`airbnb-animated-icons`, 14 Aug): a rate limit on
+        bearer-token verification plus the booking and reviews routes that use it. That is current,
+        not stranded. Recommendation: merge that branch normally rather than cherry-picking.
+- [x] C8. DONE, commit 5475b0fa6. The walk-in code half is no longer stranded: hashed lookup,
+      constant-time compare, no raw token written to a column, mint-fresh-on-reopen with a
+      one-minute debounce, and the seed route stores a hash too. verified against the live database
+      (our hash equals Postgres digest on the same input, lookup by hash resolves a row, unique
+      index present) and by a six-case check of the compare, all passing.
 
 ## ROUND 2, the clashes (owner 2026-08-14: "for the clashes ask me tons of questions and if its visual sh ask me too")
 
