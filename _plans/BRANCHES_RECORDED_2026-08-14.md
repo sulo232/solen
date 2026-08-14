@@ -78,3 +78,8 @@ than what ships.
 | `claude/adoring-curie-22ecac` | `ef004dcf4` | 2026-06-28 | 16 |
 
 That one carried nine files nobody else had (eight database changes, one setup script), all kept in commit 064fe4fad.
+| `claude/upbeat-lalande-8484e5` | `b44cc7ee1` | 2026-07-04 | 82 |
+
+Kept off it in fecc75b57: four dashboard documents and a variations sheet. Its address-check improvement
+landed separately in 303546df7. Its two components were deleted as dead code months ago (94aeb53bb,
+aa4631e8f), so they are not losses.
