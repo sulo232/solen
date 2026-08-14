@@ -1,0 +1,12 @@
+-- exists-check: net-new vs supabase/migrations/064_quartier_subscriptions.sql because migration
+-- files are immutable once applied; this is the follow-up migration that revokes a policy 064
+-- created, not an extension of that (already-shipped) file.
+-- Ring: quartier_subscriptions had a public INSERT policy ("quartier_sub_insert_public",
+-- WITH CHECK (true), migration 064) that lets ANYONE with the anon/public Supabase key insert
+-- rows directly via PostgREST, bypassing the rate limit and zod validation in
+-- app/api/quartier/subscribe/route.ts (a direct spam vector: unlimited rows, any email/quartier
+-- string, no cooldown). The only real write path is that route, which uses the service-role admin
+-- client (createAdminSupabaseClient) and bypasses RLS entirely, so the policy is unneeded.
+-- Drop it; SELECT stays admin-only (quartier_sub_select_admin, untouched) and the app route is
+-- unaffected because it never relied on RLS to write.
+DROP POLICY IF EXISTS "quartier_sub_insert_public" ON quartier_subscriptions;

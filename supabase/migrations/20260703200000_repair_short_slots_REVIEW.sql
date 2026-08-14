@@ -1,0 +1,61 @@
+-- exists-check: net-new vs supabase/migrations/20260703195000_gap_hunt_d3_d5_d8_hardening.sql
+-- (which deduped availability_slots and added the unique index) because this
+-- is a separate one-off DATA REPAIR for a different defect (short ends_at),
+-- not another dedup pass. No existing migration repairs slot length.
+--
+-- REVIEW ONLY. NOT APPLIED. Data repair for the unbookable-services bug.
+--
+-- Root cause (fixed in code separately, app/api/cron/generate-slots/route.ts):
+-- the nightly slot generator used to compute ONE slotDuration per staff member
+-- from only the first mapped service, then reused that single duration as
+-- ends_at for every service's rows. Any service whose real duration differs
+-- from that first service's duration got a slot shorter (or longer) than its
+-- own duration_minutes. app/api/availability/time-slots/route.ts correctly
+-- filters out any slot whose length is less than the requested service's
+-- duration, so those short rows are invisible to customers ("Keine
+-- Zeitfenster verfuegbar" for services that ARE actually staffed).
+--
+-- Verified live (2026-07-03): 43 (salon_id, service_id) pairs across 18
+-- salons have future 'available' slots shorter than services.duration_minutes.
+-- Example: Herrenschnitt (30 min) at salon 63e581dd-2b0e-4910-b4a5-543bc1e157f6
+-- has 216 slots/day of exactly 20 minutes.
+--
+-- This migration ONLY widens ends_at on rows that are:
+--   status = 'available'  (never touches booked/completed/cancelled rows)
+--   starts_at > now()     (never touches past rows)
+--   (ends_at - starts_at) < services.duration_minutes  (only the broken ones)
+--
+-- Side effect (accepted): widening an available slot's ends_at can make it
+-- overlap an adjacent available slot for the same staff member. This is fine,
+-- the booking flow re-validates staff availability at book time (it does not
+-- trust the pre-generated slot list alone), so an overlapping AVAILABLE slot
+-- cannot cause a double-booking, at worst two available rows describe
+-- overlapping windows until the next nightly regeneration cleans them up.
+--
+-- DO NOT APPLY without owner review. Run the pre-count, review the sample,
+-- then apply, then run the post-count to confirm 0 remaining.
+
+-- Pre-count: how many broken rows exist right now.
+-- SELECT count(*) AS broken_slots_before
+-- FROM public.availability_slots a
+-- JOIN public.services s ON s.id = a.service_id
+-- WHERE a.status = 'available'
+--   AND a.starts_at > now()
+--   AND (extract(epoch FROM (a.ends_at - a.starts_at)) / 60) < s.duration_minutes;
+
+-- The repair itself (commented out; uncomment to apply after review):
+-- UPDATE public.availability_slots a
+-- SET ends_at = a.starts_at + (s.duration_minutes || ' minutes')::interval
+-- FROM public.services s
+-- WHERE s.id = a.service_id
+--   AND a.status = 'available'
+--   AND a.starts_at > now()
+--   AND (extract(epoch FROM (a.ends_at - a.starts_at)) / 60) < s.duration_minutes;
+
+-- Post-count: expect 0 after the UPDATE above runs.
+-- SELECT count(*) AS broken_slots_after
+-- FROM public.availability_slots a
+-- JOIN public.services s ON s.id = a.service_id
+-- WHERE a.status = 'available'
+--   AND a.starts_at > now()
+--   AND (extract(epoch FROM (a.ends_at - a.starts_at)) / 60) < s.duration_minutes;
