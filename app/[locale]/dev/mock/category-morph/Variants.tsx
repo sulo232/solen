@@ -1,42 +1,39 @@
 "use client";
 
-// exists-check: `npm run exists "category morph"` = 0. The categories come from
-// `searchCategories.ts`, the one source; nothing is re-declared.
+// exists-check: `npm run exists "category morph"` = 0. Categories come from `searchCategories.ts`.
 //
-// ROUND 4, and the previous three are deleted rather than kept as options, because he closed them:
-//   R1 he asked for circles that morph into pills, with a glare. I put the glass on the container.
-//   R2 "i want glossy sh on the icon not the pill or circl bro" , moved it onto the glyph, three ways.
-//   R3 "the icons ur choosing doesnt make any scence bro why diamonds etc ... generate" , generated
-//      a coral set with the shine on the object.
-//   R4 "wtf are these colors bro stop maiking dumb sh up make it black flat jst normal icons bro"
+// ROUND 5, owner: "icons are not at all what i want".
 //
-// So: black, flat, normal. No colour, no gloss, no gradient, no lift, no options. One row.
-// The only thing kept from his own idea is the shape: circle at rest, the locked pill when chosen.
+// I have now guessed the icon style FOUR times and been wrong four times: 3D renders in colour, a
+// gloss on the container, a gloss on the glyph, a generated coral set, a generated black set. Every
+// one of those was me choosing a style he never named. Guessing a fifth time is the expensive move,
+// so this page stops proposing and starts asking with something to point at.
 //
-// The icons are generated, because our glyph set has no barber tool and no polish bottle, which is
-// how nails ended up as a diamond and hair salon and barber ended up sharing one pair of scissors.
-// Four solid black silhouettes: shears, clippers, a polish bottle, spa stones. Measured on the
-// chosen sheet before cutting: 0.0% coloured pixels.
+// WHAT IS ON THIS PAGE: the two icon families we ALREADY OWN and that he has NOT rejected, at the
+// real size, in the real chip. Line is what every other icon in the product uses today. Solid is
+// the same set filled. If either is it, he says a word and it is done; if neither, the fastest path
+// is one screenshot of icons he likes from any app, because nothing on disk tells me.
 //
-// lang-ok: the labels come from the app's own constant; this file owns no copy.
+// WHAT WAS CHECKED FIRST, so this is not a lazy question:
+//   - his screenshots folder, for a reference he may already have dropped: nothing icon-related
+//     since 2026-08-03
+//   - TASTE_LOG for an approved icon FAMILY: it fixes stroke width by size and kills the grey tile
+//     behind row glyphs, and never names a family
+//   - the repo for a second icon set: `lucide-react` is the only one installed
+//
+// lang-ok: labels come from the app's own constant; this file owns no copy.
 
 import * as React from "react";
-import Image from "next/image";
 import { CATEGORIES } from "@/app/[locale]/_components/homepage/searchCategories";
 
-const ICON: Record<string, string> = {
-  Coiffeur: "/icons/categories/flat/coiffeur.png",
-  Barbershop: "/icons/categories/flat/barbershop.png",
-  Nails: "/icons/categories/flat/nails.png",
-  "Spa & Wellness": "/icons/categories/flat/spa.png",
-};
-
-export default function Variants() {
+/** The chip, unchanged from what he approved: circle at rest, the locked pill when chosen. */
+function Row({ fill }: { fill: boolean }) {
   const [i, setI] = React.useState(0);
   return (
     <div className="flex gap-2 overflow-x-auto pb-2">
       {CATEGORIES.map((c, n) => {
         const on = n === i;
+        const Icon = c.icon;
         return (
           <button
             key={c.label}
@@ -45,7 +42,12 @@ export default function Variants() {
               on ? "bg-s-bg-sunken px-4" : "w-12 justify-center border border-s-border bg-white"
             }`}
           >
-            <Image src={ICON[c.label]} alt="" width={22} height={22} className="shrink-0" />
+            <Icon
+              size={22}
+              strokeWidth={fill ? 1 : 2}
+              className="shrink-0 text-s-ink"
+              fill={fill ? "currentColor" : "none"}
+            />
             <span
               className={`whitespace-nowrap text-[15px] font-semibold text-s-ink transition-all duration-300 ${
                 on ? "max-w-[140px] opacity-100" : "max-w-0 opacity-0"
@@ -56,6 +58,21 @@ export default function Variants() {
           </button>
         );
       })}
+    </div>
+  );
+}
+
+export default function Variants() {
+  return (
+    <div className="space-y-8">
+      <section>
+        <p className="mb-3 text-[13px] font-semibold text-s-ink-2">Line, what the rest of the app uses</p>
+        <Row fill={false} />
+      </section>
+      <section>
+        <p className="mb-3 text-[13px] font-semibold text-s-ink-2">Solid, the same set filled in</p>
+        <Row fill />
+      </section>
     </div>
   );
 }
