@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen · Discover — coherent search + filters (Pinterest research)</title>
+<script src="https://unpkg.com/lucide@latest"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --border:#E7E5E4; --sunken:#EFEFEE;
+    --accent:#185CE0; --heart:#FF3366;
+    --heading:'Inter Tight',system-ui,sans-serif; --body:'Hanken Grotesk',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#EDEDEC;color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased;padding:26px 20px 70px}
+  .head{max-width:1180px;margin:0 auto 22px}
+  .head h1{font-family:var(--heading);font-weight:700;font-size:24px;letter-spacing:-.02em}
+  .head p{color:var(--ink2);font-size:13px;margin-top:6px;max-width:900px;line-height:1.5}
+  .head b{color:var(--ink)}
+  .row{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:start}
+  @media(max-width:900px){.row{grid-template-columns:1fr 1fr}}
+  @media(max-width:620px){.row{grid-template-columns:1fr}}
+
+  .phone{background:#fff;border:1px solid var(--border);border-radius:28px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05),0 18px 42px -26px rgba(0,0,0,.4);display:flex;flex-direction:column;min-height:660px}
+  .cap{padding:10px 15px;font-family:var(--heading);font-weight:600;font-size:12px;color:var(--ink2);border-bottom:1px solid var(--border)}
+  .scr{flex:1;padding:14px 14px 16px;display:flex;flex-direction:column}
+
+  /* ONE pill language: grey rounded, solid-accent when selected */
+  .srow{display:flex;align-items:center;gap:11px;margin-bottom:12px}
+  .back .ic{width:21px;height:21px;color:var(--ink);flex:0 0 auto}
+  .field{flex:1;display:flex;align-items:center;gap:8px;background:var(--sunken);border-radius:99px;padding:10px 14px}
+  .field .ic{width:16px;height:16px;color:var(--ink2)}
+  .field .q{flex:1;font-size:14px;color:var(--ink)}
+  .field .ph{flex:1;font-size:14px;color:var(--ink2)}
+  .field .mic{width:17px;height:17px;color:var(--ink2)}
+  .field .xc{width:19px;height:19px;border-radius:99px;background:#D9D9D7;display:grid;place-items:center}
+  .field .xc .ic{width:12px;height:12px;color:#fff}
+  .tune .ic{width:23px;height:23px;color:var(--ink);flex:0 0 auto}     /* tune icon BESIDE the search bar (Pinterest) */
+  .tune{position:relative} .tune .dot{position:absolute;top:-2px;right:-2px;width:8px;height:8px;border-radius:99px;background:var(--accent)}
+  .cancel{font-family:var(--heading);font-weight:600;font-size:14px;color:var(--ink)}
+
+  .chips{display:flex;gap:8px;overflow:hidden;margin-bottom:14px}
+  .chip{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;font-family:var(--heading);font-weight:500;font-size:13px;padding:9px 14px;border-radius:99px;background:var(--sunken);color:var(--ink)}
+  .chip .ic{width:14px;height:14px;color:var(--ink2)}
+  .chip.on{background:#181818;color:#fff} .chip.on .ic{color:#fff}   /* measured: Pinterest selected = near-black, not blue */
+  /* photo-backed chips (Pinterest "Short"/"Routine" — where the colour lives) */
+  .pchip{position:relative;width:96px;height:40px;border-radius:14px;overflow:hidden;flex:0 0 auto}
+  .pchip img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .pchip::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(10,10,10,.1),rgba(10,10,10,.45))}
+  .pchip span{position:absolute;left:10px;bottom:8px;z-index:2;color:#fff;font-family:var(--heading);font-weight:600;font-size:13px;text-shadow:0 1px 3px rgba(0,0,0,.5)}
+
+  /* hair-pattern dropdown (lives under the Haarmuster chip) — custom icons, solid-accent selected */
+  .dd{border:1px solid var(--border);border-radius:18px;box-shadow:0 14px 30px -16px rgba(0,0,0,.3);padding:11px;margin-bottom:14px}
+  .tiles{display:flex;gap:9px;overflow:hidden}
+  .tile{flex:0 0 auto;width:66px;height:74px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;border-radius:15px;background:var(--sunken)}
+  .tile .gi{width:28px;height:28px;background:var(--ink);-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center}
+  .tile .lab{font-family:var(--heading);font-weight:500;font-size:11px}
+  .tile.on{background:#181818;color:#fff} .tile.on .gi{background:#fff}   /* measured: near-black selected tile */
+
+  .grid{column-count:2;column-gap:9px;margin-top:2px}
+  .card{break-inside:avoid;margin-bottom:9px;position:relative}
+  .card img{width:100%;display:block;border-radius:14px}
+  .card .h{position:absolute;top:7px;right:7px;width:26px;height:26px;border-radius:99px;background:rgba(255,255,255,.92);display:grid;place-items:center}
+  .card .h .ic{width:14px;height:14px;color:var(--ink)}
+  .card .chip2{position:absolute;left:7px;bottom:7px;font-size:10.5px;font-weight:600;font-family:var(--heading);color:#fff;background:rgba(10,10,10,.55);backdrop-filter:blur(3px);padding:3px 8px;border-radius:99px}
+
+  /* autocomplete rows */
+  .ac .item{display:flex;align-items:center;gap:14px;padding:11px 2px}
+  .ac .item .ic{width:16px;height:16px;color:var(--ink2)}
+  .ac .item .t{font-size:16px;color:var(--ink2)} .ac .item .t b{color:var(--ink);font-weight:600}
+  .seclbl{font-family:var(--heading);font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink2);margin:14px 0 6px}
+
+  /* filter sheet */
+  .stitle{text-align:center;font-family:var(--heading);font-weight:700;font-size:16px}
+  .srow2{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .srow2 .ic{width:20px;height:20px;color:var(--ink)}
+  .reset{font-family:var(--heading);font-weight:600;font-size:13px;color:var(--ink2);background:var(--sunken);padding:5px 11px;border-radius:99px}
+  .opt{display:flex;align-items:center;justify-content:space-between;padding:12px 2px}
+  .opt .l{font-size:16px}
+  .radio{width:21px;height:21px;border-radius:99px;border:2px solid var(--border)}
+  .radio.on{border:none;background:#181818;position:relative}
+  .radio.on::after{content:"";position:absolute;inset:0;margin:auto;width:9px;height:9px;border-radius:99px;background:#fff}
+  .fchips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 4px}
+  .apply{margin-top:auto;text-align:center;padding:13px;border-radius:99px;background:var(--ink);color:#fff;font-family:var(--heading);font-weight:600;font-size:14px}
+
+  .note{padding:10px 15px 14px;border-top:1px solid var(--border);background:#FCFCFB;font-size:11.5px;line-height:1.45;color:var(--ink2)}
+  .note b{font-family:var(--heading);color:var(--ink)}
+</style>
+</head>
+<body>
+  <div class="head">
+    <h1>Discover — coherent search + filters (researched on Mobbin)</h1>
+    <p><b>One pill language everywhere</b>, fixing the contradictions: grey rounded search pill (magnifier + mic) · <b>tune icon beside the search</b> (Pinterest puts it there, not after the category pills) · filter <b>chips</b> share the exact pill shape, selected = solid blue · the custom hair-pattern icons live in the <b>Haarmuster chip's dropdown</b> · sheet with one ink "View results". Solen skin + your real icons.</p>
+  </div>
+
+  <div class="row">
+
+    <!-- A · RESULTS — search + filter chips coherent, Haarmuster dropdown open -->
+    <div class="phone">
+      <div class="cap">1 · Results (search + filters)</div>
+      <div class="scr">
+        <div class="srow">
+          <span class="back"><i data-lucide="chevron-left" class="ic"></i></span>
+          <div class="field"><i data-lucide="search" class="ic"></i><span class="q">curly hair</span><i data-lucide="mic" class="mic"></i></div>
+          <span class="tune"><i data-lucide="sliders-horizontal" class="ic"></i><span class="dot"></span></span>
+        </div>
+        <div class="chips">
+          <span class="chip on">Wavy <i data-lucide="chevron-up" class="ic"></i></span>
+          <span class="pchip"><img src="/api/discovery/thumb/0ea9d957-c536-44a5-bbfd-fc86ffd3e717"><span>Kurz</span></span>
+          <span class="pchip"><img src="/api/discovery/thumb/65afc1af-59d7-40fb-85a3-86220d616d6e"><span>Pflege</span></span>
+        </div>
+        <div class="dd">
+          <div class="tiles">
+            <div class="tile"><span class="gi" style="-webkit-mask-image:url(/hair-patterns/straight.png);mask-image:url(/hair-patterns/straight.png)"></span><span class="lab">Straight</span></div>
+            <div class="tile on"><span class="gi" style="-webkit-mask-image:url(/hair-patterns/wavy.png);mask-image:url(/hair-patterns/wavy.png)"></span><span class="lab">Wavy</span></div>
+            <div class="tile"><span class="gi" style="-webkit-mask-image:url(/hair-patterns/coily.png);mask-image:url(/hair-patterns/coily.png)"></span><span class="lab">Curly</span></div>
+            <div class="tile"><span class="gi" style="-webkit-mask-image:url(/hair-patterns/protective.png);mask-image:url(/hair-patterns/protective.png)"></span><span class="lab">Protective</span></div>
+          </div>
+        </div>
+        <div class="grid">
+          <div class="card"><img src="/api/discovery/thumb/ac75cb12-1deb-4f06-9546-bfe1d044d5cf"><span class="h"><i data-lucide="heart" class="ic"></i></span><span class="chip2">Wolf Cut</span></div>
+          <div class="card"><img src="/api/discovery/thumb/13a233cd-b202-46ac-a90a-a7194a3fda5f"><span class="h"><i data-lucide="heart" class="ic"></i></span><span class="chip2">Butterfly Cut</span></div>
+        </div>
+      </div>
+      <div class="note"><b>Coherent:</b> search pill + chips + tiles all one rounded family. Tune icon sits <b>by the search</b> (opens the sheet →). Haarmuster chip = solid blue (active) with its dropdown of <b>custom icons</b> below.</div>
+    </div>
+
+    <!-- B · FILTER SHEET -->
+    <div class="phone">
+      <div class="cap">2 · Filter sheet (tune icon)</div>
+      <div class="scr">
+        <div class="srow2"><i data-lucide="x" class="ic"></i><span class="stitle">Filter</span><span class="reset">Zurücksetzen</span></div>
+        <p class="seclbl">Inhalt</p>
+        <div class="opt"><span class="l">Alle</span><span class="radio on"></span></div>
+        <div class="opt"><span class="l">Fotos</span><span class="radio"></span></div>
+        <div class="opt"><span class="l">Videos</span><span class="radio"></span></div>
+        <div class="opt"><span class="l">Salons</span><span class="radio"></span></div>
+        <p class="seclbl">Geschlecht</p>
+        <div class="fchips"><span class="chip on">Alle</span><span class="chip">Frauen</span><span class="chip">Männer</span><span class="chip">Unisex</span></div>
+        <div class="apply">Ergebnisse anzeigen</div>
+      </div>
+      <div class="note"><b>Same chips</b> inside the sheet; content type = radio. One ink "Ergebnisse anzeigen" (Pinterest's red → Solen ink).</div>
+    </div>
+
+    <!-- C · AUTOCOMPLETE -->
+    <div class="phone">
+      <div class="cap">3 · Autocomplete (typing)</div>
+      <div class="scr">
+        <div class="srow">
+          <div class="field"><i data-lucide="search" class="ic"></i><span class="q">curly hair</span><span class="xc"><i data-lucide="x" class="ic"></i></span></div>
+          <span class="cancel">Abbrechen</span>
+        </div>
+        <div class="ac">
+          <div class="item"><i data-lucide="search" class="ic"></i><span class="t">curly hair<b>styles men</b></span></div>
+          <div class="item"><i data-lucide="search" class="ic"></i><span class="t">curly hair <b>men</b></span></div>
+          <div class="item"><i data-lucide="search" class="ic"></i><span class="t">curly hair <b>with bangs</b></span></div>
+          <div class="item"><i data-lucide="search" class="ic"></i><span class="t">curly hair <b>balayage</b></span></div>
+          <div class="item"><i data-lucide="search" class="ic"></i><span class="t">curly hair <b>bob</b></span></div>
+        </div>
+        <p class="seclbl">Salons</p>
+        <div class="ac">
+          <div class="item"><i data-lucide="store" class="ic"></i><span class="t" style="color:var(--ink)">Muse Beauty Studio</span></div>
+        </div>
+      </div>
+      <div class="note"><b>Same grey pill</b> + Abbrechen; text rows with bold completion + a Salons group (Pinterest groups Accounts/Boards).</div>
+    </div>
+
+  </div>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

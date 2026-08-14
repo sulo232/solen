@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen · Discover — Font Comparison</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..800&family=Inter+Tight:wght@400..700&family=Hanken+Grotesk:wght@400..700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#0A0A0A; --ink-2:#6B6B6B; --ink-3:#9A9A9A;
+    --bg:#FFFFFF; --sunken:#F5F5F4; --border:#E7E5E4;
+    --accent:#185CE0; --star:#FFC32B;
+    --page:#FAFAF9;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    background:var(--page);
+    font-family:'Inter Tight',system-ui,sans-serif;
+    color:var(--ink);
+    padding:32px 20px 64px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .head{max-width:900px;margin:0 auto 28px;text-align:center;}
+  .head h1{font-size:22px;font-weight:600;letter-spacing:-.02em;}
+  .head p{color:var(--ink-2);font-size:14px;margin-top:6px;font-family:'Hanken Grotesk',sans-serif;}
+  .stage{display:flex;gap:28px;justify-content:center;align-items:flex-start;flex-wrap:wrap;max-width:900px;margin:0 auto;}
+  .col{width:390px;}
+  .tag{
+    display:flex;align-items:center;gap:8px;justify-content:center;
+    margin-bottom:12px;font-size:12px;font-weight:600;letter-spacing:.02em;
+    font-family:'Hanken Grotesk',sans-serif;
+  }
+  .tag .dot{width:18px;height:18px;border-radius:999px;display:grid;place-items:center;color:#fff;font-size:11px;font-weight:700;}
+  .tag.a .dot{background:var(--ink);}
+  .tag.b .dot{background:var(--accent);}
+  .tag .sub{color:var(--ink-3);font-weight:500;}
+
+  /* ---- phone frame ---- */
+  .phone{
+    background:var(--bg);border:1px solid var(--border);border-radius:30px;
+    padding:18px 16px 22px;box-shadow:0 12px 40px rgba(0,0,0,.10);overflow:hidden;
+  }
+
+  /* ---- font role variables per column ---- */
+  .col-geist  { --f-display:'Geist'; --f-body:'Geist'; }
+  .col-locked { --f-display:'Inter Tight'; --f-body:'Hanken Grotesk'; }
+
+  .disp{font-family:var(--f-display),system-ui,sans-serif;}
+  .body{font-family:var(--f-body),system-ui,sans-serif;}
+
+  /* top chrome */
+  .chrome{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+  .brand{font-family:var(--f-display);font-size:24px;font-weight:700;letter-spacing:-.02em;}
+  .chrome-r{display:flex;gap:8px;}
+  .ic{width:34px;height:34px;border-radius:999px;border:1px solid var(--border);display:grid;place-items:center;color:var(--ink);}
+  .ic.solid{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .ic svg{width:17px;height:17px;}
+
+  h2.title{font-family:var(--f-display);font-size:27px;font-weight:600;letter-spacing:-.015em;margin-bottom:14px;}
+
+  /* search */
+  .search{
+    display:flex;align-items:center;gap:8px;background:var(--sunken);border:1px solid var(--border);
+    border-radius:999px;padding:11px 14px;margin-bottom:14px;color:var(--ink-3);
+  }
+  .search svg{width:16px;height:16px;flex:none;}
+  .search .ph{font-family:var(--f-body);font-size:15px;}
+  .search .mic{margin-left:auto;}
+
+  /* chip row */
+  .chips{display:flex;gap:8px;margin-bottom:20px;}
+  .chip{
+    font-family:var(--f-display);font-size:13px;font-weight:500;border-radius:999px;
+    padding:8px 14px;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;
+  }
+  .chip.ghost{background:var(--sunken);border:1px solid var(--border);color:var(--ink);}
+  .chip.ghost svg{width:13px;height:13px;}
+  .chip.photo{
+    position:relative;height:40px;width:92px;border-radius:14px;overflow:hidden;color:#fff;font-weight:600;
+    display:flex;align-items:flex-end;padding:7px 10px;
+  }
+  .chip.photo.k1{background:linear-gradient(160deg,#6b5544,#241a12);}
+  .chip.photo.k2{background:linear-gradient(160deg,#5a6b7a,#1c2630);}
+
+  .sec{font-family:var(--f-display);font-size:18px;font-weight:600;letter-spacing:-.01em;margin-bottom:12px;}
+
+  /* collections */
+  .coll{display:flex;gap:12px;margin-bottom:22px;}
+  .coll .c{flex:1;}
+  .coll .thumb{height:96px;border-radius:14px;margin-bottom:7px;}
+  .coll .c1 .thumb{background:linear-gradient(135deg,#3a3a3a,#0f0f0f);}
+  .coll .c2 .thumb{background:linear-gradient(135deg,#4a4036,#1a140d);}
+  .coll .c3 .thumb{background:linear-gradient(135deg,#42525e,#161d23);}
+  .coll .lbl{font-family:var(--f-display);font-size:14px;font-weight:600;}
+
+  /* feed card */
+  .card .img{height:200px;border-radius:18px;background:linear-gradient(135deg,#6e5a48,#241a11);position:relative;margin-bottom:9px;}
+  .card .stag{
+    position:absolute;left:8px;bottom:8px;background:rgba(255,255,255,.92);color:var(--ink);
+    font-family:var(--f-display);font-size:11px;font-weight:500;padding:3px 9px;border-radius:999px;
+  }
+  .card .heart{position:absolute;right:8px;top:8px;width:30px;height:30px;border-radius:999px;background:rgba(255,255,255,.92);display:grid;place-items:center;}
+  .card .heart svg{width:15px;height:15px;}
+  .card .creator{font-family:var(--f-body);font-size:13px;color:var(--ink-2);display:flex;align-items:center;gap:5px;}
+  .card .creator svg{width:13px;height:13px;flex:none;}
+  .card .meta{font-family:var(--f-body);font-size:13px;color:var(--ink-2);display:flex;align-items:center;gap:8px;margin-top:5px;}
+  .card .meta .star{display:inline-flex;align-items:center;gap:3px;}
+  .card .meta svg{width:12px;height:12px;}
+
+  /* specimen */
+  .spec{margin-top:16px;padding-top:16px;border-top:1px dashed var(--border);}
+  .spec .big{font-family:var(--f-display);font-size:30px;font-weight:600;letter-spacing:-.01em;line-height:1;}
+  .spec .nums{font-family:var(--f-display);font-size:20px;font-weight:500;margin-top:8px;color:var(--ink-2);}
+  .spec .sen{font-family:var(--f-body);font-size:14px;line-height:1.5;color:var(--ink);margin-top:10px;}
+  .spec .sen b{font-weight:700;}
+  .note{font-family:'Hanken Grotesk',sans-serif;font-size:12px;color:var(--ink-3);text-align:center;margin-top:10px;}
+  .legend{max-width:900px;margin:34px auto 0;font-family:'Hanken Grotesk',sans-serif;font-size:13px;color:var(--ink-2);line-height:1.6;background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px 18px;}
+  .legend b{color:var(--ink);}
+</style>
+</head>
+<body>
+
+  <div class="head">
+    <h1>Discover — same screen, two type systems</h1>
+    <p>Only the font changes. Layout, color, content identical. Pick what reads right to you.</p>
+  </div>
+
+  <div class="stage">
+
+    <!-- ================= COLUMN A : GEIST (current) ================= -->
+    <div class="col col-geist">
+      <div class="tag a"><span class="dot">A</span> CURRENT <span class="sub">· Geist (single family)</span></div>
+      <div class="phone">
+        <div class="chrome">
+          <div class="brand">Solen</div>
+          <div class="chrome-r">
+            <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
+            <div class="ic solid"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div>
+          </div>
+        </div>
+        <h2 class="title">Entdecken</h2>
+        <div class="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <span class="ph">Styles suchen…</span>
+          <svg class="mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+        </div>
+        <div class="chips">
+          <span class="chip ghost">Textur <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></span>
+          <span class="chip photo k1">Kurz</span>
+          <span class="chip photo k2">Pflege</span>
+        </div>
+        <div class="sec">Kollektionen</div>
+        <div class="coll">
+          <div class="c c1"><div class="thumb"></div><div class="lbl">Textured Crops</div></div>
+          <div class="c c2"><div class="thumb"></div><div class="lbl">Fades</div></div>
+          <div class="c c3"><div class="thumb"></div><div class="lbl">Shags</div></div>
+        </div>
+        <div class="card">
+          <div class="img">
+            <span class="stag">Balayage</span>
+            <span class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3 5.5 5.5 0 0 0 12 5.5 5.5 5.5 0 0 0 7.5 3 5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></span>
+          </div>
+          <div class="creator">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+            Muse Beauty Studio
+          </div>
+          <div class="meta">
+            <span class="star"><svg viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M12 2l3 6 6 .9-4.5 4.3 1 6.3L12 17l-5.5 2.8 1-6.3L3 8.9 9 8z"/></svg>4.9</span>
+            <span>ab 45 CHF</span>
+          </div>
+        </div>
+        <div class="spec">
+          <div class="big">Aa Gg Rr</div>
+          <div class="nums">0123456789 · CHF</div>
+          <div class="sen">Finde den <b>perfekten Schnitt</b> in deiner Nähe — buchbar in Sekunden.</div>
+        </div>
+      </div>
+      <div class="note">Geist — geometric, Vercel-issued. Even, tech-forward.</div>
+    </div>
+
+    <!-- ================= COLUMN B : INTER TIGHT + HANKEN (locked) ================= -->
+    <div class="col col-locked">
+      <div class="tag b"><span class="dot">B</span> LOCKED <span class="sub">· Inter Tight + Hanken Grotesk</span></div>
+      <div class="phone">
+        <div class="chrome">
+          <div class="brand">Solen</div>
+          <div class="chrome-r">
+            <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
+            <div class="ic solid"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div>
+          </div>
+        </div>
+        <h2 class="title">Entdecken</h2>
+        <div class="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <span class="ph">Styles suchen…</span>
+          <svg class="mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+        </div>
+        <div class="chips">
+          <span class="chip ghost">Textur <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></span>
+          <span class="chip photo k1">Kurz</span>
+          <span class="chip photo k2">Pflege</span>
+        </div>
+        <div class="sec">Kollektionen</div>
+        <div class="coll">
+          <div class="c c1"><div class="thumb"></div><div class="lbl">Textured Crops</div></div>
+          <div class="c c2"><div class="thumb"></div><div class="lbl">Fades</div></div>
+          <div class="c c3"><div class="thumb"></div><div class="lbl">Shags</div></div>
+        </div>
+        <div class="card">
+          <div class="img">
+            <span class="stag">Balayage</span>
+            <span class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3 5.5 5.5 0 0 0 12 5.5 5.5 5.5 0 0 0 7.5 3 5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></span>
+          </div>
+          <div class="creator">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+            Muse Beauty Studio
+          </div>
+          <div class="meta">
+            <span class="star"><svg viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M12 2l3 6 6 .9-4.5 4.3 1 6.3L12 17l-5.5 2.8 1-6.3L3 8.9 9 8z"/></svg>4.9</span>
+            <span>ab 45 CHF</span>
+          </div>
+        </div>
+        <div class="spec">
+          <div class="big">Aa Gg Rr</div>
+          <div class="nums">0123456789 · CHF</div>
+          <div class="sen">Finde den <b>perfekten Schnitt</b> in deiner Nähe — buchbar in Sekunden.</div>
+        </div>
+      </div>
+      <div class="note">Inter Tight (headings) + Hanken Grotesk (body) — warmer body, tighter display.</div>
+    </div>
+
+  </div>
+
+  <div class="legend">
+    <b>How to read this:</b> Column A is what's live right now (Geist everywhere). Column B applies the two-font
+    pairing through the same role classes the real components use — <b>Inter Tight</b> for headings / titles / chips
+    (<code>font-heading</code>, <code>font-display</code>), <b>Hanken Grotesk</b> for body / creator / meta
+    (<code>font-body</code>). Watch the <b>“Entdecken” title</b>, the <b>numbers</b> (4.9 / 45 CHF / 0123456789),
+    the <b>lowercase g / a / R</b> in the specimen, and the <b>creator line</b> — that's where the two diverge most.
+  </div>
+
+</body>
+</html>

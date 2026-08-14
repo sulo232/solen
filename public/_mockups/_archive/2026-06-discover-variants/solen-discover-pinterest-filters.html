@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen · Discover filters — Pinterest shapes × Solen colours</title>
+<script src="https://unpkg.com/lucide@latest"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --border:#E7E5E4; --sunken:#F2F2F1;
+    --accent:#185CE0; --accent-pale:#EAEFFE; --star:#FFC32B; --heart:#FF3366;
+    --heading:'Inter Tight',system-ui,sans-serif; --body:'Hanken Grotesk',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#EDEDEC;color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased;padding:26px 20px 70px}
+  .head{max-width:1500px;margin:0 auto 22px}
+  .head h1{font-family:var(--heading);font-weight:700;font-size:24px;letter-spacing:-.02em}
+  .head p{color:var(--ink2);font-size:13px;margin-top:6px;max-width:900px;line-height:1.5}
+  .head b{color:var(--ink)}
+
+  .row{max-width:1500px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:18px;align-items:start}
+  @media(max-width:1240px){.row{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:660px){.row{grid-template-columns:1fr}}
+
+  .phone{background:#fff;border:1px solid var(--border);border-radius:30px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05),0 20px 44px -28px rgba(0,0,0,.4);display:flex;flex-direction:column;height:720px}
+  .cap{padding:9px 15px;font-family:var(--heading);font-weight:600;font-size:12px;color:var(--ink2);border-bottom:1px solid var(--border);display:flex;gap:6px;align-items:center}
+  .cap .dot{width:7px;height:7px;border-radius:99px;background:var(--accent)}
+  .scr{flex:1;overflow:hidden;padding:14px 14px 0;position:relative;display:flex;flex-direction:column}
+
+  /* search bars */
+  .srow{display:flex;align-items:center;gap:10px;margin-bottom:13px}
+  .ic{width:18px;height:18px;color:var(--ink2);flex:0 0 auto}
+  .field{flex:1;display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--ink);border-radius:99px;padding:9px 13px}
+  .field.rest{background:var(--sunken);border-color:var(--border)}
+  .field .q{flex:1;font-size:14px}
+  .field .ph{flex:1;font-size:14px;color:var(--ink2)}
+  .field .ic{width:16px;height:16px}
+  .xc{width:20px;height:20px;border-radius:99px;background:var(--sunken);display:grid;place-items:center;flex:0 0 auto}
+  .xc .ic{width:12px;height:12px}
+  .cancel{font-family:var(--heading);font-weight:600;font-size:14px;color:var(--ink)}
+  .back{width:20px;height:20px;flex:0 0 auto}
+  .back .ic{width:20px;height:20px;color:var(--ink)}
+  .tune{width:24px;height:24px;flex:0 0 auto}
+  .tune .ic{width:22px;height:22px;color:var(--ink)}
+  /* circular back button (matches the app's circular chrome) */
+  .cbtn{width:36px;height:36px;border-radius:99px;border:1px solid var(--border);display:grid;place-items:center;flex:0 0 auto}
+  .cbtn .ic{width:18px;height:18px;color:var(--ink)}
+  /* the Hair-pattern pill's dropdown card (tiles live here now, not as a standalone section) */
+  .ddcard{border:1px solid var(--border);border-radius:18px;box-shadow:0 14px 32px -18px rgba(0,0,0,.32);padding:11px;margin-bottom:14px}
+  .chip.on{background:var(--accent-pale);color:var(--accent)}
+  .chip.on .gi{background:var(--accent)} .chip.on .ic{color:var(--accent)}
+
+  /* autocomplete rows */
+  .ac .item{display:flex;align-items:center;gap:15px;padding:11px 2px}
+  .ac .item .ic{width:17px;height:17px;color:var(--ink2)}
+  .ac .item .t{font-size:17px;color:var(--ink2)}
+  .ac .item .t b{color:var(--ink);font-weight:600}
+
+  /* contextual chip row */
+  .chips{display:flex;gap:8px;overflow:hidden;margin-bottom:14px}
+  .chip{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;font-family:var(--heading);font-weight:500;font-size:13px;padding:9px 13px;border-radius:99px;background:var(--sunken);color:var(--ink)}
+  .chip .gi{width:16px;height:16px;flex:0 0 auto;background:var(--ink);-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center}
+  .chip .ic{width:14px;height:14px;color:var(--ink2)}
+  .pchip{position:relative;width:92px;height:40px;border-radius:14px;overflow:hidden;flex:0 0 auto}
+  .pchip img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .pchip::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(10,10,10,.12),rgba(10,10,10,.5))}
+  .pchip span{position:absolute;left:10px;bottom:7px;z-index:2;color:#fff;font-family:var(--heading);font-weight:600;font-size:13px;text-shadow:0 1px 3px rgba(0,0,0,.5)}
+
+  /* section header */
+  .sec{display:flex;align-items:center;justify-content:center;gap:6px;font-family:var(--heading);font-weight:600;font-size:15px;margin:3px 0 12px}
+  .sec .ic{width:15px;height:15px;color:var(--ink2)}
+
+  /* pattern tiles (Pinterest grey tile shape) */
+  .tiles{display:flex;gap:9px;overflow:hidden;padding-bottom:2px}
+  .tile{flex:0 0 auto;width:66px;height:78px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border-radius:16px;background:var(--sunken);border:1.5px solid transparent}
+  .tile.on{background:var(--accent-pale);border-color:var(--accent)}
+  .tile .gi{width:30px;height:30px;background:var(--ink);-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center}
+  .tile.on .gi{background:var(--accent)}
+  .tile .lab{font-family:var(--heading);font-weight:500;font-size:11px}
+  .tile.on .lab{color:var(--accent)}
+
+  /* masonry */
+  .grid{margin-top:14px;column-count:2;column-gap:8px;overflow:hidden}
+  .card{break-inside:avoid;margin-bottom:8px;position:relative}
+  .card img{width:100%;display:block;border-radius:14px}
+  .card .h{position:absolute;top:7px;right:7px;width:26px;height:26px;border-radius:99px;background:rgba(255,255,255,.92);display:grid;place-items:center}
+  .card .h .ic{width:14px;height:14px;color:var(--ink)}
+
+  /* filter-by radio + chip-grid */
+  .ftitle{text-align:center;font-family:var(--heading);font-weight:700;font-size:17px;margin-bottom:6px}
+  .seclbl{display:flex;align-items:center;gap:6px;font-family:var(--heading);font-weight:600;font-size:13px;color:var(--ink);margin:16px 0 4px}
+  .seclbl .ic{width:13px;height:13px;color:var(--ink2)}
+  .opt{display:flex;align-items:center;justify-content:space-between;padding:13px 2px}
+  .opt .l{font-size:16px}
+  .opt.sel .l{font-weight:600}
+  .radio{width:22px;height:22px;border-radius:99px;border:2px solid var(--border);display:grid;place-items:center}
+  .radio.on{border-color:var(--accent)}
+  .radio.on::after{content:"";width:11px;height:11px;border-radius:99px;background:var(--accent)}
+  .gchips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .gchip{font-family:var(--heading);font-weight:500;font-size:13.5px;padding:9px 15px;border-radius:12px;background:var(--sunken);color:var(--ink)}
+  .gchip.on{background:var(--accent-pale);color:var(--accent);box-shadow:inset 0 0 0 1.5px var(--accent)}
+  .actions{margin-top:auto;display:flex;gap:10px;padding:12px 0 16px;border-top:1px solid var(--border)}
+  .btn{flex:1;text-align:center;padding:13px;border-radius:99px;font-family:var(--heading);font-weight:600;font-size:14px}
+  .btn.ghost{background:var(--sunken);color:var(--ink)}
+  .btn.primary{background:var(--ink);color:#fff}
+
+  .note{padding:10px 15px 14px;border-top:1px solid var(--border);background:#FCFCFB;font-size:11.5px;line-height:1.45;color:var(--ink2)}
+  .note b{font-family:var(--heading);color:var(--ink)}
+</style>
+</head>
+<body>
+  <div class="head">
+    <h1>Discover filters — Pinterest shapes, Solen colours, real icons</h1>
+    <p><b>Structure copied 1:1 from Pinterest</b> (your screenshots + Mobbin): autocomplete rows, the contextual chip row, the grey pattern-tile selector, the radio "Filter by" sheet, and the chip-grid refine. <b>Skin is Solen</b> — white surfaces, ink text, accent-blue selection (Pinterest's red/blue → ink + accent), Inter Tight / Hanken. Pattern tiles use the <b>real bg-removed icons</b>.</p>
+  </div>
+
+  <div class="row">
+
+    <!-- 1 · AUTOCOMPLETE -->
+    <div class="phone">
+      <div class="cap"><span class="dot"></span>1 · Autocomplete</div>
+      <div class="scr">
+        <div class="srow">
+          <div class="field"><i data-lucide="search" class="ic"></i><span class="q">curly hair</span><span class="xc"><i data-lucide="x" class="ic"></i></span></div>
+          <span class="cancel">Cancel</span>
+        </div>
+        <div class="ac">
+          <div class="item"><i data-lucide="search" class="ic"></i><span class="t">curly hair<b>styles men</b></span></div>
+          <div class="item"><i data-lucide="search" class="ic"></i><span class="t">curly hair <b>men</b></span></div>
+          <div class="item"><i data-lucide="search" class="ic"></i><span class="t">curly hair <b>with bangs</b></span></div>
+          <div class="item"><i data-lucide="search" class="ic"></i><span class="t">curly hair<b>styles short</b></span></div>
+          <div class="item"><i data-lucide="search" class="ic"></i><span class="t">curly hair <b>layers</b></span></div>
+          <div class="item"><i data-lucide="search" class="ic"></i><span class="t">curly hair <b>balayage</b></span></div>
+          <div class="item"><i data-lucide="search" class="ic"></i><span class="t">curly hair <b>bob</b></span></div>
+        </div>
+      </div>
+      <div class="note"><b>Shape:</b> magnifier + query, completion bold; pill field + Cancel. <b>Solen:</b> focused border ink (not blue).</div>
+    </div>
+
+    <!-- 2 · RESULTS + HAIR-PATTERN DROPDOWN (standalone "Search by hair pattern" section deleted) -->
+    <div class="phone">
+      <div class="cap"><span class="dot"></span>2 · Results</div>
+      <div class="scr">
+        <div class="srow">
+          <span class="cbtn"><i data-lucide="arrow-left" class="ic"></i></span>
+          <div class="field rest"><span class="q">curly hair</span><i data-lucide="mic" class="ic"></i></div>
+          <span class="tune"><i data-lucide="sliders-horizontal" class="ic"></i></span>
+        </div>
+        <div class="chips">
+          <span class="chip on"><span class="gi" style="-webkit-mask-image:url(/hair-patterns/coily.png);mask-image:url(/hair-patterns/coily.png)"></span>Hair pattern <i data-lucide="chevron-up" class="ic"></i></span>
+          <span class="pchip"><img src="https://picsum.photos/seed/short7/120/80"><span>Short</span></span>
+          <span class="pchip"><img src="https://picsum.photos/seed/rout7/120/80"><span>Routine</span></span>
+        </div>
+        <!-- Pattern tiles now live INSIDE the Hair-pattern pill's dropdown — no redundant "Search by hair pattern" header -->
+        <div class="ddcard">
+          <div class="tiles">
+            <div class="tile"><span class="gi" style="-webkit-mask-image:url(/hair-patterns/straight.png);mask-image:url(/hair-patterns/straight.png)"></span><span class="lab">Straight</span></div>
+            <div class="tile"><span class="gi" style="-webkit-mask-image:url(/hair-patterns/wavy.png);mask-image:url(/hair-patterns/wavy.png)"></span><span class="lab">Wavy</span></div>
+            <div class="tile on"><span class="gi" style="-webkit-mask-image:url(/hair-patterns/coily.png);mask-image:url(/hair-patterns/coily.png)"></span><span class="lab">Curly</span></div>
+            <div class="tile"><span class="gi" style="-webkit-mask-image:url(/hair-patterns/protective.png);mask-image:url(/hair-patterns/protective.png)"></span><span class="lab">Protective</span></div>
+          </div>
+        </div>
+        <div class="grid">
+          <div class="card"><img src="https://picsum.photos/seed/cu1/300/360"><span class="h"><i data-lucide="heart" class="ic"></i></span></div>
+          <div class="card"><img src="https://picsum.photos/seed/cu2/300/300"><span class="h"><i data-lucide="heart" class="ic"></i></span></div>
+        </div>
+      </div>
+      <div class="note"><b>Deleted</b> the standalone "Search by hair pattern" section. Tiles live in the <b>Hair-pattern pill's dropdown</b> · circular back · mic = <b>voice input</b>.</div>
+    </div>
+
+    <!-- 3 · FILTER BY (radio) -->
+    <div class="phone">
+      <div class="cap"><span class="dot"></span>3 · Filter by</div>
+      <div class="scr">
+        <div class="srow" style="margin-bottom:6px"><span class="cbtn"><i data-lucide="arrow-left" class="ic"></i></span><span class="ftitle" style="flex:1;margin:0">Filter by</span><span style="width:36px"></span></div>
+        <div class="opt sel"><span class="l">All</span><span class="radio on"></span></div>
+        <div class="opt"><span class="l">Photos</span><span class="radio"></span></div>
+        <div class="opt"><span class="l">Videos</span><span class="radio"></span></div>
+        <div class="opt"><span class="l">Salons</span><span class="radio"></span></div>
+        <div class="opt"><span class="l">Saved</span><span class="radio"></span></div>
+        <div class="actions"><span class="btn ghost">Reset</span><span class="btn primary">Apply</span></div>
+      </div>
+      <div class="note"><b>Shape:</b> radio rows + Cancel/Done pills (Pinterest). <b>Solen:</b> accent radio, ink Apply (not red/blue).</div>
+    </div>
+
+    <!-- 4 · REFINE (chip grid) -->
+    <div class="phone">
+      <div class="cap"><span class="dot"></span>4 · Refine (chips)</div>
+      <div class="scr">
+        <div class="srow" style="margin-bottom:6px"><span class="cbtn"><i data-lucide="x" class="ic"></i></span><span class="ftitle" style="flex:1;margin:0">Refine</span><span style="width:36px"></span></div>
+        <div class="seclbl">Gender <i data-lucide="info" class="ic"></i></div>
+        <div class="gchips"><span class="gchip on">All</span><span class="gchip">Women</span><span class="gchip">Men</span><span class="gchip">Unisex</span></div>
+        <div class="seclbl">Length</div>
+        <div class="gchips"><span class="gchip">Short</span><span class="gchip on">Medium</span><span class="gchip">Long</span></div>
+        <div class="seclbl">Style</div>
+        <div class="gchips"><span class="gchip">Balayage</span><span class="gchip on">Curtain Bangs</span><span class="gchip">Wolf Cut</span><span class="gchip">Shag</span><span class="gchip">Bob</span></div>
+        <div class="actions"><span class="btn ghost">Clear all</span><span class="btn primary">Show results</span></div>
+      </div>
+      <div class="note"><b>Shape:</b> wrap chip-grid multi-select (Pinterest "Pick filters"). <b>Solen:</b> selected = accent (not black fill).</div>
+    </div>
+
+  </div>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

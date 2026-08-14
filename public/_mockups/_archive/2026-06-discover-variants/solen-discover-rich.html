@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen · Discover — rich</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400..800&family=Hanken+Grotesk:wght@300..700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#0A0A0A; --ink-2:#6B6B6B; --ink-3:#9A9A9A; --bg:#FFFFFF; --sunken:#F4F3F2; --border:#ECEAE8;
+    --flame:#9A3412; --star:#FFC32B; --page:#E7E5E3;
+    --disp:'Inter Tight',system-ui,sans-serif; --body:'Hanken Grotesk',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--page);font-family:var(--body);color:var(--ink);padding:26px 16px 50px;-webkit-font-smoothing:antialiased;}
+  .head{text-align:center;margin-bottom:18px;}
+  .head h1{font-family:var(--disp);font-size:22px;font-weight:600;letter-spacing:-.02em;}
+  .head p{color:var(--ink-2);font-size:13px;margin-top:5px;}
+  .phone{width:402px;margin:0 auto;background:var(--bg);border-radius:34px;box-shadow:0 24px 60px rgba(0,0,0,.18);overflow:hidden;border:1px solid var(--border);}
+  img{display:block;object-fit:cover;}
+
+  .barrow{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 10px;}
+  .brand{font-family:var(--disp);font-size:25px;font-weight:700;letter-spacing:-.02em;}
+  .ics{display:flex;gap:8px;} .ic{width:32px;height:32px;border-radius:999px;border:1px solid var(--border);display:grid;place-items:center;} .ic.solid{background:var(--ink);border-color:var(--ink);} .ic svg{width:16px;height:16px;color:var(--ink);} .ic.solid svg{color:#fff;}
+  .search{display:flex;align-items:center;gap:9px;background:var(--sunken);border:1px solid var(--border);border-radius:999px;padding:12px 15px;color:var(--ink-3);margin:0 16px 16px;font-family:var(--body);font-size:14.5px;}
+  .search svg{width:16px;height:16px;}
+
+  .cats{display:flex;gap:14px;overflow-x:auto;padding:0 16px 16px;}
+  .cat{flex:none;display:flex;flex-direction:column;align-items:center;gap:6px;width:58px;}
+  .cat .puck{width:58px;height:58px;border-radius:18px;display:grid;place-items:center;}
+  .cat .puck img{width:34px;height:34px;object-fit:contain;}
+  .cat span{font-family:var(--disp);font-size:11px;font-weight:600;}
+  .p1{background:#FBEFE4;}.p2{background:#E9EEFB;}.p3{background:#FBE7F1;}.p4{background:#EAF6ED;}.p5{background:#F2ECFB;}.p6{background:#FBF3E3;}
+
+  .railhead{display:flex;align-items:center;justify-content:space-between;padding:8px 16px 10px;}
+  .railhead .t{font-family:var(--disp);font-size:18.5px;font-weight:700;letter-spacing:-.012em;display:flex;align-items:center;gap:7px;}
+  .railhead .flame{color:var(--flame);display:inline-flex;} .railhead .flame svg{width:17px;height:17px;}
+  .railhead .sub{font-family:var(--body);font-size:12.5px;color:var(--ink-3);font-weight:400;}
+  .railhead .arrow{width:28px;height:28px;border-radius:999px;background:var(--sunken);display:grid;place-items:center;} .railhead .arrow svg{width:15px;height:15px;color:var(--ink);}
+  .rail{display:flex;gap:11px;overflow-x:auto;padding:0 16px 8px;}
+
+  /* featured card */
+  .fcard{flex:none;width:250px;}
+  .fcard .ph{height:150px;border-radius:18px;position:relative;overflow:hidden;}
+  .fcard .ph img{width:100%;height:100%;}
+  .fcard .ph .scrim{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.35),transparent 55%);}
+  .fcard .ph .promo{position:absolute;top:9px;left:9px;background:var(--flame);color:#fff;font-family:var(--disp);font-size:10.5px;font-weight:700;padding:4px 8px;border-radius:7px;display:flex;align-items:center;gap:3px;}
+  .fcard .ph .promo svg{width:11px;height:11px;}
+  .fcard .ph .heart{position:absolute;top:8px;right:8px;width:30px;height:30px;border-radius:999px;background:rgba(255,255,255,.92);display:grid;place-items:center;}.fcard .ph .heart svg{width:15px;height:15px;}
+  .fcard .ph .who{position:absolute;left:10px;bottom:9px;color:#fff;font-family:var(--body);font-size:12px;font-weight:500;text-shadow:0 1px 3px rgba(0,0,0,.5);}
+  .fcard .nm{font-family:var(--disp);font-size:14.5px;font-weight:600;margin-top:8px;}
+  .fcard .meta{font-family:var(--body);font-size:12.5px;color:var(--ink-2);display:flex;align-items:center;gap:6px;margin-top:2px;}
+  .fcard .meta .star{display:inline-flex;align-items:center;gap:2px;color:var(--ink);} .fcard .meta svg{width:12px;height:12px;}
+
+  /* circular near-you */
+  .circ{flex:none;display:flex;flex-direction:column;align-items:center;gap:7px;width:82px;}
+  .circ .av{width:68px;height:68px;border-radius:999px;overflow:hidden;border:2px solid #fff;box-shadow:0 2px 10px rgba(0,0,0,.12);}
+  .circ .av img{width:100%;height:100%;}
+  .circ .nm{font-family:var(--disp);font-size:12px;font-weight:600;text-align:center;}
+  .circ .mt{font-family:var(--body);font-size:11px;color:var(--ink-2);display:flex;align-items:center;gap:3px;}.circ .mt svg{width:10px;height:10px;}
+
+  /* ranked */
+  .rank{flex:none;width:200px;position:relative;}
+  .rank .ph{height:130px;border-radius:18px;overflow:hidden;position:relative;}
+  .rank .ph img{width:100%;height:100%;}
+  .rank .ph .scrim{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.5),transparent 50%);}
+  .rank .num{position:absolute;left:6px;bottom:-6px;font-family:var(--disp);font-size:62px;font-weight:800;color:#fff;line-height:1;z-index:3;text-shadow:0 3px 10px rgba(0,0,0,.45);}
+  .rank .nm{font-family:var(--disp);font-size:13.5px;font-weight:600;margin-top:7px;}
+  .rank .mt{font-family:var(--body);font-size:11.5px;color:var(--ink-2);}
+
+  .divider{height:9px;background:var(--page);margin:8px 0 2px;}
+
+  .masonhead{font-family:var(--disp);font-size:18.5px;font-weight:700;padding:14px 16px 11px;letter-spacing:-.012em;}
+  .mason{column-count:2;column-gap:7px;padding:0 7px;}
+  .mt{break-inside:avoid;margin-bottom:7px;border-radius:14px;position:relative;overflow:hidden;}
+  .mt img{width:100%;}
+  .mt .scrim{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.34),transparent 48%);}
+  .mt .tagchip{position:absolute;left:7px;bottom:7px;background:rgba(255,255,255,.94);font-family:var(--disp);font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:999px;}
+  .mt .h{position:absolute;right:7px;top:7px;width:28px;height:28px;border-radius:999px;background:rgba(255,255,255,.92);display:grid;place-items:center;}.mt .h svg{width:14px;height:14px;}
+  .mt .who{position:absolute;left:8px;bottom:8px;color:#fff;font-family:var(--body);font-size:11px;font-weight:500;text-shadow:0 1px 3px rgba(0,0,0,.5);}
+  .mt .play{position:absolute;inset:0;display:grid;place-items:center;} .mt .play span{width:38px;height:38px;border-radius:999px;background:rgba(255,255,255,.86);display:grid;place-items:center;} .mt .play svg{width:15px;height:15px;color:#0A0A0A;margin-left:2px;}
+</style>
+</head>
+<body>
+  <div class="head">
+    <h1>Discover — rich (real photos, dense)</h1>
+    <p>Same structure as before, but photographic + tight. This is the texture Pinterest/Uber have that gray boxes don't.</p>
+  </div>
+
+  <div class="phone">
+    <div class="barrow">
+      <div class="brand">Entdecken</div>
+      <div class="ics"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></span><span class="ic solid"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></span></div>
+    </div>
+    <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>Styles, Salons, Looks suchen…</div>
+
+    <div class="cats">
+      <div class="cat"><div class="puck p1"><img src="/icons/categories/scissors.png" alt=""></div><span>Haare</span></div>
+      <div class="cat"><div class="puck p2"><img src="/icons/categories/clippers.png" alt=""></div><span>Barber</span></div>
+      <div class="cat"><div class="puck p3"><img src="/icons/categories/nails.png" alt=""></div><span>Nails</span></div>
+      <div class="cat"><div class="puck p4"><img src="/icons/categories/spa.png" alt=""></div><span>Spa</span></div>
+      <div class="cat"><div class="puck p5"><img src="/icons/categories/map.png" alt=""></div><span>Karte</span></div>
+      <div class="cat"><div class="puck p6"><img src="/icons/categories/walkin.png" alt=""></div><span>Walk-in</span></div>
+    </div>
+
+    <div class="railhead"><div class="t"><span class="flame"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2s5 4 5 9a5 5 0 0 1-10 0c0-1 .4-2.2 1-3-.2 1.2.6 2 1.5 2 1.2 0 1.3-1 1-2.2C11 6 12 3.5 12 2z"/></svg></span>Trending in Basel</div><div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div></div>
+    <div class="rail">
+      <div class="fcard"><div class="ph"><img src="https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=500&h=320&fit=crop&q=80" alt=""><div class="scrim"></div><span class="promo"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2s5 4 5 9a5 5 0 0 1-10 0c0-1 .4-2.2 1-3-.2 1.2.6 2 1.5 2 1.2 0 1.3-1 1-2.2C11 6 12 3.5 12 2z"/></svg>+180%</span><span class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 12 5.5 5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7Z"/></svg></span></div><div class="nm">Ghost Hair</div><div class="meta">Emerging · 42 Suchen / Woche</div></div>
+      <div class="fcard"><div class="ph"><img src="https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=500&h=320&fit=crop&q=80" alt=""><div class="scrim"></div><span class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 12 5.5 5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7Z"/></svg></span><span class="who">@hairby.lena</span></div><div class="nm">Wolf Cut</div><div class="meta">128 Looks · 12 Salons</div></div>
+    </div>
+
+    <div class="railhead"><div class="t">Für dich <span class="sub">· nach deinem Profil</span></div><div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div></div>
+    <div class="rail">
+      <div class="fcard"><div class="ph"><img src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=500&h=320&fit=crop&q=80" alt=""><div class="scrim"></div><span class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 12 5.5 5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7Z"/></svg></span></div><div class="nm">Textured Crop</div><div class="meta"><span class="star"><svg viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M12 2l3 6 6 .9-4.5 4.3 1 6.3L12 17l-5.5 2.8 1-6.3L3 8.9 9 8z"/></svg>4.9</span> · ab 45 CHF · 1.2km</div></div>
+      <div class="fcard"><div class="ph"><img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=500&h=320&fit=crop&q=80" alt=""><div class="scrim"></div><span class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 12 5.5 5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7Z"/></svg></span></div><div class="nm">Low Taper Fade</div><div class="meta"><span class="star"><svg viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M12 2l3 6 6 .9-4.5 4.3 1 6.3L12 17l-5.5 2.8 1-6.3L3 8.9 9 8z"/></svg>4.8</span> · ab 38 CHF · 800m</div></div>
+    </div>
+
+    <div class="railhead"><div class="t">Salons in deiner Nähe</div><div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div></div>
+    <div class="rail">
+      <div class="circ"><div class="av"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=160&h=160&fit=crop&q=80" alt=""></div><div class="nm">Muse Studio</div><div class="mt"><svg viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M12 2l3 6 6 .9-4.5 4.3 1 6.3L12 17l-5.5 2.8 1-6.3L3 8.9 9 8z"/></svg>4.9 · 400m</div></div>
+      <div class="circ"><div class="av"><img src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=160&h=160&fit=crop&q=80" alt=""></div><div class="nm">Old Town</div><div class="mt"><svg viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M12 2l3 6 6 .9-4.5 4.3 1 6.3L12 17l-5.5 2.8 1-6.3L3 8.9 9 8z"/></svg>4.7 · 1.2km</div></div>
+      <div class="circ"><div class="av"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=160&h=160&fit=crop&q=80" alt=""></div><div class="nm">Nail Bliss</div><div class="mt"><svg viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M12 2l3 6 6 .9-4.5 4.3 1 6.3L12 17l-5.5 2.8 1-6.3L3 8.9 9 8z"/></svg>4.8 · 800m</div></div>
+      <div class="circ"><div class="av"><img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=160&h=160&fit=crop&q=80" alt=""></div><div class="nm">Glow Bar</div><div class="mt"><svg viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M12 2l3 6 6 .9-4.5 4.3 1 6.3L12 17l-5.5 2.8 1-6.3L3 8.9 9 8z"/></svg>4.6 · 1.5km</div></div>
+    </div>
+
+    <div class="railhead"><div class="t">Beliebt diese Woche <span class="sub">· meist gespeichert</span></div><div class="arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></div></div>
+    <div class="rail">
+      <div class="rank"><div class="ph"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&h=320&fit=crop&q=80" alt=""><div class="scrim"></div></div><span class="num">1</span><div class="nm">Butterfly Cut</div><div class="mt">2.1k gespeichert</div></div>
+      <div class="rank"><div class="ph"><img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=500&h=320&fit=crop&q=80" alt=""><div class="scrim"></div></div><span class="num">2</span><div class="nm">Curtain Bangs</div><div class="mt">1.8k gespeichert</div></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="masonhead">Mehr entdecken</div>
+    <div class="mason">
+      <div class="mt"><img src="https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=400&h=560&fit=crop&q=80" alt=""><div class="scrim"></div><span class="tagchip">Shag</span><span class="h"><svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 12 5.5 5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7Z"/></svg></span><span class="who">@studio.noir</span></div>
+      <div class="mt"><img src="https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=400&h=430&fit=crop&q=80" alt=""><div class="scrim"></div><span class="tagchip">Wolf Cut</span><div class="play"><span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div></div>
+      <div class="mt"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=520&fit=crop&q=80" alt=""><div class="scrim"></div><span class="tagchip">Balayage</span></div>
+      <div class="mt"><img src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=400&h=470&fit=crop&q=80" alt=""><div class="scrim"></div><span class="tagchip">Fringe</span></div>
+      <div class="mt"><img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&h=600&fit=crop&q=80" alt=""><div class="scrim"></div><span class="tagchip">Layered</span><span class="who">@cutsby.dom</span></div>
+      <div class="mt"><img src="https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?w=400&h=420&fit=crop&q=80" alt=""><div class="scrim"></div><span class="tagchip">Taper Fade</span></div>
+      <div class="mt"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=500&fit=crop&q=80" alt=""><div class="scrim"></div><span class="tagchip">Gel Nails</span></div>
+      <div class="mt"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=440&fit=crop&q=80" alt=""><div class="scrim"></div><span class="tagchip">Curtain Bangs</span></div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen · Discover — every page (Pinterest structure, Solen skin)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400..700&family=Inter:wght@400..600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#0A0A0A; --ink-2:#6B6B6B; --ink-3:#9A9A9A; --bg:#FFFFFF; --sunken:#F4F3F2;
+    --border:#E7E5E3; --page:#EDEBEA; --accent:#185CE0; --star:#FFC32B; --heart:#FF3366;
+    --disp:'Inter Tight',system-ui,sans-serif; --body:'Inter',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--page);font-family:var(--body);color:var(--ink);padding:30px 20px 70px;-webkit-font-smoothing:antialiased;}
+  .head{text-align:center;margin-bottom:8px;}
+  .head h1{font-family:var(--disp);font-size:25px;font-weight:600;letter-spacing:-.02em;}
+  .head p{color:var(--ink-2);font-size:14px;margin-top:7px;max-width:760px;margin-left:auto;margin-right:auto;line-height:1.5;}
+  .legend{max-width:760px;margin:14px auto 26px;font-size:12.5px;color:var(--ink-2);background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:12px 16px;line-height:1.7;}
+  .legend b{color:var(--ink);font-family:var(--disp);}
+  .legend .anim{color:var(--accent);font-weight:600;}
+  .grid{display:flex;gap:34px;justify-content:center;flex-wrap:wrap;align-items:flex-start;}
+  .col{width:380px;max-width:100%;}
+  .cap{font-family:var(--disp);font-size:15px;font-weight:600;text-align:center;margin-bottom:4px;}
+  .cap small{display:block;font-family:var(--body);font-weight:400;font-size:12.5px;color:var(--ink-2);margin-top:3px;line-height:1.45;}
+  .phone{background:var(--bg);border-radius:36px;box-shadow:0 24px 60px rgba(0,0,0,.16);overflow:hidden;border:1px solid var(--border);margin-top:12px;height:760px;position:relative;}
+  img{display:block;object-fit:cover;}
+  svg{display:block;}
+
+  /* shared chrome */
+  .bar{display:flex;align-items:center;gap:11px;padding:15px 15px 11px;}
+  .ico{width:38px;height:38px;border-radius:999px;display:grid;place-items:center;flex:none;border:1px solid var(--border);color:var(--ink);}
+  .ico svg{width:18px;height:18px;}
+  .field{flex:1;display:flex;align-items:center;gap:9px;background:var(--sunken);border:1px solid var(--border);border-radius:999px;padding:10px 14px;color:var(--ink-3);font-size:14.5px;}
+  .field svg{width:16px;height:16px;}
+  .filtbtn{position:relative;width:40px;height:40px;border-radius:999px;border:1px solid var(--border);display:grid;place-items:center;flex:none;color:var(--ink);}
+  .filtbtn svg{width:19px;height:19px;}
+  .filtbtn .badge{position:absolute;top:-3px;right:-3px;min-width:17px;height:17px;padding:0 4px;border-radius:999px;background:var(--ink);color:#fff;font-family:var(--disp);font-size:10px;font-weight:700;display:grid;place-items:center;border:2px solid var(--bg);}
+
+  /* filter chip row — matched 1:1 to the LIVE chip (page.tsx ~L387): a sunken pill control + photo-background cards.
+     NO selected ring (live has none). Style chip = h40 w94 rounded-14, img fills, dark gradient, white label. */
+  .chips{display:flex;gap:8px;overflow:hidden;padding:2px 15px 13px;}
+  .chip-ctl{flex:none;display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 14px;border-radius:999px;font-family:var(--disp);font-size:13px;font-weight:500;white-space:nowrap;border:1px solid var(--border);background:var(--sunken);color:var(--ink);}
+  .chip-ctl svg{width:14px;height:14px;}
+  .pchip{position:relative;flex:none;height:40px;width:94px;border-radius:14px;overflow:hidden;}
+  .pchip img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+  .pchip .ov{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(10,10,10,.10),rgba(10,10,10,.55));}
+  .pchip b{position:absolute;bottom:6px;left:10px;z-index:1;font-family:var(--disp);font-size:13px;font-weight:600;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.55);}
+
+  /* masonry */
+  .mason{column-count:2;column-gap:6px;padding:0 6px;}
+  .m{break-inside:avoid;margin-bottom:6px;border-radius:14px;overflow:hidden;position:relative;background:#ddd;}
+  .m .h{position:absolute;right:7px;top:7px;width:28px;height:28px;border-radius:999px;background:rgba(255,255,255,.92);display:grid;place-items:center;}
+  .m .h svg{width:14px;height:14px;color:var(--ink);}
+  .m .h.on{background:var(--heart);} .m .h.on svg{color:#fff;}
+  .m .tag{position:absolute;left:7px;bottom:8px;background:rgba(255,255,255,.94);font-family:var(--disp);font-size:10px;font-weight:600;padding:3px 8px;border-radius:999px;}
+
+  /* section label */
+  .seclab{font-family:var(--disp);font-weight:700;font-size:16px;letter-spacing:-.01em;padding:6px 16px 10px;}
+  .seclab.sm{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-3);}
+
+  /* boards (collage) */
+  .boards{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:0 16px;}
+  .board .cover{display:grid;grid-template-columns:2fr 1fr;grid-template-rows:1fr 1fr;gap:2px;height:118px;border-radius:16px;overflow:hidden;}
+  .board .cover img{width:100%;height:100%;}
+  .board .cover img:first-child{grid-row:1 / span 2;}
+  .board .bt{font-family:var(--disp);font-size:14.5px;font-weight:600;margin-top:7px;}
+  .board .bm{font-size:12px;color:var(--ink-2);margin-top:1px;}
+
+  /* board detail hero */
+  .hero{position:relative;height:230px;}
+  .hero img{width:100%;height:100%;}
+  .hero .scrim{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.6),rgba(0,0,0,.05) 55%);}
+  .hero .top{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:14px;}
+  .hero .top .ico{border-color:rgba(255,255,255,.5);background:rgba(0,0,0,.25);color:#fff;backdrop-filter:blur(4px);}
+  .hero .ttl{position:absolute;left:16px;right:16px;bottom:14px;color:#fff;}
+  .hero .ey{font-family:var(--disp);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;opacity:.9;}
+  .hero .h1{font-family:var(--disp);font-size:23px;font-weight:700;letter-spacing:-.02em;margin-top:2px;}
+  .meta{padding:12px 16px 4px;}
+  .meta .mrow{font-family:var(--disp);font-size:12.5px;font-weight:600;color:var(--ink-2);}
+  .meta .desc{font-size:13.5px;color:var(--ink);line-height:1.45;margin-top:5px;}
+
+  /* sheet */
+  .sheet{position:absolute;left:0;right:0;bottom:0;background:var(--bg);border-radius:22px 22px 0 0;box-shadow:0 -10px 40px rgba(0,0,0,.14);padding:14px 16px 22px;}
+  .sheet .grab{width:36px;height:4px;border-radius:99px;background:var(--border);margin:0 auto 12px;}
+  .sheet .sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .sheet .sh .t{font-family:var(--disp);font-size:16px;font-weight:600;}
+  .sheet .sh svg{width:20px;height:20px;color:var(--ink);}
+  .dim{position:absolute;inset:0;background:rgba(0,0,0,.32);}
+
+  /* save-to grid */
+  .savegrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .sb{display:flex;align-items:center;gap:10px;}
+  .sb .cv{width:48px;height:48px;border-radius:12px;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:1px;flex:none;background:var(--sunken);}
+  .sb .cv img{width:100%;height:100%;}
+  .sb .nm{font-family:var(--disp);font-size:13.5px;font-weight:600;line-height:1.1;}
+  .sb .ct{font-size:11.5px;color:var(--ink-2);}
+  .sb.create .cv{display:grid;place-items:center;color:var(--ink-2);}
+  .sb.create .cv svg{width:20px;height:20px;}
+
+  /* filter drawer radio */
+  .frow{display:flex;align-items:center;justify-content:space-between;padding:15px 18px;}
+  .frow .l{font-family:var(--disp);font-size:18px;font-weight:600;}
+  .radio{width:22px;height:22px;border-radius:999px;border:2px solid var(--border);}
+  .radio.on{border-color:var(--ink);position:relative;}
+  .radio.on::after{content:"";position:absolute;inset:4px;border-radius:999px;background:var(--ink);}
+  .fhead{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 4px;}
+  .fhead .t{font-family:var(--disp);font-size:17px;font-weight:600;}
+  .fhead svg{width:20px;height:20px;}
+  .fbtns{position:absolute;left:0;right:0;bottom:0;display:flex;gap:10px;padding:16px;border-top:1px solid var(--border);background:var(--bg);}
+  .btn{flex:1;height:48px;border-radius:999px;display:grid;place-items:center;font-family:var(--disp);font-size:15px;font-weight:600;}
+  .btn.reset{background:var(--sunken);color:var(--ink);}
+  .btn.apply{background:var(--ink);color:#fff;}
+
+  .toggle{width:42px;height:25px;border-radius:999px;background:var(--accent);position:relative;flex:none;}
+  .toggle::after{content:"";position:absolute;top:2.5px;right:2.5px;width:20px;height:20px;border-radius:999px;background:#fff;}
+  .input{border:1px solid var(--border);border-radius:14px;padding:11px 14px;font-family:var(--body);}
+  .input .lab{font-size:11px;color:var(--ink-3);}
+  .input .val{font-family:var(--disp);font-size:15px;font-weight:600;margin-top:2px;}
+</style>
+</head>
+<body>
+  <div class="head">
+    <h1>Discover — every page, Pinterest structure × Solen skin</h1>
+    <p>Your 9 screenshots, translated. Structure = Fresha/Pinterest. Aesthetic = Solen B&amp;W (Inter Tight + Inter, accent <b>#185CE0</b>, primary stays <b>ink</b> not red, star #FFC32B, heart #FF3366). Consistency fixes baked in: one type scale, fewer text labels, tighter weights.</p>
+  </div>
+  <div class="legend">
+    <b>Animations</b> (the <span class="anim">blue notes</span> in each frame): chips slide+fade on select · filter sheet springs up from bottom (260ms) · the filter badge pops (scale 0→1) when a filter applies · board cover does a subtle parallax/zoom on tap before pushing to detail · hero collapses to a sticky title bar on scroll · heart does a scale-pop + fill on save · save-sheet slides up, board row highlights on save.
+  </div>
+
+  <div class="grid">
+
+    <!-- ───────────────── 1 · SEARCH RESULTS + FILTER CHIPS (consistency) ───────────────── -->
+    <div class="col">
+      <div class="cap">1 · Results + filter row <small>clean sliders icon w/ active badge · one weight system · no filler text</small></div>
+      <div class="phone">
+        <div class="bar">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg></div>
+          <div class="field"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><span style="color:var(--ink)">Curtain Bangs</span></div>
+          <div class="filtbtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="13" y2="6"/><line x1="17" y1="6" x2="20" y2="6"/><circle cx="15" cy="6" r="2"/><line x1="4" y1="12" x2="7" y2="12"/><line x1="11" y1="12" x2="20" y2="12"/><circle cx="9" cy="12" r="2"/><line x1="4" y1="18" x2="13" y2="18"/><line x1="17" y1="18" x2="20" y2="18"/><circle cx="15" cy="18" r="2"/></svg><span class="badge">2</span></div>
+        </div>
+        <div class="chips">
+          <span class="chip-ctl">Textur <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></span>
+          <span class="pchip"><img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=220&h=120&fit=crop"><span class="ov"></span><b>Shag</b></span>
+          <span class="pchip"><img src="https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=220&h=120&fit=crop"><span class="ov"></span><b>Textured</b></span>
+          <span class="pchip"><img src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=220&h=120&fit=crop"><span class="ov"></span><b>Layered</b></span>
+          <span class="pchip"><img src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=220&h=120&fit=crop"><span class="ov"></span><b>Fringe</b></span>
+        </div>
+        <div class="mason">
+          <div class="m"><img src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=300&h=400&fit=crop"><span class="h on"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-8-5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 6-8 11-8 11z"/></svg></span><span class="tag">Curtain Bangs</span></div>
+          <div class="m"><img src="https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=300&h=320&fit=crop"><span class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-8-5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 6-8 11-8 11z"/></svg></span></div>
+          <div class="m"><img src="https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=300&h=380&fit=crop"><span class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-8-5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 6-8 11-8 11z"/></svg></span></div>
+          <div class="m"><img src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=300&h=300&fit=crop"><span class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-8-5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 6-8 11-8 11z"/></svg></span></div>
+        </div>
+        <div style="position:absolute;bottom:10px;left:16px;font-size:11px;" class="anim-x"><span style="color:var(--accent);font-weight:600;font-size:11px;">↑ chip select: fill slides in + badge pops on the filter icon</span></div>
+      </div>
+    </div>
+
+    <!-- ───────────────── 2 · FILTER DRAWER ───────────────── -->
+    <div class="col">
+      <div class="cap">2 · Filter sheet <small>radio list + Reset/Anwenden · Apply is INK (not Pinterest red)</small></div>
+      <div class="phone">
+        <div class="fhead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg><span class="t">Filtern</span><span style="width:20px"></span></div>
+        <div class="seclab sm" style="padding-top:14px">Kategorie</div>
+        <div class="frow"><span class="l">Alle</span><span class="radio on"></span></div>
+        <div class="frow"><span class="l">Haare</span><span class="radio"></span></div>
+        <div class="frow"><span class="l">Nägel</span><span class="radio"></span></div>
+        <div class="frow"><span class="l">Wimpern &amp; Brauen</span><span class="radio"></span></div>
+        <div class="frow"><span class="l">Spa</span><span class="radio"></span></div>
+        <div class="seclab sm">Für</div>
+        <div class="frow"><span class="l">Alle</span><span class="radio on"></span></div>
+        <div class="frow"><span class="l">Damen · Herren</span><span class="radio"></span></div>
+        <div class="fbtns"><span class="btn reset">Zurücksetzen</span><span class="btn apply">Anwenden</span></div>
+        <div style="position:absolute;top:64px;right:16px;font-size:10.5px;color:var(--accent);font-weight:600;">springs up 260ms ↗</div>
+      </div>
+    </div>
+
+    <!-- ───────────────── 3 · BOARDS ROW (collections) ───────────────── -->
+    <div class="col">
+      <div class="cap">3 · Sammlungen (boards) <small>collage covers · tappable → detail · replaces the flat 3-tiles</small></div>
+      <div class="phone">
+        <div class="bar">
+          <div class="field"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>Styles &amp; Looks suchen…</div>
+          <div class="filtbtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="13" y2="6"/><line x1="17" y1="6" x2="20" y2="6"/><circle cx="15" cy="6" r="2"/><line x1="4" y1="12" x2="7" y2="12"/><line x1="11" y1="12" x2="20" y2="12"/><circle cx="9" cy="12" r="2"/><line x1="4" y1="18" x2="13" y2="18"/><line x1="17" y1="18" x2="20" y2="18"/><circle cx="15" cy="18" r="2"/></svg></div>
+        </div>
+        <div class="seclab">Sammlungen</div>
+        <div class="boards">
+          <div class="board">
+            <div class="cover"><img src="https://images.unsplash.com/photo-1605497788044-5a32c7078486?w=240&h=240&fit=crop" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=240&h=240&fit=crop'"><img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=120&h=120&fit=crop"><img src="https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=120&h=120&fit=crop"></div>
+            <div class="bt">Textured Crops</div><div class="bm">24 Looks</div>
+          </div>
+          <div class="board">
+            <div class="cover"><img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=240&h=240&fit=crop"><img src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=120&h=120&fit=crop"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=120&h=120&fit=crop"></div>
+            <div class="bt">Fades</div><div class="bm">31 Looks</div>
+          </div>
+          <div class="board">
+            <div class="cover"><img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=240&h=240&fit=crop"><img src="https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=120&h=120&fit=crop"><img src="https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=120&h=120&fit=crop"></div>
+            <div class="bt">Shags</div><div class="bm">18 Looks</div>
+          </div>
+          <div class="board">
+            <div class="cover"><img src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=240&h=240&fit=crop"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=120&h=120&fit=crop"><img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=120&h=120&fit=crop"></div>
+            <div class="bt">Balayage</div><div class="bm">42 Looks</div>
+          </div>
+        </div>
+        <div style="position:absolute;bottom:12px;left:16px;font-size:10.5px;color:var(--accent);font-weight:600;">tap → cover zooms, pushes to detail (frame 4)</div>
+      </div>
+    </div>
+
+    <!-- ───────────────── 4 · BOARD DETAIL ───────────────── -->
+    <div class="col">
+      <div class="cap">4 · Board detail <small>tap a board → hero + description + its Looks · sticky title on scroll</small></div>
+      <div class="phone">
+        <div class="hero">
+          <img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=420&h=460&fit=crop">
+          <div class="scrim"></div>
+          <div class="top"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg></div><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg></div></div>
+          <div class="ttl"><div class="ey">Im Trend</div><div class="h1">Fades</div></div>
+        </div>
+        <div class="meta"><div class="mrow">Sammlung · 31 Looks</div><div class="desc">Saubere Übergänge — vom Skin Fade bis zum Taper. Gespeichert von der Solen-Redaktion.</div></div>
+        <div class="mason" style="margin-top:8px">
+          <div class="m"><img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=300&h=380&fit=crop"><span class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-8-5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 6-8 11-8 11z"/></svg></span></div>
+          <div class="m"><img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=300&h=300&fit=crop"><span class="h on"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-8-5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 6-8 11-8 11z"/></svg></span></div>
+          <div class="m"><img src="https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=300&h=350&fit=crop"></div>
+          <div class="m"><img src="https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?w=300&h=300&fit=crop"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───────────────── 5 · SAVE TO BOARD ───────────────── -->
+    <div class="col">
+      <div class="cap">5 · Speichern in (save sheet) <small>save a Look to a board · the boards system</small></div>
+      <div class="phone">
+        <img src="https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=420&h=760&fit=crop" style="width:100%;height:100%;opacity:.5">
+        <div class="dim"></div>
+        <div class="sheet" style="height:60%">
+          <div class="grab"></div>
+          <div class="sh"><span class="t">Speichern in</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></div>
+          <div class="savegrid">
+            <div class="sb"><span class="cv"><img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=60&h=60&fit=crop"><img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=60&h=60&fit=crop"><img src="https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=60&h=60&fit=crop"><img src="https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?w=60&h=60&fit=crop"></span><span><span class="nm">Mein Schnitt</span><br><span class="ct">12 Looks</span></span></div>
+            <div class="sb"><span class="cv"><img src="https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=60&h=60&fit=crop"><img src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=60&h=60&fit=crop"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=60&h=60&fit=crop"><img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=60&h=60&fit=crop"></span><span><span class="nm">Hochzeit</span><br><span class="ct">7 Looks</span></span></div>
+            <div class="sb create"><span class="cv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span><span><span class="nm">Neue Sammlung</span><br><span class="ct">erstellen</span></span></div>
+          </div>
+          <div class="btn apply" style="margin-top:18px;width:100%">Neue Sammlung erstellen</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───────────────── 6 · CREATE BOARD ───────────────── -->
+    <div class="col">
+      <div class="cap">6 · Neue Sammlung (create) <small>name · privat toggle · ink Erstellen button</small></div>
+      <div class="phone">
+        <div class="fhead"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg><span class="t">Neue Sammlung</span><span style="width:20px"></span></div>
+        <div style="padding:20px 16px 0;display:grid;place-items:center;">
+          <div style="width:150px;height:110px;border-radius:16px;overflow:hidden;display:grid;grid-template-columns:2fr 1fr;grid-template-rows:1fr 1fr;gap:2px;">
+            <img src="https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=200&h=200&fit=crop" style="grid-row:1 / span 2;width:100%;height:100%"><img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop" style="width:100%;height:100%"><div style="background:var(--sunken)"></div>
+          </div>
+        </div>
+        <div style="padding:22px 16px 0">
+          <div class="input"><div class="lab">Name</div><div class="val">Mein Schnitt</div></div>
+          <div class="frow" style="padding:18px 2px 0"><span><span class="l" style="font-size:15px">Privat</span><br><span style="font-size:12px;color:var(--ink-2)">Nur du siehst diese Sammlung</span></span><span class="toggle"></span></div>
+          <div class="frow" style="padding:14px 2px 0"><span><span class="l" style="font-size:15px">Gruppen-Sammlung</span><br><span style="font-size:12px;color:var(--ink-2)">Andere einladen</span></span><svg viewBox="0 0 24 24" width="20" fill="none" stroke="var(--ink-2)" stroke-width="2"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5"/><path d="M18 9v6M15 12h6"/></svg></div>
+        </div>
+        <div class="fbtns"><span class="btn apply" style="flex:1">Sammlung erstellen</span></div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen · Discover — "Made for you" rows</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400..800&family=Hanken+Grotesk:wght@300..700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#0A0A0A; --ink-2:#6B6B6B; --ink-3:#9A9A9A;
+    --bg:#FFFFFF; --sunken:#F5F5F4; --border:#E7E5E4;
+    --accent:#185CE0; --star:#FFC32B; --page:#FAFAF9;
+    --disp:'Inter Tight',system-ui,sans-serif; --body:'Hanken Grotesk',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--page);font-family:var(--body);color:var(--ink);padding:30px 20px 70px;-webkit-font-smoothing:antialiased;}
+  .head{max-width:1240px;margin:0 auto 26px;text-align:center;}
+  .head h1{font-family:var(--disp);font-size:23px;font-weight:600;letter-spacing:-.02em;}
+  .head p{color:var(--ink-2);font-size:14px;margin-top:6px;}
+  .stage{display:flex;gap:26px;justify-content:center;align-items:flex-start;flex-wrap:wrap;max-width:1240px;margin:0 auto;}
+  .col{width:368px;}
+  .tag{display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:11px;font-size:12px;font-weight:600;letter-spacing:.02em;}
+  .tag .n{width:18px;height:18px;border-radius:999px;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:700;}
+  .tag .sub{color:var(--ink-3);font-weight:500;}
+  .rec{background:var(--accent);}
+  .phone{background:var(--bg);border:1px solid var(--border);border-radius:28px;padding:16px 14px 20px;box-shadow:0 12px 38px rgba(0,0,0,.10);overflow:hidden;}
+
+  .chrome{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .brand{font-family:var(--disp);font-size:21px;font-weight:700;letter-spacing:-.02em;}
+  .chrome-r{display:flex;gap:7px;}
+  .ic{width:31px;height:31px;border-radius:999px;border:1px solid var(--border);display:grid;place-items:center;color:var(--ink);}
+  .ic.solid{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .ic svg{width:15px;height:15px;}
+  h2.title{font-family:var(--disp);font-size:24px;font-weight:600;letter-spacing:-.015em;margin-bottom:11px;}
+  .search{display:flex;align-items:center;gap:8px;background:var(--sunken);border:1px solid var(--border);border-radius:999px;padding:10px 13px;margin-bottom:14px;color:var(--ink-3);}
+  .search svg{width:15px;height:15px;flex:none;}
+  .search .ph{font-size:14px;}
+  .search .mic{margin-left:auto;}
+
+  /* For-you label */
+  .fy{display:flex;align-items:center;gap:6px;margin-bottom:9px;}
+  .fy .lbl{font-family:var(--disp);font-size:15px;font-weight:600;letter-spacing:-.01em;}
+  .fy .spark{color:var(--accent);}
+  .fy .spark svg{width:15px;height:15px;display:block;}
+  .fy .why{font-size:11px;color:var(--ink-3);margin-left:2px;}
+
+  /* text pill row */
+  .pillrow{display:flex;gap:7px;overflow-x:auto;padding-bottom:6px;margin:0 -14px 16px;padding-left:14px;padding-right:14px;}
+  .pillrow::-webkit-scrollbar{display:none;}
+  .pill{font-family:var(--disp);font-size:13px;font-weight:500;white-space:nowrap;border-radius:999px;padding:8px 14px;border:1px solid var(--border);background:var(--bg);color:var(--ink);}
+  .pill.on{background:var(--ink);color:#fff;border-color:var(--ink);}
+
+  /* filter row (textur + photo chips) */
+  .filtrow{display:flex;gap:8px;margin-bottom:6px;}
+  .chip{font-family:var(--disp);font-size:13px;font-weight:500;border-radius:999px;padding:8px 13px;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;background:var(--sunken);border:1px solid var(--border);color:var(--ink);}
+  .chip svg{width:13px;height:13px;}
+  .pchip{position:relative;height:38px;width:84px;border-radius:13px;overflow:hidden;color:#fff;font-family:var(--disp);font-weight:600;font-size:13px;display:flex;align-items:flex-end;padding:6px 9px;}
+  .pchip.k1{background:linear-gradient(160deg,#6b5544,#241a12);}
+  .pchip.k2{background:linear-gradient(160deg,#5a6b7a,#1c2630);}
+
+  /* photo idea chips (V3) */
+  .ideas{display:flex;gap:9px;overflow-x:auto;margin:0 -14px 16px;padding:0 14px 6px;}
+  .ideas::-webkit-scrollbar{display:none;}
+  .idea{flex:none;width:84px;}
+  .idea .ph{height:84px;border-radius:15px;position:relative;overflow:hidden;}
+  .idea .ph span{position:absolute;left:6px;bottom:6px;color:#fff;font-family:var(--disp);font-weight:600;font-size:12px;text-shadow:0 1px 3px rgba(0,0,0,.6);}
+  .idea.i1 .ph{background:linear-gradient(150deg,#7a6450,#2a1d12);}
+  .idea.i2 .ph{background:linear-gradient(150deg,#444,#0f0f0f);}
+  .idea.i3 .ph{background:linear-gradient(150deg,#6f7a86,#1b242c);}
+  .idea.i4 .ph{background:linear-gradient(150deg,#8a6f5c,#30221a);}
+  .idea.i5 .ph{background:linear-gradient(150deg,#525c66,#171d23);}
+
+  /* mini feed peek */
+  .peek{display:flex;gap:9px;}
+  .peek .c{flex:1;}
+  .peek .t{border-radius:14px;}
+  .peek .c1 .t{height:128px;background:linear-gradient(135deg,#6e5a48,#241a11);}
+  .peek .c2 .t{height:148px;background:linear-gradient(135deg,#42525e,#161d23);}
+  .peek .cap{font-family:var(--body);font-size:12px;color:var(--ink-2);margin-top:5px;}
+
+  .persona{display:inline-flex;align-items:center;gap:6px;background:var(--sunken);border:1px solid var(--border);border-radius:999px;padding:4px 10px;font-size:11px;font-weight:600;color:var(--ink-2);margin-bottom:12px;}
+  .persona b{color:var(--ink);}
+  .note{font-size:11.5px;color:var(--ink-3);text-align:center;margin-top:10px;line-height:1.45;}
+
+  .legend{max-width:1240px;margin:32px auto 0;font-family:var(--body);font-size:13px;color:var(--ink-2);line-height:1.6;background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px 18px;}
+  .legend b{color:var(--ink);}
+  .legend .real{color:#15803D;font-weight:700;}
+  .legend .later{color:#9A3412;font-weight:700;}
+</style>
+</head>
+<body>
+  <div class="head">
+    <h1>Discover rows — more style options, "made for you"</h1>
+    <p>Same screen, three ways to add personalized style chips. Locked fonts (Inter Tight + Hanken).</p>
+  </div>
+
+  <div class="stage">
+
+    <!-- ============ V1: single For-You text-pill row ============ -->
+    <div class="col">
+      <div class="tag"><span class="n">1</span> ONE ROW <span class="sub">· For-you text pills</span></div>
+      <div class="phone">
+        <div class="chrome"><div class="brand">Solen</div><div class="chrome-r"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div><div class="ic solid"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div></div></div>
+        <h2 class="title">Entdecken</h2>
+        <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><span class="ph">Styles suchen…</span><svg class="mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg></div>
+
+        <div class="fy"><span class="spark"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.8 5.4L19 9l-5.2 1.6L12 16l-1.8-5.4L5 9l5.2-1.6z"/></svg></span><span class="lbl">Für dich</span></div>
+        <div class="pillrow">
+          <span class="pill on">Wolf Cut</span><span class="pill">Buzz Cut</span><span class="pill">Curtain Bangs</span><span class="pill">Bob</span><span class="pill">Balayage</span><span class="pill">Layers</span>
+        </div>
+        <div class="filtrow">
+          <span class="chip">Textur <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></span>
+          <span class="pchip k1">Kurz</span><span class="pchip k2">Pflege</span>
+        </div>
+        <div class="note">One scrollable row of curated styles, sits above the existing Textur/quick-filter row.</div>
+      </div>
+      <div class="note"><b style="color:var(--ink)">Lightest touch.</b> Adds styles without new vertical weight. Filter row unchanged.</div>
+    </div>
+
+    <!-- ============ V2: two rows (For-you + Filters) — RECOMMENDED ============ -->
+    <div class="col">
+      <div class="tag"><span class="n rec">2</span> TWO ROWS <span class="sub">· For-you + Filters (recommended)</span></div>
+      <div class="phone">
+        <div class="chrome"><div class="brand">Solen</div><div class="chrome-r"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div><div class="ic solid"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div></div></div>
+        <h2 class="title">Entdecken</h2>
+        <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><span class="ph">Styles suchen…</span><svg class="mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg></div>
+
+        <span class="persona">Viewing as <b>♂ Men</b> · from your profile</span>
+        <div class="fy"><span class="spark"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.8 5.4L19 9l-5.2 1.6L12 16l-1.8-5.4L5 9l5.2-1.6z"/></svg></span><span class="lbl">Für dich</span></div>
+        <div class="pillrow">
+          <span class="pill on">Skin Fade</span><span class="pill">Buzz Cut</span><span class="pill">Crew Cut</span><span class="pill">Textured Crop</span><span class="pill">Mid Fade</span><span class="pill">Pompadour</span>
+        </div>
+        <div class="fy"><span class="lbl" style="font-size:13px;color:var(--ink-2)">Filter</span></div>
+        <div class="filtrow">
+          <span class="chip">Textur <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></span>
+          <span class="pchip k1">Kurz</span><span class="pchip k2">Pflege</span>
+        </div>
+        <div class="note">Personalized styles separated from filters. Set + order adapt per user.</div>
+      </div>
+      <div class="note"><b style="color:var(--ink)">Clearest structure.</b> "Ideas curated for you" reads distinct from "filters." Most Pinterest-like. Buildable now.</div>
+    </div>
+
+    <!-- ============ V3: photo idea chips ============ -->
+    <div class="col">
+      <div class="tag"><span class="n">3</span> PHOTO IDEAS <span class="sub">· image-backed chips</span></div>
+      <div class="phone">
+        <div class="chrome"><div class="brand">Solen</div><div class="chrome-r"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div><div class="ic solid"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div></div></div>
+        <h2 class="title">Entdecken</h2>
+        <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><span class="ph">Styles suchen…</span><svg class="mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg></div>
+
+        <div class="fy"><span class="spark"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.8 5.4L19 9l-5.2 1.6L12 16l-1.8-5.4L5 9l5.2-1.6z"/></svg></span><span class="lbl">Für dich</span><span class="why">· deine Looks</span></div>
+        <div class="ideas">
+          <div class="idea i1"><div class="ph"><span>Wolf Cut</span></div></div>
+          <div class="idea i2"><div class="ph"><span>Buzz</span></div></div>
+          <div class="idea i3"><div class="ph"><span>Bob</span></div></div>
+          <div class="idea i4"><div class="ph"><span>Fade</span></div></div>
+          <div class="idea i5"><div class="ph"><span>Layers</span></div></div>
+        </div>
+        <div class="filtrow">
+          <span class="chip">Textur <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></span>
+          <span class="pchip k1">Kurz</span><span class="pchip k2">Pflege</span>
+        </div>
+        <div class="note">Each style is a photo tile (Pinterest "Ideas for you"). Richest, most visual.</div>
+      </div>
+      <div class="note"><b style="color:var(--ink)">Most premium</b> — but needs one representative image per style. Data dependency → phase 2.</div>
+    </div>
+
+  </div>
+
+  <div class="legend">
+    <b>The algorithm, honestly:</b> the chip <b>set + order</b> is what "made for you" means here.
+    <span class="real">Real now</span> — pulled from your saved profile (<code>disc_gender</code>, <code>disc_hair_texture</code>): a male profile leads with Skin Fade / Buzz / Crew Cut; female with Wolf Cut / Bob / Money Piece; curly texture surfaces curly cuts. Logged-out → a "Trending in Basel" fallback set.
+    <span class="later">Backend later</span> — search history, booked services, likes/saves feed a behavioral ranking ("because you searched …"). Same component, richer source — no UI rework when it lands.
+    <br><br><b>My pick: V2.</b> It separates "ideas curated for you" from "filters" (the real Pinterest pattern), adds the Wolf Cut / Buzz / Men's options you asked for, and ships now on profile data — V3's photo tiles can layer on once we have a per-style image.
+  </div>
+</body>
+</html>

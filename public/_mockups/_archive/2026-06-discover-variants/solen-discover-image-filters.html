@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen · Discover — image filters</title>
+<script src="https://unpkg.com/lucide@latest"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --border:#E7E5E4; --sunken:#F2F2F1;
+    --accent:#185CE0; --accent-pale:#EAEFFE; --heart:#FF3366;
+    --heading:'Inter Tight',system-ui,sans-serif; --body:'Hanken Grotesk',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#fff;color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased;max-width:430px;margin:0 auto;padding:16px 14px 40px}
+  .note{background:#FFF8E6;border:1px solid #F2E2B0;border-radius:12px;padding:9px 12px;font-size:11.5px;line-height:1.45;color:#7a5b12;margin-bottom:14px}
+  .note b{font-family:var(--heading)}
+  h1.t{font-family:var(--heading);font-weight:600;font-size:22px;letter-spacing:-.015em;margin-bottom:11px}
+
+  .search{display:flex;align-items:center;gap:9px;background:var(--sunken);border:1px solid var(--border);border-radius:99px;padding:11px 14px;color:var(--ink2);font-size:14px;margin-bottom:13px}
+  .search .mag{width:16px;height:16px;color:var(--ink2)}
+  .search .ph{flex:1}
+  .search .mic{width:17px;height:17px;color:var(--ink2)}
+
+  /* category tabs — TEXT only (no nonsensical icons); filter icon AFTER the last pill */
+  .tabs{display:flex;align-items:center;gap:8px;overflow-x:auto;padding-bottom:2px;margin-bottom:14px;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{flex:0 0 auto;font-family:var(--heading);font-weight:500;font-size:13px;padding:9px 15px;border-radius:99px;background:var(--sunken);color:var(--ink2);border:1px solid transparent;white-space:nowrap}
+  .tab.on{background:var(--accent-pale);color:var(--accent);border-color:rgba(24,92,224,.2)}
+  .fbtn{flex:0 0 auto;width:38px;height:38px;display:grid;place-items:center;border-radius:99px;border:1px solid var(--border);position:relative}
+  .fbtn .ic{width:17px;height:17px;color:var(--ink)}
+  .fbtn .dotmark{position:absolute;top:-1px;right:-1px;width:8px;height:8px;border-radius:99px;background:var(--accent)}
+
+  /* TEXTURE filter — image-backed colourful tiles (real hair photos), not line icons */
+  .texrow{display:flex;gap:9px;overflow-x:auto;padding-bottom:4px;margin-bottom:16px;scrollbar-width:none}
+  .texrow::-webkit-scrollbar{display:none}
+  .tex{flex:0 0 auto;width:84px;position:relative}
+  .tex .ph{position:relative;width:84px;height:96px;border-radius:16px;overflow:hidden;border:2px solid transparent}
+  .tex .ph img{width:100%;height:100%;object-fit:cover;display:block}
+  .tex .ph::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(10,10,10,.05),rgba(10,10,10,.55))}
+  .tex .lab{position:absolute;left:0;right:0;bottom:7px;z-index:2;text-align:center;color:#fff;font-family:var(--heading);font-weight:600;font-size:12px;text-shadow:0 1px 4px rgba(0,0,0,.6)}
+  .tex.on .ph{border-color:var(--accent)}
+  .tex.on::after{content:"";position:absolute;top:6px;right:6px;width:18px;height:18px;border-radius:99px;background:var(--accent);z-index:3;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>");background-repeat:no-repeat;background-position:center}
+
+  .grid{column-count:2;column-gap:9px}
+  .card{break-inside:avoid;margin-bottom:9px;position:relative}
+  .card img{width:100%;display:block;border-radius:14px}
+  .card .h{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:99px;background:rgba(255,255,255,.92);display:grid;place-items:center}
+  .card .h .ic{width:15px;height:15px;color:var(--ink)}
+  .card .chip{position:absolute;left:8px;bottom:8px;font-size:11px;font-weight:600;font-family:var(--heading);color:#fff;background:rgba(10,10,10,.55);backdrop-filter:blur(3px);padding:3px 9px;border-radius:99px}
+</style>
+</head>
+<body>
+  <div class="note"><b>What changed:</b> texture filter = <b>real hair photos</b> (colourful image tiles, not pale line icons) · filter icon sits <b>after the last pill</b> (scroll right to see it) · category tabs are text (dropped the nonsensical nails/brows icons) · mic = voice input. Live data — these are actual feed photos.</div>
+
+  <h1 class="t">Entdecken</h1>
+
+  <div class="search"><i data-lucide="search" class="mag"></i><span class="ph">Styles suchen…</span><i data-lucide="mic" class="mic"></i></div>
+
+  <!-- category tabs: text only, filter icon AFTER the last pill (scrolls to the end) -->
+  <div class="tabs">
+    <span class="tab">Alle</span>
+    <span class="tab on">Haare</span>
+    <span class="tab">Nägel</span>
+    <span class="tab">Wimpern</span>
+    <span class="tab">Augenbrauen</span>
+    <span class="fbtn"><i data-lucide="sliders-horizontal" class="ic"></i><span class="dotmark"></span></span>
+  </div>
+
+  <!-- texture = image-backed colourful tiles (real hair photos) -->
+  <div class="texrow">
+    <div class="tex"><div class="ph"><img src="/api/discovery/thumb/ba53349f-f19b-46af-97d6-d2c2e0a4392c"></div><span class="lab">Straight</span></div>
+    <div class="tex"><div class="ph"><img src="/api/discovery/thumb/65afc1af-59d7-40fb-85a3-86220d616d6e"></div><span class="lab">Wavy</span></div>
+    <div class="tex on"><div class="ph"><img src="/api/discovery/thumb/59b33979-5dd8-4845-8636-972a378b8358"></div><span class="lab">Curly</span></div>
+    <div class="tex"><div class="ph"><img src="/api/discovery/thumb/0cb54bc2-7127-4b65-a256-bb8684a3f648"></div><span class="lab">Coily</span></div>
+    <div class="tex"><div class="ph"><img src="/api/discovery/thumb/46d2da15-2184-4c57-a4f9-52b0efed853a"></div><span class="lab">Protective</span></div>
+    <div class="tex"><div class="ph"><img src="/api/discovery/thumb/0ea9d957-c536-44a5-bbfd-fc86ffd3e717"></div><span class="lab">Bald</span></div>
+  </div>
+
+  <div class="grid">
+    <div class="card"><img src="/api/discovery/thumb/ac75cb12-1deb-4f06-9546-bfe1d044d5cf"><span class="h"><i data-lucide="heart" class="ic"></i></span><span class="chip">Wolf Cut</span></div>
+    <div class="card"><img src="/api/discovery/thumb/13a233cd-b202-46ac-a90a-a7194a3fda5f"><span class="h"><i data-lucide="heart" class="ic"></i></span><span class="chip">Butterfly Cut</span></div>
+    <div class="card"><img src="/api/discovery/thumb/0ea9d957-c536-44a5-bbfd-fc86ffd3e717"><span class="h"><i data-lucide="heart" class="ic"></i></span><span class="chip">Taper Fade</span></div>
+    <div class="card"><img src="/api/discovery/thumb/0cb54bc2-7127-4b65-a256-bb8684a3f648"><span class="h"><i data-lucide="heart" class="ic"></i></span><span class="chip">Hime Cut</span></div>
+  </div>
+
+  <script>lucide.createIcons();</script>
+</body>
+</html>

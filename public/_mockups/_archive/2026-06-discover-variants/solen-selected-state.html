@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen · How to show "selected"</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400..700&family=Inter:wght@400..600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#0A0A0A; --ink-2:#6B6B6B; --ink-3:#9A9A9A; --bg:#FFFFFF; --sunken:#F4F3F2; --border:#E7E5E3;
+    --accent:#185CE0; --disp:'Inter Tight',system-ui,sans-serif; --body:'Inter',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:#EDEBEA;font-family:var(--body);color:var(--ink);padding:30px 22px 70px;-webkit-font-smoothing:antialiased;}
+  h1{font-family:var(--disp);font-size:24px;font-weight:600;letter-spacing:-.02em;text-align:center;}
+  .sub{color:var(--ink-2);font-size:14px;text-align:center;margin:7px auto 26px;max-width:680px;line-height:1.5;}
+  .card{max-width:680px;margin:0 auto 16px;background:var(--bg);border:1px solid var(--border);border-radius:18px;padding:18px 20px;}
+  .card.rec{border-color:var(--accent);box-shadow:0 0 0 3px rgba(24,92,224,.10);}
+  .lab{font-family:var(--disp);font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px;}
+  .pill{font-family:var(--disp);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#fff;background:var(--accent);border-radius:999px;padding:2px 8px;}
+  .who{font-size:12.5px;color:var(--ink-2);margin:3px 0 14px;}
+  .row{display:flex;gap:8px;}
+  /* base photo chip = the live one (h40 w94 rounded-14, photo + gradient + white label) */
+  .pchip{position:relative;height:40px;width:94px;border-radius:14px;overflow:hidden;flex:none;}
+  .pchip img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+  .pchip .ov{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(10,10,10,.10),rgba(10,10,10,.55));}
+  .pchip b{position:absolute;bottom:6px;left:9px;z-index:2;font-family:var(--disp);font-size:12.5px;font-weight:600;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.55);}
+
+  /* A · checkmark badge */
+  .a .sel .badge{position:absolute;top:4px;right:4px;z-index:3;width:18px;height:18px;border-radius:999px;background:var(--ink);display:grid;place-items:center;box-shadow:0 1px 3px rgba(0,0,0,.4);}
+  .a .sel .badge svg{width:11px;height:11px;color:#fff;}
+  /* B · darken + center check (the photo-chip take on a solid fill) */
+  .b .sel .ov{background:rgba(10,10,10,.55);}
+  .b .sel .chk{position:absolute;inset:0;z-index:3;display:grid;place-items:center;}
+  .b .sel .chk svg{width:20px;height:20px;color:#fff;}
+  /* C · dim the unselected */
+  .c .pchip{opacity:.45;transition:opacity .15s;} .c .sel{opacity:1;}
+  /* D · bottom bar + bold label */
+  .d .pchip{border-radius:14px 14px 0 0;}
+  .d .wrap{display:flex;flex-direction:column;align-items:stretch;gap:0;flex:none;width:94px;}
+  .d .bar{height:3px;border-radius:0 0 3px 3px;background:transparent;}
+  .d .sel .bar{background:var(--ink);}
+  /* E · dim only the selected (user idea) */
+  .e .sel .ov{background:rgba(10,10,10,.55);}
+
+  /* text/control chips row (Textur + filter) */
+  .tchip{height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--border);background:var(--sunken);color:var(--ink);font-family:var(--disp);font-size:13px;font-weight:500;display:inline-flex;align-items:center;gap:6px;}
+  .tchip.fill{background:var(--ink);border-color:var(--ink);color:#fff;font-weight:600;}
+  .tchip.tint{background:rgba(24,92,224,.10);border-color:transparent;color:var(--accent);font-weight:600;}
+  .note{max-width:680px;margin:22px auto 0;font-size:13px;color:var(--ink-2);line-height:1.6;background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:14px 18px;}
+  .note b{color:var(--ink);font-family:var(--disp);}
+</style>
+</head>
+<body>
+  <h1>How to show "selected" (no black box)</h1>
+  <p class="sub">Your photo chips can't fill with a colour (the photo IS the chip), so the indicator goes ON the chip. Here is what real apps do, applied to your Shag / Textured / Layered chips. The 2nd chip is "selected" in each row.</p>
+
+  <!-- A -->
+  <div class="card rec a">
+    <div class="lab">A · Checkmark badge <span class="pill">Recommended</span></div>
+    <div class="who">Instagram & Pinterest multi-select. A small solid check in the corner. Reads instantly, sits on the photo, no border, no recolour.</div>
+    <div class="row">
+      <span class="pchip"><img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=220&h=120&fit=crop"><span class="ov"></span><b>Shag</b></span>
+      <span class="pchip sel"><img src="https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=220&h=120&fit=crop"><span class="ov"></span><b>Textured</b><span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></span></span>
+      <span class="pchip"><img src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=220&h=120&fit=crop"><span class="ov"></span><b>Layered</b></span>
+      <span class="pchip"><img src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=220&h=120&fit=crop"><span class="ov"></span><b>Fringe</b></span>
+    </div>
+  </div>
+
+  <!-- B -->
+  <div class="card b">
+    <div class="lab">B · Darken + center check</div>
+    <div class="who">The photo-chip version of a solid fill (Fresha / Uber fill their text chips dark). Darkens the selected photo and centers a check. Clear, but heavier.</div>
+    <div class="row">
+      <span class="pchip"><img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=220&h=120&fit=crop"><span class="ov"></span><b>Shag</b></span>
+      <span class="pchip sel"><img src="https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=220&h=120&fit=crop"><span class="ov"></span><span class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg></span><b>Textured</b></span>
+      <span class="pchip"><img src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=220&h=120&fit=crop"><span class="ov"></span><b>Layered</b></span>
+      <span class="pchip"><img src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=220&h=120&fit=crop"><span class="ov"></span><b>Fringe</b></span>
+    </div>
+  </div>
+
+  <!-- C -->
+  <div class="card c">
+    <div class="lab">C · Dim the rest</div>
+    <div class="who">Selected stays full, the others fade back (Netflix / gallery pattern). Elegant, but ambiguous when nothing is selected yet, and weaker on small chips.</div>
+    <div class="row">
+      <span class="pchip"><img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=220&h=120&fit=crop"><span class="ov"></span><b>Shag</b></span>
+      <span class="pchip sel"><img src="https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=220&h=120&fit=crop"><span class="ov"></span><b>Textured</b></span>
+      <span class="pchip"><img src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=220&h=120&fit=crop"><span class="ov"></span><b>Layered</b></span>
+      <span class="pchip"><img src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=220&h=120&fit=crop"><span class="ov"></span><b>Fringe</b></span>
+    </div>
+  </div>
+
+  <!-- D -->
+  <div class="card d">
+    <div class="lab">D · Bottom bar (tab style)</div>
+    <div class="who">A short ink bar under the selected chip (Uber Eats tabs). Clean, but reads more like a "tab" than a "filter", and adds height.</div>
+    <div class="row">
+      <span class="wrap"><span class="pchip"><img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=220&h=120&fit=crop"><span class="ov"></span><b>Shag</b></span><span class="bar"></span></span>
+      <span class="wrap sel"><span class="pchip"><img src="https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=220&h=120&fit=crop"><span class="ov"></span><b>Textured</b></span><span class="bar"></span></span>
+      <span class="wrap"><span class="pchip"><img src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=220&h=120&fit=crop"><span class="ov"></span><b>Layered</b></span><span class="bar"></span></span>
+      <span class="wrap"><span class="pchip"><img src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=220&h=120&fit=crop"><span class="ov"></span><b>Fringe</b></span><span class="bar"></span></span>
+    </div>
+  </div>
+
+  <!-- E · dim only the selected (your idea) -->
+  <div class="card e" style="border-color:var(--accent);box-shadow:0 0 0 3px rgba(24,92,224,.10);">
+    <div class="lab">E · Dim only the selected <span class="pill">Your idea</span></div>
+    <div class="who">Darkens just the selected chip, nothing else. Minimal and clean. One worry: a darker chip can read as "off / disabled" rather than "chosen", because we expect the selected thing to stand OUT, not recede. Look at "Textured" below and see if it reads as picked to you.</div>
+    <div class="row">
+      <span class="pchip"><img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=220&h=120&fit=crop"><span class="ov"></span><b>Shag</b></span>
+      <span class="pchip sel"><img src="https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=220&h=120&fit=crop"><span class="ov"></span><b>Textured</b></span>
+      <span class="pchip"><img src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=220&h=120&fit=crop"><span class="ov"></span><b>Layered</b></span>
+      <span class="pchip"><img src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=220&h=120&fit=crop"><span class="ov"></span><b>Fringe</b></span>
+    </div>
+  </div>
+
+  <div class="note">
+    <b>For text chips + the filter (Textur, radios):</b> these CAN fill, and that is exactly what Fresha, Uber and Pinterest do for theirs. Two clean choices:
+    <div class="row" style="margin-top:12px;gap:10px;align-items:center;">
+      <span class="tchip fill">Textur <svg width="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></span>
+      <span style="font-size:12px;color:var(--ink-3)">solid ink fill (Fresha / Uber)</span>
+      <span class="tchip tint" style="margin-left:14px">Damen</span>
+      <span style="font-size:12px;color:var(--ink-3)">soft blue tint (lighter, on-brand)</span>
+    </div>
+  </div>
+
+  <div class="note" style="border-color:var(--accent);">
+    <b>My pick:</b> <b>A (checkmark badge)</b> for the photo chips. it needs no border or recolour (so no "black box" and no blue ring), works on any photo, and is the literal Instagram/Pinterest pattern for "this one's chosen." For the few text things that aren't photos (the Textur control, the filter radios), keep the <b>solid ink fill</b> like Fresha/Uber. one system: photos get a check, text gets a fill.
+  </div>
+</body>
+</html>

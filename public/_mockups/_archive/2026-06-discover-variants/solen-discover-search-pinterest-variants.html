@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen · Discover search & filter — Pinterest structure × Solen skin (colour pass)</title>
+<script src="https://unpkg.com/lucide@latest"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --border:#E7E5E4; --sunken:#F5F5F4;
+    --accent:#185CE0; --accent-pale:#EAEFFE; --star:#FFC32B; --heart:#FF3366;
+    --heading:'Inter Tight',system-ui,sans-serif; --body:'Hanken Grotesk',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#FAFAF9;color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased;padding:28px 20px 80px}
+  .head{max-width:1280px;margin:0 auto 26px}
+  .head h1{font-family:var(--heading);font-weight:700;font-size:25px;letter-spacing:-.02em}
+  .head p{color:var(--ink2);font-size:13.5px;margin-top:6px;max-width:900px;line-height:1.55}
+  .head .axis{margin-top:12px;display:flex;flex-wrap:wrap;gap:8px;font-size:11.5px}
+  .pill-note{padding:4px 10px;border-radius:99px;background:#fff;border:1px solid var(--border);color:var(--ink2)}
+  .pill-note b{font-family:var(--heading)}
+  .pill-note.acc{background:var(--accent-pale);border-color:transparent;color:var(--accent)}
+
+  .row{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:22px;align-items:start}
+  @media(max-width:1080px){.row{grid-template-columns:1fr 1fr}}
+  @media(max-width:760px){.row{grid-template-columns:1fr}}
+
+  .frame{background:#fff;border:1px solid var(--border);border-radius:26px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05),0 18px 40px -26px rgba(0,0,0,.3)}
+  .cap{padding:11px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+  .cap .n{font-family:var(--heading);font-weight:600;font-size:13px}
+  .cap .src{margin-left:auto;font-size:10px;font-family:var(--heading);font-weight:600;letter-spacing:.03em;color:var(--ink2);background:var(--sunken);padding:3px 8px;border-radius:99px}
+  .screen{padding:16px 15px 18px;min-height:560px}
+
+  .sbar{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+  .sfield{flex:1;display:flex;align-items:center;gap:8px;background:var(--sunken);border:1px solid var(--border);border-radius:99px;padding:10px 13px}
+  .sfield.active{background:#fff;border-color:var(--ink)}
+  .sfield .q{flex:1;font-size:14px;color:var(--ink)}
+  .sfield .ic,.sbar .ic{width:16px;height:16px;color:var(--ink2);flex:0 0 auto}
+  .cancel{font-family:var(--heading);font-weight:500;font-size:14px;color:var(--ink2)}
+  .iconbtn{width:38px;height:38px;display:grid;place-items:center;border-radius:99px;border:1px solid var(--border);flex:0 0 auto}
+  .iconbtn .ic{width:16px;height:16px;color:var(--ink)}
+  .backbtn{width:34px;height:34px;display:grid;place-items:center;border-radius:99px;flex:0 0 auto}
+  .backbtn .ic{width:18px;height:18px;color:var(--ink)}
+
+  /* autocomplete list — visual suggestions get a thumbnail (Pinterest's visual-search rows) */
+  .ac{display:flex;flex-direction:column}
+  .ac .item{display:flex;align-items:center;gap:13px;padding:9px 4px}
+  .ac .item .ic{width:16px;height:16px;color:var(--ink2);flex:0 0 auto}
+  .ac .item .txt{flex:1;font-size:16px;color:var(--ink2);font-weight:400}
+  .ac .item .txt b{color:var(--ink);font-weight:600}
+  .ac .item .thumb{width:40px;height:40px;border-radius:11px;object-fit:cover;flex:0 0 auto}
+
+  /* contextual chip row */
+  .chips{display:flex;gap:8px;overflow:hidden;margin-bottom:16px}
+  .chip{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;font-family:var(--heading);font-weight:500;font-size:12.5px;padding:8px 13px;border-radius:99px;background:var(--sunken);color:var(--ink);border:1px solid var(--border)}
+  .chip .gl{width:18px;height:18px;color:var(--ink)}
+  .chip .ic{width:13px;height:13px}
+  /* active "Hair pattern" → accent (sanctioned active-state) */
+  .chip.acc{background:var(--accent-pale);border-color:transparent;color:var(--accent)}
+  .chip.acc .gl{color:var(--accent)} .chip.acc .ic{color:var(--accent)}
+  /* photo-backed chips (Pinterest's "Short"/"Routine") */
+  .chip.photo{position:relative;padding:0;border:none;overflow:hidden;height:38px;width:84px;color:#fff}
+  .chip.photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .chip.photo span{position:relative;z-index:2;width:100%;text-align:center;text-shadow:0 1px 3px rgba(0,0,0,.5)}
+  .chip.photo::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(10,10,10,.15),rgba(10,10,10,.45));z-index:1}
+
+  .sec{display:flex;align-items:center;justify-content:center;gap:6px;font-family:var(--heading);font-weight:600;font-size:15px;margin:4px 0 13px}
+  .sec .ic{width:14px;height:14px;color:var(--ink2)}
+
+  /* pattern selector tiles — selected = ACCENT (blue) */
+  .pats{display:flex;gap:9px;overflow:hidden;padding-bottom:2px}
+  .pat{flex:0 0 auto;width:74px;display:flex;flex-direction:column;align-items:center;gap:7px;padding:11px 6px;border-radius:16px;background:var(--sunken);border:1.5px solid transparent}
+  .pat .gl{width:30px;height:30px;color:var(--ink)}
+  .pat .lab{font-family:var(--heading);font-weight:500;font-size:11px;color:var(--ink);white-space:nowrap}
+  .pat.on{border-color:var(--accent);background:var(--accent-pale)}
+  .pat.on .gl{color:var(--accent)} .pat.on .lab{color:var(--accent);font-weight:600}
+
+  .grid{margin-top:16px;column-count:2;column-gap:9px}
+  .card{break-inside:avoid;margin-bottom:9px;position:relative}
+  .card img{width:100%;display:block;border-radius:14px}
+  .card .h{position:absolute;top:7px;right:7px;width:26px;height:26px;border-radius:99px;background:rgba(255,255,255,.9);display:grid;place-items:center}
+  .card .h .ic{width:14px;height:14px;color:var(--ink)}
+
+  /* filter-by radio list — selected = ACCENT (blue), like Pinterest */
+  .ftitle{text-align:center;font-family:var(--heading);font-weight:600;font-size:16px}
+  .opt{display:flex;align-items:center;justify-content:space-between;padding:15px 4px;border-bottom:1px solid var(--border)}
+  .opt .l{font-size:17px;color:var(--ink)}
+  .opt.sel .l{font-weight:600}
+  .radio{width:22px;height:22px;border-radius:99px;border:2px solid var(--border);display:grid;place-items:center}
+  .radio.on{border-color:var(--accent)}
+  .radio.on::after{content:"";width:11px;height:11px;border-radius:99px;background:var(--accent)}
+  .fbtns{display:flex;gap:10px;margin-top:28px}
+  .btn{flex:1;text-align:center;padding:13px;border-radius:99px;font-family:var(--heading);font-weight:600;font-size:14px}
+  .btn.ghost{background:#fff;border:1px solid var(--border);color:var(--ink2)}
+  .btn.primary{background:var(--ink);color:#fff}
+
+  .notes{padding:13px 16px 16px;border-top:1px solid var(--border);background:#FCFCFB}
+  .notes h4{font-family:var(--heading);font-size:10.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink2);margin-bottom:8px}
+  .notes li{font-size:12px;line-height:1.5;color:var(--ink);list-style:none;padding-left:15px;position:relative;margin-bottom:6px}
+  .notes li::before{content:"";position:absolute;left:0;top:7px;width:5px;height:5px;border-radius:99px;background:var(--ink2)}
+  .notes li.good::before{background:var(--accent)}
+  .notes li.warn::before{background:var(--star)}
+  .notes .w{color:var(--ink2)}
+  svg.gl{fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+</style>
+</head>
+<body>
+  <div class="head">
+    <h1>Discover search &amp; filter — colour pass</h1>
+    <p>Same Pinterest structure, but colour pulled from the <b>three legit sources</b> (not by painting chrome): <b>(1) selected-state accent</b> — royal blue <b>#185CE0</b> on the active pattern tile / radio / chip, which the system sanctions and Pinterest does too; <b>(2) photo-backed chips</b> — "Short"/"Routine" carry style thumbnails like the reference; <b>(3) result + suggestion photos</b>. The primary <b>Apply stays ink</b> — accent marks <i>selection</i>, ink marks <i>action</i>.</p>
+    <div class="axis">
+      <span class="pill-note acc">selected → <b>accent blue</b></span>
+      <span class="pill-note">photo-backed chips</span>
+      <span class="pill-note">suggestion thumbnails</span>
+      <span class="pill-note">Apply stays <b>ink</b> (locked CTA)</span>
+      <span class="pill-note">★ rating still <b>yellow</b>, heart <b>pink</b></span>
+    </div>
+  </div>
+
+  <div class="row">
+
+    <!-- ========== FRAME 1: AUTOCOMPLETE ========== -->
+    <div class="frame">
+      <div class="cap"><span class="n">1 · Search autocomplete</span><span class="src">typed query</span></div>
+      <div class="screen">
+        <div class="sbar">
+          <div class="sfield active"><i data-lucide="search" class="ic"></i><span class="q">hair</span><i data-lucide="x" class="ic"></i></div>
+          <span class="cancel">Cancel</span>
+        </div>
+        <div class="ac">
+          <div class="item"><i data-lucide="search" class="ic"></i><span class="txt">hair</span></div>
+          <div class="item"><i data-lucide="search" class="ic"></i><span class="txt">hair<b>cut</b></span></div>
+          <div class="item"><i data-lucide="search" class="ic"></i><span class="txt">hair <b>color ideas</b></span><img class="thumb" src="https://picsum.photos/seed/sg1/80/80" alt=""></div>
+          <div class="item"><i data-lucide="search" class="ic"></i><span class="txt">hair <b>men</b></span></div>
+          <div class="item"><i data-lucide="search" class="ic"></i><span class="txt">hair <b>balayage</b></span><img class="thumb" src="https://picsum.photos/seed/sg2/80/80" alt=""></div>
+          <div class="item"><i data-lucide="search" class="ic"></i><span class="txt">hair <b>curly</b></span><img class="thumb" src="https://picsum.photos/seed/sg3/80/80" alt=""></div>
+          <div class="item"><i data-lucide="search" class="ic"></i><span class="txt">hair<b>cut women</b></span></div>
+          <div class="item"><i data-lucide="search" class="ic"></i><span class="txt">hair <b>bridal styling</b></span><img class="thumb" src="https://picsum.photos/seed/sg4/80/80" alt=""></div>
+        </div>
+      </div>
+      <div class="notes">
+        <h4>Colour source</h4>
+        <ul>
+          <li class="good">Visual-style suggestions carry a <b>thumbnail</b> (Pinterest's visual-search rows) — colour from real content.</li>
+          <li>Generic queries stay plain. Empty field = Trending pills (already built).</li>
+          <li class="warn">Thumbnails need the suggestion→image backend; text-only until then.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ========== FRAME 2: PATTERN SELECTOR ========== -->
+    <div class="frame">
+      <div class="cap"><span class="n">2 · Search by pattern</span><span class="src">the standout</span></div>
+      <div class="screen">
+        <div class="sbar">
+          <span class="backbtn"><i data-lucide="arrow-left" class="ic"></i></span>
+          <div class="sfield"><span class="q">curly hair</span><i data-lucide="mic" class="ic"></i></div>
+          <span class="iconbtn"><i data-lucide="sliders-horizontal" class="ic"></i></span>
+        </div>
+        <div class="chips">
+          <span class="chip acc"><svg class="gl" viewBox="0 0 24 24"><path d="M7 5c1.6 1.3 1.6 3.2 0 4.5c-1.6 1.3 -1.6 3.2 0 4.5"/><path d="M12 5c1.6 1.3 1.6 3.2 0 4.5c-1.6 1.3 -1.6 3.2 0 4.5"/><path d="M17 5c1.6 1.3 1.6 3.2 0 4.5c-1.6 1.3 -1.6 3.2 0 4.5"/></svg>Hair pattern <i data-lucide="chevron-down" class="ic"></i></span>
+          <span class="chip photo"><img src="https://picsum.photos/seed/short9/120/80" alt=""><span>Short</span></span>
+          <span class="chip photo"><img src="https://picsum.photos/seed/rout9/120/80" alt=""><span>Routine</span></span>
+        </div>
+        <div class="sec">Search by hair pattern <i data-lucide="info" class="ic"></i></div>
+        <div class="pats">
+          <div class="pat"><svg class="gl" viewBox="0 0 24 24"><path d="M6 3.5V20.5M12 3.5V20.5M18 3.5V20.5"/></svg><span class="lab">Straight</span></div>
+          <div class="pat on"><svg class="gl" viewBox="0 0 24 24"><path d="M6 3.5c2 1.6 2 4 0 5.6c-2 1.6 -2 4 0 5.6c2 1.6 2 4 0 5.6"/><path d="M12 3.5c2 1.6 2 4 0 5.6c-2 1.6 -2 4 0 5.6c2 1.6 2 4 0 5.6"/><path d="M18 3.5c2 1.6 2 4 0 5.6c-2 1.6 -2 4 0 5.6c2 1.6 2 4 0 5.6"/></svg><span class="lab">Wavy</span></div>
+          <div class="pat"><svg class="gl" viewBox="0 0 24 24"><path d="M8 4a2.8 2.8 0 1 1 0 5.6a2.8 2.8 0 1 1 0 5.6a2.8 2.8 0 1 1 0 5.6"/><path d="M16 4a2.8 2.8 0 1 1 0 5.6a2.8 2.8 0 1 1 0 5.6a2.8 2.8 0 1 1 0 5.6"/></svg><span class="lab">Curly</span></div>
+          <div class="pat"><svg class="gl" viewBox="0 0 24 24"><path d="M6.5 4l3 2l-3 2l3 2l-3 2l3 2l-3 2l3 2"/><path d="M14.5 4l3 2l-3 2l3 2l-3 2l3 2l-3 2l3 2"/></svg><span class="lab">Coily</span></div>
+          <div class="pat"><svg class="gl" viewBox="0 0 24 24"><path d="M9 3.5C14 6.5 14 9.5 9 12.5C4 15.5 4 18.5 9 21.5"/><path d="M15 3.5C10 6.5 10 9.5 15 12.5C20 15.5 20 18.5 15 21.5"/></svg><span class="lab">Protective</span></div>
+          <div class="pat"><svg class="gl" viewBox="0 0 24 24"><path d="M5 18a7 7 0 0 1 14 0"/><path d="M3.5 18h17"/><path d="M9 12.6a3.4 3.4 0 0 1 4 -1.7"/></svg><span class="lab">Bald</span></div>
+        </div>
+        <div class="grid">
+          <div class="card"><img src="https://picsum.photos/seed/cur1/300/400" alt=""><span class="h"><i data-lucide="heart" class="ic"></i></span></div>
+          <div class="card"><img src="https://picsum.photos/seed/cur2/300/320" alt=""><span class="h"><i data-lucide="heart" class="ic"></i></span></div>
+          <div class="card"><img src="https://picsum.photos/seed/cur3/300/300" alt=""><span class="h"><i data-lucide="heart" class="ic"></i></span></div>
+        </div>
+      </div>
+      <div class="notes">
+        <h4>Colour source</h4>
+        <ul>
+          <li class="good">Selected pattern = <b>accent blue</b> (glyph + tint + label). Sanctioned active-state, not decoration.</li>
+          <li class="good">"Short"/"Routine" = <b>photo-backed</b> chips; "Hair pattern" active = accent-pale.</li>
+          <li class="warn">Hair-only; nails→shape, lashes→style get their own sets. Glyphs proposed.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ========== FRAME 3: FILTER BY ========== -->
+    <div class="frame">
+      <div class="cap"><span class="n">3 · Filter by</span><span class="src">content type</span></div>
+      <div class="screen">
+        <div class="sbar" style="margin-bottom:18px">
+          <span class="backbtn"><i data-lucide="arrow-left" class="ic"></i></span>
+          <span class="ftitle" style="flex:1;margin:0">Filter by</span>
+          <span style="width:34px"></span>
+        </div>
+        <div class="opt sel"><span class="l">All</span><span class="radio on"></span></div>
+        <div class="opt"><span class="l">Photos</span><span class="radio"></span></div>
+        <div class="opt"><span class="l">Videos</span><span class="radio"></span></div>
+        <div class="opt"><span class="l">Salons</span><span class="radio"></span></div>
+        <div class="opt" style="border-bottom:none"><span class="l">Saved</span><span class="radio"></span></div>
+        <div class="fbtns">
+          <span class="btn ghost">Reset</span>
+          <span class="btn primary">Apply</span>
+        </div>
+      </div>
+      <div class="notes">
+        <h4>Colour source</h4>
+        <ul>
+          <li class="good">Selected radio = <b>accent blue</b> (Pinterest's blue, now on-system).</li>
+          <li>Pins→Photos, Profiles→Salons, Products dropped, Boards→Saved.</li>
+          <li class="warn">Apply stays <b>ink</b> — accent never replaces the primary CTA.</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+  <script>lucide.createIcons();</script>
+</body>
+</html>
