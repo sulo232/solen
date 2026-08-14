@@ -265,6 +265,44 @@ to touch git. I commit everything when they land.
     `src/components/salon/GiftCardBanner.tsx` is a complete gift-card banner rendered NOWHERE
     (`grep -rn GiftCardBanner src` returns only its own definition). It should go, and that is a
     deletion so it waits for the owner rather than happening quietly.
+## "WHY ARE YOU BUILDING WEB INSTEAD OF APP, WE ARE MAKING APP FOR APP STORE" (owner 2026-08-14)
+
+He was reading the evidence correctly and the answer was mine to have given earlier. Every screen
+built this session is in `solen-mobile`, the Expo iOS app. Exactly one change went into the website,
+`lib/auth/request-user.ts`, and only because the app has to call the website's booking endpoint and
+that endpoint could not recognise an app login. What made it LOOK like web work is that every link
+handed over was a browser URL: the iOS simulator does not boot on this machine (`xcrun simctl`
+returns `CoreSimulatorService connection became invalid`), so the app is shown through Expo web,
+which renders the same React Native components in a browser.
+
+**But the question exposed something real that nobody had checked.** `verified:` commit `7381715`.
+The app was not configured to BE an app. `app.json` had no `ios.bundleIdentifier`, which an iOS
+build cannot start without; it would have installed on the home screen labelled `solen-mobile`, the
+repo folder name; there was no `eas.json` at all; and iOS had no splash image while Android did.
+Fixed, with `ch.solen.app` as the identifier, which is PERMANENT after the first upload and needs
+his yes before one happens.
+
+Left alone deliberately, with the reasoning kept because it is the kind that gets re-broken:
+`userInterfaceStyle` stays `automatic`. Forcing it to `light` writes `UIUserInterfaceStyle: Light`
+into Info.plist, which locks the trait collection so `useColorScheme()` can never return dark, which
+would permanently kill the System option that ships today in `profile/settings.tsx`. Light-by-default
+already lives in `ThemeProvider`, which is the right layer for it.
+
+**Still between this app and the App Store, none of it fixable from here:**
+- The icon is still Expo's blue template logo. `assets/expo.icon/icon.json` names its own layers
+  `expo-symbol 2.svg` and `grid.png`. Needs a real 1024x1024 brand asset, which is a design decision
+  and not something to invent.
+- No Apple Developer account, certificate or provisioning profile. That is a paid account and his.
+- No EAS project link. `npx expo config` shows `extra` as `{ router: {} }`, no `eas.projectId`.
+- No App Store Connect record: name reservation, description, age rating, the privacy label for what
+  Supabase auth collects, and screenshots.
+- **A likely rejection, worth fixing before submitting:** `auth/welcome.tsx:41-48,94-101` renders
+  both "Weiter mit Google" and "Weiter mit Apple", and both call the same
+  `supabase.auth.signInWithOAuth` web redirect. `expo-apple-authentication` is not installed and
+  there is no native entitlement. Apple guideline 4.8 requires native Sign in with Apple when
+  another third-party login is offered, and a web-view bounce on the Apple button is a common
+  rejection.
+
 ## THE PARITY LOOP (owner 2026-08-14: *"build out evrth as a loop for app so its 1to 1 from web"*)
 
 `verified:` `node scripts/app-parity.mjs`, commit `9f6f7ac0d`. It walks both route trees and prints
