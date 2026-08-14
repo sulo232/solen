@@ -1,12 +1,13 @@
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import { createAdminSupabaseClient } from "@/lib/supabase";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
-import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
+import { applyRateLimit, generalLimiter, bearerVerifyLimiter, getClientIp } from "@/lib/ratelimit";
 import { validateBody, walkinJoinSchema } from "@/lib/validations";
 import { estimateWaitMinutes } from "@/lib/barber/wait-time-calculator";
 import { joinWalkinQueue } from "@/lib/walkin/join";
+import { resolveRequestUser } from "@/lib/auth/request-user";
 
 // GET /api/walkin/queue?salon_id=... — Public: current queue summary
 export async function GET(req: NextRequest) {
@@ -102,10 +103,20 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "This shop requires payment to join the line", code: "PAYMENT_REQUIRED" }, { status: 402 });
   }
 
-  // Capture customer_id if logged in (guest = null).
-  const supabase = await createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  const customerId = user?.id ?? null;
+  // Capture customer_id if logged in (guest = null). resolveRequestUser resolves the caller
+  // from either the web session cookie or an iOS `Authorization: Bearer <token>` header,
+  // verifying the token server-side against the Supabase Auth server. Without this, a logged-in
+  // app customer joining the queue fell through to the guest branch below (customerId stayed
+  // null), so their own ticket never carried their user id and would not show as theirs. An
+  // invalid/expired Bearer token returns its own 401 from resolveRequestUser and must NEVER
+  // fall through here to a null (anonymous) customerId, same contract as app/api/bookings/route.ts.
+  if (req.headers.get("Authorization")) {
+    const authFlood = await applyRateLimit(bearerVerifyLimiter, { ip: getClientIp(req) });
+    if (authFlood) return authFlood;
+  }
+  const resolvedUser = await resolveRequestUser(req);
+  if (resolvedUser instanceof NextResponse) return resolvedUser;
+  const customerId = resolvedUser.user?.id ?? null;
 
   // Race-safe insert via the shared helper (atomic position retry).
   const result = await joinWalkinQueue(admin, {

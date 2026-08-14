@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
+import { createAdminSupabaseClient } from "@/lib/supabase";
 import { sendEmail, bookingConfirmation, salonNewBooking } from "@/lib/email";
 import { applyRateLimit, bookingLimiter, bearerVerifyLimiter, getClientIp } from "@/lib/ratelimit";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
@@ -17,8 +17,19 @@ import { resolveRequestUser } from "@/lib/auth/request-user";
 import type { Database } from "@/lib/database.types";
 
 export async function GET(request: NextRequest) {
-  const supabase = await createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  // resolveRequestUser (lib/auth/request-user.ts) resolves the caller from EITHER the web
+  // session cookie, unchanged, or an iOS `Authorization: Bearer <token>` header, itself
+  // verified server-side against the Supabase Auth server. Without this an app customer
+  // listing their own bookings hit a hard 401 (see POST below for the fuller writeup and
+  // the same identical ordering: the round trip a Bearer token costs to verify is throttled
+  // by IP BEFORE the resolve, and only when a header is actually present).
+  if (request.headers.get("Authorization")) {
+    const authFlood = await applyRateLimit(bearerVerifyLimiter, { ip: getClientIp(request) });
+    if (authFlood) return authFlood;
+  }
+  const resolvedUser = await resolveRequestUser(request);
+  if (resolvedUser instanceof NextResponse) return resolvedUser;
+  const { user, supabase } = resolvedUser;
   if (!user) return NextResponse.json({ message: "Unauthorized", code: "UNAUTHORIZED" }, { status: 401 });
 
   const { searchParams } = new URL(request.url);
