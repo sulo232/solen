@@ -1,0 +1,50 @@
+/* Solen onboarding mockups — shared base. Self-hosted only (no CDN). 2026-06-17 */
+:root{
+  --ink:#0A0A0A; --ink2:#6B6B6B; --ink3:#A1A1AA; --border:#E4E4E7; --hair:#ECECEE;
+  --bg:#FFFFFF; --sunken:#F4F4F5; --accent:#276EF1; --accentDeep:#1E54B7; --accentPale:#EAEFFE;
+  --star:#FFC32B; --success:#16A34A; --save:#FF3366; --surcharge:#EA580C;
+  --violet:#7C3AED; --cblue:#2563EB; --cpink:#EC4899; --cgreen:#16A34A; --corange:#EA580C; --crose:#E11D48;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;background:#0c0c0e;color:#fff}
+.tight{font-family:'Inter Tight','Inter',sans-serif}
+.wrap{max-width:1500px;margin:0 auto;padding:36px 26px 60px}
+.sec-h{font-family:'Inter Tight';font-weight:800;font-size:30px;letter-spacing:-.02em;margin:0}
+.sec-sub{color:#9aa0a6;font-size:14px;margin:8px 0 0;max-width:760px;line-height:1.5}
+.note{background:#161619;border:1px solid #232327;border-radius:14px;padding:14px 16px;margin:18px 0 4px;font-size:13px;color:#c7c7cc;line-height:1.55}
+.note b{color:#fff}
+.phones{display:flex;gap:32px;overflow-x:auto;padding:22px 4px 10px;scrollbar-width:thin}
+.col{flex:0 0 auto;width:300px}
+.cap{font-size:13px;color:#cfcfd4;margin:0 0 12px;font-weight:600;display:flex;gap:8px;align-items:baseline}
+.cap span{color:#8a8a90;font-weight:500;font-size:12px}
+/* phone */
+.phone{width:300px;height:642px;border-radius:42px;position:relative;background:#1c1c1f;padding:7px;box-shadow:0 34px 70px -24px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.05)}
+.screen{position:absolute;inset:7px;border-radius:35px;background:#fff;color:var(--ink);overflow:hidden;display:flex;flex-direction:column}
+.notch{position:absolute;top:7px;left:50%;transform:translateX(-50%);width:104px;height:24px;background:#1c1c1f;border-radius:0 0 16px 16px;z-index:60}
+.sb{height:42px;flex:0 0 42px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 20px 5px;font-size:12.5px;font-weight:600;color:inherit;z-index:40}
+.sb .r{display:flex;gap:5px;align-items:center}
+.body{flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column}
+.pad{padding:0 18px}
+/* type */
+.h1{font-family:'Inter Tight';font-weight:800;font-size:27px;line-height:1.12;letter-spacing:-.025em;color:var(--ink)}
+.h2{font-family:'Inter Tight';font-weight:700;font-size:21px;line-height:1.15;letter-spacing:-.02em;color:var(--ink)}
+.sub{font-size:14px;line-height:1.45;color:var(--ink2)}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink3)}
+.word{font-family:'Inter Tight';font-weight:800;font-size:17px;letter-spacing:-.02em}
+/* controls */
+.cta{height:52px;border-radius:999px;background:var(--ink);color:#fff;font-weight:600;font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px}
+.cta-light{height:52px;border-radius:999px;background:#fff;color:#111;font-weight:600;font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px}
+.cta-grad{height:52px;border-radius:999px;background:linear-gradient(135deg,var(--accent),var(--violet));color:#fff;font-weight:600;font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px}
+.skip{color:var(--ink2);font-weight:600;font-size:14px;text-align:center}
+.ring{width:24px;height:24px;border-radius:999px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.ring.on{border-color:var(--ink)}.ring.on .d{width:12px;height:12px;border-radius:999px;background:var(--ink)}
+.prog{height:6px;border-radius:999px;background:var(--border);overflow:hidden;flex:1}
+.prog .f{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--violet))}
+.chip{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 13px;border-radius:999px;background:var(--sunken);font-size:13px;font-weight:600;color:var(--ink)}
+.icochip{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center}
+.card{background:#fff;border:1px solid var(--border);border-radius:16px}
+/* lucide sizing */
+i[data-lucide]{width:20px;height:20px;stroke-width:2;display:inline-block;vertical-align:middle}
+.muted i{color:var(--ink2)}
+img{display:block}

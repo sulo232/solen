@@ -1,0 +1,241 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Solen Onboarding · Cool (animiert)</title><link rel="stylesheet" href="../_assets/ds.css">
+<style>
+*{box-sizing:border-box;margin:0}
+body{font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;background:radial-gradient(1000px 500px at 50% -10%,#17171c,#08080a);color:#fff;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 16px}
+.tight{font-family:'Inter Tight','Inter',sans-serif}
+.hint{color:#7d7d85;font-size:13px;margin-bottom:18px;text-align:center}
+.hint b{color:#cfcfd4;font-weight:600}
+.ph{width:332px;height:712px;border-radius:50px;background:#0e0e10;padding:5px;position:relative;box-shadow:0 50px 90px -28px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.06);cursor:pointer}
+.scr{position:absolute;inset:5px;border-radius:45px;overflow:hidden;
+  background:linear-gradient(158deg,#8B73EF 0%,#5C8CFF 52%,#3FB8EC 100%)}
+.scr::before{content:"";position:absolute;inset:-35%;z-index:0;background:radial-gradient(40% 40% at 26% 18%,rgba(180,198,255,.45),transparent 70%),radial-gradient(46% 46% at 82% 82%,rgba(70,200,245,.45),transparent 70%);filter:blur(34px);animation:drift 16s ease-in-out infinite alternate}
+@keyframes drift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(6%,5%) scale(1.18)}}
+.time{position:absolute;top:14px;left:24px;font-size:13px;font-weight:600;color:#fff;z-index:6}
+/* screens stack */
+.scn{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;padding:52px 24px 26px;opacity:0;pointer-events:none;transition:opacity .45s ease}
+.scn.light{background:#F1EEF4}
+.scn.active{opacity:1;pointer-events:auto}
+.scn .e{opacity:0}
+.scn.active .e{animation:rise .55s cubic-bezier(.16,1,.3,1) forwards}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.scn.active .e1{animation-delay:.06s}.scn.active .e2{animation-delay:.15s}.scn.active .e3{animation-delay:.24s}.scn.active .e4{animation-delay:.33s}.scn.active .e5{animation-delay:.42s}.scn.active .e6{animation-delay:.51s}.scn.active .e7{animation-delay:.6s}
+.word{font-family:'Inter Tight';font-weight:600;font-size:14px;letter-spacing:.06em;color:rgba(255,255,255,.85)}
+.eyebrow{font-size:14px;font-weight:500;color:rgba(255,255,255,.84)}
+.q{font-family:'Inter Tight';font-weight:700;font-size:28px;line-height:1.1;letter-spacing:-.03em;color:#fff;margin-top:5px}
+.sub{font-size:14.5px;line-height:1.5;color:rgba(255,255,255,.86);margin-top:10px}
+.prog{height:3px;border-radius:999px;background:rgba(255,255,255,.3);overflow:hidden;margin-bottom:20px}
+.prog .f{height:100%;background:#fff;border-radius:999px;transition:width .6s cubic-bezier(.16,1,.3,1)}
+/* big conversational name input (Aby 'name thing': big faded inline text, no box) */
+.namein{font-family:'Inter Tight';font-weight:700;font-size:34px;letter-spacing:-.02em;line-height:1.1;color:#fff;margin-top:30px;min-height:42px;display:flex;align-items:center;gap:2px}
+.namein .ph0{color:rgba(255,255,255,.38)}
+.cur{display:inline-block;width:2px;height:34px;background:#fff;margin-left:1px;animation:blink 1s steps(1) infinite;vertical-align:middle}@keyframes blink{50%{opacity:0}}
+/* bigger, airier, more conversational choice rows ('name screen' energy) */
+.opt{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:19px 6px;border-bottom:1px solid rgba(255,255,255,.22);font-family:'Inter Tight';font-weight:600;font-size:21px;letter-spacing:-.01em;color:rgba(255,255,255,.78);transition:.25s}
+.opt .r{width:13px;height:13px;border-radius:999px;background:rgba(255,255,255,.35);flex:0 0 auto;transition:.25s}
+.opt.on{color:#fff}
+.opt.on .r{width:18px;height:18px;background:#fff;box-shadow:0 0 0 5px rgba(255,255,255,.18)}
+/* ghost -> solid pill (Aby signature) */
+.pill{height:53px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:16px;transition:background .35s ease,color .35s ease}
+.pill.ink{background:#101015;color:#fff}
+.pill.ghost{background:rgba(255,255,255,.16);color:rgba(255,255,255,.5)}
+.skip{text-align:center;font-size:13.5px;font-weight:600;color:rgba(255,255,255,.78);margin-top:13px}
+.sp{flex:1}
+/* welcome floating salon cards (Linktree hero) */
+.collage{flex:1;position:relative;margin-top:6px}
+.fcard{position:absolute;border-radius:18px;overflow:hidden;box-shadow:0 18px 36px -12px rgba(10,10,30,.45);background:#fff}
+.fcard img{width:100%;height:100%;object-fit:cover;display:block}
+.fcard .cap{position:absolute;left:0;right:0;bottom:0;padding:18px 10px 9px;background:linear-gradient(transparent,rgba(0,0,0,.6));font-family:'Inter Tight';font-weight:700;font-size:12.5px;color:#fff}
+.fcard .cap span{display:block;font-family:'Inter';font-weight:500;font-size:10.5px;color:rgba(255,255,255,.8);margin-top:1px}
+.f1{width:150px;height:196px;left:14px;top:28px;transform:rotate(-6deg);animation:floaty 7s ease-in-out infinite alternate}
+.f2{width:138px;height:178px;right:8px;top:8px;transform:rotate(5deg);animation:floaty 8s ease-in-out -1.5s infinite alternate}
+.f3{width:120px;height:150px;left:74px;top:166px;transform:rotate(-2deg);z-index:3;animation:floaty 6.5s ease-in-out -.8s infinite alternate}
+@keyframes floaty{to{transform:translateY(-12px) rotate(var(--rr,0deg))}}
+.f1{--rr:-6deg}.f2{--rr:5deg}.f3{--rr:-2deg}
+/* swipe deck (Deepstash) */
+.deck{flex:1;position:relative;margin-top:14px}
+.card{position:absolute;inset:0 4px;border-radius:24px;overflow:hidden;background:#000;box-shadow:0 22px 44px -14px rgba(10,10,30,.5);transition:transform .55s cubic-bezier(.16,1,.3,1),opacity .45s ease}
+.card img{width:100%;height:100%;object-fit:cover;display:block}
+.card .meta{position:absolute;left:0;right:0;bottom:0;padding:30px 18px 18px;background:linear-gradient(transparent,rgba(0,0,0,.72))}
+.card .nm{font-family:'Inter Tight';font-weight:700;font-size:21px;color:#fff;letter-spacing:-.01em}
+.card .lo{font-size:13px;color:rgba(255,255,255,.85);margin-top:3px}
+.card .st{position:absolute;top:14px;left:14px;background:rgba(0,0,0,.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:999px;padding:6px 11px;font-weight:700;font-size:13px;color:#fff}
+.card .st b{color:#FFC32B;font-weight:700}
+.card .stamp{position:absolute;top:24px;right:18px;border-radius:12px;padding:7px 14px;font-family:'Inter Tight';font-weight:800;font-size:18px;letter-spacing:.04em;transform:rotate(11deg) scale(.7);opacity:0;transition:.25s cubic-bezier(.34,1.56,.64,1)}
+.card .stamp.save{border:2.5px solid #FF3366;color:#FF3366}
+.card .stamp.skip{left:18px;right:auto;border:2.5px solid #fff;color:#fff;transform:rotate(-11deg) scale(.7)}
+.card .stamp.show{opacity:1;transform:rotate(11deg) scale(1)}
+.card .stamp.skip.show{transform:rotate(-11deg) scale(1)}
+.card.p1{transform:translateY(0) scale(1);z-index:3}
+.card.p2{transform:translateY(16px) scale(.93);z-index:2;opacity:.96}
+.card.p3{transform:translateY(32px) scale(.86);z-index:1;opacity:.9}
+.card.saveoff{transform:translateX(135%) rotate(13deg)!important;opacity:0;z-index:4}
+.card.skipoff{transform:translateX(-135%) rotate(-13deg)!important;opacity:0;z-index:4}
+.deckctl{display:flex;gap:12px;margin-top:16px}
+.deckctl div{flex:1;height:48px;border-radius:999px;display:flex;align-items:center;justify-content:center;gap:7px;font-weight:600;font-size:14.5px;background:rgba(255,255,255,.16)}
+.deckctl .sv{color:#fff}.deckctl .sv i{color:#FF6B8A}
+.deckctl i[data-lucide]{width:17px;height:17px}
+/* light payoff feed with photo thumbs */
+.feed{padding:13px 0;border-top:1px solid rgba(255,255,255,.2);display:flex;gap:13px;align-items:center}
+.feed .thumb{width:54px;height:54px;border-radius:13px;object-fit:cover;flex:0 0 auto;box-shadow:0 6px 16px -6px rgba(10,10,30,.4)}
+.feed .tx{flex:1}
+.feed b{font-family:'Inter Tight';font-weight:700;font-size:15.5px;color:#fff;display:block}
+.feed p{font-size:12.5px;color:rgba(255,255,255,.78);margin-top:2px}
+.feed .st{font-size:13px;color:#fff;font-weight:700}.feed .st b{color:#fff}
+.feed .st i{color:#FFC32B}
+.dots{display:flex;gap:5px;justify-content:center;margin-top:16px}.dot{width:6px;height:6px;border-radius:9px;background:rgba(255,255,255,.4);transition:.3s}.dot.on{width:16px;background:#fff}
+.dots.dk .dot{background:rgba(20,18,26,.25)}.dots.dk .dot.on{background:#15131A}
+i[data-lucide]{display:inline-block;vertical-align:middle;stroke-width:2}
+@media (prefers-reduced-motion: reduce){*{animation-duration:.01ms!important}}
+</style></head><body>
+<div class="hint">▶ Spielt automatisch ab. <b>Tippen</b> springt zum nächsten Screen.</div>
+<div class="ph" id="ph"><div class="scr" id="scr"><div class="time">9:41</div>
+
+<!-- 1 · Welcome (Linktree floating-card hero) -->
+<div class="scn active" data-dwell="3000">
+  <div class="word e e1">SOLEN</div>
+  <div class="collage">
+    <div class="fcard f1 e e2"><img src="img/hero1.png" alt=""><div class="cap">Cuts &amp; Culture<span>Coiffeur · Basel</span></div></div>
+    <div class="fcard f2 e e3"><img src="img/hero2.png" alt="" style="object-position:50% 75%"><div class="cap">Spa Sereno<span>Day Spa · Basel</span></div></div>
+    <div class="fcard f3 e e4"><img src="img/welcome_hair.png" alt=""><div class="cap">Studio Margot<span>Coiffeur · Basel</span></div></div>
+  </div>
+  <div class="eyebrow e e4">Schön, dass du da bist.</div>
+  <div class="q e e5" style="font-size:31px;margin-top:4px">Dein nächster<br>Lieblingssalon.</div>
+  <div class="pill ink e e6" style="margin-top:18px">Los geht's</div>
+  <div class="skip e e7">Ich habe schon ein Konto</div>
+</div>
+
+<!-- 2 · Name (the Aby 'name thing') -->
+<div class="scn" data-type="name" data-dwell="3000">
+  <div class="prog e e1"><div class="f" style="width:14%"></div></div>
+  <div class="eyebrow e e1">Hallo, ich bin Solen.</div>
+  <div class="q e e2">Wie sollen wir<br>dich nennen?</div>
+  <div class="namein e e3"><span id="typed"></span><span class="ph0" id="phold">Dein Name</span><span class="cur"></span></div>
+  <div class="sp"></div><div class="pill ghost e e4" data-solid>Weiter</div>
+</div>
+
+<!-- 3 · Goal (Linktree 'describe your goal') -->
+<div class="scn" data-dwell="2800">
+  <div class="prog e e1"><div class="f" style="width:33%"></div></div>
+  <div class="eyebrow e e1">Schön, dich kennenzulernen, Alex.</div>
+  <div class="q e e2">Was bringt dich<br>zu Solen?</div><div style="height:12px"></div>
+  <div class="opt e e3 sel"><span>Selfcare-Ritual</span><span class="r"></span></div>
+  <div class="opt e e4"><span>Ein besonderer Anlass</span><span class="r"></span></div>
+  <div class="opt e e5"><span>Neuer Look</span><span class="r"></span></div>
+  <div class="opt e e6"><span>Einfach entspannen</span><span class="r"></span></div>
+  <div class="sp"></div><div class="pill ghost e e7" data-solid>Weiter</div>
+</div>
+
+<!-- 4 · Category -->
+<div class="scn" data-dwell="2800">
+  <div class="prog e e1"><div class="f" style="width:55%"></div></div>
+  <div class="eyebrow e e1">Damit es zu dir passt.</div>
+  <div class="q e e2">Womit verwöhnst<br>du dich gern?</div><div style="height:12px"></div>
+  <div class="opt e e3 sel"><span>Coiffeur</span><span class="r"></span></div>
+  <div class="opt e e4"><span>Barber</span><span class="r"></span></div>
+  <div class="opt e e5 sel2"><span>Nägel</span><span class="r"></span></div>
+  <div class="opt e e6"><span>Spa</span><span class="r"></span></div>
+  <div class="sp"></div><div class="pill ghost e e7" data-solid>Weiter</div>
+</div>
+
+<!-- 5 · City (Solen core lever — added) -->
+<div class="scn" data-dwell="2600">
+  <div class="prog e e1"><div class="f" style="width:76%"></div></div>
+  <div class="eyebrow e e1">Fast geschafft.</div>
+  <div class="q e e2">Wo suchst du?</div><div style="height:12px"></div>
+  <div class="opt e e3 sel"><span>Basel</span><span class="r"></span></div>
+  <div class="opt e e4"><span>Zürich</span><span class="r"></span></div>
+  <div class="opt e e5"><span>Bern</span><span class="r"></span></div>
+  <div class="sp"></div><div class="pill ghost e e6" data-solid>Weiter</div>
+</div>
+
+<!-- 6 · Swipe deck (Deepstash recommendations) -->
+<div class="scn" data-type="deck" data-dwell="4600">
+  <div class="prog e e1"><div class="f" style="width:90%"></div></div>
+  <div class="eyebrow e e1">Für dich in Basel, Alex</div>
+  <div class="q e e2" style="font-size:25px">Speichere, was<br>dir gefällt.</div>
+  <div class="deck e e3">
+    <div class="card p3"><img src="img/welcome_hair.png" alt=""><div class="st">★ <b>4.7</b></div><div class="meta"><div class="nm">Studio Margot</div><div class="lo">Coiffeur · Aeschengraben</div></div></div>
+    <div class="card p2"><img src="img/hero2.png" alt="" style="object-position:50% 75%"><div class="st">★ <b>4.9</b></div><span class="stamp skip">NÖ</span><div class="meta"><div class="nm">Spa Sereno</div><div class="lo">Day Spa · Steinenvorstadt</div></div></div>
+    <div class="card p1"><img src="img/hero1.png" alt=""><div class="st">★ <b>4.8</b></div><span class="stamp save">SPEICHERN</span><div class="meta"><div class="nm">Cuts &amp; Culture</div><div class="lo">Coiffeur · Elsässerstrasse</div></div></div>
+  </div>
+  <div class="deckctl e e4">
+    <div><i data-lucide="x"></i> Weiter</div>
+    <div class="sv"><i data-lucide="heart"></i> Speichern</div>
+  </div>
+</div>
+
+<!-- 7 · Payoff feed (light) -->
+<div class="scn" data-dwell="3400">
+  <div class="eyebrow e e1">Für dich zusammengestellt, Alex</div>
+  <div class="q e e2">Empfohlen<br>in Basel</div>
+  <div style="margin-top:14px">
+    <div class="feed e e3" style="border-top:0"><img class="thumb" src="img/hero1.png" alt=""><div class="tx"><b>Cuts &amp; Culture</b><p>Coiffeur · Elsässerstrasse</p></div><div class="st"><i data-lucide="star" style="width:14px;height:14px;fill:#FFC32B"></i> 4.8</div></div>
+    <div class="feed e e4"><img class="thumb" src="img/welcome_hair.png" alt=""><div class="tx"><b>Studio Margot</b><p>Coiffeur · Aeschengraben</p></div><div class="st"><i data-lucide="star" style="width:14px;height:14px;fill:#FFC32B"></i> 4.9</div></div>
+    <div class="feed e e5"><img class="thumb" src="img/hero2.png" alt="" style="object-position:50% 75%"><div class="tx"><b>Spa Sereno</b><p>Day Spa · Steinenvorstadt</p></div><div class="st"><i data-lucide="star" style="width:14px;height:14px;fill:#FFC32B"></i> 4.7</div></div>
+  </div>
+  <div class="sp"></div><div class="pill ink e e6">Los geht's</div>
+</div>
+
+<div class="dots" style="position:absolute;bottom:18px;left:0;right:0;z-index:6" id="dots"></div>
+</div></div>
+<script src="../_assets/lucide.min.js"></script>
+<script>
+const scns=[...document.querySelectorAll('.scn')], dotsEl=document.getElementById('dots');
+scns.forEach((_,i)=>{const d=document.createElement('span');d.className='dot'+(i===0?' on':'');dotsEl.appendChild(d)});
+const dots=[...dotsEl.children];
+let i=0, timer, timeouts=[];
+const NAME="Alex";
+function clearT(){timeouts.forEach(clearTimeout);timeouts=[]}
+function T(fn,ms){timeouts.push(setTimeout(fn,ms))}
+function typeName(scn){
+  const t=scn.querySelector('#typed'), ph=scn.querySelector('#phold'), pill=scn.querySelector('[data-solid]');
+  if(!t)return; t.textContent=""; if(ph)ph.style.display='';
+  T(()=>{ if(ph)ph.style.display='none';
+    let k=0;const id=setInterval(()=>{t.textContent=NAME.slice(0,++k);if(k>=NAME.length){clearInterval(id);solidify(pill)}},120);
+    timeouts.push({clear:()=>clearInterval(id)});
+  },650);
+}
+function solidify(pill){ if(pill){pill.classList.remove('ghost');pill.classList.add('ink')} }
+function selectRows(scn){
+  const pill=scn.querySelector('[data-solid]');
+  scn.querySelectorAll('.opt.sel').forEach(o=>T(()=>o.classList.add('on'),680));
+  scn.querySelectorAll('.opt.sel2').forEach(o=>T(()=>o.classList.add('on'),1020));
+  if(scn.querySelector('.opt.sel')) T(()=>solidify(pill),760);
+}
+function resetDeck(scn){
+  const c=scn.querySelectorAll('.card');
+  c.forEach(x=>{x.classList.remove('saveoff','skipoff');x.querySelectorAll('.stamp').forEach(s=>s.classList.remove('show'))});
+  // restore stack order p1(front=last child) p2 p3
+  c[0].className='card p3';c[1].className='card p2';c[2].className='card p1';
+}
+function playDeck(scn){
+  const front=scn.querySelector('.card.p1'), mid=scn.querySelector('.card.p2'), back=scn.querySelector('.card.p3');
+  T(()=>front.querySelector('.stamp.save')?.classList.add('show'),900);
+  T(()=>{front.classList.remove('p1');front.classList.add('saveoff');
+         mid.classList.remove('p2');mid.classList.add('p1');
+         back.classList.remove('p3');back.classList.add('p2');},1200);
+  T(()=>mid.querySelector('.stamp.skip')?.classList.add('show'),2500);
+  T(()=>{mid.classList.remove('p1');mid.classList.add('skipoff');
+         back.classList.remove('p2');back.classList.add('p1');},2800);
+}
+function show(n){
+  clearT();
+  scns[i].classList.remove('active');
+  scns[i].querySelectorAll('.opt').forEach(o=>o.classList.remove('on'));
+  scns[i].querySelectorAll('[data-solid]').forEach(p=>{p.classList.add('ghost');p.classList.remove('ink')});
+  i=(n+scns.length)%scns.length;
+  const scn=scns[i]; scn.classList.add('active');
+  dots.forEach((d,k)=>d.classList.toggle('on',k===i));
+  dotsEl.classList.toggle('dk',scn.classList.contains('light'));
+  const type=scn.dataset.type;
+  if(type==='name') typeName(scn);
+  else if(type==='deck'){ resetDeck(scn); playDeck(scn); }
+  else selectRows(scn);
+  loop(scn);
+}
+function next(){show(i+1)}
+function loop(scn){clearInterval(timer);const d=parseInt((scn||scns[i]).dataset.dwell||'2800',10);timer=setInterval(next,d)}
+document.getElementById('ph').addEventListener('click',()=>{next()});
+lucide.createIcons(); loop(scns[0]);
+</script></body></html>
