@@ -145,19 +145,39 @@ is unproven, and each phase writes its state here so the loop survives a session
         web's 245.9, first heading 23px against 22.5. Salon-of-the-month and the curated for-you
         rows deliberately omitted, since both live only in the web repo with no mobile source and a
         stand-in would be fabrication.
-  - [ ] Search screen against the web.
-  - [ ] Salon page against the web.
-  - [x] **The SAMPLE slots are gone and the times are real.** `verified:` `grep -in "sample|not
-        wired" src/app/booking.tsx` now returns nothing, and the screen calls
+  - [x] **Search screen against the web.** `verified:` `src/app/(tabs)/suche.tsx` +
+        `src/components/SalonCard.tsx` (new `variant="feed"`, additive, other variants
+        untouched). Measured against `/de/barbershop` + `/de/search` live at 390x844: card
+        width **366px both** (was 358 app / 366 web, page gutter fixed 16px to 12px), card
+        grammar now matches (2-col name+address+reviews left / rating+price right, rounded-16
+        photo, gallery dots, "ab N CHF" number-first), filter pills + leading circle + sort pill
+        bumped to the 44pt touch floor (was ~29-36px). Not done: the web chrome's own home+
+        hamburger masthead has no native equivalent (by design, native tab bar replaces it), so
+        top-400-row brightness differs (163 app vs 215 web) for that structural reason, not a
+        styling miss.
+  - [x] **Salon page against the web.** `verified:` `src/app/salon/[slug].tsx` unchanged;
+        `src/components/salon/SalonHeaderBlock.tsx` + `SalonServicesSection.tsx` edited. Header:
+        name bumped 22px/700 to 30px/600 (measured glyph height 22px on both web and app, exact
+        match), status line dropped its stale "bis HH:MM" tail (web dropped that itself
+        2026-07-24), the standalone "ab CHF" header price line removed (web's header never had
+        one). Services: removed the app-only Express/Klassisch/Signature duration-tier grouping,
+        web removed that same grouping 2026-07-24; now one grouped-list-card, first 5 rows, name
+        500/15px, duration in ink-3, price number-first "ab N CHF" bold. Not done, named not
+        hidden: the web Termin/Walk-in segmented toggle has no app equivalent (needs the walk-in
+        queue flow, Phase 5, out of this pass's scope); the hero photo reads noticeably darker on
+        app (46 vs 119 brightness in the hero region) even though both pull the same real
+        cover_photo_url/gallery_urls with no fabrication, likely a different first-photo
+        crop/order, not chased further (would mean touching data fetch, out of scope here).
+  - [x] **SAMPLE slots gone, times are real.** `verified:` `src/app/booking.tsx:189` in commit `252060ce0`.
+        `grep -in "sample|not wired" src/app/booking.tsx` now returns nothing, and the screen calls
         `fetchAvailableSlots` at `src/app/booking.tsx:189`. The query is at
         `src/lib/queries.ts:305` and hits the real `availability_slots` table, which the LIVE
         snapshot confirms carries 9365 rows with RLS on; every column it reads
         (`id, starts_at, ends_at, service_id, staff_member_id, salon_id, status`) is present in
         `_inventory/_db-columns.json`, so this is not a phantom-column silent no-op.
-  - [x] **Confirmation screen exists**, `src/app/confirmation.tsx`, and booking routes into it at
-        `src/app/booking.tsx:232`. `verified:` `grep -n "Alert.alert" src/app/booking.tsx` now
-        returns nothing. It deliberately does NOT claim a paid or persisted booking, for the reason
-        in the next line.
+  - [x] **Confirmation screen exists.** `verified:` `src/app/confirmation.tsx` and `src/app/booking.tsx:232`, commit `252060ce0`.
+        `grep -n "Alert.alert" src/app/booking.tsx` now returns nothing, so the stub is gone. It
+        deliberately does NOT claim a paid or persisted booking, for the reason in the next line.
 
 - [ ] **THE REAL BLOCKER, found 2026-08-14 and bigger than the fake slots were: the app cannot
       WRITE ANYTHING.** `src/lib/queries.ts` is 19 exported functions, 30 `.select()` calls and
