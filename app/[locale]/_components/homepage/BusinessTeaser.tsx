@@ -48,7 +48,7 @@ export default function BusinessTeaser() {
             size={56}
             strokeWidth={1.25}
             aria-hidden
-            className="text-s-ink-3"
+            className="text-s-ink-2"
           />
         </div>
 
@@ -58,7 +58,7 @@ export default function BusinessTeaser() {
           {/* mockup-ok: owner decision 5A (2026-08-09) , the section eyebrow stays,
               at the SAME size as the small grey text on a salon card. Measured on
               the live homepage: card meta = 12px, this eyebrow was 13px. */}
-          <p className="font-body text-[12px] font-semibold text-s-ink-3">
+          <p className="font-body text-[12px] font-semibold text-s-ink-2">
             Für Salons
           </p>
           {/* V3-D193 (2026-05-26): Page H2 weight 900 → 800 per "too bold" sweep.

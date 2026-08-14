@@ -166,7 +166,7 @@ export default function DashboardAdvicePanel({ advice }: { advice: DashboardAdvi
   return (
     <DashPanel title={t("adviceTitle")}>
       {rows}
-      <p className="px-5 py-3 text-[12px] text-s-ink-3">
+      <p className="px-5 py-3 text-[12px] text-s-ink-2">
         {t("adviceWindow", { weeks: advice.window_weeks })}
       </p>
     </DashPanel>
