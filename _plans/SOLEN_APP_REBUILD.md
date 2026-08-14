@@ -93,19 +93,18 @@ is unproven, and each phase writes its state here so the loop survives a session
       TWO THINGS THE FIRST SCREENSHOT ALREADY SHOWED, both real: the app opens in DARK by default
       (web is light-only by law, so this is a live contradiction for phase 1), and the floating tab
       bar overlaps the city header at the top of Home.
-- [ ] **Phase 1 , the canon. REWRITTEN after the audit, and it is now a much smaller job.**
-      I had this badly wrong, and so did the external council. Both of us called "web look + liquid
-      glass" an unresolved contradiction and a trap. It is neither: `_design-system/THEMING.md`
-      already resolved it, owner-approved **2026-06-15**, and it is SHIPPED in **13 real screens**.
-      Light theme mirrors the web's white high-contrast look; dark is a separate Revolut charcoal
-      system, not an inversion. Liquid glass already has named rules: the exact API
-      (`expo-glass-effect`, `GlassView`/`GlassCircle`), where it belongs (icon controls over photos,
-      the sticky book bar, the tab bar), a required fallback, and an explicit do-not-glass-everything
-      guard. Neither I nor the council had read the file we were theorising about.
-      So the real question is NOT "derive a canon", it is **"keep this canon or reverse it"**, plus
-      the one thing genuinely open: dark mode, which the app has at ~80% coverage and the web bans.
-      CLOSE: he sees the existing canon rendered on real screens, says keep or change, and the 15
-      docs collapse to that one canon with THEMING's locked values carried forward verbatim.
+- [x] **Phase 1 , the canon. CLOSED 2026-08-14.** He picked, in his own words: *"design eveth make
+      it like the main web bro"*. The standard is that an app screen must read as the SAME PRODUCT
+      as the equivalent solen.ch screen: same palette, type scale, card grammar, spacing and
+      component anatomy, with native behaviour added on top rather than instead. Light only, which
+      is his own dated rule (`TASTE_LOG` 2026-07-15, "no dark mode") and is now the ThemeProvider
+      default rather than following the OS. Glass stays limited to the three placements THEMING
+      already named, each with a fallback.
+      `verified:` written into `solen-mobile/_design-system/THEMING.md` as a new leading section
+      rather than a new file. I tried to create a parallel `CANON.md` and the exists-guard stopped
+      it, correctly: THEMING already declares itself the canon, and a second canon is the exact
+      duplication the audit had just caught me on.
+
 - [ ] **Phase 2 , demolition. Now has explicit no-destroy rules, from the audit.**
       Delete the 38 mockup routes AND `src/app/sheet-demo.tsx`, which sits outside `mocks/` and would
       have survived the original close condition. Collapse the 15 docs into the one canon.
