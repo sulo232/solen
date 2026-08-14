@@ -345,6 +345,16 @@ changes how a booking decides its payment mode, which is money behaviour and his
       on how often a token can be checked. Merging or deleting a branch someone is actively writing
       to is how you lose an afternoon of someone else's work. It lands when that session lands it.
       verified: `git worktree list` shows it checked out; `git log -1` shows today 14:46.
-- [ ] C12. `quirky-ellis-ef5559` keeps 169 files newer than main after today's three lifts. What is
-      left is the error-shape refactor (112 route files, no behaviour change) plus research notes.
-      Decide it as one thing: redo the refactor on current code, or drop the branch.
+- [x] C12. DONE, commits f6726c310, 695ef2842, aa19643cb. Everything on that copy that existed
+      NOWHERE else is here now: 63 research files (the cross-surface doctrine plus 27 principle
+      write-ups), 12 database changes written and never applied (upload file-type limits,
+      public-bucket listing scope, a revoked permission, an RLS performance fix), the backend audit
+      with its questions and rationale, its tests, and the leaked-password check, wired into sign-up
+      and verified against the real service.
+      DELIBERATELY LEFT: the error-shape rewrite across 112 route files (no behaviour change, and
+      main has moved on since July, so taking it would revert later work for nothing), and the same
+      file's password-rule loosening and Sie-to-du copy change, which a customer would feel.
+      THREE of its checks live in a folder this session cannot write to, so they are named here
+      rather than half-copied: migration-fabricated-data, service-role-ownership, storage-rls-bypass.
+- [ ] C13. Delete `quirky-ellis-ef5559` once those three checks are either copied by a session that
+      can write there, or judged not worth keeping. That is the only thing still holding it.
