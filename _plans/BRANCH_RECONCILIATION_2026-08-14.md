@@ -329,3 +329,18 @@ changes how a booking decides its payment mode, which is money behaviour and his
       The gate for the asking: `~/.claude/hooks/finish-autonomously-gate.py` now refuses a closing
       message that offers "finish it or bin it" about work that already exists, unless it names a
       real stake (money moving, a legal question, a decision he made). 8/8 on its own cases.
+
+### The branch pile, tracked as boxes rather than announced (2026-08-14, evening)
+
+78 branches at the start of the day, 25 now. Every deletion was examined first and recorded in
+`_plans/BRANCHES_RECORDED_2026-08-14.md` with the id that brings it back.
+
+- [ ] C10. The 25 that remain, one at a time. Each one: open it, rescue anything uncommitted that
+      exists nowhere else, decide merge or delete against what ships, delete, record. Cheapest
+      first, which is how the first 53 went.
+- [ ] C11. `airbnb-animated-icons-ee4329` is the only branch whose work is NEWER than main and from
+      today (a rate limit on bearer-token verification plus the two routes that use it). Current,
+      not stranded, so it merges rather than being picked apart.
+- [ ] C12. `quirky-ellis-ef5559` keeps 169 files newer than main after today's three lifts. What is
+      left is the error-shape refactor (112 route files, no behaviour change) plus research notes.
+      Decide it as one thing: redo the refactor on current code, or drop the branch.
