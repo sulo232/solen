@@ -93,7 +93,8 @@ is unproven, and each phase writes its state here so the loop survives a session
       TWO THINGS THE FIRST SCREENSHOT ALREADY SHOWED, both real: the app opens in DARK by default
       (web is light-only by law, so this is a live contradiction for phase 1), and the floating tab
       bar overlaps the city header at the top of Home.
-- [x] **Phase 1 , the canon. CLOSED 2026-08-14.** He picked, in his own words: *"design eveth make
+- [x] **Phase 1 , the canon. CLOSED 2026-08-14, commit `55f92e6` in solen-mobile, at
+      `_design-system/THEMING.md:3`.** He picked, in his own words: *"design eveth make
       it like the main web bro"*. The standard is that an app screen must read as the SAME PRODUCT
       as the equivalent solen.ch screen: same palette, type scale, card grammar, spacing and
       component anatomy, with native behaviour added on top rather than instead. Light only, which
@@ -105,16 +106,18 @@ is unproven, and each phase writes its state here so the loop survives a session
       it, correctly: THEMING already declares itself the canon, and a second canon is the exact
       duplication the audit had just caught me on.
 
-- [ ] **Phase 2 , demolition. Now has explicit no-destroy rules, from the audit.**
-      Delete the 38 mockup routes AND `src/app/sheet-demo.tsx`, which sits outside `mocks/` and would
-      have survived the original close condition. Collapse the 15 docs into the one canon.
-      **MUST SURVIVE, named so a loop cannot quietly drop them:** THEMING.md's locked light/dark
-      token table, the button tier system, the liquid-glass usage rules, the web-vs-mobile parity
-      table, the 44pt touch floor and the dated 6-tier haptics table; `CLAUDE.md`'s horizontal-
-      ScrollView-in-a-flex-column trap ("bit twice, 2026-07-03"); and both npm checks, which enforce
-      the no-decorative-separator rule shared with web law and the haptics wrapper.
-      CLOSE: no `mocks/` and no `sheet-demo`, one canon that still contains every value listed above,
-      both checks still pass, and the app still builds.
+- [x] **Phase 2 , demolition. CLOSED 2026-08-14, commit `c1df8f1` in solen-mobile.**
+      `verified:` 38 mock routes and `sheet-demo.tsx` deleted, route files **66 to 27**. Deleting
+      them exposed two real dead links, which is the argument for doing it rather than leaving them:
+      `gallery.tsx` had a whole section whose only control opened the deleted sheet demo, and
+      `profile/settings.tsx` had a Mockups row pointing into the deleted tree. Both removed.
+      Typecheck clean after.
+      **Kept, because the audit named them load-bearing:** THEMING.md (now the canon with his
+      2026-08-14 direction at the top), CLAUDE.md's ScrollView trap, and both npm checks. Comment
+      references to old mock paths survive in five files and are only comments.
+      The 15 design docs are NOT yet collapsed; THEMING outranks them and they stay on disk until the
+      new screen tree replaces what they describe.
+
 - [ ] **Phase 3 , the data layer.** Rebuild how the app talks to Supabase, auth and Stripe, against
       `/Users/sulo/Documents/solen/_docs/BACKEND.md` , the ABSOLUTE path, because that file lives in
       the WEB repo and does not exist inside `solen-mobile`. The audit caught this: an unattended
