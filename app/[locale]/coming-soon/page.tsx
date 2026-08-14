@@ -3,7 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Sparkles, ArrowLeft, Bell, Gift, Star, Send, Heart } from "lucide-react";
+import { Sparkles, ArrowLeft, Bell, Gift, Star, Send, Heart, Check } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useState } from "react";
 import { motion } from "motion/react";
@@ -93,7 +93,10 @@ export default function ComingSoonPage() {
           </div>
         ) : (
           <div className="flex items-center justify-center gap-2 text-s-success text-sm font-medium mb-6">
-            <Sparkles size={16} />
+            {/* Check, not Sparkles: sparkles is banned by name (LOCKFILE 1598, memory
+                feedback_icon_rules) and this is a confirmation, which is what a check means.
+                The fix already existed on quirky-ellis and was never merged. */}
+            <Check size={16} />
             {t("notifySuccess")}
           </div>
         )}

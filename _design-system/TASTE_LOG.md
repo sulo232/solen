@@ -726,3 +726,30 @@ where proposals come from, and he judges each one.
 
 **Where it was decided:** `/de/dev/mock/card-shape`, the real home screen with a three-stop toggle,
 built under the mockup definition in `public/_mockups/_BASE.md`.
+
+---
+
+## 2026-08-14 , the branch versions of a screen lose to what ships. He picked "Now".
+
+**Owner, verbatim:** "fice version keep now", answering the five-stop toggle on the search results
+screen at `/de/dev/mock/versions/search`.
+
+**What he was choosing between.** Five real renders of five real versions of `SearchTemplate.tsx`,
+each written into the tree, rendered by the dev server at 402pt and photographed. Pixel diff against
+what ships: v2 69.3%, v3 47.6%, v4 49.6%, v5 69.3% of the frame. The biggest rival is carried by 33
+unmerged branches.
+
+**Why this decision is bigger than one screen.** Measured the same hour across all 55 clashing
+screens, by comparing the last commit date of every branch's copy of each file against main's: what
+ships is the NEWEST version on 53 of them. The competing versions are older snapshots, not
+alternative designs, so adopting one means going backwards. The home inspiration row is the clean
+illustration: the live version is the only one of eleven that renders the creator handle and the
+from-price under each card, and the largest rival group is from 17 July without it.
+
+**The standing rule this sets, until he says otherwise:** on a screen where the live version is the
+newest, the branch copies are history and are not re-proposed. The only screen measured with a
+genuinely newer branch copy is `app/[locale]/coming-soon/page.tsx` (quirky-ellis 2026-07-23 against
+main 2026-07-17), and that one is still his to look at.
+
+**Where it was decided:** `/de/dev/mock/versions/search`, five stops, English labels, built under the
+mockup definition in `public/_mockups/_BASE.md`.

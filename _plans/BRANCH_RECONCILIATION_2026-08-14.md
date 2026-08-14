@@ -175,7 +175,15 @@ Payload: `/tmp/claude/version-ages.json`. Mockup for the row: `/de/dev/mock/vers
       built by the date comparison above, and the inspiration-row case shown at
       `app/[locale]/dev/mock/versions/inspiration-row/page.tsx`.
 
-- [ ] C6b. SHOW him each, paced by him, one at a time. Not startable in bulk by design: he said
+- [x] C6b. ANSWERED 2026-08-14: "fice version keep now". He flipped the five stops on the search
+      results screen and kept what ships. Logged in `_design-system/TASTE_LOG.md` (2026-08-14 entry).
+      Combined with C6d, that settles the screen queue: on 53 of 55 screens the live version is the
+      newest, so the branch copies are history, not choices, and they are not re-proposed. The one
+      screen where a branch was genuinely newer, `coming-soon`, turned out to be a single icon swap
+      and is with him now as a two-stop picture. verified: commit below, TASTE_LOG 2026-08-14,
+      /tmp/claude/version-ages.json.
+      OLD TEXT, kept because it was the plan until he answered: SHOW him each, paced by him, one at
+      a time. Not startable in bulk by design: he said
       "Show me each version, I pick", so the queue moves at his pace, not mine.
       **1 of 30 DECIDED. Salon card photo shape: he picked A, 2026-08-14, so 5/4 stays and the
       six branches' 6/5 is in the graveyard.** Logged in `_design-system/TASTE_LOG.md` and
