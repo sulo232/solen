@@ -152,6 +152,26 @@ is unproven, and each phase writes its state here so the loop survives a session
         wired. This is the single biggest thing in the whole rebuild.
   - [ ] Confirmation screen, which does not exist at all; booking currently ends in an
         `Alert.alert` stub.
+### The whole-frontend fan-out, 2026-08-14
+
+Owner: *"i told you to rebuild the frontned of app from scratch why are youbdoing it one by one its
+an easy job"*. He was right, and one of my own gates was part of why: `no-concurrent-coders-same-repo`
+banned every parallel builder in this repo, so a whole-frontend fan-out was impossible. The collision
+it was built for was never caused by parallelism, it was caused by two agents both running `git add`.
+The gate now asks a brief for two promises, disjoint file ownership and no git, and steps aside when
+they are there. Self-tested 4/4.
+
+All 25 remaining screens are out with five builders at once, on disjoint files, none of them allowed
+to touch git. I commit everything when they land.
+
+| builder | screens |
+|---|---|
+| 1 | `(tabs)/suche`, `salon/[slug]` |
+| 2 | `(tabs)/entdecken`, `(tabs)/karte`, `angebote`, `inspo/[id]` |
+| 3 | `(tabs)/profil`, `profile/bookings favorites settings preferences referral`, `rewards`, `notifications` |
+| 4 | `booking` + real availability, `confirmation` (new), `auth/login`, `auth/welcome`, `onboarding` |
+| 5 | `city-sheet`, `search-filters`, `discover/saved`, `gallery`, `profile/hair-profile`, `reviews/[slug]` |
+
 - [ ] **Phase 5 , walk-in and the queue.** Pay upfront, get a number, track the place in line.
       CLOSE: a queue joined and tracked in the simulator, screenshotted.
 - [ ] **Phase 6 , the rest of the customer.** Appointments, tips, vouchers, loyalty, referrals,
