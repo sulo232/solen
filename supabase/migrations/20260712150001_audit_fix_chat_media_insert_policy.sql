@@ -1,3 +1,5 @@
+-- Renamed 2026-08-14 from 20260712150000, which was already taken on main by
+-- audit_fix_quick_action_token_single_use.sql. Already applied live; content unchanged.
 -- exists-check: net-new vs 002_profiles.sql, 031_audit_log.sql, 065_social_media.sql, 056_chat_templates.sql,
 -- 033_guest_checkout.sql, 029_review_policies.sql, 060_chat_read_receipts.sql, 061_fix_review_inserts.sql
 -- because none of those define storage.objects policies for the chat-media bucket; grep across all of

@@ -1,3 +1,8 @@
+-- Renamed 2026-08-14 from 20260703120000 to 20260703120001. Another migration already on main
+-- (20260703120000_save_service_bundle_rpc_a5.sql) had claimed that exact stamp on a different
+-- branch. Two files sharing one version stamp is a collision the migration tooling cannot
+-- resolve, and this change is already applied live, so the stamp is bookkeeping. Content is
+-- byte-identical to what was rescued.
 -- exists-check: net-new (no benchmark/analytics RPC existed). Perf pass C1; applied 2026-07-03 via
 -- MCP apply_migration, mirrored here. Owns no table.
 

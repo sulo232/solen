@@ -1,3 +1,5 @@
+-- Renamed 2026-08-14 from 20260703130000, same reason as its sibling: 20260703130000 was already
+-- taken on main by seed_rollout_cities_a5.sql. Already applied live; content unchanged.
 -- exists-check: net-new (no client-summary RPC existed). Perf pass C3; applied 2026-07-03 via MCP
 -- apply_migration, mirrored here. Owns no table.
 
