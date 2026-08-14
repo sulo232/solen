@@ -75,3 +75,6 @@ than what ships.
 |---|---|---|---|
 | `claude/amazing-curie-932abc` | `e01413395` | 2026-06-23 | 86 |
 | `claude/cranky-bose-15064d` | `2fddaf0d8` | 2026-06-23 | 86 |
+| `claude/adoring-curie-22ecac` | `ef004dcf4` | 2026-06-28 | 16 |
+
+That one carried nine files nobody else had (eight database changes, one setup script), all kept in commit 064fe4fad.
