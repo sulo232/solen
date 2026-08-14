@@ -187,9 +187,7 @@ export default function QueueTrackingPage() {
   if (notFound || !data) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-white px-6 text-center">
-        <div className="mb-6 grid h-20 w-20 place-items-center rounded-full bg-s-bg-sunken">
-          <TicketX size={34} strokeWidth={1.8} className="text-s-ink-2" aria-hidden />
-        </div>
+        <TicketX size={60} strokeWidth={1.25} className="mb-6 text-s-ink" aria-hidden />
         <h1 className="font-heading text-[20px] font-bold text-s-ink">{l.notFound}</h1>
         <p className="mt-1.5 max-w-[300px] text-[14px] leading-relaxed text-s-ink-2">{l.notFoundSub}</p>
         <Link href={`/${locale}`} className="mt-6 rounded-btn bg-s-ink px-6 py-3 font-heading text-[14px] font-semibold text-white transition-transform active:scale-[0.98]">
@@ -310,9 +308,7 @@ export default function QueueTrackingPage() {
   if (isCancelled || isNoShow) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-white px-6 text-center">
-        <div className="mb-6 grid h-20 w-20 place-items-center rounded-full bg-s-bg-sunken">
-          <AlertCircle size={34} strokeWidth={1.8} className="text-s-ink-2" aria-hidden />
-        </div>
+        <AlertCircle size={60} strokeWidth={1.25} className="mb-6 text-s-ink" aria-hidden />
         <h1 className="font-heading text-[20px] font-bold text-s-ink">{isCancelled ? l.cancelled : l.noShow}</h1>
         <p className="mt-1.5 max-w-[300px] text-[14px] leading-relaxed text-s-ink-2">{isCancelled ? l.cancelledSub : l.noShowSub}</p>
         <Link href={`/${locale}`} className="mt-6 rounded-btn bg-s-ink px-6 py-3 font-heading text-[14px] font-semibold text-white transition-transform active:scale-[0.98]">

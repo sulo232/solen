@@ -15,7 +15,6 @@ import {
   Palette,
   Scissors,
   Search,
-  Sparkles,
   Sun,
   Sunrise,
   Sunset,
@@ -108,10 +107,10 @@ const HEIGHT = {
 const SERVICES: { label: string; icon: LucideIcon }[] = [
   { label: "Coiffeur",       icon: Scissors },
   { label: "Barbershop",     icon: Scissors },
-  { label: "Nails",          icon: Sparkles },
+  { label: "Nails",          icon: Hand },
   { label: "Spa & Wellness", icon: Leaf },
   { label: "Massage",        icon: Hand },
-  { label: "Maniküre",       icon: Sparkles },
+  { label: "Maniküre",       icon: Hand },
   { label: "Pediküre",       icon: Footprints },
   { label: "Färben",         icon: Palette },
 ];

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Check, Star, Scissors, UserPlus, Sparkles, Droplets, Zap, Shield, Lock, CreditCard } from "lucide-react";
+import { ArrowRight, Check, Star, Scissors, UserPlus, Droplets, Shield, Lock, CreditCard, Hand } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { buildAlternates } from "@/lib/seo";
 import BentoBusiness, { JoinUsCard } from "../_components/homepage/BentoBusiness";
@@ -329,10 +329,10 @@ export default async function FuerSalonsPage({
             {[
               { icon: Scissors, key: "cat_coiffeur" },
               { icon: UserPlus, key: "cat_barbershop" },
-              { icon: Sparkles, key: "cat_nails" },
+              { icon: Hand, key: "cat_nails" },
               { icon: Droplets, key: "cat_spa" },
               { icon: Star, key: "cat_makeup" },
-              { icon: Zap, key: "cat_waxing" },
+              { icon: Droplets, key: "cat_waxing" },
             ].map((cat) => (
               <div
                 key={cat.key}

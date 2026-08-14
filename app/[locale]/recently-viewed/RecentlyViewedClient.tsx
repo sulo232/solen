@@ -78,9 +78,7 @@ export default function RecentlyViewedClient() {
         ) : list.length === 0 ? (
           // Empty state — sunken clock disc + ink CTA (mockup)
           <div className="flex flex-col items-center px-8 pb-14 pt-16 text-center">
-            <div className="mb-6 grid h-16 w-16 place-items-center rounded-full bg-s-bg-sunken text-s-ink-2">
-              <Clock size={30} strokeWidth={1.8} aria-hidden />
-            </div>
+            <Clock size={56} strokeWidth={1.25} className="mb-6 text-s-ink" aria-hidden />
             <h2 className="font-heading text-[22px] font-bold tracking-[-0.02em] text-s-ink">{t("emptyTitle")}</h2>
             <p className="mt-2 max-w-[260px] text-[14px] leading-relaxed text-s-ink-2">{t("emptyBody")}</p>
             <Link

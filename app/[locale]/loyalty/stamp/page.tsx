@@ -77,9 +77,7 @@ export default function LoyaltyStampPage() {
             style={{ boxShadow: "0 2px 4px rgba(26,18,9,.06), 0 8px 28px rgba(26,18,9,.08)" }}
           >
             {/* Icon box — icons are content, not actions: sunken + ink (1.5 v3, 2026-06-11) */}
-            <div className="w-16 h-16 rounded-[18px] bg-s-bg-sunken flex items-center justify-center mx-auto mb-5">
-              <Award size={30} className="text-s-ink" />
-            </div>
+            <Award size={56} strokeWidth={1.25} className="mx-auto mb-5 text-s-ink" />
             <p className="text-[12px] font-heading tracking-[0.08em] text-s-ink-2 mb-2">
               Stempelkarte
             </p>

@@ -8,7 +8,7 @@
 // follow-up — tracked in QUESTIONS.md.
 
 import * as React from "react";
-import { Star, Heart, Droplet, Zap } from "lucide-react";
+import { Star, Heart, Droplet, Tag } from "lucide-react";
 
 export type Choice = { value: string; label: string };
 export type InterestChoice = Choice & { note?: string; cls: string };
@@ -87,7 +87,7 @@ export function CatIcon({ name }: { name: string }) {
 
 export const INTEREST_ICON: Record<string, React.ReactNode> = {
   top_rated: <Star size={20} aria-hidden />,
-  deals: <Zap size={20} aria-hidden />,
+  deals: <Tag size={20} aria-hidden />,
   favorites: <Heart size={20} aria-hidden />,
   spa: <Droplet size={20} aria-hidden />,
 };

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "motion/react";
-import { Check, ChevronRight, ArrowLeft, PartyPopper, Loader2, Building2, Sparkles, AlertCircle, Camera } from "lucide-react";
+import { Check, ChevronRight, ArrowLeft, PartyPopper, Loader2, Building2, AlertCircle, Camera, TrendingUp } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import InteractiveHoverButton from "@/components-legacy/ui/interactive-hover-button";
 import { slideSwitch } from "@/lib/animations";
@@ -24,7 +24,7 @@ const TOTAL_STEPS = 3;
 
 const STEP_META = [
   { icon: Building2, label: "basics" },
-  { icon: Sparkles, label: "quickwin" },
+  { icon: TrendingUp, label: "quickwin" },
   { icon: Camera, label: "photos" },
 ];
 
@@ -251,7 +251,7 @@ function Step3({ data, onChange, category, t }: {
           </div>
           {suggested && data.service_name && (
             <div className="flex items-center gap-1.5 mt-1.5">
-              <Sparkles size={10} className="text-s-ink-2" />
+              <TrendingUp size={10} className="text-s-ink-2" />
               <p className="text-[12px] font-heading tracking-[0.08em] text-s-ink/45">
                 KI-Vorschlag anpassbar
               </p>
@@ -291,7 +291,7 @@ function Step3({ data, onChange, category, t }: {
 
         <div className="rounded-[12px] border border-s-border p-4 bg-s-bg-sunken">
           <div className="flex items-center gap-1.5 mb-1.5">
-            <Sparkles size={12} className="text-s-ink-2 shrink-0" />
+            <TrendingUp size={12} className="text-s-ink-2 shrink-0" />
             <p className="text-[12.5px] font-heading font-semibold text-s-ink-2">
               {t("step3Quick.hint")}
             </p>

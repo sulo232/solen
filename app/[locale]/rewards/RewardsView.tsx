@@ -4,7 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { motion, useReducedMotion, type Variants } from "motion/react";
 import { useTranslations } from "next-intl";
-import { Award, Crown, Check, CalendarClock, Zap, Gift, Tag, BadgePercent, Clock, Search, Lock } from "lucide-react";
+import { Award, Crown, Check, CalendarClock, Timer, Gift, Tag, BadgePercent, Clock, Search, Lock } from "lucide-react";
 import { LOYALTY, type LoyaltyStatus, type Tier } from "@/lib/loyalty/status";
 
 const RANK: Record<Tier, number> = { base: 0, gold: 1, platinum: 2 };
@@ -25,7 +25,7 @@ const PERKS = [
   { key: "memberDeals", Icon: BadgePercent, chip: "success", min: "gold" as Tier },
   { key: "birthday", Icon: Gift, chip: "pink", min: "gold" as Tier },
   { key: "slots", Icon: CalendarClock, chip: "mut", min: "platinum" as Tier },
-  { key: "angebote48", Icon: Zap, chip: "mut", min: "platinum" as Tier },
+  { key: "angebote48", Icon: Timer, chip: "mut", min: "platinum" as Tier },
 ] as const;
 
 function chipClass(kind: string): string {

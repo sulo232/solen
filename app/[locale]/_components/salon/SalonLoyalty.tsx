@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { ChevronRight, Diamond, Sparkles, Crown, UserPlus } from "lucide-react";
+import { ChevronRight, Diamond, Gem, Crown, UserPlus } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
@@ -33,7 +33,7 @@ export function SalonLoyalty() {
       desc: "Sammeln Sie bei jedem Besuch automatisch Treuepunkte. Je öfter Sie buchen, desto mehr.",
     },
     {
-      icon: Sparkles,
+      icon: Gem,
       title: "Belohnungen",
       subtitle: "Lösen Sie spannende Belohnungen ein",
       desc: "Tauschen Sie gesammelte Punkte gegen Rabatte, kostenlose Services oder Geschenke ein.",

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Sparkles, Tag, Layers, ShoppingBag, ImageIcon, Bell } from "lucide-react";
+import { Bot, Tag, Layers, ShoppingBag, ImageIcon, Bell } from "lucide-react";
 import { useTranslations } from "next-intl";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import AiArtGenerator from "@/components-legacy/dashboard/nail/AiArtGenerator";
@@ -15,7 +15,7 @@ import InfillReminderConfig from "@/components-legacy/dashboard/nail/InfillRemin
 type Tab = "ai" | "gallery" | "prices" | "stations" | "retail" | "sales" | "reminders";
 
 const TABS: { id: Tab; labelKey: string; icon: React.ElementType }[] = [
-  { id: "ai", labelKey: "tabAI", icon: Sparkles },
+  { id: "ai", labelKey: "tabAI", icon: Bot },
   { id: "gallery", labelKey: "tabGallery", icon: ImageIcon },
   { id: "prices", labelKey: "tabPrices", icon: Tag },
   { id: "stations", labelKey: "tabStations", icon: Layers },

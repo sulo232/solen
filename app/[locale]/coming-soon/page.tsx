@@ -3,7 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Sparkles, ArrowLeft, Bell, Gift, Star, Send, Heart } from "lucide-react";
+import { Clock, ArrowLeft, Bell, Gift, Star, Send, Heart, Check } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useState } from "react";
 import { motion } from "motion/react";
@@ -21,7 +21,7 @@ export default function ComingSoonPage() {
   const t = useTranslations("comingSoon");
   const params = useSearchParams() ?? new URLSearchParams();
   const feature = params.get("feature") ?? "default";
-  const meta = FEATURE_MAP[feature] ?? { Icon: Sparkles };
+  const meta = FEATURE_MAP[feature] ?? { Icon: Clock };
   const FeatureIcon = meta.Icon;
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
@@ -61,9 +61,9 @@ export default function ComingSoonPage() {
         transition={{ duration: 0.5 }}
         className="max-w-md w-full text-center"
       >
-        <div className="w-20 h-20 rounded-[24px] mx-auto mb-6 flex items-center justify-center bg-s-bg-sunken">
-          <FeatureIcon size={32} className="text-s-ink" aria-hidden />
-        </div>
+        {/* Owner picked stop 4 on /dev/mock/versions/coming-soon-icon, 2026-08-14: no grey tile,
+            the glyph carries itself at 64. "i never want this anywhere". */}
+        <FeatureIcon size={64} strokeWidth={1.25} className="mx-auto mb-6 text-s-ink" aria-hidden />
 
         <h1 className="font-display text-3xl md:text-[40px] font-semibold tracking-tight text-s-ink leading-[1.05] mb-2">
           {t("title")}
@@ -93,7 +93,7 @@ export default function ComingSoonPage() {
           </div>
         ) : (
           <div className="flex items-center justify-center gap-2 text-s-success text-sm font-medium mb-6">
-            <Sparkles size={16} />
+            <Check size={16} />
             {t("notifySuccess")}
           </div>
         )}
