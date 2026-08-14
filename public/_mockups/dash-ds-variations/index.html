@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<!--
+Exists-check: target = REAL salon-owner dashboard home (app/[locale]/dashboard/page.tsx): 64px icon rail + topbar + eyebrow/title/New-appointment CTA + KPI StatTile row + charts + "Today" DashRow list. `npm run exists ds-variations` = 0 matches (new comparison). Treatment-only comparison of 3 DESIGN-SYSTEM skins on that same structure. Measured live (2026-07-04): rail 64px, h1 26px/600, CTA ink #0A0A0A pill radius 9999px pad 10/18. Tokens: Customer DS from tailwind.config.js; Aurora from branch claude/bold-hellman-b31513 (#F5F7FA field, shadow-aurora, 18px). lang-ok note: mockup copy intentionally English (internal review). Sample KPI numbers = consistent placeholders (skin comparison, not data).
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard , Design System Directions</title>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --ink3:#9A9A9A; --hair:#E4E4E7;
+    --white:#FFFFFF; --sunken:#F4F4F5; --accent:#276EF1; --accent-deep:#1E54B7;
+    --success:#16A34A; --success-bg:#E8F5E9; --star:#FFC32B; --amber:#EA580C;
+    --field:#F5F7FA;
+    --shadow-aurora:0 1px 2px rgba(16,24,40,.05), 0 14px 30px -12px rgba(16,24,40,.14);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter Tight','Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#E9EAEC;color:var(--ink);-webkit-font-smoothing:antialiased;padding:0 0 60px}
+  .page-head{max-width:1220px;margin:0 auto;padding:28px 20px 8px}
+  .page-head h1{font-size:22px;font-weight:700;letter-spacing:-.02em}
+  .page-head p{font-size:14px;color:var(--ink2);margin-top:6px;line-height:1.5;max-width:780px}
+  .rec{display:inline-block;margin-top:12px;font-size:13px;font-weight:600;color:var(--accent);background:#EAEFFE;border-radius:999px;padding:6px 12px}
+  .grid{display:flex;gap:20px;max-width:1220px;margin:22px auto 0;padding:0 20px;overflow-x:auto}
+  .col{flex:1 1 0;min-width:370px}
+  .col-label{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+  .col-label b{font-size:15px;font-weight:700}
+  .col-label .tag{font-size:11px;font-weight:600;color:var(--ink2)}
+  .col-note{font-size:12.5px;color:var(--ink2);line-height:1.5;margin-bottom:12px;min-height:56px}
+
+  .dash{border-radius:16px;overflow:hidden;border:1px solid var(--hair);background:var(--white);height:560px;display:flex}
+  .rail{width:48px;flex-shrink:0;background:var(--white);border-right:1px solid var(--hair);display:flex;flex-direction:column;align-items:center;padding-top:12px;gap:3px}
+  .rail .logo{width:28px;height:28px;border-radius:8px;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;margin-bottom:8px}
+  .rail .ico{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;color:var(--ink2)}
+  .rail .ico svg{width:17px;height:17px}
+  .body{flex:1;display:flex;flex-direction:column;min-width:0}
+  .topbar{height:44px;border-bottom:1px solid var(--hair);display:flex;align-items:center;padding:0 14px;gap:10px;background:var(--white)}
+  .salonpill{font-size:12px;font-weight:600;border:1px solid var(--hair);border-radius:999px;padding:3px 10px}
+  .spacer{flex:1}
+  .tbico{width:16px;height:16px;color:var(--ink2)}
+  .content{flex:1;padding:16px;overflow:hidden}
+  .eyebrow{font-size:11px;font-weight:600;color:var(--ink3)}
+  .rowtop{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
+  .rowtop h2{font-size:20px;font-weight:600;letter-spacing:-.02em;margin-top:3px}
+  .cta{font-size:13px;font-weight:600;padding:9px 15px;border-radius:999px;display:inline-flex;align-items:center;gap:6px;color:#fff;background:var(--ink)}
+  .cta svg{width:14px;height:14px}
+  .kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-bottom:14px}
+  .kpi{border-radius:14px;padding:12px;background:var(--white);border:1px solid var(--hair);min-width:0}
+  .kpi .kl{font-size:10.5px;color:var(--ink2);font-weight:500;display:flex;align-items:center;gap:6px;margin-bottom:7px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .kpi .disc{width:20px;height:20px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .kpi .disc svg{width:12px;height:12px}
+  .kpi .kv{font-size:21px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .kpi .kd{font-size:10.5px;font-weight:600;margin-top:3px}
+  .up{color:var(--success)} .dn{color:#DC2626}
+  .panels{display:grid;grid-template-columns:minmax(0,0.72fr) minmax(0,1fr);gap:12px}
+  .panel{border-radius:14px;background:var(--white);border:1px solid var(--hair);padding:12px;min-height:0;min-width:0}
+  .panel h3{font-size:12px;font-weight:600;color:var(--ink);margin-bottom:10px;display:flex;justify-content:space-between}
+  .panel h3 a{color:var(--accent);font-weight:600;font-size:11.5px;text-decoration:none}
+  .chart{height:78px;display:flex;align-items:flex-end;gap:5px;padding-top:6px}
+  .bar{flex:1;background:var(--accent);border-radius:3px 3px 0 0;opacity:.9}
+  .today .row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--hair)}
+  .today .row:last-child{border-bottom:0}
+  .av{width:24px;height:24px;border-radius:999px;background:var(--sunken);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--ink2)}
+  .today .nm{font-size:12px;font-weight:600;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .today .tm{font-size:11px;color:var(--ink2);font-variant-numeric:tabular-nums}
+  .pill{font-size:9.5px;font-weight:600;padding:2px 7px;border-radius:999px}
+  .pill.ok{background:var(--success-bg);color:var(--success)}
+  .pill.pend{background:#FEF3E2;color:var(--amber)}
+
+  /* A: AURORA (rich operator) */
+  .v-aurora .dash{background:var(--field)}
+  .v-aurora .content{background:var(--field)}
+  .v-aurora .kpi,.v-aurora .panel{border:0;box-shadow:var(--shadow-aurora);border-radius:18px}
+  .v-aurora .cta{background:var(--accent)}
+  .v-aurora .rail .ico.active{background:#EAEFFE;color:var(--accent)}
+  .v-aurora .disc.money{background:#DCFCE7;color:var(--success)}
+  .v-aurora .disc.book{background:#EAEFFE;color:var(--accent)}
+  .v-aurora .disc.cust{background:#EAEFFE;color:var(--accent)}
+  .v-aurora .disc.rate{background:#FEF6DE;color:#B7860B}
+  .v-aurora .bar{background:linear-gradient(180deg,var(--accent),rgba(39,110,241,.35))}
+
+  /* B: CUSTOMER DS (B&W restraint) */
+  .v-cust .dash{background:var(--white)}
+  .v-cust .content{background:var(--white)}
+  .v-cust .kpi,.v-cust .panel{border:1px solid var(--hair);box-shadow:none;border-radius:16px}
+  .v-cust .cta{background:var(--ink)}
+  .v-cust .rail .ico.active{background:var(--sunken);color:var(--ink)}
+  .v-cust .disc{display:none}
+  .v-cust .bar{background:var(--ink);opacity:.14}
+  .v-cust .bar.hl{background:var(--ink);opacity:.85}
+
+  /* C: HYBRID (recommended) */
+  .v-hy .dash{background:var(--white)}
+  .v-hy .content{background:var(--white)}
+  .v-hy .kpi,.v-hy .panel{border:1px solid var(--hair);box-shadow:none;border-radius:16px}
+  .v-hy .cta{background:var(--ink)}
+  .v-hy .rail .ico.active{background:var(--sunken);color:var(--ink)}
+  .v-hy .disc{width:15px;height:15px;background:transparent}
+  .v-hy .disc svg{width:14px;height:14px}
+  .v-hy .disc.money{color:var(--success)}
+  .v-hy .disc.book{color:var(--ink2)}
+  .v-hy .disc.cust{color:var(--ink2)}
+  .v-hy .disc.rate{color:var(--star)}
+  .v-hy .bar{background:var(--sunken)}
+  .v-hy .bar.hl{background:var(--accent);opacity:1}
+  .recbadge{position:absolute;top:-9px;right:12px;background:var(--success);color:#fff;font-size:10px;font-weight:700;padding:3px 9px;border-radius:999px;z-index:2}
+</style>
+</head>
+<body>
+<div class="page-head">
+  <h1>Dashboard , 3 design-system directions</h1>
+  <p>The same real dashboard home (icon rail, KPI row, chart, today list), shown in three visual languages. Structure is identical everywhere , only the treatment (surfaces, depth, colour, CTA) changes. Pick one; I build the whole dashboard to it.</p>
+  <span class="rec">My pick: C , Hybrid. Customer-app calm, plus one semantic colour cue so an owner scans money and rating instantly.</span>
+</div>
+
+<div class="grid">
+  <div class="col v-aurora">
+    <div class="col-label"><b>A , Aurora</b><span class="tag">rich operator</span></div>
+    <div class="col-note">Tinted page field, soft floating cards with depth, coloured KPI chips, azure primary CTA. The approved-but-unmerged skin. Most app-like, most visual weight.</div>
+    <div class="dash">__F__</div>
+  </div>
+  <div class="col v-cust">
+    <div class="col-label"><b>B , Customer DS</b><span class="tag">restraint</span></div>
+    <div class="col-note">The consumer app's language inside the dashboard: flat white, hairline borders, ink CTA, blue only on tiny links. Calmest, most consistent with what customers see. Least hierarchy for dense data.</div>
+    <div class="dash">__F__</div>
+  </div>
+  <div class="col v-hy">
+    <div class="col-label"><b>C , Hybrid</b><span class="tag">recommended</span></div>
+    <div class="col-note">Customer-DS restraint plus ONE operator concession: a small semantic icon per KPI (money green, rating yellow) so numbers read at a glance. Calm but scannable.</div>
+    <div class="dash">__F__</div>
+  </div>
+</div>
+
+<script>
+function icon(p){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>'}
+const I={
+  grid:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>',
+  cal:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+  users:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>',
+  scis:'<circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.12 15.88M14.47 14.48 20 20M8.12 8.12 12 12"/>',
+  box:'<path d="M21 8v8a2 2 0 0 1-1 1.73l-7 4a2 2 0 0 1-2 0l-7-4A2 2 0 0 1 3 16V8"/><path d="m3.3 7 8.7 5 8.7-5M12 22V12"/>',
+  dollar:'<line x1="12" y1="2" x2="12" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>',
+  chart:'<path d="M3 3v18h18"/><path d="m7 12 3-3 4 4 5-5"/>',
+  cog:'<circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.2 4.2l2.8 2.8M17 17l2.8 2.8M1 12h4M19 12h4M4.2 19.8 7 17M17 7l2.8-2.8"/>',
+  plus:'<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>',
+  star:'<polygon points="12 2 15 9 22 9.3 16.5 14 18.5 21 12 17 5.5 21 7.5 14 2 9.3 9 9"/>',
+};
+const railIcons=[['grid',1],['cal',0],['users',0],['scis',0],['box',0],['users',0],['dollar',0],['chart',0],['cog',0]];
+const today=[['LM','Lena Meier','09:30','ok','Confirmed'],['TB','Tomas Brunner','10:15','ok','Confirmed'],['AK','Amir Khan','11:00','pend','Pending'],['SR','Sofia Rossi','13:45','ok','Confirmed']];
+function frame(){
+  const rail=railIcons.map(([k,a])=>'<div class="ico'+(a?' active':'')+'">'+icon(I[k])+'</div>').join('');
+  const bars=[40,55,48,70,62,85,58].map((h,i)=>'<div class="bar'+(i===5?' hl':'')+'" style="height:'+h+'%"></div>').join('');
+  const rows=today.map(([av,nm,tm,st,lb])=>'<div class="row"><div class="av">'+av+'</div><div class="nm">'+nm+'</div><span class="pill '+st+'">'+lb+'</span></div>').join('');
+  return `
+    <div class="rail"><div class="logo">S</div>${rail}</div>
+    <div class="body">
+      <div class="topbar"><span class="salonpill">Salon Test</span><span class="spacer"></span>
+        <span class="tbico">${icon('<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>')}</span>
+        <span class="tbico">${icon('<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>')}</span>
+      </div>
+      <div class="content">
+        <div class="rowtop">
+          <div><div class="eyebrow">Saturday, 4 July</div><h2>Overview</h2></div>
+          <span class="cta">${icon(I.plus)}New appointment</span>
+        </div>
+        <div class="kpis">
+          <div class="kpi"><div class="kl"><span class="disc money">${icon(I.dollar)}</span>Revenue</div><div class="kv">CHF 2'840</div><div class="kd up">+12%</div></div>
+          <div class="kpi"><div class="kl"><span class="disc book">${icon(I.cal)}</span>Bookings</div><div class="kv">24</div><div class="kd up">+8%</div></div>
+          <div class="kpi"><div class="kl"><span class="disc cust">${icon(I.users)}</span>New clients</div><div class="kv">6</div><div class="kd up">+2</div></div>
+          <div class="kpi"><div class="kl"><span class="disc rate">${icon(I.star)}</span>Rating</div><div class="kv">4.8</div><div class="kd">128 total</div></div>
+        </div>
+        <div class="panels">
+          <div class="panel"><h3>Revenue , 7 days</h3><div class="chart">${bars}</div></div>
+          <div class="panel today"><h3>Today<a href="#">All</a></h3>${rows}</div>
+        </div>
+      </div>
+    </div>`;
+}
+const html=frame();
+document.querySelectorAll('.dash').forEach(d=>{d.innerHTML=d.innerHTML.replace('__F__',html)});
+</script>
+</body>
+</html>
