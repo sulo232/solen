@@ -55,6 +55,33 @@ export function paymentFailedNotification(
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
 
+/**
+ * Pre-charge sweep decline → email to customer. The booking is still confirmed;
+ * only the early (5-day-out) attempt to charge the saved card failed. Must NOT
+ * imply the appointment itself was cancelled or unconfirmed (see
+ * paymentFailedNotification above, which IS true at booking time, but is a false
+ * statement here).
+ */
+export function preChargeDeclinedNotification(
+  to: string,
+  vars: { salon: string; date: string },
+  locale: EmailLocale = "de"
+) {
+  const subjects: Record<EmailLocale, string> = {
+    de: `Zahlung fehlgeschlagen: ${vars.salon}`,
+    en: `Payment failed: ${vars.salon}`,
+    fr: `Paiement échoué: ${vars.salon}`,
+    it: `Pagamento fallito: ${vars.salon}`,
+  };
+  const bodies: Record<EmailLocale, string> = {
+    de: `<p>Die Vorab-Belastung für deinen Termin am ${vars.date} konnte nicht durchgeführt werden. Dein Termin bleibt bestätigt.</p><p>Bitte aktualisiere deine Zahlungsmethode oder kontaktiere den Salon.</p>`,
+    en: `<p>The advance charge for your appointment on ${vars.date} could not be processed. Your appointment is still confirmed.</p><p>Please update your payment method or contact the salon.</p>`,
+    fr: `<p>Le prélèvement anticipé pour votre rendez-vous du ${vars.date} n'a pas pu être effectué. Votre rendez-vous reste confirmé.</p><p>Veuillez mettre à jour votre moyen de paiement ou contacter le salon.</p>`,
+    it: `<p>L'addebito anticipato per il tuo appuntamento del ${vars.date} non è andato a buon fine. Il tuo appuntamento resta confermato.</p><p>Aggiorna il tuo metodo di pagamento o contatta il salone.</p>`,
+  };
+  return { to, subject: subjects[locale], html: bodies[locale] };
+}
+
 /** Customer cancels → email to salon owner */
 export function customerCancelledNotification(
   to: string,

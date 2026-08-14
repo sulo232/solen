@@ -16,11 +16,11 @@ const calcAge = (dateStr: string) => {
 
 const signupSchema = z.object({
   email: z.string().email("Ungültige E-Mail-Adresse"),
-  password: z
-    .string()
-    .min(8, "Mindestens 8 Zeichen")
-    .regex(/[A-Z]/, "Mindestens ein Grossbuchstabe")
-    .regex(/[0-9]/, "Mindestens eine Zahl"),
+  // NIST SP 800-63-4 (July 2025): no composition rules (they push users toward
+  // "Password1!"-shaped passwords that are in every cracking dictionary).
+  // Length is what resists cracking. Breach-list check happens after parsing,
+  // below, since it needs a network call the schema itself can't make.
+  password: z.string().min(12, "Mindestens 12 Zeichen"),
   birthday: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Format: YYYY-MM-DD").optional(),
   salon_name: z.string().min(2, "Name muss mindestens 2 Zeichen haben").optional(),
 }).refine(data => data.birthday || data.salon_name, {
@@ -55,7 +55,16 @@ export async function POST(request: NextRequest) {
   // neither is smuggled in behind a security fix.
   if (await isPasswordBreached(password)) {
     return NextResponse.json(
-      { message: "Dieses Passwort wurde bei einem Datenleck veröffentlicht. Bitte wählen Sie ein anderes." },
+      {
+        // `code` is taken from that same branch and is worth having on its own: without it this
+        // route can only hand the client a German sentence, so a French or Italian visitor was
+        // shown German at the one moment they are being told to pick a different password. The
+        // four translations already exist (authRegister.errorPasswordBreached in every locale
+        // file); nothing was reading them. `message` stays as the fallback for any caller that
+        // only looks at that field, and keeps the formal voice.
+        code: "password_breached",
+        message: "Dieses Passwort wurde bei einem Datenleck veröffentlicht. Bitte wählen Sie ein anderes.",
+      },
       { status: 400 },
     );
   }

@@ -97,6 +97,20 @@ export default function GuestLookupPage() {
           const data = await res.json().catch(() => ({}));
           setBookingId(data?.booking_id ?? null);
           setView("opened");
+          // SEC-09: the raw token has now been exchanged for the httpOnly guest cookie
+          // (setGuestCookie, called inside GET /api/bookings/guest-lookup), so this browser no
+          // longer needs it in the URL to stay authenticated. Strip it from the address bar with
+          // a history REPLACE, never push, so a Back-button press can't resurrect it into
+          // history, and so any pageview captured from this point on can't see it either. `code`
+          // stays (it is not a secret, just the display order number, and keeping it is what
+          // makes a reload/share of this URL still work). Done ONLY on success, deliberately: on
+          // failure (the branches below) the exchange never happened, and the catch branch in
+          // particular can mean a transient network blip rather than a genuinely bad token, so we
+          // leave `t` in place there rather than stranding the guest with an unretryable link.
+          const clean = new URL(window.location.href);
+          clean.searchParams.delete("t");
+          clean.searchParams.delete("access_token");
+          window.history.replaceState(null, "", clean.pathname + clean.search + clean.hash);
         } else {
           // Uniform 404 (bad code / bad token / expired) → calm recovery state.
           setView("linkInvalid");

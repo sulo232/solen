@@ -908,9 +908,12 @@ export type Database = {
           arrived_at: string | null
           attributed_search_event_id: string | null
           bundle_id: string | null
+          cancel_link_used_at: string | null
           cancellation_reason: string | null
           cancelled_at: string | null
           completed_at: string | null
+          confirm_link_used_at: string | null
+          consumed_at: string | null
           created_at: string | null
           crm_photo_url: string | null
           customer_note: string | null
@@ -939,7 +942,6 @@ export type Database = {
           outlook_event_id: string | null
           paid_amount: number | null
           paid_via: string | null
-          remaining_at_salon: number | null
           payment_intent_id: string | null
           payment_status: string | null
           platform_fee: number | null
@@ -958,6 +960,7 @@ export type Database = {
           reference_code: string | null
           referral_code: string | null
           refunded_amount: number
+          remaining_at_salon: number | null
           reschedule_requested_at: string | null
           reschedule_status: string | null
           reschedule_to: string | null
@@ -991,9 +994,12 @@ export type Database = {
           arrived_at?: string | null
           attributed_search_event_id?: string | null
           bundle_id?: string | null
+          cancel_link_used_at?: string | null
           cancellation_reason?: string | null
           cancelled_at?: string | null
           completed_at?: string | null
+          confirm_link_used_at?: string | null
+          consumed_at?: string | null
           created_at?: string | null
           crm_photo_url?: string | null
           customer_note?: string | null
@@ -1022,7 +1028,6 @@ export type Database = {
           outlook_event_id?: string | null
           paid_amount?: number | null
           paid_via?: string | null
-          remaining_at_salon?: number | null
           payment_intent_id?: string | null
           payment_status?: string | null
           platform_fee?: number | null
@@ -1041,6 +1046,7 @@ export type Database = {
           reference_code?: string | null
           referral_code?: string | null
           refunded_amount?: number
+          remaining_at_salon?: number | null
           reschedule_requested_at?: string | null
           reschedule_status?: string | null
           reschedule_to?: string | null
@@ -1074,9 +1080,12 @@ export type Database = {
           arrived_at?: string | null
           attributed_search_event_id?: string | null
           bundle_id?: string | null
+          cancel_link_used_at?: string | null
           cancellation_reason?: string | null
           cancelled_at?: string | null
           completed_at?: string | null
+          confirm_link_used_at?: string | null
+          consumed_at?: string | null
           created_at?: string | null
           crm_photo_url?: string | null
           customer_note?: string | null
@@ -1105,7 +1114,6 @@ export type Database = {
           outlook_event_id?: string | null
           paid_amount?: number | null
           paid_via?: string | null
-          remaining_at_salon?: number | null
           payment_intent_id?: string | null
           payment_status?: string | null
           platform_fee?: number | null
@@ -1124,6 +1132,7 @@ export type Database = {
           reference_code?: string | null
           referral_code?: string | null
           refunded_amount?: number
+          remaining_at_salon?: number | null
           reschedule_requested_at?: string | null
           reschedule_status?: string | null
           reschedule_to?: string | null
@@ -1189,6 +1198,13 @@ export type Database = {
             columns: ["slot_id"]
             isOneToOne: false
             referencedRelation: "availability_slots"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_slot_id_fkey"
+            columns: ["slot_id"]
+            isOneToOne: false
+            referencedRelation: "availability_slots_public"
             referencedColumns: ["id"]
           },
           {
@@ -1519,7 +1535,7 @@ export type Database = {
           booking_id: string | null
           brand: string | null
           created_at: string | null
-          customer_id: string
+          customer_id: string | null
           developer_volume: string | null
           ends_formula: Json | null
           id: string
@@ -1540,7 +1556,7 @@ export type Database = {
           booking_id?: string | null
           brand?: string | null
           created_at?: string | null
-          customer_id: string
+          customer_id?: string | null
           developer_volume?: string | null
           ends_formula?: Json | null
           id?: string
@@ -1561,7 +1577,7 @@ export type Database = {
           booking_id?: string | null
           brand?: string | null
           created_at?: string | null
-          customer_id?: string
+          customer_id?: string | null
           developer_volume?: string | null
           ends_formula?: Json | null
           id?: string
@@ -1655,7 +1671,7 @@ export type Database = {
         Row: {
           booking_id: string | null
           created_at: string | null
-          customer_id: string
+          customer_id: string | null
           discovery_item_id: string | null
           id: string
           photo_type: string | null
@@ -1666,7 +1682,7 @@ export type Database = {
         Insert: {
           booking_id?: string | null
           created_at?: string | null
-          customer_id: string
+          customer_id?: string | null
           discovery_item_id?: string | null
           id?: string
           photo_type?: string | null
@@ -1677,7 +1693,7 @@ export type Database = {
         Update: {
           booking_id?: string | null
           created_at?: string | null
-          customer_id?: string
+          customer_id?: string | null
           discovery_item_id?: string | null
           id?: string
           photo_type?: string | null
@@ -2024,6 +2040,39 @@ export type Database = {
           ok?: boolean
           processed?: number | null
           ran_at?: string
+        }
+        Relationships: []
+      }
+      csp_violation_reports: {
+        Row: {
+          blocked_origin: string
+          disposition: string | null
+          effective_directive: string
+          first_seen_at: string
+          id: string
+          last_seen_at: string
+          report_count: number
+          sample_blocked_uri: string | null
+        }
+        Insert: {
+          blocked_origin: string
+          disposition?: string | null
+          effective_directive: string
+          first_seen_at?: string
+          id?: string
+          last_seen_at?: string
+          report_count?: number
+          sample_blocked_uri?: string | null
+        }
+        Update: {
+          blocked_origin?: string
+          disposition?: string | null
+          effective_directive?: string
+          first_seen_at?: string
+          id?: string
+          last_seen_at?: string
+          report_count?: number
+          sample_blocked_uri?: string | null
         }
         Relationships: []
       }
@@ -3263,7 +3312,7 @@ export type Database = {
       intake_form_responses: {
         Row: {
           ai_recommendation: string | null
-          customer_id: string
+          customer_id: string | null
           filled_at: string | null
           id: string
           responses: Json
@@ -3272,7 +3321,7 @@ export type Database = {
         }
         Insert: {
           ai_recommendation?: string | null
-          customer_id: string
+          customer_id?: string | null
           filled_at?: string | null
           id?: string
           responses?: Json
@@ -3281,7 +3330,7 @@ export type Database = {
         }
         Update: {
           ai_recommendation?: string | null
-          customer_id?: string
+          customer_id?: string | null
           filled_at?: string | null
           id?: string
           responses?: Json
@@ -3643,7 +3692,7 @@ export type Database = {
           allergies: string[] | null
           allergy_notes: string | null
           allergy_severity: string | null
-          customer_id: string
+          customer_id: string | null
           id: string
           notes: string | null
           preferred_brand: string | null
@@ -3658,7 +3707,7 @@ export type Database = {
           allergies?: string[] | null
           allergy_notes?: string | null
           allergy_severity?: string | null
-          customer_id: string
+          customer_id?: string | null
           id?: string
           notes?: string | null
           preferred_brand?: string | null
@@ -3673,7 +3722,7 @@ export type Database = {
           allergies?: string[] | null
           allergy_notes?: string | null
           allergy_severity?: string | null
-          customer_id?: string
+          customer_id?: string | null
           id?: string
           notes?: string | null
           preferred_brand?: string | null
@@ -3701,7 +3750,7 @@ export type Database = {
           color_primary: string | null
           color_secondary: string | null
           created_at: string | null
-          customer_id: string
+          customer_id: string | null
           id: string
           length: string | null
           material: string | null
@@ -3718,7 +3767,7 @@ export type Database = {
           color_primary?: string | null
           color_secondary?: string | null
           created_at?: string | null
-          customer_id: string
+          customer_id?: string | null
           id?: string
           length?: string | null
           material?: string | null
@@ -3735,7 +3784,7 @@ export type Database = {
           color_primary?: string | null
           color_secondary?: string | null
           created_at?: string | null
-          customer_id?: string
+          customer_id?: string | null
           id?: string
           length?: string | null
           material?: string | null
@@ -3785,9 +3834,9 @@ export type Database = {
           id: string
           is_active: boolean | null
           label_de: string | null
+          label_en: string | null
           label_fr: string | null
           label_it: string | null
-          label_en: string | null
           price_modifier: number
           rule_type: string
           salon_id: string
@@ -3800,9 +3849,9 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           label_de?: string | null
+          label_en?: string | null
           label_fr?: string | null
           label_it?: string | null
-          label_en?: string | null
           price_modifier: number
           rule_type: string
           salon_id: string
@@ -3815,9 +3864,9 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           label_de?: string | null
+          label_en?: string | null
           label_fr?: string | null
           label_it?: string | null
-          label_en?: string | null
           price_modifier?: number
           rule_type?: string
           salon_id?: string
@@ -4100,7 +4149,7 @@ export type Database = {
           sessions_total: number
           sessions_used: number | null
           stripe_payment_intent_id: string | null
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           expires_at?: string | null
@@ -4113,7 +4162,7 @@ export type Database = {
           sessions_total: number
           sessions_used?: number | null
           stripe_payment_intent_id?: string | null
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           expires_at?: string | null
@@ -4126,7 +4175,7 @@ export type Database = {
           sessions_total?: number
           sessions_used?: number | null
           stripe_payment_intent_id?: string | null
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -4134,6 +4183,13 @@ export type Database = {
             columns: ["package_id"]
             isOneToOne: false
             referencedRelation: "service_packages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "package_purchases_salon_id_fkey"
+            columns: ["salon_id"]
+            isOneToOne: false
+            referencedRelation: "salons"
             referencedColumns: ["id"]
           },
         ]
@@ -4400,6 +4456,7 @@ export type Database = {
           account_status: string
           age_group: string | null
           age_range: string | null
+          analytics_consent: boolean | null
           avatar_url: string | null
           ban_reason: string | null
           banned_at: string | null
@@ -4452,6 +4509,7 @@ export type Database = {
           account_status?: string
           age_group?: string | null
           age_range?: string | null
+          analytics_consent?: boolean | null
           avatar_url?: string | null
           ban_reason?: string | null
           banned_at?: string | null
@@ -4504,6 +4562,7 @@ export type Database = {
           account_status?: string
           age_group?: string | null
           age_range?: string | null
+          analytics_consent?: boolean | null
           avatar_url?: string | null
           ban_reason?: string | null
           banned_at?: string | null
@@ -5002,41 +5061,6 @@ export type Database = {
           },
         ]
       }
-      review_translations: {
-        Row: {
-          created_at: string
-          id: string
-          locale: string
-          review_id: string
-          source_locale: string
-          translated: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          locale: string
-          review_id: string
-          source_locale?: string
-          translated: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          locale?: string
-          review_id?: string
-          source_locale?: string
-          translated?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "review_translations_review_id_fkey"
-            columns: ["review_id"]
-            isOneToOne: false
-            referencedRelation: "reviews"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       review_photos: {
         Row: {
           created_at: string
@@ -5107,6 +5131,41 @@ export type Database = {
             columns: ["salon_id"]
             isOneToOne: false
             referencedRelation: "salons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      review_translations: {
+        Row: {
+          created_at: string
+          id: string
+          locale: string
+          review_id: string
+          source_locale: string
+          translated: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          locale: string
+          review_id: string
+          source_locale?: string
+          translated: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          locale?: string
+          review_id?: string
+          source_locale?: string
+          translated?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "review_translations_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "reviews"
             referencedColumns: ["id"]
           },
         ]
@@ -5336,6 +5395,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "sales_slot_id_fkey"
+            columns: ["slot_id"]
+            isOneToOne: false
+            referencedRelation: "availability_slots_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "sales_staff_member_id_fkey"
             columns: ["staff_member_id"]
             isOneToOne: false
@@ -5495,9 +5561,9 @@ export type Database = {
           id: string
           is_system: boolean | null
           name_de: string
+          name_en: string
           name_fr: string | null
           name_it: string | null
-          name_en: string
         }
         Insert: {
           auto_rule?: Json | null
@@ -5508,9 +5574,9 @@ export type Database = {
           id?: string
           is_system?: boolean | null
           name_de: string
+          name_en: string
           name_fr?: string | null
           name_it?: string | null
-          name_en: string
         }
         Update: {
           auto_rule?: Json | null
@@ -5521,9 +5587,9 @@ export type Database = {
           id?: string
           is_system?: boolean | null
           name_de?: string
+          name_en?: string
           name_fr?: string | null
           name_it?: string | null
-          name_en?: string
         }
         Relationships: []
       }
@@ -5921,6 +5987,65 @@ export type Database = {
           },
         ]
       }
+      salon_of_month_winners: {
+        Row: {
+          id: string
+          is_current: boolean
+          month: string
+          reason: string | null
+          salon_id: string
+          selected_at: string
+          selected_by: string | null
+        }
+        Insert: {
+          id?: string
+          is_current?: boolean
+          month: string
+          reason?: string | null
+          salon_id: string
+          selected_at?: string
+          selected_by?: string | null
+        }
+        Update: {
+          id?: string
+          is_current?: boolean
+          month?: string
+          reason?: string | null
+          salon_id?: string
+          selected_at?: string
+          selected_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "salon_of_month_winners_salon_id_fkey"
+            columns: ["salon_id"]
+            isOneToOne: false
+            referencedRelation: "salons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "salon_of_month_winners_selected_by_fkey"
+            columns: ["selected_by"]
+            isOneToOne: false
+            referencedRelation: "profile_summaries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "salon_of_month_winners_selected_by_fkey"
+            columns: ["selected_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "salon_of_month_winners_selected_by_fkey"
+            columns: ["selected_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       salon_pace: {
         Row: {
           pace_minutes: number | null
@@ -6078,34 +6203,30 @@ export type Database = {
         }
         Relationships: []
       }
-      // MANUAL addition (2026-07-25): supabase/migrations/20260725120000_salon_portfolio_images.sql
-      // was written but could not be applied live in this session (no Supabase MCP tool bound to
-      // this coder sub-agent). Regenerate via the MCP generate_typescript_types tool once the
-      // migration is actually applied, then drop this comment. Shape mirrors staff_portfolio_images.
       salon_portfolio_images: {
         Row: {
           category: string | null
-          created_at: string
+          created_at: string | null
           id: string
           image_url: string
           salon_id: string
-          sort_order: number
+          sort_order: number | null
         }
         Insert: {
           category?: string | null
-          created_at?: string
+          created_at?: string | null
           id?: string
           image_url: string
           salon_id: string
-          sort_order?: number
+          sort_order?: number | null
         }
         Update: {
           category?: string | null
-          created_at?: string
+          created_at?: string | null
           id?: string
           image_url?: string
           salon_id?: string
-          sort_order?: number
+          sort_order?: number | null
         }
         Relationships: [
           {
@@ -6113,51 +6234,6 @@ export type Database = {
             columns: ["salon_id"]
             isOneToOne: false
             referencedRelation: "salons"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      salon_of_month_winners: {
-        Row: {
-          id: string
-          is_current: boolean
-          month: string
-          reason: string | null
-          salon_id: string
-          selected_at: string
-          selected_by: string | null
-        }
-        Insert: {
-          id?: string
-          is_current?: boolean
-          month: string
-          reason?: string | null
-          salon_id: string
-          selected_at?: string
-          selected_by?: string | null
-        }
-        Update: {
-          id?: string
-          is_current?: boolean
-          month?: string
-          reason?: string | null
-          salon_id?: string
-          selected_at?: string
-          selected_by?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "salon_of_month_winners_salon_id_fkey"
-            columns: ["salon_id"]
-            isOneToOne: false
-            referencedRelation: "salons"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "salon_of_month_winners_selected_by_fkey"
-            columns: ["selected_by"]
-            isOneToOne: false
-            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -6193,9 +6269,9 @@ export type Database = {
           deposit_min: number | null
           deposit_percent: number | null
           description_de: string | null
+          description_en: string | null
           description_fr: string | null
           description_it: string | null
-          description_en: string | null
           email: string | null
           explore_score: number | null
           facebook_url: string | null
@@ -6234,16 +6310,18 @@ export type Database = {
           owner_id: string
           parent_salon_id: string | null
           payment_mode: string | null
+          payment_mode_admin: string | null
+          payment_mode_enforced: boolean
           pet_friendly: boolean | null
           phone: string | null
           postal_code: string | null
           quartier: string | null
           registration_completed: boolean | null
-          review_photos_enabled: boolean
-          reviews_enabled: boolean
           rejected_at: string | null
           rejection_reason: string | null
           review_count: number | null
+          review_photos_enabled: boolean
+          reviews_enabled: boolean
           score_details: Json | null
           search_doc: unknown
           slug: string
@@ -6305,9 +6383,9 @@ export type Database = {
           deposit_min?: number | null
           deposit_percent?: number | null
           description_de?: string | null
+          description_en?: string | null
           description_fr?: string | null
           description_it?: string | null
-          description_en?: string | null
           email?: string | null
           explore_score?: number | null
           facebook_url?: string | null
@@ -6346,16 +6424,18 @@ export type Database = {
           owner_id: string
           parent_salon_id?: string | null
           payment_mode?: string | null
+          payment_mode_admin?: string | null
+          payment_mode_enforced?: boolean
           pet_friendly?: boolean | null
           phone?: string | null
           postal_code?: string | null
           quartier?: string | null
           registration_completed?: boolean | null
-          review_photos_enabled?: boolean
-          reviews_enabled?: boolean
           rejected_at?: string | null
           rejection_reason?: string | null
           review_count?: number | null
+          review_photos_enabled?: boolean
+          reviews_enabled?: boolean
           score_details?: Json | null
           search_doc?: unknown
           slug: string
@@ -6417,9 +6497,9 @@ export type Database = {
           deposit_min?: number | null
           deposit_percent?: number | null
           description_de?: string | null
+          description_en?: string | null
           description_fr?: string | null
           description_it?: string | null
-          description_en?: string | null
           email?: string | null
           explore_score?: number | null
           facebook_url?: string | null
@@ -6458,16 +6538,18 @@ export type Database = {
           owner_id?: string
           parent_salon_id?: string | null
           payment_mode?: string | null
+          payment_mode_admin?: string | null
+          payment_mode_enforced?: boolean
           pet_friendly?: boolean | null
           phone?: string | null
           postal_code?: string | null
           quartier?: string | null
           registration_completed?: boolean | null
-          review_photos_enabled?: boolean
-          reviews_enabled?: boolean
           rejected_at?: string | null
           rejection_reason?: string | null
           review_count?: number | null
+          review_photos_enabled?: boolean
+          reviews_enabled?: boolean
           score_details?: Json | null
           search_doc?: unknown
           slug?: string
@@ -6930,9 +7012,9 @@ export type Database = {
           duration_minutes: number
           id: string
           name_de: string
+          name_en: string
           name_fr: string | null
           name_it: string | null
-          name_en: string
           price: number
           service_id: string
           sort_order: number
@@ -6943,6 +7025,8 @@ export type Database = {
           id?: string
           name_de: string
           name_en: string
+          name_fr?: string | null
+          name_it?: string | null
           price?: number
           service_id: string
           sort_order?: number
@@ -6952,9 +7036,9 @@ export type Database = {
           duration_minutes?: number
           id?: string
           name_de?: string
+          name_en?: string
           name_fr?: string | null
           name_it?: string | null
-          name_en?: string
           price?: number
           service_id?: string
           sort_order?: number
@@ -7028,18 +7112,18 @@ export type Database = {
           curing_minutes: number | null
           daily_limit_per_staff: number | null
           description_de: string | null
+          description_en: string | null
           description_fr: string | null
           description_it: string | null
-          description_en: string | null
           duration_minutes: number
           finishing_minutes: number | null
           id: string
           is_active: boolean | null
           material_type: string | null
           name_de: string
+          name_en: string
           name_fr: string | null
           name_it: string | null
-          name_en: string
           photo_urls: string[] | null
           price: number
           processing_minutes: number | null
@@ -7059,18 +7143,18 @@ export type Database = {
           curing_minutes?: number | null
           daily_limit_per_staff?: number | null
           description_de?: string | null
+          description_en?: string | null
           description_fr?: string | null
           description_it?: string | null
-          description_en?: string | null
           duration_minutes: number
           finishing_minutes?: number | null
           id?: string
           is_active?: boolean | null
           material_type?: string | null
           name_de: string
+          name_en: string
           name_fr?: string | null
           name_it?: string | null
-          name_en: string
           photo_urls?: string[] | null
           price: number
           processing_minutes?: number | null
@@ -7090,18 +7174,18 @@ export type Database = {
           curing_minutes?: number | null
           daily_limit_per_staff?: number | null
           description_de?: string | null
+          description_en?: string | null
           description_fr?: string | null
           description_it?: string | null
-          description_en?: string | null
           duration_minutes?: number
           finishing_minutes?: number | null
           id?: string
           is_active?: boolean | null
           material_type?: string | null
           name_de?: string
+          name_en?: string
           name_fr?: string | null
           name_it?: string | null
-          name_en?: string
           photo_urls?: string[] | null
           price?: number
           processing_minutes?: number | null
@@ -7135,9 +7219,9 @@ export type Database = {
           updated_at: string | null
           updated_by: string | null
           value_de: string | null
-          value_it: string | null
           value_en: string | null
           value_fr: string | null
+          value_it: string | null
         }
         Insert: {
           auto_override?: string | null
@@ -7149,9 +7233,9 @@ export type Database = {
           updated_at?: string | null
           updated_by?: string | null
           value_de?: string | null
-          value_it?: string | null
           value_en?: string | null
           value_fr?: string | null
+          value_it?: string | null
         }
         Update: {
           auto_override?: string | null
@@ -7163,9 +7247,9 @@ export type Database = {
           updated_at?: string | null
           updated_by?: string | null
           value_de?: string | null
-          value_it?: string | null
           value_en?: string | null
           value_fr?: string | null
+          value_it?: string | null
         }
         Relationships: [
           {
@@ -7233,7 +7317,7 @@ export type Database = {
       spa_treatment_outcomes: {
         Row: {
           booking_id: string | null
-          client_id: string
+          client_id: string | null
           created_at: string
           follow_up_notes: string | null
           id: string
@@ -7247,7 +7331,7 @@ export type Database = {
         }
         Insert: {
           booking_id?: string | null
-          client_id: string
+          client_id?: string | null
           created_at?: string
           follow_up_notes?: string | null
           id?: string
@@ -7261,7 +7345,7 @@ export type Database = {
         }
         Update: {
           booking_id?: string | null
-          client_id?: string
+          client_id?: string | null
           created_at?: string
           follow_up_notes?: string | null
           id?: string
@@ -8686,6 +8770,68 @@ export type Database = {
       }
     }
     Views: {
+      availability_slots_public: {
+        Row: {
+          ends_at: string | null
+          id: string | null
+          last_minute_discount_percent: number | null
+          salon_id: string | null
+          service_id: string | null
+          staff_member_id: string | null
+          starts_at: string | null
+          status: string | null
+        }
+        Insert: {
+          ends_at?: string | null
+          id?: string | null
+          last_minute_discount_percent?: number | null
+          salon_id?: string | null
+          service_id?: string | null
+          staff_member_id?: string | null
+          starts_at?: string | null
+          status?: string | null
+        }
+        Update: {
+          ends_at?: string | null
+          id?: string | null
+          last_minute_discount_percent?: number | null
+          salon_id?: string | null
+          service_id?: string | null
+          staff_member_id?: string | null
+          starts_at?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "availability_slots_salon_id_fkey"
+            columns: ["salon_id"]
+            isOneToOne: false
+            referencedRelation: "salons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "availability_slots_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "availability_slots_staff_member_id_fkey"
+            columns: ["staff_member_id"]
+            isOneToOne: false
+            referencedRelation: "staff_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "availability_slots_staff_member_id_fkey"
+            columns: ["staff_member_id"]
+            isOneToOne: false
+            referencedRelation: "staff_ratings_view"
+            referencedColumns: ["staff_id"]
+          },
+        ]
+      }
       profile_summaries: {
         Row: {
           avatar_url: string | null
@@ -8862,6 +9008,42 @@ export type Database = {
           total_count: number
         }[]
       }
+      discovery_feed_v2: {
+        Args: {
+          p_category?: string
+          p_creator?: string
+          p_cursor_created_at?: string
+          p_cursor_id?: string
+          p_cursor_rank?: number
+          p_cursor_sort_order?: number
+          p_gender?: string
+          p_limit?: number
+          p_offset?: number
+          p_style?: string
+          p_tags_any?: string[]
+          p_texture?: string
+          p_user_gender?: string
+        }
+        Returns: {
+          alt_text: string
+          author_name: string
+          content_type: string
+          created_at_key: string
+          id: string
+          image_url: string
+          media_type: string
+          price_min: number
+          rank_key: number
+          sort_order_key: number
+          source: string
+          style_name: string
+          tags: string[]
+          tiktok_embed_html: string
+          tiktok_thumbnail_url: string
+          tiktok_url: string
+          total_count: number
+        }[]
+      }
       discovery_fts_doc: {
         Args: {
           p_author: string
@@ -8959,6 +9141,9 @@ export type Database = {
           deposit_percent: number | null
           description_de: string | null
           description_en: string | null
+          description_fr: string | null
+          description_it: string | null
+          email: string | null
           explore_score: number | null
           facebook_url: string | null
           family_owned: boolean | null
@@ -8966,6 +9151,7 @@ export type Database = {
           frozen_at: string | null
           frozen_reason: string | null
           gallery_urls: string[] | null
+          google_place_id: string | null
           group_id: string | null
           id: string
           instagram_url: string | null
@@ -8995,16 +9181,18 @@ export type Database = {
           owner_id: string
           parent_salon_id: string | null
           payment_mode: string | null
+          payment_mode_admin: string | null
+          payment_mode_enforced: boolean
           pet_friendly: boolean | null
           phone: string | null
           postal_code: string | null
           quartier: string | null
           registration_completed: boolean | null
-          review_photos_enabled: boolean
-          reviews_enabled: boolean
           rejected_at: string | null
           rejection_reason: string | null
           review_count: number | null
+          review_photos_enabled: boolean
+          reviews_enabled: boolean
           score_details: Json | null
           search_doc: unknown
           slug: string
@@ -9116,6 +9304,15 @@ export type Database = {
       recompute_salon_engagement: { Args: never; Returns: number }
       recompute_user_salon_affinity: { Args: never; Returns: number }
       recompute_user_style_affinity: { Args: never; Returns: number }
+      record_csp_violation: {
+        Args: {
+          p_directive: string
+          p_disposition: string
+          p_origin: string
+          p_sample: string
+        }
+        Returns: undefined
+      }
       redeem_user_credits: {
         Args: {
           p_amount: number

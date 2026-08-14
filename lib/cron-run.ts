@@ -17,17 +17,51 @@ import { reportError } from "@/lib/error-report";
 
 /**
  * Shape a cron handler may return. Any extra fields pass through untouched.
- * `errors` accepts the standardized string[] fail-list, but several existing
- * crons already return an `errors` field as a per-item failure COUNT (a
- * number). Both are accepted so those routes don't need renaming; only the
- * array form is treated as an ok:false signal (see withCronRun below).
+ * `errors` is a string[] of failed items, one string each (e.g.
+ * `errors: failures.map(f => f.message)`); a non-empty array is the
+ * ok:false signal (see withCronRun below). NEVER a bare count/number: that
+ * used to be permitted here (`string[] | number`) and a cron returning the
+ * number form was silently coerced to an empty array downstream, so `ok`
+ * stayed true on a night every item failed. This shipped 3 separate times.
+ * The `| number` branch is removed so a cron trying to hand back a count
+ * instead of a list is a TYPE ERROR at build time, not a silent runtime
+ * drop (2026-07-16, replacing the since-removed cron-error-contract-gate.py
+ * runtime gate, which never actually caught this shape, see git history).
  */
 export interface CronRunResult {
   ok?: boolean;
   processed?: number;
-  errors?: string[] | number;
+  errors?: string[];
   [key: string]: unknown;
 }
+
+/**
+ * Floor for the "every attempt this run declined" symptom check (pre-charge,
+ * no-show, release-payments). A pure customer-side card decline is DATA, not
+ * a failure (BACKEND_LAW.md #14: alert on symptoms, never causes), but a run
+ * where EVERY attempt declined and NONE succeeded is not N unlucky
+ * customers, it is a broken Stripe/account config wearing a customer-shaped
+ * costume, and that IS a symptom worth reddening the run for.
+ *
+ * 5 is picked from the fleet's REAL measured scale (queried live 2026-07-16
+ * against the prod DB): cron_runs has never logged a single row in prod yet,
+ * the qualifying row count for all three crons is 0 right now, and total
+ * bookings created in the last 30 days is 9 (only 1 booking has ever reached
+ * card_saved). At this size real batches are usually 0-2 attempts; a floor
+ * much above 5 would mean the check almost never fires for a long time, and
+ * a floor of 1-2 cannot structurally tell a system outage apart from
+ * ordinary bad luck (one or two genuinely bad cards on the same night is
+ * unremarkable, see the 1-of-1 example above). 5 is the smallest count where
+ * "every single attempt declined" stops being explainable by chance even
+ * under a deliberately pessimistic hypothetical, NOT a claimed real decline
+ * rate: even assuming a generous 50% chance any given attempt declines
+ * purely at random, the odds all 5 decline by chance alone is 1-in-32
+ * (about 3%), and that 50% assumption is already far above what a saved,
+ * previously-verified off-session card should realistically decline at.
+ * A judgment call, not a measured constant, retune live if the fleet's real
+ * batch sizes change.
+ */
+export const ALL_DECLINED_SYMPTOM_FLOOR = 5;
 
 /**
  * Wrap a cron route's business logic. `name` is the cron_runs.name value

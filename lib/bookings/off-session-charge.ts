@@ -24,7 +24,7 @@
 // number here — convert at the FE / settings boundary via lib/stripe.ts toRappen.
 
 import Stripe from "stripe";
-import { getStripe } from "@/lib/stripe";
+import { getStripe, isStripeCardDecline } from "@/lib/stripe";
 import { alertAdmin } from "@/lib/alert-admin";
 
 export interface OffSessionChargeArgs {
@@ -48,8 +48,13 @@ export type OffSessionChargeResult =
   | { status: "charged"; paymentIntentId: string; chargedCents: number }
   /** Off-session SCA: the PI is parked; the caller must surface a re-auth (notification hook). */
   | { status: "requires_action"; paymentIntentId: string | null; clientSecret: string | null }
-  /** Decline / restricted account / any other Stripe error. Never throws. */
-  | { status: "failed"; error: string };
+  /**
+   * Decline / restricted account / any other Stripe error. Never throws.
+   * `declined: true` = a genuine card decline (customer-side, data, don't
+   * redden a cron run over it); `false` = a non-decline Stripe failure
+   * (system-side, should redden). See `isStripeCardDecline` (lib/stripe.ts).
+   */
+  | { status: "failed"; error: string; declined: boolean };
 
 /**
  * Create + confirm an off-session PaymentIntent. Pure money primitive: no DB writes,
@@ -103,11 +108,10 @@ export async function chargeOffSession(args: OffSessionChargeArgs): Promise<OffS
     // StripeAPIError / StripeConnectionError / idempotency conflict / programming
     // error is the infrastructure failure worth an inbox ping. (requires_action
     // already returned above, so it can't reach here.)
-    const errType: string | undefined = err?.type ?? err?.raw?.type;
-    const isCardDecline = errType === "StripeCardError" || errType === "card_error";
+    const isCardDecline = isStripeCardDecline(err);
     if (!isCardDecline) {
       void alertAdmin("off-session charge threw (non-decline)", {
-        stripe_error_type: errType ?? null,
+        stripe_error_type: (err?.type ?? err?.raw?.type) ?? null,
         stripe_error_code: code ?? null,
         customer: stripeCustomerId,
         idempotency_key: idempotencyKey,
@@ -116,6 +120,8 @@ export async function chargeOffSession(args: OffSessionChargeArgs): Promise<OffS
         error: err?.message ?? String(err),
       });
     }
-    return { status: "failed", error: err?.message ?? String(err) };
+    // declined = isCardDecline, surfaced to the caller so a cron loop can count
+    // this as a customer-side outcome (data) instead of a system error.
+    return { status: "failed", error: err?.message ?? String(err), declined: isCardDecline };
   }
 }

@@ -6301,7 +6301,8 @@
     "continue": "Continua",
     "errorMinAge": "Devi avere almeno 16 anni.",
     "errorAccountExists": "Hai già un account. Accedi.",
-    "errorPasswordMin": "La password deve contenere almeno 8 caratteri."
+    "errorPasswordMin": "La password deve contenere almeno 8 caratteri.",
+    "errorPasswordBreached": "Questa password è stata trovata in una violazione dei dati. Ne scelga un'altra."
   },
   "passwordStrength": {
     "weak": "Debole",

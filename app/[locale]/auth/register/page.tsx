@@ -116,6 +116,9 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
     setPasswordError(pwErr);
     if (ageErr || pwErr) return;
 
+    // The copy this merge came from replaced the rule above with a bare 12-character minimum and
+    // no other requirement. Refused, for the second time: it is a change every existing customer
+    // would feel and it is not part of the breach fix. Only the locale-aware error below is taken.
     if (!submitGuard.tryEnter()) return; // a signup is already in flight, drop the duplicate
     setSaving(true);
 
@@ -136,7 +139,9 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
         return;
       }
       if (!res.ok) {
-        toast.error(data.message || tc("errorProcessing"));
+        // A leaked password gets its own translated line instead of the server's German sentence.
+        // Every other server error falls back to its raw message exactly as before.
+        toast.error(data.code === "password_breached" ? t("errorPasswordBreached") : (data.message || tc("errorProcessing")));
         return;
       }
       setSuccess(true);

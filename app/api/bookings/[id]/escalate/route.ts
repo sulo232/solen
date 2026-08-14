@@ -9,6 +9,7 @@ import { getServerEnv } from "@/lib/env";
 import { logAuditEvent } from "@/lib/audit";
 import { resolveBookingActor } from "@/lib/bookings/authorize";
 import { writeCaseEvent } from "@/lib/bookings/dispute-engine";
+import { sendEmail } from "@/lib/email";
 
 // SP-3 Endpoint 4 — customer/guest escalates a salon-REJECTED refund to Solen
 // admin. CAS-guarded salon_rejected → escalated; one timeline row; reuse the
@@ -93,19 +94,14 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       const { data: admins } = await admin.from("profiles").select("email").eq("role", "admin");
       const emails = (admins ?? []).map((a) => a.email).filter(Boolean) as string[];
       if (emails.length > 0) {
-        await fetch("https://api.resend.com/emails", {
-          method: "POST",
-          headers: { Authorization: `Bearer ${resendApiKey}`, "Content-Type": "application/json" },
-          body: JSON.stringify({
-            from: "support@solen.ch",
-            to: emails,
-            subject: "Rückerstattung eskaliert — Solen-Review erforderlich | Refund escalated",
-            html: `<p>A customer escalated a salon-rejected refund for booking #${bookingId}.</p>
+        await sendEmail({
+          from: "support@solen.ch",
+          to: emails,
+          subject: "Rückerstattung eskaliert — Solen-Review erforderlich | Refund escalated", // em-dash-ok: pre-existing subject, relocated unchanged
+          html: `<p>A customer escalated a salon-rejected refund for booking #${bookingId}.</p>
                    <p>Please review in the admin dispute queue.</p>`,
-          }),
-          // api-contracts-06: bound the outbound call so a hung Resend request
-          // can't hold the function's whole wall-clock budget.
-          signal: AbortSignal.timeout(8000),
+          // The per-call 8s abort that used to sit here is gone because sendEmail carries its own
+          // 5s timeout for every send, so the bound survives and is no longer per-caller.
         });
       }
     } catch (e) {

@@ -89,6 +89,19 @@ export interface SiblingSalon {
   categories: string[];
 }
 
+// AMENITIES_SELF_REPORTED (see the nine amenity fields below: pet_friendly, kid_friendly,
+// wheelchair_accessible, near_public_transport, lgbtq_friendly, woman_owned, family_owned,
+// student_discount, wifi_friendly). They were seeded from a hash of each salon's own id
+// (supabase/migrations/20260530_seed_salon_amenities.sql), not a real answer any salon
+// gave. Verified on prod 2026-07-16: 7 salons falsely claimed wheelchair access and 8
+// falsely claimed LGBTQ+ welcome purely as a function of their UUID; those values were
+// nulled on prod the same day (supabase/migrations/20260716150000_null_fabricated_salon_amenities.sql
+// reproduces that on a fresh reset). Keep this false until salons can self-report these
+// facts via onboarding/dashboard (not built yet, a separate task): flipping it to true
+// is the ONLY change needed to bring back the badges (SalonAdditionalInfo.tsx) and the
+// search filter facets (SearchTemplate.tsx / FilterSheet.tsx).
+export const AMENITIES_SELF_REPORTED = false;
+
 export interface SalonDetail {
   id: string;
   name: string;

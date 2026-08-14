@@ -6301,7 +6301,8 @@
     "continue": "Weiter",
     "errorMinAge": "Sie müssen mindestens 16 Jahre alt sein.",
     "errorAccountExists": "Sie haben bereits ein Konto. Bitte loggen Sie sich ein.",
-    "errorPasswordMin": "Das Passwort braucht mindestens 8 Zeichen."
+    "errorPasswordMin": "Das Passwort braucht mindestens 8 Zeichen.",
+    "errorPasswordBreached": "Dieses Passwort wurde bei einem Datenleck veröffentlicht. Bitte wählen Sie ein anderes."
   },
   "passwordStrength": {
     "weak": "Schwach",

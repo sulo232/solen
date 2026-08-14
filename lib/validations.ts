@@ -705,7 +705,9 @@ export const loginSchema = z.object({
 
 export const signupSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(8).max(200),
+  // NIST SP 800-63-4 (July 2025): 12-char minimum, no composition rules.
+  // Keep this in sync with the real signup gate: app/api/auth/signup/route.ts.
+  password: z.string().min(12).max(200),
   display_name: z.string().min(1).max(100).optional(),
 });
 
@@ -756,6 +758,14 @@ export const adminPaymentModeOverrideSchema = z.object({
 
 export const adminAiLimitSchema = z.object({
   cap: z.number().int().min(1).max(100000),
+  // Optional: the GLOBAL (house-wide) daily AI budget, see lib/ratelimit.ts
+  // getAiGlobalDailyLimiter(). Optional so existing callers that only send `cap` (the per-user
+  // limit) keep working unchanged.
+  globalCap: z.number().int().min(1).max(1000000).optional(),
+  // Optional: whether the exhausted CHF/month nail AI budget also blocks an admin, see
+  // lib/nail/ai-budget.ts NAIL_AI_BUDGET_BLOCKS_ADMIN_KEY. Optional so existing callers that
+  // only send `cap`/`globalCap` keep working unchanged.
+  blocksAdmin: z.boolean().optional(),
 });
 
 export const adminFeatureFlagSchema = z.object({

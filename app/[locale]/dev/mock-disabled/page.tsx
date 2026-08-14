@@ -79,6 +79,11 @@ export default async function MockDisabledPage({
     .order("category, name_de");
   if (!services || services.length === 0) notFound();
 
+  // Same coalesce the real booking page does (app/[locale]/salon/[slug]/booking/page.tsx:227):
+  // is_active is nullable in the database but the query above already filters on it being true,
+  // so every returned row genuinely has it. The wizard's own type wants it non-null.
+  const bookingServices = services.map((s) => ({ ...s, is_active: s.is_active ?? true }));
+
   const { data: staffRaw } = await supabase
     .from("staff_members")
     .select("id, name, avatar_url, specialties, is_active, average_rating, review_count, bio, languages")
@@ -135,7 +140,7 @@ export default async function MockDisabledPage({
           <BookingProvider salonId={salon.id} initialService={initialService}>
             <JumpToBookingStep step="pay-confirm">
               <BookingWizard
-                services={services}
+                services={bookingServices}
                 staffList={staff}
                 salon={salon as unknown as Salon}
                 staffServices={staffServices ?? []}

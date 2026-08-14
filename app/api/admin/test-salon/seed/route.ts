@@ -5,6 +5,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
 import { validateBody, adminTestSalonSeedSchema } from "@/lib/validations";
+// Missing import, caught by the typecheck after the branch merges of 2026-08-14: the walk-in
+// hashed-token work called this here without ever importing it, so this route could not build.
+import { hashTrackingToken } from "@/lib/walkin/authz";
 
 const TEST_PREFIX = "[TEST]";
 

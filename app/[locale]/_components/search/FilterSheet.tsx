@@ -344,6 +344,10 @@ export interface FilterSheetProps {
   amenityOptions: { col: string; label: string; icon?: React.ComponentType<{ size?: number; strokeWidth?: number; className?: string }> }[];
   amenities: string[];
   onAmenityToggle: (col: string) => void;
+  /** AMENITIES_SELF_REPORTED (app/[locale]/_components/salon/_shared.ts): hide the group
+   *  while the underlying salons columns are nulled (fabricated data removed 2026-07-16).
+   *  Defaults to true (shown) so an omitted prop keeps prior behavior. */
+  showAmenities?: boolean;
 
   // ── Angebote (deals / last_minute_discount) ──
   deals: boolean;
@@ -436,6 +440,7 @@ function FilterSheetContent({
   amenityOptions,
   amenities,
   onAmenityToggle,
+  showAmenities = true,
   deals,
   onDealsToggle,
   showDeals = true,
@@ -535,8 +540,10 @@ function FilterSheetContent({
         </FilterGroup>
       )}
 
-      {/* Ausstattung / Amenities — salons boolean columns + icons. */}
-      {(!section || section === "amenities") && (
+      {/* Ausstattung / Amenities: salons boolean columns + icons. Hidden while
+          showAmenities is false (AMENITIES_SELF_REPORTED, salon/_shared.ts): the
+          underlying columns are nulled fabricated data, not a real fact yet. */}
+      {showAmenities && (!section || section === "amenities") && (
         <FilterGroup heading={section ? "" : labels.amenitiesHeading}>
           <div className="flex flex-wrap gap-2">
             {amenityOptions.map((a) => {

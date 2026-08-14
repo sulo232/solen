@@ -42,11 +42,16 @@ const BADGE_CLASS =
   "absolute right-1 top-1 grid h-[16px] min-w-[16px] place-items-center rounded-full px-[3px] text-[10px] font-bold leading-none text-white"; // drift-ok: exact quote of the live badge (NotificationBell.tsx:48), not a new invention.
 
 export default async function MockBadgePage({
+  params,
   searchParams,
 }: {
+  // Hero takes a locale (it greets a signed-in visitor by name), and this page renders the real
+  // Hero rather than a copy of it, so it has to pass one. It is already in the route segment.
+  params: Promise<{ locale: string }>;
   searchParams: Promise<{ v?: string }>;
 }) {
   if (process.env.NODE_ENV === "production") notFound();
+  const { locale } = await params;
   const { v } = await searchParams;
   const variant = v === "ink" ? "ink" : "rot";
   const badgeTone = variant === "ink" ? "bg-s-ink" : "bg-s-error";
@@ -62,7 +67,7 @@ export default async function MockBadgePage({
           <span className={`${BADGE_CLASS} ${badgeTone}`}>{EXAMPLE_COUNT}</span>
         </span>
       </div>
-      <Hero />
+      <Hero locale={locale} />
       <FeedZone>
         <MobileCategoriesRow />
         <RecentlyViewed />

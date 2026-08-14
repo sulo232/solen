@@ -36,15 +36,16 @@ export async function GET(req: NextRequest) {
   if (error) return { error: error.message, errors: [error.message] };
 
   let analyzed = 0, failed = 0;
+  const errors: string[] = [];
   for (const it of items ?? []) {
     const imageUrl = (it.image_url as string) || (it.tiktok_thumbnail_url as string);
-    if (!imageUrl) { failed++; continue; }
+    if (!imageUrl) { failed++; errors.push(`item ${it.id}: no image_url/tiktok_thumbnail_url to analyze`); continue; }
     try {
       const isTikTok = !!it.tiktok_url || it.media_type === "tiktok";
       const ai = isTikTok
         ? await analyzeDiscoveryTikTok(imageUrl, (it.alt_text as string) ?? "", (it.tiktok_url as string) ?? undefined, it.category as string)
         : await analyzeDiscoveryImage(imageUrl, it.category as string);
-      if (!ai) { failed++; continue; }
+      if (!ai) { failed++; errors.push(`item ${it.id}: AI analysis returned no result`); continue; }
       const productsFlat = ai.products_flat ?? (Array.isArray(ai.products_needed) ? ai.products_needed : []);
       // Keep existing category + texture (they carry CHECK constraints; the AI override sets texture=null for
       // nails/lashes anyway). Everything else comes from the category-aware AI output.
@@ -63,14 +64,20 @@ export async function GET(req: NextRequest) {
         price_min: ai.price_min ?? null, price_max: ai.price_max ?? null,
         ai_analysis: { ...ai },
       }).eq("id", it.id);
-      if (upErr) { console.error("[cron/discovery-ai-backfill] update failed:", it.id, upErr.message); failed++; continue; }
+      if (upErr) {
+        console.error("[cron/discovery-ai-backfill] update failed:", it.id, upErr.message);
+        failed++;
+        errors.push(`item ${it.id}: ${upErr.message}`);
+        continue;
+      }
       analyzed++;
     } catch (e) {
       console.error("[cron/discovery-ai-backfill] analyze failed:", it.id, String(e));
       failed++;
+      errors.push(`item ${it.id}: ${e instanceof Error ? e.message : String(e)}`);
     }
   }
 
-  return { ok: true, analyzed, failed, picked: items?.length ?? 0, processed: analyzed };
+  return { analyzed, failed, picked: items?.length ?? 0, processed: analyzed, errors };
   });
 }

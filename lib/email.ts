@@ -52,7 +52,7 @@ function stripHtmlToText(html: string): string {
 }
 
 export interface EmailPayload {
-  to: string;
+  to: string | string[];
   subject: string;
   html: string;
   /** Plain-text alternative. Auto-derived from `html` by sendEmail() when omitted. */
@@ -60,42 +60,105 @@ export interface EmailPayload {
   // seo-comms-09: an optional attachment set, e.g. bookingConfirmation's .ics calendar
   // file. `content` is base64, matching Resend's own attachments field shape.
   attachments?: { filename: string; content: string }[];
+  /**
+   * Optional From override. Defaults to "solen.ch <noreply@solen.ch>" (below) when omitted, so
+   * every existing caller that doesn't set this keeps sending from the same default address.
+   * Needed by the 8 collapsed hand-rolled sites (2026-07-17), which use "support@solen.ch" or
+   * "Solen <noreply@solen.ch>" and must keep their existing sender identity byte-identical.
+   */
+  from?: string;
 }
+
+/**
+ * How long we are willing to wait for Resend before giving up.
+ *
+ * Why a timeout exists at all: this call is awaited INSIDE synchronous, customer-facing
+ * requests (app/api/bookings/route.ts:594 and :628, inside the booking POST). Callers already
+ * try/catch it, so a Resend ERROR is handled and the booking survives. A Resend HANG was not:
+ * with no timeout, the await blocked until the platform killed the whole function, so the
+ * customer watched their booking screen die AFTER the booking row had already been committed,
+ * and saw a failure for something that actually worked.
+ *
+ * Why 5000ms specifically, measured not guessed (2026-07-16): 10 timed calls to
+ * api.resend.com/emails returned in 0.21s to 0.34s. 5s is roughly 15x the observed worst case,
+ * so it cannot fire on a normal slow day, and it sits well under the serverless function's own
+ * wall-clock ceiling, so WE give up before the platform kills the request and we keep the
+ * ability to log it.
+ *
+ * Honest limit of that measurement: it was taken from a dev machine against the validation
+ * path (an intentionally invalid payload, no mail sent), NOT from a cold Netlify eu-west
+ * invocation doing a real send. So this is a sane bound, not a true p99. If Resend ever gets
+ * genuinely slower, this fires and logs, which is the point: a logged timeout beats a silent
+ * hang. Re-measure from production before tightening it.
+ */
+const RESEND_TIMEOUT_MS = 5000;
 
 /**
  * Send a transactional email via Resend.
  * Requires RESEND_API_KEY in environment.
+ *
+ * Throws on failure, including timeout. Every caller must keep its try/catch: an email is never
+ * worth failing a booking that already committed.
+ *
+ * @param requestId optional (OBS-01): the caller's request id, logged alongside this
+ *   function's own console.error/warn lines so a failed send can be traced back to the
+ *   booking-create or webhook request that triggered it. Optional so every EXISTING caller
+ *   (there are several) keeps compiling unchanged.
  */
-export async function sendEmail(payload: EmailPayload): Promise<void> {
+export async function sendEmail(payload: EmailPayload, requestId?: string): Promise<void> {
   const apiKey = getServerEnv().RESEND_API_KEY;
   if (!apiKey || apiKey === "PASTE_RESEND_KEY_HERE") {
-    console.warn("[email] RESEND_API_KEY not configured — skipping email send");
+    console.warn("[email] RESEND_API_KEY not configured, skipping email send", { requestId });
     return;
   }
 
-  const res = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      from: "solen.ch <noreply@solen.ch>",
-      to: payload.to,
-      subject: payload.subject,
-      // typography-02: wrap every template's body in the brand font stack here,
-      // the single choke point all ~30 template builders funnel through. Fixes
-      // lib/email-templates/{audit-notifications,booking-notifications,
-      // salon-onboarding,welcome-series}.ts, which had zero font-family
-      // declarations of their own and rendered in each client's default font
-      // (Times New Roman in classic Outlook) with no brand typeface.
-      html: `<div style="font-family:${EMAIL_FONT_STACK};color:${EMAIL_COLORS.ink};font-size:15px;line-height:1.5">${payload.html}</div>`,
-      // seo-comms-07: every send now carries a text/plain part, hand-written when the
-      // template supplied one, else derived from the same html above.
-      text: payload.text ?? stripHtmlToText(payload.html),
-      ...(payload.attachments ? { attachments: payload.attachments } : {}),
-    }),
-  });
+  // MERGED BY HAND 2026-08-14, both halves kept. The timeout below came from the July branch and
+  // had never reached main: main carried the RESEND_TIMEOUT_MS comment explaining a timeout that
+  // the code did not actually apply, so every send waited indefinitely. The brand font wrapper,
+  // the text/plain part and the attachments came from main and are not in the branch. Dropping
+  // either side loses something real, so the request body below is main's and the abort handling
+  // around it is the branch's.
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), RESEND_TIMEOUT_MS);
+
+  let res: Response;
+  try {
+    res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: payload.from ?? "solen.ch <noreply@solen.ch>",
+        to: payload.to,
+        subject: payload.subject,
+        // typography-02: wrap every template's body in the brand font stack here,
+        // the single choke point all ~30 template builders funnel through. Fixes
+        // lib/email-templates/{audit-notifications,booking-notifications,
+        // salon-onboarding,welcome-series}.ts, which had zero font-family
+        // declarations of their own and rendered in each client's default font
+        // (Times New Roman in classic Outlook) with no brand typeface.
+        html: `<div style="font-family:${EMAIL_FONT_STACK};color:${EMAIL_COLORS.ink};font-size:15px;line-height:1.5">${payload.html}</div>`,
+        // seo-comms-07: every send now carries a text/plain part, hand-written when the
+        // template supplied one, else derived from the same html above.
+        text: payload.text ?? stripHtmlToText(payload.html),
+        ...(payload.attachments ? { attachments: payload.attachments } : {}),
+      }),
+      signal: controller.signal,
+    });
+  } catch (err) {
+    // Name the timeout explicitly rather than letting it surface as a bare "AbortError", so the
+    // log says WHY. Do not swallow it: the caller decides, and every caller already try/catches.
+    if (err instanceof Error && err.name === "AbortError") {
+      console.error(`[email] Resend timed out after ${RESEND_TIMEOUT_MS}ms:`, payload.subject, { requestId });
+      throw new Error(`Resend timeout after ${RESEND_TIMEOUT_MS}ms`);
+    }
+    throw err;
+  } finally {
+    // Always clear, including the success path, or the pending timer holds the function alive.
+    clearTimeout(timer);
+  }
 
   if (!res.ok) {
     const error = await res.text();

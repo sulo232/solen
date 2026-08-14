@@ -23,3 +23,25 @@ export const stripe = new Proxy({} as Stripe, {
 export function toRappen(chf: number): number {
   return Math.round(chf * 100);
 }
+
+/**
+ * Classify a caught Stripe error as a genuine CARD DECLINE (declined /
+ * insufficient_funds / expired_card and kin) versus every other Stripe
+ * failure (API outage, restricted account, malformed request, an expired
+ * capture window). A card decline is a normal business outcome, the system
+ * worked and the answer was no; anything else means Stripe (or our own call)
+ * did not do its job and is worth surfacing as a real error.
+ *
+ * `err.type === "StripeCardError"` is the stripe-node SDK's typed error
+ * class name; `err.raw?.type === "card_error"` is the same classification
+ * straight off the raw API response, kept as a fallback for whichever shape
+ * the caller's catch actually sees. This is the ORIGINAL discriminator from
+ * lib/bookings/off-session-charge.ts's alertAdmin gate, pulled out here so a
+ * second Stripe call site (a capture, not a create) can reuse it instead of
+ * re-deriving its own copy.
+ */
+export function isStripeCardDecline(err: unknown): boolean {
+  const e = err as { type?: string; raw?: { type?: string } } | null | undefined;
+  const errType = e?.type ?? e?.raw?.type;
+  return errType === "StripeCardError" || errType === "card_error";
+}
