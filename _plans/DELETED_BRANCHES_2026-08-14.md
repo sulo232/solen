@@ -12,3 +12,4 @@
 | `cleanup-leaked-secrets` | d24eabee0 | 1 | 2 | _manual_testing/MANUAL-setup-checklist 2.md (1), _manual_testing/MANUAL-setup-checklist.md (1) | security: redact leaked Resend + Gemini keys from MANUAL-setup-checkli |
 | `cleanup-vercel` | 6f1ad39ee | 1 | 1 | vercel.json (1) | chore: remove vercel.json (migrated to Netlify) [skip vercel] |
 | `cron-jobs` | 47b37a596 | 1 | 3 | .github/actions (1), .github/workflows (1), _tasks/INCOMPLETE_FEATURES.md (1) | feat: cron jobs via GitHub Actions (replaces vercel.json crons) [skip  |
+| `pre-rebase-backup` | a81527699 | 111 | 164 | exact twin of claude/backend-analysis-improvements-77f02b (same files, same 244 clashes, same 21 database changes) | audit: evidence tokens on parent verdict boxes; drop redunda |
