@@ -118,11 +118,21 @@ is unproven, and each phase writes its state here so the loop survives a session
       The 15 design docs are NOT yet collapsed; THEMING outranks them and they stay on disk until the
       new screen tree replaces what they describe.
 
-- [ ] **Phase 3 , the data layer.** Rebuild how the app talks to Supabase, auth and Stripe, against
-      `/Users/sulo/Documents/solen/_docs/BACKEND.md` , the ABSOLUTE path, because that file lives in
-      the WEB repo and does not exist inside `solen-mobile`. The audit caught this: an unattended
-      loop working in the mobile repo would have found nothing at the relative path I first wrote. CLOSE: every screen's data comes from a typed
-      client with no fabricated values, proven by the silent-no-op discriminate check.
+- [~] **Phase 3 , the data layer. AUDITED 2026-08-14, and it does NOT need rebuilding.** The plan
+      said "rebuild"; measured, that would be destroying working code, which is the same mistake the
+      earlier audit caught on appointments, loyalty and search.
+      `verified:` `src/lib/queries.ts` already holds 29 typed calls against the real tables, and the
+      client is typed off the generated database types. Auth works. This layer is sound.
+      **The one real defect, and it is a fabrication, not a typing problem:** the booking flow's time
+      step renders SAMPLE slots. `src/app/booking.tsx:11` says so in its own header, and again at
+      lines 34 and 294: *"SAMPLE times only (availability is not wired yet)"*. The screen is honest
+      about it on screen, which is better than lying, but a customer cannot book a real time. That is
+      the one thing standing between this app and a working booking, and it belongs to phase 4.
+      Also open, minor: `auth/welcome.tsx` uses placeholder art, and rewards has an unlocked value
+      noted in its own header.
+      CLOSE, revised: not "rebuild the layer" but "wire real availability into the booking time step
+      and remove the SAMPLE slots". Tracked in phase 4.
+
 - [ ] **Phase 4 , the spine.** Home, search, salon page, booking, confirmation. The path that earns
       money. CLOSE: an appointment booked end to end in the simulator, screenshotted.
 - [ ] **Phase 5 , walk-in and the queue.** Pay upfront, get a number, track the place in line.
