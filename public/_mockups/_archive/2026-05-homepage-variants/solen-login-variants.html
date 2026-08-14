@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen — Login v2 · hero photo + pills (grounded)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --disabled:#C5C8C4; --border:#E7E5E4;
+    --bg:#FFFFFF; --sunken:#F5F5F4; --page:#ECEBEA;
+    --shadow-card:0 4px 12px rgba(50,47,44,0.06),0 2px 4px rgba(50,47,44,0.03);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+  body{font-family:"Geist",system-ui,sans-serif;background:var(--page);color:var(--ink);letter-spacing:-0.01em;padding:40px 24px 80px}
+  .head{max-width:1100px;margin:0 auto 36px}
+  .head h1{font-size:24px;font-weight:600;letter-spacing:-0.02em}
+  .head p{font-size:14px;color:var(--ink2);margin-top:8px;max-width:720px;line-height:1.55}
+  .legend{display:flex;gap:22px;margin-top:16px;flex-wrap:wrap}
+  .legend-item{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink2)}
+  .chip{font-size:11px;font-weight:600;padding:3px 8px;border-radius:9999px;background:var(--ink);color:#fff}
+  .chip.alt{background:var(--sunken);color:var(--ink);border:1px solid var(--border)}
+
+  .lab{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(2,380px);gap:56px;justify-content:center;align-items:start}
+  @media(max-width:900px){.lab{grid-template-columns:380px}}
+  .col{display:flex;flex-direction:column;align-items:center}
+  .cap{margin-top:18px;text-align:center;max-width:360px}
+  .cap .t{font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:8px}
+  .cap .rec{font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;background:var(--ink);color:#fff;padding:2px 7px;border-radius:9999px}
+  .cap p{font-size:13px;color:var(--ink2);margin-top:7px;line-height:1.5}
+
+  .phone{width:380px;background:var(--bg);border-radius:44px;border:1px solid var(--border);box-shadow:var(--shadow-card);overflow:hidden;position:relative}
+
+  /* hero photo */
+  .hero{position:relative;height:248px;background:#d8d2cc;overflow:hidden}
+  .hero img{width:100%;height:100%;object-fit:cover;display:block}
+  .hero .scrim{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(10,10,10,.28) 0%,rgba(10,10,10,0) 38%,rgba(255,255,255,0) 70%,#fff 100%)}
+  .hero .status{position:absolute;top:0;left:0;right:0;height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 26px;font-size:13px;font-weight:600;color:#fff}
+  .hero .mark{position:absolute;top:54px;left:26px;display:flex;align-items:center;gap:9px}
+  .hero .chipS{width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,.92);color:var(--ink);display:grid;place-items:center;font-weight:700;font-size:15px;backdrop-filter:blur(6px)}
+  .hero .wm{color:#fff;font-weight:600;font-size:17px;letter-spacing:-0.02em;text-shadow:0 1px 8px rgba(0,0,0,.25)}
+
+  .screen{padding:4px 26px 30px;margin-top:-2px}
+  h2.title{font-size:28px;font-weight:600;letter-spacing:-0.02em;line-height:1.12;color:var(--ink)}
+  .sub{font-size:15px;color:var(--ink2);margin-top:7px;line-height:1.4}
+
+  /* pill buttons */
+  .pill{width:100%;height:54px;border-radius:9999px;display:flex;align-items:center;justify-content:center;gap:10px;position:relative;font-size:15px;font-weight:500;cursor:pointer;transition:.18s;border:none}
+  .pill .ic{position:absolute;left:20px;display:grid;place-items:center;width:20px;height:20px}
+  .pill .ic svg{width:20px;height:20px}
+  .pill-ink{background:var(--ink);color:#fff}
+  .pill-ink:hover{opacity:.92}
+  .pill-out{background:#fff;color:var(--ink);border:1px solid var(--border)}
+  .pill-out:hover{background:var(--sunken)}
+
+  .field{width:100%;height:54px;border-radius:9999px;border:1px solid var(--border);background:#fff;padding:0 20px;font-size:15px;display:flex;align-items:center;justify-content:space-between}
+  .field .ph{color:var(--ink2)}
+  .field .eye svg{width:18px;height:18px;display:block}
+
+  .divider{display:flex;align-items:center;gap:14px;color:var(--ink2);font-size:13px}
+  .divider .ln{flex:1;height:1px;background:var(--border)}
+  .link{color:var(--ink);font-weight:500;text-decoration:underline;text-underline-offset:2px}
+  .muted{font-size:13px;color:var(--ink2)}
+  .legal{font-size:11px;color:var(--ink2);line-height:1.5;text-align:center}
+  .stack{display:flex;flex-direction:column;gap:11px}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-apple" viewBox="0 0 24 24"><path fill="currentColor" d="M17.05 12.04c-.03-2.6 2.12-3.85 2.22-3.91-1.21-1.77-3.09-2.01-3.76-2.04-1.6-.16-3.12.94-3.93.94-.81 0-2.06-.92-3.39-.89-1.74.03-3.35 1.01-4.25 2.57-1.81 3.14-.46 7.79 1.3 10.34.86 1.25 1.88 2.65 3.22 2.6 1.29-.05 1.78-.83 3.34-.83 1.56 0 2 .83 3.37.81 1.39-.03 2.27-1.27 3.12-2.53.98-1.45 1.39-2.85 1.41-2.92-.03-.01-2.71-1.04-2.74-4.13zM14.69 4.5c.71-.86 1.19-2.06 1.06-3.25-1.02.04-2.26.68-2.99 1.54-.66.76-1.23 1.98-1.08 3.15 1.14.09 2.3-.58 3.01-1.44z"/></symbol>
+  <symbol id="i-google" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path fill="none" stroke="#6B6B6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3" fill="none" stroke="#6B6B6B" stroke-width="2"/></symbol>
+</svg>
+
+<div class="head">
+  <h1>Login v2 — hero photo + pills</h1>
+  <p>Fixing your two flags: <strong>monochrome</strong> → a lifestyle hero photo carries the warmth/color (the UI stays B&amp;W); <strong>boxy</strong> → <strong>pill</strong> buttons (rounded-full, our <code>rounded-btn</code>) with varied hierarchy — one ink anchor, the rest white-bordered. Grounded in Vocabulary / BlaBlaCar / Anything (Mobbin). Same A/B choice: what leads, social or email.</p>
+  <div class="legend">
+    <div class="legend-item"><span class="chip">A · Recommended</span> Social-first — Apple leads (ink), email below</div>
+    <div class="legend-item"><span class="chip alt">B</span> Email-first — form leads (ink CTA), social below</div>
+  </div>
+</div>
+
+<div class="lab">
+
+  <!-- A — SOCIAL-FIRST -->
+  <div class="col">
+    <div class="phone">
+      <div class="hero">
+        <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=820&h=560&fit=crop" alt="" onerror="this.style.display='none'"/>
+        <div class="scrim"></div>
+        <div class="status"><span>9:41</span><span>5G ▮▮</span></div>
+        <div class="mark"><span class="chipS">S</span><span class="wm">solen.ch</span></div>
+      </div>
+      <div class="screen">
+        <h2 class="title">Welcome back</h2>
+        <p class="sub">Sign in to book and manage appointments.</p>
+        <div class="stack" style="margin-top:24px">
+          <button class="pill pill-ink"><span class="ic"><svg><use href="#i-apple"/></svg></span> Sign in with Apple</button>
+          <button class="pill pill-out"><span class="ic"><svg><use href="#i-google"/></svg></span> Continue with Google</button>
+        </div>
+        <div class="divider" style="margin:24px 0 18px"><span class="ln"></span>or with email<span class="ln"></span></div>
+        <div class="stack">
+          <div class="field"><span class="ph">Email</span></div>
+          <div class="field"><span class="ph">Password</span><span class="eye"><svg><use href="#i-eye"/></svg></span></div>
+          <button class="pill pill-out" style="font-weight:500">Sign in</button>
+        </div>
+        <p style="text-align:center;margin-top:16px"><a class="muted" style="text-decoration:none">Forgot password?</a></p>
+        <p style="text-align:center;margin-top:22px" class="muted">No account yet? <a class="link">Sign up</a></p>
+      </div>
+    </div>
+    <div class="cap"><span class="t">A — Social-first <span class="rec">Recommended</span></span>
+      <p>Apple is the ink anchor (one-tap, fastest), Google + email recede. Warm photo, soft pills — most "modern app." Best if sign-ins skew social.</p></div>
+  </div>
+
+  <!-- B — EMAIL-FIRST -->
+  <div class="col">
+    <div class="phone">
+      <div class="hero">
+        <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=820&h=560&fit=crop" alt="" onerror="this.style.display='none'"/>
+        <div class="scrim"></div>
+        <div class="status"><span>9:41</span><span>5G ▮▮</span></div>
+        <div class="mark"><span class="chipS">S</span><span class="wm">solen.ch</span></div>
+      </div>
+      <div class="screen">
+        <h2 class="title">Welcome back</h2>
+        <p class="sub">Good to see you again.</p>
+        <div class="stack" style="margin-top:24px">
+          <div class="field"><span class="ph">Email</span></div>
+          <div class="field"><span class="ph">Password</span><span class="eye"><svg><use href="#i-eye"/></svg></span></div>
+          <button class="pill pill-ink">Sign in</button>
+        </div>
+        <p style="text-align:center;margin-top:14px"><a class="muted" style="text-decoration:none">Forgot password?</a></p>
+        <div class="divider" style="margin:22px 0 18px"><span class="ln"></span>or<span class="ln"></span></div>
+        <div class="stack">
+          <button class="pill pill-out"><span class="ic"><svg><use href="#i-apple"/></svg></span> Sign in with Apple</button>
+          <button class="pill pill-out"><span class="ic"><svg><use href="#i-google"/></svg></span> Continue with Google</button>
+        </div>
+        <p style="text-align:center;margin-top:22px" class="muted">No account yet? <a class="link">Sign up</a></p>
+      </div>
+    </div>
+    <div class="cap"><span class="t">B — Email-first</span>
+      <p>Form leads with the ink "Sign in" CTA, social below an "or". Best if most of your existing users are email/password. Same warm photo + pills.</p></div>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen — Onboarding · categories + curation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&display=swap" rel="stylesheet" />
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--disabled:#C5C8C4;--border:#E7E5E4;--bg:#FFFFFF;--sunken:#F5F5F4;--page:#ECEBEA;--shadow:0 4px 12px rgba(50,47,44,0.06),0 2px 4px rgba(50,47,44,0.03);
+    /* universal colors — yellow/pink/blue matched to s-accent, green+amber kept canonical (perceptually matched) */
+    --star:#FFC32B; --star-pale:#FDF8E7;
+    --heart:#FF3366; --heart-pale:#FDE7EC;
+    --water:#276EF1; --water-pale:#E7EFFD;
+    --open:#16A34A; --open-pale:#E8F5E9;
+    --urgency:#9A3412; --urgency-pale:#FFF1E6;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+  body{font-family:"Geist",system-ui,sans-serif;background:var(--page);color:var(--ink);letter-spacing:-0.01em;padding:40px 24px 80px}
+  .head{max-width:1180px;margin:0 auto 26px}
+  .head h1{font-size:24px;font-weight:600;letter-spacing:-0.02em}
+  .head p{font-size:14px;color:var(--ink2);margin-top:8px;max-width:800px;line-height:1.55}
+  .sec-label{display:flex;align-items:baseline;gap:10px;margin:32px auto 16px;max-width:1180px}
+  .sec-label .tag{font-size:15px;font-weight:600}
+  .sec-label .desc{font-size:13px;color:var(--ink2)}
+  .row{display:flex;gap:30px;flex-wrap:wrap;justify-content:center;max-width:1180px;margin:0 auto}
+
+  .phone{width:320px;background:var(--bg);border-radius:40px;border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;flex:none}
+  .status{height:42px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:12px;font-weight:600}
+  .screen{padding:4px 22px 26px}
+  .pcap{font-size:12px;color:var(--ink2);text-align:center;margin-top:10px}
+
+  .topbar{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+  .back{width:32px;height:32px;border-radius:9999px;display:grid;place-items:center;color:var(--ink);flex:none;border:1px solid var(--border)}
+  .progress{flex:1}
+  .ptrack{height:5px;border-radius:9999px;background:var(--sunken);overflow:hidden}
+  .pfill{height:100%;background:var(--ink);border-radius:9999px}
+  .pstep{font-size:11px;color:var(--ink2);margin-top:6px}
+  .skip{font-size:13px;font-weight:500;color:var(--ink2);background:none;border:none;cursor:pointer;white-space:nowrap}
+
+  h2.q{font-size:23px;font-weight:600;letter-spacing:-0.02em;line-height:1.15;color:var(--ink)}
+  .qsub{font-size:14px;color:var(--ink2);margin-top:6px;line-height:1.4}
+
+  /* category grid (B&W — categories have no universal color) */
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px}
+  .tile{position:relative;border:1px solid var(--border);border-radius:16px;padding:15px 14px;background:#fff;cursor:pointer}
+  .tile.on{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+  .tile .ti{width:38px;height:38px;border-radius:11px;background:var(--sunken);display:grid;place-items:center;color:var(--ink)}
+  .tile .ti svg{width:21px;height:21px}
+  .tile .tn{font-size:14.5px;font-weight:500;color:var(--ink);margin-top:11px}
+  .tile .tk{position:absolute;top:12px;right:12px;width:20px;height:20px;border-radius:9999px;display:grid;place-items:center;color:#fff;background:var(--ink)}
+  .tile .tk svg{width:12px;height:12px}
+
+  .cards{display:flex;flex-direction:column;gap:10px;margin-top:22px}
+  .card{display:flex;align-items:center;gap:13px;padding:13px 14px;border:1px solid var(--border);border-radius:16px;background:#fff;cursor:pointer}
+  .card.on{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+  .card .ci{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;flex:none}
+  .card .ci svg{width:20px;height:20px}
+  .card .ct{font-size:15px;font-weight:500;color:var(--ink)}
+  .card .cs{font-size:12px;color:var(--ink2);margin-top:1px}
+  .card .check{margin-left:auto;width:22px;height:22px;border-radius:9999px;border:1.5px solid var(--border);display:grid;place-items:center;color:#fff;flex:none}
+  .card.on .check{background:var(--ink);border-color:var(--ink)}
+  .card.on .check svg{width:13px;height:13px}
+
+  .foot{margin-top:24px;display:flex;flex-direction:column;gap:12px}
+  .cta{width:100%;height:50px;border-radius:9999px;background:var(--ink);color:#fff;border:none;font-size:14.5px;font-weight:500;cursor:pointer}
+  .skipline{text-align:center}
+  .skipline button{font-size:13px;color:var(--ink2);text-decoration:underline;text-underline-offset:2px;background:none;border:none;cursor:pointer}
+
+  /* done */
+  .done{padding-top:30px;text-align:center;display:flex;flex-direction:column;align-items:center}
+  .donecheck{width:64px;height:64px;border-radius:9999px;background:var(--open-pale);display:grid;place-items:center;color:var(--open);margin-bottom:20px}
+  .donecheck svg{width:32px;height:32px}
+  .donechips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:18px}
+  .dchip{height:34px;padding:0 14px;border-radius:9999px;background:var(--sunken);display:inline-flex;align-items:center;font-size:13px;font-weight:500;color:var(--ink)}
+
+  .palette{max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;gap:24px;background:#fff;border:1px solid var(--border);border-radius:20px;padding:20px 26px}
+  .sw{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink2)}
+  .sw .d{width:28px;height:28px;border-radius:9999px;display:grid;place-items:center}
+  .sw .d svg{width:15px;height:15px}
+  .sw b{color:var(--ink);font-weight:600}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-scissors" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.12 15.88M14.47 14.48 20 20M8.12 8.12 12 12"/></g></symbol>
+  <symbol id="i-razor" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="6" rx="2"/><path d="M12 10v5M9 18h6"/></g></symbol>
+  <symbol id="i-nail" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21V8a3 3 0 0 1 6 0v13M9 21h6M8 8c0-2 1-5 4-5s4 3 4 5"/></g></symbol>
+  <symbol id="i-leaf" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 4 13c0-6 5-9 16-9 0 8-3 14-9 16zM4 20c2-5 6-8 11-9"/></g></symbol>
+  <symbol id="i-brush" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4 20 10 11 19l-5 1 1-5z"/><path d="m12 6 6 6"/></g></symbol>
+  <symbol id="i-wax" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8c4-3 12-3 16 0M4 13c4-3 12-3 16 0M4 18c4-3 12-3 16 0"/></g></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path fill="currentColor" d="m12 2 2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.8 6.1 20.8l1.2-6.6L2.5 9.6l6.6-.9L12 2z"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path fill="currentColor" d="M12 21s-7.5-4.6-10-9.3C.6 8.9 2 5.5 5.2 5.1c2-.25 3.6.9 4.8 2.2C11.2 6 12.8 4.85 14.8 5.1 18 5.5 19.4 8.9 22 11.7 19.5 16.4 12 21 12 21z"/></symbol>
+  <symbol id="i-drop" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.7s6 6.4 6 10.3a6 6 0 0 1-12 0c0-3.9 6-10.3 6-10.3z"/></symbol>
+  <symbol id="i-tag" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12V4a1 1 0 0 1 1-1h8l8 8-9 9z"/><circle cx="7.5" cy="7.5" r="1.4" fill="currentColor" stroke="none"/></g></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="m5 12 5 5 9-11"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="m15 18-6-6 6-6"/></symbol>
+</svg>
+
+<div class="head">
+  <h1>Onboarding — "what are you looking for?" + homepage curation</h1>
+  <p>New step picks the <strong>categories</strong> you'll actually book (B&amp;W — categories carry no universal color) and your <strong>deals/offers</strong> interest. Those selections curate the homepage. Universal color stays where it means something: ★ yellow, ♥ pink, 💧 blue, ⚡ amber (deals), ✓ green (done). Everything skippable.</p>
+</div>
+
+<div class="sec-label"><span class="tag">The flow</span><span class="desc">categories → interests/deals → curated home</span></div>
+<div class="row">
+
+  <!-- Categories — the new step -->
+  <div>
+    <div class="phone">
+      <div class="status"><span>9:41</span><span>5G ▮▮</span></div>
+      <div class="screen">
+        <div class="topbar"><div class="back"><svg width="16" height="16"><use href="#i-back"/></svg></div><div class="progress"><div class="ptrack"><div class="pfill" style="width:70%"></div></div><div class="pstep">Step 4 of 5</div></div><button class="skip">Skip</button></div>
+        <h2 class="q">What are you looking for?</h2>
+        <p class="qsub">Pick what you'll book — we'll build your home around it.</p>
+        <div class="grid">
+          <div class="tile on"><span class="ti"><svg><use href="#i-scissors"/></svg></span><div class="tn">Coiffeur</div><span class="tk"><svg><use href="#i-check"/></svg></span></div>
+          <div class="tile"><span class="ti"><svg><use href="#i-razor"/></svg></span><div class="tn">Barbershop</div></div>
+          <div class="tile on"><span class="ti"><svg><use href="#i-nail"/></svg></span><div class="tn">Nails</div><span class="tk"><svg><use href="#i-check"/></svg></span></div>
+          <div class="tile on"><span class="ti"><svg><use href="#i-leaf"/></svg></span><div class="tn">Spa &amp; Wellness</div><span class="tk"><svg><use href="#i-check"/></svg></span></div>
+          <div class="tile"><span class="ti"><svg><use href="#i-brush"/></svg></span><div class="tn">Makeup</div></div>
+          <div class="tile"><span class="ti"><svg><use href="#i-wax"/></svg></span><div class="tn">Waxing</div></div>
+        </div>
+        <div class="foot"><button class="cta">Continue</button><div class="skipline"><button>Skip for now</button></div></div>
+      </div>
+    </div>
+    <p class="pcap">NEW — categories (curates home)</p>
+  </div>
+
+  <!-- Interests / deals -->
+  <div>
+    <div class="phone">
+      <div class="status"><span>9:41</span><span>5G ▮▮</span></div>
+      <div class="screen">
+        <div class="topbar"><div class="back"><svg width="16" height="16"><use href="#i-back"/></svg></div><div class="progress"><div class="ptrack"><div class="pfill" style="width:88%"></div></div><div class="pstep">Step 5 of 5</div></div><button class="skip">Skip</button></div>
+        <h2 class="q">What are you into?</h2>
+        <p class="qsub">We'll surface these at the top of your home.</p>
+        <div class="cards">
+          <div class="card on"><span class="ci" style="background:var(--star-pale)"><svg style="color:var(--star)"><use href="#i-star"/></svg></span><span><span class="ct">Top-rated salons</span></span><span class="check"><svg><use href="#i-check"/></svg></span></div>
+          <div class="card on"><span class="ci" style="background:var(--urgency-pale)"><svg style="color:var(--urgency)"><use href="#i-tag"/></svg></span><span><span class="ct">Deals &amp; offers</span><span class="cs">Coupons, last-minute prices</span></span><span class="check"><svg><use href="#i-check"/></svg></span></div>
+          <div class="card"><span class="ci" style="background:var(--heart-pale)"><svg style="color:var(--heart)"><use href="#i-heart"/></svg></span><span><span class="ct">Saved favorites</span></span><span class="check"></span></div>
+          <div class="card"><span class="ci" style="background:var(--water-pale)"><svg style="color:var(--water)"><use href="#i-drop"/></svg></span><span><span class="ct">Spa &amp; relaxation</span></span><span class="check"></span></div>
+        </div>
+        <div class="foot"><button class="cta">Continue</button><div class="skipline"><button>Skip for now</button></div></div>
+      </div>
+    </div>
+    <p class="pcap">Interests + deals/coupons</p>
+  </div>
+
+  <!-- Done — curated -->
+  <div>
+    <div class="phone">
+      <div class="status"><span>9:41</span><span>5G ▮▮</span></div>
+      <div class="screen">
+        <div class="done">
+          <div class="donecheck"><svg><use href="#i-check"/></svg></div>
+          <h2 class="q">You're all set</h2>
+          <p class="qsub">Your Solen home is curated around what you picked.</p>
+          <div class="donechips">
+            <span class="dchip">Coiffeur</span><span class="dchip">Nails</span><span class="dchip">Spa</span><span class="dchip">Deals</span>
+          </div>
+        </div>
+        <div class="foot" style="margin-top:36px"><button class="cta">Explore Solen</button></div>
+      </div>
+    </div>
+    <p class="pcap">Done — green = success</p>
+  </div>
+
+</div>
+
+<div class="sec-label"><span class="tag">The palette (locked)</span><span class="desc">yellow/pink/blue ≈ tokens · green + amber canonical · all in true color, chrome B&amp;W</span></div>
+<div class="palette">
+  <div class="sw"><span class="d" style="background:var(--star-pale);color:var(--star)"><svg><use href="#i-star"/></svg></span><span><b>Yellow</b> #FFC32B · rating</span></div>
+  <div class="sw"><span class="d" style="background:var(--heart-pale);color:var(--heart)"><svg><use href="#i-heart"/></svg></span><span><b>Pink</b> #FF3366 · saved</span></div>
+  <div class="sw"><span class="d" style="background:var(--water-pale);color:var(--water)"><svg><use href="#i-drop"/></svg></span><span><b>Blue</b> #276EF1 · water/info</span></div>
+  <div class="sw"><span class="d" style="background:var(--open-pale);color:var(--open)"><svg><use href="#i-check"/></svg></span><span><b>Green</b> #16A34A · open/done</span></div>
+  <div class="sw"><span class="d" style="background:var(--urgency-pale);color:var(--urgency)"><svg><use href="#i-tag"/></svg></span><span><b>Burnt amber</b> #9A3412 · deals/urgency</span></div>
+</div>
+
+</body>
+</html>
