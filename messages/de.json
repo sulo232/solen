@@ -157,7 +157,9 @@
     "loginToProfile": "Melden Sie sich an, um Ihr Profil zu sehen",
     "loginCta": "Jetzt anmelden",
     "aboutUs": "Über uns",
-    "myAccount": "Mein Konto"
+    "myAccount": "Mein Konto",
+    "forBusiness": "Für Unternehmen",
+    "services": "Services"
   },
   "home": {
     "hero_title": "Ihr Salon in Basel",

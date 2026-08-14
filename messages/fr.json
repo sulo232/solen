@@ -157,7 +157,9 @@
     "loginToProfile": "Connectez-vous pour voir votre profil",
     "loginCta": "Se connecter",
     "aboutUs": "À propos",
-    "myAccount": "Mon compte"
+    "myAccount": "Mon compte",
+    "forBusiness": "Pour les salons",
+    "services": "Services"
   },
   "home": {
     "hero_title": "Votre salon à Bâle",
