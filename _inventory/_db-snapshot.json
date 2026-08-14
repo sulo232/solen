@@ -143,6 +143,11 @@
       "rls": true
     },
     {
+      "name": "csp_violation_reports",
+      "rows": 0,
+      "rls": true
+    },
+    {
       "name": "customer_segment_members",
       "rows": 14,
       "rls": true
@@ -403,6 +408,11 @@
       "rls": true
     },
     {
+      "name": "promo_redemptions",
+      "rows": 0,
+      "rls": true
+    },
+    {
       "name": "push_subscriptions",
       "rows": 0,
       "rls": true
@@ -519,6 +529,11 @@
     },
     {
       "name": "salon_last_minute_settings",
+      "rows": 0,
+      "rls": true
+    },
+    {
+      "name": "salon_of_month_winners",
       "rows": 0,
       "rls": true
     },
@@ -743,6 +758,6 @@
       "rls": true
     }
   ],
-  "capturedAt": "2026-07-12",
+  "capturedAt": "2026-08-14 (tables reconciled against pg_class live; the 2026-07-12 capture was missing csp_violation_reports, promo_redemptions and salon_of_month_winners, so `npm run exists` answered 'nothing found' for three real tables, one of them the one behind Salon of the Month. search_zero_results is a VIEW, not a base table, so it belongs in _db-columns.json only, which is where it is.)",
   "rlsDisabled": []
 }
