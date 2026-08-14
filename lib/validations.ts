@@ -745,6 +745,15 @@ export const adminCommissionSchema = z.object({
   rate: z.number().min(0).max(100),
 });
 
+// What an admin may send when overriding a salon's payment mode. `payment_mode_admin` is nullable
+// so an admin can clear their own override, and `payment_mode_enforced` is required so the request
+// always says outright whether the override is meant to win. Landed 2026-08-14 with the rest of
+// that feature, whose columns had been live and unread since July.
+export const adminPaymentModeOverrideSchema = z.object({
+  payment_mode_admin: z.enum(["at_salon", "deposit", "prepay"]).nullable(),
+  payment_mode_enforced: z.boolean(),
+});
+
 export const adminAiLimitSchema = z.object({
   cap: z.number().int().min(1).max(100000),
 });
