@@ -69,8 +69,25 @@ export async function GET(
 
   if (!booking) return NextResponse.json({ error: "Booking not found" }, { status: 404 });
 
+  // Audit finding #1 (HIGH, 2026-07-12), RECOVERED 2026-08-14. This route's only gate was a
+  // self-contained HMAC token with no server-side single-use marker, so the link in a customer's
+  // email stayed REPLAYABLE until its embedded expiry passed: an email link-scanner, or anyone who
+  // got the URL, could act on it again and again. Check-and-set `consumed_at` in the SAME update as
+  // the status change, so zero rows returned means the link was already used.
+  //
+  // NOT taken wholesale from the branch it was stranded on. That branch's copy of this file also
+  // deleted main's status CAS guard and dropped the `money` result, both of which landed later, so
+  // copying it across would have undone two fixes to fix one. Only the single-use marker is lifted.
   if (action === "confirm" && booking.status === "pending") {
-    await admin.from("bookings").update({ status: "confirmed" }).eq("id", bookingId);
+    const { data: confirmedRows } = await admin
+      .from("bookings")
+      .update({ status: "confirmed", consumed_at: new Date().toISOString() })
+      .eq("id", bookingId)
+      .is("consumed_at", null)
+      .select("id");
+    if (!confirmedRows || confirmedRows.length === 0) {
+      return NextResponse.json({ error: "Link already used" }, { status: 409 });
+    }
     return NextResponse.json({ result: "confirmed", booking_id: bookingId });
   }
 
@@ -81,14 +98,22 @@ export async function GET(
     // a concurrent state change (e.g. the salon already cancelled it) cannot double-process
     // this booking. booking.status is non-null inside this branch (guaranteed by the includes
     // guard above). We check the row count: if the race is lost, DO NOT free the slot or refund.
+    // The single-use marker (audit finding #1, recovered 2026-08-14) rides ALONGSIDE the existing
+    // status CAS rather than replacing it: the status guard stops a concurrent state change, the
+    // consumed_at guard stops the same link being replayed. Two different races, both real.
     const { data: cancelledRows } = await admin
       .from("bookings")
-      .update({ status: "cancelled", cancelled_at: new Date().toISOString() })
+      .update({
+        status: "cancelled",
+        cancelled_at: new Date().toISOString(),
+        consumed_at: new Date().toISOString(),
+      })
       .eq("id", bookingId)
       .eq("status", booking.status!)
+      .is("consumed_at", null)
       .select("id");
     if (!cancelledRows || cancelledRows.length === 0) {
-      // The booking's status changed under us between the read and this write; do nothing else.
+      // Either the status changed under us, or the link was already used. Do nothing else.
       return NextResponse.json({ result: "noop", booking_id: bookingId }, { status: 409 });
     }
     // Free slot
