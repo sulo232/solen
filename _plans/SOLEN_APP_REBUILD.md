@@ -172,8 +172,15 @@ to touch git. I commit everything when they land.
 | 4 | `booking` + real availability, `confirmation` (new), `auth/login`, `auth/welcome`, `onboarding` |
 | 5 | `city-sheet`, `search-filters`, `discover/saved`, `gallery`, `profile/hair-profile`, `reviews/[slug]` |
 
-- [ ] **Phase 5 , walk-in and the queue.** Pay upfront, get a number, track the place in line.
-      CLOSE: a queue joined and tracked in the simulator, screenshotted.
+- [~] **Phase 5 , walk-in and the queue.** Pay upfront, get a number, track the place in line.
+      CLOSE: a queue joined and tracked, screenshotted.
+      `verified:` the app has NO walk-in or queue screen at all. `find src -iname "*walk*" -o -iname
+      "*queue*"` in solen-mobile returns five Lottie files, one category png and
+      `src/components/home/WalkInBand.tsx`, and nothing under `src/app/`. The web has the whole flow:
+      `app/[locale]/walk-in-join`, `walk-in-pay`, `queue/[token]`, `walk-in-tip/[token]`, behind six
+      live endpoints under `app/api/walkin/` and `app/api/bookings/walk-in`. Out with builder 6:
+      four new screens copied from those routes, real queue values only, payment stubbed behind a
+      disabled state since Stripe is out of scope.
 - [ ] **Phase 6 , the rest of the customer.** Appointments, tips, vouchers, loyalty, referrals,
       reviews, saved, recently viewed, notifications, profile. CLOSE: every web customer route has
       an app equivalent or a written reason it does not.
