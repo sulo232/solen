@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Solen · card badges (grounded)</title>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --ink3:#A1A1AA;
+    --bg:#FFFFFF; --sunken:#F4F4F5; --border:#E6E6E8;
+    --blue:#276EF1; --star:#FFC32B;
+    --love-soft:#FAD2DA; --love-deep:#A23548;   /* s-love family — the real discount badge colors */
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+  body{margin:0; background:#E9E9EC; font-family:-apple-system,system-ui,"Inter",sans-serif;
+       color:var(--ink); padding:22px 12px 60px; display:flex; flex-direction:column; align-items:center; gap:14px}
+  .cap{width:100%; max-width:390px; color:#5b5b62; font-size:12.5px; line-height:1.55; padding:0 4px}
+  .cap b{color:#0A0A0A}
+  .phone{width:390px; max-width:100%; background:var(--bg); border-radius:42px; overflow:hidden;
+         box-shadow:0 18px 50px rgba(0,0,0,.16); border:1px solid #d9d9dd}
+  .status{height:46px; display:flex; align-items:center; justify-content:space-between; padding:0 26px; font-size:14px; font-weight:600}
+
+  .hdr{display:flex; align-items:center; justify-content:space-between; padding:4px 16px 12px}
+  .city{font-size:17px; font-weight:500; display:flex; align-items:center; gap:5px}
+  .chev{font-size:11px; color:var(--ink2)}
+  .bell{width:24px; height:24px}
+
+  .search{margin:0 16px 12px; height:52px; border-radius:999px; border:1px solid var(--border);
+          background:#fff; box-shadow:0 4px 16px rgba(0,0,0,.06); display:flex; align-items:center; gap:10px; padding:0 18px}
+  .search svg{width:18px; height:18px; color:var(--ink3)}
+  .search span{color:var(--ink3); font-size:15px}
+
+  .cats{display:flex; justify-content:space-between; padding:2px 18px 14px}
+  .cat{display:flex; flex-direction:column; align-items:center; gap:6px; width:60px}
+  .catic{width:42px; height:42px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:24px}
+  .cat span{font-size:12px; color:var(--ink2)}
+  .cat.on span{color:var(--ink); font-weight:600}
+  .cat .bar{height:2px; width:22px; border-radius:1px; background:transparent}
+  .cat.on .bar{background:var(--ink)}
+
+  .filters{display:flex; gap:8px; padding:2px 16px 0; overflow-x:auto; scrollbar-width:none}
+  .filters::-webkit-scrollbar{display:none}
+  .pill{flex:0 0 auto; height:36px; border-radius:999px; padding:0 14px; display:flex; align-items:center; gap:6px;
+        font-size:13.5px; font-weight:500; background:var(--sunken); color:var(--ink)}
+  .pill.on{background:var(--ink); color:#fff}
+  .pill .down{font-size:10px; opacity:.7}
+
+  .sec-h{font-size:21px; font-weight:700; letter-spacing:-.5px; padding:20px 16px 12px}
+  .rail{display:flex; gap:14px; padding:0 16px 8px; overflow-x:auto; scrollbar-width:none}
+  .rail::-webkit-scrollbar{display:none}
+
+  .card{flex:0 0 230px; width:230px}
+  .photo{position:relative; width:100%; aspect-ratio:5/4; border-radius:18px; overflow:hidden}
+  .photo.a{background:linear-gradient(135deg,#caa07a,#6e4b32)}
+  .photo.b{background:linear-gradient(140deg,#8aa0b8,#33485f)}
+  .photo.c{background:linear-gradient(135deg,#a9c3a0,#5a7e58)}
+
+  /* heart = neutral white Liquid Glass (already in the app) */
+  .heart{position:absolute; top:8px; right:8px; width:32px; height:32px; border-radius:999px;
+         display:flex; align-items:center; justify-content:center;
+         background:rgba(255,255,255,.5); -webkit-backdrop-filter:blur(14px) saturate(1.4);
+         backdrop-filter:blur(14px) saturate(1.4); border:1px solid rgba(255,255,255,.6); box-shadow:0 2px 8px rgba(0,0,0,.12)}
+  .heart svg{width:17px; height:17px}
+
+  /* Badge = the system's tinted layered-glass, rounded RECTANGLE, sentence case.
+     The TINT is the signal — no dots. */
+  .badge{position:absolute; top:8px; left:8px; padding:5px 10px; border-radius:10px;
+         font-size:11px; font-weight:600; letter-spacing:.1px;
+         -webkit-backdrop-filter:blur(14px) saturate(1.4); backdrop-filter:blur(14px) saturate(1.4)}
+  .badge.discount{background:rgba(250,210,218,.62); border:1px solid rgba(162,53,72,.32); color:var(--love-deep); box-shadow:0 1px 3px rgba(26,18,9,.06)}
+  .badge.neutral{background:rgba(255,255,255,.55); border:1px solid rgba(255,255,255,.75); color:var(--ink); box-shadow:0 1px 3px rgba(26,18,9,.08)}
+
+  .crow{display:flex; align-items:baseline; gap:7px; margin-top:10px; padding:0 2px}
+  .nm{font-size:14px; font-weight:600; letter-spacing:-.15px; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .rt{display:flex; align-items:center; gap:3px; font-size:13px; color:var(--ink2)}
+  .rt svg{width:12px; height:12px}
+  .addr{font-size:12px; color:var(--ink2); padding:0 2px; margin-top:5px}
+  .brow{display:flex; align-items:center; justify-content:space-between; padding:0 2px; margin-top:6px}
+  .pr{font-size:12px; font-weight:600}
+  .slot{display:flex; align-items:center; gap:4px; font-size:12px; font-weight:600}
+  .slot svg{width:12px; height:12px; color:var(--ink2)}
+</style>
+</head>
+<body>
+
+<div class="cap"><b>Only real badges now.</b> Same card backbone (glass heart, name + ★, address, price + date) + the one tinted-glass slot our system already defines. Tint = signal, no dots: <b>pink glass = discount (real −% field)</b>, <b>neutral glass = Neu / Top bewertet</b>. No Beliebt, no "#1", no Solen Favorit — those have no data.</div>
+
+<div class="phone">
+  <div class="status"><span>9:41</span><span>5G ▪▪▪</span></div>
+
+  <div class="hdr">
+    <div class="city">Basel <span class="chev">▾</span></div>
+    <svg class="bell" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+  </div>
+
+  <div class="search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+    <span>Salon oder Behandlung suchen</span>
+  </div>
+
+  <div class="cats">
+    <div class="cat on"><div class="catic" style="background:#eaf3ec">✂️</div><span>Coiffeur</span><div class="bar"></div></div>
+    <div class="cat"><div class="catic" style="background:#eef1f6">🧔</div><span>Barber</span><div class="bar"></div></div>
+    <div class="cat"><div class="catic" style="background:#fdeef2">💅</div><span>Nägel</span><div class="bar"></div></div>
+    <div class="cat"><div class="catic" style="background:#fef6e6">🌿</div><span>Spa</span><div class="bar"></div></div>
+  </div>
+
+  <div class="filters">
+    <div class="pill on">Heute frei</div>
+    <div class="pill">Sortieren <span class="down">▾</span></div>
+    <div class="pill">Preis <span class="down">▾</span></div>
+    <div class="pill">Walk-in</div>
+  </div>
+
+  <div class="sec-h">Empfohlen für dich</div>
+  <div class="rail">
+
+    <!-- A: real discount (last_minute_discount_percent) -->
+    <div class="card">
+      <div class="photo a">
+        <div class="badge discount">−20%</div>
+        <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8"><path d="M19 14c1.5-1.5 3-3.3 3-5.5A4.5 4.5 0 0 0 12 6 4.5 4.5 0 0 0 2 8.5C2 12 6 15 12 20c2-1.7 4-3.3 5.5-4.8"/></svg></div>
+      </div>
+      <div class="crow"><span class="nm">Cuts &amp; Culture</span><span class="rt"><svg viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2l3 6.3 7 .9-5 4.7 1.2 6.9L12 17.8 5.8 20.8 7 13.9 2 9.2l7-.9z"/></svg>4.8</span></div>
+      <div class="addr">Elsässerstrasse 10, Basel</div>
+      <div class="brow"><span class="pr">CHF 15</span><span class="slot"><svg viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="1.9"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>Heute</span></div>
+    </div>
+
+    <!-- B: Neu (created_at) -->
+    <div class="card">
+      <div class="photo b">
+        <div class="badge neutral">Neu</div>
+        <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8"><path d="M19 14c1.5-1.5 3-3.3 3-5.5A4.5 4.5 0 0 0 12 6 4.5 4.5 0 0 0 2 8.5C2 12 6 15 12 20c2-1.7 4-3.3 5.5-4.8"/></svg></div>
+      </div>
+      <div class="crow"><span class="nm">Herrenzimmer</span><span class="rt"><svg viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2l3 6.3 7 .9-5 4.7 1.2 6.9L12 17.8 5.8 20.8 7 13.9 2 9.2l7-.9z"/></svg>4.9</span></div>
+      <div class="addr">Gerbergasse 22, Basel</div>
+      <div class="brow"><span class="pr">CHF 39</span><span class="slot"><svg viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="1.9"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>Morgen</span></div>
+    </div>
+
+    <!-- C: Top bewertet (average_rating) -->
+    <div class="card">
+      <div class="photo c">
+        <div class="badge neutral">Top bewertet</div>
+        <div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8"><path d="M19 14c1.5-1.5 3-3.3 3-5.5A4.5 4.5 0 0 0 12 6 4.5 4.5 0 0 0 2 8.5C2 12 6 15 12 20c2-1.7 4-3.3 5.5-4.8"/></svg></div>
+      </div>
+      <div class="crow"><span class="nm">Studio Mira</span><span class="rt"><svg viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2l3 6.3 7 .9-5 4.7 1.2 6.9L12 17.8 5.8 20.8 7 13.9 2 9.2l7-.9z"/></svg>4.9</span></div>
+      <div class="addr">Steinenvorstadt 5, Basel</div>
+      <div class="brow"><span class="pr">CHF 35</span><span class="slot"><svg viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="1.9"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>12.09</span></div>
+    </div>
+
+  </div>
+  <div style="height:14px"></div>
+</div>
+
+<div class="cap" style="font-size:11.5px; color:#7a7a80">HTML approximates the glass tint; the real iOS Liquid Glass (tinted GlassView) renders when built on the card. "−20%" is a sample of the real last_minute_discount_percent. Font is system; real app = Inter.</div>
+
+</body>
+</html>

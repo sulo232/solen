@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { Gift, ArrowRight, Sparkles } from "lucide-react";
+import { Gift, ArrowRight, BadgePercent } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { REFERRAL_STORAGE_KEY } from "@/lib/referral/storage";
 
@@ -74,7 +74,7 @@ export default function ReferralLandingPage({ params }: Props) {
             "border border-s-border"
           )}
         >
-          <Sparkles className="w-4 h-4 text-s-ink-2 flex-shrink-0" strokeWidth={1.75} aria-hidden="true" />
+          <BadgePercent className="w-4 h-4 text-s-ink-2 flex-shrink-0" strokeWidth={1.75} aria-hidden="true" />
           <span className="font-body text-xs font-semibold text-s-ink-2 uppercase tracking-widest mr-1">
             {t("codeLabel")}
           </span>

@@ -37,7 +37,7 @@ Everything else (mechanical edits, sweeps, enforcement wiring, verification, app
 5. **No muted focal fills + coherent emphasis.** Never use a dark `.text` token (`#906309`, `#9A3412`) as a FOCAL fill, it reads muddy. Focal = a vivid `.DEFAULT` token or surcharge orange `#EA580C` on a light tint bg. Surcharge is orange, not blue. And emphasis (weight or colour) maps to a WHOLE meaningful unit, never an orphan sub-token: bolding/colouring just the "65" but not the "from / CHF" reads as a glitch, not a decision. A card may carry two ink elements (name + price) only if the NAME is larger, so size, not colour, marks the anchor (V3-D442, amends A13).
 6. **Refined pastel, never screamy.** Inline status chips/badges = pastel `.bg` + ink text + saturated icon (Stripe / Vercel restraint), not a saturated solid block. The success/confirmation disc = **normal green `#16A34A`** + white check (NOT deep `#15803D`, NOT a pale tint).
 7. **Elevation is earned by the background, not the button.** One primary commit → ink fill; a control over a photo → frosted glass (`FROST_GLASS`, `lib/frost-glass.ts`); a calm control on white / stone → FLAT, no shadow. White + shadow on a calm surface is the banned grey-haze.
-8. **Fonts:** Inter Tight (display / headings) + Inter (body) + JetBrains Mono (codes). **Never Geist.**
+8. **Fonts:** Inter Tight (display / headings) + Inter (body) + Inter Tight tabular for codes (`font-variant-numeric: tabular-nums`, LOCKFILE §13.4; JetBrains Mono RETIRED V3-D470 2026-06-10, owner: "the W-047 font is different"). **Never Geist.**
 9. **Ground in the system; don't invent.** Pull size / affordance / selected-state from a LOCKED component (avatar size from SalonTeam, selected = ink-border). Don't eyeball or invent hex / sizes / copy. "Too heavy / too small" = refine the existing affordance, don't replace it. When a value isn't locked, ASK, don't fill from memory.
 10. **No em-dashes; emoji chat-only.** No `—` / `–` anywhere in UI copy, code, comments, or commits (use period / comma / colon / parentheses / spaced hyphen). Emoji + playful tone live in chat replies only, never in shipped code or files.
 
@@ -154,6 +154,7 @@ Before applying, building, or committing ANY visual / design change: **show the 
 1. The mockup MUST be a **copy of the REAL page/component** with ONLY the proposed change applied — capture the real route (Playwright), modify the real DOM/component uncommitted, show before/after. NEVER a from-scratch HTML redraw (they diverge → "this doesn't look like the homepage").
 2. **Treatment-only:** change ONLY the proposed thing (shadow / bg / radius / spacing). Never touch structure, layout, copy, icons, or content in a design mockup. Structure stays; only the treatment changes.
 3. Approve → THEN edit the real component + commit. Memory: `feedback_mockup_first_always`.
+4. **WHOLE-PAGE + ENGLISH (owner 2026-07-13, hook-enforced):** a mockup is a preview of the WHOLE real page (full route chrome, variant-switchable), never an isolated component panel or A/B swatch board. Hardcoded mockup copy is ALWAYS ENGLISH (owner 2026-07-01, REAFFIRMED by the 2026-07-13 correction; a same-day dictated "always in german" was a mis-transcription and is void). Real components rendering German via i18n are exempt; give review links at /en/ so the page reads English. Gate: `.claude/hooks/mockup-english-gate.py` (requires `Mockup-scope: whole-page` + a real app-tree import in new mockup files; blocks hardcoded German).
 
 ---
 
@@ -211,6 +212,45 @@ Three layers, all live:
 3. **Hook-enforced**: new routes/APIs/migrations/mockups block unless `npm run exists` ran this turn,
    and every NEW mockup file must contain an `Exists-check:` line naming what the target surface
    already renders + any REMOVED hits + the one thing that's actually new.
+
+## 🔍 MISSING THINGS: say it, find out WHY, then fix (owner 2026-08-14, session-wide)
+
+**Owner, verbatim:** *"no tell me if feutures or stuffs are missing and the stuff u talked abt
+search reason why its not there and then fix accordingly and this process i want sessionwide make
+it a principle and also activate not jat silent turn off of ths principle"*
+
+When something turns out to be ABSENT (a feature, a column, a table, a route, a component, a file,
+a check), three steps in this order, every time, no exceptions:
+
+1. **SAY IT.** Name the missing thing plainly, in the reply, in his words. Not in a plan file he
+   will not open. A missing thing he does not hear about is the same as one that was never found.
+2. **FIND OUT WHY IT IS MISSING.** Never restore something before knowing why it left. The reasons
+   this project actually produces, in the order worth checking:
+   - **Deliberately killed.** `_design-system/REMOVED.md` (the graveyard) and dated
+     `_design-system/TASTE_LOG.md` entries. A hit here means DO NOT restore it without his yes.
+   - **Superseded.** Something else now does its job. `npm run exists <keyword>` and its synonyms.
+   - **Never landed.** Built on a branch that was never merged. `git log --all -- <path>` shows the
+     commit and the branch it is stranded on.
+   - **Half-landed.** The code shipped and its migration did not, or the reverse. This is the
+     dangerous one because the product looks complete and silently does not work.
+   - **Blocked.** A gate, a permission, or a missing credential stopped it, and nobody said so.
+3. **FIX ACCORDINGLY, and "accordingly" means the fix follows the reason.** Killed on purpose:
+   leave it and say so. Superseded: point at the replacement. Never landed: bring it across.
+   Half-landed: land the other half. Blocked: name the blocker.
+
+**WHY THIS EXISTS, the case that produced it, 2026-08-14.** 40 branches with about 1,800 commits
+were sitting unmerged, and an audit against the live database found four migrations whose objects
+do not exist. One of them adds `bookings.consumed_at`, and without it the one-click confirm/cancel
+link in an email has **no replay protection at all**: verified on the shipped route, which contains
+no single-use check of any kind. The feature was not cancelled and it was not superseded. It was
+written, reviewed, and stranded on a branch nobody merged. Nothing in this system said so.
+
+**ACTIVE, not a silent default.** He asked for this to be armed rather than advice, so:
+`~/.claude/hooks/missing-needs-a-reason-gate.py` (Stop) refuses a closing message that reports
+something missing, absent, or not there without naming WHY, and refuses a claim that something was
+restored or added back when the graveyard has an entry for it.
+
+---
 
 ## 🚨 Surgical edits only
 

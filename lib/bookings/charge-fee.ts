@@ -67,6 +67,14 @@ export interface ChargeFeeResult {
   chargedCents?: number;
   /** Present when status='requires_action' — drives the re-auth hook (notification piece). */
   clientSecret?: string;
+  /** Present when status='failed': the real Stripe decline reason, so a caller (cron loop)
+   * can surface it instead of a bare status string. */
+  error?: string;
+  /** Present when status='failed'. true = a genuine card decline (customer-side,
+   * data, do not redden a cron run over it). false = a system-side failure (claim
+   * write, claim race, or a non-decline Stripe error) that SHOULD redden. Mirrors
+   * OffSessionChargeResult's `declined` (lib/bookings/off-session-charge.ts). */
+  declined?: boolean;
 }
 
 interface BookingRow {
@@ -197,7 +205,8 @@ export async function chargeFee(args: ChargeFeeArgs): Promise<ChargeFeeResult> {
 
   if (claimErr) {
     console.error(`[charge-fee] claim write failed for booking ${id} (${kind}):`, claimErr.message);
-    return { status: "failed" };
+    // A DB write failure, not a card outcome: system-side.
+    return { status: "failed", error: `claim write failed: ${claimErr.message}`, declined: false };
   }
 
   if (!claimRow) {
@@ -212,7 +221,12 @@ export async function chargeFee(args: ChargeFeeArgs): Promise<ChargeFeeResult> {
     const raced = (refetched as { fee_charge_status: string | null } | null)?.fee_charge_status ?? null;
     if (raced === "charged") return { status: "charged" };
     if (raced === "requires_action") return { status: "requires_action" };
-    return { status: "failed" };
+    // A concurrent claim race, not a card outcome: system-side.
+    return {
+      status: "failed",
+      error: `booking ${id} already claimed by a concurrent charge attempt (fee_charge_status=${raced ?? "null"})`,
+      declined: false,
+    };
   }
 
   // 7. Off-session charge via the shared primitive (the single place that talks to
@@ -259,7 +273,9 @@ export async function chargeFee(args: ChargeFeeArgs): Promise<ChargeFeeResult> {
       fee_charge_claimed_at: null,
     });
     console.error(`[charge-fee] charge failed for booking ${id} (${kind}):`, result.error);
-    return { status: "failed" };
+    // Propagate the real Stripe classification (card decline vs. non-decline
+    // failure) instead of re-deriving it here.
+    return { status: "failed", error: result.error, declined: result.declined };
   }
 
   // 9. Success. CAS the charged state onto the stale/null status row.

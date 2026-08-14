@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { getServerEnv, getAppUrl } from "@/lib/env";
 import { verifyCronSecret } from "@/lib/cron-auth";
-import { tipPromptEmail } from "@/lib/email";
+import { tipPromptEmail, sendEmail } from "@/lib/email";
 import { sendNotification } from "@/lib/notifications";
 import { withCronRun } from "@/lib/cron-run";
 import { runWithConcurrency } from "@/lib/concurrency";
@@ -12,7 +12,6 @@ import { runWithConcurrency } from "@/lib/concurrency";
 // review_prompt notifications self-expire after this many days (auto-deleted earlier on review submit).
 const REVIEW_PROMPT_TTL_DAYS = 30;
 const SOLEN_EMAIL_SENDER = "Solen <noreply@solen.ch>";
-const RESEND_EMAILS_URL = "https://api.resend.com/emails";
 
 // RING 3a: caps a per-item errors[] array so a bad batch never floods cron_runs.
 function capErrors(errs: string[], max = 20): string[] {
@@ -20,18 +19,13 @@ function capErrors(errs: string[], max = 20): string[] {
   return [...errs.slice(0, max), `...and ${errs.length - max} more`];
 }
 
-// Same Resend call the route already made via raw fetch, now with the
-// response actually checked (RING 3a: a !res.ok used to be silently ignored).
+// Same Resend call the route already made via raw fetch, now delegated to the shared
+// sendEmail() (lib/email.ts) so it inherits the same 5s timeout / AbortController / logging
+// as every other transactional email (fix #11). apiKey is no longer read here (sendEmail
+// reads its own via getServerEnv), kept as a parameter so this file's three call sites don't change.
 async function sendViaResend(apiKey: string, to: string, subject: string, html: string): Promise<void> {
-  const res = await fetch(RESEND_EMAILS_URL, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ from: SOLEN_EMAIL_SENDER, to, subject, html }),
-  });
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Resend error ${res.status}: ${body}`);
-  }
+  void apiKey;
+  await sendEmail({ from: SOLEN_EMAIL_SENDER, to, subject, html });
 }
 
 /**

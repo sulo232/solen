@@ -1,0 +1,51 @@
+{
+ "done_verified": [
+  "S01",
+  "S06",
+  "S08",
+  "S09",
+  "S11",
+  "S12",
+  "S13",
+  "S15",
+  "S16",
+  "S17",
+  "S18",
+  "S19",
+  "S20",
+  "S21",
+  "S22",
+  "S23",
+  "S24",
+  "S25",
+  "S26",
+  "S27",
+  "S28",
+  "S29",
+  "S30",
+  "S31",
+  "S32",
+  "S33"
+ ],
+ "draft_only": [],
+ "missing_entirely": [
+  "S02",
+  "S03",
+  "S04",
+  "S05",
+  "S07",
+  "S10",
+  "S14"
+ ],
+ "myths_caught": [
+  "Marketing-blog '60-80% text / 20-40% images' and '+280%/+340% engagement' figures: draft itself already flagged these MYTH and did not use them in the proposal. Confirmed correct handling, no change needed.",
+  "The draft's Tuch et al. source citation ('hci-basel.ch/MA/2007_Tuch.pdf', 'N=60 undergraduates') does not correspond to any findable source. Web search surfaces only the real, published Tuch et al. (2012) IJHCS 70(11) paper (119 website screenshots, not N=60 undergraduates) and an unrelated 2012 hci-basel.ch masters thesis by a different author (Hanchar). This is a fabricated-looking citation pattern (plausible-sounding institutional URL + invented N) that must not enter RATIONALE.md as written.",
+  "The draft's T3 fingertip-contact-patch figure (\"roughly 7 to 9mm\") is a slightly-off recall of the actual MIT Touch Lab numbers (fingertip ~8-10mm, finger pad ~10-14mm); not on the myth_screen table itself (that table is scoped to conversion/retention/psychology stats, not touch-ergonomics), but it fails the same reality-over-memory check and needed correction to the real range with an actual named source rather than an unsourced approximation.",
+  "\"perceptual/stimulus-driven vs semantic\" task-type breakpoint distinction attributed to Bailey/Konstan 2006 and Iqbal/Bailey CHI 2008: not confirmable from either cited paper, resembles a different paper's (Adamczyk and Bailey 2004) coarse/fine breakpoint finding misattributed here. Dropped from the mechanic reasoning.",
+  "Apple HIG 'a custom UI element must never mimic the appearance of a system badge': not confirmable as an Apple HIG statement, softened to only the two confirmed clauses (supplement-not-critical, kept-in-sync).",
+  "Draft claimed 'SkipLink absent from app/[locale]/layout.tsx, WCAG 2.4.1 unmet in production' -- FALSE. Direct read of app/[locale]/layout.tsx:61-68 shows an inline hand-rolled skip-to-content link ('Zum Inhalt springen', href=#main-content, sr-only until focus, dated V3-D312) that already satisfies Bypass Blocks in production. The gap is real but different: it's a duplicate/drifted implementation (SkipLink.tsx primitive vs inline anchor), not a missing one. This was the draft's central and most 'surprising' repo-fact claim, so it is the one that most needed checking, and it failed.",
+  "'Skeleton screens make sites feel ~30% faster than spinners' -- unsourced vendor/blog figure, correctly flagged by the draft as do-not-cite, MYTH tier, kept out of verified_addition as a magnitude.",
+  "Citation conflation, not a pop-stat myth but a factual error worth flagging alongside myths: the progress-bar 10-percent finding was attributed to 'Harrison, Amento, Kuznetsov and Bell, 2010, CHI' when that exact author list published at UIST 2007; the 2010 CHI paper on the same topic has a different author list (Harrison, Yeo, Hudson). Corrected to 2007, UIST in verified_addition.",
+  "82% of mobile users use dark mode / 70% report readability issues from poor contrast, no primary source located; already correctly flagged MYTH in the draft, kept out of verified_addition"
+ ]
+}

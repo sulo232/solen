@@ -1,0 +1,124 @@
+{
+ "id": "S17",
+ "draft": {
+  "id": "S17",
+  "tag": "mechanize",
+  "title": "Spacing-rhythm audit: computable metric spec",
+  "principle_summary": "Two mechanics are conflated in the key question and must be scored separately. Gestalt proximity, the qualitative law that space-within-a-group must read as smaller than space-between-groups, is T1 (Wertheimer 1923, already cited at RATIONALE.md section 2; independently supported by Kubovy and Wagemans 1995 finding grouping strength decays as a function of relative, not absolute, distance). The specific numeric claim that adjacent spacing steps need roughly a 1.25x ratio to read as distinct is NOT a measured perceptual threshold for spatial gaps. It is a design-practice convention (CONV) borrowed by analogy from typographic modular-scale ratios (Minor Third 1.2, Major Third 1.25) and from two spacing-scale-construction writeups (Nathan Curtis and EightShapes, Utopia.fyi) that recommend geometric rather than linear spacing steps so neighbors stay distinguishable. No study measuring a just-noticeable-difference for UI whitespace gaps specifically was found. Weber's Law (Weber 1834, T1) is the right anchor for the general idea that ratio, not absolute difference, governs detectability, but its documented Weber fractions are for classic psychophysical continua (weight, brightness, line length) and have not been shown to transfer to a 1.25 figure for 2D whitespace, so citing 1.25 as a measured Weber fraction for spacing would overclaim. Correct framing: Weber's Law justifies why any floor should be ratio-based rather than absolute-pixel-based, and 1.25 itself stays a CONV working threshold pending a Taste Lab probe, matching the tier the source doc (GEOMETRY_PRINCIPLES_2026-07-17.md, GM-05) already assigns it.",
+  "sources": [
+   {
+    "claim": "Space within a group must read as smaller than space between groups",
+    "source": "Wertheimer 1923, Laws of Organization in Perceptual Forms, Factor of Proximity; cited RATIONALE.md section 2 and reused at RATIONALE.md 389, 559, 611",
+    "tier": "T1"
+   },
+   {
+    "claim": "Grouping strength decays as a function of relative, not absolute, distance between elements",
+    "source": "Kubovy and Wagemans 1995, Psychological Science, grouping-by-proximity as a decaying exponential of relative distance",
+    "tier": "T1"
+   },
+   {
+    "claim": "Perceived-difference detection is governed by the ratio of a change to the baseline magnitude, not the absolute difference",
+    "source": "Weber 1834, Weber's Law, foundational psychophysics; general principle only, no documented Weber fraction for 2D UI whitespace gaps",
+    "tier": "T1"
+   },
+   {
+    "claim": "Adjacent spacing-scale steps should carry roughly a 1.25 to 1.5 ratio so neighbors read as distinct sizes",
+    "source": "Nathan Curtis, EightShapes, Space in Design Systems essay; Utopia.fyi space-scale calculator; design-practice writeups, not perception studies; tagged CONV in _design-system/research/GEOMETRY_PRINCIPLES_2026-07-17.md GM-05",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Minor Third 1.2 and Major Third 1.25 are standard modular-scale ratios used for typographic hierarchy",
+    "source": "Typographic modular-scale convention, Tim Brown tradition; musical-interval naming, not a measured perception result",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Space within less than space between as popularized via Refactoring UI",
+    "source": "RATIONALE.md's own research audit, GEOMETRY_PRINCIPLES_2026-07-17.md line 204, flags this citation path as secondary book-notes blogs, primary paywalled text never opened; convergent across sources and matches Solen practice but not a primary citation",
+    "tier": "T3"
+   },
+   {
+    "claim": "Solen owner-annotated ladder 16/48/56/72/84 has step ratios 3.0, 1.17, 1.29, 1.17; two steps fall below the 1.25 convention floor",
+    "source": "_design-system/research/GEOMETRY_PRINCIPLES_2026-07-17.md line 25, arithmetic derived from the owner's own annotated reference, cited at RATIONALE.md 142",
+    "tier": "T3"
+   }
+  ],
+  "solen_current": "RATIONALE.md 384-390, Spacing rhythm 32/12/16 tier scale, LOCKFILE 442-453, already has a full DECISION/FORCES/OPTIMIZES/SACRIFICES/MECHANIC/SOURCE block: MECHANIC cites section 2 Gestalt proximity T1, space within a group must read as smaller than space between groups, the 32/12/16 relationship is exactly that ordering. RATIONALE.md 142 separately records the owner's own annotated 16/48/56/72/84 ladder and flags two of its four steps as below the roughly 1.25 perceptual-distinctness floor, citing research GEOMETRY_PRINCIPLES_2026-07-17.md. RATIONALE.md 846 lists D8, Spacing-rhythm audit against the 32/12/16 whitelist, in the diagnostic-gaps table as Mechanizable YES but with no spec written, only the label. LOCKFILE.md 442-453 is the frozen literal source for the 32/12/16 tiers and the round-to-clean-5s-and-10s-above-100px rule. GEOMETRY_PRINCIPLES_2026-07-17.md GM-05, lines 294-300, already proposes the ratio-floor CONV and a rough checkable line, every token divides the module evenly, consecutive tokens have a ratio at or above roughly 1.25, but that line is a design note buried in a research doc, not merged into RATIONALE.md or spec'd as a build-ready script contract.",
+  "gap": "D8 is labeled Mechanizable YES but has zero spec: no defined input, which DOM properties to sample, no formula, no threshold, no output shape. Three sub-checks need separate explicit metric specs because they test different things and can each independently pass or fail: ladder-conformance, is every sampled gap one of the sanctioned values; ratio-distinctness, do the ladder's own adjacent rungs clear the roughly 1.25 CONV floor, a one-time audit of the ladder itself, not per-render; within-less-than-between, does a rendered container's internal child-to-child gap stay strictly smaller than its own external gap to sibling containers. RATIONALE.md never states which DOM measurement each check reads, padding vs gap vs margin vs computed bounding-box delta, never states a tolerance for near-miss values, and never states what a violation should be labeled, contract breach vs cosmetic, tying to D10's severity matrix which also has no spec. The dedup_notes flag that the within-between source is weak is correct and is now resolved above: it is T3, convergent but secondary-sourced, safe to keep as the mechanic's justification, but should not be upgraded to T1 in any future doc edit.",
+  "taste_lab_probe": "Probe design to calibrate the 1.25 CONV floor on a real Solen surface before it becomes an enforced threshold: take one populated card-list surface, for example SalonServices grouped list. Render three variants that hold every other property fixed and only change the ratio between the Card-gap tier and an adjacent invented tier: variant A uses the current 12px Card gap against a 16px Group gap, ratio 1.33, clears the floor; variant B compresses to 12px vs 14px, ratio 1.17, at the level the owner's own 48-to-56 and 72-to-84 steps sit; variant C widens to 12px vs 18px, ratio 1.5. Show the three to the owner side by side, unlabeled, and ask only which of these three reads as two visually distinct spacing tiers, and which one or two read as the same tier with noise. A same-tier verdict on variant B and a distinct-tier verdict on A and C is the discriminating result that would promote 1.25 from CONV working-threshold to an owner-confirmed floor; a null result, all three read the same, or the ranking does not track the ratio, would falsify the floor for Solen's own surfaces and should be recorded as such rather than kept as an unverified assumption.",
+  "proposed_addition": "COMPUTABLE METRIC SPEC for D8, three independent sub-checks, all read-only against a rendered page via Playwright plus getComputedStyle and getBoundingClientRect. None reopen a frozen literal.\n\nSUB-CHECK 1, ladder conformance, per-render, catches drift. Inputs: for every DOM element pair that is vertically or horizontally adjacent siblings inside a shared parent, or a parent-to-first-child pair, compute the gap as next.top minus prev.bottom for vertical stacks or the equivalent for horizontal, in CSS px, rounded to the nearest integer. Whitelist: the values LOCKFILE.md 442-453 sanctions, 32 Section, 12 Card, 16 Group, plus the full 4pt-multiple set already used component-internally, 4, 8, 12, 16, 20, 24, 32, 40, 48, 56, 64, for padding and gap utility classes, plus clean 5s and 10s for one-off dimensions above 100px. Formula: flag if gap is not in the whitelist and gap modulo 4 is not 0, a true off-grid value, or if gap is a 4pt-clean value but sits strictly between two adjacent whitelist tiers with no documented reason, the drift signal LOCKFILE.md 452 already names by example, mt-5, mt-6, mt-7, space-y-5. Output: per-flag row of file, selector or component name, measured gap px, nearest whitelist tier, delta. Tier of the underlying rule: 4pt grid is CONV, RATIONALE.md 144; the specific 32/12/16 tier set is a hand-tuned house DECISION, not derived.\n\nSUB-CHECK 2, ratio-distinctness of the ladder itself, one-time audit of the token set, not per-render. Inputs: the full ordered list of sanctioned spacing tokens in use across the system, from SUB-CHECK 1's whitelist, sorted ascending. Formula: for every adjacent pair a and b with a less than b, compute ratio equals b divided by a. Flag any pair where ratio is less than 1.25. Threshold: 1.25, CONV, GM-05, EightShapes and Utopia.fyi convention, explicitly not a measured just-noticeable-difference for spatial gaps. Report the ratio, do not silently drop or round it. Known current failures per this exact formula: the owner's own annotated 16/48/56/72/84 reference ladder produces ratios 3.0, 1.17, 1.29, 1.17, meaning 48-to-56 and 72-to-84 both fail the floor, already surfaced at RATIONALE.md 142 and GEOMETRY_PRINCIPLES_2026-07-17.md line 25. This is a documented finding to log, not a mandate to change any frozen literal: no SOURCE or LOCKFILE literal is reopened by this check, the output is advisory input to a possible future owner-confirmed revision of that specific reference ladder only, never an auto-fix.\n\nSUB-CHECK 3, within-less-than-between grouping consistency, per-render, catches the Gestalt-proximity violation. Inputs: for every container identified as a group, 2 or more same-kind children rendered as a list, card-cluster, or pill-row, compute internal_gap as the modal or median gap between its own direct children, and external_gap as the gap from that container's outer bounding box to its nearest sibling container of the same kind. Formula: flag if internal_gap is greater than or equal to external_gap, violates the ordering the Gestalt proximity law requires, or if external_gap divided by internal_gap is less than 1.25, the same CONV ratio floor as SUB-CHECK 2, applied locally instead of to the whole token ladder, so a container can pass the global ladder check yet still fail to visually separate from its neighbor. Tier: the ordering requirement, internal less than external, is T1, Wertheimer 1923; the specific 1.25 multiplier applied to this local pairing is the same CONV floor as SUB-CHECK 2, not independently sourced, so it should not be double-counted as two different pieces of evidence. Output: per-flag row of container selector, internal_gap, external_gap, ratio, verdict, ordering-violation or ratio-violation.\n\nSeverity mapping, feeds D10, only a pointer, not specified here in full: SUB-CHECK 1 near-miss values that are LOCKFILE-listed but misapplied, using 16 where 32 belongs, are cosmetic taste, not contract breach, because no LOCKFILE literal states a component-to-tier assignment rule beyond the three named contexts, Section, Card, Group. SUB-CHECK 3 ordering violations, internal_gap greater than or equal to external_gap, are the closest thing to a contract breach in this trio, because they violate LOCKFILE.md 442-453's stated intent, three numbers sitewide, group inside a card, directly, not just a CONV ratio.",
+  "numbers_used": [
+   "1.25",
+   "1.5",
+   "1.2",
+   "3.0",
+   "1.17",
+   "1.29",
+   "16",
+   "48",
+   "56",
+   "72",
+   "84",
+   "32",
+   "12",
+   "20",
+   "24",
+   "40",
+   "64",
+   "4",
+   "8"
+  ]
+ },
+ "verified": {
+  "id": "S17",
+  "tag": "mechanize",
+  "title": "Spacing-rhythm audit: computable metric spec",
+  "verdict": "clean",
+  "claim_verdicts": [
+   {
+    "claim": "Space within a group must read as smaller than space between groups (Wertheimer 1923)",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Standard Gestalt proximity law; correctly and consistently cited at RATIONALE.md section 2, reused verbatim at lines 389, 559, 611. Confirmed by direct read of the file."
+   },
+   {
+    "claim": "Grouping strength decays as an exponential function of relative distance (Kubovy and Wagemans 1995)",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Verified via web search: real paper, 'Grouping by Proximity and Multistability in Dot Lattices: A Quantitative Gestalt Theory', Psychological Science vol 6 issue 4 (1995), pp 225-234. Finding matches the draft's description closely: probability of grouping decreases exponentially with interdot distance (the 'Pure Distance Law'). Correctly tiered T1."
+   },
+   {
+    "claim": "Perceived-difference detection is ratio-governed, not absolute-difference-governed (Weber 1834)",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Foundational, uncontested psychophysics. Draft correctly refuses to claim any documented Weber fraction transfers to 2D UI whitespace; this caveat is the load-bearing part and it holds."
+   },
+   {
+    "claim": "Adjacent spacing-scale steps should carry roughly a 1.25 to 1.5 ratio (Nathan Curtis/EightShapes, Utopia.fyi)",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Both sources verified real. EightShapes 'Space in Design Systems' article exists and recommends geometric/nonlinear steps over linear ones. Utopia.fyi confirmed to use modular ratios 1.2, 1.25, 1.333, 1.5, 1.618. Neither source is a perception study; correctly tiered CONV, not T1. Matches how the project's own GEOMETRY_PRINCIPLES_2026-07-17.md GM-05 already tags it."
+   },
+   {
+    "claim": "Minor Third 1.2 / Major Third 1.25 are standard modular-scale ratios",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Verified: these are real, commonly-used musical-interval-named type-scale ratios (confirmed via Utopia.fyi search results listing 1.2, 1.25, 1.333, 1.5, 1.618). Correctly tiered CONV, borrowed by analogy, not a perception threshold."
+   },
+   {
+    "claim": "Space-within less than space-between as popularized via Refactoring UI",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Confirmed by direct read: GEOMETRY_PRINCIPLES_2026-07-17.md line 204 states this exact caveat verbatim, secondary book-notes blogs, primary paywalled text never opened. Draft quotes it accurately and does not upgrade the tier."
+   },
+   {
+    "claim": "Owner's 16/48/56/72/84 ladder has step ratios 3.0, 1.17, 1.29, 1.17; two steps below the 1.25 floor",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Verified by direct read of GEOMETRY_PRINCIPLES_2026-07-17.md lines 20-25 and RATIONALE.md line 142: text and arithmetic match the draft exactly (48/16=3.0, 56/48=1.1667, 72/56=1.2857, 84/72=1.1667). Correctly labeled as a derived finding from the owner's own annotation, not an external citation."
+   }
+  ],
+  "myths_caught": [],
+  "verified_addition": "COMPUTABLE METRIC SPEC for D8, three independent sub-checks, all read-only against a rendered page via Playwright plus getComputedStyle and getBoundingClientRect. None reopen a frozen literal.\n\nSUB-CHECK 1, ladder conformance, per-render, catches drift. Inputs: for every DOM element pair that is vertically or horizontally adjacent siblings inside a shared parent, or a parent-to-first-child pair, compute the gap as next.top minus prev.bottom for vertical stacks or the equivalent for horizontal, in CSS px, rounded to the nearest integer. Whitelist: the values LOCKFILE.md 442-453 sanctions for vertical rhythm, 32 Section, 12 Card, 16 Group, plus the full 4pt-multiple set already used component-internally per GEOMETRY_PRINCIPLES_2026-07-17.md line 197 (component-internal spacing rides Tailwind's full curated multiplier set; the three locked tiers govern vertical rhythm only, not every gap sitewide), 4, 8, 12, 16, 20, 24, 32, 40, 48, 56, 64, plus clean 5s and 10s for one-off dimensions above 100px. Formula: flag if gap is not in the whitelist and gap modulo 4 is not 0, a true off-grid value, or if gap is a 4pt-clean value but sits strictly between two adjacent whitelist tiers with no documented reason, the drift signal LOCKFILE.md 452 already names by example, mt-5, mt-6, mt-7, space-y-5. Output: per-flag row of file, selector or component name, measured gap px, nearest whitelist tier, delta. Tier of the underlying rule: 4pt grid is CONV, RATIONALE.md 144; the specific 32/12/16 tier set is a hand-tuned house DECISION, not derived from any perception study.\n\nSUB-CHECK 2, ratio-distinctness of the ladder itself, one-time audit of the token set, not per-render. Inputs: the full ordered list of sanctioned spacing tokens in use across the system, from SUB-CHECK 1's whitelist, sorted ascending. Formula: for every adjacent pair a and b with a less than b, compute ratio equals b divided by a. Flag any pair where ratio is less than 1.25. Threshold: 1.25 is a CONV working-threshold, not a measured just-noticeable-difference for spatial gaps. Verified sourcing: it is borrowed by analogy from typographic modular-scale ratios (Minor Third 1.2, Major Third 1.25, both real named conventions) and from two spacing-scale-construction writeups, Nathan Curtis/EightShapes (\"Space in Design Systems\") and Utopia.fyi's space calculator, both confirmed to exist and to recommend geometric over linear spacing steps, neither a perception study. No study measuring a just-noticeable-difference for UI whitespace specifically was found; do not cite 1.25 as a Weber fraction. Report the ratio, do not silently drop or round it. Known current failures per this exact formula: the owner's own annotated 16/48/56/72/84 reference ladder produces ratios 3.0, 1.17, 1.29, 1.17 (verified by direct arithmetic), meaning 48-to-56 and 72-to-84 both fail the floor, already surfaced at RATIONALE.md 142 and GEOMETRY_PRINCIPLES_2026-07-17.md line 25. This is a documented finding to log, not a mandate to change any frozen literal: no SOURCE or LOCKFILE literal is reopened by this check, the output is advisory input to a possible future owner-confirmed revision of that specific reference ladder only, never an auto-fix. Note: GEOMETRY_PRINCIPLES_2026-07-17.md's own review (line 197) flags that GM-05's worked example fabricated a \"16/24/32/48 matching Solen's own\" ladder that does not actually exist as a lock; only the general ratio-distinctness reasoning survives that critique, not any specific four-tier ladder claim, and this spec does not carry the fabricated ladder forward.\n\nSUB-CHECK 3, within-less-than-between grouping consistency, per-render, catches the Gestalt-proximity violation. Inputs: for every container identified as a group, 2 or more same-kind children rendered as a list, card-cluster, or pill-row, compute internal_gap as the modal or median gap between its own direct children, and external_gap as the gap from that container's outer bounding box to its nearest sibling container of the same kind. Formula: flag if internal_gap is greater than or equal to external_gap, violates the ordering the Gestalt proximity law requires, or if external_gap divided by internal_gap is less than 1.25, the same CONV ratio floor as SUB-CHECK 2, applied locally instead of to the whole token ladder, so a container can pass the global ladder check yet still fail to visually separate from its neighbor. Tier: the ordering requirement, internal less than external, is T1, Wertheimer 1923, independently supported by Kubovy and Wagemans 1995's finding that grouping probability decays exponentially with distance (Psychological Science, verified real study); the specific 1.25 multiplier applied to this local pairing is the same CONV floor as SUB-CHECK 2, not independently sourced, so it should not be double-counted as two different pieces of evidence. Output: per-flag row of container selector, internal_gap, external_gap, ratio, verdict, ordering-violation or ratio-violation.\n\nSeverity mapping, feeds D10, only a pointer, not specified here in full: SUB-CHECK 1 near-miss values that are LOCKFILE-listed but misapplied, using 16 where 32 belongs, are cosmetic taste, not contract breach, because no LOCKFILE literal states a component-to-tier assignment rule beyond the three named contexts, Section, Card, Group. SUB-CHECK 3 ordering violations, internal_gap greater than or equal to external_gap, are the closest thing to a contract breach in this trio, because they violate the T1-grounded intent behind LOCKFILE.md 442-453's three numbers, not just a CONV ratio.",
+  "residual_risks": "No myth-table hits: none of the numbers in numbers_used (1.25, 1.5, 1.2, 3.0, 1.17, 1.29, or the spacing pixel values) appear on the psychology myth_screen table, which covers conversion/retention stats, not spacing geometry, so that screen does not apply here. Two things for the owner or a future doc pass to note, not blockers: (1) GEOMETRY_PRINCIPLES_2026-07-17.md's own internal review already flags GM-05's worked example as having fabricated a nonexistent four-tier \"16/24/32/48\" Solen ladder; this verified addition does not repeat that fabrication and stays scoped to the real 32/12/16 lock plus the already-real component-internal 4pt multiplier set, but if GM-05 is ever read in isolation without its own correction note, that fabricated-ladder claim could resurface. (2) The 1.25 ratio floor remains an unverified CONV working-threshold for Solen's own surfaces until the taste_lab_probe (three-variant blind ranking on a real card-list) is actually run with the owner; until then SUB-CHECK 2 and SUB-CHECK 3's ratio flags should be logged as advisory findings, never auto-enforced as a blocking gate, and the owner's own 16/48/56/72/84 reference ladder should not be silently \"fixed\" to satisfy the floor, that would be reopening a value nobody has locked as wrong, only measured as unusual."
+ }
+}

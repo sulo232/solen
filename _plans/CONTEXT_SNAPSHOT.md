@@ -2,23 +2,46 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-12T00:06:47 (trigger: auto)
+- taken: 2026-08-14T23:50:51 (trigger: auto)
 - branch: claude/agent-flow-design-overhaul-2af2c2
 
 ## git
 ```
-0b364162b Tapping the city field made the whole panel jump. Two causes, both mine
-a4e2cde2f The search field is B with a grey outline, and both fields finally match
-86dfa81c3 Three fields to pick from, and the reference one is built to its own measurements
-581ff58d6 Verified on the map view, which is where he said it still showed
-d1e6d4d51 One sheet when it is all the way open, with a back arrow in the field
+92ff09582 Second copy merged, sixteen clashes settled one at a time
+317c0ee72 First copy actually merged, conflicts resolved one by one, and the personal row is on
+4a5d6d694 Proof on the hands-off line
+613fdb974 Hands off the phone-app copy, he said leave it entirely
+9503cd5a3 Your English, French and Italian visitors were reading German in the top menu, on every page
 ```
 ```
-M app/[locale]/_components/homepage/HomeSearchPill.tsx
- M app/[locale]/_components/search/SearchOverlay.tsx
+M  _design-system/QUESTIONS.md
+A  app/[locale]/_components/business/AssetPlaceholder.tsx
+A  app/[locale]/_components/business/CountUp.tsx
+A  app/[locale]/_components/business/EarningsCalculator.tsx
+A  app/[locale]/_components/business/MotionProvider.tsx
+A  app/[locale]/_components/business/Reveal.tsx
+UU app/[locale]/_components/homepage/BusinessTeaser.tsx
+UU app/[locale]/_components/homepage/WhySolen.tsx
+UU app/[locale]/_components/layout/Footer.tsx
+UU app/[locale]/_components/layout/Header.tsx
+UU app/[locale]/_components/layout/MobileMenu.tsx
+UD app/[locale]/business/page.tsx
+UU app/[locale]/fuer-salons/page.tsx
+D  app/[locale]/partner/layout.tsx
+UD app/[locale]/partner/page.tsx
+M  app/[locale]/warum-solen/page.tsx
+UU app/sitemap.ts
+DU components-legacy/home/PartnerBlock.tsx
+DU components-legacy/layout/Footer.tsx
+UU messages/de.json
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
+67 | BRANCH RECONCILIATION , 40 unmerged branches, ~1800 commits, none on main (owner 2026-08-14: "look in deeep theres gnna be alot of conflicts ... merge them or delete but ask me alot") | **ACTIVE** (2026-08-14) , four questions asked
+66 | CATEGORY ROW: circles that morph into pills, flat icons with a glare (owner 2026-08-12: "instead of pills like circle n once u click then it bcms pill all morphism and also the icon i want it like abit glare yk like 3d liquid style icons") | **ACTIVE** (2026-08-12)
+64 | SEARCH PANEL FLATNESS , no colour on the idle list, and the for-you feed (owner 2026-08-12: "i wanna improve design sh looks flat n no color n the fur sie ui too") | **ACTIVE** (2026-08-12) , mockup delivered, awaiting his pick
+63 | SEARCH SHEET SIZE , the Wo? sheet starts 56pt lower than the Suche sheet (owner 2026-08-12: "u see the diffrence between em the sheet size between wo and search i like search better and also the wann" + "not like refference") | **ACTIVE** (2026-08-12)
+62 | SEARCH PANEL: keyboard height, calendar, tapped date, home bar (owner 2026-08-12: "when on keyboard wo why when expanded no full oage on the bottom yk like sheet is not long enough and wann calender is not fully all visable yk and tapped is blue it should be black and scrolled down why is the search bat collapsed in homepage yk") | **ACTIVE** (2026-08-12)
 61 | SEARCH FULL-TYPE VIEW , one sheet, a back control, and the overlap on the map (owner 2026-08-11: "want full type ciew bro like in airbnb refference i gave u") | **ACTIVE** (2026-08-11)
 60 | BUG SWEEP , his three phone screenshots plus a full hunt (owner 2026-08-11: "bugs alot go find on yr own n tell me all") | **ACTIVE** (2026-08-11)
 59 | SEARCH PANEL , his three picks off `/dev/search-states` plus the empty-submit question (owner 2026-08-11: "1b 2b 3 b but whatvif nth selected and tapped enter...") | **ACTIVE** (2026-08-11)
@@ -73,3 +96,9 @@ M app/[locale]/_components/homepage/HomeSearchPill.tsx
 48 | PRINCIPLE DEEP-RESEARCH , re-test every principle we already have against external evidence | **ACTIVE** (design) + handoff (rest) 2026-07-28
 50 | DESIGN principle deep-research (the rules we ALREADY have) | **ACTIVE** (2026-07-28)
 51 | DESIGN RE-ENGINEER , improve the system we have, measured against live Airbnb | **ACTIVE** (2026-07-28)
+
+## BRANCH_RECONCILIATION_2026-08-14.md
+Open boxes:
+- [ ] C10. The remaining copies, one at a time. Each one: open it, rescue anything uncommitted that
+- [ ] C13. Delete `quirky-ellis-ef5559` once those three checks are either copied by a session that
+- [ ] C14. Those eight files reach main. Nothing to build; it is the merge, which is his.

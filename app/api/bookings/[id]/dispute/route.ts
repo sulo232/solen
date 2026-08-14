@@ -11,6 +11,7 @@ import { resolveBookingActor } from "@/lib/bookings/authorize";
 import { writeCaseEvent, chargeUpcharge, ChargeUpchargeError } from "@/lib/bookings/dispute-engine";
 import { notifyUpchargeCharged } from "@/lib/bookings/notify-upcharge";
 import { reportError } from "@/lib/error-report";
+import { sendEmail } from "@/lib/email";
 
 // SP-3 Endpoints 6 (POST salon upcharge request) + 7 (PATCH customer respond).
 //
@@ -187,20 +188,15 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       }
       const upchargeUrl = `${baseUrl}/de/bookings/${bookingId}/upcharge`;
       try {
-        await fetch("https://api.resend.com/emails", {
-          method: "POST",
-          headers: { Authorization: `Bearer ${resendApiKey}`, "Content-Type": "application/json" },
-          body: JSON.stringify({
-            from: "support@solen.ch",
-            to: customerEmail,
-            subject: "Ein Salon hat einen Aufpreis angefragt | A salon requested an additional charge",
-            html: `<p>Der Salon hat für Buchung #${bookingId} einen Aufpreis angefragt.</p>
+        await sendEmail({
+          from: "support@solen.ch",
+          to: customerEmail,
+          subject: "Ein Salon hat einen Aufpreis angefragt | A salon requested an additional charge",
+          html: `<p>Der Salon hat für Buchung #${bookingId} einen Aufpreis angefragt.</p>
                    <p>Sie müssen ausdrücklich zustimmen, bevor etwas berechnet wird. Wenn Sie nicht reagieren, passiert nichts.</p>
                    <p><a href="${upchargeUrl}">Aufpreis prüfen und zustimmen oder ablehnen</a></p>`,
-          }),
-          // api-contracts-06: bound the outbound call so a hung Resend request
-          // can't hold the function's whole wall-clock budget.
-          signal: AbortSignal.timeout(8000),
+          // The per-call 8s abort that used to sit here is gone because sendEmail carries its own
+          // 5s timeout for every send, so the bound survives and is no longer per-caller.
         });
       } catch (e) {
         console.error("[booking-disputes] Failed to send upcharge email to customer", e);

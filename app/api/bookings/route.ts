@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
+import { effectivePaymentMode } from "@/lib/bookings/payment-mode";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { sendEmail, bookingConfirmation, salonNewBooking } from "@/lib/email";
 import { applyRateLimit, bookingLimiter, getClientIp } from "@/lib/ratelimit";
@@ -15,6 +16,8 @@ import { completeReferralForFirstBooking } from "@/lib/referral/complete-referra
 import { reportError } from "@/lib/error-report";
 import { resolveSwissLocale } from "@/lib/format";
 import type { Database } from "@/lib/database.types";
+// Ties a completed booking back to the search that led to it, which is what feeds the personal row.
+import { attributeBookingToSearch } from "@/lib/points/attribution";
 
 export async function GET(request: NextRequest) {
   const supabase = await createServerSupabaseClient();
@@ -181,7 +184,7 @@ export async function POST(request: NextRequest) {
   // Kept as ONE string literal (not concatenated) so PostgREST's TS types infer the embedded shape.
   let slotQuery = db
     .from("availability_slots")
-    .select("id, salon_id, service_id, starts_at, ends_at, staff_member_id, price_override, status, salons(id, owner_id, name, address, auto_assign_method, daily_limit_enabled, daily_limit, online_booking_enabled, vacation_start, vacation_end, payment_mode, booking_confirmation_mode, cancellation_fee_type, cancellation_fee_value, free_cancel_hours, no_show_fee_type, no_show_fee_value, vat_registered, vat_rate, vat_number), services(price, name_de, name_en)")
+    .select("id, salon_id, service_id, starts_at, ends_at, staff_member_id, price_override, status, salons(id, owner_id, name, address, auto_assign_method, daily_limit_enabled, daily_limit, online_booking_enabled, vacation_start, vacation_end, payment_mode, payment_mode_admin, payment_mode_enforced, booking_confirmation_mode, cancellation_fee_type, cancellation_fee_value, free_cancel_hours, no_show_fee_type, no_show_fee_value, vat_registered, vat_rate, vat_number), services(price, name_de, name_en)")
     .eq("status", "available");
 
   if (slot_id) {
@@ -272,7 +275,19 @@ export async function POST(request: NextRequest) {
   // Phase D: a salon on deposit/prepay requires online payment — reject an in-person booking that
   // would bypass the required deposit/prepay. The pay step enforces this; this is the server backstop.
   {
-    const salPayMode = (slot.salons as { payment_mode?: string } | null)?.payment_mode;
+    // Resolved through effectivePaymentMode so an admin override that is actually enforced is the
+    // authority here, not just the salon's own setting. Landed 2026-08-14: the two columns it reads
+    // went live in July with no code that reads them.
+    const salForMode = slot.salons as {
+      payment_mode?: string | null;
+      payment_mode_admin?: string | null;
+      payment_mode_enforced?: boolean | null;
+    } | null;
+    const salPayMode = effectivePaymentMode({
+      payment_mode: salForMode?.payment_mode ?? null,
+      payment_mode_admin: salForMode?.payment_mode_admin ?? null,
+      payment_mode_enforced: salForMode?.payment_mode_enforced ?? null,
+    });
     if ((salPayMode === "deposit" || salPayMode === "prepay") && payment_method !== "online") {
       return NextResponse.json(
         { message: "This salon requires online payment.", code: "ONLINE_PAYMENT_REQUIRED" },
@@ -669,6 +684,20 @@ export async function POST(request: NextRequest) {
     } catch (err) {
       console.error("[bookings] referral completion failed:", err);
     }
+  }
+
+  // 10. Search→book attribution (points/affinity funnel). Best-effort, must NEVER break a booking.
+  //     /api/search/event sets an httpOnly solen_se_sid cookie (path "/") on every search; if a
+  //     recent click in that session led to THIS salon, flip search_events.booked + stamp the
+  //     booking (last-touch, 60-min window). No-op without a session/consent or a matching click.
+  try {
+    const searchSid = request.cookies.get("solen_se_sid")?.value;
+    if (searchSid) {
+      const admin = createAdminSupabaseClient();
+      await attributeBookingToSearch(admin, { sessionId: searchSid, salonId: slot.salon_id as string, bookingId: booking.id });
+    }
+  } catch (err) {
+    console.error("[bookings] search→book attribution failed:", err);
   }
 
   // Surface the freshly-assigned reference_code on the returned row (the insert ran before the

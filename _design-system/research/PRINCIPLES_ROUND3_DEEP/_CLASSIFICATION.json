@@ -1,0 +1,548 @@
+{
+ "classifications": [
+  {
+   "id": "S01",
+   "title": "Richness/restraint calibration prior (imagery-zone bands, chunk ceiling, task-conditioned density)",
+   "size": "doc-only",
+   "already_applied": "yes",
+   "needs_mockup": false,
+   "tag": "generative-gap",
+   "integration_target": "doc-only: _design-system/RATIONALE.md (closes gap register G1, revises/extends the section-28 anchor near section 12/Berlyne line 185). No product file changes. Cross-references (read-only, no edits needed): PSYCHOLOGY.md law 7, TASTE_DASHBOARDS.md finding 14, project_floors_law.md memory.",
+   "change_summary": "Adds a generative-prior write-up to RATIONALE.md documenting real-app-corroborated bands (hero/PDP imagery ~35-45% of first viewport, browse cards ~1/3, transactional surfaces ~0%, 4-7 chunk ceiling, ~7-block component vocabulary, task-conditioned richness direction) as first-draft guidance for future NEW mockups; it explicitly reopens no frozen literal and changes no shipped surface today.",
+   "reason": "Verified against the real product: SalonHero.tsx already ships a mobile aspect-[4/3] full-bleed carousel (~281px tall against a ~700-750px first viewport, i.e. already ~38-40%, matching the proposed 35-45% hero/PDP band almost exactly), the ~1/3 browse-card imagery floor is already an owner-locked law (FLOORS_LAW, 2026-07-21), and the booking flow's Zeit/Bezahlen steps are already text/pill-first with near-zero imagery, matching the transactional band. So the principle mostly documents rationale for practice already shipped rather than proposing a change. Its own text is explicit that it is a documentation addition only (\"this prior sets a first-draft band for a NEW mockup only; it reopens no frozen literal\") and its own residual_risks/taste_lab_probe say the numeric bands should not be treated as firmer than a first-draft prior until a future taste-lab probe runs, i.e. any actual surface change is deliberately deferred to a separate, later, owner-gated task, not this one. Nothing here touches the PDP-hero-becomes-40%-zone or homepage-structural BIG examples the owner named, since the PDP hero is already at that zone and no homepage change is proposed, so it integrates directly into RATIONALE.md with no mockup needed."
+  },
+  {
+   "id": "S02",
+   "title": "Layout-pattern selector (list / grid / carousel / table / bento)",
+   "size": "doc-only",
+   "already_applied": "yes",
+   "needs_mockup": false,
+   "integration_target": "doc-only: _design-system/RATIONALE.md domain 5 \"Spacing and shape\", inserted directly after the existing \"Grouping and containment\" paragraph at line 155 (no product code touched)",
+   "change_summary": "Add the verified_addition text (a 6-rule container-pattern selector: list default / split-view-for-location / grid for bounded 4-8 sets / carousel-only-as-preview-with-escape-hatch / table-flattens-to-chips-on-mobile / bento-only-for-small-fixed-heterogeneous-sets) as a new generative-prior paragraph in RATIONALE.md, cross-referencing LOCKFILE §7.840 and PSYCHOLOGY.md law 11.",
+   "reason": "This is pure design-rationale documentation, not a UI change: nothing in verified_addition instructs editing any component. I checked the real product to confirm the pattern it codifies is already how Solen behaves. Search (app/[locale]/_components/search/SearchTemplate.tsx) already ships split-view (list+map): desktop `?map=1` split panel and a mobile map-sheet FAB toggle (`mobileView` state, MapView dynamic import), which is exactly rule 2's Baymard-grounded recommendation, so that is not a gap to fix. The \"Top bewertet\" hero carousel was already owner-removed (2026-07-02, confirmed in code as a REMOVED comment), consistent with rule 4's carousel-must-have-escape-hatch/never-be-the-only-place-content-lives discipline. No `bento` usage exists anywhere in app/ or components/, so there is no live misuse of rule 6 to correct, and no literal HTML table on any mobile surface. The one thing the synthesis itself flags (residual_risks item 1) is explicitly NOT a proposed code change: it says the split-view point is \"a flag for the owner to weigh... not an instruction to change the build unilaterally,\" and since Solen's search already has split-view, that flag is moot for the current product. Because the addition only writes prior/rationale text and the practice it describes is already true in the real code, it integrates directly with no mockup, per the owner's small/incremental/already-true rule."
+  },
+  {
+   "id": "S03",
+   "title": "Page-level vertical rhythm prior for a brand-new page",
+   "tag": "generative-gap",
+   "size": "doc-only",
+   "already_applied": "partial",
+   "needs_mockup": false,
+   "surface": "Design docs only (_design-system/RATIONALE.md); it is a generative scaffold prior for future brand-new pages, not tied to one existing route (checked: no salon PDP, no homepage restructure implied; app/[locale]/page.tsx and others are pre-existing pages this entry does not touch)",
+   "integration_target": "doc-only: _design-system/RATIONALE.md, add the \"Domain 21 addendum\" block verbatim from verified.verified_addition; cross-link SOURCE.md/LOCKFILE.md where it corroborates the existing locked 16px/32px gap binary. No product file changes.",
+   "change_summary": "Write a documentation entry describing a JOB-based hero-height band table (25-50% search-forward marketplace hero, 20-30% centered empty-state cluster, 80-85% as an outer-bound-only brand hero), a default new-page section order (hero -> heading -> early trust/social-proof -> repeating content -> directory/browse last -> footer), and a reaffirmation (not a change) of the already-locked 16px heading-to-content / 32px section-to-section gap binary, plus a one-heading/one-CTA-color discipline note. Ends with a deferred taste-lab probe (build a real thin page at 3 hero heights) that is explicitly future work, not part of this integration.",
+   "reason": "This is a rationale/grounding addition to design documentation with zero product code touched: it is a prior for scaffolding a FUTURE brand-new page (candidate examples named are an Angebote landing or category hub that doesn't structurally exist yet), not a restructure of any live customer surface like the homepage or salon PDP (the two things the owner explicitly named as BIG). The gap-rhythm claims it makes are already-locked values being corroborated, not changed. The one part of the entry that would be a real structural build (3 hero-height variants at 25/35/55% on a real page) is itself flagged inside the entry as a separate future taste_lab_probe requiring an owner squint-test, i.e. it is already scoped as deferred/mockup-needed work rather than something to integrate now. Also note: the verify pass downgraded several of the draft's evidence claims from CONV to T3 and cut one fabricated citation (a DEV Community retrospective claimed to support \"calm design\" actually reports the opposite, bento grids winning), so the doc text to integrate is the corrected verified_addition, not the original synth.proposed_addition."
+  },
+  {
+   "id": "S04",
+   "title": "Empty-state + illustration language: a generative anatomy",
+   "tag": "generative-gap",
+   "size": "doc-only",
+   "already_applied": "yes",
+   "needs_mockup": false,
+   "surface": "_design-system/RATIONALE.md (section 16, states/EmptyState) + _design-system/components/EmptyStateDiscovery.md",
+   "integration_target": "doc-only: append verified.verified_addition text into _design-system/RATIONALE.md under section 16 (states/EmptyState anchor); separately fix the stale \"200px banner\" references (two occurrences) in _design-system/components/EmptyStateDiscovery.md to \"220px\" to match the live component",
+   "change_summary": "Adds a generative four-part empty-state anatomy (visual 15-40% height, 3-6 word headline, one muted subline, single CTA) to RATIONALE.md, explicitly crediting Solen's own already-shipped EmptyStateDiscovery.tsx (confirmed live at app/[locale]/_components/profile/EmptyStateDiscovery.tsx, used on /profile/stamps, /profile/favorites, /profile/looks) as the strongest precedent, and leaves the search/filter zero-result CTA color as an open Taste-Lab probe rather than a decision.",
+   "reason": "No product code, layout, or customer-facing surface changes. This is purely a rationale/grounding document entry recording a design pattern that Solen's real EmptyStateDiscovery component (verified via npm run exists + reading the .tsx file) already embodies and was owner-confirmed on 2026-06-11. The only actionable follow-up is a trivial doc-drift fix (200px vs the live 220px) in the component's own markdown doc, and an explicitly-flagged open owner probe (CTA color for search-empty states) that the entry itself defers to a future Taste Lab round rather than proposing to ship now. Nothing here meets the \"big\" bar (no imagery-zone restructure, no homepage/PDP layout change)."
+  },
+  {
+   "id": "S05",
+   "title": "Responsive reflow grammar (breakpoint behavior prior)",
+   "tag": "generative-gap",
+   "size": "doc-only",
+   "already_applied": "partial",
+   "needs_mockup": false,
+   "integration_target": "doc-only: _design-system/LOCKFILE.md §7 (Grid patterns / Breakpoints) and/or _design-system/RATIONALE.md (the reflow-grammar section referenced as gap G5). No component file changes.",
+   "change_summary": "Add a new \"generative prior\" section to the design docs stating four reflow rules (column-collapse threshold by content shape, companion panels as binary toggles not continuous shrink, filter/chip rows scroll instead of wrap, compound-control collapse mode chosen per-product not per-breakpoint), with evidence tiers and a softened container-query stat; no existing UI is being changed.",
+   "reason": "This is pure documentation content (a \"prior\" for future component builds), not a change to any live customer surface. I verified the one concrete code claim it touches: SearchTemplate.tsx (app/[locale]/_components/search/SearchTemplate.tsx lines ~1519-1634) already implements exactly what LOCKFILE:856 states, grid-cols-2/lg:grid-cols-2 when mapOpen is true, md:grid-cols-3 lg:grid-cols-4 when false, plus a binary mapOpen toggle (not continuous shrink), matching PRIOR 1 and PRIOR 2 already. So the product already does most of what the principle describes (already_applied=partial: the map-open grid case and the binary map-toggle are already correct; the map-closed 3/4-col ladder still diverges from the pure Fresha/Airbnb 2-hold pattern, and that divergence is explicitly flagged by the principle itself as an open owner question via a Taste Lab probe, not something to silently change). Since the deliverable is text for LOCKFILE/RATIONALE and the one open product question is explicitly deferred to an owner-approved Taste Lab probe (their own mockup process) rather than shipped now, this integrates as doc-only with no mockup needed today. If the owner later wants the Taste Lab probe built, that specific follow-up (rendering 3 grid variants at 768px) would be its own size=big/needs_mockup=true item, not this one."
+  },
+  {
+   "id": "S06",
+   "title": "Imagery / art-direction language (owner-declined, gated on G6)",
+   "tag": "generative-gap",
+   "size": "doc-only",
+   "already_applied": "yes",
+   "needs_mockup": false,
+   "surface": "_design-system/RATIONALE.md (open-gaps register)",
+   "integration_target": "doc-only: _design-system/RATIONALE.md open-gaps register (x-ref LOCKFILE §11 Imagery Pattern Registry + PHOTO_STRATEGY.md). No product code file is touched.",
+   "change_summary": "Append the verified_addition text as a parking note under RATIONALE.md's open-gaps register, recording that G6 (site-wide imagery-density floor / general art-direction rules) stays OWNER-DECLINED as of 2026-07-15, confirmed by RATIONALE.md line 831 and three independent 2026-07-22 scouting passes that all stopped at the gate, and spelling out what a future owner yes would unlock (a density prior analogous to S01's richness/restraint prior, plus a Taste-Lab probe design) without reopening the gate itself.",
+   "reason": "This stream produces zero product-code change. It is explicitly an owner-gated research stream (G6) that the synthesis declines to reopen; the entire deliverable is a paragraph of rationale text for RATIONALE.md explaining why the gate stays shut and what reopening it would unlock. I confirmed RATIONALE.md line 831 already carries the G6 owner-declined status, and no SalonCard/PDP/homepage/booking component is referenced or implicated anywhere in the JSON. There is nothing structural, visual, or even small-incremental to integrate into a real surface, so it does not fit either \"small\" (a code tweak) or \"big\" (a visible layout/imagery change); it is pure documentation of an already-true state (the gate is already closed, already recorded). Approve and file directly, no mockup, since there is no rendered surface to show the owner."
+  },
+  {
+   "id": "S07",
+   "title": "Flow-level motion choreography (anchor conservation across booking steps)",
+   "size": "doc-only",
+   "already_applied": "yes",
+   "needs_mockup": false,
+   "tag": "generative-gap",
+   "surface": "Booking flow (components-legacy/booking/BookingWizard.tsx + step components)",
+   "integration_target": "doc-only: _design-system/RATIONALE.md (add the anchor-conservation prior + citations); also fix the LOCKFILE.md line-locator citation for the 40ms stagger rule (verified_addition flags 1413-1420 as wrong, correct location is section 16.4 / line ~1434) before this text ships",
+   "change_summary": "Record in RATIONALE.md that Solen's booking flow already implements the anchor-conservation prior: a verbatim-identical `fixed bottom-0 left-0 right-0` ink CTA bar recurs across every step file (ServicesStaffStep.tsx:543, StaffStep.tsx:180, DateTimeStep.tsx:266, HairStep.tsx:224, PayConfirmStep.tsx:614), with only the label/enabled-state changing per step; step transitions already use the <=300ms glide slide+fade (V3-D464, confirmed in MOTION.md:78); sub-flow commits already reuse the single DateTimePicker primitive (reused in DateTimeStep.tsx and RescheduleSheet.tsx) so results land back in the row that opened them; shared-element carries are already restricted to card-to-PDP only. No product code changes needed.",
+   "reason": "Verified against the real files: the booking wizard (components-legacy/booking/BookingWizard.tsx and its five step components) already has zero net-new structural/layout work to do here, every mechanism the principle prescribes (fixed-slot bottom CTA with only label/fill changing, <=300ms directional step transitions, sub-flow-writes-into-its-row via the shared DateTimePicker, single flagship shared-element exception) is already shipped and cited by V3-D464/MOTION.md/LOCKFILE. The one deliberate gap, no separate step/progress indicator, is an existing owner decision (Q55/Q56, mockup 20, \"NO progress UI anywhere\") documented in BookingWizard.tsx's own comments, not something this principle should reopen. The only genuinely open items are two owner-decision flags already named in verified.residual_risks (the unbuilt Taste Lab probe on a possible second shared-element moment, and the Lugg CTA-saturation tension for QUESTIONS.md) plus a citation-locator typo fix, none of which touch a customer-facing surface, so this stays doc-only with no mockup needed."
+  },
+  {
+   "id": "S08",
+   "title": "Token extension grammar (how to mint a new token correctly)",
+   "size": "doc-only",
+   "already_applied": "partial",
+   "needs_mockup": false,
+   "tag": "generative-gap",
+   "surface": "design-system docs (RATIONALE.md domain 19 / LOCKFILE.md / TASTE_LOG.md)",
+   "integration_target": "_design-system/RATIONALE.md (append/extend domain 19's generative prior with the naming grammar, tier-skip boundary, and enforcement-note text from verified_addition; RATIONALE.md:833 already lists this exact gap as a doc follow-up \"G8: Token extension grammar... semantic/status extension still CONV\")",
+   "change_summary": "Adds a procedural writeup (no code/token values change) for HOW to derive and name a genuinely new design token if one is ever needed: place new color steps by job on the existing Radix 12-step map, name by a four-question grammar (kind/role/variant/state), never let a component skip the semantic tier to point at a raw primitive, and route any newly minted token through the existing solen-drift-check gate. It explicitly refuses to reopen any frozen literal, the closed semantic-hue table, or the 32/12/16 spacing rhythm.",
+   "reason": "Grepped RATIONALE.md: domain 19 (line 731) already has the Radix 12-step job map for Solen's neutrals ramp, and line 833 already tracks \"semantic/status extension still CONV\" as an open doc follow-up, i.e. the owner's own docs already flag this exact gap and this stream is the fill-in text for it. The verified_addition is entirely prose for RATIONALE.md/TASTE_LOG.md: a classify-then-derive procedure, a naming grammar, a tier-skip check, and an enforcement note pointing at the drift-check gate that already exists. It touches zero components, zero pages, and mints zero actual new token values (it explicitly forbids picking any new hex/pixel value without a separate owner yes first) so there is nothing to render, nothing to mock up, and no product surface changes. This is pure documentation/methodology, hence doc-only rather than small (which would still imply a small code touch) or big."
+  },
+  {
+   "id": "S09",
+   "title": "Density defaults per customer surface",
+   "tag": "generative-gap",
+   "size": "doc-only",
+   "already_applied": "yes",
+   "needs_mockup": false,
+   "surface": "design-system research docs (RATIONALE.md); no product route/component targeted",
+   "integration_target": "doc-only: _design-system/RATIONALE.md (or research/PRINCIPLES_ROUND3_DEEP corpus), append the verified_addition text as-is including its self-flagged STATUS line and the open Taste-Lab probe; no component file needs editing",
+   "change_summary": "Adds a documented \"density steps down with funnel depth\" research prior (scan-many surfaces = thin, few-field cards; decide-on-one PDP = generous padding, no per-row photo) and corrects an inverted T1 citation (the draft wrongly called Fresha's real search card thin/no-price when Fresha's actual search card is price-led with 3 inline service rows). No new UI is proposed; the real product already implements this exact gradient: SalonResultCard's grid/list/card variants are thin (name+rating+price+next-slot, no CTA, no per-card price-service rows), while its feed variant's hasServiceQuery state already renders up to 3 priced service rows plus a \"View N matching services\" link (mirroring the corrected Fresha pattern), and the PDP's SalonServices renders low-density, hairline-divided rows (py-[18px], no per-row photo) exactly as the prior describes.",
+   "reason": "The principle's own verified output is self-flagged \"STATUS: flagged, not ready to graduate to RATIONALE.md as written\" and explicitly parks its one open question (whether to diverge from Fresha's price-led search card) as an owner decision item inside the text rather than proposing a code change now. It names no specific layout/visual change to any real page; it is a corrected research finding plus a computable density prior for FUTURE surfaces. Verified against the live code (SalonResultCard.tsx variants: grid/list/card/feed with hasServiceQuery; SalonServices.tsx row markup), the density gradient it describes is already how these surfaces behave. That makes it doc-only, already-applied, no mockup needed - it integrates as a research-doc note (including its own caveat) rather than a product edit."
+  },
+  {
+   "id": "S10",
+   "title": "Visual-weight / balance centroid (computable D1 spec)",
+   "size": "doc-only",
+   "already_applied": "no",
+   "needs_mockup": false,
+   "change_summary": "Write the verified D1 computable-balance spec (weighted-centroid formula, 15% advisory tolerance band, local-calibration rule, top/right-axis confound caveat, Taste Lab probe recommendation) into RATIONALE.md's gap register / domain 21 section, replacing the current one-line D1 placeholder; explicitly advisory-only, feeds the existing solen-taste-diagnosis squint-test pass, never a build gate.",
+   "reason": "This is a rationale/methodology addition with zero product code or UI change: it only adds grounding text to a design doc (RATIONALE.md, gap register item D1 at line 839 and domain 21 at line 793). Confirmed via npm run exists \"centroid\" / \"visual balance\" (0 matches) that no script or component implements this today, and the proposal itself states it must never join the drift-gate's blocking set or affect any rendered surface. No PDP/homepage/booking-flow file needs touching, so it doesn't qualify as big, and there's no product-facing change to size as small either, it's pure documentation.",
+   "integration_target": "doc-only: _design-system/RATIONALE.md (replace the D1 row at line 839 and/or expand domain 21 at line 793 with the verified_addition text)",
+   "tag": "mechanize",
+   "surface": "design-docs"
+  },
+  {
+   "id": "S11",
+   "title": "Blue-coverage % + accent-hue count sweep (real-world calibration addendum)",
+   "size": "doc-only",
+   "already_applied": "no",
+   "needs_mockup": false,
+   "tag": "mechanize",
+   "surface": "_design-system/RATIONALE.md (domain 28 gap register, D2 entry)",
+   "integration_target": "doc-only: _design-system/RATIONALE.md domain 28 (D2 gap-register entry, around line 840). No product code touched.",
+   "change_summary": "Append the verified calibration evidence (Fresha/Peerspace/Uber/IKEA screen counts, the Uber and Doctolib teardown quotes, and the H_clickable/H_semantic hue-scoping split proposal) as a documented addendum to the still-unbuilt D2 metric spec in RATIONALE.md; it explicitly does not change the shipped LOCKFILE thresholds (S_blue <=3/<=1, P_blue <=3%/<=1%) and does not touch any component, since D2's actual measurement script has not been built yet (confirmed: RATIONALE.md line 850 lists D2 as \"not started\").",
+   "reason": "This is pure research/rationale text with zero product-code footprint: the verified_addition itself says twice it does not alter shipped thresholds and does not reopen any LOCKFILE literal, and the one actionable idea (H_clickable/H_semantic split) is scoped to \"should ship with the metric build\" for D2, a metric-audit script that RATIONALE.md's own build-order note confirms is not started yet. There is no real component, page, or gate to edit today, so it can only land as a documentation addition, not a small/big code change."
+  },
+  {
+   "id": "S12",
+   "title": "Alignment / off-grid detector (D3)",
+   "size": "doc-only",
+   "already_applied": "no",
+   "needs_mockup": false,
+   "tag": "mechanize",
+   "surface": "_design-system/RATIONALE.md (gap register, domain 1 / D-gap table)",
+   "integration_target": "doc-only: _design-system/RATIONALE.md, expand the existing one-line \"D3 | Alignment/off-grid conformance... | YES\" row in the gap register (currently at the \"Diagnostic gaps (lens B)\" table, grepped location around the D1-D10 list) into the full verified_addition write-up (METRIC 1 edge-equality delta, METRIC 2 4px/5px grid-modulo, PROCEDURE, BOUNDARY, SOURCE). No script file is created and no product route/component is touched in this step.",
+   "change_summary": "Expand RATIONALE.md's existing one-line D3 gap-table entry (\"Alignment/off-grid conformance ... YES\") into the full mechanized-check spec: two measurable metrics (getBoundingClientRect edge-delta with a 1-4px near-miss violation band, and a value%4/value%5 grid-modulo check split at the 100px LOCKFILE threshold), a render/measure/group/output procedure matching solen-drift-check's report shape, and an explicit advisory-only (never-hard-gate) boundary; this is a documentation addition only, it does not write or wire the actual detector script into any build/CI pipeline.",
+   "reason": "Confirmed by reading _design-system/RATIONALE.md directly: D3 already exists as a one-line row in the gap register (\"D3 | Alignment/off-grid conformance (near-miss edges 1-4px apart, off-4pt values) | YES\", mechanizable=YES, unstarted in the file's own build-order note). The proposed addition is the verified write-up expanding that row into a full metric/formula/threshold/procedure spec for RATIONALE.md itself, with no script built and, critically, zero touch on any customer-facing file (grepped for \"alignment detector\" via npm run exists: 0 hits, confirming no existing product surface or script references this). It never renders on SalonCard, the PDP, the homepage, or any booking-flow screen, so it fails the \"visible structural/layout/imagery change to a real customer surface\" bar that defines \"big,\" and it isn't a product code edit either (the verified_addition's own BOUNDARY plus residual_risks item 4 both say the actual running script is separate future tooling needing an explicit owner nod per the project's build-then-integrate rule, i.e. that part is deliberately NOT being shipped now). What's ready to ship today is pure grounding-doc content, hence doc-only, not small."
+  },
+  {
+   "id": "S13",
+   "title": "Pre-delivery self-walk gate",
+   "tag": "mechanize",
+   "size": "small",
+   "already_applied": "no",
+   "needs_mockup": false,
+   "surface": "Agent tooling / .claude/hooks Stop-gate family (not a customer-facing route or component)",
+   "integration_target": "New hook file, e.g. .claude/hooks/pre-delivery-self-walk-gate.py (or .sh), wired into the Stop array in .claude/settings.json alongside the three hooks already there (.claude/hooks/browser-verify-gate.sh, scripts/hooks/visual-deliverable-gate.py, scripts/hooks/recurrence-harden-gate.py); doc write-up goes in _design-system/RATIONALE.md section 28 lens B once the hallucinated sources are stripped.",
+   "change_summary": "Add a 4th Stop-hook gate that blocks any UI-touching turn from ending unless the agent's final message contains a fixed six-line self-walk report (squint, hierarchy, type-ceiling, grouping, contrast, density), each line independently PASS/FLAG/n-a, mirroring the already-live browser-verify-gate.sh pattern (exit code 2 + self-releasing skip flag).",
+   "reason": "Verified against the real repo: settings.json currently wires exactly three Stop hooks (browser-verify-gate.sh, visual-deliverable-gate.py, recurrence-harden-gate.py) and no pre-delivery-self-walk-gate or mockup-floors-gate file exists anywhere in the worktree (grep/find confirmed empty, matching the principle's own OPEN CAVEAT). This is a process/tooling gate on the agent's own final message, not a visible structural/layout/imagery change to any customer surface (it never touches SalonCard, PDP, homepage, or booking-flow files), so it fails the owner's stated bar for \"big\" (reserved for things like PDP hero-imagery-as-40%-zone or homepage restructure) and needs no visual mockup. It is best read as incremental: a fourth entry in an already-established Stop-hook-gate family, reusing the exact fire-conditions, skip-flag TTL, and exit-2 block style of the existing browser-verify-gate.sh, so it integrates directly as a new hook script rather than requiring a design mockup. One caveat worth carrying into the build ticket rather than silently dropping: the verification pass itself downgraded several load-bearing citations (Uber's \"Base Counter\" tool could not be found via search or direct URL and should not be cited as confirmed; Eleken's \"17-step\" count and the Figma Config-2026 AI reviewer are also unconfirmed) and explicitly recommends confirming with the owner first, since this would be a 4th mandatory Stop-gate risking gate-fatigue or the agent gaming the 6-line format. That is a build-order note (test the two discriminating pass/fail cases before wiring per rule 12.5), not a mockup-approval need, so it still ships as size=small with no mockup."
+  },
+  {
+   "id": "S14",
+   "title": "Repertory-grid triads + staircase probes for taste elicitation",
+   "size": "doc-only",
+   "already_applied": "no",
+   "needs_mockup": false,
+   "tag": "mechanize",
+   "surface": "design-system docs (RATIONALE.md, TASTE_LOG.md, QUESTIONS.md) — no product code",
+   "integration_target": "doc-only: _design-system/RATIONALE.md (extend domain 16 / fill gap D5 with the \"D5 mechanized\" section verbatim from verified.verified_addition), plus a TASTE_LOG.md write-back row template and a QUESTIONS.md line for the noted blue-selected-state tension",
+   "change_summary": "Adds two elicitation procedures (a Kelly-style repertory-grid TRIAD RUN for unnamed/categorical taste complaints run to construct saturation, and a bisecting STAIRCASE RUN for continuous axes like radius/shadow/blue-saturation/motion-duration run to 3 reversals) plus a standard TASTE_LOG.md write-back table, so a settled taste call gets recorded once instead of being re-argued every round; explicitly does not override LOCKFILE and flags (but does not resolve) a blue-vs-gray selected-state tension in the two cited reference UIs.",
+   "reason": "This is a pure documentation/methodology addition to the design-system's own process docs (RATIONALE.md, TASTE_LOG.md, QUESTIONS.md); it defines a future elicitation protocol for owner+Claude sessions and touches zero product components, pages, or routes, so it is doc-only, not a product code change, and needs no mockup or owner visual sign-off before integrating (it can still be surfaced to the owner as an FYI since it introduces a new recurring workflow, but that is a process note, not a size=big/mockup gate)."
+  },
+  {
+   "id": "S15",
+   "title": "Tap-target + slip-adjacency sweep",
+   "tag": "mechanize",
+   "size": "doc-only",
+   "already_applied": "partial",
+   "needs_mockup": false,
+   "surface": "_design-system/RATIONALE.md (domain 10 / gap register D6), _design-system/SOURCE.md §16.5, _design-system/QUESTIONS.md",
+   "integration_target": "doc-only: _design-system/RATIONALE.md (extend the existing D6 gap-register line at ~844 into the full CHECK A / CHECK B computable metric spec, in domain 10 near the existing slip-adjacency mechanic at RATIONALE.md:217) + _design-system/SOURCE.md:1032 (one-line citation fix) + _design-system/QUESTIONS.md (log the destructive-hue-token fork as an open owner decision)",
+   "change_summary": "Add the CHECK A (24px WCAG-2.5.8-floor / 44px Solen-floor target-size sweep) and CHECK B (net-new slip-adjacency sweep: flag destructive/commit control pairs closer than 24px unless a hue, weight, or structural differentiation channel is present) computable metric spec into RATIONALE.md's already-existing D6 gap-register entry; fix SOURCE.md:1032's citation error (\"WCAG 2.1\" should read WCAG 2.2, since 2.5.5/2.5.8 were introduced in 2.2 not 2.1, verified against the live line); and log the \"Solen has no destructive-hue CTA token\" fork as an explicit QUESTIONS.md item rather than silently resolving it. No product UI code or customer-facing surface changes.",
+   "reason": "Verified against the real repo: SOURCE.md:1032 still reads \"Minimum 44x44 px hit area per WCAG 2.1\" (confirmed wrong/unfixed), RATIONALE.md:157 already has the correct WCAG-2.2 framing, and RATIONALE.md:844 already lists this exact sweep (44px floor + 8px consequential separation) in the gap register tagged \"YES [mechanizable]\" but \"not started\" as an actual tool. e2e/visual/spine.spec.ts already has a stubbed axe-core target-size check waiting on a dependency install (@axe-core/playwright not in package.json), and research/GEOMETRY_PRINCIPLES_2026-07-17.md confirms the underlying UI pattern (weight-differentiated destructive/commit pairs, e.g. cancel/delete confirm modals referenced in the dashboard bookings/badge-manager/staff pages) is already practiced in the product, just not yet formalized as a computed rule or wired into an automated sweep. So: the design PRINCIPLE is already applied in real components; what's missing is purely documentation (the formal metric spec text, the citation correction, and the owner-decision flag) plus a future automated-tooling task (installing axe-core, adding data-consequence tags) that is itself already correctly scoped elsewhere as unstarted build work, not something to silently do here. Nothing here is a visible structural/layout/imagery change to a customer surface, so it doesn't meet the owner's \"big\" bar and needs no mockup; it integrates directly as a docs edit."
+  },
+  {
+   "id": "S16",
+   "title": "Cross-surface consistency diff (D7 role-registry gate spec)",
+   "size": "doc-only",
+   "tag": "mechanize",
+   "already_applied": "no",
+   "needs_mockup": false,
+   "surface": "design-system tooling (solen-drift-check), not a customer-facing route",
+   "integration_target": "_design-system/RATIONALE.md (append as a new numbered domain/entry, following the existing Round-1/Round-2 pattern of domains 12-23); no product code touched. Future engineering follow-up (out of scope for this triage) would extend .claude/skills/solen-drift-check/scripts/check.py with a --cross-surface mode, per the spec's own \"BOUNDARY: no code written here\" note.",
+   "change_summary": "Adds a computable spec (role registry -> extraction -> distinct_count/mode/divergence_rate formula -> HARD/SOFT finding thresholds) for a future drift-check extension that would catch a legal-but-divergent token/class used differently across call sites for the same semantic role (e.g. TabPill selected-fill, card-radius); it names no new visual value, invents no new UI, and touches zero product/customer code, it only documents a mechanism to build later.",
+   "reason": "This is a \"mechanize\" tag: a metric/tooling spec for the design-system enforcement layer, not a visual or structural change to any customer-facing surface (no PDP/homepage/booking-flow file is touched). It fails the size=big bar (no visible layout/imagery/structure change) and isn't a simple code tweak either (size=small doesn't fit since there's no product component to edit) -- it is purely a rationale/spec addition to the design docs, matching size=doc-only exactly. The verified pass also corrected several misattributed/conflated stats (zeroheight vs OverlayQA, \"three\" vs actual five drift subtypes) but those are citation fixes within the same doc-only addition, not scope changes."
+  },
+  {
+   "id": "S17",
+   "title": "Spacing-rhythm audit: computable metric spec for D8 (ladder conformance, ratio-distinctness, within/between grouping)",
+   "size": "doc-only",
+   "already_applied": "no",
+   "needs_mockup": false,
+   "change_summary": "Write the three-sub-check computable metric spec (per-render gap-whitelist conformance, one-time 1.25-ratio ladder audit, per-render within-less-than-between grouping check) for RATIONALE.md's D8 gap, correcting one fabricated NN/g attribution and downgrading two overclaimed T2 sources to T3/CONV; no product UI or code changes and no actual drift-check script implementation, just the documented spec text.",
+   "reason": "This is a mechanize-tag research finding about future drift-check tooling (D8 in RATIONALE.md's own gap table, explicitly listed as \"not started\"), not a customer-facing surface. Confirmed by reading .claude/skills/solen-drift-check/scripts/check.py: it only does static source-text regex drift (hex, arbitrary Tailwind values, letter-spacing) with zero getComputedStyle/getBoundingClientRect gap-measurement logic, so nothing resembling this spec is applied anywhere yet. The proposed_addition/verified_addition is pure documentation (thresholds, formulas, severity mapping, a taste-lab probe design) with no accompanying script and no product code touched (grepped SalonCard, PDP, homepage, booking flow, none reference this). It also explicitly disclaims reopening any locked literal (16/48/56/72/84 ladder stays frozen) and treats the 1.25 ratio as advisory-only pending an owner taste-lab probe. Since it changes zero rendered pixels on any real page, it cannot be \"big\" under the owner's rule (big = visible structural/layout/imagery change to a real customer surface); it is a doc-only research addition, so it integrates directly without a mockup.",
+   "integration_target": "doc-only: _design-system/RATIONALE.md (expand the D8 row / gap-table entry with the three sub-checks, the corrected source tiers, and a pointer to the taste-lab probe); optionally also record the corrected NN/g fabrication strike and Uber Base/Orange tier downgrades in _design-system/research/PRINCIPLES_ROUND3_DEEP/S17.json's own trail (already present) so future writer-stage merges don't carry the fabricated ladder forward. No code file is a valid target since D8 has no implementation yet.",
+   "tag": "mechanize"
+  },
+  {
+   "id": "S18",
+   "title": "Multi-locale overflow audit: computable clip/wrap detector for de/en/fr/it",
+   "tag": "mechanize",
+   "size": "doc-only",
+   "already_applied": "no",
+   "needs_mockup": false,
+   "surface": "_design-system/RATIONALE.md Domain 9 (i18n typography) + future scripts/mcp/site-tester tooling",
+   "integration_target": "doc-only: _design-system/RATIONALE.md section 9 (Domain 9, i18n typography) — append the CLIP/CONTAINER-BREACH/WRAP-DELTA/OVERLAP computable spec and the Fresha/Booking.com live-failure evidence as the mechanics under the existing expansion-table prose. The proposed site-tester crawl-variant script (scripts/mcp/site-tester/crawl.mjs extension) is a future BUILD task, not part of this doc integration; leave a pointer to it in QUESTIONS.md or a TODO, don't half-build it now.",
+   "change_summary": "Adds a methodology/spec for auditing DOM elements for locale-overflow (clip, wrap-delta, overlap, container-breach) across de/en/fr/it at Solen's existing 375/768/1280px breakpoints, grounded in a verified IBM/W3C expansion table plus two live-reproduced production failures (Fresha, Booking.com); no existing page, component, or route is changed by this principle itself, only design-doc content and a proposed (not-yet-built) audit script.",
+   "reason": "This is a research/methodology deliverable for a QA audit tool, not a visible structural/layout/imagery change to any real customer surface (the owner's two named BIG examples are PDP hero-imagery-as-40%-zone and homepage restructure; this touches neither). npm run exists confirmed no overflow-audit tooling exists yet, and RATIONALE.md already has the Domain 9 section this extends, including a flagged numeric error the stream explicitly defers. It records rationale/thresholds for a future computed check, so it is doc-only, not small (no product code changes today) and not big (no live-page visual change at all)."
+  },
+  {
+   "id": "S19",
+   "title": "Severity matrix for design findings (D10 rendering contract)",
+   "size": "doc-only",
+   "already_applied": "partial",
+   "needs_mockup": false,
+   "tag": "mechanize",
+   "surface": "internal design-review tooling (punch lists, SUGGESTIONS.md, verifier-loop reports) — not customer-facing",
+   "integration_target": "_design-system/RATIONALE.md (expand the one-line D10 row at line 848 into the full computable-metric + output-rendering-contract spec from verified.verified_addition)",
+   "change_summary": "Expand D10 from a one-line stub into a full spec: the Nielsen frequency x impact x persistence severity math (T1, unchanged), plus a new rendering contract for how any internal severity/finding output must render (label only, never the raw 0-4 number; sorted worst-first; a second axis like provenance/status shown as its own separate adjacent tag, never fused into one compound badge; a count on every tier heading, e.g. \"BLOCKING (3)\"), grounded in Mobbin captures of Jira/ClickUp (strong, native fields) and Airtable/Asana (template-strong), with GitHub Projects and Miro correctly downgraded to weak/anecdotal since neither has a native priority feature.",
+   "reason": "This is purely a design-review documentation addition (how Claude itself formats severity findings in internal markdown outputs like punch lists and SUGGESTIONS.md) with an explicit note in the source that these outputs are internal, not customer-facing screens, and are therefore not bound by the 80/17 ink-scale law. It changes zero product code, zero customer-facing routes or components (verified no SalonCard/PDP/homepage/booking touch-points exist for this), and the underlying label vocabulary (BLOCKING/COSMETIC) is already informally in use across the design docs. It integrates directly as a doc expansion, no owner mockup needed."
+  },
+  {
+   "id": "S20",
+   "title": "Information architecture and navigation (breadcrumb / tab-bar / single-back grounding)",
+   "tag": "net-new",
+   "size": "doc-only",
+   "already_applied": "yes",
+   "needs_mockup": false,
+   "surface": "_design-system/RATIONALE.md, _design-system/QUESTIONS.md",
+   "integration_target": "doc-only: append verified_addition as \"## Domain 24: information architecture and navigation\" in _design-system/RATIONALE.md (existing numbered list runs to \"27. Domain 23\" at line 813, so this becomes item 28 / Domain 24); add the one open item (\"should the 2+-level breadcrumb threshold move to NN/g's 3+ floor\") to _design-system/QUESTIONS.md with the evidence attached.",
+   "change_summary": "Adds a new sourced RATIONALE.md domain (breadcrumb depth, visible-tab-bar-over-hamburger, single-global-back) that grounds three navigation rules Solen already enforces in cited research (Pirolli and Card, Nielsen heuristic 4, NN/g breadcrumb and hamburger-menu studies) plus a 13-app competitor scout; it explicitly does not change any locked literal (breadcrumb still fires at 2+ levels, tab bar and single-back stay as-is) and only logs one open question to QUESTIONS.md rather than deciding it.",
+   "reason": "Verified against the real product: SalonCard/PDP/search already show no breadcrumb below 2 levels, the mobile app already uses a single small bottom tab set and Header-owns-the-back per project_single_global_back memory, and RATIONALE.md already has 27 numbered Domain sections plus a folklore/myth table this addition extends. The proposed content is pure documentation (a RATIONALE.md domain writeup and a QUESTIONS.md entry) with zero touch to any component, route, or locked literal, so it is doc-only and integrates directly with no mockup or owner visual review needed."
+  },
+  {
+   "id": "S21",
+   "title": "Search + browse findability",
+   "size": "doc-only",
+   "already_applied": "partial",
+   "needs_mockup": false,
+   "change_summary": "Add a new \"Findability\" domain section to _design-system/RATIONALE.md (after the existing Domain 11 enforcement block) documenting the sourced rationale for facet-state legibility, live-count commit buttons, reformulation-as-normal-path, structural zero/low-result recovery, and F-pattern-caveat scan placement, plus a flagged tension (colored-selected-fill apps vs Solen's locked gray-sunken law) and a three-part Taste-Lab probe design for still-undecided numeric thresholds (facet-row cap, exact recovery copy).",
+   "reason": "The verified_addition is explicitly framed as \"a new section for RATIONALE.md\" with a target_anchor and placement instruction; it contains zero concrete pixel/component specs to build, only sourced rationale, a named-but-deliberately-unresolved tension for QUESTIONS.md, and a Taste-Lab probe design whose own purpose is to calibrate numbers \"not invented here.\" Checking the real product shows the two mechanics that ARE concretely described (live result-count on the filter-sheet commit button, and a structural cause-aware zero-result recovery with icon+headline+single CTA) are already shipped verbatim: FilterSheet.tsx's apply button reads \"{count} Salons anzeigen\"/\"Show {count} salons\" (messages/de.json:4683, en.json:4673), and SearchTemplate.tsx's EmptyState/C1State (lines 2169-2318) already implements exactly the icon/headline/single-CTA/optional-secondary-link shape the principle asks for, including per-cause branching (city miss, date filter, other filters, query miss). The only genuinely unimplemented ideas here (ClassPass-style \"still available on other days\" relabeling for sparse-not-zero results, and swapping the current horizontally-scrolling FilterChipStrip for a one-row-plus-\"Mehr Filter\"-disclosure layout) are explicitly left unspecified pending a Taste-Lab probe, i.e. the principle itself defers them rather than proposing them as a ready-to-build change. Nothing here is a structural/layout/imagery change to a live customer surface today, so it does not meet the owner's \"big\" bar; it ships as documentation only.",
+   "integration_target": "_design-system/RATIONALE.md, inserted as a new numbered domain section immediately after \"## 11. Domain 11 (Solen-specific): enforcement\" (line 225), using the verified.verified_addition text verbatim as the section body. Also add the flagged colored-selected-fill tension as a line in _design-system/QUESTIONS.md per the residual_risks note."
+  },
+  {
+   "id": "S22",
+   "title": "Onboarding / first-run UX disclosure mechanics",
+   "size": "doc-only",
+   "already_applied": "yes",
+   "needs_mockup": false,
+   "tag": "net-new",
+   "surface": "app/[locale]/onboarding/OnboardingFlow.tsx (customer onboarding) + future long-option pickers",
+   "integration_target": "doc-only: _design-system/RATIONALE.md (new \"First-run onboarding, disclosure mechanics\" domain section, verified_addition text as-is)",
+   "change_summary": "Add the six-decision onboarding-disclosure domain (one-question-per-screen, progressive disclosure past ~8-9 options, bar-vs-dots progress split as a strong default not an absolute rule, counted commit-CTA for thresholded pickers, a flagged-not-adopted tension about industry blue/black selected-pill fills vs Solen's locked calm-gray, and guest-first discovery ordering) to RATIONALE.md; no product code changes, since the live onboarding flow already implements the actionable parts.",
+   "reason": "Read the real onboarding flow (app/[locale]/onboarding/OnboardingFlow.tsx) and its option config (beautyFields.tsx). Decision 1 (one question per screen) and Decision 3 (continuous progress bar with a \"Schritt X von Y\" label, no dot pagination) are already implemented exactly as described. Decision 2 (progressive disclosure past ~8-9 options) and Decision 4 (counted N/M commit CTA for thresholded pickers) are not currently triggered because every option list here (gender 4, hair 5, skin 5, categories 4, interests 4) is well under the 8-9 threshold and none has a minimum-count requirement, so per the principle's own boundary rules a static \"Weiter\" CTA and no disclosure valve are already correct. Decision 5 is explicitly a documented tension, not adopted (Solen keeps its locked calm-gray selected fill). Decision 6 (guest-first discovery, account deferred) already matches Solen's existing /search, /{city}/{category}, and /inspo routes per project memory. Since every actionable item is already true in the product and the rest is either deferred-by-design or not yet triggered by real option-list sizes, this principle has no code to integrate now; it is pure research documentation for RATIONALE.md, to be referenced if/when a future picker (e.g. the dormant 67-row service_categories taxonomy) actually grows past the threshold."
+  },
+  {
+   "id": "S23",
+   "title": "Notification display weight: message class to surface (push/badge vs in-app only)",
+   "size": "small",
+   "already_applied": "partial",
+   "needs_mockup": false,
+   "tag": "net-new",
+   "surface": "Notification system: app/[locale]/notifications/NotificationsClient.tsx, app/[locale]/_components/layout/NotificationBell.tsx, booking-confirmation screen, push infra (lib/notifications.ts)",
+   "integration_target": "Record the class-to-surface routing decision in _design-system/RATIONALE.md (Domain 24, verbatim as verified_addition) since it cross-references PSYCHOLOGY law 14 and does not re-derive cadence. For the two concrete in-app deltas: (1) unread dot + semibold title is ALREADY correct in app/[locale]/notifications/NotificationsClient.tsx:120-126, no edit needed, just cite it as evidence in the doc; (2) add an amber \"action required\" pill + inline pastel card variant is a small addition to whatever status-pill component renders booking state (app/[locale]/profile/bookings/page.tsx and any shared status-pill component it uses) for the one genuinely-actionable case (e.g. payment failed / consultation form incomplete); (3) a one-line notification-preview sentence (\"Du wirst benachrichtigt, sobald...\") on the booking-confirmation screen is a single inline-copy addition, not a layout change.",
+   "change_summary": "Adds a documentation rule that notification DISPLAY SURFACE (OS push+badge / push-only / in-app-Toast-only) is chosen by message class, independent of send cadence (which stays owned by PSYCHOLOGY law 14), plus three in-app conventions: unread rows use a small dot + semibold title never a full-row color fill (already exactly implemented in NotificationsClient.tsx), a status pill escalates color from neutral to amber with an inline pastel card only when genuinely actionable (not yet built, small addition), and a one-line preview of the coming push notification on booking-confirmation/permission screens (new, single inline-copy addition).",
+   "reason": "The core content is a documentation/rationale entry (routing rule + sourced mechanics), not a visible structural change to any page. Of its two concrete product deltas, one is already implemented verbatim in the real code (unread dot + semibold, checked in NotificationsClient.tsx) and the other two (an amber action-required pill variant, a one-line notification-preview sentence) are narrow additive tweaks to an existing status element and existing confirmation copy, not a layout/imagery/structural overhaul of any customer surface, so none of it meets the owner's bar for \"big\" (PDP hero-40% or homepage-scale restructure). The entry itself also flags that full push/badge routing may require backend work, which is out of scope for a doc-integration pass and is already correctly logged as an open question rather than something to build now."
+  },
+  {
+   "id": "S24",
+   "title": "Trust / credibility signals (Fogg / Stanford Web Credibility)",
+   "size": "doc-only",
+   "already_applied": "yes",
+   "needs_mockup": false,
+   "tag": "net-new",
+   "surface": "_design-system/RATIONALE.md (new Domain section, no product UI touched)",
+   "integration_target": "doc-only: _design-system/RATIONALE.md, append as the next \"## N. Domain N: Credibility signals (Fogg / Stanford)\" section following the existing Domain 12-23 pattern (§16-27). No component/route edits.",
+   "change_summary": "Add a documented design-rationale domain (Fogg/Stanford credibility framework: labeled-row verification never a badge grid, verified markers default to green/ink never blue, zero-signal rows are omitted not shown as bare 0, badge/cert density calibrated to category distrust) to RATIONALE.md; it proposes no new UI element and explicitly defers a verified-badge component until an owner decision creates the backing data/verification pipeline.",
+   "reason": "The verified_addition is pure grounding/rationale text for the design docs, not a UI change: it explicitly states no badge is proposed (SACRIFICES section, \"not proposed here as a shippable UI element yet\") because no verification data/pipeline exists, and it resolves its own open question by confirming production code already satisfies the one behavioral implication (SalonResultCard.tsx gates the entire rating/review line on `rating != null`, so zero-review salons already render no rating row, matching Fresha's precedent). Grep confirms zero components implement any verified-badge pattern, so there's nothing to build or retrofit. This is a doc-only addition that records already-true behavior plus a rule for future trust-signal work; it never rises to a big structural/imagery change on a customer surface, so it integrates directly without a mockup."
+  },
+  {
+   "id": "S25",
+   "title": "Error prevention and recovery (Nielsen H5/H9)",
+   "size": "doc-only",
+   "already_applied": "unknown",
+   "needs_mockup": false,
+   "tag": "net-new",
+   "surface": "_design-system/RATIONALE.md (new Domain 24 section)",
+   "integration_target": "doc-only: append verified_addition verbatim as a new \"## Domain 24: Error prevention and recovery (Nielsen H5/H9)\" section in _design-system/RATIONALE.md, immediately after Domain 21 (forms/input) at line ~757; no LOCKFILE.md edit needed since it only cross-references the already-correct line 618 (toast auto-dismiss) and line 543 (outcome confirmation) rules without changing their values.",
+   "change_summary": "Adds a governing-principle doc section (prevention hierarchy: eliminate > constrain input > confirm-gate; confirm-dialogs reserved for rare/destructive actions with undo-toasts as the default for routine reversible ones; error copy must name the exact field+cause and never discard input; blocked actions get an explanation+alternative instead of a silent disable) with two corrected internal LOCKFILE citations and one narrowed claim (Fresha's ink-monochrome commit and the Plausible promo-code example) -- it proposes no new component, no new confirm/undo UI, and touches no product code or page.",
+   "reason": "The verified_addition is explicitly scoped as a \"cross-reference only\" doc addition: it states it \"does not reopen any LOCKFILE literal,\" does not touch ErrorState/ErrorFallback, and defines no new component or layout, only a written governing principle plus corrected citations (line 475->618, line 445->543) for RATIONALE.md. Confirmed via grep/exists-check that no confirm-dialog or undo-toast pattern currently exists as a reusable component in the product (0 matches for \"confirm dialog\" and \"undo toast\"), so applying this principle to any real screen (e.g., building an actual undo-toast for booking cancel, or a two-button ink cancel modal) would be net-new UI work requiring its own mockup-first pass later; the PRINCIPLE record itself, however, is pure documentation and ships directly with no mockup."
+  },
+  {
+   "id": "S26",
+   "title": "Accessibility beyond contrast: keyboard, screen-reader semantics, reduced motion, target size",
+   "size": "small",
+   "already_applied": "partial",
+   "needs_mockup": false,
+   "tag": "net-new",
+   "surface": "_design-system/SOURCE.md (Domain 24 + §16.5 wording), SkipLink.tsx doc comment, MobileMenu.tsx nav landmark",
+   "integration_target": "_design-system/SOURCE.md (add new \"Domain 24: accessibility beyond contrast\" section using verified_addition text; fix §16.5's \"Minimum 44x44 px hit area per WCAG 2.1\" wording at SOURCE.md:1032 to name AA-24px vs AAA-44px explicitly; add a pointer sentence in §16.2 or a new §16.7 naming globals.css:804-813 as the prefers-reduced-motion cap) + app/[locale]/_components/primitives/SkipLink.tsx (fix or delete the stale doc comment claiming it's mounted as first focusable child of body, since it is only imported by app/[locale]/dev/primitives/page.tsx) + app/[locale]/_components/layout/MobileMenu.tsx (wrap existing nav markup in a `<nav>` landmark element, closing the SOURCE.md:993 self-flagged gap)",
+   "change_summary": "Add a verified, standards-cited accessibility Domain-24 write-up to SOURCE.md (four WCAG keyboard SCs, landmark/name-role-value requirement, skip-link and reduced-motion conventions, and the AA-24px-vs-AAA-44px target-size distinction), correct SOURCE.md:1032's flattened \"WCAG 2.1 44px\" wording to name the AA/AAA tiers explicitly, fix or retire the unmounted SkipLink.tsx primitive's stale doc comment, and wrap MobileMenu's markup in a real `<nav>` landmark.",
+   "reason": "This is not a visible structural/layout/imagery change to a customer surface (unlike the PDP-hero-40% or homepage-restructure BIG examples); it is a documentation addition (new SOURCE.md domain, corrected wording of an existing rule) plus three mechanical, non-visual code fixes: a stale doc-comment correction on an unmounted internal primitive, and wrapping existing nav markup in a semantic `<nav>` tag (no visible change, only an ARIA landmark added). All literal values (44px, 24px) stay frozen per the principle's own BOUNDARY clause, and no new UI/settings screen is being built now, only its convention is recorded for a future IF. This matches \"small: incremental refinement / value already correct that just needs its why recorded / a computed-floor spec that only adds a check,\" not \"big.\""
+  },
+  {
+   "id": "S27",
+   "title": "Perceived performance: the response-time clock, sharpened by production practice",
+   "size": "doc-only",
+   "already_applied": "partial",
+   "needs_mockup": false,
+   "tag": "net-new",
+   "surface": "_design-system/RATIONALE.md (Domain 16: states and feedback)",
+   "integration_target": "_design-system/RATIONALE.md, section 20 \"Domain 16: states and feedback\", replace the existing 4-bullet \"Perceived performance (each claim flagged):\" block at lines 745-749 with the verified_addition text.",
+   "change_summary": "Replaces the current 4-bullet Perceived Performance block in RATIONALE.md (lines 745-749) with a longer, production-evidence-backed version: fixes a real citation error (Harrison et al. is UIST 2007, not \"Harrison 2010, CHI\" as currently written on line 747), downgrades the Mejtoft skeleton-vs-spinner study from an implied T2 to CONV with its own non-significance caveat added, adds the instant-confirm-vs-honest-two-stage decision split (Zomato/OpenTable/GetYourGuide/Hyatt vs Booking.com/Airbnb copy patterns) as new generative guidance, adds shimmer-sweep-as-default production evidence, and flags the loading.tsx route coverage gap (7 of 172 routes) as a named, Solen-internal audit item. No component, route, or visible UI changes anywhere; this only rewrites design-doc rationale text.",
+   "reason": "This is a pure documentation edit to _design-system/RATIONALE.md, a rationale/citation-grounding doc, with zero touch to product code, components, routes, or rendered UI. It corrects a citation error already sitting live in the file and adds sourced production evidence and a generative decision rule (instant-confirm vs honest two-stage) as prose guidance for future work. The taste_lab_probe A/B-test ideas mentioned in the source are explicitly marked by the synthesis itself as hypotheses requiring owner approval and mockup-first before touching any live copy, so they are NOT part of this integration; this classification covers only the doc replacement. Nothing here rises to a structural/layout/imagery change on a real customer surface (the owner's big-change bar), so it integrates directly with no mockup."
+  },
+  {
+   "id": "S28",
+   "title": "Content design mechanics (verbosity ladder, error-message checklist, reading level, empty-state two-register structure)",
+   "tag": "net-new",
+   "size": "doc-only",
+   "already_applied": "partial",
+   "needs_mockup": false,
+   "surface": "_design-system/RATIONALE.md (documentation only, no app/component/route touched)",
+   "integration_target": "_design-system/RATIONALE.md — append as a new section immediately after line 813 (\"## 27. Domain 23: ethics as taste...\"), i.e. \"## 28. Domain 24: content design mechanics\", using verified.verified_addition verbatim (the draft's own internal numbering, \"section 29\", is off by one against the file's actual sequence 24→25→26→27; correct to 28 when inserting).",
+   "change_summary": "Adds a sourced reference domain to RATIONALE.md codifying four copy mechanics (icon-recognizability-keyed verbosity ladder, four-part error-message checklist, grade 6-9 reading-level ceiling, two-register empty/confirmation-state structure) with citations and a Nike-Run-Club negative example; it is a documentation/rationale addition only, it does not itself edit any component, string, or route.",
+   "reason": "The verified_addition explicitly targets \"RATIONALE.md section 29\" only, a rationale/grounding doc, not a product surface; no PDP/homepage/booking-flow/component file is touched. Checked the real product: CLAUDE.md's existing \"Copy economy\" block (rules 1-5, e.g. \"Drop words the context already says\", truncate+\"Mehr lesen\", action-verbosity ladder by icon-ambiguity) already implements much of mechanic 1 and the Nike-Run-Club anti-pattern in spirit, so already_applied is partial, not fresh, but the four-part error checklist, the reading-level ceiling, and the explicit two-register empty-state word-count band are new formalizations not previously written down anywhere in the repo. Since it is pure documentation with no layout/imagery/structural change to any customer screen, it is doc-only by the owner's rule and integrates directly without a mockup."
+  },
+  {
+   "id": "S29",
+   "title": "Dark mode / theming decision (web) — Theming Contract domain entry",
+   "size": "doc-only",
+   "already_applied": "partial",
+   "needs_mockup": false,
+   "surface": "_design-system/RATIONALE.md (design-docs canon, no product route/component)",
+   "integration_target": "doc-only: _design-system/RATIONALE.md — add a new numbered \"## Domain: Theming Contract\" section (following the section 29 slot after the existing Domain 23 ethics section / Gap register, using the entry format from section 1: DECISION/FORCES/OPTIMIZES/SACRIFICES/BOUNDARY/MECHANIC/SOURCE/XREF)",
+   "change_summary": "Add a consolidated \"Theming Contract\" domain entry to RATIONALE.md that formally records the web-light-only / mobile-dark-mode-only decision with its full evidence chain (T1 positive-polarity research, corrected NN/g findings, 9-peer category-parity check, Cal.com split-control precedent for a possible future dashboard-only reopen), replacing what today are three scattered one-line pointers (RATIONALE.md lines 5, 667, 723) with one canonical, citable section; no product code or UI changes anywhere.",
+   "reason": "This is pure design-documentation consolidation: it touches only _design-system/RATIONALE.md's rationale/citation layer, adds no new component, route, or visual treatment, and changes nothing a customer or owner sees. Grepping RATIONALE.md confirms the underlying DECISION (web dark mode declined 2026-07-15, graveyarded) is already recorded and cross-referenced at lines 5, 667, and 723, so this is real-world already-applied-in-substance, just not yet written up as its own full Domain entry with the FORCES/SACRIFICES/BOUNDARY structure the verified pass produced (notably the verify pass caught and corrected two fabricated NN/g claims in the earlier draft, so the corrected verified_addition text is worth landing over the scattered pointers). Nothing here is a structural/layout/imagery change to a customer surface, so it does not meet the owner's bar for \"big\" (PDP hero-as-40%-zone, homepage restructure) and needs no mockup or owner sign-off, it can be integrated directly into the docs."
+  },
+  {
+   "id": "S30",
+   "title": "Motion timing thresholds + easing derivation (RAIL/Material/competitor-CSS deepening of RATIONALE.md section 7)",
+   "tag": "canon-deepen",
+   "size": "doc-only",
+   "already_applied": "partial",
+   "needs_mockup": false,
+   "surface": "_design-system/RATIONALE.md section 7 (Motion and timing)",
+   "integration_target": "doc-only: _design-system/RATIONALE.md section 7 (append RAIL naming, corrected Material/competitor-CSS citations, and a new wait-state-machine subsection); no LOCKFILE value changes, no component/page code touched.",
+   "change_summary": "Add three citation layers to the already-partial RATIONALE.md section 7: (1) name RAIL explicitly as corroborating only the 100ms and 16ms tiers (not the 1s tier, which the verify pass found RAIL does not actually cover), (2) correct and cite live competitor CSS for Solen's snap-curve match (Booksy ships the exact Material bezier verbatim, not Vagaro as originally drafted; Vagaro's claim was refuted on re-fetch), and (3) add a net-new wait-state-machine subsection (skeleton vs in-context scrim vs full-screen block vs pastel success banner) sourced from a T3 Mobbin survey, flagged for spot-check since one sibling claim in the same research batch was found fabricated.",
+   "reason": "This is a pure documentation deepening of an existing RATIONALE.md section (confirmed at line 161, already covering Doherty/Miller-Nielsen/INP). Nothing in the synth or verified content touches any product component, route, or LOCKFILE token value; it only adds citations, corrects a competitor-CSS claim the verify pass found wrong, and appends one new documented subsection. No visible customer-facing layout/imagery/structure changes anywhere, so it fails the \"big\" bar entirely and does not even reach code-level \"small\" since no file under components/ or app/ is touched. Ships as a docs-only integration, no mockup needed."
+  },
+  {
+   "id": "S31",
+   "title": "Elevation / shadow rgba + z-index scale grounding",
+   "size": "doc-only",
+   "already_applied": "partial",
+   "needs_mockup": false,
+   "tag": "canon-deepen",
+   "surface": "_design-system/RATIONALE.md (documentation only, no customer-facing surface)",
+   "integration_target": "_design-system/RATIONALE.md section 18 (Domain 14: depth, light, and materiality), inserted after the existing two-light-model paragraph at line 721, as two new paragraphs: \"Shadow blur and alpha progression\" and \"Z-index tier gap sizing\". No LOCKFILE.md value changes.",
+   "change_summary": "Appends two evidence paragraphs to RATIONALE.md documenting that live-measured competitor CSS (Fresha, Booking.com, Booksy, Treatwell) and Bootstrap's z-index docs confirm the SHAPE of Solen's already-shipped shadow progression (elevation-1/2/3 at LOCKFILE:481-486, blur 3/12/28px with climbing alpha) and z-index scale (LOCKFILE:494-497, sheet-bg 400 through tooltip 700), while explicitly flagging (not resolving) that competitors use decade-jump z-index tiers rather than Solen's fine 10-unit gaps; the verified pass also corrects two factual errors in the draft (the dialog-blur ratio was 2.5x, actually ~3x measured; the cookie-consent z-index sentinel was framed as near Number.MAX_SAFE_INTEGER but is actually near the much smaller 32-bit signed integer ceiling) and drops two uncheckable citations (rajeshrnair.com, zignuts.com).",
+   "reason": "This is pure documentation grounding for two design values (box-shadow rgba/blur table and z-index scale) that already exist verbatim in LOCKFILE.md and are already implemented in the codebase. Both the DECISION lines in the proposed content say \"unchanged\" and explicitly state the frozen LOCKFILE values are not being touched, only their rationale/evidence trail is being deepened with live-measured competitor data. There is no product code, component, or customer-facing surface change of any kind, so it does not qualify as \"small\" (a code tweak) or \"big\" (a structural/visual change needing owner mockup approval) -- it is a docs-only addition to RATIONALE.md and can be integrated directly without a mockup."
+  },
+  {
+   "id": "S32",
+   "title": "Neutral-ramp + accent hex perceptual derivation (OKLCH grounding)",
+   "tag": "canon-deepen",
+   "size": "doc-only",
+   "already_applied": "partial",
+   "needs_mockup": false,
+   "surface": "design docs only (_design-system/RATIONALE.md color/contrast section)",
+   "integration_target": "doc-only: _design-system/RATIONALE.md (extend the existing \"Domain 2: Color\" / \"Domain 3: Contrast\" sections around lines 81-111, which already state the OKLCH-is-the-generation-space claim and the measured WCAG/APCA token table this principle recomputes and grounds further)",
+   "change_summary": "Adds a documented OKLCH (L/C/H) breakdown proving Solen's four frozen hexes (s-ink, s-accent, s-border, s-bg.sunken) form one coherent lifted-black-plus-cool-ramp rather than four independent picks, explains the accent's known AA failure on sunken surfaces (4.17:1) as a mechanical consequence of its OKLCH lightness/chroma, retracts an unsourced \"3.7:1\" figure, and adds CONV/T3 real-competitor-app corroboration (Fresha, Booksy, Booking.com, Zocdoc) for the sparse-blue-accent convention. No hex values change and no component/page is touched.",
+   "reason": "This is purely an addition to the design-system rationale documentation: it re-derives and grounds four ALREADY-FROZEN, already-owner-approved hex literals with color-science math and competitor citations. It explicitly states it changes no hex value, licenses no new token, and touches no product surface (PDP, homepage, SalonCard, booking flow, etc. are all untouched). It reads as doc-only work, one tier smaller than even a typical \"small\" code tweak, so it integrates directly into RATIONALE.md with no owner mockup needed. The one open item, a taste_lab_probe asking whether to formally document an on-sunken accent-text variant reusing the already-locked s-accent.deep token, is a yes/no question for QUESTIONS.md, not a build decision requiring a mockup."
+  },
+  {
+   "id": "S33",
+   "title": "i18n text-expansion + multi-script typography grounding",
+   "size": "doc-only",
+   "already_applied": "partial",
+   "needs_mockup": false,
+   "tag": "canon-deepen",
+   "surface": "design docs (RATIONALE.md, SOURCE.md) - no product code, no rendered UI touched",
+   "integration_target": "doc-only: _design-system/RATIONALE.md section 9 \"Domain 9: i18n typography\" (replace the existing bucket sentence at line 206: \"under 10 chars can expand 200-300 percent, 11-20 chars roughly 80-100, 21-70 chars roughly 40, 71+ roughly 30\" with the corrected single-unit table + the new three-strategy resolution mechanic + the myth-chain finding). Companion edit flagged (not auto-applied per the entry's own instruction) to _design-system/SOURCE.md section 17.3 (\"### §17.3 · German text expands ~30% vs English\", currently verbatim at that heading) to point at RATIONALE section 9 and add FR/IT figures - needs owner sign-off since SOURCE.md sits above RATIONALE in doc hierarchy.",
+   "change_summary": "Replaces RATIONALE.md's existing i18n-expansion bucket sentence (which mixes percent-of-original and percent-increase units inconsistently, confirmed by reading line 206) with a corrected single-unit IBM/W3C table, adds an Italian-over-German per-language correction (drops the SOURCE.md §17.3 \"German is worst case\" framing), and adds a new ranked resolution-strategy mechanic (shorten > widen-to-content > wrap, never truncate) backed by live competitor fetches; also documents that the \"German +30%\" figure circulating in trend content is unsourced folklore.",
+   "reason": "Confirmed by reading both files: this is a pure documentation refinement inside _design-system/RATIONALE.md (Domain 9 already exists at that exact location with the exact sentence the entry proposes to replace) plus an explicitly-flagged, not-auto-applied companion note for SOURCE.md. No component, page, route, or rendered UI is touched - it only changes the rationale/grounding text that future frontend work will cite. That places it squarely in the doc-only bucket, not a product code change, so it integrates directly with no mockup."
+  }
+ ],
+ "aggregate": {
+  "approved_small": [
+   {
+    "id": "S13",
+    "title": "Pre-delivery self-walk gate",
+    "surface": "Agent tooling / .claude/hooks Stop-gate family (not a customer-facing route or component)",
+    "change_summary": "Add a 4th Stop-hook gate that blocks any UI-touching turn from ending unless the agent's final message contains a fixed six-line self-walk report (squint, hierarchy, type-ceiling, grouping, contrast, density), each line independently PASS/FLAG/n-a, mirroring the already-live browser-verify-gate.sh pattern (exit code 2 + self-releasing skip flag).",
+    "integration_target": "New hook file, e.g. .claude/hooks/pre-delivery-self-walk-gate.py (or .sh), wired into the Stop array in .claude/settings.json alongside the three hooks already there (.claude/hooks/browser-verify-gate.sh, scripts/hooks/visual-deliverable-gate.py, scripts/hooks/recurrence-harden-gate.py); doc write-up goes in _design-system/RATIONALE.md section 28 lens B once the hallucinated sources are stripped. Build-order note: strip the unconfirmed citations (Uber 'Base Counter', Eleken '17-step', Figma Config-2026 AI reviewer), confirm with owner given gate-fatigue risk, and test the two discriminating pass/fail cases before wiring (rule 12.5).",
+    "already_applied": "no"
+   },
+   {
+    "id": "S23",
+    "title": "Notification display weight: message class to surface (push/badge vs in-app only)",
+    "surface": "Notification system: app/[locale]/notifications/NotificationsClient.tsx, app/[locale]/_components/layout/NotificationBell.tsx, booking-confirmation screen, push infra (lib/notifications.ts)",
+    "change_summary": "Adds a documentation rule that notification DISPLAY SURFACE (OS push+badge / push-only / in-app-Toast-only) is chosen by message class, independent of send cadence (which stays owned by PSYCHOLOGY law 14), plus three in-app conventions: unread rows use a small dot + semibold title never a full-row color fill (already exactly implemented in NotificationsClient.tsx), a status pill escalates color from neutral to amber with an inline pastel card only when genuinely actionable (not yet built, small addition), and a one-line preview of the coming push notification on booking-confirmation/permission screens (new, single inline-copy addition).",
+    "integration_target": "Record the class-to-surface routing decision in _design-system/RATIONALE.md (Domain 24, verbatim as verified_addition) since it cross-references PSYCHOLOGY law 14. Concrete deltas: (1) unread dot + semibold title is ALREADY correct in app/[locale]/notifications/NotificationsClient.tsx:120-126, no edit, cite as evidence; (2) add an amber 'action required' pill + inline pastel card variant to the status-pill component rendering booking state (app/[locale]/profile/bookings/page.tsx) for the one genuinely-actionable case; (3) add a one-line notification-preview sentence on the booking-confirmation screen. Full push/badge routing may need backend work, out of scope, logged as open question.",
+    "already_applied": "partial"
+   },
+   {
+    "id": "S26",
+    "title": "Accessibility beyond contrast: keyboard, screen-reader semantics, reduced motion, target size",
+    "surface": "_design-system/SOURCE.md (Domain 24 + §16.5 wording), SkipLink.tsx doc comment, MobileMenu.tsx nav landmark",
+    "change_summary": "Add a verified, standards-cited accessibility Domain-24 write-up to SOURCE.md (four WCAG keyboard SCs, landmark/name-role-value requirement, skip-link and reduced-motion conventions, and the AA-24px-vs-AAA-44px target-size distinction), correct SOURCE.md:1032's flattened 'WCAG 2.1 44px' wording to name the AA/AAA tiers explicitly, fix or retire the unmounted SkipLink.tsx primitive's stale doc comment, and wrap MobileMenu's markup in a real <nav> landmark.",
+    "integration_target": "_design-system/SOURCE.md (add new 'Domain 24: accessibility beyond contrast' section using verified_addition text; fix §16.5's wording at SOURCE.md:1032 to name AA-24px vs AAA-44px; add a pointer sentence in §16.2 or a new §16.7 naming globals.css:804-813 as the prefers-reduced-motion cap) + app/[locale]/_components/primitives/SkipLink.tsx (fix or delete the stale doc comment claiming it's mounted as first focusable child of body, since it is only imported by app/[locale]/dev/primitives/page.tsx) + app/[locale]/_components/layout/MobileMenu.tsx (wrap existing nav markup in a <nav> landmark element, closing the SOURCE.md:993 self-flagged gap). All literal values (44px, 24px) stay frozen per the principle's BOUNDARY clause.",
+    "already_applied": "partial"
+   }
+  ],
+  "parked_big": [],
+  "doc_only": [
+   {
+    "id": "S01",
+    "title": "Richness/restraint calibration prior (imagery-zone bands, chunk ceiling, task-conditioned density)"
+   },
+   {
+    "id": "S02",
+    "title": "Layout-pattern selector (list / grid / carousel / table / bento)"
+   },
+   {
+    "id": "S03",
+    "title": "Page-level vertical rhythm prior for a brand-new page"
+   },
+   {
+    "id": "S04",
+    "title": "Empty-state + illustration language: a generative anatomy"
+   },
+   {
+    "id": "S05",
+    "title": "Responsive reflow grammar (breakpoint behavior prior)"
+   },
+   {
+    "id": "S06",
+    "title": "Imagery / art-direction language (owner-declined, gated on G6)"
+   },
+   {
+    "id": "S07",
+    "title": "Flow-level motion choreography (anchor conservation across booking steps)"
+   },
+   {
+    "id": "S08",
+    "title": "Token extension grammar (how to mint a new token correctly)"
+   },
+   {
+    "id": "S09",
+    "title": "Density defaults per customer surface"
+   },
+   {
+    "id": "S10",
+    "title": "Visual-weight / balance centroid (computable D1 spec)"
+   },
+   {
+    "id": "S11",
+    "title": "Blue-coverage % + accent-hue count sweep (real-world calibration addendum)"
+   },
+   {
+    "id": "S12",
+    "title": "Alignment / off-grid detector (D3)"
+   },
+   {
+    "id": "S14",
+    "title": "Repertory-grid triads + staircase probes for taste elicitation"
+   },
+   {
+    "id": "S15",
+    "title": "Tap-target + slip-adjacency sweep"
+   },
+   {
+    "id": "S16",
+    "title": "Cross-surface consistency diff (D7 role-registry gate spec)"
+   },
+   {
+    "id": "S17",
+    "title": "Spacing-rhythm audit: computable metric spec for D8 (ladder conformance, ratio-distinctness, within/between grouping)"
+   },
+   {
+    "id": "S18",
+    "title": "Multi-locale overflow audit: computable clip/wrap detector for de/en/fr/it"
+   },
+   {
+    "id": "S19",
+    "title": "Severity matrix for design findings (D10 rendering contract)"
+   },
+   {
+    "id": "S20",
+    "title": "Information architecture and navigation (breadcrumb / tab-bar / single-back grounding)"
+   },
+   {
+    "id": "S21",
+    "title": "Search + browse findability"
+   },
+   {
+    "id": "S22",
+    "title": "Onboarding / first-run UX disclosure mechanics"
+   },
+   {
+    "id": "S24",
+    "title": "Trust / credibility signals (Fogg / Stanford Web Credibility)"
+   },
+   {
+    "id": "S25",
+    "title": "Error prevention and recovery (Nielsen H5/H9)"
+   },
+   {
+    "id": "S27",
+    "title": "Perceived performance: the response-time clock, sharpened by production practice"
+   },
+   {
+    "id": "S28",
+    "title": "Content design mechanics (verbosity ladder, error-message checklist, reading level, empty-state two-register structure)"
+   },
+   {
+    "id": "S29",
+    "title": "Dark mode / theming decision (web) — Theming Contract domain entry"
+   },
+   {
+    "id": "S30",
+    "title": "Motion timing thresholds + easing derivation (RAIL/Material/competitor-CSS deepening of RATIONALE.md section 7)"
+   },
+   {
+    "id": "S31",
+    "title": "Elevation / shadow rgba + z-index scale grounding"
+   },
+   {
+    "id": "S32",
+    "title": "Neutral-ramp + accent hex perceptual derivation (OKLCH grounding)"
+   },
+   {
+    "id": "S33",
+    "title": "i18n text-expansion + multi-script typography grounding"
+   }
+  ],
+  "counts": {
+   "small": 3,
+   "big": 0,
+   "doc_only": 30
+  }
+ }
+}

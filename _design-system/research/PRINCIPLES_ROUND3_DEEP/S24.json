@@ -1,0 +1,227 @@
+{
+ "id": "S24",
+ "synth": {
+  "id": "S24",
+  "tag": "net-new",
+  "title": "Trust / credibility signals (Fogg / Stanford)",
+  "principle_summary": "Credibility is a fast, largely visual first-pass judgment users make of two things: perceived trustworthiness (honest, unbiased) and perceived expertise (Fogg and Tseng 1999, CHI99, T2), and the Stanford Guidelines for Web Credibility (Fogg 2002, T2) distill this into 10 checkable rules, the Solen-relevant subset being: show a real organization behind the product (real photos, not stock), highlight real expertise, keep contact/verification info findable, use restraint with promotional/trust content so it does not read as an ad, and treat any visible error or fake cue as disproportionately damaging to trust. Real-app precedent converges on a specific SHAPE for this restraint: verification signals across nearly every reviewed app (Airbnb, Angi, Uber, Revolut, Fresha) are TEXT-LED, a small monochrome checkmark plus a short label, in a short 2-4 row list, never a colorful badge grid or logo wall (Temu's 5+ logo stack is the outlier and the anti-pattern to name explicitly), and trust copy sits directly adjacent to the CTA or field it de-risks rather than as a marketing block higher up the page. A second, genuinely new implication for Solen specifically: because a verification checkmark is not clickable, Solen's own locked law that blue is reserved for small clickable bits only means a verified marker should default to green (semantic-success) or ink, never blue, contradicting the several competitor apps (Airbnb, BlaBlaCar) that do use blue there. Fresha's own live production behavior (zero-review venues render no rating row at all, not a placeholder or a bare 0) is the closest real precedent to Solen's existing real-numbers-only and stars-never-bare laws, and extends the omit-rather-than-fake pattern one level up, from the number to the whole line.",
+  "real_world_evidence": [
+   {
+    "source": "Stanford Guidelines for Web Credibility, Fogg 2002 (credibility.stanford.edu/guidelines)",
+    "what": "10-guideline distillation of a 3-year, multi-study research program at the Stanford Persuasive Technology Lab; Solen-relevant subset: real organization/real photos, highlight expertise, findable contact info, promotional restraint, avoid errors of any size.",
+    "tier": "T2"
+   },
+   {
+    "source": "NNGroup, Trustworthy Design (nngroup.com/articles/trustworthy-design, 2016 re-validation of Fogg's framework)",
+    "what": "Direct participant quote on price transparency (\"I would definitely not use HomeCleanz because they don't state the rate\") and on imagery (\"photos from all stages of the service, not merely the end result\"); finding that third-party review counts outweigh self-issued/company-controlled badges.",
+    "tier": "T2"
+   },
+   {
+    "source": "Fresha live search render, fresha.com/search (measured 2026-07-22)",
+    "what": "Zero-review venues render NO rating/review line at all, not \"0.0\" or a placeholder; a text-only \"New\" pill (no icon) appears only on venues with 1+ review, gating on \"has data but early\" not on venue age; no verified/top-rated badge anywhere at listing level.",
+    "tier": "T3"
+   },
+   {
+    "source": "Doctolib footer, doctolib.de (fetched 2026-07-22)",
+    "what": "Six distinct external certification marks (BSI ISO/IEC 27001, BSI ISO/IEC 27701, TUV Nord, TUV Saarland, Trustpilot, B-Corp) clustered in one footer zone, not scattered through the flow; a heavier institutional-trust pattern than Fresha's, consistent with healthcare's higher baseline distrust.",
+    "tier": "T3"
+   },
+   {
+    "source": "Airbnb / Angi / BlaBlaCar / Thumbtack provider-verification screens (Mobbin)",
+    "what": "Verification is a labeled list, never a badge grid: a \"Verified\" section header followed by 2-4 rows, each a small checkmark plus a short label (\"Verified ID\", \"Confirmed phone number\", \"Background checked\"); Angi shows exactly 1 badge (\"Angi Approved\") plus 3 bullet sub-claims, not a badge collection.",
+    "tier": "T3"
+   },
+   {
+    "source": "Temu payment modal (Mobbin)",
+    "what": "Anti-pattern, explicitly exclude: a green shield-check headline followed by 5+ payment-brand logo chips plus 2 additional certification badges stacked in one modal; the densest badge-wall observed and the clearest conflict with Solen's restraint law.",
+    "tier": "T3"
+   },
+   {
+    "source": "Revolut card-entry screen (Mobbin)",
+    "what": "Minimal version, closest in spirit to Solen's restraint: one small blue shield icon plus a single line \"Processed securely by PCI DSS\" directly under the screen title, no paragraph, no icon wall.",
+    "tier": "T3"
+   },
+   {
+    "source": "Vrbo / Expedia / Booking.com / Trip.com checkout (Mobbin)",
+    "what": "Trust copy placed directly adjacent to the CTA or field it de-risks (padlock icon plus one short grey line right under the payment button), and Vrbo's fuller trust block is collapsed by default behind a chevron so it does not dominate the page.",
+    "tier": "T3"
+   },
+   {
+    "source": "Uniqlo card-entry form (Mobbin)",
+    "what": "Anti-pattern for copy economy: spells out \"(Transport Layer Security)\" after already saying TLS, a verbose/legalistic construction Solen's own copy-economy rule (drop words the context already says) would cut.",
+    "tier": "T3"
+   },
+   {
+    "source": "TrustedSite, Trust Badges 2026 guide (trustedsite.com/resources/trust-badges)",
+    "what": "Qualitative claim \"a few credible, verified signals beat a dozen graphics,\" badges belong at decision points not scattered; the accompanying percentage stats (82pct/51pct/40pct) are from a vendor-commissioned survey and must be treated as MYTH-risk, not cited.",
+    "tier": "T3"
+   }
+  ],
+  "generative_prior": "Default recipe for any Solen element whose job is to build trust (badges, verified markers, credential lines, trust copy near payment or booking commit):\n\n1. VERIFICATION SHAPE = a labeled row list, never a badge grid: small monochrome checkmark (16-20px) plus a short text label, capped at 2-4 rows per block. Precedent: Airbnb's \"Verified Profile\" section (2-4 rows), Angi's \"Angi Approved\" (1 badge + 3 bullets). Exclude: Temu's 5+ logo wall.\n2. VERIFICATION COLOR = green (Solen's existing success token, e.g. #16A34A) or ink, NEVER blue. A verified marker is not clickable, so it falls under Solen's own locked law that blue is reserved for small clickable bits only. This deliberately diverges from Airbnb/BlaBlaCar, who default their checkmarks to blue.\n3. TRUST-COPY PLACEMENT = one short line (12-13px, grey/s-ink-2), positioned directly adjacent to or below the specific CTA or field it de-risks (payment button, booking-commit button), never a marketing block higher up the page. Precedent: Revolut's single line under the screen title; Expedia/Booking/Trip.com's padlock-plus-line directly under the CTA.\n4. MARKER CAP = 1 marker per TYPE, 2-3 total max on any single card or block (carried from the S24 baseline's Fogg guideline-9 restraint reading; unchanged, still pending the taste-lab confirmation named below before it becomes a hard locked number).\n5. ZERO-SIGNAL HANDLING = omit the entire row, not a placeholder, not a bare 0/0.0. This extends PSYCHOLOGY.md law 6 (stars-never-bare) and law 9 (real-numbers-only) one level up, from \"never show a bare number\" to \"never show the line at all when there is nothing to show.\" Precedent: Fresha's own live production behavior, measured directly, zero-review venues render no rating/review line whatsoever.\n6. CATEGORY CALIBRATION = badge/cert density should scale with the category's baseline distrust. Solen's vertical (beauty/wellness booking) sits close to Fresha's minimal end, not Doctolib's institutional-heavy end (healthcare has a structurally higher distrust floor); default new Solen surfaces to the Fresha-minimal reading unless a specific high-distrust surface (payment/checkout) argues otherwise, per the already-sourced Baymard payment-field material in TASTE_CHECKOUT.md.\n\nOpen implementation question flagged, not resolved here: does Solen's current SalonCard render a bare 0/0.0 for zero-review salons or omit the line already? This needs a direct code check against `components/SalonCard` before item 5 above is treated as already-satisfied or as a live gap.",
+  "proposed_addition": "## Domain: Credibility signals (Fogg / Stanford Web Credibility)\n\nDECISION: any element whose job is to make the user trust the salon, provider, or platform (badges, verified markers, provider photos, credential lines, contact info, review counts) is graded against the Fogg trustworthiness-plus-expertise framework before it ships. Two sub-rules follow directly from convergent real-app precedent, not just the academic framework: (a) a maximum of one credibility marker of each TYPE appears per card, rendered as a labeled row (checkmark plus short text), never a badge grid, so markers read as signal, not decoration; (b) any verification/success checkmark defaults to green or ink, never blue, because it is not a clickable element and Solen's own locked law reserves blue for small clickable bits only.\n\nFORCES: showing more trust markers feels like it should increase trust, but Fogg's guideline 9 (restraint with promotional content), the Baymard finding that visual glitches near a trust-sensitive moment make users suspect a breach, and the real-app precedent (every reviewed app except Temu keeps verification to a short labeled list, never a logo wall) all point the other way: markers stacked past a small number read as compensating for something. Any marker that cannot be substantiated (an unverified \"Verified\" badge, a stock photo standing in for the real salon, a placeholder \"0.0\" where there is no data) is worse than no marker, because Fogg's guideline 10 (avoid errors of any size) treats a caught fake or hollow credibility cue as a credibility-destroying error, not a neutral omission. This is also why zero-signal states must OMIT the whole row rather than render a bare zero, per Fresha's own measured production behavior.\n\nOPTIMIZES FOR: the visitor's fast, largely visual first-pass judgment of trustworthiness and expertise (Fogg and Tseng 1999, T2), using cues Solen can actually back with real data: real self-hosted salon and staff photography (ties to PSYCHOLOGY.md's photos-first law and to NNGroup's finding that users specifically want photos from all stages of a service, not just the end result, do not duplicate), a real review count next to any star (PSYCHOLOGY.md law 6, already gated), and, where the underlying fact exists, a provider credential or years-active line. NNGroup's re-validation of Fogg also found upfront price disclosure is itself a credibility factor, not just a conversion one (cross-reference PSYCHOLOGY.md law 5 price-transparency, do not duplicate) and that external, third-party-anchored numbers (a real review count, a real cert) outweigh a self-issued badge in user trust, which argues for Solen preferring \"N verified bookings\" or \"N reviews\" style numbers over an in-house \"Verified\" badge wherever the underlying data exists.\n\nSACRIFICES: a verified-salon or verified-provider badge is explicitly NOT proposed here as a shippable UI element yet. Solen currently has no verification process or backing data field for it (confirmed by grep: zero components implement a trust-verification badge), so per the no-fabricated-data taste rule this stays a documented mechanic with no visual instantiation until an owner decision creates the underlying verification pipeline. Shipping a badge ahead of the data would itself be the Fogg guideline-10 violation this domain exists to prevent. Similarly, an institutional cert-stack (Doctolib's six-logo footer pattern) is explicitly NOT the default for Solen's vertical; that density belongs to categories with a structurally higher baseline distrust than beauty/wellness booking.\n\nBOUNDARY: this domain governs PERCEPTUAL credibility cues (what makes a real thing look trustworthy). It does not govern factual honesty (PSYCHOLOGY.md's ethics bar, unchanged) and it does not reopen or restate the checkout-specific Baymard payment-field material in TASTE_CHECKOUT.md lines 10-13, which stays the canonical source for payment-form trust and is cross-referenced, not duplicated, here. It does not relitigate the frozen salon-card badge copy or placement locked at RATIONALE.md:530-534; it only supplies the sourced boundary condition (Fogg guideline 9 restraint, plus the real-app text-led/non-blue precedent) that DECISION was missing.\n\nMECHANIC: Fogg and Tseng 1999 (CHI99, T2) frame credibility as trustworthiness times expertise, both perceptual, both judged fast. The Stanford Guidelines for Web Credibility (Fogg 2002, T2) are the published 10-item checklist from a 3-year, multi-study Stanford Persuasive Technology Lab program that surveyed over 4,500 people cumulatively; the single empirical study behind the visual-design finding, Stanford-Makovsky 2002 (reported in Fogg et al. 2003, ACM DUX, T2), surveyed 2,684 people specifically and found design look cited in 46.1 percent of participant comments as a credibility factor, the same aesthetic-usability mechanic RATIONALE.md line 179 already cites for perceived usability, extended here to perceived trust. NNGroup's 2016 study independently re-validated four of Fogg's factors (design quality, upfront disclosure, comprehensive/current content including real photography, external validation over self-issued claims), giving this domain a second, more recent T2 anchor beyond the original 2002 guidelines.\n\nPRECEDENT (real-app convergence, T3 unless noted, informs the SHAPE of the rules above without becoming law on its own): verification renders as a short labeled row list, never a badge grid, across Airbnb, Angi, BlaBlaCar, and Thumbtack; Temu's 5+ logo badge wall is the explicit anti-pattern to exclude; Revolut's single blue-icon-plus-one-line pattern and Vrbo's collapsed-by-default trust block are the closest analogues to Solen's own restraint; Expedia/Booking/Trip.com place trust copy directly under the CTA it de-risks rather than as a hero block; Fresha (Solen's own closest competitor, measured live) omits the entire rating row on zero-review venues rather than showing a placeholder, the strongest direct precedent for extending real-numbers-only to whole-row omission; Doctolib's six-badge footer cluster is the calibration ceiling Solen should NOT default toward, given the vertical gap between healthcare and beauty/wellness booking. A 2026 trend line (TrustedSite T3, Valmax Agency T3, dmletterstudio T3) independently converges on the same restraint direction (badges at decision points not scattered, structural transparency over decorative badge walls, inline not footer-hidden security copy), reinforcing rather than conflicting with Solen's existing 80/17 and no-decorative-artifacts laws; TrustedSite's cited percentage stats (82pct/51pct/40pct) are vendor-commissioned survey numbers and must never be cited in RATIONALE.md, only the qualitative restraint claim is usable.\n\nSOURCE: credibility.stanford.edu/guidelines (Fogg 2002, Stanford Guidelines for Web Credibility, T2); credibility.stanford.edu/pdf/p80-fogg.pdf (Fogg and Tseng 1999, The Elements of Computer Credibility, CHI99, T2); dl.acm.org/doi/10.1145/997078.997097 and credibility.stanford.edu/pdf/Stanford-MakovskyWebCredStudy2002-prelim.pdf (Fogg et al. 2003, How Do Users Evaluate the Credibility of Web Sites, Stanford-Makovsky 2002 study, n=2,684, T2, source of the 46.1 percent figure); nngroup.com/articles/trustworthy-design (NNGroup, Trustworthy Design, 2016 re-validation of Fogg's framework, T2); fresha.com/search (live measured render, 2026-07-22, T3, zero-review-row-omission precedent); doctolib.de (live fetched footer, 2026-07-22, T3, institutional cert-stack calibration ceiling); trustedsite.com/resources/trust-badges (T3, qualitative restraint claim only, percentages are MYTH-risk, do not cite); valmax.agency (T3, structural-transparency trend observation); dmletterstudio.com (T3, inline-security-copy trend observation); cross-reference PSYCHOLOGY.md law 5 price-transparency, law 6 stars-never-bare, law 9 real-numbers-only, and the 100ms trust window law (do not duplicate); cross-reference TASTE_CHECKOUT.md lines 10-13 for Baymard payment-field-specific perceived-security material (T2, already sourced, do not duplicate); cross-reference RATIONALE.md line 179 aesthetic-usability effect (T2) as the adjacent mechanic this domain extends from perceived usability to perceived trust.",
+  "sources": [
+   {
+    "claim": "Stanford Guidelines for Web Credibility (2002), 10-guideline distillation of a 3-year research program surveying over 4,500 people cumulatively.",
+    "source": "credibility.stanford.edu/guidelines, Fogg B.J. 2002",
+    "tier": "T2"
+   },
+   {
+    "claim": "Credibility resolves into perceived trustworthiness plus perceived expertise, both judged fast and visually.",
+    "source": "credibility.stanford.edu/pdf/p80-fogg.pdf, Fogg B.J. and Tseng H. 1999, The Elements of Computer Credibility, CHI99",
+    "tier": "T2"
+   },
+   {
+    "claim": "46.1 percent of participants cited overall visual design as a credibility factor; the specific study behind this had n=2,684, not the cumulative 4,500-plus program figure.",
+    "source": "Fogg B.J. et al. 2003, How Do Users Evaluate the Credibility of Web Sites, ACM DUX 2003 / Stanford-Makovsky 2002 study",
+    "tier": "T2"
+   },
+   {
+    "claim": "Users specifically want photos from all stages of a service not just the end result, want upfront price disclosure before commitment, and trust third-party/external validation over a company's self-issued badges or testimonials.",
+    "source": "NNGroup, Trustworthy Design (nngroup.com/articles/trustworthy-design)",
+    "tier": "T2"
+   },
+   {
+    "claim": "Payment fields need visual encapsulation to read as secure; trust badges 1-2 max inside that block; 19 percent of 2025 checkout abandonment (n=1026) was explicit card-data distrust.",
+    "source": "Baymard Institute, Perceived Security of the Payment Form (already cited, TASTE_CHECKOUT.md lines 10-13, cross-reference only)",
+    "tier": "T2"
+   },
+   {
+    "claim": "Fresha's live production behavior omits the entire rating/review row on zero-review venues rather than rendering a placeholder.",
+    "source": "fresha.com/search, measured live render 2026-07-22",
+    "tier": "T3"
+   },
+   {
+    "claim": "Doctolib clusters six distinct external certification/auditor marks in a single footer zone.",
+    "source": "doctolib.de, fetched 2026-07-22",
+    "tier": "T3"
+   },
+   {
+    "claim": "Verification UI across Airbnb/Angi/BlaBlaCar/Thumbtack renders as a short labeled row list (checkmark plus label), never a badge grid; Temu's 5+ logo wall is the outlier anti-pattern.",
+    "source": "Mobbin screen captures, Airbnb/Angi/BlaBlaCar/Thumbtack/Temu",
+    "tier": "T3"
+   },
+   {
+    "claim": "Trust badge volume should stay restrained and placed at decision points, not scattered; the accompanying vendor percentage stats are not independently sourced.",
+    "source": "TrustedSite, Trust Badges 2026 guide (trustedsite.com/resources/trust-badges)",
+    "tier": "T3"
+   },
+   {
+    "claim": "2026 fintech/SaaS UI trend favors structural transparency over decorative trust badges.",
+    "source": "Valmax Agency, UI Design in March 2026 Dribbble roundup",
+    "tier": "T3"
+   },
+   {
+    "claim": "Trend toward inline (not footer-hidden) security messaging, passkey-first login, and accessibility cues treated as credibility signals.",
+    "source": "dmletterstudio, UI/UX Trends 2026: How to Design for Trust Now",
+    "tier": "T3"
+   }
+  ],
+  "numbers_used": [
+   "10 published Stanford Guidelines for Web Credibility",
+   "over 4,500 people (Persuasive Technology Lab's cumulative multi-study research base, not one study's n)",
+   "2,684 (the actual n of the Stanford-Makovsky 2002 study that produced the visual-design finding)",
+   "46.1 percent cited visual design as a credibility factor",
+   "19 percent of 2025 checkout abandonment attributed to card-data distrust, n=1026 (cross-ref TASTE_CHECKOUT.md, do not duplicate)",
+   "1-2 max trust badges inside the payment block (Baymard, cross-ref TASTE_CHECKOUT.md)",
+   "1 marker per type / 2-3 markers max per card (Solen-proposed cap, still pending taste-lab confirmation)",
+   "2-4 labeled verification rows max (Airbnb/Angi observed real-app pattern)",
+   "5+ logo badge wall (Temu, explicit anti-pattern threshold to exclude)",
+   "6 external certification marks (Doctolib footer, calibration ceiling not a target)",
+   "82/51/40 percent (TrustedSite vendor-survey stats, flagged MYTH-risk, must never be cited)"
+  ],
+  "taste_lab_probe": "Two-part panel test on a real Solen salon card, small owner/pilot-salon panel: (1) DENSITY, unchanged from the S24 baseline, same card shown with zero markers vs one marker (real review count) vs three-plus stacked markers, ask which reads most trustworthy vs most like an advertisement, to calibrate whether the one-marker-per-type cap should become a hard locked number; (2) COLOR, new, the same single verification checkmark shown in blue vs green vs ink, ask which one reads as \"a real credential\" and which reads as \"something I could tap,\" to confirm for Solen's own users specifically (not just inferred from competitor convention) that blue signals actionability and is therefore the wrong color for a non-clickable verified marker, before locking green/ink as the rule."
+ },
+ "verified": {
+  "id": "S24",
+  "tag": "net-new",
+  "verdict": "revised",
+  "claim_verdicts": [
+   {
+    "claim": "Stanford Guidelines for Web Credibility (Fogg 2002): 10 guidelines, based on 3 years of research covering over 4,500 people.",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Directly fetched credibility.stanford.edu/guidelines. All 10 guidelines confirmed (real organization, expertise, contact info, promotional restraint, avoid errors are all genuinely in the list). The '4,500 people over 3 years' figure is the page's own stated aggregate research-program size, confirmed verbatim."
+   },
+   {
+    "claim": "Fogg and Tseng 1999, 'The Elements of Computer Credibility,' CHI99: credibility = perceived trustworthiness x perceived expertise, both fast/visual judgments.",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Not re-fetched this round (PDF fetch failed to return readable text), but this is a canonical, unambiguous, widely-cited HCI paper; title, venue, and core framing match training knowledge with high confidence. Treat as verified-by-convergence, not primary-text-confirmed this session."
+   },
+   {
+    "claim": "Stanford-Makovsky 2002 study (n=2,684), 46.1 percent of participants cited visual design as a credibility factor.",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Primary PDF unreadable via fetch (binary/image-heavy), but the paper's own published title is 'How Do Users Evaluate the Credibility of Web Sites? A Study with Over 2,500 Participants' (Fogg et al. 2003, ACM DUX), which converges with n=2,684. The 46.1 percent figure is the single most consistently-cited stat from this study across independent secondary UX sources and could not be directly falsified. Keep T2 but note the exact digit (2,684 vs 'over 2,500') was not re-confirmed against primary text this round."
+   },
+   {
+    "claim": "NNGroup 'Trustworthy Design': HomeCleanz rate-disclosure quote, photos from all stages of a service (not just end result), third-party reviews outweigh self-issued badges.",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Directly fetched nngroup.com/articles/trustworthy-design. All three sub-claims confirmed verbatim, including the exact HomeCleanz quote and the photos-at-all-stages finding."
+   },
+   {
+    "claim": "Baymard 'Perceived Security of the Payment Form': 1-2 badges max inside the encapsulated payment block; 19 percent of 2025 checkout abandonment (n=1,026) is explicit card-data distrust.",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Directly fetched baymard.com/blog/perceived-security-of-payment-form. Both figures confirmed verbatim, and cross-checked against the project's own _design-system/research/TASTE_CHECKOUT.md lines 10-12, which independently cite the same numbers with the same source. Correctly cross-referenced rather than duplicated in the draft."
+   },
+   {
+    "claim": "Fresha's live production render omits the rating/review row entirely for zero-review venues (no placeholder, no bare 0.0).",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Independently reverified live via browser (fresha.com/search, Basel hair-salon query, 2026-07-22): 'HAIRSPACE - Ronny the Barber' renders name/distance/address/category with zero rating line, while adjacent cards with reviews show a star plus review count ('5.0', '191 reviews'). Claim directly confirmed by fresh observation, not just carried from the draft's unverified assertion."
+   },
+   {
+    "claim": "A text-only 'New' pill appears only on venues with 1+ review (gates on 'has data but early', not venue age).",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Not positively confirmed this round: no 'New' pill was observed in about 10 sampled cards (only a 'Featured' pill appeared once). The negative case is consistent with the claim (the 0-review card had no New pill either), but no 1-to-few-review card was sampled to confirm the positive case. Soften confidence; do not treat as fully confirmed."
+   },
+   {
+    "claim": "Doctolib footer clusters six distinct external certification marks (BSI ISO/IEC 27001, BSI ISO/IEC 27701, TUV Nord, TUV Saarland, Trustpilot, B-Corp).",
+    "source_ok": false,
+    "tier_final": "T3",
+    "note": "Directly fetched doctolib.de footer: found 7-8 distinct marks, not 6 (adds BSI C5 Testat Typ 2 and a separate 'Certified Hosting' badge to the draft's list). The qualitative claim (heavier institutional cert-stack than Fresha, clustered in one footer zone) holds; the specific count of six is wrong and needs correcting to six-to-eight in the write-up."
+   },
+   {
+    "claim": "Verification renders as a short labeled row list (never a badge grid) across Airbnb, Angi, BlaBlaCar, Thumbtack; Temu is a 5+ logo wall anti-pattern; Revolut/Vrbo/Expedia/Booking/Trip.com/Uniqlo patterns as described.",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Sourced to Mobbin screen captures from a prior session; this verify pass had no Mobbin access and could not independently re-confirm any of these app-specific claims. Correctly self-tiered T3 by the draft (not claimed as T1/T2), so this is an honest tier, not a violation, but it remains genuinely unverified by this pass and should be flagged as such rather than treated as settled."
+   },
+   {
+    "claim": "TrustedSite / Valmax Agency / dmletterstudio 2026 trend pieces on badge restraint; TrustedSite's 82/51/40 percent stats are vendor-commissioned and must not be cited.",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Correctly tiered T3 (marketing/SEO content, not research). The draft itself already flags the percentage stats as MYTH-risk and excludes them from proposed_addition, verified by inspection: no percentage from this source appears in the proposed_addition text."
+   },
+   {
+    "claim": "Zero Solen components currently implement a trust-verification badge (grep-confirmed).",
+    "source_ok": true,
+    "tier_final": "verified",
+    "note": "Confirmed via grep across components/ and app/ for VerifiedBadge and verified-badge patterns: no hits. Supports the draft's SACRIFICES claim that no badge is proposed ahead of the underlying verification data existing."
+   },
+   {
+    "claim": "Cross-references (RATIONALE.md line 179 aesthetic-usability effect; PSYCHOLOGY.md laws 5/6/8/9; RATIONALE.md:530-534 salon-card badge lock; TASTE_CHECKOUT.md lines 10-13) point at real, matching content.",
+    "source_ok": true,
+    "tier_final": "verified",
+    "note": "All four cross-references read and confirmed to exist with matching content. RATIONALE.md:530-534 is specifically about salon-card urgency/featured badge copy and placement (not credibility badges), which is close enough to support the BOUNDARY claim but is a slightly loose match worth noting."
+   },
+   {
+    "claim": "Numbers used screened against the myth_screen never-cite table.",
+    "source_ok": true,
+    "tier_final": "verified",
+    "note": "None of the ten banned myth-table figures (2,000% samples; 70-90% defaults; losses-hurt-2x; jam study; $300M button/ASOS; 5% retention/25-95% profit; retention 5-25x cheaper; Amazon 100ms/1% sales; Duolingo +20% DAU; UGC 4x) appear anywhere in sources, real_world_evidence, or numbers_used. The draft correctly uses the ALLOWED Google/Deloitte substitute language rather than the banned Amazon anecdote."
+   }
+  ],
+  "myths_caught": [
+   "Doctolib footer count overstated as 'six' when live reverification found seven to eight distinct marks; corrected in verified_addition.",
+   "The 'New pill gates on 1+ review' Fresha sub-claim is unconfirmed (not refuted, but not positively sampled) and should be held with lower confidence than the primary zero-review-omission claim, which was directly reverified.",
+   "All Mobbin-sourced app-precedent claims (Airbnb, Angi, BlaBlaCar, Thumbtack, Temu, Revolut, Vrbo, Expedia, Booking.com, Trip.com, Uniqlo) remain unverified by this adversarial pass since Mobbin was not accessible; they are honestly self-tiered T3 by the draft already, so nothing needs downgrading, but they should not be treated as more settled than that.",
+   "No banned myth-table statistic was found anywhere in the draft; this is a clean pass on that specific screen."
+  ],
+  "verified_addition": "## Domain: Credibility signals (Fogg / Stanford Web Credibility)\n\nDECISION: any element whose job is to make the user trust the salon, provider, or platform (badges, verified markers, provider photos, credential lines, contact info, review counts) is graded against the Fogg trustworthiness-plus-expertise framework before it ships. Two sub-rules follow directly from convergent real-app precedent, not just the academic framework: (a) a maximum of one credibility marker of each TYPE appears per card, rendered as a labeled row (checkmark plus short text), never a badge grid, so markers read as signal, not decoration; (b) any verification/success checkmark defaults to green or ink, never blue, because it is not a clickable element and Solen's own locked law reserves blue for small clickable bits only.\n\nFORCES: showing more trust markers feels like it should increase trust, but Fogg's guideline 9 (restraint with promotional content), the Baymard finding that visual glitches near a trust-sensitive moment make users suspect a breach, and the real-app precedent (every reviewed app except Temu keeps verification to a short labeled list, never a logo wall) all point the other way: markers stacked past a small number read as compensating for something. Any marker that cannot be substantiated (an unverified \"Verified\" badge, a stock photo standing in for the real salon, a placeholder \"0.0\" where there is no data) is worse than no marker, because Fogg's guideline 10 (avoid errors of any size) treats a caught fake or hollow credibility cue as a credibility-destroying error, not a neutral omission. This is also why zero-signal states must OMIT the whole row rather than render a bare zero, per Fresha's own directly reverified production behavior (confirmed live 2026-07-22).\n\nOPTIMIZES FOR: the visitor's fast, largely visual first-pass judgment of trustworthiness and expertise (Fogg and Tseng 1999, T2), using cues Solen can actually back with real data: real self-hosted salon and staff photography (ties to PSYCHOLOGY.md's photos-first law and to NNGroup's finding that users specifically want photos from all stages of a service, not just the end result, do not duplicate), a real review count next to any star (PSYCHOLOGY.md law 6, already gated), and, where the underlying fact exists, a provider credential or years-active line. NNGroup's re-validation of Fogg also found upfront price disclosure is itself a credibility factor, not just a conversion one (cross-reference PSYCHOLOGY.md law 5 price-transparency, do not duplicate) and that external, third-party-anchored numbers (a real review count, a real cert) outweigh a self-issued badge in user trust, which argues for Solen preferring \"N verified bookings\" or \"N reviews\" style numbers over an in-house \"Verified\" badge wherever the underlying data exists.\n\nSACRIFICES: a verified-salon or verified-provider badge is explicitly NOT proposed here as a shippable UI element yet. Solen currently has no verification process or backing data field for it (confirmed by grep: zero components implement a trust-verification badge), so per the no-fabricated-data taste rule this stays a documented mechanic with no visual instantiation until an owner decision creates the underlying verification pipeline. Shipping a badge ahead of the data would itself be the Fogg guideline-10 violation this domain exists to prevent. Similarly, an institutional cert-stack (Doctolib's six-to-eight-badge footer pattern, directly reverified live) is explicitly NOT the default for Solen's vertical; that density belongs to categories with a structurally higher baseline distrust than beauty/wellness booking. Note: the companion open question of whether Solen's own SalonCard already omits a bare rating row for zero-review salons is now resolved, not open. Direct code check of app/[locale]/_components/search/SalonResultCard.tsx confirms the rating block is already gated on `rating != null` and the review-count text on `reviewCount > 0`, so item 5's zero-signal-omission pattern is already satisfied in production, not a live gap.\n\nBOUNDARY: this domain governs PERCEPTUAL credibility cues (what makes a real thing look trustworthy). It does not govern factual honesty (PSYCHOLOGY.md's ethics bar, unchanged) and it does not reopen or restate the checkout-specific Baymard payment-field material in TASTE_CHECKOUT.md lines 10-13, which stays the canonical source for payment-form trust and is cross-referenced, not duplicated, here (both figures independently re-verified live against baymard.com this pass). It does not relitigate the frozen salon-card badge copy or placement locked at RATIONALE.md:530-534 (urgency/featured badges specifically); it only supplies the sourced boundary condition (Fogg guideline 9 restraint, plus the real-app text-led/non-blue precedent) that DECISION was missing.\n\nMECHANIC: Fogg and Tseng 1999 (CHI99, T2) frame credibility as trustworthiness times expertise, both perceptual, both judged fast. The Stanford Guidelines for Web Credibility (Fogg 2002, T2) are the published 10-item checklist from a 3-year, multi-study Stanford Persuasive Technology Lab program that surveyed over 4,500 people cumulatively (directly confirmed against credibility.stanford.edu/guidelines); the single empirical study behind the visual-design finding, Stanford-Makovsky 2002 (reported in Fogg et al. 2003, ACM DUX, T2, published title \"A Study with Over 2,500 Participants\"), found design look cited in roughly 46.1 percent of participant comments as a credibility factor, the same aesthetic-usability mechanic RATIONALE.md line 179 already cites for perceived usability, extended here to perceived trust. NNGroup's 2016 re-validation of Fogg's framework independently confirmed (direct quote match) design quality, upfront disclosure, comprehensive/current content including real photography, and external validation over self-issued claims, giving this domain a second, more recent T2 anchor beyond the original 2002 guidelines.\n\nPRECEDENT (real-app convergence, T3 unless noted, informs the SHAPE of the rules above without becoming law on its own): verification renders as a short labeled row list, never a badge grid, across Airbnb, Angi, BlaBlaCar, and Thumbtack (Mobbin-sourced, not independently re-verified this pass); Temu's 5+ logo badge wall is the explicit anti-pattern to exclude (Mobbin-sourced, unverified this pass); Revolut's single blue-icon-plus-one-line pattern and Vrbo's collapsed-by-default trust block are the closest analogues to Solen's own restraint (Mobbin-sourced, unverified this pass); Expedia/Booking/Trip.com place trust copy directly under the CTA it de-risks rather than as a hero block (Mobbin-sourced, unverified this pass); Fresha (Solen's own closest competitor) omits the entire rating row on zero-review venues rather than showing a placeholder, directly reverified live 2026-07-22 (star plus review count shown only when reviews exist; zero-review card shows neither), the strongest direct precedent for extending real-numbers-only to whole-row omission; Doctolib's six-to-eight-badge footer cluster (directly reverified live 2026-07-22) is the calibration ceiling Solen should NOT default toward, given the vertical gap between healthcare and beauty/wellness booking. A 2026 trend line (TrustedSite T3, Valmax Agency T3, dmletterstudio T3) independently converges on the same restraint direction (badges at decision points not scattered, structural transparency over decorative badge walls, inline not footer-hidden security copy), reinforcing rather than conflicting with Solen's existing 80/17 and no-decorative-artifacts laws; TrustedSite's cited percentage stats (82/51/40 percent) are vendor-commissioned survey numbers and must never be cited in RATIONALE.md, only the qualitative restraint claim is usable.\n\nSOURCE: credibility.stanford.edu/guidelines (Fogg 2002, Stanford Guidelines for Web Credibility, T2, directly fetched and confirmed); credibility.stanford.edu/pdf/p80-fogg.pdf (Fogg and Tseng 1999, The Elements of Computer Credibility, CHI99, T2, canonical citation, not re-fetched this pass); Fogg et al. 2003, How Do Users Evaluate the Credibility of Web Sites (Stanford-Makovsky 2002 study, n approx. 2,684, T2, source of the 46.1 percent figure, primary PDF unreadable via fetch, confirmed by title/secondary convergence); nngroup.com/articles/trustworthy-design (NNGroup, Trustworthy Design, 2016 re-validation of Fogg's framework, T2, directly fetched and confirmed verbatim); fresha.com/search (live measured render, directly reverified 2026-07-22 by this pass, T3, zero-review-row-omission precedent CONFIRMED); doctolib.de (live fetched footer, directly reverified 2026-07-22 by this pass, T3, institutional cert-stack calibration ceiling, count corrected to six-to-eight marks); baymard.com/blog/perceived-security-of-payment-form (T2, directly fetched and confirmed: 1-2 badge placement guidance and 19 percent/n=1,026 distrust figure both verbatim-matched); trustedsite.com/resources/trust-badges (T3, qualitative restraint claim only, percentages are MYTH-risk, do not cite); valmax.agency (T3, structural-transparency trend observation, unverified this pass); dmletterstudio.com (T3, inline-security-copy trend observation, unverified this pass); cross-reference PSYCHOLOGY.md law 5 price-transparency, law 6 stars-never-bare, law 8 first-100ms, law 9 real-numbers-only (all confirmed present and matching); cross-reference TASTE_CHECKOUT.md lines 10-13 for Baymard payment-field-specific perceived-security material (T2, already sourced, do not duplicate, independently re-confirmed this pass); cross-reference RATIONALE.md line 179 aesthetic-usability effect (T2, confirmed present) as the adjacent mechanic this domain extends from perceived usability to perceived trust.",
+  "residual_risks": "1) Owner decision needed before this domain has any shippable output: no verification pipeline or data field exists yet for a \"Verified\" badge, so this stays a documented mechanic only, consistent with the no-fabricated-data rule; flag for the owner whether/when to build the underlying verification process. 2) The proposed hard numbers (one marker per type, 2-3 markers max per card; verification color = green/ink never blue) are Solen-proposed and explicitly NOT yet locked; the draft's own taste_lab_probe correctly proposes testing both before they become law, add as a QUESTIONS.md candidate rather than treating as settled. 3) All Mobbin-sourced app-precedent claims (Airbnb, Angi, BlaBlaCar, Thumbtack, Temu, Revolut, Vrbo, Expedia, Booking.com, Trip.com, Uniqlo) are carried from a prior session and were not re-verifiable this pass (no Mobbin access); they are honestly tiered T3 already, but if this domain gets promoted toward locked law, those specific screen claims should get a fresh Mobbin pull before being treated as anything firmer than illustrative precedent. 4) Doctolib's badge count needed a factual correction (six claimed, seven-to-eight found live); fixed in verified_addition, but flags that the original synthesis pass did not itself reverify the live fetch it claimed to have made on 2026-07-22, worth noting for the synthesis agent's future evidence-gathering discipline. 5) The Fresha \"New pill only for venues with 1+ review\" sub-claim is unconfirmed (not refuted); if this specific mechanic is ever cited as evidence on its own (outside the stronger, directly-confirmed zero-review-omission claim), it should be re-sampled against a low-review-count venue first. 6) No lock is reopened by this addition: RATIONALE.md:530-534 (salon-card badge copy) and TASTE_CHECKOUT.md (payment-field trust) are correctly cross-referenced rather than duplicated or contradicted."
+ }
+}

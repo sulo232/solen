@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Solen · discount badge options</title>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --ink3:#A1A1AA; --bg:#FFFFFF; --border:#E6E6E8; --star:#FFC32B;
+    --love-soft:#FAD2DA; --love-deep:#A23548; --red:#E11900;
+  }
+  *{box-sizing:border-box}
+  body{margin:0; background:#E9E9EC; font-family:-apple-system,system-ui,"Inter",sans-serif; color:var(--ink);
+       padding:22px 14px 50px; display:flex; flex-direction:column; align-items:center; gap:20px}
+  .wrap{width:100%; max-width:380px; display:flex; flex-direction:column; gap:22px}
+  .opt{display:flex; flex-direction:column; gap:8px}
+  .lbl{font-size:13px; font-weight:600}
+  .lbl span{font-weight:400; color:#6b6b72}
+  .card{background:var(--bg); border-radius:20px; padding:8px; box-shadow:0 10px 30px rgba(0,0,0,.10)}
+  .photo{position:relative; width:100%; aspect-ratio:16/10; border-radius:14px; overflow:hidden;
+         background:linear-gradient(135deg,#c9a6b0,#7d5563)}
+  .heart{position:absolute; top:8px; right:8px; width:30px; height:30px; border-radius:999px;
+         background:rgba(255,255,255,.5); -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px);
+         border:1px solid rgba(255,255,255,.6); display:flex; align-items:center; justify-content:center}
+  .heart svg{width:16px;height:16px}
+  .badge{position:absolute; top:8px; left:8px; padding:5px 9px; border-radius:6px; font-size:11px; font-weight:600; letter-spacing:.1px}
+  .b-red{background:var(--red); color:#fff}
+  .b-rose{background:var(--love-soft); color:var(--love-deep); border:1px solid rgba(162,53,72,.22)}
+  .b-ink{background:var(--ink); color:#fff}
+  .b-glassrose{background:rgba(250,210,218,.55); -webkit-backdrop-filter:blur(14px) saturate(1.4); backdrop-filter:blur(14px) saturate(1.4); color:var(--love-deep); border:1px solid rgba(255,255,255,.5)}
+  .meta{padding:8px 4px 4px; display:flex; flex-direction:column; gap:3px}
+  .nm-row{display:flex; align-items:baseline; gap:6px}
+  .nm{font-size:14px; font-weight:600; flex:1}
+  .rt{display:flex; align-items:center; gap:3px; font-size:13px; color:var(--ink2)}
+  .rt svg{width:11px;height:11px}
+  .addr{font-size:12px; color:var(--ink2)}
+  .pr-row{display:flex; justify-content:space-between; font-size:12px; margin-top:2px}
+  .pr{font-weight:600}
+  .slot{color:var(--ink2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="opt">
+    <div class="lbl">1 · Bold red <span>— current (the “weird” one: screamy solid, error-red vibe)</span></div>
+    <div class="card">
+      <div class="photo"><div class="badge b-red">−20%</div><div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8"><path d="M19 14c1.5-1.5 3-3.3 3-5.5A4.5 4.5 0 0 0 12 6 4.5 4.5 0 0 0 2 8.5C2 12 6 15 12 20c2-1.7 4-3.3 5.5-4.8"/></svg></div></div>
+      <div class="meta"><div class="nm-row"><span class="nm">Haarsalon Margot</span><span class="rt"><svg viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2l3 6.3 7 .9-5 4.7 1.2 6.9L12 17.8 5.8 20.8 7 13.9 2 9.2l7-.9z"/></svg>4.8</span></div><div class="addr">Aeschengraben 18, Basel</div><div class="pr-row"><span class="pr">CHF 35</span><span class="slot">Heute</span></div></div>
+    </div>
+  </div>
+
+  <div class="opt">
+    <div class="lbl">2 · Refined rose <span>— the system’s actual discount color (pale bg + deep text). Soft, premium.</span></div>
+    <div class="card">
+      <div class="photo"><div class="badge b-rose">−20%</div><div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8"><path d="M19 14c1.5-1.5 3-3.3 3-5.5A4.5 4.5 0 0 0 12 6 4.5 4.5 0 0 0 2 8.5C2 12 6 15 12 20c2-1.7 4-3.3 5.5-4.8"/></svg></div></div>
+      <div class="meta"><div class="nm-row"><span class="nm">Haarsalon Margot</span><span class="rt"><svg viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2l3 6.3 7 .9-5 4.7 1.2 6.9L12 17.8 5.8 20.8 7 13.9 2 9.2l7-.9z"/></svg>4.8</span></div><div class="addr">Aeschengraben 18, Basel</div><div class="pr-row"><span class="pr">CHF 35</span><span class="slot">Heute</span></div></div>
+    </div>
+  </div>
+
+  <div class="opt">
+    <div class="lbl">3 · Ink <span>— matches the B&amp;W chrome perfectly. Sleek, gender-neutral, “−20%” does the talking.</span></div>
+    <div class="card">
+      <div class="photo"><div class="badge b-ink">−20%</div><div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8"><path d="M19 14c1.5-1.5 3-3.3 3-5.5A4.5 4.5 0 0 0 12 6 4.5 4.5 0 0 0 2 8.5C2 12 6 15 12 20c2-1.7 4-3.3 5.5-4.8"/></svg></div></div>
+      <div class="meta"><div class="nm-row"><span class="nm">Haarsalon Margot</span><span class="rt"><svg viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2l3 6.3 7 .9-5 4.7 1.2 6.9L12 17.8 5.8 20.8 7 13.9 2 9.2l7-.9z"/></svg>4.8</span></div><div class="addr">Aeschengraben 18, Basel</div><div class="pr-row"><span class="pr">CHF 35</span><span class="slot">Heute</span></div></div>
+    </div>
+  </div>
+
+  <div class="opt">
+    <div class="lbl">4 · Rose glass <span>— same rose, but the Liquid Glass material you liked earlier.</span></div>
+    <div class="card">
+      <div class="photo"><div class="badge b-glassrose">−20%</div><div class="heart"><svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8"><path d="M19 14c1.5-1.5 3-3.3 3-5.5A4.5 4.5 0 0 0 12 6 4.5 4.5 0 0 0 2 8.5C2 12 6 15 12 20c2-1.7 4-3.3 5.5-4.8"/></svg></div></div>
+      <div class="meta"><div class="nm-row"><span class="nm">Haarsalon Margot</span><span class="rt"><svg viewBox="0 0 24 24" fill="#FFC32B"><path d="M12 2l3 6.3 7 .9-5 4.7 1.2 6.9L12 17.8 5.8 20.8 7 13.9 2 9.2l7-.9z"/></svg>4.8</span></div><div class="addr">Aeschengraben 18, Basel</div><div class="pr-row"><span class="pr">CHF 35</span><span class="slot">Heute</span></div></div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

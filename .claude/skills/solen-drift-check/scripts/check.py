@@ -270,6 +270,30 @@ RAW_PALETTE_RE = re.compile(
 # specifically. Checked via three substrings on the line (class order varies).
 A16_DOT_SIZE_RE = re.compile(r"\b[hw]-(?:1|1\.5|2)\b|\b[hw]-\[[2-8]px\]")
 
+# A25 — the grey tile behind an icon (owner 2026-08-14, verbatim: "it still using this gray box
+# inside icon sh i never want this anywhere redesign"). A fixed square of sunken grey with a glyph
+# centred in it is the empty-state grey disc the states row already bans by name ("NEVER a grey
+# Lucide disc"), wearing a different radius. Matches a SIZED box (w-N h-N, N >= 10, so about 40px
+# and up) that carries a grey fill AND a corner AND centres its content. Small grey pills, avatars
+# and photo fallbacks do not match: they are below the size floor or carry no centred glyph.
+#
+# SIZE FLOOR, and it is the whole difference between a defect and the design system. The locked
+# icon-BUTTON is `h-11 w-11` on a sunken fill, it is tappable, and it is everywhere including the
+# global back button. A first draft of this rule started at w-10 and flagged it, which would have
+# been a rule that fights the contract it is meant to protect. The decorative tile he objects to
+# starts at 64px, so the floor is w-16, and anything that reads as interactive is skipped as well.
+ICON_TILE_SIZE_RE = re.compile(r"\bw-(?:1[6-9]|2[0-9]|3[0-9])\b[^\n]{0,40}\bh-(?:1[6-9]|2[0-9]|3[0-9])\b|"
+                               r"\bh-(?:1[6-9]|2[0-9]|3[0-9])\b[^\n]{0,40}\bw-(?:1[6-9]|2[0-9]|3[0-9])\b")
+ICON_TILE_INTERACTIVE_RE = re.compile(r"<button|onClick|aria-label|role=|\bhover:|\bactive:|cursor-pointer")
+ICON_TILE_GREY_RE = re.compile(r"\bbg-s-bg-sunken\b|\bbg-gray-(?:50|100|200)\b|\bbg-\[#F4F4F5\]", re.IGNORECASE)
+ICON_TILE_ROUND_RE = re.compile(r"\brounded-(?:full|xl|2xl|3xl|\[\d+px\])")
+
+# A26 — the sparkles glyph, banned by name (owner 2026-08-14: "i told you never use that spark sh
+# it makes no scence"). It was already banned in LOCKFILE §1598 for steppers and in the icon-rules
+# memory; nothing enforced it, so it kept shipping, including on the coming-soon page he was looking
+# at. Zap is banned by the same rule and rides along.
+ICON_BANNED_GLYPH_RE = re.compile(r"<\s*(?:Sparkles|Zap)\b|\bIcon:\s*(?:Sparkles|Zap)\b")
+
 # A17 — opacity hairline (V3-D443, CONSISTENCY_AUDIT). The opacity-modulated ink
 # border (`border-s-ink/10`, `border-s-ink/[0.06]`, ...) is the single most-
 # duplicated drift (~480 sites) and A2 misses it (the bracket sits after `/`, not
@@ -976,6 +1000,25 @@ def scan_text(text: str, rel: str, respect_inline_skip: bool = False) -> list[Fi
                 file=rel, line=ln_no, rule="A15: raw Tailwind palette colour",
                 snippet=line,
                 recommendation=f"`{m.group(0)}` is a raw Tailwind palette colour. Use a semantic token: s-error / s-success / s-warning / s-accent / s-ink / s-bg-* (CONSISTENCY_AUDIT V3-D442).",
+            ))
+
+        # A25 — grey tile behind an icon (HARD; gate blocks net-new). Owner 2026-08-14.
+        if (ICON_TILE_GREY_RE.search(line) and ICON_TILE_ROUND_RE.search(line)
+                and ICON_TILE_SIZE_RE.search(line)
+                and not ICON_TILE_INTERACTIVE_RE.search(line)
+                and ("items-center" in line or "place-items-center" in line)):
+            findings.append(Finding(
+                file=rel, line=ln_no, rule="A25: grey tile behind an icon",
+                snippet=line,
+                recommendation="No grey box behind a glyph, anywhere (owner 2026-08-14). Let the icon sit on the page at a larger size, or use the real category art in /icons/categories/. This is the same thing the states row already bans as a grey Lucide disc.",
+            ))
+
+        # A26 — banned glyph (HARD; gate blocks net-new). Owner 2026-08-14.
+        if ICON_BANNED_GLYPH_RE.search(line):
+            findings.append(Finding(
+                file=rel, line=ln_no, rule="A26: banned icon glyph (sparkles/zap)",
+                snippet=line,
+                recommendation="Sparkles and zap are banned by name (LOCKFILE 1598, owner 2026-08-14). Pick a glyph that says what the thing IS: a clock for something coming, a check for a confirmation, a bell for a reminder.",
             ))
 
         # A16 — decorative accent dot (HARD; gate blocks net-new). V3-D442.

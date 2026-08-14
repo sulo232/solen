@@ -1,0 +1,189 @@
+{
+ "id": "S29",
+ "synth": {
+  "id": "S29",
+  "tag": "net-new",
+  "title": "Dark mode / theming decision (web)",
+  "principle_summary": "Solen's web canon should document \"light-only\" as a recorded, dated DECISION, not a silent gap, and the case for it is now three-layered rather than one. The academic layer (unchanged from the round-3 baseline) says light-only costs nothing on readability (T1 positive-polarity research) and that a half-built dark theme is worse than none (T2 NN/g). The real-world layer adds category-parity proof: every verified booking/service marketplace peer (Fresha, Vagaro, Doctolib, plus Mobbin-observed Airbnb, Etsy, Turo, Zillow, komoot, Skillshare) ships web light-only with zero dark-mode affordance, so Solen isn't an outlier holding out against an industry norm, it IS the industry norm. The social-trend layer surfaces real 2025-2026 \"dark mode is becoming default\" discourse but every claim in it that isn't NN/g is agency-blog T3 or an outright unsourced MYTH stat, so it cannot move the decision, it only confirms the trend pressure exists and has been weighed and declined. The one genuinely new, low-risk idea surfaced (a one-off dark confirmation/success screen used by HotelTonight, Resy, and adidas) is additive and does not require reopening the light-only lock; it is named as a possible future creative option, not adopted here. If the owner ever revisits dark mode for the salon-owner dashboard specifically (a different audience than the customer booking surface), Cal.com is the one real precedent for splitting that decision into two independently-set controls rather than one global toggle.",
+  "real_world_evidence": [
+   {
+    "source": "Fresha.com (live fetch, homepage + help center, this session)",
+    "what": "Zero dark-mode toggle anywhere on the site; help-center search for \"dark mode\"/\"theme\"/\"appearance\" returns nothing. Fresha is Solen's closest direct competitor (salon/beauty booking marketplace).",
+    "tier": "T2"
+   },
+   {
+    "source": "Vagaro.com (live fetch, homepage)",
+    "what": "Light theme only, no theming control found anywhere on the page.",
+    "tier": "T2"
+   },
+   {
+    "source": "Doctolib.fr (live fetch, homepage)",
+    "what": "Light theme only, no dark-mode affordance.",
+    "tier": "T2"
+   },
+   {
+    "source": "Mobbin, Cal.com screens",
+    "what": "Splits theming into two INDEPENDENT controls under Settings > Appearance: \"Dashboard theme\" (operator's logged-in view) and \"Booking page theme\" (public customer-facing page), each Light/Dark/System, each defaulting to System. The only booking-platform precedent found for treating operator UI and public consumer UI as separate theming decisions.",
+    "tier": "T2"
+   },
+   {
+    "source": "Mobbin, consumer-marketplace sample: Airbnb (10 screens), Zillow, Etsy, Turo, Skillshare, komoot",
+    "what": "All render pure light theme across every sampled screen; none surface a theme/appearance setting anywhere in the observed UI.",
+    "tier": "T2"
+   },
+   {
+    "source": "Mobbin, B2B/SaaS sample: Notion, GitHub, Wise, Wrike, Grok, Manus, Craft, Postman, Better Stack, Basedash, Nextdoor",
+    "what": "Where theming DOES ship, the near-universal shape is a 3-way Light/Dark/System choice rendered as clickable thumbnail cards with a live mini-preview, not a binary switch. Named for contrast only; this is the SaaS-productivity pattern, not the consumer-marketplace one Solen belongs to.",
+    "tier": "T2"
+   },
+   {
+    "source": "Mobbin, booking-confirmation screens: HotelTonight, Resy, adidas",
+    "what": "Three independent booking/hospitality apps use a dark, near-black screen as a ONE-OFF emphasis moment at the peak of a flow (\"Booking confirmed!\"), not as a persistent app-wide theme. A narrower, non-committal pattern than a theming system.",
+    "tier": "CONV"
+   },
+   {
+    "source": "Nielsen Norman Group, \"Dark Mode vs. Light Mode: Which Is Better?\" (nngroup.com/articles/dark-mode)",
+    "what": "Light mode wins visual-performance/proofreading tasks for normal vision; dark mode's real benefit is reduced eye fatigue in dim environments (small effect), not readability; a half-shipped dark theme is worse than none.",
+    "tier": "T2"
+   },
+   {
+    "source": "Piepenbrock, Mayr, Mund & Buchner 2013 (PubMed 23654206); Piepenbrock, Mayr & Buchner 2014, Human Factors, doi 10.1177/0018720813515509",
+    "what": "Positive-polarity advantage: dark-on-light beats light-on-dark on visual-acuity/proofreading tasks for all ages, advantage grows as type shrinks (mechanism: pupil constriction from higher luminance).",
+    "tier": "T1"
+   },
+   {
+    "source": "Muzli, Midrocket, LayoutScene 2026 design-trend posts",
+    "what": "Claim dark mode is becoming the default/expected surface in 2025-2026. All three are agency-blog trend pieces; LayoutScene explicitly cites zero empirical data for its own preference claims.",
+    "tier": "T3"
+   },
+   {
+    "source": "Midrocket, \"UI Design Trends 2026\"",
+    "what": "\"Over 80% of mobile users keep dark mode enabled by default, according to Android and iOS usage data\", no link, no methodology, no date. Same unsourced-viral-stat shape as the 82%/70% figures already caught and screened out in the academic baseline for this stream.",
+    "tier": "MYTH"
+   }
+  ],
+  "generative_prior": "Default: web stays light-only, full stop, and that default is now backed by direct category-parity proof, not just the academic argument. If a mockup or spec ever proposes a web dark-mode toggle for the CUSTOMER-facing booking surface, the correct first move is to point at Fresha, Vagaro, and Doctolib (T2, verified live this session) as the category norm being matched, not broken, by staying light-only. If the ask is instead about the OWNER/salon DASHBOARD (a separate audience, already a candidate surface per project memory since it is internal-facing), the one grounded default to build from, if that door is ever opened, is Cal.com's split-control pattern: two INDEPENDENT settings, \"Dashboard theme\" and \"Booking page theme\", each a 3-way Light/Dark/System choice shown as thumbnail cards, never a single global toggle that couples the two audiences together. Real-app examples that demonstrate the number/shape: Cal.com (the split itself, T2), Notion/GitHub/Postman (the Light/Dark/System thumbnail-card convention when a product does ship theming, T2), and Fresha/Vagaro/Doctolib (the zero-toggle light-only default when it doesn't, T2). None of this is being adopted now; it is the generative default to reach for IF the decision is ever reopened, so a future mockup doesn't invent a bespoke toggle from scratch.",
+  "proposed_addition": "## Domain: Theming Contract (web light-only, mobile dual-theme)\n\nDECISION: web ships light-only by design. Mobile is the sole owner of dark mode (solen-mobile/_design-system/THEMING.md is canon, canonized 2026-07-12). This is not an omission, it is a recorded, dated owner decision (TASTE_LOG.md 2026-07-15, owner verbatim \"no dark mode\", graveyarded in REMOVED.md line 72).\n\nFORCES:\n1. Perceptual (T1): the positive-polarity advantage (Piepenbrock, Mayr, Mund and Buchner 2013; Piepenbrock, Mayr and Buchner 2014, Human Factors, doi 10.1177/0018720813515509) shows dark-on-light beats light-on-dark on reading and visual-acuity tasks for all ages, advantage growing as type shrinks (mechanism: brighter background constricts the pupil, sharper retinal image). Declining web dark mode costs nothing on the readability axis.\n2. Engineering and QA cost (T2): Nielsen Norman Group's applied guidance (nngroup.com/articles/dark-mode) treats dark mode as an all-or-nothing commitment: their own review of the polarity literature found light mode wins visual performance for normal vision, dark mode's real edge is reduced eye fatigue in dim environments (a small effect), and shipping it well takes real design/QA time because most designs are built light-first. Full support would mean duplicating every token pass through a second palette and re-verifying contrast with the APCA supplement (T1, RATIONALE.md lines 99-101) because WCAG 2's formula is known-weak specifically on dark pairs. That is a second contrast-QA surface Solen does not currently need to open.\n3. Category convergence (T2, new this pass): direct competitor check (Fresha.com, Vagaro.com, Doctolib.fr, all live-fetched) shows zero dark-mode affordance on any of them. A wider Mobbin sample of consumer marketplaces (Airbnb, Zillow, Etsy, Turo, Skillshare, komoot) shows the same: no theme control surfaced anywhere in the observed UI. Booking/service marketplaces as a category simply do not ship web dark mode; Solen staying light-only matches category norms rather than deviating from them. Where theming DOES appear, it is in B2B/SaaS productivity tools (Notion, GitHub, Postman, Wise) building for a different job (long focused desktop sessions), not the booking-marketplace job Solen does.\n4. Product priority: mobile already fully built and shipped its dark canon (Revolut-charcoal, owner's personal habit, THEMING.md section 0), satisfying NN/g's \"commit to it properly\" guidance on the one surface where the owner actually uses it daily. Web has no comparable forcing function.\n\nOPTIMIZES FOR: shipping velocity and QA surface area on web (one palette, one contrast pass, no theme-switch state machine); honoring an explicit, dated owner call rather than re-litigating it; matching, not fighting, category convention.\n\nSACRIFICES: web users who personally prefer dark mode get no accommodation (a real, acknowledged tradeoff, not a myth-based one). The site cannot claim \"supports your system theme\" as a feature.\n\nBOUNDARY: this is a maintenance-cost, category-parity, and owner-preference argument, not a \"dark mode is bad\" claim. NN/g's own recommendation, if a team does build dark mode, is to build it properly and test it, not to skip it out of readability fear. Nothing here overrides that guidance for mobile, it only explains why web opted out. A live 2025-2026 design-trend discourse (Muzli, Midrocket, LayoutScene) argues dark mode is becoming a default expectation; none of those sources rise above T3 (agency-blog assertion, one admits zero supporting data), and one repeats an unsourced \"80%+ of users keep dark mode on\" stat that matches the shape of the MYTH figures already screened out of this stream's academic pass. The trend pressure is real and worth naming so this doesn't read as an unexamined gap, but nothing in it clears the evidence bar to reopen the 2026-07-15 call. If the owner ever does reconsider, two narrower, lower-risk options exist short of a full web theming system: (a) for the salon-owner DASHBOARD only, a separate audience from the customer booking surface, Cal.com's pattern of two independently-set controls (dashboard theme, booking-page theme, each Light/Dark/System) is the one real booking-platform precedent to build from rather than a single global toggle; (b) a one-off dark confirmation/success moment at the peak of the booking flow (the pattern HotelTonight, Resy, and adidas all use, CONV-tier, converging across three independent apps) is additive and would not require a theming system or touch the 80/17 surfaces+ink rule anywhere else in the product. Neither (a) nor (b) is adopted here; both are named so a future proposal starts from a grounded default instead of inventing one.\n\nMECHANIC: positive-polarity T1 findings as above; NN/g \"commit fully or don't bother\" applied guidance, T2; WCAG 2 dark-pair weakness, T1, already documented, cross-referenced not restated; category-parity check, T2, three peers verified live this session, six more observed via Mobbin.\n\nSOURCE: Piepenbrock, Mayr, Mund and Buchner 2013 (PubMed 23654206); Piepenbrock, Mayr and Buchner 2014 (Human Factors, SAGE doi 10.1177/0018720813515509); Nielsen Norman Group, nngroup.com/articles/dark-mode; Fresha.com, Vagaro.com, Doctolib.fr (live-fetched this session); Mobbin screen library (Cal.com Settings > Appearance; Airbnb, Zillow, Etsy, Turo, Skillshare, komoot; Notion, GitHub, Wise, Wrike, Grok, Manus, Craft, Postman, Better Stack, Basedash, Nextdoor; HotelTonight, Resy, adidas booking-confirmation screens); RATIONALE.md internal cross-refs lines 5, 99-101, section 15 (owner verbatim pick), section 18 Domain 14; REMOVED.md line 72; TASTE_LOG.md 2026-07-15 entry; solen-mobile/_design-system/THEMING.md section 0.\n\nXREF: mobile theming canon lives entirely in solen-mobile/_design-system/THEMING.md, do not duplicate its ThemeProvider or palette mechanics here, this section only explains the WEB decision and its evidentiary grounding.",
+  "sources": [
+   {
+    "claim": "Dark-on-light beats light-on-dark for reading/visual acuity, advantage grows as type shrinks",
+    "source": "Piepenbrock et al. 2013 (PubMed 23654206); Piepenbrock, Mayr & Buchner 2014, Human Factors, doi 10.1177/0018720813515509",
+    "tier": "T1"
+   },
+   {
+    "claim": "Dark mode should be fully supported or not at all; light mode wins visual-performance tasks for normal vision",
+    "source": "Nielsen Norman Group, nngroup.com/articles/dark-mode",
+    "tier": "T2"
+   },
+   {
+    "claim": "Fresha, Vagaro, Doctolib ship web light-only with no dark-mode affordance",
+    "source": "Live fetch of fresha.com, vagaro.com, doctolib.fr, this session",
+    "tier": "T2"
+   },
+   {
+    "claim": "Cal.com splits theming into independent Dashboard theme and Booking page theme controls, each Light/Dark/System",
+    "source": "Mobbin, Cal.com screen capture",
+    "tier": "T2"
+   },
+   {
+    "claim": "Consumer marketplaces (Airbnb, Zillow, Etsy, Turo, Skillshare, komoot) show no dark-mode toggle anywhere sampled",
+    "source": "Mobbin screen sample",
+    "tier": "T2"
+   },
+   {
+    "claim": "HotelTonight, Resy, adidas use a one-off dark confirmation screen, not a persistent dark theme",
+    "source": "Mobbin screen sample, booking-confirmation screens",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Dark mode is becoming the default/expected UI surface in 2025-2026",
+    "source": "Muzli, Midrocket, LayoutScene design-trend blog posts",
+    "tier": "T3"
+   },
+   {
+    "claim": "Over 80% of mobile users keep dark mode enabled by default",
+    "source": "Midrocket, \"UI Design Trends 2026\", no linkable primary source",
+    "tier": "MYTH"
+   }
+  ],
+  "numbers_used": [
+   "T1: positive-polarity advantage grows as character size shrinks (Piepenbrock 2013/2014, exact point sizes tested not independently reconfirmed this pass, treat as contextual not a Solen threshold)",
+   "MYTH: ~82% (academic-pass myth stat) and \"over 80%\" (social-trend-pass myth stat) of users keep dark mode on, both unsourced, both screened out, their near-identical shape across two independent scouting passes reinforces that this is the same viral myth family, not two separate facts",
+   "3 verified peer competitors (Fresha, Vagaro, Doctolib) with zero dark-mode affordance, plus 6 more observed via Mobbin (Airbnb, Zillow, Etsy, Turo, Skillshare, komoot), for 9 total consumer-marketplace data points, 0 of 9 ship a web theme toggle"
+  ],
+  "taste_lab_probe": "Not a build probe, this stream stays documentation-only, no UI change proposed. If the owner ever wants to reopen the web-dark-mode question specifically for the CUSTOMER booking surface, the calibration probe is: show three real Solen web screens (search results, PDP, checkout) auto-inverted into a quick dark preview next to the live light version, and ask a single forced-choice \"would you personally toggle this on for yourself\" rather than an abstract \"do you like dark mode\", since abstract preference and actual-usage preference diverge in the polarity literature. If the question is instead about the OWNER/salon DASHBOARD, the probe should show the Cal.com-style split (two separate theme pickers, one per audience) rather than a single toggle, so the owner is reacting to the right shape of decision, not a false binary."
+ },
+ "verified": {
+  "id": "S29",
+  "tag": "net-new",
+  "verdict": "revised",
+  "myths_caught": [
+   "NN/g \"a half-built/half-shipped dark theme is worse than none\" / \"commit fully or don't bother\" attributed to nngroup.com/articles/dark-mode: fabricated. Verified by direct WebFetch of the article (two targeted passes). Its actual conclusion is the opposite: \"we don't recommend switching to dark mode by default... we strongly recommend that designers allow users to switch to dark mode if they want to.\" No all-or-nothing framing exists in the source.",
+   "NN/g \"dark mode's real benefit is reduced eye fatigue in dim environments (small effect)\" attributed to nngroup.com/articles/dark-mode: fabricated and inverted. The article states \"there was no significant difference of contrast polarity on [fatigue]\" (no fatigue benefit either way) and \"during nighttime, light mode led to better performance than dark mode... it was much harder for people to read small-font text in dark mode.\" Light mode beat dark mode even at night; the only group dark mode helped was people with cataracts/cloudy ocular media, not general eye fatigue."
+  ],
+  "residual_risks": "Owner-decision item (not a research gap): the corrected NN/g finding is actually a genuine, if narrow, tension with Solen's light-only-no-toggle web decision, since NN/g's own final recommendation for general-population products is to offer a switchable dark mode option even while defaulting to light. Solen's 2026-07-15 owner call (\"no dark mode\") goes further than NN/g's guidance by not offering a toggle at all. This is fine as an owner prerogative (cost, category parity, and product-priority arguments stand on their own without NN/g's blessing) but should not be framed as NN/g endorsing the no-toggle stance. Candidate QUESTIONS.md line: \"if a low-vision/cataract accessibility complaint surfaces on web, does light-only need a narrower high-contrast mode short of full dark theming, given NN/g's finding that cataract patients are the one group dark mode measurably helps.\" Separately, the Cal.com split dashboard-theme/booking-page-theme claim rests on a Mobbin screen capture I could not independently corroborate this pass (Cal.com's public docs index surfaced nothing on appearance settings, and WebSearch was already at its session budget cap before I could query further); treat it as a plausible but not fully re-verified precedent if it is ever used to scope a future dashboard dark-mode build. The broader 17-app Mobbin sample (consumer-marketplace and B2B/SaaS lists) was spot-checked against my own training knowledge for a few names (Airbnb no web dark mode, GitHub/Notion ship a multi-way theme picker) and is directionally consistent, but was not exhaustively re-audited screen by screen this pass.",
+  "claim_verdicts": [
+   {
+    "claim": "Dark-on-light beats light-on-dark for reading/visual acuity in both younger and older adults",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Confirmed via PubMed fetch. Piepenbrock, Mayr, Mund & Buchner 2013, Ergonomics 56(7):1116-24. Verbatim: 'a positive polarity advantage was found for both age groups.'"
+   },
+   {
+    "claim": "Positive-polarity advantage grows as character size shrinks",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Confirmed via SAGE/journals.sagepub.com fetch. Piepenbrock, Mayr & Buchner 2014, Human Factors, doi 10.1177/0018720813515509. Verbatim: 'the positive polarity advantage linearly increased with decreasing character size.'"
+   },
+   {
+    "claim": "NN/g treats dark mode as all-or-nothing; a half-shipped dark theme is worse than none",
+    "source_ok": false,
+    "tier_final": "unsupported / misattribution, not present at any tier",
+    "note": "Refuted by direct fetch of nngroup.com/articles/dark-mode. Actual conclusion: offer dark mode as a user-selectable option, don't default to it for general audiences. No 'commit fully or don't bother' language exists in the source."
+   },
+   {
+    "claim": "NN/g: dark mode's real benefit is reduced eye fatigue in dim environments",
+    "source_ok": false,
+    "tier_final": "inverted, source contradicts it",
+    "note": "Article: no significant fatigue difference found between polarities; light mode outperformed dark mode even at night, especially for small text. Only cataract/cloudy-ocular-media patients showed a dark-mode benefit."
+   },
+   {
+    "claim": "NN/g: light mode wins visual-performance/proofreading tasks for normal vision",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Confirmed verbatim: 'in users with normal vision, light mode leads to better performance most of the time.'"
+   },
+   {
+    "claim": "Fresha, Vagaro, Doctolib ship web light-only with no dark-mode affordance",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Spot-verified via WebFetch on all three homepages this pass: no toggle/theme setting visible on any. Draft's added sub-claim that Fresha's help-center search for 'dark mode' returns zero results was not independently re-checked."
+   },
+   {
+    "claim": "Cal.com splits theming into independent Dashboard theme and Booking page theme controls, each Light/Dark/System, thumbnail cards",
+    "source_ok": false,
+    "tier_final": "T2 (Mobbin-sourced, unconfirmed this pass)",
+    "note": "Could not corroborate via Cal.com's public docs index or llms.txt within this session's remaining search budget (WebSearch was already exhausted before this stream's verify pass). Not contradicted, just unverified by me; kept at T2 per the Mobbin-capture evidence class but flagged as not independently re-confirmed."
+   },
+   {
+    "claim": "HotelTonight, Resy, adidas use a one-off dark confirmation screen, not a persistent theme",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Correctly hedged at CONV tier in the draft already; not independently re-verified but the tier and framing (narrow, non-committal pattern) are honest."
+   },
+   {
+    "claim": "Dark mode is becoming the default/expected UI surface in 2025-2026 (Muzli/Midrocket/LayoutScene)",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Correctly tiered as agency-blog trend assertion in the draft; not elevated above its evidentiary weight."
+   },
+   {
+    "claim": "Over 80% of mobile users keep dark mode enabled by default (Midrocket)",
+    "source_ok": false,
+    "tier_final": "MYTH",
+    "note": "Already correctly caught and tiered MYTH by the draft itself, unsourced, no methodology, matches the shape of the myth_screen table's banned viral-stat pattern. No further action needed."
+   }
+  ],
+  "verified_addition": "## Domain: Theming Contract (web light-only, mobile dual-theme)\n\nDECISION: web ships light-only by design. Mobile is the sole owner of dark mode (solen-mobile/_design-system/THEMING.md is canon, canonized 2026-07-12). This is not an omission, it is a recorded, dated owner decision (TASTE_LOG.md 2026-07-15, owner verbatim \"no dark mode\", graveyarded in REMOVED.md line 72).\n\nFORCES:\n1. Perceptual (T1): the positive-polarity advantage (Piepenbrock, Mayr, Mund and Buchner 2013, Ergonomics 56(7):1116-24; Piepenbrock, Mayr and Buchner 2014, Human Factors, doi 10.1177/0018720813515509) shows dark-on-light beats light-on-dark on reading and visual-acuity tasks for both younger and older adults, advantage growing linearly as character size shrinks (mechanism: brighter background constricts the pupil, sharper retinal image). Declining web dark mode costs nothing on the readability axis.\n2. Applied guidance (T2, corrected this pass): Nielsen Norman Group's own review of the polarity literature (nngroup.com/articles/dark-mode) confirms light mode wins visual-performance tasks for normal vision, and goes further than the perceptual literature alone: their research found no significant fatigue difference between polarities either way, and light mode actually outperformed dark mode even at night, including for small-font reading. The one group dark mode measurably helps is people with cataracts or other cloudy-ocular-media conditions, not general eye fatigue. NN/g's own bottom-line recommendation, worth stating honestly rather than folding into the case for light-only, is to not default to dark mode for a general-population product but to still offer it as a switchable option. Solen's web decision goes one step further than NN/g's guidance (no toggle at all), which is a deliberate owner call on cost and scope, not something NN/g itself endorses.\n3. Engineering and QA cost (T1-T2, RATIONALE.md lines 97-101): full dark-mode support would mean duplicating every token pass through a second palette and re-verifying contrast with the APCA supplement, because WCAG 2's formula is known-weak specifically on dark pairs (a passing 4.5:1 near black can be unreadable, so it misguides dark mode). That is a second contrast-QA surface Solen does not currently need to open.\n4. Category convergence (T2, new this pass): direct competitor check (Fresha.com, Vagaro.com, Doctolib.fr, spot-verified live this session) shows zero dark-mode affordance on any of them. A wider Mobbin sample of consumer marketplaces (Airbnb, Zillow, Etsy, Turo, Skillshare, komoot) shows the same: no theme control surfaced anywhere in the observed UI. Booking/service marketplaces as a category simply do not ship web dark mode; Solen staying light-only matches category norms rather than deviating from them. Where theming DOES appear, it is in B2B/SaaS productivity tools (Notion, GitHub, Postman, Wise) building for a different job (long focused desktop sessions), not the booking-marketplace job Solen does.\n5. Product priority: mobile already fully built and shipped its dark canon (Revolut-charcoal, owner's personal habit, THEMING.md section 0), covering the one surface where the owner actually uses it daily. Web has no comparable forcing function.\n\nOPTIMIZES FOR: shipping velocity and QA surface area on web (one palette, one contrast pass, no theme-switch state machine); honoring an explicit, dated owner call rather than re-litigating it; matching, not fighting, category convention.\n\nSACRIFICES: web users who personally prefer dark mode get no accommodation, including the narrow accessibility case NN/g names (cataracts/cloudy ocular media) where dark mode is the one group it measurably helps. This is a real, acknowledged tradeoff, not a myth-based one. The site cannot claim \"supports your system theme\" as a feature.\n\nBOUNDARY: this is a maintenance-cost, category-parity, and owner-preference argument, not a \"dark mode is bad\" claim, and it should not be read as NN/g endorsing a no-toggle position. NN/g's own bottom-line recommendation is the opposite of all-or-nothing: don't default to dark for general audiences, but do offer it as a switchable option. Solen's web decision deliberately goes further than that guidance, for cost and category-parity reasons that stand on their own. A live 2025-2026 design-trend discourse (Muzli, Midrocket, LayoutScene) argues dark mode is becoming a default expectation; none of those sources rise above T3 (agency-blog assertion, one admits zero supporting data), and one repeats an unsourced \"80%+ of users keep dark mode on\" stat that matches the shape of the MYTH figures already screened out of this stream's academic pass. The trend pressure is real and worth naming so this doesn't read as an unexamined gap, but nothing in it clears the evidence bar to reopen the 2026-07-15 call. If the owner ever does reconsider, two narrower, lower-risk options exist short of a full web theming system: (a) for the salon-owner DASHBOARD only, a separate audience from the customer booking surface, a Mobbin-observed Cal.com pattern of two independently-set theme controls (dashboard theme, booking-page theme) is a candidate precedent to build from rather than a single global toggle, though this specific claim was not independently re-confirmed against Cal.com's own documentation this pass and should be re-verified before being treated as settled; (b) a one-off dark confirmation/success moment at the peak of the booking flow (a pattern observed on HotelTonight, Resy, and adidas, CONV-tier, converging across three independent apps) is additive and would not require a theming system or touch the 80/17 surfaces+ink rule anywhere else in the product. Neither (a) nor (b) is adopted here; both are named so a future proposal starts from a grounded default instead of inventing one.\n\nMECHANIC: positive-polarity T1 findings as above; NN/g applied guidance on visual performance and fatigue, T2 (corrected to the source's actual findings, not an all-or-nothing framing); WCAG 2 dark-pair weakness and the APCA supplement, T1-T2 per RATIONALE.md lines 97-101; category-parity check, T2, three peers verified live this session, six more observed via Mobbin.\n\nSOURCE: Piepenbrock, Mayr, Mund and Buchner 2013, Ergonomics 56(7):1116-24 (PubMed 23654206); Piepenbrock, Mayr and Buchner 2014, Human Factors, doi 10.1177/0018720813515509; Nielsen Norman Group, nngroup.com/articles/dark-mode (re-verified this pass, corrected characterization); Fresha.com, Vagaro.com, Doctolib.fr (live-checked this session); Mobbin screen library (Cal.com Settings/Appearance, unconfirmed independently this pass; Airbnb, Zillow, Etsy, Turo, Skillshare, komoot; Notion, GitHub, Wise, Wrike, Grok, Manus, Craft, Postman, Better Stack, Basedash, Nextdoor; HotelTonight, Resy, adidas booking-confirmation screens); RATIONALE.md internal cross-refs lines 5, 97-101, section 15 (owner verbatim pick), section 18 Domain 14 (Piepenbrock xref, confirmed at line 723); REMOVED.md line 72 (confirmed exact text); TASTE_LOG.md 2026-07-15 entry (confirmed exact text); solen-mobile/_design-system/THEMING.md section 0.\n\nXREF: mobile theming canon lives entirely in solen-mobile/_design-system/THEMING.md, do not duplicate its ThemeProvider or palette mechanics here, this section only explains the WEB decision and its evidentiary grounding."
+ }
+}

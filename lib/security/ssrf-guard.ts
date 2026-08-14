@@ -49,6 +49,19 @@ function isBlockedIPv6(ip: string): boolean {
   const mapped = normalized.match(/^::(ffff:)?(\d+\.\d+\.\d+\.\d+)$/);
   if (mapped) return isBlockedIPv4(mapped[2]);
 
+  // The SAME address written in hex instead of dots: ::ffff:a00:1 is 10.0.0.1 and ::ffff:7f00:1 is
+  // 127.0.0.1. Node treats both as valid IPv6, the dotted pattern above does not match them, and
+  // measured on this exact function they came back ALLOWED while their dotted twins were blocked.
+  // Found 2026-08-14 by comparing against a fuller version of this guard that was written in July
+  // and never merged.
+  const hexMapped = normalized.match(/^::ffff:([0-9a-f]{1,4}):([0-9a-f]{1,4})$/);
+  if (hexMapped) {
+    const hi = parseInt(hexMapped[1], 16);
+    const lo = parseInt(hexMapped[2], 16);
+    const asDotted = `${(hi >> 8) & 0xff}.${hi & 0xff}.${(lo >> 8) & 0xff}.${lo & 0xff}`;
+    return isBlockedIPv4(asDotted);
+  }
+
   if (normalized === "::1") return true; // loopback
   if (normalized === "::") return true; // unspecified
   if (/^fe[89ab][0-9a-f]:/.test(normalized)) return true; // fe80::/10 link-local

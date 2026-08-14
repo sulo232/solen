@@ -5,6 +5,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
 import { validateBody, adminTestSalonSeedSchema } from "@/lib/validations";
+// Missing import, caught by the typecheck after the branch merges of 2026-08-14: the walk-in
+// hashed-token work called this here without ever importing it, so this route could not build.
+import { hashTrackingToken } from "@/lib/walkin/authz";
 
 const TEST_PREFIX = "[TEST]";
 
@@ -70,7 +73,9 @@ export async function POST(request: NextRequest) {
         status: i === 0 ? "in_chair" : "waiting",
         position: i,
         estimated_wait_minutes: (i + 1) * 20,
-        tracking_token: `test-${Date.now()}-${i}-${Math.random().toString(36).slice(2, 6)}`,
+        // Seed rows are resolved by the same hashed lookup as real ones, so the hash is what
+        // gets stored. The raw value is thrown away here: nobody opens a seeded ticket link.
+        tracking_token_hash: hashTrackingToken(`test-${Date.now()}-${i}-${Math.random().toString(36).slice(2, 6)}`),
         join_method: "walk_in",
         joined_at: new Date(Date.now() - i * 5 * 60_000).toISOString(),
       }));

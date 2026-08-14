@@ -705,7 +705,9 @@ export const loginSchema = z.object({
 
 export const signupSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(8).max(200),
+  // NIST SP 800-63-4 (July 2025): 12-char minimum, no composition rules.
+  // Keep this in sync with the real signup gate: app/api/auth/signup/route.ts.
+  password: z.string().min(12).max(200),
   display_name: z.string().min(1).max(100).optional(),
 });
 
@@ -745,8 +747,25 @@ export const adminCommissionSchema = z.object({
   rate: z.number().min(0).max(100),
 });
 
+// What an admin may send when overriding a salon's payment mode. `payment_mode_admin` is nullable
+// so an admin can clear their own override, and `payment_mode_enforced` is required so the request
+// always says outright whether the override is meant to win. Landed 2026-08-14 with the rest of
+// that feature, whose columns had been live and unread since July.
+export const adminPaymentModeOverrideSchema = z.object({
+  payment_mode_admin: z.enum(["at_salon", "deposit", "prepay"]).nullable(),
+  payment_mode_enforced: z.boolean(),
+});
+
 export const adminAiLimitSchema = z.object({
   cap: z.number().int().min(1).max(100000),
+  // Optional: the GLOBAL (house-wide) daily AI budget, see lib/ratelimit.ts
+  // getAiGlobalDailyLimiter(). Optional so existing callers that only send `cap` (the per-user
+  // limit) keep working unchanged.
+  globalCap: z.number().int().min(1).max(1000000).optional(),
+  // Optional: whether the exhausted CHF/month nail AI budget also blocks an admin, see
+  // lib/nail/ai-budget.ts NAIL_AI_BUDGET_BLOCKS_ADMIN_KEY. Optional so existing callers that
+  // only send `cap`/`globalCap` keep working unchanged.
+  blocksAdmin: z.boolean().optional(),
 });
 
 export const adminFeatureFlagSchema = z.object({

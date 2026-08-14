@@ -1,0 +1,211 @@
+<!doctype html>
+<!--
+  Full-page PDP rhythm mockup (owner 2026-07-23: "i told you a full page pdp page mockup").
+  Replaces the rejected isolated mini-PDP A/B panel. One full PDP, one whole-page rhythm toggle.
+  Exists-check: mirrors the real salon PDP (SalonDetailV3 + SalonServices + SalonTeam + SalonReviews
+  + SalonAbout + book bar); only the section spacing changes per the toggle. Prices use the shipped
+  CHF-prefix (decision #1). Part B shows the onboarding picker with the homepage's real 3D icons.
+  Grounded-in: app/[locale]/_components/salon/SalonDetailV3.tsx
+  Grounded-in: app/[locale]/_components/salon/SalonServices.tsx
+  Grounded-in: app/[locale]/_components/salon/SalonReviews.tsx
+  Grounded-in: app/[locale]/_components/salon/SalonAbout.tsx
+  Grounded-in: app/[locale]/onboarding/beautyFields.tsx
+  Grounded-in: app/[locale]/_components/homepage/MobileCategoriesRow.tsx
+  Grounded-in: app/[locale]/_components/primitives/PriceFrom.tsx
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Salon PDP rhythm (full page) plus onboarding icons</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A0A0A; --ink-2:#6B6B6B; --border:#E4E4E7; --sunken:#F4F4F5;
+    --accent:#276EF1; --star:#FFC32B; --success:#16A34A; --white:#fff;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--sunken); font-family:"Inter",system-ui,sans-serif; color:var(--ink); -webkit-font-smoothing:antialiased; padding:24px 0 80px;}
+  .wrap{max-width:440px; margin:0 auto; padding:0 16px;}
+  .pagetitle{font-family:"Inter Tight",sans-serif; font-weight:600; font-size:20px; letter-spacing:-.01em;}
+  .pagesub{margin-top:6px; font-size:14px; color:var(--ink-2); line-height:1.5;}
+
+  .toolbar{position:sticky; top:0; z-index:20; margin:14px 0 16px; background:var(--sunken); padding:8px 0;}
+  .seg{display:inline-flex; gap:8px; background:var(--white); border:1px solid var(--border); border-radius:999px; padding:4px;}
+  .seg button{min-height:44px; padding:0 18px; border:0; border-radius:999px; background:transparent; font-family:"Inter",sans-serif; font-size:14px; font-weight:500; color:var(--ink); cursor:pointer;}
+  .seg button[aria-pressed="true"]{background:var(--sunken); font-weight:600;}
+  .toolbar .lbl{font-size:12px; font-weight:600; color:var(--ink-2); margin-right:10px;}
+
+  .phone{background:var(--white); border:1px solid var(--border); border-radius:28px; overflow:hidden;}
+  .hero{position:relative; width:100%; height:230px;}
+  .hero img{width:100%; height:100%; object-fit:cover; display:block;}
+  .hero .back{position:absolute; left:12px; top:12px; width:44px; height:44px; display:grid; place-items:center; border-radius:999px; background:rgba(255,255,255,.82); backdrop-filter:blur(8px); font-size:20px;}
+  .pbody{padding:16px;}
+
+  .name{font-family:"Inter Tight",sans-serif; font-weight:600; font-size:20px; letter-spacing:-.01em;}
+  .subline{margin-top:6px; display:flex; align-items:center; gap:8px; font-size:14px; color:var(--ink-2);}
+  .subline .star{color:var(--star);}
+  .subline .open{color:var(--success); font-weight:500;}
+
+  .tabs{margin-top:14px; display:flex; gap:20px; border-bottom:1px solid var(--border);}
+  .tabs a{padding:10px 0; font-size:14px; font-weight:500; color:var(--ink-2); text-decoration:none;}
+  .tabs a.on{color:var(--ink); font-weight:600; border-bottom:2px solid var(--ink);}
+
+  .pdp-section{margin-top:20px;}
+  .pdp-head{font-family:"Inter Tight",sans-serif; font-weight:600; font-size:19px; letter-spacing:-.01em;}
+  .pdp-firstgap{margin-top:20px;}
+  .pdp-item + .pdp-item{margin-top:20px;}
+  #stage[data-rhythm="proposed"] .pdp-section{margin-top:32px;}
+  #stage[data-rhythm="proposed"] .pdp-firstgap{margin-top:12px;}
+  #stage[data-rhythm="proposed"] .pdp-item + .pdp-item{margin-top:20px;}
+
+  .srow{display:flex; justify-content:space-between; align-items:flex-start; gap:12px;}
+  .sname{font-size:15px; font-weight:500;}
+  .smeta{margin-top:4px; font-size:13px; color:var(--ink-2);}
+  .sprice{font-size:14px; font-weight:600; white-space:nowrap; font-variant-numeric:tabular-nums;}
+  .book{flex:none; align-self:center; padding:9px 20px; border:1px solid var(--border); border-radius:999px; background:var(--white); font-size:14px; font-weight:600; color:var(--ink);}
+
+  .team{display:flex; gap:16px;}
+  .tmember{text-align:center;}
+  .tmember img{width:64px; height:64px; border-radius:999px; object-fit:cover;}
+  .tname{margin-top:8px; font-size:14px; font-weight:500;}
+  .trole{margin-top:2px; font-size:12px; color:var(--ink-2);}
+
+  .rev-summary{display:flex; align-items:baseline; gap:6px;}
+  .rev-big{font-size:15px; font-weight:600;}
+  .rev-count{font-size:14px; color:var(--ink-2);}
+  .rev-name{font-size:15px; font-weight:600;}
+  .rev-date{margin-top:2px; font-size:13px; color:var(--ink-2);}
+  .rev-text{margin-top:8px; font-size:14px; line-height:1.5; color:var(--ink-2);}
+  .readmore{margin-top:4px; background:none; border:0; padding:0; font-size:13px; font-weight:600; color:var(--accent); cursor:pointer;}
+  .about{font-size:14px; line-height:1.55; color:var(--ink-2);}
+
+  .bookbar{margin-top:20px; display:flex; justify-content:space-between; align-items:center; padding:14px 16px; border-top:1px solid var(--border);}
+  .bookbar .p{font-size:14px; color:var(--ink-2);} .bookbar .p b{color:var(--ink); font-weight:600;}
+  .bookbar .cta{padding:12px 22px; border-radius:999px; background:var(--ink); color:var(--white); font-size:15px; font-weight:600;}
+
+  .divider{margin:28px 0 8px; border-top:1px solid var(--border);}
+  .parttitle{font-family:"Inter Tight",sans-serif; font-weight:600; font-size:16px;}
+  .partsub{margin-top:6px; font-size:13px; color:var(--ink-2); line-height:1.5;}
+
+  .onbo{margin-top:14px; background:var(--white); border:1px solid var(--border); border-radius:28px; padding:20px 16px;}
+  .onbo-q{font-family:"Inter Tight",sans-serif; font-weight:600; font-size:19px;}
+  .pills{margin-top:16px; display:flex; flex-wrap:wrap; gap:10px;}
+  .pill{display:flex; align-items:center; gap:8px; padding:10px 16px; border:1px solid var(--border); border-radius:999px; background:var(--white); font-size:14px; font-weight:500;}
+  .pill img{width:28px; height:28px; object-fit:contain;}
+  .onbo-cap{margin-top:14px; font-size:13px; color:var(--ink-2); line-height:1.5;}
+  .foot{margin-top:20px; font-size:12px; color:var(--ink-2); text-align:center; line-height:1.5;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="pagetitle">Salon PDP heading rhythm, full page</div>
+  <div class="pagesub">The whole salon page, real components. Toggle the rhythm to see the spacing on the actual page, not a cropped panel.</div>
+
+  <div class="toolbar">
+    <span class="lbl">Rhythm</span>
+    <span class="seg" role="group" aria-label="rhythm">
+      <button id="b-current" aria-pressed="true" onclick="setR('current')">Now, 20px</button>
+      <button id="b-proposed" aria-pressed="false" onclick="setR('proposed')">Three tier, 32 / 20 / 12</button>
+    </span>
+  </div>
+
+  <div id="stage" data-rhythm="current">
+    <div class="phone">
+      <div class="hero">
+        <img src="https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=1200&q=80" alt="Photo of Muse Beauty Studio interior">
+        <div class="back">&#8592;</div>
+      </div>
+      <div class="pbody">
+        <div class="name">Muse Beauty Studio</div>
+        <div class="subline"><span class="star">&#9733;</span> 4.8 <span class="rev-count">(11)</span> <span class="open">Open</span> <span>till 19:00</span></div>
+
+        <div class="tabs">
+          <a class="on" href="#">Overview</a><a href="#">Services</a><a href="#">Team</a><a href="#">Reviews</a>
+        </div>
+
+        <div class="pdp-section">
+          <div class="pdp-head">Services</div>
+          <div class="pdp-firstgap">
+            <div class="pdp-item srow">
+              <div><div class="sname">Women's cut</div><div class="smeta">45 min</div></div>
+              <div style="text-align:right"><div class="sprice">from CHF 65</div></div>
+              <span class="book">Book</span>
+            </div>
+            <div class="pdp-item srow">
+              <div><div class="sname">Color</div><div class="smeta">90 min</div></div>
+              <div style="text-align:right"><div class="sprice">from CHF 120</div></div>
+              <span class="book">Book</span>
+            </div>
+            <div class="pdp-item srow">
+              <div><div class="sname">Blow-dry</div><div class="smeta">30 min</div></div>
+              <div style="text-align:right"><div class="sprice">from CHF 40</div></div>
+              <span class="book">Book</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pdp-section">
+          <div class="pdp-head">Team</div>
+          <div class="pdp-firstgap team">
+            <div class="tmember"><img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=200&q=80" alt="Ava"><div class="tname">Ava</div><div class="trole">Hair Stylist</div></div>
+            <div class="tmember"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=200&q=80" alt="Mila"><div class="tname">Mila</div><div class="trole">Colorist</div></div>
+            <div class="tmember"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=200&q=80" alt="Noah"><div class="tname">Noah</div><div class="trole">Barber</div></div>
+          </div>
+        </div>
+
+        <div class="pdp-section">
+          <div class="pdp-head">Reviews</div>
+          <div class="pdp-firstgap">
+            <div class="pdp-item rev-summary"><span class="star" style="color:var(--star)">&#9733;</span><span class="rev-big">4.8</span><span class="rev-count">(11)</span></div>
+            <div class="pdp-item">
+              <div class="rev-name">Sarah K.</div>
+              <div class="rev-date">2 weeks ago</div>
+              <div class="rev-text">Quick appointment, friendly team, exactly the cut I wanted. Booking took under a minute and they remembered my colour from last time, which made the whole visit feel effortless and</div>
+              <button class="readmore">Read more</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="pdp-section">
+          <div class="pdp-head">About</div>
+          <div class="pdp-firstgap about">A calm studio in Kleinbasel focused on cuts, colour and care. Walk-ins welcome on quieter mornings.</div>
+        </div>
+      </div>
+
+      <div class="bookbar">
+        <div class="p">from <b>CHF 65</b></div>
+        <span class="cta">Book appointment</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="parttitle">Onboarding category icons, to lock</div>
+  <div class="partsub">Decision #2. These are the same purpose-made 3D icons the homepage category row already uses, replacing the derived Lucide set (Brush, Hand, Droplet) that read wrong.</div>
+
+  <div class="onbo">
+    <div class="onbo-q">What are you into?</div>
+    <div class="pills">
+      <span class="pill"><img src="icons/scissors.png" alt="scissors">Coiffeur</span>
+      <span class="pill"><img src="icons/clippers.png" alt="clippers">Barbershop</span>
+      <span class="pill"><img src="icons/nails.png" alt="nails">Nails</span>
+      <span class="pill"><img src="icons/spa.png" alt="spa">Spa</span>
+    </div>
+    <div class="onbo-cap">Scissors for Coiffeur is locked. Clippers, nails and spa are the homepage's own icons, so onboarding and the home category row finally match.</div>
+  </div>
+
+  <div class="foot">Full page, real components, real assets. Review name and text are illustrative. Toggle the rhythm to compare the whole page.</div>
+</div>
+
+<script>
+  function setR(r){
+    document.getElementById('stage').setAttribute('data-rhythm', r);
+    document.getElementById('b-current').setAttribute('aria-pressed', r==='current');
+    document.getElementById('b-proposed').setAttribute('aria-pressed', r==='proposed');
+  }
+</script>
+</body>
+</html>

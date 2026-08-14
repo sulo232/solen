@@ -1344,7 +1344,7 @@ This is the operational layer of the dual-axis rule. The rule above says WHAT. T
 |---|---|---|---|
 | Before any non-trivial edit | Read `_design-system/LOCKFILE.md` §1.5 / §2.5 / §11 / §6 | (read-only) | Token + type role + imagery + copy rules. Never stale. |
 | After any sweep | `/solen-drift-check` skill | `_design-system/_drift-report.md` + `_design-system/_pending-migration.md` | Python scanner. Validates aesthetic gates A1-A12. |
-| Pattern reference (Uber-measured) | Read `public/_pixel-refs/uber/{blue,feedback-blue,imagery}/UBER-*.md` | (read-only) | Measured Uber patterns underlying the LOCKFILE rules. |
+| Pattern reference (Uber-measured) | Read `_design-system/UBER_TYPE_SPEC.md`, plus the measured values inline in §1.5 / §2.5 / §11 / §6 above | (read-only) | The `public/_pixel-refs/uber/*` capture folder is archival and not present in-repo; the measured Uber patterns now live in `UBER_TYPE_SPEC.md` and inline in the cited LOCKFILE sections. |
 | Per-wave gates | Read `_design-system/WORK_TYPES.md` | (read-only) | Lighthouse a11y ≥95, LCP ≤2.5s, contrast 0 failures. |
 
 **Cross-axis (both):**

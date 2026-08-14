@@ -1,0 +1,264 @@
+<!-- Base: elicitation -->
+<!-- Scale: full-page -->
+<!--
+Exists-check: ran `npm run exists "payment model pay in store"` and `npm run exists "TabPill"` and `npm run exists "walk-in pay"` (results: 0 hits for a salon/admin pay-in-store toggle; TabPill primitive exists at app/[locale]/_components/primitives/TabPill.tsx; walk-in-pay page exists at app/[locale]/walk-in-pay/page.tsx, payment-only today, no card-vs-pay-in-salon choice). No REMOVED.md hit for this concept.
+Grounded-in: app/[locale]/dashboard/settings/page.tsx (PaymentsTab: max-w-md space-y-6 wrapper, Stripe Connect card, label/radio-card recipe), app/[locale]/walk-in-pay/page.tsx (Card 2 payment-breakdown chrome, payment-card container styling), app/[locale]/_components/primitives/TabPill.tsx (locked gray-selected segmented control), components-legacy/dashboard/DashboardLayout.tsx (admin icon rail + top bar chrome).
+Depicts: salon settings block "Zahlung bei Terminen" -> app/[locale]/dashboard/settings/page.tsx (PaymentsTab layout, Stripe Connect card, label recipe); the choice control itself is NET-NEW, rendered as the LOCKED gray TabPill segmented control instead of the page's existing blue-bordered radio-card pattern (that blue border is flagged as legacy drift per the project's no-black-selected/no-blue-selected rule, owner 2026-06-29 + 2026-07-02, so this mockup does not replicate it)
+Depicts: admin per-salon override block with an Erzwungen locked state -> NET-NEW (no existing admin per-salon payment-override surface); admin chrome traced to components-legacy/dashboard/DashboardLayout.tsx and the settings-card chrome from app/[locale]/dashboard/settings/page.tsx
+Depicts: customer booking pay step "Pay at salon" option -> app/[locale]/walk-in-pay/page.tsx (Card 2 payment-breakdown + payment-card chrome); the card-vs-pay-at-salon CHOICE itself is NET-NEW (walk-in-pay is payment-only today), rendered with the same LOCKED gray TabPill selected treatment as surface (a) for consistency
+Depicts: admin icon rail and top bar chrome (surface b) -> components-legacy/dashboard/DashboardLayout.tsx
+Demo data (salon name, amounts) is labeled as such; nothing is wired to a live table. Copy is English per the mockup-content gate; production copy would ship in German per the taxonomy.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mockup , Payment model: salon settings, admin override, customer pay step</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A0A0A; --ink-2:#52525B; --ink-3:#71717A;
+    --border:#E4E4E7; --sunken:#F4F4F5;
+    --accent:#276EF1;
+    --success:#16A34A; --success-bg:#EFFCF3;
+    --warning:#F1AE27; --warning-bg:#FDF6E7;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:#FAFAFA; color:var(--ink);
+    font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding:32px 28px 80px;
+  }
+  h1,h2,.font-heading{font-family:"Inter Tight","Inter",sans-serif}
+  .page-head{max-width:1440px;margin:0 auto 28px}
+  .page-head h1{font-size:22px;font-weight:700;letter-spacing:-0.01em;margin:0 0 6px}
+  .page-head p{font-size:14px;color:var(--ink-2);margin:0;max-width:760px;line-height:1.5}
+  .surfaces{max-width:1440px;margin:0 auto;display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start}
+  .surface{flex:1 1 420px;max-width:460px;min-width:380px}
+  .surface-label{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+  .surface-letter{width:22px;height:22px;border-radius:6px;background:var(--ink);color:#fff;font-size:12px;font-weight:700;display:grid;place-items:center;font-family:"Inter Tight",sans-serif}
+  .surface-title{font-size:14px;font-weight:700;color:var(--ink)}
+  .caption{font-size:12px;color:var(--ink-2);line-height:1.5;margin:10px 2px 0}
+  .caption strong{color:var(--ink);font-weight:600}
+  svg.i{display:block}
+
+  /* ── shared settings-card chrome ── */
+  .settings-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px;max-width:400px}
+  .field-label{font-size:12px;font-weight:500;color:var(--ink-2);margin:0 0 8px;display:block}
+  .stripe-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+  .stripe-row-left{display:flex;align-items:center;gap:8px}
+  .stripe-row-left p{font-size:13px;font-weight:500;color:var(--ink);margin:0}
+  .status-pill{font-size:11px;padding:3px 9px;border-radius:999px;background:var(--success-bg);color:var(--success);font-weight:600}
+
+  /* ── TabPill segmented control (LOCKED gray-selected) ── */
+  .seg{display:flex;gap:6px;flex-wrap:wrap}
+  .seg-pill{padding:8px 14px;border-radius:999px;font-size:13px;font-weight:500;background:#fff;border:1px solid var(--border);color:var(--ink-2)}
+  .seg-pill.selected{background:var(--sunken);border-color:var(--sunken);color:var(--ink);font-weight:600}
+  .seg-pill.disabled{opacity:.5}
+
+  .helper{font-size:12px;color:var(--ink-3);margin-top:8px;line-height:1.5}
+
+  /* ── (b) admin frame ── */
+  .admin-frame{
+    display:flex; height:520px; border:1px solid var(--border); border-radius:12px;
+    overflow:hidden; background:var(--sunken);
+    box-shadow:0 1px 2px rgba(10,10,10,.04),0 6px 18px rgba(10,10,10,.05);
+  }
+  .rail{width:56px;background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;padding:10px 0;flex-shrink:0}
+  .rail .logo{width:32px;height:32px;display:grid;place-items:center;font-size:16px;font-weight:700;letter-spacing:-0.04em;color:var(--ink);font-family:"Inter Tight",sans-serif;margin-bottom:6px}
+  .rail-icon{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;color:var(--ink-3);margin:1px 0}
+  .rail-icon.active{background:var(--border);color:var(--ink)}
+  .rail-divider{width:20px;height:1px;background:var(--border);margin:5px 0}
+  .rail-spacer{flex:1}
+  .main-col{flex:1;display:flex;flex-direction:column;min-width:0}
+  .topbar{height:48px;background:rgba(255,255,255,.85);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;padding:0 16px;flex-shrink:0}
+  .switcher-pill{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:999px;border:1px solid var(--border);font-size:12px;font-weight:500;color:var(--ink-2);background:#fff}
+  .topbar-spacer{flex:1}
+  .icon-btn{width:28px;height:28px;border-radius:999px;display:grid;place-items:center;color:var(--ink-2)}
+  .content{flex:1;overflow-y:auto;padding:18px}
+  .page-h1{font-size:19px;font-weight:600;letter-spacing:-0.015em;color:var(--ink);margin:0 0 2px}
+  .page-sub{font-size:12.5px;color:rgba(10,10,10,.4);margin:0 0 16px}
+
+  .salon-row{border:1px solid var(--border);border-radius:12px;padding:14px;background:#fff;margin-bottom:10px}
+  .salon-row-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+  .salon-name{font-size:14px;font-weight:600;color:var(--ink)}
+  .enforced-pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--warning-bg);color:var(--ink)}
+  .lock-toggle{display:flex;align-items:center;gap:8px;padding-top:10px;border-top:1px solid var(--border);margin-top:10px}
+  .lock-toggle p{font-size:12px;color:var(--ink-2);margin:0;flex:1}
+  .switch{width:36px;height:20px;border-radius:999px;background:var(--ink);position:relative;flex-shrink:0}
+  .switch::after{content:"";position:absolute;top:2px;right:2px;width:16px;height:16px;border-radius:999px;background:#fff}
+
+  /* ── (c) phone frame ── */
+  .phone{max-width:380px;margin:0 auto;background:var(--sunken);border-radius:28px;padding:14px;border:1px solid var(--border)}
+  .phone-screen{background:#fff;border-radius:20px;padding:18px;min-height:480px}
+  .pay-card{border-radius:16px;background:#fff;box-shadow:0 1px 2px rgba(10,10,10,.04),0 6px 18px rgba(10,10,10,.05);padding:16px;margin-bottom:12px;border:1px solid var(--border)}
+  .pay-row{display:flex;align-items:baseline;justify-content:space-between;gap:12px;font-size:14px}
+  .pay-row.total{border-top:1px solid rgba(10,10,10,.08);margin-top:10px;padding-top:10px}
+  .pay-row.total span:first-child{font-family:"Inter Tight",sans-serif;font-weight:600;font-size:15px}
+  .pay-row.total span:last-child{font-family:"Inter",sans-serif;font-weight:600;font-size:20px}
+  .pay-opt{width:100%;display:flex;align-items:center;gap:10px;border-radius:12px;border:1px solid var(--border);background:#fff;padding:12px 14px;margin-bottom:8px}
+  .pay-opt.selected{background:var(--sunken);border-color:var(--sunken)}
+  .pay-opt-icon{width:20px;height:20px;color:var(--ink-2);flex-shrink:0}
+  .pay-opt.selected .pay-opt-icon{color:var(--ink)}
+  .pay-opt-label{flex:1;font-size:14px;font-weight:500;color:var(--ink-2)}
+  .pay-opt.selected .pay-opt-label{color:var(--ink);font-weight:600}
+  .cta{width:100%;height:52px;border-radius:14px;background:var(--ink);color:#fff;font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;border:none;margin-top:12px}
+  .secure-line{display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px;font-weight:500;color:var(--ink-2);margin-top:10px}
+</style>
+</head>
+<body>
+
+<div class="page-head">
+  <h1>Mockup , Payment model: pay in store</h1>
+  <p>The decided model: a salon can choose Online / In-store / Both for how customers pay, an admin can also pick, and admin is enforced over the salon's own choice. Three real surfaces on one page.</p>
+  <span style="display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:12px;font-weight:600;color:var(--warning);background:var(--warning-bg);padding:5px 10px;border-radius:999px">Demo data , salon names and amounts are placeholders, nothing is wired to a live table</span>
+</div>
+
+<div class="surfaces">
+
+  <!-- ═══ SURFACE A: SALON SETTINGS ═══ -->
+  <div class="surface">
+    <div class="surface-label">
+      <div class="surface-letter">A</div>
+      <div class="surface-title">Salon dashboard settings</div>
+    </div>
+
+    <div class="settings-card">
+      <div class="stripe-row">
+        <div class="stripe-row-left">
+          <svg class="i lucide" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+          <p>Link bank account</p>
+        </div>
+        <span class="status-pill">Connected</span>
+      </div>
+
+      <label class="field-label">Payment at appointments</label>
+      <div class="seg">
+        <div class="seg-pill">Pay online</div>
+        <div class="seg-pill">Pay at salon</div>
+        <div class="seg-pill selected">Both</div>
+      </div>
+      <p class="helper">Customers can choose either at checkout. Cards are still required to hold walk-in slots.</p>
+    </div>
+
+    <p class="caption"><strong>Enforced by:</strong> the salon's own choice, unless an admin override below locks it.</p>
+  </div>
+
+  <!-- ═══ SURFACE B: ADMIN OVERRIDE ═══ -->
+  <div class="surface">
+    <div class="surface-label">
+      <div class="surface-letter">B</div>
+      <div class="surface-title">Admin per-salon override</div>
+    </div>
+
+    <div class="admin-frame">
+      <div class="rail">
+        <div class="logo">S</div>
+        <div class="rail-icon"><svg class="i lucide" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg></div>
+        <div class="rail-icon"><svg class="i lucide" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg></div>
+        <div class="rail-divider"></div>
+        <div class="rail-icon"><svg class="i lucide" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></div>
+        <div class="rail-icon active"><svg class="i lucide" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15 21v-5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v5"/><path d="M17.774 10.31a1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.451 0 1.12 1.12 0 0 0-1.548 0 2.5 2.5 0 0 1-3.452 0 1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.77-3.248l2.889-4.184A2 2 0 0 1 7 2h10a2 2 0 0 1 1.653.873l2.895 4.192a2.5 2.5 0 0 1-3.774 3.244"/><path d="M4 10.95V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8.05"/></svg></div>
+        <div class="rail-icon"><svg class="i lucide" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+        <div class="rail-spacer"></div>
+      </div>
+      <div class="main-col">
+        <div class="topbar">
+          <div class="switcher-pill">All salons <svg class="i lucide" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div>
+          <div class="topbar-spacer"></div>
+          <div class="icon-btn"><svg class="i lucide" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg></div>
+        </div>
+        <div class="content">
+          <h2 class="page-h1">Payment method per salon</h2>
+          <p class="page-sub">Override a salon's own choice</p>
+
+          <div class="salon-row">
+            <div class="salon-row-head">
+              <span class="salon-name">Barbershop Zurich</span>
+              <span class="enforced-pill"><svg class="i lucide" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Enforced</span>
+            </div>
+            <div class="seg">
+              <div class="seg-pill selected">Pay online</div>
+              <div class="seg-pill">Pay at salon</div>
+              <div class="seg-pill">Both</div>
+            </div>
+            <div class="lock-toggle">
+              <p>Admin enforcement is on. The salon's own choice below is locked.</p>
+              <div class="switch"></div>
+            </div>
+            <div class="seg" style="margin-top:10px">
+              <div class="seg-pill disabled selected">Both</div>
+              <div class="seg-pill disabled">Pay online</div>
+              <div class="seg-pill disabled">Pay at salon</div>
+            </div>
+          </div>
+
+          <div class="salon-row">
+            <div class="salon-row-head">
+              <span class="salon-name">Nails by Elena</span>
+              <span style="font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--sunken);color:var(--ink-2)">Not enforced</span>
+            </div>
+            <div class="seg">
+              <div class="seg-pill">Pay online</div>
+              <div class="seg-pill">Pay at salon</div>
+              <div class="seg-pill selected">Both</div>
+            </div>
+            <div class="lock-toggle">
+              <p>Admin enforcement is off. This salon controls its own choice.</p>
+              <div class="switch" style="background:var(--border)"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="caption"><strong>Enforced by:</strong> this admin toggle, when on, overrides and locks the salon's own choice (surface A) to the value the admin picked here.</p>
+  </div>
+
+  <!-- ═══ SURFACE C: CUSTOMER BOOKING PAY STEP ═══ -->
+  <div class="surface">
+    <div class="surface-label">
+      <div class="surface-letter">C</div>
+      <div class="surface-title">Customer booking pay step</div>
+    </div>
+
+    <div class="phone">
+      <div class="phone-screen">
+        <div class="pay-card">
+          <div class="pay-row"><span>Haircut, Barbershop Zurich</span><span>CHF 45.00</span></div>
+          <div class="pay-row" style="margin-top:6px"><span style="color:var(--ink-2);font-size:13px">VAT (8.1%)</span><span style="color:var(--ink-2);font-size:13px">CHF 3.65</span></div>
+          <div class="pay-row total"><span>Total</span><span>CHF 48.65</span></div>
+        </div>
+
+        <label class="field-label">How would you like to pay</label>
+        <div class="pay-opt selected">
+          <svg class="i lucide pay-opt-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+          <span class="pay-opt-label">Card</span>
+        </div>
+        <div class="pay-opt">
+          <svg class="i lucide pay-opt-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg>
+          <span class="pay-opt-label">Pay at salon</span>
+        </div>
+
+        <button class="cta">
+          Confirm booking
+          <svg class="i lucide" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </button>
+        <div class="secure-line">
+          <svg class="i lucide" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Secure payment
+        </div>
+      </div>
+    </div>
+
+    <p class="caption"><strong>Enforced by:</strong> whatever surface A/B resolve to for this salon; "Pay at salon" only shows when the resolved mode allows it.</p>
+  </div>
+
+</div>
+
+</body>
+</html>

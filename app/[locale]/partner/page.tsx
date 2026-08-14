@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { Store, TrendingUp, Calendar, ArrowRight, Star, Check, ChevronDown, ChevronRight, UserPlus, Settings, Zap, Shield, Lock, CreditCard, Quote, BarChart3, Users, MessageSquare, Clock, Bell, Scissors, Sparkles, Droplets } from "lucide-react";
+import { Store, TrendingUp, Calendar, ArrowRight, Star, Check, ChevronDown, ChevronRight, UserPlus, Settings, Shield, Lock, CreditCard, Quote, BarChart3, Users, MessageSquare, Clock, Bell, Scissors, Droplets, Hand, Rocket } from "lucide-react";
 import InteractiveHoverButton from "@/components-legacy/ui/interactive-hover-button";
 import PartnerSignupForm from "@/components-legacy/partner/PartnerSignupForm";
 
@@ -48,7 +48,7 @@ export default function PartnerPage() {
                 0.08em, the locked Eyebrow value in LOCKFILE §2. Same edit on the 7
                 section eyebrows below. Source strings are already sentence case in
                 all four locales, so no i18n change was needed. */}
-            <p className="text-[12px] md:text-[12px] font-body font-bold tracking-[0.08em] text-s-ink-3 mb-3">
+            <p className="text-[12px] md:text-[12px] font-body font-bold tracking-[0.08em] text-s-ink-2 mb-3">
               {t("for_owners")}
             </p>
             <h1 className="font-heading text-[clamp(26px,7vw,30px)] md:text-[46px] font-semibold text-s-ink mb-4 leading-[1.0] tracking-[-0.03em]">
@@ -145,10 +145,10 @@ export default function PartnerPage() {
             {[
               { icon: Scissors, key: "cat_coiffeur" },
               { icon: UserPlus, key: "cat_barbershop" },
-              { icon: Sparkles, key: "cat_nails" },
+              { icon: Hand, key: "cat_nails" },
               { icon: Droplets, key: "cat_spa" },
               { icon: Star, key: "cat_makeup" },
-              { icon: Zap, key: "cat_waxing" },
+              { icon: Droplets, key: "cat_waxing" },
             ].map((cat) => (
               <div key={cat.key} className="p-5 rounded-[14px] bg-white border border-s-border hover:border-s-ink hover:shadow-elevation-1 transition-[border-color,box-shadow] duration-200">
                 <cat.icon className="w-6 h-6 text-s-ink mb-3" />
@@ -199,7 +199,7 @@ export default function PartnerPage() {
                 <p className="text-sm text-s-ink-2 mb-2">
                   {t("hiw_step1_desc")}
                 </p>
-                <span className="inline-block text-[12px] font-heading uppercase tracking-[.12em] text-s-ink-3 px-3 py-1.5 rounded-pill bg-s-bg-sunken">
+                <span className="inline-block text-[12px] font-heading uppercase tracking-[.12em] text-s-ink-2 px-3 py-1.5 rounded-pill bg-s-bg-sunken">
                   {t("hiw_step1_time")}
                 </span>
               </div>
@@ -219,7 +219,7 @@ export default function PartnerPage() {
                 <p className="text-sm text-s-ink-2 mb-2">
                   {t("hiw_step2_desc")}
                 </p>
-                <span className="inline-block text-[12px] font-heading uppercase tracking-[.12em] text-s-ink-3 px-3 py-1.5 rounded-pill bg-s-bg-sunken">
+                <span className="inline-block text-[12px] font-heading uppercase tracking-[.12em] text-s-ink-2 px-3 py-1.5 rounded-pill bg-s-bg-sunken">
                   {t("hiw_step2_time")}
                 </span>
               </div>
@@ -232,7 +232,7 @@ export default function PartnerPage() {
                 3
               </div>
               <div className="mt-2 md:mt-4">
-                <Zap className="w-6 h-6 text-s-ink mx-auto mb-2 hidden md:block" />
+                <Rocket className="w-6 h-6 text-s-ink mx-auto mb-2 hidden md:block" />
                 <h3 className="font-heading text-base text-s-ink mb-1">
                   {t("hiw_step3_title")}
                 </h3>

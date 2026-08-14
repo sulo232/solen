@@ -1,0 +1,71 @@
+{
+ "id": "S06",
+ "draft": {
+  "id": "S06",
+  "tag": "generative-gap",
+  "title": "Imagery / art-direction language (OWNER-DECLINED, gated on G6)",
+  "principle_summary": "This stream is explicitly BLOCKED: the key_question says \"Do not research until the owner re-opens G6.\" Per the task's own routing rule for OWNER-DECLINED/gated streams, the deliverable is a short parking note, not a researched prior. No new empirical research was performed for this stream.",
+  "sources": [
+   {
+    "claim": "Uber inventory is illustration-first (34%), photo-as-trust-layer (28%), chrome (38%), zero video, 0px border-radius on every image",
+    "source": "LOCKFILE.md §11 (V3-D330, 2026-05-28), citing public/_pixel-refs/uber/imagery/UBER-IMAGERY-PATTERN.md, 116 desktop images across 8 surfaces",
+    "tier": "T3"
+   },
+   {
+    "claim": "Professional photos caused +9% occupancy on Airbnb (diff-in-diff)",
+    "source": "PSYCHOLOGY.md line 34, citing Management Science (photo-quality study); law 7 photos-are-the-decision-input",
+    "tier": "T2"
+   },
+   {
+    "claim": "56% of users hit images first",
+    "source": "PSYCHOLOGY.md line 34, unnamed inline stat attached to the Airbnb photo-quality claim",
+    "tier": "T3"
+   }
+  ],
+  "solen_current": "LOCKFILE.md §11 (Imagery Pattern Registry, V3-D330, lines 1122 to 1180) already codifies: 5 enumerated layout patterns (split-hero, full-bleed editorial, search-card-over-photo, alternating rows, magazine grid), 5 non-negotiable rules (border-radius 0 with named exceptions, no flat rgba overlay wash with the DS-10 gradient-scrim carve-out, no video except the Entdecken TikTok-stream exemption, single next/image + Supabase Storage CDN pipeline, same image mobile+desktop), a text-on-photo scrim recipe (DS-10), a sourcing policy (AI placeholders during sweep, lazy real-photo swap), a migration mapping table for the phase-2 sweep, and a canonical aspect-ratio set (1:1, 3:2, 16:9, 21:9, 4:3) enforced by drift rule A11. PSYCHOLOGY.md law 7 (line 34) already owns the commercial/behavioral case for photos as decision input, not decoration, with two sourced stats. PHOTO_STRATEGY.md is a narrow spike covering only the 6 category-landing heroes: CDN choice (no new vendor, Netlify+next/image), AI placeholder source (Nano Banana), a manual owner quality gate, and a generation spec (3:2 master, subject right-weighted, Swiss-plausible interiors, no readable faces). None of these three documents state a site-wide imagery density/ratio floor (what fraction of a page or card grid should be photographic versus text/chrome, beyond the 6 heroes), nor a general PDP/card photo treatment rule beyond the existing §11 patterns, nor art-direction rules (lighting, composition, cropping discipline) for imagery outside the category-hero spike.",
+  "gap": "The gap named in the stream (a site-wide imagery density/ratio floor, general PDP/card photo treatment, and art-direction rules beyond the 6 category heroes PHOTO_STRATEGY.md covers) is real: LOCKFILE §11 governs WHAT PATTERN to use and HOW to render an image once one exists, but not HOW MUCH imagery a given surface should carry or WHERE the floor sits. PHOTO_STRATEGY.md only resolves this for the 6 static category heroes, not for dynamic salon/search/dashboard surfaces generally. However, the stream's own key_question is explicit: \"BLOCKED pending a fresh owner yes... Do not research until the owner re-opens G6.\" Producing a full generative prior (numeric imagery-share bands, per-surface photo treatment rules, art-direction guidelines) here would violate that instruction and would front-run an owner decision that has not been made. This report therefore stops at naming the gap and does not attempt to close it.",
+  "proposed_addition": "PARKING NOTE ONLY (no prior drafted, per gating instruction):\\n\\nWhat an owner \"yes\" on G6 would unlock: a computable, site-wide imagery-density prior (analogous to S01's richness/restraint prior, gap_ref G1) that would tell a first mockup how much photographic content a given surface class needs (search results grid, PDP body beyond the hero, dashboard, category landings beyond the 6 already speced) before it reads as either \"photo-starved and monochrome\" or \"cluttered.\" It would also extend LOCKFILE §11's 5 patterns with general art-direction rules (lighting consistency, subject framing, crop discipline for user-uploaded salon photos versus AI-placeholder or licensed-stock photos) that today exist only for the 6 static category heroes in PHOTO_STRATEGY.md.\\n\\nWhy it stays parked: the stream's key_question is marked BLOCKED with an explicit \"do not research until the owner re-opens G6\" instruction. The commercial/behavioral case for imagery (photos as decision input, not decoration) is already settled and lives in PSYCHOLOGY.md law 7; what remains gated is the DESIGN-SYSTEM commitment (a numeric floor, a build obligation across surfaces beyond the 6 heroes) which carries real cost (photography, AI-generation, or licensing spend) that only the owner can authorize. Re-opening G6 is therefore a scope-and-budget decision, not a research gap. When the owner reopens it, the correct next step is to run this stream's research proper: source a T1/T2 imagery-density study if one exists (none was found or asserted here), then draft a generative prior in the shape the stream calls for (numeric bands: imagery share, per-surface treatment, art-direction rules) plus a short Taste-Lab probe comparing 2 to 3 density variants on a real Solen surface (e.g. search results) to calibrate the floor empirically rather than by assertion.",
+  "taste_lab_probe": "Not designed. Per the gating instruction for OWNER-DECLINED streams, no Taste-Lab probe is proposed until the owner reopens G6; a probe (e.g. showing the owner 2 to 3 search-results-grid variants at different photo-to-text ratios and asking a repertory-grid-style preference question) should be the first deliverable once reopened, not before.",
+  "numbers_used": [
+   "34% illustration-first",
+   "28% photo-as-trust-layer",
+   "38% chrome",
+   "116 desktop images",
+   "8 surfaces",
+   "0px border-radius",
+   "+9% occupancy (Airbnb)",
+   "56% of users hit images first",
+   "3:2 aspect ratio",
+   "2400px",
+   "6 category heroes"
+  ]
+ },
+ "verified": {
+  "id": "S06",
+  "tag": "generative-gap",
+  "verdict": "clean",
+  "claim_verdicts": [
+   {
+    "claim": "Uber inventory is illustration-first (34%), photo-as-trust-layer (28%), chrome (38%), zero video, 0px border-radius on every image",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Verified verbatim in LOCKFILE.md line 1124 (V3-D330, 2026-05-28), citing public/_pixel-refs/uber/imagery/UBER-IMAGERY-PATTERN.md, 116 images/8 surfaces. This is an internal measured inventory of a competitor's site, not a peer-reviewed or third-party-validated study, so T3 (internal measurement, single source) is the honest tier, not T1/T2. Draft's tier was already correct."
+   },
+   {
+    "claim": "Professional photos caused +9% occupancy on Airbnb (diff-in-diff)",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Verified in _design-system/research/PSYCH_BUSINESS_IMPACT.md line 31: peer-reviewed Management Science diff-in-differences study, 7,423 Airbnb listings, 16 months, exact figure 8.98% (draft rounds to +9%, acceptable). Paper link present (pubsonline.informs.org/doi/10.1287/mnsc.2021.4175). This is a genuinely causal, peer-reviewed study, arguably T1-grade evidence quality, but PSYCHOLOGY.md's own inline citation at line 34 doesn't carry the source pointer, so T2 (verified but summary-file citation is thin) is the defensible tier for this stream's purposes. Not a myth-table entry, not inflated."
+   },
+   {
+    "claim": "56% of users hit images first",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Full form found in _design-system/research/PSYCH_PSYCHOLOGY.md line 19/78: '56% of shoppers' first action on a product page is looking at images before any text', sourced to Baymard Institute usability benchmarking (link present). Real and traceable, but PSYCHOLOGY.md line 34 (what the draft actually cited) states it as a bare inline number with no source pointer attached in that file, matching the myth-screen's own warning that un-named inline PSYCHOLOGY numbers need verification before standalone use. Verified now via the primary research doc, so it survives, but draft's T3 (not T1/T2) was the right caution given the citation as given."
+   }
+  ],
+  "myths_caught": [],
+  "verified_addition": "PARKING NOTE ONLY (no prior drafted, per gating instruction).\n\nWhat an owner yes on G6 would unlock: a computable, site-wide imagery-density prior (analogous to S01's richness/restraint prior, gap_ref G1) that would tell a first mockup how much photographic content a given surface class needs (search results grid, PDP body beyond the hero, dashboard, category landings beyond the 6 already speced) before it reads as either photo-starved and monochrome or cluttered. It would also extend LOCKFILE section 11's 5 patterns with general art-direction rules (lighting consistency, subject framing, crop discipline for user-uploaded salon photos versus AI-placeholder or licensed-stock photos) that today exist only for the 6 static category heroes in PHOTO_STRATEGY.md.\n\nWhy it stays parked: the stream's key_question is marked BLOCKED with an explicit instruction not to research until the owner reopens G6 (confirmed live in RATIONALE.md line 831: \"G6 | Imagery/art direction: OWNER-DECLINED 2026-07-15; listed as a known gap, needs a NEW yes\"). The commercial and behavioral case for imagery (photos as decision input, not decoration) is already settled and lives in PSYCHOLOGY.md law 7 (line 34), backed by two verified sources: a peer-reviewed Management Science diff-in-differences study (7,423 Airbnb listings, professional photos produced 8.98 percent higher occupancy, PSYCH_BUSINESS_IMPACT.md line 31) and a Baymard Institute usability finding (56 percent of shoppers look at images before text, PSYCH_PSYCHOLOGY.md line 19). What remains gated is the design-system commitment (a numeric floor, a build obligation across surfaces beyond the 6 heroes), which carries real cost (photography, AI-generation, or licensing spend) that only the owner can authorize. Reopening G6 is therefore a scope-and-budget decision, not a research gap.\n\nWhen the owner reopens it, the correct next step is to run this stream's research proper: source a study that speaks directly to imagery DENSITY or RATIO (the two sources above establish photo PRESENCE/quality matters, not how much of a page should be photographic), then draft a generative prior in the shape the stream calls for (numeric bands: imagery share, per-surface treatment, art-direction rules) plus a short Taste-Lab probe comparing 2 to 3 density variants on a real Solen surface (e.g. search results) to calibrate the floor empirically rather than by assertion.",
+  "residual_risks": "No claim failed verification and no myth-table number was cited, so this stream needed no correction, only tier confirmation. One residual gap worth flagging to the owner as a QUESTIONS.md candidate (not a lock change): both sourced studies (Airbnb occupancy, Baymard first-look) establish that photo PRESENCE and quality matter, but neither speaks to imagery DENSITY or RATIO (what fraction of a page/grid should be photographic). If G6 is reopened, the research stage will need a fresh density-specific source or will have to fall back to a Taste-Lab probe as the primary evidence rather than a cited study, since no located source currently answers the actual G6 question. This does not weaken the parking note itself, which correctly stops short of inventing a density number."
+ }
+}

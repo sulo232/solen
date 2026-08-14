@@ -1,0 +1,105 @@
+{
+ "id": "S28",
+ "draft": {
+  "id": "S28",
+  "tag": "net-new",
+  "title": "Microcopy / content design",
+  "principle_summary": "Content design (distinct from voice/tone, which governs personality) is the sourced mechanics layer for individual pieces of UI copy: a verbosity ladder for button/label text keyed to icon recognizability, a four-part structure for error messages (what happened, why in user terms, how to fix it, non-blaming tone), a target reading grade for public-facing strings, and a no-dead-end rule for empty/error/zero-result states. These are perceptual and comprehension mechanics, not persuasion mechanics, so the section sits beside PSYCHOLOGY.md rather than duplicating it; the one overlap (never inventing a number in an empty or error string) is cross-referenced to the existing real-numbers-only law rather than restated.",
+  "solen_current": "RATIONALE.md section 26 \"Domain 22: voice and tone mechanics\" (lines 801-811) covers TONE well: the four NN/g tone dimensions, voice-constant-tone-varies-by-state, Yifrah's no-dead-ends line (line 807, currently one bullet with no structure behind it), and sentence-case. RATIONALE.md section 21 \"Domain 17: forms and input\" (lines 751-757) cites WCAG 3.3.1-3.3.3 plus Nielsen heuristic 9 for error copy but only as one clause, no message-structure mechanic. RATIONALE.md section 22 \"Domain 18: iconography\" (lines 759-765) locks a CLOSED set of icon-only controls (close X, back arrow, search, hamburger, save heart, copy, share) but has no general ladder for the rest of the button/label surface. The actual verbosity-ladder RULE lives only in CLAUDE.md's \"Copy economy (owner rules, 2026-06-11)\" block (5 numbered items: drop context-redundant words, truncate long text behind a blue \"Mehr lesen\", the icon-only/icon+label/label-only ladder, no redundant tags, mockups bound too) as an unsourced owner correction list, not grounded in any cited mechanic. Reading level and the empty-state copy pattern are not addressed anywhere in RATIONALE, LOCKFILE, SOURCE, or PSYCHOLOGY.md.",
+  "gap": "Missing generative prior with no cited mechanic: (1) the button/label verbosity ladder in CLAUDE.md is a house rule with zero sourced backing, so a new surface has no principle to reason from, only a memorized list; (2) error-message specificity has a citation (WCAG, Nielsen heuristic 9) but no STRUCTURE, so \"be constructive\" stays a vibe; (3) reading level for Solen copy (de/en/fr/it, mixed-literacy Swiss market) is entirely uncovered; (4) the no-dead-ends line (RATIONALE:807) is a single unsupported sentence with no worked pattern for what the \"next action\" should say. This is exactly the dedup_notes gap: tone is well-covered, microcopy MECHANICS are thin to absent.",
+  "proposed_addition": "Add as RATIONALE.md section 29, \"Domain 24: content design mechanics\" (new domain, cross-referencing Domain 22 voice/tone and PSYCHOLOGY.md rather than repeating them):\n\n**Verbosity ladder is keyed to icon recognizability, not to screen real estate (T2, Nielsen heuristic 6 recognition-over-recall plus NN/g icon-usability body of work).** A control's label length is a function of how reliably its icon alone identifies the action, not of how much space is available. Three rungs: icon-only (only for the closed set already locked in Domain 18, each carrying a mandatory aria-label); icon+label (any action outside that closed set whose icon is directional or symbolic help, not self-sufficient); label-only, no icon (any commitment action: pay, book, confirm, delete, irreversible or money-moving steps, where an icon would only compete with the word for attention). This grounds CLAUDE.md's existing three-rung ladder in a testable reason instead of a memorized list, and gives new-surface copy a rule to apply rather than a lookup table.\n\n**Error messages are a four-part structure, not a single sentence (T2, NN/g \"Error-Message Guidelines\" and \"10 Design Guidelines for Reporting Errors in Forms\"; T1 floor underneath from WCAG 3.3.1/3.3.2/3.3.3 already cited in Domain 17).** What happened (precise, not \"something went wrong\"); why, in user-relatable terms, never a raw system or HTTP code; what to do next (the fix, phrased as an instruction); tone that never blames the user (\"the code did not match\" not \"you entered the wrong code\"). NN/g's own scoring rubric grades these four parts independently, which is why the structure is worth naming as a mechanic rather than folding into \"be constructive.\" This is the missing STRUCTURE behind Domain 17's existing WCAG/heuristic-9 citation; nothing in Domain 17 changes, only extends.\n\n**Reading level target: grade 7-9 (T2, convergent sources, not a single study).** PlainLanguage.gov (the US federal plain-language mandate) and NN/g's error-message guidance both converge on roughly 7th to 8th grade reading level for public-facing UI text; GOV.UK's UK equivalent sets a 9-year-old reading age as their house target (CONV, a named convention, not a universal empirical finding, recorded honestly as GOV.UK's own choice, not adopted here). Solen operating position: grade 7-9 as a soft ceiling for de/en/fr/it strings, checked qualitatively (short sentences, common words, no nested clauses), since no de/fr/it Flesch-Kincaid equivalent is standardized for this codebase. BOUNDARY: do not compute an actual Flesch-Kincaid score on English strings and apply the number to German, French, or Italian copy, the formula is English-calibrated (T1 formula, Flesch 1948, Kincaid extension 1975, English-only validity).\n\n**No dead ends, structured (T3, Yifrah microcopy framework, single popularized practitioner book, defensible core, already cited thinly at RATIONALE:807).** Every empty, error, and zero-result state names ONE next action as a verb-led CTA (already EmptyState's action slot, Domain 22 line 807's enforcement point); the copy above that action states the state honestly (no fabricated counts or false positives, cross-reference PSYCHOLOGY.md's real-numbers-only law rather than restating it here) and never implies the user did something wrong when the state is a legitimate zero (an empty search result is not a user error and should not read as an apology for one).\n\nBOUNDARY: this domain governs microcopy MECHANICS (length, structure, reading level) only. It does not reopen the LOCKFILE voice register (du-form, no exclamation marks, no hype) or Domain 22's tone-dimension positions, both stay frozen. It does not duplicate PSYCHOLOGY.md; conversion-shaped copy calls (loss framing, default-as-recommendation copy) stay there and are cross-referenced by law name, not restated.",
+  "taste_lab_probe": "Pull 6 live Solen error strings (2 payment, 2 booking-flow, 2 form-validation) and 4 empty-state strings (search zero-results, no bookings yet, no reviews yet, queue-empty) across all four locales. Score each against the four-part error structure and the no-dead-end rule (present/absent per part, binary). Any string missing \"what to do next\" or blaming the user (\"Sie haben einen Fehler gemacht\" style phrasing) is a punch-list item, not a taste call, since the structure is the sourced mechanic being tested, not a preference.",
+  "numbers_used": [
+   "7-8th grade reading level (NN/g error-message guidance)",
+   "grade 7-9 general web-writing target (PlainLanguage.gov convergent guidance)",
+   "9-year-old reading age (GOV.UK house convention, CONV, not adopted as Solen target)",
+   "3 rungs on the verbosity ladder (icon-only / icon+label / label-only)",
+   "4-part error message structure (what / why / fix / tone)"
+  ],
+  "sources": [
+   {
+    "claim": "Effective error messages precisely describe what happened, use human-readable plain language, offer constructive next steps, and use a positive tone that does not blame the user; NN/g's own scoring rubric grades these criteria independently, and NN/g recommends text at roughly a 7th to 8th grade reading level.",
+    "source": "Nielsen Norman Group, Error-Message Guidelines (nngroup.com/articles/error-message-guidelines/) and An Error Messages Scoring Rubric (nngroup.com/articles/error-messages-scoring-rubric/) and 10 Design Guidelines for Reporting Errors in Forms (nngroup.com/articles/errors-forms-design-guidelines/)",
+    "tier": "T2"
+   },
+   {
+    "claim": "Recognition (icon plus label, or a well-known icon alone) places less cognitive load on users than recall (an unlabeled icon the user must remember the meaning of); this is heuristic 6 of Nielsen's ten usability heuristics and underlies why icon-only controls are safe only for a small, well-known set.",
+    "source": "Jakob Nielsen / Nielsen Norman Group, 10 Usability Heuristics for User Interface Design (nngroup.com/articles/ten-usability-heuristics/)",
+    "tier": "T2"
+   },
+   {
+    "claim": "US federal plain-language guidance and independent web-writing convention both target roughly grade 7 to 9 reading level for general-audience public-facing content.",
+    "source": "PlainLanguage.gov (federal plain-language mandate) as summarized by readability-tool secondary sources converging on the 7-9 grade band",
+    "tier": "T2"
+   },
+   {
+    "claim": "GOV.UK content design sets a 9-year-old reading age as its house writing target, tied to a roughly 5,000-word core vocabulary recognized by shape at that age.",
+    "source": "GOV.UK content design guidance, summarized in GOV.UK content principles PDF (assets.publishing.service.gov.uk) and related GOV.UK style-guide pages",
+    "tier": "CONV"
+   },
+   {
+    "claim": "The Flesch-Kincaid Grade Level formula computes an approximate US school grade level from average sentence length and average syllables per word; it is calibrated for English and is the most widely used English readability formula.",
+    "source": "Flesch, R. (1948), A New Readability Yardstick; Kincaid, J.P. et al. (1975), Derivation of New Readability Formulas, US Navy research report; summarized via readabilityformulas.com and readable.com",
+    "tier": "T1"
+   },
+   {
+    "claim": "Every empty, error, and zero-result state should offer the user a clear next action rather than a dead end; this is a core tenet of the practitioner microcopy framework popularized by Kinneret Yifrah.",
+    "source": "Kinneret Yifrah, Microcopy: The Complete Guide (practitioner book, no controlled study behind the specific claim, popularized framework)",
+    "tier": "T3"
+   }
+  ]
+ },
+ "verified": {
+  "id": "S28",
+  "tag": "net-new",
+  "title": "Microcopy / content design",
+  "verdict": "revised",
+  "myths_caught": [],
+  "claim_verdicts": [
+   {
+    "claim": "NN/g recommends error-message text at roughly a 7th to 8th grade reading level (Flesch-Kincaid)",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Verified live: nngroup.com/articles/error-message-guidelines confirms 7-8th grade as part of NN/g's broader 6th-8th grade general-audience target. Real, correctly tiered T2 (practitioner synthesis, not a primary study)."
+   },
+   {
+    "claim": "NN/g's error-message scoring rubric grades what/why/fix/tone as four independent parts",
+    "source_ok": true,
+    "tier_final": "T2 (softened)",
+    "note": "The rubric is real (nngroup.com/articles/error-messages-scoring-rubric) but its actual structure is 12 guidelines across 3 dimensions (visibility, communication, efficiency), not a literal 4-part what/why/fix/tone split. The draft's 4-part frame is the drafter's own synthesis of NN/g's guidance, not a direct restatement of the rubric's shape. Overclaim on structure, not on substance; corrected in verified_addition to say the structure is 'distilled from' NN/g guidance rather than 'NN/g's own scoring rubric grades these four parts independently.'"
+   },
+   {
+    "claim": "Nielsen heuristic 6 (recognition over recall) underlies icon-only-is-risky-outside-a-known-set",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Standard, verifiable, uncontested Nielsen heuristic. Fine as cited."
+   },
+   {
+    "claim": "PlainLanguage.gov / US federal plain-language guidance targets roughly grade 7-9 for general-audience content",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Verified: digital.gov and related federal plain-language guidance converge on 8th grade or below; consistent with the 7-9 band claimed. Real site, real mandate (Plain Writing Act)."
+   },
+   {
+    "claim": "GOV.UK sets a 9-year-old reading age as its content design target",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Verified live (GDS blog, gov.uk content design guidance): confirmed exact figure and rationale (~5,000-word core vocabulary, literacy-floor design for the lowest-literacy readers). Correctly tiered CONV, correctly NOT adopted as a Solen number, just cited as a named convention."
+   },
+   {
+    "claim": "Flesch-Kincaid Grade Level formula is English-calibrated and the most common English readability formula",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Standard, well-documented history (Flesch 1948, Kincaid 1975 Navy report). No inflation. English-only-validity boundary in the draft is correct and important given Solen is de/en/fr/it."
+   },
+   {
+    "claim": "Kinneret Yifrah's Microcopy: The Complete Guide popularizes the no-dead-ends microcopy tenet",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Real practitioner book, already cited in RATIONALE.md line 807 for the same tenet ('No dead ends (Yifrah, microcopy)'), so this is consistent reuse of an already-accepted source, not a new unverified claim. T3 is honest (single popularized book, no controlled study)."
+   }
+  ],
+  "verified_addition": "Add as RATIONALE.md section 29, \"Domain 24: content design mechanics\" (new domain; section 28 is already taken by the gap register, so 29 is the correct next slot; cross-references Domain 22 voice/tone and PSYCHOLOGY.md rather than repeating them):\n\n**Verbosity ladder is keyed to icon recognizability, not to screen real estate (T2, Nielsen heuristic 6 recognition-over-recall).** A control's label length is a function of how reliably its icon alone identifies the action, not of how much space is available. Three rungs: icon-only (only for the closed set already locked in Domain 18, each carrying a mandatory aria-label); icon+label (any action outside that closed set whose icon is directional or symbolic help, not self-sufficient); label-only, no icon (any commitment action: pay, book, confirm, delete, irreversible or money-moving steps, where an icon would only compete with the word for attention). This grounds CLAUDE.md's existing three-rung ladder in a testable reason instead of a memorized list, and gives new-surface copy a rule to apply rather than a lookup table.\n\n**Error messages follow a four-part checklist distilled from NN/g's error-message guidance (T2, NN/g \"Error-Message Guidelines\" and \"10 Design Guidelines for Reporting Errors in Forms\"; T1 floor underneath from WCAG 3.3.1/3.3.2/3.3.3 already cited in Domain 17).** What happened (precise, not \"something went wrong\"); why, in user-relatable terms, never a raw system or HTTP code; what to do next (the fix, phrased as an instruction); tone that never blames the user (\"the code did not match\" not \"you entered the wrong code\"). Correction on sourcing: NN/g's own scoring rubric is structured as 12 guidelines across 3 dimensions (visibility, communication, efficiency), not literally this four-part split, so the four parts here are a Solen-authored distillation of NN/g's guidance, not a direct restatement of NN/g's rubric shape. This is the missing STRUCTURE behind Domain 17's existing WCAG/heuristic-9 citation; nothing in Domain 17 changes, only extends.\n\n**Reading level target: grade 7-9 (T2, convergent sources, not a single study), verified against three independent trails.** NN/g's error-message guidance (7-8th grade), PlainLanguage.gov federal guidance (8th grade or below), and GOV.UK's own house target (a 9-year-old reading age, CONV, a named convention tied to a roughly 5,000-word core vocabulary, not an empirical universal, recorded honestly as GOV.UK's choice and NOT adopted here) all converge on the same low-single-digit-grade band. Solen operating position: grade 7-9 as a soft ceiling for de/en/fr/it strings, checked qualitatively (short sentences, common words, no nested clauses), since no de/fr/it Flesch-Kincaid equivalent is standardized for this codebase. BOUNDARY: do not compute an actual Flesch-Kincaid score on English strings and apply the number to German, French, or Italian copy; the formula is English-calibrated (T1 formula, Flesch 1948, Kincaid extension 1975, English-only validity).\n\n**No dead ends, structured (T3, Yifrah microcopy framework, single popularized practitioner book, already cited at RATIONALE:807 for the same tenet).** Every empty, error, and zero-result state names ONE next action as a verb-led CTA (already EmptyState's action slot, Domain 22 line 807's enforcement point); the copy above that action states the state honestly (no fabricated counts or false positives, cross-reference PSYCHOLOGY.md's real-numbers-only law rather than restating it here) and never implies the user did something wrong when the state is a legitimate zero (an empty search result is not a user error and should not read as an apology for one).\n\nBOUNDARY: this domain governs microcopy MECHANICS (length, structure, reading level) only. It does not reopen the LOCKFILE voice register (du-form, no exclamation marks, no hype) or Domain 22's tone-dimension positions, both stay frozen. It does not duplicate PSYCHOLOGY.md; conversion-shaped copy calls (loss framing, default-as-recommendation copy) stay there and are cross-referenced by law name, not restated.",
+  "residual_risks": "One correction made: the draft over-attributed a literal \"four-part structure\" to NN/g's scoring rubric when the rubric is actually 12 guidelines across 3 dimensions (visibility/communication/efficiency). Softened to \"distilled from NN/g guidance\" with the correction stated inline so a future reader does not re-cite the rubric's shape incorrectly. No myth-screen violations found: none of the numbers_used (7-8th grade, grade 7-9, 9-year-old reading age, 3 rungs, 4-part structure) appear on the never-cite table, and none are dressed-up pop-stats, they are directly verifiable named-source conventions or standard heuristics. All source URLs were live-checked via web search and match the claimed content. No frozen LOCKFILE literal is touched, disputed, or implicitly reopened; the addition explicitly walls itself off from the voice/tone register and PSYCHOLOGY.md. One open question for the owner, not a defect: the draft's taste_lab_probe (score 6 live error strings + 4 empty-state strings against the four-part structure) is a good punch-list generator but was not run as part of this verify pass, since verify scope is claim-checking, not implementation; flag as a QUESTIONS.md candidate (\"run the S28 taste-lab probe on live error/empty-state copy\") for the owner or a follow-up build turn."
+ }
+}

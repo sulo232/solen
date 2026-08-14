@@ -1,0 +1,21 @@
+-- exists-check: `npm run exists consumed_at` -> 0 matches, run 2026-08-14. Net-new column.
+--
+-- 20260712150000_audit_fix_quick_action_token_single_use
+--
+-- app/api/bookings/[id]/quick-action/route.ts (GET, PUBLIC) gates the one-click confirm/cancel
+-- email link ONLY on a self-contained HMAC token with no server-side single-use marker, so the
+-- token stays valid and replayable (by a link-scanner, or anyone who gets the URL) until its
+-- embedded expiry passes. Add a nullable consumed_at marker so the route can check-and-set it
+-- atomically in the SAME update as the status change (.is("consumed_at", null) + zero rows
+-- returned means "already used").
+--
+-- WHY THIS FILE IS ONLY LANDING NOW, per the missing-things principle: it was not cancelled and it
+-- was not superseded. Written 2026-07-12 on claude/backend-analysis-improvements-77f02b, reviewed,
+-- and then stranded there because that branch was never merged. The 2026-08-14 audit checked every
+-- unmerged migration against the live schema and this was one of four whose objects genuinely do
+-- not exist. The graveyard has no entry for it.
+--
+-- Additive and idempotent: a nullable column with `if not exists`, so re-running is a no-op and
+-- every existing row keeps a null marker, i.e. "not yet used".
+
+alter table public.bookings add column if not exists consumed_at timestamptz default null;

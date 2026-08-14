@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { motion } from "motion/react";
 import {
-  Zap, DollarSign, AlertTriangle, UserPlus, Heart, Users,
+  Rocket, DollarSign, AlertTriangle, UserPlus, Heart, Users,
   ChevronDown, ChevronUp,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -14,7 +14,7 @@ import EmptyState from "@/components-legacy/ui/EmptyState";
 import { containerVariants, itemVariants } from "@/lib/animations";
 
 const ICON_MAP: Record<string, LucideIcon> = {
-  Zap, DollarSign, AlertTriangle, UserPlus, Heart, Users,
+  Rocket, DollarSign, AlertTriangle, UserPlus, Heart, Users,
 };
 
 interface Segment {

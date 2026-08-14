@@ -35,7 +35,8 @@
     "e2e": "tsx scripts/e2e-booking.ts",
     "contracts:census": "node scripts/api-contracts-census.mjs",
     "select-star:census": "node scripts/select-star-census.mjs",
-    "duplication:census": "node scripts/duplication-census.mjs"
+    "duplication:census": "node scripts/duplication-census.mjs",
+    "claims": "node scripts/verify-doc-claims.mjs"
   },
   "dependencies": {
     "@babel/runtime": "^7.23.9",

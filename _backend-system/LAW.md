@@ -10,6 +10,30 @@
 
 ---
 
+## 0. THE ONE LAW (if you read nothing else)
+
+> **A control that returns 200 has proven nothing. Prove BEHAVIOR, not existence.**
+
+RESTORED 2026-08-14. This section, plus the two at the bottom of this file, existed only on
+`premerge-backup-2026-07-17` and were lost when the rest of this document was rewritten. They are
+the highest-value paragraphs in it, which is exactly the kind of thing a rewrite drops quietly.
+
+This is the house's #1 failure mode and it recurred as the top-ranked finding in 7 of the 15
+research topics independently: data-modeling, transactions, migrations, authz, file-storage,
+jobs-async, webhooks. It wears different costumes:
+
+- PostgREST returns `error: null` on a **zero-row** UPDATE. The lost race reports success.
+- PostgREST **silently nulls** a select on a column that does not exist. The homepage went blank for weeks.
+- A cron reports `ok: true` on a night **every Stripe call failed**, because it counted failures in a field the wrapper never read.
+- Storage RLS **fails closed silently**: `review-photos` returned `200 {success:true}` for months while writing nothing.
+- A migration applies cleanly and the feature is still broken, because **PostgREST's schema cache** had not reloaded.
+
+A filter must **discriminate** (return a correct subset), not merely render. A column must appear in
+the **live snapshot** (`npm run exists <col>`), not merely in a TS type. A write must be confirmed by
+**affected-row count**, never by `error === null`.
+
+---
+
 ## 1. Data modeling and storage
 
 Source: `research/data-modeling.md`.
@@ -464,3 +488,33 @@ Topics and rows the research covered but this freeze deliberately does NOT lock,
 - ~~Whether `FORCE ROW LEVEL SECURITY` is actually set on Solen's salon-scoped tables~~ **RESOLVED 2026-07-27 (authz-rls-09), see `audit/authz.md` AUTHZ-06.** `relforcerowsecurity = false` on every one of the 150 public tables (confirmed live), and it does not matter: `pg_roles` shows `anon.rolbypassrls = false` and `authenticated.rolbypassrls = false`, so the app's own session client can never hit the owner-bypass path FORCE RLS guards against, only `postgres`/`service_role` bypass, and app traffic never connects as either. No action needed unless a future operational script, migration runner, or reporting connection is ever added that connects as the table owner against production data, at which point this row must be reopened.
 - **The exact Netlify function timeout number.** Two of Netlify's own current doc pages disagree with each other (one states 60s non-configurable for synchronous functions, another states 30s for "standard serverless functions" in the same product family), per `research/jobs-async.md` and `research/reliability.md`. The DECISION (always set an explicit `maxDuration` on batch/loop-heavy crons) is frozen above regardless of the exact platform default; the number itself needs either a direct Netlify support confirmation or an empirical test (deploy a controlled-sleep route handler and observe where it's actually cut off), neither done in this research pass.
 - **Whether GitHub secret-scanning/push protection is actually enabled on the Solen repo.** `research/security.md`'s secrets-storage row recommends confirming this as an action item; it is a settings check, not visible from the local working tree, and was not independently verified. Not a decision fork, a to-do for whoever owns repo settings.
+
+---
+
+## What Solen already does RIGHT (do not "fix" these)
+
+RESTORED 2026-08-14 from `premerge-backup-2026-07-17`, same reason as section 0 above.
+A fresh session's instinct is to improve things. These are correct, hard-won, and several were fixed 3 times before they stuck. Leave them alone.
+
+- **Idempotency keys** on every sampled Stripe charge site, keyed on business-invariant fields computed BEFORE the call, and correctly propagated to 5+ money call sites.
+- **`getUser()` discipline** is real project-wide, not aspirational. All 28 `getSession()` hits are verified client-only.
+- **Booking slot-claim**: app-level CAS + a GIST EXCLUDE constraint + a second independent unique partial index. Textbook layered defense.
+- **Credit/voucher/promo/member-discount/staff-limit RPCs** all take their lock BEFORE any read.
+- **`processed_webhook_events`** PK-claim + release-on-throw. Correct.
+- **Forward-only migrations**: genuinely followed, 0 down migrations across 264 files. PostgREST auto-reload (`pgrst_ddl_watch`) confirmed live.
+- **Nightly export**: idempotent, never conflated with PITR, per-table try/catch, two independent failure-alert paths. `db-backups` bucket genuinely private.
+- **GDPR photo-purge** deletes orphaned Storage bytes before the DB row.
+- **No premature infra anywhere sampled**: no GraphQL, no hand-written OpenAPI, no hot standby, no lock service, no broker. Correctly deferred.
+
+## Honest coverage
+
+**All 15 topics are now audited** against live code (`audit/<topic>.md`, 15 files; roll-up + ranked fix list in `AUDIT_2026-07-16.md`). Two of them (`data-modeling`, `authz`) were checked against the LIVE DB via read-only `execute_sql`, not TS types.
+
+But every audit is grep-exhaustive for its search patterns while deep-reading a **MINORITY sample**: roughly 15-25 files per topic out of ~354 routes + 264 migrations + 26 crons. **Treat "no gap found" in an unread corner as "not yet checked", never a clean bill of health.**
+
+Each audit names its own blind spot; the sharpest ones:
+- `authz`: 25 of 32 statically-flagged routes and ~322 unflagged routes NOT read.
+- `transactions-concurrency`: ~165 unopened loop sites, a possible unswept N+1 source.
+- `jobs-async`: 9 of 26 crons unverified for the very bug found in the other 17.
+- `rate-limiting`: **whether Upstash is actually configured on the live prod deploy is UNKNOWN.** If it is not, every non-abuse-prone limiter is silently off in production right now.
+- `reliability`: every timeout recommendation still needs a real measured p99 first; none was available.

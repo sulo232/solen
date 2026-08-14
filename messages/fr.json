@@ -157,7 +157,9 @@
     "loginToProfile": "Connectez-vous pour voir votre profil",
     "loginCta": "Se connecter",
     "aboutUs": "À propos",
-    "myAccount": "Mon compte"
+    "myAccount": "Mon compte",
+    "forBusiness": "Pour les salons",
+    "services": "Services"
   },
   "home": {
     "hero_title": "Votre salon à Bâle",
@@ -6299,7 +6301,8 @@
     "continue": "Continuer",
     "errorMinAge": "Vous devez avoir au moins 16 ans.",
     "errorAccountExists": "Vous avez déjà un compte. Connectez-vous.",
-    "errorPasswordMin": "Le mot de passe doit contenir au moins 8 caractères."
+    "errorPasswordMin": "Le mot de passe doit contenir au moins 8 caractères.",
+    "errorPasswordBreached": "Ce mot de passe a été trouvé dans une fuite de données. Merci d'en choisir un autre."
   },
   "passwordStrength": {
     "weak": "Faible",

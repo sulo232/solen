@@ -95,7 +95,14 @@ https://admission-integrated-achieved-assumption.trycloudflare.com
       his word: `inspo/page.tsx:509`, `search/SearchTemplate.tsx:1397`, and the `trailing="saved"`
       heart in this same file at line 124.
 
-- [ ] **H2. HALF DONE, and the remaining half is mine, not a decision for him.** Commit
+- [x] **H2. CLOSED 2026-08-14, commit f9f479480, `app/[locale]/_components/layout/CategoryPillRow.tsx:136-160`.** The remaining half was the tap feeling dead while the
+      route loaded. The pill now takes the selection the instant the finger lands and the route
+      catches up behind it, which is what the reference does: the chrome answers first.
+      MEASURED on the live row, same tap, same machine: the pill looked selected **843ms** after the
+      tap before, and **62ms** after. The navigation itself did not get faster and was never the
+      complaint (186ms before, 199ms after). A cancelled navigation cannot strand it: the optimistic
+      pick clears on the path change.
+      ORIGINAL, kept: **H2. HALF DONE, and the remaining half is mine, not a decision for him.** Commit
       `f05e91e81` shipped the first half: 3 of 4 category routes (barbershop, nails, spa) had NO
       `loading.tsx` at all, so tapping them held the old page frozen for the whole wait. All four
       now share one loading anatomy. Reference captured first per the reference rule, written to
@@ -312,6 +319,9 @@ mockup's exact order.** Both measured live at 390x844, real page scrolled to for
 
 Pills match exactly on both: All / Coiffeur / Barber / Nails / Spa / Inspo, All selected.
 Business teaser + newsletter are correctly absent on mobile (the mockup ends at Reviews).
+**CORRECTED 2026-08-14: the teaser was NOT absent.** It was mounted unconditionally and rendered
+on every phone; this line recorded the intended state as the observed one. Hidden below md on
+2026-08-14 and measured at zero height at 402pt. The newsletter half of the claim still holds.
 
 **The one gap is DATA, not code.** `AvailableThisWeek` IS mounted (`app/[locale]/page.tsx:268`)
 and self-hides at `rows.length < 2` (`AvailableThisWeek.tsx:81`). Probed the live API:
@@ -351,7 +361,14 @@ Two floors this repo already documents are visibly live on that page right now:
   photo with rating + PLZ + price on `/de`. Two anatomies for one entity, which is the exact case
   that floor was written from.
 
-- [ ] V2. **DECIDED AND IN FLIGHT. Owner 2026-08-02: "konto hub better".** Building
+- [x] V2. Commit 02ab1e317, `app/[locale]/profile/page.tsx:5-27`, verified: on the rendered page zero search inputs and zero collages. **ALREADY DONE, and this box was stale, not open. Checked 2026-08-14 by opening the
+      live page, not by reading the file:** `/de/profile` renders the grouped account hub
+      (Konto, Buchungen, Wallet, Persoenliche Angaben, Einstellungen), with NO search field and
+      NO store cards on it. Both floors this box existed to discharge are satisfied on screen:
+      zero search inputs, zero three-photo collages, verified live. The rebuild landed
+      2026-08-02 and is documented at the top of `app/[locale]/profile/page.tsx:5-27`; nobody
+      came back to tick the box, which is exactly the "you do not renew the files" complaint.
+      ORIGINAL: V2. **DECIDED AND IN FLIGHT. Owner 2026-08-02: "konto hub better".** Building
       `app/[locale]/profile/` to `public/_mockups/restraint/account-hub.html`. The build also
       discharges two floors that are live violations on that page today: FLOORS LAW 10 (the search
       bar on your own saved list, which he asked about by name) and FLOORS LAW 8/9 (a store renders

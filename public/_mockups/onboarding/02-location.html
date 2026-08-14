@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solen Onboarding · 2 Standort</title>
+<link rel="stylesheet" href="../_assets/ds.css">
+<link rel="stylesheet" href="_base.css">
+</head>
+<body>
+<div class="wrap">
+  <a href="index.html" style="color:#9aa0a6;font-size:13px;text-decoration:none">← Alle Sektionen</a>
+  <h1 class="sec-h" style="margin-top:14px">2 · Standort / Location</h1>
+  <p class="sec-sub">Salons in der Nähe brauchen einen Standort. Den Wert zuerst zeigen ("Salons um dich herum"), dann GPS anbieten, immer mit manueller Stadtwahl als Ausweg. Schritt 1 von 4.</p>
+  <div class="note"><b>Wie andere es lösen:</b> Viator = Wert-Sheet "Find experiences nearby" + saubere Nearby-Städteliste mit Pin-Chips. Uber Eats = Adress-Suchfeld oben + "Current location / Turn on" Reihe. GO Club = große Typo über sanftem Glow. Swarm/Particle = Value-Reihen mit Icon-Chips, was Standort freischaltet.</p>
+
+  <div class="phones">
+
+    <!-- A: value-framed GPS pre-prompt (Viator) -->
+    <div class="col">
+      <p class="cap">A — Wert-Vorabfrage + GPS <span>Viator</span></p>
+      <div class="phone"><div class="notch"></div><div class="screen">
+        <div class="sb"><span>9:41</span><span class="r"><i data-lucide="wifi"></i><i data-lucide="battery-full"></i></span></div>
+        <div class="body pad" style="padding-bottom:22px">
+          <!-- progress -->
+          <div style="display:flex;align-items:center;gap:10px;margin-top:4px">
+            <div class="prog"><div class="f" style="width:25%"></div></div>
+            <span style="font-size:11px;font-weight:600;color:var(--ink3);white-space:nowrap">Schritt 1 von 4</span>
+          </div>
+          <!-- soft map/pin hero -->
+          <div style="margin-top:20px;height:172px;border-radius:22px;position:relative;overflow:hidden;background:radial-gradient(120% 90% at 50% 30%,#EAEFFE 0%,#F4F4F5 70%)">
+            <!-- faux map grid -->
+            <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(39,110,241,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(39,110,241,.07) 1px,transparent 1px);background-size:30px 30px"></div>
+            <div style="position:absolute;left:22%;top:30%;width:14px;height:14px;border-radius:999px;background:#fff;box-shadow:0 0 0 5px rgba(39,110,241,.15)"></div>
+            <div style="position:absolute;right:24%;top:58%;width:14px;height:14px;border-radius:999px;background:#fff;box-shadow:0 0 0 5px rgba(124,58,237,.15)"></div>
+            <!-- center pin -->
+            <div style="position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);width:64px;height:64px;border-radius:999px;background:rgba(39,110,241,.12)"></div>
+            <div style="position:absolute;left:50%;top:46%;transform:translate(-50%,-58%);width:46px;height:46px;border-radius:999px;background:linear-gradient(135deg,var(--accent),var(--violet));display:flex;align-items:center;justify-content:center;box-shadow:0 10px 22px -8px rgba(39,110,241,.55)">
+              <i data-lucide="map-pin" style="color:#fff;width:24px;height:24px"></i>
+            </div>
+          </div>
+          <div class="h1" style="margin-top:20px;font-size:25px">Salons in deiner Nähe finden</div>
+          <p class="sub" style="margin-top:10px">Mit deinem Standort zeigen wir dir sofort Salons um dich herum mit freien Terminen.</p>
+          <div style="flex:1"></div>
+          <div class="cta-grad"><i data-lucide="navigation" style="color:#fff;width:18px;height:18px"></i> Standort verwenden</div>
+          <p class="skip" style="margin-top:14px">Stadt manuell wählen</p>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- B: clean city list (Viator nearby) -->
+    <div class="col">
+      <p class="cap">B — Saubere Städteliste <span>Viator</span></p>
+      <div class="phone"><div class="notch"></div><div class="screen">
+        <div class="sb"><span>9:41</span><span class="r"><i data-lucide="wifi"></i><i data-lucide="battery-full"></i></span></div>
+        <div class="body pad" style="padding-bottom:22px">
+          <div style="display:flex;align-items:center;gap:10px;margin-top:4px">
+            <div class="prog"><div class="f" style="width:25%"></div></div>
+            <span style="font-size:11px;font-weight:600;color:var(--ink3);white-space:nowrap">Schritt 1 von 4</span>
+          </div>
+          <div class="h2" style="margin-top:18px;font-size:22px">Wähle deine Stadt</div>
+          <!-- GPS row on top -->
+          <div style="display:flex;align-items:center;gap:12px;margin-top:16px;padding:12px;border-radius:14px;background:var(--accentPale)">
+            <span class="icochip" style="background:#fff;width:40px;height:40px"><i data-lucide="navigation" style="color:var(--accent)"></i></span>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:14px;font-weight:700;color:var(--ink)">Aktuellen Standort verwenden</div>
+              <div style="font-size:12px;color:var(--accentDeep)">Schnellster Weg</div>
+            </div>
+            <i data-lucide="chevron-right" style="color:var(--accent);width:18px;height:18px"></i>
+          </div>
+          <p class="eyebrow" style="margin:18px 0 10px">Städte</p>
+          <div style="display:flex;flex-direction:column;gap:2px;flex:1;min-height:0;overflow:hidden">
+            <!-- Zürich selected -->
+            <div style="display:flex;align-items:center;gap:12px;padding:11px 4px">
+              <span class="icochip" style="background:var(--sunken);width:38px;height:38px"><i data-lucide="map-pin" style="color:var(--ink)"></i></span>
+              <div style="flex:1"><div style="font-size:14px;font-weight:600;color:var(--ink)">Zürich</div><div style="font-size:12px;color:var(--ink2)">Schweiz</div></div>
+              <span class="ring on"><span class="d"></span></span>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:11px 4px">
+              <span class="icochip" style="background:var(--sunken);width:38px;height:38px"><i data-lucide="map-pin" style="color:var(--ink2)"></i></span>
+              <div style="flex:1"><div style="font-size:14px;font-weight:600;color:var(--ink)">Basel</div><div style="font-size:12px;color:var(--ink2)">Schweiz</div></div>
+              <span class="ring"></span>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:11px 4px">
+              <span class="icochip" style="background:var(--sunken);width:38px;height:38px"><i data-lucide="map-pin" style="color:var(--ink2)"></i></span>
+              <div style="flex:1"><div style="font-size:14px;font-weight:600;color:var(--ink)">Bern</div><div style="font-size:12px;color:var(--ink2)">Schweiz</div></div>
+              <span class="ring"></span>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:11px 4px">
+              <span class="icochip" style="background:var(--sunken);width:38px;height:38px"><i data-lucide="map-pin" style="color:var(--ink2)"></i></span>
+              <div style="flex:1"><div style="font-size:14px;font-weight:600;color:var(--ink)">Genf</div><div style="font-size:12px;color:var(--ink2)">Schweiz</div></div>
+              <span class="ring"></span>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:11px 4px">
+              <span class="icochip" style="background:var(--sunken);width:38px;height:38px"><i data-lucide="map-pin" style="color:var(--ink2)"></i></span>
+              <div style="flex:1"><div style="font-size:14px;font-weight:600;color:var(--ink)">Luzern</div><div style="font-size:12px;color:var(--ink2)">Schweiz</div></div>
+              <span class="ring"></span>
+            </div>
+          </div>
+          <div class="cta" style="margin-top:6px">Weiter</div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- C: search-a-place field (Uber Eats / Pangea) -->
+    <div class="col">
+      <p class="cap">C — Ort suchen + Chips <span>Uber Eats</span></p>
+      <div class="phone"><div class="notch"></div><div class="screen">
+        <div class="sb"><span>9:41</span><span class="r"><i data-lucide="wifi"></i><i data-lucide="battery-full"></i></span></div>
+        <div class="body pad" style="padding-bottom:22px">
+          <div style="display:flex;align-items:center;gap:10px;margin-top:4px">
+            <div class="prog"><div class="f" style="width:25%"></div></div>
+            <span style="font-size:11px;font-weight:600;color:var(--ink3);white-space:nowrap">Schritt 1 von 4</span>
+          </div>
+          <div class="h1" style="margin-top:18px;font-size:24px">Wo suchst du?</div>
+          <p class="sub" style="margin-top:8px">Stadt oder Quartier eingeben.</p>
+          <!-- search field -->
+          <div style="display:flex;align-items:center;gap:10px;margin-top:16px;height:50px;padding:0 14px;border-radius:14px;background:var(--sunken);border:1px solid var(--border)">
+            <i data-lucide="search" style="color:var(--ink2);width:18px;height:18px"></i>
+            <span style="font-size:14px;color:var(--ink3)">Stadt, PLZ oder Quartier</span>
+          </div>
+          <!-- current location row -->
+          <div style="display:flex;align-items:center;gap:12px;margin-top:14px;padding:12px 4px;border-bottom:1px solid var(--hair)">
+            <span class="icochip" style="background:var(--accentPale);width:40px;height:40px"><i data-lucide="locate-fixed" style="color:var(--accent)"></i></span>
+            <div style="flex:1"><div style="font-size:14px;font-weight:700;color:var(--accent)">Aktuellen Standort verwenden</div></div>
+            <i data-lucide="chevron-right" style="color:var(--ink3);width:18px;height:18px"></i>
+          </div>
+          <p class="eyebrow" style="margin:18px 0 10px">Beliebte Städte</p>
+          <div style="display:flex;gap:9px;flex-wrap:wrap">
+            <span class="chip"><i data-lucide="map-pin" style="color:var(--accent);width:15px;height:15px"></i>Zürich</span>
+            <span class="chip"><i data-lucide="map-pin" style="color:var(--violet);width:15px;height:15px"></i>Basel</span>
+            <span class="chip"><i data-lucide="map-pin" style="color:var(--cpink);width:15px;height:15px"></i>Bern</span>
+            <span class="chip"><i data-lucide="map-pin" style="color:var(--cgreen);width:15px;height:15px"></i>Genf</span>
+            <span class="chip"><i data-lucide="map-pin" style="color:var(--corange);width:15px;height:15px"></i>Luzern</span>
+            <span class="chip"><i data-lucide="map-pin" style="color:var(--cblue);width:15px;height:15px"></i>Lausanne</span>
+          </div>
+          <div style="flex:1"></div>
+          <p class="skip">Überspringen</p>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- D: map backdrop + floating city chip (GO Club editorial) -->
+    <div class="col">
+      <p class="cap">D — Karten-Hintergrund + Chip <span>GO Club</span></p>
+      <div class="phone"><div class="notch"></div><div class="screen">
+        <!-- map backdrop -->
+        <div style="position:absolute;inset:0;background:radial-gradient(130% 80% at 30% 20%,#EAEFFE 0%,#F4F4F5 60%,#ECECEE 100%)"></div>
+        <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(39,110,241,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(39,110,241,.06) 1px,transparent 1px);background-size:34px 34px"></div>
+        <!-- faux roads -->
+        <div style="position:absolute;left:-10%;top:34%;width:130%;height:7px;background:#fff;transform:rotate(-8deg);opacity:.8"></div>
+        <div style="position:absolute;left:-10%;top:62%;width:130%;height:5px;background:#fff;transform:rotate(6deg);opacity:.7"></div>
+        <div style="position:absolute;left:38%;top:-10%;width:6px;height:120%;background:#fff;transform:rotate(10deg);opacity:.7"></div>
+        <!-- pins -->
+        <div style="position:absolute;left:24%;top:26%;width:11px;height:11px;border-radius:999px;background:var(--violet);box-shadow:0 0 0 5px rgba(124,58,237,.16)"></div>
+        <div style="position:absolute;right:22%;top:44%;width:11px;height:11px;border-radius:999px;background:var(--cpink);box-shadow:0 0 0 5px rgba(236,72,153,.16)"></div>
+        <!-- center user pin -->
+        <div style="position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);width:52px;height:52px;border-radius:999px;background:linear-gradient(135deg,var(--accent),var(--violet));display:flex;align-items:center;justify-content:center;box-shadow:0 14px 28px -8px rgba(39,110,241,.6);z-index:5">
+          <i data-lucide="map-pin" style="color:#fff;width:26px;height:26px"></i>
+        </div>
+
+        <div class="sb" style="position:relative;z-index:10"><span>9:41</span><span class="r"><i data-lucide="wifi"></i><i data-lucide="battery-full"></i></span></div>
+        <div class="body pad" style="position:relative;z-index:10;justify-content:flex-end;padding-bottom:22px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:auto;margin-top:4px">
+            <div class="prog" style="background:rgba(10,10,10,.12)"><div class="f" style="width:25%"></div></div>
+            <span style="font-size:11px;font-weight:600;color:var(--ink2);white-space:nowrap">Schritt 1 von 4</span>
+          </div>
+          <!-- floating glass card -->
+          <div class="card" style="padding:18px;box-shadow:0 24px 50px -18px rgba(0,0,0,.28)">
+            <!-- detected city chip -->
+            <span style="display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 13px;border-radius:999px;background:var(--accentPale);font-size:13px;font-weight:700;color:var(--accentDeep)">
+              <i data-lucide="locate-fixed" style="color:var(--accent);width:15px;height:15px"></i> Zürich erkannt
+            </span>
+            <div class="h2" style="margin-top:14px;font-size:21px">Wir starten in Zürich</div>
+            <p class="sub" style="margin-top:8px">23 Salons in deiner Nähe. Stimmt das nicht? Du kannst die Stadt jederzeit wechseln.</p>
+            <div class="cta-grad" style="margin-top:18px"><i data-lucide="check" style="color:#fff;width:18px;height:18px"></i> Ja, weiter</div>
+            <p class="skip" style="margin-top:12px">Andere Stadt wählen</p>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+  </div>
+</div>
+<script src="../_assets/lucide.min.js"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>

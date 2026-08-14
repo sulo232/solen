@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen Dashboard, chairs first</title>
+<!--
+  Grounded-in: app/[locale]/dashboard/page.tsx
+  Owner-scope: confirmed: chairs are the hero (multiple occupied), revenue demoted to a stat line, no bottom dock (one nav), today small with See all, zero repeated information
+  Exists-check: npm run exists dashboard ran this turn (24 dashboard API routes, DashboardLayout.tsx, DashboardUI.tsx, 50 components-legacy/dashboard components,
+  lib/dashboard/category-nav.ts all already exist and are reused here only for the DATA SHAPE, not the structure). This file REVISES
+  public/_mockups/dashboard-overhaul/integrated.html after direct owner feedback on that draft: (1) "not on board with this revenue today thing, we don't even
+  need that as the main information" so revenue moved out of the hero into a thin stat line, (2) "put the person in chair, MANY person... make that main" so the
+  chair grid is now the hero with three of four chairs occupied at once instead of mostly free, (3) "a lot of to-dos or same information all over and over
+  again" so every person/event now appears in exactly one place (chairs, waiting, needs-you or today, never two), (4) "make Today small... see all" so the
+  6-row Today list becomes a 2-row preview with a "See all" link, (5) "what does this bottom navigation do, now we have two navigation, it's clutter" so the
+  floating action dock and the right rail (to-dos + live stream) are both deleted, the sidebar is the only navigation. Tokens, fonts, the icon sprite, the
+  ig-sidebar shell and the chair-card/status-pill CSS (.d2-chair/.d2-staffrow/.d2-occ/.d2-primact/.d2-openpill/.pill/.av/.card/.panel/.panelh/.doic/.dotx) are
+  copied verbatim from integrated.html, including its traffic-light chrome dots (#ff5f57/#febc2e/#28c840, standard macOS window-control colours, decorative
+  chrome only, hue-ok) and its two-stop staff-avatar gradients (each a locked token paired with one darker/lighter stop of the same hue, e.g. blue #276EF1 to
+  #1B4DCB, amber #F0A868 to #C0524A, already approved in integrated.html, hue-ok), and only extended with a ".hero" size modifier plus a few new small classes
+  (stat line, wait rows, small neutral buttons, see-all link) needed for the new layout; no existing class was redefined. One deliberate deviation from the
+  owner's literal card-accent wording: the brief offers "a faint green wash OR a green left edge" for occupied chairs; a wash would need a gradient, and this
+  file's own hard rule bans gradients outside the avatar circles, so occupied chairs use the green left-edge option instead of integrated.html's gradient
+  wash. UI copy is English per mockup convention; a real build ships de/en/fr/it.
+-->
+<style>
+:root{
+  --ink:#0A0A0A; --ink2:#6B6B6B; --ink3:#A1A1A6;
+  --border:#E4E4E7; --sunken:#F4F4F5; --canvas:#F6F6F7;
+  --blue:#276EF1; --blue-pale:#EAEFFE;
+  --green:#16A34A; --green-bg:#E8F5E9;
+  --amber:#F1AE27; --amber-bg:#FDF6E7; --star:#FFC32B;
+  --font-body:'Inter','SF Pro Text',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  --font-disp:'Inter Tight','SF Pro Display',system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:var(--font-body);background:#E9E9EB;color:var(--ink);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:inherit;text-decoration:none}
+svg.ic{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;display:block}
+button{font:inherit}
+
+/* ---------- page intro (outside the mock) ---------- */
+.pageintro{max-width:1320px;margin:0 auto;padding:34px 20px 16px}
+.pageintro .ey{font:600 12px/1 var(--font-body);color:var(--ink3);margin:0 0 11px}
+.pageintro h1{font-family:var(--font-disp);font-weight:640;font-size:29px;letter-spacing:-.02em;margin:0 0 9px}
+.pageintro p{max-width:860px;margin:0;color:#55555b;font-size:14.5px;line-height:1.6}
+.pageintro p b{color:var(--ink);font-weight:600}
+
+.linkrow{max-width:1320px;margin:18px auto 0;padding:0 20px;display:flex;gap:10px}
+.linkpill{display:inline-flex;align-items:center;padding:7px 14px;border-radius:99px;border:1px solid #d9d9dd;background:#fff;font-size:12.5px;font-weight:600;color:var(--ink2);cursor:pointer}
+.linkpill:hover{background:var(--sunken);color:var(--ink)}
+
+.stage{max-width:1320px;margin:0 auto;padding:22px 20px 60px}
+
+.win{border-radius:18px;overflow:hidden;background:#fff;box-shadow:0 24px 60px -24px rgba(10,10,10,.35),0 6px 18px -10px rgba(10,10,10,.2);border:1px solid rgba(10,10,10,.08)}
+.chrome{height:38px;display:flex;align-items:center;gap:7px;padding:0 14px;background:#f3f3f5;border-bottom:1px solid #e6e6e9}
+.dot{width:11px;height:11px;border-radius:50%}
+.chrome .u{margin-left:14px;font-size:12px;color:#8a8a90;background:#fff;border:1px solid #e6e6e9;border-radius:7px;padding:3px 12px}
+
+/* ---------- shared primitives, copied verbatim from integrated.html ---------- */
+.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:99px;font-size:11.5px;font-weight:600;white-space:nowrap}
+.pill i{width:6px;height:6px;border-radius:50%;display:inline-block}
+.pill.ok{background:var(--green-bg);color:var(--green)} .pill.ok i{background:var(--green)}
+.pill.ghost{background:var(--sunken);color:var(--ink2)} .pill.ghost i{background:var(--ink3)}
+.av{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:600;color:#fff;flex:none}
+.card{border-radius:18px;border:1px solid var(--border);background:#fff;box-shadow:0 2px 8px rgba(50,47,44,.05)}
+.panel{border-radius:18px;border:1px solid var(--border);background:#fff;overflow:hidden;box-shadow:0 2px 8px rgba(50,47,44,.05)}
+.panelh{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border)}
+.panelh h3{font-family:var(--font-disp);font-weight:620;font-size:14.5px;margin:0}
+.panelh .pcount{font-size:11.5px;color:var(--ink3);font-weight:600}
+.doic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none}
+.doic .ic{width:16px;height:16px}
+.dotx{flex:1;min-width:0}
+.dotx .t{display:block;font-size:13.5px;font-weight:600;letter-spacing:-.005em}
+.dotx .s{display:block;font-size:12px;color:var(--ink2);margin-top:1px}
+.livedot{width:8px;height:8px;border-radius:50%;background:var(--green);position:relative}
+.livedot::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid var(--green);opacity:.4;animation:pg 2s ease-out infinite}
+@keyframes pg{0%{transform:scale(.5);opacity:.55}100%{transform:scale(1.7);opacity:0}}
+
+/* D1 pieces reused verbatim: greeting text + today card/rows */
+.d1-greet .eyb{font:600 12.5px/1 var(--font-body);color:var(--ink3);margin:0 0 8px}
+.d1-greet h2{font-family:var(--font-disp);font-weight:640;font-size:24px;letter-spacing:-.02em;margin:0}
+.d1-todayhead{display:flex;align-items:center;justify-content:space-between;padding:15px 18px;border-bottom:1px solid var(--border)}
+.d1-todayhead h3{font-family:var(--font-disp);font-weight:620;font-size:15.5px;margin:0}
+.d1-trow{display:flex;align-items:center;gap:13px;padding:13px 18px}
+.d1-trow+.d1-trow{border-top:1px solid var(--border)}
+.d1-ttime{font-family:var(--font-disp);font-weight:640;font-size:13px;width:42px;flex:none;font-variant-numeric:tabular-nums}
+.d1-tmain{flex:1;min-width:0}
+.d1-tmain .nm{display:block;font-weight:600;font-size:14px;letter-spacing:-.005em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* D2 pieces reused verbatim: open pill + chair cards, extended with a .hero size modifier */
+.d2-openpill{display:inline-flex;align-items:center;gap:9px;padding:9px 16px 9px 12px;border-radius:99px;background:var(--green-bg);color:var(--green);font-weight:700;font-size:13.5px;flex:none}
+.d2-openpill .d{width:9px;height:9px;border-radius:50%;background:var(--green);position:relative}
+.d2-openpill .d::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid var(--green);opacity:.4;animation:pg 2s ease-out infinite}
+.d2-chair{border-radius:18px;border:1px solid var(--border);background:#fff;padding:18px;box-shadow:0 2px 8px rgba(50,47,44,.05);display:flex;flex-direction:column;gap:12px}
+.d2-staffrow{display:flex;align-items:center;gap:10px}
+.d2-staffrow .nm{font-family:var(--font-disp);font-weight:640;font-size:13.5px;flex:1}
+.d2-occ{flex:1;min-height:52px;display:flex;flex-direction:column;justify-content:center}
+.d2-occ .nm2{font-weight:600;font-size:14.5px}
+.d2-occ .sv{font-size:12.5px;color:var(--ink2);margin-top:2px}
+.d2-occ .countdown{font-size:12px;font-weight:700;color:var(--green);display:flex;align-items:center;gap:6px;margin-top:5px}
+.d2-occ.free .nm2{color:var(--ink3);font-weight:600}
+.d2-occ.free .sv{color:var(--ink2)}
+.d2-primact{border:0;border-radius:99px;padding:11px 0;font-weight:700;font-size:13.5px;cursor:pointer;width:100%}
+.d2-primact.ink{background:var(--ink);color:#fff}
+.d2-primact.outlinebtn{background:#fff;color:var(--ink);border:1px solid var(--border)}
+.d2-primact.outlinebtn:hover{background:var(--sunken)}
+/* hero modifier: this task's explicit spec, chairs are the main information so the cards get more room
+   and the client name (the person in the chair) reads bigger than the staff label above it */
+.d2-chair.hero{padding:22px;gap:14px}
+.d2-chair.hero .d2-occ .nm2{font-size:18px;letter-spacing:-.01em}
+/* occupied accent: the spec offers a wash OR a left edge; a wash needs a gradient, which this page's
+   hard rule bans outside avatar circles, so occupied chairs use a solid green left edge instead */
+.d2-chair.hero.live{border-color:var(--border);border-left:3px solid var(--green);padding-left:19px}
+
+/* D3 pieces reused verbatim: sidebar shell */
+.d3-wsrow{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:10px}
+.d3-wsrow .nm{font-family:var(--font-disp);font-weight:640;font-size:14px;flex:1}
+.d3-wsrow .ic{width:14px;height:14px;color:var(--ink3);flex:none}
+.d3-search{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;background:#fff;border:1px solid var(--border);color:var(--ink3);font-size:12.5px;margin-bottom:16px}
+.d3-search .ic{width:14px;height:14px;flex:none}
+.d3-search span{flex:1}
+.d3-search .kbd{font-family:var(--font-disp);font-size:10px;font-weight:600;color:var(--ink3);background:var(--sunken);border-radius:5px;padding:2px 6px;flex:none}
+.d3-navitem{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;font-size:13.5px;font-weight:500;color:var(--ink2)}
+.d3-navitem .ic{width:16px;height:16px;flex:none;color:var(--ink3)}
+/* active state per the locked design contract: sunken bg, ink text, blue icon, never a blue/black fill */
+.d3-navitem.act{background:var(--sunken);color:var(--ink);font-weight:600}
+.d3-navitem.act .ic{color:var(--blue)}
+
+/* =========================================================
+   this file's own CSS: the sidebar shell + a single quiet
+   content column. No right rail, no floating dock.
+   ========================================================= */
+.ig-app{display:flex;min-height:820px;background:#fff;font-size:14px}
+
+.ig-sidebar{width:240px;flex:none;background:var(--canvas);border-right:1px solid var(--border);padding:20px 14px;display:flex;flex-direction:column;gap:2px}
+.ig-sidetop{display:flex;align-items:center;gap:4px;margin-bottom:10px}
+.ig-sidetop .d3-wsrow{flex:1;padding:5px 6px}
+.ig-wsav{width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,#276EF1,#1B4DCB);color:#fff;display:grid;place-items:center;font-family:var(--font-disp);font-weight:800;font-size:11px;flex:none}
+.ig-collapse{width:28px;height:28px;border-radius:8px;border:0;background:transparent;color:var(--ink3);display:grid;place-items:center;cursor:pointer;flex:none}
+.ig-collapse:hover{background:#fff;color:var(--ink)}
+.ig-navdiv{height:1px;background:var(--border);margin:10px 6px}
+
+.ig-content{flex:1;min-width:0}
+.ig-scroll{padding:36px 40px 44px}
+.ig-center{display:flex;flex-direction:column;gap:32px}
+
+.ig-greetrow{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.ig-headright{display:flex;align-items:center;gap:12px}
+.ig-statusrow{display:flex;align-items:center;gap:12px;padding:8px 14px;border:1px solid var(--border);border-radius:99px;background:#fff;box-shadow:0 2px 8px rgba(50,47,44,.05);flex:none}
+.ig-statusdiv{width:1px;height:16px;background:var(--border)}
+.ig-statustext{font-size:12.5px;color:var(--ink2);white-space:nowrap}
+.ig-newbtn{border:0;background:var(--ink);color:#fff;font-weight:700;font-size:13px;padding:10px 18px 10px 14px;border-radius:99px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.ig-newbtn .ic{width:15px;height:15px}
+.ig-newbtn:hover{opacity:.92}
+
+/* the thin stat line: revenue demoted here, quiet text, no cards, no chart, no gradient */
+.ig-statline{display:flex;align-items:stretch;flex-wrap:wrap;row-gap:14px}
+.ig-stat{display:flex;flex-direction:column;justify-content:center;gap:5px;padding:0 28px 0 0}
+.ig-statdiv{width:1px;background:var(--border);margin:0 28px 0 0}
+.ig-stat .lab{font-size:11.5px;color:var(--ink3);font-weight:600}
+.ig-stat .val{font-family:var(--font-disp);font-weight:700;font-size:20px;letter-spacing:-.01em;font-variant-numeric:tabular-nums;color:var(--ink);display:flex;align-items:baseline;gap:7px}
+.ig-stat .val .delta{font-size:12px;font-weight:700;color:var(--green);font-family:var(--font-body)}
+
+.ig-sectionhead{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.ig-sectionhead .lft{display:flex;align-items:center;gap:10px}
+.ig-sectionhead h3{font-family:var(--font-disp);font-weight:620;font-size:15px;margin:0}
+
+.ig-chairs{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+@media (max-width:920px){.ig-chairs{grid-template-columns:repeat(2,1fr)}}
+
+.ig-tworow{display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap}
+.ig-tworow>.panel{flex:1;min-width:280px}
+
+/* waiting rows */
+.ig-waitrow{display:flex;align-items:center;gap:13px;padding:13px 18px}
+.ig-waitrow+.ig-waitrow{border-top:1px solid var(--border)}
+.ig-waitno{font-family:var(--font-disp);font-weight:700;font-size:12.5px;color:var(--ink3);width:34px;flex:none}
+.ig-waitmain{flex:1;min-width:0}
+.ig-waitmain .nm{display:block;font-weight:600;font-size:13.5px}
+.ig-waitmain .sv{display:block;font-size:12px;color:var(--ink2);margin-top:1px}
+
+/* needs-you rows: reuse doic/dotx, swap the chevron for a small neutral action button */
+.ig-needrow{display:flex;align-items:center;gap:13px;padding:13px 16px}
+.ig-needrow+.ig-needrow{border-top:1px solid var(--border)}
+
+.ig-smallbtn{border:1px solid var(--border);background:#fff;color:var(--ink);font-weight:600;font-size:12px;padding:7px 14px;border-radius:99px;cursor:pointer;white-space:nowrap;flex:none}
+.ig-smallbtn:hover{background:var(--sunken)}
+
+.ig-seeall{color:var(--blue);font-size:12.5px;font-weight:600}
+.ig-seeall:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" class="lucide-sprite" aria-hidden="true"><defs>
+<symbol id="i-grid" viewBox="0 0 24 24"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></symbol>
+<symbol id="i-calendar" viewBox="0 0 24 24"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+<symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></symbol>
+<symbol id="i-userCheck" viewBox="0 0 24 24"><path d="m16 11 2 2 4-4"/><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></symbol>
+<symbol id="i-usersRound" viewBox="0 0 24 24"><path d="M18 21a8 8 0 0 0-16 0"/><circle cx="10" cy="8" r="5"/><path d="M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3"/></symbol>
+<symbol id="i-scissors" viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/></symbol>
+<symbol id="i-box" viewBox="0 0 24 24"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><polyline points="3.29 7 12 12 20.71 7"/><path d="m7.5 4.27 9 5.15"/></symbol>
+<symbol id="i-megaphone" viewBox="0 0 24 24"><path d="M11 6a13 13 0 0 0 8.4-2.8A1 1 0 0 1 21 4v12a1 1 0 0 1-1.6.8A13 13 0 0 0 11 14H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"/><path d="M6 14a12 12 0 0 0 2.4 7.2 2 2 0 0 0 3.2-2.4A8 8 0 0 1 10 14"/><path d="M8 6v8"/></symbol>
+<symbol id="i-dollar" viewBox="0 0 24 24"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></symbol>
+<symbol id="i-settings" viewBox="0 0 24 24"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></symbol>
+<symbol id="i-chevronsUD" viewBox="0 0 24 24"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></symbol>
+<symbol id="i-chevronRight" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5v14"/></symbol>
+<symbol id="i-arrowUR" viewBox="0 0 24 24"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></symbol>
+<symbol id="i-arrowDR" viewBox="0 0 24 24"><path d="m7 7 10 10"/><path d="M17 7v10H7"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></symbol>
+<symbol id="i-wallet" viewBox="0 0 24 24"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></symbol>
+<symbol id="i-rotate" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+<symbol id="i-store" viewBox="0 0 24 24"><path d="M15 21v-5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v5"/><path d="M17.774 10.31a1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.451 0 1.12 1.12 0 0 0-1.548 0 2.5 2.5 0 0 1-3.452 0 1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.77-3.248l2.889-4.184A2 2 0 0 1 7 2h10a2 2 0 0 1 1.653.873l2.895 4.192a2.5 2.5 0 0 1-3.774 3.244"/><path d="M4 10.95V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8.05"/></symbol>
+<symbol id="i-more" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></symbol>
+<symbol id="i-command" viewBox="0 0 24 24"><path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3"/></symbol>
+<symbol id="i-panelLeft" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/></symbol>
+</defs></svg>
+
+<div class="pageintro">
+  <p class="ey">Solen Operator Dashboard</p>
+  <h1>Chairs first, everything else quiet</h1>
+  <p>Revision of the integrated draft after owner feedback. The people in the chairs are now the main information, several chairs busy at once, not one lonely card. Revenue is demoted to a quiet stat line, it no longer leads the page. The bottom action dock is gone, the sidebar is the only navigation. Today collapses to a count plus a <b>See all</b> link instead of the full day. And nothing appears twice, a person or event now shows up in exactly one place: the chairs, the waiting list, needs-you or today.</p>
+</div>
+
+<div class="linkrow">
+  <a class="linkpill" href="integrated.html">Previous draft</a>
+  <a class="linkpill" href="fresh.html">The 3 structures</a>
+</div>
+
+<div class="stage">
+  <div class="win">
+    <div class="chrome"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span><span class="u">solen.ch/de/dashboard</span></div>
+    <div class="ig-app">
+
+      <!-- SIDEBAR, the only navigation on this page -->
+      <div class="ig-sidebar">
+        <div class="ig-sidetop">
+          <div class="d3-wsrow">
+            <span class="ig-wsav">S</span>
+            <span class="nm">test</span>
+            <svg class="ic" data-lucide="chevrons-up-down"><use href="#i-chevronsUD"/></svg>
+          </div>
+          <button class="ig-collapse" aria-label="Collapse sidebar">
+            <svg class="ic" data-lucide="panel-left"><use href="#i-panelLeft"/></svg>
+          </button>
+        </div>
+
+        <div class="d3-search">
+          <svg class="ic" data-lucide="search"><use href="#i-search"/></svg>
+          <span>Search or jump to...</span>
+          <span class="kbd"><svg class="ic" data-lucide="command" style="width:9px;height:9px;display:inline;vertical-align:-1px"><use href="#i-command"/></svg>K</span>
+        </div>
+
+        <div class="d3-navitem act"><svg class="ic" data-lucide="layout-grid"><use href="#i-grid"/></svg>Overview</div>
+        <div class="d3-navitem"><svg class="ic" data-lucide="calendar"><use href="#i-calendar"/></svg>Calendar</div>
+        <div class="d3-navitem"><svg class="ic" data-lucide="users"><use href="#i-users"/></svg>Clients</div>
+        <div class="d3-navitem"><svg class="ic" data-lucide="box"><use href="#i-box"/></svg>Catalog</div>
+        <div class="d3-navitem"><svg class="ic" data-lucide="dollar-sign"><use href="#i-dollar"/></svg>Sales</div>
+        <div class="d3-navitem"><svg class="ic" data-lucide="user-check"><use href="#i-userCheck"/></svg>Team</div>
+        <div class="d3-navitem"><svg class="ic" data-lucide="megaphone"><use href="#i-megaphone"/></svg>Marketing</div>
+        <div class="d3-navitem"><svg class="ic" data-lucide="chart-column"><use href="#i-chart"/></svg>Reports</div>
+
+        <div class="ig-navdiv"></div>
+        <div class="d3-navitem"><svg class="ic" data-lucide="settings"><use href="#i-settings"/></svg>Settings</div>
+      </div>
+
+      <!-- CONTENT, one quiet column: header, stat line, chairs (hero), waiting + needs-you, today small -->
+      <div class="ig-content">
+        <div class="ig-scroll">
+          <div class="ig-center">
+
+            <div class="ig-greetrow">
+              <div class="d1-greet">
+                <div class="eyb">Tuesday 14 July</div>
+                <h2>Good morning, test</h2>
+              </div>
+              <div class="ig-headright">
+                <div class="ig-statusrow">
+                  <span class="d2-openpill"><span class="d"></span>Open</span>
+                  <span class="ig-statusdiv"></span>
+                  <span class="ig-statustext">closes 19:00</span>
+                </div>
+                <button class="ig-newbtn"><svg class="ic" data-lucide="plus"><use href="#i-plus"/></svg>New</button>
+              </div>
+            </div>
+
+            <!-- revenue lives here now, demoted to a quiet line, no card, no chart, no gradient -->
+            <div class="ig-statline">
+              <div class="ig-stat">
+                <span class="lab">Revenue today</span>
+                <span class="val">CHF 1'240<span class="delta">+18%</span></span>
+              </div>
+              <div class="ig-statdiv"></div>
+              <div class="ig-stat">
+                <span class="lab">Appointments</span>
+                <span class="val">6</span>
+              </div>
+              <div class="ig-statdiv"></div>
+              <div class="ig-stat">
+                <span class="lab">Waiting</span>
+                <span class="val">3</span>
+              </div>
+              <div class="ig-statdiv"></div>
+              <div class="ig-stat">
+                <span class="lab">Free chairs</span>
+                <span class="val">1</span>
+              </div>
+            </div>
+
+            <!-- the hero: who is in the chair right now, several people at once -->
+            <div>
+              <div class="ig-sectionhead" style="margin-bottom:14px">
+                <div class="lft">
+                  <span class="livedot"></span>
+                  <h3>In the chair now</h3>
+                </div>
+                <span class="panelh pcount" style="padding:0;border:0">3 of 4 chairs busy</span>
+              </div>
+              <div class="ig-chairs">
+
+                <div class="d2-chair hero live">
+                  <div class="d2-staffrow">
+                    <span class="av" style="background:linear-gradient(135deg,#276EF1,#1B4DCB)">EM</span>
+                    <span class="nm">Elena M.</span>
+                    <span class="pill ok"><i></i>In chair</span>
+                  </div>
+                  <div class="d2-occ">
+                    <div class="nm2">Lena Vogt</div>
+                    <div class="sv">Women's cut</div>
+                    <div class="countdown"><span class="livedot" style="width:6px;height:6px"></span>12 min left</div>
+                  </div>
+                  <button class="d2-primact ink">Complete</button>
+                </div>
+
+                <div class="d2-chair hero live">
+                  <div class="d2-staffrow">
+                    <span class="av" style="background:linear-gradient(135deg,#F0A868,#C0524A)">DK</span>
+                    <span class="nm">David K.</span>
+                    <span class="pill ok"><i></i>In chair</span>
+                  </div>
+                  <div class="d2-occ">
+                    <div class="nm2">Marco Rossi</div>
+                    <div class="sv">Beard &amp; fade</div>
+                    <div class="countdown"><span class="livedot" style="width:6px;height:6px"></span>8 min left</div>
+                  </div>
+                  <button class="d2-primact ink">Complete</button>
+                </div>
+
+                <div class="d2-chair hero live">
+                  <div class="d2-staffrow">
+                    <span class="av" style="background:linear-gradient(135deg,#16A34A,#0E7A37)">SL</span>
+                    <span class="nm">Sara L.</span>
+                    <span class="pill ok"><i></i>In chair</span>
+                  </div>
+                  <div class="d2-occ">
+                    <div class="nm2">Sofia Keller</div>
+                    <div class="sv">Gel nails</div>
+                    <div class="countdown"><span class="livedot" style="width:6px;height:6px"></span>25 min left</div>
+                  </div>
+                  <button class="d2-primact ink">Complete</button>
+                </div>
+
+                <div class="d2-chair hero">
+                  <div class="d2-staffrow">
+                    <span class="av" style="background:linear-gradient(135deg,#8B5CF6,#6D28D9)">TB</span>
+                    <span class="nm">Tom B.</span>
+                    <span class="pill ghost"><i></i>Free</span>
+                  </div>
+                  <div class="d2-occ free">
+                    <div class="nm2">Next, 14:30</div>
+                    <div class="sv">Nina Brun, Spa facial</div>
+                  </div>
+                  <button class="d2-primact outlinebtn">Start</button>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- walk-ins live only here, and decisions only in needs-you, never both -->
+            <div class="ig-tworow">
+              <div class="panel">
+                <div class="panelh"><h3>Waiting</h3><span class="pcount">3</span></div>
+                <div>
+                  <div class="ig-waitrow">
+                    <span class="ig-waitno">No. 1</span>
+                    <span class="ig-waitmain"><span class="nm">Luca F.</span><span class="sv">Men's cut, waiting 8 min</span></span>
+                    <button class="ig-smallbtn">Check in</button>
+                  </div>
+                  <div class="ig-waitrow">
+                    <span class="ig-waitno">No. 2</span>
+                    <span class="ig-waitmain"><span class="nm">Anna B.</span><span class="sv">Beard trim, waiting 4 min</span></span>
+                    <button class="ig-smallbtn">Check in</button>
+                  </div>
+                  <div class="ig-waitrow">
+                    <span class="ig-waitno">No. 3</span>
+                    <span class="ig-waitmain"><span class="nm">Noah K.</span><span class="sv">Men's cut, waiting 2 min</span></span>
+                    <button class="ig-smallbtn">Check in</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="panel">
+                <div class="panelh"><h3>Needs you</h3></div>
+                <div>
+                  <div class="ig-needrow">
+                    <span class="doic" style="background:var(--green-bg);color:var(--green)"><svg class="ic" data-lucide="wallet"><use href="#i-wallet"/></svg></span>
+                    <span class="dotx"><span class="t">2 payments to collect</span><span class="s">CHF 165 across 2 finished appointments</span></span>
+                    <button class="ig-smallbtn">Collect</button>
+                  </div>
+                  <div class="ig-needrow">
+                    <span class="doic" style="background:var(--blue-pale);color:var(--blue)"><svg class="ic" data-lucide="calendar"><use href="#i-calendar"/></svg></span>
+                    <span class="dotx"><span class="t">3 appointments to confirm</span><span class="s">Waiting on your OK</span></span>
+                    <button class="ig-smallbtn">Review</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- today, small on purpose: a count and a link, not the full list -->
+            <div class="card">
+              <div class="d1-todayhead">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <h3>Today</h3>
+                  <span class="pcount">6 appointments</span>
+                </div>
+                <a class="ig-seeall" href="#">See all</a>
+              </div>
+              <div class="d1-trow">
+                <span class="d1-ttime">11:15</span>
+                <span class="av" style="width:28px;height:28px;font-size:11px;background:linear-gradient(135deg,#F0A868,#C0524A)">DK</span>
+                <span class="d1-tmain"><span class="nm">Jonas Widmer, Men's cut</span></span>
+              </div>
+              <div class="d1-trow">
+                <span class="d1-ttime">13:00</span>
+                <span class="av" style="width:28px;height:28px;font-size:11px;background:linear-gradient(135deg,#276EF1,#1B4DCB)">EM</span>
+                <span class="d1-tmain"><span class="nm">Aria Fischer, Color</span></span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

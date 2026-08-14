@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
-import { applyRateLimit, generalLimiter, getAiDailyLimiter } from "@/lib/ratelimit";
+import { applyRateLimit, generalLimiter, getAiDailyLimiter, getAiGlobalDailyLimiter, AI_GLOBAL_BUDGET_KEY } from "@/lib/ratelimit";
 import { checkUserBanned } from "@/lib/feature-flags";
 import { validateBody, intakeRecommendationSchema } from "@/lib/validations";
 import { getServerEnv } from "@/lib/env";
@@ -25,6 +25,12 @@ export async function POST(req: NextRequest) {
 
   const rateLimited = await applyRateLimit(generalLimiter, { userId: user.id });
   if (rateLimited) return rateLimited;
+
+  // House-wide daily AI ceiling, checked before the per-user one. The per-user cap is a fairness
+  // limit and a fresh account arrives with a fresh allowance, so only a shared counter bounds what
+  // a single day can cost. One route first, on purpose: the rest follow once this one is verified.
+  const globalAiLimited = await applyRateLimit(await getAiGlobalDailyLimiter(), { userId: AI_GLOBAL_BUDGET_KEY });
+  if (globalAiLimited) return globalAiLimited;
 
   const dailyLimited = await applyRateLimit(await getAiDailyLimiter(), { userId: user.id });
   if (dailyLimited) return dailyLimited;

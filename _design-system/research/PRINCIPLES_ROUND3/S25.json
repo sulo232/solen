@@ -1,0 +1,121 @@
+{
+ "id": "S25",
+ "draft": {
+  "id": "S25",
+  "tag": "net-new",
+  "title": "Error prevention and recovery",
+  "principle_summary": "Two separable disciplines govern errors: PREVENTION (Nielsen heuristic 5) stops the error before it happens via constraints and forcing functions, or asks for confirmation only when an action is destructive and irreversible; RECOVERY (Nielsen heuristic 9, backed by WCAG 3.3.x) governs what happens once an error occurs, and the single biggest lever there is message specificity, not tone. Baymard's benchmark finds 98 percent of tested sites show a generic error message even when the backend already knows the exact field and cause, which is the gap this stream targets. The secondary principle is a hierarchy: eliminate the error-prone condition first, confirm only for destructive or irreversible acts, and prefer undo over confirmation everywhere else, because confirmation dialogs habituate (users learn to click through them) while undo keeps the user moving and only costs something if the mistake actually happened.",
+  "sources": [
+   {
+    "claim": "Nielsen's 10 usability heuristics, including H5 (error prevention: eliminate error-prone conditions or confirm before commit) and H9 (help users recognize, diagnose, and recover from errors; messages in plain language, precisely indicate the problem, constructively suggest a solution)",
+    "source": "Nielsen Norman Group, 10 Usability Heuristics for User Interface Design (nngroup.com/articles/ten-usability-heuristics), heuristics refined from Nielsen and Molich 1990 / Nielsen 1994 factor analysis of real usability problems",
+    "tier": "T2"
+   },
+   {
+    "claim": "Confirmation dialogs reduce errors on destructive, costly, or irreversible actions but lose effectiveness with overuse because users habituate and click through them; undo is the preferred fallback under the user-control-and-freedom heuristic",
+    "source": "Nielsen Norman Group, Confirmation Dialogs Can Prevent User Errors (If Not Overused) (nngroup.com/articles/confirmation-dialog)",
+    "tier": "T3"
+   },
+   {
+    "claim": "Forcing functions are physical or interaction constraints that make an error-prone step impossible rather than merely discouraged (three subtypes: interlocks, lock-ins, lockouts); this is the design-theory foundation under the prevention half of H5",
+    "source": "Don Norman, The Design of Everyday Things (1988/2013), chapter on constraints and forcing functions",
+    "tier": "T2"
+   },
+   {
+    "claim": "98 percent of sites in Baymard's checkout benchmark do not target the error message at the exact problem that triggered it, even though the backend logic already knows the cause; generic messages measurably block task completion in moderated testing",
+    "source": "Baymard Institute, How to Improve Validation Errors (baymard.com/blog/adaptive-validation-error-messages)",
+    "tier": "T3"
+   },
+   {
+    "claim": "WCAG 3.3.1 Error Identification, 3.3.2 Labels or Instructions, and 3.3.3 Error Suggestion are a formal accessibility standard requiring errors to be identified in text, fields to carry instructions, and a correction to be suggested when known",
+    "source": "W3C, Web Content Accessibility Guidelines 2.1/2.2, success criteria 3.3.1 to 3.3.3",
+    "tier": "T1"
+   },
+   {
+    "claim": "Validate on blur or submit, never per keystroke; confirm success early, deliver errors late (already cited in Solen's forms domain as T2 forms research)",
+    "source": "RATIONALE.md domain 21, line 743 (forms research, unnamed aggregate)",
+    "tier": "T2"
+   }
+  ],
+  "solen_current": "Coverage is thin and split across three places, none of which states the PREVENTION half of the principle. (1) RATIONALE.md domain 21 (\\\"Domain 17: forms and input\\\"), line 757: \\\"Error layer: WCAG 3.3.1/3.3.2/3.3.3 + Nielsen heuristic 9 (plain language, precise, constructive; inline at the field, summary linking down on long forms)\\\" - this cites H9 and the WCAG triad correctly but only as a fragment inside the forms domain, not as its own domain, and never mentions H5, forcing functions, or confirmation-vs-undo. (2) RATIONALE.md line 445 and 479 mention \\\"dual confirmation-at-both-ends\\\" and toast auto-dismiss as house CONVENTION with no cited hierarchy for WHEN a confirmation step is warranted versus when undo should replace it. (3) COMPONENT_REGISTRY.md line 36 locks ErrorState (dashboard fetch-fail panel, red icon chip + retry) and ErrorFallback (route-level boundary), and CLAUDE.md line 195 bans silent `.catch(() => {})` and mandates `console.error` plus a user-visible error on payment flows. These are RECOVERY plumbing (a component exists, logging is mandated) with zero governing principle for message CONTENT (specificity) or for PREVENTION (constraints, forcing functions, the confirm-vs-undo choice) anywhere in RATIONALE.md, SOURCE.md, or LOCKFILE.md.",
+  "gap": "No domain section owns error prevention or recovery as a topic. The forms domain has one sourced sentence on H9 message quality but omits H5 entirely (constraints, forcing functions, confirmation gating). Solen has no stated rule for which actions get a confirmation dialog versus which should just be undoable (the salon cancel-booking flow, the dashboard delete-service flow, and the discount-code removal flow currently have no documented rationale for their confirm-or-undo choice). There is also no specificity mandate for error copy: nothing in the system currently forbids a generic \\\"Something went wrong\\\" toast, and the Baymard 98 percent finding (the exact number this stream's key_question names) is uncited anywhere in the repo.",
+  "proposed_addition": "## Domain 24: Error prevention and recovery (Nielsen H5/H9)\n\nTwo disciplines, not one. PREVENTION asks whether the error should have been possible at all; RECOVERY asks what happens once it occurred. Solen's existing coverage (RATIONALE.md domain 21 line 757, and the ErrorState/ErrorFallback components) already handles the mechanics of recovery UI; this domain supplies the missing governing principle for both halves.\n\n**Prevention hierarchy (T2, Nielsen H5 plus Norman's forcing-function taxonomy):** in order of preference, (1) eliminate the error-prone condition structurally, so the wrong action is not offered (a disabled Pay button before a slot is picked, already Solen's own disabled-state convention); (2) constrain input so an invalid value cannot be entered (inputmode/type on numeric fields, already domain 21's input-mechanics line); (3) only when 1 and 2 are impossible, gate the action behind a confirmation step, and reserve that step for actions that are destructive, costly, or hard to reverse (Norman's interlock/lock-in/lockout typology names the mechanism; a stove that cannot ignite the wrong burner is the canonical forcing function).\n\n**Confirm-versus-undo choice (T3, NN/g):** confirmation dialogs measurably cut errors on high-stakes actions but habituate with repeated use, users learn to click through them, so the dialog should be reserved for genuinely rare, high-cost moments (deleting a salon service with existing bookings, cancelling a paid booking) and never used for routine or frequent actions. For routine actions with a real but recoverable cost (removing a discount code, deselecting a staff member mid-flow), undo (a toast with an inline reverse action, or simply not persisting the change until a later explicit commit step) is the better default because it costs the user nothing when no mistake was made, unlike a confirmation dialog which taxes every use whether or not an error was about to happen.\n\n**Message specificity mandate (T3, Baymard; T1 boundary, WCAG 3.3.1 to 3.3.3):** an error message must name the exact field and the exact cause when the backend already knows it (\\\"Postleitzahl muss 4 Ziffern haben\\\", never a generic \\\"Ungueltige Eingabe\\\" for a validation the code has already narrowed). Baymard's checkout benchmark found 98 percent of tested sites fail this even though the backend logic already isolates the cause, and moderated testing shows generic messages are the specific point where users abandon rather than self-correct. This extends, rather than repeats, RATIONALE.md line 757's existing H9 citation: that line established plain-language and inline placement; this adds the SPECIFICITY requirement Solen has not yet stated, and gives it a named, checkable source.\n\n**Recovery UI stays componentised (no change, cross-reference only):** ErrorState (COMPONENT_REGISTRY.md line 36) and ErrorFallback already implement the retry-affordance half of H9 for dashboard panels and route boundaries; CLAUDE.md line 195's ban on silent `.catch(() => {})` is the logging half. This domain does not touch either; it supplies the missing principle for what the error COPY inside those components must say, and for when a control upstream of them should have been gated by a confirmation step instead of ever reaching an error state.\n\nBOUNDARY: this domain governs UI copy and interaction gating, not backend validation logic or retry/backoff strategy (those are fable-backend's silent no-op territory). It does not reopen any LOCKFILE literal (toast 4s/3-max at line 475, dual-confirmation-at-both-ends at line 445 stay as-is); it gives those existing CONV rules a stated WHEN to apply confirmation at all, which they currently lack.\n\nMECHANIC: T1 (WCAG 3.3.1 to 3.3.3, formal standard) bounds the recovery floor; T2 (Nielsen H5/H9, Norman forcing functions) supplies the two-discipline structure; T3 (NN/g confirmation-dialog guidance, Baymard's 98 percent specificity finding) supplies the two operational numbers/thresholds, both single-source and both flagged for re-verification of exact magnitude if cited to the owner as a hard number rather than a directional finding.",
+  "taste_lab_probe": "Not a generative-prior stream, so no probe is required. If the owner wants one anyway: audit the three highest-stakes destructive actions already in the product (cancel a paid booking, delete a dashboard service with existing bookings, remove a payment method) against the prevention hierarchy above, and record for each whether it currently uses a confirmation dialog, an undo toast, or neither, then decide per-action rather than applying one blanket rule.",
+  "numbers_used": [
+   "98 percent (Baymard, sites without targeted error messages)",
+   "3.3.1/3.3.2/3.3.3 (WCAG success criteria numbers)",
+   "H5/H9 (Nielsen heuristic numbers 5 and 9 of 10)"
+  ]
+ },
+ "verified": {
+  "id": "S25",
+  "tag": "net-new",
+  "verdict": "revised",
+  "myths_caught": [],
+  "claim_verdicts": [
+   {
+    "claim": "Nielsen's 10 usability heuristics H5 (error prevention) and H9 (help recognize/diagnose/recover from errors) exist as described",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Verified against nngroup.com/articles/ten-usability-heuristics; matches file's existing T2 treatment of NN/g heuristics elsewhere (lines 705, 765)."
+   },
+   {
+    "claim": "Confirmation dialogs reduce errors on destructive/costly/irreversible actions but lose effectiveness with overuse due to habituation; undo is the preferred fallback",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Article confirmed live at nngroup.com/articles/confirmation-dialog, content matches the draft's paraphrase. Draft tagged this T3; every other NN/g citation in RATIONALE.md (lines 53, 75, 134, 693, 705, 765, 803) is tagged T2. Corrected to T2 for internal consistency; this is a single-org practitioner synthesis, same epistemic weight as the other NN/g citations already in the file, no reason to demote just this one."
+   },
+   {
+    "claim": "Forcing functions (interlocks, lock-ins, lockouts) are Norman's constraint taxonomy from The Design of Everyday Things",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Accurate to the book; canonical design-theory text, not empirical peer review, T2 is the honest tier and matches how the file treats Norman elsewhere (line 693, affordance/signifier)."
+   },
+   {
+    "claim": "98 percent of Baymard-benchmarked sites show a generic error message even though the backend already knows the exact field/cause",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Verified live at baymard.com/blog/adaptive-validation-error-messages, the 98 percent figure and B&H Photo/ZIP-code examples are real and match the draft. Draft tagged this T3; the file's own precedent tags Baymard as T2 twice already (line 755 'Single column (T2, Baymard/CXL)', line 827 'Baymard list-vs-grid as anchors'). Corrected to T2 for internal consistency, same single-org benchmark-methodology weight as the file's existing Baymard citations."
+   },
+   {
+    "claim": "WCAG 3.3.1 Error Identification, 3.3.2 Labels or Instructions, 3.3.3 Error Suggestion are a formal W3C standard requiring text error identification, field instructions, and correction suggestions",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Verified against w3.org/WAI/WCAG21/Understanding pages; description accurate (3.3.1 and 3.3.2 are Level A, 3.3.3 is Level AA, draft did not misstate levels). T1 is correct, matches the file's own T1 tagging of WCAG citations at RATIONALE.md line 757."
+   },
+   {
+    "claim": "RATIONALE.md line 757 already cites WCAG 3.3.1/3.3.2/3.3.3 plus Nielsen H9 inside the forms domain, without covering H5, forcing functions, or confirm-vs-undo",
+    "source_ok": true,
+    "tier_final": "n/a",
+    "note": "Read the live file at lines 751-757: confirmed verbatim, the line exists exactly as quoted and the gap claim (no H5, no forcing functions, no confirm-vs-undo hierarchy anywhere in the surrounding domain) holds on inspection of the full domain 21 section 751-757."
+   },
+   {
+    "claim": "COMPONENT_REGISTRY.md line 36 locks ErrorState as the dashboard fetch-fail panel (red icon chip + retry) and ErrorFallback as the route-level boundary",
+    "source_ok": true,
+    "tier_final": "n/a",
+    "note": "Confirmed live: ErrorState row matches description exactly (red icon chip, ink Try again pill, RotateCcw, locked status); ErrorFallback is named as the route-level counterpart in the same row's Don't clause."
+   },
+   {
+    "claim": "CLAUDE.md line 195 bans silent .catch(() => {}) and mandates console.error plus user-visible errors on payment flows",
+    "source_ok": true,
+    "tier_final": "n/a",
+    "note": "Confirmed live at CLAUDE.md line ~193-195: matches verbatim (never .catch(() => {}), always console.error, payment flows: log + user-visible error + retry)."
+   },
+   {
+    "claim": "RATIONALE.md line 445 and 479 document dual confirmation-at-both-ends and toast auto-dismiss as house convention with no stated hierarchy for when confirmation is warranted vs. undo",
+    "source_ok": true,
+    "tier_final": "n/a",
+    "note": "Confirmed live: the dual-confirmation-at-both-ends DECISION/MECHANIC block (tagged CONV, uncovered by any domain section) and the toast 4s/3-max DECISION block (also CONV) both exist near those line numbers and match the draft's characterization exactly."
+   },
+   {
+    "claim": "Domain 24 is the correct next-available domain number for this new section",
+    "source_ok": true,
+    "tier_final": "n/a",
+    "note": "Verified by grepping every existing '## N. Domain M' header: the last one is Domain 23 (RATIONALE.md line 813, 'ethics as taste'). Domain 24 is genuinely the next free slot, not a fabricated or colliding number."
+   }
+  ],
+  "verified_addition": "## Domain 24: Error prevention and recovery (Nielsen H5/H9)\n\nTwo disciplines, not one. PREVENTION asks whether the error should have been possible at all; RECOVERY asks what happens once it occurred. Solen's existing coverage (RATIONALE.md domain 21 line 757, and the ErrorState/ErrorFallback components) already handles the mechanics of recovery UI; this domain supplies the missing governing principle for both halves.\n\n**Prevention hierarchy (T2, Nielsen H5 plus Norman's forcing-function taxonomy):** in order of preference, (1) eliminate the error-prone condition structurally, so the wrong action is not offered (a disabled Pay button before a slot is picked, already Solen's own disabled-state convention); (2) constrain input so an invalid value cannot be entered (inputmode/type on numeric fields, already domain 21's input-mechanics line); (3) only when 1 and 2 are impossible, gate the action behind a confirmation step, and reserve that step for actions that are destructive, costly, or hard to reverse (Norman's interlock/lock-in/lockout typology names the mechanism; a stove that cannot ignite the wrong burner is the canonical forcing function).\n\n**Confirm-versus-undo choice (T2, NN/g):** confirmation dialogs measurably cut errors on high-stakes actions but habituate with repeated use, users learn to click through them, so the dialog should be reserved for genuinely rare, high-cost moments (deleting a salon service with existing bookings, cancelling a paid booking) and never used for routine or frequent actions. For routine actions with a real but recoverable cost (removing a discount code, deselecting a staff member mid-flow), undo (a toast with an inline reverse action, or simply not persisting the change until a later explicit commit step) is the better default because it costs the user nothing when no mistake was made, unlike a confirmation dialog which taxes every use whether or not an error was about to happen.\n\n**Message specificity mandate (T2, Baymard; T1 boundary, WCAG 3.3.1 to 3.3.3):** an error message must name the exact field and the exact cause when the backend already knows it (\"Postleitzahl muss 4 Ziffern haben\", never a generic \"Ungueltige Eingabe\" for a validation the code has already narrowed). Baymard's checkout benchmark found 98 percent of tested sites fail this even though the backend logic already isolates the cause (verified live at baymard.com, the B&H Photo phone-number and ZIP-code examples are Baymard's own), and moderated testing shows generic messages are the specific point where users abandon rather than self-correct. This extends, rather than repeats, RATIONALE.md line 757's existing H9 citation: that line established plain-language and inline placement; this adds the SPECIFICITY requirement Solen has not yet stated, and gives it a named, checkable source.\n\n**Recovery UI stays componentised (no change, cross-reference only):** ErrorState (COMPONENT_REGISTRY.md line 36) and ErrorFallback already implement the retry-affordance half of H9 for dashboard panels and route boundaries; CLAUDE.md line 195's ban on silent `.catch(() => {})` is the logging half. This domain does not touch either; it supplies the missing principle for what the error COPY inside those components must say, and for when a control upstream of them should have been gated by a confirmation step instead of ever reaching an error state.\n\nBOUNDARY: this domain governs UI copy and interaction gating, not backend validation logic or retry/backoff strategy (those are fable-backend's silent no-op territory). It does not reopen any LOCKFILE literal (toast 4s/3-max at line 475, dual-confirmation-at-both-ends at line 445 stay as-is); it gives those existing CONV rules a stated WHEN to apply confirmation at all, which they currently lack.\n\nMECHANIC: T1 (WCAG 3.3.1 to 3.3.3, formal standard) bounds the recovery floor; T2 (Nielsen H5/H9, Norman forcing functions, NN/g confirmation-dialog guidance, Baymard's specificity finding) supplies the two-discipline structure and the two operational findings, both single-org sources (consistent with how RATIONALE.md already tiers NN/g and Baymard elsewhere), flagged for re-verification of exact magnitude if cited to the owner as a hard number rather than a directional finding.",
+  "residual_risks": "Tier correction only, no claim failed outright: the draft under-tiered both the NN/g confirmation-dialog article and the Baymard 98 percent finding as T3 when every other citation of these same two organizations in RATIONALE.md (NN/g at lines 53, 75, 134, 693, 705, 765, 803; Baymard at lines 755, 827) is tagged T2. Corrected both to T2 in verified_addition for internal consistency; this is a tiering-discipline note for whoever runs synthesis on future streams, not a content problem. No LOCKFILE literal was touched or reopened. One judgment call for the owner, not a verification failure: the draft's own taste_lab_probe suggests auditing the three highest-stakes destructive actions (cancel paid booking, delete a service with bookings, remove a payment method) against the new prevention hierarchy to decide confirm-vs-undo per action; this is real follow-up work, not something this synthesis pass can resolve, and is a good QUESTIONS.md candidate rather than something to silently pick a default for.",
+  "title": "Error prevention and recovery"
+ }
+}

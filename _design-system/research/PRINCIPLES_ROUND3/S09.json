@@ -1,0 +1,54 @@
+{
+ "id": "S09",
+ "draft": {
+  "id": "S09",
+  "tag": "generative-gap",
+  "title": "Density defaults per customer surface",
+  "principle_summary": "placeholder",
+  "sources": [],
+  "solen_current": "placeholder",
+  "gap": "placeholder",
+  "proposed_addition": "placeholder"
+ },
+ "verified": {
+  "id": "S09",
+  "tag": "generative-gap",
+  "title": "Density defaults per customer surface",
+  "verdict": "flagged",
+  "verified_addition": "NONE. The research-stage draft for S09 arrived with principle_summary, sources, solen_current, gap, and proposed_addition all literally set to the placeholder string \"placeholder\" - no claim, number, or source was actually produced to verify or clean. Rather than invent a density-defaults spec at the verify stage (rows-per-viewport, padding scale, whitespace-to-content ratio per surface class), which would violate the no-fabricated-data rule and the dont-invent-when-not-locked rule, this stream should be sent back to the research stage to actually answer the key_question (density targets for discovery feed vs search results vs PDP vs dashboard, grounded in an existing Solen surface or a named source), then re-verified.",
+  "claim_verdicts": [
+   {
+    "claim": "principle_summary (placeholder)",
+    "source_ok": false,
+    "tier_final": "N/A",
+    "note": "Literal placeholder string, not a real claim; nothing to source-check."
+   },
+   {
+    "claim": "sources[] (empty array)",
+    "source_ok": false,
+    "tier_final": "N/A",
+    "note": "No sources were listed by the research stage at all."
+   },
+   {
+    "claim": "solen_current (placeholder)",
+    "source_ok": false,
+    "tier_final": "N/A",
+    "note": "No actual audit of current Solen density conventions was performed."
+   },
+   {
+    "claim": "gap (placeholder)",
+    "source_ok": false,
+    "tier_final": "N/A",
+    "note": "Gap statement not written; duplicates key_question already in the streams file (dashboard density is out of scope per dedup_notes, customer-surface density is the actual target)."
+   },
+   {
+    "claim": "proposed_addition (placeholder)",
+    "source_ok": false,
+    "tier_final": "N/A",
+    "note": "No RATIONALE.md addition text was drafted; nothing survives to keep."
+   }
+  ],
+  "myths_caught": [],
+  "residual_risks": "The research stage for S09 did not run (or its output was dropped before reaching verify). Before re-running research: dashboard density is already sourced in TASTE_DASHBOARDS per the stream's own dedup_notes, so the re-run must scope strictly to customer-facing surfaces (discovery/Inspo feed, search results grid, PDP, booking flow) and cite either an existing Solen component/page as the empirical anchor or a named, checkable external source, no recalled UX stats. Any proposed rows-per-viewport or whitespace-ratio number is a candidate for a QUESTIONS.md entry rather than a frozen LOCKFILE value, since density defaults touch multiple already-locked surfaces (SearchTemplate, SalonCard, Inspo feed) and changing any of them needs an explicit owner decision, not a silent addition from this stream."
+ }
+}

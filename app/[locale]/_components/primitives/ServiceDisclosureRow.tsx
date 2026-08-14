@@ -61,7 +61,7 @@ export function ServiceDisclosureRow({
             aria-hidden
             className={cn(
               // mockup-ok: owner-approved 2026-07-18 liftup-booking-services-tiered mockup
-              "shrink-0 text-s-ink-3 transition-transform duration-[260ms] ease-glide",
+              "shrink-0 text-s-ink-2 transition-transform duration-[260ms] ease-glide",
               isExpanded && "rotate-180"
             )}
           />

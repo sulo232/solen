@@ -1,0 +1,205 @@
+{
+ "id": "S22",
+ "synth": {
+  "id": "S22",
+  "tag": "net-new",
+  "title": "Onboarding / first-run UX",
+  "principle_summary": "First-run flows govern disclosure and pacing, not persuasion (persuasion is PSYCHOLOGY laws 3+4's territory): each screen should carry exactly one decision so a progress signal means what it says; long option lists (interest pickers, category taxonomies) reveal a curated visible subset first with an explicit numbered \"Show more\" release valve rather than a full dump or a single opaque \"browse\" tap; progress indicators split by screen type, a continuous thin bar for active-choice question screens versus dot pagination plus a corner Skip for passive value/marketing carousels, because the two screen types carry different cognitive modes and conflating them either trivializes a real question or wrongly gates a skimmable pitch; and a multi-select picker's commit CTA folds its own progress count into the label (\"Continue 3/3\") so the answer to \"how many more\" sits at the exact point of the next tap. Discovery itself (search, category browse) stays unauthenticated with account creation deferred to the commitment step, which is the layout-layer restatement of PSYCHOLOGY law 4, not a new claim. One tension is recorded, not resolved: every sampled app renders a selected onboarding pill as a solid blue or black fill, the opposite of Solen's locked calm-gray sunken-fill selected state; that is flagged for the record, not adopted.",
+  "real_world_evidence": [
+   {
+    "source": "Headway (habit/learning app), Mobbin iOS capture",
+    "what": "strict one-question-per-screen onboarding rhythm; numbered-circle + partial-bar progress indicator with a phase label under the bar (About you / Aspiration / Like time); identical CTA copy repeated every step so pacing reads from the rhythm, not the label",
+    "tier": "CONV"
+   },
+   {
+    "source": "Best Buy (interest picker, e-commerce, not booking), Mobbin iOS capture",
+    "what": "bottom-sheet interest picker shows roughly 8 category pills before an inline numbered 'Show more product categories (46)' link, grouped under section headers; two-button footer (Clear All text link + Save solid button)",
+    "tier": "CONV"
+   },
+   {
+    "source": "X / Twitter (Following topics setup), Mobbin iOS capture",
+    "what": "category-then-subtopic drill-down; selecting a top category reveals its own sub-topic pill cluster with a dedicated 'Show more' ghost button per cluster, progressive disclosure nested two levels deep",
+    "tier": "CONV"
+   },
+   {
+    "source": "Amazon Alexa (What are your top interests), Mobbin iOS capture",
+    "what": "pills grouped under bold section headers (Entertainment, Technology, Lifestyle); two-button footer, Later (ghost, skip) beside Continue (solid, primary), skip always co-located with commit, never a hidden corner link",
+    "tier": "CONV"
+   },
+   {
+    "source": "Eventbrite (Tell us what you love), Mobbin iOS capture",
+    "what": "single outlier: selected pill state is an outline ring on an unchanged background, not a fill; no progress bar visible on the screen at all, relies purely on headline copy for orientation",
+    "tier": "T3"
+   },
+   {
+    "source": "Tinder ('What are you into') + Cosmos ('Pick three to start your feed'), Mobbin iOS captures",
+    "what": "both independently render the commit CTA as a counted label, 'Next 10/10' and 'Continue 3/3' respectively; convergence across two unrelated product categories (dating, shopping) is the evidence this is a settled pattern, not a house quirk",
+    "tier": "CONV"
+   },
+   {
+    "source": "Cross-app progress-indicator synthesis (real-app scout), Mobbin sample of ~12 apps",
+    "what": "dot pagination + corner Skip consistently reserved for passive value/marketing carousels (Plex, Elevate, YouTube, GoHenry); continuous thin bar (2-4px, light-grey track, brand-accent fill) consistently used for active-choice question sequences with no Skip (MyFitnessPal, Life Reset, Liven, Cosmos/Recime); no sampled app used a stepped/dotted indicator for an active question sequence",
+    "tier": "CONV"
+   },
+   {
+    "source": "Fresha marketplace homepage, live browser measurement by competitor scout, 2026-07-22",
+    "what": "search bar + 13 category pills render with zero signup wall, only a generic Menu affordance in the header; discovery fully open before any account ask, confirming the guest-first structural pattern at the homepage level (exact checkout-step wall placement not independently re-verified this pass)",
+    "tier": "CONV"
+   },
+   {
+    "source": "Airbnb, Doctolib, Booking.com (competitor scout, training-recall + partial live checks, help-center fetches 404'd)",
+    "what": "cited as directional examples of open browse/search with account creation deferred to a booking-confirmation step; Uber cited as a counter-example requiring phone auth near first launch, evidence guest-first is not universal across all marketplace categories",
+    "tier": "T3"
+   },
+   {
+    "source": "Amazon Alexa minimum-count copy ('choose at least 5 interests'), single-app observation",
+    "what": "explicit numeric threshold nudge on the interest picker; not corroborated by a second app in the sampled set this pass, and borders PSYCHOLOGY's anchoring territory rather than a layout mechanic, so it is routed there and not adopted as a RATIONALE default",
+    "tier": "T3"
+   }
+  ],
+  "generative_prior": "Defaults that would produce a right first mockup for a Solen first-run/interest-picker screen: (1) one question or one preference-axis per screen, repeat the same CTA copy across steps, progress bar at top, full-width, thin 2-4px, light-grey track with the accent fill (Headway, MyFitnessPal, Life Reset, Liven all converge on this band); (2) an option list under roughly 8-9 visible items renders flat, no disclosure control; at or above that count, show a curated top subset (a Popular row or the first alphabetical/most-relevant 8-9) plus a numbered 'Show more (N)' ghost link, never a silent full-scroll dump (Best Buy's exact count is 8 before its link; X nests a second disclosure tier per sub-category); (3) reserve dot-pagination + corner Skip for passive value screens that precede the question sequence, never on a screen the user must actually decide something on, active-choice screens get the continuous bar and, if an escape is warranted, an inline 'none of these' option in the choice set itself rather than a corner Skip (Headway's pattern); (4) when a picker has a real minimum or target count, fold the count into the CTA label itself ('Weiter 3/3' style, German-appropriate phrasing per the CLAUDE.md 3-word CTA lock), not a separate counter chip (Tinder + Cosmos convergence); (5) selected-pill FILL stays Solen's locked calm-gray `bg-s-bg-sunken`, do not import the industry-standard blue/black fill seen in every sampled app, that is a named, deliberate tension, not a gap to close.",
+  "proposed_addition": "## Domain (Solen-specific): First-run onboarding, disclosure mechanics (net-new, added 2026-07-22)\n\n**Scope guard.** This domain owns the LAYOUT and DISCLOSURE mechanics of first-run flows only: how questions are sequenced, how a long option list gets progressively revealed, how progress is signaled, and how a picker communicates \"how many more taps.\" The behavioral WHY of guest-first sequencing and endowed-progress framing is owned by PSYCHOLOGY.md law 3 (never start a user at zero) and law 4 (value before auth, guest-first everywhere); this section defers to those laws and does not restate them. Cross-reference, do not duplicate.\n\n**DECISION 1: One decision per onboarding screen, not a combined multi-ask card.**\nFORCES: a single question per screen keeps cognitive load low and lets a progress signal map cleanly to \"N of M decisions made\"; combining asks (name + interests + notification opt-in on one screen) saves screens but blurs what \"50 percent done\" means and raises the chance of an abandoned partial-fill.\nOPTIMIZES FOR: legible progress, lower per-screen abandonment, a progress bar that means what it says.\nSACRIFICES: total screen count is higher for the same amount of information collected; a rushed user pays more taps.\nBOUNDARY: collapse to a combined screen only when the asks are genuinely one decision wearing two fields (name + photo on one \"who are you\" step); never when they are two independent preference axes.\nMECHANIC: CONV, convergent structural pattern, not a controlled study. Headway runs a strict single-question-per-screen rhythm with a numbered-circle-plus-partial-bar indicator and a phase label under the bar (\"About you\", \"Aspiration\"); every step repeats identical CTA copy so the rhythm, not the label, carries the pacing signal.\nSOURCE: real-app scout, Headway capture (Mobbin, iOS), 2026-07-22 pull.\n\n**DECISION 2: Long option lists progressively disclose from a curated visible subset, not a full dump.**\nFORCES: showing a full taxonomy (60+ tags) up front overwhelms scanning and buries popular choices under alphabetical noise; hiding everything behind one opaque \"browse\" tap loses the at-a-glance sense of scope.\nOPTIMIZES FOR: fast first-pass scanning of the most useful options, with an explicit numbered escape hatch to the rest.\nSACRIFICES: a small number of relevant-but-uncommon options sit one extra tap away for every user, not just the ones who need them.\nBOUNDARY: applies once option count exceeds roughly 8-9 visible items in the default viewport; under that count, show everything, a \"Show more\" link on a 6-item list is friction with no payoff.\nMECHANIC: CONV, converging across three independently sampled apps. Best Buy's interest sheet shows roughly 8 category pills before an inline \"Show more product categories (46)\" link; X's topic setup nests a second \"Show more\" tier under each selected category; Amazon Alexa groups pills under bold section headers instead of one flat list. The \"roughly 6-9 visible before a disclosure valve\" band is a CONV default derived from this convergence, not a measured Solen number, a starting point to test, not a locked threshold.\nSOURCE: real-app scout, Best Buy / X / Amazon Alexa captures (Mobbin), 2026-07-22 pull.\n\n**DECISION 3: Progress signaling splits by screen type, continuous bar for active-choice screens, dot pagination for passive value screens.**\nFORCES: a question sequence where every screen demands a decision needs a signal for \"how much decision-making is left\" (a continuous fill); a marketing/value carousel the user only skims needs a signal for \"how many cards remain\" plus an easy Skip.\nOPTIMIZES FOR: the progress indicator matching the cognitive mode of the screen it sits on.\nSACRIFICES: two progress idioms inside one onboarding flow costs a little visual consistency for a real gain in correctly signaling screen type.\nBOUNDARY: never put a corner Skip on a bar-progress question screen (the real escape hatch there, when needed, is an inline \"none of these apply\" option in the choice set, as Headway does); never put a blocking-commit bar on a passive carousel.\nMECHANIC: CONV, structural pattern across the sampled set. Dot pagination consistently paired with corner Skip on carousel-style value screens (Plex, Elevate, YouTube, GoHenry cited); continuous thin bars (2-4px, light-grey track, brand-accent fill, hue varies and carries no signal itself) consistently used on active-choice sequences with no Skip (MyFitnessPal, Life Reset, Liven, Cosmos/Recime cited).\nSOURCE: real-app scout, cross-app synthesis (Mobbin), 2026-07-22 pull.\n\n**DECISION 4: A multi-select picker's commit CTA counts progress inside its own label.**\nFORCES: a separate progress readout above a picker asks the eye to travel between two places to know \"how many more\"; folding the count into the CTA itself puts the answer where the next action is taken.\nOPTIMIZES FOR: single point of attention at decision time, especially when a picker has a minimum-count threshold.\nSACRIFICES: the CTA label becomes state-dependent (must re-render on every tap), a small implementation cost against a static label.\nBOUNDARY: worth the state-dependent label only when the picker has a real threshold or target count; a free-form \"pick any number\" picker gets a static \"Continue\" instead. This pattern is copy-only and hue-neutral, no conflict with the locked selected-pill fill treatment (Decision 5).\nMECHANIC: CONV, the same counted-CTA shape appearing independently in two unrelated apps (Tinder's \"Next 10/10\", Cosmos's \"Continue 3/3\") is convergent evidence, not a one-off house style.\nSOURCE: real-app scout, Tinder + Cosmos captures (Mobbin), 2026-07-22 pull.\n\n**DECISION 5 (tension note, not a rule change): every sampled app's selected-pill treatment is solid blue or black fill; Solen's lock is calm-gray fill.** Flagged, not adopted. All three scouting reports independently converge: every app sampled (Headway, X, Best Buy, Eventbrite, Amazon Alexa, Tinder, Cosmos, Replika) renders a selected onboarding pill as a solid saturated fill (blue or black) or, in Eventbrite's single outlier, a border-only ring, never Solen's locked calm-gray `bg-s-bg-sunken` sunken fill. This is industry-standard practice, not a flaw in the sampled apps, and it is also exactly the restraint Solen's `no-black-selected` gate and TASTE_LOG 2026-06-29 filter-pill lock deliberately reject in favor of a quieter selected-state language across the product. Nothing here argues to reopen the lock; recorded so a future taste review has the tension named instead of rediscovering it.\nBOUNDARY: n/a, documents a tension for the record only.\nSOURCE: real-app scout + social/trend scout + competitor scout, all three, independently, 2026-07-22 pull; xref LOCKFILE \"filter pill\" row, TASTE_LOG 2026-06-29.\n\n**DECISION 6: Discovery and interest capture stay unauthenticated; account creation defers to the commitment step.**\nThe layout consequence of PSYCHOLOGY law 4 (value before auth, guest-first everywhere, T2), restated here only at the disclosure layer: search/browse/category-pill exploration renders with zero signup wall, and any interest-picker or personalization step that follows discovery is either optional or deferred until the user is already committing to something concrete. Solen's `/search`, `/{city}/{category}`, and `/inspo` routes already match this structurally; nothing new to build, this decision anchors onboarding-flow ORDER (discover first, ask second, account last) against a measured competitor reference.\nMECHANIC: CONV (kept conservative, matching the competitor scout's own tiering). Fresha's live marketplace homepage (measured directly via browser navigation, 2026-07-22) shows a search bar and 13 category pills with zero signup wall and only a generic \"Menu\" header affordance, confirming discovery is fully open before any account ask. Airbnb and Doctolib cited as directional/CONV only (not independently re-measured this pass; help-center docs 404'd). Uber noted as a counter-example (near-launch phone auth), evidence guest-first is not universal across all marketplace types, ride-hailing's fraud/trust constraints differ from browse-heavy discovery.\nSOURCE: competitor scout, live Fresha browser capture, 2026-07-22; xref PSYCHOLOGY.md law 4.\n\n**Screened out, routed elsewhere, not adopted here:**\n- Minimum-selection nudge copy (\"choose at least 5 interests\", Amazon Alexa, single-app T3 observation) borders persuasion/anchoring, not a layout mechanic; routed to PSYCHOLOGY.md for consideration there, not adopted as a RATIONALE default.\n- Icon-plus-label or emoji-plus-label onboarding pills (Best Buy, Amazon Alexa, X, Replika) rejected outright: Solen's locked icon rule is Lucide-only with no decorative emoji in UI (feedback_icon_rules), the emoji-chip register these apps use is a hype tone the calm/no-hype law already excludes.\n- No genuine beauty/booking-specific onboarding reference was found on Mobbin this pass (adjacent categories only: habit apps, e-commerce, social, assistant, dating); a direct Fresha onboarding-flow capture (distinct from the homepage measurement in Decision 6) would sharpen structural fidelity if this domain is revisited.",
+  "sources": [
+   {
+    "claim": "one-question-per-screen rhythm with numbered-circle-plus-bar progress",
+    "source": "Headway iOS app, Mobbin capture",
+    "tier": "CONV"
+   },
+   {
+    "claim": "8-item visible cap before a numbered Show more link on interest pickers",
+    "source": "Best Buy iOS interest picker, Mobbin capture",
+    "tier": "CONV"
+   },
+   {
+    "claim": "nested Show more disclosure per selected category",
+    "source": "X/Twitter Following topics setup, Mobbin capture",
+    "tier": "CONV"
+   },
+   {
+    "claim": "section-header grouping for long pill lists",
+    "source": "Amazon Alexa interest picker, Mobbin capture",
+    "tier": "CONV"
+   },
+   {
+    "claim": "outline-ring selected state, no fill",
+    "source": "Eventbrite interest picker, Mobbin capture",
+    "tier": "T3"
+   },
+   {
+    "claim": "counted commit-CTA label pattern (N/M)",
+    "source": "Tinder + Cosmos, Mobbin captures",
+    "tier": "CONV"
+   },
+   {
+    "claim": "dot pagination + Skip on passive carousels vs continuous bar on active question screens",
+    "source": "cross-app Mobbin synthesis (Plex, Elevate, YouTube, GoHenry, MyFitnessPal, Life Reset, Liven, Cosmos/Recime)",
+    "tier": "CONV"
+   },
+   {
+    "claim": "discovery open, no signup wall on homepage",
+    "source": "Fresha live homepage, browser-measured 2026-07-22",
+    "tier": "CONV"
+   },
+   {
+    "claim": "guest-first browse pattern, account deferred to booking",
+    "source": "Airbnb, Doctolib (directional, not independently re-measured)",
+    "tier": "T3"
+   },
+   {
+    "claim": "phone-auth near launch as a guest-first counter-example",
+    "source": "Uber (training recall, not re-verified this pass)",
+    "tier": "T3"
+   },
+   {
+    "claim": "minimum-count threshold copy on interest picker",
+    "source": "Amazon Alexa, single-app observation",
+    "tier": "T3"
+   }
+  ],
+  "numbers_used": [
+   "2-4px progress bar thickness (CONV band, cross-app)",
+   "roughly 8-9 visible pills before a Show more disclosure valve (CONV band, Best Buy/X/Alexa convergence)",
+   "N/M counted CTA pattern, e.g. Continue 3/3 (CONV, Tinder + Cosmos convergence)"
+  ],
+  "taste_lab_probe": "Build two versions of a future Solen interest-picker screen (e.g. hair-type or service-interest capture at signup): version A shows the full option list at once (20+ pills, no disclosure control); version B shows a curated 8-9 pill subset plus a numbered \"Mehr anzeigen (N)\" link, grouped under 2-3 section headers. Both keep the locked calm-gray selected-pill fill (no blue/black import). Time users to first selection and to task completion, and check whether the disclosure version (B) reduces perceived overwhelm without increasing the number of users who never scroll to find a wanted option that was hidden behind the link."
+ },
+ "verified": {
+  "id": "S22",
+  "tag": "net-new",
+  "verdict": "revised",
+  "myths_caught": [
+   "Decision 6's Fresha claim ('13 category pills render with zero signup wall') does not hold up: independently re-navigating to the live fresha.com homepage during this verify pass shows the hero renders ONLY a search bar (All treatments / Current location / Any time) and a header with Log in / List your business / Menu. Zero category pills anywhere on the page. The no-signup-wall / guest-first finding IS confirmed true (search is fully open, no forced account), but the specific '13 category pills' figure is either a measurement error or a conflation with a different Fresha page (a search-results or category-listing page). Cut from verified_addition rather than softened, since the number itself is not present on the cited surface.",
+   "Decision 3's absolute boundary ('never put a corner Skip on a bar-progress question screen') is contradicted by the draft's own cited evidence. Pulling the actual Tinder 'What are you into?' interest-picker screen (Mobbin) shows a continuous gradient progress bar at the top, a corner 'Skip' link, AND a counted 'Next 10/10' CTA, all on the same active-choice screen. That is exactly the combination Decision 3 says should never happen. The general dot-pagination-for-passive / bar-for-active split IS a real, reproducible pattern (confirmed independently for Headway, X, Amazon Alexa, Best Buy, Cosmos), but the 'never' wording overclaims certainty the evidence doesn't support. Softened to a strong default with a named counter-example in verified_addition."
+  ],
+  "residual_risks": "Owner-decision items and open uncertainties, none of which reopen a lock: (1) Decision 5's tension (every sampled app uses a solid blue/black selected-pill fill or an outline ring, the opposite of Solen's locked calm-gray sunken fill) is real and independently reproduced across all apps checked in this verify pass; genuine QUESTIONS.md/TASTE_LOG candidate, not resolved here, no lock touched. (2) Decision 3's dot-vs-bar and skip-vs-no-skip split should be applied as a strong default, not a hard rule; Tinder's own onboarding mixes a continuous bar, a corner Skip, and a counted CTA on one active-choice screen, so a future Solen build should not treat \"bar screens never get a Skip\" as gospel without checking whether the picker has a real minimum-count requirement (Tinder's does not gate on a minimum, Amazon Alexa's does, and only Alexa uses the Later/Continue two-button pattern instead of a corner Skip; that finer distinction, minimum-count-gates-Skip-placement, was not in the draft and is worth a follow-up note rather than a rule this pass). (3) The draft itself admits no genuine beauty/booking-specific onboarding reference was found on Mobbin; every example is habit, social, e-commerce, dating, or assistant apps, so structural fit to Solen's actual booking/interest-capture domain is a generalization, not a proven fit, until a direct Fresha or beauty-app onboarding capture is done. (4) Best Buy/X/Alexa's \"roughly 8-9 visible items before a Show more valve\" is a 3-app convergence, not a controlled study; the draft's own taste_lab_probe already proposes testing it, which is the right next step rather than treating it as settled. (5) Decision 6 should be re-measured before being cited again: identify which Fresha surface (if any) actually shows category pills, since the homepage does not.",
+  "verified_addition": "## Domain (Solen-specific): First-run onboarding, disclosure mechanics (net-new, added 2026-07-22, adversarially verified 2026-07-22)\n\n**Scope guard.** This domain owns the LAYOUT and DISCLOSURE mechanics of first-run flows only: how questions are sequenced, how a long option list gets progressively revealed, how progress is signaled, and how a picker communicates \"how many more taps.\" The behavioral WHY of guest-first sequencing and endowed-progress framing is owned by PSYCHOLOGY.md law 3 (never start a user at zero) and law 4 (value before auth, guest-first everywhere); this section defers to those laws and does not restate them. Cross-reference, do not duplicate.\n\n**DECISION 1: One decision per onboarding screen, not a combined multi-ask card.**\nFORCES: a single question per screen keeps cognitive load low and lets a progress signal map cleanly to \"N of M decisions made\"; combining asks (name + interests + notification opt-in on one screen) saves screens but blurs what \"50 percent done\" means and raises the chance of an abandoned partial-fill.\nOPTIMIZES FOR: legible progress, lower per-screen abandonment, a progress bar that means what it says.\nSACRIFICES: total screen count is higher for the same amount of information collected; a rushed user pays more taps.\nBOUNDARY: collapse to a combined screen only when the asks are genuinely one decision wearing two fields (name + photo on one \"who are you\" step); never when they are two independent preference axes.\nMECHANIC: CONV, convergent structural pattern, not a controlled study. Headway runs a strict single-question-per-screen rhythm with a numbered-circle-plus-partial-bar indicator and a phase label under the bar (\"About you\", \"Aspiration\", \"Like time\"); every step repeats identical CTA copy (\"Continue\") so the rhythm, not the label, carries the pacing signal. Headway's picker screens also close with an inline \"I don't relate to any of these\" escape option in the choice set itself, not a corner Skip.\nSOURCE: real-app scout, Headway capture (Mobbin, iOS); re-confirmed by direct Mobbin pull during this verify pass, 2026-07-22.\n\n**DECISION 2: Long option lists progressively disclose from a curated visible subset, not a full dump.**\nFORCES: showing a full taxonomy (60+ tags) up front overwhelms scanning and buries popular choices under alphabetical noise; hiding everything behind one opaque \"browse\" tap loses the at-a-glance sense of scope.\nOPTIMIZES FOR: fast first-pass scanning of the most useful options, with an explicit numbered escape hatch to the rest.\nSACRIFICES: a small number of relevant-but-uncommon options sit one extra tap away for every user, not just the ones who need them.\nBOUNDARY: applies once option count exceeds roughly 8-9 visible items in the default viewport; under that count, show everything, a \"Show more\" link on a 6-item list is friction with no payoff.\nMECHANIC: CONV, converging across three independently sampled apps, re-confirmed by direct Mobbin pull. Best Buy's interest sheet shows 9 category pills before an inline \"Show more product categories (46)\" link (also \"Show more topics (11)\" and \"Show more brands (15)\" on the same screen); X's topic setup groups pills under section headers (Music, Entertainment, Lifestyle, Arts & Culture) with a \"Show more\" link per section; Amazon Alexa groups pills under bold section headers (Entertainment, Technology, Lifestyle) instead of one flat list. The \"roughly 8-9 visible before a disclosure valve\" band is a CONV default derived from this convergence, not a measured Solen number, a starting point to test, not a locked threshold.\nSOURCE: real-app scout, Best Buy / X / Amazon Alexa captures (Mobbin), 2026-07-22 pull; re-confirmed by direct Mobbin pull during this verify pass, 2026-07-22.\n\n**DECISION 3: Progress signaling splits by screen type, continuous bar for active-choice screens, dot pagination for passive value screens, as a strong default, not an absolute rule.**\nFORCES: a question sequence where every screen demands a decision needs a signal for \"how much decision-making is left\" (a continuous fill); a marketing/value carousel the user only skims needs a signal for \"how many cards remain\" plus an easy Skip.\nOPTIMIZES FOR: the progress indicator matching the cognitive mode of the screen it sits on.\nSACRIFICES: two progress idioms inside one onboarding flow costs a little visual consistency for a real gain in correctly signaling screen type.\nBOUNDARY: prefer no corner Skip on a bar-progress question screen; when a real escape hatch is warranted, an inline option in the choice set itself (Headway's \"I don't relate to any of these\") is the cleaner pattern than a corner Skip. This is a preference, not an absolute: Tinder's own interest picker (Mobbin capture) combines a continuous gradient bar, a corner \"Skip\" link, and a counted \"Next 10/10\" CTA on one active-choice screen, so the combination does occur in the wild. The finer distinction worth testing is whether a real minimum-count requirement is what actually decides Skip placement: Amazon Alexa, which enforces \"at least 5 interests,\" uses a two-button Later/Continue footer instead of a corner Skip, while Tinder, which has no enforced minimum, allows a corner Skip alongside the bar. Never put a blocking-commit bar on a passive carousel.\nMECHANIC: CONV, structural pattern across the sampled set, with a named counter-example. Dot pagination consistently paired with corner Skip on carousel-style value screens (Plex, Elevate, YouTube, GoHenry cited, not independently re-verified this pass); continuous thin bars (2-4px, light-grey track, brand-accent fill, hue varies and carries no signal itself) consistently used on active-choice sequences (MyFitnessPal, Life Reset, Liven, Cosmos/Recime cited, not independently re-verified this pass; Headway and X independently re-confirmed).\nSOURCE: real-app scout, cross-app synthesis (Mobbin), 2026-07-22 pull; Tinder counter-example found during this adversarial verify pass, 2026-07-22.\n\n**DECISION 4: A multi-select picker's commit CTA counts progress inside its own label.**\nFORCES: a separate progress readout above a picker asks the eye to travel between two places to know \"how many more\"; folding the count into the CTA itself puts the answer where the next action is taken.\nOPTIMIZES FOR: single point of attention at decision time, especially when a picker has a minimum-count threshold.\nSACRIFICES: the CTA label becomes state-dependent (must re-render on every tap), a small implementation cost against a static label.\nBOUNDARY: worth the state-dependent label only when the picker has a real threshold or target count; a free-form \"pick any number\" picker gets a static \"Continue\" instead. This pattern is copy-only and hue-neutral, no conflict with the locked selected-pill fill treatment (Decision 5).\nMECHANIC: CONV, the same counted-CTA shape appearing independently in two apps (Tinder's \"Next 10/10\", also seen repeated as \"Next 0/4\" and \"Next 4/4\" on a separate Tinder lifestyle-questions screen and \"Continue 5/5\" on a Tinder passions screen; Cosmos's \"Continue 3/3\") is convergent evidence within a real, if Tinder-heavy, sample; Cosmos is the independent second app that keeps this a cross-app pattern rather than a single house style.\nSOURCE: real-app scout, Tinder + Cosmos captures (Mobbin), 2026-07-22 pull; re-confirmed by direct Mobbin pull during this verify pass, 2026-07-22.\n\n**DECISION 5 (tension note, not a rule change): every sampled app's selected-pill treatment is solid blue/black fill or an outline ring; Solen's lock is calm-gray fill.** Flagged, not adopted. Independently re-confirmed during this verify pass: Cosmos and Tinder render selected pills as a solid black fill, X and Amazon Alexa render a solid blue/teal fill, Eventbrite renders a black outline ring on an unchanged background, none render Solen's locked calm-gray `bg-s-bg-sunken` sunken fill. This is industry-standard practice, not a flaw in the sampled apps, and it is also exactly the restraint Solen's `no-black-selected` gate and TASTE_LOG 2026-06-29 filter-pill lock deliberately reject in favor of a quieter selected-state language across the product. Nothing here argues to reopen the lock; recorded so a future taste review has the tension named instead of rediscovering it.\nBOUNDARY: n/a, documents a tension for the record only.\nSOURCE: real-app scout + social/trend scout + competitor scout, all three, independently, 2026-07-22 pull; re-confirmed by direct Mobbin pull during this verify pass, 2026-07-22; xref LOCKFILE \"filter pill\" row, TASTE_LOG 2026-06-29.\n\n**DECISION 6: Discovery and interest capture stay unauthenticated; account creation defers to the commitment step.**\nThe layout consequence of PSYCHOLOGY law 4 (value before auth, guest-first everywhere, T2), restated here only at the disclosure layer: search/browse/category exploration renders with zero signup wall, and any interest-picker or personalization step that follows discovery is either optional or deferred until the user is already committing to something concrete. Solen's `/search`, `/{city}/{category}`, and `/inspo` routes already match this structurally; nothing new to build, this decision anchors onboarding-flow ORDER (discover first, ask second, account last) against a measured competitor reference.\nMECHANIC: CONV. Fresha's live marketplace homepage, independently re-navigated during this verify pass (2026-07-22), confirms the guest-first structural claim but NOT the specific pill count the original pull cited: the hero renders a search bar (\"All treatments\" / \"Current location\" / \"Any time\") and a header with Log in / List your business / Menu only, no category pills anywhere on the page, and no forced account creation before browsing recommended salons. The \"zero signup wall, discovery fully open\" finding stands as CONV; a prior claim of \"13 category pills\" on this same page does not match the live render and is cut, not carried forward. Airbnb and Doctolib remain directional/T3 only (not independently re-measured, help-center docs 404'd). Uber remains a T3 counter-example (near-launch phone auth, training recall, not re-verified), evidence guest-first is not universal across all marketplace categories, ride-hailing's fraud/trust constraints differ from browse-heavy discovery.\nSOURCE: competitor scout, live Fresha browser capture; independently re-verified live via browser navigation during this adversarial verify pass, 2026-07-22; xref PSYCHOLOGY.md law 4.\n\n**Screened out, routed elsewhere, not adopted here:**\n- Minimum-selection nudge copy (\"choose at least 5 interests\", Amazon Alexa, confirmed exact copy on direct Mobbin re-pull) borders persuasion/anchoring, not a layout mechanic; routed to PSYCHOLOGY.md for consideration there, not adopted as a RATIONALE default.\n- Icon-plus-label or emoji-plus-label onboarding pills (Best Buy, Amazon Alexa, X, Replika, also seen on BFF and Deepstash during verification) rejected outright: Solen's locked icon rule is Lucide-only with no decorative emoji in UI (feedback_icon_rules), the emoji-chip register these apps use is a hype tone the calm/no-hype law already excludes.\n- No genuine beauty/booking-specific onboarding reference was found on Mobbin this pass (adjacent categories only: habit apps, e-commerce, social, assistant, dating); a direct Fresha onboarding-flow capture (distinct from the homepage measurement in Decision 6, and distinct from whatever Fresha page actually does show category pills, since the homepage does not) would sharpen structural fidelity if this domain is revisited.",
+  "claim_verdicts": [
+   {
+    "claim": "Headway: one-question-per-screen rhythm with numbered-circle-plus-bar progress and a phase label",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "confirmed via direct Mobbin pull; screen shows exactly 'About you / Aspiration / Like time' phase labels under a numbered-circle-plus-bar indicator, and an inline 'I don't relate to any of these' escape option"
+   },
+   {
+    "claim": "Best Buy: roughly 8 category pills before a numbered 'Show more product categories (46)' link",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "confirmed; actual count is 9 pills before the link (Desktop Computers through Cell Phones), consistent with the draft's own 'roughly 8-9' generative-prior framing even though the sources[] entry rounds to 8"
+   },
+   {
+    "claim": "X/Twitter: nested Show more disclosure per selected category",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "confirmed structurally, section-grouped pills (Music/Entertainment/Lifestyle/Arts & Culture) each with their own 'Show more' link; the 'per selected category' framing slightly overstates a drill-down that is really per-section, minor imprecision not a fabrication"
+   },
+   {
+    "claim": "Amazon Alexa: section-header grouping plus Later/Continue footer on interest picker",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "confirmed exact match including the 'Personalize your experience by choosing at least 5 interests' minimum-count copy"
+   },
+   {
+    "claim": "Eventbrite: outline-ring selected pill state, no fill, no visible progress bar",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "confirmed via direct Mobbin pull, correctly self-tiered T3 as a single-app observation"
+   },
+   {
+    "claim": "Tinder 'Next 10/10' and Cosmos 'Continue 3/3' counted commit-CTA convergence",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "both confirmed exactly via Mobbin; Tinder repeats the counted-CTA pattern across at least three separate onboarding screens in its own flow, so the 'two unrelated apps' framing is really one strongly-committed app plus one independent corroborating app (Cosmos), still real cross-app convergence"
+   },
+   {
+    "claim": "Cross-app: dot pagination + Skip reserved for passive carousels, continuous bar with no Skip reserved for active-choice screens",
+    "source_ok": false,
+    "tier_final": "CONV, boundary softened",
+    "note": "the general split is real and independently reproduced for Headway, X, Amazon Alexa, Cosmos, but the absolute 'never a corner Skip on a bar screen' boundary is contradicted by the draft's own citable evidence: Tinder's interest picker shows a continuous gradient bar, a corner Skip, and a counted CTA together on one active-choice screen. Downgraded from an absolute rule to a strong default with a named counter-example in verified_addition"
+   },
+   {
+    "claim": "Fresha live homepage: search bar plus 13 category pills, zero signup wall, only a generic Menu affordance",
+    "source_ok": false,
+    "tier_final": "T3 for the pill count (unverifiable, does not match live render); CONV retained only for the no-signup-wall finding",
+    "note": "independently re-navigated to the live fresha.com homepage during this pass: hero is search bar only (All treatments / Current location / Any time), header is Log in / List your business / Menu. Zero category pills present anywhere. The '13 category pills' figure does not exist on this page as currently rendered and is cut from verified_addition; the guest-first, no-signup-wall structural finding is independently confirmed true and kept"
+   },
+   {
+    "claim": "Airbnb, Doctolib: guest-first browse pattern, account deferred to booking (directional, not independently re-measured)",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "correctly self-tiered by the draft as directional/unverified; no change needed, help-center fetch failures are plausible and stated honestly"
+   },
+   {
+    "claim": "Uber: phone-auth near launch as a guest-first counter-example (training recall, not re-verified)",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "correctly self-tiered as unverified training recall; no change needed"
+   },
+   {
+    "claim": "Amazon Alexa: minimum-count threshold copy 'choose at least 5 interests', single-app observation",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "confirmed exact wording via direct Mobbin pull; correctly tiered T3 and correctly routed to PSYCHOLOGY rather than adopted as a RATIONALE default"
+   }
+  ]
+ }
+}

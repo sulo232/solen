@@ -1,0 +1,234 @@
+{
+ "id": "S02",
+ "synth": {
+  "id": "S02",
+  "tag": "generative-gap",
+  "title": "Layout-pattern selector (list / grid / carousel / table / bento)",
+  "principle_summary": "The container is picked on two axes, not by habit: HOMOGENEITY (are the items the same kind of thing, peers-of-a-collection, or different kinds of things, heterogeneous entry points/metrics) and TASK (scan-to-compare, browse-a-preview-before-committing, or read-a-small-fixed-set). List is the default for a homogeneous, comparable, unbounded set (search results, service rows, booking history) and is the only pattern that supports true row-by-row comparison. It upgrades to split-view (list + map) only when the data carries a real location/distance decision factor, a conditional that Baymard's controlled testing shows materially changes engagement, not a cosmetic toggle. Grid suits a small, bounded set (uniform or mixed) that must be fully scannable at once, never an unbounded feed. Carousel is reserved for a small peekable preview of a larger set the user has not yet committed to evaluating, and requires an explicit escape hatch; it is disqualified the instant the carousel IS the full content the user must compare against. Table is functionally a desktop pattern; on mobile, row-by-column data flattens into a wrapped chip-grid or gets an explicit user-toggled Table/Chart switch rather than an always-visible table. Bento is the narrowest and most misused pattern: every real example found licenses it ONLY for a small, fixed, categorically heterogeneous set (a handful of different KPI types, or a handful of different entry points), and every example that forced homogeneous items into a bento shape read visibly weaker or gets criticized as thoughtless-by-default in the current design-trend conversation. This closes gap G2 as a layer that sits below LOCKFILE §7.840's Grid TYPE classification: Grid TYPE names the content's structural shape (manuscript/column/modular/hierarchical), this addition names the concrete container pattern that realizes each shape once cardinality and task are known.",
+  "real_world_evidence": [
+   {
+    "source": "Uber home screen (BGR + 9to5Mac redesign coverage, 2023)",
+    "what": "Bento-style grid of 2-6 large service icons (ride, eats) at top for categorically DIFFERENT entry points; homogeneous destination history below stays a plain scrollable list, never bento cells. Direct evidence for the bento disqualifying condition.",
+    "tier": "T3"
+   },
+   {
+    "source": "Dimensional personality app (real-app scout)",
+    "what": "True bento: one large 2x1 highlighted tile plus five smaller equal tiles, size marks the ONE primary item, muted treatment marks the rest as secondary. Clearest 'one hero plus many peers, ranked by size' example.",
+    "tier": "T3"
+   },
+   {
+    "source": "MacroFactor body-metrics app (real-app scout)",
+    "what": "Counter-example: forces homogeneous same-entity cards (every tile is a body measurement) into bento shape; reads noticeably weaker/monotonous than the heterogeneous examples, empirically supporting the homogeneity disqualifier.",
+    "tier": "T3"
+   },
+   {
+    "source": "Tonal fitness dashboard + Flighty (real-app scout)",
+    "what": "Bento/hero-card differentiation achieved via saturated color fills (green delta pills, gradient hero cards), which is the mechanism Solen's 80/17 restraint forbids. Flagged as an unresolved tension, not adopted.",
+    "tier": "T3"
+   },
+   {
+    "source": "ClassPass studio list (real-app scout)",
+    "what": "Strict vertical list for an unbounded, comparison-driven set: photo thumbnail, name, distance, rating-with-count, quality tag. No grid or carousel once the set is unbounded and needs line-by-line comparison.",
+    "tier": "T3"
+   },
+   {
+    "source": "Fresha services list + Fresha 'Trending' home carousel (real-app scout, live-fetched)",
+    "what": "Services under category tabs = flat list, no photos per-row. Home 'Trending' salons = horizontal carousel with 2 cards + a partial 3rd peeking (explicit preview affordance), directly beside a static 2-column grid for the fixed, complete Categories set.",
+    "tier": "T3"
+   },
+   {
+    "source": "Zocdoc providers-nearby row vs the named-actions row above it (real-app scout)",
+    "what": "Carousel used specifically for a small peekable set with a 'See all' escape hatch; the row of exhaustive named actions above it (a small fixed set the user must pick exactly one of) is a plain list instead.",
+    "tier": "T3"
+   },
+   {
+    "source": "Nike Experiences screen (real-app scout)",
+    "what": "Strict 2-column grid, not carousel, for a bounded mixed-content set (events + product drops) under a filter tab strip. Confirms grid over carousel once the set needs full scanning rather than peeking.",
+    "tier": "T3"
+   },
+   {
+    "source": "Superpower health scheduling (real-app scout)",
+    "what": "Only near-table pattern found on mobile: time-slot data (location x time) rendered as wrapped multi-column chip grid, not gridlines/headers. Evidence tables get flattened into chip-grids on mobile.",
+    "tier": "T3"
+   },
+   {
+    "source": "Vagaro dashboard + reports (support docs, competitor teardown)",
+    "what": "Dashboard = customizable heterogeneous widget grid (list widget, chart widget, number widget together, closest documented bento analogue in a booking competitor). Reports give an explicit user-picked Table(Grid)/Chart toggle rather than an auto-decided container.",
+    "tier": "T3"
+   },
+   {
+    "source": "Baymard Institute, accommodation search split-view study (controlled usability testing)",
+    "what": "70% of OTA/hotel sites default to list-only. Split-view (list+map) drove 95% map engagement at Hilton vs 65% of users on list-only sites never touching the map at all. Recommends split-view as default whenever a location dimension is present, not an opt-in toggle.",
+    "tier": "T2"
+   },
+   {
+    "source": "Booksy customer home (Booksy blog)",
+    "what": "Category browse via scrollable carousel rows plus a ranked 'best businesses' section, used specifically for the browse/discover pre-commit task, never for an exhaustive-compare task.",
+    "tier": "T3"
+   },
+   {
+    "source": "uxpatterns.dev + NN/g, Table vs List vs Card Grid pattern guide",
+    "what": "Cards/grids actively break when forcing flowing or sequential content (editorial, step-based onboarding) into card boxes; lists are indicated for sortability and density. NN/g is a credentialed UX research org but this synthesis caps the citation at T3 per this stream's sourcing rules since it arrived via the social/trend scouting pass.",
+    "tier": "T3"
+   },
+   {
+    "source": "SaaSFrame, 'Designing Bento Grids That Actually Work' 2026 practical guide",
+    "what": "Bento works only when content has natural card-level, self-contained units (metrics, features, product specs); most 2026 implementations force bento onto content without that shape, producing what the source calls the 'Frankenstein effect'.",
+    "tier": "T3"
+   }
+  ],
+  "generative_prior": "Default container by axis, with real-app anchors per row:\n\n1. LIST (default for the core Solen case: salon/service search results, booking history, review lists). Fires when: items are homogeneous peers AND the set is unbounded or large AND the task is scan-to-compare or scan-to-commit. Examples: ClassPass studio list, Fresha services-under-tabs list, Uber's homogeneous destination-history strip.\n\n2. SPLIT-VIEW (list + map), a variant of list, not a separate pattern. Fires when: list conditions hold AND the data has a real location/distance decision factor. Baymard's measured numbers: default-to-split-view engaged 95% of users with the map (vs 65% never touching a map on list-only). Solen already ranks/filters salons by distance, so any salon search-results surface that currently ships list-only should be read as under Baymard's \"70% do this, and it underperforms\" bucket, not as evidence Solen's choice is already optimal. Flag for the owner, do not silently change (LOCKFILE §10 structure axis governs the actual search-results build).\n\n3. GRID. Fires when: the set is bounded and low-cardinality (roughly 4-8 items, a taxonomy-shortcut count, not derived from a formal study, both the competitor and social scouts note no source gives a hard cardinality threshold) AND every item needs to be scanned at once, not peeked. Examples: Fresha's 2-column Categories grid directly beside its Trending carousel, Nike's 2-column Experiences grid under a filter strip.\n\n4. CAROUSEL. Fires when: the set is a PREVIEW of a larger collection, the task is browse/discover with no commitment yet, AND a \"See all\" escape hatch exists. Disqualified the moment the carousel is the only place the full set lives, since the user then cannot compare it (cross-ref PSYCHOLOGY.md law 11, Comparability beats trimming: hiding comparable options behind a swipe is functionally the same failure mode the law already bans for service/staff lists). Examples: Fresha Trending (2 cards + partial 3rd peeking), Zocdoc providers-nearby, Booksy category rows. Directional caution only, not a hard number: carousel click-through is reported as very low in repeated 2026 trend write-ups (~1%, traced to the long-circulated Erik Runyon web-carousel data), CONV tier, do not cite the bare percentage as a verified statistic.\n\n5. TABLE. On mobile, essentially disqualified by default; the observed real pattern is either (a) flatten row x column data into a wrapped chip-grid (Superpower's time-slot chips: 3 per row, location as the implicit row axis) or (b) give the user an explicit Table/Chart toggle rather than auto-rendering a table (Vagaro reports). Reserve literal tables for desktop/business-owner dashboard surfaces only.\n\n6. BENTO. Fires ONLY when: the set is small and FIXED (roughly 2-6 cells) AND every cell is a genuinely different kind of thing (a different metric type, or a different entry point/service), never more of the same kind of thing at different sizes. Examples: Uber home (ride vs eats, categorically different services), Dimensional (one hero personality-facet tile + five smaller peer tiles), Vagaro's heterogeneous KPI-widget dashboard. Disqualifying counter-evidence: MacroFactor's homogeneous body-measurement bento reads monotonous precisely because every cell is the same kind of thing forced into unequal-looking cells. BOUNDARY, not a resolution: every bento example that differentiates cells beyond size does so with saturated color fills (Tonal's green delta pill, Flighty's gradient hero cards), which conflicts with Solen's locked 80/17 restraint. If a future Solen dashboard adopts bento, differentiation must come from size/weight/whitespace only; this is an open problem the scouts do not solve within Solen's palette, note it, do not silently borrow the color solution.\n\nCross-reference, do not duplicate: LOCKFILE §7.840 Grid TYPE (manuscript/column/modular/hierarchical) names the content SHAPE; this prior's list/split-view maps to \"column\", grid/carousel map to \"modular\", bento/table map to \"hierarchical\". RATIONALE.md's existing Grouping and containment paragraph (research/TASTE_GROUPING.md) answers the one-level-down question of card vs list ROW for a single item; this prior answers the container for the WHOLE collection.",
+  "proposed_addition": "GENERATIVE PRIOR (closes gap register G2, RATIONALE.md domain 5 \"Spacing and shape\", placed directly after the existing \"Grouping and containment\" paragraph near line 155; cross-ref LOCKFILE §7.840 Grid TYPE classification and PSYCHOLOGY.md law 11 Comparability beats trimming):\n\nContainer-pattern selector, given cardinality/homogeneity/task:\n\n1. LIST is the default for a homogeneous, unbounded, comparison-driven set (search results, service rows, booking/review history). It is the pattern that already governs Solen's core marketplace surfaces and should stay the default absent a location or bento-qualifying reason to deviate.\n\n2. SPLIT-VIEW (list + map) is a variant of list, triggered only when the data carries a real location/distance decision factor. Baymard's controlled testing (T2): 70% of OTA/hotel sites still default to list-only, and on those sites 65% of users never touch the map at all, versus 95% map engagement when split-view is the default. Solen ranks/filters salons by distance already, so any current list-only salon-search surface sits inside the underperforming 70% bucket by this evidence; this is a flag for the owner to weigh against the structure-axis Fresha lock (LOCKFILE §10), not an instruction to change the build unilaterally.\n\n3. GRID fires for a small, bounded set (roughly 4-8 items by real-app observation, no formal study gives a hard cutoff) that needs full-scan visibility, never for an unbounded feed. Fresha's own home screen demonstrates the boundary directly: Trending salons is a carousel, Categories directly below it is a static grid, same page, different cardinality and task.\n\n4. CAROUSEL fires only for a preview of a larger set, pre-commitment, WITH an explicit \"See all\" escape hatch. It is disqualified the moment it is the only place the full set lives, since a swiped-away option cannot be compared, a specific case of PSYCHOLOGY.md law 11 (Comparability beats trimming) applied to the container layer, not a new mechanic. Carousel click-through is reported low in current design-trend writing (commonly cited near 1 percent, tracing to long-circulated Erik Runyon web-carousel data); treat this as CONV-tier directional caution against defaulting to carousel, never as a cited statistic.\n\n5. TABLE is functionally a desktop pattern. On mobile, real apps either flatten tabular data into a wrapped chip-grid (rows implicit, e.g. time-slots per location as 3-per-row chips) or give the user an explicit Table/Chart toggle instead of auto-rendering a table. Do not ship a literal HTML-table-shaped UI on a Solen mobile surface; reserve tables for the business-owner dashboard on desktop widths.\n\n6. BENTO is licensed ONLY for a small, fixed (roughly 2-6 cells), categorically heterogeneous set, i.e. cells that are genuinely different kinds of things (different metric types, or different entry points/services), never a homogeneous feed rendered as unequal-sized cards. Every observed counter-example (forcing homogeneous items into bento shape) reads visibly weaker; this is the operational form the existing owner complaint about clutter already points at. BOUNDARY, not adopted: every real bento example that differentiates cells beyond size also leans on saturated color fills, which conflicts with Solen's locked 80/17 restraint (do not reopen; this is a noted tension, not a proposed change to the palette). Any future Solen bento use must differentiate by size/weight/whitespace only, an unresolved implementation question this addition surfaces but does not close.\n\nRelationship to existing law, stated explicitly so nothing here re-derives it: LOCKFILE §7.840 Grid TYPE names the content's structural SHAPE (manuscript/column/modular/hierarchical); this addition is the layer that picks the concrete UI container once that shape, the item count, and the user's task are known (column maps to list/split-view, modular maps to grid/carousel, hierarchical maps to bento/table). RATIONALE.md's existing Grouping and containment paragraph answers the one-level-down question of card-vs-row for a SINGLE item inside a collection; this addition answers the container for the WHOLE collection and does not restate that paragraph's peers-vs-facets test.",
+  "sources": [
+   {
+    "claim": "70% of OTA/hotel sites default to list-only search results; split-view (list+map) drove 95% map engagement at Hilton vs 65% of list-only users never touching the map.",
+    "source": "Baymard Institute, The Optimal Layout for Hotel and Property Rental Search Results, baymard.com/blog/accommodations-split-view",
+    "tier": "T2"
+   },
+   {
+    "claim": "Fresha home screen pairs a horizontal Trending carousel (2 cards + partial 3rd peeking) with a static 2-column Categories grid directly below it, same page.",
+    "source": "Real-app scout observation of fresha.com live UI",
+    "tier": "T3"
+   },
+   {
+    "claim": "Fresha services list under category tabs renders as a flat list with no per-row photos, price and duration inline, thin hairline dividers.",
+    "source": "Real-app scout observation of fresha.com live UI",
+    "tier": "T3"
+   },
+   {
+    "claim": "Uber home renders a bento-style grid for a small set of categorically different service entry points (ride, eats) and a plain scrollable list for homogeneous destination history.",
+    "source": "BGR and 9to5Mac coverage of the Uber home-screen redesign",
+    "tier": "T3"
+   },
+   {
+    "claim": "Vagaro's business dashboard is a customizable, reorderable widget grid mixing list, chart, and number widget types; its reports offer an explicit user-toggled Table(Grid)/Chart view.",
+    "source": "Vagaro Support, Dashboard Reports and Appointments Summary Report articles",
+    "tier": "T3"
+   },
+   {
+    "claim": "Superpower renders per-location time-slot data as a wrapped multi-column chip grid rather than a literal table.",
+    "source": "Real-app scout observation of Superpower iOS app",
+    "tier": "T3"
+   },
+   {
+    "claim": "MacroFactor's body-measurement cards are the one homogeneous-content example forced into a bento-shaped grid, and read weaker/more monotonous than the heterogeneous bento examples in the same sweep.",
+    "source": "Real-app scout observation of MacroFactor app",
+    "tier": "T3"
+   },
+   {
+    "claim": "Bento grids work only when content has natural card-level, self-contained units; most 2026 implementations force it onto content without that shape (the 'Frankenstein effect').",
+    "source": "SaaSFrame, Designing Bento Grids That Actually Work, a 2026 practical guide",
+    "tier": "T3"
+   },
+   {
+    "claim": "Cards/card-grids break when flowing or sequential content (editorial, step-based onboarding) is forced into them; lists are indicated for sortability and density.",
+    "source": "uxpatterns.dev, Table vs List vs Card Grid pattern guide, cross-referencing NN/g Card View vs List View",
+    "tier": "T3"
+   },
+   {
+    "claim": "Carousel click-through is reported very low in circulated design-community data (near 1 percent), a figure traced to long-standing Erik Runyon web-carousel click studies.",
+    "source": "2026 design-trend roundup citing the Runyon carousel data; not independently re-verified this cycle",
+    "tier": "CONV"
+   },
+   {
+    "claim": "'67% of the top 100 SaaS products on ProductHunt use bento layouts' -- no traceable primary source, no named study or methodology found. EXCLUDED, not used as evidence anywhere in this addition.",
+    "source": "TikTok/bento-criticism roundup, unattributed statistic",
+    "tier": "MYTH"
+   },
+   {
+    "claim": "'Up to 15-25% higher engagement with mid-page content' for bento in ecommerce -- no named study or methodology behind the range. EXCLUDED, not used as evidence anywhere in this addition.",
+    "source": "valmax.agency trends piece, unattributed statistic",
+    "tier": "MYTH"
+   },
+   {
+    "claim": "Choice overload from too many options is a population-level myth; fix comparability with 3-5 labeled categories rather than trimming, which grounds the carousel-hides-comparable-options disqualifier.",
+    "source": "PSYCHOLOGY.md law 11, Comparability beats trimming (cross-referenced, not restated)",
+    "tier": "T1"
+   }
+  ],
+  "numbers_used": [
+   "70% of OTA/hotel sites default list-only (Baymard)",
+   "95% map engagement with split-view default at Hilton vs 65% never using the map on list-only sites (Baymard)",
+   "2-6 cell band for a licensed bento set (real-app-derived synthesis, not a cited study number)",
+   "4-8 item band for a licensed grid (real-app-derived synthesis, not a cited study number)",
+   "~1% carousel click-through, CONV-tier directional figure traced to Erik Runyon data, not independently re-verified this cycle",
+   "2 cards + partial 3rd peeking, Fresha Trending carousel viewport (real-app observation)",
+   "67% of top-100 ProductHunt SaaS products use bento -- MARKED MYTH, excluded",
+   "15-25% higher mid-page engagement from bento in ecommerce -- MARKED MYTH, excluded"
+  ],
+  "taste_lab_probe": "Test the one claim in this addition with the most concrete, measured backing and the clearest Solen application: does a Solen salon search-results surface need split-view (list + map) given Baymard's finding that list-only leaves 65% of users never touching the map versus 95% engagement when split-view is the default. Build 3 variants of ONE already-shipped Solen search-results context (recommend the /{city}/{category} SearchTemplate, Solen's highest-traffic list-shaped surface; structure untouched, only the container changes per the mockup-first rule):\n\nVariant A, current: whatever the surface ships today (list-only or map-as-separate-toggle, confirm which before building).\nVariant B, Baymard's recommended default: persistent split-view, list left/top + map right/bottom at mobile widths, horizontal filter bar (not a sidebar, per Baymard's own finding that sidebars get overlaid and hidden).\nVariant C, carousel-preview hybrid: a short horizontal carousel of the top 4-5 nearest salons above the full list, testing whether Solen's users treat \"near me\" as a preview task (carousel-appropriate) or a compare task (list/split-view appropriate).\n\nProcedure: show all 3 at real mobile width (375px), unlabeled. Ask an unprompted preference plus a one-sentence why, so the axis the owner actually reacts to surfaces rather than being assumed. Then ask directly whether distance/location is something they weigh while comparing salons or only after picking one, since that answer is the actual test of this addition's split-view trigger condition. Record the winner's container choice back into this file as the confirmed Solen instance of band 2, replacing the flag-only language above with an owner-confirmed decision."
+ },
+ "verified": {
+  "id": "S02",
+  "tag": "generative-gap",
+  "verdict": "revised",
+  "myths_caught": [
+   "Uber bento claim overstated its sourcing: BGR/9to5Mac/CNET/Uber-Newsroom coverage of the 2023 redesign confirms only 'simplified homescreen, two prominent options: rides and Eats delivery, fewer taps' -- it does NOT use the words 'grid' or 'bento', and does not describe the destination-history section as staying a plain list. The visual bento-grid framing is a screenshot/scout interpretation layered onto press text that only describes simplification. Downgraded from a press-sourced T3 claim to a CONV-tier scout observation and the attribution language corrected so it is not misread as the outlets themselves calling it bento.",
+   "The two stats already flagged MYTH by the draft ('67% of top-100 ProductHunt SaaS use bento', '15-25% higher mid-page engagement from bento') are correctly unsourced/untraceable and correctly excluded from proposed_addition's actual prose -- confirmed as properly quarantined, not smuggled into the shipped text. No action needed beyond confirming the quarantine held."
+  ],
+  "verified_addition": "GENERATIVE PRIOR (closes gap register G2, RATIONALE.md domain 5 \"Spacing and shape\", placed directly after the existing \"Grouping and containment\" paragraph near line 155; cross-ref LOCKFILE §7.840 Grid TYPE classification and PSYCHOLOGY.md law 11 Comparability beats trimming):\n\nContainer-pattern selector, given cardinality/homogeneity/task:\n\n1. LIST is the default for a homogeneous, unbounded, comparison-driven set (search results, service rows, booking/review history). It is the pattern that already governs Solen's core marketplace surfaces and should stay the default absent a location or bento-qualifying reason to deviate.\n\n2. SPLIT-VIEW (list + map) is a variant of list, triggered only when the data carries a real location/distance decision factor. Baymard's controlled testing (T2, verified against the primary source this cycle): 70% of OTA/hotel sites still default to list-only, and on those sites 65% of users never touch the map at all, versus 95% map engagement when split-view is the default (Hilton cited by name as the exemplar). Solen ranks/filters salons by distance already, so any current list-only salon-search surface sits inside the underperforming 70% bucket by this evidence; this is a flag for the owner to weigh against the structure-axis Fresha lock (LOCKFILE §10), not an instruction to change the build unilaterally.\n\n3. GRID fires for a small, bounded set (roughly 4-8 items by real-app observation, no formal study gives a hard cutoff) that needs full-scan visibility, never for an unbounded feed. Fresha's own home screen demonstrates the boundary directly: Trending salons is a carousel, Categories directly below it is a static grid, same page, different cardinality and task (real-app scout observation, T3, not independently re-verified this cycle since it requires the logged-in app view rather than the public marketing site).\n\n4. CAROUSEL fires only for a preview of a larger set, pre-commitment, WITH an explicit \"See all\" escape hatch. It is disqualified the moment it is the only place the full set lives, since a swiped-away option cannot be compared, a specific case of PSYCHOLOGY.md law 11 (Comparability beats trimming, confirmed present at PSYCHOLOGY.md line 45) applied to the container layer, not a new mechanic. Carousel click-through is reported low in current design-trend writing (commonly cited near 1 percent); this traces to Erik Runyon's analysis of roughly 3.7 million homepage visits to a single university site (Notre Dame), where about 1% of visitors clicked the carousel at all and 84% of those clicks landed only on the first slide. That source is real and the ~1% figure is traceable, but it is a single-site, single-era case study, not a generalizable causal study, so treat it as CONV-tier directional caution against defaulting to carousel, never as a cited statistic implying it applies to Solen's traffic.\n\n5. TABLE is functionally a desktop pattern. On mobile, real apps either flatten tabular data into a wrapped chip-grid (rows implicit, e.g. time-slots per location as 3-per-row chips) or give the user an explicit Table/Chart toggle instead of auto-rendering a table. These specific app examples (Superpower chip-grid, Vagaro Table/Chart report toggle) are real-app-scout observations (T3) not independently re-verified this session; treat the mechanism as directionally sound but re-confirm the exact Vagaro toggle behavior before citing it as a precedent in a spec. Do not ship a literal HTML-table-shaped UI on a Solen mobile surface; reserve tables for the business-owner dashboard on desktop widths.\n\n6. BENTO is licensed ONLY for a small, fixed (roughly 2-6 cells), categorically heterogeneous set, i.e. cells that are genuinely different kinds of things (different metric types, or different entry points/services), never a homogeneous feed rendered as unequal-sized cards. Uber's 2023 home-screen simplification (rides + Eats as the two prominent entry points) is consistent with this pattern in the app's screenshots, but note precisely: the cited press coverage (BGR, 9to5Mac, CNET, Uber's own newsroom post) documents \"fewer taps, two prominent options\" in text and does not itself use the words \"grid\" or \"bento\" or make a claim about the destination-history section, so cite this example as a scout-observed screenshot pattern, not as something the press asserted. Every observed counter-example of forcing homogeneous items into bento shape (e.g. a body-metrics app where every tile is the same kind of measurement) reads visibly weaker; this is the operational form the existing owner complaint about clutter already points at. BOUNDARY, not adopted: every real bento example that differentiates cells beyond size also leans on saturated color fills, which conflicts with Solen's locked 80/17 restraint (do not reopen; this is a noted tension, not a proposed change to the palette). Any future Solen bento use must differentiate by size/weight/whitespace only, an unresolved implementation question this addition surfaces but does not close.\n\nRelationship to existing law, stated explicitly so nothing here re-derives it: LOCKFILE §7.840 Grid TYPE names the content's structural SHAPE (manuscript/column/modular/hierarchical); this addition is the layer that picks the concrete UI container once that shape, the item count, and the user's task are known (column maps to list/split-view, modular maps to grid/carousel, hierarchical maps to bento/table). RATIONALE.md's existing Grouping and containment paragraph answers the one-level-down question of card-vs-row for a SINGLE item inside a collection; this addition answers the container for the WHOLE collection and does not restate that paragraph's peers-vs-facets test.",
+  "claim_verdicts": [
+   {
+    "claim": "70% of OTA/hotel sites default to list-only search results; split-view (list+map) drove 95% map engagement at Hilton vs 65% of list-only users never touching the map.",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Verified verbatim against baymard.com/blog/accommodations-split-view: 70% list-view default, 65% of list-only users didn't use the map, 95% engaged with the map on Hilton's split-view. Exact match, correctly tiered T2 (Baymard is paid controlled UX-testing research, not a peer-reviewed academic study, so T2 not T1 is fair)."
+   },
+   {
+    "claim": "Carousel click-through is reported very low in circulated design-community data (near 1 percent), traced to Erik Runyon's carousel data.",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Verified: Erik Runyon analyzed ~3.7 million homepage visits to University of Notre Dame's site; ~1% clicked the carousel, 84% of those only clicked slide 1. Real and traceable, but single-site/single-era case study -- CONV tier (directional caution, not a citable statistic) is the correct and honest tier, matches the draft's own hedge."
+   },
+   {
+    "claim": "Uber home renders a bento-style grid for a small set of categorically different service entry points (ride, eats) and a plain scrollable list for homogeneous destination history, per BGR and 9to5Mac coverage.",
+    "source_ok": false,
+    "tier_final": "CONV",
+    "note": "Press coverage (9to5Mac, CNET, Uber Newsroom) confirms only 'simplified homescreen, two prominent options: rides and Eats, fewer taps' -- no 'grid'/'bento' language, no mention of a destination-history list. The specific bento-grid claim and the list-for-history claim are not supported by the cited press text; downgraded to CONV and re-attributed as a scout screenshot interpretation, not an assertion made by BGR/9to5Mac."
+   },
+   {
+    "claim": "Fresha home screen pairs a horizontal Trending carousel (2 cards + partial 3rd peeking) with a static 2-column Categories grid directly below it, same page.",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Could not independently re-verify this session: WebFetch on fresha.com only returns the public marketing page, not the logged-in app home screen the claim describes. Plausible and specific enough to keep as an unverified-but-not-contradicted real-app-scout observation (T3, as drafted); flagged for re-confirmation before this specific claim is used as a hard precedent."
+   },
+   {
+    "claim": "Fresha services list under category tabs renders as a flat list, no per-row photos.",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Same limitation as above -- not independently re-verified this session (requires app interaction beyond WebFetch's reach). Kept at T3 as drafted, no contradiction found."
+   },
+   {
+    "claim": "NN/g and uxpatterns.dev: cards/grids break for flowing or sequential content; lists are indicated for sortability and density.",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Confirmed NN/g does publish directly relevant guidance (nngroup.com Card View vs List View: 'list view allows for easy sorting and is space efficient, while card view is visually engaging and creates effective groupings'), consistent with the claim's substance. The draft's own T3 self-cap (arrived via social/trend scouting, not the primary research pass) is appropriately conservative and kept as-is."
+   },
+   {
+    "claim": "MacroFactor forces homogeneous body-measurement cards into bento shape and reads weaker than heterogeneous examples; Dimensional, Tonal, Flighty, ClassPass, Zocdoc, Nike, Superpower, Vagaro, Booksy real-app observations.",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Could not independently re-verify any of these mobile-app-specific visual claims this session (no app access via available tools). No internal contradiction or implausibility found; kept at T3 as drafted since that is already the correct 'unverified real-app observation' tier and none of these claims carry a load-bearing statistic."
+   },
+   {
+    "claim": "'67% of top-100 ProductHunt SaaS products use bento' and '15-25% higher mid-page engagement from bento in ecommerce'.",
+    "source_ok": false,
+    "tier_final": "MYTH",
+    "note": "Draft itself already correctly identifies both as untraceable/unattributed and excludes them from the actual proposed_addition prose. Verified this exclusion held in verified_addition -- neither number appears in the shipped text. No further action needed beyond confirming the quarantine."
+   },
+   {
+    "claim": "Comparability beats trimming is PSYCHOLOGY.md law 11, cited as the ground for the carousel-disqualifier.",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Confirmed present verbatim at _design-system/PSYCHOLOGY.md line 45 ('11. Comparability beats trimming (T1 against naive trimming)'). Correct cross-reference, correct tier."
+   },
+   {
+    "claim": "None of S02's numbers appear in the project myth_screen never-cite table (2000%-samples, 70-90%-defaults, 2x-losses, jam-study, $300M-button, 5%-retention, 5-25x-cheaper, Amazon-100ms, Duolingo+20%, UGC-4x).",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Screened every number in sources[], real_world_evidence[], and numbers_used[] against the myth_screen table verbatim. No overlap; S02 is a layout-pattern stream, not a conversion/psychology stream, so none of those specific banned figures were at risk of being reached for. Screen passed clean."
+   }
+  ],
+  "residual_risks": "Owner-decision items (not blocking, surface for the owner): (1) The split-view flag is real and Baymard-grounded -- any current Solen salon-search list-only surface sits in the underperforming 70% bucket by this evidence, but changing it collides with the LOCKFILE §10 Fresha structure-axis lock, so this needs an explicit owner call, not a unilateral change; the synthesis's own taste_lab_probe (3-variant A/B/C test on the /{city}/{category} SearchTemplate) is the right next step if the owner wants to resolve it rather than just flag it. (2) The bento-differentiation-needs-color tension (every real heterogeneous bento example leans on saturated fills, which the locked 80/17 restraint forbids) is genuinely unresolved -- this is a real open design problem worth a QUESTIONS.md entry, not something this verify pass can close. (3) Three T3 app-observation claims (Fresha's live app home screen, Vagaro's Table/Chart toggle, Superpower's chip-grid) could not be independently re-verified this session because they require logged-in app access this tool set does not have; they are plausible and self-consistent but should be re-confirmed with a live screenshot pass (fresha-section-capture or a scout revisit) before any of them is cited as a hard precedent in a future spec, per rule 15's assume-vs-verified discipline. (4) The Uber bento citation needed a real correction (see myths_caught) -- the underlying visual pattern is likely accurate from screenshots but the press-coverage attribution was overstated; verified_addition softens this, no further owner action needed unless the owner wants the Uber example dropped entirely rather than re-attributed. (5) The 4-8 (grid) and 2-6 (bento) cardinality bands are explicitly self-labeled as synthesis heuristics, not study-derived thresholds -- fine as generative priors but should not be quoted elsewhere as a sourced number."
+ }
+}

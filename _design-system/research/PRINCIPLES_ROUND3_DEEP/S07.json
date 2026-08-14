@@ -1,0 +1,179 @@
+{
+ "id": "S07",
+ "synth": {
+  "id": "S07",
+  "tag": "generative-gap",
+  "title": "Flow-level motion choreography (multi-step sequences)",
+  "principle_summary": "Across every real shipped checkout/booking flow inspected, \"choreography\" is not built from elaborate per-step animation, it is built from anchor conservation: pick one or two functional anchors (a step indicator, a bottom-fixed CTA/price bar), pin each to the identical screen position on every step of the flow, and express step-to-step progress as a value/fill/label/color change on that fixed object rather than a new element entering in a new place. Step-to-step screen transitions stay directional and cheap (a slide/fade under roughly 300ms), a sub-flow's result (a sheet, a picker) renders back into the exact row that opened it, and true shared-element carries (an object visually morphing frame between screens) stay rare and reserved for one flagship moment, because per-element choreography is expensive to build and, by Airbnb's own account, is usually the first thing cut under implementation or performance pressure. This is the resolution to the generative gap: \"step continuity\" and \"stagger/cascade order\" are two separate mechanics, not one, stagger/cascade governs how a SET of elements enters within one step (already locked, LOCKFILE:1413-1420), while step-to-step continuity is governed by anchor position constancy. Cross-references PSYCHOLOGY.md law 8 (first-100ms): the choreography's job is to never cost perceived responsiveness; positional constancy produces the \"this feels considered\" read for free, the animation is not what's doing that work.",
+  "proposed_addition": "PRIOR (generative default for flow-level choreography, answers G7): within one flow, designate at most two anchor elements by functional role, a step/progress indicator and a bottom-fixed CTA/price summary, and pin each to an identical bounding-box position on every screen of the flow. Represent all step-to-step state (which step is active, CTA label, price total, enabled/disabled) as a value, fill, or label change on that fixed object, never as a new element entering at a new position. Step-to-step screen transitions are directional slides at or under roughly 300ms (Solen's existing booking-flow slide+fade on the `glide` curve, V3-D464, already sits inside this ceiling, so this is a confirm, not a change); under prefers-reduced-motion, collapse to a flat ~100ms crossfade rather than skipping the cut outright. When a sub-flow (bottom sheet, date/time picker) commits, its result must render into the exact row or slot that opened it, not a fresh page render elsewhere, matching Solen's existing DateTimePicker placement convention (worth an explicit assertion, not just an accident of layout). CTA copy is free to change per step to literally name the next consequence (e.g. \"Weiter: Zahlung\" rather than a repeated generic \"Weiter\"), but the CTA's position, size, and ink treatment stay fixed throughout, continuity comes from the fixed slot, not from repeated copy. Stagger/cascade entrance (already locked at LOCKFILE:1413-1420, roughly 40ms per card) is explicitly a WITHIN-step rule for element sets and must not be conflated with cross-step continuity, which this prior governs instead. Shared-element transitions (LOCKFILE:1406-1411) stay exceptional, reserved for one flagship navigation per product area; Solen's existing card-to-PDP-only restriction is the correct instinct to keep, not a compromise to relax, because per-element choreography is genuinely expensive to build and maintain, and Airbnb's own engineering writeup states that this kind of animation is typically the first thing cut when it strains implementation time or performance budget. One noted tension, not adopted: several observed apps (Lugg) increase CTA color saturation as flow-completion increases, a real and plausible progress signal, but it runs directly against Solen's ink-only single-commit-CTA lock (LOCKFILE), so it is named here as a pattern seen in the wild and explicitly NOT proposed for adoption.\n\nTASTE LAB PROBE: build the same 3-step booking flow (Services -> Staff -> Zeit) three ways and show the owner: (A) current state, each step an independent screen with its own header/CTA position; (B) anchor-conserved, the stepper and CTA pinned to identical slots across all three screens, state expressed only as fill/label change, transitions <=300ms directional slides; (C) anchor-conserved plus one shared-element carry, the selected staff photo visibly morphs from its Staff-step position into its new Zeit-step position, Airbnb-style. Ask directly: does (B) alone already read as \"this flows together,\" or does it need (C)'s added shared-element cost to feel choreographed? The answer settles whether Solen's existing one-flagship-transition restriction (card-to-PDP only) should stay exceptional, or earns a second, deliberate moment inside the booking flow itself.",
+  "real_world_evidence": [
+   {
+    "source": "Everyday Rewards (iOS checkout, via Mobbin)",
+    "what": "3-step numbered stepper (Cart/Delivery/Payment) stays in the identical header position across all three checkout screens; only the circle fill (solid orange vs outline) changes to mark progress",
+    "tier": "CONV"
+   },
+   {
+    "source": "GetYourGuide (iOS checkout, via Mobbin)",
+    "what": "2-step stepper plus a bottom CTA fixed in the same slot on both the contact-details and payment screens; the price line stays persistent in the same position",
+    "tier": "CONV"
+   },
+   {
+    "source": "Careem Salon&Spa (iOS booking, via Mobbin)",
+    "what": "a caption under the header previews the NEXT step by name before the user acts (\"Next step: Popular add-ons\"); the bottom price/CTA bar morphs its own color and value in place (grey/disabled to green/enabled) rather than a new bar sliding in",
+    "tier": "CONV"
+   },
+   {
+    "source": "Urban Company (iOS home-service booking, via Mobbin)",
+    "what": "a date/time bottom sheet's confirmed result is written directly into the exact cart row that opened it, with an edit pencil, so the sheet's output spatially lands rather than the page refreshing elsewhere",
+    "tier": "CONV"
+   },
+   {
+    "source": "Temu (iOS add-to-cart, via Mobbin)",
+    "what": "the Add to cart button becomes its own confirmation in the same button real estate (label changes to \"Added to cart\"); the lasting record of the action is a small persistent cart badge elsewhere, not a full-screen change",
+    "tier": "CONV"
+   },
+   {
+    "source": "Crate & Barrel (iOS 13-screen checkout, via Mobbin)",
+    "what": "CTA label changes per step to literally name the next consequence (\"NEXT: PAYMENT\" then \"PLACE ORDER\") while position, size, and color stay fixed in the identical bottom bar throughout",
+    "tier": "CONV"
+   },
+   {
+    "source": "Lugg (iOS delivery booking, via Mobbin)",
+    "what": "CTA color saturation increases as flow-completion increases (light lavender \"Add payment method\" to saturated purple-gradient \"Book now\"); noted as a real pattern but in direct tension with Solen's ink-only single-CTA lock, not proposed for adoption",
+    "tier": "CONV"
+   },
+   {
+    "source": "Airbnb Tech Blog, Cal Stephens, \"Motion engineering at scale\" (Medium)",
+    "what": "a declarative shared-element framework tags matching component identifiers on source and destination screens and animates only the flagged view's frame/content between them; the post states heavy per-element choreography is usually the first part of a feature cut under implementation-time or performance pressure",
+    "tier": "T2"
+   },
+   {
+    "source": "Foundey, \"Stepper UI Best Practices\"",
+    "what": "step-transition animations should stay under roughly 300ms and show direction (e.g. left-to-right movement), cited alongside named examples: Airbnb uses a persistent sidebar stepper for its listing flow, Stripe uses an inline filling horizontal bar across Cart to Review",
+    "tier": "T2"
+   },
+   {
+    "source": "Baymard Institute, checkout flow UX research (320+ site benchmark)",
+    "what": "progress indicators must be a literal 1:1 map of the actual steps, grouping or hiding steps confused test participants, and past steps must stay clickable",
+    "tier": "T2"
+   },
+   {
+    "source": "Uber Base design system (base.uber.com Motion + Progress Steps pages)",
+    "what": "stated principle to avoid diagonal movement by separating horizontal from vertical transitions, and to fall back to a flat ~100ms crossfade under prefers-reduced-motion; only reachable via search snippet, the live Framer-rendered pages could not be scraped, so treat as directional and unverified at full detail",
+    "tier": "T3"
+   },
+   {
+    "source": "Fresha (Machinas case study, Jessica Zoller portfolio), Booksy/Vagaro/Treatwell comparison pages (Pabau, SelectHub)",
+    "what": "none of Solen's direct salon-booking competitors publish any motion-timing or flow-choreography specification; portfolio pieces mention \"micro interactions\" as a deliverable with zero concrete detail",
+    "tier": "CONV"
+   }
+  ],
+  "generative_prior": "Pin at most two functional anchors per flow (step indicator, bottom CTA/price bar) to an identical on-screen slot across every step; express all progress as a fill/label/color change on that fixed object, never a new element entering at a new position. Step transitions: directional slide/fade, roughly <=300ms (Solen's existing V3-D464 booking slide+fade already meets this), collapsing to a flat ~100ms crossfade under reduced motion. A sub-flow's committed result (sheet, picker) renders back into the exact row that triggered it. Real-app demonstrations of the anchor-conservation mechanism: Everyday Rewards' 3-step header stepper (fill-only change, same position every screen), GetYourGuide's fixed-slot bottom CTA across both checkout steps, and Crate & Barrel's 13-screen flow where the CTA changes its label to name the literal next consequence while staying pinned to the same bottom bar throughout. Shared-element carries (a la Airbnb's tagged-identifier framework) stay rare and reserved for one flagship moment per product area, matching Solen's existing card-to-PDP-only restriction, expensive per-element choreography is the first thing cut under real engineering pressure per Airbnb's own writeup, so cheap positional constancy should be the load-bearing mechanic, not elaborate animation.",
+  "taste_lab_probe": "Build the Services -> Staff -> Zeit booking flow three ways and show the owner: (A) current independent-screen state, (B) anchor-conserved (stepper + CTA pinned to identical slots, state as fill/label change only, <=300ms slides), (C) anchor-conserved plus one shared-element carry (the chosen staff photo visibly morphs position from the Staff step into the Zeit step). Ask whether (B) alone already reads as \"this flows together\" or whether the flow needs (C)'s extra cost to feel choreographed, this settles whether the existing one-flagship-transition rule (card-to-PDP only) should stay exceptional or earn a second moment inside booking itself.",
+  "numbers_used": [
+   "<=300ms step-transition ceiling (Foundey cross-industry stepper research; already matched by Solen's existing V3-D464 glide slide+fade)",
+   "~100ms flat crossfade fallback under prefers-reduced-motion (Uber Base, T3, unverified in full detail)",
+   "0px position/size delta as the anchor-conservation target (derived from the cross-cutting Mobbin observation, not a single named source)",
+   "~40ms per-card stagger (cross-ref only, already locked at LOCKFILE:1413-1420, cited to show it is a separate axis from step-to-step continuity, not new here)"
+  ],
+  "sources": [
+   {
+    "claim": "Step-transition animations should stay under roughly 300ms and show direction (e.g. left-to-right)",
+    "source": "Foundey, \"Stepper UI Best Practices\" (foundey.com/blog/stepper-ui-best-practices)",
+    "tier": "T2"
+   },
+   {
+    "claim": "Progress indicators must be a literal 1:1 map of the flow's actual steps; grouping/hiding steps confuses users; completed steps stay clickable",
+    "source": "Baymard Institute, checkout flow UX research, 320+ site benchmark (baymard.com/learn/checkout-flow-ux-optimization)",
+    "tier": "T2"
+   },
+   {
+    "claim": "Airbnb's shared-element framework tags matching identifiers on source/destination views and animates only the flagged view between screens; heavy per-element choreography is typically the first thing cut under implementation or performance pressure",
+    "source": "Cal Stephens, Airbnb Tech Blog, \"Motion engineering at scale\" (medium.com/airbnb-engineering/motion-engineering-at-scale-5ffabfc878)",
+    "tier": "T2"
+   },
+   {
+    "claim": "Uber's Base design system avoids diagonal movement (separates horizontal/vertical) and falls back to a flat ~100ms crossfade under prefers-reduced-motion",
+    "source": "base.uber.com Motion + Progress Steps pages, search-snippet only, live JS-rendered pages could not be scraped",
+    "tier": "T3"
+   },
+   {
+    "claim": "Anchor conservation (fixed-slot stepper/CTA, state as fill/label/color change only) is the actual mechanism behind flow choreography in shipped apps",
+    "source": "Mobbin screen captures: Everyday Rewards, GetYourGuide, Careem, Urban Company, Temu, Crate & Barrel, Lugg (iOS)",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Direct salon-booking competitors (Fresha, Booksy, Vagaro, Treatwell) publish no motion-timing or flow-choreography specification",
+    "source": "Machinas Fresha case study, Jessica Zoller Fresha portfolio, Pabau and SelectHub comparison pages",
+    "tier": "CONV"
+   },
+   {
+    "claim": "~70.22% cart abandonment tied to checkout micro-interactions",
+    "source": "unnamed aggregator (digidrub.com), no primary study cited, suspiciously precise decimal",
+    "tier": "MYTH"
+   }
+  ]
+ },
+ "verified": {
+  "id": "S07",
+  "tag": "generative-gap",
+  "verdict": "revised",
+  "verified_addition": "PRIOR (generative default for flow-level choreography, answers G7): within one flow, designate at most two anchor elements by functional role, a step/progress indicator and a bottom-fixed CTA/price summary, and pin each to an identical bounding-box position on every screen of the flow. Represent all step-to-step state (which step is active, CTA label, price total, enabled/disabled) as a value, fill, or label change on that fixed object, never as a new element entering at a new position. Step-to-step screen transitions are directional slides at or under roughly 300ms; this ceiling is corroborated primarily by Solen's own already-shipped V3-D464 booking-flow slide+fade on the `glide` curve (confirmed in MOTION.md), which already sits inside it, so this is a confirm of existing behavior, not a new import, treat the ~300ms figure itself as a converging industry convention rather than a rigorously-studied number (its cited source is a startup design agency's marketing blog, not a research body). Under prefers-reduced-motion, collapse to a flat ~100ms crossfade rather than skipping the cut outright (this specific number is unverified, sourced only to a JS-rendered page that could not be scraped, treat as directional, not locked). When a sub-flow (bottom sheet, date/time picker) commits, its result must render into the exact row or slot that opened it, not a fresh page render elsewhere, matching Solen's existing DateTimePicker placement convention (worth an explicit assertion, not just an accident of layout). CTA copy is free to change per step to literally name the next consequence (e.g. \"Weiter: Zahlung\" rather than a repeated generic \"Weiter\"), but the CTA's position, size, and ink treatment stay fixed throughout, continuity comes from the fixed slot, not from repeated copy. Stagger/cascade entrance (already locked at LOCKFILE section 16.4, around line 1434, \"Card grids: 40ms stagger rise-in\", not lines 1413-1420 as an earlier draft cited, that range covers the sheet-physics and shared-element rules instead) is explicitly a WITHIN-step rule for element sets and must not be conflated with cross-step continuity, which this prior governs instead. Shared-element transitions stay exceptional, reserved for one flagship navigation per product area; Solen's existing card-to-PDP-only restriction (LOCKFILE section 16.3, confirmed: \"this is the only shared-element moment, every other route change keeps slide/fade\") is the correct instinct to keep, not a compromise to relax, because per-element choreography is genuinely expensive to build and maintain, and Airbnb's own engineering writeup (verified quote) states this kind of animation is typically the first thing cut when it strains implementation time or performance budget. One noted tension, not adopted: at least one observed app (Lugg, single unverified Mobbin capture) increases CTA color saturation as flow-completion increases, a real and plausible progress signal, but it runs directly against Solen's ink-only single-commit-CTA lock, so it is named here as a pattern seen in the wild and explicitly NOT proposed for adoption, and should be logged as a QUESTIONS.md candidate rather than silently dropped.\n\nTASTE LAB PROBE (unchanged): build the same 3-step booking flow (Services -> Staff -> Zeit) three ways and show the owner: (A) current state, each step an independent screen with its own header/CTA position; (B) anchor-conserved, the stepper and CTA pinned to identical slots across all three screens, state expressed only as fill/label change, transitions <=300ms directional slides; (C) anchor-conserved plus one shared-element carry, the selected staff photo visibly morphs from its Staff-step position into its new Zeit-step position, Airbnb-style. Ask directly: does (B) alone already read as \"this flows together,\" or does it need (C)'s added shared-element cost to feel choreographed? The answer settles whether Solen's existing one-flagship-transition restriction (card-to-PDP only) should stay exceptional, or earns a second, deliberate moment inside the booking flow itself.",
+  "claim_verdicts": [
+   {
+    "claim": "Step-transition animations should stay under roughly 300ms and show direction; Airbnb uses a persistent sidebar stepper, Stripe uses an inline filling bar (Foundey, 'Stepper UI Best Practices')",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Page is real and does say this, but Foundey is a startup design agency's marketing blog with no cited study or methodology, published 2026-07-21 (one day before this session), classic fresh-SEO-bait shape. Downgraded from the draft's T2 to CONV. The 300ms number survives only via convergence with Solen's own already-shipped V3-D464 timing."
+   },
+   {
+    "claim": "Progress indicators must be a literal 1:1 map of actual checkout steps; grouping/hiding confuses users; past steps stay clickable (Baymard Institute)",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Confirmed via direct fetch, both claims present near-verbatim. Baymard runs primary usability-testing research, T2 is a safe floor, could arguably be T1."
+   },
+   {
+    "claim": "Airbnb's shared-element framework tags matching identifiers on source/destination views; heavy per-element choreography is typically the first thing cut under implementation or performance pressure (Cal Stephens, Airbnb Tech Blog)",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Confirmed via direct fetch, exact quote matches: 'it's often the first part of a product experience that gets dropped when translating from design to implementation.'"
+   },
+   {
+    "claim": "Uber Base avoids diagonal movement and falls back to a flat ~100ms crossfade under prefers-reduced-motion",
+    "source_ok": false,
+    "tier_final": "T3",
+    "note": "Could not independently verify on two fetch attempts, site is JS/Framer-rendered and returned no scrapeable motion content. Draft already self-flagged this as T3/unverified, which is the correct honest call, no downgrade needed but also no upgrade earned."
+   },
+   {
+    "claim": "Real-app anchor-conservation examples: Everyday Rewards, GetYourGuide, Careem Salon&Spa, Urban Company, Temu, Crate & Barrel, Lugg (Mobbin captures)",
+    "source_ok": false,
+    "tier_final": "CONV",
+    "note": "No Mobbin access in this verify session to re-check screen-by-screen. CONV is already the correct conservative ceiling for unverifiable observational captures; recommend a spot-check of 2-3 entries before this is treated as locked shipped-app consensus."
+   },
+   {
+    "claim": "Direct salon-booking competitors (Fresha, Booksy, Vagaro, Treatwell) publish no motion-timing or flow-choreography specification",
+    "source_ok": false,
+    "tier_final": "CONV",
+    "note": "Low-stakes negative claim, plausible on its face, not exhaustively re-verified here. CONV tier already appropriate."
+   },
+   {
+    "claim": "~70.22% cart abandonment tied to checkout micro-interactions (digidrub.com)",
+    "source_ok": false,
+    "tier_final": "MYTH",
+    "note": "Correctly caught as MYTH by the original synthesis and correctly excluded from proposed_addition/generative_prior. Confirmed this catch stands; no correction needed."
+   },
+   {
+    "claim": "40ms per-card stagger is locked at LOCKFILE:1413-1420",
+    "source_ok": false,
+    "tier_final": "N/A (internal citation)",
+    "note": "The rule itself is real and locked (LOCKFILE section 16.4, 'Card grids: 40ms stagger rise-in'), but the cited line range 1413-1420 actually covers sections 16.1-16.3 (sheet physics, gallery dots, the ONE shared-element rule), the correct location is around line 1434. Locator drift, not a fabrication, fixed in verified_addition."
+   }
+  ],
+  "myths_caught": [
+   "Foundey 'Stepper UI Best Practices' tiered T2 in the draft is actually a startup design agency's uncredentialed marketing blog with no cited study behind its 300ms claim, published the day before this session; downgraded to CONV.",
+   "The ~70.22% cart-abandonment stat (digidrub.com) was already correctly caught as MYTH and correctly kept out of the proposed addition by the original synthesis; verified this catch is sound.",
+   "LOCKFILE line-range citation for the 40ms stagger rule (1413-1420) points at the wrong section (sheet physics/shared-element rules); the real rule is at section 16.4, line approximately 1434. Locator error, not a fabricated rule, corrected in verified_addition."
+  ],
+  "residual_risks": "1) Uber Base (base.uber.com) diagonal-movement and 100ms-crossfade claims remain unverified, JS-rendered site returned no scrapeable content on two attempts, stays T3, do not let this harden into a locked number without someone screenshotting the live Framer pages directly. 2) The seven Mobbin real-world-evidence captures could not be re-verified screen-by-screen in this session (no Mobbin access), CONV tier is already the honest ceiling, but spot-check 2-3 of the 7 with actual Mobbin access before treating the pattern as locked shipped-app consensus. 3) OWNER-DECISION ITEM for QUESTIONS.md: the Lugg CTA-saturation-ramp tension is real and correctly not adopted here, but deserves a deliberate owner call on whether Solen ever wants a saturation signal for flow-completion progress on a non-primary in-flow button, kept away from the locked single ink-fill commit CTA. 4) OWNER-DECISION ITEM: the Taste Lab probe (anchor-conservation alone vs plus one shared-element carry inside booking) is unbuilt; its outcome should decide whether the card-to-PDP-only shared-element restriction stays sole-flagship or earns a second moment inside booking, this is a genuine open call needing the owner to look at three real builds, not a foregone conclusion. 5) Minor: fix the LOCKFILE line-locator citation (1413-1420 to section 16.4, line approximately 1434) before this text ships into RATIONALE.md."
+ }
+}

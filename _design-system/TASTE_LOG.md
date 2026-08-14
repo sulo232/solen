@@ -15,8 +15,8 @@ grounded in the real component (no invented layouts, no fabricated data).
 - [x] Round 1: Search result card (`SalonResultCard`)
 - [x] Round 2: Salon PDP (Book CTA + title)
 - [x] Round 3: Booking step (date / time) + audit conflicts B1/B2
-- [ ] Round 4: Pay step
-- [ ] Round 5: Confirmation
+- [x] Round 4: Pay step , covered by a different mechanism (owner-approved mockup, not the 2-4 option elicitation used in Rounds 1-3): commits `58098af8b` "approved redesign — blue icon stepper, hair step v3, pay step restyle" (2026-06-11) + `71ba0909c` "pay-step payment choice per approved mockup 24d-ink" (2026-06-12). Closed 2026-07-10 (governance backfill).
+- [x] Round 5: Confirmation , covered: commit `77f47b00b` "rebuild to senior scorecard 5/5 (the approved mockup)" (2026-06-09), cross-referenced in MOTION.md's DONE log ("Confirmation rebuilt to 5/5"). Also an approved-mockup rebuild, not the elicitation format. Closed 2026-07-10 (governance backfill).
 
 ---
 
@@ -29,9 +29,11 @@ price number). Confirmed verbatim: **"all ur count correct"** (all 4 "my read" p
 | Dimension | Decision | Why |
 |---|---|---|
 | **Elevation** | Soft, visible shadow (`elevation-2` family) | Gentle lift, the card family. Flat reads cheap; lifted too "app"; hairline too boxy. |
-| **Availability hook** | **Green availability pill** (semantic), not ink text | Green = available is *information*, the one intentional splash of life on a calm card. |
+| **Availability hook** | ~~Green availability pill (semantic), not ink text~~ **REVERSED (V3-D443, CONSISTENCY_AUDIT.md:8):** owner rejected the green pill; card availability is now **plain ink text**, no pill. Do NOT re-add (also locked in CLAUDE.md's design-contract "availability" row). | Green = available is *information*, the one intentional splash of life on a calm card. *(superseded rationale, kept for history)* |
 | **Price** | **Bold ink number**, units grey | The number is what you scan, so it carries the weight; `from`/`CHF` recede. |
 | **Card extras** | **Clean** | Name, rating (no count), one meta line (`category · city`), price, the one slot hook. No review-count, no distance, no badge. Re-confirms V3-D354. |
+
+- keywords: availability, availability pill, green pill, next slot, next available, plain text availability, card availability
 
 ### Cross-cutting rules promoted from this round
 - **Coherent emphasis** (-> CLAUDE.md taste rule #5): weight or colour maps to a
@@ -51,6 +53,12 @@ price number). Confirmed verbatim: **"all ur count correct"** (all 4 "my read" p
 
 ## Round 3: Booking date + time + audit conflicts B1/B2 (2026-06-07)
 
+> **B1 SUPERSEDED (owner 2026-06-29, gate `no-black-selected`; LOCKFILE §13.1 point 3):** the blue
+> selected-state below now applies ONLY to the calendar date + time slot exception. Every OTHER
+> selected state (active tab, radio, filter pill, chip, menu/list option, segmented control) moved to
+> calm GRAY fill (`bg-s-bg-sunken` + `text-s-ink` + semibold), never blue-border, never black/ink. Do
+> not re-litigate "active tab" or "radio" as blue , they are gray now.
+
 Shown on the REAL `DateTimePicker` primitive via a throwaway harness route, after
 the hand-drawn calendar mockup was rejected ("that aint actually the real
 calendar"). Confirmed verbatim: **"both b"**.
@@ -58,8 +66,10 @@ calendar"). Confirmed verbatim: **"both b"**.
 | Dimension | Decision | Why |
 |---|---|---|
 | **Time-slot layout** | **Grouped grid** (Vormittag / Nachmittag) | the `DateTimePicker` primitive ALREADY does this; the booking flow just runs a bespoke full-width-ink-rows version instead. |
-| **Selected-state colour (audit B1)** | **Blue `s-accent`** everywhere a single choice is active (calendar date, time slot, active tab, radio); **ink reserved for the ONE commit button** | one "selected" language; matches the search overlay; collapses the 5 dialects the audit found. |
+| **Selected-state colour (audit B1)** | ~~Blue `s-accent` everywhere a single choice is active (calendar date, time slot, active tab, radio)~~ **NARROWED 2026-06-29: blue survives ONLY for calendar date + time slot; active tab/radio/chip/menu-option are now GRAY** (`bg-s-bg-sunken`); **ink reserved for the ONE commit button** | one "selected" language; matches the search overlay; collapses the 5 dialects the audit found. |
 | **Card price weight (audit B2)** | **Bold ink number, name kept LARGER** as the anchor | resolves B2; amend rule A13 to "anchor by SIZE, name + price may both be ink if the name is larger." |
+
+- keywords: selected state, active state, selected colour, blue selected, gray selected, grey selected, filter pill selected, active tab, radio selected, no-black-selected, calendar date, time slot
 
 ### KEY FINDING (reframes round 3)
 The search overlay uses the `DateTimePicker` primitive (grouped grid + blue via
@@ -137,7 +147,7 @@ spa), so the chrome IA is broken. Full record + phase-2 list: [`_discovery-audit
 | **Filter model** | **Two-level progressive disclosure.** Top = category pills; tap a category -> expands to that category's sub-style pills (Hair reuses today's data-driven quick-chips; nails/barber/spa get their own). | Solves the council's "category collision" without a separate taxonomy fighting the feed. |
 | **Default feed** | **Blended "For You"** (all categories), scoped by the pills + search. Hybrid, not pure-segmented. | Owner likes blended-for-you; council's siloed-intent concern is handled by the pill scope on tap. |
 | **Feed cards** | **Keep as-is this pass** (owner "what we got rn"). | Card redesign is out of scope; chrome/IA first. |
-| **Selected pill state** | Blue border + blue text, NO fill; neutral resting pills. | Re-confirms the locked filter-pill rule (V3-D450). |
+| **Selected pill state** | ~~Blue border + blue text, NO fill; neutral resting pills.~~ **SUPERSEDED 2026-06-29 (out-of-scope discovery, flagged not fixed by this pass):** V3-D450 (cited here as still-locked) was itself superseded 9 days after this entry , selected pills are now GRAY (`bg-s-bg-sunken` + `text-s-ink`), never blue-border. See the Round-3 B1 supersession note above. | Re-confirms the locked filter-pill rule (V3-D450, now superseded). |
 
 ### Deferred (phase 2, data-coupled)
 - Per-category sub-taxonomy for nails/barber/spa (extend `/api/discovery/chip-terms` to be category-scoped).
@@ -205,6 +215,7 @@ LOCKFILE §3.5 depth note that describes inputs as filled-grey. Both are now his
 
 Verified live at 390 on `/de/booking/resend-link`: white fill, 1px `rgb(228,228,231)` line, and
 identical at rest and when tapped.
+- keywords: filter, filter pill, filter chip, filter sheet, sort segment, price slider, filter button, filters neutral, blue filter, gray filter, grey filter, sheet chip, apply button
 
 ## 2026-07-06 , data-state filters: hide while empty (owner approved)
 - Decision: filter surfaces that point at data which cannot discriminate are HIDDEN, not shown-but-empty. Applied to the Angebote pill + FilterSheet group + deals sort + Angebote rail (while 0 listed salons carry a deal) and the Fuer-wen pill + group (while every active service is tagged for all genders). They reappear automatically when the data changes (cached availability check, ~5 min).
@@ -694,3 +705,141 @@ contact with him; it means Airbnb is where proposals now come FROM, and he still
 **Scope he set in the same exchange:** all 94 customer screens outside the dashboard, one screen at
 a time, screens with no Airbnb counterpart graded against our own floors, and the design principles
 themselves in scope for improvement, not just the screens.
+
+---
+
+## 2026-08-14 , the salon card photo shape stays as it ships. He picked A.
+
+**Owner, verbatim:** "A", answering a three-stop toggle on the live home screen.
+
+**The question, and why it existed at all.** Eight unmerged branches each carry their own
+`SalonCard.tsx` and every file differs. Measured across all nine versions including main, corner,
+shadow, name size and name weight are the same everywhere. The only visible disagreement is the
+photo shape, and it splits 3 to 6: `aspect-[5/4]` on main, `6/5` on the other six.
+
+**Measured on the rendered home card at 402pt, all three in the same session:**
+
+| stop | ratio | rendered | what it is |
+|---|---|---|---|
+| **A (picked)** | 5/4 = 1.25 | 239 x 191 | what ships today |
+| B | 6/5 = 1.20 | 239 x 199 | what six branches settled on |
+| C | 20/19 = 1.053 | 239 x 227 | Airbnb's own card, measured 2026-07-28 |
+
+**A and B are 8px apart, which is why C was added.** Two options that differ by 8px on a phone are
+not a choice anyone can see, and handing him an invisible A/B is how a decision round gets wasted.
+C put a genuinely different shape on the table so the pick meant something. He still chose A.
+
+**What this settles, beyond one file.** The six branches' 6/5 is REJECTED by name, so none of the
+eight competing SalonCards has anything left to contribute on shape, and the shape axis of that
+clash is closed rather than pending. Airbnb being the source of truth (2026-08-12) did not carry the
+card shape with it, which is the same pattern as the pill border he killed on 2026-07-31: Airbnb is
+where proposals come from, and he judges each one.
+
+**Where it was decided:** `/de/dev/mock/card-shape`, the real home screen with a three-stop toggle,
+built under the mockup definition in `public/_mockups/_BASE.md`.
+
+---
+
+## 2026-08-14 , the branch versions of a screen lose to what ships. He picked "Now".
+
+**Owner, verbatim:** "fice version keep now", answering the five-stop toggle on the search results
+screen at `/de/dev/mock/versions/search`.
+
+**What he was choosing between.** Five real renders of five real versions of `SearchTemplate.tsx`,
+each written into the tree, rendered by the dev server at 402pt and photographed. Pixel diff against
+what ships: v2 69.3%, v3 47.6%, v4 49.6%, v5 69.3% of the frame. The biggest rival is carried by 33
+unmerged branches.
+
+**Why this decision is bigger than one screen.** Measured the same hour across all 55 clashing
+screens, by comparing the last commit date of every branch's copy of each file against main's: what
+ships is the NEWEST version on 53 of them. The competing versions are older snapshots, not
+alternative designs, so adopting one means going backwards. The home inspiration row is the clean
+illustration: the live version is the only one of eleven that renders the creator handle and the
+from-price under each card, and the largest rival group is from 17 July without it.
+
+**The standing rule this sets, until he says otherwise:** on a screen where the live version is the
+newest, the branch copies are history and are not re-proposed. The only screen measured with a
+genuinely newer branch copy is `app/[locale]/coming-soon/page.tsx` (quirky-ellis 2026-07-23 against
+main 2026-07-17), and that one is still his to look at.
+
+**Where it was decided:** `/de/dev/mock/versions/search`, five stops, English labels, built under the
+mockup definition in `public/_mockups/_BASE.md`.
+
+---
+
+## 2026-08-14 , no grey box behind an icon, anywhere. And sparkles is dead.
+
+**Owner, verbatim, in three steps:** "i told you never use that spark sh it makes no scence harden",
+then "it still using this gray box inside icon sh i never want this anywhere redesign", then "4" on
+the icon toggle and "2" on the business-teaser toggle.
+
+**What the icon looks like now, picked from five rendered stops:** the glyph sits on the page at
+**64px, stroke 1.25, ink**, with nothing behind it. No tile, no disc, no outline ring. Applied to
+every screen that had one: coming-soon, the loyalty stamp card, both walk-in queue end states, and
+recently-viewed.
+
+**The one exception, and it is a real one:** the brand page's logo FALLBACK is a grey square showing
+an initial, not a glyph. The imagery floor requires a fallback there. It carries an inline
+`drift-ok` note so the check can tell the difference.
+
+**Sparkles and zap are gone from all thirteen real files** and replaced by glyphs that say what the
+thing is: hand for nails, clock for coming-soon, check for a confirmation, gem for a loyalty tier,
+tag for a deal, bot for the AI panels, droplets for waxing, rocket for the speed claim, timer for a
+48-hour offer, badge-percent for a referral discount.
+
+**The home page's business block lost its placeholder.** He removed the real illustration on
+2026-05-26 (V3-D166), the code kept a grey square with a picture glyph "while a replacement is in
+flight", and the replacement never came. Measured before deleting: 723pt tall on a 402pt phone, and
+325pt after, so more than half the section was empty grey. The slot is NOT refilled with another
+picture: the imagery floor and the no-decorative-image gate both say that slot is real salon content
+or nothing.
+
+**Enforced, not just recorded:** the existing design-drift check gained A25 (a grey tile behind a
+glyph, floor 64px, tappable things skipped so the back button survives) and A26 (sparkles and zap by
+name). No new gate was added. Driven end to end: adding either one is refused, the back button and a
+plain icon pass.
+
+**Where it was decided:** `/de/dev/mock/versions/coming-soon-icon` (five stops) and
+`/de/dev/mock/versions/business-teaser` (three stops).
+---
+
+## Locked-rule keyword index (governance backfill, 2026-07-10)
+
+These are LOCKFILE-locked calls that never ran through the Rounds 1-4 mockup-elicitation
+process but ARE among the most-relitigated rules per the design-governance audit
+(`_design-system/DESIGN_GOVERNANCE_AUDIT_2026-07-10.md` Part 2 finding 5). Cross-referenced
+here (not re-decided) so the upcoming TASTE_LOG injection hook can match them; source of truth
+stays LOCKFILE.
+
+### Blue is sparse (the hyperlink-only rule)
+Blue `s-accent #276EF1` lands ONLY on text that reads as a hyperlink (review counts, inline
+body links, "Mehr lesen", "Passwort vergessen", map/directions jump-links) plus locked system
+states (focus ring, Spinner, stepper discs). LOCKFILE:59, "v3 (2026-06-11, council): BLUE = THE
+HYPERLINK COLOR, not the clickability color (supersedes v2 'generous')."
+- keywords: blue sparse, blue accent, hyperlink blue, generous blue, blue everywhere, accent color, s-accent
+
+### Toast recipe (white pill + circle badge)
+V3-D462 (2026-06-13, Chime/Google-Photos recipe): white pill (`bg-white border-s-border
+shadow-elevation-3`), circle-badge tone icon (26px tint bg + saturated glyph), ink text, one
+blue text action, docked BOTTOM. Replaced the earlier pastel whole-pill tint. LOCKFILE §5
+(Toast/Toaster) + live `primitives/Toast.tsx:180-213`.
+- keywords: toast, toast recipe, toast pill, pastel toast, notification, snackbar, toast badge
+
+### Stepper is blue, never green
+LOCKFILE §13.2 supersession note (2026-06-11, owner-approved booking-pay/-hair mockups,
+shipped in `BookingWizard.tsx` + the live queue tracker): "the 2026-06-10 green-family stepper
++ walk-in-blue-exception model is REPLACED by ONE blue stepper language everywhere… Blue =
+progress, green = state (success/confirmed), never the reverse." Green on a stepper node = NEVER.
+- keywords: stepper, progress stepper, step tracker, stepper blue, stepper green, booking steps, walk-in tracker, step indicator
+
+### Eyebrow rules
+Eyebrow role (LOCKFILE:229, :301): 11px mobile / 12px desktop, weight 600, UPPERCASE,
+tracking 0.08em, `text-s-ink-3`, max ONE per surface (drift rule A7 flags >1). V3-D421 cut
+tracking 0.16em -> 0.08em and weight 700 -> 600.
+- keywords: eyebrow, eyebrow rules, uppercase label, section label, tracking, small caps
+
+### Radius scale
+Card/block = 16 (`rounded-card`); button/chip = pill; input = 16; sheet = 28; image = flush
+(0), with the SalonResultCard photo exception (`rounded-card`, V3-D350). CLAUDE.md design
+contract "radius" row.
+- keywords: radius, border radius, rounded, rounded card, rounded pill, rounded input, rounded sheet, corner radius

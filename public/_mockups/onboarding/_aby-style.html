@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solen · Aby-Stil v2 (minimal, korrekt)</title>
+<link rel="stylesheet" href="../_assets/ds.css">
+<style>
+*{box-sizing:border-box;margin:0}
+body{font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;background:#0b0b0d;color:#fff;min-height:100vh}
+.tight{font-family:'Inter Tight','Inter',sans-serif}
+.wrap{max-width:1300px;margin:0 auto;padding:38px 26px 70px}
+.title{font-family:'Inter Tight';font-weight:800;font-size:30px;letter-spacing:-.02em}
+.lead{color:#9aa0a6;font-size:14.5px;margin-top:8px;max-width:880px;line-height:1.55}
+.row{display:flex;gap:44px;justify-content:center;flex-wrap:wrap;margin-top:42px}
+.col{width:330px}.cap{font-size:13px;color:#cfcfd4;font-weight:600;margin:0 0 13px;text-align:center}.cap span{color:#82828a;font-weight:500}
+.phone{width:330px;height:700px;border-radius:50px;background:#0e0e10;padding:6px;position:relative;box-shadow:0 46px 84px -30px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.06),inset 0 0 0 2px #2a2a2e}
+.screen{position:absolute;inset:6px;border-radius:44px;overflow:hidden;display:flex;flex-direction:column}
+.dyn{position:absolute;top:13px;left:50%;transform:translateX(-50%);width:104px;height:29px;background:#000;border-radius:18px;z-index:60}
+.sb{height:50px;flex:0 0 50px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 24px 7px;font-size:13.5px;font-weight:600;z-index:30}
+.sb .r{display:flex;gap:6px;align-items:center}.sb i{width:16px;height:16px}
+.body{flex:1;display:flex;flex-direction:column;padding:6px 26px 28px;z-index:10;min-height:0}
+/* blob: real generated glossy 3D multi-lobed cloud asset (matches Aby) */
+.blobimg{width:152px;height:152px;object-fit:contain;align-self:center;animation:float 7s ease-in-out infinite alternate}
+@keyframes float{0%{transform:translateY(0) rotate(-3deg)}100%{transform:translateY(-10px) rotate(3deg)}}
+.word{font-family:'Inter Tight';font-weight:600;font-size:14px;letter-spacing:.06em;color:#a6a6ac;text-align:center}
+.hD{font-family:'Inter Tight';font-weight:700;font-size:30px;line-height:1.08;letter-spacing:-.035em;color:#15131A}
+.subD{font-size:14.5px;line-height:1.5;color:#8a8a90;margin-top:10px}
+.prog{height:3px;border-radius:999px;background:#ECECEE;overflow:hidden;margin-bottom:22px}.prog .f{height:100%;background:#15131A;border-radius:999px}
+.ctaB{height:54px;border-radius:999px;background:#0E0E12;color:#fff;font-weight:600;font-size:16px;display:flex;align-items:center;justify-content:center;gap:8px}
+.terms{text-align:center;font-size:11px;color:#b3b3b8;margin-top:14px;line-height:1.5}
+/* light selectable rows — borderless (Gemini fix), Superpower black-fill on select */
+.optL{display:flex;align-items:center;gap:12px;background:#F6F6F8;border-radius:16px;padding:15px 16px;margin-bottom:10px;box-shadow:inset 0 0 0 1.6px transparent;transition:.15s}
+.optL.on{background:#EEF0F5}
+.optL .t{flex:1;font-weight:600;font-size:15px;color:#15131A}
+.ringL{width:21px;height:21px;border-radius:999px;border:2px solid #D2D2D6}.optL.on .ringL{border:0;background:#15131A;position:relative}.optL.on .ringL::after{content:"";position:absolute;inset:5px;border-radius:999px;background:#fff}
+.icL{width:34px;height:34px;border-radius:10px;background:#EDEDF0;display:flex;align-items:center;justify-content:center}.icL i{color:#15131A}
+/* rich category grid — glossy 3D icons, no line-icons, no radio dot */
+.grid3d{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:2px}
+.cat3d{background:#F4F4F7;border-radius:20px;padding:12px 8px 11px;display:flex;flex-direction:column;align-items:center;gap:5px;position:relative;box-shadow:inset 0 0 0 2px transparent;transition:.15s}
+.cat3d.on{background:#fff;box-shadow:inset 0 0 0 2px #15131A}
+.cat3d img{width:72px;height:72px;object-fit:contain}
+.cat3d span{font-weight:600;font-size:14px;color:#15131A}
+.cat3d .chk{display:none}
+.cat3d.on .chk{display:flex;position:absolute;top:9px;right:9px;width:22px;height:22px;border-radius:999px;background:#15131A;align-items:center;justify-content:center}
+.cat3d.on .chk i{width:13px;height:13px;color:#fff;stroke-width:3}
+/* warm gradient screen (only emotional) */
+.warm{background:linear-gradient(168deg,#C73E51 0%,#D9663F 46%,#EFCF77 100%)}
+.hW{font-family:'Inter Tight';font-weight:700;font-size:27px;line-height:1.1;letter-spacing:-.035em;color:#fff}
+.eyW{font-size:14px;color:rgba(255,255,255,.85);font-weight:500}
+.optW{display:flex;align-items:center;gap:12px;background:rgba(0,0,0,.12);border:0;border-radius:16px;padding:16px;margin-bottom:10px;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.optW.on{background:rgba(0,0,0,.22)}
+.optW .t{flex:1;font-weight:600;font-size:15px;color:#fff}
+.ringW{width:21px;height:21px;border-radius:999px;border:0;background:rgba(0,0,0,.18)}.optW.on .ringW{background:rgba(0,0,0,.42);position:relative}.optW.on .ringW::after{content:"";position:absolute;inset:6px;border-radius:999px;background:#fff}
+.ctaW{height:54px;border-radius:999px;background:rgba(0,0,0,.22);border:0;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:#fff;font-weight:600;font-size:16px;display:flex;align-items:center;justify-content:center;gap:8px}
+i[data-lucide]{display:inline-block;vertical-align:middle;stroke-width:2;width:18px;height:18px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a href="index.html" style="color:#9aa0a6;font-size:13px;text-decoration:none">← Alle Sektionen</a>
+  <h1 class="title" style="margin-top:14px">Aby-Stil v2 · korrekt (minimal + weiß, warmer Verlauf nur emotional)</h1>
+  <p class="lead">Korrigiert gegen die echten Aby-Screens (gespeichert): überwiegend WEISS + minimal, fette dunkle Typo, graue Subline, schwarzer Pill-CTA, der Verlaufs-Blob auf Weiß. Der weiche warme Verlauf (Crimson→Gold) NUR auf emotionalen Screens mit Frosted-Reihen. Blob morpht im Link.</p>
+
+  <div class="row">
+
+    <!-- 1 Welcome: minimal white + blob -->
+    <div class="col">
+      <p class="cap">Welcome <span>· weiß, Blob, schwarzer Pill</span></p>
+      <div class="phone"><div class="dyn"></div><div class="screen" style="background:#fff">
+        <div class="sb" style="color:#15131A"><span>9:41</span><span class="r"><i data-lucide="wifi"></i><i data-lucide="battery-full"></i></span></div>
+        <div class="body">
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px">
+            <img class="blobimg" src="img/blob.png" alt="">
+            <div class="word">SOLEN</div>
+          </div>
+          <div class="hD">Dein nächster<br>Lieblingssalon.</div>
+          <div class="subD">Finde und buche die besten Coiffeure, Spas und Studios in deiner Stadt.</div>
+          <div class="ctaB" style="margin-top:22px">Los geht's</div>
+          <div class="terms">Mit „Los geht's" akzeptierst du die <u>AGB</u> und <u>Datenschutz</u>.</div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- 2 Category: minimal white question -->
+    <div class="col">
+      <p class="cap">Kategorie <span>· weiß, minimal, klare Reihen</span></p>
+      <div class="phone"><div class="dyn"></div><div class="screen" style="background:#fff">
+        <div class="sb" style="color:#15131A"><span>9:41</span><span class="r"><i data-lucide="wifi"></i><i data-lucide="battery-full"></i></span></div>
+        <div class="body">
+          <div class="prog" style="margin-top:4px"><div class="f" style="width:50%"></div></div>
+          <div class="hD" style="font-size:27px">Womit verwöhnst<br>du dich gern?</div>
+          <div class="subD" style="margin-bottom:16px">Wähle alles, was dich anspricht.</div>
+          <div class="grid3d">
+            <div class="cat3d on"><span class="chk"><i data-lucide="check"></i></span><img src="img/cat3d/coiffeur.png" alt=""><span>Coiffeur</span></div>
+            <div class="cat3d"><img src="img/cat3d/barber.png" alt=""><span>Barber</span></div>
+            <div class="cat3d on"><span class="chk"><i data-lucide="check"></i></span><img src="img/cat3d/nails.png" alt=""><span>Nägel</span></div>
+            <div class="cat3d"><img src="img/cat3d/spa.png" alt=""><span>Spa</span></div>
+            <div class="cat3d"><img src="img/cat3d/massage.png" alt=""><span>Massage</span></div>
+            <div class="cat3d"><img src="img/cat3d/kosmetik.png" alt=""><span>Kosmetik</span></div>
+          </div>
+          <div style="flex:1"></div>
+          <div class="ctaB">Weiter</div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- 3 Goal: warm gradient (emotional) + frosted -->
+    <div class="col">
+      <p class="cap">Was bringt dich her <span>· warmer Verlauf, frosted</span></p>
+      <div class="phone"><div class="dyn"></div><div class="screen warm">
+        <div class="sb" style="color:#fff"><span>9:41</span><span class="r"><i data-lucide="wifi"></i><i data-lucide="battery-full"></i></span></div>
+        <div class="body">
+          <div class="prog" style="background:rgba(255,255,255,.25);margin-top:4px"><div class="f" style="width:25%;background:#fff"></div></div>
+          <div class="eyW">Schön, dich kennenzulernen.</div>
+          <div class="hW" style="margin-top:6px;margin-bottom:20px">Was bringt dich<br>zu Solen?</div>
+          <div class="optW on"><span class="t">Selfcare-Ritual</span><span class="ringW"></span></div>
+          <div class="optW"><span class="t">Ein besonderer Anlass</span><span class="ringW"></span></div>
+          <div class="optW"><span class="t">Neuer Look</span><span class="ringW"></span></div>
+          <div class="optW"><span class="t">Einfach entspannen</span><span class="ringW"></span></div>
+          <div class="optW"><span class="t">Nur am Stöbern</span><span class="ringW"></span></div>
+          <div style="flex:1"></div>
+          <div class="ctaW">Weiter</div>
+        </div>
+      </div></div>
+    </div>
+
+  </div>
+</div>
+<script src="../_assets/lucide.min.js"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>

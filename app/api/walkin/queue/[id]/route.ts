@@ -9,7 +9,7 @@ import { getStripe } from "@/lib/stripe";
 import { calculateNoShowFee } from "@/lib/cancellation-policy";
 import { notifyNoShowFee } from "@/lib/bookings/notify-no-show-fee";
 import type { Database } from "@/lib/database.types";
-import { constantTimeStringEqual } from "@/lib/cron-auth";
+import { verifyTrackingToken } from "@/lib/walkin/authz";
 
 // PATCH /api/walkin/queue/[id] — Salon owner/staff: update queue entry status
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -215,12 +215,17 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
 
   const admin = createAdminSupabaseClient();
 
+  // phantom-ok: barber_walkin_queue.tracking_token_hash is LIVE, checked this session against the
+  // database itself (information_schema shows it as nullable text, and all 23 rows carry a value).
+  // The local column snapshot is from 2026-07-12, three days before the migration that added it.
   const { data: entry } = await admin
-    .from("barber_walkin_queue").select("id, salon_id, tracking_token, status, payment_intent_id")
+    .from("barber_walkin_queue").select("id, salon_id, tracking_token_hash, status, payment_intent_id")
     .eq("id", id).single();
 
   if (!entry) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  if (!entry.tracking_token || !(await constantTimeStringEqual(entry.tracking_token, token))) {
+  // Compare against the stored HASH in constant time. The plaintext column this used to read has
+  // been null on most live rows since 17 July, when the hash migration landed without its code.
+  if (!verifyTrackingToken(token, (entry as any).tracking_token_hash)) {
     return NextResponse.json({ error: "Invalid token" }, { status: 403 });
   }
   if (entry.status !== "waiting") return NextResponse.json({ error: "Cannot cancel — already in progress" }, { status: 400 });

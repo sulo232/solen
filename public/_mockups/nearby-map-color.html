@@ -1,0 +1,82 @@
+<!--
+Grounded-in: app/[locale]/_components/homepage/Nearby.tsx (the map teaser), app/[locale]/_components/salon/SalonLocation.tsx:23-25 (static-Mapbox pattern).
+Exists-check: `npm run exists nearby` ran this turn. Nearby.tsx renders the fabricated teaser. This mockup only swaps the MAP STYLE/pin color (owner: "i dont like the monochrome"); same teaser size + chip + CTA as the approved A layout.
+Net-new: nothing structural , map style/pin color choice only.
+Owner-scope: confirmed: owner said "ok but i dont like the monochrome" about the grey light-v11 map (2026-07-14).
+german-ok: only real product copy is German (count chip, map CTA).
+lucide-ok: inline svgs carry class="lucide lucide-<name>".
+psych-ok: "20 Salons in Basel" is the real live count (static mockup literal).
+Assets: nmap-*.png + nearby-map-wide.png = real Basel Mapbox static images (mapbox streets-v12 / light-v11 / outdoors-v12 styles), 20 real pins, self-hosted.
+-->
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@500;600;700&display=swap');
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--sunken:#F4F4F5;--border:#E4E4E7;--accent:#276EF1;--red:#DC2626;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);background:#EDEDEF;}
+  .wrap{max-width:1180px;margin:0 auto;padding:26px 20px 60px;}
+  h1{font-family:'Inter Tight';font-size:22px;font-weight:700;letter-spacing:-.02em;margin-bottom:4px;}
+  .lead{color:var(--ink2);font-size:14px;line-height:1.5;margin-bottom:22px;max-width:820px;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:22px;}
+  .card{background:#fff;border:1px solid var(--border);border-radius:20px;padding:16px;}
+  .card.rec{border-color:var(--ink);box-shadow:0 1px 0 var(--ink);}
+  .cap{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+  .tag{font-family:'Inter Tight';font-size:12.5px;font-weight:600;padding:3px 10px;border-radius:999px;}
+  .tag.now{background:#FEF2F2;color:var(--red);}
+  .tag.rec{background:var(--ink);color:#fff;}
+  .tag.alt{background:var(--sunken);color:var(--ink);}
+  .capnote{font-size:12px;color:var(--ink2);}
+  .teaser{position:relative;height:150px;border-radius:16px;overflow:hidden;border:1px solid var(--border);background:var(--sunken);display:block;}
+  .teaser img{width:100%;height:100%;object-fit:cover;display:block;}
+  .chip{position:absolute;bottom:11px;left:11px;display:inline-flex;align-items:center;gap:6px;background:#fff;border-radius:999px;padding:6px 11px;font-size:12.5px;font-weight:500;color:var(--ink);box-shadow:0 2px 8px rgba(0,0,0,.14);}
+  .chip svg{width:13px;height:13px;}
+  .cta{position:absolute;bottom:11px;right:11px;display:inline-flex;align-items:center;gap:2px;background:#fff;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:600;color:var(--accent);box-shadow:0 2px 8px rgba(0,0,0,.14);}
+  .cta svg{width:13px;height:13px;}
+  .note{font-size:12px;color:var(--ink2);margin-top:12px;line-height:1.5;}
+  .note b{color:var(--ink);font-weight:600;}
+  .legend{font-size:11px;color:var(--ink2);margin-top:20px;text-align:center;line-height:1.5;}
+</style>
+<div class="wrap">
+  <h1>Nearby map , colour options</h1>
+  <p class="lead">Same real Basel map and the same 20 real pins, four map styles. The grey one is the current look you did not like; the others bring the map to life (the Rhine reads blue, parks green) while staying calm enough for the homepage.</p>
+
+  <div class="grid">
+
+    <div class="card">
+      <div class="cap"><span class="tag now">Now , monochrome</span><span class="capnote">light grey, ink pins</span></div>
+      <a class="teaser" href="#"><img src="_assets/nearby-map-wide.png" alt="Basel map grey">
+        <span class="chip"><svg class="lucide lucide-map-pin" viewBox="0 0 24 24" fill="currentColor"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3" fill="#fff"/></svg><span german-ok>20 Salons in Basel</span></span>
+        <span class="cta" german-ok>Karte öffnen <svg class="lucide lucide-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+      </a>
+      <p class="note"><b>The grey one.</b> Reads flat / wireframe-ish, which is the "monochrome" you flagged.</p>
+    </div>
+
+    <div class="card rec">
+      <div class="cap"><span class="tag rec">1 , Recommended</span><span class="capnote">full colour streets, ink pins</span></div>
+      <a class="teaser" href="#"><img src="_assets/nmap-streets-ink.png" alt="Basel map colour">
+        <span class="chip"><svg class="lucide lucide-map-pin" viewBox="0 0 24 24" fill="currentColor"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3" fill="#fff"/></svg><span german-ok>20 Salons in Basel</span></span>
+        <span class="cta" german-ok>Karte öffnen <svg class="lucide lucide-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+      </a>
+      <p class="note"><b>Real map colour.</b> The Rhine, the parks and the roads carry the colour , the way a normal city map looks. Ink pins stay legible. Most alive, still calm.</p>
+    </div>
+
+    <div class="card">
+      <div class="cap"><span class="tag alt">2 , calm + blue pins</span><span class="capnote">light map, accent-blue pins</span></div>
+      <a class="teaser" href="#"><img src="_assets/nmap-light-blue.png" alt="Basel map light blue pins">
+        <span class="chip"><svg class="lucide lucide-map-pin" viewBox="0 0 24 24" fill="currentColor"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3" fill="#fff"/></svg><span german-ok>20 Salons in Basel</span></span>
+        <span class="cta" german-ok>Karte öffnen <svg class="lucide lucide-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+      </a>
+      <p class="note"><b>Minimal colour.</b> Keeps the quiet grey base, colour comes only from the brand-blue pins. Least busy, but the map itself is still fairly grey.</p>
+    </div>
+
+    <div class="card">
+      <div class="cap"><span class="tag alt">3 , outdoors</span><span class="capnote">green terrain, ink pins</span></div>
+      <a class="teaser" href="#"><img src="_assets/nmap-outdoors-ink.png" alt="Basel map outdoors">
+        <span class="chip"><svg class="lucide lucide-map-pin" viewBox="0 0 24 24" fill="currentColor"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3" fill="#fff"/></svg><span german-ok>20 Salons in Basel</span></span>
+        <span class="cta" german-ok>Karte öffnen <svg class="lucide lucide-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
+      </a>
+      <p class="note"><b>Greener.</b> Terrain style, more green. Warmer but a bit busier and less "city" than option 1.</p>
+    </div>
+
+  </div>
+  <p class="legend">All four are the real api.mapbox.com map of Basel with the 20 real salon pins, only the style / pin colour changes. Self-hosted, no CDN.</p>
+</div>

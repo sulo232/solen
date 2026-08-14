@@ -134,8 +134,22 @@ export default function CategoryPillRow() {
   // :active on a tap unless the element carries a touch listener, so a CSS-only press window is
   // zero-length). Held for 220ms to match the pill's own transition duration.
   const [pressedCategory, setPressedCategory] = React.useState<string | null>(null);
+
+  // OPTIMISTIC SELECTION, the open half of H2 in _plans/HOME_INSPO_CHROME_2026-08-01.md.
+  // Owner's original words: "when you switch between the categories it loads like another page".
+  // Measured on this dev server: a category switch takes 105 to 764ms, and until now NOTHING moved
+  // in the row during it except a 220ms press scale, so the tapped pill stayed unselected while the
+  // page loaded. The selection now moves the instant the finger lands and the route catches up,
+  // which is how the reference behaves: the chrome answers immediately and the content follows.
+  // Cleared when the path actually changes, so a cancelled navigation cannot strand it.
+  const [optimisticCategory, setOptimisticCategory] = React.useState<string | null>(null);
+  React.useEffect(() => {
+    setOptimisticCategory(null);
+  }, [pathname]);
+
   const handleCategoryPress = (slug: string) => {
     setPressedCategory(slug);
+    setOptimisticCategory(slug);
     window.setTimeout(() => {
       setPressedCategory((prev) => (prev === slug ? null : prev));
     }, 220);
@@ -211,7 +225,10 @@ export default function CategoryPillRow() {
             // drives category/search-route-only behavior, see showCategoryChrome above), so
             // categorySegment never equals "inspo". isDiscover is the real /inspo-route check;
             // without this branch the Inspo pill could never show selected on its own page.
-            const isActive = c.home ? isHome : c.slug === "inspo" ? isDiscover : c.slug === categorySegment;
+            const routeActive = c.home ? isHome : c.slug === "inspo" ? isDiscover : c.slug === categorySegment;
+            // While a tap is in flight, the tapped pill is the selected one and nothing else is, so
+            // the row never shows two fills or none. Falls back to the route the moment it lands.
+            const isActive = optimisticCategory ? optimisticCategory === c.slug : routeActive;
             return (
               <Link
                 key={c.slug}

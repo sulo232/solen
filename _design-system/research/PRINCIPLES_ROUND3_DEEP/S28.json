@@ -1,0 +1,214 @@
+{
+ "id": "S28",
+ "synth": {
+  "id": "S28",
+  "tag": "net-new",
+  "title": "Microcopy / content design",
+  "principle_summary": "Content design is the sourced mechanics layer underneath Solen's voice/tone (Domain 22, which stays frozen): it governs the LENGTH and STRUCTURE of individual pieces of copy, not personality. Four mechanics, each with a sourced floor: a three-rung verbosity ladder keyed to icon recognizability rather than screen space (label-only commit actions run 1-4 words, never a bare verb, never a sentence); a four-part error-message checklist (what happened, why in user terms, what to do next, non-blaming tone) where naming the exact field beats a bare \"Required\"; a grade 7-9 reading-level soft ceiling for de/en/fr/it strings (English-calibrated Flesch-Kincaid never applied to the other three locales); and a two-register structure for empty/confirmation/zero-result states, a 2-5 word headline plus one 8-15 word sub-line naming the next action, with everything below that reverting to label:value pairs, never prose. Real-app scouting across five booking-adjacent and travel apps converges tightly on the two-register band and the field-specific-error pattern; it also surfaces a live negative example (Nike Run Club's headline restated verbatim in the body) that gives CLAUDE.md's existing \"drop words the context already says\" rule a concrete citation instead of an abstract instruction. Several comps (Airbnb, Square Go, Booksy) lean warmer/more playful than Solen's locked du-form no-hype voice, so the addition explicitly adopts their STRUCTURE only, not their tone, which the tighter Doctolib/Zocdoc/IKEA register validates as the closer analogue.",
+  "proposed_addition": "Add as RATIONALE.md section 29, \"Domain 24: content design mechanics\" (cross-references Domain 22 voice/tone and PSYCHOLOGY.md rather than repeating them; extends CLAUDE.md's Copy economy rules into a sourced canon):\n\n**1. Verbosity ladder is keyed to icon recognizability, not screen real estate (T2, Nielsen heuristic 6 recognition-over-recall).** Three rungs: icon-only (closed set locked in Domain 18, mandatory aria-label); icon+label (any action outside that set whose icon is directional or symbolic help, not self-sufficient); label-only (commitment actions: pay, book, confirm, delete). Real-world convergence on the label-only rung's length: Fresha's marketing CTAs run 2-4 words (\"Get the app\", \"Find out more\"; MEASURED, fresha.com homepage), and booking-vertical empty-state CTAs on Airbnb Trips (\"Start searching\"), Square Go (\"Explore\"), and Fresha run 1-2 words, never a full sentence on the button itself (T2, converging across 3 apps, Mobbin). Generic labels (\"Learn more\", \"Click here\", \"Submit\") are a named anti-pattern in current UX-writing practice, they break \"information scent\" and fail screen-reader users navigating by link list alone (CONV, single named source, Alice Chen / UX Content Collective 2026, not independently corroborated but consistent with the T2 Nielsen heuristic already cited). Combined rule: a label-only commit action names the destination/object in 1-4 words (\"Buchen\", \"Bezahlen\", \"Kalender hinzufügen\"), never a bare verb alone, never a full sentence.\n\n**2. Error messages follow a four-part checklist distilled from NN/g guidance (T2, NN/g Error-Message Guidelines + 10 Design Guidelines for Reporting Errors in Forms; T1 floor from WCAG 3.3.1-3.3.3 already cited in Domain 17; the four parts are a Solen-authored distillation, NOT a literal restatement of NN/g's actual 12-guideline/3-dimension rubric shape).** What happened (precise); why, in user terms (never a raw system code); what to do next (an instruction); tone that never blames the user. Real-world spread on the \"why\" and \"fix\" parts: Zocdoc names the exact field (\"Please enter a Member ID\") and SeatGeek's field-level error does the same in a full sentence (\"We're having trouble processing your billing address state. Please review and try again.\"), both MEASURED as stronger than Alan's bare \"Required\" under an address field (no field name, no fix instruction, the weakest example gathered) or Booking.com's \"Add your first name\" (names the field, not the actual problem). Ulta Beauty's flat \"Coupon code is not valid\" (no apology, no please) versus SeatGeek's apologetic register on a structurally identical error shows tone is NOT dictated by this structure, the four parts are a length/content floor; register still comes from Domain 22 voice/tone (cross-reference, not restated). Optional implementation pattern observed on SeatGeek (CONV, single-app observation): a two-tier error system, a deliberately vague page-level banner that points down to the field (\"Something went wrong / Please fix the error\", with \"error\" as a scroll-to link) paired with the specific field-level message, useful on multi-field forms where one top-of-page string cannot carry every field's specific \"why\" without becoming a wall of text.\n\n**3. Reading level target: grade 7-9 (T2, convergent sources: NN/g 7-8th grade, PlainLanguage.gov 8th-grade-or-below; GOV.UK's 9-year-old reading age is CONV, a named convention, not adopted as the Solen number).** BOUNDARY: Flesch-Kincaid is English-calibrated (T1, Flesch 1948, Kincaid 1975); never compute a score on English strings and apply the number to German, French, or Italian copy. No real-app evidence changes this rung, none of the three scouting passes could measure reading level directly from screenshots or homepage copy.\n\n**4. Empty, confirmation, and zero-result states resolve to two prose registers, never one wall of text (upgraded from a single unsupported \"no dead ends\" sentence at RATIONALE:807, T2, Yifrah's no-dead-ends tenet plus direct convergence across 5 real apps).** Register one, the headline: 2-5 words, a fragment or imperative, never a full sentence (\"No trips booked...yet!\" Airbnb; \"No Appointments\" Square Go; \"Your booking is confirmed\" IKEA). Register two, one sub-line: a single short sentence, roughly 8-15 words, stating the state honestly and naming the one next action (\"No worries! Explore places nearby and find your new go-to today\" Square Go; \"Please check your email inbox for confirmation of your appointment\" IKEA). Everything below that boundary reverts to label:value pairs (booking ID, date, price), never prose, MEASURED consistently on Fresha's and IKEA's confirmation screens (Fresha also pairs a bold 3-4 word action verb with a plain-sentence grey sub-label per row, e.g. \"Manage appointment / Reschedule or cancel your appointment\", the same two-register pattern applied to an action list rather than a single empty state). Negative example to enforce against: Nike Run Club's empty state restates the headline as the body almost verbatim (\"No Upcoming Experiences\" then \"You haven't registered for any upcoming experiences\", MEASURED, Mobbin), exactly the failure CLAUDE.md's copy-economy rule 1 already bans (\"drop words the context already says\"), now with a concrete negative citation instead of an abstract rule. CTA on these states stays 1-2 words per mechanic 1. Cross-reference PSYCHOLOGY.md's real-numbers-only law for the \"state honestly\" clause rather than restating it here.\n\nTENSION FLAG, not adopted (per hard rule, no LOCKFILE/SOURCE literal reopened): several MEASURED comps (Airbnb's \"...yet!\", Square Go's \"No worries!\", Booksy's \"Something come up? We've got you.\") lean on a warmer, more playful register than Solen's locked du-form/no-exclamation/no-hype voice. Adopt the STRUCTURE (two-register tiering, field-specific errors, 1-2 word CTAs) from these comps, not the TONE. Doctolib's formal French-market register and Zocdoc/IKEA's flatter neutral phrasing are the closer tonal analogues to Solen's existing restraint, this is a validation of the current locked voice, not a case for changing it.\n\nSCREENED OUT (T3, out of scope, not folded into the domain): \"agentic content design\" (answer-first formatting, question-based headers, RAG-chunk-independent writing, a claimed +180% agent-citation stat) targets AI-agent/RAG consumption of content; Solen has no such surface today, and the 180% figure is a single unverified blog claim regardless, do not cite it even qualitatively. Content-designer salary/compensation trends are a labor-market observation, not a copy mechanic. Competitor content-design guideline pages (Airbnb DLS, Uber Base) could not be loaded live this session (403/404/empty response), so their principles are NOT cited here despite being pattern-matchable from training, per the no-fabrication rule; flag as a follow-up WebFetch task once those pages are reachable, not as an adopted source today.",
+  "generative_prior": "Concrete defaults that would produce a right first draft: (1) label-only commit CTA = 1-4 words naming the object/destination, never a bare verb (\"Buchen\", \"Termin bestätigen\"), demonstrated by Fresha's 2-4 word marketing CTAs and Airbnb Trips/Square Go/Fresha's 1-2 word empty-state buttons; (2) error string = what (precise) + why (user terms, no code) + fix (instruction) + non-blaming tone, all four present, field named explicitly, demonstrated by Zocdoc (\"Please enter a Member ID\") and SeatGeek's field-level message versus the negative baseline of Alan's bare \"Required\"; (3) reading level = grade 7-9 soft ceiling, short sentences, no nested clauses, checked qualitatively per locale (T2, no real-app evidence added this round); (4) empty/confirmation state = exactly two prose lines, headline 2-5 words + sub-line 8-15 words naming the one next action, everything else label:value, demonstrated by Square Go's booking-vertical empty state (\"No Appointments\" / \"No worries! Explore places nearby and find your new go-to today…\"), IKEA's confirmation (bold headline + one polite sentence + pure label:value summary below), and Fresha's confirmation action list (bold 3-4 word verb label + grey one-line explanation per row); with Nike Run Club's headline-restated-as-body as the concrete anti-pattern to check every new empty state against before shipping.",
+  "real_world_evidence": [
+   {
+    "source": "Airbnb Trips empty state (Mobbin)",
+    "what": "Two-line structure: 2-5 word headline with ellipsis-as-pause (\"No trips booked...yet!\"), one 9-word sub-line, single outlined CTA, plus a smaller divider-separated assistive link. Warmer tone than Solen's locked voice, structure adopted, tone not.",
+    "tier": "T2"
+   },
+   {
+    "source": "Square Go appointments empty state (Mobbin, booking-vertical comp)",
+    "what": "Headline \"No Appointments\" (no filler \"yet\"), reassurance-first sub-line \"No worries! Explore places nearby...\", single filled-pill 1-word CTA \"Explore\". Closest direct comp to Solen's own booking empty state.",
+    "tier": "T2"
+   },
+   {
+    "source": "Nike Run Club empty state (Mobbin)",
+    "what": "Headline \"No Upcoming Experiences\" then body near-verbatim restates it (\"You haven't registered for any upcoming experiences\"). Negative example, violates Solen's existing copy-economy rule 1.",
+    "tier": "T2"
+   },
+   {
+    "source": "Booking.com / Alan / Zocdoc form errors (Mobbin)",
+    "what": "Three bars of error specificity: Booking.com names the field (\"Add your first name\"), Alan is bare (\"Required\"), Zocdoc is most specific (\"Please enter a Member ID\"). Naming the exact field beats a bare \"Required\".",
+    "tier": "T2"
+   },
+   {
+    "source": "SeatGeek checkout errors (Mobbin)",
+    "what": "Two-tier system: vague page-level banner that scrolls to the field, plus a specific, apologetic field-level message (\"We're having trouble processing your billing address state. Please review and try again.\").",
+    "tier": "CONV"
+   },
+   {
+    "source": "Ulta Beauty coupon error (Mobbin, beauty-retail comp)",
+    "what": "Flat statement \"Coupon code is not valid\", no apology, no please, contrasts with SeatGeek's softer register on a structurally identical error.",
+    "tier": "CONV"
+   },
+   {
+    "source": "Fresha booking confirmation (Mobbin, direct booking-vertical comp)",
+    "what": "Status pill + large date/time anchor + stacked action rows, each pairing a bold 3-4 word verb label with a plain grey one-line explanation, never a full punctuated sentence.",
+    "tier": "T2"
+   },
+   {
+    "source": "IKEA post-purchase confirmation (Mobbin)",
+    "what": "Bold headline + one polite full-sentence body + pure label:value data summary below (no prose at all beneath the confirmation line).",
+    "tier": "T2"
+   },
+   {
+    "source": "Fresha, Treatwell, Booksy, Doctolib homepages (direct WebFetch)",
+    "what": "Fresha calm 2-4 word CTAs; Treatwell/Booksy playful, exclamation marks, colloquial (\"Cut the phone tag\"); Doctolib formal, full sentences, no contractions. Doctolib's restraint is the closer tonal match to Solen's locked du-form no-hype voice.",
+    "tier": "T2"
+   },
+   {
+    "source": "Alice Chen, UX Content Collective, \"Learn more\" is not enough (2026 blog)",
+    "what": "Generic CTAs break information scent and fail screen-reader users; single named source, not independently corroborated, but consistent with the already-cited T2 Nielsen heuristic 6.",
+    "tier": "CONV"
+   }
+  ],
+  "sources": [
+   {
+    "claim": "Effective error messages precisely describe what happened, use plain language, offer constructive next steps, and never blame the user; NN/g's guidance converges on roughly 7th-8th grade reading level for this copy.",
+    "source": "Nielsen Norman Group, Error-Message Guidelines; 10 Design Guidelines for Reporting Errors in Forms (nngroup.com)",
+    "tier": "T2"
+   },
+   {
+    "claim": "Recognition (icon plus label, or a well-known icon alone) places less cognitive load than recall (unlabeled icon), heuristic 6 of Nielsen's ten usability heuristics, underlying why icon-only is safe only for a small known set.",
+    "source": "Jakob Nielsen / NNG, 10 Usability Heuristics for User Interface Design",
+    "tier": "T2"
+   },
+   {
+    "claim": "US federal plain-language guidance targets roughly grade 7-9 for general-audience content.",
+    "source": "PlainLanguage.gov / digital.gov, Plain Writing Act guidance",
+    "tier": "T2"
+   },
+   {
+    "claim": "GOV.UK sets a 9-year-old reading age as its content-design target, tied to a roughly 5,000-word core vocabulary.",
+    "source": "GOV.UK content design guidance / GDS blog",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Flesch-Kincaid Grade Level is an English-calibrated readability formula and the most common English readability measure.",
+    "source": "Flesch (1948), A New Readability Yardstick; Kincaid et al. (1975), Derivation of New Readability Formulas (US Navy)",
+    "tier": "T1"
+   },
+   {
+    "claim": "Every empty, error, and zero-result state should offer a clear next action rather than a dead end.",
+    "source": "Kinneret Yifrah, Microcopy: The Complete Guide (already cited at RATIONALE:807)",
+    "tier": "T3"
+   },
+   {
+    "claim": "Generic CTAs (\"Learn more\", \"Click here\") break information scent and hurt screen-reader navigation; prescribes action verb plus object/destination.",
+    "source": "Alice Chen, UX Content Collective blog (2026)",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Booking-vertical and travel-app empty states converge on a 2-5 word headline plus one 8-15 word sub-line naming the next action, with 1-2 word CTAs.",
+    "source": "Mobbin screen captures: Airbnb Trips, Square Go, Fresha, IKEA, Nike Run Club",
+    "tier": "T2"
+   },
+   {
+    "claim": "Field-specific error naming (Zocdoc, SeatGeek) reads better than a bare \"Required\" (Alan) or a field-named-but-cause-unnamed message (Booking.com).",
+    "source": "Mobbin screen captures: Zocdoc, Alan, Booking.com, SeatGeek",
+    "tier": "T2"
+   },
+   {
+    "claim": "\"Agentic content design\" (answer-first formatting, RAG-chunk writing, a claimed +180% agent-citation stat) is an emerging, unsettled 2025-2026 discipline not applicable to any current Solen surface.",
+    "source": "UX Writing Hub, Agentic Content Design blog listing; NNG, 4 Things GenAI Needs for Better Content Design (Jan 2026)",
+    "tier": "T3"
+   }
+  ],
+  "numbers_used": [
+   "2-5 word empty/confirmation headline",
+   "8-15 word sub-line",
+   "1-4 word label-only commit CTA",
+   "1-2 word empty-state CTA",
+   "3-4 word Fresha action-list verb label",
+   "4-part error message structure (what / why / fix / tone)",
+   "3 rungs on the verbosity ladder",
+   "grade 7-9 reading level target",
+   "9-year-old GOV.UK reading age (CONV, not adopted)"
+  ],
+  "taste_lab_probe": "Pull 6 live Solen error strings (2 payment, 2 booking-flow, 2 form-validation) and 6 empty/confirmation strings (search zero-results, no bookings yet, no reviews yet, queue-empty, booking confirmation, payment confirmation) across all four locales. Score errors against the four-part structure (what/why/fix/tone, binary present/absent per part) and against field-specificity (does it name the exact field like Zocdoc, or read like Alan's bare \"Required\"). Score empty/confirmation strings against the two-register band (headline 2-5 words, sub-line 8-15 words, single sentence, one next action) and explicitly check each headline against its own sub-line for the Nike Run Club failure mode (does the sub-line just restate the headline). Any string missing a structure part, blaming the user, or restating its own headline is a punch-list item, not a taste call, since the structure being tested is the sourced mechanic, not a preference."
+ },
+ "verified": {
+  "id": "S28",
+  "tag": "net-new",
+  "verdict": "revised",
+  "myths_caught": [
+   "\"Alice Chen, UX Content Collective blog (2026)\" is very likely a fabricated source: the domain uxcontentcollective.com returns DNS failure (does not exist / ENOTFOUND). Cut entirely; the underlying point (generic CTAs break information scent) survives on the already-cited, independently real Nielsen heuristic 6 alone.",
+   "The claim \"NN/g's guidance converges on roughly 7th-8th grade reading level for this copy\" was attached to NN/g's Error-Message Guidelines and 10 Design Guidelines for Reporting Errors in Forms articles. Both articles were fetched directly and neither mentions a reading grade level at all (confirmed: their content is about inline validation, field-adjacent placement, color, icons, no readability guidance). The actual NNG number (verified verbatim via WebFetch: \"We usually recommend writing at the 6-8th grade reading level for general audiences\") comes from a different NNG article (Plain Language Experts), and the real figure is 6-8th grade, not 7-8th. This is a citation-mixing error, not a fabrication, but it misattributes both the source article and the exact number.",
+   "PlainLanguage.gov/digital.gov's current live plain-language guide page was fetched directly and does not state an explicit grade-level number (e.g. \"8th grade or below\") anywhere on the page, despite this being a commonly repeated factoid. Downgraded from T2 to CONV pending a citable primary source.",
+   "GOV.UK's \"9-year-old reading age\" could not be confirmed on any current live GOV.UK or GDS page this session (multiple URLs 404'd or redirected without stating the number). The draft already tags this CONV and explicitly does not adopt it as the Solen number, so no change to adoption status, but its live-verifiability is weaker than the draft implies; noted as unconfirmed-live rather than a settled convention."
+  ],
+  "verified_addition": "Add as RATIONALE.md section 29, \"Domain 24: content design mechanics\" (cross-references Domain 22 voice/tone and PSYCHOLOGY.md rather than repeating them; extends CLAUDE.md's Copy economy rules into a sourced canon):\n\n**1. Verbosity ladder is keyed to icon recognizability, not screen real estate (T2, Nielsen heuristic 6 recognition-over-recall).** Three rungs: icon-only (closed set locked in Domain 18, mandatory aria-label); icon+label (any action outside that set whose icon is directional or symbolic help, not self-sufficient); label-only (commitment actions: pay, book, confirm, delete). Real-world convergence on the label-only rung's length: Fresha's marketing CTAs run 2-3 words (\"Get the app\", \"Find out more\"; MEASURED directly, fresha.com homepage, re-verified this pass), and booking-vertical empty-state CTAs on Square Go (\"Explore\", MEASURED directly via Mobbin, exact verbatim match to the source screen) and Fresha run 1-2 words, never a full sentence on the button itself (T2, converging across apps). Generic labels (\"Learn more\", \"Click here\", \"Submit\") are a well-known anti-pattern in UX-writing practice: they break \"information scent\" and force screen-reader users navigating by link list alone to open each link to learn its destination (T2, this is the direct practical implication of the Nielsen recognition-over-recall heuristic already cited above; a prior draft attributed this specifically to \"Alice Chen, UX Content Collective blog (2026)\", that domain does not resolve and the citation is dropped as unverifiable, the claim itself survives on the Nielsen heuristic alone). Combined rule: a label-only commit action names the destination/object in 1-4 words (\"Buchen\", \"Bezahlen\", \"Kalender hinzufügen\"), never a bare verb alone, never a full sentence.\n\n**2. Error messages follow a four-part checklist distilled from NN/g guidance (T2, NN/g Error-Message Guidelines + 10 Design Guidelines for Reporting Errors in Forms, both re-fetched and confirmed to exist verbatim under those titles this pass; T1 floor from WCAG 3.3.1-3.3.3 already cited in Domain 17; the four parts are a Solen-authored distillation of NNG's actual guidance, which covers inline validation timing, field-adjacent placement, color, and icons, NOT a literal restatement of NN/g's 12-guideline/3-dimension rubric shape, and NEITHER NNG article states a reading-level number, see mechanic 3 for the correctly sourced grade-level claim).** What happened (precise); why, in user terms (never a raw system code); what to do next (an instruction); tone that never blames the user, this last point IS explicit in NNG's own guidance (\"don't use phrasing that blames users or implies they are doing something wrong, such as invalid, illegal, or incorrect\", confirmed verbatim on nngroup.com). Real-world spread on the \"why\" and \"fix\" parts, sampled via Mobbin, not independently re-verified screen-by-screen this pass beyond the two spot-checks below: Zocdoc reportedly names the exact field (\"Please enter a Member ID\") and SeatGeek's field-level error reportedly does the same in a full sentence, both stronger than Alan's bare \"Required\" (no field name, no fix instruction) or Booking.com's \"Add your first name\" (names the field, not the underlying problem); treat these three comps as CONV pending a fresh Mobbin re-check, not a locked T2 floor. Ulta Beauty's flat \"Coupon code is not valid\" (no apology, no please) versus SeatGeek's apologetic register on a structurally identical error shows tone is NOT dictated by this structure, the four parts are a length/content floor; register still comes from Domain 22 voice/tone (cross-reference, not restated). Optional implementation pattern reportedly observed on SeatGeek (CONV, single-app, unreconfirmed this pass): a two-tier error system, a deliberately vague page-level banner that points down to the field, paired with the specific field-level message, useful on multi-field forms where one top-of-page string cannot carry every field's specific \"why\" without becoming a wall of text.\n\n**3. Reading level target: grade 6-9 soft band (Solen ceiling set at the top of that band, grade 9).** The verified floor is NN/g's Plain Language Experts article, fetched and quoted directly this pass: \"We usually recommend writing at the 6-8th grade reading level for general audiences\" (T2, confirmed verbatim, and this is the correct NNG source, NOT the Error-Message Guidelines articles cited in mechanic 2, which say nothing about reading level despite a prior draft implying they did). PlainLanguage.gov/digital.gov's live plain-language guide page was fetched directly and currently states plain-language principles without an explicit grade-level number, downgrade that citation from T2 to CONV, a widely repeated convention this pass could not confirm on the live source. GOV.UK's 9-year-old reading age is likewise CONV, unconfirmed on current live GOV.UK/GDS pages this session, and stays explicitly NOT adopted as the Solen number. BOUNDARY: Flesch-Kincaid is English-calibrated (T1, Flesch 1948, Kincaid et al. 1975, both well-documented primary sources); never compute a score on English strings and apply the number to German, French, or Italian copy. No real-app evidence changes this rung; none of the scouting passes could measure reading level directly from screenshots or homepage copy.\n\n**4. Empty, confirmation, and zero-result states resolve to two prose registers, never one wall of text (upgraded from a single unsupported \"no dead ends\" sentence at RATIONALE:807, T3 Yifrah's no-dead-ends tenet, plus direct convergence across real apps, two of which were independently re-verified verbatim this pass).** Register one, the headline: 2-5 words, a fragment or imperative, never a full sentence (\"No Appointments\", Square Go, MEASURED verbatim via Mobbin this pass; \"No Upcoming Experiences\", Nike Run Club, MEASURED verbatim via Mobbin this pass; \"No trips booked...yet!\", Airbnb Trips, reported, not reconfirmed this pass). Register two, one sub-line: a single short sentence, roughly 8-15 words, stating the state honestly and naming the one next action (\"No worries! Explore places nearby and find your new go-to today...\", Square Go, MEASURED verbatim via Mobbin this pass, 11 words; IKEA confirmation sub-line reported, not reconfirmed this pass). Everything below that boundary reverts to label:value pairs (booking ID, date, price), never prose; the Fresha and IKEA confirmation-screen claims are CONV pending re-verification, not independently re-checked this pass. Negative example to enforce against: Nike Run Club's empty state restates the headline as the body almost verbatim, CONFIRMED VERBATIM this pass via direct Mobbin capture: headline \"No Upcoming Experiences\", body \"You haven't registered for any upcoming experiences.\", exactly the failure CLAUDE.md's copy-economy rule 1 already bans (\"drop words the context already says\"), now with a concrete, independently re-verified negative citation instead of an abstract rule. CTA on these states stays 1-2 words per mechanic 1. Cross-reference PSYCHOLOGY.md's real-numbers-only law for the \"state honestly\" clause rather than restating it here.\n\nTENSION FLAG, not adopted (per hard rule, no LOCKFILE/SOURCE literal reopened): several comps (Airbnb's \"...yet!\", Square Go's \"No worries!\", confirmed present in the verified Square Go capture, Booksy's reported \"Something come up? We've got you.\") lean on a warmer, more playful register than Solen's locked du-form/no-exclamation/no-hype voice. Adopt the STRUCTURE (two-register tiering, field-specific errors, 1-2 word CTAs) from these comps, not the TONE. Doctolib's formal register and Zocdoc/IKEA's flatter neutral phrasing are the closer tonal analogues to Solen's existing restraint (reported, not reconfirmed this pass), this is a validation of the current locked voice, not a case for changing it. This tension is a candidate QUESTIONS.md entry, not a blocking issue: it is fully resolved by \"adopt structure, not tone\" and requires no owner decision to ship.\n\nSCREENED OUT (T3, out of scope, not folded into the domain): \"agentic content design\" (answer-first formatting, question-based headers, RAG-chunk-independent writing) targets AI-agent/RAG consumption of content; Solen has no such surface today. The article confirmed to exist this pass (UX Writing Hub, \"Agentic Content Design: How to Build Your First Guidelines\"), but its claimed +180% agent-citation stat remains an unverified single blog claim regardless of the article's real existence, do not cite it even qualitatively. Content-designer salary/compensation trends are a labor-market observation, not a copy mechanic. Competitor content-design guideline pages (Airbnb DLS, Uber Base) could not be loaded live this session (403/404/empty response), so their principles are NOT cited here despite being pattern-matchable from training, per the no-fabrication rule; flag as a follow-up WebFetch task once those pages are reachable, not as an adopted source today.",
+  "claim_verdicts": [
+   {
+    "claim": "Effective error messages precisely describe what happened, use plain language, offer constructive next steps, and never blame the user (NN/g Error-Message Guidelines / 10 Design Guidelines for Reporting Errors in Forms).",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Both articles re-fetched directly this pass and confirmed to exist under those exact titles, with matching guidance content (inline validation, field-adjacent placement, non-blaming tone confirmed verbatim: 'avoid invalid, illegal, incorrect'). Neither article states a reading-level number; that clause must be detached from this source (see next verdict)."
+   },
+   {
+    "claim": "NN/g's guidance converges on roughly 7th-8th grade reading level for error-message copy.",
+    "source_ok": false,
+    "tier_final": "T2 (misattributed)",
+    "note": "Confirmed false attribution: neither NNG error-message article mentions reading level. The real NNG number (6-8th grade, not 7-8th) lives in a different article, 'Plain Language Experts', fetched and quoted verbatim this pass. Corrected and re-sourced in verified_addition."
+   },
+   {
+    "claim": "Recognition (icon+label or a well-known icon alone) places less cognitive load than recall (unlabeled icon); Nielsen heuristic 6.",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Standard, well-documented Nielsen Norman heuristic, correctly tiered and correctly used as the basis for the generic-CTA anti-pattern once the fabricated Alice Chen citation is removed."
+   },
+   {
+    "claim": "US federal plain-language guidance targets roughly grade 7-9 / 8th-grade-or-below for general-audience content.",
+    "source_ok": false,
+    "tier_final": "CONV",
+    "note": "digital.gov/guides/plain-language (the live redirect target of plainlanguage.gov) was fetched directly and discusses plain-language principles without stating an explicit grade-level number. Downgraded from T2 to CONV; this is a widely repeated but currently unconfirmed-on-live-source factoid."
+   },
+   {
+    "claim": "GOV.UK sets a 9-year-old reading age as its content-design target.",
+    "source_ok": false,
+    "tier_final": "CONV",
+    "note": "Could not confirm on any current live GOV.UK or GDS page this session (404s and redirects with no number found). Already correctly tagged CONV and not adopted as the Solen number in the draft; downgrade confidence further to 'unconfirmed live', keep unadopted."
+   },
+   {
+    "claim": "Flesch-Kincaid Grade Level is an English-calibrated readability formula.",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Well-established, correctly tiered; Flesch 1948 and Kincaid et al. 1975 (US Navy report) are real, primary, well-documented sources."
+   },
+   {
+    "claim": "Every empty, error, and zero-result state should offer a clear next action rather than a dead end (Yifrah, Microcopy: The Complete Guide).",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Real book, correctly tiered T3 (general tenet, not an empirical finding) in the original draft, no change needed."
+   },
+   {
+    "claim": "Generic CTAs break information scent and hurt screen-reader navigation; prescribes action verb plus object/destination (Alice Chen, UX Content Collective blog, 2026).",
+    "source_ok": false,
+    "tier_final": "MYTH (fabricated/unreachable)",
+    "note": "uxcontentcollective.com returns DNS failure. No evidence this source exists. Removed from verified_addition; the underlying claim is retained but re-grounded solely in the already-verified Nielsen heuristic 6."
+   },
+   {
+    "claim": "Nike Run Club's empty state restates its headline ('No Upcoming Experiences') almost verbatim in the body ('You haven't registered for any upcoming experiences').",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "CONFIRMED VERBATIM this pass via direct Mobbin screen capture. Exact text match. Strongest-evidenced claim in the whole stream."
+   },
+   {
+    "claim": "Square Go's appointments empty state reads 'No Appointments' / 'No worries! Explore places nearby and find your new go-to today...' with a 1-word 'Explore' CTA.",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "CONFIRMED VERBATIM this pass via direct Mobbin screen capture. Exact text and word counts match the draft's claims precisely."
+   },
+   {
+    "claim": "Fresha's marketing CTAs run 2-4 words ('Get the app', 'Find out more').",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "CONFIRMED this pass via direct WebFetch of fresha.com: 'Get the app' (2 words), 'Find out more' (3 words) both present verbatim. Corrected range to 2-3 words observed (no 4-word CTA found on the homepage), a minor tightening, not a refutation."
+   },
+   {
+    "claim": "Zocdoc, Alan, Booking.com, and SeatGeek form-error comparisons (field-specificity spread) and the 'agentic content design' UX Writing Hub article.",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "UX Writing Hub's agentic-content-design article confirmed to exist via WebFetch (correctly T3, correctly excluded from any adopted number, no change needed). The Zocdoc/Alan/Booking.com/SeatGeek Mobbin screen quotes could not be located via a targeted Mobbin re-search this pass (query returned other apps, not these). Not proven false, given two other Mobbin claims independently checked out exact, but downgraded to CONV pending a follow-up targeted re-check before treating as a locked T2 floor."
+   }
+  ],
+  "residual_risks": "Two corrections were substantive and are folded into verified_addition: (1) the NNG reading-level number was misattributed to the wrong article and was off by one grade (6-8th verified, not 7-8th), fixed inline; (2) the 'Alice Chen / UX Content Collective' citation is very likely fabricated (domain does not resolve) and has been cut, with the underlying claim re-grounded in the already-solid Nielsen heuristic 6 citation alone. Neither correction changes the shipped mechanics (verbosity ladder, four-part error checklist, two-register empty-state structure) or any numeric target Solen actually adopts; they only correct sourcing hygiene. Before this ships to RATIONALE.md as a locked source: (a) PlainLanguage.gov's 8th-grade figure and GOV.UK's 9-year reading age are both downgraded to CONV this pass because their current live pages don't state the number outright; if the owner wants a harder external floor than NN/g's verified 6-8th grade, that needs a fresh primary-source hunt, not a re-cite of the same unconfirmed convention. (b) The Zocdoc/Alan/Booking.com/SeatGeek/Ulta/IKEA/Doctolib/Treatwell/Booksy Mobbin quotes were accepted on a 2-of-N spot-check basis (Nike Run Club and Square Go both came back exact-verbatim, which is reassuring but not exhaustive); a follow-up targeted Mobbin pass naming each app explicitly would fully close this gap before the domain is treated as gospel. (c) The TENSION FLAG (warmer comps' tone vs Solen's locked du-form voice) is correctly resolved as 'adopt structure not tone' and does not reopen any LOCKFILE row, but is worth a one-line TASTE_LOG entry so it is not re-litigated later. (d) The four-part error checklist and the 6-9 grade Solen ceiling are Solen-authored decisions layered on top of sourced floors, not verbatim external mandates; the draft is already honest about this and verified_addition preserves that honesty, no further action needed there. No myth_screen (PSYCHOLOGY.md never-cite) numbers appear anywhere in this stream, confirmed clean on that axis."
+ }
+}

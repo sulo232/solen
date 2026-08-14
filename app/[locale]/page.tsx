@@ -60,6 +60,10 @@ import ContinueCard from "./_components/homepage/ContinueCard";
 // everyone until an admin turns it on. Not the same feature as the removed
 // ArtistOfTheMonth (invented demo stylists, no backend) referenced below.
 import SalonOfMonth from "./_components/homepage/SalonOfMonth";
+// The personal row: the salons this customer leans toward, worked out nightly from their own
+// bookings, favourites and searches. Renders nothing for a signed-out or brand-new visitor, so the
+// page is unchanged until there is something real to show. Owner switched it on 2026-08-14.
+import ForYouAffinityRow from "./_components/homepage/ForYouAffinityRow";
 // V3-D124 (2026-05-24): FeatureBento was added then scrapped per user.
 // Component file kept at ./_components/homepage/FeatureBento.tsx and
 // illustrations at public/illustrations/features/ for easy revive — just
@@ -276,6 +280,7 @@ export default async function Page({
         <ContinueCard />
         <MobileCategoriesRow />
         <SalonOfMonth locale={locale} />
+        <ForYouAffinityRow />
         <ForYouSalonRows salonData={salonCardData} />
         {/* I4: real localStorage view-history tile row, search-a.html's own position (directly
             above the "Top on Solen" rail RecentlyViewed.tsx's fallback title renders below). Builds
@@ -299,7 +304,15 @@ export default async function Page({
             to bring it back. */}
         <Entdecken />
         <Reviews />
-        <BusinessTeaser />
+        {/* Desktop only. The mobile home ends at Reviews: that is what the home-v3 mockup shows
+            (`public/_mockups/home-v3/search-a.html`) and what HOME_INSPO_CHROME recorded as "business
+            teaser + newsletter are correctly absent on mobile". HOME_V3_CATEGORY_MAP even lists this
+            as delivered and verified at 390x844, and it never was: the section shipped unconditional
+            and the owner found it himself on 2026-08-14 ("removed that section from new homepage ...
+            u didnt even flag it"). Hidden below md, which is what the record always said. */}
+        <div className="max-md:hidden">
+          <BusinessTeaser />
+        </div>
       </FeedZone>
       </div>
     </>

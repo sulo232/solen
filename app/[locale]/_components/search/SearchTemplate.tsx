@@ -87,6 +87,7 @@ import { MapSalonDetail } from "./MapSalonDetail";
 import { CategoryBrowseRails } from "./CategoryBrowseRails";
 import { CategoryMobileRails } from "./CategoryMobileRails";
 import type { SalonCategory } from "@/lib/types";
+import { AMENITIES_SELF_REPORTED } from "../salon/_shared";
 import { getCityName, getCityCoords, slugFromCity, DEFAULT_CITY_SLUG, ALL_CITIES_PARAM, type CitySlug } from "@/lib/cities";
 import { formatDateLabel, nextAvailableSlotLabel } from "@/lib/format";
 import { useActiveCities } from "@/hooks/useActiveCities";
@@ -515,7 +516,11 @@ export default function SearchTemplate({
       ? [{ key: "gender", label: gender === "female" ? t("genderFemale") : gender === "male" ? t("genderMale") : gender === "non_binary" ? t("genderNonBinary") : t("sectionGender"), active: !!gender }]
       : []),
     { key: "rating", label: minRating ? `${minRating}` : t("sectionRating"), active: minRating != null },
-    { key: "amenities", label: activeAmenities.length ? t("pillAmenitiesCount", { count: activeAmenities.length }) : t("sectionAmenities"), active: activeAmenities.length > 0 },
+    // AMENITIES_SELF_REPORTED (salon/_shared.ts): the pill is hidden while the underlying
+    // salons columns are nulled fabricated data, not a real fact yet.
+    ...(AMENITIES_SELF_REPORTED
+      ? [{ key: "amenities", label: activeAmenities.length ? t("pillAmenitiesCount", { count: activeAmenities.length }) : t("sectionAmenities"), active: activeAmenities.length > 0 }]
+      : []),
     // V3-D454: hidden while 0 listed salons have a real deal, UNLESS a stale link
     // already has ?deals=true set (same active-param exception as gender above).
     ...(filterAvailability.deals || deals
@@ -1537,7 +1542,12 @@ export default function SearchTemplate({
           full grid, ONLY on a category route in browse mode (no query + no active
           filter). Reuses the homepage SalonCard. Revert: set BROWSE_RAILS = false. */}
       {BROWSE_RAILS && activeCategory && activeFilterCount === 0 && q.length === 0 && (
-        <CategoryBrowseRails salons={salons} locale={locale} category={activeCategory} />
+        <CategoryBrowseRails
+          salons={salons}
+          locale={locale}
+          category={activeCategory}
+          citySelected={!!activeCity}
+        />
       )}
 
       {/* Result count row, count LEFT, sort dropdown RIGHT (Airbnb/Fresha
@@ -2218,6 +2228,7 @@ export default function SearchTemplate({
         amenityOptions={amenityOptions}
         amenities={activeAmenities}
         onAmenityToggle={(col) => toggleBooleanParam(col, activeAmenities.includes(col))}
+        showAmenities={AMENITIES_SELF_REPORTED}
         deals={deals}
         onDealsToggle={() => toggleBooleanParam("deals", deals)}
         showDeals={filterAvailability.deals || deals}

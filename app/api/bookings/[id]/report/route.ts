@@ -17,6 +17,7 @@ import {
   writeCaseEvent,
   type ReasonCode,
 } from "@/lib/bookings/dispute-engine";
+import { sendEmail } from "@/lib/email";
 
 // SP-3 Endpoints 1 (POST create), 2 (GET view + timeline), 3 (PATCH salon review).
 //
@@ -381,20 +382,15 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const { data: owner } = await admin.from("profiles").select("email").eq("id", salonOwnerId).single();
     if (owner?.email) {
       try {
-        await fetch("https://api.resend.com/emails", {
-          method: "POST",
-          headers: { Authorization: `Bearer ${resendApiKey}`, "Content-Type": "application/json" },
-          body: JSON.stringify({
-            from: "support@solen.ch",
-            to: owner.email,
-            subject: "Ein Kunde hat ein Problem mit einer Buchung gemeldet",
-            html: `<p>Ein Kunde hat ein Problem mit Buchung #${bookingId} gemeldet.</p>
+        await sendEmail({
+          from: "support@solen.ch",
+          to: owner.email,
+          subject: "Ein Kunde hat ein Problem mit einer Buchung gemeldet",
+          html: `<p>Ein Kunde hat ein Problem mit Buchung #${bookingId} gemeldet.</p>
                    <p><strong>Typ:</strong> ${reasonCode}</p>
                    <p>Bitte loggen Sie sich in Ihr Dashboard ein, um zu antworten.</p>`,
-          }),
-          // api-contracts-06: bound the outbound call so a hung Resend request
-          // can't hold the function's whole wall-clock budget.
-          signal: AbortSignal.timeout(8000),
+          // The per-call 8s abort that used to sit here is gone because sendEmail carries its own
+          // 5s timeout for every send, so the bound survives and is no longer per-caller.
         });
       } catch (e) {
         console.error("[booking-disputes] Failed to send dispute email to salon owner", e);

@@ -84,7 +84,7 @@ export default async function ReviewsPage({
         {/* 2026-06-11: was a BLUE tracked-uppercase eyebrow — double violation
             (blue on non-interactive text + banned eyebrow). Normal-case grey kicker. */}
         {/* mockup-ok: owner decision 5A (2026-08-09) , eyebrow at card-meta size. Was 13px. */}
-        <span className="block font-body text-[12px] font-semibold text-s-ink-3">
+        <span className="block font-body text-[12px] font-semibold text-s-ink-2">
           {t("eyebrow")}
         </span>
         <h1 className="mt-2 font-display text-[clamp(26px,4vw,38px)] font-semibold leading-[1.1] tracking-[-0.02em] text-s-ink">

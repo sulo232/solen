@@ -820,13 +820,18 @@ export default function Header({ locale }: { locale: string }) {
           aria-label="Hauptnavigation"
           className="hidden md:flex min-w-0 flex-1 items-center justify-center gap-2"
         >
+          {/* Two more German literals in the global header, found 2026-08-14 on the live English
+              home page: "Für Unternehmen" rendered in German to every English, French and Italian
+              visitor on every page. Same defect the 2026-07-27 sweep fixed five times in this file
+              and missed here, because these two sit in the desktop nav rather than the mobile menu.
+              Keys added to all four locale files. */}
           <DropdownMenu
-            label="Services"
+            label={tNav("services")}
             items={SERVICES_MENU}
             locale={locale}
           />
           <DropdownMenu
-            label="Für Unternehmen"
+            label={tNav("forBusiness")}
             items={BUSINESS_MENU}
             locale={locale}
           />

@@ -1,0 +1,249 @@
+{
+ "id": "S32",
+ "synth": {
+  "id": "S32",
+  "tag": "canon-deepen",
+  "title": "Neutral-ramp + accent hex perceptual derivation",
+  "principle_summary": "Solen's four frozen base hexes are not four independent picks: run through OKLCH (Ottosson 2020, already Solen's adopted generation space at RATIONALE.md:81), s-ink #0A0A0A (L 0.145, C~0), s-border #E4E4E7 (L 0.920, H 286.3) and s-bg.sunken #F4F4F5 (L 0.967, H 286.4) form a coherent lifted-black-plus-two-step-cool-ramp, matched in hue within 0.1 degrees to each other and rotated about 220 degrees away from the warm hexes they replaced (E0DDDB, F8F5F2) at matched lightness and chroma, i.e. the 2026 cool reversal (v2 rule 4) was a pure hue rotation, now provable rather than asserted. s-accent #276EF1 sits at L 0.573, C 0.2095 (about 90 percent of the sRGB gamut's chroma ceiling at that lightness/hue), which mechanically explains its already-recorded borderline contrast: 4.58:1 on white (passes AA) but 4.17:1 on sunken (fails AA). The \"accent ~3.7:1\" figure the stream's key_question asked to recompute does not exist in any Solen doc or in this recomputation and should be dropped as an unsourced number, not carried forward. Three independent real-app scouting passes (Mobbin screenshots, live getComputedStyle measurement of Fresha/Booksy/Booking.com, and OKLCH-tooling precedent from Evil Martians/Radix/Tailwind v4) converge on the same structural shape as this math: one saturated accent hue confined to small text links, icon buttons and badges, sitting on a near-white surface with black or near-black headline ink is both the dominant real-world convention in booking apps AND the numerically correct derivation of why Solen's specific hexes behave the way LOCKFILE already prescribes.",
+  "real_world_evidence": [
+   {
+    "source": "Fresha.com marketing homepage, live getComputedStyle scan (competitor scout, measured)",
+    "what": "Fresha's rendered ink computes to #0D0D0D, a 3-unit-per-channel delta from Solen's frozen s-ink #0A0A0A (imperceptible): the closest structural comparator (per this project's own dual-axis rule) independently lands on almost the same lifted-black value. Fresha's own accent is violet #6950F3, not blue, gold #FFC00A reserved for the star rating; Fresha uses ink, not its brand color, for CTAs/links.",
+    "tier": "CONV"
+   },
+   {
+    "source": "Booksy.com marketing homepage, live getComputedStyle scan (competitor scout, measured)",
+    "what": "Zero saturated computed colors found anywhere on the page (max-min channel delta >25 threshold); CTA and cookie-accept button both render near-black, not any accent hue. Confirms ink-only-CTA is a live convention among direct beauty-marketplace competitors, not only an Uber-import habit.",
+    "tier": "CONV"
+   },
+   {
+    "source": "Booking.com homepage, live getComputedStyle scan (competitor scout, measured)",
+    "what": "Primary CTA and header use saturated blue #006CE4/#003B95 at scale, not confined to small text/icons: a genuine counter-example to Solen's sparse-blue rule from a comparable high-frequency marketplace. Tension noted, not applied: Solen/Fresha/Booksy's ink-CTA-plus-sparse-accent pattern is a deliberate stance against the legacy-OTA convention Booking.com represents, not an oversight.",
+    "tier": "CONV"
+   },
+   {
+    "source": "CVS Health (appointment confirmation + time-picker screens), Square Go (booking confirmation modal), Best Buy (appointment confirmed screen), BlaBlaCar (preferences screen), Fresha (appointment confirmation) via Mobbin (real-app scout)",
+    "what": "Across five booking/appointment apps, blue is confined to icon-buttons (Add to Calendar/Reschedule/Cancel), inline text links (\"Communication Preferences\", \"Reschedule appointment\"), and selected-state borders/chips, never a body/heading/price color, on a white-or-near-white base with black bold headlines. Structurally identical shape to Solen's own usage rule.",
+    "tier": "T3"
+   },
+   {
+    "source": "Zocdoc and Superpower screens via Mobbin (real-app scout, flagged as counter-patterns)",
+    "what": "Zocdoc uses a warm cream/ivory background plus yellow/orange CTAs, the exact warm-drift LOCKFILE's cool-hairline rule rejects; Superpower's CTA is black but its accent hue is orange, not blue, showing the SPECIFIC accent hue (Solen's blue) is a brand choice each product makes independently, not a universal law the OKLCH math alone would predict.",
+    "tier": "T3"
+   },
+   {
+    "source": "Evil Martians, \"OKLCH in CSS: why quit RGB/HSL\" (social/trend scout)",
+    "what": "Argues a fixed OKLCH lightness floor (e.g. L>=87%) guarantees text-on-any-hue contrast without per-hue retesting, and that a palette can be generated from a formula plus a few seed colors, directional tooling-industry support for treating Solen's four hexes as a checkable ramp rather than eyeballed values.",
+    "tier": "T3"
+   },
+   {
+    "source": "Radix Colors documentation, 12-step scale (social/trend scout)",
+    "what": "Explicitly states its steps are curated per use-case (background/hover/border/overlay/text) using the APCA algorithm, not derived from one uniform formula; \"practical usability over theoretical uniformity.\" Direct caveat against over-claiming that OKLCH math alone would have picked Solen's exact four hexes from scratch, which the proposed BOUNDARY clause already states.",
+    "tier": "T3"
+   },
+   {
+    "source": "Tailwind CSS v4 release notes (social/trend scout)",
+    "what": "Confirms industry tooling has moved its default palette generation to OKLCH, but Tailwind's own framing is about gamut/vividness, not proof of guaranteed contrast ratios, a caution against overstating what OKLCH adoption alone buys a design system.",
+    "tier": "T3"
+   }
+  ],
+  "generative_prior": "For any new or re-derived neutral/accent hex in Solen's system, the checkable defaults a first mockup should hit: (1) ink stays a LIFTED near-black, target OKLCH L 0.14-0.15 with C effectively 0 (not literal #000000, matching both Solen's #0A0A0A and Fresha's independently-converged #0D0D0D), giving 19-20:1 on white; (2) a two-step neutral ramp (border, sunken) must share hue within about 0.1-1 degree of each other at high lightness (L 0.90-0.97) to read as one coherent cool ramp rather than two independently eyeballed greys, exactly the Radix step-map shape RATIONALE.md:731 already claims; (3) the accent hue lands in the canonical blue band (H 250-270 degrees) at a mid lightness (L 0.55-0.60) and near-ceiling in-gamut chroma for that hue, which mechanically caps its contrast: expect roughly 4.5-4.6:1 on white/near-white (passing AA) but a drop below 4.5:1 (Solen measures 4.17:1) on any tinted/sunken surface, so an accent-as-text placement must be reserved for white or near-white backgrounds only, never the sunken surface; (4) usage stays confined to small clickable units (inline text links, icon-buttons, badges, selected-chip borders), never body copy, headings, prices, or the primary CTA fill, a pattern independently confirmed live across CVS Health, Best Buy, Square Go, BlaBlaCar and Fresha (5 booking-category apps via Mobbin) and by Fresha's and Booksy's own computed styles (ink-only CTAs, zero-to-sparse saturated color on primary surfaces). Booking.com is the documented exception (saturated blue at CTA scale) and should be read as evidence of a real alternative convention Solen deliberately did not follow, not as a reason to loosen the rule.",
+  "proposed_addition": "DECISION: Solen's four frozen base hexes, converted to OKLCH (Ottosson 2020, the space already adopted at RATIONALE.md:81), form a coherent structure rather than four independent picks: s-ink #0A0A0A sits at L 0.145 / C 0.000 (achromatic, lifted off true black); s-accent #276EF1 sits at L 0.573 / C 0.2095 / H 261.4 (canonical blue hue band, about 90 percent of the maximum in-gamut sRGB chroma available at that lightness and hue); s-border #E4E4E7 sits at L 0.920 / C 0.0040 / H 286.3; s-bg.sunken #F4F4F5 sits at L 0.967 / C 0.0013 / H 286.4. The two neutrals match in hue within 0.1 degrees, supporting the reading that they are two lightness steps of one cool-toned ramp (matching the Radix step map already asserted at RATIONALE.md:731) rather than two independently eyeballed greys. Their warm predecessors, E0DDDB (L 0.899 / C 0.0043 / H 56.4) and F8F5F2 (L 0.972 / C 0.0051 / H 67.8), sit at matched lightness and matched tiny chroma but a hue roughly 220 degrees away (yellow-orange versus blue-violet): the 2026 cool reversal (v2 rule 4) was a pure hue rotation at constant lightness and chroma, now shown numerically instead of only asserted.\n\nREAL-WORLD CONFIRMATION (net-new to this pass, CONV/T3, does not change tier of the T1 math above): three independent scouting passes converge on the same structural shape the OKLCH math predicts. Live getComputedStyle measurement of Fresha.com finds its rendered ink at #0D0D0D, a 3-unit delta from Solen's #0A0A0A, an independent real-market anchor for the lifted-black target. Mobbin screens of CVS Health, Best Buy, Square Go, BlaBlaCar and Fresha (five booking/appointment apps) show blue confined to icon-buttons, inline text links and selected-chip borders, never body/heading/price color, on white-or-near-white with black bold headlines, the identical shape to Solen's own usage rule. Booksy.com renders zero saturated color anywhere on its marketing surface (ink-only CTA), a more restrained cousin of Solen's pattern. Booking.com is the one documented counter-example (saturated blue #006CE4 at primary-CTA scale): noted as a real, deliberate divergence Solen chose not to follow, not evidence against the rule. Tooling precedent (Evil Martians' lightness-floor approach, Radix Colors' per-step APCA curation, Tailwind v4's OKLCH-default palette) supports treating OKLCH as the right working space for this kind of after-the-fact grounding, while Radix's explicit \"practical usability over theoretical uniformity\" stance is the caveat behind this addition's own BOUNDARY clause: the math explains the picks, it does not claim to have generated them from a pure formula.\n\nFORCES: showing OKLCH numbers (plus now, real-app confirmation) for four already-frozen, owner-approved hexes versus leaving them as bare literals; treating hue-angle agreement at near-zero chroma as meaningful versus flagging its own noise floor; citing a competitor counter-example (Booking.com) honestly versus omitting it to keep the rule looking uncontested.\n\nOPTIMIZES FOR: making the neutral ramp and the cool-versus-warm swap independently checkable (any future neutral addition can be placed on this ramp by OKLCH job the way RATIONALE.md:731 already prescribes for Radix steps, instead of eyeballing a new hex); tracing the accent's known borderline AA contrast (RATIONALE.md:110-111) to its OKLCH lightness as the mechanical cause instead of leaving it as an unexplained observed number; grounding the sparse-blue usage rule in independently observed real-app convention (five booking apps, Mobbin) in addition to internal math, so the rule reads as market-validated, not house style alone.\n\nSACRIFICES: none of the four hex values change, this section only documents their position and adds corroborating market evidence; the hue-match finding for the two neutrals is weaker evidence than the warm-versus-cool delta because chroma is near zero for both pairs (OKLCH hue angle is numerically unstable as chroma approaches zero, a standard property of any polar color encoding); the real-app evidence is CONV/T3 (screenshots and live-site scans), it corroborates but cannot substitute for the T1 OKLCH/WCAG math; Booking.com's contrary convention is disclosed rather than smoothed over, which slightly weakens the \"sparse blue is the market norm\" framing but strengthens the honesty of the claim.\n\nBOUNDARY: this section grounds the four EXISTING frozen hexes, it does not license inventing a fifth neutral, adjusting L/C/H targets, or treating the OKLCH numbers (or the real-app screens) as a formula that would have picked these exact hexes from scratch (they were chosen by owner review across several rounds, e.g. RATIONALE.md:327's v2 rule 4 decision; OKLCH and market comparables here explain and verify the pick after the fact, they do not derive it a priori). Do not carry forward \"accent contrast approximately 3.7:1\" from any prior brief: recomputed WCAG values are 4.58:1 on white and 4.17:1 on sunken (the sunken pairing fails AA 4.5:1 for normal text, already recorded at RATIONALE.md:111); no 3.7:1 figure exists in any Solen doc or in this recomputation and it should not be cited. Do not treat Booking.com's saturated-blue-CTA convention as grounds to reopen LOCKFILE's sparse-blue rule; it is disclosed as a real, deliberate industry alternative Solen did not choose, nothing here reopens that lock.\n\nMECHANIC: OKLab/OKLCH conversion (Ottosson 2020, T1 for perceptual uniformity, RATIONALE.md:81) applied directly to the sRGB hex via the standard linearize-to-LMS-to-Lab pipeline; WCAG 2.x contrast formula (L1+0.05)/(L2+0.05) on linearized relative luminance (T1, W3C SC 1.4.3, already cited RATIONALE.md:97) applied to recompute the accent pairings. Both are deterministic formula applications, independently reproduced and confirmed to match RATIONALE.md's existing 2026-07-15 measurement table. Real-app comparables gathered via Mobbin screen search (structural/visual pattern only, no computed CSS available from that source) and via live getComputedStyle scans of Fresha.com, Booksy.com and Booking.com (actual rendered hex values, directly comparable to Solen's).\n\nSOURCE: Bjorn Ottosson, \"A perceptual color space for image processing\" (2020), the OKLab/OKLCH derivation, T1, already the cited authority at RATIONALE.md:81. W3C WCAG 2.1 Success Criterion 1.4.3 contrast formula, T1, already cited at RATIONALE.md:97. Numeric OKLCH and WCAG values computed directly from the frozen hex literals in LOCKFILE.md:36-59, independently reproduced twice (research draft plus verification pass) and matching exactly. Real-app evidence: Mobbin screens of CVS Health, Square Go, Best Buy, BlaBlaCar, Fresha, Zocdoc and Superpower (T3, screenshot-sourced, structural pattern only); live getComputedStyle measurement of Fresha.com, Booksy.com and Booking.com marketing pages (CONV, directly measured hex values, this research pass); Evil Martians \"OKLCH in CSS\" and Radix Colors documentation and Tailwind CSS v4 release notes (T3, design-tooling precedent, not peer-reviewed).",
+  "sources": [
+   {
+    "claim": "OKLab/OKLCH (Ottosson 2020) gives near-uniform perceptual lightness with orthogonal L/C/H axes, already Solen's adopted generation space",
+    "source": "Bjorn Ottosson, \"A perceptual color space for image processing\" (2020); cited in Solen at RATIONALE.md:81",
+    "tier": "T1"
+   },
+   {
+    "claim": "WCAG 2.x contrast ratio formula (L1+0.05)/(L2+0.05), AA thresholds 4.5:1 normal / 3:1 large",
+    "source": "W3C WCAG 2.1 Success Criterion 1.4.3; cited in Solen at RATIONALE.md:97",
+    "tier": "T1"
+   },
+   {
+    "claim": "Recomputed OKLCH coordinates for s-ink, s-accent, s-border, s-bg.sunken and the two retired warm hexes; recomputed WCAG ratios (ink 19.80:1, accent-on-white 4.58:1, accent-on-sunken 4.17:1 fails AA)",
+    "source": "Direct arithmetic application of the Ottosson OKLab conversion and WCAG formulas to LOCKFILE.md:36-59 literals, independently computed twice (draft + verification pass), matching RATIONALE.md:107-111's existing table",
+    "tier": "T1"
+   },
+   {
+    "claim": "\"accent contrast approximately 3.7:1\" does not exist in any Solen document",
+    "source": "Full-repo grep of _design-system/ for \"3.7:1\", zero matches; nearest unrelated neighbor is the retired green-CTA 3.6:1 at SOURCE.md:1025",
+    "tier": "T1"
+   },
+   {
+    "claim": "Fresha's rendered ink computes to #0D0D0D; its own accent is violet #6950F3 not blue",
+    "source": "Live getComputedStyle scan of Fresha.com marketing homepage (competitor scout, this research pass)",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Booksy.com renders zero saturated color anywhere on its marketing surface",
+    "source": "Live getComputedStyle scan of Booksy.com (competitor scout, this research pass)",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Booking.com uses saturated blue #006CE4/#003B95 at primary-CTA scale, a counter-example to sparse-blue usage",
+    "source": "Live getComputedStyle scan of Booking.com (competitor scout, this research pass)",
+    "tier": "CONV"
+   },
+   {
+    "claim": "CVS Health, Square Go, Best Buy, BlaBlaCar and Fresha confine blue to icon-buttons, inline text links and selected-chip borders on a white/near-white plus black-ink base",
+    "source": "Mobbin screen captures (real-app scout, this research pass)",
+    "tier": "T3"
+   },
+   {
+    "claim": "Zocdoc uses warm cream + orange CTA (rejected pattern); Superpower's accent hue is orange not blue",
+    "source": "Mobbin screen captures (real-app scout, this research pass)",
+    "tier": "T3"
+   },
+   {
+    "claim": "Radix Colors' 12-step scale is curated per use-case via APCA, not derived from one uniform formula",
+    "source": "Radix Colors documentation, radix-ui.com/colors (social/trend scout, this research pass)",
+    "tier": "T3"
+   },
+   {
+    "claim": "A fixed OKLCH lightness floor can guarantee text-on-hue contrast without per-hue retesting",
+    "source": "Evil Martians, \"OKLCH in CSS: why quit RGB/HSL\" (social/trend scout, this research pass)",
+    "tier": "T3"
+   },
+   {
+    "claim": "Tailwind v4 moved its default palette generation to OKLCH for gamut/vividness, not as a contrast-ratio guarantee",
+    "source": "Tailwind CSS v4 release notes, tailwindcss.com/blog/tailwindcss-v4 (social/trend scout, this research pass)",
+    "tier": "T3"
+   }
+  ],
+  "numbers_used": [
+   "#0A0A0A -> OKLCH L 0.145 C 0.000",
+   "#276EF1 -> OKLCH L 0.573 C 0.2095 H 261.4 (~90% of sRGB gamut chroma ceiling at that L/H)",
+   "#E4E4E7 -> OKLCH L 0.920 C 0.0040 H 286.3",
+   "#F4F4F5 -> OKLCH L 0.967 C 0.0013 H 286.4",
+   "retired warm border #E0DDDB -> OKLCH L 0.899 C 0.0043 H 56.4",
+   "retired warm sunken #F8F5F2 -> OKLCH L 0.972 C 0.0051 H 67.8",
+   "hue delta cool vs warm neutral pair: approx 220 degrees",
+   "hue match s-border vs s-bg.sunken: within 0.1 degrees",
+   "s-ink on white WCAG: 19.80:1",
+   "s-ink-2 #6B6B6B on white WCAG: 5.33:1",
+   "s-accent on white WCAG: 4.58:1 (passes AA)",
+   "s-accent on sunken F4F4F5 WCAG: 4.17:1 (fails AA 4.5:1)",
+   "s-border on white WCAG: 1.27:1",
+   "s-ink on sunken WCAG: 18.01:1",
+   "Fresha computed ink: #0D0D0D (3-unit delta from Solen's #0A0A0A)",
+   "Booking.com computed CTA blue: #006CE4 / header #003B95, used at scale (counter-example)",
+   "3.7:1 figure: zero matches in any Solen doc, dropped as unsourced"
+  ],
+  "taste_lab_probe": "Now that OKLCH traces the accent's on-sunken AA failure (4.17:1) to its L 0.573 position, and real-app scouting confirms comparable apps (Fresha) never place their accent hue as body/link text over a tinted surface either, does the owner want a documented on-sunken text variant (reusing the already-locked deeper accent token s-accent.deep #1E54B7, LOCKFILE.md:1194) for any future accent-as-link-text-on-sunken case, or accept the deviation as-is (never place accent text on sunken, use ink instead). This is a yes/no on reusing an already-locked token in a new documented context, not a new mockup."
+ },
+ "verified": {
+  "id": "S32",
+  "tag": "canon-deepen",
+  "verdict": "revised",
+  "myths_caught": [
+   "'accent contrast approximately 3.7:1' does not exist in any Solen doc: confirmed absent via a fresh repo-wide grep this pass (zero hits outside the prior research artifact itself); correctly dropped, not carried forward.",
+   "Booksy.com 'zero saturated computed colors found anywhere on the page' is false. Live getComputedStyle scan found oklch(0.6 0.1 223.39) = #288DAC (a distinctly saturated teal-blue, chroma 0.1, delta-25+ by any reasonable saturation threshold) used 368 times sitewide, including as the fill of a visible 'Download' app CTA button. The cookie-accept 'Allow all' button IS near-black (rgb(42,44,50)) as claimed, but the sweeping 'zero saturated colors anywhere' claim and 'CTA... renders near-black' generalization are overstated and were softened.",
+   "Booking.com 'Primary CTA and header use saturated blue #006CE4/#003B95 at scale' overstates the CTA half. Live measurement confirms the header background band IS #003B95 exactly, and #006CE4 IS used for nav category link text (Train Travel, etc), but the actual primary Search CTA button on the homepage renders orange/gold #FFB700 (rgb(255,183,0)), not blue. Corrected to 'header band + nav links use blue at scale' rather than 'the primary CTA'.",
+   "Zocdoc 'warm cream/ivory background' claim is false as measured. Live getComputedStyle of the homepage body finds background #F7F8F9 (cool light gray, matched to Solen's own cool-neutral family in hue direction, not warm). There IS a barely-visible warm brown tint (rgba(58,47,31,0.05), 5 percent opacity) on category filter pills and a yellow accent chip color, but calling the page background 'warm cream/ivory' mischaracterizes the dominant surface. Softened / corrected in the verified addition; this specific example should not be used as the warm-drift counter-illustration without the correction.",
+   "The Radix Colors quote '\"practical usability over theoretical uniformity\"' presented in quotation marks as verbatim documentation text does not appear anywhere in Radix's docs (checked three separate pages: understanding-the-scale, aliasing, and the colors overview). This reads as a fabricated or invented quotation dressed as a direct citation. The underlying idea it was attached to (steps are curated per use-case, not one uniform formula) IS supported by real Radix text ('Each step is designed with a specific use case in mind'), so the quotation marks were removed and the citation replaced with the accurate paraphrase.",
+   "Superpower.com's 'orange accent, black CTA' claim could not be verified in this pass: the site refused/blocked direct navigation. Left as an unverified Mobbin-sourced claim rather than a confirmed one; flagged, not dropped, since Mobbin screenshots (not independently re-checked here) are the stated source.",
+   "The five-app Mobbin claim (CVS Health, Square Go, Best Buy, BlaBlaCar, Fresha confining blue to icon-buttons/text-links/borders) could not be independently reproduced in this pass (no Mobbin access from this environment). The live Fresha check is consistent with the pattern (violet accent used only 6 times sitewide against 6283 ink occurrences), which is supportive but is one of the five apps, not all five. Tier stays T3/directional as the draft itself already labeled it; language softened from implying full reproduction to 'reported, partially corroborated by the one app independently re-measured here.'"
+  ],
+  "residual_risks": "Two owner-facing items, neither blocking the addition: (1) the taste_lab_probe is a genuine open QUESTIONS.md candidate: now that OKLCH traces the accent's on-sunken AA failure (4.17:1, confirmed by independent recomputation) to its L 0.573 position, does the owner want a documented on-sunken text variant reusing the already-locked s-accent.deep #1E54B7 (confirmed real at LOCKFILE.md:1194, though that block is scoped to dashboard-only usage per its section header, a nuance the probe should carry forward), or accept the deviation as-is. (2) The stream's real-world evidence section, net-new to this pass, needed three corrections after live re-measurement (Booksy 'zero saturated colors', Booking.com 'primary CTA is blue', Zocdoc 'warm cream background') and caught one fabricated direct quote (the Radix 'practical usability' line). None of these touch the T1 OKLCH/WCAG math, which independently reproduced exact to three known-good sources (RATIONALE.md's existing table, the prior verification pass in research/PRINCIPLES_ROUND3/S32.json, and a from-scratch Python recomputation run in this pass). The corrected real-world section is weaker evidence than the draft presented it as, being CONV/T3 corroboration with real but smaller magnitude than claimed, not a clean sweep across every named app; whoever merges this into RATIONALE should keep the real-world block clearly subordinate to the T1 math and should not present the Mobbin five-app claim as fully verified.",
+  "verified_addition": "DECISION: Solen's four frozen base hexes, converted to OKLCH (Ottosson 2020, the space already adopted at RATIONALE.md:81), form a coherent structure rather than four independent picks: s-ink #0A0A0A sits at L 0.145 / C 0.000 (achromatic, lifted off true black); s-accent #276EF1 sits at L 0.573 / C 0.2095 / H 261.4 (canonical blue hue band, about 90 percent of the maximum in-gamut sRGB chroma available at that lightness and hue); s-border #E4E4E7 sits at L 0.920 / C 0.0040 / H 286.3; s-bg.sunken #F4F4F5 sits at L 0.967 / C 0.0013 / H 286.4. The two neutrals match in hue within 0.1 degrees, supporting the reading that they are two lightness steps of one cool-toned ramp (matching the Radix step map already asserted at RATIONALE.md:731) rather than two independently eyeballed greys. Their warm predecessors, E0DDDB (L 0.899 / C 0.0043 / H 56.4) and F8F5F2 (L 0.972 / C 0.0051 / H 67.8), sit at matched lightness and matched tiny chroma but a hue roughly 210-230 degrees away (yellow-orange versus blue-violet): the 2026 cool reversal (v2 rule 4, RATIONALE.md:327) was a pure hue rotation at constant lightness and chroma, now shown numerically instead of only asserted.\n\nREAL-WORLD CONFIRMATION (net-new to this pass, CONV/T3, does not change the tier of the T1 math above, and is weaker corroboration than the original draft presented). Live getComputedStyle measurement of Fresha.com confirms its rendered ink at #0D0D0D (rgb(13,13,13), the single most common color on the page, 6283 occurrences), a 3-unit delta from Solen's #0A0A0A, an independent real-market anchor for the lifted-black target; Fresha's own accent, violet #6950F3, appears only 6 times on the homepage against those 6283 ink instances, and its star rating uses gold #FFC00A, not blue, matching the \"brand hue stays sparse\" shape. Mobbin screens of CVS Health, Best Buy, Square Go, BlaBlaCar and Fresha (five booking/appointment apps, reported by the research pass, not independently re-checked here except for Fresha) are consistent with blue confined to icon-buttons, inline text links and selected-chip borders rather than body/heading/price color; this should be read as directional support, not a fully reproduced finding. Booksy.com is mostly restrained (cookie-accept and most primary actions render near-black) but is not the \"zero saturated color anywhere\" case the original draft claimed: a \"Download the app\" CTA and a promotional badge use a distinct saturated teal-blue (#288DAC), so Booksy corroborates sparse-blue as a direction, not an absolute. Booking.com remains the clearest documented counter-example, though the specific mechanism is corrected: its header background band renders exactly #003B95 and its nav category links render exactly #006CE4, both at real visual scale, while its actual primary Search CTA on the homepage is orange/gold #FFB700, not blue, so the divergence from Solen's rule is \"blue chrome at scale,\" not \"a blue-filled primary CTA.\" This is noted as a real, deliberate divergence Solen chose not to follow, not evidence against the rule. Tooling precedent (Evil Martians' lightness-floor approach, confirmed by direct quote: \"black text will always be readable on any hue, since we set L to 80%\"; Tailwind v4's OKLCH-default palette, confirmed by direct quote citing gamut/vividness, not a contrast guarantee) supports treating OKLCH as the right working space for this kind of after-the-fact grounding. Radix Colors' real documented stance is \"each step is designed with a specific use case in mind\" (backgrounds, hover states, borders, overlays, text) rather than one uniform algorithm; a previously-drafted verbatim-looking quote, \"practical usability over theoretical uniformity,\" does not appear anywhere in Radix's docs and has been removed as an unverified attribution.\n\nFORCES: showing OKLCH numbers (plus now, partially-corroborated real-app evidence) for four already-frozen, owner-approved hexes versus leaving them as bare literals; treating hue-angle agreement at near-zero chroma as meaningful versus flagging its own noise floor; citing a competitor counter-example (Booking.com) honestly, including the correction that its CTA is orange not blue, versus a cleaner but less accurate story.\n\nOPTIMIZES FOR: making the neutral ramp and the cool-versus-warm swap independently checkable (any future neutral addition can be placed on this ramp by OKLCH job the way RATIONALE.md:731 already prescribes for Radix steps, instead of eyeballing a new hex); tracing the accent's known borderline AA contrast (RATIONALE.md:110-111) to its OKLCH lightness as the mechanical cause instead of leaving it as an unexplained observed number; grounding the sparse-blue usage rule in real, independently re-measured live sites in addition to internal math, while being honest that the real-app evidence is directional corroboration, not a clean sweep.\n\nSACRIFICES: none of the four hex values change, this section only documents their position and adds corroborating market evidence; the hue-match finding for the two neutrals is weaker evidence than the warm-versus-cool delta because chroma is near zero for both pairs (OKLCH hue angle is numerically unstable as chroma approaches zero, a standard property of any polar color encoding); the real-app evidence is CONV/T3 (screenshots and live-site scans, one site, Superpower, could not be re-verified at all in this pass), it corroborates but cannot substitute for the T1 OKLCH/WCAG math; Booking.com's contrary convention is disclosed with its correction (header/nav blue at scale, orange CTA) rather than smoothed into a cleaner but wrong story.\n\nBOUNDARY: this section grounds the four EXISTING frozen hexes, it does not license inventing a fifth neutral, adjusting L/C/H targets, or treating the OKLCH numbers (or the real-app screens) as a formula that would have picked these exact hexes from scratch (they were chosen by owner review across several rounds, e.g. RATIONALE.md:327's v2 rule 4 decision; OKLCH and market comparables here explain and verify the pick after the fact, they do not derive it a priori). Do not carry forward \"accent contrast approximately 3.7:1\" from any prior brief: recomputed WCAG values are 4.58:1 on white and 4.17:1 on sunken (the sunken pairing fails AA 4.5:1 for normal text, already recorded at RATIONALE.md:111); no 3.7:1 figure exists in any Solen doc and it should not be cited. Do not treat Booking.com's blue-at-scale convention as grounds to reopen LOCKFILE's sparse-blue rule; it is disclosed as a real, deliberate industry alternative Solen did not choose, nothing here reopens that lock. Do not cite the Radix \"practical usability over theoretical uniformity\" line as a documented quote; it is not one.\n\nMECHANIC: OKLab/OKLCH conversion (Ottosson 2020, T1 for perceptual uniformity, RATIONALE.md:81) applied directly to the sRGB hex via the standard linearize-to-LMS-to-Lab pipeline; WCAG 2.x contrast formula (L1+0.05)/(L2+0.05) on linearized relative luminance (T1, W3C SC 1.4.3, already cited RATIONALE.md:97) applied to recompute the accent pairings. Both are deterministic formula applications, independently reproduced three times (the original research draft, a prior verification pass on file at research/PRINCIPLES_ROUND3/S32.json, and a fresh from-scratch Python recomputation in this pass) and all three match RATIONALE.md's existing 2026-07-15 measurement table exactly. Real-app comparables gathered via live getComputedStyle scans of Fresha.com, Booksy.com, Booking.com and Zocdoc.com run directly in this verification pass (actual rendered hex/oklch values, not estimated), plus Mobbin screen references from the research pass (structural pattern only, not independently reproduced here except for Fresha) and design-tooling precedent confirmed by direct WebFetch quote (Evil Martians, Tailwind v4) or found unsupported and corrected (Radix quote, Zocdoc background characterization).\n\nSOURCE: Bjorn Ottosson, \"A perceptual color space for image processing\" (2020), the OKLab/OKLCH derivation, T1, already the cited authority at RATIONALE.md:81. W3C WCAG 2.1 Success Criterion 1.4.3 contrast formula, T1, already cited at RATIONALE.md:97. Numeric OKLCH and WCAG values computed directly from the frozen hex literals in LOCKFILE.md:36-59, independently reproduced three times, matching exactly. Real-app evidence: live getComputedStyle measurement of Fresha.com, Booksy.com, Booking.com and Zocdoc.com marketing pages, run and corrected in this verification pass (CONV, directly measured hex/oklch values); Mobbin screens of CVS Health, Square Go, Best Buy, BlaBlaCar and Superpower (T3, screenshot-sourced, structural pattern only, not independently reproduced here); Evil Martians \"OKLCH in CSS\" and Tailwind CSS v4 release notes (T3, design-tooling precedent, confirmed by direct quote via WebFetch this pass); Radix Colors documentation (T3, real content confirmed, but the specific \"practical usability over theoretical uniformity\" quotation is unverified and removed).",
+  "claim_verdicts": [
+   {
+    "claim": "OKLab/OKLCH (Ottosson 2020) gives near-uniform perceptual lightness with orthogonal L/C/H axes, already Solen's adopted generation space at RATIONALE.md:81",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Confirmed exact text match at RATIONALE.md:81 via direct file read this pass."
+   },
+   {
+    "claim": "WCAG 2.x contrast ratio formula (L1+0.05)/(L2+0.05), AA thresholds 4.5:1 normal / 3:1 large, cited at RATIONALE.md:97",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Confirmed exact text match at RATIONALE.md:97."
+   },
+   {
+    "claim": "Recomputed OKLCH coordinates for s-ink, s-accent, s-border, s-bg.sunken and the two retired warm hexes",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Independently reproduced with a fresh from-scratch Python OKLab implementation this pass. All values match to stated precision: 0A0A0A L=0.145 C=0.0000, 276EF1 L=0.573 C=0.2095 H=261.4, E4E4E7 L=0.920 C=0.0040 H=286.3, F4F4F5 L=0.967 C=0.0013 H=286.4, E0DDDB L=0.899 C=0.0043 H=56.4, F8F5F2 L=0.972 C=0.0051 H=67.8. No inflation found. Hue delta between warm and cool pairs measured at 205-230 degrees depending on which pair, softened from the draft's flat 'approx 220' to 'roughly 210-230'."
+   },
+   {
+    "claim": "Recomputed WCAG ratios: accent on white 4.58:1, accent on sunken 4.17:1 (fails AA), ink on white 19.80:1, matching RATIONALE.md:110-111",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Independently recomputed this pass: 4.578 rounds to 4.58, 4.165 rounds to 4.17, 19.798 rounds to 19.80. Exact match to RATIONALE.md:110-111 and to the prior verification pass on file."
+   },
+   {
+    "claim": "RATIONALE.md:731 asserts a Radix 12-step neutral placement for the two neutral hexes",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Confirmed exact text and line number via direct grep and read this pass."
+   },
+   {
+    "claim": "RATIONALE.md:327 states the v2 rule 4 cool-reversal decision cited in the BOUNDARY clause",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Confirmed: line 327 is the exact 'Cool-neutral surface and border tokens over warm (LOCKFILE:40,44)' decision block."
+   },
+   {
+    "claim": "s-accent.deep #1E54B7 exists at LOCKFILE.md:1194 as referenced in the taste_lab_probe",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Confirmed at that line, though the surrounding section header scopes that token block to dashboard-only usage, a nuance worth carrying into the probe."
+   },
+   {
+    "claim": "'accent contrast approximately 3.7:1' does not exist in any Solen doc",
+    "source_ok": true,
+    "tier_final": "T1 (negative finding, confirmed)",
+    "note": "Fresh repo-wide grep this pass found zero hits outside the research artifact discussing the figure's absence. Correctly dropped."
+   },
+   {
+    "claim": "Fresha.com's rendered ink computes to #0D0D0D; its own accent is violet #6950F3 not blue, gold #FFC00A for the star rating",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Live getComputedStyle scan this pass confirms exactly: rgb(13,13,13) as the single most common color (6283 occurrences), rgb(255,192,10) gold (656 occurrences), rgb(105,80,243) violet accent used only 6 times. Fully confirmed."
+   },
+   {
+    "claim": "Booksy.com renders zero saturated computed colors anywhere on its marketing surface; CTA and cookie-accept button both render near-black",
+    "source_ok": false,
+    "tier_final": "CONV, downgraded/corrected",
+    "note": "Refuted as stated. Live scan found oklch(0.6 0.1 223.39) = #288DAC, a distinctly saturated teal-blue, used 368 times including as a visible 'Download' app CTA fill. The cookie-accept button IS near-black (rgb(42,44,50)) as claimed. Corrected to remove the absolute 'zero anywhere' framing."
+   },
+   {
+    "claim": "Booking.com uses saturated blue #006CE4/#003B95 at primary-CTA scale",
+    "source_ok": false,
+    "tier_final": "CONV, corrected",
+    "note": "Header background band confirmed exactly #003B95; nav category link text confirmed exactly #006CE4. But the actual primary Search CTA button renders orange/gold #FFB700, not blue. 'At primary-CTA scale' is wrong; corrected to 'header/nav scale, CTA itself is orange.'"
+   },
+   {
+    "claim": "CVS Health, Square Go, Best Buy, BlaBlaCar and Fresha confine blue to icon-buttons, inline text links and selected-chip borders on a white/near-white plus black-ink base",
+    "source_ok": true,
+    "tier_final": "T3 (unchanged, honestly labeled by the draft already)",
+    "note": "Could not access Mobbin in this environment to independently re-check the other four apps; only Fresha was re-measured live and is consistent with the pattern. Left at T3/directional as the draft already tiered it, language softened to note partial reproduction."
+   },
+   {
+    "claim": "Zocdoc uses a warm cream/ivory background plus yellow/orange CTA; Superpower's accent hue is orange not blue",
+    "source_ok": false,
+    "tier_final": "T3, corrected for Zocdoc; Superpower unverified",
+    "note": "Zocdoc's live body background measures #F7F8F9, a cool light gray, not warm cream/ivory; there is a barely-visible 5-percent-opacity warm tint on filter pills and a yellow accent chip elsewhere, but the 'warm cream background' characterization is wrong and was corrected. Superpower.com could not be reached in this pass (navigation denied), so that half of the claim is unverified, not confirmed or refuted."
+   },
+   {
+    "claim": "Radix Colors' 12-step scale is curated per use-case via APCA, not derived from one uniform formula, quoting 'practical usability over theoretical uniformity'",
+    "source_ok": false,
+    "tier_final": "T3, quote removed",
+    "note": "The underlying idea is real (Radix docs state 'Each step is designed with a specific use case in mind'), but the quoted phrase 'practical usability over theoretical uniformity' does not appear on any of three Radix Colors doc pages checked via WebFetch this pass (understanding-the-scale, aliasing, overview). Treated as a fabricated attribution and removed from the verified addition."
+   },
+   {
+    "claim": "A fixed OKLCH lightness floor can guarantee text-on-hue contrast without per-hue retesting (Evil Martians)",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Confirmed via WebFetch direct quote: 'black text will always be readable on any hue, since we set L to 80%.' Article also confirms the 'formula plus a few seed colors generates a whole palette' claim."
+   },
+   {
+    "claim": "Tailwind v4 moved its default palette generation to OKLCH for gamut/vividness, not as a contrast-ratio guarantee",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Confirmed via WebFetch direct quote from the v4 release notes citing wider gamut and more vivid colors, not contrast guarantees, exactly as the draft characterized it."
+   }
+  ]
+ }
+}

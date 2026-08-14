@@ -3,7 +3,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { applyRateLimit, generalLimiter, getAiDailyLimiter, getClientIp } from "@/lib/ratelimit";
+import { applyRateLimit, generalLimiter, getAiDailyLimiter, getClientIp, getAiGlobalDailyLimiter, AI_GLOBAL_BUDGET_KEY, AI_GLOBAL_BUDGET_EXCEEDED_BODY } from "@/lib/ratelimit";
 import { z } from "zod";
 import { validateBody } from "@/lib/validations";
 import { getServerEnv } from "@/lib/env";
@@ -21,6 +21,11 @@ export async function POST(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  // Global budget checked BEFORE the per-user cap: a house-wide cost ceiling on top of the
+  // per-user fairness limiter, see lib/ratelimit.ts:132.
+  const globalLimited = await applyRateLimit(await getAiGlobalDailyLimiter(), { userId: AI_GLOBAL_BUDGET_KEY }, AI_GLOBAL_BUDGET_EXCEEDED_BODY);
+  if (globalLimited) return globalLimited;
 
   const dailyLimited = await applyRateLimit(await getAiDailyLimiter(), { userId: user.id });
   if (dailyLimited) return dailyLimited;

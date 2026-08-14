@@ -1,0 +1,230 @@
+{
+ "id": "S27",
+ "synth": {
+  "id": "S27",
+  "tag": "net-new",
+  "title": "Perceived performance: the response-time clock, sharpened by production practice",
+  "principle_summary": "Perceived-latency design is governed by a single clock, Nielsen's three response-time limits (T1: about 0.1s instantaneous, about 1.0s flow-uninterrupted, about 10s attention-limit), which tells a builder WHEN a device (skeleton, spinner, labor-illusion copy, progress bar) is warranted at all. Real production apps resolve that clock into two decision splits the academic literature alone does not specify. First, INSTANT-CHECK vs HONEST TWO-STAGE: when a backend action essentially cannot fail (same-system reservation, saved item), resolve straight to a definitive result with no interstitial; when a real external dependency exists (3rd-party payment, staff confirmation, an airline), narrate the wait with an actual stated time estimate and a stated fallback, never a fake progress bar. Second, the labor-illusion finding (Buell and Norton 2011, T2) that visible effort raises perceived value must be read through a guardrail production apps already enforce themselves: none of the scouted apps manufacture an artificial delay to trigger the effect, they narrate a REAL wait that already exists, with real numbers (\"couple of minutes,\" \"24 hours,\" \"72 hours\"), the only version compatible with Solen's no-fabricated-data law. Skeletons must shape-match the arriving layout exactly (grid density, block sizes) with a shimmer sweep as the dominant production treatment (flat grey is an acceptable lighter fallback), and should share shape grammar with the surface's empty state so loading-to-content and loading-to-empty transitions do not jump. None of this touches route-level loading.tsx coverage, which stays a Solen-internal engineering gap (7 of 172 routes) that no competitor teardown can resolve, since Suspense-boundary placement is framework-internal and does not surface in any product's public footprint.",
+  "real_world_evidence": [
+   {
+    "source": "AllTrails, Shop, Selfridges, DailyArt, Vrbo, Commons, Shipt, foodpanda, Farfetch (Mobbin app-screen library, this session)",
+    "what": "Skeleton placeholders shape-match the arriving layout block-for-block: identical column count, identical card-internal structure (image block plus text bars at correct widths), zero layout shift on resolve. AllTrails mirrors hero image, filter-pill row, two content blocks, price/meta bars exactly.",
+    "tier": "T3"
+   },
+   {
+    "source": "NN/g, nngroup.com/articles/skeleton-screens (live fetch, this session)",
+    "what": "Names LinkedIn (full-page feed skeleton) and Headspace (wireframe image/text placeholders) as production examples of the shape-matching rule; also names NBC's frame-flash variant as an explicitly discouraged pattern (reads as a glitch, not a loading cue).",
+    "tier": "CONV"
+   },
+   {
+    "source": "Farfetch, Commons, Grab, DoorDash (Mobbin + NN/g, this session)",
+    "what": "Shimmer left-to-right gradient sweep is the dominant production treatment signaling still-working, versus a smaller set (Tabby, Lyft, YouTube) that ship flat static grey and rely on shape alone. Both stay neutral grey, no color or iconography, so both are compatible with Solen's calm system.",
+    "tier": "T3"
+   },
+   {
+    "source": "Booking.com, car-rental confirmation (Mobbin)",
+    "what": "Two-step checklist: filled green check \"We've got your booking\" plus booking number, then outlined step \"Confirming your car with Budget, this should only take a couple of minutes, if it takes too long we'll cancel the request and let you know straight away.\" Narrates real work with a real time estimate and a stated fallback, no fake progress bar.",
+    "tier": "T3"
+   },
+   {
+    "source": "Airbnb, stay confirmation (Mobbin)",
+    "what": "\"Your stay is pending, once your identity is verified your Host will have 24 hours to confirm, we'll email you an update within an hour.\" Explicit numbers, not a vague \"soon\".",
+    "tier": "T3"
+   },
+   {
+    "source": "Booking.com, flight confirmation (Mobbin)",
+    "what": "\"It's taking a little while for the airline to confirm, but just sit tight, we'll email it to you within 72 hours.\"",
+    "tier": "T3"
+   },
+   {
+    "source": "Zomato, OpenTable, GetYourGuide, World of Hyatt (Mobbin)",
+    "what": "Instant green-check-disc \"Confirmed\" with no intermediate working-on-it step, used only where the backend essentially cannot fail (same-system reservation). Matches Solen's already-locked success disc (normal green #16A34A plus white check).",
+    "tier": "T3"
+   },
+   {
+    "source": "Expedia, car rental search (Mobbin)",
+    "what": "Hybrid state: skeleton cards for the list plus a small spinner inside the first card with copy above it (\"Finding available cars... don't forget to add collision damage protection at checkout\"), using the wait to slip in a real tip rather than a blank stall.",
+    "tier": "T3"
+   },
+   {
+    "source": "Fresha, service picker (Mobbin capture of the live product)",
+    "what": "\"Continue\" button stays visible but greyed and disabled before a selection is made, an optimistic-affordance signal (the next step exists, the action has not happened) closer to Solen's existing disabled opacity-50 convention than to true optimistic rendering.",
+    "tier": "T3"
+   },
+   {
+    "source": "Fresha, no-results state (Mobbin capture of the live product)",
+    "what": "Empty state is a distinct designed object (centered search-glass icon, \"No results found\", one line of guidance), not a leftover loading skeleton, i.e. loading and empty are deliberately different shapes sharing the same content-region grammar.",
+    "tier": "T3"
+   },
+   {
+    "source": "Negative finding across the full scouting pass (Mobbin, competitor fetches, this session)",
+    "what": "Across dozens of screens (Booking.com, Airbnb, Expedia, Zomato, OpenTable, GetYourGuide, Hyatt, Fresha and others) no app fabricates a progress percentage or a fake countdown; every stated wait-time number is a real estimate.",
+    "tier": "CONV"
+   }
+  ],
+  "generative_prior": "Default for any wait-bearing surface: (1) classify the action as backend-cannot-fail versus real-external-dependency; (2) if cannot-fail, resolve instantly to Solen's locked success disc with no interstitial; (3) if a real dependency exists, show a shape-matched skeleton (shimmer sweep default) for the 0.1 to 10s window, and if the wait is inside the 1 to 10s band and the user might doubt the action registered, add one line of honest narration with a REAL, salon-specific or system-specific number (\"Bestaetigung durch den Salon, meist innerhalb weniger Minuten\") never a generic \"processing\" and never a fabricated percentage; (4) route-level default, add a loading.tsx (skeleton shaped to the arriving content) to any route whose data dependency can plausibly exceed about 1s, leave it absent when the fetch is reliably sub-1s. Real anchors for each number: the 0.1/1.0/10s bands come from Nielsen 1993 (T1); the \"couple of minutes / 24 hours / 72 hours\" honest-wait pattern comes from Booking.com and Airbnb's live confirmation copy (T3, Mobbin); the instant-resolve pattern comes from Zomato, OpenTable, GetYourGuide and World of Hyatt (T3, Mobbin), which already matches Solen's locked green-check-disc; the shimmer-sweep-as-default comes from Farfetch, Commons, Grab and DoorDash (T3/CONV); the 7 of 172 loading.tsx coverage is a repo measurement (CONV), re-run this session with find app -name loading.tsx vs find app -name page.tsx.",
+  "proposed_addition": "Insert into RATIONALE.md section 20 (Domain 16: states and feedback), replacing the existing four-bullet \"Perceived performance\" block, same location, no other section renumbered. This synthesis extends the already-verified academic draft (Nielsen 1993 T1, Mejtoft et al. 2018 T2, Buell and Norton 2011 T2, Harrison et al. UIST 2007 T2, corrected from a prior CHI-2010 misattribution) with a production evidence layer, and does not reopen any LOCKFILE literal.\n\n\"**Perceived performance: the response-time clock, made concrete by production practice.**\n\nThree thresholds govern every device below (T1, Nielsen, Usability Engineering 1993 ch.5; restated at nngroup.com/articles/response-times-3-important-limits): under about 0.1s no feedback is needed, the result is the feedback (a flashed-then-gone skeleton here is worse than nothing, it becomes the thing the eye has to parse). Between about 0.1s and 1.0s the user notices the wait but flow stays unbroken, still no interstitial required. Between about 1.0s and 10s the system must show it is working or the user starts doubting the tap registered, this is the exact window skeletons and labor illusion occupy. Past about 10s flow is already broken and the UI owes a percent-complete or a time estimate, not just an activity signal.\n\n- Skeletons (T2, Mejtoft, Langstrom and Soderstrom 2018, ECCE, doi 10.1145/3232078.3232086): beat spinners on PERCEIVED speed and ease of navigation, but spinner users completed the actual task faster on first visit, the win is affective, not a task-time gain. Depends entirely on shape-matching the arriving content, Solen's lock (skeleton matches final layout) is the tested-good variant. Do not cite the commonly repeated \"30 percent faster\" figure, no traceable primary source exists (MYTH, verified this pass). Production confirms shape-match discipline at scale (T3, Mobbin, this session): AllTrails' trail-detail skeleton mirrors its loaded layout block-for-block; Shop and Selfridges render the identical column count and card-internal structure in skeleton and loaded grid, zero layout shift on resolve; the same discipline shows in DailyArt, Vrbo, Commons, Shipt, foodpanda and Farfetch. NN/g's own skeleton-screens article names LinkedIn (full-page feed skeleton) and Headspace (wireframe image/text placeholders) as production examples of the same pattern (CONV), and flags a frame-flash variant (NBC) as explicitly discouraged since the flash reads as a glitch, not a loading cue.\n- Shimmer sweep is the dominant production treatment, not flat grey (T3, Mobbin, this session): Farfetch, Commons, Grab and DoorDash all animate a left-to-right lighter gradient band across the placeholder as the still-working signal; a smaller set (Tabby, Lyft, YouTube) ship flat static grey and rely on shape alone. Both stay neutral grey with no color or iconography, either is compatible with Solen's calm system, shimmer is the richer default, flat grey is an acceptable lighter-weight fallback for small components.\n- Labor illusion and operational transparency (T2, Buell and Norton 2011, Management Science 57(9), pp.1564-1579, five experiments): visible system effort is preferred to an identical instant result. GUARDRAIL, sharpened by production evidence rather than theory alone: no app observed across this scouting pass manufactures an artificial delay to trigger this effect (negative finding, CONV, full Mobbin and competitor sweep this session). What actually ships is narrating a REAL wait that already exists, with a real stated time estimate, never a vague \"please wait\": Booking.com's car-rental confirmation shows a two-step checklist, a filled green check for \"We've got your booking\" plus an outlined step \"Confirming your car with Budget, this should only take a couple of minutes, if it takes too long we'll cancel the request and let you know straight away\" (T3, Mobbin); Airbnb's \"Your stay is pending\" states \"your Host will have 24 hours to confirm, we'll email you an update within an hour\" (T3, Mobbin); Booking.com's flight confirmation states \"it's taking a little while for the airline to confirm, we'll email it to you within 72 hours\" (T3, Mobbin). This is the operative reading of Buell and Norton for Solen: narrate real, already-happening work with a real number, never insert delay or invent a percentage to manufacture the effect, that would be taste rule 1 (no fabricated data) with a stopwatch on it.\n- Instant-confirm versus honest two-stage is a decision split the scouted apps demonstrate that the academic literature alone does not specify (T3, Mobbin, this session): reservations where the backend essentially cannot fail resolve straight to a definitive result, big green check disc, \"Confirmed\", no intermediate step, observed in Zomato, OpenTable, GetYourGuide and World of Hyatt, matching Solen's own locked success disc (normal green #16A34A plus white check). Where a genuine external dependency exists (a 3rd-party supplier, an airline, a Host or salon manually confirming, identity verification), the honest two-stage narration above is used instead. Generative rule for Solen: a booking that only touches Solen's own database and a salon-side auto-accept resolves to the instant green-check state already locked; a booking with a real external confirmation step (a salon that manually accepts, a payment needing 3-D Secure follow-up) uses the honest two-stage state with a real, specific time estimate, never a generic \"processing\".\n- Progress bars (T2, Harrison, Amento, Kuznetsov and Bell, \"Rethinking the Progress Bar,\" UIST 2007, corrected from a prior draft's misattribution to CHI 2010, a different paper by a partly different author list belongs there): animation curve shifts perceived duration by roughly 10 percent (the backward-rippling pattern measured about 11 percent shorter, p<0.001); only for a real determinate wait. Confirmed by production negative evidence, no app across the entire scouting pass fabricates a progress percentage or a fake countdown, every stated number observed is a real estimate.\n- Optimistic UI (CONV, tradeoff, not a perception study): saves and hearts safely optimistic (current HeartButton), payments and bookings never optimistic. Production shows a lighter-weight version of the same discipline that costs nothing to adopt: Fresha's service picker keeps \"Continue\" visible but greyed and disabled before a selection is made (T3, Mobbin), signaling the next step exists without pretending the action already succeeded, closer to Solen's existing disabled opacity-50 convention than to true optimistic rendering.\n- Skeleton and empty-state shape continuity (T3, Fresha, Mobbin, this session): Fresha renders \"No results found\" as a distinct, deliberate object (centered icon, heading, one line of guidance), not a leftover loading skeleton. For Solen this means the Skeleton shape and the EmptyState shape on the same surface should read as siblings, both scoped to the same content region as the eventual populated state, so the loading-to-empty transition does not read as a layout jump.\n\n**The loading.tsx boundary is the response-time clock made computable, and stays a Solen-internal audit, not a competitor question.** Next.js App Router resolves the 1s-to-10s window at the ROUTE level: a page.tsx without a sibling loading.tsx has no Suspense boundary, so any fetch inside it that crosses roughly 1s renders a blank tab with no activity signal at all. Repo measurement (find app -name loading.tsx vs find app -name page.tsx, re-verified this session): 7 of 172 page.tsx have a sibling loading.tsx, an unaudited, asymmetric pattern across sibling category pages, not a deliberate choice. This gap is confirmed to be one no competitor teardown can resolve, no competitor's public engineering writing or Mobbin capture speaks to route-level Suspense boundary placement, that is framework-internal and does not appear in any product's public-facing footprint (CONV, scouting finding this session). Generative default: add a loading.tsx (skeleton shaped to the arriving grid, list or card, shimmer sweep per the production default above) when the route's data dependency can plausibly exceed about 1s; leave it absent, not present-but-blank, when the fetch is reliably sub-1s, a boundary that flashes under the 0.1s line adds jank it claims to remove.\n\n**Evidence gaps, stated not filled.** Two items were flagged as plausible but could not be sourced this pass and must not be cited until a fresh, live-verified pass confirms them: Uber's \"finding your driver\" matching animation as a labor-illusion example (commonly referenced in UX writing, no citable source surfaced this session), and the specific skeleton or spinner treatment used by Booksy, Vagaro, Treatwell, Doctolib and Fresha's own search-results transient state (Fresha's static Mobbin captures jump straight from interaction to populated results, an evidence gap in the capture method, not proof Fresha ships no loading state). Close both with a live, network-throttled browser pass before citing either as fact.\n\nCross-reference, not duplicate: PSYCHOLOGY.md law 8 (first-100ms-is-the-brand, Google/Deloitte 2020, plus 0.1s load speed correlates with plus 8.4 percent conversion on mobile retail, the approved substitute for the untraceable Amazon-100ms anecdote) owns the CONVERSION angle of speed; this addition owns only the PERCEPTUAL and display angle, how a wait feels once it is already happening, and links to law 8 by name rather than restating its number.\"",
+  "sources": [
+   {
+    "claim": "Three response-time limits for interactive systems: about 0.1s instantaneous, about 1.0s flow uninterrupted, about 10s attention limit.",
+    "source": "Jakob Nielsen, Usability Engineering (1993), ch. 5; restated at nngroup.com/articles/response-times-3-important-limits",
+    "tier": "T1"
+   },
+   {
+    "claim": "Skeleton screens score higher than spinners on perceived speed and ease of navigation, spinner users completed the underlying task faster on first visit.",
+    "source": "Mejtoft, Langstrom, Soderstrom, ECCE 2018, ACM Digital Library, doi 10.1145/3232078.3232086",
+    "tier": "T2"
+   },
+   {
+    "claim": "Visibly showing a system doing work increases perceived value and can make users prefer a longer visibly-worked wait over an identical instant result.",
+    "source": "Buell and Norton, Management Science 57(9), 2011, pp.1564-1579, five experiments",
+    "tier": "T2"
+   },
+   {
+    "claim": "Progress bar animation pattern changes perceived duration by roughly 10 to 11 percent, backward-rippling fastest.",
+    "source": "Harrison, Amento, Kuznetsov, Bell, Rethinking the Progress Bar, ACM UIST 2007 (corrected from a prior misattribution to CHI 2010)",
+    "tier": "T2"
+   },
+   {
+    "claim": "The commonly repeated skeletons-are-30-percent-faster figure has no traceable primary source.",
+    "source": "No named primary source across vendor and blog citations checked this session",
+    "tier": "MYTH"
+   },
+   {
+    "claim": "Optimistic UI is a correctness-tradeoff convention, not a measured perception effect.",
+    "source": "Widely documented pattern (e.g. Apollo/React Query optimistic-update docs), no controlled perception study attached",
+    "tier": "CONV"
+   },
+   {
+    "claim": "7 of 172 page.tsx have a sibling loading.tsx in the Solen repo.",
+    "source": "Repo measurement, find app -name loading.tsx vs find app -name page.tsx, re-run this session",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Skeleton shape-matching, shimmer sweep, honest two-stage confirmation copy, and instant-confirm-for-cannot-fail-actions are the dominant production patterns across booking and marketplace apps.",
+    "source": "Mobbin app-screen library captures of AllTrails, Vrbo, Commons, Shipt, foodpanda, Farfetch, Selfridges, DailyArt, Booking.com, Airbnb, Expedia, Zomato, OpenTable, GetYourGuide, World of Hyatt, Fresha, this session",
+    "tier": "T3"
+   },
+   {
+    "claim": "NN/g names LinkedIn, Headspace and DoorDash as skeleton-shape-matching production examples and flags NBC's frame-flash variant as discouraged.",
+    "source": "nngroup.com/articles/skeleton-screens, live fetch this session",
+    "tier": "CONV"
+   }
+  ],
+  "numbers_used": [
+   "0.1s",
+   "1.0s",
+   "10s",
+   "roughly 10 to 11 percent (progress bar animation, Harrison et al. UIST 2007)",
+   "30 percent (flagged MYTH, do not cite)",
+   "7 of 172 (loading.tsx route coverage, repo measurement)",
+   "24 hours (Airbnb host confirmation window)",
+   "1 hour (Airbnb email-update window)",
+   "72 hours (Booking.com flight confirmation window)",
+   "1993 (Nielsen)",
+   "2018 (Mejtoft et al.)",
+   "2011 (Buell and Norton)",
+   "2007 (Harrison et al., UIST, corrected from a prior CHI-2010 misattribution)"
+  ],
+  "taste_lab_probe": "Two probe candidates, both need mockup-first and owner approval before touching live copy (this addition proposes hypotheses only, not permission to ship). Probe 1, on 2-3 real Solen routes with a genuine 1-3s search or availability wait that currently ship a bare or missing skeleton (candidates: salon search results, booking availability check), A/B a labor-illusion string over the skeleton against the silent skeleton alone, using a real stated time estimate rather than a vague one, and measure self-reported perceived wait plus whether users notice the wait unprompted, following Buell and Norton's method. Probe 2, net-new to this synthesis, on a booking type that currently shows a generic pending state, test the instant-confirm-when-safe versus honest-two-stage-when-dependent split against the current single treatment, and measure trust and perceived speed for each backend-dependency class separately, since the production evidence suggests the two classes should not share one copy pattern."
+ },
+ "verified": {
+  "id": "S27",
+  "tag": "net-new",
+  "verdict": "revised",
+  "myths_caught": [
+   "Mejtoft, Langstrom, Soderstrom 2018 (ECCE, confirmed real paper, doi 10.1145/3232078.3232086) is cited at T2 as if it establishes 'skeletons beat spinners on perceived speed and ease of navigation.' The paper's own abstract states verbatim: 'this paper cannot show any significant differences in any comparisons between the web pages.' The draft omits this self-disclosed non-significance. Downgraded to CONV and the caveat added inline; same failure mode the doc elsewhere catches for the jam-study failed replication (a directionally-suggestive small study dressed as a settled finding).",
+   "Harrison, Amento, Kuznetsov, Bell 'Rethinking the Progress Bar' is correctly re-attributed to UIST 2007 (confirmed via OpenAlex: authors, venue 'Proceedings of the 20th annual ACM symposium on User interface software and technology', year 2007) -- the prior misattribution genuinely exists in the live RATIONALE.md (line 747: 'Harrison 2010, CHI'), so the correction itself is warranted and real. BUT the draft's added precision, 'roughly 10 to 11 percent... backward-rippling fastest... p<0.001', could not be verified from accessible abstract/metadata (ACM DL 403'd on every direct fetch) and is absent from the existing, more conservative RATIONALE.md line ('roughly 10 percent'). Reads as invented precision layered onto a real citation. Softened back to the verifiable 'roughly 10 percent'; the specific p-value and exact magnitude flagged as unconfirmed.",
+   "NN/g's critique of NBC's loading pattern was paraphrased in the draft as 'reads as a glitch, not a loading cue.' The live nngroup.com/articles/skeleton-screens page actually says NBC's frame-only display is 'essentially equivalent to a spinner, since it doesn't include any information about the page structure,' warning 'users will assume the page is not working and abandon it.' Corrected to match the source's actual reasoning (risk of perceived non-response / abandonment, not 'looks like a glitch').",
+   "The Fresha 'Continue button stays visible but greyed and disabled' claim: the closest matching screen found via Mobbin (Fresha iOS, service detail sheet) uses a button labeled 'Add to booking', not 'Continue', in the disabled/greyed state before a service option is selected. The underlying pattern (disabled primary CTA before selection) is confirmed; the specific button label asserted in the draft is not. Softened to avoid naming an unconfirmed label."
+  ],
+  "residual_risks": "1) Insertion target verified real: _design-system/RATIONALE.md section '20. Domain 16: states and feedback' contains a 'Perceived performance (each claim flagged):' four-bullet block at lines 745-749, matching the draft's description. The live block already carries the CHI-2010 misattribution the draft claims to fix (line 747), so this synthesis is a genuine, warranted correction, not a phantom problem. 2) Harrison et al 2007 UIST is fully paywalled behind ACM DL (403 on every direct fetch this pass); the '10-11%, p<0.001, backward-rippling' figures need a full-text read (library access or a citing secondary source that quotes the number) before RATIONALE.md states them at that precision -- until then keep the existing conservative 'roughly 10 percent'. 3) Mejtoft et al 2018's self-reported non-significance is an owner-visible framing choice: RATIONALE.md can keep citing it as a directional/CONV data point (recommended, with caveat) or drop it in favor of the Mobbin production evidence, which does not depend on this contested study. 4) The draft's own two flagged 'evidence gaps' (Uber matching-animation labor illusion, Booksy/Vagaro/Treatwell/Doctolib/Fresha's own transient search state) are correctly left uncited rather than guessed -- no action needed, just confirming they should stay flagged. 5) taste_lab_probe items (A/B tests on real Solen routes) are owner-decision/mockup-first gated per the draft's own note; nothing here authorizes touching live copy. 6) Fresha's empty-state claim ('No results found' as a distinct designed object) was not independently spot-checked this pass (time-boxed); treat as T3-unverified-this-round, though plausible given the production quality seen elsewhere in this pass.",
+  "claim_verdicts": [
+   {
+    "claim": "Three response-time limits: about 0.1s instantaneous, 1.0s flow-uninterrupted, 10s attention-limit (Nielsen 1993).",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Canonical, uncontested HCI finding; no verification risk."
+   },
+   {
+    "claim": "Mejtoft, Langstrom, Soderstrom 2018 ECCE: skeleton screens score higher on perceived speed/ease of navigation than spinners; spinner users finished faster on first visit.",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Paper confirmed real (OpenAlex: correct authors/venue/year/doi). Direction of the finding is accurately paraphrased, BUT the paper's own text states it 'cannot show any significant differences in any comparisons' -- draft cited this at T2 without that caveat, overstating confidence. Downgraded to CONV; caveat must ship with the citation."
+   },
+   {
+    "claim": "Buell and Norton 2011, Management Science 57(9) pp.1564-1579: visible effort raises perceived value (labor illusion), five experiments.",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Confirmed exact via publisher fetch: title 'The Labor Illusion: How Operational Transparency Increases Perceived Value', authors, year, journal, volume/issue/pages all match verbatim."
+   },
+   {
+    "claim": "Harrison, Amento, Kuznetsov, Bell, 'Rethinking the Progress Bar', ACM UIST 2007, corrected from a prior CHI-2010 misattribution; animation pattern shifts perceived duration by roughly 10-11 percent, backward-rippling fastest, p<0.001.",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Citation itself confirmed via OpenAlex (authors, venue = UIST 2007 proceedings, year); the CHI-2010 misattribution genuinely exists in the live RATIONALE.md and this is a real fix. The specific '10-11%, p<0.001, backward-rippling' magnitude could NOT be verified from accessible sources (ACM DL paywalled/403 throughout). Citation stays T2; the specific number should be softened to the already-safe 'roughly 10 percent' until full text is read."
+   },
+   {
+    "claim": "The commonly repeated 'skeletons are 30% faster' figure has no traceable primary source.",
+    "source_ok": true,
+    "tier_final": "MYTH",
+    "note": "Draft already self-flags this correctly as MYTH with no source claimed -- good practice, no change needed."
+   },
+   {
+    "claim": "Optimistic UI is a correctness-tradeoff convention, not a measured perception effect.",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Reasonable, undisputed framing; matches the existing RATIONALE.md line 749 verbatim in spirit. No verification risk."
+   },
+   {
+    "claim": "7 of 172 page.tsx have a sibling loading.tsx in the Solen repo.",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Re-ran `find app -name page.tsx` (172) and `find app -name loading.tsx` (7) in this worktree this pass -- exact match, fully confirmed."
+   },
+   {
+    "claim": "Booking.com car-rental confirmation shows a two-step checklist: green check 'We've got your booking' plus outlined step 'Confirming your car with Budget, this should only take a couple of minutes, if it takes too long we'll cancel the request and let you know straight away.'",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Verified near word-for-word via live Mobbin screen search (Booking.com iOS, 'We're working on it' screen) -- copy matches almost exactly."
+   },
+   {
+    "claim": "Airbnb 'Your stay is pending, once your identity is verified your Host will have 24 hours to confirm, we'll email you an update within an hour.'",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Verified near word-for-word via live Mobbin screen search (Airbnb iOS pending-reservation screen)."
+   },
+   {
+    "claim": "Booking.com flight confirmation: 'it's taking a little while for the airline to confirm, we'll email it to you within 72 hours.'",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Verified via live Mobbin screen search (Booking.com iOS, 'All paid! Your confirmation's coming' screen) -- matches closely."
+   },
+   {
+    "claim": "Zomato, OpenTable, GetYourGuide, World of Hyatt resolve instantly to a green-check 'Confirmed' state with no intermediate working step.",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Spot-checked OpenTable via Mobbin: 'Booking Confirmed' green-check state present, no visible intermediate waiting screen in the flow found. Zomato/GetYourGuide/Hyatt not independently re-checked this pass; pattern is consistent with what was found."
+   },
+   {
+    "claim": "Fresha's service picker keeps a primary CTA ('Continue') visible but greyed/disabled before a selection is made.",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Underlying pattern confirmed via Mobbin (Fresha iOS): a disabled/greyed primary CTA before an option is selected. Specific button label in the draft ('Continue') does not match what was found ('Add to booking' in the service-detail sheet); label softened to avoid over-claiming."
+   },
+   {
+    "claim": "NN/g names LinkedIn and Headspace as skeleton-shape-matching production examples, DoorDash as a shimmer example, and flags NBC's pattern as discouraged because it reads as a glitch.",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "LinkedIn, Headspace, DoorDash all confirmed present in the live nngroup.com/articles/skeleton-screens article with matching descriptions. The NBC characterization is inaccurate: actual source reasoning is 'equivalent to a spinner, no structural info, users will assume the page is not working and abandon it', not 'reads as a glitch'. Corrected."
+   },
+   {
+    "claim": "Google/Deloitte 2020: +0.1s load speed correlates with +8.4% conversion (37 sites, production) -- referenced by name to PSYCHOLOGY.md law 8, not restated inline.",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "This is the myth_screen's own APPROVED substitute for the banned Amazon-100ms anecdote, and the draft correctly cross-references it by name rather than restating the number -- fully compliant with the myth-screen rule, no violation."
+   }
+  ],
+  "verified_addition": "Insert into RATIONALE.md section 20 (Domain 16: states and feedback), replacing the existing four-bullet \"Perceived performance\" block at lines 745-749, same location, no other section renumbered. Confirmed this pass: that block exists exactly as described, and its current Harrison citation reads \"Harrison 2010, CHI\" -- a real misattribution this synthesis genuinely fixes (verified: Harrison, Amento, Kuznetsov, Bell, \"Rethinking the Progress Bar\" is UIST 2007, not CHI 2010, via OpenAlex). This synthesis extends the already-verified academic draft (Nielsen 1993 T1, Mejtoft et al. 2018 T2->CONV downgraded this pass, Buell and Norton 2011 T2, Harrison et al. UIST 2007 T2) with a production evidence layer, and does not reopen any LOCKFILE literal.\n\n\"**Perceived performance: the response-time clock, made concrete by production practice.**\n\nThree thresholds govern every device below (T1, Nielsen, Usability Engineering 1993 ch.5; restated at nngroup.com/articles/response-times-3-important-limits): under about 0.1s no feedback is needed, the result is the feedback (a flashed-then-gone skeleton here is worse than nothing, it becomes the thing the eye has to parse). Between about 0.1s and 1.0s the user notices the wait but flow stays unbroken, still no interstitial required. Between about 1.0s and 10s the system must show it is working or the user starts doubting the tap registered, this is the exact window skeletons and labor illusion occupy. Past about 10s flow is already broken and the UI owes a percent-complete or a time estimate, not just an activity signal.\n\n- Skeletons (CONV, Mejtoft, Langstrom and Soderstrom 2018, ECCE, doi 10.1145/3232078.3232086): in a small first-look study (fictional news site), the skeleton-screen condition scored higher on perceived speed and ease of navigation than the spinner condition, but spinner users found a specified article faster on their first visit. IMPORTANT CAVEAT the source paper itself states: \"this paper cannot show any significant differences in any comparisons between the web pages\" -- treat this as directionally suggestive, not a settled statistically significant effect. Do not cite it as proof skeletons \"beat\" spinners; cite it as one small study whose direction happens to line up with the shape-match discipline below. Depends entirely on shape-matching the arriving content, Solen's lock (skeleton matches final layout) is the tested-good variant regardless of this study's power. Do not cite the commonly repeated \"30 percent faster\" figure, no traceable primary source exists (MYTH, verified this pass). Production confirms shape-match discipline at scale (T3, Mobbin, this session): AllTrails' trail-detail skeleton mirrors its loaded layout block-for-block; Shop and Selfridges render the identical column count and card-internal structure in skeleton and loaded grid, zero layout shift on resolve; the same discipline shows in DailyArt, Vrbo, Commons, Shipt, foodpanda and Farfetch. NN/g's own skeleton-screens article (live-fetched and confirmed this pass) names LinkedIn (full-page feed skeleton) and Headspace (wireframe image/text placeholders) as production examples of the same pattern (CONV), and flags NBC's frame-only display as discouraged: NN/g's actual reasoning is that it is \"essentially equivalent to a spinner, since it doesn't include any information about the page structure,\" risking that \"users will assume the page is not working and abandon it\" (corrected this pass from an earlier, inaccurate \"reads as a glitch\" paraphrase).\n- Shimmer sweep is the dominant production treatment, not flat grey (T3, Mobbin, this session): Farfetch, Commons, Grab and DoorDash all animate a left-to-right lighter gradient band across the placeholder as the still-working signal (DoorDash's shimmer independently confirmed via NN/g's own article this pass); a smaller set (Tabby, Lyft, YouTube) ship flat static grey and rely on shape alone. Both stay neutral grey with no color or iconography, either is compatible with Solen's calm system, shimmer is the richer default, flat grey is an acceptable lighter-weight fallback for small components.\n- Labor illusion and operational transparency (T2, Buell and Norton 2011, Management Science 57(9), pp.1564-1579, five experiments, citation confirmed verbatim this pass): visible system effort is preferred to an identical instant result. GUARDRAIL, sharpened by production evidence rather than theory alone: no app observed across this scouting pass manufactures an artificial delay to trigger this effect (negative finding, CONV, full Mobbin and competitor sweep this session). What actually ships is narrating a REAL wait that already exists, with a real stated time estimate, never a vague \"please wait\": Booking.com's car-rental confirmation shows a two-step checklist, a filled green check for \"We've got your booking\" plus an outlined step \"Confirming your car with Budget, this should only take a couple of minutes, if it takes too long we'll cancel the request and let you know straight away\" (T3, verified near word-for-word against a live Mobbin screen capture this pass); Airbnb's \"Your stay is pending\" states \"your Host will have 24 hours to confirm, we'll email you an update within an hour\" (T3, verified near word-for-word against a live Mobbin screen capture this pass); Booking.com's flight confirmation states \"it's taking a little while for the airline to confirm, we'll email it to you within 72 hours\" (T3, verified against a live Mobbin screen capture this pass). This is the operative reading of Buell and Norton for Solen: narrate real, already-happening work with a real number, never insert delay or invent a percentage to manufacture the effect, that would be taste rule 1 (no fabricated data) with a stopwatch on it.\n- Instant-confirm versus honest two-stage is a decision split the scouted apps demonstrate that the academic literature alone does not specify (T3, Mobbin, this session): reservations where the backend essentially cannot fail resolve straight to a definitive result, big green check disc, \"Confirmed\", no intermediate step; spot-checked this pass on OpenTable (\"Booking Confirmed\" green-check state, no intermediate waiting screen found in the flow), consistent with the draft's additional claims for Zomato, GetYourGuide and World of Hyatt (not independently re-verified this pass), matching Solen's own locked success disc (normal green #16A34A plus white check). Where a genuine external dependency exists (a 3rd-party supplier, an airline, a Host or salon manually confirming, identity verification), the honest two-stage narration above is used instead. Generative rule for Solen: a booking that only touches Solen's own database and a salon-side auto-accept resolves to the instant green-check state already locked; a booking with a real external confirmation step (a salon that manually accepts, a payment needing 3-D Secure follow-up) uses the honest two-stage state with a real, specific time estimate, never a generic \"processing\".\n- Progress bars (T2, Harrison, Amento, Kuznetsov and Bell, \"Rethinking the Progress Bar,\" ACM UIST 2007, confirmed this pass via publication record: authors, venue \"20th annual ACM symposium on User interface software and technology\", year 2007 -- corrected from the live RATIONALE.md's prior misattribution to \"Harrison 2010, CHI\", a genuine error this fixes): animation pattern changes perceived duration; keep the existing, verifiable figure of roughly 10 percent rather than the more precise \"10-11 percent, p<0.001, backward-rippling fastest\" claimed in an earlier draft of this addition, which could not be confirmed from accessible sources this pass (ACM Digital Library returned 403 on every direct-fetch attempt; the full-text figure needs library access or a citing secondary source before it ships at that precision). Only relevant for a real determinate wait. Confirmed by production negative evidence, no app across the entire scouting pass fabricates a progress percentage or a fake countdown, every stated number observed (24 hours, 72 hours, \"a couple of minutes\") is a real estimate.\n- Optimistic UI (CONV, tradeoff, not a perception study): saves and hearts safely optimistic (current HeartButton), payments and bookings never optimistic. Production shows a lighter-weight version of the same discipline that costs nothing to adopt: Fresha keeps a primary action button visible but greyed and disabled before a required selection is made (T3, confirmed via a live Mobbin screen this pass, though the specific screen found used the label \"Add to booking\" in a service-detail sheet rather than \"Continue\" in the main booking flow -- the disabled-before-selection pattern is confirmed, the exact button label is not), signaling the next step exists without pretending the action already succeeded, closer to Solen's existing disabled opacity-50 convention than to true optimistic rendering.\n- Skeleton and empty-state shape continuity (T3, Fresha, Mobbin -- this specific claim not independently re-verified this pass, treat as T3-unconfirmed-this-round): the draft states Fresha renders \"No results found\" as a distinct, deliberate object (centered icon, heading, one line of guidance), not a leftover loading skeleton. For Solen this means the Skeleton shape and the EmptyState shape on the same surface should read as siblings, both scoped to the same content region as the eventual populated state, so the loading-to-empty transition does not read as a layout jump.\n\n**The loading.tsx boundary is the response-time clock made computable, and stays a Solen-internal audit, not a competitor question.** Next.js App Router resolves the 1s-to-10s window at the ROUTE level: a page.tsx without a sibling loading.tsx has no Suspense boundary, so any fetch inside it that crosses roughly 1s renders a blank tab with no activity signal at all. Repo measurement (find app -name loading.tsx vs find app -name page.tsx, re-run and confirmed exact this pass: 172 page.tsx, 7 loading.tsx): 7 of 172 page.tsx have a sibling loading.tsx, an unaudited, asymmetric pattern across sibling category pages, not a deliberate choice. This gap is confirmed to be one no competitor teardown can resolve, no competitor's public engineering writing or Mobbin capture speaks to route-level Suspense boundary placement, that is framework-internal and does not appear in any product's public-facing footprint (CONV, scouting finding this session). Generative default: add a loading.tsx (skeleton shaped to the arriving grid, list or card, shimmer sweep per the production default above) when the route's data dependency can plausibly exceed about 1s; leave it absent, not present-but-blank, when the fetch is reliably sub-1s, a boundary that flashes under the 0.1s line adds jank it claims to remove.\n\n**Evidence gaps, stated not filled.** Two items were flagged as plausible but could not be sourced this pass and must not be cited until a fresh, live-verified pass confirms them: Uber's \"finding your driver\" matching animation as a labor-illusion example (commonly referenced in UX writing, no citable source surfaced this session), and the specific skeleton or spinner treatment used by Booksy, Vagaro, Treatwell, Doctolib and Fresha's own search-results transient state (Fresha's static Mobbin captures jump straight from interaction to populated results, an evidence gap in the capture method, not proof Fresha ships no loading state). Close both with a live, network-throttled browser pass before citing either as fact.\n\nCross-reference, not duplicate: PSYCHOLOGY.md law 8 (first-100ms-is-the-brand, Google/Deloitte 2020, +0.1s load speed correlates with +8.4 percent conversion on mobile retail, the approved substitute for the untraceable Amazon-100ms anecdote) owns the CONVERSION angle of speed; this addition owns only the PERCEPTUAL and display angle, how a wait feels once it is already happening, and links to law 8 by name rather than restating its number.\""
+ }
+}

@@ -1,0 +1,969 @@
+<!doctype html>
+<!--
+  REBUILD (round 2, English-only, structure-fixed). The previous version of this file
+  (git 4a72264c6) rendered hardcoded GERMAN UI copy (owner rejected: "no German") and used
+  a simplified custom row card instead of the REAL SalonResultCard.tsx variant="feed"
+  markup (owner: "structure was wrong"). This version fixes both: every visible string is
+  English, and the mobile result cards follow the real feed-variant anatomy.
+
+  ROUND 3 (two owner-reported fixes). (1) The Current/Proposed toggle CSS was re-verified
+  with a headless-browser click test (Playwright): every toggled block already had a
+  matching body[data-map]/body[data-directory] display rule and switches correctly both
+  ways, so no CSS change was needed there, this note replaces guessing with the measured
+  result. (2) The directory (Google, non-bookable) cards dropped the blue "View on Google"
+  out-link entirely (owner: "I don't want this type of shit... makes no sense") and now
+  render as an integrated box, grounded in MapSalonDetail.tsx (the real map-pin-tap detail
+  card's name/meta stack) and SalonLocation.tsx (directions stays a MAP affordance next to
+  the address, never a card out-link): photo placeholder, name, a small "Not bookable" tag,
+  the address line, and a subtle neutral "On the map" cue, no price, no Book button, no blue.
+
+  Grounded-in: app/[locale]/[city]/[category]/page.tsx (the REAL dynamic route for this
+  surface, renders <SearchTemplate> for /{locale}/{city}/coiffeur etc; its
+  CATEGORY_NAMES.coiffeur.en constant equals "Hair Salon", line 23 , that is where the
+  category string used below comes from, it is grounded copy, not invented), plus
+  app/[locale]/_components/search/SearchTemplate.tsx (the sticky search band: pill +
+  trailing map icon, category+query on line 1, city on line 2; the far-left filter circle
+  + scrolling chip row, "Open now" toggle, "Price"/"Rating" dropdown chips; the count row,
+  "{n} salons in {city}" left, sort pill right, default sort label "Most popular" =
+  t("sort_rating"); the mapOpen desktop split at md:grid-cols-[1fr_minmax(380px,46%)]; and
+  the single fixed bottom "Map"/"List" pill, MAP_FAB_LABEL.en="Map" /
+  LIST_FAB_LABEL.en="List", same pill on mobile AND desktop, text flips with
+  mapOpen/mobileView), app/[locale]/_components/search/SalonResultCard.tsx variant="feed"
+  (2026-07-02 owner-approved /dev/results-full state, the mobile 1-col default:
+  aspect-[5/4] photo , CARD_REDESIGN_2026-07-13 moved this off aspect-[3/2], this mockup
+  matches the CURRENT shape , rounded-card, borderless with no card shadow, heart
+  top-right, carousel dots bottom-center shown only when the gallery has more than one
+  photo, name plus an inline star rating on one row, a "distance, address" line, a
+  "category, N reviews" line, then up to 3 service-price rows in a sunken pill plus a
+  "View N matching services" link, the ONE blue text-link class in this file, matching
+  RatingStars.tsx which already renders the review count "(N)" in text-s-accent the same
+  way), SalonResultCard.tsx variant="card" (the desktop 2/3-col grid default: photo-top
+  with shadow-elevation-2 resting and -3 on hover, name plus rating, a meta line, price
+  plus a next-availability row), components-legacy/MapView.tsx (white price-pill markers,
+  star plus CHF price, gray-sunken #F4F4F5 fill when selected, ink text, never blue or ink
+  fill on the pill itself), app/api/directory/route.ts plus the salon_directory table
+  (name, address, google_maps_url, google_rating, google_review_count , no price column, no
+  booking , for the 3 non-bookable Google entries), app/[locale]/_components/search/
+  MapSalonDetail.tsx (the real map-pin-tap detail card's name + meta line stack, reused for
+  the directory card's neutral name/tag/address structure), and app/[locale]/_components/
+  salon/SalonLocation.tsx (proof that a directions jump belongs BESIDE the address as a
+  map affordance, not as a card out-link , its directions link sits next to the street
+  line on the PDP map section, never on a list card).
+
+  Exists-check: npm run exists "category search route mockup" -> 0 hits (net-new mockup
+  file, safe to build). salon_directory table exists live (48 rows, RLS on) with
+  GET /api/directory already built, but no page currently renders it for customers (no
+  frontend consumer yet). The "Also in Basel" placement demonstrated below is the open
+  design question, not a shipped feature. Map behavior (?map=1, mapOpen, the mobile FAB) is
+  live in SearchTemplate.tsx , only the DESKTOP default (open/closed) is up for discussion.
+
+  Declared deviations (intentional, flagged for the reviewer):
+  1. PriceFrom.tsx's real render order is "{amount} CHF" (Swiss format, e.g. "55 CHF"), not
+     "CHF {amount}". This mockup renders "from CHF 55" per the task's explicit literal copy
+     list ("from CHF N") , flagging the order mismatch so the owner can confirm which one
+     the mockup should model going forward.
+  2. NOT a deviation, a real inconsistency worth flagging: this file uses "Hair Salon" as
+     the category string (grounded in app/[locale]/[city]/[category]/page.tsx's
+     CATEGORY_NAMES.coiffeur.en). But SalonResultCard.tsx's separate CATEGORY_LABEL
+     constant (used for the card meta line) hardcodes "Coiffeur" for EVERY locale including
+     English , it has no translated string. The page's breadcrumb and SEO title already say
+     "Hair Salon" in English; the result card underneath it would currently still say
+     "Coiffeur". This mockup follows the page-level English string; the card-level constant
+     is real, live, untranslated tech debt worth a ticket.
+  3. lib/format.ts nextAvailableSlotLabel() appends a literal clock time (e.g.
+     "Today 15:30") even on the en locale. That conflicts with the dated owner rule (memory
+     feedback_no_times_in_listings, 2026-06-22, emphatic: never a time on a browse/listing
+     card , "Today"/"Tomorrow"/"DD.MM" plus a calendar icon only, price left, date right).
+     The desktop grid demo below follows the OWNER RULE (no time), not the shipped helper's
+     current output , flagging this drift, since SalonResultCard's "card" variant ships the
+     time-included format live today.
+  4. formatDuration() in SalonResultCard.tsx hardcodes German unit words ("Min."/"Std.")
+     regardless of locale; this mockup's service rows use English "min"/"h" units instead.
+  5. No Google Fonts CDN link. The brief allows only the Unsplash <img> URLs as an external
+     dependency, so headings/body use a system-font stack instead of Inter/Inter Tight (the
+     real product renders Inter Tight for display, Inter for body).
+  6. Service names, durations and CHF prices for the 5 salons are illustrative demo content
+     (there is no live booking data behind this mockup) , same convention the previous
+     version of this file used for its street addresses and review counts.
+
+  This file is a comparison MOCKUP (two independent Current/Proposed toggles), not a
+  shippable page: not under public/, not wired to any route, not committed.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solen, Category search route: map default &amp; directory placement (English)</title>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --border:#E4E4E7; --sunken:#F4F4F5;
+    --accent:#276EF1; --star:#FFC32B; --white:#ffffff;
+    --elev2:0 2px 8px rgba(50,47,44,.09); --elev3:0 6px 16px rgba(50,47,44,.12);
+    --page-bg:#E9E9EA;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--page-bg);}
+  body{
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.font-heading{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;
+    letter-spacing:-0.02em; margin:0; font-weight:800;
+  }
+  p{margin:0;}
+  button{font-family:inherit; cursor:pointer;}
+  img{max-width:100%; display:block;}
+  a{text-decoration:none;}
+
+  /* the ONE blue class in this file (LOCKFILE taste rule 3: text links, small tappable
+     metadata, never cards/prices/CTAs). Applied to: the review-count "(N)" mark (matches
+     RatingStars.tsx's text-s-accent) and "View N matching services". Directory (Google,
+     non-bookable) cards carry NO blue, owner rejected the "View on Google" out-link, round 3. */
+  .accent{color:var(--accent);}
+
+  /* icon sprite */
+  .i{fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0;}
+  .i-fill{fill:currentColor; stroke:none;}
+  .i12{width:12px;height:12px;} .i13{width:13px;height:13px;} .i14{width:14px;height:14px;}
+  .i16{width:16px;height:16px;} .i18{width:18px;height:18px;} .i20{width:20px;height:20px;} .i22{width:22px;height:22px;}
+
+  /* meta page chrome (NOT app UI, the mockup wrapper) */
+  .page{max-width:1280px;margin:0 auto;padding:28px 20px 90px;}
+  .meta-header h1{font-size:20px; font-weight:800;}
+  .meta-header .sub{margin-top:8px;font-size:13px;color:var(--ink2);line-height:1.6;max-width:840px;}
+  .exists-note{margin-top:12px;font-size:12px;color:var(--ink2);line-height:1.55;background:#fff;
+    border:1px solid var(--border);border-radius:12px;padding:12px 16px;max-width:900px;}
+  .exists-note b{color:var(--ink);}
+
+  /* control bar */
+  .control-bar{
+    position:sticky; top:12px; z-index:80; margin-top:22px;
+    background:rgba(255,255,255,.96); backdrop-filter:blur(10px);
+    border:1px solid var(--border); border-radius:16px; box-shadow:var(--elev3);
+    padding:16px 20px; display:flex; gap:28px; flex-wrap:wrap;
+  }
+  .toggle-group{display:flex; flex-direction:column; gap:9px; flex:1 1 300px;}
+  .toggle-label{font-size:13px; font-weight:700; color:var(--ink);}
+  .toggle-btns{display:inline-flex; border-radius:9999px; padding:3px; background:var(--sunken); width:max-content;}
+  .toggle-btn{border:none; background:transparent; padding:7px 16px; border-radius:9999px;
+    font-size:12.5px; font-weight:600; color:var(--ink2); transition:background-color .15s,color .15s;}
+  .toggle-btn.is-active{background:var(--ink); color:#fff;}
+  .toggle-caption{font-size:12.5px; color:var(--ink2); line-height:1.5; max-width:460px;}
+  .toggle-caption span{display:none;}
+  body[data-map="current"] .cap-map-current{display:inline;}
+  body[data-map="proposed"] .cap-map-proposed{display:inline;}
+  body[data-directory="current"] .cap-dir-current{display:inline;}
+  body[data-directory="proposed"] .cap-dir-proposed{display:inline;}
+
+  /* frame sections */
+  .frame-section{margin-top:44px;}
+  .frame-heading{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:16px;}
+  .frame-heading h2{font-size:15px; font-weight:800;}
+  .frame-heading-note{font-size:12px; color:var(--ink2);}
+
+  /* PHONE FRAME (402px) */
+  .phone-frame{
+    position:relative; width:402px; max-width:100%; height:900px; margin:0 auto;
+    background:#fff; border:1px solid var(--border); border-radius:28px;
+    overflow:hidden; box-shadow:var(--elev3);
+  }
+  .phone-scroll{height:100%; overflow-y:auto; -webkit-overflow-scrolling:touch;}
+
+  .app-header{position:sticky; top:0; z-index:10; background:#fff; padding:12px 16px 10px;}
+  .app-header-row{display:flex; align-items:center; justify-content:space-between;}
+  .logo{font-size:19px; font-weight:800; letter-spacing:-0.02em; color:var(--ink);}
+  .hamburger-btn{display:grid; place-items:center; width:40px; height:40px; border-radius:9999px;
+    background:transparent; border:none; color:var(--ink);}
+  .cat-pills{display:flex; gap:6px; margin-top:10px; overflow-x:auto; scrollbar-width:none;}
+  .cat-pills::-webkit-scrollbar{display:none;}
+  .cat-pill{flex-shrink:0; padding:6px 12px; border-radius:9999px; font-size:12.5px; font-weight:600;
+    border:1px solid var(--border); background:#fff; color:var(--ink); white-space:nowrap;}
+  .cat-pill.is-active{background:var(--sunken); border-color:transparent; font-weight:700;}
+
+  .search-wrap{padding:12px 16px 0;}
+  .search-pill{display:flex; align-items:center; gap:10px; border:1px solid var(--border);
+    border-radius:9999px; padding:9px 8px 9px 14px; background:#fff;}
+  .search-text{flex:1; min-width:0;}
+  .search-line1{font-size:14px; font-weight:600; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .search-line2{font-size:12.5px; color:var(--ink2); margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .round-btn{flex-shrink:0; width:40px; height:40px; border-radius:9999px; border:1px solid var(--border);
+    display:grid; place-items:center; color:var(--ink); background:#fff;}
+
+  .chip-row{display:flex; align-items:center; gap:8px; padding:14px 16px 0; overflow-x:auto; scrollbar-width:none;}
+  .chip-row::-webkit-scrollbar{display:none;}
+  .filter-round-btn{flex-shrink:0; width:34px; height:34px; border-radius:9999px; border:1px solid var(--border);
+    display:grid; place-items:center; color:var(--ink); background:#fff;}
+  .chip{flex-shrink:0; display:inline-flex; align-items:center; gap:4px; padding:8px 13px; border-radius:9999px;
+    font-size:12.5px; font-weight:500; border:1px solid var(--border); background:#fff; color:var(--ink); white-space:nowrap;}
+  .chip.is-toggle-active{background:var(--sunken); border-color:transparent; font-weight:600;}
+
+  .count-row{display:flex; align-items:center; justify-content:space-between; padding:18px 16px 4px;}
+  .count-text{font-size:15px; font-weight:700; color:var(--ink);}
+  .count-text b{font-weight:700;}
+  .sort-pill{display:inline-flex; align-items:center; gap:5px; padding:6px 12px; border-radius:9999px;
+    border:1px solid var(--border); font-size:12.5px; font-weight:500; color:var(--ink); background:#fff;}
+
+  .results{display:flex; flex-direction:column; gap:26px; padding:14px 16px 100px;}
+  .results-block{display:none;}
+  body[data-directory="current"] .results-block.dir-current{display:flex; flex-direction:column; gap:26px;}
+  body[data-directory="proposed"] .results-block.dir-proposed{display:flex; flex-direction:column; gap:26px;}
+
+  /* card shell, feed variant (mobile default): borderless, no card shadow/border. */
+  .s-card{position:relative;}
+  .s-photo{position:relative; aspect-ratio:5/4; width:100%; border-radius:16px; overflow:hidden; background:var(--sunken);}
+  .s-photo img{width:100%; height:100%; object-fit:cover;}
+  .s-heart{position:absolute; top:10px; right:10px; color:#fff; filter:drop-shadow(0 1px 3px rgba(0,0,0,.45));}
+  .s-dots{position:absolute; bottom:10px; left:50%; transform:translateX(-50%); display:flex; gap:6px;}
+  .s-dot{width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,.55);}
+  .s-dot.is-active{background:#fff;}
+
+  .s-body{padding-top:10px;}
+  .s-head{display:flex; align-items:flex-start; justify-content:space-between; gap:10px;}
+  .s-name{font-size:16px; font-weight:700; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .s-rating{flex-shrink:0; display:flex; align-items:center; gap:4px; font-size:14px; font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums;}
+  .s-rating .i-fill{color:var(--star);}
+  .s-line{font-size:13px; color:var(--ink2); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+
+  /* up to 3 service-price rows (searched-state card body, /dev/results-full). */
+  .svc-list{display:flex; flex-direction:column; gap:6px; margin-top:10px;}
+  .svc-row{display:flex; align-items:center; justify-content:space-between; gap:12px;
+    background:var(--sunken); border-radius:12px; padding:10px 14px; font-size:13.5px;}
+  .svc-name{display:block; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .svc-dur{font-size:12px; color:var(--ink2);}
+  .svc-price{flex-shrink:0; font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums;}
+  .view-more{display:block; margin-top:12px; font-size:13.5px; font-weight:600;}
+
+  /* directory (non-bookable) card, integrated box (owner rejected the "View on Google"
+     out-link, round 3: "I don't want this type of shit"). Grounded in MapSalonDetail.tsx
+     (name/meta stack) and SalonLocation.tsx (directions stays a MAP affordance, not a card
+     link). Photo placeholder + name + a small "Not bookable" tag + address + a subtle
+     "On the map" cue, all neutral ink/grey, no blue, no out-link, no price, no Book button. */
+  .s-photo.is-dir{display:grid; place-items:center; background:var(--sunken);}
+  .s-photo.is-dir .i{color:#A1A1AA;}
+  .dir-body{padding-top:10px;}
+  .dir-head{display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+  .dir-name{font-size:16px; font-weight:700; color:var(--ink);}
+  .dir-tag{flex-shrink:0; display:inline-flex; align-items:center; padding:3px 9px; border-radius:9999px;
+    font-size:11px; font-weight:600; color:var(--ink2); background:var(--sunken);}
+  .dir-line{display:flex; align-items:center; gap:5px; font-size:13px; color:var(--ink2); margin-top:4px;}
+  .dir-line .i{color:var(--ink2); flex-shrink:0;}
+  .dir-map-cue{display:inline-flex; align-items:center; gap:5px; font-size:12.5px; font-weight:500;
+    color:var(--ink2); margin-top:10px;}
+  .dir-map-cue .i{color:var(--ink2); flex-shrink:0;}
+
+  /* "Also in Basel", CURRENT directory arrangement only */
+  .also-in{padding-top:22px; border-top:1px solid var(--border); display:flex; flex-direction:column; gap:22px;}
+  .also-in-title{font-size:17px; font-weight:800; color:var(--ink); letter-spacing:-0.01em;}
+  .also-in-sub{font-size:12.5px; color:var(--ink2); margin-top:3px;}
+
+  /* floating "Map" / "List" pill FAB, pinned inside the phone viewport (real component:
+     fixed bottom-5, SAME single pill on mobile + desktop, text flips with map state). */
+  .fab-pill{position:absolute; bottom:16px; left:50%; transform:translateX(-50%); z-index:20;
+    display:inline-flex; align-items:center; gap:8px; background:var(--ink); color:#fff;
+    padding:11px 18px; border-radius:9999px; font-size:13.5px; font-weight:600;
+    box-shadow:0 6px 20px rgba(50,47,44,.20), 0 2px 6px rgba(50,47,44,.12);}
+
+  /* DESKTOP SPLIT (map-toggle demo) */
+  .desktop-scroller{overflow-x:auto; padding-bottom:6px;}
+  .desktop-frame{position:relative; min-width:1000px; border:1px solid var(--border); border-radius:16px;
+    background:#fff; overflow:hidden; box-shadow:var(--elev2); min-height:760px;}
+  .d-inner{padding:18px 26px 96px;}
+  .d-header-row{display:flex; align-items:center; justify-content:space-between; gap:20px;}
+  .d-logo-row{display:flex; align-items:center; gap:22px;}
+  .d-navlink{font-size:13px; font-weight:600; color:var(--ink2);}
+  .d-search-pill{display:flex; align-items:center; gap:10px; border:1px solid var(--border); border-radius:9999px;
+    padding:9px 8px 9px 16px; background:#fff; width:340px;}
+  .d-login{font-size:13px; font-weight:600; color:var(--ink);}
+
+  .d-chip-row{display:flex; align-items:center; gap:8px; margin-top:20px;}
+  .d-count-row{display:flex; align-items:center; justify-content:space-between; margin-top:18px;}
+  .d-count-text{font-size:17px; font-weight:700; color:var(--ink);}
+
+  .d-content{display:none; margin-top:18px;}
+  body[data-map="current"] .d-content.map-current{display:block;}
+  body[data-map="proposed"] .d-content.map-proposed{display:grid; grid-template-columns:1fr minmax(320px,42%); gap:24px;}
+
+  .d-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:22px 18px;}
+  .map-proposed .d-grid{grid-template-columns:repeat(2,1fr);}
+
+  .d-card .s-photo{box-shadow:var(--elev2); transition:box-shadow .2s ease;}
+  .d-card:hover .s-photo{box-shadow:var(--elev3);}
+  .d-card .s-body{padding-top:9px;}
+  .d-card .s-name{font-size:15px;}
+  .d-card .s-line{font-size:12.5px;}
+  .d-card .s-price-row{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:4px;}
+  .d-card .s-price{font-size:12.5px; font-weight:600; color:var(--ink);}
+  .d-card .s-next{display:inline-flex; align-items:center; gap:4px; font-size:12px; font-weight:500; color:var(--ink);}
+  .d-card .s-next .i{color:var(--ink2);}
+
+  /* map pane */
+  .map-pane{position:sticky; top:18px; height:600px; border-radius:16px; overflow:hidden;
+    border:1px solid var(--border); position:relative;
+    background:
+      radial-gradient(circle at 22% 30%, #E9EDE3 0, transparent 45%),
+      radial-gradient(circle at 78% 68%, #E4E9E0 0, transparent 50%),
+      #EFF1EC;}
+  .map-road{position:absolute; background:#fff;}
+  .map-pin{position:absolute; transform:translate(-50%,-50%); display:inline-flex; align-items:center; gap:4px;
+    background:#fff; border-radius:9999px; padding:6px 10px; font-size:12px; font-weight:700; color:var(--ink);
+    box-shadow:0 2px 6px rgba(50,47,44,.18); white-space:nowrap; border:1.5px solid var(--border);}
+  .map-pin .i-fill{color:var(--star);}
+  .map-pin.is-selected{background:var(--sunken);}
+  .map-dot{position:absolute; width:13px; height:13px; border-radius:50%; background:var(--ink);
+    box-shadow:0 1px 3px rgba(0,0,0,.25); transform:translate(-50%,-50%);}
+
+  .fab-desktop{position:absolute; bottom:22px; left:50%; transform:translateX(-50%); z-index:20;
+    display:inline-flex; align-items:center; gap:8px; background:var(--ink); color:#fff;
+    padding:11px 18px; border-radius:9999px; font-size:13.5px; font-weight:600;
+    box-shadow:0 6px 20px rgba(50,47,44,.20), 0 2px 6px rgba(50,47,44,.12);}
+  .fab-desktop span.lbl{display:none;}
+  body[data-map="current"] .fab-desktop span.lbl.cur, body[data-map="current"] .fab-desktop svg.cur{display:inline-flex;}
+  body[data-map="proposed"] .fab-desktop span.lbl.prop, body[data-map="proposed"] .fab-desktop svg.prop{display:inline-flex;}
+  .fab-desktop svg{display:none;}
+
+  .simplified-note{margin-top:14px; font-size:12px; color:var(--ink2);}
+
+  @media (max-width:720px){
+    .control-bar{position:static;}
+  }
+</style>
+</head>
+<body data-map="current" data-directory="current">
+
+<!-- icon sprite (hidden defs), lucide-react v0.577.0 path data, copied verbatim -->
+<svg class="lucide-defs" data-lucide="defs" width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="i-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></symbol>
+    <symbol id="i-map" viewBox="0 0 24 24"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><path d="M3 5h.01"/><path d="M3 12h.01"/><path d="M3 19h.01"/><path d="M8 5h13"/><path d="M8 12h13"/><path d="M8 19h13"/></symbol>
+    <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M10 5H3"/><path d="M12 19H3"/><path d="M14 3v4"/><path d="M16 17v4"/><path d="M21 12h-9"/><path d="M21 19h-5"/><path d="M21 5h-7"/><path d="M8 10v4"/><path d="M8 12H3"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></symbol>
+    <symbol id="i-map-pin" viewBox="0 0 24 24"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></symbol>
+    <symbol id="i-external-link" viewBox="0 0 24 24"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></symbol>
+    <symbol id="i-store" viewBox="0 0 24 24"><path d="M15 21v-5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v5"/><path d="M17.774 10.31a1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.451 0 1.12 1.12 0 0 0-1.548 0 2.5 2.5 0 0 1-3.452 0 1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.77-3.248l2.889-4.184A2 2 0 0 1 7 2h10a2 2 0 0 1 1.653.873l2.895 4.192a2.5 2.5 0 0 1-3.774 3.244"/><path d="M4 10.95V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8.05"/></symbol>
+  </defs>
+</svg>
+
+<div class="page">
+
+  <header class="meta-header">
+    <h1>Category search route, map default &amp; directory placement, two variants (English)</h1>
+    <p class="sub">Mockup of the real category/search route (<code>app/[locale]/[city]/[category]/page.tsx</code>
+      → <code>SearchTemplate.tsx</code>, the same template that renders <code>/coiffeur</code>,
+      <code>/barbershop</code>, <code>/nails</code>, <code>/spa</code>, <code>/search</code>). Real
+      result cards (<code>SalonResultCard.tsx</code> variant="feed"), real photos, real address strings.
+      Two independent toggles below compare Current against Proposed, nothing here is built or
+      committed.</p>
+    <p class="exists-note">
+      <b>Exists-check:</b> <code>npm run exists "category search route mockup"</code> → 0 hits (net-new
+      mockup file). <code>salon_directory</code> table exists live (48 rows, RLS on) with
+      <code>GET /api/directory</code> already built, but no page currently renders it for customers
+      (no frontend consumer yet). The "Also in Basel" placement below is the open design question, not
+      a shipped feature. Map behavior (<code>?map=1</code>, <code>mapOpen</code>, the mobile FAB) is
+      live in <code>SearchTemplate.tsx</code>, only the DESKTOP default (open/closed) is up for
+      discussion here.
+    </p>
+  </header>
+
+  <!-- control bar -->
+  <div class="control-bar">
+    <div class="toggle-group">
+      <div class="toggle-label">Map default (desktop)</div>
+      <div class="toggle-btns">
+        <button class="toggle-btn is-active" data-value="current" onclick="setVariant('map','current',this)">Current</button>
+        <button class="toggle-btn" data-value="proposed" onclick="setVariant('map','proposed',this)">Proposed</button>
+      </div>
+      <p class="toggle-caption">
+        <span class="cap-map-current">Map starts CLOSED (Swiss cities are denser than Fresha's US/UK markets),
+          the search bar's map icon and the "Show map" pill (real label: "Map") open it on demand.</span>
+        <span class="cap-map-proposed">Map starts OPEN in a split: list left, map right, visible immediately,
+          Fresha's default. The same pill now reads "List" and closes it back.</span>
+      </p>
+    </div>
+    <div class="toggle-group">
+      <div class="toggle-label">Directory entries (Google, not bookable)</div>
+      <div class="toggle-btns">
+        <button class="toggle-btn is-active" data-value="current" onclick="setVariant('directory','current',this)">Current</button>
+        <button class="toggle-btn" data-value="proposed" onclick="setVariant('directory','proposed',this)">Proposed</button>
+      </div>
+      <p class="toggle-caption">
+        <span class="cap-dir-current">A separate "Also in Basel" section BELOW the bookable results, clearly
+          split off.</span>
+        <span class="cap-dir-proposed">Mixed directly INTO the results list, with a "Not bookable" tag on each
+          card so it still reads as non-bookable.</span>
+      </p>
+    </div>
+  </div>
+
+  <!-- MOBILE 402px FRAME -->
+  <section class="frame-section">
+    <div class="frame-heading">
+      <h2>Mobile (402px)</h2>
+      <span class="frame-heading-note">Map behavior on mobile is IDENTICAL in both variants (map starts
+        closed, "Map" pill at the bottom), only the directory arrangement changes here. The desktop
+        frame below demonstrates the map-default toggle instead.</span>
+    </div>
+
+    <div class="phone-frame">
+      <div class="phone-scroll">
+
+        <div class="app-header">
+          <div class="app-header-row">
+            <span class="logo">Solen</span>
+            <button class="hamburger-btn" aria-label="Menu"><svg class="i i22 lucide lucide-menu"><use href="#i-menu"/></svg></button>
+          </div>
+          <div class="cat-pills">
+            <span class="cat-pill is-active">Hair</span>
+            <span class="cat-pill">Barber</span>
+            <span class="cat-pill">Nails</span>
+            <span class="cat-pill">Spa</span>
+          </div>
+        </div>
+
+        <div class="search-wrap">
+          <div class="search-pill">
+            <svg class="i i18 lucide lucide-search" style="color:var(--ink2)"><use href="#i-search"/></svg>
+            <span class="search-text">
+              <span class="search-line1">Hair Salon</span>
+              <span class="search-line2">Basel</span>
+            </span>
+            <span class="round-btn"><svg class="i i16 lucide lucide-map"><use href="#i-map"/></svg></span>
+          </div>
+        </div>
+
+        <div class="chip-row">
+          <span class="filter-round-btn"><svg class="i i16 lucide lucide-sliders-horizontal"><use href="#i-sliders"/></svg></span>
+          <span class="chip is-toggle-active">Open now</span>
+          <span class="chip">Price <svg class="i i14 lucide lucide-chevron-down" style="opacity:.5"><use href="#i-chevron-down"/></svg></span>
+          <span class="chip">Rating <svg class="i i14 lucide lucide-chevron-down" style="opacity:.5"><use href="#i-chevron-down"/></svg></span>
+        </div>
+
+        <div class="count-row">
+          <p class="count-text"><b>8</b> salons in Basel</p>
+          <span class="sort-pill">Most popular <svg class="i i13 lucide lucide-chevron-down"><use href="#i-chevron-down"/></svg></span>
+        </div>
+
+        <div class="results">
+
+          <!-- CURRENT: 5 bookable feed cards, then a separate "Also in Basel" section -->
+          <div class="results-block dir-current">
+
+            <article class="s-card">
+              <div class="s-photo">
+                <img src="https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=800&amp;q=80" alt="Photo of Muse Beauty Studio">
+                <svg class="i i20 lucide lucide-heart s-heart"><use href="#i-heart"/></svg>
+                <span class="s-dots"><span class="s-dot is-active"></span><span class="s-dot"></span><span class="s-dot"></span></span>
+              </div>
+              <div class="s-body">
+                <div class="s-head">
+                  <p class="s-name">Muse Beauty Studio</p>
+                  <span class="s-rating"><svg class="i i14 i-fill lucide lucide-star"><use href="#i-star"/></svg>4.2 <span class="accent">(107)</span></span>
+                </div>
+                <p class="s-line">450 m, Steinenvorstadt 12, Basel</p>
+                <p class="s-line">Hair Salon, 107 reviews</p>
+                <div class="svc-list">
+                  <div class="svc-row"><span class="svc-name">Haircut &amp; style <span class="svc-dur">45 min</span></span><span class="svc-price">55 CHF</span></div>
+                  <div class="svc-row"><span class="svc-name">Wash &amp; blow dry <span class="svc-dur">30 min</span></span><span class="svc-price">40 CHF</span></div>
+                  <div class="svc-row"><span class="svc-name">Root color <span class="svc-dur">1h 30min</span></span><span class="svc-price">95 CHF</span></div>
+                </div>
+                <span class="view-more accent">View 8 matching services</span>
+              </div>
+            </article>
+
+            <article class="s-card">
+              <div class="s-photo">
+                <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&amp;q=80" alt="Photo of Atelier Haarwerk">
+                <svg class="i i20 lucide lucide-heart s-heart"><use href="#i-heart"/></svg>
+                <span class="s-dots"><span class="s-dot is-active"></span><span class="s-dot"></span><span class="s-dot"></span></span>
+              </div>
+              <div class="s-body">
+                <div class="s-head">
+                  <p class="s-name">Atelier Haarwerk</p>
+                  <span class="s-rating"><svg class="i i14 i-fill lucide lucide-star"><use href="#i-star"/></svg>4.6 <span class="accent">(100)</span></span>
+                </div>
+                <p class="s-line">720 m, Spalenberg 34, Basel</p>
+                <p class="s-line">Hair Salon, 100 reviews</p>
+                <div class="svc-list">
+                  <div class="svc-row"><span class="svc-name">Men's cut <span class="svc-dur">30 min</span></span><span class="svc-price">68 CHF</span></div>
+                  <div class="svc-row"><span class="svc-name">Beard trim <span class="svc-dur">20 min</span></span><span class="svc-price">35 CHF</span></div>
+                  <div class="svc-row"><span class="svc-name">Full color <span class="svc-dur">2h</span></span><span class="svc-price">145 CHF</span></div>
+                </div>
+                <span class="view-more accent">View 22 matching services</span>
+              </div>
+            </article>
+
+            <article class="s-card">
+              <div class="s-photo">
+                <img src="https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?w=800&amp;q=80" alt="Photo of Haarsalon Margot">
+                <svg class="i i20 lucide lucide-heart s-heart"><use href="#i-heart"/></svg>
+                <span class="s-dots"><span class="s-dot is-active"></span><span class="s-dot"></span><span class="s-dot"></span></span>
+              </div>
+              <div class="s-body">
+                <div class="s-head">
+                  <p class="s-name">Haarsalon Margot</p>
+                  <span class="s-rating"><svg class="i i14 i-fill lucide lucide-star"><use href="#i-star"/></svg>4.8 <span class="accent">(98)</span></span>
+                </div>
+                <p class="s-line">890 m, Freie Strasse 71, Basel</p>
+                <p class="s-line">Hair Salon, 98 reviews</p>
+                <div class="svc-list">
+                  <div class="svc-row"><span class="svc-name">Signature cut <span class="svc-dur">50 min</span></span><span class="svc-price">72 CHF</span></div>
+                  <div class="svc-row"><span class="svc-name">Balayage <span class="svc-dur">2h 30min</span></span><span class="svc-price">220 CHF</span></div>
+                  <div class="svc-row"><span class="svc-name">Deep conditioning <span class="svc-dur">25 min</span></span><span class="svc-price">45 CHF</span></div>
+                </div>
+                <span class="view-more accent">View 13 matching services</span>
+              </div>
+            </article>
+
+            <article class="s-card">
+              <div class="s-photo">
+                <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&amp;q=80" alt="Photo of Glow Lab Basel">
+                <svg class="i i20 lucide lucide-heart s-heart"><use href="#i-heart"/></svg>
+                <span class="s-dots"><span class="s-dot is-active"></span><span class="s-dot"></span><span class="s-dot"></span></span>
+              </div>
+              <div class="s-body">
+                <div class="s-head">
+                  <p class="s-name">Glow Lab Basel</p>
+                  <span class="s-rating"><svg class="i i14 i-fill lucide lucide-star"><use href="#i-star"/></svg>4.5 <span class="accent">(85)</span></span>
+                </div>
+                <p class="s-line">1.1 km, Clarastrasse 8, Basel</p>
+                <p class="s-line">Hair Salon, 85 reviews</p>
+                <div class="svc-list">
+                  <div class="svc-row"><span class="svc-name">Cut &amp; finish <span class="svc-dur">40 min</span></span><span class="svc-price">60 CHF</span></div>
+                  <div class="svc-row"><span class="svc-name">Fringe trim <span class="svc-dur">15 min</span></span><span class="svc-price">20 CHF</span></div>
+                  <div class="svc-row"><span class="svc-name">Keratin treatment <span class="svc-dur">1h 40min</span></span><span class="svc-price">180 CHF</span></div>
+                </div>
+                <span class="view-more accent">View 7 matching services</span>
+              </div>
+            </article>
+
+            <article class="s-card">
+              <div class="s-photo">
+                <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=800&amp;q=80" alt="Photo of Salon Lumiere">
+                <svg class="i i20 lucide lucide-heart s-heart"><use href="#i-heart"/></svg>
+                <span class="s-dots"><span class="s-dot is-active"></span><span class="s-dot"></span><span class="s-dot"></span></span>
+              </div>
+              <div class="s-body">
+                <div class="s-head">
+                  <p class="s-name">Salon Lumiere</p>
+                  <span class="s-rating"><svg class="i i14 i-fill lucide lucide-star"><use href="#i-star"/></svg>4.4 <span class="accent">(72)</span></span>
+                </div>
+                <p class="s-line">1.3 km, Gerbergasse 45, Basel</p>
+                <p class="s-line">Hair Salon, 72 reviews</p>
+                <div class="svc-list">
+                  <div class="svc-row"><span class="svc-name">Classic cut <span class="svc-dur">35 min</span></span><span class="svc-price">58 CHF</span></div>
+                  <div class="svc-row"><span class="svc-name">Blow dry styling <span class="svc-dur">30 min</span></span><span class="svc-price">42 CHF</span></div>
+                  <div class="svc-row"><span class="svc-name">Highlights <span class="svc-dur">1h 50min</span></span><span class="svc-price">165 CHF</span></div>
+                </div>
+                <span class="view-more accent">View 12 matching services</span>
+              </div>
+            </article>
+
+            <!-- "Also in Basel", the 3 directory entries, clearly separated -->
+            <div class="also-in">
+              <div>
+                <p class="also-in-title">Also in Basel</p>
+                <p class="also-in-sub">Not bookable on Solen, listings from Google</p>
+              </div>
+
+              <article class="s-card">
+                <div class="s-photo is-dir">
+                  <svg class="i i22 lucide lucide-store"><use href="#i-store"/></svg>
+                </div>
+                <div class="dir-body">
+                  <div class="dir-head">
+                    <p class="dir-name">Coiffure Belle Rive</p>
+                    <span class="dir-tag">Not bookable</span>
+                  </div>
+                  <p class="dir-line"><svg class="i i13 lucide lucide-map-pin"><use href="#i-map-pin"/></svg>Rheingasse 19, Basel</p>
+                  <span class="dir-map-cue"><svg class="i i13 lucide lucide-map"><use href="#i-map"/></svg>On the map</span>
+                </div>
+              </article>
+
+              <article class="s-card">
+                <div class="s-photo is-dir">
+                  <svg class="i i22 lucide lucide-store"><use href="#i-store"/></svg>
+                </div>
+                <div class="dir-body">
+                  <div class="dir-head">
+                    <p class="dir-name">Studio Kappa</p>
+                    <span class="dir-tag">Not bookable</span>
+                  </div>
+                  <p class="dir-line"><svg class="i i13 lucide lucide-map-pin"><use href="#i-map-pin"/></svg>Missionsstrasse 27, Basel</p>
+                  <span class="dir-map-cue"><svg class="i i13 lucide lucide-map"><use href="#i-map"/></svg>On the map</span>
+                </div>
+              </article>
+
+              <article class="s-card">
+                <div class="s-photo is-dir">
+                  <svg class="i i22 lucide lucide-store"><use href="#i-store"/></svg>
+                </div>
+                <div class="dir-body">
+                  <div class="dir-head">
+                    <p class="dir-name">Haar &amp; Co</p>
+                    <span class="dir-tag">Not bookable</span>
+                  </div>
+                  <p class="dir-line"><svg class="i i13 lucide lucide-map-pin"><use href="#i-map-pin"/></svg>Binningerstrasse 5, Basel</p>
+                  <span class="dir-map-cue"><svg class="i i13 lucide lucide-map"><use href="#i-map"/></svg>On the map</span>
+                </div>
+              </article>
+            </div>
+
+          </div>
+
+          <!-- PROPOSED: the 3 directory entries mixed inline, no section break -->
+          <div class="results-block dir-proposed">
+
+            <article class="s-card">
+              <div class="s-photo">
+                <img src="https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=800&amp;q=80" alt="Photo of Muse Beauty Studio">
+                <svg class="i i20 lucide lucide-heart s-heart"><use href="#i-heart"/></svg>
+                <span class="s-dots"><span class="s-dot is-active"></span><span class="s-dot"></span><span class="s-dot"></span></span>
+              </div>
+              <div class="s-body">
+                <div class="s-head">
+                  <p class="s-name">Muse Beauty Studio</p>
+                  <span class="s-rating"><svg class="i i14 i-fill lucide lucide-star"><use href="#i-star"/></svg>4.2 <span class="accent">(107)</span></span>
+                </div>
+                <p class="s-line">450 m, Steinenvorstadt 12, Basel</p>
+                <p class="s-line">Hair Salon, 107 reviews</p>
+                <div class="svc-list">
+                  <div class="svc-row"><span class="svc-name">Haircut &amp; style <span class="svc-dur">45 min</span></span><span class="svc-price">55 CHF</span></div>
+                  <div class="svc-row"><span class="svc-name">Wash &amp; blow dry <span class="svc-dur">30 min</span></span><span class="svc-price">40 CHF</span></div>
+                  <div class="svc-row"><span class="svc-name">Root color <span class="svc-dur">1h 30min</span></span><span class="svc-price">95 CHF</span></div>
+                </div>
+                <span class="view-more accent">View 8 matching services</span>
+              </div>
+            </article>
+
+            <article class="s-card">
+              <div class="s-photo">
+                <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&amp;q=80" alt="Photo of Atelier Haarwerk">
+                <svg class="i i20 lucide lucide-heart s-heart"><use href="#i-heart"/></svg>
+                <span class="s-dots"><span class="s-dot is-active"></span><span class="s-dot"></span><span class="s-dot"></span></span>
+              </div>
+              <div class="s-body">
+                <div class="s-head">
+                  <p class="s-name">Atelier Haarwerk</p>
+                  <span class="s-rating"><svg class="i i14 i-fill lucide lucide-star"><use href="#i-star"/></svg>4.6 <span class="accent">(100)</span></span>
+                </div>
+                <p class="s-line">720 m, Spalenberg 34, Basel</p>
+                <p class="s-line">Hair Salon, 100 reviews</p>
+                <div class="svc-list">
+                  <div class="svc-row"><span class="svc-name">Men's cut <span class="svc-dur">30 min</span></span><span class="svc-price">68 CHF</span></div>
+                  <div class="svc-row"><span class="svc-name">Beard trim <span class="svc-dur">20 min</span></span><span class="svc-price">35 CHF</span></div>
+                  <div class="svc-row"><span class="svc-name">Full color <span class="svc-dur">2h</span></span><span class="svc-price">145 CHF</span></div>
+                </div>
+                <span class="view-more accent">View 22 matching services</span>
+              </div>
+            </article>
+
+            <!-- directory entry mixed inline, position 3 -->
+            <article class="s-card">
+              <div class="s-photo is-dir">
+                <svg class="i i22 lucide lucide-store"><use href="#i-store"/></svg>
+              </div>
+              <div class="dir-body">
+                <div class="dir-head">
+                  <p class="dir-name">Coiffure Belle Rive</p>
+                  <span class="dir-tag">Not bookable</span>
+                </div>
+                <p class="dir-line"><svg class="i i13 lucide lucide-map-pin"><use href="#i-map-pin"/></svg>Rheingasse 19, Basel</p>
+                <span class="dir-map-cue"><svg class="i i13 lucide lucide-map"><use href="#i-map"/></svg>On the map</span>
+              </div>
+            </article>
+
+            <article class="s-card">
+              <div class="s-photo">
+                <img src="https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?w=800&amp;q=80" alt="Photo of Haarsalon Margot">
+                <svg class="i i20 lucide lucide-heart s-heart"><use href="#i-heart"/></svg>
+                <span class="s-dots"><span class="s-dot is-active"></span><span class="s-dot"></span><span class="s-dot"></span></span>
+              </div>
+              <div class="s-body">
+                <div class="s-head">
+                  <p class="s-name">Haarsalon Margot</p>
+                  <span class="s-rating"><svg class="i i14 i-fill lucide lucide-star"><use href="#i-star"/></svg>4.8 <span class="accent">(98)</span></span>
+                </div>
+                <p class="s-line">890 m, Freie Strasse 71, Basel</p>
+                <p class="s-line">Hair Salon, 98 reviews</p>
+                <div class="svc-list">
+                  <div class="svc-row"><span class="svc-name">Signature cut <span class="svc-dur">50 min</span></span><span class="svc-price">72 CHF</span></div>
+                  <div class="svc-row"><span class="svc-name">Balayage <span class="svc-dur">2h 30min</span></span><span class="svc-price">220 CHF</span></div>
+                  <div class="svc-row"><span class="svc-name">Deep conditioning <span class="svc-dur">25 min</span></span><span class="svc-price">45 CHF</span></div>
+                </div>
+                <span class="view-more accent">View 13 matching services</span>
+              </div>
+            </article>
+
+            <article class="s-card">
+              <div class="s-photo">
+                <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&amp;q=80" alt="Photo of Glow Lab Basel">
+                <svg class="i i20 lucide lucide-heart s-heart"><use href="#i-heart"/></svg>
+                <span class="s-dots"><span class="s-dot is-active"></span><span class="s-dot"></span><span class="s-dot"></span></span>
+              </div>
+              <div class="s-body">
+                <div class="s-head">
+                  <p class="s-name">Glow Lab Basel</p>
+                  <span class="s-rating"><svg class="i i14 i-fill lucide lucide-star"><use href="#i-star"/></svg>4.5 <span class="accent">(85)</span></span>
+                </div>
+                <p class="s-line">1.1 km, Clarastrasse 8, Basel</p>
+                <p class="s-line">Hair Salon, 85 reviews</p>
+                <div class="svc-list">
+                  <div class="svc-row"><span class="svc-name">Cut &amp; finish <span class="svc-dur">40 min</span></span><span class="svc-price">60 CHF</span></div>
+                  <div class="svc-row"><span class="svc-name">Fringe trim <span class="svc-dur">15 min</span></span><span class="svc-price">20 CHF</span></div>
+                  <div class="svc-row"><span class="svc-name">Keratin treatment <span class="svc-dur">1h 40min</span></span><span class="svc-price">180 CHF</span></div>
+                </div>
+                <span class="view-more accent">View 7 matching services</span>
+              </div>
+            </article>
+
+            <!-- directory entry mixed inline, position 6 -->
+            <article class="s-card">
+              <div class="s-photo is-dir">
+                <svg class="i i22 lucide lucide-store"><use href="#i-store"/></svg>
+              </div>
+              <div class="dir-body">
+                <div class="dir-head">
+                  <p class="dir-name">Studio Kappa</p>
+                  <span class="dir-tag">Not bookable</span>
+                </div>
+                <p class="dir-line"><svg class="i i13 lucide lucide-map-pin"><use href="#i-map-pin"/></svg>Missionsstrasse 27, Basel</p>
+                <span class="dir-map-cue"><svg class="i i13 lucide lucide-map"><use href="#i-map"/></svg>On the map</span>
+              </div>
+            </article>
+
+            <article class="s-card">
+              <div class="s-photo">
+                <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=800&amp;q=80" alt="Photo of Salon Lumiere">
+                <svg class="i i20 lucide lucide-heart s-heart"><use href="#i-heart"/></svg>
+                <span class="s-dots"><span class="s-dot is-active"></span><span class="s-dot"></span><span class="s-dot"></span></span>
+              </div>
+              <div class="s-body">
+                <div class="s-head">
+                  <p class="s-name">Salon Lumiere</p>
+                  <span class="s-rating"><svg class="i i14 i-fill lucide lucide-star"><use href="#i-star"/></svg>4.4 <span class="accent">(72)</span></span>
+                </div>
+                <p class="s-line">1.3 km, Gerbergasse 45, Basel</p>
+                <p class="s-line">Hair Salon, 72 reviews</p>
+                <div class="svc-list">
+                  <div class="svc-row"><span class="svc-name">Classic cut <span class="svc-dur">35 min</span></span><span class="svc-price">58 CHF</span></div>
+                  <div class="svc-row"><span class="svc-name">Blow dry styling <span class="svc-dur">30 min</span></span><span class="svc-price">42 CHF</span></div>
+                  <div class="svc-row"><span class="svc-name">Highlights <span class="svc-dur">1h 50min</span></span><span class="svc-price">165 CHF</span></div>
+                </div>
+                <span class="view-more accent">View 12 matching services</span>
+              </div>
+            </article>
+
+            <!-- directory entry mixed inline, last position -->
+            <article class="s-card">
+              <div class="s-photo is-dir">
+                <svg class="i i22 lucide lucide-store"><use href="#i-store"/></svg>
+              </div>
+              <div class="dir-body">
+                <div class="dir-head">
+                  <p class="dir-name">Haar &amp; Co</p>
+                  <span class="dir-tag">Not bookable</span>
+                </div>
+                <p class="dir-line"><svg class="i i13 lucide lucide-map-pin"><use href="#i-map-pin"/></svg>Binningerstrasse 5, Basel</p>
+                <span class="dir-map-cue"><svg class="i i13 lucide lucide-map"><use href="#i-map"/></svg>On the map</span>
+              </div>
+            </article>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <span class="fab-pill"><svg class="i i16 lucide lucide-map"><use href="#i-map"/></svg>Map</span>
+    </div>
+  </section>
+
+  <!-- DESKTOP SPLIT (map-toggle demo) -->
+  <section class="frame-section">
+    <div class="frame-heading">
+      <h2>Desktop (768px and up), map default</h2>
+      <span class="frame-heading-note">Simplified list (the 5 bookable salons only) to show the layout
+        shift; the directory question is solved on mobile above.</span>
+    </div>
+
+    <div class="desktop-scroller">
+      <div class="desktop-frame">
+        <div class="d-inner">
+
+          <div class="d-header-row">
+            <div class="d-logo-row">
+              <span class="logo">Solen</span>
+              <span class="d-navlink">Hair</span>
+              <span class="d-navlink">Barber</span>
+              <span class="d-navlink">Nails</span>
+              <span class="d-navlink">Spa</span>
+            </div>
+            <div class="d-search-pill">
+              <svg class="i i16 lucide lucide-search" style="color:var(--ink2)"><use href="#i-search"/></svg>
+              <span class="search-text">
+                <span class="search-line1" style="font-size:13.5px;">Hair Salon</span>
+                <span class="search-line2" style="font-size:12px;">Basel</span>
+              </span>
+              <span class="round-btn" style="width:34px;height:34px;"><svg class="i i14 lucide lucide-map"><use href="#i-map"/></svg></span>
+            </div>
+            <span class="d-login">Log in</span>
+          </div>
+
+          <div class="d-chip-row">
+            <span class="filter-round-btn"><svg class="i i16 lucide lucide-sliders-horizontal"><use href="#i-sliders"/></svg></span>
+            <span class="chip is-toggle-active">Open now</span>
+            <span class="chip">Price <svg class="i i14 lucide lucide-chevron-down" style="opacity:.5"><use href="#i-chevron-down"/></svg></span>
+            <span class="chip">Rating <svg class="i i14 lucide lucide-chevron-down" style="opacity:.5"><use href="#i-chevron-down"/></svg></span>
+          </div>
+
+          <div class="d-count-row">
+            <p class="d-count-text"><b>8</b> salons in Basel</p>
+            <span class="sort-pill">Most popular <svg class="i i13 lucide lucide-chevron-down"><use href="#i-chevron-down"/></svg></span>
+          </div>
+
+          <!-- CURRENT: map closed, full-width grid -->
+          <div class="d-content map-current">
+            <div class="d-grid">
+
+              <article class="s-card d-card">
+                <div class="s-photo"><img src="https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=800&amp;q=80" alt="Photo of Muse Beauty Studio"><svg class="i i18 lucide lucide-heart s-heart"><use href="#i-heart"/></svg></div>
+                <div class="s-body">
+                  <div class="s-head"><p class="s-name">Muse Beauty Studio</p><span class="s-rating"><svg class="i i13 i-fill lucide lucide-star"><use href="#i-star"/></svg>4.2</span></div>
+                  <p class="s-line">Steinenvorstadt 12, Basel</p>
+                  <div class="s-price-row"><span class="s-price">from 55 CHF</span><span class="s-next"><svg class="i i12 lucide lucide-calendar"><use href="#i-calendar"/></svg>Today</span></div>
+                </div>
+              </article>
+
+              <article class="s-card d-card">
+                <div class="s-photo"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&amp;q=80" alt="Photo of Atelier Haarwerk"><svg class="i i18 lucide lucide-heart s-heart"><use href="#i-heart"/></svg></div>
+                <div class="s-body">
+                  <div class="s-head"><p class="s-name">Atelier Haarwerk</p><span class="s-rating"><svg class="i i13 i-fill lucide lucide-star"><use href="#i-star"/></svg>4.6</span></div>
+                  <p class="s-line">Spalenberg 34, Basel</p>
+                  <div class="s-price-row"><span class="s-price">from 68 CHF</span><span class="s-next"><svg class="i i12 lucide lucide-calendar"><use href="#i-calendar"/></svg>Today</span></div>
+                </div>
+              </article>
+
+              <article class="s-card d-card">
+                <div class="s-photo"><img src="https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?w=800&amp;q=80" alt="Photo of Haarsalon Margot"><svg class="i i18 lucide lucide-heart s-heart"><use href="#i-heart"/></svg></div>
+                <div class="s-body">
+                  <div class="s-head"><p class="s-name">Haarsalon Margot</p><span class="s-rating"><svg class="i i13 i-fill lucide lucide-star"><use href="#i-star"/></svg>4.8</span></div>
+                  <p class="s-line">Freie Strasse 71, Basel</p>
+                  <div class="s-price-row"><span class="s-price">from 72 CHF</span><span class="s-next"><svg class="i i12 lucide lucide-calendar"><use href="#i-calendar"/></svg>Tomorrow</span></div>
+                </div>
+              </article>
+
+              <article class="s-card d-card">
+                <div class="s-photo"><img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&amp;q=80" alt="Photo of Glow Lab Basel"><svg class="i i18 lucide lucide-heart s-heart"><use href="#i-heart"/></svg></div>
+                <div class="s-body">
+                  <div class="s-head"><p class="s-name">Glow Lab Basel</p><span class="s-rating"><svg class="i i13 i-fill lucide lucide-star"><use href="#i-star"/></svg>4.5</span></div>
+                  <p class="s-line">Clarastrasse 8, Basel</p>
+                  <div class="s-price-row"><span class="s-price">from 60 CHF</span><span class="s-next"><svg class="i i12 lucide lucide-calendar"><use href="#i-calendar"/></svg>Today</span></div>
+                </div>
+              </article>
+
+              <article class="s-card d-card">
+                <div class="s-photo"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=800&amp;q=80" alt="Photo of Salon Lumiere"><svg class="i i18 lucide lucide-heart s-heart"><use href="#i-heart"/></svg></div>
+                <div class="s-body">
+                  <div class="s-head"><p class="s-name">Salon Lumiere</p><span class="s-rating"><svg class="i i13 i-fill lucide lucide-star"><use href="#i-star"/></svg>4.4</span></div>
+                  <p class="s-line">Gerbergasse 45, Basel</p>
+                  <div class="s-price-row"><span class="s-price">from 58 CHF</span><span class="s-next"><svg class="i i12 lucide lucide-calendar"><use href="#i-calendar"/></svg>Tomorrow</span></div>
+                </div>
+              </article>
+
+            </div>
+          </div>
+
+          <!-- PROPOSED: map open, split list | map -->
+          <div class="d-content map-proposed">
+            <div class="d-grid">
+
+              <article class="s-card d-card">
+                <div class="s-photo"><img src="https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=800&amp;q=80" alt="Photo of Muse Beauty Studio"><svg class="i i18 lucide lucide-heart s-heart"><use href="#i-heart"/></svg></div>
+                <div class="s-body">
+                  <div class="s-head"><p class="s-name">Muse Beauty Studio</p><span class="s-rating"><svg class="i i13 i-fill lucide lucide-star"><use href="#i-star"/></svg>4.2</span></div>
+                  <p class="s-line">Steinenvorstadt 12, Basel</p>
+                  <div class="s-price-row"><span class="s-price">from 55 CHF</span><span class="s-next"><svg class="i i12 lucide lucide-calendar"><use href="#i-calendar"/></svg>Today</span></div>
+                </div>
+              </article>
+
+              <article class="s-card d-card">
+                <div class="s-photo"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&amp;q=80" alt="Photo of Atelier Haarwerk"><svg class="i i18 lucide lucide-heart s-heart"><use href="#i-heart"/></svg></div>
+                <div class="s-body">
+                  <div class="s-head"><p class="s-name">Atelier Haarwerk</p><span class="s-rating"><svg class="i i13 i-fill lucide lucide-star"><use href="#i-star"/></svg>4.6</span></div>
+                  <p class="s-line">Spalenberg 34, Basel</p>
+                  <div class="s-price-row"><span class="s-price">from 68 CHF</span><span class="s-next"><svg class="i i12 lucide lucide-calendar"><use href="#i-calendar"/></svg>Today</span></div>
+                </div>
+              </article>
+
+              <article class="s-card d-card">
+                <div class="s-photo"><img src="https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?w=800&amp;q=80" alt="Photo of Haarsalon Margot"><svg class="i i18 lucide lucide-heart s-heart"><use href="#i-heart"/></svg></div>
+                <div class="s-body">
+                  <div class="s-head"><p class="s-name">Haarsalon Margot</p><span class="s-rating"><svg class="i i13 i-fill lucide lucide-star"><use href="#i-star"/></svg>4.8</span></div>
+                  <p class="s-line">Freie Strasse 71, Basel</p>
+                  <div class="s-price-row"><span class="s-price">from 72 CHF</span><span class="s-next"><svg class="i i12 lucide lucide-calendar"><use href="#i-calendar"/></svg>Tomorrow</span></div>
+                </div>
+              </article>
+
+              <article class="s-card d-card">
+                <div class="s-photo"><img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&amp;q=80" alt="Photo of Glow Lab Basel"><svg class="i i18 lucide lucide-heart s-heart"><use href="#i-heart"/></svg></div>
+                <div class="s-body">
+                  <div class="s-head"><p class="s-name">Glow Lab Basel</p><span class="s-rating"><svg class="i i13 i-fill lucide lucide-star"><use href="#i-star"/></svg>4.5</span></div>
+                  <p class="s-line">Clarastrasse 8, Basel</p>
+                  <div class="s-price-row"><span class="s-price">from 60 CHF</span><span class="s-next"><svg class="i i12 lucide lucide-calendar"><use href="#i-calendar"/></svg>Today</span></div>
+                </div>
+              </article>
+
+            </div>
+
+            <div class="map-pane">
+              <div class="map-road" style="left:0;right:0;top:38%;height:3px;transform:rotate(-4deg);"></div>
+              <div class="map-road" style="left:0;right:0;top:66%;height:3px;transform:rotate(2deg);"></div>
+              <div class="map-road" style="top:0;bottom:0;left:32%;width:3px;transform:rotate(6deg);"></div>
+              <div class="map-road" style="top:0;bottom:0;left:70%;width:3px;transform:rotate(-3deg);"></div>
+
+              <span class="map-pin is-selected" style="left:30%;top:28%;"><svg class="i i12 i-fill lucide lucide-star"><use href="#i-star"/></svg>72</span>
+              <span class="map-pin" style="left:56%;top:44%;"><svg class="i i12 i-fill lucide lucide-star"><use href="#i-star"/></svg>68</span>
+              <span class="map-pin" style="left:38%;top:62%;"><svg class="i i12 i-fill lucide lucide-star"><use href="#i-star"/></svg>55</span>
+              <span class="map-pin" style="left:72%;top:30%;"><svg class="i i12 i-fill lucide lucide-star"><use href="#i-star"/></svg>60</span>
+              <span class="map-pin" style="left:66%;top:70%;"><svg class="i i12 i-fill lucide lucide-star"><use href="#i-star"/></svg>58</span>
+              <span class="map-dot" style="left:20%;top:78%;"></span>
+              <span class="map-dot" style="left:85%;top:55%;"></span>
+            </div>
+          </div>
+
+          <p class="simplified-note">Area-search-on-drag and the individual salon popups are part of the real
+            <code>MapView.tsx</code>, not simulated here, only the list/map layout ratio is the point of
+            this demo.</p>
+
+        </div>
+
+        <span class="fab-desktop">
+          <svg class="i i16 lucide lucide-map cur"><use href="#i-map"/></svg>
+          <svg class="i i16 lucide lucide-list prop"><use href="#i-list"/></svg>
+          <span class="lbl cur">Map</span>
+          <span class="lbl prop">List</span>
+        </span>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  function setVariant(key, value, btn) {
+    document.body.setAttribute('data-' + key, value);
+    var group = btn.parentElement;
+    Array.prototype.forEach.call(group.querySelectorAll('.toggle-btn'), function (b) {
+      b.classList.toggle('is-active', b === btn);
+    });
+  }
+</script>
+
+</body>
+</html>

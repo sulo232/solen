@@ -157,7 +157,9 @@
     "loginToProfile": "Sign in to view your profile",
     "loginCta": "Sign in now",
     "aboutUs": "About us",
-    "myAccount": "My account"
+    "myAccount": "My account",
+    "forBusiness": "For business",
+    "services": "Services"
   },
   "home": {
     "hero_title": "Your salon in Basel",
@@ -6298,7 +6300,8 @@
     "continue": "Continue",
     "errorMinAge": "You must be at least 16 years old.",
     "errorAccountExists": "You already have an account. Please sign in.",
-    "errorPasswordMin": "The password needs at least 8 characters."
+    "errorPasswordMin": "The password needs at least 8 characters.",
+    "errorPasswordBreached": "This password was found in a data breach. Please choose another one."
   },
   "passwordStrength": {
     "weak": "Weak",

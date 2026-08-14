@@ -1,0 +1,228 @@
+{
+ "id": "S09",
+ "synth": {
+  "generative_prior": "Computable defaults per Solen customer-surface class (dashboard excluded, already sourced via TASTE_DASHBOARDS):\n\n1. SEARCH RESULTS / LIST (scan-many mode, structure-locked to Fresha): card = 1 image (single photo or carousel) + name (14px semibold) + rating value + distance/address line + category tag + review count. NO price, NO per-card CTA button, NO inline service preview. Density band: mobile ~1.2-1.5 cards visible per 812px fold (near full-bleed photo card, ~480-560px tall); desktop 2-column card grid inside a ~700px list column alongside a persistent (not force-collapsed) map, ~4 cards visible above an ~900px fold. Grounded in: Fresha search (measured live this session, fresha.com/search, both viewports) which is Solen's locked STRUCTURE source per the dual-axis rule, cross-checked against Airbnb's list+map split (CONV, ~18 results/grid beside a persistent map) which independently converges on the same list+map pattern. Booksy's thicker card (rating+distance+badge+3 inline priced services, ~8-10 fields/card, T1 measured) and ClassPass's denser 4-rows-with-status-chip pattern (T2, Mobbin) are named as the DENSER alternative Solen should NOT adopt, since Solen's locked \"no times in listings, no fabricated price preview on a card\" rules already side with Fresha's thin-row philosophy.\n\n2. DISCOVERY / INSPO FEED (scan-many, visual-first mode): 2-column masonry (matches the existing project north-star of a Pinterest-style gallery), gutter target 8-12px (between Pinterest's near-zero gutter and Cosmos's ~8-10px breathing-room gutter), NO text-caption scrim overlay on tiles (Lemon8's dark-gradient caption pattern is richer/more graphic than Solen's flat 80/17 no-hype surface law allows), save-affordance limited to a small corner icon (Pinterest's \"+\" pattern). Density band: 3+ rows (6+ tiles) visible per 812px mobile fold, matching Pinterest's measured ~3.3 rows (T2, Mobbin) but with Cosmos's calmer gutter (T2, Mobbin) rather than Pinterest's near-zero one, since Pinterest's tightness reads as commercial-volume optimization Solen doesn't need.\n\n3. PDP (decide-on-one mode, low density, generous padding): name (large, 2-line max) then a grey meta line (hours/address) then a bold availability/social-proof line then an action-button row then H2 section headers then content rows at ~90-100px each with a hairline divider, no photo per row for list-style content (e.g. services). Grounded in Square Go's salon PDP (T2, Mobbin, the most directly comparable competitor to Solen's own PDP), which is measurably lower-density and more generously spaced than any list/search/discovery surface in the same app family.\n\nCROSS-CUTTING FORMULA: as a surface moves deeper into the funnel (discovery/search → PDP), density should step DOWN, meaning fields-per-card/row shrinks going INTO a scan surface and padding-per-item grows going INTO a decide surface. No app sampled uses one flat density constant across surface types; treat \"one spacing scale, applied identically everywhere\" as the anti-pattern this stream corrects, not the 4-pt spacing SCALE itself (which stays locked, only its per-surface application band is new).",
+  "id": "S09",
+  "numbers_used": [
+   "1.2-1.5 cards visible per 812px mobile fold (search results)",
+   "~4 cards visible above ~900px desktop fold, 2-col grid (search results)",
+   "480-560px card height band (mobile search card)",
+   "700px list-column width alongside persistent map (desktop search)",
+   "8-12px masonry gutter band (Inspo feed)",
+   "3+ rows / 6+ tiles visible per 812px mobile fold (Inspo feed)",
+   "90-100px per content row with hairline divider (PDP service rows)",
+   "Booksy card ~8-10 fields/card vs Fresha ~5 fields/card (rejected-density contrast)",
+   "Airbnb ~18 results/grid beside persistent map (CONV cross-check)",
+   "Booking.com ~25 cards/page pagination (CONV cross-check, different pattern, not adopted)"
+  ],
+  "principle_summary": "Information density is not one constant Solen should apply everywhere. It steps down as the customer moves from scanning many options to deciding on one: search-result and discovery-feed surfaces (scan-many mode) default to compact, image-led cards with few fields, no price, and no per-card CTA; the PDP (decide-on-one mode) default to generous padding, a single top-to-bottom hierarchy, and no per-row photography. The computable signal is rows-or-tiles-visible-per-viewport-fold together with fields-per-card: both should shrink on scan surfaces and the padding-per-item should grow as the surface approaches the commit action. No real app sampled uses a flat density constant across surface types, and Solen's own locked structure source (Fresha) and closest same-category rival (Booksy) actively disagree on search-card density, which is itself evidence that \"density\" is a per-surface decision, not a single number.",
+  "proposed_addition": "## Density defaults per customer surface (generative prior, tag: generative-gap)\n\n**Gap this fills:** Solen's dashboard density is already sourced (see TASTE_DASHBOARDS); customer-facing surfaces (search results, Inspo/discovery feed, PDP) had no computable density prior, so a new surface risked being eyeballed rather than derived. This section is that prior.\n\n**Prior (bands, not frozen literals, since none of these touch an already-LOCKFILE'd row directly):**\n- Search results / list: thin Fresha-style row (photo + name + rating + distance + category/reviews, no price, no per-card CTA), mobile ~1.2-1.5 cards/fold, desktop ~4 cards/fold in a 2-col grid beside a persistent (not forced) map.\n- Inspo / discovery feed: 2-col masonry, 8-12px gutter, no caption scrim on tiles, ~3+ rows/fold on mobile.\n- PDP: generous padding, single hierarchy (name -> meta -> availability/social proof -> actions -> sectioned content), ~90-100px content rows with hairline dividers, no per-row photography for list content.\n- Formula: density steps DOWN with funnel depth (scan surfaces = fewer fields, higher row count; decide surface = fewer rows, more padding per item). Do not apply one flat spacing constant across all three.\n\n**Named real-app anchors (so a builder has a concrete image, not just a number):** Fresha search (Solen's own structure source, thin-card, measured), Booksy search (thick price-led card, explicitly the pattern to AVOID for search results), Square Go PDP (closest generously-spaced PDP analog), Pinterest / Cosmos masonry (discovery feed structure vs Solen-appropriate gutter restraint).\n\n**Explicitly rejected, do not adopt:** per-card CTA buttons on search rows (KAYAK, Klook pattern; conflicts with Solen's ink-only single-commit-button rule), price/service preview baked into the search card (Booksy pattern; conflicts with no-times-in-listings and no-fabricated-price-preview rules), dark-gradient caption scrims on discovery tiles (Lemon8 pattern; conflicts with the 80/17 no-decorative-overlay law).\n\n**Tensions noted, NOT applied (owner reopening required, not this stream's call):** 2026 trend material describes \"fluid spacing over fixed margins\" and \"density that expands with user proficiency\" (T3, trade-press). Both would require touching Solen's locked 4-pt spacing scale (V3-D443) or building a net-new personalization system; flagged here as background context only, per the precedence chain (LOCKFILE outranks trend research).\n\n**Taste-Lab probe:** show the owner two live-mockup variants of the search-results list at the same data set: (A) Fresha-anchored thin row (photo + name + rating + distance + category, no price) at the ~1.3-cards/mobile-fold band, vs (B) a denser Booksy-style row with an inline lowest-price service preview. Ask which reads as \"Solen\" and why, to lock the search-card field count as a LOCKFILE row rather than leave it as this stream's unlocked prior.",
+  "real_world_evidence": [
+   {
+    "source": "Fresha search (fresha.com/search, live-rendered this session, desktop 1600px + mobile 375px)",
+    "what": "Thin directory-row card: photo carousel + name/rating line + distance/address line + category/reviews line, no price, no per-card CTA; desktop = 2-col grid beside a persistent (default-open) map, ~4 cards/fold; mobile = ~1.2 cards/fold, image-led",
+    "tier": "T1"
+   },
+   {
+    "source": "Booksy search (booksy.com/s/hair-salon, live-rendered this session, mobile 375px)",
+    "what": "Thick preview-row card: rating+reviews+distance+badge+3 inline priced/duration services+Book button per card, roughly 8-10 fields vs Fresha's 5",
+    "tier": "T1"
+   },
+   {
+    "source": "Square Go salon PDP (via Mobbin screen capture)",
+    "what": "Generously-spaced PDP: name, grey meta line, availability/social-proof line, 4-pill action row, H2 sections, ~90-100px service rows with hairline dividers, no per-row photo",
+    "tier": "T2"
+   },
+   {
+    "source": "ClassPass search list (via Mobbin screen capture)",
+    "what": "Densest list sampled: small thumbnail + 3-line text stack + status chip, ~4 rows/812px fold, deliberately low-whitespace for fast scanning",
+    "tier": "T2"
+   },
+   {
+    "source": "KAYAK hotel list (via Mobbin screen capture)",
+    "what": "~3 cards/fold with a persistent orange inline CTA button per row, named as a pattern to reject for Solen (conflicts with ink-only single-commit-button rule)",
+    "tier": "T2"
+   },
+   {
+    "source": "Pinterest masonry grid (via Mobbin screen capture)",
+    "what": "2-col masonry, near-zero gutter, no card border/shadow, ~3.3 rows (6-7 tiles) visible per 812px fold, no captions except a corner save icon",
+    "tier": "T2"
+   },
+   {
+    "source": "Cosmos art-reference grid (via Mobbin screen capture)",
+    "what": "2-col masonry with an ~8-10px gutter (more breathing room than Pinterest), zero captions, closest analog to a restrained Inspo feed",
+    "tier": "T2"
+   },
+   {
+    "source": "Lemon8 grid (via Mobbin screen capture)",
+    "what": "Hashtag-grouped rows with dark-gradient caption scrims over every tile, named as a pattern to reject under the 80/17 no-decorative-overlay law",
+    "tier": "T2"
+   },
+   {
+    "source": "Airbnb desktop search (secondary description, not independently rendered)",
+    "what": "~18 results in a grid beside a persistent map, same list+map split as Fresha desktop",
+    "tier": "CONV"
+   },
+   {
+    "source": "Booking.com search (secondary description, not independently rendered)",
+    "what": "25-card page-N pagination rather than infinite map-bounded scroll, a denser but structurally different default not adopted here",
+    "tier": "CONV"
+   },
+   {
+    "source": "MyDesigner.gg 'Dense Interfaces Are Back' / Envato 'calm interfaces' 2026 trend pieces",
+    "what": "2026 UX discourse splits into a dense-power-tool camp (Notion, Linear, dashboards) and a calm-consumer-surface camp; corroborates Solen's existing dashboard-vs-customer-surface split but supplies no numeric density target",
+    "tier": "T3"
+   }
+  ],
+  "sources": [
+   {
+    "claim": "Fresha search card structure and density bands",
+    "source": "fresha.com/search, live-rendered this session",
+    "tier": "T1"
+   },
+   {
+    "claim": "Booksy search card structure and density",
+    "source": "booksy.com/s/hair-salon, live-rendered this session",
+    "tier": "T1"
+   },
+   {
+    "claim": "Square Go PDP layout and density",
+    "source": "mobbin.com/screens/b302dc27-ed66-4442-a59e-1e4dc73799b1",
+    "tier": "T2"
+   },
+   {
+    "claim": "ClassPass search list density",
+    "source": "mobbin.com/screens/c2983f3d-87f7-443c-ab43-ab0976cebad9",
+    "tier": "T2"
+   },
+   {
+    "claim": "KAYAK per-row CTA pattern",
+    "source": "mobbin.com/screens/2ebab6b3-1f53-4a55-8790-d58a48848159",
+    "tier": "T2"
+   },
+   {
+    "claim": "Pinterest masonry density",
+    "source": "mobbin.com/screens/20e4f2b7-716b-47b6-80e3-833f0ee7ea80",
+    "tier": "T2"
+   },
+   {
+    "claim": "Cosmos masonry gutter",
+    "source": "mobbin.com/screens/161b484a-50b1-4574-900a-5167c51080a2",
+    "tier": "T2"
+   },
+   {
+    "claim": "Lemon8 caption-scrim tiles",
+    "source": "mobbin.com/screens/b8c7a247-b0ad-484e-9046-64c210da316a",
+    "tier": "T2"
+   },
+   {
+    "claim": "Airbnb ~18-result grid beside persistent map",
+    "source": "secondary description via WebSearch, not independently rendered",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Booking.com 25-card pagination",
+    "source": "secondary description via WebSearch, not independently rendered",
+    "tier": "CONV"
+   },
+   {
+    "claim": "2026 dense-vs-calm UX trend split",
+    "source": "mydesigner.gg/blog/dense-interfaces-information-hierarchy-2026 and elements.envato.com/learn/ux-ui-design-trends",
+    "tier": "T3"
+   },
+   {
+    "claim": "Fluid/adaptive spacing 2026 trend (flagged, not applied)",
+    "source": "fuselabcreative.com/mobile-app-design-trends-for-2025 and index.dev/blog/ui-ux-design-trends",
+    "tier": "T3"
+   }
+  ],
+  "tag": "generative-gap",
+  "taste_lab_probe": "Mockup two live variants of the same search-results list with real data: (A) Fresha-anchored thin row (photo, name, rating, distance, category, no price, no CTA) at ~1.3 cards/mobile-fold, versus (B) a denser row with an inline lowest-price service preview (Booksy-style). Ask the owner which reads as Solen's own voice and why, so the search-card field count graduates from this stream's prior into a LOCKFILE row instead of staying an unlocked default.",
+  "title": "Density defaults per customer surface"
+ },
+ "verified": {
+  "id": "S09",
+  "tag": "generative-gap",
+  "verdict": "flagged",
+  "myths_caught": [
+   "The draft's central T1 claim ('Fresha search card structure and density bands', sourced to 'fresha.com/search, live-rendered this session') is factually inverted. Live re-check this pass of the SAME session's already-open Fresha tabs (tab-3 and tab-8, both at the real /search results view with '9 venues within map area' + Filters + persistent map, screenshotted at 800x450) shows each search-result card actually carries: photo carousel + name + distance/address + category + (rating when present) + THREE inline priced/duration services (e.g. 'Haarschnitt, 30 min, CHF 40') + a 'View N matching services' link. That is a price-led, service-preview card, structurally closer to what the draft itself labels 'the Booksy pattern Solen should reject' than to the thin no-price card the draft describes. The thin card (photo + name + rating + address + category + review count, no price) is real, but it is Fresha's HOMEPAGE recommendation carousel (fresha.com root, confirmed via tab-1), not its search-results page.",
+   "Because of the inversion above, the draft's 'Booksy ~8-10 fields/card vs Fresha ~5 fields/card (rejected-density contrast)' number is backwards: the actual Fresha search card is at least as field-dense as Booksy's (name + distance + category + up to 3 priced/timed services + a service-count link), not the sparse 5-field baseline claimed.",
+   "Pinterest '~3.3 rows (6-7 tiles) visible per 812px fold' is presented as if pixel-measured. Mobbin screen captures (re-pulled this pass) support 'roughly 3 rows' qualitatively but not a decimal-precision figure; the '.3' reads as false precision dressed as a measurement, not an actual measurement."
+  ],
+  "verified_addition": "## Density defaults per customer surface (generative prior, tag: generative-gap)\n\n**STATUS: flagged, not ready to graduate to RATIONALE.md as written.** Adversarial re-check found the stream's anchor citation (Fresha search-card structure) inverted. The prior below is corrected, but the whole density formula was built assuming a thin Fresha search card that does not exist on the real search page; re-derive the search-results band from the corrected structure before locking anything.\n\n**Gap this fills:** Solen's dashboard density is already sourced (see TASTE_DASHBOARDS); customer-facing surfaces (search results, Inspo/discovery feed, PDP) had no computable density prior. This section is that prior, corrected against a live re-render.\n\n**Corrected finding on Fresha (owner-relevant):** Fresha's actual search-results card (fresha.com/search, live-rendered and re-verified this session) is price-led: photo carousel, name, distance/address, category, rating when present, up to three inline priced + timed services, and a \"View N matching services\" link. This is closer to the dense, price-preview pattern the draft originally proposed to reject (attributed to Booksy) than to a thin card. Fresha's thin, price-free card (photo + name + rating + address + category + review count) is real but lives on the Fresha HOMEPAGE recommendation carousel, not the search page.\n\nThis matters under Solen's dual-axis rule (STRUCTURE = Fresha). Solen's own locked search-card rule (\"no price, no per-card CTA, no times in listings\") is NOT inherited from Fresha's search structure, it actively diverges from it. That divergence may still be the right call (it is grounded in Solen's own no-fabrication and copy-economy law, and in the \"no times in listings\" lock), but it should be recorded as a NAMED, deliberate deviation from the structure source, not implied as a Fresha-aligned default. This is an owner-decision item, not something this stream can resolve unilaterally.\n\n**Prior (bands, not frozen literals, since none of these touch an already-LOCKFILE'd row directly):**\n- Search results / list: Solen's current no-price, no-CTA card is a DEVIATION from Fresha's real (price-led) search card, kept for Solen's own reasons; do not cite it as \"Fresha structure.\" Density bands (mobile ~1.2-1.5 cards/fold, desktop ~4 cards/fold in a 2-col grid beside a persistent map) were measured assuming the thin card and need re-checking against a card that may run taller once Solen's own field set is finalized.\n- Inspo / discovery feed: 2-col masonry, roughly 8-12px gutter, no caption scrim on tiles, roughly 3 rows visible per mobile fold (qualitative, not a measured decimal).\n- PDP: generous padding, single hierarchy (name, meta, availability/social proof, actions, sectioned content), roughly 90-100px content rows with hairline dividers, no per-row photography for list content. Confirmed structurally against Square Go's live PDP screen (name, grey meta line, availability line, action-pill row, \"Services\" H2, row = name + description + price/duration + a per-row Book pill, hairline divider). Note Square Go DOES put a Book button on each service row; Solen's \"no per-card CTA\" rule is again a deliberate deviation from the closest sampled analog, not an inherited structure.\n- Formula: density steps down with funnel depth as a directional idea (scan surfaces carry more rows/less padding, decide surfaces carry fewer rows/more padding), but the specific search-results anchor needs to be re-derived now that the Fresha citation is corrected. Treat the formula as a hypothesis, not a locked rule, until re-verified.\n\n**Named real-app anchors, re-verified this pass:**\n- Fresha search page (own structure source): price-led card, re-confirmed live, corrects the earlier draft.\n- Fresha homepage carousel: thin card, real but a different surface than search.\n- Square Go PDP (Mobbin id b302dc27-ed66-4442-a59e-1e4dc73799b1, exact-ID match confirmed): generously-spaced PDP with a per-service Book button.\n- ClassPass search list (Mobbin id c2983f3d-87f7-443c-ab43-ab0976cebad9, exact-ID match confirmed): densest list sampled, thumbnail + 3-line text stack + urgency/status chips, roughly 4 rows/812px fold.\n- KAYAK hotel list (Mobbin, re-confirmed): persistent orange Book/View-deal button per row, correctly named as a pattern to avoid for Solen (conflicts with the ink-only single-commit-button rule).\n- Pinterest masonry (Mobbin, re-confirmed): 2-col, near-zero gutter, no card border/shadow, no captions except a corner save icon, roughly 3 rows visible per mobile fold (qualitative).\n- Lemon8 grid (Mobbin, re-confirmed): dark-gradient caption scrims over tiles, correctly named as a pattern to reject under the 80/17 no-decorative-overlay law.\n- Cosmos masonry gutter and Booksy's exact field count were NOT independently re-confirmed this pass (cookie-wall blocked a clean re-render of Booksy's live search page within this session's tool budget); treat both as T2 carried forward from the prior pass, not upgraded to T1.\n\n**Explicitly rejected, do not adopt:** per-card CTA buttons on search rows (KAYAK pattern, confirmed; conflicts with Solen's ink-only single-commit-button rule), dark-gradient caption scrims on discovery tiles (Lemon8 pattern, confirmed; conflicts with the 80/17 no-decorative-overlay law). Do NOT cite \"Booksy's price-preview pattern\" as the sole example to avoid: Fresha's own search card does the same thing, so this is a Solen-specific choice, not a Fresha-vs-Booksy divergence.\n\n**Tensions noted, NOT applied (owner reopening required, not this stream's call):** 2026 trade-press describes \"fluid spacing over fixed margins\" and \"density that expands with user proficiency\" (T3, trade-press, not independently verified this pass). Both would require touching Solen's locked 4-pt spacing scale (V3-D443) or building a net-new personalization system; flagged as background context only, per the precedence chain (LOCKFILE outranks trend research). Airbnb's \"~18 results/grid\" and Booking.com's \"25-card pagination\" remain CONV-tier (secondary description, not independently rendered this pass either); keep them as soft cross-checks, not evidence.\n\n**Taste-Lab probe (revised):** show the owner two live-mockup variants of the search-results list at the same data set: (A) Solen's current no-price, no-CTA thin row, vs (B) a Fresha-accurate price-led row (photo, name, distance, category, up to 3 priced services, \"View N more\"). Ask directly: \"Fresha itself shows price previews on search cards. Do we want to keep diverging from that, and if so, on what grounds?\" This makes the real trade-off visible (Solen's own no-fabrication/no-times-in-listings law vs matching the structure source) instead of presenting the current no-price card as if it were inherited from Fresha.",
+  "claim_verdicts": [
+   {
+    "claim": "Fresha search card structure and density bands (photo+name+rating+distance+category+reviews, no price, no per-card CTA)",
+    "source_ok": false,
+    "tier_final": "refuted (live re-check this session shows the opposite: Fresha search cards ARE price-led with 3 inline priced services + a service-count link; the thin card is Fresha's homepage carousel, not search)",
+    "note": "Re-rendered fresha.com/search live in already-open session tabs (tab-3, tab-8); screenshot confirms priced service rows on every card."
+   },
+   {
+    "claim": "Booksy search card structure and density (~8-10 fields, incl. 3 inline priced services + Book button)",
+    "source_ok": true,
+    "tier_final": "T2 (downgraded from T1)",
+    "note": "Could not cleanly re-render Booksy's live search results this pass (cookie-wall repeatedly blocked; homepage-only content confirmed rating/reviews/address/badges but not the priced-service rows). Plausible and likely genuine since a Booksy tab was already open pre-session, but not independently re-confirmed to T1 in this pass."
+   },
+   {
+    "claim": "Square Go salon PDP layout and density (generous padding, action-pill row, Services H2, ~90-100px rows, hairline dividers)",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Mobbin id b302dc27-ed66-4442-a59e-1e4dc73799b1 confirmed exact-match this pass; screen shows name, grey meta, availability line, action pills (Book/Call/Message/Directions), Services H2, rows with name+description+price/duration+per-row Book button, hairline dividers. One correction: rows DO carry a per-row Book button, which the draft's PDP bullet did not mention."
+   },
+   {
+    "claim": "ClassPass search list density (thumbnail + 3-line stack + status chip, ~4 rows/812px fold)",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Mobbin id c2983f3d-87f7-443c-ab43-ab0976cebad9 confirmed exact-match this pass; screen matches description closely (name, distance, category, rating+reviews, Safety Guidelines badge, urgency chip like '50+ bookings this week'), roughly 4 rows visible per mobile fold."
+   },
+   {
+    "claim": "KAYAK per-row CTA pattern (persistent orange Book/View-deal button per row)",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Re-confirmed via Mobbin this pass on both KAYAK hotel list and hotel-deals screens; orange Book/View deal button appears on every row."
+   },
+   {
+    "claim": "Pinterest masonry density (2-col, near-zero gutter, no captions except corner save icon, ~3.3 rows/812px fold)",
+    "source_ok": true,
+    "tier_final": "T2, with the '3.3' precision softened to 'roughly 3 rows' (not a pixel measurement)",
+    "note": "Structure confirmed via Mobbin re-search this pass (2-col masonry, no borders, no captions). The decimal precision is not supportable from a screen capture; treat as an estimate."
+   },
+   {
+    "claim": "Cosmos masonry gutter (~8-10px, more breathing room than Pinterest)",
+    "source_ok": true,
+    "tier_final": "T2 (unchanged, not independently re-confirmed this pass)",
+    "note": "Not re-checked in this verify pass due to tool-budget; carried forward from prior research at its existing tier, not upgraded."
+   },
+   {
+    "claim": "Lemon8 grid caption-scrim tiles",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Re-confirmed via Mobbin this pass; dark-gradient text overlays visible on story-style tiles (e.g. 'COFFEE TIME' tile)."
+   },
+   {
+    "claim": "Airbnb ~18-result grid beside a persistent map",
+    "source_ok": true,
+    "tier_final": "CONV (unchanged)",
+    "note": "Draft already tiers this honestly as secondary/not independently rendered. WebSearch budget was exhausted this session before it could be independently checked; tier left as-is since the draft did not overstate it."
+   },
+   {
+    "claim": "Booking.com 25-card page-N pagination",
+    "source_ok": true,
+    "tier_final": "CONV (unchanged)",
+    "note": "Same as above: honestly tiered already by the draft, could not independently verify this pass due to exhausted WebSearch budget, no reason to believe it is inflated."
+   },
+   {
+    "claim": "2026 dense-vs-calm UX trend split (mydesigner.gg, Envato)",
+    "source_ok": true,
+    "tier_final": "T3 (unchanged)",
+    "note": "Generic trade-press framing, already correctly tiered low and flagged as 'supplies no numeric density target.' Not independently re-fetched this pass."
+   },
+   {
+    "claim": "Fluid/adaptive spacing 2026 trend (flagged, not applied)",
+    "source_ok": true,
+    "tier_final": "T3 (unchanged)",
+    "note": "Draft already correctly declines to apply this against the locked 4pt scale. No change needed."
+   }
+  ]
+ }
+}

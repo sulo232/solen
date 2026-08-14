@@ -1,0 +1,131 @@
+{
+ "id": "S13",
+ "draft": {
+  "id": "S13",
+  "tag": "mechanize",
+  "title": "Pre-delivery self-walk gate",
+  "principle_summary": "Two converging bodies of evidence back turning a review checklist into a gate that fires automatically rather than on request. First, the formal usability-inspection method: heuristic evaluation (Nielsen and Molich, 1990, still standard HCI practice) pairs a named checklist with a 0-4 severity scale (0 not a problem, 1 cosmetic, 2 minor, 3 major, 4 catastrophe) so a felt problem becomes a rated, comparable finding, not a vibe. The cognitive walkthrough (Wharton, Rieman, Lewis and Polson, 1994) is the sibling method for task-based self-review: walk each step and answer a fixed set of questions before the interface ships. Second, checklist-as-error-prevention has direct outcome evidence outside UX: the WHO Surgical Safety Checklist trial (Haynes et al., NEJM 2009, 8 hospitals, 7,688 patients) measured postoperative complications drop from 11.0% to 7.0% and in-hospital mortality drop from 1.5% to 0.8% purely from making a fixed ordered checklist mandatory before a procedure, the mechanism Gawande's Checklist Manifesto (2009) popularized: routine complex tasks under time pressure predictably skip steps unless the skip is structurally blocked, not just discouraged. The generalizable principle for Solen: an ordered checklist with explicit pass or fail thresholds, gated so a step cannot be silently skipped under task focus, converts self-review from advisory (skipped when busy, the exact failure the owner named for taste diagnosis) to structural (physically blocks the turn from ending). This is the same pattern already proven in this repo by browser-verify-gate.sh: a Stop hook that blocks the turn until a required signal is present in the transcript, with a time-boxed override flag for genuine exceptions.",
+  "sources": [
+   {
+    "claim": "Heuristic evaluation pairs a fixed checklist with a 0-4 severity scale (0 not a problem, 1 cosmetic, 2 minor usability problem, 3 major problem, 4 usability catastrophe), standard practice since Nielsen and Molich 1990.",
+    "source": "Nielsen Norman Group, Heuristic Evaluation and severity ratings methodology",
+    "tier": "T1"
+   },
+   {
+    "claim": "The cognitive walkthrough is a formal step-by-step self-review method for interfaces, evaluated against a fixed question set at each task step.",
+    "source": "Wharton, Rieman, Lewis, Polson (1994), The Cognitive Walkthrough Method: A Practitioner's Guide",
+    "tier": "T1"
+   },
+   {
+    "claim": "WHO Surgical Safety Checklist introduction dropped inpatient complications from 11.0% to 7.0% (36% relative reduction) and in-hospital deaths from 1.5% to 0.8%, across 8 hospitals, 7,688 patients.",
+    "source": "Haynes et al., New England Journal of Medicine 2009, A Surgical Safety Checklist to Reduce Morbidity and Mortality in a Global Population",
+    "tier": "T2"
+   },
+   {
+    "claim": "Mandatory ordered checklists prevent step-skipping under time pressure in complex routine tasks across aviation, surgery, and other high-stakes domains; a checklist that can be silently skipped does not deliver this effect.",
+    "source": "Atul Gawande, The Checklist Manifesto (2009), summarizing the aviation and surgical checklist evidence base",
+    "tier": "T2"
+   },
+   {
+    "claim": "WCAG 2.2 AA requires a minimum 4.5:1 contrast ratio for normal text against its background.",
+    "source": "W3C Web Content Accessibility Guidelines (WCAG) 2.2, Success Criterion 1.4.3 Contrast (Minimum)",
+    "tier": "T1"
+   },
+   {
+    "claim": "The squint test (blur/squint the screen and note what survives as the focal element) is a named informal design-review method with no controlled-study backing, used as a quick heuristic in practice.",
+    "source": "Nielsen Norman Group and general visual-design practice literature naming the squint test",
+    "tier": "CONV"
+   },
+   {
+    "claim": "A dominance jump between hierarchy levels reads reliably only at roughly 30-50 percent size difference; 1-2px deltas read as rendering noise, not intentional hierarchy.",
+    "source": "Solen's own researched floor, _design-system/RATIONALE.md (typographic hierarchy floors, TASTE_TYPOGRAPHY.md)",
+    "tier": "T3"
+   },
+   {
+    "claim": "Solen's own Stop-hook gate pattern (a required signal must appear in the transcript before the turn can end, with a time-boxed skip flag) already exists and is proven for browser verification.",
+    "source": ".claude/hooks/browser-verify-gate.sh in this repository",
+    "tier": "CONV"
+   }
+  ],
+  "solen_current": "Solen already has all the raw material for D4 but none of it is gated. RATIONALE.md section 28 (lines 819-850) is a judge-flagged gap register that names D4 explicitly: \"Pre-delivery self-walk: run the diagnosis skill on MY OWN mockups BEFORE showing (candidate Stop-gate; the reactive loop is the weakest link)\" and its build-order note calls D4 \"the gate that makes everything else fire,\" ranking it above D1/D2/G1. The solen-taste-diagnosis skill (/Users/sulo/.claude/skills/solen-taste-diagnosis/SKILL.md) already contains a complete, well-sourced 7-step ordered walk: Step 0 ground-on-render, Step 1 name-task-then-describe, Step 2 focal hierarchy squint test plus type-size/emphasis counts, Step 3 typographic hierarchy floors (the 30-50 percent dominance rule, heading space-above-exceeds-below), Step 3.5 balance/collapse-test centroid method, Step 4 grouping and containment decision tree, Step 5 contrast math (WCAG plus APCA), Step 6 surface-specific floors (dashboard, checkout), Step 7 ranked report with severity 0-4. Separately, the FLOORS LAW (memory project_floors_law.md, CLAUDE.md FLOORS LAW block, LOCKFILE section 17, SOURCE section 10.0) already defines a mandatory \"floors:\" 5-pass note (photo focal, one biggest element, real number, semantic-color moment, no dead-grey zone) enforced today by a mockup-floors-gate.py the owner approved 2026-07-21. The repo also already runs the exact gate ARCHITECTURE this stream needs: browser-verify-gate.sh is a Stop hook that scans the transcript for a required signal after a UI edit and blocks (exit 2) the turn from ending if it is missing, with a 30-minute .flag override for genuine exceptions. Every piece exists in isolation; none of them is wired together as a single ordered self-walk that fires on EVERY UI delivery, only the taste-diagnosis skill and the floors note fire, and both currently fire only reactively (owner complaint, or the mockup-floors ritual specifically), never automatically as a pre-delivery gate on all six axes named in the key question.",
+  "gap": "The gap is exactly D4 as the judge flagged it: the diagnosis skill and the floors note are advisory prose that a busy agent under task focus skips, the same failure mode CLAUDE.md rule 9 and the LAW_SYSTEM doctrine already name generically (\"advice gets outranked under task focus, a gate doesn't\"). Concretely: (1) there is no Stop-hook wired to solen-taste-diagnosis the way browser-verify-gate.sh is wired to browser verification, so nothing forces the 6-axis walk to run before a mockup or built screen is shown; (2) the six axes named in the key question (squint, hierarchy count, type-size ceiling, grouping tree, contrast math, density) exist as separate prose sections in the skill file but are never required to appear together, in order, with individually checkable pass/fail thresholds, in the agent's own final message; (3) there is no single artifact format (\"self-walk:\" block) that a hook can grep for, the way \"floors:\" already is one for the density axis alone, the other five axes have no equivalent grep target.",
+  "proposed_addition": "COMPUTABLE GATE SPEC for D4 (build-ready, no code written here):\n\nNAME: pre-delivery-self-walk-gate (a Stop hook, same file family as .claude/hooks/browser-verify-gate.sh)\n\nFIRES WHEN (chains after browser-verify-gate.sh's own precondition rather than duplicating its scan):\n1. At least one Edit/Write/MultiEdit this turn touched a rendered-UI file (*.tsx/*.jsx/*.css/*.scss under app|src|components, or a file under public/_mockups/**), AND\n2. A browser-verification signal already ran this turn (browser-verify-gate.sh's own signal list: mcp__claude-in-chrome__*, mcp__Claude_Browser__*, Task with subagent_type design-verifier, curl to localhost), meaning a render actually happened, AND\n3. No fresh .claude/self-walk-skip.flag (30-minute TTL, same override pattern as the existing gate).\n\nREQUIRED ARTIFACT: the agent's final assistant message of the turn must contain a labeled block with exactly six lines, each in the form \"axis: value -> PASS or violation+fix\", in this fixed order (cheapest-signal-first so an early FLAG can short-circuit the rest):\n\n1. squint: state in <=8 words what survives a mental blur of the screenshot; FLAG if it does not name the screen's stated primary task target (solen-taste-diagnosis Step 1+2).\n2. hierarchy: N = count of distinct type sizes visible on the screen; FLAG if N>3 (repo's own <=4-size/2-weight type budget, project_type_budget_gate) or if more than 2 elements simultaneously stack bold+color+size emphasis (Step 2, \"if you emphasize everything nothing gets focus\").\n3. type-ceiling: state the largest:second-largest size ratio for the dominant hierarchy jump; FLAG if ratio <1.3 (the 30 percent floor, T3 Solen-researched) for any two levels meant to differ in rank, or if any delta is 1-2px.\n4. grouping: state one of peers-list, peers-cards, facets-whitespace, facets-card-dividers plus one line why (the decision tree, Step 4); FLAG if a full-width tinted \"stopping point\" block or a card-within-a-card is present (named bans).\n5. contrast: for every text/background pair newly introduced or changed this turn, state the measured ratio; FLAG any normal-text pair below 4.5:1 (WCAG 2.2 AA, T1, Success Criterion 1.4.3) or below the APCA body floor (Lc 75) on dark/sunken surfaces.\n6. density: the existing FLOORS LAW 5-pass (photo focal, one biggest element, real number, semantic-color moment, no dead-grey zone); FLAG any of the 5 unmet, reusing the existing \"floors:\" note format so this gate subsumes rather than duplicates the live mockup-floors-gate.\n\nBLOCK BEHAVIOR: exit code 2 if any of the 6 lines is missing from the final message, or present but reporting a FLAG value with no stated fix attached. The block message enumerates which of the 6 line-prefixes are missing or unresolved, mirroring browser-verify-gate.sh's self-releasing message style so the agent can fix and re-emit without a human round-trip.\n\nWHAT IT FLAGS, HOW IT MAPS A COMPLAINT TO A NUMBER: each of the 6 lines is a named, source-grounded metric already defined in solen-taste-diagnosis Steps 1-6, so \"still feels off\" becomes, mechanically, whichever of the 6 lines carries a FLAG. This closes the loop the judge named: the walk fires on every delivery (structural), not only when the owner says \"this is bad\" (reactive), and the artifact format gives future D1/D2/D3/D6/D7/D8/D9 scripts (RATIONALE.md section 28's other mechanizable rows) a single place to write their computed numbers into, rather than each needing its own gate.\n\nBOUNDARY: this gate checks that the 6-line report EXISTS and each line's stated value clears its threshold; it does not itself compute pixel measurements (that is D1/D3's separate script work) and does not replace the owner's taste-lab judgment on axes that survive the walk unstained (Step 7's \"then it is a preference question\" clause stands unchanged). No LOCKFILE or SOURCE frozen literal is reopened by this proposal; the thresholds cited (4.5:1, <=4 sizes, 30 percent dominance jump, the 5-pass floors) are all already-locked Solen values, restated here only as gate thresholds, not renegotiated.",
+  "numbers_used": [
+   "0-4 severity scale (Nielsen heuristic evaluation)",
+   "11.0% to 7.0% complication rate, 36% relative reduction (Haynes et al. NEJM 2009)",
+   "1.5% to 0.8% in-hospital mortality (Haynes et al. NEJM 2009)",
+   "8 hospitals, 7,688 patients (Haynes et al. NEJM 2009 study size)",
+   "4.5:1 minimum contrast ratio (WCAG 2.2 AA 1.4.3)",
+   "APCA Lc 75 body-text floor (Solen's own RATIONALE.md APCA floor table)",
+   "30-50 percent dominance-jump floor (Solen's own researched typography floor)",
+   "N>3 distinct type sizes threshold, <=4 size / 2-weight budget (Solen's existing type-budget gate)",
+   "30-minute TTL override flag (Solen's existing browser-verify-gate.sh pattern)"
+  ],
+  "taste_lab_probe": "Not a generative-gap probe (this is a mechanize stream), but the gate itself needs a before/after discriminating test per CLAUDE.md rule 12.5 (build, self-test, then integrate): craft one turn that SHOULD trigger the block (edit a UI file, verify in browser, end the turn with zero self-walk lines in the final message; assert exit code 2 and the correct missing-line list) and one turn that SHOULD pass cleanly (same edit, verify, but emit all 6 correctly-formatted PASS lines; assert exit code 0). Only wire the hook into .claude/settings.json Stop array after both cases behave correctly, exactly as rule 12.5 requires for any new gate."
+ },
+ "verified": {
+  "claim_verdicts": [
+   {
+    "claim": "Heuristic evaluation pairs a fixed checklist with a 0-4 severity scale (0 not a problem ... 4 usability catastrophe), standard practice since Nielsen and Molich 1990.",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Wording of the 0-4 scale confirmed verbatim via search (NN/g, MeasuringU). Minor dating slip: the severity-rating scale itself is Nielsen's later work (Usability Engineering 1994 / 'Severity Ratings for Usability Problems' 1995), not the original Nielsen and Molich 1990 CHI paper, which introduced heuristic evaluation as a method but not this specific 0-4 rubric. Downgraded from the draft's implicit T1 to T2 for the attribution, the scale's content is correct."
+   },
+   {
+    "claim": "The cognitive walkthrough is a formal step-by-step self-review method for interfaces, evaluated against a fixed question set at each task step.",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Wharton, Rieman, Lewis and Polson 1994 is a real, standard HCI citation for this method. No refutation found."
+   },
+   {
+    "claim": "WHO Surgical Safety Checklist: complications 11.0% to 7.0%, mortality 1.5% to 0.8%, 8 hospitals, 7,688 patients.",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Confirmed by direct search against the NEJM 2009 paper and secondary summaries (Harvard Gazette, ScienceDaily, NCBI Bookshelf): rates and p-values match exactly (P=0.003 mortality, P<0.001 complications). 3,733 baseline + 3,955 post-checklist = 7,688, checks out. Kept at T2, single RCT-adjacent study, not a meta-analysis, appropriately not oversold as T1 dogma."
+   },
+   {
+    "claim": "Mandatory ordered checklists prevent step-skipping under time pressure in complex routine tasks; a checklist that can be silently skipped does not deliver this effect.",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Correctly framed as a popularization (Gawande synthesizing aviation/surgery evidence) rather than a primary data source. Tier T2 is honest; not inflated to T1."
+   },
+   {
+    "claim": "WCAG 2.2 AA requires 4.5:1 minimum contrast for normal text.",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Standard, well-established W3C spec value (Success Criterion 1.4.3). No refutation needed."
+   },
+   {
+    "claim": "The squint test is a named informal design-review method with no controlled-study backing.",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Correctly tiered as convention, not research; matches practice literature."
+   },
+   {
+    "claim": "A dominance jump reads reliably only at roughly 30-50 percent size difference; 1-2px deltas read as noise.",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Correctly scoped as Solen's own internal researched floor (RATIONALE.md / TASTE_TYPOGRAPHY.md), not an external academic claim. Not independently re-verified here since it is the project's own prior, appropriately tiered T3."
+   },
+   {
+    "claim": "Solen's Stop-hook gate pattern (required signal in transcript, time-boxed skip flag) already exists and is proven for browser verification.",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Confirmed: .claude/hooks/browser-verify-gate.sh exists and is wired in this worktree's .claude/settings.json Stop hooks."
+   },
+   {
+    "claim": "(Not in sources[], but load-bearing in solen_current/proposed_addition) mockup-floors-gate.py exists today and enforces the FLOORS LAW 5-pass note, owner-approved 2026-07-21.",
+    "source_ok": false,
+    "tier_final": "MYTH",
+    "note": "REFUTED. No file named mockup-floors-gate.py (or any floors-gate / type-budget-gate script) exists anywhere under /Users/sulo/Documents/solen, and none is registered in this worktree's .claude/settings.json hooks list (only browser-verify-gate.sh, pre-build-exists-check.sh, pre-commit-graveyard.sh, pre-component-edit-pixel-spec.sh, pre-edit-drift-gate.sh, pre-edit-removed-check.sh, user-prompt-binary-triggers.sh are wired). The only hit anywhere in the repo is a prose mention in _design-system/TASTE_LOG.md, a decision log, not a hook file. This is exactly the rule-16 trap: a mention (in memory/TASTE_LOG) is not proof the gate is live. The draft cites this as an already-proven precedent for D4's architecture; it is not currently a working precedent in this worktree, it may be a decided-but-unbuilt item or may live only on a different branch."
+   }
+  ],
+  "id": "S13",
+  "tag": "mechanize",
+  "title": "Pre-delivery self-walk gate",
+  "verdict": "revised",
+  "myths_caught": [],
+  "verified_addition": "COMPUTABLE GATE SPEC for D4 (build-ready, no code written here):\n\nNAME: pre-delivery-self-walk-gate (a Stop hook, same file family as .claude/hooks/browser-verify-gate.sh, confirmed live and wired in .claude/settings.json).\n\nFIRES WHEN (chains after browser-verify-gate.sh's own precondition rather than duplicating its scan):\n1. At least one Edit/Write/MultiEdit this turn touched a rendered-UI file (*.tsx/*.jsx/*.css/*.scss under app|src|components, or a file under public/_mockups/**), AND\n2. A browser-verification signal already ran this turn (browser-verify-gate.sh's own signal list), meaning a render actually happened, AND\n3. No fresh .claude/self-walk-skip.flag (30-minute TTL, same override pattern as the existing gate).\n\nREQUIRED ARTIFACT: the agent's final assistant message of the turn must contain a labeled block with exactly six lines, each in the form \"axis: value -> PASS or violation+fix\", in this fixed order (cheapest-signal-first so an early FLAG can short-circuit the rest):\n\n1. squint: state in <=8 words what survives a mental blur of the screenshot; FLAG if it does not name the screen's stated primary task target (solen-taste-diagnosis Step 1+2, T1-adjacent NN/g practice, no external stat attached).\n2. hierarchy: N = count of distinct type sizes visible on the screen; FLAG if N>3 (repo's own type-budget target) or if more than 2 elements simultaneously stack bold+color+size emphasis.\n3. type-ceiling: state the largest:second-largest size ratio for the dominant hierarchy jump; FLAG if ratio <1.3 (the 30 percent floor, T3, Solen's own researched typography floor per RATIONALE.md / TASTE_TYPOGRAPHY.md) for any two levels meant to differ in rank, or if any delta is 1-2px.\n4. grouping: state one of peers-list, peers-cards, facets-whitespace, facets-card-dividers plus one line why; FLAG if a full-width tinted \"stopping point\" block or a card-within-a-card is present.\n5. contrast: for every text/background pair newly introduced or changed this turn, state the measured ratio; FLAG any normal-text pair below 4.5:1 (WCAG 2.2 AA, T1, Success Criterion 1.4.3, confirmed) or below the APCA body floor on dark/sunken surfaces.\n6. density: the FLOORS LAW 5-pass (photo focal, one biggest element, real number, semantic-color moment, no dead-grey zone); FLAG any of the 5 unmet, reusing the \"floors:\" note format defined in CLAUDE.md's FLOORS LAW block. Note: as of this verification, no automated hook currently enforces the floors note in this worktree, only a TASTE_LOG.md decision entry names it, so this gate is the FIRST place that format would actually be checked mechanically, not a subsumption of an existing live gate.\n\nBLOCK BEHAVIOR: exit code 2 if any of the 6 lines is missing from the final message, or present but reporting a FLAG value with no stated fix attached. The block message enumerates which of the 6 line-prefixes are missing or unresolved, mirroring browser-verify-gate.sh's self-releasing message style.\n\nWHY A GATE, NOT ADVICE (evidence, correctly tiered): Nielsen's heuristic evaluation (Nielsen and Molich 1990 for the method; the 0-4 severity scale itself is more precisely credited to Nielsen's 1994/1995 follow-up work, T2) and Wharton et al.'s 1994 cognitive walkthrough (T1) both formalize self-review into a named, ordered, answerable checklist rather than a vibe. Outside UX, the WHO Surgical Safety Checklist trial (Haynes et al., NEJM 2009, T2, confirmed by direct source check: 8 hospitals, 7,688 patients, complications 11.0% to 7.0%, in-hospital mortality 1.5% to 0.8%) is the strongest available outcome evidence that a MANDATORY ordered checklist, not an optional one, changes behavior under time pressure; Gawande's Checklist Manifesto (T2, a popularization of that evidence base, not new primary data) is cited only for the mechanism claim, not for additional numbers.\n\nWHAT IT FLAGS, HOW IT MAPS A COMPLAINT TO A NUMBER: each of the 6 lines is a named, source-grounded metric already defined in solen-taste-diagnosis Steps 1-6, so \"still feels off\" becomes, mechanically, whichever of the 6 lines carries a FLAG.\n\nBOUNDARY: this gate checks that the 6-line report EXISTS and each line's stated value clears its threshold; it does not itself compute pixel measurements and does not replace the owner's taste-lab judgment on axes that survive the walk unstained. No LOCKFILE or SOURCE frozen literal is reopened by this proposal; the thresholds cited (4.5:1, <=4 sizes, 30 percent dominance jump, the 5-pass floors) are all already-locked Solen values, restated here only as gate thresholds.",
+  "residual_risks": "1. INFRASTRUCTURE GAP (should go to QUESTIONS.md, not silently fixed here): the draft's proposed_addition and solen_current section both assert mockup-floors-gate.py is a live, owner-approved (2026-07-21) enforcement hook that D4 would \"subsume rather than duplicate.\" I could not find this file anywhere in the solen repo tree, and it is not registered in this worktree's .claude/settings.json Stop/PreToolUse hooks (only browser-verify-gate.sh, pre-build-exists-check.sh, pre-commit-graveyard.sh, pre-component-edit-pixel-spec.sh, pre-edit-drift-gate.sh, pre-edit-removed-check.sh, user-prompt-binary-triggers.sh are wired). The only trace is a prose line in _design-system/TASTE_LOG.md. Before building D4 on the premise that it extends an existing gate, the owner should confirm: was the floors gate ever actually wired (maybe on a different branch/worktree), or is it a decided-but-unbuilt item that D4 should build FROM SCRATCH rather than extend. Same open question likely applies to the memory-cited 'type_budget_gate' PreToolUse hook, also not found registered here.\n\n2. Nielsen severity-scale citation dating: the draft attributes the 0-4 severity scale to \"Nielsen and Molich 1990\" without qualification. The scale content is correct but its more precise citation is Nielsen's later work (1994 Usability Engineering / a dedicated 1995 severity-ratings piece). Not worth a LOCKFILE-level correction, just a citation-precision note if this ships into RATIONALE.md's source table.\n\n3. The gate spec itself is unbuilt (as required by CLAUDE.md rule 12.5): before wiring pre-delivery-self-walk-gate into .claude/settings.json, it needs the two discriminating test cases (a turn that should block, a turn that should pass) run and confirmed correct, exactly as the draft's taste_lab_probe already specifies. That test has not been run as part of this verify pass, it is scoped as future build work, not a claim being made here."
+ }
+}

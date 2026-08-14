@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronRight, Scissors, Brush, Flower2, Sparkles, type LucideIcon } from "lucide-react";
+import { ChevronRight, Scissors, Brush, Flower2, Hand, type LucideIcon } from "lucide-react";
 import { Section, SectionFrame, SectionTitle } from "./SectionHeader";
 
 /**

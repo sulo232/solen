@@ -229,6 +229,47 @@ export async function getAiDailyLimiter(): Promise<Ratelimit> {
   return limiter;
 }
 
+/**
+ * A HOUSE-WIDE daily ceiling on the expensive AI calls, on top of the per-user one above.
+ *
+ * The per-user cap is a fairness limit: it stops one account running up a bill. It does nothing
+ * about a hundred accounts each spending their full allowance on the same day, or about a scripted
+ * signup loop, because every fresh account arrives with a fresh allowance. This is the cost limit:
+ * one shared counter for the whole product, so the worst case for a day is bounded no matter how
+ * many callers there are.
+ *
+ * Landed 2026-08-14. The July backend re-audit wired two routes to a global limiter and the
+ * limiter itself was never written: `getAiGlobalDailyLimiter` is imported on that branch and
+ * defined in no branch at all, so those files could not have compiled. Implemented here rather
+ * than lifted.
+ *
+ * 2000/day is deliberately far above real use (the per-user cap is 100 and a busy day is a handful
+ * of users drafting a few things each) and far below a runaway. Like its per-user sibling it joins
+ * the abuse-prone set, so an unconfigured Upstash in production fails CLOSED: a cost ceiling that
+ * disappears when the counter is missing is not a ceiling.
+ */
+export const AI_GLOBAL_DAILY_CAP = 2000;
+export const AI_GLOBAL_BUDGET_KEY = "solen:ai:global";
+export const AI_GLOBAL_BUDGET_EXCEEDED_BODY = {
+  error: "AI features are paused for today",
+  code: "AI_GLOBAL_BUDGET_EXCEEDED",
+};
+
+let aiGlobalDailyLimiter: Ratelimit | null = null;
+
+export async function getAiGlobalDailyLimiter(): Promise<Ratelimit> {
+  if (!aiGlobalDailyLimiter) {
+    aiGlobalDailyLimiter = new Ratelimit({
+      redis,
+      limiter: Ratelimit.slidingWindow(AI_GLOBAL_DAILY_CAP, "1 d"),
+      analytics: true,
+      prefix: "rl:ai:global",
+    });
+    ABUSE_PRONE_LIMITERS.add(aiGlobalDailyLimiter);
+  }
+  return aiGlobalDailyLimiter;
+}
+
 // Set at most once per process. The underlying misconfiguration (Upstash unset in
 // prod) doesn't change between requests, so re-alerting on every request would just
 // spam the inbox into being ignored.
@@ -254,9 +295,20 @@ function alertMisconfiguredRedisOnce(): void {
 
 type RateLimitIdentifier = { ip: string } | { userId: string };
 
+/**
+ * @param body optional replacement for the generic 429 payload, for a limiter whose refusal means
+ *   something specific enough that the caller should be told which one it hit. The one case today
+ *   is AI_GLOBAL_BUDGET_EXCEEDED_BODY: "AI features are paused for today" is a house-wide cost
+ *   ceiling and reads completely differently from "you are going too fast", which is what the
+ *   generic body says. Added 2026-08-14 during the branch merge, and the ordering matters: this
+ *   parameter is OPTIONAL and appended, so all 40-odd existing two-argument call sites are
+ *   untouched. That constant and its limiter were already on main and exported; only this
+ *   parameter was missing, so seven routes that wanted the specific message could not compile.
+ */
 export async function applyRateLimit(
   limiter: Ratelimit,
-  identifier: RateLimitIdentifier
+  identifier: RateLimitIdentifier,
+  body: Record<string, unknown> = RATE_LIMITED_BODY
 ): Promise<NextResponse | null> {
   // Skip rate limiting if Upstash Redis is not configured
   if (!env.UPSTASH_REDIS_REST_URL || !env.UPSTASH_REDIS_REST_TOKEN) {
@@ -269,7 +321,7 @@ export async function applyRateLimit(
         // returns, minus the X-RateLimit-* headers (we have no real limit/remaining/
         // reset numbers to report without a Redis call, and fabricating them would
         // be worse than omitting them).
-        return NextResponse.json(RATE_LIMITED_BODY, { status: 429 });
+        return NextResponse.json(body, { status: 429 });
       }
       alertMisconfiguredRedisOnce();
     }
@@ -279,7 +331,7 @@ export async function applyRateLimit(
     const key = "ip" in identifier ? identifier.ip : identifier.userId;
     const { success, limit, reset, remaining } = await limiter.limit(key);
     if (!success) {
-      return NextResponse.json(RATE_LIMITED_BODY, {
+      return NextResponse.json(body, {
         status: 429,
         headers: {
           "X-RateLimit-Limit": String(limit),
@@ -319,7 +371,16 @@ export async function checkRateLimit(limiter: Ratelimit, key: string): Promise<b
   }
 }
 
-export function getClientIp(req: NextRequest): string {
+/**
+ * Accepts either a request or a bare headers object. It only ever reads headers, and a server
+ * component has no request to hand it, only `await headers()`. Typing it as NextRequest meant the
+ * one public page that needs an IP (the Inspo detail page, which fires a paid AI call on view)
+ * could not call the trusted-header helper at all. Structural, so anything with `.get()` works.
+ */
+type HeaderSource = { get(name: string): string | null };
+
+export function getClientIp(source: NextRequest | HeaderSource): string {
+  const req: HeaderSource = "headers" in source ? source.headers : source;
   return (
     // Platform-trusted headers first: x-forwarded-for's leftmost entry is attacker-supplied
     // (an attacker can prepend any value), so every auth/OTP limiter keyed on it alone is
@@ -327,9 +388,9 @@ export function getClientIp(req: NextRequest): string {
     // x-nf-client-connection-ip with the real connecting IP, so it can't be spoofed by the
     // client; x-real-ip is the common trusted-proxy equivalent. Only fall back to the
     // spoofable XFF parse when neither trusted header is present (local/dev).
-    req.headers.get("x-nf-client-connection-ip")?.trim() ||
-    req.headers.get("x-real-ip")?.trim() ||
-    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    req.get("x-nf-client-connection-ip")?.trim() ||
+    req.get("x-real-ip")?.trim() ||
+    req.get("x-forwarded-for")?.split(",")[0]?.trim() ||
     "unknown"
   );
 }

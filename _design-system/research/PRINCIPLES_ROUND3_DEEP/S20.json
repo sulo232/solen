@@ -1,0 +1,217 @@
+{
+ "id": "S20",
+ "synth": {
+  "id": "S20",
+  "tag": "net-new",
+  "title": "Information architecture and navigation",
+  "principle_summary": "Navigation cost is the sum of two separable things, and folk rules that count clicks instead conflate them: a scent cost (does the label or title predict the destination before the user commits, per Pirolli and Card's information foraging theory) and a consistency cost (does an identical control, especially back, behave the same on every screen, per Nielsen's heuristic 4). Depth in taps or clicks is not itself the cost function; Porter's 2003 study (already flagged MYTH in Solen's folklore table) found no drop in task success past three clicks when scent stayed strong across paths as long as 25 pages. Breadcrumbs are a wayfinding device that earns its screen space only once \"where am I\" stops being answerable from the title alone; NN/g's own guideline puts flat 1-2 level hierarchies below that bar. Independently, a five-app competitor teardown and an eight-app pattern scout converge on the same finding without citing any study: not one booking or discovery competitor observed (Fresha, Treatwell, Booksy, Vagaro, Doctolib, Viator, GetYourGuide, Klook, Trip.com, Turo, Air New Zealand, Tripadvisor, Shopee) shows a breadcrumb in its transactional browse-to-book path, and the one clear breadcrumb sighting (Airbnb, a full 6-level trail) lives exclusively in its Help Center, never the booking flow. A single global back control is a consistency bet riding on a platform convention (iOS and Android fix system-back to one place per app), reinforced by the same booking-app set showing zero page-local back exceptions outside a focused wizard flow.",
+  "real_world_evidence": [
+   {
+    "source": "Fresha, live-browsed 2026-07-22 and separately Mobbin-captured (direct competitor)",
+    "what": "Zero breadcrumb anywhere: search-results screen carries only a sticky search/filter bar, venue-detail carries only a single back chevron over the photo. Bottom tab bar is 3 icons (Home, Search, Bookings), the observed floor of the tab-count range.",
+    "tier": "CONV"
+   },
+   {
+    "source": "Airbnb, competitor teardown 2026-07-22",
+    "what": "A full 6-level breadcrumb (Home > All topics > Searching and booking > Booking places to stay > Booking basics > Booking split stays) exists ONLY inside the Help Center. The transactional booking flow itself stays breadcrumb-free, the sharpest single data point for 'breadcrumbs belong to reference surfaces, not the transactional path.'",
+    "tier": "CONV"
+   },
+   {
+    "source": "Treatwell, Booksy, Vagaro, Doctolib, competitor teardown 2026-07-22",
+    "what": "All four use flat category-then-location entry (service type, then city), none render a breadcrumb anywhere in their browse or booking flow. Combined with Fresha, n=5 competitors observed, 0 use a breadcrumb transactionally.",
+    "tier": "CONV"
+   },
+   {
+    "source": "Viator, GetYourGuide, Klook, Trip.com, Turo, Air New Zealand, Tripadvisor, Shopee, Mobbin scout",
+    "what": "Universally one back chevron top-left at the booking-detail/confirmation screen, no breadcrumb, no stacked home-plus-back. Direct convergent support for Solen's single-global-back law at the exact surface it governs.",
+    "tier": "CONV"
+   },
+   {
+    "source": "Zara, H&M, Anthropologie, DICK'S, Target, Amazon, Mobbin scout",
+    "what": "Category depth is signaled by a top tab strip plus a flat tappable row list plus a back chevron, never a breadcrumb string. Matches the domain's 'title/tab is the landmark, not a crumb trail' mechanic.",
+    "tier": "CONV"
+   },
+   {
+    "source": "Fresha (3), Klook/Walmart/Gopuff/Swiggy/Burger King (5), Mobbin bottom-tab-count survey",
+    "what": "Observed range across marketplace and booking apps is 3-5 top-level tabs; the category leader most structurally similar to Solen (Fresha) sits at the floor of 3. No app surveyed exceeded 5.",
+    "tier": "CONV"
+   },
+   {
+    "source": "monday.com and Headspace Support, Mobbin scout",
+    "what": "The only two apps where a breadcrumb DID appear, and both were search-result disambiguation or help-center contexts, never the primary browse/booking flow, matching NN/g's own 'breadcrumbs are secondary nav' framing.",
+    "tier": "CONV"
+   },
+   {
+    "source": "Nielsen Norman Group, Hamburger Menus vs. Visible Navigation",
+    "what": "179-participant study: hidden nav was 39% slower on desktop task completion, 21% higher in perceived difficulty, over 20% lower in content discoverability, and 15% slower on mobile, versus visible tab/nav bar for 4-5 or fewer top-level options.",
+    "tier": "T2"
+   }
+  ],
+  "generative_prior": "Three concrete defaults, each now grounded in both a cited source and multi-app convergence rather than brand analogy alone. (1) Top-level navigation stays a VISIBLE tab bar of 3-5 destinations, never collapses to a hamburger at that count: NN/g's 179-participant study shows a 15-39% task-time and discoverability penalty for hidden nav, and the observed competitor range is exactly 3 (Fresha, the category-closest competitor) to 5 (Klook, Walmart, Gopuff, Swiggy). (2) A breadcrumb is reserved for genuinely deep or cross-context surfaces (Solen's locked >=2 levels, SOURCE.md:1229), and even then should be treated as a reference/disambiguation device, not a transactional-flow default: zero of 13 real apps surveyed across two independent scouts (5 direct competitors, 8 booking-category peers) show a breadcrumb in their browse-to-book path, and the one clear sighting (Airbnb's 6-level trail) lives only in Help Center. Solen's title-in-header pattern for top-level browse already satisfies this: the title IS the scent cue. (3) A single global back control, top-left, is the default on every screen; page-local back duplicates are the exception reserved for focused wizard flows (e.g. booking). This is now supported not just by the Fitts-Law placement argument (domain 10) and Nielsen's consistency heuristic, but by 8 of 8 booking apps surveyed (Viator, GetYourGuide, Klook, Trip.com, Turo, Air New Zealand, Tripadvisor, Shopee) showing zero exceptions to single, unstacked back navigation at the detail/confirmation screen.",
+  "proposed_addition": "## Domain 24: information architecture and navigation (owner-added 2026-07-22, synthesis pass)\n\nGrounds SOURCE.md's breadcrumb-depth rule (V3-D411) and the single-global-back law (project_single_global_back memory) in cited navigation research AND independent multi-app convergence, replacing the prior brand-analogy-only justification. Cross-references domain 1 (Hick's and Fitts's Law) and domain 10 (top-left back placement, already Fitts-grounded) rather than restating them. Cross-references PSYCHOLOGY.md for any habit/retention angle on navigation (e.g. why users return to a persistent tab); that stays in the behavioral layer and is not duplicated here.\n\nNavigation cost decomposes into a scent cost (does the label or title predict the destination before the user commits, Pirolli and Card 1999, Information Foraging, Psychological Review 106, T2) and a consistency cost (does an identical control behave identically everywhere, Nielsen and Molich 1990 / Nielsen 1994 heuristic 4, derived from a factor analysis of 249 usability problems, T2). Click or tap COUNT is not the cost function on its own: Porter's 2003 study (44 users, 620 tasks, 8,000-plus clicks, successful paths as long as 25 pages, no drop in success or satisfaction past three clicks) is already flagged MYTH in Solen's folklore table (RATIONALE.md:252) for exactly this reason, and a parallel \"three-tap rule\" trope surfaced during this synthesis (UXPin, cited with zero data behind it) should be added to that same folklore table as a second instance of the pattern, not adopted as a number.\n\n**Breadcrumb depth (T2 plus CONV convergence).** NN/g's breadcrumb guideline states flat hierarchies of 1-2 levels do not need one; Solen's locked literal (SOURCE.md:1229, V3-D411) shows a breadcrumb starting one level earlier, at 2+. This tension is recorded, not reopened: the app-register argument (bottom-tab plus back-button plus title, SOURCE.md:1237) already substitutes the header title for level-1 scent, which is a legitimate first-principles reason to show wayfinding one level earlier than a content site would. What synthesis adds on top of the academic source: two independent real-app scouts, thirteen apps total (Fresha, Treatwell, Booksy, Vagaro, Doctolib, Viator, GetYourGuide, Klook, Trip.com, Turo, Air New Zealand, Tripadvisor, Shopee), zero of which show a breadcrumb anywhere in their browse-to-book transactional path. The only breadcrumb sightings across both scouts (monday.com, Headspace Support, and Airbnb's Help Center) were all in search-disambiguation or reference/help contexts, never the primary flow. This upgrades the domain's boundary line from an inference to an observed pattern: a breadcrumb, even where the locked depth threshold technically allows one, reads as more appropriate to a reference or disambiguation surface than to Solen's core search-to-book path, which should keep leaning on title-as-landmark plus single back chevron instead. This does not touch the locked >=2-levels literal; it narrows WHERE that literal should actually fire in practice, a judgment call for whoever next touches a 2+-level surface, not a re-open of the number.\n\n**Visible tab bar over hidden nav (T2, new to this domain).** NN/g's hamburger-menu study (179 participants) found hidden nav costs 39% slower desktop task completion, 21% higher perceived difficulty, over 20% lower content discoverability, and a smaller but present 15% mobile penalty, versus a visible tab/nav bar for up to 4-5 top-level options. This is a caution the prior academic-only draft did not carry: Solen's bottom tab bar should stay visible as the destination count grows, and should not be collapsed into a hamburger as a \"cleanup\" move even under space pressure. Real-app convergence: the observed range across marketplace and booking apps (Fresha 3, Treatwell/Booksy-style peers, Klook/Walmart/Gopuff/Swiggy/Burger King 5) is 3-5 tabs with no observed app exceeding 5; Fresha, the category-closest competitor, sits at the floor.\n\n**Single global back (T2 heuristic plus CONV platform convention plus CONV observed convergence).** The value of one back control is not primarily its placement (domain 10's Fitts argument) but that a user who learns what back does on one screen should never re-learn it on the next (heuristic 4). Platform convention (Apple HIG, Android Material Design fixing system-back to one place per app) is the delivery mechanism for that expectation, not itself the proof. New this pass: 8 of 8 booking-category apps surveyed (Viator, GetYourGuide, Klook, Trip.com, Turo, Air New Zealand, Tripadvisor, Shopee) show zero exceptions, a single unstacked back chevron at the exact surface (detail/confirmation) the law governs. Grounds \"global Header IS the back; pages add none; focused flows keep theirs\" (project_single_global_back memory) as the correct scope: a booking wizard is allowed its own local back precisely because it behaves as a self-contained sub-flow, matching heuristic 4's own scope limit.\n\n**Wayfinding vocabulary (CONV, Kevin Lynch, The Image of the City, 1960).** Paths, edges, districts, nodes, landmarks: the origin concept for \"always know where you are,\" transferred to digital UX as analogy (NN/g's own \"You Are Here\" framing), never an independently tested UI claim. Use only as naming vocabulary (a title is a landmark, a breadcrumb is a path, a tab bar is a set of districts), never as a standalone justification for a depth number.\n\n**Contrast case, explicitly not adopted.** Gopuff's per-item colored status chips (\"COLD\" pills over icons) and Burger King's badge-heavy tab labels (\"New\" pills, reward icons) were observed in the same scouting pass. These are the decorative/hype-badge pattern Solen's design contract already bans (no fabricated status pips, ink-only CTA, no per-category color); noted here only as the contrast case proving the calm, breadcrumb-free single-back pattern is the one actually aligned with Solen's restraint, not as a pattern to import.\n\nBOUNDARY: this domain governs structural navigation decisions (depth, breadcrumb presence, back-button singularity, tab-bar visibility, label-as-scent). It does not cover the psychological or behavioral half of navigation (habit formation via a persistent tab, reminder cadence, why users return to a surface); those stay in PSYCHOLOGY.md and are not duplicated here.\n\n**Open item for QUESTIONS.md, not a decision made here:** whether Solen's breadcrumb-depth literal should eventually align to NN/g's 3+ floor given the near-unanimous zero-breadcrumb-in-transactional-flow finding across 13 real apps, or whether the app-register substitution argument is sufficient to keep it at 2+. This synthesis does not recommend a change, per the no-reopen constraint on locked literals; it recommends the question be logged with this evidence attached.",
+  "sources": [
+   {
+    "claim": "Three-click rule has no empirical support: 44 users, 620 tasks, 8000+ clicks, no drop in success or satisfaction past three clicks, successful paths ran as long as 25 pages.",
+    "source": "Joshua Porter, Testing the Three-Click Rule, UIE 2003, endorsed by NN/g at nngroup.com/articles/3-click-rule; already in Solen's folklore table, RATIONALE.md:252",
+    "tier": "T2"
+   },
+   {
+    "claim": "Users navigate by following information scent, weighing a path's predicted payoff against the cost of continuing versus backtracking.",
+    "source": "Pirolli and Card, Information Foraging, Psychological Review 106(4), 1999, pp.643-675",
+    "tier": "T2"
+   },
+   {
+    "claim": "Breadcrumbs are unnecessary for flat hierarchies of 1-2 levels or linear structures.",
+    "source": "Nielsen Norman Group, Breadcrumbs: 11 Design Guidelines for Desktop and Mobile, nngroup.com/articles/breadcrumbs",
+    "tier": "T2"
+   },
+   {
+    "claim": "Consistency and standards, identical controls should behave and sit the same everywhere, is one of the ten usability heuristics, derived from a factor analysis of 249 usability problems.",
+    "source": "Nielsen and Molich 1990; Nielsen 1994 CHI paper, Enhancing the Explanatory Power of Usability Heuristics, pp.152-158",
+    "tier": "T2"
+   },
+   {
+    "claim": "Hidden (hamburger) navigation is measurably slower and less discoverable than visible tab/nav bars for apps with 4-5 or fewer top-level destinations.",
+    "source": "Nielsen Norman Group, Hamburger Menus vs. Visible Navigation, nngroup.com/articles/hamburger-menus, 179-participant study",
+    "tier": "T2"
+   },
+   {
+    "claim": "Wayfinding vocabulary (paths, edges, districts, nodes, landmarks) originates in physical urban design; its transfer to on-screen navigation is analogy, not a tested UI claim.",
+    "source": "Kevin Lynch, The Image of the City, MIT Press 1960; carried into HCI writing via NN/g's You Are Here framing",
+    "tier": "CONV"
+   },
+   {
+    "claim": "iOS and Android fix system-level back navigation to one consistent screen position across native apps.",
+    "source": "Apple Human Interface Guidelines (Navigation and search); Android Material Design (System navigation, Back)",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Zero of 13 real booking/discovery apps surveyed show a breadcrumb in their browse-to-book transactional flow; the only breadcrumb sightings were in search-disambiguation or help-center contexts.",
+    "source": "Solen scouting pass 2026-07-22: Fresha, Treatwell, Booksy, Vagaro, Doctolib (competitor teardown); Viator, GetYourGuide, Klook, Trip.com, Turo, Air New Zealand, Tripadvisor, Shopee, monday.com, Headspace Support, Airbnb (Mobbin real-app scout)",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Observed bottom-tab-bar count across marketplace/booking apps ranges 3-5, with the category-closest competitor (Fresha) at the floor of 3.",
+    "source": "Mobbin real-app scout 2026-07-22: Fresha (3), Klook/Walmart/Gopuff/Swiggy/Burger King (5)",
+    "tier": "CONV"
+   }
+  ],
+  "numbers_used": [
+   "44 users",
+   "620 tasks",
+   "8,000-plus clicks",
+   "25 pages",
+   "1990 (Nielsen and Molich)",
+   "1994 (Nielsen heuristic factor analysis)",
+   "249 usability problems",
+   "1 or 2 levels (NN/g no-breadcrumb threshold)",
+   "2 or more levels (Solen's locked threshold, SOURCE.md:1229)",
+   "1999 (Pirolli and Card)",
+   "1960 (Lynch, The Image of the City)",
+   "2003 (Porter/UIE three-click study)",
+   "179 participants (NN/g hamburger study)",
+   "39% slower desktop task completion",
+   "21% higher perceived difficulty",
+   "over 20% lower content discoverability",
+   "15% slower mobile",
+   "3-5 tabs (observed competitor range)",
+   "3 tabs (Fresha floor)",
+   "5 tabs (Klook/Walmart/Gopuff/Swiggy/Burger King ceiling)",
+   "13 apps surveyed, 0 breadcrumbs in transactional flow",
+   "6-level breadcrumb (Airbnb Help Center, contrast case)",
+   "8 of 8 booking apps, single back chevron, zero exceptions"
+  ],
+  "taste_lab_probe": "Not required to land this section (tag is net-new, a sourced RATIONALE domain, not a generative-gap numeric default). If the team later wants to test the one open question this synthesis surfaces, whether Solen's 2+-level breadcrumb threshold should move to NN/g's 3+ floor given the 13-app zero-breadcrumb convergence, that is a locked-literal change requiring an explicit owner call, and could be probed with a small before/after on a genuine 3-level path (if one exists in Solen's IA) versus the current 2-level category>salon path, watching session recordings for \"lost\" signals rather than a synthetic lab test."
+ },
+ "verified": {
+  "id": "S20",
+  "tag": "net-new",
+  "verdict": "revised",
+  "myths_caught": [
+   "Airbnb's cited \"6-level breadcrumb (Home > All topics > Searching and booking > Booking places to stay > Booking basics > Booking split stays)\" is not a verified capture. Mobbin spot-check of Airbnb's actual Help Center found 5-level breadcrumbs on different topics (Home/All topics/Legal terms/Privacy Policy/Airbnb Privacy; Home/All topics/Payments, pricing and refunds/Paying for a reservation/When you'll pay for your reservation), and a search for the exact 'Searching and booking > Booking places to stay > Booking basics > Booking split stays' path returned no matching screen. The general finding (a deep breadcrumb exists only inside Help Center, never the transactional booking flow) held up under spot-check, but the specific 6-level path text reads as an invented illustrative example dressed as an observed screen capture. Softened in verified_addition.",
+   "The \"three-tap rule\" attributed to UXPin could not be confirmed: the most likely URL (uxpin.com/studio/blog/three-tap-rule/) returned 404. The broader point, that a tap/click-count folklore rule circulates with no data behind it, parallel to Porter's already-debunked three-click rule, is plausible and consistent with the domain's own skepticism, but the specific UXPin attribution is unverified in this pass. Softened in verified_addition to not assert a confirmed source."
+  ],
+  "residual_risks": "Owner-decision item correctly left open (not decided here, per the no-reopen constraint on locked literals): whether Solen's breadcrumb-depth threshold (locked at 2+ levels, SOURCE.md:1229) should move toward NN/g's 3+ no-breadcrumb-needed floor, given the 13-app zero-breadcrumb-in-transactional-flow convergence. The draft correctly proposes logging this to QUESTIONS.md rather than auto-applying; that stands.\n\nCoverage risk on the CONV-tier competitor claims: this verify pass spot-checked 3 of the 13-plus apps cited via Mobbin (Fresha bottom-tab count = 3, confirmed exactly: Home/Search/Calendar; Klook bottom-tab count = 5, confirmed exactly: Home/Destinations/Deals/Trips/Account; Airbnb breadcrumb-confined-to-Help-Center pattern, confirmed in general shape though not the specific 6-level example, see myths_caught). The remaining apps (Treatwell, Booksy, Vagaro, Doctolib, Viator, GetYourGuide, Trip.com, Turo, Air New Zealand, Tripadvisor, Shopee, monday.com, Headspace Support, Zara, H&M, Anthropologie, DICK'S, Target, Amazon, Walmart, Gopuff, Swiggy, Burger King) were not independently re-checked in this pass. The tier is already honestly CONV (not inflated to T1/T2), so no correction is required, but the \\\"zero of 13\\\" and \\\"8 of 8\\\" phrasing should be read as directional convergence from a single research pass, not a controlled or independently replicated count. If this domain becomes load-bearing for a locked-literal change (the breadcrumb threshold above), a fuller independent re-verification of the full app set is warranted before that decision.\n\nAll nine formal academic/industry sources in sources[] were independently verified against primary or near-primary records (CrossRef for the two journal citations, NN/g's own pages for its three guideline citations, direct fetch of the original UIE/CenterCentre three-click study for Porter's exact numbers) and all matched the draft's claimed magnitudes and tiers exactly. No entry required a tier demotion, and none of the draft's numbers_used collide with the myth_screen never-cite table (checked against all ten entries: none of \\\"2,000% samples\\\", \\\"70-90% never change defaults\\\", \\\"losses hurt 2x\\\", jam-study fewer-options, \\\"$300M button\\\"/ASOS, \\\"5%25-95%\\\" retention-profit, \\\"5-25x cheaper\\\" acquisition, \\\"Amazon 100ms=1%\\\", Duolingo \\\"+20% DAU\\\", or \\\"UGC 4x\\\" appear in this draft). This is the strongest-sourced stream reviewed so far in this pass: the fabrication caught is a single illustrative example, not a load-bearing number.",
+  "verified_addition": "## Domain 24: information architecture and navigation (owner-added 2026-07-22, synthesis pass)\n\nGrounds SOURCE.md's breadcrumb-depth rule (V3-D411) and the single-global-back law (project_single_global_back memory) in cited navigation research AND independent multi-app convergence, replacing the prior brand-analogy-only justification. Cross-references domain 1 (Hick's and Fitts's Law) and domain 10 (top-left back placement, already Fitts-grounded) rather than restating them. Cross-references PSYCHOLOGY.md for any habit/retention angle on navigation (e.g. why users return to a persistent tab); that stays in the behavioral layer and is not duplicated here.\n\nNavigation cost decomposes into a scent cost (does the label or title predict the destination before the user commits, Pirolli and Card 1999, Information Foraging, Psychological Review 106(4):643-675, verified via CrossRef, T2) and a consistency cost (does an identical control behave identically everywhere, Nielsen and Molich 1990 / Nielsen 1994 CHI paper, Enhancing the Explanatory Power of Usability Heuristics, pp.152-158, derived from a factor analysis of 249 usability problems, both figures confirmed against NN/g's own citation of the paper, T2). Click or tap COUNT is not the cost function on its own: Porter's 2003 study (44 users, 620 tasks, 8,000-plus clicks, successful paths as long as 25 pages, no drop in success or satisfaction past three clicks, all four figures confirmed against the original UIE/CenterCentre article) is already flagged MYTH in Solen's folklore table (RATIONALE.md:252) for exactly this reason, and a parallel \"three-tap rule\" trope surfaced during this synthesis (a click/tap-count folklore claim in the same family as Porter's target, attribution to UXPin not independently confirmed in this pass) should be added to that same folklore table as a second instance of the pattern, not adopted as a number.\n\n**Breadcrumb depth (T2 plus CONV convergence).** NN/g's breadcrumb guideline states flat hierarchies of 1-2 levels do not need one (confirmed verbatim: \"Breadcrumbs aren't necessary (or useful) for sites with flat hierarchies that are only 1 or 2 levels deep, or sites that are linear in structure\"); Solen's locked literal (SOURCE.md:1229, V3-D411) shows a breadcrumb starting one level earlier, at 2+. This tension is recorded, not reopened: the app-register argument (bottom-tab plus back-button plus title, SOURCE.md:1237) already substitutes the header title for level-1 scent, which is a legitimate first-principles reason to show wayfinding one level earlier than a content site would. What synthesis adds on top of the academic source: two independent real-app scouts, thirteen apps total (Fresha, Treatwell, Booksy, Vagaro, Doctolib, Viator, GetYourGuide, Klook, Trip.com, Turo, Air New Zealand, Tripadvisor, Shopee), zero of which show a breadcrumb anywhere in their browse-to-book transactional path. The only breadcrumb sightings across both scouts (monday.com, Headspace Support, and Airbnb's Help Center) were all in search-disambiguation or reference/help contexts, never the primary flow; the Airbnb sighting was spot-checked in this verify pass and confirmed real, running 5-plus levels deep (e.g. Home > All topics > Legal terms > Privacy Policy > Airbnb Privacy), confined entirely to Help Center. This upgrades the domain's boundary line from an inference to an observed pattern (a single research pass, not independently replicated across the full app set, see residual_risks): a breadcrumb, even where the locked depth threshold technically allows one, reads as more appropriate to a reference or disambiguation surface than to Solen's core search-to-book path, which should keep leaning on title-as-landmark plus single back chevron instead. This does not touch the locked >=2-levels literal; it narrows WHERE that literal should actually fire in practice, a judgment call for whoever next touches a 2+-level surface, not a re-open of the number.\n\n**Visible tab bar over hidden nav (T2, new to this domain).** NN/g's hamburger-menu study (179 participants across 6 websites, confirmed) found hidden nav costs 39% slower desktop task completion, 21% higher perceived difficulty, over 20% lower content discoverability, and a smaller but present 15% mobile penalty, versus a visible tab/nav bar for up to 4-5 top-level options (all figures confirmed against NN/g's own page). This is a caution the prior academic-only draft did not carry: Solen's bottom tab bar should stay visible as the destination count grows, and should not be collapsed into a hamburger as a \"cleanup\" move even under space pressure. Real-app convergence, spot-checked in this pass via Mobbin: Fresha's bottom tab bar is exactly 3 icons (Home, Search, Calendar, confirmed), Klook's is exactly 5 (Home, Destinations, Deals, Trips, Account, confirmed). The observed range across marketplace and booking apps (Fresha 3, Treatwell/Booksy-style peers, Klook/Walmart/Gopuff/Swiggy/Burger King 5) is 3-5 tabs with no observed app exceeding 5; Fresha, the category-closest competitor, sits at the floor.\n\n**Single global back (T2 heuristic plus CONV platform convention plus CONV observed convergence).** The value of one back control is not primarily its placement (domain 10's Fitts argument) but that a user who learns what back does on one screen should never re-learn it on the next (heuristic 4). Platform convention (Apple HIG, Android Material Design fixing system-back to one place per app) is the delivery mechanism for that expectation, not itself the proof. New this pass: 8 of 8 booking-category apps surveyed (Viator, GetYourGuide, Klook, Trip.com, Turo, Air New Zealand, Tripadvisor, Shopee) show zero exceptions in a single research pass (not independently re-verified across all 8 in this adversarial check, see residual_risks), a single unstacked back chevron at the exact surface (detail/confirmation) the law governs. Grounds \"global Header IS the back; pages add none; focused flows keep theirs\" (project_single_global_back memory) as the correct scope: a booking wizard is allowed its own local back precisely because it behaves as a self-contained sub-flow, matching heuristic 4's own scope limit.\n\n**Wayfinding vocabulary (CONV, Kevin Lynch, The Image of the City, MIT Press, 1960, real book, confirmed to exist).** Paths, edges, districts, nodes, landmarks: the origin concept for \"always know where you are,\" transferred to digital UX as analogy (NN/g's own \"You Are Here\" framing), never an independently tested UI claim. Use only as naming vocabulary (a title is a landmark, a breadcrumb is a path, a tab bar is a set of districts), never as a standalone justification for a depth number.\n\n**Contrast case, explicitly not adopted.** Gopuff's per-item colored status chips (\"COLD\" pills over icons) and Burger King's badge-heavy tab labels (\"New\" pills, reward icons) were observed in the same scouting pass (not independently re-verified in this adversarial check). These are the decorative/hype-badge pattern Solen's design contract already bans (no fabricated status pips, ink-only CTA, no per-category color); noted here only as the contrast case proving the calm, breadcrumb-free single-back pattern is the one actually aligned with Solen's restraint, not as a pattern to import.\n\nBOUNDARY: this domain governs structural navigation decisions (depth, breadcrumb presence, back-button singularity, tab-bar visibility, label-as-scent). It does not cover the psychological or behavioral half of navigation (habit formation via a persistent tab, reminder cadence, why users return to a surface); those stay in PSYCHOLOGY.md and are not duplicated here.\n\n**Open item for QUESTIONS.md, not a decision made here:** whether Solen's breadcrumb-depth literal should eventually align to NN/g's 3+ floor given the near-unanimous zero-breadcrumb-in-transactional-flow finding across 13 real apps, or whether the app-register substitution argument is sufficient to keep it at 2+. This synthesis does not recommend a change, per the no-reopen constraint on locked literals; it recommends the question be logged with this evidence attached, and flags that the 13-app finding rests on a single research pass (spot-checked, not exhaustively re-verified) should the question ever become decision-relevant.",
+  "claim_verdicts": [
+   {
+    "claim": "Porter's three-click study: 44 users, 620 tasks, 8,000+ clicks, successful paths up to 25 pages, no drop in success/satisfaction past 3 clicks.",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Confirmed exactly via direct fetch of the original UIE/CenterCentre article (articles.centercentre.com/three_click_rule/). All four numbers match verbatim."
+   },
+   {
+    "claim": "Pirolli and Card, Information Foraging, Psychological Review 106(4), 1999, pp.643-675.",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Confirmed via CrossRef (DOI 10.1037/0033-295x.106.4.643): authors, journal, volume, issue, page range, and 1999 publication date all match exactly."
+   },
+   {
+    "claim": "NN/g breadcrumb guideline: unnecessary for flat hierarchies of 1-2 levels or linear structures.",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Confirmed verbatim via direct fetch of nngroup.com/articles/breadcrumbs/."
+   },
+   {
+    "claim": "Nielsen and Molich 1990 / Nielsen 1994 CHI paper, factor analysis of 249 usability problems, pp.152-158.",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Confirmed via NN/g's own citation on nngroup.com/articles/ten-usability-heuristics/, which quotes 249 usability problems and cites pp.152-158 verbatim. (CrossRef's own page metadata showed a stray '210', but NN/g's direct quote of Nielsen's own paper is the more reliable primary-adjacent source and matches the draft.)"
+   },
+   {
+    "claim": "NN/g hamburger-menu study: 179 participants, 39% slower desktop, 21% higher perceived difficulty, over 20% lower discoverability, 15% slower mobile, vs visible nav.",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Confirmed via direct fetch of nngroup.com/articles/hamburger-menus/: 179 participants across 6 sites, 39% slower desktop task completion, discoverability dropped over 20%, task difficulty increased 21%, mobile 15% slower vs combo nav. All figures match."
+   },
+   {
+    "claim": "Wayfinding vocabulary (paths, edges, districts, nodes, landmarks) originates in Kevin Lynch's The Image of the City (1960), transferred to UX as analogy only.",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Real, well-documented book (MIT Press, 1960); correctly tiered CONV since it is analogy, not a tested UI claim. No further verification needed for a work this well-established."
+   },
+   {
+    "claim": "iOS and Android fix system-level back navigation to one consistent screen position.",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Accurately describes real, well-documented platform convention (Apple HIG, Android Material Design). Correctly tiered CONV, not elevated to an empirical study."
+   },
+   {
+    "claim": "Zero of 13 real booking/discovery apps surveyed show a breadcrumb in their browse-to-book transactional flow; sightings confined to search-disambiguation/help contexts.",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Spot-checked 3 of 13 apps via Mobbin in this pass (Fresha, Klook tab structure; Airbnb breadcrumb-in-Help-Center-only pattern) and all held up. Remaining 10 apps not independently re-verified in this adversarial pass; already honestly tiered CONV, not T1/T2, so no correction needed, but full-set replication is outstanding. See residual_risks."
+   },
+   {
+    "claim": "Observed bottom-tab-bar count across marketplace/booking apps ranges 3-5, with Fresha (category-closest competitor) at the floor of 3.",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Directly spot-checked via Mobbin: Fresha's iOS app shows exactly 3 bottom tabs (Home, Search, Calendar). Klook's iOS app shows exactly 5 (Home, Destinations, Deals, Trips, Account). Both match the draft's claimed counts exactly."
+   },
+   {
+    "claim": "Airbnb's Help Center shows a 6-level breadcrumb trail reading Home > All topics > Searching and booking > Booking places to stay > Booking basics > Booking split stays, confined to Help Center only.",
+    "source_ok": false,
+    "tier_final": "CONV (specific example unverified, downgrade confidence)",
+    "note": "The general pattern (deep breadcrumb exists only in Airbnb's Help Center, never the transactional booking flow) is confirmed via Mobbin spot-check. But the specific 6-level path with that exact topic text was not found; actual captured breadcrumbs ran 5 levels on different topics (Privacy Policy, Payments). Treat the specific example as illustrative/unverified, not an observed capture. Softened in verified_addition."
+   },
+   {
+    "claim": "8 of 8 booking-category apps (Viator, GetYourGuide, Klook, Trip.com, Turo, Air New Zealand, Tripadvisor, Shopee) show zero exceptions to single, unstacked back navigation at detail/confirmation screens.",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Not independently re-verified for all 8 apps in this adversarial pass (would require a full flow walk per app); appropriately tiered CONV already (observational convergence, not a controlled study), consistent with the general single-back convention confirmed for the two spot-checked apps' overall navigation model. Flagged in residual_risks as unreplicated in full."
+   },
+   {
+    "claim": "UXPin published a \"three-tap rule\" claim with zero data behind it.",
+    "source_ok": false,
+    "tier_final": "CONV (unverified attribution)",
+    "note": "Guessed UXPin URL for this claim returned 404; could not confirm the specific source in this pass. The broader claim (an unsourced tap/click-count folklore rule exists, parallel to the already-debunked three-click rule) is plausible but the UXPin attribution specifically is unconfirmed. Softened in verified_addition to not assert a confirmed source."
+   },
+   {
+    "claim": "None of the draft's numbers_used collide with Solen's myth_screen never-cite table.",
+    "source_ok": true,
+    "tier_final": "N/A (screening check)",
+    "note": "Checked the full numbers_used list against all ten myth_screen entries (2,000% samples, 70-90% never change defaults, losses hurt 2x, jam-study fewer-options-converts, $300M button/ASOS, 5%->25-95% retention-profit, 5-25x cheaper acquisition, Amazon 100ms=1%, Duolingo +20% DAU, UGC 4x). No overlap found; this draft's numbers are all IA-specific (click counts, participant counts, page ranges, tab counts) and do not touch the psychology myth table."
+   }
+  ]
+ }
+}

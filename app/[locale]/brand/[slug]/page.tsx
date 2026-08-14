@@ -72,7 +72,7 @@ export default function BrandPage() {
               <Image src={group.logo_url} alt={group.name} fill className="object-contain" />
             </div>
           ) : (
-            <div className="w-20 h-20 rounded-[12px] bg-s-bg-sunken flex items-center justify-center text-s-ink text-2xl font-heading shrink-0">
+            <div className={"w-20 h-20 rounded-[12px] bg-s-bg-sunken flex items-center justify-center text-s-ink text-2xl font-heading shrink-0" /* drift-ok: logo FALLBACK showing an initial, not a glyph on a decorative tile; the imagery floor requires this fallback */}>
               {group.name[0]}
             </div>
           )}

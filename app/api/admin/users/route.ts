@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { validateBody } from "@/lib/validations";
 import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
+import { logAuditEvent } from "@/lib/audit";
 import { z } from "zod";
 import type { Database } from "@/lib/database.types";
 
@@ -69,8 +70,38 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: "No updates provided" }, { status: 400 });
   }
 
-  const { error } = await admin.from("profiles").update(updates).eq("id", user_id);
+  // Read the values BEFORE changing them, so the trail records old to new rather than only the new
+  // state. Lifted 2026-08-14 from the 17 July backend re-audit, which was written and then stranded
+  // on an unmerged branch: promoting someone to admin or suspending an account are the two levers
+  // one account holder has over another, and until now neither left a record of what it used to be.
+  const { data: before, error: beforeError } = await admin
+    .from("profiles").select("role, is_suspended").eq("id", user_id).single();
+  if (beforeError || !before) {
+    return NextResponse.json({ error: "User not found" }, { status: 404 });
+  }
+
+  // .select("id") forces the database to say which rows it actually touched. Without it a match on
+  // nothing (a wrong id, a deleted account) still comes back without an error, and the log below
+  // would record a promotion that never happened. A trail that logs fiction is worse than none.
+  const { data: updated, error } = await admin
+    .from("profiles").update(updates).eq("id", user_id).select("id");
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (!updated || updated.length === 0) {
+    return NextResponse.json({ error: "User not found" }, { status: 404 });
+  }
+
+  if (role !== undefined) {
+    await logAuditEvent(req, user.id, "user.role_change", "user", user_id, {
+      from: before.role ?? null,
+      to: role,
+    });
+  }
+  if (is_suspended !== undefined) {
+    await logAuditEvent(req, user.id, is_suspended ? "user.suspend" : "user.unsuspend", "user", user_id, {
+      from: before.is_suspended ?? null,
+      to: is_suspended,
+    });
+  }
 
   return NextResponse.json({ ok: true });
 }

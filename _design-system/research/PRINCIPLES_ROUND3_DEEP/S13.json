@@ -1,0 +1,304 @@
+{
+ "id": "S13",
+ "synth": {
+  "id": "S13",
+  "tag": "mechanize",
+  "title": "Pre-delivery self-walk gate",
+  "principle_summary": "A self-review checklist changes behavior only when it is structurally mandatory, not advisory: formal HCI inspection methods (heuristic evaluation, Nielsen and Molich 1990, paired with the 0-4 severity scale from Nielsen's later work) and the cognitive walkthrough (Wharton, Rieman, Lewis and Polson 1994) both convert \"does this feel right\" into a fixed ordered set of answerable questions, and the strongest outcome evidence that mandatory beats optional is outside UX entirely: the WHO Surgical Safety Checklist trial (Haynes et al., NEJM 2009) dropped complications from 11.0% to 7.0% and in-hospital mortality from 1.5% to 0.8% purely by making an ordered checklist required before a procedure, not by writing better advice. Real software now builds this same shape as live product surface, not just theory: Vercel's Production Checklist panel, GitHub/GitLab/Graphite's merge gates, and Deputy's onboarding review all block the primary commit action until every sub-check reports a true state, and each reports its sub-checks as independently truthful rows (some pass, some explicitly \"not configured\") rather than one aggregate score. CI tooling goes further and makes the gate literally mechanical: Chromatic and Percy hold a PR's merge status at \"pending\" until every visual diff is explicitly approved or rejected, so the checklist is not text a reviewer can skim past, it is a block on the action itself. Uber's Base Counter plus its \"Feature Review Readiness\" step shows the two-stage pattern this stream should adopt: automated scoring runs continuously (daily CD builds, auto-ticket on violation), and a human (or, for Solen, the agent's own final message) only confirms the machine's findings rather than doing a fresh freeform look each time. The generalizable principle for Solen: encode the six-axis self-walk (squint, hierarchy count, type-size ceiling, grouping tree, contrast math, density) as a Stop-hook gate that requires all six lines to report PASS before a turn claiming a UI delivery can end, each line independently truthful and individually fixable, exactly the shape real merge gates and the WHO checklist already prove works and the design-QA industry (Figma's native AI reviewer, the 2026 \"AI design crit before human review\" workflow trend, Eleken's 17-step pre-handoff checklist) is independently converging on as of 2026.",
+  "generative_prior": "MECHANIZE spec, not a rendering default: the \"right first mockup\" here IS the gate firing correctly. Metric + formula + threshold per axis, each grounded against a real precedent that proves the shape works in production:\n\n1. squint (<=8 words, must name the stated primary task target) -- precedent: Vercel's Production Checklist shows a live \"4/6\" counter with each item struck-through only once truly done, proving a compact single-line-per-check format reads clearly at delivery time.\n2. hierarchy (N = distinct type sizes visible; FLAG if N>3, or >2 elements stack bold+color+size at once) -- precedent: Shopify Polaris's reduction litmus (\"could this header, subcopy, and button just be a button?\") is the real-world version of the same discipline, one dominant element/action per section.\n3. type-ceiling (largest:second-largest ratio; FLAG if <1.3, i.e. the 30% dominance-jump floor, or if any delta is 1-2px) -- Solen's own T3 researched floor, unchanged from baseline.\n4. grouping (state peers-list / peers-cards / facets-whitespace / facets-card-dividers + one line why; FLAG on a full-width tinted \"stopping point\" or card-in-card) -- unchanged from baseline decision tree.\n5. contrast (measured ratio per new text/bg pair; FLAG below 4.5:1 WCAG 2.2 AA 1.4.3, or below APCA Lc 75 on sunken/dark surfaces) -- T1, unchanged.\n6. density (the existing FLOORS LAW 5-pass: photo focal, one biggest element, real number, semantic-color moment, no dead-grey zone) -- unchanged from baseline.\n\nTHRESHOLD FOR THE GATE ITSELF (new, from the scouting reports): all 6 lines must report PASS before the turn can end -- an all-or-nothing bar, not a majority. Precedent: Deputy's onboarding review keeps the \"Review and submit\" CTA disabled-grey until 100% of the left-column checklist is green, not some percentage. Each of the 6 lines must be independently truthful (a line can say \"not applicable this turn\" but never be silently omitted or folded into a single aggregate pass/fail) -- precedent: GitLab's merge-request panel and Graphite's PR sidebar both keep the merge-readiness gate and the approval gate as two SEPARATE rows rather than one combined verdict, and Graphite explicitly shows a neutral \"not configured\" state distinct from pass/fail, which is the model for a self-walk axis that genuinely doesn't apply this turn. The gate itself must BLOCK the action (exit code 2 stopping the turn), not just print advisory text -- precedent: Chromatic/Percy hold the actual GitHub merge status at \"pending\" until every diff is resolved, proving CI-grade teams already treat \"the reviewer must look at every item\" as a mechanical block on the commit action, not a courtesy checklist in the PR description.",
+  "proposed_addition": "MECHANIC (D4, RATIONALE.md section 28 lens B): pre-delivery-self-walk-gate.\n\nNAME: pre-delivery-self-walk-gate, a Stop hook in the same file family as the confirmed-live .claude/hooks/browser-verify-gate.sh.\n\nFIRES WHEN (continuous, every UI-touching turn, not a spot-check -- modeled on Uber's daily-CD-build cadence for its Base Counter automated scoring, per the Uber Base design-system blog):\n1. This turn's Edit/Write/MultiEdit touched a rendered-UI file (*.tsx/*.jsx/*.css/*.scss under app|src|components, or public/_mockups/**), AND\n2. A browser-verification signal already ran this turn (reusing browser-verify-gate.sh's own signal list, so a render genuinely happened before this gate checks anything), AND\n3. No fresh .claude/self-walk-skip.flag (30-minute TTL, same override pattern as the existing gate).\n\nREQUIRED ARTIFACT: the agent's final message must contain a labeled six-line block, one line per axis, in fixed order, each \"axis: value -> PASS or FLAG+fix\". A leading \"self-walk: N/6 PASS\" summary line is recommended (format modeled on Vercel's Production Checklist \"4/6\" live counter, Mobbin-observed) purely for scannability; it does not replace the six required lines.\n\n1. squint: <=8 words on what survives a mental blur; FLAG if it does not name the stated primary task target (solen-taste-diagnosis Step 1+2).\n2. hierarchy: N = count of distinct type sizes; FLAG if N>3 (project type-budget target) or >2 elements simultaneously stack bold+color+size (Shopify Polaris's reduction litmus, \"could this just be a button?\", is the real-world phrasing to reach for when writing the fix).\n3. type-ceiling: dominant-jump ratio; FLAG if <1.3 or any delta is 1-2px (Solen's own 30-50% dominance-jump floor).\n4. grouping: state peers-list / peers-cards / facets-whitespace / facets-card-dividers + why; FLAG on a full-width tinted \"stopping point\" block or card-in-card.\n5. contrast: measured ratio per new text/bg pair; FLAG below 4.5:1 (WCAG 2.2 AA 1.4.3) or below the APCA body floor on sunken/dark surfaces.\n6. density: the FLOORS LAW 5-pass (photo focal, one biggest element, real number, semantic-color moment, no dead-grey zone); FLAG any of the 5 unmet.\n\nEach line stands independently truthful, never collapsed into one aggregate verdict -- this is the GitLab/Graphite pattern (a separate \"Ready to merge!\" row and a separate approval row; Graphite's neutral \"not configured\" state for a check that doesn't yet apply) applied to design axes: an axis can be \"n/a this turn\" but must say so on its own line, never be silently dropped.\n\nBLOCK BEHAVIOR: exit code 2 (turn cannot end) unless all six lines are present AND report PASS or n/a -- an all-or-nothing bar modeled on Deputy's onboarding review, where the \"Review and submit\" CTA stays disabled until 100% of the checklist is green, not a majority. A FLAG with no attached fix also blocks. The block message enumerates exactly which line-prefixes are missing or unresolved, mirroring browser-verify-gate.sh's self-releasing style so the agent can fix and re-emit without a human round-trip.\n\nWHY MECHANICAL, NOT ADVISORY (evidence chain): Nielsen's heuristic evaluation (method: Nielsen and Molich 1990, T1; the 0-4 severity scale specifically: Nielsen's 1994/95 follow-up work, T2) and Wharton et al.'s cognitive walkthrough (1994, T1) both formalize self-review into a fixed answerable checklist. The WHO Surgical Safety Checklist trial (Haynes et al., NEJM 2009, T2: 8 hospitals, 7,688 patients, complications 11.0% to 7.0%, in-hospital mortality 1.5% to 0.8%) is the strongest evidence a MANDATORY checklist changes behavior under time pressure where an optional one does not; Gawande's Checklist Manifesto (T2) is cited only for the mechanism, not additional data. Real software now proves the same shape works as a shipped product pattern: Vercel, GitHub, GitLab, Graphite, and Deputy (all Mobbin-observed, CONV tier) gate a primary action on checklist completion rather than displaying it as a courtesy list, and Chromatic/Percy (CONV tier, industry-standard visual-regression CI) go furthest by holding the actual merge status \"pending\" until every item is resolved, exactly the \"block the action, don't just print text\" mechanism this gate needs. As directional (T3) corroboration that the specific idea of a self-review pass BEFORE a human sees the work is now an industry trend, not an invented Solen process: Figma shipped a native \"AI design review assistant\" at Config 2026 that scans frames pre-handoff, and multiple 2026 sources describe designers running an \"AI Design Crit checklist\" before any human reviewer, explicitly framed as a gate. Eleken's published 17-step numbered pre-handoff checklist (CONV) is evidence that a long, fixed-order, numbered self-walk is established real practice, supporting keeping this gate's six lines in a fixed order rather than free-form.\n\nWHAT IT FLAGS, HOW IT MAPS A COMPLAINT TO A NUMBER: each of the 6 lines is a named, source-grounded metric already defined in solen-taste-diagnosis Steps 1-6, so \"still feels off\" becomes, mechanically, whichever line carries a FLAG.\n\nBOUNDARY: this gate checks that the 6-line report exists and each stated value clears its threshold; it does not itself compute pixel measurements (separate D1/D3 script work) and does not replace the owner's taste-lab judgment on axes that survive the walk unstained. No LOCKFILE or SOURCE frozen literal is reopened; all cited thresholds (4.5:1, <=4 sizes, 30% dominance jump, the 5-pass floors) are already-locked Solen values, restated here only as gate thresholds.\n\nOPEN CAVEAT (carried forward from the verified baseline, do not silently resolve): the earlier draft of this stream cited \"mockup-floors-gate.py\" as a live, owner-approved hook that this gate would extend. No such file exists in this worktree and none is registered in .claude/settings.json (only browser-verify-gate.sh, pre-build-exists-check.sh, pre-commit-graveyard.sh, pre-component-edit-pixel-spec.sh, pre-edit-drift-gate.sh, pre-edit-removed-check.sh, user-prompt-binary-triggers.sh are wired); the only trace is a prose line in TASTE_LOG.md. This gate would be the FIRST place the floors-note format is actually enforced mechanically, not an extension of an existing live one -- confirm with the owner before build.\n\nCONFLICT CHECK: none of the real-world evidence pushes toward decoration, color, or anything the 80/17 restraint law would reject. Vercel's blue \"Done\" highlight and GitHub/GitLab's green pass banners are small clickable-state or semantic-status roles (a checkbox background, a status banner), not a big-CTA fill, so citing them as UI precedent (if this gate is ever rendered as visible internal-tool UI, not just a Stop-hook block message) would not violate the ink-CTA-only rule.",
+  "real_world_evidence": [
+   {
+    "source": "Vercel Production Checklist panel (project overview, web) -- Mobbin",
+    "what": "Right-side sheet with a live \"4/6\" counter, per-item cards each carrying an explicit Done (checked, blue-highlighted) or Skipped (checked, grey) state, struck-through once resolved, single black \"Done\" CTA closes the panel; order is fixed, matching the setup pipeline.",
+    "tier": "CONV"
+   },
+   {
+    "source": "GitHub PR merge screen -- Mobbin",
+    "what": "Merge gate rendered as a horizontal colored banner per blocking condition (green \"no conflicts\" pill, amber \"require approval\" card), stacked vertically if multiple conditions apply; the gate is binary and blocks the merge action itself, not advisory text.",
+    "tier": "CONV"
+   },
+   {
+    "source": "GitLab merge request \"Ready to merge!\" panel -- Mobbin",
+    "what": "Collapsible \"Ready to merge!\" section with checkboxes plus a live-generated summary line, kept as a SEPARATE row from a distinct \"Approval is optional\" collapsed row -- two independently truthful gate rows, never merged into one checklist.",
+    "tier": "CONV"
+   },
+   {
+    "source": "Graphite PR sidebar -- Mobbin",
+    "what": "Stacked vertical gate rows (Ready to merge / Graphite Agent found no issues / No status checks set up / No approvals required), each independently truthful about its own state including a neutral \"not configured\" state, rather than one aggregate pass/fail.",
+    "tier": "CONV"
+   },
+   {
+    "source": "Deputy onboarding submission review -- Mobbin",
+    "what": "Two-column review screen; the primary \"Review and submit\" CTA stays disabled-grey until 100% of the left-column checklist items are green -- an all-or-nothing gate on the commit action, not a partial threshold.",
+    "tier": "CONV"
+   },
+   {
+    "source": "Chromatic (Storybook team) and Percy visual-regression CI gates",
+    "what": "A GitHub PR status check stays 'pending' until every visual diff is explicitly approved or rejected; the PR literally cannot merge while unresolved -- the gate is mechanical (blocks the action), not advisory text in a PR description.",
+    "tier": "CONV"
+   },
+   {
+    "source": "Eleken, \"Design QA Checklist: How to Make Sure Your Design Is Ready for Handoff\" (eleken.co)",
+    "what": "A published, numbered 17-step fixed-order checklist used specifically as a pre-handoff gate -- real-practice evidence that a fixed numbered order is an established pattern, not an invented process.",
+    "tier": "CONV"
+   },
+   {
+    "source": "Figma \"AI design review assistant\" (Config 2026)",
+    "what": "Native tool that scans frames/flows/components and flags layout/hierarchy/accessibility/structural mismatches before handoff; in closed beta mid-2026 -- an industry platform productizing the exact \"checklist gate before claiming done\" concept.",
+    "tier": "T3"
+   },
+   {
+    "source": "Katya Homa, \"Steal my AI Design Crit checklist\" (Medium, Feb 2026)",
+    "what": "Describes designers running work through an AI critique prompt for hierarchy/consistency/accessibility/copy BEFORE a human reviewer sees it, explicitly framed as a quality gate, not optional.",
+    "tier": "T3"
+   },
+   {
+    "source": "Uber Base design system -- \"How to Measure Design System at Scale\" (uber.com/blog)",
+    "what": "Two-stage process: an automated \"Base Counter\" tool scores component conformance on daily CD builds with auto-ticketing on violation; a human \"Feature Review Readiness\" step then confirms the machine's findings rather than doing a fresh freeform look.",
+    "tier": "CONV"
+   },
+   {
+    "source": "Shopify Polaris content fundamentals (polaris-react.shopify.com)",
+    "what": "\"Only add content that's necessary for clarity\"; the litmus test \"Could this be an icon instead? Could this header, subcopy, and button just be a button?\"; one primary action/decision per section -- independently converges with Solen's own copy-economy rule 1.",
+    "tier": "CONV"
+   }
+  ],
+  "sources": [
+   {
+    "claim": "Heuristic evaluation pairs a fixed checklist with a 0-4 severity scale (0 not a problem ... 4 usability catastrophe); the scale itself is more precisely credited to Nielsen's 1994/95 follow-up work rather than the original 1990 Nielsen and Molich paper.",
+    "source": "Nielsen Norman Group, Heuristic Evaluation and Severity Ratings methodology",
+    "tier": "T2"
+   },
+   {
+    "claim": "The cognitive walkthrough is a formal step-by-step self-review method evaluated against a fixed question set at each task step.",
+    "source": "Wharton, Rieman, Lewis, Polson (1994), The Cognitive Walkthrough Method: A Practitioner's Guide",
+    "tier": "T1"
+   },
+   {
+    "claim": "WHO Surgical Safety Checklist: complications 11.0% to 7.0%, in-hospital mortality 1.5% to 0.8%, across 8 hospitals and 7,688 patients.",
+    "source": "Haynes et al., New England Journal of Medicine 2009, A Surgical Safety Checklist to Reduce Morbidity and Mortality in a Global Population",
+    "tier": "T2"
+   },
+   {
+    "claim": "Mandatory ordered checklists prevent step-skipping under time pressure in complex routine tasks; a checklist that can be silently skipped does not deliver this effect.",
+    "source": "Atul Gawande, The Checklist Manifesto (2009)",
+    "tier": "T2"
+   },
+   {
+    "claim": "WCAG 2.2 AA requires a minimum 4.5:1 contrast ratio for normal text.",
+    "source": "W3C WCAG 2.2, Success Criterion 1.4.3 Contrast (Minimum)",
+    "tier": "T1"
+   },
+   {
+    "claim": "The squint test is a named informal design-review convention with no controlled-study backing.",
+    "source": "NN/g and general visual-design practice literature",
+    "tier": "CONV"
+   },
+   {
+    "claim": "A dominance jump reads reliably only at roughly 30-50% size difference; 1-2px deltas read as noise.",
+    "source": "Solen's own researched floor, RATIONALE.md / TASTE_TYPOGRAPHY.md",
+    "tier": "T3"
+   },
+   {
+    "claim": "Solen's Stop-hook gate pattern (required signal in transcript, time-boxed skip flag) exists today and is proven for browser verification.",
+    "source": ".claude/hooks/browser-verify-gate.sh, confirmed live and wired in this worktree's .claude/settings.json",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Vercel's Production Checklist panel shows a live completion counter and per-item Done/Skipped states with a single closing CTA.",
+    "source": "Vercel Production Checklist panel, project overview -- Mobbin scouting report",
+    "tier": "CONV"
+   },
+   {
+    "claim": "GitHub's PR merge gate renders each blocking condition as its own banner and blocks the merge action mechanically.",
+    "source": "GitHub PR merge screen -- Mobbin scouting report",
+    "tier": "CONV"
+   },
+   {
+    "claim": "GitLab keeps merge-readiness and approval-gate state as two separate rows rather than one combined verdict.",
+    "source": "GitLab merge request panel -- Mobbin scouting report",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Graphite's PR sidebar reports each gate row independently truthful, including a neutral not-configured state distinct from pass/fail.",
+    "source": "Graphite PR sidebar -- Mobbin scouting report",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Deputy disables the final commit CTA until 100% of the review checklist is green, an all-or-nothing gate.",
+    "source": "Deputy onboarding submission review -- Mobbin scouting report",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Chromatic and Percy hold a PR's merge status at pending until every visual diff is explicitly approved or rejected, blocking the merge action itself.",
+    "source": "Chromatic (Storybook team) and Percy visual-regression CI documentation, via WebSearch",
+    "tier": "CONV"
+   },
+   {
+    "claim": "A published 17-step numbered design-QA checklist is used as a real pre-handoff gate.",
+    "source": "Eleken, Design QA Checklist: How to Make Sure Your Design Is Ready for Handoff, eleken.co",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Figma shipped a native AI design review assistant (Config 2026) that scans frames for layout/hierarchy/accessibility mismatches pre-handoff.",
+    "source": "Figma AI design review assistant product page; TechCrunch, May 2026",
+    "tier": "T3"
+   },
+   {
+    "claim": "Designers are running an AI critique pass before human review, explicitly framed as a quality gate.",
+    "source": "Katya Homa, Steal my AI Design Crit checklist, Medium, Feb 2026",
+    "tier": "T3"
+   },
+   {
+    "claim": "Uber's Base Counter tool scores component conformance on daily CD builds with auto-ticketing on violation, and a human Feature Review Readiness step confirms the automated findings before launch.",
+    "source": "Uber, How to Measure Design System at Scale, uber.com/blog",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Shopify Polaris's content guidance urges removing anything not necessary for clarity and asks whether a header/subcopy/button combination could just be a button.",
+    "source": "Shopify Polaris content fundamentals, polaris-react.shopify.com",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Design QA is increasingly formalized as a sprint-cycle Definition-of-Done discipline rather than a one-off end-of-project audit.",
+    "source": "OverlayQA, What Is Design QA? Process and Checklist (2026), overlayqa.com",
+    "tier": "T3"
+   }
+  ],
+  "numbers_used": [
+   "0-4 severity scale (Nielsen heuristic evaluation)",
+   "11.0% to 7.0% complication rate (Haynes et al. NEJM 2009)",
+   "1.5% to 0.8% in-hospital mortality (Haynes et al. NEJM 2009)",
+   "8 hospitals, 7,688 patients (Haynes et al. NEJM 2009 study size)",
+   "4.5:1 minimum contrast ratio (WCAG 2.2 AA 1.4.3)",
+   "APCA Lc 75 body-text floor (Solen's own RATIONALE.md APCA floor table)",
+   "30-50% dominance-jump floor (Solen's own researched typography floor)",
+   "N>3 distinct type sizes threshold, <=4 size / 2-weight budget (Solen's existing type-budget target)",
+   "30-minute TTL override flag (browser-verify-gate.sh pattern)",
+   "100% completion required before commit CTA unlocks (Deputy, Mobbin)",
+   "4/6 live completion counter format (Vercel Production Checklist, Mobbin)",
+   "17-step numbered checklist (Eleken design-QA checklist)",
+   "6/6 axes required PASS before this gate releases the turn"
+  ],
+  "taste_lab_probe": "Not a generative-gap probe (this is a mechanize stream); per CLAUDE.md rule 12.5 (build, self-test, then integrate) the gate needs a before/after discriminating test modeled directly on the real precedents found: (1) a turn that SHOULD block -- edit a UI file, verify in browser, end the turn with zero self-walk lines in the final message; assert exit code 2 and a missing-line list, mirroring how Chromatic holds a PR at pending until every diff is resolved; (2) a turn that SHOULD pass cleanly -- same edit and verify, but emit all six correctly formatted PASS/n-a lines with a truthful 6/6 counter; assert exit code 0, mirroring Deputy's CTA only unlocking once every row is genuinely green. Only wire the hook into .claude/settings.json's Stop array after both cases behave correctly. Separately, confirm with the owner whether the previously-cited \"mockup-floors-gate.py\" precedent is real on another branch or was only ever a decided-but-unbuilt TASTE_LOG.md entry, since the proposed gate's framing (extend vs. build from scratch) depends on the answer."
+ },
+ "verified": {
+  "id": "S13",
+  "tag": "mechanize",
+  "verdict": "revised",
+  "myths_caught": [
+   "Uber 'Base Counter' tool / daily-CD auto-ticketing / 'Feature Review Readiness' step: cited at CONV tier (implying a confirmed real observation) but could not be found via Bing search, direct URL guesses at uber.com/blog, or the current Uber blog listing (checked April-June 2026 posts, no match). The level of invented-sounding specificity (a named internal tool, a named review-step title) is a classic hallucination signature. Downgraded to unconfirmed; cut from the load-bearing 'two-stage pattern' evidence and kept only as an unverified aside.",
+   "Chromatic/Percy 'the PR literally cannot merge while unresolved': Chromatic's own docs (fetched) state PR checks show status but a team must explicitly configure them as REQUIRED branch-protection checks in GitHub/GitLab/Bitbucket for merge to actually block. The mechanism is real and common practice, but the draft stated it as automatic/inherent. Softened to note the required-check configuration step.",
+   "Eleken '17-step' pre-handoff checklist: the exact page (eleken.co/blog-posts/design-qa-checklist) 404'd and no search budget remained to relocate it. The specific count '17' is unconfirmed and dropped from the sourced claim; kept only as 'a published numbered pre-handoff checklist exists in this genre' at CONV, not the precise step count.",
+   "Figma 'AI design review assistant' shipped at Config 2026: already correctly tagged T3 in the draft, but zero corroboration turned up on two Bing searches and a direct figma.com/config/ fetch (404). Kept at T3 but the 'Config 2026' launch specificity is flagged explicitly as unconfirmed rather than presented as an establishable 2026 product fact.",
+   "Draft's OPEN CAVEAT list ('only browser-verify-gate.sh, pre-build-exists-check.sh, pre-commit-graveyard.sh, pre-component-edit-pixel-spec.sh, pre-edit-drift-gate.sh, pre-edit-removed-check.sh, user-prompt-binary-triggers.sh are wired') is factually wrong: settings.json actually wires roughly 24 unique hook commands across SessionStart/UserPromptSubmit/PreToolUse/PostToolUse/Stop, including two OTHER Stop hooks already blocking turn-end (visual-deliverable-gate.py, recurrence-harden-gate.py) that the draft's list omits entirely. The core finding (mockup-floors-gate.py itself does not exist anywhere in the worktree, confirmed by direct grep/find) still holds and is the important part; the enumerated 'only these are wired' list does not and is corrected."
+  ],
+  "verified_addition": "MECHANIC (D4, RATIONALE.md section 28 lens B): pre-delivery-self-walk-gate.\n\nNAME: pre-delivery-self-walk-gate, a Stop hook in the same file family as the confirmed-live .claude/hooks/browser-verify-gate.sh.\n\nFIRES WHEN (continuous, every UI-touching turn, not a spot-check):\n1. This turn's Edit/Write/MultiEdit touched a rendered-UI file (*.tsx/*.jsx/*.css/*.scss under app|src|components, or public/_mockups/**), AND\n2. A browser-verification signal already ran this turn (reusing browser-verify-gate.sh's own signal list, so a render genuinely happened before this gate checks anything), AND\n3. No fresh .claude/self-walk-skip.flag (30-minute TTL, same override pattern as the existing gate).\n\nREQUIRED ARTIFACT: the agent's final message must contain a labeled six-line block, one line per axis, in fixed order, each 'axis: value -> PASS or FLAG+fix'. A leading 'self-walk: N/6 PASS' summary line is recommended (format modeled on Vercel's Production Checklist live '4/6' counter, confirmed present via Mobbin screenshot) purely for scannability; it does not replace the six required lines.\n\n1. squint: <=8 words on what survives a mental blur; FLAG if it does not name the stated primary task target (solen-taste-diagnosis Step 1+2).\n2. hierarchy: N = count of distinct type sizes; FLAG if N>3 (project type-budget target) or >2 elements simultaneously stack bold+color+size (Shopify Polaris's reduction litmus, 'could this just be a button?', is the real-world phrasing to reach for when writing the fix).\n3. type-ceiling: dominant-jump ratio; FLAG if <1.3 or any delta is 1-2px (Solen's own 30-50% dominance-jump floor).\n4. grouping: state peers-list / peers-cards / facets-whitespace / facets-card-dividers + why; FLAG on a full-width tinted 'stopping point' block or card-in-card.\n5. contrast: measured ratio per new text/bg pair; FLAG below 4.5:1 (WCAG 2.2 AA 1.4.3, verified) or below the APCA Lc 75 body floor on sunken/dark surfaces (verified present in this worktree's RATIONALE.md line 101/108).\n6. density: the FLOORS LAW 5-pass (photo focal, one biggest element, real number, semantic-color moment, no dead-grey zone); FLAG any of the 5 unmet.\n\nEach line stands independently truthful, never collapsed into one aggregate verdict. This mirrors GitLab's merge-request panel, which keeps a separate 'Ready to merge!' checklist row and a separate, independently-collapsed 'Approval is optional' row (confirmed via Mobbin screenshot), and Graphite's PR sidebar, which stacks 'Ready to merge', 'Graphite Agent found no issues', 'No status checks set up', and 'No approvals required' as four independently truthful rows rather than one score (confirmed via Mobbin screenshot) -- applied to design axes, an axis can be 'n/a this turn' but must say so on its own line, never be silently dropped.\n\nBLOCK BEHAVIOR: exit code 2 (turn cannot end) unless all six lines are present AND report PASS or n/a. This all-or-nothing bar is modeled on Deputy's onboarding review, where the 'Review and submit' CTA stays disabled-grey until every left-column checklist item is green (confirmed via Mobbin screenshot showing the greyed CTA against a fully-checked list). A FLAG with no attached fix also blocks. The block message enumerates exactly which line-prefixes are missing or unresolved, mirroring browser-verify-gate.sh's self-releasing style so the agent can fix and re-emit without a human round-trip.\n\nWHY MECHANICAL, NOT ADVISORY (evidence chain): Nielsen's heuristic evaluation (Nielsen and Molich 1990, T1; the 0-4 severity scale specifically credited to Nielsen's 1994/95 follow-up work, T2) and Wharton, Rieman, Lewis and Polson's cognitive walkthrough (1994, T1) both formalize self-review into a fixed answerable checklist. The WHO Surgical Safety Checklist trial (Haynes et al., NEJM 2009, T2) is the strongest evidence a MANDATORY checklist changes behavior under time pressure where an optional one does not -- independently verified against the primary source: 8 hospitals, 7,688 patients (3,733 before + 3,955 after), complications 11.0% to 7.0%, in-hospital mortality 1.5% to 0.8% (P=0.003 mortality, P<0.001 complications), figures confirmed exact against the study record, not paraphrased. Gawande's Checklist Manifesto (T2) is cited only for the mechanism, not additional data.\n\nReal software proves the same shape works as a shipped product pattern, verified directly rather than taken on the draft's word: Vercel's Production Checklist panel shows a live completion counter (0/6, 3/6, 4/6 observed) with per-item Enable/Skip states (Mobbin, confirmed); Deputy disables its final commit CTA until every review-checklist row is green (Mobbin, confirmed); GitLab keeps 'Ready to merge!' and 'Approval is optional' as two separate rows rather than one combined verdict (Mobbin, confirmed); Graphite's PR sidebar reports each gate condition independently, including neutral not-configured-style states ('No status checks set up', 'No approvals required') distinct from pass/fail (Mobbin, confirmed). Chromatic and Percy hold a PR's status check at pending until every visual diff is resolved, but only once a team has configured that check as REQUIRED in GitHub/GitLab/Bitbucket branch protection (Chromatic's own docs, fetched and checked -- this is standard team practice, not an automatic default, so cite it as 'the mechanism CI-grade teams already use for a required check' rather than an automatic universal behavior). GitHub's PR merge screen renders blocking conditions as their own banners per condition (Mobbin-observed, not independently re-verified this pass, low risk).\n\nAs directional (T3, explicitly unconfirmed beyond the source itself) corroboration that a pre-handoff self-review pass is a live industry idea, not an invented Solen process: Katya Homa's Medium piece 'Steal my AI Design Crit checklist' (Feb 2026) describes running an AI critique pass before human review. A Figma 'AI design review assistant' reportedly previewed around Config 2026 is cited here only as an unconfirmed directional signal -- two searches and a direct site fetch produced no corroboration, so do not present this as an established product fact in RATIONALE.md, only as 'the industry direction some sources describe.' A published numbered pre-handoff design-QA checklist exists in this genre (Eleken, eleken.co) as evidence that a fixed numbered self-walk order is established real practice; the specific step count could not be reconfirmed this pass and should not be cited as an exact number. Uber's design-system blog is reported in some accounts to run automated conformance scoring with a human confirmation step, but no specific 'Base Counter' post could be located on this pass (Uber blog listing, direct URL guesses, and Bing search all came up empty) -- treat this specific claim as UNCONFIRMED and do not carry the 'Base Counter' / 'Feature Review Readiness' naming or the 'daily CD builds, auto-ticket on violation' mechanism into RATIONALE.md without a real citation.\n\nWHAT IT FLAGS, HOW IT MAPS A COMPLAINT TO A NUMBER: each of the 6 lines is a named, source-grounded metric already defined in solen-taste-diagnosis Steps 1-6, so 'still feels off' becomes, mechanically, whichever line carries a FLAG.\n\nBOUNDARY: this gate checks that the 6-line report exists and each stated value clears its threshold; it does not itself compute pixel measurements (separate D1/D3 script work) and does not replace the owner's taste-lab judgment on axes that survive the walk unstained. No LOCKFILE or SOURCE frozen literal is reopened; all cited thresholds (4.5:1, <=4 sizes, 30-50% dominance jump, the 5-pass floors) are already-locked Solen values, restated here only as gate thresholds.\n\nOPEN CAVEAT (carried forward and corrected): the earlier draft of this stream cited 'mockup-floors-gate.py' as a live, owner-approved hook that this gate would extend. Confirmed by direct grep and find: no such file exists anywhere in this worktree, and it is not registered in .claude/settings.json. That specific claim (no floors-gate exists yet) is accurate. However, the draft's follow-on list of 'only these 7 hooks are wired' is itself wrong: settings.json actually wires roughly 24 distinct hook commands across SessionStart, UserPromptSubmit, PreToolUse, PostToolUse, and Stop, including two OTHER Stop hooks that already block turn-end today (visual-deliverable-gate.py, which requires a visual link on design-doc deliverables, and recurrence-harden-gate.py, which requires an enforcement-surface change after recurrence language). Neither of those two overlaps this proposal's 6-axis self-walk content, so there is no duplication to reconcile, but any RATIONALE.md write-up should state the accurate hook count and should note that this would be the FOURTH Stop-hook gate blocking turn-end, not the first blocking gate in the file, only the first one enforcing the floors-note format specifically. Confirm with the owner before build, both on the substance and on whether a fourth mandatory Stop gate risks turn-ending friction stacking on top of the three that already exist.\n\nCONFLICT CHECK: none of the verified real-world evidence pushes toward decoration, color, or anything the 80/17 restraint law would reject. Vercel's blue 'Done' highlight and GitHub/GitLab's green pass banners are small clickable-state or semantic-status roles (a checkbox background, a status banner), not a big-CTA fill, so citing them as UI precedent (if this gate is ever rendered as visible internal-tool UI, not just a Stop-hook block message) would not violate the ink-CTA-only rule.",
+  "residual_risks": "1. Owner decision needed: whether to build this at all, and if so whether a FOURTH mandatory Stop-hook gate (on top of browser-verify-gate.sh, visual-deliverable-gate.py, recurrence-harden-gate.py, all already blocking turn-end today) risks gate fatigue or an agent starting to game the 6-line format rather than genuinely walk the axes -- this tradeoff is not addressed anywhere in the draft and should be a named QUESTIONS.md item before build. 2. The Uber 'Base Counter' claim must be re-sourced with a real, fetchable URL or dropped before this text is committed to RATIONALE.md; as written it cannot survive a citation check. 3. The Figma Config-2026 AI design review assistant and the Eleken 17-step figure should be re-verified with a fresh WebSearch budget (this pass's budget was exhausted mid-verification) before being cited as settled facts rather than directional color. 4. Per CLAUDE.md rule 12.5 (build, self-test, then integrate), the two discriminating test cases the draft already specifies (a turn with zero self-walk lines should exit 2; a turn with all six correctly-formatted PASS/n-a lines should exit 0) must actually be run against the hook script before it is wired into settings.json's Stop array -- this is a hard gate on shipping, not optional polish. 5. No LOCKFILE or SOURCE frozen literal is reopened by this stream; the thresholds cited (4.5:1, <=4 type sizes, 30-50% dominance jump, 5-pass floors) are all already-locked values being reused as gate thresholds, so there is no lock-tension item to escalate on that front.",
+  "claim_verdicts": [
+   {
+    "claim": "WHO Surgical Safety Checklist: complications 11.0% to 7.0%, mortality 1.5% to 0.8%, 8 hospitals, 7,688 patients (Haynes et al., NEJM 2009)",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Verified via PubMed abstract fetch: exact match, 3,733 pre + 3,955 post = 7,688; P=0.003 mortality, P<0.001 complications. Tier T2 correct for a single non-randomized before/after study."
+   },
+   {
+    "claim": "Heuristic evaluation (Nielsen and Molich 1990) and the 0-4 severity scale (Nielsen 1994/95 follow-up)",
+    "source_ok": true,
+    "tier_final": "T1/T2 as split in draft",
+    "note": "Standard, well-established HCI canon; no red flags on recall, tier split (method T1, scale T2) is defensible and left as-is."
+   },
+   {
+    "claim": "Cognitive walkthrough (Wharton, Rieman, Lewis, Polson, 1994)",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Real, canonical citation from the Usability Inspection Methods literature."
+   },
+   {
+    "claim": "WCAG 2.2 AA 1.4.3 requires 4.5:1 minimum contrast for normal text",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Correct, unchanged."
+   },
+   {
+    "claim": "APCA Lc 75 body-text floor",
+    "source_ok": true,
+    "tier_final": "T3 (self-referential)",
+    "note": "Verified present verbatim in this worktree's _design-system/RATIONALE.md (line 101: 'Lc 75 body'; line 108 shows an actual measured pair). Correctly self-sourced, not an external claim."
+   },
+   {
+    "claim": "Vercel Production Checklist panel shows a live N/6 counter with per-item Enable/Skip states",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Confirmed directly via Mobbin screenshots this pass: observed 0/6, 3/6, 4/6 states with Enable/Skip buttons matching the draft's description."
+   },
+   {
+    "claim": "Deputy disables the 'Review and submit' CTA until 100% of the checklist is green",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Confirmed via Mobbin screenshot: greyed-out 'Review and submit' button against a checklist with green checkmarks."
+   },
+   {
+    "claim": "GitLab keeps 'Ready to merge!' and 'Approval is optional' as two separate rows",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Confirmed via Mobbin screenshot: both rows present and independently collapsible, exactly as described."
+   },
+   {
+    "claim": "Graphite's PR sidebar reports each gate row independently, including a neutral not-configured state",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Confirmed via Mobbin: 'Ready to merge', 'Graphite Agent found no issues', 'No status checks set up', 'No approvals required' shown as four stacked independent rows. 'Not configured' is a fair paraphrase of 'No status checks set up'."
+   },
+   {
+    "claim": "Chromatic and Percy hold a PR's merge status at pending until every visual diff is resolved, blocking the merge action itself",
+    "source_ok": false,
+    "tier_final": "CONV, softened",
+    "note": "Chromatic's own docs (fetched) confirm the check exists but require the team to configure it as a REQUIRED branch-protection status check for it to actually block merge; not automatic by default as the draft implied. Real mechanism, overclaimed as inherent."
+   },
+   {
+    "claim": "Eleken published a 17-step numbered pre-handoff design QA checklist",
+    "source_ok": false,
+    "tier_final": "CONV, step count unconfirmed",
+    "note": "URL 404'd, no remaining search budget to relocate the exact page. General genre (numbered pre-handoff checklists exist) plausible; the specific '17' figure could not be reconfirmed and is dropped."
+   },
+   {
+    "claim": "Figma shipped a native AI design review assistant at Config 2026 that scans frames pre-handoff",
+    "source_ok": false,
+    "tier_final": "T3, unconfirmed",
+    "note": "Zero corroboration found across two Bing searches and a direct figma.com/config/ fetch (404). Already correctly tagged T3 in the draft; kept at T3 but flagged explicitly as unconfirmed rather than presented as settled."
+   },
+   {
+    "claim": "Katya Homa, 'Steal my AI Design Crit checklist' (Medium, Feb 2026), describes an AI critique pass before human review",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Plausible, low-stakes personal-blog citation, consistent with the known Medium design-writing genre; not independently re-verified this pass but appropriately hedged already at T3."
+   },
+   {
+    "claim": "Uber's Base design system runs an automated 'Base Counter' conformance scorer on daily CD builds with auto-ticketing, plus a human 'Feature Review Readiness' step",
+    "source_ok": false,
+    "tier_final": "T3 at best, flagged unconfirmed",
+    "note": "Could not locate via Uber blog listing, direct URL guesses, or Bing search. Cited at CONV tier in the draft (implying confirmed observation) which is not earned; this is the single most load-bearing unverifiable claim in the stream and should not enter RATIONALE.md without a real citation."
+   },
+   {
+    "claim": "Shopify Polaris's content guidance uses the litmus 'could this header, subcopy, and button just be a button?'",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Consistent with Polaris's known published content-design philosophy of removing anything not necessary for clarity; not independently re-fetched this pass but low risk and plausible."
+   },
+   {
+    "claim": "No number in this stream appears on the PSYCHOLOGY.md myth_screen never-cite table",
+    "source_ok": true,
+    "tier_final": "N/A (screening result)",
+    "note": "Checked every number in sources[], real_world_evidence[], and numbers_used[] against the myth_screen table (2000% samples, 70-90% defaults, 2x loss aversion, jam study, $300M button, 5%/25-95% retention, 5-25x CAC, Amazon 100ms/1%, Duolingo +20%, UGC 4x). Zero overlap; this stream's domain (checklist/HCI/CI-gate evidence) does not touch the psychology myth table at all."
+   },
+   {
+    "claim": "mockup-floors-gate.py is a live, owner-approved hook this proposal would extend",
+    "source_ok": false,
+    "tier_final": "corrected in verified_addition",
+    "note": "Confirmed by grep/find: no such file exists anywhere in the worktree and it is not registered in settings.json. The draft's own OPEN CAVEAT already flagged this correctly. However the draft's companion list of 'only 7 hooks are wired' undercounts reality (~24 unique hook commands actually wired, including two other Stop hooks); corrected in verified_addition."
+   }
+  ]
+ }
+}

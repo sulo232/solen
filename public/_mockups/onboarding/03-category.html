@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solen Onboarding · 3 Kategorie</title>
+<link rel="stylesheet" href="../_assets/ds.css">
+<link rel="stylesheet" href="_base.css">
+</head>
+<body>
+<div class="wrap">
+  <a href="index.html" style="color:#9aa0a6;font-size:13px;text-decoration:none">← Alle Sektionen</a>
+  <h1 class="sec-h" style="margin-top:14px">3 · Kategorie / Interests-Grid</h1>
+  <p class="sec-sub">Mehrfachauswahl der Kategorien. Das ist der Moment, in dem die Startseite personalisiert wird. Foto-Kacheln verkaufen das Ergebnis besser als reine Labels, und eine Live-Vorschau macht die Auswahl sofort wertvoll.</p>
+  <div class="note"><b>Wie andere es lösen:</b> Behance = 2-Spalten Foto-Kacheln, Label im Bild, Sticky "Select 1 or more". Zalando = Foto-Kacheln mit Label-Leiste + Sticky Save. SiriusXM = runde Foto-Chips im 3-Spalten-Raster. NBA = Raster mit grünem Check-Badge auf Auswahl.</p>
+
+  <div class="phones">
+
+    <!-- A: 2-col photo tiles + ring + colored selected border (Behance/Zalando) -->
+    <div class="col">
+      <p class="cap">A — Foto-Kacheln 2-Spalten <span>Behance/Zalando</span></p>
+      <div class="phone"><div class="notch"></div><div class="screen">
+        <div class="sb"><span>9:41</span><span class="r"><i data-lucide="wifi"></i><i data-lucide="battery-full"></i></span></div>
+        <div class="body" style="padding-bottom:18px">
+          <div class="pad" style="padding-top:4px">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="prog"><div class="f" style="width:50%"></div></div>
+              <span style="font-size:11px;font-weight:600;color:var(--ink3);white-space:nowrap">Schritt 2 von 4</span>
+            </div>
+            <div class="h1" style="font-size:24px;margin-top:16px">Was interessiert dich?</div>
+            <p class="sub" style="margin-top:6px">Wähle deine Kategorien für eine persönliche Startseite.</p>
+          </div>
+          <div style="flex:1;min-height:0;overflow:hidden;margin-top:14px;padding:0 18px">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+              <!-- selected coiffeur -->
+              <div style="position:relative;height:96px;border-radius:15px;overflow:hidden;border:2px solid var(--accent);box-shadow:0 6px 16px -8px rgba(39,110,241,.5)">
+                <img src="img/coiffeur.png" style="width:100%;height:100%;object-fit:cover">
+                <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 35%,rgba(0,0,0,.6) 100%)"></div>
+                <div class="ring on" style="position:absolute;top:8px;right:8px;border-color:#fff;background:rgba(255,255,255,.25);backdrop-filter:blur(2px)"><span class="d" style="background:#fff"></span></div>
+                <span style="position:absolute;left:10px;bottom:8px;color:#fff;font-weight:700;font-size:13px">Coiffeur</span>
+              </div>
+              <!-- selected nails -->
+              <div style="position:relative;height:96px;border-radius:15px;overflow:hidden;border:2px solid var(--accent);box-shadow:0 6px 16px -8px rgba(39,110,241,.5)">
+                <img src="img/nails.png" style="width:100%;height:100%;object-fit:cover">
+                <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 35%,rgba(0,0,0,.6) 100%)"></div>
+                <div class="ring on" style="position:absolute;top:8px;right:8px;border-color:#fff;background:rgba(255,255,255,.25);backdrop-filter:blur(2px)"><span class="d" style="background:#fff"></span></div>
+                <span style="position:absolute;left:10px;bottom:8px;color:#fff;font-weight:700;font-size:13px">Nägel</span>
+              </div>
+              <!-- unselected barber -->
+              <div style="position:relative;height:96px;border-radius:15px;overflow:hidden;border:2px solid transparent">
+                <img src="img/barber.png" style="width:100%;height:100%;object-fit:cover">
+                <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 35%,rgba(0,0,0,.6) 100%)"></div>
+                <div class="ring" style="position:absolute;top:8px;right:8px;border-color:#fff;background:rgba(0,0,0,.2)"></div>
+                <span style="position:absolute;left:10px;bottom:8px;color:#fff;font-weight:700;font-size:13px">Barber</span>
+              </div>
+              <!-- unselected spa -->
+              <div style="position:relative;height:96px;border-radius:15px;overflow:hidden;border:2px solid transparent">
+                <img src="img/spa.png" style="width:100%;height:100%;object-fit:cover">
+                <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 35%,rgba(0,0,0,.6) 100%)"></div>
+                <div class="ring" style="position:absolute;top:8px;right:8px;border-color:#fff;background:rgba(0,0,0,.2)"></div>
+                <span style="position:absolute;left:10px;bottom:8px;color:#fff;font-weight:700;font-size:13px">Spa</span>
+              </div>
+              <!-- unselected massage -->
+              <div style="position:relative;height:96px;border-radius:15px;overflow:hidden;border:2px solid transparent">
+                <img src="img/massage.png" style="width:100%;height:100%;object-fit:cover">
+                <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 35%,rgba(0,0,0,.6) 100%)"></div>
+                <div class="ring" style="position:absolute;top:8px;right:8px;border-color:#fff;background:rgba(0,0,0,.2)"></div>
+                <span style="position:absolute;left:10px;bottom:8px;color:#fff;font-weight:700;font-size:13px">Massage</span>
+              </div>
+              <!-- unselected kosmetik -->
+              <div style="position:relative;height:96px;border-radius:15px;overflow:hidden;border:2px solid transparent">
+                <img src="img/kosmetik.png" style="width:100%;height:100%;object-fit:cover">
+                <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 35%,rgba(0,0,0,.6) 100%)"></div>
+                <div class="ring" style="position:absolute;top:8px;right:8px;border-color:#fff;background:rgba(0,0,0,.2)"></div>
+                <span style="position:absolute;left:10px;bottom:8px;color:#fff;font-weight:700;font-size:13px">Kosmetik</span>
+              </div>
+            </div>
+          </div>
+          <div class="pad" style="margin-top:14px">
+            <div class="cta">Weiter <span style="font-weight:500;opacity:.7;font-size:13px">2 gewählt</span></div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- B: icon-chip cards, selected = colored fill -->
+    <div class="col">
+      <p class="cap">B — Icon-Chip-Karten <span>SiriusXM/Spotify</span></p>
+      <div class="phone"><div class="notch"></div><div class="screen">
+        <div class="sb"><span>9:41</span><span class="r"><i data-lucide="wifi"></i><i data-lucide="battery-full"></i></span></div>
+        <div class="body" style="padding-bottom:18px">
+          <div class="pad" style="padding-top:4px">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="prog"><div class="f" style="width:50%"></div></div>
+              <span style="font-size:11px;font-weight:600;color:var(--ink3);white-space:nowrap">Schritt 2 von 4</span>
+            </div>
+            <div class="h1" style="font-size:24px;margin-top:16px">Wähle deine Themen</div>
+            <p class="sub" style="margin-top:6px">Tippe alles an, was dich interessiert.</p>
+          </div>
+          <div style="flex:1;min-height:0;overflow:hidden;margin-top:16px;padding:0 18px">
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <!-- selected: Coiffeur (violet) -->
+              <div style="display:flex;align-items:center;gap:12px;padding:11px 13px;border-radius:15px;background:#F3EBFF;border:2px solid var(--violet)">
+                <span class="icochip" style="width:38px;height:38px;background:#fff"><i data-lucide="scissors" style="color:var(--violet)"></i></span>
+                <span style="flex:1;font-size:15px;font-weight:600;color:var(--ink)">Coiffeur</span>
+                <span style="width:22px;height:22px;border-radius:999px;background:var(--violet);display:flex;align-items:center;justify-content:center"><i data-lucide="check" style="color:#fff;width:14px;height:14px;stroke-width:3"></i></span>
+              </div>
+              <!-- selected: Barber (blue) -->
+              <div style="display:flex;align-items:center;gap:12px;padding:11px 13px;border-radius:15px;background:var(--accentPale);border:2px solid var(--accent)">
+                <span class="icochip" style="width:38px;height:38px;background:#fff"><i data-lucide="scissors" style="color:var(--accent)"></i></span>
+                <span style="flex:1;font-size:15px;font-weight:600;color:var(--ink)">Barber</span>
+                <span style="width:22px;height:22px;border-radius:999px;background:var(--accent);display:flex;align-items:center;justify-content:center"><i data-lucide="check" style="color:#fff;width:14px;height:14px;stroke-width:3"></i></span>
+              </div>
+              <!-- unselected: Nägel (pink) -->
+              <div style="display:flex;align-items:center;gap:12px;padding:11px 13px;border-radius:15px;background:#fff;border:1.5px solid var(--border)">
+                <span class="icochip" style="width:38px;height:38px;background:#FDE8F1"><i data-lucide="sparkles" style="color:var(--cpink)"></i></span>
+                <span style="flex:1;font-size:15px;font-weight:600;color:var(--ink)">Nägel</span>
+                <span class="ring"></span>
+              </div>
+              <!-- unselected: Spa (green) -->
+              <div style="display:flex;align-items:center;gap:12px;padding:11px 13px;border-radius:15px;background:#fff;border:1.5px solid var(--border)">
+                <span class="icochip" style="width:38px;height:38px;background:#E9F8EE"><i data-lucide="flower-2" style="color:var(--cgreen)"></i></span>
+                <span style="flex:1;font-size:15px;font-weight:600;color:var(--ink)">Spa</span>
+                <span class="ring"></span>
+              </div>
+              <!-- unselected: Massage (orange) -->
+              <div style="display:flex;align-items:center;gap:12px;padding:11px 13px;border-radius:15px;background:#fff;border:1.5px solid var(--border)">
+                <span class="icochip" style="width:38px;height:38px;background:#FCEEE3"><i data-lucide="hand" style="color:var(--corange)"></i></span>
+                <span style="flex:1;font-size:15px;font-weight:600;color:var(--ink)">Massage</span>
+                <span class="ring"></span>
+              </div>
+              <!-- unselected: Kosmetik (rose) -->
+              <div style="display:flex;align-items:center;gap:12px;padding:11px 13px;border-radius:15px;background:#fff;border:1.5px solid var(--border)">
+                <span class="icochip" style="width:38px;height:38px;background:#FCE7EC"><i data-lucide="droplet" style="color:var(--crose)"></i></span>
+                <span style="flex:1;font-size:15px;font-weight:600;color:var(--ink)">Kosmetik</span>
+                <span class="ring"></span>
+              </div>
+            </div>
+          </div>
+          <div class="pad" style="margin-top:14px">
+            <div class="cta">Weiter</div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- C: Pinterest-style 3-col photo mosaic + green check badges -->
+    <div class="col">
+      <p class="cap">C — Foto-Mosaik 3-Spalten <span>Pinterest/Google Arts</span></p>
+      <div class="phone"><div class="notch"></div><div class="screen">
+        <div class="sb"><span>9:41</span><span class="r"><i data-lucide="wifi"></i><i data-lucide="battery-full"></i></span></div>
+        <div class="body" style="padding-bottom:18px">
+          <div class="pad" style="padding-top:4px">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="prog"><div class="f" style="width:50%"></div></div>
+              <span style="font-size:11px;font-weight:600;color:var(--ink3);white-space:nowrap">Schritt 2 von 4</span>
+            </div>
+            <div class="h1" style="font-size:23px;margin-top:16px">Tippe an, was dir gefällt</div>
+          </div>
+          <div style="flex:1;min-height:0;overflow:hidden;margin-top:16px;padding:0 18px">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+              <!-- col layout: staggered heights via individual cells -->
+              <!-- selected coiffeur -->
+              <div style="position:relative;height:120px;border-radius:14px;overflow:hidden">
+                <img src="img/coiffeur.png" style="width:100%;height:100%;object-fit:cover">
+                <div style="position:absolute;inset:0;background:rgba(39,110,241,.18)"></div>
+                <span style="position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:999px;background:var(--success);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.25)"><i data-lucide="check" style="color:#fff;width:14px;height:14px;stroke-width:3"></i></span>
+                <span style="position:absolute;left:7px;bottom:6px;color:#fff;font-weight:700;font-size:11px;text-shadow:0 1px 4px rgba(0,0,0,.6)">Coiffeur</span>
+              </div>
+              <!-- unselected barber -->
+              <div style="position:relative;height:88px;border-radius:14px;overflow:hidden">
+                <img src="img/barber.png" style="width:100%;height:100%;object-fit:cover">
+                <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 45%,rgba(0,0,0,.5) 100%)"></div>
+                <span style="position:absolute;left:7px;bottom:6px;color:#fff;font-weight:700;font-size:11px;text-shadow:0 1px 4px rgba(0,0,0,.6)">Barber</span>
+              </div>
+              <!-- selected nails -->
+              <div style="position:relative;height:104px;border-radius:14px;overflow:hidden">
+                <img src="img/nails.png" style="width:100%;height:100%;object-fit:cover">
+                <div style="position:absolute;inset:0;background:rgba(39,110,241,.18)"></div>
+                <span style="position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:999px;background:var(--success);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.25)"><i data-lucide="check" style="color:#fff;width:14px;height:14px;stroke-width:3"></i></span>
+                <span style="position:absolute;left:7px;bottom:6px;color:#fff;font-weight:700;font-size:11px;text-shadow:0 1px 4px rgba(0,0,0,.6)">Nägel</span>
+              </div>
+              <!-- unselected spa -->
+              <div style="position:relative;height:96px;border-radius:14px;overflow:hidden">
+                <img src="img/spa.png" style="width:100%;height:100%;object-fit:cover">
+                <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 45%,rgba(0,0,0,.5) 100%)"></div>
+                <span style="position:absolute;left:7px;bottom:6px;color:#fff;font-weight:700;font-size:11px;text-shadow:0 1px 4px rgba(0,0,0,.6)">Spa</span>
+              </div>
+              <!-- unselected massage -->
+              <div style="position:relative;height:118px;border-radius:14px;overflow:hidden">
+                <img src="img/massage.png" style="width:100%;height:100%;object-fit:cover">
+                <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 45%,rgba(0,0,0,.5) 100%)"></div>
+                <span style="position:absolute;left:7px;bottom:6px;color:#fff;font-weight:700;font-size:11px;text-shadow:0 1px 4px rgba(0,0,0,.6)">Massage</span>
+              </div>
+              <!-- unselected kosmetik -->
+              <div style="position:relative;height:90px;border-radius:14px;overflow:hidden">
+                <img src="img/kosmetik.png" style="width:100%;height:100%;object-fit:cover">
+                <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 45%,rgba(0,0,0,.5) 100%)"></div>
+                <span style="position:absolute;left:7px;bottom:6px;color:#fff;font-weight:700;font-size:11px;text-shadow:0 1px 4px rgba(0,0,0,.6)">Kosmetik</span>
+              </div>
+            </div>
+          </div>
+          <div class="pad" style="margin-top:14px">
+            <div class="cta-grad">Weiter</div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- D: live-preview variant — tiles + sticky bottom bar w/ count + fanned photo stack (owner fave) -->
+    <div class="col">
+      <p class="cap">D — Live-Vorschau + Foto-Stapel <span>Solen-Original</span></p>
+      <div class="phone"><div class="notch"></div><div class="screen">
+        <div class="sb"><span>9:41</span><span class="r"><i data-lucide="wifi"></i><i data-lucide="battery-full"></i></span></div>
+        <div class="body" style="padding-bottom:0">
+          <div class="pad" style="padding-top:4px">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="prog"><div class="f" style="width:50%"></div></div>
+              <span style="font-size:11px;font-weight:600;color:var(--ink3);white-space:nowrap">Schritt 2 von 4</span>
+            </div>
+            <div class="h1" style="font-size:23px;margin-top:16px">Was suchst du in Basel?</div>
+          </div>
+          <div style="flex:1;min-height:0;overflow:hidden;margin-top:14px;padding:0 18px">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+              <!-- selected coiffeur -->
+              <div style="position:relative;height:84px;border-radius:14px;overflow:hidden;border:2px solid var(--accent)">
+                <img src="img/coiffeur.png" style="width:100%;height:100%;object-fit:cover">
+                <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 40%,rgba(0,0,0,.6) 100%)"></div>
+                <span style="position:absolute;top:7px;right:7px;width:20px;height:20px;border-radius:999px;background:var(--accent);display:flex;align-items:center;justify-content:center"><i data-lucide="check" style="color:#fff;width:13px;height:13px;stroke-width:3"></i></span>
+                <span style="position:absolute;left:9px;bottom:7px;color:#fff;font-weight:700;font-size:12px">Coiffeur</span>
+              </div>
+              <!-- selected spa -->
+              <div style="position:relative;height:84px;border-radius:14px;overflow:hidden;border:2px solid var(--accent)">
+                <img src="img/spa.png" style="width:100%;height:100%;object-fit:cover">
+                <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 40%,rgba(0,0,0,.6) 100%)"></div>
+                <span style="position:absolute;top:7px;right:7px;width:20px;height:20px;border-radius:999px;background:var(--accent);display:flex;align-items:center;justify-content:center"><i data-lucide="check" style="color:#fff;width:13px;height:13px;stroke-width:3"></i></span>
+                <span style="position:absolute;left:9px;bottom:7px;color:#fff;font-weight:700;font-size:12px">Spa</span>
+              </div>
+              <!-- unselected barber -->
+              <div style="position:relative;height:84px;border-radius:14px;overflow:hidden;border:2px solid transparent">
+                <img src="img/barber.png" style="width:100%;height:100%;object-fit:cover">
+                <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 40%,rgba(0,0,0,.6) 100%)"></div>
+                <div class="ring" style="position:absolute;top:7px;right:7px;width:20px;height:20px;border-color:#fff;background:rgba(0,0,0,.2)"></div>
+                <span style="position:absolute;left:9px;bottom:7px;color:#fff;font-weight:700;font-size:12px">Barber</span>
+              </div>
+              <!-- unselected nails -->
+              <div style="position:relative;height:84px;border-radius:14px;overflow:hidden;border:2px solid transparent">
+                <img src="img/nails.png" style="width:100%;height:100%;object-fit:cover">
+                <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 40%,rgba(0,0,0,.6) 100%)"></div>
+                <div class="ring" style="position:absolute;top:7px;right:7px;width:20px;height:20px;border-color:#fff;background:rgba(0,0,0,.2)"></div>
+                <span style="position:absolute;left:9px;bottom:7px;color:#fff;font-weight:700;font-size:12px">Nägel</span>
+              </div>
+            </div>
+          </div>
+          <!-- sticky live-preview bar -->
+          <div style="margin-top:12px;background:var(--sunken);border-top:1px solid var(--hair);padding:13px 18px 18px">
+            <div style="display:flex;align-items:center;gap:12px">
+              <!-- fanned stack of small photos -->
+              <div style="position:relative;width:74px;height:42px;flex:0 0 auto">
+                <div style="position:absolute;left:0;top:5px;width:34px;height:34px;border-radius:10px;overflow:hidden;border:2px solid #fff;transform:rotate(-9deg);box-shadow:0 3px 8px -2px rgba(0,0,0,.25)"><img src="img/spa.png" style="width:100%;height:100%;object-fit:cover"></div>
+                <div style="position:absolute;left:18px;top:2px;width:34px;height:34px;border-radius:10px;overflow:hidden;border:2px solid #fff;transform:rotate(4deg);box-shadow:0 3px 8px -2px rgba(0,0,0,.25)"><img src="img/coiffeur.png" style="width:100%;height:100%;object-fit:cover"></div>
+                <div style="position:absolute;left:38px;top:5px;width:34px;height:34px;border-radius:10px;overflow:hidden;border:2px solid #fff;transform:rotate(11deg);box-shadow:0 3px 8px -2px rgba(0,0,0,.25)"><img src="img/massage.png" style="width:100%;height:100%;object-fit:cover"></div>
+              </div>
+              <div style="flex:1;min-width:0">
+                <div style="font-family:'Inter Tight';font-weight:800;font-size:17px;letter-spacing:-.02em;color:var(--ink)">12 Salons in Basel</div>
+                <div style="font-size:12px;color:var(--ink2);margin-top:1px">für Coiffeur und Spa bereit</div>
+              </div>
+            </div>
+            <div class="cta" style="margin-top:13px">Loslegen <i data-lucide="arrow-right" style="color:#fff;width:18px;height:18px"></i></div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+  </div>
+</div>
+<script src="../_assets/lucide.min.js"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>

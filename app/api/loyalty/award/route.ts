@@ -4,9 +4,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { validateBody, loyaltyAwardSchema } from "@/lib/validations";
 import { getServerEnv } from "@/lib/env";
+import { sendEmail } from "@/lib/email";
 
 /**
- * POST /api/loyalty/award — Award a loyalty stamp after booking completion.
+ * POST /api/loyalty/award: award a loyalty stamp after booking completion.
  * Called internally (e.g., from webhook or cron) with admin-level access.
  * Body: { booking_id: string, salon_id: string, customer_id: string }
  *
@@ -103,17 +104,13 @@ async function sendAlmostThereEmail(
   const displayName = profile?.display_name ?? "";
 
   try {
-    await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${resendApiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        from: "Solen <noreply@solen.ch>",
-        to: email,
-        subject: `⭐ Noch 1 Besuch bis zu Ihrer Belohnung bei ${salonName}!`,
-        html: `
+    // Routed through the shared sender (owner decision 2026-08-14). The German stays formal:
+    // the branch this came from rewrote "Ihrer" to "deiner" throughout, which COPY_LAW forbids.
+    await sendEmail({
+      from: "Solen <noreply@solen.ch>",
+      to: email,
+      subject: `⭐ Noch 1 Besuch bis zu Ihrer Belohnung bei ${salonName}!`,
+      html: `
           <div style="font-family: 'DM Sans', sans-serif; max-width: 480px; margin: 0 auto; padding: 24px;">
             <h2 style="font-family: Syne, sans-serif; color: #1A1209;">Fast geschafft!</h2>
             <p style="color: #666;">Hallo ${displayName},</p>
@@ -123,13 +120,11 @@ async function sendAlmostThereEmail(
               style="display: inline-block; background: #C05038; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-top: 16px;">
               Jetzt Termin buchen
             </a>
-            <p style="color: #999; font-size: 12px; margin-top: 24px;">— Ihr Solen Team</p>
+            <p style="color: #999; font-size: 12px; margin-top: 24px;">Ihr Solen Team</p>
           </div>
         `,
-      }),
-      // api-contracts-06: bound the outbound call so a hung Resend request
-      // can't hold the function's whole wall-clock budget.
-      signal: AbortSignal.timeout(8000),
+      // The per-call 8s abort that used to sit here is gone because sendEmail now carries its own
+      // 5s timeout for every send, so the bound is kept and is no longer per-caller.
     });
   } catch (err) {
     console.error("[loyalty/award] Failed to send almost-there email:", err);

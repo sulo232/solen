@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { ClipboardList, Clock, Sparkles } from "lucide-react";
+import { ClipboardList, Clock, Bot } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import Spinner from "@/components-legacy/ui/Spinner";
 import type { IntakeFormResponse } from "@/lib/types";
@@ -129,7 +129,7 @@ export default function MyIntakeFormsPage() {
                               // V3-D286: AI recommendation block — undefined s-amber → s-accent pale (Layer 2 info wash, refined pastel pattern per CLAUDE.md V3-D199)
                               <div className="mt-4 mb-5 p-3 rounded-[12px] bg-s-bg-sunken border border-s-border">
                                 <p className="text-xs font-bold text-s-ink flex items-center gap-1 mb-1.5">
-                                  <Sparkles size={12} /> {t("intakeAiAnalysis")}
+                                  <Bot size={12} /> {t("intakeAiAnalysis")}
                                 </p>
                                 <p className="text-sm text-s-ink/80 leading-relaxed">
                                   {form.ai_recommendation}

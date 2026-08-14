@@ -1,0 +1,47 @@
+{
+ "id": "S22",
+ "draft": {
+  "id": "S22",
+  "tag": "net-new",
+  "title": "Onboarding / first-run UX",
+  "principle_summary": "placeholder",
+  "sources": [],
+  "solen_current": "placeholder",
+  "gap": "placeholder",
+  "proposed_addition": "placeholder"
+ },
+ "verified": {
+  "id": "S22",
+  "tag": "net-new",
+  "verdict": "flagged",
+  "verified_addition": "NONE. The research-stage draft for S22 (\"Onboarding / first-run UX\") contains no actual content: principle_summary, solen_current, gap, and proposed_addition are all literally the string \"placeholder\", and sources is an empty array. There is nothing to verify or clean, because nothing was researched. No claim, no number, no citation was produced, so the myth screen and source-check found zero items to test.\n\nPer the stream's own scope (TASTE_R3_STREAMS.json S22, target _design-system/RATIONALE.md, x-ref PSYCHOLOGY law 3 never-start-at-zero + law 4 value-before-auth/guest-first), the real deliverable should have been sourced first-run/onboarding disclosure-mechanics principles (progressive onboarding sequencing, value-before-friction, pill-picker interest capture as a layout/perceptual pattern) explicitly scoped to NOT re-derive the behavioral core already owned by PSYCHOLOGY.md laws 3 and 4. None of that was attempted.\n\nThis verify stage cannot manufacture a proposed_addition on the research stage's behalf; doing so would violate the very discipline this pipeline exists to enforce (rule 15/16: don't invent, don't assert unchecked claims).",
+  "claim_verdicts": [
+   {
+    "claim": "principle_summary = \"placeholder\"",
+    "source_ok": false,
+    "tier_final": "MYTH",
+    "note": "Not a real claim, literal placeholder text, no content to verify."
+   },
+   {
+    "claim": "solen_current = \"placeholder\"",
+    "source_ok": false,
+    "tier_final": "MYTH",
+    "note": "Not a real claim, literal placeholder text."
+   },
+   {
+    "claim": "gap = \"placeholder\"",
+    "source_ok": false,
+    "tier_final": "MYTH",
+    "note": "Not a real claim, literal placeholder text."
+   },
+   {
+    "claim": "proposed_addition = \"placeholder\"",
+    "source_ok": false,
+    "tier_final": "MYTH",
+    "note": "Not a real claim, literal placeholder text; sources[] is empty so nothing to spot-check."
+   }
+  ],
+  "myths_caught": [],
+  "residual_risks": "The research stage for S22 did not run or its output was lost/truncated before reaching verify. This needs to go back to the research stage before any owner-facing addition can be produced. Nothing here is a lock-tension or a QUESTIONS.md candidate; it is a pipeline gap, not a design decision. Recommend re-running research for S22 against _plans/TASTE_R3_STREAMS.json's actual key_question (first-run disclosure/layout mechanics, explicitly excluding the PSYCHOLOGY-owned behavioral core in laws 3 and 4) before re-submitting to verify."
+ }
+}

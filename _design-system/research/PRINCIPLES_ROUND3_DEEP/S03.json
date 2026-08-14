@@ -1,0 +1,217 @@
+{
+ "id": "S03",
+ "synth": {
+  "id": "S03",
+  "tag": "generative-gap",
+  "title": "Page-level vertical rhythm prior for a brand-new page",
+  "principle_summary": "A brand-new page reads balanced before any content-specific tuning when it follows one repeatable skeleton: exactly ONE dominant hero block first (photo, search bar, or icon-illustration, height scaled to the page's JOB, not a flat percentage), ONE heading immediately after it (never two headings stacked with no content between), then a strict repeating unit of section-heading, then content, then an optional \"see all\" link, separated by hairlines or whitespace, with trust/social-proof surfaced early and directory/browse content pushed last, and a sticky bottom bar reserved for the single commit action when one exists. The hero-height figure is not a single constant, it is a BAND that varies by page job: a search-forward discovery/marketplace hero (Solen's own home, salon list) sits around 25-35% of the first viewport (what Fresha, Booksy, Treatwell, and Urban Company's PDP actually ship), an empty-state or single-action screen can center its icon-heading-CTA cluster at roughly 20-30% of screen height without being top-anchored (Depop), and a full-bleed brand/onboarding hero (rare on Solen, which is utility-first) can run as high as 80-85% (TIDE) but that is an upper-bound reference, never a target. Within a section, the gap from heading to its content stays tight (matches Solen's locked 16px), and the gap between one section and the next stays loose (matches Solen's locked 32px); this binary is independently corroborated by three unrelated sources (Hulu's shelf pattern, the 8pt spacing grid convention, and Booking.com's repeating content-link-divider unit), not just Solen's own memory.",
+  "real_world_evidence": [
+   {
+    "source": "Urban Company AC-service PDP (Mobbin)",
+    "what": "hero photo fills ~35% of viewport, icon controls float over it with no text on photo; order = photo hero -> identity block (title+subtitle) -> trust row (rating+bookings count) -> ONE sunken-gray CTA banner -> category row -> content sections, all separated by plain hairlines",
+    "tier": "T3"
+   },
+   {
+    "source": "TheFork / Eat Day restaurant PDP (Mobbin)",
+    "what": "name+location+category+price+rating stack ABOVE the photo, then a photo carousel, then a 4-tab bar, then a promo banner, then a bold heading with time-slot pills; FLAGGED CONFLICT: stacks a green -40% badge on every slot, which Solen's single-pale-green-pill law rejects",
+    "tier": "T3"
+   },
+   {
+    "source": "TIDE onboarding hero (Mobbin)",
+    "what": "full-bleed photo/video occupies ~85% of screen height, one heading + one subtitle overlaid near the bottom third, two stacked CTAs anchor the bottom; the extreme upper bound of a hero band, not a target for a utility-first product like Solen",
+    "tier": "T3"
+   },
+   {
+    "source": "Depop empty-bag state (Mobbin)",
+    "what": "icon illustration (~25% of screen height) sits vertically CENTERED as a group with heading, one-line subtitle, and a full-width black pill CTA, not top-anchored; the black pill matches Solen's ink-CTA law directly",
+    "tier": "T3"
+   },
+   {
+    "source": "Acorns empty state (Mobbin)",
+    "what": "icon+heading+body sit in the top third, large gap, then the CTA pill is pinned near the bottom of the viewport rather than directly under the text; a second valid empty-state rhythm distinct from Depop's centered cluster",
+    "tier": "T3"
+   },
+   {
+    "source": "Booking.com property PDP sections (Mobbin)",
+    "what": "repeating unit across the whole page: bold H2 heading -> content (cards or icon+label grid) -> optional blue see-all link -> hairline divider before the next section; sticky bottom bar carries a caption line above the single commit CTA",
+    "tier": "T3"
+   },
+   {
+    "source": "Viator activity PDP (Mobbin)",
+    "what": "H2 + one-line gray subtitle -> photo grid with a +N overlay count tile -> divider -> large rating number + review card; two-line price-plus-CTA sticky bottom bar is a recurring booking-app pattern",
+    "tier": "T3"
+   },
+   {
+    "source": "Hulu home shelves (Mobbin)",
+    "what": "repeating shelf unit: bold heading with an optional VIEW ALL link on the SAME row, then a card row directly beneath with a tight ~12-16px gap, then a larger ~24-32px gap before the next shelf heading; a clean real-app instance of the binary tight-within/loose-between gap rhythm, observed 3x in one screenful",
+    "tier": "T3"
+   },
+   {
+    "source": "Cross-cutting read across all 8 examined Mobbin screens",
+    "what": "every screen follows the same skeleton: one dominant hero first, one identity/heading block, then a repeating (heading -> content -> optional link) unit divided by hairlines, sticky bottom bar reserved for the single commit action; none stack two headings back-to-back with no content between; none use more than one accent color for the primary CTA per screen",
+    "tier": "CONV"
+   },
+   {
+    "source": "8pt/8px spacing grid",
+    "what": "the dominant spacing-token convention (8,16,24,32,40,48...) across Material Design, IBM Carbon, and widely cited UX-education sources; grounds Solen's existing 16/32 binary gap as convention-backed, not arbitrary",
+    "tier": "CONV"
+   },
+   {
+    "source": "Fresha, Booksy, Treatwell homepages (live teardown)",
+    "what": "all three beauty/wellness marketplace homepages ship a SINGLE heading in a search-forward hero occupying roughly 25-30% of the first viewport (headline + search bar, not a full-bleed visual band), followed by hero -> trust/social-proof -> app-download cross-sell -> feature/benefit blocks -> directory/browse (heaviest section, functionally a sitemap) -> footer, with generous, clear-break spacing between all sections",
+    "tier": "CONV"
+   },
+   {
+    "source": "Doctolib homepage (live teardown)",
+    "what": "structural outlier: near-absent hero (5-10% of page height, headline only) dropping straight into a dense directory grid; consistent with being a utility/healthcare booking tool rather than a discovery marketplace, and explicitly NOT the pattern to import for Solen's discovery-led posture",
+    "tier": "T3"
+   },
+   {
+    "source": "2026 landing-page trend roundups (Showit, Figma Resource Library, involve.me)",
+    "what": "directional shift toward larger section-to-section gaps (96-128px) and fewer, larger sections on desktop marketing landing pages; framed as \"generous breathing room\", no adoption data cited",
+    "tier": "T3"
+   },
+   {
+    "source": "DEV Community six-month retrospective on 2026 web-design trends",
+    "what": "a rare retrospective/falsifiable trend piece (grades which predicted trends actually held up) naming the \"calm design\" anti-maximalism correction as the one trend that stuck; directionally aligned with Solen's existing restraint lock rather than pulling toward more visual noise",
+    "tier": "T3"
+   },
+   {
+    "source": "Max content-width convention (multiple current marketing/product sites, via Showit roundup)",
+    "what": "1140-1280px centered max-width is the stable convention; matches Solen's own locked max-w-[1280px] page width, cited as external grounding only, changes nothing",
+    "tier": "CONV"
+   }
+  ],
+  "generative_prior": "Default new-page scaffold (produces a right-first mockup before content tuning): (1) ONE hero block, height chosen from a JOB-based band, not one flat number: search-forward discovery/marketplace hero = 25-35% of first viewport (Fresha/Booksy/Treatwell/Urban Company average), empty-state or single-focused-action screen = center the icon-heading-CTA cluster at roughly 20-30% of screen height, DO NOT default to top-anchored (Depop vs Acorns are both valid, centered-cluster is the safer generative default because it reads intentional at any content length); full-bleed brand/onboarding hero = up to 80% is a documented upper bound, not something to default to on a utility-first product. (2) ONE heading directly after the hero; never a second heading before any content has appeared. (3) Trust/social-proof (rating+count, stats) surfaces EARLY, in the first two sections, not buried, matching all three live marketplace teardowns. (4) Every subsequent section repeats the same unit: heading (with an optional same-row \\\"see all\\\" link) -> content -> hairline divider, gap FROM heading TO its content = Solen's locked 16px, gap BETWEEN one section's end and the next section's heading = Solen's locked 32px (three independent sources back this exact binary: Hulu's shelf pattern, the 8pt grid convention, Booking.com's repeating unit). (5) Directory/browse/sitemap-style content, if present, goes LAST, immediately before the footer, never first (Fresha/Booksy/Treatwell convergent order; Doctolib's directory-first pattern is the named exception for utility tools, explicitly not Solen's shape). (6) If a single commit action exists, it lives in a sticky bottom bar, never competing with a second CTA color on the same screen (0/8 examined screens used two accent colors for competing primary actions).",
+  "proposed_addition": "## Domain 21 addendum: page-level vertical rhythm prior for a brand-new page (closes gap-register G3)\n\n**Hero-height band is a JOB-based table, not one constant (T3, converging Mobbin + live-teardown evidence, supersedes treating \"~40% hero\" as a general prior):** a search-forward discovery/marketplace hero (home, salon-list style pages) targets 25-35% of the first viewport, matching what Fresha, Booksy, and Treatwell actually ship and close to Urban Company's ~35% PDP hero; an empty-state or single-focused-action screen centers its icon-heading-CTA cluster at roughly 20-30% of screen height (Depop), not top-anchored by default; a full-bleed brand/onboarding hero can run to 80-85% (TIDE) but this is recorded as an outer-bound reference only, never a default, since Solen is utility-first not brand-video-first. The existing ~40% figure in the balance-recipe memory reads as specific to the EmptyStateDiscovery surface it was derived from, not a general new-page constant; this entry replaces the single-number habit with the three-row band above so future pages pick the right row by JOB rather than reusing 40% everywhere.\n\n**Default section order (CONV, convergent across Fresha/Booksy/Treatwell/Urban Company/Booking.com):** hero -> single heading + identity -> trust/social-proof (early, first two sections) -> one primary CTA or cross-sell -> repeating content sections -> directory/browse/sitemap content (if any, LAST) -> footer. Doctolib's directory-first order is the named exception for utility/healthcare booking tools; Solen's discovery-led posture follows the marketplace order, not Doctolib's.\n\n**Gap rhythm reaffirmed from three independent angles (CONV, not reopening the LOCKFILE literal, corroborating it):** the existing 16px heading-to-content / 32px section-to-section binary is independently visible in Hulu's shelf pattern (tight heading-to-content gap, loose gap before the next shelf heading), the 8pt spacing-grid convention generally, and Booking.com's repeating heading-content-link-divider unit. Desktop landing-page trend sources (T3, Showit/Figma/involve.me) point toward even larger macro gaps (96-128px) between MAJOR marketing sections specifically, this is a distinct, larger scale than the component-level 16/32 binary and is recorded as a directional note for large desktop marketing pages only, not a change to the locked binary.\n\n**One heading, one CTA-color discipline (CONV, 8/8 Mobbin screens + 3/3 teardown sites):** never stack two headings with no content between them; never run two accent colors for two competing primary actions on the same screen. Booking.com and Viator's colored (blue/green) primary CTAs are named exceptions that do NOT transfer, Solen's ink-CTA law stands.\n\n**Named conflicts explicitly rejected, not imported:** TheFork's repeated green discount badge per time-slot (Solen allows one pale-green discount pill, not one per item); asymmetric/broken-grid heroes and kinetic typography from the 2026 trend layer (T3, conflicts with the 80/17 surfaces+ink restraint lock); bento-grid density (conflicts with Solen's single-column/simple-grid scaffolding). The one trend layer finding worth citing as directional support is the \"calm design\" anti-maximalism correction itself (T3, retrospective-graded), which corroborates Solen's existing restraint from the outside.\n\n**Cross-reference:** hero paint priority ties to PSYCHOLOGY.md law 8 (first 100ms is the brand, fast hero/card paint); hero-as-photo choice ties to law 7 (photos are the decision input). Neither law is restated here, both apply on top of this composition prior.\n\n**Taste-Lab probe (closes G3's remaining open half):** build the SAME real Solen surface (candidate: a currently-thin new page, e.g. an Angebote landing or a category hub) three ways, hero at 25%, hero at 35%, hero at 55%, all other elements held identical, and run the squint test + a felt-balance rating with the owner to confirm which row of the JOB-based band actually reads right for that surface class before generalizing further. Record the result back into this entry with a dated owner call, the same pattern G2 used to half-close on 2026-07-16.",
+  "sources": [
+   {
+    "claim": "8pt/8px spacing grid is the dominant convention",
+    "source": "Rejuvenate Digital, \"The 8pt Grid System\"; UX Planet, \"8 point grid system in UX design\"",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Section-to-section spacing trending toward 96-128px on desktop landing pages",
+    "source": "Showit, \"2026 Web Design Trends\"; Figma Resource Library, \"Web design trends\"",
+    "tier": "T3"
+   },
+   {
+    "claim": "Fewer sections, larger gaps is the explicit 2026 landing-page framing",
+    "source": "involve.me, \"Landing Page Design Trends by Industry\"; involve.me, \"9 Landing Page Trends For 2026\"",
+    "tier": "T3"
+   },
+   {
+    "claim": "Hero sections trending asymmetric/broken-grid, kinetic typography (rejected for Solen)",
+    "source": "Landy AI, \"Hero Section Design: 20+ Examples\"; We Are Tenet, \"15 Important UI UX Design Trends of 2026\"",
+    "tier": "T3"
+   },
+   {
+    "claim": "Bento grids live but contested by an anti-grid brutalism counter-movement (rejected for Solen)",
+    "source": "Medium/KreativePS, \"2026 Design Trends: From Prediction to Practice\"",
+    "tier": "T3"
+   },
+   {
+    "claim": "Calm design anti-maximalism is the trend that actually held up over six months",
+    "source": "DEV Community, \"Web Design Trends 2026: What Actually Held Up After Six Months\"",
+    "tier": "T3"
+   },
+   {
+    "claim": "Max content width convention holds at 1140-1280px centered",
+    "source": "Showit, \"2026 Web Design Trends\"",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Fresha, Booksy, Treatwell, Doctolib homepage structure and hero-height reads",
+    "source": "Live WebFetch teardown of fresha.com, booksy.com, treatwell.co.uk, doctolib.fr",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Urban Company, TheFork, TIDE, Depop, Acorns, Booking.com, Viator, Hulu screen-level rhythm patterns",
+    "source": "Mobbin live screen pulls (URLs in the scouting report)",
+    "tier": "T3"
+   }
+  ],
+  "numbers_used": [
+   "25-35% hero-height band for a search-forward marketplace hero",
+   "20-30% centered-cluster height for an empty-state hero",
+   "80-85% as a documented upper-bound-only hero figure, never a default",
+   "16px heading-to-content gap (existing Solen lock, corroborated not changed)",
+   "32px section-to-section gap (existing Solen lock, corroborated not changed)",
+   "96-128px directional note for desktop marketing macro-section gaps (T3, distinct scale, not a lock change)",
+   "1140-1280px max content width (CONV, matches Solen's existing locked 1280)",
+   "8pt/8px spacing grid convention"
+  ],
+  "taste_lab_probe": "Build one real, currently-thin Solen page (e.g. an Angebote landing or category hub) three ways with hero height at 25%, 35%, and 55% of first viewport, everything else held identical (treatment-only). Run the squint test plus a felt-balance rating with the owner to determine which row of the JOB-based hero-height band actually reads right for that surface class, then record the dated verdict back into this RATIONALE entry, same closure pattern G2 used on 2026-07-16."
+ },
+ "verified": {
+  "id": "S03",
+  "tag": "generative-gap",
+  "verdict": "revised",
+  "myths_caught": [
+   "\"A DEV Community six-month retrospective names calm-design/anti-maximalism as the trend that stuck\" is fabricated. The article (dev.to/studiomeyer_io, \"Web Design Trends 2026: What Actually Held Up After Six Months\") is real but says the opposite: bento grids and dark mode are what held up (denser/graphic patterns, not restraint); kinetic typography, glassmorphism 2.0, and organic blobs are what underdelivered. It never mentions calm design. This was cited as directional support for Solen's restraint lock when the source does not say that.",
+   "\"Showit and Figma Resource Library document a 96-128px section-gap shift\" is an invented number. The Showit article (showit.com/business-growth/2026-web-design-trends-you-need-to-know) exists and was read directly; its only spacing guidance is a relative '20% more whitespace around the headline' tip, no pixel figures anywhere.",
+   "\"1140-1280px max content width per the Showit roundup\" mis-cites its source; Showit does not mention a max-width figure at all. The number itself is a real, independently-known industry convention (Bootstrap 1140/1200px containers etc.), just not from the article it was attributed to.",
+   "\"involve.me explicitly frames fewer/larger sections with bigger gaps as a named 2026 trend\" overstates its source; the article (involve.me/blog/landing-page-trends), read directly, treats whitespace only as a generic best practice (citing Google's homepage), with no explicit fewer-sections framing and no pixel numbers.",
+   "Fresha/Booksy/Treatwell hero-height cited as CONV-tier (25-30%, 'live teardown') overstates both the method and the number. Live re-fetch this pass reads Fresha's hero at roughly 40-50% and Treatwell's at 30-40%, both above the claimed band; Booksy's fraction wasn't determinable. Neither the original synthesis nor this verify used actual pixel measurement (Playwright/getComputedStyle, this project's own site-teardown standard) -- both relied on AI-summarized page reads, which does not support a CONV/high-confidence tier.",
+   "Doctolib's '5-10% of page height' hero figure is unconfirmed; WebFetch on doctolib.fr returned only footer/nav markup, the actual hero was never seen by either the original synthesis or this verify pass."
+  ],
+  "residual_risks": "Owner-decision items and open uncertainty to carry forward, not blockers to filing this entry:\n\n1. The hero-height band's numeric edges are still soft even after correction (my own re-fetch found Fresha 40-50%, Treatwell 30-40%, both higher than the draft's claimed 25-30%). The entry's own taste_lab_probe (build one real Solen page at 25/35/55% hero height, squint-test with the owner) is the real closure mechanism here, not any of the cited percentages. Treat the corrected band as a wide directional prior only until that probe runs.\n\n2. Doctolib's figure could not be confirmed at all this pass (fetch only returned footer content). Either drop it as an example, or get an actual measured or manually-observed read before citing a number for it again.\n\n3. The \"calm design held up\" citation was cut entirely because the source says the opposite. If a trend-layer citation is wanted later to support Solen's restraint posture, the DEV retrospective's REAL finding (kinetic typography, glassmorphism 2.0, and organic blobs underdelivering) is the supportable angle, bento grids winning is not supportable as backing for restraint and should not be reused that way.\n\n4. The 96-128px macro-gap figure and the Showit-attributed 1140-1280px figure were cut for lacking a real source. If a future entry wants a macro-section-gap number for large desktop marketing pages, it needs a freshly quoted source, not a carry-over from this stream.\n\n5. All Mobbin-sourced percentages (Urban Company ~35%, TheFork, TIDE 80-85%, Depop ~25%, Acorns, Booking.com, Viator, Hulu) could not be independently re-verified this pass (no Mobbin access). They were already conservatively tiered T3 in the draft rather than CONV, so this is a smaller risk than the items above, but they remain estimates, not measurements, and should be flagged as such if this entry is ever promoted past T3.\n\n6. Method flag for future verify passes on this stream: WebFetch's AI-summarized reads of live marketing sites are not pixel measurement. Any hero-height number that ends up gating an actual build decision should get a real Playwright/PIL teardown first (per this project's own site-teardown skill), not another WebFetch estimate.",
+  "claim_verdicts": [
+   {
+    "claim": "Fresha, Booksy, Treatwell homepages ship a search-forward hero at roughly 25-30% of the first viewport (real_world_evidence, tier CONV)",
+    "source_ok": false,
+    "tier_final": "T3",
+    "note": "Live re-fetch this pass: Fresha ~40-50%, Treatwell ~30-40%, Booksy unspecified/substantial. Higher and wider than the claimed 25-30% band; CONV tier unsupported since no pixel measurement was ever taken, only AI-summarized page reads."
+   },
+   {
+    "claim": "Doctolib homepage has a near-absent hero at 5-10% of page height (real_world_evidence, tier T3)",
+    "source_ok": false,
+    "tier_final": "T3 (unconfirmed)",
+    "note": "WebFetch on doctolib.fr returned only footer/nav markup this pass; the actual hero was never observed by either the original synthesis or this verify. Directional claim (search/directory-first, low-hero) is plausible for a utility booking tool but the specific figure is unverified."
+   },
+   {
+    "claim": "A DEV Community six-month retrospective names calm-design anti-maximalism as the trend that held up, corroborating Solen's restraint lock",
+    "source_ok": false,
+    "tier_final": "MYTH (fabricated inference from a real source)",
+    "note": "Article exists (dev.to/studiomeyer_io) but reports the opposite: bento grids + dark mode held up, kinetic typography/glassmorphism 2.0/organic blobs underdelivered. 'Calm design' is never mentioned. Cut from the addition."
+   },
+   {
+    "claim": "Showit and Figma Resource Library roundups document a directional 96-128px section-to-section spacing shift on desktop landing pages",
+    "source_ok": false,
+    "tier_final": "T3, unsourced number",
+    "note": "Showit article (showit.com/business-growth/2026-web-design-trends-you-need-to-know) read directly contains zero pixel spacing figures; only guidance is a relative '20% more whitespace' tip. Number appears invented."
+   },
+   {
+    "claim": "1140-1280px centered max-width convention, cited via the Showit roundup",
+    "source_ok": false,
+    "tier_final": "CONV (real convention, wrong citation)",
+    "note": "Showit does not mention a max-width figure. The range itself is a genuine, well-known industry convention (Bootstrap 1140/1200px containers etc.) so it's fine to keep as background corroboration for Solen's own 1280px lock, just not attributed to Showit."
+   },
+   {
+    "claim": "involve.me's 2026 landing-page piece explicitly names fewer/larger sections with bigger gaps as a 2026 trend",
+    "source_ok": false,
+    "tier_final": "T3, weak",
+    "note": "Article exists (involve.me/blog/landing-page-trends) but read directly, whitespace is discussed only as a generic best practice (Google homepage example), no explicit fewer-sections framing, no pixel numbers."
+   },
+   {
+    "claim": "8pt/8px spacing grid is the dominant convention (Material Design, IBM Carbon, UX-education sources)",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Well-established, uncontested industry convention; no issue."
+   },
+   {
+    "claim": "Mobbin screen-level percentages: Urban Company ~35% PDP hero, TIDE 80-85%, Depop ~25% centered cluster, Acorns bottom-pinned CTA, Booking.com/Viator/Hulu repeating-unit patterns",
+    "source_ok": false,
+    "tier_final": "T3 (already correctly tiered, unverified this pass)",
+    "note": "No Mobbin access this pass to re-check; draft already kept these at T3 rather than CONV, so no compounding risk, but they remain unmeasured estimates."
+   },
+   {
+    "claim": "TheFork's per-slot green discount badge conflicts with Solen's single-pale-green-pill law (named conflict, not imported)",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Internally consistent flag; correctly named as a rejected pattern, not a claim requiring external verification."
+   }
+  ],
+  "verified_addition": "## Domain 21 addendum: page-level vertical rhythm prior for a brand-new page (closes gap-register G3)\n\n**Hero-height band is a JOB-based table, not one constant (T3 throughout, downgraded from the draft's CONV; supersedes treating \"~40% hero\" as a general prior):** a search-forward discovery/marketplace hero (home, salon-list style pages) reads generous but well short of full-bleed on the three live marketplace homepages checked directly (Fresha's hero read roughly 40-50% of the first viewport, Treatwell's roughly 30-40%, Booksy's substantial but not precisely determinable from a text read); treat the working band as roughly 30-50%, wide and directional, not a tight 25-30% target. Urban Company's PDP hero (Mobbin, T3, not independently re-verified this pass) sits around 35%, inside that band. An empty-state or single-focused-action screen can center its icon-heading-CTA cluster at roughly 20-30% of screen height (Depop, Mobbin/T3), not top-anchored by default. A full-bleed brand/onboarding hero can run to 80-85% (TIDE, Mobbin/T3) but this is an outer-bound reference only, never a default, since Solen is utility-first not brand-video-first. None of these percentages were pixel-measured (Playwright/getComputedStyle); they come from either an AI-summarized live-page read or a Mobbin screen read, so this whole band stays T3 until the entry's taste_lab_probe actually measures a real Solen surface.\n\n**Default section order (T3, converging Mobbin + live-site reads, downgraded from CONV since the live reads were not pixel-measured):** hero -> single heading + identity -> trust/social-proof (early, first two sections, confirmed directly: Fresha shows an app-download block then a reviews carousel then trust-stat counters right after its hero; Treatwell shows a trending-content carousel then three value-prop blocks) -> one primary CTA or cross-sell -> repeating content sections -> directory/browse/sitemap content last (confirmed directly on both Fresha and Treatwell: extensive city/category directory links sit near the bottom, just before the footer) -> footer. Doctolib is named in the source material as the directory-first exception for utility/healthcare booking tools, but its own hero-height figure could not be confirmed this pass (fetch only returned footer content); keep the exception as a directional note, not a measured contrast.\n\n**Gap rhythm reaffirmed from independent angles, none of which reopen the LOCKFILE literal:** the existing 16px heading-to-content / 32px section-to-section binary is corroborated by the 8pt spacing-grid convention (CONV, uncontested) and by Mobbin reads of Hulu's shelf pattern and Booking.com's repeating heading-content-link-divider unit (both T3, not independently re-verified this pass). The draft's claim of a sourced 96-128px desktop macro-gap trend from Showit/Figma roundups does not hold up: the Showit article, read directly, contains no pixel spacing figures at all (its only guidance is a relative \"20% more whitespace\" tip), so that specific number is cut. If a macro-gap figure for large desktop marketing sections is wanted later, it needs a freshly quoted source, not this one.\n\n**One heading, one CTA-color discipline (T3, Mobbin-sourced, not independently re-verified this pass):** never stack two headings with no content between them; never run two accent colors for two competing primary actions on the same screen. Booking.com and Viator's colored (blue/green) primary CTAs are named exceptions that do NOT transfer, Solen's ink-CTA law stands.\n\n**Named conflicts explicitly rejected, not imported:** TheFork's repeated green discount badge per time-slot (Solen allows one pale-green discount pill, not one per item); asymmetric/broken-grid heroes and kinetic typography from the 2026 trend layer (kinetic typography is independently confirmed by the DEV Community six-month retrospective as a trend that specifically underdelivered in production, mainly for accessibility and Core Web Vitals reasons, so rejecting it for Solen carries extra real-world support, not less); bento-grid density (the same retrospective found bento grids ARE the trend that held up and became a default for Apple, Google, Microsoft, and Spotify, so this is a values/taste call for Solen against a real, currently-winning pattern, not a rejection of something fringe or already fading, name it as a deliberate Solen restraint choice rather than implying the wider industry agrees). The draft's claim that a \"calm design\" anti-maximalism correction corroborates this restraint choice does not hold up: the retrospective never mentions calm design and reports the opposite direction (denser bento layouts winning). That citation is removed rather than softened.\n\n**Cross-reference:** hero paint priority ties to PSYCHOLOGY.md law 8 (first 100ms is the brand, fast hero/card paint); hero-as-photo choice ties to law 7 (photos are the decision input). Neither law is restated here, both apply on top of this composition prior.\n\n**Taste-Lab probe (closes G3's remaining open half, now doing more work than before since the cited percentages turned out soft):** build the SAME real Solen surface (candidate: a currently-thin new page, e.g. an Angebote landing or a category hub) three ways, hero at 25%, hero at 35%, hero at 55%, all other elements held identical, and run the squint test plus a felt-balance rating with the owner to confirm which row of the JOB-based band actually reads right for that surface class, since none of the source percentages in this entry were pixel-measured. Record the result back into this entry with a dated owner call, the same pattern G2 used to half-close on 2026-07-16."
+ }
+}

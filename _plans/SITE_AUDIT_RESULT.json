@@ -1,0 +1,1129 @@
+{
+ "aggregate": {
+  "done": [
+   {
+    "principle": "Single global back: header IS the back; pages add none; no stacked home+back",
+    "evidence": "app/[locale]/layout.tsx:104 mounts <Header> once site-wide wrapped by HideInBooking; focused flows opt out via route regexes and supply their own local back (BookingWizard.tsx:176-198)"
+   },
+   {
+    "principle": "Blue reserved for text links and small tappable metadata only",
+    "evidence": "SalonSidebar.tsx:129/199, SalonHeader.tsx:105, SalonReviews.tsx:111, SalonResultCard.tsx:559, RatingStars.tsx:197, NotificationsClient.tsx:170 all use s-accent on review counts/directions/markAll links"
+   },
+   {
+    "principle": "Booking date/time picker selected-state fill is the one locked blue exception",
+    "evidence": "SearchOverlay.tsx:887,903,1055 and DateTimePicker.tsx:317,468,583,805 use bg-s-accent for selected date/time cells only"
+   },
+   {
+    "principle": "Dashboard surfaces keep blue-filled CTAs (LOCKFILE scopes rule to customer site only)",
+    "evidence": "dashboard/settings, bookings, cases, badge-manager use bg-s-accent; LOCKFILE.md:1194 'Dashboard ONLY - customer site keeps ink CTAs'"
+   },
+   {
+    "principle": "TabPill primitive: selected = bg-s-bg-sunken + text-s-ink + semibold, unselected white + hairline",
+    "evidence": "TabPill.tsx:64-68; used correctly in dashboard/all-salons/page.tsx:221,374 and dashboard/review-moderation/page.tsx:158"
+   },
+   {
+    "principle": "FilterSheet chips use gray sunken fill selected, no blue/black",
+    "evidence": "FilterSheet.tsx:357-384 active = 'border-transparent bg-s-bg-sunken text-s-ink font-semibold'"
+   },
+   {
+    "principle": "Search Wann date/time chips stay blue as the documented date/slot exception",
+    "evidence": "SearchOverlay.tsx:887,903,1055 carry explicit 'selected-ok' comments citing the booking-date/slot blue exception"
+   },
+   {
+    "principle": "Card grammar: group related facts (name+address, price+rating)",
+    "evidence": "SalonCard.tsx:462-500 groups name+rating, category, address+price; SalonResultCard.tsx:643-680 groups name+rating then meta+price+nextSlot"
+   },
+   {
+    "principle": "Rank groups in scan order, most important top-left",
+    "evidence": "SalonCard.tsx:462-467 and SalonResultCard.tsx:643-652 put CardName as Row 1 top-left, price/meta below"
+   },
+   {
+    "principle": "De-label: UI implies labels, no 'Label: value' spreadsheets",
+    "evidence": "No colon-separated label pairs in SalonCard.tsx/SalonResultCard.tsx; RatingStars renders bare star+number, PriceFrom renders 'ab 85 CHF'"
+   },
+   {
+    "principle": "One differentiated element per card; photos whenever honest",
+    "evidence": "Every card variant leads with a real salon photo (SalonCard.tsx:416-432, SalonResultCard.tsx:233-262); name is sole larger/weighted anchor via CardName vs CardMeta"
+   },
+   {
+    "principle": "Larger one-off dimensions round to clean 5s/10s above ~100px",
+    "evidence": "max-w-[1180px], max-w-[1280px], max-w-[640px] all clean round numbers"
+   },
+   {
+    "principle": "Font family = Inter Tight (display) + Inter (body), Geist banned",
+    "evidence": "app/layout.tsx:10-12; tailwind.config.js:226-244 fontFamily points to var(--font-inter-tight); grep for Geist returns zero live usages"
+   },
+   {
+    "principle": "Type scale roles (name 14, meta 12-13, H2 clamp(18px,2vw,20px), eyebrow 11) followed",
+    "evidence": "SalonCard.tsx:465 name text-[14px], meta text-[12/13px]; H2 clamp used across warum-solen, brand, partner, salon components matching LOCKFILE.md:230/251"
+   },
+   {
+    "principle": "Named easing curves snap/spring/glide/thud match LOCKFILE §4",
+    "evidence": "tailwind.config:325-329 defines the four cubic-beziers exactly matching LOCKFILE §4; used across 40+ call sites"
+   },
+   {
+    "principle": "420ms entrance recipe is the single locked ENTER RECIPE imported from a shared module",
+    "evidence": "motion.ts:22-24,38-45 defines ENTER_DURATION=420, GLIDE_EASE, enterVariants (opacity/scale 0.96/blur 8px); enforced by motion-recipe-gate.py"
+   },
+   {
+    "principle": "prefers-reduced-motion handled: base state is final visible state",
+    "evidence": "globals.css:171-174,456-469,804-813; motion.ts:58,100,167 useReducedMotion collapsing to duration:0; used across many surfaces"
+   },
+   {
+    "principle": "One primary commit = ink fill, may carry shadow-elevation-2",
+    "evidence": "checkout/page.tsx:374 bg-s-ink+shadow-elevation-2; Header.tsx:751; CityTopBar.tsx:258"
+   },
+   {
+    "principle": "Calm control on flat white/sunken stays FLAT, zero box-shadow",
+    "evidence": "TabPill.tsx:70 comment 'FLAT with no lift'; Header.tsx:588-589,789 hamburger flat per V3-D421L"
+   },
+   {
+    "principle": "Product/card surfaces earn resting elevation-1/2 by default",
+    "evidence": "SalonCard.tsx:401 shadow-elevation-2 photo wrapper; SalonServices/Bundles/Products use border-s-border + shadow-whisper (sanctioned grouped-list-card exception)"
+   },
+   {
+    "principle": "White-fill + shadow on dark/ink card = valid inverse-primary treatment",
+    "evidence": "BentoBusiness.tsx:512 bg-white+shadow-elevation-2 chevron circle on dark Partner CTA card, matching CONTROL_ELEVATION verdict"
+   },
+   {
+    "principle": "aria-label on icon-only interactive elements",
+    "evidence": "HeartButton.tsx:174, BackButton.tsx:32-39, Header.tsx multiple; 106 files reference aria-label; conforms to RATIONALE.md:765 closed set"
+   },
+   {
+    "principle": "Skip-to-content link for keyboard users",
+    "evidence": "layout.tsx:62-65 sr-only skip link is first focusable element, targets main#main-content tabIndex=-1"
+   },
+   {
+    "principle": "Screen-reader / landmark semantics (main, nav, header)",
+    "evidence": "layout.tsx:107 <main>; Header.tsx:495 <header>, :680-681 <nav aria-label='Hauptnavigation'>"
+   },
+   {
+    "principle": "Input focus indicator (conforming half of no-focus-ring tradeoff)",
+    "evidence": "globals.css ~1194-1234 THE INPUT FOCUS LAW: ink-edge border + soft halo on :focus-visible, unlayered to beat Tailwind"
+   },
+   {
+    "principle": "Progress/waiting indicators render as an icon-stepper, never a plain bar",
+    "evidence": "queue/[token]/page.tsx:317-330 icon-stepper (Check/Users/Clock/Armchair) with live-derived states; booking flow intentionally has no progress bar per mockup 20"
+   },
+   {
+    "principle": "No decorative separator dots/pips between metadata",
+    "evidence": "SalonHeader.tsx:87-89 comment 'stacked rows, NO separator dots'; rows 93-130 use stacked divs with no bullets"
+   },
+   {
+    "principle": "Drop words the context already says (address doubles as directions link)",
+    "evidence": "SalonHeader.tsx:121-130 comment 'the link itself opens directions (no separate Wegbeschreibung)'"
+   },
+   {
+    "principle": "No redundant language tags / duplicate meta on a row",
+    "evidence": "SalonTeam.tsx:31,191 the 'DE/EN/FR' languages row removed, replaced by staff role/specialty"
+   },
+   {
+    "principle": "No fabricated data: counts/ratings/availability from live source",
+    "evidence": "lib/barber/walkin-availability.ts computes Frei in X Min from real queries; ForYouSalonRows sorts by real rating; SalonCard omits missing address rather than fabricating"
+   },
+   {
+    "principle": "No redundant curation badges (Top bewertet/Beliebt/Neu backed by real data)",
+    "evidence": "SalonOfMonth.tsx:29-31 gates badge on real DB winner row; ForYouSalonRows.tsx:83 applies top-bewertet only to actually-top card"
+   },
+   {
+    "principle": "Payment fields live in their own visible box",
+    "evidence": "PayConfirmStep.tsx:636-655 wraps Stripe PaymentElement in bordered rounded-input container; BookingPaymentForm.tsx:170"
+   },
+   {
+    "principle": "Validate on blur/submit, not every keystroke",
+    "evidence": "GuestBookingForm.tsx:80-120 only clears errors mid-typing, new errors only via imperative validate() on Buchen press; checkout promo validates on Anwenden click only"
+   },
+   {
+    "principle": "Hero/PDP surfaces: one photo zone ~35-45% of first viewport",
+    "evidence": "SalonHero.tsx:68 mobile aspect-[4/3] (~36%); desktop aspect-[16/7] 3-photo grid, matching RATIONALE.md:868"
+   },
+   {
+    "principle": "Browse/list card imagery floor ~1/3",
+    "evidence": "SalonResultCard.tsx:400/493 default card/feed variants render photo aspect-[5/4] full-width, clearing the ~1/3 floor"
+   },
+   {
+    "principle": "Transactional/commit surfaces: imagery near zero",
+    "evidence": "BookingWizard.tsx has zero next/image references; live wizard renders text/price rows only, matching RATIONALE.md:870"
+   },
+   {
+    "principle": "Never a bare grey box for missing imagery",
+    "evidence": "SalonHero.tsx:92-98,182-191 render bg-s-bg-sunken + large monogram; SalonResultCard.tsx:251-284 monogram/Store icon fallback"
+   },
+   {
+    "principle": "Photos carry the color; adjacent UI stays neutral (80/17)",
+    "evidence": "SalonResultCard text uses only ink tokens; only non-neutral colors are semantic (star/heart/walk-in tier); LOCKFILE.md:126"
+   },
+   {
+    "principle": "Category landing split-hero imagery pattern on 4 live category routes",
+    "evidence": "CategoryHero.tsx:45-60 aspect-[3/2] photo right, text left, matching LOCKFILE §11 Pattern 1 on coiffeur/barbershop/nails/spa"
+   },
+   {
+    "principle": "IA/nav: single global back (header owns it, focused flows keep own)",
+    "evidence": "BackButton.tsx:1-16 canonical single back affordance; RATIONALE.md:1378 grounds in Nielsen heuristic 4 + convergence"
+   },
+   {
+    "principle": "Breadcrumb only on deep/desktop transactional-adjacent surfaces",
+    "evidence": "SalonBreadcrumb.tsx:14-19 renders desktop-only (hidden md:flex); RATIONALE.md:1374 confirms 13/13 apps show zero breadcrumb in browse-to-book path"
+   },
+   {
+    "principle": "Search: facet state visible with live outcome count on commit button",
+    "evidence": "FilterSheet.tsx:298,611 restates live result count on commit CTA per S21"
+   },
+   {
+    "principle": "Search: zero-result state has structural cause-specific recovery",
+    "evidence": "SearchTemplate.tsx:2211-2315 cause-aware EmptyState (detects date/query/filter cause with clearFilters/toHome actions)"
+   },
+   {
+    "principle": "Onboarding: one decision per screen",
+    "evidence": "OnboardingFlow.tsx:3-4 comment 'one-question-per-screen (Uber rhythm)'; STEPS array + per-step render confirm"
+   },
+   {
+    "principle": "Onboarding: continuous progress bar for active-choice screens",
+    "evidence": "OnboardingFlow.tsx:73 progress calc + :152 thin bar bg-s-ink width transition"
+   },
+   {
+    "principle": "Error prevention: disable commit control until required selection made",
+    "evidence": "StaffStep.tsx:193, ServicesStaffStep.tsx:558, DateTimeStep.tsx:270 all disable Weiter until required selection exists"
+   },
+   {
+    "principle": "Error prevention: destructive-confirm gate reserved for rare high-cost actions with explicit reason step",
+    "evidence": "CancelBookingSheet.tsx:21-23 styled bottom sheet replacing raw window.confirm; refund preview fetched at :57 before commit"
+   },
+   {
+    "principle": "Trust: zero-signal states omit the whole rating/review row",
+    "evidence": "SalonResultCard.tsx:299,340,409,533,576,647 gate rating on rating!=null; :473 gates review-count on >0, matching Fresha precedent"
+   },
+   {
+    "principle": "Trust: no shippable Verified badge until real verification pipeline exists",
+    "evidence": "RATIONALE.md:1506 confirmed by grep: zero components implement a trust-verification badge"
+   },
+   {
+    "principle": "Perceived perf: skeletons shape-matched with shimmer sweep default",
+    "evidence": "Skeleton.tsx:8-14,74-83 CSS shimmer (animate-shimmer); SkeletonCard/DiscoveryGridSkeleton mirror populated counterparts"
+   },
+   {
+    "principle": "Content design: label-only commit CTAs stay 1-4 words",
+    "evidence": "StaffStep/DateTimeStep/ServicesStaffStep render short ink 'Weiter' labels; PayConfirmStep.tsx:619-620 short label"
+   },
+   {
+    "principle": "Copy: no redundant/decorative filler in checkout/booking flows",
+    "evidence": "grep for banned filler patterns found no matches outside /terms legal page (exempt)"
+   }
+  ],
+  "missing_small": [
+   {
+    "principle": "No breadcrumbs anywhere in shipped UI (owner-rejected, removed)",
+    "evidence": "checkout/page.tsx:390-399 renders a live breadcrumb row inline-labeled 'P15 — Breadcrumb'; route not in HideInBooking hide list so global Header also renders (stacked home+breadcrumb)",
+    "whats_needed": "Delete the P15 breadcrumb block at checkout/page.tsx:390-399 (surgical). Note /checkout has zero href callers, so flag to owner whether the whole orphaned route should be graveyarded vs patched"
+   },
+   {
+    "principle": "Blue is NEVER used on a price or charge amount",
+    "evidence": "checkout/page.tsx:494-496 'Zahlung vor Ort' price row text-s-accent; :503-515 'Jetzt zu zahlen' charge box renders label + amount in blue (text-xl text-s-accent), the most prominent price on the screen",
+    "whats_needed": "Recolor the charge-amount box to ink (text-s-ink/border-s-ink or neutral surface) per the design-contract rule that prices stay ink/grey; blue must not carry the money figure"
+   },
+   {
+    "principle": "Blue reserved for clickable elements, never a decorative icon tint",
+    "evidence": "checkout/page.tsx:417 (MapPin), :427 (Calendar), :435 (User) tint three non-interactive booking-summary metadata icons blue; LOCKFILE.md:140 requires ink not blue on non-links",
+    "whats_needed": "Swap the three icon classNames from text-s-accent to text-s-ink-3 since MapPin/Calendar/User in the booking summary are not clickable"
+   },
+   {
+    "principle": "Blue never fills a primary/commit CTA button (commit stays ink)",
+    "evidence": "queue/[token]/page.tsx:288 (low-rating feedback-send CTA) and :546 (Wegbeschreibung/Directions CTA, next to an ink Home CTA at :550) both fill a full-width primary button with bg-s-accent instead of ink",
+    "whats_needed": "Change both buttons' bg-s-accent to bg-s-ink (matching the ink pattern at :550) unless owner carves out this queue-tracker screen as a named outcome-screen exception"
+   },
+   {
+    "principle": "Blue budget stays sparse per screen (S_blue <=1 on a form screen)",
+    "evidence": "checkout/page.tsx has 25 s-accent occurrences (error banners 88-91,318-327,559-562,631-634,676-679; decorative icons 417/427/435/524/596; price rows 494-515). RATIONALE.md:1109 threshold S_blue<=1 for forms; several blue uses are error states that should be red",
+    "whats_needed": "Reduce checkout blue to genuine text-link/small-chip cases; recolor the error banners to s-error red (they are error states, not links); recolor price/charge to ink"
+   },
+   {
+    "principle": "Dashboard client-detail tab row must use gray sunken fill for active tab, never ink/black",
+    "evidence": "dashboard/clients/page.tsx:356 active branch = 'bg-s-ink text-white hover:bg-black', the exact ink-fill pattern banned 2026-06-29 and logged in REMOVED.md; not using the existing TabPill primitive",
+    "whats_needed": "Replace the inline tab button with the TabPill primitive, or swap the active branch to 'bg-s-bg-sunken text-s-ink font-semibold'"
+   },
+   {
+    "principle": "Help-center category filter pills must use gray sunken fill, never ink/black",
+    "evidence": "help/page.tsx:87-107 both 'Alle' and each category pill set 'bg-s-ink text-white' when active; the file's own comment at :56 cites a stale/superseded ink-fill rule",
+    "whats_needed": "Swap the active branch to the TabPill gray recipe 'bg-s-bg-sunken text-s-ink font-semibold' (or the TabPill component) and drop the stale ink-fill comment"
+   },
+   {
+    "principle": "Inspo feed chip-term selector must use gray sunken fill, never ink/black",
+    "evidence": "inspo/page.tsx:543-547 selected = 'border-s-ink bg-s-ink text-white'; traces to a 2026-06-23 REMOVED decision superseded by the 2026-06-29 gray-fill law; no Inspo-specific exception recorded",
+    "whats_needed": "Swap selected branch to 'border-s-border bg-s-bg-sunken text-s-ink font-semibold'; confirm with owner since this reverses a previously-explicit (now stale) decision before touching the surrounding animation-keyframe styling"
+   },
+   {
+    "principle": "Icon the details row: one row of icon+value pairs (14px icons)",
+    "evidence": "Only the next-slot row is iconed (Calendar; SalonResultCard.tsx:672-678). Category/address/price rows in SalonCard.tsx:479-499 and SalonResultCard.tsx:658-680 are plain text with no icon",
+    "whats_needed": "Add a small leading 14px icon (e.g. MapPin for address, already used at SalonResultCard.tsx:302) to the category/address meta row, or document these rows as an intentional exception in LOCKFILE §14.1"
+   },
+   {
+    "principle": "Price rendered bold-ink and smaller than name (latest dated owner decision)",
+    "evidence": "PriceFrom.tsx:27-34 amount span gets font-semibold only when emphasis=true, never a color override; every call site wraps it in CardMeta which bakes text-s-ink-2 grey (CardText.tsx:47-49). All 7 call sites produce grey, not bold-ink. CardText doc comment still encodes the older A13 grey-price rule",
+    "whats_needed": "Either (a) give PriceFrom's amount text-s-ink when emphasis is true + pass emphasis at SalonCard.tsx:495 + update CardText doc comment/drift A13 exception; or (b) if owner reverted to grey-price, update CLAUDE.md design-contract table + TASTE_LOG. Genuine doc/code contradiction, flag for owner rather than guess"
+   },
+   {
+    "principle": "Loading = Skeleton matching final layout, not a bare spinner",
+    "evidence": "salon/[slug]/loading.tsx:6-14 hand-rolls raw animate-pulse divs instead of <Skeleton>; five dashboard admin pages (cities-admin:92-95, homepage-admin:86-89, commission-admin:99-102, feature-flags-admin:132-135, ai-limits-admin:117-120) render a bare centered Loader2 spinner for primary content",
+    "whats_needed": "Swap salon/[slug]/loading.tsx raw pulse divs for <Skeleton>; replace the five admin pages' centered Loader2 block with a Skeleton composition shaped like the eventual table/list"
+   },
+   {
+    "principle": "Empty = EmptyState component with one action",
+    "evidence": "brand/[slug]/page.tsx:109 bare <p>Noch keine Standorte</p>; inspo/saved/[id]/page.tsx:69 and inspo/board/[id]/page.tsx:92 bare <p>Noch keine Looks</p>; SalonReviews.tsx:127 bare italic <p>Noch keine Bewertungen</p>",
+    "whats_needed": "Replace the four bare-paragraph empties with <EmptyState> per locked anatomy (headline + subline + one action, or a text-link for nested/secondary empties like 'Looks entdecken')"
+   },
+   {
+    "principle": "Error = ErrorState (inline) / ErrorFallback (route boundary)",
+    "evidence": "inspo/saved/[id]/page.tsx:67 and inspo/board/[id]/page.tsx:90 hand-roll bare <p>Kollektion nicht gefunden</p> for a fetch-failed/not-found state, no icon/retry/role=alert",
+    "whats_needed": "Swap the two bare paragraphs for <ErrorState> with a retry/back action, consistent with inspo/error.tsx"
+   },
+   {
+    "principle": "Drift signal: mt-7/gap-7/space-y-7/py-7 should not appear (off the 32/12/16 ladder)",
+    "evidence": "mt-7 on customer surfaces: app/error.tsx:38, not-found.tsx:46, booking/lookup:550, profile/page.tsx:221, SalonDetailV3.tsx:242, SalonServicesSheet.tsx:493, WhySolen.tsx:129, OnboardingFlow.tsx:135/216; gap-7: SalonReviews.tsx:132, BusinessTeaser.tsx:35, DateTimePicker.tsx:188; space-y-7: settings:61, SettingsForm.tsx:172/174; py-7: Footer.tsx:91",
+    "whats_needed": "Swap every mt-7/gap-7/space-y-7/py-7 to the nearest correct tier (32 Section or 24/16 Group). Mechanical; DateTimePicker.tsx:188 matters most as a shared primitive across booking+search"
+   },
+   {
+    "principle": "4-pt scale only, no arbitrary pixel spacing",
+    "evidence": "booking/lookup/page.tsx: mb-[7px]:251, pt-[15px]:268, mt-[18px]/pt-[18px] x5 at 343/393/468/484/539, mt-[22px]:479, mt-[2px]:605; booking/resend-link/page.tsx: mb-[7px]:233, mt-[9px]:299, mt-[18px] 304/353, mb-[7px]:358",
+    "whats_needed": "Replace each bracket value with the nearest 4pt-clean Tailwind class; most collapse to mt-2/mt-3/mt-4. Mechanical, file-local"
+   },
+   {
+    "principle": "Home-feed exception keeps ~24px rhythm, not ad hoc 28px",
+    "evidence": "WhySolen.tsx:129 uses mt-7 (28px) for CTA gap; BusinessTeaser.tsx:35 uses gap-7 (28px) for grid, neither the documented ~24px home rhythm",
+    "whats_needed": "Align both to the home-feed's existing 24px (or nearest already-used home value) instead of ad hoc 28px"
+   },
+   {
+    "principle": "No em-dashes anywhere in UI copy",
+    "evidence": "Widespread in user-visible strings: layout.tsx:17 tab title, og:title metadata across page/nails/spa/coiffeur/business/ueber-uns/privacy/kontakt/karriere/terms/blog/impressum; body copy business/page.tsx:99,122,138,146; terms/components/TermsContent.tsx:199-202,269-273; SalonLoyalty.tsx:45",
+    "whats_needed": "Sweep every user-facing string (metadata titles/descriptions, marketing/FAQ copy, terms content, loyalty descriptions) and replace em-dash with period/comma/colon/spaced hyphen. Text-only, no mockup. Dashboard em-dash empty-value placeholders are a distinct convention and can stay"
+   },
+   {
+    "principle": "Only the 6-value duration whitelist is canonical; others are drift",
+    "evidence": "Header.tsx:724 duration-[280ms], :797/:807 duration-[220ms]; CookieConsent.tsx:252 duration-[400ms]; Sheet.tsx:43 duration-[600ms]; motion.ts:125 duration-[180ms]; confirmed as A3 hits by check.py:104",
+    "whats_needed": "Round each to canonical: Header 280/220ms->250/300ms; CookieConsent 400ms->300/500ms; Sheet.tsx:43 600ms->300ms (also a §4 spec violation, sheet-open locked at 300ms); motion.ts:125 180ms either round to 150/200ms or add 180ms to the whitelist as a documented button-transition exception (owner call)"
+   },
+   {
+    "principle": "Locked motion-per-transition table followed by components owning each transition",
+    "evidence": "Sheet.tsx:43 ships duration-[600ms] against the locked 'sheet/modal open = 300ms glide' row (2x the spec); FeaturedStylists.tsx:211 hover lift uses duration-150 not the locked 200ms card-hover-lift",
+    "whats_needed": "Fix Sheet.tsx:43 to duration-300; spot-check FeaturedStylists.tsx:211's 150ms hover-lift against the 200ms row and align if it follows the shared convention"
+   },
+   {
+    "principle": "A resting card must NOT combine border-s-border with a shadow simultaneously",
+    "evidence": "SalonOtherLocations.tsx:67 border-s-border + hover:shadow-elevation-2; SalonLoyalty.tsx:72 same; WalkInBand.tsx:97 border-s-border + shadow at rest on the loading skeleton",
+    "whats_needed": "Drop border-s-border wherever a shadow is also present (or drop the shadow, keep flat border) at SalonOtherLocations.tsx:67, SalonLoyalty.tsx:72, WalkInBand.tsx:97"
+   },
+   {
+    "principle": "A control over a photo must use the canonical FROST_GLASS recipe",
+    "evidence": "SalonHero.tsx:247 'Alle Fotos ansehen' pill over the gallery photo uses bg-white/95 + shadow-md, not lib/frost-glass.ts, while the hero's own back/share/heart controls already use frost-glass",
+    "whats_needed": "Swap the 'Alle Fotos ansehen' pill's bg-white/95+shadow-md for the shared .frost-glass/FROST_GLASS utility used by the other three hero controls"
+   },
+   {
+    "principle": "Interactive touch targets >=44px (h-11/w-11 floor)",
+    "evidence": "SearchOverlay.tsx:1089 'Entfernen' icon button is h-8 w-8 (32px); BackButton.tsx:35, the canonical shared back primitive, is h-10 w-10 (40px). Neither is on RATIONALE.md:1226's documented exception list",
+    "whats_needed": "Bump BackButton.tsx:35 to h-11 w-11 (propagates everywhere) and SearchOverlay.tsx:1089 to h-11 w-11 (keep icon glyph size, enlarge hit area like HeartButton), or add both to RATIONALE.md SACRIFICES list if owner wants them compact"
+   },
+   {
+    "principle": "Real Lucide markup only, never hand-drawn SVG paths",
+    "evidence": "beautyFields.tsx:73-77 CAT_PATHS hand-drawn category glyphs on live onboarding; BellIcon.tsx:75,77 hand-drawn bell; SuccessMark.tsx:35-37 hand-drawn check on booking-confirmed screens; SectionHeader.tsx:173-190 hand-drawn arrow on every homepage see-all link",
+    "whats_needed": "Swap the 4 to real lucide-react imports: beautyFields->Scissors/nails/spa icons; BellIcon->lucide Bell in the existing hover animation; SuccessMark->lucide Check; SectionHeader arrow->lucide ArrowRight with the dash-draw hover applied to its path"
+   },
+   {
+    "principle": "Never the zap/lightning icon (banned by name)",
+    "evidence": "beautyFields.tsx:11,90 Zap as deals icon on live onboarding; partner/page.tsx:8,148,232 Zap for waxing + a feature icon; fuer-salons/page.tsx:4,335 Zap for waxing",
+    "whats_needed": "Replace Zap with a context-appropriate icon (tag/badge-percent for deals/waxing, or no icon) in beautyFields.tsx, partner/page.tsx, fuer-salons/page.tsx"
+   },
+   {
+    "principle": "Long review text truncates with a blue 'Mehr lesen'",
+    "evidence": "SalonReviews.tsx:193-208 clamps at 3 lines with a 'Mehr lesen' toggle but styled text-s-ink (black), not text-s-accent blue as copy rule 2 requires",
+    "whats_needed": "Change the button className at SalonReviews.tsx:205 from text-s-ink to text-s-accent"
+   },
+   {
+    "principle": "Long salon descriptions clamp with 'Mehr lesen'",
+    "evidence": "SalonAbout.tsx:29-41 renders full about/description text with no line-clamp, no length check, no expand control at all",
+    "whats_needed": "Add a clamp (~150 chars or line-clamp-3/-5) plus a blue text-s-accent 'Mehr lesen' toggle to SalonAbout.tsx, matching SalonReviews' ReviewCard pattern"
+   },
+   {
+    "principle": "Top-aligned visible labels on every field (never placeholder-as-label)",
+    "evidence": "PayConfirmStep.tsx:483-500 contactName/contactPhone inputs have no <label>, only placeholder + aria-label, inside the live booking flow",
+    "whats_needed": "Add a visible <label> (or wrap in the existing FieldLabel/Field primitive) above the contactName and contactPhone inputs in PayConfirmStep.tsx:483-500, matching GuestBookingForm.tsx"
+   },
+   {
+    "principle": "Error renders inline at the field, not just a generic toast",
+    "evidence": "SettingsForm.tsx failure paths (profile/email/password/delete at 69-70,100-102,122-124,157-158) only call toast.error with zero inline per-field error rendering",
+    "whats_needed": "Add lightweight client-side validation (email format, password length) with an inline error <p> under the relevant input in SettingsForm.tsx, following the GuestBookingForm.tsx pattern"
+   },
+   {
+    "principle": "Destructive commit button color follows ink-only CTA discipline (S25 Fresha precedent)",
+    "evidence": "CancelBookingSheet.tsx:158-159 renders the destructive Cancel as border-s-error/40 text-s-error (red outline), diverging from S25's ink recommendation, not flagged as a deliberate deviation",
+    "whats_needed": "Either log a TASTE_LOG/QUESTIONS.md line naming the red-outline destructive-cancel as a deliberate deviation, or switch to an ink/outline treatment matching the cited precedent"
+   },
+   {
+    "principle": "Error messages name the exact field/cause, never a generic fallback",
+    "evidence": "checkout/page.tsx:220-223 prefers the backend message but falls back to generic 'errorValidation' (messages/de.json:468, en.json:468) when none supplied",
+    "whats_needed": "Confirm the promo/voucher API always returns a cause-specific message (expired vs nonexistent) so the generic fallback is never hit, or replace the fallback copy with a more specific default"
+   },
+   {
+    "principle": "List-variant thumbnail honors the ~1/3 imagery floor",
+    "evidence": "SalonResultCard.tsx:332 list variant photo is a fixed h-[104px] w-[104px] square in a full-width flex row, well under 1/3; only reachable via ?layout=list (desktop map-split view)",
+    "whats_needed": "If the map-split list row should honor the floor, widen the thumbnail to ~140-160px, or accept as a documented task-conditioned exception (dense list next to a map, RATIONALE.md:876-879) and flag to owner to confirm intent"
+   }
+  ],
+  "missing_big": [
+   {
+    "principle": "Three-tier vertical rhythm (32 Section / 12 Card / 16 Group) sitewide",
+    "surface": "Salon PDP (SalonServices, SalonReviews, SalonBundles, SalonTeam, SalonLocation, SalonProducts, SalonVenuesNearby, SalonSidebar, SalonLoyalty) and sitewide",
+    "whats_needed": "A fourth de facto tier mt-5 (20px) has become the dominant heading-to-content gap across the whole PDP (65 mt-5 hits sitewide, none mapping to 32/12/16). Reclassify each as Group (16px) or Card (12px) and swap the class. Because it touches the whole PDP rhythm uniformly, treat as structural: mockup one representative section (e.g. SalonServices) at 16px, get owner sign-off, then sweep the rest"
+   },
+   {
+    "principle": "CTA text never <=13px (locked CTA role 14px mobile / 15px desktop)",
+    "surface": "Checkout (live payment surface), plus dashboard/settings and onboarding/salon pill buttons",
+    "whats_needed": "checkout/page.tsx:99,327,374,552,624,686 set text-[11px] on primary/secondary CTA buttons; dashboard/settings:138 and onboarding/salon:114 use text-[12px]. Bump to the locked CTA recipe text-[14px] md:text-[15px] font-medium sentence case. Checkout is a live payment surface so this needs a mockup-first pass and owner approval, not a silent edit"
+   },
+   {
+    "principle": "Sentence-case UI copy; tracked UPPERCASE limited to Eyebrow and Tag/Status roles only (A7)",
+    "surface": "Checkout, auth/reset-password, loyalty/stamp, referral, warum-solen, business, privacy/terms sidebars, rewards (customer/payment/account surfaces)",
+    "whats_needed": "checkout/page.tsx (12+ instances at 99,102,324,327,367,374,393,397,406,506,525,538,543,552,583,597,610,615,624), reset-password:98,121,136,156,220, loyalty/stamp:82,93,115, referral:81,98, warum-solen:125, business:191, privacy/terms sidebars, rewards:130 use uppercase+tracking outside eyebrow/tag roles. Convert to sentence case dropping uppercase/tracking per LOCKFILE A7. Checkout and auth/loyalty are live payment/account surfaces so this needs a mockup-first pass and owner sign-off"
+   },
+   {
+    "principle": "Never Sparkles/Star glyph as decorative filler/all/featured placeholder (banned by name)",
+    "surface": "~12 live customer + dashboard files: profile/looks nav, SearchBar Nails/Maniküre category icons, nail-tech PDP badge, salon onboarding, intake-forms AI tag, referral, coming-soon, partner, fuer-salons, dashboard nail-admin, badge-manager",
+    "whats_needed": "Replace each Sparkles usage with real content (a photo/collage for tile-style uses like SearchBar's category tiles) or a context-specific Lucide icon (badge/award/check-circle for AI/verification tags), or drop the icon for a clean labeled pill. Spans ~12 files needing per-surface content decisions, not a single mechanical swap"
+   },
+   {
+    "principle": "Every route whose data can exceed ~1s gets a sibling loading.tsx Suspense boundary",
+    "surface": "App-directory-wide (7 loading.tsx vs 172 page.tsx)",
+    "whats_needed": "RATIONALE.md:1561-1562 confirms the 7/172 figure as an unaudited asymmetric pattern. Audit which of the 172 routes have a data fetch that can plausibly cross 1s and are missing a sibling loading.tsx; route-by-route sweep across the app directory, a structural change not a one-line fix"
+   },
+   {
+    "principle": "Notification display weight: message class routed to a matching surface (push+badge vs in-app toast), never one undifferentiated channel",
+    "surface": "Notification infrastructure (likely solen-mobile, not this web repo)",
+    "whats_needed": "No push-notification channel/importance routing code found in the web repo; only in-app Toast exists. RATIONALE.md:1491 flags this as a build task, not just a doc entry. This is a backend/infra build (push channel classification, per-class routing) likely belonging to solen-mobile where push lives; scope and owner should confirm before building"
+   }
+  ],
+  "counts": {
+   "done": 52,
+   "small": 33,
+   "big": 6
+  }
+ },
+ "audits": [
+  {
+   "group": "back-nav",
+   "findings": [
+    {
+     "principle": "No breadcrumbs anywhere in the shipped UI (owner-rejected, removed)",
+     "status": "partial",
+     "size": "small",
+     "evidence": "app/[locale]/checkout/page.tsx:390-399 renders a live breadcrumb row (\"Startseite\" link + ChevronRight + \"Checkout\" label), inline-labeled by the codebase's own inventory comment as \"P15 — Breadcrumb\". Confirmed still present via `npm run exists checkout` -> PAGE SECTIONS list: \"P15 — Breadcrumb -> app/[locale]/checkout/page.tsx:390\". This route is not in HideInBooking.tsx's hide list (app/[locale]/_components/layout/HideInBooking.tsx:64-78 only hides /booking, /staff/*, /walk-in-pay, /queue/*, /bookings/*/report|refund|upcharge, /onboarding), so the global Header (with its own home-link wordmark) also renders on top of it, i.e. a stacked home+breadcrumb. Two other breadcrumb component families exist in the repo but are genuinely dead: components/ui/breadcrumb.tsx and components-legacy/ui/Breadcrumb.tsx have zero importers anywhere in app/ or components/, and app/[locale]/_components/salon/SalonBreadcrumb.tsx is only referenced in a code comment in app/[locale]/salon/[slug]/layout.tsx (never imported/rendered), so those three are correctly retired, not shipped.",
+     "whats_needed": "Delete the P15 breadcrumb block at app/[locale]/checkout/page.tsx:390-399 (surgical, few lines). Note: no route in the app links to /checkout (grep for \"/checkout\" href found zero callers outside the file itself) so this page appears to be orphaned/legacy relative to the live booking wizard flow (components-legacy/booking/BookingWizard.tsx, which owns the real Bezahlen step); worth flagging to the owner whether the whole route should be graveyarded rather than just patched."
+    },
+    {
+     "principle": "Single global back: the global Header IS the back; pages add none; no stacked home+back",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "app/[locale]/layout.tsx:104 mounts <Header locale={locale}/> once, site-wide, wrapped by HideInBooking (app/[locale]/layout.tsx:103). Focused self-contained flows opt the global Header out via HideInBooking's route regexes (app/[locale]/_components/layout/HideInBooking.tsx:64-91: /booking, /staff/[x], /walk-in-pay, /queue/[token], /bookings/*/report|refund|upcharge, /onboarding, /auth except login/register, plus /inspo/board|saved and the /inspo/[uuid] detail view) and supply their own local back per components-legacy/booking/BookingWizard.tsx:176-198 (single chevron-back + X, comment explicitly: 'the back arrow is the navigation'). No file outside these documented exceptions renders a second/competing back control alongside the global Header.",
+     "whats_needed": ""
+    }
+   ]
+  },
+  {
+   "group": "blue-sparse",
+   "findings": [
+    {
+     "principle": "Text links and small tappable metadata (review counts, directions link, 'Mehr lesen'-style actions) are the ONLY things rendered in s-accent blue",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "app/[locale]/_components/salon/SalonSidebar.tsx:129 (review-count button), :199 (Route/directions link); app/[locale]/_components/salon/SalonHeader.tsx:105; app/[locale]/_components/salon/SalonLocation.tsx:62; app/[locale]/_components/salon/SalonReviews.tsx:111; app/[locale]/_components/search/SalonResultCard.tsx:559; app/[locale]/_components/search/MapSalonDetail.tsx:192; app/[locale]/_components/primitives/RatingStars.tsx:197; app/[locale]/_components/homepage/WalkInBand.tsx:130; app/[locale]/notifications/NotificationsClient.tsx:170 (markAll text link)",
+     "whats_needed": ""
+    },
+    {
+     "principle": "Booking date/time picker selected-state fill is the one locked blue exception",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "app/[locale]/_components/search/SearchOverlay.tsx:887,903,1055 and app/[locale]/_components/primitives/DateTimePicker.tsx:317,468,583,805 use bg-s-accent for selected date/time cells only, matching the LOCKFILE-locked booking-date/slot exception",
+     "whats_needed": ""
+    },
+    {
+     "principle": "Dashboard (owner/staff) surfaces keep blue-filled CTAs and controls (LOCKFILE explicitly scopes this rule to customer site only)",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "app/[locale]/dashboard/settings/page.tsx, bookings/page.tsx, cases/page.tsx, badge-manager/page.tsx etc. all use bg-s-accent for primary buttons; LOCKFILE.md:1194 states 'Dashboard ONLY - customer site keeps ink CTAs'",
+     "whats_needed": ""
+    },
+    {
+     "principle": "Blue is NEVER used on a price or charge amount",
+     "status": "missing",
+     "size": "small",
+     "evidence": "app/[locale]/checkout/page.tsx:494-496 ('Zahlung vor Ort' price row rendered `text-s-accent`), and the big 'Jetzt zu zahlen' / 'Anzahlung jetzt' charge box at :503-515 renders both the label and the actual amount (`<span className=\"font-heading text-xl text-s-accent\">{formatCurrency(chargeAmount, locale)}</span>`) in blue. This is the most prominent price on the checkout screen.",
+     "whats_needed": "Recolor the charge-amount box to ink (`text-s-ink` / `border-s-ink` or a neutral surface) matching the design-contract rule that prices stay ink/grey and only the one commit CTA gets emphasis; blue must not carry the money figure."
+    },
+    {
+     "principle": "Blue is reserved for clickable elements, never used as a decorative icon tint",
+     "status": "missing",
+     "size": "small",
+     "evidence": "app/[locale]/checkout/page.tsx:417 (`<MapPin ... className=\"... text-s-accent ...\" />`), :427 (`<Calendar ... text-s-accent ...`), :435 (`<User ... text-s-accent ...`) tint three non-interactive metadata icons in the booking-summary card blue; LOCKFILE.md:140 states icon tints on non-links must be INK, not blue.",
+     "whats_needed": "Swap these three icon classNames from text-s-accent to text-s-ink-3 (or matching neutral) since MapPin/Calendar/User in the booking summary are not clickable."
+    },
+    {
+     "principle": "Blue is never used to fill a primary/commit CTA button (the one commit action stays ink; LOCKFILE.md:1194 scopes the blue-CTA exception to dashboard only, and 'outcome-driven blue CTA' V3-D426 is scoped to payment-result/outcome screens, not this)",
+     "status": "missing",
+     "size": "small",
+     "evidence": "app/[locale]/queue/[token]/page.tsx:288 (`<button ... className=\"... rounded-full bg-s-accent py-3.5 ... text-white ...\">` the low-rating feedback-send CTA) and :546 (`<a href={mapsHref} ... className=\"... rounded-full bg-s-accent py-3.5 ... text-white ...\">` the 'Wegbeschreibung/Directions' action-bar CTA, sitting right next to an ink-filled 'Home' CTA variant at :550) both fill a full-width primary action button with blue instead of ink.",
+     "whats_needed": "Change both buttons' bg-s-accent to bg-s-ink (matching the ink primary-CTA pattern already used at :550 and elsewhere on the same screen) unless the owner explicitly wants this queue-tracker screen carved out as another named outcome-screen exception."
+    },
+    {
+     "principle": "Blue budget stays sparse per screen (RATIONALE.md's own measured threshold: S_blue <=3 blue elements on a content screen, <=1 on a form screen)",
+     "status": "missing",
+     "size": "small",
+     "evidence": "app/[locale]/checkout/page.tsx contains 25 separate s-accent occurrences (lines 88-679: error banners/icons at 88-91,318-327,559-562,631-634,676-679, decorative icons at 417/427/435/524/596, price rows at 494-515) on a single checkout/payment screen. RATIONALE.md:1109 records the owner-set threshold as P_blue <=3% / S_blue <=1 for forms; checkout is a form/payment screen and is far over budget, and several of those blue uses are error states that should be s-error (red), not s-accent (blue).",
+     "whats_needed": "Reduce checkout's blue usage to the handful of genuine text-link/small-chip cases (e.g. the Tag/promo icon, the info-only helper links); recolor the error banners (AlertCircle + message text at 88-91/318-327/559-562/631-634/676-679) to s-error red since they are error states, not links; recolor the price/charge display to ink per the finding above."
+    }
+   ]
+  },
+  {
+   "group": "selected-gray",
+   "findings": [
+    {
+     "principle": "TabPill primitive (filters/segments): selected = bg-s-bg-sunken + text-s-ink + semibold, unselected = white + hairline",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "app/[locale]/_components/primitives/TabPill.tsx:64-68 (outline+active = 'border-s-border bg-s-bg-sunken text-s-ink'); used correctly in app/[locale]/dashboard/all-salons/page.tsx:221,374 and app/[locale]/dashboard/review-moderation/page.tsx:158",
+     "whats_needed": ""
+    },
+    {
+     "principle": "FilterSheet chips (SheetChip: gender, amenities, deals, price buckets, sort segment) = gray sunken fill selected, no blue/black",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "app/[locale]/_components/search/FilterSheet.tsx:357-384 ('selected = calm GRAY sunken ... NO black, NO blue', active state = 'border border-transparent bg-s-bg-sunken text-s-ink font-semibold')",
+     "whats_needed": ""
+    },
+    {
+     "principle": "Search 'Wann' date/time chips (SearchOverlay period chip, flex date chip, calendar date cell) may stay blue as the documented date/slot exception",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "app/[locale]/_components/search/SearchOverlay.tsx:887,903,1055 all carry explicit 'selected-ok: ... chip (design contract)' comments citing the booking-date/slot blue exception",
+     "whats_needed": ""
+    },
+    {
+     "principle": "Dashboard client-detail tab row (Termine/Notizen/etc.) must use gray sunken fill for the active tab, never ink/black",
+     "status": "missing",
+     "size": "small",
+     "evidence": "app/[locale]/dashboard/clients/page.tsx:356 - `${tab === t.key ? \"bg-s-ink text-white hover:bg-black\" : \"bg-white border border-s-border text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink\"}` - exactly the ink-fill pattern the 2026-06-29 owner decision banned; REMOVED.md logs the pattern as graveyarded ('selected state black ink bg-s-ink active pill chip option check-badge... never black when selected'). Not using the TabPill primitive that already exists and is imported elsewhere in dashboard/.",
+     "whats_needed": "Replace the inline tab button with the TabPill primitive (already used in dashboard/all-salons and dashboard/review-moderation), or swap the active branch to `bg-s-bg-sunken text-s-ink font-semibold` matching TabPill's outline+active recipe."
+    },
+    {
+     "principle": "Help-center category filter pills (/help) must use gray sunken fill for the selected category, never ink/black",
+     "status": "missing",
+     "size": "small",
+     "evidence": "app/[locale]/help/page.tsx:87-107 - both the 'Alle' pill and each category pill set `activeCategory === key ? \"bg-s-ink text-white\" : \"bg-s-bg-sunken text-s-ink-2 hover:bg-s-border\"`. The file's own comment at line 56 ('active tab uses ink-fill per LOCKFILE TabPill pattern') cites a stale/superseded rule; current LOCKFILE.md:53 and TabPill.tsx explicitly ban ink fill on selection.",
+     "whats_needed": "Swap the active branch to the TabPill gray recipe: `bg-s-bg-sunken text-s-ink font-semibold` (or replace with the TabPill component) and drop the stale ink-fill comment."
+    },
+    {
+     "principle": "Inspo feed tag/chip-term selector (chipTerms pills below the DNA filter row) must use gray sunken fill for the selected chip, never ink/black",
+     "status": "missing",
+     "size": "small",
+     "evidence": "app/[locale]/inspo/page.tsx:543-547 - `sel ? \"relative z-10 border border-s-ink bg-s-ink text-white\" : \"border border-s-border bg-white text-s-ink-2 hover:text-s-ink\"`. Traces to a 2026-06-23 REMOVED.md decision that mandated ink fill for these exact pills, but that decision was itself superseded by the owner's 2026-06-29 gray-fill law; no Inspo-specific exception is recorded in TASTE_LOG.md or LOCKFILE.md.",
+     "whats_needed": "Swap the selected branch to `border-s-border bg-s-bg-sunken text-s-ink font-semibold` (drop border-s-ink/bg-s-ink), matching the TabPill/FilterSheet recipe; confirm with owner since this reverses a previously-explicit (now stale) decision before touching the animation-keyframe styling around it."
+    }
+   ]
+  },
+  {
+   "group": "card-grammar",
+   "findings": [
+    {
+     "principle": "Group related facts (name+address, price+rating, time+duration)",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "app/[locale]/_components/homepage/SalonCard.tsx:462-500 groups name+rating (Row 1), category (Row 2), address+price (Row 3); app/[locale]/_components/search/SalonResultCard.tsx:643-680 (grid) groups name+rating then meta+price+nextSlot",
+     "whats_needed": ""
+    },
+    {
+     "principle": "Rank groups in scan order, most important top-left",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "SalonCard.tsx:462-467 and SalonResultCard.tsx:643-652 both put CardName (the salon name) as Row 1 top-left, price/meta below",
+     "whats_needed": ""
+    },
+    {
+     "principle": "De-label: UI implies labels (star implies rating, CHF implies price), no 'Label: value' spreadsheets",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "No 'Label: value' pairs found in SalonCard.tsx or SalonResultCard.tsx; RatingStars renders bare star+number (no 'Rating:' prefix), PriceFrom renders 'ab 85 CHF' not 'Price: 85'. Grep across the two files for a colon-separated label pattern returned nothing.",
+     "whats_needed": ""
+    },
+    {
+     "principle": "Icon the details row: one row of icon+value pairs (14px icons) instead of label text",
+     "status": "partial",
+     "size": "small",
+     "evidence": "Only the next-slot row is iconed (Calendar icon; SalonResultCard.tsx:672-678 and :356-362 use Calendar+text). The category/address/price detail rows in both the homepage SalonCard (SalonCard.tsx:479-499, Row 2/3) and the SalonResultCard grid variant (SalonResultCard.tsx:658-680) are plain text with no icon at all, and the feed-variant service rows (SalonResultCard.tsx:541-557) render name/duration/price with zero icons.",
+     "whats_needed": "Add a small leading icon (14px per LOCKFILE §13.7) to the category/address meta row (e.g. MapPin for address, already used in the 'suggest' variant at SalonResultCard.tsx:302) so the plain-text detail rows match the recipe, or explicitly document these rows as an intentional exception in LOCKFILE §14.1."
+    },
+    {
+     "principle": "One differentiated element per card (size/weight/photo); photos whenever honest",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "Every card variant leads with a real salon photo (SalonCard.tsx:416-432, SalonResultCard.tsx:233-262) and the name is the sole larger/weighted anchor via <CardName> (app/[locale]/_components/primitives/CardText.tsx:39-41, font-medium/text-s-ink) versus <CardMeta> (CardText.tsx:47-49, font-normal/text-s-ink-2) for everything else.",
+     "whats_needed": ""
+    },
+    {
+     "principle": "Price rendered bold-ink (dark, semibold) and smaller than the name, per the latest dated owner decision (TASTE_LOG.md:33 'Bold ink number, units grey'; TASTE_LOG.md:62 'amend rule A13 to anchor by SIZE, name + price may both be ink if larger'; CLAUDE.md design-contract table 'price bold-ink but smaller than name')",
+     "status": "missing",
+     "size": "small",
+     "evidence": "PriceFrom's amount span only ever gets font-semibold when emphasis=true, never a color override (app/[locale]/_components/primitives/PriceFrom.tsx:27-34: 'className={emphasis ? \"font-semibold\" : undefined}', no text-s-ink). Every call site wraps it in <CardMeta>, which bakes text-s-ink-2 (grey) on all children (CardText.tsx:47-49). So the shipped price is grey (bold-grey where emphasis is passed, e.g. SalonResultCard.tsx:308/353/425/443/583/669; plain grey non-bold on the homepage SalonCard.tsx:495 which passes no emphasis at all). None of the 7 call sites produce a bold-INK (dark) price. The CardText.tsx doc comment (lines 20-24) also still tells authors that adding 'font-bold text-s-ink' on card meta gets drift-flagged, i.e. the code and its own inline documentation still encode the OLDER A13 rule (LOCKFILE.md:371-390, price recedes to grey-normal), not the amended one.",
+     "whats_needed": "Either (a) give PriceFrom's amount span text-s-ink when emphasis is true (small: 1-line change in PriceFrom.tsx) plus pass emphasis at the homepage SalonCard.tsx:495 call site, and update the CardText.tsx doc comment + drift-checker A13 exception list to allow an ink+bold price alongside the name; or (b) if the owner has since reverted to the grey-price treatment, update CLAUDE.md's design-contract table and TASTE_LOG's dated entries so they stop stating the opposite of what's shipped. This is a genuine doc/code contradiction, flag for the owner rather than guess which side is current."
+    }
+   ]
+  },
+  {
+   "group": "states",
+   "findings": [
+    {
+     "principle": "Loading = Skeleton matching final layout (not a bare spinner)",
+     "status": "partial",
+     "size": "small",
+     "evidence": "Correct: app/[locale]/loading.tsx, app/[locale]/search/loading.tsx, app/[locale]/coiffeur/loading.tsx, app/[locale]/dashboard/loading.tsx, app/[locale]/profile/loading.tsx, app/[locale]/inspo/loading.tsx all import the shared <Skeleton>/<SkeletonCard> primitive (app/[locale]/_components/primitives/Skeleton.tsx) and compose it to mirror the final grid/card/hero shape. SearchTemplate.tsx:250 (SalonCardSkeleton) also matches its final card footprint. Violations: app/[locale]/salon/[slug]/loading.tsx:6-14 hand-rolls raw `<div className=\"bg-s-bg-sunken animate-pulse\">` blocks instead of the componentized <Skeleton> (shape is layout-matched but bypasses the shared primitive, contradicting CLAUDE.md 'States are componentised + locked -- USE them, don't hand-roll'). More seriously, five dashboard admin pages render a bare centered spinner for the full page's initial data fetch instead of a skeleton: app/[locale]/dashboard/cities-admin/page.tsx:92-95, app/[locale]/dashboard/homepage-admin/page.tsx:86-89, app/[locale]/dashboard/commission-admin/page.tsx:99-102, app/[locale]/dashboard/feature-flags-admin/page.tsx:132-135, app/[locale]/dashboard/ai-limits-admin/page.tsx:117-120 -- all the identical pattern `{loading ? <div className=\"flex justify-center py-16\"><Loader2 className=\"animate-spin\"/></div> : (...)}` for the page's primary content list, not a button/action.",
+     "whats_needed": "Swap app/[locale]/salon/[slug]/loading.tsx's raw pulse divs for the <Skeleton> primitive (same shapes, just the shared component). Replace the five dashboard admin pages' centered Loader2 content-loading block with a Skeleton composition shaped like the eventual table/list (each page already has a populated-state markup to mirror, same pattern as dashboard/loading.tsx)."
+    },
+    {
+     "principle": "Empty = EmptyState component with one action",
+     "status": "partial",
+     "size": "small",
+     "evidence": "Correct: app/[locale]/profile/stamps/page.tsx:110, app/[locale]/profile/favorites/page.tsx:84, app/[locale]/profile/looks/page.tsx:48 all use the componentized <EmptyState title=... /> with an action slot; dashboard admin list pages (all-salons, all-users, badge-manager, marketing, review-moderation, salon-of-month-admin, segments, bundles, reviews) and SearchTemplate.tsx / TreatmentsClient.tsx also import EmptyState. Violations: app/[locale]/brand/[slug]/page.tsx:109 renders a bare `<p>Noch keine Standorte verfügbar.</p>` with no icon, no action, not the EmptyState component, for a genuinely-empty 'Alle Standorte' grid; app/[locale]/inspo/saved/[id]/page.tsx:69 and app/[locale]/inspo/board/[id]/page.tsx:92 render the identical bare `<p>Noch keine Looks in dieser Kollektion.</p>` pattern with no action for an empty collection; components/salon/SalonReviews.tsx:127 renders a bare italic `<p>Noch keine Bewertungen.</p>` for zero reviews.",
+     "whats_needed": "Replace the four bare-paragraph empty texts (brand/[slug]/page.tsx:109, inspo/saved/[id]/page.tsx:69, inspo/board/[id]/page.tsx:92, SalonReviews.tsx:127) with the <EmptyState> component per the locked anatomy (RATIONALE.md ~line 946: headline + subline + one action, or a text-link for a nested/secondary empty like these -- e.g. 'Looks entdecken' link back to Inspo)."
+    },
+    {
+     "principle": "Error = ErrorState (inline) / ErrorFallback (route boundary)",
+     "status": "partial",
+     "size": "small",
+     "evidence": "Correct at the route level: app/[locale]/nails/error.tsx, app/[locale]/salon/[slug]/error.tsx, app/[locale]/search/error.tsx, app/[locale]/inspo/error.tsx, app/[locale]/dashboard/error.tsx, app/[locale]/spa/error.tsx, app/[locale]/coiffeur/error.tsx, app/[locale]/barbershop/error.tsx, app/[locale]/profile/error.tsx all import ErrorState/ErrorFallback as Next.js error boundaries; SearchTemplate.tsx and several dashboard admin pages (commission-admin, marketing, salon-of-month-admin, bundles, reviews) use ErrorState inline for a failed fetch, matching the doc's 'loading = spinner, empty = EmptyState, failure = ErrorState' contract (_design-system/components/ErrorState.md). Violation: app/[locale]/inspo/saved/[id]/page.tsx:67 and app/[locale]/inspo/board/[id]/page.tsx:90 hand-roll a bare `<p>Kollektion nicht gefunden.</p>` for a fetch-failed/not-found state instead of the componentized ErrorState (no icon, no retry action, no role=alert).",
+     "whats_needed": "Swap the two bare 'Kollektion nicht gefunden' paragraphs (inspo/saved/[id]/page.tsx:67, inspo/board/[id]/page.tsx:90) for the <ErrorState> component with a retry/back action, consistent with the componentized error handling already used elsewhere on the same route family (inspo/error.tsx)."
+    }
+   ]
+  },
+  {
+   "group": "spacing-rhythm",
+   "findings": [
+    {
+     "principle": "Three-tier vertical rhythm: 32px Section / 12px Card / 16px Group, sitewide (LOCKFILE:442-453)",
+     "status": "partial",
+     "size": "big",
+     "evidence": "The tiers exist and are used in some places, but a fourth de facto tier (mt-5 = 20px) has become the dominant heading-to-content gap across the entire PDP: app/[locale]/_components/salon/SalonServices.tsx:132, SalonReviews.tsx:116/122/126/138, SalonBundles.tsx:97/119, SalonTeam.tsx:126, SalonLocation.tsx:40, SalonProducts.tsx:103, SalonVenuesNearby.tsx:126/169, SalonAppCta.tsx:54, SalonSidebar.tsx:138, SalonServicesSheet.tsx:255, SalonLoyalty.tsx:62 (65 mt-5 hits total sitewide, most on non-dev customer surfaces). None of these map to 32/12/16.",
+     "whats_needed": "Reclassify each mt-5 usage as either Group (16px, if it's heading-to-content inside one PDP section card) or Card (12px, if between sibling items) and swap the class. Because this touches the whole PDP visual rhythm uniformly, treat as a structural change: mockup one representative section (e.g. SalonServices) at 16px, get owner sign-off, then sweep the rest."
+    },
+    {
+     "principle": "Drift signal: mt-5/mt-6/mt-7/space-y-5/... between sections or cards should not appear (LOCKFILE:453)",
+     "status": "missing",
+     "size": "small",
+     "evidence": "mt-7 (28px, not on the 32/12/16 ladder and not even in the extended 4pt-multiple whitelist of S17 sub-check 1) appears on customer-facing surfaces: app/error.tsx:38, app/[locale]/not-found.tsx:46, app/[locale]/booking/lookup/page.tsx:550, app/[locale]/profile/page.tsx:221, app/[locale]/_components/salon/SalonDetailV3.tsx:242 (md:mt-7 on the PDP header), app/[locale]/_components/salon/SalonServicesSheet.tsx:493, app/[locale]/_components/homepage/WhySolen.tsx:129, app/[locale]/onboarding/OnboardingFlow.tsx:135/216. Same pattern with gap-7: SalonReviews.tsx:132, BusinessTeaser.tsx:35 (homepage), DateTimePicker.tsx:188 (the ONE locked shared date/time primitive used by both booking and search). space-y-7: profile/settings/page.tsx:61, SettingsForm.tsx:172/174. py-7: Footer.tsx:91 (global footer, every page).",
+     "whats_needed": "Swap every mt-7/gap-7/space-y-7/py-7 instance to the nearest correct tier (32 Section or 24/16 if it's actually a Group). Mechanical, no design decision needed since LOCKFILE already names mt-7 as the exact drift pattern to remove; the DateTimePicker.tsx instance matters most since it is a single shared primitive reused across booking and search."
+    },
+    {
+     "principle": "4-pt scale only, sitewide, no arbitrary pixel spacing values",
+     "status": "missing",
+     "size": "small",
+     "evidence": "Arbitrary bracket pixel spacing (not even 4pt-clean) on the booking lookup and resend-link flows: app/[locale]/booking/lookup/page.tsx:251 (mb-[7px]), :268 (pt-[15px]), :343/393/468/484/539 (mt-[18px] / pt-[18px] repeated 5x), :479 (mt-[22px]), :605 (mt-[2px]); app/[locale]/booking/resend-link/page.tsx:233 (mb-[7px]), :299 (mt-[9px]), :304/353 (mt-[18px]), :358 (mb-[7px]).",
+     "whats_needed": "Replace each bracket value with the nearest 4pt-clean class from the standard Tailwind scale (7px/9px/15px/18px/22px have no reason to exist outside the grid); most collapse to mt-2/mt-3/mt-4/mt-5-equivalent. Purely mechanical, file-local, no visual redesign."
+    },
+    {
+     "principle": "Larger one-off dimensions round to clean 5s/10s above ~100px (LOCKFILE:452-453)",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "No violations found in this sweep; large dimensions observed (max-w-[1180px], max-w-[1280px], max-w-[640px] etc.) are all clean round numbers, consistent with the rule.",
+     "whats_needed": ""
+    },
+    {
+     "principle": "Home-feed exception: homepage keeps the owner-tuned ~24px tight rhythm instead of the 32px Section tier (LOCKFILE:455-461)",
+     "status": "partial",
+     "size": "small",
+     "evidence": "The exception is respected in most homepage sections, but WhySolen.tsx:129 uses mt-7 (28px) for its CTA button gap and BusinessTeaser.tsx:35 uses gap-7 (28px) for its grid, neither of which is the documented ~24px home rhythm nor a locked tier value.",
+     "whats_needed": "Align both to the home-feed's existing 24px (or the nearest already-used home value) rather than the ad hoc 28px."
+    }
+   ]
+  },
+  {
+   "group": "typography",
+   "findings": [
+    {
+     "principle": "Font family = Inter Tight (display/headings) + Inter (body), Geist banned",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "app/layout.tsx:10-12 (\"Inter Tight (display/headings) + Inter (body) per V3-D410... Mono is RETIRED... codes render Inter Tight tabular\"); tailwind.config.js:226-244 fontFamily.display/heading/mono all point to var(--font-inter-tight); app/globals.css:122-213 sets Inter/Inter Tight on every role, line 7 comment \"Do NOT reintroduce Geist\"; grep for \"Geist\" in app/ and tailwind.config.js returns zero live usages, only historical comments noting it was reverted (globals.css:128, tailwind.config.js:228).",
+     "whats_needed": ""
+    },
+    {
+     "principle": "Type scale roles (name 14, meta 12-13, Section H2 clamp(18px,2vw,20px), eyebrow 11) are followed on customer surfaces",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "app/[locale]/_components/homepage/SalonCard.tsx:465 name text-[14px], :469/:480/:489/:494 meta text-[12px]/text-[13px] matching LOCKFILE Body-small(13/14)/Caption(11/12) roles; Section H2 clamp(18px,2vw,20px) used consistently across app/[locale]/warum-solen/page.tsx:231,283,315,337,381,412, app/[locale]/brand/[slug]/page.tsx:105, app/[locale]/partner/page.tsx (7 instances), app/[locale]/[city]/[category]/page.tsx:83, app/[locale]/_components/salon/SalonOpeningTimes.tsx:30, SalonAbout.tsx:32, SalonReviews.tsx:90 - matches LOCKFILE.md:230/251 exactly.",
+     "whats_needed": ""
+    },
+    {
+     "principle": "CTA text never <=13px (locked CTA role is 14px mobile / 15px desktop, LOCKFILE.md:238)",
+     "status": "missing",
+     "size": "big",
+     "evidence": "app/[locale]/checkout/page.tsx:99,327,374,552,624,686 - primary and secondary submit/CTA buttons all set text-[11px] (e.g. line 374 \"px-6 py-3.5 rounded-btn bg-s-ink text-white text-[11px] font-heading uppercase tracking-[.06em]\"), well under the 13px floor stated in this audit group and the 14/15px CTA role locked in LOCKFILE.md:238. Same pattern on app/[locale]/dashboard/settings/page.tsx:138 (text-[12px]) and app/[locale]/onboarding/salon/page.tsx:114 (text-[12px]).",
+     "whats_needed": "Bump checkout.tsx CTA buttons (and the settings/onboarding pill buttons) to the locked CTA recipe: text-[14px] md:text-[15px] font-medium tracking-[-0.005em], sentence case. Checkout is a live payment surface, so per project rule this needs a mockup-first pass and owner approval before shipping, not a silent edit."
+    },
+    {
+     "principle": "No em-dashes anywhere in UI copy (rule 10 / feedback_no_emdashes)",
+     "status": "missing",
+     "size": "small",
+     "evidence": "Widespread across shipped, user-visible strings, not just comments: browser-tab / SEO titles in app/layout.tsx:17 (\"solen.ch - Salons in Basel\" written with an em-dash), app/[locale]/page.tsx:96-99 og:title metadata, app/[locale]/nails/page.tsx:28-31, spa/page.tsx:28-31, coiffeur/page.tsx:28-31, business/page.tsx:41-44, ueber-uns/page.tsx:5, privacy/page.tsx:8, kontakt/page.tsx:5, karriere/page.tsx:4, terms/page.tsx:8, blog/page.tsx:5, impressum/page.tsx:4; visible body/marketing copy in app/[locale]/business/page.tsx:99 (\"60 Sekunden Formular. Name, Salon, Stadt [em-dash] fertig.\"), :122,:138,:146 FAQ answers; rendered legal text in app/[locale]/terms/components/TermsContent.tsx:199-202,269-273 (list items using em-dash inside <strong> definitions); app/[locale]/_components/salon/SalonLoyalty.tsx:45 (\"...exklusive Vorteile [em-dash] von Bronze bis Platin.\").",
+     "whats_needed": "Sweep every user-facing string (page metadata titles/descriptions, marketing/FAQ copy, terms content, loyalty descriptions) and replace the em-dash with a period, comma, colon, or spaced hyphen per rule 10. Mechanical text-only change, no layout/structure touched, so it does not need a mockup. (Dashboard use of an em-dash character as an empty-value placeholder, e.g. dashboard/page.tsx:81,190 and several admin pages, is a distinct convention, not prose punctuation, and can stay.)"
+    },
+    {
+     "principle": "Sentence-case UI copy; tracked/letter-spaced UPPERCASE limited to the Eyebrow and Tag/Status roles only (LOCKFILE rule A7)",
+     "status": "missing",
+     "size": "big",
+     "evidence": "LOCKFILE.md:339-345 states only two roles may use `uppercase`; CLAUDE.md:130 explicitly bans \"tracked-uppercase labels/eyebrows\" outside that. Live violations on customer/checkout/auth surfaces: app/[locale]/checkout/page.tsx (12+ instances, e.g. lines 99,102,324,327,367,374,393,397,406,506,525,538,543,552,583,597,610,615,624) uppercase tracking-[.06em to .20em] on CTA buttons, price rows and section labels, not eyebrows/tags; app/[locale]/auth/reset-password/page.tsx:98,121,136,156,220 uppercase tracked labels and CTA button; app/[locale]/loyalty/stamp/page.tsx:82,93,115; app/[locale]/referral/[code]/page.tsx:81,98 (h1 tracking-wide uppercase); app/[locale]/warum-solen/page.tsx:125; app/[locale]/business/page.tsx:191; app/[locale]/privacy/components/PrivacySidebar.tsx:97 and terms/components/TermsSidebar.tsx:109 (nav headers uppercase tracking-[0.16em]); app/[locale]/rewards/RewardsView.tsx:130.",
+     "whats_needed": "Convert these to sentence case, dropping `uppercase`/`tracking-[...em]`, per LOCKFILE section A7 and SOURCE.md:1117-1123 (\"Eyebrows: the ONE place UPPERCASE is allowed\"). Checkout and auth/loyalty are live payment/account surfaces, so this is a visual treatment change on customer-facing screens and needs a mockup-first pass and owner sign-off before editing, not a silent sweep."
+    }
+   ]
+  },
+  {
+   "group": "motion",
+   "findings": [
+    {
+     "principle": "Only the 6-value duration whitelist (80/150/200/250/300/500ms, plus 100ms registered 2026-07-12) is canonical; other durations are drift",
+     "status": "partial",
+     "size": "small",
+     "evidence": "_design-system/LOCKFILE.md:572-576 (canon list) and _design-system/_pending-migration.md:9874-13080 (drift-check A3 findings, generated live this session) list 6 real non-canonical arbitrary durations in core primitives/layout, not legacy routes: app/[locale]/_components/layout/Header.tsx:724 duration-[280ms], Header.tsx:797 and :807 duration-[220ms], app/[locale]/_components/primitives/CookieConsent.tsx:252 duration-[400ms], app/[locale]/_components/primitives/Sheet.tsx:43 duration-[600ms], app/[locale]/_components/primitives/motion.ts:125 duration-[180ms]. The drift checker itself confirms these as A3 non-canonical duration hits against CANONICAL_DURATIONS_MS = {80,100,150,200,250,300,500} in .claude/skills/solen-drift-check/scripts/check.py:104.",
+     "whats_needed": "Round each to a canonical value: Header.tsx menu-icon crossfades 280ms/220ms -> 250ms or 300ms; CookieConsent 400ms -> 300ms or 500ms; Sheet.tsx:43 600ms -> 300ms per LOCKFILE's own §4 per-transition table which locks 'Sheet / modal open' at 300ms glide (this one is a real spec violation, not just off-canon, since Sheet.tsx is currently animating at DOUBLE the locked sheet-open duration); motion.ts:125's 180ms 'butter transition' is explicitly named in MOTION.md:31 as an intentional value but was never added to the LOCKFILE canonical set, so either round it to 150/200ms or add 180ms to the whitelist as a documented button-transition exception (a doc/gate mismatch, owner call needed either way)."
+    },
+    {
+     "principle": "Named easing curves snap/spring/glide/thud, each cubic-bezier value matching LOCKFILE §4, used consistently on interactions",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "tailwind.config.*:325-329 defines ease-snap cubic-bezier(0.4,0,0.2,1), ease-spring cubic-bezier(0.34,1.56,0.64,1), ease-glide cubic-bezier(0.16,1,0.3,1), ease-thud cubic-bezier(0.7,0,0.84,0), exactly matching LOCKFILE §4. These classes (ease-glide especially) are used pervasively across app/[locale]/_components (SalonHero, SalonCard, Header, SearchTemplate, TabPill, motion.ts, etc, 40+ call sites found via grep).",
+     "whats_needed": ""
+    },
+    {
+     "principle": "420ms entrance recipe (opacity 0->1 + scale 0.96->1 + blur 8px->0, glide easing) is the single locked ENTER RECIPE, imported from a shared module rather than hand-rolled per surface",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "app/[locale]/_components/primitives/motion.ts:22-24,38-45 defines ENTER_DURATION=420, GLIDE_EASE, and the enterVariants object with exactly opacity 0->1, scale 0.96->1, filter blur(8px)->blur(0); this is the shared module referenced by MOTION.md:28-33 and enforced globally by the ~/.claude/hooks/motion-recipe-gate.py PreToolUse gate (MOTION.md:5).",
+     "whats_needed": ""
+    },
+    {
+     "principle": "prefers-reduced-motion is handled: base/resting state is the final visible state, animation only adds the entrance, no vestibular-trigger motion for reduced-motion users",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "Global CSS handles the universal case at app/globals.css:171-174, 456-469 (SuccessMark), 521, 804-813, 911, 1114, 1184. Component-level: app/[locale]/_components/primitives/motion.ts:58,100,167 (useReducedMotion collapsing to transition:{duration:0}), plus useReducedMotion() used directly in RewardsView.tsx:95, SearchBar.tsx:182, SearchOverlay.tsx:154, SearchTemplate.tsx:423, RatingStars.tsx:118, map-motion/page.tsx:112, map-zoom/page.tsx:74, search-morph/page.tsx:73, plus components-legacy ReviewForm, ErrorState, CelebrationRing, EmptyState, ToggleCircle, typewriter.tsx, MapView.tsx. This is one of the more thoroughly covered rules in the codebase, both globally and per-surface.",
+     "whats_needed": ""
+    },
+    {
+     "principle": "Locked motion-per-transition table (hover lift 200ms glide, press 150ms thud, sheet/modal open 300ms glide, select toggle/scrim 200ms snap, color/focus 150ms snap) is followed by the components that own each transition type",
+     "status": "partial",
+     "size": "small",
+     "evidence": "Hover lift and press transitions largely match (e.g. SalonCard.tsx:387 active:scale-[0.97] active:duration-[80ms] matches the documented 3-tier press convention; FeaturedStylists.tsx:211 hover lift uses duration-150 not the locked 200ms for card hover-lift, a minor drift). The clearest violation is Sheet.tsx:43 shipping duration-[600ms] against the table's locked 'Sheet / modal open = 300ms glide' row (LOCKFILE section 'Motion per transition', row 3) -- the primitive that all sheets/modals in the app share is running at 2x the locked duration.",
+     "whats_needed": "Fix Sheet.tsx:43 to duration-300 (or the canonical duration-[300ms]) to match the locked sheet-open spec; spot-check FeaturedStylists.tsx:211's 150ms hover-lift against the 200ms card-hover-lift row and align if it's meant to follow the shared convention rather than being an intentional per-surface choice."
+    },
+    {
+     "principle": "SuccessMark celebration choreography (ring/disc/check/text) uses specific timing values documented in MOTION.md and LOCKFILE, but those exact ms values (750/550/400/420) are not all members of the canonical 6-value duration whitelist",
+     "status": "partial",
+     "size": "na",
+     "evidence": "app/globals.css:461-464: confirm-ring 0.75s, confirm-pop 0.55s (labeled = spring), confirm-draw 0.4s, celebrate-rise 0.42s (labeled = glide). None of 750/550/400ms appear in LOCKFILE's canonical duration list (80/100/150/200/250/300/500); only 420ms (celebrate-rise, matching the entrance recipe) is a named, LOCKFILE-acknowledged departure. The other three (750/550/400) are undocumented as whitelist exceptions even though MOTION.md:62 names the SuccessMark choreography as intentional and locked.",
+     "whats_needed": "This is a documentation gap, not a visual bug: the owner already approved the SuccessMark choreography (MOTION.md:60-63) as a locked, one-off 'confirmation delight peak' component, so the fix is administrative -- add these SuccessMark-specific ms values to LOCKFILE §4 as a named, scoped exception (same treatment as the 420ms entrance departure) rather than silently leaving them outside the whitelist where a future drift sweep would flag them as unexplained drift."
+    }
+   ]
+  },
+  {
+   "group": "elevation",
+   "findings": [
+    {
+     "principle": "One primary commit action = ink fill, may carry shadow-elevation-2 (the one deliberate lift)",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "app/[locale]/checkout/page.tsx:374 bg-s-ink text-white ... shadow-elevation-2 (checkout CTA); app/[locale]/_components/layout/Header.tsx:751 bg-s-ink ... shadow-[0_4px_12px_rgba(4,51,56,0.18)] (header primary CTA); app/[locale]/_components/layout/CityTopBar.tsx:258 bg-s-ink text-white shadow-[0_2px_6px_rgba(0,0,0,0.20)] (city-confirm commit button)",
+     "whats_needed": ""
+    },
+    {
+     "principle": "Calm/quiet control on flat white or s-bg-sunken surface stays FLAT, zero box-shadow",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "app/[locale]/_components/primitives/TabPill.tsx:70 comment 'FLAT with no lift (V3-D420 CONTROL_ELEVATION: calm controls on white never cast a shadow)' with no shadow class applied; app/[locale]/_components/layout/Header.tsx:588-589,789 hamburger explicitly kept flat per V3-D421L",
+     "whats_needed": ""
+    },
+    {
+     "principle": "Product/card surfaces earn resting elevation-1/2 by default (photo containers, grouped-list cards use the sanctioned shadow-whisper token)",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "app/[locale]/_components/homepage/SalonCard.tsx:401 shadow-elevation-2 on the photo wrapper, group-hover:shadow-elevation-3; app/[locale]/_components/salon/SalonServices.tsx:139/147, SalonBundles.tsx:138, SalonProducts.tsx:103/183 all use border-s-border + shadow-whisper (the owner-sanctioned grouped-list-card exception, 2026-06-11)",
+     "whats_needed": ""
+    },
+    {
+     "principle": "A resting card must NOT combine border-s-border with a shadow at the same time (the dated tell per LOCKFILE/CONTROL_ELEVATION: a card that carries elevation must drop the border)",
+     "status": "missing",
+     "size": "small",
+     "evidence": "app/[locale]/_components/salon/SalonOtherLocations.tsx:67 border border-s-border bg-white transition-shadow hover:shadow-elevation-2 (hover state carries both border AND shadow-elevation-2 simultaneously); app/[locale]/_components/salon/SalonLoyalty.tsx:72 same pattern, border border-s-border ... hover:shadow-elevation-2; app/[locale]/_components/homepage/WalkInBand.tsx:97 border border-s-border bg-white p-3 shadow-[0_6px_16px_rgba(0,0,0,0.05)] on the loading-skeleton card (border+shadow simultaneously at rest, though the real loaded card at line 111 correctly drops the shadow and keeps only the border)",
+     "whats_needed": "Drop border-s-border wherever a shadow (elevation-2 hover or the resting skeleton shadow) is also present, or drop the shadow and keep the flat border look, per the LOCKFILE dated-tell rule. Three sites: SalonOtherLocations.tsx:67, SalonLoyalty.tsx:72, WalkInBand.tsx:97."
+    },
+    {
+     "principle": "A control that sits OVER a photo must use the canonical FROST_GLASS recipe (frosted white + blur + inner border), not a plain white+shadow badge",
+     "status": "partial",
+     "size": "small",
+     "evidence": "app/[locale]/_components/salon/SalonHero.tsx:247 'Alle Fotos ansehen' pill sits directly over the third gallery photo but uses bg-white/95 ... shadow-md, a plain translucent-white+shadow badge, not lib/frost-glass.ts's FROST_GLASS/.frost-glass recipe that SalonHero's own back/share/heart controls already use (per CONTROL_ELEVATION audit log: 'SalonHero back/share/heart | frosted glass over photo | correct (A), promoted recipe to lib/frost-glass.ts')",
+     "whats_needed": "Swap the 'Alle Fotos ansehen' pill's bg-white/95+shadow-md treatment for the shared .frost-glass / FROST_GLASS utility already used by the other three controls on the same hero, for a consistent over-photo material."
+    },
+    {
+     "principle": "White-fill + shadow on a non-white (e.g. dark/ink) card background is a valid inverse-primary treatment, not a grey-haze violation",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "app/[locale]/_components/homepage/BentoBusiness.tsx:512 bg-white ... shadow-elevation-2 chevron circle sits on the dark 'Werde Solen-Partner' CTA card (white text at lines 496/505 confirms dark background), matching the CONTROL_ELEVATION audit's prior verdict 'BentoBusiness white+shadow | white-fill on a bg-s-ink surface | correct INVERSE-primary'",
+     "whats_needed": ""
+    }
+   ]
+  },
+  {
+   "group": "a11y",
+   "findings": [
+    {
+     "principle": "Global ink focus-visible ring on interactive chrome (buttons/links/pills)",
+     "status": "missing",
+     "size": "na",
+     "evidence": "app/globals.css:356-395: an owner-mandated block sets outline:none on a:focus/a:focus-visible, button:focus/focus-visible, [role=button], [tabindex], summary for ALL devices (not just touch), comment 'NO focus ring on interactive chrome, on ANY device' (owner-mandated repeatedly, 2026-07-01/02). Already documented in _design-system/RATIONALE.md:119 as a recorded, deliberate owner tradeoff against WCAG 2.4.7/2.4.11, not an oversight. RATIONALE.md:119 also flags a residual inconsistency: SalonCard's own Link wrapper still carries a focus-visible outline (app/[locale]/_components/homepage/SalonCard.tsx:384, `focus-visible:outline-2 focus-visible:outline-s-ink`), i.e. one component didn't get the global kill and is now the ONE place a ring still shows, inconsistent with the rest of the site.",
+     "whats_needed": "This is an owner-locked aesthetic decision (calm-over-visible-focus), so it is not a bug to silently fix. Two real gaps if the owner wants them closed: (1) SalonCard.tsx:384's leftover focus-visible outline is inconsistent with the global kill, either strip it to match everywhere-no-ring, or restore a ring everywhere instead. (2) Inputs are the only conforming element (ink edge + halo), so keyboard users get zero visual focus feedback on any button, link, or pill site-wide, a real WCAG 2.4.7 AA failure that is currently accepted as a known tradeoff, not fixed. Any change needs explicit owner sign-off given how strongly this was previously mandated."
+    },
+    {
+     "principle": "Interactive touch targets >=44px (h-11/w-11 floor)",
+     "status": "partial",
+     "size": "small",
+     "evidence": "Correctly sized: HeartButton uses a 44x44 hit area with a smaller visible glass circle (app/[locale]/_components/homepage/HeartButton.tsx:174-177, h-11 w-11, comment 'Button hit area is 44x44 (WCAG + ergonomic minimum)'). Header back/menu/account controls also look correctly sized. Violations found: app/[locale]/_components/search/SearchOverlay.tsx:1089 renders an 'Entfernen' (remove) icon button at only h-8 w-8 (32px, below the 44px floor); app/[locale]/_components/primitives/BackButton.tsx:35, the CANONICAL shared back-button primitive used across the app, is h-10 w-10 (40px, 4px short of the 44px floor). RATIONALE.md:1226 names a short exception list (TabPill 32/40px, SaveHeart 28x28) but neither SearchOverlay's remove button nor BackButton is on that documented exception list.",
+     "whats_needed": "Bump BackButton.tsx:35 from h-10 w-10 to h-11 w-11 (this is the shared primitive, so one fix propagates everywhere it's used) and SearchOverlay.tsx:1089's remove button from h-8 w-8 to h-11 w-11, or explicitly add both to RATIONALE.md's documented SACRIFICES exception list if the owner wants to keep them compact. A few-line class change, no visual redesign needed since the icon glyph itself can stay the same visible size with a larger invisible hit area (same technique HeartButton already uses)."
+    },
+    {
+     "principle": "aria-label on icon-only interactive elements",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "Spot-checked icon-only controls all carry aria-label + aria-hidden on the icon glyph: HeartButton.tsx:174 (aria-label={isSaved ? \"Gespeichert\" : \"Speichern\"}), BackButton.tsx:32-39 (aria-label={label}, ArrowLeft has aria-hidden), Header.tsx lines 286/305/559/573/585/613/681/740/782/831 (city picker, home link, back, main nav, account, hamburger menu with dynamic open/close label, categories all labeled). 106 files across app/ and components/ reference aria-label; RATIONALE.md:765 pins a closed set of icon-only-permitted controls (close X, back, search, hamburger, save heart, copy, share), each requiring a mandatory aria-label, and the checked components conform to that list.",
+     "whats_needed": ""
+    },
+    {
+     "principle": "Skip-to-content link for keyboard users",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "app/[locale]/layout.tsx:62-65: `<a href=\"#main-content\" className=\"sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] ... focus:bg-s-ink focus:text-white ...\">Zum Inhalt springen</a>` is the first focusable element in the tree, visually hidden until keyboard focus, then pops in as an ink pill (V3-D312). It targets `<main id=\"main-content\" tabIndex={-1}>` at layout.tsx:107. Because the skip link uses a background/position change on `:focus` rather than the global outline, it is unaffected by the global no-focus-ring kill and remains visible on focus.",
+     "whats_needed": ""
+    },
+    {
+     "principle": "Screen-reader / landmark semantics (main, nav, header)",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "Real semantic landmarks are used, not divs: app/[locale]/layout.tsx:107 `<main id=\"main-content\">`; app/[locale]/_components/layout/Header.tsx:495 `<header>` and Header.tsx:680-681 `<nav aria-label=\"Hauptnavigation\">`. Interactive regions add explicit ARIA labels beyond the bare tag (e.g. Header.tsx:740 'Mein Konto', Header.tsx:831 'Kategorien').",
+     "whats_needed": ""
+    },
+    {
+     "principle": "Input focus indicator (the conforming half of the no-focus-ring tradeoff)",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "app/globals.css ~1194-1234 ('THE INPUT FOCUS LAW'): a single global rule gives every input/textarea/select an ink-edge border plus a soft halo box-shadow on :focus-visible, unlayered so it beats Tailwind border utilities (root-cause comment at globals.css:1197-1211 explains why it had to move out of @layer base). RATIONALE.md:119/739 calls this out as the conforming half of the tradeoff: buttons/links lost their ring by owner mandate, inputs kept theirs.",
+     "whats_needed": ""
+    }
+   ]
+  },
+  {
+   "findings": [
+    {
+     "principle": "Real Lucide markup only, never hand-drawn SVG paths",
+     "status": "partial",
+     "size": "small",
+     "evidence": "app/[locale]/onboarding/beautyFields.tsx:73-77 (CAT_PATHS: hand-drawn coiffeur/barbershop/nails/spa glyphs used on the live onboarding category picker); app/[locale]/_components/layout/BellIcon.tsx:75,77 (hand-drawn bell path, comment admits \"lucide-shaped ... until/unless we swap in a custom shape\"); app/[locale]/_components/primitives/SuccessMark.tsx:35-37 (hand-drawn check path instead of lucide Check, used on booking-confirmed/payment-settled screens); app/[locale]/_components/homepage/SectionHeader.tsx:173-190 (hand-drawn chevron/arrow path replicating lucide's ArrowRight, used on every homepage section See-all link). Counter-evidence: 193 files correctly import from lucide-react (verified via grep), and app/[locale]/_components/homepage/NearbyMap.tsx:115-116 stringifies a lucide star path only because Leaflet markers require raw HTML strings, not a JSX component -- a legitimate technical exception, not a violation.",
+     "whats_needed": "Swap the 4 violating components to real lucide-react imports: beautyFields CatIcon -> Scissors/Scissors(barbershop-variant)/a real nails+spa icon; BellIcon -> wrap lucide's Bell in the existing motion.svg hover animation instead of a hand-copied path; SuccessMark -> lucide Check inside the disc; SectionHeader's arrow link -> lucide ArrowRight with the same dash-draw hover trick applied to its actual path data."
+    },
+    {
+     "principle": "Never the zap/lightning icon (banned by name, owner 2026-06-14)",
+     "status": "missing",
+     "size": "small",
+     "evidence": "app/[locale]/onboarding/beautyFields.tsx:11,90 (Zap used as the \"deals\" interest icon on the live onboarding interest picker); app/[locale]/partner/page.tsx:8,148,232 (Zap used for the \"waxing\" category icon and a marketing feature icon on the live partner marketing page); app/[locale]/fuer-salons/page.tsx:4,335 (Zap used for \"waxing\" category icon on the live salon marketing page).",
+     "whats_needed": "Replace Zap with a context-appropriate icon per the memory guidance (tag/badge-percent for deals/waxing pricing, or no icon at all) in all 3 files: beautyFields.tsx, partner/page.tsx, fuer-salons/page.tsx."
+    },
+    {
+     "principle": "Never the Sparkles (or Star) glyph as a decorative filler/all/featured placeholder (banned by name, owner 2026-06-23)",
+     "status": "missing",
+     "size": "big",
+     "evidence": "Widespread live-surface usage found via grep, not limited to dev tooling: app/[locale]/profile/page.tsx:212 (Sparkles as the \"Looks\" nav-row icon); app/[locale]/_components/homepage/SearchBar.tsx:111,114 (Sparkles as the Nails/Maniküre category icons on the homepage search); app/[locale]/nail-tech/[id]/page.tsx:141 (Sparkles badge on a live nail-tech PDP); app/[locale]/onboarding/salon/page.tsx:26,247,287 (Sparkles used repeatedly through salon onboarding); app/[locale]/profile/intake-forms/page.tsx:118 (Sparkles on an \"AI Analyse\" tag); app/[locale]/referral/[code]/page.tsx:97, app/[locale]/coming-soon/page.tsx:24,96, app/[locale]/partner/page.tsx:145, app/[locale]/fuer-salons/page.tsx:332, app/[locale]/dashboard/nail-admin/page.tsx:18, app/[locale]/dashboard/badge-manager/page.tsx:7,19 all import/render Sparkles as a generic decorative or category glyph. app/[locale]/_components/homepage/CategoryStack.tsx:2 imports Sparkles but does not render it (dead import, not itself a violation).",
+     "whats_needed": "Per the owner's ruling, replace each Sparkles usage with real content (a representative photo/collage for tile-style uses like SearchBar's Nails/Maniküre and any \"all/featured\" tile) or a context-specific Lucide icon (badge/award/check-circle for the AI/verification tags), or drop the icon entirely for a clean labeled pill/row. This spans ~12 live customer + dashboard files and needs per-surface content decisions, not a single mechanical swap, hence 'big'."
+    },
+    {
+     "principle": "Progress/waiting indicators render as an icon-stepper (icon-above-text, DoorDash/Uber shape), never a plain bar",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "app/[locale]/queue/[token]/page.tsx:317-330 implements the walk-in live tracker exactly to LOCKFILE §13.2's spec: real lucide icons per node (Check, Users, Clock, Armchair) with done/current/future disc states derived from live ticket data (nodeState()), matching the canonical Bezahlt -> In der Schlange -> Fast dran -> Dran stepper. Note: the booking flow (components-legacy/booking/BookingWizard.tsx:40-44) deliberately ships with NO progress indicator at all per a later, more specific owner-approved decision (mockup 20, 2026-06-11, documented in memory project_booking_flow_canonical.md), superseding the older 'Q56 3-segment progress bar' comment still visible at lines 22-38 of the same file -- this is a locked intentional deviation, not a violation of the icon-stepper rule, but the stale in-file comment block (lines 22-38) documenting the old design is worth deleting since it contradicts the actual shipped behavior a few lines below it."
+    }
+   ],
+   "group": "icons"
+  },
+  {
+   "group": "copy-economy",
+   "findings": [
+    {
+     "principle": "No decorative separator dots/pips between metadata (e.g. rating/status/address on PDP)",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "app/[locale]/_components/salon/SalonHeader.tsx:87-89 comment explicitly states \"Meta — stacked rows for a clear order, NO separator dots\" and the rendered rows (93-130) use stacked divs with no bullet characters; the old bullet-separated inline version described at line 29 was superseded.",
+     "whats_needed": ""
+    },
+    {
+     "principle": "Drop words the context already says (e.g. address button doubling as directions link, no separate \"Wegbeschreibung\")",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "app/[locale]/_components/salon/SalonHeader.tsx:121-130, comment: \"Address — the link itself opens directions (no separate 'Wegbeschreibung')\"; also SalonTeam.tsx:191 replaced a redundant \"DE / EN / FR\" languages row with the staff role.",
+     "whats_needed": ""
+    },
+    {
+     "principle": "No redundant language tags / duplicate meta on a row (banned example: \"DE / EN\" tag on a barber row)",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "app/[locale]/_components/salon/SalonTeam.tsx:31 and :191, comments record the \"DE / EN / FR\" languages row was removed and replaced by the staff's role/specialty, a decision-relevant fact.",
+     "whats_needed": ""
+    },
+    {
+     "principle": "No fabricated data: counts, ratings, availability text must come from a live source, never invented",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "lib/barber/walkin-availability.ts:1-60 computes \"Frei in X Min\" from real queue/staff/service-duration queries; app/[locale]/_components/homepage/ForYouSalonRows.tsx:41-52 sorts \"Top bewertet\" strictly by the real fetched rating (comment: \"never an invented tiebreak value\"); app/[locale]/_components/homepage/SalonCard.tsx:351-360 explicitly omits the address line rather than fabricating one when data is missing (\"Neither given ... address is omitted, never fabricated\").",
+     "whats_needed": ""
+    },
+    {
+     "principle": "No redundant tags/badges (SalonCard curation badges like Top bewertet/Beliebt/Neu must be backed by real, decision-relevant data, not decorative)",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "app/[locale]/_components/homepage/SalonOfMonth.tsx:29-31 gates the \"Solen Favorit\" badge on a real DB winner row (salon_of_month_winners) and returns null otherwise; app/[locale]/_components/homepage/ForYouSalonRows.tsx:83 only applies \"top-bewertet\" to the card that is actually top by real rating.",
+     "whats_needed": ""
+    },
+    {
+     "principle": "Long text truncates with a blue \"Mehr lesen\" that expands in place (reviews)",
+     "status": "partial",
+     "size": "small",
+     "evidence": "app/[locale]/_components/salon/SalonReviews.tsx:193-208 does clamp review text at 3 lines (line-clamp-3) with an isLong>200-char threshold and a \"Mehr lesen\" toggle button, but the button is styled `text-s-ink` (black), not `text-s-accent` blue as CLAUDE.md copy rule 2 requires (\"an inline text-s-accent 'Mehr lesen'\").",
+     "whats_needed": "Change the button className at SalonReviews.tsx:205 from `text-s-ink` to `text-s-accent` so the affordance reads as the small clickable blue accent per the design contract."
+    },
+    {
+     "principle": "Long descriptions clamp with \"Mehr lesen\" (salon About/description text)",
+     "status": "missing",
+     "size": "small",
+     "evidence": "app/[locale]/_components/salon/SalonAbout.tsx:29-41 renders the full about/description text with no line-clamp, no length check, and no \"Mehr lesen\" expand control at all — any length of text renders in full.",
+     "whats_needed": "Add a clamp (~150 chars or line-clamp-3/-5) plus a blue `text-s-accent` \"Mehr lesen\" expand toggle to SalonAbout.tsx, matching the pattern already built in SalonReviews.tsx's ReviewCard."
+    },
+    {
+     "principle": "No redundant/decorative filler copy in checkout/booking flows (policy line repeated twice, decorative chips)",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "Grep across app/ for banned filler patterns (\"· Walk-in\", repeated policy lines, decorative status dots) found no matches outside the /terms legal page (app/[locale]/terms/components/TermsContent.tsx), which is a legal-text surface not a booking/checkout card and is exempt from copy-economy card rules.",
+     "whats_needed": ""
+    }
+   ]
+  },
+  {
+   "findings": [
+    {
+     "principle": "Top-aligned labels (never floating/inline-only) on every visible field",
+     "status": "partial",
+     "size": "small",
+     "evidence": "Implemented correctly in the two forms customers actually reach: components-legacy/booking/GuestBookingForm.tsx:133-139 (name), 168-174 (phone), 214-219 (email) all render a real <label> above the input, and app/[locale]/_components/primitives/FieldLabel.tsx:20-27 documents 'Always renders ABOVE the field, never inside (floating labels are banned)', used throughout app/[locale]/profile/settings/SettingsForm.tsx via the local `Field` wrapper (SettingsForm.tsx:288-295). VIOLATION: the logged-in-user contact-edit fields inside the same booking flow (components-legacy/booking/PayConfirmStep.tsx:483-500, 'Kontaktname'/'Telefon' inputs) have no <label> element at all, only `placeholder={tp('contactName')}` / `placeholder={tp('contactPhone')}` plus an `aria-label` for screen readers.",
+     "whats_needed": "Add a visible <label> (or wrap in the existing FieldLabel/Field primitive) above the contactName and contactPhone inputs in PayConfirmStep.tsx:483-500, matching the pattern already used two components away in GuestBookingForm.tsx."
+    },
+    {
+     "principle": "Never placeholder-as-label (placeholder is a hint, not a substitute for a visible label)",
+     "status": "partial",
+     "size": "small",
+     "evidence": "GuestBookingForm.tsx does this correctly: label + placeholder both present on every field (lines 133-153). VIOLATION: PayConfirmStep.tsx:483-491 (contactName input, `placeholder={tp('contactName')}` with no sibling <label>) and PayConfirmStep.tsx:492-501 (contactPhone input, same pattern) are placeholder-only fields for the logged-in-user contact editor. Also present in a currently-unlinked legacy route: app/[locale]/auth/register/page.tsx:167-182 (email/password inputs are placeholder-only, no <label>) — noted for completeness though register is outside the booking/checkout/settings scope.",
+     "whats_needed": "Same fix as above: add a real label above the two PayConfirmStep contact fields; the placeholder text can stay as a hint underneath it."
+    },
+    {
+     "principle": "Payment fields live in their own visible box, separated from the rest of the form",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "The live booking payment step wraps the Stripe PaymentElement in its own bordered container: components-legacy/booking/PayConfirmStep.tsx:636-655 renders `<BookingPaymentForm>` inside a `rounded-input border border-s-border bg-s-bg-surface p-4` div, and BookingPaymentForm.tsx:170 places the actual `<PaymentElement options={{ layout: 'tabs' }} />` inside that. The orphaned legacy route app/[locale]/checkout/page.tsx:694-728 also does this independently, with an explicit 'Sichere Zahlung' header box (`bg-white rounded-[12px] border border-s-ink/[0.07] shadow-warm-md`), though that route is not reachable from any current navigation (grep found zero callers of `/checkout` outside the file itself; the real payment step is PayConfirmStep -> BookingPaymentForm, reached via app/[locale]/salon/[slug]/booking/page.tsx -> BookingWizard).",
+     "whats_needed": ""
+    },
+    {
+     "principle": "Validate on blur/submit, not on every keystroke",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "components-legacy/booking/GuestBookingForm.tsx:80-96 (`sync`) recomputes validity on every keystroke internally but only CLEARS an already-shown error, never introduces a new one mid-typing; new errors only appear via the imperative `validate()` (lines 109-120) which PayConfirmStep.tsx:199 calls once, on the single 'Buchen' CTA press. Checkout promo/voucher codes are the same: app/[locale]/checkout/page.tsx `handlePromoValidate`/`handleVoucherValidate` (lines 200-262) only fire from the explicit 'Anwenden' button click (line 549), never from the input's onChange (line 535).",
+     "whats_needed": ""
+    },
+    {
+     "principle": "Error renders inline at the field, not just as a generic toast",
+     "status": "partial",
+     "size": "small",
+     "evidence": "Implemented for the guest-checkout form: GuestBookingForm.tsx:154-163, 196-203, 237-244 render a `<p role=\"alert\">` with the specific message directly under each field, wired via `aria-describedby`. MISSING for SettingsForm.tsx: every failure path (profile save, email change, password change, account delete) only calls `toast.error(...)` (lines 69-70, 100-102, 122-124, 157-158) with zero inline per-field error rendering anywhere in the file, so a bad email/password format is only reported in a floating toast, not next to the offending input. Booking-level (non-guest-field) errors in PayConfirmStep.tsx also go through `showError` -> toast only (line 69, an explicit dated owner call: 'errors surface as the standard top toast, not a block', 2026-06-12) — that one is a documented deviation, not an oversight, but it does mean the rule is only fully honored inside GuestBookingForm.",
+     "whats_needed": "For SettingsForm.tsx: add lightweight client-side validation (email format, password length) with an inline error <p> under the relevant input, following the exact GuestBookingForm.tsx pattern, instead of relying solely on the post-fetch toast."
+    }
+   ],
+   "group": "forms"
+  },
+  {
+   "findings": [
+    {
+     "principle": "Hero/PDP surfaces: one photo zone at roughly 35-45% of the first viewport",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "app/[locale]/_components/salon/SalonHero.tsx:68 mobile hero uses `aspect-[4/3]` full-bleed carousel (375px wide -> ~281px tall photo, ~36% of an ~780px first viewport on iPhone-class screens); desktop uses `aspect-[16/7]` 3-photo Fresha grid (SalonHero.tsx:225-253, DesktopGallery). Matches RATIONALE.md:868 band (Fresha PDP carousel ~40-45%)."
+    },
+    {
+     "principle": "Browse/list card surfaces: imagery floor of roughly 1/3 of the card/viewport",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "app/[locale]/_components/search/SalonResultCard.tsx: the DEFAULT variants (SearchTemplate.tsx:1642, `card` on desktop / `feed` on mobile, SearchTemplate.tsx:1578) render the photo at `aspect-[5/4]` full-width (SalonResultCard.tsx:400 card variant, :493 feed variant) with text (name/meta/price, 2-3 lines) below -- photo occupies well over half the card, clearing the ~1/3 floor (RATIONALE.md:869 confirms the floor stands for browse cards)."
+    },
+    {
+     "principle": "Browse/list card surfaces: `list` variant photo is a small fixed 104px/112px thumbnail, well under the ~1/3 imagery floor for that row",
+     "status": "partial",
+     "size": "small",
+     "evidence": "SalonResultCard.tsx:332 (`h-[104px] w-[104px]` fixed square) inside a `flex items-center gap-3.5` row (SalonResultCard.tsx:328) that stretches full row width -- photo is a small fraction of row area, well under 1/3. Only reachable via `?layout=list` (SearchTemplate.tsx:525-526), used for the desktop map-open split view, not the default browse experience (default is `card`/`feed`, both compliant -- see above).",
+     "whats_needed": "If the map-split list row is meant to also honor the ~1/3 floor, widen the thumbnail (e.g. to ~140-160px) or accept this as a documented task-conditioned exception (dense list next to a map, RATIONALE.md:876-879 task-conditioning logic already permits leaner imagery in space-constrained utility layouts) -- flag to the owner to confirm this is an intentional named exception rather than an unflagged drift."
+    },
+    {
+     "principle": "Transactional/commit-flow surfaces (checkout, booking steps, slot-picker): imagery drops to near zero",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "components-legacy/booking/BookingWizard.tsx has zero `next/image`/photo references (grep returned no hits). app/[locale]/salon/[slug]/booking/page.tsx:232 only passes `coverPhotoUrl` into the `EmptyServicesState` fallback (no bookable services), not into the active wizard flow -- the live booking wizard (services -> staff -> time -> pay) renders text/price rows only, matching RATIONALE.md:870's 0%-imagery precedent (Urban Company cart, CVS slot picker)."
+    },
+    {
+     "principle": "Never a bare grey box for missing imagery",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "SalonHero.tsx:92-98 (mobile, 0 photos) and :182-191 (desktop, 0 photos) render `bg-s-bg-sunken` with a large monogram initial (`salon.name.charAt(0)`, up to 140px font), not a bare box. SalonResultCard.tsx:251-262 does the same for card photos (initial at 64-80px) and SalonResultCard.tsx:281-284 falls back to a `Store` Lucide icon for the 70px suggest-row thumbnail. Every photo-less state carries a content-bearing monogram or icon, never an empty grey rectangle."
+    },
+    {
+     "principle": "Photos carry the color under the 80/17 surfaces+ink system; adjacent UI stays neutral",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "SalonResultCard.tsx text rows use only `text-s-ink` / `text-s-ink-2` / `text-s-ink-3` (CardName/CardMeta primitives, e.g. lines 644-680); the only non-neutral colors on cards are semantic (star `#FFC32B` via RatingStars, heart `#FF3366` via HeartButton, walk-in tier green/orange/red at lines 380-385) -- no decorative color is painted onto chrome to 'add life', consistent with LOCKFILE.md:126 ('Life on a non-interactive area comes from imagery + motion + semantic colour ... never from painting blue'). Category landing hero (CategoryHero.tsx:46, 58-60) is the same pattern: white surface, ink text, photo on the right carrying all the color."
+    },
+    {
+     "principle": "Category landing full-bleed/split-hero imagery pattern (LOCKFILE §11 Pattern 1) exists on the 4 live category routes",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "app/[locale]/_components/landings/CategoryHero.tsx:45-60: `aspect-[3/2]` photo RIGHT, text LEFT, `rounded-none`, no overlay -- matches LOCKFILE §11 Pattern 1 exactly, used on /coiffeur, /barbershop, /nails, /spa (per the file's own doc comment lines 8-9)."
+    }
+   ],
+   "group": "imagery"
+  },
+  {
+   "group": "r3-netnew",
+   "findings": [
+    {
+     "principle": "IA/nav: single global back (one back per screen, header owns it, focused flows keep their own)",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "app/[locale]/_components/primitives/BackButton.tsx:1-16 (canonical single back affordance, replaces 4 hand-rolled versions per its own comment); RATIONALE.md:1378 (S20) cites project_single_global_back memory and grounds it in Nielsen heuristic 4 plus 8/8 booking-app convergence.",
+     "whats_needed": ""
+    },
+    {
+     "principle": "IA/nav: breadcrumb only on deep/desktop transactional-adjacent surfaces, not the core mobile search-to-book path (SOURCE.md V3-D411, S20 narrows where the 2+ rule fires)",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "app/[locale]/_components/salon/SalonBreadcrumb.tsx:14-19 ('Renders on desktop ONLY (hidden md:flex) - mobile screen real estate doesn't justify the trail; mobile users have the Back overlay'); RATIONALE.md:1374 confirms 13/13 real apps show zero breadcrumb in their browse-to-book transactional path.",
+     "whats_needed": ""
+    },
+    {
+     "principle": "IA/nav: visible tab bar over hidden hamburger nav for top-level destinations (NN/g hidden-nav penalty, S20)",
+     "status": "partial",
+     "size": "na",
+     "evidence": "No persistent bottom tab bar found in app/ for the web product (grep for a bottom nav/tab-bar component returned nothing customer-facing); Header.tsx uses a top header, not a Fresha-style 3-5 icon tab bar. S20's own evidence (Fresha 3 tabs, Klook 5) is about native/mobile apps; Solen web's structure differs by platform so this may be a scope mismatch, not a violation, but it is not independently confirmed as implemented on web.",
+     "whats_needed": "Confirm whether this domain's tab-bar recommendation is scoped to solen-mobile (which does have bottom nav) rather than the web app being audited; if web is in scope, no dedicated component was found to point to."
+    },
+    {
+     "principle": "Search findability: facet state visible with a live outcome count restated on the commit button (Hearst 2006 + Zocdoc precedent, S21)",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "app/[locale]/_components/search/FilterSheet.tsx:10 ('Zuruecksetzen + \"{count} Salons anzeigen\" footer'), :298 (`apply: (count: number) => string`), :611 (`{labels.apply(resultCount)}`) restates the live result count on the commit CTA exactly as S21 recommends.",
+     "whats_needed": ""
+    },
+    {
+     "principle": "Search findability: zero-result state needs a structural, cause-specific recovery action, not a bare 'keine Ergebnisse' dead end (Baymard + Too Good To Go/Google Drive/Wise precedent, S21)",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "app/[locale]/_components/search/SearchTemplate.tsx:2211-2315 implements a cause-aware EmptyState (detects date/query/filter cause, e.g. line 2292 SlidersHorizontal + t('nrFiltersHeadline') + clearFilters action; line 2306 hasFilters ? clearFilters : toHome), matching S21's Too Good To Go/Wise-style structural recovery pattern.",
+     "whats_needed": ""
+    },
+    {
+     "principle": "Onboarding: one decision per screen, not a combined multi-ask card (S22 Decision 1)",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "app/[locale]/onboarding/OnboardingFlow.tsx:3-4 comment states 'Skippable, one-question-per-screen (Uber rhythm)... Config-driven steps'; STEPS array (line 34) and per-step render (line 72 onward) confirm single-question-per-screen structure.",
+     "whats_needed": ""
+    },
+    {
+     "principle": "Onboarding: continuous progress bar for active-choice question screens (S22 Decision 3)",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "app/[locale]/onboarding/OnboardingFlow.tsx:73 (`const progress = Math.round(((i + 1) / TOTAL) * 100)`) and :152 (`<div className=\"h-full rounded-pill bg-s-ink transition-[width] duration-300 ease-out\" style={{ width: `${progress}%` }} />`) is exactly the continuous thin-bar pattern S22 recommends for active-choice screens.",
+     "whats_needed": ""
+    },
+    {
+     "principle": "Error prevention: eliminate the error-prone condition structurally (disable the commit control until a required selection is made) before ever gating behind a confirm/validation error (Nielsen H5, Norman forcing functions, S25)",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "components-legacy/booking/StaffStep.tsx:193 (`disabled={!selected}`), components-legacy/booking/ServicesStaffStep.tsx:558 (`disabled={formData.services.length === 0 || isChecking}`), components-legacy/booking/DateTimeStep.tsx:270 (`disabled={!formData.selectedDate || !formData.selectedTime || isChecking}`) all disable the Weiter/commit button until the required prior selection exists, matching S25's prevention-hierarchy step 1.",
+     "whats_needed": ""
+    },
+    {
+     "principle": "Error prevention: destructive-confirm gate reserved for genuinely rare, high-cost actions (cancelling a paid booking), with an explicit reason/side-effect step rather than a bare window.confirm (S25)",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "components-legacy/booking/CancelBookingSheet.tsx:21-23 ('money-moving self-cancel confirmation... Replaces the raw window.confirm() in BookingsList with a styled bottom sheet'); refund preview fetched at line 57 before the user commits.",
+     "whats_needed": ""
+    },
+    {
+     "principle": "Error prevention: destructive commit button color follows Solen's ink-only CTA discipline (S25's narrow Fresha-precedent recommendation: ink, not red)",
+     "status": "partial",
+     "size": "small",
+     "evidence": "components-legacy/booking/CancelBookingSheet.tsx:158-159 renders the destructive Cancel action as `border-s-error/40 text-s-error` (red outline), not the ink treatment S25 specifically cites as the compatible precedent (Fresha's client cancel-appointment flow, black button). This is semantically defensible under taste rule 4 (error = red is an allowed semantic hue) but diverges from S25's stated recommendation and was not flagged anywhere as a named, deliberate deviation.",
+     "whats_needed": "Either log a TASTE_LOG/QUESTIONS.md line naming the red-outline destructive-cancel button as a deliberate Solen deviation from S25's ink recommendation, or switch it to an ink/outline treatment to match the cited precedent exactly. Small, surgical either way."
+    },
+    {
+     "principle": "Error prevention: error messages name the exact field/cause when the backend already knows it, never a generic fallback (Baymard adaptive-specificity finding, S25/S28)",
+     "status": "partial",
+     "size": "small",
+     "evidence": "app/[locale]/checkout/page.tsx:220-223 (`setPromoError(data.message ?? tc('errorValidation'))`) prefers the backend's specific message when present, but falls back to the generic messages/*.json key `errorValidation` = 'Validation error' / 'Fehler bei der Validierung' (messages/de.json:468, messages/en.json:468) when the backend doesn't supply one, exactly the vague-language anti-pattern S25/S28 warn against.",
+     "whats_needed": "Confirm the promo/voucher API route always returns a cause-specific message (e.g. 'this code has expired' vs 'this code doesn't exist') so the generic fallback is never actually hit in practice, or replace the fallback copy with a more specific default."
+    },
+    {
+     "principle": "Trust/credibility: zero-signal states omit the whole rating/review row rather than rendering a placeholder or a bare zero (Fogg guideline 10, S24)",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "app/[locale]/_components/search/SalonResultCard.tsx:299,340,409,533,576,647 all gate the rating block on `rating != null`, and line 473 gates the review-count text on `reviewCount != null && reviewCount > 0`, exactly matching S24's cited Fresha zero-review-row-omission precedent.",
+     "whats_needed": ""
+    },
+    {
+     "principle": "Trust/credibility: no shippable 'Verified' badge until a real verification pipeline and backing data field exist (Fogg guideline 10, no-fabricated-data rule, S24)",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "RATIONALE.md:1506 states this was confirmed by grep: zero components implement a trust-verification badge in the codebase, matching the design contract's no-fabricated-data rule (CLAUDE.md taste rule 1).",
+     "whats_needed": ""
+    },
+    {
+     "principle": "Perceived performance: skeletons shape-matched to the arriving layout, with a shimmer sweep as the richer default (S27)",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "app/[locale]/_components/primitives/Skeleton.tsx:8-14,74-83 implements a CSS-driven shimmer (`animate-shimmer`) and multiple shape-matched skeleton components exist (SkeletonCard.tsx, DiscoveryGridSkeleton.tsx) alongside their populated counterparts.",
+     "whats_needed": ""
+    },
+    {
+     "principle": "Perceived performance: every route whose data can plausibly exceed ~1s gets a sibling loading.tsx Suspense boundary; routes reliably under 1s stay without one (S27)",
+     "status": "partial",
+     "size": "big",
+     "evidence": "Repo count (re-run this pass): 7 loading.tsx vs 172 page.tsx. RATIONALE.md:1561-1562 (S27) independently confirms this exact 7/172 figure and flags it as 'an unaudited, asymmetric pattern across sibling category pages, not a deliberate choice.'",
+     "whats_needed": "Audit which of the 172 page.tsx routes have a data fetch that can plausibly cross 1s and are missing a sibling loading.tsx; this is a route-by-route sweep across the app directory, a structural change, not a one-line fix."
+    },
+    {
+     "principle": "Content design: label-only commit CTAs stay 1-4 words naming the destination/object, never a bare verb or full sentence (S28 mechanic 1)",
+     "status": "implemented",
+     "size": "na",
+     "evidence": "components-legacy/booking/StaffStep.tsx / DateTimeStep.tsx / ServicesStaffStep.tsx all render short ink CTA labels ('Weiter', German short-form); PayConfirmStep.tsx:619-620 similarly short label pattern; consistent with copy economy rule 3's action-verbosity ladder already in project CLAUDE.md.",
+     "whats_needed": ""
+    },
+    {
+     "principle": "Notification display weight: message class (transactional/time-critical vs non-transactional) routed to a matching surface (system push+badge vs in-app Toast only), never one undifferentiated channel (S23)",
+     "status": "missing",
+     "size": "big",
+     "evidence": "No push-notification channel/importance routing code found in this web repo (grep for expo-notifications/push_token/notification channel/badge count in lib/ and app/api returned nothing); only the in-app Toast primitive exists (app/[locale]/_components/primitives/Toast.tsx, app/[locale]/_components/primitives/WelcomeToast.tsx). S23 itself flags this as an open question: 'This domain assumes push infrastructure is already wired for per-class routing. If Solen currently sends one undifferentiated push type, this domain implies a build task, not only a documentation entry' (RATIONALE.md:1491).",
+     "whats_needed": "This is a backend/infra build task (push channel classification, per-class routing to push+badge vs in-app-only), not a UI-only fix; likely belongs to the mobile app (solen-mobile) where push actually lives, not this web repo. Scope and owner should confirm before building."
+    }
+   ]
+  }
+ ]
+}

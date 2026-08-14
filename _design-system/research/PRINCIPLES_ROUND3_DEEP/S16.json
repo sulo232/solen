@@ -1,0 +1,235 @@
+{
+ "id": "S16",
+ "synth": {
+  "id": "S16",
+  "tag": "mechanize",
+  "title": "Cross-surface consistency diff",
+  "principle_summary": "A token being individually legal at one call site never proves the same semantic role renders identically everywhere it appears. Nielsen's \"consistency and standards\" heuristic (NN/g, refined 1994 from a factor analysis of 249 logged usability problems) names this failure class directly: the same word, situation, or visual treatment must signal the same concept throughout a product. Gestalt similarity, already the mechanic behind RATIONALE's Twin-control rule, is why the eye punishes a violation: identical form is the cue that says \"same kind of thing,\" so two divergent renderings of one role read as a bug even when neither literal breaks a rule alone. Real-world evidence closes the gap between that principle and a buildable mechanism. A live getComputedStyle audit of fresha.com (Solen's own structure-axis reference) shows Fresha does not gate card radius with a bare literal, it ships a named modifier class (`Card_--radius-m`) so the radius tier is a call-site CHOICE from an enumerated set, exactly the \"role registry\" shape D7 proposes. Across seven more shipped apps surveyed on Mobbin, Fresha's own filter pills reused verbatim across two search screens, Linear's quarter picker, Acorns' plan segmented control, Plenty of Fish's gender picker, Gentler Streak's sex picker, Fi's breed toggle, ClassPass' map-pin card vs list card, every primitive shows distinct_count == 1 for its own selected-state or radius role across every surface it appears on inside that app: zero drift, because it is one shared component rendering N times, not N hand-rolled copies. The corollary the survey also surfaces (Fi goes black-selected, Acorns goes colored-accent-selected) is that this consistency is PER-APP, never a cross-app style requirement, so D7 measures Solen against itself, never against an outside brand's choice.",
+  "proposed_addition": "COMPUTABLE METRIC SPEC, D7: Cross-surface consistency diff (mechanize).\n\nSHIP SHAPE: extend the existing commit-time gate (pre-edit-drift-gate.sh / solen-drift-check's scripts/check.py), do not ship as a standalone periodic report. Industry sources converge on \"gate at commit, not audit later\" as the 2025-2026 best practice (Design Systems Collective, atomize.tools playbooks), and Solen already has the commit-time-hook precedent this slots into.\n\nINPUTS\n1. A ROLE REGISTRY: semantic role name -> (a) glob/regex of call-site files, (b) the CSS property/Tailwind class family carrying the role's value, (c) the canonical value where LOCKFILE names one, or \"CONV: mode-wins\" where it does not. Seed entries, pulled from already-frozen LOCKFILE rows (no new literal proposed, only named for diffing):\n   - \"card-radius\": call sites = card/panel components applying rounded-2xl / rounded-lg / rounded-[NNpx] / a radius prop; canonical = 16px (rounded-2xl), LOCKFILE:414-426.\n   - \"tabpill-selected-fill\": call sites = TabPill.tsx plus any pill/chip/segment with a selected boolean; canonical = bg-s-bg-sunken + text-s-ink + font-semibold, CLAUDE.md design-contract row \"selected / active\" (owner 2026-06-29).\n   - \"price-string-format\": call sites = every CHF-amount renderer; canonical = LOCKFILE:772-778,793 per RATIONALE's price-string entry.\n   - \"icon-stroke-width\": call sites = every Lucide icon call with strokeWidth; canonical = unresolved (RATIONALE flags LOCKFILE:1218,1279-1280 as internally inconsistent), starts CONV: mode-wins until the owner locks one number.\n   Real-world precedent this shape is sound, not invented: Fresha's own `Card_--radius-m` class naming already encodes a role-registry-style enumeration (radius-s/m/l implied) at the component API level, live evidence that naming the tier at the call site is how a real production design system prevents this drift at the source, not just catches it after.\n\n2. EXTRACTION: grep/AST-walk every call-site file for the property's literal value (px resolved from a Tailwind class, a hex, a class-name string, a format-string shape), tagged file:line. Reuses solen-drift-check's existing AST/regex machinery, pointed at a role's call-site set instead of one changed file.\n\nFORMULA\n- V = multiset of extracted values across a role's N call sites.\n- distinct_count(R) = unique values in V.\n- mode(R) = most frequent value (ties broken toward the LOCKFILE canonical if named).\n- divergence_rate(R) = count(vi != mode(R)) / N.\n- outliers(R) = (file, line, value) list where vi != mode(R).\n\nTHRESHOLDS, grounded in what shipped apps actually show, not invented\n- distinct_count(R) == 1 (divergence_rate 0%): PASS, silent. This is the observed steady state in every real example surveyed: Fresha's filter pills across two screens, Linear's quarter picker, Acorns' plan control, ClassPass' map-pin vs list card all hit exactly this, zero within-app drift on the primitive checked.\n- distinct_count(R) >= 2 with a LOCKFILE-named canonical: every vi != canonical is a HARD finding, blocks the commit (same severity tier as an A1-A5 solen-drift-check hit). This is the TabPill ink-fill case (commit c21c6cd91) and the key_question's Hero/Footer/Header radius case; had tabpill-selected-fill been a registered role, that regression would have been a pre-commit HARD finding instead of a manual B9 render-verify catch.\n- distinct_count(R) >= 2 with no LOCKFILE-named canonical (CONV: mode-wins): every vi != mode(R) is a SOFT finding, logged not gated, an internal-inconsistency signal (the Nielsen mechanic above), not a literal contract breach.\n- divergence_rate(R) is reported per role regardless of severity: \"20% of card call sites disagree with the canonical\" replaces \"this feels inconsistent\" with a number.\n\nWHAT IT FLAGS THAT solen-drift-check CANNOT\nsolen-drift-check's Category A rules (A1 hex, A2 arbitrary Tailwind, A3 duration, A4 easing, A5 retired token) operate per-file against a fixed literal allowlist; a component resolving to a legal class (rounded-lg) at one call site and a different legal class (rounded-2xl) at another passes every existing per-file rule. D7 closes that gap by grouping by role across files first, the exact SalonResultCard/Hero/Footer/Header scenario in the key question, and the exact per-app-consistent-but-app-to-app-different pattern the Mobbin survey shows is normal between brands (Fi black-selected vs Acorns colored-accent-selected) but must NEVER happen within one app.\n\nBOUNDARY: spec defines inputs/formula/thresholds/ship-shape only, no code written here. Building it extends scripts/check.py with a role registry and group-by-role pass as a new mode (e.g. --cross-surface), additive to solen-drift-check, not a replacement, its unit of analysis (a role's call-site set) differs from the existing gate's unit (one file's diff).",
+  "real_world_evidence": [
+   {
+    "source": "fresha.com homepage, live getComputedStyle audit, 2026-07-22 (competitor scout)",
+    "what": "Card component ships a named modifier class `Card_--radius-m` (8px) rather than a bare literal; also found 12px inputs, 16px search container, 999px pills, 24px video player, 32px 32px 0 0 sheet header, 50% icon buttons, all cleanly separable by class name. Live proof the role-registry shape (name the tier, enumerate the set) already works at the component-API level in a real production design system.",
+    "tier": "T2"
+   },
+   {
+    "source": "Mobbin, Fresha iOS search filter bar, two screens in one flow",
+    "what": "Filter pill row (Sort by / Max price / Venue type) is bit-for-bit identical geometry and fill reused verbatim across two different screens in the same search flow.",
+    "tier": "T2"
+   },
+   {
+    "source": "Mobbin, Linear Mobile \"Target date\" quarter picker",
+    "what": "Segmented control selected state (solid dark fill, white text) uses one recipe app-wide, radius and height match the equivalent primitive elsewhere in Linear's system.",
+    "tier": "T2"
+   },
+   {
+    "source": "Mobbin, Acorns \"Change plan\" segmented control",
+    "what": "Selected state (white pill fill + purple dot) is one fixed recipe never swapped for a different fill on another screen.",
+    "tier": "T2"
+   },
+   {
+    "source": "Mobbin, Plenty of Fish gender picker + Gentler Streak sex picker + Fi breed toggle",
+    "what": "Each app is internally consistent on its own selected-state recipe, but the three apps each use a DIFFERENT color for \"selected\" (coral, black, black respectively). Evidence that consistency is a PER-APP property, never a cross-app style requirement, matching D7's framing that it diffs Solen against itself only.",
+    "tier": "T2"
+   },
+   {
+    "source": "Mobbin, ClassPass map-pin card vs list card",
+    "what": "Photo radius, card radius, and filter pills are visually identical across a map-overlay card and a full list card rendering the same venue data, direct analog to the SalonResultCard risk named in the key question.",
+    "tier": "T2"
+   },
+   {
+    "source": "zeroheight Design Systems Report 2026 (report.zeroheight.com), via Design Systems Collective summary",
+    "what": "Only 8% of surveyed teams call their design system \"very stable,\" 44% call it unstable or very unstable; average token coverage across 375 audited production sites was 40.4%. Single-vendor self-reported study, directional only.",
+    "tier": "T3"
+   },
+   {
+    "source": "Design Systems Collective, \"Design Token Drift: We Audited 375 Sites. Only 7.5% Got It Right.\"",
+    "what": "Independent write-up quantifying token-drift prevalence across a large sample of live production sites.",
+    "tier": "T3"
+   },
+   {
+    "source": "Dembrandt (dembrandt.com)",
+    "what": "Commercial product category dedicated to extracting design tokens from a live site and diffing/tracking snapshots over time, external validation that the diff-report mechanism category D7 proposes is a real, addressed problem, not a Solen-only concern.",
+    "tier": "T3"
+   },
+   {
+    "source": "OverlayQA blog, \"What Is Design System Drift and How to Detect It\"",
+    "what": "Names three drift subtypes (token drift, component-variant drift, pattern drift); pattern drift is defined as composition/layout diverging across product areas, the direct analog of the Hero/Footer/Header scatter in the key question.",
+    "tier": "T3"
+   },
+   {
+    "source": "Design Systems Collective / atomize.tools, 2025-2026 Figma-variables best-practice playbooks",
+    "what": "Recommend gating releases with untokenized-value scans and PR-time linting bots rather than periodic manual audits, the industry framing that supports shipping D7 as a commit-time gate extension rather than a standalone report.",
+    "tier": "T3"
+   }
+  ],
+  "generative_prior": "Ship D7 as an extension of the existing commit-time gate, never a standalone periodic report (industry convergence: Design Systems Collective / atomize.tools 2025-2026 playbooks name \"gate at commit\" as best practice over manual audit, and Solen's pre-edit-drift-gate.sh is already that shape).\n\nMETRIC + FORMULA: for a registered role R with N call sites, distinct_count(R) = unique rendered values, mode(R) = most frequent value, divergence_rate(R) = count(vi != mode(R)) / N, outliers(R) = (file, line, value) list.\n\nTHRESHOLD BAND, grounded in live app evidence not invented:\n- distinct_count(R) == 1 (0% divergence) is the observed steady state in every real primitive surveyed: Fresha's filter pills across two screens, Linear's quarter picker, Acorns' plan control, ClassPass' map-pin vs list card, all hit exactly this. That is the target \"right first mockup\" state: zero within-app divergence on any registered role, PASS silently.\n- distinct_count(R) >= 2 with a LOCKFILE-named canonical -> HARD finding, blocks commit (same severity as an A1-A5 solen-drift-check hit). Would have caught the TabPill ink-fill regression (c21c6cd91) pre-commit instead of at manual render-verify.\n- distinct_count(R) >= 2 with no named canonical (CONV: mode-wins) -> SOFT finding, logged not gated.\n\nROLE-REGISTRY SHAPE precedent: Fresha's own `Card_--radius-m` modifier-class naming (live-measured, 2026-07-22) is direct evidence that naming the tier at the call site, not just catching drift after the fact, is how a real shipped design system already solves this. Solen's registry (card-radius, tabpill-selected-fill, price-string-format, icon-stroke-width as seed roles) should mirror that shape.",
+  "taste_lab_probe": "Not a generative-prior stream (mechanize tag), so no visual calibration is needed. Two scoping decisions remain for the owner, neither reopens a frozen literal: (1) icon-stroke-width canonicalization, RATIONALE already flags LOCKFILE:1218,1279-1280 as internally inconsistent; D7 cannot promote this role from CONV/soft to HARD until the owner picks one strokeWidth number. (2) ship shape, whether D7 runs as a --cross-surface report mode (informational) or is wired straight into the existing pre-edit-drift-gate.sh as a blocking check from day one; the real-world scouting favors gate-at-commit, but that is a rollout call, not a spec dependency.",
+  "sources": [
+   {
+    "claim": "Consistency and standards is Nielsen's 4th usability heuristic, refined 1994 from a factor analysis of 249 logged usability problems.",
+    "source": "Nielsen Norman Group, nngroup.com/articles/consistency-and-standards",
+    "tier": "T1"
+   },
+   {
+    "claim": "Gestalt similarity is the mechanic behind requiring twin controls to share one styled instance.",
+    "source": "RATIONALE.md section 2 / Twin-control rule (LOCKFILE:435-437), underlying Gestalt similarity literature",
+    "tier": "T1"
+   },
+   {
+    "claim": "Solen's border-radius scale is a hand-picked discrete step set (12/16/20/24/28/9999px), not formula-derived.",
+    "source": "_design-system/LOCKFILE.md:414-426, restated RATIONALE.md:360-366",
+    "tier": "CONV"
+   },
+   {
+    "claim": "TabPill selected state locked to calm gray fill, superseding ink-fill (V3-D421) and blue-border (V3-D450), owner-dated 2026-06-29.",
+    "source": "CLAUDE.md design-contract table, row \"selected / active\"",
+    "tier": "CONV"
+   },
+   {
+    "claim": "solen-drift-check's Category A rules catch single-file literal violations, not same-role divergence across files.",
+    "source": ".claude/skills/solen-drift-check/SKILL.md, \"What it catches\" table (A1-A5); reasoned inference, not a verbatim doesn't-catch line",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Fresha renders card radius via a named modifier class (Card_--radius-m, 8px), not a bare literal.",
+    "source": "Live getComputedStyle audit of fresha.com, homepage, 2026-07-22 session",
+    "tier": "T2"
+   },
+   {
+    "claim": "Fresha, Linear, Acorns, Plenty of Fish, Gentler Streak, Fi, and ClassPass each show zero within-app divergence on the primitive surveyed, and consistency is per-app not cross-app.",
+    "source": "Mobbin screen captures (URLs in scout report), 2026-07 session",
+    "tier": "T2"
+   },
+   {
+    "claim": "Average token coverage across 375 audited production sites is 40.4%; only 8% of teams call their design system very stable, 44% unstable.",
+    "source": "zeroheight Design Systems Report 2026 (report.zeroheight.com), via Design Systems Collective",
+    "tier": "T3"
+   },
+   {
+    "claim": "A dedicated commercial tool category (token extraction + drift tracking over time) already exists for this exact diff mechanism.",
+    "source": "Dembrandt, dembrandt.com",
+    "tier": "T3"
+   },
+   {
+    "claim": "Design system drift is categorized into token drift, component-variant drift, and pattern drift.",
+    "source": "OverlayQA, \"What Is Design System Drift and How to Detect It\"",
+    "tier": "T3"
+   },
+   {
+    "claim": "Industry best practice favors gating releases with untokenized-value scans at commit/PR time over periodic manual audits.",
+    "source": "Design Systems Collective / atomize.tools 2025-2026 Figma-variables playbooks",
+    "tier": "T3"
+   }
+  ],
+  "numbers_used": [
+   "249",
+   "1994",
+   "12",
+   "16",
+   "18",
+   "20",
+   "22",
+   "24",
+   "28",
+   "9999",
+   "2026-06-29",
+   "0",
+   "1",
+   "20%",
+   "40.4%",
+   "8%",
+   "44%",
+   "375",
+   "7.5%",
+   "8"
+  ]
+ },
+ "verified": {
+  "id": "S16",
+  "tag": "mechanize",
+  "verdict": "revised",
+  "myths_caught": [
+   "The '40.4% average token coverage across 375 audited production sites' figure does not appear anywhere in the zeroheight Design Systems Report 2026 (that report is a 147-practitioner stability survey: 8% 'very stable' + 34% 'unstable' + 10% 'very unstable' = 44%, no site-audit coverage metric at all). The 375-sites/coverage numbers were pulled from a DIFFERENT study and glued onto the zeroheight citation, a genuine stat-conflation across two unrelated sources.",
+   "The '375 sites, only 7.5% got it right' design-token-drift study is misattributed to 'Design Systems Collective' (designsystemscollective.com does not resolve, DNS failure on direct fetch). The real publisher is OverlayQA (overlayqa.com/blog/design-token-drift-study/), and the real headline stat is '90%+ token coverage puts a site in the top 7.5%', not a generic 'got it right' framing.",
+   "OverlayQA's drift taxonomy actually names FIVE subtypes (token, component-variant, pattern, documentation, behavioral drift), not three; the draft cited three real ones without flagging that two more exist, an incomplete-taxonomy presentation.",
+   "The Nielsen '249 usability problems, refined 1994' fact is real and quoted correctly, but does not appear on the cited URL (nngroup.com/articles/consistency-and-standards); it lives on nngroup.com/articles/ten-usability-heuristics/. Citation pointer error, not a false fact."
+  ],
+  "claim_verdicts": [
+   {
+    "claim": "Consistency and standards is Nielsen's 4th usability heuristic, refined 1994 from a factor analysis of 249 usability problems.",
+    "source_ok": false,
+    "tier_final": "T1",
+    "note": "Fact verified true and quoted correctly (WebFetch confirmed the exact 249/1994 language), but it lives on nngroup.com/articles/ten-usability-heuristics/, not the cited nngroup.com/articles/consistency-and-standards (that page was fetched directly and contains no such history). Fix the citation URL, keep the fact."
+   },
+   {
+    "claim": "Gestalt similarity is the mechanic behind requiring twin controls to share one styled instance.",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "RATIONALE.md exists and LOCKFILE:368 area documents the Twin-control rule tied to symmetry/similarity literature. Internal doc citation, not an external stat; reasonable as-is."
+   },
+   {
+    "claim": "Solen's border-radius scale is a hand-picked discrete step set, not formula-derived.",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Confirmed against LOCKFILE.md lines 412-428 (Border radius table): card=16px, card-lg=20px, pill=9999px, input=12px, sheet=28px, rounded-2xl=16px etc, a discrete table not a formula. Line pointer 414-426 is close enough (table spans 412-427)."
+   },
+   {
+    "claim": "TabPill selected state locked to calm gray fill, superseding ink-fill (V3-D421) and blue-border (V3-D450), owner-dated 2026-06-29.",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Directly confirmed in the project CLAUDE.md design-contract table and taste rule 3, verbatim match including the 2026-06-29 date and the supersession chain."
+   },
+   {
+    "claim": "solen-drift-check's Category A rules catch single-file literal violations, not same-role divergence across files.",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Already labeled as reasoned inference in the draft, not a verbatim doc quote. Honest tiering, no change needed."
+   },
+   {
+    "claim": "Fresha renders card radius via a named modifier class (Card_--radius-m, 8px), not a bare literal.",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Independently re-verified this pass with a live getComputedStyle browser check on fresha.com: elements carrying class Card_--radius-m resolve to borderRadius: 8px exactly as claimed (confirmed on the locale-picker dialog's Card primitive, both wrapper and border layers, plus the interactive button variant). This is the load-bearing precedent for the whole role-registry mechanism and it holds up under direct measurement. Caveat: this modifier pattern was observed on Fresha's shared Card primitive (dialog option cards); Fresha's separate LocationCard component (homepage listing cards) instead hardcodes borderRadius:16px directly in its own CSS module rather than through a radius modifier, so not literally every 'card-shaped' element on the site goes through one enumerated registry, only the ones built on the shared Card component do. That LocationCard 16px value WAS however identical across every instance checked on the homepage, an incidental additional confirmation of D7's own within-role-consistency thesis."
+   },
+   {
+    "claim": "Fresha, Linear, Acorns, Plenty of Fish, Gentler Streak, Fi, and ClassPass each show zero within-app divergence on the primitive surveyed, and consistency is per-app not cross-app.",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Could not independently re-verify this pass: Mobbin requires an account/session this subagent does not have, and no browser check was attempted against it. No positive evidence of falsity was found either. Keep as asserted from the original scouting session, but flag as not independently re-confirmed in this adversarial pass."
+   },
+   {
+    "claim": "Average token coverage across 375 audited production sites is 40.4%; only 8% of teams call their design system very stable, 44% unstable.",
+    "source_ok": false,
+    "tier_final": "MYTH",
+    "note": "Refuted by direct fetch of the zeroheight report: the 8% 'very stable' / 44% 'unstable+very unstable' figures ARE real and correctly quoted from a 147-practitioner survey, but the '375 audited production sites' and '40.4% token coverage' figures do NOT appear in that report at all. Those numbers belong to a separate site-audit study (OverlayQA, see below) and were incorrectly merged into the zeroheight citation. Split the citation: zeroheight = practitioner-survey stability stats only; site-coverage stats cite OverlayQA."
+   },
+   {
+    "claim": "A dedicated commercial tool category (token extraction + drift tracking over time) already exists for this exact diff mechanism.",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Confirmed by direct fetch of dembrandt.com: it extracts colors/typography/spacing/shadows/motion from live URLs, supports pinned-baseline drift comparison with numeric deltas, matches the draft's characterization closely."
+   },
+   {
+    "claim": "Design system drift is categorized into token drift, component-variant drift, and pattern drift.",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Confirmed the three named subtypes are real and correctly defined (verified via direct fetch of overlayqa.com's drift-detection article), but the article actually defines FIVE subtypes total (also documentation drift and behavioral drift). The draft's 'three' framing is a selective, incomplete slice presented without noting the omission."
+   },
+   {
+    "claim": "Industry best practice favors gating releases with untokenized-value scans at commit/PR time over periodic manual audits.",
+    "source_ok": false,
+    "tier_final": "T3",
+    "note": "Could not locate or verify this specific 'Design Systems Collective / atomize.tools 2025-2026 playbooks' claim; designsystemscollective.com does not resolve (DNS failure on direct fetch), and a second article in this same draft was already found misattributed to that same publisher name. Treat as an unverified directional industry generalization, not a confirmed cited source; the ship-shape recommendation itself (extend the existing commit-time gate) is sound on its own logic (Solen already has pre-edit-drift-gate.sh as precedent) independent of this shaky citation."
+   },
+   {
+    "claim": "The '375 sites, only 7.5% got it right' design-token-drift study, attributed to Design Systems Collective.",
+    "source_ok": false,
+    "tier_final": "T3",
+    "note": "The study is real (confirmed via search: title 'Design Token Drift: We Audited 375 Sites. Only 7.5% Got It Right.') but the publisher is OverlayQA (overlayqa.com/blog/design-token-drift-study/), not Design Systems Collective. The real headline stat is '90%+ coverage puts a site in the top 7.5%', a narrower claim than 'got it right' implies. Correct the publisher name in any citation."
+   }
+  ],
+  "verified_addition": "COMPUTABLE METRIC SPEC, D7: Cross-surface consistency diff (mechanize).\n\nSHIP SHAPE: extend the existing commit-time gate (pre-edit-drift-gate.sh / solen-drift-check's scripts/check.py), do not ship as a standalone periodic report. This follows Solen's own precedent (the project already gates drift at commit time via pre-edit-drift-gate.sh), and is directionally supported by industry gate-at-commit guidance, though the specific \"Design Systems Collective / atomize.tools\" citation for that guidance could not be independently verified this pass (the publisher name proved unreliable elsewhere in this research, see below) and should be treated as unconfirmed color, not load-bearing evidence.\n\nINPUTS\n1. A ROLE REGISTRY: semantic role name -> (a) glob/regex of call-site files, (b) the CSS property/Tailwind class family carrying the role's value, (c) the canonical value where LOCKFILE names one, or \"CONV: mode-wins\" where it does not. Seed entries, pulled from already-frozen LOCKFILE rows (no new literal proposed, only named for diffing):\n   - \"card-radius\": call sites = card/panel components applying rounded-2xl / rounded-lg / rounded-[NNpx] / a radius prop; canonical = 16px (rounded-2xl), LOCKFILE border-radius table (lines ~412-428).\n   - \"tabpill-selected-fill\": call sites = TabPill.tsx plus any pill/chip/segment with a selected boolean; canonical = bg-s-bg-sunken + text-s-ink + font-semibold, CLAUDE.md design-contract row \"selected / active\" (owner 2026-06-29, verified verbatim against the current CLAUDE.md).\n   - \"price-string-format\": call sites = every CHF-amount renderer; canonical = LOCKFILE price-string entry per RATIONALE.\n   - \"icon-stroke-width\": call sites = every Lucide icon call with strokeWidth; canonical = unresolved (RATIONALE flags an internal LOCKFILE inconsistency), starts CONV: mode-wins until the owner locks one number.\n   Real-world precedent this shape is sound, not invented: independently re-verified via a live getComputedStyle check on fresha.com (this session), Fresha's shared Card primitive does ship a named modifier class (Card_--radius-m, confirmed resolving to exactly 8px on every instance checked, both wrapper and interactive-button variants). That is direct, current evidence that naming the tier at the call site, rather than hand-rolling a literal per site, is how a real production design system already prevents this exact class of drift. Caveat for honesty: this modifier pattern applies to Fresha's shared Card component specifically; a separate, more specialized component on the same page (LocationCard, the homepage listing card) instead hardcodes its own 16px radius directly rather than routing through a shared modifier, and that hardcoded value WAS identical across every instance observed. Fresha itself is a two-tier example: one role (dialog Card) uses an enumerated registry, a different role (LocationCard) uses a hardcoded but still internally-consistent literal. Both patterns satisfy D7's actual bar (one canonical value per role, applied identically at every call site for that role); only the first is registry-shaped.\n\n2. EXTRACTION: grep/AST-walk every call-site file for the property's literal value (px resolved from a Tailwind class, a hex, a class-name string, a format-string shape), tagged file:line. Reuses solen-drift-check's existing AST/regex machinery, pointed at a role's call-site set instead of one changed file.\n\nFORMULA\n- V = multiset of extracted values across a role's N call sites.\n- distinct_count(R) = unique values in V.\n- mode(R) = most frequent value (ties broken toward the LOCKFILE canonical if named).\n- divergence_rate(R) = count(vi != mode(R)) / N.\n- outliers(R) = (file, line, value) list where vi != mode(R).\n\nTHRESHOLDS, grounded in what was actually checked, not invented\n- distinct_count(R) == 1 (divergence_rate 0%): PASS, silent. This matches the directly-verified Fresha example above (both the modifier-based Card and the hardcoded LocationCard hit zero within-role divergence on every instance checked this pass). The broader claim that six additional shipped apps (Linear, Acorns, Plenty of Fish, Gentler Streak, Fi, ClassPass) on Mobbin show the same pattern was NOT independently re-confirmed in this verification pass (no Mobbin access) and should be treated as directional supporting color from the original scouting session, not independently re-checked evidence.\n- distinct_count(R) >= 2 with a LOCKFILE-named canonical: every vi != canonical is a HARD finding, blocks the commit (same severity tier as an A1-A5 solen-drift-check hit). This is the TabPill ink-fill case (commit c21c6cd91) and the key_question's Hero/Footer/Header radius case; had tabpill-selected-fill been a registered role, that regression would have been a pre-commit HARD finding instead of a manual B9 render-verify catch.\n- distinct_count(R) >= 2 with no LOCKFILE-named canonical (CONV: mode-wins): every vi != mode(R) is a SOFT finding, logged not gated, an internal-inconsistency signal (the Nielsen consistency-and-standards mechanic, refined 1994 from a factor analysis of 249 logged usability problems, NN/g), not a literal contract breach.\n- divergence_rate(R) is reported per role regardless of severity: a stated percentage of call sites disagreeing with canonical replaces \"this feels inconsistent\" with a number.\n\nWHAT IT FLAGS THAT solen-drift-check CANNOT\nsolen-drift-check's Category A rules (A1 hex, A2 arbitrary Tailwind, A3 duration, A4 easing, A5 retired token) operate per-file against a fixed literal allowlist; a component resolving to a legal class (rounded-lg) at one call site and a different legal class (rounded-2xl) at another passes every existing per-file rule. D7 closes that gap by grouping by role across files first, the exact SalonResultCard/Hero/Footer/Header scenario in the key question.\n\nBOUNDARY: spec defines inputs/formula/thresholds/ship-shape only, no code written here. Building it extends scripts/check.py with a role registry and group-by-role pass as a new mode (e.g. --cross-surface), additive to solen-drift-check, not a replacement, its unit of analysis (a role's call-site set) differs from the existing gate's unit (one file's diff).\n\nCORRECTIONS APPLIED IN THIS VERIFY PASS (for the record, not part of the spec itself): the industry-adoption evidence originally cited as \"zeroheight report: 375 audited sites, 40.4% token coverage\" was a conflation of two unrelated studies (zeroheight's 147-practitioner stability survey does not contain any 375-site or 40.4% figure); the \"375 sites, only 7.5% got it right\" study was misattributed to \"Design Systems Collective\" when its actual publisher is OverlayQA. Neither correction changes the spec's mechanism, formula, or thresholds, only the supporting-evidence citations.",
+  "residual_risks": "Owner-decision items (none reopen a frozen literal): (1) icon-stroke-width canonicalization is still blocked on the owner picking one strokeWidth number before that role can move from CONV/soft to HARD, unchanged from the draft. (2) ship-shape rollout choice (report mode vs immediate blocking gate) is still a genuine owner call, and the industry citation that favored \"gate immediately\" (Design Systems Collective / atomize.tools) could not be verified this pass and should not be treated as decisive either way, decide on Solen's own risk appetite instead.\n\nUncertainty flags for the owner/next stage: the six-app Mobbin cross-app-consistency survey (Linear, Acorns, Plenty of Fish, Gentler Streak, Fi, ClassPass) was not independently re-checked in this adversarial pass (no Mobbin session access); it is plausible and internally consistent with the one Mobbin-adjacent claim that WAS directly re-verified (Fresha's Card_--radius-m), but treat it as asserted-not-reconfirmed if a future stage leans on it as load-bearing evidence rather than color. Also worth noting for whoever builds this: even within Fresha's own site, two different card-shaped components use two different consistency strategies (registry-modifier vs hardcoded-but-consistent literal) and both pass D7's actual bar, this is useful precedent that D7's role registry should not force every visually-similar element into one role, roles should be scoped to actual shared components/call-site families, not to \"looks like a card.\""
+ }
+}

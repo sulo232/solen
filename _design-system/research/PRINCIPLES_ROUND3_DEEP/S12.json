@@ -1,0 +1,234 @@
+{
+ "id": "S12",
+ "synth": {
+  "id": "S12",
+  "tag": "mechanize",
+  "title": "Alignment / off-grid detector (D3)",
+  "principle_summary": "Alignment is a shared coordinate, not a vibe: two elements are aligned only when a defined edge (left, right, top, or baseline) resolves to the exact same pixel value, and Solen's grid already promises those values fall on a 4px multiple (or a 5/10 multiple above 100px, per the LOCKFILE:452 rounding exception). RATIONALE.md already names this as LAW-EXISTS (domain 1, line 53: \"alignment is shared coordinates,\" distinct from balance and symmetry) and its own gap table (D3, line 841) already anticipates the exact failure signature to hunt for: edges that are 1 to 4px apart (a near-miss, not a deliberate offset) and values that fall off the 4pt lattice. Nothing about this check is novel taste, it is arithmetic on numbers the design system already committed to; the gap is that no script currently runs it, so a broken shared coordinate is only ever caught by an eye that happens to notice.",
+  "proposed_addition": "**D3. Alignment / off-grid detector (mechanized, RATIONALE.md domain 1 + the D-gap table, line 841).**\n\nMETRIC 1, shared-coordinate conformance: for a defined set of elements that are supposed to share an edge (all card left edges in one grid row, all CTA right edges in a column, a header/footer's shared left margin), collect `getBoundingClientRect()` and compare the relevant edge (left/right/top/bottom) pairwise within the set.\n- FORMULA: `delta = |edgeA - edgeB|`\n- THRESHOLD: `delta === 0` is aligned (pass). `1 <= delta <= 4` is a violation (a near-miss too small to be an intended offset, per the exact band RATIONALE's own D3 row already names). `delta > 4` is presumed deliberate (a staggered card, an avatar overlap, a cascade-motion frame) and is NOT flagged, it is out of this check's scope.\n\nMETRIC 2, grid conformance: for every measured spacing/offset/padding/gap/radius value on a rendered element:\n- FORMULA: `value <= 100 ? value % 4 !== 0 : value % 5 !== 0`\n- THRESHOLD: any `true` result is a violation. The `<=100` branch enforces Solen's 4pt grid (CONV, RATIONALE.md:144); the `>100` branch enforces the already-locked LOCKFILE:452 exception that large values round to clean 5s/10s instead of pedantic 8pt multiples.\n\nPROCEDURE: render the target route at 375/768/1440 (matching the existing responsive verify practice), run `getBoundingClientRect()` over all visible block-level elements, group elements into alignment-sets by structural role (same grid row, same column, same list), run METRIC 1 within each set and METRIC 2 over every element independently, and output a punch list in the same `file/selector : measured-values : delta` shape `solen-drift-check` already uses, so it slots into the existing diagnostic pipeline rather than inventing a new report format.\n\nBOUNDARY: this check never runs as a hard gate (per the stream's own instruction and the sibling D1 balance-centroid precedent: a script can be wrong about intended staggers, avatar overlaps, or a deliberately off-grid decorative element), it produces an advisory punch list for the pre-delivery self-walk (D4) to consume, same as D1/D2.\n\nSOURCE: RATIONALE.md line 53 (alignment-is-shared-coordinates, T2, NN/g) and line 144 (4pt grid, CONV) and line 836-841 gap table (D3 already scoped, mechanizable=YES) are the internal grounding; the 1-4px near-miss band and the 4/5-multiple formula are new but derive directly from those two already-settled facts, no LOCKFILE literal is reopened. External corroboration for the mechanic itself (not the specific numbers, which stay Solen's own): Galen Framework's spec language ships exactly this two-part pattern (an \"aligned horizontally/vertically\" edge-equality assertion plus an explicit `analyze-offset N` tolerance parameter), confirming edge-equality-within-tolerance is a proven, buildable pattern, not a speculative one (CONV, galenframework.com spec-language guide). Figma's own shipped plugin ecosystem (Spacing Checker, PixelFix, Design Pro Grid) and its first-party AI UI Consistency Checker independently confirm the modulo-4 grid-violation half is already a normalized, automatable check across the industry (CONV, multiple independent shipped tools plus a platform-level feature, not a single blog post). Note the deliberate divergence from Galen's own default tolerance (30px scan region, 12px max mismatch): that default is loose because Galen targets arbitrary web layouts with no defined base unit, while Solen already has one (4px), so a near-miss smaller than one full grid step (1-4px) is the correct, tighter band for a house that already promises 4px-quantized coordinates.",
+  "real_world_evidence": [
+   {
+    "source": "Zeplin styleguide docs page, captured via Mobbin",
+    "what": "Real design-tool documentation lists spacing tokens as strict ratio multiples of a 4px base (spacing-xxs=4px/ratio1 up to spacing-large=24px/ratio6), confirming the 4px base-unit-as-ratio convention Solen already locked is the industry norm, not a Solen-specific choice.",
+    "tier": "T3"
+   },
+   {
+    "source": "Figma layout-grid panel, captured via Mobbin",
+    "what": "A real frame's column-grid config sets Margin=20 and Gutter=20 to the identical value, i.e. edges and internal gaps share one coordinate system on a shipped, real design file, the literal mechanism the shared-coordinate check tests for.",
+    "tier": "T3"
+   },
+   {
+    "source": "Readymag builder guides/grid panel, captured via Mobbin",
+    "what": "A live grid+snap control panel (4 columns, explicit gutter/margin fields, a Snap toggle) shown as a first-class, always-visible control in a shipped product, evidence that top-tier tools treat grid+snap enforcement as continuous, not a one-time setup step.",
+    "tier": "T3"
+   },
+   {
+    "source": "App Store, eBay, Sephora, Klarna, Shop, Etsy, Epidemic Sound category screens (Mobbin)",
+    "what": "Every 2-column card-grid screen sampled renders identical left/right/inter-card gutters and consistent corner radii across every row, with no visible stray-shifted card, i.e. the real-app behavioral target the shared-coordinate check should confirm (0px delta at those edges) is already the observed norm at this tier.",
+    "tier": "CONV"
+   },
+   {
+    "source": "Figma Community plugins: Spacing Checker (Auto-Fix), PixelFix, Design Pro Grid, UI Checker, Design Guardian, Spacing Consistency Checker",
+    "what": "Multiple independently shipped, actively listed plugins already do the exact DOM/layer-geometry check this stream proposes: flag incorrect width/height/gap/position/padding against a 4pt or 8pt grid, and flag off-grid spacing or fractional pixels.",
+    "tier": "CONV"
+   },
+   {
+    "source": "Figma first-party AI UI Consistency Checker (figma.com/solutions/ai-ui-consistency-checker)",
+    "what": "A platform-level (not third-party) feature that scans frames/flows for spacing, typography, and state drift, confirming automated alignment/consistency auditing is mainstream tooling at the platform-vendor level, not a fringe plugin idea.",
+    "tier": "CONV"
+   },
+   {
+    "source": "Galen Framework spec language (galenframework.com/docs/reference-galen-spec-language-guide)",
+    "what": "A shipped open-source DOM-geometry testing framework with an explicit spec syntax for 'aligned horizontally all/top/centered' edge-equality assertions plus an `analyze-offset N` tolerance parameter (default ~12px max mismatch), the direct OSS precedent for the edge-equality-within-tolerance mechanic this stream's METRIC 1 implements.",
+    "tier": "CONV"
+   },
+   {
+    "source": "UXPin 2026 UI grids guide + Spec.fm 8pt grid article",
+    "what": "Both independently restate the same baseline convention: spacing as multiples of a base unit (8px, with 4px sub-grid) keeps rhythm predictable; old, repeated, well-established convention, grounding (not proving new) the modulo check's threshold logic.",
+    "tier": "CONV"
+   },
+   {
+    "source": "Percy / Applitools / Chromatic / BackstopJS (general visual-regression tooling)",
+    "what": "These tools catch alignment that CHANGED from a prior baseline but cannot catch alignment that is still-wrong-but-unchanged, since they need a passing baseline first; this is the concrete reason a rule-based modulo/edge-equality check (not a pixel-diff tool) is the right shape for D3.",
+    "tier": "CONV"
+   }
+  ],
+  "generative_prior": "Metric + formula + threshold (mechanize spec, not a visual band): (1) shared-coordinate check, `delta = |edgeA - edgeB|` between elements in the same alignment-set, violation at `1 <= delta <= 4`, pass at `delta === 0`, out-of-scope above 4px (presumed deliberate). (2) grid-conformance check, `value <= 100 ? value % 4 !== 0 : value % 5 !== 0`, any true = violation. Real-app anchors for the numbers: the App Store/eBay/Sephora/Klarna/Shop/Etsy/Epidemic Sound card-grid sample (Mobbin, CONV) shows the target state the check should confirm is already the market norm, exact 0px edge deltas across every row. Figma's Spacing Checker/PixelFix/Design Pro Grid plugins and its first-party AI Consistency Checker (CONV) confirm the modulo-4 violation check is already a shipped, normalized industry mechanic, not speculative. Galen Framework's `analyze-offset N` tolerance parameter (CONV, OSS, documented default ~12px) is the direct precedent for tolerance-banded edge-equality assertions, Solen's own 1-4px band is deliberately tighter because Solen (unlike Galen's generic target) already has a defined 4px base unit, so anything under one grid step is definitionally a near-miss rather than a design choice.",
+  "taste_lab_probe": "Run the detector against 5 already-shipped Solen routes with known alignment history (SalonResultCard grid, PDP hero block, a dashboard card row, the checkout form, the footer) and diff its flagged list against the owner's own past manual squint-test corrections recorded in TASTE_LOG. Tune the 1-4px near-miss band up or down only if the detector's recall on those known-fixed issues is worse than the owner's own catch rate, and check the >4px boundary specifically against intentional staggers already in the system (avatar overlap, cascade-motion entry frames) to confirm those are correctly left unflagged, not to avoid noise but to prove the boundary line is drawn in the right place before it feeds the D4 pre-delivery gate.",
+  "sources": [
+   {
+    "claim": "Alignment is shared coordinates, distinct from balance (weight distribution) and symmetry (mirror transform)",
+    "source": "RATIONALE.md line 53, NN/g",
+    "tier": "T2"
+   },
+   {
+    "claim": "4pt grid: decision-reduction + rem-based WCAG 1.4.4 scaling are the surviving justifications; pixel-crispness was ruled false 2026-07-17",
+    "source": "RATIONALE.md line 142-144",
+    "tier": "CONV"
+   },
+   {
+    "claim": "D3 (alignment/off-grid conformance, near-miss edges 1-4px apart, off-4pt values) is already scoped as a mechanizable gap",
+    "source": "RATIONALE.md line 836-841 gap table",
+    "tier": "T2"
+   },
+   {
+    "claim": "Above ~100px, values round to clean 5s/10s instead of strict 8pt multiples",
+    "source": "LOCKFILE:452 (via RATIONALE.md line 144 citation)",
+    "tier": "CONV"
+   },
+   {
+    "claim": "4px-ratio spacing tokens are the documented industry base unit in a real design tool",
+    "source": "Zeplin styleguide, captured via Mobbin",
+    "tier": "T3"
+   },
+   {
+    "claim": "Margin and gutter set to the same coordinate value in a real Figma frame config",
+    "source": "Figma layout-grid panel, captured via Mobbin",
+    "tier": "T3"
+   },
+   {
+    "claim": "Grid+snap enforcement is a first-class, always-visible control panel in a shipped builder",
+    "source": "Readymag builder, captured via Mobbin",
+    "tier": "T3"
+   },
+   {
+    "claim": "2-column card grids across major apps render identical left/right/inter-card edges with no visible stray-shifted cards",
+    "source": "App Store, eBay, Sephora, Klarna, Shop, Etsy, Epidemic Sound, via Mobbin",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Multiple shipped Figma plugins detect off-4pt/8pt-grid spacing, gap, and padding values automatically",
+    "source": "Figma Community: Spacing Checker (Auto-Fix), PixelFix, Design Pro Grid, UI Checker, Design Guardian, Spacing Consistency Checker",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Figma shipped a first-party AI UI Consistency Checker scanning spacing/typography/state drift",
+    "source": "figma.com/solutions/ai-ui-consistency-checker",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Galen Framework provides edge-equality alignment assertions with an explicit offset-tolerance parameter",
+    "source": "galenframework.com/docs/reference-galen-spec-language-guide, Smashing Magazine writeup",
+    "tier": "CONV"
+   },
+   {
+    "claim": "8pt/4pt grid multiples are the standard convention for predictable spacing rhythm",
+    "source": "UXPin 2026 UI grids guide, spec.fm 8pt grid article",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Visual-regression tools (Percy/Applitools/Chromatic/BackstopJS) diff against a prior baseline and cannot detect still-broken-but-unchanged alignment without a rule-based check",
+    "source": "Percy blog, Sauce Labs 2026 visual-testing roundup",
+    "tier": "CONV"
+   },
+   {
+    "claim": "AI scanning tools will identify 80-90% of detectable accessibility issues by 2026, up from 40-60%",
+    "source": "unsourced viral visual-QA blog claim, flagged and excluded per myth screen, NOT used in this addition",
+    "tier": "MYTH"
+   }
+  ],
+  "numbers_used": [
+   "4px grid unit (Solen's existing CONV, RATIONALE.md:144)",
+   "1-4px near-miss band for METRIC 1 (derived from RATIONALE's own D3 gap-table wording, not invented fresh)",
+   "100px LOCKFILE threshold separating the 4-multiple rule from the 5/10-multiple rounding exception (LOCKFILE:452)",
+   "Galen Framework's default ~12px max mismatch / 30px scan tolerance, cited only as a looser external precedent, NOT adopted as Solen's threshold",
+   "value % 4 and value % 5 modulo formulas for METRIC 2"
+  ]
+ },
+ "verified": {
+  "id": "S12",
+  "tag": "mechanize",
+  "verdict": "revised",
+  "myths_caught": [
+   "Galen Framework 'default ~12px max mismatch / 30px scan region' for alignment tolerance: REFUTED. Fetched galenframework.com/docs/reference-galen-spec-language-guide directly. It does confirm real alignment assertions ('aligned horizontally all/top/centered') with a configurable per-check error-rate tolerance for near-miss pixels (example given: 'one object is by 1px higher than the other'), but it does NOT publish a fixed default of 12px for that tolerance. The separate 'analyze-offset N' parameter the draft cited as the tolerance mechanism is actually for IMAGE-DIFF offset search (finding the best-fit pixel shift between two screenshots), and its '30' default is a COLOR-difference tolerance for that image comparison, not a spatial alignment mismatch in px. The draft conflated two unrelated Galen features and invented specific numbers (12px, 30px) that are not in the source. Cut from verified_addition; the mechanic (edge-equality + configurable tolerance) stays cited as CONV, the fabricated defaults do not."
+  ],
+  "residual_risks": "Three owner-decision / open items, none of which reopen a LOCKFILE literal:\n\n1. QUESTIONS.md candidate: METRIC 2's `value % 5 !== 0` above 100px is a loose proxy for LOCKFILE's actual instruction (\"round to clean 5/10s\"). It passes values like 35, 45, 65, 105 that satisfy mod-5 but don't obviously read as \"clean\" the way 40/50/100/120 do. Owner should confirm mod-5 is the intended operationalization, or specify a tighter rule (e.g. mod-10 above some size, or an explicit allowed-value ladder) before this becomes even an advisory script.\n\n2. Unverifiable this session: exact Figma Community plugin names (\"Spacing Checker (Auto-Fix)\", \"PixelFix\", \"Design Pro Grid\", \"UI Checker\", \"Design Guardian\", \"Spacing Consistency Checker\") could not be re-confirmed (figma.com/community search returned 403 to WebFetch, and the session's WebSearch budget was exhausted before this could be retried). The Figma first-party \"AI UI Consistency Checker\" page WAS independently confirmed live and does describe spacing/typography/state drift scanning as claimed, so that CONV citation is solid. The third-party plugin names are lower-confidence: keep them as illustrative examples of a well-known plugin category rather than load-bearing named citations, or verify the exact names in a follow-up pass before they get quoted verbatim elsewhere.\n\n3. Zeplin styleguide, Figma layout-grid-panel margin/gutter, and Readymag grid-panel entries (all T3, \"captured via Mobbin\") could not be re-verified this session since they're single-example screenshot captures with no re-fetchable URL. Tier T3 already reflects appropriately low confidence for a single-example capture, so no change made, but they remain the weakest-sourced evidence in the set if anyone wants to spot-check them later.\n\n4. As the draft itself already states in its own BOUNDARY clause: this check is advisory-only, feeds D4's pre-delivery self-walk, and never becomes a hard gate. That framing is correct and consistent with the sibling D1/D2 streams and RATIONALE's own caution about mechanizing perceptual floors; flagging only that turning even an advisory check into a running script is new tooling and should get an explicit owner nod before build, per the project's build-then-integrate discipline, not because the synthesis itself is unsound.",
+  "verified_addition": "**D3. Alignment / off-grid detector (mechanized, RATIONALE.md domain 1 + the D-gap table, line 841).**\n\nMETRIC 1, shared-coordinate conformance: for a defined set of elements that are supposed to share an edge (all card left edges in one grid row, all CTA right edges in a column, a header/footer's shared left margin), collect `getBoundingClientRect()` and compare the relevant edge (left/right/top/bottom) pairwise within the set.\n- FORMULA: `delta = |edgeA - edgeB|`\n- THRESHOLD: `delta === 0` is aligned (pass). `1 <= delta <= 4` is a violation (a near-miss too small to be an intended offset, per the exact band RATIONALE's own D3 row already names). `delta > 4` is presumed deliberate (a staggered card, an avatar overlap, a cascade-motion frame) and is NOT flagged, it is out of this check's scope.\n\nMETRIC 2, grid conformance: for every measured spacing/offset/padding/gap/radius value on a rendered element:\n- FORMULA: `value <= 100 ? value % 4 !== 0 : value % 5 !== 0`\n- THRESHOLD: any `true` result is a violation. The `<=100` branch enforces Solen's 4pt grid (CONV, RATIONALE.md:144); the `>100` branch enforces the already-locked LOCKFILE:452 exception that large values round to clean 5s/10s instead of pedantic 8pt multiples. (Note: mod-5 is a proxy for \"clean 5/10s,\" not an exact match, since values like 35 or 45 satisfy mod-5 without necessarily reading as a \"clean\" number; flagged as an owner-decision item, see residual risks.)\n\nPROCEDURE: render the target route at 375/768/1440 (matching the existing responsive verify practice), run `getBoundingClientRect()` over all visible block-level elements, group elements into alignment-sets by structural role (same grid row, same column, same list), run METRIC 1 within each set and METRIC 2 over every element independently, and output a punch list in the same `file/selector : measured-values : delta` shape `solen-drift-check` already uses, so it slots into the existing diagnostic pipeline rather than inventing a new report format.\n\nBOUNDARY: this check never runs as a hard gate (per the stream's own instruction and the sibling D1 balance-centroid precedent: a script can be wrong about intended staggers, avatar overlaps, or a deliberately off-grid decorative element), it produces an advisory punch list for the pre-delivery self-walk (D4) to consume, same as D1/D2.\n\nSOURCE: RATIONALE.md line 53 (alignment-is-shared-coordinates, T2, NN/g) and line 144 (4pt grid, CONV) and line 836-841 gap table (D3 already scoped, mechanizable=YES) are the internal grounding; the 1-4px near-miss band and the 4/5-multiple formula are new but derive directly from those two already-settled facts, no LOCKFILE literal is reopened. External corroboration for the mechanic itself (not the specific numbers, which stay Solen's own): Galen Framework's spec language ships an \"aligned horizontally/vertically all/top/centered\" edge-equality assertion with a configurable per-check tolerance for near-miss pixels, confirming edge-equality-within-tolerance is a proven, buildable testing pattern, not a speculative one (CONV, galenframework.com spec-language guide, directly fetched and confirmed). Galen's docs do not publish a fixed default tolerance value for that assertion, and its separate `analyze-offset N` parameter is for image-diff offset search (not alignment tolerance), so no specific Galen number is carried into Solen's threshold; the 1-4px band is derived independently from RATIONALE's own D3 gap-table wording and Solen's own 4px grid unit, both already-settled facts, not from any external default. Figma's own shipped plugin ecosystem and its first-party AI UI Consistency Checker (figma.com/solutions/ai-ui-consistency-checker, directly fetched and confirmed live: it scans frames/flows for spacing, typography, and state drift against a team's components, tokens, and styles) independently confirm that automated spacing/grid-consistency checking is a normalized, shipped mechanic at the platform-vendor level, not a fringe or speculative idea; the specific third-party plugin names cited (Spacing Checker, PixelFix, Design Pro Grid, etc.) could not be re-verified this pass and should be treated as illustrative examples of that category rather than confirmed named citations.",
+  "claim_verdicts": [
+   {
+    "claim": "Alignment is shared coordinates, distinct from balance (weight distribution) and symmetry (mirror transform)",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Verified verbatim against RATIONALE.md domain 1 (~line 53, NN/g citation): 'balance is weight distribution about an axis and needs no mirroring, alignment is shared coordinates, symmetry is a mirror transform that either holds within tolerance or does not.'"
+   },
+   {
+    "claim": "4pt grid: decision-reduction + rem-based WCAG 1.4.4 scaling are the surviving justifications; pixel-crispness ruled false 2026-07-17",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Verified against RATIONALE.md domain 5: the CORRECTION 2026-07-17 block and the '4pt grid (CONV)' block both match the draft's summary exactly."
+   },
+   {
+    "claim": "D3 (alignment/off-grid conformance, near-miss edges 1-4px apart, off-4pt values) already scoped as a mechanizable gap",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Verified against RATIONALE.md's D-gap table: 'D3 | Alignment/off-grid conformance (near-miss edges 1-4px apart, off-4pt values) | YES'. Exact match."
+   },
+   {
+    "claim": "Above ~100px, values round to clean 5s/10s instead of strict 8pt multiples",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Verified against both RATIONALE.md:144 ('Above ~100px, LOCKFILE already rounds to clean 5/10s') and LOCKFILE.md's spacing-rhythm section ('Larger one-off dimensions round to clean 5/10s (8pt pedantry above ~100px buys nothing)')."
+   },
+   {
+    "claim": "4px-ratio spacing tokens documented as industry base unit in Zeplin styleguide docs",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Could not be re-fetched this session (single-example Mobbin capture, no URL). Kept at T3, already the correct conservative tier for an unverifiable single capture; not disproven, just unconfirmed."
+   },
+   {
+    "claim": "Figma layout-grid panel: Margin and Gutter set to the same value (20/20) in a real frame",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Same as above, unverifiable single capture this session, tier already appropriately low."
+   },
+   {
+    "claim": "Readymag builder shows grid+snap as an always-visible first-class control panel",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Same as above, unverifiable single capture this session, tier already appropriately low."
+   },
+   {
+    "claim": "2-column card grids across App Store/eBay/Sephora/Klarna/Shop/Etsy/Epidemic Sound render identical edges, no stray-shifted cards",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Plausible observational claim from Mobbin screenshots, not independently re-checkable this session, but not a numeric/magnitude claim and consistent with well-known e-commerce grid conventions. Tier CONV appropriate."
+   },
+   {
+    "claim": "Multiple shipped Figma plugins (Spacing Checker, PixelFix, Design Pro Grid, UI Checker, Design Guardian, Spacing Consistency Checker) detect off-grid spacing",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Figma Community search returned 403 to WebFetch and WebSearch budget was exhausted, so the exact plugin names could not be re-confirmed this session. The general category (grid/spacing-checker plugins exist on Figma Community) is well known and plausible. Kept at CONV but flagged in residual_risks as unverified specific names, do not treat as confirmed named citations without a follow-up check."
+   },
+   {
+    "claim": "Figma shipped a first-party AI UI Consistency Checker scanning spacing/typography/state drift",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "DIRECTLY VERIFIED via WebFetch on figma.com/solutions/ai-ui-consistency-checker: page is real and confirms the described scanning behavior for spacing, typography, and component-state drift against team components/tokens/styles."
+   },
+   {
+    "claim": "Galen Framework provides edge-equality alignment assertions with an explicit offset-tolerance parameter, default ~12px max mismatch / 30px scan region",
+    "source_ok": false,
+    "tier_final": "CONV (numbers cut)",
+    "note": "DIRECTLY VERIFIED the alignment assertions and configurable tolerance concept are real (galenframework.com spec-language guide confirms 'aligned horizontally all/top/centered' plus a per-check error-rate tolerance). REFUTED the specific numbers: the doc gives no fixed 12px default for that tolerance, and the 'analyze-offset N' parameter the draft attributed the numbers to is actually an unrelated image-diff feature whose '30' default is a color tolerance, not a spatial pixel offset. The specific magnitudes were fabricated/misattributed and have been cut from verified_addition; the general mechanic citation survives at CONV."
+   },
+   {
+    "claim": "8pt/4pt grid multiples are the standard convention for predictable spacing rhythm (UXPin, Spec.fm)",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Generic, well-established industry convention; not independently re-fetched this session but low-risk and consistent with widely known design-system practice. No red flags."
+   },
+   {
+    "claim": "Visual-regression tools (Percy/Applitools/Chromatic/BackstopJS) diff against a prior baseline and cannot detect still-broken-but-unchanged alignment",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Accurately describes how baseline-diff visual regression tooling works; well-known category fact, no numeric claim to refute, no risk found."
+   },
+   {
+    "claim": "AI scanning tools will identify 80-90% of detectable accessibility issues by 2026, up from 40-60%",
+    "source_ok": false,
+    "tier_final": "MYTH",
+    "note": "Correctly self-flagged by the draft author as an unsourced viral claim and excluded from proposed_addition entirely. Verified it does not appear anywhere in verified_addition. No further action needed, this is the draft doing its own myth-screening correctly."
+   }
+  ]
+ }
+}
