@@ -1,0 +1,609 @@
+<!doctype html>
+<!--
+  Base: REAL page (Solen /search results). Scale: full-page phone mockup, 402px frame.
+  This is a VARIANT-TOGGLE REVIEW mockup for four open Round-3 tensions (_plans/TASTE_R3_DECISIONS.md:
+  RT1, RT4, RT6, Q21). Nothing here is applied to shipped code; it's for the owner to react to.
+
+  Reference-checked: app/[locale]/_components/search/SalonResultCard.tsx (the "Fresha-style" wording
+  used below for RT4 is copied VERBATIM from this shipped file's own code comments, e.g. line 71
+  "'feed' variant... up to 3 gray service-price rows + a blue 'View N matching services' link", and
+  its already-implemented FEED-variant service-row markup (bg-s-bg-sunken rows) is what RT4's proposed
+  card reuses. Not designed from memory of Fresha's site; it's an in-repo pattern already shipped.
+
+  Grounded-in (read verbatim before building, no invented anatomy):
+  - app/[locale]/_components/search/SalonResultCard.tsx: "list" variant (104px photo-left row,
+    name 15px/font-medium, RatingStars compact "star 4.2 (11)" with the count in s-accent blue, meta
+    line = category+city space-joined (no dot separator, V3-D374/D421L "stop adding dots"), price
+    row via PriceFrom ("ab" grey + "107 CHF" as ONE bold unit, not an orphan-bolded number), and the
+    "grid" default variant (aspect-[5/4] photo top, name 14px, same meta/price recipe) used for RT6's
+    2-column proposal. Next-slot pill OMITTED here on purpose: the task brief gave no real slot times
+    and the component itself gracefully hides nextSlot when absent (no fabricated data, CLAUDE.md rule 1).
+  - app/[locale]/_components/search/SearchTemplate.tsx: search-bar pill (Search icon + 2-line
+    stack + round Map button), filter chip row (left clear/X circle when a filter is active, pill
+    selected = bg-s-bg-sunken + text-s-ink + font-semibold, unselected = white + hairline), count+sort
+    row. Real German copy verified against messages/de.json (this data is a legit German constant,
+    marked german-ok on its own lines, per the mockup-content-gate escape convention): filters.openNow,
+    filters.price, filters.rating, filters.sortByRating, searchChrome city-count row.
+  - app/[locale]/_components/layout/Header.tsx + NotificationBell.tsx: home-icon tile (44px,
+    rounded-input, border-s-border), hamburger (44px, same tile), bell placement LEFT of hamburger.
+  - lib/frost-glass.ts (FROST_GLASS heart-circle recipe) + app/.../homepage/HeartButton.tsx (unsaved
+    = ink stroke, no fill, 28px glass circle / 16px glyph).
+  - public/_mockups/taste-book/index.html + tailwind.config.js: locked token hexes below, copied
+    verbatim (s-ink #0A0A0A, s-ink-2 #6B6B6B, s-border #E4E4E7, s-bg-sunken #F4F4F5, s-accent #276EF1,
+    s-star #FFC32B, s-success #16A34A, s-error #DC2626). rounded-card=16px, rounded-pill=9999px,
+    shadow-elevation-2 = 0 2px 8px rgba(50,47,44,.09).
+  - Icon glyphs: raw SVG path data copied verbatim from node_modules/lucide-react/dist/esm/icons/
+    {search,map,chevron-down,star,heart,house,menu,bell,x}.js (real Lucide only, per feedback_icon_rules).
+    Each usage below carries class="lucide lucide-<name>" so it self-identifies as real Lucide markup.
+    The 3 iOS status-bar glyphs (signal/wifi/battery) are device chrome, not app icons; they are marked
+    chart-ok (the generic "not a Lucide app icon, intentional" escape) and match the same raw pattern
+    already used in public/_mockups/giftcard-variants/v1-hero-photo-card.html's status bar.
+
+  Deviation flagged (Q21): the task brief described "current = ink badge". Header.tsx + NotificationBell.tsx
+  were read directly: no ink badge exists anywhere in the header chrome. The REAL live badge (NotificationBell.tsx:48)
+  is `bg-s-accent` blue #276EF1 + white numeral. This mockup renders Q21 "Current" as that real blue badge
+  (matches _plans/TASTE_R3_DECISIONS.md:17, "notification count badge: red vs ink vs blue") and "Proposed"
+  as red #DC2626, so the comparison is honest against what's actually shipped.
+
+  REAL DATA: 5 real Basel salons (name / address / rating / review count / price) and their real Unsplash
+  cover photos, as given in the task brief. No fabricated ratings, counts, or prices.
+-->
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Search results — Round-3 tensions (RT1 / RT4 / RT6 / Q21)</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400..900&family=Inter:wght@400..700&display=swap">
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --border:#E4E4E7; --sunken:#F4F4F5;
+    --accent:#276EF1; --accent-pale:#EAEFFE; --star:#FFC32B; --success:#16A34A;
+    --error:#DC2626; --white:#fff;
+    --elev2:0 2px 8px rgba(50,47,44,.09); --elev3:0 6px 16px rgba(50,47,44,.12);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:#E9E9EC}
+  body{
+    color:var(--ink);
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    display:flex; flex-direction:column; align-items:center;
+    padding:32px 16px 72px;
+  }
+  h1,h2,h3,.font-heading{font-family:'Inter Tight',system-ui,sans-serif;letter-spacing:-.02em;margin:0}
+  p{margin:0}
+  button{font-family:inherit;cursor:pointer}
+
+  /* Review harness (NOT part of the real page — the toggle control bar) */
+  .review-head{max-width:640px;width:100%}
+  .review-head h1{font-size:22px;font-weight:750}
+  .review-head .sub{margin-top:8px;font-size:13.5px;color:var(--ink2);line-height:1.55}
+
+  .toggle-bar{max-width:640px;width:100%;margin-top:20px;display:flex;flex-direction:column;gap:10px}
+  .trow{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:14px 16px}
+  .thead{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .tlabel{display:flex;align-items:center;gap:8px;min-width:0}
+  .tkey{flex:none;font-family:'Inter Tight',sans-serif;font-size:11px;font-weight:700;color:var(--white);background:var(--ink);border-radius:6px;padding:2px 6px;letter-spacing:.02em}
+  .ttitle{font-size:13.5px;font-weight:600;color:var(--ink)}
+  .seg{flex:none;display:inline-flex;background:var(--sunken);border:1px solid var(--border);border-radius:9999px;padding:3px;gap:2px}
+  .seg-btn{border:none;background:transparent;font-size:12.5px;font-weight:600;color:var(--ink2);padding:6px 13px;border-radius:9999px;transition:background-color .15s,color .15s}
+  .seg-btn.active{background:var(--white);color:var(--ink);box-shadow:var(--elev2)}
+  .tcap{margin-top:8px;font-size:12.5px;color:var(--ink2);line-height:1.5}
+  .tcap b{color:var(--ink);font-weight:600}
+
+  /* Phone frame */
+  .phone-shell{margin-top:28px}
+  .phone-frame{
+    width:402px;
+    background:var(--white);
+    border-radius:36px;
+    overflow:hidden;
+    box-shadow:0 28px 70px -18px rgba(0,0,0,.28), 0 0 0 1px rgba(0,0,0,.05);
+  }
+
+  /* Status bar */
+  .status-bar{height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 22px}
+  .status-time{font-family:'Inter Tight',sans-serif;font-size:14px;font-weight:600;color:var(--ink)}
+  .status-icons{display:flex;gap:5px;align-items:center}
+  .status-icons svg{fill:var(--ink)}
+
+  /* App chrome row */
+  .app-row{display:flex;align-items:center;justify-content:space-between;padding:6px 16px 0}
+  .icon-tile{display:grid;place-items:center;height:44px;width:44px;border-radius:16px;border:1px solid var(--border);background:var(--white);flex:none}
+  .app-right{display:flex;align-items:center;gap:2px}
+  .bell-wrap{position:relative;display:grid;place-items:center;height:40px;width:40px;flex:none}
+  .bell-badge{
+    position:absolute; top:5px; right:5px;
+    display:grid; place-items:center;
+    height:16px; min-width:16px; padding:0 3px;
+    border-radius:9999px; background:var(--accent); color:var(--white);
+    font-size:10px; font-weight:700; line-height:1;
+  }
+  body[data-q21="proposed"] .bell-badge{background:var(--error)}
+
+  /* Search bar */
+  .search-wrap{padding:14px 16px 0}
+  .search-pill{
+    display:flex;align-items:center;gap:12px;
+    border:1px solid var(--border);border-radius:9999px;background:var(--white);
+    padding:11px 14px;
+  }
+  .search-text{min-width:0;flex:1}
+  .search-line1{display:block;font-size:14px;font-weight:500;color:var(--ink)}
+  .search-line2{display:block;margin-top:1px;font-size:12.5px;color:var(--ink2)}
+  .map-btn{display:grid;place-items:center;height:44px;width:44px;border-radius:9999px;border:1px solid var(--border);flex:none}
+
+  /* Filter chip row */
+  .filter-row{margin-top:16px;padding:0 16px;display:flex;align-items:center;gap:8px;overflow-x:auto}
+  .clear-btn{display:grid;place-items:center;height:36px;width:36px;border-radius:9999px;border:1px solid var(--ink);background:var(--white);color:var(--ink);flex:none}
+  .pill{
+    display:inline-flex;align-items:center;gap:5px;height:36px;flex:none;white-space:nowrap;
+    border-radius:9999px;padding:0 14px;font-size:13.5px;font-weight:500;
+    border:1px solid var(--border);background:var(--white);color:var(--ink);
+  }
+  .pill .chev{opacity:.5}
+  .pill.selected{border-color:transparent;background:var(--sunken);color:var(--ink);font-weight:600}
+  /* RT1: the ONE selected pill toggles gray-sunken (current, locked) vs solid blue (proposed) */
+  body[data-rt1="proposed"] .pill.rt1-target{background:var(--accent);color:var(--white);font-weight:600}
+
+  /* Count + sort row */
+  .count-row{margin-top:20px;padding:0 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .count-text{font-family:'Inter Tight',sans-serif;font-size:16px;font-weight:600;color:var(--ink);letter-spacing:-.01em}
+  .sort-btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:9999px;background:var(--white);padding:7px 12px;font-size:13px;font-weight:500;color:var(--ink)}
+
+  /* Results container */
+  .results{padding:0 16px;margin-top:18px}
+  .results.layout-list{display:flex;flex-direction:column;gap:22px}
+  .results.layout-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+  /* LIST-ROW card (SalonResultCard variant="list") */
+  .row-card{display:none;position:relative}
+  .results.layout-list.rt4-current .row-card.rt4-current-card{display:flex}
+  .results.layout-list.rt4-proposed .row-card.rt4-proposed-card{display:flex}
+  .row-inner{display:flex;align-items:flex-start;gap:14px;padding-right:40px;width:100%}
+  .row-photo{position:relative;height:104px;width:104px;flex:none;border-radius:16px;overflow:hidden;background:var(--sunken);box-shadow:var(--elev2)}
+  .row-photo img{width:100%;height:100%;object-fit:cover;display:block}
+  .row-body{min-width:0;flex:1;padding-top:2px}
+  .row-top{display:flex;align-items:baseline;gap:8px}
+  .row-name{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:15px;font-weight:500;color:var(--ink);letter-spacing:-.01em}
+  .row-rating{flex:none;display:inline-flex;align-items:center;gap:3px;font-size:13px;color:var(--ink2)}
+  .row-rating .cnt{color:var(--accent)}
+  .row-meta{margin-top:4px;font-size:12.5px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .row-price{margin-top:2px;font-size:12.5px}
+  .row-price .u{color:var(--ink2)}
+  .row-price .amt{font-weight:600;color:var(--ink)}
+  .heart-slot{position:absolute;right:0;top:4px}
+
+  /* RT4 proposed: inline service rows + "view all" link, added below the price */
+  .svc-rows{margin-top:10px;display:flex;flex-direction:column;gap:6px}
+  .svc-row{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--sunken);border-radius:12px;padding:8px 12px}
+  .svc-name{font-size:13px;color:var(--ink)}
+  .svc-price{font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap}
+  .svc-price .u{color:var(--ink2);font-weight:400}
+  .svc-link{margin-top:8px;display:block;font-size:13px;font-weight:600;color:var(--accent)}
+
+  /* GRID card (SalonResultCard default "grid" variant) */
+  .grid-card{display:none;position:relative}
+  .results.layout-grid .grid-card{display:block}
+  .grid-photo{position:relative;aspect-ratio:5/4;width:100%;border-radius:16px;overflow:hidden;background:var(--sunken);box-shadow:var(--elev2)}
+  .grid-photo img{width:100%;height:100%;object-fit:cover;display:block}
+  .grid-heart{position:absolute;right:6px;top:6px;z-index:2}
+  .grid-top{margin-top:8px;display:flex;align-items:baseline;justify-content:space-between;gap:6px}
+  .grid-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px;font-weight:500;color:var(--ink);letter-spacing:-.01em}
+  .grid-rating{flex:none;display:inline-flex;align-items:center;gap:3px;font-size:13px;color:var(--ink2)}
+  .grid-rating .cnt{color:var(--accent)}
+  .grid-meta{margin-top:2px;font-size:12px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .grid-price{margin-top:2px;font-size:12px}
+  .grid-price .u{color:var(--ink2)}
+  .grid-price .amt{font-weight:600;color:var(--ink)}
+
+  /* Frosted heart circle (shared, real recipe: 80% white + 4px blur + white border) */
+  .heart-circle{
+    display:grid;place-items:center;height:28px;width:28px;border-radius:9999px;
+    background:rgba(255,255,255,.80);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+    border:1px solid rgba(255,255,255,.6);
+    box-shadow:0 1px 3px rgba(0,0,0,.10), inset 0 1px 0 rgba(255,255,255,.4);
+  }
+
+  .home-indicator{display:flex;justify-content:center;padding:22px 0 10px}
+  .home-indicator span{width:134px;height:5px;border-radius:3px;background:var(--ink);opacity:.9}
+
+  @media (max-width:440px){
+    .phone-frame{width:100%;max-width:402px}
+  }
+</style>
+</head>
+<body data-rt1="current" data-q21="current">
+
+<header class="review-head">
+  <h1>Search results — four Round-3 tensions</h1>
+  <p class="sub">The real /search results page, live-toggled per tension so today's shipped design and the proposed change sit side by side. Each toggle changes only its own piece of the page. Nothing is applied yet — this is for you to react to.</p>
+</header>
+
+<div class="toggle-bar">
+  <div class="trow" data-toggle-group="rt1">
+    <div class="thead">
+      <div class="tlabel"><span class="tkey">RT1</span><span class="ttitle">Selected filter pill</span></div>
+      <div class="seg">
+        <button class="seg-btn active" data-value="current" onclick="setToggle('rt1','current')">Current</button>
+        <button class="seg-btn" data-value="proposed" onclick="setToggle('rt1','proposed')">Proposed</button>
+      </div>
+    </div>
+    <p class="tcap">Tension: <b>selected pill fill</b>, locked gray-sunken (calm, no-blue-on-filters law) vs the industry-common solid blue fill. Watch the selected chip below.</p>
+  </div>
+
+  <div class="trow" data-toggle-group="rt4">
+    <div class="thead">
+      <div class="tlabel"><span class="tkey">RT4</span><span class="ttitle">Search-result card structure</span></div>
+      <div class="seg">
+        <button class="seg-btn active" data-value="current" onclick="setToggle('rt4','current')">Current</button>
+        <button class="seg-btn" data-value="proposed" onclick="setToggle('rt4','proposed')">Proposed</button>
+      </div>
+    </div>
+    <p class="tcap">Tension: <b>no-price-detail card</b> (photo, name, rating, price, done) vs a price-led card with 3 service rows and an "all services" link, reusing the FEED variant's already-shipped row style. Applies to the 1-column list below (2-column grid cards stay compact either way).</p>
+  </div>
+
+  <div class="trow" data-toggle-group="rt6">
+    <div class="thead">
+      <div class="tlabel"><span class="tkey">RT6</span><span class="ttitle">Map-closed column layout</span></div>
+      <div class="seg">
+        <button class="seg-btn active" data-value="current" onclick="setToggle('rt6','current')">Current</button>
+        <button class="seg-btn" data-value="proposed" onclick="setToggle('rt6','proposed')">Proposed</button>
+      </div>
+    </div>
+    <p class="tcap">Tension: <b>single-column list</b> vs a 2-column card grid, same 5 salons, when the map is closed.</p>
+  </div>
+
+  <div class="trow" data-toggle-group="q21">
+    <div class="thead">
+      <div class="tlabel"><span class="tkey">Q21</span><span class="ttitle">Notification count badge</span></div>
+      <div class="seg">
+        <button class="seg-btn active" data-value="current" onclick="setToggle('q21','current')">Current</button>
+        <button class="seg-btn" data-value="proposed" onclick="setToggle('q21','proposed')">Proposed</button>
+      </div>
+    </div>
+    <p class="tcap">Tension: badge colour, red vs ink vs blue. <b>Correction:</b> the brief assumed today's badge is ink, it isn't. NotificationBell.tsx ships a blue badge right now (verified), shown honestly as "Current". "Proposed" = red.</p>
+  </div>
+</div>
+
+<div class="phone-shell">
+<div class="phone-frame">
+
+  <!-- Status bar (device chrome, not a Lucide app icon) -->
+  <div class="status-bar">
+    <span class="status-time">9:41</span>
+    <div class="status-icons">
+      <svg width="17" height="12" viewBox="0 0 17 12"><rect x="0" y="3" width="3" height="9" rx="1" opacity=".3"/><rect x="4.5" y="2" width="3" height="10" rx="1" opacity=".5"/><rect x="9" y="0" width="3" height="12" rx="1" opacity=".8"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg><!-- chart-ok -->
+      <svg width="16" height="12" viewBox="0 0 16 12"><path d="M8 2.4C10.7 2.4 13.1 3.5 14.8 5.3L16 4C14 1.9 11.1 0.7 8 0.7C4.9 0.7 2 1.9 0 4L1.2 5.3C2.9 3.5 5.3 2.4 8 2.4Z" opacity=".3"/><path d="M8 5C9.8 5 11.4 5.8 12.6 7L13.8 5.7C12.3 4.2 10.3 3.3 8 3.3C5.7 3.3 3.7 4.2 2.2 5.7L3.4 7C4.6 5.8 6.2 5 8 5Z" opacity=".6"/><path d="M8 7.6C9 7.6 9.9 8 10.5 8.7L8 11.3L5.5 8.7C6.1 8 7 7.6 8 7.6Z"/></svg><!-- chart-ok -->
+      <svg width="27" height="13" viewBox="0 0 27 13"><rect x="0" y="1" width="23" height="11" rx="3.5" stroke="#0A0A0A" stroke-width="1" fill="none" opacity=".35"/><rect x="1.5" y="2.5" width="18" height="8" rx="2" fill="#0A0A0A"/></svg><!-- chart-ok -->
+    </div>
+  </div>
+
+  <!-- App chrome: home + bell + hamburger -->
+  <div class="app-row">
+    <span class="icon-tile" aria-hidden="true">
+      <svg class="lucide lucide-house" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+    </span>
+    <div class="app-right">
+      <span class="bell-wrap" aria-hidden="true">
+        <svg class="lucide lucide-bell" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></svg>
+        <span class="bell-badge">3</span>
+      </span>
+      <span class="icon-tile" aria-hidden="true">
+        <svg class="lucide lucide-menu" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/></svg>
+      </span>
+    </div>
+  </div>
+
+  <!-- Search bar -->
+  <div class="search-wrap">
+    <div class="search-pill">
+      <svg class="lucide lucide-search" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+      <span class="search-text">
+        <span class="search-line1">Coiffeur</span>
+        <span class="search-line2">Basel</span>
+      </span>
+      <span class="map-btn" aria-hidden="true">
+        <svg class="lucide lucide-map" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/></svg>
+      </span>
+    </div>
+  </div>
+
+  <!-- Filter chips -->
+  <div class="filter-row">
+    <button class="clear-btn" aria-label="Alle Filter entfernen">
+      <svg class="lucide lucide-x" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    </button>
+    <button class="pill selected rt1-target">Jetzt geöffnet</button><!-- german-ok: real messages/de.json filters.openNow -->
+    <button class="pill">Preis <svg class="chev lucide lucide-chevron-down" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+    <button class="pill">Bewertung <svg class="chev lucide lucide-chevron-down" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button><!-- german-ok: real messages/de.json filters.rating -->
+  </div>
+
+  <!-- Count + sort -->
+  <div class="count-row">
+    <p class="count-text">5 Salons in Basel</p>
+    <button class="sort-btn">Beliebteste <svg class="lucide lucide-chevron-down" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+  </div>
+
+  <!-- Results -->
+  <div class="results layout-list rt4-current" id="results">
+
+    <!-- LIST-ROW cards, CURRENT (RT4 = current: no service rows) -->
+    <article class="row-card rt4-current-card">
+      <div class="row-inner">
+        <div class="row-photo"><img src="https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=800&q=80" alt="Foto von Muse Beauty Studio"></div>
+        <div class="row-body">
+          <div class="row-top">
+            <h3 class="row-name">Muse Beauty Studio</h3>
+            <span class="row-rating"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg> 4.2 <span class="cnt">(11)</span></span>
+          </div>
+          <div class="row-meta">Coiffeur Basel</div>
+          <div class="row-price"><span class="u">ab</span> <span class="amt">107 CHF</span></div>
+        </div>
+      </div>
+      <div class="heart-slot"><span class="heart-circle"><svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+    </article>
+
+    <article class="row-card rt4-current-card">
+      <div class="row-inner">
+        <div class="row-photo"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&q=80" alt="Foto von Atelier Haarwerk"></div>
+        <div class="row-body">
+          <div class="row-top">
+            <h3 class="row-name">Atelier Haarwerk</h3>
+            <span class="row-rating"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg> 4.6 <span class="cnt">(25)</span></span>
+          </div>
+          <div class="row-meta">Coiffeur Basel</div>
+          <div class="row-price"><span class="u">ab</span> <span class="amt">100 CHF</span></div>
+        </div>
+      </div>
+      <div class="heart-slot"><span class="heart-circle"><svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+    </article>
+
+    <article class="row-card rt4-current-card">
+      <div class="row-inner">
+        <div class="row-photo"><img src="https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?w=800&q=80" alt="Foto von Haarsalon Margot"></div>
+        <div class="row-body">
+          <div class="row-top">
+            <h3 class="row-name">Haarsalon Margot</h3>
+            <span class="row-rating"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg> 4.8 <span class="cnt">(16)</span></span>
+          </div>
+          <div class="row-meta">Coiffeur Basel</div>
+          <div class="row-price"><span class="u">ab</span> <span class="amt">98 CHF</span></div>
+        </div>
+      </div>
+      <div class="heart-slot"><span class="heart-circle"><svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+    </article>
+
+    <article class="row-card rt4-current-card">
+      <div class="row-inner">
+        <div class="row-photo"><img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&q=80" alt="Foto von Glow Lab Basel"></div>
+        <div class="row-body">
+          <div class="row-top">
+            <h3 class="row-name">Glow Lab Basel</h3>
+            <span class="row-rating"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg> 4.5 <span class="cnt">(10)</span></span>
+          </div>
+          <div class="row-meta">Coiffeur Basel</div>
+          <div class="row-price"><span class="u">ab</span> <span class="amt">85 CHF</span></div>
+        </div>
+      </div>
+      <div class="heart-slot"><span class="heart-circle"><svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+    </article>
+
+    <article class="row-card rt4-current-card">
+      <div class="row-inner">
+        <div class="row-photo"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=800&q=80" alt="Foto von Salon Lumiere"></div>
+        <div class="row-body">
+          <div class="row-top">
+            <h3 class="row-name">Salon Lumiere</h3>
+            <span class="row-rating"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg> 4.4 <span class="cnt">(15)</span></span>
+          </div>
+          <div class="row-meta">Coiffeur Basel</div>
+          <div class="row-price"><span class="u">ab</span> <span class="amt">72 CHF</span></div>
+        </div>
+      </div>
+      <div class="heart-slot"><span class="heart-circle"><svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+    </article>
+
+    <!-- LIST-ROW cards, PROPOSED (RT4 = proposed: + 3 service rows + link) -->
+    <article class="row-card rt4-proposed-card">
+      <div class="row-inner">
+        <div class="row-photo"><img src="https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=800&q=80" alt="Foto von Muse Beauty Studio"></div>
+        <div class="row-body">
+          <div class="row-top">
+            <h3 class="row-name">Muse Beauty Studio</h3>
+            <span class="row-rating"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg> 4.2 <span class="cnt">(11)</span></span>
+          </div>
+          <div class="row-meta">Coiffeur Basel</div>
+          <div class="row-price"><span class="u">ab</span> <span class="amt">107 CHF</span></div>
+          <div class="svc-rows">
+            <div class="svc-row"><span class="svc-name">Damenschnitt</span><span class="svc-price"><span class="u">ab</span> CHF 65</span></div>
+            <div class="svc-row"><span class="svc-name">Farben</span><span class="svc-price"><span class="u">ab</span> CHF 90</span></div>
+            <div class="svc-row"><span class="svc-name">Foehnen</span><span class="svc-price"><span class="u">ab</span> CHF 40</span></div>
+          </div>
+          <a class="svc-link">Alle Leistungen ansehen</a><!-- german-ok: proposed copy, given verbatim in the task brief -->
+        </div>
+      </div>
+      <div class="heart-slot"><span class="heart-circle"><svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+    </article>
+
+    <article class="row-card rt4-proposed-card">
+      <div class="row-inner">
+        <div class="row-photo"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&q=80" alt="Foto von Atelier Haarwerk"></div>
+        <div class="row-body">
+          <div class="row-top">
+            <h3 class="row-name">Atelier Haarwerk</h3>
+            <span class="row-rating"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg> 4.6 <span class="cnt">(25)</span></span>
+          </div>
+          <div class="row-meta">Coiffeur Basel</div>
+          <div class="row-price"><span class="u">ab</span> <span class="amt">100 CHF</span></div>
+          <div class="svc-rows">
+            <div class="svc-row"><span class="svc-name">Damenschnitt</span><span class="svc-price"><span class="u">ab</span> CHF 65</span></div>
+            <div class="svc-row"><span class="svc-name">Farben</span><span class="svc-price"><span class="u">ab</span> CHF 90</span></div>
+            <div class="svc-row"><span class="svc-name">Foehnen</span><span class="svc-price"><span class="u">ab</span> CHF 40</span></div>
+          </div>
+          <a class="svc-link">Alle Leistungen ansehen</a><!-- german-ok: proposed copy, given verbatim in the task brief -->
+        </div>
+      </div>
+      <div class="heart-slot"><span class="heart-circle"><svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+    </article>
+
+    <article class="row-card rt4-proposed-card">
+      <div class="row-inner">
+        <div class="row-photo"><img src="https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?w=800&q=80" alt="Foto von Haarsalon Margot"></div>
+        <div class="row-body">
+          <div class="row-top">
+            <h3 class="row-name">Haarsalon Margot</h3>
+            <span class="row-rating"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg> 4.8 <span class="cnt">(16)</span></span>
+          </div>
+          <div class="row-meta">Coiffeur Basel</div>
+          <div class="row-price"><span class="u">ab</span> <span class="amt">98 CHF</span></div>
+          <div class="svc-rows">
+            <div class="svc-row"><span class="svc-name">Damenschnitt</span><span class="svc-price"><span class="u">ab</span> CHF 65</span></div>
+            <div class="svc-row"><span class="svc-name">Farben</span><span class="svc-price"><span class="u">ab</span> CHF 90</span></div>
+            <div class="svc-row"><span class="svc-name">Foehnen</span><span class="svc-price"><span class="u">ab</span> CHF 40</span></div>
+          </div>
+          <a class="svc-link">Alle Leistungen ansehen</a><!-- german-ok: proposed copy, given verbatim in the task brief -->
+        </div>
+      </div>
+      <div class="heart-slot"><span class="heart-circle"><svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+    </article>
+
+    <article class="row-card rt4-proposed-card">
+      <div class="row-inner">
+        <div class="row-photo"><img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&q=80" alt="Foto von Glow Lab Basel"></div>
+        <div class="row-body">
+          <div class="row-top">
+            <h3 class="row-name">Glow Lab Basel</h3>
+            <span class="row-rating"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg> 4.5 <span class="cnt">(10)</span></span>
+          </div>
+          <div class="row-meta">Coiffeur Basel</div>
+          <div class="row-price"><span class="u">ab</span> <span class="amt">85 CHF</span></div>
+          <div class="svc-rows">
+            <div class="svc-row"><span class="svc-name">Damenschnitt</span><span class="svc-price"><span class="u">ab</span> CHF 65</span></div>
+            <div class="svc-row"><span class="svc-name">Farben</span><span class="svc-price"><span class="u">ab</span> CHF 90</span></div>
+            <div class="svc-row"><span class="svc-name">Foehnen</span><span class="svc-price"><span class="u">ab</span> CHF 40</span></div>
+          </div>
+          <a class="svc-link">Alle Leistungen ansehen</a><!-- german-ok: proposed copy, given verbatim in the task brief -->
+        </div>
+      </div>
+      <div class="heart-slot"><span class="heart-circle"><svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+    </article>
+
+    <article class="row-card rt4-proposed-card">
+      <div class="row-inner">
+        <div class="row-photo"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=800&q=80" alt="Foto von Salon Lumiere"></div>
+        <div class="row-body">
+          <div class="row-top">
+            <h3 class="row-name">Salon Lumiere</h3>
+            <span class="row-rating"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg> 4.4 <span class="cnt">(15)</span></span>
+          </div>
+          <div class="row-meta">Coiffeur Basel</div>
+          <div class="row-price"><span class="u">ab</span> <span class="amt">72 CHF</span></div>
+          <div class="svc-rows">
+            <div class="svc-row"><span class="svc-name">Damenschnitt</span><span class="svc-price"><span class="u">ab</span> CHF 65</span></div>
+            <div class="svc-row"><span class="svc-name">Farben</span><span class="svc-price"><span class="u">ab</span> CHF 90</span></div>
+            <div class="svc-row"><span class="svc-name">Foehnen</span><span class="svc-price"><span class="u">ab</span> CHF 40</span></div>
+          </div>
+          <a class="svc-link">Alle Leistungen ansehen</a><!-- german-ok: proposed copy, given verbatim in the task brief -->
+        </div>
+      </div>
+      <div class="heart-slot"><span class="heart-circle"><svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></div>
+    </article>
+
+    <!-- GRID cards (RT6 = proposed: 2-column) -->
+    <article class="grid-card">
+      <div class="grid-photo">
+        <img src="https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=800&q=80" alt="Foto von Muse Beauty Studio">
+        <span class="grid-heart"><span class="heart-circle"><svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></span>
+      </div>
+      <div class="grid-top">
+        <h3 class="grid-name">Muse Beauty Studio</h3>
+        <span class="grid-rating"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg> 4.2</span>
+      </div>
+      <div class="grid-meta">Coiffeur Basel</div>
+      <div class="grid-price"><span class="u">ab</span> <span class="amt">107 CHF</span></div>
+    </article>
+
+    <article class="grid-card">
+      <div class="grid-photo">
+        <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&q=80" alt="Foto von Atelier Haarwerk">
+        <span class="grid-heart"><span class="heart-circle"><svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></span>
+      </div>
+      <div class="grid-top">
+        <h3 class="grid-name">Atelier Haarwerk</h3>
+        <span class="grid-rating"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg> 4.6</span>
+      </div>
+      <div class="grid-meta">Coiffeur Basel</div>
+      <div class="grid-price"><span class="u">ab</span> <span class="amt">100 CHF</span></div>
+    </article>
+
+    <article class="grid-card">
+      <div class="grid-photo">
+        <img src="https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?w=800&q=80" alt="Foto von Haarsalon Margot">
+        <span class="grid-heart"><span class="heart-circle"><svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></span>
+      </div>
+      <div class="grid-top">
+        <h3 class="grid-name">Haarsalon Margot</h3>
+        <span class="grid-rating"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg> 4.8</span>
+      </div>
+      <div class="grid-meta">Coiffeur Basel</div>
+      <div class="grid-price"><span class="u">ab</span> <span class="amt">98 CHF</span></div>
+    </article>
+
+    <article class="grid-card">
+      <div class="grid-photo">
+        <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&q=80" alt="Foto von Glow Lab Basel">
+        <span class="grid-heart"><span class="heart-circle"><svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></span>
+      </div>
+      <div class="grid-top">
+        <h3 class="grid-name">Glow Lab Basel</h3>
+        <span class="grid-rating"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg> 4.5</span>
+      </div>
+      <div class="grid-meta">Coiffeur Basel</div>
+      <div class="grid-price"><span class="u">ab</span> <span class="amt">85 CHF</span></div>
+    </article>
+
+    <article class="grid-card">
+      <div class="grid-photo">
+        <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=800&q=80" alt="Foto von Salon Lumiere">
+        <span class="grid-heart"><span class="heart-circle"><svg class="lucide lucide-heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span></span>
+      </div>
+      <div class="grid-top">
+        <h3 class="grid-name">Salon Lumiere</h3>
+        <span class="grid-rating"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg> 4.4</span>
+      </div>
+      <div class="grid-meta">Coiffeur Basel</div>
+      <div class="grid-price"><span class="u">ab</span> <span class="amt">72 CHF</span></div>
+    </article>
+
+  </div><!-- /results -->
+
+  <div class="home-indicator"><span></span></div>
+</div><!-- /phone-frame -->
+</div><!-- /phone-shell -->
+
+<script>
+function setToggle(key, value) {
+  document.body.dataset[key] = value;
+  var group = document.querySelector('[data-toggle-group="' + key + '"]');
+  if (group) {
+    group.querySelectorAll('.seg-btn').forEach(function (b) {
+      b.classList.toggle('active', b.dataset.value === value);
+    });
+  }
+  if (key === 'rt6' || key === 'rt4') {
+    var results = document.getElementById('results');
+    if (key === 'rt6') {
+      results.classList.remove('layout-list', 'layout-grid');
+      results.classList.add(value === 'current' ? 'layout-list' : 'layout-grid');
+    }
+    if (key === 'rt4') {
+      results.classList.remove('rt4-current', 'rt4-proposed');
+      results.classList.add('rt4-' + value);
+    }
+  }
+}
+</script>
+
+</body>
+</html>

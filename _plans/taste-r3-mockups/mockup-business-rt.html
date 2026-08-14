@@ -1,0 +1,803 @@
+<!doctype html>
+<!--
+  Grounded-in: app/[locale]/business/page.tsx
+  Grounded-in: app/[locale]/_components/business/BentoCard.tsx
+  Grounded-in: app/[locale]/_components/business/MarketplaceVisual.tsx
+
+  Exists-check (2026-07-23): the three Grounded-in paths above were grepped + read first
+  (the real /business route, its 3D-tilt BentoCard primitive, its 3-card faux-stack
+  marketplace visual). All three exist and are the structural ground truth for this mockup.
+  Real tokens pulled from public/_mockups/taste-book/index.html (s-ink #0A0A0A, s-ink-2
+  #6B6B6B, s-border #E4E4E7, s-bg-sunken #F4F4F5, s-accent #276EF1, s-star #FFC32B). Icon
+  paths + the lucide/lucide-<name> class markers copied verbatim from node_modules/lucide-react
+  (arrow-right, heart, star, check). Net-new in this file: the 3 side-by-side variant toggles
+  (Q22 marketplace visual, Q25+Q34 hero CTA placement, Q27 bento tilt) and the small bento
+  demo grid used only for the Q27 toggle.
+
+  Grounding notes for the reviewer:
+  1. The real /business page.tsx hard-codes its body copy in German regardless of locale
+     (STEPS / PRICING_CHECKS / FAQS / hero JSX are literal German strings; only <title>/<meta
+     description> are locale-switched). This mockup's hero + marketplace copy is an ENGLISH
+     translation of that real copy (structure, layout and meaning match the real page 1:1),
+     not the literal German, because the project's mockup-lang gate hard-requires English
+     mockup copy.
+  2. The real hero eyebrow ("Fur Salons") renders in tracked all-caps in the live component
+     (Tailwind's text-transform utility plus wide letter-spacing). This mockup uses sentence
+     case with no letter-spacing instead, per the project's no-caps rule, a dated owner
+     rejection of tracked all-caps labels that supersedes the older component styling.
+  Both are flagged explicitly since they are deviations from "match the real page's literal
+  styling", forced by gates that postdate that component's code.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solen /business — 3 open questions (mockup)</title>
+<style>
+  :root {
+    --ink: #0A0A0A;
+    --ink-2: #6B6B6B;
+    --border: #E4E4E7;
+    --sunken: #F4F4F5;
+    --accent: #276EF1;
+    --star: #FFC32B;
+    --white: #FFFFFF;
+    --elev1: 0 1px 3px rgba(10,10,10,.06), 0 1px 2px rgba(10,10,10,.04);
+    --elev2: 0 2px 8px rgba(50,47,44,.09);
+    --elev3: 0 8px 24px rgba(10,10,10,.14);
+    --font-display: 'Inter Tight', -apple-system, 'SF Pro Display', 'Segoe UI', system-ui, sans-serif;
+    --font-body: 'Inter', -apple-system, 'SF Pro Text', 'Segoe UI', system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    background: #EAEAEC;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    color: var(--ink);
+    font-family: var(--font-body);
+    padding: 32px 16px 80px;
+  }
+
+  h1, h2, h3 { margin: 0; font-family: var(--font-display); }
+  p { margin: 0; }
+  a { text-decoration: none; }
+  button { font-family: var(--font-body); cursor: pointer; }
+  img { display: block; }
+
+  /* ─────────────── page intro (outside the phone) ─────────────── */
+  .page-intro {
+    max-width: 402px;
+    margin: 0 auto 20px;
+  }
+  .page-intro h1 {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .page-intro p {
+    margin-top: 6px;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--ink-2);
+  }
+  .page-intro ol {
+    margin: 10px 0 0;
+    padding-left: 18px;
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: var(--ink-2);
+  }
+  .page-intro strong { color: var(--ink); font-weight: 600; }
+
+  /* ─────────────── phone frame ─────────────── */
+  .phone-shell {
+    width: 402px;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 14px;
+    background: #17171A;
+    border-radius: 48px;
+    box-shadow: var(--elev3);
+  }
+  .phone-notch {
+    height: 22px;
+    width: 120px;
+    margin: 0 auto 8px;
+    background: #17171A;
+    border-radius: 0 0 16px 16px;
+  }
+  .phone-screen {
+    background: var(--white);
+    border-radius: 34px;
+    overflow: hidden;
+  }
+
+  /* ─────────────── mockup control bar (dev chrome, not real page UI) ─────────────── */
+  .control-bar {
+    margin: 0 16px 18px;
+    padding: 12px 14px 14px;
+    border: 1px dashed rgba(10,10,10,0.18);
+    border-radius: 16px;
+    background: #FBFBFC;
+  }
+  .control-bar__tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--sunken);
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: 10px;
+    font-weight: 700;
+  }
+  .control-bar__title {
+    margin-top: 8px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .control-bar__buttons {
+    margin-top: 10px;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .toggle-btn {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 8px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--white);
+    color: var(--ink-2);
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+  }
+  .toggle-btn.is-active {
+    background: var(--sunken);
+    color: var(--ink);
+    border-color: var(--sunken);
+  }
+  .control-bar__caption {
+    margin-top: 10px;
+    font-size: 12px;
+    line-height: 1.45;
+    color: var(--ink-2);
+  }
+
+  /* ─────────────── HERO ─────────────── */
+  .hero-wrap {
+    padding: 24px 16px 0;
+  }
+  .hero-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 20px;
+  }
+  .hero-photo {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+  }
+  .hero-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .hero-gradient {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top right, rgba(0,0,0,0.55), rgba(0,0,0,0.15) 55%, transparent 100%);
+  }
+  .hero-overlay-text {
+    position: absolute;
+    inset: auto 0 0 0;
+    padding: 20px;
+  }
+  .eyebrow {
+    font-family: var(--font-body);
+    font-size: 12.5px;
+    font-weight: 600;
+  }
+  .eyebrow--on-photo { color: rgba(255,255,255,0.85); }
+  .eyebrow--on-white { color: var(--ink-2); }
+
+  .hero-h1 {
+    margin-top: 12px;
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+  }
+  .hero-h1--on-photo { color: var(--white); }
+  .hero-h1--on-white { color: var(--ink); }
+
+  .hero-body {
+    margin-top: 16px;
+    max-width: 300px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.4;
+    letter-spacing: -0.025em;
+  }
+  .hero-body--on-photo { color: rgba(255,255,255,0.85); }
+  .hero-body--on-white { color: var(--ink-2); }
+
+  .hero-cta-row {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 700;
+    border: none;
+  }
+  .btn-icon { width: 15px; height: 15px; flex-shrink: 0; }
+  .btn--white-on-photo {
+    background: var(--white);
+    color: var(--ink);
+    box-shadow: var(--elev2);
+  }
+  .btn--ghost-on-photo {
+    background: transparent;
+    color: var(--white);
+    border: 1px solid rgba(255,255,255,0.3);
+    font-weight: 600;
+  }
+  .btn--ink {
+    background: var(--ink);
+    color: var(--white);
+    box-shadow: var(--elev2);
+  }
+  .btn--outline {
+    background: var(--white);
+    color: var(--ink);
+    border: 1px solid var(--border);
+    font-weight: 600;
+  }
+
+  .hero-band {
+    background: var(--white);
+    padding: 20px;
+  }
+  .hero-photo--short {
+    aspect-ratio: 4 / 3;
+  }
+
+  /* ─────────────── generic section ─────────────── */
+  .section {
+    padding: 40px 20px;
+  }
+  .section-h2 {
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+  }
+  .section-body {
+    margin-top: 14px;
+    max-width: 320px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.55;
+    color: var(--ink-2);
+  }
+  .section-link {
+    margin-top: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .section-link .btn-icon { width: 13px; height: 13px; color: var(--accent); }
+
+  /* ─────────────── Q22 marketplace visual ─────────────── */
+  .mp-visual {
+    position: relative;
+    margin-top: 24px;
+  }
+
+  /* current: 5-card fan of real salons */
+  .mp-fan {
+    position: relative;
+    height: 190px;
+    margin: 0 auto;
+  }
+  .mp-card {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    width: 84px;
+    border-radius: 16px;
+    background: var(--white);
+    box-shadow: var(--elev2);
+    overflow: hidden;
+  }
+  .mp-card__photo { position: relative; width: 100%; aspect-ratio: 4/5; }
+  .mp-card__photo img { width: 100%; height: 100%; object-fit: cover; }
+  .mp-card__heart {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 18px;
+    height: 18px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.9);
+    display: grid;
+    place-items: center;
+    box-shadow: var(--elev1);
+  }
+  .mp-card__heart svg { width: 9px; height: 9px; color: var(--ink-2); }
+  .mp-card__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
+    padding: 6px 6px 2px;
+  }
+  .mp-card__name {
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .mp-card__rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 1px;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--ink);
+    flex-shrink: 0;
+  }
+  .mp-card__rating svg { width: 8px; height: 8px; color: var(--star); }
+  .mp-card__city {
+    padding: 0 6px 7px;
+    font-size: 9.5px;
+    color: var(--ink-2);
+  }
+
+  /* proposed: Switzerland map with city dots */
+  .mp-map {
+    display: flex;
+    justify-content: center;
+    padding: 12px 0 4px;
+  }
+  .mp-map svg { width: 100%; max-width: 300px; height: auto; }
+  .mp-map-label {
+    font-family: var(--font-body);
+    font-size: 10.5px;
+    font-weight: 600;
+    fill: var(--ink-2);
+  }
+
+  /* ─────────────── Q27 bento demo ─────────────── */
+  .bento-grid {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .bento-cell {
+    position: relative;
+    border-radius: 24px;
+    background: var(--white);
+    box-shadow: var(--elev1);
+    padding: 22px;
+    will-change: transform;
+    transition: box-shadow 200ms ease, transform 150ms ease-out;
+    transform-style: preserve-3d;
+  }
+  .bento-cell:hover { box-shadow: var(--elev2); }
+  .bento-cell__visual {
+    margin-bottom: 20px;
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+  }
+  .bento-cell__title {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+  }
+  .bento-cell__desc {
+    margin-top: 6px;
+    font-size: 13.5px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--ink-2);
+  }
+
+  /* tilt state: downgrade = subtle 2deg on hover */
+  .bento-grid[data-tilt="downgrade"] .bento-cell:hover {
+    transform: perspective(900px) rotateX(2deg) rotateY(-2deg);
+  }
+  /* tilt state: remove = flat, JS gates the mousemove handler so no transform is ever set */
+
+  .visual-confirm {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 14px;
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--white);
+  }
+  .visual-confirm svg { width: 14px; height: 14px; }
+  .visual-confirm span { font-size: 12px; font-weight: 700; }
+
+  .visual-chat { width: 100%; display: flex; flex-direction: column; gap: 6px; }
+  .chat-bubble {
+    max-width: 82%;
+    padding: 7px 11px;
+    border-radius: 14px;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+  .chat-bubble--in {
+    align-self: flex-start;
+    background: var(--sunken);
+    color: var(--ink);
+    border-bottom-left-radius: 4px;
+  }
+  .chat-bubble--out {
+    align-self: flex-end;
+    background: var(--ink);
+    color: var(--white);
+    border-bottom-right-radius: 4px;
+  }
+
+  .visual-bars {
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    height: 56px;
+  }
+  .visual-bars span {
+    flex: 1;
+    border-radius: 4px 4px 0 0;
+    background: var(--ink);
+  }
+</style>
+</head>
+<body>
+
+  <div class="page-intro">
+    <h1>Solen /business, 3 open questions</h1>
+    <p>Real /business hero and marketplace pitch section, rebuilt to scale from the live components (business/page.tsx, MarketplaceVisual.tsx, BentoCard.tsx). Three dashed control bars below are mockup-only chrome, tap a button to switch Current vs Proposed.</p>
+    <ol>
+      <li><strong>Q25 + Q34</strong>: where does the hero primary CTA sit, on the photo overlay or on a white band below it.</li>
+      <li><strong>Q22</strong>: does the marketplace pitch show real salon cards or a stylized city map.</li>
+      <li><strong>Q27</strong>: keep, downgrade, or remove the BentoCard 3D cursor tilt.</li>
+    </ol>
+  </div>
+
+  <div class="phone-shell">
+    <div class="phone-notch"></div>
+    <div class="phone-screen">
+
+      <!-- ═══════════════ Q25 + Q34 control bar ═══════════════ -->
+      <div class="hero-wrap" style="padding-top:20px;">
+        <div class="control-bar" data-toggle-group>
+          <span class="control-bar__tag">Q25 + Q34</span>
+          <p class="control-bar__title">Hero primary CTA placement</p>
+          <div class="control-bar__buttons">
+            <button type="button" class="toggle-btn is-active" data-variant-btn="current"
+              data-caption="Current: the primary CTA is a white pill sitting directly on the dark photo overlay. It works, but it is a documented exception to the ink-CTA rule.">
+              Current: on photo
+            </button>
+            <button type="button" class="toggle-btn" data-variant-btn="proposed"
+              data-caption="Proposed: the photo is text-free, the headline and CTA move below it onto a white band, so the primary CTA can be the standard bg-s-ink pill with no exception.">
+              Proposed: below photo
+            </button>
+          </div>
+          <p class="control-bar__caption" data-caption>Current: the primary CTA is a white pill sitting directly on the dark photo overlay. It works, but it is a documented exception to the ink-CTA rule.</p>
+        </div>
+      </div>
+
+      <!-- ═══════════════ HERO ═══════════════ -->
+      <div class="hero-wrap">
+        <div class="hero-card">
+
+          <!-- CURRENT: text + both CTAs overlaid on the photo -->
+          <div data-variant-panel="current">
+            <div class="hero-photo">
+              <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=1200&q=80" alt="Modern hair salon interior at golden hour">
+              <div class="hero-gradient"></div>
+              <div class="hero-overlay-text">
+                <p class="eyebrow eyebrow--on-photo">For salons</p>
+                <h1 class="hero-h1 hero-h1--on-photo">Solen for<br>your business.</h1>
+                <p class="hero-body hero-body--on-photo">More bookings, less hassle. Four tools, one platform. Over 1,200 salons already book with Solen.</p>
+                <div class="hero-cta-row">
+                  <a class="btn btn--white-on-photo" href="#">
+                    Sign up now
+                    <svg class="btn-icon lucide lucide-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                  </a>
+                  <a class="btn btn--ghost-on-photo" href="#">How it works</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PROPOSED: clean photo, text + primary CTA on a white band below -->
+          <div data-variant-panel="proposed" hidden>
+            <div class="hero-photo hero-photo--short">
+              <img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=1200&q=80" alt="Modern hair salon interior at golden hour">
+            </div>
+            <div class="hero-band">
+              <p class="eyebrow eyebrow--on-white">For salons</p>
+              <h1 class="hero-h1 hero-h1--on-white">Solen for<br>your business.</h1>
+              <p class="hero-body hero-body--on-white">More bookings, less hassle. Four tools, one platform. Over 1,200 salons already book with Solen.</p>
+              <div class="hero-cta-row">
+                <a class="btn btn--ink" href="#">
+                  Sign up now
+                  <svg class="btn-icon lucide lucide-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </a>
+                <a class="btn btn--outline" href="#">How it works</a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ═══════════════ Q22 marketplace section ═══════════════ -->
+      <div class="section">
+        <h2 class="section-h2">Clients find you.<br>You don't have to chase them.</h2>
+        <p class="section-body">Over 1,200 Swiss salons are visible on solen.ch. Every day, thousands of clients search for appointments in Basel, Zurich, Bern, and Lugano.</p>
+        <a class="section-link" href="#">
+          See how Solen clients find you
+          <svg class="btn-icon lucide lucide-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+
+        <div class="control-bar" data-toggle-group style="margin:24px 0 0;">
+          <span class="control-bar__tag">Q22</span>
+          <p class="control-bar__title">Marketplace visual</p>
+          <div class="control-bar__buttons">
+            <button type="button" class="toggle-btn is-active" data-variant-btn="current"
+              data-caption="Current: a fanned stack of real SalonCards, photo, name and rating, so a partner immediately recognizes their own listing.">
+              Current: card stack
+            </button>
+            <button type="button" class="toggle-btn" data-variant-btn="proposed"
+              data-caption="Proposed: a stylized Switzerland map with city dots. Reads as atmosphere, but drops the concrete photo, name and rating proof.">
+              Proposed: map
+            </button>
+          </div>
+          <p class="control-bar__caption" data-caption>Current: a fanned stack of real SalonCards, photo, name and rating, so a partner immediately recognizes their own listing.</p>
+        </div>
+
+        <div class="mp-visual">
+          <!-- CURRENT: 5-card fan, real salons -->
+          <div data-variant-panel="current">
+            <div class="mp-fan" aria-hidden="true">
+              <!-- Muse Beauty Studio -->
+              <article class="mp-card" style="transform: translateX(-146px) translateY(14px) rotate(-18deg); opacity:.55; z-index:1;">
+                <div class="mp-card__photo"><img src="https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=800&q=80" alt="Muse Beauty Studio"></div>
+                <div class="mp-card__row"><span class="mp-card__name">Muse Beauty Studio</span><span class="mp-card__rating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.2</span></div>
+                <p class="mp-card__city">Basel</p>
+              </article>
+              <!-- Atelier Haarwerk -->
+              <article class="mp-card" style="transform: translateX(-72px) translateY(6px) rotate(-9deg); opacity:.85; z-index:2;">
+                <div class="mp-card__photo"><img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&q=80" alt="Atelier Haarwerk"></div>
+                <div class="mp-card__row"><span class="mp-card__name">Atelier Haarwerk</span><span class="mp-card__rating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.6</span></div>
+                <p class="mp-card__city">Basel</p>
+              </article>
+              <!-- Haarsalon Margot, front card (proper noun salon name, not German sentence) -->
+              <article class="mp-card" style="transform: translateX(0) translateY(0) rotate(0deg); opacity:1; z-index:3; width:96px;">
+                <div class="mp-card__photo">
+                  <img src="https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?w=800&q=80" alt="Haarsalon Margot">
+                  <span class="mp-card__heart"><svg class="lucide lucide-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg></span>
+                </div>
+                <div class="mp-card__row"><span class="mp-card__name">Haarsalon Margot</span><span class="mp-card__rating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.8</span></div>
+                <p class="mp-card__city">Basel</p>
+              </article>
+              <!-- Glow Lab Basel -->
+              <article class="mp-card" style="transform: translateX(72px) translateY(6px) rotate(9deg); opacity:.85; z-index:2;">
+                <div class="mp-card__photo"><img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&q=80" alt="Glow Lab Basel"></div>
+                <div class="mp-card__row"><span class="mp-card__name">Glow Lab Basel</span><span class="mp-card__rating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.5</span></div>
+                <p class="mp-card__city">Basel</p>
+              </article>
+              <!-- Salon Lumiere -->
+              <article class="mp-card" style="transform: translateX(146px) translateY(14px) rotate(18deg); opacity:.55; z-index:1;">
+                <div class="mp-card__photo"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=800&q=80" alt="Salon Lumiere"></div>
+                <div class="mp-card__row"><span class="mp-card__name">Salon Lumiere</span><span class="mp-card__rating"><svg class="lucide lucide-star" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>4.4</span></div>
+                <p class="mp-card__city">Basel</p>
+              </article>
+            </div>
+          </div>
+
+          <!-- PROPOSED: stylized Switzerland map. Not an icon so no lucide class applies here;
+               the whole <svg> is an illustrative data shape, marked chart-ok per the gate. -->
+          <div data-variant-panel="proposed" hidden>
+            <div class="mp-map" aria-hidden="true">
+              <svg viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg"><!-- chart-ok -->
+                <path d="M 40 72 C 22 44, 58 16, 100 22 C 138 10, 190 24, 220 50 C 250 64, 258 90, 234 110 C 250 130, 244 156, 208 172 C 188 192, 158 186, 144 166 C 120 182, 90 176, 80 152 C 54 146, 28 122, 40 72 Z"
+                  fill="#F4F4F5" stroke="#E4E4E7" stroke-width="2"/>
+                <circle cx="72" cy="46" r="5" fill="#0A0A0A" stroke="#FFFFFF" stroke-width="2"/>
+                <text x="82" y="44" class="mp-map-label">Basel</text>
+                <circle cx="150" cy="62" r="5" fill="#0A0A0A" stroke="#FFFFFF" stroke-width="2"/>
+                <text x="160" y="60" class="mp-map-label">Zurich</text>
+                <circle cx="98" cy="102" r="5" fill="#0A0A0A" stroke="#FFFFFF" stroke-width="2"/>
+                <text x="52" y="118" class="mp-map-label">Bern</text>
+                <circle cx="176" cy="156" r="5" fill="#0A0A0A" stroke="#FFFFFF" stroke-width="2"/>
+                <text x="150" y="176" class="mp-map-label">Lugano</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════════════ Q27 bento tilt demo ═══════════════ -->
+      <div class="section" style="padding-top:0;">
+        <div class="control-bar" data-tilt-control>
+          <span class="control-bar__tag">Q27</span>
+          <p class="control-bar__title">BentoCard 3D tilt</p>
+          <div class="control-bar__buttons">
+            <button type="button" class="toggle-btn is-active" data-tilt-btn="keep"
+              data-caption="Keep: cards tilt up to 6 degrees as the cursor moves across them, the current /business behavior. Try it on desktop with a mouse.">
+              Keep (3D)
+            </button>
+            <button type="button" class="toggle-btn" data-tilt-btn="downgrade"
+              data-caption="Downgrade: a fixed subtle 2 degree tilt on hover, no cursor tracking. Signals interactivity without the full effect.">
+              Downgrade (2°)
+            </button>
+            <button type="button" class="toggle-btn" data-tilt-btn="remove"
+              data-caption="Remove: flat cards, only the shadow deepens on hover. Calmest option, matches the calm-control elevation rule.">
+              Remove (flat)
+            </button>
+          </div>
+          <p class="control-bar__caption" data-tilt-caption>Keep: cards tilt up to 6 degrees as the cursor moves across them, the current /business behavior. Try it on desktop with a mouse.</p>
+        </div>
+
+        <div class="bento-grid" data-tilt="keep">
+          <div class="bento-cell">
+            <div class="bento-cell__visual">
+              <span class="visual-confirm">
+                <svg class="lucide lucide-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                <span>Confirmed in 23 sec</span>
+              </span>
+            </div>
+            <h3 class="bento-cell__title">Instant confirmations</h3>
+            <p class="bento-cell__desc">Clients book directly and get confirmed in seconds. You do nothing by hand.</p>
+          </div>
+
+          <div class="bento-cell">
+            <div class="bento-cell__visual">
+              <div class="visual-chat">
+                <div class="chat-bubble chat-bubble--in">Anything free at 2pm Monday?</div>
+                <div class="chat-bubble chat-bubble--out">Sure, see you at 2!</div>
+              </div>
+            </div>
+            <h3 class="bento-cell__title">Chat with clients directly</h3>
+            <p class="bento-cell__desc">Confirm details or answer a quick question, right in the app.</p>
+          </div>
+
+          <div class="bento-cell">
+            <div class="bento-cell__visual">
+              <div class="visual-bars" aria-hidden="true">
+                <span style="height:30%; background:rgba(10,10,10,.10);"></span>
+                <span style="height:48%; background:rgba(10,10,10,.14);"></span>
+                <span style="height:38%; background:rgba(10,10,10,.10);"></span>
+                <span style="height:70%; background:rgba(10,10,10,.20);"></span>
+                <span style="height:90%; background:rgba(10,10,10,.28);"></span>
+                <span style="height:60%; background:rgba(10,10,10,.16);"></span>
+              </div>
+            </div>
+            <h3 class="bento-cell__title">See what's working</h3>
+            <p class="bento-cell__desc">Track busy hours, repeat clients, and where bookings drop off.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+  // Generic Current / Proposed toggle: swaps [data-variant-panel] visibility and updates the caption.
+  document.querySelectorAll('[data-toggle-group]').forEach(function (root) {
+    var buttons = root.querySelectorAll('[data-variant-btn]');
+    var caption = root.querySelector('[data-caption]');
+    // panels live in the sibling block right after this control bar's parent wrapper,
+    // scoped by walking up to the shared section then querying panels inside it.
+    var scope = root.closest('.hero-wrap') || root.closest('.section') || root.parentElement;
+    var panels = scope.querySelectorAll('[data-variant-panel]');
+
+    function setVariant(variant) {
+      buttons.forEach(function (b) {
+        var active = b.getAttribute('data-variant-btn') === variant;
+        b.classList.toggle('is-active', active);
+        b.setAttribute('aria-pressed', active ? 'true' : 'false');
+        if (active && caption) caption.textContent = b.getAttribute('data-caption');
+      });
+      panels.forEach(function (p) {
+        p.hidden = p.getAttribute('data-variant-panel') !== variant;
+      });
+    }
+
+    buttons.forEach(function (b) {
+      b.addEventListener('click', function () {
+        setVariant(b.getAttribute('data-variant-btn'));
+      });
+    });
+
+    setVariant('current');
+  });
+
+  // Q27 tilt control: keep = cursor-following 3D tilt (mirrors BentoCard.tsx's mousemove
+  // handler, capped at the same +/-6deg it uses); downgrade = CSS-only fixed 2deg hover tilt;
+  // remove = flat, no transform.
+  (function () {
+    var control = document.querySelector('[data-tilt-control]');
+    var grid = document.querySelector('.bento-grid');
+    var cells = grid.querySelectorAll('.bento-cell');
+    var caption = control.querySelector('[data-tilt-caption]');
+    var buttons = control.querySelectorAll('[data-tilt-btn]');
+
+    function resetCells() {
+      cells.forEach(function (c) { c.style.transform = ''; });
+    }
+
+    function setMode(mode) {
+      grid.setAttribute('data-tilt', mode);
+      resetCells();
+      buttons.forEach(function (b) {
+        var active = b.getAttribute('data-tilt-btn') === mode;
+        b.classList.toggle('is-active', active);
+        b.setAttribute('aria-pressed', active ? 'true' : 'false');
+        if (active) caption.textContent = b.getAttribute('data-caption');
+      });
+    }
+
+    buttons.forEach(function (b) {
+      b.addEventListener('click', function () {
+        setMode(b.getAttribute('data-tilt-btn'));
+      });
+    });
+
+    cells.forEach(function (cell) {
+      cell.addEventListener('mousemove', function (e) {
+        if (grid.getAttribute('data-tilt') !== 'keep') return;
+        var rect = cell.getBoundingClientRect();
+        var x = e.clientX - rect.left - rect.width / 2;
+        var y = e.clientY - rect.top - rect.height / 2;
+        var rotateY = Math.max(-6, Math.min(6, (x / (rect.width / 2)) * 6));
+        var rotateX = Math.max(-6, Math.min(6, -(y / (rect.height / 2)) * 6));
+        cell.style.transform = 'perspective(1200px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg)';
+      });
+      cell.addEventListener('mouseleave', function () {
+        if (grid.getAttribute('data-tilt') !== 'keep') return;
+        cell.style.transform = 'perspective(1200px) rotateX(0deg) rotateY(0deg)';
+      });
+    });
+
+    setMode('keep');
+  })();
+</script>
+
+</body>
+</html>

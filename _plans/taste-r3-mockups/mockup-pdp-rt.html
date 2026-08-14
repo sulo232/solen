@@ -1,0 +1,647 @@
+<!doctype html>
+<!--
+  Round-3 tension mockup: Solen SALON detail page / PDP (mobile). REBUILD per owner feedback
+  (_plans/TASTE_R3_MOCKUP_FEEDBACK.md, "PDP mockup = BROKEN/unusable... I can't even open it
+  fully, doesn't really work, almost an unseeable clickable... ENGLISH"). This replaces the
+  prior version in place. Two root causes fixed:
+
+    1. USABILITY: the old file nested a FIXED-HEIGHT overflow-y:auto "phone" box inside the
+       page's own scroll. Two independently-scrolling touch surfaces on one mobile screen is a
+       known trap (iOS/Android can't tell which one a swipe belongs to), matching "can't even
+       open it fully." FIX: there is now exactly ONE scroll surface (the document/body). The
+       ".phone" card is a plain auto-height box, not a clipped inner scroller. The bottom
+       "Book appointment" bar is truly `position: fixed` to the real viewport (like the shipped
+       SalonMobileBookBar.tsx), not sticky-inside-a-clipped-box.
+    2. TOGGLES: the old segmented pills were 13px text on about 7px padding, "almost an
+       unseeable clickable." FIX: every toggle button is now 52px or taller (well past the 44px
+       touch-target floor), bold 14 to 15px label, a visible checkmark on the active choice,
+       and a calm-gray fill (locked selected treatment, never blue or ink) so the current pick
+       is unmistakable.
+
+  ALL page copy is now English (no German anywhere), per the explicit rebuild instruction. This
+  SUPERSEDES the prior version's "keep German product copy" choice, which the owner feedback
+  file itself calls out as wrong (H1: "my 'keep real German content' instruction was wrong,
+  mockups are ENGLISH").
+
+  Grounded-in: app/[locale]/_components/salon/SalonHero.tsx
+  Grounded-in: app/[locale]/_components/salon/SalonStickyTabNav.tsx
+  Grounded-in: app/[locale]/_components/salon/SalonHeader.tsx
+  Grounded-in: app/[locale]/_components/salon/StatusInline.tsx
+  Grounded-in: app/[locale]/_components/salon/SalonServices.tsx
+  Grounded-in: app/[locale]/_components/salon/SalonMobileBookBar.tsx
+  Grounded-in: app/[locale]/_components/salon/SalonReviews.tsx (review-card anatomy + clamp)
+  Grounded-in: app/[locale]/_components/salon/SalonTeam.tsx (avatar 88px + name/role stack)
+  Grounded-in: app/[locale]/_components/primitives/Avatar.tsx (greyscale initials fallback)
+  Grounded-in: app/[locale]/_components/primitives/RatingStars.tsx, PriceFrom.tsx, BackButton.tsx, TabPill.tsx
+  Grounded-in: lib/frost-glass.ts
+  Grounded-in: public/_mockups/taste-book/index.html (locked hex tokens)
+  Grounded-in: tailwind.config.js, s-open #1F8900, s-closed #DC2626, s-success #16A34A, s-accent DEFAULT #276EF1, deep #1E54B7 [hue-ok]
+
+  What each grounds:
+    SalonHero.tsx          -> hero anatomy: full-bleed photo, frosted back/share/heart, bottom gradient band + gallery dots.
+    SalonStickyTabNav.tsx  -> tab nav: CURRENT = tabs-row only; PROPOSED = the component's real
+                               V3-D421 mobile identity row (back/name/share/heart) ABOVE the tabs.
+    SalonHeader.tsx        -> name / rating+count / status / address meta stack, exact order.
+    StatusInline.tsx       -> split-color status word (green/red) + grey time tail, no separator dot.
+    SalonServices.tsx      -> ServiceRow: name (semibold ink) / duration (grey, "N min") / price (bold ink, "from N CHF") / Book pill.
+    SalonMobileBookBar.tsx -> fixed bottom ink pill "Book appointment" + chevron, viewport-fixed (not sticky-in-a-box).
+    SalonReviews.tsx       -> review card anatomy: avatar+name+date, 5-star row, clamp-3 body + "Read more" toggle IN INK
+                              (the real shipped color is text-s-ink, not blue, despite the copy-economy doc's ideal;
+                              built to match what actually ships, flagging the doc/code gap per house rule 18).
+    SalonTeam.tsx          -> team row: 88px avatar (initials fallback) + name 14px + role 12px grey below.
+    Avatar.tsx             -> initials-avatar fallback palette is GREYSCALE (no per-name color), used for team + review avatars.
+    Icons                  -> every svg below carries a real class="lucide lucide-<name>" marker matching
+                              node_modules/lucide-static path data (arrow-left, share, heart, star, map-pin, chevron-right, check).
+
+  Documented, non-blocking deviations (rule 18, surfaced not hidden):
+    - Price format uses the REAL PriceFrom convention "{amount} CHF" with the label word FIRST
+      ("from 65 CHF"), not the brief prose's "from CHF 65" (unit before number). Matches what
+      the real primitive renders.
+    - Duration uses the real "{n} min" (lowercase, no clock icon), not "(45 min.)" with a period.
+    - The brief's "from CHF 107" salon fact is not rendered as a standalone header line. Grepped
+      SalonHeader.tsx + SalonSidebar.tsx, neither renders a from-price on the PDP (that lives on
+      SalonCard listings only). Inventing a UI slot for it would not be grounded in a real
+      component, so it's omitted; the cheapest listed service (Blow-dry, from 40 CHF) is the
+      real from-price signal already visible on this page.
+    - Services render as ONE grouped card (the brief's literal ask), not the real component's
+      duration-TIER grouping (Express/Classic/Signature). Kept surgical to what was asked
+      rather than adding unrequested structure.
+    - Hero shows only the ONE real photo the brief supplied. SalonHero.tsx only renders gallery
+      dots when a salon has 2+ photos (photos.length > 1); with one real photo there is nothing
+      to page to. Rather than fabricate additional photo URLs not given, the dot row is a
+      static, NON-clickable 3-dot strip (no onclick handler at all, so it never pretends to be
+      interactive) shown purely to place the real anatomy on the canvas, per the brief's
+      explicit "gallery dots" render list. Back/share/heart (which don't depend on photo count)
+      are fully real and tappable.
+    - Team member names (Ava, Noah, Mila) and the one review's reviewer name/text are
+      illustrative mockup placeholder content (the brief gave no team or review data), clearly
+      not presented as counts/ratings/status facts, which is what the no-fabrication rule
+      targets. The salon's real given facts (name, city, rating, review count, services and
+      prices) are exact.
+    - Control bar is `position: sticky; top: 0` (the brief's "pinned at the TOP"), but kept
+      compact via 2 and 3 column button grids instead of full-width stacked rows, specifically
+      so a short mobile viewport still has real room to see and scroll the phone content
+      beneath it. Full-width stacking would have made "pinned" itself the next usability
+      failure. Button height (52px) and the checkmark+fill active state carry the "big,
+      obvious" requirement regardless of column count.
+    - RT3 has no toggle button, per its own explicit sub-spec ("side by side, always shown").
+      Only Q32 and R1 are interactive toggle groups. The brief's summary line loosely groups
+      all three under "toggle groups"; its own detailed RT3 description (no toggle, always both
+      visible) is followed as the more specific instruction.
+    - No drawn iPhone bezel, notch, or status bar (public/_mockups/_BASE.md "no-fake-phone"
+      law): the 402px column is a plain viewport-boundary card, not fake iOS chrome.
+    - s-accent.deep (#1E54B7) and s-success (#16A34A) are locked tailwind.config.js tokens, named explicitly by the brief itself, not invented hues. [hue-ok]
+    - s-open DEFAULT (#1F8900) is a locked tailwind.config.js token (whitelisted in the
+      contract-hue gate's LOCKED_HUES set); flagged [muted-ok] where used as a raw hex (v=0.54
+      trips the muted heuristic on HSV math alone).
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Muse Beauty Studio, Salon PDP, Round-3 tensions (Q32 / R1 / RT3)</title>
+<style>
+  :root {
+    --ink: #0A0A0A;
+    --ink-2: #6B6B6B;
+    --border: #E4E4E7;
+    --sunken: #F4F4F5;
+    --accent: #276EF1;
+    --accent-deep: #1E54B7; /* hue-ok: s-accent.deep, tailwind.config.js, locked */
+    --star: #FFC32B;
+    --success: #16A34A;
+    --success-bg: #E8F5E9;
+    --wrong: #DC2626;
+    --wrong-bg: #FEE2E2;
+    --white: #FFFFFF;
+    --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--sunken); }
+  body {
+    color: var(--ink);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2 { margin: 0; font-family: var(--font-display); letter-spacing: -0.02em; }
+  p { margin: 0; }
+  button { font: inherit; cursor: pointer; }
+  svg { display: block; }
+
+  /* ===== control bar: ONE sticky layer, kept compact so it never eats the whole
+     phone viewport (see the deviation note above). ===== */
+  .control-bar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 16px 14px;
+  }
+  .control-inner { max-width: 720px; margin: 0 auto; }
+  .control-inner h1 { font-size: 17px; font-weight: 700; }
+  .control-inner .lede { margin-top: 4px; font-size: 12.5px; color: var(--ink-2); line-height: 1.5; }
+
+  .axis { margin-top: 16px; }
+  .axis-label { display: block; font-size: 12.5px; font-weight: 700; color: var(--ink); }
+  .axis-label .tag { display: inline-block; margin-left: 6px; font-size: 11px; font-weight: 600; color: var(--ink-2); }
+
+  /* ===== big, obvious toggle buttons, the core usability fix ===== */
+  .seg { display: grid; gap: 8px; margin-top: 8px; }
+  .seg.seg-2 { grid-template-columns: 1fr 1fr; }
+  .seg.seg-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .seg-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 52px;
+    border: 1.5px solid var(--border);
+    background: var(--white);
+    color: var(--ink-2);
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: background-color .15s, color .15s, border-color .15s;
+  }
+  .seg.seg-2 .seg-btn { font-size: 15px; }
+  .seg-btn .chk { opacity: 0; flex-shrink: 0; }
+  .seg-btn:hover { color: var(--ink); }
+  .seg-btn.active { background: var(--sunken); color: var(--ink); border-color: var(--border); }
+  .seg-btn.active .chk { opacity: 1; }
+
+  .axis-caption { margin-top: 8px; font-size: 12.5px; color: var(--ink-2); line-height: 1.5; }
+  .axis-static-note { margin-top: 8px; font-size: 12.5px; color: var(--ink-2); line-height: 1.5; }
+
+  /* ===== phone-width viewport card, auto height, NOT a clipped inner scroller.
+     The whole document (body) is the only scroll surface now. ===== */
+  .stage-wrap { display: flex; justify-content: center; padding: 24px 16px 0; }
+  .phone {
+    width: 402px;
+    max-width: 100%;
+    background: var(--white);
+    border-radius: 14px;
+    box-shadow: 0 20px 50px rgba(10,10,10,.16), 0 1px 0 rgba(10,10,10,.04);
+    overflow: hidden;
+  }
+
+  /* ===== hero (roughly 40% of a typical phone viewport via the real 4:3 aspect ratio) ===== */
+  .hero { position: relative; width: 100%; aspect-ratio: 4 / 3; overflow: hidden; background: var(--sunken); }
+  .hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .glass-btn {
+    background: rgba(255,255,255,.80);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255,255,255,.6);
+    box-shadow: 0 1px 3px rgba(0,0,0,.10), inset 0 1px 0 rgba(255,255,255,.4);
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+  }
+  .hero-back { position: absolute; left: 16px; top: 16px; width: 40px; height: 40px; }
+  .hero-icons { position: absolute; right: 16px; top: 16px; display: flex; align-items: center; gap: 12px; }
+  .hero-icons .glass-btn { width: 38px; height: 38px; }
+  .hero-fade { position: absolute; inset-inline: 0; bottom: 0; height: 80px; background: linear-gradient(to top, rgba(0,0,0,.40), transparent); pointer-events: none; }
+  .hero-dots { position: absolute; inset-inline: 0; bottom: 32px; display: flex; justify-content: center; gap: 5px; }
+  .hero-dots span { height: 6px; width: 6px; border-radius: 999px; background: rgba(255,255,255,.55); }
+  .hero-dots span.active { width: 18px; background: #fff; }
+
+  /* ===== tab nav (Q32), flows in normal document flow, no longer position:sticky
+     (removed along with the nested scroll box; see header deviation note). ===== */
+  .nav-current, .nav-proposed { display: none; border-bottom: 1px solid var(--border); background: var(--white); }
+  #stage[data-q32="current"] .nav-current { display: block; }
+  #stage[data-q32="proposed"] .nav-proposed { display: block; }
+
+  .identity-row { display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 16px; border-bottom: 1px solid var(--border); }
+  .identity-row .icon-btn { background: none; border: 0; padding: 0; color: var(--ink); display: grid; place-items: center; width: 20px; height: 20px; }
+  .identity-row .name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--font-display); font-size: 16px; font-weight: 600; letter-spacing: -0.01em; }
+
+  .tabs-row { display: flex; align-items: center; gap: 22px; min-height: 46px; padding: 0 16px; overflow-x: auto; }
+  .nav-current .tabs-row { min-height: 50px; }
+  .tab-btn { background: none; border: 0; padding: 8px 0; font-size: 14px; font-weight: 600; color: var(--ink-2); white-space: nowrap; position: relative; }
+  .tab-btn.active { color: var(--ink); }
+  .tab-btn.active::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; border-radius: 999px; background: var(--ink); }
+
+  /* ===== body content ===== */
+  .content { padding: 20px 16px 0; }
+  .salon-name { font-size: 24px; font-weight: 600; line-height: 1.1; }
+
+  .meta-stack { margin-top: 12px; display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
+  .rating-row { display: flex; align-items: baseline; gap: 6px; }
+  .rating-row .stars { display: inline-flex; align-items: center; gap: 3px; font-weight: 600; color: var(--ink); }
+  .rating-row .count { color: var(--accent); font-weight: 500; background: none; border: 0; padding: 0; font-size: 14px; }
+
+  .status-line { display: inline-flex; align-items: baseline; gap: 6px; }
+  .status-word { font-weight: 600; }
+  .status-tail { color: var(--ink-2); }
+  #stage[data-status="current"] .status-row.is-open .status-word   { color: #1F8900; } /* muted-ok: s-open DEFAULT, tailwind.config.js, locked */
+  #stage[data-status="current"] .status-row.is-closed .status-word { color: var(--wrong); }
+  #stage[data-status="a"]       .status-row.is-open .status-word   { color: var(--success); }
+  #stage[data-status="a"]       .status-row.is-closed .status-word { color: var(--ink-2); }
+  #stage[data-status="b"]       .status-row.is-open .status-word   { color: var(--ink); }
+  #stage[data-status="b"]       .status-row.is-closed .status-word { color: var(--ink); }
+
+  .address-row { display: flex; align-items: center; gap: 6px; color: var(--ink-2); }
+  .address-row svg { flex-shrink: 0; color: var(--ink-2); }
+
+  .r1-note {
+    margin-top: 14px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    background: var(--sunken);
+  }
+  .r1-note .r1-label { font-size: 12px; font-weight: 600; color: var(--ink-2); }
+  .r1-note .status-line { margin-top: 6px; font-size: 14px; }
+  .r1-note .r1-caption { margin-top: 8px; font-size: 12.5px; color: var(--ink-2); line-height: 1.5; }
+
+  /* ===== services ===== */
+  .section { margin-top: 32px; }
+  .section-h { font-size: 19px; font-weight: 600; letter-spacing: -0.02em; }
+
+  .services-card { margin-top: 16px; border: 1px solid var(--border); border-radius: 24px; overflow: hidden; background: var(--white); box-shadow: 0 2px 8px rgba(50,47,44,.06); }
+  .service-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 20px; }
+  .service-row + .service-row { border-top: 1px solid var(--border); }
+  .service-name { font-size: 15px; font-weight: 600; color: var(--ink); }
+  .service-duration { margin-top: 4px; font-size: 13px; color: var(--ink-2); }
+  .service-price { margin-top: 12px; font-size: 14px; font-weight: 700; color: var(--ink); }
+  .book-pill { flex-shrink: 0; border: 1px solid var(--border); background: var(--white); border-radius: 999px; padding: 8px 20px; font-size: 13px; font-weight: 600; color: var(--ink); }
+  .book-pill:hover { background: var(--sunken); }
+
+  /* ===== team ===== */
+  .team-row { margin-top: 16px; display: flex; gap: 16px; }
+  .team-member { display: flex; flex-direction: column; align-items: center; text-align: center; width: 88px; }
+  .team-avatar { width: 88px; height: 88px; border-radius: 999px; display: grid; place-items: center; font-family: var(--font-display); font-weight: 600; font-size: 30px; }
+  .team-name { margin-top: 10px; font-size: 14px; font-weight: 500; color: var(--ink); }
+  .team-role { margin-top: 2px; font-size: 12px; color: var(--ink-2); }
+
+  /* ===== reviews: real summary + one real review card ===== */
+  .review-summary { margin-top: 16px; display: flex; align-items: center; gap: 2px; }
+  .review-summary-line { margin-top: 10px; display: flex; align-items: baseline; gap: 6px; }
+  .review-summary-line .avg { font-size: 18px; font-weight: 700; color: var(--ink); }
+  .review-summary-line .count { font-size: 16px; font-weight: 500; color: var(--accent); }
+  .review-hr { margin-top: 18px; border-top: 1px solid var(--border); }
+
+  .review-card { margin-top: 20px; }
+  .review-head { display: flex; align-items: center; gap: 14px; }
+  .review-avatar { width: 56px; height: 56px; border-radius: 999px; display: grid; place-items: center; font-family: var(--font-display); font-weight: 600; font-size: 18px; flex-shrink: 0; }
+  .review-name { font-size: 16px; font-weight: 600; color: var(--ink); }
+  .review-date { margin-top: 2px; font-size: 14px; color: var(--ink-2); }
+  .review-stars { margin-top: 12px; display: flex; gap: 2px; }
+  .review-text { margin-top: 10px; font-size: 15px; line-height: 1.5; color: var(--ink-2); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .review-text.expanded { -webkit-line-clamp: unset; display: block; overflow: visible; }
+  .read-more { margin-top: 4px; background: none; border: 0; padding: 0; font-size: 13px; font-weight: 500; color: var(--ink); }
+  .read-more:hover { opacity: .8; }
+
+  /* ===== RT3: reviews link contrast comparison (always side by side, no toggle) ===== */
+  .rt3-eyebrow { margin-top: 24px; font-size: 12px; font-weight: 700; color: var(--ink-2); }
+  .rt3-grid { margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .rt3-card { background: var(--sunken); border-radius: 16px; padding: 14px; }
+  .rt3-chip { display: inline-flex; align-items: center; font-size: 11px; font-weight: 700; border-radius: 999px; padding: 3px 9px; }
+  .rt3-chip.wrong { background: var(--wrong-bg); color: var(--wrong); }
+  .rt3-chip.right { background: var(--success-bg); color: var(--success); }
+  .rt3-summary { margin-top: 10px; font-size: 13px; }
+  .rt3-summary .rt3-rating { font-weight: 700; color: var(--ink); }
+  .rt3-summary .rt3-count { color: var(--ink-2); margin-left: 5px; }
+  .rt3-link { display: block; margin-top: 10px; font-size: 13px; font-weight: 600; line-height: 1.4; }
+  .rt3-link.current { color: var(--accent); }
+  .rt3-link.proposed { color: var(--accent-deep); }
+  .rt3-hex { margin-top: 8px; font-size: 11px; color: var(--ink-2); font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+  .rt3-caption { margin-top: 12px; font-size: 12.5px; color: var(--ink-2); line-height: 1.5; }
+
+  .spacer { height: 110px; } /* clears the fixed bottom bar, per the brief's "add bottom padding" */
+
+  /* ===== fixed (viewport-fixed) book bar, a real fixed bar, not a sticky-in-a-box ===== */
+  .book-bar-wrap {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 0;
+    width: 402px;
+    max-width: calc(100% - 32px);
+    z-index: 200;
+    background: var(--white);
+    padding: 12px 0 16px;
+  }
+  .book-bar-fade { position: absolute; left: 0; right: 0; bottom: 100%; height: 24px; background: linear-gradient(to top, var(--white), transparent); pointer-events: none; }
+  .book-cta {
+    position: relative;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    width: 100%;
+    background: var(--ink);
+    color: var(--white);
+    border: 0;
+    border-radius: 999px;
+    padding: 14px 0;
+    font-size: 15px;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+  <header class="control-bar">
+    <div class="control-inner">
+      <h1>Salon PDP, Round-3 tensions</h1>
+      <p class="lede">Muse Beauty Studio, Basel. Three toggles below flip real parts of the page. RT3 is always shown side by side.</p>
+
+      <div class="axis">
+        <span class="axis-label">Q32 <span class="tag">Sticky tab nav</span></span>
+        <div class="seg seg-2">
+          <button type="button" class="seg-btn active" onclick="setAxis('q32','current',this)" aria-pressed="true">
+            <svg class="chk lucide lucide-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            Current
+          </button>
+          <button type="button" class="seg-btn" onclick="setAxis('q32','proposed',this)" aria-pressed="false">
+            <svg class="chk lucide lucide-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            Proposed
+          </button>
+        </div>
+        <p class="axis-caption" id="q32-caption">Current: one tab row only (Overview / Services / Team / Reviews), about 50px tall.</p>
+      </div>
+
+      <div class="axis">
+        <span class="axis-label">R1 <span class="tag">Status color (Open/Closed)</span></span>
+        <div class="seg seg-3">
+          <button type="button" class="seg-btn active" onclick="setAxis('status','current',this)" aria-pressed="true">
+            <svg class="chk lucide lucide-check" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            Current
+          </button>
+          <button type="button" class="seg-btn" onclick="setAxis('status','a',this)" aria-pressed="false">
+            <svg class="chk lucide lucide-check" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            Proposed A
+          </button>
+          <button type="button" class="seg-btn" onclick="setAxis('status','b',this)" aria-pressed="false">
+            <svg class="chk lucide lucide-check" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            Proposed B
+          </button>
+        </div>
+        <p class="axis-caption" id="status-caption">Current (live today): "Open" green #1F8900, "Closed" red #DC2626.</p>
+      </div>
+
+      <div class="axis">
+        <span class="axis-label">RT3 <span class="tag">Link contrast on a sunken card</span></span>
+        <p class="axis-static-note">No toggle, always shown side by side further down (the Reviews section): #276EF1 vs. #1E54B7 on #F4F4F5.<!-- hue-ok --></p>
+      </div>
+    </div>
+  </header>
+
+  <div class="stage-wrap">
+    <div class="phone" id="stage" data-q32="current" data-status="current">
+
+      <!-- HERO: the one real photo, frosted back/share/heart, gradient band + static gallery dots -->
+      <div class="hero" id="section-photos">
+        <img src="https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=1200&q=80" alt="Photo 1 of Muse Beauty Studio">
+
+        <button type="button" class="glass-btn hero-back" aria-label="Back">
+          <svg class="lucide lucide-arrow-left" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+        </button>
+
+        <div class="hero-icons">
+          <button type="button" class="glass-btn" aria-label="Share salon">
+            <svg class="lucide lucide-share" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v13"/><path d="m16 6-4-4-4 4"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/></svg>
+          </button>
+          <button type="button" class="glass-btn" aria-label="Save salon">
+            <svg class="lucide lucide-heart" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+          </button>
+        </div>
+
+        <div class="hero-fade" aria-hidden="true"></div>
+        <!-- static, non-clickable: brief gives one real photo, so there's nothing a 2nd/3rd
+             dot would swap to. Shown purely as anatomy placement, see header deviation note. -->
+        <div class="hero-dots" aria-hidden="true">
+          <span class="active"></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- Q32: sticky tab nav, two variants toggled from the control bar above -->
+      <nav class="nav-current" aria-label="Salon sections">
+        <div class="tabs-row">
+          <button type="button" class="tab-btn" onclick="document.getElementById('section-photos').scrollIntoView({behavior:'smooth'})">Overview</button>
+          <button type="button" class="tab-btn active" onclick="document.getElementById('section-services').scrollIntoView({behavior:'smooth'})">Services</button>
+          <button type="button" class="tab-btn" onclick="document.getElementById('section-team').scrollIntoView({behavior:'smooth'})">Team</button>
+          <button type="button" class="tab-btn" onclick="document.getElementById('section-reviews').scrollIntoView({behavior:'smooth'})">Reviews</button>
+        </div>
+      </nav>
+      <nav class="nav-proposed" aria-label="Salon sections">
+        <div class="identity-row">
+          <button type="button" class="icon-btn" aria-label="Back">
+            <svg class="lucide lucide-arrow-left" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+          </button>
+          <span class="name">Muse Beauty Studio</span>
+          <button type="button" class="icon-btn" aria-label="Share salon">
+            <svg class="lucide lucide-share" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v13"/><path d="m16 6-4-4-4 4"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/></svg>
+          </button>
+          <button type="button" class="icon-btn" aria-label="Save salon">
+            <svg class="lucide lucide-heart" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+          </button>
+        </div>
+        <div class="tabs-row">
+          <button type="button" class="tab-btn" onclick="document.getElementById('section-photos').scrollIntoView({behavior:'smooth'})">Overview</button>
+          <button type="button" class="tab-btn active" onclick="document.getElementById('section-services').scrollIntoView({behavior:'smooth'})">Services</button>
+          <button type="button" class="tab-btn" onclick="document.getElementById('section-team').scrollIntoView({behavior:'smooth'})">Team</button>
+          <button type="button" class="tab-btn" onclick="document.getElementById('section-reviews').scrollIntoView({behavior:'smooth'})">Reviews</button>
+        </div>
+      </nav>
+
+      <div class="content">
+        <!-- name + rating + status + address, per SalonHeader.tsx meta stack -->
+        <h2 class="salon-name">Muse Beauty Studio</h2>
+        <div class="meta-stack">
+          <div class="rating-row">
+            <span class="stars">
+              <svg class="lucide lucide-star" width="13" height="13" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+              4.2
+            </span>
+            <button type="button" class="count" onclick="document.getElementById('section-reviews').scrollIntoView({behavior:'smooth'})" aria-label="Show 11 reviews">(11)</button>
+          </div>
+
+          <button type="button" class="status-line status-row is-open" style="background:none;border:0;padding:0;text-align:left;" aria-label="View opening hours">
+            <span class="status-word">Open</span><span class="status-tail">, closes at 19:00</span>
+          </button>
+
+          <div class="address-row">
+            <svg class="lucide lucide-map-pin" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+            Rumelinsplatz 4, 4001 Basel
+          </div>
+        </div>
+
+        <!-- R1 comparison callout: same status line rendered "closed", so both states are visible at once -->
+        <div class="r1-note">
+          <span class="r1-label">R1 comparison: this is what "Closed" would look like</span>
+          <div class="status-line status-row is-closed">
+            <span class="status-word">Closed</span><span class="status-tail">, opens at 09:00</span>
+          </div>
+          <p class="r1-caption" id="status-caption-inline">Current (live today): "Open" green #1F8900, "Closed" red #DC2626.</p>
+        </div>
+
+        <!-- services: one grouped card, hairline-divided rows, real ServiceRow anatomy -->
+        <section class="section" id="section-services">
+          <h2 class="section-h">Services</h2>
+          <div class="services-card">
+            <div class="service-row">
+              <div>
+                <div class="service-name">Women's cut</div>
+                <div class="service-duration">45 min</div>
+                <div class="service-price">from 65 CHF</div>
+              </div>
+              <button type="button" class="book-pill">Book</button>
+            </div>
+            <div class="service-row">
+              <div>
+                <div class="service-name">Color</div>
+                <div class="service-duration">90 min</div>
+                <div class="service-price">from 120 CHF</div>
+              </div>
+              <button type="button" class="book-pill">Book</button>
+            </div>
+            <div class="service-row">
+              <div>
+                <div class="service-name">Blow-dry</div>
+                <div class="service-duration">30 min</div>
+                <div class="service-price">from 40 CHF</div>
+              </div>
+              <button type="button" class="book-pill">Book</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- team row: SalonTeam.tsx anatomy, 88px initials avatar + name + role -->
+        <section class="section" id="section-team">
+          <h2 class="section-h">Team</h2>
+          <div class="team-row">
+            <div class="team-member">
+              <div class="team-avatar" style="background:#F5F5F4; color:#0A0A0A;">A</div>
+              <div class="team-name">Ava</div>
+              <div class="team-role">Hair Stylist</div>
+            </div>
+            <div class="team-member">
+              <div class="team-avatar" style="background:#E7E5E4; color:#0A0A0A;">N</div>
+              <div class="team-name">Noah</div>
+              <div class="team-role">Colorist</div>
+            </div>
+            <div class="team-member">
+              <div class="team-avatar" style="background:#D6D3D1; color:#0A0A0A;">M</div>
+              <div class="team-name">Mila</div>
+              <div class="team-role">Junior Stylist</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- reviews: real summary + one real review card (avatar/name/date/stars/clamp) -->
+        <section class="section" id="section-reviews">
+          <h2 class="section-h">Reviews</h2>
+
+          <div class="review-summary" aria-hidden="true">
+            <svg class="lucide lucide-star" width="26" height="26" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+            <svg class="lucide lucide-star" width="26" height="26" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+            <svg class="lucide lucide-star" width="26" height="26" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+            <svg class="lucide lucide-star" width="26" height="26" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+            <svg class="lucide lucide-star" width="26" height="26" viewBox="0 0 24 24" fill="#E4E4E7" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+          </div>
+          <div class="review-summary-line">
+            <span class="avg">4.2</span>
+            <span class="count">(11)</span>
+          </div>
+          <div class="review-hr"></div>
+
+          <article class="review-card">
+            <div class="review-head">
+              <div class="review-avatar" style="background:#A8A29E; color:#FFFFFF;">SK</div>
+              <div>
+                <div class="review-name">Sarah K.</div>
+                <div class="review-date">2 weeks ago</div>
+              </div>
+            </div>
+            <div class="review-stars" aria-hidden="true">
+              <svg class="lucide lucide-star" width="14" height="14" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+              <svg class="lucide lucide-star" width="14" height="14" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+              <svg class="lucide lucide-star" width="14" height="14" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+              <svg class="lucide lucide-star" width="14" height="14" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+              <svg class="lucide lucide-star" width="14" height="14" viewBox="0 0 24 24" fill="#FFC32B" stroke="none"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
+            </div>
+            <p class="review-text" id="review-text">Booked in for a cut and color after months of putting it off. The stylist actually listened when I explained what I wanted instead of just doing their usual thing, and the color came out exactly right. The salon is calm and bright, never felt rushed, and the price matched what was quoted before I sat down. Already booked my next visit.</p>
+            <button type="button" class="read-more" id="read-more-btn" onclick="toggleReview()">Read more</button>
+          </article>
+
+          <!-- RT3: reviews link contrast comparison, always side by side, no toggle -->
+          <p class="rt3-eyebrow">RT3 comparison (not real content)</p>
+          <div class="rt3-grid">
+            <div class="rt3-card">
+              <span class="rt3-chip wrong">Current</span>
+              <p class="rt3-summary"><span class="rt3-rating">4.2</span><span class="rt3-count">11 reviews</span></p>
+              <a href="#" class="rt3-link current" onclick="return false;">Read all 11 reviews</a>
+              <p class="rt3-hex">#276EF1 on #F4F4F5, about 4.17:1</p>
+            </div>
+            <div class="rt3-card">
+              <span class="rt3-chip right">Proposed</span>
+              <p class="rt3-summary"><span class="rt3-rating">4.2</span><span class="rt3-count">11 reviews</span></p>
+              <a href="#" class="rt3-link proposed" onclick="return false;">Read all 11 reviews</a>
+              <p class="rt3-hex">#1E54B7 (s-accent.deep) on #F4F4F5, about 6.4:1<!-- hue-ok: locked token --></p>
+            </div>
+          </div>
+          <p class="rt3-caption">#276EF1 (the current s-accent) reaches only about 4.17:1 on the sunken card #F4F4F5, below the 4.5:1 AA minimum for body text. #1E54B7 (already locked as s-accent.deep, no new hex) reaches about 6.4:1 and passes AA.<!-- hue-ok --></p>
+        </section>
+
+        <div class="spacer"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- fixed (not sticky-in-a-box) bottom book bar, a real fixed element on the viewport -->
+  <div class="book-bar-wrap">
+    <div class="book-bar-fade" aria-hidden="true"></div>
+    <button type="button" class="book-cta">
+      Book appointment
+      <svg class="lucide lucide-chevron-right" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+    </button>
+  </div>
+
+<script>
+  var CAPTIONS = {
+    q32: {
+      current: 'Current: one tab row only (Overview / Services / Team / Reviews), about 50px tall.',
+      proposed: 'Proposed: 2-row, identity row (back, name, share, heart) above the tab row, about 90px tall.'
+    },
+    status: {
+      current: 'Current (live today): "Open" green #1F8900, "Closed" red #DC2626.',
+      a: 'Proposed A: "Open" in success green #16A34A, "Closed" in grey (V3-D197).',
+      b: 'Proposed B: both "Open" and "Closed" in plain ink #0A0A0A, no color as a signal.'
+    }
+  };
+
+  function setAxis(axis, value, btn) {
+    document.getElementById('stage').setAttribute('data-' + axis, value);
+    var group = btn.parentElement;
+    var buttons = group.querySelectorAll('.seg-btn');
+    for (var i = 0; i < buttons.length; i++) {
+      buttons[i].classList.remove('active');
+      buttons[i].setAttribute('aria-pressed', 'false');
+    }
+    btn.classList.add('active');
+    btn.setAttribute('aria-pressed', 'true');
+    var caption = CAPTIONS[axis][value];
+    var el = document.getElementById(axis + '-caption');
+    if (el) el.textContent = caption;
+    if (axis === 'status') {
+      var inline = document.getElementById('status-caption-inline');
+      if (inline) inline.textContent = caption;
+    }
+  }
+
+  function toggleReview() {
+    var text = document.getElementById('review-text');
+    var btn = document.getElementById('read-more-btn');
+    var expanded = text.classList.toggle('expanded');
+    btn.textContent = expanded ? 'Read less' : 'Read more';
+  }
+</script>
+</body>
+</html>

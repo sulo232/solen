@@ -1,0 +1,189 @@
+<!doctype html>
+<!-- Base: net-new -->
+<!-- Scale: full-page -->
+<!--
+  Exists-check: `npm run exists taste-r3-review` = 0 hits (2026-07-22). Net-new review companion to
+  _design-system/research/PRINCIPLES_ROUND3(_DEEP) and the Taste Book (public/_mockups/taste-book/index.html).
+  This page is a MOCKUP for owner approval: nothing here is applied to RATIONALE.md / the Taste Book / SOURCE
+  until the owner says yes. It self-renders from ./cards.json + ./summary.json (written from the research output).
+  It rebuilds NO existing product surface (Base: net-new); it is a full-page research review/report, not a redraw.
+
+  Grounded-in: public/_mockups/taste-book/index.html (this Taste-Book review extends that exact card/token style)
+  Grounded-in: _design-system/RATIONALE.md (the taste-system file these additions are proposed for)
+  Grounded-in: tailwind.config.js (all color tokens copied verbatim from the live theme, no invented hexes)
+
+  Depicts: 33 principle review cards -> _design-system/research/PRINCIPLES_ROUND3_DEEP/S*.json (real verified research output)
+  Depicts: summary banner counts -> _design-system/research/PRINCIPLES_ROUND3_DEEP/_MERGED_INDEX.json (real)
+  Depicts: "stats I refused to use" list -> _MERGED_INDEX.json myths[] (real, caught during adversarial verify)
+  Depicts: "your calls" decisions -> _MERGED_INDEX.json tensions[] (real lock-vs-mechanic tensions flagged by the verify pass)
+  Depicts: card visual style + tokens -> public/_mockups/taste-book/index.html + tailwind.config.js (extends the real Taste Book)
+  Depicts: NET-NEW review/report page. It depicts RESEARCH DATA, not any product UI surface; no product feature is drawn or invented.
+  Tokens (all locked): s-ink #0A0A0A, s-ink-2 #6B6B6B, s-border #E4E4E7, s-bg.sunken #F4F4F5, s-accent #276EF1,
+  s-star #FFC32B, s-success #16A34A, s-error #DC2626, orange #EA580C. Pale tints are token-derived backgrounds.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Taste Research Round 3, before and after</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400..900&family=Inter:wght@400..700&display=swap">
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --ink3:#9A9A9A; --border:#E4E4E7; --sunken:#F4F4F5;
+    --accent:#276EF1; --accent-pale:#EAEFFE; --star:#FFC32B; --success:#16A34A; --success-bg:#E8F5E9;
+    --white:#fff; --wrong:#DC2626; --wrong-bg:#FEE2E2; --orange:#EA580C; --orange-bg:#FEF3C7;
+    --elev2:0 2px 8px rgba(50,47,44,.09);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--sunken);overflow-x:hidden}
+  body{color:var(--ink);font-family:'Inter',system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+  h1,h2,h3,.font-heading{font-family:'Inter Tight',system-ui,sans-serif;letter-spacing:-.02em;margin:0}
+  p{margin:0}
+  a{color:var(--accent);text-decoration:none}
+  .wrap{max-width:1080px;margin:0 auto;padding:32px 20px 80px}
+
+  .head h1{font-size:26px;font-weight:750}
+  .head .sub{margin-top:10px;font-size:15px;color:var(--ink2);line-height:1.55;max-width:720px}
+  .head .meta{margin-top:8px;font-size:12px;color:var(--ink3)}
+
+  .banner{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:24px}
+  @media(max-width:640px){.banner{grid-template-columns:1fr 1fr}}
+  .stat{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:16px}
+  .stat .n{font-size:28px;font-weight:750;font-family:'Inter Tight',sans-serif;letter-spacing:-.02em}
+  .stat .l{font-size:12px;color:var(--ink2);margin-top:4px;line-height:1.4}
+
+  .legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px;font-size:11px;color:var(--ink2)}
+  .tier{display:inline-flex;align-items:center;gap:6px;background:var(--white);border:1px solid var(--border);border-radius:999px;padding:4px 10px}
+  .dot{width:8px;height:8px;border-radius:999px;display:inline-block}
+  .t1{background:var(--success)} .t2{background:var(--accent)} .t3{background:var(--orange)} .conv{background:var(--ink3)} .myth{background:var(--wrong)}
+
+  .section{margin-top:40px}
+  .section > h2{font-size:19px;font-weight:700}
+  .section > .sdesc{font-size:13px;color:var(--ink2);margin-top:4px;margin-bottom:8px;line-height:1.5}
+
+  .card{background:var(--white);border:1px solid var(--border);border-radius:18px;padding:20px;margin-top:14px;box-shadow:var(--elev2)}
+  .card .top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+  .card .title{font-size:16px;font-weight:700;font-family:'Inter Tight',sans-serif;letter-spacing:-.01em}
+  .chip{flex:none;font-size:11px;font-weight:600;border-radius:999px;padding:3px 10px;background:var(--sunken);color:var(--ink2)}
+  .chip.gen{background:var(--accent-pale);color:var(--accent)}
+  .chip.mech{background:var(--success-bg);color:var(--success)}
+  .chip.net{background:var(--sunken);color:var(--ink2)}
+  .chip.canon{background:var(--orange-bg);color:var(--orange)}
+  .plain{font-size:14px;color:var(--ink);line-height:1.55;margin-top:10px}
+  .rulebox{margin-top:12px;background:var(--sunken);border-radius:12px;padding:12px 14px;font-size:14px;line-height:1.5}
+  .rulebox b{font-weight:650}
+  .ba{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+  @media(max-width:560px){.ba{grid-template-columns:1fr}}
+  .ba .col{border:1px solid var(--border);border-radius:12px;padding:12px}
+  .ba .lab{font-size:11px;font-weight:600;color:var(--ink2);margin-bottom:6px}
+  .ba .now .lab{color:var(--ink3)}
+  .ba .after{border-color:#CBE0C9;background:#FAFDF9}
+  .ba .after .lab{color:var(--success)}
+  .ba .body{font-size:13px;color:var(--ink);line-height:1.5}
+  .foot{margin-top:14px;padding-top:12px;border-top:1px solid var(--border);display:flex;flex-wrap:wrap;gap:12px;align-items:baseline}
+  .foot .tiers{font-size:12px;color:var(--ink2)}
+  .foot .src{font-size:11px;color:var(--ink3)}
+  .why{margin-top:10px;font-size:13px;color:var(--ink);font-style:italic}
+  .visual-note{margin-top:12px;border:1px dashed var(--accent);border-radius:12px;padding:10px 12px;background:var(--accent-pale);font-size:12px;color:var(--accent)}
+  .visual-note b{font-weight:650}
+
+  .mythrow,.decrow{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-top:10px}
+  .mythrow .stat{all:unset;display:block;font-size:14px;font-weight:650;color:var(--wrong)}
+  .mythrow .why{margin-top:4px;font-style:normal;color:var(--ink2);font-size:13px}
+  .decrow .topic{font-size:14px;font-weight:650}
+  .decrow .tension{margin-top:4px;font-size:13px;color:var(--ink);line-height:1.5}
+  .decrow .opts{margin-top:6px;font-size:12px;color:var(--ink2)}
+  .loading{margin-top:24px;font-size:14px;color:var(--ink2)}
+  .footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--border);font-size:12px;color:var(--ink3);line-height:1.6}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="head">
+    <h1>Taste Research, Round 3</h1>
+    <p class="sub">Everything I want to add to your taste and design system, shown before and after, in plain English. Nothing here is applied yet. This is for you to read and approve first. Every claim carries an evidence tier, and every number was checked against a real source before it made it onto this page.</p>
+    <p class="meta" id="meta">Loading the research output...</p>
+  </header>
+
+  <section class="banner" id="banner"></section>
+
+  <div class="legend">
+    <span class="tier"><span class="dot t1"></span>T1 replicated or a formal standard</span>
+    <span class="tier"><span class="dot t2"></span>T2 one strong study</span>
+    <span class="tier"><span class="dot t3"></span>T3 directional</span>
+    <span class="tier"><span class="dot conv"></span>CONV a useful convention</span>
+    <span class="tier"><span class="dot myth"></span>MYTH caught and excluded</span>
+  </div>
+
+  <div id="content"><p class="loading">Loading 33 principles...</p></div>
+
+  <footer class="footer" id="footer"></footer>
+</div>
+
+<script>
+const TAGS=[
+  {key:'generative-gap',cls:'gen',title:'1. Generative priors',desc:'How to get the first mockup right, not just grade it after. Concrete defaults, numbers, and real app examples.'},
+  {key:'net-new',cls:'net',title:'2. New principle areas',desc:'Whole topics the system had no home for yet, grounded and cross linked to what exists.'},
+  {key:'mechanize',cls:'mech',title:'3. Computable checks',desc:'Turning eyeballed floors into numbers a script can measure, so "unbalanced" gets an answer.'},
+  {key:'canon-deepen',cls:'canon',title:'4. Deepened existing rules',desc:'Locked rules that had no recorded why, now grounded in named research.'},
+];
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function chipClass(tag){var t=TAGS.find(x=>x.key===tag);return t?t.cls:'';}
+function card(c){
+  var vis = c.is_visual && c.visual_demo_desc ? '<div class="visual-note"><b>Visual demo coming:</b> '+esc(c.visual_demo_desc)+'</div>' : '';
+  var src = (c.top_sources||[]).length ? '<span class="src">'+esc((c.top_sources||[]).join('  |  '))+'</span>' : '';
+  return '<div class="card">'
+    +'<div class="top"><div class="title">'+esc(c.title)+'</div><span class="chip '+chipClass(c.tag)+'">'+esc(c.tag)+'</span></div>'
+    +'<p class="plain">'+esc(c.plain_english)+'</p>'
+    +'<div class="rulebox"><b>The rule:</b> '+esc(c.the_rule)+'</div>'
+    +'<div class="ba"><div class="col now"><div class="lab">Now</div><div class="body">'+esc(c.before_state)+'</div></div>'
+    +'<div class="col after"><div class="lab">After</div><div class="body">'+esc(c.after_state)+'</div></div></div>'
+    +vis
+    +'<div class="foot"><span class="tiers">'+esc(c.tier_summary||'')+'</span>'+src+'</div>'
+    +(c.one_line_why?'<div class="why">'+esc(c.one_line_why)+'</div>':'')
+    +'</div>';
+}
+function render(cards,summary){
+  var meta=document.getElementById('meta');
+  var banner=document.getElementById('banner');
+  var content=document.getElementById('content');
+  var hc=(summary&&summary.headline_counts)||{};
+  meta.textContent='Round 3 deep research: web, real apps (Mobbin), TikTok / Instagram / Dribbble trends, and competitor teardowns, all adversarially fact checked.';
+  var myths=(summary&&summary.distinct_myths)||[];
+  var decs=(summary&&summary.owner_decisions)||[];
+  banner.innerHTML=[
+    ['n',hc.new_blocks!=null?hc.new_blocks:cards.length,'principles researched and drafted'],
+    ['n',myths.length||hc.myths_caught||0,'fake or unsourced stats caught and excluded'],
+    ['n',decs.length||hc.tensions||0,'things that need your decision'],
+    ['n',hc.gaps_closed!=null?hc.gaps_closed:'', 'open gaps addressed'],
+  ].map(function(s){return '<div class="stat"><div class="n">'+esc(String(s[1]))+'</div><div class="l">'+esc(s[2])+'</div></div>';}).join('');
+
+  var html='';
+  TAGS.forEach(function(t){
+    var group=cards.filter(function(c){return c.tag===t.key;});
+    if(!group.length) return;
+    html+='<div class="section"><h2>'+esc(t.title)+'</h2><div class="sdesc">'+esc(t.desc)+'</div>'
+      + group.map(card).join('') + '</div>';
+  });
+  if(myths.length){
+    html+='<div class="section"><h2>Stats I refused to use</h2><div class="sdesc">Popular numbers that turned out to have no real source. Caught during the fact check and kept out of your system.</div>'
+      + myths.map(function(m){return '<div class="mythrow"><span class="stat">'+esc(m.stat)+'</span><div class="why">'+esc(m.why_fake)+'</div></div>';}).join('') + '</div>';
+  }
+  if(decs.length){
+    html+='<div class="section"><h2>Your calls</h2><div class="sdesc">Where the research argues against a locked value. The lock stays until you decide, on purpose.</div>'
+      + decs.map(function(d){return '<div class="decrow"><div class="topic">'+esc(d.topic)+'</div><div class="tension">'+esc(d.tension)+'</div>'+(d.options?'<div class="opts">Options: '+esc(d.options)+'</div>':'')+'</div>';}).join('') + '</div>';
+  }
+  content.innerHTML=html;
+  document.getElementById('footer').textContent='Every principle above comes from named, checked sources (the full research lives in _design-system/research/PRINCIPLES_ROUND3_DEEP). Reply with a number to change or drop one. On your yes, these get written into RATIONALE.md and the visual ones become new Taste Book pairs.';
+}
+Promise.all([
+  fetch('./cards.json').then(function(r){return r.ok?r.json():[];}).catch(function(){return [];}),
+  fetch('./summary.json').then(function(r){return r.ok?r.json():null;}).catch(function(){return null;})
+]).then(function(res){
+  var cards=res[0]||[]; var summary=res[1];
+  if(!cards.length){document.getElementById('content').innerHTML='<p class="loading">The research cards are still being generated. Reload in a moment.</p>';return;}
+  render(cards,summary);
+});
+</script>
+</body>
+</html>

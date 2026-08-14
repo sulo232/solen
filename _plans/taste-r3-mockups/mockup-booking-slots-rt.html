@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<!--
+Exists-check: ran `npm run exists DateTimePicker` and `npm run exists time slot` before
+building. The shared booking and search date/time primitive already exists, this mockup does
+not duplicate it, it renders the real anatomy of the "Zeit" step, not a from-scratch redraw.
+
+Grounded-in: app/[locale]/_components/primitives/DateTimePicker.tsx (dateLayout="strip": the
+DayStrip and TimeSlotList sub-components; TimeSlotList's slot-button classes at lines 566-593
+ship `rounded-full` today, the "Current" toggle state below).
+
+Grounded-in: components-legacy/booking/DateTimeStep.tsx (the real "Zeit" step composition:
+stylist pill, DateTimePicker with dateLayout="strip" and selectedTone="ink", the quiet
+waitlist link, the fixed bottom "Weiter" bar at lines 265-277).
+
+Grounded-in: components-legacy/booking/BookingWizard.tsx (compact header at lines 174-210:
+back arrow, small centred step title "Datum & Zeit" from stepTitles.datetime, X exit at 44px,
+h-11 w-11).
+
+Grounded-in: components-legacy/booking/BookingExitButton.tsx (the real X button: plain icon,
+no circle border, hover bg-s-bg-sunken, aria-label from booking.leave.exit = "Verlassen").
+
+Grounded-in: messages/de.json (real copy: stepTitles.datetime "Datum & Zeit",
+dateSelection.pickDate "Datum wählen", timeSelection.title "Wähle eine Uhrzeit",
+booking.waitlist.quietLink "Kein passender Termin? Auf die Warteliste", dateSelection.continue
+"Weiter", booking.leave.exit "Verlassen", staffPicker.any "Keine Präferenz").
+
+Grounded-in: tailwind.config.js (locked tokens used below: s-ink #0A0A0A, s-ink-2 #6B6B6B,
+s-border #E4E4E7, s-bg-sunken #F4F4F5, s-accent #276EF1, s-star #FFC32B, s-success #16A34A,
+radius scale: card 16, btn 999, input 16).
+
+Grounded-in: _design-system/QUESTIONS.md (Q-2026-06-11-slot-radius, the open question this
+toggle renders) and CLAUDE.md's design-contract row "selected / active" (the calm-gray TabPill
+treatment applies everywhere except the named exception, "booking date/slot stays blue". That
+exception is what both toggle states render below). Icons: real lucide-react v0.577.0 path
+data (node_modules/lucide-react/dist/esm/icons/*.js), not invented paths.
+
+Known deviation (surfaced, not silently resolved):
+  1. The real DayStrip renders weekday-abbrev + day-number + month-abbrev (e.g. "Do 23 Jul"),
+     NOT literal "Heute"/"Morgen" labels. There is no such special-casing in DayStrip's fmt()
+     helper (lines 294-329). Rendered here as real dates computed from today (2026-07-23:
+     Do 23, Fr 24, Sa 25, So 26, Mo 27, Di 28, Mi 29 Jul), not the illustrative "Heute/Morgen"
+     text from the brief.
+  2. DateTimeStep.tsx passes explicit labels (Morgens/Nachmittags/Abends) that override the
+     primitive's own DEFAULT_LABELS (Vormittag/Nachmittag/Abend, DateTimePicker.tsx line 79-89).
+     This mockup uses Vormittag/Nachmittag/Abend per the literal brief instruction. Both strings
+     are real, wired copy in this codebase (one is the shipped override, one is the primitive's
+     own default), noted here so neither is mistaken for an invented string.
+  3. Real DateTimeStep.tsx currently hardcodes `selectedTone="ink"` (ink-filled selected date
+     and slot), which contradicts the CLAUDE.md design-contract's later "booking date/slot stays
+     blue" exception line. This mockup renders the contract's blue exception, as the brief
+     explicitly instructs ("the one locked blue-fill exception for booking date/slot"), matching
+     the doc rather than the current ink-toned shipped prop. That contract-vs-shipped-prop gap is
+     real; this control-surface mockup surfaces it, it does not fix it.
+  4. No CDN allowed on this file (control surface, no external network calls). Font-family falls
+     back to system-ui and -apple-system rather than loading Inter Tight / Inter from Google
+     Fonts. Sizes, weights, and letter-spacing all still match the locked values; only the exact
+     glyph shapes differ from a real device render.
+-->
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Q-2026-06-11-slot-radius: booking Zeit step, time-slot shape</title>
+<style>
+  :root{
+    --s-ink:#0A0A0A;
+    --s-ink-2:#6B6B6B;
+    --s-border:#E4E4E7;
+    --s-bg-sunken:#F4F4F5;
+    --s-bg-base:#FFFFFF;
+    --s-accent:#276EF1;
+    --s-star:#FFC32B;
+    --s-success:#16A34A;
+    --raised:rgba(255,255,255,.95);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Inter','Inter Tight',system-ui,-apple-system,sans-serif;
+    background:#E7E7EA;
+    color:var(--s-ink);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:28px 16px 72px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .font-heading{font-family:'Inter Tight','Inter',system-ui,-apple-system,sans-serif;}
+
+  /* ============ control bar ============ */
+  .control-bar{
+    width:100%;
+    max-width:640px;
+    background:var(--s-bg-base);
+    border:1px solid var(--s-border);
+    border-radius:16px;
+    padding:16px 18px;
+    margin-bottom:24px;
+  }
+  .control-eyebrow{
+    font-size:11px;
+    font-weight:600;
+    color:var(--s-ink-2);
+    letter-spacing:0;
+    margin:0 0 6px;
+  }
+  .control-title{
+    font-family:'Inter Tight','Inter',system-ui,-apple-system,sans-serif;
+    font-size:16px;
+    font-weight:700;
+    letter-spacing:-0.01em;
+    margin:0 0 12px;
+    color:var(--s-ink);
+  }
+  .toggle-row{
+    display:inline-flex;
+    background:var(--s-bg-sunken);
+    border-radius:999px;
+    padding:3px;
+    gap:2px;
+  }
+  .toggle-btn{
+    font-family:'Inter','Inter Tight',system-ui,-apple-system,sans-serif;
+    font-size:13.5px;
+    font-weight:600;
+    color:var(--s-ink-2);
+    background:transparent;
+    border:none;
+    border-radius:999px;
+    padding:8px 18px;
+    cursor:pointer;
+    transition:background-color 150ms ease, color 150ms ease;
+  }
+  .toggle-btn.active{
+    background:var(--s-bg-base);
+    color:var(--s-ink);
+    box-shadow:0 1px 3px rgba(10,10,10,0.08);
+  }
+  .caption{
+    font-size:13px;
+    line-height:1.5;
+    color:var(--s-ink-2);
+    margin:12px 0 0;
+    max-width:560px;
+  }
+  .caption b{color:var(--s-ink);font-weight:600;}
+  .tradeoff{
+    font-size:12.5px;
+    line-height:1.5;
+    color:var(--s-ink-2);
+    margin:8px 0 0;
+    padding-top:8px;
+    border-top:1px solid var(--s-border);
+    max-width:560px;
+  }
+
+  /* ============ phone frame ============ */
+  .frame-label{
+    font-size:12px;
+    font-weight:600;
+    color:var(--s-ink-2);
+    margin-bottom:10px;
+  }
+  .phone-frame{
+    width:402px;
+    max-width:100%;
+    background:#000;
+    border-radius:44px;
+    padding:12px;
+    box-shadow:0 20px 50px rgba(0,0,0,0.25);
+  }
+  .phone-screen{
+    width:100%;
+    height:820px;
+    background:var(--s-bg-sunken);
+    border-radius:34px;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    position:relative;
+  }
+
+  /* ============ wizard header (BookingWizard.tsx lines 174-210) ============ */
+  .wiz-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:14px 12px 6px 8px;
+    flex-shrink:0;
+  }
+  .icon-btn{
+    width:44px;
+    height:44px;
+    display:grid;
+    place-items:center;
+    border-radius:999px;
+    border:none;
+    background:transparent;
+    color:var(--s-ink);
+    cursor:pointer;
+    flex-shrink:0;
+    transition:background-color 150ms ease;
+  }
+  .icon-btn:hover{background:rgba(10,10,10,0.05);}
+  .step-title{
+    flex:1;
+    min-width:0;
+    text-align:center;
+    font-family:'Inter Tight','Inter',system-ui,-apple-system,sans-serif;
+    font-size:16.5px;
+    font-weight:600;
+    letter-spacing:-0.01em;
+    color:var(--s-ink);
+    margin:0;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  /* ============ body ============ */
+  .wiz-body{
+    flex:1;
+    overflow-y:auto;
+    padding:4px 16px 0;
+  }
+  .stylist-row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding-top:4px;
+  }
+  .stylist-pill{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    border:1px solid var(--s-border);
+    border-radius:999px;
+    padding:6px 12px 6px 6px;
+    background:transparent;
+    cursor:pointer;
+    transition:border-color 150ms ease;
+  }
+  .stylist-pill:hover{border-color:rgba(10,10,10,0.25);}
+  .stylist-avatar{
+    width:28px;
+    height:28px;
+    border-radius:999px;
+    border:1px solid var(--s-border);
+    background:#fff;
+    display:grid;
+    place-items:center;
+    flex-shrink:0;
+  }
+  .stylist-name{
+    font-size:14px;
+    font-weight:500;
+    color:var(--s-ink);
+  }
+
+  .section{margin-top:28px;}
+  .section-heading{
+    font-family:'Inter Tight','Inter',system-ui,-apple-system,sans-serif;
+    font-size:18px;
+    font-weight:700;
+    color:var(--s-ink);
+    margin:0 0 12px;
+  }
+
+  /* ============ day strip (DayStrip, DateTimePicker.tsx lines 298-345) ============ */
+  .day-strip{
+    display:flex;
+    gap:10px;
+    overflow-x:auto;
+    padding-bottom:2px;
+    scrollbar-width:none;
+  }
+  .day-strip::-webkit-scrollbar{display:none;}
+  .day-pill{
+    flex-shrink:0;
+    width:72px;
+    border-radius:16px;
+    border:1px solid var(--s-border);
+    background:var(--s-bg-base);
+    padding:12px 0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:2px;
+    cursor:pointer;
+    transition:border-color 150ms ease, background-color 150ms ease, color 150ms ease;
+  }
+  .day-pill:hover{border-color:rgba(10,10,10,0.3);}
+  .day-pill .wk{font-size:12px;font-weight:500;color:var(--s-ink);text-transform:capitalize;}
+  .day-pill .num{font-size:22px;font-weight:700;line-height:1;color:var(--s-ink);font-variant-numeric:tabular-nums;margin:2px 0;}
+  .day-pill .mo{font-size:12px;font-weight:400;color:var(--s-ink);text-transform:capitalize;}
+  .day-pill.selected{
+    background:var(--s-accent);
+    border-color:var(--s-accent);
+  }
+  .day-pill.selected .wk,
+  .day-pill.selected .num,
+  .day-pill.selected .mo{color:#fff;}
+  .day-pill.more{
+    color:var(--s-ink-2);
+    justify-content:center;
+    gap:4px;
+  }
+  .day-pill.more span{
+    font-size:12px;
+    font-weight:500;
+    line-height:1.15;
+    padding:0 4px;
+    text-align:center;
+  }
+  .day-pill.more:hover{color:var(--s-ink);border-color:rgba(10,10,10,0.3);}
+
+  /* ============ time slot panel (TimeSlotList, DateTimePicker.tsx lines 554-598) ============ */
+  .slot-panel{
+    background:var(--s-bg-base);
+    border:1px solid var(--s-border);
+    border-radius:12px;
+    padding:16px;
+  }
+  .slot-group{margin-bottom:16px;}
+  .slot-group:last-child{margin-bottom:0;}
+  .slot-group-label{
+    font-size:12.5px;
+    font-weight:600;
+    color:var(--s-ink-2);
+    margin-bottom:8px;
+  }
+  .slot-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:6px;
+  }
+  .slot-btn{
+    padding:10px 6px;
+    border:1px solid var(--s-border);
+    background:var(--s-bg-base);
+    color:var(--s-ink);
+    font-family:'Inter','Inter Tight',system-ui,-apple-system,sans-serif;
+    font-size:14px;
+    font-weight:600;
+    font-variant-numeric:tabular-nums;
+    cursor:pointer;
+    border-radius:999px; /* CURRENT: shared primitive, rounded-full */
+    transition:border-radius 150ms ease, background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+  }
+  .slot-btn:hover{border-color:rgba(10,10,10,0.25);background:var(--s-bg-sunken);}
+  .slot-btn.selected{
+    background:var(--s-accent);
+    border-color:var(--s-accent);
+    color:#fff;
+  }
+  .slot-btn.selected:hover{background:var(--s-accent);}
+
+  body.variant-proposed .slot-btn{
+    border-radius:12px; /* PROPOSED: mockup 04's 12px-radius rectangle */
+  }
+
+  /* ============ waitlist quiet link (DateTimeStep.tsx lines 249-258) ============ */
+  .waitlist-row{
+    margin-top:20px;
+    text-align:center;
+  }
+  .waitlist-link{
+    font-size:13.5px;
+    font-weight:600;
+    color:var(--s-ink-2);
+    background:none;
+    border:none;
+    cursor:pointer;
+    padding:8px;
+    transition:color 150ms ease;
+  }
+  .waitlist-link:hover{color:var(--s-ink);}
+
+  .body-spacer{height:112px;flex-shrink:0;}
+
+  /* ============ sticky CTA bar (DateTimeStep.tsx lines 265-277) ============ */
+  .cta-bar{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    border-top:1px solid var(--s-border);
+    background:var(--raised);
+    padding:12px 16px;
+  }
+  .cta-btn{
+    width:100%;
+    background:var(--s-ink);
+    color:#fff;
+    border:none;
+    border-radius:999px;
+    padding:14px 0;
+    font-family:'Inter Tight','Inter',system-ui,-apple-system,sans-serif;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    transition:filter 150ms ease;
+  }
+  .cta-btn:hover{filter:brightness(1.06);}
+
+  @media (max-width: 460px){
+    .phone-frame{padding:8px;border-radius:36px;}
+    .phone-screen{border-radius:28px;height:760px;}
+  }
+</style>
+</head>
+<body>
+
+  <div class="control-bar">
+    <p class="control-eyebrow">OPEN QUESTION: Q-2026-06-11-slot-radius</p>
+    <p class="control-title">Booking "Zeit" step, time-slot shape: pill vs 12px rectangle</p>
+    <div class="toggle-row">
+      <button type="button" class="toggle-btn active" data-variant="current" onclick="setVariant('current')">Current</button>
+      <button type="button" class="toggle-btn" data-variant="proposed" onclick="setVariant('proposed')">Proposed</button>
+    </div>
+    <p class="caption" id="caption">
+      <b>Current:</b> the shared <code>DateTimePicker</code> primitive renders every time slot as a full 999px pill (<code>rounded-full</code>). This is what ships today, in booking and in the search filter sheet that reuses the same component.
+    </p>
+    <p class="tradeoff">
+      The slot shape lives inside the one shared primitive (booking and search both call it). Changing this radius here is not a booking-only change: the same component instance renders search's date/time filters, so flipping the token restyles both surfaces at once. That is the real tradeoff behind this question, not a style preference in isolation.
+    </p>
+  </div>
+
+  <p class="frame-label">iPhone viewport, 402px, real "Datum &amp; Zeit" step anatomy<!-- german-ok --></p>
+
+  <div class="phone-frame">
+    <div class="phone-screen">
+
+      <div class="wiz-header">
+        <button type="button" class="icon-btn" aria-label="Zurück"><!-- german-ok -->
+          <svg class="lucide lucide-arrow-left" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+        </button>
+        <h1 class="step-title">Datum &amp; Zeit</h1><!-- german-ok -->
+        <button type="button" class="icon-btn" aria-label="Verlassen"><!-- german-ok -->
+          <svg class="lucide lucide-x" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="wiz-body">
+
+        <div class="stylist-row">
+          <button type="button" class="stylist-pill">
+            <span class="stylist-avatar">
+              <svg class="lucide lucide-users" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg>
+            </span>
+            <span class="stylist-name">Keine Präferenz</span><!-- german-ok -->
+            <svg class="lucide lucide-chevron-down" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+        </div>
+
+        <div class="section">
+          <h3 class="section-heading">Datum wählen</h3><!-- german-ok -->
+          <div class="day-strip">
+            <button type="button" class="day-pill"><span class="wk">Do</span><span class="num">23</span><span class="mo">Jul</span></button>
+            <button type="button" class="day-pill selected"><span class="wk">Fr</span><span class="num">24</span><span class="mo">Jul</span></button>
+            <button type="button" class="day-pill"><span class="wk">Sa</span><span class="num">25</span><span class="mo">Jul</span></button>
+            <button type="button" class="day-pill"><span class="wk">So</span><span class="num">26</span><span class="mo">Jul</span></button>
+            <button type="button" class="day-pill"><span class="wk">Mo</span><span class="num">27</span><span class="mo">Jul</span></button>
+            <button type="button" class="day-pill"><span class="wk">Di</span><span class="num">28</span><span class="mo">Jul</span></button>
+            <button type="button" class="day-pill"><span class="wk">Mi</span><span class="num">29</span><span class="mo">Jul</span></button>
+            <button type="button" class="day-pill more">
+              <svg class="lucide lucide-calendar" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+              <span>Weitere Daten</span><!-- german-ok -->
+            </button>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3 class="section-heading">Wähle eine Uhrzeit</h3><!-- german-ok -->
+          <div class="slot-panel">
+
+            <div class="slot-group">
+              <div class="slot-group-label">Vormittag</div><!-- german-ok -->
+              <div class="slot-grid">
+                <button type="button" class="slot-btn">09:00</button>
+                <button type="button" class="slot-btn">09:30</button>
+                <button type="button" class="slot-btn">10:00</button>
+                <button type="button" class="slot-btn">11:30</button>
+              </div>
+            </div>
+
+            <div class="slot-group">
+              <div class="slot-group-label">Nachmittag</div><!-- german-ok -->
+              <div class="slot-grid">
+                <button type="button" class="slot-btn selected">14:00</button>
+                <button type="button" class="slot-btn">14:30</button>
+                <button type="button" class="slot-btn">16:00</button>
+                <button type="button" class="slot-btn">17:30</button>
+              </div>
+            </div>
+
+            <div class="slot-group">
+              <div class="slot-group-label">Abend</div><!-- german-ok -->
+              <div class="slot-grid">
+                <button type="button" class="slot-btn">18:00</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="waitlist-row">
+          <button type="button" class="waitlist-link">Kein passender Termin? Auf die Warteliste</button><!-- german-ok -->
+        </div>
+
+        <div class="body-spacer"></div>
+      </div>
+
+      <div class="cta-bar">
+        <button type="button" class="cta-btn">Weiter</button><!-- german-ok -->
+      </div>
+
+    </div>
+  </div>
+
+<script>
+  var CAPTIONS = {
+    current: '<b>Current:</b> the shared <code>DateTimePicker</code> primitive renders every time slot as a full 999px pill (<code>rounded-full</code>). This is what ships today, in booking and in the search filter sheet that reuses the same component.',
+    proposed: '<b>Proposed:</b> time slots as 12px-radius rectangles, the shape booking mockup 04 diverged to. Selected slot keeps the same <code>s-accent</code> blue fill either way, only the corner radius changes.'
+  };
+  function setVariant(variant){
+    document.body.classList.toggle('variant-proposed', variant === 'proposed');
+    document.querySelectorAll('.toggle-btn').forEach(function(btn){
+      btn.classList.toggle('active', btn.getAttribute('data-variant') === variant);
+    });
+    document.getElementById('caption').innerHTML = CAPTIONS[variant];
+  }
+</script>
+
+</body>
+</html>

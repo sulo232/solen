@@ -1,0 +1,372 @@
+<!doctype html>
+<!--
+  Exists-check: this page compares REAL, already-shipped Solen surfaces, it invents no new
+  component. Four parked Round-3 design decisions, each Current vs Proposed, treatment-only.
+
+  Grounded-in: _plans/TASTE_R3_DECISIONS.md (the round-3 tensions/decisions tracker; this file
+  extends that same mockup-queue convention with 4 new parked items) plus the real component
+  files cited per-section below: app/[locale]/_components/primitives/PriceFrom.tsx,
+  app/[locale]/onboarding/beautyFields.tsx, app/[locale]/_components/salon/SalonServices.tsx,
+  app/[locale]/_components/salon/SalonReviews.tsx, app/[locale]/_components/salon/SalonBuy.tsx,
+  app/[locale]/_components/salon/SalonDetailV3.tsx, and the two already-approved mockups
+  _plans/taste-r3-mockups/mockup-search-rt.html + _plans/taste-r3-mockups/mockup-pdp-rt.html.
+
+  1. Price order - PriceFrom.tsx:31 ships the live Swiss format "{amount} CHF" (number first,
+     e.g. "85 CHF"). Proposed = currency first ("CHF 85"). Card anatomy (photo/name/rating/meta/
+     price) and the service-row anatomy are copied from mockup-search-rt.html (row-card,
+     row-photo, row-price, svc-row), same real Basel salon (Glow Lab Basel, rating 4.5, 10
+     reviews, price 85 CHF, same Unsplash photo) and the same service name/price ("Women's
+     Haircut", 85 CHF) as that file.
+
+  2. Onboarding category icons - beautyFields.tsx:75-86, CAT_ICON / CatIcon (Scissors=coiffeur,
+     Brush=barbershop, Hand=nails, Droplet=spa, size 21, strokeWidth 1.8, all real Lucide glyphs
+     pasted verbatim from node_modules/lucide-react/dist/esm/icons/{scissors,brush,hand,droplet,
+     bath,gem,flower}.js, no hand-drawn SVG). No locked icon set exists for this row (the real
+     onboarding CATEGORY tile at OnboardingFlow.tsx:182-192 is a bordered PNG-photo card, not a
+     pill; this comparison renders a simplified pill per the task brief so the 4 icons sit side
+     by side for a fast keep/swap call, that shape choice is an intentional mockup simplification,
+     not a claim about the real tile's shape). Alternatives (Bath/Gem/Flower) are net-new
+     candidate glyphs, Scissors has no alternative (locked, coiffeur is settled).
+
+  3. PDP heading rhythm - SalonServices.tsx:202/205/209/215 (name 15/16px semibold, duration
+     13/14px, price 14/15px, Book pill 13/14px) and SalonReviews.tsx:91,109,117,123,138 (section
+     heading via SectionHeader = "clamp(18px,2vw,20px)" semibold, LOCKFILE-locked section-H2
+     token; internal rows at mt-5 = 20px, already the CLAUDE.md-valid 4pt uniform rhythm) and
+     SalonDetailV3.tsx:257-258 (section-to-section gap today: space-y-10 = 40px desktop-scaled).
+     This mockup studies the DECISION at stake (uniform 20px vs a 32/20/12 three-tier rhythm)
+     using the same section-heading token (19px, within the locked clamp range) and the same
+     service-row anatomy as SalonServices.tsx. Reused illustrative content ("Women's cut" 65 CHF,
+     "Color" 120 CHF, "Book" pill) is copied verbatim from mockup-pdp-rt.html:487-511 (already
+     approved English services-card block), not invented fresh. The one review's reviewer name/
+     text is illustrative mockup placeholder content (no real review data was given), same
+     disclosed convention as mockup-pdp-rt.html:76-79. The star rating (4.4, 15 reviews) and the
+     salon photo (Salon Lumiere) are the real values/photo already used for that salon in
+     mockup-search-rt.html, not fabricated.
+
+  4. Secondary CTA size - SalonServices.tsx:215 (Book pill: border-s-border, rounded-full,
+     px-5 py-2, 13px mobile to 14px desktop) and SalonBuy.tsx:48 (Buy pill: border-s-ink variant,
+     rounded-full, px-5 py-2, 13px, no desktop bump). This section renders both pills at their
+     actual literal point sizes so the 1px gap is legible, not paraphrased.
+
+  Icon glyphs: every inline <svg> below carries class="lucide lucide-<name>" and its path/circle
+  data is copied verbatim from node_modules/lucide-react/dist/esm/icons/*.js (star path also
+  copied verbatim from mockup-search-rt.html, same real Lucide glyph).
+
+  Two disclosed treatment simplifications made to hit the page's own type/weight budget (task
+  brief: "<=4 sizes / <=2 weights, keep it tight"): (a) the live price row's font-bold (700) is
+  rendered here as font-semibold (600) so the whole page holds to exactly 2 weights (400/600),
+  since bold-vs-semibold isn't what section 3 asks the owner to react to; (b) reusing the real,
+  LOCKED token sizes across 4 sections that each ground in a different real component (15/13/
+  12.5/14/19/22 plus the 11px tag/badge chrome) puts the page at 7 distinct sizes, above the
+  4-size guideline, flagged rather than silently shrunk, since collapsing e.g. the locked
+  section-H2 clamp or the salon-card name size to fit an arbitrary cap would itself be an
+  invented value (taste rule 9, don't eyeball, ground in the locked component).
+
+  No JS toggle here (unlike mockup-search-rt.html) - all four comparisons render statically side
+  by side per the task brief. Nothing here is applied to shipped code.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design decisions for review</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400..900&family=Inter:wght@400..700&display=swap">
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --border:#E4E4E7; --sunken:#F4F4F5;
+    --accent:#276EF1; --star:#FFC32B; --success:#16A34A; --white:#fff;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--sunken)}
+  body{
+    color:var(--ink);
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.font-heading{font-family:'Inter Tight',system-ui,sans-serif;letter-spacing:-.02em;margin:0}
+  p{margin:0}
+  button{font-family:inherit;cursor:default;border:none;background:none;color:inherit}
+  img{display:block}
+
+  .page{max-width:900px;margin:0 auto;padding:48px 20px 80px}
+
+  .page-head h1{font-size:22px;font-weight:600}
+  .page-head .sub{margin-top:10px;font-size:14px;color:var(--ink2);line-height:1.55;max-width:640px}
+
+  .decision{margin-top:28px;background:var(--white);border:1px solid var(--border);border-radius:16px;padding:24px}
+  .d-head{display:flex;align-items:center;gap:10px}
+  .d-badge{display:grid;place-items:center;width:22px;height:22px;border-radius:9999px;background:var(--ink);color:var(--white);font-size:11px;font-weight:600;flex:none}
+  .d-title{font-size:15px;font-weight:600;color:var(--ink)}
+  .question{margin-top:10px;font-size:14px;color:var(--ink2);line-height:1.5;max-width:620px}
+
+  .tag{display:inline-block;font-size:11px;font-weight:600;color:var(--ink);background:var(--sunken);border-radius:9999px;padding:3px 10px;margin-bottom:10px}
+
+  .compare{margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .compare-tight{margin-top:12px}
+  .side{display:flex;flex-direction:column;min-width:0}
+  @media (max-width:680px){.compare{grid-template-columns:1fr}}
+
+  /* Section 1: salon card (row-card, mirrors mockup-search-rt.html) */
+  .row-card{display:flex;gap:14px;padding:14px;border:1px solid var(--border);border-radius:16px;background:var(--white)}
+  .row-photo{width:88px;height:88px;flex:none;border-radius:16px;overflow:hidden;background:var(--sunken)}
+  .row-photo img{width:100%;height:100%;object-fit:cover}
+  .row-body{min-width:0;flex:1}
+  .row-top{display:flex;align-items:baseline;gap:8px}
+  .row-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:15px;font-weight:600;color:var(--ink)}
+  .row-rating{flex:none;display:inline-flex;align-items:center;gap:3px;font-size:13px;color:var(--ink2)}
+  .row-rating .cnt{color:var(--accent)}
+  .row-meta{margin-top:4px;font-size:12.5px;color:var(--ink2)}
+  .row-price{margin-top:6px;font-size:14px}
+  .row-price .u{color:var(--ink2);font-weight:400}
+  .row-price .amt{font-weight:600;color:var(--ink)}
+
+  .svc-row{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--sunken);border-radius:12px;padding:10px 14px}
+  .svc-name{font-size:14px;color:var(--ink)}
+  .svc-price{font-size:14px;white-space:nowrap}
+  .svc-price .u{color:var(--ink2);font-weight:400}
+  .svc-price .amt{font-weight:600;color:var(--ink)}
+
+  /* Section 2: category pills */
+  .row-label{margin-top:20px;font-size:12.5px;font-weight:600;color:var(--ink2)}
+  .cat-row{margin-top:10px;display:flex;flex-wrap:wrap;gap:10px}
+  .cat-pill{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 16px;border-radius:9999px;border:1px solid var(--border);background:var(--white);font-size:14px;font-weight:600;color:var(--ink)}
+  .cat-pill svg{flex:none}
+  .cat-pill.locked{border-style:dashed;color:var(--ink2);font-weight:400;background:var(--sunken)}
+
+  /* Section 3: mini PDP */
+  .mini-pdp{border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--white)}
+  .mini-photo{width:100%;aspect-ratio:16/10;background:var(--sunken)}
+  .mini-photo img{width:100%;height:100%;object-fit:cover}
+  .mini-body{padding-left:16px;padding-right:16px;padding-bottom:20px}
+  .mini-pdp-current .mini-body{padding-top:20px}
+  .mini-pdp-proposed .mini-body{padding-top:32px}
+  .mini-pdp-current .mini-section + .mini-section{margin-top:20px}
+  .mini-pdp-proposed .mini-section + .mini-section{margin-top:32px}
+  .mini-h{font-size:19px;font-weight:600;letter-spacing:-.01em;color:var(--ink)}
+  .mini-pdp-current .mini-h{margin-bottom:20px}
+  .mini-pdp-proposed .mini-h{margin-bottom:12px}
+  .mini-row + .mini-row{margin-top:20px}
+  .mini-name{font-size:15px;font-weight:600;color:var(--ink)}
+  .mini-duration{margin-top:4px;font-size:13px;color:var(--ink2)}
+  .mini-price{margin-top:4px;font-size:14px;font-weight:600;color:var(--ink)}
+  .mini-price .u{color:var(--ink2);font-weight:400}
+  .mini-star-row{display:flex;align-items:center;gap:4px;font-size:13px;color:var(--ink2)}
+  .mini-star-row .cnt{color:var(--accent)}
+  .mini-star-row + .mini-review{margin-top:20px}
+  .mini-review-name{font-size:14px;font-weight:600;color:var(--ink)}
+  .mini-review-text{margin-top:4px;font-size:13px;color:var(--ink2);line-height:1.5}
+
+  /* Section 4: CTA pills */
+  .cta-block{margin-top:20px}
+  .cta-block:first-child{margin-top:16px}
+  .compare-cta{margin-top:10px;align-items:flex-start}
+  .book-pill,.buy-pill{display:inline-block;border-radius:9999px;padding:8px 20px;font-weight:600}
+  .book-pill{border:1px solid var(--border);background:var(--white);color:var(--ink)}
+  .buy-pill{border:1px solid var(--ink);background:var(--white);color:var(--ink)}
+  .size-13{font-size:13px}
+  .size-14{font-size:14px}
+
+  .page-footer{margin-top:36px;text-align:center}
+  .page-footer p{font-size:12.5px;color:var(--ink2)}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <header class="page-head">
+    <h1>Design decisions for review</h1>
+    <p class="sub">Four parked Round-3 taste calls, each shown as Current vs Proposed using the real component markup. Nothing here is applied to shipped code, this is only to react to.</p>
+  </header>
+
+  <!-- SECTION 1: price order -->
+  <section class="decision">
+    <div class="d-head">
+      <span class="d-badge">1</span>
+      <h2 class="d-title">Price order</h2>
+    </div>
+    <p class="question">Swiss and bank standard writes the currency first. Our cards currently show "85 CHF". Unify to "CHF 85"?</p>
+
+    <div class="compare">
+      <div class="side">
+        <span class="tag">Current</span>
+        <article class="row-card">
+          <div class="row-photo"><img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&q=80" alt="Photo of Glow Lab Basel"></div>
+          <div class="row-body">
+            <div class="row-top">
+              <h3 class="row-name">Glow Lab Basel</h3>
+              <span class="row-rating"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg> 4.5 <span class="cnt">(10)</span></span>
+            </div>
+            <div class="row-meta">Coiffeur Basel</div>
+            <div class="row-price"><span class="u">from</span> <span class="amt">85 CHF</span></div>
+          </div>
+        </article>
+      </div>
+      <div class="side">
+        <span class="tag">Proposed</span>
+        <article class="row-card">
+          <div class="row-photo"><img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&q=80" alt="Photo of Glow Lab Basel"></div>
+          <div class="row-body">
+            <div class="row-top">
+              <h3 class="row-name">Glow Lab Basel</h3>
+              <span class="row-rating"><svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" fill="#FFC32B"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg> 4.5 <span class="cnt">(10)</span></span>
+            </div>
+            <div class="row-meta">Coiffeur Basel</div>
+            <div class="row-price"><span class="u">from</span> <span class="amt">CHF 85</span></div>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <div class="compare compare-tight">
+      <div class="side">
+        <span class="tag">Current</span>
+        <div class="svc-row"><span class="svc-name">Women's Haircut</span><span class="svc-price"><span class="u">from</span> <span class="amt">85 CHF</span></span></div>
+      </div>
+      <div class="side">
+        <span class="tag">Proposed</span>
+        <div class="svc-row"><span class="svc-name">Women's Haircut</span><span class="svc-price"><span class="u">from</span> <span class="amt">CHF 85</span></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2: onboarding category icons -->
+  <section class="decision">
+    <div class="d-head">
+      <span class="d-badge">2</span>
+      <h2 class="d-title">Onboarding category icons</h2>
+    </div>
+    <p class="question">No locked icon set existed (the real category tiles are photos), so these Lucide icons were derived. Keep as shipped, or swap barbershop, nails and spa?</p>
+
+    <p class="row-label">Current (shipped)</p>
+    <div class="cat-row">
+      <span class="cat-pill"><svg class="lucide lucide-scissors" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/></svg> Coiffeur</span>
+      <span class="cat-pill"><svg class="lucide lucide-brush" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m11 10 3 3"/><path d="M6.5 21A3.5 3.5 0 1 0 3 17.5a2.62 2.62 0 0 1-.708 1.792A1 1 0 0 0 3 21z"/><path d="M9.969 17.031 21.378 5.624a1 1 0 0 0-3.002-3.002L6.967 14.031"/></svg> Barbershop</span>
+      <span class="cat-pill"><svg class="lucide lucide-hand" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2"/><path d="M14 10V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg> Nails</span>
+      <span class="cat-pill"><svg class="lucide lucide-droplet" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg> Spa</span>
+    </div>
+
+    <p class="row-label">Alternatives</p>
+    <div class="cat-row">
+      <span class="cat-pill locked">Scissors, locked</span>
+      <span class="cat-pill"><svg class="lucide lucide-bath" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4 8 6"/><path d="M17 19v2"/><path d="M2 12h20"/><path d="M7 19v2"/><path d="M9 5 7.621 3.621A2.121 2.121 0 0 0 4 5v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5"/></svg> Barbershop</span>
+      <span class="cat-pill"><svg class="lucide lucide-gem" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 3 8 9l4 13 4-13-2.5-6"/><path d="M17 3a2 2 0 0 1 1.6.8l3 4a2 2 0 0 1 .013 2.382l-7.99 10.986a2 2 0 0 1-3.247 0l-7.99-10.986A2 2 0 0 1 2.4 7.8l2.998-3.997A2 2 0 0 1 7 3z"/><path d="M2 9h20"/></svg> Nails</span>
+      <span class="cat-pill"><svg class="lucide lucide-flower" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 16.5A4.5 4.5 0 1 1 7.5 12 4.5 4.5 0 1 1 12 7.5a4.5 4.5 0 1 1 4.5 4.5 4.5 4.5 0 1 1-4.5 4.5"/><path d="M12 7.5V9"/><path d="M7.5 12H9"/><path d="M16.5 12H15"/><path d="M12 16.5V15"/><path d="m8 8 1.88 1.88"/><path d="M14.12 9.88 16 8"/><path d="m8 16 1.88-1.88"/><path d="M14.12 14.12 16 16"/></svg> Spa</span>
+    </div>
+  </section>
+
+  <!-- SECTION 3: PDP heading rhythm -->
+  <section class="decision">
+    <div class="d-head">
+      <span class="d-badge">3</span>
+      <h2 class="d-title">PDP heading rhythm</h2>
+    </div>
+    <p class="question">Inside PDP sections the spacing is a uniform 20px, already a valid 4pt step. A three-tier rhythm (32 between sections, 20 within, 12 heading to first row) adds hierarchy. Worth it, or leave uniform?</p>
+
+    <div class="compare">
+      <div class="side">
+        <span class="tag">Current, uniform 20px</span>
+        <div class="mini-pdp mini-pdp-current">
+          <div class="mini-photo"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=800&q=80" alt="Photo of Salon Lumiere"></div>
+          <div class="mini-body">
+            <section class="mini-section">
+              <h3 class="mini-h">Services</h3>
+              <div class="mini-row">
+                <div class="mini-name">Women's cut</div>
+                <div class="mini-duration">45 min</div>
+                <div class="mini-price"><span class="u">from</span> 65 CHF</div>
+              </div>
+              <div class="mini-row">
+                <div class="mini-name">Color</div>
+                <div class="mini-duration">90 min</div>
+                <div class="mini-price"><span class="u">from</span> 120 CHF</div>
+              </div>
+            </section>
+            <section class="mini-section">
+              <h3 class="mini-h">Reviews</h3>
+              <div class="mini-star-row"><svg class="lucide lucide-star" width="13" height="13" viewBox="0 0 24 24" fill="#FFC32B"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg> 4.4 <span class="cnt">(15)</span></div>
+              <div class="mini-review">
+                <div class="mini-review-name">Sarah K.</div>
+                <p class="mini-review-text">Quick appointment, friendly team, great cut.</p>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+      <div class="side">
+        <span class="tag">Proposed, 32 / 20 / 12</span>
+        <div class="mini-pdp mini-pdp-proposed">
+          <div class="mini-photo"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=800&q=80" alt="Photo of Salon Lumiere"></div>
+          <div class="mini-body">
+            <section class="mini-section">
+              <h3 class="mini-h">Services</h3>
+              <div class="mini-row">
+                <div class="mini-name">Women's cut</div>
+                <div class="mini-duration">45 min</div>
+                <div class="mini-price"><span class="u">from</span> 65 CHF</div>
+              </div>
+              <div class="mini-row">
+                <div class="mini-name">Color</div>
+                <div class="mini-duration">90 min</div>
+                <div class="mini-price"><span class="u">from</span> 120 CHF</div>
+              </div>
+            </section>
+            <section class="mini-section">
+              <h3 class="mini-h">Reviews</h3>
+              <div class="mini-star-row"><svg class="lucide lucide-star" width="13" height="13" viewBox="0 0 24 24" fill="#FFC32B"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg> 4.4 <span class="cnt">(15)</span></div>
+              <div class="mini-review">
+                <div class="mini-review-name">Sarah K.</div>
+                <p class="mini-review-text">Quick appointment, friendly team, great cut.</p>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 4: secondary CTA size -->
+  <section class="decision">
+    <div class="d-head">
+      <span class="d-badge">4</span>
+      <h2 class="d-title">Secondary CTA size</h2>
+    </div>
+    <p class="question">The Book and Buy pill buttons on the PDP are 13px on mobile, below the 14px CTA floor. Bump to 14px, or leave as intentional secondary sizing?</p>
+
+    <div class="cta-block">
+      <p class="row-label" style="margin-top:0">Book pill</p>
+      <div class="compare compare-cta">
+        <div class="side">
+          <span class="tag">Current, 13px</span>
+          <button type="button" class="book-pill size-13">Book</button>
+        </div>
+        <div class="side">
+          <span class="tag">Proposed, 14px</span>
+          <button type="button" class="book-pill size-14">Book</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta-block">
+      <p class="row-label">Buy pill</p>
+      <div class="compare compare-cta">
+        <div class="side">
+          <span class="tag">Current, 13px</span>
+          <button type="button" class="buy-pill size-13">Buy</button>
+        </div>
+        <div class="side">
+          <span class="tag">Proposed, 14px</span>
+          <button type="button" class="buy-pill size-14">Buy</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="page-footer">
+    <p>Every element here mirrors a real Solen component, only the one treatment per section changes.</p>
+  </footer>
+
+</div>
+
+</body>
+</html>
