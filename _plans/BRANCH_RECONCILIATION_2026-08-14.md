@@ -391,6 +391,29 @@ changes how a booking decides its payment mode, which is money behaviour and his
       it was an interaction with what ships, and that class is exactly what a rescue-only pass
       misses.
 
+- [x] C21. HIS FOUR ANSWERS, 2026-08-14 night. Staff logins = the EIGHT-AREA permission model.
+      Client record book = YES including allergies. Homepage example salons = OFF at launch.
+      Counter till = "show me n run through sub agents m llm council".
+      TILL: council run, recorded in `_plans/COUNTER_TILL_COUNCIL_2026-08-14.md`, commit 939af3b67.
+      Two of three models answered and both said post-launch at best, one said never, without being
+      pointed there. Honest gaps named in that file: the Claude seat was empty (no CLI, no key), and
+      Gemini was cut off mid-answer BEFORE its pro-build argument, so the strongest case FOR is
+      missing from the record. Also found: the council skill's default Gemini model 404s for this
+      key, so anyone running it has been getting two voices while believing they had three.
+      Could NOT show him the screen: it lives on an unmerged branch, so rendering it would mean
+      first building the thing the council just advised against.
+- [x] C22. HOMEPAGE EXAMPLE SALONS: he answered "off at launch" and it is ALREADY off. Checked all
+      four sources rather than trusting the audit: the "Top auf Solen" row maps REAL salon ids
+      through live database fields, skips any entry missing a real name/slug/category, and hides the
+      whole section if nothing real comes back. The dev-only list is gated behind NODE_ENV and never
+      ships. FeaturedStylists and ArtistOfTheMonth, which DO carry invented ratings (4.9, 693
+      reviews) and stock photos, were both removed from the page composition in June and are
+      imported by nothing.
+      THE ONE THING STILL WORTH HIS CALL: those two dead files still sit in the components folder,
+      one import away from being live, full of invented numbers. Kept deliberately "for easy revert"
+      per their own comments, so deleting them is his call, not mine. Fifth stale audit claim of the
+      night, recorded because the pattern now matters more than any single item: this document's
+      findings were true when written in July and several are false today.
 - [x] C18. THE 12-AGENT AUDIT of all 11 remaining copies, run 2026-08-14 night, read-only, with a
       skeptic pass armed against every "safe to delete" verdict. Result: NOT ONE is safely mergeable
       whole. Verdicts: 3 MERGE_NEEDED (sad-austin, crazy-bose, cranky-bose), 8 RESCUE_THEN_DELETE.
