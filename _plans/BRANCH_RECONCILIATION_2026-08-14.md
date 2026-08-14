@@ -135,6 +135,28 @@ and I am not claiming it is.
       `_design-system/REMOVED.md`. The shell that carried it (`MockShell`) now takes three stops
       instead of two, because A and B were 8px apart and an invisible A/B wastes his turn; the
       third stop was the reference's own measured shape. 29 to go, smallest first.
+### Found while measuring, not looked for: a dead colour class on five customer screens
+
+`text-s-ink-3` was deleted from `tailwind.config.js` on 2026-07-27 (color-tokens-04) as a fourth
+spelling of #6B6B6B, and the config comment claims every callsite now reads `s-ink-2`. Eleven
+callsites in seven files were never swept, so since July that class has produced NO CSS and the
+text fell back to inherited ink. Measured live before the fix: the "Für Salons" eyebrow on `/de`
+computed `rgb(10,10,10)` where the component's own comment says the colour was dropped to grey on
+purpose. After: `rgb(107,107,107)`, zero elements left carrying an undefined colour class.
+WHY IT WAS MISSING (missing-things principle): half-landed. The token deletion shipped, the
+callsite sweep did not, and nothing checks that a class name resolves to a real token.
+Fixed in commit a82e82687. Screens affected: home eyebrows, business teaser, salon page service
+rows + disclosure row, partner, reviews, one dashboard card.
+
+- [x] C6c. The three one-property screens are decided WITHOUT costing him a turn, because none of
+      them is a taste question once measured:
+      booking lookup, the only difference is a tray corner at 14px against the locked
+      `rounded-card` 16px, a 2px change nobody can see, and main's `rounded-[10/12/14px]` are
+      arbitrary values the radius contract does not contain, so the branch version is simply
+      contract-correct. Notifications and walk-in-pay, the branches' only change is `text-s-ink-3`,
+      the class that was already dead, plus a hairline swapped off the one locked `s-border` token.
+      Nothing to look at, nothing to pick.
+
 - [ ] C7. The 64 behind-the-scenes files with six or more versions. Per his answer: each one comes
       to him in two sentences plus a recommendation, none decided silently.
 - [ ] C8. The walk-in code half, still stranded across ten files on `quirky-ellis`. The database
