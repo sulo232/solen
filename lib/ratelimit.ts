@@ -229,6 +229,47 @@ export async function getAiDailyLimiter(): Promise<Ratelimit> {
   return limiter;
 }
 
+/**
+ * A HOUSE-WIDE daily ceiling on the expensive AI calls, on top of the per-user one above.
+ *
+ * The per-user cap is a fairness limit: it stops one account running up a bill. It does nothing
+ * about a hundred accounts each spending their full allowance on the same day, or about a scripted
+ * signup loop, because every fresh account arrives with a fresh allowance. This is the cost limit:
+ * one shared counter for the whole product, so the worst case for a day is bounded no matter how
+ * many callers there are.
+ *
+ * Landed 2026-08-14. The July backend re-audit wired two routes to a global limiter and the
+ * limiter itself was never written: `getAiGlobalDailyLimiter` is imported on that branch and
+ * defined in no branch at all, so those files could not have compiled. Implemented here rather
+ * than lifted.
+ *
+ * 2000/day is deliberately far above real use (the per-user cap is 100 and a busy day is a handful
+ * of users drafting a few things each) and far below a runaway. Like its per-user sibling it joins
+ * the abuse-prone set, so an unconfigured Upstash in production fails CLOSED: a cost ceiling that
+ * disappears when the counter is missing is not a ceiling.
+ */
+export const AI_GLOBAL_DAILY_CAP = 2000;
+export const AI_GLOBAL_BUDGET_KEY = "solen:ai:global";
+export const AI_GLOBAL_BUDGET_EXCEEDED_BODY = {
+  error: "AI features are paused for today",
+  code: "AI_GLOBAL_BUDGET_EXCEEDED",
+};
+
+let aiGlobalDailyLimiter: Ratelimit | null = null;
+
+export async function getAiGlobalDailyLimiter(): Promise<Ratelimit> {
+  if (!aiGlobalDailyLimiter) {
+    aiGlobalDailyLimiter = new Ratelimit({
+      redis,
+      limiter: Ratelimit.slidingWindow(AI_GLOBAL_DAILY_CAP, "1 d"),
+      analytics: true,
+      prefix: "rl:ai:global",
+    });
+    ABUSE_PRONE_LIMITERS.add(aiGlobalDailyLimiter);
+  }
+  return aiGlobalDailyLimiter;
+}
+
 // Set at most once per process. The underlying misconfiguration (Upstash unset in
 // prod) doesn't change between requests, so re-alerting on every request would just
 // spam the inbox into being ignored.

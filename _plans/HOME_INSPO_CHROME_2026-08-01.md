@@ -361,7 +361,7 @@ Two floors this repo already documents are visibly live on that page right now:
   photo with rating + PLZ + price on `/de`. Two anatomies for one entity, which is the exact case
   that floor was written from.
 
-- [x] V2. **ALREADY DONE, and this box was stale, not open. Checked 2026-08-14 by opening the
+- [x] V2. Commit 02ab1e317, `app/[locale]/profile/page.tsx:5-27`, verified: on the rendered page zero search inputs and zero collages. **ALREADY DONE, and this box was stale, not open. Checked 2026-08-14 by opening the
       live page, not by reading the file:** `/de/profile` renders the grouped account hub
       (Konto, Buchungen, Wallet, Persoenliche Angaben, Einstellungen), with NO search field and
       NO store cards on it. Both floors this box existed to discharge are satisfied on screen:
