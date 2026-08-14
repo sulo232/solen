@@ -150,7 +150,7 @@ jobs:
 
   daily-03-utc:
     if: github.event.schedule == '0 3 * * *' || (github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'nightly-maintenance')
-    name: Daily 03:00 UTC · solen-score recalc (POST), process-deletions (GET), reconcile (GET)
+    name: Daily 03:00 UTC · solen-score recalc (POST), process-deletions (GET), reconcile (GET), affinity-recompute (GET), salon-engagement-recompute (GET)
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -177,6 +177,16 @@ jobs:
         uses: ./.github/actions/ping-cron
         with:
           paths: /api/cron/style-affinity-recompute
+          secret: ${{ secrets.CRON_SECRET }}
+      - name: affinity-recompute (GET)
+        uses: ./.github/actions/ping-cron
+        with:
+          paths: /api/cron/affinity-recompute
+          secret: ${{ secrets.CRON_SECRET }}
+      - name: salon-engagement-recompute (GET)
+        uses: ./.github/actions/ping-cron
+        with:
+          paths: /api/cron/salon-engagement-recompute
           secret: ${{ secrets.CRON_SECRET }}
 
   daily-03-45-utc:

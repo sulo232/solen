@@ -60,6 +60,10 @@ import ContinueCard from "./_components/homepage/ContinueCard";
 // everyone until an admin turns it on. Not the same feature as the removed
 // ArtistOfTheMonth (invented demo stylists, no backend) referenced below.
 import SalonOfMonth from "./_components/homepage/SalonOfMonth";
+// The personal row: the salons this customer leans toward, worked out nightly from their own
+// bookings, favourites and searches. Renders nothing for a signed-out or brand-new visitor, so the
+// page is unchanged until there is something real to show. Owner switched it on 2026-08-14.
+import ForYouAffinityRow from "./_components/homepage/ForYouAffinityRow";
 // V3-D124 (2026-05-24): FeatureBento was added then scrapped per user.
 // Component file kept at ./_components/homepage/FeatureBento.tsx and
 // illustrations at public/illustrations/features/ for easy revive — just
@@ -276,6 +280,7 @@ export default async function Page({
         <ContinueCard />
         <MobileCategoriesRow />
         <SalonOfMonth locale={locale} />
+        <ForYouAffinityRow />
         <ForYouSalonRows salonData={salonCardData} />
         {/* I4: real localStorage view-history tile row, search-a.html's own position (directly
             above the "Top on Solen" rail RecentlyViewed.tsx's fallback title renders below). Builds

@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { motion } from "motion/react";
 import {
   Star, TrendingUp, Gem, ShieldCheck, Award, Heart, Crown,
-  Flame, Rocket, ThumbsUp, BadgeCheck, Trophy, Gem, Medal, CircleCheck,
+  Flame, Rocket, ThumbsUp, BadgeCheck, Trophy, Medal, CircleCheck,
   Bookmark, Eye, Gift, Target, X, Plus, Search, Trash2, Edit2,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -17,7 +17,7 @@ import { containerVariants, itemVariants } from "@/lib/animations";
 /* ─── Icon map ─── */
 const ICON_MAP: Record<string, LucideIcon> = {
   Star, TrendingUp, Gem, ShieldCheck, Award, Heart, Crown,
-  Flame, Rocket, ThumbsUp, BadgeCheck, Trophy, Gem, Medal, CircleCheck,
+  Flame, Rocket, ThumbsUp, BadgeCheck, Trophy, Medal, CircleCheck,
   Bookmark, Eye, Gift, Target,
 };
 const ICON_OPTIONS = Object.keys(ICON_MAP);

@@ -7,6 +7,9 @@ import * as React from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+// Records that a search showed results, which is what the personal row learns from. Consent-gated
+// inside the helper, so a visitor who refused analytics sends nothing.
+import { logSearchImpression } from "@/lib/searchTelemetry";
 import { useTranslations } from "next-intl";
 import {
   motion,
@@ -366,7 +369,21 @@ export function SearchOverlay({
   // Replaces the old Trending chips in the idle state + fills short typing results.
   const { looks: forYouLooks } = useForYouLooks(open);
   const typing = serviceQ.trim().length >= 2;
-  const hasResults = results.services.length + results.salons.length + results.stylists.length > 0;
+  const totalResults = results.services.length + results.salons.length + results.stylists.length;
+  const hasResults = totalResults > 0;
+
+  // One record per distinct search that actually returned something. This is what the personal row
+  // on the home page learns from. Lifted 2026-08-14 from the June work that was never merged; only
+  // this half came across, because the click half sits inside result rows this file has since been
+  // rewritten around, and guessing where they now live is how a wrong line gets shipped.
+  const lastLoggedSearch = React.useRef("");
+  React.useEffect(() => {
+    const q = serviceQ.trim();
+    if (q.length >= 2 && totalResults > 0 && lastLoggedSearch.current !== q) {
+      lastLoggedSearch.current = q;
+      logSearchImpression({ query: q, locale, resultsCount: totalResults });
+    }
+  }, [serviceQ, totalResults, locale]);
 
   const serviceRef = React.useRef<HTMLInputElement>(null);
   const cityRef = React.useRef<HTMLInputElement>(null);
