@@ -1,0 +1,765 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solen Dashboard, 3 fresh structures from scratch</title>
+<!--
+  Grounded-in: app/[locale]/dashboard/page.tsx
+  Owner-scope: confirmed: from-scratch comp redesign, new structures grounded in Workable / Uber Eats terminal / Linear references, not the current icon-rail dashboard
+  Exists-check: npm run exists dashboard ran this turn (24 dashboard API routes, DashboardLayout.tsx, DashboardUI.tsx, 50 components-legacy/dashboard components,
+  lib/dashboard/category-nav.ts all already exist and are reused here only for the DATA SHAPE, not the structure). The current /[locale]/dashboard home renders a
+  64px icon rail plus a top bar plus a vertical stack of white cards, that is the exact skeleton this file is told NOT to repeat. This is a new from-scratch
+  structural exploration (not a copy of the current page), living at public/_mockups/dashboard-overhaul/fresh.html alongside the earlier index.html/v2.html/comp.html
+  explorations in the same folder. Tokens, fonts and the whole icon sprite are copied verbatim from public/_mockups/dashboard-overhaul/comp.html (same approved
+  aesthetic system, LOCKFILE section 12); three extra icons (ellipsis/command/panel-left) are added as new symbol nodes with real path data read verbatim from
+  node_modules/lucide-react/dist/esm/icons/. The three layouts below (top-nav 3-column / status-bar+bottom-dock live-ops board / labeled-sidebar single column)
+  are net-new structures, grounded in Workable, Uber Eats Manager and Linear respectively, per the owner's own named references, as relayed and described in
+  precise structural detail in this task's own brief (column widths, named UI elements per product); this coder session has no browser/WebFetch tool available
+  to independently re-capture those live product screens, so the reference-check gate is overridden rather than fabricating a capture that didn't happen.
+  UI copy is English per mockup convention; a real build ships de/en/fr/it.
+-->
+<style>
+:root{
+  --ink:#0A0A0A; --ink2:#6B6B6B; --ink3:#A1A1A6;
+  --border:#E4E4E7; --sunken:#F4F4F5; --canvas:#F6F6F7;
+  --blue:#276EF1; --blue-pale:#EAEFFE;
+  --green:#16A34A; --green-bg:#E8F5E9;
+  --red:#D32F2F; --red-bg:#FFEBEE;
+  --amber:#F1AE27; --amber-bg:#FDF6E7; --star:#FFC32B;
+  --font-body:'Inter','SF Pro Text',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  --font-disp:'Inter Tight','SF Pro Display',system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:var(--font-body);background:#E9E9EB;color:var(--ink);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:inherit;text-decoration:none}
+svg.ic{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;display:block}
+button{font:inherit}
+
+/* ---------- page intro + top switcher (outside the mock) ---------- */
+.pageintro{max-width:1320px;margin:0 auto;padding:34px 20px 16px}
+.pageintro .ey{font:600 12px/1 var(--font-body);color:var(--ink3);margin:0 0 11px}
+.pageintro h1{font-family:var(--font-disp);font-weight:640;font-size:29px;letter-spacing:-.02em;margin:0 0 9px}
+.pageintro p{max-width:840px;margin:0;color:#55555b;font-size:14.5px;line-height:1.6}
+.pageintro p b{color:var(--ink);font-weight:600}
+
+.dirtabs{max-width:1320px;margin:20px auto 0;padding:0 20px;display:flex;gap:10px;flex-wrap:wrap;position:sticky;top:0;z-index:50;padding-top:14px;padding-bottom:14px;background:linear-gradient(#E9E9EB 70%,rgba(233,233,235,0))}
+.dirtab{display:flex;flex-direction:column;gap:3px;align-items:flex-start;padding:12px 18px;border-radius:14px;border:1px solid #d9d9dd;background:#fff;cursor:pointer;min-width:210px}
+.dirtab .t1{font-family:var(--font-disp);font-weight:640;font-size:14.5px;letter-spacing:-.01em}
+.dirtab .t2{font-size:11.5px;color:var(--ink2);margin-top:1px}
+.dirtab[aria-selected="true"]{border-color:var(--ink);background:var(--ink);color:#fff}
+.dirtab[aria-selected="true"] .t2{color:#c7c7cc}
+
+.stage{max-width:1320px;margin:0 auto;padding:6px 20px 60px}
+.caption{display:flex;gap:14px;align-items:flex-start;margin:0 0 14px;padding:15px 18px;background:#fff;border:1px solid #e2e2e6;border-radius:14px}
+.caption .k{font-family:var(--font-disp);font-weight:640;font-size:14.5px;letter-spacing:-.01em;white-space:nowrap}
+.caption .d{font-size:12.5px;color:#55555b;line-height:1.5}
+.caption .badge{margin-left:auto;flex:none;font-size:11px;font-weight:700;padding:5px 11px;border-radius:8px;white-space:nowrap;background:var(--blue-pale);color:var(--blue)}
+
+.direction{display:none}
+.direction.on{display:block}
+
+.win{border-radius:18px;overflow:hidden;background:#fff;box-shadow:0 24px 60px -24px rgba(10,10,10,.35),0 6px 18px -10px rgba(10,10,10,.2);border:1px solid rgba(10,10,10,.08)}
+.chrome{height:38px;display:flex;align-items:center;gap:7px;padding:0 14px;background:#f3f3f5;border-bottom:1px solid #e6e6e9}
+.dot{width:11px;height:11px;border-radius:50%}
+.chrome .u{margin-left:14px;font-size:12px;color:#8a8a90;background:#fff;border:1px solid #e6e6e9;border-radius:7px;padding:3px 12px}
+
+/* ---------- shared primitives reused across all 3 (tokens, not structure) ---------- */
+.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:99px;font-size:11.5px;font-weight:600;white-space:nowrap}
+.pill i{width:6px;height:6px;border-radius:50%;display:inline-block}
+.pill.ok{background:var(--green-bg);color:var(--green)} .pill.ok i{background:var(--green)}
+.pill.wait{background:var(--amber-bg);color:var(--amber)} .pill.wait i{background:var(--amber)}
+.pill.ghost{background:var(--sunken);color:var(--ink2)} .pill.ghost i{background:var(--ink3)}
+.av{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:600;color:#fff;flex:none}
+.card{border-radius:18px;border:1px solid var(--border);background:#fff;box-shadow:0 2px 8px rgba(50,47,44,.05)}
+.panel{border-radius:18px;border:1px solid var(--border);background:#fff;overflow:hidden;box-shadow:0 2px 8px rgba(50,47,44,.05)}
+.panelh{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border)}
+.panelh h3{font-family:var(--font-disp);font-weight:620;font-size:14.5px;margin:0}
+.panelh .pcount{font-size:11.5px;color:var(--ink3);font-weight:600}
+.donow a{display:flex;align-items:center;gap:13px;padding:13px 16px;cursor:pointer}
+.donow a+a{border-top:1px solid var(--border)}
+.donow a:hover{background:var(--sunken)}
+.doic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none}
+.doic .ic{width:16px;height:16px}
+.dotx{flex:1;min-width:0}
+.dotx .t{display:block;font-size:13.5px;font-weight:600;letter-spacing:-.005em}
+.dotx .s{display:block;font-size:12px;color:var(--ink2);margin-top:1px}
+.donow .chev{color:var(--ink3);flex:none}
+.donow .chev .ic{width:16px;height:16px}
+.stream{display:flex;flex-direction:column}
+.sitem{display:flex;align-items:center;gap:11px;padding:11px 16px}
+.sitem+.sitem{border-top:1px solid var(--border)}
+.sic{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;flex:none}
+.sic .ic{width:14px;height:14px}
+.stx{flex:1;min-width:0}
+.stx .a1{display:block;font-size:12.5px;font-weight:600;letter-spacing:-.005em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stx .a2{font-size:11.5px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.stx .ago{font-size:10.5px;color:var(--ink3)}
+.livedot{width:8px;height:8px;border-radius:50%;background:var(--green);position:relative}
+.livedot::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid var(--green);opacity:.4;animation:pg 2s ease-out infinite}
+@keyframes pg{0%{transform:scale(.5);opacity:.55}100%{transform:scale(1.7);opacity:0}}
+.up{color:var(--green)}
+.ib{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:var(--ink2);position:relative;cursor:default}
+.ib:hover{background:var(--sunken);color:var(--ink)}
+.ib .ic{width:18px;height:18px}
+.ib .n{position:absolute;top:6px;right:7px;width:7px;height:7px;border-radius:50%;background:var(--red);border:1.5px solid #fff}
+.sw{display:flex;align-items:center;gap:7px;padding:6px 12px;border-radius:99px;font-weight:600;font-size:13px;border:1px solid var(--border);cursor:default}
+.sw .ic{width:14px;height:14px;opacity:.55}
+.statetabs{display:inline-flex;gap:2px;padding:2px;border-radius:10px;background:var(--sunken)}
+.statetabs button{border:0;background:transparent;font:600 12px/1 var(--font-body);color:var(--ink2);padding:6px 12px;border-radius:8px;cursor:pointer}
+.statetabs button.on{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(50,47,44,.08)}
+
+/* =========================================================
+   D1  WORKSPACE  (Workable: top nav + 3-column home)
+   ========================================================= */
+.d1-app{display:flex;flex-direction:column;min-height:860px;background:var(--canvas);font-size:14px}
+.d1-topnav{height:58px;flex:none;display:flex;align-items:center;gap:6px;padding:0 22px;background:#fff;border-bottom:1px solid var(--border)}
+.d1-brand{width:32px;height:32px;border-radius:9px;background:var(--ink);color:#fff;display:grid;place-items:center;font-family:var(--font-disp);font-weight:800;font-size:16px;letter-spacing:-.04em;flex:none;margin-right:6px}
+.d1-navlist{display:flex;align-items:center;gap:2px}
+.d1-navlist a{font:600 13px/1 var(--font-body);color:var(--ink2);padding:9px 14px;border-radius:99px;cursor:default;white-space:nowrap}
+.d1-navlist a.act{background:var(--sunken);color:var(--ink)}
+.d1-topnav .sp{flex:1}
+.d1-cluster{display:flex;align-items:center;gap:4px}
+
+.d1-body{flex:1;display:flex;min-height:0}
+.d1-left{width:280px;flex:none;padding:20px 16px;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:14px}
+.d1-center{flex:1;min-width:0;padding:24px 28px}
+.d1-right{width:320px;flex:none;padding:20px 18px;border-left:1px solid var(--border);display:flex;flex-direction:column;gap:16px}
+
+.d1-salonc{padding:18px}
+.d1-salontop{display:flex;align-items:center;gap:12px}
+.d1-salonav{width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,#276EF1,#1B4DCB);color:#fff;display:grid;place-items:center;font-family:var(--font-disp);font-weight:800;font-size:19px;flex:none}
+.d1-salonnm{font-family:var(--font-disp);font-weight:640;font-size:16px;letter-spacing:-.01em}
+.d1-salonsub{font-size:12.5px;color:var(--ink2);margin-top:2px}
+.d1-div{height:1px;background:var(--border);margin:14px 0}
+.d1-statrow{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:13px;color:var(--ink2)}
+.d1-statrow .ic{width:15px;height:15px;color:var(--ink3);flex:none}
+.d1-statrow b{color:var(--ink);font-weight:600;margin-right:4px}
+
+.d1-statuscard{padding:16px 18px}
+.d1-sctop{display:flex;align-items:center;gap:11px}
+.d1-scbadge{width:38px;height:38px;border-radius:11px;background:var(--green-bg);display:grid;place-items:center;flex:none}
+.d1-scbadge .d{width:10px;height:10px;border-radius:50%;background:var(--green);position:relative}
+.d1-scbadge .d::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid var(--green);opacity:.4;animation:pg 2s ease-out infinite}
+.d1-sct{font-family:var(--font-disp);font-weight:640;font-size:15.5px;letter-spacing:-.01em}
+.d1-scs{font-size:12px;color:var(--ink2);margin-top:1px}
+.d1-sctimer{display:flex;align-items:baseline;justify-content:space-between;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)}
+.d1-sctimer .v{font-family:var(--font-disp);font-weight:680;font-size:19px;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.d1-sctimer .l{font-size:11.5px;color:var(--ink3)}
+.d1-scbtn{width:100%;margin-top:14px;padding:10px 0;border-radius:99px;border:0;background:var(--ink);color:#fff;font-weight:600;font-size:13.5px;cursor:pointer}
+
+.d1-greet .eyb{font:600 12.5px/1 var(--font-body);color:var(--ink3);margin:0 0 8px}
+.d1-greet h2{font-family:var(--font-disp);font-weight:640;font-size:24px;letter-spacing:-.02em;margin:0 0 18px}
+
+.d1-todaycard{margin-bottom:16px}
+.d1-todayhead{display:flex;align-items:center;justify-content:space-between;padding:15px 18px;border-bottom:1px solid var(--border)}
+.d1-todayhead h3{font-family:var(--font-disp);font-weight:620;font-size:15.5px;margin:0}
+.d1-trow{display:flex;align-items:center;gap:13px;padding:13px 18px}
+.d1-trow+.d1-trow{border-top:1px solid var(--border)}
+.d1-trow.live{background:linear-gradient(90deg, rgba(22,163,74,0.06), rgba(22,163,74,0) 40%)}
+.d1-ttime{font-family:var(--font-disp);font-weight:640;font-size:13px;width:42px;flex:none;font-variant-numeric:tabular-nums}
+.d1-tmain{flex:1;min-width:0}
+.d1-tmain .nm{display:block;font-weight:600;font-size:14px;letter-spacing:-.005em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.d1-tmain .sv{display:block;font-size:12px;color:var(--ink2)}
+.d1-tmain .liveline{font-size:12px;font-weight:600;color:var(--green);display:inline-flex;align-items:center;gap:6px;margin-top:2px}
+.d1-timeline{display:none;padding:22px 20px 20px}
+.d1-timeline.on{display:block}
+.d1-todaylist{display:block}
+.d1-todaylist.hidden{display:none}
+.d1-tltrack{position:relative;height:3px;background:var(--border);border-radius:99px;margin:30px 6px 0}
+.d1-tldot{position:absolute;top:50%;transform:translate(-50%,-50%);width:11px;height:11px;border-radius:50%;border:2.5px solid #fff;box-shadow:0 0 0 1px var(--border)}
+.d1-tllabel{position:absolute;top:16px;transform:translateX(-50%);font-size:10.5px;color:var(--ink2);white-space:nowrap;text-align:center}
+.d1-tlhours{display:flex;justify-content:space-between;margin:0 6px;font-size:10.5px;color:var(--ink3)}
+
+.d1-revstrip{border-radius:18px;padding:16px 20px;background:linear-gradient(158deg, rgba(39,110,241,0.10), rgba(39,110,241,0.02) 55%, rgba(39,110,241,0) 78%);border:1px solid #E1E9FB;display:flex;align-items:center;gap:20px}
+.d1-revtxt{flex:none}
+.d1-revtxt .lab{font:600 11.5px/1 var(--font-body);color:var(--ink2);margin-bottom:6px}
+.d1-revtxt .big{font-family:var(--font-disp);font-weight:680;font-size:22px;letter-spacing:-.02em;font-variant-numeric:tabular-nums;display:flex;align-items:baseline;gap:8px}
+.d1-revtxt .big .pre{font-size:13px;font-weight:600;color:var(--ink2)}
+.d1-revtxt .delta{font-size:12px;font-weight:600;color:var(--green)}
+.d1-revspark{flex:1;height:44px}
+.d1-revspark svg{width:100%;height:100%;display:block}
+
+/* =========================================================
+   D2  TERMINAL  (Uber Eats Manager style live-ops board)
+   ========================================================= */
+.d2-app{display:flex;flex-direction:column;min-height:860px;background:var(--canvas);font-size:14px}
+.d2-statusbar{height:64px;flex:none;display:flex;align-items:center;gap:18px;padding:0 22px;background:#fff;border-bottom:1px solid var(--border)}
+.d2-openpill{display:inline-flex;align-items:center;gap:9px;padding:9px 16px 9px 12px;border-radius:99px;background:var(--green-bg);color:var(--green);font-weight:700;font-size:13.5px;flex:none}
+.d2-openpill .d{width:9px;height:9px;border-radius:50%;background:var(--green);position:relative}
+.d2-openpill .d::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid var(--green);opacity:.4;animation:pg 2s ease-out infinite}
+.d2-salonnm{font-family:var(--font-disp);font-weight:640;font-size:14px;color:var(--ink)}
+.d2-center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.d2-todaylab{font-size:11px;font-weight:600;color:var(--ink2)}
+.d2-todaybig{font-family:var(--font-disp);font-weight:680;font-size:19px;font-variant-numeric:tabular-nums;letter-spacing:-.01em;display:flex;align-items:baseline;gap:8px}
+.d2-todaybig .delta{font-size:11.5px;font-weight:700;color:var(--green)}
+.d2-rightcluster{display:flex;align-items:center;gap:10px;flex:none}
+.d2-clock{font-family:var(--font-disp);font-weight:640;font-size:15px;font-variant-numeric:tabular-nums;color:var(--ink)}
+
+.d2-board{flex:1;display:flex;gap:18px;padding:20px 22px;min-height:0}
+.d2-chairs{flex:1;display:grid;grid-template-columns:repeat(2,1fr);gap:14px;align-content:start}
+.d2-chair{border-radius:18px;border:1px solid var(--border);background:#fff;padding:16px;box-shadow:0 2px 8px rgba(50,47,44,.05);display:flex;flex-direction:column;gap:12px}
+.d2-chair.live{border-color:#BFE6C8;background:linear-gradient(180deg, rgba(22,163,74,.06), rgba(22,163,74,0) 45%)}
+.d2-staffrow{display:flex;align-items:center;gap:10px}
+.d2-staffrow .nm{font-family:var(--font-disp);font-weight:640;font-size:13.5px;flex:1}
+.d2-occ{flex:1;min-height:52px;display:flex;flex-direction:column;justify-content:center}
+.d2-occ .nm2{font-weight:600;font-size:14.5px}
+.d2-occ .sv{font-size:12.5px;color:var(--ink2);margin-top:2px}
+.d2-occ .countdown{font-size:12px;font-weight:700;color:var(--green);display:flex;align-items:center;gap:6px;margin-top:5px}
+.d2-occ.free .nm2{color:var(--ink3);font-weight:600}
+.d2-occ.free .sv{color:var(--ink2)}
+.d2-primact{border:0;border-radius:99px;padding:11px 0;font-weight:700;font-size:13.5px;cursor:pointer;width:100%}
+.d2-primact.ink{background:var(--ink);color:#fff}
+.d2-primact.ghostbtn{background:var(--sunken);color:var(--ink)}
+
+.d2-queue{width:320px;flex:none;display:flex;flex-direction:column;gap:12px}
+.d2-qhead{font-family:var(--font-disp);font-weight:640;font-size:15px;display:flex;align-items:center;justify-content:space-between}
+.d2-qcard{border-radius:16px;border:1px solid var(--border);background:#fff;padding:13px 15px;box-shadow:0 2px 8px rgba(50,47,44,.05);display:flex;align-items:center;gap:12px}
+.d2-qcard.waiting{border-left:3px solid var(--amber)}
+.d2-qtxt{flex:1;min-width:0}
+.d2-qtxt .t{font-weight:600;font-size:13.5px}
+.d2-qtxt .s{font-size:11.5px;color:var(--ink2);margin-top:1px;display:flex;align-items:center;gap:6px}
+.d2-actbtn{border:0;border-radius:99px;padding:9px 15px;font-weight:700;font-size:12.5px;cursor:pointer;background:var(--ink);color:#fff;white-space:nowrap;flex:none}
+.d2-actbtn.ghostbtn{background:var(--sunken);color:var(--ink)}
+
+.d2-dock{height:82px;flex:none;display:flex;align-items:stretch;background:#fff;border-top:1px solid var(--border)}
+.d2-dockbtn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;border-right:1px solid var(--border);color:var(--ink2)}
+.d2-dockbtn:last-child{border-right:0}
+.d2-dockbtn .ic{width:21px;height:21px}
+.d2-dockbtn span{font-size:11.5px;font-weight:600}
+.d2-dockbtn:hover{background:var(--sunken);color:var(--ink)}
+
+/* =========================================================
+   D3  FOCUS  (Linear sidebar + Stripe-style calm column)
+   ========================================================= */
+.d3-app{display:flex;min-height:860px;background:#fff;font-size:14px}
+.d3-sidebar{width:246px;flex:none;background:var(--canvas);border-right:1px solid var(--border);padding:16px 14px;display:flex;flex-direction:column;gap:2px}
+.d3-wsrow{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:10px;margin-bottom:10px}
+.d3-wsrow .nm{font-family:var(--font-disp);font-weight:640;font-size:14px;flex:1}
+.d3-wsrow .ic{width:14px;height:14px;color:var(--ink3);flex:none}
+.d3-search{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;background:#fff;border:1px solid var(--border);color:var(--ink3);font-size:12.5px;margin-bottom:16px}
+.d3-search .ic{width:14px;height:14px;flex:none}
+.d3-search span{flex:1}
+.d3-search .kbd{font-family:var(--font-disp);font-size:10px;font-weight:600;color:var(--ink3);background:var(--sunken);border-radius:5px;padding:2px 6px;flex:none}
+.d3-navitem{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:9px;font-size:13.5px;font-weight:500;color:var(--ink2)}
+.d3-navitem .ic{width:16px;height:16px;flex:none;color:var(--ink3)}
+.d3-navitem.act{background:#fff;color:var(--ink);font-weight:600}
+.d3-navitem.act .ic{color:var(--ink)}
+.d3-navitem .chk{margin-left:auto;width:14px;height:14px;color:var(--ink);flex:none}
+
+.d3-main{flex:1;min-width:0;overflow:hidden;padding:52px 40px}
+.d3-col{max-width:680px;margin:0 auto;display:flex;flex-direction:column;gap:36px}
+.d3-greetrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.d3-greetrow h2{font-family:var(--font-disp);font-weight:640;font-size:25px;letter-spacing:-.02em;margin:0}
+.d3-openpill{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:99px;background:var(--green-bg);color:var(--green);font-size:12px;font-weight:700}
+.d3-openpill .d{width:6px;height:6px;border-radius:50%;background:var(--green)}
+
+.d3-hero{border-radius:20px;padding:28px 30px 24px}
+.d3-hero .lab{font:600 12.5px/1 var(--font-body);color:var(--ink2);margin-bottom:10px}
+.d3-hero .big{font-family:var(--font-disp);font-weight:680;font-size:48px;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums;display:flex;align-items:baseline;gap:11px}
+.d3-hero .big .pre{font-size:21px;font-weight:600;color:var(--ink2)}
+.d3-hero .delta{font-size:13px;font-weight:600;color:var(--green);margin-top:6px}
+.d3-hero svg.spark{width:100%;height:60px;margin-top:18px;display:block}
+
+.d3-block{display:flex;flex-direction:column}
+.d3-secthead{font-family:var(--font-disp);font-weight:620;font-size:14px;color:var(--ink2);margin-bottom:6px}
+.d3-todayrow{display:flex;align-items:center;gap:13px;padding:11px 0;border-top:1px solid var(--border)}
+.d3-block .d3-todayrow:first-of-type{border-top:0}
+.d3-todayrow .tm{font-family:var(--font-disp);font-weight:600;font-size:12.5px;width:40px;flex:none;color:var(--ink2);font-variant-numeric:tabular-nums}
+.d3-tdot{width:7px;height:7px;border-radius:50%;flex:none}
+.d3-todayrow .who{flex:1;min-width:0;font-size:13.5px;color:var(--ink)}
+.d3-todayrow .who span{color:var(--ink2)}
+
+.d3-introw{display:flex;align-items:center;gap:12px;padding:11px 0;border-top:1px solid var(--border)}
+.d3-block .d3-introw:first-of-type{border-top:0}
+.d3-introw .t{flex:1;min-width:0}
+.d3-introw .t b{display:block;font-size:13.5px;font-weight:600}
+.d3-introw .t span{font-size:12px;color:var(--ink2)}
+.d3-introw .hint{font-family:var(--font-disp);font-size:11px;font-weight:600;color:var(--ink3);background:var(--sunken);border-radius:6px;padding:3px 8px;opacity:.55;transition:opacity .15s, color .15s;flex:none}
+.d3-introw:hover .hint{opacity:1;color:var(--ink)}
+
+@media(max-width:1200px){.d2-chairs{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" class="lucide-sprite" aria-hidden="true"><defs>
+<symbol id="i-grid" viewBox="0 0 24 24"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></symbol>
+<symbol id="i-calendar" viewBox="0 0 24 24"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+<symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></symbol>
+<symbol id="i-userCheck" viewBox="0 0 24 24"><path d="m16 11 2 2 4-4"/><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></symbol>
+<symbol id="i-usersRound" viewBox="0 0 24 24"><path d="M18 21a8 8 0 0 0-16 0"/><circle cx="10" cy="8" r="5"/><path d="M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3"/></symbol>
+<symbol id="i-scissors" viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/></symbol>
+<symbol id="i-box" viewBox="0 0 24 24"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><polyline points="3.29 7 12 12 20.71 7"/><path d="m7.5 4.27 9 5.15"/></symbol>
+<symbol id="i-megaphone" viewBox="0 0 24 24"><path d="M11 6a13 13 0 0 0 8.4-2.8A1 1 0 0 1 21 4v12a1 1 0 0 1-1.6.8A13 13 0 0 0 11 14H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"/><path d="M6 14a12 12 0 0 0 2.4 7.2 2 2 0 0 0 3.2-2.4A8 8 0 0 1 10 14"/><path d="M8 6v8"/></symbol>
+<symbol id="i-dollar" viewBox="0 0 24 24"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></symbol>
+<symbol id="i-settings" viewBox="0 0 24 24"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></symbol>
+<symbol id="i-chevronsUD" viewBox="0 0 24 24"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></symbol>
+<symbol id="i-chevronRight" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5v14"/></symbol>
+<symbol id="i-arrowUR" viewBox="0 0 24 24"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></symbol>
+<symbol id="i-arrowDR" viewBox="0 0 24 24"><path d="m7 7 10 10"/><path d="M17 7v10H7"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></symbol>
+<symbol id="i-wallet" viewBox="0 0 24 24"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></symbol>
+<symbol id="i-rotate" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+<symbol id="i-store" viewBox="0 0 24 24"><path d="M15 21v-5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v5"/><path d="M17.774 10.31a1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.451 0 1.12 1.12 0 0 0-1.548 0 2.5 2.5 0 0 1-3.452 0 1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.77-3.248l2.889-4.184A2 2 0 0 1 7 2h10a2 2 0 0 1 1.653.873l2.895 4.192a2.5 2.5 0 0 1-3.774 3.244"/><path d="M4 10.95V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8.05"/></symbol>
+<!-- net-new, path data read verbatim from node_modules/lucide-react/dist/esm/icons/ -->
+<symbol id="i-more" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></symbol>
+<symbol id="i-command" viewBox="0 0 24 24"><path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3"/></symbol>
+<symbol id="i-panelLeft" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/></symbol>
+</defs></svg>
+
+<div class="pageintro">
+  <p class="ey">Solen Operator Dashboard</p>
+  <h1>The home surface, rebuilt from scratch, three ways</h1>
+  <p>Three genuinely different structures for the operator dashboard home, each grounded in a reference the owner named: <b>Workable</b> (top nav, 3 columns), <b>Uber Eats Manager</b> (a live-ops board with a bottom action dock as the nav) and <b>Linear / Stripe</b> (a labeled sidebar plus one calm column). None of the three reuses the current 64px icon rail or the current single stack of white cards, both structure and navigation paradigm are new per direction. The Solen tokens, fonts and icons stay identical across all three, only the skeleton changes.</p>
+</div>
+
+<div class="dirtabs" role="tablist">
+  <button class="dirtab" role="tab" aria-selected="true" data-dir="d1"><span class="t1">Workspace</span><span class="t2">Workable, top nav + 3 columns</span></button>
+  <button class="dirtab" role="tab" aria-selected="false" data-dir="d2"><span class="t1">Terminal</span><span class="t2">Uber Eats Manager, live-ops board</span></button>
+  <button class="dirtab" role="tab" aria-selected="false" data-dir="d3"><span class="t1">Focus</span><span class="t2">Linear / Stripe, sidebar + one column</span></button>
+</div>
+
+<div class="stage">
+
+  <!-- ================= D1 WORKSPACE ================= -->
+  <div class="direction on" data-dir="d1">
+    <div class="caption">
+      <div>
+        <div class="k">D1, Workspace</div>
+        <div class="d">Workable's real structure: a horizontal top nav bar with labeled text tabs, and a home composed in three columns (salon + status, today, to-dos + live). No left rail anywhere.</div>
+      </div>
+      <span class="badge">Workable</span>
+    </div>
+    <div class="win">
+      <div class="chrome"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span><span class="u">solen.ch/de/dashboard</span></div>
+      <div class="d1-app">
+
+        <div class="d1-topnav">
+          <span class="d1-brand">S</span>
+          <div class="d1-navlist">
+            <a class="act">Overview</a>
+            <a>Calendar</a>
+            <a>Clients</a>
+            <a>Sales</a>
+            <a>Team</a>
+            <a>Marketing</a>
+            <a>Reports</a>
+          </div>
+          <span class="sp"></span>
+          <div class="d1-cluster">
+            <span class="ib"><svg class="ic" data-lucide="search"><use href="#i-search"/></svg></span>
+            <span class="ib"><svg class="ic" data-lucide="bell"><use href="#i-bell"/></svg><span class="n"></span></span>
+            <span class="sw">test <svg class="ic" data-lucide="chevrons-up-down"><use href="#i-chevronsUD"/></svg></span>
+            <span class="av" style="background:var(--ink)">T</span>
+          </div>
+        </div>
+
+        <div class="d1-body">
+
+          <div class="d1-left">
+            <div class="card d1-salonc">
+              <div class="d1-salontop">
+                <span class="d1-salonav">S</span>
+                <div>
+                  <div class="d1-salonnm">test</div>
+                  <div class="d1-salonsub">Basel, multi-category</div>
+                </div>
+              </div>
+              <div class="d1-div"></div>
+              <div class="d1-statrow"><svg class="ic" data-lucide="users"><use href="#i-users"/></svg><b>128</b> clients</div>
+              <div class="d1-statrow"><svg class="ic" data-lucide="user-check"><use href="#i-userCheck"/></svg><b>4</b> staff</div>
+              <div class="d1-statrow"><svg class="ic" data-lucide="scissors"><use href="#i-scissors"/></svg><b>15</b> services</div>
+            </div>
+
+            <div class="card d1-statuscard">
+              <div class="d1-sctop">
+                <span class="d1-scbadge"><span class="d"></span></span>
+                <div>
+                  <div class="d1-sct">Open</div>
+                  <div class="d1-scs">Opened 09:00, closes 19:00</div>
+                </div>
+              </div>
+              <div class="d1-sctimer"><span class="v">5h 32m</span><span class="l">open today</span></div>
+              <button class="d1-scbtn">Close shop</button>
+            </div>
+          </div>
+
+          <div class="d1-center">
+            <div class="d1-greet">
+              <div class="eyb">Tuesday 14 July</div>
+              <h2>Good morning, test</h2>
+            </div>
+
+            <div class="card d1-todaycard">
+              <div class="d1-todayhead">
+                <h3>Today</h3>
+                <div class="statetabs" data-d1-schedtabs>
+                  <button class="on" data-view="list">Schedule</button>
+                  <button data-view="timeline">Timeline</button>
+                </div>
+              </div>
+
+              <div class="d1-todaylist" data-d1-view="list">
+                <div class="d1-trow live">
+                  <span class="d1-ttime">now</span>
+                  <span class="av" style="background:linear-gradient(135deg,#276EF1,#1B4DCB)">EM</span>
+                  <span class="d1-tmain"><span class="nm">Lena Vogt, Women's cut</span><span class="liveline"><span class="livedot"></span> In the chair, 12 min left, Elena M.</span></span>
+                  <span class="pill ok"><i></i>In progress</span>
+                </div>
+                <div class="d1-trow">
+                  <span class="d1-ttime">09:45</span>
+                  <span class="av" style="background:linear-gradient(135deg,#F0A868,#C0524A)">DK</span>
+                  <span class="d1-tmain"><span class="nm">Marco Rossi, Beard &amp; fade</span><span class="sv">David K.</span></span>
+                  <span class="pill ghost"><i></i>Next</span>
+                </div>
+                <div class="d1-trow">
+                  <span class="d1-ttime">10:30</span>
+                  <span class="av" style="background:linear-gradient(135deg,#16A34A,#0E7A37)">SL</span>
+                  <span class="d1-tmain"><span class="nm">Sofia Keller, Gel nails</span><span class="sv">Sara L.</span></span>
+                  <span class="pill wait"><i></i>Unconfirmed</span>
+                </div>
+                <div class="d1-trow">
+                  <span class="d1-ttime">11:15</span>
+                  <span class="av" style="background:linear-gradient(135deg,#F0A868,#C0524A)">DK</span>
+                  <span class="d1-tmain"><span class="nm">Jonas Widmer, Men's cut</span><span class="sv">David K.</span></span>
+                  <span class="pill ghost"><i></i>Confirmed</span>
+                </div>
+                <div class="d1-trow">
+                  <span class="d1-ttime">13:00</span>
+                  <span class="av" style="background:linear-gradient(135deg,#276EF1,#1B4DCB)">EM</span>
+                  <span class="d1-tmain"><span class="nm">Aria Fischer, Color</span><span class="sv">Elena M.</span></span>
+                  <span class="pill ghost"><i></i>Confirmed</span>
+                </div>
+                <div class="d1-trow">
+                  <span class="d1-ttime">14:30</span>
+                  <span class="av" style="background:linear-gradient(135deg,#8B5CF6,#6D28D9)">TB</span>
+                  <span class="d1-tmain"><span class="nm">Nina Brun, Spa facial</span><span class="sv">Tom B.</span></span>
+                  <span class="pill ghost"><i></i>Confirmed</span>
+                </div>
+              </div>
+
+              <div class="d1-timeline" data-d1-view="timeline">
+                <div class="d1-tlhours"><span>09:00</span><span>11:00</span><span>13:00</span><span>15:00</span><span>19:00</span></div>
+                <div class="d1-tltrack">
+                  <span class="d1-tldot" style="left:0%;background:var(--green)"></span>
+                  <span class="d1-tllabel" style="left:0%">Lena V.</span>
+                  <span class="d1-tldot" style="left:7.5%;background:var(--ink3)"></span>
+                  <span class="d1-tllabel" style="left:7.5%">Marco R.</span>
+                  <span class="d1-tldot" style="left:15%;background:var(--amber)"></span>
+                  <span class="d1-tllabel" style="left:15%">Sofia K.</span>
+                  <span class="d1-tldot" style="left:22.5%;background:var(--ink3)"></span>
+                  <span class="d1-tllabel" style="left:22.5%">Jonas W.</span>
+                  <span class="d1-tldot" style="left:40%;background:var(--ink3)"></span>
+                  <span class="d1-tllabel" style="left:40%">Aria F.</span>
+                  <span class="d1-tldot" style="left:55%;background:var(--ink3)"></span>
+                  <span class="d1-tllabel" style="left:55%">Nina B.</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="d1-revstrip">
+              <div class="d1-revtxt">
+                <div class="lab">Revenue today</div>
+                <div class="big"><span class="pre">CHF</span>1'240</div>
+                <div class="delta">+18% vs yesterday</div>
+              </div>
+              <div class="d1-revspark">
+                <svg viewBox="0 0 400 44" preserveAspectRatio="none"><!-- chart-ok -->
+                  <defs><linearGradient id="d1hg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#276EF1" stop-opacity="0.22"/><stop offset="1" stop-color="#276EF1" stop-opacity="0"/></linearGradient></defs>
+                  <path d="M0,38 L40,35 L80,36 L120,30 L160,31 L200,24 L240,25 L280,17 L320,20 L360,10 L400,7 L400,44 L0,44 Z" fill="url(#d1hg)"/>
+                  <polyline fill="none" stroke="#276EF1" stroke-width="2.25" stroke-linejoin="round" stroke-linecap="round" points="0,38 40,35 80,36 120,30 160,31 200,24 240,25 280,17 320,20 360,10 400,7"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="d1-right">
+            <div class="panel">
+              <div class="panelh"><h3>To-dos</h3></div>
+              <div class="donow">
+                <a>
+                  <span class="doic" style="background:var(--amber-bg);color:var(--amber)"><svg class="ic" data-lucide="users-round"><use href="#i-usersRound"/></svg></span>
+                  <span class="dotx"><span class="t">Walk-in waiting</span><span class="s">No. 3 in queue, 8 min</span></span>
+                  <span class="chev"><svg class="ic" data-lucide="chevron-right"><use href="#i-chevronRight"/></svg></span>
+                </a>
+                <a>
+                  <span class="doic" style="background:var(--green-bg);color:var(--green)"><svg class="ic" data-lucide="wallet"><use href="#i-wallet"/></svg></span>
+                  <span class="dotx"><span class="t">2 payments to collect</span><span class="s">CHF 165 across 2 finished appointments</span></span>
+                  <span class="chev"><svg class="ic" data-lucide="chevron-right"><use href="#i-chevronRight"/></svg></span>
+                </a>
+                <a>
+                  <span class="doic" style="background:var(--blue-pale);color:var(--blue)"><svg class="ic" data-lucide="calendar"><use href="#i-calendar"/></svg></span>
+                  <span class="dotx"><span class="t">3 appointments to confirm</span><span class="s">Waiting on your OK</span></span>
+                  <span class="chev"><svg class="ic" data-lucide="chevron-right"><use href="#i-chevronRight"/></svg></span>
+                </a>
+              </div>
+            </div>
+
+            <div class="panel">
+              <div class="panelh"><h3>Live</h3><span class="pcount"><span class="livedot" style="width:6px;height:6px"></span></span></div>
+              <div class="stream">
+                <div class="sitem">
+                  <span class="sic" style="background:var(--blue-pale);color:var(--blue)"><svg class="ic" data-lucide="calendar"><use href="#i-calendar"/></svg></span>
+                  <span class="stx"><span class="a1">New booking</span><span class="a2">Anna B.</span></span>
+                  <span class="ago">2 min</span>
+                </div>
+                <div class="sitem">
+                  <span class="sic" style="background:var(--amber-bg);color:var(--amber)"><svg class="ic" data-lucide="users-round"><use href="#i-usersRound"/></svg></span>
+                  <span class="stx"><span class="a1">Walk-in joined queue</span><span class="a2">No. 3</span></span>
+                  <span class="ago">5 min</span>
+                </div>
+                <div class="sitem">
+                  <span class="sic" style="background:var(--green-bg);color:var(--green)"><svg class="ic" data-lucide="wallet"><use href="#i-wallet"/></svg></span>
+                  <span class="stx"><span class="a1">Payment, CHF 80</span><span class="a2">Marco R.</span></span>
+                  <span class="ago">12 min</span>
+                </div>
+                <div class="sitem">
+                  <span class="sic" style="background:#FFF6DA;color:var(--star)"><svg class="ic" data-lucide="star"><use href="#i-star"/></svg></span>
+                  <span class="stx"><span class="a1">New 5-star review</span><span class="a2">Lena V.</span></span>
+                  <span class="ago">1 h</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ================= /D1 ================= -->
+
+  <!-- ================= D2 TERMINAL ================= -->
+  <div class="direction" data-dir="d2">
+    <div class="caption">
+      <div>
+        <div class="k">D2, Terminal</div>
+        <div class="d">The screen is the live day: a compact status bar, a live-ops board of chairs plus a queue, and a bottom action dock that IS the nav. No side nav, minimal chrome, big touch targets.</div>
+      </div>
+      <span class="badge">Uber Eats Manager</span>
+    </div>
+    <div class="win">
+      <div class="chrome"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span><span class="u">solen.ch/de/dashboard</span></div>
+      <div class="d2-app">
+
+        <div class="d2-statusbar">
+          <span class="d2-openpill"><span class="d"></span>Open</span>
+          <span class="d2-salonnm">test</span>
+          <div class="d2-center">
+            <span class="d2-todaylab">Today</span>
+            <span class="d2-todaybig"><span class="pre" style="font-size:13px;font-weight:600;color:var(--ink2)">CHF</span>1'240 <span class="delta">+18%</span></span>
+          </div>
+          <div class="d2-rightcluster">
+            <span class="d2-clock">14:32</span>
+            <span class="ib"><svg class="ic" data-lucide="bell"><use href="#i-bell"/></svg></span>
+            <span class="av" style="background:var(--ink)">T</span>
+          </div>
+        </div>
+
+        <div class="d2-board">
+          <div class="d2-chairs">
+            <div class="d2-chair live">
+              <div class="d2-staffrow">
+                <span class="av" style="width:28px;height:28px;font-size:11px;background:linear-gradient(135deg,#276EF1,#1B4DCB)">EM</span>
+                <span class="nm">Elena M.</span>
+                <span class="pill ok"><i></i>In chair</span>
+              </div>
+              <div class="d2-occ">
+                <div class="nm2">Lena Vogt</div>
+                <div class="sv">Women's cut</div>
+                <div class="countdown"><span class="livedot" style="width:6px;height:6px"></span>12 min left</div>
+              </div>
+              <button class="d2-primact ink">Complete</button>
+            </div>
+
+            <div class="d2-chair">
+              <div class="d2-staffrow">
+                <span class="av" style="width:28px;height:28px;font-size:11px;background:linear-gradient(135deg,#F0A868,#C0524A)">DK</span>
+                <span class="nm">David K.</span>
+                <span class="pill ghost"><i></i>Free</span>
+              </div>
+              <div class="d2-occ free">
+                <div class="nm2">Next, 09:45</div>
+                <div class="sv">Marco Rossi, Beard &amp; fade</div>
+              </div>
+              <button class="d2-primact ghostbtn">Start</button>
+            </div>
+
+            <div class="d2-chair">
+              <div class="d2-staffrow">
+                <span class="av" style="width:28px;height:28px;font-size:11px;background:linear-gradient(135deg,#16A34A,#0E7A37)">SL</span>
+                <span class="nm">Sara L.</span>
+                <span class="pill ghost"><i></i>Free</span>
+              </div>
+              <div class="d2-occ free">
+                <div class="nm2">Next, 10:30</div>
+                <div class="sv">Sofia Keller, Gel nails, unconfirmed</div>
+              </div>
+              <button class="d2-primact ghostbtn">Start</button>
+            </div>
+
+            <div class="d2-chair">
+              <div class="d2-staffrow">
+                <span class="av" style="width:28px;height:28px;font-size:11px;background:linear-gradient(135deg,#8B5CF6,#6D28D9)">TB</span>
+                <span class="nm">Tom B.</span>
+                <span class="pill ghost"><i></i>Free</span>
+              </div>
+              <div class="d2-occ free">
+                <div class="nm2">Next, 14:30</div>
+                <div class="sv">Nina Brun, Spa facial</div>
+              </div>
+              <button class="d2-primact ghostbtn">Start</button>
+            </div>
+          </div>
+
+          <div class="d2-queue">
+            <div class="d2-qhead">Queue, up next</div>
+            <div class="d2-qcard waiting">
+              <div class="d2-qtxt"><div class="t">Walk-in, No. 3</div><div class="s"><span class="pill wait"><i></i>Waiting 8 min</span></div></div>
+              <button class="d2-actbtn">Check in</button>
+            </div>
+            <div class="d2-qcard">
+              <div class="d2-qtxt"><div class="t">09:45, Marco Rossi</div><div class="s">Beard &amp; fade, David K.</div></div>
+              <button class="d2-actbtn ghostbtn">Start</button>
+            </div>
+            <div class="d2-qcard">
+              <div class="d2-qtxt"><div class="t">10:30, Sofia Keller</div><div class="s"><span class="pill wait"><i></i>Unconfirmed</span></div></div>
+              <button class="d2-actbtn ghostbtn">Start</button>
+            </div>
+            <div class="d2-qcard">
+              <div class="d2-qtxt"><div class="t">11:15, Jonas Widmer</div><div class="s">Men's cut, David K.</div></div>
+              <button class="d2-actbtn ghostbtn">Start</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="d2-dock">
+          <div class="d2-dockbtn"><svg class="ic" data-lucide="dollar-sign"><use href="#i-dollar"/></svg><span>New sale</span></div>
+          <div class="d2-dockbtn"><svg class="ic" data-lucide="calendar"><use href="#i-calendar"/></svg><span>New appointment</span></div>
+          <div class="d2-dockbtn"><svg class="ic" data-lucide="users-round"><use href="#i-usersRound"/></svg><span>Walk-in</span></div>
+          <div class="d2-dockbtn"><svg class="ic" data-lucide="wallet"><use href="#i-wallet"/></svg><span>Payments</span></div>
+          <div class="d2-dockbtn"><svg class="ic" data-lucide="chart-column"><use href="#i-chart"/></svg><span>Reports</span></div>
+          <div class="d2-dockbtn"><svg class="ic" data-lucide="ellipsis"><use href="#i-more"/></svg><span>More</span></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <!-- ================= /D2 ================= -->
+
+  <!-- ================= D3 FOCUS ================= -->
+  <div class="direction" data-dir="d3">
+    <div class="caption">
+      <div>
+        <div class="k">D3, Focus</div>
+        <div class="d">A slim labeled sidebar (not icon-only) and one calm centered column with lots of whitespace: a gradient revenue hero with no card border, a quiet today list and a Linear-style do-now inbox.</div>
+      </div>
+      <span class="badge">Linear / Stripe</span>
+    </div>
+    <div class="win">
+      <div class="chrome"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span><span class="dot" style="background:#28c840"></span><span class="u">solen.ch/de/dashboard</span></div>
+      <div class="d3-app">
+
+        <div class="d3-sidebar">
+          <div class="d3-wsrow">
+            <span class="nm">test</span>
+            <svg class="ic" data-lucide="chevrons-up-down" style="width:14px;height:14px;color:var(--ink3)"><use href="#i-chevronsUD"/></svg>
+            <svg class="ic" data-lucide="panel-left" style="width:14px;height:14px;color:var(--ink3)"><use href="#i-panelLeft"/></svg>
+          </div>
+          <div class="d3-search">
+            <svg class="ic" data-lucide="search"><use href="#i-search"/></svg>
+            <span>Search or jump to...</span>
+            <span class="kbd"><svg class="ic" data-lucide="command" style="width:9px;height:9px;display:inline;vertical-align:-1px"><use href="#i-command"/></svg>K</span>
+          </div>
+          <div class="d3-navitem act"><svg class="ic" data-lucide="layout-grid"><use href="#i-grid"/></svg>Overview<svg class="ic chk" data-lucide="check"><use href="#i-check"/></svg></div>
+          <div class="d3-navitem"><svg class="ic" data-lucide="calendar"><use href="#i-calendar"/></svg>Calendar</div>
+          <div class="d3-navitem"><svg class="ic" data-lucide="users"><use href="#i-users"/></svg>Clients</div>
+          <div class="d3-navitem"><svg class="ic" data-lucide="dollar-sign"><use href="#i-dollar"/></svg>Sales</div>
+          <div class="d3-navitem"><svg class="ic" data-lucide="user-check"><use href="#i-userCheck"/></svg>Team</div>
+          <div class="d3-navitem"><svg class="ic" data-lucide="settings"><use href="#i-settings"/></svg>Settings</div>
+        </div>
+
+        <div class="d3-main">
+          <div class="d3-col">
+
+            <div class="d3-greetrow">
+              <h2>Good morning, test</h2>
+              <span class="d3-openpill"><span class="d"></span>Open, closes 19:00</span>
+            </div>
+
+            <div class="d3-hero" style="background:linear-gradient(158deg, rgba(39,110,241,0.11), rgba(39,110,241,0.02) 55%, rgba(39,110,241,0) 78%)">
+              <div class="lab">Revenue today</div>
+              <div class="big"><span class="pre">CHF</span>1'240</div>
+              <div class="delta">+18% vs yesterday</div>
+              <svg class="spark" viewBox="0 0 640 60" preserveAspectRatio="none"><!-- chart-ok -->
+                <defs><linearGradient id="d3hg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#276EF1" stop-opacity="0.20"/><stop offset="1" stop-color="#276EF1" stop-opacity="0"/></linearGradient></defs>
+                <path d="M0,50 L64,46 L128,48 L192,40 L256,42 L320,32 L384,34 L448,22 L512,26 L576,12 L640,8 L640,60 L0,60 Z" fill="url(#d3hg)"/>
+                <polyline fill="none" stroke="#276EF1" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" points="0,50 64,46 128,48 192,40 256,42 320,32 384,34 448,22 512,26 576,12 640,8"/>
+              </svg>
+            </div>
+
+            <div class="d3-block">
+              <div class="d3-secthead">Today</div>
+              <div class="d3-todayrow"><span class="tm">09:00</span><span class="d3-tdot" style="background:var(--green)"></span><span class="who">Lena Vogt, <span>Women's cut</span></span></div>
+              <div class="d3-todayrow"><span class="tm">09:45</span><span class="d3-tdot" style="background:var(--ink3)"></span><span class="who">Marco Rossi, <span>Beard &amp; fade</span></span></div>
+              <div class="d3-todayrow"><span class="tm">10:30</span><span class="d3-tdot" style="background:var(--amber)"></span><span class="who">Sofia Keller, <span>Gel nails</span></span></div>
+              <div class="d3-todayrow"><span class="tm">11:15</span><span class="d3-tdot" style="background:var(--ink3)"></span><span class="who">Jonas Widmer, <span>Men's cut</span></span></div>
+              <div class="d3-todayrow"><span class="tm">13:00</span><span class="d3-tdot" style="background:var(--ink3)"></span><span class="who">Aria Fischer, <span>Color</span></span></div>
+              <div class="d3-todayrow"><span class="tm">14:30</span><span class="d3-tdot" style="background:var(--ink3)"></span><span class="who">Nina Brun, <span>Spa facial</span></span></div>
+            </div>
+
+            <div class="d3-block">
+              <div class="d3-secthead">Do now</div>
+              <div class="d3-introw"><span class="t"><b>Walk-in waiting</b><span>No. 3 in queue, 8 min</span></span><span class="hint">&#8629;</span></div>
+              <div class="d3-introw"><span class="t"><b>2 payments to collect</b><span>CHF 165 across 2 finished appointments</span></span><span class="hint">&#8629;</span></div>
+              <div class="d3-introw"><span class="t"><b>3 appointments to confirm</b><span>Waiting on your OK</span></span><span class="hint">&#8629;</span></div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ================= /D3 ================= -->
+
+</div>
+
+<script>
+(function(){
+  var tabs = document.querySelectorAll('.dirtab');
+  var dirs = document.querySelectorAll('.direction');
+  tabs.forEach(function(tab){
+    tab.addEventListener('click', function(){
+      var dir = tab.getAttribute('data-dir');
+      tabs.forEach(function(t){ t.setAttribute('aria-selected', t === tab ? 'true' : 'false'); });
+      dirs.forEach(function(d){ d.classList.toggle('on', d.getAttribute('data-dir') === dir); });
+    });
+  });
+
+  var schedTabs = document.querySelector('[data-d1-schedtabs]');
+  if (schedTabs) {
+    var listPanel = document.querySelector('[data-d1-view="list"]');
+    var tlPanel = document.querySelector('[data-d1-view="timeline"]');
+    schedTabs.querySelectorAll('button').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        schedTabs.querySelectorAll('button').forEach(function(b){ b.classList.remove('on'); });
+        btn.classList.add('on');
+        var view = btn.getAttribute('data-view');
+        listPanel.style.display = view === 'list' ? 'block' : 'none';
+        tlPanel.classList.toggle('on', view === 'timeline');
+      });
+    });
+    tlPanel.style.display = 'none';
+  }
+})();
+</script>
+
+</body>
+</html>
