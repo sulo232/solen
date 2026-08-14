@@ -211,7 +211,23 @@ is unproven, and each phase writes its state here so the loop survives a session
         live against :3077 with real DB rows, not just status codes, and the test rows were deleted
         and their slots reset afterwards. Under adversarial security review now, because the writer
         of an auth boundary is never its reviewer.
-  - [ ] Step 2, the app calls it. Nothing in solen-mobile posts a booking yet.
+  - [x] **Step 2, the app can write.** `verified:` commit `f1c08b1` in solen-mobile, `src/lib/mutations.ts:1`.
+        `src/lib/authedFetch.ts` carries the app's session as a bearer header, refreshing rather
+        than caching it, and sends NO header when there is no session so the guest path keeps
+        working. Thirteen scenarios proven against the running server on real rows, run twice: a
+        logged-in call writes the booking under that exact `user_id`, a guest call writes a null
+        user and gets its one-time access token, and a forged token is refused instead of quietly
+        downgraded to guest. Every row and slot created was deleted and re-queried three ways to
+        confirm it was gone.
+        Only `createBooking` exists, because only that endpoint accepts an app login today. Six
+        more are listed in the file header with the endpoint blocking each. The sharpest one:
+        `POST /api/walkin/queue` reads its customer from a cookie at
+        `app/api/walkin/queue/route.ts:106`, so an app caller would be silently recorded as a
+        guest. A function for it would have compiled, returned 201, and been wrong.
+        Also found: `bookings.consumed_at` is live in the database and absent from the generated
+        types. Harmless here, and a reminder that the types drift behind the schema.
+  - [ ] Step 2b, the booking SCREEN calls it. `src/app/booking.tsx` still ends at the confirmation
+        hand-off without posting. Held only because another builder owns that file this minute.
   - [ ] Step 3, the other seventeen routes. Deliberately staged one at a time behind the review.
         Two adjacent blind spots of the same class are already named: `GET` in that same file is
         still cookie-only, and `lib/bookings/authorize.ts`'s `resolveBookingActor` carries it into
