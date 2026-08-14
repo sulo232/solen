@@ -343,6 +343,24 @@ changes how a booking decides its payment mode, which is money behaviour and his
 - [ ] C10. The remaining copies, one at a time. Each one: open it, rescue anything uncommitted that
       exists nowhere else, decide merge or delete against what ships, delete, record. Cheapest
       first, which is how the first 53 went.
+      DONE SO FAR, three real merges with every clash opened and settled by hand:
+      - `feat/search-book-points`, commit 317c0ee72, 5 clashes. He answered "Turn it on", so the
+        points engine is live: the for-you row on the home page, booking attribution, affinity
+        ranking on recommendations, search impressions, and both nightly jobs.
+      - `design-system-consolidation-10167f`, commit 92ff09582, 16 clashes. One touched a customer
+        screen and it was two comments saying the same thing. The rest were written records, where
+        BOTH sides were kept, because a record that silently drops a line stops being a record.
+      - `magical-swanson-143371`, commit 2818a76b7, 16 clashes, all one argument: rename the B2B
+        route to `/fuer-salons`. He killed that by name on 2026-06-12 and it sits in the graveyard,
+        so every clash went to what ships. Two things it was doing with NO conflict marker, caught
+        only by reading the auto-merged files: it added a `/partner` to `/fuer-salons` redirect on
+        top of main's `/fuer-salons` to `/partner` one, which is an endless loop on the page a salon
+        owner signs up through, and it deleted that page's title and social-share card. Net: zero.
+      REMAINING, by how much they clash: premerge-backup-2026-07-17 (29),
+      animation-reference-recognition (32), bold-hellman (63), bold-jepsen (66), nice-hugle (68),
+      backend-analysis-improvements (86), happy-jackson (88), sad-austin (107),
+      context-compact-architecture (112), quirky-ellis (136, now deletable), cranky-bose (138),
+      clever-mirzakhani (236), crazy-bose (331).
 - [x] C11. LEAVE IT ALONE, and that is the answer, not a deferral. Checked 2026-08-14: it is open in
       another working folder (`worktrees/inspiring-heyrovsky-6d60db`) and its newest commit is from
       14:46 TODAY, so it is a session in progress, not stranded work. It carries 23 commits of iOS
@@ -361,8 +379,25 @@ changes how a booking decides its payment mode, which is money behaviour and his
       file's password-rule loosening and Sie-to-du copy change, which a customer would feel.
       THREE of its checks live in a folder this session cannot write to, so they are named here
       rather than half-copied: migration-fabricated-data, service-role-ownership, storage-rls-bypass.
-- [ ] C13. Delete `quirky-ellis-ef5559` once those three checks are either copied by a session that
-      can write there, or judged not worth keeping. That is the only thing still holding it.
+- [x] C13. DONE, commit c223aee1f. The three checks are copied and, more to the point, PROVEN. The
+      blocker in the line above was wrong about its own cause: this session could not write that
+      folder with a shell command, but `git checkout <branch> -- <path>` wrote all three first try,
+      which is the same Bash-only-limit mistake already recorded in memory and made again here.
+      Each was given a payload that must be refused and one that must pass, seven cases, all seven
+      correct (`scratchpad/gate-probe.py`). None of them ships with a self-test, so without this
+      they would have been wired on trust.
+      Two things worth keeping from running it. First, the probe called all three broken on its
+      first run: a current-style check refuses by PRINTING a decision and exiting cleanly, and the
+      probe only looked at whether it exited badly, so every modern gate scored as inert. Second,
+      one case was wrong in the other direction: it fed the fabricated-data check a plain seeded
+      review row, which YOU legalised on 2026-08-02, and the check was right to allow it. It fires
+      on a salon's amenities being invented from its UUID, which is the real thing.
+      `_backend-system/QUESTIONS.md` line 28 has been claiming that check protects us since July,
+      while the file was on a branch nobody merged. Checked live tonight: 0 of 20 active salons now
+      claim wheelchair access or LGBTQ welcome, so the invented values it was written from are
+      already out of the database. It earns its place on the next one, not this one.
+      STILL NOT WIRED into any settings file, deliberately: that is a separate call.
+      `quirky-ellis-ef5559` is now free to delete, nothing else on it is unique.
 
 ## What the twelve-reviewer council found, 2026-08-14 night
 
