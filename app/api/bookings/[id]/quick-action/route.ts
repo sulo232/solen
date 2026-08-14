@@ -78,12 +78,23 @@ export async function GET(
   // NOT taken wholesale from the branch it was stranded on. That branch's copy of this file also
   // deleted main's status CAS guard and dropped the `money` result, both of which landed later, so
   // copying it across would have undone two fixes to fix one. Only the single-use marker is lifted.
+  // The marker is PER ACTION, not per booking. The first version of this fix used one shared
+  // `consumed_at` for both branches, and the review panel caught what that does: a guest clicks
+  // confirm, the row is marked used, and their cancel link is then refused for ever, even though
+  // it was never clicked. Guest bookings have no signed-in cancel path (see the note above), so
+  // that would have locked them out of the only way they have to cancel, and an email scanner
+  // auto-clicking confirm would have done it to them. Worse than the replay it was closing.
+  //
+  // Also re-asserts `status = 'pending'` at write time, which the cancel branch below has always
+  // done: without it a stale-but-unexpired confirm link can revive a booking the salon already
+  // cancelled, after its slot was freed and possibly rebooked.
   if (action === "confirm" && booking.status === "pending") {
     const { data: confirmedRows } = await admin
       .from("bookings")
-      .update({ status: "confirmed", consumed_at: new Date().toISOString() })
+      .update({ status: "confirmed", confirm_link_used_at: new Date().toISOString() })
       .eq("id", bookingId)
-      .is("consumed_at", null)
+      .eq("status", "pending")
+      .is("confirm_link_used_at", null)
       .select("id");
     if (!confirmedRows || confirmedRows.length === 0) {
       return NextResponse.json({ error: "Link already used" }, { status: 409 });
@@ -100,17 +111,17 @@ export async function GET(
     // guard above). We check the row count: if the race is lost, DO NOT free the slot or refund.
     // The single-use marker (audit finding #1, recovered 2026-08-14) rides ALONGSIDE the existing
     // status CAS rather than replacing it: the status guard stops a concurrent state change, the
-    // consumed_at guard stops the same link being replayed. Two different races, both real.
+    // cancel_link_used_at guard stops the same link being replayed. Two different races, both real.
     const { data: cancelledRows } = await admin
       .from("bookings")
       .update({
         status: "cancelled",
         cancelled_at: new Date().toISOString(),
-        consumed_at: new Date().toISOString(),
+        cancel_link_used_at: new Date().toISOString(),
       })
       .eq("id", bookingId)
       .eq("status", booking.status!)
-      .is("consumed_at", null)
+      .is("cancel_link_used_at", null)
       .select("id");
     if (!cancelledRows || cancelledRows.length === 0) {
       // Either the status changed under us, or the link was already used. Do nothing else.
