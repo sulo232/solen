@@ -356,11 +356,48 @@ changes how a booking decides its payment mode, which is money behaviour and his
         only by reading the auto-merged files: it added a `/partner` to `/fuer-salons` redirect on
         top of main's `/fuer-salons` to `/partner` one, which is an endless loop on the page a salon
         owner signs up through, and it deleted that page's title and social-share card. Net: zero.
-      REMAINING, by how much they clash: premerge-backup-2026-07-17 (29),
-      animation-reference-recognition (32), bold-hellman (63), bold-jepsen (66), nice-hugle (68),
+      - `premerge-backup-2026-07-17`, commit 1181c65e7, 38 clashes plus 882 lines with no clash
+        marker at all. The biggest one so far and the only one that changed the product. He decided
+        four things and all four are done: the eight hand-rolled customer emails now go through the
+        one shared sender with the formal German kept, and the three security checks are armed.
+        CORRECTION he is owed and was given: the 5-second email timeout I described when he decided
+        did NOT exist on main. Main carried the comment and none of the code, so sends waited
+        forever. Taking this copy is what made it real.
+        Caught only by reading the silent half: that copy replaced the SMS arm of resend-access
+        with an email send, inside the branch that only runs when there is NO email address.
+        Fixed while here: a leaked-password refusal was showing German to French and Italian
+        customers, with all four translations already sitting unused.
+        THE TYPECHECK WAS BROKEN AND IS NOW A REAL CHECK AGAIN. It reported 3,199 errors; the cause
+        was this working folder having a database library two minor versions behind what the
+        project requires, against types generated from the current one, so every query typed as
+        `never`. Corrected version, and it fell to 14. Main reports zero, so all 14 were tonight's,
+        and all 14 are fixed: stale generated types (three columns that exist live were missing,
+        which broke a real admin route and the one-click email link), a missing import, an
+        over-narrow parameter type, and the optional third argument the rate limiter needed so
+        seven routes could say "AI is paused for today" instead of "you are going too fast".
+      - `animation-reference-recognition-11f0c3`, commit 412f6c635, 33 clashes. Nothing needed a
+        mockup because none of it was a taste choice: three of its changes break floors (times back
+        on cards, the chart-only grey used as text at 2.54:1, and a from-price with no service name,
+        which Swiss price law does not allow). It also tried to restore three pages he deleted, one
+        of them a zombie already resurrected once. RESCUED: the graveyard line for the availability
+        badge he dropped on 2026-07-13, which existed nowhere else while SalonCard.tsx:111 tells
+        readers to look for it there.
+      REMAINING, by how much they clash: bold-hellman (63), bold-jepsen (66), nice-hugle (68),
       backend-analysis-improvements (86), happy-jackson (88), sad-austin (107),
       context-compact-architecture (112), quirky-ellis (136, now deletable), cranky-bose (138),
       clever-mirzakhani (236), crazy-bose (331).
+      HIS CALL 2026-08-14 on the last two: rescue what is unique, then delete, rather than opening
+      every clash. Named cost he accepted: tonight's endless-redirect find was NOT unique to a copy,
+      it was an interaction with what ships, and that class is exactly what a rescue-only pass
+      misses.
+
+- [x] C15. The two business pages nobody could open are gone, commit 58db2c974. He chose "delete
+      both, keep the bounces". `/business` and `/fuer-salons` have 301-ed to `/partner` since
+      2026-06-12, so 724 and 500 lines could never render. Their two exclusive components went too;
+      the FAQ component and the bento block stayed, because both are used by live surfaces, checked
+      rather than assumed. Graveyard line added, recovery commands written down, including the fact
+      that the big one reads a translation namespace that exists in none of the four languages and
+      would throw even if restored.
 - [x] C11. LEAVE IT ALONE, and that is the answer, not a deferral. Checked 2026-08-14: it is open in
       another working folder (`worktrees/inspiring-heyrovsky-6d60db`) and its newest commit is from
       14:46 TODAY, so it is a session in progress, not stranded work. It carries 23 commits of iOS
