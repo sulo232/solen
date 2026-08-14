@@ -299,3 +299,25 @@ screen a customer or a salon owner uses:
       yes or no, never decided silently.
 - [x] C5. ANSWERED: delete the backup, keep the original. DONE, `pre-rebase-backup` removed and
       recorded at a81527699 in `_plans/DELETED_BRANCHES_2026-08-14.md` first. 78 branches left.
+
+## The one real half-landed feature left, found 2026-08-14 while going branch by branch
+
+**Admin override of a salon's payment mode.** The DATABASE half went live this morning: the
+migration adding `salons.payment_mode_admin` and `payment_mode_enforced` was applied. The CODE half
+has never existed on main and lives only on `quirky-ellis`: the resolver, the admin endpoint, its
+validation schema, plus wiring in the booking route and the pay-confirm step.
+
+WHY IT IS MISSING: never landed. Written 2026-07-20, reviewed, and the branch was never merged.
+Nothing tracked it, and applying its migration this morning is what turned it half-landed.
+
+RISK RIGHT NOW: none live. The two columns are inert, nothing reads them, the product behaves
+exactly as before.
+
+WHY IT IS NOT SIMPLY LIFTED: bringing only the endpoint across would add an admin control that
+changes nothing, which is this project's own worst failure mode. Bringing the whole thing across
+changes how a booking decides its payment mode, which is money behaviour and his call. So:
+  A. land the whole feature so an admin override actually decides the payment mode, or
+  B. drop the two columns again and file the feature.
+
+- [ ] C9. Owner picks A or B on the payment-mode override. Blocked on him by design: A changes money
+      behaviour, B is a database change. Everything else about it is measured and written here.
