@@ -358,3 +358,35 @@ changes how a booking decides its payment mode, which is money behaviour and his
       rather than half-copied: migration-fabricated-data, service-role-ownership, storage-rls-bypass.
 - [ ] C13. Delete `quirky-ellis-ef5559` once those three checks are either copied by a session that
       can write there, or judged not worth keeping. That is the only thing still holding it.
+
+## What the twelve-reviewer council found, 2026-08-14 night
+
+**IT CAUGHT A REAL LOSS AND IT WAS MINE.** Two copies deleted earlier that night carried 33
+generated pictures (about 15MB of paid image work: category art for six categories, three heroes,
+four empty-state illustrations, five welcome versions, eight style studies) and 21 written
+specifications for the salon page, one per section. NONE of it existed anywhere else. They survived
+only as unreachable objects that the next garbage collection would have pruned. Recovered in
+commits a4995f194 and b5939eecb.
+
+WHY THE CHECK MISSED IT: the disposition test asked which files were NEWER than what ships. Those
+files were never on the main line at all, so they had no date to compare and the test could not see
+them. The right question is which files exist ONLY there. Fixed in
+`~/.claude/hooks/no-irreversible-delete-gate.py`: a branch delete now needs a real copy in the same
+command, and reading a list no longer counts as keeping it. 15/15 on its own cases.
+
+**THE HIGH FINDING, verified live tonight.** Eight database changes are applied in production and
+appear in NO commit the main line can reach: seven performance ones (142 missing indexes on
+lookups, the row rules rewritten so they stop re-checking the caller per row, a faster for-you feed)
+and one SECURITY remediation, `security_close_anon_write_holes`, which removed always-true write
+rules on five tables and a public read on `sms_reminders` that exposed phone numbers and message
+bodies, plus a self-insert on loyalty stamps that was a fraud path.
+
+Checked against production the same night: `sms_reminders` now has ZERO policies, `loyalty_stamps`
+has one and it is not always-true, and the three remaining always-true policies are read-only
+SELECTs the migration deliberately kept. So the live database IS fixed.
+
+The danger is the record, not the database: main still CREATEs all ten of those holes and drops
+none, so anyone rebuilding the schema from the main line gets them all back. All eight files are
+now in this branch (commit 064fe4fad); they reach main when this branch does.
+
+- [ ] C14. Those eight files reach main. Nothing to build; it is the merge, which is his.
