@@ -1,0 +1,534 @@
+<!--
+  Exists-check: npm run exists "filter sheet" → app/[locale]/_components/search/FilterSheet.tsx
+  already renders the live Inspo/search filter sheet (Sortieren/Preis/Bewertung/Gender groups,
+  reset + apply footer, SheetChip ink-fill selected). REMOVED.md: no hit for the filter sheet.
+  Net-new in THIS mockup: the "Dein Haar" personal hair-profile banner + the real masked
+  hair-pattern glyph tiles for Haartyp (straight/wavy/coily/protective from /hair-patterns/),
+  rendered as SOFT-MATERIAL floating tiles. This is a design exploration only, not wired.
+-->
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Inspo Filter — Soft Material & Depth</title>
+<style>
+  :root {
+    --ink: #0A0A0A;
+    --ink-2: #6B6B6B;
+    --ink-3: #9B9B9B;
+    --hairline: #E4E4E7;
+    --sunken: #F4F4F5;
+    --white: #ffffff;
+    --display: 'Inter Tight', -apple-system, 'SF Pro Display', system-ui, sans-serif;
+    --body: 'Inter', -apple-system, 'SF Pro Text', system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--body);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    /* warm-neutral restraint behind the phone frame */
+    background:
+      radial-gradient(120% 80% at 50% 0%, #fbfaf9 0%, #f1efed 60%, #ebe9e6 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 16px 64px;
+  }
+
+  /* ── caption above the frame ───────────────────────────────────────────── */
+  .caption {
+    font-family: var(--body);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-2);
+    letter-spacing: -0.01em;
+    margin: 0 0 18px;
+    text-align: center;
+  }
+  .caption b {
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  /* ── phone frame + dimmed backdrop ─────────────────────────────────────── */
+  .phone {
+    width: 390px;
+    max-width: 100%;
+    height: 760px;
+    border-radius: 44px;
+    overflow: hidden;
+    position: relative;
+    background: #d8d5d1;
+    box-shadow:
+      0 2px 4px rgba(20,18,16,.10),
+      0 24px 60px rgba(20,18,16,.22);
+    /* faux behind-sheet content, kept muted so the sheet is the subject */
+    background-image:
+      linear-gradient(180deg, #eceae7 0%, #e3e0dc 100%);
+  }
+
+  /* a hint of the feed peeking behind the dimmed backdrop */
+  .feed-hint {
+    position: absolute;
+    inset: 0;
+    padding: 56px 14px 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    opacity: .5;
+  }
+  .feed-hint span {
+    display: block;
+    border-radius: 16px;
+    background: #cfccc8;
+  }
+  .feed-hint span:nth-child(1) { height: 150px; }
+  .feed-hint span:nth-child(2) { height: 120px; }
+  .feed-hint span:nth-child(3) { height: 120px; }
+  .feed-hint span:nth-child(4) { height: 150px; }
+
+  .backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(14,13,12,.42);
+    backdrop-filter: blur(1.5px);
+  }
+
+  /* ── the sheet ─────────────────────────────────────────────────────────── */
+  .sheet {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--white);
+    border-top-left-radius: 26px;
+    border-top-right-radius: 26px;
+    box-shadow: 0 -8px 40px rgba(20,18,16,.16);
+    padding: 0 18px 18px;
+    /* paper-warm sunken floor so the white tiles read as floating ON it */
+    background:
+      linear-gradient(180deg, #ffffff 0%, #ffffff 38%, #fcfbfa 100%);
+  }
+
+  /* refined grabber: short, soft, centered, sits in its own breathing room */
+  .grabber-wrap {
+    display: flex;
+    justify-content: center;
+    padding: 9px 0 4px;
+  }
+  .grabber {
+    width: 38px;
+    height: 5px;
+    border-radius: 999px;
+    background: #DEDDDA;
+  }
+
+  /* header row: title + circled-X */
+  .head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 2px 14px;
+  }
+  .head h1 {
+    margin: 0;
+    font-family: var(--display);
+    font-size: 21px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: var(--ink);
+  }
+  .close {
+    width: 34px;
+    height: 34px;
+    border-radius: 999px;
+    border: 1px solid var(--hairline);
+    background: var(--white);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink-2);
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(20,18,16,.05);
+  }
+  .close svg { width: 17px; height: 17px; display: block; }
+
+  /* scroll body */
+  .body {
+    max-height: 560px;
+    overflow: hidden; /* static mockup, no scroll needed */
+  }
+
+  /* ── HERO: Dein Haar banner — the one focal moment ─────────────────────── */
+  .hair-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 15px 16px;
+    border-radius: 20px;
+    background:
+      linear-gradient(180deg, #ffffff 0%, #fdfcfb 100%);
+    /* whisper of soft depth — reads as a physical object floating on the sheet */
+    box-shadow:
+      0 1px 2px rgba(20,18,16,.06),
+      0 6px 20px rgba(20,18,16,.06);
+    border: 1px solid rgba(228,228,231,.7);
+  }
+  /* the hair-type glyph in a softly pressed ink medallion */
+  .hair-medallion {
+    flex: 0 0 auto;
+    width: 50px;
+    height: 50px;
+    border-radius: 16px;
+    background: linear-gradient(180deg, #161514 0%, #0A0A0A 100%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    box-shadow:
+      0 1px 2px rgba(20,18,16,.18),
+      0 5px 14px rgba(20,18,16,.18),
+      inset 0 1px 0 rgba(255,255,255,.10);
+  }
+  .hair-medallion .glyph {
+    width: 30px;
+    height: 30px;
+  }
+  .hair-card .text { min-width: 0; }
+  .hair-card .text .label {
+    display: block;
+    font-family: var(--display);
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+    color: var(--ink);
+  }
+  .hair-card .text .sub {
+    display: block;
+    margin-top: 3px;
+    font-family: var(--body);
+    font-size: 12.5px;
+    font-weight: 400;
+    line-height: 1.35;
+    color: var(--ink-2);
+  }
+
+  /* ── group scaffolding ─────────────────────────────────────────────────── */
+  .group { padding-top: 26px; }
+  .group > .g-title {
+    margin: 0 0 12px;
+    padding: 0 2px;
+    font-family: var(--display);
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.012em;
+    line-height: 1;
+    color: var(--ink);
+  }
+
+  /* ── Geschlecht: segmented, single-select ──────────────────────────────── */
+  .segmented {
+    display: flex;
+    gap: 6px;
+    padding: 5px;
+    border-radius: 16px;
+    background: var(--sunken);
+  }
+  .seg {
+    flex: 1;
+    appearance: none;
+    border: 0;
+    cursor: pointer;
+    border-radius: 12px;
+    padding: 11px 8px;
+    font-family: var(--body);
+    font-size: 13.5px;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.005em;
+    color: var(--ink-2);
+    background: transparent;
+    transition: color .15s ease;
+  }
+  .seg[aria-pressed="true"] {
+    /* pressed-in ink with considered weight + soft lift off the sunken track */
+    color: #ffffff;
+    font-weight: 600;
+    background: linear-gradient(180deg, #161514 0%, #0A0A0A 100%);
+    box-shadow:
+      0 1px 2px rgba(20,18,16,.20),
+      0 4px 12px rgba(20,18,16,.18),
+      inset 0 1px 0 rgba(255,255,255,.08);
+  }
+
+  /* ── Haartyp: soft-material floating tiles ─────────────────────────────── */
+  .types {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 9px;
+  }
+  .type {
+    appearance: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 13px 4px 11px;
+    border-radius: 18px;
+    border: 1px solid rgba(228,228,231,.75);
+    background: linear-gradient(180deg, #ffffff 0%, #fdfcfb 100%);
+    color: var(--ink);
+    /* whisper of depth — floating physical tile, not a flat grey box */
+    box-shadow:
+      0 1px 2px rgba(20,18,16,.06),
+      0 4px 16px rgba(20,18,16,.05);
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .type .glyph {
+    width: 26px;
+    height: 26px;
+    color: var(--ink);
+  }
+  .type .t-label {
+    font-family: var(--body);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    color: var(--ink-2);
+  }
+  /* the "All" tile: a calm centered dot-set, no icon, label leads */
+  .type.all .all-mark {
+    width: 26px;
+    height: 26px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .type.all .all-mark span {
+    width: 5px; height: 5px; border-radius: 999px;
+    background: var(--ink-3);
+    box-shadow: 9px 0 0 var(--ink-3), -9px 0 0 var(--ink-3);
+  }
+
+  /* PRESSED-IN selected tile: ink fill, glyph + label go white, sinks slightly */
+  .type[aria-pressed="true"] {
+    border-color: transparent;
+    background: linear-gradient(180deg, #161514 0%, #0A0A0A 100%);
+    color: #ffffff;
+    box-shadow:
+      0 1px 2px rgba(20,18,16,.22),
+      0 6px 16px rgba(20,18,16,.20),
+      inset 0 1px 0 rgba(255,255,255,.08);
+  }
+  .type[aria-pressed="true"] .glyph { color: #ffffff; }
+  .type[aria-pressed="true"] .t-label { color: #ffffff; font-weight: 600; }
+
+  /* the masked-glyph engine — inherits currentColor from the tile */
+  .glyph {
+    display: block;
+    background-color: currentColor;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+  }
+  .glyph.straight    { -webkit-mask-image: url(/hair-patterns/straight.png);   mask-image: url(/hair-patterns/straight.png); }
+  .glyph.wavy        { -webkit-mask-image: url(/hair-patterns/wavy.png);       mask-image: url(/hair-patterns/wavy.png); }
+  .glyph.curly       { -webkit-mask-image: url(/hair-patterns/coily.png);      mask-image: url(/hair-patterns/coily.png); }
+  .glyph.protective  { -webkit-mask-image: url(/hair-patterns/protective.png); mask-image: url(/hair-patterns/protective.png); }
+
+  /* ── Sortieren: text-led chips on white ────────────────────────────────── */
+  .sortpills {
+    display: flex;
+    gap: 8px;
+  }
+  .sort {
+    appearance: none;
+    cursor: pointer;
+    flex: 1;
+    padding: 12px 8px;
+    border-radius: 14px;
+    border: 1px solid rgba(228,228,231,.85);
+    background: var(--white);
+    font-family: var(--body);
+    font-size: 13.5px;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.005em;
+    color: var(--ink-2);
+    box-shadow: 0 1px 2px rgba(20,18,16,.04);
+    transition: color .15s ease, box-shadow .15s ease;
+  }
+  .sort[aria-pressed="true"] {
+    color: #ffffff;
+    font-weight: 600;
+    border-color: transparent;
+    background: linear-gradient(180deg, #161514 0%, #0A0A0A 100%);
+    box-shadow:
+      0 1px 2px rgba(20,18,16,.20),
+      0 4px 12px rgba(20,18,16,.18),
+      inset 0 1px 0 rgba(255,255,255,.08);
+  }
+
+  /* ── footer: reset + apply ─────────────────────────────────────────────── */
+  .foot {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-top: 22px;
+    margin-top: 22px;
+    border-top: 1px solid var(--hairline);
+  }
+  .reset {
+    flex: 0 0 auto;
+    width: 50px;
+    height: 50px;
+    border-radius: 999px;
+    border: 1px solid var(--hairline);
+    background: var(--white);
+    color: var(--ink);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 2px rgba(20,18,16,.05);
+  }
+  .reset svg { width: 19px; height: 19px; display: block; }
+  .apply {
+    flex: 1;
+    height: 50px;
+    border: 0;
+    cursor: pointer;
+    border-radius: 999px;
+    background: linear-gradient(180deg, #161514 0%, #0A0A0A 100%);
+    color: #ffffff;
+    font-family: var(--body);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    box-shadow:
+      0 1px 2px rgba(20,18,16,.22),
+      0 8px 22px rgba(20,18,16,.22),
+      inset 0 1px 0 rgba(255,255,255,.10);
+  }
+</style>
+</head>
+<body>
+
+  <p class="caption">Direction: <b>Soft material &amp; depth</b> — tiles float on the sheet, selection presses into ink.</p>
+
+  <div class="phone">
+    <!-- faint feed peeking behind the dimmed backdrop -->
+    <div class="feed-hint" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <div class="backdrop" aria-hidden="true"></div>
+
+    <section class="sheet" role="dialog" aria-label="Filter">
+      <div class="grabber-wrap"><div class="grabber" aria-hidden="true"></div></div>
+
+      <div class="head">
+        <h1>Filter</h1>
+        <button class="close" type="button" aria-label="Schliessen">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M18 6 6 18" /><path d="m6 6 12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="body">
+
+        <!-- HERO: Dein Haar -->
+        <div class="hair-card">
+          <span class="hair-medallion" aria-hidden="true">
+            <span class="glyph wavy"></span>
+          </span>
+          <span class="text">
+            <span class="label">Welliges, schulterlanges Haar</span>
+            <span class="sub">Schon auf dich abgestimmt. Alles änderbar.</span>
+          </span>
+        </div>
+
+        <!-- Geschlecht -->
+        <div class="group">
+          <h2 class="g-title">Geschlecht</h2>
+          <div class="segmented" role="group" aria-label="Geschlecht">
+            <button class="seg" type="button" aria-pressed="false">Frauen</button>
+            <button class="seg" type="button" aria-pressed="true">Männer</button>
+            <button class="seg" type="button" aria-pressed="false">Unisex</button>
+          </div>
+        </div>
+
+        <!-- Haartyp -->
+        <div class="group">
+          <h2 class="g-title">Haartyp</h2>
+          <div class="types" role="group" aria-label="Haartyp">
+            <button class="type all" type="button" aria-pressed="false">
+              <span class="all-mark" aria-hidden="true"><span></span></span>
+              <span class="t-label">Alle</span>
+            </button>
+            <button class="type" type="button" aria-pressed="false">
+              <span class="glyph straight" aria-hidden="true"></span>
+              <span class="t-label">Glatt</span>
+            </button>
+            <button class="type" type="button" aria-pressed="true">
+              <span class="glyph wavy" aria-hidden="true"></span>
+              <span class="t-label">Wellig</span>
+            </button>
+            <button class="type" type="button" aria-pressed="false">
+              <span class="glyph curly" aria-hidden="true"></span>
+              <span class="t-label">Lockig</span>
+            </button>
+            <button class="type" type="button" aria-pressed="false">
+              <span class="glyph protective" aria-hidden="true"></span>
+              <span class="t-label">Protective</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Sortieren -->
+        <div class="group">
+          <h2 class="g-title">Sortieren</h2>
+          <div class="sortpills" role="group" aria-label="Sortieren">
+            <button class="sort" type="button" aria-pressed="true">Für dich</button>
+            <button class="sort" type="button" aria-pressed="false">Neu</button>
+            <button class="sort" type="button" aria-pressed="false">Beliebt</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- footer -->
+      <div class="foot">
+        <button class="reset" type="button" aria-label="Zurücksetzen">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+            <path d="M3 3v5h5" />
+          </svg>
+        </button>
+        <button class="apply" type="button">Anwenden</button>
+      </div>
+
+    </section>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Inspo Filter, Precision und Rhythm</title>
+<!-- Exists-check: target = Inspo filter bottom-sheet (existing, app/[locale]/inspo filter sheet). REMOVED hits = none. Net-new = a premium "Precision & Rhythm" treatment (segmented gender control, ink-slab selected states, hairline-sectioned rhythm). No new component, treatment-only redesign of the existing sheet. -->
+<style>
+  :root{
+    --ink:#0A0A0A;
+    --ink-2:#6B6B6B;
+    --ink-3:#9B9B9B;
+    --hair:#E4E4E7;
+    --sunken:#F4F4F5;
+    --white:#fff;
+    --font-display:'Inter Tight',-apple-system,'SF Pro Display',system-ui,sans-serif;
+    --font-body:'Inter',-apple-system,'SF Pro Text',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  body{
+    font-family:var(--font-body);
+    background:#EFEFF1;
+    color:var(--ink);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:32px 16px 48px;
+    min-height:100vh;
+  }
+
+  .caption{
+    font-family:var(--font-body);
+    font-size:12px;
+    line-height:1.5;
+    color:var(--ink-2);
+    max-width:390px;
+    width:100%;
+    margin-bottom:16px;
+    letter-spacing:.1px;
+  }
+  .caption b{font-weight:600;color:var(--ink)}
+
+  /* Phone frame */
+  .frame{
+    width:390px;
+    height:780px;
+    background:#C9C9CE;
+    border-radius:44px;
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 24px 60px rgba(10,10,10,.22),0 4px 14px rgba(10,10,10,.10);
+  }
+  /* dimmed backdrop showing a hint of the feed behind */
+  .backdrop{
+    position:absolute;
+    inset:0;
+    background:#1d1d20;
+  }
+  .feed-ghost{
+    position:absolute;
+    inset:0;
+    padding:18px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    grid-auto-rows:150px;
+    gap:10px;
+    opacity:.5;
+    filter:blur(1.5px);
+  }
+  .feed-ghost span{background:#3a3a40;border-radius:14px;display:block}
+  .scrim{position:absolute;inset:0;background:rgba(10,10,10,.46)}
+
+  /* Bottom sheet */
+  .sheet{
+    position:absolute;
+    left:0;right:0;bottom:0;
+    background:var(--white);
+    border-top-left-radius:26px;
+    border-top-right-radius:26px;
+    padding:0 20px 20px;
+    box-shadow:0 -1px 0 rgba(10,10,10,.04);
+  }
+
+  /* Grabber, refined: short, soft, centered */
+  .grabber{
+    width:34px;height:5px;border-radius:3px;
+    background:var(--hair);
+    margin:8px auto 4px;
+  }
+
+  /* Sheet header row */
+  .sheet-head{
+    display:flex;align-items:center;justify-content:space-between;
+    height:48px;
+  }
+  .sheet-title{
+    font-family:var(--font-display);
+    font-size:19px;font-weight:600;letter-spacing:-.2px;
+  }
+  .close{
+    width:32px;height:32px;border-radius:50%;
+    border:1px solid var(--hair);
+    background:var(--white);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--ink);
+    cursor:pointer;
+    flex:0 0 auto;
+  }
+  .close svg{width:15px;height:15px}
+
+  /* Dein Haar anchor, the hero, ink slab */
+  .hair-card{
+    background:var(--ink);
+    border-radius:18px;
+    padding:14px 16px;
+    display:flex;align-items:center;gap:13px;
+    margin-bottom:4px;
+  }
+  .hair-glyph{
+    width:42px;height:42px;border-radius:12px;
+    background:rgba(255,255,255,.10);
+    flex:0 0 auto;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--white);
+  }
+  .hair-glyph .mask{
+    width:26px;height:26px;display:block;background-color:currentColor;
+    -webkit-mask-image:url(/hair-patterns/wavy.png);mask-image:url(/hair-patterns/wavy.png);
+    -webkit-mask-size:contain;mask-size:contain;
+    -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+    -webkit-mask-position:center;mask-position:center;
+  }
+  .hair-copy{min-width:0;flex:1}
+  .hair-eyebrow{
+    font-family:var(--font-body);
+    font-size:12px;font-weight:500;color:rgba(255,255,255,.52);
+    margin-bottom:2px;
+  }
+  .hair-line{
+    font-family:var(--font-display);
+    font-size:15px;font-weight:600;color:var(--white);
+    letter-spacing:-.1px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .hair-sub{
+    font-family:var(--font-body);
+    font-size:12px;font-weight:400;color:rgba(255,255,255,.60);
+    margin-top:3px;line-height:1.35;
+  }
+
+  /* Section rhythm, hairline separated */
+  .section{padding:18px 0;border-top:1px solid var(--hair)}
+  .section:first-of-type{border-top:none}
+  .section-label{
+    font-family:var(--font-body);
+    font-size:13px;font-weight:600;color:var(--ink);
+    margin-bottom:12px;
+    letter-spacing:-.05px;
+  }
+
+  /* iOS segmented control, one track, ink slab on selected */
+  .segment{
+    display:grid;grid-template-columns:repeat(3,1fr);
+    background:var(--sunken);
+    border-radius:13px;
+    padding:3px;
+    gap:0;
+  }
+  .seg{
+    height:38px;border-radius:10px;border:none;background:transparent;
+    font-family:var(--font-body);font-size:14px;font-weight:500;color:var(--ink-2);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;position:relative;
+  }
+  .seg.is-on{
+    background:var(--ink);color:var(--white);font-weight:600;
+    box-shadow:0 1px 2px rgba(10,10,10,.18);
+  }
+  /* faint divider hairlines between unselected segments */
+  .seg.div::before{
+    content:"";position:absolute;left:0;top:9px;bottom:9px;width:1px;background:var(--hair);
+  }
+  .seg.is-on.div::before,.seg.is-on + .seg.div::before{display:none}
+
+  /* Haartyp, tight elegant icon row */
+  .types{
+    display:flex;gap:8px;
+  }
+  .type{
+    flex:1;
+    min-width:0;
+    height:74px;
+    border-radius:14px;
+    border:1px solid var(--hair);
+    background:var(--white);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;
+    cursor:pointer;color:var(--ink-2);
+  }
+  .type .mask{
+    width:26px;height:26px;display:block;background-color:currentColor;
+    -webkit-mask-size:contain;mask-size:contain;
+    -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+    -webkit-mask-position:center;mask-position:center;
+  }
+  .type .word{
+    font-family:var(--font-body);font-size:12px;font-weight:500;color:var(--ink-2);
+    letter-spacing:-.1px;
+  }
+  /* All tile, no icon, a centered glyphless dot of text */
+  .type .all-mark{
+    font-family:var(--font-display);font-size:17px;font-weight:600;color:var(--ink-2);
+    height:26px;display:flex;align-items:center;
+  }
+  .type.is-on{
+    background:var(--ink);border-color:var(--ink);color:var(--white);
+  }
+  .type.is-on .word,.type.is-on .all-mark{color:var(--white);font-weight:600}
+  .type.is-on .mask{color:var(--white)}
+
+  /* Sortieren, refined small chips */
+  .chips{display:flex;gap:8px}
+  .chip{
+    height:38px;padding:0 18px;border-radius:19px;
+    border:1px solid var(--hair);background:var(--white);
+    font-family:var(--font-body);font-size:13px;font-weight:500;color:var(--ink-2);
+    display:flex;align-items:center;gap:7px;cursor:pointer;
+  }
+  .chip .dot{width:14px;height:14px;display:flex;align-items:center;justify-content:center}
+  .chip svg{width:13px;height:13px}
+  .chip.is-on{
+    background:var(--ink);border-color:var(--ink);color:var(--white);font-weight:600;
+  }
+
+  /* Footer */
+  .foot{
+    display:flex;align-items:center;gap:10px;
+    padding-top:18px;margin-top:4px;border-top:1px solid var(--hair);
+  }
+  .reset{
+    width:50px;height:50px;border-radius:25px;flex:0 0 auto;
+    border:1px solid var(--hair);background:var(--white);
+    display:flex;align-items:center;justify-content:center;color:var(--ink);
+    cursor:pointer;
+  }
+  .reset svg{width:18px;height:18px}
+  .apply{
+    flex:1;height:50px;border-radius:25px;border:none;
+    background:var(--ink);color:var(--white);
+    font-family:var(--font-display);font-size:15px;font-weight:600;letter-spacing:-.1px;
+    display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;
+  }
+  .apply .count{
+    font-family:var(--font-body);font-size:12px;font-weight:500;
+    color:rgba(255,255,255,.62);
+  }
+
+  .home-ind{
+    width:128px;height:5px;border-radius:3px;background:rgba(255,255,255,.0);
+    margin:14px auto 2px;
+  }
+</style>
+</head>
+<body>
+
+  <p class="caption"><b>Direction, Precision und Rhythm.</b> Linear/Stripe settings discipline: gender as a true iOS segmented control, ink slabs for selected, hairline-sectioned rhythm on an exact 8pt grid.</p>
+
+  <div class="frame">
+    <div class="backdrop">
+      <div class="feed-ghost">
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <div class="scrim"></div>
+    </div>
+
+    <div class="sheet">
+      <div class="grabber"></div>
+
+      <div class="sheet-head">
+        <div class="sheet-title">Filter</div>
+        <button class="close" aria-label="Schliessen">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="hair-card">
+        <div class="hair-glyph"><span class="mask"></span></div>
+        <div class="hair-copy">
+          <div class="hair-eyebrow">Dein Haar</div>
+          <div class="hair-line">Welliges, schulterlanges Haar</div>
+          <div class="hair-sub">Schon auf dich abgestimmt. Alles änderbar.</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-label">Geschlecht</div>
+        <div class="segment">
+          <button class="seg">Frauen</button>
+          <button class="seg div is-on">Männer</button>
+          <button class="seg div">Unisex</button>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-label">Haartyp</div>
+        <div class="types">
+          <button class="type">
+            <span class="all-mark">Alle</span>
+          </button>
+          <button class="type">
+            <span class="mask" style="-webkit-mask-image:url(/hair-patterns/straight.png);mask-image:url(/hair-patterns/straight.png)"></span>
+            <span class="word">Glatt</span>
+          </button>
+          <button class="type is-on">
+            <span class="mask" style="-webkit-mask-image:url(/hair-patterns/wavy.png);mask-image:url(/hair-patterns/wavy.png)"></span>
+            <span class="word">Wellig</span>
+          </button>
+          <button class="type">
+            <span class="mask" style="-webkit-mask-image:url(/hair-patterns/coily.png);mask-image:url(/hair-patterns/coily.png)"></span>
+            <span class="word">Lockig</span>
+          </button>
+          <button class="type">
+            <span class="mask" style="-webkit-mask-image:url(/hair-patterns/protective.png);mask-image:url(/hair-patterns/protective.png)"></span>
+            <span class="word">Schutz</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-label">Sortieren</div>
+        <div class="chips">
+          <button class="chip is-on">
+            <span class="dot">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            </span>
+            Für dich
+          </button>
+          <button class="chip">Neu</button>
+          <button class="chip">Beliebt</button>
+        </div>
+      </div>
+
+      <div class="foot">
+        <button class="reset" aria-label="Filter zurücksetzen">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        </button>
+        <button class="apply">Anwenden <span class="count">142 Looks</span></button>
+      </div>
+
+      <div class="home-ind"></div>
+    </div>
+  </div>
+
+</body>
+</html>
