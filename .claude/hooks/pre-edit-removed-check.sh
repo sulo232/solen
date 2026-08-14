@@ -33,6 +33,64 @@ PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$(pwd)}"
 [[ -n "$FILE" ]] || exit 0
 # Only EXISTING files (a brand-new file is pre-build-exists-check's job).
 [[ -e "$FILE" ]] || exit 0
+# (c) COMPONENT BRANCH, added 2026-08-14. Owner: "wheres that even gnna live tho[ugh], removed that
+# section from new homepage ... u didnt even flag it thats a big problem make a gate for the core
+# cause."
+#
+# THE CORE CAUSE, stated plainly: this gate only ever looked at ROUTE PAGES, so styling a SECTION
+# that the current design has already dropped sailed straight through. That is what happened: a whole
+# turn went into the home page's business block, deleting a placeholder and centring the text, while
+# two plan files said that section is not on the mobile home at all. Nothing looked, so nothing said
+# so, and the owner had to.
+#
+# The check is mechanical and cheap: when the edit targets a COMPONENT, grep the plan and design docs
+# for that component's name on a line that also carries a removal or hide word. Any hit is surfaced
+# and the edit stops until it is read. It does not judge; it makes me look at what was already
+# written before I restyle something that may not belong on the screen any more.
+case "$FILE" in
+  *"/_components/"*.tsx|*"/components/"*.tsx|*"/components-legacy/"*.tsx)
+    COMP=$(basename "$FILE" .tsx)
+    case "$COMP" in index|page|layout|route) exit 0 ;; esac
+    # The phrase has to be about the SECTION being off a screen, not about deleting something inside
+    # it. The first draft matched any "remove"/"deleted" on the line and flagged SalonCard, whose
+    # notes are full of removing a badge and a pill FROM the card. Those are edits to the component,
+    # which is the ordinary work this gate must never interrupt.
+    # A CONTRADICTION, not a keyword. Drafts two and three matched hide/remove words near the name
+    # and flagged four ordinary components, because plan files are full of "remove the line above the
+    # header" and "drop the SearchOverlay prop" , work ON a component, which is the normal work this
+    # gate must never interrupt. Keyword matching cannot tell those apart and every widening made it
+    # noisier.
+    #
+    # So it checks a FACT against a FACT instead. The doc phrase has to be the specific claim that
+    # the section is off a screen ("hide X below md", "X is absent on mobile"), and the code has to
+    # DISAGREE: the place that mounts it carries no responsive-hide class. Doc says gone, code says
+    # rendered, and only that pair blocks. Today's case is exactly that shape: a plan says "hide
+    # BusinessTeaser below md, all delivered", and page.tsx mounts it with nothing around it.
+    DOC_HITS=$(grep -rniE "hide[^.]{0,20}\b${COMP}\b[^.]{0,20}below (md|the)|\b${COMP}\b[^.]{0,25}(hidden below|absent on mobile|not on (the )?mobile)" \
+                 --include='*.md' "$PROJECT_DIR/_plans" "$PROJECT_DIR/_design-system" 2>/dev/null \
+               | head -3 || true)
+    if [[ -n "$DOC_HITS" ]]; then
+      MOUNTS=$(grep -rn --include='*.tsx' -B 2 "<${COMP}[ /]" "$PROJECT_DIR/app" 2>/dev/null \
+               | grep -v "/dev/" | grep -iE "hidden|max-md:|md:block|md:hidden" | head -2 || true)
+      [[ -n "$MOUNTS" ]] && DOC_HITS=""   # the code already honours it; nothing to flag
+    fi
+    if [[ -n "$DOC_HITS" ]]; then
+      {
+        echo "SECTION-STILL-WANTED CHECK: you are restyling \`${COMP}\`, and the written record says it was hidden or removed somewhere."
+        echo
+        echo "$DOC_HITS"
+        echo
+        echo "The owner caught this by hand on 2026-08-14: a full turn went into the home page's business block while two plan files said that section is not on the mobile home at all. Styling something the design has already dropped is wasted work, and worse, it looks like the section is blessed."
+        echo
+        echo "READ those lines first. Then either confirm the section is still wanted and say so in the flag, or fix the fact that it is still mounted."
+        echo "Override: echo \"<why this section is still live>\" > .claude/removed-edit-skip.flag  (30-min TTL, non-blank)"
+      } >&2
+      exit 2
+    fi
+    exit 0
+    ;;
+esac
+
 # Only route PAGES (the resurrect-risk surface). Not route.ts/components/libs.
 case "$FILE" in *"/page.tsx") ;; *) exit 0 ;; esac
 

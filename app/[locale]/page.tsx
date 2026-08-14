@@ -299,7 +299,15 @@ export default async function Page({
             to bring it back. */}
         <Entdecken />
         <Reviews />
-        <BusinessTeaser />
+        {/* Desktop only. The mobile home ends at Reviews: that is what the home-v3 mockup shows
+            (`public/_mockups/home-v3/search-a.html`) and what HOME_INSPO_CHROME recorded as "business
+            teaser + newsletter are correctly absent on mobile". HOME_V3_CATEGORY_MAP even lists this
+            as delivered and verified at 390x844, and it never was: the section shipped unconditional
+            and the owner found it himself on 2026-08-14 ("removed that section from new homepage ...
+            u didnt even flag it"). Hidden below md, which is what the record always said. */}
+        <div className="max-md:hidden">
+          <BusinessTeaser />
+        </div>
       </FeedZone>
       </div>
     </>
