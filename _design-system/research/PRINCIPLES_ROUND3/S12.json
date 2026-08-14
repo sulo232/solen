@@ -1,0 +1,42 @@
+{
+ "id": "S12",
+ "draft": {
+  "id": "S12",
+  "tag": "mechanize",
+  "title": "Alignment / off-grid detector (D3)",
+  "principle_summary": "placeholder",
+  "sources": [],
+  "solen_current": "placeholder",
+  "gap": "placeholder",
+  "proposed_addition": "placeholder"
+ },
+ "verified": {
+  "claim_verdicts": [
+   {
+    "claim": "Alignment is shared coordinates, distinct from balance and symmetry (NN/g)",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Confirmed already present in RATIONALE.md line 53, correctly tiered T2 there. Draft did not cite it, had to be pulled from the file directly."
+   },
+   {
+    "claim": "D3 (alignment/off-grid conformance) is a mechanizable diagnostic gap",
+    "source_ok": true,
+    "tier_final": "T2 (internal, engineering claim not an external stat)",
+    "note": "Confirmed at RATIONALE.md line 836-841, the gaps table already marks D3 YES-mechanizable. This is Solen's own prior work, not an external citation, so myth-screen does not apply to it."
+   },
+   {
+    "claim": "4pt grid rationale (decision-reduction + rem-scaling, not pixel-crispness)",
+    "source_ok": true,
+    "tier_final": "CONV (convention, correctly labeled)",
+    "note": "Confirmed at RATIONALE.md line 142-144, already correctly downgraded from a false pixel-crispness claim on 2026-07-17. Relevant because the detector's off-grid tolerance must match this convention, not invent a new one."
+   }
+  ],
+  "id": "S12",
+  "tag": "mechanize",
+  "title": "Alignment / off-grid detector (D3)",
+  "verdict": "flagged",
+  "myths_caught": [],
+  "verified_addition": "RESEARCH-STAGE FAILURE, not a content issue: the draft handed to verify had every field (\"placeholder\") and sources: []. Nothing was actually researched, so there was nothing to adversarially check against the myth screen; the numbers_used / sources fields are absent from the stream's own JSON entry too, confirming the research stage never ran on S12. I am not fabricating psychology stats to fill the gap since this stream is a pure engineering diagnostic (DOM geometry), not a behavioral claim, so the myth screen has no applicable numbers here. What I found grounded and citable directly in RATIONALE.md (not from the empty draft) that a rerun should build on:\\n\\nDomain: Diagnostic, alignment (D3, gap_ref D3, RATIONALE.md line 836-841 gaps table, already marked mechanizable=YES but unbuilt).\\nPrior: \"alignment is shared coordinates\" is distinct from balance (weight distribution) and symmetry (mirror transform); T2, NN/g, cited at RATIONALE.md line 53. This is LAW-EXISTS but currently unmeasured on any live Solen page, which is the actual gap, not a new law to source.\\nGrid convention: 4pt grid is CONV (RATIONALE.md line 144), justified by decision-reduction and rem-based WCAG 1.4.4 scaling, explicitly NOT by pixel-crispness (that claim was already ruled false 2026-07-17, line 142). Any off-grid detector must tolerance-match this CONV, it should flag left/top/width/height/gap px values not on the 4-multiple set (or the 32/12/16 rhythm tier, or the >100px 5/10 rounding exception at LOCKFILE:452), not invent a stricter rule.\\nDetector shape (engineering spec, not a cited claim): collect getBoundingClientRect() for visible block-level elements on a rendered route, bucket left/right/top/bottom edges to the nearest integer px, flag any two edges that are 1 to 4px apart (a near-miss, should be exactly 0 or intentionally offset), and separately flag any measured offset/size/gap whose value is not a multiple of 4 (excluding the >100px rounding exception). Output should list file:line/selector, the two mismatched values, and the delta, mirroring the format already used by solen-drift-check.\\n\\nResidual note for the owner: nothing here reopens a frozen literal, this only proposes building the missing script against values already locked. The actual research-stage draft needs to be rerun properly, this pass only recovered what was already true in RATIONALE.md; it did not invent new tiered claims to replace the placeholder.",
+  "residual_risks": "The upstream research stage for S12 produced no real content (all fields literally \"placeholder\", sources empty), so this verify pass could not adversarially test any claim as intended, it had to reconstruct the honest baseline from RATIONALE.md itself. Recommend the orchestrator re-run the research stage for S12 specifically before this addition is considered final; what is returned here is a verified STARTING POINT (existing prior + existing gap entry), not a fully drafted RATIONALE.md addition with a written detector script. Also flag to the owner as a process gap: if other streams in this batch show the same all-placeholder pattern, the research stage may have failed silently across the run, not just on S12."
+ }
+}

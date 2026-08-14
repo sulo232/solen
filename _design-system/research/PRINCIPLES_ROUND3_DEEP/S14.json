@@ -1,0 +1,170 @@
+{
+ "id": "S14",
+ "synth": {
+  "id": "S14",
+  "tag": "mechanize",
+  "title": "Repertory-grid triads + staircase probes",
+  "principle_summary": "Taste elicitation should replace guessing with two paired, bounded procedures: a TRIAD RUN (Kelly repertory grid, 1955) that surfaces the owner's unnamed bipolar taste constructs by showing three real screens and asking which two are alike and how the third differs, run until construct saturation instead of a fixed count; and a STAIRCASE RUN (adaptive bisection probe) that converts a recurring vague complaint on a continuous axis (radius, shadow depth, blue saturation, motion duration) into a measured numeric threshold by narrowing a bounded range with forced binary choices until the estimate stabilizes. Both procedures exist so a settled taste call gets written back to TASTE_LOG as a dated construct or threshold, closing the loop that RATIONALE.md domain 16 already opened and queued as gap D5, rather than the same \"too heavy\" / \"too busy\" complaint being re-argued from scratch every round.",
+  "real_world_evidence": [
+   {
+    "source": "Grok - \"Which video do you prefer to keep?\" (2AFC screen)",
+    "what": "Pure two-alternative-forced-choice UI: two tiles labeled Video A / Video B, single CTA that restates the choice back (\"Keep Video B\") instead of a generic Next. This is a triad reduced to a pair - the literal mechanic Kelly's method runs, in a shipped consumer surface.",
+    "tier": "T3"
+   },
+   {
+    "source": "Warby Parker face-shape quiz, step 2 of 5",
+    "what": "Explicit staircase framing: \"2 OF 5\" progress counter, one bounded question per step (\"pick up to two\"), a built-in \"Not sure?\" fallback branch. Closest real match to a staircase probe's step discipline (explicit count, one narrowing decision per step, an escape branch for the undecidable case).",
+    "tier": "T3"
+   },
+   {
+    "source": "Stitch Fix Style Shuffle",
+    "what": "Single-item forced binary rating (thumbs up/down per garment, no comparison screen) feeding a per-customer style embedding; self-reported 80%+ of 4M+ customers, 1B+ ratings. Evidence that a cheap, repeated binary probe scales, but the adoption/volume figures are Stitch Fix's own reporting, not independently audited.",
+    "tier": "CONV"
+   },
+   {
+    "source": "LLM-assisted hybrid interfaces for remote repertory grid interviews (ScienceDirect, 2025-2026)",
+    "what": "Academic tooling thread (a system called Q-Survey) automating the iterative triad dialogue classic RGT interviews require, i.e. software-mediated repertory grid elicitation is an active current research direction, not settled practice.",
+    "tier": "T3"
+   },
+   {
+    "source": "Fransella, Bell and Bannister, \"A Manual for Repertory Grid Technique\" (methodology literature, cited via uxmatters.com and ixd.prattsi.org UX-research writeups)",
+    "what": "Canonical operational guidance for RGT: element pools of roughly 6-10, triads run (systematic or random) until no new construct pole emerges, i.e. saturation as the stopping rule rather than a fixed triad count.",
+    "tier": "T2"
+   },
+   {
+    "source": "Airbnb design-critique discipline (Katie Dill, via First Round Review) and Airbnb DLS origin (Karri Saarinen / Alex Schleifer, Airbnb Design on Medium)",
+    "what": "The nearest real-company analog to \"capture a settled taste call once, stop re-litigating it\": stage-aware critique rules plus a written Design Language System that downstream builders reference instead of re-deriving taste per surface. Process-level analog, not an elicitation instrument.",
+    "tier": "CONV"
+   }
+  ],
+  "generative_prior": "MECHANIZED DEFAULTS (metric + formula + threshold), grounded in the T2 repgrid methodology and standard psychophysical staircase averaging, adapted for a design-taste context:\n\nTRIAD RUN. Element pool: 6-10 real Solen screens of the same class (never abstractions or generic references - matches taste rule 9, ground in the actual system). Present 3 at a time, ask \"which two feel alike, how does the third differ\" - the answer names a bipolar construct (pole A vs pole B) in the owner's own words. STOPPING RULE = construct saturation: stop the round when 2 consecutive triads yield zero new construct poles. For an 8-10 element pool this typically resolves within 6-10 triads (T2, Fransella et al. saturation curves), far short of the full C(n,3) combinatorial set. Real-app analog for the \"small bounded step, explicit count\" shape: Warby Parker's 5-step staircase quiz.\n\nSTAIRCASE RUN (continuous axes only - radius, shadow depth, blue saturation, motion duration). Bisect a bounded interval with forced binary choices (\"closer to A or B\") each trial narrowing the range by half. STOPPING RULE = 3 reversals, take the mean of the last 3 reversal values as the threshold (T1/T2, Cornsweet 1962 staircase-averaging convention, adapted here to a subjective rather than perceptual threshold, so tier the output as owner-anchored not psychophysical fact). Suggested tolerance bands to declare convergence: radius +/-2px, motion duration +/-20ms, opacity/saturation +/-0.05. Real-app analog for the binary-narrowing shape: Grok's 2AFC \"keep A or B\" pattern, reduced from a triad to a pair.\n\nWRITE-BACK. Every completed TRIAD or STAIRCASE run produces one TASTE_LOG.md entry: dated, construct name (pole A vs pole B) or threshold value, the triad/staircase trial IDs it was elicited from, and an \"applies to\" scope. This is the D5 payoff the RATIONALE.md domain-16 paragraph already named but left as a queued gap; this generative_prior is the fill.\n\nTRIGGER for running a probe at all: taste rule 6's own pattern-reset threshold (two occurrences of the same unnamed complaint, e.g. \"too heavy\" said twice) is the natural fire condition, so this mechanic activates on an existing signal rather than a new one.",
+  "proposed_addition": "### D5 mechanized: the triad + staircase probe protocol (extends RATIONALE.md domain 16, §12 epistemic stance)\n\n**METRIC.** Two probe types, chosen by axis type:\n- CATEGORICAL/UNNAMED axis (owner says \"off\" / \"busy\" / \"heavy\" with no named cause, twice, per taste rule 6) -> TRIAD RUN.\n- CONTINUOUS/NAMED axis already in the system (radius, shadow depth, blue saturation percent, motion duration) where the owner disputes a specific value -> STAIRCASE RUN.\n\n**FORMULA.**\n- TRIAD RUN: element pool n = 6-10 real same-class Solen screens. Present triads (systematic order preferred over random for reproducibility). Each triad yields 0 or 1 new bipolar construct pole-pair. Running new-construct count per triad; STOP when the last 2 triads both yield 0 new poles (construct saturation, T2 per Fransella/Bell/Bannister RGT methodology).\n- STAIRCASE RUN: bounded interval [low, high] anchored to the nearest LOCKFILE-adjacent values already in the system (never inventing an out-of-system bound). Each trial bisects the surviving interval via a forced \"closer to A or B\" choice. Track reversals (direction changes). STOP at 3 reversals; report threshold = mean of the last 3 reversal values (T1/T2 staircase-averaging convention, tiered CONV when applied to a subjective rather than perceptual judgment).\n\n**THRESHOLD (declare-convergence bands).** radius +/-2px, motion duration +/-20ms, opacity/saturation +/-0.05, blue-accent-usage-share +/-1 percentage point. A staircase that has not converged within these bands after 8 trials escalates to the owner as an open QUESTIONS.md item rather than reporting a false-precision number.\n\n**WRITE-BACK FORMAT (TASTE_LOG.md entry, same Decision/Why table shape already in use).**\n| Date | Probe type | Construct / threshold | Elicited from | Applies to | Supersedes |\n|---|---|---|---|---|---|\n| YYYY-MM-DD | Triad / Staircase | \"pole A vs pole B\" or numeric value + unit | triad/trial element IDs | named surface/component | prior TASTE_LOG row id, if any |\n\n**BOUNDARY.** This mechanic elicits and RECORDS taste; it never overrides a LOCKFILE frozen literal or an existing TASTE_LOG row on its own authority. A construct or threshold that contradicts a LOCKFILE value is a QUESTIONS.md entry for the owner, exactly as domain-16's existing epistemic-stance rule already states (this file's boundary is inherited, not re-argued).\n\n**NOTED TENSION, not applied.** Two of the real-world examples that best demonstrate the mechanic's UI shape (Warby Parker's staircase step, Grok's 2AFC pair) both render their selected/chosen state as a solid BLUE fill. That directly conflicts with Solen's locked selected-state law (calm gray `bg-s-bg-sunken` fill, never blue, never ink). Any internal Taste Lab tooling built to run these probes should follow Solen's own selected-state convention, not the blue pattern seen in the source examples; flagging the conflict here rather than importing it.\n\n**SOURCE.** Kelly 1955 (repertory grid, T2 method); Fransella/Bell/Bannister RGT manual via uxmatters.com and ixd.prattsi.org (T2, saturation-as-stopping-rule); Cornsweet 1962 staircase method (T1 psychophysics, CONV when adapted to subjective design thresholds); Warby Parker and Grok flows observed on Mobbin (T3, UI-shape evidence only); Stitch Fix Style Shuffle self-reported figures (CONV, unverified volume claim, cited only as directional evidence that a cheap binary probe scales); Airbnb critique discipline and DLS origin (CONV, process analog, not an instrument match).",
+  "sources": [
+   {
+    "claim": "Kelly's repertory grid: triad comparison elicits bipolar constructs",
+    "source": "Kelly, G.A. (1955), The Psychology of Personal Constructs; summarized via uxmatters.com and ixd.prattsi.org UX-research writeups",
+    "tier": "T2"
+   },
+   {
+    "claim": "RGT practice: 6-10 elements, triads run until construct saturation, not a fixed count",
+    "source": "Fransella, Bell, Bannister, A Manual for Repertory Grid Technique (cited via uxmatters.com, ixd.prattsi.org, EXPRESSO method library)",
+    "tier": "T2"
+   },
+   {
+    "claim": "Staircase methods converge via reversal averaging",
+    "source": "Cornsweet, T.N. (1962), The staircase-method in psychophysics",
+    "tier": "T1"
+   },
+   {
+    "claim": "Warby Parker face-shape quiz uses an explicit 5-step staircase with a bounded per-step choice and a 'not sure' fallback branch",
+    "source": "Mobbin flow capture, Warby Parker face-shape quiz",
+    "tier": "T3"
+   },
+   {
+    "claim": "Grok's video-preference screen is a pure 2AFC pairwise choice UI",
+    "source": "Mobbin screen capture, Grok \"Which video do you prefer to keep?\"",
+    "tier": "T3"
+   },
+   {
+    "claim": "Stitch Fix Style Shuffle uses single-item binary ratings at scale (80%+ of 4M+ customers, 1B+ ratings)",
+    "source": "Stitch Fix's own explainer (stitchfix.com) and QZ writeup, self-reported figures",
+    "tier": "CONV"
+   },
+   {
+    "claim": "LLM-assisted tooling for remote repertory-grid interviews is an active 2025-2026 research thread",
+    "source": "ScienceDirect, \"LLM-assisted hybrid interfaces for remote repertory grid interviews\"",
+    "tier": "T3"
+   },
+   {
+    "claim": "Airbnb's stage-aware critique discipline and its DLS are the closest real-company analog to capturing a settled taste call once",
+    "source": "First Round Review interview with Katie Dill; Karri Saarinen/Alex Schleifer, \"Building a Visual Language\", Airbnb Design on Medium",
+    "tier": "CONV"
+   }
+  ],
+  "numbers_used": [
+   "6-10 element pool for a triad run (T2, RGT methodology convention)",
+   "stop rule: 2 consecutive triads with zero new construct poles (T2, saturation heuristic)",
+   "typically 6-10 triads to reach saturation for an 8-10 element pool (T2, derived from RGT saturation curves, not exhaustive C(n,3))",
+   "staircase stop rule: 3 reversals, threshold = mean of last 3 reversal values (T1/T2, Cornsweet staircase averaging, adapted to CONV when used on subjective judgments)",
+   "convergence tolerance bands: radius +/-2px, motion duration +/-20ms, opacity/saturation +/-0.05, blue-accent-share +/-1 percentage point (CONV, proposed operational default, not independently sourced)",
+   "escalate to owner if staircase has not converged within 8 trials (CONV, proposed operational default)"
+  ],
+  "taste_lab_probe": "Next Taste Lab round: pick 8 real PASS-verified screens from one surface (e.g. recent booking-flow or dashboard-section screens) that the owner has NOT already commented on by name. Run a TRIAD RUN with no expected construct stated in advance (\"which two feel alike, how does the third differ\") and log whatever bipolar axis surfaces, even if it does not match a taste rule already on the books, as a candidate D5 entry in TASTE_LOG. Separately, take the single most recent unresolved \"too heavy\" or \"too busy\" style complaint on file and run a STAIRCASE RUN against its named continuous axis (radius, shadow depth, or blue saturation) to convert it into a numeric threshold with a declared tolerance band, rather than leaving it as an adjective."
+ },
+ "verified": {
+  "id": "S14",
+  "tag": "mechanize",
+  "verdict": "revised",
+  "myths_caught": [
+   "Stitch Fix Style Shuffle volume: draft cites '1B+ ratings' but Stitch Fix's own newsroom post and LinkedIn material state '10 billion interactions' / 'over 10 billion item ratings' -- the draft's number is off by 10x. Corrected to 10 billion+ in verified_addition, still tagged CONV (self-reported, not audited).",
+   "Stitch Fix '80%+ of 4M+ customers' figure: two search engines (DuckDuckGo, Bing) returned no Stitch Fix source stating any percentage of any customer count uses Style Shuffle. This specific figure could not be traced to any publication and is cut from verified_addition rather than softened -- it reads like an invented precision number attached to a real program.",
+   "ScienceDirect 'LLM-assisted hybrid interfaces for remote repertory grid interviews' / 'Q-Survey' citation: could not be located via two independent search engines under any phrasing. This is very likely a hallucinated or misremembered citation, not a T3 finding. Downgraded to MYTH (unconfirmed citation) and removed from the source list and the 'active research direction' claim in verified_addition; the Kelly/Fransella methodology stands on its own without it.",
+   "The FORMULA's '2 consecutive triads yield zero new poles' stopping rule and 'typically 6-10 triads for an 8-10 element pool' figure are presented as T2-sourced (attributed directly to Fransella/Bell/Bannister). The manual's real, confirmable claim is only the general concept 'run to saturation, not a fixed count' -- it is not confirmable that the manual specifies '2 consecutive' or '6-10' as exact numbers. Re-tagged CONV (a reasonable operational default inspired by the T2 concept) rather than T2 itself.",
+   "The staircase's '3 reversals, mean of last 3' stop rule is presented as a direct T1/T2 Cornsweet convention. Cornsweet 1962 (confirmed real, American Journal of Psychology vol 75) describes continuing 'until many reversals are obtained around the value to be estimated' -- it does not specify 3 as the count; classic staircase practice often runs 6-8 reversals for precision. The specific cutoff of 3 is re-tagged CONV (a simplification for a fast, low-stakes subjective probe), with the general reversal-averaging mechanism staying T1."
+  ],
+  "residual_risks": "Owner-decision items: (1) whether to actually build the internal 'Taste Lab' tooling implied by taste_lab_probe -- this stream elicits and records taste, it does not by itself resolve any open taste question, and no build-time estimate exists; (2) the draft's own flagged tension (Warby Parker / Grok reference screens render selected state as solid blue, which conflicts with Solen's locked gray-sunken selected-state law) is correctly NOT applied in the mechanic itself, but should be logged as an explicit QUESTIONS.md line rather than left inside a RATIONALE prose note, so it does not silently resurface as 'the reference used blue' during a future build. Residual uncertainty: the corrected 'CONV, operational default' tags on the 2-triad and 3-reversal stopping rules mean these thresholds have never actually been run against a real Solen taste dispute -- the numbers are plausible defaults, not validated ones, and the taste_lab_probe pilot is the actual test of whether they work in practice, not a formality. The Stitch Fix and Airbnb evidence remain CONV-tier company self-reporting / process analogy, not controlled evidence that triad or staircase probes outperform ad hoc taste calls for THIS use case (owner + Claude, not owner + population of raters) -- worth naming as a limitation rather than implying the mechanic is proven at Solen's scale.",
+  "verified_addition": "### D5 mechanized: the triad + staircase probe protocol (extends RATIONALE.md domain 16, §12 epistemic stance)\n\n**METRIC.** Two probe types, chosen by axis type:\n- CATEGORICAL/UNNAMED axis (owner says \"off\" / \"busy\" / \"heavy\" with no named cause, twice, per taste rule 6) -> TRIAD RUN.\n- CONTINUOUS/NAMED axis already in the system (radius, shadow depth, blue saturation percent, motion duration) where the owner disputes a specific value -> STAIRCASE RUN.\n\n**FORMULA.**\n- TRIAD RUN: element pool n = 6-10 real same-class Solen screens. Present triads (systematic order preferred over random for reproducibility). Each triad yields 0 or 1 new bipolar construct pole-pair. Running new-construct count per triad; STOP when the last 2 triads both yield 0 new poles. The general principle here (saturation, not a fixed triad count, is the correct stopping rule) is T2-sourced to Fransella/Bell/Bannister's RGT methodology manual; the specific \"2 consecutive triads\" cutoff and the \"6-10 triads typically needed\" estimate are NOT numbers stated in that manual -- they are CONV operational defaults reasoned from the saturation concept, to be tuned against real Solen runs.\n- STAIRCASE RUN: bounded interval [low, high] anchored to the nearest LOCKFILE-adjacent values already in the system (never inventing an out-of-system bound). Each trial bisects the surviving interval via a forced \"closer to A or B\" choice. Track reversals (direction changes). STOP at 3 reversals; report threshold = mean of the last 3 reversal values. The reversal-averaging mechanism itself is T1, confirmed to Cornsweet, T.N. (1962), \"The Staircase-Method in Psychophysics,\" The American Journal of Psychology 75(3):485-491, which runs a staircase \"until many reversals are obtained around the value to be estimated.\" Cornsweet does not specify 3 as the count -- classic psychophysical staircases commonly run 6-8 reversals for precision. The 3-reversal cutoff used here is a CONV simplification, chosen for a fast, low-stakes, subjective (not perceptual-threshold) design probe, and should be tiered CONV in any citation, not T1.\n\n**THRESHOLD (declare-convergence bands).** radius +/-2px, motion duration +/-20ms, opacity/saturation +/-0.05, blue-accent-usage-share +/-1 percentage point. These bands are CONV, proposed operational defaults, not independently sourced. A staircase that has not converged within these bands after 8 trials escalates to the owner as an open QUESTIONS.md item rather than reporting a false-precision number.\n\n**WRITE-BACK FORMAT (TASTE_LOG.md entry, same Decision/Why table shape already in use).**\n| Date | Probe type | Construct / threshold | Elicited from | Applies to | Supersedes |\n|---|---|---|---|---|---|\n| YYYY-MM-DD | Triad / Staircase | \"pole A vs pole B\" or numeric value + unit | triad/trial element IDs | named surface/component | prior TASTE_LOG row id, if any |\n\n**BOUNDARY.** This mechanic elicits and RECORDS taste; it never overrides a LOCKFILE frozen literal or an existing TASTE_LOG row on its own authority. A construct or threshold that contradicts a LOCKFILE value is a QUESTIONS.md entry for the owner, exactly as domain-16's existing epistemic-stance rule already states (this file's boundary is inherited, not re-argued).\n\n**NOTED TENSION, not applied.** Two of the real-world examples that best demonstrate the mechanic's UI shape (Warby Parker's staircase step, Grok's 2AFC pair) both render their selected/chosen state as a solid BLUE fill. That directly conflicts with Solen's locked selected-state law (calm gray `bg-s-bg-sunken` fill, never blue, never ink). Any internal Taste Lab tooling built to run these probes should follow Solen's own selected-state convention, not the blue pattern seen in the source examples. This tension should be logged as its own QUESTIONS.md line at build time, not just noted in prose here.\n\n**SOURCE.** Kelly, G.A. (1955), The Psychology of Personal Constructs (T2, repertory grid / triad method, cited via secondary UX-research summaries rather than the primary text); Fransella, Bell and Bannister, A Manual for Repertory Grid Technique, via uxmatters.com and ixd.prattsi.org (T2 for the \"6-10 elements, run to saturation not a fixed count\" concept; the specific numeric cutoffs above are CONV, not literature-stated); Cornsweet, T.N. (1962), The American Journal of Psychology 75(3):485-491, \"The Staircase-Method in Psychophysics\" (T1, confirmed real and correctly described; the 3-reversal cutoff used here is a CONV adaptation, not the paper's own number); Warby Parker and Grok flows observed on Mobbin (T3, UI-shape evidence only, unverified independently in this pass); Stitch Fix Style Shuffle self-reported figures (CONV, company-published: newsroom.stitchfix.com states \"10 billion interactions\" / \"over 10 billion item ratings\" on Style Shuffle -- cited only as directional evidence that a cheap binary probe scales at consumer volume; no verified figure exists for what share of Stitch Fix's customer base uses it, so no percentage-of-customers claim should be made); Airbnb critique discipline (Katie Dill, \"Stop Dancing Around Criticism,\" First Round Review, review.firstround.com -- confirmed real article, CONV, process analog only, not an instrument match) and Airbnb DLS origin (Karri Saarinen/Alex Schleifer, Airbnb Design on Medium, CONV, not independently re-verified in this pass).\n\n**CUT.** The draft's claim of an active 2025-2026 ScienceDirect research thread on \"LLM-assisted hybrid interfaces for remote repertory grid interviews\" (a system named \"Q-Survey\") could not be located via two independent search engines under any phrasing and is removed from this addition as an unconfirmed, possibly hallucinated citation. The rest of the mechanic does not depend on it.",
+  "claim_verdicts": [
+   {
+    "claim": "Kelly, G.A. (1955), The Psychology of Personal Constructs -- repertory grid triad method for eliciting bipolar constructs",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Real, foundational text; cited via secondary UX-research summaries rather than primary reading, so T2 (not T1) is the honest tier, matching the draft."
+   },
+   {
+    "claim": "Fransella, Bell, Bannister manual: RGT practice uses 6-10 elements, triads run to saturation rather than a fixed count",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Real, standard RGT methodology text, correctly characterized for the GENERAL saturation-as-stopping-rule concept. The specific '2 consecutive triads' and '6-10 triads typically' numbers are not confirmable as the manual's own figures -- downgraded to CONV for those specific numbers only."
+   },
+   {
+    "claim": "Cornsweet 1962 describes a staircase method with reversal averaging for psychophysical thresholds",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Verified: Cornsweet, T.N. (1962), 'The Staircase-Method in Psychophysics,' The American Journal of Psychology 75(3):485-491. Confirmed description matches (continues past first reversal, averages over many reversals). The draft's specific '3 reversals' cutoff is not Cornsweet's own number; that piece is CONV."
+   },
+   {
+    "claim": "Warby Parker face-shape quiz uses an explicit 5-step staircase with bounded per-step choices and a 'not sure' fallback",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Plausible UI-shape description consistent with known Warby Parker quiz flows; could not be independently re-verified via Mobbin in this pass, so it stays at the draft's own T3 (weakest tier), not downgraded further but not upgraded either."
+   },
+   {
+    "claim": "Grok's video-preference screen is a pure 2AFC pairwise choice UI restating the choice on the CTA",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Same treatment as the Warby Parker claim: plausible, unverified independently, correctly already at the weakest T3 tier in the draft."
+   },
+   {
+    "claim": "Stitch Fix Style Shuffle: self-reported 80%+ of 4M+ customers, 1B+ ratings",
+    "source_ok": false,
+    "tier_final": "MYTH",
+    "note": "Wrong on both counts. Stitch Fix's own newsroom/LinkedIn material states 10 billion interactions / 10 billion+ item ratings, not 1 billion (10x error). No source found anywhere for an '80%+ of 4M+ customers' figure -- it does not trace to any Stitch Fix publication. The volume claim is corrected to 10 billion+ (kept CONV, self-reported); the 80%/4M customer-count figure is cut entirely."
+   },
+   {
+    "claim": "LLM-assisted hybrid interfaces for remote repertory grid interviews is an active 2025-2026 ScienceDirect research thread (a system called Q-Survey)",
+    "source_ok": false,
+    "tier_final": "MYTH",
+    "note": "Could not locate this paper via two independent search engines under multiple phrasings. Very likely a hallucinated or misattributed citation. Removed from the addition and from the source list; the core triad/staircase mechanic does not depend on it."
+   },
+   {
+    "claim": "Airbnb's stage-aware critique discipline: Katie Dill interview in First Round Review on giving effective design criticism",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Verified real article: 'Stop Dancing Around Criticism and Put It to Use with These Tips from Airbnb's Head of Experience Design,' review.firstround.com. Correctly tiered CONV (process analog, not an elicitation instrument) already in the draft."
+   },
+   {
+    "claim": "Airbnb DLS origin credited to Karri Saarinen / Alex Schleifer via Airbnb Design on Medium",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Consistent with well-documented, widely-cited Airbnb Design Language System origin story; not independently re-fetched in this pass but not a surprising or load-bearing claim, so left at the draft's CONV tier."
+   },
+   {
+    "claim": "Numbers used (6-10 element pool, 2-triad / 3-reversal stopping rules, tolerance bands, 8-trial escalation) do not appear on the myth_screen never-cite table",
+    "source_ok": true,
+    "tier_final": "N/A",
+    "note": "Checked against TASTE_R3_STREAMS.json myth_screen verbatim (2000% samples, 70-90% defaults, losses 2x, jam study, $300M button/ASOS, 5% retention, retention 5-25x cheaper, Amazon 100ms, Duolingo +20%, UGC 4x). None of S14's numbers match or paraphrase these; the myth-table risk here was the independently-discovered Stitch Fix and ScienceDirect issues, not a table hit."
+   }
+  ]
+ }
+}

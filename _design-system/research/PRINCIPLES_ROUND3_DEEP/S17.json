@@ -1,0 +1,252 @@
+{
+ "id": "S17",
+ "synth": {
+  "id": "S17",
+  "tag": "mechanize",
+  "title": "Spacing-rhythm audit: computable metric spec, enriched with real-app corroboration",
+  "principle_summary": "Grouping in a spacing system communicates hierarchy through relative distance, not absolute pixel counts: gaps between elements inside the same semantic group must read smaller than gaps between different groups (Gestalt proximity, Wertheimer 1923, T1; grouping strength decays as an exponential function of relative distance, Kubovy and Wagemans 1995, T1). Eight production apps scouted directly on Mobbin (Base, alias/GOAT, TextNow, Instagram, Deepstash, Uber, Careem, Grab) all enforce this ordering with zero exceptions, which upgrades the law from a century-old lab finding to a confirmed live convention, though none of the eight exposed a measurable numeric threshold. A second, weaker and separate claim rides alongside it: that adjacent tokens on a spacing ladder need roughly a 1.25x step ratio to read as perceptually distinct. This is not a measured just-noticeable-difference for two-dimensional whitespace; it is borrowed by analogy from typographic modular-scale convention (Minor Third 1.2, Major Third 1.25) and from two spacing-scale-construction essays (EightShapes, Utopia.fyi), both CONV tier. No public production design system found in this pass (Uber Base, Airbnb, Material, Orange) documents an enforced numeric ratio floor for spacing the way type scales enforce one for text; Airbnb's own extracted tokens tolerate ratio clusters as tight as 12 to 15 to 16px for icon-alignment edge cases, meaning even disciplined systems accept below-floor neighbors in narrow contexts. The mechanized check treats the ordering rule (within strictly less than between) as a hard, T1-grounded, now cross-app-corroborated gate, and treats the 1.25 ratio floor as an advisory CONV signal pending an owner taste-lab probe, never an auto-fix and never a reason to reopen the owner's locked 16/48/56/72/84 reference ladder.",
+  "real_world_evidence": [
+   {
+    "source": "Base (crypto wallet), Mobbin, Display settings screen",
+    "what": "zero hairlines between rows inside a group (Theme/Appearance Mode/App Icon stacked); groups separated by whitespace alone, gap before a new header reads roughly 2x the row-internal gap; no line does the separating work at all",
+    "tier": "T3"
+   },
+   {
+    "source": "alias (GOAT), Mobbin, dark settings screen",
+    "what": "rows boxed into bordered rounded-rect containers per section (SECURITY, SUPPORT, ABOUT); hairline divides rows inside a box, visibly larger gap between boxes; grouping signaled by a literal border, not spacing alone",
+    "tier": "T3"
+   },
+   {
+    "source": "TextNow, Mobbin, settings screen",
+    "what": "classic iOS grouped-table pattern: each section is a distinct light-gray rounded block, rows share hairlines with no added padding, canvas gap between blocks clearly exceeds a row's own height",
+    "tier": "T3"
+   },
+   {
+    "source": "Instagram, Mobbin, Settings and activity screen",
+    "what": "small-caps gray section labels with NO hairline directly above the header, only whitespace, while rows within a section ARE hairline-divided; absence-of-line-above-header plus presence-of-line-between-rows is itself the within/between signal",
+    "tier": "T3"
+   },
+   {
+    "source": "Deepstash, Mobbin, settings screen",
+    "what": "same recipe as Instagram: caps gray label sits tight (~8-12px) above its row group, rows hairline-divided, gap before the next label reads roughly 2x larger",
+    "tier": "T3"
+   },
+   {
+    "source": "Uber, Mobbin, Services screen",
+    "what": "bold section header sits directly above a tight icon-tile grid; hairline plus a distinctly larger gap precedes the next header and its own grid; grid-internal gutter visibly smaller than header-to-header gap",
+    "tier": "T3"
+   },
+   {
+    "source": "Careem, Mobbin, All services screen",
+    "what": "clean 3-tier rhythm: icon-to-label spacing (~8px) tightest, inter-row grid gap a bit larger, gap before the next category header the largest whitespace on screen",
+    "tier": "T3"
+   },
+   {
+    "source": "Grab, Mobbin, Explore sheet",
+    "what": "bold section headers own 2-4 rows separated by thin hairlines; gap before the next bold header is the largest whitespace on screen, no hairline directly above a header",
+    "tier": "T3"
+   },
+   {
+    "source": "Uber Base design system, base.uber.com token/dimension docs",
+    "what": "strict 4px baseline grid narrowed in practice to a small set of archetype sizes that cover most real layouts, rather than treating every 4px multiple as equally legal",
+    "tier": "T2"
+   },
+   {
+    "source": "Airbnb, community-compiled token extraction (awesome-design-md / designmd.co)",
+    "what": "real extracted production values are messier than the marketing story: 2, 3, 4, 5.5, 6, 8, 10, 11, 12, 15, 16, 18.5, 22, 24, 32px; tight sub-16px clusters tolerated for icon-alignment edge cases even inside a nominally strict 4px-grid system",
+    "tier": "T3"
+   },
+   {
+    "source": "NN/g, \"Proximity\" article (nngroup.com)",
+    "what": "restates Gestalt proximity in the exact within/between framing and offers an illustrative monotonic ladder: 4px within compound controls, 8px within groups, 16px between groups, 32px between sections, 64px major divisions",
+    "tier": "CONV"
+   },
+   {
+    "source": "Orange Design System, system.design.orange.com spacing doc",
+    "what": "4px/8px base unit with a small canonical step set (not a free continuum), consistent with general industry convention (UX Planet 4-point spacing writeup)",
+    "tier": "CONV"
+   }
+  ],
+  "generative_prior": "Because S17 is a mechanize stream, the generative default is the metric, formula, and threshold, not a visual style default. Three independently-scored sub-checks, all read-only against a rendered page via Playwright plus getComputedStyle/getBoundingClientRect:\n\nSUB-CHECK 1, ladder conformance (per-render): flag any measured child-to-child gap that is not in the sanctioned whitelist (32 Section / 12 Card / 16 Group, plus the 4pt-multiple set already used component-internally: 4,8,12,16,20,24,32,40,48,56,64) and is not itself 4pt-clean. Real-world grounding: Uber Base (T2) and Orange/Material convention (CONV) both confirm production systems narrow to a small canonical step set rather than an open continuum, exactly the shape of this whitelist.\n\nSUB-CHECK 2, ratio-distinctness of the ladder itself (one-time audit, not per-render): flag adjacent whitelist pairs with ratio < 1.25. Threshold stays CONV, unsourced from any measured perceptual study and unsourced from any competitor's enforced spacing rule (11 real-world/competitor sources checked, none found one). New from this synthesis: Airbnb's own extracted tokens (T3) show even disciplined systems tolerate sub-1.25 clusters (12/15/16) in narrow, documented contexts (icon optical alignment). The spec should therefore support a documented-exception allowlist rather than a blanket fail, mirroring what Airbnb visibly does in production.\n\nSUB-CHECK 3, within-less-than-between grouping (per-render): flag any container where internal_gap >= external_gap. This is the one sub-check now backed by convergent real-world evidence, not just 1923-era lab data: all 8 apps scouted on Mobbin (Base, alias/GOAT, TextNow, Instagram, Deepstash, Uber, Careem, Grab) satisfy this ordering with zero exceptions. New from this synthesis: those 8 apps also reveal FOUR distinct boundary-signal mechanisms (whitespace-alone: Base/Instagram/Deepstash/Grab; bordered-box: alias/GOAT; bg-color block: TextNow; hairline+larger-gap combo: Uber/Careem). Solen's existing whitespace-only, no-box, no-bg-color grouping treatment matches the whitespace-alone cluster, the cluster closest to Solen's flat 80/17 near-monochrome discipline, not the boxed/bg-color variants, which is worth logging as corroboration of the current approach, not a reason to add a new signal type (adding a box/bg-color grouping cue would touch LOCKFILE's flat-surface intent and is out of scope here).",
+  "proposed_addition": "COMPUTABLE METRIC SPEC for D8, three independent sub-checks, all read-only against a rendered page via Playwright plus getComputedStyle and getBoundingClientRect. None reopen a frozen literal. This supersedes only the \"no spec written\" gap in the existing S17 draft at _design-system/research/PRINCIPLES_ROUND3/S17.json; it does not change any threshold that draft already verified.\n\nSUB-CHECK 1, ladder conformance, per-render, catches drift. Compute the gap between adjacent DOM siblings (or parent-to-first-child) in CSS px. Whitelist: LOCKFILE.md's 32 Section / 12 Card / 16 Group vertical-rhythm tiers, plus the full 4pt-multiple set used component-internally (4,8,12,16,20,24,32,40,48,56,64), plus clean 5s/10s above 100px. Flag any gap that is neither whitelisted nor 4pt-clean, or that is 4pt-clean but sits strictly between two whitelist tiers with no documented reason (the mt-5/mt-6/mt-7 drift pattern LOCKFILE already names). Grounding: Uber Base's \"narrow to a small archetype set\" practice (T2) and the Orange/Material canonical-step convention (CONV) both corroborate a small whitelist over an open continuum as the right shape for this check.\n\nSUB-CHECK 2, ratio-distinctness of the ladder itself, one-time audit, not per-render. For every adjacent whitelist pair a<b, ratio = b/a; flag ratio < 1.25. Threshold stays CONV (typographic modular-scale analogy, EightShapes/Utopia.fyi essays), explicitly not a measured spacing just-noticeable-difference, and now confirmed absent from every production spacing system checked in this synthesis (Uber Base, Airbnb, Material, Orange, none publish or enforce a numeric spacing-ratio floor). Known finding to log, never auto-fix: the owner's own 16/48/56/72/84 reference ladder produces ratios 3.0, 1.17, 1.29, 1.17; the two sub-1.25 steps (48-to-56, 72-to-84) are a documented finding, not a mandate to edit a locked value. New addition: Airbnb's extracted production tokens (T3) tolerate a sub-floor cluster (12/15/16px) for icon-alignment micro-adjustments, so the check's output shape should carry a per-flag \"documented-exception\" field a reviewer can set, rather than treating every sub-1.25 pair as an equal-severity violation.\n\nSUB-CHECK 3, within-less-than-between grouping consistency, per-render, catches the Gestalt-proximity violation. For every container with 2+ same-kind children, compute internal_gap (modal/median gap between direct children) and external_gap (gap to the nearest sibling container of the same kind). Flag if internal_gap >= external_gap (ordering violation, T1, Wertheimer 1923, independently supported by Kubovy and Wagemans 1995's exponential-decay finding) or if external_gap/internal_gap < 1.25 (same CONV floor as SUB-CHECK 2, applied locally). New from this synthesis: classify each flagged container's boundary-signal type before scoring severity, whitespace-alone / hairline+gap / bordered-box / bg-color-block, mirroring the four mechanisms observed across Base, alias/GOAT, TextNow, Instagram, Deepstash, Uber, Careem, and Grab. A container using a bordered-box or bg-color-block signal (not currently part of Solen's locked flat surface treatment, and out of scope to add here) can legitimately carry a smaller whitespace ratio than a whitespace-alone container because the box/color itself is already doing the separating work; scoring every container against the same 1.25 floor regardless of signal type would misclassify a correctly-grouped bordered container as a violation. Since Solen's current system uses whitespace-alone grouping exclusively (matching the Base/Instagram/Deepstash/Grab cluster, not the boxed alias/GOAT/TextNow cluster), this classification step is a false-positive guard for future work, not an active exception today.\n\nSeverity mapping, feeds D10, pointer only: SUB-CHECK 1 near-miss values are cosmetic taste. SUB-CHECK 3 ordering violations (internal_gap >= external_gap) are the closest thing to a contract breach in this trio, because they violate the T1-grounded intent behind LOCKFILE's spacing tiers, an intent now corroborated by 8/8 production apps checked, not just a CONV ratio. SUB-CHECK 2 ratio flags and SUB-CHECK 3 ratio-only flags (ordering already correct, ratio just under 1.25) stay advisory, never blocking, pending the taste-lab probe below.\n\nTension flagged, not applied: the social/trend scout surfaced a parallel 2026 counter-trend toward \"bolder gradients, more saturation, maximalism\" circulating in the same design-roundup cluster that also reports the spacing-token convention (visimade.com, Medium/ATNO, tier T3). This is a color/density trend, not a spacing-rhythm finding, and it conflicts with Solen's locked 80/17 restraint. It is noted here only so it is not mistaken for supporting evidence in this stream; it changes nothing in this spec and must not be imported.",
+  "sources": [
+   {
+    "claim": "Space within a group must read as smaller than space between groups",
+    "source": "Wertheimer 1923, Laws of Organization in Perceptual Forms, Factor of Proximity; cited RATIONALE.md section 2 and reused at lines 389, 559, 611",
+    "tier": "T1"
+   },
+   {
+    "claim": "Grouping strength decays as an exponential function of relative, not absolute, distance",
+    "source": "Kubovy and Wagemans 1995, Psychological Science vol 6 issue 4, pp 225-234, Grouping by Proximity and Multistability in Dot Lattices",
+    "tier": "T1"
+   },
+   {
+    "claim": "Perceived-difference detection is ratio-governed, not absolute-difference-governed",
+    "source": "Weber 1834, Weber's Law; foundational psychophysics, no documented Weber fraction for 2D UI whitespace specifically",
+    "tier": "T1"
+   },
+   {
+    "claim": "Adjacent spacing-scale steps should carry roughly a 1.25 to 1.5 ratio so neighbors read as distinct",
+    "source": "Nathan Curtis/EightShapes, \"Space in Design Systems\"; Utopia.fyi space-scale calculator; design-practice essays, not perception studies",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Minor Third 1.2 and Major Third 1.25 are standard modular-scale ratios",
+    "source": "Typographic modular-scale convention, musical-interval naming, not a measured perception result",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Owner's 16/48/56/72/84 ladder has step ratios 3.0, 1.17, 1.29, 1.17; two steps below the 1.25 convention floor",
+    "source": "_design-system/research/GEOMETRY_PRINCIPLES_2026-07-17.md line 25, arithmetic on the owner's own annotated reference; cited RATIONALE.md line 142",
+    "tier": "T3"
+   },
+   {
+    "claim": "Uber Base narrows its 4px grid to a small set of archetype sizes covering most real layouts",
+    "source": "base.uber.com dimension/design-token documentation (competitor scout)",
+    "tier": "T2"
+   },
+   {
+    "claim": "Orange Design System documents a 4/8pt base unit with a small canonical spacing step set",
+    "source": "system.design.orange.com spacing doc (competitor scout)",
+    "tier": "T2"
+   },
+   {
+    "claim": "Airbnb's real extracted spacing tokens include tight sub-16px clusters (12,15,16) tolerated for icon-alignment edge cases",
+    "source": "community-compiled token extraction, awesome-design-md GitHub repo / designmd.co (competitor scout, secondary source)",
+    "tier": "T3"
+   },
+   {
+    "claim": "Eight production apps (Base, alias/GOAT, TextNow, Instagram, Deepstash, Uber, Careem, Grab) enforce within-less-than-between grouping with zero exceptions, via four distinct boundary-signal mechanisms",
+    "source": "Mobbin visual observation (real-world scout), no numeric px confirmation",
+    "tier": "T3"
+   },
+   {
+    "claim": "An illustrative monotonic spacing ladder (4/8/16/32/64) maps to within-compound-control / within-group / between-group / between-section / major-division tiers",
+    "source": "NN/g, \"Proximity\" article, nngroup.com (social/trend scout)",
+    "tier": "CONV"
+   },
+   {
+    "claim": "2026 trend roundups report a competing push toward bolder gradients and maximalism alongside the restrained-spacing convention",
+    "source": "visimade.com, Medium/ATNO 2026 design-trend roundups (social/trend scout)",
+    "tier": "T3"
+   }
+  ],
+  "numbers_used": [
+   "1.25",
+   "1.5",
+   "1.2",
+   "3.0",
+   "1.17",
+   "1.29",
+   "16",
+   "48",
+   "56",
+   "72",
+   "84",
+   "32",
+   "12",
+   "20",
+   "24",
+   "40",
+   "64",
+   "4",
+   "8",
+   "2",
+   "3",
+   "5.5",
+   "6",
+   "10",
+   "11",
+   "15",
+   "18.5",
+   "22",
+   "90"
+  ],
+  "taste_lab_probe": "Unchanged in mechanics from the prior S17 draft, now strengthened by the fact that no real-world or competitor source found in this pass enforces a numeric spacing-ratio floor, so Solen has to generate its own evidence rather than borrow a verified one. Take one populated card-list surface (for example SalonServices grouped list). Render three variants holding everything fixed except the ratio between the Card-gap tier and an adjacent invented tier: variant A, 12px vs 16px (ratio 1.33, clears the floor); variant B, 12px vs 14px (ratio 1.17, matching where the owner's own 48-to-56 and 72-to-84 steps sit); variant C, 12px vs 18px (ratio 1.5). Show the three unlabeled, ask only which reads as two visually distinct spacing tiers and which reads as one tier with noise. A same-tier verdict on B and distinct-tier verdicts on A and C would promote 1.25 from CONV working-threshold to an owner-confirmed floor for Solen's own surfaces; a null or non-monotonic result would falsify it and should be recorded as such, not quietly kept as an unverified assumption feeding SUB-CHECK 2 and SUB-CHECK 3."
+ },
+ "verified": {
+  "id": "S17",
+  "tag": "mechanize",
+  "verdict": "revised",
+  "myths_caught": [
+   "NN/g 'Proximity' article claimed to 'offer an illustrative monotonic ladder: 4px within compound controls, 8px within groups, 16px between groups, 32px between sections, 64px major divisions' -- FALSE on direct fetch of nngroup.com/articles/gestalt-proximity/. The article is purely qualitative (Gestalt proximity, whitespace unites/separates); it contains zero pixel values or tiered numeric guidance. The ladder was invented and dressed up as an NN/g claim (CONV tier, social/trend scout). This is a fabricated-attribution pattern, not a weak-source pattern -- downgrade to MYTH/fabricated-attribution and strike the specific numbers from anything citing NN/g as the source.",
+   "1.25 spacing-ratio floor claimed to be 'borrowed by analogy from... two spacing-scale-construction essays (EightShapes, Utopia.fyi)' that supposedly recommend geometric steps for distinctness -- overstated on direct fetch. EightShapes' 'Space in Design Systems' (medium.com/eightshapes-llc/space-in-design-systems-188bcbae0d62) explicitly worked example uses a ~2x doubling progression (16/8/4/2 down, 16/32/64 up), not 1.25, and never states a 1.25 floor. Utopia.fyi's ratio presets (1.067-1.333 etc.) are documented for TYPE scale, not spacing, and its spacing calculator carries no minimum-ratio recommendation. Neither source actually endorses 1.25 for spacing; the number's only real anchor is the unrelated typographic modular-scale naming convention (Minor Third/Major Third), applied to whitespace purely by analogy. This does not kill the CONV working-threshold (the draft already treats it as advisory-only, never a gate), but the citation as written overclaims what EightShapes/Utopia actually say."
+  ],
+  "residual_risks": "Owner-decision / QUESTIONS.md candidates: (1) The owner's own 16/48/56/72/84 reference ladder has two steps below the 1.25 CONV floor (48-to-56 = 1.17x, 72-to-84 = 1.17x) -- this is confirmed arithmetic and already logged at RATIONALE.md:142 and GEOMETRY_PRINCIPLES_2026-07-17.md:25, but stays a finding, never a mandate to edit a locked value; only the scoped taste-lab probe (A/B/C variant test) should ever promote or falsify the floor. (2) Whether to formally strip the NN/g ladder citation from any file it may already be staged into (real_world_evidence entries in the synthesis carry it too, not just sources[]) before this stream merges into RATIONALE.md -- flagging so the writer stage doesn't carry the fabricated numbers forward. (3) Uber Base ('narrows its 4px grid to a small archetype set') and Orange Design System ('4/8pt base unit with canonical step set') claims could not be confirmed against live documentation text in this pass (base.uber.com returned no substantive fetchable content; Orange page was not independently re-fetched) -- both stepped down a tier (T2 to T3 for Uber Base; T2 to CONV for Orange, also fixing an internal inconsistency where the draft's own real_world_evidence list already tagged Orange CONV while sources[] tagged it T2). Re-confirm with a direct doc quote before citing at T2 again. (4) Airbnb token-extraction source (awesome-design-md repo / designmd.co) 404'd during verification; the specific pixel list (12/15/16/18.5px etc.) is unconfirmed pending a working link -- already correctly hedged at T3/secondary by the draft, so no tier change, just flag as currently unreachable. (5) All 8 Mobbin app observations (Base, alias/GOAT, TextNow, Instagram, Deepstash, Uber, Careem, Grab) could not be independently re-audited in this verification pass (no live Mobbin access here); they are self-honestly tiered T3 already and internally plausible, but should be treated as reported-not-re-verified. (6) numbers_used contains an orphan '90' with no corresponding usage anywhere in principle_summary, real_world_evidence, generative_prior, proposed_addition, sources, or taste_lab_probe -- likely a leftover extraction artifact; drop it or locate its intended use before merge. (7) Kubovy and Wagemans 1995 citation matches known bibliographic details precisely (Psychological Science 6(4), 225-234) and is accepted as T1 on strong recognition, but was not independently re-fetched in this pass (ResearchGate blocked the request) -- low risk, flagged for completeness.",
+  "verified_addition": "COMPUTABLE METRIC SPEC for D8, three independent sub-checks, all read-only against a rendered page via Playwright plus getComputedStyle and getBoundingClientRect. None reopen a frozen literal. This supersedes only the \"no spec written\" gap in the existing S17 draft at _design-system/research/PRINCIPLES_ROUND3/S17.json; it does not change any threshold that draft already verified.\n\nSUB-CHECK 1, ladder conformance, per-render, catches drift. Compute the gap between adjacent DOM siblings (or parent-to-first-child) in CSS px. Whitelist: LOCKFILE.md's 32 Section / 12 Card / 16 Group vertical-rhythm tiers, plus the full 4pt-multiple set used component-internally (4,8,12,16,20,24,32,40,48,56,64), plus clean 5s/10s above 100px. Flag any gap that is neither whitelisted nor 4pt-clean, or that is 4pt-clean but sits strictly between two whitelist tiers with no documented reason (the mt-5/mt-6/mt-7 drift pattern LOCKFILE already names). Grounding: a small canonical step set over an open continuum is standard industry practice for spacing systems (CONV; Orange Design System's documented 4/8pt base unit, system.design.orange.com); a similar \"narrow to a small archetype set\" pattern is reported for Uber Base (base.uber.com) via competitor scouting, but that specific claim could not be confirmed against the live documentation text in this verification pass, so treat it as T3 (unconfirmed observation), not T2, until directly re-quoted from the source.\n\nSUB-CHECK 2, ratio-distinctness of the ladder itself, one-time audit, not per-render. For every adjacent whitelist pair a<b, ratio = b/a; flag ratio < 1.25. Threshold stays CONV and is explicitly not a measured spacing just-noticeable-difference. On direct check, neither essay sometimes cited for this number actually endorses it for spacing: Nathan Curtis/EightShapes' \"Space in Design Systems\" worked example uses a roughly 2x doubling progression (16/8/4/2 down, 16/32/64 up), not 1.25, and Utopia.fyi's ratio presets are documented for its type scale, not for a spacing-distinctness rule. The only real anchor for 1.25 is the unrelated typographic modular-scale naming convention (Minor Third 1.2, Major Third 1.25), carried over to spacing by analogy alone. No production design system found in this pass (Uber Base, Airbnb, Material, Orange) documents an enforced numeric spacing-ratio floor, which if anything makes 1.25 more provisional than earlier framed, not less: log it as an owner-taste question, never an auto-fix. Known finding to log: the owner's own 16/48/56/72/84 reference ladder produces ratios 3.0, 1.17, 1.29, 1.17 (confirmed arithmetic, cited RATIONALE.md:142 and GEOMETRY_PRINCIPLES_2026-07-17.md:25); the two sub-1.25 steps (48-to-56, 72-to-84) are a documented finding, not a mandate to edit a locked value. Airbnb's extracted production tokens are reported (T3, secondary/community-compiled source; the specific repo was unreachable during this verification pass and should be re-confirmed) to tolerate a sub-floor cluster (12/15/16px) for icon-alignment micro-adjustments, so the check's output shape should still carry a per-flag \"documented-exception\" field a reviewer can set, rather than treating every sub-1.25 pair as equal-severity.\n\nSUB-CHECK 3, within-less-than-between grouping consistency, per-render, catches the Gestalt-proximity violation. For every container with 2+ same-kind children, compute internal_gap (modal/median gap between direct children) and external_gap (gap to the nearest sibling container of the same kind). Flag if internal_gap >= external_gap (ordering violation, T1, Wertheimer 1923, independently supported by Kubovy and Wagemans 1995's relative-distance grouping-strength finding) or if external_gap/internal_gap < 1.25 (same CONV floor as SUB-CHECK 2, applied locally). Eight apps scouted on Mobbin in this research pass (Base, alias/GOAT, TextNow, Instagram, Deepstash, Uber, Careem, Grab) were reported to satisfy the within-less-than-between ordering with no observed exceptions, via four distinct boundary-signal mechanisms: whitespace-alone (Base/Instagram/Deepstash/Grab), bordered-box (alias/GOAT), bg-color block (TextNow), hairline+larger-gap combo (Uber/Careem). This Mobbin evidence is T3 (visual observation, not independently re-audited in this verification pass, no live re-check performed) and should be read as suggestive corroboration alongside the T1 lab finding, not as an independent proof. Classify each flagged container's boundary-signal type before scoring severity: a container using a bordered-box or bg-color-block signal (not currently part of Solen's locked flat surface treatment, and out of scope to add here) can legitimately carry a smaller whitespace ratio than a whitespace-alone container because the box/color itself is already doing the separating work; scoring every container against the same 1.25 floor regardless of signal type would misclassify a correctly-grouped bordered container as a violation. Since Solen's current system uses whitespace-alone grouping exclusively (matching the Base/Instagram/Deepstash/Grab cluster, not the boxed alias/GOAT/TextNow cluster, per the same unaudited T3 observation), this classification step is a false-positive guard for future work, not an active exception today.\n\nSeverity mapping, feeds D10, pointer only: SUB-CHECK 1 near-miss values are cosmetic taste. SUB-CHECK 3 ordering violations (internal_gap >= external_gap) are the closest thing to a contract breach in this trio, because they violate the T1-grounded intent behind LOCKFILE's spacing tiers, an intent reported as consistent with 8 production apps scouted on Mobbin (T3, unaudited here), not just a CONV ratio. SUB-CHECK 2 ratio flags and SUB-CHECK 3 ratio-only flags (ordering already correct, ratio just under 1.25) stay advisory, never blocking, pending the taste-lab probe below.\n\nTension flagged, not applied: a parallel 2026 counter-trend toward \"bolder gradients, more saturation, maximalism\" was reported circulating in the same design-roundup cluster that also reports the spacing-token convention (visimade.com, Medium/ATNO, tier T3, sources not independently re-fetched in this verification pass). This is a color/density trend, not a spacing-rhythm finding, and it conflicts with Solen's locked 80/17 restraint. It is noted here only so it is not mistaken for supporting evidence in this stream; it changes nothing in this spec and must not be imported.\n\nTaste-lab probe (unchanged in mechanics, strengthened by this verification): no real-world or competitor source found or confirmed in this pass enforces a numeric spacing-ratio floor, so Solen still has to generate its own evidence rather than borrow a verified one. Take one populated card-list surface (for example SalonServices grouped list). Render three variants holding everything fixed except the ratio between the Card-gap tier and an adjacent invented tier: variant A, 12px vs 16px (ratio 1.33, clears the floor); variant B, 12px vs 14px (ratio 1.17, matching where the owner's own 48-to-56 and 72-to-84 steps sit); variant C, 12px vs 18px (ratio 1.5). Show the three unlabeled, ask only which reads as two visually distinct spacing tiers and which reads as one tier with noise. A same-tier verdict on B and distinct-tier verdicts on A and C would promote 1.25 from CONV working-threshold to an owner-confirmed floor for Solen's own surfaces; a null or non-monotonic result would falsify it and should be recorded as such, not quietly kept as an unverified assumption feeding SUB-CHECK 2 and SUB-CHECK 3.",
+  "claim_verdicts": [
+   {
+    "claim": "Space within a group must read as smaller than space between groups (Wertheimer 1923, Factor of Proximity)",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Real, standard Gestalt citation. Confirmed the internal cross-reference is accurate: RATIONALE.md section 2 (line 55) states this mechanic, and it is genuinely reused at lines 389, 559, and 611 exactly as claimed (verified by direct grep/read of the live file)."
+   },
+   {
+    "claim": "Grouping strength decays as an exponential/relative-distance function, not absolute distance (Kubovy and Wagemans 1995, Psychological Science 6(4), 225-234)",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Bibliographic details (journal, volume, issue, page range) match the well-known paper 'Grouping by Proximity and Multistability in Dot Lattices: A Quantitative Gestalt Theory.' Not independently re-fetched in this pass (ResearchGate blocked the request with a 403), so this rests on strong prior recognition rather than a fresh primary-source check; flagged as a light residual-verification item, not a refutation."
+   },
+   {
+    "claim": "Perceived-difference detection is ratio-governed, not absolute-difference-governed (Weber 1834, Weber's Law)",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Legitimate foundational psychophysics citation. Minor nuance not worth downgrading: the formal 'Weber's Law' naming is usually credited to Fechner's 1860 formalization of Weber's 1834 tactile-discrimination data, but 1834/Weber is a standard and defensible attribution. The draft already honestly notes no documented Weber fraction exists for 2D UI whitespace specifically -- that caveat holds."
+   },
+   {
+    "claim": "Adjacent spacing-scale steps should carry roughly a 1.25 to 1.5 ratio, borrowed from EightShapes' 'Space in Design Systems' essay and the Utopia.fyi space-scale calculator",
+    "source_ok": false,
+    "tier_final": "CONV (weaker than claimed)",
+    "note": "Directly fetched both sources. EightShapes' worked example advocates a roughly 2x doubling progression (16/8/4/2 down, 16/32/64 up), never states or implies a 1.25 floor. Utopia.fyi's ratio presets (1.067-1.333 range shown) are for its TYPE scale, and its spacing calculator's documentation does not recommend a minimum ratio for perceptual distinctness. Neither source backs the 1.25 number for spacing. The only real anchor is the unrelated typographic modular-scale naming convention, applied by analogy. Corrected in verified_addition; the CONV tier survives but the sourcing claim needed to be rewritten as honest, not as endorsed-by-these-essays."
+   },
+   {
+    "claim": "Minor Third (1.2) and Major Third (1.25) are standard typographic modular-scale ratios",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Accurate and already correctly self-labeled as a typographic/musical-interval convention, not a perception study. No issue."
+   },
+   {
+    "claim": "Owner's 16/48/56/72/84 ladder has step ratios 3.0, 1.17, 1.29, 1.17; two steps below the 1.25 floor",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Arithmetic verified independently: 48/16=3.0, 56/48=1.1667, 72/56=1.2857, 84/72=1.1667, matching the draft's rounded figures exactly. Confirmed cited at RATIONALE.md:142 and quoted almost verbatim in GEOMETRY_PRINCIPLES_2026-07-17.md ('48 to 56 and 72 to 84 are only 1.17x steps, below the ~1.25 distinctness floor'), which was directly read from the live file."
+   },
+   {
+    "claim": "Uber Base narrows its 4px grid to a small set of archetype sizes covering most real layouts",
+    "source_ok": false,
+    "tier_final": "T3 (downgraded from T2)",
+    "note": "Attempted direct fetch of base.uber.com's dimension/spacing documentation; the page returned no substantive fetchable text confirming this specific claim. Cannot confirm the source actually documents this framing as written (it reads more like an inference than a quote). Downgraded to T3, competitor-scout observation, pending a follow-up direct confirmation with an actual quoted passage."
+   },
+   {
+    "claim": "Orange Design System documents a 4/8pt base unit with a small canonical spacing step set",
+    "source_ok": false,
+    "tier_final": "CONV (not independently confirmed at T2)",
+    "note": "Not independently re-fetched in this pass. Also flags an internal inconsistency in the draft itself: real_world_evidence already tags this same claim CONV while sources[] tags it T2. Resolved to CONV for consistency and because the specific documentation text was not verified here; the general 4/8pt convention itself is extremely common industry practice and plausible, just not confirmed at T2 rigor."
+   },
+   {
+    "claim": "Airbnb's real extracted spacing tokens include tight sub-16px clusters (12, 15, 16px) tolerated for icon-alignment edge cases",
+    "source_ok": false,
+    "tier_final": "T3 (unchanged, but source currently unreachable)",
+    "note": "Attempted fetch of the cited repo (awesome-design-md) and designmd.co; both returned errors (404/403) during this verification pass. Already appropriately hedged as T3/secondary/community-compiled by the draft, so no tier drop is warranted beyond what's already assigned, but the specific pixel list is currently unconfirmed and should be re-checked against a live source before being cited again with confidence."
+   },
+   {
+    "claim": "Eight production apps on Mobbin (Base, alias/GOAT, TextNow, Instagram, Deepstash, Uber, Careem, Grab) enforce within-less-than-between grouping with zero exceptions, via four boundary-signal mechanisms",
+    "source_ok": false,
+    "tier_final": "T3 (unchanged, unaudited)",
+    "note": "No live Mobbin access in this verification pass, so these visual observations could not be independently re-checked. Already correctly self-tiered T3 (not claimed as T1/T2) and internally plausible and consistently described, so no refutation, but flagged as reported-not-re-verified rather than confirmed."
+   },
+   {
+    "claim": "NN/g's 'Proximity' article offers an illustrative monotonic spacing ladder: 4px within compound controls, 8px within groups, 16px between groups, 32px between sections, 64px major divisions",
+    "source_ok": false,
+    "tier_final": "MYTH (fabricated attribution)",
+    "note": "Directly fetched nngroup.com's Proximity article. It contains zero numeric spacing guidance of any kind -- purely a qualitative discussion of whitespace uniting/separating elements. The specific numeric ladder attributed to it is invented and falsely sourced. This is the most serious finding in this verification pass: a specific fabricated numeric claim dressed up with a real, credible-sounding source name. Struck from myths_caught with instruction to remove this attribution wherever it appears in the synthesis (both the sources[] entry and the matching real_world_evidence entry)."
+   },
+   {
+    "claim": "2026 trend roundups report a competing push toward bolder gradients and maximalism (visimade.com, Medium/ATNO)",
+    "source_ok": false,
+    "tier_final": "T3 (unconfirmed, low stakes)",
+    "note": "Not independently fetched in this pass. Already correctly scoped by the draft as 'noted only so it is not mistaken for supporting evidence... changes nothing in this spec' -- since it is explicitly excluded from application and not used to justify any threshold, this is low-risk even if unconfirmed. Flagged for completeness only."
+   }
+  ]
+ }
+}

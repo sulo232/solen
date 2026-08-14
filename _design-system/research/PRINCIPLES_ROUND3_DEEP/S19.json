@@ -1,0 +1,135 @@
+{
+ "id": "S19",
+ "synth": {
+  "id": "S19",
+  "tag": "mechanize",
+  "title": "Severity matrix for design findings",
+  "principle_summary": "Nielsen's severity method (frequency x impact x persistence, 0-4 scale, T1) gives D10 its scoring math, but every real product-tooling app that renders a severity/priority field agrees on a second, separate contract the academic source is silent on: the computed value never reaches a human reader as a raw number, it collapses to exactly one ordinal WORD from a 3-to-5-tier set, sorted worst-first, with any second axis (status, provenance) kept as its own adjacent tag rather than fused into one compound badge, and grouped views attach a count next to each tier. D10's own four labels (BLOCKING/HIGH/MINOR/COSMETIC) already sit inside that observed 3-5 tier band, so the missing piece is not a new tier count, it is a rendering contract: score in private, label in public, worst-first, axes never merged, counts on group headers. The Nielsen math stays T1; the rendering contract is CONV (industry convention observed across six real apps, not a formal study).",
+  "proposed_addition": "COMPUTABLE METRIC: Design-Finding Severity Score (D10), extended\n\nCORE (T1 math, unchanged from the verified S19 draft, condensed here for completeness): each punch-list finding gets source_type (gate_breach / mechanized / subjective), instance_count, component_reach, and deviation_magnitude. Three sub-scores 0-4 (FREQUENCY from instance_count, IMPACT forced to 4 for any gate_breach else from deviation_magnitude bands, PERSISTENCE from component_reach) combine as SEVERITY = round(mean(FREQUENCY, IMPACT, PERSISTENCE)), clamped 0-4. Thresholds: 4 or any gate_breach = BLOCKING (ship gate fails); 3 = HIGH (fixed before the current verifier-loop round closes); 2 = MINOR (parked to SUGGESTIONS.md); 0-1 = COSMETIC (opportunistic only). Any finding scored 3 or 4 needs one independent second pass before the list is final (T1, the 35% single-evaluator stat: a solo reviewer misses roughly two-thirds of real problems). The 25/75/150% deviation-magnitude band boundaries remain T3/self-derived, unverified until backtested against 5-10 closed punch-list items per the taste_lab_probe below.\n\nNEW: OUTPUT RENDERING CONTRACT (CONV, from six scouted real apps: Jira, Airtable, ClickUp, Asana, GitHub Projects, Miro)\n\n1. Never print the raw SEVERITY number. Print only the tier label (BLOCKING / HIGH / MINOR / COSMETIC). Every scouted app collapses its own multi-factor priority to a single displayed word, none surfaces a formula or a numeric score to the reader; D10's 4-label scheme already matches the observed 3-tier (Miro) to 5-tier (Jira) band, so no label-count change, only a rendering rule the current text is silent on.\n2. Sort worst-first, always. Every scouted board orders its severity groups from most to least severe (Jira: Highest to Lowest; Airtable: Critical to Low), never alphabetical or insertion order.\n3. When a finding needs to show both its severity tier AND its provenance (source_type), render them as two small, separate, adjacent tags, e.g. `BLOCKING · gate_breach`, never fused into one compound string. This mirrors ClickUp and Asana, both of which keep Priority and Status as two independent one-word pills on the same row and never merge them, and gives D10's own existing two-bucket split (contract breach vs mechanized taste finding) a concrete display form instead of leaving it implicit in the source_type field alone.\n4. In any grouped view (a punch-list document, the SUGGESTIONS.md queue, a verifier-loop round summary), attach a count to each tier heading, e.g. \"BLOCKING (3)\". Every scouted board (Jira, Airtable, GitHub Projects) does this. Practical payoff for this codebase: a shrinking BLOCKING(N) count between verifier-loop rounds IS rule 9's \"strictly fewer items than the previous round\" convergence check, made visible at a glance instead of requiring a manual recount.\n\nLOCKFILE TENSION, noted and NOT applied: all six scouted apps encode severity with saturated color fills (Jira's red/orange chevrons, Airtable's deep-pink/salmon/yellow pills, Asana's magenta/tan/green pills). Ported literally that conflicts with Solen's 80/17 near-monochrome, sparse-blue customer-color law. RATIONALE.md and the punch-list/SUGGESTIONS.md outputs this metric feeds are internal design-review documents, not customer-facing screens, so they are not bound by that law as written. If a severity view is ever built as an actual on-screen admin/QA panel rather than markdown output, it needs its own explicit pass under the ink-scale and sparse-blue rules (muted text-weight + a single small dot instead of a saturated fill) before reusing any scouted app's palette. That build decision is out of scope here and is flagged, not resolved.\n\nSCOUTING COVERAGE NOTE: the social/trend and competitor-teardown scouts for this stream both hit an exhausted search budget and returned no usable evidence; both reported the gap honestly rather than fabricating a source or a statistic, correctly per the never-invent rule. The competitor scout did live-reconfirm the two NN/g citations (severity scale wording, 35% single-evaluator figure) directly against nngroup.com before the budget ran out, no new claim resulted, it is a re-verification, not new evidence. The real-app pattern above comes entirely from the third scout's Mobbin captures of internal ops-tooling (Jira/Airtable/ClickUp/Asana/GitHub Projects/Miro), which is the closest real-world analog available since \"severity triage UI\" has no customer-facing or public competitor-teardown surface to observe.\n\nSOURCE: Nielsen Norman Group, \"How to Rate the Severity of Usability Problems\" (T1) and \"Heuristic Evaluation: Theory\" (T1) for the scoring math; Mobbin-observed board views of Jira, Airtable, ClickUp, Asana, GitHub Projects, and Miro (CONV) for the rendering contract; internal Solen locked constants (32/12/16 spacing whitelist, 44px tap-target floor) reused unchanged, not new.",
+  "sources": [
+   {
+    "claim": "Nielsen's severity scale is 0=not a problem, 1=cosmetic, 2=minor, 3=major, 4=catastrophe, from frequency x impact x persistence plus a market-impact factor",
+    "source": "Nielsen Norman Group, How to Rate the Severity of Usability Problems, nngroup.com/articles/how-to-rate-the-severity-of-usability-problems/",
+    "tier": "T1"
+   },
+   {
+    "claim": "A single evaluator finds only about 35% of usability problems (averaged over six projects); returns diminish past roughly 5 evaluators",
+    "source": "Nielsen Norman Group, Heuristic Evaluation: Theory, nngroup.com/articles/how-to-conduct-a-heuristic-evaluation/theory-heuristic-evaluations/",
+    "tier": "T1"
+   },
+   {
+    "claim": "Severity/priority renders as a single ordinal label (never a raw score), sorted worst-first, in a 3-to-5-tier set",
+    "source": "Mobbin capture of Jira board-by-priority, Airtable kanban/grid by priority, Miro embedded table",
+    "tier": "CONV"
+   },
+   {
+    "claim": "A second orthogonal field (status/provenance) renders as its own separate small pill, never fused into one compound badge with severity",
+    "source": "Mobbin capture of ClickUp task detail (Priority row + Status row) and Asana task cards (Priority pill + Status pill side by side)",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Grouped severity views attach a count badge to each tier's group header",
+    "source": "Mobbin capture of Jira board columns, Airtable group headers, GitHub Projects \"By priority\" view",
+    "tier": "CONV"
+   },
+   {
+    "claim": "25/75/150% deviation-magnitude band boundaries used to score the IMPACT sub-factor",
+    "source": "Self-derived for this stream, not sourced from Nielsen or any external study; pending backtest",
+    "tier": "T3"
+   }
+  ],
+  "numbers_used": [
+   "0-4 Nielsen severity scale (T1)",
+   "35% problems found by a single evaluator (T1)",
+   "~5 evaluators diminishing-returns point (T1)",
+   "25% / 75% / 150% deviation-magnitude band boundaries (T3, self-derived, pending backtest)",
+   "3-to-5 discrete severity tiers as the observed real-app rendering convention (CONV, new this pass)",
+   "32/12/16 spacing whitelist (D8, already-locked Solen value, not new)",
+   "44px tap-target floor (D6, already-locked Solen value, not new)"
+  ],
+  "real_world_evidence": [
+   {
+    "source": "Jira, board grouped by priority (Mobbin)",
+    "what": "5 ordinal tiers (Highest/High/Medium/Low/Lowest), colored chevron + numeric count badge per column header, worst-first left-to-right, no raw score ever shown to the user",
+    "tier": "CONV"
+   },
+   {
+    "source": "Airtable, kanban and grid views grouped by priority (Mobbin)",
+    "what": "4 tiers (Critical/High/Medium/Low) as pastel pills, sorted worst-first, group header format is literally \"PRIORITY [tier]\" + \"Count N\"",
+    "tier": "CONV"
+   },
+   {
+    "source": "ClickUp, board and task-detail views (Mobbin)",
+    "what": "4 tiers (Urgent/High/Normal/Low) shown as a colored flag icon only; Priority and Status (On track/At risk/Off track) render as two fully independent single-line rows, never merged into one field",
+    "tier": "CONV"
+   },
+   {
+    "source": "Asana, task cards (Mobbin)",
+    "what": "Priority pill and Status pill sit side by side on the same card, both one word, no numeric score anywhere in the UI",
+    "tier": "CONV"
+   },
+   {
+    "source": "GitHub Projects, \"By priority\" view (Mobbin)",
+    "what": "Binary-leaning grouping (Urgent vs No Priority) with a colored dot and count, most items sit ungraded until explicitly assigned a tier",
+    "tier": "CONV"
+   },
+   {
+    "source": "Nielsen Norman Group (live re-fetch by the competitor-teardown scout)",
+    "what": "Confirmed verbatim wording of the 0-4 severity labels and the frequency/impact/persistence factors, plus the explicit note that a single evaluator's severity call is unreliable relative to a multi-rater mean, no new claim, a re-verification of the existing T1 baseline",
+    "tier": "T1"
+   }
+  ],
+  "generative_prior": "For any future internal design-QA tooling surface that displays a computed severity/priority value (a punch-list renderer, a SUGGESTIONS.md formatter, a verifier-loop report), default to: (1) 4 ordinal tier labels, worst-first (BLOCKING / HIGH / MINOR / COSMETIC, D10's existing set, already inside the observed 3-5 tier real-app band), never a visible 0-4 number or formula; (2) a second field (provenance/status) as its own adjacent small tag, never string-concatenated with the severity label; (3) a count badge next to each tier heading in any grouped/listed view. Real-app anchors for the 3-5 tier band and the never-show-raw-score rule: Jira (5 tiers), Airtable and ClickUp (4 tiers), Miro (3 tiers). Real-app anchors for the two-axis-never-fused rule: ClickUp's separate Priority/Status rows, Asana's side-by-side Priority/Status pills. This is a rendering default, not a new perceptual floor, so it needs no Taste Lab probe, it is directly computable and testable against the six cited screens.",
+  "taste_lab_probe": "Not required, mechanize-tag stream, no new perceptual default (unchanged from the baseline draft). The severity-math calibration path stands: backtest the formula against 5-10 already-closed punch-list items from past verifier-loop rounds where the owner's actual triage call (fixed-now vs parked vs ignored) is known, and require the formula's bucket to match the owner's real decision at least 8/10 times before treating the 25/75/150% deviation bands as load-bearing. The new rendering-contract addition (label-not-score, two-axis-never-fused, count badges) needs no separate probe since it is a direct port of an observed convention, not a perceptual claim, verify it only by checking the eventual punch-list renderer's output against this spec."
+ },
+ "verified": {
+  "id": "S19",
+  "tag": "mechanize",
+  "verdict": "revised",
+  "myths_caught": [
+   "GitHub Projects framed as a platform-convention anchor for a fixed priority scale is overclaimed: GitHub's own docs confirm Priority is NOT a built-in default field, it is a user-created custom single-select field with no canonical option set (their own example uses Low/Medium/High, not the draft's implied Urgent/High/Medium/Low). The draft's 'Urgent vs No Priority, most items ungraded' observation is one team's ad hoc field configuration, not a GitHub Projects convention. Downgraded from a platform-convention anchor to a weak/anecdotal data point.",
+   "Miro cited as a '3-tier' convention anchor for the low end of the tier-count band is overclaimed: Miro is a general whiteboard/diagramming tool with no native priority or severity feature (confirmed via miro.com/features, no tagging-tier system described). The captured '3-tier embedded table' reflects one board's freeform design choice, not a Miro-endorsed convention. Downgraded from convention anchor to weak/anecdotal data point; the tier-count band's real anchors are Jira (5, native field) and ClickUp (4, native field), both confirmed canonical.",
+   "Airtable group-header format quoted as 'literally PRIORITY [tier] + Count N' overclaims precision for what is more plausibly a paraphrase of the UI, not a verbatim string; softened to a description rather than a quoted literal in verified_addition."
+  ],
+  "residual_risks": "Three items need owner or QUESTIONS.md attention: (1) The draft's tier-count band (3-to-5) leans on Jira and ClickUp as the only genuinely canonical platform anchors after this pass; Airtable and Asana are strong-but-template conventions, GitHub Projects and Miro are weak/anecdotal single-board captures, not platform features. This does not change the actionable recommendation (D10's existing 4 labels already sit inside the Jira/ClickUp band) but the evidence citation should not claim six equally-strong app conventions going forward. (2) The LOCKFILE tension the draft itself flagged and correctly did not resolve: all six scouted apps use saturated color fills for severity, which conflicts with Solen's 80/17 near-monochrome sparse-blue law; this is fine as-is because the outputs (RATIONALE.md, punch-lists, SUGGESTIONS.md) are internal markdown, not customer-facing screens, but if a real on-screen admin/QA severity panel is ever built it needs its own ink-scale pass before reusing any scouted palette. Candidate for QUESTIONS.md so it is not silently ported later. (3) The 25/75/150% deviation-magnitude band boundaries remain T3, self-derived, and explicitly unverified; the draft's own taste_lab_probe (backtest against 5-10 closed punch-list items, require 8/10 match to the owner's real triage call) is the correct gate and should run before those numbers are treated as load-bearing.",
+  "verified_addition": "COMPUTABLE METRIC: Design-Finding Severity Score (D10), extended\n\nCORE (T1 math, unchanged, condensed): each punch-list finding gets source_type (gate_breach / mechanized / subjective), instance_count, component_reach, and deviation_magnitude. Three sub-scores 0-4 (FREQUENCY from instance_count, IMPACT forced to 4 for any gate_breach else from deviation_magnitude bands, PERSISTENCE from component_reach) combine as SEVERITY = round(mean(FREQUENCY, IMPACT, PERSISTENCE)), clamped 0-4. Thresholds: 4 or any gate_breach = BLOCKING (ship gate fails); 3 = HIGH (fixed before the current verifier-loop round closes); 2 = MINOR (parked to SUGGESTIONS.md); 0-1 = COSMETIC (opportunistic only). Any finding scored 3 or 4 needs one independent second pass before the list is final: this is grounded in a verified NN/g figure, a single evaluator finds only about 35 percent of usability problems averaged across six projects, with diminishing returns past three to five evaluators (confirmed verbatim on the NN/g \"Heuristic Evaluation: Theory\" page, live-fetched this pass). The 25/75/150% deviation-magnitude band boundaries remain T3, self-derived, unverified until backtested against 5-10 closed punch-list items per the taste_lab_probe below.\n\nNEW: OUTPUT RENDERING CONTRACT (CONV, strongest anchors Jira and ClickUp; Airtable and Asana template-strong; GitHub Projects and Miro weak/anecdotal, see note)\n\n1. Never print the raw SEVERITY number. Print only the tier label (BLOCKING / HIGH / MINOR / COSMETIC). Jira (5 native tiers: Highest/High/Medium/Low/Lowest) and ClickUp (4 native tiers: Urgent/High/Normal/Low, shown as a colored flag icon, no numeric score) both ship this as a built-in field with no visible formula or score. D10's 4-label scheme already sits inside that band, so no label-count change, only a rendering rule the current text is silent on.\n2. Sort worst-first, always. Jira orders Highest to Lowest, Airtable's common Critical-to-Low template orders the same way; no scouted board used alphabetical or insertion order.\n3. When a finding needs to show both its severity tier AND its provenance (source_type), render them as two small, separate, adjacent tags, e.g. `BLOCKING · gate_breach`, never fused into one compound string. ClickUp (separate Priority row and Status row) and Asana (separate Priority pill and Status pill on the same card) both keep these as two independent one-word fields, never merged. This gives D10's existing two-bucket split (contract breach vs mechanized taste finding) a concrete display form.\n4. In any grouped view (a punch-list document, the SUGGESTIONS.md queue, a verifier-loop round summary), attach a count to each tier heading, e.g. \"BLOCKING (3)\". Jira and Airtable both do this on native priority fields; treat this as the load-bearing pair, not a six-app consensus. Practical payoff for this codebase: a shrinking BLOCKING(N) count between verifier-loop rounds IS rule 9's \"strictly fewer items than the previous round\" convergence check, made visible at a glance.\n\nEVIDENCE QUALITY NOTE (this pass): of the six apps cited by the scout, four have a genuinely native, canonical priority/severity field (Jira, ClickUp confirmed as built-in; Airtable and Asana as strong default templates), and two do not. GitHub Projects has no built-in Priority field at all, it is a user-created custom single-select with no fixed option set (confirmed against GitHub's own docs), so the \"Urgent vs No Priority\" observation reflects one team's setup, not a platform convention. Miro has no native priority/severity feature, it is a general whiteboard tool, so the \"3-tier embedded table\" observation reflects one ad hoc board, not a Miro convention. Neither downgrade changes the actionable recommendation, since Jira (5) and ClickUp (4) alone already bracket D10's existing 4-label scheme, but future citations of this stream should lean on the four confirmed anchors, not frame all six as equally strong.\n\nLOCKFILE TENSION, noted and NOT applied: the confirmed real apps encode severity with saturated color fills (Jira's red/orange chevrons, Airtable's pink/salmon/yellow pills, ClickUp and Asana's colored flags and pills). Ported literally that conflicts with Solen's 80/17 near-monochrome, sparse-blue customer-color law. RATIONALE.md and the punch-list/SUGGESTIONS.md outputs this metric feeds are internal design-review documents, not customer-facing screens, so they are not bound by that law as written. If a severity view is ever built as an actual on-screen admin/QA panel rather than markdown output, it needs its own explicit pass under the ink-scale and sparse-blue rules (muted text-weight + a single small dot instead of a saturated fill) before reusing any scouted app's palette. That build decision is out of scope here and is flagged, not resolved. Candidate for QUESTIONS.md.\n\nSCOUTING COVERAGE NOTE: the social/trend and competitor-teardown scouts for this stream both hit an exhausted search budget and returned no usable evidence; both reported the gap honestly rather than fabricating a source or a statistic, correctly per the never-invent rule. The competitor scout's live re-fetch of the two NN/g citations is independently reconfirmed in this verify pass (exact 0-4 label wording and the 35% single-evaluator figure both quote-match the live NN/g pages).\n\nSOURCE: Nielsen Norman Group, \"How to Rate the Severity of Usability Problems\" (T1, verified) and \"Heuristic Evaluation: Theory\" (T1, verified, exact quote: \"Averaged over six of my projects, single evaluators found only 35 percent of the usability problems in the interfaces\") for the scoring math; Mobbin-observed board views of Jira and ClickUp (CONV, strong, native fields) plus Airtable and Asana (CONV, template-strong) for the rendering contract, with GitHub Projects and Miro downgraded to weak/anecdotal (no native priority scale on either platform); internal Solen locked constants (32/12/16 spacing whitelist, 44px tap-target floor) reused unchanged, not new.",
+  "claim_verdicts": [
+   {
+    "claim": "Nielsen's severity scale is 0=not a problem, 1=cosmetic, 2=minor, 3=major, 4=catastrophe, from frequency x impact x persistence plus a market-impact factor",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Confirmed via live fetch of nngroup.com/articles/how-to-rate-the-severity-of-usability-problems: exact label wording matches (cosmetic/minor/major/catastrophe), plus the fourth factor market impact is correctly named and quoted."
+   },
+   {
+    "claim": "A single evaluator finds only about 35% of usability problems (averaged over six projects); returns diminish past roughly 5 evaluators",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Confirmed via live fetch of the specific 'theory-heuristic-evaluations' sub-page (not the general how-to page, which lacks the number): exact quote 'Averaged over six of my projects, single evaluators found only 35 percent of the usability problems in the interfaces.' Diminishing-returns framing (3-5 evaluators, cost-benefit optimum around 4) also confirmed."
+   },
+   {
+    "claim": "Severity/priority renders as a single ordinal label (never a raw score), sorted worst-first, in a 3-to-5-tier set",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Solid for Jira (5 native tiers, confirmed general knowledge) and ClickUp (4 native tiers, flag icon, confirmed general knowledge). Weak for the Miro leg of this claim: Miro has no native priority/severity feature (checked miro.com/features, no tagging-tier system found), so a '3-tier' Miro capture is one ad hoc board's design, not a platform convention. Softened in verified_addition to name Jira/ClickUp as the real anchors."
+   },
+   {
+    "claim": "A second orthogonal field (status/provenance) renders as its own separate small pill, never fused into one compound badge with severity",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "ClickUp (Priority row + Status row) and Asana (Priority pill + Status pill side by side) are both well-established default task-card patterns; no red flag found."
+   },
+   {
+    "claim": "Grouped severity views attach a count badge to each tier's group header",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Strong for Jira and Airtable (standard board/group-header behavior). Weak for the GitHub Projects leg: GitHub's own docs confirm Priority is not a built-in field, it is a user-created custom single-select with no default option set, so the cited 'By priority' view with counts reflects one team's custom setup, not a GitHub Projects convention. Softened in verified_addition."
+   },
+   {
+    "claim": "25/75/150% deviation-magnitude band boundaries used to score the IMPACT sub-factor",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Correctly labeled self-derived and unsourced in the original draft; no change needed, this is honest tiering, not a myth. Backtest gate (taste_lab_probe) should run before treating these as load-bearing, as the draft itself already states."
+   }
+  ]
+ }
+}

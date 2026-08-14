@@ -1,0 +1,234 @@
+{
+ "id": "S33",
+ "synth": {
+  "id": "S33",
+  "tag": "canon-deepen",
+  "title": "i18n text-expansion + multi-script typography grounding",
+  "principle_summary": "Text-expansion planning must be keyed to source-string CHARACTER LENGTH, not to a per-language flat percentage: the IBM/W3C curve runs from 100-200% increase under 10 characters down to 30% over 70 characters, so short UI strings (chips, tabs, CTA labels, exactly Solen's fixed-width surfaces) are the worst-case band, not the best case a flat \"German +30%\" implies. German is also not a safe worst-case proxy for Solen's other Latin locales: the one available per-language datapoint ranks Italian (3.0x) above German (2.8x) above French (2.6x). When real shipped products hit this problem they resolve it three ways, in order of preference: shorten the copy at translation time (Fresha, Treatwell), let the container size to content instead of clamping (Booksy), or wrap to a second line (Discord, Doctolib). None resolve it with shrink-to-fit font scaling or mid-word ellipsis-truncation on a primary CTA or nav chip, which is the concrete anti-pattern D9's overflow audit should test for. Separately, the specific \"German expands ~30%\" number circulating in 2026 trend content traces to an SEO content-farm citation that does not even contain the figure, confirming it as folklore rather than an independently-corroborated second source.",
+  "proposed_addition": "RATIONALE.md section 9 (Domain 9: i18n typography), replacing the line-206 bucket sentence and adding a new resolution-strategy mechanic, same CONV/T2 framing, no LOCKFILE literal touched:\n\nDECISION: State the IBM/W3C character-bucket expansion curve in ONE consistent unit (percentage increase over the English source length); stop treating German as the presumptive worst-case Solen locale; and name the three real-world resolution strategies for a fixed-width slot that overflows, ranked by preference, so D9 has a concrete pass/fail vocabulary instead of a single number.\n\nFORCES: fixed-width UI slots (chips, tabs, badge pills, button labels) must be sized against the longest rendered locale, not the EN draft. The correct slack number depends on the source string's character length, not on which of the four locales it renders in. Mixing \"percent of original\" and \"percent increase\" conventions in the same table produces a silently wrong slack budget for mid-length strings. And when a slot still overflows after correct sizing, the component needs a named fallback strategy, not an ad hoc clamp.\n\nOPTIMIZES FOR: a single readable planning table an implementer can apply without re-deriving units; a named, shippable-precedent-backed decision tree for overflow (shorten, then widen-to-content, then wrap) instead of defaulting to truncation; permanently closing SOURCE.md:1075's already-flagged folklore gap with a real source and a debunked myth-chain, so nobody re-imports \"German +30%\" from a future trend-roundup search.\n\nSACRIFICES: precision. The underlying IBM table is pooled across European languages (not German-specific, not per-locale) and its 51-70 bucket does not monotonically decrease versus the 31-50 bucket, an artifact this entry notes rather than smooths over. The per-language ranking (Italian over German) rests on one word pair (Flickr's \"views\"), so it is directional test-string guidance, not a settled per-language law. The competitor resolution-strategy evidence is CONV (live-fetched real screens, not a controlled study) and Doctolib's observation is partial (footer-only, no fetchable booking-flow CTA text).\n\nBOUNDARY: no line-height rule follows for Solen's own locale set. The W3C source's vertical-space guidance (Thai roughly 150% of Latin line height, extra headroom for CJK/Arabic/Devanagari/Tibetan) applies to non-Latin scripts only; de/en/fr/it are all Latin, so domain 9's existing boundary line (\"RTL and CJK: out of scope by locale set\") already correctly excludes this. Separately, \"variable font width axis for language compression\" is explicitly NOT a documented multilingual-expansion technique in current design-trend or technical sources (checked directly, absent from both the typography-trend roundups and the localization literature): do not let a future pass bridge \"variable fonts are a 2026 trend\" into \"therefore compress German with a width axis\" without new evidence. This finding narrows, it does not expand, the multi-script surface.\n\nMECHANIC (T2, IBM \"Guidelines to design global solutions\" via W3C Internationalization \"Text size in translation\"): planning buckets for percentage increase over the English source string, by source character count: under 10 chars, 100-200% (the translation can run 2-3x the source length); 11-20 chars, 80-100%; 21-30 chars, 60-80%; 31-50 chars, 40-60%; 51-70 chars, 51-70% (source-table anomaly, use the wider 40-70% band for planning); over 70 chars, 30%. Chips, tabs, and buttons sit in the under-20-char band, the largest-expansion band, which is why the LOCKFILE <=3-word CTA lock and the truncation-with-affordance rule carry real weight.\n\nMECHANIC (T2, same source, single-word example, pooled-language caveat applies): do not treat German as the automatic worst-case Solen locale for short strings. The one available per-language ratio (Flickr's \"views\" label, English = 1.0x) ranks Italian 3.0x above German 2.8x above Portuguese and French at 2.6x each. Any Solen fixed-width slot test-string set should include an Italian and a French candidate alongside the German one, not German alone.\n\nMECHANIC (CONV, live competitor fetches 2026-07-22): three observed resolution strategies for a fixed-width slot that overflows in a non-English locale, ranked by how shipped products actually use them. (1) Shorten at translation time: Fresha's German CTAs stay 1-2 words by deliberate word choice (\"Suchen\", \"Mehr erfahren\", \"Hol dir die App\"), Treatwell compresses \"Buche 24/7\" the same way Solen's own copy-economy rule 1 already prescribes. (2) Widen the container to content: Booksy's German nav chip \"Augenbrauen & Wimpern\" (21 characters) ships unclamped at full pill width rather than truncated, alongside \"Haarentfernung\" (14 chars) and \"Massage und Spa\". (3) Wrap to a second line: Discord's language-settings row grows vertically to a second line for longer identifiers rather than truncating the first; Doctolib's German footer/legal nav reflows across multiple lines rather than clipping (partial evidence, footer-only fetch). None of the eight real apps sampled (N26, GetYourGuide, Discord, Trip.com, Fresha, Treatwell, Booksy, Doctolib) were observed using shrink-to-fit font scaling or mid-word ellipsis-truncation on a primary CTA or nav chip. This is usable negative evidence for D9: a hard-truncated DE/FR/IT CTA or chip in Solen's own audit is the anti-pattern these products avoid, not an acceptable fallback.\n\nMECHANIC / MYTH-CHAIN FINDING (documented so it is not re-imported): a 2026 localization-trends article (gleef.eu, author credited only as \"eva-b\") states German expands \"up to +30%\" and cites a single source for it; fetching that cited source directly shows it is an SEO content-farm page (affiliate banners, unrelated \"related reading\" links, author credited as a \"Retail Strategy Consultant\") that does not contain the German percentage it is cited for. The same article states French +15-20%, Spanish +15-25%, and Arabic +20-30% with zero citations at all. This is the exact unsourced-stat-laundering shape SOURCE.md:1075's flat \"German ~30%\" already matched; it is now independently confirmed as folklore, not merely uncited.\n\nSOURCE: W3C Internationalization Working Group, \"Text size in translation\" (Richard Ishida), https://www.w3.org/International/articles/article-text-size.en.html, citing IBM's \"Guidelines to design global solutions\" for the character-bucket table and its own Flickr \"views\" example for the per-language ratio. Competitor evidence: live fetches of fresha.com/de, treatwell.de, booksy.com/de-de, doctolib.de on 2026-07-22 (Doctolib partial, footer-only). Myth-chain evidence: gleef.eu \"Top design localization trends every product team needs in 2026\" and its cited unicode.live source, both fetched directly.\n\nCompanion edit to SOURCE.md:1075 (flag for owner sign-off, SOURCE.md sits above RATIONALE in doc hierarchy): change \"German text expands ~30% vs English\" to point at RATIONALE.md section 9 for the sourced mechanic, add FR/IT to the illustrative example line, and note the debunked gleef.eu citation chain so a future pass does not re-import the same folklore number from a trend search.",
+  "generative_prior": "Default fixed-width UI slots (chips, tabs, badge pills, button labels) to the length-dependent slack budget, not a flat percentage: under 10 EN characters, plan for 100-200% increase (2-3x length); 11-20 chars, 80-100%; 21-30 chars, 60-80%; 31-50 chars, 40-60%; over 70 chars, 30%. Do not use German as the single worst-case test string; include an Italian and French candidate too (Flickr \"views\": IT 3.0x > DE 2.8x > FR/PT 2.6x, T2). When a real DE/FR/IT string still overflows a slot sized to this budget, resolve it in this order, each demonstrated by a real shipped app: (1) shorten the copy itself, the way Fresha keeps CTAs to \"Suchen\" / \"Mehr erfahren\" and Treatwell to \"Buche 24/7\"; (2) let the container size to content, the way Booksy ships its 21-character \"Augenbrauen & Wimpern\" nav chip unclamped; (3) wrap to a second line, the way Discord's language row and Doctolib's footer nav reflow rather than truncate. Never shrink-to-fit or mid-word-ellipsis a CTA or nav chip; none of the eight real apps sampled do this.",
+  "real_world_evidence": [
+   {
+    "source": "Flickr (via W3C \"Text size in translation\")",
+    "what": "English label 'views' translated: German 2.8x, Italian 3.0x, French/Portuguese 2.6x each; a real shipped-product datapoint showing Italian expands MORE than German at short-label scale",
+    "tier": "T2"
+   },
+   {
+    "source": "Booksy (booksy.com/de-de, live fetch 2026-07-22)",
+    "what": "German nav chip 'Augenbrauen & Wimpern' (21 characters) ships unclamped at full pill width, no truncation, alongside 14-char 'Haarentfernung'",
+    "tier": "CONV"
+   },
+   {
+    "source": "Fresha (fresha.com/de, live fetch 2026-07-22)",
+    "what": "German CTAs kept to 1-2 words by deliberate translation choice ('Suchen', 'Mehr erfahren', 'Hol dir die App') rather than clamping a longer natural translation; Solen's Fresha-structure axis already shares this discipline",
+    "tier": "CONV"
+   },
+   {
+    "source": "Treatwell (treatwell.de, live fetch 2026-07-22)",
+    "what": "Primary CTA compressed to 'Buche 24/7', same word-dropping discipline as Solen's own copy-economy rule 1",
+    "tier": "CONV"
+   },
+   {
+    "source": "Discord (Mobbin capture)",
+    "what": "Language-settings row adds a second line for longer/compound identifiers rather than truncating the first line; a structural wrap pattern generalizable to DE compound strings",
+    "tier": "CONV"
+   },
+   {
+    "source": "Doctolib (doctolib.de, live fetch 2026-07-22, footer only)",
+    "what": "German footer/legal nav copy reflows across multiple lines rather than clipping; partial evidence, no booking-flow CTA text was fetchable",
+    "tier": "CONV"
+   },
+   {
+    "source": "N26 (Mobbin capture)",
+    "what": "Language picker lets each language's native name sit at its own natural width, one per row, no truncation handling needed because the list is vertical not fixed-width",
+    "tier": "CONV"
+   },
+   {
+    "source": "gleef.eu 2026 trends article + its cited unicode.live source",
+    "what": "The specific 'German +30%' figure circulating in 2026 trend content traces to a content-farm page that does not contain the number it is cited for; confirms the figure as folklore, not an independent second source",
+    "tier": "MYTH"
+   }
+  ],
+  "sources": [
+   {
+    "claim": "IBM/W3C character-bucket expansion table (length-dependent, English source): <10 chars 200-300% of original / 100-200% increase down to >70 chars 130%/30% increase",
+    "source": "W3C Internationalization, 'Text size in translation' (Richard Ishida), https://www.w3.org/International/articles/article-text-size.en.html, citing IBM 'Guidelines to design global solutions'",
+    "tier": "T2"
+   },
+   {
+    "claim": "Per-language 'views' ratio example: Portuguese 2.6x, French 2.6x, German 2.8x, Italian 3.0x, Chinese 1.2x, Korean 0.8x vs English 1.0x",
+    "source": "Same W3C article, Flickr 'views' example table",
+    "tier": "T2"
+   },
+   {
+    "claim": "German/Finnish/Dutch compounding concatenates short words into one long term ('Input processing features' -> 'Eingabeverarbeitungsfunktionen')",
+    "source": "Same W3C article, compounding-languages section",
+    "tier": "T1"
+   },
+   {
+    "claim": "Vertical space needs are tied to non-Latin scripts only (Thai ~150% of Latin line height; extra headroom named for Arabic, CJK, Devanagari, Tibetan) and do not apply to Solen's de/en/fr/it Latin set",
+    "source": "Same W3C article, vertical-space section",
+    "tier": "T3"
+   },
+   {
+    "claim": "Booksy's German nav ships a 21-character chip ('Augenbrauen & Wimpern') unclamped, no truncation",
+    "source": "booksy.com/de-de, live fetch 2026-07-22",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Fresha and Treatwell keep German CTAs to 1-2 words by translation choice rather than clamping",
+    "source": "fresha.com/de and treatwell.de, live fetch 2026-07-22",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Doctolib's German footer/legal nav reflows across lines rather than truncating (footer-only observation)",
+    "source": "doctolib.de, live fetch 2026-07-22, partial",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Discord's language-settings row and N26's language picker use vertical growth / natural-width rows rather than truncation for longer identifiers",
+    "source": "Mobbin captures of Discord and N26 language-settings screens",
+    "tier": "CONV"
+   },
+   {
+    "claim": "'German text expands +30%' circulating in 2026 trend content traces to a content-farm citation that does not contain the figure; French/Spanish/Arabic figures in the same article are uncited",
+    "source": "gleef.eu 'Top design localization trends every product team needs in 2026' and its cited unicode.live page, both fetched directly",
+    "tier": "MYTH"
+   },
+   {
+    "claim": "SOURCE.md:1075 states an unsourced flat 'German text expands ~30% vs English' with no FR/IT figures",
+    "source": "Internal finding, _design-system/SOURCE.md line 1075, cross-checked against W3C table and gleef.eu myth-chain",
+    "tier": "CONV"
+   }
+  ],
+  "numbers_used": [
+   "100-200%",
+   "80-100%",
+   "60-80%",
+   "40-60%",
+   "51-70%",
+   "30%",
+   "200-300%",
+   "180-200%",
+   "160-180%",
+   "140-160%",
+   "151-170%",
+   "130%",
+   "1.0x",
+   "2.6x",
+   "2.8x",
+   "3.0x",
+   "1.2x",
+   "0.8x",
+   "150%",
+   "21 characters",
+   "14 characters",
+   "LOCKFILE <=3-word CTA lock (not reopened, cited as-is)"
+  ],
+  "taste_lab_probe": "Pull 12 real Solen strings across the four expansion bands (3 chips/badges under 10 EN chars, 3 tab/button labels 11-20 chars, 3 section titles/labels 21-30 chars, 3 body-adjacent labels 31-50+ chars) from the actual de/fr/it message-file values in messages/{locale}.json. For each, compute the real character-length ratio against the EN source and bucket it against the corrected MECHANIC table. Flag any string whose actual ratio exceeds its bucket's upper bound as a real overflow risk. Then, for every flagged string, check which of the three resolution strategies the component actually uses today: does it truncate/ellipsis (the anti-pattern, matches none of the 8 real apps sampled), does it clamp to a fixed width sized only against the EN or DE string (Booksy's counter-example says widen instead), or does it already wrap/size-to-content. This gives D9's overflow audit a numeric threshold AND a named pass/fail vocabulary (shorten / widen / wrap vs truncate) instead of the flat 30% folklore."
+ },
+ "verified": {
+  "id": "S33",
+  "tag": "canon-deepen",
+  "verdict": "revised",
+  "myths_caught": [
+   "The draft's OWN myth-chain finding checked out as accurate (gleef.eu 'German +30%' traces to a unicode.live content-farm page by 'Lina Ortega, Retail Strategy Consultant' that does not contain the figure) - this is not a myth that snuck into the draft, it is a correctly-caught myth, verified independently via direct WebFetch of both pages.",
+   "Caught during this pass: the Treatwell 'Buche 24/7' example is presented as 'the primary CTA' compressed, but the live page shows it is a feature-section subheading ('Buche 24/7 / Einfach vom Bett oder aus dem Bus'), not the button text on Treatwell's actual primary CTA. The underlying fact (short, word-dropped German phrasing) is real; the framing overstated its UI role.",
+   "Caught during this pass: the Discord 'language-settings row grows to a second line for longer identifiers' claim overstates what Mobbin's Discord language-list screens actually show. Every row in that list is a static two-line design (native name + English name), used uniformly regardless of string length - not a dynamic wrap-on-overflow behavior. It is weak/wrong evidence for the specific 'wrap over truncate when a string overflows' mechanic, though it is still consistent with 'no truncation observed.'"
+  ],
+  "residual_risks": "Owner-decision items: (1) SOURCE.md:1075 companion edit is correctly flagged in the draft itself as needing owner sign-off since SOURCE.md sits above RATIONALE in doc hierarchy - do not auto-apply. (2) The 51-70-char bucket genuinely does not monotonically decrease in IBM's own table (151-170% of original, i.e. 51-70% increase, sits above the 31-50 bucket's 40-60% increase) - this is a real property of the source data, not a synthesis error, but any implementer skimming the table for the first time will likely assume a typo; worth a one-line callout in RATIONALE itself, not just this verify pass. (3) Discord and N26 evidence came from Mobbin stock captures, not live-fetched originals like the four competitor sites - Discord's specific evidence for 'wrap on overflow' turned out to not support that exact mechanic (see myths_caught) and was cut; N26's 'natural-width row, no truncation' claim held up on re-check. Recommend the taste_lab_probe step lean on Booksy (verified, live, unclamped 21-char chip) and Doctolib (verified, live, wrapping footer) as the two strongest 'don't truncate' precedents rather than Discord. (4) The 'compounding languages is T1' tier claim (pre-existing content in RATIONALE.md, not net-new from this draft) is inflated - its only cited source is the same W3C secondary article, so T2 is the honest tier; flagging for a future pass since S33 does not touch that paragraph. (5) No search-engine cross-check of the exact D9-implementation numbers was possible beyond WebFetch (WebSearch quota was exhausted mid-task by prior session usage) - all verification here is single-source WebFetch per claim, not multi-engine corroborated; low risk given every fetch returned exact-quote matches, but noted for completeness.",
+  "verified_addition": "RATIONALE.md section 9 (Domain 9: i18n typography), replacing the line-206 bucket sentence and adding a new resolution-strategy mechanic, same CONV/T2 framing, no LOCKFILE literal touched:\n\nDECISION: State the IBM/W3C character-bucket expansion curve in ONE consistent unit (percentage increase over the English source length); stop treating German as the presumptive worst-case Solen locale; and name the three real-world resolution strategies for a fixed-width slot that overflows, ranked by preference, so D9 has a concrete pass/fail vocabulary instead of a single number.\n\nFORCES: fixed-width UI slots (chips, tabs, badge pills, button labels) must be sized against the longest rendered locale, not the EN draft. The correct slack number depends on the source string's character length, not on which of the four locales it renders in. Mixing \"percent of original\" and \"percent increase\" conventions in the same table produces a silently wrong slack budget for mid-length strings - this is a real, checkable defect in RATIONALE.md's own current line 206, which states \"under 10 chars can expand 200-300 percent\" (a percent-of-original figure) immediately next to \"11-20 chars roughly 80-100\" (which can only be read as a percent-increase figure, since 80-100 percent OF ORIGINAL would mean shrinking) - confirming the unit-mixing problem this entry fixes is not hypothetical. And when a slot still overflows after correct sizing, the component needs a named fallback strategy, not an ad hoc clamp.\n\nOPTIMIZES FOR: a single readable planning table an implementer can apply without re-deriving units; a named, shippable-precedent-backed decision tree for overflow (shorten, then widen-to-content, then wrap) instead of defaulting to truncation; permanently closing SOURCE.md:1075's already-flagged folklore gap (verified present verbatim: \"### §17.3 · German text expands ~30% vs English\") with a real source and a debunked myth-chain, so nobody re-imports \"German +30%\" from a future trend-roundup search.\n\nSACRIFICES: precision. The underlying IBM table is pooled across European languages (not German-specific, not per-locale) and its 51-70 bucket does not monotonically decrease versus the 31-50 bucket (151-170% of original vs 140-160%), an artifact this entry notes rather than smooths over. The per-language ranking (Italian over German) rests on one word pair (Flickr's \"views\"), so it is directional test-string guidance, not a settled per-language law. The competitor resolution-strategy evidence is CONV (live-fetched real screens, not a controlled study); Doctolib's observation is partial (footer-only, no fetchable booking-flow CTA text); and the Discord Mobbin capture, on closer look, shows a static two-line native-name/English-name row design used uniformly for every language, not a length-triggered wrap - it is not clean evidence for the \"wrap on overflow\" mechanic specifically, only weak evidence of \"no truncation observed.\" Booksy, Fresha, Treatwell, and N26's evidence held up on direct re-fetch.\n\nBOUNDARY: no line-height rule follows for Solen's own locale set. The W3C source's vertical-space guidance (Thai roughly 150% of Latin line height, extra headroom named for Arabic, Chinese, Devanagari, Japanese, Korean, Tibetan) applies to non-Latin scripts only; de/en/fr/it are all Latin, so domain 9's existing boundary line (\"RTL and CJK: out of scope by locale set\") already correctly excludes this. Separately, \"variable font width axis for language compression\" is explicitly NOT a documented multilingual-expansion technique in current design-trend or technical sources: do not let a future pass bridge \"variable fonts are a 2026 trend\" into \"therefore compress German with a width axis\" without new evidence. This finding narrows, it does not expand, the multi-script surface.\n\nMECHANIC (T2, IBM \"Guidelines to design global solutions\" via W3C Internationalization \"Text size in translation,\" Richard Ishida - source table verified by direct fetch, exact figures below): planning buckets for percentage increase over the English source string, by source character count: under 10 chars, 100-200% (source table: 200-300% of original); 11-20 chars, 80-100% (180-200% of original); 21-30 chars, 60-80% (160-180% of original); 31-50 chars, 40-60% (140-160% of original); 51-70 chars, 51-70% (source-table anomaly - 151-170% of original, higher than the preceding bucket - use the wider 40-70% band for planning); over 70 chars, 30% (130% of original). Chips, tabs, and buttons sit in the under-20-char band, the largest-expansion band, which is why the LOCKFILE <=3-word CTA lock (verified present, LOCKFILE.md ~line 765: \"Button labels: shortest grammatical form... <=3 words\") and the truncation-with-affordance rule carry real weight.\n\nMECHANIC (T2, same W3C source, single-word example, pooled-language caveat applies): do not treat German as the automatic worst-case Solen locale for short strings. The one available per-language ratio (Flickr's \"views\" label, English = 1.0x, verified by direct fetch) ranks Italian 3.0x above German 2.8x above Portuguese and French at 2.6x each (Korean 0.8x, Chinese 1.2x, both out of Solen's locale set). Any Solen fixed-width slot test-string set should include an Italian and a French candidate alongside the German one, not German alone.\n\nMECHANIC (CONV, live competitor fetches 2026-07-22, re-verified): three observed resolution strategies for a fixed-width slot that overflows in a non-English locale, ranked by how shipped products actually use them. (1) Shorten at translation time: Fresha's German CTAs stay 1-2 words by deliberate word choice (\"Suchen\", \"Mehr erfahren\", \"Hol dir die App\" - verified exact on fresha.com/de), and Treatwell's German copy uses the same word-dropping discipline (its \"Buche 24/7\" feature-section heading, not the site's primary CTA button, still exemplifies the compression Solen's own copy-economy rule 1 already prescribes). (2) Widen the container to content: Booksy's German nav chip \"Augenbrauen & Wimpern\" (21 characters, verified exact) ships unclamped at full pill width rather than truncated, alongside \"Haarentfernung\" (14 characters, verified exact) and \"Massage und Spa\" - confirmed live on booksy.com/de-de. (3) Wrap to a second line: Doctolib's German footer/legal nav reflows across multiple lines rather than clipping (verified live on doctolib.de, footer-only evidence); N26's language picker lets each language's native name sit at its own natural width in a vertical list, avoiding the truncation question entirely by not using a fixed-width slot (verified via Mobbin capture). None of the real apps sampled (Booksy, Fresha, Treatwell, Doctolib, N26) were observed using shrink-to-fit font scaling or mid-word ellipsis-truncation on a primary CTA or nav chip. This is usable negative evidence for D9: a hard-truncated DE/FR/IT CTA or chip in Solen's own audit is the anti-pattern these products avoid, not an acceptable fallback.\n\nMECHANIC / MYTH-CHAIN FINDING (documented so it is not re-imported, independently re-verified by direct fetch of both pages): a 2026 localization-trends article (gleef.eu/insights/top-design-localization-trends-product-teams-2026, byline \"eva-b\") states German expands \"Up to +30%\" and links that figure to a single cited source; fetching that cited source (unicode.live/evolution-multiscript-ui-2026) directly confirms it does NOT contain the German percentage it is cited for, and is instead a content-farm page (author credited as \"Lina Ortega, Retail Strategy Consultant,\" extensive affiliate/ad content, a \"related reading\" block linking to leather wallets, emergency shelters, and dashcams - topics unrelated to localization). The same gleef.eu article states French +15-20%, Spanish +15-25%, and Arabic +20-30% with zero citations at all. This is the exact unsourced-stat-laundering shape SOURCE.md:1075 already matched; it is now independently confirmed as folklore, not merely uncited.\n\nSOURCE: W3C Internationalization Working Group, \"Text size in translation\" (Richard Ishida), https://www.w3.org/International/articles/article-text-size.en.html, citing IBM's \"Guidelines to design global solutions\" for the character-bucket table and its own Flickr \"views\" example for the per-language ratio - re-fetched directly, all figures confirmed exact. Competitor evidence: live fetches of fresha.com/de, treatwell.de, booksy.com/de-de, doctolib.de on 2026-07-22 (Doctolib partial, footer-only; Treatwell's example is a section heading, not its primary CTA), plus a Mobbin capture of N26's language picker (Discord's Mobbin capture was checked and dropped - its \"second line\" is a static bilingual row design, not a length-triggered wrap, so it does not support this mechanic and was removed as evidence). Myth-chain evidence: gleef.eu \"Top design localization trends every product team needs in 2026\" and its cited unicode.live source, both fetched directly and confirmed to match the claim.\n\nCompanion edit to SOURCE.md:1075 (flag for owner sign-off, SOURCE.md sits above RATIONALE in doc hierarchy): change \"German text expands ~30% vs English\" to point at RATIONALE.md section 9 for the sourced mechanic, add FR/IT to the illustrative example line, and note the debunked gleef.eu citation chain so a future pass does not re-import the same folklore number from a trend search.",
+  "claim_verdicts": [
+   {
+    "claim": "IBM/W3C character-bucket expansion table: <10 chars 200-300% of original / 100-200% increase down to >70 chars 130%/30% increase, including the 51-70 anomaly",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Re-fetched w3.org/International/articles/article-text-size.en.html directly; all six bucket figures (200-300, 180-200, 160-180, 140-160, 151-170, 130 percent-of-original) matched exactly, including the non-monotonic 51-70 anomaly. The draft's percent-of-original-to-percent-increase conversion is arithmetically correct."
+   },
+   {
+    "claim": "Per-language 'views' ratio: Portuguese 2.6x, French 2.6x, German 2.8x, Italian 3.0x, Chinese 1.2x, Korean 0.8x vs English 1.0x",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Re-fetched same W3C page; Flickr views table matched exactly, Italian ranked above German as claimed."
+   },
+   {
+    "claim": "German/Finnish/Dutch compounding concatenates short words into one long term",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Pre-existing RATIONALE.md content, not part of this draft's proposed_addition text, but flagged: its only cited source is the same W3C secondary article, so T1 (primary source) is an inflated tier; should be T2."
+   },
+   {
+    "claim": "Vertical space needs tied to non-Latin scripts only (Thai ~150%, extra headroom for Arabic/CJK/Devanagari/Tibetan), out of scope for de/en/fr/it",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Re-fetched; matched almost verbatim including the specific script list (Arabic, Chinese, Devanagari, Japanese, Korean, Tibetan). Correctly scoped as a boundary, not a rule to apply."
+   },
+   {
+    "claim": "Booksy's German nav ships a 21-character chip ('Augenbrauen & Wimpern') unclamped, no truncation, alongside 14-char 'Haarentfernung'",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Live-fetched booksy.com/de-de directly; both strings and character counts confirmed exact, no ellipsis observed."
+   },
+   {
+    "claim": "Fresha keeps German CTAs to 1-2 words by translation choice",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Live-fetched fresha.com/de; 'Suchen', 'Mehr erfahren', 'Hol dir die App' all confirmed exact."
+   },
+   {
+    "claim": "Treatwell compresses its primary CTA to 'Buche 24/7'",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Live-fetched treatwell.de; the phrase exists exactly but is a feature-section subheading ('Buche 24/7 / Einfach vom Bett oder aus dem Bus'), not literally the site's primary CTA button. Corrected the framing in verified_addition; underlying fact stands."
+   },
+   {
+    "claim": "Doctolib's German footer/legal nav reflows across lines rather than truncating (footer-only)",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Live-fetched doctolib.de; footer confirmed to wrap across multiple lines with full text, no ellipsis. Already correctly caveated as partial evidence in the draft."
+   },
+   {
+    "claim": "Discord's language-settings row grows vertically to a second line for longer identifiers rather than truncating",
+    "source_ok": false,
+    "tier_final": "MYTH",
+    "note": "Checked via Mobbin: Discord's language list shows a static two-line row (native name + English name) for every entry uniformly, regardless of string length - not a dynamic wrap-on-overflow behavior. Overstates what the capture actually shows; removed as supporting evidence for this specific mechanic."
+   },
+   {
+    "claim": "N26's language picker shows each language's native name at natural width, one per row, no truncation handling needed",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Checked via Mobbin capture of N26's country-of-residence flow language dropdown: Deutsch, English, Français, Español, Italiano each shown at natural width in a vertical list. Confirmed."
+   },
+   {
+    "claim": "'German text expands +30%' in 2026 trend content traces to a content-farm citation that does not contain the figure; French/Spanish/Arabic figures in the same article are uncited",
+    "source_ok": true,
+    "tier_final": "MYTH",
+    "note": "Independently re-verified by direct fetch of both pages. gleef.eu/insights/top-design-localization-trends-product-teams-2026 (byline 'eva-b') states 'German | Up to +30%' linked to unicode.live/evolution-multiscript-ui-2026; that page does not contain the figure and is a content-farm page (author 'Lina Ortega, Retail Strategy Consultant,' affiliate ads, unrelated 'related reading' links to wallets/shelters/dashcams). French +15-20%, Spanish +15-25%, Arabic +20-30% in the same gleef.eu article carry no citation at all. Exact match to the draft's claim."
+   },
+   {
+    "claim": "SOURCE.md:1075 states an unsourced flat 'German text expands ~30% vs English' with no FR/IT figures",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Read the actual file: line 1075 header reads verbatim '### §17.3 · German text expands ~30% vs English', confirmed no FR/IT figures in that subsection."
+   },
+   {
+    "claim": "RATIONALE.md line 206 mixes 'percent of original' and 'percent increase' units in its existing bucket sentence, which this addition is meant to replace",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Read the actual file: line 206 currently reads 'under 10 chars can expand 200-300 percent, 11-20 chars roughly 80-100...' - the first figure is percent-of-original, the second can only be percent-increase (80-100 percent of original would mean shrinking). This is a genuine internal inconsistency this draft fixes, strengthening the case for the addition beyond what the draft itself argued."
+   },
+   {
+    "claim": "LOCKFILE.md carries a <=3-word CTA lock near line 765",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Read the actual file: 'Button labels: shortest grammatical form... <=3 words' appears at line ~765 under 'Copy economy (V3-D460)'. Confirmed."
+   },
+   {
+    "claim": "Numbers in numbers_used list (100-200%, 80-100%, 60-80%, 40-60%, 51-70%, 30%, 200-300%, 180-200%, 160-180%, 140-160%, 151-170%, 130%, 1.0x-3.0x, 1.2x, 0.8x, 150%, 21/14 characters) match the myth_screen never-cite table",
+    "source_ok": true,
+    "tier_final": "T2/CONV mixed (per-claim)",
+    "note": "Cross-checked every number against TASTE_R3_STREAMS.json's myth_screen (the PSYCHOLOGY.md never-cite list: 2000% samples, 70-90% defaults, losses 2x, jam study, $300M button, 5% retention, retention 5-25x cheaper, Amazon 100ms, Duolingo +20%, UGC 4x). No overlap - this draft is i18n-domain, not psychology-domain, and cites none of the banned figures."
+   }
+  ]
+ }
+}

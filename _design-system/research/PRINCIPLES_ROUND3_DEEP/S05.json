@@ -1,0 +1,246 @@
+{
+ "id": "S05",
+ "synth": {
+  "id": "S05",
+  "tag": "generative-gap",
+  "title": "Responsive reflow grammar (breakpoint behavior prior)",
+  "principle_summary": "A component reflows correctly across 375/768/1440 when its collapse behavior is chosen by CONTENT SHAPE, not by a single universal breakpoint ladder. Photo-grid and card-forward content (salon cards, galleries) holds its column count from desktop through tablet and drops to one column only at phone width; data-dense list-plus-panel content (filter sidebar, multi-field rows) collapses a full breakpoint earlier, going full-width and stacked already at tablet. Companion panels (a map, a detail pane) never shrink continuously alongside the main content; they are a binary toggle that is either present at full size or replaced by an open button. Filter/chip rows never wrap to a second line at any width; below the point where they would wrap, they become one horizontally-scrolling row instead. Compound controls (a search bar, a multi-field picker) either merge into one summary control (photo-grid discovery products) or stack each field as its own full-width row (transactional list products), and which mode a product uses is consistent for that product across every narrower breakpoint, not chosen per-breakpoint. None of this is yet expressed as a rule in Solen's own docs: LOCKFILE §7 states container widths and one grid recipe (`grid-cols-2 md:grid-cols-3 lg:grid-cols-4`) as bare CONV device-class buckets with no stated collapse-order logic behind them, which is the exact gap this stream (G5) exists to fill.",
+  "generative_prior": "Four concrete defaults, each with a threshold and 2-3 real-app examples, meant to make the FIRST mockup of a new responsive component right without guessing:\n\n1. COLUMN-COLLAPSE THRESHOLD BY CONTENT SHAPE. Photo-grid/card content: hold column count from 1440 through 768, drop to 1 column only below 768 (i.e. only at the 375 phone tier). Evidence: Fresha salon search (fresha.com/search) is 2-col at both 1440 and 768, 1-col only at 375; Airbnb search results (airbnb.com/s/Zurich) shows the identical 2-col-hold-then-1-col-at-375 pattern. Data-dense list/panel content (a sidebar filter plus multi-field rows): collapse a full breakpoint earlier, going full-width stacked already at 768. Evidence: Booking.com's left filter sidebar and list-row cards both stack at 768, the same width where Fresha and Airbnb are still holding their desktop-like 2-column layout.\n\n2. COMPANION PANEL = BINARY TOGGLE, NEVER A CONTINUOUS SHRINK. Below the width where a map/detail panel and the main content can no longer both hold a usable size (empirically ~768 in every case observed), replace the panel with a single open/close control rather than narrowing it. Evidence: Fresha's map panel becomes a small map-icon button at 768 that opens a full overlay; Airbnb's map becomes a floating \"Show map\" pill pinned bottom-center at 768; Turo exposes an explicit Grid/Map toggle in its top bar rather than trying to run both simultaneously below desktop width.\n\n3. FILTER/CHIP ROWS SCROLL, NEVER WRAP. A filter or chip row stays one line at every breakpoint; below the width where it would wrap, it becomes horizontally scrollable instead. Evidence: Fresha's filter chip row at 375 has its rightmost \"Price\" chip visibly clipped at the viewport edge, direct proof of scroll-not-wrap; Airbnb's amenity chip row scrolls as one line at both 768 and 375.\n\n4. COMPOUND-CONTROL COLLAPSE MODE IS PER-PRODUCT, NOT PER-BREAKPOINT. Discovery/photo-grid products merge a multi-field control into one summary pill (bold title line plus one comma-joined meta line) at every breakpoint below desktop. Transactional list products stack each field as its own full-width row instead. Evidence: Fresha's 3-field search bar (query, location, time) becomes one merged pill at both 768 and 375; Airbnb does the same, truncating text at 768 and going two-line at 375; Booking.com, by contrast, stacks destination and dates as separate full rows at 768, never merging. Solen's own locked `DateTimePicker` (one primitive: `dateLayout` strip for booking, calendar for search) already follows the merge model, so this evidence retroactively grounds a choice Solen made without a stated reflow rationale behind it.\n\nSecondary, lower-confidence input: container queries (component-scoped reflow, not just page-level breakpoints) are CONV-supported by 2025-2026 industry sources at roughly 94% browser support as of December 2025, arguing that a shared component (e.g. a SalonCard reused in a narrow sidebar and a wide grid) should key its own layout off its container's width, not only the page's. This did not surface from the real-app scouting and is not yet backed by a Solen-specific example; treat as a framing to keep in mind for shared components, not a numbered rule to apply today.\n\nTENSION FLAGGED, NOT REOPENED: LOCKFILE §7 (grid pattern set) currently sets the Solen search result grid to `grid-cols-2 md:grid-cols-3 lg:grid-cols-4`, adding a column at every step up. The two structural references this file claims to mirror (Fresha directly, Airbnb via LOCKFILE §1.5/§2.5 aesthetic lock) both instead HOLD 2 columns from tablet through desktop and only drop to 1 at phone, i.e. neither adds a third column at md. This is a genuine mismatch between the locked literal and the live behavior of the app it is meant to structurally mirror. Not proposing a change to the lock here; naming it so the owner can decide with the Taste Lab probe below rather than the mismatch sitting silent.",
+  "proposed_addition": "### Responsive reflow grammar, a generative prior (gap G5, _design-system/research/PRINCIPLES_ROUND3/S05)\n\nThis is a PRIOR for building new responsive components, not a retrofit of an existing LOCKFILE literal. LOCKFILE §7.816-848 already states container widths and one grid recipe as bare CONV numbers with no collapse-order logic behind them (RATIONALE.md section 14, \"Container widths and breakpoints\" and \"Grid pattern set\" blocks); this section supplies the missing grammar so the next component is built once and reflows right the first time, instead of being retrofit after an owner catches a bad collapse.\n\nPRIOR 1, column-collapse threshold by content shape: card/photo-grid content holds its column count from 1440 down through 768 and drops to 1 column only below 768; data-dense list-plus-panel content (a filter sidebar, multi-field rows) collapses a full breakpoint earlier and is already full-width-stacked at 768. Real-app evidence: Fresha and Airbnb search grids (2-col at both 1440 and 768, 1-col only at 375, T2 direct live-render capture) versus Booking.com (sidebar and list-rows both stack already at 768, T2 direct live-render capture, the explicit divergent case). Apply the \"column\" or \"modular\" Grid TYPE (LOCKFILE:840-848 classification) as card/photo-grid, and the \"column\" type used for dense row lists as the data-dense case, when deciding which threshold a new grid uses.\n\nPRIOR 2, companion panel is a binary toggle: a map or detail panel running alongside main content does not shrink continuously as viewport narrows; below the width where both can no longer hold a usable size, it becomes a single open/close control (icon button or floating pill) instead. Evidence: Fresha map-to-icon-button and Airbnb map-to-floating-pill, both at 768 (T2 direct live-render); Turo's explicit Grid/Map top-bar toggle (T2, Mobbin capture).\n\nPRIOR 3, filter/chip rows scroll, never wrap: a filter or chip row stays one line at every width; below the wrap point it becomes horizontally scrollable. Evidence: Fresha's chip row visibly clipping its rightmost chip at 375 (T2, direct proof via screenshot), Airbnb's amenity row scrolling at both 768 and 375 (T2).\n\nPRIOR 4, compound-control collapse mode is chosen once per product, not per breakpoint: photo-grid discovery products merge a multi-field control into one summary pill at every narrower width; transactional list products stack each field as its own row instead. Evidence: Fresha and Airbnb both merge (T2, direct live-render); Booking.com stacks (T2, direct live-render, divergent case). Solen's locked `DateTimePicker` single-primitive design already matches the merge model; this is retroactive grounding, not a new requirement.\n\nSecondary framing, not yet evidenced on a Solen surface: container queries (component-level, not just page-level, reflow) are CONV-supported at roughly 94% browser adoption as of December 2025 across independent 2025-2026 sources (LogRocket, DEV Community, UXPin). Worth keeping in mind for any shared component reused at genuinely different container widths (e.g. a card inside a narrow sidebar versus a wide grid); not asserted as a numbered rule here because no real-app or Solen example backs a specific threshold.\n\nExplicitly rejected as an input: the 2025-2026 \"bento grid\" visual trend (mixed-size asymmetric cells) is CONV as a design trend but conflicts with Solen's 80/17 neutral-surface-plus-ink restraint and the no-decorative-artifacts rule; only its documented mobile collapse LOGIC (anchor element first, then supporting cells in priority order, single column below the threshold) is worth borrowing, never the dense asymmetric visual language itself. A separate unsourced claim that bento layouts increase dwell time or click-through is screened out as folklore (no named study, no publisher) and must not be cited.\n\nTENSION, named not resolved: LOCKFILE's own search-result grid (`grid-cols-2 md:grid-cols-3 lg:grid-cols-4`) adds a column at md where the two structural/aesthetic references it targets (Fresha, Airbnb) both instead hold 2 columns through tablet and drop straight to 1 at phone. Flagging for the Taste Lab probe below rather than changing the lock unilaterally.\n\nTASTE LAB PROBE (per the repertory-grid method already logged in RATIONALE.md section, gap register D5): render Solen's own search-results grid at 768px in three real versions, current locked (`md:grid-cols-3`, three columns), Fresha/Airbnb-matched (hold 2 columns, drop to 1 only below 768), and a list-row alternative (single column, map behind a toggle button, matching Turo/Booking.com's denser mode). Show the owner all three at the SAME 768px width side by side, ask which reads right and why in their own words (not \"pick A/B/C\" but the triadic \"which two are alike, how does the third differ\" prompt), and use the answer to either retrofit LOCKFILE §7.816's grid recipe with a stated MECHANIC or explicitly confirm the current 2/3/4 ladder as an intentional Solen deviation from the Fresha/Airbnb reference, which it is not currently marked as.",
+  "real_world_evidence": [
+   {
+    "source": "Fresha salon search (fresha.com/search), competitor-teardown scout, live Browser-pane render at 375/768/1440",
+    "what": "Result-card grid holds 2 columns at both 1440 and 768, drops to 1 column only at 375; map panel present as a fixed side panel at 1440, replaced by an icon button that opens a full overlay at 768 and 375; filter row is a single horizontally-scrolling chip strip at 768/375 with the rightmost chip visibly clipped at 375; search bar collapses from 3 fields into one merged summary pill (bold title + comma-joined meta line) at both 768 and 375",
+    "tier": "T2"
+   },
+   {
+    "source": "Airbnb search results (airbnb.com/s/Zurich), competitor-teardown scout, live Browser-pane render at 375/768/1440",
+    "what": "Identical 2-col-hold-then-1-col-at-375 grid pattern to Fresha; map becomes a floating \"Show map\" pill at 768; amenity filter chips scroll as one row at both 768 and 375 without wrapping; search bar merges to one pill, truncating text at 768 and going two-line at 375; a bottom tab bar (Explore/Wishlists/Log in) appears only at 375, absent at 1440 and 768",
+    "tier": "T2"
+   },
+   {
+    "source": "Booking.com search results (booking.com/searchresults.html), competitor-teardown scout, live Browser-pane render at 768",
+    "what": "Divergent case: left filter sidebar and side-by-side list-row cards both collapse to full-width stacked blocks already at 768, a full breakpoint earlier than Fresha/Airbnb hold their structure; search bar fields (destination, dates) stack as separate full-width rows rather than merging into a summary pill",
+    "tier": "T2"
+   },
+   {
+    "source": "Turo (car rental marketplace), real-world scout via Mobbin",
+    "what": "List pane at desktop width is a single column of full-width row cards (not a grid) running alongside a persistent map taking roughly 55% of viewport width; an explicit Grid/Map toggle in the top bar implies the two are alternate modes, not simultaneously resized",
+    "tier": "T2"
+   },
+   {
+    "source": "Fiverr, Faire, Unity Asset Store (marketplaces), real-world scout via Mobbin",
+    "what": "Sidebar-filter-plus-N-column-grid structural family, with a recurring two-tier filter placement pattern: taxonomy checkboxes in a fixed-width sidebar, numeric/attribute filters (price, rating) as a separate dropdown-pill row above the grid; single-viewport captures only, no breakpoint transition directly observed",
+    "tier": "T3"
+   },
+   {
+    "source": "General web consensus on Airbnb's grid, cited by the real-world scout but not independently verified there",
+    "what": "Commonly reported 6 to 5 to 4 to 3 to 2 to 1 column collapse sequence as viewport narrows, with the map hidden behind a toggle at the point the grid drops to list-only",
+    "tier": "T3"
+   },
+   {
+    "source": "LogRocket, DEV Community (\"Ultimate Guide to CSS Container Queries\"), UXPin, 2025-2026 trend scout",
+    "what": "Container queries reported at roughly 94% browser support as of December 2025, industry framing shifting from viewport-only breakpoints to per-component container-width reflow",
+    "tier": "CONV"
+   },
+   {
+    "source": "Dribbble bento-grid tag pages, LogRocket, Superfiles/Orbix Studio/Landdding 2026 trend roundups, trend scout",
+    "what": "Bento/asymmetric grid layouts converge on a stated mobile collapse rule: below 768px, single column, every cell full-width and stacked, anchor cell first, then supporting cells in priority order",
+    "tier": "CONV"
+   },
+   {
+    "source": "One 2026 trend roundup, trend scout, explicitly screened out",
+    "what": "Unsourced claim that bento-grid sites see higher dwell time, click-through, and information retention; no named study, no publisher, no methodology given",
+    "tier": "MYTH"
+   },
+   {
+    "source": "Brand Vision, TransFunnel 2026 mobile-UX pieces, trend scout",
+    "what": "44x44px (Apple HIG) / 48dp (Material) touch-target floor restated as current baseline; already grounded in RATIONALE.md domain 10 (touch ergonomics), not new information for Solen",
+    "tier": "CONV"
+   },
+   {
+    "source": "Brand Vision mobile-UX piece, trend scout",
+    "what": "Directional single-source claim that secondary content should collapse into accordions/tabs rather than a full vertical stack on narrow viewports, citing unverified \"cognitive overload causes bounce\"",
+    "tier": "T3"
+   }
+  ],
+  "sources": [
+   {
+    "claim": "Fresha and Airbnb hold a 2-column result grid from 1440 through 768, dropping to 1 column only at 375",
+    "source": "Live Browser-pane render of fresha.com/search and airbnb.com/s/Zurich at 375/768/1440, competitor-teardown scout this round",
+    "tier": "T2"
+   },
+   {
+    "claim": "Booking.com collapses its sidebar-plus-list structure to full-width stacked already at 768, a breakpoint earlier than Fresha/Airbnb",
+    "source": "Live Browser-pane render of booking.com/searchresults.html at 768, competitor-teardown scout this round",
+    "tier": "T2"
+   },
+   {
+    "claim": "Map/companion panels collapse to a binary open/close toggle rather than shrinking continuously",
+    "source": "Fresha (icon button), Airbnb (floating pill), Turo (explicit Grid/Map toggle), live render + Mobbin captures, this round's scouts",
+    "tier": "T2"
+   },
+   {
+    "claim": "Filter/chip rows scroll horizontally rather than wrapping to a second line",
+    "source": "Fresha chip clip at 375, Airbnb amenity row at 768/375, live render, competitor-teardown scout",
+    "tier": "T2"
+   },
+   {
+    "claim": "Container queries have reached roughly 94% browser support as of December 2025",
+    "source": "LogRocket, DEV Community \"Ultimate Guide to CSS Container Queries\", UXPin 2025-2026 pieces, trend scout",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Bento-grid mobile collapse rule: single column below 768, anchor-first priority order",
+    "source": "Dribbble bento-grid tag, LogRocket, Superfiles/Orbix Studio/Landdding 2026 roundups, trend scout",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Bento-grid layouts increase dwell time, click-through, and retention",
+    "source": "One unnamed 2026 trend roundup, no study or publisher cited, trend scout",
+    "tier": "MYTH"
+   },
+   {
+    "claim": "44px/48dp is the current touch-target floor",
+    "source": "Brand Vision, TransFunnel 2026 mobile-UX pieces, trend scout; already grounded in RATIONALE.md domain 10",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Solen's locked search-result grid (2/3/4 columns) adds a column at md where Fresha and Airbnb both hold 2 columns through tablet",
+    "source": "Direct comparison of LOCKFILE:841-848 against this round's live Fresha/Airbnb renders",
+    "tier": "T2"
+   }
+  ],
+  "numbers_used": [
+   "768px as the observed column-drop / stack threshold for card-grid content (Fresha, Airbnb, T2 direct render)",
+   "768px as the earlier stack threshold for data-dense list/panel content (Booking.com, T2 direct render)",
+   "~94% container-query browser support as of December 2025 (CONV, LogRocket/DEV Community/UXPin)",
+   "44x44px / 48dp touch-target floor (CONV, restated, already in RATIONALE.md domain 10, not new)",
+   "2/3/4 column ladder in the current LOCKFILE grid recipe (LOCKFILE:841-848), flagged as a tension against the 2-hold-then-1 pattern actually seen on Fresha/Airbnb"
+  ],
+  "taste_lab_probe": "Render Solen's search-results grid at 768px in three real versions built on the actual component: (A) current locked `md:grid-cols-3` three-column, (B) Fresha/Airbnb-matched, hold 2 columns through tablet and drop to 1 only below 768, (C) a denser list-row mode with the map behind an open/close toggle (Turo/Booking.com pattern). Show the owner all three at the same 768px width and ask the repertory-grid triad question, \"which two of these three are alike, and how does the third differ\" rather than a plain pick-one, to surface the owner's own unnamed reasoning. Use the answer to either write a MECHANIC-backed retrofit of LOCKFILE:841-848's grid recipe, or to explicitly confirm the current 2/3/4 ladder as a deliberate Solen deviation from the Fresha/Airbnb structural reference, which it is not currently marked as anywhere in LOCKFILE or RATIONALE."
+ },
+ "verified": {
+  "id": "S05",
+  "tag": "generative-gap",
+  "verdict": "revised",
+  "myths_caught": [
+   "Container-query browser-support stat (~94% as of December 2025) is chronologically inconsistent with ground truth: caniuse.com's own live global usage-weighted figure (checked this pass) is 92.6% as of its current June-2026 snapshot. Browser support only grows over time, so a December-2025 figure should be LOWER than 92.6%, not higher at ~94%. The named secondary sources (LogRocket, DEV Community, UXPin) could not be independently re-verified this pass (WebSearch budget was exhausted mid-verification), so the specific magnitude is unconfirmed and directionally suspect. Softened in verified_addition to 'over 90%' with the caniuse contradiction noted rather than repeating the precise 94% figure.",
+   "The 'TENSION FLAGGED' section drops a qualifier that is present in the actual locked line. LOCKFILE:856 reads `grid-cols-2 md:grid-cols-3 lg:grid-cols-4 (2-col when map open)`, not a bare unconditional ladder. Both live Fresha and Airbnb renders this pass showed their grids WITH the map panel open, holding 2 columns, which is exactly what the Solen literal already specifies for the map-open case. The draft characterizes this as a flat, unexplained mismatch against the Fresha/Airbnb reference; it is at minimum an incomplete characterization, since the map-open branch may already match. The genuinely untested question is what the ladder does in the map-CLOSED state, which neither this stream's scouting nor this verification pass checked. Corrected in verified_addition and moved the open question to residual_risks with the accurate framing.",
+   "The retroactive-grounding claim for Solen's `DateTimePicker` overstates its own component doc. Reading `_design-system/components/DateTimePicker.md` directly: `dateLayout=\"calendar\"` vs `\"strip\"` is a PER-PRODUCT-CONTEXT selection (search page always uses calendar, booking flow always uses strip), not a viewport-breakpoint-driven collapse of one field into a summary pill the way PRIOR 4 describes for Fresha/Airbnb/Booking.com. The component is real and the 'don't build a second date picker' lock is real, but citing it as evidence for the RESPONSIVE reflow prior conflates two different kinds of mode selection. Softened in verified_addition to describe it as a precedent for per-product (not per-breakpoint) compound-control mode selection, which is what it actually demonstrates.",
+   "The T3 'general web consensus on Airbnb's 6-5-4-3-2-1 column collapse' entry in real_world_evidence is directly contradicted by this stream's own T2 live-render finding (2-col hold through 768, drop straight to 1 at 375, no smooth multi-step descent), which I independently reconfirmed this pass. It is correctly kept out of the prose/proposed_addition and correctly tiered below the T2 direct observation, but sitting in the same evidence table as if it were corroborating rather than contradicted is misleading on a skim. Flagged in residual_risks for removal or an explicit 'contradicted by direct observation' note rather than deletion from verified_addition (owner call, not mine to silently cut)."
+  ],
+  "residual_risks": "Owner-decision items: (1) The Taste Lab probe as drafted tests the LOCKFILE 2/3/4 ladder as a single undifferentiated case against Fresha/Airbnb's 2-hold-then-1 pattern. Since LOCKFILE:856 already carries a map-open/map-closed distinction the draft omitted, the probe should be split into two questions: does the map-OPEN state already match (likely yes, unverified), and does the map-CLOSED state need retrofitting (genuinely open). Recommend the owner get the corrected framing before the Taste Lab render is built, or the probe will burn a round testing a mismatch that may be partly resolved already. (2) The container-query stat should either be dropped to a qualitative claim ('most current browsers support container queries, exact percentage not independently confirmed this pass') or re-verified against the named LogRocket/DEV Community/UXPin sources directly once WebSearch budget resets; do not ship the precise ~94% figure into RATIONALE.md as-is. (3) Turo's evidence was upgraded this pass from Mobbin-only to a direct live render (I navigated turo.com/search myself and confirmed the Grid/Map toggle and the list-beside-persistent-map desktop layout), so that entry can be marked as independently confirmed, stronger than the draft's own T2 claim implied. (4) Fiverr/Faire/Unity Asset Store (T3, Mobbin-sourced) and the bento-grid mobile-collapse rule (CONV, trend-roundup-sourced) were not re-verified this pass; both are already appropriately low-tiered and low-stakes since neither is asserted as an operative numbered rule, so this is a note not a blocker. (5) The bento dwell-time/CTR MYTH catch in the original draft is correct and should stay cut, no action needed.",
+  "verified_addition": "### Responsive reflow grammar, a generative prior (gap G5, _design-system/research/PRINCIPLES_ROUND3/S05)\n\nThis is a PRIOR for building new responsive components, not a retrofit of an existing LOCKFILE literal. LOCKFILE §7.816-848 already states container widths and one grid recipe as bare CONV numbers with no collapse-order logic behind them; this section supplies the missing grammar so the next component is built once and reflows right the first time, instead of being retrofit after an owner catches a bad collapse.\n\nPRIOR 1, column-collapse threshold by content shape: card/photo-grid content holds its column count from 1440 down through 768 and drops to 1 column only below 768; data-dense list-plus-panel content (a filter sidebar, multi-field rows) collapses a full breakpoint earlier and is already full-width-stacked at 768. Evidence, independently re-rendered this pass: Fresha and Airbnb search grids both hold 2 columns at 1440 and 768, dropping to 1 only at 375 (T2, direct live-render, reconfirmed). Booking.com's filter sidebar and list-row cards both stack full-width already at 768, a full breakpoint earlier (T2, direct live-render, reconfirmed). Apply the \"column\" or \"modular\" Grid TYPE (LOCKFILE:840-848 classification) as card/photo-grid, and the \"column\" type used for dense row lists as the data-dense case, when deciding which threshold a new grid uses.\n\nPRIOR 2, companion panel is a binary toggle: a map or detail panel running alongside main content does not shrink continuously as viewport narrows; below the width where both can no longer hold a usable size, it becomes a single open/close control (icon button or floating pill) instead. Evidence, independently reconfirmed this pass: Fresha's map collapses to a small map icon button at 768 (T2, direct live-render); Airbnb's map becomes a floating \"Show map\" pill pinned bottom-center at 768 (T2, direct live-render, exact match); Turo runs an explicit Grid/Map toggle in its top bar with the list occupying roughly half the viewport beside a persistent map at desktop width (T2, directly re-verified this pass by navigating the live site, stronger confirmation than the original Mobbin-only citation).\n\nPRIOR 3, filter/chip rows scroll, never wrap: a filter or chip row stays one line at every width; below the wrap point it becomes horizontally scrollable. Evidence, reconfirmed this pass: Fresha's filter/sort chip row stays a single line at 768, clipping at the viewport edge at 375 (T2, direct render); Airbnb's amenity chip row stays one line at both 768 and 375 without wrapping (T2, direct render).\n\nPRIOR 4, compound-control collapse mode is chosen once per product, not per breakpoint: photo-grid discovery products merge a multi-field control into one summary pill at every narrower width; transactional list products stack each field as its own row instead. Evidence, reconfirmed this pass: Fresha's search bar merges to one pill (bold query line, comma-joined meta line) at 375 (T2, direct render); Airbnb's search control compacts to a truncated 3-segment bar at 768 and a two-line merged pill at 375 (T2, direct render); Booking.com stacks destination, dates, and occupancy as three separate full-width rows rather than merging, even in its top search form (T2, direct render, divergent case confirmed). Solen's own locked `DateTimePicker` already ships two named layout modes (`dateLayout=\"calendar\"` for search, `\"strip\"` for booking), which is a real precedent for choosing ONE compound-control mode per product context and never re-deciding it per screen; note this is a per-product mode choice, not itself an example of a control collapsing at a viewport breakpoint, so treat it as grounding for the PRINCIPLE (pick once, don't vary per breakpoint) rather than direct evidence for the specific pill-merge mechanic.\n\nSecondary framing, not yet evidenced on a Solen surface: container queries (component-level, not just page-level, reflow) are reported at a high majority of browser support in 2025-2026 industry sources (LogRocket, DEV Community, UXPin), though the precise figure is uncertain: caniuse.com's own live global usage-weighted figure is 92.6% as checked this pass, and since support only grows over time a December-2025 snapshot would read at or below that, not above it. Treat \"most current browsers support this\" as the safe claim; do not cite a specific percentage without re-checking caniuse.com directly. Worth keeping in mind for any shared component reused at genuinely different container widths (e.g. a card inside a narrow sidebar versus a wide grid); not asserted as a numbered rule here because no real-app or Solen example backs a specific threshold.\n\nExplicitly rejected as an input: the 2025-2026 \"bento grid\" visual trend (mixed-size asymmetric cells) is a trend claim, not independently reconfirmed this pass, and conflicts with Solen's 80/17 neutral-surface-plus-ink restraint and the no-decorative-artifacts rule; only its documented mobile collapse LOGIC (anchor element first, then supporting cells in priority order, single column below the threshold) is worth borrowing, never the dense asymmetric visual language itself. A separate unsourced claim that bento layouts increase dwell time or click-through is screened out as folklore (no named study, no publisher) and must not be cited.\n\nTENSION, named not resolved, corrected: LOCKFILE's search-result grid recipe is `grid-cols-2 md:grid-cols-3 lg:grid-cols-4 (2-col when map open)`, not a bare unconditional ladder. Both live Fresha and Airbnb renders used as evidence had their map panel open, holding 2 columns at both 1440 and 768, which matches what Solen's own literal already specifies for the map-open case. The genuinely open question is what the ladder does in the map-CLOSED state (full-width content, no panel competing for room), which was not tested by this stream or by this verification pass on either the Solen app or the two references. Flagging the corrected, narrower question for the owner rather than the original flat mismatch.\n\nTASTE LAB PROBE (per the repertory-grid method already logged in RATIONALE.md section, gap register D5), corrected scope: render Solen's own search-results grid at 768px in three real versions built on the actual component, split by map state since the current lock already branches on it. Map-OPEN state: (A) current locked 2-column (already matches the Fresha/Airbnb map-open pattern, likely a confirm-not-change case) versus (B) any alternative worth testing. Map-CLOSED state: (A) current locked `md:grid-cols-3` versus (B) a Fresha/Airbnb-style 2-column hold. Also test the companion pattern: (C) a denser list-row mode with the map behind an open/close toggle (Turo/Booking.com pattern), shown at the same 768px width. Ask the repertory-grid triad question, \"which two of these three are alike, and how does the third differ\" rather than a plain pick-one, to surface the owner's own unnamed reasoning. Use the answer to either write a MECHANIC-backed retrofit of LOCKFILE:841-848's grid recipe for the map-closed case specifically, or explicitly confirm the current ladder as a deliberate Solen deviation, which it is not currently marked as anywhere in LOCKFILE or RATIONALE.",
+  "claim_verdicts": [
+   {
+    "claim": "Fresha search grid holds 2 columns at both 1440 and 768, drops to 1 column only at 375",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Independently reconfirmed via live Browser-pane render this pass (fresha.com search results, real venue data, both widths)."
+   },
+   {
+    "claim": "Fresha's map panel becomes a small icon button at 768/375 that opens a full overlay",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Confirmed: at 768 the full side-panel map is replaced by a small map-icon button in the top bar; verified directly this pass."
+   },
+   {
+    "claim": "Fresha's filter/chip row stays one line and clips at the viewport edge at 375 rather than wrapping",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Confirmed directly: at 375 the filter row ('Anbieter', 'Beste Uebereinstimmung', etc.) runs off the right edge of the viewport rather than wrapping to a second line."
+   },
+   {
+    "claim": "Fresha's search bar merges to one pill (bold title plus meta line) at 375",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Confirmed directly: at 375 the header shows the query bold on one line and 'Beliebige Uhrzeit / Aktueller Standort' as a second meta line, matching the claimed merge pattern exactly."
+   },
+   {
+    "claim": "Airbnb search results hold 2 columns at 1440 and 768, drop to 1 only at 375",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Confirmed directly via live render of airbnb.com/s/Zurich--Switzerland/homes at both widths."
+   },
+   {
+    "claim": "Airbnb's map becomes a floating 'Show map' pill pinned bottom-center at 768",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Confirmed directly and precisely, exact wording and position match the live render."
+   },
+   {
+    "claim": "Airbnb shows a bottom tab bar (Explore/Wishlists/Log in) only at 375, absent at 1440/768",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Confirmed directly this pass; present in real_world_evidence and matches what was rendered."
+   },
+   {
+    "claim": "Airbnb's amenity filter chips scroll as one row at 768 and 375 without wrapping",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Confirmed directly: chip row stayed single-line at both widths in the live render."
+   },
+   {
+    "claim": "Airbnb's search bar merges to a pill, truncating at 768 and going two-line at 375",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Confirmed directly: truncated 3-segment bar at 768, bold title plus two-line pill at 375."
+   },
+   {
+    "claim": "Booking.com's sidebar and list-row cards both collapse to full-width stacked blocks already at 768",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Confirmed directly via live render of booking.com/searchresults.html at 768: filter sidebar full-width on top, single-column property list below, no 2-column grid."
+   },
+   {
+    "claim": "Booking.com stacks destination and dates as separate full-width rows rather than merging into a pill",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Confirmed directly: the search form at the top of the results page shows destination, dates, and occupancy as three stacked full-width fields."
+   },
+   {
+    "claim": "Turo's list pane is a single column of full-width row cards beside a persistent map, with an explicit Grid/Map toggle",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Upgraded from the draft's Mobbin-only citation: independently navigated to the live turo.com search page this pass and directly confirmed the Grid/Map toggle buttons and the list-beside-map desktop layout."
+   },
+   {
+    "claim": "Container queries have reached roughly 94% browser support as of December 2025",
+    "source_ok": false,
+    "tier_final": "CONV, softened",
+    "note": "caniuse.com's own live global usage-weighted figure, checked this pass, is 92.6% (current snapshot). Since support only grows over time, a December-2025 figure would need to be at or below 92.6%, not above it at 94%. The named secondary sources could not be re-verified due to WebSearch budget exhaustion. Softened to a qualitative 'over 90%' claim with the caniuse contradiction noted."
+   },
+   {
+    "claim": "Bento-grid mobile collapse rule: single column below 768, anchor-first priority order",
+    "source_ok": false,
+    "tier_final": "CONV",
+    "note": "Not independently re-verified this pass (WebSearch budget exhausted before reaching this lower-priority claim). Appropriately tiered CONV already and explicitly not adopted as an operative numbered rule in the proposed text, so residual risk is low; source_ok=false here means unconfirmed, not refuted."
+   },
+   {
+    "claim": "Bento-grid layouts increase dwell time, click-through, and retention",
+    "source_ok": false,
+    "tier_final": "MYTH",
+    "note": "Correctly screened out by the original draft as unsourced folklore; no correction needed, this catch was already sound."
+   },
+   {
+    "claim": "44x44px / 48dp is the current touch-target floor",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Stable, versioned platform-spec facts (Apple HIG, Material Design), not a drifting statistic; already grounded in RATIONALE.md domain 10 per the draft. Not re-verified live this pass but low risk given the stability of the underlying spec."
+   },
+   {
+    "claim": "Solen's locked DateTimePicker already follows the merge model for compound-control breakpoint collapse (PRIOR 4)",
+    "source_ok": false,
+    "tier_final": "internal, corrected",
+    "note": "Read _design-system/components/DateTimePicker.md directly: dateLayout='calendar' vs 'strip' is a per-product-context selection (search page vs booking flow), not a viewport-breakpoint-driven collapse of a field into a summary pill. The component and the one-primitive lock are real; the specific 'already follows the merge model' framing conflates two different kinds of mode selection. Corrected in verified_addition to describe it as precedent for the general principle rather than direct evidence for the pill-merge mechanic."
+   },
+   {
+    "claim": "LOCKFILE's search-result grid recipe (grid-cols-2 md:grid-cols-3 lg:grid-cols-4) conflicts with Fresha/Airbnb holding 2 columns through tablet",
+    "source_ok": false,
+    "tier_final": "corrected",
+    "note": "Read LOCKFILE:856 directly: the actual line is 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4 (2-col when map open)'. The draft's synthesis dropped this qualifier. Both live Fresha and Airbnb renders used as evidence had their map open, holding 2 columns, which is what Solen's literal already specifies for that state. The real open question, corrected in verified_addition, is what the ladder does in the map-CLOSED state, which nobody has tested yet."
+   }
+  ]
+ }
+}

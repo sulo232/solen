@@ -1,0 +1,267 @@
+{
+ "id": "S15",
+ "synth": {
+  "id": "S15",
+  "tag": "mechanize",
+  "title": "Tap-target + slip-adjacency sweep",
+  "principle_summary": "Two distinct, non-overlapping mechanics govern interactive-target safety, and a computable sweep has to check both separately, not conflate them. (1) Raw target-size geometry is Fitts's-Law-grounded and has a settled, standards-authored floor: WCAG 2.5.8 (AA, WCAG 2.2, not 2.1) sets 24x24 CSS px or a 24px center-to-center spacing exception (five named exceptions apply); WCAG 2.5.5 (AAA) sets a stricter 44x44 with no spacing escape hatch; Apple HIG independently lands at 44x44pt (60x60pt visionOS); Material lands at 48dp with an 8dp recommended gap. Solen's own 44px design-contract floor sits deliberately at the AAA/HIG line, above the legal AA minimum, not a restatement of it, so SOURCE.md:1032 citing \"WCAG 2.1\" for that 44px number is a real, fixable citation error. (2) Slip adjacency is a separate mechanic no mainstream tool checks: when a destructive control (cancel, delete) sits near a benign or commit control, the risk is not \"is this tappable\" but \"can this be tapped BY MISTAKE instead of its neighbor,\" a function of inter-target distance AND consequence asymmetry. The real-world scouting confirms slip adjacency is solved industry-wide not by spacing alone but by at least one of three differentiation channels: a distinct hue for the destructive action, a downgraded control type/weight (text link vs filled button), or spatial/structural separation (a second screen, an overflow menu, or a mandatory confirmation step) — same-size, same-color, side-by-side pairs (Shift's reschedule/cancel row) are the industry's own worst-practice example, not a defensible baseline.",
+  "real_world_evidence": [
+   {
+    "source": "Fresha, Manage appointment sheet (Mobbin)",
+    "what": "Reschedule and Cancel are two stacked full-width list rows (~52-56px each, hairline divider), both neutral black, no color differentiation; low slip-risk because both are equally low-consequence entry points and the actual destructive commit is deferred to a second confirmation screen reached one more tap away.",
+    "tier": "T2"
+   },
+   {
+    "source": "Fresha, cancel confirmation screen (Mobbin)",
+    "what": "Sole black \"Yes, cancel\" button at the bottom; no adjacent Back/No button exists at all, the only escape is the top-left chevron, physically far from the commit target. Also matches Fresha's staff-side pattern (Fresha Help Center) where cancellation is gated behind a status dropdown or overflow menu, never a bare button beside Reschedule/Edit.",
+    "tier": "T2"
+   },
+   {
+    "source": "Redfin, tour manage screen (Mobbin)",
+    "what": "Reschedule (solid primary) stacked above Cancel instead, rendered as a plain TEXT LINK not a button, i.e. control-type downgrade removes adjacency risk entirely since the two aren't even the same control class.",
+    "tier": "T2"
+   },
+   {
+    "source": "CVS Health, visit review screen (Mobbin)",
+    "what": "Reschedule (solid blue fill) stacked above Cancel (outline, same blue text) with a visible ~12-16px vertical gap; differentiated by fill weight (solid vs outline) plus a real gap, not touching edges.",
+    "tier": "T2"
+   },
+   {
+    "source": "Shift, test drive screen (Mobbin)",
+    "what": "Reschedule and Cancel sit side by side, same-width, same neutral outline style, ~12-16px gap, zero color or weight differentiation, only the label text differs. Flagged in the scouting report as the weakest pattern found, the anti-pattern this sweep exists to catch.",
+    "tier": "T2"
+   },
+   {
+    "source": "Lime, cancel reservation confirmation (Mobbin)",
+    "what": "Two side-by-side 50/50-split full-width buttons, No (light gray) and Yes, cancel (green), adjacent with only a thin gap, differentiated purely by hue. Shows that even a top-tier app accepts side-by-side adjacency for a binary confirm/cancel when color does the differentiation work.",
+    "tier": "T2"
+   },
+   {
+    "source": "Telegram / Shopee, swipe-action row reveals (Mobbin)",
+    "what": "Destructive Delete sits directly adjacent to benign Mute/Archive with ZERO visual gap, only a hard color boundary; mitigated by (a) requiring a deliberate swipe gesture rather than a single tap and (b) consistently placing the destructive segment last/hardest to reach.",
+    "tier": "T2"
+   },
+   {
+    "source": "MyFitnessPal, swipe-to-delete row (Mobbin)",
+    "what": "Single-action swipe reveal (Delete only, no sibling action in the same gesture), so no within-gesture adjacency risk exists; the only separation is full row height to the next list item.",
+    "tier": "T2"
+   },
+   {
+    "source": "Uber, cancel-a-ride flow (Uber Help)",
+    "what": "Swipe-up, then tap Cancel, then a second explicit confirm tap (\"Yes, Cancel\"): friction-added two-step plus a directional gesture, not a single adjacent button.",
+    "tier": "T2"
+   },
+   {
+    "source": "Airbnb, cancel-a-reservation flow (Airbnb Help, guest + host)",
+    "what": "Cancel reservation sits physically separated (top-right) from the page's other primary actions, then requires reason-select then Continue then a second Cancel-reservation tap with a refund breakdown shown before final commit.",
+    "tier": "T2"
+   },
+   {
+    "source": "Booking.com, cancellation flow (Houst third-party writeup)",
+    "what": "Cancel button sits at the bottom of the reservation-details page, separated from Modify, gated by a reason-select and fee-disclosure screen before the cancellation is final. Styling reported as inconsistent across surfaces by third parties, so treat only the placement/gating claim as reliable, not the color claim.",
+    "tier": "T3"
+   },
+   {
+    "source": "Doctolib, cancellation flow (Doctolib Help)",
+    "what": "Confirmation names the consequence (e.g. cancellation-deadline penalty) before a second confirm tap. Complaints center on appointment-list findability, a DIFFERENT failure mode (can't find the right item) than slip-adjacency (hit the wrong control); worth keeping the two failure categories distinct in the sweep's scope.",
+    "tier": "T2"
+   },
+   {
+    "source": "NN/g, \"Dangerous UX: Consequential Options Close to Benign Options\" (cited across 2025 practitioner sources)",
+    "what": "Named, canonical practitioner doctrine ranking destructive-neutral proximity as a top-10 application design mistake; convention is neutral/Cancel first, destructive second, with a confirmation modal as the standard extra-friction pattern.",
+    "tier": "T2"
+   },
+   {
+    "source": "DubBot, Designing Destructive Buttons (2025)",
+    "what": "Cites WCAG 2.5.8's own spacing-exception language verbatim: a target is compliant if, when a 24px-diameter circle is centered on its bounding box, the circle does not intersect another target's circle. This is the closest thing to a computable slip-adjacency rule that already has spec authority, worth citing directly instead of inventing a new heuristic.",
+    "tier": "T1"
+   },
+   {
+    "source": "Social/trend scout, Muzli 2026 mobile UI trends + LogRocket swipe accessibility piece",
+    "what": "No social/trend content addresses tap-target sizing or slip-adjacency directly (the topic lives in accessibility/practitioner blogs, not TikTok/Instagram design content). The one live directional pull found is gesture-first compound gestures with haptic layering (swipe-to-delete replacing tap flows), which LogRocket explicitly warns needs a tap-based fallback or it excludes users with motor impairments. No unsourced viral stat was found on this topic either, an honest gap, not a myth to screen out.",
+    "tier": "T3"
+   }
+  ],
+  "generative_prior": "CHECK A (target-size floor, extends the already-speced axe-core wire-in): BLOCKING tier = WCAG 2.5.8 AA, min(w,h) < 24px CSS AND no same-type neighbor center >= 24px away (the exact spec test: a 24px-diameter circle centered on each element's bounding box must not intersect another target's circle, per DubBot/W3C). ADVISORY tier = Solen's own 44px design-contract floor (RATIONALE.md:157, the AAA/HIG line), flagged separately since axe-core has no concept of it. Real-app calibration: none of the 8 apps scouted render a full-width action row under 48-56px tall (Fresha's list rows, CVS's buttons), which is comfortably above both floors, confirming 44px is the de facto industry target even where 24px is the legal minimum. CHECK B (slip adjacency, net-new): for any pair of tagged elements where one is \"destructive\" and the other is \"commit\" or \"neutral\", FLAG if edgeGap < 24px UNLESS at least ONE of three real-app-confirmed differentiation channels is present: (a) HUE differentiation, the destructive control uses a distinct color from the commit control (Lime's green/gray split, the near-universal pattern across all 8 apps scouted except Shift), (b) CONTROL-TYPE/WEIGHT downgrade, destructive rendered as a lower-weight control class than commit, e.g. text link vs filled button (Redfin), outline vs solid fill (CVS), or buried behind a menu/dropdown (Fresha staff-side), or (c) STRUCTURAL separation, destructive reached via a different screen, gated by a mandatory intermediate step (reason-select, second confirm tap: Uber, Airbnb, Booking.com, Fresha, Doctolib all use this, a 5/5 convergence), or physically isolated from the primary action zone (Fresha's confirm-screen chevron pattern). Shift's row (same size, same hue, same weight, same screen, 12-16px gap only) is the sweep's canonical FAIL example: it has none of the three channels. BOUNDARY / tension to flag, not resolve here: every real app scouted uses a distinct HUE for destructive actions (red, orange, or at minimum green-vs-gray for confirm/cancel); Solen's locked ink-only CTA system (`bg-s-ink` for the one commit button) has no destructive-action color token defined anywhere in LOCKFILE/SOURCE. This sweep cannot assume channel (a) is available to Solen without a separate, explicitly-owner-approved decision to add a destructive hue (likely the existing error-red token); until that decision is made, Solen destructive actions must rely on channel (b) or (c) instead, and the sweep's channel-detection logic needs a Solen-specific default of \"no hue channel available\" rather than assuming red-vs-ink reads as differentiated.",
+  "proposed_addition": "COMPUTABLE METRIC SPEC (RATIONALE.md §28 lens B, D6, extends the S15 baseline draft with real-app calibration):\n\nCHECK A: Solen-floor target-size sweep. rect = element.getBoundingClientRect() (outer hit element, not painted glyph, e.g. HeartButton's 44 outer/32 inner). BLOCKING: min(w,h) < 24px AND not exempt (WCAG 2.5.8 AA; reuse axe-core's target-size rule verbatim, axe-core 4.5+, and set the WCAG 2.2 ruleset flag explicitly, since the rule ships OFF by default and silently no-ops otherwise, a wiring detail confirmed against Deque's own release notes). ADVISORY: min(w,h) < 44px AND not exempt AND not on the named Solen exception list (TabPill 32/40px, SaveHeart 28x28, already documented SACRIFICES). Exempt = inline text targets or the named exception list.\n\nCHECK B: Slip-adjacency sweep (net-new). Tag interactive elements with a CONSEQUENCE attribute (data-consequence=\"commit\"|\"destructive\"|\"neutral\") per component type, not per instance. For every pair where consequence differs and at least one side is commit or destructive: edgeGap = shortest gap between bounding boxes. FLAG if edgeGap < 24px UNLESS one of three differentiation channels is present, each drawn from a converged real-app pattern rather than invented: (a) hue channel, distinct color between the two controls, (b) control-type/weight channel, different control class or fill weight (button vs link, solid vs outline, or buried behind a menu), (c) structural channel, destructive gated behind a second screen or mandatory confirm step. Output per flagged pair: both selectors, both tags, edgeGap, which channel (if any) was detected. Size-ratio asymmetry (the original 1.5x-area guess) folds into channel (b) rather than standing alone, since none of the 8 scouted apps use pure size difference without also changing hue or weight.\n\nBOUNDARY (flag, do not resolve): Solen's ink-only CTA system currently has no destructive-hue token; every real app scouted differentiates destructive actions by color. This sweep's channel-(a) detection defaults to \"unavailable\" for Solen until an explicit owner decision adds a destructive hue (candidate: the existing error-red token), so today's implementations must lean on channels (b)/(c).\n\nCITATION FIX (same gap-register item, still standing from the baseline draft, verified unchanged): replace SOURCE.md:1032's \"Minimum 44x44 px hit area per WCAG 2.1 (some platforms 48)\" with RATIONALE.md:157's already-correct framing (24x24 WCAG 2.5.8 AA legal floor; 44px is Solen's voluntary AAA/HIG-line choice, WCAG 2.2 not 2.1).\n\nDISTINCT-FAILURE-MODE NOTE (from Doctolib scouting, worth a line in the sweep's scope doc): \"can't find the right control among many\" (Doctolib's actual user complaint) is a findability problem, not slip-adjacency; the sweep should not conflate the two when triaging flagged pairs.\n\nTASTE LAB PROBE: unchanged core design, now anchored to real frames instead of abstract renders: show the Lime pair (hue-only, no gap), the Shift pair (no channel, small gap), and the CVS pair (weight + gap) side by side at the same size, ask which feels \"safe to tap without double-checking.\" Use the answer to convert the currently-guessed channel-sufficiency question (is hue-alone, per Lime, actually enough, or does it need to pair with a gap too) into a locked rule, since Lime is real-world evidence that top apps DO ship hue-only differentiation at close proximity, which the draft's original probe didn't have a real anchor for.",
+  "sources": [
+   {
+    "claim": "WCAG 2.5.8 Target Size (Minimum), Level AA, WCAG 2.2: 24x24 CSS px or 24px spacing exception, five named exceptions",
+    "source": "W3C WCAG 2.2 Understanding Target Size Minimum, https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html",
+    "tier": "T1"
+   },
+   {
+    "claim": "WCAG 2.5.8's spacing exception exact test: a 24px-diameter circle centered on each target's bounding box must not intersect another target's circle",
+    "source": "DubBot, Designing Destructive Buttons: Balancing Function and Accessibility (2025), https://dubbot.com/dubblog/2025/designing-destructive-buttons-balancing-function-and-accessibility.html",
+    "tier": "T1"
+   },
+   {
+    "claim": "WCAG 2.5.5 Target Size (Enhanced), Level AAA: 44x44 CSS px, no spacing exception",
+    "source": "W3C WCAG 2.2 Understanding Target Size Enhanced, https://www.w3.org/WAI/WCAG22/Understanding/target-size-enhanced.html",
+    "tier": "T1"
+   },
+   {
+    "claim": "Apple HIG: button hit region at least 44x44pt, 60x60pt on visionOS",
+    "source": "Apple Human Interface Guidelines, Buttons, https://developer.apple.com/design/human-interface-guidelines/buttons",
+    "tier": "T1"
+   },
+   {
+    "claim": "axe-core 4.5+ ships a target-size rule for WCAG 2.5.8, off by default until the WCAG 2.2 ruleset is enabled",
+    "source": "Deque axe-core rule docs + 4.5 release blog, https://dequeuniversity.com/rules/axe/4.6/target-size",
+    "tier": "T2"
+   },
+   {
+    "claim": "Fingertip contact patch is roughly 8-10mm (fingertip) to 10-14mm (finger pad), corrects the S15 baseline draft's blurred 7-9mm figure",
+    "source": "MIT Touch Lab, as verified in the prior S15.json research pass",
+    "tier": "T3"
+   },
+   {
+    "claim": "Material Design 48dp target with 8dp recommended spacing",
+    "source": "Material Design guidance, as cited in Solen's RATIONALE.md:157",
+    "tier": "T2"
+   },
+   {
+    "claim": "Fresha, Redfin, CVS Health, Lime, Shift reschedule/cancel button patterns",
+    "source": "Mobbin real-app screen captures, per S15 real-app scout",
+    "tier": "T2"
+   },
+   {
+    "claim": "Telegram/Shopee swipe-action adjacency, MyFitnessPal single-action swipe",
+    "source": "Mobbin real-app screen captures, per S15 real-app scout",
+    "tier": "T2"
+   },
+   {
+    "claim": "Uber, Airbnb, Booking.com, Fresha, Doctolib all use a mandatory second confirm step plus spatial separation for cancellation flows",
+    "source": "Uber Help, Airbnb Help (guest/host), Houst Booking.com guide, Fresha Help Center, Doctolib Help, per S15 competitor scout",
+    "tier": "T2"
+   },
+   {
+    "claim": "NN/g names consequential-options-near-benign-options as a top-10 application design mistake",
+    "source": "Nielsen Norman Group, cited across 2025 practitioner pieces per S15 social scout",
+    "tier": "T2"
+   },
+   {
+    "claim": "EU Accessibility Act (June 28 2025) makes WCAG 2.2 / 2.5.8's 24x24 a legal compliance floor, not just a guideline",
+    "source": "TestParty, WCAG 2.5.8 Target Size Minimum 2025 guide, per S15 social scout",
+    "tier": "T2"
+   },
+   {
+    "claim": "No social/trend content addresses tap-target sizing directly; gesture-first swipe-to-delete is the one live directional pull, and it needs a tap fallback for accessibility",
+    "source": "Muzli 2026 mobile UI trends report + LogRocket swipe-to-delete accessibility piece, per S15 social scout",
+    "tier": "T3"
+   }
+  ],
+  "numbers_used": [
+   "24x24 CSS px (WCAG 2.5.8 AA minimum)",
+   "24px center-distance spacing exception (WCAG 2.5.8, exact test = non-intersecting 24px-diameter circles)",
+   "44x44 CSS px (WCAG 2.5.5 AAA)",
+   "44x44 pt (Apple HIG button hit region)",
+   "60x60 pt (Apple HIG visionOS button hit region)",
+   "48dp (Material touch target)",
+   "8dp (Material recommended spacing)",
+   "8-10mm fingertip / 10-14mm finger pad (MIT Touch Lab, corrects prior 7-9mm)",
+   "44px Solen design-contract floor (RATIONALE.md:157)",
+   "24px slip-adjacency edge-gap floor (proposed, reuses WCAG 2.5.8's spacing constant)",
+   "~52-56px Fresha list-row height, ~48-50px CVS button height, ~12-16px CVS/Shift button gap (real-app calibration, T2, Mobbin)",
+   "axe-core v4.5.0 (version introducing WCAG 2.2 / target-size rule support)"
+  ],
+  "taste_lab_probe": "Anchor the probe to real frames instead of abstract renders: show the Lime confirm pair (hue-only differentiation, gray vs green, thin gap), the Shift reschedule/cancel pair (no differentiation channel, ~12-16px gap, industry's own worst example), and the CVS Health pair (weight differentiation, solid vs outline, ~12-16px gap), all resized to the same on-screen dimensions, and ask \"which pair feels safe to tap without double-checking.\" Use the answer to settle whether a single differentiation channel (hue alone, per Lime) is sufficient on its own or must pair with a minimum gap, replacing the original draft's unanchored 1.5x size-ratio guess with a decision grounded in what top apps already ship."
+ },
+ "verified": {
+  "id": "S15",
+  "tag": "mechanize",
+  "verdict": "revised",
+  "myths_caught": [
+   "NN/g \"Dangerous UX: Consequential Options Close to Benign Options\" is cited in sources[] as a named canonical NN/g article/doctrine (T2). I could not find this article on nngroup.com's own article index, and targeted web/search checks (Bing, DuckDuckGo, Google) returned no corroboration of this exact title as an NN/g-authored piece. This is the same failure pattern the myth_screen guards against: a specific claim dressed in a prestigious org's name without a traceable citation. Downgraded to CONV (a real, well-observed practitioner convention, independently supported by the 8-app Mobbin convergence in this same draft) rather than verified NN/g doctrine. Do not cite this as \"NN/g names X as a top-10 mistake\" in the shipped RATIONALE entry without a working URL.",
+   "Apple HIG's \"60x60pt on visionOS\" figure could not be verified this session: Apple's HIG pages are JS-rendered and returned only page titles to WebFetch, and no secondary source corroborated the specific visionOS number (the general 44x44pt iOS/iPadOS figure is well-corroborated and kept at T1, but the visionOS addendum is unverified, not confirmed-false, and should not be treated as settled until directly checked)."
+  ],
+  "residual_risks": "Two items need a follow-up check before being treated as locked, and one item is a genuine owner-decision fork already correctly deferred by the draft:\n(1) Apple HIG \"60x60pt visionOS\" figure is unverified this pass (JS-rendered docs blocked automated fetch) — spot-check directly against developer.apple.com before citing it as settled fact; the core 44x44pt figure is fine.\n(2) The NN/g \"Dangerous UX\" article title could not be located — either find the real URL or rewrite the RATIONALE citation to describe it as converged practitioner convention (backed by the Mobbin 8-app evidence) rather than a named NN/g piece.\n(3) OWNER-DECISION (carried from the draft's own BOUNDARY section, not resolved here): Solen's locked ink-only CTA system has no destructive-hue token, so slip-adjacency channel (a) — hue differentiation — is unavailable to Solen today. This is a genuine QUESTIONS.md candidate: does Solen want a destructive-red token (candidate: existing error-red), or does it commit to always using channel (b)/(c) (control-type downgrade or structural gating) for destructive actions? Do not silently add a red CTA token to resolve this.\n(4) The proposed data-consequence=\"commit\"|\"destructive\"|\"neutral\" tagging convention is net-new with no existing Solen precedent; sweeping every destructive/commit control to add it is real, unscoped implementation work, not a documentation-only change.\n(5) Mobbin app-pattern evidence (Fresha, Redfin, CVS, Shift, Lime, Telegram/Shopee, MyFitnessPal, Uber, Airbnb, Doctolib) could not be independently re-audited this verify pass (no Mobbin access this session); the draft's own tiering is already conservative and self-correcting (Booking.com/Houst correctly downgraded to T3 for the styling claim), so no change made, but a live spot-check is worth doing before this becomes reference material other streams build on.\n(6) EU Accessibility Act's link to WCAG 2.5.8 runs through EN 301 549, not a direct EAA-to-WCAG citation; the June 28 2025 enforcement date itself is confirmed (Level Access, secondary source) but \"makes 2.5.8 a legal compliance floor\" compresses a two-step legal chain — fine as a directional claim in a design rationale doc, not precise enough to cite in a legal-compliance context.",
+  "verified_addition": "COMPUTABLE METRIC SPEC (RATIONALE.md §28 lens B, D6, extends the S15 baseline draft with real-app calibration; internal citations verified directly against the repo, both line numbers confirmed exact: RATIONALE.md:157 and SOURCE.md:1032):\n\nCHECK A: Solen-floor target-size sweep. rect = element.getBoundingClientRect() (outer hit element, not painted glyph, e.g. HeartButton's 44 outer/32 inner). BLOCKING: min(w,h) < 24px AND not exempt (WCAG 2.5.8 AA, verified: 24x24 CSS px, five named exceptions are Spacing/Equivalent/Inline/User Agent Control/Essential; reuse axe-core's target-size rule verbatim. Confirmed directly against axe-core's v4.5.0 GitHub release notes: \"new rule: Add WCAG 2.2 target-size rule (off by default)\", so the \"ships OFF by default, must set the WCAG 2.2 ruleset flag\" wiring detail is a real, verified gotcha, not a guess). ADVISORY: min(w,h) < 44px AND not exempt AND not on the named Solen exception list (TabPill 32/40px, SaveHeart 28x28, already documented SACRIFICES). Exempt = inline text targets or the named exception list.\n\nCHECK B: Slip-adjacency sweep (net-new). Tag interactive elements with a CONSEQUENCE attribute (data-consequence=\"commit\"|\"destructive\"|\"neutral\") per component type, not per instance. For every pair where consequence differs and at least one side is commit or destructive: edgeGap = shortest gap between bounding boxes. FLAG if edgeGap < 24px UNLESS one of three differentiation channels is present, each drawn from a real-app pattern rather than invented: (a) hue channel, distinct color between the two controls, (b) control-type/weight channel, different control class or fill weight (button vs link, solid vs outline, or buried behind a menu), (c) structural channel, destructive gated behind a second screen or mandatory confirm step. Output per flagged pair: both selectors, both tags, edgeGap, which channel (if any) was detected. Size-ratio asymmetry (the original 1.5x-area guess) folds into channel (b) rather than standing alone, since none of the scouted apps use pure size difference without also changing hue or weight.\n\nBOUNDARY (flag, do not resolve, real owner-decision fork): Solen's ink-only CTA system currently has no destructive-hue token; the scouted real apps generally differentiate destructive actions by color, though this pattern comes from a small (8-app) Mobbin sample, not an exhaustive survey. This sweep's channel-(a) detection defaults to \"unavailable\" for Solen until an explicit owner decision adds a destructive hue (candidate: the existing error-red token), so today's implementations must lean on channels (b)/(c). Log as a QUESTIONS.md candidate, not a silent decision.\n\nCITATION FIX (verified directly against the live files, exact line match on both): replace SOURCE.md:1032's \"Minimum 44x44 px hit area per WCAG 2.1 (some platforms 48)\" with RATIONALE.md:157's already-correct framing (24x24 WCAG 2.5.8 AA legal floor; 44px is Solen's voluntary AAA/HIG-line choice, WCAG 2.2 not 2.1). This is a real, confirmed error: 2.5.8 and 2.5.5 do not exist in WCAG 2.1, they were introduced in WCAG 2.2 (Oct 2023).\n\nDISTINCT-FAILURE-MODE NOTE (from Doctolib scouting, worth a line in the sweep's scope doc): \"can't find the right control among many\" is a findability problem, not slip-adjacency; the sweep should not conflate the two when triaging flagged pairs.\n\nTASTE LAB PROBE: unchanged core design, anchored to real frames instead of abstract renders: show the Lime pair (hue-only, no gap), the Shift pair (no channel, small gap), and the CVS pair (weight + gap) side by side at the same size, ask which feels \"safe to tap without double-checking.\" Use the answer to convert the currently-guessed channel-sufficiency question (is hue-alone, per Lime, actually enough, or does it need to pair with a gap too) into a locked rule.\n\nCITATION CAUTIONS carried from verify pass: do not cite \"NN/g names this a top-10 mistake\" (the specific article title could not be located on nngroup.com or via search this session; describe it as converged practitioner convention, backed by the 8-app real-world evidence, instead). Do not cite Apple's visionOS 60x60pt figure as confirmed (unverified this session, JS-rendered docs blocked automated check); the general 44x44pt iOS figure is solid.",
+  "claim_verdicts": [
+   {
+    "claim": "WCAG 2.5.8 Target Size (Minimum), Level AA, WCAG 2.2: 24x24 CSS px minimum, with a 24px-diameter-circle spacing exception and five named exceptions (Spacing, Equivalent, Inline, User Agent Control, Essential)",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Confirmed directly against W3C's Understanding Target Size Minimum page: exact size, level, and all five exception names match, including the precise circle-intersection spacing test."
+   },
+   {
+    "claim": "WCAG 2.5.5 Target Size (Enhanced), Level AAA: 44x44 CSS px, no spacing exception",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Confirmed directly against W3C's Understanding Target Size Enhanced page: size, level, and absence of a spacing escape hatch all match."
+   },
+   {
+    "claim": "DubBot's 2025 article cites WCAG 2.5.8's exact circle-intersection spacing test",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Confirmed by fetching the article directly; it quotes the circle test near-verbatim. Article does not discuss destructive-button adjacency specifically, so cite it only for the spacing-math claim, not as evidence for the slip-adjacency mechanic itself."
+   },
+   {
+    "claim": "Apple HIG: 44x44pt minimum button hit region",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Not re-fetched this session (Apple's HIG pages are JS-rendered and blocked automated extraction), but this figure is extremely well-established and convergent across independent secondary sources; high confidence."
+   },
+   {
+    "claim": "Apple HIG: 60x60pt on visionOS",
+    "source_ok": false,
+    "tier_final": "T2 (unverified)",
+    "note": "Could not confirm via any available tool this session; not found false, just unconfirmed. Flag for a direct manual check before treating as locked."
+   },
+   {
+    "claim": "axe-core 4.5+ ships a target-size rule for WCAG 2.5.8, off by default until the WCAG 2.2 ruleset is enabled",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Confirmed against axe-core's own v4.5.0 GitHub release notes (primary source): \"new rule: Add WCAG 2.2 target-size rule (off by default)\". Upgraded from the draft's self-assigned T2 given primary-source confirmation."
+   },
+   {
+    "claim": "Material Design: 48dp minimum touch target, 8dp recommended spacing",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Not independently re-fetched (Material's docs are JS-rendered), but this figure is already independently present in Solen's own RATIONALE.md:157 and is one of the most widely republished figures in touch-target literature. Keep at the draft's own T2, no downgrade warranted."
+   },
+   {
+    "claim": "MIT Touch Lab fingertip contact patch approx 8-10mm / 10-14mm",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Already conservatively self-tiered T3 by the draft; an approximate figure from a widely-cited but not directly re-verified study. No change."
+   },
+   {
+    "claim": "NN/g names \"consequential options close to benign options\" a top-10 application design mistake, in an article titled \"Dangerous UX: Consequential Options Close to Benign Options\"",
+    "source_ok": false,
+    "tier_final": "CONV",
+    "note": "Not found on nngroup.com's own article index; no search corroboration of this exact title as an NN/g piece. Downgraded from the draft's self-assigned T2 (dressed as citable practitioner doctrine) to CONV (a real, well-observed convention, independently supported by the draft's own 8-app Mobbin evidence, but not attributable to a specific NN/g article as written)."
+   },
+   {
+    "claim": "EU Accessibility Act enforcement began June 28 2025, making WCAG 2.2 / 2.5.8's 24x24px a legal compliance floor",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "The June 28 2025 enforcement date is confirmed via a secondary compliance-industry source (Level Access); the EC's own page confirms June 2022 as the member-state transposition deadline, consistent with a 2025 downstream enforcement date. The \"legal compliance floor\" framing compresses an EAA -> EN 301 549 -> WCAG chain rather than a direct EAA-to-WCAG citation; keep as directional (T2), not a precise legal citation."
+   },
+   {
+    "claim": "SOURCE.md:1032 cites \"WCAG 2.1\" for the 44x44px hit-area minimum, which is a real citation error since 2.5.5/2.5.8 were introduced in WCAG 2.2",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Verified directly against the live repo file at the exact line: SOURCE.md:1032 reads \"Minimum 44×44 px hit area per WCAG 2.1 (some platforms 48)\". WCAG 2.5.5 and 2.5.8 do not exist in WCAG 2.1 (both added in WCAG 2.2, Oct 2023), so the citation error is real and precisely located."
+   },
+   {
+    "claim": "RATIONALE.md:157 already has the correct framing (24x24 WCAG 2.5.8 AA legal floor vs Solen's voluntary 44px AAA/HIG-line choice, correctly attributed to WCAG 2.2)",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Verified directly against the live repo file at the exact line: RATIONALE.md:157 matches the draft's description almost verbatim."
+   },
+   {
+    "claim": "Mobbin real-app captures (Fresha, Redfin, CVS Health, Shift, Lime, Telegram/Shopee, MyFitnessPal, Uber, Airbnb, Doctolib, Booking.com/Houst) show the described cancel/destructive-action patterns",
+    "source_ok": true,
+    "tier_final": "T2 (T3 for Booking.com/Houst, as the draft itself already states)",
+    "note": "Could not independently re-audit these captures this session (no Mobbin access). The draft's self-tiering is already conservative and internally consistent (it downgrades Booking.com's styling claim to T3 on its own), so no change made; flagged as a residual risk for a future spot-check rather than a confirmed error."
+   },
+   {
+    "claim": "Muzli 2026 mobile UI trends + LogRocket swipe-to-delete accessibility piece: no viral stat found on tap-target sizing, gesture-first swipe-to-delete needs a tap fallback",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Already honestly tiered T3 by the draft with an explicit admission of an evidence gap rather than inventing a stat to fill it; this is exactly the myth_screen's intended behavior, not a violation."
+   }
+  ]
+ }
+}

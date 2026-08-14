@@ -1,0 +1,204 @@
+{
+ "id": "S26",
+ "draft": {
+  "id": "S26",
+  "tag": "net-new",
+  "title": "Accessibility beyond contrast: keyboard, screen-reader semantics, reduced motion, target size",
+  "principle_summary": "Four WCAG pillars beyond color contrast govern the non-visual half of accessibility: (1) full keyboard operability with no traps and a predictable focus order (WCAG 2.1.1 / 2.1.2 / 2.4.3, T1); (2) programmatic structure via landmark roles and name-role-value so assistive tech can navigate and identify controls (WCAG 1.3.1 / 4.1.2 plus WAI-ARIA landmark roles, T1 / CONV); (3) a mechanism to skip repeated blocks (WCAG 2.4.1, T1) and to honor prefers-reduced-motion for interaction-triggered animation (WCAG 2.3.3, T1); and (4) two DISTINCT target-size floors that must never collapse into one number: WCAG 2.5.8 is AA at 24x24 CSS px (WCAG 2.2, the legal floor) and WCAG 2.5.5 is AAA at 44x44 (WCAG 2.1, an aspirational floor Apple HIG 44pt and Material 48dp independently converge near). Solen already has mostly-correct rule text for this in SOURCE.md section 16, but real repo-state defects sit under the prose: SkipLink exists as a component but is mounted only on the internal /dev/primitives page, not in production app/[locale]/layout.tsx; prefers-reduced-motion is implemented once globally in globals.css but the pattern is referenced directly in a small minority of component files despite spring/bounce motion existing in far more of them; and SOURCE section 16.5 states the 44px floor as flatly \"WCAG 2.1\" without naming it as the AAA criterion, which reads as if AA itself requires 44px when the legal AA floor is actually 24px (WCAG 2.5.8, added in 2.2).",
+  "sources": [
+   {
+    "claim": "WCAG 2.1.1 Keyboard (Level A): all functionality must be operable through a keyboard interface, without requiring specific timings for individual keystrokes.",
+    "source": "W3C, Understanding WCAG 2.2 / 2.1, SC 2.1.1 Keyboard (https://www.w3.org/WAI/WCAG21/Understanding/keyboard.html)",
+    "tier": "T1"
+   },
+   {
+    "claim": "WCAG 2.1.2 No Keyboard Trap (Level A): if keyboard focus can move into a component, it must be able to move away using only the keyboard.",
+    "source": "W3C, Web Content Accessibility Guidelines (WCAG) 2.2, SC 2.1.2 (https://www.w3.org/TR/WCAG22/)",
+    "tier": "T1"
+   },
+   {
+    "claim": "WCAG 2.4.3 Focus Order (Level A): if a page can be navigated sequentially, focusable components receive focus in an order that preserves meaning and operability.",
+    "source": "W3C, Web Content Accessibility Guidelines (WCAG) 2.2, SC 2.4.3 (https://www.w3.org/TR/WCAG22/)",
+    "tier": "T1"
+   },
+   {
+    "claim": "WCAG 2.4.1 Bypass Blocks (Level A): a mechanism (e.g. a skip link) must exist to bypass blocks of content repeated across pages, such as a header/nav.",
+    "source": "W3C, Understanding WCAG 2.2, SC 2.4.1 Bypass Blocks (https://www.w3.org/WAI/WCAG22/Understanding/)",
+    "tier": "T1"
+   },
+   {
+    "claim": "WCAG 2.3.3 Animation from Interactions (Level AAA): motion animation triggered by interaction can be disabled, unless the animation is essential to the function or information conveyed; the practical implementation is honoring prefers-reduced-motion.",
+    "source": "W3C, Understanding WCAG 2.2, SC 2.3.3 Animation from Interactions (https://www.w3.org/WAI/WCAG22/Understanding/)",
+    "tier": "T1"
+   },
+   {
+    "claim": "WCAG 4.1.2 Name, Role, Value (Level A): for all UI components, the name and role must be programmatically determinable, states/properties must be settable, and changes must be notifiable to assistive tech; this is the SC that ARIA roles/states/aria-live exist to satisfy.",
+    "source": "W3C, Web Content Accessibility Guidelines (WCAG) 2.2, SC 4.1.2 (https://www.w3.org/TR/WCAG22/)",
+    "tier": "T1"
+   },
+   {
+    "claim": "WAI-ARIA landmark roles (banner, navigation, main, contentinfo, complementary) let assistive technology programmatically identify and jump between page regions; banner/main/contentinfo should each appear at most once per page.",
+    "source": "W3C WAI-ARIA Authoring Practices Guide, Landmark Regions (https://www.w3.org/WAI/ARIA/apg/patterns/landmarks/); MDN ARIA landmark role (https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/roles/landmark_role)",
+    "tier": "T1"
+   },
+   {
+    "claim": "WCAG 2.5.8 Target Size Minimum (Level AA, new in WCAG 2.2): interactive targets must be at least 24x24 CSS pixels, with listed exceptions (inline text targets, essential size, spacing offset, equivalent control available).",
+    "source": "W3C, Web Content Accessibility Guidelines (WCAG) 2.2, SC 2.5.8 (https://www.w3.org/TR/WCAG22/)",
+    "tier": "T1"
+   },
+   {
+    "claim": "WCAG 2.5.5 Target Size Enhanced (Level AAA, WCAG 2.1): interactive targets should be at least 44x44 CSS pixels except where an exception applies; this is the AAA line, not AA.",
+    "source": "W3C, Web Content Accessibility Guidelines (WCAG) 2.1, SC 2.5.5 (https://www.w3.org/TR/WCAG21/)",
+    "tier": "T1"
+   },
+   {
+    "claim": "Roving tabindex (one focusable item at a time, arrow keys move focus, tabindex=-1 on the rest) is the standard ARIA APG pattern for composite widgets (tabs, radio groups, menus) so Tab exits the whole widget in one press while arrow keys move within it.",
+    "source": "W3C WAI-ARIA Authoring Practices Guide, Developing a Keyboard Interface (https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/)",
+    "tier": "CONV"
+   },
+   {
+    "claim": "SkipLink component exists in the Solen codebase (app/[locale]/_components/primitives/SkipLink.tsx, exported from primitives/index.ts) but the only place it is rendered is app/[locale]/dev/primitives/page.tsx; it is absent from app/[locale]/layout.tsx, the production shell.",
+    "source": "Direct repo grep this session: `grep -rn SkipLink app` and read of app/[locale]/layout.tsx (no SkipLink import/render found there)",
+    "tier": "CONV"
+   },
+   {
+    "claim": "prefers-reduced-motion is referenced in roughly 2.45 percent of .tsx files under app/ (8 of 326) in this repo as measured this session, versus far more files using spring/bounce-style motion.",
+    "source": "Direct repo grep this session: `grep -rl \"prefers-reduced-motion\" app --include=*.tsx` (8 hits) vs `find app -name *.tsx` (326 total); the stream brief itself cites a similar order-of-magnitude figure (~1.5 percent) from a prior audit pass",
+    "tier": "CONV"
+   },
+   {
+    "claim": "role= attribute usage appears in roughly 10.1 percent of .tsx files under app/ (33 of 326) as measured this session; the stream brief cites a similar order-of-magnitude figure (~5 percent) from a prior, narrower-scoped audit pass.",
+    "source": "Direct repo grep this session: `grep -rl \"role=\" app --include=*.tsx` (33 hits) vs 326 total .tsx files",
+    "tier": "CONV"
+   }
+  ],
+  "solen_current": "SOURCE.md section 16 (lines 983-1044) already states most of the rule text: 16.1 Landmarks requires main/header/footer (present) and nav (self-flagged \"currently missing\"); 16.2 Focus management sets the s-ink focus ring and tab-order rule; 16.3 aria covers aria-label, aria-pressed, aria-live, aria-hidden; 16.4 is the contrast table (out of this stream's scope); 16.5 Touch targets states \"Minimum 44x44 px hit area per WCAG 2.1 (some platforms 48)\"; 16.6 Keyboard nav lists Tab/Space/Enter/Escape/arrow-key behavior. RATIONALE.md domain 5 (line 157) correctly separates WCAG 2.5.8 AA 24x24 from WCAG 2.5.5 AAA 44x44 and states Solen's 44px floor is deliberately the AAA/HIG line, not the AA minimum. RATIONALE.md line 171 already names prefers-reduced-motion as WCAG 2.3.3 T1, confirms the global implementation exists (globals.css:805-813), and flags that SOURCE section 16 and RESTRAINT_TEST never mention it, i.e. the gap was already caught in Round 2 but the doc fix was never applied. SkipLink.tsx exists as a built primitive (app/[locale]/_components/primitives/SkipLink.tsx, exported, documented with a \"§F.6\" tag) but is mounted only in app/[locale]/dev/primitives/page.tsx, confirmed by grep this session; app/[locale]/layout.tsx has no SkipLink import or render.",
+  "gap": "Three concrete, checkable gaps, not just thin prose: (1) SOURCE 16.5 conflates AA and AAA into one unlabeled \"WCAG 2.1\" 44px figure, contradicting RATIONALE's own correct 24-vs-44 split at line 157, so a reader of SOURCE alone would wrongly believe 44px is the legal AA floor; (2) the SkipLink component (WCAG 2.4.1's implementation) is built, documented, and demoed on a dev-only page, but is not mounted in the actual production layout, so the Bypass Blocks criterion is unmet in shipped Solen despite the primitive existing; this is a pure \"built but not wired\" defect, not a design gap; (3) prefers-reduced-motion has a correct global CSS implementation and a correctly-tiered RATIONALE entry (T1, WCAG 2.3.3), but SOURCE.md section 16 (the doc actually read before building a route, per SOURCE line 1330's own reading order) never points to it, so it functions as invisible law that a new component author has no way to discover short of reading globals.css directly. RATIONALE.md also has no dedicated domain section for keyboard nav SC numbers (2.1.1/2.1.2/2.4.3) or landmark/ARIA mechanics (1.3.1/4.1.2, ARIA APG); SOURCE 16.1/16.3/16.6 state the WHAT in practitioner language but never cite the underlying SC numbers or tier them, so there is no RATIONALE domain an owner or agent can check a keyboard/ARIA claim against the way domain 4 (contrast) or domain 5 (target size) already allow.",
+  "proposed_addition": "New RATIONALE.md section, inserted as \"Domain 24: Accessibility beyond contrast\" directly before the existing Gap register section (current line 819), so it sits alongside domain 23 (ethics) rather than inside the states/forms/iconography cluster. Suggested body:\n\n## Domain 24: accessibility beyond contrast (keyboard, screen-reader semantics, reduced motion)\n\n**Keyboard operability is three separate criteria, not one (T1, WCAG 2.2): 2.1.1 Keyboard (everything reachable and operable without a mouse), 2.1.2 No Keyboard Trap (focus can always leave a component with the keyboard alone), 2.4.3 Focus Order (tab order matches the order that preserves meaning).** SOURCE 16.6 already states the practitioner-facing behavior (Tab/Space/Enter/Escape/arrows); this entry supplies the SC numbers so a claim of \"keyboard accessible\" is checkable against a named standard instead of a description. Composite widgets (tab lists, radio groups, filter pill rows) follow the ARIA APG roving-tabindex pattern (CONV, W3C APG Developing a Keyboard Interface): one item in the Tab sequence, tabindex=-1 on the rest, arrow keys move the roving focus. This is the mechanic behind SOURCE 16.6's already-stated but unexplained \"arrow keys navigate within composite widgets\" line.\n\n**Landmarks and name-role-value are the programmatic-structure half of a11y (T1, WCAG 1.3.1 Info and Relationships / 4.1.2 Name Role Value; ARIA landmark roles, W3C APG).** A sighted user infers page structure visually; a screen-reader user needs it exposed as banner/nav/main/contentinfo landmarks and correct roles/states on every custom control. SOURCE 16.1 already requires main/header/footer and flags nav as missing; ground that flag against the standard directly: the missing `<nav>` landmark on MobileMenu is a 1.3.1 gap, not a style nicety, and closing it is a mechanical fix (wrap the nav markup, no visual change).\n\n**Skip links satisfy Bypass Blocks (T1, WCAG 2.4.1) only if mounted where users actually land.** Solen has a correct SkipLink primitive (app/[locale]/_components/primitives/SkipLink.tsx) but it is currently reachable only from the internal /dev/primitives demo page, not from app/[locale]/layout.tsx. The MECHANIC to record: 2.4.1 is satisfied by the component's EXISTENCE only in the trivial sense that the code compiles; the standard is satisfied by a keyboard user on the live production shell being able to Tab once and reach a \"Skip to main content\" link before the header nav. Until layout.tsx renders SkipLink, this SC is unmet in production regardless of what the primitives page demonstrates. Fix is mechanical (add the existing, already-built component to the layout), not a design decision, so it does not need mockup-first sign-off under the usual visual-change rule since it is a hidden-until-focused element with no visible-state change.\n\n**prefers-reduced-motion is the implementation of Animation from Interactions (T1, WCAG 2.3.3).** Already correctly tiered at RATIONALE line 171: vestibular-disorder triggers are large-scale motion, parallax, and spatial transitions; Solen's globals.css already hard-caps animation/transition duration under the media query, so the mechanic exists. The gap this stream closes is discoverability, not correctness: SOURCE section 16 (the file actually consulted per its own reading-order note at SOURCE:1330) should carry a pointer sentence into 16.2 or a new 16.7, e.g. \"All motion beyond a component's own transition classes must respect prefers-reduced-motion; the global cap lives in globals.css:805-813, do not re-implement per component, rely on the cap and keep spring/bounce durations within it.\" This turns the rule from something an agent must already know to find, into something the checklist a route-builder reads (SOURCE:1330's own instruction: \"pull Mobbin refs, then states, clickable contract, a11y, i18n\") actually surfaces.\n\n**Target size floor: 24px is the law, 44px is the house standard above it (T1, WCAG 2.5.8 AA vs WCAG 2.5.5 AAA).** SOURCE 16.5's current wording (\"Minimum 44x44 px hit area per WCAG 2.1, some platforms 48\") should be corrected to name the tier explicitly: \"WCAG 2.5.8 (AA, WCAG 2.2) sets the legal floor at 24x24 CSS px; Solen's 44px floor is the WCAG 2.5.5 AAA / Apple HIG 44pt line, deliberately set above the legal minimum, not equal to it.\" This is a wording-only fix (no literal changes, the 44px LOCKFILE value is untouched) that removes the AA/AAA conflation RATIONALE:157 already avoids but SOURCE:1030 still commits.\n\nBOUNDARY: this domain does not reopen any frozen 44px/24px literal, does not propose new visual treatment, and the SkipLink-mount and nav-landmark fixes are mechanical wiring of already-approved primitives, not new design surface requiring mockup-first sign-off. Screen-reader testing itself (VoiceOver/NVDA passes) is out of scope for this research stream; it names the standards and repo defects, not a manual test protocol.",
+  "numbers_used": [
+   "2.1.1",
+   "2.1.2",
+   "2.4.1",
+   "2.4.3",
+   "2.3.1",
+   "2.3.3",
+   "2.5.5",
+   "2.5.8",
+   "1.3.1",
+   "4.1.2",
+   "24",
+   "44",
+   "48",
+   "8",
+   "805",
+   "813",
+   "2.45 percent (8 of 326 files)",
+   "10.1 percent (33 of 326 files)",
+   "~1.5 percent (stream brief figure)",
+   "~5 percent (stream brief figure)"
+  ],
+  "taste_lab_probe": "Not applicable as a preference probe (this stream is standards-compliance, tag net-new / not generative-gap), but one discriminating verification IS worth running before closing the gap: after mounting SkipLink in layout.tsx, Tab once from a fresh page load on a production build and confirm (a) the skip link receives visible focus, (b) activating it moves focus to #main-content (already present in app/[locale]/layout.tsx:108 as `<main id=\"main-content\" tabIndex={-1}>`), and (c) it is invisible until focused (no permanent layout shift). This is a pass/fail check, not a taste calibration."
+ },
+ "verified": {
+  "id": "S26",
+  "tag": "net-new",
+  "verdict": "revised",
+  "myths_caught": [
+   "Draft claimed 'SkipLink absent from app/[locale]/layout.tsx, WCAG 2.4.1 unmet in production' -- FALSE. Direct read of app/[locale]/layout.tsx:61-68 shows an inline hand-rolled skip-to-content link ('Zum Inhalt springen', href=#main-content, sr-only until focus, dated V3-D312) that already satisfies Bypass Blocks in production. The gap is real but different: it's a duplicate/drifted implementation (SkipLink.tsx primitive vs inline anchor), not a missing one. This was the draft's central and most 'surprising' repo-fact claim, so it is the one that most needed checking, and it failed."
+  ],
+  "claim_verdicts": [
+   {
+    "claim": "WCAG 2.1.1 Keyboard (Level A)",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Correct, standard SC."
+   },
+   {
+    "claim": "WCAG 2.1.2 No Keyboard Trap (Level A)",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Correct."
+   },
+   {
+    "claim": "WCAG 2.4.3 Focus Order (Level A)",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Correct."
+   },
+   {
+    "claim": "WCAG 2.4.1 Bypass Blocks (Level A)",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "The SC itself is real and correctly described; only the repo-state claim built on top of it (see myths_caught) is false."
+   },
+   {
+    "claim": "WCAG 2.3.3 Animation from Interactions (Level AAA)",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Correct SC number and level."
+   },
+   {
+    "claim": "WCAG 4.1.2 Name, Role, Value (Level A)",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Correct."
+   },
+   {
+    "claim": "WAI-ARIA landmark roles (banner/nav/main/contentinfo)",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Correct, standard APG guidance."
+   },
+   {
+    "claim": "WCAG 2.5.8 Target Size Minimum, AA, 24x24 (WCAG 2.2)",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Verified via web search (Silktide, wcag22aa.org, WCAG.com): confirmed AA, 24x24, new in 2.2, with size/spacing/alternative-target escape hatches."
+   },
+   {
+    "claim": "WCAG 2.5.5 Target Size Enhanced, AAA, 44x44 (WCAG 2.1)",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Verified via same web search: confirmed AAA, 44x44, no spacing escape hatch, distinct from 2.5.8."
+   },
+   {
+    "claim": "Roving tabindex is the ARIA APG pattern for composite widgets",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Standard, well-known pattern; correctly tiered CONV not T1."
+   },
+   {
+    "claim": "SkipLink.tsx exists but is mounted only on app/[locale]/dev/primitives/page.tsx, absent from app/[locale]/layout.tsx",
+    "source_ok": false,
+    "tier_final": "MYTH",
+    "note": "REFUTED by direct read. layout.tsx:61-68 has a working inline skip-to-content anchor (not using the SkipLink.tsx primitive) that already satisfies WCAG 2.4.1 in production. The draft's grep-only method (grep -rn SkipLink app) missed this because the inline link doesn't reference the SkipLink identifier. Corrected finding: two divergent skip-link implementations exist (inline in layout.tsx, componentized in SkipLink.tsx used only on the dev demo page), which is a minor consolidation/drift issue, not a missing-in-production issue."
+   },
+   {
+    "claim": "prefers-reduced-motion referenced in ~2.45 percent of .tsx files under app/ (8 of 326)",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Re-ran grep this session: exactly 8 hits, 326 total .tsx files under app/. Numbers confirmed exact."
+   },
+   {
+    "claim": "role= attribute used in ~10.1 percent of .tsx files under app/ (33 of 326)",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Re-ran grep this session: exactly 33 hits, 326 total. Numbers confirmed exact."
+   },
+   {
+    "claim": "SOURCE.md 16.5 states the 44px floor as flatly 'WCAG 2.1' without naming AA vs AAA, and SOURCE 16.1 self-flags <nav> as missing",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Both confirmed by direct read: SOURCE.md:1032 reads exactly 'Minimum 44x44 px hit area per WCAG 2.1 (some platforms 48)'; SOURCE.md:993 reads 'nav element ... currently missing -- Q in QUESTIONS'. RATIONALE.md:157 independently states the correct 24-vs-44 AA/AAA split, confirming the draft's conflation claim between the two docs."
+   },
+   {
+    "claim": "Numbers_used lists 2.3.1 alongside 2.3.3",
+    "source_ok": false,
+    "tier_final": "N/A",
+    "note": "2.3.1 (Three Flashes or Below Threshold, a seizure-safety SC) is never explained or referenced anywhere in the draft's principle_summary, sources, or proposed_addition text -- it appears to be a stray/erroneous entry in numbers_used, likely a typo neighbor of 2.3.3. Dropped from the verified numbers list; not carried into verified_addition."
+   }
+  ],
+  "verified_addition": "## Domain 24: accessibility beyond contrast (keyboard, screen-reader semantics, reduced motion)\n\n**Keyboard operability is three separate criteria, not one (T1, WCAG 2.2): 2.1.1 Keyboard (everything reachable and operable without a mouse), 2.1.2 No Keyboard Trap (focus can always leave a component with the keyboard alone), 2.4.3 Focus Order (tab order matches the order that preserves meaning).** SOURCE 16.6 already states the practitioner-facing behavior (Tab/Space/Enter/Escape/arrows); this entry supplies the SC numbers so a claim of \"keyboard accessible\" is checkable against a named standard instead of a description. Composite widgets (tab lists, radio groups, filter pill rows) follow the ARIA APG roving-tabindex pattern (CONV, W3C APG Developing a Keyboard Interface): one item in the Tab sequence, tabindex=-1 on the rest, arrow keys move the roving focus. This is the mechanic behind SOURCE 16.6's already-stated but unexplained \"arrow keys navigate within composite widgets\" line.\n\n**Landmarks and name-role-value are the programmatic-structure half of a11y (T1, WCAG 1.3.1 Info and Relationships / 4.1.2 Name Role Value; ARIA landmark roles, W3C APG).** A sighted user infers page structure visually; a screen-reader user needs it exposed as banner/nav/main/contentinfo landmarks and correct roles/states on every custom control. SOURCE 16.1 already requires main/header/footer (confirmed present in app/[locale]/layout.tsx) and self-flags `<nav>` as missing (SOURCE.md:993, \"currently missing, Q in QUESTIONS\"). Ground that flag against the standard directly: the missing `<nav>` landmark on MobileMenu is a 1.3.1 gap, not a style nicety, and closing it is a mechanical fix (wrap the nav markup, no visual change).\n\n**Skip links satisfy Bypass Blocks (T1, WCAG 2.4.1), and Solen's production shell already has one: a correction to the earlier repo scan.** A grep-only pass (`grep -rn SkipLink app`) surfaces the componentized primitive (app/[locale]/_components/primitives/SkipLink.tsx) and its single usage on the internal /dev/primitives demo page, and can read as if 2.4.1 is unmet in production. It is not: app/[locale]/layout.tsx:61-68 already renders an inline, hand-rolled skip-to-content anchor (\"Zum Inhalt springen\", href=\"#main-content\", sr-only until focus, dated V3-D312) as the first focusable element, targeting the `<main id=\"main-content\" tabIndex={-1}>` at layout.tsx:108. WCAG 2.4.1 is satisfied today. The real, smaller finding: two divergent implementations of the same pattern exist side by side (the inline anchor in layout.tsx and the SkipLink.tsx primitive, whose own doc comment claims it is \"mounted as the FIRST focusable child of body\" when it is not) with different target ids (#main-content vs the primitive's default #main) and different visual treatment (ink pill vs brand-teal pill). This is a documentation-and-consolidation defect, not a missing-criterion defect: either retire the componentized SkipLink.tsx (and correct its stale doc comment) or migrate layout.tsx to use it, so there is one skip-link source of truth instead of two that could silently diverge further.\n\n**prefers-reduced-motion is the implementation of Animation from Interactions (T1, WCAG 2.3.3).** Already correctly tiered at RATIONALE line 171: vestibular-disorder triggers are large-scale motion, parallax, and spatial transitions; Solen's globals.css already hard-caps animation/transition duration under the media query, so the mechanic exists globally and correctly. The gap this stream closes is discoverability, not correctness: SOURCE section 16 (the file actually consulted per its own reading-order note at SOURCE:1330) never points to it. Measured this session: only 8 of 326 .tsx files under app/ reference prefers-reduced-motion directly, versus a global CSS cap that should cover all of them by design; that gap between \"how many files need to know\" and \"how many reference it\" is exactly what makes it invisible law. SOURCE 16.2 or a new 16.7 should carry a pointer sentence, e.g. \"All motion beyond a component's own transition classes must respect prefers-reduced-motion; the global cap lives in globals.css:805-813, do not re-implement per component, rely on the cap and keep spring/bounce durations within it.\"\n\n**Target size floor: 24px is the law, 44px is the house standard above it (T1, WCAG 2.5.8 AA vs WCAG 2.5.5 AAA, both independently confirmed this session against current W3C guidance).** SOURCE 16.5's current wording (\"Minimum 44x44 px hit area per WCAG 2.1, some platforms 48\", SOURCE.md:1032) should be corrected to name the tier explicitly: \"WCAG 2.5.8 (AA, WCAG 2.2) sets the legal floor at 24x24 CSS px, with size, spacing, or an equivalent-control exception; Solen's 44px floor is the WCAG 2.5.5 AAA / Apple HIG 44pt line, deliberately set above the legal minimum, not equal to it.\" This is a wording-only fix (no literal changes, the 44px LOCKFILE value is untouched) that removes the AA/AAA conflation RATIONALE:157 already avoids but SOURCE:1030 still commits.\n\nBOUNDARY: this domain does not reopen any frozen 44px/24px literal, does not propose new visual treatment, and the nav-landmark fix is mechanical wiring, not new design surface requiring mockup-first sign-off. The skip-link finding is downgraded from \"unmet criterion, needs mounting\" to \"duplicate implementation, needs consolidation\" after verification; that consolidation is also mechanical (pick one implementation) and does not change what a keyboard user experiences today. Screen-reader testing itself (VoiceOver/NVDA passes) is out of scope for this research stream; it names the standards and repo defects, not a manual test protocol.",
+  "residual_risks": "Two things for the owner or a QUESTIONS.md entry, not for silent resolution: (1) the two skip-link implementations (inline anchor in layout.tsx targeting #main-content, vs SkipLink.tsx primitive defaulting to #main and used only on /dev/primitives) have diverged in both target id and visual style; picking one and retiring or correcting the other is a small decision, not urgent since production already passes 2.4.1, but worth a QUESTIONS.md line so it doesn't rot further. (2) SOURCE.md:993 already self-flags the missing `<nav>` landmark as \"Q in QUESTIONS\" — verify that question is actually still open in QUESTIONS.md (not checked this session) before treating it as new work; if it was already answered and just never closed out in SOURCE, that's a smaller doc-sync fix, not a design decision. Neither touches a frozen LOCKFILE literal."
+ }
+}

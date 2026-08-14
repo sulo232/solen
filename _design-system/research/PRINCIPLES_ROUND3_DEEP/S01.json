@@ -1,0 +1,338 @@
+{
+ "id": "S01",
+ "synth": {
+  "id": "S01",
+  "tag": "generative-gap",
+  "title": "Richness/restraint calibration prior (how much to put on a surface)",
+  "principle_summary": "How much to put on a first-draft surface is governed by two layers that must be applied together, not one. The COGNITIVE layer (unchanged from the academic pass) sets a numeric ceiling: 4 to 7 Gestalt-grouped chunks above the fold (Miller 1956 ceiling, Cowan 2001 floor of roughly 3-5), with the aesthetic-usability effect and 50ms first-impression research explaining why spending the marginal unit on finish reads as competence, not decoration. The STRUCTURAL layer, newly corroborated across seven real shipped apps (Fresha, Treatwell, Square Go, Urban Company, CVS Health, Airbnb, Airtasker), shows the ceiling is not spent as a flat page-wide imagery percentage. Every real competitor concentrates imagery into ONE zone sized to that surface's TASK TYPE (a hero/PDP carousel runs 35-45% of first viewport, a browse card runs close to the existing Solen 1/3 floor, a checkout or slot-picker surface runs near zero) and goes flat, text-only, list-row below that zone. Fresha's own above-the-fold service cap (6 of 22 shown) lands inside the independently-derived 4-7 chunk band, which is the strongest single piece of corroboration in this synthesis: a competitor's real UI decision and a 70-year-old cognitive-load literature converge on the same number by two unrelated methods. The direction to lean when a mockup is ambiguous is not a blanket \"richer is safer\" rule (that leg of the academic draft was already downgraded to T3); real evidence instead conditions it on TASK TYPE, browse/discovery screens tolerate and reward more richness (Too Good To Go, Airtasker, Sephora), transactional/booking-task screens (CVS slot picker, Urban Company cart, Square Go PDP) stay sparse and still read as competent, so \"lean richer\" only applies inside a browse/discovery surface, never inside a commit-flow step. 2026 design-press trend claims toward denser, more decorative \"maximalism\" (bento grids, tactile maximalism) are real directional signal but stay T3/CONV and are explicitly NOT adopted where they would loosen Solen's 80/17 restraint or no-decorative-artifact law; they are noted as a live tension, not a license.",
+  "proposed_addition": "GENERATIVE PRIOR (closes gap register G1, RATIONALE.md:826), revises and extends the section-28 anchor / cross-ref near section 12 (Berlyne line 185) with real-app corroboration layered onto the academic bands. Cross-reference PSYCHOLOGY.md law 7 (\"Photos are the decision input, not decoration\", T1 causal, +9% Airbnb occupancy) for the behavioral WHY behind the imagery floor; this prior does not re-derive that claim.\n\n1. IMAGERY IS A ZONE, NOT A FLAT PERCENTAGE. The FLOORS LAW's \"~1/3 imagery\" (CONV, owner-approved 2026-07-21) is confirmed as the right browse-card number by real precedent, but it must be SCOPED by surface type, not applied as a page-wide constant. Concrete bands, corroborated by direct product observation:\n   - Hero/PDP surfaces: one photo zone at roughly 35-45% of first viewport (Fresha salon PDP carousel ~40-45%; Airbnb detail hero: one large photo at 50% width plus a 2x2 grid of four smaller photos, 5 photos total), then a hard cut to flat white/text below with zero further imagery in the repeating content (Fresha's own services tab runs fully text-only rows below the hero, no thumbnail per service).\n   - Browse/list card surfaces: the existing ~1/3 floor stands unchanged.\n   - Transactional/commit-flow surfaces (checkout, cart, slot-picker): imagery drops to near zero and this is CORRECT, not a violation. Urban Company's cart, Square Go's service-detail PDP, and CVS Health's slot picker all ship at or near 0% imagery and read as competent, not broken, real-world evidence that runs directly counter to a flat imagery percentage. This closes the exact gap the earlier academic-only pass left cross-referenced but never scoped.\n\n2. CHUNK COUNT ABOVE THE FOLD: 4 to 7 distinct Gestalt-grouped chunks, biased low (4-5) on a glance-based mobile surface (unchanged from the verified academic band: Miller 1956 T1 ceiling, Cowan 2001 T2 floor of roughly 3-5). NEW CORROBORATION: Fresha's own above-the-fold service list shows 6 of 22 total services before a \"See all\" overflow, landing inside this band by independent real-world observation, not cognitive-load theory. Treat this as the strongest evidence point in the whole prior: two unrelated methods (a shipped competitor's product decision and 1956-2001 cognitive-load literature) converge on the same number.\n\n3. DECORATIVE-VS-INFORMATIONAL GATE inside a chunk: unchanged, still the copy-economy delete-test (project CLAUDE.md rule 1), always outranks richness. NEW BOUND: three independent competitor teardowns (Fresha, Treatwell, Booksy's own documented component list) converge on the SAME roughly seven-item component vocabulary for a marketplace profile (cover photo/gallery, name plus rating plus count, description, services with price plus duration, staff, reviews, one booking CTA) with no decorative filler beyond that set. This is evidence the informational ceiling is not just theoretically derivable, it is what real competitors independently converged on without a shared design system.\n\n4. DIRECTIONAL BIAS WHEN UNCERTAIN IS TASK-CONDITIONED, NOT BLANKET. Revises the earlier academic-only band, which leaned on a Reinecke and Gajos 2014 asymmetric-curve claim that could not be verified from the paper's actual findings and was downgraded to a hedged T3 lean. Real-app evidence gives a sharper, task-conditioned rule instead of a single global lean:\n   - Inside a BROWSE/DISCOVERY surface, lean richer up to band 2's ceiling. Too Good To Go's discover feed (photo ~55% of card height, badge, strikethrough-plus-bold price, distance) and Airtasker's category feed (image-forward cards immediately followed by an icon-only pill grid on the same screen) both ship dense and legible because every element is bound to a fixed grid position, never floating.\n   - Inside a TRANSACTIONAL/COMMIT-FLOW surface (any booking step, cart, checkout, slot picker), lean sparser, near the floor of band 2, not the ceiling. CVS Health's slot picker and Urban Company's cart both under-fill by Solen's own richness instinct and still read as competent precisely because the task is narrow and the user's attention should not be split.\n   - This directly maps onto Solen's own booking flow (services, staff, time, pay): earlier steps (services list, staff picker) may sit toward band 2's richer end; Zeit and Bezahlen should sit toward the sparse end. This is new, generative guidance the earlier academic-only draft did not produce.\n   - Confidence note carried forward: this band replaces a downgraded T2 citation with T3-tier competitor observation; still the weakest-evidenced band in the prior, now on firmer footing than before but still pending the Taste Lab probe below.\n\n5. NOVELTY BUDGET: unchanged from the verified academic band. MAYA (T2, confirmed) caps genuinely-new pattern to ONE differentiator per surface; reuse a LOCKED component everywhere else. The band-3 component-vocabulary convergence (Fresha/Treatwell/Booksy) is independent real-world support for the same discipline: none of the three competitors invented a novel eighth building block.\n\n6. DENSITY/WHITESPACE COUPLING, extended with a concrete grouping mechanic. TASTE_DASHBOARDS.md finding 14 (CONV, confirmed, currently scoped to dashboard tables/forms) still applies to any browse card: rising field count must pair with growing, not shrinking, gutters. NEW, CONV-tier lever from 2026 design-press scouting: bento-style modular grid grouping (asymmetric tile sizing inside one shared grid, T3 trend, not a validated study) is the one trend-research finding compatible with Solen's restraint law, because it raises perceived richness through LAYOUT variety, not through added color or decoration, and it is exactly the mechanic Too Good To Go and Fresha rely on to keep dense cards legible (every element bound to a grid slot). Offered as an implementation technique for band 1 and band 4's richer end, not as a new numeric floor.\n\n7. FINISH ALLOCATION (where, not how much): unchanged, still CONV, still an allocation order not a quantity prior (RESTRAINT_TEST.md, RATIONALE.md:189).\n\n8. TENSION FLAG, NOT ADOPTED: 2026 design-press \"dense is back\" and \"tactile maximalism\" trend claims (T3, MyDesigner Blog, AuFaitUX, Medium/Bootcamp roundups) and Sephora's card imagery ratio (~55-60% per card, saturated illustrated color blocks) both point toward more visual density and MORE decorative color-and-texture richness than Solen's 80/17 near-monochrome law and no-decorative-artifact rule permit. These are logged as a live directional tension in the field, not evidence for loosening any LOCKFILE literal. The one counter-trend that is directionally ALIGNED with Solen's existing restraint (Envato/GitNexa \"calm design\", narrative-over-density dashboards) is the citable trend if this prior is ever challenged as too sparse.\n\nBOUNDARY: this prior sets a first-draft band for a NEW mockup only; it reopens no frozen literal (card radius, LOCKFILE spacing tokens, the 44px touch floor, the 80/17 ratio, the no-decorative-artifact rule); band 3's informational gate always outranks band 4's richness bias when they conflict; band 4's task-conditioning always outranks a blanket richer-lean.",
+  "generative_prior": "Concrete defaults for a first-draft mockup, stated as bands with the real apps that demonstrate each number:\n\n- IMAGERY ZONE (not a flat ratio): hero/PDP surfaces run one photo zone at 35-45% of first viewport (Fresha salon PDP carousel ~40-45%; Airbnb detail hero 1 large photo at 50% width + 2x2 grid of 4 smaller = 5 photos total), browse/list cards hold the existing Solen ~1/3 floor, transactional/commit-flow surfaces (cart, checkout, slot picker) run near 0% imagery (Urban Company cart, Square Go PDP, CVS Health slot picker, all zero-photo and still competent).\n- CHUNK CEILING: 4-7 Gestalt-grouped chunks above the fold, biased 4-5 on mobile (Miller 1956 T1 / Cowan 2001 T2). Corroborated live: Fresha shows exactly 6 of 22 services before \"See all\" overflow, inside this band.\n- COMPONENT VOCABULARY CEILING: roughly 7 building blocks for a marketplace profile page (photo/gallery, name+rating+count, description, services w/ price+duration, staff, reviews, one CTA), independently converged on by Fresha, Treatwell, and Booksy's own documented spec, no decorative filler beyond this set in any of the three.\n- DIRECTION WHEN UNCERTAIN, task-conditioned: lean richer up to the ceiling inside a browse/discovery surface (Too Good To Go feed cards ~55% photo, Airtasker image-forward carousel immediately followed by an icon-only pill grid on the same screen); lean sparser toward the floor inside a transactional/commit-flow surface (CVS slot picker, Urban Company cart, Square Go PDP, all near-zero imagery and text-first, still read as competent because the task is narrow).\n- GRID-BINDING as the density-without-clutter mechanic: every element in a dense real-app surface (Too Good To Go, Fresha) is bound to a fixed grid position, never floating; bento-style modular grouping (T3 trend) is the closest named technique for this in current design-press vocabulary.",
+  "real_world_evidence": [
+   {
+    "source": "Fresha salon PDP (Mobbin, iOS)",
+    "what": "hero photo carousel ~40-45% of first viewport, hard cut to flat white text below; services tab is text-only rows, no per-row thumbnail",
+    "tier": "T3"
+   },
+   {
+    "source": "Fresha, live salon page fetch (Your Salon, Zurich)",
+    "what": "22 total services, 6 shown above the fold before See all overflow, falls inside the independently-derived 4-7 chunk band",
+    "tier": "CONV"
+   },
+   {
+    "source": "Square Go service detail (Mobbin, iOS)",
+    "what": "zero photos, avatar placeholder only, text-first PDP with bold pill CTA row, real precedent for near-monochrome restraint on a booking PDP",
+    "tier": "T3"
+   },
+   {
+    "source": "Urban Company cart (Mobbin, iOS)",
+    "what": "dense but zero-imagery checkout screen, disciplined text/price rows, purple CTA; evidence imagery share is a hero-screen concept, not a page-wide floor",
+    "tier": "T3"
+   },
+   {
+    "source": "CVS Health slot picker (Mobbin, iOS)",
+    "what": "extremely sparse, no photography, large empty space below the slot grid; real top-tier app shipping deliberately under-filled because the task is narrow",
+    "tier": "T3"
+   },
+   {
+    "source": "Sephora discover/services (Mobbin, iOS)",
+    "what": "2-up card grid, ~55-60% image per card, saturated illustrated color blocks; conflicts with Solen 80/17, logged as an out-of-bounds precedent only",
+    "tier": "T3"
+   },
+   {
+    "source": "Too Good To Go discover feed (Mobbin, iOS)",
+    "what": "dense image-forward cards (~55% photo per card height) that stay legible because every element is bound to a fixed grid position",
+    "tier": "T3"
+   },
+   {
+    "source": "Airtasker Hair and beauty category feed (Mobbin, iOS)",
+    "what": "image-dense 2-card carousel immediately followed by an icon-only, zero-image pill grid on the same screen, real evidence density should vary by SECTION not by whole screen",
+    "tier": "T3"
+   },
+   {
+    "source": "Treatwell, live salon page fetch (World of Hair, Zurich)",
+    "what": "single hero photo (sparser than Fresha), 841 reviews with overflow discipline, self-estimated ~60% text/40% visual on a detail page, lower imagery share than a browse grid would carry",
+    "tier": "CONV"
+   },
+   {
+    "source": "Airbnb detail page (design-teardown sources, not Airbnb's own docs)",
+    "what": "5-photo hero grid, 1 large photo at 50% width plus a 2x2 grid of 4 smaller photos, depth from photo clipping not shadow elevation",
+    "tier": "CONV"
+   },
+   {
+    "source": "Booksy help-center documentation",
+    "what": "canonical 7-block profile component list (cover photo, gallery, description, services+pricing, staff photos, reviews, one booking button), matches Fresha and Treatwell's shipped structure almost exactly",
+    "tier": "CONV"
+   },
+   {
+    "source": "Uber ride-request flow (design-teardown sources)",
+    "what": "black/white base, single accent color, an internal Uber design critique flagged as info present but not prioritized, evidence even a locked-restraint app treats over-inclusion as a live unsolved risk",
+    "tier": "CONV"
+   },
+   {
+    "source": "2026 design-press trend roundups (MyDesigner Blog, Orbix Studio, AuFaitUX)",
+    "what": "bento-grid modular density and tactile maximalism named as 2026 correction to over-minimal UI; the bento-grid lever is compatible with Solen restraint (layout, not decoration), tactile maximalism is not",
+    "tier": "T3"
+   },
+   {
+    "source": "Envato Elements / GitNexa 2026 trend roundups",
+    "what": "counter-trend toward calm, narrative-over-density dashboards and continued iOS-native restraint, directionally aligned with Solen's existing lock",
+    "tier": "T3"
+   }
+  ],
+  "sources": [
+   {
+    "claim": "Aesthetic-usability effect: r ~ 0.589 between aesthetics and apparent ease-of-use, N=252 raters over 26 ATM UI variants",
+    "source": "Kurosu, M. and Kashimura, K. (1995), Hitachi Design Center study, already cited RATIONALE.md:179",
+    "tier": "T2"
+   },
+   {
+    "claim": "MAYA: typicality and novelty independently and jointly predict aesthetic preference",
+    "source": "Hekkert, Snelders, van Wieringen (2003), British Journal of Psychology 94, already cited RATIONALE.md:183",
+    "tier": "T2"
+   },
+   {
+    "claim": "Berlyne inverted-U: intermediate visual complexity preferred, mixed replication",
+    "source": "Berlyne, D.E., already cited RATIONALE.md:185 as T3",
+    "tier": "T3"
+   },
+   {
+    "claim": "Working memory / immediate-perception span roughly 7 plus-or-minus 2 chunks",
+    "source": "Miller, G.A. (1956), Psychological Review",
+    "tier": "T1"
+   },
+   {
+    "claim": "Under attention-limited conditions, realistic capacity is closer to roughly 3-5 chunks, ~4 central estimate",
+    "source": "Cowan, N. (2001), Behavioral and Brain Sciences 24(1)",
+    "tier": "T2"
+   },
+   {
+    "claim": "Visual complexity and prototypicality shape first impressions within 50ms of exposure",
+    "source": "Tuch, Presslaber, Stocklin, Opwis, Bargas-Avila (2012), International Journal of Human-Computer Studies 70(11); corrected citation, earlier draft's hci-basel.ch/2007 URL and N=60 figure could not be verified and are dropped",
+    "tier": "T3"
+   },
+   {
+    "claim": "Reinecke and Gajos 2014 complexity-preference study is genuine at scale (2.4M ratings, ~40k participants) but the specific asymmetric sparse-costs-little/cluttered-costs-a-lot framing could not be confirmed from the paper's reported findings",
+    "source": "Reinecke, K. and Gajos, K.Z. (2014), CHI 2014",
+    "tier": "T3"
+   },
+   {
+    "claim": "Density/whitespace inverse coupling: rising component density must pair with growing surrounding margins",
+    "source": "Una Kravets / Google Design, Material Density on the Web, already sourced TASTE_DASHBOARDS.md:33",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Imagery should cover roughly one third of browse viewports, never a bare grey box",
+    "source": "Solen FLOORS LAW, owner-approved 2026-07-21, memory project_floors_law.md",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Photos are the decision input, not decoration; +9% Airbnb occupancy from professional photos",
+    "source": "PSYCHOLOGY.md law 7 (T1 causal), cross-referenced not re-derived",
+    "tier": "T1"
+   },
+   {
+    "claim": "Fresha salon PDP hero carousel and services list structure",
+    "source": "Mobbin iOS screens, Fresha PDP + services tab captures",
+    "tier": "T3"
+   },
+   {
+    "claim": "Fresha live salon page: 22 services, 6 shown above fold; 3-photo hero gallery; 173 reviews compressed to one line",
+    "source": "fresha.com/a/your-salon-zurich-waldmannstrasse-10-yn0hig6g, WebFetch summarization",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Treatwell live salon page: single hero photo, 841 reviews, ~60% text/40% visual self-estimate",
+    "source": "treatwell.ch/ort/world-of-hair-zuerich, WebFetch summarization",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Booksy canonical 7-block profile component list",
+    "source": "biz.booksy.com/en-us/features/booksy-profile and support.booksy.com photo guidelines",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Airbnb detail hero: 5-photo grid, 1 large at 50% width + 4 smaller in 2x2",
+    "source": "Superdesign Airbnb design-system breakdown, DesignSystems.one Airbnb; not Airbnb's own docs",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Uber ride-request flow black/white plus single accent, internal info-not-prioritized critique",
+    "source": "Superdesign Uber design-system breakdown",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Square Go, Urban Company, CVS Health, Sephora, Too Good To Go, Airtasker screen structures",
+    "source": "Mobbin iOS screens, individual URLs in scout report",
+    "tier": "T3"
+   },
+   {
+    "claim": "Dense interfaces / bento grids as a 2026 design-press correction to over-minimal UI; 67% ProductHunt bento-adoption figure is unsourced and screened out as MYTH, not used",
+    "source": "MyDesigner Blog, Orbix Studio, Desinance blog roundups",
+    "tier": "T3"
+   },
+   {
+    "claim": "Tactile maximalism / functional maximalism as Gen-Z UI trend",
+    "source": "AuFaitUX blog, Medium/Bootcamp roundup",
+    "tier": "T3"
+   },
+   {
+    "claim": "Counter-trend: calm design, narrative dashboards, continued iOS restraint",
+    "source": "Envato Elements learn hub, GitNexa mobile blog",
+    "tier": "T3"
+   }
+  ],
+  "numbers_used": [
+   "0.589 correlation, N=252, 26 ATM UI variants (Kurosu and Kashimura 1995)",
+   "7 plus-or-minus 2 chunks (Miller 1956)",
+   "roughly 3-5 chunks, ~4 central estimate (Cowan 2001)",
+   "4-7 chunk band biased 4-5 on mobile (derived synthesis)",
+   "6 of 22 services shown above the fold (Fresha live page, real-world corroboration of the chunk band)",
+   "roughly 1/3 imagery share for browse cards (Solen FLOORS LAW, CONV)",
+   "35-45% first-viewport imagery for hero/PDP surfaces (Fresha ~40-45%, Airbnb 5-photo grid, derived from real-app observation, CONV/T3)",
+   "near 0% imagery for transactional surfaces (CVS, Urban Company, Square Go, T3 observation)",
+   "5 photos in Airbnb's detail hero, 1 large at 50% width + 4 smaller (CONV)",
+   "roughly 7 building blocks in a marketplace profile (Fresha, Treatwell, Booksy convergence, CONV)",
+   "55-60% card imagery share for Sephora, 55% for Too Good To Go card photo height (T3, flagged as boundary not adopted / not adopted respectively)",
+   "841 reviews, ~60% text / 40% visual self-estimate (Treatwell, CONV)",
+   "2.4 million ratings, ~40,000 participants (Reinecke and Gajos 2014, T2 for scale, T3 for the specific asymmetric claim which could not be verified)",
+   "+9% Airbnb occupancy from professional photos (PSYCHOLOGY.md law 7, T1, cross-referenced not re-derived)"
+  ],
+  "taste_lab_probe": "Build 3 real variants of ONE already-shipped Solen browse surface (recommend salon SearchTemplate grid, highest-traffic customer surface already wired for the FLOORS LAW 5-pass note), structure untouched, only richness dialed, PLUS a second paired probe on one transactional step (recommend the booking Zeit step) to test the new task-conditioned direction band.\n\nProbe A (browse surface, tests bands 1, 2, 4-richer-leg):\n- Level A sparse: imagery on ~15% of cards, 2 facts per card, flat depth.\n- Level B target: imagery ~1/3 per the existing floor, 3-4 facts, gray-tray on photo-less cards, band 6 grid-binding applied.\n- Level C cluttered: imagery on every card plus one decorative graphic, 6+ facts, tight gutters, one non-informational badge (this level intentionally probes the Sephora/Too-Good-To-Go boundary named in band 8).\n\nProbe B (transactional surface, tests band 4-sparser-leg, new in this synthesis):\n- Level A minimal: current Zeit step as-is, near-zero imagery, text/pill-first (matches CVS/Urban Company precedent).\n- Level B slightly richer: add one contextual photo or richer slot-card treatment, still inside band 2's low end (4-5 chunks).\n- Level C dense: pack additional metadata/imagery onto the slot picker, tests whether richness on a commit-flow step actually hurts task completion the way real-app precedent predicts.\n\nProcedure, both probes: show all 3 unlabeled at real mobile width (375px). Ask (1) unprompted pairwise preference plus one-sentence why, (2) a squint-test chunk count on the winner. For Probe A, also ask which level \"feels like Solen\" vs which level \"feels like a different app\" to directly test the Sephora/maximalism boundary. For Probe B, additionally time-to-first-tap on the slot grid across levels, since band 4's task-conditioning predicts B/A should outperform C on speed even if C wins raw preference. Record both winners' exact chunk counts and imagery percentages back into RATIONALE.md, replacing this prior's placeholder bands with owner-confirmed numbers, and log whether Probe B confirms or refutes the task-conditioned direction rule in band 4 before that band is treated as settled."
+ },
+ "verified": {
+  "id": "S01",
+  "tag": "generative-gap",
+  "verdict": "revised",
+  "myths_caught": [
+   "Fresha 'six of 22 services shown above the fold' called out as the strongest corroboration point in the synthesis does not reproduce: an independent re-fetch of the same live URL returned 4 shown before 'See all', not 6. The claim is downgraded to a range and the 'strongest evidence point' superlative is removed; the band-4-7 fit still holds (at the floor) but is not the clean convergence the draft claimed.",
+   "The 50ms first-impression citation is likely swapped: the well-established primary source for '50ms to form a first impression of a webpage' is Lindgaard, Fernandes, Dudek, Brown (2006), not Tuch et al. (2012) IJHCS. The draft's own note says it 'corrected' an earlier hci-basel.ch/2007 citation to Tuch 2012, but Tuch's own lab is hosted at hci-basel.ch and the paper's actual exposure duration could not be confirmed (access blocked). Repointed the 50ms claim to Lindgaard 2006; kept Tuch 2012 as a narrower, duration-unspecified claim.",
+   "Treatwell '~60% text / 40% visual' self-estimate does not reproduce: an independent re-fetch of the same page estimated 80-85% text / 15-20% visual. Both are ungrounded LLM eyeball estimates, not pixel measurements. Softened to a qualitative claim, tier CONV to T3.",
+   "Booksy's documented profile structure does not explicitly itemize 'staff photos' as a discrete block (only 'portfolio / showcase your best work'); softened from an exact 7-item match to an approximate one.",
+   "Uber 'internal design critique flagged as info present but not prioritized' is an unverifiable narrative claim sourced only to a tertiary teardown site, not a primary Uber document; downgraded CONV to T3 and flagged as weak, not cut, since it does not carry independent weight in the prior anyway."
+  ],
+  "residual_risks": "Owner-decision items: (1) the imagery-zone bands (35-45% hero, ~1/3 browse floor, ~0% transactional) are real-app-observed but still CONV/T3 tier, not causal evidence; they should go through the taste_lab_probe before being written into RATIONALE.md as anything firmer than a first-draft prior. (2) Band 4's task-conditioned direction rule (richer in browse, sparser in transactional) is the weakest-evidenced band per the draft's own admission and explicitly depends on Probe B to confirm or refute before being treated as settled; do not let it silently harden into a rule before that probe runs. (3) The bento-grid / tactile-maximalism tension flag in point 8 is correctly logged as NOT adopted, but is a live directional pull against the 80/17 near-monochrome law; if a future designer leans on 2026 trend pieces to loosen restraint, point 8 needs to be re-read as a boundary, not permission. (4) The Airbnb +9% occupancy figure was not independently re-verified in this pass (search access exhausted); it is inherited from PSYCHOLOGY.md law 7 per the draft's own stated boundary, so re-verification responsibility sits with that file's own audit trail, not this stream. (5) All Mobbin-sourced screen observations (Square Go, Urban Company, CVS Health, Sephora, Too Good To Go, Airtasker) are single-example, T3, and unverifiable by me directly (no Mobbin access); they read as internally consistent with the task-conditioned theory but should be treated as illustrative, not proof, until a second independent screenshot pass confirms them. (6) Live-page WebFetch counts (Fresha service count, Treatwell text/visual ratio) proved unstable across two independent fetches in this session alone; any RATIONALE.md number sourced this way should carry a 'measured via automated fetch, not a fixed screenshot count, recheck before treating as precise' caveat rather than being presented as a hard number.",
+  "verified_addition": "GENERATIVE PRIOR (closes gap register G1, RATIONALE.md:826), revises and extends the section-28 anchor / cross-ref near section 12 (Berlyne line 185) with real-app corroboration layered onto the academic bands. Cross-reference PSYCHOLOGY.md law 7 (\"Photos are the decision input, not decoration\", T1 causal, +9% Airbnb occupancy) for the behavioral WHY behind the imagery floor; this prior does not re-derive that claim, and that specific figure was not independently re-verified in this verification pass (search access exhausted this session) so it carries PSYCHOLOGY.md's own sourcing, not fresh confirmation here.\n\n1. IMAGERY IS A ZONE, NOT A FLAT PERCENTAGE. The FLOORS LAW's \"~1/3 imagery\" (CONV, owner-approved 2026-07-21) is confirmed as the right browse-card number by real precedent, but it must be SCOPED by surface type, not applied as a page-wide constant. Concrete bands, corroborated by direct product observation (single-example T3/CONV tier, not causal evidence, pending the taste_lab_probe):\n   - Hero/PDP surfaces: one photo zone at roughly 35-45% of first viewport (Fresha salon PDP carousel ~40-45%; Airbnb detail hero: one large photo at 50% width plus a 2x2 grid of four smaller photos, 5 photos total), then a hard cut to flat white/text below with zero further imagery in the repeating content (Fresha's own services tab runs fully text-only rows below the hero, no thumbnail per service).\n   - Browse/list card surfaces: the existing ~1/3 floor stands unchanged.\n   - Transactional/commit-flow surfaces (checkout, cart, slot-picker): imagery drops to near zero and this is CORRECT, not a violation. Urban Company's cart, Square Go's service-detail PDP, and CVS Health's slot picker all ship at or near 0% imagery and read as competent, not broken, real-world evidence (T3, single-example Mobbin observations, not independently re-verified) that runs directly counter to a flat imagery percentage. This closes the exact gap the earlier academic-only pass left cross-referenced but never scoped.\n\n2. CHUNK COUNT ABOVE THE FOLD: 4 to 7 distinct Gestalt-grouped chunks, biased low (4-5) on a glance-based mobile surface (unchanged from the verified academic band: Miller 1956 T1 ceiling, Cowan 2001 T2 floor of roughly 3-5). CORROBORATION, CORRECTED: Fresha's own above-the-fold service list lands inside this band by independent real-world observation, not cognitive-load theory, but the exact count is unstable across fetches, an independent re-fetch of the same live page returned 4 shown before \"See all\" overflow, not the 6 an earlier pass reported. Treat this as supporting evidence that the band's floor is realistic in a shipped competitor, not as a precise convergence claim; do not cite an exact single number (\"6 of 22\") in RATIONALE.md without a fixed screenshot to back it, since live-page automated counts moved 4 to 6 between two fetches in the same session.\n\n3. DECORATIVE-VS-INFORMATIONAL GATE inside a chunk: unchanged, still the copy-economy delete-test (project CLAUDE.md rule 1), always outranks richness. BOUND, SOFTENED: competitor teardowns of Fresha, Treatwell, and Booksy's own documented component list converge on a SIMILAR, not identical, roughly seven-item component vocabulary for a marketplace profile (cover photo/gallery, name plus rating plus count, description, services with price plus duration, staff or team presence, reviews, one booking CTA). Note Booksy's own documentation does not itemize \"staff photos\" as a separate named block, it folds staff/team presentation into general \"portfolio\" language, so the seven-item match across all three competitors is approximate, not exact. Still useful evidence that the informational ceiling is close to what real competitors independently converged on, just not a clean unanimous seven-for-seven.\n\n4. DIRECTIONAL BIAS WHEN UNCERTAIN IS TASK-CONDITIONED, NOT BLANKET. Revises the earlier academic-only band, which leaned on a Reinecke and Gajos 2014 asymmetric-curve claim that could not be verified from the paper's actual findings and was downgraded to a hedged T3 lean. Real-app evidence gives a sharper, task-conditioned rule instead of a single global lean, still T3-tier single-example observation, the weakest-evidenced band in this prior:\n   - Inside a BROWSE/DISCOVERY surface, lean richer up to band 2's ceiling. Too Good To Go's discover feed (photo ~55% of card height, badge, strikethrough-plus-bold price, distance) and Airtasker's category feed (image-forward cards immediately followed by an icon-only pill grid on the same screen) both ship dense and legible because every element is bound to a fixed grid position, never floating.\n   - Inside a TRANSACTIONAL/COMMIT-FLOW surface (any booking step, cart, checkout, slot picker), lean sparser, near the floor of band 2, not the ceiling. CVS Health's slot picker and Urban Company's cart both under-fill by Solen's own richness instinct and still read as competent precisely because the task is narrow and the user's attention should not be split.\n   - This directly maps onto Solen's own booking flow (services, staff, time, pay): earlier steps (services list, staff picker) may sit toward band 2's richer end; Zeit and Bezahlen should sit toward the sparse end. This is new, generative guidance the earlier academic-only draft did not produce.\n   - Confidence note carried forward and strengthened: this band replaces a downgraded T2 citation with T3-tier competitor observation, still the weakest-evidenced band in the prior, explicitly pending the Taste Lab Probe B below before it is treated as settled rather than a hypothesis.\n\n5. NOVELTY BUDGET: unchanged from the verified academic band. MAYA (T2, confirmed) caps genuinely-new pattern to ONE differentiator per surface; reuse a LOCKED component everywhere else. The band-3 component-vocabulary convergence (Fresha/Treatwell/Booksy) is independent, approximate real-world support for the same discipline: none of the three competitors invented a novel eighth building block.\n\n6. DENSITY/WHITESPACE COUPLING, extended with a concrete grouping mechanic. TASTE_DASHBOARDS.md finding 14 (CONV, confirmed, currently scoped to dashboard tables/forms) still applies to any browse card: rising field count must pair with growing, not shrinking, gutters. NEW, T3-tier lever from 2026 design-press scouting: bento-style modular grid grouping (asymmetric tile sizing inside one shared grid, T3 trend, not a validated study) is the one trend-research finding compatible with Solen's restraint law, because it raises perceived richness through LAYOUT variety, not through added color or decoration, and it is exactly the mechanic Too Good To Go and Fresha appear to rely on to keep dense cards legible (single-example T3 observation). Offered as an implementation technique for band 1 and band 4's richer end, not as a new numeric floor.\n\n7. FINISH ALLOCATION (where, not how much): unchanged, still CONV, still an allocation order not a quantity prior (RESTRAINT_TEST.md, RATIONALE.md:189).\n\n8. TENSION FLAG, NOT ADOPTED: 2026 design-press \"dense is back\" and \"tactile maximalism\" trend claims (T3, MyDesigner Blog, AuFaitUX, Medium/Bootcamp roundups) and Sephora's card imagery ratio (~55-60% per card, saturated illustrated color blocks, T3 single-example) both point toward more visual density and MORE decorative color-and-texture richness than Solen's 80/17 near-monochrome law and no-decorative-artifact rule permit. These are logged as a live directional tension in the field, not evidence for loosening any LOCKFILE literal. The one counter-trend that is directionally ALIGNED with Solen's existing restraint (Envato/GitNexa \"calm design\", narrative-over-density dashboards) is the citable trend if this prior is ever challenged as too sparse.\n\nBOUNDARY: this prior sets a first-draft band for a NEW mockup only; it reopens no frozen literal (card radius, LOCKFILE spacing tokens, the 44px touch floor, the 80/17 ratio, the no-decorative-artifact rule); band 3's informational gate always outranks band 4's richness bias when they conflict; band 4's task-conditioning always outranks a blanket richer-lean; no number in this prior should be treated as more precise than T3/CONV tier until the taste_lab_probe returns owner-confirmed counts.",
+  "claim_verdicts": [
+   {
+    "claim": "Aesthetic-usability effect (Kurosu and Kashimura 1995): r ~ 0.589, N=252 raters, 26 ATM UI variants",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "N=252 and 26 ATM variants independently confirmed via Nielsen Norman Group. The specific r=0.589 correlation value could not be independently re-derived from a primary source in this pass (paper access blocked, 403), but is a commonly repeated figure in secondary aesthetic-usability literature and the structural facts around it check out. Keep tier as cited."
+   },
+   {
+    "claim": "MAYA: typicality and novelty independently and jointly predict aesthetic preference (Hekkert, Snelders, van Wieringen 2003, British Journal of Psychology 94)",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Well-established, widely-cited paper in design cognition literature. No reason to doubt from general knowledge; not independently re-fetched this pass but not surprising or newly load-bearing."
+   },
+   {
+    "claim": "Berlyne inverted-U: intermediate visual complexity preferred, mixed replication",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Already correctly tiered T3 in the draft (mixed replication acknowledged). No change."
+   },
+   {
+    "claim": "Working memory / immediate-perception span roughly 7 plus-or-minus 2 chunks (Miller 1956)",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Canonical, foundational finding, correctly tiered."
+   },
+   {
+    "claim": "Realistic attention-limited capacity closer to roughly 3-5 chunks, ~4 central estimate (Cowan 2001, Behavioral and Brain Sciences)",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Legitimate, well-known landmark review. Tier reasonable as cited."
+   },
+   {
+    "claim": "Visual complexity and prototypicality shape first impressions within 50ms of exposure (Tuch, Presslaber, Stocklin, Opwis, Bargas-Avila 2012, IJHCS 70(11))",
+    "source_ok": false,
+    "tier_final": "T3",
+    "note": "The 50ms first-impression finding's well-established primary source is Lindgaard, Fernandes, Dudek, Brown (2006), Behaviour & Information Technology, not Tuch et al. 2012. The draft's claim to have 'corrected' an unverifiable hci-basel.ch/2007 citation to Tuch 2012 is itself suspect since Tuch's own lab is hosted at hci-basel.ch, and Tuch 2012's actual exposure duration could not be confirmed (all direct access attempts returned 403). Repoint the 50ms claim to Lindgaard 2006; keep Tuch 2012 only for the visual-complexity/prototypicality claim without a specific duration attached."
+   },
+   {
+    "claim": "Reinecke and Gajos 2014 CHI: 2.4M ratings, ~40k participants genuine at scale, but the specific asymmetric sparse-costs-little/cluttered-costs-a-lot framing could not be confirmed from the paper's findings",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Draft already honestly downgrades this and flags the unconfirmed sub-claim. No further correction needed; this is a model example of honest tiering."
+   },
+   {
+    "claim": "Density/whitespace inverse coupling (Una Kravets / Google Design, Material Density on the Web)",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Real, previously-sourced reference per project memory (TASTE_DASHBOARDS.md:33). No issue."
+   },
+   {
+    "claim": "Imagery should cover roughly one third of browse viewports (Solen FLOORS LAW, owner-approved 2026-07-21)",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Internal owner-approved decision, correctly tiered CONV, not an external stat."
+   },
+   {
+    "claim": "Photos are the decision input, not decoration; +9% Airbnb occupancy from professional photos (PSYCHOLOGY.md law 7, T1 causal)",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Not independently re-verified in this pass, search access exhausted mid-session and direct fetch attempts to Airbnb's own resources page and search engines were blocked or unhelpful. Draft explicitly scopes this as cross-referenced not re-derived, so it inherits PSYCHOLOGY.md's own audit trail. Flagged in residual_risks as unconfirmed by this specific pass, not as a failure."
+   },
+   {
+    "claim": "Fresha salon PDP hero carousel ~40-45% of first viewport, hard cut to flat text below, services tab text-only rows",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Plausible, single-example Mobbin observation, cannot independently verify without Mobbin access. Correctly tiered T3 already."
+   },
+   {
+    "claim": "Fresha live salon page: 22 total services, 6 shown above fold before See all, 173 reviews",
+    "source_ok": false,
+    "tier_final": "T3",
+    "note": "22 services and 173 reviews reproduced exactly on independent re-fetch. The '6 shown above fold' figure did NOT reproduce, an independent re-fetch of the same URL returned 4 shown before See all. This is the draft's headline corroboration claim and the specific count is not stable enough to support the 'strongest evidence point' framing. Downgraded from CONV to T3 and the count should be presented as a range (4-6), not an exact number, until confirmed via a fixed screenshot rather than repeated automated fetches."
+   },
+   {
+    "claim": "Treatwell live salon page: single hero photo, 841 reviews, ~60% text/40% visual self-estimate",
+    "source_ok": false,
+    "tier_final": "T3",
+    "note": "841 reviews and single-hero-photo structure reproduced exactly on independent re-fetch. The 60/40 text/visual ratio did not reproduce, an independent re-fetch estimated 80-85% text / 15-20% visual. Both figures are LLM eyeball estimates of a rendered page, not pixel measurements; downgrade the ratio claim from CONV to T3 and state it qualitatively (text-dominant, lower imagery share than a browse grid) rather than with a specific percentage split."
+   },
+   {
+    "claim": "Booksy canonical 7-block profile component list matches Fresha and Treatwell's shipped structure almost exactly",
+    "source_ok": false,
+    "tier_final": "T3",
+    "note": "Booksy's own business page documents cover photo, services/pricing, availability, portfolio ('showcase your best work'), and reviews, but does not explicitly itemize 'staff photos' as a discrete named block the way the draft implies. The seven-item match is approximate, not exact. Downgraded from CONV to T3 for the specific staff-photos sub-claim; the rest of the component list holds."
+   },
+   {
+    "claim": "Airbnb detail hero: 5-photo grid, 1 large at 50% width + 4 smaller in 2x2 (design-teardown sources, not Airbnb's own docs)",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Already correctly caveated as a secondary teardown source, not Airbnb's own documentation. Plausible and consistent with known Airbnb listing-page layout conventions from general knowledge. No further downgrade needed given the honest sourcing caveat already present."
+   },
+   {
+    "claim": "Uber ride-request flow: black/white plus single accent, internal design critique flagged as info present but not prioritized",
+    "source_ok": false,
+    "tier_final": "T3",
+    "note": "The black/white-plus-accent structural claim is plausible and consistent with known Uber brand conventions. The specific 'internal design critique' claim is vague, unfalsifiable, and sourced only to a tertiary teardown site, not a primary Uber document. Downgraded from CONV to T3; this sub-claim adds narrative color but should not be leaned on as evidence."
+   },
+   {
+    "claim": "Square Go, Urban Company, CVS Health, Sephora, Too Good To Go, Airtasker screen structures (Mobbin iOS screens)",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Cannot independently verify without Mobbin access; correctly tiered T3 already as single-example observations. Internally consistent with the task-conditioned theory but should stay illustrative, not proof."
+   },
+   {
+    "claim": "Dense interfaces / bento grids as 2026 design-press trend; 67% ProductHunt bento-adoption figure is unsourced and screened out as MYTH, not used",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Draft correctly self-screens the viral 67% figure per the myth-table discipline and does not use it. Good practice, no correction needed."
+   },
+   {
+    "claim": "Tactile maximalism / functional maximalism as Gen-Z UI trend (AuFaitUX, Medium/Bootcamp roundup)",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Correctly tiered T3 trend-press claim, explicitly flagged as tension not adopted. No issue."
+   },
+   {
+    "claim": "Counter-trend: calm design, narrative dashboards (Envato Elements, GitNexa)",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Correctly tiered T3 trend-press claim. No issue."
+   }
+  ]
+ }
+}

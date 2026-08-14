@@ -338,9 +338,13 @@ changes how a booking decides its payment mode, which is money behaviour and his
 - [ ] C10. The 25 that remain, one at a time. Each one: open it, rescue anything uncommitted that
       exists nowhere else, decide merge or delete against what ships, delete, record. Cheapest
       first, which is how the first 53 went.
-- [ ] C11. `airbnb-animated-icons-ee4329` is the only branch whose work is NEWER than main and from
-      today (a rate limit on bearer-token verification plus the two routes that use it). Current,
-      not stranded, so it merges rather than being picked apart.
+- [x] C11. LEAVE IT ALONE, and that is the answer, not a deferral. Checked 2026-08-14: it is open in
+      another working folder (`worktrees/inspiring-heyrovsky-6d60db`) and its newest commit is from
+      14:46 TODAY, so it is a session in progress, not stranded work. It carries 23 commits of iOS
+      app parity: the app being recognised as a logged-in customer on the write paths, plus a limit
+      on how often a token can be checked. Merging or deleting a branch someone is actively writing
+      to is how you lose an afternoon of someone else's work. It lands when that session lands it.
+      verified: `git worktree list` shows it checked out; `git log -1` shows today 14:46.
 - [ ] C12. `quirky-ellis-ef5559` keeps 169 files newer than main after today's three lifts. What is
       left is the error-shape refactor (112 route files, no behaviour change) plus research notes.
       Decide it as one thing: redo the refactor on current code, or drop the branch.

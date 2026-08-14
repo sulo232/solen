@@ -1,0 +1,230 @@
+{
+ "id": "S23",
+ "synth": {
+  "id": "S23",
+  "tag": "net-new",
+  "title": "Notification timing + re-engagement cadence (perceptual/display angle)",
+  "principle_summary": "Cadence and copy-framing for reminders stay fully owned by PSYCHOLOGY law 14 (46% opt-out at 2-5/week, SMS RCT 21.1% to 14.2%); this entry never re-derives that. What RATIONALE is missing is the display-form layer: a fixed routing rule from message class to display surface (system push plus badge for transactional/time-critical, push without a forced badge for transactional/non-urgent, in-app-only Toast/banner for re-engagement), now reinforced by three real-app conventions no prior draft captured. First, unread state is signaled by a small dot plus a title-weight change on the row itself, never a full-row color fill. Second, urgency escalates gradually through a status pill, neutral confirmed pill to amber action-required pill plus an amber inline card, never a jump straight to a red or a solid loud block. Third, a small but real class of apps previews the literal notification bubble at the moment of opt-in or booking, building trust in the interruption before it happens rather than only exposing a cadence toggle. Two open tensions surface from real-app evidence that this entry flags rather than resolves: no real app found uses a neutral grey unread badge or dot, every saturated-badge example was brand-colored, which is a genuine friction against Solen's 80/17 blue-is-sparse restraint; and a 2025-2026 industry trend toward dark-base glassmorphic notification surfaces is explicitly named and rejected as off-brand, since Solen's locked toast stays the light Chime recipe.",
+  "real_world_evidence": [
+   {
+    "source": "Fresha notification settings screen (Mobbin)",
+    "what": "Flat quiet toggle list: transactional \"Text message appointment notifications\" ON by default, marketing SMS/email OFF by default. No icons, no color, no badges, pure text plus iOS switch. Reusable as a structural reference since Fresha already owns Solen's structure axis.",
+    "tier": "CONV"
+   },
+   {
+    "source": "Fresha appointment details and action-required screens (Mobbin)",
+    "what": "Graduated urgency via status pill only: neutral confirmed = solid indigo/purple pill, white text, no other color on the screen. When something needs attention, the pill swaps to amber \"Action required\" and a pale-yellow inline card appears below the date/time block with a text-link CTA (\"Complete now\"), never a button, never red.",
+    "tier": "CONV"
+   },
+   {
+    "source": "Fresha appointment details reminder row (Mobbin)",
+    "what": "\"Add to calendar / Set yourself a reminder\" lives as a plain list row with a small pale-lavender icon-chip (~40px), label plus one-line grey subtext. No badge, no urgency color.",
+    "tier": "CONV"
+   },
+   {
+    "source": "Superpower appointment reminder screen (Mobbin)",
+    "what": "Full-screen \"Your appointment is tomorrow\" headline IS the reminder (not a toast or badge), paired with an orange-active status stepper and two buttons: neutral outline \"Add to calendar\" plus solid black \"Get directions\". Reminder content reads as wayfinding, not promotion.",
+    "tier": "CONV"
+   },
+   {
+    "source": "GetYourGuide onboarding reminder-permission screen (Mobbin)",
+    "what": "Renders a mocked-up in-app notification card, small brand-color icon, bold title, two-line grey body, \"now\" timestamp, inside the permission prompt itself before the OS \"Allow\" button fires. Shows the user the exact bubble they'll get before granting permission.",
+    "tier": "CONV"
+   },
+   {
+    "source": "Lyft ride-booked confirmation bottom sheet (Mobbin)",
+    "what": "Confirmation copy narrates the coming interrupt inline (\"You'll be notified when your driver's on the way\") at the moment of booking, rather than only exposing a separate settings toggle.",
+    "tier": "CONV"
+   },
+   {
+    "source": "Booking.com, Expedia, Grab, GetYourGuide notification/inbox screens (Mobbin)",
+    "what": "Unread state = a small dot (brand-colored on Booking.com/Grab, neutral grey on GetYourGuide) plus bold title weight on the row itself. None fill the whole row with color for \"new\". Booking.com additionally colors notification titles blue even when non-actionable, a real divergence from Solen's stricter blue-is-sparse rule, noted but not adopted.",
+    "tier": "CONV"
+   },
+   {
+    "source": "eBay, Bluesky, Digg, Shopee, Jumprope, Glass bell icon and badge conventions (Mobbin)",
+    "what": "Near-universal outline bell plus small circular numeric badge, brand-saturated fill (red/pink/orange), white number, roughly 16-18px on a ~24px icon. No neutral-grey badge example found anywhere in the sample. Shopee's multi-badge, multi-accent-color hub (counts up to 83, per-category colored pills) is the loud e-commerce extreme, named explicitly as the anti-pattern to avoid.",
+    "tier": "CONV"
+   },
+   {
+    "source": "Hypelist, eBay, Bluesky, Jumprope empty notification states (Mobbin)",
+    "what": "Centered grey/outline bell icon plus one line of muted grey text (\"No notifications yet\"), no illustration, no color, no CTA. Matches Solen's existing EmptyState primitive; confirms no bespoke illustration work is needed for a notifications-empty state.",
+    "tier": "CONV"
+   },
+   {
+    "source": "X (Twitter), TIDE, Apple Store, Chime toast patterns (Mobbin)",
+    "what": "Toast = pill/rounded-rect anchored top or bottom, one line, small leading icon, auto-dismiss, no button. Apple Store's is plain neutral grey-black with no color at all; Chime and TIDE use a colored success disc inside the toast. Directly confirms Solen's already-locked Chime-recipe toast (LOCKFILE, project_toast_recipe_locked); no change needed on this axis.",
+    "tier": "CONV"
+   },
+   {
+    "source": "Duolingo, MyFitnessPal, How We Feel, Headspace, Ahead reminder-settings screens (Mobbin)",
+    "what": "Uniformly a sectioned toggle list (title, one-line description, right-aligned brand-colored switch), never a stepper or wizard. MyFitnessPal adds a pale-blue inline banner with a link (\"enable notifications in Settings\") when the OS-level permission itself is off, a permission-nudge state Solen currently has no UI for.",
+    "tier": "CONV"
+   },
+   {
+    "source": "Orizon Design, sanjaydey.com, Framer Designfest, UI UX Showcase (design-trend blogs, 2025-12 through 2026-05)",
+    "what": "Independently converge on \"calm/quiet interfaces\" and \"distraction-free mode\" as the dominant 2026 UI posture, restraint over intrusion, framed as a retention lever. Directional validation of Solen's already-locked quiet posture (plain-ink availability text, pastel not saturated status chips), not a new instruction.",
+    "tier": "T3"
+   },
+   {
+    "source": "Orizon Design 2026 trends piece, citing named Dribbble shots",
+    "what": "Motion for state-change becomes shorter and more functional (\"cognitive guide\" not \"brand flourish\") in 2026 work. Single agency source, not independently corroborated this pass; aligned with Solen's existing MOTION.md discipline, no conflict.",
+    "tier": "T3"
+   },
+   {
+    "source": "Orizon Design and Groovy Web, dark-base glassmorphism trend pieces",
+    "what": "Both describe a 2025-2026 push toward dark-base (#0A0A0A to #1A1A2E), heavy frosted/translucent panels as the default notification/AI-surface container language. Explicitly conflicts with Solen's locked contract (80% white and cool-sunken surfaces; frost reserved for controls over a photo only, CONTROL_ELEVATION.md). Named here as considered and rejected, not silently dropped.",
+    "tier": "T3"
+   },
+   {
+    "source": "Groovy Web AI-app trends blog",
+    "what": "Claims toasts are being displaced by micro-animation state feedback for AI apps, and cites unsourced stats (82% prefer dark mode for AI apps, 65% YoY voice-interface growth). Self-published agency blog with no cited methodology; the percentage claims are screened out as MYTH and must never be cited. The directional toast-displacement claim is AI-streaming-specific, low relevance to Solen's booking/moderation toasts, noted for completeness only.",
+    "tier": "MYTH"
+   }
+  ],
+  "generative_prior": "Route every notification by MESSAGE CLASS to a fixed three-rung DISPLAY SURFACE, independent of send cadence (cadence stays PSYCHOLOGY law 14): Class 1, transactional and time-critical (booking confirmed, appointment reminder, payment failed) gets an OS push banner with sound plus an app-icon badge increment. Class 2, transactional but not time-critical (document ready, review request) gets a push banner without a forced badge. Class 3, non-transactional or re-engagement (rebooking suggestion, Inspo digest, promo) is confined to the in-app surface only, the locked Toast recipe or an in-app banner, never a system push, never a badge. Within the in-app surface, two structural defaults now have real-app grounding with concrete numbers: an UNREAD ROW is a small dot (roughly 6-8px, sized off existing Solen dot tokens) plus semibold title, never a colored row-fill, demonstrated by Booking.com, Expedia, Grab, and GetYourGuide notification lists. An URGENCY ESCALATION is a status-pill color swap plus an inline pastel card only when the state is genuinely actionable, never a default-loud treatment, demonstrated by Fresha's confirmed-to-action-required pill pattern, matching Solen's own never-fabricate-urgency semantic-color rule already in LOCKFILE. A NOTIFICATION-PREVIEW pattern, showing the literal future notification bubble inside the permission-request or booking-confirmation screen, is grounded by GetYourGuide and Lyft and is a genuinely new, low-cost trust-building display idea Solen's booking-confirmation and push-permission screens do not currently use. Two things are flagged, not defaulted: no real-app precedent exists for a neutral-grey unread badge (every sample was brand-saturated), so if Solen wants a bell badge at all, this is an owner taste-lab call, not a research-backed default; and MyFitnessPal's permission-nudge banner (pale tint plus a settings-deeplink) is a state Solen has no UI for yet, worth a QUESTIONS.md line rather than inventing one here.",
+  "proposed_addition": "## Domain 24: Notification display weight (message class to surface, not cadence)\n\nDECISION: notification DISPLAY SURFACE is chosen by message class, in a fixed three-rung ladder: (1) transactional and time-critical (booking confirmed, appointment reminder, payment failed) gets the loudest available surface, an OS-level push banner with sound plus an app-icon badge increment; (2) transactional but not time-critical (a document ready, a review request) gets a push banner without a forced badge increment; (3) non-transactional or re-engagement (rebooking suggestion, Inspo digest, promo) is confined to the in-app surface only, the already-locked Toast recipe (LOCKFILE toast section) or an in-app banner, never a system push and never an app-icon badge. This rule decides WHICH SURFACE a notification uses. It does NOT decide how often class-3 notifications fire; that stays PSYCHOLOGY law 14's cadence cap and per-category opt-in/opt-out defaults, cross-referenced not re-derived.\n\nFORCES: a system push banner and an app-icon badge are the loudest tools an app has, interrupting whatever the user is doing outside the app entirely; using them for low-value content trains the user to dismiss or mute the channel, which then also mutes the transactional messages the user actually needs. Conversely, under-using the loud surface for a genuinely time-critical message risks a missed action with a real cost.\n\nOPTIMIZES FOR: preserving the push channel's signal-to-noise so a transactional push keeps its attention-earning power; letting a non-transactional nudge exist without paying the cost of a system-level interruption or a persistent badge the user cannot act on to clear.\n\nSACRIFICES: a non-transactional nudge confined to in-app Toast/banner is only seen if and when the user opens the app, so a rebooking suggestion cannot itself pull a lapsed user back in; that job stays with whatever separate low-frequency channel PSYCHOLOGY law 14 already governs, not with the in-app surface.\n\nBOUNDARY: this rule governs SURFACE CHOICE only. It does not set send times, does not set the weekly cap, does not set copy framing, and does not reopen the Toast component's own locked visual recipe; a class-3 notification that lands in-app still renders through the existing Toast component unchanged.\n\nMECHANIC (routing): Android's notification channel/importance model structurally enforces exactly this class-to-surface split, letting a user mute a low-value channel while a transactional channel stays on, and only the highest importance level earns a heads-up, sound-plus-banner presentation (CONV, developer.android.com). Apple's Human Interface Guidelines converge on the badge half: a badge should supplement, never carry, critical information, and must stay in sync with real unread state (T1, developer.apple.com). Bailey and Konstan 2006 and the follow-on Iqbal and Bailey CHI 2008 work establish that interruption cost (added time, error rate, annoyance) is measurably lower when delivery lands at a natural task breakpoint versus mid-task, the underlying reason a low-value message should not claim the same interruption budget as a high-value one (T2).\n\nMECHANIC (in-app display form, added from real-app scouting): three sub-conventions extend the routing rule inside the in-app surface itself, all CONV-tier (observed Mobbin screenshots, not research findings).\n- Unread indicator: a small dot plus semibold title weight on the affected row, never a colored full-row fill. Demonstrated by Booking.com, Expedia, Grab, and GetYourGuide notification/inbox screens. GetYourGuide keeps the dot neutral grey; Booking.com and Grab use their own brand color. No sample used a bare neutral-grey badge on the bell icon itself, only on an inline row dot, flagged as an open tension below.\n- Urgency escalation: a status pill swaps color (neutral confirmed pill to amber action-required pill) and an inline pastel card with a text-link CTA appears only once the state is genuinely actionable, demonstrated by Fresha's confirmed-versus-action-required screens. This matches, and requires no change to, Solen's existing never-fabricate-urgency semantic-color rule.\n- Notification preview: the literal future notification bubble (icon, title, two-line body, timestamp) is rendered inside the permission-request or booking-confirmation screen itself, before or alongside the ask, demonstrated by GetYourGuide's onboarding permission screen and Lyft's ride-booked confirmation copy narrating the coming push. This is new to Solen: a low-cost trust-building placement for the booking-confirmation and push-permission screens, distinct from a settings toggle.\n\nTREND CONTEXT (T3, named not adopted as law): a 2025-2026 cross-source design-trend convergence (Orizon Design, sanjaydey.com, Framer Designfest, UI UX Showcase) toward calm, quiet, distraction-minimizing interfaces validates Solen's already-locked restrained toast and pastel-chip posture; cited as external corroboration only, never as the reason for the DECISION above. A parallel 2025-2026 trend toward dark-base glassmorphic notification/AI-surface panels (Orizon Design, Groovy Web) is explicitly considered and REJECTED here: it conflicts with Solen's locked 80% white and cool-sunken surface contract and the frost-only-over-photo elevation rule, so Solen's toast stays the light Chime recipe, not a dark glass panel. A same-source (Groovy Web) claim that toasts are being displaced by AI micro-animation feedback, and its accompanying unsourced percentage stats (82% dark-mode preference, 65% YoY voice growth), is screened as MYTH and excluded from citation anywhere in Solen docs.\n\nOPEN QUESTIONS (flagged, not resolved by this entry):\n- No real-app precedent was found for a neutral-grey unread badge or dot on a bell/nav icon; every observed badge example was brand-saturated. If Solen wants a badge on its notification bell, whether it stays neutral grey (matching 80/17 restraint) or takes a small saturated accent is a genuine taste-lab call, not something this research can default for the owner.\n- MyFitnessPal's permission-nudge banner (pale tint plus a deep-link to OS Settings, shown when the OS-level push permission itself is off) is a state Solen's product currently has no UI for. Worth a QUESTIONS.md line for whether/how to add it, not invented here.\n- This domain assumes push infrastructure is already wired for per-class routing. If Solen currently sends one undifferentiated push type, this domain implies a build task, not only a documentation entry.\n\nSOURCE: Android Developers notification channel/importance docs (developer.android.com/training/notify-user/channels); Apple Human Interface Guidelines, System experiences: Notifications (developer.apple.com); Bailey and Konstan 2006, Computers in Human Behavior; Iqbal and Bailey, CHI 2008; Mobbin screenshots of Fresha (notification settings, appointment confirmed/action-required, reminder row), Superpower (reminder screen), GetYourGuide (permission-preview, notification inbox), Lyft (booking confirmation), Booking.com/Expedia/Grab (unread-dot convention), eBay/Bluesky/Digg/Shopee/Jumprope/Glass (bell/badge convention, Shopee named as loud anti-pattern), Hypelist (empty state), X/TIDE/Apple Store/Chime (toast pattern), Duolingo/MyFitnessPal/How We Feel/Headspace/Ahead (reminder-settings toggle list); Orizon Design, sanjaydey.com, Framer Designfest, UI UX Showcase (calm-interfaces trend, T3); Orizon Design and Groovy Web (dark-glass trend, T3, rejected); cross-reference PSYCHOLOGY.md law 14 (cadence, opt-out data, per-category defaults, not re-derived here); Solen LOCKFILE.md toast section and TASTE_LOG V3-D462 (Toast recipe, unchanged by this entry).",
+  "sources": [
+   {
+    "claim": "Android's notification importance/channel model splits sound-plus-heads-up from silent by channel, and lets a user mute one channel while keeping another on.",
+    "source": "Android Developers, developer.android.com/training/notify-user/channels",
+    "tier": "CONV"
+   },
+   {
+    "claim": "A badge should supplement a notification, not carry critical information by itself, and must be kept in sync with real unread state.",
+    "source": "Apple Human Interface Guidelines, System experiences: Notifications, developer.apple.com",
+    "tier": "T1"
+   },
+   {
+    "claim": "Interruption cost (time, errors, annoyance) is measurably lower when a notification lands at a natural task breakpoint versus mid-task.",
+    "source": "Bailey and Konstan 2006, Computers in Human Behavior; Iqbal and Bailey, CHI 2008",
+    "tier": "T2"
+   },
+   {
+    "claim": "Fresha's confirmed state uses a solid pill only; an action-required state swaps the pill to amber and adds a pale-yellow card with a text-link CTA.",
+    "source": "Fresha, Mobbin screens (appointment details, action-required)",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Unread notification rows across major apps use a small dot plus title-weight change, never a full-row color fill.",
+    "source": "Booking.com, Expedia, Grab, GetYourGuide, Mobbin screens",
+    "tier": "CONV"
+   },
+   {
+    "claim": "GetYourGuide and Lyft preview the literal future notification content inside the permission-request or booking-confirmation screen itself.",
+    "source": "GetYourGuide, Lyft, Mobbin screens",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Solen's locked toast recipe (light pill, colored success disc, bottom-docked) matches Apple Store, Chime, and TIDE's real toast patterns.",
+    "source": "Apple Store, Chime, TIDE, Mobbin screens; Solen LOCKFILE toast section, TASTE_LOG V3-D462",
+    "tier": "CONV"
+   },
+   {
+    "claim": "No sampled app used a neutral-grey badge on a bell/nav icon; all bell badges were brand-saturated. Shopee's multi-badge, multi-color hub is the loud anti-pattern extreme.",
+    "source": "eBay, Bluesky, Digg, Shopee, Jumprope, Glass, Mobbin screens",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Calm, quiet, distraction-minimizing interfaces are converging as the dominant 2026 UI trend across multiple independent design-trend sources.",
+    "source": "Orizon Design; sanjaydey.com; Framer Designfest; UI UX Showcase (2025-12 to 2026-05)",
+    "tier": "T3"
+   },
+   {
+    "claim": "A 2025-2026 trend toward dark-base glassmorphic notification/AI-surface panels exists and is explicitly rejected as off-brand for Solen.",
+    "source": "Orizon Design; Groovy Web",
+    "tier": "T3"
+   },
+   {
+    "claim": "82% dark-mode preference and 65% YoY voice-interface growth stats are unsourced and must not be cited.",
+    "source": "Groovy Web AI-app trends blog",
+    "tier": "MYTH"
+   },
+   {
+    "claim": "Non-transactional pushes cap at 2-3 per week; 46% opt-out measured at 2-5/week send rate; SMS RCT moved 21.1% to 14.2%.",
+    "source": "PSYCHOLOGY.md law 14 (cross-reference only, not re-derived in this entry)",
+    "tier": "T2"
+   }
+  ],
+  "numbers_used": [
+   "46% opt-out at 2-5/week (PSYCHOLOGY law 14, cross-ref only)",
+   "SMS RCT 21.1% to 14.2% (PSYCHOLOGY law 14, cross-ref only)",
+   "unread dot roughly 6-8px",
+   "bell badge roughly 16-18px on a ~24px icon (Mobbin sample, no numeric Solen default set)",
+   "Shopee badge counts observed up to 83 (anti-pattern example, not a target)"
+  ],
+  "taste_lab_probe": "Show the owner two versions of the notification bell in the global nav, both otherwise matching the locked header: (a) a small brand-blue saturated dot with no count, (b) a neutral grey dot with no count. Ask which reads as noticed at a glance without breaking the 80/17 blue-is-sparse restraint. No real app in this scouting pass used a neutral-grey unread indicator on a bell icon, only on inline row dots, so this is a genuine open call for the owner rather than something the research can default. Separately, show a booking-confirmation screen mockup with and without a one-line inline preview of the coming push notification (GetYourGuide/Lyft pattern) and ask whether it reads as reassuring or as clutter on an already-dense confirmation screen."
+ },
+ "verified": {
+  "id": "S23",
+  "tag": "net-new",
+  "verdict": "clean",
+  "verified_addition": "## Domain 24: Notification display weight (message class to surface, not cadence)\n\nDECISION: notification DISPLAY SURFACE is chosen by message class, in a fixed three-rung ladder: (1) transactional and time-critical (booking confirmed, appointment reminder, payment failed) gets the loudest available surface, an OS-level push banner with sound plus an app-icon badge increment; (2) transactional but not time-critical (a document ready, a review request) gets a push banner without a forced badge increment; (3) non-transactional or re-engagement (rebooking suggestion, Inspo digest, promo) is confined to the in-app surface only, the already-locked Toast recipe (LOCKFILE toast section) or an in-app banner, never a system push and never an app-icon badge. This rule decides WHICH SURFACE a notification uses. It does NOT decide how often class-3 notifications fire; that stays PSYCHOLOGY law 14's cadence cap and per-category opt-in/opt-out defaults, cross-referenced not re-derived.\n\nFORCES: a system push banner and an app-icon badge are the loudest tools an app has, interrupting whatever the user is doing outside the app entirely; using them for low-value content trains the user to dismiss or mute the channel, which then also mutes the transactional messages the user actually needs. Conversely, under-using the loud surface for a genuinely time-critical message risks a missed action with a real cost.\n\nOPTIMIZES FOR: preserving the push channel's signal-to-noise so a transactional push keeps its attention-earning power; letting a non-transactional nudge exist without paying the cost of a system-level interruption or a persistent badge the user cannot act on to clear.\n\nSACRIFICES: a non-transactional nudge confined to in-app Toast/banner is only seen if and when the user opens the app, so a rebooking suggestion cannot itself pull a lapsed user back in; that job stays with whatever separate low-frequency channel PSYCHOLOGY law 14 already governs, not with the in-app surface.\n\nBOUNDARY: this rule governs SURFACE CHOICE only. It does not set send times, does not set the weekly cap, does not set copy framing, and does not reopen the Toast component's own locked visual recipe; a class-3 notification that lands in-app still renders through the existing Toast component unchanged.\n\nMECHANIC (routing): Android's notification channel/importance model structurally enforces exactly this class-to-surface split (verified against developer.android.com: IMPORTANCE_HIGH makes a sound and shows heads-up, IMPORTANCE_DEFAULT makes a sound only, IMPORTANCE_LOW/MIN drop sound and status-bar visibility; the user retains full per-channel override even though the developer cannot change importance post-creation), letting a user mute a low-value channel while a transactional channel stays on (CONV, developer.android.com). Apple's Human Interface Guidelines converge on the badge half: confirmed verbatim against the live HIG Notifications page, Badging section, \"Make sure badging isn't the only method you use to communicate essential information\" and \"Keep badges up to date... reducing a badge's count to zero removes all related notifications from Notification Center\" (T1, developer.apple.com). Bailey and Konstan 2006 (\"On the need for attention-aware systems: measuring effects of interruption on task performance, error rate, and affective state,\" Computers in Human Behavior) and the follow-on Iqbal and Bailey CHI 2008 work (\"Effects of intelligent notification management on users and their tasks\") are confirmed to exist via Crossref with matching titles, venues, and authorship, and establish that interruption cost is lower when delivery lands at a natural task breakpoint versus mid-task, the underlying reason a low-value message should not claim the same interruption budget as a high-value one (T2, existence and topical match verified; exact effect sizes not re-verified against the primary papers this pass).\n\nMECHANIC (in-app display form, added from real-app scouting, spot-verified this pass via direct Mobbin screen pulls): three sub-conventions extend the routing rule inside the in-app surface itself, all CONV-tier (observed screenshots, not research findings).\n- Unread indicator: a small dot plus semibold title weight on the affected row, never a colored full-row fill. Directionally confirmed across a wider spot-check (Airbnb, Deel, BFF, Wise, Linktree, Spotify, monday.com, HYPE, Glass, Digg all use a small dot or small numeric badge, none use a full-row color fill); the specific Booking.com/Expedia/Grab attribution was not individually re-confirmed this pass (a direct Booking.com search failed to return results) and should be treated as CONV-tier and unconfirmed-in-this-round rather than re-verified.\n- Urgency escalation: a status pill swaps color (neutral confirmed pill to amber action-required pill) and an inline pastel card with a text-link CTA appears only once the state is genuinely actionable. Directly confirmed via live Mobbin screen pull of Fresha's appointment-details screens: the confirmed state is a solid indigo/purple pill with white text and a checkmark; the action-required state swaps to an amber pill with a warning icon plus a pale-yellow card reading \"Complete consultation form before your appointment / Complete now →\", an exact match to the claim. This matches, and requires no change to, Solen's existing never-fabricate-urgency semantic-color rule.\n- Notification preview: the literal future notification bubble (icon, title, two-line body, timestamp) is rendered inside the permission-request or booking-confirmation screen itself. Directly confirmed via live Mobbin pull: GetYourGuide's onboarding screen shows a mocked notification card (\"Barcelona: Food Tour... your activity starts in 90 minutes...\") both underneath and layered with the OS permission dialog; Lyft's \"Lyft booked!\" confirmation screen states, near-verbatim, \"You'll be notified when your driver's on the way\" with a bell icon. Both examples check out exactly as described. This is new to Solen: a low-cost trust-building placement for the booking-confirmation and push-permission screens, distinct from a settings toggle.\n\nTREND CONTEXT (T3, named not adopted as law, not independently re-verified this pass beyond confirming the cited stats are correctly screened as MYTH): a 2025-2026 cross-source design-trend convergence (Orizon Design, sanjaydey.com, Framer Designfest, UI UX Showcase) toward calm, quiet, distraction-minimizing interfaces validates Solen's already-locked restrained toast and pastel-chip posture; cited as external corroboration only, never as the reason for the DECISION above. A parallel 2025-2026 trend toward dark-base glassmorphic notification/AI-surface panels (Orizon Design, Groovy Web) is explicitly considered and REJECTED here: it conflicts with Solen's locked 80% white and cool-sunken surface contract and the frost-only-over-photo elevation rule, so Solen's toast stays the light Chime recipe, not a dark glass panel. A same-source (Groovy Web) claim that toasts are being displaced by AI micro-animation feedback, and its accompanying unsourced percentage stats (82% dark-mode preference, 65% YoY voice-interface growth), is correctly screened as MYTH in the source draft and stays excluded from citation anywhere in Solen docs; this pass found no reason to relax that exclusion.\n\nOPEN QUESTIONS (flagged, not resolved by this entry):\n- No real-app precedent was confirmed this pass for a neutral-grey unread badge or dot on a bell/nav icon; every badge I directly pulled (Airbnb red, Flo pink-red, Shopee red/orange, Glass gold) was brand-saturated. If Solen wants a badge on its notification bell, whether it stays neutral grey (matching 80/17 restraint) or takes a small saturated accent is a genuine taste-lab call, not something this research can default for the owner.\n- MyFitnessPal's permission-nudge banner (pale tint plus a deep-link to OS Settings, shown when the OS-level push permission itself is off) was not re-verified this pass and is a state Solen's product currently has no UI for. Worth a QUESTIONS.md line for whether/how to add it, not invented here.\n- This domain assumes push infrastructure is already wired for per-class routing. If Solen currently sends one undifferentiated push type, this domain implies a build task, not only a documentation entry.\n\nSOURCE: Android Developers notification channel/importance docs (developer.android.com/training/notify-user/channels, importance-level table confirmed live this pass); Apple Human Interface Guidelines, Notifications page, Badging section (developer.apple.com/design/human-interface-guidelines/notifications, confirmed live this pass); Bailey and Konstan 2006, Computers in Human Behavior (existence and venue confirmed via Crossref); Iqbal and Bailey, CHI 2008 (existence and venue confirmed via Crossref); Mobbin screenshots of Fresha (confirmed/action-required pill pattern, directly re-pulled and matched), GetYourGuide (permission-preview screen, directly re-pulled and matched), Lyft (booking-confirmation copy, directly re-pulled and matched); Booking.com/Expedia/Grab (unread-dot convention, cited in the source draft, not individually re-confirmed this pass); eBay/Bluesky/Digg/Shopee/Jumprope/Glass (bell/badge convention; the general \"no neutral-grey badge\" pattern is consistent with a wider spot-check, the specific \"Shopee counts up to 83\" figure was not confirmed in the screens pulled this pass, three other Shopee badge counts, 25/8/33, were visible instead, so treat \"83\" as an unconfirmed specific rather than a verified figure); Hypelist (empty state); X/TIDE/Apple Store/Chime (toast pattern, not re-verified this pass, low risk since it only restates the already-locked Chime recipe); Duolingo/MyFitnessPal/How We Feel/Headspace/Ahead (reminder-settings toggle list, not re-verified this pass); Orizon Design, sanjaydey.com, Framer Designfest, UI UX Showcase (calm-interfaces trend, T3, not independently re-verified); Orizon Design and Groovy Web (dark-glass trend, T3, rejected; the accompanying percentage stats confirmed correctly screened as MYTH); cross-reference PSYCHOLOGY.md law 14 (46% opt-out at 2-5/week and the SMS RCT 21.1%→14.2% figure both confirmed verbatim present at PSYCHOLOGY.md line 55 this pass; cadence, opt-out data, per-category defaults not re-derived here); Solen LOCKFILE.md toast section and TASTE_LOG V3-D462 (Toast recipe, unchanged by this entry).",
+  "claim_verdicts": [
+   {
+    "claim": "Android's notification importance/channel model splits sound-plus-heads-up from silent by channel, and lets a user mute one channel while keeping another on.",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Confirmed verbatim via live WebFetch of developer.android.com/training/notify-user/channels: IMPORTANCE_HIGH = sound + heads-up, IMPORTANCE_DEFAULT = sound only, IMPORTANCE_LOW/MIN = silent/hidden; user retains full per-channel control post-creation. Draft's CONV tier is conservative (this is primary platform documentation) but not an overclaim, so no correction needed."
+   },
+   {
+    "claim": "A badge should supplement a notification, not carry critical information by itself, and must be kept in sync with real unread state.",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Confirmed near-verbatim via live fetch of the actual HIG Notifications page, Badging section: 'Make sure badging isn't the only method you use to communicate essential information' and 'Keep badges up to date... reducing a badge's count to zero removes all related notifications.' Exact match, T1 tier correct."
+   },
+   {
+    "claim": "Interruption cost is measurably lower when a notification lands at a natural task breakpoint versus mid-task, per Bailey and Konstan 2006 and Iqbal and Bailey CHI 2008.",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Both papers confirmed to exist via Crossref with matching titles ('On the need for attention-aware systems...', Computers in Human Behavior 2006; 'Effects of intelligent notification management on users and their tasks', SIGCHI 2008) and correct authorship/venue. Topical match to the claim is strong (both papers are squarely about interruption-cost and notification timing). Exact effect sizes were not re-derived from the primary text this pass, so T2 (peer-reviewed, not independently re-verified for magnitude) is the honest tier, matching the draft."
+   },
+   {
+    "claim": "Fresha's confirmed state uses a solid pill only; an action-required state swaps the pill to amber and adds a pale-yellow card with a text-link CTA.",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Directly re-pulled via Mobbin: confirmed = solid indigo/purple pill, white text, checkmark icon. Action-required = amber pill with warning icon plus a pale-yellow card, 'Complete consultation form before your appointment / Complete now ->'. Exact match to the draft's description."
+   },
+   {
+    "claim": "GetYourGuide and Lyft preview the literal future notification content inside the permission-request or booking-confirmation screen itself.",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Directly re-pulled via Mobbin: GetYourGuide shows a mocked notification card layered with/under the OS permission dialog. Lyft's booking-confirmation screen reads near-verbatim 'You'll be notified when your driver's on the way.' Both confirmed."
+   },
+   {
+    "claim": "Unread notification rows across Booking.com, Expedia, Grab, and GetYourGuide use a small dot plus title-weight change, never a full-row color fill.",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "The general pattern (small dot/badge, never full-row fill) is well corroborated by a wider spot-check of ten other apps this pass. The specific Booking.com/Expedia/Grab brand attribution was not individually re-confirmed (a direct Mobbin search for Booking.com notifications errored out). Kept as CONV, flagged in verified_addition as unconfirmed-in-this-round for the specific three brands rather than downgraded, since the directional claim holds."
+   },
+   {
+    "claim": "No sampled app used a neutral-grey badge on a bell/nav icon; all bell badges were brand-saturated. Shopee's multi-badge, multi-color hub, counts observed up to 83, is the loud anti-pattern extreme.",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "The no-neutral-grey-badge pattern held in every badge I directly pulled (Airbnb red, Flo pink-red, Shopee red/orange, Glass gold). The specific '83' count was not confirmed; the Shopee screens pulled this pass showed 25, 8, and 33 instead. The '83' figure is downgraded to unconfirmed-specific in verified_addition; it is not load-bearing to the DECISION."
+   },
+   {
+    "claim": "46% opt-out at 2-5/week and SMS RCT 21.1% to 14.2% are correctly attributed to PSYCHOLOGY.md law 14 and not re-derived.",
+    "source_ok": true,
+    "tier_final": "T2 (cross-ref only)",
+    "note": "Both figures confirmed verbatim present at PSYCHOLOGY.md line 55 in the actual project file. Neither number appears on the myth_screen never-cite table. Correctly cross-referenced rather than re-derived, satisfying the myth_screen's sourcing requirement."
+   },
+   {
+    "claim": "82% dark-mode preference and 65% YoY voice-interface growth stats (Groovy Web) are unsourced and must not be cited.",
+    "source_ok": true,
+    "tier_final": "MYTH",
+    "note": "The draft itself already screens these out correctly as MYTH; this pass found no reason to relax that exclusion and confirms the tier is appropriate for an unsourced agency-blog percentage claim."
+   },
+   {
+    "claim": "A 2025-2026 trend toward calm/quiet interfaces and a separate trend toward dark-base glassmorphic notification surfaces both exist per named design-trend blogs.",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Correctly tiered as T3 (lowest evidentiary tier, named-not-adopted) in the draft; not independently re-verified this pass since these are directional trend claims explicitly kept out of the DECISION logic, low risk regardless of exact fetch confirmation."
+   }
+  ],
+  "myths_caught": [
+   "The draft's own pre-screen of Groovy Web's '82% prefer dark mode for AI apps' and '65% YoY voice-interface growth' as MYTH-tier, unsourced agency-blog percentages was checked and confirmed correct; this verification pass found no additional myth-table violations and no new unsourced statistics smuggled into the DECISION/MECHANIC text."
+  ],
+  "residual_risks": "Three specifics could not be independently re-confirmed this pass and should be treated as open, not as verified fact: (1) the exact brand attribution for the unread-dot convention on Booking.com, Expedia, and Grab specifically (a direct Mobbin search for Booking.com notifications errored; the general small-dot-not-full-row-fill pattern is well corroborated by ten other apps I did pull directly, so the underlying design principle is solid even though those three specific brand citations are not individually re-verified); (2) the 'Shopee badge counts observed up to 83' figure, the Shopee screens I pulled showed 25/8/33 instead, this number is not load-bearing to the DECISION and appears only in real_world_evidence/numbers_used, not in the DECISION/MECHANIC text itself; (3) the MyFitnessPal permission-nudge banner and the Superpower full-screen reminder example were not re-checked this pass, both are low-stakes single examples the draft already treats as illustrative rather than load-bearing (MyFitnessPal is explicitly logged as an open question, not a default). None of these three affect the core DECISION, which rests on two independently-confirmed primary sources (Android's official channel/importance docs, Apple's official HIG badging guidance) plus two topically-matched peer-reviewed papers (Bailey and Konstan 2006, Iqbal and Bailey CHI 2008) confirmed to exist via Crossref, plus three CONV-tier real-app examples (Fresha's pill escalation, GetYourGuide's notification preview, Lyft's confirmation copy) that were directly re-pulled from Mobbin and matched the draft's description closely, in Lyft's case near word-for-word. Two owner-facing decisions remain genuinely open and are correctly left unresolved by the draft rather than defaulted: whether Solen's notification-bell badge (if built at all) stays neutral grey or takes a small saturated accent, since no neutral-grey precedent was found in any brand-saturated badge sampled; and whether to add a permission-nudge UI state (MyFitnessPal pattern) for when OS-level push permission is off, since Solen currently has no such surface. Both belong in the taste_lab_probe / QUESTIONS.md, not silently decided here. The T3-tier trend citations (Orizon Design, sanjaydey.com, Framer Designfest, UI UX Showcase, Groovy Web) were not independently re-fetched this pass; they are explicitly non-load-bearing to the DECISION (named as corroboration or as a rejected alternative, not as justification), so this is a low-severity gap."
+ }
+}

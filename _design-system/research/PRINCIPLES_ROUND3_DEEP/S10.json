@@ -1,0 +1,165 @@
+{
+ "id": "S10",
+ "synth": {
+  "id": "S10",
+  "tag": "mechanize",
+  "title": "Visual-weight / balance centroid (computable)",
+  "principle_summary": "Balance is measurable, not just felt: weight a screen's elements by area times local contrast, compute the weighted centroid, and compare its offset from the frame's geometric center against a tolerance band. But the model that grounds this (Lok/Feiner/Ngai's WeightMap/centroid work) is a small, dated academic result, no booking or marketplace competitor runs anything like it in production, and 2025-2026 design practice explicitly treats \"balanced\" as decision-priority weighting rather than symmetry. So the computable form stays exactly what the stream's key question demands: a number that flags gross imbalance for a human to look at inside the existing squint-test pass, never a pass/fail gate, and never calibrated against saturated competitor screens that would misread Solen's own deliberate 80/17 restraint as a defect.",
+  "proposed_addition": "### D1 computable spec: visual-weight centroid (advisory only, never a gate)\n\nFORMULA: for each rendered element i in the viewport, weight_i = area_i (px^2, from getBoundingClientRect) x contrast_i (0 to 1, the relative-luminance difference between the element and its LOCAL background patch, WCAG relative-luminance formula, not the page's global range). Centroid_x = sum(weight_i x center_x_i) / sum(weight_i); Centroid_y computed the same way on the vertical axis. Offset = (Centroid - frame geometric center), reported as a percent of the frame's half-width and half-height, one number per axis.\n\nTOLERANCE BAND (proposed default, CONV, not an owner-locked number, ask before treating as fixed): flag only when an axis offset exceeds roughly 15 percent of that axis's half-dimension. Below that, stay silent. This is grounded in real-app convergence, not a derivation: empty-state illustrations across nine unrelated apps (Rocket Money, Shell, DoorDash Dasher, Uber Eats, Yuka, Careem, Zopa Bank, Speak, Blinkit) consistently sit around 35 to 40 percent down the frame rather than at the 50 percent geometric center, a roughly 15 to 20 percent vertical centroid shift that reads as the felt-balanced norm across every one of them, not a defect. A tighter tolerance would flag Solen's own locked `<EmptyState>` pattern as broken.\n\nCALIBRATE LOCAL, NOT AGAINST COMPETITOR SCREENS: measure contrast against each element's own local background patch. Solen's 80/17 near-monochrome palette (LOCKFILE section 0) computes far lower absolute contrast mass than the saturated hero photos and mascot illustrations the cross-app examples were built from (Urban Company's rose-petal hero, Yuka's carrot, Blinkit's dog). A scale calibrated against those references would read every Solen screen as underweighted; that is the restraint working as intended, not a real gap, and the model must be tuned against Solen's own locked surfaces, never a competitor baseline.\n\nKNOWN CONFOUND, DO NOT AUTO-CORRECT: elements gain perceived weight nearer the top and right of a frame and near the vertical or diagonal axes (T3, design-balance patent literature). A crude centroid script will not know this. A human reading a flagged offset inside the diagnosis pass should discount it accordingly; the tool must not bake in a silent correction it cannot defend.\n\nNEVER A GATE, three independent reasons: (1) NN/g's own working definition of balance stays explicitly qualitative, \"not necessarily symmetrical,\" with no formula prescribed (T2). (2) 2025-2026 design-trend material converges on asymmetric, decision-priority layouts as now-normal practice, not something a symmetry-seeking check should punish (CONV, multiple independent trend sources); this argues FOR Solen's own existing \"one heading, one ~40% hero\" balance recipe, not against it. (3) The closest real industry precedent, Figma's October 2025 \"Check Designs\" linter, ships as a non-blocking recommendation layer (CONV). No booking or marketplace competitor (Fresha, Treatwell, Booksy, Vagaro, Airbnb, Uber, Booking.com, Doctolib) publishes a computable balance tool at all, so there is no competitor precedent either way, this stays a house-original diagnostic, scoped exactly to the gap register's own framing.\n\nMECHANIC: T2 for the formula shape (Lok/Feiner/Ngai centroid model; NN/g's area-weighted qualitative definition; MIT CSAIL / bioRxiv contrast-and-luminance weighting). CONV for the 15 percent tolerance band and the local-calibration rule, both drawn from real-app convergence, not derived from a study. Note: this scout could not independently verify the stream's own \"validated on only 5 students\" figure for the Lok/Feiner/Ngai paper; treat that specific number as the stream's unverified detail, the advisory-only conclusion does not depend on it.\nSOURCE: gap register D1 (RATIONALE.md:839, \"the computable form is gap-register item D1\" cross-referenced at RATIONALE.md:793 domain 21); academic root Lok, Feiner & Ngai, \"Evaluation of Visual Balance for Automated Layout,\" ACM IUI 2004; scouting synthesis 2026-07-22.\nBOUNDARY: flags a candidate for a human second look inside the solen-taste-diagnosis squint-test pass (RATIONALE.md domain 21, composition vocabulary). Never blocks a build, never joins the drift-gate's blocking set, never overrides a documented intentional asymmetry, the owner's existing \"one ~40% hero, rest sunken\" balance recipe stays valid even at a large computed offset.\n\nCross-ref: no PSYCHOLOGY.md law applies here, balance is a perceptual-composition mechanic (RATIONALE.md domain 21), not a behavioral-conversion law.\n\n**Taste Lab probe (recommended before locking the 15 percent number):** render one real Solen surface (salon PDP hero is the natural candidate) at three computed centroid offsets, roughly 5, 15, and 30 percent of frame half-dimension, holding every other variable fixed. Ask 8 to 10 people to rate \"does this feel balanced\" 1 to 5 per version. Set the tolerance band where the rating crosses from \"fine\" to \"off,\" rather than shipping the 15 percent default as-is.",
+  "real_world_evidence": [
+   {
+    "source": "Urban Company booking home, Mobbin scout",
+    "what": "Hero photo occupies top ~45% of viewport; the Book Now CTA pill overlaps the image's bottom-left corner rather than sitting centered, a deliberate down-left weight shift to counteract the photo's centered mass.",
+    "tier": "T3"
+   },
+   {
+    "source": "Cross-app empty states, 9 apps (Rocket Money, Shell, DoorDash Dasher, Uber Eats, Yuka, Careem, Zopa Bank, Speak, Blinkit), Mobbin scout",
+    "what": "Illustration sized ~15% of screen width, centered horizontally but positioned ~35-40% down the frame, not at the 50% geometric vertical center, consistently across all 9 independent apps.",
+    "tier": "CONV"
+   },
+   {
+    "source": "Fresha salon PDP sticky bottom bar, Mobbin scout",
+    "what": "Weight kept in rough left-right equilibrium between dissimilar element types: grey '136 services available' text (left) against a solid black Book Now button (right).",
+    "tier": "T3"
+   },
+   {
+    "source": "Airtasker category browse, Mobbin scout",
+    "what": "Two listing cards, each image-top(~55%)/text-bottom(~45%), genuinely symmetric weight distribution card-to-card, the near-zero-offset counterexample to the empty-state pattern.",
+    "tier": "T3"
+   },
+   {
+    "source": "Groupon home hero, Mobbin scout",
+    "what": "Text lockup placed center-left and slightly above true vertical mid, a rule-of-thirds-adjacent placement rather than dead geometric center.",
+    "tier": "T3"
+   },
+   {
+    "source": "Lok, Feiner & Ngai, ACM IUI 2004, competitor-teardown scout",
+    "what": "The academic root of the weighted-centroid/WeightMap balance model the stream's key question already names; formula shape (area/contrast-weighted centroid vs geometric center) matches the proposed spec.",
+    "tier": "T2"
+   },
+   {
+    "source": "NN/g, 'Balance in UX Design' + '5 Principles of Visual Design in UX', competitor-teardown scout",
+    "what": "Industry-standard definition: balance is area-weighted, not element-count, and explicitly not necessarily symmetric; stops short of a formula, treated as designer judgment.",
+    "tier": "T2"
+   },
+   {
+    "source": "MIT CSAIL (Jahanian et al.) + bioRxiv pictorial-balance study, competitor-teardown scout",
+    "what": "Larger empirical base independently confirms contrast/luminance, not just area, as a weight term feeding a centroid computation.",
+    "tier": "T2"
+   },
+   {
+    "source": "Figma 'Check Designs' linter (Oct 2025), social-trend scout",
+    "what": "Closest real industry precedent: ships as a non-blocking recommendation layer, not a pass/fail gate, direct validation for keeping S10 advisory-only.",
+    "tier": "CONV"
+   },
+   {
+    "source": "Competitor sweep (Fresha, Treatwell, Booksy, Vagaro, Airbnb, Uber, Booking.com, Doctolib), competitor-teardown scout",
+    "what": "None publish a computable balance-centroid diagnostic; large design orgs run pixel-diff visual regression and token linting instead, a genuine gap, not something to port.",
+    "tier": "CONV"
+   }
+  ],
+  "generative_prior": "Default weight formula: weight_i = bounding-box area (px^2) x local-background-relative contrast (0-1, WCAG relative luminance). Default tolerance band: do not flag until an axis's centroid offset exceeds ~15% of that axis's half-dimension, a number read directly off real-app convergence, not derived. Evidence for the 15% band: 9 unrelated apps' empty-state illustrations sit ~35-40% down the frame rather than the 50% geometric center (Rocket Money, Shell, DoorDash Dasher, Uber Eats, Yuka, Careem, Zopa Bank, Speak, Blinkit, Mobbin scout), a convergent ~10-15% deliberate vertical shift treated as normal, not broken, across every one of them. Urban Company's booking-home CTA pill (overlapping the hero's bottom-left corner rather than centered) and Groupon's hero text lockup (center-left, above vertical mid rather than dead center) are two more concrete apps showing the same \"off-center reads as fine\" pattern the tolerance band must accommodate. Airtasker's symmetric image-top/text-bottom listing cards show the other end, near-zero offset is also fine, confirming the metric should flag GROSS imbalance only, not deviation from perfect center. Calibration must run against Solen's own locked surfaces (80/17 near-monochrome), never against these competitors' saturated hero photos and mascot illustrations, or every Solen screen would read as falsely underweighted.",
+  "sources": [
+   {
+    "claim": "Lok, Feiner & Ngai's WeightMap/centroid academic model is the correct root for a weighted-centroid balance metric",
+    "source": "ACM IUI 2004, dl.acm.org/doi/10.1145/964442.964462",
+    "tier": "T2"
+   },
+   {
+    "claim": "Balance is defined as area-weighted, non-symmetric distribution of visual signal about an axis; no prescribed formula",
+    "source": "Nielsen Norman Group, 'Balance in UX Design' and '5 Principles of Visual Design in UX'",
+    "tier": "T2"
+   },
+   {
+    "claim": "Contrast/luminance, not just area, is a validated weight term for computing visual-balance centroids",
+    "source": "MIT CSAIL (Jahanian et al., 'Learning Visual Balance from Large-scale Datasets') and bioRxiv 2020 pictorial-balance study",
+    "tier": "T2"
+   },
+   {
+    "claim": "Elements gain perceived weight nearer the top/right of a frame and near symmetry axes, a confound a crude centroid model should not silently correct for",
+    "source": "USPTO patent 'Determining a visual balance of an image' (single-patent source, design-balance literature)",
+    "tier": "T3"
+   },
+   {
+    "claim": "Figma's Check Designs (Oct 2025) and other 2026 AI design-linting tools ship balance/hierarchy checks as advisory, non-blocking recommendations",
+    "source": "Figma, '11 of the Best AI Design Tools for 2026'; UXPin, '15 AI Tools for Designers in 2026'",
+    "tier": "CONV"
+   },
+   {
+    "claim": "No booking/marketplace competitor (Fresha, Treatwell, Booksy, Vagaro, Airbnb, Uber, Booking.com, Doctolib) publishes a computable balance-centroid diagnostic; large design orgs run pixel-diff visual regression instead",
+    "source": "wearepresta.com, 'Design Systems 2026: How Airbnb & Uber Scale to 100M Users' plus direct competitor design-system search",
+    "tier": "CONV"
+   },
+   {
+    "claim": "2025-2026 design practice treats balance as decision-priority weighting, not symmetry, and describes it as 'weighting rather than mirroring'",
+    "source": "valmax.agency trend roundup; The HypeEdge, 'The Rise of Asymmetric Layouts'",
+    "tier": "CONV"
+   }
+  ],
+  "numbers_used": [
+   "~45% viewport height for Urban Company's hero photo",
+   "9 apps' empty-state illustrations positioned ~35-40% down the frame vs 50% geometric center",
+   "~15% screen-width illustration size across the 9-app empty-state pattern",
+   "Airtasker listing cards ~55%/45% image/text split, near-symmetric left/right",
+   "Proposed 15% of axis half-dimension as the advisory tolerance band (CONV default, not owner-locked)",
+   "Ngo/Lok-Feiner-Ngai model's '5 students' validation figure, flagged as unverified by this scout, not independently corroborated"
+  ],
+  "taste_lab_probe": "Render one real Solen surface (salon PDP hero is the natural candidate) at three computed weighted-centroid offsets, roughly 5%, 15%, and 30% of frame half-dimension, with every other variable held fixed. Ask 8-10 people to rate \"does this feel balanced\" on a 1-5 scale per version. Set the tolerance band at whichever offset the rating crosses from \"fine\" to \"off,\" rather than shipping the 15% default proposed here without a check."
+ },
+ "verified": {
+  "id": "S10",
+  "tag": "mechanize",
+  "verdict": "revised",
+  "myths_caught": [
+   "The '5 students' validation figure for Lok/Feiner/Ngai (IUI 2004) is not merely unverified, it is absent. I pulled the actual open-access PDF (columbia.edu/~lok/papers/balance.pdf, confirmed via DBLP conf/iui/LokFN04): the paper reports ZERO human subjects. Its 'Results' section (6) is a computational test-harness demo (BalanceManager screenshots, timing benchmarks) with no user study of any kind, let alone a 5-student one. This number should be cut outright, not hedged.",
+   "The draft claims the proposed centroid-vs-geometric-center formula 'matches' Lok/Feiner/Ngai's model. Reading the actual paper: it does NOT compute a centroid offset from center at all. It builds a per-pixel WeightMap, downsamples via an image pyramid, and evaluates CRYSTALLOGRAPHIC balance (uniformity of weight across the whole map, compared against a uniform reference), using row/column sum derivatives to suggest move-directions, not a single weighted centroid minus frame-center number. The paper is real and on-topic (visual weight assigned per element, used to grade a layout) but 'formula shape matches' overstates the fidelity; it is a loose inspiration, not a derivation.",
+   "The Jahanian paper is misattributed to 'MIT CSAIL.' DBLP confirms it is Ali Jahanian, S.V.N. Vishwanathan, Jan P. Allebach, 'Learning visual balance from large-scale datasets of aesthetically highly rated images,' SPIE Human Vision and Electronic Imaging 2015 (doi 10.1117/12.2084548), a Purdue-era paper (Allebach is Purdue faculty; HVEI is an SPIE venue). Jahanian's later MIT CSAIL affiliation postdates this specific paper by years; citing it under an MIT CSAIL byline is a false institutional tag."
+  ],
+  "residual_risks": "Three owner-decision / QUESTIONS.md-candidate items survive the correction pass. (1) The proposed formula (area x local-background contrast, weighted centroid vs geometric center, percent-of-half-dimension offset) is a HOUSE-ORIGINAL synthesis loosely inspired by three separate, non-converging academic threads (Lok/Feiner/Ngai's crystallographic WeightMap for the weighting concept, the bioRxiv Corwin preprint for the literal centroid-of-luminance idea, the HP patent for the axis-proximity confound). It should be labeled that way in RATIONALE.md rather than implying one paper validates the whole formula; this is a documentation fix, not a design-direction problem. (2) The bioRxiv Corwin paper ('Pictorial balance is a bottom-up aesthetic property mediated by eye movements,' confirmed real, DOI 10.1101/2020.05.26.104687, currently on v8) is a single-author, unreviewed preprint, not a peer-reviewed publication as far as I could confirm; I downgraded it from the draft's T2 to T3, which softens but does not remove its evidentiary support for the luminance-weighting idea. (3) Figma's 'Check Designs' (real, announced Schema 2025, dated to late October 2025 by a forum post) is confirmed as a pre-'ready for dev' review feature, but I could not independently confirm it is explicitly documented as non-blocking rather than a soft gate on the ready-for-dev flip; the advisory-only argument for S10 does not depend on this single data point (NN/g's own qualitative non-formula stance and the asymmetric-layout trend material stand on their own), so this is a minor evidentiary softening, not a structural risk. None of these three change the recommendation: stay advisory-only, run the Taste Lab probe before locking the 15 percent tolerance number, never let this join the drift-gate's blocking set.",
+  "verified_addition": "### D1 computable spec: visual-weight centroid (advisory only, never a gate)\n\nFORMULA: for each rendered element i in the viewport, weight_i = area_i (px^2, from getBoundingClientRect) x contrast_i (0 to 1, the relative-luminance difference between the element and its LOCAL background patch, WCAG relative-luminance formula, not the page's global range). Centroid_x = sum(weight_i x center_x_i) / sum(weight_i); Centroid_y computed the same way on the vertical axis. Offset = (Centroid - frame geometric center), reported as a percent of the frame's half-width and half-height, one number per axis. NOTE: this exact formula is a house-original synthesis, not a direct port of any single cited paper (see MECHANIC below); it should be labeled that way rather than implied to come pre-validated from the literature.\n\nTOLERANCE BAND (proposed default, CONV, not an owner-locked number, ask before treating as fixed): flag only when an axis offset exceeds roughly 15 percent of that axis's half-dimension. Below that, stay silent. This is grounded in real-app convergence, not a derivation: empty-state illustrations across nine unrelated apps (Rocket Money, Shell, DoorDash Dasher, Uber Eats, Yuka, Careem, Zopa Bank, Speak, Blinkit) consistently sit around 35 to 40 percent down the frame rather than at the 50 percent geometric center, a roughly 15 to 20 percent vertical centroid shift that reads as the felt-balanced norm across every one of them, not a defect. Spot-checked independently against three more empty states (Urban Company 'Native devices,' Upwork 404, 7-Eleven 'No Messages'): the pattern holds directionally, illustration mass sits above true vertical center, none at the geometric 50 percent mark. A tighter tolerance would flag Solen's own locked `<EmptyState>` pattern as broken.\n\nCALIBRATE LOCAL, NOT AGAINST COMPETITOR SCREENS: measure contrast against each element's own local background patch. Solen's 80/17 near-monochrome palette (LOCKFILE section 0) computes far lower absolute contrast mass than the saturated hero photos and mascot illustrations the cross-app examples were built from (Urban Company's rose-petal hero, Yuka's carrot, Blinkit's dog). A scale calibrated against those references would read every Solen screen as underweighted; that is the restraint working as intended, not a real gap, and the model must be tuned against Solen's own locked surfaces, never a competitor baseline.\n\nKNOWN CONFOUND, DO NOT AUTO-CORRECT: elements gain perceived weight nearer the top and right of a frame and near the vertical or horizontal or diagonal axes. Confirmed directly against the primary source (US Patent 8,724,905 B2, Hewlett-Packard, filed 2009 / granted 2014, 'Determining a Visual Balance of an Image'): \"Visual elements tend to have more visual weight when placed closer to the vertical axis, the horizontal axis, or a diagonal axis... A visual element holds more visual weight when it is placed towards the top of an image. Likewise, it tends to hold more weight as it is placed towards the right side.\" A crude centroid script will not know this. A human reading a flagged offset inside the diagnosis pass should discount it accordingly; the tool must not bake in a silent correction it cannot defend.\n\nNEVER A GATE, three independent reasons: (1) NN/g's own working definition of balance stays explicitly qualitative. Verified directly against nngroup.com/articles/principles-visual-design/: \"The area taken by the design element matters when creating balance, not just the number of elements,\" and \"Balance occurs when there is an equally distributed (but not necessarily symmetrical) amount of visual signal on both sides of an imaginary axis.\" No formula is prescribed (T2). (2) 2025-2026 design-trend material converges on asymmetric, decision-priority layouts as now-normal practice, not something a symmetry-seeking check should punish (CONV, multiple independent trend sources); this argues FOR Solen's own existing \"one heading, one ~40% hero\" balance recipe, not against it. (3) Figma's October 2025 \"Check Designs\" feature (confirmed real, announced at Figma's Schema 2025 conference, functions as a review pass before a file is marked \"ready for dev\") is the closest real industry precedent for a computable design-quality check; I could not independently confirm published language calling it strictly non-blocking, so treat this specific data point as directional support, not proof, and let reasons (1) and (2) carry the advisory-only argument. No booking or marketplace competitor (Fresha, Treatwell, Booksy, Vagaro, Airbnb, Uber, Booking.com, Doctolib) was found publishing a computable balance tool at all, so there is no competitor precedent either way, this stays a house-original diagnostic, scoped exactly to the gap register's own framing.\n\nMECHANIC (corrected): the weighting concept (per-element visual weight contributing to an overall balance judgment) traces to Lok, Feiner & Ngai's WeightMap model (ACM IUI 2004, verified real via DBLP conf/iui/LokFN04 and the open-access PDF), but that paper's actual algorithm evaluates CRYSTALLOGRAPHIC balance via a per-pixel WeightMap and image-pyramid uniformity check, not a single weighted-centroid-minus-geometric-center number; it also reports NO human validation study whatsoever (its \"Results\" section is a computational test-harness demo, not a user study), so any claimed participant count for it, including a \"5 students\" figure that appeared in this stream's numbers, is unsupported and has been cut, not just flagged. The literal centroid-of-luminance idea is closer to David Corwin's bioRxiv preprint \"Pictorial balance is a bottom-up aesthetic property mediated by eye movements\" (DOI 10.1101/2020.05.26.104687, confirmed real, \"a top weighted center of quadrant luminance calculation is proposed to measure balance\"), an unreviewed single-author preprint, tiered T3 here rather than the draft's T2 since it is not independently peer-reviewed. NN/g supplies the area-weighted, non-symmetric qualitative definition (T2, verified verbatim above). The confound term traces to Jahanian, Vishwanathan & Allebach, \"Learning visual balance from large-scale datasets of aesthetically highly rated images\" (SPIE HVEI 2015, doi 10.1117/12.2084548, confirmed via DBLP) rather than to \"MIT CSAIL\" as the draft stated; the paper is Purdue-era and predates Jahanian's later MIT affiliation. CONV for the 15 percent tolerance band and the local-calibration rule, both drawn from real-app convergence, not derived from a study.\n\nSOURCE: gap register D1 (RATIONALE.md:839, \"per-element bbox area x darkness x saturation, centroid offset\"; RATIONALE.md:793, \"the computable form (visual-weight centroid) is gap-register item D1,\" domain 21). Note the gap register's own weight formula (area x darkness x saturation) differs slightly from this spec's (area x local contrast); reconcile before locking. Academic threads: Lok/Feiner/Ngai IUI 2004 (weighting concept, not the centroid formula), Corwin bioRxiv 2020 (the centroid-of-luminance idea, T3 preprint), Jahanian/Vishwanathan/Allebach SPIE HVEI 2015 (contrast as a weight term), US Patent 8,724,905 B2 (the position confound), NN/g (qualitative non-formula definition). Scouting synthesis 2026-07-22, adversarially re-verified same date.\n\nBOUNDARY: flags a candidate for a human second look inside the solen-taste-diagnosis squint-test pass (RATIONALE.md domain 21, composition vocabulary). Never blocks a build, never joins the drift-gate's blocking set, never overrides a documented intentional asymmetry, the owner's existing \"one ~40% hero, rest sunken\" balance recipe stays valid even at a large computed offset.\n\nCross-ref: no PSYCHOLOGY.md law applies here, balance is a perceptual-composition mechanic (RATIONALE.md domain 21), not a behavioral-conversion law.\n\n**Taste Lab probe (recommended before locking the 15 percent number):** render one real Solen surface (salon PDP hero is the natural candidate) at three computed centroid offsets, roughly 5, 15, and 30 percent of frame half-dimension, holding every other variable fixed. Ask 8 to 10 people to rate \"does this feel balanced\" 1 to 5 per version. Set the tolerance band where the rating crosses from \"fine\" to \"off,\" rather than shipping the 15 percent default as-is.",
+  "claim_verdicts": [
+   {
+    "claim": "Lok, Feiner & Ngai's WeightMap/centroid academic model is the correct root for a weighted-centroid balance metric",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Paper is real (confirmed via DBLP conf/iui/LokFN04 and the open-access PDF from columbia.edu). But its actual algorithm is a per-pixel WeightMap plus image-pyramid crystallographic-uniformity check, not a literal weighted-centroid-vs-geometric-center formula. 'Correct root' overstates fidelity; it is the inspiration for the weighting concept only. Also: the paper contains zero human-subject validation, so any participant-count figure attributed to it (the '5 students' number the stream carried) is fabricated, not merely unverified."
+   },
+   {
+    "claim": "Balance is defined as area-weighted, non-symmetric distribution of visual signal about an axis; no prescribed formula",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Verified verbatim against nngroup.com/articles/principles-visual-design/: 'The area taken by the design element matters when creating balance, not just the number of elements' and 'not necessarily symmetrical.' Accurate as cited."
+   },
+   {
+    "claim": "Contrast/luminance, not just area, is a validated weight term for computing visual-balance centroids (MIT CSAIL Jahanian et al. + bioRxiv 2020)",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Both underlying papers are real: Jahanian/Vishwanathan/Allebach, SPIE HVEI 2015 (doi 10.1117/12.2084548, confirmed via DBLP) but is a Purdue-era paper, not MIT CSAIL as claimed; institutional attribution is wrong. Corwin's bioRxiv preprint (DOI 10.1101/2020.05.26.104687) does propose a 'top weighted center of quadrant luminance calculation,' closely matching the claim, but is an unreviewed single-author preprint, so downgraded from the draft's T2 to T3."
+   },
+   {
+    "claim": "Elements gain perceived weight nearer the top/right of a frame and near symmetry axes, a confound a crude centroid model should not silently correct for",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Confirmed exactly against US Patent 8,724,905 B2 (Hewlett-Packard, filed 2009, granted 2014, 'Determining a Visual Balance of an Image'). Quoted language matches almost verbatim. Correctly tiered T3 already."
+   },
+   {
+    "claim": "Figma's Check Designs (Oct 2025) and other 2026 AI design-linting tools ship balance/hierarchy checks as advisory, non-blocking recommendations",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Check Designs is real, announced at Figma's Schema 2025 conference (dated to late October 2025 by a forum post), functions as a review pass before a file can be marked 'ready for dev.' Could not independently confirm published language calling it explicitly non-blocking versus a soft gate on that status flip. Kept at CONV but the specific non-blocking framing should be treated as directional, not proven."
+   },
+   {
+    "claim": "No booking/marketplace competitor publishes a computable balance-centroid diagnostic; large design orgs run pixel-diff visual regression instead",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "An absence claim from a competitor sweep; cannot be definitively disproven or proven by a single adversarial pass, but no counter-evidence surfaced and the claim is appropriately hedged as CONV, not asserted as a checked fact."
+   },
+   {
+    "claim": "2025-2026 design practice treats balance as decision-priority weighting, not symmetry, described as 'weighting rather than mirroring'",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Sourced to marketing/trend-roundup blogs (valmax.agency, HypeEdge), appropriately tiered as trend commentary (CONV) rather than principle. No issue with the tier as given."
+   }
+  ]
+ }
+}

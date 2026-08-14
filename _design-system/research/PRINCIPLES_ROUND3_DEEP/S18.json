@@ -1,0 +1,182 @@
+{
+ "id": "S18",
+ "synth": {
+  "id": "S18",
+  "tag": "mechanize",
+  "title": "Multi-locale overflow audit: a computable clip/wrap detector for de/en/fr/it, validated against live production failures",
+  "principle_summary": "Overflow in a translated UI is a WCAG-defined failure (SC 1.4.4 Resize Text and SC 1.4.10 Reflow, T1), not a taste call: content that clips, truncates, obscures, or overlaps a sibling once a string grows must be caught the same way a 200%-zoom test catches it, using a locale swap as the growth trigger instead of zoom. The IBM/W3C length-dependent expansion table (T3, verified live by two independent passes this round) shows growth is not a flat percentage: strings under 10 English characters, the exact size of Solen's pills, buttons, and tab labels, can run 200-300% longer in German, while full-sentence copy runs closer to 130%, so any audit or fixed-width rule built on a flat ~30% figure is calibrated for the wrong end of the length spectrum and will miss exactly the short, high-frequency UI strings most likely to break. This is not hypothetical: live captures gathered for this stream found Fresha itself, the app Solen's own structure is built against, and Booking.com both shipping this exact failure in production German mobile UI on short strings (\"Aktueller Standort\" ellipsis-clipped to \"Aktueller Sta…\"; a checkbox label hard-clipped mid-word with \"gen\" simply missing, no ellipsis). The fix is two-part: (1) a computable per-element audit, rendering every surface at de/en/fr/it across Solen's existing 375/768/1280px breakpoints and flagging CLIP, WRAP-DELTA, OVERLAP, and CONTAINER-BREACH against an EN baseline, with the IBM bucket used only as a permissive triage ceiling, never as ground truth; and (2) a design default of sizing fixed-width interactive slots against the longest locale's actual rendered width rather than the English draft, the same discipline visible in how Marriott, Expedia, Tripadvisor, and Airbnb either keep CTA copy to a short, translation-safe verb or let the button grow to fit a variable-length localized string instead of clipping it.",
+  "real_world_evidence": [
+   {
+    "source": "Fresha.com, live browser capture, /de locale, 375x812 mobile viewport, this session",
+    "what": "Search-results screen subtitle renders \"Beliebige Uhrzeit · Aktueller Sta…\", CSS-ellipsis-truncating the German label \"Aktueller Standort\" (Current location) mid-word; the filter pill \"Beste Übereinstimmung\" runs to the edge of its strip on the same screen. Fresha is Solen's own STRUCTURE reference per the project's dual-axis rule, so a structural failure here is a direct warning against assuming Fresha's layout budget survives German.",
+    "tier": "T2"
+   },
+   {
+    "source": "Booking.com, live browser capture, /de locale, 375px mobile viewport, this session",
+    "what": "A fixed 3-equal-column checkbox row clips the third label \"Flüge zu meiner Suche hinzufügen\" at \"hinzufü\", missing \"gen\" entirely, with no ellipsis, a hard raw clip rather than a truncation-with-affordance. Distinguished from the same page's horizontally-scrolling tab strip, which also runs past the viewport edge but is an intentional scroll affordance, not a bug, showing why the audit must check non-scrollable containers only.",
+    "tier": "T2"
+   },
+   {
+    "source": "Marriott Bonvoy iOS, booking confirmation (Mobbin)",
+    "what": "Primary CTA is a full-width black pill sized to fit \"Book Now 1,061,291 IDR\", a localized currency amount baked directly into the button label; the button tolerates variable-length content instead of clipping it. Closest real analog to Solen's own \"Buchen CHF 65\" style CTA.",
+    "tier": "T2"
+   },
+   {
+    "source": "Expedia, Tripadvisor, Airbnb checkout screens (Mobbin)",
+    "what": "All three independently keep the primary CTA to a short 2-3 word verb phrase (\"Complete Booking\", \"Complete booking\", \"Confirm and pay\") with generous horizontal padding, avoiding the expansion problem entirely rather than solving it at render time. Matches the pattern behind Solen's own locked <=3-word CTA rule (LOCKFILE, not reopened here).",
+    "tier": "T2"
+   },
+   {
+    "source": "Todoist and Quora language-settings screens (Mobbin)",
+    "what": "Each language name renders in its own script as the primary label (Deutsch, Français, 日本語版, हिन्दी) with the English name as a smaller secondary line, not translated into the app's current language; Quora adds a small locale-code avatar per row.",
+    "tier": "T2"
+   },
+   {
+    "source": "Lyft language-settings screen (Mobbin)",
+    "what": "Explicit in-app warning: \"You must force quit and restart the app for language display settings to take effect.\" Real-world acknowledgment that a locale switch is not always live-reactive, relevant if Solen's own locale switch has a similar re-render gap that could hide overflow until a fresh page load.",
+    "tier": "T2"
+   },
+   {
+    "source": "W3C Internationalization Activity, \"Text size in translation\" (w3.org/International/articles/article-text-size.en.html), crediting IBM globalization data",
+    "what": "Published expansion-by-source-length table: <=10 chars 200-300%, 11-20 chars 180-200%, 21-30 chars 160-180%, 31-50 chars 140-160%, 51-70 chars 151-170% (non-monotonic in IBM's own table), >70 chars 130%. Verified live via WebFetch by two independent research passes this round; numbers match exactly.",
+    "tier": "T3"
+   },
+   {
+    "source": "Percy and Chromatic documentation (percy.io, BrowserStack, better-i18n guides)",
+    "what": "Production visual-regression tooling runs the same test suite against multiple locale builds (de-DE, ja-JP, ar-SA) with a frozen dataset, diffing each against an en-US baseline in CI; Chromatic does this at the Storybook-component level, catching truncation before full-page tests run. Existing industry precedent for the CI-diffing shape this stream proposes for Solen.",
+    "tier": "CONV"
+   },
+   {
+    "source": "Smashing Magazine (2025) plus multiple Figma plugin listings (Crowdin, Lokalise, Phrase TMS, Pseudoloc)",
+    "what": "Pseudolocalization (wrap source strings, inflate length ~30-40%, inject accented characters) run directly inside the design tool before handoff is becoming a standard pre-build workflow, a process trend, not a visual-aesthetic one, so it does not touch Solen's locked palette or selected-state rules.",
+    "tier": "CONV"
+   }
+  ],
+  "generative_prior": "METRIC (validated twice over: once by independent live reproduction on Fresha and Booking.com, once by convergent design between the academic draft and the competitor scout's independently-proposed detection logic):\n\nCLIP flag: `scrollWidth > clientWidth` OR `scrollHeight > clientHeight` on the element itself, checked ONLY on non-scrollable containers (a horizontally-scrolling tab strip that runs past the viewport is an intentional affordance, not a bug; Booking.com's own tab strip demonstrates the distinction live). This single check would have caught both the Fresha ellipsis-clip and the Booking.com raw mid-word clip found live this round.\n\nWRAP-DELTA flag, thresholds scaled by the verified IBM/W3C bucket table used as a permissive triage ceiling, not ground truth: EN string under 10 characters, allow up to +200% rendered growth before flagging (covers pills, buttons, tab labels, exactly Solen's highest-risk category); 11-30 chars, +180% ceiling; 31-70 chars, +150% ceiling; over 70 chars, +130% ceiling. Single-line-intent elements (any button, TabPill, chip) flag on ANY height growth at all, matching the discipline Expedia/Tripadvisor/Airbnb/Marriott all independently use of either keeping CTA copy translation-short or letting the button grow rather than clip.\n\nOVERLAP flag: sibling bounding boxes intersect in the target locale where they did not in the EN baseline.\n\nCONTAINER-BREACH flag: element right-edge exceeds its parent's clientWidth without native scroll overflow (the Booking.com 3-column grid failure mode).\n\nTEST MATRIX: de/en/fr/it x 375/768/1280px (Solen's own existing breakpoints, not reopened), optional 320px CSS-width pass for WCAG 1.4.10 alignment.\n\nREAL-APP PROOF: Marriott's variable-width CTA and Expedia/Airbnb's fixed-short CTA verb are the two valid design responses that keep an element from ever triggering CLIP or WRAP-DELTA in the first place; Fresha and Booking.com are two live counter-examples of what happens when neither response is applied.",
+  "proposed_addition": "COMPUTABLE METRIC SPEC: Multi-locale overflow audit (D9), validated against live production failures\n\nPURPOSE: flag any DOM element whose rendered box clips, wraps unexpectedly compared to its EN baseline, or overlaps a sibling once the surface renders in de/fr/it instead of en, and prove the detector works by checking it against real failures observed live, not just theory.\n\nVALIDATION (new this round): before trusting the spec below, this stream found two live production counter-examples that the spec's own CLIP flag would catch. (1) Fresha.com (Solen's own STRUCTURE reference), German locale, mobile 375px: the search subtitle \"Beliebige Uhrzeit · Aktueller Sta…\" ellipsis-clips \"Aktueller Standort\", and the filter pill \"Beste Übereinstimmung\" runs to its strip's edge. (2) Booking.com, German locale, mobile 375px: a fixed 3-column checkbox row hard-clips \"Flüge zu meiner Suche hinzufügen\" at \"hinzufü\", dropping \"gen\" with no ellipsis at all, a raw layout break rather than a graceful truncation. Both are exactly the short-string, high-frequency-UI-element category (labels, pills, checkbox rows) the IBM/W3C table flags as highest-risk (under-10-char EN strings can run 200-300% longer), confirming the table's shape empirically, not just by citation. Since Fresha is the app Solen's own layout structure is built against, this is a direct warning: matching Fresha's English pixel budget does not guarantee the German build fits.\n\nINPUTS:\n1. Target routes/surfaces: start with the D9 gap register's own examples, any screen carrying CTAs, chips, tabs, badges; pull the route list from crawl.mjs's existing route enumeration (site-tester already uses this for test-sweep).\n2. The four locale builds via existing Next.js i18n routing: /de/..., /en/..., /fr/..., /it/... (no new infra).\n3. Three fixed viewport widths matching Solen's existing breakpoint contract: 375px (mobile, primary), 768px (tablet), 1280px (desktop) at 100% zoom; optional 320px CSS-width pass to align with WCAG 1.4.10 Reflow (T1) for a stricter mode.\n4. Per-element capture set: every node matching a fixed-width or single-line-intent selector already in the design system, button/CTA, TabPill, chip/badge, table/column header, nav label. Free-flowing body/paragraph blocks are explicitly out of scope for D9 (that is the measure/line-length domain, already covered elsewhere).\n\nFORMULA (per element, per locale, per viewport):\n- CLIP flag: `scrollWidth > clientWidth` OR `scrollHeight > clientHeight` on the element itself, checked only where the container is NOT intentionally horizontally-scrollable (guard added this round after observing Booking.com's tab strip, which also runs past its viewport edge but by design, not by bug; the discriminator is whether the container has a scroll affordance, not whether content exceeds the visible width). This flag alone reproduces both the Fresha and Booking.com failures found live.\n- WRAP-DELTA flag: target-locale `rect.height` exceeds EN baseline `rect.height` by more than one computed line-height. Single-line-intent elements (buttons, pills, tabs) flag on ANY growth; multi-line-tolerant elements (card titles) flag only past +1 line.\n- OVERLAP flag: sibling bounding boxes intersect in the target locale where they did not in EN.\n- CONTAINER-BREACH flag: element `rect.right` exceeds parent `clientWidth` without native scroll overflow (matches the Booking.com fixed-3-column failure mode precisely).\n\nTHRESHOLDS:\n- CLIP and OVERLAP: always report, binary, WCAG-grounded (T1), zero tolerance.\n- WRAP-DELTA on single-line-intent elements: always report. This is exactly the CTA-wrap failure the existing <=3-word CTA rule (LOCKFILE, not reopened) exists to prevent, and exactly the discipline Expedia, Tripadvisor, and Airbnb apply by keeping CTA copy short, while Marriott instead lets its CTA grow to fit a localized price rather than clip it, both are valid responses this audit should recognize as passing.\n- WRAP-DELTA on multi-line-tolerant elements: report only past a length-bucket-scaled ceiling, using the verified IBM/W3C table as a PERMISSIVE triage bound, not a verified fact about German or French: under 10 EN characters, allow up to +200% growth; 11-30 chars, +180%; 31-70 chars, +150%; over 70 chars, +130%. A flag fires only when actual growth exceeds the bucket's own ceiling, so a future correction to the underlying percentage only moves the tolerance dial, the CLIP/OVERLAP/CONTAINER-BREACH checks stay T1-grounded and threshold-free regardless.\n\nOUTPUT SHAPE: one row per (route, element selector, locale, viewport), four boolean flags, EN and locale string values, both bounding rects, computed severity: CLIP or OVERLAP = blocking (ships nothing); WRAP-DELTA past ceiling on interactive elements = high; WRAP-DELTA within bucket but visually notable = informational. Sort blocking first, slotting into the same severity vocabulary D10 already proposes generically.\n\nBUILD NOTE: implement as a site-tester crawl variant reusing crawl.mjs's route enumeration and Playwright session, looping locale x viewport x route, one `page.evaluate()` per route walking the interactive-element selectors and returning rect/scroll JSON, diffed against a cached EN baseline. This mirrors the existing industry pattern of CI-embedded per-locale visual diffing (Percy, Chromatic, CONV-tier, cross-checked across two independent scouting passes this round), just built on infra Solen already has (site-tester, messages/{de,fr,it}.json) instead of adding a new vendor dependency.\n\nRESIDUAL TENSION, not fixed here: RATIONALE.md:206 currently paraphrases the IBM/W3C table with numbers that do not match the verified source (\"11-20 chars roughly 80-100, 21-70 chars roughly 40, 71+ roughly 30\" instead of the confirmed 180-200% / 140-170% / 130%), likely a dropped-digit transcription error. This draft's own numbers above are the verified-correct ones; the mismatch in the existing file is a correction candidate for S33, out of this stream's scope, flagged rather than silently patched.\n\nWHAT THIS DOES NOT DO: it does not re-derive or re-verify the IBM expansion percentages as settled fact about German or French generally (S33's job), and it does not touch the existing CONV-tier flat 20-35% sentence-scale figure already honestly caveated in RATIONALE.md, which this stream deliberately does not lean on for its thresholds.",
+  "sources": [
+   {
+    "claim": "WCAG 2.1 SC 1.4.4 (Resize Text) requires content not be clipped, truncated, or obscured at 200% resize; Technique F69 names this exact failure.",
+    "source": "W3C, Understanding SC 1.4.4 Resize Text (w3.org/WAI/WCAG21/Understanding/resize-text.html) and Technique F69",
+    "tier": "T1"
+   },
+   {
+    "claim": "WCAG 2.1 SC 1.4.10 (Reflow) requires no loss of content or functionality at a 320 CSS px viewport (400% zoom equivalent).",
+    "source": "W3C, Understanding SC 1.4.10 Reflow (w3.org/WAI/WCAG21/Understanding/reflow.html)",
+    "tier": "T1"
+   },
+   {
+    "claim": "IBM's expansion-by-source-length table: <=10 chars 200-300%, 11-20 chars 180-200%, 21-30 chars 160-180%, 31-50 chars 140-160%, 51-70 chars 151-170%, >70 chars 130%.",
+    "source": "W3C Internationalization Activity, \"Text size in translation\" (w3.org/International/articles/article-text-size.en.html), crediting IBM globalization data, verified live via WebFetch by two independent research passes this round",
+    "tier": "T3"
+   },
+   {
+    "claim": "Fresha's German mobile search-results screen ellipsis-clips \"Aktueller Standort\" and runs a filter pill to the edge of its strip.",
+    "source": "Live browser capture, fresha.com /de, 375x812 viewport, this session",
+    "tier": "T2"
+   },
+   {
+    "claim": "Booking.com's German mobile homepage hard-clips a checkbox label mid-word (\"hinzufü\", missing \"gen\") in a fixed 3-column grid with no ellipsis.",
+    "source": "Live browser capture, booking.com /de, 375px viewport, this session",
+    "tier": "T2"
+   },
+   {
+    "claim": "Marriott Bonvoy's full-width CTA absorbs a variable-length localized currency string rather than clipping; Expedia, Tripadvisor, and Airbnb instead keep CTA copy to a short translation-safe verb.",
+    "source": "Mobbin screens (Marriott Bonvoy, Expedia, Tripadvisor, Airbnb)",
+    "tier": "T2"
+   },
+   {
+    "claim": "Todoist and Quora render each language name in its own script as the primary label with English as a smaller secondary line; Lyft warns a locale switch needs an app restart to take effect.",
+    "source": "Mobbin screens (Todoist, Quora, Lyft)",
+    "tier": "T2"
+   },
+   {
+    "claim": "Percy and Chromatic run the same test suite against multiple locale builds and diff each against an English baseline in CI, an existing precedent for the CI-diffing pattern this stream proposes.",
+    "source": "percy.io blog, BrowserStack localization-testing guide, better-i18n.com",
+    "tier": "CONV"
+   },
+   {
+    "claim": "RATIONALE.md:206 currently misquotes the IBM/W3C table (roughly 80-100 / 40 / 30 instead of the verified 180-200% / 140-170% / 130%), a likely transcription error, not something to silently fix in this stream.",
+    "source": "Direct read of _design-system/research/PRINCIPLES_ROUND3/S18.json verified block, cross-checked against the live W3C source",
+    "tier": "T2"
+   }
+  ],
+  "numbers_used": [
+   "200-300% (IBM/W3C, strings <=10 EN chars)",
+   "180-200% (11-20 chars)",
+   "160-180% (21-30 chars)",
+   "140-160% (31-50 chars)",
+   "151-170% (51-70 chars, non-monotonic in source)",
+   "130% (>70 chars)",
+   "375/768/1280px (Solen's existing breakpoint contract, not reopened)",
+   "320px CSS width (WCAG 1.4.10 optional stricter pass)",
+   "20-35% CONV sentence-scale range (existing RATIONALE.md figure, not reopened, not relied on for thresholds)",
+   "30-40% (external corroborating range cited by real-world/social scouts, same industry-heuristic magnitude, not used as the audit threshold)"
+  ],
+  "taste_lab_probe": "This round closes the gap the academic draft flagged as unfillable (\"could not find a Mobbin screen or web source showing an app's overflow FAILURE state\"): Fresha and Booking.com's live German-mobile captures now serve as real before/after negative examples. Probe: run the proposed CLIP/WRAP-DELTA/OVERLAP/CONTAINER-BREACH flags against the three existing RATIONALE.md:199 test strings (Terminbestätigung, Haarverlängerung, Wegbeschreibung, plus FR Renseignements complémentaires) at their real Solen call-sites, screenshot EN vs. target locale side by side next to the Fresha and Booking.com failure screenshots as calibration anchors, and ask the owner one binary judgment per flagged element: does this read as broken, yes or no. This calibrates whether the IBM-derived bucket ceilings are too strict or too loose for Solen's own type scale and container widths against real reference failures, not just synthetic ones, before trusting the ceilings at full scale across all routes."
+ },
+ "verified": {
+  "claim_verdicts": [
+   {
+    "claim": "WCAG 2.1 SC 1.4.4 (Resize Text) requires content not be clipped, truncated, or obscured at 200% resize; Technique F69 names this exact failure.",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Verified via direct WebFetch of w3.org/WAI/WCAG21/Understanding/resize-text.html. Confirmed verbatim: loss-of-content prohibition and F69 named as the failure technique for clipped/truncated/obscured text."
+   },
+   {
+    "claim": "WCAG 2.1 SC 1.4.10 (Reflow) requires no loss of content or functionality at a 320 CSS px viewport.",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Verified via direct WebFetch of w3.org/WAI/WCAG21/Understanding/reflow.html. Quote confirmed verbatim."
+   },
+   {
+    "claim": "IBM's expansion-by-source-length table: <=10 chars 200-300%, 11-20 chars 180-200%, 21-30 chars 160-180%, 31-50 chars 140-160%, 51-70 chars 151-170% (non-monotonic), >70 chars 130%.",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Verified via direct WebFetch of the live w3.org/International/articles/article-text-size.en.html page. Every bucket and percentage matches exactly, including the odd non-monotonic 51-70 bucket, which is a strong tell the draft actually read the page rather than pattern-matching a plausible-sounding table. T3 is the correct tier: this is documented industry guidance from IBM's globalization group, not a peer-reviewed study with disclosed methodology, so it should not be elevated to T1/T2 as if it were an academic result."
+   },
+   {
+    "claim": "Fresha's German mobile search-results screen ellipsis-clips 'Aktueller Standort' and runs a filter pill to the edge of its strip.",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "INDEPENDENTLY REPRODUCED this round: navigated live to fresha.com in German locale at 375x812 viewport and captured a screenshot showing exactly 'Beliebige Uhrzeit · Aktueller Sta…' with the ellipsis mid-word, plus the 'Beste Übereinstimmung' pill running off the right edge of its strip. This is a direct, repeat confirmation of a real, currently-live production failure, not a one-off or stale capture. T2 (single live observation) is honest; do not elevate to T1 since it is one snapshot of one screen, not a systematic sample."
+   },
+   {
+    "claim": "Booking.com's German mobile homepage hard-clips a checkbox label mid-word ('hinzufü', missing 'gen') in a fixed 3-column grid with no ellipsis.",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "INDEPENDENTLY REPRODUCED this round: navigated live to booking.com/index.de.html at 375px width, screenshot shows the third checkbox column text cut off at 'hinzufü' with no ellipsis, exactly as claimed. DOM inspection via page.evaluate found a mechanism nuance worth folding into the spec: the label div's own scrollWidth equals its clientWidth (72px, no internal text-overflow), but the div's own bounding box (rect.right = 398px) bleeds past the 375px viewport with no page-level horizontal scroll. So the correct technical classification is CONTAINER-BREACH (a box positioned past its container/viewport edge, invisible with no scrollbar), not a text-level CLIP via overflow:hidden + text-overflow:ellipsis-style truncation on the element itself. The VISIBLE symptom the draft described (word appears to end mid-syllable, no ellipsis) is accurate; only the underlying CSS mechanism needed a one-line correction, which is folded into verified_addition."
+   },
+   {
+    "claim": "Marriott Bonvoy's CTA absorbs a variable-length localized currency string; Expedia, Tripadvisor, and Airbnb keep CTA copy to a short translation-safe verb.",
+    "source_ok": false,
+    "tier_final": "T2",
+    "note": "Could not independently verify this round: WebSearch budget was already exhausted (200/200) when I reached this claim, and I did not invoke the Mobbin MCP tool to re-pull these screens. Tier stays T2 as already assigned in the draft (not elevated, not treated as principle), which is the honest posture given I could not check it. Flagging as unverified-this-round rather than false; do not treat as confirmed until a future pass actually re-pulls the Mobbin screens."
+   },
+   {
+    "claim": "Todoist and Quora render each language name in its own script with English as a secondary line; Lyft warns a locale switch needs an app restart.",
+    "source_ok": false,
+    "tier_final": "T2",
+    "note": "Same as above: not independently re-verified this round (search budget exhausted, Mobbin tool not invoked). Tier T2 already appropriately hedges this as single-source, not elevated to principle. This item is decorative texture for the write-up, not load-bearing for the computable CLIP/WRAP-DELTA/OVERLAP/CONTAINER-BREACH formulas, so its unverified status does not weaken the stream's core deliverable."
+   },
+   {
+    "claim": "Percy and Chromatic run per-locale visual diffs against an English baseline in CI, an existing precedent for the proposed CI-diffing pattern.",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Not deeply re-verified (no fresh fetch this round), but this is well-established public knowledge about these products' documented capabilities and is already correctly tiered CONV, i.e. treated as an industry-practice convergence, not cited as a controlled-study fact. No overclaim to correct."
+   },
+   {
+    "claim": "RATIONALE.md:206 misquotes the IBM/W3C table (roughly 80-100 / 40 / 30 instead of the verified 180-200% / 140-170% / 130%), likely a transcription error.",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "VERIFIED true by direct grep of the live file: line 206 reads verbatim '11-20 chars roughly 80-100, 21-70 chars roughly 40, 71+ roughly 30', which does not match the now-confirmed-correct W3C source (180-200% / 160-180%+140-160%+151-170% collapsed / 130%). The draft's own flagged discrepancy is a real, confirmed bug in the existing file, correctly scoped as an S33 correction candidate rather than silently patched here."
+   }
+  ],
+  "myths_caught": [],
+  "verdict": "clean",
+  "verified_addition": "COMPUTABLE METRIC SPEC: Multi-locale overflow audit (D9), validated against live production failures\n\nPURPOSE: flag any DOM element whose rendered box clips, wraps unexpectedly compared to its EN baseline, or overlaps a sibling once the surface renders in de/fr/it instead of en, and prove the detector works by checking it against real failures observed live, not just theory.\n\nVALIDATION (confirmed twice: once by the synthesis draft's own live captures this round, once independently reproduced by this adversarial verify pass): before trusting the spec below, this stream found two live production counter-examples that the spec's own CLIP and CONTAINER-BREACH flags would catch, and the verify pass re-navigated to both sites live and confirmed the same failures render right now. (1) Fresha.com (Solen's own STRUCTURE reference), German locale, mobile 375px: the search subtitle \"Beliebige Uhrzeit · Aktueller Sta…\" ellipsis-clips \"Aktueller Standort\", and the filter pill \"Beste Übereinstimmung\" runs to its strip's edge. Reproduced live this round, screenshot confirms exact text. (2) Booking.com, German locale, mobile 375px: a fixed 3-column checkbox row cuts off \"Flüge zu meiner Suche hinzufügen\" at \"hinzufü\", dropping \"gen\" with no ellipsis. Reproduced live this round; DOM inspection (page.evaluate on the label element) showed the precise mechanism is a CONTAINER-BREACH, not a text-level ellipsis clip: the label's own box has no internal overflow (scrollWidth equals clientWidth), but the box's own right edge sits past the 375px viewport with no horizontal scroll available, so the visible portion simply ends where the viewport ends. This refines but does not overturn the original claim, the visible symptom (word cut off mid-syllable, no ellipsis) is exactly as described. Both are exactly the short-string, high-frequency-UI-element category (labels, pills, checkbox rows) the IBM/W3C table flags as highest-risk (under-10-char EN strings can run 200-300% longer), confirming the table's shape empirically, not just by citation. Since Fresha is the app Solen's own layout structure is built against, this is a direct warning: matching Fresha's English pixel budget does not guarantee the German build fits.\n\nINPUTS:\n1. Target routes/surfaces: start with the D9 gap register's own examples, any screen carrying CTAs, chips, tabs, badges; pull the route list from crawl.mjs's existing route enumeration (site-tester already uses this for test-sweep).\n2. The four locale builds via existing Next.js i18n routing: /de/..., /en/..., /fr/..., /it/... (no new infra).\n3. Three fixed viewport widths matching Solen's existing breakpoint contract: 375px (mobile, primary), 768px (tablet), 1280px (desktop) at 100% zoom; optional 320px CSS-width pass to align with WCAG 1.4.10 Reflow (T1) for a stricter mode.\n4. Per-element capture set: every node matching a fixed-width or single-line-intent selector already in the design system, button/CTA, TabPill, chip/badge, table/column header, nav label. Free-flowing body/paragraph blocks are explicitly out of scope for D9 (that is the measure/line-length domain, already covered elsewhere).\n\nFORMULA (per element, per locale, per viewport):\n- CLIP flag: `scrollWidth > clientWidth` OR `scrollHeight > clientHeight` on the element itself, checked only where the container is NOT intentionally horizontally-scrollable.\n- CONTAINER-BREACH flag: element `rect.right` exceeds parent `clientWidth` without native scroll overflow. This is the flag that actually fires on the Booking.com failure (its own box does not internally overflow; its box bleeds past its container). Keep CLIP and CONTAINER-BREACH as two distinct checks per the DOM evidence gathered this round, do not collapse them, a real element can fail either independently.\n- WRAP-DELTA flag: target-locale `rect.height` exceeds EN baseline `rect.height` by more than one computed line-height. Single-line-intent elements (buttons, pills, tabs) flag on ANY growth; multi-line-tolerant elements (card titles) flag only past +1 line.\n- OVERLAP flag: sibling bounding boxes intersect in the target locale where they did not in EN.\n\nTHRESHOLDS:\n- CLIP, CONTAINER-BREACH, and OVERLAP: always report, binary, WCAG-grounded (T1), zero tolerance.\n- WRAP-DELTA on single-line-intent elements: always report. This is exactly the CTA-wrap failure the existing <=3-word CTA rule (LOCKFILE:764, not reopened) exists to prevent.\n- WRAP-DELTA on multi-line-tolerant elements: report only past a length-bucket-scaled ceiling, using the verified IBM/W3C table (T3, confirmed live against the primary source this round) as a PERMISSIVE triage bound, not a verified fact about German or French: under 10 EN characters, allow up to +200% growth; 11-30 chars, +180%; 31-70 chars, +150%; over 70 chars, +130%. A flag fires only when actual growth exceeds the bucket's own ceiling, so a future correction to the underlying percentage only moves the tolerance dial, the CLIP/OVERLAP/CONTAINER-BREACH checks stay T1-grounded and threshold-free regardless.\n\nOUTPUT SHAPE: one row per (route, element selector, locale, viewport), four boolean flags (CLIP, CONTAINER-BREACH, WRAP-DELTA, OVERLAP), EN and locale string values, both bounding rects, computed severity: CLIP, CONTAINER-BREACH, or OVERLAP = blocking (ships nothing); WRAP-DELTA past ceiling on interactive elements = high; WRAP-DELTA within bucket but visually notable = informational. Sort blocking first.\n\nBUILD NOTE: implement as a site-tester crawl variant reusing crawl.mjs's route enumeration and Playwright session, looping locale x viewport x route, one `page.evaluate()` per route walking the interactive-element selectors and returning rect/scroll JSON, diffed against a cached EN baseline. This mirrors the existing industry pattern of CI-embedded per-locale visual diffing (Percy, Chromatic, CONV-tier, not independently re-verified this round but a well-documented product capability), just built on infra Solen already has (site-tester, messages/{de,fr,it}.json) instead of adding a new vendor dependency.\n\nRESIDUAL TENSION, not fixed here: RATIONALE.md:206 currently paraphrases the IBM/W3C table with numbers that do not match the verified source (\"11-20 chars roughly 80-100, 21-70 chars roughly 40, 71+ roughly 30\" instead of the confirmed 180-200% / 140-170% / 130%). Confirmed a real mismatch by direct file read this round, not a hypothetical. Likely a dropped-digit transcription error. This draft's own numbers above are the verified-correct ones; the mismatch in the existing file is a correction candidate for S33, out of this stream's scope, flagged rather than silently patched.\n\nWHAT THIS DOES NOT DO: it does not re-derive or re-verify the IBM expansion percentages as settled fact about German or French generally (S33's job), and it does not touch the existing CONV-tier flat 20-35% sentence-scale figure already honestly caveated in RATIONALE.md, which this stream deliberately does not lean on for its thresholds. It also does not lean on the Mobbin-sourced app examples (Marriott, Expedia, Tripadvisor, Airbnb, Todoist, Quora, Lyft) for any threshold or formula value, those remain unverified-this-round decorative texture (T2, not elevated) and should be spot-checked before the taste_lab_probe uses them as calibration anchors.",
+  "residual_risks": "1. OWNER DECISION CANDIDATE (for QUESTIONS.md): the CONTAINER-BREACH vs CLIP distinction discovered this round (Booking.com's failure is a box-position breach, not a self-contained text clip) should be kept as two separate detector flags rather than merged, since a real production element can trigger one without the other. This is a spec-design choice, not a hard blocker, but worth the owner's eyes before D9 gets built. 2. Mobbin-sourced supporting examples (Marriott, Expedia, Tripadvisor, Airbnb, Todoist, Quora, Lyft) were NOT independently re-verified this round: WebSearch budget was exhausted (200/200) before I reached them, and I did not invoke the Mobbin MCP tool. They remain at their already-honest T2 tier and are not load-bearing for the computable formula, but a future pass should re-pull them from Mobbin before they're used as taste_lab_probe calibration anchors. 3. The RATIONALE.md:206 mismatch is confirmed real (verified via direct file read) and is explicitly out-of-scope for S18 by the draft's own framing; it needs to land as an actual correction task for S33 or a fast-follow edit, otherwise the file keeps citing numbers that undercount label-scale expansion by roughly half. 4. The IBM/W3C table itself (T3) is industry practitioner guidance without disclosed sample size or methodology; it is being used correctly here as a permissive triage ceiling rather than ground truth, which is the right posture, but the spec should keep that framing explicit anywhere it resurfaces downstream so nobody upgrades it to a hard scientific threshold later.",
+  "id": "S18",
+  "tag": "mechanize"
+ }
+}

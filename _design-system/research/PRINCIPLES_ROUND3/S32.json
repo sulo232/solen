@@ -1,0 +1,134 @@
+{
+ "id": "S32",
+ "draft": {
+  "id": "S32",
+  "tag": "canon-deepen",
+  "title": "Neutral-ramp + accent hex perceptual derivation",
+  "principle_summary": "OKLCH (Ottosson 2020) decomposes an sRGB hex into perceptually near-uniform Lightness, Chroma, and Hue, already adopted at RATIONALE.md:81 as the palette-generation space. Running that conversion on Solen's four frozen base hexes turns bare LOCKFILE literals into a checkable ramp. The two near-white neutrals, s-border #E4E4E7 (L 0.920, C 0.0040, H 286.3) and s-bg.sunken #F4F4F5 (L 0.967, C 0.0013, H 286.4), share a hue angle within 0.1 degrees of each other: a real two-step Radix neutral ramp (matching the step map already claimed at RATIONALE.md:731), not just an assertion. That hue (286, blue-violet) sits roughly 220 degrees around the wheel from the warm hexes it replaced, E0DDDB (L 0.899, C 0.0043, H 56.4) and F8F5F2 (L 0.972, C 0.0051, H 67.8, yellow-orange region), at matched lightness and matched tiny chroma magnitude. That is the numeric proof behind the qualitative \"cool reversal, v2 rule 4\" claim stated as an assertion at LOCKFILE.md:40, 44 and RATIONALE.md:126, 129, 327 without ever showing a number: it was a pure hue rotation, not a lightness or saturation change. The accent, s-accent #276EF1, converts to L 0.573, C 0.210, H 261.4, landing inside the canonical blue hue band (roughly 240 to 270 degrees) at a chroma near the sRGB gamut's practical ceiling for that hue. Its OKLCH lightness is the direct mechanical cause of its already-recorded borderline WCAG contrast: a mid-lightness (L about 0.57) blue cannot clear 4.5:1 against a near-white background by much, and clears it even less against an already-light sunken background. Recomputing independently confirms 4.58:1 on white and 4.17:1 on sunken (fails AA), matching RATIONALE.md:110-111's 2026-07-15 measurement within rounding. s-ink #0A0A0A converts to L 0.145, C 0.000: it is a lifted near-black (not L 0), which is why it still reads as pure ink with zero hue bias, since chroma is effectively zero. One caveat carried forward honestly: OKLab hue angle is numerically noisy as chroma approaches zero (a known OKLCH limitation, already flagged at RATIONALE.md:81's own caveat line), so the neutral pair's matching H should be read as directionally supportive of the cool-ramp claim, not as a standalone proof; the warm-versus-cool hexes at matched lightness are the more robust half of the same finding because their hue delta (about 220 degrees) is far larger than any plausible noise floor at that chroma level.",
+  "gap": "LOCKFILE.md:36, 40, 44, 59 state the four base hexes (s-ink #0A0A0A, s-accent #276EF1, s-border #E4E4E7, s-bg.sunken #F4F4F5) as usage-rule literals with zero derivation: no OKLCH position, no stated relationship between the two neutrals, no stated relationship to the warm hexes they replaced. This is asymmetric with the rest of the token system: s-warning's amber IS derived (LOCKFILE.md:72, explicit HSL twin-of-accent formula, same S/L, hue 40 degrees) and the RETIRED tokens section (LOCKFILE.md:104-114) documents exactly why each superseded token was swapped. RATIONALE.md:731 asserts a Radix 12-step neutral placement (border at step 6, sunken at steps 2-3) but shows no OKLCH numbers proving those two hexes actually sit on one coherent ramp rather than being two independently eyeballed near-white greys that happen to look similar. RATIONALE.md's domain-3 contrast table (lines 103-116) already measures WCAG/APCA pairs correctly and does not need correction, but it treats the accent's borderline contrast as an observed fact rather than tracing it to the color's own OKLCH lightness, so the \"why is accent-on-sunken failing AA\" question has no mechanical answer anywhere in the docs. Separately, this stream's own key_question cites \"accent contrast approximately 3.7:1\" as a figure to recompute: recomputing it from the WCAG formula against both white and sunken produces 4.58:1 and 4.17:1, not 3.7:1. No document in _design-system/ contains a 3.7:1 figure for the accent; the nearest neighboring number is the retired green-CTA-on-white ratio of 3.6:1 at SOURCE.md:1025, a different token entirely. The 3.7:1 figure should be treated as an unsourced number and dropped rather than propagated into RATIONALE.",
+  "solen_current": "LOCKFILE.md:36 (s-ink #0A0A0A, \"Primary text + primary CTA bg\", no derivation) · LOCKFILE.md:40 (s-border #E4E4E7, \"COOL neutral, v2 rule 4, reverses warm V3-D447 #E0DDDB\", asserted not measured) · LOCKFILE.md:44 (s-bg.sunken #F4F4F5, \"COOL light grey, v2 rule 4, reverses warm #F8F5F2\", asserted not measured) · LOCKFILE.md:59 (s-accent #276EF1, usage rules only, no OKLCH position, no contrast number) · LOCKFILE.md:72 (s-warning, the ONE base-adjacent token that IS derived: explicit HSL twin-of-accent formula) · RATIONALE.md:81-83 (OKLCH adopted as T1 generation space, one worked example: chart-series hue stepping, base hexes not run through it) · RATIONALE.md:103-116 (2026-07-15 WCAG/APCA measurement table, correct and current, treated here as ground truth to reconcile against, not to be altered) · RATIONALE.md:731 (Radix 12-step neutral placement asserted by job, not shown in OKLCH numbers) · RATIONALE.md:126, 129, 327 (cool-vs-warm framing repeated as qualitative claim across three locations, never quantified).",
+  "proposed_addition": "DECISION: Solen's four frozen base hexes, converted to OKLCH (Ottosson 2020, the space already adopted at RATIONALE.md:81), form a coherent structure rather than four independent picks: s-ink #0A0A0A sits at L 0.145 / C 0.000 (achromatic, lifted off true black); s-accent #276EF1 sits at L 0.573 / C 0.210 / H 261.4 (canonical blue hue band, near-ceiling chroma for that hue in sRGB); s-border #E4E4E7 sits at L 0.920 / C 0.0040 / H 286.3; s-bg.sunken #F4F4F5 sits at L 0.967 / C 0.0013 / H 286.4. The two neutrals match in hue within 0.1 degrees, confirming they are two lightness steps of one cool-toned ramp (matching the Radix step map already asserted at RATIONALE.md:731) rather than two independently eyeballed greys. Their warm predecessors, E0DDDB (L 0.899 / C 0.0043 / H 56.4) and F8F5F2 (L 0.972 / C 0.0051 / H 67.8), sit at matched lightness and matched tiny chroma but a hue roughly 220 degrees away (yellow-orange versus blue-violet): the 2026 \"cool reversal\" (v2 rule 4) was a pure hue rotation at constant lightness and chroma, now shown numerically instead of only asserted.\n\nFORCES: showing OKLCH numbers for four already-frozen, owner-approved hexes versus leaving them as bare literals; treating hue-angle agreement at near-zero chroma as meaningful versus flagging its own noise floor.\n\nOPTIMIZES FOR: making the neutral ramp and the cool-versus-warm swap independently checkable (any future neutral addition can be placed on this ramp by OKLCH job the way RATIONALE.md:731 already prescribes for Radix steps, instead of eyeballing a new hex); tracing the accent's known borderline AA contrast (RATIONALE.md:110-111) to its OKLCH lightness as the mechanical cause, instead of leaving it as an unexplained observed number.\n\nSACRIFICES: none of the four hex values change, this section only documents their position; the hue-match finding for the two neutrals is weaker evidence than the warm-versus-cool delta because chroma is near zero for both pairs (OKLCH hue angle is known to be numerically unstable as chroma approaches zero, RATIONALE.md:81's own caveat), so it should be read as supportive, not as standalone proof.\n\nBOUNDARY: this section grounds the four EXISTING frozen hexes; it does not license inventing a fifth neutral, adjusting L/C/H targets, or treating the OKLCH numbers as a formula that would have picked these exact hexes from scratch (they were chosen by owner review across several rounds, e.g. RATIONALE.md:327's v2 rule 4 decision; OKLCH here explains and verifies the pick after the fact, it does not derive it a priori). Also do not carry forward \"accent contrast approximately 3.7:1\" from any prior brief: recomputed WCAG values are 4.58:1 on white and 4.17:1 on sunken (the sunken pairing fails AA 4.5:1 for normal text, already recorded at RATIONALE.md:111); no 3.7:1 figure exists in any Solen doc for this token and it should not be cited.\n\nMECHANIC: OKLab/OKLCH conversion (Ottosson 2020, T1 for perceptual uniformity, RATIONALE.md:81) applied directly to the sRGB hex via the standard linearize-to-LMS-to-Lab pipeline; WCAG 2.x contrast formula (L1+0.05)/(L2+0.05) on linearized relative luminance (T1, W3C SC 1.4.3, already cited RATIONALE.md:97) applied to recompute the accent pairings. Both are deterministic formula applications, not empirical claims requiring an external study citation beyond the formulas themselves (already sourced elsewhere in RATIONALE.md).\n\nSOURCE: Bjorn Ottosson, \"A perceptual color space for image processing\" (2020), the OKLab/OKLCH derivation, T1, already the cited authority at RATIONALE.md:81. W3C WCAG 2.1 Success Criterion 1.4.3 contrast formula, T1, already cited at RATIONALE.md:97. Numeric OKLCH and WCAG values in this block were computed directly from the frozen hex literals in LOCKFILE.md:36-59 using those two published formulas (arithmetic conversion, independently reproducible, not a third-party claim needing its own tier).",
+  "numbers_used": [
+   "#0A0A0A -> OKLCH L 0.145 C 0.000 H 89.9 (undefined, C~0)",
+   "#276EF1 -> OKLCH L 0.573 C 0.210 H 261.4",
+   "#E4E4E7 -> OKLCH L 0.920 C 0.0040 H 286.3",
+   "#F4F4F5 -> OKLCH L 0.967 C 0.0013 H 286.4",
+   "#E0DDDB (retired warm border) -> OKLCH L 0.899 C 0.0043 H 56.4",
+   "#F8F5F2 (retired warm sunken) -> OKLCH L 0.972 C 0.0051 H 67.8",
+   "hue delta between cool and warm neutral pair: approx 220 degrees",
+   "hue match between s-border and s-bg.sunken: within 0.1 degrees",
+   "s-ink on white WCAG contrast: 19.80:1",
+   "s-ink-2 #6B6B6B on white WCAG contrast: 5.33:1",
+   "s-accent on white WCAG contrast: 4.58:1",
+   "s-accent on sunken F4F4F5 WCAG contrast: 4.17:1 (fails AA 4.5:1)",
+   "s-border on white WCAG contrast: 1.27:1",
+   "sunken F4F4F5 on white WCAG contrast: 1.10:1",
+   "s-ink on sunken WCAG contrast: 18.01:1",
+   "3.7:1 figure from the stream key_question: not found in any Solen doc, nearest neighbor is the unrelated retired green-CTA 3.6:1 at SOURCE.md:1025, should be dropped not propagated"
+  ],
+  "taste_lab_probe": "Not primarily needed since this stream is canon-deepen (grounding, not a new default), but one calibration question is worth carrying to the taste lab alongside the existing probe 3 at RATIONALE.md:116: given that OKLCH now shows the accent's borderline sunken-surface contrast (4.17:1, fails AA) is a direct consequence of its L 0.573 position, does the owner want a documented on-sunken variant (a slightly darker L for accent text specifically on sunken backgrounds, e.g. the existing s-accent.deep #1E54B7 already used for dashboard hover, LOCKFILE.md:1194) reused for this case, or accept the deviation as-is. This does not require a new mockup, only a yes/no on reusing an already-locked deeper accent token in a new context.",
+  "sources": [
+   {
+    "claim": "OKLab/OKLCH (Ottosson 2020) gives near-uniform perceptual lightness with orthogonal L/C/H axes, unlike HSL where lightness is an RGB math artifact; already Solen's adopted generation space",
+    "source": "Bjorn Ottosson, \"A perceptual color space for image processing\" (2020); cited in Solen at RATIONALE.md:81",
+    "tier": "T1"
+   },
+   {
+    "claim": "WCAG 2.x contrast ratio formula (L1+0.05)/(L2+0.05) on linearized sRGB relative luminance (0.2126R+0.7152G+0.0722B), AA thresholds 4.5:1 normal text / 3:1 large text",
+    "source": "W3C WCAG 2.1 Success Criterion 1.4.3; cited in Solen at RATIONALE.md:97",
+    "tier": "T1"
+   },
+   {
+    "claim": "Recomputed OKLCH coordinates for s-ink #0A0A0A (L 0.145 C 0.000), s-accent #276EF1 (L 0.573 C 0.210 H 261.4), s-border #E4E4E7 (L 0.920 C 0.0040 H 286.3), s-bg.sunken #F4F4F5 (L 0.967 C 0.0013 H 286.4), and the retired warm hexes E0DDDB (L 0.899 C 0.0043 H 56.4) and F8F5F2 (L 0.972 C 0.0051 H 67.8)",
+    "source": "Direct arithmetic application of the Ottosson OKLab conversion matrices to the frozen hex literals in LOCKFILE.md:36-59 and the retired hexes noted at LOCKFILE.md:40,44; computed independently in this research pass, reproducible from the published formula",
+    "tier": "T1"
+   },
+   {
+    "claim": "Recomputed WCAG ratios: s-ink on white 19.80:1, s-ink-2 on white 5.33:1, s-accent on white 4.58:1, s-accent on sunken 4.17:1 (fails AA)",
+    "source": "Direct application of the WCAG formula above to the same hexes; matches RATIONALE.md:107-111's existing 2026-07-15 measurement table within rounding",
+    "tier": "T1"
+   },
+   {
+    "claim": "OKLab hue angle becomes numerically unstable as chroma approaches zero, so near-achromatic hue matches are weaker evidence than large-chroma hue matches",
+    "source": "General property of any polar (LCh-style) color encoding noted as a caveat already in RATIONALE.md:81 (\"imperfect in high-chroma blue/purple, gamut edges clip\"); the near-zero-chroma instability is the complementary low-chroma edge case of the same caveat",
+    "tier": "T2"
+   },
+   {
+    "claim": "s-warning amber is already derived from s-accent by an explicit HSL twin formula (same S/L, hue 40 degrees), the one existing precedent for hex derivation in this system",
+    "source": "_design-system/LOCKFILE.md:72",
+    "tier": "CONV"
+   }
+  ]
+ },
+ "verified": {
+  "id": "S32",
+  "tag": "canon-deepen",
+  "title": "Neutral-ramp + accent hex perceptual derivation",
+  "verdict": "clean",
+  "verified_addition": "DECISION: Solen's four frozen base hexes, converted to OKLCH (Ottosson 2020, the space already adopted at RATIONALE.md:81), form a coherent structure rather than four independent picks: s-ink #0A0A0A sits at L 0.145 / C 0.000 (achromatic, lifted off true black); s-accent #276EF1 sits at L 0.573 / C 0.210 / H 261.4 (canonical blue hue band, roughly 90 percent of the maximum in-gamut sRGB chroma available at that lightness and hue); s-border #E4E4E7 sits at L 0.920 / C 0.0040 / H 286.3; s-bg.sunken #F4F4F5 sits at L 0.967 / C 0.0013 / H 286.4. The two neutrals match in hue within 0.1 degrees, supporting the reading that they are two lightness steps of one cool-toned ramp (matching the Radix step map already asserted at RATIONALE.md:731) rather than two independently eyeballed greys. Their warm predecessors, E0DDDB (L 0.899 / C 0.0043 / H 56.4) and F8F5F2 (L 0.972 / C 0.0051 / H 67.8), sit at matched lightness and matched tiny chroma but a hue roughly 220 degrees away (yellow-orange versus blue-violet): the 2026 cool reversal (v2 rule 4) was a pure hue rotation at constant lightness and chroma, now shown numerically instead of only asserted.\n\nFORCES: showing OKLCH numbers for four already-frozen, owner-approved hexes versus leaving them as bare literals; treating hue-angle agreement at near-zero chroma as meaningful versus flagging its own noise floor.\n\nOPTIMIZES FOR: making the neutral ramp and the cool-versus-warm swap independently checkable (any future neutral addition can be placed on this ramp by OKLCH job the way RATIONALE.md:731 already prescribes for Radix steps, instead of eyeballing a new hex); tracing the accent's known borderline AA contrast (RATIONALE.md:110-111) to its OKLCH lightness as the mechanical cause, instead of leaving it as an unexplained observed number.\n\nSACRIFICES: none of the four hex values change, this section only documents their position; the hue-match finding for the two neutrals is weaker evidence than the warm-versus-cool delta because chroma is near zero for both pairs (OKLCH hue angle is numerically unstable as chroma approaches zero, a standard property of any polar color encoding and the low-chroma edge case of the caveat already noted at RATIONALE.md:81), so it should be read as supportive, not as standalone proof.\n\nBOUNDARY: this section grounds the four EXISTING frozen hexes, it does not license inventing a fifth neutral, adjusting L/C/H targets, or treating the OKLCH numbers as a formula that would have picked these exact hexes from scratch (they were chosen by owner review across several rounds, e.g. RATIONALE.md:327's v2 rule 4 decision, OKLCH here explains and verifies the pick after the fact, it does not derive it a priori). Also do not carry forward \"accent contrast approximately 3.7:1\" from any prior brief: recomputed WCAG values are 4.58:1 on white and 4.17:1 on sunken (the sunken pairing fails AA 4.5:1 for normal text, already recorded at RATIONALE.md:111), no 3.7:1 figure exists in any Solen doc for this token and it should not be cited.\n\nMECHANIC: OKLab/OKLCH conversion (Ottosson 2020, T1 for perceptual uniformity, RATIONALE.md:81) applied directly to the sRGB hex via the standard linearize-to-LMS-to-Lab pipeline; WCAG 2.x contrast formula (L1+0.05)/(L2+0.05) on linearized relative luminance (T1, W3C SC 1.4.3, already cited RATIONALE.md:97) applied to recompute the accent pairings. Both are deterministic formula applications, independently reproduced and confirmed to match RATIONALE.md's existing 2026-07-15 measurement table.\n\nSOURCE: Bjorn Ottosson, \"A perceptual color space for image processing\" (2020), the OKLab/OKLCH derivation, T1, already the cited authority at RATIONALE.md:81 (verified as the real, correctly-titled source: a widely adopted technical blog post now referenced in the CSS Color Level 4/5 drafts, not a peer-reviewed journal paper, but that distinction does not change its T1 status here since the claim being cited is a deterministic mathematical formula, not an empirical finding). W3C WCAG 2.1 Success Criterion 1.4.3 contrast formula, T1, already cited at RATIONALE.md:97. Numeric OKLCH and WCAG values in this block were computed directly from the frozen hex literals in LOCKFILE.md:36-59 and the retired hexes at LOCKFILE.md:40,44, independently reproduced by this verification pass and matching the draft's figures exactly.",
+  "myths_caught": [],
+  "residual_risks": "Two things for the owner or a doc-cleanup pass, neither blocking: (1) the draft's \"gap\" field cites RATIONALE.md:126 and :129 as two of three locations repeating the cool-vs-warm qualitative claim; verified those two line numbers are wrong (126 is the Domain 4 Typography heading, 129 is blank), only RATIONALE.md:327 actually carries that claim. This citation slip lives in the research-stage supporting text, not in the proposed_addition itself, so it does not corrupt what ships to RATIONALE.md, but whoever merges this stream should not copy the 126/129 citations forward. (2) The taste_lab_probe genuinely surfaces an unresolved owner decision: now that OKLCH traces the accent's on-sunken AA failure (4.17:1) to its L 0.573 position, does the owner want a documented on-sunken text variant (reusing the already-locked s-accent.deep #1E54B7, confirmed at LOCKFILE.md:1194) or accept the recorded deviation as-is; this is a genuine QUESTIONS.md candidate, not something this verification pass should decide.",
+  "claim_verdicts": [
+   {
+    "claim": "OKLab/OKLCH (Ottosson 2020) gives near-uniform perceptual lightness with orthogonal L/C/H axes; already Solen's adopted generation space",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Confirmed via web search: Bjorn Ottosson published this exact blog post title in Dec 2020, now referenced in CSS Color Level 4/5 drafts. It is a technical blog post rather than a peer-reviewed paper, but the claim itself is a deterministic mathematical conversion (not an empirical result), so T1 is defensible for the formula's correctness, which the recomputation confirms exactly."
+   },
+   {
+    "claim": "WCAG 2.x contrast ratio formula (L1+0.05)/(L2+0.05), AA thresholds 4.5:1 normal / 3:1 large",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Standard, correctly stated. Recomputed independently and all resulting ratios match RATIONALE.md's existing table within rounding."
+   },
+   {
+    "claim": "Recomputed OKLCH coordinates for the four base hexes plus two retired warm hexes",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Independently recomputed with a from-scratch Python OKLab implementation; every L/C/H value in the draft matched to the stated precision (e.g. s-accent L 0.573 C 0.2095 H 261.4, s-border/s-bg.sunken hue match within 0.1 degrees, warm pair hue delta ~220 degrees). No inflation found."
+   },
+   {
+    "claim": "Recomputed WCAG ratios: s-ink on white 19.80:1, s-accent on white 4.58:1, s-accent on sunken 4.17:1 (fails AA), etc.",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Independently recomputed, exact match to the draft and to RATIONALE.md:107-111's existing table."
+   },
+   {
+    "claim": "OKLab hue angle becomes numerically unstable as chroma approaches zero",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Correct as a general mathematical property of polar color encodings (hue is a function of atan2(b,a), which is ill-conditioned near the origin). Reasonably tiered as T2 since it is not itself empirically studied for this specific case, just standard math; not inflated."
+   },
+   {
+    "claim": "s-accent chroma sits near the sRGB gamut's practical ceiling for that hue at that lightness",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Independently computed the sRGB gamut boundary at L 0.573, H 261.4: max in-gamut chroma is C 0.234, and s-accent's C 0.2095 is about 90 percent of that ceiling. The draft's qualitative 'near-ceiling' framing holds; not overstated."
+   },
+   {
+    "claim": "'accent contrast approximately 3.7:1' cited in the stream's key_question",
+    "source_ok": false,
+    "tier_final": "MYTH-ADJACENT (unsourced, dropped)",
+    "note": "Grepped every file in _design-system/ for '3.7:1' and found zero matches. The draft correctly identifies this as an unsourced figure with no home in any Solen doc and correctly drops it rather than propagating it. Treated as a caught fabrication, not a verified claim."
+   },
+   {
+    "claim": "s-warning amber is derived from s-accent by an explicit HSL twin formula, the one existing precedent for hex derivation",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Confirmed at LOCKFILE.md:72 verbatim: 'amber = the accent's twin, same HSL S+L (88%/55%), hue 40 degrees'."
+   },
+   {
+    "claim": "RATIONALE.md:731 asserts a Radix 12-step neutral placement for the two neutral hexes",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Confirmed at RATIONALE.md line ~731-736: 'Solen's neutral mapping...white=1, sunken F4F4F5=2-3, border E4E4E7=6...'. Matches."
+   },
+   {
+    "claim": "Cool-vs-warm reversal repeated as a qualitative claim at RATIONALE.md:126, 129, 327",
+    "source_ok": false,
+    "tier_final": "n/a (citation error, not part of the shipped addition)",
+    "note": "Checked directly: line 126 is the Domain 4 Typography heading, line 129 is blank. Only line 327 actually states the cool-reversal DECISION. This is a citation slip in the draft's 'gap' supporting text, not in the proposed_addition content itself, so it does not corrupt what ships, but should not be copied forward as-is."
+   }
+  ]
+ }
+}

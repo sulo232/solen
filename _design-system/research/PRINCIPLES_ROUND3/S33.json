@@ -1,0 +1,102 @@
+{
+ "id": "S33",
+ "draft": {
+  "id": "S33",
+  "tag": "canon-deepen",
+  "title": "i18n text-expansion + multi-script typography grounding",
+  "principle_summary": "The IBM globalization guidelines table (republished by the W3C Internationalization Working Group) gives a length-dependent expansion curve for English-to-European-language translation: the shorter the source string, the larger the percentage expansion, running from 200-300% of original length under 10 characters down to 130% over 70 characters. This is a pooled dataset across European languages, not a per-language breakdown, and the table's own numbers do not monotonically decrease (the 51-70 char bucket sits above the 31-50 bucket in the published source itself). The article's only per-language datapoint is a single short-word example, and in it Italian (3.0x) and German (2.8x) both exceed the commonly repeated \"German expands 30%\" folklore, with Italian actually higher than German. The multi-script line-height half of the key question resolves to a scope finding: the W3C source ties extra vertical space needs to non-Latin scripts (Thai, CJK, Arabic, Devanagari), which do not apply to Solen's de/en/fr/it Latin locale set, so there is no new line-height rule to add there, only a confirmation that RATIONALE's existing RTL/CJK boundary line is correctly scoped.",
+  "sources": [
+   {
+    "claim": "IBM's character-bucket expansion table for English-to-European-language translation: up to 10 chars = 200-300% of original length, 11-20 = 180-200%, 21-30 = 160-180%, 31-50 = 140-160%, 51-70 = 151-170%, over 70 = 130%. The 51-70 bucket exceeding the 31-50 bucket is an anomaly present in the published table itself (verified against raw HTML, not a transcription error).",
+    "source": "W3C Internationalization, \"Text size in translation\" (Richard Ishida), https://www.w3.org/International/articles/article-text-size.en.html, table titled \"No. of characters in English source / Average expansion\", sourced in the article to IBM's \"Guidelines to design global solutions\"",
+    "tier": "T2"
+   },
+   {
+    "claim": "The character-bucket table is pooled across European languages as a group; the article does not publish a German-only or French-only version of it. The one per-language datapoint in the article is a single short-word example (Flickr's \"views\" label) with length ratios versus English (1.0x): Portuguese 2.6x, French 2.6x, German 2.8x, Italian 3.0x, Chinese 1.2x, Korean 0.8x.",
+    "source": "Same W3C article, the \"views\" ratio table and its surrounding paragraph, plus IBM Guidelines to design global solutions (cited source, not independently re-fetched)",
+    "tier": "T2"
+   },
+   {
+    "claim": "Compounding languages (German, Finnish, Dutch) concatenate short words into one long term (\"Input processing features\" becomes \"Eingabeverarbeitungsfunktionen\"), which is the mechanism behind label-scale expansion outliers, distinct from the general per-word ratio.",
+    "source": "Same W3C article, section on compounding languages",
+    "tier": "T1"
+   },
+   {
+    "claim": "Extra vertical space / taller-character line-height needs are tied to non-Latin scripts: the article names Arabic (Nastaliq fonts especially), Chinese, Devanagari, Japanese, Korean, Tibetan, and gives Thai as needing roughly 150% of the vertical space of Latin-equivalent text.",
+    "source": "Same W3C article, section on vertical space / non-Latin scripts",
+    "tier": "T3"
+   },
+   {
+    "claim": "Solen's current SOURCE.md line \"German text expands ~30% vs English\" carries no citation and picks a single flat number that sits below the actual W3C/IBM range for short label-scale strings (which the table puts at 60-200%+ depending on length) and ignores that Italian and French are not automatically smaller expanders than German.",
+    "source": "Internal finding, cross-checking _design-system/SOURCE.md:1075 against the W3C table above",
+    "tier": "CONV"
+   }
+  ],
+  "solen_current": "RATIONALE.md section 9 (\"Domain 9: i18n typography\", lines 193-208) already carries real content: it labels text expansion CONV, cites the LOCKFILE:764 <=3-word CTA lock as the mechanic behind label-width safety, names German compound-wrap behavior as T1, and at line 206 already cites \"W3C Text size in translation restating IBM globalization data\" with a length-dependent bucket table (under 10 chars: 200-300%, 11-20: roughly 80-100%, 21-70: roughly 40%, 71+: roughly 30%). It also carries a folklore-table entry at line 248 flagging SOURCE.md:1075's flat \"30 percent\" claim as unsourced. SOURCE.md:1075 (section 17.3, \"German text expands ~30% vs English\") itself still states the bare unsourced number with zero citation and zero mention of FR or IT, the two other Latin locales Solen ships. LOCKFILE.md:764 holds the frozen <=3-word CTA rule RATIONALE grounds against (not reopened here).",
+  "gap": "Two concrete gaps survive despite the existing coverage. First, RATIONALE's own bucket table at line 206 silently mixes two different units: it reports the under-10 bucket as \"200-300 percent\" using the source's raw \"percent of original length\" convention, but reports the 11-20 bucket as \"roughly 80-100 percent\" using a different convention (percentage increase over original, i.e. 180-200% minus 100). The 21-70 bucket then flattens three real IBM buckets (21-30 at 60-80% increase, 31-50 at 40-60% increase, 51-70 at 51-70% increase) into one number, \"roughly 40 percent,\" which understates the 21-30 and 51-70 buckets by roughly half. An implementer sizing a fixed-width chip against \"40 percent slack\" for a 25-character DE string is underprovisioning against the actual IBM data (60-80% is the correct planning number for that length). Second, SOURCE.md:1075 is the actual bare assertion the stream targets: it names only German and only one flat 30% figure, with no source and no FR/IT figures, even though the one per-language datapoint available (the Flickr \"views\" example) shows Italian (3.0x) and German (2.8x) both landing above French and Portuguese (2.6x each) at label scale, meaning \"German is the worst-case locale\" is not even directionally safe to assume for Solen's actual locale set.",
+  "proposed_addition": "RATIONALE.md section 9, replace the line-206 bucket sentence with corrected, unit-consistent buckets (same CONV/T2 framing, no LOCKFILE literal touched):\n\nDECISION: State the IBM/W3C character-bucket expansion curve in ONE consistent unit (percentage increase over the English source length), and stop treating German as the presumptive worst-case Solen locale.\n\nFORCES: fixed-width UI slots (chips, tabs, badge pills, button labels) must be sized against the longest rendered locale, not the EN draft; the correct slack number depends on the SOURCE STRING'S CHARACTER LENGTH, not on which of the four locales it renders in; mixing \"percent of original\" and \"percent increase\" in the same table produces a silently wrong slack budget for mid-length strings.\n\nOPTIMIZES FOR: a single readable planning table an implementer can apply without re-deriving units; correcting the folklore-table's own flagged gap (SOURCE.md:1075) with an actual named source instead of leaving it uncited.\n\nSACRIFICES: precision, since the underlying IBM table itself is pooled across European languages (not German-specific, not per-locale) and its 51-70 bucket does not monotonically decrease, an artifact this proposal notes rather than smooths over.\n\nBOUNDARY: no line-height rule follows for Solen's own locale set. The W3C source's vertical-space guidance (Thai ~150% of Latin height, extra headroom for CJK/Arabic/Devanagari) applies to non-Latin scripts only. de/en/fr/it are all Latin, so domain 9's existing boundary line (line 208: \"RTL and CJK: out of scope by locale set\") already correctly excludes this; nothing new to add there. This finding narrows, it does not expand, the multi-script surface.\n\nMECHANIC (T2, IBM Guidelines to design global solutions via W3C Internationalization \"Text size in translation\"): planning buckets for percentage INCREASE over the English source string, by source character count: under 10 chars, 100-200% (i.e. the translation can run 2-3x the source length); 11-20 chars, 80-100%; 21-30 chars, 60-80%; 31-50 chars, 40-60%; 51-70 chars, 51-70% (source table anomaly, use the wider 40-70% band for planning); over 70 chars, 30%. Chips, tabs, and buttons sit in the under-20-char band, which is why the LOCKFILE:764 <=3-word CTA lock and truncation-with-affordance rule (RATIONALE line 200) carry real weight, that band is where expansion is largest.\n\nMECHANIC (T2, same source, single-word example): do not treat German as the automatic worst-case Solen locale for short strings. The one available per-language ratio (Flickr's \"views\" label, English=1.0x) ranks Italian 3.0x above German 2.8x above Portuguese and French 2.6x each. Any Solen fixed-width slot test string set should include an Italian and a French candidate alongside the German one, not German alone.\n\nSOURCE: W3C Internationalization Working Group, \"Text size in translation\" (Richard Ishida), https://www.w3.org/International/articles/article-text-size.en.html, citing IBM's \"Guidelines to design global solutions\" for the character-bucket table and its own Flickr \"views\" example for the per-language ratio.\n\nCompanion edit to SOURCE.md:1075: change \"German text expands ~30% vs English\" to point at RATIONALE.md section 9 for the sourced mechanic instead of restating an uncited flat number, and add FR/IT to the illustrative example line (currently only shows DE \"Sign in / Anmelden\" and \"Reviews / Bewertungen\").",
+  "numbers_used": [
+   "200-300%",
+   "180-200%",
+   "160-180%",
+   "140-160%",
+   "151-170%",
+   "130%",
+   "100-200%",
+   "80-100%",
+   "60-80%",
+   "40-60%",
+   "51-70%",
+   "30%",
+   "1.0x",
+   "1.2x",
+   "2.6x",
+   "2.8x",
+   "3.0x",
+   "0.8x",
+   "150%",
+   "LOCKFILE:764 <=3-word CTA lock (not reopened, cited as-is)"
+  ],
+  "taste_lab_probe": "Probe design: pull 12 real Solen strings across the four expansion bands (3 chips/badges under 10 chars, 3 tab/button labels 11-20 chars, 3 section titles/labels 21-30 chars, 3 body-adjacent labels 31-50+ chars) and read the actual de/fr/it message-file values already in messages/{locale}.json. For each, compute the real character-length ratio against the EN source and bucket it against the corrected MECHANIC table above. Flag any string whose actual ratio exceeds its bucket's upper bound (a real overflow risk, not a theoretical one) and any fixed-width component (TabPill, chip, button) whose CSS width was sized only against the EN or DE string. This closes the loop the stream names: D9's overflow audit gets a defensible numeric threshold to test against instead of the flat \"30 percent\" folklore."
+ },
+ "verified": {
+  "id": "S33",
+  "tag": "canon-deepen",
+  "verdict": "clean",
+  "myths_caught": [],
+  "claim_verdicts": [
+   {
+    "claim": "IBM/W3C character-bucket table: <=10 chars 200-300%, 11-20 180-200%, 21-30 160-180%, 31-50 140-160%, 51-70 151-170%, >70 130%, with the 51-70 bucket exceeding the 31-50 bucket as a genuine anomaly in the published source",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Live-fetched the W3C page directly. Table numbers match the draft exactly, digit for digit. The 51-70 > 31-50 anomaly is real (151-170% vs 140-160%), not a transcription error. T2 is honest: this is IBM's data via W3C's secondary citation, the IBM primary document itself was not independently located."
+   },
+   {
+    "claim": "Per-language 'views' ratio example: Portuguese 2.6x, French 2.6x, German 2.8x, Italian 3.0x, Chinese 1.2x, Korean 0.8x, pooled table is not per-language",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Confirmed verbatim against the fetched Flickr example table. Italian (3.0x) genuinely exceeds German (2.8x) at this one datapoint, so the draft's claim that German is not a safe worst-case proxy for Solen's FR/IT locales holds."
+   },
+   {
+    "claim": "Compounding languages (German, Finnish, Dutch) concatenate short words into one long term, e.g. 'Input processing features' -> 'Eingabeverarbeitungsfunktionen'",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Confirmed against the fetched article, same example phrase. T1 is reasonable, this is an established linguistic fact about German compounding, not a contested statistic."
+   },
+   {
+    "claim": "Vertical space needs tied to non-Latin scripts: Thai ~150% of Latin line height, extra headroom named for Arabic, CJK, Devanagari, Tibetan",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Confirmed against the fetched article. T3 is appropriately conservative since this is one illustrative example (Thai) rather than a derived cross-script average; not overclaimed."
+   },
+   {
+    "claim": "SOURCE.md:1075 states an unsourced flat 'German text expands ~30% vs English' with no FR/IT figures",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Read SOURCE.md directly. Line 1075 is exactly '### 17.3 German text expands ~30% vs English' with only DE examples ('Sign in/Anmelden', 'Reviews/Bewertungen'), zero citation, zero FR/IT. Claim confirmed verbatim, and RATIONALE.md's own section 12 folklore table already independently flags this same line as an unsourced myth, so the draft is not introducing a new dispute, it is closing an already-open one."
+   }
+  ],
+  "verified_addition": "RATIONALE.md section 9, replace the line-206 bucket sentence with corrected, unit-consistent buckets (same CONV/T2 framing, no LOCKFILE literal touched):\n\nDECISION: State the IBM/W3C character-bucket expansion curve in ONE consistent unit (percentage increase over the English source length), and stop treating German as the presumptive worst-case Solen locale.\n\nFORCES: fixed-width UI slots (chips, tabs, badge pills, button labels) must be sized against the longest rendered locale, not the EN draft. The correct slack number depends on the source string's character length, not on which of the four locales it renders in. Mixing \"percent of original\" and \"percent increase\" in the same table (as the current line 206 does: 200-300% for under-10 chars is the raw \"percent of original\" convention, but \"roughly 80-100\" for 11-20 chars is already the increase convention) produces a silently wrong slack budget for mid-length strings.\n\nOPTIMIZES FOR: a single readable planning table an implementer can apply without re-deriving units. Correcting SOURCE.md:1075's already-flagged folklore gap with an actual named source instead of leaving the flat unsourced number in place.\n\nSACRIFICES: precision. The underlying IBM table itself is pooled across European languages (not German-specific, not per-locale) and its 51-70 bucket does not monotonically decrease versus the 31-50 bucket, an artifact this entry notes rather than smooths over. Verified live against the W3C source page: 31-50 chars is 140-160% of original length, 51-70 chars is 151-170%, the higher bucket genuinely sits above the lower one in the published data.\n\nBOUNDARY: no line-height rule follows for Solen's own locale set. The W3C source's vertical-space guidance (Thai roughly 150% of Latin line height, extra headroom for CJK/Arabic/Devanagari/Tibetan) applies to non-Latin scripts only. de/en/fr/it are all Latin, so domain 9's existing boundary line (\"RTL and CJK: out of scope by locale set\") already correctly excludes this. This finding narrows, it does not expand, the multi-script surface.\n\nMECHANIC (T2, IBM \"Guidelines to design global solutions\" via W3C Internationalization \"Text size in translation\"): planning buckets for percentage increase over the English source string, by source character count: under 10 chars, 100-200% (the translation can run 2-3x the source length); 11-20 chars, 80-100%; 21-30 chars, 60-80%; 31-50 chars, 40-60%; 51-70 chars, 51-70% (source table anomaly, use the wider 40-70% band for planning); over 70 chars, 30%. Chips, tabs, and buttons sit in the under-20-char band, which is why the LOCKFILE:764 <=3-word CTA lock and truncation-with-affordance rule (RATIONALE line 200) carry real weight, that band is where expansion is largest.\n\nMECHANIC (T2, same source, single-word example, pooled-language caveat applies): do not treat German as the automatic worst-case Solen locale for short strings. The one available per-language ratio (Flickr's \"views\" label, English = 1.0x) ranks Italian 3.0x above German 2.8x above Portuguese and French at 2.6x each. Any Solen fixed-width slot test string set should include an Italian and a French candidate alongside the German one, not German alone. Treat this ranking as directional (one word, one product), not a settled per-language law.\n\nSOURCE: W3C Internationalization Working Group, \"Text size in translation\" (Richard Ishida), https://www.w3.org/International/articles/article-text-size.en.html, citing IBM's \"Guidelines to design global solutions\" for the character-bucket table and its own Flickr \"views\" example for the per-language ratio. Live-fetched and cross-checked, all figures above match the published page exactly.\n\nCompanion edit to SOURCE.md:1075: change \"German text expands ~30% vs English\" to point at RATIONALE.md section 9 for the sourced mechanic instead of restating an uncited flat number, and add FR/IT to the illustrative example line (currently only shows DE \"Sign in / Anmelden\" and \"Reviews / Bewertungen\"). This also resolves the open item already logged in RATIONALE.md section 12's folklore table against this exact line.",
+  "residual_risks": "Line-number drift, not a frozen-literal conflict: the draft cites LOCKFILE:764 for the <=3-word CTA rule, which matches the actual bullet in the current file, but RATIONALE.md's own existing text at section 9 cites LOCKFILE:765 for the same rule. Worth a one-line QUESTIONS.md note to reconcile the citation, not a reason to hold the addition.\n\nThe IBM \"Guidelines to design global solutions\" primary document itself was not independently located or fetched, only W3C's secondary citation of it. If the owner wants T1 confidence on the character-bucket table specifically, someone should track down IBM's original guideline document; current T2 tier is the honest ceiling without that.\n\nThe companion SOURCE.md:1075 edit touches canonical SOURCE.md text (not a LOCKFILE frozen literal, so not blocked by the precedence chain, but SOURCE.md still sits above RATIONALE in the doc hierarchy per project convention). Flag for owner sign-off before editing SOURCE.md directly, since this stream's primary target was RATIONALE.md section 9.\n\nThe Italian-over-German ranking rests on a single word pair (Flickr's \"views\") in one product's UI, not a systematic per-language corpus. It is real and verified, but treat \"Italian expands more than German\" as directional evidence for test-string selection, not as a new locked ordering that overrides German-first testing habits everywhere."
+ }
+}

@@ -1,0 +1,271 @@
+{
+ "id": "S31",
+ "synth": {
+  "id": "S31",
+  "tag": "canon-deepen",
+  "title": "Elevation / shadow rgba + z-index scale grounding",
+  "principle_summary": "A shadow's blur widening and alpha climbing together as elevation increases is not an aesthetic guess: it is the physically correct behavior of a penumbra as an object lifts further from its surface (T1 optics), it is the shape every measured competitor and social-trend source actually ships (a tight key/edge layer plus a wider, lower-alpha ambient layer, both layers' alpha rising with elevation), and Fresha's own live dialog shadow (measured: blur roughly 2.5x the card's, alpha climbing .04 to .12) demonstrates the identical direction Solen already locked. Z-index tiering is a separate, equally real convention: every measured competitor site (Fresha, Booking.com, Booksy, Treatwell) uses order-of-magnitude \"decade jump\" tiers (ones, tens, hundreds, thousands) rather than fine 10-unit ladders, keeps the tightest gap reserved for a background/foreground pair that will never need an insertion between them (a scrim and its own sheet), and every one of them reserves one deliberately oversized \"nuclear\" value near the top of the safe integer range as an escape hatch for a layer that must always win regardless of the app's own scheme (in all four measured sites, that slot was occupied by a third-party cookie-consent overlay). Solen's 400/410/500/510/600/700 scale matches the PATTERN (unequal, sparse, gapped tiers with a tight background/foreground pair) but not the SHAPE competitors actually ship (decade jumps, not fine 10-unit steps), which is a real, now-evidenced tension worth naming, not a locked value being reopened.",
+  "real_world_evidence": [
+   {
+    "source": "Fresha (competitor, live DOM measured via getComputedStyle)",
+    "what": "Card shadow is a two-layer recipe: rgba(19,19,19,.12) 0 1px 6px 0 (ambient) + rgba(19,19,19,.04) 0 0 0 1px (tight edge). Dialog shadow: rgba(19,19,19,.08) 0 2px 8px 0 + rgba(19,19,19,.12) 0 4px 20px 0, blur roughly 2.5x the card's and alpha climbing as elevation rises, not just blur.",
+    "tier": "T1"
+   },
+   {
+    "source": "Fresha salon-list cards (Mobbin, iOS visual evidence)",
+    "what": "Resting cards carry almost no visible drop shadow; row separation comes from a hairline/whitespace gap, not elevation, matching Solen's own flat-unless-earned doctrine.",
+    "tier": "T2"
+   },
+   {
+    "source": "Booking.com (competitor, live DOM measured)",
+    "what": "Single-layer shadow only, rgba(26,26,26,.16) 0 2px 8px 0, a simpler one-layer recipe than Fresha's two-layer stack, with a higher single alpha (.16).",
+    "tier": "T1"
+   },
+   {
+    "source": "Booksy (competitor, live DOM measured)",
+    "what": "Button/nav shadow is literally Tailwind's stock shadow-md (negative-spread two-layer trick). Cookie-consent dialog carries a far larger blur (68px) and darker alpha (.3) than any in-app surface, confirming alpha and blur both scale with a surface's distance from the page.",
+    "tier": "T1"
+   },
+   {
+    "source": "Fabric, Savee, pliability, Craft, IMDb, Notion, ChatGPT, FocusFlight (8 apps, Mobbin visual evidence)",
+    "what": "Identical two-tier depth recipe on every sheet/picker screen: a dimmed scrim (roughly 40-80% black) plus a soft-shadowed raised sheet on top; no app showed a third simultaneous layer (e.g. a toast over an open sheet), supporting a hard cap on usable simultaneous z-tiers.",
+    "tier": "T2"
+   },
+   {
+    "source": "Jobber, Linear Mobile, Glassdoor, Google Drive, Beli, Faire Wholesale (6 apps, Mobbin visual evidence)",
+    "what": "Toasts consistently overlap the tab bar rather than sitting above it with a gap, i.e. toast z-index outranks persistent nav chrome in every sample checked.",
+    "tier": "T2"
+   },
+   {
+    "source": "Collect, Edits, Pangea (3 apps, Mobbin visual evidence)",
+    "what": "FAB elevation is real but split: Collect and Edits give the FAB a visible circular shadow as the highest persistent (non-modal) element; Pangea's FAB sits flush with the tab bar at the same plane. Two different resolved patterns, a genuine open design choice, not a single derivable law.",
+    "tier": "T2"
+   },
+   {
+    "source": "Fresha, Booking.com, Booksy, Treatwell (4 sites, live DOM z-index measured)",
+    "what": "Every site clusters its own z-index values at order-of-magnitude jumps (ones/tens/hundreds/low-thousands: e.g. Fresha 1,10,100,1000,2000) and every one reserves a single deliberately oversized sentinel near Number.MAX_SAFE_INTEGER-adjacent values purely for a third-party cookie-consent overlay that must always win.",
+    "tier": "T1"
+   },
+   {
+    "source": "Bootstrap 5.3 z-index scale (live-verified against getbootstrap.com/docs/5.3/layout/z-index/)",
+    "what": "Real values are dropdown 1000, sticky 1020, fixed 1030, offcanvas-backdrop 1040, offcanvas 1045, modal-backdrop 1050, modal 1055, popover 1070, tooltip 1080, toast 1090: unequal gaps (20/10/10/5/5/5/15/10/10), with the tightest 5-point gaps reserved precisely for a backdrop-and-its-own-foreground pair, the same shape as Solen's tight scrim/sheet pairing.",
+    "tier": "CONV"
+   },
+   {
+    "source": "Material Design shadow system (m1.material.io, archived Material Design 1 resource)",
+    "what": "Formalizes a key shadow (tighter, higher opacity) layered under an ambient shadow (wider, lower opacity), both shifting together with named opacity constants (key-umbra .20, key-penumbra .14, ambient .12) as dp/elevation rises.",
+    "tier": "CONV"
+   },
+   {
+    "source": "General shadow-formation optics (umbra/penumbra/antumbra)",
+    "what": "For a fixed-size light source, a cast shadow's soft edge (penumbra) physically widens as the object lifts further from the surface it shadows.",
+    "tier": "T1"
+   },
+   {
+    "source": "2026 UI-trend roundup (rajeshrnair.com)",
+    "what": "Current design consensus recommends a two-layer tight-plus-diffuse shadow recipe (e.g. 0 1px 3px rgba(0,0,0,.1), 0 8px 24px rgba(0,0,0,.06)) over a single harsh drop-shadow, explicitly to build depth through layering.",
+    "tier": "CONV"
+   },
+   {
+    "source": "Neumorphism, self-critiqued by 2026 trend sources (zignuts.com)",
+    "what": "The trend literature itself flags neumorphism's dual-embossed low-contrast shadow as an accessibility failure, recommending a border or accent fix; cited here as a named, sourced reason to keep excluding it from Solen, not as evidence for anything to adopt.",
+    "tier": "CONV"
+   }
+  ],
+  "generative_prior": "Shadow shape (numbers as bands, not new locked values): always a two-layer stack, a tight/key layer plus a wider/diffuse ambient layer, with BOTH blur and alpha climbing together as elevation rises, never blur alone. Observed real bands: resting/card tier sits around blur 1-8px, alpha .04-.12 (Fresha card: 6px/.12 ambient + edge .04; Solen elevation-1 already 3px); dialog/sheet tier around blur 8-20px, alpha .08-.16 (Fresha dialog: 20px/.12; Booking.com single-layer: 8px/.16; Solen elevation-2 already 12px); the furthest, must-win surface (a full-screen consent banner in the competitor data) tops out around blur 60-70px, alpha .3 (Booksy cookie dialog: 68px/.3), an outer bound worth knowing even though Solen's own elevation-3/pressed literals (28px, .12/.06) stay well inside it and are not being changed. Three real-app anchors for this band: Fresha's own dialog (20px blur, alpha climbing .08 to .12), Booksy's stock Tailwind shadow-md button, and Material Design's named .20/.14/.12 opacity triad.\n\nZ-index shape: order-of-magnitude (\"decade jump\") tiers per component family (ones for base content, tens for dropdowns/sticky chrome, hundreds for scrims, low-thousands for modals/toasts), a tight 5-10 point gap reserved only for a background-and-its-own-foreground pair that will never need an insertion between them (scrim-to-sheet, backdrop-to-modal), and one deliberately oversized escape-hatch value near the top of the safe integer range reserved for a layer that must always win regardless of the app's own scheme. Three real-app anchors: Fresha's own scale (1, 10, 100, 1000, 2000, clean decade jumps), Bootstrap's real corrected scale (1000-1090, tight 5-point gaps only between backdrop/foreground pairs, 10-20 point gaps between distinct overlay types), and the cookie-consent sentinel pattern repeated identically across all four measured competitor sites (Booking.com, Booksy, Treatwell all reserve a near-Number.MAX_SAFE_INTEGER-adjacent value for the one overlay that must out-rank everything).\n\nTension to flag, not to apply: Solen's locked 400/410/500/510/600/700 ladder matches the PATTERN (sparse, unequal, tight background/foreground pair) but not the decade-jump SHAPE every measured competitor and Bootstrap's real (corrected) numbers actually use. No competitor site or documented convention checked in this pass produces fine 10-unit-apart tiers between semantically distinct overlay types the way Solen's scale does between its hundred-tiers. This is evidence worth logging for a future owner-reviewed revision, not grounds to reopen the frozen LOCKFILE values now.",
+  "proposed_addition": "Extends the already-verified S31 draft (two new paragraphs slotted into RATIONALE.md section 18, Domain 14, after the existing two-light-model paragraph at line 721) with a third evidence layer, real shipped competitor and app data, without touching any frozen LOCKFILE value.\n\n### Shadow blur and alpha progression (extends LOCKFILE:481-486, section-14 box shadow table)\nDECISION: unchanged, elevation-1 through elevation-3 plus pressed two-layer rgba stacks (blur 3px to 12px to 28px, key-layer alpha .04 to .08 to .12, second-layer alpha .03 to .04 to .06).\nFORCES: a higher elevation needs to read as more lifted without the top of the ladder looking pasted-on or overly dark; the step sizes need to keep growing, not stay linear, or level 3 would look like level 2 with a filter on it; and the recipe needs to survive contact with what real shipped products actually render, not just an internal system.\nOPTIMIZES FOR: a three-step ladder where each step is unambiguously more lifted than the last, judged by eye against both a physical reference and a measured competitor reference.\nSACRIFICES: the exact multiplier between steps is still owner-tuned by eye, not derived from a formula; this addition narrows, but does not close, the \"no formula to extend from\" gap.\nBOUNDARY: this grounds direction (blur widens, alpha climbs, together, as elevation increases) and precedent (both a physical law and a named system and now measured live competitor CSS all point the same way), not the exact Solen numbers, which stay CONV and unchanged.\nMECHANIC: three independent lines of evidence now converge on the same shape. Physically (T1), a fixed-size light source produces a wider, softer penumbra as an object lifts further from its surface. Conventionally (CONV), Material Design's key-plus-ambient shadow system formalizes the same two-layer, alpha-climbing pattern (verified live: key-umbra .20, key-penumbra .14, ambient .12), and current 2026 design-trend consensus (rajeshrnair.com) independently recommends the identical tight-plus-diffuse two-layer recipe over a single harsh shadow. Empirically (T1, live-measured), Fresha's own production CSS runs the same shape end to end: its card shadow is a tight-edge-plus-ambient two-layer stack, and its dialog shadow (a higher elevation tier) has both a roughly 2.5x larger blur radius AND a higher alpha than the card, confirming that real shipped competitor surfaces move alpha and blur together, not blur alone, exactly as Solen's own elevation-1/2/3 progression already does. Booksy's cookie-consent dialog (blur 68px, alpha .3) further shows the same direction continuing at a level higher than any in-app surface Booksy itself uses, an external upper bound that corroborates the progression's shape without implying Solen needs a fourth tier. Two Mobbin-observed patterns temper how far to trust \"more shadow\" as a universal rule: Fresha's own resting list cards use almost no shadow at all, separation comes from a hairline/whitespace gap, which is not a contradiction of the progression but confirmation that Solen's own flat-unless-earned doctrine (elevation only spent where it is earned) matches real competitor restraint, not just Uber-derived taste. Neumorphism's dual-embossed low-contrast shadow pattern, explicitly flagged by 2026 trend sources themselves as an accessibility failure, is named here as a rejected pattern with a citable reason, not a candidate direction.\nSOURCE: Material Design shadows resource (CONV), m1.material.io/resources/shadows.html; general umbra/penumbra shadow-formation optics (T1); Fresha production CSS, fresha.com, live-measured getComputedStyle (T1); Booksy production CSS, booksy.com, live-measured (T1); rajeshrnair.com 2026 UI trends roundup (CONV); LOCKFILE:481-486; RATIONALE.md section 18 (light-from-above, two-light model, already present).\n\n### Z-index tier gap sizing (extends LOCKFILE:494-497, section-14 z-index scale)\nDECISION: unchanged, sheet-bg 400 / sheet 410 / modal-bg 500 / modal 510 / toast 600 / tooltip 700, with header/tab-nav and sticky-rail on a separate small-number scale (z-50, z-30).\nFORCES: overlays need an unambiguous stacking order regardless of DOM mount order; a future overlay type needs to be insertable without renumbering the whole scale; a background/scrim and its own foreground content never need anything inserted between them, so they do not need the same headroom as two unrelated overlay types; and a layer that must always win (a mandatory legal/consent overlay, if Solen ever needs one) needs a value nothing else can accidentally exceed.\nOPTIMIZES FOR: an extensible scale where inserting a new layer type is a matter of picking a free number in an existing gap, never a renumbering exercise.\nSACRIFICES: same as before, this names why the gaps exist and why they are unequal; it does not derive the exact gap sizes (10 versus 90 versus 100) from a formula, and this pass surfaces, without resolving, a real shape mismatch against every measured competitor.\nBOUNDARY: this grounds the pattern (gapped, unequal spacing on purpose, a tight gap for background/foreground pairs, a wide gap between distinct types) and now flags a shape tension worth an owner decision later, not a reason to reopen the frozen 400/410/500/510/600/700 values today. It also does not reconcile the separate z-50/z-30 header/sticky-rail scale with the 400-700 overlay scale, already flagged at LOCKFILE:825-831.\nMECHANIC: sparse enumeration (CONV) is a real, citable software convention (Bootstrap's live-verified layout z-index scale: dropdown 1000, sticky 1020, fixed 1030, offcanvas-backdrop 1040, offcanvas 1045, modal-backdrop 1050, modal 1055, popover 1070, tooltip 1080, toast 1090, unequal gaps of 5 to 20, with the tightest 5-point gaps reserved for exactly the backdrop-to-its-own-foreground pairing Solen's tight 10-point sheet-bg-to-sheet gap mirrors). Four independently measured competitor sites (Fresha, Booking.com, Booksy, Treatwell) add a second, stronger data point this round: every one of them clusters its OWN z-index values at order-of-magnitude decade jumps (Fresha: 1, 10, 100, 1000, 2000) rather than fine 10-unit-apart tiers between distinct overlay types, and every one of them reserves a single deliberately oversized value near the top of the safe integer range as an escape hatch for a layer that must always out-rank the app's own scheme, in all four cases occupied by a third-party cookie-consent overlay (via OneTrust/Cybot). This confirms the PATTERN Solen's scale already follows (sparse, unequal, tight pair-gap, wide type-gap) but surfaces a genuine, now-evidenced SHAPE mismatch: no measured competitor or documented convention checked this round produces fine 10-unit gaps between semantically distinct overlay tiers (sheet/modal/toast/tooltip) the way Solen's 400 to 700 range does; the closer real-world analogue is decade-jump tiers per component family plus one reserved escape-hatch value, not fine graduated hundreds. This tension is logged for a future owner-reviewed pass, the frozen values are unchanged here.\nSOURCE: Bootstrap layout z-index docs (CONV), getbootstrap.com/docs/5.3/layout/z-index/ (verified live); Fresha, Booking.com, Booksy, Treatwell production z-index values, live-measured getComputedStyle (T1, n=4 sites); LOCKFILE:494-497; LOCKFILE:825-831 (the unreconciled second scale, already flagged); RATIONALE.md section 18.",
+  "sources": [
+   {
+    "claim": "Material Design's key-plus-ambient shadow system uses named opacity constants (.20/.14/.12) that shift together with elevation.",
+    "source": "m1.material.io/resources/shadows.html",
+    "tier": "CONV"
+   },
+   {
+    "claim": "A cast shadow's penumbra widens as the object-to-surface distance grows, for a fixed light source.",
+    "source": "General umbra/penumbra/antumbra shadow-formation optics",
+    "tier": "T1"
+   },
+   {
+    "claim": "Bootstrap's real z-index scale is dropdown 1000 through toast 1090 with unequal 5-20 point gaps, tightest between a backdrop and its own foreground.",
+    "source": "getbootstrap.com/docs/5.3/layout/z-index/",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Fresha's card and dialog shadows are a measured two-layer stack with alpha climbing alongside blur as elevation rises.",
+    "source": "fresha.com, live getComputedStyle measurement",
+    "tier": "T1"
+   },
+   {
+    "claim": "Booking.com uses a single-layer shadow recipe, simpler than Fresha's two-layer stack.",
+    "source": "booking.com, live getComputedStyle measurement",
+    "tier": "T1"
+   },
+   {
+    "claim": "Booksy's button shadow is stock Tailwind shadow-md; its cookie-consent dialog uses a far larger blur/alpha than any in-app surface.",
+    "source": "booksy.com, live getComputedStyle measurement",
+    "tier": "T1"
+   },
+   {
+    "claim": "Fresha, Booking.com, Booksy, and Treatwell all cluster z-index at decade-jump tiers and reserve a near-max-int sentinel for a cookie-consent overlay.",
+    "source": "Live getComputedStyle measurement across 4 sites",
+    "tier": "T1"
+   },
+   {
+    "claim": "Eight apps (Fabric, Savee, pliability, Craft, IMDb, Notion, ChatGPT, FocusFlight) share an identical scrim-plus-sheet two-tier depth recipe with no observed third simultaneous layer.",
+    "source": "Mobbin visual screens",
+    "tier": "T2"
+   },
+   {
+    "claim": "Six apps show toasts overlapping the tab bar, outranking persistent nav chrome in z-order.",
+    "source": "Mobbin visual screens (Jobber, Linear, Glassdoor, Google Drive, Beli, Faire Wholesale)",
+    "tier": "T2"
+   },
+   {
+    "claim": "2026 design-trend consensus recommends a two-layer tight-plus-diffuse shadow recipe over a single harsh shadow.",
+    "source": "rajeshrnair.com UI trends roundup",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Neumorphism's low-contrast embossed shadow is flagged by trend sources themselves as an accessibility failure.",
+    "source": "zignuts.com",
+    "tier": "CONV"
+   }
+  ],
+  "numbers_used": [
+   "3px",
+   "12px",
+   "28px",
+   ".04",
+   ".03",
+   ".08",
+   ".04",
+   ".12",
+   ".06",
+   "400",
+   "410",
+   "500",
+   "510",
+   "600",
+   "700",
+   "z-50",
+   "z-30",
+   "0.20",
+   "0.14",
+   "0.12",
+   "1000",
+   "1020",
+   "1030",
+   "1040",
+   "1045",
+   "1050",
+   "1055",
+   "1070",
+   "1080",
+   "1090",
+   "6px",
+   "1px",
+   ".12",
+   "2px",
+   "8px",
+   "20px",
+   ".16",
+   "68px",
+   ".3",
+   "2.5x",
+   "1",
+   "10",
+   "100",
+   "2000",
+   "5",
+   "10-20"
+  ],
+  "taste_lab_probe": "Not a generative-gap probe (this stream is canon-deepen). Two low-priority open questions for the gap register instead, both now evidenced by live measurement rather than a single stale flag: (1) should the header/sticky-rail z-30/z-50 scale eventually fold into the 400-700 overlay scale, given a future overlay could plausibly need to stack relative to both a modal and a sticky header (already flagged at LOCKFILE:825-831); (2) given zero measured competitor (Fresha, Booking.com, Booksy, Treatwell) or documented convention (Bootstrap) produces Solen's fine 10-unit gaps between distinct overlay tiers, should a future round replace the 400/410/500/510/600/700 ladder with decade-jump tiers plus one reserved max-int-adjacent escape hatch, closer to what every measured real product actually ships. Neither question is resolved here and neither authorizes touching the frozen LOCKFILE values now."
+ },
+ "verified": {
+  "id": "S31",
+  "tag": "canon-deepen",
+  "verdict": "revised",
+  "myths_caught": [
+   "\"Number.MAX_SAFE_INTEGER-adjacent\" / \"near the top of the safe integer range\" for the cookie-consent z-index sentinel overstates the magnitude by about 4.2 million times. Live-measured sentinel values (Booking.com 2147483646 on .onetrust-pc-dark-filter, Treatwell 2147483645-2147483647 on #onetrust-banner-sdk / #onetrust-pc-sdk, Booksy 2147483631 on #CybotCookiebotDialog) all sit near the 32-bit signed integer ceiling (2^31-1 = 2,147,483,647), a well-known browser-safe z-index maximum, not near JS's Number.MAX_SAFE_INTEGER (2^53-1 = 9,007,199,254,740,991). The underlying pattern (a reserved oversized sentinel for a must-always-win cookie overlay) is real and now directly confirmed on 3 of the 4 named sites; the magnitude description was wrong and is corrected.",
+   "\"Fresha's dialog blur roughly 2.5x the card's\" understates the measured ratio. Live getComputedStyle on fresha.com: card shadow = rgba(19,19,19,.12) 0 1px 6px 0 + rgba(19,19,19,.04) 0 0 0 1px (exact match to the draft); dialog shadow = rgba(19,19,19,.08) 0 2px 8px 0 + rgba(19,19,19,.12) 0 4px 20px 0 (exact match to the draft). Comparing the widest blur layer of each (20px vs 6px) gives roughly 3.3x, not 2.5x. The two-layer alpha-climbing shape is confirmed exactly; only the ratio number was off and is corrected to \"roughly 3x\".",
+   "rajeshrnair.com, cited as a \"2026 UI trends roundup\" recommending a two-layer tight-plus-diffuse shadow recipe: the domain is a Kerala-based IT consultant's personal portfolio/service site. Its homepage has no design-trends content, and neither Bing nor DuckDuckGo site-restricted searches surface any matching article. Treated as unsourced; the specific citation is cut from verified_addition. The underlying claim (two-layer shadows are a common current recommendation) is plausible from general design knowledge but is not attached to a verifiable source here.",
+   "zignuts.com, cited for \"neumorphism flagged as an accessibility failure\": the domain is a corporate site for an AI/software dev agency with no neumorphism or accessibility content on its homepage, and it is not locatable via search either. Treated as unsourced; the specific citation is cut. Neumorphism's low-contrast accessibility problem is well documented elsewhere in design literature, but this specific source does not support the claim and should not be cited for it."
+  ],
+  "residual_risks": "Owner-decision items (not resolved by this verify pass, carry to QUESTIONS.md as before): (1) whether Solen's 400/410/500/510/600/700 z-index ladder should eventually move toward decade-jump tiers (now more firmly evidenced: live-measured on Fresha 1/10/100/1000/2000/10000/100000, Booking.com 1/2/5/10/100/333/8888/92000, Booksy 0/2/10/20/30/40/50/100, Treatwell 1/3/10/1002 - all sparse and jump by roughly an order of magnitude, none using Solen's fine 10-unit gaps between distinct overlay types); (2) whether the header/sticky z-30/z-50 scale should fold into the 400-700 overlay scale (LOCKFILE:825-831, unchanged by this pass). Neither authorizes touching frozen LOCKFILE values now.\n\nVerification gaps to flag honestly: Fresha's own cookie-consent overlay z-index sentinel was not directly observed this session (no consent banner was showing when measured, likely already dismissed by a prior automated visit), so \"all four sites\" for the sentinel pattern is 3-of-4 independently reconfirmed (Booking.com, Treatwell, Booksy) plus Fresha's decade-jump base scale confirmed separately; Fresha's own sentinel is assumed consistent with the pattern, not directly measured. The Mobbin-sourced T2 app-behavior claims (8 apps scrim+sheet, 6 apps toast-over-tabbar, 3 apps FAB elevation) were not independently reverified this pass (no Mobbin lookup was run); they are carried forward at their original T2 tier on the strength of the prior agent's specificity, not on new evidence. One T2 claim (Fresha's own cards carry almost no visible shadow) got incidental corroboration: live-measured Fresha venue cards on fresha.com show box-shadow rgba(255,255,255,0) (fully transparent inset), consistent with \"almost no visible drop shadow\" for the web surface too, though this doesn't confirm the Mobbin iOS observation specifically. The two cut citations (rajeshrnair.com, zignuts.com) leave two CONV-tier statements (two-layer-shadow trend popularity, neumorphism accessibility critique) without a specific verifiable source; if either statement is wanted in shipped copy with a citation, a real source (e.g., a named design-systems article) needs to be found and checked before use, not reused from this draft.",
+  "verified_addition": "Extends the already-verified S31 draft (two new paragraphs slotted into RATIONALE.md section 18, Domain 14, after the existing two-light-model paragraph at line 721) with a third evidence layer, real shipped competitor and app data, without touching any frozen LOCKFILE value. All rgba/blur/z-index values below were re-measured live this pass via getComputedStyle on the actual sites (fresha.com, booking.com, booksy.com, treatwell.de) and matched exactly except where a correction is noted.\n\n### Shadow blur and alpha progression (extends LOCKFILE:481-486, section-14 box shadow table)\nDECISION: unchanged, elevation-1 through elevation-3 plus pressed two-layer rgba stacks (blur 3px to 12px to 28px, key-layer alpha .04 to .08 to .12, second-layer alpha .03 to .04 to .06).\nFORCES: a higher elevation needs to read as more lifted without the top of the ladder looking pasted-on or overly dark; the step sizes need to keep growing, not stay linear, or level 3 would look like level 2 with a filter on it; and the recipe needs to survive contact with what real shipped products actually render, not just an internal system.\nOPTIMIZES FOR: a three-step ladder where each step is unambiguously more lifted than the last, judged by eye against both a physical reference and a measured competitor reference.\nSACRIFICES: the exact multiplier between steps is still owner-tuned by eye, not derived from a formula; this addition narrows, but does not close, the \"no formula to extend from\" gap.\nBOUNDARY: this grounds direction (blur widens, alpha climbs, together, as elevation increases) and precedent (both a physical law and a named system and now measured live competitor CSS all point the same way), not the exact Solen numbers, which stay CONV and unchanged.\nMECHANIC: three independent lines of evidence now converge on the same shape. Physically (T1), a fixed-size light source produces a wider, softer penumbra as an object lifts further from its surface. Conventionally (CONV), Material Design's key-plus-ambient shadow system formalizes the same two-layer, alpha-climbing pattern (verified live: Sketch spec opacities 20/14/12, i.e. .20/.14/.12). Empirically (T1, live-measured this pass), Fresha's own production CSS runs the same shape end to end: its card shadow is exactly rgba(19,19,19,.12) 0 1px 6px 0 plus rgba(19,19,19,.04) 0 0 0 1px, and its dialog shadow (a higher elevation tier) is exactly rgba(19,19,19,.08) 0 2px 8px 0 plus rgba(19,19,19,.12) 0 4px 20px 0, both alpha and blur higher than the card. Comparing the widest blur layer of each gives roughly 3x (20px vs 6px, live-measured, corrected from an earlier \"2.5x\" estimate), confirming real shipped competitor surfaces move alpha and blur together, not blur alone, exactly as Solen's own elevation-1/2/3 progression already does. Booking.com's card shadow is a simpler single-layer recipe, rgba(26,26,26,.16) 0 2px 8px 0 (live-measured, exact match), showing the two-layer approach is a choice, not a universal requirement. Booksy's button shadow is literally Tailwind's stock shadow-md signature (live-measured: rgba(0,0,0,.1) 0 4px 6px -1px, rgba(0,0,0,.1) 0 2px 4px -2px), and its cookie-consent dialog shadow (live-measured: rgba(0,0,0,.3) 0 32px 68px 0) is both far larger in blur and higher in alpha than any in-app surface Booksy itself uses, an external upper bound that corroborates the progression's shape without implying Solen needs a fourth tier. Two Mobbin-observed patterns (not independently reverified this pass, carried at T2) temper how far to trust \"more shadow\" as a universal rule: Fresha's own resting list cards use almost no shadow at all, separation comes from a hairline/whitespace gap; live-measured Fresha web venue cards independently corroborate this, showing a fully transparent inset shadow (rgba(255,255,255,0)) at rest, consistent with Solen's own flat-unless-earned doctrine, not just Uber-derived taste. Neumorphism's dual-embossed low-contrast shadow pattern is named here as a rejected pattern, consistent with known accessibility concerns about low-contrast embossed UI (a specific \"2026 trend source\" citation for this claim could not be independently verified this pass and has been dropped; treat this sentence as team reasoning, not a sourced citation, until a checkable reference is found).\nSOURCE: Material Design shadows resource (CONV), m1.material.io/resources/shadows.html (verified live); general umbra/penumbra shadow-formation optics (T1); Fresha production CSS, fresha.com, live-measured getComputedStyle this pass (T1); Booking.com production CSS, booking.com, live-measured this pass (T1); Booksy production CSS, booksy.com, live-measured this pass (T1); LOCKFILE:481-486; RATIONALE.md section 18 (light-from-above, two-light model, already present).\n\n### Z-index tier gap sizing (extends LOCKFILE:494-497, section-14 z-index scale)\nDECISION: unchanged, sheet-bg 400 / sheet 410 / modal-bg 500 / modal 510 / toast 600 / tooltip 700, with header/tab-nav and sticky-rail on a separate small-number scale (z-50, z-30).\nFORCES: overlays need an unambiguous stacking order regardless of DOM mount order; a future overlay type needs to be insertable without renumbering the whole scale; a background/scrim and its own foreground content never need anything inserted between them, so they do not need the same headroom as two unrelated overlay types; and a layer that must always win (a mandatory legal/consent overlay, if Solen ever needs one) needs a value nothing else can accidentally exceed.\nOPTIMIZES FOR: an extensible scale where inserting a new layer type is a matter of picking a free number in an existing gap, never a renumbering exercise.\nSACRIFICES: same as before, this names why the gaps exist and why they are unequal; it does not derive the exact gap sizes (10 versus 90 versus 100) from a formula, and this pass surfaces, without resolving, a real shape mismatch against every measured competitor.\nBOUNDARY: this grounds the pattern (gapped, unequal spacing on purpose, a tight gap for background/foreground pairs, a wide gap between distinct types) and now flags a shape tension worth an owner decision later, not a reason to reopen the frozen 400/410/500/510/600/700 values today. It also does not reconcile the separate z-50/z-30 header/sticky-rail scale with the 400-700 overlay scale, already flagged at LOCKFILE:825-831.\nMECHANIC: sparse enumeration (CONV) is a real, citable software convention (Bootstrap's live-verified layout z-index scale, confirmed exact this pass: dropdown 1000, sticky 1020, fixed 1030, offcanvas-backdrop 1040, offcanvas 1045, modal-backdrop 1050, modal 1055, popover 1070, tooltip 1080, toast 1090, unequal gaps of 5 to 20, with the tightest 5-point gaps reserved for exactly the backdrop-to-its-own-foreground pairing Solen's tight 10-point sheet-bg-to-sheet gap mirrors). Four competitor sites were live-measured this pass (not just cited): Fresha's own z-index values are 1, 2, 10, 100, 1000, 2000, 10000, 100000, clean order-of-magnitude jumps; Booking.com's are 1, 2, 5, 10, 100, 333, 8888, 92000, and reserves 2147483646 for its OneTrust cookie-consent dark filter; Treatwell's include 1, 3, 10, 1002, and reserves 2147483645-2147483647 for OneTrust cookie-consent elements (#onetrust-banner-sdk, #onetrust-pc-sdk); Booksy's are 0, 2, 10, 20, 30, 40, 50, 100, and reserves 2147483631 for its Cybot/Cookiebot dialog (#CybotCookiebotDialog). Three of these four sentinel values were directly confirmed as belonging to a cookie-consent overlay this pass (Booking.com, Treatwell, Booksy); Fresha's own decade-jump base scale is confirmed but its cookie-consent sentinel was not visible in this session to directly re-check. All three confirmed sentinels sit near the 32-bit signed integer ceiling (2,147,483,647), the classic browser-safe z-index maximum, not near JS's Number.MAX_SAFE_INTEGER (roughly 9 quadrillion, corrected from an earlier \"near Number.MAX_SAFE_INTEGER\" framing that overstated the magnitude by about 4.2 million times). This confirms the PATTERN Solen's scale already follows (sparse, unequal, tight pair-gap, wide type-gap) but surfaces a genuine, now more firmly evidenced SHAPE mismatch: no measured competitor or documented convention checked this round produces fine 10-unit gaps between semantically distinct overlay tiers (sheet/modal/toast/tooltip) the way Solen's 400 to 700 range does; the closer real-world analogue is decade-jump tiers per component family plus one reserved escape-hatch value near the 32-bit integer ceiling, not fine graduated hundreds. This tension is logged for a future owner-reviewed pass, the frozen values are unchanged here.\nSOURCE: Bootstrap layout z-index docs (CONV), getbootstrap.com/docs/5.3/layout/z-index/ (verified live, exact match); Fresha, Booking.com, Booksy, Treatwell production z-index values, live-measured getComputedStyle this pass (T1, n=4 sites, cookie-consent sentinel directly confirmed on 3 of 4); LOCKFILE:494-497; LOCKFILE:825-831 (the unreconciled second scale, already flagged); RATIONALE.md section 18.",
+  "claim_verdicts": [
+   {
+    "claim": "Material Design's key-plus-ambient shadow system uses opacity constants (.20/.14/.12) that shift with elevation.",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Confirmed live via WebFetch on m1.material.io/resources/shadows.html: Sketch spec lists Opacity 20 / 14 / 12 (i.e. .20/.14/.12) for umbra/key/ambient across elevation levels."
+   },
+   {
+    "claim": "A cast shadow's penumbra widens as object-to-surface distance grows, for a fixed light source.",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Basic, uncontested optics; no specific citation needed or claimed."
+   },
+   {
+    "claim": "Bootstrap's real z-index scale is dropdown 1000 through toast 1090 with unequal 5-20 point gaps.",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Confirmed exact via live WebFetch of getbootstrap.com/docs/5.3/layout/z-index/, values match the SCSS source listed on the page precisely."
+   },
+   {
+    "claim": "Fresha's card and dialog shadows are a measured two-layer stack with alpha climbing alongside blur.",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Independently re-measured live via getComputedStyle on fresha.com this pass: card = rgba(19,19,19,.12) 0 1px 6px 0 + rgba(19,19,19,.04) 0 0 0 1px; dialog = rgba(19,19,19,.08) 0 2px 8px 0 + rgba(19,19,19,.12) 0 4px 20px 0. Exact match to the draft's claim."
+   },
+   {
+    "claim": "Fresha's dialog blur is roughly 2.5x the card's blur.",
+    "source_ok": false,
+    "tier_final": "T1 (corrected number)",
+    "note": "Measured ratio of widest blur layers is 20px/6px = ~3.3x, not 2.5x. The direction (dialog blurs more than card) and the underlying rgba values are correct; only the multiplier was wrong. Corrected to \"roughly 3x\" in verified_addition."
+   },
+   {
+    "claim": "Booking.com uses a single-layer shadow recipe, simpler than Fresha's two-layer stack.",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Confirmed exact live: rgba(26,26,26,.16) 0 2px 8px 0px was the only shadow style found across the measured elements on booking.com."
+   },
+   {
+    "claim": "Booksy's button shadow is stock Tailwind shadow-md; its cookie-consent dialog uses a far larger blur/alpha than any in-app surface.",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Both parts confirmed exact live on booksy.com: shadow-md signature rgba(0,0,0,.1) 0 4px 6px -1px + rgba(0,0,0,.1) 0 2px 4px -2px found; cookie dialog shadow rgba(0,0,0,.3) 0 32px 68px 0px matches the draft's \"68px/.3\" claim exactly, and belongs to #CybotCookiebotDialog."
+   },
+   {
+    "claim": "Fresha, Booking.com, Booksy, and Treatwell all cluster z-index at decade-jump tiers and reserve a near-max-int sentinel for a cookie-consent overlay.",
+    "source_ok": true,
+    "tier_final": "T1 (magnitude corrected)",
+    "note": "Decade-jump base scales confirmed live on all 4 sites. Cookie-consent near-max-int sentinel directly confirmed on 3 of 4 (Booking.com 2147483646/OneTrust, Treatwell 2147483645-647/OneTrust, Booksy 2147483631/Cybot); Fresha's own sentinel not visible this session to re-check. The 'Number.MAX_SAFE_INTEGER-adjacent' framing used elsewhere in the draft is factually wrong by about 4.2 million times; actual values sit near the 32-bit signed integer ceiling (2,147,483,647). Corrected in verified_addition."
+   },
+   {
+    "claim": "Eight apps (Fabric, Savee, pliability, Craft, IMDb, Notion, ChatGPT, FocusFlight) share an identical scrim-plus-sheet two-tier depth recipe with no observed third simultaneous layer.",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Not independently reverified this pass (no Mobbin lookup performed); carried forward at original T2 tier, unconfirmed but not contradicted."
+   },
+   {
+    "claim": "Six apps show toasts overlapping the tab bar, outranking persistent nav chrome in z-order.",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Not independently reverified this pass; carried forward at original T2 tier."
+   },
+   {
+    "claim": "2026 design-trend consensus recommends a two-layer tight-plus-diffuse shadow recipe over a single harsh shadow, sourced to rajeshrnair.com.",
+    "source_ok": false,
+    "tier_final": "unsourced (was CONV)",
+    "note": "rajeshrnair.com's homepage is a Kerala IT consultant's personal/portfolio site with no design-trends content; not locatable via Bing or DuckDuckGo site-restricted search either. Citation cut from verified_addition; the general claim is left uncited."
+   },
+   {
+    "claim": "Neumorphism's low-contrast embossed shadow is flagged by trend sources as an accessibility failure, sourced to zignuts.com.",
+    "source_ok": false,
+    "tier_final": "unsourced (was CONV)",
+    "note": "zignuts.com's homepage is a corporate software-agency site with no neumorphism or accessibility content; not locatable via search. Citation cut from verified_addition; the general claim (neumorphism's accessibility issues are documented elsewhere in design literature) is left uncited pending a real source."
+   }
+  ]
+ }
+}

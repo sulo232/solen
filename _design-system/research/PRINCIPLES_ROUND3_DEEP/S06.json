@@ -1,0 +1,121 @@
+{
+ "id": "S06",
+ "synth": {
+  "id": "S06",
+  "tag": "generative-gap",
+  "title": "Imagery / art-direction language (OWNER-DECLINED, gated on G6)",
+  "principle_summary": "This stream stays BLOCKED. Its own key_question is explicit: \"Do not research until the owner re-opens G6,\" and dedup_notes confirms it as owner-declined. All three scouting reports (real-app, social-trend, competitor) independently read the same gate and returned no findings rather than research a site-wide imagery-density floor, PDP/card photo treatment, or general art-direction rules beyond the 6 category heroes PHOTO_STRATEGY.md covers. Per this synthesis task's own hard rule for owner-gated streams, the deliverable is a short \"what a yes unlocks\" note, not a full generative prior. The commercial case for imagery presence (photos as decision input, not decoration) is already settled and lives in PSYCHOLOGY.md law 7; what is missing and gated is a DENSITY/RATIO commitment, which carries real photography/AI-generation/licensing spend that only the owner can authorize.",
+  "proposed_addition": "PARKING NOTE ONLY, added under RATIONALE.md's open-gaps register (x-ref LOCKFILE §11 Imagery Pattern Registry + PHOTO_STRATEGY.md), no prior drafted:\n\nG6 remains OWNER-DECLINED (owner-set 2026-07-15, reconfirmed by three independent 2026-07-22 scouting passes that all read the gate and stopped without researching). What reopening G6 would unlock: a computable, site-wide imagery-density prior analogous to S01's richness/restraint prior (gap_ref G1) that tells a first mockup how much photographic content a surface class needs (search results grid, PDP body beyond the hero, dashboard, category landings beyond the 6 already speced) before it reads as photo-starved/monochrome versus cluttered, plus general art-direction rules (lighting consistency, subject framing, crop discipline for user-uploaded salon photos versus AI-placeholder or licensed-stock) extending LOCKFILE §11's 5 existing layout patterns.\n\nWhy it stays parked: the two sourced studies behind PSYCHOLOGY.md law 7 (Airbnb occupancy diff-in-diff, Baymard first-look) establish that photo PRESENCE and quality matter commercially, not what fraction of a page should be photographic. No density-specific T1/T2 source was found or asserted by any of the three scouts or the prior research pass. Reopening G6 is a scope-and-budget decision (photography/generation/licensing cost), not a research gap, and this synthesis does not reopen it.\n\nWhen the owner gives a fresh yes: run the stream properly. Source a density-specific study if one exists; if none does, treat a Taste-Lab probe (2-3 photo-to-text-ratio variants on the search-results grid, repertory-grid preference question) as the primary evidence rather than an assertion. Starting comparanda already on file: the Uber imagery inventory in LOCKFILE §11 (34% illustration-first / 28% photo-as-trust-layer / 38% chrome, T3, internal measurement of 116 desktop images across 8 surfaces) is a plausible reference point for a density band, but it measures a competitor's actual mix, not a validated optimum, so it should anchor the probe design, not be copied as a locked number.",
+  "real_world_evidence": [
+   {
+    "source": "Real-app scout (dispatched 2026-07-22)",
+    "what": "Read S06's key_question and dedup_notes verbatim, declined to run any Mobbin/WebSearch pass, returned empty findings citing the explicit \"do not research until the owner re-opens G6\" instruction",
+    "tier": "CONV"
+   },
+   {
+    "source": "Social-trend scout (dispatched 2026-07-22)",
+    "what": "Same gate recognized independently; explicitly stated it made no WebSearch or firecrawl-scrape calls; recommended re-dispatch only after a fresh owner yes on G6",
+    "tier": "CONV"
+   },
+   {
+    "source": "Competitor scout (dispatched 2026-07-22)",
+    "what": "Same gate recognized independently; flagged that reopening G6 is a live chat decision for the orchestrating conversation, not something a research subagent should trigger unilaterally; made no WebSearch/firecrawl calls",
+    "tier": "CONV"
+   }
+  ],
+  "generative_prior": "No generative prior is issued for this synthesis; that is the point of the gate. If G6 is reopened, the starting reference for calibration (not a locked default) is the existing Uber imagery-pattern inventory already codified in LOCKFILE §11: illustration-first 34%, photo-as-trust-layer 28%, chrome 38%, zero video, 0px border-radius on every image (T3, internal measurement, 116 desktop images across 8 surfaces, V3-D330). That number describes a competitor's shipped mix, not a validated floor, so a reopened G6 would need either a fresh density-specific T1/T2 source or a Taste-Lab probe run on a real Solen surface (search results grid recommended, since it is the highest-traffic imagery-bearing surface not yet covered by PHOTO_STRATEGY.md's 6 category heroes) before any number gets written into RATIONALE.md as a floor.",
+  "sources": [
+   {
+    "claim": "S06 key_question is explicitly BLOCKED pending a fresh owner yes; do not research until G6 reopens",
+    "source": "_plans/TASTE_R3_STREAMS.json, id=S06, key_question + dedup_notes fields",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Uber inventory is illustration-first (34%), photo-as-trust-layer (28%), chrome (38%), zero video, 0px border-radius on every image",
+    "source": "LOCKFILE.md section 11 (V3-D330, 2026-05-28), citing public/_pixel-refs/uber/imagery/UBER-IMAGERY-PATTERN.md, 116 desktop images across 8 surfaces",
+    "tier": "T3"
+   },
+   {
+    "claim": "Professional photos produced 8.98% higher occupancy on Airbnb (diff-in-diff, 7,423 listings, 16 months)",
+    "source": "PSYCHOLOGY.md law 7 (photos-are-the-decision-input), verified against _design-system/research/PSYCH_BUSINESS_IMPACT.md line 31, peer-reviewed Management Science study",
+    "tier": "T2"
+   },
+   {
+    "claim": "56% of shoppers look at images before text on a product page",
+    "source": "PSYCHOLOGY.md law 7, verified against _design-system/research/PSYCH_PSYCHOLOGY.md line 19, Baymard Institute usability benchmarking",
+    "tier": "T3"
+   },
+   {
+    "claim": "G6 is owner-set declined as of 2026-07-15, listed as a known gap needing a NEW yes",
+    "source": "RATIONALE.md line 831 (per prior verified research pass in _design-system/research/PRINCIPLES_ROUND3/S06.json)",
+    "tier": "CONV"
+   }
+  ],
+  "numbers_used": [
+   "34% illustration-first",
+   "28% photo-as-trust-layer",
+   "38% chrome",
+   "116 desktop images",
+   "8 surfaces",
+   "0px border-radius",
+   "8.98% occupancy lift (Airbnb)",
+   "56% of users hit images first",
+   "6 category heroes"
+  ],
+  "taste_lab_probe": "Deferred, not run. Only proposable once the owner reopens G6: show the owner 2-3 photo-to-text-ratio variants of the same real Solen surface (search results grid recommended, as the highest-traffic surface not yet covered by PHOTO_STRATEGY.md's 6 category heroes), each built as a real page copy per the mockup-first law, and ask a repertory-grid-style preference question (\"which feels complete, which feels cluttered, which feels bare\") to calibrate a density floor empirically rather than by assertion."
+ },
+ "verified": {
+  "claim_verdicts": [
+   {
+    "claim": "S06 key_question is explicitly BLOCKED pending a fresh owner yes; do not research until G6 reopens",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Verified verbatim in _plans/TASTE_R3_STREAMS.json, streams[id=S06].key_question and dedup_notes. Text matches exactly, including the G6 gap_ref and the xref to PSYCHOLOGY.md law 7."
+   },
+   {
+    "claim": "Uber inventory is illustration-first (34%), photo-as-trust-layer (28%), chrome (38%), zero video, 0px border-radius on every image",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Verified verbatim in _design-system/LOCKFILE.md line 1124, section header 'V3-D330, 2026-05-28', citing public/_pixel-refs/uber/imagery/UBER-IMAGERY-PATTERN.md, 116 desktop images across 8 surfaces. Internal single-source measurement of a competitor, so T3 is the honest ceiling, not T1/T2. Draft's tier is correct and matches the prior-verified pass already on file at _design-system/research/PRINCIPLES_ROUND3/S06.json."
+   },
+   {
+    "claim": "Professional photos produced 8.98% higher occupancy on Airbnb (diff-in-diff, 7,423 listings, 16 months)",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Verified in _design-system/research/PSYCH_BUSINESS_IMPACT.md line 31: peer-reviewed Management Science DiD study, 7,423 Airbnb listings, 16 months, exact figure 8.98% with a DOI-shaped link (pubsonline.informs.org/doi/10.1287/mnsc.2021.4175). PSYCHOLOGY.md line 34 rounds this to '+9%' inline; the draft's more precise 8.98% traces correctly to the underlying research file, not an inflation. Could arguably claim T1 given single-paper causal design, but T2 (one strong study, not yet replicated) is the more conservative and defensible call, consistent with the existing verified pass in S06.json. WebSearch budget was exhausted this session (200/200) so the paper itself could not be independently re-fetched externally; tier rests on the repo's citation trail, which is internally consistent and specific (named journal, DOI pattern, exact N and duration), not a vague or viral-sounding figure."
+   },
+   {
+    "claim": "56% of shoppers look at images before text on a product page",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Verified in _design-system/research/PSYCH_PSYCHOLOGY.md line 19/78, sourced to Baymard Institute usability benchmarking with a working-looking link. PSYCHOLOGY.md's law 7 blanket-tags the combined law 'T1, causal', but that tag covers the Airbnb causal study, not this vendor-benchmark stat; the draft's granular T3 for this specific number is more honest than importing the law's blanket T1 label, and matches the prior-verified S06.json pass."
+   },
+   {
+    "claim": "G6 is owner-set declined as of 2026-07-15, listed as a known gap needing a NEW yes",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Verified verbatim in _design-system/RATIONALE.md line 831: 'G6 | Imagery/art direction: OWNER-DECLINED 2026-07-15; listed as a known gap, needs a NEW yes | Owner-gated'. Exact match including the line number cited."
+   },
+   {
+    "claim": "Three independent scouting passes (real-app, social-trend, competitor) each read the G6 gate on 2026-07-22 and returned no findings without researching",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "No separate persisted scout-report files exist on disk for S06 (checked _design-system/research/ tree), so the exact three-scout narrative cannot be independently re-verified from artifacts; this is expected given the fan-out pipeline returns subagent output through orchestrator context rather than always persisting each dispatch. The claim is already honestly tiered CONV (lowest tier) by the draft, not inflated, and it is corroborated in kind by the pre-existing PRINCIPLES_ROUND3/S06.json prior-verified pass, which independently reached the identical 'stop at the gate, park the note' behavior and a 'clean' verdict for this same stream. No downgrade needed; flagging as an inherent verification limit, not a false claim."
+   },
+   {
+    "claim": "The search-results grid is 'the highest-traffic imagery-bearing surface not yet covered by PHOTO_STRATEGY.md's 6 category heroes'",
+    "source_ok": false,
+    "tier_final": "unsupported assertion (implied metric, no source)",
+    "note": "This phrase appears twice in the draft (proposed_addition and generative_prior) and reads as a traffic/usage claim, but no analytics source is cited or exists for it. Solen is pre-launch with no real customers (project memory: project_prelaunch_no_real_customers.md), so there is no real traffic data to support a 'highest-traffic' ranking among surfaces. This is the kind of implied-data phrasing the project's no-fabricated-data rule (CLAUDE.md taste rule 1: 'never render a number/status not wired to a live source') and the pre-launch-reality framing rule both flag. It should be softened to a funnel-logic argument (search results is the first major imagery-bearing surface after home in the booking flow, and is not yet covered by PHOTO_STRATEGY.md) rather than an implied measured-traffic claim. Corrected in verified_addition."
+   }
+  ],
+  "myths_caught": [
+   "\"highest-traffic imagery-bearing surface\" applied to the search-results grid implies real usage/traffic data that does not exist: Solen is pre-launch with no real customers (memory: project_prelaunch_no_real_customers.md), so no analytics back a traffic ranking among surfaces. Softened in verified_addition to a funnel-position argument (first major imagery-bearing surface after home, not yet covered by PHOTO_STRATEGY.md) instead of an implied traffic metric. Not a myth_screen table hit (that table is scoped to conversion/retention percentages), but the same reality-over-memory / no-fabricated-data discipline applies."
+  ],
+  "residual_risks": "Everything else in the draft checks out: the G6 gate text, the RATIONALE.md line 831 citation, the LOCKFILE section 11 Uber inventory numbers (34/28/38%, 116 images, 8 surfaces, 0px radius, V3-D330 2026-05-28), and both PSYCHOLOGY.md law 7 stats (8.98% Airbnb occupancy DiD and 56% Baymard images-first) all trace to real, correctly-quoted repo sources with honest, non-inflated tiers (T2/T3, not T1). No myth_screen numbers (2000% samples, 70-90% defaults, 2x loss aversion, jam study, $300M button, 5%/25-95% retention-profit, 5-25x cheaper retention, Amazon 100ms, Duolingo +20%, UGC 4x) were used. No em-dashes found in the proposed text. The lock (G6 owner-declined) is correctly NOT reopened; the synthesis only parks a note, matching the project's owner-gate discipline.\n\nOpen items for the owner, not resolved by this synthesis:\n1. G6 itself remains a live owner decision, not a research question: does the owner want to reopen it now that an analogous prior exists as a template (S01's richness/restraint prior for gap_ref G1)? This synthesis explicitly declines to answer that; it is a scope-and-budget call (photography/AI-generation/licensing spend), correctly left to the owner.\n2. The Airbnb 8.98% occupancy DiD study could not be freshly re-verified against the live web this pass (WebSearch budget was exhausted at 200/200 calls this session before reaching S06). The citation trail inside the repo is specific and internally consistent (named peer-reviewed journal, DOI-shaped link, exact N/duration, and it matches an already-independently-verified prior pass in PRINCIPLES_ROUND3/S06.json), so it is not treated as suspect, but a fresh external re-check is recommended the next time search budget is available, per rule 15 (reality over memory).\n3. The three-scout process narrative (real-app/social-trend/competitor all independently stopping at the gate) cannot be checked against a persisted artifact since no separate scout-report files exist on disk for S06; it is corroborated only indirectly by the matching PRINCIPLES_ROUND3/S06.json prior pass, and is already honestly tiered CONV by the draft, so no correction is needed, just a noted limit of this verify pass.\n4. QUESTIONS.md candidate (not answered here): now that PHOTO_STRATEGY.md exists for the 6 static heroes and S01 has a shipped richness/restraint prior as a template, is the site-wide imagery-density floor (G6) still purely a budget question, or does the owner want a cheap Taste-Lab probe run now (before committing spend) to at least see the shape of the answer? Flag for the owner, do not decide.",
+  "id": "S06",
+  "tag": "generative-gap",
+  "verdict": "revised",
+  "verified_addition": "PARKING NOTE ONLY, added under RATIONALE.md's open-gaps register (x-ref LOCKFILE §11 Imagery Pattern Registry + PHOTO_STRATEGY.md), no prior drafted:\n\nG6 remains OWNER-DECLINED (owner-set 2026-07-15, per RATIONALE.md line 831; reconfirmed by three independent 2026-07-22 scouting passes that all read the gate and stopped without researching, and by the matching prior-verified pass on file at _design-system/research/PRINCIPLES_ROUND3/S06.json). What reopening G6 would unlock: a computable, site-wide imagery-density prior analogous to S01's richness/restraint prior (gap_ref G1) that tells a first mockup how much photographic content a surface class needs (search results grid, PDP body beyond the hero, dashboard, category landings beyond the 6 already speced) before it reads as photo-starved/monochrome versus cluttered, plus general art-direction rules (lighting consistency, subject framing, crop discipline for user-uploaded salon photos versus AI-placeholder or licensed-stock) extending LOCKFILE §11's 5 existing layout patterns.\n\nWhy it stays parked: the two sourced studies behind PSYCHOLOGY.md law 7 establish that photo PRESENCE and quality matter commercially, not what fraction of a page should be photographic: professional photos produced 8.98% higher Airbnb occupancy in a peer-reviewed diff-in-diff study (7,423 listings, 16 months, Management Science, T2), and 56% of shoppers look at images before text per Baymard Institute usability benchmarking (T3, vendor benchmark, not independently replicated). No density-specific T1/T2 source was found or asserted by any of the three scouts or the prior research pass. Reopening G6 is a scope-and-budget decision (photography/generation/licensing cost), not a research gap, and this synthesis does not reopen it.\n\nWhen the owner gives a fresh yes: run the stream properly. Source a density-specific study if one exists; if none does, treat a Taste-Lab probe (2-3 photo-to-text-ratio variants on the search-results grid, repertory-grid preference question) as the primary evidence rather than an assertion. Starting comparanda already on file: the Uber imagery inventory in LOCKFILE §11 (34% illustration-first / 28% photo-as-trust-layer / 38% chrome, T3, internal measurement of 116 desktop images across 8 surfaces, V3-D330) is a plausible reference point for a density band, but it measures a competitor's actual mix, not a validated optimum, so it should anchor the probe design, not be copied as a locked number. Note: the search-results grid is proposed as the probe surface because it is the first major imagery-bearing surface after home in the booking funnel and is not yet covered by PHOTO_STRATEGY.md's 6 category heroes, not because of measured traffic data. Solen is pre-launch with no real customers, so no live traffic numbers exist to rank surfaces by usage; any density floor the owner eventually sets should be calibrated against the Taste-Lab probe, not an assumed traffic ranking."
+ }
+}

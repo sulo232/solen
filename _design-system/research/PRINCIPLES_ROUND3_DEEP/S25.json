@@ -1,0 +1,240 @@
+{
+ "id": "S25",
+ "synth": {
+  "id": "S25",
+  "tag": "net-new",
+  "title": "Error prevention and recovery",
+  "principle_summary": "Error handling splits into two disciplines that need separate rules, not one. PREVENTION (Nielsen H5) stops the error before it happens, in a strict preference order: eliminate the error-prone condition structurally, then constrain the input so a wrong value cannot be entered, and only when both are impossible, gate the action behind a confirmation step reserved for genuinely destructive or hard-to-reverse acts, because confirmation dialogs habituate with overuse and users learn to click through them, so routine reversible actions should get an undo toast instead of a confirm dialog. RECOVERY (Nielsen H9, floored by WCAG 3.3.1 to 3.3.3) governs what happens once an error occurs, and the evidence from both the academic baseline and this round's live-app scouting agrees the single biggest lever is specificity, not tone or color: name the exact field and the exact cause the backend already knows, preserve the user's input, and never discard the form on a failed submit.",
+  "real_world_evidence": [
+   {
+    "source": "Fresha, cancel-an-appointment flow (client and salon-owner web, Mobbin)",
+    "what": "Cancel confirm modal uses a single ink-black commit button (\"Yes, cancel\" / \"Cancel appointment\") with no separate colored destructive button; on the salon side a reason dropdown defaults to a plausible value and dismiss is the X only, not a labeled second button. This is the one sampled app that is ink-monochrome on a destructive commit, directly compatible with Solen's own ink-CTA law, and it is Solen's structural reference already.",
+    "tier": "CONV"
+   },
+   {
+    "source": "Square Appointments, cancel-appointment flow (client web, Mobbin)",
+    "what": "Two full-verb-phrase buttons, \"Cancel appointment\" and \"Keep appointment\", never a bare Yes/No; the cancellation-policy link sits inline right above the buttons at the decision moment; post-cancel copy states the specific fact the user is anxious about, \"Payment was canceled and your card was not charged,\" rather than a generic confirmation.",
+    "tier": "CONV"
+   },
+   {
+    "source": "Booking.com, Zocdoc, Wise, Turo field-validation screens (web, Mobbin)",
+    "what": "Per-field inline pattern: red border + red exclamation icon inside the field + a full-sentence red caption directly under it (\"Add your first name\", \"A valid address is required to book with this doctor\", \"Your email address doesn't match. Please try again.\"), triggered only after the field is touched, never validated pre-emptively while the user is still typing. Booking.com additionally shows a green check on a field once it becomes valid.",
+    "tier": "CONV"
+   },
+   {
+    "source": "Alan, Stripe test-mode payment decline (web, Mobbin)",
+    "what": "The actual Stripe decline reason is surfaced verbatim below the Pay button in red text at the point of failure, not swallowed into a generic \"Payment failed\" or shown as a modal interrupt.",
+    "tier": "CONV"
+   },
+   {
+    "source": "Spotify, CVS Health, Notion, IKEA, Best Buy undo patterns (web/app, Mobbin)",
+    "what": "Reversible, non-destructive actions (delete a notification, remove a cart item, move to trash) skip the confirm dialog entirely and use a toast or inline card with an \"Undo\" action instead; Best Buy's cart-remove pairs Undo with a second recovery path, \"Save for later\", in the same inline card.",
+    "tier": "CONV"
+   },
+   {
+    "source": "Fresha deposit-paid cancel block, Acuity Scheduling side-effect checkboxes (web, Mobbin)",
+    "what": "When Fresha cannot let a client cancel online because a deposit was paid, it does not just disable the button, it swaps in an explanation plus a working alternative: \"The appointment cannot be cancelled online... Call [Salon Name] directly.\" Acuity surfaces side-effect choices (mark as no-show, notify client) as explicit checkboxes before the destructive action commits, rather than bundling them silently.",
+    "tier": "CONV"
+   },
+   {
+    "source": "Kiwi.com, Tripadvisor, Plausible Analytics promo/discount code errors (web, Mobbin)",
+    "what": "All three name the specific failure reason in a full sentence on a money-adjacent field (\"This promo code doesn't exist\", \"invalid, has expired, or cannot be used for the selected activity\"), demonstrating the specificity bar is already cleared in the wild on high-stakes fields even though Baymard's benchmark finds it widely missed elsewhere.",
+    "tier": "CONV"
+   },
+   {
+    "source": "Baymard Institute, \"Improve Validation Errors with Adaptive Messages (98% Don't)\"",
+    "what": "Confirmed live and re-checked this round: the 98 percent figure measures sites that fail to ADAPT their error copy to the specific cause the backend already knows, not a blanket claim that 98 percent of sites use vague language everywhere. The stream's own key_question stated this loosely; the corrected framing should carry into the doc.",
+    "tier": "T2"
+   },
+   {
+    "source": "Nielsen Norman Group, Error Message Guidelines (nngroup.com, 2023)",
+    "what": "Prevent errors proactively, never discard user input on a failed submit, offer specific corrective suggestions (matching a ZIP to a city) instead of just flagging invalid, and never validate a field the user has not finished with yet, a named \"hostile pattern.\"",
+    "tier": "T2"
+   },
+   {
+    "source": "Waymo, Qantas offline/network empty states (web/app, Mobbin)",
+    "what": "Minimal camp: grey line icon, grey text headline, one instruction line, single blue text-link retry with no button chrome, versus an illustrated camp (GoPay, Truebill) with a character illustration and a colored button. Qantas can stack a page-level empty state with a separate toast for a background action failing at the same time.",
+    "tier": "CONV"
+   }
+  ],
+  "generative_prior": "For a net-new domain, the default that produces a right first mockup: (1) every destructive-action confirm gets a two-button pattern with full verb-phrase labels (\"Termin stornieren\" / \"Behalten\"), never bare Yes/No or icon-only, following Square's labeling over Fresha's X-only dismiss because a labeled second button is a stronger recognition cue per H9's plain-language rule; the commit button itself stays Solen's locked ink (Fresha's own destructive commit is also ink-monochrome, so this is not a new tension, it is precedent). (2) Reversible, routine actions (remove a discount code, deselect a staff member mid-flow, undo a cart change) get NO confirm dialog at all, they get a toast with an inline text-link \"Rückgängig\" using Solen's already-locked sparse-blue link rule, matching the Spotify/CVS/Notion/IKEA pattern. (3) Every field-level error is a full sentence naming the field and the exact cause (\"Postleitzahl muss 4 Ziffern haben\"), never a bare \"Ungültig\", placed inline under the field, triggered on blur/submit not per-keystroke, matching Booking.com/Zocdoc/Wise/Turo and Solen's own domain 21 forms line. (4) When an action must be blocked rather than merely erred (a deposit-paid booking that cannot be cancelled online), the copy states the reason plus a working alternative in the same panel, never a silently disabled control, per Fresha's deposit-block pattern. (5) Money-adjacent recovery copy states the specific fact the user is anxious about (\"Karte wurde nicht belastet\") rather than a generic \"Erledigt\", per Square; this is the same discipline as Solen's existing bounded loss-framing law in PSYCHOLOGY.md (name what did not happen, do not leave it to inference) and should cross-reference that law rather than restate it here.",
+  "proposed_addition": "## Domain 24: Error prevention and recovery (Nielsen H5/H9)\n\nTwo disciplines, not one. PREVENTION asks whether the error should have been possible at all; RECOVERY asks what happens once it occurred. Solen's existing coverage (RATIONALE.md domain 21 line 757, and the ErrorState/ErrorFallback components) already handles the mechanics of recovery UI; this domain supplies the missing governing principle for both halves, now grounded in live competitor and real-app evidence, not academic sourcing alone.\n\n**Prevention hierarchy (T2, Nielsen H5 plus Norman's forcing-function taxonomy):** in order of preference, (1) eliminate the error-prone condition structurally, so the wrong action is not offered (a disabled Pay button before a slot is picked, already Solen's own disabled-state convention); (2) constrain input so an invalid value cannot be entered (inputmode/type on numeric fields, already domain 21's input-mechanics line); (3) only when 1 and 2 are impossible, gate the action behind a confirmation step, and reserve that step for actions that are destructive, costly, or hard to reverse (Norman's interlock/lock-in/lockout typology names the mechanism). Acuity Scheduling's pre-cancel checkboxes (\"Mark as no-show\", \"Send email to client\") are a live example of surfacing side-effects as explicit choices at the gate rather than bundling them silently into one destructive click.\n\n**Confirm-versus-undo choice (T2, NN/g), with a live-app tiebreak:** confirmation dialogs measurably cut errors on high-stakes actions but habituate with repeated use, so the dialog should be reserved for genuinely rare, high-cost moments (cancelling a paid booking, deleting a dashboard service with existing bookings) and never used for routine or frequent actions. For routine actions with a real but recoverable cost (removing a discount code, deselecting a staff member mid-flow), undo (a toast with an inline reverse action) is the better default, matching Spotify, CVS, Notion, IKEA, and Best Buy, all of which skip the confirm step entirely for reversible actions and use an inline \"Undo\" link instead. Best Buy's cart-remove pattern of pairing Undo with a second recovery path in one card is worth naming as the richer option when two valid recoveries exist.\n\n**Destructive-confirm button labeling (new, CONV, resolves a tension the drafting round left open):** across every sampled real app (Viator, Duolingo, Klima, Notion, Peerspace, CAVA) the destructive commit button is red, which is NOT compatible with Solen's ink-only CTA law and is explicitly NOT being proposed here. The one sampled app that is ink-monochrome on a destructive commit is Fresha, Solen's own structural reference, so the resolution is to follow Fresha's color choice (ink) and Square's label wording (full verb phrases on both buttons, \"Cancel appointment\" / \"Keep appointment\", never a bare X-dismiss or Yes/No) rather than either app's full pattern alone. This does not reopen the LOCKFILE ink-CTA rule, it cites the one precedent already consistent with it.\n\n**Message specificity mandate (T2, Baymard; T1 boundary, WCAG 3.3.1 to 3.3.3), corrected framing:** an error message must name the exact field and the exact cause when the backend already knows it. Baymard's benchmark finding, verified this round, is that 98 percent of tested sites fail to ADAPT their message to the specific cause even though the backend logic already isolates it, not that 98 percent use vague language everywhere; the earlier draft's key_question stated this more loosely and should not be repeated as a blanket \"98% use non-specific error language\" claim. Live counter-evidence exists on high-stakes fields specifically: Kiwi.com, Tripadvisor, and Plausible Analytics all name the exact promo-code failure reason in a full sentence, meaning money-adjacent fields already tend to clear this bar even where Baymard finds the wider web does not. NN/g's guidance adds two mechanics this stream had not previously named: never discard user input on a failed submit, and never validate a field the user has not finished with yet (a named \"hostile pattern\").\n\n**Blocked-action explanation pattern (new, CONV):** when an action cannot be cleanly prevented (Fresha's deposit-paid case: the client cannot cancel online because a deposit was already paid), the correct response is not a silently disabled control, it is a swapped-in panel stating the reason in plain language plus a working alternative (\"Call [Salon] directly\"). This is H9's \"constructively suggest a solution\" rule applied to a blocked action rather than a validation error, and is a genuinely new pattern this round surfaced that the prior draft did not cover.\n\n**Recovery UI stays componentised (no change, cross-reference only):** ErrorState (COMPONENT_REGISTRY.md line 36) and ErrorFallback already implement the retry-affordance half of H9 for dashboard panels and route boundaries; CLAUDE.md line 195's ban on silent `.catch(() => {})` is the logging half. This domain does not touch either; it supplies the missing principle for what the error COPY inside those components must say, and for when a control upstream of them should have been gated by a confirmation step instead of ever reaching an error state. For money-adjacent recovery copy specifically (\"your card was not charged\"), cross-reference PSYCHOLOGY.md's bounded loss-framing law rather than restating its mechanics here; the two are the same discipline (name what did not happen) applied to different surfaces.\n\nBOUNDARY: this domain governs UI copy and interaction gating, not backend validation logic or retry/backoff strategy (fable-backend's silent no-op territory). It does not reopen any LOCKFILE literal: the ink-only CTA law stands (Fresha's ink destructive-commit is cited as compatible precedent, not as license to soften the rule); toast 4s/3-max at line 475 and dual-confirmation-at-both-ends at line 445 stay as-is, this domain gives them a stated WHEN, not a new value.\n\nMECHANIC: T1 (WCAG 3.3.1 to 3.3.3) bounds the recovery floor; T2 (Nielsen H5/H9, Norman forcing functions, NN/g confirmation-dialog and error-message guidance, Baymard's adaptive-specificity finding) supplies the two-discipline structure and the specificity mandate; CONV tier (this round's live-app scouting: Fresha, Square, Acuity, Booking.com, Zocdoc, Wise, Turo, Alan, Spotify, CVS, Notion, IKEA, Best Buy, Kiwi.com, Tripadvisor, Plausible, Waymo, Qantas) supplies the concrete generative defaults and resolves the destructive-button-color tension the academic-only draft left open. The social/trend scouting pass this round found no citable Dribbble/TikTok/design-Twitter material (tool access limits, not lack of effort) and confirmed no AI-generated-UI trend source ties directly to error handling; treat \"social layer\" as thin, not closed, and flag T3/CONV-only claims (the AI \"vibe design\" 2026 trend bucket) as context, never as a sourced error-prevention principle.",
+  "sources": [
+   {
+    "claim": "Nielsen's H5 (error prevention) and H9 (recognize/diagnose/recover) heuristics",
+    "source": "Nielsen Norman Group, Ten Usability Heuristics for User Interface Design (nngroup.com/articles/ten-usability-heuristics)",
+    "tier": "T2"
+   },
+   {
+    "claim": "Confirmation dialogs cut errors on destructive actions but lose effectiveness with overuse due to habituation; undo is the preferred fallback for routine actions",
+    "source": "Nielsen Norman Group, Confirmation Dialogs Can Prevent User Errors (If Not Overused) (nngroup.com/articles/confirmation-dialog)",
+    "tier": "T2"
+   },
+   {
+    "claim": "Forcing functions (interlocks, lock-ins, lockouts) as a constraint taxonomy",
+    "source": "Don Norman, The Design of Everyday Things (1988/2013)",
+    "tier": "T2"
+   },
+   {
+    "claim": "98 percent of Baymard-benchmarked sites fail to adapt error messages to the specific known cause (not a blanket vagueness claim)",
+    "source": "Baymard Institute, Improve Validation Errors with Adaptive Messages (98% Don't) (baymard.com/blog/adaptive-validation-error-messages)",
+    "tier": "T2"
+   },
+   {
+    "claim": "WCAG 3.3.1 Error Identification, 3.3.2 Labels or Instructions, 3.3.3 Error Suggestion",
+    "source": "W3C, Web Content Accessibility Guidelines 2.1/2.2 success criteria 3.3.1 to 3.3.3",
+    "tier": "T1"
+   },
+   {
+    "claim": "Prevent errors proactively, preserve user input on failed submit, never validate an unfinished field",
+    "source": "Nielsen Norman Group, Error Message Guidelines (nngroup.com/articles/error-message-guidelines, 2023)",
+    "tier": "T2"
+   },
+   {
+    "claim": "Fresha cancel-appointment flow: ink-monochrome commit button, deposit-paid block with phone-number alternative",
+    "source": "Mobbin, Fresha web screens (cancel/manage appointment flow)",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Square Appointments cancel flow: two full-verb-phrase buttons, policy link at decision point, specific money-reassurance copy",
+    "source": "Mobbin, Square Appointments web screens (canceling an appointment, client)",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Acuity Scheduling: side-effect checkboxes before destructive cancel action",
+    "source": "Mobbin, Acuity Scheduling web screens (canceling an appointment)",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Per-field inline validation with red border/icon/caption, triggered on touch not per-keystroke",
+    "source": "Mobbin, Booking.com / Zocdoc / Wise / Turo web screens",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Verbatim payment decline reason shown at point of failure",
+    "source": "Mobbin, Alan web screen (health insurance payment)",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Reversible actions skip confirm and use an undo toast instead",
+    "source": "Mobbin, Spotify / CVS Health / Notion / IKEA / Best Buy screens",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Specific promo-code failure copy on money-adjacent fields",
+    "source": "Mobbin, Kiwi.com / Tripadvisor / Plausible Analytics screens",
+    "tier": "CONV"
+   },
+   {
+    "claim": "AI-generated \"vibe design\" is a named 2026 industry trend bucket but has no confirmed direct link to error-handling specifics",
+    "source": "Muzli Blog, Vibe Design in 2026 / Mobile App Design Trends 2026 articles",
+    "tier": "T3"
+   }
+  ],
+  "numbers_used": [
+   "98 percent (Baymard, corrected: sites failing to adapt error copy to a known cause, not a blanket vagueness rate)",
+   "WCAG 3.3.1 / 3.3.2 / 3.3.3 (success criteria numbers)",
+   "Nielsen heuristics 5 and 9 of 10"
+  ],
+  "taste_lab_probe": "Audit the three highest-stakes destructive actions already in the product (cancel a paid booking, delete a dashboard service with existing bookings, remove a payment method) against the prevention hierarchy above, and record for each whether it currently uses a confirmation dialog, an undo toast, or neither. For the booking-cancel case specifically, compare against the two live precedents this round surfaced: Fresha's ink-monochrome commit with X-only dismiss versus Square's two labeled buttons (\"Cancel appointment\" / \"Keep appointment\") with the policy link inline above the buttons; decide per-action which labeling pattern to adopt rather than applying one blanket rule, since Fresha is Solen's structural reference but Square's explicit two-button labeling is arguably a stronger H9 recognition cue than an X-only dismiss."
+ },
+ "verified": {
+  "id": "S25",
+  "tag": "net-new",
+  "verdict": "revised",
+  "myths_caught": [
+   "proposed_addition's destructive-button-color paragraph names 'Viator, Duolingo, Klima, Notion, Peerspace, CAVA' as apps where the destructive commit button is red, but none of these six appear anywhere in sources[] or real_world_evidence[] with that claim. Live Mobbin spot-check confirms Notion's own delete-page/delete-property/delete-comment modals ARE red ('Yes. Delete this page', 'Delete'), so the general point is directionally true, but Viator/Duolingo/Klima/Peerspace/CAVA are asserted with zero backing evidence entries, a real traceability gap for a claim doing load-bearing work (it resolves the central ink-vs-red tension).",
+   "The proposed_addition implies Fresha is broadly 'ink-monochrome on a destructive commit.' Live Mobbin check of Fresha's own admin panel shows a RED 'Delete' button on 'Delete Training?' (time-off type) and 'Delete all shifts' modals. The ink-monochrome pattern is real but confirmed ONLY on the client-facing cancel-appointment modal (verified: black 'Cancel appointment' button, X-only dismiss, reason dropdown) -- it does not generalize to Fresha destructive actions as a brand-wide trait.",
+   "real_world_evidence claims Kiwi.com, Tripadvisor, AND Plausible Analytics all 'name the specific failure reason in a full sentence' on promo-code errors. Live Mobbin check: Kiwi.com ('This promo code doesn't exist. Please check it and try again.') and Tripadvisor ('invalid, has expired, or cannot be used for the selected activity') both verified verbatim. Plausible Analytics's actual message is 'You need to enter a valid discount code' -- generic, does not name a specific cause (expired vs not-found vs wrong-tier), so it does not clear the same specificity bar and the 'all three' framing overstates it.",
+   "Two internal LOCKFILE.md line-number citations in the BOUNDARY paragraph are wrong and one is conceptually mismatched: 'toast 4s/3-max at line 475' -- actual content at line 475 is unrelated (service-grouping shadow rules); the toast 4s/max-3 rule is at line 618. 'dual-confirmation-at-both-ends at line 445' -- line 445 is spacing-rhythm content; the actual 'Outcome confirmation: completing an action confirms at BOTH ends' rule is at line 543, and it describes a feedback-loop principle (heart fills + badge appears elsewhere, toast + provenance chip) for routine actions, NOT a confirm-dialog/destructive-action pattern -- the label 'dual-confirmation' misleadingly borrows confirm-dialog vocabulary for a different LOCKFILE concept."
+  ],
+  "claim_verdicts": [
+   {
+    "claim": "98 percent of Baymard-benchmarked sites fail to adapt error messages to the specific known cause (not a blanket vagueness claim)",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Verified verbatim at baymard.com/blog/adaptive-validation-error-messages: '98% of sites in our benchmark don't use error messages targeted specifically at the exact problem that triggered the error -- despite the back-end logic knowing the issue.' The draft's corrected framing (not a blanket vagueness rate) is accurate and matches the source exactly."
+   },
+   {
+    "claim": "Confirmation dialogs cut errors on destructive actions but lose effectiveness with overuse due to habituation; undo is the preferred fallback for routine actions",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Verified at nngroup.com/articles/confirmation-dialog/. Article uses the exact 'cry wolf' framing and explicitly recommends undo alongside selective confirmation for serious/irreversible actions only."
+   },
+   {
+    "claim": "Prevent errors proactively, preserve user input on failed submit, never validate an unfinished field",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Verified at nngroup.com/articles/error-message-guidelines/ (Neusesser & Sunwall, May 2023). Confirms 'let users correct errors by editing their original action instead of starting over' and the premature-validation warning, both cited accurately."
+   },
+   {
+    "claim": "WCAG 3.3.1 Error Identification, 3.3.2 Labels or Instructions, 3.3.3 Error Suggestion",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Real W3C success criteria numbers, correctly named and correctly tiered T1."
+   },
+   {
+    "claim": "Nielsen's H5 (error prevention) and H9 (recognize/diagnose/recover) heuristics",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Real, correctly numbered heuristics from Nielsen's canonical ten; T2 is the honest tier already used elsewhere in this project's docs for this vocabulary."
+   },
+   {
+    "claim": "Forcing functions (interlocks, lock-ins, lockouts) as a constraint taxonomy",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Real content from Norman's Design of Everyday Things; conceptually accurate use of the terms, T2 (practitioner-canonical, not an empirical measurement) is the right tier."
+   },
+   {
+    "claim": "Fresha cancel-appointment flow: ink-monochrome commit button, deposit-paid block with phone-number alternative",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Verified via live Mobbin screenshots: cancel modal shows black 'Cancel appointment' button + reason dropdown + X-only dismiss; deposit-block screen shows 'The appointment cannot be cancelled online because you have paid a deposit. Call [Salon] directly' + phone number, matching the draft almost verbatim. Scope correction needed: this holds only for the client cancel-appointment modal, not Fresha destructive actions generally (Fresha's own admin delete modals are red, see myths_caught)."
+   },
+   {
+    "claim": "Square Appointments cancel flow: two full-verb-phrase buttons, policy link at decision point, specific money-reassurance copy",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Verified via live Mobbin screenshot: client-side modal shows 'Cancel appointment' / 'Keep appointment' buttons plus 'See cancellation policy' link, and the post-cancel screen reads 'Payment was canceled and your card was not charged.' verbatim. Note the owner-side Square cancel view uses a red button, so the draft's 'client web' qualifier is correctly load-bearing and must stay."
+   },
+   {
+    "claim": "Specific promo-code failure copy on money-adjacent fields (Kiwi.com / Tripadvisor / Plausible Analytics)",
+    "source_ok": false,
+    "tier_final": "CONV",
+    "note": "Kiwi.com and Tripadvisor verified verbatim via Mobbin. Plausible Analytics's actual message ('You need to enter a valid discount code') is generic, not cause-specific, and does not clear the same specificity bar -- drop Plausible from this claim or note it separately as a weaker/generic example."
+   },
+   {
+    "claim": "ErrorState (COMPONENT_REGISTRY.md line 36) and ErrorFallback already implement retry-affordance half of H9",
+    "source_ok": true,
+    "tier_final": "internal",
+    "note": "Confirmed exact: line 36 of COMPONENT_REGISTRY.md is the ErrorState row, and it references ErrorFallback for route boundaries exactly as the draft states."
+   },
+   {
+    "claim": "RATIONALE.md domain 21 line 757 already covers WCAG 3.3.1-3.3.3 + Nielsen heuristic 9",
+    "source_ok": true,
+    "tier_final": "internal",
+    "note": "Confirmed exact line match."
+   },
+   {
+    "claim": "CLAUDE.md line 195's ban on silent .catch(() => {})",
+    "source_ok": true,
+    "tier_final": "internal",
+    "note": "Confirmed exact line match, exact quote match."
+   },
+   {
+    "claim": "toast 4s/3-max at LOCKFILE.md line 475; dual-confirmation-at-both-ends at LOCKFILE.md line 445",
+    "source_ok": false,
+    "tier_final": "internal",
+    "note": "Both line numbers wrong (correct locations are 618 and 543 respectively) and the 'dual-confirmation-at-both-ends' label misattributes a different LOCKFILE concept (an action-feedback-loop rule for routine actions, not a destructive-confirm-dialog rule) -- see myths_caught."
+   },
+   {
+    "claim": "destructive commit button is red across Viator, Duolingo, Klima, Notion, Peerspace, CAVA",
+    "source_ok": false,
+    "tier_final": "CONV (unsourced list)",
+    "note": "Notion spot-verified red on delete modals; the other five apps appear nowhere in sources[]/real_world_evidence[] and were not independently checked -- cut the specific app list or add them to sources before shipping."
+   }
+  ],
+  "verified_addition": "## Domain 24: Error prevention and recovery (Nielsen H5/H9)\n\nTwo disciplines, not one. PREVENTION asks whether the error should have been possible at all; RECOVERY asks what happens once it occurred. Solen's existing coverage (RATIONALE.md domain 21 line 757, and the ErrorState/ErrorFallback components) already handles the mechanics of recovery UI; this domain supplies the missing governing principle for both halves, now grounded in live competitor and real-app evidence, not academic sourcing alone.\n\n**Prevention hierarchy (T2, Nielsen H5 plus Norman's forcing-function taxonomy):** in order of preference, (1) eliminate the error-prone condition structurally, so the wrong action is not offered (a disabled Pay button before a slot is picked, already Solen's own disabled-state convention); (2) constrain input so an invalid value cannot be entered (inputmode/type on numeric fields, already domain 21's input-mechanics line); (3) only when 1 and 2 are impossible, gate the action behind a confirmation step, and reserve that step for actions that are destructive, costly, or hard to reverse (Norman's interlock/lock-in/lockout typology names the mechanism). Acuity Scheduling's pre-cancel checkboxes (\"Mark as no-show\", \"Send email to client\") are a live example of surfacing side-effects as explicit choices at the gate rather than bundling them silently into one destructive click. (Acuity example not independently re-verified this round; carried forward as CONV, flagged for a spot-check before it anchors a build decision.)\n\n**Confirm-versus-undo choice (T2, NN/g), with a live-app tiebreak:** confirmation dialogs measurably cut errors on high-stakes actions but habituate with repeated use (verified against nngroup.com/articles/confirmation-dialog/), so the dialog should be reserved for genuinely rare, high-cost moments (cancelling a paid booking, deleting a dashboard service with existing bookings) and never used for routine or frequent actions. For routine actions with a real but recoverable cost (removing a discount code, deselecting a staff member mid-flow), undo (a toast with an inline reverse action) is the better default, matching the Spotify/CVS/Notion/IKEA/Best Buy pattern of skipping the confirm step for reversible actions in favor of an inline \"Undo\" link (these five app examples were not independently re-verified this round; CONV, carried forward as directionally reliable given the same pattern held up on every app this round DID spot-check). Best Buy's cart-remove pattern of pairing Undo with a second recovery path in one card is worth naming as the richer option when two valid recoveries exist.\n\n**Destructive-confirm button labeling (CONV, resolves a tension the drafting round left open):** live spot-checks this round confirm Notion's own delete modals use a red button (\"Yes. Delete this page\"), consistent with the broader industry norm of a colored destructive commit -- which is NOT compatible with Solen's ink-only CTA law and is explicitly NOT being proposed here. The one verified counter-example is Fresha's client-facing cancel-appointment modal specifically (confirmed live: black \"Cancel appointment\" button, X-only dismiss, reason dropdown) -- note this does not generalize to Fresha as a brand: Fresha's own admin-side destructive actions (deleting a time-off type, deleting shifts) use a red \"Delete\" button, so the ink-monochrome pattern is scoped to that one client flow, not a Fresha-wide trait. The resolution is to follow that specific Fresha flow's color choice (ink) and Square's label wording (full verb phrases on both buttons, \"Cancel appointment\" / \"Keep appointment\", verified live on Square's client-side modal, never a bare X-dismiss or Yes/No) rather than either app's full pattern. This does not reopen the LOCKFILE ink-CTA rule, it cites the one precedent already consistent with it, narrowly scoped to the appointment-cancel surface.\n\n**Message specificity mandate (T2, Baymard; T1 boundary, WCAG 3.3.1 to 3.3.3), corrected framing:** an error message must name the exact field and the exact cause when the backend already knows it. Baymard's benchmark finding, verified this round against the primary source, is that 98 percent of tested sites fail to ADAPT their message to the specific cause even though the backend logic already isolates it, not that 98 percent use vague language everywhere; the earlier draft's key_question stated this more loosely and should not be repeated as a blanket \"98% use non-specific error language\" claim. Live counter-evidence exists on high-stakes fields: Kiwi.com (\"This promo code doesn't exist. Please check it and try again.\") and Tripadvisor (\"invalid, has expired, or cannot be used for the selected activity\") both verified verbatim, meaning money-adjacent fields already tend to clear this bar even where Baymard finds the wider web does not. (Plausible Analytics was checked and dropped from this example set: its actual promo-code error, \"You need to enter a valid discount code,\" is generic rather than cause-specific and does not clear the same bar.) NN/g's guidance (verified against the primary article) adds two mechanics this stream had not previously named: never discard user input on a failed submit, and never validate a field the user has not finished with yet (a named \"hostile pattern\").\n\n**Blocked-action explanation pattern (CONV, verified live):** when an action cannot be cleanly prevented (Fresha's deposit-paid case, confirmed live: the client cannot cancel online because a deposit was already paid), the correct response is not a silently disabled control, it is a swapped-in panel stating the reason in plain language plus a working alternative (\"Call [Salon] directly\" with a tappable phone number). This is H9's \"constructively suggest a solution\" rule applied to a blocked action rather than a validation error.\n\n**Recovery UI stays componentised (no change, cross-reference only):** ErrorState (COMPONENT_REGISTRY.md line 36, verified) and ErrorFallback already implement the retry-affordance half of H9 for dashboard panels and route boundaries; CLAUDE.md line 195's ban on silent `.catch(() => {})` (verified) is the logging half. This domain does not touch either; it supplies the missing principle for what the error COPY inside those components must say, and for when a control upstream of them should have been gated by a confirmation step instead of ever reaching an error state. For money-adjacent recovery copy specifically (\"your card was not charged\", verified verbatim on Square), cross-reference PSYCHOLOGY.md law 10 (loss-framing with grace) rather than restating its mechanics here; the two are the same discipline (name what did not happen) applied to different surfaces.\n\nBOUNDARY: this domain governs UI copy and interaction gating, not backend validation logic or retry/backoff strategy (fable-backend's silent no-op territory). It does not reopen any LOCKFILE literal: the ink-only CTA law stands (the one verified ink destructive-commit precedent, Fresha's client cancel-appointment flow specifically, is cited as compatible precedent, not as license to soften the rule or generalize to other Fresha surfaces). The existing toast auto-dismiss/max-visible rule (LOCKFILE.md line 618: \"Auto-dismiss 4s. Max 3 visible.\") and the existing action-feedback-loop rule (LOCKFILE.md line 543: \"Outcome confirmation: completing an action confirms at BOTH ends\") stay as-is and are correctly named here with corrected line numbers; this domain gives them a stated WHEN for error-adjacent cases, not a new value, and does not treat the line-543 rule as a confirm-dialog pattern (it is a feedback-loop rule for routine successful actions, a distinct concept from the destructive-confirm gate above).\n\nMECHANIC: T1 (WCAG 3.3.1 to 3.3.3) bounds the recovery floor; T2 (Nielsen H5/H9, Norman forcing functions, NN/g confirmation-dialog and error-message guidance, Baymard's adaptive-specificity finding, all re-verified against primary sources this round) supplies the two-discipline structure and the specificity mandate; CONV tier (this round's live-app scouting, spot-checked: Fresha, Square, Kiwi.com, Tripadvisor, Notion confirmed accurate with scope corrections; Acuity, Alan, Spotify, CVS, IKEA, Best Buy, Booking.com, Zocdoc, Wise, Turo, Waymo, Qantas carried forward unverified this round, flag before they anchor a build decision) supplies the concrete generative defaults and resolves the destructive-button-color tension the academic-only draft left open, narrowly scoped to the specific flows actually observed. The social/trend scouting pass this round found no citable Dribbble/TikTok/design-Twitter material (tool access limits, not lack of effort) and confirmed no AI-generated-UI trend source ties directly to error handling; treat \"social layer\" as thin, not closed, and flag T3/CONV-only claims (the AI \"vibe design\" 2026 trend bucket) as context, never as a sourced error-prevention principle.",
+  "residual_risks": "Owner-decision / QUESTIONS.md candidates: (1) the six-app red-destructive-button list in the original draft (Viator, Duolingo, Klima, Notion, Peerspace, CAVA) had zero backing evidence entries for five of the six apps -- either re-run those specific searches and add them to sources[], or ship with the narrower, fully-verified claim (Notion confirmed, general industry-norm framing for the rest). (2) The Fresha ink-monochrome precedent must stay scoped to the client cancel-appointment flow only; Fresha's own admin destructive actions (delete time-off type, delete shifts) use red, so citing \"Fresha\" unscoped as ink-brand-wide would be a false generalization if it resurfaces in a later doc pass. (3) Two LOCKFILE.md internal citations were wrong in the original draft (line 475 -> 618 for toast auto-dismiss, line 445 -> 543 for outcome-confirmation) and one concept was mislabeled (\"dual-confirmation-at-both-ends\" borrowed confirm-dialog vocabulary for what is actually a routine-action feedback-loop rule) -- worth a broader grep-and-fix pass across other R3 streams for the same line-number-drift failure mode, since it suggests citations were written from memory rather than re-checked against the live file. (4) Plausible Analytics's promo-code error was dropped from the specificity-mandate example set because its actual copy is generic, not cause-specific; if a future pass wants a third specificity example, re-search rather than reuse Plausible. (5) CONV-tier claims not independently re-verified this round (Acuity, Alan, Spotify, CVS, IKEA, Best Buy, Booking.com, Zocdoc, Wise, Turo, Waymo, Qantas) should get a spot-check pass before Phase C treats them as load-bearing generative defaults, given the 2-of-9 nuance-issue rate found among the claims that WERE checked this round."
+ }
+}

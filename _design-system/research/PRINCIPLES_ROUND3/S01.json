@@ -1,0 +1,162 @@
+{
+ "id": "S01",
+ "draft": {
+  "id": "S01",
+  "tag": "generative-gap",
+  "title": "Richness/restraint calibration prior (how much to put on a surface)",
+  "principle_summary": "The question \"how much\" (imagery share, element count, decorative-vs-informational ratio, novelty vs recognizability) is governed by four converging bodies of work: Miller/Cowan chunk-capacity limits give a numeric ceiling on how many distinct visual groups a screen can carry; Reinecke/Gajos's large-scale complexity-preference curve is asymmetric (erring sparse costs little, erring complex costs a lot), which gives the DIRECTION to lean when uncertain; the aesthetic-usability effect (already in RATIONALE.md) explains why spending the marginal unit on finish reads as more usable, not just prettier; and MAYA (already in RATIONALE.md) caps how much of the richness may be genuinely NEW pattern versus recognizable pattern. None of these numbers were previously assembled into a single applicable band for a first mockup; they existed as separate citations answering separate questions.",
+  "sources": [
+   {
+    "claim": "Aesthetic-usability effect: perceived beauty raises perceived (not actual) usability, r ~ 0.589 between aesthetics and apparent ease-of-use ratings, N=252 participants over 26 ATM UI variants.",
+    "source": "Kurosu, M. and Kashimura, K. (1995), Hitachi Design Center study; summarized by NN/g 'The Aesthetic-Usability Effect' (nngroup.com/articles/aesthetic-usability-effect); already cited RATIONALE.md:179",
+    "tier": "T2"
+   },
+   {
+    "claim": "MAYA: typicality and novelty independently and jointly predict aesthetic preference and suppress each other's effect; push novelty only as far as category recognition survives.",
+    "source": "Hekkert, P., Snelders, D., van Wieringen, P.C.W. (2003), 'Most advanced, yet acceptable: Typicality and novelty as joint predictors of aesthetic preference in industrial design', British Journal of Psychology 94, 111-124; already cited RATIONALE.md:183",
+    "tier": "T2"
+   },
+   {
+    "claim": "Intermediate visual complexity is preferred over very sparse or very cluttered (inverted-U); useful lens, mixed replication, not a hard law.",
+    "source": "Berlyne, D.E., arousal/complexity aesthetic theory; already cited RATIONALE.md:185 as T3 mixed replication",
+    "tier": "T3"
+   },
+   {
+    "claim": "The complexity-preference curve is asymmetric: webpages slightly below mid-complexity lose only a little preference, pages above mid-complexity lose much more.",
+    "source": "Reinecke, K. and Gajos, K.Z. (2014), 'Quantifying Visual Preferences Around the World', CHI 2014 (2.4 million ratings, ~40,000 participants, 43 countries); dl.acm.org/doi/10.1145/2556288.2557052",
+    "tier": "T2"
+   },
+   {
+    "claim": "Visual complexity and prototypicality shape first impressions of a website within the first 50ms of exposure.",
+    "source": "Tuch, A.N. et al., visual complexity and prototypicality of website first impressions (Swiss sample, N=60 undergraduates); hci-basel.ch/MA/2007_Tuch.pdf and related published work",
+    "tier": "T3"
+   },
+   {
+    "claim": "Working memory / immediate-perception span is limited to roughly 7 plus-or-minus 2 chunks of information.",
+    "source": "Miller, G.A. (1956), 'The Magical Number Seven, Plus or Minus Two', Psychological Review; foundational, heavily cited across HCI (RATIONALE.md:461 already cites the neighboring Miller 1968 finding)",
+    "tier": "T1"
+   },
+   {
+    "claim": "Under attention-limited conditions without rehearsal, realistic working-memory capacity is closer to about 4 chunks, not 7.",
+    "source": "Cowan, N. (2001), 'The magical number 4 in short-term memory', Behavioral and Brain Sciences 24(1)",
+    "tier": "T2"
+   },
+   {
+    "claim": "Increasing a component's internal density (tighter rows/cells) must be paired with LARGER surrounding margins/gutters, not smaller; density and whitespace move in opposite directions at the component vs layout level.",
+    "source": "Una Kravets / Google Design, 'Using Material Density on the Web', medium.com/google-design; already sourced in _design-system/research/TASTE_DASHBOARDS.md:33 as finding 14, extended here from dashboard tables to customer-facing cards",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Solen's own 'life budget' ranking (photography ~50%, typography ~25%, motion ~15%, whitespace ~7%, depth ~3%) as a spend-allocation order.",
+    "source": "_design-system/RESTRAINT_TEST.md (llm-council output, Opus+Grok, 2026-06-10); explicitly marked CONV, 'do not cite as evidence' at RATIONALE.md:189",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Imagery should cover roughly one third of browse viewports; never a bare grey box.",
+    "source": "Solen FLOORS LAW (owner-approved 2026-07-21, per memory project_floors_law.md); house policy, not an external empirical claim",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Marketing-blog '60-80% text / 20-40% images' and case-study numbers like '+280%/+340% engagement from an image ratio change'",
+    "source": "assorted marketing-agency glossary pages surfaced by search (2pointagency.com, digitalmarketinglaboratory.com); no named study, no methodology, classic unsourced-percentage pattern",
+    "tier": "MYTH"
+   }
+  ],
+  "solen_current": "RATIONALE.md already carries the individual ingredients but never assembles them into a usable band. Line 179 cites the aesthetic-usability effect (T2), line 181 processing fluency, line 183 MAYA (T2), line 185 Berlyne inverted-U (T3, \"useful lens for card density... never a hard law\"), and line 189 explicitly labels RESTRAINT_TEST.md's photography/typography/motion/whitespace/depth percentages as CONV and warns \"do not cite them as evidence.\" Section 28's gap register names the exact hole at G1 (RATIONALE.md:826): \"Richness calibration: 'rich not bland' has zero mechanics; needs a probe-calibrated band (photos per screen, fields per card, above-fold count). Taste Lab probe: 3 richness levels of one real surface. HIGHEST [priority].\" Outside RATIONALE.md, the FLOORS LAW (memory project_floors_law.md, \"imagery ~1/3 of browse viewports\") supplies the one existing numeric floor, and TASTE_DASHBOARDS.md:33 supplies a density/whitespace inverse rule (CONV, Material Design) scoped to dashboard tables and forms only, not yet extended to customer-facing cards. RESTRAINT_TEST.md's 5-question test and life-budget ranking answer WHERE effort goes on an already-decided-rich screen, not HOW MUCH to add on a brand-new one.",
+  "gap": "The individual sources exist but were never combined into the thing G1 asks for: a computable band that tells a first mockup HOW MUCH before any owner feedback loop. Three concrete holes: (1) no chunk-count ceiling exists anywhere in the file, so \"rich not bland\" has no number to check a mockup against; (2) no rule states the DIRECTION to err when uncertain between two candidate richness levels, so the sparse-vs-cluttered oscillation the gap names has no tie-breaker; (3) the density/whitespace inverse rule is scoped to dashboards only (TASTE_DASHBOARDS.md), leaving customer browse cards, the surface G1's own probe recommendation targets, without the coupling rule that prevents a richer card from reading busy. G1 itself already prescribes the fix shape (a 3-level Taste Lab probe on one real surface); that probe was never designed or run.",
+  "proposed_addition": "GENERATIVE PRIOR (closes gap register G1, RATIONALE.md:826), for the new anchor at section 28 / a cross-referenced block near section 12 (Berlyne line 185):\n\n1. IMAGERY SHARE: unchanged, cross-reference only. ~1/3 of a browse viewport carries a photograph (FLOORS LAW, house CONV, owner-approved 2026-07-21). Never a bare grey box inside that third. This prior does not re-derive it, only wires it into the same band as the following numbers.\n\n2. CHUNK COUNT ABOVE THE FOLD: 4 to 7 distinct visual GROUPS visible without scrolling on a mobile browse surface, biased to the low end (4-5) on a glance-based surface. MECHANIC: Miller 1956's 7 plus-or-minus 2 span (T1) sets the ceiling; Cowan 2001's ~4-chunk estimate under attention-limited, non-rehearsed conditions (T2) sets the floor for a scanned phone screen. A \"chunk\" is one Gestalt-grouped unit (one card, one photo block, one CTA cluster), not each field inside it, so a rich card (photo plus name plus price plus rating) still counts as ONE chunk. This is the missing number behind the existing Berlyne line (RATIONALE.md:185): the \"peak\" it names without a value is this band.\n\n3. DECORATIVE-VS-INFORMATIONAL GATE inside a chunk: every element must pass copy-economy rule 1's delete-test (project CLAUDE.md), UNLESS it is carrying the imagery floor. Not a new number, an application: richness never reopens the no-redundant-tags rule.\n\n4. DIRECTIONAL BIAS WHEN UNCERTAIN: lean richer, not sparser, up to band 2's ceiling. MECHANIC: Reinecke and Gajos 2014's asymmetric complexity-preference curve (T2, 2.4 million ratings) shows sparse-of-peak loses little preference, complex-of-peak loses much more; Tuch et al.'s first-impression study (T3) finds the same sensitivity within 50ms; the aesthetic-usability effect (T2, already RATIONALE.md:179) means the marginal unit spent on finish is read as more usable, not merely decorative. Combined, these license richness as the safer default error, strictly bounded by gate 3 and gate 2.\n\n5. NOVELTY BUDGET: MAYA (T2, already RATIONALE.md:183) caps how much of a new surface's richness may be genuinely new pattern: spend novelty on ONE differentiator (one hero treatment, one motion moment), reuse a LOCKED component everywhere else. Generalizes the existing dual-axis rule (Fresha structure / Uber skin, LOCKFILE section 10) from Fresha rebuilds to any net-new surface.\n\n6. DENSITY/WHITESPACE COUPLING, extended to customer cards: TASTE_DASHBOARDS.md finding 14 (CONV, Material Design, already sourced at research/TASTE_DASHBOARDS.md:33, currently scoped to tables/forms) applies to any browse card too: if a card's field count rises toward band 2's ceiling, the gutter around that card block must grow in step, never shrink or stay flat. This is the specific mechanic that keeps a rich card from reading busy, and closes the scoping gap named above.\n\n7. FINISH ALLOCATION (where, not how much): RESTRAINT_TEST.md's photography~50/typography~25/motion~15/whitespace~7/depth~3 ranking stays CONV and stays an allocation order, not a quantity prior; keep the two questions separated so the CONV percentages are never mistaken for the richness ceiling in bands 2 and 4.\n\nBOUNDARY: this prior sets a first-draft band for a NEW mockup only; it reopens no frozen literal (card radius, LOCKFILE spacing tokens, the 44px touch floor); the informational gate (band 3) always outranks the richness bias (band 4) when they conflict.",
+  "taste_lab_probe": "Build 3 real variants of ONE already-shipped Solen browse surface (recommend the salon SearchTemplate grid: highest-traffic customer surface, already wired for the FLOORS LAW 5-pass note), structure untouched, only richness dialed:\n\nLevel A, sparse (deliberate lower anchor): imagery on ~15% of cards, 2 facts per card (name, price), flat depth, no gray-tray on photo-less cards.\nLevel B, target (current best guess): imagery ~1/3 per the existing floor, 3-4 facts per card (name, price, rating, one meta line), gray-tray on any photo-less card, band 6's density/whitespace coupling applied.\nLevel C, cluttered (deliberate upper anchor): imagery on every card plus one added decorative graphic, 6+ facts per card, tight gutters, at least one non-informational badge.\n\nProcedure: show all 3 unlabeled at real mobile width (375px) side by side. Ask, in this order: (1) an unprompted pairwise preference plus a one-sentence why, so the axis the owner actually reacts to surfaces rather than being guessed; (2) a squint-test chunk count on the winner (how many groups registered in half a second). Record the winner's exact chunk count and imagery percentage back into this file, replacing band 2's \"4-7, lean 4-5\" placeholder with the owner-confirmed number. This is gap register item D5's repertory-grid procedure, applied specifically to close G1.",
+  "numbers_used": [
+   "0.589 correlation (Kurosu and Kashimura 1995)",
+   "N=252 participants, 26 ATM UI variants (Kurosu and Kashimura 1995)",
+   "2.4 million ratings / ~40,000 participants / 43 countries (Reinecke and Gajos 2014)",
+   "N=60 undergraduate sample, 50ms exposure window (Tuch et al.)",
+   "7 plus-or-minus 2 chunks (Miller 1956)",
+   "~4 chunks under attention-limited conditions (Cowan 2001)",
+   "4 to 7 chunk band, biased to 4-5 on mobile (derived synthesis, not itself a cited study number)",
+   "~1/3 imagery share (existing Solen FLOORS LAW, CONV)",
+   "photography ~50 / typography ~25 / motion ~15 / whitespace ~7 / depth ~3 percent (RESTRAINT_TEST.md, CONV, already flagged do-not-cite-as-evidence)",
+   "60-80% text / 20-40% image and +280%/+340% marketing-blog figures (flagged MYTH, not used in the proposal)"
+  ]
+ },
+ "verified": {
+  "id": "S01",
+  "tag": "generative-gap",
+  "title": "Richness/restraint calibration prior (how much to put on a surface)",
+  "verdict": "revised",
+  "myths_caught": [
+   "Marketing-blog '60-80% text / 20-40% images' and '+280%/+340% engagement' figures: draft itself already flagged these MYTH and did not use them in the proposal. Confirmed correct handling, no change needed.",
+   "The draft's Tuch et al. source citation ('hci-basel.ch/MA/2007_Tuch.pdf', 'N=60 undergraduates') does not correspond to any findable source. Web search surfaces only the real, published Tuch et al. (2012) IJHCS 70(11) paper (119 website screenshots, not N=60 undergraduates) and an unrelated 2012 hci-basel.ch masters thesis by a different author (Hanchar). This is a fabricated-looking citation pattern (plausible-sounding institutional URL + invented N) that must not enter RATIONALE.md as written."
+  ],
+  "claim_verdicts": [
+   {
+    "claim": "Aesthetic-usability effect: r ~ 0.589 between aesthetics and apparent ease-of-use, N=252 raters over 26 ATM UI variants (Kurosu and Kashimura 1995, Hitachi).",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Confirmed by search (NN/g, Laws of UX, Semantic Scholar all report the same 26-stimuli / 252-rater / r=.589 design). Matches RATIONALE.md:179 verbatim. Already-cited status verified by direct file read."
+   },
+   {
+    "claim": "MAYA: typicality and novelty independently and jointly predict aesthetic preference and suppress each other (Hekkert, Snelders, van Wieringen 2003, British Journal of Psychology 94).",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Well-established, widely-cited paper; matches RATIONALE.md:183 verbatim on direct read. No red flags."
+   },
+   {
+    "claim": "Berlyne inverted-U: intermediate visual complexity preferred over sparse or cluttered; mixed replication.",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Matches RATIONALE.md:185 verbatim, already correctly labeled T3/mixed-replication there. No change."
+   },
+   {
+    "claim": "Reinecke and Gajos 2014: 2.4 million ratings, ~40,000 participants, 43 countries.",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Base scale numbers (2.4M ratings, ~40k participants) confirmed by search across Harvard EECS page, ACM DL, ResearchGate. Could not independently confirm '43 countries' in the snippets retrieved but this figure is widely repeated for this paper and is not implausible; not flagged as false, just unconfirmed to the letter."
+   },
+   {
+    "claim": "The complexity-preference curve is ASYMMETRIC: below-peak (sparse) loses little preference, above-peak (cluttered) loses much more.",
+    "source_ok": false,
+    "tier_final": "T3",
+    "note": "REFUTED AS STATED. Multiple targeted searches on this paper return findings about demographic/cultural variation in preferred complexity (gender, education, country), not a stated asymmetric-loss-function around the preference peak. This is the single most load-bearing claim in the draft (it is the entire justification for band 4's 'lean richer when uncertain' directional bias) and it was not verifiable from the actual paper's reported findings. Downgraded from T2 to T3 and softened to a qualitative, hedged statement in verified_addition; flagged as a residual risk since band 4 loses its strongest leg."
+   },
+   {
+    "claim": "Visual complexity and prototypicality shape first impressions within the first 50ms of exposure (Tuch et al.).",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "The underlying finding is real and confirmed: Tuch, Presslaber, Stocklin, Opwis, Bargas-Avila (2012), International Journal of Human-Computer Studies 70(11), found VC/PT affect aesthetic ratings within 50ms (and a follow-up within 17ms). BUT the draft's specific source citation is wrong: 'hci-basel.ch/MA/2007_Tuch.pdf' does not surface in search, and the 'N=60 undergraduates, Swiss sample' detail does not match the real study design (119 website screenshots rated, not N=60 raters). Corrected citation supplied in verified_addition; the invented N and URL are dropped."
+   },
+   {
+    "claim": "Miller 1956: working memory / immediate span limited to ~7 plus-or-minus 2 chunks.",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Foundational, uncontested citation. Correctly kept T1."
+   },
+   {
+    "claim": "Cowan 2001: under attention-limited, non-rehearsed conditions, realistic capacity is closer to ~4 chunks (Behavioral and Brain Sciences 24(1)).",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Confirmed by search (journalofcognition.org, PhilPapers, ResearchGate all describe the same 'magical number 4' reconsideration). More precisely the paper says a range of roughly 3 to 5 chunks with ~4 as the central estimate; draft's 'closer to about 4' is an accurate compression, not an inflation. No change needed beyond noting the 3-5 range exists."
+   },
+   {
+    "claim": "Density/whitespace inverse coupling rule (Una Kravets / Google Design, Material Density on the Web), CONV, already sourced in TASTE_DASHBOARDS.md finding 14, scoped to tables/forms.",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Confirmed by direct file read of _design-system/research/TASTE_DASHBOARDS.md:33 and :79. Wording and scope (tables, long forms, lists; explicitly excludes focused-task controls like date pickers) matches the draft's description exactly."
+   },
+   {
+    "claim": "Solen life-budget ranking (photography~50/typography~25/motion~15/whitespace~7/depth~3), CONV, RATIONALE.md already flags do-not-cite-as-evidence.",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Confirmed by direct file read of RATIONALE.md:189, wording matches ('llm-council output, CONV label... Do not cite them as evidence')."
+   },
+   {
+    "claim": "Imagery should cover roughly one third of browse viewports, house FLOORS LAW, owner-approved 2026-07-21.",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Confirmed verbatim in memory file project_floors_law.md: 'imagery ~1/3 of browse viewports + never a bare grey box', dated and owner-approved as stated."
+   }
+  ],
+  "verified_addition": "GENERATIVE PRIOR (closes gap register G1, RATIONALE.md:826), for the new anchor at section 28 / a cross-referenced block near section 12 (Berlyne line 185):\n\n1. IMAGERY SHARE: unchanged, cross-reference only. Roughly one third of a browse viewport carries a photograph (FLOORS LAW, house CONV, owner-approved 2026-07-21). Never a bare grey box inside that third. This prior does not re-derive it, only wires it into the same band as the following numbers.\n\n2. CHUNK COUNT ABOVE THE FOLD: 4 to 7 distinct visual GROUPS visible without scrolling on a mobile browse surface, biased to the low end (4-5) on a glance-based surface. MECHANIC: Miller 1956's 7 plus-or-minus 2 span (T1) sets the ceiling; Cowan 2001's reconsideration to roughly 3-5 chunks (about 4 as the central estimate) under attention-limited, non-rehearsed conditions (T2, confirmed) sets the floor for a scanned phone screen. A \"chunk\" is one Gestalt-grouped unit (one card, one photo block, one CTA cluster), not each field inside it, so a rich card (photo plus name plus price plus rating) still counts as ONE chunk. This is the missing number behind the existing Berlyne line (RATIONALE.md:185): the \"peak\" it names without a value is this band.\n\n3. DECORATIVE-VS-INFORMATIONAL GATE inside a chunk: every element must pass copy-economy rule 1's delete-test (project CLAUDE.md), unless it is carrying the imagery floor. Not a new number, an application: richness never reopens the no-redundant-tags rule.\n\n4. DIRECTIONAL BIAS WHEN UNCERTAIN: lean richer, not sparser, up to band 2's ceiling, held with LOWER confidence than the rest of this prior. MECHANIC: the aesthetic-usability effect (T2, Kurosu and Kashimura 1995, r=.589, confirmed, already RATIONALE.md:179) means the marginal unit spent on finish is read as more usable, not merely decorative, and Tuch et al. (2012, International Journal of Human-Computer Studies 70:11, T3, confirmed) show visual complexity and prototypicality shape first impressions within 50ms of exposure. Reinecke and Gajos's 2014 study (2.4 million ratings, roughly 40,000 participants, T2 for the scale claim) is genuine and large, but its published findings as verified here concern how the PEAK of the complexity-preference curve varies by demographic and country, not a confirmed asymmetric-loss shape around that peak; the \"sparse costs little, cluttered costs a lot\" framing could not be verified against the paper's reported results and is therefore downgraded to a hedged, T3-level directional lean rather than a settled asymmetric law. Combined, these license richness as a plausible safer default error, strictly bounded by gate 3 and gate 2, but this band is the weakest-evidenced part of the prior and should be treated as a working hypothesis until the Taste Lab probe below tests it directly.\n\n5. NOVELTY BUDGET: MAYA (T2, Hekkert, Snelders, van Wieringen 2003, confirmed, already RATIONALE.md:183) caps how much of a new surface's richness may be genuinely new pattern: spend novelty on ONE differentiator (one hero treatment, one motion moment), reuse a LOCKED component everywhere else. Generalizes the existing dual-axis rule (Fresha structure / Uber skin, LOCKFILE section 10) from Fresha rebuilds to any net-new surface.\n\n6. DENSITY/WHITESPACE COUPLING, extended to customer cards: TASTE_DASHBOARDS.md finding 14 (CONV, Material Design, confirmed at research/TASTE_DASHBOARDS.md:33, currently scoped to tables/forms/lists) applies to any browse card too: if a card's field count rises toward band 2's ceiling, the gutter around that card block must grow in step, never shrink or stay flat. This is the specific mechanic that keeps a rich card from reading busy, and closes the scoping gap named above.\n\n7. FINISH ALLOCATION (where, not how much): RESTRAINT_TEST.md's photography~50/typography~25/motion~15/whitespace~7/depth~3 ranking stays CONV and stays an allocation order, not a quantity prior (confirmed unchanged at RATIONALE.md:189); keep the two questions separated so the CONV percentages are never mistaken for the richness ceiling in bands 2 and 4.\n\nBOUNDARY: this prior sets a first-draft band for a NEW mockup only; it reopens no frozen literal (card radius, LOCKFILE spacing tokens, the 44px touch floor); the informational gate (band 3) always outranks the richness bias (band 4) when they conflict; and band 4 itself is explicitly the lowest-confidence band in this prior pending the probe below.",
+  "residual_risks": "Band 4 (the directional tie-breaker for when to lean richer vs sparser) rested on the Reinecke and Gajos 2014 asymmetric-curve claim as its strongest piece of evidence, and that specific characterization could not be confirmed from the paper's actual reported findings (search surfaced demographic/cultural variance in the preferred complexity peak, not a stated asymmetric penalty shape around it). The band survives on the aesthetic-usability effect and the Tuch et al. 50ms finding alone, both real but neither directly about which direction to err. Recommend the Taste Lab probe (already specified in the draft) run BEFORE this band is treated as settled, and log the actual pairwise result as the tie-breaker rather than the asymmetric-curve reasoning. Separately, the draft's original Tuch citation URL and N=60 figure were corrected here; if any other stream in this same research sweep drew on the same fabricated hci-basel.ch/2007 citation, it should be re-checked and corrected identically. Neither of these findings requires reopening a frozen LOCKFILE literal; they only affect the confidence level attached to the new prior's directional-bias band, which is a QUESTIONS.md candidate for an owner sign-off note (\"richness-lean-when-uncertain is a working hypothesis, not a settled law, until the probe runs\") rather than a lock change."
+ }
+}

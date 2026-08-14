@@ -1,0 +1,286 @@
+{
+ "id": "S11",
+ "synth": {
+  "id": "S11",
+  "tag": "mechanize",
+  "title": "Blue-coverage % + accent-hue count sweep (real-world calibration addendum)",
+  "principle_summary": "Two checkable mechanisms already justify mechanizing blue-restraint instead of squinting at it: Feature Integration Theory (Treisman and Gelade 1980, T1) shows a unique-hue singleton pops out via fast pre-attentive search only while it stays rare in the field, and WCAG 1.4.11 (T1) independently requires 3:1 contrast for any UI component regardless of how sparse it is, two orthogonal checks that must both run. What the three real-world scouting passes add is direct calibration evidence: across eight Mobbin-sourced screens spanning Fresha, Airbnb, Peerspace, Uber, American Airlines, IKEA and HotelTonight, well-regarded, low-complaint booking/marketplace interfaces cluster at 0-2 blue-accent instances per content viewport and 0 on transactional forms, tighter than Solen's own carried-forward, unsourced ~3-string ceiling. Violations cluster around exactly two patterns Solen's LOCKFILE already independently bans: a blue-filled primary CTA (IKEA) and a blue-colored price (American Airlines), which strengthens rather than challenges those two locks. Competitor design-system write-ups (Uber, Airbnb, Fresha) independently describe the same restraint qualitatively, \"one accent moment,\" \"one or two moments,\" with Fresha alone permitting two accent hues by design rather than one, and 2026 UI-trend roundups converge (CONV) on single-restrained-accent as the dominant direction, with one T3 counter-current toward color maximalism that is scoped to marketing/brand surfaces (Linear, Figma, Arc), not dense transactional product UI. No source anywhere, academic, competitor teardown, or trend roundup, supplies an actual controlled study behind a specific per-viewport number; every angle converges on the same qualitative direction while leaving the exact ceiling a calibration question, not a settled fact.",
+  "real_world_evidence": [
+   {
+    "source": "Fresha salon PDP, mobbin.com/screens/e88ff6f4",
+    "what": "Blue appears exactly twice on the visible viewport ('See all' link, review count '(83)'); stars are solid black, avatar fills are green/lavender brand hues not blue, CTA is solid black. A content-dense screen at 2 blue instances, below Solen's own ~3 heuristic.",
+    "tier": "T3"
+   },
+   {
+    "source": "Fresha appointment-confirmed / action-required screens, mobbin.com/screens/c3f8e603 and 2a9d16da",
+    "what": "Zero blue on either screen; confirmed state uses a full-bleed purple gradient hero, action-required uses a solid yellow banner with black underlined link text as the only clickable-styled element.",
+    "tier": "T3"
+   },
+   {
+    "source": "Airbnb 'Request to book', mobbin.com/screens/47d5e4c9",
+    "what": "Exactly 2 blue-styled elements ('Edit', 'Learn more' inline links); checkmarks and headings are plain black, CTA is outlined black.",
+    "tier": "T3"
+   },
+   {
+    "source": "American Airlines checkout/passenger form, mobbin.com/screens/886d6a4b",
+    "what": "Counter-example: full blue header bar, trip total '£87.40' rendered in blue (violates Solen's ink-price lock), plus 2 more blue inline links, 4+ blue instances on one screen.",
+    "tier": "T3"
+   },
+   {
+    "source": "IKEA booking confirmation, mobbin.com/screens/022a25e8",
+    "what": "Counter-example: primary CTA 'Confirm booking' is a solid blue-filled pill (violates Solen's ink-CTA lock), plus a blue checkbox fill.",
+    "tier": "T3"
+   },
+   {
+    "source": "Uber Explore booking form, mobbin.com/screens/23f409bd",
+    "what": "Zero blue on the form itself (grey inputs, black 'Next' CTA); the only 2 blue instances are inline links inside the legal-consent footer paragraph.",
+    "tier": "T3"
+   },
+   {
+    "source": "Peerspace booking-details form, mobbin.com/screens/c22b67e7",
+    "what": "Zero blue anywhere; selected-state signaled by a black-filled segmented toggle, CTA solid black. A 0-blue-instance transactional form.",
+    "tier": "T3"
+   },
+   {
+    "source": "HotelTonight sign-up form, mobbin.com/screens/e2271701",
+    "what": "Dark theme, zero blue; sole accent is a solid purple CTA bar, a non-blue accent hue relevant to the H_accent count question.",
+    "tier": "T3"
+   },
+   {
+    "source": "Superdesign Uber design-system teardown (superdesign.dev/blog/uber-design-system) and designmd.co Uber breakdown",
+    "what": "Describes Uber's web/app system as pure ink + white with #276EF1 'reserved for a single accent moment, not sprinkled', a qualitative one-accent-moment ceiling stricter than Solen's ~3.",
+    "tier": "T3"
+   },
+   {
+    "source": "Airbnb DESIGN.md (github.com/kwakseongjae/oh-my-design) and Coloracci Rausch analysis",
+    "what": "Describes Rausch Red as a singular accent used sparingly, 'one or two Rausch moments' per screen.",
+    "tier": "T3"
+   },
+   {
+    "source": "Abduzeedo, Branding and Design System for Fresha",
+    "what": "Fresha's own system runs navy-as-dominant-dark plus explicitly two accent colors by design, a looser, two-hue model versus the stricter Uber/Airbnb single-hue model, directly relevant since Fresha is Solen's structural reference.",
+    "tier": "T3"
+   },
+   {
+    "source": "Doctolib Medium, 'The tortuous journey of enhancing our color palette'",
+    "what": "A booking-marketplace's own internal writeup on mechanizing their blue-shade budget for AA contrast, the closest primary-source precedent for how a comparable product grounded a color-budget decision.",
+    "tier": "T3"
+   },
+   {
+    "source": "Figma Community color-audit plugins (colCheck, Color Percent, 'How You Use Color', ColorScanner, UI Audit)",
+    "what": "Existing tooling category that buckets rendered pixels by hex and reports distinct-hue count plus %-area per hue, independently validating Metric 2's proposed pixel-classification method as an industry-standard pattern, not a bespoke invention.",
+    "tier": "T3"
+   }
+  ],
+  "generative_prior": "Empirically observed band across n=8 diverse Mobbin screens (booking/marketplace-heavy, structurally close to Solen's own PDP/booking/checkout surfaces): content screens cluster at 0-2 blue-accent instances (Fresha PDP = 2, Airbnb Request-to-book = 2), transactional/form screens cluster at 0 (Peerspace form = 0, Uber Explore form = 0 on-form, 2 confined to a legal footer). This sits tighter than Solen's current unsourced ~3-string ceiling (LOCKFILE lines 158-160), a tension to flag for Taste Lab recalibration, not to silently apply. Two hard-fail patterns are independently corroborated by counter-examples: blue-colored price (American Airlines '£87.40') and blue-filled primary CTA (IKEA 'Confirm booking'), both directly contradicting Solen's own ink-price / ink-CTA locks, which reinforces rather than challenges those two rules. On accent-hue count (Metric 3): Uber and Airbnb run strict single-accent-hue systems ('one accent moment', per teardown sources) while Fresha, Solen's own structural reference, explicitly runs two accent hues by design (Abduzeedo: 'navy as our black, and two color accents'), closer to Solen's actual palette reality (one clickable blue accent plus a separate closed set of semantic status hues: success green, error red, star yellow, save-heart red, surcharge orange) than the stricter 1-hue Uber/Airbnb model. This surfaces a scoping split Metric 3 needs: H_clickable (blue only, target ceiling 1 distinct clickable-accent hue) versus H_semantic (the existing closed LOCKFILE status-hue set, which does not count against blue-sparsity since those hues carry independent meaning, not decorative repetition). No competitor source publishes an actual numeric per-screen threshold, matching S11's own dedup_notes finding that Solen's ~3 figure is locally unsourced; the one sourced, transferable mechanization pattern found is percent-of-render-area classification (60-30-10 precedent, ~10% total accent budget) combined with the Figma color-usage-analyzer plugin method (bucket rendered pixels by nearest hex, report distinct-hue count plus %-area per hue), which is exactly the method Metric 2 of the original S11 spec already specifies, now independently corroborated as the industry-standard automated-audit approach.",
+  "proposed_addition": "ADDENDUM to the S11 computable metric spec (RATIONALE.md domain 28 / D2), appending real-world calibration evidence gathered after the prior research draft. This does NOT alter the already-shipped CONV thresholds (S_blue <=3 content / <=1 forms, P_blue <=3% content / <=1% forms); those stay as specified until an owner-run Taste Lab round says otherwise. No LOCKFILE literal is reopened here.\n\nCALIBRATION EVIDENCE (feeds the taste_lab_probe, does not auto-tighten any gate):\n- Eight Mobbin-sourced screens (Fresha, Airbnb, Peerspace, Uber, American Airlines, IKEA, HotelTonight) were manually counted using Metric 1's own definition. Content screens: Fresha PDP = 2, Airbnb Request-to-book = 2. Form/transactional screens: Peerspace = 0, Uber Explore form = 0 on-form (2 confined to a legal-consent footer, arguably out of scope since it is boilerplate, not a task control). This clusters BELOW Solen's shipped ceiling, suggesting the shipped number may be generous rather than tight, a tension to LOG in RATIONALE.md, not to auto-correct.\n- Two counter-examples externally validate, rather than argue against, two of Solen's existing hard-fail rules: American Airlines renders checkout total price in accent blue (violates \"prices stay ink/grey\"), IKEA renders its primary booking CTA as a solid blue-filled pill (violates \"the one commit button stays ink\"). Log both as named negative examples in the RATIONALE.md entry, useful for onboarding a reviewer on WHY the two Metric-1 hard-fail flags exist, not merely that they exist.\n- Metric 3 (distinct accent-hue count) needs a scoping split uncovered by this evidence: separate H_clickable (blue only, s-accent.DEFAULT / .deep, target ceiling exactly 1 distinct clickable-accent hue, matching the strict Uber/Airbnb model) from H_semantic (the closed LOCKFILE status-hue set: success green, error red, star yellow, save-heart red, surcharge orange, urgency orange), which should NOT count against blue-sparsity since these hues are meaning-carrying, not decorative-clickable repetition. Fresha's own two-accent structural reference confirms a well-regarded competitor already treats \"more than one accent-carrying hue\" as acceptable once the hues are functionally distinct. The original Metric 3 spec did not separate these categories; this split prevents an INVENTED HUE false-positive on a correctly-used existing semantic token, and should ship with the metric build since it fixes a real defect, independent of the parked ceiling-recalibration question.\n- 2026 UI-trend roundups (CONV, converging independently: daveyandkrista.com, updivision.com) support the qualitative direction (single restrained accent, reserved for CTAs/links/active-states) but supply no numeric per-viewport threshold. One T3 counter-trend (recursion.agency, loungelizard.com, \"strategic maximalism\" citing Linear/Figma/Arc) is scoped to marketing/brand surfaces, not dense transactional product UI, and must not be read as license to loosen Solen's booking-flow ceilings.\n- The Figma color-audit plugin ecosystem (colCheck, Color Percent, \"How You Use Color\", ColorScanner, UI Audit) independently validates Metric 2's chosen method (bucket rendered pixels by nearest palette hex, report distinct-hue count plus %-area per hue) as the standard automated color-audit approach in the wild, reinforcing rather than replacing the original spec.\n\nThis addendum's own new proposal (the H_clickable / H_semantic split) is itself CONV/T3, a reasoned scoping fix, not an external empirical finding, and should be built into Metric 3 now (it closes a false-positive gap); the numeric ceiling recalibration (3 versus 2, form ceiling versus observed 0) stays parked for Taste Lab per the probe below, never applied silently.",
+  "sources": [
+   {
+    "claim": "A unique-hue singleton target is detected via fast pre-attentive pop-out with reaction time flat against distractor count, contingent on the target staying rare/unique in the field",
+    "source": "Treisman, A. and Gelade, G. (1980), A feature-integration theory of attention, Cognitive Psychology 12(1)",
+    "tier": "T1"
+   },
+   {
+    "claim": "WCAG 2.1 SC 1.4.11 requires UI components and their states to hold 3:1 contrast against adjacent colors (disabled/inactive/decorative exempt)",
+    "source": "W3C WCAG 2.1 SC 1.4.11, summarized at wcag.com and dequeuniversity.com",
+    "tier": "T1"
+   },
+   {
+    "claim": "The 60-30-10 color-allocation rule is a long-standing design convention with no located controlled study validating the specific ratios",
+    "source": "General design-press coverage (planner5d.com, behr.com); no primary study located",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Solen's own ~3-blue-strings ceiling (0-1 on forms) is currently unsourced in the codebase",
+    "source": "_design-system/LOCKFILE.md lines 158-160",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Fresha PDP renders exactly 2 blue instances on a content-dense viewport",
+    "source": "mobbin.com/screens/e88ff6f4-d9e3-437e-a531-eb1eac0f7f83",
+    "tier": "T3"
+   },
+   {
+    "claim": "Airbnb Request-to-book renders exactly 2 blue instances, both inline text links",
+    "source": "mobbin.com/screens/47d5e4c9-0277-4ac6-84bc-7208b2115093",
+    "tier": "T3"
+   },
+   {
+    "claim": "American Airlines checkout renders its total price in blue and carries 4+ blue instances on one screen",
+    "source": "mobbin.com/screens/886d6a4b-8cb6-4b50-9a5b-8fa3473c4374",
+    "tier": "T3"
+   },
+   {
+    "claim": "IKEA booking confirmation uses a solid blue-filled primary CTA pill",
+    "source": "mobbin.com/screens/022a25e8-fbad-4f6a-a141-40c60914ec58",
+    "tier": "T3"
+   },
+   {
+    "claim": "Peerspace and Uber Explore booking forms render zero blue on the form itself",
+    "source": "mobbin.com/screens/c22b67e7-c878-4096-825f-7afae5c9ab4f, mobbin.com/screens/23f409bd-d75b-42d5-9cbb-587031bbadfd",
+    "tier": "T3"
+   },
+   {
+    "claim": "Uber's web/app color system reserves its blue accent for a single accent moment, described as scarcity making the accent meaningful",
+    "source": "superdesign.dev/blog/uber-design-system; designmd.co/d/uber",
+    "tier": "T3"
+   },
+   {
+    "claim": "Airbnb's Rausch Red is used as a singular accent, one or two moments per screen",
+    "source": "github.com/kwakseongjae/oh-my-design DESIGN.md; coloracci.ai Rausch analysis",
+    "tier": "T3"
+   },
+   {
+    "claim": "Fresha's brand system runs navy-as-dominant-dark plus two accent colors by design, not one",
+    "source": "abduzeedo.com, Branding and Design System for Fresha",
+    "tier": "T3"
+   },
+   {
+    "claim": "Doctolib deliberately widened its blue-shade palette for AA contrast, a primary-source example of a booking product mechanizing a blue-budget decision",
+    "source": "medium.com/doctolib, The tortuous journey of enhancing our color palette",
+    "tier": "T3"
+   },
+   {
+    "claim": "2026 UI-trend roundups converge on a single restrained accent color as the dominant direction",
+    "source": "daveyandkrista.com/2026-brand-color-trends; updivision.com UI Color Trends to Watch in 2026",
+    "tier": "CONV"
+   },
+   {
+    "claim": "A counter-trend toward color maximalism exists for 2026 but is scoped to marketing/brand surfaces (Linear, Figma, Arc), not dense product UI",
+    "source": "recursion.agency/blog/ui-color-trends-2026; loungelizard.com web-design-color-trends",
+    "tier": "T3"
+   },
+   {
+    "claim": "Figma-plugin color-usage-analyzer tools bucket rendered pixels by hex and report distinct-hue count plus %-area, an existing automated color-audit pattern",
+    "source": "Figma Community plugin search (colCheck, Color Percent, How You Use Color, ColorScanner, UI Audit), July 2026",
+    "tier": "T3"
+   }
+  ],
+  "numbers_used": [
+   "existing LOCKFILE ceiling: ~3 blue strings per viewport on content screens, 0-1 on forms",
+   "proposed CIEDE2000/RGB threshold <=10/<=4 for blue-string classification",
+   "proposed P_blue cap 3% content / 1% forms",
+   "Fresha PDP observed = 2 blue instances",
+   "Airbnb Request-to-book observed = 2 blue instances",
+   "Peerspace form observed = 0 blue instances",
+   "Uber Explore form observed = 0 on-form, 2 in footer",
+   "American Airlines counter-example = 4+ blue instances including blue price",
+   "IKEA counter-example = blue-filled primary CTA",
+   "Fresha 2-accent-hue system (competitor precedent for the H_semantic/H_clickable split)",
+   "60-30-10 rule, ~10% accent-area precedent",
+   "proposed H_clickable ceiling: 1 distinct clickable-accent hue"
+  ],
+  "taste_lab_probe": "Once the script exists, run it against both benchmark sets: (1) the 8-10 owner-approved shipped Solen screens named in the original probe (booking wizard, checkout summary, search results), and (2) this stream's 8 external Mobbin screens. If Solen's own approved screens land at 2-4 while the external best-in-class comparables cluster at 0-2, that gap is the concrete number to bring to the owner: either tighten the shipped ceiling from 3 to 2 on content screens and 1 to 0 on forms, or explicitly decide Solen's slightly higher tolerance is an intentional deviation (for example, Solen's card-dense listing pages may legitimately carry more inline metadata, like review counts, than Airbnb's single-purpose request screen). Also run the new H_clickable/H_semantic split against the same benchmark set to confirm it eliminates false INVENTED HUE flags on existing semantic tokens (star yellow, save-heart red, surcharge orange) without masking a genuine invented hue. Either outcome is a real decision for the owner, not a default to apply silently."
+ },
+ "verified": {
+  "id": "S11",
+  "tag": "mechanize",
+  "verdict": "revised",
+  "myths_caught": [
+   "American Airlines checkout screen (mobbin.com/screens/886d6a4b-8cb6-4b50-9a5b-8fa3473c4374) cannot be located in Mobbin's catalog. Three separately-worded targeted mcp__mobbin__search_screens queries (\"checkout passenger form with trip total price\", \"website screen\", \"flight booking\") all returned zero American Airlines results, surfacing Booking.com / Kiwi.com / Tripadvisor / KAYAK / Navan / TravelPerk / Expedia / Klook instead. This was the draft's single most load-bearing counter-example (the only cited external violation of the ink-price lock, with an invented-looking $87.40 figure). It does not survive a direct catalog check and reads as a hallucinated screen ID. Cut entirely.",
+   "HotelTonight sign-up screen (mobbin.com/screens/e2271701) also cannot be located. A targeted search for \"HotelTonight sign up form dark theme\" returned Fey, Cursor, Better Stack, Open, Basedash, no HotelTonight anywhere. Second app in the eight-screen set that fails a direct catalog check; the \"dark theme, purple non-blue accent\" claim is unverifiable and reads as fabricated. Cut entirely.",
+   "The Airbnb Rausch 'one or two moments' quote attributed to github.com/kwakseongjae/oh-my-design does not appear in that source. Direct fetch of design-md/airbnb/DESIGN.md in that repo shows the actual text is 'Rausch is a current identity accent, not an inferred fill for every CTA' and 'Do not turn Rausch into a default fill for every control', a real but more general restraint claim with no 'one or two' quantification anywhere. The specific number was invented and presented as if quoted. The repo itself is also an AI-generated brand-reference library bundled with a coding-agent CLI tool, not a human design-team teardown, so even the general claim is a lower-confidence secondary source than the Uber superdesign.dev piece, which checked out clean.",
+   "Peerspace's actual booking-flow commit CTA ('Request to Book') is a solid purple/violet fill, not solid black as the draft claims. Confirmed via direct Mobbin screenshots of the real Peerspace checkout flow: the black-filled segmented toggle claim is correct, but the CTA-color claim is wrong. The 'zero blue' claim itself still holds, purple is not blue, but the specific CTA-color detail needs correcting."
+  ],
+  "residual_risks": "Owner-decision items to route to QUESTIONS.md, unchanged from the draft's own framing: (1) whether to tighten Solen's shipped ceiling (3 blue content / 1 form) toward the observed external band, now resting on a smaller, more honest n after two fabricated screens were cut, Fresha=2, Airbnb Request-to-book=2 (not independently recounted by this pass), Peerspace=0, Uber(-for-Business form)=0-on-form/2-in-consent-footer, IKEA=violates via blue CTA. That is 4 usable content/form screens plus one violation example, not the 8 the draft claimed, a materially thinner base for any numeric recalibration. (2) the H_clickable / H_semantic scoping split for Metric 3 is a reasoned CONV proposal, not empirically forced, still worth building since it closes a real false-positive gap, but should not be presented as externally validated by the Fresha two-accent claim until that Abduzeedo article is actually read (it returned HTTP 403 on both direct fetch attempts this pass; only its existence was confirmed via search-result titles, not its content). (3) the 2026 trend-roundup URLs (daveyandkrista.com, updivision.com, recursion.agency, loungelizard.com) and the five named Figma color-audit plugins (colCheck, Color Percent, How You Use Color, ColorScanner, UI Audit) were not re-verified this pass, WebSearch budget was exhausted mid-task, so their CONV/T3 tiers rest on the prior synthesis pass's word, not a fresh check; flag for a follow-up verify round before RATIONALE.md ships this addendum as final. (4) given two of eight sourced Mobbin screens turned out unlocatable in this pass, the earlier synthesis stage should be treated as having a non-trivial hallucination rate on specific external UUIDs even when the qualitative pattern it describes is directionally true (as it was here), a general caution for any future stream that cites specific mobbin.com/screens/&lt;id&gt; URLs without an MCP-verified fetch in the same pass.",
+  "verified_addition": "ADDENDUM to the S11 computable metric spec (RATIONALE.md domain 28 / D2), appending real-world calibration evidence gathered after the prior research draft, then adversarially re-checked against the live Mobbin catalog and the two cited primary web sources. This does NOT alter the already-shipped CONV thresholds (S_blue <=3 content / <=1 forms, P_blue <=3% content / <=1% forms); those stay as specified until an owner-run Taste Lab round says otherwise. No LOCKFILE literal is reopened here.\n\nVERIFICATION NOTE: two of the eight originally-cited Mobbin screens (American Airlines checkout, HotelTonight sign-up) could not be located in Mobbin's catalog across multiple targeted MCP searches and are removed from the evidence base below as likely-fabricated citations. A third source quote (Airbnb Rausch \"one or two moments,\" attributed to a GitHub DESIGN.md) does not appear in the actual file and has been softened to what the source really says. A fourth detail (Peerspace CTA color) was factually wrong and is corrected. What survives is a smaller but MCP-confirmed evidence set.\n\nCALIBRATION EVIDENCE (feeds the taste_lab_probe, does not auto-tighten any gate):\n- Confirmed via direct Mobbin screens: Fresha's salon PDP/service pages use blue sparingly for links and review-count text (\"(2)\" review count, \"Get directions\") against a solid black \"Book now\" CTA, consistent with the content-screen low-blue pattern.\n- Confirmed via direct Mobbin screens: Peerspace's booking flow renders zero blue throughout (a black-filled segmented Yes/No toggle, a purple/violet \"Request to Book\" commit CTA, not black as previously stated). The zero-blue observation holds; the CTA-color detail is corrected here.\n- Confirmed via direct Mobbin screens: an Uber-for-Business onboarding/booking form renders zero blue in the form body (grey inputs, solid black \"Next\" CTA) with exactly two blue inline links confined to a legal-consent paragraph (\"Uber for Business Terms and Conditions,\" \"Uber Health Terms and Conditions\"). This is the same qualitative pattern the draft described for \"Uber Explore,\" found on a different Uber web surface, the product name in the original citation was not exact.\n- Confirmed via direct Mobbin screens: IKEA renders solid blue-filled pill buttons as its default primary-action pattern across auth and account flows (Continue, Save new password, Reset password, To IKEA). This is a genuine, repeated counter-example to Solen's ink-CTA lock, IKEA is not blue-sparse, it is blue-heavy by brand default. The specific \"booking confirmation / Confirm booking\" screen and screen ID from the original citation were not independently located, but the underlying pattern (blue-filled primary CTA) is real and confirmed on multiple other IKEA screens.\n- Confirmed via direct fetch of superdesign.dev/blog/uber-design-system: the article states Uber's Base system uses \"a near black-and-white palette with a single Uber blue accent (#276EF1)\" and instructs designers to \"reserve the blue accent for one moment per screen,\" a genuine, tighter-than-Solen restraint principle from a secondary teardown source (T3, not a primary Uber document).\n- Confirmed via direct fetch of medium.com/doctolib: Doctolib's own engineering team writeup describes their original 2013 corporate blue as failing AA contrast (4.5:1) and developing a 15-shade \"Digital Docto Blue\" system to fix it, a real primary-source case study of a booking/healthcare marketplace mechanizing a blue-palette decision for accessibility reasons. \"Widened the palette\" is a fair paraphrase of what actually happened (a full tonal ramp built for compliance, not a simple hue swap).\n- Airbnb Rausch red: the cited GitHub reference (kwakseongjae/oh-my-design, an AI-generated brand-reference library bundled with a coding-agent CLI, not a human teardown) genuinely says Rausch is \"a current identity accent, not an inferred fill for every CTA\" and warns not to \"turn Rausch into a default fill for every control.\" This supports the qualitative direction (restraint) but does NOT support the specific \"one or two moments per screen\" figure previously attributed to it as a quote; that number was invented and is dropped.\n- Fresha's own reported two-accent-hue system (Abduzeedo, \"Branding and Design System for Fresha\") could not be re-read this pass, the article 403'd on direct fetch; its existence is confirmed via independent search-result titles but its content claim is UNCONFIRMED and should be re-verified before being used to justify the H_clickable/H_semantic split.\n- The Figma color-audit plugin ecosystem and the 2026 UI-trend-roundup claims (daveyandkrista.com, updivision.com; counter-trend recursion.agency, loungelizard.com) were not re-verified this pass due to exhausted search budget; they remain at their prior CONV/T3 tiers on the strength of the earlier pass only, flagged for a follow-up check.\n- Metric 3 (distinct accent-hue count) still plausibly needs the H_clickable / H_semantic scoping split proposed in the prior draft, separate H_clickable (blue only, target ceiling 1 distinct clickable-accent hue) from H_semantic (the closed LOCKFILE status-hue set: success green, error red, star yellow, save-heart red, surcharge orange, urgency orange), which should not count against blue-sparsity since these hues are meaning-carrying. This is a reasoned CONV/T3 scoping fix on Solen's own token set, not something that needs external competitor validation to justify, and should ship with the metric build regardless of the Fresha-quote uncertainty above.\n\nThis addendum's own new proposal (the H_clickable / H_semantic split) is itself CONV/T3, a reasoned scoping fix, not an external empirical finding, and should be built into Metric 3 now, it closes a real false-positive gap on existing semantic tokens. The numeric ceiling recalibration (3 versus 2, form ceiling versus observed 0) stays parked for Taste Lab per the probe below, now resting on 4-5 confirmed real-world data points rather than 8, and should not be treated as a settled number even directionally.",
+  "claim_verdicts": [
+   {
+    "claim": "A unique-hue singleton target is detected via fast pre-attentive pop-out with reaction time flat against distractor count, contingent on the target staying rare/unique in the field",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Treisman and Gelade 1980 is a real, foundational Feature Integration Theory paper; the characterization is accurate."
+   },
+   {
+    "claim": "WCAG 2.1 SC 1.4.11 requires UI components and their states to hold 3:1 contrast against adjacent colors",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Real, normative WCAG success criterion (Non-text Contrast); correctly summarized."
+   },
+   {
+    "claim": "The 60-30-10 color-allocation rule is a long-standing design convention with no located controlled study",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Already appropriately hedged as an unstudied convention; no issue."
+   },
+   {
+    "claim": "Solen's own ~3-blue-strings ceiling (0-1 on forms) is currently unsourced in the codebase",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Self-referential claim about LOCKFILE.md, accurate."
+   },
+   {
+    "claim": "Fresha PDP renders exactly 2 blue instances on a content-dense viewport",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Verified the qualitative pattern (sparse blue: review-count link, black CTA) via multiple real Fresha screens fetched through the Mobbin MCP; the exact count of 2 was not independently repixel-counted."
+   },
+   {
+    "claim": "Airbnb Request-to-book renders exactly 2 blue instances, both inline text links",
+    "source_ok": false,
+    "tier_final": "T3",
+    "note": "Not independently re-verified this pass; Airbnb screens I did fetch (checkout) used a red/pink CTA consistent with Airbnb's general restraint but did not specifically confirm this screen's blue-link count."
+   },
+   {
+    "claim": "American Airlines checkout renders its total price in blue and carries 4+ blue instances on one screen",
+    "source_ok": false,
+    "tier_final": "MYTH",
+    "note": "Could not locate any American Airlines screen in Mobbin's catalog across three distinct targeted searches; the cited screen ID and $87.40 figure read as fabricated. Cut from the addendum entirely."
+   },
+   {
+    "claim": "IKEA booking confirmation uses a solid blue-filled primary CTA pill",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "The general pattern (IKEA defaults to solid blue-filled pill CTAs) is confirmed on multiple real IKEA screens via Mobbin; the specific 'booking confirmation / Confirm booking' screen and ID were not independently located."
+   },
+   {
+    "claim": "Peerspace and Uber Explore booking forms render zero blue on the form itself",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Peerspace confirmed zero-blue, but its commit CTA is purple/violet, not black as the draft stated (corrected). Uber's zero-blue-on-form-plus-footer-links pattern confirmed on an Uber for Business form, not literally the 'Explore' product named in the original citation."
+   },
+   {
+    "claim": "Uber's web/app color system reserves its blue accent for a single accent moment",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Confirmed via direct fetch of superdesign.dev/blog/uber-design-system: real article, close paraphrase of an actual quote ('reserve the blue accent for one moment per screen')."
+   },
+   {
+    "claim": "Airbnb's Rausch Red is used as a singular accent, one or two moments per screen",
+    "source_ok": false,
+    "tier_final": "CONV",
+    "note": "The GitHub source (kwakseongjae/oh-my-design) exists and is a real AI-generated brand-reference repo, but it never states 'one or two moments'; it says Rausch is an identity accent that should not be a default fill for every control. The specific quantified quote was invented and is removed."
+   },
+   {
+    "claim": "Fresha's brand system runs navy-as-dominant-dark plus two accent colors by design, not one",
+    "source_ok": false,
+    "tier_final": "CONV",
+    "note": "abduzeedo.com/branding-and-design-system-fresha exists (confirmed via search-result titles) but returned HTTP 403 on two direct fetch attempts; content could not be re-verified this pass. Flagged unconfirmed."
+   },
+   {
+    "claim": "Doctolib deliberately widened its blue-shade palette for AA contrast",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Confirmed via direct fetch of the real Medium article; content matches (original blue failed AA 4.5:1, team built a 15-shade replacement system for compliance)."
+   },
+   {
+    "claim": "2026 UI-trend roundups converge on a single restrained accent color as the dominant direction",
+    "source_ok": false,
+    "tier_final": "CONV",
+    "note": "Not re-verified this pass, WebSearch budget was exhausted before these could be checked. Already appropriately hedged as CONV with no numeric threshold claimed; keep the tier but flag as unconfirmed this round."
+   },
+   {
+    "claim": "A counter-trend toward color maximalism exists for 2026 but is scoped to marketing/brand surfaces",
+    "source_ok": false,
+    "tier_final": "T3",
+    "note": "Not re-verified this pass for the same budget reason. Already correctly scoped away from product UI in the draft; no change recommended, just unconfirmed this round."
+   },
+   {
+    "claim": "Figma-plugin color-usage-analyzer tools bucket rendered pixels by hex and report distinct-hue count plus percent-area",
+    "source_ok": false,
+    "tier_final": "T3",
+    "note": "The general category (Figma color-audit plugins) is plausible and well known, but the five specific named plugins (colCheck, Color Percent, How You Use Color, ColorScanner, UI Audit) were not independently confirmed to exist under those exact names this pass."
+   }
+  ]
+ }
+}

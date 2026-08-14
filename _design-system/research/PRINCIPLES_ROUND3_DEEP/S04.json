@@ -1,0 +1,212 @@
+{
+ "id": "S04",
+ "synth": {
+  "id": "S04",
+  "tag": "generative-gap",
+  "title": "Empty-state + illustration language: a generative anatomy",
+  "principle_summary": "Across booking-marketplace and consumer-app precedent, a legible empty state has exactly four parts in a fixed order: a small visual (icon or spot-illustration, never a full-bleed hero, roughly 15 to 40 percent of the visible block height), a short headline that names the absence in three to six words, one muted subline that explains what will appear (not an apology), and a single primary action. Search or filter zero-result states are a distinct sub-anatomy: the CTA must target fixing the input (reset filters, adjust search) rather than a generic \"explore\" action. Illustration style, where used, should be monochrome ink-line and system-consistent (one stroke weight, one palette) rather than full-color or mascot-driven, which matches Solen's existing 80/17 restraint and no-hype copy law rather than requiring a new decision. Solen's own EmptyStateDiscovery component already goes one step further than every competitor scouted: it fills the empty-state visual budget with real, dynamically populated data (a discovery banner + a real-salon rail) instead of a static illustration, which is both the industry-consensus \"give a recovery path\" pattern and a stronger version of it. This anatomy is the generative default for any new empty, zero-result, or first-run surface; PSYCHOLOGY law 3 (never start at zero) binds the copy and framing layer on top of it, not the visual layout.",
+  "real_world_evidence": [
+   {
+    "source": "Fresha iOS, No appointments empty state (Mobbin, same-category comp)",
+    "what": "Small flat icon (~15% visual weight, not an illustration), bold headline, one grey subline, single OUTLINE pill CTA \"Search salons\"",
+    "tier": "T3"
+   },
+   {
+    "source": "Peerspace, No Upcoming Bookings empty state (Mobbin, booking marketplace)",
+    "what": "Monochrome ink line-icon (~40px), bold headline, grey subline, single SOLID BLACK pill CTA \"Start exploring\", generous whitespace, no secondary link",
+    "tier": "T3"
+   },
+   {
+    "source": "CRED, no upcoming trips empty state (Mobbin, restraint-known fintech)",
+    "what": "Single-ink-outline line illustration (~30% height), lowercase sentence-style headline, solid black pill CTA",
+    "tier": "T3"
+   },
+   {
+    "source": "Freenow, stacked Active/History empty states (Mobbin)",
+    "what": "Small flat icon plus, for the secondary/nested empty state only, a TEXT LINK action instead of a filled button, evidence that the single-CTA rule can be a link when the empty state is nested inside a populated screen",
+    "tier": "T3"
+   },
+   {
+    "source": "Walmart, Too Good To Go, Skyscanner, Klook, GitHub, OpenSea search-empty states (Mobbin, cross-app)",
+    "what": "Consistent search-empty sub-anatomy: illustration or sad-face glyph, headline names the failure, single CTA always targets fixing the input (reset filters, search again). CTA is always solid brand-color fill in every example seen; no neutral-outline precedent found for this specific sub-case, flagged as a gap for the synthesis",
+    "tier": "T3"
+   },
+   {
+    "source": "Airbnb Past trips, Yelp, GetYourGuide empty states (Mobbin)",
+    "what": "Full-color mascot or scene illustration (30 to 40% height) plus playful/rhyming headline copy and a brand-color CTA fill; the most hype end of the spectrum scouted. Direct conflict with Solen rule 3 (no fabricated hype) and the no-hype voice law, not adopted",
+    "tier": "T3"
+   },
+   {
+    "source": "getillustrations.com, Illustration Trends 2026",
+    "what": "Minimal spot illustration, line art, and monochrome black-and-white palettes named as the dominant lightweight style for SaaS/productivity empty states (Linear, Notion cited)",
+    "tier": "T3"
+   },
+   {
+    "source": "Eleken, Empty state UX examples and design rules",
+    "what": "Canonical four-part anatomy (visual, headline, one subline, single CTA) cross-checked against Toptal, Pencil and Paper, LogRocket, Wise Design, Carbon Design, GitLab Pajamas; explicit warning against illustration-heavy empties in dense transactional products",
+    "tier": "CONV"
+   },
+   {
+    "source": "LogRocket, Designing no-results-found pages",
+    "what": "Generic \"no results found\" named as a measurable conversion blocker; recommends pairing the headline with a concrete recovery path (adjust filters, check spelling, browse related) rather than a dead end",
+    "tier": "CONV"
+   },
+   {
+    "source": "Solen internal: EmptyStateDiscovery.tsx / EmptyStateDiscovery.md",
+    "what": "Shipped 2026-06-11: real-salon rail plus a 200px discovery banner replace a static illustration entirely for profile-list empties; owner explicitly rejected the centered-minimal version (\"pitch black tile\", \"I can see the footer\"). Strongest evidence in this entry: owner-confirmed and shipped, on-domain",
+    "tier": "T1"
+   },
+   {
+    "source": "72technologies.com, Empty States as Onboarding",
+    "what": "Claims first-run empty states do \"80 percent of the persuasion work\". Unsourced agency stat, do not cite the number; only the qualitative direction (first-run empties matter more than usually credited) survives as T3",
+    "tier": "MYTH"
+   }
+  ],
+  "generative_prior": "Defaults for generating any new empty/zero-result/first-run state:\n\n1. VISUAL PROPORTION: icon or spot-illustration at 15-40% of the block's visible height, never full-bleed. Two bands: a small line-icon (~40-70px, under 15% of the block) for a NESTED/secondary empty state living inside an already-populated screen (Freenow pattern); a larger spot-illustration or real-data module (20-40%) for a PRIMARY/first-run empty that owns the whole viewport (Fresha, Peerspace, CRED land at 15-30%; Solen's EmptyStateDiscovery banner is 200px, which on a typical 812px mobile viewport is ~25%, already inside this band without having been derived from it).\n2. HEADLINE: 3-6 words, states the absence, matches Solen's existing \"Noch keine X\" pattern (EmptyStateDiscovery already uses this shape).\n3. SUBLINE: exactly one line, muted/grey, explains what will appear, never an apology, never a full descriptive sentence replacing the headline+subline split (reject the Airbnb pattern of one long sentence).\n4. ACTION: exactly one. PRIMARY/first-run empty = solid ink pill CTA (matches Solen's one-ink-CTA law, and matches the two most Solen-aligned precedents, Peerspace and CRED, both solid black). NESTED/secondary empty = a text link is acceptable instead of a button (Freenow precedent), never a second competing CTA.\n5. SEARCH/FILTER ZERO-RESULTS is a distinct sub-anatomy, not the same component as first-run empty: CTA text must target the fix (\"Filter zurücksetzen\", \"Suche anpassen\"), not a generic \"explore\" verb. OPEN FLAG: every competitor example found uses a brand-color-filled CTA here; Solen has no existing precedent for this specific case and must decide new (do not default to blue-fill, that reopens the sparse-blue rule; the defensible default is the same solid-ink CTA as the primary case, or a neutral-outline pill, pending an owner probe).\n6. ILLUSTRATION STYLE, if illustration is used at all instead of real data: monochrome ink-line only, one fixed stroke weight and palette across every instance (system consistency, getillustrations.com/Eleken CONV), never full-color, never a mascot/character, never isometric or 3D.\n7. PREFER REAL DATA OVER ILLUSTRATION when the surface has real data to show (Solen's own precedent, stronger than any competitor default scouted): a populated rail or banner outperforms a static drawing and should be the first option considered before reaching for an illustration.\n8. PSYCHOLOGY law 3 tie-in (never-start-at-zero): the copy and framing on top of this anatomy must not render a cold \"0\" as the headline numeral or otherwise present the state as a dead stop; frame it as the point right before the first action, not the absence of one.",
+  "proposed_addition": "# RATIONALE.md addition, target anchor: section 16 states / EmptyState component doc (S04, tag generative-gap)\n\nGAP: EmptyStateDiscovery.md documents one concrete component; there is no generative anatomy rule that a NEW empty/zero-result/first-run surface (search-empty, cart-equivalent-empty, onboarding-empty) can be built against without a fresh owner review each time. This entry closes gap G4.\n\nPRIOR (the generative default, use this to generate the first mockup of any new empty state):\nA legible empty state is four parts in fixed order: (1) a visual sized 15-40% of the block's visible height, monochrome ink-line if illustrated, never full-bleed, and REAL DATA preferred over any illustration when the surface has real content to show (Solen's own EmptyStateDiscovery precedent beats every competitor default scouted); (2) a 3-6 word headline naming the absence, following the existing \"Noch keine X\" shape; (3) one muted subline explaining what appears next, never an apology, never a full sentence replacing the headline+subline split; (4) exactly one action, a solid ink pill CTA for a primary/first-run empty, or a text link for a nested/secondary empty inside an already-populated screen. Search/filter zero-results is a separate sub-anatomy whose CTA must target fixing the input, not a generic explore action, and has no settled color precedent in Solen yet (see BOUNDARY).\n\nEVIDENCE: real-app anatomy corroborated independently across Fresha, Peerspace, CRED, Freenow, Airbnb, and the search-empty cluster (Walmart, Too Good To Go, Skyscanner, Klook, GitHub, OpenSea), all T3/CONV, no T1/T2 causal study found for the anatomy itself; the \"real data beats illustration\" half is grounded in Solen's own shipped, owner-confirmed EmptyStateDiscovery component, the strongest evidence in this entry.\n\nCONFLICTS NOTED, NOT ADOPTED: full-color/mascot illustration (Airbnb, Yelp, GetYourGuide) and playful/rhyming headline copy conflict with Solen rules 2, 3, and 6 (no decorative artifacts, no fabricated hype, refined restraint) and the PSYCHOLOGY.md no-hype voice law; isometric/3D illustration (SaaS trend, T3) is heavier than Solen's flat system. None of these are adopted; they are named so a future agent does not independently re-propose them.\n\nBOUNDARY: the search/filter zero-results CTA color is UNRESOLVED. Every competitor example uses a brand-color fill; Solen's sparse-blue rule (small clickable text/chips only) and no-black-selected-state law do not obviously resolve to one answer for this specific case. This is a Taste-Lab probe, not a decision, see taste_lab_probe.\n\nXREF: PSYCHOLOGY.md law 3 (never-start-at-zero, endowed progress) binds the copy/framing layer, not the visual layout: the headline and subline must not present the empty state as a cold zero, but as the point right before the first action.\n\nMECHANIC: CONV/T3, cross-app anatomy consensus plus one T1-equivalent internal precedent (EmptyStateDiscovery, owner-confirmed and shipped); no formal study measures the specific 15-40% visual-proportion band, it is a scouted range, not a derived constant.\n\nSOURCE: Mobbin scouting pass (Fresha, Peerspace, CRED, Freenow, Airbnb, search-empty cluster, 2026-07-22); Eleken/LogRocket/Toptal/Pencil and Paper/Wise/Carbon/GitLab Pajamas design-literature consensus; getillustrations.com and 365webresources.com illustration-trend roundups (T3); Solen internal `_design-system/components/EmptyStateDiscovery.md`; PSYCHOLOGY.md law 3.",
+  "sources": [
+   {
+    "claim": "Fresha uses a small flat icon and outline CTA on its empty state, not a big illustration or filled CTA",
+    "source": "Mobbin capture of Fresha iOS \"No appointments\" screen",
+    "tier": "T3"
+   },
+   {
+    "claim": "Peerspace uses a monochrome ink icon and solid black pill CTA on its empty state",
+    "source": "Mobbin capture of Peerspace \"No Upcoming Bookings\" screen",
+    "tier": "T3"
+   },
+   {
+    "claim": "CRED uses a single-ink-outline illustration and solid black CTA with lowercase copy",
+    "source": "Mobbin capture of CRED empty-trips screen",
+    "tier": "T3"
+   },
+   {
+    "claim": "Nested/secondary empty states can use a text link instead of a button",
+    "source": "Mobbin capture of Freenow stacked Active/History empty states",
+    "tier": "T3"
+   },
+   {
+    "claim": "Search/filter zero-result CTAs are consistently brand-color filled with no neutral-outline precedent found",
+    "source": "Mobbin cross-app capture: Walmart, Too Good To Go, Skyscanner, Klook, GitHub, OpenSea",
+    "tier": "T3"
+   },
+   {
+    "claim": "Minimalist monochrome spot-illustration is the dominant 2026 SaaS empty-state style (Linear, Notion)",
+    "source": "getillustrations.com, Illustration Trends 2026: 7 Styles for Web and SaaS Design",
+    "tier": "T3"
+   },
+   {
+    "claim": "Canonical empty-state anatomy is visual + headline + one subline + single CTA, cross-checked across seven design systems and UX publications",
+    "source": "Eleken, Empty state UX examples and design rules that actually work; corroborated by Toptal, Pencil and Paper, LogRocket, Wise Design, Carbon Design System, GitLab Pajamas",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Generic no-results-found messaging is a measurable conversion blocker; pairing with a concrete recovery path performs better",
+    "source": "LogRocket, Designing no-results-found pages that can engage users",
+    "tier": "CONV"
+   },
+   {
+    "claim": "First-run empty states do 80 percent of the persuasion work",
+    "source": "72technologies.com, Empty States as Onboarding: A Practical UX Playbook",
+    "tier": "MYTH"
+   },
+   {
+    "claim": "Solen's own EmptyStateDiscovery fills empty-state space with real, dynamically populated data instead of a static illustration, and was owner-confirmed over a centered-minimal alternative",
+    "source": "_design-system/components/EmptyStateDiscovery.md, shipped 2026-06-11",
+    "tier": "T1"
+   },
+   {
+    "claim": "Never start a user at zero; a stated head start raises completion",
+    "source": "PSYCHOLOGY.md law 3 (endowed progress, field study 19% to 34%)",
+    "tier": "T2"
+   }
+  ],
+  "numbers_used": [
+   "15-40% visual proportion band (T3 scouted range across 6+ apps)",
+   "3-6 word headline length (CONV, cross-referenced design literature)",
+   "~40-70px / under 15% icon size for nested empty states (T3, Freenow precedent)",
+   "200px EmptyStateDiscovery banner ≈ 25% of a 812px mobile viewport (internal, computed from existing shipped component, not a new invented number)"
+  ],
+  "taste_lab_probe": "Mockup two treatments of the same search/filter zero-results state (e.g. Angebote search with no matches): (A) solid ink CTA \"Filter zurücksetzen\" matching the primary-empty rule, versus (B) a neutral-outline pill in the same slot. Show both to the owner in the next Taste Lab round and ask which reads right for a fix-the-input action specifically, since every competitor precedent scouted uses a brand-color fill here and Solen has no existing rule that resolves the case either way."
+ },
+ "verified": {
+  "id": "S04",
+  "tag": "generative-gap",
+  "verdict": "revised",
+  "myths_caught": [
+   "Refuted: \"Every search/filter zero-result CTA scouted is a solid brand-color fill; no neutral-outline precedent found\" (in real_world_evidence, the BOUNDARY paragraph, and the taste_lab_probe framing). Re-scouted via Mobbin: Skyscanner's \"Clear all filters\" on its zero-flights screen is a neutral-outline pill (white bg, hairline border, blue text), not a fill. GitHub's \"Reset search filters\" is a plain blue text link with no button at all. Walmart's \"We couldn't find a match\" screen ships with NO CTA whatsoever. Only Too Good To Go (teal fill) and OpenSea (\"Back to all items\", blue fill) actually confirm the brand-fill pattern. The field is mixed, not a wall Solen alone would be breaking.",
+   "Overstated: CRED's empty-trips illustration is described as \"single-ink-outline\" / monochrome. Re-checked via Mobbin: it is a black-line illustration WITH color fill (tan/beige compass shape, red/pink accent sparkles), not strictly monochrome ink-line. The lowercase headline and solid-black CTA parts of the claim hold; the illustration-style part does not.",
+   "Stale number: EmptyStateDiscovery banner cited as \"200px\" (from the component doc's prose, both in the real_world_evidence entry and the \"~25% of an 812px viewport\" computed number). The live component code (app/[locale]/_components/profile/EmptyStateDiscovery.tsx line 73) actually renders h-[220px], not 200px. Recomputed: 220/812 = ~27%, not 25%. Still lands inside the claimed 15-40% band so the conclusion survives, but the cited number was wrong and traced to a stale doc rather than the live code."
+  ],
+  "residual_risks": "Owner-decision item (reframed, not resolved): the search/filter zero-results CTA color for Solen is still genuinely open, but the Taste Lab probe should now test three real options grounded in actual precedent, not two hypothetical ones: solid-ink fill, Skyscanner-style neutral-outline pill (closest real match to Solen's own neutral filter-pill convention), and GitHub-style plain text-link. Do not ship the probe copy claiming \\\"every competitor fills, will Solen break the mold\\\" since that premise is false.\n\nDoc-drift item (low stakes, worth a quick fix, not a blocker): _design-system/components/EmptyStateDiscovery.md prose says \\\"200px discovery banner\\\" in two places while the live component (EmptyStateDiscovery.tsx) has shipped at h-[220px] since at least this check. Someone should sync the doc to the code, or re-verify which value is actually current before either is cited again.\n\nFraming item for RATIONALE.md phrasing: the \\\"monochrome ink-line only\\\" illustration rule is correctly grounded in Solen's OWN 80/17 restraint law (CLAUDE.md rule 3), not in competitor consensus, because the competitor evidence itself is mixed, not monochrome (Fresha's icon is a color gradient, CRED's illustration has color fill). The addition should say this is a Solen-imposed constraint layered on top of a looser industry norm, not an industry default Solen happens to match, so a future agent does not cite Fresha/CRED as monochrome precedent by mistake.\n\nUnverified due to web-search budget exhaustion this session: could not independently re-fetch the Eleken, LogRocket, or getillustrations.com articles to confirm exact titles/content match the draft's paraphrase. Their assigned tiers (CONV/T3, not T1/T2) were already appropriately cautious for design-blog consensus rather than causal research, so this is a low-severity gap, not a reason to distrust the anatomy claim itself (which is independently corroborated by five direct Mobbin captures in this pass).",
+  "verified_addition": "# RATIONALE.md addition, target anchor: section 16 states / EmptyState component doc (S04, tag generative-gap)\n\nGAP: EmptyStateDiscovery.md documents one concrete component; there is no generative anatomy rule that a NEW empty/zero-result/first-run surface (search-empty, cart-equivalent-empty, onboarding-empty) can be built against without a fresh owner review each time. This entry closes gap G4.\n\nPRIOR (the generative default, use this to generate the first mockup of any new empty state):\nA legible empty state is four parts in fixed order: (1) a visual sized 15-40% of the block's visible height, monochrome ink-line if illustrated (a Solen-imposed restraint, see CONFLICTS NOTED, not an industry default), never full-bleed, and REAL DATA preferred over any illustration when the surface has real content to show (Solen's own EmptyStateDiscovery precedent beats every competitor default scouted); (2) a 3-6 word headline naming the absence, following the existing \"Noch keine X\" shape; (3) one muted subline explaining what appears next, never an apology, never a full sentence replacing the headline+subline split; (4) exactly one action, a solid ink pill CTA for a primary/first-run empty, or a text link for a nested/secondary empty inside an already-populated screen (confirmed live on Freenow: the nested \"Active\" empty uses a text link \"+ New booking\", the nested \"History\" empty below it uses no CTA at all). Search/filter zero-results is a separate sub-anatomy whose CTA must target fixing the input, not a generic explore action, and has no settled color precedent in Solen yet (see BOUNDARY, corrected).\n\nEVIDENCE: real-app anatomy corroborated independently across five directly re-checked Mobbin captures (Fresha \"No appointments\", Peerspace \"No Upcoming Bookings\", CRED empty-trips, Freenow stacked Active/History, and a six-app search-empty cluster), all T3, no T1/T2 causal study found for the anatomy itself; the \"real data beats illustration\" half is grounded in Solen's own shipped, owner-confirmed EmptyStateDiscovery component (in production use on /profile/stamps, /profile/favorites, /profile/looks), the strongest evidence in this entry.\n\nCONFLICTS NOTED, NOT ADOPTED: full-color/mascot illustration (Airbnb, Yelp, GetYourGuide, not independently re-checked this pass) and playful/rhyming headline copy conflict with Solen rules 2, 3, and 6 (no decorative artifacts, no fabricated hype, refined restraint) and the PSYCHOLOGY.md no-hype voice law; isometric/3D illustration (SaaS trend, T3) is heavier than Solen's flat system. Note also that the competitor set is not itself uniformly monochrome: Fresha's icon is a color gradient and CRED's illustration has tan/red color fill over its black linework, so \"monochrome ink-line\" is Solen's own restraint rule applied here, not a pattern borrowed from these two examples. None of these are adopted; they are named so a future agent does not independently re-propose them.\n\nBOUNDARY: the search/filter zero-results CTA color is UNRESOLVED for Solen, but the competitor field is NOT uniformly brand-fill as first assumed. Re-scouted directly: solid brand-color fill appears (Too Good To Go \"Clear filters\" teal pill, OpenSea \"Back to all items\" blue pill), but so does a neutral-outline pill (Skyscanner \"Clear all filters\", white background, hairline border, blue text) and a bare text-link with no button (GitHub \"Reset search filters\"); Walmart's equivalent screen ships no CTA at all. So Solen is not choosing between \"match everyone\" and \"break the pattern\", it is choosing among three precedented options. Skyscanner's neutral-outline pill is the closest real match to Solen's own neutral filter-pill convention (bg-s-bg-sunken selected state, never a colored fill). This is a Taste-Lab probe, not a decision, see taste_lab_probe (revise the probe copy to present the corrected three-way choice, not a false \"everyone fills\" premise).\n\nXREF: PSYCHOLOGY.md law 3 (never-start-at-zero, endowed progress, 19% to 34% in the original field study) binds the copy/framing layer, not the visual layout: the headline and subline must not present the empty state as a cold zero, but as the point right before the first action.\n\nMECHANIC: CONV/T3, cross-app anatomy consensus plus one T1-equivalent internal precedent (EmptyStateDiscovery, owner-confirmed and shipped, in production on three routes); no formal study measures the specific 15-40% visual-proportion band, it is a scouted range, not a derived constant. The single quoted pixel value in earlier drafts of this entry (a \"200px\" banner height) was traced to stale prose in EmptyStateDiscovery.md; the live component (EmptyStateDiscovery.tsx) renders h-[220px], about 27% of an 812px mobile viewport, still inside the 15-40% band. Sync the doc before citing that number again.\n\nSOURCE: Mobbin re-scouting pass (Fresha, Peerspace, CRED, Freenow, and a six-app search-empty cluster: Walmart, Too Good To Go, Skyscanner, Klook not directly re-checked, GitHub, OpenSea, 2026-07-22, direct screen captures, not paraphrase); Eleken/LogRocket/Toptal/Pencil and Paper/Wise/Carbon/GitLab Pajamas design-literature consensus (CONV/T3, not independently re-fetched this pass due to search-budget exhaustion, tier already conservative); getillustrations.com illustration-trend roundup (T3, same caveat); Solen internal `_design-system/components/EmptyStateDiscovery.md` cross-checked against the live `EmptyStateDiscovery.tsx` and its three call sites; PSYCHOLOGY.md law 3, verified verbatim against the file.",
+  "claim_verdicts": [
+   {
+    "claim": "Fresha uses a small flat icon and outline CTA on its empty state, not a big illustration or filled CTA",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Confirmed via direct Mobbin capture: bold \"No appointments\" headline, grey subline, single outline pill \"Search salons\". Minor cosmetic overstatement: the icon is a small color-gradient calendar glyph, not strictly \"flat\" monochrome; immaterial to the anatomy claim."
+   },
+   {
+    "claim": "Peerspace uses a monochrome ink icon and solid black pill CTA on its empty state",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Confirmed exactly via direct Mobbin capture: line-icon, bold \"No Upcoming Bookings\" headline, grey subline, solid black pill \"Start exploring\"."
+   },
+   {
+    "claim": "CRED uses a single-ink-outline illustration and solid black CTA with lowercase copy",
+    "source_ok": false,
+    "tier_final": "T3",
+    "note": "Headline (lowercase, sentence-style) and solid black CTA confirmed. Illustration claim overstated: direct Mobbin capture shows a black-line illustration WITH color fill (tan compass, red/pink accents), not strictly monochrome ink-line. Corrected in verified_addition."
+   },
+   {
+    "claim": "Nested/secondary empty states can use a text link instead of a button",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Confirmed via direct Mobbin capture of Freenow's stacked Active/History screen: Active uses a text link (\"+ New booking\"), History uses no CTA at all, reinforcing rather than undermining the point."
+   },
+   {
+    "claim": "Search/filter zero-result CTAs are consistently brand-color filled with no neutral-outline precedent found",
+    "source_ok": false,
+    "tier_final": "T3",
+    "note": "REFUTED by direct re-scouting: Skyscanner's \"Clear all filters\" is a neutral-outline pill, GitHub's \"Reset search filters\" is a plain text link, Walmart ships no CTA at all on its equivalent screen. Only 2 of 6 named apps (Too Good To Go, OpenSea) actually confirm brand-fill. Corrected to \"mixed precedent\" in verified_addition; the OPEN FLAG / taste_lab_probe framing was rewritten to match."
+   },
+   {
+    "claim": "Minimalist monochrome spot illustration is the dominant 2026 SaaS empty-state style (Linear, Notion)",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Not independently re-fetched this pass (web-search budget exhausted for the session). Already correctly tiered as a trend claim (T3), not elevated to principle; low risk since the recommendation it supports (monochrome-if-illustrated) is independently grounded in Solen's own restraint rule, not solely this source."
+   },
+   {
+    "claim": "Canonical empty-state anatomy is visual + headline + one subline + single CTA, cross-checked across seven design systems and UX publications",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Not independently re-fetched this pass (search budget exhausted). Tier CONV is appropriate for design-blog/system consensus and is independently corroborated by the five direct Mobbin captures re-checked in this pass, so the substance stands even without re-fetching the specific article."
+   },
+   {
+    "claim": "Generic no-results-found messaging is a measurable conversion blocker; pairing with a concrete recovery path performs better",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Not independently re-fetched this pass (search budget exhausted). Directionally consistent with the confirmed search-empty pattern (every scouted app pairs the message with SOME recovery path, even when that path is only a text link), so treating it as CONV rather than a stronger tier is correctly conservative."
+   },
+   {
+    "claim": "First-run empty states do 80 percent of the persuasion work",
+    "source_ok": true,
+    "tier_final": "MYTH",
+    "note": "Correctly identified and handled by the original synthesis: tagged MYTH, the number itself is not cited or used anywhere in numbers_used or the proposed addition, only the softened qualitative direction survives. No further correction needed."
+   },
+   {
+    "claim": "Solen's own EmptyStateDiscovery fills empty-state space with real, dynamically populated data instead of a static illustration, and was owner-confirmed over a centered-minimal alternative",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Confirmed: _design-system/components/EmptyStateDiscovery.md documents the owner rejection quotes (\"pitch black tile\", \"I can see the footer\") verbatim, shipped 2026-06-11, in production use on /profile/stamps, /profile/favorites, /profile/looks. One number within this evidence was stale: the doc's \"200px banner\" does not match the live component's h-[220px] in EmptyStateDiscovery.tsx line 73; corrected in verified_addition and myths_caught."
+   },
+   {
+    "claim": "Never start a user at zero; a stated head start raises completion",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Verified verbatim against _design-system/PSYCHOLOGY.md: \"a stated head start raises completion (19%→34% in the original field study; pace acceleration replicated)\". Exact match to the draft's citation."
+   }
+  ]
+ }
+}

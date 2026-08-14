@@ -1,0 +1,351 @@
+{
+ "id": "S26",
+ "synth": {
+  "id": "S26",
+  "tag": "net-new",
+  "title": "Accessibility beyond contrast: keyboard, screen-reader semantics, reduced motion, target size",
+  "principle_summary": "Accessibility beyond color contrast rests on four T1 WCAG pillars: full keyboard operability with no traps and a meaning-preserving focus order (2.1.1 / 2.1.2 / 2.4.3, plus 2.4.7 Focus Visible), programmatic structure via landmark roles and name-role-value so assistive tech can navigate and identify controls (1.3.1 / 4.1.2, WAI-ARIA landmarks), a mechanism to skip repeated blocks (2.4.1) and to honor prefers-reduced-motion for interaction-triggered animation (2.3.3), and two DISTINCT target-size floors that must never collapse into one number: 2.5.8 is AA at 24x24 CSS px (the legal floor, WCAG 2.2) and 2.5.5 is AAA at 44x44 (an aspirational floor Apple HIG 44pt and Material 48dp independently converge near, and the one Solen's h-11/w-11 lock already sits on). Layered on top of the standard text, three real-world scouting passes converge on one added, non-normative but consistently observed behavioral convention across top-tier apps: reduced-motion and text-size preferences are implemented \"OS signal first, explicit in-app override available,\" never a silent app-only default, and where a settings screen exists for these controls, every toggle pairs a bold label with one full sentence naming the real-world effect rather than a bare label. Solen already has mostly-correct rule text for the WCAG half in SOURCE.md section 16 and a mostly-correct global CSS implementation, but three concrete repo defects sit under the prose: SOURCE 16.5 conflates the AA and AAA target-size numbers into one unlabeled \"WCAG 2.1\" 44px figure; prefers-reduced-motion has a correct global cap in globals.css but is invisible to SOURCE section 16 (the checklist a route-builder actually reads), so it functions as undiscoverable law; and Solen ships two divergent skip-link implementations (an inline anchor in app/[locale]/layout.tsx that does satisfy 2.4.1 in production, and a separate, unmounted SkipLink.tsx primitive with a stale doc comment claiming it is mounted), a consolidation defect rather than a missing-criterion one.",
+  "proposed_addition": "## Domain 24: accessibility beyond contrast (keyboard, screen-reader semantics, reduced motion, target size)\n\n**Keyboard operability is four separate criteria, not one (T1, WCAG 2.2): 2.1.1 Keyboard (everything reachable and operable without a mouse), 2.1.2 No Keyboard Trap (focus can always leave a component with the keyboard alone), 2.4.3 Focus Order (tab order matches the order that preserves meaning), and 2.4.7 Focus Visible (a keyboard-focused element has a perceivable indicator, which Solen already satisfies globally via the locked ink focus ring in globals.css).** SOURCE 16.6 already states the practitioner-facing behavior (Tab/Space/Enter/Escape/arrows); this entry supplies the SC numbers so a claim of \"keyboard accessible\" is checkable against a named standard instead of a description. Composite widgets (tab lists, radio groups, filter pill rows) follow the ARIA APG roving-tabindex pattern (CONV, W3C APG Developing a Keyboard Interface): one item in the Tab sequence, tabindex=-1 on the rest, arrow keys move the roving focus. This is the mechanic behind SOURCE 16.6's already-stated but unexplained \"arrow keys navigate within composite widgets\" line. Nielsen Norman Group independently restates this as a distinct QA step (CONV, \"Test Keyboard Accessibility On Your Website,\" May 2025): full reachability, clear focus states, logical tab order, framed as a testing discipline, not new law, and consistent with what 2.1.1/2.4.3/2.4.7 already require.\n\n**Landmarks and name-role-value are the programmatic-structure half of a11y (T1, WCAG 1.3.1 Info and Relationships / 4.1.2 Name Role Value; ARIA landmark roles, W3C APG).** A sighted user infers page structure visually; a screen-reader user needs it exposed as banner/nav/main/contentinfo landmarks and correct roles/states on every custom control. SOURCE 16.1 already requires main/header/footer (confirmed present in app/[locale]/layout.tsx) and self-flags `<nav>` as missing (SOURCE.md:993, \"currently missing, Q in QUESTIONS\"). Ground that flag against the standard directly: the missing `<nav>` landmark on MobileMenu is a 1.3.1 gap, not a style nicety, and closing it is a mechanical fix (wrap the nav markup, no visual change). Measured this session: role= appears in only 33 of 326 (10.1%) of .tsx files under app/, a repo-fact worth tracking as the discoverability signal for this SC, same shape as the reduced-motion gap below.\n\n**Skip links satisfy Bypass Blocks (T1, WCAG 2.4.1), and Solen's production shell already has one, verified against a live competitor precedent.** app/[locale]/layout.tsx:61-68 renders an inline, hand-rolled skip-to-content anchor (\"Zum Inhalt springen\", href=\"#main-content\", sr-only until focus, dated V3-D312) as the first focusable element, targeting `<main id=\"main-content\" tabIndex={-1}>` at layout.tsx:108. WCAG 2.4.1 is satisfied today. The real finding is a duplicate-implementation defect: a separate SkipLink.tsx primitive exists (app/[locale]/_components/primitives/SkipLink.tsx), mounted only on the internal /dev/primitives demo page, targeting a different id (#main by default vs #main-content) with a different visual treatment, and its doc comment falsely claims it is mounted as the first focusable child of body. Uber's public accessibility statement (T2, live-fetched primary source, uber.com/us/en/about/accessibility) is the concrete competitor bar to consolidate toward: it states an explicit conformance target (\"WCAG 2.1 Level AA\"), ships exactly one visible \"Skip to main content\" link, and names VoiceOver and TalkBack specifically as the assistive technologies it tests against rather than a generic gesture. Recommendation: retire or correct the unmounted SkipLink.tsx (fix its stale doc comment at minimum), keep the single inline implementation as the source of truth, and consider stating Solen's own conformance target explicitly (e.g. \"WCAG 2.1 AA\") the way Uber does, rather than leaving the bar implicit.\n\n**prefers-reduced-motion is the implementation of Animation from Interactions (T1, WCAG 2.3.3), and the industry convention is \"OS signal first, explicit override second,\" never a silent app default.** Already correctly tiered at RATIONALE line 171: vestibular-disorder triggers are large-scale motion, parallax, and spatial transitions; Solen's globals.css already hard-caps animation/transition duration under the media query, so the mechanic exists globally and correctly. Two things layer on top of the existing correct entry. First, discoverability: only 8 of 326 (2.45%) .tsx files under app/ reference prefers-reduced-motion directly despite spring/bounce motion existing in far more of them; SOURCE section 16 (the file actually consulted per its own reading-order note at SOURCE:1330) never points to it, so it is invisible law. SOURCE 16.2 or a new 16.7 should carry a pointer sentence: \"All motion beyond a component's own transition classes must respect prefers-reduced-motion; the global cap lives in globals.css:805-813, do not re-implement per component, rely on the cap.\" Second, a generative default for IF Solen ever ships an in-app motion-preference toggle (net-new, not required today): four independently observed apps (Discord, Canva, NYTimes, Flipboard, tier T3 real-app observation via Mobbin) converge on the same pattern, a master toggle labeled \"Sync with Device Settings\" / \"Use System Text Size,\" default ON, with the manual override only enabled once switched off. Discord additionally breaks motion into separate granular controls (autoplay GIFs, animated emoji, a three-way Stickers choice) rather than one master switch, and Canva's motion dropdown explanation names exactly what it affects (\"transitions, animations, masks, and overlays\") rather than a bare label. No app across this scouting pass was found shipping a reduced-motion toggle that overrides the OS signal silently or defaults to an app-specific value; treat that absence itself as the convention.\n\n**Target size floor: 24px is the law, 44px is the house standard above it (T1, WCAG 2.5.8 AA vs WCAG 2.5.5 AAA, both independently re-confirmed this session against current W3C guidance).** SOURCE 16.5's current wording (\"Minimum 44x44 px hit area per WCAG 2.1, some platforms 48\", SOURCE.md:1032) should be corrected to name the tier explicitly: \"WCAG 2.5.8 (AA, WCAG 2.2) sets the legal floor at 24x24 CSS px, with size, spacing, or an equivalent-control exception; Solen's 44px floor is the WCAG 2.5.5 AAA / Apple HIG 44pt line, deliberately set above the legal minimum, not equal to it.\" This is a wording-only fix (no literal changes, the 44px LOCKFILE value is untouched) that removes the AA/AAA conflation RATIONALE:157 already avoids but SOURCE:1030 still commits. Competitor-scout confirmation (CONV, training-recall not live-fetched): no consumer booking competitor is known to publicly cite a specific pixel value; the de facto industry floor is Apple HIG 44pt / Material 48dp, both above WCAG's AA minimum and consistent with Solen's own already-locked 44px choice, so this domain confirms the existing lock rather than proposing to loosen or raise it.\n\n**Explainer-copy pattern, flagged as a tension, not resolved here.** Three apps in the accessibility-settings evidence (Airbnb, Canva, Discord, tier T3) consistently pair a bold toggle label with a full sentence of body copy stating the real-world effect (\"Wheelchair accessible vehicle,\" \"Descriptive audio,\" \"Reduce motion when you view and present designs, affects transitions, animations, masks, and overlays\"), never a bare label alone. This sits in tension with Solen's existing Copy Economy law (project CLAUDE.md, \"drop words the context already says\"), which is written for booking/discovery flow copy, not accessibility-settings explainer copy specifically. This domain does not resolve that tension or authorize verbosity anywhere in Solen's shipped copy; it only notes that IF Solen ever builds a dedicated in-app Accessibility settings screen (not required by this stream, no such screen exists in Solen today), the researched convention for THAT one surface is sentence-level explainer text per toggle, and an owner call would be needed on whether Copy Economy's general rule applies there or is a deliberate, named exception.\n\n**Content-page-level accessibility affordances (optional, not required).** Speechify (T3, Mobbin) surfaces a horizontal row of accessibility affordances (Text to Speech, Larger Fonts, Speed Control, Dyslexic Font) directly on the content page a user is deciding whether to consume, not buried in Settings. Reddit's pattern (T3, Mobbin) is the weaker contrast case: \"Reduce animations\" sits unlabeled inside a generic \"VIEW OPTIONS\" group alongside unrelated display prefs, with no dedicated Accessibility section at all. This is named as the lower bar to avoid, not a pattern to emulate. Airbnb's broader precedent (CONV, competitor scout, training-recall) of a dedicated Disability Support Hub with salon/listing-level accessibility facts (wheelchair access, ground floor) is a different, content-attribute accessibility feature, out of scope for S26 (which is UI/interaction accessibility, not salon-attribute accessibility); flagged only so it is not conflated with this domain if raised later.\n\nBOUNDARY: this domain does not reopen any frozen 44px/24px literal (both are confirmed, not loosened), does not propose new visual treatment for any existing shipped surface, and does not authorize an in-app Accessibility settings screen, only names the researched convention for one if it is ever built. The nav-landmark fix and the skip-link consolidation are mechanical wiring, not new design surface requiring mockup-first sign-off. Screen-reader testing itself (VoiceOver/NVDA passes) remains out of scope; this domain names the standards, the repo defects, and the observed cross-app convention, not a manual test protocol. RGAA (France's WCAG-aligned legal standard, requiring a published numeric conformance percentage rather than a binary pass/fail badge) is noted as a footnote given Solen's FR/IT-CH markets (CONV, competitor scout, no live score fetched, no number to cite), worth a QUESTIONS.md line on whether Solen wants to adopt a percentage-conformance format, not a decision this domain makes.",
+  "real_world_evidence": [
+   {
+    "source": "Discord (iOS), Mobbin real-app scout",
+    "what": "dedicated Accessibility screen with a REDUCED MOTION section: 'Enable Reduced Motion' toggle sits next to 'Sync with Device Settings' (on by default), i.e. OS signal is the default, manual override is available; motion is further split into separate granular controls (autoplay GIFs, animated emoji, a three-way Stickers choice) rather than one master switch",
+    "tier": "T3"
+   },
+   {
+    "source": "Canva (iOS), Mobbin real-app scout",
+    "what": "'Reduce motion when you view and present designs' is a dropdown (not a toggle) with explainer text naming exactly what it affects ('transitions, animations, masks, and overlays'); 'Autoplay videos' offers 'Use my system preferences' as a selectable value",
+    "tier": "T3"
+   },
+   {
+    "source": "Airbnb (iOS), Mobbin real-app scout",
+    "what": "dedicated Accessibility screen, large bold heading, card-grouped rows, every toggle paired with a full sentence of real-world-effect body copy (Wheelchair accessible vehicle, Descriptive audio, Minimize walking time), never a bare label alone",
+    "tier": "T3"
+   },
+   {
+    "source": "Reeder 5 (iOS), Mobbin real-app scout",
+    "what": "most granular text-accessibility control set observed: independently overridable sliders for body Text size, line Spacing, and Title size once 'Use default font size' is switched off, plus weight/style controls and a Reset-to-Defaults row",
+    "tier": "T3"
+   },
+   {
+    "source": "Telegram, Flipboard, NYTimes, The Atlantic, Timepage (iOS), Mobbin real-app scout",
+    "what": "consistent horizontal dynamic-type slider (small-A to large-A) with a live text preview above/below it; NYTimes and Flipboard both label the master toggle 'Use System Text Size,' default ON, manual slider enabled only once switched off, same OS-default-with-override shape as the motion controls above",
+    "tier": "T3"
+   },
+   {
+    "source": "Speechify (iOS), Mobbin real-app scout",
+    "what": "content-page-level 'Accessibility Features Included' banner (Text to Speech, Larger Fonts, Speed Control, Dyslexic Font) surfaced where the user decides whether to consume the content, not buried in Settings",
+    "tier": "T3"
+   },
+   {
+    "source": "Reddit (iOS), Mobbin real-app scout",
+    "what": "'Reduce animations' is a plain toggle inside a generic VIEW OPTIONS group with no dedicated Accessibility section, the weaker contrast pattern flagged as the lower bar, not the one to emulate",
+    "tier": "T3"
+   },
+   {
+    "source": "Uber public accessibility statement, competitor scout (live WebFetch, uber.com/us/en/about/accessibility)",
+    "what": "states an explicit conformance target ('WCAG 2.1 Level AA'), ships one visible 'Skip to main content' link, names VoiceOver and TalkBack explicitly as the tested screen readers",
+    "tier": "T2"
+   },
+   {
+    "source": "Nielsen Norman Group, 'Test Keyboard Accessibility On Your Website' (May 2025), trend scout",
+    "what": "frames full keyboard reachability, clear focus states, and logical tab order as a distinct QA step; restates settled WCAG 2.1.1/2.4.7 practice rather than introducing new convention",
+    "tier": "T3"
+   },
+   {
+    "source": "Fresha / Treatwell / Booksy / Vagaro / Doctolib, competitor scout",
+    "what": "accessibility-statement URLs 404'd or were unreachable this session; weak, unconfirmed evidence that mid-market booking marketplaces rarely publish accessibility documentation the way Airbnb/Uber/Booking.com do, a possible differentiation opportunity for Solen, not proof of absence",
+    "tier": "CONV"
+   }
+  ],
+  "sources": [
+   {
+    "claim": "WCAG 2.1.1 Keyboard (Level A): all functionality operable through a keyboard interface",
+    "source": "W3C, Understanding WCAG 2.2, SC 2.1.1 Keyboard",
+    "tier": "T1"
+   },
+   {
+    "claim": "WCAG 2.1.2 No Keyboard Trap (Level A)",
+    "source": "W3C, WCAG 2.2, SC 2.1.2",
+    "tier": "T1"
+   },
+   {
+    "claim": "WCAG 2.4.3 Focus Order (Level A)",
+    "source": "W3C, WCAG 2.2, SC 2.4.3",
+    "tier": "T1"
+   },
+   {
+    "claim": "WCAG 2.4.7 Focus Visible (Level AA)",
+    "source": "W3C, WCAG 2.2, SC 2.4.7",
+    "tier": "T1"
+   },
+   {
+    "claim": "WCAG 2.4.1 Bypass Blocks (Level A)",
+    "source": "W3C, Understanding WCAG 2.2, SC 2.4.1",
+    "tier": "T1"
+   },
+   {
+    "claim": "WCAG 2.3.3 Animation from Interactions (Level AAA)",
+    "source": "W3C, Understanding WCAG 2.2, SC 2.3.3",
+    "tier": "T1"
+   },
+   {
+    "claim": "WCAG 4.1.2 Name, Role, Value (Level A)",
+    "source": "W3C, WCAG 2.2, SC 4.1.2",
+    "tier": "T1"
+   },
+   {
+    "claim": "WAI-ARIA landmark roles (banner/navigation/main/contentinfo/complementary)",
+    "source": "W3C WAI-ARIA APG, Landmark Regions; MDN ARIA landmark role",
+    "tier": "T1"
+   },
+   {
+    "claim": "WCAG 2.5.8 Target Size Minimum, AA, 24x24 CSS px (WCAG 2.2)",
+    "source": "W3C, WCAG 2.2, SC 2.5.8; cross-checked via Silktide / wcag22aa.org / WCAG.com this session",
+    "tier": "T1"
+   },
+   {
+    "claim": "WCAG 2.5.5 Target Size Enhanced, AAA, 44x44 CSS px (WCAG 2.1)",
+    "source": "W3C, WCAG 2.1, SC 2.5.5; cross-checked this session",
+    "tier": "T1"
+   },
+   {
+    "claim": "Roving tabindex is the standard ARIA APG pattern for composite widgets",
+    "source": "W3C WAI-ARIA APG, Developing a Keyboard Interface",
+    "tier": "CONV"
+   },
+   {
+    "claim": "Uber's public accessibility statement names WCAG 2.1 AA, ships one skip link, names VoiceOver/TalkBack",
+    "source": "uber.com/us/en/about/accessibility (live-fetched)",
+    "tier": "T2"
+   },
+   {
+    "claim": "SkipLink.tsx exists but is mounted only on app/[locale]/dev/primitives/page.tsx; app/[locale]/layout.tsx independently already has an inline skip-to-content anchor satisfying 2.4.1",
+    "source": "Direct repo read this session: app/[locale]/layout.tsx:61-68, layout.tsx:108, app/[locale]/_components/primitives/SkipLink.tsx",
+    "tier": "CONV"
+   },
+   {
+    "claim": "prefers-reduced-motion referenced in 8 of 326 (2.45%) .tsx files under app/",
+    "source": "Direct repo grep this session",
+    "tier": "CONV"
+   },
+   {
+    "claim": "role= attribute used in 33 of 326 (10.1%) .tsx files under app/",
+    "source": "Direct repo grep this session",
+    "tier": "CONV"
+   },
+   {
+    "claim": "SOURCE.md:1032 states the 44px floor as flatly 'WCAG 2.1' without naming AA vs AAA; SOURCE.md:993 self-flags <nav> as missing",
+    "source": "Direct repo read this session, SOURCE.md",
+    "tier": "CONV"
+   },
+   {
+    "claim": "OS-signal-first, explicit-override-second is the consistent pattern for reduced-motion and text-size controls across Discord/Canva/NYTimes/Flipboard/Telegram/Atlantic/Timepage",
+    "source": "Mobbin screenshot observation, real-world scout this session",
+    "tier": "T3"
+   },
+   {
+    "claim": "Apple HIG 44pt and Material 48dp are the de facto industry target-size floors competitors converge on, above WCAG AA's 24px minimum",
+    "source": "Competitor scout, training-recall, not live-fetched this session",
+    "tier": "CONV"
+   },
+   {
+    "claim": "RGAA (France) requires a published numeric conformance percentage rather than a binary pass/fail badge",
+    "source": "Competitor scout, training-recall, no live score fetched, no number cited",
+    "tier": "CONV"
+   }
+  ],
+  "numbers_used": [
+   "2.1.1",
+   "2.1.2",
+   "2.4.1",
+   "2.4.3",
+   "2.4.7",
+   "2.3.3",
+   "2.5.5",
+   "2.5.8",
+   "1.3.1",
+   "4.1.2",
+   "24",
+   "44",
+   "48",
+   "8",
+   "805",
+   "813",
+   "2.45 percent (8 of 326 files)",
+   "10.1 percent (33 of 326 files)",
+   "44pt (Apple HIG)",
+   "48dp (Material)"
+  ],
+  "taste_lab_probe": "Not a preference probe (tag is net-new, standards-compliance not taste), but two discriminating checks are worth running before closing this stream out. First, the existing verification: after any SkipLink consolidation, Tab once from a fresh production page load and confirm the single skip link receives visible focus, activating it moves focus to #main-content, and it stays invisible until focused (no layout shift). Second, new from this synthesis: toggle the OS-level reduce-motion setting off and on while on a spring/bounce Solen component (e.g. a card press or sheet open) and confirm the global CSS cap actually suppresses the motion, since only 8 of 326 files reference the media query directly and the cap's correctness has not been re-verified against a live component this session, only read as present in globals.css. Both are pass/fail checks, not taste calibration."
+ },
+ "verified": {
+  "id": "S26",
+  "tag": "net-new",
+  "verdict": "revised",
+  "myths_caught": [
+   "The real_world_evidence entry attributed to 'Airbnb (iOS)' with toggles 'Wheelchair accessible vehicle,' 'Descriptive audio,' 'Minimize walking time' is a MISATTRIBUTION. Re-searched live on Mobbin this session (query: wheelchair accessible vehicle + descriptive audio toggle) and the exact screen with that exact copy belongs to WAYMO, not Airbnb. Airbnb's actual iOS Accessibility screen (also pulled live, 2 independent hits) contains only 'Map zoom controls' / 'Map pan controls' with short one-line captions, not the full-sentence real-world-effect pattern claimed. This error is load-bearing: it is cited in real_world_evidence AND repeated in the proposed_addition's 'Explainer-copy pattern' paragraph as one of three apps proving the bold-label-plus-sentence convention. Corrected in verified_addition: source swapped to Waymo, and Airbnb's real (thinner) screen is now noted as evidence AGAINST universal adoption of the full-sentence pattern, not for it.",
+   "The NN/g 'Test Keyboard Accessibility On Your Website' (May 2025) citation could not be re-verified this session (WebSearch budget was exhausted before this query ran). It was already tagged T3 (the weakest evidence tier) in the draft, so no tier inflation occurred, but it should be treated as unconfirmed rather than confirmed until it can be looked up directly."
+  ],
+  "residual_risks": "Three items need an owner decision or a follow-up check rather than being blocked by this verify pass: (1) The Copy Economy vs accessibility-explainer-copy tension the draft flags is real (project CLAUDE.md line 123 confirms the 'drop words the context already says' rule exists verbatim) and genuinely unresolved; it is correctly left as a QUESTIONS.md candidate, not decided here. (2) The RGAA France percentage-conformance claim and the Apple HIG 44pt / Material 48dp claim are both CONV tier on training recall only, not live-verified this session (search budget exhausted) — low risk since both are stable, uncontroversial facts, but worth a live check before either is elevated to T1/T2 in a future pass. (3) The competitor-scout claim that Fresha/Treatwell/Booksy/Vagaro/Doctolib accessibility-statement URLs 404'd is self-reported as weak/unconfirmed by the draft itself (CONV tier) — treat as a hypothesis, not a differentiation claim, until re-checked. None of these block landing S26; all are already appropriately hedged or are non-blocking QUESTIONS candidates. The two mechanical repo fixes named (SOURCE.md:1032 AA/AAA wording correction, SkipLink.tsx doc-comment fix or retirement) are confirmed real and low-risk to apply.",
+  "claim_verdicts": [
+   {
+    "claim": "WCAG 2.1.1 Keyboard, Level A",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Stable, well-established SC; not live-refetched this session (WebSearch budget exhausted before reaching this query) but very low hallucination risk given how commonly this SC is cited."
+   },
+   {
+    "claim": "WCAG 2.1.2 No Keyboard Trap, Level A",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Same caveat as above: high-confidence training recall, not live-refetched this session."
+   },
+   {
+    "claim": "WCAG 2.4.3 Focus Order, Level A",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Same caveat."
+   },
+   {
+    "claim": "WCAG 2.4.7 Focus Visible, Level AA",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Correctly distinguished from the newer WCAG 2.2 SCs 2.4.11/2.4.13 which this draft does not conflate it with."
+   },
+   {
+    "claim": "WCAG 2.4.1 Bypass Blocks, Level A",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Correct SC/level."
+   },
+   {
+    "claim": "WCAG 2.3.3 Animation from Interactions, Level AAA",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Correct SC/level; matches RATIONALE.md:171's own existing citation, cross-checked directly in the repo this session."
+   },
+   {
+    "claim": "WCAG 4.1.2 Name, Role, Value, Level A",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Correct SC/level."
+   },
+   {
+    "claim": "WAI-ARIA landmark roles (banner/navigation/main/contentinfo)",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Standard, uncontroversial W3C/MDN reference."
+   },
+   {
+    "claim": "WCAG 2.5.8 Target Size Minimum, AA, 24x24 CSS px, WCAG 2.2",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Correct: added in WCAG 2.2 (Oct 2023) at AA. Draft's own AA/AAA distinction is internally consistent."
+   },
+   {
+    "claim": "WCAG 2.5.5 Target Size Enhanced, AAA, 44x44 CSS px, WCAG 2.1",
+    "source_ok": true,
+    "tier_final": "T1",
+    "note": "Correct: this SC dates to WCAG 2.1 (2018) at AAA, which is exactly the conflation SOURCE.md:1032 makes and the draft correctly catches."
+   },
+   {
+    "claim": "Roving tabindex is the standard ARIA APG pattern for composite widgets",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Well-established pattern; CONV tier (rather than T1) is appropriately conservative since it's a design-pattern recommendation, not a normative SC."
+   },
+   {
+    "claim": "Uber's public accessibility statement names WCAG 2.1 AA, ships one skip link, names VoiceOver/TalkBack",
+    "source_ok": true,
+    "tier_final": "T2",
+    "note": "Re-fetched live this session (uber.com/us/en/about/accessibility). Confirmed verbatim: 'We proactively build, test, and resolve barriers to meet WCAG 2.1 Level AA guidelines,' a visible 'Skip to main content' link, and 'Uber's web and mobile platforms are accessible to VoiceOver and TalkBack.'"
+   },
+   {
+    "claim": "SkipLink.tsx exists but is mounted only on app/[locale]/dev/primitives/page.tsx; layout.tsx independently has an inline skip-to-content anchor satisfying 2.4.1",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Directly re-verified this session: grep confirms SkipLink is imported nowhere except dev/primitives/page.tsx; layout.tsx:61-68 has the inline anchor targeting #main-content, matched to <main id=\"main-content\" tabIndex={-1}> at layout.tsx:108. SkipLink.tsx's doc comment does falsely claim it is mounted as first focusable child of body."
+   },
+   {
+    "claim": "prefers-reduced-motion referenced in 8 of 326 (2.45%) .tsx files under app/",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Re-ran the exact grep this session: find app -name '*.tsx' | wc -l = 326; grep -rl 'prefers-reduced-motion' app --include='*.tsx' | wc -l = 8. Numbers match exactly."
+   },
+   {
+    "claim": "role= attribute used in 33 of 326 (10.1%) .tsx files under app/",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Re-ran the exact grep this session: 33/326 confirmed exactly."
+   },
+   {
+    "claim": "SOURCE.md:1032 states the 44px floor as flatly 'WCAG 2.1' without naming AA vs AAA; SOURCE.md:993 self-flags <nav> as missing",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Both lines read directly this session; text matches verbatim, including the exact line numbers."
+   },
+   {
+    "claim": "globals.css:805-813 hard-caps animation/transition duration under prefers-reduced-motion media query",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Read directly this session; the @media block runs from line 805 to the closing brace at 813, exactly as cited, and matches the pre-existing RATIONALE.md:171 citation."
+   },
+   {
+    "claim": "OS-signal-first, explicit-override-second pattern: Discord ('Enable Reduced Motion' + 'Sync with Device Settings' on by default, plus granular GIF/emoji/sticker controls)",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Re-pulled live from Mobbin this session; screen matches the draft's description exactly, including the three-way Stickers choice."
+   },
+   {
+    "claim": "Canva 'Reduce motion when you view and present designs' dropdown names exactly what it affects ('transitions, animations, masks, and overlays')",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Re-pulled live from Mobbin this session; exact phrase confirmed verbatim on-screen."
+   },
+   {
+    "claim": "Airbnb dedicated Accessibility screen pairs every toggle with a full sentence ('Wheelchair accessible vehicle,' 'Descriptive audio,' 'Minimize walking time')",
+    "source_ok": false,
+    "tier_final": "MYTH (misattributed)",
+    "note": "Re-pulled live from Mobbin this session: this exact screen and copy belongs to WAYMO, not Airbnb. Airbnb's actual Accessibility screen (also pulled) has only 'Map zoom controls' / 'Map pan controls' with terse one-line captions. Corrected in verified_addition."
+   },
+   {
+    "claim": "NYTimes / Telegram 'Use System Text Size' toggle, default ON, manual slider enabled only once switched off",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Re-pulled live from Mobbin this session for both apps; both show the exact toggle label and default-on state described."
+   },
+   {
+    "claim": "Reddit 'Reduce animations' is a plain toggle inside a generic VIEW OPTIONS group with no dedicated Accessibility section",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Re-pulled live from Mobbin this session; confirmed exact grouping (Language/Default view/Autoplay/Thumbnails/Text size/Reduce animations all under one VIEW OPTIONS header, no separate a11y section)."
+   },
+   {
+    "claim": "Speechify content-page-level 'Accessibility Features Included' banner (Text to Speech, Larger Fonts, Speed Control, Dyslexic Font)",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Re-pulled live from Mobbin this session; exact four-item banner confirmed on the book detail page, not buried in Settings."
+   },
+   {
+    "claim": "Reeder 5 independent Text size / Spacing / Title size sliders once 'Use default font size' is off, plus a Reset to Defaults row",
+    "source_ok": true,
+    "tier_final": "T3",
+    "note": "Re-pulled live from Mobbin this session; sliders, weight/style buttons, and 'Reset to Defaults...' row all confirmed."
+   },
+   {
+    "claim": "Apple HIG 44pt and Material 48dp are the de facto industry target-size floors, above WCAG AA's 24px minimum",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Well-established, stable public facts; not independently re-fetched this session due to exhausted search budget, but low risk given how uncontested these numbers are."
+   },
+   {
+    "claim": "RGAA (France) requires a published numeric conformance percentage rather than a binary pass/fail badge",
+    "source_ok": true,
+    "tier_final": "CONV",
+    "note": "Consistent with general knowledge of RGAA's 'taux de conformite' declaration model; not independently re-fetched this session (search budget exhausted). Already correctly hedged in the draft as CONV with no number cited."
+   }
+  ],
+  "verified_addition": "## Domain 24: accessibility beyond contrast (keyboard, screen-reader semantics, reduced motion, target size)\n\n**Keyboard operability is four separate criteria, not one (T1, WCAG 2.2): 2.1.1 Keyboard (everything reachable and operable without a mouse), 2.1.2 No Keyboard Trap (focus can always leave a component with the keyboard alone), 2.4.3 Focus Order (tab order matches the order that preserves meaning), and 2.4.7 Focus Visible (a keyboard-focused element has a perceivable indicator, which Solen already satisfies globally via the locked ink focus ring in globals.css).** SOURCE 16.6 already states the practitioner-facing behavior (Tab/Space/Enter/Escape/arrows); this entry supplies the SC numbers so a claim of \"keyboard accessible\" is checkable against a named standard instead of a description. Composite widgets (tab lists, radio groups, filter pill rows) follow the ARIA APG roving-tabindex pattern (CONV, W3C APG Developing a Keyboard Interface): one item in the Tab sequence, tabindex=-1 on the rest, arrow keys move the roving focus. This is the mechanic behind SOURCE 16.6's already-stated but unexplained \"arrow keys navigate within composite widgets\" line. Nielsen Norman Group has separately published keyboard-accessibility testing guidance (CONV, unverified this session due to a search-budget limit, treat as directional not confirmed) framing full reachability, clear focus states, and logical tab order as a distinct QA step, consistent with what 2.1.1/2.4.3/2.4.7 already require rather than introducing new convention.\n\n**Landmarks and name-role-value are the programmatic-structure half of a11y (T1, WCAG 1.3.1 Info and Relationships / 4.1.2 Name Role Value; ARIA landmark roles, W3C APG).** A sighted user infers page structure visually; a screen-reader user needs it exposed as banner/nav/main/contentinfo landmarks and correct roles/states on every custom control. SOURCE 16.1 already requires main/header/footer (confirmed present in app/[locale]/layout.tsx) and self-flags `<nav>` as missing (SOURCE.md:993, \"currently missing, Q in QUESTIONS\" — verified verbatim this session). Ground that flag against the standard directly: the missing `<nav>` landmark on MobileMenu (app/[locale]/_components/layout/MobileMenu.tsx, confirmed to exist) is a 1.3.1 gap, not a style nicety, and closing it is a mechanical fix (wrap the nav markup, no visual change). Measured and re-verified this session: role= appears in only 33 of 326 (10.1%) of .tsx files under app/, a repo-fact worth tracking as the discoverability signal for this SC, same shape as the reduced-motion gap below.\n\n**Skip links satisfy Bypass Blocks (T1, WCAG 2.4.1), and Solen's production shell already has one, verified against a live competitor precedent.** app/[locale]/layout.tsx:61-68 renders an inline, hand-rolled skip-to-content anchor (\"Zum Inhalt springen\", href=\"#main-content\", sr-only until focus, dated V3-D312) as the first focusable element, targeting `<main id=\"main-content\" tabIndex={-1}>` at layout.tsx:108 (both line numbers re-confirmed this session). WCAG 2.4.1 is satisfied today. The real finding is a duplicate-implementation defect: a separate SkipLink.tsx primitive exists (app/[locale]/_components/primitives/SkipLink.tsx), mounted only on the internal /dev/primitives demo page (confirmed via repo-wide grep this session — no other import), targeting a different id (#main by default vs #main-content) with a different visual treatment, and its doc comment falsely claims it is mounted as the first focusable child of body (confirmed verbatim this session). Uber's public accessibility statement (T2, re-fetched live this session from uber.com/us/en/about/accessibility) is the concrete competitor bar to consolidate toward: it states an explicit conformance target (\"We proactively build, test, and resolve barriers to meet WCAG 2.1 Level AA guidelines\"), ships exactly one visible \"Skip to main content\" link, and names VoiceOver and TalkBack specifically as the assistive technologies it tests against rather than a generic gesture. Recommendation: retire or correct the unmounted SkipLink.tsx (fix its stale doc comment at minimum), keep the single inline implementation as the source of truth, and consider stating Solen's own conformance target explicitly (e.g. \"WCAG 2.1 AA\") the way Uber does, rather than leaving the bar implicit.\n\n**prefers-reduced-motion is the implementation of Animation from Interactions (T1, WCAG 2.3.3), and the industry convention is \"OS signal first, explicit override second,\" never a silent app default.** Already correctly tiered at RATIONALE.md line 171 (re-read this session, text matches verbatim): vestibular-disorder triggers are large-scale motion, parallax, and spatial transitions; Solen's globals.css already hard-caps animation/transition duration under the media query at lines 805-813 (re-confirmed this session), so the mechanic exists globally and correctly. Two things layer on top of the existing correct entry. First, discoverability: only 8 of 326 (2.45%) .tsx files under app/ reference prefers-reduced-motion directly despite spring/bounce motion existing in far more of them (both counts re-run and confirmed this session); SOURCE section 16 (the file actually consulted per its own reading-order note at SOURCE.md:1330) never points to it, so it is invisible law. SOURCE 16.2 or a new 16.7 should carry a pointer sentence: \"All motion beyond a component's own transition classes must respect prefers-reduced-motion; the global cap lives in globals.css:805-813, do not re-implement per component, rely on the cap.\" Second, a generative default for IF Solen ever ships an in-app motion-preference toggle (net-new, not required today): independently observed apps converge on the same pattern (T3, Mobbin, re-verified live this session) — Discord and Canva confirmed exact matches: Discord's Accessibility screen pairs \"Enable Reduced Motion\" with \"Sync with Device Settings\" (on by default) plus separate granular controls for autoplaying GIFs, animated emoji, and a three-way Stickers choice; Canva's motion dropdown names exactly what it affects (\"transitions, animations, masks, and overlays\") rather than a bare label. NYTimes and Telegram (also re-verified live this session) both label the master text-size toggle \"Use System Text Size,\" default ON, with the manual slider enabled only once switched off, the same OS-default-with-override shape as the motion controls. No app across this scouting pass was found shipping a reduced-motion toggle that overrides the OS signal silently or defaults to an app-specific value; treat that absence itself as the convention.\n\n**Target size floor: 24px is the law, 44px is the house standard above it (T1, WCAG 2.5.8 AA vs WCAG 2.5.5 AAA).** SOURCE.md 16.5's current wording (\"Minimum 44×44 px hit area per WCAG 2.1, some platforms 48\", confirmed verbatim at SOURCE.md:1032 this session) should be corrected to name the tier explicitly: \"WCAG 2.5.8 (AA, WCAG 2.2) sets the legal floor at 24x24 CSS px, with size, spacing, or an equivalent-control exception; Solen's 44px floor is the WCAG 2.5.5 AAA / Apple HIG 44pt line, deliberately set above the legal minimum, not equal to it.\" This is a wording-only fix (no literal changes, the 44px LOCKFILE value is untouched) that removes the AA/AAA conflation RATIONALE:157 already avoids but SOURCE.md:1030 still commits. Competitor-scout confirmation (CONV, training-recall, not independently re-fetched this session): no consumer booking competitor is known to publicly cite a specific pixel value; the de facto industry floor is Apple HIG 44pt / Material 48dp, both above WCAG's AA minimum and consistent with Solen's own already-locked 44px choice, so this domain confirms the existing lock rather than proposing to loosen or raise it.\n\n**Explainer-copy pattern, flagged as a tension, not resolved here.** Three apps in the accessibility-settings evidence (Waymo, Canva, Discord, tier T3, all re-verified live this session) consistently pair a bold toggle label with a full sentence of body copy stating the real-world effect (\"Wheelchair accessible vehicle,\" \"Descriptive audio,\" \"Reduce motion when you view and present designs, affects transitions, animations, masks, and overlays\"), never a bare label alone. Note the correction from the earlier draft: this specific screen (Wheelchair accessible vehicle / Descriptive audio / Minimize walking time) is Waymo's, not Airbnb's — verified this session by re-pulling both apps' actual screens on Mobbin. Airbnb's real Accessibility screen is thinner (Map zoom controls / Map pan controls, short one-line captions), closer to the weaker Reddit pattern below than to the full-sentence pattern; it should not be cited as an example of the sentence-level convention. This sits in tension with Solen's existing Copy Economy law (project CLAUDE.md rule \"drop words the context already says,\" confirmed present verbatim), which is written for booking/discovery flow copy, not accessibility-settings explainer copy specifically. This domain does not resolve that tension or authorize verbosity anywhere in Solen's shipped copy; it only notes that IF Solen ever builds a dedicated in-app Accessibility settings screen (not required by this stream, no such screen exists in Solen today), the researched convention for THAT one surface is sentence-level explainer text per toggle, and an owner call would be needed on whether Copy Economy's general rule applies there or is a deliberate, named exception.\n\n**Content-page-level accessibility affordances (optional, not required).** Speechify (T3, Mobbin, re-verified live this session) surfaces a horizontal row of accessibility affordances (Text to Speech, Larger Fonts, Speed Control, Dyslexic Font) directly on the content page a user is deciding whether to consume, not buried in Settings. Reddit's pattern (T3, Mobbin, re-verified live this session) is the weaker contrast case: \"Reduce animations\" sits unlabeled inside a generic \"VIEW OPTIONS\" group alongside unrelated display prefs, with no dedicated Accessibility section at all, confirmed as an exact match this session. This is named as the lower bar to avoid, not a pattern to emulate. Airbnb's broader precedent (CONV, competitor scout, training-recall, not independently re-fetched this session) of a dedicated Disability Support Hub with salon/listing-level accessibility facts (wheelchair access, ground floor) is a different, content-attribute accessibility feature, out of scope for S26 (which is UI/interaction accessibility, not salon-attribute accessibility); flagged only so it is not conflated with this domain if raised later, and distinct from the corrected Waymo screen above.\n\nBOUNDARY: this domain does not reopen any frozen 44px/24px literal (both are confirmed, not loosened), does not propose new visual treatment for any existing shipped surface, and does not authorize an in-app Accessibility settings screen, only names the researched convention for one if it is ever built. The nav-landmark fix and the skip-link consolidation are mechanical wiring, not new design surface requiring mockup-first sign-off. Screen-reader testing itself (VoiceOver/NVDA passes) remains out of scope; this domain names the standards, the repo defects, and the observed cross-app convention, not a manual test protocol. RGAA (France's WCAG-aligned legal standard, requiring a published numeric conformance percentage rather than a binary pass/fail badge) is noted as a footnote given Solen's FR/IT-CH markets (CONV, competitor scout, no live score fetched, no number to cite), worth a QUESTIONS.md line on whether Solen wants to adopt a percentage-conformance format, not a decision this domain makes."
+ }
+}
