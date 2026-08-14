@@ -63,3 +63,15 @@ Recovery is one command each, the id is the branch tip:  `git checkout -b <name>
 Total: 51 branches.
 
 The 26 branches NOT in this list carry at least one file newer than main and are untouched.
+
+## Added 2026-08-14 evening, after checking what they carried
+
+Both carried the same two things: a hair-DNA endpoint that is IN THE GRAVEYARD (deleted on
+purpose, zero callers, the phone app works it out on the device instead) and the algorithm
+behind it, which the phone app already has its own copy of. Nothing else on them is newer
+than what ships.
+
+| branch | tip | last commit | files it touched |
+|---|---|---|---|
+| `claude/amazing-curie-932abc` | `e01413395` | 2026-06-23 | 86 |
+| `claude/cranky-bose-15064d` | `2fddaf0d8` | 2026-06-23 | 86 |
