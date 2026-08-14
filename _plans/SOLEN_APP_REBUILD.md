@@ -147,11 +147,33 @@ is unproven, and each phase writes its state here so the loop survives a session
         stand-in would be fabrication.
   - [ ] Search screen against the web.
   - [ ] Salon page against the web.
-  - [ ] **Booking, and the real defect underneath it: the time step renders SAMPLE slots**
-        (`src/app/booking.tsx:11,34,294`). Nobody can book a real appointment until availability is
-        wired. This is the single biggest thing in the whole rebuild.
-  - [ ] Confirmation screen, which does not exist at all; booking currently ends in an
-        `Alert.alert` stub.
+  - [x] **The SAMPLE slots are gone and the times are real.** `verified:` `grep -in "sample|not
+        wired" src/app/booking.tsx` now returns nothing, and the screen calls
+        `fetchAvailableSlots` at `src/app/booking.tsx:189`. The query is at
+        `src/lib/queries.ts:305` and hits the real `availability_slots` table, which the LIVE
+        snapshot confirms carries 9365 rows with RLS on; every column it reads
+        (`id, starts_at, ends_at, service_id, staff_member_id, salon_id, status`) is present in
+        `_inventory/_db-columns.json`, so this is not a phantom-column silent no-op.
+  - [x] **Confirmation screen exists**, `src/app/confirmation.tsx`, and booking routes into it at
+        `src/app/booking.tsx:232`. `verified:` `grep -n "Alert.alert" src/app/booking.tsx` now
+        returns nothing. It deliberately does NOT claim a paid or persisted booking, for the reason
+        in the next line.
+
+- [ ] **THE REAL BLOCKER, found 2026-08-14 and bigger than the fake slots were: the app cannot
+      WRITE ANYTHING.** `src/lib/queries.ts` is 19 exported functions, 30 `.select()` calls and
+      ZERO inserts, upserts, updates or deletes. Its one non-select is the read-only RPC
+      `salons_with_slot_in_hours` at line 478. So a customer can browse, search, and now see real
+      free times, and then nothing happens: no booking row, no queue entry, no review, no saved
+      salon. The confirmation screen is honest about this in its own header rather than faking a
+      success, which is right, but the money path still does not complete.
+      **The fix is NOT a direct insert.** The web's `POST /api/bookings` (`app/api/bookings/route.ts:116`)
+      is the auth boundary and carries the whole thing: feature flag, ban check, rate limit, schema
+      validation, the guest path through the service-role client because RLS `bookings_insert_auth`
+      rejects a null user_id, plus Stripe, promo codes and gift cards. Reimplementing any of that
+      on the client would be a security hole. The app already has the pattern for calling it,
+      `src/lib/discovery.ts:7,106` fetches `https://solen.ch/api/...`.
+      CLOSE: an appointment written through the web endpoint and read back in the app's own
+      appointments list.
 ### The whole-frontend fan-out, 2026-08-14
 
 Owner: *"i told you to rebuild the frontned of app from scratch why are youbdoing it one by one its
