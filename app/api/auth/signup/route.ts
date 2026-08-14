@@ -5,6 +5,7 @@ import { createServerSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, authLimiter, getClientIp } from "@/lib/ratelimit";
 import { z } from "zod";
 import { trackServerEvent, identifyServerUser } from "@/lib/posthog-server";
+import { isPasswordBreached } from "@/lib/auth/breached-password";
 
 const calcAge = (dateStr: string) => {
   const b = new Date(dateStr);
@@ -43,6 +44,22 @@ export async function POST(request: NextRequest) {
   }
 
   const { email, password, birthday, salon_name } = parsed.data;
+
+  // Refuse a password that already appears in a public breach list. Only a hash prefix leaves this
+  // server, never the password, so the service being asked cannot learn what was typed.
+  //
+  // Landed 2026-08-14 from the July backend work, which was written and never merged. Deliberately
+  // ONLY this half: that branch also loosened the password rules from eight characters with a
+  // capital and a digit to twelve characters with no other rule, and rewrote the age line from Sie
+  // to du. Both are changes a customer would feel, and the second breaks the formal-voice rule, so
+  // neither is smuggled in behind a security fix.
+  if (await isPasswordBreached(password)) {
+    return NextResponse.json(
+      { message: "Dieses Passwort wurde bei einem Datenleck veröffentlicht. Bitte wählen Sie ein anderes." },
+      { status: 400 },
+    );
+  }
+
   const supabase = await createServerSupabaseClient();
   const origin = new URL(request.url).origin;
 
