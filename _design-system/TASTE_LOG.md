@@ -694,3 +694,35 @@ contact with him; it means Airbnb is where proposals now come FROM, and he still
 **Scope he set in the same exchange:** all 94 customer screens outside the dashboard, one screen at
 a time, screens with no Airbnb counterpart graded against our own floors, and the design principles
 themselves in scope for improvement, not just the screens.
+
+---
+
+## 2026-08-14 , the salon card photo shape stays as it ships. He picked A.
+
+**Owner, verbatim:** "A", answering a three-stop toggle on the live home screen.
+
+**The question, and why it existed at all.** Eight unmerged branches each carry their own
+`SalonCard.tsx` and every file differs. Measured across all nine versions including main, corner,
+shadow, name size and name weight are the same everywhere. The only visible disagreement is the
+photo shape, and it splits 3 to 6: `aspect-[5/4]` on main, `6/5` on the other six.
+
+**Measured on the rendered home card at 402pt, all three in the same session:**
+
+| stop | ratio | rendered | what it is |
+|---|---|---|---|
+| **A (picked)** | 5/4 = 1.25 | 239 x 191 | what ships today |
+| B | 6/5 = 1.20 | 239 x 199 | what six branches settled on |
+| C | 20/19 = 1.053 | 239 x 227 | Airbnb's own card, measured 2026-07-28 |
+
+**A and B are 8px apart, which is why C was added.** Two options that differ by 8px on a phone are
+not a choice anyone can see, and handing him an invisible A/B is how a decision round gets wasted.
+C put a genuinely different shape on the table so the pick meant something. He still chose A.
+
+**What this settles, beyond one file.** The six branches' 6/5 is REJECTED by name, so none of the
+eight competing SalonCards has anything left to contribute on shape, and the shape axis of that
+clash is closed rather than pending. Airbnb being the source of truth (2026-08-12) did not carry the
+card shape with it, which is the same pattern as the pill border he killed on 2026-07-31: Airbnb is
+where proposals come from, and he judges each one.
+
+**Where it was decided:** `/de/dev/mock/card-shape`, the real home screen with a three-stop toggle,
+built under the mockup definition in `public/_mockups/_BASE.md`.

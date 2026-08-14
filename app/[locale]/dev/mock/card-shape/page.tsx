@@ -40,10 +40,21 @@ const PROPOSED = `
   [class*="aspect-[5/4]"] { aspect-ratio: 6 / 5 !important; }
 `;
 
+// THREE STOPS, not two (owner 2026-08-14, "shapes i want now"). The branches only ever disagreed
+// about A versus B, and measured on the rendered home card those two sit 8px apart: 239x191 at 5/4
+// against 239x199 at 6/5. A choice you cannot see is not a choice, so the reference joined it:
+// Airbnb's own home card measured 1.053, which is 239x227 at our width. measure-ok, numbers from
+// getBoundingClientRect on this page and from the Airbnb capture, neither eyeballed.
+const SHAPES = [
+  { label: "A", css: "" },
+  { label: "B", css: `[class*="aspect-[5/4]"] { aspect-ratio: 6 / 5 !important; }` },
+  { label: "C", css: `[class*="aspect-[5/4]"] { aspect-ratio: 20 / 19 !important; }` },
+];
+
 export default function CardShapePage() {
   if (process.env.NODE_ENV === "production") notFound();
   return (
-    <MockShell proposed={PROPOSED}>
+    <MockShell proposed={PROPOSED} options={SHAPES}>
       <MockRoute src="/de" />
     </MockShell>
   );

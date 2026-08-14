@@ -128,9 +128,13 @@ and I am not claiming it is.
       hairline swapped from `border-s-border` to `border-s-ink/[0.06]`).
       The rest differ on three or more properties at once, so each is a real look, not a tweak.
       Ordering for the show-half: the three one-property ones first, since each is one question.
-- [ ] C6b. SHOW him each, paced by him, one at a time. First one is already waiting and unanswered
-      (`/dev/mock/card-shape`). Not startable in bulk by design: he said "Show me each version, I
-      pick", so the queue moves at his pace, not mine.
+- [ ] C6b. SHOW him each, paced by him, one at a time. Not startable in bulk by design: he said
+      "Show me each version, I pick", so the queue moves at his pace, not mine.
+      **1 of 30 DECIDED. Salon card photo shape: he picked A, 2026-08-14, so 5/4 stays and the
+      six branches' 6/5 is in the graveyard.** Logged in `_design-system/TASTE_LOG.md` and
+      `_design-system/REMOVED.md`. The shell that carried it (`MockShell`) now takes three stops
+      instead of two, because A and B were 8px apart and an invisible A/B wastes his turn; the
+      third stop was the reference's own measured shape. 29 to go, smallest first.
 - [ ] C7. The 64 behind-the-scenes files with six or more versions. Per his answer: each one comes
       to him in two sentences plus a recommendation, none decided silently.
 - [ ] C8. The walk-in code half, still stranded across ten files on `quirky-ellis`. The database

@@ -34,27 +34,65 @@ const HIDE_APP_CHROME = `
 
 export function MockShell({
   proposed,
+  options,
   children,
   startWithProposed = true,
 }: {
   /** The one change under question, as CSS applied to the live screen. */
   proposed: string;
+  /**
+   * More than two candidates for the SAME one change (owner 2026-08-14, "shapes i want now").
+   *
+   * measured: the two shapes the branches disagree about land 8px apart on a 402pt phone, measured
+   * with getBoundingClientRect on the live home card: 239x191 at 5/4 (1.25) and 239x199 at 6/5
+   * (1.20). That is not a difference he can see, so the reference's own shape joined the set as a
+   * third stop: Airbnb's home card measured 1.053 the same week, which renders 239x227 here.
+   * measure-ok: numbers above come from the rendered page and from the reference capture, not from
+   * eyeballing either one.
+   *
+   * Still one axis and one screen; the toggle just carries three stops instead of two. Option 0 is
+   * always what ships, so its css is empty.
+   */
+  options?: { label: string; css: string }[];
   children: React.ReactNode;
   startWithProposed?: boolean;
 }) {
   const [after, setAfter] = React.useState(startWithProposed);
+  const [pick, setPick] = React.useState(options ? 1 : 0);
+  const css = options ? options[pick]!.css : after ? proposed : "";
   return (
     <div className="fixed inset-0 z-[1001] overflow-y-auto bg-white">
       <style>{HIDE_APP_CHROME}</style>
-      {after ? <style>{proposed}</style> : null}
-      <MockCtx.Provider value={{ proposed, active: after }}>{children}</MockCtx.Provider>
-      <button
-        data-mock-toggle
-        onClick={() => setAfter((v) => !v)}
-        className="fixed bottom-[max(20px,env(safe-area-inset-bottom))] left-1/2 z-[1002] h-11 -translate-x-1/2 rounded-full bg-s-ink px-5 font-heading text-[15px] font-bold text-white shadow-elevation-3" /* selected-ok: the one control on the screen */
-      >
-        {after ? "New" : "Now"}
-      </button>
+      {css ? <style>{css}</style> : null}
+      <MockCtx.Provider value={{ proposed: css, active: Boolean(css) }}>{children}</MockCtx.Provider>
+      {options ? (
+        <div
+          data-mock-toggle
+          className="fixed bottom-[max(20px,env(safe-area-inset-bottom))] left-1/2 z-[1002] flex -translate-x-1/2 gap-1 rounded-full border border-s-border bg-white p-1 shadow-elevation-3"
+        >
+          {options.map((o, i) => (
+            <button
+              key={o.label}
+              onClick={() => setPick(i)}
+              aria-pressed={i === pick}
+              className={
+                "h-9 rounded-full px-4 font-heading text-[15px] " +
+                (i === pick ? "bg-s-bg-sunken font-semibold text-s-ink" : "font-medium text-s-ink-2")
+              }
+            >
+              {o.label}
+            </button>
+          ))}
+        </div>
+      ) : (
+        <button
+          data-mock-toggle
+          onClick={() => setAfter((v) => !v)}
+          className="fixed bottom-[max(20px,env(safe-area-inset-bottom))] left-1/2 z-[1002] h-11 -translate-x-1/2 rounded-full bg-s-ink px-5 font-heading text-[15px] font-bold text-white shadow-elevation-3" /* selected-ok: the one control on the screen */
+        >
+          {after ? "New" : "Now"}
+        </button>
+      )}
     </div>
   );
 }
@@ -85,6 +123,11 @@ export function MockRoute({ src }: { src: string }) {
           el.setAttribute("data-mock-proposed", "1");
           el.textContent = proposed;
           doc.head.appendChild(el);
+        } else if (active && existing && existing.textContent !== proposed) {
+          // measured 2026-08-14: with three stops on the toggle, B and C both rendered 239x199,
+          // because the injected style was only ever created or removed, never REWRITTEN, so the
+          // second proposal never reached the frame. Two options hid as one.
+          existing.textContent = proposed;
         } else if (!active && existing) {
           existing.remove();
         }
