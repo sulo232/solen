@@ -228,10 +228,15 @@ is unproven, and each phase writes its state here so the loop survives a session
         types. Harmless here, and a reminder that the types drift behind the schema.
   - [ ] Step 2b, the booking SCREEN calls it. `src/app/booking.tsx` still ends at the confirmation
         hand-off without posting. Held only because another builder owns that file this minute.
-  - [ ] Step 3, the other seventeen routes. Deliberately staged one at a time behind the review.
-        Two adjacent blind spots of the same class are already named: `GET` in that same file is
-        still cookie-only, and `lib/bookings/authorize.ts`'s `resolveBookingActor` carries it into
-        refund, report and upcharge.
+  - [~] Step 3, the rest of the customer write path. Out now, four routes, ranked by damage:
+        `POST /api/walkin/queue` (reads its customer from a cookie at line 106, so an app caller is
+        silently recorded as an anonymous walk-in and never sees their own ticket, the same
+        silent-misidentification class as the booking bug), `lib/bookings/authorize.ts`'s
+        `resolveBookingActor` (behind seven sub-routes; fails CLOSED to a uniform 404, so annoying
+        rather than dangerous, but it means a customer cannot view or cancel the booking this
+        rollout just fixed the creation of), the `GET` in the bookings route, and
+        `POST /api/reviews`. Each carries the security review's own finding forward: the IP throttle
+        runs BEFORE the resolve, using the fail-closed limiter, never `generalLimiter`.
 
 ### The whole-frontend fan-out, 2026-08-14
 
