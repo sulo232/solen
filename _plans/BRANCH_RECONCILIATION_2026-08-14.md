@@ -319,5 +319,13 @@ changes how a booking decides its payment mode, which is money behaviour and his
   A. land the whole feature so an admin override actually decides the payment mode, or
   B. drop the two columns again and file the feature.
 
-- [ ] C9. Owner picks A or B on the payment-mode override. Blocked on him by design: A changes money
-      behaviour, B is a database change. Everything else about it is measured and written here.
+- [x] C9. Commit c5d1194d6 , owner said A and named the asking itself as the defect ("what kinda
+      question is this tho ... we need gates for this lazyness"). BUILT: `lib/bookings/payment-mode.ts`
+      (the resolver), `app/api/bookings/route.ts:276` (asks the resolver instead of reading the
+      salon's own column), `app/api/admin/salons/[id]/payment-mode/route.ts` (the admin endpoint,
+      audited), and the schema in `lib/validations.ts`. verified: six rules checked against the real
+      resolver, all passing; no new type errors (36 before, 36 after, all pre-existing); and live,
+      all 28 salons have no override set, so nothing about today's bookings changed.
+      The gate for the asking: `~/.claude/hooks/finish-autonomously-gate.py` now refuses a closing
+      message that offers "finish it or bin it" about work that already exists, unless it names a
+      real stake (money moving, a legal question, a decision he made). 8/8 on its own cases.
