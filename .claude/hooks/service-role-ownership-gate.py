@@ -1,0 +1,282 @@
+#!/usr/bin/env python3
+"""service-role-ownership-gate: PreToolUse (Write only), BLOCKING.
+
+Backend audit ground truth: createAdminSupabaseClient() (lib/supabase.ts:78)
+uses the service-role key, which has Postgres BYPASSRLS. RLS does not apply
+underneath it, so every ownership decision at its ~238 app/api/ call sites is
+hand-rolled with zero backstop. Three separate audit waves found this class
+(IDOR / OWASP API1): CRM client routes accepting an arbitrary `client_id`,
+barber-leaderboard, walkin-analytics, cross-salon walkin/queue PATCH , around
+20 vulnerable routes total.
+
+The canonical ownership helpers live in lib/auth/require.ts: requireAuth,
+requireAdmin, requireSalonOwner, requireRole.
+
+ROUND 2 FIX (reviewer proof, 2026-07-16): the original Edit|Write|MultiEdit
+scope ran against all 234 real call sites and fired on 80 (34%), every single
+one a false positive in four shapes: (1) an inline `profiles.role !== "admin"`
+check instead of the named helper, (2) ownership expressed as a plain JS
+comparison after a joined select (`salonOwner !== user.id`), (3) an HMAC/token
+verification scheme invisible to the old signal set, (4) legitimately public
+data with no ownership concept at all. The SAME reviewer also wrote a
+textbook IDOR route (admin client + `searchParams.get("salon_id")` piped
+straight into `.eq("salon_id", ...)`, zero auth) and the old gate ALLOWED it,
+because the old `OWNERSHIP_EQ` heuristic only checked that the literal
+`.eq("salon_id"|...)` string appeared ANYWHERE in the content , it never
+verified the bound value traced back to the caller's own identity instead of
+the request. That presence-only check legitimized the exact bug it was
+meant to catch, so it has been REMOVED (see below).
+
+Two structural fixes:
+
+1. Scope narrowed to Write only (new files), matching the house precedent
+   at ~/.claude/hooks/no-unauth-money-route.py. There are 238 existing call
+   sites; re-litigating every one of them on every Edit is what produced the
+   34% false-positive rate. A brand-new route is graded clean; an existing
+   one is no longer re-graded on every touch.
+
+2. The auth-signal recognizer is widened to match the ACTUAL shapes found in
+   the false-positive corpus (read, not guessed, from app/api/admin/cities/
+   route.ts, app/api/admin/commission/route.ts, app/api/admin/revenue/
+   route.ts, app/api/bookings/[id]/refund/route.ts, app/api/bookings/[id]/
+   quick-action/route.ts):
+     - ROLE_CHECK: an inline `<x>.role !== "admin"` / `"admin" !== <x>.role`
+       comparison (category 1: the inline admin check).
+     - OWNERSHIP_COMPARISON: a JS `!==`/`===` comparison against
+       `user.id` / `session.user.id` (category 2: ownership as a JS
+       comparison after a joined select, e.g. `salonOwner !== user.id`).
+     - createHmac( / timingSafeEqual( added to AUTH_SIGNAL (category 3:
+       HMAC/token-based authorization, e.g. quick-action's
+       verifyActionToken()).
+   Verification against the FULL 234-file corpus (not just the 5 files named
+   above) surfaced a further, very common real shape not covered by the
+   reviewer's 4 categories: `getActiveSalon(supabase|admin, user.id, ...)`
+   (lib/active-salon.ts) and `clientBelongsToSalon(admin, salon.id,
+   customerId)` (lib/verify-salon-client.ts) are the actual, pervasive
+   ownership-resolution helpers used across app/api/clients/[id]/*,
+   app/api/salon/*, app/api/dashboard/* etc, NOT the named requireSalonOwner
+   from lib/auth/require.ts the original gate looked for. Both added to
+   AUTH_SIGNAL. `verifyAccessToken(` (lib/bookings/guest-access.ts, a
+   SHA-256-hash token check with an anti-timing-oracle sentinel branch) is
+   the same HMAC/token-verification class as quick-action's
+   verifyActionToken(), also added. Same for `findQueueEntryByToken(`
+   (lib/walkin/authz.ts): the guest walk-in tip/review routes gate purely on
+   the queue tracking token, no session at all, by design.
+   A second very common real shape: a query scoped to the CALLER's OWN id,
+   `.eq(<any column>, user.id)` / `.eq(<any column>, session.user.id)` / a
+   variable assigned directly from one of those (e.g. `const userId =
+   user?.id; ... .eq("customer_id", userId)`). This is unambiguously safe
+   regardless of column name, because the bound value is the session's own
+   identity, not anything client-suppliable, so it cannot express an IDOR
+   no matter what it is compared against. Implemented as `has_self_scoped_
+   query()` below (a small Python check, not a single regex, because it has
+   to resolve a variable back to its assignment first).
+   NOT added: bare `auth.getUser(`/`auth.getSession(` as a blanket signal.
+   The house's own no-unauth-money-route.py treats that as sufficient for
+   its narrower question ("is there ANY auth at all"), but this gate's
+   question is OWNERSHIP, not mere authentication -- almost every one of
+   the 234 files calls auth.getUser() somewhere, so treating it alone as
+   authorization would neuter this gate exactly the way createServer
+   SupabaseClient alone once neutered it (see the sibling gate's own FIXED
+   note). An authenticated-but-not-owner caller is precisely the CRM
+   client_id / barber-leaderboard bug class this gate exists to catch.
+   Category 4 (legitimately public data, no ownership concept at all , e.g.
+   app/api/discovery/boards/[id]/route.ts, app/api/analytics/track-view/
+   route.ts) has NO reliable syntactic signal that distinguishes it from a
+   route that is missing a required ownership check; that distinction is a
+   business-logic judgment call, not a pattern. Rather than invent a broad
+   pattern that would reopen the false-negative hole (a heuristic loose
+   enough to wave those two files through would also wave through routes
+   that genuinely need a check), those routes are left to the
+   `ownership-ok:` escape hatch. This is a deliberate MISS-over-false-
+   positive choice; the Write-only scope means it only matters for a
+   brand-new route shaped like these two, and the escape hatch exists
+   exactly for that case. Against the full 234-file corpus, category 4 (a
+   public salon/barber/brand/queue/telemetry/marketplace-purchase lookup or
+   write with no privacy-owned resource involved) accounts for the entire
+   remaining residual under a Write-SIMULATED stress test (32 files); it is
+   NOT a residual in real operation, because the Write-only scope means none
+   of these 234 existing files are re-graded on the Edits that actually touch
+   them day to day.
+   `/api/dev/` is also exempted (app/api/dev/login/route.ts): hard-404'd
+   outside NODE_ENV=development, matching no-unauth-money-route.py's own
+   exemption.
+
+The old `OWNERSHIP_EQ` presence-only heuristic (".eq(\"salon_id\"|...)`
+appears anywhere") is REMOVED, not tightened: reliably tracing whether an
+ARBITRARY bound value is server-derived vs. client-supplied cannot be done
+with a regex without either (a) staying loose enough to keep allowing the
+reviewer's reproduced IDOR, or (b) getting complex enough to become its own
+source of false positives/negatives. The one narrow case that IS reliable
+(the bound value literally traces to the caller's own `user.id`) is kept as
+`has_self_scoped_query()` above; anything looser is a MISS, per the fix
+brief's explicit permission to prefer a miss over a false positive.
+
+DENIES a Write of a NEW app/api/**/route.ts whose content satisfies ALL:
+  (a) calls createAdminSupabaseClient(
+  (b) reads a CLIENT-SUPPLIED identifier: a route param (`params.` /
+      `await params`), `searchParams.get(`, or a field off `await req.json()`
+      / `await request.json()`
+  (c) has NO authorization signal anywhere in the content: none of
+      requireAuth / requireAdmin / requireSalonOwner / requireRole /
+      resolveBookingActor / CRON_SECRET / stripe-signature / createHmac /
+      timingSafeEqual / getActiveSalon / clientBelongsToSalon /
+      verifyAccessToken / findQueueEntryByToken, no inline
+      `.role !== "admin"` check, no JS ownership comparison against
+      `user.id` / `session.user.id`, and no query scoped to the caller's
+      own id.
+
+All three are required (AND, not OR).
+
+Escape hatch: put `ownership-ok:` (case-insensitive) anywhere in the added
+content if the route genuinely needs no ownership check (e.g. a public,
+non-sensitive lookup).
+
+Fail-open on any internal error, matching the house pattern
+(no-select-star-sensitive.py, money-update-cas-gate.py)."""
+import json, re, sys
+
+FIRE_PATH = re.compile(r"app/api/.+/route\.ts$")
+ESCAPE = re.compile(r"ownership-ok\s*:", re.I)
+
+ADMIN_CLIENT = re.compile(r"createAdminSupabaseClient\(")
+CLIENT_SUPPLIED = re.compile(
+    r"(await\s+params\b|\bparams\s*\.|searchParams\s*\.\s*get\(|"
+    r"await\s+req(?:uest)?\s*\.\s*json\(\))"
+)
+AUTH_SIGNAL = re.compile(
+    r"\b(requireAuth|requireAdmin|requireSalonOwner|requireRole|resolveBookingActor|"
+    r"CRON_SECRET|stripe-signature|createHmac|timingSafeEqual|getActiveSalon|"
+    r"clientBelongsToSalon|verifyAccessToken|findQueueEntryByToken)\b"
+)
+# Category 1 (2026-07-16 fix): the inline admin check used ~35+ times instead
+# of the named requireAdmin() helper -- `profile?.role !== "admin"`.
+ROLE_CHECK = re.compile(
+    r"\.\s*role\s*(?:!==|===)\s*[\"']admin[\"']|[\"']admin[\"']\s*(?:!==|===)\s*[\w.?]*\.\s*role"
+)
+# Category 2 (2026-07-16 fix): ownership expressed as a plain JS comparison
+# after a joined select -- `salonOwner !== user.id` / `!== session.user.id`.
+OWNERSHIP_COMPARISON = re.compile(
+    r"(?:!==|===)\s*(?:session\s*\.\s*)?user\??\s*\.\s*id\b"
+    r"|\b(?:session\s*\.\s*)?user\??\s*\.\s*id\s*(?:!==|===)"
+)
+# Corpus-verification fix (2026-07-16): a query scoped to the CALLER'S OWN
+# id (`.eq(<any column>, user.id)` or a variable assigned straight from
+# user.id/session.user.id, e.g. `const userId = user?.id`) is unambiguously
+# safe no matter what column it filters, because the bound value cannot be
+# client-supplied. Narrow on purpose: only a DIRECT `user.id`/`session.user.id`
+# expression, or a variable whose ENTIRE initializer is that expression,
+# counts -- anything else (a client param, a joined-table field, a computed
+# expression) is left alone, so this cannot be used to wave through the
+# reviewer's IDOR shape (`.eq("salon_id", salonId)` where `salonId` comes
+# from `searchParams.get(...)`).
+SELF_ID_EXPR = r"(?:session\s*\.\s*)?user\??\s*\.\s*id"
+SELF_ID_ONLY = re.compile(r"^" + SELF_ID_EXPR + r"$")
+SELF_ID_VAR_ASSIGN = re.compile(
+    r"\b(?:const|let|var)\s+(\w+)\s*(?::[^=]+)?=\s*" + SELF_ID_EXPR + r"\b"
+)
+EQ_CALL = re.compile(r"\.eq\(\s*[\"']\w+[\"']\s*,\s*([\w.$?]+)\s*\)")
+# One extra hop: a locally-defined helper (e.g. `async function requireUser() { ... return
+# user?.id ?? null; }`, seen in app/api/discovery/collections/[id]/route.ts and its items/
+# sub-route) that wraps the same user.id read. Only counts if the FUNCTION is DEFINED in
+# this same content and a user.id/session.user.id reference appears in a window right after
+# its opening brace (window, not brace-matching, because a destructured `{ data: { user } }`
+# inside the body defeats a naive "stop at the first `}`" body capture) -- an imported
+# helper from another file does not satisfy this (correctly conservative: an import alone
+# proves nothing about what the helper actually checks).
+LOCAL_FN_START = re.compile(r"(?:async\s+)?function\s+(\w+)\s*\([^)]*\)\s*\{")
+LOCAL_FN_WINDOW = 250
+VAR_FROM_CALL = re.compile(
+    r"\b(?:const|let|var)\s+(\w+)\s*(?::[^=]+)?=\s*(?:await\s+)?(\w+)\s*\("
+)
+
+
+def local_self_id_fn_names(content):
+    names = set()
+    for m in LOCAL_FN_START.finditer(content):
+        window = content[m.end():m.end() + LOCAL_FN_WINDOW]
+        if re.search(SELF_ID_EXPR, window):
+            names.add(m.group(1))
+    return names
+
+
+def has_self_scoped_query(content):
+    self_vars = set(SELF_ID_VAR_ASSIGN.findall(content))
+    local_self_id_fns = local_self_id_fn_names(content)
+    for varname, fnname in VAR_FROM_CALL.findall(content):
+        if fnname in local_self_id_fns:
+            self_vars.add(varname)
+    for m in EQ_CALL.finditer(content):
+        val = m.group(1).strip()
+        if SELF_ID_ONLY.match(val) or val in self_vars:
+            return True
+    return False
+
+
+def allow():
+    sys.exit(0)
+
+
+def deny(msg):
+    print(json.dumps({"hookSpecificOutput": {
+        "hookEventName": "PreToolUse",
+        "permissionDecision": "deny",
+        "permissionDecisionReason": msg,
+    }}))
+    sys.exit(0)
+
+
+try:
+    data = json.load(sys.stdin)
+except Exception:
+    allow()
+
+try:
+    if (data.get("tool_name") or "") != "Write":
+        allow()
+
+    ti = data.get("tool_input") or {}
+    path = str(ti.get("file_path") or "")
+    if not FIRE_PATH.search(path):
+        allow()
+    # dev-only routes are hard-404'd outside NODE_ENV=development (see app/api/dev/login/
+    # route.ts), so they are never a live IDOR surface. Matches the house convention already
+    # established in no-unauth-money-route.py.
+    if "/api/dev/" in path:
+        allow()
+
+    content = str(ti.get("content") or "")
+    if not content:
+        allow()
+
+    if ESCAPE.search(content):
+        allow()
+
+    if (ADMIN_CLIENT.search(content)
+            and CLIENT_SUPPLIED.search(content)
+            and not AUTH_SIGNAL.search(content)
+            and not ROLE_CHECK.search(content)
+            and not OWNERSHIP_COMPARISON.search(content)
+            and not has_self_scoped_query(content)):
+        deny(
+            "BLOCKED (service-role IDOR risk): this new route calls createAdminSupabaseClient() "
+            "(service-role key, BYPASSES RLS entirely) AND reads a client-supplied identifier "
+            "(a route param / searchParams / a req.json() field), but has NO authorization "
+            "signal anywhere in the content: no requireAuth/requireAdmin/requireSalonOwner/"
+            "requireRole/resolveBookingActor/getActiveSalon/clientBelongsToSalon/"
+            "verifyAccessToken check, no CRON_SECRET/stripe-signature/HMAC verification, no "
+            "inline `.role !== \"admin\"` check, no ownership comparison against "
+            "`user.id`/`session.user.id`, and no query scoped to the caller's own id. Because "
+            "RLS does not apply under the "
+            "service-role key, this is a direct IDOR: any authenticated (or unauthenticated) "
+            "caller can pass ANY id and read/write someone else's row. Three separate audit "
+            "waves found this exact class (CRM routes taking an arbitrary client_id, "
+            "barber-leaderboard, walkin-analytics, cross-salon walkin/queue PATCH), roughly 20 "
+            "routes. Use a helper from lib/auth/require.ts (requireAuth / requireAdmin / "
+            "requireSalonOwner / requireRole), or constrain the query to the caller's own "
+            "salon/user before the admin client touches the row. If this route genuinely needs "
+            "no ownership check, add `ownership-ok:` anywhere in the new content."
+        )
+    allow()
+except Exception:
+    allow()
