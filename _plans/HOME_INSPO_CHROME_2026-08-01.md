@@ -95,7 +95,14 @@ https://admission-integrated-achieved-assumption.trycloudflare.com
       his word: `inspo/page.tsx:509`, `search/SearchTemplate.tsx:1397`, and the `trailing="saved"`
       heart in this same file at line 124.
 
-- [ ] **H2. HALF DONE, and the remaining half is mine, not a decision for him.** Commit
+- [x] **H2. CLOSED 2026-08-14, commit below.** The remaining half was the tap feeling dead while the
+      route loaded. The pill now takes the selection the instant the finger lands and the route
+      catches up behind it, which is what the reference does: the chrome answers first.
+      MEASURED on the live row, same tap, same machine: the pill looked selected **843ms** after the
+      tap before, and **62ms** after. The navigation itself did not get faster and was never the
+      complaint (186ms before, 199ms after). A cancelled navigation cannot strand it: the optimistic
+      pick clears on the path change.
+      ORIGINAL, kept: **H2. HALF DONE, and the remaining half is mine, not a decision for him.** Commit
       `f05e91e81` shipped the first half: 3 of 4 category routes (barbershop, nails, spa) had NO
       `loading.tsx` at all, so tapping them held the old page frozen for the whole wait. All four
       now share one loading anatomy. Reference captured first per the reference rule, written to
@@ -312,6 +319,9 @@ mockup's exact order.** Both measured live at 390x844, real page scrolled to for
 
 Pills match exactly on both: All / Coiffeur / Barber / Nails / Spa / Inspo, All selected.
 Business teaser + newsletter are correctly absent on mobile (the mockup ends at Reviews).
+**CORRECTED 2026-08-14: the teaser was NOT absent.** It was mounted unconditionally and rendered
+on every phone; this line recorded the intended state as the observed one. Hidden below md on
+2026-08-14 and measured at zero height at 402pt. The newsletter half of the claim still holds.
 
 **The one gap is DATA, not code.** `AvailableThisWeek` IS mounted (`app/[locale]/page.tsx:268`)
 and self-hides at `rows.length < 2` (`AvailableThisWeek.tsx:81`). Probed the live API:
