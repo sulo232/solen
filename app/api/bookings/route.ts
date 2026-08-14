@@ -3,7 +3,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { sendEmail, bookingConfirmation, salonNewBooking } from "@/lib/email";
-import { applyRateLimit, bookingLimiter, getClientIp } from "@/lib/ratelimit";
+import { applyRateLimit, bookingLimiter, bearerVerifyLimiter, getClientIp } from "@/lib/ratelimit";
 import { checkFeatureEnabled, checkUserBanned } from "@/lib/feature-flags";
 import { validateBody, createBookingSchema } from "@/lib/validations";
 // SP-2 owns guest-access primitives; SP-1 only CALLS them (no parallel token/code scheme).
@@ -126,6 +126,22 @@ export async function POST(request: NextRequest) {
   // session cookie or an iOS `Authorization: Bearer <token>` header, verifying the token
   // against the Supabase Auth server rather than trusting it; an invalid/expired Bearer token
   // returns its own 401 here (`instanceof NextResponse`), never falling through to guest.
+  // Verifying a Bearer token costs an outbound round trip to the Supabase Auth server, and the
+  // caller needs no credentials to make us spend it: any non-empty `Authorization: Bearer x`
+  // reaches it. The cookie path never had this exposure, because `getUser()` with no session
+  // cookie short-circuits without a network call, so the Bearer branch introduced it and it lands
+  // BEFORE `bookingLimiter` below, which is the throttle §10b.12 put on this surface precisely so
+  // it would not sit unbounded for anon. Found by the security review of this change, 2026-08-14.
+  // So bound the round trip first, by IP, and only when there is a header to verify.
+  // `bearerVerifyLimiter` is 30/min and is registered ABUSE_PRONE, so it fails CLOSED if Upstash
+  // is ever unset in production. `generalLimiter` was the first choice and would have been wrong
+  // for exactly that reason: it is not in that set, so the guard would have passed everything
+  // silently on a misconfigured production boot.
+  if (request.headers.get("Authorization")) {
+    const authFlood = await applyRateLimit(bearerVerifyLimiter, { ip: getClientIp(request) });
+    if (authFlood) return authFlood;
+  }
+
   const resolvedUser = await resolveRequestUser(request);
   if (resolvedUser instanceof NextResponse) return resolvedUser;
   const { user, supabase } = resolvedUser;
