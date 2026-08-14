@@ -436,7 +436,7 @@ export default function ServicesStaffStep({
             </h4>
           }
           meta={
-            <p className="mt-1 text-[14px] text-s-ink-3 tabular-nums">
+            <p className="mt-1 text-[14px] text-s-ink-2 tabular-nums">
               {formatDuration(service.duration_minutes)}
               {gLabel && <> {gLabel}</>}
             </p>
