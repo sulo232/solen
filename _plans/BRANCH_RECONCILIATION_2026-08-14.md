@@ -113,3 +113,52 @@ They only create policies, indexes, grants or functions, and the snapshot on dis
 columns, not those. Proving them needs a live query against `pg_policies` and `pg_indexes`. The
 Supabase tool refused with a permission error this session, so that half of the audit is not done
 and I am not claiming it is.
+
+## ROUND 2, the clashes (owner 2026-08-14: "for the clashes ask me tons of questions and if its visual sh ask me too")
+
+### What the 28 remaining branches actually contain, measured
+
+| branch | product files | of those, SCREENS | behind the scenes | clashes |
+|---|---|---|---|---|
+| crazy-bose-57e405 | 579 | 247 | 331 | 813 |
+| clever-mirzakhani-1af8ef | 328 | 174 | 152 | 434 |
+| quirky-ellis-ef5559 | 372 | 113 | 259 | 303 |
+| nice-hugle-c0b706 | 93 | 61 | 31 | 294 |
+| cranky-bose-5621bf | 164 | 6 | 157 | 255 |
+| context-compact-architecture-5d1ace | 110 | 108 | 1 | 254 |
+| backend-analysis-improvements-77f02b | 164 | 18 | 145 | 244 |
+| pre-rebase-backup | 164 | 18 | 145 | 244 (exact twin of the row above) |
+| sad-austin-a99451 | 151 | 114 | 36 | 222 |
+| happy-jackson-514459 | 137 | 117 | 19 | 180 |
+| elated-raman-2dda12 | 112 | 109 | 2 | 169 |
+| bold-hellman-b31513 | 83 | 69 | 14 | 147 |
+
+**13 branches are mostly SCREENS, 14 are mostly behind the scenes.** That split is what decides
+whether a clash is a question for his eyes or a question for judgement.
+
+**47 SCREENS have six or more competing versions.** The worst, and every one of these is a real
+screen a customer or a salon owner uses:
+
+| versions | screen |
+|---|---|
+| 9 | password reset |
+| 9 | dashboard badge manager |
+| 9 | the dashboard frame itself (`DashboardLayout`) |
+| 9 | dashboard settings |
+| 8 | `SalonCard`, the salon tile used across the product |
+| 8 | `SearchTemplate`, the search results page |
+| 8 | booking lookup |
+| 8 | resend booking link |
+| 8 | dashboard revenue |
+| 8 | checkout |
+
+64 more behind-the-scenes files also have six or more versions.
+
+### Boxes
+
+- [x] C1. Clashes measured and split into "he would see it" versus "judgement", which is what makes
+      the questions answerable rather than a wall.
+- [ ] C2. ASKED: which screen to settle first, since 47 of them have competing versions.
+- [ ] C3. ASKED: how to settle a SCREEN clash, given he wants to be asked about visual ones.
+- [ ] C4. ASKED: how to settle a behind-the-scenes clash, where there is nothing to look at.
+- [ ] C5. ASKED: the twin pair, and whether to delete the redundant one.
