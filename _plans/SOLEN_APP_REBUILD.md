@@ -181,11 +181,36 @@ to touch git. I commit everything when they land.
       live endpoints under `app/api/walkin/` and `app/api/bookings/walk-in`. Out with builder 6:
       four new screens copied from those routes, real queue values only, payment stubbed behind a
       disabled state since Stripe is out of scope.
-- [ ] **Phase 6 , the rest of the customer.** Appointments, tips, vouchers, loyalty, referrals,
-      reviews, saved, recently viewed, notifications, profile. CLOSE: every web customer route has
-      an app equivalent or a written reason it does not.
-- [ ] **Phase 7 , the pass.** Every screen against the canon, measured. CLOSE: design-verifier PASS
+- [~] **Phase 6 , the rest of the customer.** CLOSE: every web customer route has an app equivalent
+      or a written reason it does not. Gone through item by item, each one measured:
+  - Appointments, reviews, saved, notifications, profile, loyalty, referrals: **out with builders 3
+    and 5.** Referral has no web counterpart to copy, `/de/referral` 307s to
+    `/de/coming-soon?feature=referral`, so it gets the shared look and nothing invented.
+  - Tips: **out with builder 6**, as `walk-in-tip/[token]`. `grep -ril trinkgeld src` in
+    solen-mobile returns nothing today.
+  - Recently viewed: **not a gap.** The web has `/de/recently-viewed`; the app's Home already
+    covers the same slot, and says so at `src/app/(tabs)/index.tsx:16`, using the web
+    RecentlyViewed's own no-history fallback. Nothing to build.
+  - Vouchers: **must NOT be built, it is a killed feature.** The web keeps `/de/vouchers`, but
+    `_design-system/REMOVED.md:59` retired the purchase and redeem endpoints as a 410 stub with
+    zero live callers, and gift cards are in the killed list. The one voucher trace in the app is
+    a schema filter, `is_purchased_voucher` at `src/lib/queries.ts:122,171,195,463`, which is a
+    column and not a feature.
+  - **Dead code found, and it is a killed feature sitting in the tree:**
+    `src/components/salon/GiftCardBanner.tsx` is a complete gift-card banner rendered NOWHERE
+    (`grep -rn GiftCardBanner src` returns only its own definition). It should go, and that is a
+    deletion so it waits for the owner rather than happening quietly.
+- [~] **Phase 7 , the pass.** Every screen against the canon, measured. CLOSE: design-verifier PASS
       on every screen, no open punch items.
+      **The instrument is built and self-tested, ahead of the screens landing**, because six
+      builders copying six different web pages at once fail in a way one builder cannot: not by
+      missing their own target, but by disagreeing with EACH OTHER. Six versions of the same card.
+      `verified:` `scratchpad/pair-measure.py`, run on two synthetic pairs: an identical pair
+      reports a 0.0 difference and 5/5 white on both sides, and a dark-app-against-white-web pair
+      reports top brightness 78.6 vs 192.8, ink 75.9% vs 0.0%, white 0/5 vs 5/5, and names the
+      offending screen in the spread line. It pairs `<stem>-app.png` against `<stem>-web.png`, and
+      besides the per-pair diff it prints the SPREAD across all app screens, so the screen that
+      walked off on its own is named rather than eyeballed.
 
 ## HOW THE LOOP SURVIVES
 
