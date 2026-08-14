@@ -753,3 +753,40 @@ main 2026-07-17), and that one is still his to look at.
 
 **Where it was decided:** `/de/dev/mock/versions/search`, five stops, English labels, built under the
 mockup definition in `public/_mockups/_BASE.md`.
+
+---
+
+## 2026-08-14 , no grey box behind an icon, anywhere. And sparkles is dead.
+
+**Owner, verbatim, in three steps:** "i told you never use that spark sh it makes no scence harden",
+then "it still using this gray box inside icon sh i never want this anywhere redesign", then "4" on
+the icon toggle and "2" on the business-teaser toggle.
+
+**What the icon looks like now, picked from five rendered stops:** the glyph sits on the page at
+**64px, stroke 1.25, ink**, with nothing behind it. No tile, no disc, no outline ring. Applied to
+every screen that had one: coming-soon, the loyalty stamp card, both walk-in queue end states, and
+recently-viewed.
+
+**The one exception, and it is a real one:** the brand page's logo FALLBACK is a grey square showing
+an initial, not a glyph. The imagery floor requires a fallback there. It carries an inline
+`drift-ok` note so the check can tell the difference.
+
+**Sparkles and zap are gone from all thirteen real files** and replaced by glyphs that say what the
+thing is: hand for nails, clock for coming-soon, check for a confirmation, gem for a loyalty tier,
+tag for a deal, bot for the AI panels, droplets for waxing, rocket for the speed claim, timer for a
+48-hour offer, badge-percent for a referral discount.
+
+**The home page's business block lost its placeholder.** He removed the real illustration on
+2026-05-26 (V3-D166), the code kept a grey square with a picture glyph "while a replacement is in
+flight", and the replacement never came. Measured before deleting: 723pt tall on a 402pt phone, and
+325pt after, so more than half the section was empty grey. The slot is NOT refilled with another
+picture: the imagery floor and the no-decorative-image gate both say that slot is real salon content
+or nothing.
+
+**Enforced, not just recorded:** the existing design-drift check gained A25 (a grey tile behind a
+glyph, floor 64px, tappable things skipped so the back button survives) and A26 (sparkles and zap by
+name). No new gate was added. Driven end to end: adding either one is refused, the back button and a
+plain icon pass.
+
+**Where it was decided:** `/de/dev/mock/versions/coming-soon-icon` (five stops) and
+`/de/dev/mock/versions/business-teaser` (three stops).

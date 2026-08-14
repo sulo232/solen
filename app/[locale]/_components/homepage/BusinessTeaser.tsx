@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, ImageIcon } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 /**
  * BusinessTeaser — V3-D220 (2026-05-26, /business rebuild). Originally V3-D149 (2026-05-25).
@@ -32,25 +32,17 @@ export default function BusinessTeaser() {
       aria-label="Solen für Salons"
       className="mx-auto max-w-[1280px] px-4 py-12 md:px-8 md:py-20"
     >
-      <div className="grid grid-cols-1 gap-7 md:grid-cols-2 md:items-center md:gap-12 lg:gap-16">
-        {/* V3-D166 (2026-05-26): real illustration removed per user —
-            placeholder while a replacement is in flight. Source file
-            kept at `public/illustrations/business/business-hero-square.png`
-            for revert; restore by swapping this block back to the
-            previous `<Image src=...>` and re-adding `import Image from
-            "next/image"` at top. */}
-        <div
-          role="img"
-          aria-label="Bild-Platzhalter — Solon-Hero wird ersetzt"
-          className="relative aspect-square w-full overflow-hidden rounded-[16px] md:rounded-[20px] bg-s-bg-sunken grid place-items-center"
-        >
-          <ImageIcon
-            size={56}
-            strokeWidth={1.25}
-            aria-hidden
-            className="text-s-ink-2"
-          />
-        </div>
+      <div className="mx-auto max-w-[620px] text-center">
+      {/* THE PLACEHOLDER IS DELETED. Owner picked stop 2 on /dev/mock/versions/business-teaser,
+          2026-08-14, after "i never want this anywhere".
+          History, because an empty grey square does not sit on a home page by accident: he removed
+          the real illustration on 2026-05-26 (V3-D166) and the code left a placeholder "while a
+          replacement is in flight". It never came, and nothing tracked it, so the temporary state
+          became the design for two and a half months. Measured before deleting: the section stood
+          723pt tall on a 402pt phone and 325pt without the box, so more than half of it was empty.
+          NOT replaced with another picture on purpose: a decorative image baked into a component is
+          refused by the imagery floor and by the no-decorative-image gate, which say this slot is
+          real salon content or nothing. Old files remain at public/illustrations/business/. */}
 
         {/* Text block — headline + sub + CTA stacked. On desktop, sits in the
             right grid cell, vertically centered with the image. */}
