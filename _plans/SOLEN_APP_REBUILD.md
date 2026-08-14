@@ -136,7 +136,10 @@ is unproven, and each phase writes its state here so the loop survives a session
 - [ ] **Phase 4 , the spine.** Home, search, salon page, booking, confirmation. The path that earns
       money. CLOSE: an appointment booked end to end, screenshotted through Expo web (the simulator
       does not run here, see phase 0).
-  - [x] **Home, rebuilt fresh 2026-08-14, commit `74c4497`.** `verified:` section order taken from
+  - [x] **Home, rebuilt fresh. `verified:` commit `74c4497` in solen-mobile, screen at
+        `src/app/(tabs)/index.tsx`, and I re-measured both screenshots MYSELF rather than taking the
+        agent's word: app 390x844 top-of-screen brightness **242.7** against the web's **245.9**, and
+        pure white at **5 of 5** sample points on both. Section order taken from
         the live web page read in full, not remembered. Measured side by side at phone width: six
         tiles both, white at all five sample points both, top-of-screen brightness 242.6 against the
         web's 245.9, first heading 23px against 22.5. Salon-of-the-month and the curated for-you
