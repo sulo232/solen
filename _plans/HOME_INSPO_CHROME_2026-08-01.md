@@ -95,7 +95,7 @@ https://admission-integrated-achieved-assumption.trycloudflare.com
       his word: `inspo/page.tsx:509`, `search/SearchTemplate.tsx:1397`, and the `trailing="saved"`
       heart in this same file at line 124.
 
-- [x] **H2. CLOSED 2026-08-14, commit below.** The remaining half was the tap feeling dead while the
+- [x] **H2. CLOSED 2026-08-14, commit f9f479480, `app/[locale]/_components/layout/CategoryPillRow.tsx:136-160`.** The remaining half was the tap feeling dead while the
       route loaded. The pill now takes the selection the instant the finger lands and the route
       catches up behind it, which is what the reference does: the chrome answers first.
       MEASURED on the live row, same tap, same machine: the pill looked selected **843ms** after the
@@ -361,7 +361,14 @@ Two floors this repo already documents are visibly live on that page right now:
   photo with rating + PLZ + price on `/de`. Two anatomies for one entity, which is the exact case
   that floor was written from.
 
-- [ ] V2. **DECIDED AND IN FLIGHT. Owner 2026-08-02: "konto hub better".** Building
+- [x] V2. **ALREADY DONE, and this box was stale, not open. Checked 2026-08-14 by opening the
+      live page, not by reading the file:** `/de/profile` renders the grouped account hub
+      (Konto, Buchungen, Wallet, Persoenliche Angaben, Einstellungen), with NO search field and
+      NO store cards on it. Both floors this box existed to discharge are satisfied on screen:
+      zero search inputs, zero three-photo collages, verified live. The rebuild landed
+      2026-08-02 and is documented at the top of `app/[locale]/profile/page.tsx:5-27`; nobody
+      came back to tick the box, which is exactly the "you do not renew the files" complaint.
+      ORIGINAL: V2. **DECIDED AND IN FLIGHT. Owner 2026-08-02: "konto hub better".** Building
       `app/[locale]/profile/` to `public/_mockups/restraint/account-hub.html`. The build also
       discharges two floors that are live violations on that page today: FLOORS LAW 10 (the search
       bar on your own saved list, which he asked about by name) and FLOORS LAW 8/9 (a store renders
