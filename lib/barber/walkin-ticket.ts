@@ -1,6 +1,7 @@
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { estimateWaitMinutes } from "@/lib/barber/wait-time-calculator";
 import { nanoid } from "nanoid";
+import { hashTrackingToken, mintTrackingToken } from "@/lib/walkin/authz";
 import type Stripe from "stripe";
 
 type Admin = ReturnType<typeof createAdminSupabaseClient>;
@@ -76,14 +77,21 @@ interface ExistingRow {
   id: string;
   ticket_code: string | null;
   position: number;
-  tracking_token: string | null;
 }
 
-function toResult(row: ExistingRow, paymentMethod: string | null, counts: { queue_ahead: number; wait_minutes: number }): WalkinTicketResult {
+// The raw token is no longer readable from the row: only its hash is stored (2026-08-14, landing
+// the code half of the 17 July re-audit). So it is passed in explicitly, from the mint that just
+// happened, and a path that cannot produce one hands back null rather than a broken link.
+function toResult(
+  row: ExistingRow,
+  paymentMethod: string | null,
+  counts: { queue_ahead: number; wait_minutes: number },
+  trackingToken: string | null,
+): WalkinTicketResult {
   return {
     ticket_number: row.ticket_code,
     queue_id: row.id,
-    tracking_token: row.tracking_token,
+    tracking_token: trackingToken, // the in-memory response, not a column
     position: row.position,
     payment_method: paymentMethod,
     ...counts,
@@ -141,8 +149,9 @@ async function insertWalkinEntry(
     onTicketCodeCollision?: () => Promise<ExistingRow | null>;
     errorLabel: string;
   }
-): Promise<{ row: ExistingRow; recovered: boolean }> {
+): Promise<{ row: ExistingRow; recovered: boolean; rawToken: string | null }> {
   const { salonId, ticketCode, counts, fields, onTicketCodeCollision, errorLabel } = opts;
+  const rawToken = nanoid(12);
   let lastErr: unknown = null;
   for (let attempt = 0; attempt < 6; attempt++) {
     // Recompute position EACH attempt: the (salon_id, position) partial UNIQUE index means a
@@ -161,22 +170,26 @@ async function insertWalkinEntry(
         status: "waiting",
         position,
         estimated_wait_minutes: counts.wait_minutes,
-        tracking_token: nanoid(12),
+        // Only the hash at rest; the raw token is returned to the caller below and lives in the
+        // customer's ticket URL. Column live since 17 July, code landed 2026-08-14.
+        tracking_token_hash: hashTrackingToken(rawToken),
         join_method: fields.join_method,
         ticket_code: ticketCode,
         payment_intent_id: fields.payment_intent_id,
       })
-      .select("id, ticket_code, position, tracking_token")
+      .select("id, ticket_code, position")
       .single();
 
-    if (!error && data) return { row: data, recovered: false };
+    if (!error && data) return { row: data, recovered: false, rawToken };
 
     lastErr = error;
     if (error?.code === "23505") {
       // Resolve which unique index tripped (the paid path guards payment_intent_id).
       if (onTicketCodeCollision) {
         const winner = await onTicketCodeCollision();
-        if (winner) return { row: winner, recovered: true };
+        // A concurrent process owns this row and its token, which nobody can read back,
+        // so the caller mints a fresh one for the customer it is answering.
+        if (winner) return { row: winner, recovered: true, rawToken: null };
       }
       continue; // otherwise a position collision → recompute position + retry (ticketCode fixed)
     }
@@ -212,12 +225,15 @@ export async function createWalkinTicket(
   // Fast path: this PI already issued a ticket.
   const existing = await admin
     .from("barber_walkin_queue")
-    .select("id, ticket_code, position, tracking_token")
+    .select("id, ticket_code, position")
     .eq("payment_intent_id", pi.id)
     .maybeSingle();
   if (existing.data) {
     const counts = await liveCounts(admin, salonId, existing.data.position);
-    return toResult(existing.data, paymentMethod, counts);
+    // This payment already has a ticket and its raw token is not readable (hash only at rest), so
+    // issue a fresh one for whoever is asking now. They proved ownership by holding the PaymentIntent.
+    const fresh = await mintTrackingToken(admin, existing.data.id);
+    return toResult(existing.data, paymentMethod, counts, fresh);
   }
 
   const position = await nextQueuePosition(admin, salonId);
@@ -227,7 +243,7 @@ export async function createWalkinTicket(
   // Insert with retry. Two unique indexes guard concurrency:
   //   (salon_id, ticket_code) → bump the code and retry
   //   (payment_intent_id)     → another process already created it → return that ticket
-  const { row, recovered } = await insertWalkinEntry(admin, {
+  const { row, recovered, rawToken } = await insertWalkinEntry(admin, {
     salonId,
     ticketCode,
     counts,
@@ -243,7 +259,7 @@ export async function createWalkinTicket(
     onTicketCodeCollision: async () => {
       const winner = await admin
         .from("barber_walkin_queue")
-        .select("id, ticket_code, position, tracking_token")
+        .select("id, ticket_code, position")
         .eq("payment_intent_id", pi.id)
         .maybeSingle();
       return winner.data ?? null;
@@ -255,7 +271,8 @@ export async function createWalkinTicket(
   // booking — the winning process already did). Fresh insert → link the booking as before.
   if (recovered) {
     const c = await liveCounts(admin, salonId, row.position);
-    return toResult(row, paymentMethod, c);
+    const fresh = rawToken ?? (await mintTrackingToken(admin, row.id));
+    return toResult(row, paymentMethod, c, fresh);
   }
   if (linkBookingId) {
     const { error: linkErr } = await admin
@@ -264,7 +281,7 @@ export async function createWalkinTicket(
       .eq("id", linkBookingId);
     if (linkErr) console.error("[createWalkinTicket] booking link failed:", linkErr);
   }
-  return toResult(row, paymentMethod, counts);
+  return toResult(row, paymentMethod, counts, rawToken);
 }
 
 /**
@@ -292,7 +309,7 @@ export async function createCashWalkinTicket(
   const counts = await liveCounts(admin, salonId, position);
 
   const trimmedName = customerName?.trim() || null;
-  const { row } = await insertWalkinEntry(admin, {
+  const { row, rawToken } = await insertWalkinEntry(admin, {
     salonId,
     ticketCode,
     counts,
@@ -309,5 +326,5 @@ export async function createCashWalkinTicket(
     errorLabel: "createCashWalkinTicket",
   });
 
-  return toResult(row, null, counts);
+  return toResult(row, null, counts, rawToken);
 }

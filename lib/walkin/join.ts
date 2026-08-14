@@ -13,6 +13,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { nanoid } from "nanoid";
 import { estimateWaitMinutes } from "@/lib/barber/wait-time-calculator";
 import { nextWalkinTicketCode } from "@/lib/barber/walkin-ticket";
+import { hashTrackingToken } from "@/lib/walkin/authz";
 
 export interface JoinQueueParams {
   salonId: string;
@@ -79,7 +80,11 @@ export async function joinWalkinQueue(
         status: "waiting",
         position,
         estimated_wait_minutes: estimatedWait,
-        tracking_token: trackingToken,
+        // Only the HASH is stored. The raw token is returned to the caller and lives in the
+        // customer's ticket URL, never at rest, so a dump of this table is not a set of working
+        // ticket links. Landed 2026-08-14 with the rest of the July re-audit's code half; the
+        // column it writes has been live since 17 July.
+        tracking_token_hash: hashTrackingToken(trackingToken),
         join_method: params.joinMethod,
         ticket_code: ticketCode,
       })

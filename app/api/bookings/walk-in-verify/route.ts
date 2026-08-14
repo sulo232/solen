@@ -4,7 +4,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 import { getServerEnv } from "@/lib/env";
+import { mintTrackingToken } from "@/lib/walkin/authz";
 import crypto from "crypto";
+
+// Reopen debounce. A reopened booking link mints a fresh ticket token (the stored one is a hash),
+// and without this a double tap would rotate twice and invalidate the tab that is already loading.
+// Process-local on purpose: a serverless instance handles the burst that causes this, and the worst
+// case on a cold instance is one extra rotation, which is safe.
+const REOPEN_DEBOUNCE_MS = 60_000;
+const reopenCache = new Map<string, { token: string; until: number }>();
 
 function verifyHmacToken(token: string): { bookingId: string; valid: boolean } {
   const secret = getServerEnv().BOOKING_HMAC_SECRET;
@@ -77,13 +85,30 @@ export async function GET(req: NextRequest) {
   if (queueId) {
     const { data: q } = await admin
       .from("barber_walkin_queue")
-      .select("ticket_code, position, estimated_wait_minutes, tracking_token")
+      .select("ticket_code, position, estimated_wait_minutes")
       .eq("id", queueId)
       .single();
     if (q) {
       ticket_number = q.ticket_code;
       wait_minutes = q.estimated_wait_minutes;
-      tracking_token = q.tracking_token;
+      // Mint fresh on reopen. The stored token is a hash now, so there is nothing to hand back, and
+      // a new raw token is issued for this visit instead. Only a caller who already passed the HMAC
+      // check above reaches here, so this cannot be used to take over someone else's ticket, and an
+      // older token stops working the moment a new one is issued.
+      //
+      // The reopen debounce below matters because two rapid reopens (a double tap, a second tab)
+      // would otherwise rotate twice and kill the token the first tab is still using.
+      const cached = reopenCache.get(queueId);
+      if (cached && cached.until > Date.now()) {
+        tracking_token = cached.token;
+      } else {
+        const fresh = await mintTrackingToken(admin, queueId);
+        if (!fresh) {
+          return NextResponse.json({ error: "Could not open ticket" }, { status: 500 });
+        }
+        tracking_token = fresh;
+        reopenCache.set(queueId, { token: fresh, until: Date.now() + REOPEN_DEBOUNCE_MS });
+      }
       const { count } = await admin
         .from("barber_walkin_queue")
         .select("id", { count: "exact", head: true })

@@ -640,7 +640,8 @@ export type Database = {
           started_at: string | null
           status: string
           ticket_code: string | null
-          tracking_token: string
+          tracking_token: string | null
+          tracking_token_hash: string | null
         }
         Insert: {
           assigned_barber_id?: string | null
@@ -662,7 +663,8 @@ export type Database = {
           started_at?: string | null
           status?: string
           ticket_code?: string | null
-          tracking_token: string
+          tracking_token?: string | null
+          tracking_token_hash?: string | null
         }
         Update: {
           assigned_barber_id?: string | null
@@ -684,7 +686,8 @@ export type Database = {
           started_at?: string | null
           status?: string
           ticket_code?: string | null
-          tracking_token?: string
+          tracking_token?: string | null
+          tracking_token_hash?: string | null
         }
         Relationships: [
           {

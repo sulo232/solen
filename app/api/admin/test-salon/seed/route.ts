@@ -70,7 +70,9 @@ export async function POST(request: NextRequest) {
         status: i === 0 ? "in_chair" : "waiting",
         position: i,
         estimated_wait_minutes: (i + 1) * 20,
-        tracking_token: `test-${Date.now()}-${i}-${Math.random().toString(36).slice(2, 6)}`,
+        // Seed rows are resolved by the same hashed lookup as real ones, so the hash is what
+        // gets stored. The raw value is thrown away here: nobody opens a seeded ticket link.
+        tracking_token_hash: hashTrackingToken(`test-${Date.now()}-${i}-${Math.random().toString(36).slice(2, 6)}`),
         join_method: "walk_in",
         joined_at: new Date(Date.now() - i * 5 * 60_000).toISOString(),
       }));
