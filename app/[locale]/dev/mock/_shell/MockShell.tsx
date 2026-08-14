@@ -26,7 +26,10 @@ import * as React from "react";
 // the frame's own document, and the shell hands it the CSS and the on/off state through context.
 const MockCtx = React.createContext<{ proposed: string; active: boolean }>({ proposed: "", active: false });
 
-const HIDE_APP_CHROME = `
+// Exported 2026-08-14: the versions mockup renders shots rather than the live route, and without
+// this the app's own header and cookie banner sat on top of its toggle, swallowed every tap, and the
+// picture never changed. One copy of the rule, used by both shells.
+export const HIDE_APP_CHROME = `
   body > header, header[class*="sticky"], footer,
   [class*="fixed"][class*="bottom-"]:not([data-mock-toggle]) { display: none !important; }
   main > section:has(input[type="email"]) { display: none !important; }

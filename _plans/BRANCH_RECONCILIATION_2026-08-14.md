@@ -128,6 +128,25 @@ and I am not claiming it is.
       hairline swapped from `border-s-border` to `border-s-ink/[0.06]`).
       The rest differ on three or more properties at once, so each is a real look, not a tweak.
       Ordering for the show-half: the three one-property ones first, since each is one question.
+### The machine for showing a conflict, built 2026-08-14
+
+He asked for mockups to decide conflicts through, not for links to the live page: "i need mockups ro
+resolve and decide through the conflicts". Live-CSS injection only works when versions differ by one
+property, which was true of the card shape and is false for the rest. So each version is now written
+into the working tree, rendered by the real dev server at 402pt, photographed, and reverted, and the
+shots go behind one toggle. First one live: `/de/dev/mock/versions/search`, five stops.
+Also settled by his other instruction in the same message ("mockups only english"): every label I
+write is English, the German inside a shot is the product itself. Gate:
+`~/.claude/hooks/mockup-labels-english-gate.py`, 12/12 self-test, wired, gate-eval PASS.
+
+TWO CONFLICTS DECIDED WITHOUT HIM WHILE BUILDING IT, both by his own earlier locks:
+- The home inspiration row (`Entdecken`) is under a PERMANENT no-touch lock in the graveyard
+  ("ANY change to /entdecken page or home discovery section"), so its 11 branch versions cannot be
+  adopted whatever they look like. Main stays. Caught by `pre-edit-removed-check.sh` when the
+  mockup for it was being built, which is the gate doing exactly its job.
+- Three of those versions also rewrite the heading from "Finden Sie Ihre Inspiration." to the
+  informal "Finde deine Inspiration.", which collides with the formal-Sie register in COPY_LAW.
+
 - [ ] C6b. SHOW him each, paced by him, one at a time. Not startable in bulk by design: he said
       "Show me each version, I pick", so the queue moves at his pace, not mine.
       **1 of 30 DECIDED. Salon card photo shape: he picked A, 2026-08-14, so 5/4 stays and the
@@ -148,7 +167,7 @@ callsite sweep did not, and nothing checks that a class name resolves to a real 
 Fixed in commit a82e82687. Screens affected: home eyebrows, business teaser, salon page service
 rows + disclosure row, partner, reviews, one dashboard card.
 
-- [x] C6c. The three one-property screens are decided WITHOUT costing him a turn, because none of
+- [x] C6c. Commit 821f99e2a, and the dead-class half proved in a82e82687 , the three one-property screens are decided WITHOUT costing him a turn, because none of
       them is a taste question once measured:
       booking lookup, the only difference is a tray corner at 14px against the locked
       `rounded-card` 16px, a 2px change nobody can see, and main's `rounded-[10/12/14px]` are
