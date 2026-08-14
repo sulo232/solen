@@ -1,8 +1,8 @@
-# Solen CANON (resolved 2026-06-01)
+# CANON , FOLDED into LOCKFILE.md (owner-approved 2026-07-10)
 
-**What this is.** The single-value source of truth, resolved from the contradiction audit (`_tasks/CONTRADICTION_AUDIT.md`) by user adjudication. One value per token / type / rule, no alternatives. **This is the design-context to paste into the 21st.dev Magic builder when regenerating components, and the target for the fix-sweep.** Where a doc disagrees with this, this wins (precedence: CANON + actual code > LOCKFILE > SOURCE-as-prose).
+This file was the 2026-06-01 single-value truth resolved from the contradiction audit. Every live value now lives in **`_design-system/LOCKFILE.md`**, which had grown FRESHER than this file on every conflicting row. This tombstone exists so historical citations ("CANON §N") still resolve.
 
----
+**Precedence note:** CANON's old header claimed `CANON > LOCKFILE > SOURCE`. That claim is retired. Current law: **code reality + LOCKFILE > SOURCE-as-prose**, per the project CLAUDE.md precedence chain.
 
 ## 1. Color tokens
 
