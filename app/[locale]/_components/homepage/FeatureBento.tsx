@@ -43,7 +43,7 @@ export default function FeatureBento() {
       className="relative z-[1] mb-4 md:hidden"
     >
       <div className="mx-auto max-w-[1280px] px-6 py-3">
-        <h2 className="mb-3 font-body text-[clamp(18px,2vw,20px)] font-bold leading-[1.2] tracking-[-0.025em] text-s-ink">
+        <h2 className="mb-3 font-body text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.025em] text-s-ink">
           Was du kannst
         </h2>
 
@@ -78,7 +78,7 @@ export default function FeatureBento() {
                   />
                 </div>
                 {/* Label band at bottom — matches Für dich pattern */}
-                <span className="font-body text-[13px] font-bold leading-tight text-s-ink">
+                <span className="font-body text-[13px] font-semibold leading-tight text-s-ink">
                   {label}
                 </span>
               </div>

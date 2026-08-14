@@ -40,7 +40,7 @@ import { BentoCard } from "../business/BentoCard";
  *     §2.1 "selected tab" accent use case).
  *   - VisualBooking glow halo radial-gradient bound to s-accent var
  *     (single-source revert via the token, not 2 hardcoded hex).
- *   - Section header h2: font-bold + tracking-[-0.03em] kept, size clamped
+ *   - Section header h2: font-semibold + tracking-[-0.03em] kept, size clamped
  *     to Page H2 spec.
  *
  * Each card has THREE layers of interaction (unchanged):
@@ -80,7 +80,7 @@ function VisualBooking() {
             <Check size={16} strokeWidth={2.5} aria-hidden />
           </div>
           <div className="flex-1">
-            <div className="text-[12px] font-bold leading-tight text-s-ink">
+            <div className="text-[12px] font-semibold leading-tight text-s-ink">
               Lara K.
             </div>
             <div className="text-[12px] text-s-ink-2">
@@ -88,7 +88,7 @@ function VisualBooking() {
             </div>
           </div>
         </div>
-        <div className="rounded-full bg-s-ink py-1.5 text-center font-body text-[12px] font-bold text-white">
+        <div className="rounded-full bg-s-ink py-1.5 text-center font-body text-[12px] font-semibold text-white">
           Bestätigt 23 Sek.
         </div>
         {/* Animated ping dot. mockup-ok: WCAG 2.2.2, bounded to 3 cycles (3s), see tailwind.config.js. */}
@@ -219,7 +219,7 @@ function VisualCalendar() {
               ease: [0.22, 1, 0.36, 1],
             }}
             className={cn(
-              "flex h-8 items-center justify-center rounded-md text-[12px] font-bold",
+              "flex h-8 items-center justify-center rounded-md text-[12px] font-semibold",
               slot.name
                 ? "text-s-ink"
                 : "border border-dashed border-s-border",
@@ -383,7 +383,7 @@ function VisualAnalyticsTabbed() {
                 }}
                 aria-pressed={isActive}
                 className={cn(
-                  "grid h-7 w-7 place-items-center rounded-full border font-body text-[12px] font-bold uppercase tracking-wider transition-colors duration-200 ease-glide",
+                  "grid h-7 w-7 place-items-center rounded-full border font-body text-[12px] font-semibold uppercase tracking-wider transition-colors duration-200 ease-glide",
                   // V3-D219 (2026-05-26): active tab swapped to s-accent (royal blue) —
                   // §2.1 "selected tab state" is exactly the accent use case from V3-D192.
                   isActive
@@ -644,7 +644,7 @@ export function JoinUsCard() {
                     <button
                       type="submit"
                       disabled={status === "submitting"}
-                      className="inline-flex items-center gap-2 self-start rounded-full bg-white px-7 py-3.5 font-body text-[15px] font-bold text-s-ink shadow-elevation-2 transition-all duration-200 ease-glide hover:scale-[1.02] active:scale-[0.97] disabled:opacity-60 disabled:hover:scale-100 md:self-auto"
+                      className="inline-flex items-center gap-2 self-start rounded-full bg-white px-7 py-3.5 font-body text-[15px] font-semibold text-s-ink shadow-elevation-2 transition-all duration-200 ease-glide hover:scale-[1.02] active:scale-[0.97] disabled:opacity-60 disabled:hover:scale-100 md:self-auto"
                     >
                       {status === "submitting" ? "Wird gesendet..." : "Jetzt anmelden"}
                       <ArrowRight size={16} aria-hidden />

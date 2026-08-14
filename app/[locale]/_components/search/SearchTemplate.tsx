@@ -91,6 +91,7 @@ import { getCityName, getCityCoords, slugFromCity, DEFAULT_CITY_SLUG, ALL_CITIES
 import { formatDateLabel, nextAvailableSlotLabel } from "@/lib/format";
 import { useActiveCities } from "@/hooks/useActiveCities";
 import { useScrollRestoration } from "@/lib/hooks/useScrollRestoration";
+import CategoryPillRow from "@/app/[locale]/_components/layout/CategoryPillRow";
 
 type LucideIcon = React.ComponentType<{ size?: number; strokeWidth?: number }>;
 
@@ -1313,24 +1314,32 @@ export default function SearchTemplate({
             aria-label={tChrome("editSearch")}
             aria-haspopup="dialog"
             className={cn(
-              "flex w-full cursor-pointer items-center gap-3 rounded-pill border border-s-border bg-white px-3.5 text-left",
+              // mockup-ok: VARIANT C, owner picked it 2026-08-10 off /dev/search-bar with one
+              // letter, "c". The home pill (HomeSearchPill.tsx) carries the full note; this is its
+              // sibling and moves with it, because the two are the SAME control on two surfaces and
+              // changing only the one in front of me is the half-a-sweep failure this project keeps
+              // naming. Airbnb measured live at 390: 54 tall, radius 40, centred, 19px padding,
+              // 12px icon. C keeps our hairline and lift instead of their black ring.
+              "flex h-[54px] w-full cursor-pointer items-center justify-center gap-2 rounded-[40px] border border-s-border bg-white px-[19px] text-center",
               // I2 mockup-ok (public/_mockups/home-v3/search-a.html .sa-pill --lift): the
               // V3-D421L "flat at rest, lift only when pinned" scroll-driven shadow is
               // replaced by the approved chrome's constant elevation, so the pill always
               // carries the same outline + shadow pair (the search bar is "the way in").
-              "shadow-[0_2px_8px_0_rgba(0,0,0,0.07)]", // mockup-ok
+              "shadow-elevation-3", // mockup-ok: variant C lift, owner pick 2026-08-10
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
-              "py-2.5", // V3-D421d: keep the pinned bar the SAME size as normal (no shrink, owner)
+              // V3-D421d still holds, "keep the pinned bar the SAME size as normal (no shrink,
+              // owner)": the height is now the fixed h-[54px] above, which is the same at rest and
+              // pinned, so the no-shrink rule is preserved rather than dropped.
             )}
             // I2 mockup-ok: dynamic boxShadow style removed, the shadow-[...] class above
             // now carries the constant approved value. `pillBoxShadow`/`pillShadowOpacity`
             // stay declared (untouched state per the I2 brief) but are no longer consumed here.
           >
-            <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" />
+            <Search size={12} strokeWidth={2.4} className="shrink-0 text-s-ink" /> {/* mockup-ok: variant C icon, owner pick 2026-08-10 */}
             <span className="min-w-0 flex-1">
               {/* I2 mockup-ok (search-a.html .sa-l1): 14px -> 16px, the approved chrome's
                   first-line size. */}
-              <span className="block truncate font-body text-[16px] font-medium text-s-ink">
+              <span className="block truncate font-body text-[14px] font-medium text-s-ink"> {/* mockup-ok: variant C label, owner pick 2026-08-10 */}
                 {/* A2/Model B (2026-07-04): category + query are independent, so line 1 shows
                     BOTH when both are set, not one clobbering the other. */}
                 {[activeCategory ? CATEGORY_PILLS.find((c) => c.slug === activeCategory)?.label : null, q]
@@ -1349,45 +1358,22 @@ export default function SearchTemplate({
               {/* I2 mockup-ok (search-a.html .sa-l2, "THE SECOND LINE MUST GO"): the
                   date/city subtitle is removed. One line only, per the approved chrome. */}
             </span>
-            {/* Owner 2026-08-01 ("we put the hamburger where the map view is"): MOBILE ONLY,
-                this trailing slot is the hamburger now, matching search-a.html's `#sa-menu`.
-                The map toggle is NOT lost, the bottom-centre "Karte" FAB (below,
-                MAP_FAB_LABEL) already does that job on every breakpoint and remains a map
-                affordance; this button fires the shared `solen:open-menu` window event
-                Header.tsx listens for (opens the same MobileMenu the removed top-row
-                hamburger used to open, city selector included). Split into two md:-gated
-                siblings rather than one shared element: this trailing slot was NOT
-                previously breakpoint-split, so swapping it in place would have silently
-                changed desktop too (MobileMenu is itself `md:hidden`, so a single-element
-                swap would make this button do nothing on desktop). Desktop keeps its
-                original map icon + handleMapToggle sibling below, unchanged. */}
-            <span
-              role="button"
-              tabIndex={0}
-              aria-label={tSD("openMenu")}
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                window.dispatchEvent(new CustomEvent("solen:open-menu"));
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  window.dispatchEvent(new CustomEvent("solen:open-menu"));
-                }
-              }}
-              className={cn(
-                // FIX D (2026-08-01, owner "the circle thingy is in other categories", repeating
-                // the same call already applied to HomeSearchPill.tsx's trailing hamburger): bare,
-                // no circle, no border. Hover moves from a bg fill to a text-tone change.
-                "md:hidden grid shrink-0 place-items-center", // mockup-ok
-                "text-s-ink transition-all duration-300 ease-glide hover:text-s-ink-2", // mockup-ok
-                "h-11 w-11", // mockup-ok: S3 fix, 36px -> 44px floor (approved fixes-refined); was V3-D421d "map icon stays full size when pinned"
-              )}
-            >
-              <Menu size={16} strokeWidth={2} aria-hidden />
-            </span>
+            {/* mockup-ok , THE TRAILING HAMBURGER IS GONE FROM HERE TOO. Owner 2026-08-10:
+                "I don't think this hamburger menu should be here because it's really
+                inconsistent." He then picked option C off /dev/menu-placement.
+
+                This was the SIBLING of the one in HomeSearchPill.tsx, put here on 2026-08-01
+                ("we put the hamburger where the map view is"). Removing only the home one and
+                leaving this would have left the same control in the search bar on all four
+                category routes, which is the half-a-sweep failure this project keeps naming: the
+                instance in front of you gets fixed and its siblings do not.
+
+                Its job moved to BottomNav.tsx, whose fourth item fires the identical
+                `solen:open-menu` event, so MobileMenu keeps its one trigger contract. The desktop
+                map-toggle sibling below is untouched.
+
+                The `md:hidden` split this block introduced still earns its keep: without it the
+                desktop map icon would have been swapped too. */}
             {/* Desktop sibling, untouched behavior: original map icon + handleMapToggle, just
                 now gated `hidden md:grid` so it only takes over at md+ where the mobile
                 hamburger sibling above is hidden. */}
@@ -1417,7 +1403,15 @@ export default function SearchTemplate({
             </span>
           </motion.div>
         </div>
-      </motion.div>
+      </motion.div> {/* mockup-ok: 2026-08-10 owner-directed placement fix, no motion/design change here */}
+
+      {/* CategoryPillRow (2026-08-10, owner ask): renders directly after the sticky search band
+          above, in normal document flow (a sticky element keeps its own flow-space, so this
+          sibling sits right beneath it regardless of scroll position, never sticky itself).
+          Self-gates on the route (see the component's own showCategoryChrome derivation), so
+          mounting it unconditionally here is safe on 2-segment city-category routes (e.g.
+          /basel/coiffeur, which also renders this template) where the row never showed. */}
+      <CategoryPillRow />
 
       {/* Top-bewertet hero carousel REMOVED (owner 2026-07-02: "remove the top bewertet").
           See _design-system/REMOVED.md. The results grid leads directly now. */}

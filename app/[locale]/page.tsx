@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { buildAlternates } from "@/lib/seo";
 import Hero from "./_components/homepage/Hero";
 import HomeSearchPill from "./_components/homepage/HomeSearchPill";
+import CategoryPillRow from "./_components/layout/CategoryPillRow";
 import { FeedZone } from "./_components/homepage/SectionHeader";
 // V3-D82 (2026-05-19): hero atmosphere now lives inline inside Hero.tsx
 // as a CSS double-radial-gradient (locked from V1 variant of the
@@ -249,6 +250,11 @@ export default async function Page({
       <div className="md:hidden sticky top-0 z-[55] bg-white"> {/* mockup-ok: owner-measured fix, literal instruction, tokens only */}
         <HomeSearchPill locale={locale} />
       </div>
+      {/* CategoryPillRow (2026-08-10, owner ask): renders directly after the search pill, in
+          normal document flow (NOT inside the sticky wrapper above, so it never pins). Sticky
+          elements keep their own flow-space, so this sibling sits right beneath it regardless of
+          scroll position, exactly the non-sticky "below the search bar" placement asked for. */}
+      <CategoryPillRow />
       <div className="relative overflow-hidden bg-white">
       {/* V3-D137 sunset halo SCRAPPED 2026-05-25, user ditched, reverted
           to pre-halo state. Mockup at public/solen-header-light-variants.html

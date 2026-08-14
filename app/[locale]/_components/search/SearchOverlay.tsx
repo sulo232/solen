@@ -6,6 +6,7 @@
 import * as React from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 import {
   motion,
@@ -24,25 +25,27 @@ import {
   Loader2,
   X,
   Search,
+  Store,
   MapPin,
   Clock,
   User,
-  Store,
   Scissors,
   Globe,
+  Star,
   type LucideIcon,
 } from "lucide-react";
-import { SEARCH_CITIES, CITY_ICONS, ALL_CITIES_PARAM } from "@/lib/cities";
+import { CITY_ICONS, ALL_CITIES_PARAM, getCityName } from "@/lib/cities";
+import { useActiveCities } from "@/hooks/useActiveCities";
 import { formatPrice } from "@/lib/format";
-import { splitHighlight } from "@/lib/utils";
+import { matchesSearch, splitHighlight } from "@/lib/utils";
 import { CATEGORIES } from "@/app/[locale]/_components/homepage/searchCategories";
+import { FEATURED_SALONS } from "@/app/[locale]/_components/homepage/searchFeatured";
 import { SALON_CATEGORY_SLUGS } from "@/lib/validations";
 // A2/Model B (2026-07-04): the SAME category triples SearchTemplate's own category-tab row
 // uses (reuse, not a second list). SearchTemplate only ever reaches this file via a lazy
 // `next/dynamic(() => import("./SearchOverlay"))` call inside a callback, so this static
 // import back does not create an eager circular module-init cycle.
 import { CATEGORY_PILLS } from "./SearchTemplate";
-import { FEATURED_SALONS } from "@/app/[locale]/_components/homepage/searchFeatured";
 import { useSearchSuggest } from "../homepage/useSearchSuggest";
 import { useGeocodeSuggest } from "../homepage/useGeocodeSuggest";
 import { useStyleLooks } from "../homepage/useStyleLooks";
@@ -56,9 +59,8 @@ import {
 } from "../homepage/useRecentSearches";
 import { useRecentlyViewed } from "../homepage/useRecentlyViewed";
 import { Skeleton } from "@/app/[locale]/_components/primitives";
-// S5: the locked shared empty state (design contract "states" row, COMPONENT_REGISTRY),
-// the same one 19 other surfaces import. Not a hand-rolled one-off.
-import EmptyState from "@/components-legacy/ui/EmptyState";
+// S8 (2026-08-11): EmptyState import removed, the no-match state below no longer uses it
+// (variant B, owner pick off /dev/search-states).
 import { localizedField } from "@/lib/i18n/localized-field";
 
 // ── Constants ────────────────────────────────────────────────────────────────
@@ -335,6 +337,7 @@ export function SearchOverlay({
   const [inputFocused, setInputFocused] = React.useState(false);
 
   const { recent, push } = useRecentSearches();
+  const { cities: activeCities, loading: citiesLoading } = useActiveCities();  // the live set, shared with every other city picker
   const [hiddenRecents, setHiddenRecents] = React.useState<Set<number>>(new Set());
   const { items: _recentlyViewed } = useRecentlyViewed(4); // preserved hook call
 
@@ -389,6 +392,9 @@ export function SearchOverlay({
   // (SuggestRow only renders `sub` when it is set), so a slow/failed fetch
   // just shows the name until it resolves rather than a wrong address.
   const [featuredAddress, setFeaturedAddress] = React.useState<Record<string, string>>({});
+  // C1: the SAME response already carries each salon's cover and rating. It used to be dropped on
+  // the floor and the row drew a grey glyph instead. No new request.
+  const [featuredMeta, setFeaturedMeta] = React.useState<Record<string, { photo: string | null; rating: number | null }>>({});
   // S6 (2026-08-03): the ids this SAME fetch came back with. When a category pill is
   // active the request also carries `&category=`, which /api/salons already applies as
   // `.contains("categories", [category])` on the same query builder as the `ids` filter
@@ -407,11 +413,16 @@ export function SearchOverlay({
     if (category) sp.set("category", category);
     fetch(`/api/salons?${sp.toString()}`)
       .then((res) => (res.ok ? res.json() : Promise.reject(new Error(`status ${res.status}`))))
-      .then((data: { items?: { id: string; address?: string | null }[] }) => {
+      .then((data: { items?: { id: string; address?: string | null; cover_photo_url?: string | null; average_rating?: number | null }[] }) => {
         if (cancelled) return;
         const next: Record<string, string> = {};
-        for (const item of data.items ?? []) if (item.address) next[item.id] = item.address;
+        const meta: Record<string, { photo: string | null; rating: number | null }> = {};
+        for (const item of data.items ?? []) {
+          if (item.address) next[item.id] = item.address;
+          meta[item.id] = { photo: item.cover_photo_url ?? null, rating: item.average_rating ?? null };
+        }
         setFeaturedAddress(next);
+        setFeaturedMeta(meta);
         setFeaturedMatch((data.items ?? []).map((item) => item.id));
       })
       .catch((err) => {
@@ -441,6 +452,14 @@ export function SearchOverlay({
     body.style.right = "0";
     body.style.width = "100%";
     body.style.overflow = "hidden";
+    // N1 (2026-08-11, owner: "bottom nav bar is everywhere"). Measured with the panel open: the
+    // floating nav sits at y 774 to 832 while the panel's own Suchen button runs 740 to 786, so the
+    // bar crosses the commit action by 12px. Two fixed bars at the bottom of one phone is the exact
+    // case BottomNav's own header comment already calls out, and the sticky-CTA floor says the
+    // commit action owns that slot. The nav yields while the panel is up and comes straight back on
+    // close. A body attribute rather than a prop because the two components never meet in the tree:
+    // the nav is mounted in the locale layout and this sheet is a portal.
+    body.setAttribute("data-overlay-open", "search");
     return () => {
       body.style.position = prev.position;
       body.style.top = prev.top;
@@ -448,6 +467,7 @@ export function SearchOverlay({
       body.style.right = prev.right;
       body.style.width = prev.width;
       body.style.overflow = prev.overflow;
+      body.removeAttribute("data-overlay-open");
       window.scrollTo(0, scrollY);
     };
   }, [open]);
@@ -494,9 +514,14 @@ export function SearchOverlay({
       if (autoFocusService && initialFocus === "service") {
         setInputFocused(true);
         grow(1);
-        // preventScroll: stop iOS from scrolling the focused input into view (that was the
-        // "opens then scrolls down" jank). The input already sits at the top of the sheet.
-        requestAnimationFrame(() => serviceRef.current?.focus({ preventScroll: true }));
+        // Routed through `pendingFocus` (see the effect further down) instead of a bare rAF.
+        // 2026-08-11: measured with the panel open from the home bar, document.activeElement was
+        // NOT this input and four typed characters left the value empty. A requestAnimationFrame
+        // scheduled from inside this effect can still land before the input is focusable, and when
+        // it does, `.focus()` fails silently and the field just sits there looking ready. The exact
+        // same failure was found and fixed on the city input in the step above. One mechanism now,
+        // and it runs after the commit.
+        setPendingFocus("service");
       } else {
         setInputFocused(false);
       }
@@ -576,7 +601,15 @@ export function SearchOverlay({
   // the new resting bar number is measured and reported plainly below, not silently kept at the
   // old one. `focusedTop` just below is a SEPARATE literal this does not touch, so the focused
   // state the owner already approved at (12, 66) does not move.
-  const RESTING_TOP = 160; // mockup-ok: named copy of the pre-existing cropTop resting literal below
+  // ROOT CAUSE FIX 2026-08-11 (audit, five defects at short viewports, one cause): 160 stays as
+  // the CEILING this F3 measurement produced, but it is no longer read directly. On any screen
+  // shorter than the 844 this was measured on, a flat 160 held the scrim band at the SAME pixel
+  // count regardless of how little height was left underneath it, so the sheet's floor (200,
+  // `sheetHeight` below) started winning below about 780px. `RESTING_TOP` itself, the value
+  // `topFor` actually reads, is declared further down as a viewport-scaled clamp of this ceiling,
+  // once `viewport.h` exists (it is declared after this point in the component, so reading it
+  // here would run before it is initialised).
+  const RESTING_TOP_MAX = 160; // mockup-ok: named copy of the pre-existing cropTop resting literal below
   const focusedTop = Math.max(safeTop + 6, 50); // mockup-ok: named copy of the pre-existing cropTop focused literal below
   // H5 (2026-08-03, "WHERE it opens"): the reference's settled card does not reach the screen's
   // own bottom edge; a strip of blurred page stays visible below it. Measured directly on
@@ -589,6 +622,21 @@ export function SearchOverlay({
   // travel note above `topFor`).
   const REST_BOTTOM_MARGIN_RATIO = 50 / 874;
   const headingH = useTransform(expand, [0, 0.55], [HEADING_H, 0]); // mockup-ok: pre-existing
+  // S1 (2026-08-12, owner with three of his own captures: "u see the diffrence between em the sheet
+  // size between wo and search i like search better"). Measured off those captures at 402x874: the
+  // Suche sheet opens at 112.0, the Wann? sheet at 119.7, the Wo? sheet at 168.3, so Wo? is the one
+  // outlier and it is low by 56.3. `HEADING_H` directly above is 56. That is not a coincidence: the
+  // service heading has folded on this axis since it was written, and the location heading was
+  // never wired to it, so the Wo? card keeps a heading band the Suche card drops the instant the
+  // field takes focus. With the heading present the city input also sits 59pt down the card instead
+  // of 17, iOS scrolls further to clear the keyboard, and the sheet rides down with it.
+  //
+  // Same axis, its OWN measured height. The location heading is a 24px line at leading-tight (30)
+  // plus `mb-3` (12), inside the card's `p-4`; it is not the service heading's 16px-padded box, so
+  // reusing HEADING_H here would push the unfocused Wo? card's content down 14px and change a
+  // screen he did not complain about.
+  const LOC_HEADING_H = 42;
+  const locHeadingH = useTransform(expand, [0, 0.55], [LOC_HEADING_H, 0]); // mockup-ok: the existing focus-fold axis, extended to the one step that was never wired to it; his own measurement is the target, not a new motion
   const headingOp = useTransform(expand, [0, 0.42], [1, 0]); // mockup-ok: pre-existing
   // A2 (2026-08-02 REOPENED, owner-dictated port of the approved SEARCH_MORPH.md spec): the
   // category pill row is now wired into the SAME `expand` transform as the heading, so it
@@ -648,7 +696,35 @@ export function SearchOverlay({
       const w = window.innerWidth, h = window.innerHeight;
       setViewport({ w, h });
       const vv = window.visualViewport;
-      setVvOffset(Math.max(0, Math.round(vv?.offsetTop ?? 0)));
+      // K6 (2026-08-12, owner "you didnt fix", and his own two captures are the evidence).
+      // K2 below assumes `position: fixed` stays glued to the LAYOUT viewport while iOS scrolls
+      // the VISUAL one out from under it, so it adds the offset back. If that were the whole
+      // story, both steps would put their sheet at `focusedTop`, about 65 on his phone. He
+      // measured 112 on Suche and 168 on Wo?, both LOW, by two different amounts that look like
+      // two different scroll distances, which is the signature of the compensation being applied
+      // on top of a browser that already did it. Safari has re-anchored fixed elements to the
+      // visual viewport since iOS 16, so on his phone K2 corrects a shift that never happened.
+      //
+      // Rather than pick a side of that and be wrong on half the devices, MEASURE it. A probe
+      // pinned at `fixed; top: 0` renders wherever this browser decides fixed elements go, and
+      // reports that place in the SAME coordinates every other rect in this file is measured in.
+      // So the distance the sheet must travel to sit at a wanted `y` is simply `y - probeTop`,
+      // and the correction term is `-probeTop`:
+      //   desktop, no keyboard   probeTop 0    correction 0    identical to before, by construction
+      //   fixed follows the page probeTop -O   correction +O   exactly what K2 added, kept
+      //   fixed follows the eye  probeTop 0    correction 0    no double count
+      //
+      // CORRECTED 2026-08-12 in the same hour it was written, from his own screenshot rather than
+      // from reasoning. The first version of this line added `offsetTop` on top of `-probeTop`,
+      // which on his phone is O + O, and he measured the result: the Wo? sheet went from opening
+      // at 168.3 to opening at 298.3, further from the Suche step's 112.0 instead of nearer. One
+      // term, measured, not two.
+      const probe = document.createElement("div");
+      probe.style.cssText = "position:fixed;top:0;left:0;width:1px;height:1px;visibility:hidden;pointer-events:none";
+      document.body.appendChild(probe);
+      const probeTop = probe.getBoundingClientRect().top;
+      probe.remove();
+      setVvOffset(Math.max(0, Math.round(-probeTop)));
       // The band of the layout viewport the visual viewport no longer covers = the keyboard.
       // `* scale` is what keeps a ZOOM from being misread as a keyboard: zooming to 2x halves
       // visualViewport.height for the same screen, and without the scale term this computed a
@@ -742,6 +818,83 @@ export function SearchOverlay({
   // so `oT < 1` interpolates from wherever the sheet actually is, ex included, to `origin.top`.
   // On the OPEN, `ex` is always 0 until the container finishes growing, so `settledTop` reduces
   // to the old hardcoded `RESTING_TOP` in every case the open exercises , this is a no-op there.
+  //
+  // ROOT CAUSE FIX 2026-08-11, continued from RESTING_TOP_MAX above. Measured on the unfocused
+  // sheet (ex 0, the state `topFor(1,0)` returns): a flat 160 left `sheetHeight` at 236px on a
+  // 420-tall viewport, short of the 276px the three collapsed rows plus the footer need just to
+  // lay out without clipping (56 + 66 + 86 + 68), which is the actual number behind both "the
+  // footer sits 16px past the bottom edge" and "the calendar scroller has no room for a single
+  // day row" at that height. `RESTING_TOP_MAX / 844` is the ratio 160 already implies against the
+  // device it was measured on, so multiplying it by the real `viewport.h` reproduces 160 exactly
+  // at 844 (the `Math.min` below is then a no-op, so a tall phone is untouched) and shrinks it
+  // below that height instead of holding it constant. At 420 this gives RESTING_TOP ~= 79.8,
+  // which raises `sheetHeight` to ~316px, clear of the 276px floor. `Math.max(32, ...)` only
+  // starts changing that value under ~169px of viewport height, so it never touches any of the
+  // seven heights this fix was measured against; it exists purely so a viewport shorter than any
+  // of those still gets a sheet instead of RESTING_TOP overshooting the available height itself.
+  const RESTING_TOP = Math.min(RESTING_TOP_MAX, Math.max(32, viewport.h * (RESTING_TOP_MAX / 844)));
+  // W3 (2026-08-11). Third attempt, and the two before it are worth naming because this one is
+  // their arithmetic corrected rather than a new idea.
+  //
+  // The complaint, twice from his own phone: the Wo? card runs on as blank white under its last
+  // row. With the live city set down to Basel alone the card holds two rows and the rest is paper.
+  //
+  // Attempt 1 capped the CARD and handed the leftover to another slot, which moved the hole above
+  // the list instead of below it, and clipped "Basel" by 30px.
+  // Attempt 2 pushed the SHEET's top down by the leftover, which is the right shape, and got the
+  // sum wrong: it subtracted only what the Wo? card needs and forgot that the sheet also carries
+  // the collapsed Suche row, the collapsed Wann? row and the footer. It over-subtracted by about
+  // 210px, the sheet hit its 200px floor, and the panel collapsed to a strip.
+  //
+  // So: the same push, with every occupant counted. The Suche row is always 56. The Wann? row and
+  // the footer fold away on the focus axis, so they are scaled by (1 - ex), exactly as their own
+  // transforms do. The Wo? card's own need is counted from the row count, not measured off the DOM,
+  // so there is no observer and no re-render loop.
+  //
+  // It only ever REDUCES the sheet, it is multiplied by locT so it is exactly zero on every other
+  // step, and it reads `kbInset` so the keyboard case (his screenshot) is the one it helps most.
+  // MEASURED off the live card rather than estimated, which is what the first two attempts got
+  // wrong: card padding 16 top and 16 bottom, heading 30, a 12 gap, the field 48, an 8 gap, and
+  // the slot's own 10 and 20 gaps around the card. Rows are 68 each, including the one that
+  // carries a subtitle. The +32 on the end is deliberate headroom: this value only ever REDUCES
+  // the sheet, so being generous costs a little white and being mean clips the last row, and
+  // clipping "Basel" in half is exactly how attempt 1 failed.
+  const LOC_ROW_H = 68;
+  // 2026-08-11, corrected the same evening: the field went from 48 to 56 tall when he picked
+  // variant B, and this sum still counted 48, so the card came up 8px short and sliced the
+  // Basel row at the bottom edge with the keyboard up. That is the exact failure the +32
+  // headroom exists to prevent, and it did not, because the error was in a term rather than in
+  // the margin. Any future change to the field's height has to move this number with it.
+  const LOC_CHROME_H = 16 + 30 + 12 + 56 + 8 + 16 + 10 + 20 + 32;
+  const locNeed = LOC_CHROME_H + LOC_ROW_H * ((citiesLoading ? 0 : activeCities.length) + 1);
+  const svcT = useMotionValue(activeStep === "service" ? 1 : 0);
+  const locT = useMotionValue(activeStep === "location" ? 1 : 0);
+  const dateT = useMotionValue(activeStep === "date" ? 1 : 0);
+  const locSlackFor = React.useCallback((rawTop: number, ex: number, l: number) => {
+    if (l <= 0) return 0;
+    const others = 56 + (86 + 68) * (1 - ex); // Suche row, then Wann? row + footer, which fold
+    // W4 (2026-08-11, owner: "when u click wo n kezboard mode it bugs"). This used to subtract
+    // `kbInset`, which is the height the keyboard covers, and that is what made it move.
+    //
+    // On a phone the keyboard does not resize the page, it slides up over it, and `kbInset` climbs
+    // from 0 to about 330 while it does. Feeding that into the sheet's own TOP meant the whole
+    // panel slid down as the keyboard slid up, every time, on a control he had just tapped. Two
+    // things moving against each other on one gesture is exactly what "it bugs" describes.
+    //
+    // The keyboard is not part of this sum any more. The card keeps the height it had before the
+    // keyboard appeared; the extra sits behind the keys where nobody can see it, which costs
+    // nothing, and the sheet stays still.
+    const spare = viewport.h - rawTop - locNeed - others;
+    // AND IT ONLY APPLIES WHILE THE COMPOSER IS SHOWING. Measured after the keyboard term came out
+    // and it still moved: tapping the field pushed the sheet DOWN by 154px, because folding the
+    // composer frees 154px of room and this handed every one of them straight back as slack. The
+    // panel is supposed to grow UP into that space, which is what it did before any of this, so
+    // the slack is scaled by (1 - ex) and is exactly zero the moment the field takes focus.
+    // What survives is the case he actually complained about first: Wo? open, no keyboard, half a
+    // screen of white under two rows.
+    return Math.max(spare, 0) * l * (1 - ex);
+  }, [viewport.h, locNeed]);
+
   const topFor = React.useCallback(
     (oT: number, ex: number) => {
       const settledTop = RESTING_TOP + (focusedTop - RESTING_TOP) * ex;
@@ -752,11 +905,30 @@ export function SearchOverlay({
       // state without a visual-viewport scroll, so this is identity everywhere else.
       return Math.max(minTop, base) + vvOffset;
     },
-    [origin, focusedTop, minTop, vvOffset],
+    // `viewport.h` added (root cause fix): RESTING_TOP now derives from it, and without this
+    // dependency `topFor` would keep returning a value computed from a stale RESTING_TOP after a
+    // resize/orientation change until one of the other deps also happened to change.
+    [origin, focusedTop, minTop, vvOffset, viewport.h],
   );
-  const cropTop = useTransform([morphT, expand], (latest) => { // mockup-ok: SEARCH_MORPH.md A7/A8/A9
-    const [oT, ex] = latest as [number, number];
-    return topFor(oT, ex);
+  // D1 (2026-08-12, owner: "wann calender is not fully all visable yk", with his own Airbnb capture
+  // of the same step). Measured off that capture at 402x874: their sheet starts 146pt down and the
+  // When card runs from 168pt to about 760pt, so the WHOLE month fits with no scrolling, all six
+  // rows, 1 through 31. Ours starts its sheet at 19% of the screen and the calendar gets a 234pt
+  // window onto 300pt of month, so it cuts mid-row, which is exactly what his screenshot shows.
+  //
+  // So the date step lifts the sheet instead of pushing it down: the same one value the location
+  // step already uses to give height BACK, run the other way, and clamped at the same `minTop`
+  // everything else respects. 0.6 of the distance to that floor puts our sheet at about 7% on his
+  // screen size, which is where the reference has it, and it is multiplied by `dateT` so it is
+  // exactly zero on every other step.
+  const dateLiftFor = React.useCallback((rawTop: number, d: number) => {
+    if (d <= 0) return 0;
+    return Math.max(rawTop - minTop, 0) * 0.6 * d;
+  }, [minTop]);
+  const cropTop = useTransform([morphT, expand, locT, dateT], (latest) => { // mockup-ok: SEARCH_MORPH.md A7/A8/A9
+    const [oT, ex, l, d] = latest as [number, number, number, number];
+    const raw = topFor(oT, ex);
+    return raw + locSlackFor(raw, ex, l) - dateLiftFor(raw, d);
   });
   // Measured on the reference: `left * 2 + width = 402.0` at EVERY frame, to within 0.02pt. The card
   // is centred throughout and expands symmetrically, so left is not an independent property, it is
@@ -774,8 +946,8 @@ export function SearchOverlay({
   // to exist. Mirrors cropTop's own piecewise shape (open morph 0->1, then focus progress on
   // top of that) so the sheet's bottom edge reaches the true viewport bottom in EITHER state,
   // one continuous transform, no threshold swap.
-  const sheetHeight = useTransform([morphT, expand], (latest) => { // mockup-ok: SEARCH_MORPH.md C6, H5
-    const [oT, ex] = latest as [number, number];
+  const sheetHeight = useTransform([morphT, expand, locT, dateT], (latest) => { // mockup-ok: SEARCH_MORPH.md C6, H5
+    const [oT, ex, l, d] = latest as [number, number, number, number];
     // K-A: the usable bottom edge is always the viewport's own bottom, keyboard up or not, so
     // the sheet is never shrunk to sit above the keys (that was K-B, rejected at the K4
     // chooser). Height is always "bottom minus the top `topFor` just returned", so the sheet's
@@ -786,16 +958,42 @@ export function SearchOverlay({
     // DO-NOT-REGRESS) and only opens a gap in the composed, unfocused moment , the exact moment
     // "OURS settled" was measured at. One continuous value, same `ex` this function already
     // takes, no new threshold and no new motion value.
-    const restMargin = viewport.h * REST_BOTTOM_MARGIN_RATIO * (1 - ex);
-    const bottom = viewport.h - restMargin;
+    // K5 (2026-08-12, owner: "when on keyboard wo why when expanded no full oage on the bottom yk
+    // like sheet is not long enough", with his own shot of the Wo? step, keyboard up, the white
+    // stopping short of it). The cause is an asymmetry in this file, not anything about iOS:
+    // `topFor` ends in `+ vvOffset` (K2 above) so the TOP follows the viewport the user can
+    // actually see, and this line then computes the height as "layout bottom minus that top",
+    // which cancels the term and leaves the BOTTOM edge pinned to the layout viewport. When iOS
+    // scrolls the visual viewport up to clear the keyboard, that bottom edge renders exactly
+    // `vvOffset` above the bottom of what he can see, which is the gap in his screenshot.
+    //
+    // Adding the same term to the bottom is what K-A below already says it wants: the usable
+    // bottom edge is the viewport's own bottom in every state, keyboard up or not. `vvOffset` is
+    // 0 with no keyboard and on every desktop browser, so this is identity everywhere else, the
+    // same way the top's copy of it is.
+    // D2 (2026-08-12): `* (1 - d)` hands the rest margin back to the DATE step, and only to it.
+    // His IMG_7121 still slices the 31 row, which I had reported fixed off a 780-tall desktop
+    // viewport that has no Safari chrome; re-measured at the heights his phone actually gives the
+    // page, the month needs 300 and the calendar's scroller gets 288 at 730, 262 at 700, 236 at
+    // 670. D1 above has already pulled the sheet's top as far as it may go, so the only space left
+    // is this 40px margin at the BOTTOM, which exists to make the settled composed sheet sit off
+    // the edge and has no job while a step is open and full. Taking it clears the month at 730
+    // (330 against 300) and at 700 (302 against 300). It deliberately does NOT touch the sheet's
+    // TOP, because he measured the Wann? sheet at 119.7 in the same message and put it on the side
+    // he likes; moving the top would "fix" a screen he just approved.
+    const restMargin = viewport.h * REST_BOTTOM_MARGIN_RATIO * (1 - ex) * (1 - d);
+    const bottom = viewport.h + vvOffset - restMargin;
     if (oT < 1) {
-      const restingHeight = Math.max(bottom - topFor(1, ex), 200);
+      // W3: the same slack the top takes, so the bottom edge stays pinned where K-A put it.
+      const rawResting = topFor(1, ex);
+      const restingHeight = Math.max(bottom - rawResting - locSlackFor(rawResting, ex, l) + dateLiftFor(rawResting, d), 200);
       // H3 (2026-08-05): `oT` is `morphT`, the same already-shaped value `topFor` just took, so
       // height and top still settle on the same frame, never a box that is already tall but not yet
       // positioned. The `/ 0.8` that used to sit here is gone for the reason written above `topFor`.
       return origin.height + (restingHeight - origin.height) * oT;
     }
-    return Math.max(bottom - topFor(oT, ex), 200);
+    const raw = topFor(oT, ex);
+    return Math.max(bottom - raw - locSlackFor(raw, ex, l) + dateLiftFor(raw, d), 200);
   });
   // R6 (2026-08-02 round 3, owner bug report): the scrim used to fade on its OWN
   // AnimatePresence clock while the sheet faded on `openT`. The two curves are not the same
@@ -959,9 +1157,6 @@ export function SearchOverlay({
   // location = ROW_H, the row plus its 10px gap; date = the same plus the 20px tail the old
   // `stepsH` literal carried, so the footer keeps its exact y.
   const SLOT_COLLAPSED = { service: ROW_H - 10, location: ROW_H, date: ROW_H + 20 };
-  const svcT = useMotionValue(activeStep === "service" ? 1 : 0);
-  const locT = useMotionValue(activeStep === "location" ? 1 : 0);
-  const dateT = useMotionValue(activeStep === "date" ? 1 : 0);
   React.useEffect(() => {
     const cfg = { duration: reduce ? 0 : 0.3, ease: MORPH_EASE };
     const runs = [
@@ -1031,6 +1226,23 @@ export function SearchOverlay({
     const [sh, fh] = latest as [number, number];
     return sh - fh;
   });
+  // W1 (2026-08-11): TRIED AND REVERTED, written down so the next person does not spend the same
+  // hour. The Wo? card takes every leftover pixel whatever it holds, so with the live city set down
+  // to Basel alone it renders two rows and then half a phone of blank paper (measured off his own
+  // screenshot: an unbroken white run of 1386px on a 2622px screen).
+  //
+  // The obvious fix is to cap the location slot at the height it actually needs, which is countable
+  // from the row count rather than measured off the DOM: chrome plus 68px a row. I built exactly
+  // that and it made the screen WORSE in two ways, both visible in one render. The cap was about
+  // 30px tight, so "Basel" was sliced in half by the bottom of its own card. And the height the
+  // slot gave back had to go somewhere: handing it to the open service slot moved the hole from
+  // under the list to above it, which reads worse than the original because it sits between the
+  // heading and the content.
+  //
+  // The space wants to leave the SHEET, not move between slots, and the sheet's height is computed
+  // upstream of this function from the morph progress. That is the change worth making, and it is
+  // not a change to make in the same pass as five unrelated fixes, in a file whose own comments
+  // record eleven rounds of this animation going wrong.
   const slotInputs = [slotAvail, svcT, locT, dateT, rowLocReserveH, rowDateReserveH];
   const slotSizes = (latest: unknown) => {
     const [avail, s, l, d, cl, cd] = latest as number[];
@@ -1132,6 +1344,22 @@ export function SearchOverlay({
     const [t, so, mt] = latest as [number, number, number];
     return open ? foldOp(t, so) : foldOp(t, so) * mt;
   });
+  // F1 (2026-08-11, his word was overlap and he has now said it three times). The Wo? and Wann?
+  // cards already fade out when the composer folds; the SERVICE card never did, so with the Wo?
+  // step open and the keyboard up his screen carried two white shapes touching each other: the
+  // collapsed Suche card on top and the open Wo? card under it.
+  //
+  // The reference he sent (his own Airbnb capture, measured: sheet top 62.3pt, one white surface,
+  // no card insets, no shadows between sections) is ONE sheet. The list is the screen. So the
+  // service card now folds on exactly the same axis its two neighbours already use, and the three
+  // of them behave identically instead of one being special.
+  //
+  // `foldOp(t, so)` returns 1 whenever that step IS the open one, so the service step's own focused
+  // state is untouched: this only ever hides the card while a DIFFERENT step is open.
+  const svcSlotOp = useTransform([svcT, stepsOp, morphT], (latest) => {
+    const [t, so, mt] = latest as [number, number, number];
+    return open ? foldOp(t, so) : foldOp(t, so) * mt;
+  });
   // S7 (2026-08-03, round 3 audit): `pointer-events:none` hides a control from the FINGER only.
   // Measured before this block existed, overlay open on the service step: 72 controls were
   // invisible on screen yet still tabbable and still in the accessibility tree , the entire Wo?
@@ -1204,7 +1432,75 @@ export function SearchOverlay({
     [reduce],
   );
   const collapse = React.useCallback(() => { if (listRef.current) listRef.current.scrollTop = 0; grow(0); }, [grow]);
-  const openStep = React.useCallback((s: Step) => { setActiveStep(s); setInputFocused(false); collapse(); }, [collapse]);
+  // OPENING A STEP NOW EXPANDS IT AND RAISES THE KEYBOARD, the same as the service step already
+  // did. Owner 2026-08-11: "i like how sh expands when clicked on search inside searchbar, but on
+  // location when u try to search it doesnt work like expand nor keyboard."
+  //
+  // He is describing exactly what the code did. `openStep` set the step and then explicitly did the
+  // OPPOSITE of expanding: `setInputFocused(false)` plus `collapse()`. The service step only feels
+  // right because it gets its own separate treatment in the open effect above
+  // (`setInputFocused(true); grow(1); requestAnimationFrame(focus)`), which nothing else ever got.
+  // So one of the three rows behaved and two did not, and the two silent ones are the ones you have
+  // to type into.
+  //
+  // Same three moves for every typing step now. `date` keeps the collapsed behaviour because it has
+  // no text input at all, it is a calendar, and raising a keyboard over a calendar would be wrong.
+  // The focus has to wait for React to COMMIT the new step. A requestAnimationFrame inside the
+  // click handler fires before that, and at that moment the location slot still carries
+  // `inert={activeStep !== "location"}`, so `.focus()` on the city input silently does nothing and
+  // the caret stays where it was. Measured exactly that: after tapping Wo?, document.activeElement
+  // was still the SERVICE input. So the request is recorded here and carried out in an effect below,
+  // which runs after the commit and after inert lifts.
+  const [pendingFocus, setPendingFocus] = React.useState<Step | null>(null);
+  React.useEffect(() => {
+    if (!pendingFocus) return;
+    const el = pendingFocus === "location" ? cityRef.current : serviceRef.current;
+    // preventScroll for the same reason the service step uses it: iOS otherwise scrolls the
+    // focused input into view and the sheet jumps.
+    el?.focus({ preventScroll: true });
+    setPendingFocus(null);
+  }, [pendingFocus, activeStep]);
+
+  // G1 (2026-08-11): only the SERVICE step folds the composer away. A measured sweep found that
+  // opening Wo? left the Suchen button, the Zuruecksetzen link and the close X unreachable at every
+  // screen height tested (at 844 the Suchen rect was [856, 902] against an 844px viewport, 12px past
+  // the bottom edge, and the close X computed opacity 0), and that the Wann? row landed on exactly
+  // innerHeight so you could not go from Wo? to Wann? at all.
+  //
+  // The cause was mine, from earlier the same day. `grow(1)` is the FOCUS axis: it folds the
+  // heading, both collapsed rows and the footer away so a typing list can fill the sheet. I had it
+  // running for the location step too, which folded the footer while that step still needed it.
+  // Wo? does not need the fold: its own card already grows through the slot math (locT), and it has
+  // a short list rather than a full-height one, so there is nothing to make room for.
+  //
+  // The date step already did the right thing here and its line is unchanged.
+  const openStep = React.useCallback((s: Step) => {
+    setActiveStep(s);
+    if (s === "date" || s === "location") {
+      setInputFocused(false);
+      collapse();
+      // G3 (2026-08-11): and no auto-focus on the city field either. He said it about the service
+      // field first, "i dont like when u click once its alrdy keyboard mode", and opening Wo? had
+      // the same shape: the step opened, the keyboard came straight up, and the list it exists to
+      // show was pushed behind the keys. Tapping the field is still one tap away if you want to
+      // type; the eight cities were never long enough to need filtering anyway, and today the live
+      // list is one row.
+      return;
+    }
+    setInputFocused(true);
+    grow(1);
+    setPendingFocus(s);
+  }, [collapse, grow]);
+  // G2 (2026-08-11): back to the COMPOSED view, which is what every "I have answered this step"
+  // path wants and what the city list's own comment has claimed since 2026-07-01. `openStep`
+  // cannot serve them, because opening the service step means putting the keyboard up, and doing
+  // that after a city pick folded the two rows and the footer straight back off the screen
+  // (measured: both rows jumped to y 844 and 860 on an 844px screen the instant Basel was tapped).
+  const composeStep = React.useCallback(() => {
+    setActiveStep("service");
+    setInputFocused(false);
+    collapse();
+  }, [collapse]);
   const advance = React.useCallback((s: Step) => {
     setInputFocused(false); collapse();
     const next = STEPS[STEPS.indexOf(s) + 1];
@@ -1329,6 +1625,7 @@ export function SearchOverlay({
   const fieldAddPlaceholderTxt  = t("fieldAddPlaceholder");
   const anytimeTxt              = t("anytime");
   const noPreferenceTxt         = t("noPreference");
+  const allServicesTxt          = t("allServices");
   const noPreferenceSubTxt      = t("noPreferenceSub");
   const citySearchPlaceholderTxt = t("citySearchPlaceholder");
   const tabDatesTxt             = t("tabDates");
@@ -1356,6 +1653,9 @@ export function SearchOverlay({
   const placesLabelTxt          = t("placesLabel");
   const looksLabelTxt           = t("looksLabel");
   const forYouTxt               = t("forYou");
+  // C3: "Inspo" is the product name of that feed in every locale (project memory: the discovery
+  // feed is called Inspo on the front end), so it is not a translated string.
+  const inspoTxt                = "Inspo";
   const seeAllResultsTxt        = t("seeAllResults");
   // S5: both strings already existed in messages/{de,en,fr,it}.json under this same
   // namespace and were unused by any file; no new copy invented. `noMatchBody` takes a
@@ -1403,13 +1703,45 @@ export function SearchOverlay({
   const ghostLabelOp = useTransform(openT, [0, 0.22], [1, 0]); // mockup-ok: SEARCH_MORPH.md H5
 
   const stepMeta = React.useMemo((): Record<Step, { label: string; value: string; placeholder: string }> => ({
-    service:  { label: fieldServiceLabelTxt,  value: serviceRowValue, placeholder: queryPlaceholderTxt     },
+    // R1 (2026-08-11, his words: "on top of the wo, once its expanded, there is residue of
+    // search, thats whats fucked"). This row used to fall back to the FIELD'S PLACEHOLDER, so
+    // with nothing typed it read "Suche | Service, Salon oder Stylist:in", an instruction
+    // sitting where the other two rows carry an answer ("Wo? Keine Praeferenz", "Wann?
+    // Jederzeit"). Next to them it reads as a leftover fragment of the step you just left
+    // rather than a summary of it. `allServices` already exists in all four locales and is
+    // answer-shaped, so no copy was written for this.
+    service:  { label: fieldServiceLabelTxt,  value: serviceRowValue, placeholder: allServicesTxt        },
     location: { label: locationHeadingTxt,    value: stadt && stadt !== ALL_CITIES_PARAM ? stadt : noPreferenceTxt, placeholder: fieldAddPlaceholderTxt },
     date:     { label: dateHeadingTxt,        value: dateLabel,  placeholder: anytimeTxt              },
-  }), [fieldServiceLabelTxt, serviceRowValue, queryPlaceholderTxt, locationHeadingTxt, stadt, noPreferenceTxt, fieldAddPlaceholderTxt, dateHeadingTxt, dateLabel, anytimeTxt]);
+  }), [fieldServiceLabelTxt, serviceRowValue, allServicesTxt, locationHeadingTxt, stadt, noPreferenceTxt, fieldAddPlaceholderTxt, dateHeadingTxt, dateLabel, anytimeTxt]);
 
   const visibleRecents = React.useMemo(() => recent.filter((_, i) => !hiddenRecents.has(i)), [recent, hiddenRecents]);
-  const filteredCities = React.useMemo(() => SEARCH_CITIES.filter((c) => c.toLowerCase().includes(cityQ.toLowerCase())), [cityQ]);
+  // C1 (2026-08-11): the Wo? list now offers only cities Solen can actually serve.
+  //
+  // Measured before the change: the picker showed eight cities off the hardcoded SEARCH_CITIES
+  // list while /api/cities returned exactly one active city. Picking Zurich rendered a results
+  // page headed "Suchen Basel", full of Basel salons, with the address bar still saying Zurich.
+  // Nothing errored and nothing said the city was not open yet, so a screen that looked like a
+  // successful search quietly answered a different question. Seven of the eight rows did that.
+  //
+  // Not a new system: `useActiveCities` is the shared fetch every OTHER city picker already uses,
+  // and its own docstring records why it exists ("the admin Staedte toggle never actually changed
+  // what a customer saw"). This list was the one that had never been moved onto it.
+  //
+  // The static list stays as the fallback for the moment before the fetch resolves and for a
+  // failed fetch, which is the hook's documented contract, so the picker is never empty.
+  // C2 (2026-08-11): while the live set is still loading this shows NOTHING rather than the old
+  // hardcoded eight. The sweep caught the gap C1 left: on a cold page load the fallback rendered
+  // Zurich, Bern, Lausanne, Genf, Luzern, Neuchatel and Winterthur as tappable rows for the length
+  // of the fetch, and tapping one of those lands on a results page headed "Suchen Basel". A short
+  // window is still a window, and the rule against claiming what the system cannot back does not
+  // have a grace period. "Keine Praeferenz" is always there, so the step is never empty of options
+  // while the list resolves.
+  const cityNames = React.useMemo(
+    () => (citiesLoading ? [] : activeCities.map((c) => getCityName(c.slug, locale, c))),
+    [activeCities, citiesLoading, locale],
+  );
+  const filteredCities = React.useMemo(() => cityNames.filter((c) => matchesSearch(c, cityQ)), [cityNames, cityQ]);
 
   // R7: the collapsed FACE only. The white fill, radius and shadow moved onto the slot that
   // owns it (see the slot block above), because that surface has to survive the crossfade , it
@@ -1432,22 +1764,56 @@ export function SearchOverlay({
   // at all. No. Stop.") , the bar keeps its normal 1px hairline in BOTH states now. The
   // width/inset growth is still handled by the existing cardMx collapse (12px margin -> 0),
   // untouched here. mockup-ok: SEARCH_MORPH.md C4
+  // VARIANT A, picked by the owner off /dev/search-field 2026-08-11. He replied with one letter.
+  //
+  // Read on Mobbin first, six iOS apps, and they agree with each other: Character AI, Twitch and
+  // KakaoTalk all put a focused search field in a FILLED capsule with the way back OUTSIDE it on
+  // the left and the clear INSIDE it on the right; Bloom uses the same capsule with the word
+  // Cancel beside it; Corner and Opera use the filled capsule too. The through-line is three
+  // things, and ours was the opposite on two of them:
+  //     filled capsule, not a white box with a hairline
+  //     the way out OUTSIDE the field, not sharing the text's own line
+  //     the clear INSIDE it
+  // The white box is why an empty field looked identical to a filled one, which is most of what
+  // he meant by hating its states.
+  //
+  // The A4 note below still holds and is why the height does not move: PIL-measured off his own
+  // Airbnb reference, the field does NOT grow on focus (55.0pt to 54.3pt), and the dark 2px focus
+  // border was rejected by name. Nothing here reintroduces either.
   const serviceBar = (
-    <div className="flex h-12 items-center gap-2.5 rounded-[16px] border border-s-border bg-white px-4">
-      {inputFocused ? (
-        // K1: the blur is load-bearing now. The keyboard holds `expand` at 1 (kbT), so a back
-        // tap that only ran `collapse()` would set the finger's own driver to 0 and change
-        // nothing on screen while the keyboard stayed up. Dismissing the field is what this
-        // control means, so it says so instead of relying on the platform to infer it.
-        <button onClick={() => { serviceRef.current?.blur(); setInputFocused(false); collapse(); }} aria-label={backTxt}
-          className="grid h-6 w-6 shrink-0 place-items-center text-s-ink">
-          <ArrowLeft size={20} strokeWidth={2} />
-        </button>
-      ) : (
-        <span className="grid h-6 w-6 shrink-0 place-items-center">
-          <Search size={19} strokeWidth={2} className="text-s-ink-2" />
-        </span>
-      )}
+    <div className="flex h-14 items-center">
+      {/* The way out, OUTSIDE the capsule. K1: the blur is load-bearing. The keyboard holds
+          `expand` at 1 (kbT), so a back tap that only ran `collapse()` would set the finger's own
+          driver to 0 and change nothing on screen while the keyboard stayed up. Dismissing the
+          field is what this control means, so it says so. */}
+      {/* A11 (2026-08-11): the glyph and its box are UNCHANGED, this only grows what a thumb can
+          hit. Measured at 32x40, under the 44px floor the design contract sets and WCAG asks for,
+          and that floor outranks a look preference (precedence chain tier 2). A wider box would
+          have eaten the field's width, so the hit area is an invisible inset instead: nothing on
+          screen moves, the tappable region reaches 44x44. */}
+      {/* VARIANT B WITH A GREY OUTLINE. Owner 2026-08-11, evening: "B but not black like gray sh yk",
+          picked off /dev/search-field-chrome after he sent his own Airbnb capture.
+          It replaces variant A, which he picked that same morning off /dev/search-field. Both were
+          his and they disagreed, so the mockup put them side by side and this is his answer.
+          Built to the reference's measured numbers rather than to a guess: 56 tall, radius 15,
+          a 1px outline, and the way back INSIDE the box on the left. The one deliberate departure
+          is the one he named: the reference's outline is near-black, ours is the house hairline
+          `s-border`, because a black edge is the heaviest thing on this screen.
+          Two things this also settles for free. The service field and the Wo? field now look the
+          same, which they did not this morning, and that mismatch was written down as an open
+          collision against the rule that one thing looks the same everywhere. And the hit area
+          stays 44x44 through the invisible inset, so the touch floor from A11 survives the change. */}
+      <div className="flex h-14 min-w-0 flex-1 items-center gap-2.5 rounded-[15px] border border-s-border bg-white px-3.5"> {/* mockup-ok: variant B grey outline, owner pick 2026-08-11 */}
+        {inputFocused ? (
+          <button onClick={() => { serviceRef.current?.blur(); setInputFocused(false); collapse(); setServiceQ(""); }} aria-label={backTxt}
+            className="relative grid h-8 w-8 shrink-0 place-items-center text-s-ink before:absolute before:-inset-x-1.5 before:-inset-y-2.5 before:content-['']">
+            <ChevronLeft size={22} strokeWidth={2} />
+          </button>
+        ) : (
+          <span className="grid h-6 w-6 shrink-0 place-items-center">
+            <Search size={19} strokeWidth={2} className="text-s-ink-2" />
+          </span>
+        )}
       {/* R4b (2026-08-02 round 3, owner "it reads zoomed in"): this input computed to 15px.
           iOS Safari auto-zooms the WHOLE page when a field under 16px takes focus, and
           app/layout.tsx deliberately ships no `maximum-scale`/`user-scalable` (an a11y decision
@@ -1464,7 +1830,7 @@ export function SearchOverlay({
           chrome; the widened base input law (globals.css, 2026-07-17) now reaches bare inputs
           and also sets min-height:48px/padding:16px/font-size:16px, not just fill/border/radius,
           so all of it needs the `!` prefix or the pill balloons (V3-D-input-fill-2026-07-17). */}
-      <input ref={(el) => { serviceRef.current = el; if (serviceInputRef) serviceInputRef.current = el; }} value={serviceQ}
+      <input data-bare-input ref={(el) => { serviceRef.current = el; if (serviceInputRef) serviceInputRef.current = el; }} value={serviceQ}
         onFocus={() => { setInputFocused(true); grow(1); }}
         onChange={(e) => setServiceQ(e.target.value)}
         onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleSubmit(); } }}
@@ -1474,24 +1840,34 @@ export function SearchOverlay({
       {/* A6 (2026-08-02 REOPENED): a fixed h-6 w-6 slot (same idea as the loader-dots slot
           below it) always mounted, only the button's presence inside toggles , the clear-X no
           longer changes the bar's own width when it mounts/unmounts while typing. mockup-ok: SEARCH_MORPH.md A6 */}
+      {/* A11 (2026-08-11): same fix as the back chevron above. The disc stays 20px, which is the
+          size he approved; only the invisible hit area grows to clear the 44px floor. */}
       <span className="grid h-6 w-6 shrink-0 place-items-center">
         {serviceQ.length > 0 ? (
           <button onClick={() => { setServiceQ(""); serviceRef.current?.focus(); }}
-            aria-label="Eingabe loeschen" className="text-s-ink-2">
-            <X size={18} strokeWidth={2.2} />
+            aria-label="Eingabe loeschen"
+            className="relative grid h-5 w-5 place-items-center rounded-full bg-s-ink/15 text-s-ink before:absolute before:-inset-3 before:content-['']"> {/* mockup-ok: variant A clear disc, owner pick 2026-08-11 */}
+            <X size={13} strokeWidth={2.6} />
           </button>
         ) : null}
       </span>
-      {/* P13 (owner-approved 2026-07-16): a quiet three-dot pulse loader while the suggest
-          request is in flight, replacing any spinner at the input's right end. Fixed-size slot
-          always mounted (only the dots' visibility toggles) so it never causes a layout jump. */}
-      <span className="grid h-6 w-6 shrink-0 place-items-center" aria-hidden>
-        {loading && typing ? <SuggestLoaderDots /> : null}
-      </span>
+      {/* S9 (2026-08-11): the three-dot loader that used to sit here, right of the clear X, is
+          deleted. Measured across 30 captured iOS apps: a progress indicator placed past the
+          clear X shows up zero times, while thirteen use skeleton rows with no indicator at
+          all, which is what the skeleton-rows branch above already draws at the same moment. */}
+      </div>
     </div>
   );
 
   const serviceSuggestions = () => {
+    // S8: shared between the idle list and the no-result state below, one definition of the
+    // categories rows, not two copies of the same taps.
+    // A2/Model B (2026-07-04): this category shortcut no longer clears the typed query , it
+    // only sets `service` (feeds ?category=/?service= via buildParams, unchanged), same as
+    // picking the pill row never clears `serviceQ`.
+    const categoryRows = CATEGORIES.map((c) => (
+      <SuggestRow key={c.label} name={c.label} Icon={c.icon} art={c.art} tintBg={c.bg} tintFg={c.fg} onClick={() => { setService(c.label); advance("service"); }} />
+    ));
     if (typing) {
       if (loading && !hasResults && styleTerms.length === 0)
         return <div className="space-y-2 pt-1">{[0,1,2].map((i) => <Skeleton key={i} height={48} rounded={14} />)}</div>;
@@ -1517,12 +1893,16 @@ export function SearchOverlay({
       const nothingMatched =
         !hasResults && !geoLoading && geoCandidates.length === 0 && acTerms.length === 0 && looks.length === 0;
       if (nothingMatched) {
+        // Variant B, owner pick off /dev/search-states 2026-08-11: the grey Lucide disc with
+        // a large void under it is gone. The dead end now leads TOP-down, not centred: the
+        // no-match copy, then the same category rows the idle list renders, so there is a way
+        // forward instead of a wall.
         return (
-          <EmptyState
-            icon={Search}
-            title={noMatchTitleTxt}
-            message={t("noMatchBody", { query: serviceQ.trim() })}
-          />
+          <>
+            <p className="mb-1 text-[15px] font-semibold text-s-ink">{noMatchTitleTxt}</p> {/* mockup-ok: variant B, owner pick off /dev/search-states 2026-08-11 */}
+            <p className="mb-3 text-[14px] text-s-ink-2">{t("noMatchBody", { query: serviceQ.trim() })}</p> {/* mockup-ok: variant B, owner pick off /dev/search-states 2026-08-11 */}
+            {categoryRows}
+          </>
         );
       }
       // P13: locale-native "ab CHF X" price, the same tCommon("fromPrice")+formatPrice pattern
@@ -1654,7 +2034,7 @@ export function SearchOverlay({
           {/* Für dich , DNA-personalized looks fill the bottom so short results never read empty (C). */}
           {forYouLooks.length > 0 && (
             <>
-              <SectionLabel className="mt-5">{forYouTxt}</SectionLabel>
+              <FeedSectionLabel className="mt-5" href={`/${locale}/inspo`} seeAll={inspoTxt}>{forYouTxt}</FeedSectionLabel>
               <div className="grid grid-cols-2 gap-3">
                 {forYouLooks.map((l) => (
                   <LookCard key={l.id} image={l.image} title={l.title} onClick={() => openLookItem(l.id)} />
@@ -1665,6 +2045,22 @@ export function SearchOverlay({
         </>
       );
     }
+    // REVERTED 2026-08-11, same day, on his live word: "Revert whats inside of the search search
+    // bar i had like inspo n allat u replaced w ass categorys."
+    //
+    // He had picked variant B off /dev/search-states a few hours earlier, and B cut this body down
+    // to one list. The research behind it was sound (every captured app subtracts content when the
+    // field takes focus) but the result, seen on his own phone, was four grey category rows where
+    // there had been stores and photographs. A live rejection outranks an earlier approval, and it
+    // outranks the research too.
+    //
+    // So the full stack is back exactly as it was: recents, then the popular stores with their live
+    // addresses, then the categories, then the Fuer dich look grid. The state, the fetch and the
+    // tap dispatcher that feed the stores row come back with it.
+    //
+    // What is NOT reverted, because he asked for those separately and has not withdrawn them: the
+    // loading dots stay deleted, the no-result state keeps its message at the top with a way
+    // forward, and the panel still opens without the keyboard.
     return (
       <>
         {visibleRecents.length > 0 && (<>
@@ -1682,18 +2078,16 @@ export function SearchOverlay({
           {/* A Beliebte Store is a specific salon , tapping JUMPS straight to it (marks it selected
               + opens the store page), it does NOT advance to the location step (owner). */}
           {featuredVisible.map((sl) => <SuggestRow key={sl.id} name={sl.name} sub={featuredAddress[sl.id]} Icon={Store}
+            photo={featuredMeta[sl.id]?.photo} rating={featuredMeta[sl.id]?.rating}
             onClick={() => { setService(sl.name); push({ service: sl.name, city: stadt || undefined }); goSalon(sl.id, sl.slug, sl.name); }} />)}
         </>)}
         <SectionLabel className="mt-3">{categoriesLabelTxt}</SectionLabel>
-        {/* A2/Model B (2026-07-04): this idle-state category shortcut no longer clears the typed
-            query , it only sets `service` (feeds ?category=/?service= via buildParams,
-            unchanged), same as picking the pill row never clears `serviceQ`. */}
-        {CATEGORIES.map((c) => <SuggestRow key={c.label} name={c.label} Icon={c.icon} onClick={() => { setService(c.label); advance("service"); }} />)}
-        {/* Für dich , replaces the old Trending chips with DNA-personalized looks (popular for
-            logged-out). Tapping a look opens it in Inspo. */}
+        {categoryRows}
+        {/* Für dich , DNA-personalized looks (popular for logged-out). Tapping a look opens it in
+            Inspo. This is the "inspo n allat" he asked to have back. */}
         {forYouLooks.length > 0 && (
           <>
-            <SectionLabel className="mt-3">{forYouTxt}</SectionLabel>
+            <FeedSectionLabel className="mt-3" href={`/${locale}/inspo`} seeAll={inspoTxt}>{forYouTxt}</FeedSectionLabel>
             <div className="grid grid-cols-2 gap-3 pb-2 pt-1">
               {forYouLooks.map((l) => (
                 <LookCard key={l.id} image={l.image} title={l.title} onClick={() => openLookItem(l.id)} />
@@ -1712,15 +2106,18 @@ export function SearchOverlay({
           collapsed row) instead of AUTO-ADVANCING to the date step , which replaced the city list
           with the calendar and read as "the city selector disappears in the middle". No auto-jump;
           the user taps Wann? or Suchen when ready. */}
-      <SuggestRow name={noPreferenceTxt} sub={noPreferenceSubTxt} Icon={Globe} onClick={() => { setStadt(ALL_CITIES_PARAM); setCityQ(""); openStep("service"); }} />
-      {filteredCities.map((c) => <SuggestRow key={c} name={c} img={CITY_ICONS[c]} Icon={MapPin} onClick={() => { setStadt(c); setCityQ(""); openStep("service"); }} />)}
+      <SuggestRow name={noPreferenceTxt} sub={noPreferenceSubTxt} Icon={Globe} onClick={() => { setStadt(ALL_CITIES_PARAM); setCityQ(""); composeStep(); }} />
+      {filteredCities.map((c) => <SuggestRow key={c} name={c} img={CITY_ICONS[c]} Icon={MapPin} onClick={() => { setStadt(c); setCityQ(""); composeStep(); }} />)}
     </>
   );
 
   // selected-ok: bg-s-ink is the ONE primary commit CTA, not a selected state
   const footerInner = (
     <div className="flex items-center justify-between px-5 pb-[max(14px,env(safe-area-inset-bottom))] pt-3">
-      <button onClick={reset} className="text-[14px] font-semibold text-s-ink underline-offset-4 hover:underline">{resetTxt}</button>
+      {/* A11 (2026-08-11): 93x21 measured, so the row it sits in gives it the height instead of a
+          box around the words (an h-11 wrapper would have drawn a button where a text link belongs).
+          The text, the weight and the underline-on-hover are untouched. */}
+      <button onClick={reset} className="flex h-11 items-center text-[14px] font-semibold text-s-ink underline-offset-4 hover:underline">{resetTxt}</button>
       <button onClick={handleSubmit} className="flex items-center gap-2 rounded-full bg-s-ink px-6 py-3 font-heading text-[15px] font-bold text-white transition-transform duration-150 active:scale-[0.98] active:duration-[80ms] active:ease-glide" /* selected-ok: primary commit CTA */>
         <Search size={16} strokeWidth={2.2} />{submitTxt}
       </button>
@@ -1810,7 +2207,7 @@ export function SearchOverlay({
               expanded body crossfade inside it. Height comes from `svcH` (see the slot block
               above), which is where the old `flex-1` used to sit. */}
           <motion.div style={{ height: svcH }} className="shrink-0 overflow-hidden">
-            <motion.div style={{ marginLeft: cardMx, marginRight: cardMx, borderTopLeftRadius: cardRadius, borderTopRightRadius: cardRadius, borderBottomLeftRadius: cardRadiusBottom, borderBottomRightRadius: cardRadiusBottom, boxShadow: "0 18px 50px rgba(10,10,10,0.13)" }}
+            <motion.div style={{ opacity: svcSlotOp, marginLeft: cardMx, marginRight: cardMx, borderTopLeftRadius: cardRadius, borderTopRightRadius: cardRadius, borderBottomLeftRadius: cardRadiusBottom, borderBottomRightRadius: cardRadiusBottom, boxShadow: "0 18px 50px rgba(10,10,10,0.13)" }}
               className="relative h-full overflow-hidden bg-white">
               {/* H5: the outgoing bar's own label, ghosted INSIDE the now-opaque card at the
                   spot its icon+text sat, so the growing box carries visual continuity from the
@@ -1877,10 +2274,29 @@ export function SearchOverlay({
             </motion.div>
           </motion.div>
 
-          {/* R7 slot 2 of 3: WO?. `mx-3` is the same 12px inset `cardMx` rests at, so the three
+          {/* O1 (2026-08-11, he sent a screenshot and the word was "overlap"). The three cards used
+              to get their side inset two different ways: the service card from `cardMx`, an animated
+              value that collapses 12 to 0 as the composer folds, and the other two from a literal
+              `mx-3`. The comment below said that was fine because 12 equals 12, and it is, right up
+              until `expand` is anything other than zero. Then the top card is full width, edge to
+              edge, while the card under it is still inset by 12, and two stacked cards of different
+              widths with an 8px gap read as one broken shape. Measured on his own screenshot: the
+              Suche card spans the full 1206px of the screen while the Wo? card under it runs 37 to
+              1168.
+              All three slots now take the SAME value, so no state can produce a mismatch: at rest
+              all three are inset, focused all three go full width together.
+              R7 slot 2 of 3: WO?. The old note, kept because it explains the layout: the three
               cards share one left/right edge in every state. */}
           <motion.div style={{ height: locH, paddingTop: rowGapTopReserve }} className="shrink-0 overflow-hidden"> {/* mockup-ok: SEARCH_MORPH.md STILL OPEN after H2 */}
-            <motion.div inert={rowsFolded} style={{ opacity: locSlotOp }} className="relative mx-3 h-full overflow-hidden rounded-[20px] bg-white shadow-[0_16px_48px_rgba(10,10,10,0.10)]"> {/* S7: whole slot folded away on focus */}
+            {/* `rowsFolded && activeStep !== "location"`, not bare `rowsFolded`. THE LAST
+                PIECE OF THE KEYBOARD BUG. `rowsFolded` flips true as soon as the sheet grows,
+                which is exactly what opening this step now does, so the slot inerted ITSELF
+                the moment it opened: the panel expanded and looked right, and the city input
+                could not take focus. Measured after tapping Wo?: the input had an [inert]
+                ancestor and document.activeElement was BODY, so no keyboard.
+                The fold is meant to take the OTHER rows out of the tab order, never the one
+                being used. */}
+            <motion.div inert={rowsFolded && activeStep !== "location"} style={{ opacity: locSlotOp, marginLeft: cardMx, marginRight: cardMx }} className="relative h-full overflow-hidden rounded-[20px] bg-white shadow-[0_16px_48px_rgba(10,10,10,0.10)]"> {/* S7: whole slot folded away on focus */}
               <motion.div inert={activeStep !== "location"} style={{ opacity: locT, pointerEvents: locBodyHit }} className="absolute inset-0 flex flex-col p-4"> {/* S7: city input + city rows out of the tab order when collapsed */}
                     {/* C7 (round 2, "does not expand or close"): root cause was that once a
                         step is active, its OWN heading had no click handler , the only way
@@ -1888,21 +2304,77 @@ export function SearchOverlay({
                         row, which reads as broken (tapping the open row again did nothing).
                         Wiring the accordion-collapse the SEARCH_MORPH.md spec already names
                         ("tap an active title collapses it") onto the heading itself. */}
-                    <button type="button" onClick={() => openStep("service")}
-                      className="mb-3 flex shrink-0 items-center justify-between text-left">
+                    {/* S1 (2026-08-12): folds on the same `expand` axis the service heading has
+                        always used, which is the 56pt his three captures measured between the two
+                        sheets. `inert` while folded so a zero-height invisible control cannot take
+                        keyboard focus, and the back arrow inside the field is the way out in
+                        exactly that state (B1 above). */}
+                    <motion.div inert={inputFocused} style={{ height: locHeadingH, opacity: headingContentOp }} className="shrink-0 overflow-hidden"> {/* mockup-ok: existing focus-fold axis */}
+                    <button type="button" onClick={composeStep}
+                      className="flex w-full items-center justify-between pb-3 text-left">
                       <span className="font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">{locationHeadingTxt}</span>
-                      <ChevronUp size={20} strokeWidth={2.2} className="text-s-ink-2" aria-hidden />
+                      {/* B1 continued: ONE way back, not two. With the field focused the arrow inside
+                          it is the way out, so this collapse chevron would be a second control for
+                          the same job on the same screen. His reference carries exactly one. It
+                          returns the moment the field is unfocused, where it is still the only way
+                          to fold this step. */}
+                      {inputFocused ? null : (
+                        <ChevronUp size={20} strokeWidth={2.2} className="text-s-ink-2" aria-hidden />
+                      )}
                     </button>
-                    <div className="mb-2 flex h-12 shrink-0 items-center gap-2 rounded-[14px] border border-s-border bg-white px-3.5">
-                      <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" />
+                    </motion.div> {/* mockup-ok: closes the S1 fold wrapper opened above */}
+                    {/* REVERTED 2026-08-11, and the reason matters more than the pixels.
+                        He picked variant A (a filled grey capsule) for the SERVICE field off
+                        /dev/search-field, and I extended it to this field on my own judgement,
+                        saying so at the time. It collides with a call he had already made:
+                        TASTE_LOG, commit db2a45ca8 on 2026-08-03, "He overruled my grey
+                        recommendation and the field keeps its white fill and hairline, measured
+                        1px #E4E4E7". That is this exact field, and the log exists so a settled
+                        call is never re-litigated, so the white fill comes back.
+                        What A did leave here is the clear control on a soft disc below, which he
+                        never objected to and which is the same control the service field uses.
+                        The open collision, surfaced rather than resolved: FLOORS LAW 8 says one
+                        thing looks the same everywhere, and these two fields now do not. Two of
+                        his own decisions, so it is his to break the tie. */}
+                    {/* mockup-ok: restoring the owner-approved treatment recorded in TASTE_LOG
+                        (db2a45ca8), not a new appearance. */}
+                    <div className="mb-2 flex h-14 shrink-0 items-center gap-2.5 rounded-[15px] border border-s-border bg-white px-3.5"> {/* mockup-ok: same variant B recipe as the service field, owner pick 2026-08-11 */}
+                      {/* B1 (2026-08-11): "i wish there was a back button when all the way open".
+                          There was none on this step once the keyboard was up: the only way out was
+                          the collapse chevron at the top right, which reads as a fold rather than a
+                          back. His own reference puts a back ARROW inside the field on the left, and
+                          the service field beside it already carries exactly that control, so this
+                          is the same one rather than a new invention. It only appears while the
+                          field is focused, which is the state he called "all the way open". */}
+                      {inputFocused ? (
+                        <button type="button" aria-label={backTxt}
+                          onClick={() => { cityRef.current?.blur(); setInputFocused(false); collapse(); }}
+                          className="relative grid h-8 w-6 shrink-0 place-items-center text-s-ink before:absolute before:-inset-y-1.5 before:-inset-x-3 before:content-['']">
+                          <ChevronLeft size={22} strokeWidth={2} />
+                        </button>
+                      ) : (
+                        <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" />
+                      )}
                       {/* mockup-ok: !important preserves the existing look, not a new one; same
                           carve-out as the service query input above (V3-D-input-fill-2026-07-17). */}
-                      <input ref={cityRef} value={cityQ} onChange={(e) => setCityQ(e.target.value)}
+                      {/* G3 (2026-08-11, he sent a screenshot of it): the fold follows the KEYBOARD,
+                          not the step. Opening Wo? no longer folds the composer away, which is what
+                          put the Suchen button back on screen. But tapping INTO this field raises the
+                          keyboard, and without a fold the sheet stayed at its full height while the
+                          list held two rows, so the bottom of the card was a slab of white behind the
+                          keys and the footer was under them. Measured on his shot: 348px of unbroken
+                          white, 13% of the phone, between Basel and the top of the keyboard.
+                          Focus folds, blur restores. That is exactly what this axis has always meant
+                          on the service field; the city field simply never wired it up. */}
+                      <input data-bare-input ref={cityRef} value={cityQ} onChange={(e) => setCityQ(e.target.value)}
+                        onFocus={() => { setInputFocused(true); grow(1); }}
+                        onBlur={() => { setInputFocused(false); collapse(); }}
                         placeholder={citySearchPlaceholderTxt} aria-label={citySearchPlaceholderTxt}
                         className="min-w-0 flex-1 !border-0 !bg-transparent !min-h-0 !px-0 !text-[16px] text-s-ink placeholder:text-s-ink-2 focus:outline-none focus-visible:outline-none" />
                       {cityQ.length > 0 && (
-                        <button onClick={() => { setCityQ(""); cityRef.current?.focus(); }} aria-label="Eingabe loeschen" className="shrink-0 text-s-ink-2">
-                          <X size={18} strokeWidth={2.2} />
+                        <button onClick={() => { setCityQ(""); cityRef.current?.focus(); }} aria-label="Eingabe loeschen"
+                          className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-s-ink/15 text-s-ink">
+                          <X size={13} strokeWidth={2.6} />
                         </button>
                       )}
                     </div>
@@ -1923,10 +2395,10 @@ export function SearchOverlay({
               (ROW_H * 2 + 20) carried, kept so the footer lands on exactly the same y as
               before this rewrite. */}
           <motion.div style={{ height: dateH, paddingTop: rowGapTopReserve, paddingBottom: rowGapBottomReserve }} className="shrink-0 overflow-hidden"> {/* mockup-ok: SEARCH_MORPH.md STILL OPEN after H2 */}
-            <motion.div inert={rowsFolded} style={{ opacity: dateSlotOp }} className="relative mx-3 h-full overflow-hidden rounded-[20px] bg-white shadow-[0_16px_48px_rgba(10,10,10,0.10)]"> {/* S7: whole slot folded away on focus */}
+            <motion.div inert={rowsFolded && activeStep !== "date"} style={{ opacity: dateSlotOp, marginLeft: cardMx, marginRight: cardMx }} className="relative h-full overflow-hidden rounded-[20px] bg-white shadow-[0_16px_48px_rgba(10,10,10,0.10)]"> {/* S7: whole slot folded away on focus */}
               <motion.div inert={activeStep !== "date"} style={{ opacity: dateT, pointerEvents: dateBodyHit }} className="absolute inset-0 flex flex-col px-4 pb-3 pt-4"> {/* S7: the 29-31 day cells out of the tab order when collapsed */}
                     {/* C7: same accordion-collapse as the location heading above. */}
-                    <button type="button" onClick={() => openStep("service")}
+                    <button type="button" onClick={composeStep}
                       className="mb-2 flex shrink-0 items-center justify-between text-left">
                       <span className="font-heading text-[24px] font-bold leading-tight tracking-[-0.02em] text-s-ink">{dateHeadingTxt}</span>
                       <ChevronUp size={20} strokeWidth={2.2} className="text-s-ink-2" aria-hidden />
@@ -2050,28 +2522,27 @@ function SectionLabel({ children, className = "" }: { children: React.ReactNode;
   return <p className={`mb-1 text-[13px] font-semibold text-s-ink ${className}`}>{children}</p>;
 }
 
-// P13 (owner-approved 2026-07-16): the quiet three-dot pulse loader recipe from
-// taste-round2/search.html (.dots i , 4px dots, s-ink-2, staggered 150ms, ease infinite),
-// replacing any spinner at the input's right end while the suggest request is in flight.
-function SuggestLoaderDots() {
+// C3 (2026-08-12, owner: "how to jump to the inspo page from there"). There was no way: the section
+// showed four looks and tapping one opened that single look, so the feed those looks come from was
+// unreachable from the panel. The heading carries it now. Ink with a chevron, never blue, because
+// see-all controls in this system are ink and only small clickable text is blue.
+function FeedSectionLabel({ children, className = "", href, seeAll }: {
+  children: React.ReactNode; className?: string; href: string; seeAll: string;
+}) {
   return (
-    <span className="flex items-center gap-[3px]">
-      {[0, 1, 2].map((i) => (
-        <motion.span // mockup-ok: P13 owner-approved loader recipe (search.html .dots i)
-          key={i}
-          className="h-1 w-1 rounded-full bg-s-ink-2"
-          animate={{ opacity: [0.25, 1, 0.25], y: [0, -3, 0] }} // mockup-ok: pulse loop, not an entrance
-          // WCAG 2.2.2 (Level A): was `repeat: Infinity`, an auto-starting loop with no bound, the
-          // clearest exposure in the motion audit (HOME_SEARCH_INSPO.md row 97). Bounded to 3 total
-          // cycles so the loop always ends inside 5s (worst case, the last-staggered dot at
-          // i*0.15=0.3s delay + 3*1.2s = 3.9s) even if the suggest request is still pending; it then
-          // holds on the dim static frame rather than looping indefinitely.
-          transition={{ duration: 1.2, repeat: 2, ease: "easeInOut", delay: i * 0.15 }}
-        />
-      ))}
-    </span>
+    <div className={`mb-1 flex items-center justify-between ${className}`}>
+      <p className="text-[13px] font-semibold text-s-ink">{children}</p>
+      <Link href={href} className="flex items-center gap-0.5 text-[13px] font-semibold text-s-ink">
+        {seeAll}
+        <ChevronRight size={15} strokeWidth={2.2} />
+      </Link>
+    </div>
   );
 }
+
+// S9 (2026-08-11): SuggestLoaderDots deleted, see the capsule comment where it used to render.
+// No remaining call sites in this file. mockup-ok: variant B loading-dots removal, owner pick
+// off /dev/search-states 2026-08-11
 
 // P13 (owner-approved 2026-07-16): matched-substring highlight inside a Services/Stylists row
 // title. Splitting logic lives in lib/utils (splitHighlight, shared with SalonResultCard's own
@@ -2127,16 +2598,26 @@ function CategoryPillsRow({ active, onSelect, ariaLabel }: { active: string; onS
   );
 }
 
-// Compact Inspo look card: fixed 3:4 photo + style name below, whole card taps to the look.
-// The uniform fixed aspect suits the overlay's strip + 2-col grids (the /inspo feed keeps
-// ItemCard's natural-aspect masonry). No heart here , owner picked the name-below card.
+// Compact Inspo look card: photo + style name below, whole card taps to the look. No heart here,
+// owner picked the name-below card.
+//
+// C2 (2026-08-12, owner asked the question rather than assuming: "is aespectcratio good like does
+// it acc reflect the inspo page"). It did not. Measured the same minute on both surfaces at
+// 402x874: the /inspo feed renders 192x341 and 80x142, ratio 0.563, which is the 9:16 these
+// thumbnails are shot in; this card was a fixed 3:4, ratio 0.75, so every look was cropped by
+// about a quarter top and bottom against how the same look appears on Inspo. Now 9:16, which is
+// FLOORS LAW 8: one thing looks the same on every screen that shows it.
+//
+// The title was `truncate`, one line, and at this width that cut nearly every real style name mid
+// word ("Hybrid Microblading and ..."). Two lines, which costs a little evenness between the two
+// columns and buys a legible name.
 function LookCard({ image, title, onClick }: { image: string; title: string; onClick: () => void }) {
   return (
     <button onClick={onClick} aria-label={title} className="group flex w-full flex-col gap-1.5 text-left transition-transform duration-150 active:scale-[0.99] active:duration-[80ms] active:ease-glide">
-      <span className="block w-full overflow-hidden rounded-[14px] bg-s-bg-sunken" style={{ aspectRatio: "3 / 4" }}>
+      <span className="block w-full overflow-hidden rounded-[14px] bg-s-bg-sunken" style={{ aspectRatio: "9 / 16" }}>
         {image ? <img src={image} alt="" loading="lazy" className="h-full w-full object-cover" /> : null}
       </span>
-      <span className="truncate px-0.5 text-[13px] font-semibold text-s-ink">{title}</span>
+      <span className="line-clamp-2 px-0.5 text-[13px] font-semibold leading-snug text-s-ink">{title}</span>
     </button>
   );
 }
@@ -2173,13 +2654,22 @@ function MonthGrid({ monthDate, now, windowEnd, selKey, onPick, locale }: {
         const isToday = ts === todayMid;
         // selected-ok: locked date-fill is blue s-accent (design contract)
         const selected = selKey === key;
+        // TODAY IS NOT BLUE ANY MORE. Owner 2026-08-11: "in wann why is it blue".
+        // Fair question, and the answer was that today's number was drawn in the accent colour
+        // while nothing was selected, so the calendar opened looking as though a date had already
+        // been chosen. The design contract does allow blue on a calendar date, but only as the
+        // SELECTED FILL, which is the `selected` branch below and is untouched. Today now carries
+        // the calm grey fill this system already uses for a selected pill, plus bold ink, so it
+        // reads as "you are here" rather than "already picked". No new value is introduced:
+        // bg-s-bg-sunken and the h-9 pill shape are both already on this element.
         return (
           <div key={i} className="flex justify-center">
             {disabled ? (
               <span className="grid h-9 w-9 place-items-center text-[14px] text-s-ink-2/35">{d}</span>
             ) : (
+              /* mockup-ok: swaps one existing token for another on the today branch, per his question */
               <button onClick={() => onPick(key, `${d}. ${monthLong}`)}
-                className={`grid h-9 w-9 place-items-center rounded-full text-[14px] transition-colors ${selected ? "bg-s-accent font-bold text-white" /* selected-ok: date cell */ : isToday ? "font-bold text-s-accent" : "font-medium text-s-ink hover:bg-s-bg-sunken"}`}>
+                className={`grid h-9 w-9 place-items-center rounded-full text-[14px] transition-colors ${selected ? "bg-s-ink font-bold text-white" /* selected-ok: owner 2026-08-12 "tapped is blue it should be black", overruling the blue date-fill row of the design contract by name */ : isToday ? "bg-s-bg-sunken font-bold text-s-ink" : "font-medium text-s-ink hover:bg-s-bg-sunken"}`}>
                 {d}
               </button>
             )}
@@ -2193,8 +2683,14 @@ function MonthGrid({ monthDate, now, windowEnd, selKey, onPick, locale }: {
 // P13 (owner-approved 2026-07-16): `name` widened to accept a ReactNode (a <HighlightedText>
 // result) alongside a plain string , local-only component, no other file imports it, so this
 // is a fully backward-compatible widening.
-function SuggestRow({ name, sub, Icon, img, onClick, onRemove }: {
+function SuggestRow({ name, sub, Icon, img, photo, rating, tintBg, tintFg, art, onClick, onRemove }: {
   name: React.ReactNode; sub?: string; Icon?: LucideIcon; img?: string;
+  // C1 (2026-08-12, owner: "looks flat n no color"). Three optional slots, all opt-in, so every
+  // existing caller renders byte-identically: `photo` puts the salon's OWN cover in the tile it
+  // already had, `rating` puts the gold star and the value beside the name (he asked for the value
+  // WITHOUT the review count), and `tintBg`/`tintFg` let the category rows carry the colour
+  // `searchCategories.ts` has always declared and this row used to throw away.
+  photo?: string | null; rating?: number | null; tintBg?: string; tintFg?: string; art?: string;
   onClick: () => void; onRemove?: () => void;
 }) {
   return (
@@ -2202,13 +2698,34 @@ function SuggestRow({ name, sub, Icon, img, onClick, onRemove }: {
       <button onClick={onClick} className="flex min-w-0 flex-1 items-center gap-3.5 py-2.5 text-left">
         {img ? (
           <img src={img} alt="" className="h-12 w-12 shrink-0 object-contain" />
+        ) : photo ? (
+          <span className="block h-12 w-12 shrink-0 overflow-hidden rounded-2xl bg-s-bg-sunken">
+            <img src={photo} alt="" loading="lazy" className="h-full w-full object-cover" />
+          </span>
+        ) : art ? (
+          /* C4 (2026-08-12, owner: "the icon palletes dont make any scence and doesnt resemble the
+             icon seta that are made yk"). The category's OWN drawn icon, which this project has
+             shipped in /icons/categories/v2 all along, on a tile tinted to the hue that art is
+             drawn in. Not a Lucide glyph in a colour I reasoned my way to. */
+          <span className={`grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-2xl ${tintBg ?? "bg-s-bg-sunken"}`}>
+            <img src={art} alt="" className="h-9 w-9 object-contain" />
+          </span>
         ) : (
-          <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-s-bg-sunken text-s-ink-2">
+          <span className={`grid h-12 w-12 shrink-0 place-items-center rounded-2xl ${tintBg ?? "bg-s-bg-sunken"} ${tintFg ?? "text-s-ink-2"}`}>
             {Icon ? <Icon size={20} strokeWidth={1.9} /> : null}
           </span>
         )}
         <span className="min-w-0">
-          <span className="block truncate text-[15px] font-semibold text-s-ink">{name}</span>
+          <span className="flex min-w-0 items-baseline gap-2">
+            <span className="min-w-0 truncate text-[15px] font-semibold text-s-ink">{name}</span>
+            {/* The gold star against the grey line under it IS the separation, so no dot. */}
+            {rating != null ? (
+              <span className="flex shrink-0 items-center gap-1 text-[13px] text-s-ink">
+                <Star size={12} strokeWidth={0} fill="currentColor" className="shrink-0 text-s-star" />
+                <span>{rating.toFixed(1)}</span>
+              </span>
+            ) : null}
+          </span>
           {sub ? <span className="block truncate text-[13px] text-s-ink-2">{sub}</span> : null}
         </span>
       </button>

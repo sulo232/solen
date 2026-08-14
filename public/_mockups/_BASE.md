@@ -1,5 +1,47 @@
 # _BASE , the on-phone mockup foundation (owner-mandated 2026-07-21)
 
+## WHAT A MOCKUP IS, and it had to be written down because I kept shipping things that were not one (owner 2026-08-12)
+
+**Owner, verbatim:** *"what part of mock up do you not fucking understand? ... What is this all fifty
+one? What is that? That is not a fucking mock. No. Refine the definition of a mock up because you're
+pissing me the fuck off. Harden the fucking gate."*
+
+He had asked for mockups. I gave him three desktop comparison pages with paragraphs of reasoning
+beside them, and a list of fifty-one findings. None of those is a mockup, and the reason none of
+them is a mockup is the definition below, which did not exist in writing before today.
+
+**A MOCKUP IS A SCREEN HE LOOKS AT ON HIS PHONE.** Nothing else. It is the proposed state of one
+real screen, rendered full-bleed at 402 CSS px, so that opening the link on his phone shows him what
+the app would look like. He judges it by looking.
+
+**Six things a mockup MUST be:**
+
+1. **Full-bleed.** The body is the screen. No desktop page wrapper, no `max-w-[1240px] px-5 py-10`,
+   no site header or footer around it. The no-fake-phone rule already said this and it still holds.
+2. **One screen at a time.** A before and after is one screen with a toggle, never two panes side by
+   side on a wide page. He is on a phone; side by side means both are too small to judge.
+3. **Silent.** No explanatory paragraphs, no measured-numbers block, no cost lists, no findings, no
+   tables. The reasoning belongs in the commit message and the plan file. If the screen needs a
+   paragraph to be understood, the screen is the problem.
+4. **The real thing.** Real components, real data, real photography, the real route where possible.
+5. **Judged by looking**, which means it must render correctly at 402 wide on a phone, not merely
+   contain the right values.
+6. **Reachable in one tap** from the link handed over.
+
+**Four things that are NOT mockups, all of which I have called one:**
+
+- a comparison page with prose beside it (screens 1 to 3 of the Airbnb loop, 2026-08-12)
+- a list of findings, however well measured (`/dev/airbnb-findings`, same day)
+- a document, a table, or a plan file
+- a desktop layout containing phone-width iframes
+
+Those artefacts are allowed to exist and some of them are useful. They are just not what the word
+means, and handing one over when he asked for a mockup wastes his turn.
+
+**Enforced by** `~/.claude/hooks/mockup-must-be-a-screen-gate.py`: a Stop message that calls
+something a mockup while the turn wrote a dev page carrying a desktop wrapper, explanatory prose, or
+a side-by-side pane layout is blocked before he ever reads it.
+
 > **SCOPE NARROWED 2026-08-07 by owner decision 17: this file governs STATIC mockups only.**
 >
 > New mockups are REAL PAGES under `app/[locale]/dev/`, not standalone HTML here. He asked "if we

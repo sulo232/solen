@@ -99,3 +99,34 @@ button. Labels observed in German: Alles, Unterkuenfte, Erlebnisse, Services.
   so sourcing is closed. The mechanism above stays documented here because if he later wants the
   icons to animate on selection, this is the shape that does it, and the byte costs are already
   measured.
+
+## 2026-08-10: the search pill, re-measured, and the trap that cost three rounds
+
+Measured live on airbnb.ch at a real 390-wide mobile viewport with `getComputedStyle`:
+
+| | value |
+|---|---|
+| box | 342 x 56 |
+| radius | 40px |
+| border | **1px solid `rgb(221,221,221)`** |
+| shadow | `0 6px 20px rgba(0,0,0,0.10)` |
+| padding | 19px each side |
+| layout | `justify-content: center`, text centred |
+| label | 14px, weight 500 |
+| icon | 12 x 12, 8px gap to the text |
+
+**THE TRAP, and it is worth more than the table.** A first pass read that same button's border as
+`1px rgb(0,0,0)` and a black ring shipped on our home page off the back of it. That value is really
+in their CSS. It never paints, because it sits where `border-width` is 0.
+
+**A border colour is not a border.** When measuring any border, keep only elements where
+`border-width > 0` AND `border-style !== "none"` AND the colour is not transparent. Walking the
+button plus its ancestors with that filter returns exactly ONE painted border on their pill, the
+light grey above.
+
+Cost of skipping that filter: three rounds of the owner saying the outline was wrong (black, then
+grey, then remove it), when the answer was a light hairline all along, sitting in the same element
+the whole time.
+
+Ours maps to `s-border` `#E4E4E7` (1.27:1 on white) against their `#DDDDDD` (1.36:1). Near enough
+that no new hex is needed.

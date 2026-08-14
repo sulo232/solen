@@ -1,7 +1,15 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
+// Owner 2026-07-31: "when you click services, it goes to the service bit smoothly. It doesn't
+// really look like it's jumping to another page. That's what I want."
+//
+// The plumbing for that was already installed and this file was the one row not using it:
+// next-view-transitions 0.3.5 is a dependency, <ViewTransitions> is mounted at app/layout.tsx:74,
+// and SalonCard.tsx already imports this Link so a card photo can morph into the PDP hero. The
+// header category row imported plain next/link, so every category click was a hard swap with no
+// transition. API-identical to next/link, so nothing else in this file changes.
+import { Link } from "next-view-transitions";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { ChevronDown, Home, Menu, MapPin, X, ArrowLeft } from "lucide-react";
@@ -14,13 +22,14 @@ import MobileMenu from "./MobileMenu";
 import { Logo } from "@/app/[locale]/_components/primitives";
 import NotificationBell from "./NotificationBell";
 import DesktopCitySelector from "./DesktopCitySelector";
+import LanguageSwitcher from "@/components-legacy/ui/LanguageSwitcher";
 import { getCityName, type CitySlug } from "@/lib/cities";
 import { getPersistedCity, setPersistedCity } from "@/lib/city-cookie";
 import { useActiveCities } from "@/hooks/useActiveCities";
 import { strokeForSize } from "@/lib/icon-stroke";
 
 /**
- * V3 Header — V2-D46 (2026-05-09).
+ * V3 Header, V2-D46 (2026-05-09).
  *
  * Sticky frost-on-scroll navbar adapted from `public/solen-v2-full-editorial.html`.
  * Transparent at top → frosted (white/78 + blur(14px)) once scrolled past 30px.
@@ -36,7 +45,7 @@ import { strokeForSize } from "@/lib/icon-stroke";
  * toggle needs `useEffect` + `useState`. Header was already small so the
  * "use client" directive cost is negligible. Logo is still next/link.
  */
-// V2-D49d: V3 4-category strip — text-only inline links between logo and
+// V2-D49d: V3 4-category strip, text-only inline links between logo and
 // right-side actions. Mobile: scrolls horizontally w right-edge mask fade.
 // Desktop: centered, no fade. Icons retired (V2-D49d revision per user
 // "delete the pills and only txt").
@@ -50,7 +59,7 @@ const CATEGORIES: { label: string; href: string }[] = [
 // V3-D75-header (2026-05-18): desktop dropdown menus. Replaces the
 // scroll-x category strip on md+ with two hover dropdowns: Services
 // (consumer-facing categories) and Für Unternehmen (B2B links). Mobile
-// keeps the scroll strip — it works well on touch and the hamburger
+// keeps the scroll strip, it works well on touch and the hamburger
 // already exists for everything else.
 const SERVICES_MENU: { label: string; href: string }[] = [
   { label: "Coiffeur",         href: "/coiffeur"   },
@@ -65,10 +74,10 @@ const SERVICES_MENU: { label: string; href: string }[] = [
 
 const BUSINESS_MENU: { label: string; href: string }[] = [
   // V3-D147 (2026-05-25): /business/signup was a 404 (no page existed).
-  // Now points to /business — the new B2B landing page with anchor #anmelden
+  // Now points to /business, the new B2B landing page with anchor #anmelden
   // for the signup form scroll target.
   // V3-D208 (2026-05-26, overnight ghost-404 sweep): /business/how, /business/demo,
-  // /business/pricing also 404 — no sub-routes ever existed. The /business page
+  // /business/pricing also 404, no sub-routes ever existed. The /business page
   // covers all three intents inline (how-it-works section #3, anmelden form
   // section #9, pricing section #6). Swap to in-page anchors so nav doesn't
   // dead-end. Anchors: #how, #anmelden, #pricing (added to /business page sections
@@ -91,19 +100,14 @@ const CATEGORY_SEARCH_SEGMENTS = [
 ] as const;
 type CategorySearchSegment = (typeof CATEGORY_SEARCH_SEGMENTS)[number];
 
-// V3-D364 (2026-05-29): the category bar that lives IN the header's mobile middle
-// slot (between the logo and the hamburger) at the top of category routes - per
-// repeated user request ("the red box"). Mirrors SearchTemplate's CATEGORY_PILLS
-// (coiffeur / barbershop / nails / spa; icons under /public/icons/categories).
-const HEADER_CATEGORIES: { slug: string; route: string; label: string; iconSrc: string }[] = [
-  { slug: "coiffeur", route: "coiffeur", label: "Coiffeur", iconSrc: "/icons/categories/scissors.png" },
-  { slug: "barbershop", route: "barbershop", label: "Barber", iconSrc: "/icons/categories/clippers.png" },
-  { slug: "nails", route: "nails", label: "Nails", iconSrc: "/icons/categories/nails.png" },
-  { slug: "spa", route: "spa", label: "Spa", iconSrc: "/icons/categories/spa.png" },
-];
+// V3-D364 (2026-05-29): the category bar that used to live IN the header's mobile middle
+// slot. MOVED 2026-08-10 (owner ask, pill row now renders below the search bar, not above
+// it): HEADER_CATEGORIES + the row's JSX now live in ./CategoryPillRow.tsx, mounted directly
+// after the search pill on each route that owns one (page.tsx, search/SearchTemplate.tsx,
+// inspo/page.tsx) instead of as a sibling of this header. See that file's header comment.
 
 /**
- * DropdownMenu — header dropdown nav item with hover-to-open behavior.
+ * DropdownMenu, header dropdown nav item with hover-to-open behavior.
  *
  * Pattern: <button> trigger with chevron + animated dropdown panel below.
  * Hover open (with small close delay to allow cursor travel from trigger
@@ -168,7 +172,7 @@ function DropdownMenu({
         onClick={() => setOpen(!open)}
         className={cn(
           "inline-flex items-center gap-1 whitespace-nowrap font-body text-[14px] font-medium text-s-ink-2",
-          "rounded-full px-3 py-2 transition-colors duration-150 ease-glide",
+          "rounded-full px-3 py-2 transition-colors duration-200 ease-glide",
           "hover:bg-s-bg-sunken hover:text-s-ink",
           open && "bg-s-bg-sunken text-s-ink",
           "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
@@ -179,7 +183,7 @@ function DropdownMenu({
           size={14}
           strokeWidth={2.25}
           className={cn(
-            "transition-transform duration-150 ease-glide",
+            "transition-transform duration-200 ease-glide",
             open && "rotate-180",
           )}
           aria-hidden
@@ -230,13 +234,16 @@ function DropdownMenu({
 }
 
 /**
- * MobileCityChip — V3-D421k (2026-06-06, owner "i want city option"): the mobile
+ * MobileCityChip, V3-D421k (2026-06-06, owner "i want city option"): the mobile
  * header's middle slot on the HOMEPAGE shows the current city as a "{City} ▾" chip
- * (re-introducing a mobile city control after V3-D421g removed the old one — now it
+ * (re-introducing a mobile city control after V3-D421g removed the old one, now it
  * has a proper home in the C-header middle). Cookie-persisted + reload, mirroring
  * DesktopCitySelector. Local to Header (not a shared component → no registry entry).
  */
 function MobileCityChip({ locale }: { locale: string }) {
+  // Its own hook: this is a separate component in the same file, so the Header's tCities is
+  // not in scope here. cities.select already exists in all four locales.
+  const tCities = useTranslations("cities");
   const [mounted, setMounted] = React.useState(false);
   const [city, setCity] = React.useState<CitySlug>("basel");
   const [open, setOpen] = React.useState(false);
@@ -283,7 +290,7 @@ function MobileCityChip({ locale }: { locale: string }) {
         onClick={() => setOpen((o) => !o)}
         aria-haspopup="listbox"
         aria-expanded={open}
-        aria-label="Stadt wählen"
+        aria-label={tCities("select")}
         className={cn(
           "inline-flex items-center gap-1.5 rounded-full px-3 py-2 font-body text-[15px] font-semibold text-s-ink",
           "transition-colors duration-150 ease-glide hover:bg-s-bg-sunken",
@@ -302,7 +309,7 @@ function MobileCityChip({ locale }: { locale: string }) {
       {open && (
         <div
           role="listbox"
-          aria-label="Stadt wählen"
+          aria-label={tCities("select")}
           className="absolute left-1/2 top-full z-50 mt-2 w-[170px] -translate-x-1/2 overflow-hidden rounded-xl border border-s-border bg-white shadow-[0_10px_30px_rgba(0,0,0,0.10)]"
         >
           {activeCities.map((c) => (
@@ -327,6 +334,7 @@ function MobileCityChip({ locale }: { locale: string }) {
 }
 
 export default function Header({ locale }: { locale: string }) {
+  const tSD = useTranslations("salonDetail");
   const [menuOpen, setMenuOpen] = React.useState(false);
   const [scrolled, setScrolled] = React.useState(false);
   // V3-D377 (2026-05-29): category-route header FOLD threshold, kept SEPARATE from
@@ -345,12 +353,15 @@ export default function Header({ locale }: { locale: string }) {
   const [hiddenForSalonNav, setHiddenForSalonNav] = React.useState(false);
   // V3-D101 (2026-05-22): tone state for dynamic section-aware header color.
   // Watches sections marked `data-header-tone="dark"` (e.g. the BentoBusiness
-  // navy band) — when any of them is currently passing under the header,
+  // navy band), when any of them is currently passing under the header,
   // header switches to dark navy with light text. Matches the Hims pattern
   // the user pointed at in IMG_4285 ("header color changes too").
   const [tone, setTone] = React.useState<"light" | "dark">("light");
+  // The category-pill press state (pressedCategory/handleCategoryPress) moved to
+  // ./CategoryPillRow.tsx 2026-08-10 along with the row itself, see the note above
+  // HEADER_CATEGORIES used to sit.
 
-  // V3-D215 (verifier #1): pathname guard — only hide-on-scroll on salon-detail
+  // V3-D215 (verifier #1): pathname guard, only hide-on-scroll on salon-detail
   // PDPs (path matches `/{locale}/salon/{slug}`). Computed once per render.
   const pathname = usePathname() ?? "/";
   const isSalonDetail = React.useMemo(() => {
@@ -360,7 +371,7 @@ export default function Header({ locale }: { locale: string }) {
   }, [pathname]);
 
   // V3-D461 (2026-06-09, council nav): the far-left slot is HOME on top-level destinations and
-  // BACK on deep pages — one up-affordance, never both (owner-flagged Home+Back+breadcrumb stack).
+  // BACK on deep pages, one up-affordance, never both (owner-flagged Home+Back+breadcrumb stack).
   // Top-level = homepage / the category browse routes / search / discover / city-category browse.
   const router = useRouter();
   const isTopLevel = React.useMemo(() => {
@@ -393,19 +404,41 @@ export default function Header({ locale }: { locale: string }) {
   // Owner 2026-06-29 (council-confirmed): on the HOMEPAGE the far-left slot shows the Solen logo (the
   // home icon is redundant on home). Other top-level pages keep the Home icon as a go-home affordance.
   const isHome = !!pathname && /^\/[a-z]{2}\/?$/.test(pathname);
+  // V3-D (2026-08-01, owner "why is homepage still that bro"): the home route now renders the
+  // SAME mobile category-chrome as the category/search routes (the All pill selected via
+  // HEADER_CATEGORIES' `home` entry above), so it opts into every MOBILE-ONLY categorySegment
+  // gate below (the utility-row hide, the category-pill tab row). `categorySegment` itself
+  // stays scoped to the CATEGORY_SEARCH_SEGMENTS union , it still drives the MobileCityChip
+  // branch untouched here, and the header's non-breakpoint-scoped `pt-5 pb-1` padding below is
+  // widened separately with an explicit `max-md:` guard so desktop home stays `py-5`.
+  // I8 (2026-08-01, search-a.html's Inspo tab: the pill row + search pill are the SAME chrome on
+  // every category, "All" and Inspo alike). `isDiscover` (bare /inspo route) joins the OR here,
+  // deliberately NOT folded into `categorySegment` itself: categorySegment also drives the
+  // header's scroll-collapse-to-nothing fold (further down, gated on the bare `categorySegment`
+  // variable, intentionally not widened), which hands the top-chrome slot off to a SearchTemplate
+  // sticky search band. /inspo has no SearchTemplate mounted, so folding the header there would
+  // leave mobile scroll with no chrome at all, same reasoning already recorded for `isHome` above.
+  const showCategoryChrome = isHome || !!categorySegment || isDiscover;
   const tDiscover = useTranslations("discover");
+  // 2026-07-27 language sweep: five German literals in this file rendered German to English,
+  // French and Italian visitors on EVERY page, because the header is global. Four of the five
+  // reuse keys that already existed in all four locales (navigation.login, common.back,
+  // cities.select); only aboutUs and myAccount were genuinely new.
+  const tNav = useTranslations("navigation");
+  const tCommon = useTranslations("common");
+  const tCities = useTranslations("cities");
 
   // Owner 2026-06-11: profile-subpage titles sit BESIDE the back tile (the stacked
   // page h1 below the header read unbalanced). Same slot idea as the V3-D410
   // discover-title; route-gated so every other page is untouched.
   // Owner 2026-06-12: roll it out to EVERY deep profile page (was only
-  // favorites/stamps/looks) — "you didn't apply it everywhere". Each page's own
+  // favorites/stamps/looks), "you didn't apply it everywhere". Each page's own
   // body <h1> is removed in the same change, so the title shows once, in the bar.
   // Labels mirror the hub rows the owner taps to get here (chip == the tile that
   // navigated in); intake-forms is shortened to "Formulare" so the long
   // "Konsultationsformulare" can't overflow the mobile bar. Hardcoded de on
   // purpose: this span renders on the global header for every route, and a missing
-  // i18n key here would throw and white-screen the app — i18n is tracked separately.
+  // i18n key here would throw and white-screen the app, i18n is tracked separately.
   const deepPageTitle = React.useMemo(() => {
     if (!pathname) return null;
     const TITLES: [RegExp, string][] = [
@@ -448,7 +481,7 @@ export default function Header({ locale }: { locale: string }) {
       // the header collapse + the search collapse fire on the same scroll frame.
       setCategoryCollapsed((prev) => (prev ? y > 30 : y > 60));
       // V3-D215: hysteresis matches SalonStickyTabNav.tsx (visible past 200,
-      // hide until back near top at 100) so the handoff is clean — no flicker.
+      // hide until back near top at 100) so the handoff is clean, no flicker.
       setHiddenForSalonNav((prev) => (prev ? y > 100 : y > 200));
       // Tone check: any dark section currently spanning the header band?
       const darkSections = document.querySelectorAll<HTMLElement>(
@@ -468,7 +501,7 @@ export default function Header({ locale }: { locale: string }) {
 
   // V3-D172 (2026-05-26): broadcast menu open/close state so the
   // CityTopBar (mounted at layout level, no shared state with Header)
-  // can hide itself while the menu is open. Naturally mobile-only —
+  // can hide itself while the menu is open. Naturally mobile-only ,
   // the hamburger that toggles `menuOpen` is md:hidden, so on desktop
   // `menuOpen` stays false and the event always carries open=false.
   React.useEffect(() => {
@@ -477,7 +510,30 @@ export default function Header({ locale }: { locale: string }) {
     );
   }, [menuOpen]);
 
+  // V3-D (2026-08-01): the search pill's trailing button (SearchTemplate.tsx) now opens
+  // this same MobileMenu instead of the map, since the top-row hamburger that used to own
+  // that job is hidden on mobile category/search routes (see the max-md:hidden row above).
+  // SearchTemplate has no access to this component's local `menuOpen` state, so it fires a
+  // window event the same way `solen:menu-state` is already broadcast OUT of this file, just
+  // in the opposite direction.
+  React.useEffect(() => {
+    const onOpenMenu = () => setMenuOpen(true);
+    window.addEventListener("solen:open-menu", onOpenMenu);
+    return () => window.removeEventListener("solen:open-menu", onOpenMenu);
+  }, []);
+
   const isDark = tone === "dark";
+
+  // FIX 1 (2026-08-01, transparent-header tap-swallow bug): the header's OWN box should only
+  // capture pointer events across its full padding box when it is actually painting a visible
+  // background. Mirrors the bg ternary a few lines below exactly, so the two never disagree.
+  // When the header is transparent (top of a light page, not scrolled, not dark, not mid
+  // menu-toggle) its empty vertical padding must let taps fall through to whatever real,
+  // visible page content sits underneath it, instead of swallowing the tap itself (measured:
+  // the home search pill's <a href="/de/search"> sat at y=61, under the header's 102px
+  // z-50 band, and every tap there navigated to /de/coiffeur, the header's own hit-area,
+  // not the pill).
+  const headerHasBg = !menuOpen && (isDark || scrolled);
 
   // V3-D378 (2026-05-30): header auth-awareness. Signed-in users see an account
   // avatar (→ /profile) where the "Anmelden" CTA sits; signed-out keep the CTA.
@@ -497,7 +553,7 @@ export default function Header({ locale }: { locale: string }) {
   const accountName = meta?.full_name || meta?.name || session?.user?.email || "";
   const accountInitial = accountName.trim().charAt(0).toUpperCase() || "·";
 
-  // V3-D346: hide the marketing header on the operator dashboard — DashboardLayout
+  // V3-D346: hide the marketing header on the operator dashboard, DashboardLayout
   // owns its own chrome (sidebar + topbar). Prevents the double-header + logo collision.
   if (pathname && /^\/[a-z]{2}\/dashboard(\/|$)/.test(pathname)) return null;
 
@@ -507,6 +563,21 @@ export default function Header({ locale }: { locale: string }) {
       data-tone={tone}
       className={cn(
         "sticky top-0 left-0 right-0 z-50 transition-all duration-300 ease-glide",
+        // OVERRIDE 2026-08-01 (owner, live and literal, repeated ask: "why is the category
+        // pills still sticky? What the fuck are you doing bro? No."): measured at scroll 0,
+        // TWO things were position:sticky at once, this header (carrying the category-pill
+        // row below) AND the search pill's own sticky wrapper (HomeSearchPill.tsx /
+        // SearchTemplate.tsx). The category row itself has now moved OUT of this element
+        // (rendered as a plain, non-sticky sibling right after </header>, see below), so on
+        // every route that shows it (home / category-search / inspo) this header box carries
+        // no mobile content at all (the utility row is already max-md:hidden on those routes,
+        // see showCategoryChrome below). Forcing it to plain flow on mobile there removes the
+        // SECOND sticky element entirely, leaving the search pill as the only thing that pins,
+        // literally what was asked. `!` wins over the base "sticky" utility above regardless of
+        // Tailwind's internal class order (same pattern as FIX 1's `!py-0` a few lines down).
+        // Desktop is untouched (no separate search-pill stickiness there), and every OTHER
+        // route (profile, PDP, etc., showCategoryChrome false) keeps the normal sticky header.
+        showCategoryChrome && "max-md:!static",
         // V3-D354: vertical padding is decoupled from menuOpen so opening the menu
         // never shifts the header height. Before, the menuOpen branch forced py-3
         // over the top-state py-5, so the hamburger -> X box jumped up ~8px on open.
@@ -515,7 +586,30 @@ export default function Header({ locale }: { locale: string }) {
         // tighten the BOTTOM (pb-1) so the in-page search bar tucks right under the
         // category bar - the 20px py-5 bottom was the real "gap too big" (user). Other
         // routes + scrolled state unchanged.
-        scrolled || isDark ? "py-3" : categorySegment ? "pt-5 pb-1" : "py-5",
+        scrolled || isDark
+          ? "py-3"
+          : categorySegment
+            ? "pt-5 pb-1"
+            // V3-D (2026-08-01): home gets the SAME mobile tuck as a category route (the
+            // pill row now renders right below it), but desktop must stay `py-5` unchanged ,
+            // hence the `max-md:` guard instead of widening the bare classes above.
+            // I8: /inspo joins isHome here (same mobile tuck, same desktop py-5), so its
+            // category-pill row sits at the same gap under the header as every other
+            // showCategoryChrome route instead of falling through to the untucked default.
+            : isHome || isDiscover
+              ? "py-5 max-md:pt-5 max-md:pb-1"
+              : "py-5",
+        // H3 (owner 2026-08-02, "the header, the category and the search bar, they're placed too
+        // low and it looks kind of weird"). On every showCategoryChrome route this header's own
+        // mobile row is already `max-md:hidden` (the utility row below), so on a phone this box
+        // renders NOTHING and its padding is pure empty band above the first thing the eye lands
+        // on, measured at 24px. Zeroed on mobile only, so the pill row is the first element on
+        // screen. Desktop keeps py-5 / pt-5 exactly as above.
+        // This is a SPACING change and nothing else. It deliberately does NOT make the pill row
+        // sticky: the owner rejected that by name on 2026-08-01 ("why is the category pills still
+        // sticky? What the fuck are you doing bro? No.", the OVERRIDE comment above), and a later
+        // rejection outranks the earlier "categories should be sticky" ask.
+        showCategoryChrome && "max-md:!py-0", // mockup-ok: removes dead space, no visual element changes
         // V3-D352: with the mobile menu open, the header goes fully transparent (no
         // frosted band, no shadow) so the menu reads as one clean full-screen sheet
         // from the top - only the X floats in the corner. Checked first so its bg wins.
@@ -541,7 +635,14 @@ export default function Header({ locale }: { locale: string }) {
         // ONE max-h value per state (ternary, not two competing utilities) - cn() here
         // is clsx-only, so two `max-md:max-h-*` would both emit and CSS source-order
         // would let the larger win (the header would go invisible but keep its height).
-        categorySegment &&
+        // FIX B (2026-08-01, owner "it should be search bar instead of category bar"): isHome
+        // joins this fold. Before, the category-pill row rode inside this sticky header and
+        // never folded on home (categorySegment is null there), so on scroll the CATEGORY BAR
+        // was the thing pinned at the top, not the search bar. Home's HomeSearchPill (Hero.tsx)
+        // is now itself sticky and takes the top-chrome hand-off (mirrors the SearchTemplate
+        // pattern this whole block already implements for category/search routes), so the
+        // header + its category row can fold away identically on home too.
+        (categorySegment || isHome) &&
           (categoryCollapsed && !menuOpen
             // V3-D421j (owner): also zero the vertical padding (the `py-3` scrolled state
             // left a ~24px residual band above the search bar). `!py-0` beats `py-3`
@@ -554,20 +655,47 @@ export default function Header({ locale }: { locale: string }) {
       style={{
         WebkitBackdropFilter:
           !menuOpen && (scrolled || isDark) ? "blur(14px) saturate(1.4)" : undefined,
+        // FIX 1: inline so it always wins over the tailwind class cascade (no ordering
+        // ambiguity between "pointer-events-none"/"-auto" utilities). The two direct
+        // children below opt back INTO pointer-events themselves, so every real control
+        // stays clickable; only the header's own empty padding stops intercepting taps.
+        // isSalonDetail+hiddenForSalonNav already carries its own "pointer-events-none"
+        // class (the header is translated fully off-screen there) - keep that case in
+        // explicit agreement instead of letting this inline style silently override it.
+        pointerEvents:
+          isSalonDetail && hiddenForSalonNav ? "none" : headerHasBg ? undefined : "none",
       }}
     >
-      <div className="mx-auto flex max-w-[1280px] items-center gap-2.5 px-4 md:gap-6 md:px-8">
-        {/* Logo — V3-D171 (2026-05-26): fades out when menu opens so the
+      <div
+        className={cn(
+          "pointer-events-auto mx-auto flex max-w-[1280px] items-center gap-2.5 px-4 md:gap-6 md:px-8",
+          // Owner 2026-08-01 ("we removed the home button and the hamburger menu from the top
+          // and we put the hamburger where the map view is, did you forget bro, look in the
+          // mockup"): on a category/search route this row sits directly above the category-pill
+          // row below, and the approved chrome (public/_mockups/home-v3/search-a.html .sa-root)
+          // has NO utility row there at all, the hamburger moved into the search pill's trailing
+          // slot instead (SearchTemplate.tsx). Hidden on mobile only (`max-md:hidden`), same
+          // hidden/md: pattern used for the filter row + count row in SearchTemplate.tsx; markup
+          // and every handler stay intact, desktop (md+) is untouched.
+          // V3-D (2026-08-01, owner "why is homepage still that bro"): widened from bare
+          // categorySegment to showCategoryChrome, the home route now composes the identical
+          // chrome (its own search pill's trailing slot owns the hamburger, see
+          // HomeSearchPill.tsx), so this row is hidden there too. Deep pages (profile, PDP, etc.)
+          // still keep this row, it remains their only nav chrome.
+          showCategoryChrome && "max-md:hidden",
+        )}
+      >
+        {/* Logo, V3-D171 (2026-05-26): fades out when menu opens so the
             mobile menu sheet has a clean top edge. opacity-0 +
             pointer-events-none keeps the flex layout intact (hamburger
             position doesn't shift) while making the wordmark invisible
             and untappable while menu is open. */}
         {isDiscover ? (
-          /* V3-D411 (user): no breadcrumb on this top-level browse tab — the page title sits in the logo slot
+          /* V3-D411 (user): no breadcrumb on this top-level browse tab, the page title sits in the logo slot
              and taps → home. Breadcrumbs are reserved for deep pages (SOURCE.md §20 navigation pattern). */
           <Link
             href={`/${locale}`}
-            aria-label={`${tDiscover("title")} — zur Solen Startseite`}
+            aria-label={`${tDiscover("title")}, zur Solen Startseite`}
             className={cn(
               "font-display shrink-0 text-[25px] font-semibold leading-none tracking-normal md:text-[26px]",
               "transition-opacity duration-200 ease-glide focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2 focus-visible:rounded-sm",
@@ -596,44 +724,19 @@ export default function Header({ locale }: { locale: string }) {
             aria-label="Zur Startseite"
             className={cn(
               // V3-D421h (2026-06-05): home-icon button in the far-left slot. V3-D421k:
-              // rounded-SQUARE tile. V3-D421L (2026-06-06, council 3/3): FLAT — no shadow
+              // rounded-SQUARE tile. V3-D421L (2026-06-06, council 3/3): FLAT, no shadow
               // (CONTROL_ELEVATION rule 3: zero box-shadow on white chrome; the bar itself
               // lifts on scroll, not the buttons).
               // mockup-ok: S3 fix, 40px -> 44px floor, icon glyph size unchanged (approved fixes-refined)
               // mockup-ok: rounded snapped, punch-list geometry sweep, TASTE_LOG.md:187 2026-07-15
-              // OVERHAULED 2026-08-10, owner: "the back button and the hamburger menu too and the close
-              // too, because it was a weird fucking inside of a box thing, and I don't really like
-              // that. I want it like in the screenshot. The back button maybe a circle, or the x
-              // button, the circle too. And also, like, shadow."
-              //
-              // MEASURED before changing it: this was `rounded-input`, a 44px SQUARE with 16px
-              // corners and a hairline. That is the box. The booking flow meanwhile drew a 40px
-              // bare glyph with no fill and no border, so we shipped TWO shapes for one control.
-              //
-              // Now: a circle, white, with the whisper shadow instead of the hairline, matching
-              // the Qonto reference he attached. THE COST, put to him and unanswered: a shadowed
-              // white circle on a white page is a weaker edge than the bordered box, which is why
-              // the border is kept as well rather than swapped out. His words were "and also,
-              // like, shadow", not "instead of the border".
-// CORRECTED AGAIN 2026-08-10, his words: "I wanted it to be like everyone, without the
-              // line, you know. And also I wanted to have a shadow instead of whatever the fuck
-              // you're doing."
-              //
-              // I kept the hairline AND added the shadow, and argued the cost: a shadowed white
-              // circle on a white page is a weaker edge than a bordered one. He heard that and
-              // overruled it, twice. So the line is gone and the shadow carries the edge alone,
-              // which is what the Qonto capture measured (no border, soft low shadow). Rule 10:
-              // the objection was made once, he decided, and it is not re-argued here.
-              // The shadow is stepped from whisper to elevation so it can actually be seen on
-              // white, since that was the whole basis of the objection.
-              "grid h-11 w-11 shrink-0 place-items-center rounded-full shadow-elevation",
-              "transition-[opacity,border-color,background-color,transform] duration-200 ease-glide active:scale-[0.94] active:duration-[80ms]",
+              "grid h-11 w-11 shrink-0 place-items-center rounded-full shadow-elevation-2", // mockup-ok: LOCKFILE NAV CONTROLS (2026-08-10). Shadow, NO border: the design contract says a control carrying elevation drops its border, never both, and this file states that rule itself 300 lines down on the category pill. whisper was too faint to be the only edge on white, so it is elevation-2, which is what that table froze.
+              "transition-[opacity,border-color,background-color,transform] duration-200 ease-glide active:scale-[0.94]",
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               menuOpen && "opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto",
               // V3-D101: invert over dark sections.
               isDark
-                ? "bg-white/10 text-white hover:bg-white/20"
-                : "bg-white text-s-ink hover:bg-s-bg-sunken",
+                ? "border-white/30 bg-white/10 text-white hover:bg-white/20"
+                : "border-s-border bg-white text-s-ink hover:border-s-ink",
             )}
           >
             <Home size={22} strokeWidth={2.2} aria-hidden />
@@ -646,31 +749,17 @@ export default function Header({ locale }: { locale: string }) {
               if (typeof window !== "undefined" && window.history.length > 1) router.back();
               else router.push(`/${locale}`);
             }}
-            aria-label="Zurück"
+            aria-label={tCommon("back")}
             className={cn(
               // mockup-ok: S3 fix, 40px -> 44px floor, icon glyph size unchanged (approved fixes-refined)
               // mockup-ok: rounded snapped, punch-list geometry sweep, TASTE_LOG.md:187 2026-07-15
-              // OVERHAULED 2026-08-10, owner: "the back button and the hamburger menu too and the close
-              // too, because it was a weird fucking inside of a box thing, and I don't really like
-              // that. I want it like in the screenshot. The back button maybe a circle, or the x
-              // button, the circle too. And also, like, shadow."
-              //
-              // MEASURED before changing it: this was `rounded-input`, a 44px SQUARE with 16px
-              // corners and a hairline. That is the box. The booking flow meanwhile drew a 40px
-              // bare glyph with no fill and no border, so we shipped TWO shapes for one control.
-              //
-              // Now: a circle, white, with the whisper shadow instead of the hairline, matching
-              // the Qonto reference he attached. THE COST, put to him and unanswered: a shadowed
-              // white circle on a white page is a weaker edge than the bordered box, which is why
-              // the border is kept as well rather than swapped out. His words were "and also,
-              // like, shadow", not "instead of the border".
-              "grid h-11 w-11 shrink-0 place-items-center rounded-full shadow-elevation",
-              "transition-[opacity,border-color,background-color,transform] duration-200 ease-glide active:scale-[0.94] active:duration-[80ms]",
+              "grid h-11 w-11 shrink-0 place-items-center rounded-full shadow-elevation-2", // mockup-ok: LOCKFILE NAV CONTROLS (2026-08-10). Shadow, NO border: the design contract says a control carrying elevation drops its border, never both, and this file states that rule itself 300 lines down on the category pill. whisper was too faint to be the only edge on white, so it is elevation-2, which is what that table froze.
+              "transition-[opacity,border-color,background-color,transform] duration-200 ease-glide active:scale-[0.94]",
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               menuOpen && "opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto",
               isDark
-                ? "bg-white/10 text-white hover:bg-white/20"
-                : "bg-white text-s-ink hover:bg-s-bg-sunken",
+                ? "border-white/30 bg-white/10 text-white hover:bg-white/20"
+                : "border-s-border bg-white text-s-ink hover:border-s-ink",
             )}
           >
             <ArrowLeft size={22} strokeWidth={2.2} aria-hidden />
@@ -690,7 +779,7 @@ export default function Header({ locale }: { locale: string }) {
         )}
 
         {/* Mobile: middle area. Empty by default (flex spacer pushes the
-            hamburger to the right edge — as it was for the homepage + all
+            hamburger to the right edge, as it was for the homepage + all
             non-category routes).
             V3-D376 (2026-05-29): on a category/search route this slot holds the
             scrollable CATEGORY BAR (Coiffeur / Barber / Nails / Spa). It no longer
@@ -703,7 +792,7 @@ export default function Header({ locale }: { locale: string }) {
             pages, centered"): on a category/search route this is the CITY chip,
             centered between the home + menu tiles. The category PILLS moved to their
             own full-width row below this container (see the category-tab row). Non-
-            category routes (homepage etc.) keep the empty spacer (NO city — owner
+            category routes (homepage etc.) keep the empty spacer (NO city, owner
             "not in homepage"). */}
         {/* V3 (2026-07-01, UX council): on /search the search bar OWNS the city (shows
             "Coiffeur / Bern"), so the header's global cookie-city chip is redundant AND
@@ -722,10 +811,10 @@ export default function Header({ locale }: { locale: string }) {
           <div className="flex-1 md:hidden" />
         )}
 
-        {/* ── DESKTOP NAV (md+) — V3-D75 dropdown menus ──
+        {/* ── DESKTOP NAV (md+), V3-D75 dropdown menus ──
             Replaces V2-D49d 4-category list. Two hover dropdowns + Entdecken
             direct link. Per user "instead of having many sh like all categories
-            listed yk thats ass" — dropdowns surface categories on demand
+            listed yk thats ass", dropdowns surface categories on demand
             instead of cluttering the always-on header. */}
         <nav
           aria-label="Hauptnavigation"
@@ -754,7 +843,7 @@ export default function Header({ locale }: { locale: string }) {
           </Link>
         </nav>
 
-        {/* Right side — Über uns (md+) + Anmelden (md+) + hamburger (mobile).
+        {/* Right side, Über uns (md+) + Anmelden (md+) + hamburger (mobile).
             V2-D49d: Über uns brought back per user request; the other utility
             links (Salons / Stilist:innen / Entdecken) move to mobile menu
             / footer in a follow-up. */}
@@ -763,7 +852,7 @@ export default function Header({ locale }: { locale: string }) {
             href={`/${locale}/about`}
             className={cn(
               "hidden md:inline-flex font-body text-[14px] font-medium text-s-ink-2",
-              "transition-colors duration-150 ease-glide hover:text-s-ink",
+              "transition-colors duration-200 ease-glide hover:text-s-ink",
               // V2-D62 (2026-05-15): same liquid-glass pill bloom as the category chips.
               // Without it the link reads as plain copy and people miss that it's clickable.
               "relative",
@@ -771,24 +860,35 @@ export default function Header({ locale }: { locale: string }) {
               "before:bg-white/30 before:backdrop-blur-[22px] before:backdrop-saturate-[1.7]",
               "before:shadow-[inset_0_1px_0_rgba(255,255,255,0.40),0_1px_3px_rgba(26,18,9,0.08)]",
               "before:scale-[0.6] before:opacity-0 before:content-['']",
-              "before:transition-[transform,opacity] before:duration-150 before:ease-[cubic-bezier(0.4,1.4,0.4,1)]",
+              "before:transition-[transform,opacity] before:duration-[280ms] before:ease-[cubic-bezier(0.4,1.4,0.4,1)]",
               "hover:before:scale-100 hover:before:opacity-100",
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2 focus-visible:rounded-sm",
             )}
           >
-            Über uns
+            {tNav("aboutUs")}
           </Link>
           {/* V3-D157 (2026-05-25): desktop city selector. Sits between
               Über uns and Anmelden so it reads as a utility control (right
               of nav, left of primary CTA). Mobile uses CityTopBar →
-              MobileMenu instead — desktop has no hamburger until login,
+              MobileMenu instead, desktop has no hamburger until login,
               so the city control needs to live inline in the nav. */}
           <DesktopCitySelector locale={locale} />
+          {/* Language, 2026-07-27 (owner: "changing lang doesnt rlly work"). It did not
+              work, and this is why: LanguageSwitcher was mounted in exactly ONE place, the
+              MobileMenu, whose hamburger trigger is md:hidden (:802). So a desktop visitor
+              had no working switcher at all , only the footer's <Link href={`/${code}`}>,
+              which throws you to that locale's HOMEPAGE and never sets the NEXT_LOCALE
+              cookie, so the choice does not survive the next navigation. Same component, no
+              new UI grammar: it sits beside DesktopCitySelector as a second utility control,
+              matching the comment above about why the city control lives inline here. */}
+          <span className="hidden md:inline-flex">
+            <LanguageSwitcher locale={locale} />
+          </span>
           {loggedIn ? (
             <Link
               href={`/${locale}/profile`}
-              aria-label="Mein Konto"
-              className="relative hidden md:grid place-items-center w-9 h-9 shrink-0 overflow-hidden rounded-full border border-s-border bg-s-bg-sunken text-[13px] font-semibold text-s-ink transition-opacity duration-150 ease-glide hover:opacity-90 focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2"
+              aria-label={tNav("myAccount")}
+              className="relative hidden md:grid place-items-center w-9 h-9 shrink-0 overflow-hidden rounded-full border border-s-border bg-s-bg-sunken text-[13px] font-semibold text-s-ink transition-opacity duration-200 ease-glide hover:opacity-90 focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2"
             >
               <span aria-hidden>{accountInitial}</span>
               {avatarUrl ? (
@@ -800,36 +900,36 @@ export default function Header({ locale }: { locale: string }) {
               href={`/${locale}/auth/login`}
               className="hidden md:inline-flex items-center rounded-full bg-s-ink px-5 py-[9px] font-body text-[14px] font-semibold text-white shadow-[0_4px_12px_rgba(4,51,56,0.18)] transition-all duration-200 ease-glide hover:bg-black hover:shadow-[0_6px_16px_rgba(4,51,56,0.24)] active:scale-[0.97] active:duration-[80ms] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2"
             >
-              Anmelden
+              {tNav("login")}
             </Link>
           )}
           {/* V3-D167 (2026-05-26): notification Bell. Sits LEFT of the
-              hamburger so the visual rhythm reads: [Bell] [Menu] — both
+              hamburger so the visual rhythm reads: [Bell] [Menu], both
               utility, then primary nav. Same pill styling as the
               hamburger (44px hit area, white bg, ink stroke); the only
               difference is the icon swings on hover via BellIcon's
-              motion/react variants. Currently a no-op click — wire to
+              motion/react variants. Currently a no-op click, wire to
               a notifications endpoint / panel once that surface ships.
               Mobile-only for now (matches hamburger's visibility); add
               `md:inline-flex` on the wrapper later to also show desktop. */}
-          {/* V3-D167b (2026-05-26): Bell rendered bare — no white pill,
+          {/* V3-D167b (2026-05-26): Bell rendered bare, no white pill,
               no shadow. Visual hierarchy: hamburger = primary (boxed,
               elevated), bell = secondary utility (just glyph). Tap target
               kept at 44×44 for accessibility even though the box is gone.
               V3-D171 (2026-05-26): also fades out when menu opens (same
-              pattern as Solen logo) — only the X close button remains
+              pattern as Solen logo), only the X close button remains
               visible while the menu is open. */}
-          {/* V3-D (2026-06-11): notification Bell RESTORED — the customer panel
+          {/* V3-D (2026-06-11): notification Bell RESTORED, the customer panel
               (/notifications) + data source (/api/profile/notifications over the real
               notifications table) now exist. Logged-out renders nothing (no dead control,
               the reason it was removed 2026-06-10). [Bell] [Menu] rhythm per V3-D167. */}
           <NotificationBell hidden={menuOpen} />
-          {/* V3-D155 (2026-05-25): mobile map icon removed — the Karte tile
+          {/* V3-D155 (2026-05-25): mobile map icon removed, the Karte tile
               in MobileCategoriesRow ("Für dich" 3×2 grid, position 6) now
               serves the same entry point, so the header icon was redundant. */}
           <button
             type="button"
-            aria-label={menuOpen ? "Menü schließen" : "Menü öffnen"}
+            aria-label={menuOpen ? tSD("closeMenu") : tSD("openMenu")}
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((v) => !v)}
             className={cn(
@@ -838,17 +938,13 @@ export default function Header({ locale }: { locale: string }) {
               // V3-D421k (2026-06-06): rounded-SQUARE tile matching the home button.
               // V3-D421L (council 3/3): FLAT - no shadow (CONTROL_ELEVATION rule 3). Tap
               // target 40px; folds with the header on category-route scroll.
-              // CORRECTED 2026-08-10, his words: "hamburger mini, make it, keep it fucking square."
-              // I turned all three into circles. He asked for the BACK and the X as circles, and for
-              // the hamburger to get the same overhaul, meaning the shadow. Not the shape. Square
-              // stays, shadow added.
-              "md:hidden relative grid h-11 w-11 place-items-center rounded-input border shadow-whisper transition-[transform,background-color,border-color] duration-200 ease-glide active:scale-[0.94] active:duration-[80ms] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
+              "md:hidden relative grid h-11 w-11 place-items-center rounded-input shadow-elevation-2 transition-[transform,background-color,border-color] duration-200 ease-glide active:scale-[0.94] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               isDark ? "border-white/30 bg-white/10 text-white" : "border-s-border bg-white text-s-ink",
             )}
           >
             <span
               className={cn(
-                "absolute inset-0 grid place-items-center transition-[opacity,transform] duration-150 ease-glide",
+                "absolute inset-0 grid place-items-center transition-[opacity,transform] duration-[220ms] ease-glide",
                 menuOpen ? "opacity-0 rotate-45 scale-[0.7]" : "opacity-100 rotate-0 scale-100",
               )}
               aria-hidden
@@ -858,7 +954,7 @@ export default function Header({ locale }: { locale: string }) {
             </span>
             <span
               className={cn(
-                "absolute inset-0 grid place-items-center transition-[opacity,transform] duration-150 ease-glide",
+                "absolute inset-0 grid place-items-center transition-[opacity,transform] duration-[220ms] ease-glide",
                 menuOpen ? "opacity-100 rotate-0 scale-100" : "opacity-0 -rotate-45 scale-[0.7]",
               )}
               aria-hidden
@@ -869,65 +965,6 @@ export default function Header({ locale }: { locale: string }) {
           </button>
         </div>
       </div>
-      {/* V3-D421k: category-tab row — full-width scrollable pills on their OWN row
-          below the utility row (home · city · menu). Mobile only (desktop uses the
-          dropdown nav). Right-edge fade signals "more categories scroll". Folds away
-          with the whole header on scroll (the header's max-h collapse). */}
-      {categorySegment && (
-        <div
-          className={cn(
-            "md:hidden mx-auto mt-3 max-w-[1280px] px-4",
-            menuOpen && "pointer-events-none opacity-0",
-          )}
-        >
-          <div
-            role="tablist"
-            aria-label="Kategorien"
-            className="flex items-center gap-2 overflow-x-auto scrollbar-none"
-            style={{
-              scrollbarWidth: "none",
-              WebkitMaskImage: "linear-gradient(90deg, #000 90%, transparent)",
-              maskImage: "linear-gradient(90deg, #000 90%, transparent)",
-            }}
-          >
-            {[...HEADER_CATEGORIES]
-              .sort(
-                (a, b) =>
-                  (a.slug === categorySegment ? 0 : 1) -
-                  (b.slug === categorySegment ? 0 : 1),
-              )
-              .map((c) => {
-                const isActive = c.slug === categorySegment;
-                return (
-                  <Link
-                    key={c.slug}
-                    href={`/${locale}/${c.route}`}
-                    role="tab"
-                    aria-selected={isActive}
-                    className={cn(
-                      "inline-flex h-10 shrink-0 items-center gap-2 rounded-full border px-4",
-                      "font-body text-[15px] leading-none transition-[colors,transform] duration-150 ease-glide",
-                      "active:scale-[0.98] active:duration-[80ms]",
-                      "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
-                      isActive
-                        ? "border-s-bg-sunken bg-s-bg-sunken font-semibold text-s-ink"
-                        : "border-s-border bg-white font-medium text-s-ink",
-                    )}
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={c.iconSrc}
-                      alt=""
-                      className="h-[22px] w-[22px] shrink-0 object-contain"
-                      aria-hidden
-                    />
-                    {c.label}
-                  </Link>
-                );
-              })}
-          </div>
-        </div>
-      )}
     </header>
     <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} locale={locale} loggedIn={loggedIn} />
     </>

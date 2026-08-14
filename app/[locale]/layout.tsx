@@ -13,6 +13,7 @@ import WelcomeToast from "./_components/primitives/WelcomeToast";
 import Header from "./_components/layout/Header";
 import FooterGate from "./_components/layout/FooterGate";
 import HideInBooking from "./_components/layout/HideInBooking";
+import BottomNav from "./_components/layout/BottomNav";
 import OfflineBanner from "./_components/layout/OfflineBanner";
 // V3-D348 (tweak #3): CityTopBar retired — city control moved into the Header
 // as a single responsive "Basel" location pill (DesktopCitySelector). File kept on
@@ -111,7 +112,16 @@ export default async function LocaleLayout({
             <Header locale={locale} />
           </HideInBooking>
           <PageTransitionWrapper>
-            <main id="main-content" tabIndex={-1} className="pb-[env(safe-area-inset-bottom)] isolate">
+            <main
+              id="main-content"
+              tabIndex={-1}
+              // The bottom nav is `fixed`, so it is out of flow and would sit ON TOP of the last
+              // row of content. Measured before adding this: the final salon card was clipped by
+              // the bar at 375x812. 56px is the bar's own row height (h-14), and the safe-area
+              // inset is added on top of it exactly as the bar itself does, so the two agree on
+              // every device. md:pb-0 because the bar is `md:hidden`.
+              className="isolate pb-[calc(56px+env(safe-area-inset-bottom))] md:pb-[env(safe-area-inset-bottom)]"
+            >
               <HideInBooking coverSalonDetail>
                 <Breadcrumb />
               </HideInBooking>
@@ -122,16 +132,43 @@ export default async function LocaleLayout({
               so it renders site-wide (not just homepage). Replaces the
               legacy components-legacy/layout/Footer.tsx which was never
               mounted in the V3 rebuild. */}
+          {/* N2 (2026-08-11): the footer needs the same bottom padding `main` above already has.
+              It did not have it, and the footer is OUTSIDE main, so the floating nav sat on top of
+              the last row of the footer permanently. Measured: at maximum scroll the language
+              button ("DE") ran 764 to 804 while the bar ran 774 to 832, so 30px of a 40px control
+              was under the glass and `elementFromPoint` at its exact centre returned the nav's own
+              link. A real tap did nothing at all, at any scroll position, because the button's page
+              coordinates sit inside the bar's page coordinates the whole way down. Same expression
+              as main's, so the two cannot drift apart. */}
           <HideInBooking hideOnFeed hideOnDashboard hideOnAccount>
-            <FooterGate locale={locale} />
+            <div className="pb-[calc(56px+env(safe-area-inset-bottom))] md:pb-0">
+              <FooterGate locale={locale} />
+            </div>
           </HideInBooking>
-          {/* BottomTabBar removed from web rendering 2026-05-03 per Q58
-              ("No bottom nav (web-only decision); bottom-nav components
-              deprecated for web rendering. Mobile native/PWA can re-introduce
-              bottom nav later"). Component file preserved at
-              `components/layout/BottomTabBar.tsx` for the future PWA path.
-              FloatingNavPill was already removed; BottomTabBar mount was the
-              second resurrection that page-level verifier caught. */}
+          {/* THE BOTTOM NAV IS BACK, and this comment is the record of why, because the note that
+              used to sit here said the opposite for three months.
+
+              What it said: "BottomTabBar removed from web rendering 2026-05-03 per Q58 (No bottom
+              nav, web-only decision; bottom-nav components deprecated for web rendering. Mobile
+              native/PWA can re-introduce bottom nav later)."
+
+              Owner 2026-08-10, live and explicit, after being shown three options on
+              /dev/menu-placement and picking C: "I think I want to have, like, a bottom navigation
+              bar for, you know, the web area, so it's actually, like, easier."
+
+              This is a NEW component (BottomNav.tsx), not the old BottomTabBar remounted. The old
+              file is not touched and stays deprecated. The new one is built to a measurement of
+              airbnb.ch's real mobile web bar taken the same day, and it exists to solve a concrete
+              problem the old one never addressed: with the hamburger leaving the search bar, the
+              city selector and the language switcher had no trigger left on any customer route.
+
+              `hideOnDashboard` because the operator dashboard has a sidebar and a second nav there
+              is exactly what the owner killed on 2026-07-15. HideInBooking's own list already
+              covers booking, checkout and the queue tracker, where a commit action owns the bottom
+              of the screen (the sticky-CTA floor, hierarchy-density-06). */}
+          <HideInBooking hideOnDashboard coverSalonDetail>
+            <BottomNav locale={locale} />
+          </HideInBooking>
           {/* CookieConsentProvider auto-mounts the banner; placed at provider
               level so analytics / marketing consent is queryable everywhere. */}
           <PWAInstallPrompt />

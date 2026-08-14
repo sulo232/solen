@@ -361,6 +361,84 @@ function checkSalonPhotoIntegrity() {
 // ---------------------------------------------------------------------------
 // Invariant F: LOCKFILE hex vs drift-check ALLOWED_HEX reconciliation
 // ---------------------------------------------------------------------------
+function checkBuiltAssetsAreRendered() {
+  // Invariant G (2026-08-10). THE FAILURE THIS EXISTS FOR, measured the day it was written:
+  // `public/_pixel-refs/solen-icons/out/` holds 12 finished animated-icon clips, produced over 43
+  // rounds of the owner's own feedback (`_plans/AIRBNB_ANIMATED_ICONS_R2.md`, 99KB). A grep for
+  // `solen-icons` across `app/` and `lib/` returned ZERO hits. Weeks of approved work that never
+  // reached a screen, and nobody noticed until he asked where it went.
+  //
+  // Why this is a check and not a gate: nothing was wrong at the moment each file was written. The
+  // defect only exists LATER, as an absence, which is exactly the shape a PreToolUse gate cannot
+  // see. It is also cheap and objective: a rendered-output directory either has a reference in the
+  // app or it does not.
+  //
+  // Reports rather than fails. An asset can legitimately sit unwired for a while (a mockup
+  // reference, a capture kept for measurement). The point is that it stops being invisible.
+  const lines = [];
+  const OUT_DIRS = [
+    ["public/_pixel-refs/solen-icons/out", "solen-icons"],
+  ];
+
+  let anyUnwired = false;
+  for (const [rel, needle] of OUT_DIRS) {
+    const dir = join(PROJECT_ROOT, rel);
+    if (!existsSync(dir)) continue;
+    let files = [];
+    try {
+      files = readdirSync(dir).filter((f) => /\.(webm|apng|png|mp4|json)$/i.test(f));
+    } catch {
+      continue;
+    }
+    if (files.length === 0) continue;
+
+    let refs = 0;
+    for (const root of ["app", "lib", "components-legacy"]) {
+      const base = join(PROJECT_ROOT, root);
+      if (!existsSync(base)) continue;
+      const stack = [base];
+      while (stack.length) {
+        const cur = stack.pop();
+        let entries = [];
+        try {
+          entries = readdirSync(cur, { withFileTypes: true });
+        } catch {
+          continue;
+        }
+        for (const e of entries) {
+          const full = join(cur, e.name);
+          if (e.isDirectory()) {
+            stack.push(full);
+          } else if (/\.(tsx?|jsx?)$/.test(e.name)) {
+            try {
+              if (readFileSync(full, "utf8").includes(needle)) refs += 1;
+            } catch {
+              // unreadable file is not a finding
+            }
+          }
+        }
+      }
+    }
+
+    if (refs === 0) {
+      anyUnwired = true;
+      lines.push(
+        `UNWIRED: ${rel} holds ${files.length} built file(s) and NOTHING in app/, lib/ or ` +
+        `components-legacy/ references "${needle}". Finished work that reaches no screen.`,
+      );
+    } else {
+      lines.push(`OK: ${rel} (${files.length} files) is referenced from ${refs} source file(s)`);
+    }
+  }
+
+  if (lines.length === 0) {
+    report("G. Built assets reach a screen", true, ["SKIP: no tracked output directories on disk"]);
+    return;
+  }
+  // Reports, never fails: see the header. The value is visibility, not a red build.
+  report("G. Built assets reach a screen", true, anyUnwired ? lines : lines);
+}
+
 function checkColorTokenReconciliation() {
   // Finding doc-to-gate-drift-reconciliation (2026-07-27): the drift-check gate hardcodes a
   // literal ALLOWED_HEX allowlist mirroring LOCKFILE.md's token table. Twice now (2026-07-18,
@@ -472,6 +550,7 @@ checkDocPathsAlive();
 checkWorkflowsActuallyRun();
 checkSalonPhotoIntegrity();
 checkColorTokenReconciliation();
+checkBuiltAssetsAreRendered();
 
 console.log("");
 for (const r of results) {
