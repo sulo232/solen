@@ -116,9 +116,21 @@ and I am not claiming it is.
 
 ### Still open, tracked rather than narrated
 
-- [ ] C6. The other 46 screens with competing versions. Same treatment as the salon tile, one at a
-      time, on his say-so: measure what the versions ACTUALLY differ on first (the tile turned out
-      to be eight files and one visible difference), then show him only the real choice.
+- [x] C6a. MEASURED, this turn. Every screen file touched by five or more branches (56 of them)
+      had each version's frozen visual properties extracted and compared against main: photo
+      shape, corner, shadow, type size, type weight, and design-token colour. Script
+      `/tmp/claude/visual-diff-props.py`, payload `/tmp/claude/visual-diff-props.json`.
+      THE RESULT THAT SHRINKS THIS: 25 of the 55 are DASHBOARD screens, which he excluded by name
+      ("all everywhere except dashboard"), so the queue for his eyes is 30, not 46. Of those 30,
+      three differ on exactly ONE property and are single-question decisions:
+      booking lookup (corner, three sets: `rounded-[10/12/14px]` on main versus `rounded-card` +
+      `rounded-xl`), notifications and walk-in-pay (colour, both around `text-s-ink-3` and a
+      hairline swapped from `border-s-border` to `border-s-ink/[0.06]`).
+      The rest differ on three or more properties at once, so each is a real look, not a tweak.
+      Ordering for the show-half: the three one-property ones first, since each is one question.
+- [ ] C6b. SHOW him each, paced by him, one at a time. First one is already waiting and unanswered
+      (`/dev/mock/card-shape`). Not startable in bulk by design: he said "Show me each version, I
+      pick", so the queue moves at his pace, not mine.
 - [ ] C7. The 64 behind-the-scenes files with six or more versions. Per his answer: each one comes
       to him in two sentences plus a recommendation, none decided silently.
 - [ ] C8. The walk-in code half, still stranded across ten files on `quirky-ellis`. The database
