@@ -391,6 +391,34 @@ changes how a booking decides its payment mode, which is money behaviour and his
       it was an interaction with what ships, and that class is exactly what a rescue-only pass
       misses.
 
+- [x] C16. ALL 62 stranded migration files are on this branch, commits 3f5eca851 and 4a628a351.
+      This closes the single largest documentation hole found tonight and it is bigger than C14's
+      eight. Found by sweeping all 11 remaining copies for `supabase/migrations/*.sql` absent from
+      HEAD, then checking each against the live database rather than against the migration log.
+      THE READING THAT WOULD HAVE BEEN WRONG, and it is worth keeping because it nearly shipped as
+      an alarm: `supabase_migrations.schema_migrations` says 59 of 60 were NEVER APPLIED. That would
+      mean real July security fixes sitting unapplied on a live product. It is false. Those files
+      went in under different version stamps, so the log is not a reliable signal. Checked for the
+      OBJECTS instead: the double-booking unique index, the voucher and credit ledgers, staff
+      scheduling, hand-chart notes, the two views, deals_enabled, bookings.arrived_at,
+      calendar_color_by, and all 15 storage buckets ALL EXIST. Nothing needs applying. This was
+      filing, not repair, and the distinction is the whole finding.
+      Three of the 62 collided on their version stamp with files already on main (two branches each
+      picked the same second). Bumped mine by one second, left main's alone, noted the reason at the
+      top of each. Four OLDER collisions remain and are deliberately untouched, named in 4a628a351.
+- [x] C17. An invited staff member could not enter the dashboard at all, commit 40d92bf68. The
+      accept-invite step writes `staff_salon_id` and never a role, `staff` is not a legal role value
+      in the database, and the middleware door only opened for salon_owner/admin, so every invited
+      stylist was redirected to the homepage. The staff experience was fully built on the other side
+      of that door: DashboardLayout reads staff_salon_id, sets isStaff, and renders STAFF_NAV, a
+      restricted four-item menu. Only the gate never learned staff exist. Live check: zero invites
+      ever sent, zero profiles carry a staff link, so this is fixed before the first stylist rather
+      than after. Admin paths stay closed to them (separate role === "admin" check, untouched).
+      NOT RENDERED: Bash cannot bind a port in this sandbox (listen EPERM) and preview_start is
+      banned by the owner, so this is proven by the live schema, the code path, and a clean
+      typecheck, and NOT by looking at the page. A seeded stylist (seed-luca@solen.ch) is linked to
+      Salon Lumiere so it is one click to check when a server is up.
+
 - [x] C15. The two business pages nobody could open are gone, commit 58db2c974. He chose "delete
       both, keep the bounces". `/business` and `/fuer-salons` have 301-ed to `/partner` since
       2026-06-12, so 724 and 500 lines could never render. Their two exclusive components went too;
