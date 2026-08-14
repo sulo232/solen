@@ -34,6 +34,11 @@ const EXCLUDE = [
   /^(business|fuer-salons|partner|presse|karriere|ueber-uns|warum-solen|blog|brand\/)/,
   /^(vouchers|profile\/vouchers|profile\/gift-cards|salon\/\[slug\]\/gift-card)/,
   /^(coming-soon|staff-invite|onboarding\/salon)/,
+  // account/messages is the KILLED chat feature, not an inbox. REMOVED.md turned chat off on
+  // 2026-06-13 and the web page is a dead redirect to /profile. A builder checked before building
+  // it and skipped it, correctly. It was inflating the gap count by one, and a gap you must never
+  // close is not a gap. The app's real inbox is `notifications`, which exists and is wired.
+  /^account\/messages$/,
 ];
 
 // A web route and its app counterpart do not always share a path. These are the real pairs, each
