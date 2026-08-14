@@ -212,7 +212,7 @@ rows + disclosure row, partner, reviews, one dashboard card.
       the class that was already dead, plus a hairline swapped off the one locked `s-border` token.
       Nothing to look at, nothing to pick.
 
-- [x] C7. Commit 2bb7c61f9 , MEASURED and reduced, 2026-08-14, same date test as the screens (verified:
+- [x] C7. MEASURED and reduced, 2026-08-14, same date test as the screens (verified:
       /tmp/claude/backstage-ages.json). Of the behind-the-scenes files with six or more versions,
       38 qualify and main is the newest on 24 of them, so those are history like the screens. The
       14 where a branch is genuinely newer, in plain words:
