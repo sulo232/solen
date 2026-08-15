@@ -90,6 +90,34 @@ jobs:
             exit 1
           fi
 
+      # HARD ZERO, carved out of the ratchet above (2026-08-15). Not a new gate: the check
+      # already existed and already fires. `react-hooks/rules-of-hooks` catches a hook called
+      # after an early return, with the message "Did you accidentally call a React Hook after an
+      # early return?", and it is an ERROR, not a warning. What let one through was the RATCHET:
+      # one new error inside a 564-error budget does not raise the total, so it is invisible.
+      #
+      # The case, measured 2026-08-15: SalonImageGallery has `if (!open) return null`, and the
+      # commit that added photo reporting put two useMemo calls below it. Closed the component ran
+      # 14 hooks, open it ran 16, so React threw the instant the gallery opened and the nearest
+      # error boundary swallowed it in silence. Net effect for a customer: tapping any photo on a
+      # salon page did nothing at all, with no error on screen and none in the build.
+      #
+      # This rule class measures ZERO across the whole repo today, so the hard zero costs nothing
+      # and can never be absorbed by a baseline again. Keep it separate from BASELINE on purpose:
+      # a count-based budget is the wrong instrument for a defect that is invisible at runtime.
+      - name: react-hooks/rules-of-hooks must be ZERO (a hook after an early return renders nothing and throws no visible error)
+        run: |
+          set +e
+          npx eslint . -f json > hooks-lint.json 2>/dev/null
+          set -e
+          COUNT=$(node -e "const r=require('./hooks-lint.json');console.log(r.flatMap(f=>f.messages).filter(m=>m.ruleId==='react-hooks/rules-of-hooks').length)")
+          echo "react-hooks/rules-of-hooks violations: $COUNT (hard limit: 0)"
+          if [ "$COUNT" -ne 0 ]; then
+            echo "::error::a React hook is called conditionally or after an early return. That component throws on the render where the condition flips, an error boundary hides it, and the feature silently does nothing."
+            node -e "const r=require('./hooks-lint.json');r.forEach(f=>f.messages.filter(m=>m.ruleId==='react-hooks/rules-of-hooks').forEach(m=>console.log(f.filePath+':'+m.line+' '+m.message)))"
+            exit 1
+          fi
+
   # fe-01: the repo-wide `lint` ratchet above only guarantees the TOTAL error
   # count never goes up. It does not guarantee NEW code is clean, because a PR
   # can add 5 fresh `any`s in file A while an unrelated PR removes 5 in file B,
