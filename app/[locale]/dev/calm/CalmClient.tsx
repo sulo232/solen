@@ -82,6 +82,36 @@ const OPTIONS: Option[] = [
           #calm [class*="text-[17px]"] { font-size: 16px !important; }
           #calm * { letter-spacing: normal !important; }`,
   },
+  {
+    key: "anchor",
+    label: "One thing biggest",
+    blurb:
+      "Everything above, and then the one change the reference actually shouts about. On their screen the RATING is the biggest thing by a mile: their 4.94 is set at 72px, with a 46px gap down to the next size, while their section heading is small. Ours is upside down. Our heading is 30px and the rating sits at 20px, below it. This flips them, so the number a person came to see is what they see.",
+    // measure-ok: 72px, the 46px gap, and their small heading are read off the captured screen in
+    // _design-system/references/airbnb--reviews.md, which records the 72px as the rating digit
+    // "4.94", alone, by far the largest thing on the screen. Ours (30px heading, 20px rating) came
+    // from getComputedStyle on this very page. 56px rather than their 72px, because their rating
+    // sits on a screen with no page heading competing and ours does; it is a deliberate step toward
+    // their proportion, not a copy of their number, and that distinction is the point.
+    css: `#calm button, #calm [class*="rounded-full"]:not(img):not([class*="w-1"]) {
+            border-radius: 20px !important;
+          }
+          #calm img, #calm [aria-label] > span[class*="rounded-full"] { border-radius: 9999px !important; }
+          #calm .justify-end > button {
+            height: 32px !important; padding: 0 12px !important; font-size: 14px !important;
+            border-width: 1px !important; box-sizing: content-box !important;
+            padding-top: 6px !important; padding-bottom: 6px !important;
+            background-clip: content-box !important;
+          }
+          #calm .calm-hide-count { display: none !important; }
+          #calm [class*="text-[13px]"] { font-size: 14px !important; }
+          #calm [class*="text-[15px]"] { font-size: 16px !important; }
+          #calm [class*="text-[17px]"] { font-size: 16px !important; }
+          #calm * { letter-spacing: normal !important; }
+          /* the flip: the rating becomes the anchor, the heading steps back to a label */
+          #calm [class*="text-[20px]"] { font-size: 56px !important; line-height: 1 !important; }
+          #calm [class*="text-[30px]"] { font-size: 22px !important; }`,
+  },
 ];
 
 const ON = "h-11 rounded-full bg-s-ink-soft px-4 font-body text-[13px] font-semibold text-white"; // selected-ok
