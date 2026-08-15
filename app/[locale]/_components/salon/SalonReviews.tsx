@@ -211,13 +211,21 @@ export function SalonReviews({
             <div className="mt-5 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               {tiers.map((t) => (
                 <TabPill key={String(t.key)} active={active === t.key} onClick={() => setActive(t.key)} size="sm">
+                  {/* mockup-ok: revert of the bracket, owner 2026-08-15 verbatim, "ion fw the pill
+                      yk how it looks like star5(10) yk jst make 5star and then counts wout()".
+                      The parentheses were doing no work: a pill reading "5 [star] 13" already has
+                      three parts separated by a glyph and a gap, so the brackets were a fourth
+                      separator around something nothing could be confused with (taste rule 2, an
+                      element carries information or it goes). Dropped on the star tiers AND on
+                      Alle, because leaving them on one and not the other is the inconsistency
+                      that reads as a bug. The count itself is unchanged and still real. */}
                   {t.key === "all" ? (
-                    `Alle (${t.count})`
+                    `Alle ${t.count}`
                   ) : (
                     <span className="inline-flex items-center gap-1">
                       {t.key}
                       <Star size={11} strokeWidth={0} aria-hidden className="fill-s-star" />
-                      {`(${t.count})`}
+                      {t.count}
                     </span>
                   )}
                 </TabPill>
