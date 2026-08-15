@@ -638,7 +638,15 @@ export function welcomeEmail(
   to: string,
   vars: { name: string },
   locale: EmailLocale = "de",
-  step: 1 | 2 | 3 = 1
+  // NARROWED from `1 | 2 | 3` on 2026-08-15, found by the new /dev/emails preview: every
+  // locale array below holds TWO entries, so step 3 read undefined and threw a TypeError
+  // on `s.subject`, taking the whole send with it. The third step was never written. The
+  // type was widened when the 3-step onboarding wizard landed (adcd252e2) and the body
+  // never followed; the job then moved to lib/email-templates/welcome-series.ts
+  // (welcomeDay0/3/7), which is what /api/cron/welcome-series actually calls. So this is
+  // superseded, not lost: do NOT invent a third body. Narrowing turns a runtime crash
+  // into a compile error. No production caller exists today (grepped app/ and lib/).
+  step: 1 | 2 = 1
 ): EmailPayload {
   const steps: Record<EmailLocale, { subject: string; html: string }[]> = {
     de: [
