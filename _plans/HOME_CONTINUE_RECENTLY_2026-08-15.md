@@ -326,3 +326,47 @@ The mobile-view rule, measured rather than eyeballed:
     recently-viewed card    231 wide at left 16
     the line                pill 16, continue card 16, recently viewed 16
     horizontal page scroll  none
+
+
+## The grey box: cause found, and it was a rule with no gate
+
+> You keep making this icon instead of a gray boxing. I told you I don't like this at all. Need me
+> to do it so many times. Where is this coming from? ... Fix the core problem.
+> And, also, the shadow is barely invisible.
+
+- [x] **L1. WHERE IT CAME FROM.** Not a taste file. CLAUDE.md's imagery row already bans it in
+      those words: "NEVER a bare grey box (fallback = sunken + category icon + initial)". What
+      shipped was a sunken box holding a generic lucide magnifier, which is neither a category icon
+      nor an initial, so it was the banned bare grey box wearing a symbol. A RULE WITH NO GATE,
+      which is the shape that keeps losing to task focus.
+- [x] **L2. The real fix was to delete the slot, not restyle it.** That fallback is written for a
+      SALON with a missing photo. A recent SEARCH has no salon, so there is no category icon and no
+      initial to fall back TO. The slot only existed because the layout was ported from a card that
+      assumes an entity with a photo. Removed; the sentence now takes the full 274px instead of 170.
+      verified live: no `place-items-center` box in the card, text column 274px.
+- [x] **L3. Swept the siblings instead of fixing the one instance.** Four other places use a sunken
+      box: `WalkInBand.tsx:74` fills it with a real category image, `RecentlyViewedClient.tsx:100`
+      with the salon's initial, `salon-of-month-admin` is a dashboard, and `RecentlyViewedTiles.tsx`
+      (already deleted from the homepage today) has a bare MapPin. So three of four were already
+      legal and only mine was not.
+- [x] **L4. The shadow, decided by rendering all three rather than by token name.** Probed on the
+      real page: `elevation-2` (0 2px 8px, 0.09) has no visible edge on white, `whisper` shows a
+      faint bottom edge, `elevation-3` (0 6px 16px, 0.12) reads all round. Now elevation-3.
+      verified live: computed boxShadow rgba(50,47,44,0.12) 0px 6px 16px.
+
+**The deviation this creates, surfaced rather than buried.** FLOORS LAW 4 offers three ways to make
+an elevated container visible: sit it on the sunken tray, use a flush photo edge, or on white keep
+the hairline OR step to elevation-2. He rejected the sunken tray by name today ("what is this gray
+divided shit"), the photo edge no longer applies now the card has no photo, and of the third he
+rejected the hairline ("why did you make it flat? Make a shadow") and cannot see elevation-2. Every
+option the rule offers is spent, so the card takes the next step up. The table probably wants a
+"card on white with no photo" row, and that is his call.
+
+### Harden
+
+FIX THE EXISTING ONE, no new gate file. `no-decorative-image-gate.py` already encodes exactly this
+rule in the opposite direction: it blocks a photo with NO DATA behind it. It gained a second arm
+that blocks NO PHOTO dressed up as one, a sunken box whose filling is a generic lucide glyph rather
+than a category icon or an initial. 7/7 on the new arm including all three legal shipped patterns,
+and the original 4 self-test cases still pass. Run against the real files it passes the fixed card
+and both legal siblings and blocks the one dead component that still has a bare glyph.

@@ -36,7 +36,6 @@ import * as React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
-import { Search } from "lucide-react";
 import { useRecentSearches, recentLabel } from "./useRecentSearches";
 
 type BookingSalon = { slug: string | null; name: string | null; cover_photo_url: string | null };
@@ -198,8 +197,22 @@ function ContinueShell({
   photoUrl?: string | null;
 }) {
   return (
-    /* Owner-approved 2026-08-15, and each number was measured rather than chosen:
-         SHADOW, NO BORDER. He asked for the shadow back by name. The locked surface table says a
+    /* SHADOW = elevation-3, and this is a DEVIATION from the surface table, surfaced not hidden.
+       Owner 2026-08-15: "the shadow is barely invisible. Like, I can't even see anything on the
+       card." He is right. I rendered all three candidates on the real page and looked:
+         elevation-2  0 2px 8px rgba(50,47,44,0.09)                     no visible edge on white
+         whisper      0 1px 3px 0.04 + 0 10px 28px -14px 0.10           barely a bottom edge
+         elevation-3  0 6px 16px rgba(50,47,44,0.12)                    a defined edge all round
+       THE COLLISION, stated rather than quietly resolved: FLOORS LAW 4 gives three ways to make an
+       elevated container visible, (a) sit it on the sunken tray, (b) a flush photo edge, or (c) on
+       white keep the hairline OR step to elevation-2. He has rejected (a) by name this same day
+       ("what is this gray divided shit"), (b) does not apply now that the card carries no photo,
+       and of (c) he rejected the hairline ("why did you make it flat? Make a shadow") and cannot
+       see elevation-2. Every option the rule offers is spent, so the card takes the next step up.
+       His live instruction outranks the token table in the precedence chain; the table should
+       probably gain a "card on white with no photo" row, which is his call, not mine.
+
+       The rest, measured rather than chosen: He asked for the shadow back by name. The locked surface table says a
            card carrying elevation drops its border and never carries both, so the hairline went.
          PHOTO 87 x 70, ratio 1.24, our house 5:4. It was 88 SQUARE, which he rejected by name
            more than once ("what the fuck is it fucking square").
@@ -209,7 +222,7 @@ function ContinueShell({
        The grey band this used to sit on is gone; he called it "gray divided shit". */
     <Link
       href={href}
-      className="flex h-[118px] w-full items-center gap-3.5 rounded-[18px] bg-white p-4 shadow-elevation-2 transition-transform duration-150 ease-glide active:scale-[0.99]"
+      className="flex h-[118px] w-full items-center gap-3.5 rounded-[18px] bg-white p-4 shadow-elevation-3 transition-transform duration-150 ease-glide active:scale-[0.99]"
     >
       <span className="min-w-0 flex-1">
         {eyebrow && (
@@ -231,16 +244,18 @@ function ContinueShell({
         </span>
         {meta && <span className="mt-[3px] block truncate font-body text-[12px] text-s-ink-2">{meta}</span>}
       </span>
-      {photoUrl ? (
+      {/* NO PHOTO SLOT WHEN THERE IS NO PHOTO. Owner 2026-08-15, and he had said it before:
+          "You keep making this icon instead of a gray boxing. I told you I don't like this at all
+          ... Where is this coming from? Fix the core problem."
+          The core: CLAUDE.md's imagery rule says a missing photo gets "sunken bg + category icon +
+          initial, NEVER a bare grey box". That fallback is defined for a SALON. A recent SEARCH has
+          no salon, so it has no category icon and no initial to fall back TO, and what shipped was a
+          sunken box with a generic magnifier, which is exactly the bare grey box the rule bans,
+          wearing a glyph. The slot only existed because this card's layout was ported from one that
+          assumes an entity with a photo. No entity, no slot: the sentence takes the whole card. */}
+      {photoUrl && (
         <span className="relative h-[70px] w-[87px] shrink-0 overflow-hidden rounded-[14px] bg-s-bg-sunken">
           <Image src={photoUrl} alt="" fill sizes="87px" className="object-cover" />
-        </span>
-      ) : (
-        <span
-          className="grid h-[70px] w-[87px] shrink-0 place-items-center rounded-[14px] bg-s-bg-sunken text-s-ink-2"
-          aria-hidden
-        >
-          <Search size={24} strokeWidth={1.75} />
         </span>
       )}
     </Link>
