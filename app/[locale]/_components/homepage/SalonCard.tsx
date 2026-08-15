@@ -550,8 +550,20 @@ export function SalonCard({
                     Wegleitung 2025 p.17: an advertised minimum price must describe the concrete
                     offer. Without a name we show the bare number instead of an unqualified
                     from-price, because the bare number claims less, not more. */}
+                {/* 2026-08-15: the price is the card's SECOND ANCHOR and it was rendering at
+                    12px/400 ink-2, identical to the category, the city AND the rating. Four of
+                    five meta values the same is why the owner read the card as "not balanced ...
+                    it looks empty": one ink element, then a flat grey block. The locked hierarchy
+                    row already said otherwise ("price bold-ink but smaller than name") and V3-D442
+                    wants name and price as the two ink anchors with the NAME larger, so 14/600
+                    name against 12/600 ink price keeps SIZE as the anchor marker.
+                    `emphasis` is PriceFrom's own prop for this; the first attempt hand-set classes
+                    on the CardMeta parent instead, which is the hand-drawing FLOORS LAW 9 bans and
+                    it did not win the colour anyway. */}
                 <PriceFrom
                   amount={priceFromCHF}
+                  emphasis
+                  className="text-s-ink"
                   label={priceFromService ? `${priceFromService} ${fromLabel}` : undefined}
                 />
               </CardMeta>
