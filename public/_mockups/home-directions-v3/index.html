@@ -358,6 +358,14 @@ var STORAGE_KEY = "solen.recently-viewed";
       broken-looking mockup and a false accusation against the component.
    2. Reading the slugs and photos off the live cards means the seeded history is the same data the
       rest of the page is showing, so the row cannot drift from the feed above it. */
+var IDS = {
+  "cuts-and-culture":  "5784b1ab-7314-437a-a608-01a729f02cdd",
+  "haarsalon-margot":  "f4f9bdc6-96e9-4bbb-819d-3a2931897e57",
+  "atelier-haarwerk":  "dd4a3e35-8b9c-4ee6-a52e-1fb71ce04f89",
+  "nail-studio-bliss": "ca037638-362a-491b-ada2-238e20d9d4a9",
+  "velvet-face":       "1c217cdc-f342-4790-91ec-c87709468666"
+};
+
 function harvestEntries(doc){
   var out = [], seen = {};
   var links = doc.querySelectorAll('a[href*="/salon/"]');
@@ -379,10 +387,23 @@ function harvestEntries(doc){
       try { src = decodeURIComponent(src.split("url=")[1].split("&")[0]); } catch (e) { continue; }
     }
     if (src.indexOf("/_next/image") > -1) continue;   // still wrapped, do not store it
-    var name = (a.textContent || "").trim().split("\n")[0].slice(0, 40);
-    if (!name) continue;
+    /* Take the name from the card's HEADING, not from the anchor's whole textContent. textContent
+       has no line breaks, so splitting on "\n" returned the entire card as the name and seeded
+       "Cuts & Culture4.8Barbershop4056 Basel15" into localStorage. The live component then rendered
+       that as the salon name and the row looked broken, which was my seed poisoning it rather than
+       any fault of RecentlyViewed.tsx. */
+    var head = a.querySelector("h3, h2, [class*='font-semibold']");
+    var name = ((head && head.textContent) || "").trim().slice(0, 40);
+    if (!name || name.length < 2) continue;
+    /* The real salon UUID matters. RecentlyViewed.tsx looks its rating, price, postal code and city
+       up from salonData KEYED BY ID, so an entry without one renders the bare card: no rating (the
+       "—" placeholder), no city, no price, 20px shorter than every other card on the page. That
+       looked like a fault in the component and was a gap in my seed. Ids read from the live
+       database 2026-08-15. */
+    var id = IDS[slug];
+    if (!id) continue;
     seen[slug] = 1;
-    out.push({ slug: slug, name: name, category: "coiffeur", photoUrl: src });
+    out.push({ id: id, slug: slug, name: name, category: "coiffeur", photoUrl: src });
   }
   return out;
 }

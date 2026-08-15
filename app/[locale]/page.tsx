@@ -38,14 +38,12 @@ import {
   getTopSalonIds,
   getNearbyTeaserCount,
   getTopSalonIdsByCategory,
-  getBaselShopCount,
 } from "./_components/homepage/salonCardData";
 // I4/I5 (2026-08-01, home rails reconciliation with public/_mockups/home-v3/search-a.html): the
 // mockup's 4-across "Recently viewed" tile grid (real localStorage view history, city cell) and
 // "Popular looks" photo tile grid (real seeded discovery items with a real price). Both compose
 // existing Section/SectionFrame/SectionTitle primitives; neither touches the existing
 // RecentlyViewed.tsx rail or Entdecken.tsx (this task's own no-touch list).
-import RecentlyViewedTiles from "./_components/homepage/RecentlyViewedTiles";
 import PopularLooks from "./_components/homepage/PopularLooks";
 // I7 (2026-08-01, home rails reconciliation with public/_mockups/home-v3/search-a.html
 // continuationCard()): the home's FIRST element, mounted ahead of MobileCategoriesRow per the
@@ -212,13 +210,13 @@ export default async function Page({
   // topByCategory (TopCategoryRails' four per-category rails) joins the same
   // parallel batch, same reasoning. (A6, 2026-08-05: availableThisWeekIds left this batch with
   // the "Bald frei" section it fed, see the import-site comment above.)
-  // I4 (2026-08-01): baselShopCount joins the same parallel batch, same reasoning as the I3 ids
-  // above , RecentlyViewedTiles' city cell needs a real active-salon count, never a fabricated one.
-  const [topSalonIds, nearbyCount, topByCategory, baselShopCount] = await Promise.all([
+  // I4's baselShopCount left this batch on 2026-08-15 with RecentlyViewedTiles, the only thing that
+  // consumed it. Leaving the query in would have run getBaselShopCount() on every homepage render
+  // for a value nothing reads.
+  const [topSalonIds, nearbyCount, topByCategory] = await Promise.all([
     getTopSalonIds(4),
     getNearbyTeaserCount(),
     getTopSalonIdsByCategory(10),
-    getBaselShopCount(),
   ]);
   // One combined batch fetch (2 bulk Supabase queries inside
   // getSalonCardDataMap, not one per salon) for every real salon id the
@@ -282,10 +280,11 @@ export default async function Page({
         <SalonOfMonth locale={locale} />
         <ForYouAffinityRow />
         <ForYouSalonRows salonData={salonCardData} />
-        {/* I4: real localStorage view-history tile row, search-a.html's own position (directly
-            above the "Top on Solen" rail RecentlyViewed.tsx's fallback title renders below). Builds
-            nothing when there is no real history , never a fabricated substitute. */}
-        <RecentlyViewedTiles baselShopCount={baselShopCount} />
+        {/* RecentlyViewedTiles REMOVED 2026-08-15, owner: "u again didnt remove the zulezt like
+            square sh", said twice. It rendered a second "Zuletzt angesehen" heading directly above
+            this one, with the same salons in 86x86 SQUARE tiles against this row's 242x194 card, so
+            one entity wore two shapes on one screen. RecentlyViewed below keeps the job and renders
+            the page's own card. Graveyard line filed in _design-system/REMOVED.md. */}
         <RecentlyViewed salonData={salonCardData} topSalonIds={topSalonIds} />
         {/* A4 (owner 2026-08-05): map only, the SalonCard rail under it is gone. */}
         <Nearby salonData={salonCardData} nearbyCount={nearbyCount} />
