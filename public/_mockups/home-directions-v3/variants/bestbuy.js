@@ -9,7 +9,8 @@
      rating; the photo is the only image. The rail ENDS with a terminal tile, same width, sunken,
      no photo, a clock over a short label, and that tile IS the see-all, so MK.seeAll is
      deliberately not called: this reference has no header arrow at all.
-     The rating renders as value and count, because MK owns no star icon and a hand-drawn one is refused.
+     The rating comes from MK.rating, one implementation for the whole page. Added after this file
+     was written, when the five directions turned out to draw the same element four different ways.
 
    TYPE: 4 sizes, 22 / 15 / 14 / 12. 2 weights, 600 / 400.
 
@@ -69,10 +70,7 @@ window.DIRECTIONS.bestbuy = {
         ";white-space:nowrap;overflow:hidden;text-overflow:ellipsis");
       cat.textContent = s.cat;
 
-      var rate = MK.el(doc, "span",
-        "display:block;margin-top:2px;font:400 12px/1.35 " + BODY + ";color:" + INK2 +
-        ";font-variant-numeric:tabular-nums;white-space:nowrap");
-      rate.textContent = s.r + " (" + s.c + ")";
+      var rate = MK.rating(doc, s);
 
       a.appendChild(name);
       a.appendChild(cat);

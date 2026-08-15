@@ -33,7 +33,6 @@
   var INK = "#0A0A0A";
   var INK2 = "#6B6B6B";
   var SUNKEN = "#F4F4F5";
-  var STAR = "#FFC32B";
   var DISPLAY = "'Inter Tight',Inter,sans-serif";
   var BODY = "Inter,'Inter Tight',sans-serif";
 
@@ -92,15 +91,20 @@
 
   function viewedThumb(doc, MK, salon) {
     var R = MK.REF;
+    /* The heart is a SIBLING of the link, not a child of it. A button inside an anchor is invalid
+       HTML: the parser hoists it out of the link, so the card silently loses part of its tap area
+       and the heart ends up outside the thing it belongs to. Our real SalonCard already overlays
+       HeartButton this way, so this also keeps the two implementations the same shape. */
+    var wrap = MK.el(doc, "div",
+      "flex:0 0 " + R.thumbW + "px;width:" + R.thumbW + "px;position:relative");
+
     var a = doc.createElement("a");
     a.href = "#";
-    a.style.cssText =
-      "flex:0 0 " + R.thumbW + "px;width:" + R.thumbW + "px;display:block;text-decoration:none;color:" + INK;
+    a.style.cssText = "display:block;width:100%;text-decoration:none;color:" + INK;
 
     var box = MK.el(doc, "div",
       "position:relative;width:" + R.thumbW + "px;height:" + R.thumbH + "px;margin-bottom:8px");
     box.appendChild(MK.photo(doc, salon.photo, "width:100%;height:100%;border-radius:16px"));
-    box.appendChild(heartBadge(doc, MK));
 
     var name = MK.el(doc, "div",
       "font:600 13px/1.3 " + BODY + ";color:" + INK + ";" +
@@ -112,23 +116,16 @@
       "overflow:hidden;text-overflow:ellipsis;white-space:nowrap");
     cat.textContent = salon.cat;
 
-    /* The star is a text glyph, never a hand-drawn SVG path (MK.svg has no star and the icon rule
-       refuses hand-written paths). It keeps its #FFC32B token and sits next to a darker companion,
-       the rating value, which is what the contrast bound requires of a 1.60:1 hue. */
-    var rating = MK.el(doc, "div",
-      "font:400 12px/1.35 " + BODY + ";color:" + INK2 + ";margin-top:2px;" +
-      "font-variant-numeric:tabular-nums;display:flex;align-items:center;gap:4px;white-space:nowrap");
-    var star = MK.el(doc, "span", "color:" + STAR + ";font:400 12px/1 " + BODY, "★");
-    var value = doc.createElement("span");
-    value.textContent = salon.r + " (" + salon.c + ")";
-    rating.appendChild(star);
-    rating.appendChild(value);
+    var rating = MK.rating(doc, salon);
 
     a.appendChild(box);
     a.appendChild(name);
     a.appendChild(cat);
     a.appendChild(rating);
-    return a;
+
+    wrap.appendChild(a);
+    wrap.appendChild(heartBadge(doc, MK));
+    return wrap;
   }
 
   window.DIRECTIONS.airbnb = {

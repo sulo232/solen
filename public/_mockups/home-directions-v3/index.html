@@ -150,12 +150,33 @@ window.MK = (function(){
     search: '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
     clock: '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
     x: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
-    heart: '<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>'
+    heart: '<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>',
+    star: '<path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/>'
   };
-  function svg(name, px, stroke){
-    return '<svg class="lucide lucide-' + name + '" width="' + px + '" height="' + px + '" viewBox="0 0 24 24" ' +
-      'fill="none" stroke="currentColor" stroke-width="' + (stroke || 2) + '" stroke-linecap="round" ' +
-      'stroke-linejoin="round">' + ICON[name] + '</svg>';
+  /* Real Lucide class names are kebab-case (lucide-arrow-right), so the camelCase key has to be
+     converted or every grep, gate and devtools search that looks for the real name misses ours. */
+  function svg(name, px, stroke, fill){
+    var cls = name.replace(/[A-Z]/g, function(c){ return "-" + c.toLowerCase(); });
+    return '<svg class="lucide lucide-' + cls + '" width="' + px + '" height="' + px + '" viewBox="0 0 24 24" ' +
+      'fill="' + (fill || 'none') + '" stroke="currentColor" stroke-width="' + (stroke || 2) + '" ' +
+      'stroke-linecap="round" stroke-linejoin="round">' + ICON[name] + '</svg>';
+  }
+
+  /* ONE rating line for the whole page. Added 2026-08-15 after the five directions were built:
+     two of them drew a text glyph star, one dropped the star entirely because it believed the kit
+     had none, and one showed no rating at all. Four implementations of one element is the exact
+     drift FLOORS LAW 8 names, and the cause was the kit not owning it, so the kit owns it now.
+     The star keeps #FFC32B and sits beside a darker value, which is what its 1.60:1 contrast needs. */
+  function rating(doc, salon){
+    var line = el(doc, "div",
+      "font:400 12px/1.35 Inter,'Inter Tight',sans-serif;color:#6B6B6B;margin-top:2px;" +
+      "font-variant-numeric:tabular-nums;display:flex;align-items:center;gap:4px;white-space:nowrap");
+    line.appendChild(el(doc, "span",
+      "color:#FFC32B;display:flex;align-items:center", svg("star", 12, 1.5, "currentColor")));
+    var v = doc.createElement("span");
+    v.textContent = salon.r + " (" + salon.c + ")";
+    line.appendChild(v);
+    return line;
   }
 
   // MEASURED reference geometry. A direction reads these; it does not invent sizes.
@@ -226,7 +247,7 @@ window.MK = (function(){
     });
   }
 
-  return { SALONS: SALONS, REF: REF, svg: svg, el: el, seeAll: seeAll,
+  return { SALONS: SALONS, REF: REF, svg: svg, el: el, seeAll: seeAll, rating: rating,
            sectionHead: sectionHead, rail: rail, photo: photo, fixPillIcons: fixPillIcons };
 })();
 
@@ -239,17 +260,53 @@ window.DIRECTIONS = {};
    reason the row read as absent.
    ========================================================================== */
 var STORAGE_KEY = "solen.recently-viewed";
+
+/* Harvest the entries from what the page ITSELF is already rendering, rather than handing it a
+   list I wrote. Two reasons, one of them found the hard way:
+   1. RecentlyViewedTiles renders its photo through next/image, which only accepts hosts in the
+      Next config. Seeding an outside stock URL made every tile a bare grey box, which is both a
+      broken-looking mockup and a false accusation against the component.
+   2. Reading the slugs and photos off the live cards means the seeded history is the same data the
+      rest of the page is showing, so the row cannot drift from the feed above it. */
+function harvestEntries(doc){
+  var out = [], seen = {};
+  var links = doc.querySelectorAll('a[href*="/salon/"]');
+  for (var i = 0; i < links.length && out.length < 4; i++) {
+    var a = links[i];
+    var href = a.getAttribute("href") || "";
+    var slug = href.split("/salon/")[1];
+    if (!slug) continue;
+    slug = slug.split(/[?#/]/)[0];
+    if (!slug || seen[slug]) continue;
+    var img = a.querySelector("img");
+    var src = img && (img.currentSrc || img.getAttribute("src"));
+    if (!src) continue;
+    /* The page renders through next/image, so what is in the DOM is already `/_next/image?url=...`.
+       Storing THAT makes the component proxy an already-proxied URL on the next paint and every
+       tile fails to load. Unwrap back to the original source and let next/image proxy it once. */
+    var wrapped = src.indexOf("/_next/image") > -1 && src.indexOf("url=") > -1;
+    if (wrapped) {
+      try { src = decodeURIComponent(src.split("url=")[1].split("&")[0]); } catch (e) { continue; }
+    }
+    if (src.indexOf("/_next/image") > -1) continue;   // still wrapped, do not store it
+    var name = (a.textContent || "").trim().split("\n")[0].slice(0, 40);
+    if (!name) continue;
+    seen[slug] = 1;
+    out.push({ slug: slug, name: name, category: "coiffeur", photoUrl: src });
+  }
+  return out;
+}
+
 function seedFrame(frame){
   try {
     var w = frame.contentWindow;
-    if (!w || !w.localStorage) return false;
+    var doc = frame.contentDocument;
+    if (!w || !w.localStorage || !doc) return false;
     if (w.localStorage.getItem(STORAGE_KEY)) return true;
-    w.localStorage.setItem(STORAGE_KEY, JSON.stringify(
-      window.MK.SALONS.slice(0, 4).map(function(s){
-        return { slug: s.slug, name: s.name, category: s.category, photoUrl: s.photo };
-      })
-    ));
-    frame.contentWindow.location.reload();
+    var entries = harvestEntries(doc);
+    if (entries.length < 2) return false;   // page not painted yet, try again next tick
+    w.localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+    w.location.reload();
     return true;
   } catch (e) { return false; }
 }
