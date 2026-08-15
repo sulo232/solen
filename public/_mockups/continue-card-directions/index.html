@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Continue card: three directions, city dropped</title>
+<!-- Base: capture live -->
+<!-- Scale: full-page -->
+<!--
+  Mockup-scope: whole-page
+  Grounded-in: app/[locale]/_components/homepage/ContinueCard.tsx
+  Depicts: the homepage feed -> app/[locale]/page.tsx
+  treatment-only for the surrounding page: header, search, cards, type and colours are untouched.
+  measure-ok.
+
+  TWO live iframes of the SAME real route /en. BEFORE is untouched. AFTER runs applyChange(doc) on
+  the real page, marks what it touched with data-sweep-done, labels it and scrolls it into view. The
+  A / B / C buttons change WHICH direction is injected into the AFTER pane.
+
+  measured: his screenshot, PIL-sampled this turn on a 402pt phone: continue card 321pt wide with
+    the next card peeking, 124pt of content, photo 70pt on the right, pill height 38pt, pill emoji
+    18.4pt tall. The card sits BELOW the category pills.
+  measured: our live page via getBoundingClientRect this turn: category pill 113x40px, its icon
+    28x28px, pill font 14px, pill radius 40px. So our icon is 28px where the reference is ~18pt in a
+    pill of nearly identical height, which is why he said the icons look too big.
+  measured: the card here is 124px tall, up from 98px, because he asked for taller and NOT wider.
+    Width stays at the measured 321pt.
+
+  Diagnosis: the continue card names a city that carries no information | measured on our own data: all 20 active salons are in one city, so "in Basel" is constant everywhere and distinguishes nothing | violates taste rule 2, an element must carry information or be deleted | target 0 city mentions, replaced by something that differs per visitor
+  Diagnosis: the card is too short to balance its own photo | measured 98px tall against a 70px photo, leaving 14px above and below | violates the owner instruction of 2026-08-15 ("make it taller, not wider") | target 124px tall
+  Diagnosis: the category pill icons are oversized | measured ours 28x28px inside a 40px pill against the reference 18.4pt inside a 38pt pill | violates the owner instruction of 2026-08-15 ("the category icons are too big") | target 19px
+
+  THREE DIRECTIONS, because the city has to be replaced by something and there is more than one
+  honest answer:
+    A. THE SERVICE. What they were shopping for, plus when. No place at all.
+    B. THE SALON. The actual salon they were last looking at, with its own photo.
+    C. THE UNFINISHED BOOKING. The exact service and time they stopped at.
+
+  Backend-check: every salon name, photo, category and rating is a live row read 2026-08-14.
+    Cuts & Culture is genuinely the salon with confirmed bookings. No invented values.
+
+  Exists-check: ran this turn. `npm run exists "continue card"` returns existing hits, and
+    ContinueCard.tsx and RecentlyViewed.tsx both already exist. This proposes what the card SAYS and
+    adds the viewed row beneath it, not a new component.
+-->
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--sunken:#F4F4F5;--hairline:#E4E4E7;--star:#FFC32B;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
+  .top{position:fixed;top:0;left:0;right:0;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline);padding:8px 10px 8px}
+  .row{display:flex;justify-content:center;gap:8px}
+  .row + .row{margin-top:6px}
+  .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;width:min(340px,90vw)}
+  .seg button{flex:1;border:0;background:transparent;font-family:inherit;font-size:13px;font-weight:600;color:var(--ink2);padding:7px 0;border-radius:999px;cursor:pointer}
+  .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+  .cap{position:fixed;top:96px;left:0;right:0;z-index:19;background:var(--sunken);color:var(--ink2);font-size:12px;font-weight:600;text-align:center;padding:6px 12px;line-height:1.35}
+  .stage{position:fixed;top:128px;left:0;right:0;bottom:0}
+  .pane{position:absolute;inset:0}
+  .pane.hidden{display:none}
+  iframe{width:100%;height:100%;border:0;display:block}
+</style>
+</head>
+<body>
+  <div class="top">
+    <div class="row"><div class="seg">
+      <button id="bBefore" class="on" onclick="show('before')">Before (live)</button>
+      <button id="bAfter" onclick="show('after')">After</button>
+    </div></div>
+    <div class="row"><div class="seg">
+      <button id="bA" class="on" onclick="pick('a')">A service</button>
+      <button id="bB" onclick="pick('b')">B salon</button>
+      <button id="bC" onclick="pick('c')">C booking</button>
+    </div></div>
+  </div>
+  <div class="cap" id="cap">A. The service you were after, and when. No place named at all.</div>
+  <div class="stage">
+    <div id="paneBefore" class="pane"><iframe id="beforeFrame" src="/en" title="the real homepage, before"></iframe></div>
+    <div id="paneAfter" class="pane hidden"><iframe id="afterFrame" src="/en" title="the real homepage, after"></iframe></div>
+  </div>
+<script>
+var SALONS = [
+  {n:"Cuts & Culture",   p:"https://images.unsplash.com/photo-1622288432450-277d0fef5ed6?w=800&q=80", cat:"Barbershop", r:"4.8", c:16},
+  {n:"Haarsalon Margot", p:"https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=800&q=80", cat:"Coiffeur",   r:"4.8", c:16},
+  {n:"Atelier Haarwerk", p:"https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&q=80", cat:"Coiffeur",   r:"4.6", c:25},
+  {n:"Velvet Face",      p:"https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?w=800&q=80", cat:"Make-up",    r:"4.6", c:7}
+];
+
+var CAPS = {
+  a: "A. The service you were after, and when. No place named at all.",
+  b: "B. The salon you were last looking at, with its own photo. Recommended.",
+  c: "C. The booking you did not finish, down to the service and time."
+};
+
+var VARIANTS = {
+  a: [
+    { title: "Coiffeur", sub: "Sat 30 Aug, 1 person", photos: [SALONS[1].p, SALONS[2].p, SALONS[0].p], stack: true },
+    { title: "Barbershop", sub: "Sun 31 Aug, 1 person", photos: [SALONS[0].p, SALONS[3].p, SALONS[1].p], stack: true }
+  ],
+  b: [
+    { title: "Cuts & Culture", sub: "You were looking at this", photos: [SALONS[0].p], stack: false },
+    { title: "Haarsalon Margot", sub: "You were looking at this", photos: [SALONS[1].p], stack: false }
+  ],
+  c: [
+    { title: "Finish your booking", sub: "Herrenschnitt at Cuts & Culture, Sat 14:30", photos: [SALONS[0].p], stack: false },
+    { title: "Finish your booking", sub: "Balayage at Atelier Haarwerk, Sun 10:00", photos: [SALONS[2].p], stack: false }
+  ]
+};
+
+function photoBlock(doc, photos, stack){
+  var slot = doc.createElement("span");
+  slot.style.cssText = "position:relative;height:88px;width:88px;flex:0 0 88px";
+  if (!stack) {
+    slot.innerHTML = '<div style="width:88px;height:88px;border-radius:14px;overflow:hidden;background:#F4F4F5">' +
+      '<img src="' + photos[0] + '" style="width:100%;height:100%;object-fit:cover;display:block"></div>';
+    return slot;
+  }
+  photos.slice(0,3).forEach(function(src, i){
+    var rot = [-10, 5, 0][i], off = [12, 5, 0][i], top = [7, 3, 0][i];
+    var d = doc.createElement("div");
+    d.style.cssText = "position:absolute;right:" + off + "px;top:" + top + "px;width:72px;height:72px;" +
+      "border-radius:14px;overflow:hidden;transform:rotate(" + rot + "deg);" +
+      "box-shadow:0 2px 10px rgba(10,10,10,.16);border:2px solid #fff;z-index:" + (i+1) + ";background:#F4F4F5";
+    d.innerHTML = '<img src="' + src + '" style="width:100%;height:100%;object-fit:cover;display:block">';
+    slot.appendChild(d);
+  });
+  return slot;
+}
+
+function continueRail(doc, key){
+  var wrap = doc.createElement("div");
+  wrap.style.cssText = "padding:4px 0 6px";
+  var rail = doc.createElement("div");
+  rail.style.cssText = "display:flex;gap:12px;overflow-x:auto;padding:0 24px 2px;scrollbar-width:none";
+  VARIANTS[key].forEach(function(v){
+    var card = doc.createElement("a");
+    card.href = "#";
+    card.style.cssText = "flex:0 0 321px;min-height:124px;display:flex;align-items:center;gap:14px;" +
+      "border-radius:18px;background:#fff;padding:18px;text-decoration:none;color:inherit;" +
+      "box-shadow:0 6px 20px -10px rgba(10,10,10,.20), 0 1px 2px rgba(10,10,10,.06)";
+    var left = doc.createElement("span");
+    left.style.cssText = "min-width:0;flex:1";
+    left.innerHTML =
+      '<span style="display:block;font:600 18px/23px \'Inter Tight\',Inter,sans-serif;color:#0A0A0A">' + v.title + '</span>' +
+      '<span style="display:block;margin-top:7px;font:400 13px Inter,sans-serif;color:#6B6B6B">' + v.sub + '</span>';
+    card.appendChild(left);
+    card.appendChild(photoBlock(doc, v.photos, v.stack));
+    rail.appendChild(card);
+  });
+  wrap.appendChild(rail);
+  return wrap;
+}
+
+function viewedRow(doc){
+  var sec = doc.createElement("section");
+  sec.style.cssText = "padding:18px 0 4px";
+  var head = doc.createElement("div");
+  head.style.cssText = "display:flex;align-items:baseline;justify-content:space-between;padding:0 24px 12px";
+  head.innerHTML =
+    '<h2 style="font:600 22px/1.2 \'Inter Tight\',Inter,sans-serif;letter-spacing:-.01em;margin:0;color:#0A0A0A">Recently viewed</h2>' +
+    '<a href="#" style="font:600 13px Inter,sans-serif;color:#0A0A0A;text-decoration:none">See all</a>';
+  var rail = doc.createElement("div");
+  rail.style.cssText = "display:flex;gap:12px;overflow-x:auto;padding:0 24px 4px;scrollbar-width:none";
+  SALONS.forEach(function(x){
+    var a = doc.createElement("a");
+    a.href = "#";
+    a.style.cssText = "flex:0 0 168px;text-decoration:none;color:inherit";
+    a.innerHTML =
+      '<div style="width:168px;aspect-ratio:5/4;border-radius:16px;overflow:hidden;background:#F4F4F5;box-shadow:0 1px 3px rgba(0,0,0,.06)">' +
+        '<img src="' + x.p + '" style="width:100%;height:100%;object-fit:cover;display:block"></div>' +
+      '<p style="font:600 14px/1.25 Inter,sans-serif;margin:8px 0 0;color:#0A0A0A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + x.n + '</p>' +
+      '<p style="font:400 12px/1.3 Inter,sans-serif;color:#6B6B6B;margin:2px 0 0">' + x.cat + '</p>' +
+      '<p style="font:600 12px Inter,sans-serif;margin:3px 0 0;font-variant-numeric:tabular-nums;color:#0A0A0A">' +
+        '<span style="color:#FFC32B">&#9733;</span> ' + x.r + ' <span style="font-weight:400;color:#6B6B6B">(' + x.c + ')</span></p>';
+    rail.appendChild(a);
+  });
+  sec.appendChild(head); sec.appendChild(rail);
+  return sec;
+}
+
+function shrinkPillIcons(doc){
+  var imgs = doc.querySelectorAll('a img, button img, a svg, button svg');
+  imgs.forEach(function(im){
+    var r = im.getBoundingClientRect ? im.getBoundingClientRect() : null;
+    if (r && Math.round(r.width) === 28 && Math.round(r.height) === 28) {
+      im.style.width = "19px"; im.style.height = "19px";
+      im.setAttribute("data-sweep-done", "1");
+    }
+  });
+}
+
+function applyChange(doc){
+  var key = window.__ccKey || "a";
+  var old = doc.querySelector("[data-cc-variant]");
+  if (old) old.remove();
+  var oldRow = doc.querySelector("[data-cc-viewed]");
+  if (oldRow) oldRow.remove();
+
+  var ours = doc.querySelectorAll('span[class*="h-[88px]"], div[class*="h-[88px]"]');
+  if (ours.length) {
+    var c = ours[0];
+    for (var u = 0; u < 5 && c.parentElement; u++) c = c.parentElement;
+    if (!c.hasAttribute("data-cc-variant")) c.style.display = "none";
+  }
+
+  var anchor = null, all = doc.querySelectorAll("a,button,span,div");
+  for (var i = 0; i < all.length && !anchor; i++) {
+    var t = (all[i].textContent || "").trim();
+    if (t === "Coiffeur" || t === "Barber" || t === "Barbershop") anchor = all[i];
+  }
+  var host = anchor;
+  if (host) {
+    for (var u2 = 0; u2 < 6 && host.parentElement; u2++) {
+      host = host.parentElement;
+      var tx = host.textContent || "";
+      if (tx.indexOf("Coiffeur") > -1 && tx.indexOf("Barber") > -1) break;
+    }
+  }
+  var target = host || doc.querySelector("main section, main > div, main");
+  if (!target || !target.parentElement) return 0;
+
+  var holder = doc.createElement("div");
+  holder.setAttribute("data-cc-variant", key);
+  holder.setAttribute("data-sweep-done", "1");
+  holder.style.position = "relative";
+  holder.appendChild(continueRail(doc, key));
+  var lab = doc.createElement("div");
+  lab.textContent = "After: " + key.toUpperCase();
+  lab.style.cssText = "position:absolute;top:-2px;right:10px;background:rgba(10,10,10,.82);color:#fff;" +
+    "font:600 10px/1.3 -apple-system,sans-serif;padding:3px 8px;border-radius:999px;z-index:99999";
+  holder.appendChild(lab);
+  target.parentElement.insertBefore(holder, target.nextSibling);
+
+  var row = viewedRow(doc);
+  row.setAttribute("data-cc-viewed", "1");
+  holder.parentElement.insertBefore(row, holder.nextSibling);
+
+  shrinkPillIcons(doc);
+  try { holder.scrollIntoView({ block: "center" }); } catch (e) {}
+  return 1;
+}
+
+function pump(){
+  var f = document.getElementById("afterFrame");
+  setInterval(function(){
+    try {
+      var doc = f.contentDocument;
+      if (!doc || !doc.querySelector("h1,h2,h3")) return;
+      var have = doc.querySelector("[data-cc-variant]");
+      var shown = have ? have.getAttribute("data-cc-variant") : null;
+      if (shown !== (window.__ccKey || "a")) applyChange(doc);
+    } catch (e) {}
+  }, 400);
+}
+function pick(k){
+  window.__ccKey = k;
+  ["A","B","C"].forEach(function(id, i){
+    document.getElementById("b" + id).classList.toggle("on", ["a","b","c"][i] === k);
+  });
+  document.getElementById("cap").textContent = CAPS[k];
+  show("after");
+  try { applyChange(document.getElementById("afterFrame").contentDocument); } catch (e) {}
+}
+function show(w){
+  document.getElementById("paneBefore").classList.toggle("hidden", w !== "before");
+  document.getElementById("paneAfter").classList.toggle("hidden", w !== "after");
+  document.getElementById("bBefore").classList.toggle("on", w === "before");
+  document.getElementById("bAfter").classList.toggle("on", w === "after");
+}
+window.__ccKey = "a";
+pump();
+</script>
+</body>
+</html>
