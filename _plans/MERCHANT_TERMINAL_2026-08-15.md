@@ -753,14 +753,14 @@ wait until tonight, it is not on it.
 - [x] G1 Every state a walk-in can be in `verified:` written above, states read off barber_walkin_queue migration 073; called_at and started_at confirmed present and unused in _inventory/_db-columns.json, and every legal move between them
 - [x] G2 Every state an appointment can be in `verified:` written above, states read off migration 075; bookings.arrived_at confirmed present in _inventory/_db-columns.json, and every legal move between them
 - [x] G3 Which moves happen BY THEMSELVES `verified:` the table above, and app/api/cron/pending-timeout + sms_sent_24h/sms_sent_1h are the existing automatic ones (time-driven) vs which need a human tap
-- [x] G4 The late/no-show clock `verified:` the minute-by-minute table above; rendered as the `Late` state of the mockup: what happens at +5, +15, +30 minutes, and who decides
-- [x] G5 The "arrived" tap `verified:` written above; rendered as the `Arrived` state of the mockup: what it is, who taps it, and what it unlocks
+- [x] `f004c5dc2` G4 The late/no-show clock `verified:` the minute-by-minute table above; rendered as the `Late` state of the mockup: what happens at +5, +15, +30 minutes, and who decides
+- [x] `f004c5dc2` G5 The "arrived" tap `verified:` written above; rendered as the `Arrived` state of the mockup: what it is, who taps it, and what it unlocks
 
 ### H. UNDO
-- [x] H1 Forgot to tap arrived `verified:` written above (Arrived on time backfills the scheduled time): how they fix it after the fact
-- [x] H2 Tapped no-show by mistake `verified:` written above; Fresha's own Undo no-show is the precedent, see L3: can it be taken back, and what happens to the fee
-- [x] H3 Declined or cancelled by mistake `verified:` written above; the ten second slot HOLD is what makes it possible, and Airbnb's non-reversible decline (L2) is why the honest answer after that is rebook, not restore: can it be taken back, and what does the customer see
-- [x] H4 The general rule `verified:` the three tier table above: what is reversible, for how long, and what is never reversible
+- [x] `f004c5dc2` H1 Forgot to tap arrived `verified:` written above (Arrived on time backfills the scheduled time): how they fix it after the fact
+- [x] `f004c5dc2` H2 Tapped no-show by mistake `verified:` written above; Fresha's own Undo no-show is the precedent, see L3: can it be taken back, and what happens to the fee
+- [x] `f004c5dc2` H3 Declined or cancelled by mistake `verified:` written above; the ten second slot HOLD is what makes it possible, and Airbnb's non-reversible decline (L2) is why the honest answer after that is rebook, not restore: can it be taken back, and what does the customer see
+- [x] `f004c5dc2` H4 The general rule `verified:` the three tier table above: what is reversible, for how long, and what is never reversible
 
 ### I. LOGS
 - [x] I1 What a log entry is `verified:` written above, and every event worth recording
