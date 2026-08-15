@@ -194,7 +194,8 @@
       "title": "Cosa sta cercando?",
       "salonsCount": "Saloni",
       "comingSoon": "Presto disponibile",
-      "more": "Scopri più categorie"
+      "more": "Scopri più categorie",
+      "browseTitle": "Sfoglia per categoria."
     },
     "howItWorks": {
       "eyebrow": "Per i nuovi clienti",
@@ -227,12 +228,15 @@
       "emptyMessage": "Presto più saloni vicino a Lei",
       "beliebtInBasel": "Popolare a Basilea",
       "beliebtInZuerich": "Popolare a Zurigo",
-      "beliebtInBern": "Popolare a Berna"
+      "beliebtInBern": "Popolare a Berna",
+      "nearbyPros": "Professionisti vicino a te",
+      "forYou": "Consigliato per te"
     },
     "trending": {
       "eyebrow": "Tendenza",
       "title": "Tendenza a Basilea",
-      "subtitle": "I saloni più popolari al momento"
+      "subtitle": "I saloni più popolari al momento",
+      "popularLooks": "Look popolari"
     },
     "nearby": {
       "eyebrow": "Posizione",
@@ -271,7 +275,9 @@
       "checklistVisibility": "Visibilità nella Sua città",
       "newBookings": "Nuove prenotazioni",
       "firstMonth": "nel primo mese",
-      "newCustomers": "Nuovi clienti"
+      "newCustomers": "Nuovi clienti",
+      "instantConfirm": "Conferma immediata",
+      "forSalons": "Solen per i saloni"
     },
     "trust": {
       "securePayment": "Pagamento sicuro — crittografato Stripe",
@@ -391,7 +397,9 @@
       "scrollLeft": "Scorri a sinistra",
       "scrollRight": "Scorri a destra",
       "browseAll": "Sfoglia tutto",
-      "inspirationText": "Lasciati ispirare da migliaia di stili"
+      "inspirationText": "Lasciati ispirare da migliaia di stili",
+      "inspirationTitle": "Trova la tua ispirazione.",
+      "browseAllLooks": "Esplora tutti i look"
     },
     "map": {
       "eyebrow": "Vicino a Lei",

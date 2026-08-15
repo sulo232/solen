@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { ArrowRight, Play } from "lucide-react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Section, SectionFrame, SectionTitle } from "./SectionHeader";
 import { HeartButton } from "./HeartButton";
 import { cn } from "@/lib/utils";
@@ -81,6 +81,9 @@ const solidLabelStyle = {
 } as const;
 
 export default function Entdecken() {
+  // 2026-08-15: this label was a hardcoded German literal, so it rendered German on /en,
+  // /fr and /it. Same bug class the owner caught on the recently-viewed row that day.
+  const t = useTranslations("home.discover");
   const locale = useLocale();
   const scrollRef = React.useRef<HTMLDivElement>(null);
   // V3-D160 (2026-05-26): live wire to /api/discovery/feed restored.
@@ -163,8 +166,8 @@ export default function Entdecken() {
     <Section>
       <SectionFrame>
         <SectionTitle
-          title="Finden Sie Ihre Inspiration."
-          link={{ label: "Alle entdecken →", href: `/${locale}/inspo` }}
+          title={t("inspirationTitle")}
+          link={{ label: `${t("browseAll")} →`, href: `/${locale}/inspo` }}
           scrollRef={scrollRef}
         />
         <div
@@ -390,7 +393,7 @@ export default function Entdecken() {
               + desktop-only hover bump. */}
           <Link
             href={`/${locale}/inspo`}
-            aria-label="Alle Looks entdecken"
+            aria-label={t("browseAllLooks")}
             className="group relative block shrink-0 snap-center w-[44vw] max-w-[200px] transition-transform active:scale-[0.97] active:duration-[80ms] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-4 focus-visible:rounded-[16px]"
           >
             <div
@@ -413,7 +416,7 @@ export default function Entdecken() {
               {/* mockup-ok: 16px -> 14px, owner-approved public/_mockups/improve/type-scale.html
                   (8 -> 4 type-scale merge), the other named real cost of that merge. */}
               <h3 className="font-body text-[14px] font-semibold leading-tight text-s-ink">
-                Alle entdecken
+                {t("browseAll")}
               </h3>
               <p className="mt-2 font-body text-[12px] text-s-ink-2">
                 Lassen Sie sich von tausenden Looks inspirieren

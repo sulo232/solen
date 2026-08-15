@@ -22,11 +22,11 @@ Owner message, verbatim:
 - [x] **A9. Touch-target collision SURFACED, not silently resolved.** verified: commit 1538981d5, index.html TOUCH-TARGET COLLISION header block; live smallestTapTarget measured exactly 44 on all five. 28px of visible circle inside a 44px target. Measured live: the smallest tap target in every direction is exactly 44px. A 27pt circle is below the 44pt touch floor in our
       own design contract and in WCAG 2.5.5. Tier 2 outranks a taste source, so the visible circle
       shrinks and the tap target stays 44. Do not silently ship a 27pt tap target.
-- [x] **B1. Recently-viewed: NOT built, because it already exists and is already mounted.** RecentlyViewed.tsx is at page.tsx:289 and was rendering its cold-start "Top auf Solen" fallback, which is why it read as absent. Seeding storage makes the real component render its real state. Nothing was duplicated. Nothing on our homepage renders it today. Measured this turn:
+- [x] **B1. Recently-viewed: NOT built, because it already exists and is already mounted.** verified: app/[locale]/page.tsx:289 mounts RecentlyViewed; RecentlyViewed.tsx:133 is the fallback title line; commit 721b25f77. RecentlyViewed.tsx is at page.tsx:289 and was rendering its cold-start "Top auf Solen" fallback, which is why it read as absent. Seeding storage makes the real component render its real state. Nothing was duplicated. Nothing on our homepage renders it today. Measured this turn:
       `recentlyViewedOnPage: NO`, and the 11 h2 sections contain no such row.
-  - [x] B1a. Measured anatomy from the reference: thumb 106.1 x 100.7pt, ratio 1.05:1, gap 11.4pt,
+  - [x] B1a. Measured anatomy from the reference: verified: ~/.claude/ss-measured.flag carries the PIL numbers, and _design-system/references/continue-and-recently-viewed--home.md records them. thumb 106.1 x 100.7pt, ratio 1.05:1, gap 11.4pt,
         pitch 117.5pt, left gutter 23.6pt, heart badge ~14pt, header arrow 27pt.
-  - [x] B1b. The mockup seeds by HARVESTING slugs and photos off the live cards, so the row shows the same data the feed shows. Wire it to a real source (a viewed-salon history), never fabricated rows.
+  - [x] B1b. The mockup seeds by HARVESTING slugs and photos off the live cards verified: commit 721b25f77, index.html harvestEntries(); live check returned real slugs cuts-and-culture, haarsalon-margot, atelier-haarwerk, nail-studio-bliss., so the row shows the same data the feed shows. Wire it to a real source (a viewed-salon history), never fabricated rows.
   - [x] B1c. Cold start is ANSWERED and it was already handled: RecentlyViewed falls back to a curated top list, and returns null only when that is also empty. RecentlyViewedTiles correctly renders nothing. Answer the cold-start hole the reviewer raised: a brand-new visitor has no history, so
         the row must have a defined absent state rather than rendering empty.
 - [x] **C1. Five directions, four apps, all captured this turn.** Captured, never recalled.
@@ -87,3 +87,97 @@ problem, which was not the nesting at all.
    placeholder, annotated `em-dash-ok` at SalonCard.tsx:528. And the grey tiles in the first
    screenshot were lazy-loading, not a missing-photo fallback: they paint on scroll. Both were
    nearly reported as bugs and both would have been wrong.
+
+
+## CORRECTION round, owner 2026-08-15 (second message)
+
+> jst Make it just Airbnb. Okay? And, also, to recently viewed, why is their English and German?
+> What the fuck is this? And what the fuck is it fucking square? I told you so many fucking times,
+> bro. And, also, I told you about one multiple directions markup for that specific part of last
+> scene. What part are you not fucking on undrstand
+
+- [x] **E1. Airbnb only.** Marriott, Best Buy and Vrbo unloaded. verified: commit 721b25f77, index.html loads only variants/row-{a,b,c}.js; their files remain in git at 1538981d5.
+- [x] **E2. The English and German mix, root cause found and fixed.** Both titles were hardcoded German literals, so /en, /fr and /it rendered German. verified: RecentlyViewedTiles.tsx:108 and RecentlyViewed.tsx:133 now call ui.recentlyViewed.title; live /en returned zero German headings in those two rows.
+- [x] **E3. Not square.** verified: row-a.js 112x90 (1.244), row-b.js 240x192 (1.250), row-c.js 96x77 (1.247); live measured 1.24 / 1.25 / 1.25. The square he saw is RecentlyViewedTiles.tsx:118 `aspect-square`, 86x86.
+- [x] **E4. The directions are on the RECENTLY-VIEWED ROW, which is what he asked for.** I had built them on the continue card for a whole turn. verified: commit 721b25f77, the card is shared via MK.continueRail so only the row changes between A, B and C; live visibleRecentlyViewedHeadings = 1 per direction with 2 live sections hidden.
+
+### Still open, tracked rather than narrated
+
+- [x] **E5. He picked A** ("You know what? Just make it a"). B and C unloaded; only variants/row-a.js loads. verified: commit pending, index.html loads one script tag and the switcher shows a single button.
+- [ ] **E6. The duplicate "Zuletzt angesehen" section needs his call.** Two rows render for anyone with history (page.tsx:288 and :289). Spawned as task_ed7c6e36. Retitle one, or delete one plus a REMOVED.md line.
+- [x] **E7. Done this turn, he asked for it directly.** 8 of the 10 were live and are fixed; 2 were a false positive in my own scan. verified live on /en: zero of the target German strings remain visible.
+- [x] **E8. Moot: there are no longer three directions.** He picked A, so B and C are unloaded. I measured A myself (ratios, tap targets, heading count, no nested interactives) and fixed the one contract breach I found: the card carried a border AND a shadow, which the locked surface table forbids. It is hairline only now. Superseded item, previously: Rendered and measured them myself this turn (ratios, tap targets, heading counts, no nesting), but the verifier agent has not graded them against LOCKFILE. Worth doing once he picks one, not on three throwaways.
+
+
+## CORRECTION round 2, owner 2026-08-15 (third message)
+
+> You know what? Just make it a. But, also, on this, like, skin fade, but, you know, like, what you
+> search for, you can't really identify what your last surgery person. Add that for... like, look at
+> the screenshot I fucking gave you. And, also, what is this gray, like, divided shit that's
+> happening? I don't fucking like this. I feel like it's too fucking small too.
+
+- [x] **F1. A only.** B and C no longer load. verified: index.html has one script tag, variants/row-a.js; the switcher is a single button.
+- [x] **F2. You could not tell what the last search was, and the screenshot says why.** Measured on ref2: the reference headline is a SENTENCE over two lines ("Continue searching for hair stylists in Zurich"), line 1 is 165.1pt wide, line 2 is 145.7pt, baseline to baseline is 19.4pt, which puts it near 17pt. Ours rendered the bare service name on one line at 15px, so nothing on the card said it was a resumed search. verified live: the headline now reads "Continue searching for skin fades in Basel" at 17px/22px across exactly 2 lines, 44px tall, with the service and place carrying ink 600 and the lead-in staying grey 400.
+- [x] **F3. The grey divider is gone.** It was a port of Airbnb's grey page background, which on our white page reads as a divider rather than a surface. verified live: the band computes to rgba(0,0,0,0). Removing it left a white card on white, which FLOORS LAW 4 forbids on a shadow alone, so the card took the hairline instead: measured 1px rgb(228,228,231).
+- [x] **F4. Bigger.** Card height 105 to 118, headline 15px to 17px. verified live: card measured 306 x 118, headline 17px/22px.
+
+### Still open
+
+- [ ] **F5. He has not said whether the bigger card and the hairline are right.** That is the next thing to react to, and it is a taste call, not a measurement.
+
+
+## German label sweep, owner asked for it directly (2026-08-15, he pasted the task back)
+
+Fixed, all verified live on /en with zero of the target strings remaining:
+
+| file | string | key used |
+|---|---|---|
+| CategoryPromos.tsx:70 | Stöber nach Kategorie. | home.categories.browseTitle (new) |
+| Entdecken.tsx:166 | Finden Sie Ihre Inspiration. | home.discover.inspirationTitle (new) |
+| Entdecken.tsx:393 | Alle Looks entdecken | home.discover.browseAllLooks (new) |
+| Entdecken.tsx:419 | Alle entdecken | home.discover.browseAll (already existed) |
+| Entdecken.tsx:170 | Alle entdecken -> | home.discover.browseAll (already existed) |
+| PopularLooks.tsx:48 | Beliebte Looks | home.trending.popularLooks (new) |
+| PopularLooks.tsx:52 | Alle entdecken -> | home.discover.browseAll (already existed) |
+| FeaturedStylists.tsx:201 | Profis in Ihrer Nähe | home.featured.nearbyPros (new) |
+| ForYouAffinityRow.tsx:77 | Für dich empfohlen | home.featured.forYou (new) |
+| BentoBusiness.tsx:711 | Sofortige Bestätigung | home.partner.instantConfirm (new) |
+| BusinessTeaser.tsx:32 | Solen für Salons | home.partner.forSalons (new) |
+
+**Two of the ten were a FALSE POSITIVE in my own scan, and saying so matters more than the count.**
+Hero.tsx:287 and :294 sit inside `_DeprecatedSearchBar`, a function declared once and imported by
+nobody. Those labels render on no page in any locale. I wired them, typecheck said `t` was not in
+scope, and that is what exposed it. Reverted, and the two keys I had added were removed again
+rather than left as cruft with no consumer. The dead function itself is not deleted: that needs the
+graveyard protocol and his yes.
+
+**Three strings my scan missed**, because it only matched title/label/aria-label props and these are
+JSX text children. Measured for visibility rather than assumed:
+  - `Entdecken.tsx:419` "Alle entdecken", VISIBLE at 71x35. Fixed.
+  - `MobileCategoriesRow.tsx:87` "Für Sie", section carries `hidden`, measured 0x0. Left alone.
+  - `BusinessTeaser.tsx:67` and `WhySolen.tsx:119` "Solen für / Ihr Geschäft.", measured 0x0 at this
+    viewport, and both are a marketing headline split across a `<br>`, which needs a copy decision
+    about how it wraps in four locales rather than a mechanical key swap.
+
+- [ ] **G1. 13 of the 37 homepage components still carry a user-facing German literal.** Measured after the fix with the existing i18n-write-gate's own matcher, so the number is the gate's and not a fresh grep. All 13 named in _rules/LESSONS_LEARNED.md so the next pass starts from a list. Includes the `Solen für<br />Ihr Geschäft.` headline, which is a copy call rather than a key swap because French and Italian will not break at the same word. Previously read: Not a mechanical fix: the
+      headline breaks across a `<br>` and French and Italian will not break in the same place, so it
+      needs a copy call, not a key swap.
+
+
+## CORRECTION round 3, owner 2026-08-15 (fourth message, with a red line drawn on the screenshot)
+
+> I told you to fix up the recently viewed. And what the fuck is this doing this weird ass shit? And
+> on the continue searching, why is it, like like, weirdly just on the middle? ... There's, like, a
+> line. Right? ... Make it actually attached to the left side, you know, where everything goes. And,
+> also, why did you make it flat? Make a shadow. I fucking told you. ... Make it like this. I
+> literally told you, like, a normal fucking section ... wanted the text on these pills go smaller
+> and everything, but what are you fucking doing? Revert bro.
+
+- [x] **H1. THE LEFT LINE.** verified live: page category pill 16, page Top Coiffeur h2 16, page Top Coiffeur card 16, and now my continue card 16, my Recently viewed h2 16, my first thumb 16. Was 40. Cause: MK.REF.gutter carried Airbnb's measured 23.6pt into a page whose own line is 16. First fix overshot to 32 because the host container already pads 16, so the correct value inside it is 0.
+- [x] **H2. The shadow is back and the border is gone.** verified live: boxShadow present, borderTopWidth 0px. The locked surface table allows one or the other, never both.
+- [x] **H3. A normal section of THIS page, measured off the live Top Coiffeur rail rather than the reference.** verified live: section h2 18px/600 (was 22), see-all circle 32 inside a 44 tap (was 28), thumb radius 22 (was 16), rail gap 12.
+- [x] **H4. The pills are reverted.** verified live, before against after: icon 28px in both, with no inline width override left behind; label 14px -> 13px. I had been shrinking the ICON to 15px, which he never asked for. He asked for the TEXT.
+
+### Still open
+
+- [ ] **H5. He has not reacted to the corrected row yet.** Everything above is a measured match to the page; whether the row is RIGHT is his call and not a number.

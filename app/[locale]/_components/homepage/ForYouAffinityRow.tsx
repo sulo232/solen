@@ -8,6 +8,7 @@ import * as React from "react";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import { Section, SectionFrame, SectionTitle, ScrollRow } from "./SectionHeader";
 import { SalonCard } from "./SalonCard";
+import { useTranslations } from "next-intl";
 
 type Category = "coiffeur" | "barbershop" | "nails" | "spa";
 const CARD_CATS: Category[] = ["coiffeur", "barbershop", "nails", "spa"];
@@ -58,6 +59,9 @@ function loadAffinity(): Promise<ApiSalon[] | null> {
 }
 
 export default function ForYouAffinityRow() {
+  // 2026-08-15: this label was a hardcoded German literal, so it rendered German on /en,
+  // /fr and /it. Same bug class the owner caught on the recently-viewed row that day.
+  const t = useTranslations("home.featured");
   const [salons, setSalons] = React.useState<ApiSalon[] | null>(null);
   React.useEffect(() => {
     let mounted = true;
@@ -74,7 +78,7 @@ export default function ForYouAffinityRow() {
   return (
     <Section>
       <SectionFrame>
-        <SectionTitle title="Für dich empfohlen" />
+        <SectionTitle title={t("forYou")} />
         <ScrollRow>
           {salons.map((s) => (
             <SalonCard

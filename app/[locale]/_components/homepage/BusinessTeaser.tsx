@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 /**
  * BusinessTeaser — V3-D220 (2026-05-26, /business rebuild). Originally V3-D149 (2026-05-25).
@@ -27,9 +28,12 @@ import { ArrowRight } from "lucide-react";
  */
 
 export default function BusinessTeaser() {
+  // 2026-08-15: this label was a hardcoded German literal, so it rendered German on /en,
+  // /fr and /it. Same bug class the owner caught on the recently-viewed row that day.
+  const t = useTranslations("home.partner");
   return (
     <section
-      aria-label="Solen für Salons"
+      aria-label={t("forSalons")}
       className="mx-auto max-w-[1280px] px-4 py-12 md:px-8 md:py-20"
     >
       <div className="mx-auto max-w-[620px] text-center">

@@ -34,7 +34,7 @@
 
     var box = MK.el(doc, "div",
       "position:relative;width:" + THUMB_W + "px;height:" + THUMB_H + "px;margin-bottom:8px");
-    box.appendChild(MK.photo(doc, salon.photo, "width:100%;height:100%;border-radius:16px"));
+    box.appendChild(MK.photo(doc, salon.photo, "width:100%;height:100%;border-radius:22px"));
 
     var name = MK.el(doc, "div",
       "font:600 13px/1.3 " + BODY + ";color:" + INK +

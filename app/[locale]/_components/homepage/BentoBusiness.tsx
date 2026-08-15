@@ -16,6 +16,7 @@ import {
 import { Typewriter } from "@/components/ui/typewriter";
 import { cn } from "@/lib/utils";
 import { BentoCard } from "../business/BentoCard";
+import { useTranslations } from "next-intl";
 
 /**
  * BentoBusiness — V3-D219 (2026-05-26, /business rebuild).
@@ -663,6 +664,9 @@ export function JoinUsCard() {
 }
 
 export default function BentoBusiness() {
+  // 2026-08-15: this label was a hardcoded German literal, so it rendered German on /en,
+  // /fr and /it. Same bug class the owner caught on the recently-viewed row that day.
+  const t = useTranslations("home.partner");
   // V3-D99 (2026-05-22): closing "trust / for salons" zone goes on
   // brand-deep navy (#0C254E = Ocean Blue at 14% lightness — same hue family
   // as --brand, not random dark color). Inner BentoCards keep their white bg
@@ -708,7 +712,7 @@ export default function BentoBusiness() {
         */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-6">
           <BentoCard
-            title="Sofortige Bestätigung"
+            title={t("instantConfirm")}
             description="Kund:innen buchen direkt. Sie bestätigen nichts mehr von Hand. Im Durchschnitt: 23 Sekunden."
             visual={<VisualBooking />}
             className="md:col-span-2"

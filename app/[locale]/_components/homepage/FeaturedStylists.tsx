@@ -7,6 +7,7 @@ import { Clock, Heart, Star } from "lucide-react";
 import { Section, SectionFrame, SectionTitle } from "./SectionHeader";
 import { cn } from "@/lib/utils";
 import { FROST_GLASS } from "@/lib/frost-glass";
+import { useTranslations } from "next-intl";
 
 /**
  * FeaturedStylists — V3-D140 (2026-05-25).
@@ -192,13 +193,16 @@ function SaveHeart({ name }: { name: string }) {
 }
 
 export default function FeaturedStylists() {
+  // 2026-08-15: this label was a hardcoded German literal, so it rendered German on /en,
+  // /fr and /it. Same bug class the owner caught on the recently-viewed row that day.
+  const t = useTranslations("home.featured");
   return (
     <Section>
       <SectionFrame>
         {/* V3-D140-fix (2026-05-25): "Alle ansehen →" link removed per user.
             Section now caps at 4 cards with no overflow escape. If discovery
             of more stylists is needed later, re-add: link={{ label: "Alle ansehen →", href: "/stylists" }} */}
-        <SectionTitle title="Profis in Ihrer Nähe" />
+        <SectionTitle title={t("nearbyPros")} />
         <ul className="mt-3 flex flex-col gap-2">
           {DEMO.map((s) => {
             const tokens = CATEGORY_TOKENS[s.specialty];

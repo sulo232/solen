@@ -20,7 +20,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Section, SectionFrame, SectionTitle } from "./SectionHeader";
 import { Skeleton } from "../primitives/Skeleton";
 import { usePopularLooks } from "./usePopularLooks";
@@ -34,6 +34,10 @@ import { usePopularLooks } from "./usePopularLooks";
  * floor AvailableThisWeek.tsx / TopCategoryRails.tsx / CategoryBrowseRails.tsx's Rail() all use.
  */
 export default function PopularLooks() {
+  // 2026-08-15: this label was a hardcoded German literal, so it rendered German on /en,
+  // /fr and /it. Same bug class the owner caught on the recently-viewed row that day.
+  const t = useTranslations("home.trending");
+  const tDiscover = useTranslations("home.discover");
   const locale = useLocale();
   const { looks, loading } = usePopularLooks({ limit: 8 });
 
@@ -45,8 +49,8 @@ export default function PopularLooks() {
         {/* "Alle entdecken →" is Entdecken.tsx's own existing link copy for the same /inspo
             destination, reused verbatim rather than inventing new German. */}
         <SectionTitle
-          title="Beliebte Looks"
-          link={{ label: "Alle entdecken →", href: `/${locale}/inspo` }}
+          title={t("popularLooks")}
+          link={{ label: `${tDiscover("browseAll")} →`, href: `/${locale}/inspo` }}
         />
         <div className="mt-2.5 grid grid-cols-4 gap-x-2.5 gap-y-4">
           {loading && looks.length === 0
