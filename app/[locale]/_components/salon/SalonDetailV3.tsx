@@ -11,7 +11,6 @@ import { SalonAppCta } from "./SalonAppCta";
 import { SalonContact } from "./SalonContact";
 import { SalonServices } from "./SalonServices";
 import { SalonBundles } from "./SalonBundles";
-import { SalonProducts } from "./SalonProducts";
 import { SalonTeam } from "./SalonTeam";
 import { SalonReviews } from "./SalonReviews";
 import { SalonPortfolio } from "./SalonPortfolio";
@@ -144,6 +143,9 @@ export function SalonDetailV3({
   // A5 B-3/A-3: only register the tab once the async section confirms it has data
   // (empty bundles/products render nothing, so no tab).
   if (hasBundles) availableSections.add("bundles");
+  // hasProducts stays false now that the products section is off this page (2026-08-15), so
+  // the sticky-nav tab cannot appear either. Kept rather than deleted so restoring the
+  // section is one uncommented call site, not an archaeology exercise.
   if (hasProducts) availableSections.add("products");
   if (salon.staff.length > 0) availableSections.add("team");
   if (salon.review_count > 0 || (salon.average_rating ?? 0) > 0) availableSections.add("reviews");
@@ -308,17 +310,18 @@ export function SalonDetailV3({
               </SectionErrorBoundary>
             )}
 
-            {/* A5 A-3: retail products after services (renders null until active products load). */}
-            {!walkinMode && (
-              <SectionErrorBoundary section="SalonProducts">
-                <SalonProducts
-                  salonId={salon.id}
-                  category={primaryCategory}
-                  locale={locale}
-                  onLoaded={setHasProducts}
-                />
-              </SectionErrorBoundary>
-            )}
+            {/* RETAIL PRODUCTS REMOVED from the salon page, owner 2026-08-15: "remove the product
+                section, you know, like, at all, and, also, make it so it doesn't load that because
+                it looks so weird."
+                Both halves are covered by deleting the call site rather than hiding the section:
+                the component is what fetched, so nothing loads and nothing shimmers. It carried
+                the same paint-then-vanish shape as the combos section did (a shimmer row set on
+                mount, `return null` when the fetch came back empty), which is the "it loads and
+                looks weird" he means.
+                The component file, its API route and the Stripe purchase path are all LEFT IN
+                PLACE, untouched: he asked for the section off the page, not for the feature to be
+                deleted, and the dashboard still has its products manager. Graveyard line added the
+                same turn. */}
 
             {/* Termin-only: walk-in has its OWN single selectable stylist section (the deduped
                 "Dein Barber" = #section-team, inside SalonWalkInPanel) per owner 2026-07-24, so
