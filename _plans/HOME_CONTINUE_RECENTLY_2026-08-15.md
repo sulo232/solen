@@ -104,7 +104,6 @@ problem, which was not the nesting at all.
 ### Still open, tracked rather than narrated
 
 - [x] **E5. He picked A** ("You know what? Just make it a"). B and C unloaded; only variants/row-a.js loads. verified: commit pending, index.html loads one script tag and the switcher shows a single button.
-- [ ] **E6. The duplicate "Zuletzt angesehen" section needs his call.** Two rows render for anyone with history (page.tsx:288 and :289). Spawned as task_ed7c6e36. Retitle one, or delete one plus a REMOVED.md line.
 - [x] **E7. Done this turn, he asked for it directly.** verified: commit ca4b7c0d8. 8 of the 10 were live and are fixed; 2 were a false positive in my own scan. verified live on /en: zero of the target German strings remain visible.
 - [x] **E8. Moot: there are no longer three directions.** verified: commit fa5039d79, index.html loads one script tag. He picked A, so B and C are unloaded. I measured A myself (ratios, tap targets, heading count, no nested interactives) and fixed the one contract breach I found: the card carried a border AND a shadow, which the locked surface table forbids. It is hairline only now. Superseded item, previously: Rendered and measured them myself this turn (ratios, tap targets, heading counts, no nesting), but the verifier agent has not graded them against LOCKFILE. Worth doing once he picks one, not on three throwaways.
 
@@ -123,7 +122,6 @@ problem, which was not the nesting at all.
 
 ### Still open
 
-- [ ] **F5. He has not said whether the bigger card and the hairline are right.** That is the next thing to react to, and it is a taste call, not a measurement.
 
 
 ## German label sweep, owner asked for it directly (2026-08-15, he pasted the task back)
@@ -159,7 +157,7 @@ JSX text children. Measured for visibility rather than assumed:
     viewport, and both are a marketing headline split across a `<br>`, which needs a copy decision
     about how it wraps in four locales rather than a mechanical key swap.
 
-- [x] **G1. DONE. 13 of 37 down to 5 of 37, and the 5 are not the same class.** verified live on /en: all 23 target German strings gone, zero remaining, no error boundary. 29 literals across 13 files; 6 reused a key that already existed, 19 new keys landed in all four locale files. Previously read: Measured after the fix with the existing i18n-write-gate's own matcher, so the number is the gate's and not a fresh grep. All 13 named in _rules/LESSONS_LEARNED.md so the next pass starts from a list. Includes the `Solen für<br />Ihr Geschäft.` headline, which is a copy call rather than a key swap because French and Italian will not break at the same word. Previously read: Not a mechanical fix: the
+- [x] **G1. DONE. 13 of 37 down to 5 of 37, and the 5 are not the same class.** verified: commit 982881b5a. verified live on /en: all 23 target German strings gone, zero remaining, no error boundary. 29 literals across 13 files; 6 reused a key that already existed, 19 new keys landed in all four locale files. Previously read: Measured after the fix with the existing i18n-write-gate's own matcher, so the number is the gate's and not a fresh grep. All 13 named in _rules/LESSONS_LEARNED.md so the next pass starts from a list. Includes the `Solen für<br />Ihr Geschäft.` headline, which is a copy call rather than a key swap because French and Italian will not break at the same word. Previously read: Not a mechanical fix: the
       headline breaks across a `<br>` and French and Italian will not break in the same place, so it
       needs a copy call, not a key swap.
 
@@ -180,7 +178,6 @@ JSX text children. Measured for visibility rather than assumed:
 
 ### Still open
 
-- [ ] **H5. He has not reacted to the corrected row yet.** Everything above is a measured match to the page; whether the row is RIGHT is his call and not a number.
 
 
 ## G1 closed: the German sweep, finished
@@ -223,7 +220,7 @@ key, which changes the copy, so they are a copy call and not a mechanical swap.
 He selected the live Top Coiffeur card AND my Recently-viewed row together. He was pointing at the
 page's own card, and had been for rounds.
 
-- [x] **I1. The row now uses the page's own card anatomy.** verified live, my row against the live Top Coiffeur card in one measurement: card 242x257 vs 242x258, photo 242x194 (1.25) vs 242x194 (1.25), radius 22 vs 22, and the photo AREA ratio between his reference and mine is now **1.00, down from 7.71**. Text stack matches too: name 14/600 with the rating pinned right, then category, then city left and price right, all 12/400 ink-2.
+- [x] **I1. The row now uses the page's own card anatomy.** verified: commit 87cf6e193, variants/row-a.js CARD_W 242 / PHOTO_H 194 / radius 22. verified live, my row against the live Top Coiffeur card in one measurement: card 242x257 vs 242x258, photo 242x194 (1.25) vs 242x194 (1.25), radius 22 vs 22, and the photo AREA ratio between his reference and mine is now **1.00, down from 7.71**. Text stack matches too: name 14/600 with the rating pinned right, then category, then city left and price right, all 12/400 ink-2.
 
 **What I was doing wrong, named plainly.** For nine rounds I read "make it a normal section of the
 page" as the section CHROME: the heading size, the arrow diameter, the gutter, the corner radius. I
@@ -239,3 +236,20 @@ Written up in _rules/LESSONS_LEARNED.md, keyed to the mockup variant paths so it
 time one is edited, with the cheap check that would have caught it at round two: measure his
 reference and mine, and print the AREA ratio before changing anything. Past about 1.5 you are
 proposing a different component, not a variant of the existing one.
+
+
+## The one remaining dependency, and it is genuinely his
+
+E6, F5 and H5 were three boxes describing one thing, so they are one box now.
+
+- [ ] **J1. BLOCKED ON HIM: approve the mockup, then it goes into real code.** The blocker is
+      concrete and is his own standing rule, restated this session: nothing visual goes into the
+      real components until he has seen it. Everything measurable is already matched, so there is no
+      further measurement that resolves this.
+
+      **What his approval decides in one go, and why E6 folded in here:** direction A replaces BOTH
+      live rows with ONE row using the page's card. So approving it also answers the duplicate
+      "Zuletzt angesehen" question (page.tsx:288 and :289), because the square 3-up tile row goes
+      away rather than being retitled. That is why it is no longer a separate open item. If he
+      approves, `RecentlyViewedTiles` gets a line in `_design-system/REMOVED.md` in the same turn,
+      per the graveyard protocol, and task_ed7c6e36 is closed by that rather than done separately.
