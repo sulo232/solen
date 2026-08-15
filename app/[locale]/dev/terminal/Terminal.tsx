@@ -438,7 +438,7 @@ export default function Terminal({ salonName, bookings: initialBookings, queue: 
           <div className="flex items-center justify-between">
             <span className="text-[13px] font-semibold text-s-ink">Waiting</span>
           </div>
-          <div className="mt-4 flex flex-col gap-2">
+          <div className="mt-4 flex flex-col gap-4">
             {waiting.map((entry) => {
               const key = `waiting:${entry.id}`;
               const expanded = expandedKey === key;
@@ -485,25 +485,25 @@ export default function Terminal({ salonName, bookings: initialBookings, queue: 
                     </span>
                   </button>
                   {expanded ? (
-                    <div className="mt-2 flex min-h-11 items-center gap-4">
+                    <div className="flex items-center gap-4">
                       <button
                         type="button"
                         onClick={() => resolveWaiting(entry.id, "completed")}
-                        className="text-[13px] font-normal text-s-ink"
+                        className="flex h-11 items-center text-[13px] font-normal text-s-ink"
                       >
                         Done
                       </button>
                       <button
                         type="button"
                         onClick={() => resolveWaiting(entry.id, "no_show")}
-                        className="text-[13px] font-normal text-s-ink"
+                        className="flex h-11 items-center text-[13px] font-normal text-s-ink"
                       >
                         No-show
                       </button>
                       <button
                         type="button"
                         onClick={() => resolveWaiting(entry.id, "cancelled")}
-                        className="text-[13px] font-normal text-s-error"
+                        className="flex h-11 items-center text-[13px] font-normal text-s-error"
                       >
                         Cancel
                       </button>
@@ -520,7 +520,7 @@ export default function Terminal({ salonName, bookings: initialBookings, queue: 
             <span className="text-[13px] font-semibold text-s-ink">Later today</span>
             <span className="text-[13px] font-normal tabular-nums text-s-ink-2">{laterToday.length} to go</span>
           </div>
-          <div className="mt-4 flex flex-col gap-2">
+          <div className="mt-4 flex flex-col gap-4">
             {laterToday.map((booking) => {
               const key = `booking:${booking.id}`;
               const expanded = expandedKey === key;
@@ -553,32 +553,32 @@ export default function Terminal({ salonName, bookings: initialBookings, queue: 
                     </span>
                   </button>
                   {expanded && !completed ? (
-                    <div className="mt-2 flex min-h-11 items-center gap-4">
+                    <div className="flex items-center gap-4">
                       <button
                         type="button"
                         onClick={() => openMove(booking.id)}
-                        className="text-[13px] font-normal text-s-ink"
+                        className="flex h-11 items-center text-[13px] font-normal text-s-ink"
                       >
                         Move
                       </button>
                       <button
                         type="button"
                         onClick={() => resolveBooking(booking.id, "completed")}
-                        className="text-[13px] font-normal text-s-ink"
+                        className="flex h-11 items-center text-[13px] font-normal text-s-ink"
                       >
                         Done
                       </button>
                       <button
                         type="button"
                         onClick={() => resolveBooking(booking.id, "no_show")}
-                        className="text-[13px] font-normal text-s-ink"
+                        className="flex h-11 items-center text-[13px] font-normal text-s-ink"
                       >
                         No-show
                       </button>
                       <button
                         type="button"
                         onClick={() => resolveBooking(booking.id, "cancelled")}
-                        className="text-[13px] font-normal text-s-error"
+                        className="flex h-11 items-center text-[13px] font-normal text-s-error"
                       >
                         Cancel
                       </button>

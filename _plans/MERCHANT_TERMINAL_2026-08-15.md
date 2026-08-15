@@ -561,6 +561,20 @@ all three states, at 402x874 and at 1024x820, identical at both widths:**
 - interactive controls under 44px: **0**, floor is 44
 - horizontal page overflow: **none** at either width
 
+**Verifier round 1: FAIL, 2 gaps, both fixed and re-measured.**
+1. The `Done` / `No-show` / `Cancel` links inside an EXPANDED row measured about 20px tall. My own
+   sweep missed these because those controls only exist once a row is expanded and I had measured
+   the collapsed state. Each now carries its own 44px hit area; re-measured with both a waiting row
+   and an appointment row open: **0** controls under 44px.
+2. The row stack sat at an 8px gap where the binary rhythm law wants 16. I had justified the 8 as an
+   in-group gap in the build brief; the law does not carve that out, so it is now 16.
+   Re-measured on the rendered page: **16px** between rows.
+
+**Flagged by the verifier for the OWNER, not for me:** the 2026-07-15 card-economy decision (one
+carded hero, everything else bare text) versus the tier-5 individual-entity-card pattern, which is
+what the waiting and appointment rows use. Both are real rules and they point different ways on a
+row list. Not resolved here.
+
 **Found by measuring, not by reading the code, and fixed:** `Pause queue` was a 80x20 tap target, the
 three `Start` controls and the eight `Move` time chips were 36px tall, and `Keep 11:30` was 20px. Six
 of those sat inside a 44px row, which is why reading the source suggested they were fine. `Start`
