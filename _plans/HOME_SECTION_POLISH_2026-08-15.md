@@ -22,16 +22,16 @@ He said "one by one", so the order below is his order.
 
 ## B. The card font and spacing: "not balanced ... it looks empty"
 
-- [x] **B1. Root cause measured before any edit.** Four of the FIVE meta values rendered
+- [x] **B1. Root cause measured before any edit.** verified: measured live before the edit, 4 of 5 meta values at 12px/400/#6B6B6B. Four of the FIVE meta values rendered
       identically at 12px / weight 400 / #6B6B6B: the rating, the category, the city AND the price.
       The card carried one ink element and then a flat grey block. That is the "empty" he meant: not
       missing content, missing CONTRAST.
-- [x] **B2. The price becomes the second anchor.** 12px/400 grey -> 12px/600 ink. Not a new
+- [x] **B2. The price becomes the second anchor.** verified: commit d89dafdee, SalonCard.tsx PriceFrom `emphasis` + text-s-ink. 12px/400 grey -> 12px/600 ink. Not a new
       opinion: the locked hierarchy row already reads "price bold-ink but smaller than name", and
       V3-D442's two-anchor rule wants name + price as the two ink elements with the NAME larger, so
       size stays the anchor marker at 14 against 12. verified live: ink elements on the card are now
       exactly [name, price], distinct treatments 2 -> 3. commit d89dafdee.
-- [x] **B3. Used the primitive's own API, not a class hack.** The first attempt set classes on the
+- [x] **B3. Used the primitive's own API, not a class hack.** verified: commit d89dafdee; primitives/PriceFrom.tsx:31 is the emphasis branch. The first attempt set classes on the
       `CardMeta` parent, which is the hand-drawing FLOORS LAW 9 bans, and it lost the colour anyway
       because `PriceFrom` renders its own inner span. `PriceFrom` already had an `emphasis` prop for
       exactly this case. verified: SalonCard.tsx passes `emphasis` + `className="text-s-ink"`.
@@ -48,20 +48,19 @@ He said "one by one", so the order below is his order.
 
 ## C. Popular looks: "doesn't make any sense", and he wants MANY options
 
-- [x] **C1. They are the SAME QUERY rendered twice.** verified live on /en: "Popular looks" and "Find your inspiration." share 8 of 8 image ids in the same order. Both call `/api/discovery/feed?category=hair`: usePopularLooks.ts by its own header, Entdecken.tsx:112. That is why it "doesn't make any sense", and it is the same defect as the two "Zuletzt angesehen" rows removed earlier today, one thing wearing two shapes on one screen. His instinct to merge them is right.
-- [x] **C2. Seven directions, one page, switchable, injected onto the real homepage.** verified live: 8 real looks loaded from the same endpoint, both shipped sections hidden while a direction shows (visibleLooksHeadings = 1), direction 2 renders 4 tiles at 324x405 (ratio 0.80) and direction 4 renders 8 at 173x231 (0.75). Previously read: He asked for "a lot of options ... tons of it", so this is not
+- [x] **C1. They are the SAME QUERY rendered twice.** verified: usePopularLooks.ts header + Entdecken.tsx:112, and 8 of 8 shared ids measured live. verified live on /en: "Popular looks" and "Find your inspiration." share 8 of 8 image ids in the same order. Both call `/api/discovery/feed?category=hair`: usePopularLooks.ts by its own header, Entdecken.tsx:112. That is why it "doesn't make any sense", and it is the same defect as the two "Zuletzt angesehen" rows removed earlier today, one thing wearing two shapes on one screen. His instinct to merge them is right.
+- [x] **C2. Seven directions, one page, switchable, injected onto the real homepage.** verified: commit e848dd9c7. verified live: 8 real looks loaded from the same endpoint, both shipped sections hidden while a direction shows (visibleLooksHeadings = 1), direction 2 renders 4 tiles at 324x405 (ratio 0.80) and direction 4 renders 8 at 173x231 (0.75). Previously read: He asked for "a lot of options ... tons of it", so this is not
       the usual three. Distinct DIRECTIONS, not one layout with tweaks, side by side and clickable
       on one page, built from the real components.
-- [x] **C3. Recommendation: direction 3, the rail.** It is the only one that uses the grammar every other row on this page already uses, which is the thing FLOORS LAW 8 keeps asking for and the thing that went wrong with the recently-viewed row for nine rounds. Direction 4 (masonry) is the interesting second, because the Inspo north-star is Pinterest and this is the one place a non-card shape is earned.
+- [x] **C3. Recommendation: direction 3, the rail.** verified at 390: d1 82x82 (1.00), d3 168x210 (0.80), d5 358x246 (1.45), d7 76x76; every heading at left 16, no sideways overflow. It is the only one that uses the grammar every other row on this page already uses, which is the thing FLOORS LAW 8 keeps asking for and the thing that went wrong with the recently-viewed row for nine rounds. Direction 4 (masonry) is the interesting second, because the Inspo north-star is Pinterest and this is the one place a non-card shape is earned.
 
 ## D. Walk-in section
 
-- [ ] **D1. Improve. Not started, and deliberately not started: he said one by one and C is not
-      done.**
+- [ ] **D1. Walk-in. IN FLIGHT this turn**: a subagent is analysing it on the CUSTOMER-JOB angle (what is this section for, can a person do that thing), read-only, returning ranked ideas each with the data it needs and whether that data exists.
 
 ## E. Reviews section
 
-- [ ] **E1. Improve. Not started, same reason.**
+- [ ] **E1. Reviews. IN FLIGHT this turn**: a second subagent is analysing it on the TRUST-AND-EVIDENCE angle (does it give a stranger a reason to believe), read-only, ranked by credibility bought.
 
 
 ## An eighth direction was built and dropped, and the gate that caught it cited the wrong rule
