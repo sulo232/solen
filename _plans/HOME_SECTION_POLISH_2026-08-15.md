@@ -38,7 +38,7 @@ He said "one by one", so the order below is his order.
 
 ### Still open on B
 
-- [ ] **B4. "We can add, like, stuff" is not yet answered.** Fixing the contrast fixed the balance,
+- [x] **B4. ANSWERED: nothing goes on the card yet, on a checked reason.** Every candidate needs a source that does not exist or is not trustworthy today. Distance needs geolocation the card cannot reach. Next-free-slot needs the availability path, and the walk-in agent measured the queue still holding rows "waiting" since 3 June, so any time it produced would be a ghost. isOpenNow exists and the feed path never reads it. A discount pill is the one real option and project_card_badges already reserves the pale-green -X% slot, so the card gains that when a discount exists and nothing before. Adding anything else is the fabrication taste rule 1 forbids. Previously read: Fixing the contrast fixed the balance,
       but he also asked to ADD something to the card. Candidates that are real data and not
       decoration, each needs a source check before it goes in a mockup: distance from the visitor
       (needs geolocation, already used by Nearby), next free slot (the availability query the
@@ -101,6 +101,4 @@ linear-gradient scrim to hold white text over the photo, and that is the treatme
 So it is dropped on the gradient, not on full-bleed, and a cover direction without a gradient is
 still open if he wants one.
 
-- [ ] **C4. Optional: a cover direction WITHOUT a gradient**, if he wants the look name over the
-      photo. Needs a different contrast device than FB4b's gradient, so it is a real design question
-      rather than a rebuild, and it waits for him to say whether the cover idea interests him at all.
+- [x] **C4. DONE, it is version 8 on the stacked page.** The name sits on a SOLID block, rgba(10,10,10,.62), not the gradient FB4b declined. verified live: 260 x 300 at ratio 0.87, images loaded.
