@@ -134,6 +134,26 @@
       "autoPort": false
     },
     {
+      "name": "Tunnel (dev 3000 b)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "/opt/homebrew/bin/cloudflared tunnel --url http://localhost:3000 --metrics localhost:20255 --no-autoupdate"
+      ],
+      "port": 20255,
+      "autoPort": false
+    },
+    {
+      "name": "Tunnel (this worktree next 61809)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "/opt/homebrew/bin/cloudflared tunnel --url http://localhost:61809 --metrics localhost:20256 --no-autoupdate"
+      ],
+      "port": 20256,
+      "autoPort": false
+    },
+    {
       "name": "Tunnel (mockup delivery 3210)",
       "runtimeExecutable": "bash",
       "runtimeArgs": [
