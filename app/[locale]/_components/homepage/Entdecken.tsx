@@ -84,6 +84,7 @@ export default function Entdecken() {
   // 2026-08-15: this label was a hardcoded German literal, so it rendered German on /en,
   // /fr and /it. Same bug class the owner caught on the recently-viewed row that day.
   const t = useTranslations("home.discover");
+  const tTrend = useTranslations("home.trending");
   const locale = useLocale();
   const scrollRef = React.useRef<HTMLDivElement>(null);
   // V3-D160 (2026-05-26): live wire to /api/discovery/feed restored.
@@ -378,7 +379,7 @@ export default function Entdecken() {
                     )}
                     {look.price != null && (
                       <span className="ml-auto shrink-0 font-body text-[12px] font-semibold text-s-ink">
-                        ab CHF {look.price}
+                        {tTrend("priceFrom", { price: look.price })}
                       </span>
                     )}
                   </div>

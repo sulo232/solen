@@ -129,7 +129,7 @@ export default function WalkInBand() {
                         {sofort ? "Jetzt frei" : `${s.waitMinutes}-${s.waitMinutesMax} Min`}
                       </div>
                       {!sofort && (
-                        <div className="mt-[3px] font-body text-[12px] font-semibold text-s-ink-2">bis frei</div>
+                        <div className="mt-[3px] font-body text-[12px] font-semibold text-s-ink-2">{t("untilFree")}</div>
                       )}
                       <div className="mt-2.5 flex items-center gap-2">
                         <span className="truncate font-heading text-[14px] font-semibold text-s-ink">{s.name}</span>
@@ -147,7 +147,7 @@ export default function WalkInBand() {
                         <div className="mt-[3px] truncate font-body text-[12px] text-s-ink-2">{s.address}</div>
                       )}
                       <div className="mt-[3px] font-body text-[12px] text-s-ink-2">
-                        {s.queueLength === 0 ? "Niemand wartet" : `${s.queueLength} vor Ihnen`}
+                        {s.queueLength === 0 ? t("queueEmpty") : t("queueAhead", { n: s.queueLength })}
                       </div>
                     </a>
                   );

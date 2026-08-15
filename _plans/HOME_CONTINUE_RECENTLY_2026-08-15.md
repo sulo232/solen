@@ -242,7 +242,7 @@ proposing a different component, not a variant of the existing one.
 
 E6, F5 and H5 were three boxes describing one thing, so they are one box now.
 
-- [ ] **J1. BLOCKED ON HIM: approve the mockup, then it goes into real code.** The blocker is
+- [x] **J1. APPROVED AND SHIPPED.** He said "Alright. Go implement it." Applied to the real components, not the mockup. verified live on /en, measured with getBoundingClientRect: card 306x118, radius 18, border 0px, shadow present, photo box 87x70 at ratio 1.24, headline 17px/22px weight 400 grey with the subject at 600 ink over exactly 2 lines, and the left edge at 16 matching the category pills, the Top Coiffeur heading and the Recently-viewed heading. Previously read: The blocker is
       concrete and is his own standing rule, restated this session: nothing visual goes into the
       real components until he has seen it. Everything measurable is already matched, so there is no
       further measurement that resolves this.
@@ -253,3 +253,38 @@ E6, F5 and H5 were three boxes describing one thing, so they are one box now.
       away rather than being retitled. That is why it is no longer a separate open item. If he
       approves, `RecentlyViewedTiles` gets a line in `_design-system/REMOVED.md` in the same turn,
       per the graveyard protocol, and task_ed7c6e36 is closed by that rather than done separately.
+
+
+## Implemented, 2026-08-15 ("Alright. Go implement it.")
+
+Nothing net-new was built. `ContinueCard.tsx` already existed and was already mounted at
+`page.tsx:278`, already resolving two real states (an upcoming booking, and a persisted recent
+search). This was a restyle of what ships, which is why the exists-check mattered.
+
+| | before | after |
+|---|---|---|
+| card | full width, border + shadow | 306 x 118, shadow only, no border |
+| photo box | 88 x 88 SQUARE | 87 x 70, ratio 1.24 |
+| headline | 14px medium, the bare search term | 17px/22px sentence, grey lead-in + ink subject, 2 lines |
+| several recent searches | only the first | up to 3 in a rail, next one cropped |
+| left edge | 0 | 16, on the page's line |
+
+Three defects found while implementing, each measured rather than assumed:
+
+1. **`FeedZone` gives its children no horizontal padding.** Every sibling section supplies its own
+   `mx-auto max-w-[1280px] px-4` (WalkInBand.tsx:71 is the pattern) and this one never did, so it
+   rendered at left 0 against the page's 16. My first fix used a `-mx-4 px-4` bleed, which assumed
+   a parent padding that does not exist and left it at 0 anyway. Measured twice before it was right.
+2. **`recentLabel()` had a hardcoded German fallback**, `"Suche"`, returned whenever a recent search
+   carried no query, service or city. It takes a translated string now, added in all four locales.
+3. **The storage key is `solen.recentSearches`**, not the `solen.recent-searches` I first guessed.
+   Reading useRecentSearches.ts settled it in one look.
+
+### Open, and it is a real gap between the approved mockup and what the data can back
+
+- [ ] **K1. The card shows a magnifier icon where the mockup showed a photo.** A recent SEARCH has
+      no photo attached to it: `useRecentSearches` persists query, service, city, date and period,
+      and nothing else. The mockup looked better because I hung a salon photo on it, and that photo
+      had no source. Rendering one would be fabrication, so the shipped card uses the designed
+      icon fallback instead. The honest fix is to resolve the top result for that search and use ITS
+      photo, which is a query that does not exist yet, so it is his call whether it is worth one.

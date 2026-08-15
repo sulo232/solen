@@ -239,7 +239,8 @@
       "eyebrow": "Tendance",
       "title": "Tendance à Bâle",
       "subtitle": "Les salons les plus en vogue actuellement",
-      "popularLooks": "Looks populaires"
+      "popularLooks": "Looks populaires",
+      "priceFrom": "dès CHF {price}"
     },
     "nearby": {
       "eyebrow": "Emplacement",
@@ -318,7 +319,10 @@
       "theApp": "L'application Solen",
       "fromYourPocket": "Directement depuis votre poche.",
       "walkInSub": "Sans rendez-vous. Voyez l'attente et prenez votre place.",
-      "allWalkIns": "Tous les sans-rendez-vous"
+      "allWalkIns": "Tous les sans-rendez-vous",
+      "untilFree": "avant libre",
+      "queueEmpty": "Personne n'attend",
+      "queueAhead": "{n} devant vous"
     },
     "heroCarousel": {
       "label": "Populaire près de chez vous",
@@ -445,6 +449,10 @@
     },
     "salonOfMonth": {
       "title": "Salon du mois"
+    },
+    "continueCard": {
+      "searchingFor": "Continuer à chercher",
+      "searchFallback": "Recherche"
     }
   },
   "breadcrumb": {

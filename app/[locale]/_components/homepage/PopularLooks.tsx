@@ -75,7 +75,7 @@ export default function PopularLooks() {
                     {look.title}
                   </p>
                   <p className="mt-0.5 font-body text-[12px] leading-[1.3] text-s-ink-2">
-                    ab CHF {look.priceFromCHF}
+                    {t("priceFrom", { price: look.priceFromCHF })}
                   </p>
                 </Link>
               ))}

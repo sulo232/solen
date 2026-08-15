@@ -239,7 +239,8 @@
       "eyebrow": "Trending",
       "title": "Trending in Basel",
       "subtitle": "Die aktuell angesagtesten Salons",
-      "popularLooks": "Beliebte Looks"
+      "popularLooks": "Beliebte Looks",
+      "priceFrom": "ab CHF {price}"
     },
     "nearby": {
       "eyebrow": "Standort",
@@ -318,7 +319,10 @@
       "theApp": "Die Solen-App",
       "fromYourPocket": "Direkt aus der Tasche.",
       "walkInSub": "Ohne Termin. Sehen Sie die Wartezeit und sichern Sie sich Ihren Platz.",
-      "allWalkIns": "Alle Walk-ins"
+      "allWalkIns": "Alle Walk-ins",
+      "untilFree": "bis frei",
+      "queueEmpty": "Niemand wartet",
+      "queueAhead": "{n} vor Ihnen"
     },
     "heroCarousel": {
       "label": "Beliebt in Ihrer Nähe",
@@ -445,6 +449,10 @@
     },
     "salonOfMonth": {
       "title": "Salon des Monats"
+    },
+    "continueCard": {
+      "searchingFor": "Weitersuchen nach",
+      "searchFallback": "Suche"
     }
   },
   "breadcrumb": {

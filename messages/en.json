@@ -239,7 +239,8 @@
       "eyebrow": "Trending",
       "title": "Trending in Basel",
       "subtitle": "The hottest salons right now",
-      "popularLooks": "Popular looks"
+      "popularLooks": "Popular looks",
+      "priceFrom": "from CHF {price}"
     },
     "nearby": {
       "eyebrow": "Location",
@@ -318,7 +319,10 @@
       "theApp": "The Solen app",
       "fromYourPocket": "Straight from your pocket.",
       "walkInSub": "No appointment. See the wait and take your place.",
-      "allWalkIns": "All walk-ins"
+      "allWalkIns": "All walk-ins",
+      "untilFree": "until free",
+      "queueEmpty": "Nobody waiting",
+      "queueAhead": "{n} ahead of you"
     },
     "heroCarousel": {
       "label": "Popular near you",
@@ -445,6 +449,10 @@
     },
     "salonOfMonth": {
       "title": "Salon of the Month"
+    },
+    "continueCard": {
+      "searchingFor": "Continue searching for",
+      "searchFallback": "Search"
     }
   },
   "breadcrumb": {
