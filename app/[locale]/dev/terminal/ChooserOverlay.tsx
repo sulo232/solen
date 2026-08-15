@@ -39,10 +39,20 @@ export default function ChooserOverlay({ locale, directions }: { locale: string;
     };
   }, []);
 
-  if (!mounted) return null;
+  // FIXED 2026-08-15 (owner: "the mockup isn't working at all"). Returning null until mount meant
+  // the SERVER sent a page with no chooser in it, so the first thing on a phone was the plain
+  // Solen site and a footer. Measured: zero occurrences of the overlay class in the server HTML.
 
   const screen = (
-    <div className="fixed inset-0 z-[10000] overflow-y-auto bg-white">
+    // Before hydration this is a normal full-height block; `fixed` inside the layout's transformed
+    // page-transition wrapper is bounded by that wrapper, not the viewport (owner, 2026-08-15).
+    <div
+      className={
+        mounted
+          ? "fixed inset-0 z-[10000] overflow-y-auto bg-white"
+          : "relative z-[10000] min-h-[100dvh] w-full bg-white"
+      }
+    >
       {/* Phone: three compact rows at the top of the screen. Nothing else. */}
       <div className="md:hidden">
         {directions.map((d) => (
@@ -82,6 +92,9 @@ export default function ChooserOverlay({ locale, directions }: { locale: string;
       </div>
     </div>
   );
+
+  // Server and first paint: render inline. After hydration: move into the body portal.
+  if (!mounted) return screen;
 
   return createPortal(screen, document.body);
 }

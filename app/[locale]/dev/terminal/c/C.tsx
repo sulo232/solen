@@ -132,10 +132,22 @@ export default function C({ salonName, bookings: initialBookings, queue: initial
     setQueue((prev) => prev.map((q) => (q.id === id ? { ...q, status: "in_chair", startedAt: new Date().toISOString() } : q)));
   }
 
-  if (!mounted) return null;
+  // FIXED 2026-08-15 (owner: "the mockup isn't working at all"). Returning null until mount meant
+  // the SERVER sent a page with no screen in it, so on a phone he got the plain Solen site and a
+  // footer while he waited for the script. Measured: zero occurrences of the overlay class in the
+  // server HTML of all four routes.
 
   const screen = (
-    <div className="fixed inset-0 z-[10000] flex flex-col overflow-hidden bg-s-bg-sunken">
+    // Before hydration this is a normal full-height block, because `fixed` inside the layout's
+    // transformed page-transition wrapper is bounded BY that wrapper and collapsed the screen into
+    // a squashed band with the site footer showing under it (what the owner saw, 2026-08-15).
+    <div
+      className={
+        mounted
+          ? "fixed inset-0 z-[10000] flex flex-col overflow-hidden bg-s-bg-sunken"
+          : "relative z-[10000] flex min-h-[100dvh] w-full flex-col bg-s-bg-sunken"
+      }
+    >
       {/* Top, fixed. The ONE bar of chrome, the chairs, and the wait line all sit inside it. */}
       <div className="shrink-0 bg-white">
         <div className="mx-auto flex h-14 w-full max-w-[760px] items-center justify-between px-4">
@@ -344,6 +356,11 @@ export default function C({ salonName, bookings: initialBookings, queue: initial
       </div>
     </div>
   );
+
+  // Server and first paint: render inline, so the screen exists before any script runs.
+  // After hydration: move into the body portal, so the overlay escapes the locale layout's
+  // transformed page-transition wrapper.
+  if (!mounted) return screen;
 
   return createPortal(screen, document.body);
 }

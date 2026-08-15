@@ -143,10 +143,24 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
     setQueue((prev) => prev.map((q) => (q.id === id ? { ...q, status: "in_chair", startedAt: new Date().toISOString() } : q)));
   }
 
-  if (!mounted) return null;
+  // FIXED 2026-08-15 (owner: "the mockup isn't working at all"). Returning null until mount meant
+  // the SERVER sent a page with no screen in it at all, so on a phone he got the plain Solen site
+  // and a footer while he waited for the script. Measured: the server HTML for all four routes
+  // contained zero occurrences of the overlay class. The screen now renders in the normal tree on
+  // the server and only MOVES into the body portal once mounted, so it is there from the first byte.
 
   const screen = (
-    <div className="fixed inset-0 z-[10000] overflow-y-auto overscroll-contain bg-s-bg-sunken">
+    // Before hydration this is a normal full-height block, because `fixed` inside the layout's
+    // transformed page-transition wrapper is bounded BY that wrapper and collapsed the screen into
+    // a squashed band with the site footer showing under it (what the owner saw, 2026-08-15).
+    // After hydration the portal moves it to <body>, where `fixed` means the viewport again.
+    <div
+      className={
+        mounted
+          ? "fixed inset-0 z-[10000] overflow-y-auto overscroll-contain bg-s-bg-sunken"
+          : "relative z-[10000] min-h-[100dvh] w-full bg-s-bg-sunken"
+      }
+    >
       {attentionItems.length > 0 ? (
         <div className={ATTENTION_BAR}>
           <span className="flex-1 truncate">{attentionLabel(attentionItems.length)}</span>
@@ -400,6 +414,12 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
       </div>
     </div>
   );
+
+  // Server and first paint: render inline, so the screen exists before any script runs.
+  // After hydration: move into the body portal, so the overlay escapes the locale layout's
+  // transformed page-transition wrapper (a transformed ancestor is the containing block for
+  // `fixed`, which is why an inline-only version pins itself to the wrapper instead of the screen).
+  if (!mounted) return screen;
 
   return createPortal(screen, document.body);
 }
