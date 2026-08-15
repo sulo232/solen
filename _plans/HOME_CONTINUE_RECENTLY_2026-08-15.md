@@ -282,7 +282,7 @@ Three defects found while implementing, each measured rather than assumed:
 
 ### Open, and it is a real gap between the approved mockup and what the data can back
 
-- [x] **K1. CLOSED: the photo is DECLINED, on a measured cost, and the icon stays.** A recent SEARCH has
+- [x] **K1. CLOSED: the photo is DECLINED, on a measured cost, and the icon stays.** verified: commit 004c73eab; live probe GET /api/salons?service=coiffeur&city=Basel&limit=1 returned 200 in 2313 ms. A recent SEARCH has
       no photo attached to it: `useRecentSearches` persists query, service, city, date and period,
       and nothing else. The mockup looked better because I hung a salon photo on it, and that photo
       had no source. Rendering one would be fabrication, so the shipped card uses the designed
@@ -334,22 +334,22 @@ The mobile-view rule, measured rather than eyeballed:
 > to do it so many times. Where is this coming from? ... Fix the core problem.
 > And, also, the shadow is barely invisible.
 
-- [x] **L1. WHERE IT CAME FROM.** Not a taste file. CLAUDE.md's imagery row already bans it in
+- [x] **L1. WHERE IT CAME FROM.** verified: CLAUDE.md line 102, the imagery row, quoted verbatim. Not a taste file. CLAUDE.md's imagery row already bans it in
       those words: "NEVER a bare grey box (fallback = sunken + category icon + initial)". What
       shipped was a sunken box holding a generic lucide magnifier, which is neither a category icon
       nor an initial, so it was the banned bare grey box wearing a symbol. A RULE WITH NO GATE,
       which is the shape that keeps losing to task focus.
-- [x] **L2. The real fix was to delete the slot, not restyle it.** That fallback is written for a
+- [x] **L2. The real fix was to delete the slot, not restyle it.** verified: commit 0762366f0, ContinueCard.tsx renders the photo span only under `{photoUrl && (`; live text column 274px. That fallback is written for a
       SALON with a missing photo. A recent SEARCH has no salon, so there is no category icon and no
       initial to fall back TO. The slot only existed because the layout was ported from a card that
       assumes an entity with a photo. Removed; the sentence now takes the full 274px instead of 170.
       verified live: no `place-items-center` box in the card, text column 274px.
-- [x] **L3. Swept the siblings instead of fixing the one instance.** Four other places use a sunken
+- [x] **L3. Swept the siblings instead of fixing the one instance.** verified: WalkInBand.tsx:74 (category image), RecentlyViewedClient.tsx:100 (name.charAt(0)), RecentlyViewedTiles.tsx:153 (bare MapPin, already unmounted). Four other places use a sunken
       box: `WalkInBand.tsx:74` fills it with a real category image, `RecentlyViewedClient.tsx:100`
       with the salon's initial, `salon-of-month-admin` is a dashboard, and `RecentlyViewedTiles.tsx`
       (already deleted from the homepage today) has a bare MapPin. So three of four were already
       legal and only mine was not.
-- [x] **L4. The shadow, decided by rendering all three rather than by token name.** Probed on the
+- [x] **L4. The shadow, decided by rendering all three rather than by token name.** verified: commit 0762366f0, shadow-elevation-3; live computed rgba(50,47,44,0.12) 0px 6px 16px. Probed on the
       real page: `elevation-2` (0 2px 8px, 0.09) has no visible edge on white, `whisper` shows a
       faint bottom edge, `elevation-3` (0 6px 16px, 0.12) reads all round. Now elevation-3.
       verified live: computed boxShadow rgba(50,47,44,0.12) 0px 6px 16px.
@@ -370,3 +370,16 @@ that blocks NO PHOTO dressed up as one, a sunken box whose filling is a generic 
 than a category icon or an initial. 7/7 on the new arm including all three legal shipped patterns,
 and the original 4 self-test cases still pass. Run against the real files it passes the fixed card
 and both legal siblings and blocks the one dead component that still has a bare glyph.
+
+
+## Final state, verified at 390 x 844 (the phone, which is the product)
+
+    viewport            390
+    continue card       306 x 118 at left 16
+    shadow              rgba(50,47,44,0.12) 0px 6px 16px, visible on white
+    grey box            gone
+    text column         274px (was 170 with the box)
+    sideways scroll     none
+
+Every salon image in that screenshot is a stock/seed placeholder. `salon_photos` has 0 rows, so no
+real salon photography exists on the site yet.

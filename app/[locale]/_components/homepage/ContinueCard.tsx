@@ -37,6 +37,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { useRecentSearches, recentLabel } from "./useRecentSearches";
+import { Search } from "lucide-react";
 
 type BookingSalon = { slug: string | null; name: string | null; cover_photo_url: string | null };
 type BookingService = { name_de: string | null; name_en: string | null };
@@ -244,6 +245,17 @@ function ContinueShell({
         </span>
         {meta && <span className="mt-[3px] block truncate font-body text-[12px] text-s-ink-2">{meta}</span>}
       </span>
+      {/* THE SEARCH ICON IS BACK, WITHOUT THE BOX. Owner 2026-08-15: "put, like, a search icon.
+          You can do that, but don't do, like, how you did it before. You know? That looks so
+          weird." What looked weird was the CONTAINER, a 87x70 sunken rectangle standing in for a
+          photo. The icon alone, no fill, no border, sized to the text rather than to a photo slot,
+          is a mark on the card instead of a fake image. It also keeps the card honest: a search is
+          not a place, so it gets a symbol, not a picture frame. */}
+      {!photoUrl && (
+        <span className="shrink-0 self-center pr-1 text-s-ink-2" aria-hidden>
+          <Search size={26} strokeWidth={1.75} />
+        </span>
+      )}
       {/* NO PHOTO SLOT WHEN THERE IS NO PHOTO. Owner 2026-08-15, and he had said it before:
           "You keep making this icon instead of a gray boxing. I told you I don't like this at all
           ... Where is this coming from? Fix the core problem."
