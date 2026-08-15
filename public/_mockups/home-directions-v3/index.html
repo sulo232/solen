@@ -122,9 +122,7 @@
       <button id="bAfter" onclick="show('after')">After</button>
     </div></div>
     <div class="row"><div class="seg scrollseg">
-      <button id="d1" class="on" onclick="pick('rowA')">A small rail</button>
-      <button id="d2" onclick="pick('rowB')">B big rail</button>
-      <button id="d3" onclick="pick('rowC')">C wide list</button>
+      <button id="d1" class="on" onclick="pick('rowA')">A (picked)</button>
     </div></div>
   </div>
   <div class="cap" id="cap">Loading direction</div>
@@ -195,7 +193,7 @@ window.MK = (function(){
 
   // MEASURED reference geometry. A direction reads these; it does not invent sizes.
   var REF = {
-    cardW: 306, cardH: 105, cardRatio: 2.87,
+    cardW: 306, cardH: 118, cardRatio: 2.59,   /* 105pt measured, scaled 407/387.5, plus room for the two-line sentence */
     photoW: 70, photoH: 80, photoRatio: 0.87,
     thumbW: 112, thumbH: 106, thumbRatio: 1.05,
     thumbGap: 12, gutter: 24,
@@ -267,28 +265,47 @@ window.MK = (function(){
      Airbnb measured: card 306 x 105, radius 18, photo on the right, second card peeking.
      The photo is OUR 1.25:1 landscape (87 x 70), not their measured 0.87:1 portrait, because he
      said "not square" and has twice asked to keep our own ratio. */
-  var SEARCHES = ["Skin fade", "Balayage"];
+  /* What the last search was FOR. Owner 2026-08-15: "on this, like, skin fade, but you know, like,
+     what you search for, you can't really identify what your last [search] ... look at the
+     screenshot I fucking gave you."
+     He is right and the screenshot says so plainly. Airbnb's card reads "Continue searching for
+     hair stylists in Zurich", a SENTENCE over two lines naming what and where. Ours rendered the
+     bare service name on one line, so nothing on the card said it was a resumed search at all.
+     Measured on his screenshot: line 1 is 165.1pt wide, line 2 is 145.7pt, baseline to baseline is
+     19.4pt, which puts the headline near 17pt, not the 15px we were drawing. */
+  var SEARCHES = [
+    { lead: "Continue searching for", what: "skin fades in Basel" },
+    { lead: "Continue searching for", what: "balayage in Basel" }
+  ];
+
   function continueRail(doc){
-    var band = el(doc, "section", "background:#F4F4F5;padding:16px 0 18px;margin:8px 0 24px");
+    /* NO GREY BAND. Owner 2026-08-15: "what is this gray, like, divided shit that's happening? I
+       don't fucking like this." It was a port of Airbnb's grey page background, and on our white
+       page it reads as a divider rather than as a surface. Removed.
+       That leaves a white card on white, which FLOORS LAW 4 forbids on a shadow alone, so the card
+       takes the hairline instead. Edge visibility is kept, the grey is gone. */
+    var band = el(doc, "section", "padding:4px 0 16px");
     var r = rail(doc);
-    r.style.paddingBottom = "12px";
+    r.style.paddingBottom = "10px";
     for (var i = 0; i < SEARCHES.length; i++) {
       var s = SALONS[i];
       var a = doc.createElement("a");
       a.href = "#";
       a.style.cssText = "flex:0 0 " + REF.cardW + "px;width:" + REF.cardW + "px;height:" + REF.cardH +
         "px;position:relative;display:block;background:#fff;border-radius:18px;text-decoration:none;" +
-        "box-shadow:0 1px 2px rgba(10,10,10,.06),0 6px 16px rgba(10,10,10,.08)";
+        "border:1px solid #E4E4E7;box-shadow:0 1px 2px rgba(10,10,10,.04)";
       var col = el(doc, "div",
         "position:absolute;left:18px;top:0;bottom:0;width:" + (REF.cardW - 18 - 17 - 87 - 14) +
         "px;display:flex;flex-direction:column;justify-content:center");
-      var h = el(doc, "div", "font:600 15px/1.3 'Inter Tight',Inter,sans-serif;letter-spacing:-.01em;" +
-        "color:#0A0A0A;overflow:hidden;text-overflow:ellipsis;white-space:nowrap");
-      h.textContent = SEARCHES[i];
-      var m = el(doc, "div", "font:400 13px/1.35 Inter,'Inter Tight',sans-serif;color:#6B6B6B;" +
-        "margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap");
-      m.textContent = s.cat;
-      col.appendChild(h); col.appendChild(m);
+      /* The whole sentence is ONE block so it wraps to two lines the way the reference does.
+         The service is the loud half; the lead-in stays quiet so it does not compete. */
+      var h = el(doc, "div",
+        "font:400 17px/22px 'Inter Tight',Inter,sans-serif;letter-spacing:-.01em;color:#6B6B6B");
+      h.appendChild(doc.createTextNode(SEARCHES[i].lead + " "));
+      var strong = el(doc, "span", "font-weight:600;color:#0A0A0A");
+      strong.textContent = SEARCHES[i].what;
+      h.appendChild(strong);
+      col.appendChild(h);
       a.appendChild(col);
       a.appendChild(photo(doc, s.photo,
         "position:absolute;right:17px;top:17px;width:87px;height:70px;border-radius:14px"));
@@ -419,7 +436,12 @@ function applyDirection(doc){
       sec = sec.parentElement;
       if (sec.tagName === "SECTION") break;
     }
-    if (sec && sec.tagName === "SECTION" && !sec.closest("[data-dir-block]")) {
+    /* Skip a section that CONTAINS the injected block, not just one that sits inside it. Checking
+       only `closest` looked right and hid the proposal along with the live rows, because the walk
+       up from a heading lands on an outer page section that wraps the injection: the block is a
+       DESCENDANT, so closest() never sees it. Everything measured 0 by 0. */
+    if (sec && sec.tagName === "SECTION" &&
+        !sec.closest("[data-dir-block]") && !sec.querySelector("[data-dir-block]")) {
       sec.style.display = "none";
       sec.setAttribute("data-dir-hidden", "1");
     }
@@ -479,7 +501,7 @@ function pump(){
 
 function pick(k){
   window.__dir = k;
-  var ids = { rowA:"d1", rowB:"d2", rowC:"d3" };
+  var ids = { rowA:"d1" };
   Object.keys(ids).forEach(function(name){
     document.getElementById(ids[name]).classList.toggle("on", name === k);
   });
@@ -509,8 +531,6 @@ document.getElementById('peek').innerHTML = EYE_OFF;
 
 <!-- direction files register into window.DIRECTIONS -->
 <script src="variants/row-a.js"></script>
-<script src="variants/row-b.js"></script>
-<script src="variants/row-c.js"></script>
 <script>
   window.__dir = "rowA";
   var d0 = window.DIRECTIONS.rowA;
