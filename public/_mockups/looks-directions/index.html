@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Looks section: seven directions for one merged section</title>
+<!-- Base: capture live -->
+<!-- Scale: full-page -->
+<!--
+  Mockup-scope: whole-page
+  Grounded-in: app/[locale]/_components/homepage/PopularLooks.tsx
+  Grounded-in: app/[locale]/_components/homepage/Entdecken.tsx
+  Depicts: the homepage feed -> app/[locale]/page.tsx
+  treatment-only for the surrounding page. measure-ok.
+
+  Reference-checked: the live page itself, measured this turn. His instruction was about OUR two
+    sections, not an outside brand, so the page IS the reference here.
+
+  Exists-check: ran this turn. `npm run exists PopularLooks` returns 3 (PopularLooks.tsx and
+    usePopularLooks.ts already exist), `npm run exists looks-directions` returns 0. Nothing here
+    builds a second looks component: every direction re-presents the SAME hook data the two shipped
+    sections already read. No graveyard hit for a looks-section mockup.
+
+  Diagnosis: 2 homepage sections render 1 query | measured 8 of 8 image ids shared between "Popular looks" and "Find your inspiration.", both calling /api/discovery/feed?category=hair | violates CLAUDE.md:75 FLOORS LAW 8, one entity renders through 1 component and never 2 | target 1 section, 0 shared ids
+  Diagnosis: the Popular-looks tile is square | measured 82 x 82 px, ratio 1.00 | violates the owner's instruction of 2026-08-15 ("what the fuck is it fucking square") plus the imagery row's photo-is-largest rule | target ratio 0.80, a 4/5 tile
+  Diagnosis: the tile renders 1 of the 2 text fields its data carries | measured 1 rendered (price) and 0 rendered of style_name, which is present in every payload row | violates CLAUDE.md:103 density floor, "full card info stack whenever data exists" | target 2 of 2
+
+  WHY THIS PAGE EXISTS. Owner 2026-08-15: "let's improve the design on the popular looks because it
+  doesn't make any sense. Maybe we can remove the fine yurn inspiration ... maybe we can place a
+  name popular looks with finer inspirations ... give me, like, a lot of options."
+
+  He is right and the measurement says why: it is not two sections, it is one query rendered twice.
+  Same defect as the two "Zuletzt angesehen" rows removed earlier today, one thing wearing two
+  shapes on one screen. So the question is not "how should Popular looks look", it is "what is THE
+  looks section", which is what he was reaching for.
+
+  measured: Popular looks tile 82 x 82, 8 tiles, heading 18px/600 at left 16.
+  measured: the page's own line is left 16 (category pills, every section heading, every card).
+
+  AN EIGHTH DIRECTION WAS BUILT AND DROPPED, and the reason is worth recording because the gate
+  that caught it cited the wrong rule. It was a cover card with the look name over the photo. The
+  resurrection gate called it a full-bleed revival, but TASTE_LOG 2026-07-16 (night) records
+  "Full-bleed as a direction | STANDING, not disbanded" (owner: "ok all of it no disban the full
+  bleed thing"), which supersedes the earlier same-day denial. The REAL hit is the same entry's
+  "FB4b gradient finish | NOT adopted", and that direction used a linear-gradient scrim to hold the
+  text over the photo. Dropped on the gradient, not on full-bleed.
+
+  SEVEN DIRECTIONS, each a different answer rather than one layout with tweaks:
+    1 KEEP     the 4-across tile grid, one heading instead of two (the current state, for compare)
+    2 BIG TWO  two big cards a row, name and price under
+    3 RAIL     a horizontal rail, the same grammar as every other row here, next one cropped
+    4 MASONRY  two columns, natural heights, the Pinterest shape the Inspo north-star names
+    5 HERO     one large look plus three small, an editorial lead
+    6 CHIPS    category chips over the grid, so the row answers "looks for WHAT"
+    7 LIST     photo left, name and price right, no horizontal scroll
+
+  NO FABRICATION: every tile is a real seeded discovery look with a real price_min, read through the
+  same endpoint the shipped sections use, and a look with no price is dropped exactly as
+  usePopularLooks.ts already does. The imagery is TikTok-sourced seed content, NOT Solen
+  photography: salon_photos has 0 rows.
+-->
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--sunken:#F4F4F5;--hairline:#E4E4E7;--star:#FFC32B;
+        --font:'Inter Tight',system-ui,-apple-system,sans-serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
+  .top{position:fixed;top:0;left:0;right:0;z-index:20;background:rgba(255,255,255,.94);
+       backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline);padding:8px 10px}
+  .row{display:flex;justify-content:center}
+  .row + .row{margin-top:6px}
+  .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;width:min(370px,94vw)}
+  .seg button{flex:1;border:0;background:transparent;font-family:inherit;font-size:13px;font-weight:600;
+              color:var(--ink2);padding:7px 0;border-radius:999px;cursor:pointer;white-space:nowrap}
+  .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+  .scrollseg{overflow-x:auto;scrollbar-width:none;justify-content:flex-start}
+  .scrollseg::-webkit-scrollbar{display:none}
+  .scrollseg button{flex:0 0 auto;padding:7px 13px}
+  .cap{position:fixed;top:96px;left:0;right:0;z-index:19;background:var(--sunken);color:var(--ink2);
+       font-size:12px;font-weight:600;text-align:center;padding:6px 12px;line-height:1.35}
+  .stage{position:fixed;top:132px;left:0;right:0;bottom:0;transition:top .18s ease}
+  body.bare .top,body.bare .cap{display:none}
+  body.bare .stage{top:0}
+  .peek{position:fixed;right:6px;top:6px;z-index:30;width:30px;height:30px;border:0;border-radius:999px;
+        background:rgba(10,10,10,.82);color:#fff;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.3);
+        display:flex;align-items:center;justify-content:center;opacity:.55;transition:opacity .15s ease}
+  .peek:hover,.peek:active{opacity:1}
+  body.bare .peek{opacity:.4}
+  .pane{position:absolute;inset:0}
+  .pane.hidden{display:none}
+  iframe{width:100%;height:100%;border:0;display:block}
+</style>
+</head>
+<body>
+  <div class="top">
+    <div class="row"><div class="seg">
+      <button id="bBefore" class="on" onclick="show('before')">Before (live)</button>
+      <button id="bAfter" onclick="show('after')">After</button>
+    </div></div>
+    <div class="row"><div class="seg scrollseg">
+      <button id="d1" class="on" onclick="pick(1)">1 Keep</button>
+      <button id="d2" onclick="pick(2)">2 Big two</button>
+      <button id="d3" onclick="pick(3)">3 Rail</button>
+      <button id="d4" onclick="pick(4)">4 Masonry</button>
+      <button id="d5" onclick="pick(5)">5 Hero</button>
+      <button id="d6" onclick="pick(6)">6 Chips</button>
+      <button id="d7" onclick="pick(7)">7 List</button>
+    </div></div>
+  </div>
+  <div class="cap" id="cap">Loading</div>
+  <button class="peek" id="peek" onclick="bare()" title="Hide controls" aria-label="Hide controls"></button>
+  <div class="stage">
+    <div id="paneBefore" class="pane"><iframe id="beforeFrame" src="/en" title="the real homepage, before"></iframe></div>
+    <div id="paneAfter" class="pane hidden"><iframe id="afterFrame" src="/en" title="the real homepage, after"></iframe></div>
+  </div>
+
+<script>
+var GUT = 16;      /* the page's own line, measured left 16 on pills, headings and cards */
+var INK = "#0A0A0A", INK2 = "#6B6B6B", SUNKEN = "#F4F4F5", HAIR = "#E4E4E7";
+var DISPLAY = "'Inter Tight',Inter,sans-serif", BODY = "Inter,'Inter Tight',sans-serif";
+
+var CAPS = {
+  1: "1. Keep the tile grid. One heading instead of two. The smallest possible change.",
+  2: "2. Two big cards a row. The look becomes the subject, not a thumbnail.",
+  3: "3. A rail. Same grammar as every other row on this page, next one cropped.",
+  4: "4. Masonry. Natural heights, the Pinterest shape the Inspo north-star names.",
+  5: "5. Hero plus three. One look leads, an editorial pick.",
+  6: "6. Chips over the grid, so the row answers looks for WHAT.",
+  7: "7. A list. Photo left, name and price right, no horizontal scroll."
+};
+
+/* Real look data, from the SAME endpoint both shipped sections use. A look with no price is
+   dropped, exactly as usePopularLooks.ts already does. Nothing here is invented. */
+var LOOKS = [];
+function loadLooks(win){
+  return win.fetch("/api/discovery/feed?category=hair&limit=8")
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      var raw = d.items || d.looks || d.feed || [];
+      LOOKS = raw.map(function(x){
+        var img = x.image_url || (x.tiktok_thumbnail_url
+          ? "/api/discovery/thumb?id=" + encodeURIComponent(x.id) : null);
+        return { id: x.id, img: img, title: x.style_name || "", price: x.price_min };
+      }).filter(function(l){ return l.img && l.price != null; });
+      return LOOKS;
+    })
+    .catch(function(e){ console.error("[looks-directions] feed failed:", e); return []; });
+}
+
+function el(doc, tag, css, html){
+  var n = doc.createElement(tag);
+  if (css) n.style.cssText = css;
+  if (html != null) n.innerHTML = html;
+  return n;
+}
+var ARROW = '<svg class="lucide lucide-arrow-right" width="20" height="20" viewBox="0 0 24 24" ' +
+  'fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+  '<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>';
+
+function head(doc, title){
+  var h = el(doc, "div",
+    "display:flex;align-items:center;justify-content:space-between;padding:0 " + GUT + "px 10px");
+  var t = el(doc, "h2",
+    "font:600 18px/1.25 " + DISPLAY + ";letter-spacing:-.01em;margin:0;color:" + INK);
+  t.textContent = title;
+  var a = doc.createElement("a");
+  a.href = "#"; a.setAttribute("aria-label", "See all " + title);
+  a.style.cssText = "flex:0 0 44px;width:44px;height:44px;margin-right:-8px;display:grid;" +
+    "place-items:center;text-decoration:none;color:" + INK;
+  a.appendChild(el(doc, "span",
+    "width:32px;height:32px;border-radius:999px;background:" + SUNKEN + ";display:grid;place-items:center",
+    ARROW));
+  h.appendChild(t); h.appendChild(a);
+  return h;
+}
+function photo(doc, src, css){
+  var w = el(doc, "span", css + ";overflow:hidden;background:" + SUNKEN + ";display:block");
+  w.innerHTML = '<img src="' + src + '" alt="" style="width:100%;height:100%;object-fit:cover;display:block">';
+  return w;
+}
+function price(doc, l, css){
+  var p = el(doc, "div", (css || "") + ";font:600 12px/1.35 " + BODY +
+    ";color:" + INK + ";font-variant-numeric:tabular-nums;margin-top:2px");
+  p.textContent = "from CHF " + l.price;
+  return p;
+}
+function name(doc, l, size, weight){
+  var n = el(doc, "div", "font:" + (weight || 600) + " " + (size || 13) + "px/1.3 " + BODY +
+    ";color:" + INK + ";margin-top:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap");
+  n.textContent = l.title;
+  return n;
+}
+function rail(doc, gap){
+  return el(doc, "div", "display:flex;gap:" + (gap || 12) + "px;overflow-x:auto;padding:0 " +
+    GUT + "px 4px;scrollbar-width:none");
+}
+
+var D = {};
+
+D[1] = function(doc){                     /* KEEP: the shipped 4-across tile grid, one heading */
+  var s = el(doc, "section", "padding:2px 0 10px");
+  s.appendChild(head(doc, "Popular looks"));
+  var g = el(doc, "div", "display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:0 " + GUT + "px");
+  LOOKS.slice(0, 8).forEach(function(l){
+    var a = doc.createElement("a"); a.href = "#";
+    a.style.cssText = "text-decoration:none;color:inherit";
+    a.appendChild(photo(doc, l.img, "width:100%;aspect-ratio:1/1;border-radius:14px"));
+    a.appendChild(price(doc, l, "margin-top:6px"));
+    g.appendChild(a);
+  });
+  s.appendChild(g);
+  return s;
+};
+
+D[2] = function(doc){                     /* BIG TWO: two per row, the look is the subject */
+  var s = el(doc, "section", "padding:2px 0 10px");
+  s.appendChild(head(doc, "Popular looks"));
+  var g = el(doc, "div", "display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:0 " + GUT + "px");
+  LOOKS.slice(0, 4).forEach(function(l){
+    var a = doc.createElement("a"); a.href = "#";
+    a.style.cssText = "text-decoration:none;color:inherit";
+    a.appendChild(photo(doc, l.img, "width:100%;aspect-ratio:4/5;border-radius:18px"));
+    a.appendChild(name(doc, l, 13, 600));
+    a.appendChild(price(doc, l));
+    g.appendChild(a);
+  });
+  s.appendChild(g);
+  return s;
+};
+
+D[3] = function(doc){                     /* RAIL: the page's own row grammar */
+  var s = el(doc, "section", "padding:2px 0 10px");
+  s.appendChild(head(doc, "Popular looks"));
+  var r = rail(doc, 12);
+  LOOKS.slice(0, 8).forEach(function(l){
+    var a = doc.createElement("a"); a.href = "#";
+    a.style.cssText = "flex:0 0 168px;width:168px;text-decoration:none;color:inherit";
+    a.appendChild(photo(doc, l.img, "width:168px;height:210px;border-radius:18px"));
+    a.appendChild(name(doc, l, 13, 600));
+    a.appendChild(price(doc, l));
+    r.appendChild(a);
+  });
+  s.appendChild(r);
+  return s;
+};
+
+D[4] = function(doc){                     /* MASONRY: two columns, natural heights */
+  var s = el(doc, "section", "padding:2px 0 10px");
+  s.appendChild(head(doc, "Popular looks"));
+  var g = el(doc, "div", "columns:2;column-gap:12px;padding:0 " + GUT + "px");
+  var ratios = ["3/4", "1/1", "4/5", "3/4", "1/1", "4/5", "3/4", "1/1"];
+  LOOKS.slice(0, 8).forEach(function(l, i){
+    var a = doc.createElement("a"); a.href = "#";
+    a.style.cssText = "display:block;break-inside:avoid;margin-bottom:12px;text-decoration:none;color:inherit";
+    a.appendChild(photo(doc, l.img, "width:100%;aspect-ratio:" + ratios[i % ratios.length] + ";border-radius:16px"));
+    a.appendChild(price(doc, l, "margin-top:6px"));
+    g.appendChild(a);
+  });
+  s.appendChild(g);
+  return s;
+};
+
+D[5] = function(doc){                     /* HERO: one leads, three follow */
+  var s = el(doc, "section", "padding:2px 0 10px");
+  s.appendChild(head(doc, "Popular looks"));
+  var wrap = el(doc, "div", "padding:0 " + GUT + "px");
+  var lead = LOOKS[0];
+  if (lead) {
+    var a = doc.createElement("a"); a.href = "#";
+    a.style.cssText = "display:block;text-decoration:none;color:inherit;margin-bottom:12px";
+    a.appendChild(photo(doc, lead.img, "width:100%;aspect-ratio:16/11;border-radius:20px"));
+    a.appendChild(name(doc, lead, 15, 600));
+    a.appendChild(price(doc, lead));
+    wrap.appendChild(a);
+  }
+  var g = el(doc, "div", "display:grid;grid-template-columns:repeat(3,1fr);gap:10px");
+  LOOKS.slice(1, 4).forEach(function(l){
+    var a = doc.createElement("a"); a.href = "#";
+    a.style.cssText = "text-decoration:none;color:inherit";
+    a.appendChild(photo(doc, l.img, "width:100%;aspect-ratio:1/1;border-radius:14px"));
+    a.appendChild(price(doc, l, "margin-top:6px"));
+    g.appendChild(a);
+  });
+  wrap.appendChild(g);
+  s.appendChild(wrap);
+  return s;
+};
+
+D[6] = function(doc){                     /* CHIPS: the row answers "looks for WHAT" */
+  var s = el(doc, "section", "padding:2px 0 10px");
+  s.appendChild(head(doc, "Popular looks"));
+  var chips = el(doc, "div", "display:flex;gap:8px;overflow-x:auto;padding:0 " + GUT +
+    "px 10px;scrollbar-width:none");
+  ["Hair", "Beard", "Colour", "Nails"].forEach(function(c, i){
+    var b = el(doc, "span",
+      "flex:0 0 auto;height:34px;display:inline-flex;align-items:center;padding:0 14px;" +
+      "border-radius:999px;font:" + (i === 0 ? 600 : 400) + " 13px " + BODY + ";" +
+      (i === 0 ? "background:" + SUNKEN + ";color:" + INK
+               : "background:#fff;color:" + INK + ";border:1px solid " + HAIR));
+    b.textContent = c;
+    chips.appendChild(b);
+  });
+  s.appendChild(chips);
+  var g = el(doc, "div", "display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:0 " + GUT + "px");
+  LOOKS.slice(0, 8).forEach(function(l){
+    var a = doc.createElement("a"); a.href = "#";
+    a.style.cssText = "text-decoration:none;color:inherit";
+    a.appendChild(photo(doc, l.img, "width:100%;aspect-ratio:1/1;border-radius:14px"));
+    a.appendChild(price(doc, l, "margin-top:6px"));
+    g.appendChild(a);
+  });
+  s.appendChild(g);
+  return s;
+};
+
+D[7] = function(doc){                     /* LIST: no horizontal scroll at all */
+  var s = el(doc, "section", "padding:2px 0 10px");
+  s.appendChild(head(doc, "Popular looks"));
+  var body = el(doc, "div", "padding:0 " + GUT + "px");
+  LOOKS.slice(0, 4).forEach(function(l, i, arr){
+    var a = doc.createElement("a"); a.href = "#";
+    a.style.cssText = "display:flex;align-items:center;gap:14px;padding:10px 0;min-height:44px;" +
+      "text-decoration:none;color:" + INK + (i === arr.length - 1 ? "" : ";border-bottom:1px solid " + HAIR);
+    a.appendChild(photo(doc, l.img, "flex:0 0 76px;width:76px;height:76px;border-radius:14px"));
+    var col = el(doc, "div", "min-width:0;flex:1");
+    var n = name(doc, l, 14, 600); n.style.marginTop = "0";
+    col.appendChild(n);
+    col.appendChild(price(doc, l));
+    a.appendChild(col);
+    body.appendChild(a);
+  });
+  s.appendChild(body);
+  return s;
+};
+
+/* ---- injection: replace BOTH shipped looks sections with the one chosen direction ---- */
+function apply(doc){
+  var k = window.__k || 1;
+  doc.querySelectorAll("[data-looks-block]").forEach(function(n){ n.remove(); });
+  if (!LOOKS.length) return 0;
+
+  var anchor = null;
+  doc.querySelectorAll("h2").forEach(function(h){
+    if (!/Popular looks|inspiration/i.test(h.textContent || "")) return;
+    var sec = h;
+    for (var u = 0; u < 7 && sec.parentElement; u++) {
+      sec = sec.parentElement;
+      if (sec.tagName === "SECTION") break;
+    }
+    if (sec && sec.tagName === "SECTION" && !sec.querySelector("[data-looks-block]")) {
+      if (!anchor) anchor = sec;
+      sec.style.display = "none";
+      sec.setAttribute("data-looks-hidden", "1");
+    }
+  });
+  if (!anchor || !anchor.parentElement) return 0;
+
+  var holder = doc.createElement("div");
+  holder.setAttribute("data-looks-block", String(k));
+  holder.style.position = "relative";
+  holder.appendChild(D[k](doc));
+  var tag = el(doc, "div",
+    "position:absolute;top:-2px;right:10px;background:rgba(10,10,10,.82);color:#fff;" +
+    "font:600 10px/1.3 -apple-system,sans-serif;padding:3px 8px;border-radius:999px;z-index:99999");
+  tag.textContent = String(k);
+  holder.appendChild(tag);
+  anchor.parentElement.insertBefore(holder, anchor);
+  try { holder.scrollIntoView({ block: "center" }); } catch (e) {}
+  return 1;
+}
+
+function pump(){
+  var f = document.getElementById("afterFrame");
+  var ready = false;
+  setInterval(function(){
+    try {
+      var doc = f.contentDocument;
+      if (!doc || !doc.querySelector("h1,h2,h3")) return;
+      if (!ready) {
+        ready = true;
+        loadLooks(f.contentWindow).then(function(){ apply(doc); });
+        return;
+      }
+      var have = doc.querySelector("[data-looks-block]");
+      if (!have || have.getAttribute("data-looks-block") !== String(window.__k || 1)) apply(doc);
+    } catch (e) {}
+  }, 500);
+}
+
+function pick(k){
+  window.__k = k;
+  for (var i = 1; i <= 7; i++) document.getElementById("d" + i).classList.toggle("on", i === k);
+  document.getElementById("cap").textContent = CAPS[k];
+  show("after");
+  try { apply(document.getElementById("afterFrame").contentDocument); } catch (e) {}
+}
+function show(w){
+  document.getElementById("paneBefore").classList.toggle("hidden", w !== "before");
+  document.getElementById("paneAfter").classList.toggle("hidden", w !== "after");
+  document.getElementById("bBefore").classList.toggle("on", w === "before");
+  document.getElementById("bAfter").classList.toggle("on", w === "after");
+}
+
+var EYE = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>';
+var EYE_OFF = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-off"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/></svg>';
+function bare(){
+  var on = document.body.classList.toggle('bare');
+  var b = document.getElementById('peek');
+  b.innerHTML = on ? EYE : EYE_OFF;
+  b.title = b.ariaLabel = on ? 'Show controls' : 'Hide controls';
+}
+document.getElementById('peek').innerHTML = EYE_OFF;
+window.__k = 1;
+document.getElementById("cap").textContent = CAPS[1];
+pump();
+</script>
+</body>
+</html>
