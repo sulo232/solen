@@ -615,12 +615,12 @@ He is right and our own law already says so. FLOORS LAW 9: "if the registry owns
 Hand-drawn UI in a page or feature file is a defect regardless of how good it looks." I hand-wrote
 every row, card and chip on the terminal from raw Tailwind instead of composing what ships.
 
-- [x] CORRECTION 1: read the REAL PDP and salon surfaces, take the design language from shipped code `verified:` class strings quoted from SalonServices.tsx:118/181/198/215, SalonTeam.tsx:70, SalonMobileBookBar.tsx:78
-- [x] CORRECTION 2: rebuild the terminal composing the actual components, not hand-drawn Tailwind `verified:` Terminal.tsx now imports Avatar and TabPill; the widened gate returns exit 0 on it (it returned exit 2 before)
-- [x] CORRECTION 3: write down where the shipped code and the LOCKFILE disagree, so the stale parts `verified:` the five divergences are written up above, each with file:line and both values
+- [x] `85f03144a` CORRECTION 1: read the REAL PDP and salon surfaces, take the design language from shipped code `verified:` class strings quoted from SalonServices.tsx:118/181/198/215, SalonTeam.tsx:70, SalonMobileBookBar.tsx:78
+- [x] `85f03144a` CORRECTION 2: rebuild the terminal composing the actual components, not hand-drawn Tailwind `verified:` Terminal.tsx now imports Avatar and TabPill; the widened gate returns exit 0 on it (it returned exit 2 before)
+- [x] `85f03144a` CORRECTION 3: write down where the shipped code and the LOCKFILE disagree, so the stale parts `verified:` the five divergences are written up above, each with file:line and both values
       of the design system are named rather than guessed at
-- [x] CORRECTION 4: explain in plain English, in detail, HOW THE THING WORKS end to end `verified:` the end-to-end walkthrough section above
-- [x] CORRECTION 5: the existing use-the-registered-component gate did not catch this. Widen it. `verified:` commit 002da059f, suite 14/14, fires exit 2 on the old file and exit 0 on the rebuilt one
+- [x] `85f03144a` CORRECTION 4: explain in plain English, in detail, HOW THE THING WORKS end to end `verified:` the end-to-end walkthrough section above
+- [x] `002da059f` CORRECTION 5: the existing use-the-registered-component gate did not catch this. Widen it. `verified:` commit 002da059f, suite 14/14, fires exit 2 on the old file and exit 0 on the rebuilt one
 
 ---
 
@@ -721,3 +721,12 @@ Four layers, because no single one is reliable in a browser:
 Revenue, clients, services and prices, staff, photos, marketing, refunds, invoices, settings. All of
 that stays in the dashboard, for the evening. The terminal is the "right now" screen. If a task can
 wait until tonight, it is not on it.
+
+
+## PARKED DECISIONS , his call, not mine
+
+- [ ] PARKED 2026-08-15 · Should a booking land already confirmed (what every salon tool does), or should the salon have to accept each one (what Uber Eats does)? · from: the terminal definition, and our own numbers say 28 of 28 salons already run auto-confirm
+- [ ] PARKED 2026-08-15 · Should the terminal live at solen.ch/terminal now, with terminal.solen.ch added later as a shortcut, or should it be its own address straight away (which changes the login cookie for the whole site)? · from: his "maybe like a subdomain or something"
+- [ ] PARKED 2026-08-15 · When a salon moves an appointment, does the customer just get told, or do they have to agree first? · from: three database columns for a customer-agreement handshake exist from migration 022 and no code was ever written against them
+- [ ] PARKED 2026-08-15 · The salon page uses three text weights on purpose and the design rule allows two. Does the rule become three, or does the salon page have to change? · from: measured on the shipped salon page while rebuilding the terminal out of its own parts
+- [ ] PARKED 2026-08-15 · A list of people: one white card with thin lines between rows (what the salon page does), or a separate card per person (what the entity-card rule says)? · from: the design verifier flagged the two rules pointing different ways
