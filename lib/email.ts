@@ -105,6 +105,20 @@ const RESEND_TIMEOUT_MS = 5000;
  *   booking-create or webhook request that triggered it. Optional so every EXISTING caller
  *   (there are several) keeps compiling unchanged.
  */
+/**
+ * The ONE wrapper every outgoing email body is placed inside at send time.
+ *
+ * Extracted from sendEmail's request body (2026-08-15) so the dev preview page
+ * (/dev/emails) can show a template exactly as a recipient gets it rather than an
+ * approximation. Extraction only: the string below is byte-identical to what was
+ * inlined before, so no email changes shape. When the shared shell (logo, 600px
+ * card, footer) lands, THIS is the single place it goes, and all 67 templates get
+ * it at once.
+ */
+export function wrapEmailHtml(html: string): string {
+  return `<div style="font-family:${EMAIL_FONT_STACK};color:${EMAIL_COLORS.ink};font-size:15px;line-height:1.5">${html}</div>`;
+}
+
 export async function sendEmail(payload: EmailPayload, requestId?: string): Promise<void> {
   const apiKey = getServerEnv().RESEND_API_KEY;
   if (!apiKey || apiKey === "PASTE_RESEND_KEY_HERE") {
@@ -139,7 +153,7 @@ export async function sendEmail(payload: EmailPayload, requestId?: string): Prom
         // salon-onboarding,welcome-series}.ts, which had zero font-family
         // declarations of their own and rendered in each client's default font
         // (Times New Roman in classic Outlook) with no brand typeface.
-        html: `<div style="font-family:${EMAIL_FONT_STACK};color:${EMAIL_COLORS.ink};font-size:15px;line-height:1.5">${payload.html}</div>`,
+        html: wrapEmailHtml(payload.html),
         // seo-comms-07: every send now carries a text/plain part, hand-written when the
         // template supplied one, else derived from the same html above.
         text: payload.text ?? stripHtmlToText(payload.html),
