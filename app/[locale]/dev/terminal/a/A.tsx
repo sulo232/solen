@@ -278,9 +278,13 @@ export default function A({ salonName, bookings: initialBookings, queue: initial
                           <span className={ROW_META + " truncate"}>{entry.serviceName}</span>
                         </span>
                         <span className="font-body shrink-0 text-right text-[13px] font-normal tabular-nums text-s-ink">
+                          {/* Measured at 390 wide on the tunnel, 2026-08-15: with the word "wait"
+                              here and a 52px ticket column, four of six names truncated to
+                              "Milan Pet...". The stream already says these are waiting, so the
+                              word is the thing that goes, not the name. */}
                           {inChair
-                            ? `In chair, ${elapsedMinutes(entry.startedAt ?? new Date().toISOString())} min`
-                            : `${entry.estimatedWaitMinutes} min wait`}
+                            ? `${elapsedMinutes(entry.startedAt ?? new Date().toISOString())} min`
+                            : `${entry.estimatedWaitMinutes} min`}
                         </span>
                       </button>
                       {!inChair ? (
