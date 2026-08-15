@@ -3,53 +3,58 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
-<title>Continue card: three directions, city dropped</title>
+<title>Continue card: three directions, round 2</title>
 <!-- Base: capture live -->
 <!-- Scale: full-page -->
 <!--
   Mockup-scope: whole-page
   Grounded-in: app/[locale]/_components/homepage/ContinueCard.tsx
   Depicts: the homepage feed -> app/[locale]/page.tsx
-  treatment-only for the surrounding page: header, search, cards, type and colours are untouched.
-  measure-ok.
+  treatment-only for the surrounding page. measure-ok.
 
-  TWO live iframes of the SAME real route /en. BEFORE is untouched. AFTER runs applyChange(doc) on
-  the real page, marks what it touched with data-sweep-done, labels it and scrolls it into view. The
-  A / B / C buttons change WHICH direction is injected into the AFTER pane.
+  TWO live iframes of the SAME real route /en. applyChange(doc) injects onto the real page and marks
+  what it touched with data-sweep-done. A / B / C switch which direction is injected.
 
-  measured: his screenshot, PIL-sampled this turn on a 402pt phone: continue card 321pt wide with
-    the next card peeking, 124pt of content, photo 70pt on the right, pill height 38pt, pill emoji
-    18.4pt tall. The card sits BELOW the category pills.
-  measured: our live page via getBoundingClientRect this turn: category pill 113x40px, its icon
-    28x28px, pill font 14px, pill radius 40px. So our icon is 28px where the reference is ~18pt in a
-    pill of nearly identical height, which is why he said the icons look too big.
-  measured: the card here is 124px tall, up from 98px, because he asked for taller and NOT wider.
-    Width stays at the measured 321pt.
+  ROUND 2, every change is one of his corrections, quoted:
+   "too tall now, get rid of how it was before"        -> card back to 104px (was 98, I overshot to 124)
+   "you made a fucking square"                         -> the photo is no longer square, it uses our
+                                                          own 5/4 card shape
+   "the dates, which week it is, no one cares"         -> every date and weekday removed
+   "why is here how many person it is"                 -> the head count is removed
+   "I don't like how the photos are stacked"           -> the fanned stack is gone from A
+   "maybe put back city or if they search for a
+    specific haircut, they see what they search"       -> A now shows the ACTUAL search text
+   "b is chill except the aspect ratio, it's too big"  -> B keeps its shape, its photo comes down
+   "on the booking, too much texting unorganized"      -> C cut to two short lines
+   "why is this see all button just text? we use an
+    arrow everywhere else. inconsistent sloppiness"    -> real Lucide arrow-right in a circular
+                                                          button, the same one the page already uses
 
-  Diagnosis: the continue card names a city that carries no information | measured on our own data: all 20 active salons are in one city, so "in Basel" is constant everywhere and distinguishes nothing | violates taste rule 2, an element must carry information or be deleted | target 0 city mentions, replaced by something that differs per visitor
-  Diagnosis: the card is too short to balance its own photo | measured 98px tall against a 70px photo, leaving 14px above and below | violates the owner instruction of 2026-08-15 ("make it taller, not wider") | target 124px tall
-  Diagnosis: the category pill icons are oversized | measured ours 28x28px inside a 40px pill against the reference 18.4pt inside a 38pt pill | violates the owner instruction of 2026-08-15 ("the category icons are too big") | target 19px
+  Diagnosis: the card grew past its content | measured 124px tall carrying two short lines | violates his instruction of 2026-08-15 ("too tall now, get rid of how it was before") | target 104px
+  Diagnosis: my section header had no arrow button where every other row on our page has one | measured 0px of button in my header against a 28pt circular arrow in his reference | violates FLOORS LAW 8, the same thing must look the same everywhere | target 28px
+  Diagnosis: the photo was square where our cards are not | measured 88px square | violates taste rule 9, pull the shape from a locked component, ours is 5/4 | target 92px wide
+  Diagnosis: our category pill icons are oversized | measured 28px inside a 40px pill against 18.4pt inside a 38pt pill in his reference | violates his instruction of 2026-08-15 ("the category icons are too big") | target 19px
 
-  THREE DIRECTIONS, because the city has to be replaced by something and there is more than one
-  honest answer:
-    A. THE SERVICE. What they were shopping for, plus when. No place at all.
-    B. THE SALON. The actual salon they were last looking at, with its own photo.
-    C. THE UNFINISHED BOOKING. The exact service and time they stopped at.
+  measured: his screenshot, PIL this turn, 402pt phone. Recently-viewed thumb 96pt wide. The header
+    affordance on the right is a CIRCULAR button 28pt across, which is what our own page already uses
+    on every other row and what my "See all" text was breaking.
+  measured: our live page, getBoundingClientRect this turn: category pill 113 by 40px, its icon 28px.
+  measured: the card was 98px, I made it 124px and he called it too tall. It is 104px here.
+
+  ON THE CITY, checked rather than assumed: a reviewer argued "Coiffeur" would just be the next dead
+  word if nearly every salon were coiffeur. Live count says otherwise: coiffeur 8, nails 4, spa 4,
+  barbershop 4 of 20. A goes further anyway and shows what he actually typed.
 
   Backend-check: every salon name, photo, category and rating is a live row read 2026-08-14.
-    Cuts & Culture is genuinely the salon with confirmed bookings. No invented values.
-
-  Exists-check: ran this turn. `npm run exists "continue card"` returns existing hits, and
-    ContinueCard.tsx and RecentlyViewed.tsx both already exist. This proposes what the card SAYS and
-    adds the viewed row beneath it, not a new component.
+  Exists-check: ran this turn. ContinueCard.tsx and RecentlyViewed.tsx already exist.
 -->
 <style>
   :root{--ink:#0A0A0A;--ink2:#6B6B6B;--sunken:#F4F4F5;--hairline:#E4E4E7;--star:#FFC32B;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
   body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
-  .top{position:fixed;top:0;left:0;right:0;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline);padding:8px 10px 8px}
-  .row{display:flex;justify-content:center;gap:8px}
+  .top{position:fixed;top:0;left:0;right:0;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline);padding:8px 10px}
+  .row{display:flex;justify-content:center}
   .row + .row{margin-top:6px}
   .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;width:min(340px,90vw)}
   .seg button{flex:1;border:0;background:transparent;font-family:inherit;font-size:13px;font-weight:600;color:var(--ink2);padding:7px 0;border-radius:999px;cursor:pointer}
@@ -68,12 +73,12 @@
       <button id="bAfter" onclick="show('after')">After</button>
     </div></div>
     <div class="row"><div class="seg">
-      <button id="bA" class="on" onclick="pick('a')">A service</button>
+      <button id="bA" class="on" onclick="pick('a')">A search</button>
       <button id="bB" onclick="pick('b')">B salon</button>
       <button id="bC" onclick="pick('c')">C booking</button>
     </div></div>
   </div>
-  <div class="cap" id="cap">A. The service you were after, and when. No place named at all.</div>
+  <div class="cap" id="cap">A. What they actually typed. No date, no place, no head count.</div>
   <div class="stage">
     <div id="paneBefore" class="pane"><iframe id="beforeFrame" src="/en" title="the real homepage, before"></iframe></div>
     <div id="paneAfter" class="pane hidden"><iframe id="afterFrame" src="/en" title="the real homepage, after"></iframe></div>
@@ -86,45 +91,40 @@ var SALONS = [
   {n:"Velvet Face",      p:"https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?w=800&q=80", cat:"Make-up",    r:"4.6", c:7}
 ];
 
+// Real Lucide arrow-right, copied from the markup already used elsewhere in this folder.
+var ARROW = '<svg class="lucide lucide-arrow-right" width="14" height="14" viewBox="0 0 24 24" ' +
+  'fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" ' +
+  'stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>';
+
 var CAPS = {
-  a: "A. The service you were after, and when. No place named at all.",
-  b: "B. The salon you were last looking at, with its own photo. Recommended.",
-  c: "C. The booking you did not finish, down to the service and time."
+  a: "A. What they actually typed. No date, no place, no head count.",
+  b: "B. The salon itself. Photo down to our card shape.",
+  c: "C. The booking, cut to two lines."
 };
 
 var VARIANTS = {
   a: [
-    { title: "Coiffeur", sub: "Sat 30 Aug, 1 person", photos: [SALONS[1].p, SALONS[2].p, SALONS[0].p], stack: true },
-    { title: "Barbershop", sub: "Sun 31 Aug, 1 person", photos: [SALONS[0].p, SALONS[3].p, SALONS[1].p], stack: true }
+    { title: "Skin fade",  sub: "Barbershop",           photo: SALONS[0].p },
+    { title: "Balayage",   sub: "Coiffeur",             photo: SALONS[2].p }
   ],
   b: [
-    { title: "Cuts & Culture", sub: "You were looking at this", photos: [SALONS[0].p], stack: false },
-    { title: "Haarsalon Margot", sub: "You were looking at this", photos: [SALONS[1].p], stack: false }
+    { title: "Cuts & Culture",   sub: "Barbershop",       photo: SALONS[0].p },
+    { title: "Haarsalon Margot", sub: "Coiffeur",         photo: SALONS[1].p }
   ],
   c: [
-    { title: "Finish your booking", sub: "Herrenschnitt at Cuts & Culture, Sat 14:30", photos: [SALONS[0].p], stack: false },
-    { title: "Finish your booking", sub: "Balayage at Atelier Haarwerk, Sun 10:00", photos: [SALONS[2].p], stack: false }
+    { title: "Herrenschnitt",    sub: "Cuts & Culture",   photo: SALONS[0].p },
+    { title: "Balayage",         sub: "Atelier Haarwerk", photo: SALONS[2].p }
   ]
 };
 
-function photoBlock(doc, photos, stack){
-  var slot = doc.createElement("span");
-  slot.style.cssText = "position:relative;height:88px;width:88px;flex:0 0 88px";
-  if (!stack) {
-    slot.innerHTML = '<div style="width:88px;height:88px;border-radius:14px;overflow:hidden;background:#F4F4F5">' +
-      '<img src="' + photos[0] + '" style="width:100%;height:100%;object-fit:cover;display:block"></div>';
-    return slot;
-  }
-  photos.slice(0,3).forEach(function(src, i){
-    var rot = [-10, 5, 0][i], off = [12, 5, 0][i], top = [7, 3, 0][i];
-    var d = doc.createElement("div");
-    d.style.cssText = "position:absolute;right:" + off + "px;top:" + top + "px;width:72px;height:72px;" +
-      "border-radius:14px;overflow:hidden;transform:rotate(" + rot + "deg);" +
-      "box-shadow:0 2px 10px rgba(10,10,10,.16);border:2px solid #fff;z-index:" + (i+1) + ";background:#F4F4F5";
-    d.innerHTML = '<img src="' + src + '" style="width:100%;height:100%;object-fit:cover;display:block">';
-    slot.appendChild(d);
-  });
-  return slot;
+function arrowButton(doc){
+  var b = doc.createElement("a");
+  b.href = "#";
+  b.setAttribute("aria-label", "See all");
+  b.style.cssText = "flex:0 0 28px;width:28px;height:28px;border-radius:999px;background:#F4F4F5;" +
+    "display:grid;place-items:center;text-decoration:none;color:#0A0A0A";
+  b.innerHTML = ARROW;
+  return b;
 }
 
 function continueRail(doc, key){
@@ -135,16 +135,19 @@ function continueRail(doc, key){
   VARIANTS[key].forEach(function(v){
     var card = doc.createElement("a");
     card.href = "#";
-    card.style.cssText = "flex:0 0 321px;min-height:124px;display:flex;align-items:center;gap:14px;" +
-      "border-radius:18px;background:#fff;padding:18px;text-decoration:none;color:inherit;" +
+    card.style.cssText = "flex:0 0 321px;height:104px;display:flex;align-items:center;gap:14px;" +
+      "border-radius:18px;background:#fff;padding:15px;text-decoration:none;color:inherit;" +
       "box-shadow:0 6px 20px -10px rgba(10,10,10,.20), 0 1px 2px rgba(10,10,10,.06)";
     var left = doc.createElement("span");
     left.style.cssText = "min-width:0;flex:1";
     left.innerHTML =
-      '<span style="display:block;font:600 18px/23px \'Inter Tight\',Inter,sans-serif;color:#0A0A0A">' + v.title + '</span>' +
-      '<span style="display:block;margin-top:7px;font:400 13px Inter,sans-serif;color:#6B6B6B">' + v.sub + '</span>';
-    card.appendChild(left);
-    card.appendChild(photoBlock(doc, v.photos, v.stack));
+      '<span style="display:block;font:600 17px/22px \'Inter Tight\',Inter,sans-serif;color:#0A0A0A;' +
+        'white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + v.title + '</span>' +
+      '<span style="display:block;margin-top:4px;font:400 13px Inter,sans-serif;color:#6B6B6B">' + v.sub + '</span>';
+    var shot = doc.createElement("span");
+    shot.style.cssText = "flex:0 0 92px;width:92px;height:74px;border-radius:14px;overflow:hidden;background:#F4F4F5";
+    shot.innerHTML = '<img src="' + v.photo + '" style="width:100%;height:100%;object-fit:cover;display:block">';
+    card.appendChild(left); card.appendChild(shot);
     rail.appendChild(card);
   });
   wrap.appendChild(rail);
@@ -155,18 +158,19 @@ function viewedRow(doc){
   var sec = doc.createElement("section");
   sec.style.cssText = "padding:18px 0 4px";
   var head = doc.createElement("div");
-  head.style.cssText = "display:flex;align-items:baseline;justify-content:space-between;padding:0 24px 12px";
-  head.innerHTML =
-    '<h2 style="font:600 22px/1.2 \'Inter Tight\',Inter,sans-serif;letter-spacing:-.01em;margin:0;color:#0A0A0A">Recently viewed</h2>' +
-    '<a href="#" style="font:600 13px Inter,sans-serif;color:#0A0A0A;text-decoration:none">See all</a>';
+  head.style.cssText = "display:flex;align-items:center;justify-content:space-between;padding:0 24px 12px";
+  var h = doc.createElement("h2");
+  h.textContent = "Recently viewed";
+  h.style.cssText = "font:600 22px/1.2 'Inter Tight',Inter,sans-serif;letter-spacing:-.01em;margin:0;color:#0A0A0A";
+  head.appendChild(h); head.appendChild(arrowButton(doc));
   var rail = doc.createElement("div");
   rail.style.cssText = "display:flex;gap:12px;overflow-x:auto;padding:0 24px 4px;scrollbar-width:none";
   SALONS.forEach(function(x){
     var a = doc.createElement("a");
     a.href = "#";
-    a.style.cssText = "flex:0 0 168px;text-decoration:none;color:inherit";
+    a.style.cssText = "flex:0 0 150px;text-decoration:none;color:inherit";
     a.innerHTML =
-      '<div style="width:168px;aspect-ratio:5/4;border-radius:16px;overflow:hidden;background:#F4F4F5;box-shadow:0 1px 3px rgba(0,0,0,.06)">' +
+      '<div style="width:150px;aspect-ratio:5/4;border-radius:16px;overflow:hidden;background:#F4F4F5;box-shadow:0 1px 3px rgba(0,0,0,.06)">' +
         '<img src="' + x.p + '" style="width:100%;height:100%;object-fit:cover;display:block"></div>' +
       '<p style="font:600 14px/1.25 Inter,sans-serif;margin:8px 0 0;color:#0A0A0A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + x.n + '</p>' +
       '<p style="font:400 12px/1.3 Inter,sans-serif;color:#6B6B6B;margin:2px 0 0">' + x.cat + '</p>' +
@@ -179,8 +183,7 @@ function viewedRow(doc){
 }
 
 function shrinkPillIcons(doc){
-  var imgs = doc.querySelectorAll('a img, button img, a svg, button svg');
-  imgs.forEach(function(im){
+  doc.querySelectorAll('a img, button img, a svg, button svg').forEach(function(im){
     var r = im.getBoundingClientRect ? im.getBoundingClientRect() : null;
     if (r && Math.round(r.width) === 28 && Math.round(r.height) === 28) {
       im.style.width = "19px"; im.style.height = "19px";
