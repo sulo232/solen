@@ -19,6 +19,7 @@ export interface TerminalBooking {
   serviceName: string;
   price: number;
   paymentStatus: string;
+  createdAt: string;
   staffId: string | null;
   staffName: string | null;
 }
@@ -68,6 +69,18 @@ function zurichTime(iso: string): string {
 
 function elapsedMinutes(iso: string): number {
   return Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60000));
+}
+
+// The 24 hour window is not invented: app/api/cron/pending-timeout cancels any booking left in
+// pending_approval for longer than that. This counts down against the row's own created_at.
+const PENDING_TIMEOUT_MS = 24 * 60 * 60 * 1000;
+
+function expiresIn(createdAtIso: string): string {
+  const left = new Date(createdAtIso).getTime() + PENDING_TIMEOUT_MS - Date.now();
+  if (left <= 0) return "Expired";
+  const h = Math.floor(left / 3_600_000);
+  const m = Math.floor((left % 3_600_000) / 60_000);
+  return `Expires in ${h}h ${m}m`;
 }
 
 function firstName(fullName: string): string {
@@ -285,7 +298,7 @@ export default function Terminal({ salonName, bookings: initialBookings, queue: 
             >
               <div className="flex items-center justify-between">
                 <span className="text-[11px] font-semibold text-s-ink">New request</span> {/* drift-ok: eyebrow, LOCKFILE text-size row "eyebrow 11" */}
-                <span className="text-[11px] font-normal text-s-ink-2">Expires in 23h 51m</span> {/* drift-ok: eyebrow, LOCKFILE text-size row "eyebrow 11" */}
+                <span className="text-[11px] font-normal tabular-nums text-s-ink-2">{expiresIn(pendingBooking.createdAt)}</span> {/* drift-ok: eyebrow, LOCKFILE text-size row "eyebrow 11" */}
               </div>
               <p className="mt-4 font-display text-[28px] font-semibold leading-tight text-s-ink">
                 {pendingBooking.customerName}

@@ -566,3 +566,9 @@ the chair plus three waiting.
 
 **Known cosmetic deviation, flagged not hidden:** those are the only self-hosted face photos in the
 repo, so the barber named Jonas has a photo that does not match the name. Seed-data cosmetics.
+
+**The one remaining placeholder, named:** the eight time chips in the `Move` state are a hardcoded
+list. Everything else on the screen traces to a database row, including the "Expires in 20h 18m"
+countdown, which is computed from the booking's own `created_at` against the real 24 hour window that
+`app/api/cron/pending-timeout` enforces. Wiring the chips to genuinely free slots is Phase 4 work,
+since it needs an availability query the terminal does not run yet.

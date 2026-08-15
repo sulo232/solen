@@ -53,6 +53,7 @@ interface BookingRow {
   guest_name: string | null;
   estimated_price: number | null;
   payment_status: string | null;
+  created_at: string;
   services: { name_de: string; name_en: string } | { name_de: string; name_en: string }[] | null;
   staff_members:
     | { id: string; name: string; avatar_url: string | null }
@@ -101,7 +102,7 @@ export default async function TerminalPage() {
         admin
           .from("bookings")
           .select(
-            "id, starts_at, ends_at, status, guest_name, estimated_price, payment_status, services(name_de, name_en), staff_members(id, name, avatar_url)"
+            "id, starts_at, ends_at, status, guest_name, estimated_price, payment_status, created_at, services(name_de, name_en), staff_members(id, name, avatar_url)"
           )
           .eq("salon_id", SALON_ID)
           .gte("starts_at", dayStart.toISOString())
@@ -136,6 +137,7 @@ export default async function TerminalPage() {
         serviceName: service?.name_en ?? service?.name_de ?? "Service",
         price: row.estimated_price ?? 0,
         paymentStatus: row.payment_status ?? "none",
+        createdAt: row.created_at,
         staffId: member?.id ?? null,
         staffName: member?.name ?? null,
       };
