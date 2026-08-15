@@ -87,7 +87,10 @@ export function useRecentSearches() {
   return { recent, push, clear };
 }
 
-/** Display label for a recent entry — shows the most distinctive value. */
-export function recentLabel(r: RecentSearch): string {
-  return r.query || r.service || r.city || "Suche";
+/** Display label for a recent entry, the most distinctive value it carries.
+ *  2026-08-15: the last-resort fallback was the hardcoded German "Suche", which rendered German on
+ *  /en, /fr and /it. It takes a translated string now; callers pass t("home.continueCard.searchFallback").
+ *  Kept as a parameter rather than a hook call because this is a plain function, not a component. */
+export function recentLabel(r: RecentSearch, fallback = "Search"): string {
+  return r.query || r.service || r.city || fallback;
 }

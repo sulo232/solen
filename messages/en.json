@@ -449,6 +449,10 @@
     },
     "salonOfMonth": {
       "title": "Salon of the Month"
+    },
+    "continueCard": {
+      "searchingFor": "Continue searching for",
+      "searchFallback": "Search"
     }
   },
   "breadcrumb": {
