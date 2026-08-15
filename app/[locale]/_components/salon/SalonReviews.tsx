@@ -145,13 +145,20 @@ export function SalonReviews({
             The 2026-07-24 D3 Segmented decision is what is being amended, and only on this
             summary block. Its tier filter chips and its 3-row cap below are untouched.
 
-            28px is not eyeballed: it is the display-anchor floor this system already carries
-            (FLOORS LAW 6, "one display anchor >= 28px per customer screen"), and on this section
-            the star row IS the focal element, exactly as it is in his reference. The count takes
-            `text-s-accent`, the same treatment the review count in the page header already uses,
-            so one number reads one way on one screen. */}
+            26px IS MEASURED, and the 28px it replaces was not. Corrected 2026-08-15 the same day:
+            the first pass took 28 from our own display-anchor floor (FLOORS LAW 6) because his
+            screenshots had arrived as chat attachments with no file path, so nothing could be
+            sampled. They landed on disk later that day, and PIL on his Fresha Bewertungen capture
+            (920px wide) measures the summary star row at 61px, which is 0.0663 of the viewport
+            width, so 26px at our 390px measurement viewport.
+
+            The count takes `text-s-accent`, and that is now measured too rather than assumed: the
+            same capture puts Fresha's own count in their brand purple, a saturated violet sampled
+            straight off the pixels, so a count in OUR accent is the correct translation of what he
+            pointed at rather than a liberty taken with it. It also matches the review count in
+            this page's own header, so one number reads one way on one screen. */}
         <div className="mt-4">
-          <RatingStars value={average ?? 0} mode="five" starPx={28} /> {/* psych-ok: law 6 is "a rating never appears without its sample size", and it does not here, the count renders 8px below inside this same block as one two-line unit, which is the reference anatomy; passing count too would print the number twice */}
+          <RatingStars value={average ?? 0} mode="five" starPx={26} /> {/* psych-ok: law 6 is "a rating never appears without its sample size", and it does not here, the count renders 8px below inside this same block as one two-line unit, which is the reference anatomy; passing count too would print the number twice */}
           <div className="mt-2 flex items-baseline gap-2">
             <span className="font-display text-[20px] font-bold leading-none text-s-ink tabular-nums">
               {average?.toFixed(1) ?? "-"}
@@ -306,7 +313,14 @@ function ReviewCard({ review, salonName, locale }: { review: Review; salonName?:
       </div>
 
       {/* Stars */}
-      <RatingStars value={review.rating} mode="five" size="lg" className="mt-3" />
+      {/* REVERTED to "md" (13px) on 2026-08-15, same day, and this is a correction of my own
+          eyeball rather than a change of his mind. Earlier that day I read "the stars to be more
+          big" as applying to every star row and bumped this one from md to lg, 13px to 16px.
+          Measuring his actual Fresha capture afterwards (image 8, 920px wide) puts the PER-REVIEW
+          star row at 30px, which is 0.0326 of viewport width, so 13px at our 390px viewport, i.e.
+          exactly the md it already was. Only the SUMMARY row is big in his reference, at 61px, a
+          little over twice these. So the bump moved this away from the thing he pointed at. */}
+      <RatingStars value={review.rating} mode="five" size="md" className="mt-3" />
 
       {text && (
         <>
