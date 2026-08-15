@@ -600,3 +600,24 @@ list. Everything else on the screen traces to a database row, including the "Exp
 countdown, which is computed from the booking's own `created_at` against the real 24 hour window that
 `app/api/cron/pending-timeout` enforces. Wiring the chips to genuinely free slots is Phase 4 work,
 since it needs an availability query the terminal does not run yet.
+
+---
+
+## CORRECTION ROUND (owner, 2026-08-15, second message)
+
+> "this mockup doesn't reflect our design system, and it probably does, but the design system is
+> really old so we have to renew that... go actually look into the PDP page and actually, like,
+> reflect salons and go check that design system and put it in here. because you're just using
+> inconsistent everything, and I'm just making shit up... And also you didn't even explain to me in
+> details what actually is, what's actually like, how everything works and stuff."
+
+He is right and our own law already says so. FLOORS LAW 9: "if the registry owns it, compose it.
+Hand-drawn UI in a page or feature file is a defect regardless of how good it looks." I hand-wrote
+every row, card and chip on the terminal from raw Tailwind instead of composing what ships.
+
+- [ ] CORRECTION 1: read the REAL PDP and salon surfaces, take the design language from shipped code
+- [ ] CORRECTION 2: rebuild the terminal composing the actual components, not hand-drawn Tailwind
+- [ ] CORRECTION 3: write down where the shipped code and the LOCKFILE disagree, so the stale parts
+      of the design system are named rather than guessed at
+- [ ] CORRECTION 4: explain in plain English, in detail, HOW THE THING WORKS end to end
+- [ ] CORRECTION 5: the existing use-the-registered-component gate did not catch this. Widen it.
