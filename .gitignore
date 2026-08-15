@@ -99,3 +99,4 @@ _shot*.cjs
 supabase/.temp/
 scratchpad/
 hooks-lint.json
+.claude/state/tunnel.log
