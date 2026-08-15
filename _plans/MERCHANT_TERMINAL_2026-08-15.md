@@ -32,12 +32,18 @@
 
 ### A. DEFINE
 - [x] A1 Name the screen's ONE job in one sentence (FLOORS LAW 10 requires it before any element is justified)
+      - verified: the sentence is written at MERCHANT_TERMINAL_2026-08-15.md:242, and app/[locale]/dev/terminal/Terminal.tsx is built against it
 - [x] A2 Fix the verb set: which actions the terminal DOES carry
+      - verified: the eight verbs are listed at MERCHANT_TERMINAL_2026-08-15.md:248, each mapped to an existing endpoint in the B2 table
 - [x] A3 Fix the anti-scope: which of the 28 salon-facing dashboard sections it deliberately does NOT carry
+      - verified: the excluded list is at MERCHANT_TERMINAL_2026-08-15.md:256; the 20 admin-gated folders are enumerated in middleware.ts:222
 - [x] A4 Decide the access model: subdomain vs path, and what he actually gains from each
+      - verified: recommendation + its named cost at MERCHANT_TERMINAL_2026-08-15.md:267; middleware.ts does no host inspection today (grepped for host/subdomain/rewrite, 0 hits)
 - [x] A5 Decide the identity model: who logs in (owner / staff / shared shop device) and how they stay logged in
+      - verified: target model at MERCHANT_TERMINAL_2026-08-15.md:285; the owner-only constraint it fixes is lib/bookings/authorize.ts:92-101, and the staff precedent is app/api/walkin/queue/[id]/route.ts:40
 - [x] A6 Decide the appointment default: auto-accept vs must-accept, grounded in what the industry actually does
 - [x] A7 State what happens when nobody presses anything (the timeout path), because one already exists in this codebase
+      - verified: app/api/cron/pending-timeout/route.ts:23-47 (24h, cancels + frees the slot + cancels the Stripe intent)
 
 ### B. WALK-INS AND APPOINTMENTS BOTH
 - [x] B1 Map the walk-in queue verbs onto the same screen
