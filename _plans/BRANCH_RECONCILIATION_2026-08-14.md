@@ -567,3 +567,7 @@ now in this branch (commit 064fe4fad); they reach main when this branch does.
 - [x] CORRECTION 2026-08-15 · "What the fuck is this? ... did you even use the screenshot at scale?"
       · the first version put the card full-width above the search bar; his screenshot puts it below
       the category pills at 321pt wide with the next card peeking. Measured and corrected.
+- [x] CORRECTION 2026-08-15 · "did you even use the screenshot at scale? The two screenshots are at
+      the... in the downloads folder" · the measure-first check now refuses a build when a reference
+      image on disk is NEWER than the recorded measurement, because a measurement taken before the
+      screenshot arrived cannot be about it. That is the exact shape of this failure.
