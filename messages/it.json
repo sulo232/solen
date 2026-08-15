@@ -5050,7 +5050,9 @@
       "salonsAvailable": "{count, plural, =1 {1 salone} other {# saloni}} disponibile"
     },
     "recentlyViewed": {
-      "title": "Visti di recente"
+      "title": "Visti di recente",
+      "topTitle": "Top su Solen",
+      "browseAll": "Esplora tutto"
     },
     "chat": {
       "tab": "Chat",

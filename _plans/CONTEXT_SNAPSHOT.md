@@ -2,38 +2,19 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-14T23:50:51 (trigger: auto)
+- taken: 2026-08-15T11:08:17 (trigger: auto)
 - branch: claude/agent-flow-design-overhaul-2af2c2
 
 ## git
 ```
-92ff09582 Second copy merged, sixteen clashes settled one at a time
-317c0ee72 First copy actually merged, conflicts resolved one by one, and the personal row is on
-4a5d6d694 Proof on the hands-off line
-613fdb974 Hands off the phone-app copy, he said leave it entirely
-9503cd5a3 Your English, French and Italian visitors were reading German in the top menu, on every page
+081c97098 Record: round-2 corrections, and every correction box now carries its commit
+588c1bb90 Round 2 on the continue card: every one of his corrections, and two review findings
+dae602f38 Harden: a measurement older than the screenshot no longer counts as measured
+4e0ce8f19 Record: his five corrections from the dictated message, in his words
+150ac548e Three directions for the continue card, city dropped, taller, icons down
 ```
 ```
-M  _design-system/QUESTIONS.md
-A  app/[locale]/_components/business/AssetPlaceholder.tsx
-A  app/[locale]/_components/business/CountUp.tsx
-A  app/[locale]/_components/business/EarningsCalculator.tsx
-A  app/[locale]/_components/business/MotionProvider.tsx
-A  app/[locale]/_components/business/Reveal.tsx
-UU app/[locale]/_components/homepage/BusinessTeaser.tsx
-UU app/[locale]/_components/homepage/WhySolen.tsx
-UU app/[locale]/_components/layout/Footer.tsx
-UU app/[locale]/_components/layout/Header.tsx
-UU app/[locale]/_components/layout/MobileMenu.tsx
-UD app/[locale]/business/page.tsx
-UU app/[locale]/fuer-salons/page.tsx
-D  app/[locale]/partner/layout.tsx
-UD app/[locale]/partner/page.tsx
-M  app/[locale]/warum-solen/page.tsx
-UU app/sitemap.ts
-DU components-legacy/home/PartnerBlock.tsx
-DU components-legacy/layout/Footer.tsx
-UU messages/de.json
+M public/_mockups/continue-card-directions/index.html
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
@@ -100,5 +81,4 @@ UU messages/de.json
 ## BRANCH_RECONCILIATION_2026-08-14.md
 Open boxes:
 - [ ] C10. The remaining copies, one at a time. Each one: open it, rescue anything uncommitted that
-- [ ] C13. Delete `quirky-ellis-ef5559` once those three checks are either copied by a session that
 - [ ] C14. Those eight files reach main. Nothing to build; it is the merge, which is his.
