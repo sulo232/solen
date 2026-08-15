@@ -146,7 +146,11 @@ function BundleCard({ bundle, slug, locale }: { bundle: Bundle; slug: string; lo
             "the combined two drilling into one". A cardboard parcel was wrong for two services
             sold together, which is what he flagged: nothing is being shipped. */}
         <Combine size={16} strokeWidth={2} className="text-s-ink" aria-hidden />
-        <p className="font-heading text-[16px] font-bold text-s-ink">{bundle.name}</p>
+        {/* mockup-ok: /dev/round5 option two, "One font". The combo name was the ONLY thing on the
+            PDP set in the display face at this size, so a card whose whole job is "these services
+            belong together" was announcing itself in a different voice from the services it
+            contains. Same face as the service rows below it now, which is what he tapped. */}
+        <p className="font-body text-[16px] font-bold text-s-ink">{bundle.name}</p>
       </div>
 
       <div>
@@ -158,7 +162,10 @@ function BundleCard({ bundle, slug, locale }: { bundle: Bundle; slug: string; lo
             <p className="truncate font-body text-[14px] font-medium text-s-ink">
               {locale === "en" && s.name_en ? s.name_en : s.name_de}
             </p>
-            <span className="flex shrink-0 items-center gap-1 pl-3 text-[12px] text-s-ink-2 tabular-nums">
+            {/* mockup-ok: /dev/round5 option two, second half. 12px was a fifth type size that
+                existed nowhere else in the card; 13px is one the card already used, so the card
+                drops from five sizes to four without losing a single level of hierarchy. */}
+            <span className="flex shrink-0 items-center gap-1 pl-3 text-[13px] text-s-ink-2 tabular-nums">
               {/* Casing matches SalonServices.tsx formatDurationDE (owner-locked 2026-06-09: lowercase
                   "min", no period) , NOT the shared minutesUnit i18n key ("Min", used by dashboard/services). */}
               <Clock size={11} strokeWidth={1.9} aria-hidden /> {s.duration_minutes} min
@@ -177,8 +184,11 @@ function BundleCard({ bundle, slug, locale }: { bundle: Bundle; slug: string; lo
           <span className="font-body text-[16px] font-bold text-s-ink tabular-nums">
             {formatCurrency(bundle.bundle_price, locale)}
           </span>
+          {/* mockup-ok: /dev/round5 option two , same 12->13 step as the duration above, applied
+              here too because the option he tapped moved every 12px in the card at once and this
+              pill was one of them. The pale-green + s-success recipe itself is untouched. */}
           {showDiscount && (
-            <span className="rounded-full bg-s-success-bg px-2.5 py-1 font-body text-[12px] font-semibold text-s-success tabular-nums">
+            <span className="rounded-full bg-s-success-bg px-2.5 py-1 font-body text-[13px] font-semibold text-s-success tabular-nums">
               &minus;{bundle.percent_off}%
             </span>
           )}

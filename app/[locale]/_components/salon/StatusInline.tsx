@@ -63,7 +63,14 @@ export function StatusInline({
   // already documented (Fresha ref); owner ask 2026-08-15, "write it to when it's open".
   return (
     <span className={cn("font-body inline-block", sizeCls)}>
-      <span className={cn("font-medium", isOpen ? "text-s-open" : "text-s-closed")}>{head}</span>
+      {/* mockup-ok: /dev/round5 , he picked green A there and that page named the two legal ways to
+          use it, because A measures 2.68:1 on white and TEXT needs 4.5:1. Way one: the word goes
+          darker than the dot. Way two: the word goes black and the dot alone carries the colour.
+          This is way ONE, and only after measuring the page rather than assuming: way two reads
+          fine in the abstract and collapses here, because the six green dots live in the
+          Öffnungszeiten section 3270px down and THIS line has no dot at all. Way two would have
+          left the header with no green whatsoever, on the exact line he asked to have it. */}
+      <span className={cn("font-medium", isOpen ? "text-s-open-text" : "text-s-closed")}>{head}</span>
       {tail && <span className="font-normal text-s-ink-2"> {tail}</span>}
     </span>
   );

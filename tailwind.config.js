@@ -172,7 +172,13 @@ module.exports = {
         // before. Measured contrast on white: old #22C55E = 2.32:1 (fails WCAG 1.4.3 AA
         // and the 3:1 graphical floor); new #1F8900 = 4.53:1 (AA pass).
         // s-success stays the universal success green everywhere else.
-        "s-open": { DEFAULT: "#1F8900" },
+        // `text` is NOT a second green, it is this green's legibility variant, the same
+        // DEFAULT-plus-.text split s-success/s-warning/s-error already use. It exists because a
+        // FILL and a TEXT STROKE are not the same job: DEFAULT 2.68:1 is fine for an 8px disc and
+        // unreadable as 15px type, where the floor is 4.5:1. `text` measures 4.53. Without the
+        // split, honouring his pick on the dot would have silently deleted the green from the
+        // header line, which is the one line he asked to HAVE green ("write it to when it's open").
+        "s-open": { DEFAULT: "#21B646", text: "#1F8900" },  // owner picked A off /dev/round5, 2026-08-15.Interpolated a quarter of the way from the #22C55E he called too bright toward the #1F8900 he called too dark. Contrast 2.68 on white: fine for the DOT, which is redundant with the word beside it, and too pale for TEXT, which is why StatusInline stopped colouring the word.
         // Selected-pill black, owner-picked 2026-08-15 from the four-way mockup at
         // /dev/pill-ceramic ("I don't know about, like, probably d. Yeah. Let's use d. So, yeah,
         // replace them."). Direction D: ink lifted one step off pure so a 44px filled pill stops

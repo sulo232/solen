@@ -2,41 +2,25 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-14T23:50:51 (trigger: auto)
-- branch: claude/agent-flow-design-overhaul-2af2c2
+- taken: 2026-08-15T14:45:18 (trigger: auto)
+- branch: claude/pdp-styling-updates-b2582b
 
 ## git
 ```
-92ff09582 Second copy merged, sixteen clashes settled one at a time
-317c0ee72 First copy actually merged, conflicts resolved one by one, and the personal row is on
-4a5d6d694 Proof on the hands-off line
-613fdb974 Hands off the phone-app copy, he said leave it entirely
-9503cd5a3 Your English, French and Italian visitors were reading German in the top menu, on every page
+b7b927ca6 Rebuilt the mockup he could not read, and applied the icon he picked from it
+b0b5b836e Combos, the products section gone, and the mockups he asked for instead of more changes
+45dfdff7a Proof on the packages ticks, and the mockup queue finally gets a row
+f052c6e7d "Looks weird" measured out to eight type sizes, and the packages ghost had a cause
+8ef1f15ee Phone check after C, with the before and after side by side
 ```
 ```
-M  _design-system/QUESTIONS.md
-A  app/[locale]/_components/business/AssetPlaceholder.tsx
-A  app/[locale]/_components/business/CountUp.tsx
-A  app/[locale]/_components/business/EarningsCalculator.tsx
-A  app/[locale]/_components/business/MotionProvider.tsx
-A  app/[locale]/_components/business/Reveal.tsx
-UU app/[locale]/_components/homepage/BusinessTeaser.tsx
-UU app/[locale]/_components/homepage/WhySolen.tsx
-UU app/[locale]/_components/layout/Footer.tsx
-UU app/[locale]/_components/layout/Header.tsx
-UU app/[locale]/_components/layout/MobileMenu.tsx
-UD app/[locale]/business/page.tsx
-UU app/[locale]/fuer-salons/page.tsx
-D  app/[locale]/partner/layout.tsx
-UD app/[locale]/partner/page.tsx
-M  app/[locale]/warum-solen/page.tsx
-UU app/sitemap.ts
-DU components-legacy/home/PartnerBlock.tsx
-DU components-legacy/layout/Footer.tsx
-UU messages/de.json
+M tailwind.config.js
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
+71 | PDP ROUND 5 , combos rename, products section off, and three mockups he asked for by name (owner 2026-08-15: "let's call it combos because packages doesn't make any sense", "remove the product section at all", "the review section make mock up, they didn't do that", "the green dot, I don't like how dark it is") | **ACTIVE** (2026-08-15) , 4 picks waiting on him
+69 | PDP REVIEWS + PACKAGES , measured taste diagnosis then fix (owner 2026-08-15: "the review section because it's, like, so out of place, and it looks so weird" + "I keep seeing this packages section, but then it goes away") | **ACTIVE** (2026-08-15) , 2 decisions parked
+68 | PDP ROUND 2 + 3 , ten asks off a dictated message + 9 screenshots, then six mid-turn corrections (owner 2026-08-15: "the report button we need to remove... nothing happens when you click one of the photos", then "I want groups... make it revert that", "she's too fucking cluttered", "why do you have, like, this, like, city sections") | **ACTIVE** (2026-08-15) , 3 decisions parked, everything else delivered
 67 | BRANCH RECONCILIATION , 40 unmerged branches, ~1800 commits, none on main (owner 2026-08-14: "look in deeep theres gnna be alot of conflicts ... merge them or delete but ask me alot") | **ACTIVE** (2026-08-14) , four questions asked
 66 | CATEGORY ROW: circles that morph into pills, flat icons with a glare (owner 2026-08-12: "instead of pills like circle n once u click then it bcms pill all morphism and also the icon i want it like abit glare yk like 3d liquid style icons") | **ACTIVE** (2026-08-12)
 64 | SEARCH PANEL FLATNESS , no colour on the idle list, and the for-you feed (owner 2026-08-12: "i wanna improve design sh looks flat n no color n the fur sie ui too") | **ACTIVE** (2026-08-12) , mockup delivered, awaiting his pick
@@ -97,8 +81,18 @@ UU messages/de.json
 50 | DESIGN principle deep-research (the rules we ALREADY have) | **ACTIVE** (2026-07-28)
 51 | DESIGN RE-ENGINEER , improve the system we have, measured against live Airbnb | **ACTIVE** (2026-07-28)
 
+## PDP_ROUND5_2026-08-15.md
+Open boxes:
+- [ ] PARKED 2026-08-15 · Which green: A, B or C? And given none of them clears the text floor, does the WORD stay green at a darker value while the dot takes your pick, or does the word go ink and only the dot stays green? · from: "the green dot, I don't like how dark it is"
+- [ ] PARKED 2026-08-15 · Which combo type fix: B (same font as the services above it) or C (B plus the combo name leading)? · from: "the design on the package is not good, the font"
+- [ ] PARKED 2026-08-15 · Reviews: keep what I applied, B (smaller initials), or C (lines back between reviews)? · from: "the review section, make mockup, they didn't do that"
+
+## PDP_REVIEWS_DIAGNOSIS_2026-08-15.md
+Open boxes:
+- [ ] PARKED 2026-08-15 · Keep bundles at all? Only ONE bundle exists across 28 salons six weeks
+- [ ] PARKED 2026-08-15 · If bundles stay: rename the German heading off "Pakete", since it reuses
+
 ## BRANCH_RECONCILIATION_2026-08-14.md
 Open boxes:
 - [ ] C10. The remaining copies, one at a time. Each one: open it, rescue anything uncommitted that
-- [ ] C13. Delete `quirky-ellis-ef5559` once those three checks are either copied by a session that
 - [ ] C14. Those eight files reach main. Nothing to build; it is the merge, which is his.
