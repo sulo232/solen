@@ -24,7 +24,24 @@ DEFER = re.compile(r"(i'?ll\s+(build|make|do|create|put together|mock)|i will\s+
     # Safe to widen: arm 1 only fires when the reply carries NO link, so "I'll show you the mockup at
     # /dev/x" is still untouched.
     r"i'?ll\b[^.!?\n]{0,40}\bmock ?up|mock ?ups?\b[^.!?\n]{0,25}\bnext\b)", re.I)
-LINK = re.compile(r"(trycloudflare\.com|/_mockups/|localhost:\d+|127\.0\.0\.1:\d+|/dev/[a-z0-9-]+)", re.I)
+# TIGHTENED 2026-08-15, adversarial review, and this is the escape hatch that MATTERS now that the
+# skip flag no longer opens ARM 2. The old pattern was a bare substring search, so it was satisfied
+# by things that are not a mockup handover at all:
+#   - "the dev server is still up on localhost:3000", which this project's own link rule has me
+#     writing routinely;
+#   - `/dev/null`, `/dev/random`, `/dev/urandom` inside any shell snippet;
+#   - any `/dev/<word>` appearing in ordinary prose about a file.
+# So the cheapest way to silence the arm was to mention a port or a device file by accident.
+# Now: a real handover is a tunnel URL, a _mockups path, or a /dev route given as a LINK (markdown,
+# or with a scheme and host in front of it). A bare localhost mention no longer counts, and the
+# device files are excluded by name.
+LINK = re.compile(
+    r"trycloudflare\.com"
+    r"|/_mockups/"
+    r"|\]\(\s*(?:https?://)?(?:localhost|127\.0\.0\.1)[:/]\d*[^)\s]*/dev/[a-z0-9-]+"
+    r"|https?://[^\s)\]]+/dev/[a-z0-9-]+"
+    r"|\]\([^)\s]*/dev/(?!null\b|random\b|urandom\b|stdin\b|stdout\b|stderr\b|tty\b)[a-z0-9-]+",
+    re.I)
 # ARM 2, added 2026-08-11. Owner: "u repeated urself stop skipping abt what im saying and also
 # mockup i told you", after asking TWICE for a mockup of the search field and getting a
 # panel-layout mockup the first time and a bug fix the second.
@@ -59,14 +76,81 @@ NEGATED = re.compile(
     r"|\bmock ?ups?\b[^.\n]{0,20}\b(?:not\s+needed|are\s+not\s+needed|no\s+longer)\b",
     re.I)
 
+# "SHOW ME THE ONE YOU ALREADY MADE" IS NOT "MAKE ME A NEW ONE". Added 2026-08-15, adversarial
+# review. It found that "i need to see the mockup again" and "show me the mockup you already built"
+# both trip ASKED, and the message they trigger tells you to BUILD one, which is the wrong
+# instruction when the thing already exists and he simply wants the link back. That is not a
+# hypothetical shape either: the turn immediately before this one was "server down try again",
+# i.e. re-send what you already made.
+#
+# Re-sending an existing link is the correct answer to these, and the reply carrying that link
+# satisfies ARM 2 on its own, so treating them as non-asks costs no real coverage.
+ALREADY_BUILT = re.compile(
+    r"\b(?:again|already|still|earlier|last\s+time|previous|再)\b[^.\n]{0,40}\bmock ?ups?\b"
+    r"|\bmock ?ups?\b[^.\n]{0,40}\b(?:again|already\s+(?:built|made|showed|sent)|you\s+(?:built|made|showed|sent))\b"
+    r"|\b(?:re-?send|resend|link\s+again|same\s+link)\b",
+    re.I)
+
 
 def asked_for_mockup(owner):
-    """ASKED, minus the negations. One place, so the suite and main() cannot drift apart."""
+    """ASKED, minus the negations and the re-send-what-exists asks.
+
+    One place, so the suite, verdict() and main() cannot drift apart. Every caller goes through it.
+    """
     if not owner:
         return False
     if not ASKED.search(owner):
         return False
-    return not NEGATED.search(owner)
+    return not NEGATED.search(owner) and not ALREADY_BUILT.search(owner)
+
+
+# NOT EVERY "type":"user" ROW IS HIM. Added 2026-08-15 after an independent adversarial review found
+# this by RUNNING it, which is the whole reason that review existed.
+#
+# THE FINDING, and it breaks the stated rationale for the flag change earlier the same day. That
+# change removed the escape from ARM 2 because "ARM 2 reads HIS message, and a flag arguing he meant
+# something else is an override, not a correction". ARM 2 does not reliably read his message. It
+# reads the LAST "type":"user" row, and the harness writes several kinds of row under that type that
+# he never typed: a Skill tool's entire file body, system-reminder blocks, injected context.
+#
+# The reviewer ran this file's own ASKED regex over the real ~/.claude/skills/fable-frontend/SKILL.md
+# body and got a hit on its own sentence, "show a mockup that is a COPY of the real page". So any
+# turn whose last user-type row is a Skill injection, closing in prose with no link, would have been
+# told "HE ASKED FOR A MOCKUP AND THIS TURN BUILT NONE" about text he never wrote, with no flag left
+# to clear it. Removing an escape hatch obliges you to make the trigger correct; this is the second
+# half of that debt, after the negation fix.
+#
+# The existing `"hook" not in c[:60]` line is the same idea done as a substring blocklist, and it has
+# its own false negative: a real message of his that opens with the word "hook" is silently skipped,
+# and this owner talks about hooks constantly. Both are handled below by SHAPE rather than by
+# keyword where possible, and the keyword list is anchored to line starts so ordinary prose that
+# merely contains one of these words is untouched.
+INJECTED = re.compile(
+    r"\A\s*(?:"
+    r"<(?:system-reminder|task-notification|command-name|command-message|local-command)"
+    r"|Base directory for this skill:"
+    r"|The following skills are available"
+    r"|The following deferred tools"
+    r"|Available agent types"
+    r"|Stop hook (?:feedback|blocking error)"
+    r"|\[SYSTEM NOTIFICATION"
+    r"|Caveat: The messages below"
+    r")", re.I)
+
+
+def is_injected(text):
+    """True when this 'user' row is harness-generated rather than typed by him."""
+    if not text:
+        return True
+    if INJECTED.match(text):
+        return True
+    # A skill body or a tool dump can start with ordinary prose, so also refuse a row that carries a
+    # hook/skill marker ANYWHERE while being far longer than anything he dictates. His messages run
+    # to a few hundred characters; a skill file runs to thousands.
+    if len(text) > 1500 and re.search(
+            r"(?m)^\s*(?:Base directory for this skill:|<system-reminder|Path:\s*userSettings:)", text):
+        return True
+    return False
 
 
 def last_owner_text(tp, with_ts=False):
@@ -80,7 +164,10 @@ def last_owner_text(tp, with_ts=False):
     try:
         with open(tp, encoding="utf-8") as f:
             lines = f.readlines()
-    except OSError:
+    except (OSError, UnicodeDecodeError, ValueError):
+        # UnicodeDecodeError is a ValueError, NOT an OSError, so the old `except OSError` let one bad
+        # byte anywhere in the transcript escape to main()'s bare handler, which exits 0. That turned
+        # a damaged transcript into a SILENT PASS on the arm that is meant to have no escape.
         return ("", None) if with_ts else ""
     for line in reversed(lines):
         line = line.strip()
@@ -90,14 +177,18 @@ def last_owner_text(tp, with_ts=False):
             o = json.loads(line)
         except Exception:
             continue
-        if o.get("type") != "user":
+        # A line can be valid JSON without being an object (a bare number, string, list or null).
+        # `.get` on those raises AttributeError, which aborted this whole function and fell through
+        # to the same silent pass. Found by the adversarial review.
+        if not isinstance(o, dict) or o.get("type") != "user":
             continue
-        c = o.get("message", {}).get("content", [])
+        msg = o.get("message")
+        c = msg.get("content", []) if isinstance(msg, dict) else []
         if isinstance(c, list):
             if any(isinstance(b, dict) and b.get("type") == "tool_result" for b in c):
                 continue
             c = " ".join(b.get("text", "") for b in c if isinstance(b, dict) and b.get("type") == "text")
-        if isinstance(c, str) and c.strip() and "hook" not in c[:60].lower():
+        if isinstance(c, str) and c.strip() and not is_injected(c):
             return (c, _epoch(o.get("timestamp"))) if with_ts else c
     return ("", None) if with_ts else ""
 
@@ -108,8 +199,17 @@ def wrote_mockup_route(since=None):
     written = _written(since)
     if not written:
         return False
-    return any(("/dev/" in f or f.startswith("public/_mockups/"))
-               and f.endswith((".tsx", ".jsx", ".html")) for f in written)
+    # ANCHORED 2026-08-15, adversarial review. `"/dev/" in f` was an unanchored substring test, so
+    # ANY file anywhere in the tree whose path happened to contain /dev/ counted as "the mockup" ,
+    # and this repo really has such paths, e.g. the flow harness under app/[locale]/dev/flows. A
+    # turn that edited one of those for an unrelated reason silenced ARM 2 while the actual ask went
+    # unanswered. A mockup route here is a Next route segment named dev, so require the segment to
+    # sit under an app directory rather than merely appear somewhere in the string.
+    return any(
+        (re.search(r"(?:^|/)app/[^/]*/dev/", f) or f.startswith("public/_mockups/")
+         or f.startswith("app/dev/"))
+        and f.endswith((".tsx", ".jsx", ".html"))
+        for f in written)
 
 
 def last_assistant_text(tp):
@@ -243,9 +343,20 @@ def main():
     msg = verdict(text, owner, asked_at)
     if not msg:
         sys.exit(0)
-    # The flag is consulted AFTER the verdict now, not before, because which arm fired decides
-    # whether the flag is even allowed to speak. See ARM2_FLAG_NOTE above.
-    if msg is ARM2_MSG:
+    # The flag is consulted AFTER the verdict, because which arm fired decides whether the flag is
+    # allowed to speak at all. See ARM2_FLAG_NOTE above.
+    #
+    # WHICH ARM IS RE-DERIVED, NOT IDENTIFIED BY OBJECT IDENTITY. This used to read
+    # `if msg is ARM2_MSG`, which holds only because verdict() happens to return the module constant
+    # itself. The adversarial review named the landmine: any later edit that BUILDS the message
+    # instead of returning the constant (an f-string, a .format, merging the two templates) leaves
+    # the text identical and the identity false, and the failure is silent and points the wrong way,
+    # because control then falls into `flag_ok()` and THE FLAG SILENTLY REOPENS ARM 2, which is
+    # exactly the 2026-08-15 failure this whole change exists to prevent. Re-deriving from the same
+    # helpers cannot drift like that.
+    is_arm2 = (asked_for_mockup(owner) and not LINK.search(text)
+               and not wrote_mockup_route(asked_at))
+    if is_arm2:
         sys.stderr.write(msg.rstrip("\n") + ARM2_FLAG_NOTE + "\n")
         sys.exit(2)
     if flag_ok():
@@ -284,7 +395,14 @@ def _selftest():
     check("a COMMITTED mockup answers an ask that came before it", wrote_mockup_route(time.time() - 3600), True)
     check("a committed mockup does not answer a LATER ask", wrote_mockup_route(time.time() + 60), False)
 
-    def verdict(owner_msg, reply, ask_offset):
+    # CALLS THE REAL verdict(), 2026-08-15. It used to re-implement the ARM 2 condition inline, so
+    # these six checks tested a COPY of the logic and would have kept passing while the shipped
+    # function was edited underneath them. The adversarial review flagged it, and it is the same
+    # class of defect this file's own 08-11 note warns about for the flag ordering, just never
+    # generalised. The helper now only builds the transcript; the decision comes from the module.
+    real_verdict = globals()["verdict"]
+
+    def run_verdict(owner_msg, reply, ask_offset):
         ts = time.strftime("%Y-%m-%dT%H:%M:%S.000Z", time.gmtime(time.time() + ask_offset))
         tp = os.path.join(d, "t.jsonl")
         with open(tp, "w") as fh:
@@ -292,7 +410,9 @@ def _selftest():
             fh.write(json.dumps({"type": "assistant", "timestamp": ts,
                                  "message": {"content": [{"type": "text", "text": reply}]}}) + "\n")
         owner, at = last_owner_text(tp, with_ts=True)
-        return asked_for_mockup(owner) and not LINK.search(reply) and not wrote_mockup_route(at)
+        return real_verdict(reply, owner, at) is not None
+
+    verdict = run_verdict
 
     check("BLOCKS a fresh ask answered with something else",
           verdict("give me a mockup of the search field", "I fixed the filter instead.", +30), True)
@@ -300,8 +420,17 @@ def _selftest():
           verdict("u repeated urself and also mockup i told you", "Here is the bug fix.", +30), True)
     check("PASSES when the mockup was built after the ask (the false block, 2026-08-11)",
           verdict("give me a mockup of the search field", "Variant A is live.", -3600), False)
-    check("PASSES when the reply links a /dev route",
-          verdict("give me a mockup of the search field", "Have a look at /dev/search-field", +30), False)
+    # UPDATED 2026-08-15, and the expectation moved rather than the code. This case used to hand a
+    # BARE "/dev/search-field" in prose and expect a pass. Tightening LINK (so that a stray
+    # "localhost:3000" or a "/dev/null" in a shell snippet can no longer silence the arm) means a
+    # bare path no longer counts, and that is correct on its own terms: his rule 0 says a link he
+    # cannot tap is not a link, and every other gate in the link family already demands markdown.
+    # The case's real intent, "a genuine handover passes", is preserved by making it a genuine one.
+    check("PASSES when the reply links a /dev route as a real, tappable link",
+          verdict("give me a mockup of the search field",
+                  "Have a look: [open](https://x.trycloudflare.com/en/dev/search-field)", +30), False)
+    check("BLOCKS when the /dev route is only a bare path in prose, which he cannot tap",
+          verdict("give me a mockup of the search field", "Have a look at /dev/search-field", +30), True)
     check("PASSES a one-letter answer, which is a pick and not a request",
           verdict("a", "Variant A is live.", +30), False)
     check("PASSES an ordinary question with no mockup word",
@@ -323,6 +452,55 @@ def _selftest():
                    "give me a mockup of the search field"]:
         check(f"STILL an ask: {phrase[:44]!r}",
               verdict(phrase, "I fixed the filter instead.", +30), True)
+
+    # ─── EVERYTHING BELOW CAME OUT OF THE ADVERSARIAL REVIEW, 2026-08-15 ────────────────────────
+    # None of it was in my own suite, which is the point: a suite tests its author's imagination.
+
+    # 1. "Show me the one you already made" is not "make me a new one", and the block message would
+    #    have told me to BUILD something that already exists.
+    for phrase in ["i need to see the mockup again",
+                   "show me the mockup you already built",
+                   "send me the mockup link again"]:
+        check(f"RE-SEND is not a new ask: {phrase!r}",
+              verdict(phrase, "Here it is.", +30), False)
+
+    # 2. A "user" row the harness wrote, not him. The reviewer ran this file's own ASKED regex over
+    #    the real fable-frontend skill body and got a hit on its own sentence about showing a mockup.
+    skill_row = ("Base directory for this skill: /Users/sulo/.claude/skills/fable-frontend\n\n"
+                 "Step 4. Before touching real code on any visual change: show a mockup that is a "
+                 "COPY of the real page with only the proposed change applied.")
+    check("a Skill injection is NOT him asking",
+          verdict(skill_row, "Fixed the padding bug.", +30), False)
+    check("a system-reminder block is NOT him asking",
+          verdict("<system-reminder>\nRemember to show a mockup before building.\n</system-reminder>",
+                  "Fixed the padding bug.", +30), False)
+
+    # 3. The LINK escape must not be satisfiable by accident. These are the three the reviewer found.
+    for reply, why in [("Fixed the bug, dev server is still up on localhost:3000", "a bare port"),
+                       ("Cleaned it with `rm -f /dev/null` style redirection", "a device file"),
+                       ("I edited the /dev/round5 file this morning.", "prose naming a path")]:
+        check(f"LINK is not satisfied by {why}",
+              verdict("give me a mockup of the search field", reply, +30), True)
+    check("LINK IS satisfied by a real markdown handover",
+          verdict("give me a mockup of the search field",
+                  "Have a look: [open](https://x.trycloudflare.com/en/dev/search-field)", +30), False)
+
+    # 4. Crash inputs must not become a silent pass. A JSON-valid non-object row and a message field
+    #    that is not a dict both used to raise AttributeError out of last_owner_text.
+    for bad_row, why in [("42", "a bare number"), ('"just a string"', "a bare string"),
+                         ("null", "a null"), ('{"type":"user","message":"not-a-dict"}', "a string message")]:
+        tp = os.path.join(d, "crash.jsonl")
+        ts = time.strftime("%Y-%m-%dT%H:%M:%S.000Z", time.gmtime())
+        with open(tp, "w") as fh:
+            fh.write(bad_row + "\n")
+            fh.write(json.dumps({"type": "user", "timestamp": ts,
+                                 "message": {"content": "give me a mockup of the search field"}}) + "\n")
+        try:
+            owner, at = last_owner_text(tp, with_ts=True)
+            survived = "mockup" in owner
+        except Exception:
+            survived = False
+        check(f"a damaged row ({why}) does not silence the gate", survived, True)
 
     # THE 2026-08-15 REGRESSION: the flag must not open arm 2. Driven through the real decision
     # path in main() rather than through a re-implementation of it, because the bug WAS in main()
@@ -362,8 +540,8 @@ def _selftest():
     check("flag still opens arm 1 (deferral wording is mine to correct)",
           run_main("what colour is the pill", "I'll build the mockup next.", +30), 0)
     # Must NOT trip: no flag involved, he asked and it was built.
-    check("no block when he asked and the reply carries the link",
-          run_main("make me a mockup", "It is at /dev/round5", +30), 0)
+    check("no block when he asked and the reply carries a real, tappable link",
+          run_main("make me a mockup", "It is here: [open](https://x.trycloudflare.com/en/dev/round5)", +30), 0)
 
     PDIR = real_pdir
     # the word "passed" is what ~/.claude/gate-eval.py greps for to know a suite actually ran
