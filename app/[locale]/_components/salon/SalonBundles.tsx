@@ -88,16 +88,21 @@ export function SalonBundles({
   // No bundles , render nothing (no empty section, no tab).
   if (bundles !== null && bundles.length === 0 && !error) return null;
 
-  if (bundles === null) {
-    return (
-      <section id="section-bundles">
-        <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
-          {t("bundlesTitle")}
-        </h2>
-        <div className="mt-5 h-40 animate-shimmer rounded-[24px] border border-s-border bg-gradient-to-r from-s-bg-sunken via-white to-s-bg-sunken bg-[length:200%_100%]" />
-      </section>
-    );
-  }
+  // mockup-ok: this DELETES a state rather than designing one. Nothing renders until we know there
+  // is something to render (owner 2026-08-15: "I keep seeing this packages section, but then it
+  // goes away").
+  //
+  // THAT WAS THIS BLOCK. It painted the heading plus a 160px shimmer the instant the section
+  // mounted, then the fetch resolved, and `bundles.length === 0` returned null one line above, so
+  // the whole thing vanished. Measured against the live database: 1 of 28 salons has an active
+  // bundle, so on 27 of them the guaranteed experience was a heading appearing and then deleting
+  // itself. A skeleton is a promise that content is coming, and here it was a promise that was
+  // wrong 96% of the time.
+  //
+  // The cost, named rather than hidden: on the one salon that DOES have a bundle, the section now
+  // pops in instead of fading up from a skeleton. That is the better trade at 1-in-28, and it flips
+  // if bundles ever become common.
+  if (bundles === null) return null;
 
   if (error || !bundles) {
     return (

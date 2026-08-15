@@ -167,10 +167,17 @@ export function SalonReviews({
         <div className="mt-4">
           <RatingStars value={average ?? 0} mode="five" starPx={26} /> {/* psych-ok: law 6 is "a rating never appears without its sample size", and it does not here, the count renders 8px below inside this same block as one two-line unit, which is the reference anatomy; passing count too would print the number twice */}
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="font-display text-[20px] font-bold leading-none text-s-ink tabular-nums">
+            <span className="font-display text-[16px] font-semibold leading-none text-s-ink tabular-nums">
               {average?.toFixed(1) ?? "-"}
             </span>
-            <span className="font-body text-[14px] text-s-accent">
+            {/* mockup-ok: 13, not 14, so the count joins the same meta tier as every date in this
+                section. Finding F1 of the measured diagnosis written before any of this was
+                touched (_plans/PDP_REVIEWS_DIAGNOSIS_2026-08-15.md): the section carried EIGHT
+                distinct type sizes against a ceiling of four, which is what "looks weird" measured
+                out to. This was the last stray, and at 14 it sat 1px off the tier below it, which
+                the typography floor calls a rendering glitch rather than a hierarchy. Not a new
+                size: 13 is already this section's meta tier. */}
+            <span className="font-body text-[13px] text-s-accent">
               {t("reviewsCountPlural", { count })}
             </span>
           </div>
@@ -310,12 +317,12 @@ function ReviewCard({ review, salonName, locale }: { review: Review; salonName?:
           the grey date stacked under, star row below, text below. Anonymous reviews
           show "Anonym" (the established label on /reviews). */}
       <div className="flex items-start gap-3.5">
-        <Avatar src={review.profiles?.avatar_url} name={displayName ?? tCommon("anonymous")} size={56} />
+        <Avatar src={review.profiles?.avatar_url} name={displayName ?? tCommon("anonymous")} size={44} />
         <div className="min-w-0 flex-1">
           <div className="font-body truncate text-[16px] font-semibold text-s-ink">
             {displayName ?? tCommon("anonymous")}
           </div>
-          <div className="font-body mt-0.5 text-[14px] text-s-ink-2">
+          <div className="font-body mt-0.5 text-[13px] text-s-ink-2">
             {formatReviewDate(review.created_at, locale)}
           </div>
         </div>
@@ -381,13 +388,13 @@ function ReviewCard({ review, salonName, locale }: { review: Review; salonName?:
           tray grammar as the full reviews page's reply block (components-legacy/salon/
           SalonReviews.tsx), so the two surfaces read as one consistent feature. */}
       {reply && (
-        <div className="mt-3 ml-4 rounded-[12px] border border-s-border bg-s-bg-sunken p-3">
+        <div className="mt-3 ml-4 border-l-2 border-s-border pl-3">
           <p className="flex items-center gap-1.5 text-[13px] font-semibold text-s-ink">
             <MessageSquare size={13} aria-hidden />
             {salonName ? t("replyFrom", { salon: salonName }) : t("replyFromSalon")}
           </p>
           <p className="mt-1.5 text-[13px] leading-relaxed text-s-ink-2">{reply.reply_text}</p>
-          <p className="mt-1.5 text-[12px] text-s-ink-2">{formatReviewDate(reply.created_at, locale)}</p>
+          <p className="mt-1.5 text-[13px] text-s-ink-2">{formatReviewDate(reply.created_at, locale)}</p>
         </div>
       )}
     </article>
