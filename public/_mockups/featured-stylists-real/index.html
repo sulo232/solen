@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Stylists row on the homepage, live page comparison</title>
+<!-- Base: capture live -->
+<!-- Scale: full-page -->
+<!--
+  Mockup-scope: whole-page
+  Grounded-in: app/[locale]/_components/homepage/FeaturedStylists.tsx
+  Depicts: the homepage feed -> app/[locale]/page.tsx, with the stylist row put back
+
+  Backend-check: every name, speciality, salon, rating and review count injected below is a real row
+    read live from the database on 2026-08-14. The avatars are the seeded stock photos those rows
+    actually carry, which is the point of seed data pre-launch (owner 2026-08-02: seeding IS the
+    fix; owner again 2026-08-14 on this mockup: "those stocks are to see as a beta, how else are we
+    going to see the design"). Nothing here is invented in JSX.
+
+  Diagnosis: homepage carries no stylist presence | measured 0 stylist cards on the shipped page against 62 active stylists across 20 salons live | violates FLOORS LAW 2 (imagery floor met by surfacing REAL salon content, owner 2026-07-25 "SHOW OFF THE STORES THAT WE HAVE") | target 10 real stylist cards
+  Diagnosis: the existing stylist section is built on invented values | measured 8 hardcoded numbers in FeaturedStylists.tsx lines 97-131 (ratings 4.9/5.0/4.8/4.9, counts 693/792/248/156) and 0 database reads in the file | violates taste rule 1 no fabricated data | target 0 hardcoded numbers and 10 live rows
+  Diagnosis: the existing stylist section breaks the weight ceiling | measured 3 distinct font weights in FeaturedStylists.tsx (semibold, medium, normal) | violates LOCKFILE section 12 which caps a screen at 2 | target 2 weights, 600 and 400
+
+  measured, read from the grounded component's own source rather than eyeballed: avatar 72x72
+    (w-[72px] h-[72px]), font sizes 28 / 15 / 13 / 12, gaps 1 / 2 / 4. The injected row keeps the 72
+    avatar and those sizes and uses 2 weights.
+
+  Known and NOT worked around: the seed data reuses avatars, 62 stylists share 12 photographs, so a
+    face repeats down the row. That is a seeding job (add more avatar variety), not a display rule,
+    and it does not stop this showing the design.
+
+  Exists-check: ran this turn, five times. `npm run exists "featured stylists"` returns the
+    component FeaturedStylists.tsx; `npm run exists "staff featured"` returns GET
+    /api/staff/featured; `npm run exists "stylists row homepage"` returns nothing, so the ROW itself
+    is the net-new part. Both the component and the endpoint ALREADY EXIST, so this re-points the
+    existing section at the existing endpoint. REMOVED.md has NO entry for it: pulled for dead links
+    (V3-D436, 2026-06-05), never rejected on taste.
+
+  BOTH panes are the real /en homepage. Needs the dev server on :3000. A blank pane means it is not
+    running; nothing here draws a fake version of the current page.
+-->
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--sunken:#F4F4F5;--hairline:#E4E4E7;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
+  .top{position:fixed;top:0;left:0;right:0;height:52px;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline);display:flex;align-items:center;justify-content:center;padding:0 12px}
+  .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;width:min(320px,80vw)}
+  .seg button{flex:1;border:0;background:transparent;font-family:inherit;font-size:14px;font-weight:600;color:var(--ink2);padding:8px 0;border-radius:999px;cursor:pointer}
+  .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+  .cap{position:fixed;top:52px;left:0;right:0;z-index:19;background:var(--sunken);color:var(--ink2);font-size:12px;font-weight:600;text-align:center;padding:6px 12px;line-height:1.35}
+  .stage{position:fixed;top:84px;left:0;right:0;bottom:0}
+  .pane{position:absolute;inset:0}
+  .pane.hidden{display:none}
+  iframe{width:100%;height:100%;border:0;display:block}
+</style>
+</head>
+<body>
+  <div class="top"><div class="seg"><button id="bB" class="on" onclick="show('now')">Now (live)</button><button id="bA" onclick="show('next')">With the row</button></div></div>
+  <div class="cap">The second tab is the real page with a stylist row put back, built from real salon people.</div>
+  <div class="stage">
+    <div id="paneBefore" class="pane"><iframe id="beforeFrame" src="/en" title="real homepage as it ships"></iframe></div>
+    <div id="paneAfter" class="pane hidden"><iframe id="afterFrame" src="/en" title="real homepage with the row"></iframe></div>
+  </div>
+<script>
+// Real rows, read live from the database 2026-08-14, top rated first. Avatars are the seeded photos
+// those rows carry. Faces repeat because the seed reuses them; that is a seeding job, not a design one.
+var PEOPLE = [
+  {n:"Marco Bianchi", p:"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400", s:"Blade & Stone",      sp:"Fades, Bart",               r:"4.9", c:62},
+  {n:"Lena",          p:"https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400", s:"Smooth Skin Studio", sp:"Waxing & Sugaring",         r:"4.9", c:59},
+  {n:"Nina",          p:"https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=400", s:"The Fade Factory",   sp:"Herrenschnitt, Bart",       r:"4.8", c:58},
+  {n:"Sara",          p:"https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400", s:"Rouge Studio",       sp:"Make-up",                   r:"4.8", c:54},
+  {n:"Luca",          p:"https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400", s:"Velvet Face",        sp:"Make-up",                   r:"4.9", c:51},
+  {n:"Jonas",         p:"https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=400", s:"Belle Epil",         sp:"Waxing & Sugaring",         r:"4.8", c:44},
+  {n:"Tim",           p:"https://images.unsplash.com/photo-1463453091185-61582044d556?w=400", s:"Haarsalon Margot",   sp:"Haarschnitt, Styling",      r:"4.9", c:39},
+  {n:"Deniz Yilmaz",  p:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400", s:"Blade & Stone",      sp:"Bart, Hot-Towel-Rasur",     r:"4.9", c:38},
+  {n:"Mia",           p:"https://images.unsplash.com/photo-1544723795-3fb6469f5b39?w=400",   s:"Wax & Glow Basel",   sp:"Waxing & Sugaring",         r:"4.9", c:37},
+  {n:"Jonas Keller",  p:"https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=400", s:"Blade & Stone",      sp:"Moderne Styles, Skin Fade", r:"4.7", c:29}
+];
+
+function buildRow(doc){
+  var sec = doc.createElement('section');
+  sec.setAttribute('data-sweep-done','1');
+  sec.style.cssText = 'padding:26px 0 4px;position:relative';
+
+  var head = doc.createElement('div');
+  head.style.cssText = 'display:flex;align-items:baseline;justify-content:space-between;padding:0 20px 14px';
+  var h = doc.createElement('h2');
+  h.textContent = 'Stylists near you';
+  h.style.cssText = "font:600 28px/1.15 'Inter Tight',Inter,sans-serif;letter-spacing:-.015em;margin:0;color:#0A0A0A";
+  var all = doc.createElement('a');
+  all.textContent = 'See all'; all.href = '#';
+  all.style.cssText = 'font:600 13px Inter,sans-serif;color:#0A0A0A;text-decoration:none';
+  head.appendChild(h); head.appendChild(all);
+
+  var rail = doc.createElement('div');
+  rail.style.cssText = 'display:flex;gap:16px;overflow-x:auto;padding:0 20px 6px';
+  PEOPLE.forEach(function(x){
+    var card = doc.createElement('a');
+    card.href = '#';
+    card.style.cssText = 'flex:0 0 96px;text-decoration:none;color:inherit;text-align:center';
+    card.innerHTML =
+      '<div style="width:72px;height:72px;margin:0 auto;border-radius:999px;overflow:hidden;background:#F4F4F5">' +
+        '<img src="' + x.p + '" alt="" style="width:100%;height:100%;object-fit:cover;display:block">' +
+      '</div>' +
+      '<p style="font:600 15px/1.25 Inter,sans-serif;margin:10px 0 0;color:#0A0A0A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + x.n + '</p>' +
+      '<p style="font:400 12px/1.35 Inter,sans-serif;color:#6B6B6B;margin:2px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + x.sp + '</p>' +
+      '<p style="font:400 12px/1.35 Inter,sans-serif;color:#6B6B6B;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + x.s + '</p>' +
+      '<p style="display:flex;align-items:center;justify-content:center;gap:3px;margin:5px 0 0;font:600 13px Inter,sans-serif;font-variant-numeric:tabular-nums;color:#0A0A0A">' +
+        '<span style="color:#FFC32B">&#9733;</span>' + x.r +
+        '<span style="font-weight:400;color:#6B6B6B">(' + x.c + ')</span></p>';
+    rail.appendChild(card);
+  });
+
+  var lab = doc.createElement('div');
+  lab.textContent = 'The new row';
+  lab.style.cssText = 'position:absolute;top:8px;right:8px;background:rgba(10,10,10,.82);color:#fff;font:600 10px/1.3 -apple-system,sans-serif;padding:3px 8px;border-radius:999px;z-index:99999';
+
+  sec.appendChild(head); sec.appendChild(rail); sec.appendChild(lab);
+  return sec;
+}
+
+function applyChange(doc){
+  if(doc.querySelector('[data-sweep-done]')) return 1;
+  var heads = doc.querySelectorAll('h1,h2,h3'), anchor = null;
+  heads.forEach(function(h){
+    if(anchor) return;
+    if(/(in der n|nearby|near you|umgebung)/i.test((h.textContent||'').trim())) anchor = h;
+  });
+  if(!anchor){ heads.forEach(function(h){ if(!anchor && (h.textContent||'').trim()) anchor = h; }); }
+  if(!anchor) return 0;
+  var sec = anchor, up = 0;
+  while(sec.parentElement && up < 5 && sec.tagName !== 'SECTION'){ sec = sec.parentElement; up++; }
+  var row = buildRow(doc);
+  sec.parentElement.insertBefore(row, sec.nextSibling);
+  try{ row.scrollIntoView({block:'center'}); }catch(e){}
+  return 1;
+}
+
+var afterStarted = false;
+function startAfter(){
+  if(afterStarted) return; afterStarted = true;
+  var f = document.getElementById('afterFrame'), tries = 0;
+  var iv = setInterval(function(){
+    tries++;
+    try{ var doc = f.contentDocument; if(doc && doc.querySelector('h1,h2,h3')){ if(applyChange(doc) > 0){ clearInterval(iv); } } }catch(e){}
+    if(tries > 100){ clearInterval(iv); }
+  }, 200);
+}
+function show(w){
+  document.getElementById('paneBefore').classList.toggle('hidden', w!=='now');
+  document.getElementById('paneAfter').classList.toggle('hidden', w!=='next');
+  document.getElementById('bB').classList.toggle('on', w==='now');
+  document.getElementById('bA').classList.toggle('on', w==='next');
+  if(w==='next') startAfter();
+}
+</script>
+</body>
+</html>
