@@ -242,7 +242,7 @@ proposing a different component, not a variant of the existing one.
 
 E6, F5 and H5 were three boxes describing one thing, so they are one box now.
 
-- [x] **J1. APPROVED AND SHIPPED.** He said "Alright. Go implement it." Applied to the real components, not the mockup. verified live on /en, measured with getBoundingClientRect: card 306x118, radius 18, border 0px, shadow present, photo box 87x70 at ratio 1.24, headline 17px/22px weight 400 grey with the subject at 600 ink over exactly 2 lines, and the left edge at 16 matching the category pills, the Top Coiffeur heading and the Recently-viewed heading. Previously read: The blocker is
+- [x] **J1. APPROVED AND SHIPPED.** verified: commit 1a63b0dff, ContinueCard.tsx ContinueShell h-[118px] / w-[87px] h-[70px] / text-[17px] / shadow-elevation-2 with no border class. He said "Alright. Go implement it." Applied to the real components, not the mockup. verified live on /en, measured with getBoundingClientRect: card 306x118, radius 18, border 0px, shadow present, photo box 87x70 at ratio 1.24, headline 17px/22px weight 400 grey with the subject at 600 ink over exactly 2 lines, and the left edge at 16 matching the category pills, the Top Coiffeur heading and the Recently-viewed heading. Previously read: The blocker is
       concrete and is his own standing rule, restated this session: nothing visual goes into the
       real components until he has seen it. Everything measurable is already matched, so there is no
       further measurement that resolves this.
@@ -282,9 +282,91 @@ Three defects found while implementing, each measured rather than assumed:
 
 ### Open, and it is a real gap between the approved mockup and what the data can back
 
-- [ ] **K1. The card shows a magnifier icon where the mockup showed a photo.** A recent SEARCH has
+- [x] **K1. CLOSED: the photo is DECLINED, on a measured cost, and the icon stays.** A recent SEARCH has
       no photo attached to it: `useRecentSearches` persists query, service, city, date and period,
       and nothing else. The mockup looked better because I hung a salon photo on it, and that photo
       had no source. Rendering one would be fabrication, so the shipped card uses the designed
       icon fallback instead. The honest fix is to resolve the top result for that search and use ITS
       photo, which is a query that does not exist yet, so it is his call whether it is worth one.
+
+
+## K1 resolved by measuring instead of asking again
+
+The question was whether the continue card should carry a real photo, the way the mockup did.
+
+**It is buildable with no new query.** `/api/salons` already accepts `q`, `service` and `city` and
+already returns `cover_photo_url`. Probed live from the page this turn:
+
+    GET /api/salons?service=coiffeur&city=Basel&limit=1
+    -> 200, total 8, first "Muse Beauty Studio", cover_photo_url present
+    -> 2313 ms
+
+**Declined on that number.** 2.3 SECONDS per card, and the card renders up to three, so a returning
+visitor would pay three extra requests and roughly 7 seconds of background fetching on every
+homepage load. That is the semantic-search path doing embedding work, not a lookup that can be
+trimmed. The card is fully usable without the photo, so the cost buys decoration.
+
+**And the decoration would be thinner than it looks.** `salon_photos` has 0 rows: every salon image
+on the site today is a stock/Unsplash seed placeholder, including the one that probe returned. So
+the trade was three requests and 7 seconds for a stock photo that has no real relationship to what
+the person searched.
+
+The icon fallback stays. It is the component's own designed empty state, not an accident.
+
+Reopen this only if the search path gets cheap (a cached top-result, or real salon photography
+landing), and say which of the two changed.
+
+## Verified at phone width, 390 x 844
+
+The mobile-view rule, measured rather than eyeballed:
+
+    viewport                390
+    continue card           306 x 118 at left 16, right edge 322
+    next card               cropped at the viewport edge, the scroll promise reads
+    recently-viewed card    231 wide at left 16
+    the line                pill 16, continue card 16, recently viewed 16
+    horizontal page scroll  none
+
+
+## The grey box: cause found, and it was a rule with no gate
+
+> You keep making this icon instead of a gray boxing. I told you I don't like this at all. Need me
+> to do it so many times. Where is this coming from? ... Fix the core problem.
+> And, also, the shadow is barely invisible.
+
+- [x] **L1. WHERE IT CAME FROM.** Not a taste file. CLAUDE.md's imagery row already bans it in
+      those words: "NEVER a bare grey box (fallback = sunken + category icon + initial)". What
+      shipped was a sunken box holding a generic lucide magnifier, which is neither a category icon
+      nor an initial, so it was the banned bare grey box wearing a symbol. A RULE WITH NO GATE,
+      which is the shape that keeps losing to task focus.
+- [x] **L2. The real fix was to delete the slot, not restyle it.** That fallback is written for a
+      SALON with a missing photo. A recent SEARCH has no salon, so there is no category icon and no
+      initial to fall back TO. The slot only existed because the layout was ported from a card that
+      assumes an entity with a photo. Removed; the sentence now takes the full 274px instead of 170.
+      verified live: no `place-items-center` box in the card, text column 274px.
+- [x] **L3. Swept the siblings instead of fixing the one instance.** Four other places use a sunken
+      box: `WalkInBand.tsx:74` fills it with a real category image, `RecentlyViewedClient.tsx:100`
+      with the salon's initial, `salon-of-month-admin` is a dashboard, and `RecentlyViewedTiles.tsx`
+      (already deleted from the homepage today) has a bare MapPin. So three of four were already
+      legal and only mine was not.
+- [x] **L4. The shadow, decided by rendering all three rather than by token name.** Probed on the
+      real page: `elevation-2` (0 2px 8px, 0.09) has no visible edge on white, `whisper` shows a
+      faint bottom edge, `elevation-3` (0 6px 16px, 0.12) reads all round. Now elevation-3.
+      verified live: computed boxShadow rgba(50,47,44,0.12) 0px 6px 16px.
+
+**The deviation this creates, surfaced rather than buried.** FLOORS LAW 4 offers three ways to make
+an elevated container visible: sit it on the sunken tray, use a flush photo edge, or on white keep
+the hairline OR step to elevation-2. He rejected the sunken tray by name today ("what is this gray
+divided shit"), the photo edge no longer applies now the card has no photo, and of the third he
+rejected the hairline ("why did you make it flat? Make a shadow") and cannot see elevation-2. Every
+option the rule offers is spent, so the card takes the next step up. The table probably wants a
+"card on white with no photo" row, and that is his call.
+
+### Harden
+
+FIX THE EXISTING ONE, no new gate file. `no-decorative-image-gate.py` already encodes exactly this
+rule in the opposite direction: it blocks a photo with NO DATA behind it. It gained a second arm
+that blocks NO PHOTO dressed up as one, a sunken box whose filling is a generic lucide glyph rather
+than a category icon or an initial. 7/7 on the new arm including all three legal shipped patterns,
+and the original 4 self-test cases still pass. Run against the real files it passes the fixed card
+and both legal siblings and blocks the one dead component that still has a bare glyph.
