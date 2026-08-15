@@ -105,8 +105,8 @@ problem, which was not the nesting at all.
 
 - [x] **E5. He picked A** ("You know what? Just make it a"). B and C unloaded; only variants/row-a.js loads. verified: commit pending, index.html loads one script tag and the switcher shows a single button.
 - [ ] **E6. The duplicate "Zuletzt angesehen" section needs his call.** Two rows render for anyone with history (page.tsx:288 and :289). Spawned as task_ed7c6e36. Retitle one, or delete one plus a REMOVED.md line.
-- [ ] **E7. Ten more hardcoded German labels on the homepage.** Spawned as task_57e4a095. Same bug class as E2, in 8 other components.
-- [ ] **E8. Design-verifier has not run on the three row directions.** Rendered and measured them myself this turn (ratios, tap targets, heading counts, no nesting), but the verifier agent has not graded them against LOCKFILE. Worth doing once he picks one, not on three throwaways.
+- [x] **E7. Done this turn, he asked for it directly.** 8 of the 10 were live and are fixed; 2 were a false positive in my own scan. verified live on /en: zero of the target German strings remain visible.
+- [x] **E8. Moot: there are no longer three directions.** He picked A, so B and C are unloaded. I measured A myself (ratios, tap targets, heading count, no nested interactives) and fixed the one contract breach I found: the card carried a border AND a shadow, which the locked surface table forbids. It is hairline only now. Superseded item, previously: Rendered and measured them myself this turn (ratios, tap targets, heading counts, no nesting), but the verifier agent has not graded them against LOCKFILE. Worth doing once he picks one, not on three throwaways.
 
 
 ## CORRECTION round 2, owner 2026-08-15 (third message)
@@ -124,3 +124,41 @@ problem, which was not the nesting at all.
 ### Still open
 
 - [ ] **F5. He has not said whether the bigger card and the hairline are right.** That is the next thing to react to, and it is a taste call, not a measurement.
+
+
+## German label sweep, owner asked for it directly (2026-08-15, he pasted the task back)
+
+Fixed, all verified live on /en with zero of the target strings remaining:
+
+| file | string | key used |
+|---|---|---|
+| CategoryPromos.tsx:70 | Stöber nach Kategorie. | home.categories.browseTitle (new) |
+| Entdecken.tsx:166 | Finden Sie Ihre Inspiration. | home.discover.inspirationTitle (new) |
+| Entdecken.tsx:393 | Alle Looks entdecken | home.discover.browseAllLooks (new) |
+| Entdecken.tsx:419 | Alle entdecken | home.discover.browseAll (already existed) |
+| Entdecken.tsx:170 | Alle entdecken -> | home.discover.browseAll (already existed) |
+| PopularLooks.tsx:48 | Beliebte Looks | home.trending.popularLooks (new) |
+| PopularLooks.tsx:52 | Alle entdecken -> | home.discover.browseAll (already existed) |
+| FeaturedStylists.tsx:201 | Profis in Ihrer Nähe | home.featured.nearbyPros (new) |
+| ForYouAffinityRow.tsx:77 | Für dich empfohlen | home.featured.forYou (new) |
+| BentoBusiness.tsx:711 | Sofortige Bestätigung | home.partner.instantConfirm (new) |
+| BusinessTeaser.tsx:32 | Solen für Salons | home.partner.forSalons (new) |
+
+**Two of the ten were a FALSE POSITIVE in my own scan, and saying so matters more than the count.**
+Hero.tsx:287 and :294 sit inside `_DeprecatedSearchBar`, a function declared once and imported by
+nobody. Those labels render on no page in any locale. I wired them, typecheck said `t` was not in
+scope, and that is what exposed it. Reverted, and the two keys I had added were removed again
+rather than left as cruft with no consumer. The dead function itself is not deleted: that needs the
+graveyard protocol and his yes.
+
+**Three strings my scan missed**, because it only matched title/label/aria-label props and these are
+JSX text children. Measured for visibility rather than assumed:
+  - `Entdecken.tsx:419` "Alle entdecken", VISIBLE at 71x35. Fixed.
+  - `MobileCategoriesRow.tsx:87` "Für Sie", section carries `hidden`, measured 0x0. Left alone.
+  - `BusinessTeaser.tsx:67` and `WhySolen.tsx:119` "Solen für / Ihr Geschäft.", measured 0x0 at this
+    viewport, and both are a marketing headline split across a `<br>`, which needs a copy decision
+    about how it wraps in four locales rather than a mechanical key swap.
+
+- [ ] **G1. "Solen für / Ihr Geschäft." still hardcoded in two files.** Not a mechanical fix: the
+      headline breaks across a `<br>` and French and Italian will not break in the same place, so it
+      needs a copy call, not a key swap.

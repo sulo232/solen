@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Section, SectionFrame, SectionTitle } from "./SectionHeader";
+import { useTranslations } from "next-intl";
 
 /**
  * CategoryPromos — V3-D75-promos (2026-05-18).
@@ -64,10 +65,13 @@ const CATEGORIES: CategoryPromo[] = [
 ];
 
 export default function CategoryPromos() {
+  // 2026-08-15: this label was a hardcoded German literal, so it rendered German on /en,
+  // /fr and /it. Same bug class the owner caught on the recently-viewed row that day.
+  const t = useTranslations("home.categories");
   return (
     <Section>
       <SectionFrame>
-        <SectionTitle title="Stöber nach Kategorie." />
+        <SectionTitle title={t("browseTitle")} />
         <div
           className="salon-card-stagger mt-3 flex gap-3 overflow-x-auto py-1 [-webkit-overflow-scrolling:touch] [scroll-snap-type:x_mandatory] [scrollbar-width:none] -mx-3 px-3 md:-mx-5 md:px-5 [&::-webkit-scrollbar]:hidden"
         >

@@ -194,7 +194,8 @@
       "title": "Que recherchez-vous?",
       "salonsCount": "Salons",
       "comingSoon": "Bientôt disponible",
-      "more": "Découvrir plus de catégories"
+      "more": "Découvrir plus de catégories",
+      "browseTitle": "Parcourir par catégorie."
     },
     "howItWorks": {
       "eyebrow": "Pour les nouveaux clients",
@@ -227,12 +228,15 @@
       "emptyMessage": "Bientôt plus de salons près de chez vous",
       "beliebtInBasel": "Populaire à Bâle",
       "beliebtInZuerich": "Populaire à Zurich",
-      "beliebtInBern": "Populaire à Berne"
+      "beliebtInBern": "Populaire à Berne",
+      "nearbyPros": "Pros près de chez vous",
+      "forYou": "Recommandé pour vous"
     },
     "trending": {
       "eyebrow": "Tendance",
       "title": "Tendance à Bâle",
-      "subtitle": "Les salons les plus en vogue actuellement"
+      "subtitle": "Les salons les plus en vogue actuellement",
+      "popularLooks": "Looks populaires"
     },
     "nearby": {
       "eyebrow": "Emplacement",
@@ -271,7 +275,9 @@
       "checklistVisibility": "Visibilité dans votre ville",
       "newBookings": "Nouvelles réservations",
       "firstMonth": "le premier mois",
-      "newCustomers": "Nouveaux clients"
+      "newCustomers": "Nouveaux clients",
+      "instantConfirm": "Confirmation immédiate",
+      "forSalons": "Solen pour les salons"
     },
     "trust": {
       "securePayment": "Paiement sécurisé — chiffrement Stripe",
@@ -391,7 +397,9 @@
       "scrollLeft": "Défiler à gauche",
       "scrollRight": "Défiler à droite",
       "browseAll": "Tout parcourir",
-      "inspirationText": "Inspirez-vous de milliers de styles"
+      "inspirationText": "Inspirez-vous de milliers de styles",
+      "inspirationTitle": "Trouvez votre inspiration.",
+      "browseAllLooks": "Voir tous les looks"
     },
     "map": {
       "eyebrow": "Près de vous",

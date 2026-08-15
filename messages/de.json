@@ -194,7 +194,8 @@
       "title": "Was suchen Sie?",
       "salonsCount": "Salons",
       "comingSoon": "Bald verfügbar",
-      "more": "Mehr Kategorien entdecken"
+      "more": "Mehr Kategorien entdecken",
+      "browseTitle": "Stöber nach Kategorie."
     },
     "howItWorks": {
       "eyebrow": "Für Neukunden",
@@ -227,12 +228,15 @@
       "emptyMessage": "Bald mehr Salons in Ihrer Nähe",
       "beliebtInBasel": "Beliebt in Basel",
       "beliebtInZuerich": "Beliebt in Zürich",
-      "beliebtInBern": "Beliebt in Bern"
+      "beliebtInBern": "Beliebt in Bern",
+      "nearbyPros": "Profis in Ihrer Nähe",
+      "forYou": "Für dich empfohlen"
     },
     "trending": {
       "eyebrow": "Trending",
       "title": "Trending in Basel",
-      "subtitle": "Die aktuell angesagtesten Salons"
+      "subtitle": "Die aktuell angesagtesten Salons",
+      "popularLooks": "Beliebte Looks"
     },
     "nearby": {
       "eyebrow": "Standort",
@@ -271,7 +275,9 @@
       "checklistVisibility": "Sichtbarkeit in Ihrer Stadt",
       "newBookings": "Neue Buchungen",
       "firstMonth": "im ersten Monat",
-      "newCustomers": "Neue Kunden"
+      "newCustomers": "Neue Kunden",
+      "instantConfirm": "Sofortige Bestätigung",
+      "forSalons": "Solen für Salons"
     },
     "trust": {
       "securePayment": "Sichere Zahlung — Stripe verschlüsselt",
@@ -391,7 +397,9 @@
       "scrollLeft": "Nach links scrollen",
       "scrollRight": "Nach rechts scrollen",
       "browseAll": "Alle entdecken",
-      "inspirationText": "Lassen Sie sich von tausenden Styles inspirieren"
+      "inspirationText": "Lassen Sie sich von tausenden Styles inspirieren",
+      "inspirationTitle": "Finden Sie Ihre Inspiration.",
+      "browseAllLooks": "Alle Looks entdecken"
     },
     "map": {
       "eyebrow": "In Ihrer Nähe",
