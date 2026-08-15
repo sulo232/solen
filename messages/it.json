@@ -239,7 +239,8 @@
       "eyebrow": "Tendenza",
       "title": "Tendenza a Basilea",
       "subtitle": "I saloni più popolari al momento",
-      "popularLooks": "Look popolari"
+      "popularLooks": "Look popolari",
+      "priceFrom": "da CHF {price}"
     },
     "nearby": {
       "eyebrow": "Posizione",
@@ -318,7 +319,10 @@
       "theApp": "L'app Solen",
       "fromYourPocket": "Direttamente in tasca.",
       "walkInSub": "Senza appuntamento. Vedi l'attesa e prendi il tuo posto.",
-      "allWalkIns": "Tutti i walk-in"
+      "allWalkIns": "Tutti i walk-in",
+      "untilFree": "fino a libero",
+      "queueEmpty": "Nessuno in attesa",
+      "queueAhead": "{n} prima di te"
     },
     "heroCarousel": {
       "label": "Popolari vicino a Lei",

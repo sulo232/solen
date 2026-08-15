@@ -618,6 +618,21 @@ all four locale files the whole time and had simply never been called.
    only found out because typecheck said `t` was not in scope. **A string in dead code is not a bug,
    and "fixed" on it is a false report.**
 
+**A THIRD BLIND SPOT, found by the design-verifier after I had declared the sweep done: GERMAN
+WITHOUT UMLAUTS.** Both greps below key on `[äöüßÄÖÜ]`, so all four of these walked straight past
+them and shipped, live and visible on /en at 402px:
+
+    PopularLooks.tsx:78    ab CHF {look.priceFromCHF}
+    Entdecken.tsx:381      ab CHF {look.price}
+    WalkInBand.tsx:132     bis frei
+    WalkInBand.tsx:150     "Niemand wartet" / `${s.queueLength} vor Ihnen`
+
+Same shape as the props-versus-JSX-text miss above, one layer down: the sweep matched a CHARACTER
+CLASS rather than the language. Grep German WORDS too, and grep the price and count fragments
+specifically, since those are where umlaut-free German hides:
+
+    grep -rnE '\b(ab|bis|vor|ohne|mit|und|oder|kein[e]?|Niemand|wartet|frei|Ihnen|Ihre?)\b' app/**/_components/
+
 **How to find them:**
 
     grep -rnE '(title|label|aria-label|placeholder)="[^"]*[äöüßÄÖÜ]' app/**/_components/
