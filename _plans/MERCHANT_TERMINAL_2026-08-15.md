@@ -551,14 +551,22 @@ Three states of ONE screen behind a switch at the top: `Quiet`, `New booking`, `
 Real data, not fixtures: it reads today's bookings, the live walk-in queue and the staff rows for
 The Fade Factory straight from the database through the normal query.
 
-**Measured on the rendered page (getComputedStyle over every visible text node), all three states, at
-402x874 and at 1024x820:**
-- distinct font sizes: **4** (11, 13, 15, 28), ceiling is 4
+**Measured on the rendered page (getComputedStyle and getBoundingClientRect over every visible node),
+all three states, at 402x874 and at 1024x820, identical at both widths:**
+- distinct font sizes: **3 to 4** (13, 15, 28 in Quiet; plus 11 in the two card states), ceiling is 4
 - distinct weights: **2** (400, 600), ceiling is 2
 - display anchor: **28px**, floor is 28
 - anchor ratio: **1.87x** the 15px body, floor is 1.8
-- text at weight >= 600: **19.1% to 22.9%**, ceiling is about 30
+- text at weight >= 600: **19.3% / 23.1% / 21.3%**, ceiling is about 30
+- interactive controls under 44px: **0**, floor is 44
 - horizontal page overflow: **none** at either width
+
+**Found by measuring, not by reading the code, and fixed:** `Pause queue` was a 80x20 tap target, the
+three `Start` controls and the eight `Move` time chips were 36px tall, and `Keep 11:30` was 20px. Six
+of those sat inside a 44px row, which is why reading the source suggested they were fine. `Start`
+keeps its 36px pill and gained a 44px hit area around it, so the dense row still reads right.
+Also removed: the chairs card header said "2 free" while the tiles under it already said "Free"
+twice, which is the same fact in two places.
 
 **Seeded to make it real** (owner rule 2026-08-02: seeding is the fix, not fabrication). Every salon
 had **zero** future bookings, so the screen would have rendered empty. Seeded for The Fade Factory:
