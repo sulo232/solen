@@ -173,6 +173,14 @@ module.exports = {
         // and the 3:1 graphical floor); new #1F8900 = 4.53:1 (AA pass).
         // s-success stays the universal success green everywhere else.
         "s-open": { DEFAULT: "#1F8900" },
+        // Selected-pill black, owner-picked 2026-08-15 from the four-way mockup at
+        // /dev/pill-ceramic ("I don't know about, like, probably d. Yeah. Let's use d. So, yeah,
+        // replace them."). Direction D: ink lifted one step off pure so a 44px filled pill stops
+        // reading as a hole punched in the page, with no gradient and no shadow, because those
+        // were the two directions that multiply into noise when four pills sit in a row.
+        // A TOKEN, not a literal, exactly as the mockup said it would become if he picked one.
+        // Contrast against its white label: 16.4:1, so it clears AA and AAA with room.
+        "s-ink-soft": { DEFAULT: "#1C1C1F" },
         "s-warning": { DEFAULT: "#F1AE27", bg: "#FDF6E7", text: "#B45309" },  // V3-D421: the "amber twin" of s-accent (Uber-blue HSL S+L, hue rotated to 40deg) so warning is cohesive with the accent. .text = deep amber for text-on-pale.  // V3: aligned to LIVE_TRUTH §3 hex. `.text` = readable amber for text-on-pale (V3-D347 dashboard)
         // V3-D347 — operator-dashboard CALENDAR service palette (vibrant, dashboard-only per LOCKFILE §12). Store-defined service types; NO makeup.
         "s-cal": { hair: "#2563EB", color: "#EC4899", nails: "#8B5CF6", spa: "#10B981", barber: "#F97316" },

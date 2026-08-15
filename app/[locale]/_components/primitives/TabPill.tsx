@@ -80,7 +80,19 @@ const tabPillVariants = cva(
       // outline + active = soft gray fill (matches search filter selection)
       {
         variant: "outline", tone: "active",
-        className: "border-s-border bg-s-bg-sunken text-s-ink",
+        // mockup-ok: DIRECTION D, owner-picked 2026-08-15 off the four-way comparison at
+        // /dev/pill-ceramic: "probably d. Yeah. Let's use d. So, yeah, replace them ... in a
+        // service, it's, like, all beard extras and stuff ... PDP ... also in the Review section
+        // to change the the pills."
+        //
+        // THE LOCK THIS OVERRULES, named rather than quietly stepped over: the design contract's
+        // selected/active row locked selection to a calm GRAY fill and says in as many words
+        // "NEVER black/ink fill on a selected state", with a `no-black-selected` gate behind it.
+        // His live instruction is precedence item 1 and that row is item 5, so it wins, but it
+        // wins on the record. What he was solving is his own complaint that the estate shipped
+        // BOTH a grey-selected pill and a black-selected pill one tap apart, and he has now picked
+        // the black for both. The border stays so the pill keeps its shape against white.
+        className: "border-s-ink-soft bg-s-ink-soft text-white",
       },
       // outline + inactive = white + hairline border. Hover deepens text + border,
       // FLAT with no lift (V3-D420 CONTROL_ELEVATION: calm controls on white never cast a shadow).
@@ -91,7 +103,9 @@ const tabPillVariants = cva(
       // ghost + active = soft gray fill, no border
       {
         variant: "ghost", tone: "active",
-        className: "bg-s-bg-sunken text-s-ink",
+        // mockup-ok: same direction D as the outline variant above, so the two variants of one
+        // primitive do not disagree about what "selected" looks like.
+        className: "bg-s-ink-soft text-white",
       },
       // ghost + inactive = bare, low-emphasis
       {

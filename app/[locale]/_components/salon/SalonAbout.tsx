@@ -37,9 +37,17 @@ import { useTranslations } from "next-intl";
  * Both labels come from `salonDetail.readMore` / `readLess`, which already ship in all four
  * locales, so no new copy was written for this.
  */
-const CLAMP_LINES = 4;
-/** Below this, a 4-line clamp cannot clip anything at phone width, so no toggle is drawn. */
-const CLAMP_MIN_CHARS = 170;
+/**
+ * 2026-08-15, HIS QUESTION ANSWERED HONESTLY: "the about us is too long. Do we even have the limit
+ * or did you just make that set up?"
+ *
+ * I made it up. The first version clamped at 4 lines / 170 characters and neither number came from
+ * anywhere. There IS a documented limit and it is tighter than what I picked: copy economy rule 2
+ * in CLAUDE.md says long text "clamps (~150 chars / 3 lines) with an inline text-s-accent Mehr
+ * lesen that expands in place". So these are now that rule's numbers instead of mine, which also
+ * makes the collapsed block shorter, which is what he was complaining about.
+ */
+const CLAMP_MIN_CHARS = 150;
 
 export function SalonAbout({ salon, locale }: { salon: SalonDetail; locale: string }) {
   const t = useTranslations("salonDetail");
@@ -67,7 +75,7 @@ export function SalonAbout({ salon, locale }: { salon: SalonDetail; locale: stri
       {/* ig7 (owner-approved 2026-07-16): shared .prose-measure (68ch) replaces the
           hand-rolled max-w-3xl for a readable line length. */}
       <div className="prose-measure mt-4 space-y-4 text-[14px] leading-relaxed text-s-ink-2 md:text-[15px]">
-        <p className={cn("whitespace-pre-line", clampable && !expanded && "line-clamp-4")}>
+        <p className={cn("whitespace-pre-line", clampable && !expanded && "line-clamp-3")}>
           {text}
         </p>
         {clampable && (

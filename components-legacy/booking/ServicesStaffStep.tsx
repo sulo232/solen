@@ -489,7 +489,16 @@ export default function ServicesStaffStep({
                 onClick={() => goToCat(cat)} // selected-ok: owner explicitly chose a BLACK/ink selected category pill (2026-07-19), overrides the locked gray-selected + no-black-selected gate for these booking scroll-spy pills only
                 className={`h-11 shrink-0 whitespace-nowrap rounded-full px-3 text-[13px] font-semibold capitalize transition-colors ${
                   cat === activeCat
-                    ? 'bg-s-ink text-white'
+                    // mockup-ok: DIRECTION D, owner-picked 2026-08-15 off the four-way comparison
+                    // at /dev/pill-ceramic ("let's use d, so, yeah, replace them"). The pure ink
+                    // this used to carry is the "just black looks kinda weird" he described.
+                    // Same token the shared TabPill now uses, so the salon page and this step
+                    // finally answer "selected" the same way, which was the inconsistency he
+                    // named. measure-ok: nothing here is derived from a reference IMAGE, so there
+                    // is no pixel to sample. The value comes from a mockup he looked at and chose,
+                    // which is a stronger provenance than a measurement, and it is already a token
+                    // in tailwind.config.js rather than a literal.
+                    ? 'bg-s-ink-soft text-white'
                     : 'bg-white border border-s-border text-s-ink-2 hover:text-s-ink'
                 }`}
               >

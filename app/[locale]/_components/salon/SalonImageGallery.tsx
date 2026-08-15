@@ -216,16 +216,10 @@ export function SalonImageGallery({
             </Pill>
           )}
 
-          {tab === "team" && stylistsWithPhotos.length > 0 && (
-            <>
-              <span className="mx-1 h-5 w-px shrink-0 bg-s-border" aria-hidden />
-              {stylistsWithPhotos.map((s) => (
-                <Pill key={s.id} active={activeStylist === s.id} onClick={() => setActiveStylist(s.id)}>
-                  {s.name} ({portfolios[s.id]?.length ?? 0})
-                </Pill>
-              ))}
-            </>
-          )}
+          {/* mockup-ok: the stylist switcher moved OUT of this pill row and became the avatar row
+              rendered below (owner 2026-08-15: "make a portfolio can actually, like, switch
+              between, like, staffs, how I was in the screenshot"). Nothing new is drawn here; the
+              text pills are simply gone from this row. */}
 
           {/* Category pills, SAME row (owner 2026-07-24: never a second stacked row). Alle +
               only categories that actually have a photo, in the taxonomy's declared order. */}
@@ -244,9 +238,67 @@ export function SalonImageGallery({
           )}
         </div>
 
-        {/* mockup-ok: salon tab is now a dense 3-col square grid (same grammar as the real
-            SalonPortfolio UniformGrid), replacing the old stacked 4:3 list; team tab keeps
-            its 2-col grid. */}
+        {/* mockup-ok: THE STAFF SWITCHER, as an avatar row. Owner 2026-08-15: "make a portfolio
+            can actually, like, switch between, like, staffs, how I was in the screenshot."
+            MEASURED off that screenshot (his Bildergalerie team tab, 920px wide): the avatar discs
+            run 178px across, which is 0.193 of the viewport width and so 75px at our 390px
+            measurement viewport, spaced 210px pitch, so a 32px gap that becomes 12px at our width.
+            The count badge sits bottom-right ON the disc and the name sits under it.
+            Composed from the shared Avatar primitive rather than a new circle, and the badge reuses
+            the same white-pill-with-hairline chrome SalonTeam already puts on its rating badge. */}
+        {tab === "team" && stylistsWithPhotos.length > 1 && (
+          <div className="flex gap-3 overflow-x-auto px-4 pb-1 pt-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {stylistsWithPhotos.map((s) => {
+              const on = activeStylist === s.id;
+              return (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => setActiveStylist(s.id)}
+                  aria-pressed={on}
+                  className="group flex w-[75px] shrink-0 flex-col items-center text-center transition-transform active:scale-[0.97] active:duration-[80ms]"
+                >
+                  <span className="relative">
+                    {s.avatar_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={s.avatar_url}
+                        alt={s.name}
+                        className={cn(
+                          "h-[75px] w-[75px] rounded-full bg-s-bg-sunken object-cover transition-opacity",
+                          on ? "opacity-100" : "opacity-60",
+                        )}
+                      />
+                    ) : (
+                      <span
+                        className={cn(
+                          "grid h-[75px] w-[75px] place-items-center rounded-full bg-s-bg-sunken font-display text-[26px] font-semibold text-s-ink-2",
+                          on ? "opacity-100" : "opacity-60",
+                        )}
+                      >
+                        {s.name.charAt(0)}
+                      </span>
+                    )}
+                    <span className="absolute -bottom-0.5 -right-0.5 inline-flex h-6 min-w-6 items-center justify-center rounded-full border border-s-border bg-white px-1.5 text-[12px] font-semibold tabular-nums text-s-ink">
+                      {portfolios[s.id]?.length ?? 0}
+                    </span>
+                  </span>
+                  <span
+                    className={cn(
+                      "font-body mt-2 truncate text-[13px] leading-tight",
+                      on ? "font-semibold text-s-ink" : "font-medium text-s-ink-2",
+                    )}
+                  >
+                    {s.name}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        {/* mockup-ok: salon tab is a single column of full-bleed 16/9 photos (measured off his
+            reference, see the note on that container); the team tab runs 1 big + 2 half. */}
         <div className="px-4 py-4">
           {tab === "salon" ? (
             // mockup-ok: back to FULL-WIDTH STACKED photos (owner 2026-08-15: "on the portfolio,
