@@ -3,6 +3,7 @@ import {
   type Testimonial,
 } from "@/components/ui/animated-testimonials";
 import { Section, SectionFrame, SectionTitle } from "./SectionHeader";
+import { useTranslations } from "next-intl";
 
 /**
  * Artist of the Month — V3-D75 (2026-05-18).
@@ -115,13 +116,16 @@ const STYLISTS: Testimonial[] = [
 ];
 
 export default function ArtistOfTheMonth() {
+  // 2026-08-15 i18n sweep: these were hardcoded German literals, so they rendered German
+  // on /en, /fr and /it. Same class the owner caught on the recently-viewed row.
+  const t = useTranslations("home.featured");
   // V3-D104 (2026-05-23): brand-subtle bg wrapper reverted per user "ditch
   // the whole thing abt these card box color thing." Back to plain white
   // substrate matching the rest of the feed.
   return (
     <Section>
       <SectionFrame>
-        <SectionTitle title="Artist des Monats" />
+        <SectionTitle title={t("artistOfMonth")} />
         <div className="mt-6 md:mt-10">
           <AnimatedTestimonials testimonials={STYLISTS} autoplay />
         </div>

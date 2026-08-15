@@ -55,6 +55,8 @@ import { useTranslations } from "next-intl";
 /* ─── Card visuals ─── */
 
 function VisualBooking() {
+  // 2026-08-15 i18n sweep: the demo booking row was hardcoded German.
+  const t = useTranslations("home.partner");
   return (
     <div className="relative grid h-full w-full place-items-center">
       {/* V3-D78 glow halo behind popup — gives glassmorphism something
@@ -85,12 +87,12 @@ function VisualBooking() {
               Lara K.
             </div>
             <div className="text-[12px] text-s-ink-2">
-              Schnitt + Föhn 14:00
+              {t("demoService")} 14:00
             </div>
           </div>
         </div>
         <div className="rounded-full bg-s-ink py-1.5 text-center font-body text-[12px] font-semibold text-white">
-          Bestätigt 23 Sek.
+          {t("demoConfirmed")} 23 Sek.
         </div>
         {/* Animated ping dot. mockup-ok: WCAG 2.2.2, bounded to 3 cycles (3s), see tailwind.config.js. */}
         <span className="absolute -right-2 -top-2 grid h-6 w-6 place-items-center">
@@ -457,6 +459,9 @@ function VisualAnalyticsTabbed() {
 /* ─── JoinUsCard — full-width 5th card with expand-to-form ─── */
 
 export function JoinUsCard() {
+  // 2026-08-15 i18n sweep: heading, thank-you and the name field were hardcoded German.
+  const t = useTranslations("home.partner");
+  const tCommon = useTranslations("common");
   // V3-D75-morph (2026-05-18): refactored from custom position-swap modal
   // to MorphingDialog primitive. Old version stuttered because
   // `position: relative` → `position: fixed` swap forced a layout-tree change
@@ -513,7 +518,7 @@ export function JoinUsCard() {
               {/* V3-D219: inline clamp(28,4vw,48) + tracking -0.025em → Page H2 spec
                   clamp(25,4vw,40) + tracking -0.03em (V3-D193 + V3-D190). */}
               <MorphingDialogTitle className="mt-4 font-display text-[clamp(22px,2.8vw,26px)] font-semibold leading-[1.0] tracking-[-0.03em] text-white">
-                Werden Sie Solen-Partner.
+                {t("becomePartner")}
               </MorphingDialogTitle>
               {/* V3-D219: drop md:text-[17px] step (out-of-Scale-B). Use clamp(14,3.5vw,16). */}
               <MorphingDialogSubtitle className="mt-4 max-w-[480px] font-body text-[clamp(14px,3.5vw,16px)] font-normal leading-[1.55] text-white/85">
@@ -564,7 +569,7 @@ export function JoinUsCard() {
                 </span>
                 {/* V3-D219: same Page H2 normalization as trigger. */}
                 <MorphingDialogTitle className="mt-4 font-display text-[clamp(22px,2.8vw,26px)] font-semibold leading-[1.0] tracking-[-0.03em] text-white">
-                  Werden Sie Solen-Partner.
+                  {t("becomePartner")}
                 </MorphingDialogTitle>
                 <MorphingDialogSubtitle className="mt-4 max-w-[480px] font-body text-[clamp(14px,3.5vw,16px)] font-normal leading-[1.55] text-white/85">
                   Über 1&apos;200 Stores buchen schon mit Solen. Tragen Sie sich in
@@ -593,7 +598,7 @@ export function JoinUsCard() {
                       Anmeldung erhalten.
                     </p>
                     <p className="mt-1 font-body text-[14px] font-normal leading-[1.5] text-white/80">
-                      Danke! Wir melden uns innerhalb von 24 Stunden bei Ihnen.
+                      {t("thanks")}
                     </p>
                   </div>
                 </div>
@@ -606,7 +611,7 @@ export function JoinUsCard() {
                   <input
                     type="text"
                     name="name"
-                    placeholder="Ihr Name"
+                    placeholder={tCommon("yourName")}
                     required
                     className="h-11 px-4 font-body text-[15px] font-normal text-s-ink placeholder:text-s-ink-2 outline-none transition-shadow focus:shadow-[0_0_0_3px_rgba(255,255,255,0.4)]" // mockup-ok: dead-class removal only, type=text/email already caught before this change (V3-D-input-fill-2026-07-17)
                   />
@@ -667,6 +672,7 @@ export default function BentoBusiness() {
   // 2026-08-15: this label was a hardcoded German literal, so it rendered German on /en,
   // /fr and /it. Same bug class the owner caught on the recently-viewed row that day.
   const t = useTranslations("home.partner");
+  const tCommon = useTranslations("common");
   // V3-D99 (2026-05-22): closing "trust / for salons" zone goes on
   // brand-deep navy (#0C254E = Ocean Blue at 14% lightness — same hue family
   // as --brand, not random dark color). Inner BentoCards keep their white bg

@@ -183,7 +183,8 @@
       "sub": "Finden und buchen Sie die besten Salons in Ihrer Stadt — sofort und ohne Telefon.",
       "trustRating": "Ø Bewertung",
       "trustReviews": "Bewertungen",
-      "trustFree": "Kostenlos buchen"
+      "trustFree": "Kostenlos buchen",
+      "instantlyConfirmed": "Termine, sofort bestätigt."
     },
     "cta": {
       "findSalon": "Salon finden",
@@ -195,7 +196,8 @@
       "salonsCount": "Salons",
       "comingSoon": "Bald verfügbar",
       "more": "Mehr Kategorien entdecken",
-      "browseTitle": "Stöber nach Kategorie."
+      "browseTitle": "Stöber nach Kategorie.",
+      "whatToday": "Was steht heute an?"
     },
     "howItWorks": {
       "eyebrow": "Für Neukunden",
@@ -230,7 +232,8 @@
       "beliebtInZuerich": "Beliebt in Zürich",
       "beliebtInBern": "Beliebt in Bern",
       "nearbyPros": "Profis in Ihrer Nähe",
-      "forYou": "Für dich empfohlen"
+      "forYou": "Für dich empfohlen",
+      "artistOfMonth": "Artist des Monats"
     },
     "trending": {
       "eyebrow": "Trending",
@@ -277,7 +280,16 @@
       "firstMonth": "im ersten Monat",
       "newCustomers": "Neue Kunden",
       "instantConfirm": "Sofortige Bestätigung",
-      "forSalons": "Solen für Salons"
+      "forSalons": "Solen für Salons",
+      "becomePartner": "Werden Sie Solen-Partner.",
+      "thanks": "Danke! Wir melden uns innerhalb von 24 Stunden bei Ihnen.",
+      "demoService": "Schnitt + Föhn",
+      "demoConfirmed": "Bestätigt",
+      "headlineLine1": "Solen für",
+      "headlineLine2": "Ihr Geschäft.",
+      "teaserSub": "Mehr Buchungen, weniger Aufwand, für Ihr Salon-Team.",
+      "learnMore": "Mehr erfahren",
+      "forStores": "Für Stores"
     },
     "trust": {
       "securePayment": "Sichere Zahlung — Stripe verschlüsselt",
@@ -300,7 +312,13 @@
       "rebook_cta": "Nochmal buchen",
       "quartiers": "Entdecken Sie Ihr Quartier",
       "quartiers_label": "IHR QUARTIER",
-      "quartiers_all": "Alle ansehen →"
+      "quartiers_all": "Alle ansehen →",
+      "whatYouCan": "Was du kannst",
+      "whatYouCanLong": "Was du mit Solen kannst",
+      "theApp": "Die Solen-App",
+      "fromYourPocket": "Direkt aus der Tasche.",
+      "walkInSub": "Ohne Termin. Sehen Sie die Wartezeit und sichern Sie sich Ihren Platz.",
+      "allWalkIns": "Alle Walk-ins"
     },
     "heroCarousel": {
       "label": "Beliebt in Ihrer Nähe",
@@ -399,7 +417,8 @@
       "browseAll": "Alle entdecken",
       "inspirationText": "Lassen Sie sich von tausenden Styles inspirieren",
       "inspirationTitle": "Finden Sie Ihre Inspiration.",
-      "browseAllLooks": "Alle Looks entdecken"
+      "browseAllLooks": "Alle Looks entdecken",
+      "inspireSub": "Lassen Sie sich von tausenden Looks inspirieren"
     },
     "map": {
       "eyebrow": "In Ihrer Nähe",

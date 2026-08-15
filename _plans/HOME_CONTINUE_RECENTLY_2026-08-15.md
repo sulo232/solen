@@ -105,8 +105,8 @@ problem, which was not the nesting at all.
 
 - [x] **E5. He picked A** ("You know what? Just make it a"). B and C unloaded; only variants/row-a.js loads. verified: commit pending, index.html loads one script tag and the switcher shows a single button.
 - [ ] **E6. The duplicate "Zuletzt angesehen" section needs his call.** Two rows render for anyone with history (page.tsx:288 and :289). Spawned as task_ed7c6e36. Retitle one, or delete one plus a REMOVED.md line.
-- [x] **E7. Done this turn, he asked for it directly.** 8 of the 10 were live and are fixed; 2 were a false positive in my own scan. verified live on /en: zero of the target German strings remain visible.
-- [x] **E8. Moot: there are no longer three directions.** He picked A, so B and C are unloaded. I measured A myself (ratios, tap targets, heading count, no nested interactives) and fixed the one contract breach I found: the card carried a border AND a shadow, which the locked surface table forbids. It is hairline only now. Superseded item, previously: Rendered and measured them myself this turn (ratios, tap targets, heading counts, no nesting), but the verifier agent has not graded them against LOCKFILE. Worth doing once he picks one, not on three throwaways.
+- [x] **E7. Done this turn, he asked for it directly.** verified: commit ca4b7c0d8. 8 of the 10 were live and are fixed; 2 were a false positive in my own scan. verified live on /en: zero of the target German strings remain visible.
+- [x] **E8. Moot: there are no longer three directions.** verified: commit fa5039d79, index.html loads one script tag. He picked A, so B and C are unloaded. I measured A myself (ratios, tap targets, heading count, no nested interactives) and fixed the one contract breach I found: the card carried a border AND a shadow, which the locked surface table forbids. It is hairline only now. Superseded item, previously: Rendered and measured them myself this turn (ratios, tap targets, heading counts, no nesting), but the verifier agent has not graded them against LOCKFILE. Worth doing once he picks one, not on three throwaways.
 
 
 ## CORRECTION round 2, owner 2026-08-15 (third message)
@@ -159,7 +159,7 @@ JSX text children. Measured for visibility rather than assumed:
     viewport, and both are a marketing headline split across a `<br>`, which needs a copy decision
     about how it wraps in four locales rather than a mechanical key swap.
 
-- [ ] **G1. 13 of the 37 homepage components still carry a user-facing German literal.** Measured after the fix with the existing i18n-write-gate's own matcher, so the number is the gate's and not a fresh grep. All 13 named in _rules/LESSONS_LEARNED.md so the next pass starts from a list. Includes the `Solen für<br />Ihr Geschäft.` headline, which is a copy call rather than a key swap because French and Italian will not break at the same word. Previously read: Not a mechanical fix: the
+- [x] **G1. DONE. 13 of 37 down to 5 of 37, and the 5 are not the same class.** verified live on /en: all 23 target German strings gone, zero remaining, no error boundary. 29 literals across 13 files; 6 reused a key that already existed, 19 new keys landed in all four locale files. Previously read: Measured after the fix with the existing i18n-write-gate's own matcher, so the number is the gate's and not a fresh grep. All 13 named in _rules/LESSONS_LEARNED.md so the next pass starts from a list. Includes the `Solen für<br />Ihr Geschäft.` headline, which is a copy call rather than a key swap because French and Italian will not break at the same word. Previously read: Not a mechanical fix: the
       headline breaks across a `<br>` and French and Italian will not break in the same place, so it
       needs a copy call, not a key swap.
 
@@ -173,11 +173,69 @@ JSX text children. Measured for visibility rather than assumed:
 > literally told you, like, a normal fucking section ... wanted the text on these pills go smaller
 > and everything, but what are you fucking doing? Revert bro.
 
-- [x] **H1. THE LEFT LINE.** verified live: page category pill 16, page Top Coiffeur h2 16, page Top Coiffeur card 16, and now my continue card 16, my Recently viewed h2 16, my first thumb 16. Was 40. Cause: MK.REF.gutter carried Airbnb's measured 23.6pt into a page whose own line is 16. First fix overshot to 32 because the host container already pads 16, so the correct value inside it is 0.
-- [x] **H2. The shadow is back and the border is gone.** verified live: boxShadow present, borderTopWidth 0px. The locked surface table allows one or the other, never both.
+- [x] **H1. THE LEFT LINE.** verified: commit fa5039d79, index.html REF.gutter 0. verified live: page category pill 16, page Top Coiffeur h2 16, page Top Coiffeur card 16, and now my continue card 16, my Recently viewed h2 16, my first thumb 16. Was 40. Cause: MK.REF.gutter carried Airbnb's measured 23.6pt into a page whose own line is 16. First fix overshot to 32 because the host container already pads 16, so the correct value inside it is 0.
+- [x] **H2. The shadow is back and the border is gone.** verified: commit fa5039d79, index.html continueRail box-shadow, no border. verified live: boxShadow present, borderTopWidth 0px. The locked surface table allows one or the other, never both.
 - [x] **H3. A normal section of THIS page, measured off the live Top Coiffeur rail rather than the reference.** verified live: section h2 18px/600 (was 22), see-all circle 32 inside a 44 tap (was 28), thumb radius 22 (was 16), rail gap 12.
-- [x] **H4. The pills are reverted.** verified live, before against after: icon 28px in both, with no inline width override left behind; label 14px -> 13px. I had been shrinking the ICON to 15px, which he never asked for. He asked for the TEXT.
+- [x] **H4. The pills are reverted.** verified: commit fa5039d79, index.html fixPillIcons now targets a[role=tab] fontSize only. verified live, before against after: icon 28px in both, with no inline width override left behind; label 14px -> 13px. I had been shrinking the ICON to 15px, which he never asked for. He asked for the TEXT.
 
 ### Still open
 
 - [ ] **H5. He has not reacted to the corrected row yet.** Everything above is a measured match to the page; whether the row is RIGHT is his call and not a number.
+
+
+## G1 closed: the German sweep, finished
+
+**13 of 37 components down to 5 of 37.** Verified on the live `/en` page after the change: all 23
+target strings gone, zero remaining, no error boundary.
+
+29 literals across 13 files. Six REUSED a key that already existed (`common.yourName`,
+`home.partner.eyebrow`, `home.featured.forYou`, `ui.searchOverlay.currentLocation`,
+`home.guidedSearch.reset`, `home.categories.title`); 19 new keys landed in de, en, fr and it.
+
+**The split headline is solved rather than deferred.** `"Solen für<br />Ihr Geschäft."` gets ONE KEY
+PER LINE (`home.partner.headlineLine1` / `headlineLine2`), so a translator picks the break point.
+A single key with a hardcoded `<br>` would put the break after the preposition in French and
+Italian, which is wrong in both.
+
+**Three traps this sweep hit, all worth keeping:**
+1. **A file can hold several components.** `BentoBusiness.tsx` needed hooks in `VisualBooking` and
+   `JoinUsCard`, not in `BentoBusiness`. Typecheck caught it; a grep would not have.
+2. **An async server component cannot use the hook.** `Hero.tsx` is `export default async function`,
+   so it takes `getTranslations({locale, namespace})` from `next-intl/server`, the form
+   `app/[locale]/layout.tsx` already uses.
+3. **Typecheck passing is not the page rendering.** SearchBar type-checked and still threw
+   `ReferenceError: t is not defined` into an error boundary on the live page, because the hooks and
+   the usages were resolved differently at runtime. Only reading the browser console caught it.
+
+**The 5 that remain are a different class and are deliberately left:**
+`BentoBusiness.tsx` "Lara K." (a person's name in a demo card, not copy), `NearbyMap.tsx`
+`Math.abs(k.x - p.x)` (a false positive, the matcher caught code), and three fragments that are
+half of a sentence assembled at runtime: `SolenStory` "Buchen in", `WalkInBand` "bis frei",
+`WhySolen` "Bewertet 4.9 / 5". Those three need the sentence restructured around an interpolated
+key, which changes the copy, so they are a copy call and not a mechanical swap.
+
+
+## ROUND 10, and the thing I had been missing the whole time
+
+> It's the tenth round. I told you to fix a recent review. Section we didn't fix it yet. It's been,
+> like, fucking what, ten fucking round? I told you to make it like this.
+
+He selected the live Top Coiffeur card AND my Recently-viewed row together. He was pointing at the
+page's own card, and had been for rounds.
+
+- [x] **I1. The row now uses the page's own card anatomy.** verified live, my row against the live Top Coiffeur card in one measurement: card 242x257 vs 242x258, photo 242x194 (1.25) vs 242x194 (1.25), radius 22 vs 22, and the photo AREA ratio between his reference and mine is now **1.00, down from 7.71**. Text stack matches too: name 14/600 with the rating pinned right, then category, then city left and price right, all 12/400 ink-2.
+
+**What I was doing wrong, named plainly.** For nine rounds I read "make it a normal section of the
+page" as the section CHROME: the heading size, the arrow diameter, the gutter, the corner radius. I
+matched all four, one per round, and the row still looked wrong every time, because the object he
+was pointing at was the CARD. Mine had one seventh the photo area of the card sitting directly
+below it on the same screen.
+
+Every round I ported one more number from the Airbnb reference instead of asking what this page
+already renders. The live RecentlyViewed.tsx was ALREADY using the real card. I built a smaller one
+next to it and then spent nine rounds tuning the wrong object.
+
+Written up in _rules/LESSONS_LEARNED.md, keyed to the mockup variant paths so it injects the next
+time one is edited, with the cheap check that would have caught it at round two: measure his
+reference and mine, and print the AREA ratio before changing anything. Past about 1.5 you are
+proposing a different component, not a variant of the existing one.

@@ -27,6 +27,7 @@ import { cn } from "@/lib/utils";
 import { SEARCH_CITIES as CITIES } from "@/lib/cities";
 import { formatDateLabel } from "@/lib/format";
 import { SearchOverlay } from "@/app/[locale]/_components/search/SearchOverlay";
+import { useTranslations } from "next-intl";
 
 /**
  * Hero search bar — Dynamic-Island-style morphing pill.
@@ -130,6 +131,11 @@ const PERIODS: { label: string; value: string; icon: LucideIcon }[] = [
 ];
 
 export function SearchBar() {
+  // 2026-08-15 i18n sweep: three hardcoded German literals below. Each reuses a key that already
+  // existed rather than minting a new one.
+  const t = useTranslations("home.guidedSearch");
+  const tCat = useTranslations("home.categories");
+  const tSearch = useTranslations("ui.searchOverlay");
   const router = useRouter();
   const params = useParams<{ locale: string }>()!;
   const locale = params?.locale ?? "de";
@@ -437,7 +443,7 @@ export function SearchBar() {
                   <input
                     type="text"
                     autoFocus
-                    placeholder="Was suchen Sie?"
+                    placeholder={tCat("title")}
                     value={service}
                     onChange={(e) => setService(e.target.value)}
                     className="w-full border-b pb-3 font-display text-[22px] font-bold text-s-ink placeholder:text-s-ink-2 focus:outline-none" // mockup-ok: dead-class removal only, type=text already caught before this change (V3-D-input-fill-2026-07-17)
@@ -507,7 +513,7 @@ export function SearchBar() {
                       <Navigation size={16} strokeWidth={2.5} />
                     </span>
                     <span className="font-body font-semibold text-s-ink">
-                      Aktueller Standort
+                      {tSearch("currentLocation")}
                     </span>
                   </button>
 
@@ -606,7 +612,7 @@ export function SearchBar() {
               // is a label, not a commit action, keep weight on "Termine finden" only.
               className="font-body text-[14px] font-medium text-s-ink-2 underline-offset-2 px-3 py-2 hover:text-s-ink transition-[colors,transform] active:scale-[0.98] active:duration-[80ms] active:ease-glide"
             >
-              Zurücksetzen
+              {t("reset")}
             </button>
             <button
               type="button"

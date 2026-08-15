@@ -183,7 +183,8 @@
       "sub": "Trouvez et réservez les meilleurs salons — instantanément, sans téléphone.",
       "trustRating": "note moy.",
       "trustReviews": "avis",
-      "trustFree": "Réservation gratuite"
+      "trustFree": "Réservation gratuite",
+      "instantlyConfirmed": "Des rendez-vous, confirmés instantanément."
     },
     "cta": {
       "findSalon": "Trouver un salon",
@@ -195,7 +196,8 @@
       "salonsCount": "Salons",
       "comingSoon": "Bientôt disponible",
       "more": "Découvrir plus de catégories",
-      "browseTitle": "Parcourir par catégorie."
+      "browseTitle": "Parcourir par catégorie.",
+      "whatToday": "Qu'est-ce qui vous tente aujourd'hui ?"
     },
     "howItWorks": {
       "eyebrow": "Pour les nouveaux clients",
@@ -230,7 +232,8 @@
       "beliebtInZuerich": "Populaire à Zurich",
       "beliebtInBern": "Populaire à Berne",
       "nearbyPros": "Pros près de chez vous",
-      "forYou": "Recommandé pour vous"
+      "forYou": "Recommandé pour vous",
+      "artistOfMonth": "Artiste du mois"
     },
     "trending": {
       "eyebrow": "Tendance",
@@ -277,7 +280,16 @@
       "firstMonth": "le premier mois",
       "newCustomers": "Nouveaux clients",
       "instantConfirm": "Confirmation immédiate",
-      "forSalons": "Solen pour les salons"
+      "forSalons": "Solen pour les salons",
+      "becomePartner": "Devenez partenaire Solen.",
+      "thanks": "Merci. Nous vous répondons sous 24 heures.",
+      "demoService": "Coupe et brushing",
+      "demoConfirmed": "Confirmé",
+      "headlineLine1": "Solen pour",
+      "headlineLine2": "votre salon.",
+      "teaserSub": "Plus de réservations, moins d'administratif, pour votre équipe.",
+      "learnMore": "En savoir plus",
+      "forStores": "Pour les salons"
     },
     "trust": {
       "securePayment": "Paiement sécurisé — chiffrement Stripe",
@@ -300,7 +312,13 @@
       "rebook_cta": "Réserver à nouveau",
       "quartiers": "Découvrez votre ville",
       "quartiers_label": "VOTRE VILLE",
-      "quartiers_all": "Voir tout →"
+      "quartiers_all": "Voir tout →",
+      "whatYouCan": "Ce que vous pouvez faire",
+      "whatYouCanLong": "Ce que vous pouvez faire avec Solen",
+      "theApp": "L'application Solen",
+      "fromYourPocket": "Directement depuis votre poche.",
+      "walkInSub": "Sans rendez-vous. Voyez l'attente et prenez votre place.",
+      "allWalkIns": "Tous les sans-rendez-vous"
     },
     "heroCarousel": {
       "label": "Populaire près de chez vous",
@@ -399,7 +417,8 @@
       "browseAll": "Tout parcourir",
       "inspirationText": "Inspirez-vous de milliers de styles",
       "inspirationTitle": "Trouvez votre inspiration.",
-      "browseAllLooks": "Voir tous les looks"
+      "browseAllLooks": "Voir tous les looks",
+      "inspireSub": "Inspirez-vous de milliers de looks"
     },
     "map": {
       "eyebrow": "Près de vous",

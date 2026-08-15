@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Scissors, Store } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 /**
  * SalonRegister — Fresha-for-Business style (2026-05-14).
@@ -94,6 +95,10 @@ const TINT_BG: Record<BookingBlock["tint"], string> = {
 };
 
 export default function SalonRegister() {
+  // 2026-08-15 i18n sweep: hardcoded German literals below. The two-line headline uses one
+  // key PER LINE so a translator picks the break point; French and Italian do not break
+  // after the preposition the way German does.
+  const t = useTranslations("home.partner");
   return (
     <section className="relative z-[1] mx-auto max-w-[1280px] px-3 py-3 md:px-4 md:py-6 mb-1 md:mb-3">
       <div
@@ -111,12 +116,12 @@ export default function SalonRegister() {
                 size keeps the leading-dot motif but reads as soft caption. */}
             {/* V3-D331: dropped pseudo-element dot + accent color per LOCKFILE §2.5. Eyebrow text alone. */}
             <span className="mb-3 inline-flex items-center gap-2 font-body text-[14px] font-medium text-s-ink-2">
-              Für Stores
+              {t("forStores")}
             </span>
             {/* V3-D330: font-black 900 → font-bold 700 per §2 Geist weight scale ("NEVER 800/900 — Geist 800 is heavy + clumsy"). Stars orange #F3A864 → s-star #FFC32B yellow per universal-color rule (rating = yellow). */}
             <h2 className="font-display text-[clamp(26px,7vw,30px)] font-bold leading-[1.0] tracking-normal text-s-ink">
-              Solen für<br />
-              <span className="text-s-ink">Ihr Geschäft.</span>
+              {t("headlineLine1")}<br />
+              <span className="text-s-ink">{t("headlineLine2")}</span>
             </h2>
             <p className="mt-5 font-body text-[15px] md:text-[17px] leading-[1.55] text-s-ink-2 max-w-[480px]">
               Mehr Buchungen, weniger Aufwand. Solen bringt die richtigen
@@ -128,7 +133,7 @@ export default function SalonRegister() {
               href="/partner"
               className="mt-7 inline-flex items-center gap-2.5 self-start rounded-full bg-s-ink px-6 py-3.5 font-body text-[14px] font-bold text-white shadow-[0_4px_14px_rgba(31,92,66,0.25)] transition-all duration-200 ease-glide hover:bg-black hover:-translate-y-[1px] hover:shadow-[0_6px_20px_rgba(31,92,66,0.32)] active:scale-[0.97] active:duration-[80ms]"
             >
-              Mehr erfahren
+              {t("learnMore")}
               <span aria-hidden className="text-[16px]">→</span>
             </Link>
 

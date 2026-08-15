@@ -686,3 +686,42 @@ the same thing has to look the same everywhere, and "everywhere" means the page 
 **Same class, same turn, three more:** section h2 was 22px against the page's 18px; the see-all
 circle was 28px against the page's 32px; the thumb radius was 16px against the page's 22px. All
 three were Airbnb's numbers on our page. Measure the host for these too.
+
+### "Make it like this" while pointing at an existing component means USE that component, not draw a smaller one
+
+**File(s):** `public/_mockups/**/variants/*.js`, `app/[locale]/_components/homepage/*.tsx`
+
+Owner, 2026-08-15, round TEN on one row, selecting the live Top Coiffeur card and my proposed
+Recently-viewed row together: *"I told you to make it like this."*
+
+**Measured, and the number is the whole story:**
+
+    the page's card      photo 242 x 194, radius 22, card 242 x 258
+    my hand-drawn thumb  photo 112 x  90, radius 22
+    photo AREA ratio     7.71 to 1
+
+For nine rounds I read "make it a normal section of the page" as the section CHROME: heading size,
+arrow diameter, gutter, radius. I matched all four and the row still looked wrong, because the thing
+he was pointing at was the CARD, and mine was one seventh the size of the one directly below it on
+the same screen.
+
+**The tell I walked past three times.** He said "normal section", "like this", and "recently viewed"
+while a perfectly good card sat on the same screen. Every round I ported one more measurement from
+the Airbnb reference instead of asking what the page already renders. FLOORS LAW 9 already says it:
+a screen is composed from the components we own, and hand-drawn UI is a defect however good it
+looks. The live `RecentlyViewed.tsx` was ALREADY using the real card. I built a smaller one beside it
+and spent nine rounds tuning the wrong object.
+
+**THE RULE. When he points at something already on screen and says "like this", the first move is to
+measure THAT ELEMENT and reproduce its anatomy exactly**, not to adjust the thing you built:
+
+    // his reference is on the page, so read it, do not eyeball it
+    const ref = pageCard.getBoundingClientRect();      // 242 x 258
+    const refPhoto = pageCard.querySelector('img').getBoundingClientRect();  // 242 x 194
+    // then check the ratio between his reference and yours BEFORE changing anything
+    (refPhoto.w * refPhoto.h) / (mine.w * mine.h)      // 7.71 -> you are not close
+
+**Cheap check that would have ended this at round two:** when a proposed block sits on a page that
+already renders the same KIND of thing, measure both and print the area ratio. Anything past about
+1.5 means you are proposing a different component, not a variant of the existing one, and that has
+to be a deliberate decision with a stated reason rather than an accident of porting a reference.

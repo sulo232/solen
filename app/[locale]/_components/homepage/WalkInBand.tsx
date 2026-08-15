@@ -17,7 +17,7 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Star, ArrowRight } from "lucide-react";
 
 type WalkInSalon = {
@@ -33,6 +33,9 @@ type WalkInSalon = {
 };
 
 export default function WalkInBand() {
+  // 2026-08-15 i18n sweep: these were hardcoded German literals, so they rendered German
+  // on /en, /fr and /it. Same class the owner caught on the recently-viewed row.
+  const t = useTranslations("home.sections");
   const locale = useLocale();
   const [salons, setSalons] = useState<WalkInSalon[] | null>(null);
   const [loading, setLoading] = useState(true);
@@ -84,7 +87,7 @@ export default function WalkInBand() {
                 Walk-in
               </h2>
               <p className="mt-1 font-body text-[12px] leading-[1.3] text-s-ink-2">
-                Ohne Termin. Sehen Sie die Wartezeit und sichern Sie sich Ihren Platz.
+                {t("walkInSub")}
               </p>
               {/* B "live board" (owner pick 2026-06-29): wait/queue are real-time (GET
                   /api/walkin/nearby), so a "Live" marker is honest signal, not decoration. */}
@@ -156,7 +159,7 @@ export default function WalkInBand() {
             href={`/${locale}/barbershop`}
             className="mt-4 flex items-center justify-center gap-1.5 rounded-[13px] border border-s-border bg-white px-4 py-3 font-heading text-[14px] font-semibold text-s-ink transition-[background-color,transform] duration-200 ease-glide hover:bg-s-bg-sunken active:scale-[0.97] active:duration-[80ms]"
           >
-            Alle Walk-ins
+            {t("allWalkIns")}
             <ArrowRight size={16} />
           </a>
       </div>

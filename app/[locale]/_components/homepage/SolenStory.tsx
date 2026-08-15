@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowRight, Pause, Play } from "lucide-react";
 import { Section, SectionFrame } from "./SectionHeader";
 import { opticalGlyphNudge } from "@/lib/optical";
+import { useTranslations } from "next-intl";
 
 /**
  * SolenStory — V3-D105 (2026-05-23).
@@ -28,6 +29,9 @@ import { opticalGlyphNudge } from "@/lib/optical";
  */
 
 export default function SolenStory() {
+  // 2026-08-15 i18n sweep: these were hardcoded German literals, so they rendered German
+  // on /en, /fr and /it. Same class the owner caught on the recently-viewed row.
+  const t = useTranslations("home.sections");
   const videoRef = React.useRef<HTMLVideoElement>(null);
   const [isPaused, setIsPaused] = React.useState(false);
 
@@ -51,7 +55,7 @@ export default function SolenStory() {
           <div className="order-2 md:order-1">
             {/* De-eyebrowed 2026-06-11 (owner ban on tracked-uppercase): normal-case kicker. */}
             <p className="mb-4 font-body text-[13px] font-semibold text-s-ink-2">
-              Die Solen-App
+              {t("theApp")}
             </p>
             <h2 className="mb-5 font-display text-[clamp(26px,7vw,30px)] font-semibold leading-[1.04] tracking-[-0.025em] text-s-ink">
               Buchen in
@@ -59,7 +63,7 @@ export default function SolenStory() {
               30 Sekunden.
               {/* V3-D119: text-s-ink → text-s-ink per Rule 1 cleanup
                   (brand color is CTA-only, never on headline highlights). */}
-              <span className="block text-s-ink">Direkt aus der Tasche.</span>
+              <span className="block text-s-ink">{t("fromYourPocket")}</span>
             </h2>
             <p className="mb-7 max-w-[42ch] font-body text-[14px] leading-[1.55] text-s-ink-2 md:text-[15px]">
               Kein Anrufen, kein &laquo;wir melden uns&raquo;. Preis sehen Sie

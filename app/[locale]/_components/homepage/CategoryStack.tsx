@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ChevronRight, Scissors, Brush, Flower2, Hand, type LucideIcon } from "lucide-react";
 import { Section, SectionFrame, SectionTitle } from "./SectionHeader";
+import { useTranslations } from "next-intl";
 
 /**
  * CategoryStack — V3-D99 (2026-05-22).
@@ -76,10 +77,13 @@ function splitLast(label: string) {
 }
 
 export default function CategoryStack() {
+  // 2026-08-15 i18n sweep: these were hardcoded German literals, so they rendered German
+  // on /en, /fr and /it. Same class the owner caught on the recently-viewed row.
+  const t = useTranslations("home.categories");
   return (
     <Section>
       <SectionFrame>
-        <SectionTitle title="Was steht heute an?" />
+        <SectionTitle title={t("whatToday")} />
         <ul className="mt-3 divide-y divide-black/[0.08] rounded-[14px] border border-s-border bg-white">
           {ROWS.map((row) => {
             const { head, tail } = splitLast(row.label);

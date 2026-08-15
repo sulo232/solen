@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 /**
  * FeatureBento — V3-D124 (2026-05-24).
@@ -37,14 +38,17 @@ const FEATURES: Feature[] = [
 ];
 
 export default function FeatureBento() {
+  // 2026-08-15 i18n sweep: these were hardcoded German literals, so they rendered German
+  // on /en, /fr and /it. Same class the owner caught on the recently-viewed row.
+  const t = useTranslations("home.sections");
   return (
     <section
-      aria-label="Was du mit Solen kannst"
+      aria-label={t("whatYouCanLong")}
       className="relative z-[1] mb-4 md:hidden"
     >
       <div className="mx-auto max-w-[1280px] px-6 py-3">
         <h2 className="mb-3 font-body text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.025em] text-s-ink">
-          Was du kannst
+          {t("whatYouCan")}
         </h2>
 
         {/* 2×2 grid — same tile vocabulary as MobileCategoriesRow */}
