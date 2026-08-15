@@ -305,7 +305,11 @@ export default function C({ salonName, bookings: initialBookings, queue: initial
                         onClick={() => toggle(key)}
                         className="flex min-h-11 min-w-0 flex-1 items-center gap-3 text-left"
                       >
-                        <span className="font-body w-[52px] shrink-0 text-[13px] font-normal tabular-nums text-s-ink-2">
+                        {/* Measured at 390 wide on the tunnel, 2026-08-15: "Andreas Wenger" was
+                            clipped by 7px (113 shown, 120 needed). A ticket code is 5 characters
+                            and never needs 52px, so the column gives the difference back to the
+                            name rather than the name losing its last letters. */}
+                        <span className="font-body w-[44px] shrink-0 text-[13px] font-normal tabular-nums text-s-ink-2">
                           {entry.ticketCode}
                         </span>
                         <span className="flex min-w-0 flex-1 flex-col">
