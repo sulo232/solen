@@ -1,0 +1,94 @@
+<!doctype html>
+<!-- Grounded-in: app/[locale]/checkout/page.tsx -->
+<!-- Owner-scope: confirmed: "The pill that expands on scroll ... not everywhere, like for example at checkout or specific places" (owner answer 2026-07-10, AskUserQuestion in-transcript) -->
+<!-- Exists-check: npm run exists "scroll pill" = 0 matches this turn. Grounded in the REAL checkout CTA (the production German commit label + deposit amount + free-cancel line, page.tsx:96-104; production strings stay localised, lang-ok, this mockup's own copy is English). The rejected gowith card (REMOVED.md) is NOT resurrected: only the pill element the owner confirmed. Gesture-linked per the SearchMorph law (scroll-progress-bound interpolation, no binary threshold). Measured this session: reference frames PIL-scanned (blue-scan contaminated by photo content, noted honestly); pill metrics therefore follow the REAL checkout CTA geometry (52px height), the correct grounding for an adaptation. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checkout: scroll-expanding pay pill</title>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#52525B; --ink3:#A1A1AA; --sunken:#F4F4F5; --border:#E4E4E7;
+    --glide:420ms cubic-bezier(.32,.72,0,1);
+  }
+  *{box-sizing:border-box;margin:0}
+  body{font-family:Inter,system-ui,sans-serif;background:#fafafa;color:var(--ink);display:flex;flex-direction:column;align-items:center;padding:32px 16px;gap:14px}
+  h1{font-family:'Inter Tight',Inter,sans-serif;font-size:20px;font-weight:700}
+  .sub{font-size:13px;color:var(--ink2);max-width:430px;text-align:center;line-height:1.5}
+  .phone{width:375px;height:660px;background:#fff;border:1px solid var(--border);border-radius:28px;overflow:hidden;position:relative;box-shadow:0 12px 40px rgba(10,10,10,.08)}
+  .scroll{height:100%;overflow-y:auto;padding:18px 16px 120px}
+  .h2{font-family:'Inter Tight',Inter,sans-serif;font-size:18px;font-weight:700;margin-bottom:10px}
+  .card{border:1px solid var(--border);border-radius:16px;padding:14px;margin-bottom:12px}
+  .row{display:flex;justify-content:space-between;font-size:14px;padding:7px 0}
+  .row small{color:var(--ink2);font-size:12px}
+  .row b{font-weight:600}
+  .lbl{font-size:12px;color:var(--ink2);margin-bottom:6px}
+  .field{background:var(--sunken);border-radius:12px;height:44px;margin-bottom:8px;display:flex;align-items:center;padding:0 12px;font-size:13px;color:var(--ink3)}
+  .note{font-size:12px;color:var(--ink2);text-align:center;margin-top:8px}
+  .ctawrap{position:absolute;left:0;right:0;bottom:0;padding:12px 16px 16px;background:linear-gradient(to top, #fff 70%, rgba(255,255,255,0));display:flex;justify-content:flex-end}
+  .cta{background:var(--ink);color:#fff;border:none;cursor:pointer;height:52px;border-radius:999px;font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;overflow:hidden;white-space:nowrap;will-change:width}
+  .free{font-size:11px;color:var(--ink3);position:absolute;left:0;right:0;bottom:2px;text-align:center;opacity:0}
+</style>
+</head>
+<body>
+  <h1>Checkout: the pay pill expands as you scroll</h1>
+  <p class="sub">Your confirmed pick from the reference, applied to the real checkout CTA: while you review the booking it stays a compact price pill; as you scroll toward the payment section it expands, gesture-linked, into the full commit bar. Ink throughout (the lock stays).</p>
+
+  <div class="phone">
+    <div class="scroll" id="scroll">
+      <div class="h2">Your booking</div>
+      <div class="card">
+        <div class="row"><span>Balayage and cut</span><b>CHF 180</b></div>
+        <div class="row"><small>Muse Beauty Studio, Basel</small><small>75 min</small></div>
+        <div class="row"><small>Fri 12 Jul, 14:30 with Lena</small><small></small></div>
+      </div>
+      <div class="card">
+        <div class="row"><span>Deposit due now</span><b>CHF 45</b></div>
+        <div class="row"><small>Rest at the salon</small><small>CHF 135</small></div>
+      </div>
+      <div class="h2">Payment</div>
+      <div class="lbl">Card details</div>
+      <div class="field">Card number</div>
+      <div class="field">Expiry</div>
+      <div class="field">CVC</div>
+      <div class="lbl" style="margin-top:14px">Billing</div>
+      <div class="field">Name on card</div>
+      <div class="field">Postal code</div>
+      <p class="note">Free cancellation until 24h before your appointment.</p>
+      <p class="note" style="height:180px"></p>
+    </div>
+    <div class="ctawrap">
+      <button class="cta" id="cta" style="width:132px">
+        <span id="ctaLabel">CHF 45</span>
+      </button>
+      <p class="free" id="freeLine">Free cancellation until 24h before</p>
+    </div>
+  </div>
+  <p class="sub">Scroll inside the phone. The pill width, label, and the cancellation line are all bound to scroll progress , dragging halfway holds it halfway (no snap threshold).</p>
+
+<script>
+const scroller = document.getElementById("scroll");
+const cta = document.getElementById("cta");
+const label = document.getElementById("ctaLabel");
+const freeLine = document.getElementById("freeLine");
+const wrap = cta.parentElement;
+const COMPACT_W = 132, FULL_W = 343;   // 375 minus the 16px side paddings
+function update(){
+  const max = scroller.scrollHeight - scroller.clientHeight;
+  const p = max > 0 ? Math.min(1, Math.max(0, scroller.scrollTop / (max * 0.7))) : 0;
+  const w = COMPACT_W + (FULL_W - COMPACT_W) * p;
+  cta.style.width = w + "px";
+  // label crossfades from price-only to the full commit copy , opacity follows the SAME
+  // progress value as the width (gesture-linked, no binary trigger)
+  const t = Math.min(1, Math.max(0, (p - 0.45) / 0.35));
+  label.textContent = t > 0.5 ? "Book now, CHF 45" : "CHF 45";
+  label.style.opacity = String(0.6 + 0.4 * Math.abs(t - 0.5) * 2);
+  freeLine.style.opacity = String(Math.max(0, (p - 0.8) / 0.2));
+  wrap.style.justifyContent = p > 0.98 ? "center" : "flex-end";
+}
+scroller.addEventListener("scroll", update, { passive: true });
+update();
+</script>
+</body>
+</html>

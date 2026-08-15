@@ -391,6 +391,90 @@ changes how a booking decides its payment mode, which is money behaviour and his
       it was an interaction with what ships, and that class is exactly what a rescue-only pass
       misses.
 
+- [x] C21. HIS FOUR ANSWERS, 2026-08-14 night. Staff logins = the EIGHT-AREA permission model.
+      Client record book = YES including allergies. Homepage example salons = OFF at launch.
+      Counter till = "show me n run through sub agents m llm council".
+      TILL: council run, recorded in `_plans/COUNTER_TILL_COUNCIL_2026-08-14.md`, commit 939af3b67.
+      Two of three models answered and both said post-launch at best, one said never, without being
+      pointed there. Honest gaps named in that file: the Claude seat was empty (no CLI, no key), and
+      Gemini was cut off mid-answer BEFORE its pro-build argument, so the strongest case FOR is
+      missing from the record. Also found: the council skill's default Gemini model 404s for this
+      key, so anyone running it has been getting two voices while believing they had three.
+      Could NOT show him the screen: it lives on an unmerged branch, so rendering it would mean
+      first building the thing the council just advised against.
+- [x] C22. HOMEPAGE EXAMPLE SALONS: he answered "off at launch" and it is ALREADY off. Checked all
+      four sources rather than trusting the audit: the "Top auf Solen" row maps REAL salon ids
+      through live database fields, skips any entry missing a real name/slug/category, and hides the
+      whole section if nothing real comes back. The dev-only list is gated behind NODE_ENV and never
+      ships. FeaturedStylists and ArtistOfTheMonth, which DO carry invented ratings (4.9, 693
+      reviews) and stock photos, were both removed from the page composition in June and are
+      imported by nothing.
+      THE ONE THING STILL WORTH HIS CALL: those two dead files still sit in the components folder,
+      one import away from being live, full of invented numbers. Kept deliberately "for easy revert"
+      per their own comments, so deleting them is his call, not mine. Fifth stale audit claim of the
+      night, recorded because the pattern now matters more than any single item: this document's
+      findings were true when written in July and several are false today.
+- [x] C18. THE 12-AGENT AUDIT of all 11 remaining copies, run 2026-08-14 night, read-only, with a
+      skeptic pass armed against every "safe to delete" verdict. Result: NOT ONE is safely mergeable
+      whole. Verdicts: 3 MERGE_NEEDED (sad-austin, crazy-bose, cranky-bose), 8 RESCUE_THEN_DELETE.
+      Every copy collides with the graveyard, from 3 hits to 24, so a plain merge would resurrect
+      screens he deleted on purpose. 131 files exist nowhere else.
+      IT NAMED THREE LIVE FAULTS. Two were real and are now FIXED (see C19, C20). The third, the
+      time-of-day search filter reading UTC instead of Zurich, is ALREADY FIXED LIVE: read the
+      function definition out of the database and it carries the Zurich cast. Only its migration
+      file was missing, and that file was one of the 62 in C16. Recording this because it is the
+      third audit claim tonight that was true when written and stale by the time it was read.
+      SEVEN GENUINE OWNER QUESTIONS came out of it, none of which I can answer: staff logins, an
+      in-person till, a client record book, whether any to-do list returns after he killed it,
+      shift planning, per-salon-type tools, and whether the homepage keeps falling back to example
+      salons at launch. They are for him, not for me, and they gate roughly 6,000 lines of finished
+      dashboard code.
+      NOT DONE AND DELIBERATELY NOT DONE: the audit's plan ends by deleting all 11 branches. The
+      run's own security review flagged that, correctly. Nothing gets deleted without his yes.
+- [x] C19. THE OVERCHARGE, commit e4ee82be7. Book with a discount code and save your card instead
+      of paying now, and the five-days-before job charged the FULL price. The stored price is the
+      gross on purpose (every promo condition is re-checked at charge time), the pay-now path did
+      that re-check, the cron never did. Fixed on 2026-07-07 on a branch nobody merged. Both paths
+      now run one shared re-validation. Caught while wiring: the cron's query did not even SELECT
+      promo_code, so the fix would have read undefined on every row and discounted nobody, the exact
+      looks-wired-does-nothing shape. Live: 13 active codes, 6 bookings have used one, and the one
+      booking currently awaiting a saved-card charge carries none, so nobody is exposed today.
+- [x] C20. THE BROKEN PHOTOS, commit 77c341ba0. Client before/after photos and colour formula
+      photos are in PRIVATE buckets and the code saved a PUBLIC-style link, so every one of them
+      rendered broken. Paths are stored now and a short-lived link is signed per read. The sibling
+      that would have made this a half-fix is done too: the formulas list endpoint was handing the
+      raw path to the screen. Swept every remaining public-link call site: all seven are on genuinely
+      public buckets. Both buckets are EMPTY live (zero files, zero rows) so nothing needed
+      migrating, and the GDPR erase job already accepted both shapes so a deletion request still
+      erases everything.
+- [x] C16. ALL 62 stranded migration files are on this branch, commits 3f5eca851 and 4a628a351.
+      This closes the single largest documentation hole found tonight and it is bigger than C14's
+      eight. Found by sweeping all 11 remaining copies for `supabase/migrations/*.sql` absent from
+      HEAD, then checking each against the live database rather than against the migration log.
+      THE READING THAT WOULD HAVE BEEN WRONG, and it is worth keeping because it nearly shipped as
+      an alarm: `supabase_migrations.schema_migrations` says 59 of 60 were NEVER APPLIED. That would
+      mean real July security fixes sitting unapplied on a live product. It is false. Those files
+      went in under different version stamps, so the log is not a reliable signal. Checked for the
+      OBJECTS instead: the double-booking unique index, the voucher and credit ledgers, staff
+      scheduling, hand-chart notes, the two views, deals_enabled, bookings.arrived_at,
+      calendar_color_by, and all 15 storage buckets ALL EXIST. Nothing needs applying. This was
+      filing, not repair, and the distinction is the whole finding.
+      Three of the 62 collided on their version stamp with files already on main (two branches each
+      picked the same second). Bumped mine by one second, left main's alone, noted the reason at the
+      top of each. Four OLDER collisions remain and are deliberately untouched, named in 4a628a351.
+- [x] C17. An invited staff member could not enter the dashboard at all, commit 40d92bf68. The
+      accept-invite step writes `staff_salon_id` and never a role, `staff` is not a legal role value
+      in the database, and the middleware door only opened for salon_owner/admin, so every invited
+      stylist was redirected to the homepage. The staff experience was fully built on the other side
+      of that door: DashboardLayout reads staff_salon_id, sets isStaff, and renders STAFF_NAV, a
+      restricted four-item menu. Only the gate never learned staff exist. Live check: zero invites
+      ever sent, zero profiles carry a staff link, so this is fixed before the first stylist rather
+      than after. Admin paths stay closed to them (separate role === "admin" check, untouched).
+      NOT RENDERED: Bash cannot bind a port in this sandbox (listen EPERM) and preview_start is
+      banned by the owner, so this is proven by the live schema, the code path, and a clean
+      typecheck, and NOT by looking at the page. A seeded stylist (seed-luca@solen.ch) is linked to
+      Salon Lumiere so it is one click to check when a server is up.
+
 - [x] C15. The two business pages nobody could open are gone, commit 58db2c974. He chose "delete
       both, keep the bounces". `/business` and `/fuer-salons` have 301-ed to `/partner` since
       2026-06-12, so 724 and 500 lines could never render. Their two exclusive components went too;

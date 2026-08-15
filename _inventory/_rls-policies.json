@@ -1,0 +1,2815 @@
+{
+ "_comment": "LIVE RLS policy truth (public schema), dumped from pg_policies 2026-07-07. Phase B: RLS now lives in the repo so a migration file can never again silently contradict the live DB (the voucher false-positive class). Regenerate with the pg_policies query in scripts/rls-drift.mjs's header; the automated live-drift CI check needs an owner-provided DB connection secret.",
+ "generated": "2026-07-07",
+ "count": 312,
+ "policies": [
+  {
+   "schemaname": "public",
+   "tablename": "account_actions",
+   "policyname": "account_actions_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "account_actions",
+   "policyname": "account_actions_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "account_actions",
+   "policyname": "account_actions_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text)))) OR (salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "account_actions",
+   "policyname": "account_actions_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "account_warnings",
+   "policyname": "account_warnings_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "account_warnings",
+   "policyname": "account_warnings_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "account_warnings",
+   "policyname": "account_warnings_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text)))) OR ((salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))) OR (EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text)))) OR (( SELECT auth.uid() AS uid) = user_id)))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "account_warnings",
+   "policyname": "account_warnings_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "addons",
+   "policyname": "Public read addons",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "true",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "audit_log",
+   "policyname": "audit_log_admin_only",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = ( SELECT auth.uid() AS uid)) AND (p.role = 'admin'::text))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "audit_log",
+   "policyname": "audit_log_insert_auth",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(( SELECT auth.uid() AS uid) = actor_id)"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "availability_slots",
+   "policyname": "availability_slots_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = availability_slots.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid)))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "availability_slots",
+   "policyname": "availability_slots_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = availability_slots.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid)))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "availability_slots",
+   "policyname": "availability_slots_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = availability_slots.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid))))) OR true)",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "availability_slots",
+   "policyname": "availability_slots_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = availability_slots.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid)))))",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = availability_slots.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid)))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "barber_chairs",
+   "policyname": "barber_chairs_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "barber_chairs",
+   "policyname": "barber_chairs_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "barber_chairs",
+   "policyname": "barber_chairs_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))) OR true)",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "barber_chairs",
+   "policyname": "barber_chairs_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "barber_cut_history",
+   "policyname": "barber_cut_history_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "barber_cut_history",
+   "policyname": "barber_cut_history_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "barber_cut_history",
+   "policyname": "barber_cut_history_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))) OR (customer_id = ( SELECT auth.uid() AS uid)))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "barber_cut_history",
+   "policyname": "barber_cut_history_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "barber_loyalty_cards",
+   "policyname": "barber_loyalty_cards_all_merged",
+   "cmd": "ALL",
+   "roles": "{public}",
+   "using_expr": "((salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))) OR (customer_id = ( SELECT auth.uid() AS uid)))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "barber_loyalty_history",
+   "policyname": "barber_loyalty_history_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "barber_loyalty_history",
+   "policyname": "barber_loyalty_history_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "barber_loyalty_history",
+   "policyname": "barber_loyalty_history_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))) OR (customer_id = ( SELECT auth.uid() AS uid)))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "barber_loyalty_history",
+   "policyname": "barber_loyalty_history_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "barber_loyalty_programs",
+   "policyname": "barber_loyalty_programs_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "barber_loyalty_programs",
+   "policyname": "barber_loyalty_programs_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "barber_loyalty_programs",
+   "policyname": "barber_loyalty_programs_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))) OR (is_active = true))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "barber_loyalty_programs",
+   "policyname": "barber_loyalty_programs_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "barber_walkin_queue",
+   "policyname": "barber_walkin_queue_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "barber_walkin_queue",
+   "policyname": "barber_walkin_queue_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "barber_walkin_queue",
+   "policyname": "barber_walkin_queue_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))) OR (customer_id = ( SELECT auth.uid() AS uid)))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "barber_walkin_queue",
+   "policyname": "barber_walkin_queue_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "booking_disputes",
+   "policyname": "booking_disputes_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "booking_disputes",
+   "policyname": "booking_disputes_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "booking_disputes",
+   "policyname": "booking_disputes_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text)))) OR ((EXISTS ( SELECT 1\n   FROM (bookings b\n     JOIN salons s ON ((s.id = b.salon_id)))\n  WHERE ((b.id = booking_disputes.booking_id) AND (s.owner_id = ( SELECT auth.uid() AS uid))))) OR (reporter_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "booking_disputes",
+   "policyname": "booking_disputes_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "((EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text)))) OR (EXISTS ( SELECT 1\n   FROM (bookings b\n     JOIN salons s ON ((s.id = b.salon_id)))\n  WHERE ((b.id = booking_disputes.booking_id) AND (s.owner_id = ( SELECT auth.uid() AS uid))))))",
+   "with_check": "((EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text)))) OR (EXISTS ( SELECT 1\n   FROM (bookings b\n     JOIN salons s ON ((s.id = b.salon_id)))\n  WHERE ((b.id = booking_disputes.booking_id) AND (s.owner_id = ( SELECT auth.uid() AS uid))))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "booking_waitlist",
+   "policyname": "booking_waitlist_select_merged",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((( SELECT auth.uid() AS uid) = user_id) OR (EXISTS ( SELECT 1\n   FROM salons\n  WHERE ((salons.id = booking_waitlist.salon_id) AND (salons.owner_id = ( SELECT auth.uid() AS uid))))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "booking_waitlist",
+   "policyname": "waitlist_delete_own",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(( SELECT auth.uid() AS uid) = user_id)",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "booking_waitlist",
+   "policyname": "waitlist_insert_own",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(( SELECT auth.uid() AS uid) = user_id)"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "bookings",
+   "policyname": "bookings_insert_auth",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(( SELECT auth.uid() AS uid) = user_id)"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "bookings",
+   "policyname": "bookings_select_own",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "(((user_id IS NOT NULL) AND (( SELECT auth.uid() AS uid) = user_id)) OR (EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = bookings.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid))))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "bookings",
+   "policyname": "bookings_update_own",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(((user_id IS NOT NULL) AND (( SELECT auth.uid() AS uid) = user_id)) OR (EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = bookings.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid))))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "bridal_workflows",
+   "policyname": "salon_owner_bridal",
+   "cmd": "ALL",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "calendar_tokens",
+   "policyname": "Users manage own calendar tokens",
+   "cmd": "ALL",
+   "roles": "{public}",
+   "using_expr": "(( SELECT auth.uid() AS uid) = user_id)",
+   "with_check": "(( SELECT auth.uid() AS uid) = user_id)"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "case_events",
+   "policyname": "case_events_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "case_events",
+   "policyname": "case_events_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "case_events",
+   "policyname": "case_events_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text)))) OR (EXISTS ( SELECT 1\n   FROM ((booking_disputes d\n     JOIN bookings b ON ((b.id = d.booking_id)))\n     LEFT JOIN salons s ON ((s.id = b.salon_id)))\n  WHERE ((d.id = case_events.dispute_id) AND ((d.reporter_id = ( SELECT auth.uid() AS uid)) OR (s.owner_id = ( SELECT auth.uid() AS uid)))))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "case_events",
+   "policyname": "case_events_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "chat_templates",
+   "policyname": "salon_owner_manage_templates",
+   "cmd": "ALL",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "cities",
+   "policyname": "Cities are publicly readable",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "true",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "client_formulas",
+   "policyname": "formulas_salon_manage",
+   "cmd": "ALL",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "client_notes",
+   "policyname": "client_notes_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = client_notes.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid)))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "client_notes",
+   "policyname": "client_notes_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = client_notes.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid)))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "client_notes",
+   "policyname": "client_notes_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = client_notes.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid))))) OR ((customer_id = ( SELECT auth.uid() AS uid)) AND (note_type = 'booking'::text)))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "client_notes",
+   "policyname": "client_notes_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = client_notes.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid)))))",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = client_notes.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid)))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "client_photos",
+   "policyname": "photos_salon_manage",
+   "cmd": "ALL",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "client_tags",
+   "policyname": "salon_owner_manage_tags",
+   "cmd": "ALL",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "consultation_notes",
+   "policyname": "salon_owner_consultation_notes",
+   "cmd": "ALL",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "content_reports",
+   "policyname": "content_reports_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "content_reports",
+   "policyname": "content_reports_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "((EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text)))) OR (( SELECT auth.role() AS role) = 'authenticated'::text))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "content_reports",
+   "policyname": "content_reports_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "content_reports",
+   "policyname": "content_reports_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "conversations",
+   "policyname": "conversations_insert_auth",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(( SELECT auth.uid() AS uid) = customer_id)"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "conversations",
+   "policyname": "conversations_select_participant",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((( SELECT auth.uid() AS uid) = customer_id) OR (EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = conversations.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid))))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "conversations",
+   "policyname": "conversations_update_participant",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "((( SELECT auth.uid() AS uid) = customer_id) OR (EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = conversations.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid))))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "credit_redemptions",
+   "policyname": "credit_redemptions_select",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text)))) OR (user_id = ( SELECT auth.uid() AS uid)))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "data_deletion_log",
+   "policyname": "deletion_log_admin_only",
+   "cmd": "ALL",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = ( SELECT auth.uid() AS uid)) AND (p.role = 'admin'::text))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "discovery_collections",
+   "policyname": "discovery_collections_public_read",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "true",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "discovery_comments",
+   "policyname": "discovery_comments_owner_write",
+   "cmd": "ALL",
+   "roles": "{authenticated}",
+   "using_expr": "(user_id = ( SELECT auth.uid() AS uid))",
+   "with_check": "(user_id = ( SELECT auth.uid() AS uid))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "discovery_comments",
+   "policyname": "discovery_comments_public_read",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((is_hidden = false) OR (user_id = ( SELECT auth.uid() AS uid)))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "discovery_interactions",
+   "policyname": "discovery_interactions_owner",
+   "cmd": "ALL",
+   "roles": "{authenticated}",
+   "using_expr": "(user_id = ( SELECT auth.uid() AS uid))",
+   "with_check": "(user_id = ( SELECT auth.uid() AS uid))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "discovery_items",
+   "policyname": "discovery_items_public_read",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "true",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "discovery_product_recommendations",
+   "policyname": "discovery_product_recs_public_read",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "true",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "discovery_products",
+   "policyname": "discovery_products_public_read",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "true",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "discovery_saves",
+   "policyname": "discovery_saves_owner",
+   "cmd": "ALL",
+   "roles": "{authenticated}",
+   "using_expr": "(user_id = ( SELECT auth.uid() AS uid))",
+   "with_check": "(user_id = ( SELECT auth.uid() AS uid))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "fade_blueprints",
+   "policyname": "fade_blueprints_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "fade_blueprints",
+   "policyname": "fade_blueprints_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "((salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))) OR (salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "fade_blueprints",
+   "policyname": "fade_blueprints_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))) OR (client_id = ( SELECT auth.uid() AS uid)))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "fade_blueprints",
+   "policyname": "fade_blueprints_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "favorites",
+   "policyname": "favorites_delete_own",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(( SELECT auth.uid() AS uid) = user_id)",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "favorites",
+   "policyname": "favorites_insert_own",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(( SELECT auth.uid() AS uid) = user_id)"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "favorites",
+   "policyname": "favorites_select_own",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "(( SELECT auth.uid() AS uid) = user_id)",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "feature_flags",
+   "policyname": "feature_flags_modify_admin",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = ( SELECT auth.uid() AS uid)) AND (p.role = 'admin'::text))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "feature_flags",
+   "policyname": "feature_flags_select_public",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "true",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "feature_requests",
+   "policyname": "feature_requests_admin_delete",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "feature_requests",
+   "policyname": "feature_requests_admin_insert",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "feature_requests",
+   "policyname": "feature_requests_admin_select",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "feature_requests",
+   "policyname": "feature_requests_admin_update",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "gift_cards",
+   "policyname": "gift_cards_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "gift_cards",
+   "policyname": "gift_cards_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "gift_cards",
+   "policyname": "gift_cards_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "gift_cards",
+   "policyname": "gift_cards_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "group_bookings",
+   "policyname": "group_organizer_read",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((organizer_user_id = ( SELECT auth.uid() AS uid)) OR (salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "guest_bookings",
+   "policyname": "guest_salon_read",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "(booking_id IN ( SELECT bookings.id\n   FROM bookings\n  WHERE (bookings.salon_id IN ( SELECT salons.id\n           FROM salons\n          WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "hand_chart_notes",
+   "policyname": "hand_chart_notes_manage_salon",
+   "cmd": "ALL",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = hand_chart_notes.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid)))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "help_articles",
+   "policyname": "help_articles_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = ( SELECT auth.uid() AS uid)) AND (p.role = 'admin'::text))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "help_articles",
+   "policyname": "help_articles_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = ( SELECT auth.uid() AS uid)) AND (p.role = 'admin'::text))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "help_articles",
+   "policyname": "help_articles_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = ( SELECT auth.uid() AS uid)) AND (p.role = 'admin'::text)))) OR (published = true))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "help_articles",
+   "policyname": "help_articles_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = ( SELECT auth.uid() AS uid)) AND (p.role = 'admin'::text))))",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = ( SELECT auth.uid() AS uid)) AND (p.role = 'admin'::text))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "intake_form_responses",
+   "policyname": "intake_form_responses_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "intake_form_responses",
+   "policyname": "intake_form_responses_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "intake_form_responses",
+   "policyname": "intake_form_responses_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))) OR (customer_id = ( SELECT auth.uid() AS uid)))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "intake_form_responses",
+   "policyname": "intake_form_responses_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "inventory",
+   "policyname": "Public read inventory",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "true",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "loyalty_cards",
+   "policyname": "loyalty_cards_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = loyalty_cards.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid)))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "loyalty_cards",
+   "policyname": "loyalty_cards_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = loyalty_cards.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid)))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "loyalty_cards",
+   "policyname": "loyalty_cards_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = loyalty_cards.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid))))) OR (is_active = true))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "loyalty_cards",
+   "policyname": "loyalty_cards_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = loyalty_cards.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid)))))",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = loyalty_cards.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid)))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "loyalty_stamps",
+   "policyname": "loyalty_stamps_select_merged",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((EXISTS ( SELECT 1\n   FROM (loyalty_cards lc\n     JOIN salons s ON ((s.id = lc.salon_id)))\n  WHERE ((lc.id = loyalty_stamps.loyalty_card_id) AND (s.owner_id = ( SELECT auth.uid() AS uid))))) OR (customer_id = ( SELECT auth.uid() AS uid)))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "loyalty_status",
+   "policyname": "loyalty_status_select_own",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "(( SELECT auth.uid() AS uid) = user_id)",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "makeup_face_charts",
+   "policyname": "salon_owner_face_charts",
+   "cmd": "ALL",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "makeup_kit_items",
+   "policyname": "salon_owner_kit",
+   "cmd": "ALL",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "messages",
+   "policyname": "messages_insert_participant",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "((( SELECT auth.uid() AS uid) = sender_id) AND (EXISTS ( SELECT 1\n   FROM conversations c\n  WHERE ((c.id = messages.conversation_id) AND ((c.customer_id = ( SELECT auth.uid() AS uid)) OR (EXISTS ( SELECT 1\n           FROM salons s\n          WHERE ((s.id = c.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid))))))))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "messages",
+   "policyname": "messages_select_participant",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM conversations c\n  WHERE ((c.id = messages.conversation_id) AND ((c.customer_id = ( SELECT auth.uid() AS uid)) OR (EXISTS ( SELECT 1\n           FROM salons s\n          WHERE ((s.id = c.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid)))))))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "messages",
+   "policyname": "messages_update_own",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(( SELECT auth.uid() AS uid) = sender_id)",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "nail_client_preferences",
+   "policyname": "nail_client_preferences_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "nail_client_preferences",
+   "policyname": "nail_client_preferences_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "nail_client_preferences",
+   "policyname": "nail_client_preferences_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))) OR (customer_id = ( SELECT auth.uid() AS uid)))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "nail_client_preferences",
+   "policyname": "nail_client_preferences_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "nail_design_history",
+   "policyname": "nail_design_history_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "nail_design_history",
+   "policyname": "nail_design_history_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "nail_design_history",
+   "policyname": "nail_design_history_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))) OR (customer_id = ( SELECT auth.uid() AS uid)))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "nail_design_history",
+   "policyname": "nail_design_history_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "nail_dynamic_pricing_rules",
+   "policyname": "nail_dynamic_pricing_rules_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "nail_dynamic_pricing_rules",
+   "policyname": "nail_dynamic_pricing_rules_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "nail_dynamic_pricing_rules",
+   "policyname": "nail_dynamic_pricing_rules_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))) OR (is_active = true))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "nail_dynamic_pricing_rules",
+   "policyname": "nail_dynamic_pricing_rules_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "nail_inspo_boards",
+   "policyname": "inspo_boards_own",
+   "cmd": "ALL",
+   "roles": "{public}",
+   "using_expr": "(user_id = ( SELECT auth.uid() AS uid))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "nail_inspo_images",
+   "policyname": "nail_inspo_images_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(user_id = ( SELECT auth.uid() AS uid))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "nail_inspo_images",
+   "policyname": "nail_inspo_images_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(user_id = ( SELECT auth.uid() AS uid))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "nail_inspo_images",
+   "policyname": "nail_inspo_images_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((user_id = ( SELECT auth.uid() AS uid)) OR (booking_id IN ( SELECT bookings.id\n   FROM bookings\n  WHERE (bookings.salon_id IN ( SELECT salons.id\n           FROM salons\n          WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "nail_inspo_images",
+   "policyname": "nail_inspo_images_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(user_id = ( SELECT auth.uid() AS uid))",
+   "with_check": "(user_id = ( SELECT auth.uid() AS uid))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "nail_retail_products",
+   "policyname": "nail_retail_products_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "nail_retail_products",
+   "policyname": "nail_retail_products_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "nail_retail_products",
+   "policyname": "nail_retail_products_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))) OR (is_active = true))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "nail_retail_products",
+   "policyname": "nail_retail_products_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "nail_stations",
+   "policyname": "nail_stations_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "nail_stations",
+   "policyname": "nail_stations_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "nail_stations",
+   "policyname": "nail_stations_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))) OR true)",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "nail_stations",
+   "policyname": "nail_stations_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "notification_preferences",
+   "policyname": "notif_prefs_insert_own",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(( SELECT auth.uid() AS uid) = user_id)"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "notification_preferences",
+   "policyname": "notif_prefs_select_own",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "(( SELECT auth.uid() AS uid) = user_id)",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "notification_preferences",
+   "policyname": "notif_prefs_update_own",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(( SELECT auth.uid() AS uid) = user_id)",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "notifications",
+   "policyname": "notifications_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(( SELECT auth.role() AS role) = 'service_role'::text)",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "notifications",
+   "policyname": "notifications_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(( SELECT auth.role() AS role) = 'service_role'::text)"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "notifications",
+   "policyname": "notifications_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((( SELECT auth.role() AS role) = 'service_role'::text) OR (( SELECT auth.uid() AS uid) = user_id))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "notifications",
+   "policyname": "notifications_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "((( SELECT auth.role() AS role) = 'service_role'::text) OR (( SELECT auth.uid() AS uid) = user_id))",
+   "with_check": "((( SELECT auth.role() AS role) = 'service_role'::text) OR (( SELECT auth.uid() AS uid) = user_id))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "off_peak_slots",
+   "policyname": "off_peak_slots_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = off_peak_slots.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid)))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "off_peak_slots",
+   "policyname": "off_peak_slots_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = off_peak_slots.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid)))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "off_peak_slots",
+   "policyname": "off_peak_slots_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = off_peak_slots.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid))))) OR (is_active = true))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "off_peak_slots",
+   "policyname": "off_peak_slots_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = off_peak_slots.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid)))))",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = off_peak_slots.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid)))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "package_purchases",
+   "policyname": "package_purchases_select_merged",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))) OR (user_id = ( SELECT auth.uid() AS uid)))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "platform_settings",
+   "policyname": "platform_settings_admin_all",
+   "cmd": "ALL",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "price_disputes",
+   "policyname": "price_disputes_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "price_disputes",
+   "policyname": "price_disputes_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "((EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text)))) OR (EXISTS ( SELECT 1\n   FROM (bookings b\n     JOIN salons s ON ((s.id = b.salon_id)))\n  WHERE ((b.id = price_disputes.booking_id) AND (s.owner_id = ( SELECT auth.uid() AS uid))))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "price_disputes",
+   "policyname": "price_disputes_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text)))) OR ((EXISTS ( SELECT 1\n   FROM (bookings b\n     JOIN salons s ON ((s.id = b.salon_id)))\n  WHERE ((b.id = price_disputes.booking_id) AND (s.owner_id = ( SELECT auth.uid() AS uid))))) OR (EXISTS ( SELECT 1\n   FROM bookings b\n  WHERE ((b.id = price_disputes.booking_id) AND (b.user_id = ( SELECT auth.uid() AS uid)))))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "price_disputes",
+   "policyname": "price_disputes_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "((EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text)))) OR (EXISTS ( SELECT 1\n   FROM bookings b\n  WHERE ((b.id = price_disputes.booking_id) AND (b.user_id = ( SELECT auth.uid() AS uid))))))",
+   "with_check": "((EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text)))) OR (EXISTS ( SELECT 1\n   FROM bookings b\n  WHERE ((b.id = price_disputes.booking_id) AND (b.user_id = ( SELECT auth.uid() AS uid))))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "price_offers",
+   "policyname": "price_offers_insert_salon",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = price_offers.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid)))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "price_offers",
+   "policyname": "price_offers_select_participant",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((( SELECT auth.uid() AS uid) = customer_id) OR (EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = price_offers.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid))))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "price_offers",
+   "policyname": "price_offers_update_participant",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "((( SELECT auth.uid() AS uid) = customer_id) OR (EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = price_offers.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid))))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "pricing_rules",
+   "policyname": "pricing_rules_delete_owner",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM salons\n  WHERE ((salons.id = pricing_rules.salon_id) AND (salons.owner_id = ( SELECT auth.uid() AS uid)))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "pricing_rules",
+   "policyname": "pricing_rules_insert_owner",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM salons\n  WHERE ((salons.id = pricing_rules.salon_id) AND (salons.owner_id = ( SELECT auth.uid() AS uid)))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "pricing_rules",
+   "policyname": "pricing_rules_select_public",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "(is_active = true)",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "pricing_rules",
+   "policyname": "pricing_rules_update_owner",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM salons\n  WHERE ((salons.id = pricing_rules.salon_id) AND (salons.owner_id = ( SELECT auth.uid() AS uid)))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "profiles",
+   "policyname": "profiles_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(( SELECT auth.uid() AS uid) = id)",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "profiles",
+   "policyname": "profiles_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(( SELECT auth.uid() AS uid) = id)"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "profiles",
+   "policyname": "profiles_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((( SELECT auth.uid() AS uid) = id) OR ((( SELECT auth.uid() AS uid) = id) OR ((( SELECT auth.jwt() AS jwt) ->> 'email'::text) = 'habobi1238@proton.me'::text) OR (id = ( SELECT auth.uid() AS uid))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "profiles",
+   "policyname": "profiles_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "((( SELECT auth.uid() AS uid) = id) OR (( SELECT auth.uid() AS uid) = id))",
+   "with_check": "((( SELECT auth.uid() AS uid) = id) OR (( SELECT auth.uid() AS uid) = id))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "promo_codes",
+   "policyname": "promo_codes_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "promo_codes",
+   "policyname": "promo_codes_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "((EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text)))) OR ((( SELECT auth.uid() AS uid) = created_by) AND (salon_id IS NOT NULL) AND (EXISTS ( SELECT 1\n   FROM salons\n  WHERE ((salons.id = promo_codes.salon_id) AND (salons.owner_id = ( SELECT auth.uid() AS uid)))))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "promo_codes",
+   "policyname": "promo_codes_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text)))) OR (is_active = true))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "promo_codes",
+   "policyname": "promo_codes_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "((EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text)))) OR ((( SELECT auth.uid() AS uid) = created_by) AND (salon_id IS NOT NULL) AND (EXISTS ( SELECT 1\n   FROM salons\n  WHERE ((salons.id = promo_codes.salon_id) AND (salons.owner_id = ( SELECT auth.uid() AS uid)))))))",
+   "with_check": "((EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text)))) OR ((( SELECT auth.uid() AS uid) = created_by) AND (salon_id IS NOT NULL) AND (EXISTS ( SELECT 1\n   FROM salons\n  WHERE ((salons.id = promo_codes.salon_id) AND (salons.owner_id = ( SELECT auth.uid() AS uid)))))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "push_subscriptions",
+   "policyname": "push_subscriptions_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "((( SELECT auth.role() AS role) = 'service_role'::text) OR (( SELECT auth.uid() AS uid) = user_id))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "push_subscriptions",
+   "policyname": "push_subscriptions_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "((( SELECT auth.role() AS role) = 'service_role'::text) OR (( SELECT auth.uid() AS uid) = user_id))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "push_subscriptions",
+   "policyname": "push_subscriptions_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((( SELECT auth.role() AS role) = 'service_role'::text) OR (( SELECT auth.uid() AS uid) = user_id))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "push_subscriptions",
+   "policyname": "push_subscriptions_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(( SELECT auth.role() AS role) = 'service_role'::text)",
+   "with_check": "(( SELECT auth.role() AS role) = 'service_role'::text)"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "quartier_subscriptions",
+   "policyname": "quartier_sub_insert_public",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "true"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "quartier_subscriptions",
+   "policyname": "quartier_sub_select_admin",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "recurring_booking_rules",
+   "policyname": "recurring_booking_rules_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(( SELECT auth.uid() AS uid) = user_id)",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "recurring_booking_rules",
+   "policyname": "recurring_booking_rules_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(( SELECT auth.uid() AS uid) = user_id)"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "recurring_booking_rules",
+   "policyname": "recurring_booking_rules_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((( SELECT auth.uid() AS uid) = user_id) OR (( SELECT auth.uid() AS uid) = user_id))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "recurring_booking_rules",
+   "policyname": "recurring_booking_rules_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(( SELECT auth.uid() AS uid) = user_id)",
+   "with_check": "(( SELECT auth.uid() AS uid) = user_id)"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "referrals",
+   "policyname": "referrals_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "referrals",
+   "policyname": "referrals_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "referrals",
+   "policyname": "referrals_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text)))) OR ((( SELECT auth.uid() AS uid) = referrer_id) OR (( SELECT auth.uid() AS uid) = referred_user_id)))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "referrals",
+   "policyname": "referrals_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "retail_purchases",
+   "policyname": "retail_purchases_select_merged",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text)))) OR (salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))) OR (user_id = ( SELECT auth.uid() AS uid)))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "retail_sales",
+   "policyname": "retail_sales_salon",
+   "cmd": "ALL",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "review_attributes",
+   "policyname": "review_attributes_insert_author",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM reviews r\n  WHERE ((r.id = review_attributes.review_id) AND (r.user_id = auth.uid()))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "review_attributes",
+   "policyname": "review_attributes_select_public",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "true",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "review_photos",
+   "policyname": "review_photos_public_read",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "true",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "review_replies",
+   "policyname": "review_replies_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = review_replies.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid)))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "review_replies",
+   "policyname": "review_replies_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = review_replies.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid)))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "review_replies",
+   "policyname": "review_replies_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = review_replies.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid))))) OR ((is_public = true) OR (EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = review_replies.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid))))) OR (EXISTS ( SELECT 1\n   FROM reviews r\n  WHERE ((r.id = review_replies.review_id) AND (r.user_id = ( SELECT auth.uid() AS uid)))))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "review_replies",
+   "policyname": "review_replies_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = review_replies.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid)))))",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = review_replies.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid)))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "reviews",
+   "policyname": "reviews_delete_merged",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "((EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = ( SELECT auth.uid() AS uid)) AND (p.role = 'admin'::text)))) OR (( SELECT auth.uid() AS uid) = user_id))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "reviews",
+   "policyname": "reviews_insert_own",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(( SELECT auth.uid() AS uid) = user_id)"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "reviews",
+   "policyname": "reviews_select_public",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "true",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "reviews",
+   "policyname": "reviews_update_own_48h",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "((( SELECT auth.uid() AS uid) = user_id) AND (created_at > (now() - '48:00:00'::interval)))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "sale_line_items",
+   "policyname": "sale_line_items_owner_manage",
+   "cmd": "ALL",
+   "roles": "{public}",
+   "using_expr": "(sale_id IN ( SELECT sales.id\n   FROM sales\n  WHERE (sales.salon_id IN ( SELECT salons.id\n           FROM salons\n          WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))))",
+   "with_check": "(sale_id IN ( SELECT sales.id\n   FROM sales\n  WHERE (sales.salon_id IN ( SELECT salons.id\n           FROM salons\n          WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "sales",
+   "policyname": "sales_owner_manage",
+   "cmd": "ALL",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "salon_analytics",
+   "policyname": "salon_analytics_owner_select",
+   "cmd": "SELECT",
+   "roles": "{authenticated}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = salon_analytics.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid)))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "salon_badge_assignments",
+   "policyname": "salon_badge_assignments_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "salon_badge_assignments",
+   "policyname": "salon_badge_assignments_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "salon_badge_assignments",
+   "policyname": "salon_badge_assignments_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text)))) OR (is_override_removal = false))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "salon_badge_assignments",
+   "policyname": "salon_badge_assignments_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "salon_badges",
+   "policyname": "salon_badges_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "salon_badges",
+   "policyname": "salon_badges_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "salon_badges",
+   "policyname": "salon_badges_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text)))) OR true)",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "salon_badges",
+   "policyname": "salon_badges_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "salon_clients",
+   "policyname": "salon_clients_owner_manage",
+   "cmd": "ALL",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "salon_closures",
+   "policyname": "salon_closures_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "salon_closures",
+   "policyname": "salon_closures_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "salon_closures",
+   "policyname": "salon_closures_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))) OR true)",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "salon_closures",
+   "policyname": "salon_closures_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "salon_directory",
+   "policyname": "salon_directory_delete_admin",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = ( SELECT auth.uid() AS uid)) AND (p.role = 'admin'::text))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "salon_directory",
+   "policyname": "salon_directory_modify_admin",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = ( SELECT auth.uid() AS uid)) AND (p.role = 'admin'::text))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "salon_directory",
+   "policyname": "salon_directory_select_public",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "true",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "salon_directory",
+   "policyname": "salon_directory_update_admin",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = ( SELECT auth.uid() AS uid)) AND (p.role = 'admin'::text))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "salon_documents",
+   "policyname": "salon_documents_all_merged",
+   "cmd": "ALL",
+   "roles": "{public}",
+   "using_expr": "((EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text)))) OR (salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "salon_drafts",
+   "policyname": "salon_drafts_own",
+   "cmd": "ALL",
+   "roles": "{public}",
+   "using_expr": "(user_id = ( SELECT auth.uid() AS uid))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "salon_groups",
+   "policyname": "salon_groups_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "salon_groups",
+   "policyname": "salon_groups_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "salon_groups",
+   "policyname": "salon_groups_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text)))) OR true)",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "salon_groups",
+   "policyname": "salon_groups_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "salon_last_minute_settings",
+   "policyname": "Users can insert their salon last-minute settings",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "salon_last_minute_settings",
+   "policyname": "Users can update their salon last-minute settings",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "salon_last_minute_settings",
+   "policyname": "salon_last_minute_settings_select_merged",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "(((( SELECT auth.jwt() AS jwt) ->> 'is_admin'::text) = 'true'::text) OR (salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "salon_pace",
+   "policyname": "salon_pace_owner_select",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "salon_payouts",
+   "policyname": "salon_payouts_select_merged",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))) OR (EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text)))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "salon_photos",
+   "policyname": "Public can view salon photos",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "true",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "salons",
+   "policyname": "salons_insert_owner",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(( SELECT auth.uid() AS uid) = owner_id)"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "salons",
+   "policyname": "salons_select_active",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((is_active = true) OR (( SELECT auth.uid() AS uid) = owner_id))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "salons",
+   "policyname": "salons_update_owner",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(( SELECT auth.uid() AS uid) = owner_id)",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "search_embeddings",
+   "policyname": "search_embeddings_insert_admin",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "search_embeddings",
+   "policyname": "search_embeddings_select_public",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "true",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "search_embeddings",
+   "policyname": "search_embeddings_update_admin",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "search_synonyms",
+   "policyname": "search_synonyms_public_read",
+   "cmd": "SELECT",
+   "roles": "{anon,authenticated}",
+   "using_expr": "is_active",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "service_addons",
+   "policyname": "addons_select_public",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "true",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "service_bundle_items",
+   "policyname": "bundle_items_owner_manage",
+   "cmd": "ALL",
+   "roles": "{public}",
+   "using_expr": "(bundle_id IN ( SELECT b.id\n   FROM (service_bundles b\n     JOIN salons s ON ((s.id = b.salon_id)))\n  WHERE (s.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "service_bundle_items",
+   "policyname": "bundle_items_public_read",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "(bundle_id IN ( SELECT b.id\n   FROM service_bundles b\n  WHERE ((b.is_active = true) AND (b.salon_id IN ( SELECT salons.id\n           FROM salons\n          WHERE ((salons.is_active = true) AND (salons.listed_on_marketplace IS NOT FALSE) AND (COALESCE(salons.is_test, false) = false)))))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "service_bundles",
+   "policyname": "bundles_owner_manage",
+   "cmd": "ALL",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "service_bundles",
+   "policyname": "bundles_public_read",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((is_active = true) AND (salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE ((salons.is_active = true) AND (salons.listed_on_marketplace IS NOT FALSE) AND (COALESCE(salons.is_test, false) = false)))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "service_categories",
+   "policyname": "service_categories_public_read",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "true",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "service_options",
+   "policyname": "service_options_public_read",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "true",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "service_packages",
+   "policyname": "service_packages_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "service_packages",
+   "policyname": "service_packages_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "service_packages",
+   "policyname": "service_packages_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))) OR (is_active = true))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "service_packages",
+   "policyname": "service_packages_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "services",
+   "policyname": "services_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = services.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid)))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "services",
+   "policyname": "services_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = services.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid)))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "services",
+   "policyname": "services_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = services.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid))))) OR (is_active = true))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "services",
+   "policyname": "services_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = services.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid)))))",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = services.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid)))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "site_content",
+   "policyname": "site_content_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "site_content",
+   "policyname": "site_content_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "site_content",
+   "policyname": "site_content_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text)))) OR true)",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "site_content",
+   "policyname": "site_content_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "spa_treatment_outcomes",
+   "policyname": "spa_outcomes_salon",
+   "cmd": "ALL",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "spa_treatment_rooms",
+   "policyname": "salon_owner_spa_rooms",
+   "cmd": "ALL",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "staff_breaks",
+   "policyname": "breaks_owner_manage",
+   "cmd": "ALL",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "staff_calendars",
+   "policyname": "Public read staff_cal",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "true",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "staff_invites",
+   "policyname": "invites_owner_manage",
+   "cmd": "ALL",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "staff_members",
+   "policyname": "staff_members_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = staff_members.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid)))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "staff_members",
+   "policyname": "staff_members_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = staff_members.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid)))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "staff_members",
+   "policyname": "staff_members_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = staff_members.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid))))) OR (is_active = true))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "staff_members",
+   "policyname": "staff_members_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = staff_members.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid)))))",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM salons s\n  WHERE ((s.id = staff_members.salon_id) AND (s.owner_id = ( SELECT auth.uid() AS uid)))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "staff_portfolio_images",
+   "policyname": "staff_portfolio_images_public_read",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "true",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "staff_schedules",
+   "policyname": "schedules_owner_manage",
+   "cmd": "ALL",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "staff_services",
+   "policyname": "staff_services_public_read",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "true",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "staff_time_off",
+   "policyname": "timeoff_owner_manage",
+   "cmd": "ALL",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "tier_perks",
+   "policyname": "tier_perks_read_all",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "true",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "tips",
+   "policyname": "tips_select_merged",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))) OR (salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))) OR (user_id = ( SELECT auth.uid() AS uid)))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "user_credits",
+   "policyname": "user_credits_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "user_credits",
+   "policyname": "user_credits_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "user_credits",
+   "policyname": "user_credits_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text)))) OR (( SELECT auth.uid() AS uid) = user_id))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "user_credits",
+   "policyname": "user_credits_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "user_preferences",
+   "policyname": "user_preferences_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(( SELECT auth.uid() AS uid) = user_id)",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "user_preferences",
+   "policyname": "user_preferences_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(( SELECT auth.uid() AS uid) = user_id)"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "user_preferences",
+   "policyname": "user_preferences_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((( SELECT auth.uid() AS uid) = user_id) OR (( SELECT auth.uid() AS uid) = user_id))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "user_preferences",
+   "policyname": "user_preferences_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(( SELECT auth.uid() AS uid) = user_id)",
+   "with_check": "(( SELECT auth.uid() AS uid) = user_id)"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "user_salon_affinity",
+   "policyname": "user_salon_affinity_select_own",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "(( SELECT auth.uid() AS uid) = user_id)",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "user_style_affinity",
+   "policyname": "own style affinity readable",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "(( SELECT auth.uid() AS uid) = user_id)",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "voucher_purchases",
+   "policyname": "voucher_purchases_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "voucher_purchases",
+   "policyname": "voucher_purchases_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "((EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text)))) OR (( SELECT auth.uid() AS uid) = customer_id))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "voucher_purchases",
+   "policyname": "voucher_purchases_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text)))) OR (( SELECT auth.uid() AS uid) = customer_id))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "voucher_purchases",
+   "policyname": "voucher_purchases_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "voucher_redemptions",
+   "policyname": "voucher_redemptions_select",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text)))) OR (user_id = ( SELECT auth.uid() AS uid)))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "vouchers",
+   "policyname": "vouchers_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "vouchers",
+   "policyname": "vouchers_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "((EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text)))) OR (( SELECT auth.uid() AS uid) IS NOT NULL))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "vouchers",
+   "policyname": "vouchers_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text)))) OR (recipient_email = ( SELECT auth.email() AS email)) OR (buyer_id = ( SELECT auth.uid() AS uid)) OR (salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "vouchers",
+   "policyname": "vouchers_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "((EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text)))) OR ((EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text)))) OR (salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))))",
+   "with_check": "((EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text)))) OR ((EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text)))) OR (salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "warnings",
+   "policyname": "warnings_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "warnings",
+   "policyname": "warnings_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "warnings",
+   "policyname": "warnings_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text)))) OR (( SELECT auth.uid() AS uid) = user_id))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "warnings",
+   "policyname": "warnings_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))",
+   "with_check": "(EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = ( SELECT auth.uid() AS uid)) AND (profiles.role = 'admin'::text))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "waxing_sensitivity_log",
+   "policyname": "waxing_sensitivity_log_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "((salon_id IN ( SELECT sm.salon_id\n   FROM (staff_members sm\n     JOIN profiles p ON ((p.id = ( SELECT auth.uid() AS uid))))\n  WHERE ((sm.id = p.id) AND (sm.is_active = true)))) OR (salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "waxing_sensitivity_log",
+   "policyname": "waxing_sensitivity_log_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "((salon_id IN ( SELECT sm.salon_id\n   FROM (staff_members sm\n     JOIN profiles p ON ((p.id = ( SELECT auth.uid() AS uid))))\n  WHERE ((sm.id = p.id) AND (sm.is_active = true)))) OR (salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))) OR (salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "waxing_sensitivity_log",
+   "policyname": "waxing_sensitivity_log_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((salon_id IN ( SELECT sm.salon_id\n   FROM (staff_members sm\n     JOIN profiles p ON ((p.id = ( SELECT auth.uid() AS uid))))\n  WHERE ((sm.id = p.id) AND (sm.is_active = true)))) OR (salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "waxing_sensitivity_log",
+   "policyname": "waxing_sensitivity_log_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "((salon_id IN ( SELECT sm.salon_id\n   FROM (staff_members sm\n     JOIN profiles p ON ((p.id = ( SELECT auth.uid() AS uid))))\n  WHERE ((sm.id = p.id) AND (sm.is_active = true)))) OR (salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))))",
+   "with_check": "((salon_id IN ( SELECT sm.salon_id\n   FROM (staff_members sm\n     JOIN profiles p ON ((p.id = ( SELECT auth.uid() AS uid))))\n  WHERE ((sm.id = p.id) AND (sm.is_active = true)))) OR (salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "waxing_zone_packages",
+   "policyname": "waxing_zone_packages_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "waxing_zone_packages",
+   "policyname": "waxing_zone_packages_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "((salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))) OR (salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "waxing_zone_packages",
+   "policyname": "waxing_zone_packages_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))) OR (salon_id IN ( SELECT sm.salon_id\n   FROM (staff_members sm\n     JOIN profiles p ON ((p.id = ( SELECT auth.uid() AS uid))))\n  WHERE ((sm.id = p.id) AND (sm.is_active = true)))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "waxing_zone_packages",
+   "policyname": "waxing_zone_packages_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "waxing_zone_preferences",
+   "policyname": "waxing_zone_preferences_delete_4c9184_m",
+   "cmd": "DELETE",
+   "roles": "{public}",
+   "using_expr": "((salon_id IN ( SELECT sm.salon_id\n   FROM (staff_members sm\n     JOIN profiles p ON ((p.id = ( SELECT auth.uid() AS uid))))\n  WHERE ((sm.id = p.id) AND (sm.is_active = true)))) OR (salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "waxing_zone_preferences",
+   "policyname": "waxing_zone_preferences_insert_4c9184_m",
+   "cmd": "INSERT",
+   "roles": "{public}",
+   "using_expr": "",
+   "with_check": "((salon_id IN ( SELECT sm.salon_id\n   FROM (staff_members sm\n     JOIN profiles p ON ((p.id = ( SELECT auth.uid() AS uid))))\n  WHERE ((sm.id = p.id) AND (sm.is_active = true)))) OR (salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))) OR (salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "waxing_zone_preferences",
+   "policyname": "waxing_zone_preferences_select_4c9184_m",
+   "cmd": "SELECT",
+   "roles": "{public}",
+   "using_expr": "((salon_id IN ( SELECT sm.salon_id\n   FROM (staff_members sm\n     JOIN profiles p ON ((p.id = ( SELECT auth.uid() AS uid))))\n  WHERE ((sm.id = p.id) AND (sm.is_active = true)))) OR (salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))))",
+   "with_check": ""
+  },
+  {
+   "schemaname": "public",
+   "tablename": "waxing_zone_preferences",
+   "policyname": "waxing_zone_preferences_update_4c9184_m",
+   "cmd": "UPDATE",
+   "roles": "{public}",
+   "using_expr": "((salon_id IN ( SELECT sm.salon_id\n   FROM (staff_members sm\n     JOIN profiles p ON ((p.id = ( SELECT auth.uid() AS uid))))\n  WHERE ((sm.id = p.id) AND (sm.is_active = true)))) OR (salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))))",
+   "with_check": "((salon_id IN ( SELECT sm.salon_id\n   FROM (staff_members sm\n     JOIN profiles p ON ((p.id = ( SELECT auth.uid() AS uid))))\n  WHERE ((sm.id = p.id) AND (sm.is_active = true)))) OR (salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid)))))"
+  },
+  {
+   "schemaname": "public",
+   "tablename": "wellness_journals",
+   "policyname": "salon_owner_wellness_journals",
+   "cmd": "ALL",
+   "roles": "{public}",
+   "using_expr": "(salon_id IN ( SELECT salons.id\n   FROM salons\n  WHERE (salons.owner_id = ( SELECT auth.uid() AS uid))))",
+   "with_check": ""
+  }
+ ]
+}

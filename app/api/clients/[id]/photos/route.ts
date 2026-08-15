@@ -7,6 +7,7 @@ import { checkUserBanned } from "@/lib/feature-flags";
 import { clientBelongsToSalon } from "@/lib/verify-salon-client";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 import { requireUploadHeader, verifyAndStripImage } from "@/lib/upload-security";
+import { signedUrl } from "@/lib/storage";
 
 // GET /api/clients/[id]/photos — Get client photos (salon owner only)
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -29,7 +30,26 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     .order("created_at", { ascending: false });
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ items: data ?? [] });
+
+  // client-photos is a PRIVATE bucket, so a stored getPublicUrl() link resolves to nothing and
+  // every before/after photo a salon took of a client rendered as a broken image. photo_url now
+  // holds the bucket-relative PATH and a fresh short-lived link is signed per request instead of
+  // persisting one that expires. A row that cannot be signed is DROPPED rather than passed through
+  // as a raw path, because a raw path in an <img src> is just a broken image with extra steps.
+  // Ported by hand 2026-08-14 from a branch where this was fixed on 2026-07-12 and stranded.
+  // Deliberately WITHOUT that branch's rewrite of every error response in this file: no behaviour
+  // change, and main has moved past it.
+  const admin = createAdminSupabaseClient();
+  const items = (
+    await Promise.all(
+      (data ?? []).map(async (p) => {
+        const url = await signedUrl(admin, "client-photos", p.photo_url);
+        return url ? { ...p, photo_url: url } : null;
+      }),
+    )
+  ).filter((p): p is NonNullable<typeof p> => p !== null);
+
+  return NextResponse.json({ items });
 }
 
 // POST /api/clients/[id]/photos - Upload a client photo to Supabase Storage
@@ -95,21 +115,30 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   if (uploadError) return NextResponse.json({ error: uploadError.message }, { status: 500 });
 
-  const { data: urlData } = supabase.storage.from("client-photos").getPublicUrl(path);
-
-  // Save record
+  // Store the bucket-relative PATH, never a getPublicUrl() link: this bucket is private, so such a
+  // link resolves to nothing. Reads sign a fresh URL per request (see the GET above).
   const { data: photo, error } = await supabase
     .from("client_photos")
     .insert({
       salon_id: salon.id,
       customer_id: customerId,
       booking_id: bookingId ?? null,
-      photo_url: urlData.publicUrl,
+      photo_url: path,
       photo_type: photoType,
     })
     .select()
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ data: photo }, { status: 201 });
+
+  // Sign the just-uploaded photo for the immediate response too, so the screen that just uploaded
+  // it does not have to refetch. A failed sign is an error rather than a broken <img src>.
+  const signed = await signedUrl(admin, "client-photos", path);
+  if (!signed) {
+    return NextResponse.json(
+      { error: "Photo uploaded but could not be signed for display" },
+      { status: 500 },
+    );
+  }
+  return NextResponse.json({ data: { ...photo, photo_url: signed } }, { status: 201 });
 }

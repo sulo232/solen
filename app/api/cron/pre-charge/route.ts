@@ -11,6 +11,7 @@ import { verifyCronSecret } from "@/lib/cron-auth";
 import { DEFAULT_COMMISSION_RATE_PERCENT } from "@/lib/constants/billing";
 import { withCronRun } from "@/lib/cron-run";
 import { resolveSwissLocale } from "@/lib/format";
+import { resolvePromoDiscount } from "@/lib/promo/resolve-promo-discount";
 
 // Cron: Pre-charge saved cards 5 days before appointment. Daily.
 export async function GET(req: NextRequest) {
@@ -29,7 +30,10 @@ export async function GET(req: NextRequest) {
   // Find bookings with saved cards approaching in 5 days
   const { data: bookings } = await admin
     .from("bookings")
-    .select("id, user_id, salon_id, price_paid, stripe_customer_id, stripe_payment_method_id, starts_at, salons(name, stripe_account_id), services(name_de)")
+    // promo_code is fetched for the overcharge fix below. Without it here the fix would read
+    // undefined on every row and silently never discount anything, which is the exact
+    // looks-wired-does-nothing shape this project keeps getting caught by.
+    .select("id, user_id, salon_id, price_paid, promo_code, stripe_customer_id, stripe_payment_method_id, starts_at, salons(name, stripe_account_id), services(name_de)")
     .eq("payment_status", "card_saved")
     .eq("status", "confirmed")
     .gt("starts_at", now)
@@ -62,8 +66,35 @@ export async function GET(req: NextRequest) {
     const ratePercent = settingsValue?.rate_percent ?? DEFAULT_COMMISSION_RATE_PERCENT;
     // price_paid is CHF (numeric); convert to Rappen at the boundary. Both the
     // Stripe amount and platform_fee are integer Rappen (fixes the live 100x bug).
-    const amountRappen = toRappen(booking.price_paid ?? 0);
+    // This is the GROSS price BEFORE any promo, the same value booking-pay-intent calls
+    // fullRappen: bookings/route.ts states it outright where it saves the code, "its presence
+    // here grants NO discount", because every constraint is re-checked at charge time.
+    const grossRappen = toRappen(booking.price_paid ?? 0);
+
+    // OVERCHARGE FIX, ported by hand 2026-08-14 from an unmerged branch where it was written on
+    // 2026-07-07 and then stranded. This cron charged the gross and never looked at the promo the
+    // customer applied, so anyone who booked with a discount code AND saved their card instead of
+    // paying at checkout was charged the full price five days later. The pay-now path applies the
+    // discount correctly; only this path did not, which is why it survived: the two ways to pay
+    // disagreed and only one of them was ever exercised in testing.
+    // The shared helper is the same one the pay-now path uses, so both apply IDENTICAL rules: it
+    // re-reads the live promo row and re-checks active, dates, usage, minimum spend, salon scope
+    // and tier, then caps the discount so it can never exceed the charge or drop it below Stripe's
+    // 50 Rappen floor. The persisted code is never trusted as pre-validated.
+    const { promoDiscountRappen, promoCodeApplied } = await resolvePromoDiscount(admin, {
+      promoCode: (booking as { promo_code?: string | null }).promo_code,
+      fullPriceChf: booking.price_paid ?? 0,
+      salonId: booking.salon_id,
+      userId: booking.user_id,
+      baseAmountRappen: grossRappen,
+    });
+    const amountRappen = grossRappen - promoDiscountRappen;
     const platformFee = Math.round(amountRappen * (ratePercent / 100));
+    if (promoDiscountRappen > 0) {
+      console.log(
+        `[pre-charge] booking ${booking.id}: promo ${promoCodeApplied} took ${promoDiscountRappen} Rappen off ${grossRappen}`,
+      );
+    }
 
     try {
       // Off-session charge via the SHARED primitive (the single place that talks to

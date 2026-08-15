@@ -172,15 +172,26 @@ export async function middleware(request: NextRequest) {
 
       const { data: profile } = await supabase
         .from("profiles")
-        .select("role")
+        .select("role, staff_salon_id")
         .eq("id", user.id)
         .single();
 
       let role = profile?.role;
+      // A staff member accepted an invite from a salon. That flow sets staff_salon_id and never
+      // touches role (app/api/staff/accept-invite/route.ts:114), and 'staff' is not even a legal
+      // role value in the database, so every invited stylist arrived here as a 'customer' and was
+      // bounced to the homepage. The dashboard itself was fully built for them: it reads
+      // staff_salon_id, sets isStaff, and shows STAFF_NAV, a restricted four-item menu of their
+      // own calendar, breaks, portfolio and profile (DashboardLayout.tsx:106 and :246). Only this
+      // gate never learned they exist, so the whole invite flow was a dead end. Nobody has hit it
+      // yet, checked live 2026-08-14: zero invites have ever been sent and zero profiles carry a
+      // staff_salon_id, so this is fixed before the first stylist is invited rather than after.
+      // Admin-only paths stay closed to them: that check below tests role === "admin" separately.
+      const isInvitedStaff = Boolean(profile?.staff_salon_id);
 
       // If role is not salon_owner/admin, check if user owns a salon anyway
       // (role update may have failed during onboarding)
-      if (role !== "salon_owner" && role !== "admin") {
+      if (role !== "salon_owner" && role !== "admin" && !isInvitedStaff) {
         const { data: ownedSalon } = await supabase
           .from("salons")
           .select("id")
@@ -198,7 +209,7 @@ export async function middleware(request: NextRequest) {
         }
       }
 
-      if (role !== "salon_owner" && role !== "admin") {
+      if (role !== "salon_owner" && role !== "admin" && !isInvitedStaff) {
         const url = request.nextUrl.clone();
         url.pathname = `/${currentLocale}`;
         const redirect = NextResponse.redirect(url);

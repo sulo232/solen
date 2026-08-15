@@ -7,6 +7,7 @@ import { checkUserBanned } from "@/lib/feature-flags";
 import { getActiveSalon } from "@/lib/active-salon";
 import { clientBelongsToSalon } from "@/lib/verify-salon-client";
 import { requireUploadHeader, verifyAndStripImage } from "@/lib/upload-security";
+import { signedUrl } from "@/lib/storage";
 
 // POST /api/dashboard/coiffeur/formula-photo
 // FormData fields: file (File), formula_id (string), type ("before"|"after"), client_id? (string)
@@ -91,11 +92,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: uploadError.message }, { status: 500 });
   }
 
-  const { data: publicUrlData } = admin.storage
-    .from("formula-photos")
-    .getPublicUrl(storagePath);
+  // formula-photos is a PRIVATE bucket, so the getPublicUrl() link this used to store resolved to
+  // nothing and every colour-formula before/after photo rendered as a broken image. Store the
+  // bucket-relative PATH; whatever displays it signs a short-lived link at read time
+  // (lib/storage.ts signedUrl), rather than persisting a link that expires.
+  // Same fix as app/api/clients/[id]/photos, ported by hand 2026-08-14 from a stranded branch.
+  const photoUrl = storagePath;
 
-  const photoUrl = publicUrlData.publicUrl;
+  // The response still carries a usable link so the screen that just uploaded does not refetch.
+  const signedForResponse = await signedUrl(admin, "formula-photos", storagePath);
 
   // Attach the photo to the formula (best-effort, does not block the response).
   // NOTE: `coiffeur_formula_photos` is not a real table (checked lib/database.types.ts,
@@ -110,5 +115,13 @@ export async function POST(req: NextRequest) {
     // Ignore update errors, the URL is still returned even if the formula row is gone
   }
 
-  return NextResponse.json({ url: photoUrl }, { status: 201 });
+  // The stored value is the path; the RESPONSE carries a link that actually loads. Returning the
+  // bare path here would hand the screen a broken image, which is the whole defect being fixed.
+  if (!signedForResponse) {
+    return NextResponse.json(
+      { error: "Photo uploaded but could not be signed for display" },
+      { status: 500 },
+    );
+  }
+  return NextResponse.json({ url: signedForResponse }, { status: 201 });
 }

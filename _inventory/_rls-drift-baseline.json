@@ -1,0 +1,5 @@
+{
+ "_comment": "Count of live RLS policies not found in any migration file, as of the last accepted baseline. rls-drift.mjs fails if the live count exceeds this.",
+ "count": 224,
+ "generated": "2026-07-07"
+}

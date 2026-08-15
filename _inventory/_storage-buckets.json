@@ -1,0 +1,47 @@
+{
+  "_comment": "Known Supabase Storage buckets (source of truth for no-phantom-bucket-gate). Regenerate from live after adding a bucket: select id, public from storage.buckets. Last synced 2026-07-12 (+staff-portfolio-images).",
+  "buckets": {
+    "barber-portfolio-images": {
+      "public": true
+    },
+    "chat-media": {
+      "public": false
+    },
+    "client-photos": {
+      "public": false
+    },
+    "db-backups": {
+      "public": false
+    },
+    "discovery-images": {
+      "public": true
+    },
+    "gift-card-assets": {
+      "public": true
+    },
+    "nail-inspo-images": {
+      "public": false
+    },
+    "nail-portfolio-images": {
+      "public": true
+    },
+    "salon-gallery": {
+      "public": true
+    },
+    "service-photos": {
+      "public": true
+    },
+    "review-photos": {
+      "public": true
+    },
+    "salon-documents": {
+      "public": false
+    },
+    "formula-photos": {
+      "public": false
+    },
+    "staff-portfolio-images": {
+      "public": true
+    }
+  }
+}
