@@ -92,10 +92,10 @@ function stackInto(slot, doc){
   slot.style.overflow = "visible";
   slot.style.background = "transparent";
   SALON_PHOTOS.slice(0, 3).forEach(function(src, i){
-    var rot = [-9, 5, 0][i], off = [12, 5, 0][i], top = [6, 3, 0][i];
+    var rot = [-10, 5, 0][i], off = [10, 4, 0][i], top = [5, 2, 0][i];
     var d = doc.createElement("div");
     d.style.cssText =
-      "position:absolute;right:" + off + "px;top:" + top + "px;width:76px;height:76px;" +
+      "position:absolute;right:" + off + "px;top:" + top + "px;width:58px;height:58px;" +
       "border-radius:14px;overflow:hidden;transform:rotate(" + rot + "deg);" +
       "box-shadow:0 2px 10px rgba(10,10,10,.16);border:2px solid #fff;z-index:" + (i + 1) + ";background:#F4F4F5";
     d.innerHTML = '<img src="' + src + '" style="width:100%;height:100%;object-fit:cover;display:block">';
@@ -137,45 +137,80 @@ function stylistRow(doc){
 // correct behaviour and also means there is nothing to stack onto in a logged-out preview. So when
 // it is absent we build it in ITS OWN measured anatomy (radius 18, padding 12, gap 14, 88 slot)
 // rather than inventing a different card, and put the stack in that.
-function continueCard(doc){
+// MEASURED off his screenshot, not eyeballed. Numbers below are pt on a 402pt-wide phone:
+//   card starts 24pt from the left, is 321pt wide, and the NEXT card peeks in at the right edge,
+//   so it is a horizontal carousel, not one full-width block.
+//   photo inside the card is about 70pt, sits on the right, tilted with a white frame.
+//   the whole thing sits BELOW the category pills, not above the search bar. That placement was
+//   the thing he was looking at when he said "what is this placement".
+function continueRail(doc){
   var wrap = doc.createElement("div");
-  wrap.style.cssText = "padding:0 20px 20px";
-  var card = doc.createElement("a");
-  card.href = "#";
-  card.style.cssText =
-    "display:flex;width:100%;align-items:center;gap:14px;border-radius:18px;border:1px solid #E4E4E7;" +
-    "background:#fff;padding:12px;text-decoration:none;color:inherit;" +
-    "box-shadow:0 4px 16px -8px rgba(10,10,10,.18)";
-  var left = doc.createElement("span");
-  left.style.cssText = "min-width:0;flex:1";
-  left.innerHTML =
-    '<span style="display:inline-flex;align-items:center;gap:5px;margin-bottom:3px;font:600 12px Inter,sans-serif;color:#6B6B6B">' +
-      '<span style="width:7px;height:7px;border-radius:999px;background:#6B6B6B;display:inline-block"></span>Pick up where you left off</span>' +
-    '<span style="display:block;font:500 14px/19px Inter,sans-serif;color:#0A0A0A">Continue searching for Coiffeur in Basel</span>' +
-    '<span style="display:block;margin-top:3px;font:400 12px Inter,sans-serif;color:#6B6B6B">Sat 30 Aug, 1 person</span>';
-  var slot = doc.createElement("span");
-  slot.style.cssText = "position:relative;height:88px;width:88px;flex:0 0 88px;border-radius:14px";
-  card.appendChild(left); card.appendChild(slot);
-  wrap.appendChild(card);
-  return { wrap: wrap, slot: slot };
+  wrap.style.cssText = "padding:4px 0 18px";
+  var rail = doc.createElement("div");
+  rail.style.cssText = "display:flex;gap:12px;overflow-x:auto;padding:0 24px 2px;scrollbar-width:none";
+  var slots = [];
+
+  [["Coiffeur in Basel", "Sat 30 Aug, 1 person"],
+   ["Barbershop in Basel", "Sun 31 Aug, 1 person"]].forEach(function(pair, idx){
+    var card = doc.createElement("a");
+    card.href = "#";
+    card.style.cssText =
+      "flex:0 0 321px;display:flex;align-items:center;gap:14px;border-radius:18px;" +
+      "background:#fff;padding:14px;text-decoration:none;color:inherit;" +
+      "box-shadow:0 6px 20px -10px rgba(10,10,10,.20), 0 1px 2px rgba(10,10,10,.06)";
+    var left = doc.createElement("span");
+    left.style.cssText = "min-width:0;flex:1";
+    left.innerHTML =
+      '<span style="display:block;font:600 17px/22px \'Inter Tight\',Inter,sans-serif;color:#0A0A0A">' +
+        'Continue searching for ' + pair[0] + '</span>' +
+      '<span style="display:block;margin-top:6px;font:400 13px Inter,sans-serif;color:#6B6B6B">' + pair[1] + '</span>';
+    var slot = doc.createElement("span");
+    slot.style.cssText = "position:relative;height:70px;width:70px;flex:0 0 70px";
+    card.appendChild(left); card.appendChild(slot);
+    rail.appendChild(card);
+    slots.push(slot);
+  });
+
+  wrap.appendChild(rail);
+  return { wrap: wrap, slots: slots };
 }
 
 function applyChange(doc){
   if (doc.querySelector("[data-feed-order]")) return 1;
   var did = 0;
 
-  var slots = doc.querySelectorAll('span[class*="h-[88px]"], div[class*="h-[88px]"]');
-  if (slots.length) { stackInto(slots[0], doc); did = 1; }
-  else {
-    var first = doc.querySelector("main section, main > div, main");
-    if (first) {
-      var built = continueCard(doc);
-      (first.parentElement || doc.body).insertBefore(built.wrap, first);
-      stackInto(built.slot, doc);
-      slots = [built.slot];
-      did = 1;
+  // Our own continue card, when it renders, sits ABOVE the search bar. His screenshot puts it
+  // BELOW the category pills. So hide ours and place the rail after the pills instead.
+  var ours = doc.querySelectorAll('span[class*="h-[88px]"], div[class*="h-[88px]"]');
+  if (ours.length) {
+    var card = ours[0];
+    for (var up = 0; up < 5 && card.parentElement; up++) card = card.parentElement;
+    card.style.display = "none";
+  }
+
+  // Find the category pills row by its own labels, then insert straight after its container.
+  var anchor = null;
+  var all = doc.querySelectorAll("a,button,span,div");
+  for (var i = 0; i < all.length && !anchor; i++) {
+    var t = (all[i].textContent || "").trim();
+    if (t === "Coiffeur" || t === "Barber" || t === "Barbershop") anchor = all[i];
+  }
+  var host = anchor;
+  if (host) {
+    // climb to the scrolling row that holds every pill, not just the one pill
+    for (var u = 0; u < 6 && host.parentElement; u++) {
+      host = host.parentElement;
+      if ((host.textContent || "").indexOf("Coiffeur") > -1 && (host.textContent || "").indexOf("Barber") > -1) break;
     }
   }
+  var built = continueRail(doc);
+  var target = host || doc.querySelector("main section, main > div, main");
+  if (target && target.parentElement) {
+    target.parentElement.insertBefore(built.wrap, target.nextSibling);
+    built.slots.forEach(function(s){ stackInto(s, doc); });
+    did = 1;
+  }
+  var slots = built.slots;
 
   var sections = doc.querySelectorAll("section");
   if (sections.length) {
@@ -196,12 +231,17 @@ function applyChange(doc){
 var started = false;
 function startAfter(){
   if (started) return; started = true;
-  var f = document.getElementById("afterFrame"), tries = 0;
-  var iv = setInterval(function(){
-    tries++;
-    try { var doc = f.contentDocument; if (doc && doc.querySelector("h1,h2,h3")) { if (applyChange(doc) > 0) clearInterval(iv); } } catch(e){}
-    if (tries > 120) clearInterval(iv);
-  }, 200);
+  var f = document.getElementById("afterFrame");
+  // The page hydrates and re-renders after first paint, which throws away anything injected
+  // before that. So this does NOT stop on first success: it keeps watching and puts the card
+  // back whenever React removes it. That re-render was why the card kept vanishing.
+  setInterval(function(){
+    try {
+      var doc = f.contentDocument;
+      if (!doc || !doc.querySelector("h1,h2,h3")) return;
+      if (!doc.querySelector("[data-feed-order]")) applyChange(doc);
+    } catch(e){}
+  }, 400);
 }
 function show(w){
   document.getElementById("paneBefore").classList.toggle("hidden", w!=="now");
