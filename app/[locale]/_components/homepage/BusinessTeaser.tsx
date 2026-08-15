@@ -55,7 +55,7 @@ export default function BusinessTeaser() {
               at the SAME size as the small grey text on a salon card. Measured on
               the live homepage: card meta = 12px, this eyebrow was 13px. */}
           <p className="font-body text-[12px] font-semibold text-s-ink-2">
-            Für Salons
+            {t("eyebrow")}
           </p>
           {/* V3-D193 (2026-05-26): Page H2 weight 900 → 800 per "too bold" sweep.
               Tracking widened -0.035 → -0.03em. V3-D190 size kept. */}
@@ -63,19 +63,19 @@ export default function BusinessTeaser() {
             className="mt-4 font-display font-semibold leading-[1.0] tracking-[-0.03em] text-s-ink"
             style={{ fontSize: "clamp(25px, 4vw, 40px)" }}
           >
-            Solen für<br />
-            Ihr Geschäft.
+            {t("headlineLine1")}<br />
+            {t("headlineLine2")}
           </h2>
           {/* V3-D220 (2026-05-26, /business rebuild): dropped md:text-[17px] step (out of Scale B).
               Use clamp(14,3.5vw,16) hero-sub spec from SOURCE.md §3. */}
           <p className="mt-5 max-w-[460px] font-body text-[clamp(14px,3.5vw,16px)] font-normal leading-[1.55] text-s-ink-2">
-            Mehr Buchungen, weniger Aufwand, für Ihr Salon-Team.
+            {t("teaserSub")}
           </p>
           <Link
             href="/partner"
             className="mt-8 inline-flex items-center gap-2 rounded-full bg-s-ink px-7 py-3.5 font-body text-[14px] font-semibold text-white shadow-[0_4px_14px_rgba(0,0,0,0.10)] transition-all duration-200 ease-glide hover:-translate-y-[1px] hover:bg-black hover:shadow-[0_6px_20px_rgba(0,0,0,0.18)] active:scale-[0.97] active:duration-[80ms] md:text-[15px]"
           >
-            Mehr erfahren
+            {t("learnMore")}
             <ArrowRight size={16} strokeWidth={2.5} aria-hidden />
           </Link>
         </div>

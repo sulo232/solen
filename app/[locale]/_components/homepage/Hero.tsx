@@ -6,6 +6,7 @@ import { Calendar, MapPin, Search } from "lucide-react";
 // Component file kept at ./_components/homepage/HeroHeadline.tsx for revert.
 // import HeroHeadline from "./HeroHeadline";
 import { getSessionUser } from "@/lib/supabase";
+import { getTranslations } from "next-intl/server";
 
 /**
  * Homepage hero — V3 (post V2-D26 typography + V2-D15-3 brand pivot).
@@ -32,6 +33,9 @@ import { getSessionUser } from "@/lib/supabase";
  *     separate page-level concern, not Hero's responsibility).
  */
 export default async function Hero({ locale }: { locale: string }) {
+  // 2026-08-15 i18n sweep: the h1 below was a hardcoded German literal. This is an async server
+  // component, so it takes getTranslations, not the useTranslations hook.
+  const t = await getTranslations({ locale, namespace: "home.hero" });
   // V2-D66 (2026-05-16, Hayden move #14): personalized greeting for authed users.
   // Fallback chain: profile.display_name → email local part (capitalized) → no
   // greeting. Anon visitors see the h1-only hero as before — no fake "Hallo".
@@ -201,7 +205,7 @@ export default async function Hero({ locale }: { locale: string }) {
               Still the page's biggest type, but stops bullying the fold so the
               search is reachable without scrolling. */}
           <h1 className="mb-3 font-display text-[clamp(30px,8vw,44px)] font-semibold leading-[1.08] tracking-[-0.02em] text-s-ink">
-            Termine, sofort bestätigt.
+            {t("instantlyConfirmed")}
           </h1>
           {/* V3-D327: Fresha sub 16px mobile / 22px desktop, weight 400, lh 1.3-1.4 */}
           {/* V3-D330: Hero sub tracking -0.015em → -0.005em per LOCKFILE §2.5 canonical Hero sub recipe. */}

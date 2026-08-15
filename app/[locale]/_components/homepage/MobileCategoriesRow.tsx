@@ -4,7 +4,7 @@ import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Check } from "lucide-react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useCustomerPrefs, type CustomerPrefs } from "./useCustomerPrefs";
 
 /**
@@ -55,6 +55,11 @@ export default function MobileCategoriesRow({
   prefsOverride?: CustomerPrefs | null;
 } = {}) {
   const locale = useLocale();
+  // 2026-08-15 i18n sweep: the "Für Sie" heading below was a hardcoded German literal.
+  // Note for whoever reads this next: the whole <section> carries `hidden`, so it renders
+  // nowhere today. Translated anyway rather than skipped, because unlike the dead function
+  // in Hero.tsx this component IS imported and rendered, and one class change makes it visible.
+  const t = useTranslations("home.featured");
   const fetched = useCustomerPrefs();
   const prefs = prefsOverride !== undefined ? prefsOverride : fetched;
   const picked = prefs?.categories ?? [];
@@ -84,7 +89,7 @@ export default function MobileCategoriesRow({
     <section aria-label="Kategorien" className="relative z-[1] mb-4 hidden">
       <div className="mx-auto max-w-[1280px] px-6 py-2">
         <h2 className="mb-3 font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.25] tracking-[-0.01em] text-s-ink">
-          Für Sie
+          {t("forYou")}
         </h2>
 
         <div className="grid grid-cols-3 gap-x-3 gap-y-4">

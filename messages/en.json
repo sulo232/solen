@@ -183,7 +183,8 @@
       "sub": "Find and book the best salons in your city — instantly, no phone needed.",
       "trustRating": "avg rating",
       "trustReviews": "reviews",
-      "trustFree": "Free to book"
+      "trustFree": "Free to book",
+      "instantlyConfirmed": "Appointments, confirmed instantly."
     },
     "cta": {
       "findSalon": "Find salon",
@@ -195,7 +196,8 @@
       "salonsCount": "Salons",
       "comingSoon": "Coming soon",
       "more": "Discover more categories",
-      "browseTitle": "Browse by category."
+      "browseTitle": "Browse by category.",
+      "whatToday": "What are you after today?"
     },
     "howItWorks": {
       "eyebrow": "For new customers",
@@ -230,7 +232,8 @@
       "beliebtInZuerich": "Popular in Zurich",
       "beliebtInBern": "Popular in Berne",
       "nearbyPros": "Pros near you",
-      "forYou": "Recommended for you"
+      "forYou": "Recommended for you",
+      "artistOfMonth": "Artist of the month"
     },
     "trending": {
       "eyebrow": "Trending",
@@ -277,7 +280,16 @@
       "firstMonth": "in the first month",
       "newCustomers": "New Customers",
       "instantConfirm": "Instant confirmation",
-      "forSalons": "Solen for salons"
+      "forSalons": "Solen for salons",
+      "becomePartner": "Become a Solen partner.",
+      "thanks": "Thank you. We will get back to you within 24 hours.",
+      "demoService": "Cut and blow-dry",
+      "demoConfirmed": "Confirmed",
+      "headlineLine1": "Solen for",
+      "headlineLine2": "your business.",
+      "teaserSub": "More bookings, less admin, for your salon team.",
+      "learnMore": "Learn more",
+      "forStores": "For stores"
     },
     "trust": {
       "securePayment": "Secure payment — Stripe encrypted",
@@ -300,7 +312,13 @@
       "rebook_cta": "Book again",
       "quartiers": "Discover your city",
       "quartiers_label": "YOUR CITY",
-      "quartiers_all": "View all →"
+      "quartiers_all": "View all →",
+      "whatYouCan": "What you can do",
+      "whatYouCanLong": "What you can do with Solen",
+      "theApp": "The Solen app",
+      "fromYourPocket": "Straight from your pocket.",
+      "walkInSub": "No appointment. See the wait and take your place.",
+      "allWalkIns": "All walk-ins"
     },
     "heroCarousel": {
       "label": "Popular near you",
@@ -399,7 +417,8 @@
       "browseAll": "Browse all",
       "inspirationText": "Get inspired by thousands of styles",
       "inspirationTitle": "Find your inspiration.",
-      "browseAllLooks": "Explore all looks"
+      "browseAllLooks": "Explore all looks",
+      "inspireSub": "Get inspired by thousands of looks"
     },
     "map": {
       "eyebrow": "Near you",

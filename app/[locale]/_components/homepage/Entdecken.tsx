@@ -419,7 +419,7 @@ export default function Entdecken() {
                 {t("browseAll")}
               </h3>
               <p className="mt-2 font-body text-[12px] text-s-ink-2">
-                Lassen Sie sich von tausenden Looks inspirieren
+                {t("inspireSub")}
               </p>
             </div>
           </Link>
