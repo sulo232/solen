@@ -22,6 +22,7 @@ import { SalonOpeningTimes } from "./SalonOpeningTimes";
 import { SalonAdditionalInfo } from "./SalonAdditionalInfo";
 import { SalonOtherLocations } from "./SalonOtherLocations";
 import { SalonVenuesNearby } from "./SalonVenuesNearby";
+import { SalonRecentlyViewed } from "./SalonRecentlyViewed";
 import { SalonSidebar } from "./SalonSidebar";
 import { SalonMobileBookBar } from "./SalonMobileBookBar";
 import { SectionErrorBoundary } from "../primitives/SectionErrorBoundary";
@@ -378,6 +379,12 @@ export function SalonDetailV3({
             {salon.siblings && salon.siblings.length > 0 && (
               <SalonOtherLocations siblings={salon.siblings} locale={locale} />
             )}
+
+            {/* Two rails, one per half of his 2026-08-15 ask ("specific to their searches and
+                something similar"). History first because it is personal and usually shorter, then
+                the similar-stores rail, which always has rows and so carries the block on a first
+                visit when the history one hides itself. */}
+            <SalonRecentlyViewed excludeSlug={slug} />
 
             <SalonVenuesNearby
               cat={primaryCategory}
