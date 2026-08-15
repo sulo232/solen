@@ -128,7 +128,7 @@
       "runtimeExecutable": "bash",
       "runtimeArgs": [
         "-lc",
-        "while true; do /opt/homebrew/bin/cloudflared tunnel --url http://localhost:3000 --metrics localhost:20245 --no-autoupdate; sleep 2; done"
+        "/opt/homebrew/bin/cloudflared tunnel --url http://localhost:3000 --metrics localhost:20245 --no-autoupdate"
       ],
       "port": 20245,
       "autoPort": false
