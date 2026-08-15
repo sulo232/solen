@@ -21,6 +21,15 @@
 // "Later today" list, and the "In the chair" panel, below reuse those exact two class strings
 // via the GROUPED_CARD / ROW constants, per this task's own literal brief ("Use these EXACT
 // strings"). Picking whitespace-only rows instead would mean NOT composing the real component.
+//
+// EXTENDED 2026-08-15: four more states of the same screen (Late, Arrived, Undo, Log). All four
+// reuse GROUPED_CARD / ROW / ROW_TITLE / ROW_META / SECTION_HEADING / PRIMARY_BUTTON /
+// SECONDARY_BUTTON, no new card shape. Late and Arrived read/write two small local maps
+// (arrivedTimes) layered on top of the real `bookings` array rather than a new prop, since the
+// underlying booking objects are real (today's actual confirmed rows for this salon). The Log
+// state's entries are derived from the real `bookings`/`queue` props only, no invented sentences.
+// The undo bar (state 6) is implemented once (`undo` state + `fireUndo`) and reused by every
+// resolving action across every state, per the brief.
 
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
@@ -71,7 +80,7 @@ interface TerminalProps {
   staff: TerminalStaff[];
 }
 
-type Variant = "quiet" | "new" | "move";
+type Variant = "quiet" | "new" | "move" | "late" | "arrived" | "undo" | "log";
 
 const MOVE_TIME_CHIPS = ["09:45", "10:30", "11:15", "12:00", "12:45", "15:15", "16:45", "18:15"];
 
@@ -94,6 +103,10 @@ const SECONDARY_BUTTON =
   "font-body flex h-11 shrink-0 items-center rounded-full border border-s-border bg-white px-5 text-[13px] font-medium text-s-ink transition-[colors,transform] hover:bg-s-bg-sunken active:scale-[0.97] active:duration-[80ms] active:ease-glide md:px-6";
 const PRIMARY_BUTTON =
   "font-body flex w-full items-center justify-center gap-2 rounded-full bg-s-ink py-3.5 text-[15px] font-semibold text-white transition-[colors,transform] hover:bg-black active:bg-black active:scale-[0.97] active:duration-[80ms] active:ease-glide";
+// State 7 "Log": the same size/color as ROW_TITLE, weight dropped to normal (log copy is not a
+// row's primary entity name), so this is ROW_TITLE with only the weight token swapped, not a
+// hand-typed new string.
+const LOG_TEXT = ROW_TITLE.replace("font-medium", "font-normal");
 
 function chf(amount: number): string {
   return `CHF ${amount.toFixed(2)}`;
@@ -128,6 +141,18 @@ function firstName(fullName: string): string {
   return fullName.split(" ")[0] ?? fullName;
 }
 
+// State 6, "Undo": the sentence names the action taken; the message wording per resolve verb.
+function undoVerb(status: "completed" | "no_show" | "cancelled"): string {
+  if (status === "completed") return "marked done";
+  if (status === "no_show") return "marked no-show";
+  return "cancelled";
+}
+
+interface ArrivedRecord {
+  arrivedAtIso: string;
+  startedIso: string;
+}
+
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return <h2 className={SECTION_HEADING}>{children}</h2>;
 }
@@ -142,6 +167,12 @@ export default function Terminal({ salonName, bookings: initialBookings, queue: 
   const [bellOn, setBellOn] = useState(true);
   const [queuePaused, setQueuePaused] = useState(false);
   const [mounted, setMounted] = useState(false);
+  // State 5 "Arrived": bookingId -> when they arrived + the moment their clock started ticking.
+  // Layered on top of the real bookings array rather than a new field, since it is set locally by
+  // the two places that mark an arrival (the Late action card, and the Arrived tab's own demo).
+  const [arrivedTimes, setArrivedTimes] = useState<Record<string, ArrivedRecord>>({});
+  // State 6 "Undo": one shared bar, fired by every resolving action across every state.
+  const [undo, setUndo] = useState<{ message: string; restore: () => void } | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -150,6 +181,22 @@ export default function Terminal({ salonName, bookings: initialBookings, queue: 
     document.body.style.overflow = "hidden";
     return () => { document.body.style.overflow = prev; };
   }, []);
+
+  useEffect(() => {
+    if (!undo) return;
+    const timer = setTimeout(() => setUndo(null), 10_000);
+    return () => clearTimeout(timer);
+  }, [undo]);
+
+  function fireUndo(message: string, restore: () => void) {
+    setUndo({ message, restore });
+  }
+
+  function handleUndoClick() {
+    if (!undo) return;
+    undo.restore();
+    setUndo(null);
+  }
 
   const pendingBooking = useMemo(
     () => bookings.find((b) => b.status === "pending_approval") ?? null,
@@ -188,6 +235,64 @@ export default function Terminal({ salonName, bookings: initialBookings, queue: 
     [bookings, moveBookingId]
   );
 
+  // State 4 "Late": the four degrees, read off laterToday by index. Fewer than four confirmed
+  // rows degrades gracefully, each slot is optional.
+  const lateRows = useMemo(
+    () => ({
+      dueNow: laterToday[0] ?? null,
+      fiveLate: laterToday[1] ?? null,
+      fifteenLate: laterToday[2] ?? null,
+      veryLate: laterToday[3] ?? null,
+    }),
+    [laterToday]
+  );
+
+  // "Later today" render order for the Late variant only: the 15-min-late row moves to the top,
+  // the 30+-min-late row is lifted out entirely (rendered as the action card instead). Every
+  // other variant renders laterToday unchanged.
+  const laterTodayRows = useMemo(() => {
+    if (variant !== "late") {
+      return laterToday.map((booking) => ({ booking, lateLabel: null as { text: string; className: string } | null }));
+    }
+    const rows: { booking: TerminalBooking; lateLabel: { text: string; className: string } | null }[] = [];
+    if (lateRows.fifteenLate) {
+      rows.push({ booking: lateRows.fifteenLate, lateLabel: { text: "15 min late", className: "text-s-error" } });
+    }
+    if (lateRows.dueNow) {
+      rows.push({ booking: lateRows.dueNow, lateLabel: { text: "Due now", className: "text-s-ink" } });
+    }
+    if (lateRows.fiveLate) {
+      rows.push({ booking: lateRows.fiveLate, lateLabel: { text: "5 min late", className: "text-s-ink-2" } });
+    }
+    for (const booking of laterToday.slice(4)) rows.push({ booking, lateLabel: null });
+    return rows;
+  }, [variant, laterToday, lateRows]);
+
+  // State 7 "Log": derived strictly from the real bookings/queue props, newest first. Each entry
+  // type only fires when its real source field is present, nothing invented.
+  const logEntries = useMemo(() => {
+    const entries: { id: string; timeIso: string; text: string }[] = [];
+    if (inChair && inChair.startedAt && inChair.staffName) {
+      entries.push({
+        id: `chair:${inChair.id}`,
+        timeIso: inChair.startedAt,
+        text: `${inChair.staffName} started ${inChair.customerName}`,
+      });
+    }
+    for (const b of bookings) {
+      if (b.status === "completed" && b.staffName) {
+        entries.push({ id: `done:${b.id}`, timeIso: b.endsAt, text: `${b.staffName} finished ${b.customerName}` });
+      } else if (b.status === "confirmed") {
+        entries.push({ id: `booked:${b.id}`, timeIso: b.createdAt, text: `${b.customerName} booked ${b.serviceName}` });
+      } else if (b.status === "pending_approval") {
+        entries.push({ id: `req:${b.id}`, timeIso: b.createdAt, text: `${b.customerName} requested ${b.serviceName}` });
+      }
+    }
+    return entries
+      .sort((a, b) => new Date(b.timeIso).getTime() - new Date(a.timeIso).getTime())
+      .slice(0, 12);
+  }, [bookings, inChair]);
+
   function openMove(bookingId: string) {
     setMoveBookingId(bookingId);
     setSelectedChip(null);
@@ -209,19 +314,50 @@ export default function Terminal({ salonName, bookings: initialBookings, queue: 
       setMoveBookingId(laterToday.find((b) => b.status === "confirmed")?.id ?? null);
       setSelectedChip(null);
     }
+    // Demo entry points for the two states that show the shared undo bar without a manual click:
+    // Arrived pre-marks the first Later-today row (only once, if nothing is arrived yet);
+    // Undo demonstrates the bar over the Quiet screen using the real pending request.
+    if (next === "arrived" && !laterToday.some((b) => arrivedTimes[b.id])) {
+      const first = laterToday[0];
+      if (first) {
+        const now = new Date();
+        const started = new Date(now.getTime() - 4 * 60_000).toISOString();
+        setArrivedTimes((prev) => ({ ...prev, [first.id]: { arrivedAtIso: now.toISOString(), startedIso: started } }));
+        fireUndo(`${first.customerName} marked arrived`, () => {
+          setArrivedTimes((prev) => {
+            const rest = { ...prev };
+            delete rest[first.id];
+            return rest;
+          });
+        });
+      }
+    }
+    if (next === "undo" && pendingBooking) {
+      const prevBookings = bookings;
+      const id = pendingBooking.id;
+      const name = pendingBooking.customerName;
+      setBookings((p) => p.map((b) => (b.id === id ? { ...b, status: "no_show" } : b)));
+      fireUndo(`${name} marked no-show`, () => setBookings(prevBookings));
+    }
     setVariant(next);
   }
 
   function acceptPending() {
     if (!pendingBooking) return;
+    const prev = bookings;
     const id = pendingBooking.id;
-    setBookings((prev) => prev.map((b) => (b.id === id ? { ...b, status: "confirmed" } : b)));
+    const name = pendingBooking.customerName;
+    setBookings((p) => p.map((b) => (b.id === id ? { ...b, status: "confirmed" } : b)));
+    fireUndo(`${name} confirmed`, () => setBookings(prev));
   }
 
   function declinePending() {
     if (!pendingBooking) return;
+    const prev = bookings;
     const id = pendingBooking.id;
-    setBookings((prev) => prev.filter((b) => b.id !== id));
+    const name = pendingBooking.customerName;
+    setBookings((p) => p.filter((b) => b.id !== id));
+    fireUndo(`${name} declined`, () => setBookings(prev));
   }
 
   function startWaiting(id: string) {
@@ -236,14 +372,37 @@ export default function Terminal({ salonName, bookings: initialBookings, queue: 
     setExpandedKey(null);
   }
 
-  function resolveWaiting(id: string, next: "completed" | "no_show" | "cancelled") {
-    setQueue((prev) => prev.map((q) => (q.id === id ? { ...q, status: next } : q)));
+  function resolveWaiting(entry: TerminalQueueEntry, next: "completed" | "no_show" | "cancelled") {
+    const prev = queue;
+    setQueue((p) => p.map((q) => (q.id === entry.id ? { ...q, status: next } : q)));
     setExpandedKey(null);
+    fireUndo(`${entry.customerName} ${undoVerb(next)}`, () => setQueue(prev));
   }
 
-  function resolveBooking(id: string, next: "completed" | "no_show" | "cancelled") {
-    setBookings((prev) => prev.map((b) => (b.id === id ? { ...b, status: next } : b)));
+  function resolveBooking(booking: TerminalBooking, next: "completed" | "no_show" | "cancelled") {
+    const prev = bookings;
+    setBookings((p) => p.map((b) => (b.id === booking.id ? { ...b, status: next } : b)));
     setExpandedKey(null);
+    fireUndo(`${booking.customerName} ${undoVerb(next)}`, () => setBookings(prev));
+  }
+
+  // State 4 "Late" action card: the 30+-minute row's two outcomes.
+  function markLateArrived(booking: TerminalBooking) {
+    const now = new Date().toISOString();
+    setArrivedTimes((prev) => ({ ...prev, [booking.id]: { arrivedAtIso: now, startedIso: now } }));
+    fireUndo(`${booking.customerName} marked arrived`, () => {
+      setArrivedTimes((prev) => {
+        const rest = { ...prev };
+        delete rest[booking.id];
+        return rest;
+      });
+    });
+  }
+
+  function markLateNoShow(booking: TerminalBooking) {
+    const prev = bookings;
+    setBookings((p) => p.map((b) => (b.id === booking.id ? { ...b, status: "no_show" } : b)));
+    fireUndo(`${booking.customerName} marked no-show`, () => setBookings(prev));
   }
 
   function withZurichClock(originalIso: string, hours: number, minutes: number): string {
@@ -276,9 +435,9 @@ export default function Terminal({ salonName, bookings: initialBookings, queue: 
 
   const screen = (
     <div className="fixed inset-0 z-[10000] overflow-y-auto overscroll-contain bg-s-bg-sunken">
-      {/* 1. State switch, three real TabPills. */}
+      {/* 1. State switch, seven real TabPills. Scrolls horizontally on a phone. */}
       <div className="sticky top-0 z-30 bg-white">
-        <div className="mx-auto flex min-h-11 w-full max-w-[760px] items-center gap-2 px-4 py-2">
+        <div className="mx-auto flex min-h-11 w-full max-w-[760px] items-center gap-2 overflow-x-auto scrollbar-hide px-4 py-2">
           <TabPill active={variant === "quiet"} onClick={() => selectVariant("quiet")} size="sm">
             Quiet
           </TabPill>
@@ -287,6 +446,18 @@ export default function Terminal({ salonName, bookings: initialBookings, queue: 
           </TabPill>
           <TabPill active={variant === "move"} onClick={() => selectVariant("move")} size="sm">
             Move
+          </TabPill>
+          <TabPill active={variant === "late"} onClick={() => selectVariant("late")} size="sm">
+            Late
+          </TabPill>
+          <TabPill active={variant === "arrived"} onClick={() => selectVariant("arrived")} size="sm">
+            Arrived
+          </TabPill>
+          <TabPill active={variant === "undo"} onClick={() => selectVariant("undo")} size="sm">
+            Undo
+          </TabPill>
+          <TabPill active={variant === "log"} onClick={() => selectVariant("log")} size="sm">
+            Log
           </TabPill>
         </div>
       </div>
@@ -403,9 +574,42 @@ export default function Terminal({ salonName, bookings: initialBookings, queue: 
           </div>
         ) : null}
 
-        {/* 4. The wait anchor , the screen's display anchor (FLOORS LAW 6, >= 28px) in Quiet.
-            In New booking / Move the action card above is the anchor, so this drops to one line. */}
-        {variant === "quiet" ? (
+        {/* 3. Action slot , Late (30+ minutes). Lifted out of Later today entirely into a question
+            card, same grammar as New booking / Move above. */}
+        {variant === "late" && lateRows.veryLate ? (
+          <div className={GROUPED_CARD + " p-5"}>
+            <span className="font-body text-[13px] font-medium text-s-error">30 minutes late</span>
+            <p className="font-display mt-4 text-[28px] font-semibold leading-tight text-s-ink">
+              {lateRows.veryLate.customerName}
+            </p>
+            <p className={ROW_META + " mt-4"}>
+              {lateRows.veryLate.serviceName}, {zurichTime(lateRows.veryLate.startsAt)}
+            </p>
+            <div className="mt-5 flex gap-2">
+              <button
+                type="button"
+                onClick={() => lateRows.veryLate && markLateArrived(lateRows.veryLate)}
+                className={PRIMARY_BUTTON.replace("w-full", "flex-1")}
+              >
+                They arrived
+              </button>
+              <button
+                type="button"
+                onClick={() => lateRows.veryLate && markLateNoShow(lateRows.veryLate)}
+                className={SECONDARY_BUTTON}
+              >
+                No-show
+              </button>
+            </div>
+          </div>
+        ) : null}
+
+        {/* 4. The wait anchor , the screen's display anchor (FLOORS LAW 6, >= 28px).
+            It carries the anchor in every state EXCEPT the three that put a 28px name in a card
+            above it (New booking, Move, Late), where two 28px elements would leave the screen with
+            no single biggest thing. Measured 2026-08-15: without this, Arrived / Undo / Log topped
+            out at 18px and failed the floor. */}
+        {!["new", "move", "late"].includes(variant) ? (
           <div>
             <p className="font-display text-[28px] font-semibold leading-tight tabular-nums text-s-ink">
               {waiting.length === 0 ? "No wait" : `${maxWait} min wait`}
@@ -490,21 +694,21 @@ export default function Terminal({ salonName, bookings: initialBookings, queue: 
                     <div className="mt-3 flex items-center gap-4">
                       <button
                         type="button"
-                        onClick={() => resolveWaiting(entry.id, "completed")}
+                        onClick={() => resolveWaiting(entry, "completed")}
                         className="font-body flex h-11 items-center text-[13px] font-normal text-s-ink"
                       >
                         Done
                       </button>
                       <button
                         type="button"
-                        onClick={() => resolveWaiting(entry.id, "no_show")}
+                        onClick={() => resolveWaiting(entry, "no_show")}
                         className="font-body flex h-11 items-center text-[13px] font-normal text-s-ink"
                       >
                         No-show
                       </button>
                       <button
                         type="button"
-                        onClick={() => resolveWaiting(entry.id, "cancelled")}
+                        onClick={() => resolveWaiting(entry, "cancelled")}
                         className="font-body flex h-11 items-center text-[13px] font-normal text-s-error"
                       >
                         Cancel
@@ -525,9 +729,10 @@ export default function Terminal({ salonName, bookings: initialBookings, queue: 
             <span className="font-body text-[13px] font-normal tabular-nums text-s-ink-2">{laterToday.length} to go</span>
           </div>
           <ul className={GROUPED_CARD + " mt-4"}>
-            {laterToday.map((booking) => {
+            {laterTodayRows.map(({ booking, lateLabel }) => {
               const key = `booking:${booking.id}`;
               const expanded = expandedKey === key;
+              const arrived = arrivedTimes[booking.id];
               return (
                 <li key={booking.id} className={ROW}>
                   <div className="flex items-center gap-3">
@@ -543,12 +748,25 @@ export default function Terminal({ salonName, bookings: initialBookings, queue: 
                       <span className="flex min-w-0 flex-1 flex-col">
                         <span className={ROW_TITLE + " truncate"}>{booking.customerName}</span>
                         <span className={ROW_META + " truncate"}>{booking.serviceName}</span>
+                        {arrived ? (
+                          <span className={ROW_META + " truncate"}>
+                            Started {elapsedMinutes(arrived.startedIso)} min ago
+                          </span>
+                        ) : null}
                       </span>
                       <span className="font-body shrink-0 text-right text-[13px] font-normal tabular-nums text-s-ink">
-                        {chf(booking.price)}
-                        {booking.paymentStatus === "paid" ? (
-                          <span className="mt-0.5 block text-[13px] font-normal text-s-success">Paid</span>
-                        ) : null}
+                        {arrived ? (
+                          <span className="text-s-success">Arrived {zurichTime(arrived.arrivedAtIso)}</span>
+                        ) : lateLabel ? (
+                          <span className={lateLabel.className}>{lateLabel.text}</span>
+                        ) : (
+                          <>
+                            {chf(booking.price)}
+                            {booking.paymentStatus === "paid" ? (
+                              <span className="mt-0.5 block text-[13px] font-normal text-s-success">Paid</span>
+                            ) : null}
+                          </>
+                        )}
                       </span>
                     </button>
                   </div>
@@ -563,21 +781,21 @@ export default function Terminal({ salonName, bookings: initialBookings, queue: 
                       </button>
                       <button
                         type="button"
-                        onClick={() => resolveBooking(booking.id, "completed")}
+                        onClick={() => resolveBooking(booking, "completed")}
                         className="font-body flex h-11 items-center text-[13px] font-normal text-s-ink"
                       >
                         Done
                       </button>
                       <button
                         type="button"
-                        onClick={() => resolveBooking(booking.id, "no_show")}
+                        onClick={() => resolveBooking(booking, "no_show")}
                         className="font-body flex h-11 items-center text-[13px] font-normal text-s-ink"
                       >
                         No-show
                       </button>
                       <button
                         type="button"
-                        onClick={() => resolveBooking(booking.id, "cancelled")}
+                        onClick={() => resolveBooking(booking, "cancelled")}
                         className="font-body flex h-11 items-center text-[13px] font-normal text-s-error"
                       >
                         Cancel
@@ -592,7 +810,40 @@ export default function Terminal({ salonName, bookings: initialBookings, queue: 
             <p className="font-body mt-4 text-[13px] font-normal tabular-nums text-s-ink-2">{doneCount} done today</p>
           ) : null}
         </div>
+
+        {/* 8. Log , state 7. Newest first, derived from the real bookings/queue props only. */}
+        {variant === "log" ? (
+          <div>
+            <SectionHeading>Today</SectionHeading>
+            <ul className={GROUPED_CARD + " mt-4"}>
+              {logEntries.map((entry) => (
+                <li key={entry.id} className={ROW + " flex items-baseline gap-3"}>
+                  <span className="font-body w-[52px] shrink-0 text-[13px] font-normal tabular-nums text-s-ink-2">
+                    {zurichTime(entry.timeIso)}
+                  </span>
+                  <span className={LOG_TEXT}>{entry.text}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
       </div>
+
+      {/* State 6, "Undo": one shared bar, fired by every resolving action above, in every state. */}
+      {undo ? (
+        <div className="fixed inset-x-0 bottom-0 z-10 px-4 pb-[calc(16px+env(safe-area-inset-bottom))]">
+          <div className="mx-auto flex w-full max-w-[760px] items-center justify-between gap-4 rounded-full bg-s-ink px-5 py-3">
+            <span className="font-body text-[15px] font-medium text-white">{undo.message}</span>
+            <button
+              type="button"
+              onClick={handleUndoClick}
+              className="font-body flex h-11 items-center text-[15px] font-semibold text-white underline underline-offset-4"
+            >
+              Undo
+            </button>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 

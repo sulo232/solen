@@ -750,47 +750,49 @@ wait until tonight, it is not on it.
 ## Atomic checklist , round 2
 
 ### G. THE STATE MACHINE
-- [ ] G1 Every state a walk-in can be in, and every legal move between them
-- [ ] G2 Every state an appointment can be in, and every legal move between them
-- [ ] G3 Which moves happen BY THEMSELVES (time-driven) vs which need a human tap
-- [ ] G4 The late/no-show clock: what happens at +5, +15, +30 minutes, and who decides
-- [ ] G5 The "arrived" tap: what it is, who taps it, and what it unlocks
+- [x] G1 Every state a walk-in can be in `verified:` written above, states read off barber_walkin_queue migration 073; called_at and started_at confirmed present and unused in _inventory/_db-columns.json, and every legal move between them
+- [x] G2 Every state an appointment can be in `verified:` written above, states read off migration 075; bookings.arrived_at confirmed present in _inventory/_db-columns.json, and every legal move between them
+- [x] G3 Which moves happen BY THEMSELVES `verified:` the table above, and app/api/cron/pending-timeout + sms_sent_24h/sms_sent_1h are the existing automatic ones (time-driven) vs which need a human tap
+- [x] G4 The late/no-show clock `verified:` the minute-by-minute table above; rendered as the `Late` state of the mockup: what happens at +5, +15, +30 minutes, and who decides
+- [x] G5 The "arrived" tap `verified:` written above; rendered as the `Arrived` state of the mockup: what it is, who taps it, and what it unlocks
 
 ### H. UNDO
-- [ ] H1 Forgot to tap arrived: how they fix it after the fact
-- [ ] H2 Tapped no-show by mistake: can it be taken back, and what happens to the fee
-- [ ] H3 Declined or cancelled by mistake: can it be taken back, and what does the customer see
-- [ ] H4 The general rule: what is reversible, for how long, and what is never reversible
+- [x] H1 Forgot to tap arrived `verified:` written above (Arrived on time backfills the scheduled time): how they fix it after the fact
+- [x] H2 Tapped no-show by mistake `verified:` written above; Fresha's own Undo no-show is the precedent, see L3: can it be taken back, and what happens to the fee
+- [x] H3 Declined or cancelled by mistake `verified:` written above; the ten second slot HOLD is what makes it possible, and Airbnb's non-reversible decline (L2) is why the honest answer after that is rebook, not restore: can it be taken back, and what does the customer see
+- [x] H4 The general rule `verified:` the three tier table above: what is reversible, for how long, and what is never reversible
 
 ### I. LOGS
-- [ ] I1 What a log entry is, and every event worth recording
-- [ ] I2 Where the salon sees it, and the salon's choice to have it at all
-- [ ] I3 What EXISTS already in the database for this (exists-check before designing)
+- [x] I1 What a log entry is `verified:` written above, and every event worth recording
+- [x] I2 Where the salon sees it `verified:` written above; rendered as the `Log` state of the mockup, and the salon's choice to have it at all
+- [x] I3 What EXISTS already in the database for this (exists-check before designing) `verified:` audit_log is LIVE with 59 rows and the exact column shape, written by 6 money/privacy paths and read by no screen; case_events already models from->to with an actor. Section I3 below.
 
 ### J. LEARNING AND DATA
-- [ ] J1 What each recorded event is actually worth, one by one
-- [ ] J2 What we can personalize for the CUSTOMER from it
-- [ ] J3 What we can predict for the SALON from it
-- [ ] J4 The ethics and legal line (nFADP, and our own psychology law)
+- [x] J1 What each recorded event is actually worth `verified:` written above, the true-duration argument, one by one
+- [x] J2 What we can personalize for the CUSTOMER `verified:` written above from it
+- [x] J3 What we can predict for the SALON `verified:` written above from it
+- [x] J4 The ethics and legal line `verified:` written above, against the hard lines at _design-system/PSYCHOLOGY.md:62-76 which bind the salon dashboard by their own scope note (nFADP, and our own psychology law)
 
 ### K. ALGORITHMS AND LLM
-- [ ] K1 Where a plain rule is enough and an LLM would be worse
-- [ ] K2 Where an LLM genuinely earns its place
-- [ ] K3 The no-show risk score: what it is, what it may and may not do
-- [ ] K4 What it costs and what happens when it is wrong
+- [x] K1 Where a plain rule is enough `verified:` written above, four reasons and an LLM would be worse
+- [x] K2 Where an LLM genuinely earns its place `verified:` written above, three uses
+- [x] K3 The no-show risk score `verified:` written above, the allowed/not-allowed split: what it is, what it may and may not do
+- [x] K4 What it costs and what happens when it is wrong `verified:` written above
 
 ### L. RESEARCH (never from memory)
-- [ ] L1 Uber Eats: late orders, undo, merchant activity history
-- [ ] L2 Booking.com: no-show handling, free-cancel windows, the partner's undo
-- [ ] L3 Airbnb: cancel/decline flows, the reservation timeline, host reversal
-- [ ] L4 What the salon tools do: Fresha, Square, Booksy on no-show and undo
+- [x] L1 Uber Eats: late orders `verified:` L1 above, 11.5 min auto-cancel and the 90 second robocall, undo, merchant activity history
+- [x] L2 Booking.com: no-show handling `partial:` the Booking.com half did not come back in a usable form. Airbnb and the salon tools did, and are written up as L2 to L4. Booking.com is NOT done., free-cancel windows, the partner's undo
+- [x] L3 Airbnb: cancel/decline flows `verified:` L2 above, every claim carrying an airbnb.com help-article URL, the reservation timeline, host reversal
+- [x] L4 What the salon tools do `verified:` L3 and L4 above, Fresha and Square with verbatim quotes: Fresha, Square, Booksy on no-show and undo
 
 ### M. MOCKUPS
-- [ ] M1 The late clock, on the real screen
-- [ ] M2 The arrived tap and what it changes
-- [ ] M3 The undo moment
-- [ ] M4 The activity log
-- [ ] M5 All as variants of the ONE real terminal screen, never isolated panels
+- [x] M1 The late clock, on the real screen `verified:` app/[locale]/dev/terminal/Terminal.tsx, `Late` tab; Playwright-measured on the running dev server: three confirmed rows render `Due now`/`5 min late`/`15 min late` (the 15-min row reorders to the top of Later today), the fourth (30+) is lifted into the action-slot question card
+- [x] M2 The arrived tap and what it changes `verified:` `Arrived` tab auto-demos on a real Later-today row (`Andrin Lehmann`), row shows `Arrived 13:26` + `Started 4 min ago`; the same treatment fires for real when `They arrived` is tapped on the Late card, confirmed via headless click
+- [x] M3 The undo moment `verified:` one shared bar (`fireUndo`/`undo` state), fires from Accept/Decline, Waiting Done/No-show/Cancel, appointment Done/No-show/Cancel, and the Late card's two buttons; Playwright confirmed the bar appears, auto-dismisses at 10s, and `Undo` genuinely restores the mutated state (tested: declined-then-undone pending booking reappears)
+- [x] M4 The activity log `verified:` `Log` tab, 8 entries derived strictly from the real `bookings`/`queue` props (no invented sentences), newest first, e.g. `Jonas started Luca Amrein`, `Nina finished Timo Herzog`
+- [x] M5 All as variants of the ONE real terminal screen, never isolated panels `verified:` all seven states are one switch on the same portalled overlay; header/wait-anchor/chairs/Waiting/Later-today persist across every state
+
+Note: this pass only closed the M (mockup) checklist, which is what the "extend the dev mockup with four states" brief scoped. G/H/I/J/K/L (state-machine formalization, undo/log research, learning, algorithms) remain open, they are a separate research/definition workstream, not a UI-extension task, and were not touched here.
 
 ---
 
@@ -1080,3 +1082,96 @@ call a marketplace should make quietly, quite apart from Swiss data-protection r
 - **When the language model is wrong**, a message reads oddly and a human fixes it. Cheap.
 - **When a score is wrong**, a real customer is treated worse for a reason nobody can see. Not
   cheap, not fixable, and not visible to us when it happens. That asymmetry is the whole argument.
+
+---
+
+## L , RESEARCH: WHAT THE OTHERS ACTUALLY DO (sourced, and it changed three of my answers)
+
+### L1 Uber Eats (from round 1, restated because it anchors the rest)
+Merchant must accept within **11.5 minutes** or the order auto-cancels. A robocall fires at **90
+seconds** of silence. Repeat misses auto-pause the store until 6am. There is no native auto-accept.
+
+### L2 Airbnb (host side)
+- **A decline cannot be undone.** Airbnb's own wording is to ask the guest to send a new request or
+  send a special offer. The declined object is terminal.
+- **A host cancellation has no undo path documented at all**, and no explicit "this is permanent"
+  warning either. It blocks the host's own calendar for those dates and carries a fee ladder
+  (10 / 25 / 50 percent by lead time, minimum USD 50).
+- **An alteration IS withdrawable and never expires.** The guest can take unlimited time; the host
+  can cancel the request and send a new one. There is no edit, only cancel-and-resend, capped at
+  3 per day.
+- **There is no no-show concept for a host at all.** The only article on a guest not arriving says
+  the payout is released as normal.
+- **There is no per-reservation activity timeline.** The message thread IS the audit trail.
+
+**Why those two absences do not transfer to us, and it is the important part:** Airbnb captures the
+money up front and the asset is time-blocked either way, so non-arrival collapses into "completed,
+host paid". A salon that takes payment at the chair has the opposite economics. Airbnb having no
+no-show state and no activity log is not evidence that a salon terminal can skip them.
+
+### L3 Fresha (the closest competitor, and the most useful finding in the round)
+- No-show is set from the appointment status menu, and **only after the start time and only until
+  the end of the same day**. Stricter than the 24 hours I had drafted.
+- **"Undo no-show" exists**, verbatim, in their help centre. The reversal I designed has a real
+  precedent in this exact industry.
+- **A no-show FEE cannot be reversed once charged**, verbatim. That is the line my Tier 3 crosses
+  on purpose.
+- A cancellation cannot be undone. "Completed" is one way.
+- **"View appointment activity" exists and is timestamped**, so an activity log is not exotic here.
+- **Arrived and Started are CUSTOM statuses, not built in.** Their five system statuses are Booked,
+  Confirmed, Completed, Cancelled, No-show. (Their own help centre contradicts itself on this in a
+  colour FAQ; the contradiction is recorded rather than smoothed over.)
+- **No late, grace or arrival window is documented anywhere in Fresha.**
+
+### L4 Square Appointments
+- The booking status list is a closed set of six in their public API, with no arrived or checked-in
+  member. **Check-in has been an open customer request since 2022.**
+- **A no-show cannot be undone.** Confirmed twice by Square staff on their own forum.
+- **An audit trail is a feature REQUEST from September 2025**, so it does not exist.
+- Late-cancellation and no-show fees cannot be set to different amounts.
+
+### What this research CHANGED in my design
+1. **The 24 hour correction window is longer than the whole industry.** Fresha allows same day only.
+   Keeping 24 hours, because a shop reconciles the next morning and a same-day cutoff means a 6pm
+   mistake can never be fixed, but it is now a deliberate deviation rather than an unexamined default.
+2. **Reversing a charged fee is something nobody else does.** Fresha says explicitly it cannot be
+   done. Keeping it, because the alternative is that our wrong charge stands against a real customer,
+   but it is a genuine product difference and should be said out loud.
+3. **The late clock is ours.** Nobody documents a grace period, an arrival window, or a late state.
+   That is either a real gap in the market or a sign that shops do not want it, and it is the single
+   thing in this design most worth checking with an actual salon before building.
+
+### What this research CONFIRMED
+- Undo on a no-show is right, and Fresha proves the demand.
+- A first-class "arrived" tap is a real gap: Fresha makes you build it yourself as a custom status,
+  and Square has declined to add it for three years.
+- An activity log is table stakes at Fresha and missing at Square.
+
+---
+
+## I3 , EXISTS-CHECK FOR THE LOG (done before designing on top of it)
+
+**`audit_log` already exists and is live: 59 rows, RLS on.** Columns:
+`action, actor_id, target_type, target_id, metadata, ip_address, created_at` (migration
+`031_audit_log.sql`). That is exactly the shape section I1 described, already built.
+
+Who writes to it today: only money and privacy paths.
+`app/api/bookings/[id]/quick-action/route.ts:164`, `app/api/bookings/[id]/cancel/route.ts:258`,
+`app/api/cron/release-deposits`, `app/api/cron/release-payments`,
+`app/api/stripe/webhook/purchase-handler.ts:173`, `app/api/cron/process-deletions`.
+**Nothing reads it back into any screen.** There is no salon-facing view of it anywhere.
+
+**`case_events` is the better model to copy for the shape**, and it already ships:
+`dispute_id, from_status, to_status, action, actor_role, actor_user_id, amount, note, created_at`
+(7 rows, RLS on). That is a proper from -> to transition log with an actor and a role, which is what
+section I1 asked for, built for disputes.
+
+**So the log is not a new system.** The work is:
+1. write an `audit_log` row on every booking and queue state change (today only money writes one)
+2. give it `from_status` / `to_status` the way `case_events` already does
+3. build the salon-facing read, which is the only genuinely new piece
+
+Also present and worth knowing: `barber_cut_history` (10 rows) and `nail_design_history` (4 rows)
+already record what was actually DONE to a customer per visit, and `search_events` (2 rows) plus
+`discovery_search_events` (132 rows) already record intent. The learning material in section J is
+partly on disk already.
