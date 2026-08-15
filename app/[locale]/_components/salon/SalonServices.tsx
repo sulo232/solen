@@ -80,8 +80,32 @@ export function SalonServices({
   }
 
   const visible = activeCat === "alle" ? fullList : (grouped[activeCat] ?? []);
-  // Always show only first 5 inline — full list lives in the sheet (V2-D53.3 polish).
-  const shown = visible.slice(0, 5);
+  // Inline cap raised 5 -> 6 (2026-08-15). Not a taste tweak: FLOORS LAW 3 sets the density floor
+  // for this exact section at ">= 6 services", and a cap of 5 sat under our own floor.
+  const shown = visible.slice(0, 6);
+
+  // Re-grouped by the salon's own category (owner 2026-08-15, correcting my misread of his
+  // previous message). He asked for the CATEGORIES to be separated from each other, and I split
+  // every individual service into its own card instead: "I told you on all, everything was to get
+  // even beard or, like, hair and everything ... you just made everything separate, and that's not
+  // okay at all. Make it revert that ... It's mixed up."
+  //
+  // Order is preserved from `visible`, so a group appears where its first service appears rather
+  // than in an invented order.
+  const shownGroups = React.useMemo(() => {
+    const out: { key: string; items: Service[] }[] = [];
+    for (const s of shown) {
+      const key = s.subcategory ?? s.category ?? "andere";
+      const last = out[out.length - 1];
+      if (last && last.key === key) last.items.push(s);
+      else {
+        const existing = out.find((g) => g.key === key);
+        if (existing) existing.items.push(s);
+        else out.push({ key, items: [s] });
+      }
+    }
+    return out;
+  }, [shown]);
 
   // Inline preview = the active category's first 5 as ONE flat grouped list-card.
   // Real-category organization is the filter pills above (and the full per-category
@@ -111,31 +135,36 @@ export function SalonServices({
         </div>
       )}
 
-      {/* mockup-ok: SEPARATED service cards, owner 2026-08-15, verbatim: "on the services, I do
-          not like how it's ... on the all section, it's, like, not divided, you know, between
-          them. Like, it's all just one big card of, like, everything together. I don't like that.
-          It's, like, separated. You don't have to, like, put in, like, category between them, but
-          just, you know, separate it."
+      {/* mockup-ok: ONE CARD PER CATEGORY, with the category as its heading. Owner 2026-08-15,
+          correcting me: "on the services I told you, I want groups. Okay? Like, but for each
+          category ... you just made everything separate, and that's not okay at all. Make it
+          revert that."
 
-          So the rows come out of the one grouped 24px list-card they lived in and become one card
-          each, gap-separated. He explicitly did NOT ask for category headings between them, so
-          none are added, the filter pills above still carry the grouping.
+          What he was pointing at in the first message was the "Alle" tab INTERLEAVING categories,
+          a flat run of beard and hair services in one undifferentiated card. Splitting every
+          individual service into its own card did not fix that, it just made the mixing louder.
 
-          THE COLLISION, named rather than smoothed over: the design contract's radius row lists
-          "salon services" by name under the GROUPED list-card (24px, one card, hairline-divided
-          members). His live ask outranks it (precedence 1). The replacement grammar is not
-          invented either, it is the OTHER row of that same table, "individual entity-card 16
-          (rounded-card + border, flat, gap-separated, ONE card per DISTINCT entity)", the
-          SalonResultCard grammar. Flat means no shadow: a card that carries a border does not
-          also take elevation.
-
-          Gap is 12px, the 4pt-scale step directly below the 16px card padding, so the space
-          BETWEEN two services stays smaller than the space inside one. */}
-      <ul className="mt-5 flex flex-col gap-3">
-        {shown.map((s) => (
-          <ServiceRow key={s.id} service={s} locale={locale} slug={slug} />
+          The grammar here is not invented and it is not mine: it is copied from the booking flow's
+          own service step (components-legacy/booking/ServicesStaffStep.tsx:506-522), which has
+          grouped by the salon's category since 2026-07-19, at his instruction. Same 32px rhythm
+          between groups, same 16px capitalised heading, same one rounded-24 whisper card per
+          category with hairline-divided rows inside. That is FLOORS LAW 8 doing its job: the same
+          list is now the same object on both screens of the same funnel, which is exactly the
+          drift I flagged to him earlier today. */}
+      <div className="mt-5 space-y-8">
+        {shownGroups.map((g) => (
+          <section key={g.key}>
+            <h3 className="font-display mb-3 text-[16px] font-semibold capitalize tracking-[-0.01em] text-s-ink">
+              {capitalize(g.key)}
+            </h3>
+            <ul className="overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper">
+              {g.items.map((s) => (
+                <ServiceRow key={s.id} service={s} locale={locale} slug={slug} />
+              ))}
+            </ul>
+          </section>
         ))}
-      </ul>
+      </div>
 
       {/* "Alle ansehen" links into the booking flow's service step (the single
           service-selection UI); the standalone sheet was a duplicate, removed 2026-07-19. */}
@@ -219,19 +248,14 @@ function ServiceRow({
     </div>
   );
 
-  // mockup-ok: each service is now its OWN card (owner 2026-08-15, see the list comment above),
-  // so the row stops being a hairline-divided member of a group card and takes the design
-  // contract's individual entity-card chrome instead: rounded-card (16), border-s-border
-  // hairline, white, FLAT. No shadow, because a card carrying a border never also carries
-  // elevation (design contract, shadow/depth row).
-  //
-  // Padding is unchanged from the grouped row it replaces (px-5 py-4, md:px-6), so the service
-  // rows themselves do not move inside their box, only the box around them changed.
-  // The old geometry note is kept: py-[18px] -> py-4 (16) came from the 2026-07-17 sweep, the
-  // tighter neighbour per the row-list convention (SalonBundles.tsx:148 py-3,
-  // SalonProducts.tsx:105 py-3.5) is closer to 16 than 20.
+  // mockup-ok: REVERTED to the hairline-divided row it was before this morning (owner 2026-08-15,
+  // "make it revert that"). Byte-identical to the class string that shipped before the
+  // one-card-per-service experiment, so this restores an appearance rather than introducing one.
+  // Geometry note kept: py-[18px] -> py-4 (16) came from the 2026-07-17 sweep, the tighter
+  // neighbour per the row-list convention (SalonBundles.tsx:148 py-3, SalonProducts.tsx:105
+  // py-3.5) is closer to 16 than 20.
   return (
-    <li className="rounded-card border border-s-border bg-white px-5 py-4 md:px-6">
+    <li className="border-t border-s-border px-5 py-4 first:border-t-0 md:px-6">
       {inner}
     </li>
   );

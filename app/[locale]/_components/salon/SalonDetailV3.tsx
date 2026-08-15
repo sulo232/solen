@@ -391,7 +391,7 @@ export function SalonDetailV3({
                   slug={slug}
                   salonName={salon.name}
                   city={postalToCity(salon.postal_code)}
-                  quartier={salon.quartier}
+                  salonCategories={salon.categories}
                 />
               )}
             </div>

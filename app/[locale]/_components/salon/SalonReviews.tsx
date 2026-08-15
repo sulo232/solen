@@ -122,10 +122,17 @@ export function SalonReviews({
   return (
     <div id="section-reviews">
       <section
-        // mockup-ok: drift fix to the LOCKED §427 grouped list-card grammar, byte-identical to
-        // SalonServices.tsx's already-shipped `<ul>` wrapper class string (rounded-[24px] border
-        // border-s-border bg-white shadow-whisper), no new appearance introduced.
-        className="rounded-[24px] border border-s-border bg-white shadow-whisper p-5 md:p-7"
+        // mockup-ok: the card is GONE (owner 2026-08-15: "on the review section, she's too
+        // fucking cluttered. I told you about that."). His Fresha reference, measured: FOUR
+        // hairlines in the entire screen, none of them around the reviews block and none between
+        // the rows either. So the section sits directly on the page like About and Portfolio do,
+        // and the row dividers go with it (see the row wrapper below).
+        //
+        // FLOORS LAW 4 (edge visibility) does not collide with this, which is worth saying rather
+        // than quietly overriding: that floor bounds ELEVATED CONTAINERS, and there is no
+        // container here any more. It is a heading and its content, the same as every other
+        // section on this page that carries no card.
+        className=""
       >
         {/* V3-D202 (A9): font-body → font-display + Scale B. */}
         <h2 className="font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink">
@@ -215,7 +222,13 @@ export function SalonReviews({
                 <p className="font-body text-[14px] text-s-ink-2">{t("noReviewsInGroup")}</p>
               ) : (
                 visible.map((r) => (
-                  <div key={r.id} className="border-t border-s-border pt-5 first:border-t-0 first:pt-0 [&+&]:mt-5">
+                  // mockup-ok: the hairline between rows goes with the card (owner 2026-08-15,
+                  // "too cluttered"). Measured in his own Fresha capture: no divider between
+                  // reviews at all, the gap alone separates them. 28px here, up from the 20px the
+                  // divider used to sit inside, because once the line goes the space has to carry
+                  // the grouping on its own (FLOORS LAW 5: a deletion names what it keeps, and the
+                  // surviving cue has to pass a measured floor).
+                  <div key={r.id} className="[&+&]:mt-7">
                     <ReviewCard review={r} salonName={salonName} locale={locale} />
                   </div>
                 ))

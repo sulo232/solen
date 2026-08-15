@@ -3,8 +3,13 @@
 import * as React from "react";
 import Link from "next/link";
 import { capitalize } from "./_shared";
-import { formatQuartier } from "@/lib/basel-neighborhoods";
 import { TabPill } from "../primitives/TabPill";
+import {
+  PORTFOLIO_CATEGORIES,
+  PORTFOLIO_TAXONOMY_BY_SALON_CATEGORY,
+  getPortfolioCategoryLabel,
+} from "@/lib/portfolio-categories";
+import { CATEGORIES } from "../homepage/searchCategories";
 import { useTranslations } from "next-intl";
 
 /**
@@ -12,81 +17,82 @@ import { useTranslations } from "next-intl";
  * The mid-page black "Termin buchen bei {salon}" hero card is REMOVED: booking already
  * lives in the sticky SalonMobileBookBar + the desktop SalonSidebar, so the card was a
  * third repeat of the same action and read as an unexplained black card (owner: "I
- * don't know what it is"). Only the real Fresha-pattern SEO/discovery cross-links
- * (Andere Salons in ..., category links) remain, unchanged, as a quiet peer section
- * below "In der Nähe".
+ * don't know what it is"). Only the real Fresha-pattern SEO/discovery cross-links remain.
  *
  * `variant`/`slug`/`salonName` retired with the hero card, kept unused-by-render in the
- * prop type only so app/[locale]/dev/pdp/cta/page.tsx (left as reference) still
- * compiles, same pattern as SalonCard's `nextSlotLabel`.
+ * prop type only so app/[locale]/dev/pdp/cta/page.tsx (left as reference) still compiles.
  *
- * 2026-08-15, TAP-THROUGH AREAS. Owner, pointing at his Fresha "Sonstige" capture: "on the
- * Discover More store ... maybe we can make it, like, more like this, you know, instead of
- * whatever we have so they can actually, like, tap through them and stuff."
+ * 2026-08-15, TWO CORRECTIONS FROM HIM, both blunt.
  *
- * What his reference actually does, so this copies a structure instead of a description: an
- * AREA is a pill, the pills sit in one scrollable row, and the links below are the categories
- * IN the selected area, laid out in two columns. The flat cloud of six mixed chips this section
- * used to render put areas and categories on the same level, so there was nothing to tap
- * through, and every category link was nationwide even though the visitor is looking at a
- * specific salon in a specific neighbourhood.
+ * 1. THE NEIGHBOURHOOD IS GONE. "why do you have, like, this, like, city sections, like s t j o h
+ *    a n n? I told you never do that shit. It's so fucking cringe." The pills used to be AREAS,
+ *    one of them the salon's quartier ("Andere Stores in St. Johann"). Quartier is dropped from
+ *    this surface entirely, label and link both. The city still scopes the category href, because
+ *    /[locale]/[city]/[category] is how the real category pages are addressed, but it is never
+ *    printed as a section name.
  *
- * Every href here is a route that already exists and was checked live before shipping:
- * /[locale]/[city]/[category] returned 200 for basel/coiffeur and basel/barbershop,
- * /[locale]/[category] returned 200 for all four, and /[locale]/search returned 200. The
- * nationwide fallback is used whenever `postalToCity` could not resolve a real city (it
- * returns the literal "der Schweiz" in that case, which is not a city slug and would 404).
+ * 2. FAR MORE TO TAP. "why is the the options so low?" It rendered four broad category names.
+ *    The pills are now the four marketplace categories and the list under each is that category's
+ *    OWN service taxonomy, so coiffeur offers Damenschnitt, Herrenschnitt, Farbe and Styling
+ *    instead of the single word "Coiffeure".
+ *
+ * NOT ONE LIST IS DECLARED IN THIS FILE, deliberately. The categories come from `CATEGORIES`
+ * (homepage/searchCategories.ts, the list the search hub itself renders) and their services from
+ * `PORTFOLIO_TAXONOMY_BY_SALON_CATEGORY` + `PORTFOLIO_CATEGORIES` (lib/portfolio-categories.ts),
+ * which SalonImageGallery already reads and which ships localised in all four locales. The slug
+ * for each category is DERIVED from its own label rather than written down again, so this file
+ * cannot drift from the search hub the way a hand-kept copy would.
  */
 
-/** The four marketplace categories, keyed by the slug /[locale]/[city]/[category] accepts. */
-const CATEGORY_LINKS: { key: string; label: string }[] = [
-  { key: "coiffeur", label: "Coiffeure" },
-  { key: "barbershop", label: "Barbershops" },
-  { key: "nails", label: "Nagelstudios" },
-  { key: "spa", label: "Spa & Wellness" },
-];
+/**
+ * "Spa & Wellness" -> "spa", "Coiffeur" -> "coiffeur". The canonical categories carry a display
+ * label and no slug, and the taxonomy is keyed by slug, so the first word of the label IS the
+ * join. Written as a derivation rather than a lookup table on purpose: a table here would be the
+ * fifth copy of the category list in this codebase.
+ */
+const slugOf = (label: string) => label.toLowerCase().split(/[^a-z]+/)[0];
 
 export function SalonAppCta({
   locale,
   city,
-  quartier,
+  salonCategories = [],
 }: {
   locale: string;
   slug: string;
   salonName: string;
   city: string;
+  /** Used only to open on the category this salon belongs to. Defaults to the first pill. */
+  salonCategories?: string[];
   quartier?: string | null;
   variant?: "hero" | "twoTier" | "minimal";
 }) {
   const t = useTranslations("salonDetail");
   const cityLabel = capitalize(city);
-  const quartierLabel = quartier ? formatQuartier(quartier) : null;
-
-  // postalToCity falls back to the literal "der Schweiz" when the postal code resolves to no
-  // known city. That is a country, not a city slug, so it must never be pushed into
-  // /[locale]/[city]/[category] , those links go nationwide instead.
+  // postalToCity falls back to the literal "der Schweiz" when the postal code resolves to no known
+  // city. That is a country, not a city slug, so it must never reach /[locale]/[city]/[category].
   const citySlug = cityLabel.toLowerCase();
   const cityIsReal = citySlug !== "der schweiz";
 
-  const areas = [
-    ...(quartierLabel && quartierLabel.toLowerCase() !== cityLabel.toLowerCase()
-      ? [{ key: "quartier", label: `Andere Stores in ${quartierLabel}` }]
-      : []),
-    { key: "city", label: `Andere Stores in ${cityLabel}` },
-  ];
+  const pills = React.useMemo(
+    () =>
+      CATEGORIES.map((c) => ({ slug: slugOf(c.label), label: c.label })).filter(
+        (c) => c.slug in PORTFOLIO_TAXONOMY_BY_SALON_CATEGORY,
+      ),
+    [],
+  );
 
-  const [activeArea, setActiveArea] = React.useState(areas[0].key);
+  const own = salonCategories.map((c) => c.toLowerCase()).find((c) => pills.some((p) => p.slug === c));
+  const [activeCat, setActiveCat] = React.useState<string>(own ?? pills[0]?.slug ?? "");
+  const activeLabel = pills.find((p) => p.slug === activeCat)?.label ?? activeCat;
 
-  const hrefFor = (categoryKey: string) => {
-    if (activeArea === "quartier" && quartierLabel) {
-      // SearchTemplate reads the category from `service` first, then `category`
-      // (SearchTemplate.tsx:458), and takes a free-text `q`. A quartier has no route of its
-      // own, so it travels as the query the search page already understands.
-      return `/${locale}/search?q=${encodeURIComponent(quartierLabel)}&category=${categoryKey}`;
-    }
-    if (cityIsReal) return `/${locale}/${citySlug}/${categoryKey}`;
-    return `/${locale}/${categoryKey}`;
-  };
+  // The active category's own service taxonomy, localised, straight from the canonical module.
+  const services = (
+    PORTFOLIO_TAXONOMY_BY_SALON_CATEGORY[activeCat as keyof typeof PORTFOLIO_TAXONOMY_BY_SALON_CATEGORY] ?? []
+  )
+    .map((key) => PORTFOLIO_CATEGORIES[key])
+    .filter(Boolean);
+
+  if (pills.length === 0) return null;
 
   return (
     <section className="border-t border-s-border pt-6">
@@ -94,39 +100,37 @@ export function SalonAppCta({
         {t("discoverMore")}
       </h2>
 
-      {/* The area pills. Only rendered when there is genuinely more than one area to tap
-          between: a one-tab tab row is chrome that decides nothing. TabPill is the locked
-          selected-state treatment (gray sunken fill + ink + semibold), composed rather than
-          restyled here. */}
-      {areas.length > 1 && (
-        <div className="mt-4 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {areas.map((a) => (
-            <TabPill
-              key={a.key}
-              active={activeArea === a.key}
-              onClick={() => setActiveArea(a.key)}
-              size="sm"
-            >
-              {a.label}
-            </TabPill>
-          ))}
-        </div>
-      )}
+      {/* Category pills. TabPill is the locked selected-state treatment (gray sunken fill + ink +
+          semibold), composed rather than restyled here. */}
+      <div className="mt-4 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {pills.map((p) => (
+          <TabPill key={p.slug} active={activeCat === p.slug} onClick={() => setActiveCat(p.slug)} size="sm">
+            {p.label}
+          </TabPill>
+        ))}
+      </div>
 
-      {/* Two columns of category links in the selected area (his reference's own layout).
-          Text links, so they take the accent per the design contract's link row, and the
-          hover underline that makes them read as links rather than labels. */}
+      {/* Two columns of real service links in the selected category, plus the category page itself
+          as the last entry so the broad option never disappears. */}
       <ul className="mt-5 grid grid-cols-2 gap-x-4 gap-y-3.5">
-        {CATEGORY_LINKS.map((c) => (
+        {services.map((c) => (
           <li key={c.key}>
             <Link
-              href={hrefFor(c.key)}
+              href={`/${locale}/search?category=${activeCat}&q=${encodeURIComponent(getPortfolioCategoryLabel(c.key, locale))}`}
               className="font-body text-[14px] text-s-ink underline-offset-4 transition-opacity duration-150 hover:underline hover:opacity-80"
             >
-              {c.label}
+              {getPortfolioCategoryLabel(c.key, locale)}
             </Link>
           </li>
         ))}
+        <li>
+          <Link
+            href={cityIsReal ? `/${locale}/${citySlug}/${activeCat}` : `/${locale}/${activeCat}`}
+            className="font-body text-[14px] font-medium text-s-accent underline-offset-4 transition-opacity duration-150 hover:underline hover:opacity-80"
+          >
+            {cityIsReal ? `${activeLabel} in ${cityLabel}` : activeLabel}
+          </Link>
+        </li>
       </ul>
     </section>
   );
