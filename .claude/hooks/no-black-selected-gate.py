@@ -248,10 +248,72 @@ def window_offenders(text):
     return out
 
 
+# ---------------------------------------------------------------------------------------------
+# V2, 2026-08-15 , THE INVISIBLE SELECTION. The recurrence this gate could not see.
+#
+# The owner's correction ledger flagged "selected-state" twice in fourteen days. This gate was
+# armed the whole time and was right both times about what it checks: it bans ink and blue on a
+# selected state and demands the calm grey `bg-s-bg-sunken`. That is exactly what was used. And
+# the selection was INVISIBLE, because the container underneath it was ALSO `bg-s-bg-sunken`.
+#
+# Grey on grey passes every rule in the contract and shows the shop nothing. Measured twice this
+# session on the merchant terminal: the selected pill read as a faint text highlight, not a pill.
+#
+# So the rule the contract always meant, written down: the calm grey selected fill is only a
+# selected state when it sits on WHITE. On the sunken canvas it is camouflage.
+SUNKEN = r"bg-s-bg-sunken"
+# A root/canvas container: a full-height or full-bleed wrapper painted sunken.
+SUNKEN_CANVAS = re.compile(
+    r"class(?:Name)?\s*=\s*[\"'`{][^\"'`]*"
+    r"(?=[^\"'`]*(?:\binset-0\b|\bmin-h-screen\b|\bh-screen\b|\bmin-h-\[100dvh\]\b|\bmin-h-full\b))"
+    r"(?=[^\"'`]*\b" + SUNKEN + r"\b)",
+)
+# A selected state painted with the calm grey.
+SUNKEN_SELECTED = re.compile(
+    r"(" + SEL_TOKEN + r")[^\n;{}]{0,120}\b" + SUNKEN + r"\b"
+    r"|\b" + SUNKEN + r"\b[^\n;{}]{0,120}(" + SEL_TOKEN + r")",
+    re.IGNORECASE,
+)
+
+
+def invisible_selection(text):
+    """A grey selected fill on a grey canvas. Returns the offending match or None."""
+    if not SUNKEN_CANVAS.search(text):
+        return None
+    for m in SUNKEN_SELECTED.finditer(text):
+        lo = max(0, m.start() - 80)
+        hi = min(len(text), m.end() + 80)
+        window = text[lo:hi]
+        if "selected-ok" in window or "contrast-ok" in window:
+            continue
+        # A pill that also paints itself white when unselected is fine: the pair is the signal.
+        if re.search(r"\bbg-white\b", window):
+            continue
+        return m
+    return None
+
+
 # net-new only: if the replaced/old text already had the same class of violation,
 # an unrelated edit to that region must not block.
-if offenders(old) or window_offenders(old):
+if offenders(old) or window_offenders(old) or invisible_selection(old):
     allow()
+
+_invisible = invisible_selection(new)
+if _invisible and not line_has_ok(new, _invisible.start()):
+    block(
+        "\U0001F6D1 invisible-selection gate (no-black-selected v2, 2026-08-15):\n\n"
+        "  A selected state is painted `bg-s-bg-sunken` on a container that is ALSO\n"
+        "  `bg-s-bg-sunken`. Grey on grey. It passes the contract and shows nothing.\n"
+        "    found: " + _invisible.group(0).strip()[:120] + "\n\n"
+        "  WHY THIS EXISTS: the owner's ledger flagged selected-state twice in fourteen days.\n"
+        "  This gate was armed both times and was right about what it checks, because the calm\n"
+        "  grey WAS used. The bug is the surface under it. The contract says selected = grey\n"
+        "  `over a WHITE unselected`, and the white half is what makes it a selection at all.\n\n"
+        "  FIX: put the control row on white (`bg-white`), or give the unselected pills\n"
+        "  `bg-white` so the pair carries the signal. Do not reach for ink or blue; both are\n"
+        "  banned by this same gate and by the design contract.\n\n"
+        "  Genuine false positive? `selected-ok: <reason>` on the line.\n"
+    )
 
 hits = [m for m in offenders(new) if not line_has_ok(new, m.start())]
 nonternary_hits = [m for m in window_offenders(new) if not line_has_ok(new, m.start())]
