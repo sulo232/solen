@@ -213,3 +213,29 @@ Italian, which is wrong in both.
 half of a sentence assembled at runtime: `SolenStory` "Buchen in", `WalkInBand` "bis frei",
 `WhySolen` "Bewertet 4.9 / 5". Those three need the sentence restructured around an interpolated
 key, which changes the copy, so they are a copy call and not a mechanical swap.
+
+
+## ROUND 10, and the thing I had been missing the whole time
+
+> It's the tenth round. I told you to fix a recent review. Section we didn't fix it yet. It's been,
+> like, fucking what, ten fucking round? I told you to make it like this.
+
+He selected the live Top Coiffeur card AND my Recently-viewed row together. He was pointing at the
+page's own card, and had been for rounds.
+
+- [x] **I1. The row now uses the page's own card anatomy.** verified live, my row against the live Top Coiffeur card in one measurement: card 242x257 vs 242x258, photo 242x194 (1.25) vs 242x194 (1.25), radius 22 vs 22, and the photo AREA ratio between his reference and mine is now **1.00, down from 7.71**. Text stack matches too: name 14/600 with the rating pinned right, then category, then city left and price right, all 12/400 ink-2.
+
+**What I was doing wrong, named plainly.** For nine rounds I read "make it a normal section of the
+page" as the section CHROME: the heading size, the arrow diameter, the gutter, the corner radius. I
+matched all four, one per round, and the row still looked wrong every time, because the object he
+was pointing at was the CARD. Mine had one seventh the photo area of the card sitting directly
+below it on the same screen.
+
+Every round I ported one more number from the Airbnb reference instead of asking what this page
+already renders. The live RecentlyViewed.tsx was ALREADY using the real card. I built a smaller one
+next to it and then spent nine rounds tuning the wrong object.
+
+Written up in _rules/LESSONS_LEARNED.md, keyed to the mockup variant paths so it injects the next
+time one is edited, with the cheap check that would have caught it at round two: measure his
+reference and mine, and print the AREA ratio before changing anything. Past about 1.5 you are
+proposing a different component, not a variant of the existing one.
