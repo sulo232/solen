@@ -75,6 +75,28 @@ def main():
     if tool != "Write" or not content.strip():
         sys.exit(0)
 
+    # SECTION SCOPE IS EXEMPT, added 2026-08-15 on the owner's direct instruction. Verbatim:
+    # "Can you stop using templates? Like, that's like this, like, a weird fucking top bar. It's
+    #  just so hard to navigate, and I cannot understand. I can't even see a difference. Stop,
+    #  like, doing this, like, a whole page mock up. Make you, like, one section of it. If we're
+    #  talking about one, like, element or, like, one section, the fuck. Like, remove the gate or
+    #  anything that's making you do this shit so annoying."
+    #
+    # This gate was the thing forcing the format. It demanded a fixed top bar, a Before/After
+    # segmented toggle and a live iframe on EVERY mockup file, including one that exists to compare
+    # seven versions of a single row. The cost he named is real and it is not cosmetic: with a
+    # toggle you compare two layouts by tapping and remembering, which is why he said "I can't even
+    # see a difference". Seven versions stacked at real width are compared by looking.
+    #
+    # The gate is NOT deleted, because its original case still holds: when the decision IS a page
+    # (a new route, a re-ordered feed, chrome), a hand-drawn "current" panel is the from-scratch
+    # redraw he rejected in 2026-07-19, and a live iframe of the real route is the honest before.
+    # So the exemption is narrow and declared IN THE FILE: a mockup that says it is section-scoped
+    # opts out, and a page-scoped one still gets the full treatment.
+    if re.search(r"Mockup-scope\s*:\s*section", content, re.I) or \
+       re.search(r"<!--\s*Scale:\s*section\s*-->", content, re.I):
+        sys.exit(0)
+
     project = os.environ.get("CLAUDE_PROJECT_DIR") or os.getcwd()
 
     flag = os.path.join(project, ".claude", "fullscreen-skip.flag")
