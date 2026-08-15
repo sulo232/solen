@@ -44,6 +44,109 @@ function frameDoc(inner) {
  * (#1A1209 ink, #043338 teal) and set in a font that no mail client will load, so it
  * would arrive as a broken box. A wordmark in text is used below instead.
  */
+const INK_BUTTON =
+  "display:inline-block;padding:13px 26px;background:#0A0A0A;color:#ffffff;border-radius:999px;" +
+  "text-decoration:none;font-weight:600;font-size:15px";
+
+/**
+ * PROPOSED COPY, also not applied. Owner 2026-08-15: the emails are "a little bit too long".
+ *
+ * MEASURED before cutting, so this is not a vibe: bodies run 15 to 84 words, median 26. The
+ * subjects are the worse half. Median 57 characters, longest 98, and 46 of 66 run past 45.
+ * A phone inbox shows roughly the first 33 to 50 characters (Twilio, EmailToolTester, Backlinko
+ * via Mailgenius all land in that band), so most of our subjects are cut off mid-sentence and
+ * the useful word is past the cut. Every subject below front-loads the status in the first
+ * 11 characters.
+ *
+ * Written for the three emails a customer actually gets around a booking. The rest keep their
+ * current words inside the new frame, so this is a direction to react to, not a silent rewrite
+ * of 66 templates.
+ *
+ * German is formal (Sie), per COPY_LAW. No em-dashes anywhere.
+ */
+const S = {
+  service: "Damenhaarschnitt & Föhnen",
+  salon: "Coiffure Belle Époque Niederdorf",
+  short: "26. Aug, 14:30",
+  long: { de: "Dienstag, 26. August, 14:30", en: "Tuesday 26 August, 14:30", fr: "Mardi 26 août, 14:30", it: "Martedì 26 agosto, 14:30" },
+  address: "Niederdorfstrasse 42, 8001 Zürich",
+  total: "CHF 89.00",
+};
+
+const PROPOSED_COPY = {
+  "booking-confirmation": {
+    art: `<img src="/_email-assets/confirm-mark.gif" width="70" height="70" alt="" style="display:block;margin:0 0 18px">`,
+    subject: {
+      de: `Bestätigt: ${S.short}`,
+      en: `Confirmed: ${S.short}`,
+      fr: `Confirmé: ${S.short}`,
+      it: `Confermato: ${S.short}`,
+    },
+    head: { de: "Ihr Termin steht", en: "Your appointment is set", fr: "Votre rendez-vous est confirmé", it: "Il tuo appuntamento è confermato" },
+    lines: (l) => [
+      `<strong>${S.service}</strong>`,
+      `${S.salon}`,
+      `${S.long[l]}`,
+      `${S.address}`,
+      `${S.total} <span style="color:#6B6B6B">${{ de: "inkl. MWST", en: "incl. VAT", fr: "TVA incl.", it: "IVA incl." }[l]}</span>`,
+    ],
+    cta: { de: "Buchung verwalten", en: "Manage booking", fr: "Gérer la réservation", it: "Gestisci la prenotazione" },
+  },
+  "booking-cancellation": {
+    art: `<img src="/_email-assets/cat-coiffeur-lg.png" width="84" height="84" alt="" style="display:block;margin:0 0 18px">`,
+    subject: {
+      de: `Storniert: ${S.short}`,
+      en: `Cancelled: ${S.short}`,
+      fr: `Annulé: ${S.short}`,
+      it: `Annullato: ${S.short}`,
+    },
+    head: { de: "Termin storniert", en: "Appointment cancelled", fr: "Rendez-vous annulé", it: "Appuntamento annullato" },
+    lines: (l) => [
+      `<strong>${S.service}</strong>`,
+      `${S.salon}, ${S.long[l]}`,
+      `<span style="color:#6B6B6B">${{
+        de: "Der Betrag wird in 5 bis 10 Tagen zurückerstattet.",
+        en: "Your refund arrives in 5 to 10 days.",
+        fr: "Le remboursement arrive sous 5 à 10 jours.",
+        it: "Il rimborso arriva entro 5 a 10 giorni.",
+      }[l]}</span>`,
+    ],
+    cta: { de: "Neuen Termin buchen", en: "Book a new time", fr: "Réserver un autre créneau", it: "Prenota un altro orario" },
+  },
+  "booking-reminder": {
+    art: `<img src="/_email-assets/cat-coiffeur-lg.png" width="84" height="84" alt="" style="display:block;margin:0 0 18px">`,
+    subject: {
+      de: "Morgen 14:30: Ihr Termin",
+      en: "Tomorrow 14:30: your appointment",
+      fr: "Demain 14:30: votre rendez-vous",
+      it: "Domani 14:30: il tuo appuntamento",
+    },
+    head: { de: "Bis morgen", en: "See you tomorrow", fr: "À demain", it: "A domani" },
+    lines: () => [
+      `<strong>${S.service}</strong>`,
+      `${S.salon}`,
+      `${S.address}`,
+    ],
+    cta: { de: "Route ansehen", en: "Get directions", fr: "Voir l'itinéraire", it: "Vedi il percorso" },
+  },
+};
+
+/** The proposed body: art, one headline, short stacked facts, one button. */
+function proposedBody(id, locale) {
+  const c = PROPOSED_COPY[id];
+  if (!c) return null;
+  const lines = c
+    .lines(locale)
+    .map((t) => `<p style="margin:0 0 6px;font-size:15px;line-height:1.5">${t}</p>`)
+    .join("");
+  return (
+    c.art +
+    `<h1 style="margin:0 0 14px;font-size:28px;line-height:1.2;font-weight:700;letter-spacing:-.02em">${c.head[locale]}</h1>` +
+    lines +
+    `<p style="margin:24px 0 0"><a href="https://solen.ch" style="${INK_BUTTON}">${c.cta[locale]}</a></p>`
+  );
+}
+
 function proposedShell(bodyHtml, locale) {
   const FOOT = {
     de: "Sie erhalten diese E-Mail, weil Sie einen Termin über solen.ch gebucht haben.",
@@ -79,16 +182,22 @@ for (const entry of EMAIL_PREVIEWS) {
   for (const locale of LOCALES) {
     try {
       const payload = entry.build(locale);
+      // Where proposed copy exists, the proposed view shows it. Where it does not, the email
+      // keeps its current words inside the new frame, and the card says so.
+      const rewritten = proposedBody(entry.id, locale);
+      const proposedSubject = PROPOSED_COPY[entry.id]?.subject?.[locale] ?? payload.subject;
       data[entry.id][locale] = {
         subject: payload.subject,
+        proposedSubject,
+        rewritten: Boolean(rewritten),
         now: frameDoc(wrapEmailHtml(payload.html)),
-        proposed: frameDoc(proposedShell(payload.html, locale)),
+        proposed: frameDoc(proposedShell(rewritten ?? payload.html, locale)),
         attachments: (payload.attachments ?? []).map((a) => a.filename),
       };
     } catch (err) {
       failures.push(`${entry.id} / ${locale}: ${err instanceof Error ? err.message : String(err)}`);
       const failed = frameDoc("<p>failed</p>");
-      data[entry.id][locale] = { subject: "(failed to build)", now: failed, proposed: failed, attachments: [] };
+      data[entry.id][locale] = { subject: "(failed to build)", proposedSubject: "(failed to build)", rewritten: false, now: failed, proposed: failed, attachments: [] };
     }
   }
 }
@@ -108,7 +217,9 @@ const sections = EMAIL_PREVIEW_GROUPS.map((group) => {
           ${data[e.id].de.attachments.length ? `<span class="chip">${data[e.id].de.attachments.join(", ")} attached</span>` : ""}
           <code class="id">${e.id}</code>
         </div>
-        <p class="subject"><span class="muted">Subject: </span><b data-subject="${e.id}"></b></p>
+        <p class="subject"><span class="muted">Subject: </span><b data-subject="${e.id}"></b>
+          <span class="len muted"></span>
+          <span class="chip" data-rewritten="${e.id}" style="display:none">words unchanged, frame only</span></p>
         <div class="stage"><iframe title="${e.label}" data-frame="${e.id}" sandbox="allow-same-origin"></iframe></div>
       </article>`
     )
@@ -220,7 +331,16 @@ const html = `<!doctype html>
       f.addEventListener('load', function () { fit(f); }, { once: true });
     });
     document.querySelectorAll('[data-subject]').forEach(function (b) {
-      b.textContent = DATA[b.getAttribute('data-subject')][l].subject;
+      var rec = DATA[b.getAttribute('data-subject')][l];
+      b.textContent = t === 'proposed' ? rec.proposedSubject : rec.subject;
+      var note = b.parentElement.querySelector('.len');
+      if (note) {
+        var n = (t === 'proposed' ? rec.proposedSubject : rec.subject).length;
+        note.textContent = n + ' characters' + (n > 45 ? ', cut off on a phone' : '');
+        note.style.color = n > 45 ? '#B45309' : '#6B6B6B';
+      }
+      var badge = document.querySelector('[data-rewritten="' + b.getAttribute('data-subject') + '"]');
+      if (badge) badge.style.display = (t === 'proposed' && !rec.rewritten) ? 'inline' : 'none';
     });
     document.querySelectorAll('#loc button').forEach(function (b) {
       b.setAttribute('aria-pressed', String(b.dataset.l === l));
