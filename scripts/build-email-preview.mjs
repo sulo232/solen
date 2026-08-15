@@ -15,7 +15,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { wrapEmailHtml } from "../lib/email.ts";
+import { wrapEmailHtml, EMAIL_FONT_STACK } from "../lib/email.ts";
 import { EMAIL_PREVIEWS, EMAIL_PREVIEW_GROUPS } from "../lib/email-preview-samples.ts";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -27,9 +27,51 @@ function frameDoc(inner) {
   return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0;padding:16px;background:#ffffff">${inner}</body></html>`;
 }
 
-// Build every template in every locale up front. A template with no locale parameter
-// (admin notification, cold outreach) simply yields the same output four times, which is
-// itself worth seeing.
+/**
+ * PROPOSED shell, NOT APPLIED to any real email. This is the mockup half of the page:
+ * the same untouched body, put inside a page frame, so the two can be compared side by
+ * side before anything ships. Nothing here is imported by lib/email.ts.
+ *
+ * Every value is lifted from something that already exists, none invented:
+ *   600px            already used by lib/email-templates/off-peak.ts
+ *   #F4F4F5 / #0A0A0A / #6B6B6B / #E4E4E7   EMAIL_COLORS, mirrored from the LOCKFILE
+ *   16px card radius the locked form/summary card radius
+ *   "solen.ch"       the sign-off most templates already end with
+ *
+ * Tables, not modern layout: Outlook renders these with Word, which supports neither
+ * flexbox nor grid. Open question for the owner, NOT decided here: there is no email
+ * logo to use. public/logo.svg is an SVG (Gmail strips SVG) in the retired V2 palette
+ * (#1A1209 ink, #043338 teal) and set in a font that no mail client will load, so it
+ * would arrive as a broken box. A wordmark in text is used below instead.
+ */
+function proposedShell(bodyHtml, locale) {
+  const FOOT = {
+    de: "Sie erhalten diese E-Mail, weil Sie einen Termin über solen.ch gebucht haben.",
+    en: "You are receiving this email because you booked an appointment through solen.ch.",
+    fr: "Vous recevez cet e-mail car vous avez réservé un rendez-vous via solen.ch.",
+    it: "Ricevi questa email perché hai prenotato un appuntamento tramite solen.ch.",
+  }[locale];
+
+  return `
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F4F4F5;margin:0;padding:24px 12px;font-family:${EMAIL_FONT_STACK}">
+  <tr><td align="center">
+    <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px;max-width:100%;background:#ffffff;border-radius:16px">
+      <tr><td style="padding:24px 28px 18px;font-family:${EMAIL_FONT_STACK}">
+        <span style="font-size:20px;font-weight:700;color:#0A0A0A;letter-spacing:-.01em">solen.ch</span>
+      </td></tr>
+      <tr><td style="padding:0 28px"><div style="height:1px;background:#E4E4E7;line-height:1px">&nbsp;</div></td></tr>
+      <tr><td style="padding:22px 28px 28px;color:#0A0A0A;font-size:15px;line-height:1.55;font-family:${EMAIL_FONT_STACK}">${bodyHtml}</td></tr>
+    </table>
+    <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px;max-width:100%">
+      <tr><td style="padding:16px 28px 8px;color:#6B6B6B;font-size:12px;line-height:1.5;font-family:${EMAIL_FONT_STACK}">${FOOT}</td></tr>
+    </table>
+  </td></tr>
+</table>`;
+}
+
+// Build every template in every locale up front, in both treatments. A template with no
+// locale parameter (admin notification, cold outreach) simply yields the same output four
+// times, which is itself worth seeing.
 const data = {};
 const failures = [];
 for (const entry of EMAIL_PREVIEWS) {
@@ -39,12 +81,14 @@ for (const entry of EMAIL_PREVIEWS) {
       const payload = entry.build(locale);
       data[entry.id][locale] = {
         subject: payload.subject,
-        doc: frameDoc(wrapEmailHtml(payload.html)),
+        now: frameDoc(wrapEmailHtml(payload.html)),
+        proposed: frameDoc(proposedShell(payload.html, locale)),
         attachments: (payload.attachments ?? []).map((a) => a.filename),
       };
     } catch (err) {
       failures.push(`${entry.id} / ${locale}: ${err instanceof Error ? err.message : String(err)}`);
-      data[entry.id][locale] = { subject: "(failed to build)", doc: frameDoc("<p>failed</p>"), attachments: [] };
+      const failed = frameDoc("<p>failed</p>");
+      data[entry.id][locale] = { subject: "(failed to build)", now: failed, proposed: failed, attachments: [] };
     }
   }
 }
@@ -112,7 +156,7 @@ const html = `<!doctype html>
   body[data-w="phone"] iframe { width:390px; }
 </style>
 </head>
-<body data-l="de" data-w="desktop">
+<body data-l="de" data-w="desktop" data-t="now">
 <header>
   <h1>Email preview</h1>
   <p class="sub">${EMAIL_PREVIEWS.length} templates, exactly as they arrive. Sample content, nothing sends.</p>
@@ -121,6 +165,10 @@ const html = `<!doctype html>
     <div class="toggle" id="wid">
       <button data-w="desktop">Desktop 700</button>
       <button data-w="phone">Phone 390</button>
+    </div>
+    <div class="toggle" id="treat">
+      <button data-t="now">What ships now</button>
+      <button data-t="proposed">Proposed frame</button>
     </div>
   </div>
 </header>
@@ -151,10 +199,10 @@ const html = `<!doctype html>
   }
 
   function paint() {
-    var l = body.dataset.l;
+    var l = body.dataset.l, t = body.dataset.t;
     document.querySelectorAll('[data-frame]').forEach(function (f) {
       var rec = DATA[f.getAttribute('data-frame')][l];
-      f.srcdoc = rec.doc;
+      f.srcdoc = t === 'proposed' ? rec.proposed : rec.now;
       f.addEventListener('load', function () { fit(f); }, { once: true });
     });
     document.querySelectorAll('[data-subject]').forEach(function (b) {
@@ -166,11 +214,18 @@ const html = `<!doctype html>
     document.querySelectorAll('#wid button').forEach(function (b) {
       b.setAttribute('aria-pressed', String(b.dataset.w === body.dataset.w));
     });
+    document.querySelectorAll('#treat button').forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.dataset.t === t));
+    });
   }
 
   document.getElementById('loc').addEventListener('click', function (e) {
     var b = e.target.closest('button'); if (!b) return;
     body.dataset.l = b.dataset.l; paint();
+  });
+  document.getElementById('treat').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    body.dataset.t = b.dataset.t; paint();
   });
   document.getElementById('wid').addEventListener('click', function (e) {
     var b = e.target.closest('button'); if (!b) return;
