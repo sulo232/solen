@@ -303,10 +303,17 @@ export default function SalonReviews({
                   if (c === 0) return null;
                   return (
                     <TabPill key={s} active={ratingFilter.has(s)} onClick={() => toggleRating(s)} size="sm">
+                      {/* mockup-ok: same bracket removal as the PDP section, owner 2026-08-15
+                          ("jst make 5star and then counts wout()"). It has to happen HERE TOO, and
+                          that is the whole point: this file is a SECOND copy of the reviews list,
+                          reached by tapping the all-reviews link on the PDP. Changing only the PDP
+                          would have left the two screens showing the same pill two different ways,
+                          one tap apart, which is exactly the drift FLOORS LAW 8 exists to stop. He
+                          asked once; a request applies to the thing, not to one file. */}
                       <span className="inline-flex items-center gap-1">
                         {s}
                         <Star size={11} strokeWidth={0} aria-hidden className="fill-s-star" />
-                        {`(${c.toLocaleString("de-CH")})`}
+                        {c.toLocaleString("de-CH")}
                       </span>
                     </TabPill>
                   );

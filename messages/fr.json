@@ -5696,7 +5696,7 @@
     "showMoreReviews": "Charger plus",
     "sortNewest": "Plus récents",
     "filterBy": "Filtrer par",
-    "filterAllCount": "Tous ({count})",
+    "filterAllCount": "Tous {count}",
     "reviewsCount": "{count} avis",
     "reviewsCountPlural": "{count, plural, one {# avis} other {# avis}}",
     "sortHighest": "Meilleurs",

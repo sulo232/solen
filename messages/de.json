@@ -5713,7 +5713,7 @@
     "showMoreReviews": "Mehr laden",
     "sortNewest": "Neueste",
     "filterBy": "Filtern nach",
-    "filterAllCount": "Alle ({count})",
+    "filterAllCount": "Alle {count}",
     "reviewsCount": "{count} Bewertungen",
     "reviewsCountPlural": "{count, plural, one {# Bewertung} other {# Bewertungen}}",
     "sortHighest": "Beste",

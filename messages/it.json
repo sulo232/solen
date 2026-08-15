@@ -5696,7 +5696,7 @@
     "showMoreReviews": "Carica altro",
     "sortNewest": "Più recenti",
     "filterBy": "Filtra per",
-    "filterAllCount": "Tutte ({count})",
+    "filterAllCount": "Tutte {count}",
     "reviewsCount": "{count} recensioni",
     "reviewsCountPlural": "{count, plural, one {# recensione} other {# recensioni}}",
     "sortHighest": "Migliori",
