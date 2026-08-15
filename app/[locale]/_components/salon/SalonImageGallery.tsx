@@ -249,7 +249,21 @@ export function SalonImageGallery({
             its 2-col grid. */}
         <div className="px-4 py-4">
           {tab === "salon" ? (
-            <div className="grid grid-cols-3 gap-1.5 md:gap-2.5">
+            // mockup-ok: back to FULL-WIDTH STACKED photos (owner 2026-08-15: "on the portfolio,
+            // after you open, it's, like, not balance at all. It's just all weird. I told you to
+            // fix it, and you didn't do anything. There's even the contextual reference, bro.").
+            //
+            // MEASURED off the reference he means, his Fresha Bildergalerie capture (image 3,
+            // 920px wide): the venue tab is a single column of full-bleed photos, not a grid. The
+            // two fully-visible blocks measure 464px and 324px tall inside an 828px content
+            // column, so 1.78:1 and 2.55:1, with the second one clipped by the viewport. 16/9
+            // (1.78) is the one the un-clipped photo lands on exactly.
+            //
+            // What this replaces is the 3-column square grid, and that IS what looks unbalanced:
+            // nine 110px thumbnails on a phone against his reference's 460px photos. The grid was
+            // right for the PDP's 9-tile teaser, which is a teaser. The gallery is where the
+            // photos are the point.
+            <div className="flex flex-col gap-3">
               {filteredSalonPhotos.map((u, i) => (
                 // The per-photo report control that used to sit in a positioned wrapper here is
                 // GONE (owner 2026-08-15: "the report button, we need to remove that because,
@@ -260,7 +274,10 @@ export function SalonImageGallery({
                   key={u}
                   type="button"
                   onClick={() => openLb(filteredSalonPhotos, i)}
-                  className="relative aspect-square w-full overflow-hidden rounded-md bg-s-bg-sunken transition-transform hover:scale-[0.99] active:scale-[0.98] active:duration-[80ms] active:ease-glide md:rounded-lg"
+                  // mockup-ok: 16/9 is the ratio measured off his own reference capture (see the
+                  // note on the container above), and `rounded-card` is the 16px literal the
+                  // design contract already assigns a content block this size, not a new value.
+                  className="relative aspect-[16/9] w-full overflow-hidden rounded-card bg-s-bg-sunken transition-transform hover:scale-[0.995] active:scale-[0.99] active:duration-[80ms] active:ease-glide"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
@@ -280,6 +297,12 @@ export function SalonImageGallery({
               ))}
             </div>
           ) : (
+            // mockup-ok: 1 BIG + 2 HALF, repeating. Measured off his per-stylist reference
+            // (image 5, 920px wide): the lead photo is 826px tall in an 828px column, so a
+            // full-width SQUARE, and the pair under it measures 398px tall at half width, so two
+            // squares side by side. The flat 2-column grid this replaces gave every photo the
+            // same small tile, which is the "not balanced at all" he is pointing at: nothing in
+            // it is the anchor.
             <div className="grid grid-cols-2 gap-2">
               {activePhotos.map((u, i) => (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -292,7 +315,13 @@ export function SalonImageGallery({
                   onClick={() => openLb(activePhotos, i)}
                   // ig4 (owner-approved 2026-07-16): object-top (was center) on the square
                   // grid so a portrait crop keeps the face/wrists, not the feet.
-                  className="aspect-square w-full cursor-pointer rounded-xl bg-s-bg-sunken object-cover object-top transition-transform duration-150 active:scale-[0.98] active:duration-[80ms] active:ease-glide"
+                  // mockup-ok: every third photo leads its group at full width, the two after it
+                  // sit half-width beside each other. All three stay square, which is what the
+                  // reference measures; only the width changes, so no crop rule moves.
+                  className={cn(
+                    "aspect-square w-full cursor-pointer rounded-xl bg-s-bg-sunken object-cover object-top transition-transform duration-150 active:scale-[0.98] active:duration-[80ms] active:ease-glide",
+                    i % 3 === 0 && "col-span-2",
+                  )}
                   loading="lazy"
                 />
               ))}
