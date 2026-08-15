@@ -730,3 +730,353 @@ wait until tonight, it is not on it.
 - [ ] PARKED 2026-08-15 · When a salon moves an appointment, does the customer just get told, or do they have to agree first? · from: three database columns for a customer-agreement handshake exist from migration 022 and no code was ever written against them
 - [ ] PARKED 2026-08-15 · The salon page uses three text weights on purpose and the design rule allows two. Does the rule become three, or does the salon page have to change? · from: measured on the shipped salon page while rebuilding the terminal out of its own parts
 - [ ] PARKED 2026-08-15 · A list of people: one white card with thin lines between rows (what the salon page does), or a separate card per person (what the entity-card rule says)? · from: the design verifier flagged the two rules pointing different ways
+
+---
+
+# ROUND 2 , THE STATE MACHINE, LOGS, UNDO AND LEARNING (owner 2026-08-15, third message)
+
+> "I actually think this through, like, each one... if the person doesn't come, like, for, like,
+> thirty minutes after, you know, the actual time, like, people needs to tap, you know, like, the
+> staff needs to tap the day arrive and stuff. Like, or they're in waiting... they can choose, you
+> know, to actually have, like, logs and stuff. And we can also, like, learn based on that, like,
+> activities, and we can, like, personalize more... think of all of that, data collection,
+> everything, how we can utilize... what is gonna happen if to stop. Forgot to click that they
+> arrived. Can they revert it? Or those stuff or, like, decline something... we need to use the LLM
+> cancels, algorithms cancel, and do you think it through too? Gave it, like, each one really,
+> really deep detail on how to do it and make with tons of mockup. And also analyze and go research
+> really deeply. Pay some research into Airbnb or research into Booking dot com or research into
+> Uber Eats"
+
+## Atomic checklist , round 2
+
+### G. THE STATE MACHINE
+- [ ] G1 Every state a walk-in can be in, and every legal move between them
+- [ ] G2 Every state an appointment can be in, and every legal move between them
+- [ ] G3 Which moves happen BY THEMSELVES (time-driven) vs which need a human tap
+- [ ] G4 The late/no-show clock: what happens at +5, +15, +30 minutes, and who decides
+- [ ] G5 The "arrived" tap: what it is, who taps it, and what it unlocks
+
+### H. UNDO
+- [ ] H1 Forgot to tap arrived: how they fix it after the fact
+- [ ] H2 Tapped no-show by mistake: can it be taken back, and what happens to the fee
+- [ ] H3 Declined or cancelled by mistake: can it be taken back, and what does the customer see
+- [ ] H4 The general rule: what is reversible, for how long, and what is never reversible
+
+### I. LOGS
+- [ ] I1 What a log entry is, and every event worth recording
+- [ ] I2 Where the salon sees it, and the salon's choice to have it at all
+- [ ] I3 What EXISTS already in the database for this (exists-check before designing)
+
+### J. LEARNING AND DATA
+- [ ] J1 What each recorded event is actually worth, one by one
+- [ ] J2 What we can personalize for the CUSTOMER from it
+- [ ] J3 What we can predict for the SALON from it
+- [ ] J4 The ethics and legal line (nFADP, and our own psychology law)
+
+### K. ALGORITHMS AND LLM
+- [ ] K1 Where a plain rule is enough and an LLM would be worse
+- [ ] K2 Where an LLM genuinely earns its place
+- [ ] K3 The no-show risk score: what it is, what it may and may not do
+- [ ] K4 What it costs and what happens when it is wrong
+
+### L. RESEARCH (never from memory)
+- [ ] L1 Uber Eats: late orders, undo, merchant activity history
+- [ ] L2 Booking.com: no-show handling, free-cancel windows, the partner's undo
+- [ ] L3 Airbnb: cancel/decline flows, the reservation timeline, host reversal
+- [ ] L4 What the salon tools do: Fresha, Square, Booksy on no-show and undo
+
+### M. MOCKUPS
+- [ ] M1 The late clock, on the real screen
+- [ ] M2 The arrived tap and what it changes
+- [ ] M3 The undo moment
+- [ ] M4 The activity log
+- [ ] M5 All as variants of the ONE real terminal screen, never isolated panels
+
+---
+
+## G , THE STATE MACHINE (drafted before the research lands; anything the research contradicts gets corrected, not quietly kept)
+
+### G1 The walk-in, states and moves
+Existing in the database today: `waiting | in_chair | completed | no_show | cancelled`
+(`barber_walkin_queue.status`, migration 073). Two columns already exist and are unused:
+`called_at` and `started_at`.
+
+```
+joined ──► waiting ──► called ──► in_chair ──► completed
+                │         │           │
+                │         └─► skipped (back in the queue, one round only)
+                │                     │
+                └─────────────────────┴─► no_show / cancelled
+```
+
+**`called` is the missing state and it matters.** Today a walk-in goes straight from waiting to in
+the chair. But a remote walk-in is at the cafe next door: the shop calls them, and there is a real
+gap of a few minutes before they are in the chair. Without that state the shop has to either lie
+(mark them in the chair before they walk in) or leave the queue wrong. `called_at` already exists
+for it.
+
+**`skipped` is the other missing one, and it is how barbershops actually behave.** Nobody marks a
+customer a no-show the second they do not answer. They take the next person and the missing one
+keeps their place for one round. One round, then the shop decides.
+
+### G2 The appointment, states and moves
+Existing: `pending | pending_approval | confirmed | cancelled | completed | no_show`
+(migration 075). `bookings.arrived_at` exists as a column.
+
+```
+booked ──► confirmed ──► arrived ──► in progress ──► completed
+                │            ▲
+                │            └── set retroactively when the shop forgot (G5/H1)
+                └─► cancelled  ·  no_show  ·  moved
+```
+
+**`arrived` is not a status, it is a timestamp,** and that is the right shape: the booking stays
+`confirmed` and gains an arrival time. It changes nothing legally and everything operationally.
+
+### G3 What happens by itself, and what needs a human
+| moment | by itself | needs a tap |
+|---|---|---|
+| 24h and 1h reminders | yes, already ships (`sms_sent_24h`, `sms_sent_1h`) | , |
+| the appointment time arrives | the row moves to the top and reads "due now" | , |
+| 5 minutes late | the row changes quietly. No alarm. | , |
+| 15 minutes late | the terminal raises it and makes its sound | , |
+| 30 minutes late | the terminal ASKS: arrived, or no-show | the answer |
+| customer arrives | , | "Arrived" |
+| service starts / ends | , | "Start" / "Done" |
+| a fee is charged | only after a human answered the 30 minute question | , |
+| nothing was ever tapped | at closing time it resolves to "not recorded" and **charges nothing** | , |
+
+**The single most important line in this whole design: a no-show fee is never charged by silence.**
+A busy shop that forgot to tap must never cost a real customer real money. If nobody answers, the
+question is still the first thing on the terminal the next morning, and it stays answerable for 24
+hours. After that it closes as not recorded.
+
+The cost of that choice, stated plainly: some genuine no-shows will go unbilled at the busiest
+salons, which are the ones that want the fee most. The alternative costs us a wrongly charged
+customer, a chargeback, and a support case, and it is the kind of mistake that ends trust in a
+marketplace before it has any. Worth naming as a decision rather than an assumption.
+
+### G4 The late clock, minute by minute
+- **+0** row rises to the top, reads `Due now`.
+- **+5** reads `5 min late`. Grey. No noise. Everybody is five minutes late.
+- **+15** reads `15 min late`, the row gets the alert treatment and the terminal makes its sound
+  once. This is the point where a shop can still fill the slot.
+- **+30** the row becomes a question with two buttons: `They arrived` and `No-show`. Until it is
+  answered it stays at the top and does not scroll away.
+- **closing time** unanswered becomes `Not recorded`, no fee, and it is on tomorrow's terminal.
+
+Grace values are per salon, defaulting to 15 and 30. A hairdresser's grace and a spa's are not the
+same number, and hardcoding one is how the product would feel wrong to half the market.
+
+### G5 The "Arrived" tap
+One tap, on the row, by anyone at the counter. It writes `arrived_at`. What it unlocks:
+- the appointment stops being late and stops asking
+- the real duration clock starts, which is where the learning comes from (J3)
+- if the customer prepaid, nothing changes; if they pay in person, the row now shows what to collect
+
+It can be set retroactively (H1), and it can be undone (H2).
+
+---
+
+## H , UNDO. The rule is one line: nothing is a dead end, but the way back gets heavier the further money has moved.
+
+Three tiers, and every action on the terminal sits in exactly one.
+
+### Tier 1 , the ten second undo (no money moved)
+Every tap happens INSTANTLY with no confirmation dialog, and a bar slides up: what just happened,
+and `Undo`. Ten seconds, then it goes.
+Covers: Arrived, Start, Done, Skip, Called, Accept, Move.
+Why no confirmation dialog: a confirmation costs a tap on every single correct action to protect
+against the rare wrong one, and staff learn to tap through it without reading, which means it stops
+protecting anything. Undo costs nothing when you are right.
+
+### Tier 2 , the correction, for 24 hours (money is committed but not yet moved)
+After the toast is gone, tap the row and pick `Fix this`. Covers a no-show marked by mistake, a
+forgotten arrival, a wrong finish time. It does not erase anything: it writes a correcting entry, so
+the log shows both what was recorded and what it was corrected to, by whom. That is what makes it
+safe to allow at all.
+Twenty four hours because that is the window the rest of this product already uses for a booking
+decision (the approval timeout), and because a shop reconciles its day the next morning, not later.
+
+### Tier 3 , the reversal (money has actually moved)
+A charged no-show fee, a taken payment, an issued refund. Not an undo, a new financial action:
+owner only, reason required, customer told. It exists, it is just deliberately not one tap.
+
+### H1 Forgot to tap arrived
+The most common mistake there will be, and the design has to assume it happens daily.
+- While the row is still asking (up to closing), `They arrived` also offers `Arrived on time`, which
+  backfills the scheduled time instead of now. One tap, no time picker, for the overwhelmingly
+  common case where the customer was fine and the shop was busy.
+- If a time matters, a picker opens on the scheduled time, not on now.
+- After it has closed as `Not recorded`, it is a Tier 2 correction the next morning.
+
+### H2 Marked no-show by mistake
+- Within ten seconds: Undo, nothing happened, no fee, no email.
+- Within 24 hours: `Fix this` -> `They did arrive`. If a fee was charged, this becomes a Tier 3
+  reversal automatically and the refund goes out with the correction.
+- The customer is told when a no-show is REVERSED, not only when it is recorded. Being wrongly
+  marked and then quietly unmarked without being told is worse than either.
+
+### H3 Declined or cancelled by mistake
+This is the hardest one and it is the one place undo genuinely cannot be a promise, for a reason
+that has nothing to do with us: **the moment a booking is cancelled, its slot goes back on the
+market and somebody else can take it.**
+- Within ten seconds: the slot is HELD, not released. Undo puts it back exactly as it was. This is
+  the whole reason for the ten second hold.
+- After that: the slot is genuinely free and may already be gone. So `Fix this` does not restore
+  the booking, it offers to `Rebook this customer`, pre-filled, showing whether the original time
+  is still free. Honest about what is possible.
+- A decline in approval mode has the same shape and the same ten second hold.
+
+### H4 The general rule, stated once
+| what | how long | who | what the customer sees |
+|---|---|---|---|
+| any operational tap | 10 seconds | anyone at the counter | nothing, it never happened |
+| no-show, arrival, finish | 24 hours | anyone at the counter | told only if a fee reverses |
+| cancel / decline | 10 seconds fully, then rebook-only | anyone at the counter | the cancellation, then the rebooking |
+| a charge or a refund | no limit | owner only, reason required | always |
+
+Nothing on this screen is unrecoverable. That is the design goal, and it is achievable because the
+only truly irreversible thing in the whole flow is a slot somebody else has since booked.
+
+---
+
+## I , LOGS
+
+### I1 What a log entry is
+One row per state change, and the shape is deliberately boring:
+`what it was about` (booking or queue entry), `from` -> `to`, `when`, `who` (staff member, the
+customer, or the system), `how` (a tap, a rule that fired, a cron, a payment webhook), and a
+correction pointer when this entry corrects an earlier one.
+
+Events worth recording, and nothing beyond them:
+booked · confirmed · approved · declined · reminder sent · marked arrived · started · finished ·
+marked no-show · skipped · cancelled (and by whom) · moved (from, to) · fee charged · fee reversed ·
+a correction of any of the above.
+
+### I2 Where the salon sees it, and the choice he asked for
+Two places, and they are the same data at two depths:
+- **per row:** tap any row, the history is at the bottom of what opens. "Arrived 14:03, Nina.
+  Finished 14:51, Nina." That is the version anybody actually reads.
+- **the day:** one screen, today's events in order, for the evening reconciliation.
+
+**The choice.** The log is always WRITTEN, because money and disputes need it and because a
+customer has a right to know what was recorded about their booking. What the salon chooses is
+whether the terminal SHOWS the day view at all, since a small one-chair shop does not want it and a
+six-chair shop does.
+
+**One thing to be careful about, and it is a legal point rather than a design one.** A log with a
+`who` column is a record of what each employee did and when. In Switzerland, systematic monitoring
+of employee behaviour has real constraints, and a tool that hands a salon owner a per-staff activity
+timeline is that, whatever we call it. Recording WHICH ACCOUNT acted is necessary for corrections and
+disputes. Building the owner a per-staff productivity view on top of it is a different product and
+should not be smuggled in by accident.
+
+### I3 Exists-check
+Running as part of this round, before anything is designed on top of it. Nothing here gets built
+until the audit says what the `activity-feed` endpoint and the `notifications` table already cover.
+
+---
+
+## J , WHAT THE DATA IS ACTUALLY WORTH
+
+The honest framing first: most "we'll learn from the data" plans are worth nothing because the data
+is thin and the conclusions are guesses. This one has exactly one enormous thing in it and several
+small ones, so they are separated.
+
+### J1 The big one: we learn how long things REALLY take
+`arrived_at` and `completed_at` on the same row give the true duration. Every salon's service
+durations are what the salon typed in when they signed up, and they are wrong. Everywhere.
+
+What true durations fix, in order of value:
+1. **Availability stops lying.** If Nina's 45 minute cut really takes 58, the slot after it is
+   double-booked every single time, and the customer feels it as waiting.
+2. **The wait estimate on the walk-in queue becomes real** instead of a formula.
+3. **The salon can be told**, gently and privately: "your Skin Fade is booked at 45 minutes and runs
+   at 56 on average over 40 visits. Change it?" That is a service they would pay for.
+
+This is the highest-value thing in the entire terminal, and it is a by-product of two taps that the
+staff have a reason to make anyway.
+
+### J2 What we can do for the customer
+- **Their own lateness, used FOR them, never against them.** Someone who is reliably 10 minutes late
+  gets their reminder earlier. Not a label, not a score anybody sees, just a better reminder time.
+- **When they actually come.** Real visit intervals per person feed the rebooking nudge, which our
+  own psychology law already says must fire off the customer's own cycle rather than a global
+  interval. Right now that cycle is derived from booking dates; arrival data makes it real.
+- **Who they actually see.** Which stylist really served them, from the chair record rather than the
+  booking's guess, so "book Nina again" is right.
+
+### J3 What we can tell the salon
+- true durations per service per stylist (J1)
+- the honest no-show rate for the shop, and the hours it happens in
+- how long people really wait, against what the queue promised them
+- which slots go unfilled after a late cancel, which is what a waitlist would fix
+
+### J4 The line, and it is not negotiable
+Our own hard lines bind the salon dashboard exactly as they bind customer screens, and two of them
+land directly on this:
+1. **No fabricated numbers.** Every figure above needs enough real visits behind it to mean
+   anything. A duration average over three visits is noise wearing a decimal point, and showing it
+   would be the same failure as a fake review count. Nothing renders below a real threshold.
+2. **A person is never scored to their face.** We may use lateness to time a reminder. We may not
+   show a salon "this customer is a no-show risk", because that is profiling a named individual in a
+   way that leads to them being refused service, and under Swiss data-protection rules a decision
+   like that is not something a marketplace gets to make quietly. See K3.
+
+The rule that falls out and should be written into the law file: **derived behaviour may change what
+the SYSTEM does, and may not change how a PERSON is treated.**
+
+---
+
+## K , ALGORITHMS AND THE LLM
+
+He asked directly whether an LLM should handle cancels. The honest answer is: for the decision, no,
+and for the words around the decision, yes. Split by what the job actually is.
+
+### K1 Where a plain rule wins, and an LLM would be strictly worse
+Everything on this screen that is arithmetic:
+the late clock, the no-show proposal, the fee (already frozen into the booking's own terms at the
+moment it was made), the wait estimate, the duration averages, reminder timing, the queue order.
+
+Four reasons an LLM is the wrong tool for these, and they are not stylistic:
+1. **They must be explainable to a customer who disputes a charge.** "Rule: 30 minutes late, staff
+   confirmed" is a defence. "The model decided" is not.
+2. **They must be identical every time.** The same inputs must give the same answer for two
+   customers on two days, or the fee is arbitrary.
+3. **They run on a screen that has to answer in under a second**, offline-ish, in a shop.
+4. **They cost money per call** to compute something a subtraction already answers.
+
+### K2 Where an LLM genuinely earns its place
+Language, never arithmetic. Three real uses:
+1. **Reading free text.** Cancellation reasons and customer notes are unstructured. Sorting a
+   season of them into "ill / travel / found it cheaper / salon's fault" is exactly the job.
+2. **Writing the message.** When a salon moves an appointment, the customer gets a note. Writing a
+   decent one in four languages, in the salon's own voice, from a reason typed in a hurry, is worth
+   real money to a shop that is not going to write it themselves.
+3. **Summarising the day.** "Two no-shows, both before 10am, and Nina ran 20 minutes over all
+   afternoon" from the log. A person would need five minutes and will never do it.
+
+### K3 The no-show risk score, and why it should NOT ship as most products would build it
+It is buildable: past no-shows, lead time, first-time or returning, day and hour, deposit or not.
+The rule that governs what it may do is J4's line, so:
+
+**Allowed** , it changes what the SYSTEM does:
+- a second reminder for a booking the model thinks is shaky
+- suggesting a deposit for a high-risk SLOT PATTERN (Saturday 9am, first-time, booked three weeks
+  out), which is about the slot and not about the person
+- warning the salon that a whole DAY looks fragile
+
+**Not allowed** , it changes how a PERSON is treated:
+- showing a salon a risk label on a named customer
+- letting a salon auto-decline based on a score
+- charging a bigger deposit to a named person because of their history
+Each of those is an automated decision about an individual with a real consequence, and it is not a
+call a marketplace should make quietly, quite apart from Swiss data-protection rules on profiling.
+
+### K4 What it costs, and what happens when it is wrong
+- **Cost.** Free-text classification and the odd message are pennies per salon per month. A model
+  call in the tap path would not be, which is the second reason it stays out of the tap path.
+- **When the language model is wrong**, a message reads oddly and a human fixes it. Cheap.
+- **When a score is wrong**, a real customer is treated worse for a reason nobody can see. Not
+  cheap, not fixable, and not visible to us when it happens. That asymmetry is the whole argument.
