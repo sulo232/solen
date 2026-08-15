@@ -10,7 +10,6 @@ import { Avatar, RatingStars, SeeAllButton } from "@/app/[locale]/_components/pr
 import { TabPill } from "../primitives/TabPill";
 import { cn } from "@/lib/utils";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
-import ReportButton from "@/components-legacy/discovery/ReportButton";
 
 /**
  * SalonReviews, D3 "Segmented" (2026-07-24 PORT, owner "I love this D3 segmented
@@ -133,17 +132,34 @@ export function SalonReviews({
           {t("reviewsHeading")}
         </h2>
 
-        {/* mockup-ok: D3 Segmented summary (owner-approved 2026-07-24, _overhaul/reviews/
-            DirectionSegmented.tsx). Compact star + average + grey count line, replacing the
-            old 5-star row + big number. */}
-        <div className="mt-4 flex items-center gap-2">
-          <Star size={16} stroke="none" aria-hidden className="fill-s-star" />
-          <span className="font-display text-[20px] font-bold leading-none text-s-ink tabular-nums">
-            {average?.toFixed(1) ?? "-"}
-          </span>
-          <span className="font-body text-[13px] text-s-ink-2">
-            {t("reviewsCountPlural", { count })}
-          </span>
+        {/* mockup-ok: owner 2026-08-15, holding up his Fresha "Bewertungen" capture: "I just
+            want, like, the stars to be more big and, you know, like, the colors too and also,
+            like, more like simple."
+
+            What that reference actually does, so this copies a structure and not a description:
+            a BIG solid-yellow five-star row on its own line, then the average and the review
+            count on the line below, with the count carrying the brand's clickable colour.
+            What shipped here before was the opposite: one cramped line with a 16px star, and
+            the count in grey.
+
+            The 2026-07-24 D3 Segmented decision is what is being amended, and only on this
+            summary block. Its tier filter chips and its 3-row cap below are untouched.
+
+            28px is not eyeballed: it is the display-anchor floor this system already carries
+            (FLOORS LAW 6, "one display anchor >= 28px per customer screen"), and on this section
+            the star row IS the focal element, exactly as it is in his reference. The count takes
+            `text-s-accent`, the same treatment the review count in the page header already uses,
+            so one number reads one way on one screen. */}
+        <div className="mt-4">
+          <RatingStars value={average ?? 0} mode="five" starPx={28} /> {/* psych-ok: law 6 is "a rating never appears without its sample size", and it does not here, the count renders 8px below inside this same block as one two-line unit, which is the reference anatomy; passing count too would print the number twice */}
+          <div className="mt-2 flex items-baseline gap-2">
+            <span className="font-display text-[20px] font-bold leading-none text-s-ink tabular-nums">
+              {average?.toFixed(1) ?? "-"}
+            </span>
+            <span className="font-body text-[14px] text-s-accent">
+              {t("reviewsCountPlural", { count })}
+            </span>
+          </div>
         </div>
 
         {/* GUARDED ON `rows`, NOT `all` (fixed 2026-07-28). `all` is every loaded review;
@@ -283,14 +299,14 @@ function ReviewCard({ review, salonName, locale }: { review: Review; salonName?:
             {formatReviewDate(review.created_at, locale)}
           </div>
         </div>
-        {/* mockup-ok: net-new report affordance (owner ask 2026-07-25, "surfaces that lack
-            it"), reusing ReportButton's "row" variant, a verbatim copy of the full reviews
-            page's own existing per-row Flag icon-button chrome. */}
-        <ReportButton type="review" targetId={review.id} variant="row" />
+        {/* The per-row report Flag that used to sit here is GONE (owner 2026-08-15: "the report
+            button, we need to remove that because, you know, customer is not gonna report it.
+            It's gonna look so weird and not official."). It was added on his own 2026-07-25 ask
+            for report affordances on "surfaces that lack it"; the later call wins. */}
       </div>
 
       {/* Stars */}
-      <RatingStars value={review.rating} mode="five" size="md" className="mt-3" />
+      <RatingStars value={review.rating} mode="five" size="lg" className="mt-3" />
 
       {text && (
         <>

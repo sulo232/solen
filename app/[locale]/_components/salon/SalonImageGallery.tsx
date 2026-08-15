@@ -9,7 +9,6 @@ import { SalonLightbox } from "./SalonLightbox";
 import type { StaffMember } from "./_shared";
 import { cn } from "@/lib/utils";
 import { getPortfolioCategoriesForSalon, getPortfolioCategoryLabel, PORTFOLIO_CATEGORY_ALL_LABEL, type PortfolioLocale } from "@/lib/portfolio-categories";
-import ReportButton from "@/components-legacy/discovery/ReportButton";
 import { useTranslations } from "next-intl";
 
 /**
@@ -127,6 +126,26 @@ export function SalonImageGallery({
     };
   }, [open]);
 
+  // accessibility-06 (2026-07-27): url -> category lookup so the grid's alt text can name
+  // WHAT the photo shows (its portfolio category) instead of just a bare index. Real
+  // metadata already fetched into `salonPhotos`, just never threaded through to alt=.
+  //
+  // MUST STAY ABOVE THE `if (!open)` EARLY RETURN BELOW, and that is not a style preference:
+  // it is the fix for the bug that made tapping a portfolio photo do nothing at all
+  // (owner 2026-08-15, "right now, nothing happens when you click one of the photos").
+  // This useMemo (and a second one that has since been deleted with the report control) was
+  // added BELOW the early return by commit c79210163. Closed, the component ran 14 hooks;
+  // open, it ran 16, so React threw "Rendered more hooks than during the previous render"
+  // the instant the gallery opened, the nearest error boundary swallowed it, and the screen
+  // stayed exactly as it was. Measured live on cuts-and-culture: the click fired, zero
+  // dialogs opened, that error in the console. Every hook in this component now sits above
+  // the early return.
+  const categoryByUrl = React.useMemo(() => {
+    const m = new Map<string, string | null>();
+    for (const p of salonPhotos) m.set(p.url, p.category);
+    return m;
+  }, [salonPhotos]);
+
   if (!open) return null;
 
   const stylistsWithPhotos = staff.filter((s) => (portfolios[s.id]?.length ?? 0) > 0);
@@ -158,22 +177,6 @@ export function SalonImageGallery({
   // work a photo shows instead of alt="" (these are evaluative haircut-result photos, the
   // exact content 1.1.1 does not let a gallery mark decorative).
   const activeStylistName = staff.find((s) => s.id === activeStylist)?.name ?? null;
-
-  // accessibility-06 (2026-07-27): url -> category lookup so the grid's alt text can name
-  // WHAT the photo shows (its portfolio category) instead of just a bare index. Real
-  // metadata already fetched into `salonPhotos`, just never threaded through to alt=.
-  const categoryByUrl = React.useMemo(() => {
-    const m = new Map<string, string | null>();
-    for (const p of salonPhotos) m.set(p.url, p.category);
-    return m;
-  }, [salonPhotos]);
-
-  // Same shape as categoryByUrl above: the grid renders urls, but a report must name the row.
-  const idByUrl = React.useMemo(() => {
-    const m = new Map<string, string>();
-    for (const p of salonPhotos) m.set(p.url, p.id);
-    return m;
-  }, [salonPhotos]);
 
   const openLb = (photos: string[], i: number) => setLb({ open: true, photos, index: i });
 
@@ -248,15 +251,13 @@ export function SalonImageGallery({
           {tab === "salon" ? (
             <div className="grid grid-cols-3 gap-1.5 md:gap-2.5">
               {filteredSalonPhotos.map((u, i) => (
-                // The tile is a <button> that opens the lightbox, so the report control cannot
-                // live inside it (nested buttons are invalid and the click would fight the
-                // lightbox). It is a SIBLING inside this positioned wrapper. Owner 2026-07-27:
-                // "also being able to report pictures", and "report signed in ... cz ppl can
-                // mass report etc" , ReportButton already bounces an anonymous visitor to login,
-                // and content_reports' insert policy (auth.role() = 'authenticated') is the
-                // real enforcement behind that.
-                <div key={u} className="relative">
+                // The per-photo report control that used to sit in a positioned wrapper here is
+                // GONE (owner 2026-08-15: "the report button, we need to remove that because,
+                // you know, customer is not gonna report it. It's gonna look so weird and not
+                // official."). The wrapper div went with it: the tile is the only child again,
+                // so the button IS the grid cell.
                 <button
+                  key={u}
                   type="button"
                   onClick={() => openLb(filteredSalonPhotos, i)}
                   className="relative aspect-square w-full overflow-hidden rounded-md bg-s-bg-sunken transition-transform hover:scale-[0.99] active:scale-[0.98] active:duration-[80ms] active:ease-glide md:rounded-lg"
@@ -276,15 +277,6 @@ export function SalonImageGallery({
                     loading="lazy"
                   />
                 </button>
-                {/* Only a photo that HAS a salon_portfolio_images row can be reported: the
-                    report names that row id, never the url. Venue-photo fallbacks and staff
-                    portfolios have no row here, so they render no control rather than a dead one. */}
-                {idByUrl.get(u) ? (
-                  <div className="absolute right-1.5 top-1.5 z-10">
-                    <ReportButton type="photo" targetId={idByUrl.get(u)!} variant="frost" />
-                  </div>
-                ) : null}
-                </div>
               ))}
             </div>
           ) : (

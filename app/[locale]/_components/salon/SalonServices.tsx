@@ -111,11 +111,27 @@ export function SalonServices({
         </div>
       )}
 
-      {/* Single grouped list-card of the inline preview, rows hairline-divided
-          (LOCKFILE grouped-list-card grammar). Category grouping is the filter
-          pills above; "Alle ansehen" opens the full per-category sectioned view
-          in booking. Invented Express/Klassisch/Signature tiers removed 2026-07-24. */}
-      <ul className="mt-5 overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper">
+      {/* mockup-ok: SEPARATED service cards, owner 2026-08-15, verbatim: "on the services, I do
+          not like how it's ... on the all section, it's, like, not divided, you know, between
+          them. Like, it's all just one big card of, like, everything together. I don't like that.
+          It's, like, separated. You don't have to, like, put in, like, category between them, but
+          just, you know, separate it."
+
+          So the rows come out of the one grouped 24px list-card they lived in and become one card
+          each, gap-separated. He explicitly did NOT ask for category headings between them, so
+          none are added, the filter pills above still carry the grouping.
+
+          THE COLLISION, named rather than smoothed over: the design contract's radius row lists
+          "salon services" by name under the GROUPED list-card (24px, one card, hairline-divided
+          members). His live ask outranks it (precedence 1). The replacement grammar is not
+          invented either, it is the OTHER row of that same table, "individual entity-card 16
+          (rounded-card + border, flat, gap-separated, ONE card per DISTINCT entity)", the
+          SalonResultCard grammar. Flat means no shadow: a card that carries a border does not
+          also take elevation.
+
+          Gap is 12px, the 4pt-scale step directly below the 16px card padding, so the space
+          BETWEEN two services stays smaller than the space inside one. */}
+      <ul className="mt-5 flex flex-col gap-3">
         {shown.map((s) => (
           <ServiceRow key={s.id} service={s} locale={locale} slug={slug} />
         ))}
@@ -203,16 +219,19 @@ function ServiceRow({
     </div>
   );
 
-  // Row inside the grouped card (Atelier mockup .srow): 18x20 padding, hairline
-  // divider between rows (border-top, first row none). The card owns the chrome.
-  // geometry sweep (2026-07-17, _geometry-triage.md #5): py-[18px] -> py-4 (16),
-  // the tighter neighbor per the row-list convention (SalonBundles.tsx:148 py-3,
-  // SalonProducts.tsx:105 py-3.5) is closer to 16 than 20. The identical
-  // py-[18px] literal also appears in 7 other files (SalonServicesSheet.tsx:264,
-  // TextInput.tsx:39 FENCED, SalonWalkInPanel.tsx:166+195, ServicesStaffStep.tsx:459,
-  // StaffProfilePage.tsx:345), left untouched, out of this file's scope.
+  // mockup-ok: each service is now its OWN card (owner 2026-08-15, see the list comment above),
+  // so the row stops being a hairline-divided member of a group card and takes the design
+  // contract's individual entity-card chrome instead: rounded-card (16), border-s-border
+  // hairline, white, FLAT. No shadow, because a card carrying a border never also carries
+  // elevation (design contract, shadow/depth row).
+  //
+  // Padding is unchanged from the grouped row it replaces (px-5 py-4, md:px-6), so the service
+  // rows themselves do not move inside their box, only the box around them changed.
+  // The old geometry note is kept: py-[18px] -> py-4 (16) came from the 2026-07-17 sweep, the
+  // tighter neighbour per the row-list convention (SalonBundles.tsx:148 py-3,
+  // SalonProducts.tsx:105 py-3.5) is closer to 16 than 20.
   return (
-    <li className="border-t border-s-border px-5 py-4 first:border-t-0 md:px-6">
+    <li className="rounded-card border border-s-border bg-white px-5 py-4 md:px-6">
       {inner}
     </li>
   );

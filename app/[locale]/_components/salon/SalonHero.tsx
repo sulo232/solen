@@ -12,7 +12,6 @@ import { cn } from "@/lib/utils";
 // Was a local const here (V3-D72); consolidated so SaveHeart / card overlays stop re-deriving it.
 import { FROST_GLASS } from "@/lib/frost-glass";
 import { shareOrCopy } from "@/lib/share";
-import ReportButton from "@/components-legacy/discovery/ReportButton";
 import { useTranslations } from "next-intl";
 
 /**
@@ -130,10 +129,6 @@ export function SalonHero({
             iconSize={18}
             className="!relative !right-auto !top-auto"
           />
-          {/* mockup-ok: net-new report affordance (owner ask 2026-07-25), reusing
-              ReportButton's "frost" variant, a verbatim copy of the Share button's own
-              frosted-glass over-photo chrome above. */}
-          <ReportButton type="salon" targetId={salon.id} variant="frost" />
         </div>
 
         {photos.length > 1 && (

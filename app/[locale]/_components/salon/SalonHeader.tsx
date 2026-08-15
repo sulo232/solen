@@ -6,9 +6,9 @@ import { MapPin, Share } from "lucide-react";
 import { RatingStars } from "../primitives";
 import { HeartButton } from "../homepage/HeartButton";
 import { StatusInline } from "./StatusInline";
+import { MetaDot } from "./MetaDot";
 import type { SalonDetail, OpenStatus } from "./_shared";
 import { shareOrCopy } from "@/lib/share";
-import ReportButton from "@/components-legacy/discovery/ReportButton";
 import { formatCount } from "@/lib/format";
 import { useTranslations } from "next-intl";
 
@@ -97,13 +97,12 @@ export function SalonHeader({
             {salon.name}
           </h1>
 
-          {/* Meta — stacked rows for a clear order, NO separator dots:
-              (1) rating  (2) open status → taps to opening hours  (3) address
-              as the link itself (blue) → directions. */}
-          <div className="font-body mt-3 space-y-1.5 text-[14px] text-s-ink-2 md:text-[15px]">
+          {/* Meta (owner ask 2026-08-15): rating, count and open-status on ONE
+              line, status to the right; address stays its own row below. */}
+          <div className="font-body mt-3 space-y-2 text-[14px] text-s-ink-2 md:text-[15px]">
             {/* Rating — star + value via <RatingStars> (compact, no count: the
                 count stays a separate clickable accent button → #section-reviews). */}
-            <div className="flex items-center gap-1.5">
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
               {salon.average_rating != null ? (
                 <strong className="font-semibold text-s-ink">
                   <RatingStars value={salon.average_rating} size="md" />
@@ -119,17 +118,17 @@ export function SalonHeader({
               >
                 {formatCount(salon.review_count, locale)}
               </button>
+              <MetaDot />
+              {/* Open status: tap to jump to the opening hours */}
+              <button
+                type="button"
+                onClick={scrollToHours}
+                aria-label={t("showOpeningHours")}
+                className="block text-left transition-[opacity,transform] hover:opacity-80 active:scale-[0.98] active:duration-[80ms] active:ease-glide"
+              >
+                <StatusInline isOpen={status.isOpen} label={status.label} size="md" />
+              </button>
             </div>
-
-            {/* Open status — tap to jump to the opening hours */}
-            <button
-              type="button"
-              onClick={scrollToHours}
-              aria-label={t("showOpeningHours")}
-              className="block text-left transition-[opacity,transform] hover:opacity-80 active:scale-[0.98] active:duration-[80ms] active:ease-glide"
-            >
-              <StatusInline isOpen={status.isOpen} label={status.label} size="md" />
-            </button>
 
             {/* Address — the link itself opens directions (no separate "Wegbeschreibung") */}
             <button
@@ -164,10 +163,6 @@ export function SalonHeader({
             tone="dark"
             className="!relative !right-auto !top-auto"
           />
-          {/* mockup-ok: net-new report affordance (owner ask 2026-07-25), reusing
-              ReportButton's "header" variant, a verbatim copy of the Share button's own
-              chrome above (h-11 w-11 white bordered circle). */}
-          <ReportButton type="salon" targetId={salon.id} variant="header" />
         </div>
       </div>
     </header>

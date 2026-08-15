@@ -166,9 +166,13 @@ module.exports = {
         "s-love":     { DEFAULT: "#CC4A60", soft: "#FAD2DA", deep: "#A23548" },
         "s-success": { DEFAULT: "#16A34A", bg: "#E8F5E9" },
         // Open-status green ONLY (Geöffnet text + open dot). Fresha's calmer
-        // rgb(31,137,0), owner 2026-06-12 "make the green more like Fresha".
+        // rgb(31,137,0) = #1F8900, owner 2026-06-12 "make the green more like Fresha".
+        // FIXED 2026-08-15 (owner: "the green is, like, just too bright. I don't like
+        // that."): the literal now matches its own recorded source above, it never did
+        // before. Measured contrast on white: old #22C55E = 2.32:1 (fails WCAG 1.4.3 AA
+        // and the 3:1 graphical floor); new #1F8900 = 4.53:1 (AA pass).
         // s-success stays the universal success green everywhere else.
-        "s-open": { DEFAULT: "#22C55E" },
+        "s-open": { DEFAULT: "#1F8900" },
         "s-warning": { DEFAULT: "#F1AE27", bg: "#FDF6E7", text: "#B45309" },  // V3-D421: the "amber twin" of s-accent (Uber-blue HSL S+L, hue rotated to 40deg) so warning is cohesive with the accent. .text = deep amber for text-on-pale.  // V3: aligned to LIVE_TRUTH §3 hex. `.text` = readable amber for text-on-pale (V3-D347 dashboard)
         // V3-D347 — operator-dashboard CALENDAR service palette (vibrant, dashboard-only per LOCKFILE §12). Store-defined service types; NO makeup.
         "s-cal": { hair: "#2563EB", color: "#EC4899", nails: "#8B5CF6", spa: "#10B981", barber: "#F97316" },

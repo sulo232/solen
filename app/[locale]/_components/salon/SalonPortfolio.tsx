@@ -51,8 +51,16 @@ export function SalonPortfolio({
   const [staffPhotos, setStaffPhotos] = React.useState<string[]>([]);
   const [loaded, setLoaded] = React.useState(false);
 
+  // 2026-08-15: the `urls.length >= TILE_CAP` short-circuit that used to sit in this condition
+  // is GONE, and that is the whole reason the "+N" never appeared. It stopped the staff-photo
+  // fetch the moment the venue alone could fill nine tiles, so `combined` was capped at exactly
+  // nine, `overflow` was always 0, and the last tile drew no badge. Measured on cuts-and-culture:
+  // gallery_urls is exactly 9. Fetching regardless makes the badge count the photos that are
+  // really behind the tap (the gallery this grid opens shows venue AND team photos), instead of
+  // a number that could only ever be zero. Owner 2026-08-15: "on the last one, you know, on the
+  // ninth one, there's, like, this plus count and how many there is."
   React.useEffect(() => {
-    if (loaded || urls.length >= TILE_CAP || staff.length === 0) {
+    if (loaded || staff.length === 0) {
       setLoaded(true);
       return;
     }

@@ -205,7 +205,16 @@ export function SalonDetailV3({
     // services. Switched to overflow-x-clip which prevents horizontal
     // bleed without breaking vertical sticky.
     // bg-white substrate per §5h.3 (commerce surface).
-    <main className="relative min-h-screen overflow-x-clip bg-white pb-24 md:pt-3 md:pb-16">
+    // mockup-ok: pb-24 -> pb-6 (96px -> 24px), owner 2026-08-15: "on the Discover More store,
+    // it's, like, a weird gap, like, a white space."
+    // MEASURED before changing it, so this is a number and not a nudge: the last chip of that
+    // section ended at y=4157 and the footer began 152px later. That 152 was TWO stacked bottom
+    // paddings reserving room for the SAME sticky bar, this element's 96px plus the root layout's
+    // own pb-[calc(56px+env(safe-area-inset-bottom))]. This one was the redundant half: the
+    // 881px-tall footer renders after this main, so the "Termin buchen" bar (76px) can never
+    // cover the last section here, and the root layout's reserve is the one sitting at the true
+    // bottom of the document where the bar actually is. 24px keeps normal section rhythm.
+    <main className="relative min-h-screen overflow-x-clip bg-white pb-6 md:pt-3 md:pb-8">
       {/* V3-D202 (A23): ambient gradient washes block DELETED. Was 8 absolute
           <div>s in retired warm/sage colors (peach #F2C49B, emerald #5BAE85,
           terracotta #D6754F, butter #F0C85A, sage #9CC0A4, rose #E89A88).
@@ -270,6 +279,16 @@ export function SalonDetailV3({
             )}
 
             <div className="mt-8 space-y-10 md:mt-10 md:space-y-12">
+              {/* "Über uns" moved UP here on 2026-08-15, out of its old slot below Portfolio.
+                  Owner: "on the about us, you know, like, on the top right near the street and
+                  everything, an open time and everything, like, there should be, like, about us.
+                  Right now, maybe I don't see it because, like, it's not really... there is none."
+                  It was never missing. It rendered at y=2983 on a 5172px page, which is past the
+                  reviews and the portfolio, so from the top of the page it does not exist. His own
+                  Fresha reference puts "Über" directly under the address chip and above the
+                  services, which is where it now sits. */}
+              <SalonAbout salon={salon} locale={locale} />
+
               {!walkinMode && (
                 <SectionErrorBoundary section="SalonServices">
                   <SalonServices services={salon.services} locale={locale} slug={slug} salon={salon} />
@@ -332,7 +351,8 @@ export function SalonDetailV3({
               <SalonBuy locale={locale} slug={slug} salonName={salon.name} />
             </div> */}
 
-            <SalonAbout salon={salon} locale={locale} />
+            {/* SalonAbout used to render HERE. Moved to the top of this column on 2026-08-15,
+                see the comment at its new site above. */}
 
             {/* V3-D389 (Fresha 1:1 capture): location, opening times + amenities are
                 each their OWN full-width section now — no more lumped "Über uns"
