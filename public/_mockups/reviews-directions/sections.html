@@ -342,6 +342,21 @@ var V = [
        var a = plainCard(x, absDate(x.created_at), "q5");
        var m = document.createElement("a");
        m.href = "#"; m.className = "more"; m.textContent = "Read more";
+       /* WIRED 2026-08-15. It shipped as a dead link: measured height 220 -> 220 and text
+          120 -> 120 characters on click. A control that promises and does nothing is the
+          fabricated affordance TASTE_LOG 2026-07-16 bans by name. It now un-clamps its own quote
+          and flips its label, so the version can actually be judged. */
+       m.addEventListener("click", function(ev){
+         ev.preventDefault();
+         var q = a.querySelector(".q5, .q, p");
+         if (!q) return;
+         var open = q.style.webkitLineClamp === "none";
+         q.style.display = "-webkit-box";
+         q.style.webkitBoxOrient = "vertical";
+         q.style.overflow = open ? "hidden" : "visible";
+         q.style.webkitLineClamp = open ? "5" : "none";
+         m.textContent = open ? "Read more" : "Show less";
+       });
        var wrap = h("div", "dt"); wrap.style.marginTop = "8px"; wrap.appendChild(m);
        a.appendChild(wrap);
        return a;
@@ -427,18 +442,36 @@ var V = [
      var slug = L[0] ? L[0].slug : null;
      var counts = (slug && dist[slug]) || {};
      var c = h("div", "chips");
-     c.appendChild(h("span", "chip on", "All " + (counts.total || 0)));
+     var r = h("div", "rail");
+     var mine = L.filter(function(x){ return x.slug === slug; });
+
+     /* WIRED 2026-08-15. These chips shipped dead: measured class "chip on" and background
+        rgb(244,244,245) unchanged after a click, so the row promised a filter and refused it.
+        That is the fabricated affordance TASTE_LOG 2026-07-16 bans. They now actually filter, and
+        the selected state uses the locked calm grey, never ink, never blue. */
+     function paint(sel){
+       [].forEach.call(c.children, function(ch){
+         ch.className = (ch.getAttribute("data-star") === String(sel)) ? "chip on" : "chip";
+       });
+       r.innerHTML = "";
+       mine.filter(function(x){ return sel === "all" || Math.round(x.rating) === sel; })
+           .forEach(function(x){ r.appendChild(plainCard(x, absDate(x.created_at))); });
+     }
+
+     var all = h("span", "chip on", "All " + (counts.total || 0));
+     all.setAttribute("data-star", "all");
+     all.addEventListener("click", function(){ paint("all"); });
+     c.appendChild(all);
      [5, 4, 3, 2, 1].forEach(function(n){
        if (!counts[n]) return;
        var chip = raw("span", "chip", "<i>" + starSvg(STAR_MD) + "</i>");
        chip.appendChild(h("span", null, n + "  " + counts[n]));
+       chip.setAttribute("data-star", String(n));
+       chip.addEventListener("click", function(){ paint(n); });
        c.appendChild(chip);
      });
      s.appendChild(c);
-     var r = h("div", "rail");
-     L.filter(function(x){ return x.slug === slug; }).forEach(function(x){
-       r.appendChild(plainCard(x, absDate(x.created_at)));
-     });
+     paint("all");
      s.appendChild(r);
      return s; }],
 
