@@ -2,6 +2,16 @@
   "version": "0.0.1",
   "configurations": [
     {
+      "name": "Tunnel (terminal 52933)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "/opt/homebrew/bin/cloudflared tunnel --url http://localhost:52933 --metrics localhost:20277 --no-autoupdate"
+      ],
+      "port": 20277,
+      "autoPort": false
+    },
+    {
       "name": "Tunnel (app 50723)",
       "runtimeExecutable": "bash",
       "runtimeArgs": [
