@@ -41,6 +41,33 @@ ASKED = re.compile(
     r"|\bmock ?ups?\b[^.\n]{0,30}\b(i (told|asked)|pls|please)\b"
     r"|\bmock ?up\s+i\s+told\s+you\b", re.I)
 
+# NEGATED REQUESTS ARE NOT REQUESTS. Added 2026-08-15, and found by STRESS TESTING rather than by
+# reading: `python3 ~/.claude/gate-eval.py` plus a direct regex probe showed ASKED firing on
+# "i dont want a mockup", which is the exact opposite of an ask.
+#
+# WHY THIS ONE IS URGENT RATHER THAN TIDY. Earlier the same day this gate's skip flag was narrowed
+# so it can no longer silence ARM 2. That was the right call for the failure it fixed, and it also
+# means an ARM 2 false positive is now UNESCAPABLE: the only ways out are to build a mockup he
+# explicitly said he did not want, or to put a link in the reply. Removing the escape from an arm
+# obliges you to make that arm's trigger correct, and I shipped the first half without the second.
+#
+# Deliberately narrow: it wants a negation sitting close in FRONT of the request, so an ordinary ask
+# that merely contains the word "no" somewhere ("make a mockup, no rush") is untouched.
+NEGATED = re.compile(
+    r"\b(?:do\s?n[o']?t|dont|don't|never|stop|no|without|instead\s+of|rather\s+than)\b"
+    r"[^.\n]{0,30}?\b(?:want|need|make|build|give|show|more)?\b[^.\n]{0,20}?\b(?:mock ?ups?)\b"
+    r"|\bmock ?ups?\b[^.\n]{0,20}\b(?:not\s+needed|are\s+not\s+needed|no\s+longer)\b",
+    re.I)
+
+
+def asked_for_mockup(owner):
+    """ASKED, minus the negations. One place, so the suite and main() cannot drift apart."""
+    if not owner:
+        return False
+    if not ASKED.search(owner):
+        return False
+    return not NEGATED.search(owner)
+
 
 def last_owner_text(tp, with_ts=False):
     """His most recent message, so ARM 2 can see what he actually asked for.
@@ -198,7 +225,7 @@ def verdict(reply, owner="", asked_at=None):
     what runs."""
     if not reply:
         return None
-    if owner and ASKED.search(owner) and not LINK.search(reply) and not wrote_mockup_route(asked_at):
+    if asked_for_mockup(owner) and not LINK.search(reply) and not wrote_mockup_route(asked_at):
         return ARM2_MSG
     if MOCKUP.search(reply) and DEFER.search(reply) and not LINK.search(reply):
         return ARM1_MSG
@@ -265,7 +292,7 @@ def _selftest():
             fh.write(json.dumps({"type": "assistant", "timestamp": ts,
                                  "message": {"content": [{"type": "text", "text": reply}]}}) + "\n")
         owner, at = last_owner_text(tp, with_ts=True)
-        return bool(ASKED.search(owner)) and not LINK.search(reply) and not wrote_mockup_route(at)
+        return asked_for_mockup(owner) and not LINK.search(reply) and not wrote_mockup_route(at)
 
     check("BLOCKS a fresh ask answered with something else",
           verdict("give me a mockup of the search field", "I fixed the filter instead.", +30), True)
@@ -279,6 +306,23 @@ def _selftest():
           verdict("a", "Variant A is live.", +30), False)
     check("PASSES an ordinary question with no mockup word",
           verdict("why is the search bar grey", "Because the capsule is filled.", +30), False)
+
+    # NEGATED REQUESTS, 2026-08-15. Found by gate-eval plus a direct regex probe, NOT by reading the
+    # file, and urgent because ARM 2 lost its escape hatch earlier the same day: a false positive
+    # here can now only be cleared by building a mockup he said he did not want.
+    for phrase in ["i dont want a mockup",
+                   "don't make a mockup for this",
+                   "no more mockups please",
+                   "just fix it instead of a mockup",
+                   "stop making mockups"]:
+        check(f"NEGATED is not an ask: {phrase!r}",
+              verdict(phrase, "Fixed it in the code.", +30), False)
+    # ...and the negation guard must not swallow the real ones.
+    for phrase in ["make me a mockup, no rush",
+                   "I told you to make mock up why did you not make any fucking mock ups?",
+                   "give me a mockup of the search field"]:
+        check(f"STILL an ask: {phrase[:44]!r}",
+              verdict(phrase, "I fixed the filter instead.", +30), True)
 
     # THE 2026-08-15 REGRESSION: the flag must not open arm 2. Driven through the real decision
     # path in main() rather than through a re-implementation of it, because the bug WAS in main()
