@@ -10,18 +10,42 @@ He asked a QUESTION first. The deliverable is the CAUSE, named in files, before 
 
 ## The asks, atomised
 
-- [x] 1. Identify what causes the flat look · verified: measured below
-- [x] 2. Identify what causes "pills everywhere" · verified: measured below
-- [x] 3. Name the FILES / RULES responsible, not just the symptom · verified: CLAUDE.md rows 97, 101,
-      106, 114, 115 quoted below with line numbers, plus the TabPill primitive and its 29 callers
-- [x] 4. The sort control ("Neueste"): text too big, pill too big · verified: measured 108x44px
-      holding 13px text, box is 3.38x its own text
-- [x] 5. Hierarchy / spacing / sizing is off · verified: 7 distinct sizes in one viewport against a
-      ceiling of 4, and five of them sit inside a 5px band
-- [x] 6. Star filter: drop the counts, we do not need how many there are · MOCKUP, not applied
-- [x] 7. Compare against Airbnb (and Fresha) · verified: against the already-measured
-      `_design-system/references/AIRBNB_SYSTEM_VS_OURS.md` and `airbnb--home-mobile.md`
-- [ ] 8. HIS PICK: which of the two treatments to apply, at `/en/dev/calm`
+- [x] 1. Flat look · verified (commit cf69073dd): 7 distinct sizes at 390x844 with five inside a
+      5px band (12/13/14/15/17), which is the failure named by hand in `CLAUDE.md` FLOORS LAW 7c;
+      NOT the bold share, which measured 14% against our own 30% ceiling
+- [x] 2. Pills everywhere · verified (commit cf69073dd): 14 of 17 rounded elements in the first
+      viewport are full capsules (82%), caused by `CLAUDE.md:106` ending "button/chip pill" plus
+      `CLAUDE.md:97` routing every option through TabPill, whose `TabPill.tsx:47` is `rounded-full`
+      and which 29 files import
+- [x] 3. Name the FILES / RULES · verified (commit cf69073dd): `CLAUDE.md:97` (TabPill for every
+      option), `:101` (the size row), `:106` (radius, "button/chip pill"), `:114` (44px touch),
+      `:115` (filter pill), plus `TabPill.tsx:47,75,76` and its 29 importers
+- [x] 4. The sort control · verified (commit cf69073dd): live getComputedStyle gives 108x44px, 13px
+      text, radius 9999px, so the box is 3.38x its own text. Cause is `CLAUDE.md:114` read as a rule
+      about the PAINTED box when it is a floor for the TAP AREA
+- [x] 5. Hierarchy / spacing / sizing · verified (commit cf69073dd): 7 sizes against the ceiling of
+      4, plus 4 letter-spacing values where every measured Airbnb tier is `normal`. The size row at
+      `CLAUDE.md:101` mandates 6-7 sizes while FLOORS LAW 7 caps them at 4, and both are law
+- [x] 6. Star filter counts · MOCKUP, not applied · verified (commit cf69073dd): at /en/dev/calm the
+      "whole thing" option hides them, measured live as the pill reading "5" with the count wrapper
+      computing `display: none`. The real component is untouched
+- [x] 7. Compare against Airbnb · verified (commit cf69073dd): `airbnb--home-mobile.md:41` (20px
+      dominant radius over 100 elements) and `:44` (capsule kept for the one search field), plus
+      `AIRBNB_SYSTEM_VS_OURS.md` 2c for their type tiers, tracking and weight vocabulary
+- [ ] 8. BLOCKED ON HIM, and it is a real dependency, not a punt: which treatment to apply,
+      "Softer corners" or "The whole thing", at `/en/dev/calm`. Applying either one edits
+      `CLAUDE.md`'s radius row and the shared TabPill that 29 files import, so it changes every
+      screen in the product at once. That is his call by name and cannot be guessed.
+
+## The gap this turn CLOSED rather than just naming
+
+The comparison had one row reading "not captured": Airbnb's own reviews screen, which is the
+one control he complained about ("the neuste or yk the sort"). WHY it was absent, searched
+rather than assumed: all eight Airbnb captures under `_design-system/references/` cover home,
+profile, search chrome, category switch, icons and fonts; a grep for review/bewert across that
+folder returns nothing, `REMOVED.md` has no entry, and `git log --all` finds no such file on
+any branch. So it is reason 3, NEVER LANDED: no round ever needed that screen until now.
+The fix follows the reason, so the capture is running.
 
 ## MEASURED, on the live page at 390x844, 2026-08-15
 
