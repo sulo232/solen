@@ -4,7 +4,7 @@ import * as React from "react";
 import { Section, SectionTitle, SectionFrame, ScrollRow } from "./SectionHeader";
 import { SalonCard, type SalonCardProps } from "./SalonCard";
 import { useCustomerPrefs, sortByCategoryPicks, type CustomerPrefs } from "./useCustomerPrefs";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 // 2026-07-13: real rating/address/price data batch-fetched server-side in
 // page.tsx (type-only import, the Supabase fetch code never reaches this
 // client bundle). Same pattern as Nearby.tsx.
@@ -130,10 +130,15 @@ export default function RecentlyViewed({
     ? entries
     : sortByCategoryPicks(fallback, prefs?.categories ?? []);
   const locale = useLocale();
-  const title = hasHistory ? "Zuletzt angesehen" : "Top auf Solen";
-  // With real history -> the dedicated /recently-viewed page (audit #9). The "Top auf Solen"
-  // fallback has no history page, so it still points at search. Locale-prefixed (audit #17).
-  const linkLabel = "Alle entdecken →";
+  // 2026-08-15: these three were hardcoded GERMAN string literals, so /en, /fr and /it all rendered
+  // "Zuletzt angesehen" and "Alle entdecken" on an otherwise translated page. The owner caught it on
+  // /en ("why is their English and German"). `ui.recentlyViewed.title` already existed in all four
+  // locale files and was simply never called; topTitle and browseAll were added the same day.
+  const t = useTranslations("ui.recentlyViewed");
+  const title = hasHistory ? t("title") : t("topTitle");
+  // With real history -> the dedicated /recently-viewed page (audit #9). The curated fallback has no
+  // history page, so it still points at search. Locale-prefixed (audit #17).
+  const linkLabel = t("browseAll");
   const linkHref = hasHistory ? `/${locale}/recently-viewed` : `/${locale}/search`;
 
   // No history AND the fallback fetch also came back empty (e.g. it failed):

@@ -27,7 +27,7 @@ import * as React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { MapPin } from "lucide-react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Section, SectionFrame, SectionTitle } from "./SectionHeader";
 import { CATEGORY_LABEL } from "../search/SalonResultCard";
 
@@ -91,6 +91,9 @@ export default function RecentlyViewedTiles({
   baselShopCount?: number | null;
 } = {}) {
   const locale = useLocale();
+  // 2026-08-15: the title below was a hardcoded German literal, so this row said "Zuletzt angesehen"
+  // on /en, /fr and /it. `ui.recentlyViewed.title` already existed in all four locale files.
+  const t = useTranslations("ui.recentlyViewed");
   const [entries, setEntries] = React.useState<StoredEntry[]>([]);
 
   React.useEffect(() => {
@@ -105,7 +108,7 @@ export default function RecentlyViewedTiles({
       <SectionFrame>
         {/* No link/arrow: matches search-a.html's recentlyViewed(), the one rail built with a bare
             h2 rather than sectionFrame()'s title+arrow pattern used by every rail below it. */}
-        <SectionTitle title="Zuletzt angesehen" />
+        <SectionTitle title={t("title")} />
         <div className="mt-2.5 grid grid-cols-4 gap-x-2.5 gap-y-3.5">
           {entries.map((e) => (
             // Focus cue: the global a:focus-visible inset ink edge (globals.css D1-focus-visible)

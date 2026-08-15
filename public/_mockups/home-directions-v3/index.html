@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
-<title>Continue + recently viewed: four directions from four real apps</title>
+<title>Recently viewed: three directions, Airbnb only</title>
 <!-- Base: capture live -->
 <!-- Scale: full-page -->
 <!--
@@ -61,11 +61,27 @@
   statutory tier outranks a taste source, so every direction here draws a 28px CIRCLE inside a 44px
   tap target. The look matches the reference, the target does not shrink.
 
-  Four directions, every one captured from a real app this turn via Mobbin, none recalled:
-    1 AIRBNB   his reference, corrected to the measured sizes    his own two screenshots
-    2 MARRIOTT eyebrow + one resume LINE, no card                mobbin.com/screens/87550d69-834b-45ea-8c84-5b172b304433
-    3 BESTBUY  one section, a pill switches saved vs viewed      mobbin.com/screens/ec2090d6-c6e5-4d53-8038-bc4198bcfe7b
-    4 VRBO     recent SEARCHES as sunken chips, then viewed      mobbin.com/screens/a2150d39-9dd0-4282-aad3-a0a44e8953fe
+  AIRBNB ONLY, owner 2026-08-15 ("jst Make it just Airbnb"). The Marriott, Best Buy and Vrbo
+  directions built earlier the same day are NOT loaded. Their files stay in git at commit 1538981d5
+  and the capture notes stay in _design-system/references/continue-and-recently-viewed--home.md,
+  because the research is still true even though he does not want those directions.
+
+  THE THREE DIRECTIONS ARE FOR THE RECENTLY-VIEWED ROW, which is what he actually asked for and
+  what I got wrong for a whole turn by building them for the continue card instead. The continue
+  card is now IDENTICAL in all three (MK.continueRail), so the only thing that changes when he taps
+  A, B or C is the row.
+    A small rail   Airbnb's own density, at our 5:4 instead of their 1.05 near-square
+    B big rail     the big-card treatment Airbnb reserves for its suggestion row
+    C wide list    photo left, one per row, no horizontal scroll, price included
+
+  NOT SQUARE, measured: A is 112 x 90 (1.244), B is 240 x 192 (1.250), C is 96 x 77 (1.247). The
+  square he rejected is the LIVE component, RecentlyViewedTiles.tsx:118, which renders aspect-square
+  at 86 x 86.
+
+  ENGLISH, and the German was a real bug not a mockup slip: RecentlyViewedTiles.tsx:108 and
+  RecentlyViewed.tsx:133 both hardcoded "Zuletzt angesehen" as string literals, so /en, /fr and /it
+  all rendered German there. Fixed this turn by calling ui.recentlyViewed.title, which already
+  existed in all four locale files and had never been used.
 -->
 <style>
   :root{--ink:#0A0A0A;--ink2:#6B6B6B;--sunken:#F4F4F5;--hairline:#E4E4E7;--star:#FFC32B;
@@ -106,11 +122,9 @@
       <button id="bAfter" onclick="show('after')">After</button>
     </div></div>
     <div class="row"><div class="seg scrollseg">
-      <button id="d1" class="on" onclick="pick('airbnb')">Airbnb 5:4</button>
-      <button id="d2" onclick="pick('airbnbTall')">Airbnb tall</button>
-      <button id="d3" onclick="pick('marriott')">Marriott</button>
-      <button id="d4" onclick="pick('bestbuy')">Best Buy</button>
-      <button id="d5" onclick="pick('vrbo')">Vrbo</button>
+      <button id="d1" class="on" onclick="pick('rowA')">A small rail</button>
+      <button id="d2" onclick="pick('rowB')">B big rail</button>
+      <button id="d3" onclick="pick('rowC')">C wide list</button>
     </div></div>
   </div>
   <div class="cap" id="cap">Loading direction</div>
@@ -247,8 +261,60 @@ window.MK = (function(){
     });
   }
 
+  /* THE CONTINUE CARD, one implementation, shared by every direction. It lives here and not in a
+     variant file because the owner's question on 2026-08-15 is about the RECENTLY-VIEWED ROW, so
+     the card has to be identical across the three directions or the comparison is not about the row.
+     Airbnb measured: card 306 x 105, radius 18, photo on the right, second card peeking.
+     The photo is OUR 1.25:1 landscape (87 x 70), not their measured 0.87:1 portrait, because he
+     said "not square" and has twice asked to keep our own ratio. */
+  var SEARCHES = ["Skin fade", "Balayage"];
+  function continueRail(doc){
+    var band = el(doc, "section", "background:#F4F4F5;padding:16px 0 18px;margin:8px 0 24px");
+    var r = rail(doc);
+    r.style.paddingBottom = "12px";
+    for (var i = 0; i < SEARCHES.length; i++) {
+      var s = SALONS[i];
+      var a = doc.createElement("a");
+      a.href = "#";
+      a.style.cssText = "flex:0 0 " + REF.cardW + "px;width:" + REF.cardW + "px;height:" + REF.cardH +
+        "px;position:relative;display:block;background:#fff;border-radius:18px;text-decoration:none;" +
+        "box-shadow:0 1px 2px rgba(10,10,10,.06),0 6px 16px rgba(10,10,10,.08)";
+      var col = el(doc, "div",
+        "position:absolute;left:18px;top:0;bottom:0;width:" + (REF.cardW - 18 - 17 - 87 - 14) +
+        "px;display:flex;flex-direction:column;justify-content:center");
+      var h = el(doc, "div", "font:600 15px/1.3 'Inter Tight',Inter,sans-serif;letter-spacing:-.01em;" +
+        "color:#0A0A0A;overflow:hidden;text-overflow:ellipsis;white-space:nowrap");
+      h.textContent = SEARCHES[i];
+      var m = el(doc, "div", "font:400 13px/1.35 Inter,'Inter Tight',sans-serif;color:#6B6B6B;" +
+        "margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap");
+      m.textContent = s.cat;
+      col.appendChild(h); col.appendChild(m);
+      a.appendChild(col);
+      a.appendChild(photo(doc, s.photo,
+        "position:absolute;right:17px;top:17px;width:87px;height:70px;border-radius:14px"));
+      r.appendChild(a);
+    }
+    band.appendChild(r);
+    return band;
+  }
+
+  /* The heart badge, also shared: 26px of white circle inside a 44px target. It is a SIBLING of the
+     card link, never a child, because a button inside an anchor gets hoisted out by the parser. */
+  function heart(doc){
+    var b = doc.createElement("button");
+    b.type = "button";
+    b.setAttribute("aria-label", "Save");
+    b.style.cssText = "position:absolute;top:-1px;right:-1px;width:44px;height:44px;border:0;" +
+      "padding:0;background:transparent;display:grid;place-items:center;cursor:pointer;color:#0A0A0A";
+    b.appendChild(el(doc, "span",
+      "width:26px;height:26px;border-radius:999px;background:#fff;display:grid;place-items:center;" +
+      "box-shadow:0 1px 3px rgba(10,10,10,.20)", svg("heart", 14)));
+    return b;
+  }
+
   return { SALONS: SALONS, REF: REF, svg: svg, el: el, seeAll: seeAll, rating: rating,
-           sectionHead: sectionHead, rail: rail, photo: photo, fixPillIcons: fixPillIcons };
+           sectionHead: sectionHead, rail: rail, photo: photo, fixPillIcons: fixPillIcons,
+           continueRail: continueRail, heart: heart };
 })();
 
 /* Each variants/*.js file registers itself here. */
@@ -334,11 +400,30 @@ function anchorFor(doc){
 }
 
 function applyDirection(doc){
-  var key = window.__dir || "airbnb";
+  var key = window.__dir || "rowA";
   var dir = window.DIRECTIONS[key];
   if (!dir || !doc) return 0;
 
   doc.querySelectorAll("[data-dir-block]").forEach(function(n){ n.remove(); });
+
+  /* Hide the LIVE recently-viewed sections while a direction is shown. Without this the page
+     carries three of them: the proposed one plus both real ones, which is unreadable and also
+     hides the point, since each direction REPLACES the live row rather than sitting above it.
+     Both live rows are hidden because the homepage genuinely renders two of them once a visitor
+     has history (RecentlyViewedTiles at page.tsx:288 and RecentlyViewed at :289), which is its own
+     open question and not something a direction should silently inherit. */
+  doc.querySelectorAll("h2").forEach(function(h){
+    if (!/Recently viewed|Zuletzt angesehen/i.test(h.textContent || "")) return;
+    var sec = h;
+    for (var u = 0; u < 7 && sec.parentElement; u++) {
+      sec = sec.parentElement;
+      if (sec.tagName === "SECTION") break;
+    }
+    if (sec && sec.tagName === "SECTION" && !sec.closest("[data-dir-block]")) {
+      sec.style.display = "none";
+      sec.setAttribute("data-dir-hidden", "1");
+    }
+  });
 
   var target = anchorFor(doc);
   if (!target || !target.parentElement) return 0;
@@ -377,7 +462,7 @@ function pump(){
       if (!seeded) { seeded = seedFrame(f); return; }
       var have = doc.querySelector("[data-dir-block]");
       var shown = have ? have.getAttribute("data-dir-block") : null;
-      if (shown !== (window.__dir || "airbnb")) applyDirection(doc);
+      if (shown !== (window.__dir || "rowA")) applyDirection(doc);
     } catch (e) {}
   }, 400);
   // the Before pane shows the REAL component in its REAL state, so seed it too
@@ -394,7 +479,7 @@ function pump(){
 
 function pick(k){
   window.__dir = k;
-  var ids = { airbnb:"d1", airbnbTall:"d2", marriott:"d3", bestbuy:"d4", vrbo:"d5" };
+  var ids = { rowA:"d1", rowB:"d2", rowC:"d3" };
   Object.keys(ids).forEach(function(name){
     document.getElementById(ids[name]).classList.toggle("on", name === k);
   });
@@ -423,14 +508,12 @@ document.getElementById('peek').innerHTML = EYE_OFF;
 </script>
 
 <!-- direction files register into window.DIRECTIONS -->
-<script src="variants/airbnb.js"></script>
-<script src="variants/airbnb-tall.js"></script>
-<script src="variants/marriott.js"></script>
-<script src="variants/bestbuy.js"></script>
-<script src="variants/vrbo.js"></script>
+<script src="variants/row-a.js"></script>
+<script src="variants/row-b.js"></script>
+<script src="variants/row-c.js"></script>
 <script>
-  window.__dir = "airbnb";
-  var d0 = window.DIRECTIONS.airbnb;
+  window.__dir = "rowA";
+  var d0 = window.DIRECTIONS.rowA;
   if (d0) document.getElementById("cap").textContent = d0.caption;
   pump();
 </script>
