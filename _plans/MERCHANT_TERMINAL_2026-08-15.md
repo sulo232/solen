@@ -33,7 +33,7 @@
 ### A. DEFINE
 - [x] A1 Name the screen's ONE job in one sentence (FLOORS LAW 10 requires it before any element is justified)
 - [x] A2 Fix the verb set: which actions the terminal DOES carry
-- [x] A3 Fix the anti-scope: which of the 48 existing dashboard sections it deliberately does NOT carry
+- [x] A3 Fix the anti-scope: which of the 28 salon-facing dashboard sections it deliberately does NOT carry
 - [x] A4 Decide the access model: subdomain vs path, and what he actually gains from each
 - [x] A5 Decide the identity model: who logs in (owner / staff / shared shop device) and how they stay logged in
 - [x] A6 Decide the appointment default: auto-accept vs must-accept, grounded in what the industry actually does
@@ -72,9 +72,12 @@
 ## D4 , WHAT ALREADY EXISTS IN OUR OWN CODE (measured 2026-08-15, exists-check first)
 
 ### The complaint is measurable
-`app/[locale]/dashboard/` contains **48 route folders**, each with its own `page.tsx`. Only two of
-them gate on the admin role, so this is not "mostly platform admin". A salon owner who wants to see
-today's bookings lands in a product with 48 sections. That IS "this complicated thing".
+`app/[locale]/dashboard/` contains **48 route folders**, each with its own `page.tsx`.
+Corrected after checking `middleware.ts:222`: **20** of those are listed in `adminOnlyPaths` and are
+gated centrally in middleware, not in the page files. (My first pass grepped the page files, found
+two admin checks, and wrongly concluded almost all 48 were salon-facing.)
+So the real number a salon owner sees is **28 sections**. That is still "this complicated thing",
+and it is the honest number.
 
 ### The accept-flow backend is ALREADY BUILT, and its UI never landed
 - `salons.booking_confirmation_mode` = `'instant' | 'manual_approval'` (migration 075), settable
@@ -258,7 +261,7 @@ terminal.** The terminal is the "right now" surface; the dashboard remains the "
 admin" surface. That split is the same one Uber Eats draws between Orders and Manager.
 
 One consequence worth stating plainly: this does NOT delete or replace the dashboard, and it does
-not reduce those 48 sections. It gives the shop a screen they can live on so they rarely open them.
+not reduce those 28 sections. It gives the shop a screen they can live on so they rarely open them.
 
 ### A4 , the address: `/terminal` first, subdomain later, and here is the cost
 **Recommendation: ship it as a path, `solen.ch/{locale}/terminal`.**
