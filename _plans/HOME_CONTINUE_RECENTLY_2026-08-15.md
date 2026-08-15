@@ -159,6 +159,6 @@ JSX text children. Measured for visibility rather than assumed:
     viewport, and both are a marketing headline split across a `<br>`, which needs a copy decision
     about how it wraps in four locales rather than a mechanical key swap.
 
-- [ ] **G1. "Solen für / Ihr Geschäft." still hardcoded in two files.** Not a mechanical fix: the
+- [ ] **G1. 13 of the 37 homepage components still carry a user-facing German literal.** Measured after the fix with the existing i18n-write-gate's own matcher, so the number is the gate's and not a fresh grep. All 13 named in _rules/LESSONS_LEARNED.md so the next pass starts from a list. Includes the `Solen für<br />Ihr Geschäft.` headline, which is a copy call rather than a key swap because French and Italian will not break at the same word. Previously read: Not a mechanical fix: the
       headline breaks across a `<br>` and French and Italian will not break in the same place, so it
       needs a copy call, not a key swap.

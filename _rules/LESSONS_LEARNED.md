@@ -585,3 +585,62 @@ Copying UI from a component file into a mockup reproduced a discount badge that 
 - **What happened**: 310 migrations are applied live; only 78 have a matching local file. **232 live migrations exist nowhere in the repo (75%)**, plus 43 local files with no live version and 2 collisions where two different files share one version prefix. A fresh environment rebuilt from `supabase/migrations/` would be missing three quarters of the schema. The 2026-07-28 security fix was among the missing until this was caught.
 - **Why it happened**: The Supabase MCP `apply_migration` tool applies the SQL live AND records it in `supabase_migrations.schema_migrations`, but does not write a file. `_rules/DB_SCHEMA.md` section 7 predicted this exact drift in its own words and shipped a five-step backfill recipe. The recipe ran once, in July, and drift resumed immediately, because **nothing ever called it**. A recipe with no caller is documentation, not enforcement.
 - **Fix / What to do instead**: `npm run check:migrations` (report) and `gate:migrations` (exit 1 on drift) now exist and are the caller the recipe never had. Wire the gate into CI once the backfill lands, so it starts green rather than as a permanently red check nobody reads. General class: any workflow where the authoritative change happens in a remote system and the repo copy is a manual second step will drift; the fix is a detector that diffs the two, not a better-written manual step.
+
+### A hardcoded German string literal renders German on /en, /fr and /it, and a prop-only scan misses half of them
+
+**File(s):** `app/[locale]/_components/homepage/*.tsx`, `messages/{de,en,fr,it}.json`
+
+Found 2026-08-15 after the owner asked, on the English homepage, "why is their English and German?"
+He was right. Eleven user-visible strings were plain string literals rather than translation calls,
+so every one of them rendered German on all four locales. `ui.recentlyViewed.title` had existed in
+all four locale files the whole time and had simply never been called.
+
+**Three things this class teaches, in the order they cost time.**
+
+1. **Check for an existing key BEFORE minting one.** Four of the eleven already had a key that
+   nobody called. Adding a second key for the same string is the duplication failure wearing an
+   i18n hat.
+
+2. **A scan keyed on PROPS is blind to JSX TEXT, which is the same shape of hole as the pronoun/verb
+   sweep two entries above this one.** The first pass matched `title=` / `label=` / `aria-label=`
+   and reported ten. Three more were sitting in plain element children:
+
+       <h3 ...>Alle entdecken</h3>
+       <h2 ...>Für Sie</h2>
+       <h2 ...>Solen für<br />Ihr Geschäft.</h2>
+
+   Grep BOTH shapes, always: the prop form and the `>text<` form.
+
+3. **Measure whether the string is VISIBLE before calling it a bug.** Of those three extra hits, one
+   rendered at 71x35 and two measured 0x0 (one section carries `hidden`, one is desktop-only). And
+   two of the original ten lived inside `_DeprecatedSearchBar` in `Hero.tsx`, a function declared
+   once and imported by nobody, so they render on no page in any language. I wired them anyway and
+   only found out because typecheck said `t` was not in scope. **A string in dead code is not a bug,
+   and "fixed" on it is a false report.**
+
+**How to find them:**
+
+    grep -rnE '(title|label|aria-label|placeholder)="[^"]*[äöüßÄÖÜ]' app/**/_components/
+    grep -rnE '^\s*[A-ZÄÖÜ][^<>{}]*[äöüß][^<>{}]*$' app/**/_components/   # JSX text children
+
+then, for each hit, confirm it actually renders (getBoundingClientRect on the live page) before
+touching it, and confirm the enclosing function is imported somewhere.
+
+**Not mechanically fixable, left open on purpose:** a headline split across a `<br>`
+(`"Solen für<br />Ihr Geschäft."` in `BusinessTeaser.tsx` and `WhySolen.tsx`). French and Italian do
+not break in the same place, so it needs a copy decision, not a key swap.
+
+**THE REAL SIZE OF IT, measured 2026-08-15 after the eleven were fixed: 13 of the 37 homepage
+components still carry a user-facing German literal.** Named, so the next pass starts from a list
+and not from a scan: ArtistOfTheMonth, BentoBusiness, BusinessTeaser, CategoryStack, Entdecken,
+FeatureBento, Hero, MobileCategoriesRow, SearchBar, SolenStory, WalkInBand, WhySolen. (NearbyMap is
+a false positive: the matcher caught `Math.abs(k.x - p.x)` inside code.) The eleven fixed that day
+were the ones a props-only grep could see, which is roughly half the problem.
+
+**The gate for this already exists and is armed:** `~/.claude/hooks/i18n-write-gate.py`, built
+2026-07-27 for the owner's "we need a gate to enforce multi langual while writing". It did not stop
+these because it only inspects the text BEING WRITTEN, by design, so pre-existing literals never
+block an unrelated edit. That is correct behaviour, not a hole. Do not build a second gate for this
+class; run the existing one over a file to get its finding:
+
+    python3 -c "import importlib.util,os,sys; s=importlib.util.spec_from_file_location('g', os.path.expanduser('~/.claude/hooks/i18n-write-gate.py')); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); print(m.offending(open(sys.argv[1]).read()))" <file.tsx>
