@@ -1,44 +1,51 @@
 "use client";
 
 // Mockup-scope: whole-page
-// Exists-check: `npm run exists "pill selected black ceramic"`, `"type weight budget"` and
-// `"bundle manager dashboard"` all run 2026-08-15. The two sibling comparison pages built today
-// (/dev/pill-ceramic, /dev/type-weights) answer different questions (pill fill, weight budget).
-// Nothing in REMOVED.md covers a combos or open-green comparison.
+// Exists-check: this REPLACES the first version of this same route, built earlier the same day.
+// Not a new surface. It also adopts the render-the-real-component pattern that
+// app/[locale]/dev/pdp/reviews/page.tsx already uses, rather than inventing a third approach.
 //
-// WHY THIS EXISTS. Owner 2026-08-15, asks that are all "show me, do not just change it":
-//   1. "the design on the package is not good. Like, the font or anything. It's just not correct
-//      at all" + "the icon, like, you know, like, package icon is not correct"
-//   2. "the review section authority make mock up. They didn't do that. So, like, what the fuck?"
-//      He is right, and this is the apology in the right currency: the reviews changes went
-//      straight in this morning with no mockup round. Section 4 puts what shipped next to the
-//      alternatives so he can choose, instead of being handed a fait accompli.
-//   3. "the green dot. I don't like the how dark it is. I didn't like how bright it was before,
-//      but now it's too dark." Both rejections are measured values, so section 1 is the space
-//      between them with the contrast maths computed on the page.
+// WHY IT WAS REBUILT. Owner 2026-08-15: "the big pages mock up that you made inside of it, it's
+// just too cluttered and I don't understand at all ... So make a better mock up, which is too
+// cluttered."
 //
-// FORMAT: the same live-iframe injection /dev/type-weights used, the only format that cannot drift
-// from the product. Every pane is the REAL route with one stylesheet injected. Nothing is redrawn.
+// WHAT WAS WRONG WITH V1, named rather than just "made it nicer":
+//   1. FOUR unrelated decisions on one page, so nothing was ever the question.
+//   2. NINE iframes, three per decision, side by side. He reads on a phone, where side-by-side
+//      collapses into a stack, so "compare these three" became "scroll past three copies of the
+//      same page and try to remember the first one."
+//   3. Worst: every iframe opened at the TOP of the salon page while the thing being decided was
+//      ~1700px further down. He had to find it himself in each one, which is exactly the
+//      "I don't understand these" he reported.
 //
-// drift-ok: the green hexes below ARE the subject of this page. They exist only here, nothing
-// imports them, and if he picks one it becomes a token in tailwind.config.js before it ships,
-// exactly as `s-ink-soft` did earlier today. The two labelled "what it was" and "what it is now"
-// are his own rejections, kept as anchors so the middle is judged against them rather than in
-// isolation. The hairline literal in the reviews variant is the existing s-border value, quoted
-// because an injected stylesheet cannot read Tailwind's tokens.
+// AND WHY THERE ARE NO IFRAMES AT ALL NOW. I tried three times to point an iframe at the right
+// section and measured each failure: scrollIntoView left the anchor 1664px down, setting the pane
+// window's scrollTop left it at 0 (the salon page's sticky-nav scroll-spy puts it back), and
+// pulling the frame up by a measured offset landed 1181px out because the page lays out
+// differently inside a 6000px-tall frame. Three misses is the signal to change mechanism, not to
+// keep tuning one. So this renders the REAL section components directly, which is what the
+// existing /dev/pdp/reviews page does: no scrolling, no offset maths, and the thing being decided
+// is the only thing on screen.
 //
-// English chrome throughout, including the swatch label, which says "Open" rather than mimicking
-// the product's German. The product inside the iframes renders its own locale, which the rule
+// Already decided and therefore gone from this page: the combo icon. He picked it here ("the
+// combined two drilling into one") and it is applied in SalonBundles.tsx.
+//
+// drift-ok: the green hexes are the subject of the page; they exist only here and become a token
+// before anything ships, as `s-ink-soft` did earlier today.
+//
+// English chrome throughout; the real components inside render their own locale, which the rule
 // exempts.
 
 import * as React from "react";
 import { notFound } from "next/navigation";
-import { Layers, Combine, Scissors } from "lucide-react";
 import { MetaDot } from "@/app/[locale]/_components/salon/MetaDot";
+import { SalonBundles } from "@/app/[locale]/_components/salon/SalonBundles";
+import { SalonReviews } from "@/app/[locale]/_components/salon/SalonReviews";
 
-const COMBO_SALON = "/de/salon/muse-beauty-studio"; // the one salon that has a combo
+// The one salon that actually has a combo, so the section renders real data rather than a fixture.
+const MUSE_ID = "0ed041f9-149b-4241-a09e-d41351be7097";
+const MUSE_SLUG = "muse-beauty-studio";
 
-/** WCAG contrast of a hex against white, computed here so no number on this page is asserted. */
 function contrastOnWhite(hex: string): number {
   const m = hex.replace("#", "").match(/.{2}/g)!.map((h) => parseInt(h, 16));
   const f = (c: number) => { const s = c / 255; return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4); };
@@ -46,191 +53,174 @@ function contrastOnWhite(hex: string): number {
   return Math.round((1.05 / (L + 0.05)) * 100) / 100;
 }
 
-// Candidates are INTERPOLATED between his own two rejections, not picked by eye, so each one is
-// literally between the thing he called too bright and the thing he called too dark. The first
-// draft of this page offered a #1A7F37 that computed at 5.08, DARKER than the 4.53 he had just
-// rejected, which would have been a fourth wrong answer dressed up as a choice.
 const GREENS = [
-  { hex: "#22C55E", label: "What it was", note: "You said too bright." }, // drift-ok: his rejection, kept as an anchor
-  { hex: "#21B646", label: "A", note: "A quarter of the way from the bright one toward the dark one." }, // drift-ok: candidate
-  { hex: "#16A34A", label: "B", note: "Already a token here, the green on our success ticks. Nothing new to add." }, // drift-ok: candidate
-  { hex: "#20A126", label: "C", note: "Most of the way toward the dark one, without reaching it." }, // drift-ok: candidate
-  { hex: "#1F8900", label: "What it is now", note: "You said too dark." }, // drift-ok: his rejection, kept as an anchor
+  { hex: "#22C55E", label: "Before", note: "You said too bright." }, // drift-ok: his rejection, kept as the anchor
+  { hex: "#21B646", label: "A", note: "A quarter darker than the bright one." }, // drift-ok: candidate
+  { hex: "#16A34A", label: "B", note: "Already a colour we own, the success tick green." }, // drift-ok: candidate
+  { hex: "#20A126", label: "C", note: "Most of the way to the dark one." }, // drift-ok: candidate
+  { hex: "#1F8900", label: "Now", note: "You said too dark." }, // drift-ok: his rejection, kept as the anchor
 ];
 
-const COMBO_VARIANTS = [
+type Option = { key: string; label: string; blurb: string; css: string };
+
+const COMBO_OPTIONS: Option[] = [
+  { key: "now", label: "Now", blurb: "Two different fonts inside one card, five text sizes.", css: "" },
   {
-    id: "combo-now",
-    name: "Now",
-    what: "Combo name in the display font at 16px, the services under it in the body font at 14px, and five different text sizes in one section.",
-    css: "",
+    key: "b",
+    label: "One font",
+    blurb: "The combo name uses the same font as the services list. Four sizes instead of five.",
+    css: `#probe [class*="font-heading"] { font-family: Inter, system-ui, sans-serif; }
+          #probe [class*="text-[12px]"] { font-size: 13px; }`,
   },
   {
-    id: "combo-b",
-    name: "B. Same font as the services above it",
-    what: "The combo name drops to the body font so it matches the service rows one section up, and the smallest text joins the tier above. Four sizes instead of five.",
-    css: `
-      #section-bundles [class*="font-heading"], #section-bundles [class*="font-display"]:not(h2) {
-        font-family: Inter, system-ui, sans-serif !important;
-      }
-      #section-bundles [class*="text-[12px]"] { font-size: 13px !important; }
-    `,
-  },
-  {
-    id: "combo-c",
-    name: "C. B, and the combo name leads",
-    what: "As B, and the combo name is the only thing in its card at 16, so a combo reads as one thing containing others rather than a list of equals.",
-    css: `
-      #section-bundles [class*="font-heading"], #section-bundles [class*="font-display"]:not(h2) {
-        font-family: Inter, system-ui, sans-serif !important;
-      }
-      #section-bundles [class*="text-[12px]"] { font-size: 13px !important; }
-      #section-bundles li [class*="text-[16px]"] { font-size: 14px !important; }
-    `,
+    key: "c",
+    label: "One font, name leads",
+    blurb: "Same, and the combo name is the only large thing in the card, so it reads as one thing containing others.",
+    css: `#probe [class*="font-heading"] { font-family: Inter, system-ui, sans-serif; }
+          #probe [class*="text-[12px]"] { font-size: 13px; }
+          #probe [class*="text-[14px]"] { font-size: 13px; }`,
   },
 ];
 
-const REVIEW_VARIANTS = [
+const REVIEW_OPTIONS: Option[] = [
+  { key: "now", label: "Now", blurb: "What I applied without showing you first.", css: "" },
   {
-    id: "rev-now",
-    name: "Now, what I applied without asking",
-    what: "Four text sizes, a 44px initials disc, the reply held by a left rule, no card and no dividers.",
-    css: "",
+    key: "b",
+    label: "Smaller initials",
+    blurb: "The grey circle drops to 32px, so the name and the words lead instead of two letters.",
+    css: `#probe [class*="rounded-full"][class*="grid"] { width:32px; height:32px; font-size:13px; }`,
   },
   {
-    id: "rev-b",
-    name: "B. Smaller initials",
-    what: "The initials disc drops to 32px so the name and the words carry the row, since a two letter monogram is not information.",
-    css: `#section-reviews [class*="rounded-full"][class*="grid"] { width: 32px !important; height: 32px !important; font-size: 13px !important; }`,
-  },
-  {
-    id: "rev-c",
-    name: "C. Lines back between reviews",
-    what: "A hairline returns between reviews. Your Fresha capture has none, but our rows are taller than theirs because of the replies.",
-    css: `#section-reviews article { border-top: 1px solid #E4E4E7; padding-top: 20px; }`, // drift-ok: the s-border literal, quoted because an injected sheet cannot read tokens
+    key: "c",
+    label: "Lines between",
+    blurb: "A thin line returns between reviews. Your Fresha shot has none, but our rows are taller because of the replies.",
+    css: `#probe article + article { border-top: 1px solid #E4E4E7; padding-top: 20px; }`, // drift-ok: the s-border literal
   },
 ];
 
-type Pane = { id: string; name: string; what: string; css: string };
+// selected-ok: the selected pill here is the SOFT BLACK he picked himself today off
+// /dev/pill-ceramic ("probably d, let's use d, so, yeah, replace them"), the same token the shared
+// TabPill now uses. The gate guards the older gray-selected rule his pick superseded, so matching
+// the product would fail it while diverging from the product would pass.
+const PILL_ON = "h-11 rounded-full bg-s-ink-soft px-4 font-body text-[13px] font-semibold text-white"; // selected-ok
+const PILL_OFF = "h-11 rounded-full border border-s-border bg-white px-4 font-body text-[13px] font-medium text-s-ink-2";
 
-function PaneGrid({ target, panes }: { target: string; panes: Pane[] }) {
-  const onLoad = (p: Pane) => (e: React.SyntheticEvent<HTMLIFrameElement>) => {
-    const doc = e.currentTarget.contentDocument;
-    if (!doc || !p.css) return;
-    const style = doc.createElement("style");
-    style.textContent = p.css;
-    doc.head.appendChild(style);
-  };
+function Probe({ options, children }: { options: Option[]; children: React.ReactNode }) {
+  const [pick, setPick] = React.useState(options[0].key);
+  const current = options.find((o) => o.key === pick)!;
   return (
-    <div className="mt-6 flex flex-wrap gap-8">
-      {panes.map((p) => (
-        <section key={p.id} className="w-[390px] shrink-0">
-          <h3 className="font-display text-[15px] font-semibold text-s-ink">{p.name}</h3>
-          <p className="mt-1.5 font-body text-[13px] leading-relaxed text-s-ink-2">{p.what}</p>
-          <div className="mt-3 overflow-hidden rounded-card border border-s-border">
-            <iframe src={target} title={p.name} onLoad={onLoad(p)} width={390} height={760} className="block" />
-          </div>
-        </section>
-      ))}
+    <div>
+      <div className="flex flex-wrap gap-2">
+        {options.map((o) => (
+          <button key={o.key} type="button" onClick={() => setPick(o.key)} className={pick === o.key ? PILL_ON : PILL_OFF}>
+            {o.label}
+          </button>
+        ))}
+      </div>
+      <p className="mt-3 font-body text-[13px] leading-relaxed text-s-ink-2">{current.blurb}</p>
+      {current.css ? <style dangerouslySetInnerHTML={{ __html: current.css }} /> : null}
+      <div id="probe" className="mt-4 rounded-card border border-s-border p-4">
+        {children}
+      </div>
     </div>
   );
 }
 
+const QUESTIONS = [
+  { key: "green", label: "The green" },
+  { key: "combo", label: "Combo text" },
+  { key: "reviews", label: "Reviews" },
+];
+
 export default function Round5Page() {
   if (process.env.NODE_ENV === "production") notFound();
-  const [icon, setIcon] = React.useState("layers");
+  const [q, setQ] = React.useState("green");
 
   return (
-    <main className="min-h-screen bg-white px-5 py-10">
-      <div className="mx-auto max-w-[1280px]">
-        <h1 className="font-display text-[22px] font-semibold text-s-ink">Four things to pick</h1>
-        <p className="mt-2 max-w-[640px] font-body text-[14px] leading-relaxed text-s-ink-2">
-          Every pane is the real salon page with one rule injected. Nothing is redrawn.
+    <main className="min-h-screen bg-white px-5 py-8">
+      <div className="mx-auto max-w-[430px]">
+        <h1 className="font-display text-[20px] font-semibold text-s-ink">Three questions, one at a time</h1>
+        <p className="mt-2 font-body text-[14px] leading-relaxed text-s-ink-2">
+          Pick a question, then tap the options. The real section is right underneath, and it changes
+          as you tap.
         </p>
 
-        {/* 1. THE GREEN */}
-        <section className="mt-12">
-          <h2 className="font-display text-[18px] font-semibold text-s-ink">1. The open dot, between your two nos</h2>
-          <p className="mt-2 max-w-[640px] font-body text-[14px] leading-relaxed text-s-ink-2">
-            You rejected both ends. The contrast number under each is computed on this page, not
-            typed by me. The dot only needs 3.0 to read as a shape, but the word beside it is text
-            and needs 4.5, which is the whole tension.
-          </p>
-          <div className="mt-6 flex flex-wrap gap-6">
-            {GREENS.map((g) => {
-              const c = contrastOnWhite(g.hex);
-              const anchor = g.label.startsWith("What");
-              return (
-                <div key={g.hex} className={`w-[214px] rounded-card border border-s-border p-4 ${anchor ? "bg-s-bg-sunken" : ""}`}>
-                  <div className="flex items-center gap-2">
-                    <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: g.hex }} />
-                    <span className="font-body text-[15px] font-medium" style={{ color: g.hex }}>Open</span>
-                    <span className="font-body text-[15px] text-s-ink-2">until 17:00</span>
+        <div className="mt-5 flex gap-2">
+          {QUESTIONS.map((x) => (
+            <button key={x.key} type="button" onClick={() => setQ(x.key)} className={q === x.key ? PILL_ON : PILL_OFF}>
+              {x.label}
+            </button>
+          ))}
+        </div>
+
+        {q === "green" && (
+          <section className="mt-8">
+            <h2 className="font-display text-[16px] font-semibold text-s-ink">Which green</h2>
+            <p className="mt-2 font-body text-[13px] leading-relaxed text-s-ink-2">
+              The two on grey are the ones you already rejected. The three between them are mixes of
+              those two, so each really is in between.
+            </p>
+            <div className="mt-5 flex flex-col gap-3">
+              {GREENS.map((g) => {
+                const c = contrastOnWhite(g.hex);
+                const isAnchor = g.label === "Before" || g.label === "Now";
+                return (
+                  <div key={g.hex} className={`rounded-card border border-s-border p-4 ${isAnchor ? "bg-s-bg-sunken" : ""}`}>
+                    <div className="flex items-center gap-2">
+                      <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: g.hex }} />
+                      <span className="font-body text-[15px] font-medium" style={{ color: g.hex }}>Open</span>
+                      <span className="font-body text-[15px] text-s-ink-2">until 17:00</span>
+                      <span className="ml-auto font-body text-[13px] font-semibold text-s-ink">{g.label}</span>
+                    </div>
+                    <p className="mt-2 flex items-center font-body text-[12px] text-s-ink-2">
+                      <span>{g.note}</span>
+                      <MetaDot />
+                      <span>{c >= 4.5 ? "word ok" : "word too pale"}</span>
+                    </p>
                   </div>
-                  <p className="mt-3 font-body text-[13px] font-medium text-s-ink">{g.label}</p>
-                  <p className="mt-1 flex items-center font-body text-[12px] tabular-nums text-s-ink-2">
-                    <span>{g.hex}</span>
-                    <MetaDot />
-                    <span>contrast {c}</span>
-                  </p>
-                  <p className="mt-0.5 font-body text-[12px] text-s-ink-2">
-                    {c >= 4.5 ? "word and dot both fine" : c >= 3 ? "dot fine, the word fails" : "both fail"}
-                  </p>
-                  <p className="mt-1.5 font-body text-[12px] leading-relaxed text-s-ink-2">{g.note}</p>
-                </div>
-              );
-            })}
-          </div>
-        </section>
+                );
+              })}
+            </div>
+            <p className="mt-5 font-body text-[13px] leading-relaxed text-s-ink-2">
+              The catch: the dot is fine at any of these, but the WORD next to it needs more contrast
+              than any of them has. So either the word goes darker than the dot, or the word turns
+              black and only the dot stays green.
+            </p>
+          </section>
+        )}
 
-        {/* 2. THE COMBO ICON */}
-        <section className="mt-12">
-          <h2 className="font-display text-[18px] font-semibold text-s-ink">2. The combo icon</h2>
-          <p className="mt-2 max-w-[640px] font-body text-[14px] leading-relaxed text-s-ink-2">
-            It is a cardboard parcel today, which is what you flagged: nothing is being shipped. Tap one.
-          </p>
-          <div className="mt-6 flex gap-4">
-            {[
-              { key: "layers", Icon: Layers, label: "Layers, several things as one" },
-              { key: "combine", Icon: Combine, label: "Combine, two joining into one" },
-              { key: "scissors", Icon: Scissors, label: "Scissors, the service itself" },
-            ].map(({ key, Icon, label }) => (
-              <button
-                key={key}
-                type="button"
-                onClick={() => setIcon(key)}
-                className={`flex w-[196px] flex-col items-start gap-2 rounded-card border p-4 text-left ${icon === key ? "border-s-ink-soft" : "border-s-border"}`}
-              >
-                <span className="flex items-center gap-2">
-                  <Icon size={16} className="text-s-ink" />
-                  <span className="font-body text-[15px] font-medium text-s-ink">Combos</span>
-                </span>
-                <span className="font-body text-[12px] leading-relaxed text-s-ink-2">{label}</span>
-              </button>
-            ))}
-          </div>
-        </section>
+        {q === "combo" && (
+          <section className="mt-8">
+            <h2 className="font-display text-[16px] font-semibold text-s-ink">Combo text</h2>
+            <p className="mt-2 mb-5 font-body text-[13px] leading-relaxed text-s-ink-2">
+              This is the real combo section with its real data, not a drawing of one.
+            </p>
+            <Probe options={COMBO_OPTIONS}>
+              <SalonBundles salonId={MUSE_ID} slug={MUSE_SLUG} locale="de" />
+            </Probe>
+          </section>
+        )}
 
-        {/* 3. THE COMBO SECTION TYPE */}
-        <section className="mt-12">
-          <h2 className="font-display text-[18px] font-semibold text-s-ink">3. The combo section&rsquo;s type</h2>
-          <p className="mt-2 max-w-[640px] font-body text-[14px] leading-relaxed text-s-ink-2">
-            Measured: it mixes both our fonts inside one card, the combo name in the display font and
-            the services under it in the body font, across five sizes where four is our limit. Scroll
-            each pane down to Combos.
-          </p>
-          <PaneGrid target={COMBO_SALON} panes={COMBO_VARIANTS} />
-        </section>
-
-        {/* 4. THE REVIEWS MOCKUP I OWED HIM */}
-        <section className="mt-12">
-          <h2 className="font-display text-[18px] font-semibold text-s-ink">4. Reviews, the mockup I should have made first</h2>
-          <p className="mt-2 max-w-[640px] font-body text-[14px] leading-relaxed text-s-ink-2">
-            I changed this without showing you, which was the wrong order. Here it is as a choice.
-            Scroll each pane down to the reviews.
-          </p>
-          <PaneGrid target={COMBO_SALON} panes={REVIEW_VARIANTS} />
-        </section>
+        {q === "reviews" && (
+          <section className="mt-8">
+            <h2 className="font-display text-[16px] font-semibold text-s-ink">Reviews</h2>
+            <p className="mt-2 mb-5 font-body text-[13px] leading-relaxed text-s-ink-2">
+              The real reviews section. This is the mockup I should have made before changing
+              anything.
+            </p>
+            <Probe options={REVIEW_OPTIONS}>
+              <SalonReviews
+                average={4.8}
+                count={16}
+                reviews={[]}
+                salonId={MUSE_ID}
+                salonSlug={MUSE_SLUG}
+                salonName="Muse Beauty Studio"
+                locale="de"
+              />
+            </Probe>
+          </section>
+        )}
       </div>
     </main>
   );

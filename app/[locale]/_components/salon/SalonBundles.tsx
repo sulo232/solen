@@ -10,7 +10,7 @@
  *
  * mockup-ok: grounded 1:1 in the APPROVED /dev/bundles-products Option B grammar
  * (app/[locale]/dev/bundles-products/page.tsx OptionB/BundleCard/IncludedRow):
- *   - BundleCard = rounded-[24px] border-s-border bg-white shadow-whisper, Package icon + name (16/700)
+ *   - BundleCard = rounded-[24px] border-s-border bg-white shadow-whisper, Combine icon + name (16/700)
  *   - IncludedRow = service name (14/500) + Clock duration ("N Min", s-ink-2 12px)
  *   - price row = struck summed price (13 s-ink-2 line-through) + bold bundle price (16/700 ink) + pale-green -X% pill
  *   - pale-green pill = bg-s-success-bg text-s-success (SalonCard DiscountBadge / project_card_badges recipe), percent mode only
@@ -25,7 +25,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Package, Clock } from "lucide-react";
+import { Combine, Clock } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { formatCurrency } from "@/lib/format-currency";
 
@@ -142,7 +142,10 @@ function BundleCard({ bundle, slug, locale }: { bundle: Bundle; slug: string; lo
   return (
     <div className="overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper">
       <div className="flex items-center gap-2 px-4 pt-4 pb-2">
-        <Package size={16} strokeWidth={2} className="text-s-ink" aria-hidden />
+        {/* mockup-ok: owner picked this off the three-way icon comparison at /dev/round5,
+            "the combined two drilling into one". A cardboard parcel was wrong for two services
+            sold together, which is what he flagged: nothing is being shipped. */}
+        <Combine size={16} strokeWidth={2} className="text-s-ink" aria-hidden />
         <p className="font-heading text-[16px] font-bold text-s-ink">{bundle.name}</p>
       </div>
 
