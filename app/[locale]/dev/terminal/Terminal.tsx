@@ -89,30 +89,37 @@ const MOVE_TIME_CHIPS = ["09:45", "10:30", "11:15", "12:00", "12:45", "15:15", "
 // SAME strings instead of three near-identical hand-typed copies drifting apart.
 // boxed-ok: GROUPED_CARD (container) + ROW (hairline row) are used TOGETHER below on purpose,
 // see the file-header note; this is the shipped grouped-list-card pattern, not doubled chrome.
-const GROUPED_CARD =
+// EXPORTED 2026-08-15 (round 3, the A/B/C direction rebuild): the owner rejected this file's
+// LAYOUT (the seven-tab switch), not its grammar. app/[locale]/dev/terminal/{a,b,c}/*.tsx import
+// these constants + helpers so all three new directions compose the same real class strings
+// instead of retyping them, per this task's own instruction to "reuse its class constants".
+// boxed-ok: unchanged from the file-header note above (lines 15-23), only the `export` keyword
+// was added below, GROUPED_CARD + ROW together is still the one shipped grouped-list-card
+// grammar (SalonServices.tsx:118/215, SalonTeam.tsx:70), not a new double-boundary.
+export const GROUPED_CARD =
   "overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper";
-const ROW = "border-t border-s-border px-5 py-4 first:border-t-0 md:px-6";
-const ROW_TITLE = "font-body text-[15px] font-medium text-s-ink md:text-[16px]";
-const ROW_META = "font-body mt-1 text-[13px] font-normal text-s-ink-2 md:text-[14px]";
-const SECTION_HEADING =
+export const ROW = "border-t border-s-border px-5 py-4 first:border-t-0 md:px-6";
+export const ROW_TITLE = "font-body text-[15px] font-medium text-s-ink md:text-[16px]";
+export const ROW_META = "font-body mt-1 text-[13px] font-normal text-s-ink-2 md:text-[14px]";
+export const SECTION_HEADING =
   "font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink";
 // The PDP's own secondary button (SalonServices.tsx "Buchen") renders 38px tall at py-2, which is
 // under the 44px touch floor. Measured on the live PDP, not assumed. Kept the shipped look and
 // raised only the height, so the pill still matches the product and the control is reachable.
-const SECONDARY_BUTTON =
+export const SECONDARY_BUTTON =
   "font-body flex h-11 shrink-0 items-center rounded-full border border-s-border bg-white px-5 text-[13px] font-medium text-s-ink transition-[colors,transform] hover:bg-s-bg-sunken active:scale-[0.97] active:duration-[80ms] active:ease-glide md:px-6";
-const PRIMARY_BUTTON =
+export const PRIMARY_BUTTON =
   "font-body flex w-full items-center justify-center gap-2 rounded-full bg-s-ink py-3.5 text-[15px] font-semibold text-white transition-[colors,transform] hover:bg-black active:bg-black active:scale-[0.97] active:duration-[80ms] active:ease-glide";
 // State 7 "Log": the same size/color as ROW_TITLE, weight dropped to normal (log copy is not a
 // row's primary entity name), so this is ROW_TITLE with only the weight token swapped, not a
 // hand-typed new string.
 const LOG_TEXT = ROW_TITLE.replace("font-medium", "font-normal");
 
-function chf(amount: number): string {
+export function chf(amount: number): string {
   return `CHF ${amount.toFixed(2)}`;
 }
 
-function zurichTime(iso: string): string {
+export function zurichTime(iso: string): string {
   return new Date(iso).toLocaleTimeString("en-GB", {
     timeZone: "Europe/Zurich",
     hour: "2-digit",
@@ -121,15 +128,15 @@ function zurichTime(iso: string): string {
   });
 }
 
-function elapsedMinutes(iso: string): number {
+export function elapsedMinutes(iso: string): number {
   return Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60000));
 }
 
 // The 24 hour window is not invented: app/api/cron/pending-timeout cancels any booking left in
 // pending_approval for longer than that. This counts down against the row's own created_at.
-const PENDING_TIMEOUT_MS = 24 * 60 * 60 * 1000;
+export const PENDING_TIMEOUT_MS = 24 * 60 * 60 * 1000;
 
-function expiresIn(createdAtIso: string): string {
+export function expiresIn(createdAtIso: string): string {
   const left = new Date(createdAtIso).getTime() + PENDING_TIMEOUT_MS - Date.now();
   if (left <= 0) return "Expired";
   const h = Math.floor(left / 3_600_000);
@@ -137,7 +144,7 @@ function expiresIn(createdAtIso: string): string {
   return `Expires in ${h}h ${m}m`;
 }
 
-function firstName(fullName: string): string {
+export function firstName(fullName: string): string {
   return fullName.split(" ")[0] ?? fullName;
 }
 
