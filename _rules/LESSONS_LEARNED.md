@@ -644,3 +644,45 @@ block an unrelated edit. That is correct behaviour, not a hole. Do not build a s
 class; run the existing one over a file to get its finding:
 
     python3 -c "import importlib.util,os,sys; s=importlib.util.spec_from_file_location('g', os.path.expanduser('~/.claude/hooks/i18n-write-gate.py')); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); print(m.offending(open(sys.argv[1]).read()))" <file.tsx>
+
+### A mockup that injects into the LIVE page must take its spacing from the page, not from the reference
+
+**File(s):** `public/_mockups/**/*.html`, `public/_mockups/**/variants/*.js`
+
+Owner, 2026-08-15, drawing a red line down the left of a screenshot: *"why is it, like, weirdly just
+on the middle? Like, look at the reference where it's attached. There's, like, a line. Right? ...
+Make it actually attached to the left side, you know, where everything goes."*
+
+**Measured on our own live page, which is the step that was skipped:**
+
+    page: category pill        left 16
+    page: "Top Coiffeur" h2    left 16
+    page: Top Coiffeur card    left 16
+    mine: Recently viewed h2   left 40     <- Airbnb's 23.6pt gutter, imported
+    mine: first thumb          left 40
+
+I had measured the Airbnb reference to a tenth of a point (gutter 23.6pt, thumb 106.1 x 100.7,
+arrow 27.0) and never once measured OUR page's own gutter. The reference number went straight into
+`MK.REF.gutter` and put the whole block 24px right of every other section on the page.
+
+**Then I fixed it wrong and had to measure again.** Setting the gutter to our 16 produced left 32,
+because the host container the block is injected into ALREADY pads 16. The correct value inside a
+padded host is **0**. A mockup that injects into a live page inherits the host's box; the gutter you
+write is added to the host's, not instead of it.
+
+**THE RULE.** When a mockup renders inside the real page, every spacing value is a property of THAT
+PAGE and must be measured there:
+
+    // before writing any padding/gutter into an injected block
+    const L = el => Math.round(el.getBoundingClientRect().left);
+    // sample 3+ existing sections; they agree, and their agreement IS the line
+    [pill, sectionH2, firstCard].map(L)      // -> 16, 16, 16
+
+The reference tells you SIZE and SHAPE (a photo's ratio, a card's height, a circle's diameter). The
+host page tells you POSITION and RHYTHM (gutter, gap, section padding). Taking position from the
+reference is how a correctly-sized block lands in the wrong place, which is exactly FLOORS LAW 8:
+the same thing has to look the same everywhere, and "everywhere" means the page it ships on.
+
+**Same class, same turn, three more:** section h2 was 22px against the page's 18px; the see-all
+circle was 28px against the page's 32px; the thumb radius was 16px against the page's 22px. All
+three were Airbnb's numbers on our page. Measure the host for these too.

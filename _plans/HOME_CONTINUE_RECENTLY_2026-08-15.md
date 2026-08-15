@@ -162,3 +162,22 @@ JSX text children. Measured for visibility rather than assumed:
 - [ ] **G1. 13 of the 37 homepage components still carry a user-facing German literal.** Measured after the fix with the existing i18n-write-gate's own matcher, so the number is the gate's and not a fresh grep. All 13 named in _rules/LESSONS_LEARNED.md so the next pass starts from a list. Includes the `Solen für<br />Ihr Geschäft.` headline, which is a copy call rather than a key swap because French and Italian will not break at the same word. Previously read: Not a mechanical fix: the
       headline breaks across a `<br>` and French and Italian will not break in the same place, so it
       needs a copy call, not a key swap.
+
+
+## CORRECTION round 3, owner 2026-08-15 (fourth message, with a red line drawn on the screenshot)
+
+> I told you to fix up the recently viewed. And what the fuck is this doing this weird ass shit? And
+> on the continue searching, why is it, like like, weirdly just on the middle? ... There's, like, a
+> line. Right? ... Make it actually attached to the left side, you know, where everything goes. And,
+> also, why did you make it flat? Make a shadow. I fucking told you. ... Make it like this. I
+> literally told you, like, a normal fucking section ... wanted the text on these pills go smaller
+> and everything, but what are you fucking doing? Revert bro.
+
+- [x] **H1. THE LEFT LINE.** verified live: page category pill 16, page Top Coiffeur h2 16, page Top Coiffeur card 16, and now my continue card 16, my Recently viewed h2 16, my first thumb 16. Was 40. Cause: MK.REF.gutter carried Airbnb's measured 23.6pt into a page whose own line is 16. First fix overshot to 32 because the host container already pads 16, so the correct value inside it is 0.
+- [x] **H2. The shadow is back and the border is gone.** verified live: boxShadow present, borderTopWidth 0px. The locked surface table allows one or the other, never both.
+- [x] **H3. A normal section of THIS page, measured off the live Top Coiffeur rail rather than the reference.** verified live: section h2 18px/600 (was 22), see-all circle 32 inside a 44 tap (was 28), thumb radius 22 (was 16), rail gap 12.
+- [x] **H4. The pills are reverted.** verified live, before against after: icon 28px in both, with no inline width override left behind; label 14px -> 13px. I had been shrinking the ICON to 15px, which he never asked for. He asked for the TEXT.
+
+### Still open
+
+- [ ] **H5. He has not reacted to the corrected row yet.** Everything above is a measured match to the page; whether the row is RIGHT is his call and not a number.
