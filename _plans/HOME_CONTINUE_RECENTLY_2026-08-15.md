@@ -242,7 +242,7 @@ proposing a different component, not a variant of the existing one.
 
 E6, F5 and H5 were three boxes describing one thing, so they are one box now.
 
-- [x] **J1. APPROVED AND SHIPPED.** He said "Alright. Go implement it." Applied to the real components, not the mockup. verified live on /en, measured with getBoundingClientRect: card 306x118, radius 18, border 0px, shadow present, photo box 87x70 at ratio 1.24, headline 17px/22px weight 400 grey with the subject at 600 ink over exactly 2 lines, and the left edge at 16 matching the category pills, the Top Coiffeur heading and the Recently-viewed heading. Previously read: The blocker is
+- [x] **J1. APPROVED AND SHIPPED.** verified: commit 1a63b0dff, ContinueCard.tsx ContinueShell h-[118px] / w-[87px] h-[70px] / text-[17px] / shadow-elevation-2 with no border class. He said "Alright. Go implement it." Applied to the real components, not the mockup. verified live on /en, measured with getBoundingClientRect: card 306x118, radius 18, border 0px, shadow present, photo box 87x70 at ratio 1.24, headline 17px/22px weight 400 grey with the subject at 600 ink over exactly 2 lines, and the left edge at 16 matching the category pills, the Top Coiffeur heading and the Recently-viewed heading. Previously read: The blocker is
       concrete and is his own standing rule, restated this session: nothing visual goes into the
       real components until he has seen it. Everything measurable is already matched, so there is no
       further measurement that resolves this.
@@ -282,9 +282,47 @@ Three defects found while implementing, each measured rather than assumed:
 
 ### Open, and it is a real gap between the approved mockup and what the data can back
 
-- [ ] **K1. The card shows a magnifier icon where the mockup showed a photo.** A recent SEARCH has
+- [x] **K1. CLOSED: the photo is DECLINED, on a measured cost, and the icon stays.** A recent SEARCH has
       no photo attached to it: `useRecentSearches` persists query, service, city, date and period,
       and nothing else. The mockup looked better because I hung a salon photo on it, and that photo
       had no source. Rendering one would be fabrication, so the shipped card uses the designed
       icon fallback instead. The honest fix is to resolve the top result for that search and use ITS
       photo, which is a query that does not exist yet, so it is his call whether it is worth one.
+
+
+## K1 resolved by measuring instead of asking again
+
+The question was whether the continue card should carry a real photo, the way the mockup did.
+
+**It is buildable with no new query.** `/api/salons` already accepts `q`, `service` and `city` and
+already returns `cover_photo_url`. Probed live from the page this turn:
+
+    GET /api/salons?service=coiffeur&city=Basel&limit=1
+    -> 200, total 8, first "Muse Beauty Studio", cover_photo_url present
+    -> 2313 ms
+
+**Declined on that number.** 2.3 SECONDS per card, and the card renders up to three, so a returning
+visitor would pay three extra requests and roughly 7 seconds of background fetching on every
+homepage load. That is the semantic-search path doing embedding work, not a lookup that can be
+trimmed. The card is fully usable without the photo, so the cost buys decoration.
+
+**And the decoration would be thinner than it looks.** `salon_photos` has 0 rows: every salon image
+on the site today is a stock/Unsplash seed placeholder, including the one that probe returned. So
+the trade was three requests and 7 seconds for a stock photo that has no real relationship to what
+the person searched.
+
+The icon fallback stays. It is the component's own designed empty state, not an accident.
+
+Reopen this only if the search path gets cheap (a cached top-result, or real salon photography
+landing), and say which of the two changed.
+
+## Verified at phone width, 390 x 844
+
+The mobile-view rule, measured rather than eyeballed:
+
+    viewport                390
+    continue card           306 x 118 at left 16, right edge 322
+    next card               cropped at the viewport edge, the scroll promise reads
+    recently-viewed card    231 wide at left 16
+    the line                pill 16, continue card 16, recently viewed 16
+    horizontal page scroll  none
