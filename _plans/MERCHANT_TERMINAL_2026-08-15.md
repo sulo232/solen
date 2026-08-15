@@ -1175,3 +1175,65 @@ Also present and worth knowing: `barber_cut_history` (10 rows) and `nail_design_
 already record what was actually DONE to a customer per visit, and `search_events` (2 rows) plus
 `discovery_search_events` (132 rows) already record intent. The learning material in section J is
 partly on disk already.
+
+---
+
+# ROUND 3 , HE REJECTED THE SEVEN-TAB SCREEN (owner 2026-08-15, fourth message)
+
+> "what if there is a lot and, like, multiple people" · "I don't like this gray back counting at a
+> notification bar either" · "why are you making me such a sloppy fucking shit" · "why don't you
+> make it, like, clickable? For example, new booking. How are we gonna do that?" · "the design is
+> not good at all. What is this?"
+
+**Measured before changing anything** (he selected the bell icon, so the numbers come from the
+rendered page, not a guess): a 60px tab bar sitting on a 56px header, so **116px of stacked white
+chrome before any content**, and then the grey canvas. The bell was crammed into a 193px right
+cluster between `Live` and `Pause queue`.
+
+**The three real failures, named:**
+1. The seven-tab switch was mockup chrome pretending to be product chrome. States are not tabs a
+   person flips. A new booking ARRIVES.
+2. Two stacked bars of chrome.
+3. It only ever showed one of anything. One late person, one new request.
+
+**The data was thickened to make volume real**, not simulated: 14 bookings today and 6 people
+waiting, seeded through the normal tables. Five bookings are genuinely past their time, so lateness
+is computed from the clock rather than hardcoded.
+
+## The three directions, all measured at 402 wide
+
+| | thesis | how it answers "what if there are a lot" |
+|---|---|---|
+| **A, One stream** | no sections at all, walk-ins and appointments in ONE time-ordered list with a now-line | position always means time, so the list can be any length and the shop never loses its place |
+| **B, Attention bar** | the calm day, with everything needing a human collected into the REAL shipped amber bar from `DashboardLayout.tsx:457` | attention is a COUNT, not N cards. `5 need you` + Show filters the screen to those five and back |
+| **C, Now and next** | chairs fixed on top like a till, the day scrolling underneath | five late people are five LINES in a pinned strip, not five cards |
+
+**Recommendation: B.** It composes a bar this product already ships, it is the only one of the three
+that is identical at zero and at fifty, and it keeps the calm day calm. A is the most elegant idea
+and the riskiest, because a single list means the thing needing a decision never moves to where the
+eye is. C is the most familiar to anyone who has used a till, and it spends the most screen on
+chrome that never changes.
+
+**Measured, every state including the two that only exist after a tap:**
+A 3 sizes / 3 weights / 28px anchor / 3.2% bold · B calm 4 sizes / 7.8% bold, filtered 3 sizes /
+24.2% bold · C 3 sizes / 3 weights / 28px anchor / 3.6% bold. Zero controls under 44px anywhere,
+no sideways scroll anywhere.
+
+## Two crashes that were reported to me as passing
+Direction A **never called `createPortal`**, so it rendered nothing at all, and it referenced a
+constant it had not imported. The route returned HTTP 200 the whole time and the typecheck was
+clean. Caught only by opening the page. Recorded here because it is the exact silent-no-op shape
+this project's own CLAUDE.md names as its number one failure mode, and because "200 plus green
+typecheck" was offered as proof that it worked.
+
+Also fixed on the way: B lost its 28px anchor in the filtered view, and the chooser stretched three
+rows over the whole viewport as three bands of empty white.
+
+## The gate, for the theme he has now flagged twice
+`selected-state` is in the correction ledger twice in fourteen days. The gate for it was armed both
+times and was RIGHT about what it checks: ink and blue on a selected state are banned, and the calm
+grey was what I used. The failure it could not see is that the container underneath was **also**
+grey, so the selection was invisible.
+Widened rather than duplicated (`.claude/hooks/no-black-selected-gate.py` v2): the calm grey
+selected fill is only a selected state when it sits on white. 5/5 self-test, and it blocks the
+pre-fix shape of the real file while passing the fixed one.
