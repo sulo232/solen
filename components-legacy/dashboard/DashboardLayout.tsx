@@ -256,7 +256,7 @@ export default function DashboardLayout({
 
   if (!authChecked) {
     return (
-      <div className="min-h-screen bg-s-bg-sunken flex">
+      <div data-surface="dashboard" className="min-h-screen bg-s-bg-sunken flex">
         {/* Sidebar skeleton */}
         <div className="hidden md:flex flex-col w-[240px] border-r border-s-ink/[0.06] p-3 gap-4">
           <Skeleton className="h-8 w-8" rounded={16} />
@@ -284,7 +284,7 @@ export default function DashboardLayout({
       : pathname.startsWith(`/${locale}${href}`);
 
   return (
-    <div className="min-h-screen bg-s-bg-sunken flex">
+    <div data-surface="dashboard" className="min-h-screen bg-s-bg-sunken flex">
       {/* ── Desktop icon rail (V3-D347 W1 — Fresha structure) ── */}
       <aside className="hidden md:flex fixed left-0 top-0 h-full w-[64px] bg-white border-r border-s-border flex-col items-center py-3 z-30">
         <Link href={`/${locale}/dashboard`} aria-label="Solen" className="w-9 h-9 grid place-items-center text-[20px] font-bold tracking-[-0.04em] text-s-ink mb-2">S</Link>

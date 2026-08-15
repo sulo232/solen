@@ -231,6 +231,48 @@
     background-color: theme("colors.s-ink-soft.DEFAULT");
   }
 
+  /* ═══ TWO TEXT WEIGHTS ON CUSTOMER SURFACES (owner picked C, 2026-08-15) ═══
+
+     He was shown three real salon pages side by side at /dev/type-weights, each with one rule
+     swapped and each COUNTING its own result, and picked C.
+
+       option                     weights (ceiling 2)   bold share (ceiling 30%)
+       A, what shipped                    3                    36.8%
+       B, anchors stay bold               2                    36.8%
+       C, nothing bold  <- picked         2                     0%
+
+     So the heavy tier drops one step: anything the product marks `font-semibold` or `font-bold`
+     renders at 500. Body text is NOT touched, which is the whole difference between demoting a
+     tier and flattening a page. The result is exactly two weights, 400 and 500.
+
+     WHAT THIS COSTS, and he chose it knowing: the salon name stops being the heaviest thing on its
+     screen. FLOORS LAW 6 wants one clearly biggest, heaviest element per customer screen, and
+     after this the "biggest" half is carried entirely by SIZE (the name is 30px against a 14px
+     body, a 2.1x step) with no weight step behind it. That is the trade C names on the mockup.
+
+     WHY A RULE AND NOT A SWEEP. Measured first: `font-semibold` and `font-bold` appear 1,968 times
+     across the app. Rewriting them by hand is 1,968 chances to catch the wrong one, and the next
+     component anyone writes would still say `font-semibold` and would quietly be a third weight
+     again. This is the same single-point reasoning as the ink-fill rule directly above.
+
+     THE DASHBOARD IS EXCLUDED BY NAME. 239 of those 1,968 live in the operator dashboard, which is
+     a density tool rather than a customer screen, and the emphasis budget already exempts that
+     family by name. `DashboardLayout` carries `data-surface="dashboard"` for exactly this. It is
+     the only exclusion, and it is an exclusion rather than an oversight.
+
+     The dashboard sits INSIDE the same `<main>` as everything else, so it cannot be excluded by a
+     `:not()` on the ancestor. The second rule restores it instead, and being later in the sheet at
+     equal weight it wins on the dashboard and nowhere else.
+
+     TO REVERT, or to narrow this to the salon page only: delete this block, or put the salon
+     page's own selector in front of it. Nothing else in the codebase changed. */
+  main :is(.font-semibold, .font-bold) {
+    font-weight: 500;
+  }
+  [data-surface="dashboard"] :is(.font-semibold, .font-bold) {
+    font-weight: 600;
+  }
+
   /* DS-6 (2026-06-11, video-audit, owner-approved): interactive blue darkens one
      ramp step on hover/pressed — s-accent #276EF1 -> s-accent-deep #1E54B7, 150ms.
      Single-point rule so every existing text-s-accent link/button gets the step
