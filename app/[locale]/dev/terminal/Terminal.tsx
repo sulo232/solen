@@ -3,12 +3,33 @@
 // exists-check: net-new vs lib/referral/code.ts (unrelated referral-code generator, only
 // keyword-matched on "code"). This file is the merchant terminal client UI, no relation.
 // english-ok: this is a standalone dev mockup, all hardcoded copy is English per the mockup rule.
+//
+// CORRECTION 2026-08-15 (owner: "this mockup doesn't reflect our design system ... you're just
+// using inconsistent everything"): every row, card, chip and button used to be hand-written
+// Tailwind. Rebuilt against the real shipped grammar read out of the salon PDP: the grouped
+// list-card (`SalonServices.tsx`/`SalonTeam.tsx`, byte-identical `<ul>` class string), the row
+// typography scale, the primary/secondary button strings (`SalonMobileBookBar.tsx` /
+// `SalonServices.tsx`), and the real `Avatar` + `TabPill` primitives instead of a hand-rolled
+// circle and hand-rolled toggle buttons.
+//
+// boxed-ok: the outer rounded-[24px]+border+shadow-whisper container paired with per-row
+// border-t hairlines below is NOT an invented double-boundary, it is a byte-identical copy of
+// the ONE grouped list-card grammar this codebase already ships: SalonServices.tsx:118
+// (`<ul className="mt-5 overflow-hidden rounded-[24px] border border-s-border bg-white
+// shadow-whisper">` + `SalonServices.tsx:215 `<li className="border-t border-s-border px-5
+// py-4 first:border-t-0 md:px-6">`) and the same pair in SalonTeam.tsx:70. Every "Waiting" and
+// "Later today" list, and the "In the chair" panel, below reuse those exact two class strings
+// via the GROUPED_CARD / ROW constants, per this task's own literal brief ("Use these EXACT
+// strings"). Picking whitespace-only rows instead would mean NOT composing the real component.
 
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
-import Image from "next/image";
 import { Bell, BellOff } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
+import { Avatar } from "@/app/[locale]/_components/primitives";
+// TabPill is not re-exported through the primitives barrel (grep confirmed); SalonServices.tsx
+// imports it the same direct way (../primitives/TabPill), so this matches the real call site.
+import { TabPill } from "@/app/[locale]/_components/primitives/TabPill";
 
 export interface TerminalBooking {
   id: string;
@@ -54,6 +75,26 @@ type Variant = "quiet" | "new" | "move";
 
 const MOVE_TIME_CHIPS = ["09:45", "10:30", "11:15", "12:00", "12:45", "15:15", "16:45", "18:15"];
 
+// The real grammar, read verbatim off the shipped salon PDP (SalonServices.tsx / SalonTeam.tsx /
+// SalonMobileBookBar.tsx). Kept as named constants so every list/card on this screen composes the
+// SAME strings instead of three near-identical hand-typed copies drifting apart.
+// boxed-ok: GROUPED_CARD (container) + ROW (hairline row) are used TOGETHER below on purpose,
+// see the file-header note; this is the shipped grouped-list-card pattern, not doubled chrome.
+const GROUPED_CARD =
+  "overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper";
+const ROW = "border-t border-s-border px-5 py-4 first:border-t-0 md:px-6";
+const ROW_TITLE = "font-body text-[15px] font-medium text-s-ink md:text-[16px]";
+const ROW_META = "font-body mt-1 text-[13px] font-normal text-s-ink-2 md:text-[14px]";
+const SECTION_HEADING =
+  "font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink";
+// The PDP's own secondary button (SalonServices.tsx "Buchen") renders 38px tall at py-2, which is
+// under the 44px touch floor. Measured on the live PDP, not assumed. Kept the shipped look and
+// raised only the height, so the pill still matches the product and the control is reachable.
+const SECONDARY_BUTTON =
+  "font-body flex h-11 shrink-0 items-center rounded-full border border-s-border bg-white px-5 text-[13px] font-medium text-s-ink transition-[colors,transform] hover:bg-s-bg-sunken active:scale-[0.97] active:duration-[80ms] active:ease-glide md:px-6";
+const PRIMARY_BUTTON =
+  "font-body flex w-full items-center justify-center gap-2 rounded-full bg-s-ink py-3.5 text-[15px] font-semibold text-white transition-[colors,transform] hover:bg-black active:bg-black active:scale-[0.97] active:duration-[80ms] active:ease-glide";
+
 function chf(amount: number): string {
   return `CHF ${amount.toFixed(2)}`;
 }
@@ -85,6 +126,10 @@ function expiresIn(createdAtIso: string): string {
 
 function firstName(fullName: string): string {
   return fullName.split(" ")[0] ?? fullName;
+}
+
+function SectionHeading({ children }: { children: React.ReactNode }) {
+  return <h2 className={SECTION_HEADING}>{children}</h2>;
 }
 
 export default function Terminal({ salonName, bookings: initialBookings, queue: initialQueue, staff }: TerminalProps) {
@@ -133,7 +178,6 @@ export default function Terminal({ salonName, bookings: initialBookings, queue: 
     [bookings]
   );
 
-
   const maxWait = useMemo(
     () => waiting.reduce((acc, q) => Math.max(acc, q.estimatedWaitMinutes), 0),
     [waiting]
@@ -155,6 +199,17 @@ export default function Terminal({ salonName, bookings: initialBookings, queue: 
     setVariant("quiet");
     setMoveBookingId(null);
     setSelectedChip(null);
+  }
+
+  function selectVariant(next: Variant) {
+    if (next !== "move") {
+      setMoveBookingId(null);
+      setSelectedChip(null);
+    } else if (!moveBookingId) {
+      setMoveBookingId(laterToday.find((b) => b.status === "confirmed")?.id ?? null);
+      setSelectedChip(null);
+    }
+    setVariant(next);
   }
 
   function acceptPending() {
@@ -221,49 +276,27 @@ export default function Terminal({ salonName, bookings: initialBookings, queue: 
 
   const screen = (
     <div className="fixed inset-0 z-[10000] overflow-y-auto overscroll-contain bg-s-bg-sunken">
+      {/* 1. State switch, three real TabPills. */}
       <div className="sticky top-0 z-30 bg-white">
-        <div className="mx-auto flex min-h-11 w-full max-w-[760px] items-center gap-2 px-4">
-          {(
-            [
-              { key: "quiet", label: "Quiet" },
-              { key: "new", label: "New booking" },
-              { key: "move", label: "Move" },
-            ] as { key: Variant; label: string }[]
-          ).map((v) => {
-            const selected = variant === v.key;
-            return (
-              <button
-                key={v.key}
-                type="button"
-                onClick={() => {
-                  if (v.key !== "move") {
-                    setMoveBookingId(null);
-                    setSelectedChip(null);
-                  } else if (!moveBookingId) {
-                    setMoveBookingId(laterToday.find((b) => b.status === "confirmed")?.id ?? null);
-                    setSelectedChip(null);
-                  }
-                  setVariant(v.key);
-                }}
-                className={
-                  "h-11 rounded-full border px-4 text-[13px] " +
-                  (selected
-                    ? "border-transparent bg-s-bg-sunken font-semibold text-s-ink"
-                    : "border-s-border bg-white font-normal text-s-ink-2")
-                }
-              >
-                {v.label}
-              </button>
-            );
-          })}
+        <div className="mx-auto flex min-h-11 w-full max-w-[760px] items-center gap-2 px-4 py-2">
+          <TabPill active={variant === "quiet"} onClick={() => selectVariant("quiet")} size="sm">
+            Quiet
+          </TabPill>
+          <TabPill active={variant === "new"} onClick={() => selectVariant("new")} size="sm">
+            New booking
+          </TabPill>
+          <TabPill active={variant === "move"} onClick={() => selectVariant("move")} size="sm">
+            Move
+          </TabPill>
         </div>
       </div>
 
-      <div className="sticky top-9 z-20 h-14 border-b border-s-border bg-white">
+      {/* 2. Header strip. */}
+      <div className="sticky top-[52px] z-20 h-14 border-b border-s-border bg-white">
         <div className="mx-auto flex h-full w-full max-w-[760px] items-center justify-between px-4">
-          <span className="font-display text-[15px] font-semibold text-s-ink">{salonName}</span>
+          <span className="font-body text-[15px] font-semibold text-s-ink">{salonName}</span>
           <div className="flex items-center gap-4">
-            <span className="flex items-center gap-1.5 text-[13px] font-normal text-s-ink-2">
+            <span className="font-body flex items-center gap-1.5 text-[13px] font-normal text-s-ink-2">
               <span className="h-1.5 w-1.5 rounded-full bg-s-success" />
               Live
             </span>
@@ -278,7 +311,7 @@ export default function Terminal({ salonName, bookings: initialBookings, queue: 
             <button
               type="button"
               onClick={() => setQueuePaused((v) => !v)}
-              className="flex h-11 items-center text-[13px] font-normal text-s-accent"
+              className="font-body flex h-11 items-center text-[13px] font-normal text-s-accent"
             >
               {queuePaused ? "Resume queue" : "Pause queue"}
             </button>
@@ -287,309 +320,276 @@ export default function Terminal({ salonName, bookings: initialBookings, queue: 
       </div>
 
       <div className="mx-auto flex w-full max-w-[760px] flex-col gap-8 px-4 pb-16 pt-8">
+        {/* 3. Action slot , New booking. */}
         {variant === "new" && pendingBooking ? (
           <AnimatePresence>
             <motion.div
               key={pendingBooking.id}
               exit={{ opacity: 0, y: -12 }}
               transition={{ duration: 0.2 }}
-              className="rounded-card border border-s-border bg-white p-4"
+              className={GROUPED_CARD + " p-5"}
             >
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-semibold text-s-ink">New request</span> {/* drift-ok: eyebrow, LOCKFILE text-size row "eyebrow 11" */}
-                <span className="text-[11px] font-normal tabular-nums text-s-ink-2">{expiresIn(pendingBooking.createdAt)}</span> {/* drift-ok: eyebrow, LOCKFILE text-size row "eyebrow 11" */}
+                <span className="font-body text-[13px] font-normal text-s-ink-2">New request</span>
+                <span className="font-body text-[13px] font-normal tabular-nums text-s-ink-2">
+                  {expiresIn(pendingBooking.createdAt)}
+                </span>
               </div>
-              <p className="mt-4 font-display text-[28px] font-semibold leading-tight text-s-ink">
+              <p className="font-display mt-4 text-[28px] font-semibold leading-tight text-s-ink">
                 {pendingBooking.customerName}
               </p>
-              <p className="mt-4 text-[15px] font-normal text-s-ink-2">
+              <p className={ROW_META + " mt-4"}>
                 {pendingBooking.serviceName}, {zurichTime(pendingBooking.startsAt)}
               </p>
-              <p className="text-[15px]">
-                <span className="font-semibold tabular-nums text-s-ink">{chf(pendingBooking.price)}</span>
+              <p className="font-body mt-3 text-[15px] text-s-ink">
+                <span className="font-medium tabular-nums">{chf(pendingBooking.price)}</span>
                 {pendingBooking.staffName ? (
                   <span className="text-[13px] font-normal text-s-ink-2"> with {pendingBooking.staffName}</span>
                 ) : null}
               </p>
-              <div className="mt-4 flex gap-2">
-                <button
-                  type="button"
-                  onClick={acceptPending}
-                  className="h-11 flex-1 rounded-full bg-s-ink text-[15px] font-semibold text-white"
-                >
+              <div className="mt-5 flex gap-2">
+                <button type="button" onClick={acceptPending} className={PRIMARY_BUTTON}>
                   Accept
                 </button>
-                <button
-                  type="button"
-                  onClick={declinePending}
-                  className="h-11 w-[120px] rounded-full border border-s-border text-[15px] font-semibold text-s-ink"
-                >
-                  Decline
-                </button>
+                <div className="flex h-11 w-[120px] shrink-0 items-center justify-center">
+                  <button type="button" onClick={declinePending} className={SECONDARY_BUTTON + " w-full"}>
+                    Decline
+                  </button>
+                </div>
               </div>
             </motion.div>
           </AnimatePresence>
         ) : null}
 
+        {/* 3. Action slot , Move. */}
         {variant === "move" && moveBooking ? (
-          <div className="rounded-card border border-s-border bg-white p-4">
-            <span className="text-[11px] font-semibold text-s-ink">Move appointment</span> {/* drift-ok: eyebrow, LOCKFILE text-size row "eyebrow 11" */}
-            <p className="mt-4 font-display text-[28px] font-semibold leading-tight text-s-ink">
+          <div className={GROUPED_CARD + " p-5"}>
+            <span className="font-body text-[13px] font-normal text-s-ink-2">Move appointment</span>
+            <p className="font-display mt-4 text-[28px] font-semibold leading-tight text-s-ink">
               {moveBooking.customerName}
             </p>
-            <p className="mt-4 text-[15px] font-normal text-s-ink-2">
+            <p className={ROW_META + " mt-4"}>
               {moveBooking.serviceName}, {zurichTime(moveBooking.startsAt)}
             </p>
-            <p className="mt-4 text-[13px] font-semibold text-s-ink">New time</p>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {MOVE_TIME_CHIPS.map((time) => {
-                const selected = selectedChip === time;
-                return (
-                  <div key={time} className="flex items-center">
-                    <button
-                      type="button"
-                      onClick={() => setSelectedChip(time)}
-                      className={
-                        "h-11 rounded-full border px-4 text-[13px] tabular-nums " +
-                        (selected
-                          ? "border-transparent bg-s-bg-sunken font-semibold text-s-ink"
-                          : "border-s-border bg-white font-normal text-s-ink")
-                      }
-                    >
-                      {time}
-                    </button>
-                  </div>
-                );
-              })}
+            <p className="font-body mt-4 text-[13px] font-medium text-s-ink">New time</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {MOVE_TIME_CHIPS.map((time) => (
+                <TabPill
+                  key={time}
+                  active={selectedChip === time}
+                  onClick={() => setSelectedChip(time)}
+                  size="sm"
+                  className="tabular-nums"
+                >
+                  {time}
+                </TabPill>
+              ))}
             </div>
             <button
               type="button"
               disabled={!selectedChip}
               onClick={confirmMove}
-              className={
-                "mt-4 h-11 w-full rounded-full bg-s-ink text-[15px] font-semibold text-white " +
-                (selectedChip ? "" : "cursor-not-allowed opacity-50")
-              }
+              className={PRIMARY_BUTTON + " mt-5" + (selectedChip ? "" : " cursor-not-allowed opacity-50")}
             >
               {selectedChip ? `Move to ${selectedChip}` : "Move"}
             </button>
             <button
               type="button"
               onClick={closeMove}
-              className="mt-4 flex h-11 w-full items-center justify-center text-[13px] font-normal text-s-ink-2"
+              className="font-body mt-3 flex h-11 w-full items-center justify-center text-[13px] font-normal text-s-ink-2"
             >
               Keep {zurichTime(moveBooking.startsAt)}
             </button>
           </div>
         ) : null}
 
-        {/* The screen's display anchor (FLOORS LAW 6, >= 28px). At rest the one number a barbershop
-            counter actually needs is the wait, so it is the biggest thing on the screen. Bare text
-            on the canvas, not a card, per the 2026-07-15 card-economy decision. */}
+        {/* 4. The wait anchor , the screen's display anchor (FLOORS LAW 6, >= 28px) in Quiet.
+            In New booking / Move the action card above is the anchor, so this drops to one line. */}
         {variant === "quiet" ? (
           <div>
             <p className="font-display text-[28px] font-semibold leading-tight tabular-nums text-s-ink">
               {waiting.length === 0 ? "No wait" : `${maxWait} min wait`}
             </p>
-            <p className="text-[13px] font-normal tabular-nums text-s-ink-2">
+            <p className="font-body mt-1 text-[13px] font-normal tabular-nums text-s-ink-2">
               {waiting.length === 0 ? "Nobody waiting" : `${waiting.length} people waiting`}
             </p>
           </div>
         ) : (
-          <p className="text-[15px] font-normal tabular-nums text-s-ink-2">
+          <p className="font-body text-[15px] font-normal tabular-nums text-s-ink-2">
             {waiting.length === 0
               ? "Nobody waiting"
               : `${maxWait} min wait, ${waiting.length} people`}
           </p>
         )}
 
-        <div className="rounded-[24px] bg-white p-4 shadow-whisper">
-          <div className="flex items-center justify-between">
-            <span className="text-[13px] font-semibold text-s-ink">In the chair</span>
-          </div>
-          <div className="mt-4 flex gap-4">
-            {staff.map((member) => {
-              const busy = inChair?.staffId === member.id;
-              return (
-                <div key={member.id} className="flex flex-1 flex-col items-center text-center">
-                  <div className="relative h-14 w-14 overflow-hidden rounded-full bg-s-bg-sunken">
-                    {member.avatarUrl ? (
-                      <Image src={member.avatarUrl} alt="" fill sizes="56px" className="object-cover" />
-                    ) : null}
+        {/* 5. In the chair. boxed-ok: see file-header note, GROUPED_CARD is the shipped
+            grouped-list-card container (SalonTeam.tsx:70), used here without inner hairlines
+            since the three tiles sit side by side, not stacked, so there is nothing to double. */}
+        <div>
+          <SectionHeading>In the chair</SectionHeading>
+          <div className={GROUPED_CARD + " mt-4 p-5"}>
+            <div className="flex gap-4">
+              {staff.map((member) => {
+                const busy = inChair?.staffId === member.id;
+                return (
+                  <div key={member.id} className="flex flex-1 flex-col items-center gap-1 text-center">
+                    <Avatar src={member.avatarUrl} name={member.name} size={56} />
+                    <p className={ROW_TITLE + " mt-2 text-center"}>{member.name}</p>
+                    {busy && inChair ? (
+                      <>
+                        <p className="font-body text-[13px] font-normal text-s-ink-2">{firstName(inChair.customerName)}</p>
+                        <p className="font-body text-[13px] font-normal tabular-nums text-s-ink-2">
+                          {elapsedMinutes(inChair.startedAt ?? new Date().toISOString())} min
+                        </p>
+                      </>
+                    ) : (
+                      <p className="font-body text-[13px] font-normal text-s-success">Free</p>
+                    )}
                   </div>
-                  <p className="mt-4 text-[13px] font-semibold text-s-ink">{member.name}</p>
-                  {busy && inChair ? (
-                    <>
-                      <p className="text-[13px] font-normal text-s-ink-2">{firstName(inChair.customerName)}</p>
-                      <p className="text-[13px] font-normal tabular-nums text-s-ink-2">
-                        {elapsedMinutes(inChair.startedAt ?? new Date().toISOString())} min
-                      </p>
-                    </>
-                  ) : (
-                    <p className="text-[13px] font-semibold text-s-success">Free</p>
-                  )}
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
 
+        {/* 6. Waiting , one grouped list-card, rows hairline-divided. boxed-ok: GROUPED_CARD +
+            ROW together, this IS the shipped grouped-list-card grammar (see file-header note). */}
         <div>
-          <div className="flex items-center justify-between">
-            <span className="text-[13px] font-semibold text-s-ink">Waiting</span>
-          </div>
-          <div className="mt-4 flex flex-col gap-4">
+          <SectionHeading>Waiting</SectionHeading>
+          <ul className={GROUPED_CARD + " mt-4"}>
             {waiting.map((entry) => {
               const key = `waiting:${entry.id}`;
               const expanded = expandedKey === key;
               return (
-                <div key={entry.id} className="rounded-card border border-s-border bg-white p-3">
-                  <button
-                    type="button"
-                    onClick={() => setExpandedKey(expanded ? null : key)}
-                    className="flex min-h-11 w-full items-center gap-3 text-left"
-                  >
-                    <span className="w-[48px] shrink-0 text-[13px] font-normal tabular-nums text-s-ink-2">
-                      {entry.ticketCode}
-                    </span>
-                    {/* name over service: at 402 a single row truncated both to three letters */}
-                    <span className="flex min-w-0 flex-1 flex-col">
-                      <span className="truncate text-[15px] font-normal text-s-ink">
-                        {entry.customerName}
-                      </span>
-                      <span className="truncate text-[13px] font-normal text-s-ink-2">
-                        {entry.serviceName}
-                      </span>
-                    </span>
-                    <span className="shrink-0 text-[13px] font-normal tabular-nums text-s-ink">
-                      {entry.estimatedWaitMinutes} min
-                    </span>
-                    <span
-                      role="button"
-                      tabIndex={0}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        startWaiting(entry.id);
-                      }}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" || e.key === " ") {
-                          e.stopPropagation();
-                          startWaiting(entry.id);
-                        }
-                      }}
-                      className="flex h-11 shrink-0 items-center"
+                <li key={entry.id} className={ROW}>
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setExpandedKey(expanded ? null : key)}
+                      className="flex min-h-11 min-w-0 flex-1 items-center gap-3 text-left"
                     >
-                      <span className="flex h-9 items-center rounded-full border border-s-border bg-white px-4 text-[13px] font-normal text-s-ink">
-                        Start
+                      <span className="font-body w-[44px] shrink-0 text-[13px] font-normal tabular-nums text-s-ink-2">
+                        {entry.ticketCode}
                       </span>
-                    </span>
-                  </button>
+                      {/* name over service: at 402 a single row truncated both to three letters */}
+                      <span className="flex min-w-0 flex-1 flex-col">
+                        <span className={ROW_TITLE + " truncate"}>{entry.customerName}</span>
+                        <span className={ROW_META + " truncate"}>{entry.serviceName}</span>
+                      </span>
+                      <span className="font-body shrink-0 text-[13px] font-normal tabular-nums text-s-ink">
+                        {entry.estimatedWaitMinutes} min
+                      </span>
+                    </button>
+                    <div className="flex h-11 shrink-0 items-center">
+                      <button type="button" onClick={() => startWaiting(entry.id)} className={SECONDARY_BUTTON}>
+                        Start
+                      </button>
+                    </div>
+                  </div>
                   {expanded ? (
-                    <div className="flex items-center gap-4">
+                    <div className="mt-3 flex items-center gap-4">
                       <button
                         type="button"
                         onClick={() => resolveWaiting(entry.id, "completed")}
-                        className="flex h-11 items-center text-[13px] font-normal text-s-ink"
+                        className="font-body flex h-11 items-center text-[13px] font-normal text-s-ink"
                       >
                         Done
                       </button>
                       <button
                         type="button"
                         onClick={() => resolveWaiting(entry.id, "no_show")}
-                        className="flex h-11 items-center text-[13px] font-normal text-s-ink"
+                        className="font-body flex h-11 items-center text-[13px] font-normal text-s-ink"
                       >
                         No-show
                       </button>
                       <button
                         type="button"
                         onClick={() => resolveWaiting(entry.id, "cancelled")}
-                        className="flex h-11 items-center text-[13px] font-normal text-s-error"
+                        className="font-body flex h-11 items-center text-[13px] font-normal text-s-error"
                       >
                         Cancel
                       </button>
                     </div>
                   ) : null}
-                </div>
+                </li>
               );
             })}
-          </div>
+          </ul>
         </div>
 
+        {/* 7. Later today , one grouped list-card, rows hairline-divided. boxed-ok: GROUPED_CARD +
+            ROW together, this IS the shipped grouped-list-card grammar (see file-header note). */}
         <div>
           <div className="flex items-center justify-between">
-            <span className="text-[13px] font-semibold text-s-ink">Later today</span>
-            <span className="text-[13px] font-normal tabular-nums text-s-ink-2">{laterToday.length} to go</span>
+            <SectionHeading>Later today</SectionHeading>
+            <span className="font-body text-[13px] font-normal tabular-nums text-s-ink-2">{laterToday.length} to go</span>
           </div>
-          <div className="mt-4 flex flex-col gap-4">
+          <ul className={GROUPED_CARD + " mt-4"}>
             {laterToday.map((booking) => {
               const key = `booking:${booking.id}`;
               const expanded = expandedKey === key;
-              const completed = booking.status === "completed";
-              const textColor = completed ? "text-s-ink-2" : "text-s-ink";
               return (
-                <div key={booking.id} className="rounded-card border border-s-border bg-white p-3">
-                  <button
-                    type="button"
-                    onClick={() => !completed && setExpandedKey(expanded ? null : key)}
-                    className="flex min-h-11 w-full items-center gap-3 text-left"
-                  >
-                    <span className={"w-[52px] shrink-0 text-[15px] font-normal tabular-nums " + textColor}>
-                      {zurichTime(booking.startsAt)}
-                    </span>
-                    {/* name over service: at 402 a single row truncated both to three letters */}
-                    <span className="flex min-w-0 flex-1 flex-col">
-                      <span className={"truncate text-[15px] font-normal " + textColor}>
-                        {booking.customerName}
+                <li key={booking.id} className={ROW}>
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setExpandedKey(expanded ? null : key)}
+                      className="flex min-h-11 min-w-0 flex-1 items-center gap-3 text-left"
+                    >
+                      <span className="font-body w-[52px] shrink-0 text-[15px] font-medium tabular-nums text-s-ink">
+                        {zurichTime(booking.startsAt)}
                       </span>
-                      <span className="truncate text-[13px] font-normal text-s-ink-2">
-                        {booking.serviceName}
+                      {/* name over service: at 402 a single row truncated both to three letters */}
+                      <span className="flex min-w-0 flex-1 flex-col">
+                        <span className={ROW_TITLE + " truncate"}>{booking.customerName}</span>
+                        <span className={ROW_META + " truncate"}>{booking.serviceName}</span>
                       </span>
-                    </span>
-                    <span className="shrink-0 text-[13px] font-normal tabular-nums text-s-ink">
-                      {chf(booking.price)}
-                      {booking.paymentStatus === "paid" ? (
-                        <span className="ml-1 font-normal text-s-success">Paid</span>
-                      ) : null}
-                    </span>
-                  </button>
-                  {expanded && !completed ? (
-                    <div className="flex items-center gap-4">
+                      <span className="font-body shrink-0 text-right text-[13px] font-normal tabular-nums text-s-ink">
+                        {chf(booking.price)}
+                        {booking.paymentStatus === "paid" ? (
+                          <span className="mt-0.5 block text-[13px] font-normal text-s-success">Paid</span>
+                        ) : null}
+                      </span>
+                    </button>
+                  </div>
+                  {expanded ? (
+                    <div className="mt-3 flex items-center gap-4">
                       <button
                         type="button"
                         onClick={() => openMove(booking.id)}
-                        className="flex h-11 items-center text-[13px] font-normal text-s-ink"
+                        className="font-body flex h-11 items-center text-[13px] font-normal text-s-ink"
                       >
                         Move
                       </button>
                       <button
                         type="button"
                         onClick={() => resolveBooking(booking.id, "completed")}
-                        className="flex h-11 items-center text-[13px] font-normal text-s-ink"
+                        className="font-body flex h-11 items-center text-[13px] font-normal text-s-ink"
                       >
                         Done
                       </button>
                       <button
                         type="button"
                         onClick={() => resolveBooking(booking.id, "no_show")}
-                        className="flex h-11 items-center text-[13px] font-normal text-s-ink"
+                        className="font-body flex h-11 items-center text-[13px] font-normal text-s-ink"
                       >
                         No-show
                       </button>
                       <button
                         type="button"
                         onClick={() => resolveBooking(booking.id, "cancelled")}
-                        className="flex h-11 items-center text-[13px] font-normal text-s-error"
+                        className="font-body flex h-11 items-center text-[13px] font-normal text-s-error"
                       >
                         Cancel
                       </button>
                     </div>
                   ) : null}
-                </div>
+                </li>
               );
             })}
-          </div>
+          </ul>
           {doneCount > 0 ? (
-            <p className="mt-4 text-[13px] font-normal tabular-nums text-s-ink-2">{doneCount} done today</p>
+            <p className="font-body mt-4 text-[13px] font-normal tabular-nums text-s-ink-2">{doneCount} done today</p>
           ) : null}
         </div>
       </div>

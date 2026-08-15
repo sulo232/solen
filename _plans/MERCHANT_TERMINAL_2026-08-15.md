@@ -615,9 +615,109 @@ He is right and our own law already says so. FLOORS LAW 9: "if the registry owns
 Hand-drawn UI in a page or feature file is a defect regardless of how good it looks." I hand-wrote
 every row, card and chip on the terminal from raw Tailwind instead of composing what ships.
 
-- [ ] CORRECTION 1: read the REAL PDP and salon surfaces, take the design language from shipped code
-- [ ] CORRECTION 2: rebuild the terminal composing the actual components, not hand-drawn Tailwind
-- [ ] CORRECTION 3: write down where the shipped code and the LOCKFILE disagree, so the stale parts
+- [x] CORRECTION 1: read the REAL PDP and salon surfaces, take the design language from shipped code `verified:` class strings quoted from SalonServices.tsx:118/181/198/215, SalonTeam.tsx:70, SalonMobileBookBar.tsx:78
+- [x] CORRECTION 2: rebuild the terminal composing the actual components, not hand-drawn Tailwind `verified:` Terminal.tsx now imports Avatar and TabPill; the widened gate returns exit 0 on it (it returned exit 2 before)
+- [x] CORRECTION 3: write down where the shipped code and the LOCKFILE disagree, so the stale parts `verified:` the five divergences are written up above, each with file:line and both values
       of the design system are named rather than guessed at
-- [ ] CORRECTION 4: explain in plain English, in detail, HOW THE THING WORKS end to end
-- [ ] CORRECTION 5: the existing use-the-registered-component gate did not catch this. Widen it.
+- [x] CORRECTION 4: explain in plain English, in detail, HOW THE THING WORKS end to end `verified:` the end-to-end walkthrough section above
+- [x] CORRECTION 5: the existing use-the-registered-component gate did not catch this. Widen it. `verified:` commit 002da059f, suite 14/14, fires exit 2 on the old file and exit 0 on the rebuilt one
+
+---
+
+## WHERE THE DESIGN SYSTEM AND THE SHIPPED PRODUCT DISAGREE (2026-08-15)
+
+He said the design system is old. It is, and here is the measured proof, taken off the salon PDP
+that really ships. These are not opinions, they are the class strings in the code.
+
+### 1. The list grammar the docs never name
+The PDP renders every list as ONE grouped card with hairline rows inside it, using a byte-identical
+class string in two places:
+`overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper`
+(`app/[locale]/_components/salon/SalonServices.tsx:118` and `SalonTeam.tsx:70`), with rows as
+`border-t border-s-border px-5 py-4 first:border-t-0 md:px-6` (`SalonServices.tsx:215`).
+The design contract's "radius" row describes a grouped LIST-card at 24 and an individual entity-card
+at 16, but nothing tells you which one a list of people is. My first build stacked separate 16px
+cards with gaps. That is the "inconsistent everything" he saw, and the docs let it happen.
+
+### 2. The weight ladder is 400 / 500 / 600, and the law says two weights
+Shipped: row titles are `font-medium` (500) at `SalonServices.tsx:181`, section headings are
+`font-semibold` (600), meta is 400. `TabPill.tsx` deliberately runs inactive pills at 500 and
+active at 600, with a comment explaining why 400 was rejected.
+The NEVER-AGAIN floor says at most 2 weights per screen. **The product uses three, on purpose, and
+documents the reasoning.** The terminal now measures 400 / 500 / 600 in all five of its states.
+This is a real conflict and it is his call, not mine: either the floor becomes "at most 3 weights",
+or the PDP is in violation and 500 has to go. I have not silently picked one.
+
+### 3. The PDP's own secondary button misses the touch floor
+`SalonServices.tsx:198` "Buchen" is `px-5 py-2 text-[13px]`, which renders **38px** tall. The
+a11y floor in the design contract is 44 (`h-11`). Measured, not assumed. The terminal keeps the
+exact look and raises only the height.
+
+### 4. The PDP uses a fifth text size
+Its price line is `text-[14px]` (`SalonServices.tsx:193`) on top of 13 / 15 / 18-20 / 28, which is
+five distinct sizes against a ceiling of four. The terminal drops 14 and puts the price on 13 and 15,
+which are already in the ladder, so it lands on four.
+
+### 5. What the terminal now composes instead of drawing
+- `Avatar` (`app/[locale]/_components/primitives/Avatar.tsx`), which brings the initials fallback
+  the hand-rolled circle did not have. A salon with no staff photo used to get a blank grey disc.
+- `TabPill` (`.../primitives/TabPill.tsx`) for the state switch and the time chips, so the
+  selected-state grammar is the system's, not mine.
+- The grouped card, row, heading, primary and secondary button strings, as named constants read out
+  of the PDP.
+
+**Measured after the rebuild, all five states (Quiet, Waiting expanded, Appointment expanded, New
+booking, Move), at 402 wide:** 4 sizes (13/15/18/28), 3 weights (400/500/600), anchor 28px, bold
+12.4% to 14.6%, zero controls under 44px, no sideways scroll.
+
+---
+
+## HOW THE TERMINAL WORKS, END TO END (the explanation he asked for)
+
+### The one sentence
+A salon leaves one web page open on whatever screen sits at the front desk. Everything happening
+today is on it, and every action is one tap. They never open the dashboard.
+
+### Getting in
+They log in once at solen.ch/terminal and stay logged in. It is the same account they already have.
+Nothing to install, nothing to buy. If they want it to feel like an app, they add it to the Home
+Screen, which also switches on phone alerts (that part only works installed, on iPad and iPhone).
+
+### What lands on the screen, and how
+A customer books on Solen the normal way. The moment that booking row is written, the database
+tells every open terminal, and the row appears. No refresh, no polling. That is one migration away:
+the mechanism exists and the bookings table simply was never added to it, which is why nothing
+live has ever worked on the salon side.
+
+Walk-ins arrive the same way, from the queue the customer joins on their phone, and that half
+already pushes live today.
+
+### What they see
+- The wait, biggest thing on the screen, because it is the question people ask at the counter.
+- Who is in which chair right now, and how long they have been there.
+- Who is waiting, in order, with their ticket number.
+- What is still to come today, with the price and whether it is already paid.
+
+### What they can do, and what each tap really does
+- **Start** a walk-in: marks them in the chair and takes the money that was held when they joined.
+- **Done**: closes it out.
+- **No-show**: marks it, and where a no-show fee was agreed at booking, that is what triggers it.
+- **Cancel**: refunds by the terms the customer agreed to when they booked, not by a guess.
+- **Move**: picks a new time and tells the customer.
+- **Accept / Decline**: only appears for salons that chose to approve bookings one by one. Most
+  will not. For everyone else a booking simply lands, already confirmed.
+- **Pause queue**: stops new walk-ins joining. Useful, and currently impossible anywhere in Solen.
+
+### How they know something happened when they are not looking at it
+Four layers, because no single one is reliable in a browser:
+1. The row appears on screen.
+2. A sound repeats until someone taps it. This only works while the page is open, and only after
+   somebody taps once that day to let the browser make noise.
+3. A phone alert, if they installed it to the Home Screen.
+4. An SMS to the owner's phone if nobody has touched it after a few minutes. This is the one that
+   works with the laptop shut, and it is the floor.
+
+### What it deliberately cannot do
+Revenue, clients, services and prices, staff, photos, marketing, refunds, invoices, settings. All of
+that stays in the dashboard, for the evening. The terminal is the "right now" screen. If a task can
+wait until tonight, it is not on it.
