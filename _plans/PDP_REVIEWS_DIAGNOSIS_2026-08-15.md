@@ -77,13 +77,13 @@ around for this section's sake.
 
 ## The packages section, same message
 
-- [x] WHAT IT IS · verified: heading key `salonDetail.bundlesTitle` reads **"Pakete"** in German and
+- [x] WHAT IT IS · verified: `messages/de.json` salonDetail.bundlesTitle = "Pakete", `messages/en.json` = "Bundles"; the un-kill is line 52 of _design-system/REMOVED.md ("UN-KILLED 2026-07-03 ... owner explicitly picked scope A and B"), the June kill is lines 10 and 29 of the same file; component is app/[locale]/_components/salon/SalonBundles.tsx · commit f052c6e7d · heading key `salonDetail.bundlesTitle` reads **"Pakete"** in German and
       "Bundles" in English. It is NOT the killed Pakete feature (session packs, buy-5-redeem-later,
       killed 2026-06-11, code deleted 2026-06-13, graveyard says never rebuild). It is service
       BUNDLES, 2+ services grouped at a discount, which HE un-killed himself on 2026-07-03 by
       picking scope "A and B" on the /dev/bundles-products decision mockup. The German label reusing
       the dead feature's name is the whole reason it reads as a ghost.
-- [x] WHY IT APPEARED THEN VANISHED · verified: `SalonBundles.tsx` painted its heading plus a 160px
+- [x] WHY IT APPEARED THEN VANISHED · verified: the `if (bundles === null)` branch in SalonBundles.tsx now returns null instead of a heading plus shimmer; live sampling on cuts-and-culture 27 times over 4s found the heading present in 0 of 27 samples, and muse-beauty-studio still renders Verwöhn-Paket / Brautstyling / Balayage · commit f052c6e7d · it painted its heading plus a 160px
       shimmer the moment it mounted, then returned null when the fetch came back empty. Live
       database: **1 of 28 salons** has an active bundle, so on 27 the guaranteed experience was a
       heading that deleted itself. Fixed: nothing renders until there is something to render.
