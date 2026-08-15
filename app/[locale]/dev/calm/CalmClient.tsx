@@ -44,7 +44,7 @@ const OPTIONS: Option[] = [
     key: "radius",
     label: "Softer corners",
     blurb:
-      "One change only: the capsules become 20px corners, which is Airbnb's dominant shape, measured across 100 elements of their home screen. Nothing moves and nothing resizes. Their capsule is kept for one thing, the search field, so it reads as special rather than as wallpaper.",
+      "One change only: the capsules become 20px corners. Nothing moves and nothing resizes. This is the change their reviews screen does back up: about half of their rounded things are capsules, and 82% of ours are. Their topic chips are 16px corners on a 48px control, so the chip row in particular is not a capsule row.",
     css: `#calm button, #calm [class*="rounded-full"]:not(img):not([class*="w-1"]) {
             border-radius: 20px !important;
           }
@@ -53,8 +53,10 @@ const OPTIONS: Option[] = [
   {
     key: "airbnb",
     label: "The whole thing",
+    // measure-ok: the 48px and 12px below are read off their captured reviews screen, recorded in
+    // _design-system/references/airbnb--reviews.md, not eyeballed here.
     blurb:
-      "Softer corners, plus the three other measured gaps: the sort control is painted smaller while keeping its full 44px tap area, the star filters drop the counts you said you do not need, and the type collapses onto their steps so the five sizes crowded inside a 5px band stop competing.",
+      "Softer corners, plus the sort control painted smaller, the star filters without their counts, and the crowded sizes pulled apart. Two of those four are your taste and not Airbnb's, and you should know which: their sort control is 48px tall on 12px text, so it is roomier than ours rather than tighter, and every one of their filter chips carries a count. The other two the reference backs strongly.",
     css: `#calm button, #calm [class*="rounded-full"]:not(img):not([class*="w-1"]) {
             border-radius: 20px !important;
           }
@@ -85,13 +87,36 @@ const OPTIONS: Option[] = [
 const ON = "h-11 rounded-full bg-s-ink-soft px-4 font-body text-[13px] font-semibold text-white"; // selected-ok
 const OFF = "h-11 rounded-full border border-s-border bg-white px-4 font-body text-[13px] font-medium text-s-ink-2";
 
-const FINDINGS: { what: string; ours: string; theirs: string }[] = [
-  { what: "Rounded things that are full capsules", ours: "14 of 17 (82%)", theirs: "20px corners, 100 elements" },
-  { what: "Different text sizes on one screen", ours: "7", theirs: "a scale with real steps" },
-  { what: "...of those, crammed inside 5px", ours: "5", theirs: "steps of 2, 4, then 6 and up" },
-  { what: "Letter-spacing values on one screen", ours: "4", theirs: "1, normal everywhere" },
-  { what: "The sort button, box vs its own text", ours: "3.4x", theirs: "not captured" },
-  { what: "Text in bold", ours: "14%", theirs: "3%" },
+// CORRECTED 2026-08-15 after their reviews screen was captured for the first time.
+//
+// measure-ok: every number below was measured, and measured ELSEWHERE than this file, which is the
+// case this gate's own escape names. Theirs live in
+// `_design-system/references/airbnb--reviews.md`, written this turn from their reviews screen at
+// 390x844 on a real listing via getComputedStyle: sort control 48px tall, 12px/500 text, radius
+// 9999px; topic chips 48px tall, radius 16px, 14px/400, every one carrying a count; review row =
+// 48px avatar, 16px/500 name, 9x9px black stars, 12px grey date, 14px body, 1px hairline
+// rgb(235,235,235), 60px between rows; type sizes 10/12/14/16/22/26/72px; 5 to 6% at weight >= 600.
+// Ours came from getComputedStyle on /de/salon/cuts-and-culture/reviews the same day: sort control
+// 108x44px at 13px on a capsule radius; type sizes 12/13/14/15/17/20/30px; 14% at weight >= 600;
+// 14 of 17 rounded elements are full capsules.
+//
+// TWO ROWS OF THE FIRST VERSION WERE WRONG, and they mattered. It used their HOME screen, because
+// their reviews screen had never been captured, so it claimed they reserve the capsule for one
+// search field and implied their sort control is tighter than ours. Neither holds here. Both are
+// corrected and marked, so he can see which of his instincts the reference backs and which it does
+// not. He said "mainly i want airbnb", so a row quietly pointing the wrong way would send the whole
+// product the wrong way. psych-ok: these are measured properties of a captured screen, never a
+// count rendered to a user.
+const FINDINGS: { what: string; ours: string; theirs: string; verdict: "ours" | "theirs" | "same" }[] = [
+  { what: "Rounded things that are full capsules", ours: "82%", theirs: "about half", verdict: "ours" },
+  { what: "Biggest text vs smallest, one screen", ours: "30 / 12, so 2.5x", theirs: "72 / 10, so 7.2x", verdict: "ours" },
+  { what: "Sizes crammed inside a 5px band", ours: "5 of 7", theirs: "2 of 7", verdict: "ours" },
+  { what: "Different text sizes on one screen", ours: "7", theirs: "7", verdict: "same" },
+  { what: "Sort button, box vs its own text", ours: "3.4x", theirs: "4.0x", verdict: "theirs" },
+  { what: "Sort button shape", ours: "capsule", theirs: "capsule too", verdict: "same" },
+  { what: "Counts on the filter chips", ours: "yes", theirs: "yes, on all of them", verdict: "same" },
+  { what: "A star-rating filter at all", ours: "yes", theirs: "none, just a chart", verdict: "ours" },
+  { what: "Text in bold", ours: "14%", theirs: "5-6%", verdict: "ours" },
 ];
 
 export function CalmClient(props: Record<string, unknown>) {
@@ -138,8 +163,11 @@ export function CalmClient(props: Record<string, unknown>) {
             <tbody>
               {FINDINGS.map((f) => (
                 <tr key={f.what} className="border-t border-s-border">
-                  <td className="px-3 py-2 text-s-ink">{f.what}</td>
-                  <td className="px-3 py-2 tabular-nums text-s-ink">{f.ours}</td>
+                  {/* A row where we are the outlier is ink; a row where we already match them, or
+                      where THEY are the looser one, drops to grey. Colour, not weight, so this page
+                      keeps its own emphasis budget. */}
+                  <td className={`px-3 py-2 ${f.verdict === "ours" ? "text-s-ink" : "text-s-ink-2"}`}>{f.what}</td>
+                  <td className={`px-3 py-2 tabular-nums ${f.verdict === "ours" ? "text-s-ink" : "text-s-ink-2"}`}>{f.ours}</td>
                   <td className="px-3 py-2 tabular-nums text-s-ink-2">{f.theirs}</td>
                 </tr>
               ))}

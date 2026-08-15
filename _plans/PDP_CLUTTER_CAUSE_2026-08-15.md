@@ -89,6 +89,47 @@ hierarchy of one.
 **It is NOT the bold share.** That measured 14%, comfortably under our own 30% ceiling, so the usual
 suspect is innocent here and I am not going to pretend otherwise.
 
+## THE CAPTURE CAME BACK AND IT CORRECTS ME ON TWO POINTS
+
+`_design-system/references/airbnb--reviews.md`, written 2026-08-15 from their reviews screen at
+390x844 on a real listing. Before this, every "Airbnb" number above came from their HOME screen,
+because their reviews screen had never been captured. Two of those rows were wrong, and they were
+wrong in the direction that matters, so they are corrected here rather than quietly left standing.
+
+**WRONG 1. "They keep the capsule for one thing, the search field."** That is true of their home
+screen and false of this one. Their sort control is `border-radius: 9999px`, a full capsule, and
+about HALF of the rounded elements on their reviews screen are capsules. The finding survives but
+shrinks: ours is 82% against their ~50%, which is still nearly double, and is no longer "they never
+do this".
+
+**WRONG 2, and this one reverses.** I told him a 44px box around 13px text was too big. THEIRS IS
+48px around 12px, a ratio of 4.0 against our 3.38. By the reference, our sort control is already
+TIGHTER than Airbnb's. Shrinking it is his taste, which is a completely legitimate reason, but it is
+not "make it like Airbnb" and he was about to be told it was.
+
+**Also his instinct, not theirs: the filter counts.** He called them clutter. Every one of Airbnb's
+ten topic chips carries a count ("Location 95", "Hospitality 95"). Worth doing if he wants it; worth
+not pretending the reference asked for it.
+
+**WHAT SURVIVES, and is now much better evidenced:**
+- **The capsule share.** 82% against about half.
+- **The flatness, and this is the real one.** Their type runs 10px to 72px on one screen, a range of
+  7.2x. Ours runs 12px to 30px, 2.5x. We both use SEVEN distinct sizes, so the count was never the
+  problem and my "seven against a ceiling of four" framing was aimed at the wrong number. What
+  differs is the SPREAD: five of our seven sit inside a 5px band, against two of theirs. That is
+  exactly FLOORS LAW 7c, and their 72px anchor is the thing our 30px one is imitating at a quarter
+  of the size.
+- **The bold share.** 14% against their 5 to 6%.
+
+**One more that goes his way and I did not expect:** they have NO star-rating filter at all. Their
+5/4/3/2/1 is a static distribution chart, not a control. So his instinct to strip that row is more
+Airbnb than keeping it, just not via the counts.
+
+**A conflict between two of our own references, flagged not resolved:** the Fresha reviews capture
+used earlier today says there is NO divider between review rows, and we removed ours on that basis.
+Airbnb's has one, 1px at `rgb(235,235,235)`, with 60px between rows. Two references, opposite calls,
+same element. His to settle if it ever matters.
+
 ## NOT MEASURED, said plainly rather than guessed
 
 - Airbnb's own sort control. Their reviews screen was never captured, so the replacement size on
