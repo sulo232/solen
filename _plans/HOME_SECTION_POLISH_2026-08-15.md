@@ -56,11 +56,37 @@ He said "one by one", so the order below is his order.
 
 ## D. Walk-in section
 
-- [ ] **D1. Walk-in. IN FLIGHT this turn**: a subagent is analysing it on the CUSTOMER-JOB angle (what is this section for, can a person do that thing), read-only, returning ranked ideas each with the data it needs and whether that data exists.
+- [x] **D1. Walk-in analysed on the customer-job angle. Six ideas back, and three of them are BUGS, not design.**
+  The three that are defects, each measured against live data:
+  1. **Both exits leave walk-in.** Every chip links to `/salon/{slug}` with NO param, and `?walkin=1`
+     already works: `SalonDetailV3.tsx:92` reads it and flips the mode. `WalkInBand.tsx:122` just
+     never passes it, so tapping a walk-in chip lands you in APPOINTMENT mode. The "All walk-ins"
+     button goes to `/barbershop` with no walk-in filter, which means it currently reads as "all
+     barbershops", and walk-in stopped being barbershop-only in Phase 2.
+  2. **`walkin_paused` is enforced on 3 write paths and 0 read paths.** A salon that paused its line
+     still advertises a live wait and a queue count on the homepage. `isOpenNow` exists at
+     `lib/salon-hours.ts:90` and `/api/walkin/nearby` never calls it either, so closed shops show too.
+  3. **The queue never empties, so every number in the section is a ghost.** `/api/walkin/queue`
+     returns four rows still `status: "waiting"` with `joined_at` of 2026-06-03, 2026-06-03,
+     2026-06-13 and 2026-07-01. Today is 2026-08-15. That residue is what drives the live "4 ahead
+     of you" and the 70 to 98 minute waits. None of the 28 cron routes touches `barber_walkin_queue`.
+  Also found: `POST /api/walkin/queue/remote-join` is shipped and has ZERO client callers.
 
 ## E. Reviews section
 
-- [ ] **E1. Reviews. IN FLIGHT this turn**: a second subagent is analysing it on the TRUST-AND-EVIDENCE angle (does it give a stranger a reason to believe), read-only, ranked by credibility bought.
+- [x] **E1. Reviews analysed on the trust-and-evidence angle. Six ideas back, and the top two are defects.**
+  1. **Six cards render where ten are asked for.** `api/reviews/featured/route.ts` applies `.limit(10)`
+     in the query and THEN filters inactive salons in JS, so four rows are dropped after the limit.
+  2. **`reviews.verifiedBooking` exists in all four locale files and has ZERO render sites.** The only
+     mention in code is a comment at `SalonReviews.tsx:268` describing behaviour never built. Same
+     class as the walk-in cancelPolicy case CLAUDE.md already names. 12 of 32 eligible reviews carry
+     a `booking_id` with `status='completed'` and a resolvable service name, so the badge is real.
+  3. **The evidence is unreadable on /en**: the comments are German rows and this surface makes no
+     translate call, though `/api/reviews/translate` is live and the PDP already uses it.
+  4. `route.ts:39` does `comment.slice(0, 120)` server-side with no ellipsis, so one review is
+     already cut mid-word and that becomes constant with real reviews.
+  Supply is the honest limit: only 3 visible salons have any commented review, and 18 salons with
+  reviews have zero text. `review_photos` has 0 rows, `salon_response` 0, `review_replies` just 2.
 
 
 ## An eighth direction was built and dropped, and the gate that caught it cited the wrong rule
