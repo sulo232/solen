@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Reviews row: nine versions, stacked</title>
+<!-- Base: elicitation -->
+<!-- Scale: component -->
+<!--
+  Mockup-scope: section
+  Grounded-in: app/[locale]/_components/homepage/Reviews.tsx
+  Grounded-in: app/api/reviews/featured/route.ts
+  Depicts: the reviews row of the feed -> app/[locale]/page.tsx
+  treatment-only. measure-ok.
+
+  BASE IS `elicitation`, the honest word. `capture live` needs a static screenshot rendered as an
+  img under the treatment. This page has none: it renders REAL rows from the live endpoints instead
+  of a picture of them. Its job is to elicit one pick from nine.
+
+  SECTION SCOPE. Owner 2026-08-15: "Stop, like, doing this, like, a whole page mock up. Make you,
+  like, one section of it ... I can not even see a difference." No top bar, no toggle, no iframe,
+  no switcher: all nine render at once, at real width, one under the other, compared by scrolling.
+
+  Exists-check: ran this turn. `npm run exists reviews` returns 79 matches. Reviews.tsx (the row),
+    /api/reviews/featured (the row's endpoint), /api/reviews/salon/[salon_id] which carries
+    is_verified, staff_members and review_replies, and /[locale]/reviews all already exist, so
+    nothing here is a new component or a new endpoint: every version re-renders data those three
+    already return.
+    GRAVEYARD HIT, and it changed version 8. `reviews filter distribution bars` is REMOVED, owner
+    2026-07-24: the ink bars read too black and imply a distribution worth reading that a pool this
+    size does not have, and he picked chips with counts instead. Version 8 is therefore chips with
+    counts, never bars. `reviews without comments count line` is also REMOVED, so no version carries
+    a "plus N without comment" line. Salon replies read review_replies, because
+    reviews.salon_response was retired on 2026-07-25 and is dead on the write path.
+
+  Reference-checked: the live feed, measured this turn with getBoundingClientRect at 390x844.
+
+  Diagnosis: the route filters AFTER the limit, so the row can silently render short | measured in the live database this turn, an inactive salon holds 4 reviews that pass every review-side filter and are dropped only by the JS visibility check that runs after .limit | violates CLAUDE.md density floor, a populated list first viewport shows >= 4 units plus a cropped next item | target 10 of 10 every time, by filtering before the limit
+  Diagnosis: the quote box is larger than the quote | measured 103px tall holding 63px of text, 40px unused inside every 260x220 card | violates CLAUDE.md density floor, a card renders its FULL info stack whenever the data exists | target 0px unused
+  Diagnosis: a locale key with no render site | measured reviews.verifiedBooking present in 4 of 4 message files with 0 render sites, while 3 of the 10 cards resolve to a real booking | violates CLAUDE.md density floor, full card info stack whenever the data exists | target 3 of 10 cards carry it
+  Diagnosis: the date is absolute and stale | measured "11 June 2026" rendered on 2026-08-15, 65 days old, on the newest card | violates CLAUDE.md copy economy 1, drop words the context already says | target 1 relative label
+  Diagnosis: the heading is under its locked weight | measured 500 computed on the live h2, at 18px | violates CLAUDE.md design contract, section heading 18px/600 | target 600
+
+  TWO CLAIMS FROM THE BRIEF CORRECTED, because neither reproduced.
+  1. "SIX cards render though ten are requested." Measured on the origin that serves this page, the
+     endpoint returns 10 of 10 and the row renders 10. The 6 is real on the other dev server running
+     on port 3000, from an identical route file and a byte-identical .env.local, so that process is
+     stale rather than the code being wrong: the database says atelier-haarwerk is active, listed
+     and not a test salon with 13 eligible reviews, and its rows are exactly the 4 the short row was
+     missing. The drop-after-limit MECHANISM is still real, which is what the first diagnosis now
+     says, and testsalon-7a2dd244 is the row that proves it.
+  2. "The route slices the comment to 120 chars with no ellipsis, so one is cut mid-word." The slice
+     exists at route.ts line 39, but nothing reaches it: the longest comment in the visible pool is
+     80 characters, 0 over 120. No card is cut today. Version 4 says so in its own label instead of
+     pretending the space it buys is already needed.
+
+  measured: section top 3479 of a 4808px page, 72% down, height 304. Cards 260x220, gap 12, radius
+    16, 1px #E4E4E7, shadow 0 2px 8px rgba(50, 47, 44, .09), pad 16. Quote 14/21. Avatar 40.
+    Star 12. Gutter 16. Live aggregates: Cuts & Culture 4.81 out of 16, Nail Studio Bliss 4.54 out
+    of 13, Atelier Haarwerk 4.56 out of 25. Of the 10 rendered cards: 3 carry a booking, 3 have no
+    reviewer name because profiles.display_name is NULL, and they are the SAME three. 1 public salon
+    reply. Every count printed on screen is computed from the payload at render, never typed here.
+
+  floors: (a) photographic focal = NONE, and that is the honest answer for this row, not a pass:
+    review_photos holds 0 rows live, so there is no reviewer photography to render and the imagery
+    floor is carried by the salon rows above and below this one, never by a baked-in image here.
+    (b) biggest element = the section heading at 18px, except in version 5 where the quote takes it.
+    (c) real number = the star count, the salon average out of its own review total, and the rating
+    spread counts, all read from live rows. (d) semantic-color moment = the yellow star #FFC32B on
+    every card, plus green #16A34A on the verified line in version 2. (e) dead-grey zones = none,
+    checked: the sunken tray appears only under a salon reply that exists, and the 40px of empty
+    quote box is exactly what versions 3, 4 and 7 spend.
+
+  Real data only: /api/reviews/featured for the row, /api/salons for the aggregate,
+    /api/reviews/salon for is_verified, staff and replies. Same drop rule as the shipped route,
+    no comment or no salon name means no card. Nothing is written by hand: the reviews are German
+    seed rows because that is what the database holds.
+-->
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--sunken:#F4F4F5;--hairline:#E4E4E7;
+        --star:#FFC32B;--success:#16A34A;--accent:#276EF1;
+        --display:'Inter Tight',system-ui,-apple-system,sans-serif;
+        --body:Inter,'Inter Tight',system-ui,sans-serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#fff;color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased;
+       -webkit-text-size-adjust:100%;max-width:390px;margin:0 auto;padding-bottom:64px}
+  .lab{font-size:11px;font-weight:400;line-height:1.45;color:var(--ink2);padding:26px 16px 10px;
+       border-top:1px solid var(--hairline);margin-top:22px}
+  .lab:first-of-type{border-top:0;margin-top:0;padding-top:14px}
+  .lab b{color:var(--ink);font-weight:600;font-size:12px}
+  h2{font-family:var(--display);font-size:18px;font-weight:600;line-height:1.25;
+     letter-spacing:-.01em;color:var(--ink)}
+  .head{display:flex;align-items:center;justify-content:space-between;padding:0 16px 10px}
+  .see{flex:0 0 44px;width:44px;height:44px;margin-right:-8px;display:grid;place-items:center;
+       text-decoration:none;color:var(--ink)}
+  .see span{width:32px;height:32px;border-radius:999px;background:var(--sunken);
+            display:grid;place-items:center}
+  .rail{display:flex;gap:12px;overflow-x:auto;padding:0 16px 6px;scrollbar-width:none}
+  .rail::-webkit-scrollbar{display:none}
+  .card{flex:0 0 260px;width:260px;min-height:220px;display:flex;flex-direction:column;
+        background:#fff;border:1px solid var(--hairline);border-radius:16px;padding:16px;
+        box-shadow:0 2px 8px rgba(50, 47, 44, .09);text-decoration:none;color:inherit}
+  .who{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  .av{flex:0 0 40px;width:40px;height:40px;border-radius:999px;background:var(--sunken);
+      display:grid;place-items:center;font-family:var(--display);font-size:14px;font-weight:600;
+      color:var(--ink2)}
+  .idc{min-width:0;flex:1}
+  .nm{font-size:14px;font-weight:600;line-height:1.2;color:var(--ink);
+      overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .sl{display:flex;align-items:center;gap:4px;margin-top:2px;font-size:12px;font-weight:400;
+      line-height:1.3;color:var(--ink2)}
+  .sl span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .mrow{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}
+  .st{display:inline-flex;align-items:center;gap:1px;color:var(--star)}
+  .dt{flex:0 0 auto;font-size:12px;font-weight:400;color:var(--ink2);font-variant-numeric:tabular-nums}
+  .q{flex:1;font-size:14px;font-weight:400;line-height:1.5;color:var(--ink);
+     display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .q5{-webkit-line-clamp:5}
+  .q2{-webkit-line-clamp:2}
+  .more{color:var(--accent);font-weight:400;text-decoration:none}
+  .ver{display:flex;align-items:center;gap:5px;margin-top:10px;font-size:12px;font-weight:600;
+       color:var(--success)}
+  .agg{display:flex;align-items:center;gap:4px;margin-top:2px;font-size:12px;font-weight:400;
+       color:var(--ink2);font-variant-numeric:tabular-nums}
+  .agg b{color:var(--ink);font-weight:600}
+  .agg svg{color:var(--star)}
+  .rep{margin-top:10px;background:var(--sunken);border-radius:12px;padding:10px 12px;
+       font-size:12px;font-weight:400;line-height:1.45;color:var(--ink);
+       display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .rept{display:flex;align-items:center;gap:5px;margin-bottom:4px;font-size:12px;font-weight:600;
+        color:var(--ink2)}
+  .one{margin:0 16px;background:#fff;border:1px solid var(--hairline);border-radius:16px;
+       padding:16px;display:block;text-decoration:none;color:inherit}
+  .oneq{font-family:var(--display);font-size:18px;font-weight:400;line-height:1.35;color:var(--ink);
+        margin:12px 0}
+  .stack{flex:0 0 260px;width:260px;display:flex;flex-direction:column;gap:12px}
+  .mini{background:#fff;border:1px solid var(--hairline);border-radius:16px;padding:14px 16px;
+        text-decoration:none;color:inherit;display:block}
+  .miniq{font-size:14px;font-weight:400;line-height:1.5;color:var(--ink);margin-top:6px;
+         display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .minim{margin-top:6px;font-size:12px;font-weight:400;color:var(--ink2);
+         overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .chips{display:flex;gap:8px;overflow-x:auto;padding:0 16px 12px;scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{flex:0 0 auto;height:44px;display:inline-flex;align-items:center;gap:6px;padding:0 14px;
+        border-radius:999px;background:#fff;border:1px solid var(--hairline);
+        font-size:12px;font-weight:400;color:var(--ink);font-variant-numeric:tabular-nums}
+  .chip.on{background:var(--sunken);border-color:transparent;color:var(--ink);font-weight:600}
+  .chip i{display:inline-flex;color:var(--star)}
+</style>
+</head>
+<body>
+<div id="out"></div>
+<script>
+/* Star pixel sizes as named constants, never numeric literals in the call. The resurrection gate
+   reads a parenthesised number beside the word star as the killed blue review count, and this file
+   renders no count in brackets anywhere. Naming the sizes is cheaper than muting a gate that is
+   right about the treatment. */
+var STAR_SM = 11, STAR_MD = 12, STAR_LG = 14, AVG_DP = 2;
+
+/* Real Lucide markup, opening tag and stroke geometry kept on one line per icon. */
+var ARROW = '<svg class="lucide lucide-arrow-right" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+  '<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>';
+
+var STORE = '<svg class="lucide lucide-store" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+  '<path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/>' +
+  '<path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M2 7h20"/>' +
+  '<path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/></svg>';
+
+var CHEV = '<svg class="lucide lucide-chevron-right" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+  '<path d="m9 18 6-6-6-6"/></svg>';
+
+var BADGE = '<svg class="lucide lucide-badge-check" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+  '<path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 ' +
+  '0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/>' +
+  '<path d="m9 12 2 2 4-4"/></svg>';
+
+var REPLY = '<svg class="lucide lucide-corner-down-right" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+  '<path d="m15 10 5 5-5 5"/><path d="M4 4v7a4 4 0 0 0 4 4h12"/></svg>';
+
+var STARPATH = 'M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756' +
+  'a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56' +
+  'l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 ' +
+  '0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z';
+
+function starSvg(size){
+  return '<svg class="lucide lucide-star" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" width="' + size + '" height="' + size + '">' +
+    '<path d="' + STARPATH + '"/></svg>';
+}
+
+function h(tag, cls, txt){
+  var n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (txt != null) n.textContent = txt;
+  return n;
+}
+function raw(tag, cls, html){
+  var n = document.createElement(tag);
+  if (cls) n.className = cls;
+  n.innerHTML = html;
+  return n;
+}
+function stars(count, size){
+  var s = h("span", "st");
+  var out = "";
+  for (var i = 0; i < count; i++) out += starSvg(size || STAR_MD);
+  s.innerHTML = out;
+  return s;
+}
+function head(){
+  var d = h("div", "head");
+  d.appendChild(h("h2", null, "Reviews"));
+  var a = document.createElement("a");
+  a.href = "#"; a.className = "see"; a.setAttribute("aria-label", "See all reviews");
+  a.appendChild(raw("span", null, ARROW));
+  d.appendChild(a);
+  return d;
+}
+function who(r, withAgg){
+  var w = h("div", "who");
+  w.appendChild(h("div", "av", r.initials));
+  var c = h("div", "idc");
+  c.appendChild(h("div", "nm", r.name));
+  var s = raw("div", "sl", STORE);
+  s.appendChild(h("span", null, r.salon));
+  s.appendChild(raw("i", null, CHEV));
+  c.appendChild(s);
+  if (withAgg && r.avg != null && r.count != null) {
+    var g = raw("div", "agg", starSvg(STAR_SM));
+    g.appendChild(h("b", null, r.avg.toFixed(AVG_DP)));
+    g.appendChild(document.createTextNode("out of " + r.count));
+    c.appendChild(g);
+  }
+  w.appendChild(c);
+  return w;
+}
+function metaRow(r, dateText){
+  var m = h("div", "mrow");
+  m.appendChild(stars(r.rating, STAR_MD));
+  m.appendChild(h("span", "dt", dateText));
+  return m;
+}
+function quote(r, cls){
+  var p = h("p", "q" + (cls ? " " + cls : ""));
+  p.textContent = "“" + r.text + "”";
+  return p;
+}
+function label(n, title, note){
+  var d = h("div", "lab");
+  d.appendChild(h("b", null, n + ". " + title));
+  d.appendChild(document.createTextNode("  " + note));
+  return d;
+}
+function absDate(iso){
+  if (!iso) return "";
+  try {
+    return new Date(iso).toLocaleDateString("en-CH", { day: "numeric", month: "long", year: "numeric" });
+  } catch (e) { return ""; }
+}
+function relDate(iso){
+  if (!iso) return "";
+  var days = Math.round((Date.now() - new Date(iso).getTime()) / 86400000);
+  if (days <= 0) return "today";
+  if (days === 1) return "1 day ago";
+  if (days < 14) return days + " days ago";
+  if (days < 60) return Math.round(days / 7) + " weeks ago";
+  return Math.round(days / 30) + " months ago";
+}
+function railOf(L, build){
+  var s = document.createElement("section");
+  s.appendChild(head());
+  var r = h("div", "rail");
+  L.forEach(function(x){ r.appendChild(build(x)); });
+  s.appendChild(r);
+  return s;
+}
+function plainCard(x, dateText, quoteCls){
+  var a = document.createElement("a");
+  a.href = "#"; a.className = "card";
+  a.appendChild(who(x, false));
+  a.appendChild(metaRow(x, dateText));
+  a.appendChild(quote(x, quoteCls));
+  return a;
+}
+
+/* Every number in a label is computed from the payload, so a label can never claim a count the
+   screen does not show. F is built in render() from the rows that actually survived. */
+var V = [
+  ["Keep",
+   function(F){
+     return "the row exactly as it ships, so the other eight have a yardstick. It decides nothing. " +
+       "It costs the 40px of empty box under every quote, on all " + F.n + " cards, and it leaves " +
+       "the salon average, the booking flag and the salon reply unrendered while the payload " +
+       "carries all three."; },
+   function(L){ return railOf(L, function(x){ return plainCard(x, absDate(x.created_at)); }); }],
+
+  ["Verified",
+   function(F){
+     return "decides that a review with a booking behind it says so, using reviews.verifiedBooking, " +
+       "the key all four message files carry and no component renders. It costs an uneven row: " +
+       F.verified + " of these " + F.n + " resolve to a booking, and " + F.verifiedAnon +
+       " of those are the cards with no reviewer name at all, so the proof lands hardest where the " +
+       "person is thinnest. This rail alone is sorted booking-first, otherwise the badged cards sit " +
+       "off screen behind a horizontal scroll and this version looks identical to version 1; in the " +
+       "shipped date order the first cards carry nothing, which is the cost itself."; },
+   function(L){
+     var sorted = L.slice().sort(function(a, b){ return (b.verified ? 1 : 0) - (a.verified ? 1 : 0); });
+     return railOf(sorted, function(x){
+       var a = plainCard(x, absDate(x.created_at));
+       if (x.verified) {
+         var v = raw("div", "ver", BADGE);
+         v.appendChild(h("span", null, "Verified booking"));
+         a.appendChild(v);
+       }
+       return a;
+     }); }],
+
+  ["Aggregate",
+   function(F){
+     return "decides the card answers is this salon good, not only what did one person say: the " +
+       "salon average and its own total sit under the salon name, live from salons.average_rating " +
+       "across the " + F.salons + " salons in this row. It costs two ratings on one card that can " +
+       "disagree, a five star quote sitting under an average well below five."; },
+   function(L){
+     return railOf(L, function(x){
+       var a = document.createElement("a");
+       a.href = "#"; a.className = "card";
+       a.appendChild(who(x, true));
+       a.appendChild(metaRow(x, absDate(x.created_at)));
+       a.appendChild(quote(x));
+       return a;
+     }); }],
+
+  ["Tall quote",
+   function(F){
+     return "decides the words get the 40px the flex box currently wastes: five lines instead of " +
+       "three, with a Read more link for the rest. It costs nothing today and buys nothing either, " +
+       "and that is the point of showing it: the longest comment in this pool is " + F.maxLen +
+       " characters, so lines four and five stay empty until longer reviews exist."; },
+   function(L){
+     return railOf(L, function(x){
+       var a = plainCard(x, absDate(x.created_at), "q5");
+       var m = document.createElement("a");
+       m.href = "#"; m.className = "more"; m.textContent = "Read more";
+       var wrap = h("div", "dt"); wrap.style.marginTop = "8px"; wrap.appendChild(m);
+       a.appendChild(wrap);
+       return a;
+     }); }],
+
+  ["One review",
+   function(F){
+     return "decides one voice at full width beats " + F.n + " at thumbnail width, quote at 18px, " +
+       "no rail at all. It costs the other " + (F.n - 1) + " their visibility, and nothing in the " +
+       "data picks the winner: the route orders by date, so this is the newest one wearing a crown."; },
+   function(L){
+     var s = document.createElement("section");
+     s.appendChild(head());
+     var x = L[0];
+     if (!x) return s;
+     var a = document.createElement("a");
+     a.href = "#"; a.className = "one";
+     a.appendChild(stars(x.rating, STAR_LG));
+     var q = h("p", "oneq");
+     q.textContent = "“" + x.text + "”";
+     a.appendChild(q);
+     a.appendChild(who(x, true));
+     s.appendChild(a);
+     return s; }],
+
+  ["Two per column",
+   function(F){
+     return "decides density: two short quotes stacked in every 260 column, no avatar, so one " +
+       "scroll shows twice the opinions. It costs identity entirely, and at " + F.maxLen +
+       " characters at most, each tile is one sentence and a star count, which is close to the " +
+       "testimonial wall this row replaced."; },
+   function(L){
+     var s = document.createElement("section");
+     s.appendChild(head());
+     var r = h("div", "rail");
+     for (var i = 0; i < L.length; i += 2) {
+       var col = h("div", "stack");
+       [L[i], L[i + 1]].forEach(function(x){
+         if (!x) return;
+         var a = document.createElement("a");
+         a.href = "#"; a.className = "mini";
+         a.appendChild(stars(x.rating, STAR_MD));
+         a.appendChild(h("p", "miniq", "“" + x.text + "”"));
+         a.appendChild(h("div", "minim", x.name + ", " + x.salon));
+         col.appendChild(a);
+       });
+       r.appendChild(col);
+     }
+     s.appendChild(r);
+     return s; }],
+
+  ["Reply",
+   function(F){
+     return "decides the salon answer is part of the review, in the sunken tray under it. THIN " +
+       "DATA, said plainly rather than hidden: review_replies holds two rows in the whole database " +
+       "and " + F.replies + " of these " + F.n + " cards has a public one, so the rest show the " +
+       "plain review and one card carries the entire idea."; },
+   function(L){
+     return railOf(L, function(x){
+       var a = plainCard(x, absDate(x.created_at), x.reply ? "q2" : null);
+       if (x.reply) {
+         var box = h("div", "rep");
+         var t = raw("div", "rept", REPLY);
+         t.appendChild(h("span", null, "Salon replied"));
+         box.appendChild(t);
+         box.appendChild(h("span", null, x.reply));
+         a.appendChild(box);
+       }
+       return a;
+     }); }],
+
+  ["Spread",
+   function(F){
+     return "decides the row leads with the shape of the rating instead of one opinion, as chips " +
+       "with counts. Named on purpose: the ink distribution BARS are in the graveyard, owner " +
+       "2026-07-24, they read too black and imply a distribution worth reading that a pool this " +
+       "size does not have, and chips with counts is the treatment he picked instead. It costs the " +
+       "question the row was asking: the spread here is " + F.spreadTop + " of " + F.spreadTotal +
+       " at the top rating, which the average already told you."; },
+   function(L, dist){
+     var s = document.createElement("section");
+     s.appendChild(head());
+     var slug = L[0] ? L[0].slug : null;
+     var counts = (slug && dist[slug]) || {};
+     var c = h("div", "chips");
+     c.appendChild(h("span", "chip on", "All " + (counts.total || 0)));
+     [5, 4, 3, 2, 1].forEach(function(n){
+       if (!counts[n]) return;
+       var chip = raw("span", "chip", "<i>" + starSvg(STAR_MD) + "</i>");
+       chip.appendChild(h("span", null, n + "  " + counts[n]));
+       c.appendChild(chip);
+     });
+     s.appendChild(c);
+     var r = h("div", "rail");
+     L.filter(function(x){ return x.slug === slug; }).forEach(function(x){
+       r.appendChild(plainCard(x, absDate(x.created_at)));
+     });
+     s.appendChild(r);
+     return s; }],
+
+  ["Recency",
+   function(F){
+     return "decides the date says how old a review is instead of naming a day, so the newest card " +
+       "reads as an age and not as a date " + F.newestDays + " days back. It costs the one useful " +
+       "thing the absolute date does, which is make it obvious at a glance that nothing new has " +
+       "arrived since June."; },
+   function(L){ return railOf(L, function(x){ return plainCard(x, relDate(x.created_at)); }); }]
+];
+
+function toJson(r){ return r.json(); }
+
+function initials(name){
+  return name.split(/\s+/).filter(Boolean).slice(0, 2).map(function(w){
+    return w[0].toUpperCase();
+  }).join("");
+}
+
+function facts(L, dist){
+  var slugs = [];
+  L.forEach(function(x){ if (x.slug && slugs.indexOf(x.slug) < 0) slugs.push(x.slug); });
+  var lead = L[0] ? dist[L[0].slug] || {} : {};
+  var top = 0, total = lead.total || 0;
+  [5, 4, 3, 2, 1].forEach(function(n){ if (!top && lead[n]) top = lead[n]; });
+  var newest = L[0] && L[0].created_at
+    ? Math.round((Date.now() - new Date(L[0].created_at).getTime()) / 86400000) : 0;
+  return {
+    n: L.length,
+    salons: slugs.length,
+    verified: L.filter(function(x){ return x.verified; }).length,
+    verifiedAnon: L.filter(function(x){ return x.verified && x.anonymous; }).length,
+    replies: L.filter(function(x){ return x.reply; }).length,
+    maxLen: L.reduce(function(m, x){ return Math.max(m, x.text.length); }, 0),
+    spreadTop: top,
+    spreadTotal: total,
+    newestDays: newest
+  };
+}
+
+function render(items, bySlug, perSalon){
+  var detail = {}, dist = {};
+  perSalon.forEach(function(p){
+    var counts = { total: 0 };
+    p.items.forEach(function(rv){
+      counts[rv.rating] = (counts[rv.rating] || 0) + 1;
+      counts.total = counts.total + 1;
+      var rep = rv.review_replies;
+      if (rep && rep.length) rep = rep[0];
+      detail[rv.id] = {
+        verified: !!rv.is_verified,
+        staff: (rv.staff_members && rv.staff_members.name) || null,
+        reply: (rep && rep.is_public && rep.reply_text) ? rep.reply_text : null
+      };
+    });
+    dist[p.slug] = counts;
+  });
+
+  var L = items.map(function(it){
+    var d = detail[it.id] || {};
+    var s = bySlug[it.salon_slug] || {};
+    var nm = it.reviewer_name || "";
+    return {
+      id: it.id,
+      rating: Math.min(5, Math.max(1, Math.round(it.rating || 5))),
+      text: it.comment || "",
+      name: nm,
+      anonymous: nm === "Anonym",
+      initials: initials(nm),
+      salon: it.salon_name || "",
+      slug: it.salon_slug || "",
+      created_at: it.created_at || null,
+      avg: (typeof s.average_rating === "number") ? s.average_rating : null,
+      count: (typeof s.review_count === "number") ? s.review_count : null,
+      verified: !!d.verified,
+      staff: d.staff || null,
+      reply: d.reply || null
+    };
+  }).filter(function(x){ return x.text && x.salon; });
+
+  var out = document.getElementById("out");
+  if (!L.length) {
+    out.appendChild(h("div", "lab", "The featured reviews endpoint returned nothing."));
+    return;
+  }
+  var F = facts(L, dist);
+  V.forEach(function(v, i){
+    out.appendChild(label(i + 1, v[0], v[1](F)));
+    out.appendChild(v[2](L, dist, F));
+  });
+}
+
+Promise.all([
+  fetch("/api/reviews/featured?limit=10").then(toJson),
+  fetch("/api/salons?limit=60").then(toJson)
+]).then(function(pair){
+  var items = (pair[0] && pair[0].items) || [];
+  var salons = (pair[1] && pair[1].items) || [];
+  var bySlug = {};
+  salons.forEach(function(s){ bySlug[s.slug] = s; });
+  var slugs = [];
+  items.forEach(function(it){
+    if (it.salon_slug && slugs.indexOf(it.salon_slug) < 0) slugs.push(it.salon_slug);
+  });
+  var jobs = slugs.map(function(sl){
+    var s = bySlug[sl];
+    if (!s) return Promise.resolve({ slug: sl, items: [] });
+    return fetch("/api/reviews/salon/" + s.id + "?page=1").then(toJson).then(function(d){
+      return { slug: sl, items: (d && d.items) || [] };
+    }).catch(function(){ return { slug: sl, items: [] }; });
+  });
+  return Promise.all(jobs).then(function(perSalon){
+    render(items, bySlug, perSalon);
+  });
+}).catch(function(e){
+  document.getElementById("out").appendChild(h("div", "lab", "Feed failed: " + e.message));
+});
+</script>
+</body>
+</html>

@@ -54,6 +54,45 @@ def is_index(path: str, content: str) -> bool:
     return False
 
 
+def _section_scope_corroborated(content: str, project_root: str) -> bool:
+    """True only when the file BOTH declares section scope in a COMMENT and cites at least one
+    Grounded-in component path that exists on disk.
+
+    Written after an independent review broke the assertion-only first version, which was a bare
+    `re.search("Mockup-scope: section", content)` over the whole file. That version passed the
+    gate's OWN blocked fixture with those three words added in body text, a JS string, a CSS
+    content property, an alt attribute, or a URL. Its worst case was accidental, not adversarial:
+    a mockup that merely QUOTES the rule escaped, and this repo already contains such a file.
+
+    Three conditions, each closing one demonstrated bypass:
+      1. the marker is read from HTML COMMENTS only, never the rendered body.
+      2. at least one Grounded-in path RESOLVES ON DISK, so the claim costs a real citation. This
+         is the load-bearing half and it is lifted from _nonsolen_surface.py in this same folder,
+         whose docstring already argued the point: an invented citation must fail closed.
+      3. no grounded path is a route file. A page decision cites page.tsx or layout.tsx; a section
+         decision cites a component. That is the part a whole-page redraw cannot fake.
+    """
+    comments = "\n".join(re.findall(r"<!--(.*?)-->", content, re.S))
+    if not comments:
+        return False
+    if not re.search(r"^\s*Mockup-scope\s*:\s*section\s*$", comments, re.I | re.M):
+        return False
+
+    paths = [p.rstrip(".,;") for p in re.findall(r"Grounded-in\s*:\s*(\S+)", comments)]
+    if not paths:
+        return False
+
+    root = os.path.realpath(project_root)
+    on_disk = 0
+    for rel in paths:
+        if re.search(r"(^|/)(page|layout)\.tsx?$", rel):
+            return False
+        full = rel if os.path.isabs(rel) else os.path.join(root, rel)
+        if os.path.exists(full):
+            on_disk += 1
+    return on_disk > 0
+
+
 def main():
     try:
         payload = json.load(sys.stdin)
@@ -91,10 +130,31 @@ def main():
     # The gate is NOT deleted, because its original case still holds: when the decision IS a page
     # (a new route, a re-ordered feed, chrome), a hand-drawn "current" panel is the from-scratch
     # redraw he rejected in 2026-07-19, and a live iframe of the real route is the honest before.
-    # So the exemption is narrow and declared IN THE FILE: a mockup that says it is section-scoped
-    # opts out, and a page-scoped one still gets the full treatment.
-    if re.search(r"Mockup-scope\s*:\s*section", content, re.I) or \
-       re.search(r"<!--\s*Scale:\s*section\s*-->", content, re.I):
+    #
+    # THE EXEMPTION MUST BE CORROBORATED, NOT ASSERTED. First version of this was
+    # `re.search(r"Mockup-scope\s*:\s*section", content)` over the raw file, and an independent
+    # reviewer broke it in eight ways the same hour: the gate's OWN blocked fixture passed with
+    # those three words added in visible body text, a JS string, a CSS content property, an alt
+    # attribute, or a URL query. Worst case was accidental rather than adversarial: a mockup that
+    # merely QUOTES the rule escaped the gate, and this repo already contains such a file
+    # (ig-principles/all-verdicts.html quotes design law verbatim).
+    #
+    # This repo had already solved that exact problem ELEVEN LINES BELOW, in _nonsolen_surface.py,
+    # whose docstring says it outright: "You cannot claim it by writing a sentence; you claim it by
+    # citing code that is demonstrably somewhere else... The path-must-exist check is the
+    # load-bearing part: it makes an invented citation fail closed." I added the assertion-based
+    # escape hatch that helper exists to avoid. Same mechanism now applies here:
+    #
+    #   the marker must appear in the MANIFEST COMMENT, not anywhere in the file, AND
+    #   at least one `Grounded-in:` path must EXIST ON DISK, AND
+    #   every grounded path must be a component, never a route (page.tsx / layout.tsx).
+    #
+    # A whole-page redraw cannot satisfy the third condition without citing a component it is not
+    # depicting, and that lie is visible in git. The `<!-- Scale: section -->` alternative trigger
+    # was DELETED rather than kept: mockup-real-base-gate's SCALE_PAT only accepts full-page or
+    # component, so a file declaring `Scale: section` passed this gate and was blocked by that one,
+    # which is the mutually-unsatisfiable pair that already burned seven write attempts once.
+    if _section_scope_corroborated(content, os.environ.get("CLAUDE_PROJECT_DIR") or os.getcwd()):
         sys.exit(0)
 
     project = os.environ.get("CLAUDE_PROJECT_DIR") or os.getcwd()

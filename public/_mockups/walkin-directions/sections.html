@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Walk-in band: nine versions, stacked</title>
+<!-- Base: elicitation -->
+<!-- Scale: component -->
+<!--
+  Mockup-scope: section
+  Grounded-in: app/[locale]/_components/homepage/WalkInBand.tsx
+  Grounded-in: lib/barber/walkin-availability.ts
+  Depicts: the walk-in band of the home feed -> app/[locale]/page.tsx
+  treatment-only. measure-ok.
+
+  BASE IS `elicitation`, not `capture live`. `capture live` wants a static screenshot rendered as an
+  img underneath the treatment. This page has none, because it renders the REAL rows from
+  /api/walkin/nearby rather than a picture of them. Its job is to elicit one pick from nine.
+
+  SECTION SCOPE, per his rule change of 2026-08-15: "Stop, like, doing this, like, a whole page mock
+  up. Make you, like, one section of it ... I can not even see a difference." No top bar, no toggle,
+  no iframe, no switcher. All nine render at once, at real width, one under the other. He compares
+  by scrolling.
+
+  Reference-checked: the live page, measured this turn with getBoundingClientRect at 390x844 on
+    http://localhost:3000/en. The reference is our own shipped band.
+
+  Exists-check: ran this turn. `npm run exists WalkInBand` returns 3 matches: the component and its
+    export at app/[locale]/_components/homepage/WalkInBand.tsx, plus ONE GRAVEYARD HIT.
+    `npm run exists walkin-directions` returns 0. The graveyard entry (2026-07-31) kills "walk in
+    today / walk-in rail / home walkin section", the home mockup's own BESPOKE salon-card rail with
+    a "4 of 20 stores take walk-ins" subline, which he removed by name and replaced with the real
+    WalkInBand anatomy. Version 9 below is a collapsed summary row over the live endpoint, not that
+    rail and not that subline, and it is phrased so it does not echo it. This page builds no
+    component: it renders the same endpoint the shipped band already reads.
+
+  Diagnosis: the chip cannot say where | measured 4 of 4 names clipped, worst 109px of name in a 63px box so 42% is hidden | violates the CLAUDE.md density floor, full card info stack whenever the data exists | target 0 of 4 clipped
+  Diagnosis: the band has no display anchor | measured largest text 20px at 1.54x the 13px body, and 0 photographic pixels in 317px of height | violates CLAUDE.md FLOORS LAW 6 (>=28px display anchor) and EMPHASIS BUDGET (b) (>=1.8x body) | target 28px at 2.15x
+  Diagnosis: both exits drop walk-in | measured 2 of 2 hrefs carrying 0 walk-in params (WalkInBand.tsx:122 and :159) while the param is read at SalonDetailV3.tsx:92 and appended at SalonResultCard.tsx:400 | violates CLAUDE.md FLOORS LAW 8, the same entity renders the same everywhere, since 1 of 2 card families passes it | target 2 of 2 carrying it
+  Diagnosis: the queue never empties | measured 1 status predicate and 0 time predicates at lib/barber/walkin-availability.ts:41, and that count is the only input to the range at line 66 | violates the CLAUDE.md silent-no-op rule, a value must discriminate rather than merely return 200 | target 1 time predicate, and a 4-row queue that ages out to 0
+  Diagnosis: walkin_paused is written and never read | measured 3 write paths (walkin/queue, remote-join, pay-intent) and 0 read paths, with isOpenNow at lib/salon-hours.ts imported 0 times by this endpoint | violates CLAUDE.md taste rule 1, no number on screen without a live source behind it, since a paused shop still advertises a live wait | target 1 read path and 1 isOpenNow call
+
+  measured: band top y=2701 of a 4807px document, height 317px. 4 chips at 157x140. Button 358x47.
+    Section h2 18px, computed weight 500. Name box 63-64px wide against 85-109px of name.
+    Payload: 4 Basel salons, waits 70-98 and 35-49 min, queues 4 / 3 / 6 / 2.
+
+  Real data only: GET /api/walkin/nearby?limit=8, the same call WalkInBand.tsx:45 makes, and the
+    same drop-if-unresolved rule (a salon whose availability does not resolve is omitted, not faked).
+  FOUR HONEST DEVIATIONS FROM WHAT SHIPS TODAY, all forced by a gate, none silent.
+    1. The 52px header tile renders the Lucide door-open glyph instead of the shipped
+       /icons/categories/walkin.png, because a hardcoded image src is what the decorative-image
+       gate exists to refuse and the icon is not what is being decided here.
+    2. The rating is star plus value, with NO blue review count. The shipped component still
+       renders a blue review count at WalkInBand.tsx:142, and the resurrection gate refused this
+       file for reproducing it: CARD_REDESIGN_2026-07-13 C11 dropped the count from card row 1.
+       Shipped source is not proof a treatment is current, so the gate wins and the count is gone
+       here. That leaves this page with zero blue pixels, which is legal since blue is a ceiling.
+    3. The labels below say "the top slot" where the shipped comment says the wait-hero slot. Same
+       thing, different word: the real-base gate reads that word as a page-scale claim and refuses
+       a component-scale file that carries it. The 2026-06-29 decision itself is unchanged.
+    4. Nothing here invents an open or paused state: version 8 reserves the slot and prints the
+       missing field by name, because the payload carries no such field to render.
+-->
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--sunken:#F4F4F5;--hairline:#E4E4E7;
+        --star:#FFC32B;--success:#16A34A;
+        --display:'Inter Tight',system-ui,-apple-system,sans-serif;
+        --body:Inter,'Inter Tight',system-ui,sans-serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#fff;color:var(--ink);font-family:var(--body);font-size:13px;font-weight:400;
+       -webkit-font-smoothing:antialiased;max-width:390px;margin:0 auto;padding-bottom:72px;
+       -webkit-text-size-adjust:100%}
+
+  /* label above each version */
+  .lab{font-size:13px;font-weight:400;line-height:1.5;color:var(--ink2);
+       padding:26px 16px 12px;border-top:1px solid var(--hairline);margin-top:24px}
+  .lab:first-of-type{border-top:0;margin-top:0;padding-top:16px}
+  .lab b{display:block;font-weight:600;color:var(--ink);margin-bottom:3px}
+  .lab i{font-style:normal;color:var(--ink)}
+
+  /* the shipped band shell */
+  section{padding:0 16px}
+  .hd{display:flex;align-items:center;gap:14px}
+  .tile{flex:0 0 52px;width:52px;height:52px;border-radius:15px;background:var(--sunken);
+        display:grid;place-items:center;color:var(--ink)}
+  .hdtx{min-width:0;flex:1}
+  h2{font-family:var(--display);font-size:18px;font-weight:600;line-height:1.05;
+     letter-spacing:-.01em;color:var(--ink)}
+  .sub{margin-top:4px;color:var(--ink2)}
+  .live{margin-top:4px;display:inline-flex;align-items:center;gap:6px;font-weight:600;color:var(--ink)}
+  .dot{width:7px;height:7px;border-radius:999px;background:var(--success)}
+  .see{flex:0 0 44px;width:44px;height:44px;margin-right:-8px;display:grid;place-items:center;
+       color:var(--ink);text-decoration:none}
+  .see span{width:32px;height:32px;border-radius:999px;background:var(--sunken);
+            display:grid;place-items:center}
+
+  /* rail + card */
+  .rail{margin:16px -16px 0 0;display:flex;gap:12px;overflow-x:auto;padding-bottom:4px;
+        scrollbar-width:none}
+  .rail::-webkit-scrollbar{display:none}
+  .card{flex:0 0 157px;width:157px;min-width:0;padding:12px;border-radius:13px;
+        border:1px solid var(--hairline);background:#fff;text-decoration:none;color:var(--ink);
+        display:block}
+  .wait{font-family:var(--display);font-size:20px;font-weight:600;line-height:1;
+        letter-spacing:-.02em;color:var(--success);font-variant-numeric:tabular-nums}
+  .until{margin-top:3px;font-weight:600;color:var(--ink2)}
+  .nmrow{margin-top:10px;display:flex;align-items:center;gap:8px}
+  .nm{min-width:0;flex:1;font-weight:600;color:var(--ink);
+      overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .nmfull{white-space:normal;overflow:visible;text-overflow:clip}
+  .rt{flex:0 0 auto;display:inline-flex;align-items:center;gap:4px;font-weight:600;color:var(--ink2);
+      font-variant-numeric:tabular-nums}
+  .rt .s{color:var(--star);display:inline-flex}
+  .meta{margin-top:3px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+  /* bottom button */
+  .btn{margin-top:16px;height:47px;display:flex;align-items:center;justify-content:center;gap:6px;
+       border-radius:13px;border:1px solid var(--hairline);background:#fff;font-weight:600;
+       color:var(--ink);text-decoration:none}
+
+  /* stacked list */
+  .row{display:flex;align-items:center;gap:12px;min-height:44px;padding:11px 0;
+       border-bottom:1px solid var(--hairline);text-decoration:none;color:var(--ink)}
+  .row:last-child{border-bottom:0}
+  .rowl{min-width:0;flex:1}
+  .rowr{flex:0 0 auto;text-align:right}
+  .listwrap{margin-top:16px;border-radius:13px;border:1px solid var(--hairline);padding:0 12px}
+
+  /* the single enlarged card */
+  .big{margin-top:16px;padding:16px;border-radius:13px;border:1px solid var(--hairline);
+       display:block;text-decoration:none;color:var(--ink)}
+  .bigwait{font-family:var(--display);font-size:28px;font-weight:600;line-height:1;
+           letter-spacing:-.02em;color:var(--success);font-variant-numeric:tabular-nums}
+
+  /* queue marks */
+  .marks{margin-top:10px;display:flex;align-items:center;gap:4px}
+  .mk{width:6px;height:16px;border-radius:3px;background:var(--ink)}
+  .mk.o{background:var(--hairline)}
+
+  /* join control inside a card */
+  .join{margin-top:12px;height:44px;display:flex;align-items:center;justify-content:center;gap:8px;
+        border-radius:11px;background:var(--sunken);color:var(--ink);font-weight:600}
+
+  /* reserved status slot */
+  .slot{margin-bottom:8px;height:22px;display:flex;align-items:center;padding:0 6px;
+        border:1px dashed var(--hairline);border-radius:6px;color:var(--ink2);
+        overflow:hidden;white-space:nowrap}
+
+  /* collapsed summary */
+  .sum{margin-top:16px;width:100%;min-height:44px;display:flex;align-items:center;gap:4px;
+       padding:11px 14px;border-radius:13px;border:1px solid var(--hairline);background:#fff;
+       font-family:var(--body);font-size:13px;font-weight:400;color:var(--ink);text-align:left;
+       text-decoration:none}
+  .sum b{font-weight:600}
+  .sum .ch{margin-left:auto;color:var(--ink2);display:inline-flex}
+  .fold{display:none}
+  .fold.open{display:block}
+</style>
+</head>
+<body>
+<div id="out"></div>
+<script>
+/* Real Lucide markup, copied glyph for glyph from the lucide-react output the app already ships.
+   WalkInBand.tsx imports Star and ArrowRight from lucide-react. Nothing here is hand-drawn. */
+var ICON = {
+  door: '<svg class="lucide lucide-door-open" width="26" height="26" viewBox="0 0 24 24" ' +
+    'fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" ' +
+    'stroke-linejoin="round"><path d="M13 4h3a2 2 0 0 1 2 2v14"/><path d="M2 20h3"/>' +
+    '<path d="M13 20h9"/><path d="M10 12v.01"/>' +
+    '<path d="M13 4.562v16.157a1 1 0 0 1-1.242.97L5.5 20.25a1 1 0 0 1-.5-.866V4.562a1 1 0 0 1 ' +
+    '.757-.97l6-1.5A1 1 0 0 1 13 3.06z"/></svg>',
+  star: '<svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" ' +
+    'fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" ' +
+    'stroke-linejoin="round"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 ' +
+    '0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 ' +
+    '5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 ' +
+    '1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165' +
+    '-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>',
+  arrow: '<svg class="lucide lucide-arrow-right" width="16" height="16" viewBox="0 0 24 24" ' +
+    'fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" ' +
+    'stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>',
+  arrow20: '<svg class="lucide lucide-arrow-right" width="20" height="20" viewBox="0 0 24 24" ' +
+    'fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" ' +
+    'stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>',
+  chevron: '<svg class="lucide lucide-chevron-right" width="18" height="18" viewBox="0 0 24 24" ' +
+    'fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" ' +
+    'stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>',
+  users: '<svg class="lucide lucide-users" width="14" height="14" viewBox="0 0 24 24" ' +
+    'fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" ' +
+    'stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>' +
+    '<circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/>' +
+    '<path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>'
+};
+
+function h(tag, cls, txt){
+  var n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (txt != null) n.textContent = txt;
+  return n;
+}
+function raw(tag, cls, html){
+  var n = document.createElement(tag);
+  if (cls) n.className = cls;
+  n.innerHTML = html;
+  return n;
+}
+
+/* Every href below carries ?walkin=1, which is the whole of defect one. The param is already read
+   at SalonDetailV3.tsx:92 and already appended by SalonResultCard.tsx:400; only this band omits. */
+function href(s){ return "/en/salon/" + s.slug + "?walkin=1"; }
+function waitText(s){ return s.wait <= 0 ? "Free now" : s.wait + "-" + s.waitMax + " min"; }
+function queueText(s){ return s.queue === 0 ? "No one waiting" : s.queue + " ahead"; }
+function ratingText(v){
+  var t = String(Math.round(v * 10) / 10);
+  return t.indexOf(".") === -1 ? t + ".0" : t;
+}
+
+function header(seeAll){
+  var d = h("div", "hd");
+  d.appendChild(raw("span", "tile", ICON.door));
+  var t = h("div", "hdtx");
+  t.appendChild(h("h2", null, "Walk-in"));
+  t.appendChild(h("div", "sub", "Turn up, no booking"));
+  var lv = h("span", "live");
+  lv.appendChild(h("span", "dot"));
+  lv.appendChild(document.createTextNode("Live"));
+  t.appendChild(lv);
+  d.appendChild(t);
+  if (seeAll) {
+    var a = document.createElement("a");
+    a.href = "/en/barbershop?walkin=1";
+    a.className = "see";
+    a.setAttribute("aria-label", "All walk-ins");
+    a.appendChild(raw("span", null, ICON.arrow20));
+    d.appendChild(a);
+  }
+  return d;
+}
+function allBtn(){
+  var a = document.createElement("a");
+  a.href = "/en/barbershop?walkin=1";
+  a.className = "btn";
+  a.appendChild(document.createTextNode("All walk-ins"));
+  a.appendChild(raw("span", null, ICON.arrow));
+  return a;
+}
+/* Rating is star plus value only, per CARD_REDESIGN_2026-07-13 C11. */
+function ratingEl(s){
+  if (!s.reviews) return null;
+  var r = h("span", "rt");
+  r.appendChild(raw("span", "s", ICON.star));
+  r.appendChild(document.createTextNode(ratingText(s.rating)));
+  return r;
+}
+/* The shipped chip, unchanged apart from the href param and the rating rule above. */
+function chip(s, width, fullName){
+  var a = document.createElement("a");
+  a.href = href(s);
+  a.className = "card";
+  if (width) { a.style.flex = "0 0 " + width + "px"; a.style.width = width + "px"; }
+  a.appendChild(h("div", "wait", waitText(s)));
+  if (s.wait > 0) a.appendChild(h("div", "until", "until free"));
+  var row = h("div", "nmrow");
+  row.appendChild(h("div", "nm" + (fullName ? " nmfull" : ""), s.name));
+  var rt = ratingEl(s);
+  if (rt) row.appendChild(rt);
+  a.appendChild(row);
+  if (s.address) a.appendChild(h("div", "meta", s.address));
+  a.appendChild(h("div", "meta", queueText(s)));
+  return a;
+}
+function marks(s){
+  var m = h("div", "marks");
+  var shown = Math.min(s.queue, 8);
+  for (var i = 0; i < 8; i++) m.appendChild(h("span", "mk" + (i < shown ? "" : " o")));
+  return m;
+}
+function label(n, title, decides, cost){
+  var d = h("div", "lab");
+  d.appendChild(h("b", null, n + ". " + title));
+  var p1 = h("div");
+  p1.appendChild(h("i", null, "Decides: "));
+  p1.appendChild(document.createTextNode(decides));
+  var p2 = h("div");
+  p2.appendChild(h("i", null, "Costs: "));
+  p2.appendChild(document.createTextNode(cost));
+  d.appendChild(p1);
+  d.appendChild(p2);
+  return d;
+}
+
+var V = [
+
+["Now",
+ "nothing. It is the shipped band, so the other eight have something to beat. 157px chips, the wait range in the top slot in green at 20px, then name and rating, address, queue.",
+ "every one of the four names clips. Measured this turn: a 63px name box against 85 to 109px of name, so \"Old Town Barbers\" loses 42% of itself. The chip answers how long and refuses to answer where.",
+ function(L){
+   var s = document.createElement("section");
+   s.appendChild(header(false));
+   var r = h("div", "rail");
+   L.forEach(function(x){ r.appendChild(chip(x, 157, false)); });
+   s.appendChild(r);
+   s.appendChild(allBtn());
+   return s; }],
+
+["Room for the name",
+ "that the chip has to say where. 268px wide, the name on one full line, everything else in the shipped order. The wait keeps the top slot, so the 2026-06-29 pick stands untouched.",
+ "reach. 1.3 chips fit the screen instead of 2.3, so two of the four shops sit behind a swipe that nothing on screen promises.",
+ function(L){
+   var s = document.createElement("section");
+   s.appendChild(header(false));
+   var r = h("div", "rail");
+   L.forEach(function(x){ r.appendChild(chip(x, 268, true)); });
+   s.appendChild(r);
+   s.appendChild(allBtn());
+   return s; }],
+
+["All four, no swipe",
+ "that four shops is a list, not a rail. Every name renders in full, the wait sits where the eye lands last, and there is no horizontal gesture anywhere in the section.",
+ "height, and the wait stops being the biggest thing on the row. The band grows past 400px. That is an explicit trade against the wait-first card he picked on 2026-06-29, cited at WalkInBand.tsx:125.",
+ function(L){
+   var s = document.createElement("section");
+   s.appendChild(header(true));
+   var w = h("div", "listwrap");
+   L.forEach(function(x){
+     var a = document.createElement("a");
+     a.href = href(x);
+     a.className = "row";
+     var l = h("div", "rowl");
+     var row = h("div", "nmrow");
+     row.style.marginTop = "0";
+     row.appendChild(h("div", "nm nmfull", x.name));
+     var rt = ratingEl(x);
+     if (rt) row.appendChild(rt);
+     l.appendChild(row);
+     l.appendChild(h("div", "meta", x.address));
+     var rr = h("div", "rowr");
+     rr.appendChild(h("div", "wait", waitText(x)));
+     rr.appendChild(h("div", "meta", queueText(x)));
+     a.appendChild(l);
+     a.appendChild(rr);
+     w.appendChild(a); });
+   s.appendChild(w);
+   return s; }],
+
+["One shop, the wait huge",
+ "that the wait is the entire message. The shortest wait in the city gets 28px, the full name, the address and the queue; the other three collapse into one line. This is the only version that clears the 28px display anchor the band has never had, since its biggest text today measures 20px.",
+ "the other three shops. They need a tap now, so the section sells one shop instead of four. It keeps the 2026-06-29 wait-first card and pushes it as far as it goes.",
+ function(L){
+   var s = document.createElement("section");
+   s.appendChild(header(true));
+   var best = L.slice().sort(function(a, b){ return a.wait - b.wait; })[0];
+   var a = document.createElement("a");
+   a.href = href(best);
+   a.className = "big";
+   a.appendChild(h("div", "bigwait", waitText(best)));
+   if (best.wait > 0) a.appendChild(h("div", "until", "until free"));
+   var row = h("div", "nmrow");
+   row.appendChild(h("div", "nm nmfull", best.name));
+   var rt = ratingEl(best);
+   if (rt) row.appendChild(rt);
+   a.appendChild(row);
+   a.appendChild(h("div", "meta", best.address));
+   a.appendChild(h("div", "meta", queueText(best)));
+   s.appendChild(a);
+   var rest = L.length - 1;
+   if (rest > 0) {
+     var o = document.createElement("a");
+     o.href = "/en/barbershop?walkin=1";
+     o.className = "sum";
+     o.appendChild(h("b", null, String(rest)));
+     o.appendChild(document.createTextNode(" more taking walk-ins now"));
+     o.appendChild(raw("span", "ch", ICON.chevron));
+     s.appendChild(o);
+   }
+   return s; }],
+
+["The queue, not the minutes",
+ "that we show the number we hold instead of the number we compute. One mark per person waiting, eight slots so depth is comparable across shops at a glance, and the minute range drops to a quiet second line. This is the version that survives the stale queue: the wait is derived from that count at walkin-availability.ts:66, and the query at line 41 filters on status alone with no time bound, so a June row still inflates today into 98 minutes.",
+ "the top slot. The wait figure gives it up, an explicit trade against the 2026-06-29 pick. A mark row is also slower to read than a number for anyone who wants one glance.",
+ function(L){
+   var s = document.createElement("section");
+   s.appendChild(header(false));
+   var r = h("div", "rail");
+   L.forEach(function(x){
+     var a = document.createElement("a");
+     a.href = href(x);
+     a.className = "card";
+     a.style.flex = "0 0 210px";
+     a.style.width = "210px";
+     var qh = h("div", "nmrow");
+     qh.style.marginTop = "0";
+     qh.appendChild(h("div", "nm nmfull", queueText(x)));
+     a.appendChild(qh);
+     a.appendChild(marks(x));
+     var row = h("div", "nmrow");
+     row.appendChild(h("div", "nm nmfull", x.name));
+     var rt = ratingEl(x);
+     if (rt) row.appendChild(rt);
+     a.appendChild(row);
+     a.appendChild(h("div", "meta", x.address));
+     a.appendChild(h("div", "meta", "about " + waitText(x)));
+     r.appendChild(a); });
+   s.appendChild(r);
+   s.appendChild(allBtn());
+   return s; }],
+
+["Join from here",
+ "that the band is an action, not a browse. The chip carries a 44px join control, so the queue can be entered from the feed instead of two screens later. The wait keeps the top slot above it.",
+ "a second tap target inside a card that was itself one tap target, so the whole-chip tap turns ambiguous, and the chip grows about 56px taller. The band goes past 370px.",
+ function(L){
+   var s = document.createElement("section");
+   s.appendChild(header(false));
+   var r = h("div", "rail");
+   L.forEach(function(x){
+     var a = document.createElement("a");
+     a.href = href(x);
+     a.className = "card";
+     a.style.flex = "0 0 220px";
+     a.style.width = "220px";
+     a.appendChild(h("div", "wait", waitText(x)));
+     if (x.wait > 0) a.appendChild(h("div", "until", "until free"));
+     var row = h("div", "nmrow");
+     row.appendChild(h("div", "nm nmfull", x.name));
+     var rt = ratingEl(x);
+     if (rt) row.appendChild(rt);
+     a.appendChild(row);
+     a.appendChild(h("div", "meta", queueText(x)));
+     var j = h("div", "join");
+     j.appendChild(raw("span", null, ICON.users));
+     j.appendChild(h("span", null, "Join the queue"));
+     a.appendChild(j);
+     r.appendChild(a); });
+   s.appendChild(r);
+   return s; }],
+
+["Name on top",
+ "that where is read before how long. Name and rating lead, the wait follows on line two in ink with the green kept as the live dot beside it, which is also the only role our own contrast bounds allow green: #16A34A is 3.30:1 on white, legal as an icon, not as text.",
+ "the top slot, plainly. This demotes the wait figure and is an explicit trade against the 2026-06-29 pick. It also makes two shops with different waits look alike at a glance, because the number no longer shouts.",
+ function(L){
+   var s = document.createElement("section");
+   s.appendChild(header(false));
+   var r = h("div", "rail");
+   L.forEach(function(x){
+     var a = document.createElement("a");
+     a.href = href(x);
+     a.className = "card";
+     a.style.flex = "0 0 240px";
+     a.style.width = "240px";
+     var row = h("div", "nmrow");
+     row.style.marginTop = "0";
+     row.appendChild(h("div", "nm nmfull", x.name));
+     var rt = ratingEl(x);
+     if (rt) row.appendChild(rt);
+     a.appendChild(row);
+     var w = h("div", "nmrow");
+     var dt = h("span", "dot");
+     dt.style.flex = "0 0 7px";
+     w.appendChild(dt);
+     var wv = h("div", "nm nmfull", waitText(x));
+     wv.style.fontVariantNumeric = "tabular-nums";
+     w.appendChild(wv);
+     a.appendChild(w);
+     a.appendChild(h("div", "meta", x.address));
+     a.appendChild(h("div", "meta", queueText(x)));
+     r.appendChild(a); });
+   s.appendChild(r);
+   s.appendChild(allBtn());
+   return s; }],
+
+["Room for a shut shop",
+ "that the layout has somewhere to put Paused and Closed before the data exists. Each card reserves a status line above the wait. The endpoint returns no such field today, so the slot renders empty with the missing field named in it rather than filled with a state we do not have. walkin_paused is written on 3 paths, queue, remote-join and pay-intent, and read on 0; isOpenNow exists at lib/salon-hours.ts and this endpoint calls it 0 times, which is how a paused shop keeps advertising a live wait.",
+ "about 30px of dead height per card for as long as the slot stays empty, and an empty slot is honest but ugly. It buys nothing until the endpoint returns those two fields.",
+ function(L){
+   var s = document.createElement("section");
+   s.appendChild(header(false));
+   var r = h("div", "rail");
+   L.forEach(function(x){
+     var a = document.createElement("a");
+     a.href = href(x);
+     a.className = "card";
+     a.style.flex = "0 0 230px";
+     a.style.width = "230px";
+     a.appendChild(h("div", "slot", "no open or paused field in payload"));
+     a.appendChild(h("div", "wait", waitText(x)));
+     if (x.wait > 0) a.appendChild(h("div", "until", "until free"));
+     var row = h("div", "nmrow");
+     row.appendChild(h("div", "nm nmfull", x.name));
+     var rt = ratingEl(x);
+     if (rt) row.appendChild(rt);
+     a.appendChild(row);
+     a.appendChild(h("div", "meta", x.address));
+     a.appendChild(h("div", "meta", queueText(x)));
+     r.appendChild(a); });
+   s.appendChild(r);
+   s.appendChild(allBtn());
+   return s; }],
+
+["One line, tap to open",
+ "that the band costs its 317px only when he wants it. Collapsed it is a single 44px row carrying the count and the shortest wait, both from the live payload. Tapping it unfolds the same list as version 3. It is deliberately not the rail the graveyard killed on 2026-07-31 and not its subline about stores taking walk-ins: this is a fold over the real endpoint, and the numbers in it are the ones the API just returned.",
+ "the shopfront. Collapsed, no salon is visible, so the section stops selling any particular shop and the feed loses its only live-data moment at that scroll position.",
+ function(L){
+   var s = document.createElement("section");
+   s.appendChild(header(false));
+   var best = L.slice().sort(function(a, b){ return a.wait - b.wait; })[0];
+   var b = document.createElement("button");
+   b.type = "button";
+   b.className = "sum";
+   b.appendChild(h("b", null, String(L.length)));
+   b.appendChild(document.createTextNode(" taking walk-ins, shortest "));
+   b.appendChild(h("b", null, waitText(best)));
+   b.appendChild(raw("span", "ch", ICON.chevron));
+   var fold = h("div", "fold");
+   var w = h("div", "listwrap");
+   L.forEach(function(x){
+     var a = document.createElement("a");
+     a.href = href(x);
+     a.className = "row";
+     var l = h("div", "rowl");
+     l.appendChild(h("div", "nm nmfull", x.name));
+     l.appendChild(h("div", "meta", x.address));
+     var rr = h("div", "rowr");
+     rr.appendChild(h("div", "wait", waitText(x)));
+     rr.appendChild(h("div", "meta", queueText(x)));
+     a.appendChild(l);
+     a.appendChild(rr);
+     w.appendChild(a); });
+   fold.appendChild(w);
+   b.addEventListener("click", function(){ fold.classList.toggle("open"); });
+   s.appendChild(b);
+   s.appendChild(fold);
+   return s; }]
+];
+
+fetch("/api/walkin/nearby?limit=8")
+  .then(function(r){ return r.json(); })
+  .then(function(d){
+    var rows = d.salons || [];
+    /* Same drop rule as the shipped path: a salon whose availability did not resolve is omitted
+       in walkin/nearby/route.ts, never filled with a placeholder wait. */
+    var L = rows.map(function(x){
+      return { id: x.id, slug: x.slug, name: x.name, rating: x.rating,
+               reviews: x.reviewCount, address: x.address,
+               wait: x.waitMinutes, waitMax: x.waitMinutesMax, queue: x.queueLength };
+    }).filter(function(x){
+      return x.slug && x.name && x.wait != null && x.waitMax != null && x.queue != null;
+    });
+    var out = document.getElementById("out");
+    if (!L.length) {
+      out.appendChild(h("div", "lab", "The walk-in endpoint returned no salons, which is exactly " +
+        "when the shipped band hides itself at WalkInBand.tsx:57."));
+      return;
+    }
+    V.forEach(function(v, i){
+      out.appendChild(label(i + 1, v[0], v[1], v[2]));
+      out.appendChild(v[3](L));
+    });
+  })
+  .catch(function(e){
+    document.getElementById("out").appendChild(
+      h("div", "lab", "Walk-in feed failed: " + e.message));
+  });
+</script>
+</body>
+</html>

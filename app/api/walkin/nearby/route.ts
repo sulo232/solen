@@ -49,6 +49,11 @@ export async function GET(req: NextRequest) {
     .eq("walkin_enabled", true)
     .eq("is_active", true)
     .eq("listed_on_marketplace", true)
+    // walkin_paused was enforced on the write paths (queue join, remote-join, pay-intent)
+    // but never on this read, so a shop that paused its line kept advertising a live wait
+    // on the homepage band. `not.is.true` (not .eq false) because the column is nullable
+    // and the write paths treat NULL as "not paused" via a truthy check.
+    .not("walkin_paused", "is", true)
     .order("average_rating", { ascending: false })
     .order("review_count", { ascending: false })
     .limit(limit);

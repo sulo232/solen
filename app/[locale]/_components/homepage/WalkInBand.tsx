@@ -11,7 +11,8 @@
 // - Wait shown as a conservative RANGE (waitMinutes-waitMinutesMax); 0 → "Sofort frei".
 // - Queue dots driven by real queueLength; 0 waiting → "Niemand wartet".
 // - Meta line is the real street address (no geolocation → never a fake distance).
-// - Each chip → that salon's PDP; "Alle Walk-ins" → the barbershop list.
+// - Each chip → that salon's PDP in WALK-IN mode (?walkin=1, read by SalonDetailV3);
+//   "Alle Walk-ins" → the barbershop search with the walk_in filter applied.
 // - 0 walk-in salons (feature off / none enabled) → the whole band hides (null).
 // - 1 salon → single full-width chip (no peek).
 
@@ -119,7 +120,7 @@ export default function WalkInBand() {
                   return (
                     <a
                       key={s.id}
-                      href={`/${locale}/salon/${s.slug}`}
+                      href={`/${locale}/salon/${s.slug}?walkin=1`}
                       className={`${single ? "w-full" : "flex-[0_0_42%]"} min-w-0 snap-start rounded-[13px] border border-s-border bg-white p-3 transition-transform duration-200 ease-glide active:scale-[0.98] active:duration-[80ms]`}
                     >
                       {/* R1 "located" (owner pick 2026-06-29): wait-range hero + "bis frei", then
@@ -156,7 +157,7 @@ export default function WalkInBand() {
 
           {/* CTA */}
           <a
-            href={`/${locale}/barbershop`}
+            href={`/${locale}/barbershop?walk_in=true`}
             className="mt-4 flex items-center justify-center gap-1.5 rounded-[13px] border border-s-border bg-white px-4 py-3 font-heading text-[14px] font-semibold text-s-ink transition-[background-color,transform] duration-200 ease-glide hover:bg-s-bg-sunken active:scale-[0.97] active:duration-[80ms]"
           >
             {t("allWalkIns")}
