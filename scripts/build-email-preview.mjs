@@ -135,7 +135,7 @@ const html = `<!doctype html>
   .rows { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
   .toggle { display:flex; gap:4px; }
   .toggle button { appearance:none; border:0; background:transparent; color:var(--ink2);
-                   font:inherit; font-size:13px; padding:7px 13px; border-radius:999px; cursor:pointer; min-height:36px; }
+                   font:inherit; font-size:13px; padding:7px 13px; border-radius:999px; cursor:pointer; min-height:44px; }
   .toggle button[aria-pressed="true"] { background:var(--sunken); color:var(--ink); font-weight:600; }
   main { max-width:1120px; margin:0 auto; padding:0 20px 96px; }
   nav.index { display:flex; flex-wrap:wrap; gap:6px 16px; font-size:13px; padding:18px 0; }
@@ -154,6 +154,20 @@ const html = `<!doctype html>
   .stage { display:flex; justify-content:center; background:var(--sunken); padding:22px 12px; }
   iframe { border:0; background:#fff; border-radius:8px; width:700px; max-width:100%; height:260px; }
   body[data-w="phone"] iframe { width:390px; }
+  @media (max-width: 560px) {
+    header { padding:10px 14px; padding-top:max(10px,env(safe-area-inset-top)); }
+    h1 { font-size:20px; }
+    .sub { display:none; }
+    /* All three toggles on ONE swipeable row: stacked they took 23% of a phone screen. */
+    .rows { gap:2px; margin-top:6px; flex-wrap:nowrap; overflow-x:auto;
+            -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+    .rows::-webkit-scrollbar { display:none; }
+    .toggle { flex-wrap:nowrap; flex:0 0 auto; }
+    .toggle + .toggle { margin-left:6px; padding-left:6px; border-left:1px solid var(--border); }
+    .toggle button { padding:7px 11px; white-space:nowrap; }
+    main { padding:0 12px 96px; }
+    .stage { padding:14px 8px; }
+  }
 </style>
 </head>
 <body data-l="de" data-w="desktop" data-t="now">
