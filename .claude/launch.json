@@ -124,6 +124,16 @@
       "autoPort": false
     },
     {
+      "name": "Tunnel (pdp round2 51815)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "/opt/homebrew/bin/cloudflared tunnel --url http://localhost:51815 --metrics localhost:20255 --no-autoupdate"
+      ],
+      "port": 20255,
+      "autoPort": false
+    },
+    {
       "name": "Tunnel (dev 3000)",
       "runtimeExecutable": "bash",
       "runtimeArgs": [
