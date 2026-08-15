@@ -37,7 +37,8 @@
 
 | Token | Hex | Usage |
 |---|---|---|
-| `s-ink` | `#0A0A0A` | Primary text + primary CTA bg |
+| `s-ink` | `#0A0A0A` | Primary TEXT. Not the fill any more, see the row below (owner 2026-08-15) |
+| `s-ink-soft` | `#1C1C1F` | THE INK FILL. Every filled-black surface: primary CTAs, the sticky book bar, selected pills, filled icon buttons. Owner-picked 2026-08-15 off the four-way mockup at `/dev/pill-ceramic` ("I want the black used everywhere to be this ... not everywhere, like, text. Don't change it ... for example, button ... I want you to actually put in design system"), because a large flat pure-black surface reads as a hole punched in the page. Applied in ONE place, the `.bg-s-ink` override at the top of `@layer utilities` in `app/globals.css`, rather than by renaming 416 call sites, so a newly written `bg-s-ink` cannot silently be the old black. NOT covered, deliberately: `text-s-ink` (his explicit carve-out, and 5475 sites), `border-s-ink` / `fill-s-ink` / `stroke-s-ink` (an edge or a glyph is not a surface), and the alpha forms `bg-s-ink/40` + `bg-black` (208 + 81 sites, photo scrims and gradient stops, where the point is darkness, not a surface). 16.4:1 against white text. |
 | `s-ink-2` | `#6B6B6B` | Secondary text |
 | `s-ink-3` | `#6B6B6B` | Tertiary text (collapsed onto ink-2 per V3-D138) |
 | `s-ink-disabled` | `#C5C8C4` | Disabled state |

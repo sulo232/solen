@@ -180,6 +180,16 @@ module.exports = {
         // were the two directions that multiply into noise when four pills sit in a row.
         // A TOKEN, not a literal, exactly as the mockup said it would become if he picked one.
         // Contrast against its white label: 16.4:1, so it clears AA and AAA with room.
+        //
+        // PROMOTED 2026-08-15 from "the selected pill's black" to THE INK FILL, everywhere.
+        // Owner: "I want the black used everywhere to be this ... not everywhere, like, text.
+        // Don't change it ... for example, button ... what's already, like, fulfilled black ...
+        // I want that to be this color. I want you to actually put in design system."
+        // The rule that makes it apply lives in app/globals.css, in the `.bg-s-ink` override at
+        // the top of @layer utilities, and that block carries the full reasoning plus the list of
+        // what is deliberately NOT covered (text, borders, glyphs, alpha scrims, gradient stops).
+        // Read it before changing either value: `s-ink` below stays #0A0A0A because it is the TEXT
+        // ink and has 5475 call sites.
         "s-ink-soft": { DEFAULT: "#1C1C1F" },
         "s-warning": { DEFAULT: "#F1AE27", bg: "#FDF6E7", text: "#B45309" },  // V3-D421: the "amber twin" of s-accent (Uber-blue HSL S+L, hue rotated to 40deg) so warning is cohesive with the accent. .text = deep amber for text-on-pale.  // V3: aligned to LIVE_TRUTH §3 hex. `.text` = readable amber for text-on-pale (V3-D347 dashboard)
         // V3-D347 — operator-dashboard CALENDAR service palette (vibrant, dashboard-only per LOCKFILE §12). Store-defined service types; NO makeup.
