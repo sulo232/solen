@@ -23,8 +23,8 @@ const OUT = resolve(HERE, "../public/_email-preview/index.html");
 const LOCALES = ["de", "en", "fr", "it"];
 
 /** Mail clients render on their own white page with default margins. Mirror that, nothing more. */
-function frameDoc(inner) {
-  return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0;padding:16px;background:#ffffff">${inner}</body></html>`;
+function frameDoc(inner, pad = 16) {
+  return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>*{box-sizing:border-box}img{max-width:100%}</style></head><body style="margin:0;padding:${pad}px;background:#ffffff">${inner}</body></html>`;
 }
 
 /**
@@ -158,14 +158,14 @@ function proposedShell(bodyHtml, locale) {
   return `
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F4F4F5;margin:0;padding:24px 12px;font-family:${EMAIL_FONT_STACK}">
   <tr><td align="center">
-    <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px;max-width:100%;background:#ffffff;border-radius:16px">
+    <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px;background:#ffffff;border-radius:16px">
       <tr><td style="padding:24px 28px 18px;font-family:${EMAIL_FONT_STACK}">
         <span style="font-size:20px;font-weight:700;color:#0A0A0A;letter-spacing:-.01em">solen.ch</span>
       </td></tr>
       <tr><td style="padding:0 28px"><div style="height:1px;background:#E4E4E7;line-height:1px">&nbsp;</div></td></tr>
       <tr><td style="padding:22px 28px 28px;color:#0A0A0A;font-size:15px;line-height:1.55;font-family:${EMAIL_FONT_STACK}">${bodyHtml}</td></tr>
     </table>
-    <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px;max-width:100%">
+    <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px">
       <tr><td style="padding:16px 28px 8px;color:#6B6B6B;font-size:12px;line-height:1.5;font-family:${EMAIL_FONT_STACK}">${FOOT}</td></tr>
     </table>
   </td></tr>
@@ -191,7 +191,7 @@ for (const entry of EMAIL_PREVIEWS) {
         proposedSubject,
         rewritten: Boolean(rewritten),
         now: frameDoc(wrapEmailHtml(payload.html)),
-        proposed: frameDoc(proposedShell(rewritten ?? payload.html, locale)),
+        proposed: frameDoc(proposedShell(rewritten ?? payload.html, locale), 0),
         attachments: (payload.attachments ?? []).map((a) => a.filename),
       };
     } catch (err) {
