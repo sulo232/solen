@@ -133,7 +133,6 @@ export default function Terminal({ salonName, bookings: initialBookings, queue: 
     [bookings]
   );
 
-  const freeCount = staff.length - (inChair ? 1 : 0);
 
   const maxWait = useMemo(
     () => waiting.reduce((acc, q) => Math.max(acc, q.estimatedWaitMinutes), 0),
@@ -247,7 +246,7 @@ export default function Terminal({ salonName, bookings: initialBookings, queue: 
                   setVariant(v.key);
                 }}
                 className={
-                  "h-9 rounded-full border px-4 text-[13px] " +
+                  "h-11 rounded-full border px-4 text-[13px] " +
                   (selected
                     ? "border-transparent bg-s-bg-sunken font-semibold text-s-ink"
                     : "border-s-border bg-white font-normal text-s-ink-2")
@@ -279,7 +278,7 @@ export default function Terminal({ salonName, bookings: initialBookings, queue: 
             <button
               type="button"
               onClick={() => setQueuePaused((v) => !v)}
-              className="text-[13px] font-normal text-s-accent"
+              className="flex h-11 items-center text-[13px] font-normal text-s-accent"
             >
               {queuePaused ? "Resume queue" : "Pause queue"}
             </button>
@@ -346,12 +345,12 @@ export default function Terminal({ salonName, bookings: initialBookings, queue: 
               {MOVE_TIME_CHIPS.map((time) => {
                 const selected = selectedChip === time;
                 return (
-                  <div key={time} className="flex min-h-11 items-center">
+                  <div key={time} className="flex items-center">
                     <button
                       type="button"
                       onClick={() => setSelectedChip(time)}
                       className={
-                        "h-9 rounded-full border px-4 text-[13px] tabular-nums " +
+                        "h-11 rounded-full border px-4 text-[13px] tabular-nums " +
                         (selected
                           ? "border-transparent bg-s-bg-sunken font-semibold text-s-ink"
                           : "border-s-border bg-white font-normal text-s-ink")
@@ -377,7 +376,7 @@ export default function Terminal({ salonName, bookings: initialBookings, queue: 
             <button
               type="button"
               onClick={closeMove}
-              className="mt-4 block w-full text-center text-[13px] font-normal text-s-ink-2"
+              className="mt-4 flex h-11 w-full items-center justify-center text-[13px] font-normal text-s-ink-2"
             >
               Keep {zurichTime(moveBooking.startsAt)}
             </button>
@@ -407,7 +406,6 @@ export default function Terminal({ salonName, bookings: initialBookings, queue: 
         <div className="rounded-[24px] bg-white p-4 shadow-whisper">
           <div className="flex items-center justify-between">
             <span className="text-[13px] font-semibold text-s-ink">In the chair</span>
-            <span className="text-[13px] font-normal tabular-nums text-s-ink-2">{freeCount} free</span>
           </div>
           <div className="mt-4 flex gap-4">
             {staff.map((member) => {
@@ -479,9 +477,11 @@ export default function Terminal({ salonName, bookings: initialBookings, queue: 
                           startWaiting(entry.id);
                         }
                       }}
-                      className="flex h-9 shrink-0 items-center rounded-full border border-s-border bg-white px-4 text-[13px] font-normal text-s-ink"
+                      className="flex h-11 shrink-0 items-center"
                     >
-                      Start
+                      <span className="flex h-9 items-center rounded-full border border-s-border bg-white px-4 text-[13px] font-normal text-s-ink">
+                        Start
+                      </span>
                     </span>
                   </button>
                   {expanded ? (
