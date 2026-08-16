@@ -19,7 +19,20 @@ hierarchy and balance. You know?"*
 - [x] 4. Hierarchy (commit f0ab90328) · verified: six sizes in the first viewport (28/18/16/15/14/13,
       with 13px used eight times), a range of 2.15x against Airbnb's measured 7.2x. Fix at
       `Round5Client.tsx:116`, measured as the score going 16px -> 44px so it outranks the heading
-- [ ] 5. BLOCKED ON HIM, a real dependency and not a punt: whether "All four fixed" is the one to
+- [x] 5. SUPERSEDED by what he did next, and by what he then APPLIED (commit d194a86f6, served
+      and verified through the tunnel in c55dffc86). He tapped it, said "those are the hierarchy
+      that I want" and "the star is big enough", so the mockup did its job and the open pick
+      dissolved. Three further instructions in the same breath are now in the REAL components,
+      not a preview:
+      · star-filter counts REMOVED, `app/[locale]/_components/salon/SalonReviews.tsx:239` and
+        `components-legacy/salon/SalonReviews.tsx:319` · verified over the tunnel: the pills read
+        "Alle 7", "5", "4"
+      · star inside the pill 11px -> 15px, same two lines · verified 15px live
+      · selected pill back to calm grey, `TabPill.tsx:104` and `:118` · verified as
+        rgb(244,244,245) with ink text, after he said the black was too harsh
+- [ ] 6. STILL HIS, and untouched by the above: whether the SHAPE change (capsule to a 16px
+      corner) gets applied to the product. It edits `CLAUDE.md`'s radius row and the shared
+      TabPill that 29 files import, so it moves every screen at once. Not guessable. It was
       apply. Applying it edits `CLAUDE.md`'s radius row (every button and chip in the product is a
       capsule by that line) and the shared TabPill that 29 files import, so it moves every screen
       at once. His by name, and not guessable.
