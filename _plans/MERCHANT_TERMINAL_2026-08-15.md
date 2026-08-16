@@ -33,7 +33,7 @@
 ### A. DEFINE
 - [x] A1 Name the screen's ONE job in one sentence (FLOORS LAW 10 requires it before any element is justified)
       - verified: the sentence is written at MERCHANT_TERMINAL_2026-08-15.md:242, and app/[locale]/dev/terminal/Terminal.tsx is built against it
-- [x] A2 Fix the verb set: which actions the terminal DOES carry `verified:` MERCHANT_TERMINAL_2026-08-15.md:254 lists the eight verbs; each is mapped to a live endpoint in the table at :334
+- [x] A2 Fix the verb set: which actions the terminal DOES carry `verified:` commit 4851a82f3, MERCHANT_TERMINAL_2026-08-15.md:254 lists the eight verbs; each is mapped to a live endpoint in the table at :334
       - verified: the eight verbs are listed at MERCHANT_TERMINAL_2026-08-15.md:248, each mapped to an existing endpoint in the B2 table
 - [x] A3 Fix the anti-scope: which of the 28 salon-facing dashboard sections it deliberately does NOT carry
       - verified: the excluded list is at MERCHANT_TERMINAL_2026-08-15.md:256; the 20 admin-gated folders are enumerated in middleware.ts:222
@@ -41,19 +41,19 @@
       - verified: recommendation + its named cost at MERCHANT_TERMINAL_2026-08-15.md:267; middleware.ts does no host inspection today (grepped for host/subdomain/rewrite, 0 hits)
 - [x] A5 Decide the identity model: who logs in (owner / staff / shared shop device) and how they stay logged in
       - verified: target model at MERCHANT_TERMINAL_2026-08-15.md:285; the owner-only constraint it fixes is lib/bookings/authorize.ts:92-101, and the staff precedent is app/api/walkin/queue/[id]/route.ts:40
-- [x] A6 Decide the appointment default: auto-accept vs must-accept, grounded in what the industry actually does `verified:` decision at MERCHANT_TERMINAL_2026-08-15.md:302, grounded in the sourced D2 section and in the live DB (28/28 salons instant, 0 bookings ever pending_approval)
+- [x] A6 Decide the appointment default: auto-accept vs must-accept, grounded in what the industry actually does `verified:` commit f004c5dc2 (the L2-L4 research that decided it), decision at MERCHANT_TERMINAL_2026-08-15.md:302, grounded in the sourced D2 section and in the live DB (28/28 salons instant, 0 bookings ever pending_approval)
 - [x] A7 State what happens when nobody presses anything (the timeout path), because one already exists in this codebase
       - verified: app/api/cron/pending-timeout/route.ts:23-47 (24h, cancels + frees the slot + cancels the Stripe intent)
 
 ### B. WALK-INS AND APPOINTMENTS BOTH
 - [x] B1 Map the walk-in queue verbs onto the same screen `verified:` MERCHANT_TERMINAL_2026-08-15.md:322, each verb traced to PATCH /api/walkin/queue/[id] and components-legacy/dashboard/barber/LiveQueuePanel.tsx:98
-- [x] B2 Map the appointment verbs onto the same screen `verified:` the endpoint table at MERCHANT_TERMINAL_2026-08-15.md:334
+- [x] B2 Map the appointment verbs onto the same screen `verified:` commit 4851a82f3, the endpoint table at MERCHANT_TERMINAL_2026-08-15.md:334
 - [x] B3 Name how the two streams coexist without becoming two products `verified:` MERCHANT_TERMINAL_2026-08-15.md:343, and built that way in app/[locale]/dev/terminal/Terminal.tsx (one row grammar, two variants)
 
 ### C. NO DEVICE / BROWSER-ONLY
-- [x] C1 Answer the hard question: how does the shop actually NOTICE a new booking in a browser `verified:` MERCHANT_TERMINAL_2026-08-15.md:414, two layers, each claim carrying its source
-- [x] C2 Name the fallback chain when the browser misses it
-- [x] C3 State the iPad reality (backgrounded tab, sleeping screen) with sourced facts, not guesses
+- [x] C1 Answer the hard question: how does the shop actually NOTICE a new booking in a browser `verified:` commit f004c5dc2, MERCHANT_TERMINAL_2026-08-15.md:414, two layers, each claim carrying its source
+- [x] C2 Name the fallback chain when the browser misses it `verified:` commit f004c5dc2, the five-step ladder in section C2 of this file (row, sound loop, push, SMS after N minutes, email as the record)
+- [x] C3 State the iPad reality (backgrounded tab, sleeping screen) with sourced facts, not guesses `verified:` commit f004c5dc2, section C3 of this file, sourced to Apple's own developer-forum statement that the suspension is intentional plus Chrome's two five-minute throttle and freeze mechanisms
 
 ### D. RESEARCH (never from memory)
 - [x] D1 Uber Eats merchant side: Orders vs Manager split, lifecycle, alerting, device phase-out
