@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Walk-in band: the count leads, the marks carry the load</title>
+<!-- Base: elicitation -->
+<!-- Scale: component -->
+<!--
+  Mockup-scope: section
+  Grounded-in: app/[locale]/_components/homepage/WalkInBand.tsx
+  Depicts: the walk-in band of the home feed -> app/[locale]/page.tsx
+  treatment-only. measure-ok.
+
+  ONE design, not nine. He looked at nine versions and named two things he wants kept, so this
+  page builds those two and stops: the "N ahead of you" count, which he mentioned twice, and the
+  mark indicators from version 5 (8 marks, 6 x 16 each, gap 4, empty #E4E4E7).
+
+  Composes: the individual entity-card grammar from _design-system/COMPONENT_REGISTRY.md and the
+    CLAUDE.md radius row, "individual entity-card 16 (rounded-card+border, gap-separated, ONE card
+    per DISTINCT entity, a stylist/person, a salon)". Four salons are four distinct entities, so
+    they are four separate cards and never one merged group card. The rating follows the converged
+    card decision (CARD_REDESIGN_2026-07-13 C11): star plus value, and nothing after the value.
+
+  Exists-check: ran this turn. `npm run exists walkin` returns 7 components and 4 lib modules, and
+    `npm run exists WalkInBand` returns app/[locale]/_components/homepage/WalkInBand.tsx, which is
+    what this depicts. Nothing new is built: this reads the endpoint the shipped band already
+    reads. GRAVEYARD HIT, and it is not this: _design-system/REMOVED.md kills "walk in today /
+    walk-in rail / home walkin section", the bespoke salon-card rail whose subline claimed "4 of 20
+    stores take walk-ins" (owner 2026-07-31). That rail is not re-proposed anywhere here, and the
+    invented figure that came with it is not either. The same entry records the REAL anatomy that
+    replaced it, and this page keeps its parts: the 52px sunken icon tile, the walk-in title, the
+    green Live dot, bordered cards. Two parts of it are deliberately changed and both are named in
+    the on-page label so neither is smuggled: the wait figure gives up the 20px slot to the count,
+    and the full-width "All walk-ins" button becomes the see-all circle every other feed section
+    uses. Say the word and either one goes back.
+
+  Reference-checked: the live page, measured this turn at 390 x 844 on http://localhost:61809/en
+    with getBoundingClientRect and getComputedStyle. The reference is our own shipped band. The
+    REMOVED.md entry describes the title as 18/700; the live band computes to 600, so 600 is used.
+
+  Diagnosis: the queue count is not the hero | measured on the live band the string "4 ahead of you" renders at 12px weight 400 in #6B6B6B, the same treatment as the address directly above it, while the wait range takes 20px | violates CLAUDE.md FLOORS LAW 7b, the anchor must be at least 1.8x body | target 30px, which is 2.50x the 12px body
+  Diagnosis: one size does almost all the work | measured 22 of 32 text elements on the live band sit at 12px, 68.8 percent, and my own walk-in page last round measured 120 of 162 elements at 13px with only 3 distinct sizes in the whole file | violates CLAUDE.md NEVER-AGAIN floor 2 read with FLOORS LAW 7c, size variety is not range | target 4 sizes spanning 2.50x, 30 / 18 / 15 / 12
+  Diagnosis: the walk-in icon was swapped for a drawn glyph | measured the live band renders /icons/categories/walkin.png at 34.31 x 34.31 inside a 52 x 52 #F4F4F5 box at radius 15 (WalkInBand.tsx:76) and my last mockup replaced it with a lucide door | violates CLAUDE.md taste rule 9, ground in the system and do not invent | target the real asset at the measured 34 x 34
+
+  TYPE, and why each size exists. Four sizes, two weights, in the whole file including the label.
+    30 / 600  the count. The one thing he asked for twice, so it is the only thing on the card that
+              is allowed to be big. Inter Tight, tabular, so 4 and 12 occupy the same box.
+    18 / 600  the section heading, the CLAUDE.md rule for every section heading on the feed.
+    15 / 600  the shop name. Second anchor, and 1.25x the meta so identity separates from detail.
+    12 / 400  everything else: the label under the count, the wait, the address, the rating.
+    Spread largest to smallest 30 / 12 = 2.50x, which clears the 1.5x asked for and the 1.8x floor.
+
+  COLOUR, his scale, quiet to busy, with the ratio each hue measures against white:
+    quiet   #16A34A  3.30:1   (CLAUDE.md rule 4, measured there)
+    middle  #EA580C  3.56:1   (computed this turn from the sRGB relative luminance, 0.2450)
+    busy    #DC2626  4.83:1   (CLAUDE.md rule 4, measured there)
+    All three clear the 3:1 graphical floor, so all three are legal on a mark. Warning #F1AE27 is
+    the one that is not, at 1.94:1, which is why the middle step is surcharge orange instead.
+    The hue rides the MARKS, not the number: a mark is a graphical object, where 3:1 is the whole
+    requirement, while the number stays #0A0A0A at 21:1 and carries the hierarchy by size alone.
+  THRESHOLDS, taken from the real counts the endpoint returned this turn (2, 3, 4, 6), not invented:
+    0 to 2 quiet, 3 to 4 middle, 5 and up busy. Every band holds at least one real shop, so none of
+    the three is a decoration waiting for data that may never arrive. Above 8 the marks stop filling
+    and the number keeps counting, because 8 marks cannot show 11.
+
+  measured: live band 390 wide, icon 34.31 x 34.31 in a 52 x 52 #F4F4F5 box at radius 15, chip
+    157.08 x 140, sizes 18 / 20 / 14 / 12 at weights 600 and 400, 22 of 32 text elements at 12px.
+    This section: gutter 16, card radius 16 with a 1px #E4E4E7 edge, count column 112, marks 8 x
+    (6 x 16) gap 4 = 76 wide, see-all a 32 circle inside a 44 tap, every card taller than 44.
+
+  VERIFIED AFTER RENDER, same viewport, this turn, not predicted:
+    visible sizes 30 / 18 / 15 / 12, exactly 4, and weights 600 and 400, exactly 2.
+    icon renders at 34 x 34 from /icons/categories/walkin.png, natural width 1254, loaded.
+    mark row measures 76.0 wide, each mark 6 x 16, and the fills land where the data says:
+      4 waiting orange, 3 waiting orange, 6 waiting red, 2 waiting green.
+    card 358 x 85.14, see-all tap 44 x 44 around a 32 x 32 circle, body scroll width 390, so
+    nothing overflows sideways.
+    BOTH CONTROLS CLICKED, not assumed: the first card went to /en/salon/cuts-and-culture?walkin=1
+    and the page title came back "Cuts & Culture - Barbershop in Basel"; the see-all went to
+    /en/barbershop?walk_in=true and that page rendered 4 salon cards.
+    KNOWING DEVIATION, stated rather than hidden: 10 of 27 text elements in the section carry
+    weight 600, 37.0 percent, over the roughly 30 percent ceiling in FLOORS LAW 7a. Eight of those
+    ten are the two anchors of the four cards, the count and the shop name, which the two-anchor
+    card rule in FLOORS LAW 6 requires. A card this lean cannot be under 30 percent without either
+    dropping an anchor or padding the card with filler text to dilute the share, and both are worse
+    than the overage. CLAUDE.md itself records the 30 as a house number with no study behind it.
+  Real data only: GET /api/walkin/nearby?limit=8, the same endpoint WalkInBand.tsx:46 calls. Names,
+    ratings, addresses, wait ranges and queue lengths are whatever it returns, and the rating shows
+    only when the endpoint reports at least one review. There is no photography in this band
+    because there is none to show, salon_photos has 0 rows, and the only image on the page is the
+    real category asset.
+-->
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--sunken:#F4F4F5;--hairline:#E4E4E7;--star:#FFC32B;
+        --quiet:#16A34A;--middle:#EA580C;--busy:#DC2626;
+        --display:'Inter Tight',system-ui,-apple-system,sans-serif;
+        --body:Inter,'Inter Tight',system-ui,sans-serif;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#fff;color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased;
+       -webkit-text-size-adjust:100%;max-width:390px;margin:0 auto;padding-bottom:64px}
+
+  .lab{font:400 12px/1.5 var(--body);color:var(--ink2);padding:18px 16px 24px}
+  .lab b{color:var(--ink);font-weight:600}
+  .lab p{margin-top:9px}
+
+  .head{display:flex;align-items:center;gap:14px;padding:0 16px}
+  .ic{flex:0 0 52px;width:52px;height:52px;border-radius:15px;background:var(--sunken);
+      display:grid;place-items:center}
+  .ic img{width:34px;height:34px;object-fit:contain;display:block}
+  .htx{min-width:0;flex:1}
+  h2{font:600 18px/1.05 var(--display);letter-spacing:-.01em;color:var(--ink)}
+  .sub{font:400 12px/1.3 var(--body);color:var(--ink2);margin-top:4px}
+  .live{margin-top:4px;display:inline-flex;align-items:center;gap:6px;
+        font:600 12px/1 var(--body);color:var(--ink)}
+  .live i{width:7px;height:7px;border-radius:999px;background:var(--quiet);display:block}
+  .see{flex:0 0 44px;width:44px;height:44px;margin-right:-6px;display:grid;place-items:center;
+       color:var(--ink);text-decoration:none}
+  .see span{width:32px;height:32px;border-radius:999px;background:var(--sunken);
+            display:grid;place-items:center}
+
+  .list{margin-top:16px;padding:0 16px;display:flex;flex-direction:column;gap:10px}
+  .row{display:flex;align-items:center;gap:14px;min-height:84px;padding:12px 14px;
+       background:#fff;border:1px solid var(--hairline);border-radius:16px;
+       text-decoration:none;color:inherit;
+       transition:background-color 200ms cubic-bezier(.22,.61,.36,1),transform 200ms cubic-bezier(.22,.61,.36,1)}
+  .row:active{background:var(--sunken);transform:scale(.985);transition-duration:80ms}
+
+  .q{flex:0 0 112px;width:112px}
+  .qn{display:flex;align-items:baseline;gap:6px;white-space:nowrap}
+  .qn b{font:600 30px/1 var(--display);letter-spacing:-.02em;color:var(--ink);
+        font-variant-numeric:tabular-nums}
+  .qn span{font:400 12px/1.2 var(--body);color:var(--ink2)}
+  .marks{display:flex;gap:4px;margin-top:10px}
+  .marks i{width:6px;height:16px;border-radius:2px;background:var(--hairline);display:block}
+
+  .info{min-width:0;flex:1}
+  .nrow{display:flex;align-items:center;gap:8px}
+  .nm{font:600 15px/1.25 var(--body);color:var(--ink);
+      overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .rt{margin-left:auto;flex:0 0 auto;display:inline-flex;align-items:center;gap:4px;
+      font:400 12px/1 var(--body);color:var(--ink2);font-variant-numeric:tabular-nums}
+  .mt{margin-top:4px;font:400 12px/1.35 var(--body);color:var(--ink2);
+      overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+</style>
+</head>
+<body>
+<div id="out"></div>
+<script>
+/* Real lucide markup, node_modules/lucide-react v0.577.0, read this turn. Nothing is drawn here. */
+var ARROW = '<svg class="lucide lucide-arrow-right" width="20" height="20" viewBox="0 0 24 24" ' +
+  'fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" ' +
+  'stroke-linejoin="round" aria-hidden="true">' +
+  '<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>';
+var STAR = '<svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" ' +
+  'fill="#FFC32B" stroke="#FFC32B" stroke-width="2" stroke-linecap="round" ' +
+  'stroke-linejoin="round" aria-hidden="true">' +
+  '<path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 ' +
+  '.294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 ' +
+  '2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 ' +
+  '9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>';
+
+var MARKS = 8;
+var RATING_DECIMALS = 1;
+/* Bands read off the real counts this endpoint returned (2, 3, 4, 6), not off a guessed curve. */
+function hue(n){ return n <= 2 ? "var(--quiet)" : (n <= 4 ? "var(--middle)" : "var(--busy)"); }
+
+function h(tag, cls, txt){
+  var n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (txt != null) n.textContent = txt;
+  return n;
+}
+
+function header(){
+  var d = h("div", "head");
+
+  /* The REAL asset back at the measured size. Owner this turn: "I don't like how you changed the
+     icon of the walk in." It is /icons/categories/walkin.png at 34 x 34 (WalkInBand.tsx:76), and
+     no substitute is drawn for it anywhere on this page. */
+  var box = h("span", "ic");
+  var im = document.createElement("img");
+  im.src = "/icons/categories/walkin.png"; im.alt = "";
+  box.appendChild(im);
+  d.appendChild(box);
+
+  var tx = h("div", "htx");
+  tx.appendChild(h("h2", null, "Walk-in"));
+  tx.appendChild(h("div", "sub", "No appointment. See the wait and take your place."));
+  var lv = h("span", "live");
+  lv.appendChild(h("i"));
+  lv.appendChild(document.createTextNode("Live"));
+  tx.appendChild(lv);
+  d.appendChild(tx);
+
+  var a = document.createElement("a");
+  a.href = "/en/barbershop?walk_in=true";
+  a.className = "see";
+  a.setAttribute("aria-label", "See all walk-in shops");
+  var s = document.createElement("span"); s.innerHTML = ARROW;
+  a.appendChild(s);
+  d.appendChild(a);
+  return d;
+}
+
+function card(s){
+  var a = document.createElement("a");
+  a.href = "/en/salon/" + s.slug + "?walkin=1";
+  a.className = "row";
+
+  var q = h("div", "q");
+  var qn = h("div", "qn");
+  qn.appendChild(h("b", null, String(s.queueLength)));
+  qn.appendChild(h("span", null, "ahead of you"));
+  q.appendChild(qn);
+
+  var mk = h("div", "marks");
+  var filled = Math.min(s.queueLength, MARKS);
+  for (var i = 0; i < MARKS; i++){
+    var m = h("i");
+    if (i < filled) m.style.background = hue(s.queueLength);
+    mk.appendChild(m);
+  }
+  q.appendChild(mk);
+  a.appendChild(q);
+
+  var info = h("div", "info");
+  var nrow = h("div", "nrow");
+  nrow.appendChild(h("div", "nm", s.name));
+  /* Star plus value and nothing after it: the converged card C11 took the tally off this row. */
+  if (s.reviewCount > 0){
+    var rt = h("span", "rt");
+    var st = document.createElement("span");
+    st.style.cssText = "display:flex"; st.innerHTML = STAR;
+    rt.appendChild(st);
+    rt.appendChild(document.createTextNode(s.rating.toFixed(RATING_DECIMALS)));
+    nrow.appendChild(rt);
+  }
+  info.appendChild(nrow);
+
+  var wait = s.waitMinutes <= 0
+    ? "Free now"
+    : s.waitMinutes + " to " + s.waitMinutesMax + " min wait";
+  info.appendChild(h("div", "mt", wait));
+  if (s.address) info.appendChild(h("div", "mt", s.address));
+  a.appendChild(info);
+  return a;
+}
+
+function note(){
+  var d = h("div", "lab");
+  var p1 = document.createElement("p");
+  p1.appendChild(h("b", null, "Walk-in, one design."));
+  p1.appendChild(document.createTextNode(
+    " The count you asked for twice is the biggest thing on the card at 30px, and the version 5 " +
+    "marks sit under it at 6 by 16 with a gap of 4. The marks carry your green, orange, red: " +
+    "quiet is 0 to 2 waiting, middle is 3 to 4, busy is 5 and up, bands read off the counts this " +
+    "endpoint actually returned. The number itself stays black so nothing competes with it."));
+  d.appendChild(p1);
+  d.appendChild(h("p", null,
+    "The count emphasis is NOT settled. You said a screenshot is coming for how the how-many-in-" +
+    "front should look, and it has not arrived, so 30px is my measured judgement and not your " +
+    "call yet. Everything else on this page is."));
+  d.appendChild(h("p", null,
+    "Two things I got wrong last round are corrected here: the walk-in icon is the real asset " +
+    "again at its measured 34 by 34, and the text has three real steps now, 30 for the count, 15 " +
+    "for the shop, 12 for the detail, instead of one size doing all three jobs."));
+  d.appendChild(h("p", null,
+    "Two changes to the band you approved on 31 July, said out loud rather than slipped in: the " +
+    "wait range gives up its 20px slot to the count, since only one thing per card can be the " +
+    "biggest, and the full-width All walk-ins button becomes the arrow circle every other feed " +
+    "section uses, so there is one control to one destination. Either can go back in a word."));
+  d.appendChild(h("p", null,
+    "One collision worth your call: the green Live dot now means live data while green marks mean " +
+    "a quiet queue. Same hue, two meanings. The dot is an approved element so I left it alone."));
+  return d;
+}
+
+fetch("/api/walkin/nearby?limit=8")
+  .then(function(r){ return r.json(); })
+  .then(function(d){
+    var S = (d.salons || []).filter(function(s){
+      return s && s.name && s.slug && typeof s.queueLength === "number";
+    });
+    var out = document.getElementById("out");
+    if (!S.length){
+      out.appendChild(h("div", "lab", "The walk-in endpoint returned no shops."));
+      return;
+    }
+    var sec = document.createElement("section");
+    sec.setAttribute("aria-label", "Walk-in");
+    sec.appendChild(header());
+    var list = h("div", "list");
+    S.forEach(function(s){ list.appendChild(card(s)); });
+    sec.appendChild(list);
+    out.appendChild(sec);
+    out.appendChild(note());
+  })
+  .catch(function(e){
+    document.getElementById("out").appendChild(h("div", "lab", "Walk-in feed failed: " + e.message));
+  });
+</script>
+</body>
+</html>
