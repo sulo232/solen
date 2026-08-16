@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Popular looks, rebuilt as the Inspo card</title>
+<!-- Base: elicitation -->
+<!-- Scale: component -->
+<!--
+  Mockup-scope: section
+  Grounded-in: app/[locale]/_components/homepage/PopularLooks.tsx
+  Grounded-in: app/[locale]/_components/homepage/Entdecken.tsx
+  Grounded-in: app/[locale]/_components/homepage/HeartButton.tsx
+  Depicts: Popular looks, rendered with the Inspo card anatomy -> app/[locale]/page.tsx
+  treatment-only. measure-ok.
+
+  Exists-check: ran this turn. `npm run exists PopularLooks` returns 4: the component
+    app/[locale]/_components/homepage/PopularLooks.tsx, its hook usePopularLooks.ts, and a
+    GRAVEYARD hit for "find your inspiration Entdecken inspiration section homepage second looks
+    row", recorded today because he replaced that section with this one. Nothing new is built
+    here: this renders the SAME endpoint the two shipped sections already read.
+
+  Reference-checked: the live page, measured this turn. http://localhost:61809/en at a 390 x 844
+    viewport, getBoundingClientRect plus getComputedStyle on every /inspo/ link on the page.
+
+  Diagnosis: the Popular looks tile is square | measured 82 x 82 px at ratio 1.00, radius 16 | violates owner 2026-08-16, this section takes the Inspo card anatomy, and the square has been rejected repeatedly | target ratio 0.56, 172 x 305 px at a 390 viewport
+  Diagnosis: nothing sits behind the Inspo card | measured 0 shadow layers, computed on both the card element and its photo frame | violates owner 2026-08-16, "put a real shadow BEHIND the card instead" | target 1 layer at 16 px blur
+  Diagnosis: half the photo is covered by a black overlay | measured a bottom gradient 172 x 152 px over a 172 x 305 photo, 50% of its area | violates owner 2026-08-16, he rejected the overlay by name | target 0 px of the photo covered
+  Diagnosis: the card labels our own product with another platform | measured 1 badge, 38 x 12 px, top left of every card | violates owner 2026-08-16, "REMOVE the TikTok badge" | target 0 badges
+  Diagnosis: type had no range on the round-1 page | measured 120 of 162 text elements at 13 px, 3 distinct sizes in the whole file | violates the round-2 brief, a clear primary, secondary and tertiary with a 1.5x step | target 4 sizes and 2 weights, 18 / 14 / 12 / 11, ratio 1.50
+
+  TYPE, and why each size exists. Four sizes, two weights (400 and 600).
+    18 / 600 Inter Tight  section heading. The only Inter Tight on the section, and the largest
+                          thing that is not a photograph.
+    14 / 600 Inter        the look name in variant A. The one card field a person reads first.
+    12 / 600 Inter        the price, tabular. Also the name inside variant B's pill, because the
+                          pill cannot hold 14 px at this card width. That size difference IS
+                          variant B's cost, not an accident.
+    12 / 400 Inter        the creator handle. Tertiary, ink-2, and the only non-ink text.
+    11 / 400 Inter        these lab notes. Mockup chrome, not part of the section.
+  Ratio 18 / 12 = 1.50 inside the section. The 28 px display-anchor floor is a WHOLE-SCREEN floor
+  and is carried by the page h1, measured 31.2 px on the live /en, not by a section rail.
+
+  SHADOW, picked by rendering four candidates at real card size on white and looking at them
+  (public/_mockups/looks-round2/_shadow-probe.html, screenshotted at 390 this turn), not by token
+  name. whisper (0 1px 3px rgba(10,10,10,.04), 0 10px 28px -14px rgba(10,10,10,.10)) and
+  elevation-2 (0 2px 8px rgba(50,47,44,.09)) both read as nothing against white at 172 x 305,
+  which is the failure he already named. A deeper custom value (0 8px 24px -6px rgba(10,10,10,.18))
+  reads strongest but is not a value this system owns, and inventing one when a locked token
+  already clears the bar is the invention the rules ban. CHOSEN: elevation-3,
+  0 6px 16px rgba(50,47,44,0.12), tailwind.config.js line 280. It is visible at real size, it is
+  ours, and it is the heaviest step the surface table authorizes.
+
+  CONTROLS, all three work, and the heart was clicked on the rendered page this turn to prove it:
+  aria-pressed went false to true, the glyph fill went none to #FF3366 and its stroke #0A0A0A to
+  #FF3366, then a second click put all three back. The circle at the top right opens /en/inspo.
+  Every card opens /en/inspo/<the real id>. Nothing here is drawn tappable without doing something.
+
+  measured: page gutter 16. Section heading 18 px / 600 Inter Tight, matching the live h2, which
+    measured 18 px / 600 Inter Tight on /en. Card width 44vw capped at 200 px, the live rule, so
+    it renders 172 px on a 390 phone and 200 px on anything wider. Photo frame 9:16, radius 16.
+    Heart 44 x 44 hit area over a 28 x 28 frosted circle with a 16 px glyph, the HeartButton
+    numbers. Rail gap 12.
+  Real data only: /api/discovery/feed?category=hair, images through /api/discovery/thumb/<id>
+    because the raw TikTok urls are signed and expire, and the same drop-if-no-price rule
+    usePopularLooks.ts applies. The imagery is TikTok-sourced seed content, not Solen photography.
+-->
+<style>
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--sunken:#F4F4F5;--hairline:#E4E4E7;--heart:#FF3366;
+        --display:'Inter Tight',system-ui,-apple-system,sans-serif;
+        --body:Inter,'Inter Tight',system-ui,sans-serif;
+        --lift:0 6px 16px rgba(50,47,44,0.12);}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{background:#fff;color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased;
+       max-width:390px;margin:0 auto;padding-bottom:64px}
+
+  /* lab notes: mockup chrome, 11px, never part of the section */
+  .lab{font:400 11px/1.5 var(--body);color:var(--ink2);padding:26px 16px 12px;
+       border-top:1px solid var(--hairline);margin-top:18px}
+  .lab:first-of-type{border-top:0;margin-top:0;padding-top:16px}
+  .lab b{display:block;color:var(--ink);font-weight:600;font-size:12px;margin-bottom:4px}
+
+  h2{font:600 18px/1.25 var(--display);letter-spacing:-.01em;color:var(--ink);margin:0}
+  .head{display:flex;align-items:center;justify-content:space-between;padding:0 16px}
+  .see{flex:0 0 44px;width:44px;height:44px;margin-right:-8px;display:grid;place-items:center;
+       text-decoration:none;color:var(--ink)}
+  .see span{width:32px;height:32px;border-radius:999px;background:var(--sunken);
+            display:grid;place-items:center}
+
+  /* the rail needs its own vertical padding or overflow-x clips the lift */
+  .rail{display:flex;gap:12px;overflow-x:auto;padding:10px 16px 22px;scrollbar-width:none;
+        scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+  .rail::-webkit-scrollbar{display:none}
+
+  .card{position:relative;flex:0 0 auto;width:44vw;max-width:200px;scroll-snap-align:center}
+  /* ONE tap target per card, the whole card, the way the live Inspo card behaves. A stretched
+     transparent anchor instead of wrapping the heart button inside a link. */
+  .hit{position:absolute;inset:0;z-index:1;border-radius:16px}
+  .frame{display:block;position:relative;width:100%;aspect-ratio:9/16;border-radius:16px;
+         overflow:hidden;background:var(--sunken);box-shadow:var(--lift)}
+  .frame img{width:100%;height:100%;object-fit:cover;display:block}
+
+  .heart{position:absolute;right:2px;top:2px;width:44px;height:44px;display:grid;
+         place-items:center;background:transparent;border:0;padding:0;cursor:pointer;z-index:2}
+  .heart span{width:28px;height:28px;border-radius:999px;display:grid;place-items:center;
+              background:rgba(255,255,255,0.80);backdrop-filter:blur(4px);
+              -webkit-backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,0.6);
+              box-shadow:0 1px 3px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.4);
+              transition:transform 200ms cubic-bezier(.2,.8,.2,1)}
+  .heart:active span{transform:scale(.97)}
+  /* keyboard position = an ink EDGE on the circle's existing border, per the focus row */
+  .heart:focus-visible span{border-color:var(--ink)}
+
+  /* variant B only: opaque white pill, which is why it survives with the photo uncovered */
+  .pill{position:absolute;left:8px;bottom:8px;max-width:80%;background:#fff;border-radius:999px;
+        padding:4px 10px;box-shadow:0 1px 3px rgba(10,10,10,0.10)}
+  .pill span{display:block;font:600 12px/1.35 var(--body);color:var(--ink);
+             overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+  .below{display:block;margin-top:8px}
+  .nm{font:600 14px/1.3 var(--body);color:var(--ink);height:37px;overflow:hidden;
+      display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+  .meta{display:flex;align-items:baseline;gap:8px;margin-top:2px}
+  .who{font:400 12px/1.35 var(--body);color:var(--ink2);
+       overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+  .pr{margin-left:auto;flex:0 0 auto;font:600 12px/1.35 var(--body);color:var(--ink);
+      font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+<div id="out"></div>
+<script>
+/* Real Lucide markup, v0.577.0, copied out of node_modules/lucide-react. Nothing hand drawn. */
+var ARROW_RIGHT = '<svg class="lucide lucide-arrow-right" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>';
+var HEART_D = "M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 " +
+  "2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5";
+var HEART = '<svg class="lucide lucide-heart" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#0A0A0A" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + HEART_D + '"/></svg>';
+
+function h(tag, cls, txt){
+  var n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (txt != null) n.textContent = txt;
+  return n;
+}
+
+function heartButton(name){
+  var b = document.createElement("button");
+  b.type = "button"; b.className = "heart";
+  b.setAttribute("aria-pressed", "false");
+  b.setAttribute("aria-label", "Save " + name);
+  var s = document.createElement("span");
+  s.innerHTML = HEART;
+  b.appendChild(s);
+  b.addEventListener("click", function(e){
+    e.preventDefault(); e.stopPropagation();
+    var on = b.getAttribute("aria-pressed") !== "true";
+    b.setAttribute("aria-pressed", on ? "true" : "false");
+    b.setAttribute("aria-label", (on ? "Saved " : "Save ") + name);
+    var g = b.querySelector("path").parentNode;
+    g.setAttribute("fill", on ? "#FF3366" : "none");
+    g.setAttribute("stroke", on ? "#FF3366" : "#0A0A0A");
+  });
+  return b;
+}
+
+function head(){
+  var d = h("div", "head");
+  d.appendChild(h("h2", null, "Popular looks"));
+  var a = document.createElement("a");
+  a.href = "/en/inspo"; a.className = "see";
+  a.setAttribute("aria-label", "Browse all looks");
+  var s = document.createElement("span"); s.innerHTML = ARROW_RIGHT;
+  a.appendChild(s); d.appendChild(a);
+  return d;
+}
+
+function metaRow(l){
+  var m = h("div", "meta");
+  if (l.author) m.appendChild(h("span", "who", l.author));
+  m.appendChild(h("span", "pr", "from CHF " + l.price));
+  return m;
+}
+
+/* One card. `nameOnPhoto` is the ONLY difference between the two variants. */
+function card(l, nameOnPhoto){
+  var c = h("div", "card");
+
+  var f = h("div", "frame");
+  var im = document.createElement("img");
+  im.src = l.img; im.alt = ""; im.loading = "lazy";
+  f.appendChild(im);
+  if (nameOnPhoto) {
+    var p = h("div", "pill");
+    p.appendChild(h("span", null, l.title));
+    f.appendChild(p);
+  }
+  c.appendChild(f);
+
+  var b = h("div", "below");
+  if (!nameOnPhoto) b.appendChild(h("div", "nm", l.title));
+  b.appendChild(metaRow(l));
+  c.appendChild(b);
+
+  /* the whole card is the link, so the tap target is the card, never a 16 px strip of text */
+  var a = document.createElement("a");
+  a.href = "/en/inspo/" + l.id; a.className = "hit";
+  a.setAttribute("aria-label", l.title + ", from CHF " + l.price);
+  c.appendChild(a);
+  c.appendChild(heartButton(l.title));
+  return c;
+}
+
+function section(L, nameOnPhoto){
+  var s = document.createElement("section");
+  s.appendChild(head());
+  var r = h("div", "rail");
+  L.slice(0, 8).forEach(function(l){ r.appendChild(card(l, nameOnPhoto)); });
+  s.appendChild(r);
+  return s;
+}
+
+function label(letter, title, cost){
+  var d = h("div", "lab");
+  d.appendChild(h("b", null, letter + ". " + title));
+  d.appendChild(document.createTextNode(cost));
+  return d;
+}
+
+fetch("/api/discovery/feed?category=hair&limit=8")
+  .then(function(r){ return r.json(); })
+  .then(function(d){
+    var raw = d.items || [];
+    var L = raw.map(function(x){
+      /* Resolve the image EXACTLY as usePopularLooks.ts does: a TikTok item goes through our own
+         proxy, because the raw CDN urls are signed and expire. */
+      var im = x.tiktok_url ? ("/api/discovery/thumb/" + x.id)
+                            : (x.image_url || x.tiktok_thumbnail_url || null);
+      return { id: x.id, img: im, title: x.style_name || "",
+               author: x.author_name || "", price: x.price_min };
+    }).filter(function(l){ return l.img && l.title && l.price != null; });
+
+    var out = document.getElementById("out");
+    if (!L.length) { out.appendChild(h("div", "lab", "The looks feed returned nothing.")); return; }
+
+    out.appendChild(label("A", "Name and price below the photo, on white.",
+      "Like every other card on this page. The photo is never covered, and the name gets two full " +
+      "lines at 14 px, so 43 characters survive instead of 19 (measured on this page, at 390). It " +
+      "costs 39 px of card height, and the name reads as a caption under a picture, not as part " +
+      "of it."));
+    out.appendChild(section(L, false));
+
+    out.appendChild(label("B", "The name stays on the photo, in an opaque white pill.",
+      "The pill is solid white, so it holds its own legibility with the photo uncovered, and the " +
+      "card stays 39 px shorter. It costs the name: one line at 12 px in a pill capped at 80% of " +
+      "the card, so 19 characters of 48 survive and every long style name truncates. It also puts " +
+      "a white shape back over the bottom left, the corner the overlay used to sit in."));
+    out.appendChild(section(L, true));
+  })
+  .catch(function(e){
+    document.getElementById("out").appendChild(h("div", "lab", "Feed failed: " + e.message));
+  });
+</script>
+</body>
+</html>

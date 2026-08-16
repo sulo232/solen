@@ -2,23 +2,30 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-15T11:08:17 (trigger: auto)
+- taken: 2026-08-16T21:25:49 (trigger: auto)
 - branch: claude/agent-flow-design-overhaul-2af2c2
 
 ## git
 ```
-081c97098 Record: round-2 corrections, and every correction box now carries its commit
-588c1bb90 Round 2 on the continue card: every one of his corrections, and two review findings
-dae602f38 Harden: a measurement older than the screenshot no longer counts as measured
-4e0ce8f19 Record: his five corrections from the dictated message, in his words
-150ac548e Three directions for the continue card, city dropped, taller, icons down
+e99649943 Two dead controls in the reviews mockup, caught by clicking them
+801e6213b Mockups for walk-in and reviews, nine versions each, plus the four bugs they exposed
+8ff7a1c40 An independent reviewer broke my gate change in 8 ways. Fixed with the mechanism this repo already had
+68d7804b9 One section, eight versions, stacked. No top bar, no toggle, no frame
+ca4b6b324 Remove the gate that was forcing the whole-page template, and rule 4 with it
 ```
 ```
-M public/_mockups/continue-card-directions/index.html
+M _design-system/REMOVED.md
+ M _plans/ACTIVE.md
+?? _plans/HOME_SECTION_ROUND2_2026-08-16.md
+?? public/_mockups/looks-round2/
+?? public/_mockups/reviews-round2/
+?? public/_mockups/walkin-round2/
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
-67 | BRANCH RECONCILIATION , 40 unmerged branches, ~1800 commits, none on main (owner 2026-08-14: "look in deeep theres gnna be alot of conflicts ... merge them or delete but ask me alot") | **ACTIVE** (2026-08-14) , four questions asked
+68 | HOME: continue-search card + recently-viewed (owner 2026-08-15: "big size difference between the screenshot Airbnb reference and ours" + "mock ups in direction based on other websites and apps" + "recently viewed, we didn't do anything for that") | **ACTIVE** (2026-08-15)
+69 | HOME SECTIONS one by one (owner 2026-08-15: search icon without the box, card font/spacing "not balanced ... looks empty", Popular looks "doesn't make any sense" with "tons" of options, then Walk-in, then Reviews) | **ACTIVE** (2026-08-15)
+70 | HOME SECTIONS round 2 (owner 2026-08-16, rejected all 26 stacked versions and specified ONE design per section: Popular looks takes the Inspo card minus the TikTok badge and the black gradient plus a real shadow and replaces Find-your-inspiration; walk-in keeps the N-ahead count and the mark indicators, colour-coded, real icon back, hierarchy fixed; reviews cards smaller with read-more repositioned) | **ACTIVE** (2026-08-16)
 66 | CATEGORY ROW: circles that morph into pills, flat icons with a glare (owner 2026-08-12: "instead of pills like circle n once u click then it bcms pill all morphism and also the icon i want it like abit glare yk like 3d liquid style icons") | **ACTIVE** (2026-08-12)
 64 | SEARCH PANEL FLATNESS , no colour on the idle list, and the for-you feed (owner 2026-08-12: "i wanna improve design sh looks flat n no color n the fur sie ui too") | **ACTIVE** (2026-08-12) , mockup delivered, awaiting his pick
 63 | SEARCH SHEET SIZE , the Wo? sheet starts 56pt lower than the Suche sheet (owner 2026-08-12: "u see the diffrence between em the sheet size between wo and search i like search better and also the wann" + "not like refference") | **ACTIVE** (2026-08-12)
@@ -78,7 +85,21 @@ M public/_mockups/continue-card-directions/index.html
 50 | DESIGN principle deep-research (the rules we ALREADY have) | **ACTIVE** (2026-07-28)
 51 | DESIGN RE-ENGINEER , improve the system we have, measured against live Airbnb | **ACTIVE** (2026-07-28)
 
-## BRANCH_RECONCILIATION_2026-08-14.md
+## HOME_SECTION_ROUND2_2026-08-16.md
 Open boxes:
-- [ ] C10. The remaining copies, one at a time. Each one: open it, rescue anything uncommitted that
-- [ ] C14. Those eight files reach main. Nothing to build; it is the merge, which is his.
+- [ ] **A1. Keep the Popular looks section.** He said keep it, so it is not going in the graveyard.
+- [ ] **A2. Give it the Inspo card anatomy.** measured on the live Inspo row: card 200 x 380, photo
+- [ ] **A3. Remove the TikTok badge from the card.** measured: 38 x 12 pill, top left.
+- [ ] **A4. Remove the black gradient over the photo.** measured: `bg-gradient-to-t from-black/80`
+- [ ] **A5. Put a real shadow BEHIND the card instead.** measured: the live Inspo card and its photo
+- [ ] **A6. "Find your inspiration" is replaced by Popular looks.** One section, not two. They were
+- [ ] **A7. Graveyard line for the removed section, same turn.**
+- [ ] **B1. Keep the "N ahead of you" count.** He named it twice.
+- [ ] **B2. Keep the mark indicators.** measured in version 5 of my page: 8 marks, 6 x 16 each,
+- [ ] **B3. Colour-code the marks by how busy it is.** His words: "if it's get more, then...".
+- [ ] **B4. Put the walk-in icon back.** I swapped it for a lucide door glyph. The live band uses
+- [ ] **B5. Fix the text hierarchy.** measured on my own page: 120 of 162 text elements render at
+- [ ] **B6. BLOCKED, and this is the one real dependency: the N-ahead emphasis treatment.** He said
+- [ ] **B7. Harden the hierarchy failure**, because he asked for it by name ("you do harden on that
+- [ ] **C1. The cards are too big and too long.** measured live: 260 x 220 per card.
+- [ ] **C2. Read more is the right idea in the wrong place.** measured: it currently sits in its own

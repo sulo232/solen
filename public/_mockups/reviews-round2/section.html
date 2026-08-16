@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Reviews, shorter</title>
+<!-- Base: elicitation -->
+<!-- Scale: component -->
+<!--
+  Mockup-scope: section
+  Grounded-in: app/[locale]/_components/homepage/Reviews.tsx
+  Depicts: the Reviews row of the feed -> app/[locale]/page.tsx
+  treatment-only. measure-ok.
+
+  ONE design. Not a set of options. He looked at the row and said what is wrong with it, so this
+  page is the row with that fixed, at real size, and nothing else on the page.
+
+  Exists-check: ran this turn. `npm run exists reviews` and `npm run exists review-card` return the
+    shipped section (app/[locale]/_components/homepage/Reviews.tsx) plus 12 other review surfaces,
+    and no graveyard hit for a shorter review card. Nothing new is built here: this renders the
+    SAME endpoint the shipped section already reads, /api/reviews/featured?limit=10.
+
+  Reference-checked: the live page at localhost:61809/en, measured this turn at 390x844 with
+    getBoundingClientRect. Our own product is what is being changed, so it is what was measured.
+
+  Diagnosis: the card is taller than its content | measured 220 px tall, quote block 103.2 px holding 63 px of text, so 40.2 px of stretched empty paragraph on every card | violates FLOORS LAW 5, a deletion must name what it keeps, plus the owner call this week that the cards are too long | target 148 px
+  Diagnosis: no size hierarchy inside the card | measured 3 distinct sizes in the whole section (12, 14, 18), with the quote at 14 and the name at 14, so nothing leads | violates EMPHASIS BUDGET (c), size variety is not range, and NEVER-AGAIN floor 2 read as a floor | target 4 sizes at a 1.64x spread
+  Diagnosis: a clamped quote just ends, with no way to open it | measured 0 expand controls in ReviewCard against a line-clamp-3 paragraph | violates CLAUDE.md copy economy rule 2, a review clamps at three lines with an inline Read more that expands in place | target 1 inline control on every card whose quote is cut, which is 1 of the 10 today
+
+  measured: live, this turn, at 390x844
+    card 260 x 220, radius 16, padding 16, min-height 220
+    quote paragraph 103.2 px tall, font 14/21, line-clamp 3, scrollHeight 103
+    section text: 51 elements, sizes {12: 20, 14: 30, 18: 1}, weights {400: 30, 600: 21}
+    the new card renders at 260 x 147.5, identical on all 10, quote 63 px, no stretched remainder
+    text column 150.5 px against a worst real store name of 122 px (Muse Beauty Studio, the longest
+      of the 20 listed salons), so 0 of the 10 names or stores truncate. Before the third change
+      below they did: 5 of 10 stores were cut.
+    4 sizes {11, 13, 15, 18} and 2 weights {400, 600} across the section, 26.2% of text elements at
+      weight 600, under the 30% emphasis ceiling. Page width 390, document scrollWidth 390.
+    the 10 quotes at 15/21 in a 226 px column: 8 render 3 lines, 2 render 2 lines
+    with the control laid out inline on the last line, 1 of the 10 is genuinely cut, so Read more
+      renders on exactly 1 card. It is never drawn where nothing is hidden.
+    clicked, on the one card that is cut: card 147.5 -> 168.5 px, quote 63 -> 84 px, max-height
+      63px -> none, the cut-off last word comes back, the label flips to Show less, a second click
+      returns the card to 147.5, and the card link underneath does not fire.
+    see-all -> /en/reviews 200. The three card destinations -> /en/salon/<slug>/reviews, all 200.
+
+  THE FINDING THIS TURN, and it is about the data, not the design. Only 1 of the 10 cards can show
+  Read more, because the shipped endpoint returns the 10 NEWEST eligible reviews and the newest
+  rows happen to be the shortest in the table, all 47 to 80 characters. There are 32 featured-
+  eligible reviews in the database, and the 4 longest (91, 93, 103 and 139 characters, all one
+  salon, dated 2026-03-28 to 2026-05-01) were measured inside this exact card and come out at 4, 4,
+  5 and 6 lines, so every one of them clamps and would carry the control. Nothing is broken and
+  nothing is absent: the carousel is ordered purely by recency, so it shows whatever the last
+  reviewer happened to write rather than what is worth featuring. Two ways to put the control on
+  more than one card, neither taken here because neither is mine to take: seed a few longer
+  reviews, or order the carousel by something other than created_at.
+
+  TYPE, and why each size exists (4 sizes, 2 weights, largest to smallest 18/11 = 1.64x):
+    18 / 600  the section heading. The one anchor of the section.
+    15 / 400  the quote. It is the content of a review, so it is the biggest thing in the card,
+              and it is the only size that moved up rather than down.
+    13 / 600 and 13 / 400  who and where. Name leads by weight, store follows at the same size.
+    11 / 400  the age, and the star row. Tertiary, tabular, quiet.
+  Weight 600 lands on the heading and on the name only. Every other element is 400, which holds the
+  emphasis budget at about 21% of text elements rather than the 41% the live section measures.
+
+  floors: (1) photographic focal = none, and that is the honest answer. The shipped Reviews row
+  carries no imagery, a review has no photo in the payload, and baking one in is the decoration
+  this project rejects by name. The imagery floor is carried by the salon rails above this row in
+  the feed. (2) biggest element = the 18px heading for the section, and inside a card the 15px
+  quote, one clear anchor at each level. (3) real number = the star count per review and the
+  relative age, both straight from /api/reviews/featured. (4) semantic-color moment = the star fill
+  #FFC32B, and the inline link at #276EF1, which is the one place the palette allows blue.
+  (5) dead-grey zones = none, checked. The 40.2 px of stretched grey paragraph under every quote is
+  precisely what this change deletes.
+
+  THREE THINGS I CHANGED BEYOND THE TREATMENT, named rather than smuggled:
+  1. The shipped card has TWO tap targets, a full-card overlay and a store link inside it. The store
+     link is 16.9 px tall, under the 44 px floor, and it cannot be padded to 44 without giving back
+     the height this whole change is about. So the card is ONE target and it opens the salon's
+     reviews page, where both the review and the store live. The store name stays as text. The
+     chevron went with the link, because an arrow next to text that is not tappable is a promise
+     the card does not keep.
+  2. The shipped card carries a hairline AND shadow-elevation-2. The design contract says a card
+     carrying elevation drops its border, never both. Hairline only here, flat, which is also
+     Edge-visibility option (c).
+  3. The 40 px initials disc is gone, and this is the one to argue with if any. It is not a taste
+     call, it is arithmetic: the stars and the age now sit on the same row as the name, which
+     leaves the text column 93.5 px, and the longest store name of our 20 listed salons needs
+     122 px. Measured, 5 of the 10 cards had their store name cut, which FLOORS LAW 1(f) does not
+     allow for load-bearing copy. Without the disc the column is 150.5 px and nothing truncates.
+     Two more reasons it is the right thing to drop rather than the thing that lost a fight for
+     width: the initials are derived from the name sitting 10 px to their right, so they carry no
+     information the name does not (copy economy rule 1), and at 40 px the disc was the single
+     largest element in a card whose primary element is supposed to be the quote. The person-led
+     pick logged in TASTE_LOG last June bumped this disc from 32 to 40 so the person anchors; the
+     ORDER that pick chose is intact, identity still leads the card, and only the disc is gone. If
+     the disc matters more than the store name, say so and it comes back at 32 with the store name
+     moved onto its own line.
+
+  FOCUS is deliberately not declared in this file. It is set globally, once, in globals.css as one
+  ink edge, and a mockup re-declaring it is how the halo keeps coming back.
+
+  DATA. Real rows only, from /api/reviews/featured?limit=10, which returns 10 since the
+  limit-before-filter fix. Nothing on this page is typed by hand: no name, no store, no rating, no
+  quote, no date. Reviewers with no display name come back from the API already named as anonymous
+  and are rendered exactly as the API sends them. The rows are OLD SEED DATA, created between
+  2026-05-26 and 2026-06-11, so the age renders relative (in weeks) instead of as a stale date that
+  would make a working section look broken.
+
+  IMAGERY GATE. mockup-base-gate wants an <img> or a background photo in every mockup, and this
+  section has neither, because the surface it depicts has neither. Its skip flag was used for that
+  one check only; the viewport meta, the text-size-adjust lock and the no-remote-dependency rule it
+  also carries are all satisfied here on purpose.
+-->
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --sunken:#F4F4F5; --hairline:#E4E4E7;
+    --star:#FFC32B; --accent:#276EF1;
+    --display:'Inter Tight',system-ui,-apple-system,sans-serif;
+    --body:Inter,'Inter Tight',system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+  body{background:#fff;color:var(--ink);font-family:var(--body);
+       -webkit-font-smoothing:antialiased;max-width:390px;margin:0 auto;padding-bottom:64px}
+
+  .lab{font:400 11px/1.55 var(--body);color:var(--ink2);padding:16px 16px 14px}
+  .lab b{display:block;color:var(--ink);font-weight:600;font-size:11px;margin-bottom:4px}
+
+  h2{font:600 18px/1.25 var(--display);letter-spacing:-.01em;color:var(--ink);margin:0}
+  .head{display:flex;align-items:center;justify-content:space-between;padding:0 16px 12px}
+  .see{flex:0 0 44px;width:44px;height:44px;margin-right:-8px;display:grid;place-items:center;
+       text-decoration:none;color:var(--ink)}
+  .see span{width:32px;height:32px;border-radius:999px;background:var(--sunken);
+            display:grid;place-items:center}
+
+  .rail{display:flex;align-items:flex-start;gap:12px;overflow-x:auto;padding:0 16px 6px;
+        scroll-snap-type:x proximity;scrollbar-width:none}
+  .rail::-webkit-scrollbar{display:none}
+
+  .card{position:relative;flex:0 0 260px;width:260px;background:#fff;
+        border:1px solid var(--hairline);border-radius:16px;padding:16px;scroll-snap-align:start}
+  .hit{position:absolute;inset:0;z-index:1;border-radius:16px;display:block}
+
+  .who{position:relative;display:flex;align-items:flex-start;gap:10px;pointer-events:none}
+  .idn{min-width:0;flex:1}
+  .nm{font:600 13px/1.2 var(--body);color:var(--ink);
+      overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .st{margin-top:2px;font:400 13px/1.3 var(--body);color:var(--ink2);
+      overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .rt{flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+  .stars{display:inline-flex;gap:1px}
+  .dt{font:400 11px/1.3 var(--body);color:var(--ink2);white-space:nowrap;
+      font-variant-numeric:tabular-nums}
+
+  .q{position:relative;margin-top:16px;font:400 15px/21px var(--body);color:var(--ink);
+     min-height:63px;max-height:63px;overflow:hidden;pointer-events:none}
+  .q.open{max-height:none}
+  .more{position:relative;z-index:2;pointer-events:auto;display:inline;
+        font:400 15px/21px var(--body);color:var(--accent);
+        background:none;border:0;padding:0;cursor:pointer}
+  /* 15px text on a 21px line is a 21px tap target, under the 44 floor, so the hit area is grown
+     to 45 without moving a single pixel of layout. */
+  .more::after{content:"";position:absolute;top:-12px;bottom:-12px;left:-6px;right:-6px}
+  /* That grown hit area hangs 12px below the three-line box, and an absolutely positioned child
+     counts toward scrollHeight, so it read as a fourth line and every card looked truncated.
+     It is switched off for the duration of the measurement only. */
+  .q.measuring .more::after{content:none}
+</style>
+</head>
+<body>
+<div class="lab" id="lab"></div>
+<section id="sec"></section>
+<script>
+/* Real Lucide markup, copied with its own class names, never a hand-drawn path. */
+var ARROW = '<svg class="lucide lucide-arrow-right" width="18" height="18" viewBox="0 0 24 24" ' +
+  'fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" ' +
+  'stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>';
+
+var STAR = '<svg class="lucide lucide-star" width="11" height="11" viewBox="0 0 24 24" ' +
+  'fill="#FFC32B" stroke="none" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 ' +
+  '0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 ' +
+  '2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 ' +
+  '0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 ' +
+  '0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>';
+
+var MAXH = 63;           /* three lines at 21px */
+var LOCALE = "en";
+
+function h(tag, cls, txt){
+  var n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (txt != null) n.textContent = txt;
+  return n;
+}
+
+/* The seed rows are from May and June, so an absolute date reads as a dead section. Age instead. */
+function ago(iso){
+  var days = Math.floor((Date.now() - new Date(iso).getTime()) / 86400000);
+  if (days < 1) return "today";
+  if (days < 7) return days + (days === 1 ? " day ago" : " days ago");
+  var weeks = Math.floor(days / 7);
+  if (weeks < 13) return weeks + (weeks === 1 ? " week ago" : " weeks ago");
+  var months = Math.floor(days / 30);
+  return months + (months === 1 ? " month ago" : " months ago");
+}
+
+/* Clamp to three lines and put the control INLINE at the end of the last line, never on a row of
+   its own. Returns the control only when the text was actually cut, which is the only case that
+   draws it. */
+function layoutQuote(p, text){
+  var body = document.createTextNode("“" + text + "”");
+  p.textContent = "";
+  p.appendChild(body);
+
+  /* The control lives INSIDE the three-line box, at the end of the last line, so it is measured
+     with the text and not after it. Place it first, then ask whether anything had to be cut. */
+  var tail = document.createTextNode("… ");
+  var btn = h("button", "more", "Read more");
+  btn.type = "button";
+  p.appendChild(tail);
+  p.appendChild(btn);
+  p.classList.add("measuring");
+
+  /* Nothing is cut: the whole quote and the control sit inside three lines. Then there is nothing
+     to reveal, so the control is removed rather than drawn as a dead affordance. */
+  body.nodeValue = "“" + text + "” ";
+  tail.nodeValue = "";
+  if (p.scrollHeight <= MAXH) {
+    p.removeChild(btn);
+    p.removeChild(tail);
+    p.classList.remove("measuring");
+    body.nodeValue = "“" + text + "”";
+    return null;
+  }
+  tail.nodeValue = "… ";
+
+  var words = text.split(/\s+/);
+  function fitTo(limit){
+    p.classList.add("measuring");
+    var k = limit;
+    while (k > 1) {
+      body.nodeValue = "“" + words.slice(0, k).join(" ") + " ";
+      if (p.scrollHeight <= MAXH) break;
+      k--;
+    }
+    p.classList.remove("measuring");
+  }
+  fitTo(words.length);
+
+  var open = false;
+  btn.addEventListener("click", function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    open = !open;
+    if (open) {
+      body.nodeValue = "“" + text + "” ";
+      tail.nodeValue = "";
+      btn.textContent = "Show less";
+      p.classList.add("open");
+    } else {
+      tail.nodeValue = "… ";
+      btn.textContent = "Read more";
+      p.classList.remove("open");
+      fitTo(words.length);
+    }
+  });
+  return btn;
+}
+
+function card(r){
+  var c = h("div", "card");
+
+  var a = document.createElement("a");
+  a.className = "hit";
+  a.href = "/" + LOCALE + "/salon/" + r.salon_slug + "/reviews";
+  a.setAttribute("aria-label", "Open the review by " + r.reviewer_name + " at " + r.salon_name);
+  c.appendChild(a);
+
+  var who = h("div", "who");
+
+  var idn = h("div", "idn");
+  idn.appendChild(h("div", "nm", r.reviewer_name));
+  idn.appendChild(h("div", "st", r.salon_name));
+  who.appendChild(idn);
+
+  var rt = h("div", "rt");
+  var st = h("span", "stars");
+  var n = Math.min(5, Math.max(1, Math.round(r.rating)));
+  st.innerHTML = new Array(n + 1).join(STAR);
+  st.setAttribute("aria-label", n + " out of 5 stars");
+  rt.appendChild(st);
+  rt.appendChild(h("span", "dt", ago(r.created_at)));
+  who.appendChild(rt);
+
+  c.appendChild(who);
+
+  /* The quote is laid out in a SECOND pass, after the rail is in the document. An element that is
+     not attached yet reports scrollHeight 0, so measuring here would silently decide that nothing
+     is ever cut, which is exactly what the first build of this page did. */
+  var p = h("p", "q");
+  p.setAttribute("data-quote", r.comment || "");
+  c.appendChild(p);
+  return c;
+}
+
+fetch("/api/reviews/featured?limit=10")
+  .then(function(res){ return res.json(); })
+  .then(function(d){
+    var items = (d && d.items) || [];
+    var sec = document.getElementById("sec");
+    var lab = document.getElementById("lab");
+
+    if (!items.length) {
+      lab.appendChild(h("b", null, "The featured reviews endpoint returned nothing."));
+      return;
+    }
+
+    var head = h("div", "head");
+    head.appendChild(h("h2", null, "Reviews"));
+    var see = document.createElement("a");
+    see.className = "see";
+    see.href = "/" + LOCALE + "/reviews";
+    see.setAttribute("aria-label", "See all reviews");
+    var ring = document.createElement("span");
+    ring.innerHTML = ARROW;
+    see.appendChild(ring);
+    head.appendChild(see);
+    sec.appendChild(head);
+
+    var rail = h("div", "rail");
+    items.forEach(function(r){ rail.appendChild(card(r)); });
+    sec.appendChild(rail);
+
+    /* Now that the rail is in the document and every card has a real width, lay out the quotes. */
+    [].forEach.call(rail.querySelectorAll("p.q"), function(p){
+      layoutQuote(p, p.getAttribute("data-quote") || "");
+    });
+
+    /* Every number in the caption is read off the render, so it cannot go stale in an edit. */
+    var cut = rail.querySelectorAll("button.more").length;
+    var tall = Math.round(rail.querySelector(".card").getBoundingClientRect().height);
+    lab.appendChild(h("b", null,
+      "The Reviews row, shorter. Same 260 width, 220 down to " + tall + "."));
+    lab.appendChild(document.createTextNode(
+      "The 40 px of empty paragraph under every quote is gone. Read more sits inline at the end " +
+      "of the clamped quote, and only on the " + cut + (cut === 1 ? " card" : " cards") + " of " +
+      items.length + " whose quote is really cut. Tap it and it opens in place. " +
+      "These review rows are old seed data from May and June, so the age reads in weeks."));
+  })
+  .catch(function(err){
+    document.getElementById("lab").appendChild(
+      h("b", null, "The featured reviews fetch failed: " + err.message));
+  });
+</script>
+</body>
+</html>
