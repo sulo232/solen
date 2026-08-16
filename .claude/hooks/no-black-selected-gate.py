@@ -276,6 +276,51 @@ SUNKEN_SELECTED = re.compile(
 )
 
 
+# V3, 2026-08-16 , THE THIRD MEMBER OF THE SAME FAMILY: A LEGAL TOKEN IN AN ILLEGAL ROLE.
+#
+# Owner: "You made up a random fucking collar that's beige. I don't fucking know it."
+#
+# The colour was `bg-s-warning-bg` = #FDF6E7, a real token that has been in tailwind.config.js for
+# months. Every colour gate in this estate passed it, correctly, because they all ask ONE question:
+# is this token legal. It is. The rule it broke is about the ROLE:
+#   taste rule 3: surfaces are "white + COOL sunken #F4F4F5, NO WARM CREAM"   , banned by name
+#   taste rule 6: a pastel `.bg` belongs on "inline status chips/badges"      , not a full-bleed bar
+# I painted a sticky, full-width bar in it and justified that with "DashboardLayout.tsx does it",
+# where it dresses an ADMIN PREVIEW banner, an internal tool, not a design decision.
+#
+# That is the same disease this gate already has two cases of, which is why it is widened here
+# rather than given its own file: ink on a selected state (v1) and grey on grey (v2) are both a
+# legal token used where its rule does not reach. Naming the family is the point.
+#
+# The discriminator is deliberately blunt and therefore safe: a CHIP is never sticky, never fixed,
+# and never full-width. A BAR always is. So a pastel surface token that co-occurs with a bar's own
+# positioning is the violation, and an inline badge is untouched.
+# Matches BOTH shapes a class string takes in this codebase: an inline `className="..."`, and a
+# named constant (`const ATTENTION_BAR = "..."`). The real offender was the constant form, and the
+# first version of this check missed it for exactly that reason, which is the same hole SEL_CONST
+# above already exists to close.
+PASTEL_SURFACE = re.compile(
+    r"(?:class(?:Name)?\s*=\s*[\"'`{]|=\s*\n?\s*[\"'`])[^\"'`]*"
+    r"(?=[^\"'`]*\bbg-s-(?:warning|success|error|accent|star|heart|urgency)-bg\b)"
+    r"(?=[^\"'`]*(?:\bsticky\b|\bfixed\b|\bw-full\b|\binset-x-0\b|\binset-0\b))",
+)
+
+
+def pastel_as_surface(text):
+    """A pastel semantic tint used as a full-bleed SURFACE rather than an inline chip."""
+    for m in PASTEL_SURFACE.finditer(text):
+        lo = max(0, m.start() - 100)
+        hi = min(len(text), m.end() + 100)
+        window = text[lo:hi]
+        if "surface-ok" in window or "drift-ok" in window:
+            continue
+        # A pill IS allowed to be a chip even inside a bar; rounded-full marks it as one.
+        if re.search(r"\brounded-full\b", m.group(0)):
+            continue
+        return m
+    return None
+
+
 def invisible_selection(text):
     """A grey selected fill on a grey canvas. Returns the offending match or None."""
     if not SUNKEN_CANVAS.search(text):
@@ -297,6 +342,28 @@ def invisible_selection(text):
 # an unrelated edit to that region must not block.
 if offenders(old) or window_offenders(old) or invisible_selection(old):
     allow()
+
+_pastel = pastel_as_surface(new)
+if _pastel and not pastel_as_surface(old) and not line_has_ok(new, _pastel.start()):
+    block(
+        "\U0001F6D1 pastel-as-surface gate (no-black-selected v3, owner 2026-08-16:\n"
+        "   \"You made up a random fucking collar that's beige. I don't fucking know it.\")\n\n"
+        "  A pastel semantic tint is being used as a full-bleed SURFACE (it is sticky, fixed or\n"
+        "  full-width), not as an inline chip.\n"
+        "    found: " + _pastel.group(0).strip()[:120] + "\n\n"
+        "  THE RULE IT BREAKS, and the token itself is perfectly legal, which is why every other\n"
+        "  colour gate passes it:\n"
+        "    taste rule 3: surfaces are white + COOL sunken #F4F4F5, NO WARM CREAM. Banned by name.\n"
+        "    taste rule 6: a pastel `.bg` belongs on inline status chips and badges.\n\n"
+        "  THE CASE: #FDF6E7 shipped on a sticky full-width bar because DashboardLayout.tsx has it\n"
+        "  on an ADMIN PREVIEW banner. An internal tool is not a design decision, and a class string\n"
+        "  existing in the repo is not permission to use it here. This is the same disease as the\n"
+        "  other two cases in this file: a legal token in an illegal role.\n\n"
+        "  FIX: the bar is white with the standard hairline. Carry the urgency in the TYPE and a\n"
+        "  small semantic element (an icon, one coloured word), never a colour wash. Do not swap in\n"
+        "  a different tint.\n\n"
+        "  Genuinely an inline chip? give it `rounded-full`, or `surface-ok: <reason>` on the line.\n"
+    )
 
 _invisible = invisible_selection(new)
 if _invisible and not line_has_ok(new, _invisible.start()):
