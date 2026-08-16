@@ -30,12 +30,28 @@ hierarchy and balance. You know?"*
       · star inside the pill 11px -> 15px, same two lines · verified 15px live
       · selected pill back to calm grey, `TabPill.tsx:104` and `:118` · verified as
         rgb(244,244,245) with ink text, after he said the black was too harsh
-- [ ] 6. STILL HIS, and untouched by the above: whether the SHAPE change (capsule to a 16px
-      corner) gets applied to the product. It edits `CLAUDE.md`'s radius row and the shared
-      TabPill that 29 files import, so it moves every screen at once. Not guessable. It was
-      apply. Applying it edits `CLAUDE.md`'s radius row (every button and chip in the product is a
-      capsule by that line) and the shared TabPill that 29 files import, so it moves every screen
-      at once. His by name, and not guessable.
+- [x] 6. ANSWERED AND APPLIED (commit ac1ec574c) · owner 2026-08-16: "Now it's a lot lot lot lot
+      better. You can go implement this." The capsule becomes a 16px corner in
+      `app/[locale]/_components/primitives/TabPill.tsx:47`, which 29 files import, and
+      `CLAUDE.md:106`'s radius row is updated in the same commit so the written rule and the
+      shipped component do not disagree. · verified on the REAL salon page through the tunnel,
+      not on localhost: pill radius 16px, photo 62px, row star 18px, score 44px, filters reading
+      "Alle 7" / "5" / "4", selected pill rgb(244,244,245).
+
+## The principle he asked for in the same breath
+
+*"write down and make principle based on everything we had to go. Like, we clashed and
+everything, so we actually learn from the experience."*
+
+Written as Part 4 of `~/.claude/MEASUREMENT_LAW.md`, extending the existing law rather than
+adding a file, with the five costliest pinned in `CLAUDE.md` under "A check that cannot fail is
+not a check". The placement is itself the lesson: the answer to four rounds of dead buttons was
+already written down with his exact symptom in it, and it was never read, because nothing routed
+to it from the file that is always in context.
+
+Eleven clashes in one day, one mistake: I verified under conditions that could not produce a
+failure, then reported that as a fact about his product. His phone had never loaded the page.
+Mine always had.
 
 ## MEASURED FIRST, live at 390x844, before any edit
 

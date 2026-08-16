@@ -32,10 +32,23 @@ He asked a QUESTION first. The deliverable is the CAUSE, named in files, before 
 - [x] 7. Compare against Airbnb · verified (commit cf69073dd): `airbnb--home-mobile.md:41` (20px
       dominant radius over 100 elements) and `:44` (capsule kept for the one search field), plus
       `AIRBNB_SYSTEM_VS_OURS.md` 2c for their type tiers, tracking and weight vocabulary
-- [ ] 8. BLOCKED ON HIM, and it is a real dependency, not a punt: which treatment to apply,
-      "Softer corners" or "The whole thing", at `/en/dev/calm`. Applying either one edits
-      `CLAUDE.md`'s radius row and the shared TabPill that 29 files import, so it changes every
-      screen in the product at once. That is his call by name and cannot be guessed.
+- [x] 8. ANSWERED AND APPLIED (commit ac1ec574c) · owner 2026-08-16: "Now it's a lot lot lot lot
+      better. You can go implement this." He answered it on the SIBLING page, /dev/round5, whose
+      combined option carries the same shape change this page was asking about, so the question
+      closed there rather than here. The capsule is now a 16px corner in `TabPill.tsx:47` (29
+      importers) with `CLAUDE.md:106`'s radius row updated in the same commit. · verified on the
+      real salon page through the tunnel: radius 16px, and the three other measured gaps applied
+      with it (photo 62px, row star 18px, score 44px).
+
+      The clutter diagnosis this file exists for is therefore closed too: the three causes it
+      named were the capsule-everywhere rule, the 44px floor read as a paint size rather than a
+      tap size, and a type row demanding more sizes than the type ceiling allows. The first is
+      fixed above. The second and third are recorded here and in
+      `_plans/PDP_PILL_STARS_HIERARCHY_2026-08-16.md`, and the hierarchy half shipped as the
+      44px score. What is NOT done, said plainly rather than quietly dropped: the contradiction
+      between `CLAUDE.md:101` mandating six to seven sizes and FLOORS LAW 7 capping them at four
+      is still on the books, because reconciling it rewrites a locked row across every screen and
+      that is a decision he has not been asked for yet.
 
 ## The gap this turn CLOSED rather than just naming
 
