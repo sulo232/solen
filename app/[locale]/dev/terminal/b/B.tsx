@@ -98,7 +98,11 @@ interface BDirectionProps {
 // swapped, the same way Terminal.tsx derives LOG_TEXT and its flex-1 primary,
 // so the font, weight, tracking and leading still come from the design system
 // and only the size is pinned.
-const ANCHOR = "font-display text-[28px] font-semibold leading-tight tabular-nums text-s-ink";
+// 2026-08-16: raised 28 -> 30 to match the product. MEASURED on the rendered salon PDP, its
+// page title is `clamp(30px,2.8vw,34px)`, so 28 sat a step under the biggest thing the product
+// itself uses. 30 is the bottom of that clamp, which is the value the PDP renders at 390 wide,
+// so this is the same number rather than a new one. Ratio to the 13px body goes 2.15x -> 2.31x.
+const ANCHOR = "font-display text-[30px] font-semibold leading-tight tabular-nums text-s-ink";
 // Pinned to a flat 18: the shipped clamp resolves to 18 at 390 but to 20 past
 // ~1000px, and a counter terminal can run on a wide screen. A fifth size that
 // only appears on a tablet is still a fifth size.
