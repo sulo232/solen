@@ -66,6 +66,61 @@ try:
 except Exception:
     pass
 
+# --selftest, added 2026-08-16. This gate had NO suite for its whole life, which is exactly how a
+# widening ships broken: the author's own ad-hoc cases are their imagination, not a check. It runs
+# the gate end to end through its real stdin contract, one case per rule it enforces.
+if "--selftest" in sys.argv:
+    import subprocess as _sp
+    _GATE = os.path.abspath(__file__)
+    # A path that does NOT exist on disk, so `old` is empty and the net-new rule cannot suppress a
+    # block. Using a real file here is what made the first run of this suite look like a failure.
+    _NEW = os.path.join(os.path.dirname(_GATE), "..", "..",
+                        "app", "[locale]", "dev", "selftest", "Zz.tsx")
+    _NEW = os.path.abspath(_NEW)
+
+    def _run(content):
+        payload = json.dumps({"tool_name": "Write",
+                              "tool_input": {"file_path": _NEW, "content": content}})
+        r = _sp.run([sys.executable, _GATE], input=payload, capture_output=True, text=True)
+        return r.returncode != 0
+
+    _CASES = [
+        # v1, the original law: no ink or blue on a selected state
+        ("v1 ink fill on a selected state",
+         '<button className={isSelected ? "bg-s-ink text-white" : "text-s-ink-2"}>Filter</button>', True),
+        ("v1 the calm grey selected state is the point of the rule",
+         '<button className={isSelected ? "bg-s-bg-sunken text-s-ink font-semibold" : "bg-white text-s-ink-2"}>F</button>', False),
+        # v2, 2026-08-15: the calm grey is invisible when the canvas is also grey
+        ("v2 grey selected on a grey canvas",
+         '<div className="fixed inset-0 bg-s-bg-sunken">\n'
+         '  <button className={selected ? "bg-s-bg-sunken text-s-ink" : "text-s-ink-2"}>Quiet</button>\n</div>', True),
+        ("v2 same, but the unselected pill is white so the pair carries the signal",
+         '<div className="fixed inset-0 bg-s-bg-sunken">\n'
+         '  <button className={selected ? "bg-s-bg-sunken text-s-ink" : "bg-white text-s-ink-2"}>Quiet</button>\n</div>', False),
+        # v3, 2026-08-16: a pastel semantic tint used as a full-bleed surface
+        ("v3 pastel tint on a sticky bar, the constant form",
+         'const BAR =\n  "sticky top-0 flex items-center gap-3 px-5 py-2.5 bg-s-warning-bg border-b text-s-ink";', True),
+        ("v3 pastel tint on a fixed full-width banner",
+         '<div className="fixed inset-x-0 bottom-0 bg-s-success-bg px-5 py-3">Saved</div>', True),
+        ("v3 the same tint on an inline chip is legal",
+         '<span className="inline-flex items-center rounded-full bg-s-warning-bg px-2 py-0.5">Late</span>', False),
+        ("v3 the white replacement bar",
+         'const BAR =\n  "sticky top-0 flex items-center gap-3 px-5 py-2.5 bg-white border-b border-s-border";', False),
+        # scope and escapes
+        ("a plain white card is untouched",
+         '<div className="rounded-card border border-s-border bg-white p-4">x</div>', False),
+        ("surface-ok escape is respected",
+         '<div className="sticky top-0 w-full bg-s-warning-bg px-5 py-2"> {/* surface-ok: consent strip */}C</div>', False),
+    ]
+    _ok = 0
+    for _name, _content, _expect in _CASES:
+        _blocked = _run(_content)
+        _good = _blocked == _expect
+        _ok += _good
+        print(f"  {'PASS' if _good else 'FAIL'}  {_name}  (blocked={_blocked}, expected={_expect})")
+    print(f"\n{_ok}/{len(_CASES)} passed")
+    sys.exit(0 if _ok == len(_CASES) else 1)
+
 try:
     data = json.load(sys.stdin)
 except Exception:
