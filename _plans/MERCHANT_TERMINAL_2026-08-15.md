@@ -729,6 +729,18 @@ wait until tonight, it is not on it.
 - [x] PARKED 2026-08-15 · `verified:` commit 2b0d21311 + this file; the decision is MINE not his, so it reverses on one word from him · ANSWERED-BY-DEFAULT 2026-08-16: solen.ch/terminal now, the subdomain later as a plain redirect. Taking the decision myself rather than holding it open, because it is reversible in one Netlify line and blocks nothing: a path costs no cookie change, and terminal.solen.ch can be pointed at it any day without touching the app. If he wants the real subdomain with its own session, he says so and it is a DNS record plus a cookie-domain widening. · from: his "maybe like a subdomain or something"
 - [ ] PARKED 2026-08-15 · When a salon moves an appointment, does the customer just get told, or do they have to agree first? · from: three database columns for a customer-agreement handshake exist from migration 022 and no code was ever written against them
 - [ ] PARKED 2026-08-15 · The salon page uses three text weights on purpose and the design rule allows two. Does the rule become three, or does the salon page have to change? · from: measured on the shipped salon page while rebuilding the terminal out of its own parts
+  · STILL HIS CALL, not ticked. Evidence added 2026-08-16 so he decides with the whole thing in
+  front of him, from `_design-system/research/AIRBNB_TEARDOWN_2026-08-16.md` section 8: the
+  2-weight ceiling (`CLAUDE.md:53`) is broken BY CONSTRUCTION, not by the salon page. Our own
+  weight scale (`LOCKFILE.md:311-320`, §2.5 role table) puts body at 400, CTA at 500 and headings
+  at 600, so ANY screen with a heading, body copy and a button is at three weights before anyone
+  decides anything. That is every commit-bearing screen in the product. Separately, §17.4
+  (`LOCKFILE.md:1985`) mandates TWO weight-600 anchors per card while the EMPHASIS BUDGET caps
+  weight-600 at ~30% of visible text, which a browse grid of five-element cards cannot satisfy
+  arithmetically. The reference carries its emphasis at weight 500 and measures 3.1% at 600. So
+  the honest options are: raise the ceiling to three and name the third as the CTA's 500, or drop
+  CTA to 600 so 400/600 really is the whole vocabulary. Either way one of the two files changes in
+  the same edit.
 - [x] PARKED 2026-08-15 · Should a list of people (the ones waiting, the ones booked today) be ONE card with lines between the rows, or a separate card per person? · from: the design verifier asked this in round one and it was parked, then five more rounds were built on the unanswered question · `verified:` measured on the rendered screen at 390 wide after the rebuild: one card only (the chairs) at 25.2% of the viewport, Waiting and Later-today carrying no outer card at all; commit 5aa1e12da · ANSWERED BY THE OWNER 2026-08-16, by rejection: NEITHER. On an OPERATOR
   screen a list of people is BARE ROWS on the white canvas, hairline-separated, with no outer card
   and no card per person. Both parked options were customer-surface answers, which is why holding

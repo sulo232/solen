@@ -82,6 +82,12 @@ CANON = {
     "QUESTIONS.md":          "the standing page of every open design decision",
     "SUGGESTIONS.md":        "live design-improvement suggestions",
     "PROCESS.md":            "how design work is scoped, briefed and graded",
+    # Added 2026-08-16, after a merchant terminal was rejected six times and an adversarial panel
+    # found the cause was that nobody ever named the screen or its governing law before building.
+    # No row above owns the DECIDING pass: LOCKFILE owns literals, SOURCE owns applied law,
+    # RATIONALE owns evidence, PROCESS owns how work is scoped and graded. None of them says how to
+    # decide what you are building, in plain English, before any markup. That is this file's concern.
+    "PRINCIPLES.md":         "how to decide before any markup (screen class, job, colour meaning, containers, rhythm, type)",
     # Added 2026-08-08. MEASUREMENT_LAW section 1.2 has named this file and this exact path since
     # it was written, and the file did not exist, so the law pointed at nothing. One row per
     # instrument; the load-bearing column is what each one is BLIND to.
