@@ -101,7 +101,10 @@ import WalkInBand from "./_components/homepage/WalkInBand";
 // still lives via MobileCategoriesRow "Für dich" tiles (slot 3) + Header
 // dropdown. Component file kept on disk for revert.
 // import CategoryPromos from "./_components/homepage/CategoryPromos";
-import Entdecken from "./_components/homepage/Entdecken";
+// Entdecken ("Find your inspiration.") unmounted 2026-08-16: it and PopularLooks rendered the same
+// 8 look ids from one /api/discovery/feed?category=hair query, so the page showed one query twice.
+// Component file kept on disk for revert.
+// import Entdecken from "./_components/homepage/Entdecken";
 // FeaturedStylists REMOVED from homepage (V3-D436, 2026-06-05). Every card
 // linked to /stylist/[slug] — a route that does NOT exist (locale catch-all
 // serves a soft not-found at HTTP 200). The section's DEMO array is standalone
@@ -301,7 +304,7 @@ export default async function Page({
             context to repoint at the real /salon/[slug]/staff/[staffId] page.
             See the import-site comment for the /api/staff/featured wire-up path
             to bring it back. */}
-        <Entdecken />
+        {/* Entdecken removed 2026-08-16: it and PopularLooks above rendered the same 8 look ids from one /api/discovery/feed?category=hair query. */}
         <Reviews />
         {/* Desktop only. The mobile home ends at Reviews: that is what the home-v3 mockup shows
             (`public/_mockups/home-v3/search-a.html`) and what HOME_INSPO_CHROME recorded as "business

@@ -8,7 +8,12 @@
     "cancelFailed": "Impossible d'annuler votre place",
     "removedFromFavorites": "Retiré des favoris",
     "undo": "Annuler",
-    "removeFailed": "Impossible de retirer"
+    "removeFailed": "Impossible de retirer",
+    "savedItem": "{name} enregistré",
+    "removedItem": "{name} retiré",
+    "saveFailedItem": "{name} n'a pas pu être enregistré",
+    "save": "Enregistrer",
+    "saved": "Enregistré"
   },
   "profileHub": {
     "nextAppointment": "Prochain rendez-vous",

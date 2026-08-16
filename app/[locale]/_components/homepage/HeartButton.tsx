@@ -30,6 +30,7 @@ export function HeartButton({
   salonName,
   className,
   salonId,
+  lookId,
   tone: _tone,
   size = 28,
   iconSize = 16,
@@ -40,6 +41,13 @@ export function HeartButton({
   className?: string;
   /** Salon UUID — enables `/api/favorites/toggle` persistence. Omit for non-salon hearts (local-only). */
   salonId?: string;
+  /** Discovery-item UUID, enables `/api/discovery/save` persistence for a LOOK rather than a salon.
+   *  Added 2026-08-16: the Popular looks rail composed this heart with neither id, so every tap
+   *  flipped aria-pressed to true, fired no network call, and forgot the save on reload. A control
+   *  that reports a state it never stored is a dead affordance, which this project bans by name,
+   *  and it is worse than a missing control because the user believes the save happened.
+   *  Optional and additive: every existing caller keeps its current behaviour untouched. */
+  lookId?: string;
   /** Optional visual variant hint (e.g. "spa" / "warm") — currently unused; surfaced for caller compatibility. */
   tone?: string;
   /** Visible glass-circle size in px (default 28; salon hero uses 38, V3-D421). 44px hit area preserved. */
@@ -71,8 +79,8 @@ export function HeartButton({
 
   const persist = React.useCallback(
     async (next: boolean) => {
-      // No salonId → nothing to persist (Entdecken look-author heart). Stay local.
-      if (!salonId) return;
+      // Neither id means there is genuinely nothing to write, and that stays local.
+      if (!salonId && !lookId) return;
       if (inFlight.current) return;
       inFlight.current = true;
 
@@ -93,12 +101,21 @@ export function HeartButton({
       }
 
       try {
-        const res = await fetch("/api/favorites/toggle", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({ salon_id: salonId }),
-        });
+        // A look and a salon are different objects with different endpoints. Both toggle and both
+        // return the resulting state, so everything below this line is shape-identical.
+        const res = salonId
+          ? await fetch("/api/favorites/toggle", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              credentials: "include",
+              body: JSON.stringify({ salon_id: salonId }),
+            })
+          : await fetch("/api/discovery/save", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              credentials: "include",
+              body: JSON.stringify({ item_id: lookId }),
+            });
         if (!res.ok) throw new Error(`toggle failed: ${res.status}`);
         const json: { saved?: boolean } = await res.json();
         // Reconcile with the server's authoritative state (handles the rare
@@ -127,7 +144,10 @@ export function HeartButton({
         console.error("[HeartButton] favorite toggle failed:", err);
         // Revert the optimistic flip so the UI reflects reality.
         setIsSaved(!next);
-        setAnnouncement(`${salonName} konnte nicht gespeichert werden`);
+        // 2026-08-16: was a hardcoded German literal, so /en, /fr and /it announced the failure in
+        // German with the English name interpolated into it. Same defect class the owner reported
+        // on the recently-viewed row on 2026-08-15.
+        setAnnouncement(t("saveFailedItem", { name: salonName }));
         // Surface the failure (was silent) with a retry.
         toast.error(t("saveFailed"), {
           action: { label: t("retry"), onClick: () => void persist(next) },
@@ -136,7 +156,7 @@ export function HeartButton({
         inFlight.current = false;
       }
     },
-    [salonId, pathname, salonName, t],
+    [salonId, lookId, pathname, salonName, t],
   );
 
   const toggle = (e: React.MouseEvent | React.KeyboardEvent) => {
@@ -145,8 +165,12 @@ export function HeartButton({
     const next = !isSaved;
     setIsSaved(next); // optimistic
     if (next) setPopKey((k) => k + 1);
+    // 2026-08-16: these two were hardcoded German. Measured on the rendered /en homepage before the
+    // fix, the live region read "Sleek Blunt Bob with Golden Ombre and Middle Part gespeichert".
     setAnnouncement(
-      next ? `${salonName} gespeichert` : `${salonName} entfernt`,
+      next
+        ? t("savedItem", { name: salonName })
+        : t("removedItem", { name: salonName }),
     );
     void persist(next);
   };
@@ -171,7 +195,9 @@ export function HeartButton({
       <button
         type="button"
         onClick={toggle}
-        aria-label={isSaved ? "Gespeichert" : "Speichern"}
+        // 2026-08-16: was hardcoded German. Measured on the rendered /fr homepage, eight buttons
+        // under the heading "Looks populaires" all announced themselves as "Speichern".
+        aria-label={isSaved ? t("saved") : t("save")}
         aria-pressed={isSaved}
         className={cn(
           "group absolute right-[2px] top-[2px] grid h-11 w-11 place-items-center bg-transparent p-0",

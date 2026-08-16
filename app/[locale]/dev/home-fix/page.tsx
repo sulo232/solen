@@ -12,7 +12,9 @@ import ForYouSalonRows from "@/app/[locale]/_components/homepage/ForYouSalonRows
 import RecentlyViewed from "@/app/[locale]/_components/homepage/RecentlyViewed";
 import Nearby from "@/app/[locale]/_components/homepage/Nearby";
 import WalkInBand from "@/app/[locale]/_components/homepage/WalkInBand";
-import Entdecken from "@/app/[locale]/_components/homepage/Entdecken";
+// Entdecken (Find your inspiration) retired 2026-08-16: it and Popular looks rendered
+// the same 8 look ids from one query. Popular looks survives and carries the card.
+import PopularLooks from "@/app/[locale]/_components/homepage/PopularLooks";
 import Reviews from "@/app/[locale]/_components/homepage/Reviews";
 import BusinessTeaser from "@/app/[locale]/_components/homepage/BusinessTeaser";
 import { FORYOU_SALONS } from "@/app/[locale]/_components/homepage/forYouSalons";
@@ -148,7 +150,7 @@ export default async function HomeFixPreview({
         <RecentlyViewed salonData={salonCardData} topSalonIds={topSalonIds} />
         <Nearby salonData={salonCardData} nearbyCount={nearbyCount} />
         <WalkInBand />
-        <Entdecken />
+        <PopularLooks />
         <Reviews />
         <BusinessTeaser />
       </FeedZone>
