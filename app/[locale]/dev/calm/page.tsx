@@ -27,8 +27,11 @@ const SALON_ID = "5784b1ab-7314-437a-a608-01a729f02cdd";
 const SALON_SLUG = "cuts-and-culture";
 const SALON_NAME = "Cuts & Culture";
 
+// Served from a production build, same reason as /dev/round5's page: `next dev` does not reliably
+// hydrate this app, so its buttons arrive dead on his phone. SOLEN_DEV_PAGES is set by hand on the
+// local test server and by nothing in the deploy environment, so this stays out of production.
 export default async function CalmPage() {
-  if (process.env.NODE_ENV === "production") notFound();
+  if (process.env.NODE_ENV === "production" && process.env.SOLEN_DEV_PAGES !== "1") notFound();
 
   const admin = createAdminSupabaseClient();
 

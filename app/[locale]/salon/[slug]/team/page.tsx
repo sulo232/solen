@@ -1,5 +1,15 @@
-"use client";
-
+// "use client" REMOVED 2026-08-16. It was on line 1 and it was simply wrong: this file is a server
+// component in every other respect. It exports an async `generateMetadata`, its default export is
+// an async function that awaits `params`, and it calls `getTranslations`, `loadSalonDetailWithStatus`
+// and `notFound()`. A grep for client-only usage across the whole file returns nothing at all: no
+// useState, no useEffect, no useRouter, no event handler.
+//
+// WHAT IT COST, and this is the part worth recording: exporting `generateMetadata` from a file
+// marked "use client" is a hard Next error, so `next build` FAILED on this file, which means the
+// app has not produced a production build since the directive landed. That is not a cosmetic
+// problem. It is the difference between a preview that hydrates and one that does not, and the
+// owner spent four separate messages reporting dead buttons before this surfaced.
+//
 // exists-check: `npm run exists team` (2026-07-24, this turn) , only hit is the dev-only
 // /dev/pdp/team-all route + the SalonTeam/SalonTeamOverhaul/TeamAllOverhaul components (all
 // referenced below, not duplicated) + the graveyard "ink black select button" entry (confirms

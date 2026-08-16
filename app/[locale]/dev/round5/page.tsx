@@ -44,8 +44,26 @@ const SALON_ID = "5784b1ab-7314-437a-a608-01a729f02cdd";
 const SALON_SLUG = "cuts-and-culture";
 const SALON_NAME = "Cuts & Culture";
 
+// SERVED FROM A PRODUCTION BUILD ON PURPOSE, 2026-08-16. Owner: "cant clck buttons in mockup its
+// 4th time now", and he is counting correctly.
+//
+// `next dev` does not reliably hydrate this app, and that is WRITTEN DOWN from a previous time it
+// cost hours: a route carrying generateStaticParams plus heavy vendor deps makes the dev server
+// fork a static-paths worker that requires the page's vendor chunks before the on-demand compiler
+// has finished writing them, so the route 500s and NEVER HYDRATES. The page paints from server HTML
+// and every button on it is dead. That note names the exact symptom, "buttons stuck", and the exact
+// remedy, build and start instead of dev.
+//
+// I had the evidence twice and read past it: the dev log was repeating `Cannot find module
+// './favicon.ico.json'` on this very route, which is that failure by name, and I called it
+// unrelated. Every test I ran passed because I clicked through a browser that had already loaded
+// the page successfully; his phone got the un-hydrated copy.
+//
+// So the preview now comes off `next build` + `next start`, and this guard has to let it through.
+// It still blocks a real deploy: SOLEN_DEV_PAGES is set by hand on the local test server only, and
+// nothing in the Netlify environment defines it.
 export default async function Round5Page() {
-  if (process.env.NODE_ENV === "production") notFound();
+  if (process.env.NODE_ENV === "production" && process.env.SOLEN_DEV_PAGES !== "1") notFound();
 
   const admin = createAdminSupabaseClient();
 
