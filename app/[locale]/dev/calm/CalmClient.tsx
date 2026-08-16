@@ -181,30 +181,13 @@ export function CalmClient(props: Record<string, unknown>) {
           of them. Tap through and the real page underneath changes.
         </p>
 
-        <div className="mt-5 overflow-hidden rounded-[20px] border border-s-border">
-          <table className="w-full border-collapse font-body text-[13px]">
-            <thead>
-              <tr className="bg-s-bg-sunken text-left">
-                <th className="px-3 py-2 font-medium text-s-ink-2">Counted on this screen</th>
-                <th className="px-3 py-2 font-medium text-s-ink-2">Us</th>
-                <th className="px-3 py-2 font-medium text-s-ink-2">Airbnb</th>
-              </tr>
-            </thead>
-            <tbody>
-              {FINDINGS.map((f) => (
-                <tr key={f.what} className="border-t border-s-border">
-                  {/* A row where we are the outlier is ink; a row where we already match them, or
-                      where THEY are the looser one, drops to grey. Colour, not weight, so this page
-                      keeps its own emphasis budget. */}
-                  <td className={`px-3 py-2 ${f.verdict === "ours" ? "text-s-ink" : "text-s-ink-2"}`}>{f.what}</td>
-                  <td className={`px-3 py-2 tabular-nums ${f.verdict === "ours" ? "text-s-ink" : "text-s-ink-2"}`}>{f.ours}</td>
-                  <td className="px-3 py-2 tabular-nums text-s-ink-2">{f.theirs}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
+        {/* THE TABLE MOVED BELOW THE PREVIEW, 2026-08-16, and it is the same defect I had just
+            finished fixing on the sibling page. Measured here after that fix: the rating, which is
+            the thing the last option changes, still reported `onScreen: false`, because nine rows of
+            comparison sat between the buttons and the section they act on. He taps, the screen does
+            not move, and the button reads dead. Identical symptom, different cause, one page apart.
+            The numbers are the ANSWER to his question and worth having; they are not worth standing
+            between him and the thing he is deciding, so they wait at the bottom. */}
         <div className="mt-6 flex flex-wrap gap-2">
           {OPTIONS.map((o) => (
             <button key={o.key} type="button" onClick={() => setPick(o.key)} className={pick === o.key ? ON : OFF}>
@@ -220,6 +203,35 @@ export function CalmClient(props: Record<string, unknown>) {
         <div id="calm" className="mt-6">
           {/* The real component the full reviews page renders, with the real props. */}
           <SalonReviews {...(props as any)} />
+        </div>
+
+        <h2 className="font-display mt-10 text-[20px] font-semibold text-s-ink">The numbers</h2>
+        <p className="mt-2 font-body text-[14px] leading-relaxed text-s-ink-2">
+          Counted on this screen and on theirs, the same day. Black rows are where we are the odd one
+          out. Grey rows are where we already match them, or where they are the looser one.
+        </p>
+        <div className="mt-4 overflow-hidden rounded-[20px] border border-s-border">
+          <table className="w-full border-collapse font-body text-[13px]">
+            <thead>
+              <tr className="bg-s-bg-sunken text-left">
+                <th className="px-3 py-2 font-medium text-s-ink-2">Counted</th>
+                <th className="px-3 py-2 font-medium text-s-ink-2">Us</th>
+                <th className="px-3 py-2 font-medium text-s-ink-2">Airbnb</th>
+              </tr>
+            </thead>
+            <tbody>
+              {FINDINGS.map((f) => (
+                <tr key={f.what} className="border-t border-s-border">
+                  {/* A row where we are the outlier is ink; one where we already match them, or
+                      where THEY are the looser one, drops to grey. Colour, not weight, so this page
+                      keeps its own emphasis budget. */}
+                  <td className={`px-3 py-2 ${f.verdict === "ours" ? "text-s-ink" : "text-s-ink-2"}`}>{f.what}</td>
+                  <td className={`px-3 py-2 tabular-nums ${f.verdict === "ours" ? "text-s-ink" : "text-s-ink-2"}`}>{f.ours}</td>
+                  <td className="px-3 py-2 tabular-nums text-s-ink-2">{f.theirs}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
 
         <p className="mt-8 font-body text-[13px] leading-relaxed text-s-ink-2">
