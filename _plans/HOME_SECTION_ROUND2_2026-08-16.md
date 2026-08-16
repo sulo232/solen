@@ -23,28 +23,32 @@ recorded elsewhere.
 
 `public/_mockups/looks-round2/section.html`
 
-- [x] **A1. Keep the Popular looks section.** He said keep it, so it is not going in the graveyard.
-- [x] **A2. Give it the Inspo card anatomy.** measured on the live Inspo row: card 200 x 380, photo
+- [x] **A1. Keep the Popular looks section.** `verified:` 2ceddbd91, He said keep it, so it is not going in the graveyard.
+- [x] **A2. Give it the Inspo card anatomy.** `verified:` 2ceddbd91, rendered at 390x844, measured on the live Inspo row: card 200 x 380, photo
       frame 200 x 356 at 9:16, radius 16, title 12px/500 inside a white pill, heart 44 x 44.
       Against today's Popular-looks tile, measured 150 x 150 at ratio 1.00, which is the square he
       has rejected repeatedly. **Rendered: frame 200 x 356, ratio 0.56.**
-- [x] **A3. Remove the TikTok badge from the card.** measured: 38 x 12 pill, top left.
+- [x] **A3. Remove the TikTok badge from the card.** `verified:` 2ceddbd91, measured: 38 x 12 pill, top left.
       **Rendered: `tiktokBadgePresent: false`.**
-- [x] **A4. Remove the black gradient over the photo.** measured: `bg-gradient-to-t from-black/80`
+- [x] **A4. Remove the black gradient over the photo.** `verified:` 2ceddbd91, measured: `bg-gradient-to-t from-black/80`
       covering 200 x 178, the bottom half of every card. **Rendered: `gradientPresent: false`.**
-- [x] **A5. Put a real shadow BEHIND the card instead.** measured: the live Inspo card and its photo
+- [x] **A5. Put a real shadow BEHIND the card instead.** `verified:` 2ceddbd91, measured: the live Inspo card and its photo
       frame both compute `boxShadow: none` today, so there is nothing behind it at all.
       **Rendered: `.frame` computes `rgba(50,47,44,0.12) 0 6px 16px`, elevation-3, the one probed
       as visible on white. NOTE: my first measurement sampled `.card` and reported `none`; the
       shadow sits on the frame. The gate-relevant lesson is that a shadow check must walk the
       element chain, not one node.**
-- [x] **A6. "Find your inspiration" is replaced by Popular looks.** One section, not two. They were
+- [x] **A6. "Find your inspiration" is replaced by Popular looks.** `verified:` 2ceddbd91, One section, not two. They were
       already the same query: 8 of 8 shared image ids, both calling
       /api/discovery/feed?category=hair. **The page carries exactly 2 title variants, not 8.**
-- [ ] **A7. Graveyard line for the removed section , DEFERRED TO APPLY, on purpose.** Nothing has
-      been deleted yet: this is a mockup awaiting his yes. Filing a REMOVED.md line for a section
-      that still ships would put a false death in the graveyard, and the graveyard is what the
-      anti-duplication check reads. The line gets written in the turn the deletion lands in code.
+- [ ] **A7. BLOCKED on his approval, and the blocker is concrete: nothing has been deleted yet.**
+      "Find your inspiration" still ships on the live homepage; this is a mockup proposing its
+      removal. `verified:` the section still renders , A6 measured both rails live and they return
+      the same 8 image ids from `/api/discovery/feed?category=hair`.
+      Filing a REMOVED.md line now would record a death that has not happened, in the exact file
+      the anti-duplication check reads before proposing anything, so the next session would be told
+      a live section is dead. The line gets written in the turn the deletion lands in code, which
+      is the turn he says yes.
 
 **Also measured:** 16/16 photos load, all through `/api/discovery/thumb/{id}` (the raw TikTok CDN
 URLs expire, which is why the proxy is mandatory). First paint is slow, roughly 5s per image, since
@@ -80,8 +84,38 @@ Type: 3 sizes (12/14/18), 2 weights, largest/smallest = 1.50.
 - [ ] **B6. BLOCKED, and this is the one real dependency: the N-ahead emphasis treatment.** He said
       he would attach a screenshot for how the count should look. It has not arrived. Everything
       else in B is built without it; this specific treatment waits rather than being guessed.
-- [ ] **B7. Harden the hierarchy failure**, because he asked for it by name ("you do harden on that
-      too").
+- [x] **B7. Harden the hierarchy failure**, because he asked for it by name ("you do harden on that
+      too"). `verified:` 21/21 across three suites, plus a corpus safety run over all 353 mockup
+      files. What was actually wrong is not what I expected:
+
+      **The hardening already existed and was structurally blind.** `mockup-type-budget-gate.py`
+      has enforced <=4 sizes / <=2 weights since 2026-07-21. It read my flat walk-in page and
+      passed it. It had not weighed the page: it never saw one size or one weight on it, for two
+      independent reasons.
+      1. It stripped EVERY `<style>` block as "harness chrome". True of the whole-page template,
+         false since he banned that template on 08-15: a section mockup keeps its entire design in
+         one `<style>` block, so the strip was deleting the surface and then measuring the empty
+         string. Measured: all five current mockups have exactly one style block and none contains
+         a chrome selector, so the designed surface was empty in every case.
+      2. It only read `font-size:` / `font-weight:` longhand. These files declare type as
+         `font:600 30px/1 var(--display)`, the CSS shorthand, which matched zero times.
+
+      `verified:` with sight restored it retroactively catches a real violation it had passed:
+      `looks-directions/sections.html` carries 5 body sizes against a cap of 4.
+
+      **A ratchet, not a wall.** Fixing the eyes took it from blocking 0 of 353 files to blocking
+      230, of which 222 are real mockups written while it was blind. Two thirds of the corpus
+      refused is how a gate gets switched off, so it now enforces direction: a NEW mockup must meet
+      the cap, an edit may not make a file worse, and an unchanged rewrite passes. Re-measured:
+      0 of 353 false blocks.
+
+      **THE HONEST LIMIT, stated because it undercuts the harden he asked for.** The page he
+      rejected renders 4 sizes and 2 weights, so it is INSIDE the cap and this gate would still
+      pass it. Size-counting cannot catch his complaint. The dominance floor I tried to add for
+      exactly that measured backwards (see the note in `count_budget`), so it was not shipped.
+      What this turn genuinely bought is that the type cap is enforced at all for the first time
+      since the mockup format changed. Flat-but-legal hierarchy remains a judgment call, and
+      pretending a gate now covers it would be the failure that produced this box.
 
 ## C. Reviews , BUILT, measured on the tunnel
 
@@ -98,3 +132,15 @@ Type: 3 sizes (12/14/18), 2 weights, largest/smallest = 1.50.
       two dead controls earlier tonight, so this one was exercised before being handed over.**
 
 Type: 4 sizes (11/13/15/18), 2 weights.
+
+- [x] **C3. UNPLANNED, found by the adversarial verifier: the Read more tap target was 33px against
+      the 44px a11y floor**, and the comment I had written directly above it asserted 45.
+      `verified:` re-measured at 390x844 with `document.elementFromPoint` stepped 1px down the
+      button's centre, closed AND open: 45px in both states, nothing covering it.
+      Cause: `.q` carried `max-height:63px; overflow:hidden`, which clipped the grown hit area at
+      the box edge. That clamp was belt-and-braces , the script already truncates the quote word by
+      word until it fits three lines , so removing it costs no layout and unclips the target.
+      **The part worth keeping: my own click test passed this defect.** `btn.click()` dispatches
+      straight at the element and bypasses hit-testing entirely, so it proves a handler is wired
+      and proves nothing about whether a finger can reach it. Two dead controls earlier tonight
+      taught me to click; this teaches me that clicking is not enough. Hit-test the point.

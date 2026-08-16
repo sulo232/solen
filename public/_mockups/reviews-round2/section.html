@@ -155,14 +155,20 @@
   .dt{font:400 11px/1.3 var(--body);color:var(--ink2);white-space:nowrap;
       font-variant-numeric:tabular-nums}
 
+  /* No max-height and no overflow:hidden, and that is deliberate rather than an omission.
+     The script TRUNCATES the text word by word until it fits three lines, so the clamp was
+     belt-and-braces over content that already fits. It was also the only thing clipping the
+     button's hit area: with overflow:hidden the grown area was cut at the box edge and measured
+     33px against a 44 floor, while the comment below it claimed 45. min-height stays, because
+     that is what keeps every card the same height. */
   .q{position:relative;margin-top:16px;font:400 15px/21px var(--body);color:var(--ink);
-     min-height:63px;max-height:63px;overflow:hidden;pointer-events:none}
-  .q.open{max-height:none}
+     min-height:63px;pointer-events:none}
   .more{position:relative;z-index:2;pointer-events:auto;display:inline;
         font:400 15px/21px var(--body);color:var(--accent);
         background:none;border:0;padding:0;cursor:pointer}
   /* 15px text on a 21px line is a 21px tap target, under the 44 floor, so the hit area is grown
-     to 45 without moving a single pixel of layout. */
+     to 45 without moving a single pixel of layout. VERIFY BY HIT-TESTING, not by reading this:
+     an ancestor that clips can silently eat it, which is exactly what happened here. */
   .more::after{content:"";position:absolute;top:-12px;bottom:-12px;left:-6px;right:-6px}
   /* That grown hit area hangs 12px below the three-line box, and an absolutely positioned child
      counts toward scrollHeight, so it read as a fourth line and every card looked truncated.
