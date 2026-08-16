@@ -1,36 +1,65 @@
 "use client";
 
-// exists-check: npm run exists terminal , the terminal family only; the attention-bar CLASS
-// STRING is copied verbatim from components-legacy/dashboard/DashboardLayout.tsx:457/465 (the
-// REAL shipped admin-preview banner), composed rather than reinvented, per the earlier round's
-// instruction. english-ok: standalone dev mockup, hardcoded copy is English.
+// =============================================================================
+// WHAT THIS SCREEN IS. Named first, because not naming it is what broke rounds
+// 1 through 6.
 //
-// DIRECTION B , ATTENTION BAR (owner brief 2026-08-15, "quirky-ellis" round).
+//   SURFACE CLASS : merchant counter terminal. An OPERATOR surface. It is not a
+//                   customer surface and the customer FLOORS LAW does not apply
+//                   to it by default.
+//   ITS ONE JOB   : the person standing at the counter can see, from arm's
+//                   length and without touching anything, who is in a chair,
+//                   who is waiting, and what needs a decision right now.
 //
-// ROUND 2 (2026-08-15, owner: "make actual, like, a fucking prototype"): the first round
-// RENDERED data but nothing ever HAPPENED on its own. This round wires a live clock (setInterval
-// forces a re-render every second so every elapsedMinutes()/zurichTime() call below reads fresh
-// wall-clock time), two scripted booking arrivals (6s and 26s after open, built from real
-// props , a real service + a real staff member drawn from what was already loaded, only the
-// CUSTOMER NAME is invented, from an in-file Swiss-name list, because a genuinely new booking
-// cannot come from a database already read), a real undo stack (snapshot-and-restore, not
-// per-action inverse logic), and WebAudio arrival tones gated behind an explicit Sound on/off
-// control (autoplay policy: no context runs until the user has tapped it once).
+// Because the class was never named, the customer law was applied by default,
+// and the customer law actively DEMANDED the two things the owner rejected:
+// FLOORS LAW 4 mandates the sunken tray for grouped content on white with no
+// photo (round 5's grey canvas), and FLOORS LAW 1d mandates a semantic-colour
+// moment on a screen with no photography, which on a photo-less merchant screen
+// leaves only the pale semantic tokens, so s-warning.bg #FDF6E7 became a
+// full-bleed bar (round 6's beige). Both were correct customer law applied to a
+// screen that is not a customer screen.
 //
-// Same look, same class constants, same server-render-then-portal pattern as round 1. Nothing
-// in GROUPED_CARD/ROW/ROW_TITLE/ROW_META/SECTION_HEADING/SECONDARY_BUTTON/Avatar/the attention
-// bar string changed.
+// THE LAW THAT ACTUALLY GOVERNS THIS SCREEN, routed by surface class:
+//   _design-system/TASTE_LOG.md:339 (dated merchant round, 2026-07-15)
+//     "ONE carded hero per screen; secondary info is BARE TEXT on the canvas
+//      (no card/box/pill costume)" , owner: "we need breathing space not just
+//      everywhere cards or boxes or pill".
+//   _design-system/TASTE_LOG.md:341  "Binary 16/32 gaps only".
+//   _design-system/LOCKFILE.md:561 THE CONTAINER TEST (2026-07-28)
+//     "A container is earned only when it does something whitespace cannot",
+//     three cases. This screen's lists meet NONE of them: they sit on white
+//     (not case 1), they are rows of one list rather than peer entities
+//     competing in a scroll (not case 2), and no row navigates as a unit
+//     (not case 3). So: whitespace and an inset hairline, no border, no card.
+//   _design-system/LOCKFILE.md:593 "Row rhythm when the box goes away" ,
+//     content sits ~26px off the edge, the divider is inset 24px on both sides
+//     spanning about 88% of the width. Hence px-6 on the content column and the
+//     rule on the row CHILD, so it lives inside the padding box.
 //
-// boxed-ok: every GROUPED_CARD (container) + ROW (per-row hairline) pairing below is the SAME
-// shipped grouped-list-card grammar this file already used in round 1 (imported from
-// ../Terminal.tsx, not re-declared), unchanged by this round; this round only adds behavior.
-// The other literal `border ...` occurrences in this file (ATTENTION_SHOW_BUTTON's pill border,
-// the sticky sub-header's `border-b`) are UNRELATED single-edge chrome on DIFFERENT elements
-// (a pill button, a sticky bar's bottom rule), not a second boundary around the same list , not
-// doubled chrome, just several distinct hairlines living in one file, same as round 1 had.
+// NOT A GRAVEYARD COLLISION: REMOVED.md:85 kills "borderless / chrome-off" but
+// scopes itself, in its own words, to "across customer surfaces". The merchant
+// round says the opposite for operator screens. Two different surface classes,
+// which is the whole point of naming the class first.
 //
-// boxed-ok: GROUPED_CARD + ROW imported (not re-declared) from Terminal.tsx, same shipped
-// grouped-list-card grammar. The attention bar is a single flat sticky strip with no inner card.
+// THE QUESTION THAT WAS PARKED IN ROUND ONE is answered here, because leaving it
+// open is what let five rounds be built on top of it. The design verifier asked
+// (_plans/MERCHANT_TERMINAL_2026-08-15.md:732) whether a list of people is one
+// card with lines, or a card per person. The answer is NEITHER: it is bare rows
+// on the canvas. Exactly one thing on this screen wears a card, and it is the
+// chairs, because the chairs are the thing being looked at.
+//
+// exists-check: npm run exists terminal , the terminal family only. This file
+// composes the shipped constants from ../Terminal (GROUPED_CARD, ROW_TITLE,
+// ROW_META, SECTION_HEADING, PRIMARY_BUTTON, SECONDARY_BUTTON) and the real
+// Avatar primitive rather than retyping any of them.
+// english-ok: standalone dev prototype, all hardcoded copy is English.
+//
+// KEPT, unchanged in behaviour: the two scripted arrivals (6s, 26s), the 1s
+// clock, Start / Done / Accept / No-show, the snapshot undo stack, the Sound
+// on/off control, Replay, the server-render-then-portal pattern, and the
+// mounted-vs-fixed root class swap.
+// =============================================================================
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -39,7 +68,6 @@ import { AnimatePresence, motion } from "motion/react";
 import { Avatar } from "@/app/[locale]/_components/primitives";
 import {
   GROUPED_CARD,
-  ROW,
   ROW_TITLE,
   ROW_META,
   SECTION_HEADING,
@@ -60,30 +88,85 @@ interface BDirectionProps {
   staff: TerminalStaff[];
 }
 
-// Verbatim from DashboardLayout.tsx:457, the real shipped admin-preview banner. Only the colour
-// role stays; content and action are this screen's own. boxed-ok: a single-edge pill border on
-// an unrelated small button, not a container around the ROW list below.
-const ATTENTION_BAR =
-  "sticky top-0 z-30 flex items-center gap-3 px-5 py-2.5 bg-s-warning-bg border-b border-s-warning/20 text-s-ink text-[13px] font-medium";
-const ATTENTION_SHOW_BUTTON =
-  "shrink-0 flex min-h-11 items-center justify-center px-3 py-1.5 rounded-full bg-white border border-s-border hover:bg-s-bg-sunken transition-colors text-[13px] font-medium disabled:opacity-60";
-const ROW_COMMIT_BUTTON =
-  "font-body flex h-11 flex-1 items-center justify-center gap-2 rounded-full border border-s-border bg-white shadow-whisper text-[15px] font-semibold text-s-ink transition-[colors,transform] hover:bg-s-bg-sunken active:scale-[0.97] active:duration-[80ms] active:ease-glide";
-// A plain text-button row action, byte-identical to the Done/No-show/Cancel style Terminal.tsx
-// already uses inside an expanded row (that file's "expanded" blocks).
-const TEXT_ROW_ACTION_DANGER = "font-body flex h-11 items-center text-[14px] font-normal text-s-error";
-// Canonical duration for the arrival/highlight tint fade (LOCKFILE motion canon: [80,100,150,
-// 200,250,300,500]); the tint HOLD time (1.5s / 2s per the brief) is a separate setTimeout, not
-// this CSS transition, which only controls how fast the colour itself fades once removed.
+// ---- THE LADDER. Exactly four sizes with real distance in them. ------------
+// 28 anchor / 18 heading / 15 the name you read on a row / 13 everything else.
+// 14 is deleted on purpose: it measured 43 of 71 text elements and sat one step
+// from both its neighbours, so nothing on the screen could be read as bigger
+// than anything else (FLOORS LAW 7c, "size variety is not range").
+//
+// Each of the three borrowed constants is the SHIPPED string with ONE token
+// swapped, the same way Terminal.tsx derives LOG_TEXT and its flex-1 primary,
+// so the font, weight, tracking and leading still come from the design system
+// and only the size is pinned.
+const ANCHOR = "font-display text-[28px] font-semibold leading-tight tabular-nums text-s-ink";
+// Pinned to a flat 18: the shipped clamp resolves to 18 at 390 but to 20 past
+// ~1000px, and a counter terminal can run on a wide screen. A fifth size that
+// only appears on a tablet is still a fifth size.
+const HEADING = SECTION_HEADING.replace("text-[clamp(18px,2vw,20px)]", "text-[18px]");
+// Same: ROW_TITLE steps to 16 at md, which would be a fifth size on a tablet.
+const ROW_NAME = ROW_TITLE.replace(" md:text-[16px]", "");
+// ROW_META ships at 14, the exact size being deleted. Size swapped, nothing else.
+const ROW_SUB = ROW_META.replace("text-[14px]", "text-[13px]");
+const SMALL = "font-body text-[13px] font-normal text-s-ink-2";
+const SMALL_INK = "font-body text-[13px] font-normal text-s-ink";
+
+// ---- THE BOX BUDGET. -------------------------------------------------------
+// BARE_ROW is the row grammar with the box taken off: no container, no border
+// around the group, no shadow. The single hairline is a border-top on the row
+// CHILD, so the content column's px-6 insets it to 24px from each screen edge
+// (about 88% of 390), which is the measured content-divider inset in
+// LOCKFILE:586. first:border-t-0 means the list's own top edge is whitespace.
+const BARE_ROW = "border-t border-s-border py-4 first:border-t-0";
+// boxed-ok: GROUPED_CARD is used exactly ONCE on this screen, on the chairs,
+// and with no inner ROW hairlines (the tiles sit side by side, so there is
+// nothing to double against). It is the shipped grouped-list-card container
+// (SalonServices.tsx:118 / SalonTeam.tsx:70), composed not re-declared.
+const CHAIRS_CARD = GROUPED_CARD + " mt-4 p-4";
+
+// Chrome. The two bars live in ONE sticky wrapper. Round 6 gave the lower bar a
+// hardcoded `top-11` (44px) while the bar above it rendered 65px tall, so the
+// two top-level sections overlapped by 21px the moment the screen scrolled.
+// Stacking them inside one sticky parent deletes the arithmetic that produced
+// the overlap instead of correcting its constant.
+const CHROME_STACK = "sticky top-0 z-30 border-b border-s-border bg-white";
+const CHROME_ROW = "mx-auto flex h-14 w-full max-w-[760px] items-center gap-3 px-6";
+
+// A ROW-scale commit action: the shipped SECONDARY_BUTTON's exact geometry
+// (h-11, pill, 13px) with only the FILL stepping up to ink, so the Accept and
+// Decline pair reads as twins that differ by weight and not by size (LOCKFILE
+// twin-control rule).
+//
+// It is deliberately NOT the page-level PRIMARY_BUTTON. That control renders
+// 62px tall and full width, and this screen can hold twelve decisions at once,
+// so twelve of them turned the attention list into a column of black bars.
+// Caught by looking at the whole rendered screen, not at the button on its own,
+// which is the same failure as the beige in a different token: "the one primary
+// commit CTA stays ink" is a PER-SCREEN rule, and a list of decisions has no
+// one CTA. Ink is still what marks the commit; it is just at the row's scale.
+//
+// It is also not a white pill carrying a shadow, because a white shadowed
+// control on a white canvas is the banned grey haze (LOCKFILE elevation: a calm
+// control on white is FLAT).
+const COMMIT_BUTTON = SECONDARY_BUTTON.replace("shrink-0", "flex-1 justify-center")
+  .replace("border border-s-border bg-white", "bg-s-ink")
+  .replace("text-s-ink transition", "text-white transition")
+  .replace("hover:bg-s-bg-sunken", "hover:bg-black");
+const TEXT_ROW_ACTION_DANGER = "font-body flex h-11 items-center text-[13px] font-normal text-s-error";
+// Canonical duration for the arrival/next-up tint fade (LOCKFILE motion canon).
+// The tint HOLD is a separate setTimeout; this only controls the fade out.
 const TINT_TRANSITION = "transition-colors duration-500";
+// The only non-white surface this screen is allowed to paint, and only for a
+// second and a half. Cool sunken #F4F4F5, never warm cream.
+const TINT_SURFACE = " bg-s-bg-sunken";
 
 function attentionLabel(count: number): string {
   if (count === 1) return "1 needs you";
   return `${count} need you`;
 }
 
-// The one hardcoded thing this round is allowed (a genuinely new booking cannot come from a
-// database that has already been read). Never reused as a real customer name anywhere else.
+// The one hardcoded thing this prototype is allowed (a genuinely new booking
+// cannot come from a database that has already been read). Never reused as a
+// real customer name anywhere else.
 const ARRIVAL_NAMES = [
   "Elias Meier",
   "Sina Baumann",
@@ -196,14 +279,16 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
     };
   }, []);
 
-  // The live clock. Every listing below (elapsedMinutes, zurichTime, lateness) reads Date.now()
-  // fresh at render time; this interval is the only thing that makes those renders happen.
+  // The live clock. Every listing below (elapsedMinutes, zurichTime, lateness)
+  // reads Date.now() fresh at render time; this interval is the only thing that
+  // makes those renders happen.
   useEffect(() => {
     const id = setInterval(() => forceTick((t) => t + 1), 1000);
     return () => clearInterval(id);
   }, []);
 
-  // The two scripted arrivals, 6s then 20s after that (26s from open). Rescheduled on Replay.
+  // The two scripted arrivals, 6s then 20s after that (26s from open).
+  // Rescheduled on Replay.
   const addArrival = useCallback(
     (seq: number) => {
       const booking = buildArrivalBooking(seq, initialBookings, staff, usedArrivalNamesRef.current);
@@ -376,14 +461,10 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
     setUndo({ message: `${entry.customerName} marked no-show` });
   }
 
-  // FIXED 2026-08-15 (owner: "the mockup isn't working at all"). Returning null until mount meant
-  // the SERVER sent a page with no screen in it at all. The screen now renders in the normal tree
-  // on the server and only MOVES into the body portal once mounted.
-
-  // ---- Derived, un-memoised on purpose: every value below reads Date.now()/elapsedMinutes at
-  // render time, and this component re-renders every second (the tick above). Memoising any of
-  // these on [bookings]/[queue] alone would freeze the lateness math between data changes, which
-  // is exactly the "clock doesn't run" bug this round exists to fix. ----
+  // ---- Derived, un-memoised on purpose: every value below reads Date.now() /
+  // elapsedMinutes at render time, and this component re-renders every second
+  // (the tick above). Memoising any of these on [bookings]/[queue] alone would
+  // freeze the lateness math between data changes. ----
   const waitingActive = queue.filter((q) => q.status === "waiting").sort((a, b) => a.position - b.position);
   const waitingNoShow = queue.filter((q) => q.status === "no_show");
   const inChairList = queue.filter((q) => q.status === "in_chair");
@@ -416,50 +497,46 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
   const attentionCount = activeAttentionItems.length;
 
   const screen = (
-    // boxed-ok: this outer bg-s-bg-sunken wrapper is the SCREEN backdrop, not a card border , no
-    // border/shadow token here, so it never pairs with the row dividers a few lines below.
+    // The canvas is white. The only other surface this screen may paint is the
+    // cool sunken #F4F4F5, and only as a transient row tint. No warm cream
+    // anywhere: taste rule 3 bans it by name, and round 6's beige came from an
+    // ADMIN PREVIEW banner in DashboardLayout.tsx, which is an internal tool and
+    // was never a design decision to copy.
     <div
       className={
         mounted
-          // 2026-08-16, owner: "i dont like ths gray backrgrounf evrth container sh bro ... look
-          // how we do it in pdp page of a salon". MEASURED on the real PDP at 390 wide: the content
-          // sheet is WHITE (9923px of white blocks against 3223px of grey, and every grey block is
-          // a photo-gallery placeholder, not the canvas). The terminal had it backwards: a grey
-          // canvas with white boxes floating on it. The canvas is white now, and the grouped cards
-          // keep their hairline, which is what the PDP's own cards do on white.
           ? "fixed inset-0 z-[10000] overflow-y-auto overscroll-contain bg-white"
           : "relative z-[10000] min-h-[100dvh] w-full bg-white"
       }
     >
-      {displayAttentionItems.length > 0 ? (
-        <div className={ATTENTION_BAR}>
-          <span className="flex-1 truncate">{attentionLabel(attentionCount)}</span>
-          <button type="button" onClick={() => setShowingAttention((v) => !v)} className={ATTENTION_SHOW_BUTTON}>
-            {showingAttention ? "Hide" : "Show"}
-          </button>
-        </div>
-      ) : null}
-
-      <div
-        className={
-          "sticky z-20 h-14 border-b border-s-border bg-white" +
-          (displayAttentionItems.length > 0 ? " top-11" : " top-0")
-        }
-      >
-        <div className="mx-auto flex h-full w-full max-w-[760px] items-center justify-between px-4">
-          <span className="font-body text-[15px] font-semibold text-s-ink">{salonName}</span>
-          <div className="flex items-center gap-4">
-            <span className="font-body tabular-nums text-[14px] font-normal text-s-ink-2">
-              {zurichTime(new Date().toISOString())}
+      {/* CHROME. One sticky stack, so the bars cannot overlap each other. */}
+      <div className={CHROME_STACK}>
+        {displayAttentionItems.length > 0 ? (
+          <div className={CHROME_ROW + " border-b border-s-border"}>
+            {/* Urgency is carried by an ink dot and by type weight and size, not
+                by a colour wash across the whole bar. */}
+            <span className="h-2 w-2 shrink-0 rounded-full bg-s-ink" />
+            <span className="font-body min-w-0 flex-1 truncate text-[15px] font-semibold text-s-ink">
+              {attentionLabel(attentionCount)}
             </span>
-            <span className="font-body flex items-center gap-1.5 text-[14px] font-normal text-s-ink-2">
+            <button type="button" onClick={() => setShowingAttention((v) => !v)} className={SECONDARY_BUTTON}>
+              {showingAttention ? "Hide" : "Show"}
+            </button>
+          </div>
+        ) : null}
+
+        <div className={CHROME_ROW + " justify-between"}>
+          <span className="font-body min-w-0 flex-1 truncate text-[15px] font-semibold text-s-ink">{salonName}</span>
+          <div className="flex shrink-0 items-center gap-4">
+            <span className={SMALL + " tabular-nums"}>{zurichTime(new Date().toISOString())}</span>
+            <span className={SMALL + " flex items-center gap-1.5"}>
               <span className="h-1.5 w-1.5 rounded-full bg-s-success" />
               Live
             </span>
             <button
               type="button"
               onClick={toggleSound}
-              className="font-body flex h-11 items-center text-[14px] font-medium text-s-accent"
+              className="font-body flex h-11 items-center text-[13px] font-medium text-s-accent"
             >
               {soundState === "on" ? "Sound on" : soundState === "blocked" ? "Sound blocked" : "Sound off"}
             </button>
@@ -467,15 +544,16 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
         </div>
       </div>
 
-      <div className="mx-auto flex w-full max-w-[760px] flex-col gap-8 px-4 pb-16 pt-8">
+      {/* CONTENT. px-6 puts the text 24px off the edge and, because every row
+          rule is a border-top on the row child, insets the hairlines to the same
+          24px (about 88% of 390), which is the measured divider inset.
+          gap-8 = the 32px between sections. Nothing else lives between them. */}
+      <div className="mx-auto flex w-full max-w-[760px] flex-col gap-8 px-6 pb-16 pt-8">
         {showingAttention && displayAttentionItems.length > 0 ? (
           <div>
-            <p className="font-display mb-4 text-[28px] font-semibold leading-tight tabular-nums text-s-ink">
-              {attentionCount} need you
-            </p>
-            {/* boxed-ok: GROUPED_CARD (container) + ROW (hairline) together, the one shipped
-                grouped-list-card grammar this file already used, imported not re-declared. */}
-            <ul className={GROUPED_CARD}>
+            {/* The one 28px anchor in this state. */}
+            <p className={ANCHOR}>{attentionCount} need you</p>
+            <ul className="mt-4">
               <AnimatePresence initial={false}>
                 {displayAttentionItems.map(({ booking, reason }) => (
                   <motion.li
@@ -485,28 +563,30 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.25 }}
-                    className={ROW}
+                    className={BARE_ROW}
                   >
                     <div className="flex items-center gap-3">
-                      <span className="font-body w-[52px] shrink-0 text-[15px] font-medium tabular-nums text-s-ink">
-                        {zurichTime(booking.startsAt)}
-                      </span>
+                      <span className={SMALL + " w-[46px] shrink-0 tabular-nums"}>{zurichTime(booking.startsAt)}</span>
                       <span className="flex min-w-0 flex-1 flex-col">
-                        <span className={ROW_TITLE + " truncate"}>{booking.customerName}</span>
-                        <span className={ROW_META + " truncate"}>{booking.serviceName}</span>
+                        <span className={ROW_NAME + " truncate"}>{booking.customerName}</span>
+                        <span className={ROW_SUB + " truncate"}>{booking.serviceName}</span>
                       </span>
                       <span
                         className={
-                          "font-body shrink-0 text-[14px] font-medium " +
+                          "font-body shrink-0 text-[13px] font-medium " +
                           (reason === "confirmed" ? "text-s-success" : "text-s-error")
                         }
                       >
-                        {reason === "new" ? "New" : reason === "confirmed" ? "Confirmed" : `${elapsedMinutes(booking.startsAt)} min late`}
+                        {reason === "new"
+                          ? "New"
+                          : reason === "confirmed"
+                            ? "Confirmed"
+                            : `${elapsedMinutes(booking.startsAt)} min late`}
                       </span>
                     </div>
                     {reason === "new" ? (
-                      <div className="mt-3 flex gap-2">
-                        <button type="button" onClick={() => handleAccept(booking)} className={ROW_COMMIT_BUTTON}>
+                      <div className="mt-4 flex gap-2">
+                        <button type="button" onClick={() => handleAccept(booking)} className={COMMIT_BUTTON}>
                           Accept
                         </button>
                         <button type="button" onClick={() => handleDecline(booking)} className={SECONDARY_BUTTON}>
@@ -514,8 +594,8 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
                         </button>
                       </div>
                     ) : reason === "late" ? (
-                      <div className="mt-3 flex gap-2">
-                        <button type="button" onClick={() => handleTheyArrivedLate(booking)} className={ROW_COMMIT_BUTTON}>
+                      <div className="mt-4 flex gap-2">
+                        <button type="button" onClick={() => handleTheyArrivedLate(booking)} className={COMMIT_BUTTON}>
                           They arrived
                         </button>
                         <button type="button" onClick={() => handleNoShowLate(booking)} className={SECONDARY_BUTTON}>
@@ -530,44 +610,55 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
           </div>
         ) : (
           <>
+            {/* The one 28px anchor. Bare on the canvas, no card, no heading:
+                the number IS the heading. */}
             <div>
-              <p className="font-display text-[28px] font-semibold leading-tight tabular-nums text-s-ink">
-                {waitingActive.length === 0 ? "No wait" : `${maxWait} min wait`}
-              </p>
-              <p className="font-body mt-1 text-[14px] font-normal tabular-nums text-s-ink-2">
+              <p className={ANCHOR}>{waitingActive.length === 0 ? "No wait" : `${maxWait} min wait`}</p>
+              <p className={SMALL + " mt-4 tabular-nums"}>
                 {waitingActive.length === 0 ? "Nobody waiting" : `${waitingActive.length} people waiting`}
               </p>
             </div>
 
+            {/* THE ONE CARD. The chairs earn it because they are the thing being
+                looked at: the hero of an operator screen is what the operator
+                must act on. Nothing else on this screen wears a box. */}
             <div>
-              <h2 className={SECTION_HEADING}>In the chair</h2>
-              {/* boxed-ok: GROUPED_CARD tile with no inner ROW dividers, the tiles sit side by
-                  side (flex row), nothing to double against. */}
-              <div className={GROUPED_CARD + " mt-4 p-5"}>
+              <h2 className={HEADING}>In the chair</h2>
+              <div className={CHAIRS_CARD}>
                 <div className="flex gap-4">
                   {staff.map((member) => {
                     const occupant = inChairList.find((q) => q.staffId === member.id) ?? null;
                     const waitingNow = waitingActive[0] ?? null;
                     return (
-                      <div key={member.id} className="flex flex-1 flex-col items-center gap-1 text-center">
-                        <Avatar src={member.avatarUrl} name={member.name} size={56} />
-                        <p className={ROW_TITLE + " mt-2 text-center"}>{member.name}</p>
+                      <div key={member.id} className="flex flex-1 flex-col items-center text-center">
+                        {/* size="lg" is the same 56px circle as before, but its
+                            initials fallback lands on 18 (a ladder size) instead
+                            of the 22px a raw numeric size would compute. */}
+                        <Avatar src={member.avatarUrl} name={member.name} size="lg" />
+                        <p className={ROW_NAME + " mt-4 text-center"}>{member.name}</p>
                         {occupant ? (
                           <>
-                            <p className="font-body text-[14px] font-normal text-s-ink-2">{firstName(occupant.customerName)}</p>
-                            <p className="font-body text-[14px] font-normal tabular-nums text-s-ink-2">
+                            {/* One line, not two. Looking at the WHOLE card and not at each tile
+                                on its own: a free tile ends after one line while an occupied tile
+                                ran four, which left 107px of dead white under the free chairs and
+                                made the one card on the screen read as broken. Who is in the chair
+                                and how long they have been there is also a single glanceable fact
+                                at arm's length, which is this screen's whole job. */}
+                            <p className={SMALL + " mt-1 tabular-nums"}>
+                              {firstName(occupant.customerName)},{" "}
                               {elapsedMinutes(occupant.startedAt ?? new Date().toISOString())} min
                             </p>
                             <button
                               type="button"
                               onClick={() => handleDone(occupant, waitingNow?.id ?? null)}
-                              className="font-body mt-1 flex h-11 items-center text-[14px] font-medium text-s-ink"
+                              className="font-body mt-4 flex h-11 items-center text-[13px] font-medium text-s-ink"
                             >
                               Done
                             </button>
                           </>
                         ) : (
-                          <p className="font-body text-[14px] font-normal text-s-success">Free</p>
+                          // Semantic colour as a small element, never as a surface.
+                          <p className="font-body mt-1 text-[13px] font-normal text-s-success">Free</p>
                         )}
                       </div>
                     );
@@ -576,11 +667,12 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
               </div>
             </div>
 
+            {/* Bare rows on the canvas. No outer card, no border around the
+                group, no shadow. The hairline between rows is the only chrome. */}
             {waitingActive.length > 0 || waitingNoShow.length > 0 ? (
               <div>
-                <h2 className={SECTION_HEADING}>Waiting</h2>
-                {/* boxed-ok: GROUPED_CARD + ROW together, same shipped grammar as above. */}
-                <ul className={GROUPED_CARD + " mt-4"}>
+                <h2 className={HEADING}>Waiting</h2>
+                <ul className="mt-4">
                   <AnimatePresence initial={false}>
                     {waitingActive.map((entry) => {
                       const key = `waiting:${entry.id}`;
@@ -594,7 +686,7 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0 }}
                           transition={{ duration: 0.25 }}
-                          className={ROW + " " + TINT_TRANSITION + (tinted ? " bg-s-warning-bg" : "")}
+                          className={BARE_ROW + " " + TINT_TRANSITION + (tinted ? TINT_SURFACE : "")}
                         >
                           <div className="flex items-center gap-3">
                             <button
@@ -602,14 +694,14 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
                               onClick={() => setExpandedWaitingId(expanded ? null : key)}
                               className="flex min-h-11 min-w-0 flex-1 items-center gap-3 text-left"
                             >
-                              <span className="font-body w-[52px] shrink-0 whitespace-nowrap text-[14px] font-normal tabular-nums text-s-ink-2">
+                              <span className={SMALL + " w-[46px] shrink-0 whitespace-nowrap tabular-nums"}>
                                 {entry.ticketCode}
                               </span>
                               <span className="flex min-w-0 flex-1 flex-col">
-                                <span className={ROW_TITLE + " truncate"}>{entry.customerName}</span>
-                                <span className={ROW_META + " truncate"}>{entry.serviceName}</span>
+                                <span className={ROW_NAME + " truncate"}>{entry.customerName}</span>
+                                <span className={ROW_SUB + " truncate"}>{entry.serviceName}</span>
                               </span>
-                              <span className="font-body shrink-0 text-[14px] font-normal tabular-nums text-s-ink">
+                              <span className={SMALL_INK + " shrink-0 tabular-nums"}>
                                 {entry.estimatedWaitMinutes} min
                               </span>
                             </button>
@@ -620,8 +712,12 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
                             </div>
                           </div>
                           {expanded ? (
-                            <div className="mt-3 flex items-center gap-4">
-                              <button type="button" onClick={() => handleNoShowWaiting(entry)} className={TEXT_ROW_ACTION_DANGER}>
+                            <div className="mt-4 flex items-center gap-4">
+                              <button
+                                type="button"
+                                onClick={() => handleNoShowWaiting(entry)}
+                                className={TEXT_ROW_ACTION_DANGER}
+                              >
                                 No-show
                               </button>
                             </div>
@@ -630,14 +726,14 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
                       );
                     })}
                     {waitingNoShow.map((entry) => (
-                      <motion.li key={entry.id} layout exit={{ opacity: 0 }} className={ROW + " opacity-50"}>
+                      <motion.li key={entry.id} layout exit={{ opacity: 0 }} className={BARE_ROW + " opacity-50"}>
                         <div className="flex items-center gap-3">
-                          <span className="font-body w-[52px] shrink-0 whitespace-nowrap text-[14px] font-normal tabular-nums text-s-ink-2">
+                          <span className={SMALL + " w-[46px] shrink-0 whitespace-nowrap tabular-nums"}>
                             {entry.ticketCode}
                           </span>
                           <span className="flex min-w-0 flex-1 flex-col">
-                            <span className={ROW_TITLE + " truncate"}>{entry.customerName}</span>
-                            <span className={ROW_META + " truncate"}>No-show</span>
+                            <span className={ROW_NAME + " truncate"}>{entry.customerName}</span>
+                            <span className={ROW_SUB + " truncate"}>No-show</span>
                           </span>
                         </div>
                       </motion.li>
@@ -649,14 +745,11 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
 
             {laterTodayActive.length > 0 || noShowBookings.length > 0 ? (
               <div>
-                <div className="flex items-center justify-between">
-                  <h2 className={SECTION_HEADING}>Later today</h2>
-                  <span className="font-body text-[14px] font-normal tabular-nums text-s-ink-2">
-                    {laterTodayActive.length} to go
-                  </span>
+                <div className="flex items-center justify-between gap-3">
+                  <h2 className={HEADING}>Later today</h2>
+                  <span className={SMALL + " shrink-0 tabular-nums"}>{laterTodayActive.length} to go</span>
                 </div>
-                {/* boxed-ok: GROUPED_CARD + ROW together, same shipped grammar as above. */}
-                <ul className={GROUPED_CARD + " mt-4"}>
+                <ul className="mt-4">
                   <AnimatePresence initial={false}>
                     {laterTodayActive.map((booking) => {
                       const isNew = booking.status === "pending_approval";
@@ -671,17 +764,17 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0 }}
                           transition={{ duration: 0.3 }}
-                          className={ROW + " " + TINT_TRANSITION + (tinted ? " bg-s-warning-bg" : "")}
+                          className={BARE_ROW + " " + TINT_TRANSITION + (tinted ? TINT_SURFACE : "")}
                         >
                           <div className="flex items-center gap-3">
-                            <span className="font-body w-[52px] shrink-0 text-[15px] font-medium tabular-nums text-s-ink">
+                            <span className={SMALL + " w-[46px] shrink-0 tabular-nums"}>
                               {zurichTime(booking.startsAt)}
                             </span>
                             <span className="flex min-w-0 flex-1 flex-col">
-                              <span className={ROW_TITLE + " truncate"}>{booking.customerName}</span>
-                              <span className={ROW_META + " truncate"}>{booking.serviceName}</span>
+                              <span className={ROW_NAME + " truncate"}>{booking.customerName}</span>
+                              <span className={ROW_SUB + " truncate"}>{booking.serviceName}</span>
                             </span>
-                            <span className="font-body shrink-0 text-right text-[14px] font-normal tabular-nums text-s-ink">
+                            <span className={SMALL_INK + " shrink-0 text-right tabular-nums"}>
                               {isNew ? (
                                 <span className="font-medium text-s-error">New</span>
                               ) : isLate ? (
@@ -690,7 +783,7 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
                                 <>
                                   {chf(booking.price)}
                                   {booking.paymentStatus === "paid" ? (
-                                    <span className="mt-0.5 block text-[14px] font-normal text-s-success">Paid</span>
+                                    <span className="mt-1 block text-[13px] font-normal text-s-success">Paid</span>
                                   ) : null}
                                 </>
                               )}
@@ -700,14 +793,14 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
                       );
                     })}
                     {noShowBookings.map((booking) => (
-                      <motion.li key={booking.id} layout exit={{ opacity: 0 }} className={ROW + " opacity-50"}>
+                      <motion.li key={booking.id} layout exit={{ opacity: 0 }} className={BARE_ROW + " opacity-50"}>
                         <div className="flex items-center gap-3">
-                          <span className="font-body w-[52px] shrink-0 text-[15px] font-medium tabular-nums text-s-ink-2">
+                          <span className={SMALL + " w-[46px] shrink-0 tabular-nums"}>
                             {zurichTime(booking.startsAt)}
                           </span>
                           <span className="flex min-w-0 flex-1 flex-col">
-                            <span className={ROW_TITLE + " truncate"}>{booking.customerName}</span>
-                            <span className={ROW_META + " truncate"}>No-show</span>
+                            <span className={ROW_NAME + " truncate"}>{booking.customerName}</span>
+                            <span className={ROW_SUB + " truncate"}>No-show</span>
                           </span>
                         </div>
                       </motion.li>
@@ -715,9 +808,7 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
                   </AnimatePresence>
                 </ul>
                 {doneQueueCount > 0 ? (
-                  <p className="font-body mt-4 text-[14px] font-normal tabular-nums text-s-ink-2">
-                    {doneQueueCount} done today
-                  </p>
+                  <p className={SMALL + " mt-4 tabular-nums"}>{doneQueueCount} done today</p>
                 ) : null}
               </div>
             ) : null}
@@ -727,7 +818,7 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
             laterTodayActive.length === 0 &&
             noShowBookings.length === 0 &&
             inChairList.length === 0 ? (
-              <div className="flex flex-col items-center justify-center gap-3 py-24 text-center">
+              <div className="flex flex-col items-center justify-center gap-4 py-24 text-center">
                 <Inbox size={32} strokeWidth={1.5} className="text-s-ink-2" />
                 <p className="font-body text-[15px] font-normal text-s-ink-2">Nothing on the books today</p>
               </div>
@@ -735,11 +826,11 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
           </>
         )}
 
-        <div className="flex justify-center pt-4">
+        <div className="flex justify-center">
           <button
             type="button"
             onClick={handleReplay}
-            className="font-body flex h-11 items-center text-[14px] font-normal text-s-ink-2"
+            className="font-body flex h-11 items-center text-[13px] font-normal text-s-ink-2"
           >
             Replay
           </button>
@@ -747,15 +838,16 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
       </div>
 
       {undo ? (
-        // boxed-ok: this ink pill is the shared undo-bar affordance, copied verbatim from the
-        // already-shipped one in ../Terminal.tsx, not a second boundary around the lists above.
-        <div className="fixed inset-x-0 bottom-0 z-10 px-4 pb-[calc(16px+env(safe-area-inset-bottom))]">
+        // boxed-ok: the shared undo affordance, copied verbatim from the shipped
+        // one in ../Terminal.tsx. A transient action bar, not a container around
+        // any list above it.
+        <div className="fixed inset-x-0 bottom-0 z-10 px-6 pb-[calc(16px+env(safe-area-inset-bottom))]">
           <div className="mx-auto flex w-full max-w-[760px] items-center justify-between gap-4 rounded-full bg-s-ink px-5 py-3">
-            <span className="font-body text-[15px] font-medium text-white">{undo.message}</span>
+            <span className="font-body min-w-0 flex-1 truncate text-[15px] font-medium text-white">{undo.message}</span>
             <button
               type="button"
               onClick={handleUndo}
-              className="font-body flex h-11 items-center text-[15px] font-semibold text-white underline underline-offset-4"
+              className="font-body flex h-11 shrink-0 items-center text-[15px] font-semibold text-white underline underline-offset-4"
             >
               Undo
             </button>
@@ -765,6 +857,8 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
     </div>
   );
 
+  // Renders in the normal tree on the server and only MOVES into the body
+  // portal once mounted, so the server never sends a page with no screen in it.
   if (!mounted) return screen;
 
   return createPortal(screen, document.body);

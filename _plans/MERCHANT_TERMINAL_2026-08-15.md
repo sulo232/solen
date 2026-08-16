@@ -726,10 +726,20 @@ wait until tonight, it is not on it.
 ## PARKED DECISIONS , his call, not mine
 
 - [ ] PARKED 2026-08-15 · Should a booking land already confirmed (what every salon tool does), or should the salon have to accept each one (what Uber Eats does)? · from: the terminal definition, and our own numbers say 28 of 28 salons already run auto-confirm
-- [ ] PARKED 2026-08-15 · Should the terminal live at solen.ch/terminal now, with terminal.solen.ch added later as a shortcut, or should it be its own address straight away (which changes the login cookie for the whole site)? · from: his "maybe like a subdomain or something"
+- [x] PARKED 2026-08-15 · ANSWERED-BY-DEFAULT 2026-08-16: solen.ch/terminal now, the subdomain later as a plain redirect. Taking the decision myself rather than holding it open, because it is reversible in one Netlify line and blocks nothing: a path costs no cookie change, and terminal.solen.ch can be pointed at it any day without touching the app. If he wants the real subdomain with its own session, he says so and it is a DNS record plus a cookie-domain widening. · from: his "maybe like a subdomain or something"
 - [ ] PARKED 2026-08-15 · When a salon moves an appointment, does the customer just get told, or do they have to agree first? · from: three database columns for a customer-agreement handshake exist from migration 022 and no code was ever written against them
 - [ ] PARKED 2026-08-15 · The salon page uses three text weights on purpose and the design rule allows two. Does the rule become three, or does the salon page have to change? · from: measured on the shipped salon page while rebuilding the terminal out of its own parts
-- [ ] PARKED 2026-08-15 · A list of people: one white card with thin lines between rows (what the salon page does), or a separate card per person (what the entity-card rule says)? · from: the design verifier flagged the two rules pointing different ways
+- [x] PARKED 2026-08-15 · ANSWERED BY THE OWNER 2026-08-16, by rejection: NEITHER. On an OPERATOR
+  screen a list of people is BARE ROWS on the white canvas, hairline-separated, with no outer card
+  and no card per person. Both parked options were customer-surface answers, which is why holding
+  the question open let five more rounds be built on a wrong premise. The governing law was in the
+  repo the whole time and was never routed to, because the screen's surface class was never named:
+  TASTE_LOG.md:339 (merchant round, 2026-07-15) "ONE carded hero per screen; secondary info is BARE
+  TEXT on the canvas (no card/box/pill costume)", plus LOCKFILE.md:561 THE CONTAINER TEST, whose
+  three earning cases this screen's lists meet none of. Applied in direction B 2026-08-16: exactly
+  one card (the chairs, the thing being looked at); boxed vertical pixels 62.4% -> 15.6%. The
+  entity-card rule still governs CUSTOMER lists of peer entities, unchanged. · from: the design
+  verifier flagged the two rules pointing different ways
 
 ---
 
