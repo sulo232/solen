@@ -1303,13 +1303,13 @@ real file whose content already carries the bar, so the net-new rule suppressed 
 
 # ROUND 5 , WHAT COLOUR MEANS (owner 2026-08-16, "already a lot better" + seven specifics)
 
-- [x] R5-1 Accept is black. Make it green. `verified:` measured on the rendered screen, Accept is now rgb(22,163,74) = #16A34A with white text
-- [x] R5-2 The `New` badge is red. Red is wrong for it. `verified:` measured rgb(107,107,107) = s-ink-2, no red; both render sites changed
-- [x] R5-3 The top bar: a black dot plus black "12 need you" means nothing. `verified:` the dot is deleted, measured absent from the DOM
-- [x] R5-4 Hide / Show is not clickable-through, the labels do not say what happens. `verified:` the whole bar is one button now, label measured as 'Show only these' / 'Show the whole day'
-- [x] R5-5 "where is the font that we use" `verified:` measured Inter 68 uses + Inter Tight 4, identical pairing to the PDP; the real gap is the anchor at 28 vs the PDP title at 30-34 , checked, and the answer is not what I expected.
-- [x] R5-6 Explain what the PRINCIPLE is, in one page, and implement it rather than describing it. `verified:` the seven-line colour principle above, and every one of its lines is applied in this round
-- [x] R5-7 The repeat I found while measuring, which he did not have to name `verified:` 'need you' now measured once on the screen, was twice: "12 need you" renders
+- [x] R5-1 Accept is black. Make it green. `verified:` commit 11d255b31, measured on the rendered screen, Accept is now rgb(22,163,74) = #16A34A with white text
+- [x] R5-2 The `New` badge is red. Red is wrong for it. `verified:` commit 11d255b31, measured rgb(107,107,107) = s-ink-2, no red; both render sites changed
+- [x] R5-3 The top bar: a black dot plus black "12 need you" means nothing. `verified:` commit 11d255b31, the dot is deleted, measured absent from the DOM
+- [x] R5-4 Hide / Show is not clickable-through, the labels do not say what happens. `verified:` commit 11d255b31, the whole bar is one button now, label measured as 'Show only these' / 'Show the whole day'
+- [x] R5-5 "where is the font that we use" `verified:` commits 11d255b31 + 43fc85524. Measured Inter 68 uses + Inter Tight 4, the identical pairing the PDP uses, so the families were never wrong. The real gap was the ANCHOR: 28 here against the PDP title's clamp(30px,2.8vw,34px). Raised to 30 and re-measured: sizes 13/15/18/30, anchor 2.31x the body.
+- [x] R5-6 Explain what the PRINCIPLE is, in one page, and implement it rather than describing it. `verified:` commit 11d255b31, the seven-line colour principle above, and every one of its lines is applied in this round
+- [x] R5-7 The repeat I found while measuring, which he did not have to name `verified:` commit 11d255b31, 'need you' now measured ONCE on the rendered screen, was twice: "12 need you" rendered
       TWICE, once in the bar at 15px and again as the 28px heading underneath it.
 
 ## Measured before touching anything
