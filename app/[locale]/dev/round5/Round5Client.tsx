@@ -84,6 +84,38 @@ const OPTIONS: Option[] = [
           #probe article [class*="rounded-full"] { font-size: 24px !important; }
           #probe article [class*="text-[16px]"] { font-size: 15px; }`,
   },
+  {
+    key: "all",
+    label: "All four fixed",
+    blurb:
+      "Keeps the bigger photo you liked, and fixes the three you just called out. The pills stop being stretched capsules and become a deliberate 16px corner, which is also exactly what Airbnb's own chips are. The stars in a review grow from 13px to 18px. And the score becomes the biggest thing on the screen instead of the word above it, so something finally leads.",
+    // measure-ok: the numbers here were read off the live page and off the captured references, not
+    // eyeballed. THE PILL: measured 135.6 x 44 at a 3.08 ratio, so with a fixed 22px corner radius
+    // only 44px of that width is curved and 91px is a straight line. A shape whose outline is two
+    // thirds straight does not read as a capsule, it reads as a rectangle with a junction, and that
+    // junction is the "sharp corner" he is pointing at. Dropping to a 16px corner makes it a chosen
+    // rounded rectangle instead of a stretched pill, and 16px on a 48px control is Airbnb's own chip,
+    // recorded in _design-system/references/airbnb--reviews.md.
+    // THE STARS: ours are 13px, Fresha's are 12.7px and Airbnb's are 9px, so BOTH references are
+    // smaller than what we ship. 18px is his taste going past both, by his explicit request.
+    // THE ANCHOR: their rating digit is 72px with a 46px gap to the next size; ours is 20px sitting
+    // under a 28px heading, which is upside down. 44px here rather than their 72px, because their
+    // rating has no page heading competing with it on that screen and ours does.
+    css: `#probe article p, #probe article [class*="line-clamp"] { color: var(--s-ink-measured); }
+          #probe article span[class*="inline-block"][class*="shrink-0"] {
+            width: 62px !important; height: 62px !important;
+          }
+          #probe article [class*="rounded-full"] { font-size: 24px !important; }
+          #probe article [class*="text-[16px]"] { font-size: 15px; }
+          /* the stretched capsule becomes a deliberate corner */
+          #probe button { border-radius: 16px !important; }
+          /* row stars up from 13, the summary row is left alone */
+          #probe article svg.lucide-star { width: 18px !important; height: 18px !important; }
+          /* one thing clearly biggest: the score, not the word above it */
+          #probe [class*="text-[16px]"][class*="tabular"], #probe [class*="font-display"][class*="text-[16px]"] {
+            font-size: 44px !important; line-height: 1 !important;
+          }`,
+  },
 ];
 
 // selected-ok: the soft black he picked himself off /dev/pill-ceramic today, the same token the
