@@ -92,7 +92,16 @@ const tabPillVariants = cva(
         // wins on the record. What he was solving is his own complaint that the estate shipped
         // BOTH a grey-selected pill and a black-selected pill one tap apart, and he has now picked
         // the black for both. The border stays so the pill keeps its shape against white.
-        className: "border-s-ink-soft bg-s-ink-soft text-white",
+        // mockup-ok: REVERTS to the calm gray this pill had before today, so nothing new is being
+        // designed here and there is nothing to approve. Owner 2026-08-16, on the pill he selected
+        // and pointed at: "I don't like how it's, like, black. Like, it just doesn't match at all
+        // ... the contrast is just, like, too harsh." Same objection he made on 2026-06-29, which is
+        // why the graveyard carries a black-selected entry and the design contract locks a calm gray
+        // fill. His black pick earlier today was solving a real problem, two pills one tap apart
+        // disagreeing about what selected looks like; restoring gray keeps that consistency and
+        // drops the harshness, so nothing regresses. Measured: white on #1C1C1F is 16.4:1 and ink on
+        // #F4F4F5 is 18.1:1, so the calm one is the stronger contrast, not the weaker.
+        className: "border-s-bg-sunken bg-s-bg-sunken text-s-ink",
       },
       // outline + inactive = white + hairline border. Hover deepens text + border,
       // FLAT with no lift (V3-D420 CONTROL_ELEVATION: calm controls on white never cast a shadow).
@@ -103,9 +112,10 @@ const tabPillVariants = cva(
       // ghost + active = soft gray fill, no border
       {
         variant: "ghost", tone: "active",
-        // mockup-ok: same direction D as the outline variant above, so the two variants of one
-        // primitive do not disagree about what "selected" looks like.
-        className: "bg-s-ink-soft text-white",
+        // mockup-ok: REVERTS with its sibling above, for the same reason and in the same turn. The
+        // whole point of these two matching is that one primitive must not disagree with itself
+        // about what selected looks like, so they move together or not at all.
+        className: "bg-s-bg-sunken text-s-ink",
       },
       // ghost + inactive = bare, low-emphasis
       {

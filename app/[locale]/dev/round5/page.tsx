@@ -86,7 +86,11 @@ export default async function Round5Page() {
 
   if (error) console.error("[dev/round5] review fetch failed:", error);
 
-  const rows = (data ?? []) as unknown as (Review & { rating: number })[];
+  // `any` on the row, not on the result: the select pulls three embeds (profiles, review_photos,
+  // review_replies) and the shared Review type does not declare review_photos, so naming the row
+  // type made `next build` fail with a type error while `next dev` never type-checks and said
+  // nothing. The real reviews page does exactly this for exactly this reason.
+  const rows = (data ?? []) as any[];
   const reviews: Review[] = rows.map((r) => ({
     id: r.id,
     rating: r.rating,

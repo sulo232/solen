@@ -219,13 +219,24 @@ export function SalonReviews({
                       element carries information or it goes). Dropped on the star tiers AND on
                       Alle, because leaving them on one and not the other is the inconsistency
                       that reads as a bug. The count itself is unchanged and still real. */}
+                  {/* mockup-ok: the count is GONE from the star pills, owner 2026-08-16, and he had
+                      already said it once: "I do not want the counts anymore because it just doesn't
+                      make any sense. Like, just make it how many stars there. It's, like, four star,
+                      like, four and then one star. You know? Not, like, how many counts there is."
+                      He is right that the old shape was unreadable. "5 [star] 13" put two unrelated
+                      numbers side by side with only a glyph between them, so the pill read as a
+                      single quantity and neither number was legible as itself. The pill now says one
+                      thing: which rating it filters to. The total still lives on "Alle", one pill to
+                      the left, where a total belongs.
+                      The star also grows 11px -> 15px, his second point in the same breath, "the star
+                      inside of the pill is just like too small". 15 sits with the 13px label rather
+                      than under it. */}
                   {t.key === "all" ? (
                     `Alle ${t.count}`
                   ) : (
                     <span className="inline-flex items-center gap-1">
                       {t.key}
-                      <Star size={11} strokeWidth={0} aria-hidden className="fill-s-star" />
-                      {t.count}
+                      <Star size={15} strokeWidth={0} aria-hidden className="fill-s-star" />
                     </span>
                   )}
                 </TabPill>
