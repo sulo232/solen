@@ -130,6 +130,28 @@ used earlier today says there is NO divider between review rows, and we removed 
 Airbnb's has one, 1px at `rgb(235,235,235)`, with 60px between rows. Two references, opposite calls,
 same element. His to settle if it ever matters.
 
+## THE MOST AIRBNB-FAITHFUL MOVE IS ONE HE ALREADY KILLED, and his reason still holds
+
+Their reviews screen has no star filter. The 5/4/3/2/1 is a static distribution chart you cannot
+tap. So the literal "make it like Airbnb" answer is: replace our star chips with a chart.
+
+**`REMOVED.md:95` says he killed exactly that on 2026-07-24.** The ink-filled rating-distribution
+bars in the Filter-by block, removed because they "read monochrome/too black and imply a
+distribution worth reading that 16 reviews do not have". He picked F2, chips WITH counts, instead,
+which is what ships today.
+
+So it is not proposed here, and the graveyard rule says it does not get re-proposed without his yes.
+
+**AND HIS OWN REASON DEFEATS THE REFERENCE ON THIS ONE.** The Airbnb listing that was captured has
+141 reviews. Cuts & Culture has 16. A distribution chart over 16 reviews is a chart of almost
+nothing, which is precisely the objection he raised a month ago. Copying Airbnb here would be
+copying a solution to a problem we do not have yet.
+
+**ONE THING DID REVERSE, and it is his to reverse.** On 2026-07-24 he picked chips WITH counts. On
+2026-08-15 he said the counts are clutter. That is a straightforward change of mind on a settled
+call, not a contradiction to argue with, and it is recorded here so the next round reads the newer
+decision rather than the older one. What has NOT changed: chips over bars.
+
 ## NOT MEASURED, said plainly rather than guessed
 
 - Airbnb's own sort control. Their reviews screen was never captured, so the replacement size on
