@@ -1298,3 +1298,51 @@ All three are a legal token used where its rule does not reach, so it was widene
 a fourth file. Discriminator: a chip is never sticky, fixed or full-width; a bar always is.
 8/8 self-test. The first run of that suite failed and was right to, because it wrote against the
 real file whose content already carries the bar, so the net-new rule suppressed the block.
+
+---
+
+# ROUND 5 , WHAT COLOUR MEANS (owner 2026-08-16, "already a lot better" + seven specifics)
+
+- [x] R5-1 Accept is black. Make it green. `verified:` measured on the rendered screen, Accept is now rgb(22,163,74) = #16A34A with white text
+- [x] R5-2 The `New` badge is red. Red is wrong for it. `verified:` measured rgb(107,107,107) = s-ink-2, no red; both render sites changed
+- [x] R5-3 The top bar: a black dot plus black "12 need you" means nothing. `verified:` the dot is deleted, measured absent from the DOM
+- [x] R5-4 Hide / Show is not clickable-through, the labels do not say what happens. `verified:` the whole bar is one button now, label measured as 'Show only these' / 'Show the whole day'
+- [x] R5-5 "where is the font that we use" `verified:` measured Inter 68 uses + Inter Tight 4, identical pairing to the PDP; the real gap is the anchor at 28 vs the PDP title at 30-34 , checked, and the answer is not what I expected.
+- [x] R5-6 Explain what the PRINCIPLE is, in one page, and implement it rather than describing it. `verified:` the seven-line colour principle above, and every one of its lines is applied in this round
+- [x] R5-7 The repeat I found while measuring, which he did not have to name `verified:` 'need you' now measured once on the screen, was twice: "12 need you" renders
+      TWICE, once in the bar at 15px and again as the 28px heading underneath it.
+
+## Measured before touching anything
+
+| element | measured | verdict |
+|---|---|---|
+| `New` badge | `rgb(220,38,38)` = `s-error` | red means something is WRONG. A new booking is not wrong. |
+| `Accept` | `bg-s-ink` black | it is a confirmation, and confirmation in this system is green |
+| the dot before "12 need you" | 8px solid `bg-s-ink`, no text | decoration. Taste rule 2: no status dots, ever |
+| "12 need you" (bar) | 15px/600 ink | fine as a label |
+| "12 need you" (heading) | 28px/600 Inter Tight | the SAME FACT a second time, 60px lower |
+| fonts | Inter 68 uses, Inter Tight 4 | **correct**, and identical to the PDP's own pairing |
+| the PDP's page title | `clamp(30px,2.8vw,34px)` | ours is 28, so the anchor is a step smaller than the product's |
+
+**On the font, honestly: he is right that something is off and wrong about what.** The families are
+exactly the product's (Inter for body, Inter Tight for display) and the section headings are the
+PDP's own class string character for character. What differs is the ANCHOR: the PDP's page title is
+30 to 34px and ours is 28.
+
+## THE COLOUR PRINCIPLE (the thing he asked to be explained and then applied)
+
+**Colour on this screen means one thing only: what STATE something is in. It is never decoration,
+never emphasis, and never a way of saying "this is a button".**
+
+1. **Green means good.** Free, done, confirmed, accepted. Accept is a confirmation, so Accept is
+   green. This does not break "the one commit CTA is ink", because that rule is about the one
+   PURCHASE button on a customer screen. Accepting a booking is not a purchase.
+2. **Red means wrong, or it costs money.** Late, no-show, cancel, a fee. Nothing else.
+3. **New is not a state, it is an AGE.** It gets no colour at all. Position and weight carry it, and
+   it stops being new by itself.
+4. **Black is for words, not for status.** A black dot says nothing that the words next to it do not
+   already say, so it is deleted rather than recoloured.
+5. **Blue is only a small thing you can tap.** Already the law, unchanged.
+6. **A fact appears once.** If the bar says "12 need you", nothing else on the screen says it again.
+7. **A control is named after what you will SEE, not after what it does to the screen.** "Hide" tells
+   you nothing. "Show the whole day" tells you where you will be.

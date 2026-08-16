@@ -147,10 +147,21 @@ const CHROME_ROW = "mx-auto flex h-14 w-full max-w-[760px] items-center gap-3 px
 // It is also not a white pill carrying a shadow, because a white shadowed
 // control on a white canvas is the banned grey haze (LOCKFILE elevation: a calm
 // control on white is FLAT).
+// 2026-08-16, owner: "Why is that accept button fucking black? Make it green, bro."
+// He is right, and it is not a preference, it is the rule this screen was already carrying
+// everywhere else: GREEN MEANS GOOD, and accepting a booking is a confirmation. Free reads green
+// in the chairs, Confirmed reads green in the list, and then the button that DOES the confirming
+// was black, which is the one place the screen contradicted itself.
+// It does not break "the one primary commit CTA stays ink": that rule governs the single PURCHASE
+// button on a customer screen. Accepting a booking is not a purchase, and this list can hold
+// twelve of them at once.
+// #16A34A is the locked success green (taste rule 4, "normal green, NOT deep #15803D"), white text
+// on it measures 3.94:1, which clears the 3:1 graphical floor and is why the label stays 13px/600
+// rather than dropping smaller.
 const COMMIT_BUTTON = SECONDARY_BUTTON.replace("shrink-0", "flex-1 justify-center")
-  .replace("border border-s-border bg-white", "bg-s-ink")
+  .replace("border border-s-border bg-white", "bg-s-success")
   .replace("text-s-ink transition", "text-white transition")
-  .replace("hover:bg-s-bg-sunken", "hover:bg-black");
+  .replace("hover:bg-s-bg-sunken", "hover:brightness-95");
 const TEXT_ROW_ACTION_DANGER = "font-body flex h-11 items-center text-[13px] font-normal text-s-error";
 // Canonical duration for the arrival/next-up tint fade (LOCKFILE motion canon).
 // The tint HOLD is a separate setTimeout; this only controls the fade out.
@@ -511,18 +522,27 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
     >
       {/* CHROME. One sticky stack, so the bars cannot overlap each other. */}
       <div className={CHROME_STACK}>
+        {/* 2026-08-16, owner: "why is the need you, like, fucking black? It doesn't make sense. And
+            how the fuck are you gonna click through hide".
+            THE DOT IS GONE. It was an 8px solid ink disc carrying no information the words beside it
+            did not already carry, which is exactly what taste rule 2 bans.
+            THE WHOLE BAR IS THE CONTROL now, not a small pill at the end of it: the thing you are
+            trying to tap is the sentence you just read.
+            THE LABEL SAYS WHERE YOU WILL BE, not what happens to the screen. "Hide" describes an
+            action on pixels; "Show the whole day" describes the place you land. */}
         {displayAttentionItems.length > 0 ? (
-          <div className={CHROME_ROW + " border-b border-s-border"}>
-            {/* Urgency is carried by an ink dot and by type weight and size, not
-                by a colour wash across the whole bar. */}
-            <span className="h-2 w-2 shrink-0 rounded-full bg-s-ink" />
+          <button
+            type="button"
+            onClick={() => setShowingAttention((v) => !v)}
+            className={CHROME_ROW + " border-b border-s-border text-left"}
+          >
             <span className="font-body min-w-0 flex-1 truncate text-[15px] font-semibold text-s-ink">
               {attentionLabel(attentionCount)}
             </span>
-            <button type="button" onClick={() => setShowingAttention((v) => !v)} className={SECONDARY_BUTTON}>
-              {showingAttention ? "Hide" : "Show"}
-            </button>
-          </div>
+            <span className={SECONDARY_BUTTON + " pointer-events-none"}>
+              {showingAttention ? "Show the whole day" : "Show only these"}
+            </span>
+          </button>
         ) : null}
 
         <div className={CHROME_ROW + " justify-between"}>
@@ -551,9 +571,12 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
       <div className="mx-auto flex w-full max-w-[760px] flex-col gap-8 px-6 pb-16 pt-8">
         {showingAttention && displayAttentionItems.length > 0 ? (
           <div>
-            {/* The one 28px anchor in this state. */}
-            <p className={ANCHOR}>{attentionCount} need you</p>
-            <ul className="mt-4">
+            {/* 2026-08-16: the 28px "{n} need you" heading that used to sit here is DELETED. The
+                bar 60px above it already says the same sentence, and a fact appears exactly once
+                (the 2026-07-15 operator decision: "a person or event appears in EXACTLY ONE
+                place"). He selected both of them in the same message, which is what a duplicated
+                fact looks like from the outside. The bar is now the heading for this state. */}
+            <ul>
               <AnimatePresence initial={false}>
                 {displayAttentionItems.map(({ booking, reason }) => (
                   <motion.li
@@ -573,8 +596,19 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
                       </span>
                       <span
                         className={
+                          // 2026-08-16, owner: "why is a new fucking badge or something fucking
+                          // red? It doesn't make any sense."
+                          // He is right and the rule is now written down: RED MEANS WRONG, OR IT
+                          // COSTS MONEY. A booking arriving is neither. NEW IS NOT A STATE, IT IS
+                          // AN AGE, and an age gets no colour at all: it stops being new by itself.
+                          // Green stays on Confirmed because green means good, and red stays on
+                          // late because late is the thing that actually costs the shop something.
                           "font-body shrink-0 text-[13px] font-medium " +
-                          (reason === "confirmed" ? "text-s-success" : "text-s-error")
+                          (reason === "new"
+                            ? "text-s-ink-2"
+                            : reason === "confirmed"
+                              ? "text-s-success"
+                              : "text-s-error")
                         }
                       >
                         {reason === "new"
@@ -776,7 +810,9 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
                             </span>
                             <span className={SMALL_INK + " shrink-0 text-right tabular-nums"}>
                               {isNew ? (
-                                <span className="font-medium text-s-error">New</span>
+                                // 2026-08-16: New is an AGE, not a state, so it carries no colour.
+                                // The second of the two places this badge renders; both changed.
+                                <span className="font-medium text-s-ink-2">New</span>
                               ) : isLate ? (
                                 <span className="font-medium text-s-error">{lateMin} min late</span>
                               ) : (
