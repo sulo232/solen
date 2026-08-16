@@ -144,3 +144,11 @@ Type: 4 sizes (11/13/15/18), 2 weights.
       straight at the element and bypasses hit-testing entirely, so it proves a handler is wired
       and proves nothing about whether a finger can reach it. Two dead controls earlier tonight
       taught me to click; this teaches me that clicking is not enough. Hit-test the point.
+
+- [x] **C4. Swept the OTHER two pages for the same defect rather than assuming reviews was
+      special.** `verified:` every control on both, hit-tested at 390x844 by stepping
+      `elementFromPoint` down its centre, same instrument that caught the 33px one.
+      Looks: see-all 44, heart 44, whole-card link 368. Walk-in: see-all 44, whole-row link 86.
+      Nothing under the floor and nothing covered, so reviews was the only page carrying it.
+      The reason it was reviews and only reviews: it is the one page with a control INSIDE a
+      clipped box. The other two put their controls on the card surface, where nothing clips them.
