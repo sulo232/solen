@@ -87,9 +87,27 @@ Type: 3 sizes (12/14/18), 2 weights, largest/smallest = 1.50.
       and the 30px count clears the >=28px display anchor. The old page's 3 sizes spanned 13 to 28
       but put 74% of all text on one size; this one puts 4 elements at 30 and 1 at 18, so the
       count is the loudest thing in the band, which is what he asked for.**
-- [ ] **B6. BLOCKED, and this is the one real dependency: the N-ahead emphasis treatment.** He said
-      he would attach a screenshot for how the count should look. It has not arrived. Everything
-      else in B is built without it; this specific treatment waits rather than being guessed.
+- [x] **B6. ASKED AND ANSWERED, and the answer is that it is not decided.** He said he would attach
+      a screenshot for how the count should look. Four images did arrive (2026-08-16 21:55).
+
+      `verified:` measured rather than eyeballed. They are screenshots of the LIVE homepage, and
+      what they show of the count is the CURRENT flat treatment: "4 ahead of you", "3 ahead of
+      you", "6 ahead of you", each rendering the number and the words at identical size, weight and
+      colour inside a bordered white card. So they document the problem; they carry no target
+      treatment to copy. Also visible in the same shots, confirming the round-2 asks against the
+      real product rather than against my memory of it: the TikTok pill top-left of every look
+      card, and the look title already sitting in an opaque white pill ON the photo, which is
+      variant B and is what already ships.
+
+      Asked him directly what the images were telling me. His answer: **"idk"**. That closes this
+      box as far as I can take it: the treatment is not settled, and "idk" is not permission to
+      pick one. The rebuilt band already makes the count the loudest element (30px against a 12px
+      body), which is a defensible fix for the flatness the images document, and it stays a
+      proposal until he reacts to it rather than being applied to the product.
+
+      **Not blocked any more, and not guessed either.** The distinction matters because the thing
+      that was blocking it (a missing screenshot) has resolved, and pretending it is still blocked
+      would park a decision he has already been given the chance to make.
 - [x] **B7. Harden the hierarchy failure**, because he asked for it by name ("you do harden on that
       too"). `verified:` 21/21 across three suites, plus a corpus safety run over all 353 mockup
       files. What was actually wrong is not what I expected:
