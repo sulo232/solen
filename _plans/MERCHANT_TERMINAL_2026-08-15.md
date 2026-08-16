@@ -1237,3 +1237,54 @@ grey, so the selection was invisible.
 Widened rather than duplicated (`.claude/hooks/no-black-selected-gate.py` v2): the calm grey
 selected fill is only a selected state when it sits on white. 5/5 self-test, and it blocks the
 pre-fix shape of the real file while passing the fixed one.
+
+---
+
+# ROUND 4 , THE ROOT CAUSE (owner 2026-08-16)
+
+> "No more of this laziness. you're just doing one specific thing that I told you to instead of
+> actually finding the fucking cause. You made up a random fucking collar that's beige. I don't
+> fucking know it. You're boxing everything... There's no space. You know hierarchy. Nothing...
+> Make a principle... you keep making the same fucking mistake. Ask them the core cause of your
+> sloppiness, bro."
+
+## What he named, each with the number and the rule it breaks
+
+| what he saw | measured | the rule it breaks |
+|---|---|---|
+| "a random colour that's beige" | `rgb(253,246,231)` = `#FDF6E7`, the `s-warning.bg` token | taste rule 3: surfaces are "white + COOL sunken #F4F4F5, **no warm cream**", banned by name; taste rule 6 puts a pastel `.bg` on inline chips, not a bar |
+| "you're boxing everything" | **62%** of vertical pixels (961 of 1539) inside a rounded box | 2026-07-15 operator decision: "ONE carded hero per screen; secondary info is BARE TEXT on the canvas" |
+| "there's no space" | the one section-level gap measures **-33px**, the sections overlap | binary 16/32 rhythm |
+| "you know hierarchy. nothing" | **67 of 71** text elements at 13/14/15, one step apart; the 28px anchor appears **once** | FLOORS LAW 7c: "size variety is not range... every size within ~6px is the worst case, it costs consistency and buys no hierarchy" |
+
+Every one of those rules was written down and available the whole time.
+
+## The candidate cause, put to an adversarial panel rather than trusted
+
+**"I justify a design choice by 'this class string already exists somewhere in the repo' instead of
+by 'the written rule permits it in this context'."**
+
+The beige came from `DashboardLayout.tsx`, where it dresses an ADMIN PREVIEW banner: an internal
+tool, not a design decision. The grouped card came from the PDP's services list, where it holds a
+list of services, not a whole screen. The grey canvas came from copying the PDP's row classes
+without the page they sit on. Every one was a real string from a real file, used where its rule
+does not reach.
+
+Three independent diagnoses (law-vs-precedent, order-of-operations, measured-vs-shipped) plus an
+adversarial judge are running against that candidate, with instructions to refute it. The principle
+he asked for comes out of whichever cause survives, not out of my first answer.
+
+## The gate, and it is the third case of one disease
+`selected-state` and `fabricated` are both in the correction ledger as repeats. The gate for the
+first was armed and passed the beige, correctly, because every colour gate in this estate asks one
+question: **is this token legal.** It is. What broke was the ROLE.
+
+That is the same shape as the two cases the gate already held:
+1. ink on a selected state (v1)
+2. the calm grey selected fill on a grey canvas, invisible (v2, added this session)
+3. a pastel semantic tint as a full-bleed surface (v3, added now)
+
+All three are a legal token used where its rule does not reach, so it was widened rather than given
+a fourth file. Discriminator: a chip is never sticky, fixed or full-width; a bar always is.
+8/8 self-test. The first run of that suite failed and was right to, because it wrote against the
+real file whose content already carries the bar, so the net-new rule suppressed the block.
