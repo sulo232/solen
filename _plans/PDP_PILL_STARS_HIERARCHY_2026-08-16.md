@@ -8,11 +8,21 @@ hierarchy and balance. You know?"*
 
 ## The asks
 
-- [x] 1. The pill is stretched, so it reads as having a sharp corner
-- [x] 2. The stars in a review row are too small
-- [x] 3. He LIKES the bigger photo disc from the "Your screenshot" option
-- [x] 4. No hierarchy and no balance overall
-- [ ] 5. HIS PICK: the combined option, at `/en/dev/round5`
+- [x] 1. Stretched pill (commit f0ab90328) · verified: live getComputedStyle gives 135.6x44 at a
+      3.08 ratio with a fixed 22px corner, so 91 of those 135px are straight. Fix at
+      `app/[locale]/dev/round5/Round5Client.tsx:111`, measured after as radius 9999px -> 16px
+- [x] 2. Row stars (commit f0ab90328) · verified: measured 13x13px live, against Fresha's 12.7px
+      (PIL, his screenshot) and Airbnb's 9px (`airbnb--reviews.md`), so BOTH references are smaller
+      than ours and this is his call past both. Fix at `Round5Client.tsx:113`, measured 13 -> 18
+- [x] 3. Bigger photo kept (commit f0ab90328) · verified: carried into the combined option at
+      `Round5Client.tsx:106`, measured live as 44 -> 62px when the option is tapped
+- [x] 4. Hierarchy (commit f0ab90328) · verified: six sizes in the first viewport (28/18/16/15/14/13,
+      with 13px used eight times), a range of 2.15x against Airbnb's measured 7.2x. Fix at
+      `Round5Client.tsx:116`, measured as the score going 16px -> 44px so it outranks the heading
+- [ ] 5. BLOCKED ON HIM, a real dependency and not a punt: whether "All four fixed" is the one to
+      apply. Applying it edits `CLAUDE.md`'s radius row (every button and chip in the product is a
+      capsule by that line) and the shared TabPill that 29 files import, so it moves every screen
+      at once. His by name, and not guessable.
 
 ## MEASURED FIRST, live at 390x844, before any edit
 
