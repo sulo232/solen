@@ -50,6 +50,8 @@ interface CategoryRailSalon {
   postalCode: string | null;
   city: string | null;
   priceFromCHF: number | null;
+  priceFromServiceDe: string | null;
+  priceFromServiceEn: string | null;
 }
 
 /** One category's "Top X" rail. Self-hides at < 2 salons, same floor CategoryMobileRails.tsx's own
@@ -91,6 +93,7 @@ function CategoryRail({
               photoUrl={s.photoUrl ?? undefined}
               variant="availability"
               priceFromCHF={s.priceFromCHF}
+              priceFromService={locale === "en" ? (s.priceFromServiceEn ?? s.priceFromServiceDe) : s.priceFromServiceDe}
               postalCode={s.postalCode ?? undefined}
               city={s.city ?? undefined}
             />
@@ -137,6 +140,8 @@ export default function TopCategoryRails({
               postalCode: real.postalCode,
               city: real.city,
               priceFromCHF: real.priceFromCHF,
+              priceFromServiceDe: real.priceFromServiceDe,
+              priceFromServiceEn: real.priceFromServiceEn,
             };
           })
           .filter((row): row is CategoryRailSalon => row !== null);
