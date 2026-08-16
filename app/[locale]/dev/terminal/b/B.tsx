@@ -71,7 +71,7 @@ const ROW_COMMIT_BUTTON =
   "font-body flex h-11 flex-1 items-center justify-center gap-2 rounded-full border border-s-border bg-white shadow-whisper text-[15px] font-semibold text-s-ink transition-[colors,transform] hover:bg-s-bg-sunken active:scale-[0.97] active:duration-[80ms] active:ease-glide";
 // A plain text-button row action, byte-identical to the Done/No-show/Cancel style Terminal.tsx
 // already uses inside an expanded row (that file's "expanded" blocks).
-const TEXT_ROW_ACTION_DANGER = "font-body flex h-11 items-center text-[13px] font-normal text-s-error";
+const TEXT_ROW_ACTION_DANGER = "font-body flex h-11 items-center text-[14px] font-normal text-s-error";
 // Canonical duration for the arrival/highlight tint fade (LOCKFILE motion canon: [80,100,150,
 // 200,250,300,500]); the tint HOLD time (1.5s / 2s per the brief) is a separate setTimeout, not
 // this CSS transition, which only controls how fast the colour itself fades once removed.
@@ -421,8 +421,14 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
     <div
       className={
         mounted
-          ? "fixed inset-0 z-[10000] overflow-y-auto overscroll-contain bg-s-bg-sunken"
-          : "relative z-[10000] min-h-[100dvh] w-full bg-s-bg-sunken"
+          // 2026-08-16, owner: "i dont like ths gray backrgrounf evrth container sh bro ... look
+          // how we do it in pdp page of a salon". MEASURED on the real PDP at 390 wide: the content
+          // sheet is WHITE (9923px of white blocks against 3223px of grey, and every grey block is
+          // a photo-gallery placeholder, not the canvas). The terminal had it backwards: a grey
+          // canvas with white boxes floating on it. The canvas is white now, and the grouped cards
+          // keep their hairline, which is what the PDP's own cards do on white.
+          ? "fixed inset-0 z-[10000] overflow-y-auto overscroll-contain bg-white"
+          : "relative z-[10000] min-h-[100dvh] w-full bg-white"
       }
     >
       {displayAttentionItems.length > 0 ? (
@@ -443,17 +449,17 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
         <div className="mx-auto flex h-full w-full max-w-[760px] items-center justify-between px-4">
           <span className="font-body text-[15px] font-semibold text-s-ink">{salonName}</span>
           <div className="flex items-center gap-4">
-            <span className="font-body tabular-nums text-[13px] font-normal text-s-ink-2">
+            <span className="font-body tabular-nums text-[14px] font-normal text-s-ink-2">
               {zurichTime(new Date().toISOString())}
             </span>
-            <span className="font-body flex items-center gap-1.5 text-[13px] font-normal text-s-ink-2">
+            <span className="font-body flex items-center gap-1.5 text-[14px] font-normal text-s-ink-2">
               <span className="h-1.5 w-1.5 rounded-full bg-s-success" />
               Live
             </span>
             <button
               type="button"
               onClick={toggleSound}
-              className="font-body flex h-11 items-center text-[13px] font-medium text-s-accent"
+              className="font-body flex h-11 items-center text-[14px] font-medium text-s-accent"
             >
               {soundState === "on" ? "Sound on" : soundState === "blocked" ? "Sound blocked" : "Sound off"}
             </button>
@@ -491,7 +497,7 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
                       </span>
                       <span
                         className={
-                          "font-body shrink-0 text-[13px] font-medium " +
+                          "font-body shrink-0 text-[14px] font-medium " +
                           (reason === "confirmed" ? "text-s-success" : "text-s-error")
                         }
                       >
@@ -528,7 +534,7 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
               <p className="font-display text-[28px] font-semibold leading-tight tabular-nums text-s-ink">
                 {waitingActive.length === 0 ? "No wait" : `${maxWait} min wait`}
               </p>
-              <p className="font-body mt-1 text-[13px] font-normal tabular-nums text-s-ink-2">
+              <p className="font-body mt-1 text-[14px] font-normal tabular-nums text-s-ink-2">
                 {waitingActive.length === 0 ? "Nobody waiting" : `${waitingActive.length} people waiting`}
               </p>
             </div>
@@ -548,20 +554,20 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
                         <p className={ROW_TITLE + " mt-2 text-center"}>{member.name}</p>
                         {occupant ? (
                           <>
-                            <p className="font-body text-[13px] font-normal text-s-ink-2">{firstName(occupant.customerName)}</p>
-                            <p className="font-body text-[13px] font-normal tabular-nums text-s-ink-2">
+                            <p className="font-body text-[14px] font-normal text-s-ink-2">{firstName(occupant.customerName)}</p>
+                            <p className="font-body text-[14px] font-normal tabular-nums text-s-ink-2">
                               {elapsedMinutes(occupant.startedAt ?? new Date().toISOString())} min
                             </p>
                             <button
                               type="button"
                               onClick={() => handleDone(occupant, waitingNow?.id ?? null)}
-                              className="font-body mt-1 flex h-11 items-center text-[13px] font-medium text-s-ink"
+                              className="font-body mt-1 flex h-11 items-center text-[14px] font-medium text-s-ink"
                             >
                               Done
                             </button>
                           </>
                         ) : (
-                          <p className="font-body text-[13px] font-normal text-s-success">Free</p>
+                          <p className="font-body text-[14px] font-normal text-s-success">Free</p>
                         )}
                       </div>
                     );
@@ -596,14 +602,14 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
                               onClick={() => setExpandedWaitingId(expanded ? null : key)}
                               className="flex min-h-11 min-w-0 flex-1 items-center gap-3 text-left"
                             >
-                              <span className="font-body w-[44px] shrink-0 text-[13px] font-normal tabular-nums text-s-ink-2">
+                              <span className="font-body w-[52px] shrink-0 whitespace-nowrap text-[14px] font-normal tabular-nums text-s-ink-2">
                                 {entry.ticketCode}
                               </span>
                               <span className="flex min-w-0 flex-1 flex-col">
                                 <span className={ROW_TITLE + " truncate"}>{entry.customerName}</span>
                                 <span className={ROW_META + " truncate"}>{entry.serviceName}</span>
                               </span>
-                              <span className="font-body shrink-0 text-[13px] font-normal tabular-nums text-s-ink">
+                              <span className="font-body shrink-0 text-[14px] font-normal tabular-nums text-s-ink">
                                 {entry.estimatedWaitMinutes} min
                               </span>
                             </button>
@@ -626,7 +632,7 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
                     {waitingNoShow.map((entry) => (
                       <motion.li key={entry.id} layout exit={{ opacity: 0 }} className={ROW + " opacity-50"}>
                         <div className="flex items-center gap-3">
-                          <span className="font-body w-[44px] shrink-0 text-[13px] font-normal tabular-nums text-s-ink-2">
+                          <span className="font-body w-[52px] shrink-0 whitespace-nowrap text-[14px] font-normal tabular-nums text-s-ink-2">
                             {entry.ticketCode}
                           </span>
                           <span className="flex min-w-0 flex-1 flex-col">
@@ -645,7 +651,7 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
               <div>
                 <div className="flex items-center justify-between">
                   <h2 className={SECTION_HEADING}>Later today</h2>
-                  <span className="font-body text-[13px] font-normal tabular-nums text-s-ink-2">
+                  <span className="font-body text-[14px] font-normal tabular-nums text-s-ink-2">
                     {laterTodayActive.length} to go
                   </span>
                 </div>
@@ -675,7 +681,7 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
                               <span className={ROW_TITLE + " truncate"}>{booking.customerName}</span>
                               <span className={ROW_META + " truncate"}>{booking.serviceName}</span>
                             </span>
-                            <span className="font-body shrink-0 text-right text-[13px] font-normal tabular-nums text-s-ink">
+                            <span className="font-body shrink-0 text-right text-[14px] font-normal tabular-nums text-s-ink">
                               {isNew ? (
                                 <span className="font-medium text-s-error">New</span>
                               ) : isLate ? (
@@ -684,7 +690,7 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
                                 <>
                                   {chf(booking.price)}
                                   {booking.paymentStatus === "paid" ? (
-                                    <span className="mt-0.5 block text-[13px] font-normal text-s-success">Paid</span>
+                                    <span className="mt-0.5 block text-[14px] font-normal text-s-success">Paid</span>
                                   ) : null}
                                 </>
                               )}
@@ -709,7 +715,7 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
                   </AnimatePresence>
                 </ul>
                 {doneQueueCount > 0 ? (
-                  <p className="font-body mt-4 text-[13px] font-normal tabular-nums text-s-ink-2">
+                  <p className="font-body mt-4 text-[14px] font-normal tabular-nums text-s-ink-2">
                     {doneQueueCount} done today
                   </p>
                 ) : null}
@@ -733,7 +739,7 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
           <button
             type="button"
             onClick={handleReplay}
-            className="font-body flex h-11 items-center text-[13px] font-normal text-s-ink-2"
+            className="font-body flex h-11 items-center text-[14px] font-normal text-s-ink-2"
           >
             Replay
           </button>

@@ -100,7 +100,12 @@ export const GROUPED_CARD =
   "overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper";
 export const ROW = "border-t border-s-border px-5 py-4 first:border-t-0 md:px-6";
 export const ROW_TITLE = "font-body text-[15px] font-medium text-s-ink md:text-[16px]";
-export const ROW_META = "font-body mt-1 text-[13px] font-normal text-s-ink-2 md:text-[14px]";
+// 2026-08-16, owner: "the fonts arent it too bro look how we do it in pdp page of a salon".
+// MEASURED on the real PDP at 390 wide (/de/salon/atelier-haarwerk): its workhorse size is 14,
+// used 45 times, against 13 used 32 times. The terminal had NO 14 at all and 13 used 49 times, so
+// every secondary line read a step smaller and denser than the product it is meant to match.
+// Meta now sits at 14 like the PDP's, at every width rather than only on desktop.
+export const ROW_META = "font-body mt-1 text-[14px] font-normal text-s-ink-2";
 export const SECTION_HEADING =
   "font-display text-[clamp(18px,2vw,20px)] font-semibold leading-[1.2] tracking-[-0.02em] text-s-ink";
 // The PDP's own secondary button (SalonServices.tsx "Buchen") renders 38px tall at py-2, which is
