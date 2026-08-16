@@ -139,7 +139,12 @@ export const CATEGORY_LABEL: Record<string, string> = {
 // Mirrored in messages/{de,en,fr,it}.json under ui.searchChrome; kept inline to
 // match the established inline-record pattern in SearchTemplate (MAP_FAB_LABEL).
 // Exported (V3-D453) so MapSalonDetail.tsx reuses the same "from" copy.
-export const FROM_LABEL: Record<string, string> = { de: "ab", en: "from", fr: "des", it: "da" };
+// "dès", with the accent. Corrected 2026-08-16: this shipped as "des", which is not a typo that
+// degrades gracefully, it is a different word. "dès 35 CHF" reads "from 35 CHF"; "des 35 CHF"
+// reads "some 35 CHF" and is simply wrong French on every card, every French page. The message
+// catalogue had it right the whole time (common.fromPrice = "à partir de {price}"), so only this
+// hardcoded map was wrong.
+export const FROM_LABEL: Record<string, string> = { de: "ab", en: "from", fr: "dès", it: "da" };
 
 // Walk-in live status copy. Locale-correct. `ahead(n)` = N people in front of you
 // (the colored queue count); `join` = the queue CTA; `none` = nobody waiting.

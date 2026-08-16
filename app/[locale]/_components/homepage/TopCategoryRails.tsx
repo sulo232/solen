@@ -32,6 +32,7 @@ import { SalonCard } from "./SalonCard";
 import type { SalonCardDataMap } from "./salonCardData";
 import type { SalonCardCategory } from "../salon/_shared";
 import { SALON_CATEGORY_SLUGS } from "@/lib/validations";
+import { nameForLocale, type ServiceNameLocale } from "@/lib/min-price-service";
 
 const CATEGORY_ROUTE: Record<SalonCardCategory, { route: string; label: string }> = {
   coiffeur: { route: "coiffeur", label: "Coiffeur" },
@@ -50,8 +51,7 @@ interface CategoryRailSalon {
   postalCode: string | null;
   city: string | null;
   priceFromCHF: number | null;
-  priceFromServiceDe: string | null;
-  priceFromServiceEn: string | null;
+  priceFromServiceNames: Record<ServiceNameLocale, string | null> | null;
 }
 
 /** One category's "Top X" rail. Self-hides at < 2 salons, same floor CategoryMobileRails.tsx's own
@@ -93,7 +93,7 @@ function CategoryRail({
               photoUrl={s.photoUrl ?? undefined}
               variant="availability"
               priceFromCHF={s.priceFromCHF}
-              priceFromService={locale === "en" ? (s.priceFromServiceEn ?? s.priceFromServiceDe) : s.priceFromServiceDe}
+              priceFromService={nameForLocale(s.priceFromServiceNames, locale)}
               postalCode={s.postalCode ?? undefined}
               city={s.city ?? undefined}
             />
@@ -140,8 +140,7 @@ export default function TopCategoryRails({
               postalCode: real.postalCode,
               city: real.city,
               priceFromCHF: real.priceFromCHF,
-              priceFromServiceDe: real.priceFromServiceDe,
-              priceFromServiceEn: real.priceFromServiceEn,
+              priceFromServiceNames: real.priceFromServiceNames,
             };
           })
           .filter((row): row is CategoryRailSalon => row !== null);

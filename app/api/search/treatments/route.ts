@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 import { SALON_PUBLIC_COLS } from "@/lib/salons/public-columns";
+import { minPriceService, MIN_PRICE_SERVICE_COLUMNS, type PricedServiceRow } from "@/lib/min-price-service";
 
 export async function GET(request: NextRequest) {
   const rateLimited = await applyRateLimit(generalLimiter, { ip: getClientIp(request) });
@@ -27,7 +28,7 @@ export async function GET(request: NextRequest) {
   // Find matching services
   let serviceQuery = supabase
     .from("services")
-    .select("id, salon_id, name_de, name_en, category, duration_minutes, price")
+    .select(`id, salon_id, category, duration_minutes, ${MIN_PRICE_SERVICE_COLUMNS}`)
     .eq("is_active", true);
 
   if (treatment) {
@@ -110,13 +111,18 @@ export async function GET(request: NextRequest) {
   // Enrich each salon with matching treatment info
   const results = (salons ?? []).map((salon) => {
     const matchingServices = services.filter((s) => s.salon_id === salon.id);
-    const minPrice = matchingServices.length > 0
-      ? Math.min(...matchingServices.map((s) => s.price))
-      : null;
+    // Same shared rule the salons route and the homepage use. Art. 13 PBV: the from-price this
+    // page advertises must name the concrete offer, and the card that renders it printed the
+    // "ab" wording with nothing attached until 2026-08-16.
+    const { minPrice, names } = minPriceService(matchingServices as PricedServiceRow[]);
     return {
       ...salon,
       matching_services: matchingServices.slice(0, 3),
       min_price: minPrice,
+      min_price_service_de: names.de,
+      min_price_service_en: names.en,
+      min_price_service_fr: names.fr,
+      min_price_service_it: names.it,
     };
   });
 

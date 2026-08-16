@@ -17,6 +17,7 @@ import { getNeighborhood, formatQuartier } from "@/lib/basel-neighborhoods";
 import type { SalonCard as SalonCardType } from "@/lib/types";
 import SalonBadge from "@/components-legacy/ui/SalonBadge";
 import ImageFallback from "@/components-legacy/ui/ImageFallback";
+import { nameForLocale } from "@/lib/min-price-service";
 
 const BLUR_PLACEHOLDER = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOCIgaGVpZ2h0PSI1IiB2aWV3Qm94PSIwIDAgOCA1IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSI4IiBoZWlnaHQ9IjUiIGZpbGw9IiNFOEU0REYiLz48L3N2Zz4=";
 
@@ -333,9 +334,26 @@ export default function SalonCard({ salon, variant = "default", locale = "de", s
           {/* Line 3: Price — Q43 tabular numerics + Q43 CHF prefix via formatPrice */}
           {priceToShow != null && (() => {
             const currencyLocale = locale === "de" ? "de-CH" : locale === "fr" ? "fr-CH" : locale === "it" ? "it-CH" : "en-CH";
+            const money = formatPrice(priceToShow, currencyLocale);
+            // The "ab"/"from" WORDING is only used when the concrete offer is named, which is what
+            // Art. 13 PBV requires of an advertised minimum price (SECO Wegleitung 2025 p.17).
+            // Corrected 2026-08-16: this rendered the from-wording unconditionally, so on
+            // /behandlungen, /brand and the profile favourites list it advertised a starting price
+            // with nothing attached to it. The modern SalonCard has always had this guard; this
+            // legacy one never did, so the surfaces still using it carried the unlawful shape.
+            // A bare number is the safe fallback because it claims less, not more.
+            const serviceName =
+              (salon as { min_price_service_de?: string | null; min_price_service_en?: string | null;
+                          min_price_service_fr?: string | null; min_price_service_it?: string | null });
+            const named = nameForLocale({
+              de: serviceName.min_price_service_de ?? null,
+              en: serviceName.min_price_service_en ?? null,
+              fr: serviceName.min_price_service_fr ?? null,
+              it: serviceName.min_price_service_it ?? null,
+            }, locale ?? "de");
             return (
               <p className="text-sm text-s-ink-2 leading-5 tabular-nums">
-                {tCommon("fromPrice", { price: formatPrice(priceToShow, currencyLocale) })}
+                {named ? `${named} ${tCommon("fromPrice", { price: money })}` : money}
               </p>
             );
           })()}

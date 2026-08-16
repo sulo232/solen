@@ -4,6 +4,7 @@ import * as React from "react";
 import { Section, SectionFrame, SectionTitle, ScrollRow } from "../homepage/SectionHeader";
 import { SalonCard, type SalonCardProps } from "../homepage/SalonCard";
 import { nextAvailableSlotLabel } from "@/lib/format";
+import { nameForLocale } from "@/lib/min-price-service";
 
 /**
  * CategoryBrowseRails — V3-D366 (2026-05-29) · re-expanded to 6 rails V3-D368
@@ -50,6 +51,8 @@ export type RailSalon = {
   min_price?: number | null;
   min_price_service_de?: string | null;
   min_price_service_en?: string | null;
+  min_price_service_fr?: string | null;
+  min_price_service_it?: string | null;
   distance_meters?: number | null;
   last_minute_discount_percent?: number | null;
   services?: {
@@ -124,6 +127,7 @@ function Rail({
               // min_price, not avg_price , an average under a "from" label advertises a
               // starting price the customer can never actually get (PBV Art. 13).
               priceFromCHF={s.min_price ?? undefined}
+              priceFromService={nameForLocale({ de: s.min_price_service_de ?? null, en: s.min_price_service_en ?? null, fr: s.min_price_service_fr ?? null, it: s.min_price_service_it ?? null }, locale)}
               nextSlotLabel={nextAvailableSlotLabel(s.services, locale) ?? undefined}
               address={s.address}
               city={(s.quartier ? cap(s.quartier) : undefined) || s.city}

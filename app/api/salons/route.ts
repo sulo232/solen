@@ -15,6 +15,7 @@ import { generateEmbedding } from "@/lib/search/embeddings";
 import { SALON_PUBLIC_COLS } from "@/lib/salons/public-columns";
 import { ANON_CACHE_HEADERS } from "@/lib/salons/cache-headers";
 import type { Database, Json } from "@/lib/database.types";
+import { minPriceService, MIN_PRICE_SERVICE_COLUMNS, type PricedServiceRow } from "@/lib/min-price-service";
 
 // ANON_CACHE_HEADERS moved to lib/salons/cache-headers.ts (2026-07-16): Next's
 // route-module type contract only allows HTTP method exports + a fixed config-export
@@ -83,19 +84,25 @@ export async function GET(request: NextRequest) {
     // + next available slots for the Fresha-style booking card. Homepage feeds omit
     // the flag -> lighter payload (just price for avg_price).
     const withSlots = searchParams.get("with_slots") === "1";
-    // NB: services has only name_de + name_en in the live DB (no name_fr/name_it).
-    // name_de/name_en on the non-withSlots branch. Art. 10/13 PBV: a from-price is only lawful in
-    // advertising when the copy says WHICH offer it buys, and the browse card otherwise has a
-    // number with no name to attach it to. Two more columns on an embed already being fetched.
-    // Full rule: _rules/LEGAL_COPY.md.
+    // The service NAMES ride along with the price on both branches. Art. 10/13 PBV: a from-price
+    // is only lawful in advertising when the copy says WHICH offer it buys. Full rule:
+    // _rules/LEGAL_COPY.md.
+    //
     // RESTORED 2026-08-16. This landed on 2026-07-27 in 599f5f231, verified live that day, and
     // then vanished: that commit is an ancestor of main, yet main's copy of this file has none of
     // it, so a merge resolution took the other side of the file and dropped it silently. Nothing
     // in REMOVED.md or TASTE_LOG.md retires it. The UI half survived the merge, so seven render
     // sites kept reading a field the API no longer returned and quietly printed a bare price.
+    //
+    // CORRECTION, same day: the line that used to sit here read "NB: services has only name_de +
+    // name_en in the live DB (no name_fr/name_it)". That is false, and it is why both the original
+    // work and its restoration covered two locales instead of four. Measured against the live
+    // database: 264 of 264 service rows carry all four names, e.g. Damen-Haarschnitt / Women Cut /
+    // Coupe Dame / Taglio capelli donna. A French customer was being shown a German service name
+    // beside their price on the strength of a comment nobody re-checked.
     const servicesCols = withSlots
-      ? "id, name_de, name_en, duration_minutes, price, category"
-      : "price, name_de, name_en";
+      ? `id, duration_minutes, category, ${MIN_PRICE_SERVICE_COLUMNS}`
+      : MIN_PRICE_SERVICE_COLUMNS;
     // R4-3 (2026-07-03): when ?with_slots=1 (category/search page), also embed active
     // staff specialties so SearchTemplate can build the on-photo specialization chip
     // for a free-text query. Embed is PROVEN by curl before shipping; if it errors or
@@ -587,11 +594,14 @@ export async function GET(request: NextRequest) {
       // not lawful advertising under Art. 13 PBV (SECO Wegleitung 2025 p.17: the concrete offer
       // must be described). Picked from the same rows min_price came from, so the two can never
       // disagree. Restored 2026-08-16 alongside the column selection above.
-      const cheapest = min_price === null
-        ? null
-        : (services ?? []).find((sv) => (sv.price as number) === min_price) ?? null;
-      const min_price_service_de = (cheapest?.name_de as string | undefined) ?? null;
-      const min_price_service_en = (cheapest?.name_en as string | undefined) ?? null;
+      // ...and the NAME of the service that price belongs to, in every locale. One shared rule
+      // (lib/min-price-service.ts) rather than a second copy: the homepage computed this
+      // independently and the two had already drifted to different locale coverage.
+      const { names: minServiceNames } = minPriceService(services as PricedServiceRow[] | null);
+      const min_price_service_de = minServiceNames.de;
+      const min_price_service_en = minServiceNames.en;
+      const min_price_service_fr = minServiceNames.fr;
+      const min_price_service_it = minServiceNames.it;
       // R4-3: flatten ACTIVE staff specialties into a deduped string[] the client uses
       // for the specialization match-chip. Drop the raw staff_members embed from the
       // payload (only the flat specialties list is needed downstream). Absent/empty when
@@ -611,6 +621,8 @@ export async function GET(request: NextRequest) {
         min_price,
         min_price_service_de,
         min_price_service_en,
+        min_price_service_fr,
+        min_price_service_it,
         ...(withSlots ? { staff_specialties } : {}),
         distance_meters: distanceMap ? distanceMap[salonId] : undefined,
         ...(withSlots ? { services: topServicesBySalon[salonId] ?? [] } : {}),

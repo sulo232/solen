@@ -93,6 +93,7 @@ import { formatDateLabel, nextAvailableSlotLabel } from "@/lib/format";
 import { useActiveCities } from "@/hooks/useActiveCities";
 import { useScrollRestoration } from "@/lib/hooks/useScrollRestoration";
 import CategoryPillRow from "@/app/[locale]/_components/layout/CategoryPillRow";
+import { nameForLocale } from "@/lib/min-price-service";
 
 type LucideIcon = React.ComponentType<{ size?: number; strokeWidth?: number }>;
 
@@ -170,6 +171,11 @@ type Salon = {
   min_price?: number | null;
   min_price_service_de?: string | null;
   min_price_service_en?: string | null;
+  // fr/it added 2026-08-16. They were absent because a comment in the API route asserted the
+  // services table had no French or Italian names. Measured against the live database that day:
+  // all 264 service rows carry all four.
+  min_price_service_fr?: string | null;
+  min_price_service_it?: string | null;
   distance_meters?: number | null;
   latitude?: number | null;
   longitude?: number | null;
@@ -1746,7 +1752,7 @@ export default function SearchTemplate({
                           // less than it, so the advertised starting price was unreachable. PBV
                           // Art. 13 requires a from-price to be the genuine lower limit.
                           priceFromCHF={s.min_price ?? null}
-                          priceFromService={locale === "en" ? (s.min_price_service_en ?? s.min_price_service_de ?? null) : (s.min_price_service_de ?? null)}
+                          priceFromService={nameForLocale({ de: s.min_price_service_de ?? null, en: s.min_price_service_en ?? null, fr: s.min_price_service_fr ?? null, it: s.min_price_service_it ?? null }, locale)}
                           reviewCount={s.review_count ?? null}
                           services={s.services}
                           isSaved={favoriteIds.has(s.id)}
@@ -1821,7 +1827,7 @@ export default function SearchTemplate({
                     distanceMeters={s.distance_meters ?? null}
                     // min_price, not avg_price , see the note on the sibling card above.
                     priceFromCHF={s.min_price ?? null}
-                    priceFromService={locale === "en" ? (s.min_price_service_en ?? s.min_price_service_de ?? null) : (s.min_price_service_de ?? null)}
+                    priceFromService={nameForLocale({ de: s.min_price_service_de ?? null, en: s.min_price_service_en ?? null, fr: s.min_price_service_fr ?? null, it: s.min_price_service_it ?? null }, locale)}
                     // V3-D373 (Fresha-match): review count -> its own "category · N
                     // reviews" line; location is "area, town" (built in city= above).
                     reviewCount={s.review_count ?? null}
@@ -1934,7 +1940,7 @@ export default function SearchTemplate({
           distanceMeters: s.distance_meters ?? null,
           // min_price, not avg_price , an average under a "from" label is not a floor.
           priceFromCHF: s.min_price ?? null,
-          priceFromService: locale === "en" ? (s.min_price_service_en ?? s.min_price_service_de ?? null) : (s.min_price_service_de ?? null),
+          priceFromService: nameForLocale({ de: s.min_price_service_de ?? null, en: s.min_price_service_en ?? null, fr: s.min_price_service_fr ?? null, it: s.min_price_service_it ?? null }, locale),
           reviewCount: s.review_count ?? null,
           nextSlot: nextSlotLabel(s.services, locale),
           services: s.services,
