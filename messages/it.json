@@ -8,7 +8,12 @@
     "cancelFailed": "Impossibile annullare il Suo posto",
     "removedFromFavorites": "Rimosso dai preferiti",
     "undo": "Annulla",
-    "removeFailed": "Impossibile rimuovere"
+    "removeFailed": "Impossibile rimuovere",
+    "savedItem": "{name} salvato",
+    "removedItem": "{name} rimosso",
+    "saveFailedItem": "{name} non è stato salvato",
+    "save": "Salva",
+    "saved": "Salvato"
   },
   "profileHub": {
     "nextAppointment": "Prossimo appuntamento",

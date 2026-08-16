@@ -8,7 +8,12 @@
     "cancelFailed": "Konnte Ihren Platz nicht stornieren",
     "removedFromFavorites": "Aus Favoriten entfernt",
     "undo": "Rückgängig",
-    "removeFailed": "Konnte nicht entfernt werden"
+    "removeFailed": "Konnte nicht entfernt werden",
+    "savedItem": "{name} gespeichert",
+    "removedItem": "{name} entfernt",
+    "saveFailedItem": "{name} konnte nicht gespeichert werden",
+    "save": "Speichern",
+    "saved": "Gespeichert"
   },
   "profileHub": {
     "nextAppointment": "Nächster Termin",

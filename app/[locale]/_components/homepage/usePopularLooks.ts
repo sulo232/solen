@@ -11,7 +11,18 @@
 // duplicating Entdecken's inline effect a third time).
 import * as React from "react";
 
-export type PopularLook = { id: string; image: string; title: string; priceFromCHF: number };
+export type PopularLook = {
+  id: string;
+  image: string;
+  title: string;
+  priceFromCHF: number;
+  /** The TikTok creator. Attribution is a recorded requirement on this surface
+   *  (_design-system/REMOVED.md:25), and the approved mockup renders it beside the
+   *  price. Removing the TikTok BADGE was the owner ask; removing the credit was not,
+   *  and the first build dropped both. Optional because a look without a creator is
+   *  legal data, and it is simply omitted rather than filled with a placeholder. */
+  author?: string;
+};
 export type PopularLooksState = { looks: PopularLook[]; loading: boolean };
 
 const EMPTY: PopularLooksState = { looks: [], loading: false };
@@ -27,6 +38,7 @@ type FeedItem = {
   tiktok_thumbnail_url: string | null;
   style_name: string | null;
   price_min: number | null;
+  author_name: string | null;
 };
 
 /**
@@ -50,15 +62,21 @@ export function usePopularLooks(opts?: { limit?: number }): PopularLooksState {
         const res = await fetch(`/api/discovery/feed?category=hair&limit=${limit}`, { signal: ac.signal });
         if (!res.ok) throw new Error(`discovery feed failed: ${res.status}`);
         const raw = (await res.json()) as { items?: FeedItem[] };
+        // Drafted with a nullable price, then narrowed. The predicate cannot name PopularLook
+        // directly any more: PopularLook's price is a plain number, so a predicate claiming a
+        // draft IS one is not assignable to the draft's own type once the price can be null.
+        type Draft = Omit<PopularLook, "priceFromCHF"> & { priceFromCHF: number | null };
         const looks = (raw.items ?? [])
-          .map((it) => ({
+          .map((it): Draft => ({
             id: it.id,
             image: it.tiktok_url ? `/api/discovery/thumb/${it.id}` : it.image_url || it.tiktok_thumbnail_url || "",
             title: it.style_name || "Look",
+            author: it.author_name || undefined,
             priceFromCHF: it.price_min,
           }))
           // No image, or no real price , never a placeholder tile.
-          .filter((l): l is PopularLook => Boolean(l.image) && typeof l.priceFromCHF === "number");
+          .filter((l): l is Draft & { priceFromCHF: number } =>
+            Boolean(l.image) && typeof l.priceFromCHF === "number");
         setState({ looks, loading: false });
       } catch (err) {
         if ((err as { name?: string })?.name === "AbortError") return;

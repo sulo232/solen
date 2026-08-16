@@ -77,6 +77,7 @@ function ForYouRow({
                 photoUrl={real?.photoUrl ?? undefined}
                 variant="service"
                 priceFromCHF={real?.priceFromCHF ?? null}
+                priceFromService={locale === "en" ? (real?.priceFromServiceEn ?? real?.priceFromServiceDe ?? null) : (real?.priceFromServiceDe ?? null)}
                 citySelected={false}
                 postalCode={real?.postalCode ?? undefined}
                 city={real?.city ?? undefined}

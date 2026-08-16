@@ -41,7 +41,7 @@ recorded elsewhere.
 - [x] **A6. "Find your inspiration" is replaced by Popular looks.** `verified:` 2ceddbd91, One section, not two. They were
       already the same query: 8 of 8 shared image ids, both calling
       /api/discovery/feed?category=hair. **The page carries exactly 2 title variants, not 8.**
-- [x] **A7. Graveyard line filed.** `verified:` `npm run exists "popular looks"` returns it under
+- [x] **A7. Graveyard line filed.** `verified:` _design-system/REMOVED.md:135, commit 8f59e2d0d. `npm run exists "popular looks"` returns it under
       REMOVED, naming Entdecken.tsx, quoting him, and citing the 8-of-8 shared image ids.
 
       **I got this box wrong twice and the correction matters more than the box.** I first wrote
@@ -87,7 +87,8 @@ Type: 3 sizes (12/14/18), 2 weights, largest/smallest = 1.50.
       and the 30px count clears the >=28px display anchor. The old page's 3 sizes spanned 13 to 28
       but put 74% of all text on one size; this one puts 4 elements at 30 and 1 at 18, so the
       count is the loudest thing in the band, which is what he asked for.**
-- [x] **B6. ASKED AND ANSWERED, and the answer is that it is not decided.** He said he would attach
+- [x] **B6. ASKED AND ANSWERED, and the answer is that it is not decided.** `verified:` commit
+      8f59e2d0d plus the answer he gave this turn. He said he would attach
       a screenshot for how the count should look. Four images did arrive (2026-08-16 21:55).
 
       `verified:` measured rather than eyeballed. They are screenshots of the LIVE homepage, and
@@ -170,9 +171,64 @@ Type: 4 sizes (11/13/15/18), 2 weights.
       taught me to click; this teaches me that clicking is not enough. Hit-test the point.
 
 - [x] **C4. Swept the OTHER two pages for the same defect rather than assuming reviews was
-      special.** `verified:` every control on both, hit-tested at 390x844 by stepping
+      special.** `verified:` commit 52b5f5057, every control on both, hit-tested at 390x844 by stepping
       `elementFromPoint` down its centre, same instrument that caught the 33px one.
       Looks: see-all 44, heart 44, whole-card link 368. Walk-in: see-all 44, whole-row link 86.
       Nothing under the floor and nothing covered, so reviews was the only page carrying it.
       The reason it was reviews and only reviews: it is the one page with a control INSIDE a
       clipped box. The other two put their controls on the card surface, where nothing clips them.
+
+---
+
+## D. APPLIED TO THE PRODUCT (2026-08-16, he answered "B" then "Apply it now")
+
+- [x] **D1. Popular looks rebuilt to variant B in real code.** `verified:` commit 041c09674, and
+      measured on the rendered `/en`: pill `rgb(255,255,255)` with `backdropFilter: none`, name
+      visible at 117px wide, frame 172 x 305 (ratio 0.56) radius 16 carrying
+      `rgba(50,47,44,0.12) 0 6px 16px`, TikTok badges 0, black gradients 0.
+- [x] **D2. "Find your inspiration" unmounted.** `verified:` commit 041c09674. The rendered heading
+      list on `/en` no longer contains it, and `grep -rn "<Entdecken" app/` returns nothing. The
+      file itself is kept for revert; only the mounts are gone.
+
+### The four defects the first build shipped, all caught by review, none by me
+
+- [x] **D3. THE NAME DID NOT PAINT, and this is the one that mattered.** `verified:` commit
+      041c09674. The pill was copied from the retired section rather than from the approved mockup,
+      so it carried `backdrop-filter: blur(14px) saturate(1.1)`. On the rendered page the text was
+      present in the DOM at full opacity, full visibility and ink colour, and the card still showed
+      an EMPTY WHITE PILL. Setting backdrop-filter to none in the live DOM made every name appear
+      in the next frame, which is causation rather than correlation.
+      **Why it is the worst possible defect here specifically: variant B is the variant whose whole
+      purpose is keeping the name on the photo.** A blur that hides the name does not degrade his
+      choice, it deletes it, and the source code looked correct the entire time. The mockup's own
+      line says why it is opaque: "opaque white pill, which is why it survives with the photo
+      uncovered". Solid white needs no compositing to stay legible.
+- [x] **D4. Eight hardcoded German labels landed on /en, /fr and /it.** `verified:` commit
+      041c09674. Composing the shared heart brought them: measured on rendered `/fr`, eight buttons
+      under the heading "Looks populaires" all announced "Speichern", and the live region on `/en`
+      read "Sleek Blunt Bob with Golden Ombre and Middle Part gespeichert". Three strings moved into
+      all four catalogues, with the accents correct on French and Italian (I stripped them on the
+      first pass and fixed it).
+      This is the SAME defect class he reported on the recently-viewed row on 2026-08-15, arriving
+      by a new route: not written fresh, but inherited by composing a component that already had it.
+      Composition is supposed to be the safe move, and it carries defects too.
+- [x] **D5. The heart reported a save it never stored.** `verified:` commit 041c09674. It flipped
+      `aria-pressed` to true with zero network calls and forgot on reload. `/api/discovery/save`
+      already existed and already returns the same `{saved}` shape, so it is wired now through an
+      optional `lookId` prop, additive, leaving every existing caller untouched.
+- [x] **D6. The creator credit was silently dropped.** `verified:` commit 041c09674. The approved
+      card renders the handle beside the price, and attribution is a recorded requirement on this
+      surface. "Remove the TikTok part thingy" was scoped to the BADGE, which is what was measured
+      (38 x 12, top left). The first build resolved that ambiguity silently and in the wrong
+      direction. Restored.
+- [x] **D7. Two dev pages still rendered the retired section**, so the badge and the black gradient
+      he asked to remove were still alive there. `verified:` commit 041c09674, both now mount
+      Popular looks instead.
+
+### What is NOT verified, stated rather than assumed
+
+The heart's pixel hit area could not be tested on the live page: the browser pane stopped scrolling
+and `elementFromPoint` needs the element on screen. Its box measures 44 x 44 at z-index 2 above the
+card link at z-index 1, and the same anatomy hit-tested at 44 on the mockup, but that is geometry
+and stacking, not a hit test. Named here because a control that measures 44 and tests 33 is exactly
+what happened on the reviews card tonight.

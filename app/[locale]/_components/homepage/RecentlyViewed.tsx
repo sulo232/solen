@@ -173,6 +173,7 @@ export default function RecentlyViewed({
                 photoUrl={s.photoUrl}
                 variant="availability"
                 priceFromCHF={real?.priceFromCHF ?? null}
+                priceFromService={locale === "en" ? (real?.priceFromServiceEn ?? real?.priceFromServiceDe ?? null) : (real?.priceFromServiceDe ?? null)}
                 citySelected={false}
                 postalCode={real?.postalCode ?? undefined}
                 city={real?.city ?? undefined}

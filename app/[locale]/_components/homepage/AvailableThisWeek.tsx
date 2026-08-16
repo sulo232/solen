@@ -36,6 +36,8 @@ interface AvailableRow {
   postalCode: string | null;
   city: string | null;
   priceFromCHF: number | null;
+  priceFromServiceDe: string | null;
+  priceFromServiceEn: string | null;
 }
 
 /**
@@ -74,6 +76,8 @@ export default function AvailableThisWeek({
         postalCode: real.postalCode,
         city: real.city,
         priceFromCHF: real.priceFromCHF,
+        priceFromServiceDe: real.priceFromServiceDe,
+        priceFromServiceEn: real.priceFromServiceEn,
       };
     })
     .filter((row): row is AvailableRow => row !== null);
@@ -97,6 +101,7 @@ export default function AvailableThisWeek({
               photoUrl={s.photoUrl ?? undefined}
               variant="availability"
               priceFromCHF={s.priceFromCHF}
+              priceFromService={locale === "en" ? (s.priceFromServiceEn ?? s.priceFromServiceDe) : s.priceFromServiceDe}
               postalCode={s.postalCode ?? undefined}
               city={s.city ?? undefined}
             />

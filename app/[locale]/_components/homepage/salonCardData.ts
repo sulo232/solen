@@ -51,6 +51,10 @@ export interface SalonCardData {
   address: string | null;
   /** Cheapest ACTIVE service price for the salon, null if it has none. */
   priceFromCHF: number | null;
+  /** Name of the service that priceFromCHF came from, per locale. Art. 13 PBV: an advertised
+   *  from-price must name the concrete offer it buys. Null when the salon has no active service. */
+  priceFromServiceDe: string | null;
+  priceFromServiceEn: string | null;
   /** Real coordinates (salons.latitude/longitude). Null when the salon has none,
    *  in which case it simply gets no marker on the Nearby map (never a fake one). */
   latitude: number | null;
@@ -77,8 +81,13 @@ export async function getSalonCardDataMap(salonIds: string[]): Promise<SalonCard
         .select("id, name, slug, categories, cover_photo_url, average_rating, review_count, postal_code, address, latitude, longitude")
         .in("id", uniqueIds),
       supabase
+        // name_de/name_en travel with the price because Art. 13 PBV makes a from-price lawful in
+        // advertising only when the copy names the concrete offer it buys. The API route does the
+        // same thing for the search page; this is the homepage's copy of that query and it was
+        // selecting the price alone, so the homepage card could never render the service even
+        // when the API half was working.
         .from("services")
-        .select("salon_id, price")
+        .select("salon_id, price, name_de, name_en")
         .eq("is_active", true)
         .in("salon_id", uniqueIds),
     ]);
@@ -89,11 +98,20 @@ export async function getSalonCardDataMap(salonIds: string[]): Promise<SalonCard
   // Cheapest active service price per salon, computed in JS from the bulk
   // services result (same shape as buildPriceTask() in app/api/salons/route.ts).
   const minPriceBySalon = new Map<string, number>();
+  // The NAME of whichever service won the min, kept in lockstep with the price above so the two
+  // can never disagree (same guarantee the API route makes).
+  const minServiceBySalon = new Map<string, { de: string | null; en: string | null }>();
   for (const svc of services ?? []) {
     const salonId = svc.salon_id as string;
     const price = svc.price as number;
     const current = minPriceBySalon.get(salonId);
-    if (current === undefined || price < current) minPriceBySalon.set(salonId, price);
+    if (current === undefined || price < current) {
+      minPriceBySalon.set(salonId, price);
+      minServiceBySalon.set(salonId, {
+        de: (svc.name_de as string | null) ?? null,
+        en: (svc.name_en as string | null) ?? null,
+      });
+    }
   }
 
   const map: SalonCardDataMap = {};
@@ -110,6 +128,8 @@ export async function getSalonCardDataMap(salonIds: string[]): Promise<SalonCard
       city: postalCode ? postalToCity(postalCode) : null,
       address: (salon.address as string | null) ?? null,
       priceFromCHF: minPriceBySalon.get(salon.id as string) ?? null,
+      priceFromServiceDe: minServiceBySalon.get(salon.id as string)?.de ?? null,
+      priceFromServiceEn: minServiceBySalon.get(salon.id as string)?.en ?? null,
       latitude: (salon.latitude as number | null) ?? null,
       longitude: (salon.longitude as number | null) ?? null,
     };
