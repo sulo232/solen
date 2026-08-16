@@ -41,7 +41,7 @@ recorded elsewhere.
 - [x] **A6. "Find your inspiration" is replaced by Popular looks.** `verified:` 2ceddbd91, One section, not two. They were
       already the same query: 8 of 8 shared image ids, both calling
       /api/discovery/feed?category=hair. **The page carries exactly 2 title variants, not 8.**
-- [x] **A7. Graveyard line filed.** `verified:` `npm run exists "popular looks"` returns it under
+- [x] **A7. Graveyard line filed.** `verified:` _design-system/REMOVED.md:135, commit 8f59e2d0d. `npm run exists "popular looks"` returns it under
       REMOVED, naming Entdecken.tsx, quoting him, and citing the 8-of-8 shared image ids.
 
       **I got this box wrong twice and the correction matters more than the box.** I first wrote
@@ -87,7 +87,8 @@ Type: 3 sizes (12/14/18), 2 weights, largest/smallest = 1.50.
       and the 30px count clears the >=28px display anchor. The old page's 3 sizes spanned 13 to 28
       but put 74% of all text on one size; this one puts 4 elements at 30 and 1 at 18, so the
       count is the loudest thing in the band, which is what he asked for.**
-- [x] **B6. ASKED AND ANSWERED, and the answer is that it is not decided.** He said he would attach
+- [x] **B6. ASKED AND ANSWERED, and the answer is that it is not decided.** `verified:` commit
+      8f59e2d0d plus the answer he gave this turn. He said he would attach
       a screenshot for how the count should look. Four images did arrive (2026-08-16 21:55).
 
       `verified:` measured rather than eyeballed. They are screenshots of the LIVE homepage, and
@@ -170,7 +171,7 @@ Type: 4 sizes (11/13/15/18), 2 weights.
       taught me to click; this teaches me that clicking is not enough. Hit-test the point.
 
 - [x] **C4. Swept the OTHER two pages for the same defect rather than assuming reviews was
-      special.** `verified:` every control on both, hit-tested at 390x844 by stepping
+      special.** `verified:` commit 52b5f5057, every control on both, hit-tested at 390x844 by stepping
       `elementFromPoint` down its centre, same instrument that caught the 33px one.
       Looks: see-all 44, heart 44, whole-card link 368. Walk-in: see-all 44, whole-row link 86.
       Nothing under the floor and nothing covered, so reviews was the only page carrying it.
