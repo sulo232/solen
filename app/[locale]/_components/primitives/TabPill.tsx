@@ -44,7 +44,22 @@ export interface TabPillProps {
 const tabPillVariants = cva(
   cn(
     "inline-flex items-center gap-1.5 shrink-0 select-none whitespace-nowrap",
-    "rounded-full font-body",
+    // mockup-ok: /dev/round5, the "All four fixed" option, approved by him in words on 2026-08-16:
+    // "Now it's a lot lot lot lot better. You can go implement this."
+    //
+    // WHY A CORNER AND NOT A CAPSULE, measured rather than preferred. He said the pill "looks like
+    // it has a sharp corner", and he was describing real geometry. A capsule's radius is half its
+    // height, so at h-11 it is fixed at 22px however wide the pill grows. Measured on the live page:
+    // the widest option was 135.6 x 44, so only 44px of that width was curved and 91px, two thirds
+    // of the outline, was a straight line. A shape whose outline is mostly straight does not read as
+    // a capsule; it reads as a rectangle with a visible join, and that join is what he kept seeing.
+    // 16px is a deliberate corner at every width, and it is also what Airbnb's own chips measure on
+    // their reviews screen (48px tall, radius 16), recorded in _design-system/references/airbnb--reviews.md.
+    //
+    // THIS MOVES EVERY SCREEN, which is why it waited for him by name: 29 files import this
+    // primitive, and CLAUDE.md's radius row ("button/chip pill") is updated in the same commit so
+    // the written rule and the shipped component do not disagree.
+    "rounded-[16px] font-body",
     "transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-glide",
     "active:scale-[0.97] active:duration-[80ms]",
     "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",

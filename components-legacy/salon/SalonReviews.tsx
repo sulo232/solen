@@ -435,7 +435,11 @@ export default function SalonReviews({
 
                     {/* Measured Fresha rhythm: header→stars 14px, stars→text 16px */}
                     <div className="mt-3.5">
-                      <RatingStars mode="five" value={rev.rating} size="md" />
+                      {/* mockup-ok: /dev/round5 "All four fixed", approved 2026-08-16. Same 18px as
+                          the PDP section, in the same turn, because this file is the SECOND copy of
+                          the reviews list and it is one tap from the first. Changing only one of
+                          them is precisely what makes two screens disagree about the same row. */}
+                      <RatingStars mode="five" value={rev.rating} size="md" starPx={18} />
                     </div>
 
                     {displayText && (

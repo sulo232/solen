@@ -167,7 +167,15 @@ export function SalonReviews({
         <div className="mt-4">
           <RatingStars value={average ?? 0} mode="five" starPx={26} /> {/* psych-ok: law 6 is "a rating never appears without its sample size", and it does not here, the count renders 8px below inside this same block as one two-line unit, which is the reference anatomy; passing count too would print the number twice */}
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="font-display text-[16px] font-semibold leading-none text-s-ink tabular-nums">
+            {/* mockup-ok: /dev/round5 "All four fixed", approved 2026-08-16, and his verdict on
+                tapping it was "those are the hierarchy that I want". 16px -> 44px, so the SCORE is
+                the biggest thing in the block instead of a number tucked under a heading.
+                Measured from the reference, not chosen: Airbnb's reviews screen sets its rating
+                digit at 72px with a 46px gap down to the next size, while its section heading stays
+                small, and ours had that exactly upside down. 44 rather than their 72 because their
+                rating has no page heading competing beside it and ours does; that difference is
+                deliberate and is why this is not simply their number copied. */}
+            <span className="font-display text-[44px] font-semibold leading-none text-s-ink tabular-nums">
               {average?.toFixed(1) ?? "-"}
             </span>
             {/* mockup-ok: 13, not 14, so the count joins the same meta tier as every date in this
@@ -336,7 +344,11 @@ function ReviewCard({ review, salonName, locale }: { review: Review; salonName?:
           the grey date stacked under, star row below, text below. Anonymous reviews
           show "Anonym" (the established label on /reviews). */}
       <div className="flex items-start gap-3.5">
-        <Avatar src={review.profiles?.avatar_url} name={displayName ?? tCommon("anonymous")} size={44} />
+        {/* mockup-ok: /dev/round5 "All four fixed", approved 2026-08-16 ("you can go implement
+            this"). 62px is measured off HIS Fresha screenshot with PIL (the reviewer disc there is
+            62px at 2.359 device px per CSS px); ours was 44. He named this one twice, first picking
+            it out of the earlier option and then again in the combined one. */}
+        <Avatar src={review.profiles?.avatar_url} name={displayName ?? tCommon("anonymous")} size={62} />
         <div className="min-w-0 flex-1">
           <div className="font-body truncate text-[16px] font-semibold text-s-ink">
             {displayName ?? tCommon("anonymous")}
@@ -359,7 +371,13 @@ function ReviewCard({ review, salonName, locale }: { review: Review; salonName?:
           star row at 30px, which is 0.0326 of viewport width, so 13px at our 390px viewport, i.e.
           exactly the md it already was. Only the SUMMARY row is big in his reference, at 61px, a
           little over twice these. So the bump moved this away from the thing he pointed at. */}
-      <RatingStars value={review.rating} mode="five" size="md" className="mt-3" />
+      {/* mockup-ok: /dev/round5 "All four fixed", approved 2026-08-16. 13px -> 18px, his words:
+          "I don't like how the stars here are just so fucking small", then after tapping it, "the
+          star is, like, big enough to actually, like, identify". Said plainly because it matters
+          later: BOTH references are SMALLER than what we already shipped, Fresha's row star at
+          12.7px and Airbnb's at 9px, so this is his taste going past both and not a reference match.
+          starPx is passed rather than changing the shared md tier, so nothing else on the site moves. */}
+      <RatingStars value={review.rating} mode="five" size="md" starPx={18} className="mt-3" />
 
       {text && (
         <>
