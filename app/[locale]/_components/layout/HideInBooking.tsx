@@ -41,6 +41,24 @@ export default function HideInBooking({
   const pathname = usePathname() ?? "/";
   if (!pathname) return <>{children}</>;
 
+  // PREVIEW ROUTES CARRY NO APP CHROME. Added 2026-08-16, owner: "cant press button on review
+  // question". He tapped the options and nothing appeared to happen.
+  //
+  // MEASURED, on his own viewport (375x812, touch emulation, over the tunnel): the option buttons
+  // end at y=376, and the first thing they change, the reviewer's photo disc, sits at y=647. The
+  // cookie banner's top edge is at y=656. Nine pixels. On a real iPhone, where Safari's own toolbar
+  // eats more height than the emulator does, that nine becomes negative and the ONLY visible
+  // response to his tap is underneath the cookie bar. So the button worked every time and looked
+  // completely dead, which is exactly what he reported.
+  //
+  // The header, the bottom nav and the consent bar all belong to the PRODUCT. A /dev preview page
+  // is me showing him one section to decide on; none of that chrome is part of the decision, all of
+  // it eats the screen he is deciding on, and the bottom two float over the thing being judged.
+  // This is also the same class as the interaction-proof lesson from yesterday: the page was
+  // verified by clicking it in a pane where nothing covered anything, and the failure lived
+  // entirely in the part I was not looking at.
+  if (/\/dev(\/|$)/.test(pathname)) return null;
+
   if (hideOnFeed && /\/inspo(\/|$)/.test(pathname)) return null;
 
   if (hideOnDashboard && /\/dashboard(\/|$)/.test(pathname)) return null;

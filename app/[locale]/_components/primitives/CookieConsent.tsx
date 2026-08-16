@@ -249,7 +249,17 @@ function CookieBanner() {
   // + intercepted taps (the dashboard has its own chrome). Consent STATE is untouched
   // — analytics stays off (necessary-only) until the user consents on any other page,
   // so this is DSG/GDPR-safe. Mirrors HideInBooking's "no global chrome in self-contained flows" rule.
-  if (pathname && (/\/walk-in-pay\/?$/.test(pathname) || /\/dashboard(\/|$)/.test(pathname))) return null;
+  // 2026-08-16 adds /dev to that list, and it is the SAME failure the two routes above are here for,
+  // arriving a third time. Owner: "cant press button on review question". Measured on the tunnel at
+  // 375x812: on /dev/round5 the option buttons end at y=376 and the first thing they change sits at
+  // y=647, while this strip's top edge is y=656. Nine pixels of clearance in an emulator, and less
+  // than zero on a real iPhone, where Safari's toolbar takes more height. So every tap worked and
+  // every tap looked dead, because its only visible result was under this bar.
+  // Consent STATE is untouched, exactly as in the two cases above: nothing is auto-accepted and
+  // analytics stays off until the visitor answers the banner on a real page, so this stays
+  // DSG/GDPR-safe. /dev is dev-only anyway; those routes `notFound()` in production.
+  if (pathname && (/\/walk-in-pay\/?$/.test(pathname) || /\/dashboard(\/|$)/.test(pathname)
+                   || /\/dev(\/|$)/.test(pathname))) return null;
 
   // S1 (owner decision 2026-08-03): same display-only suppression while a sheet or modal owns the
   // screen, and the banner returns the moment that closes. This z-tooltip (700) strip sat over the
