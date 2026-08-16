@@ -2,13 +2,13 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "Tunnel (terminal 53398)",
+      "name": "Tunnel (terminal 53979)",
       "runtimeExecutable": "bash",
       "runtimeArgs": [
         "-lc",
-        "/opt/homebrew/bin/cloudflared tunnel --url http://localhost:53398 --metrics localhost:20278 --no-autoupdate"
+        "/opt/homebrew/bin/cloudflared tunnel --url http://localhost:53979 --metrics localhost:20279 --no-autoupdate"
       ],
-      "port": 20278,
+      "port": 20279,
       "autoPort": false
     },
     {
