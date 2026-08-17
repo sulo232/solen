@@ -1740,14 +1740,14 @@ Two halves, running in parallel with file ownership named so they cannot collide
           fine, which is this project's named worst failure mode wearing a green light.
       The status is now logged and shown on the Shop view, because "no new bookings" and "not
       listening" look identical on a board and mean opposite things.
-- [x] R12-4 `_design-system/TERMINAL_PRINCIPLES.md` `verified:` 633 lines, eleven sections plus a
+- [x] R12-4 `_design-system/TERMINAL_PRINCIPLES.md` `verified:` commit 836d7c893, 633 lines, eleven sections plus a
       five-line summary: whose law governs and which customer laws explicitly do not, hierarchy,
       spacing, type, colour, containers, density and the fold, actions, the side-by-side against the
       dashboard console, the build order, and an honest contradictions section. Every number is
       either quoted with its pointer or was measured on the running screen at 390x844 and labelled.
       Registered in the canon list in the same turn, per that gate's own instruction.
 - [x] R12-5 The doc found TWELVE contradictions between the written law and the running screen, and
-      the ones I own are fixed rather than filed `verified:` measured after, on the live screen:
+      the ones I own are fixed rather than filed `verified:` commit 836d7c893, measured after, on the live screen:
       - the `·` middot is banned by name in LOCKFILE 0.1 and the screen used it in five strings.
         Now zero on the page.
       - the boxed decisions were UNCAPPED, one per pending request: four took 57.8% of the screen and
@@ -1770,7 +1770,7 @@ that theres an appointment for ths date not an accept or decline so what is ths"
 about phone bookings, a question about scheduled appointments, and "i want ths terminal sh to be
 connected w dashboard n stuff ... bro im confused can u ask sub agent council".
 
-- [x] R13-1 HE IS RIGHT, AND I HAD ALREADY WRITTEN THE PROOF IN ROUND 1 `verified:` live query this
+- [x] R13-1 HE IS RIGHT, AND I HAD ALREADY WRITTEN THE PROOF IN ROUND 1 `verified:` commit 8775974e9; live query this
       turn: 28 of 28 salons are `booking_confirmation_mode = 'instant'`, ZERO are manual, and 1 of
       984 bookings has ever been `pending_approval`. Round 1 of this very plan recorded exactly that
       and concluded "auto-accept stays default and the terminal is a live board rather than a gate".
@@ -1778,16 +1778,47 @@ connected w dashboard n stuff ... bro im confused can u ask sub agent council".
       spent rounds tuning it. **The research was right and the build ignored it**, which is a worse
       failure than not having researched: the finding existed, in this file, and did not reach the
       markup.
-- [ ] R13-2 What replaces the decision card. Council lens running: what is the real "needs a human"
-      event for a salon that auto-confirms, and which of those is DETECTABLE with a column that
-      exists today rather than one we wish existed.
-- [ ] R13-3 THE PHONE-CALL RED FLAG. A Swiss salon takes a large share of bookings by phone. Searched
-      before briefing: `npm run exists "phone booking"` and `"manual booking"` both return 0, the
-      dashboard calendar route contains only `page.tsx` with no insert. Council lens establishing
-      whether a salon can create a booking at all today, why not if not, and which numbers on the
-      terminal silently understate reality while phone bookings live outside the system.
-- [ ] R13-4 TERMINAL VERSUS DASHBOARD. Council lens with a forced recommendation between: separate
-      counter screen, terminal as the mobile home of the dashboard, or terminal replaces the
-      salon-facing dashboard. Must name the cost, what breaks, and the first thing to build.
-- [ ] R13-5 Scheduled appointments beyond today. The loader filters to the current Zurich day, so
-      the terminal cannot show tomorrow. Named, not yet changed.
+- [x] R13-2 What replaces the decision card, ANSWERED AND BUILT `verified:` commit dfc2e061f. The
+      council ranked the candidates by whether the data exists today, and the winner is the one he
+      named himself: somebody is standing here and they are the 14:30. `bookings.arrived_at` shipped
+      2026-06-23 and a repo-wide grep finds it ONLY in the generated types: 1 row of 984 carries a
+      value. It is a TIMESTAMP not a status on purpose, because status 409s once a booking is
+      completed and arrival has to land before that. The terminal writes it: tapped Here on Andrea
+      Vogt in the browser and the database now reads `arrived_at` 20:40, with the row showing
+      "here 20:40" where the button was.
+      Also settled: the seeded `pending_approval` rows were the ONLY reason that card ever rendered,
+      since this salon is on instant like all 28. Cleared.
+- [x] R13-3 THE PHONE-CALL RED FLAG, ANSWERED, and the answer is worse than "missing" `verified:`
+      council lens. A salon CANNOT record a phone appointment, and it is not a decision: it was built
+      TWICE and merged zero times. `8bab79b80` (NewBookingPanel) and `ad0888a92` (QuickBookModal plus
+      a 113-line owner branch on the bookings API) are both finished and both stranded. One left its
+      migration behind on main, so `availability_slots.client_id` is live, indexed, typed, documented
+      as being for "walk-in / new clients (no app profile)", and used by ZERO rows. Meanwhile the
+      dashboard still ships "Neuer Termin" in the command palette, pointing at a calendar page with
+      no create path. The blocker is one RLS policy: `bookings_insert_auth` is `auth.uid() = user_id`,
+      so an owner can only insert a booking for themselves, and unlike `availability_slots` and
+      `barber_walkin_queue` there is no owner INSERT policy. That gap is ORIGINAL, from
+      `014_new_schema.sql:261-267`, never a deletion.
+      **THE PART THAT WAS ALREADY BROKEN WITHOUT PHONE BOOKINGS, and is now fixed** `verified:` commit
+      dfc2e061f: a stylist was only "busy" if a WALK-IN sat in their chair, so a stylist in the middle
+      of a booked appointment rendered GREEN. Green is the colour the counter acts on without
+      thinking. The wait ignored appointments entirely for the same reason. Both read bookings now.
+- [x] R13-4 TERMINAL VERSUS DASHBOARD, ANSWERED: KEEP THEM SEPARATE, and his framing is the wrong
+      question `verified:` council lens with counts. The dashboard is 49 routes, 20 platform-admin,
+      26 genuinely salon-facing, and the live nav shows 13. Of his four asks, THREE already work on a
+      phone today (overview, bookings, calendar and settings all have hand-built mobile branches).
+      The two that do not are missing FEATURES, not layout, and no merge or split fixes either:
+      marking arrival (built this turn) and staff hours. Round 1 of this plan already gave the same
+      answer and the same test: "if a task can wait until this evening, it is not on the terminal".
+      Option B additionally collides with a dated owner kill: a bottom nav on the operator dashboard
+      was rejected by name 2026-07-15, and B puts the terminal's floating bar on it.
+      NAMED COST of keeping them separate, not hidden: two screens rendering "today's bookings" will
+      drift, and every future feature costs a decision about which screen it lands on. The defence is
+      that the split is a written rule rather than a judgement call.
+- [ ] R13-5 PARKED FOR HIM: scheduled appointments beyond today. The loader filters to the current
+      Zurich day. Widening it is one argument, but the council found FOUR things that break with it
+      and they are not cosmetic: today's list has no date filter so tomorrow merges into it silently,
+      the money line then sums both days, the conflict warning compares HH:mm with no date so two
+      bookings at 14:00 on different days read as a clash, and the live feed already has no date
+      filter at all. Two days is a different screen, not a wider query, so it is his call whether the
+      terminal grows a tomorrow or stays a today board.
