@@ -74,7 +74,7 @@ const PATHS: Path[] = [
       "Five of seven tools do this. Every single one turns what it finds into busy, never into an appointment.",
     cost: "Weeks, plus login handling and a stack of edge cases.",
     risk:
-      "It gives us no name, no service, no price, no money record. Square says so outright and so does Treatwell. Both could have read the event titles and chose not to. And 93% of Swiss small businesses have no online calendar to read in the first place.",
+      "It gives us no name, no service, no price, no money record. Square says so outright and so does Treatwell. Both could have read the event titles and chose not to. And in the closest real study only 11 in 100 of these businesses had any booking system to read from, so we would be building against something most of them do not own.",
     verdict: "Not worth it, and a vendor says so in writing",
     verdictTone: "no",
   },
@@ -108,6 +108,16 @@ const FACTS = [
     fact: "Nobody notices a shop that went quiet",
     detail:
       "Across seven products: no alert, no nudge, no check of the till against the calendar. Square runs both in one account and still never flags a sale with no appointment.",
+  },
+  {
+    fact: "The phone is not a side channel, it is the channel",
+    detail:
+      "In the closest thing to a proper study, across 629 European restaurants: 65 in every 100 advance bookings came by phone, 88 came direct, and 6 came through every booking platform combined. Only 11 of those businesses had any booking system at all. That last number is what kills the calendar idea, not our opinion of it.",
+  },
+  {
+    fact: "The no-show number everyone repeats is made up",
+    detail:
+      "The 20% figure traces back to one uncited sentence on a booking company's own blog. The proper research literature has no restaurant figure at all. Switzerland's real platform number is 1.9%, about one in fifty. Worth knowing before we ever build deposits on the strength of it.",
   },
   {
     fact: "93% of Swiss small businesses have no online booking at all",
