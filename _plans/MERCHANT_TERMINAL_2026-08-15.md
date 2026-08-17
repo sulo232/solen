@@ -1868,8 +1868,8 @@ it and then stop using it. That is a sharper statement of the risk than anything
       Grok also named the physical reality we would have designed past: the call arrives while the
       owner is mid-colour with the phone on their shoulder, so a screen tap is awkward and, in a Swiss
       salon, rude in front of the customer in the chair.
-- [x] R14-2 THE COMPETITOR AND MARKET RESEARCH, and MY ASSUMPTION WAS WRONG `verified:` sourced
-      sweep. I briefed the lens expecting these tools to only PUSH to Google. They mostly READ from
+- [x] R14-2 THE COMPETITOR AND MARKET RESEARCH, and MY ASSUMPTION WAS WRONG `verified:` commit
+      f5230b924; sourced sweep, every claim carrying its vendor help-centre URL. I briefed the lens expecting these tools to only PUSH to Google. They mostly READ from
       it, and the closest analogue to us reads only:
       - **Treatwell**, the one that is a marketplace rather than salon software, mirrors a shop's
         existing calendar IN as blocked time and never pushes out, and states it collects
@@ -1883,14 +1883,15 @@ it and then stop using it. That is a sharper statement of the risk than anything
         flow for a cold phone call.
       So (a) and (c) are not competing options: a calendar sync DELIVERS a busy block, nothing more.
 - [x] R14-3 WHY (a) IS STILL THE WRONG FIRST BUILD FOR US, and it is the counterparty, not the tech
-      `verified:` the calendar a small Swiss coiffeur "already keeps" is usually not Google.
+      `verified:` commit f5230b924, figures from BFS STATENT cube px-x-0602010000_103 (2023) and the
+      localsearch/HSLU KMU study (n=47,079, 2025); the calendar a small Swiss coiffeur "already keeps" is usually not Google.
       Measured: 16,847 Coiffeursalons in Switzerland (BFS STATENT 2023) at 1.77 employees each;
       82.1% of personal-service enterprises are ONE person and 95.9% are under five; only 3% of Swiss
       SMEs have a website with a booking tool (localsearch/HSLU 2025, n=47,079); and of local.ch's
       14,202 coiffeur listings just 1.7% are instantly bookable. The largest Swiss chain, GIDOR, is
       95+ branches and walk-in by design. Apple has no usable API for this segment and Fresha has no
       public write API, so "sync with what they use" means bilateral deals, not a standard.
-- [x] R14-4 HIS FEAR HAS A NUMBER ON IT `verified:` Wickens and Dixon 2007, a meta-analysis of 20
+- [x] R14-4 HIS FEAR HAS A NUMBER ON IT `verified:` commit f5230b924; Wickens and Dixon 2007, a meta-analysis of 20
       studies, put the crossover at roughly 0.70 reliability: below that, unreliable automation is
       WORSE than no automation, and the effect strengthens under high workload. That is his sentence
       ("a screen that is sometimes wrong is worse than no screen") as a measured finding, and it is
@@ -1898,7 +1899,8 @@ it and then stop using it. That is a sharper statement of the risk than anything
       Operator voices matching it exactly: a Square user keeping "a paper appointment book as well",
       and a Treatwell salon that ended up advertising only its off-peak hours because keeping two
       systems in sync was not worth the risk.
-- [x] R14-5 PHONE BOOKING BUILT AND PROVEN `verified:` typed "Beatrice Meyer" with a number in the
+- [x] R14-5 PHONE BOOKING BUILT AND PROVEN `verified:` commit f5230b924, and the row queried back
+      out of the live database after the browser saved it; typed "Beatrice Meyer" with a number in the
       browser, picked Mia and Men's Haircut, and the database now carries the row: guest_phone
       +41 79 123 45 67, `acquisition_source` "phone" (a column the salon's existing Quellen chart
       already reads, so it charts itself), status confirmed, stylist Mia. Slot created first because
