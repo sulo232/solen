@@ -39,24 +39,32 @@ A colour answers one question: **does this need me, and how soon.**
 
 | tone | shows on | what has to be true |
 |---|---|---|
-| ink | a stylist's ring | working. Nothing to do. |
-| green | a stylist's ring | free, and nobody waiting |
-| orange | a stylist's ring | free WHILE somebody waits, so seat them |
-| red | a stylist's ring, and the minutes on a waiting row | somebody has waited longer than the wait we promised |
+| green | a stylist's ring | free. A chair is open. |
+| ink | a stylist's ring | working, and the line under the face says when they finish |
+| grey | a waiting row's minutes | waited under 25 minutes |
+| orange | a waiting row's minutes | waited 25 to 39 minutes |
+| red | a waiting row's minutes | waited 40 minutes or more |
 
 Two rules keep it a system rather than a palette:
 
-1. **A tone is DERIVED from data that exists.** Every one above is computed from `joined_at` and
-   `estimated_wait_minutes`, real columns on `barber_walkin_queue`. There is no "looks busy" tone,
+1. **A tone is DERIVED from data that exists.** Every one above is computed from `joined_at`,
+   `started_at` and `services.duration_minutes`, all real columns. There is no "looks busy" tone,
    because nothing in the database says that.
 2. **A tone is shown in exactly ONE place.** A green "Free" under an orange ring is one stylist
    reporting two states at once. The ring speaks; the word underneath stays neutral.
 
-The 0.75 threshold for orange is a HOUSE NUMBER, named as one: the point where a warning still
-leaves time to act on a wait of any length.
+**The wait thresholds are ABSOLUTE, and that is a deliberate trade** (owner, 2026-08-17). They used
+to be relative to the wait each person was promised, which is truer and looked broken: 28 minutes
+rendered red while 33 rendered grey two rows below, because the first was promised 15 and the second
+45. The promise is not on the screen, so the reader saw two numbers and a rule that appeared to be
+counting rows. The cost of the absolute version, named rather than buried: somebody promised 85 and
+waiting 40 now shows an alarm we have not earned, and somebody promised 15 and waiting 24 stays quiet
+one minute from breaking our word. Worth revisiting if the promise ever renders on the row.
 
-Orange never becomes text. `s-warning` measures 1.94:1 on white, below the text floor, so a waiting
-row shows only `late`, on the number itself.
+**The ring is green or ink, never red** (corrected the same day). A free stylist used to go red when
+the queue was overdue, so red meant "problem" on a number and "available" on a face, in one viewport.
+`#C2410C` is the orange, not the system's warning amber, because amber measures 1.94:1 on white and
+this measures 4.9:1, and these numbers are text.
 
 **Why the ring and not a badge.** Four rounds went into matching a badge to the owner's reference
 before the answer turned out to be deleting it. His reference is an onboarding screen introducing
@@ -75,6 +83,8 @@ everyone. Colour what exists rather than add what does not.
 | stylist chip | `StaffChip`. Ring 0.039 of the outer circle, white band 0.059 (one and a half times the stroke), photo fills the rest. Board size 78, list size 54. Measured off the owner's own screenshot with PIL. |
 | the ONE card | the "Needs a decision" block, `rounded-[24px]` + hairline. The merchant law allows exactly one container per screen and this earns it: it is the only thing on the board that will not resolve itself. **The count excludes persistent chrome**, corrected 2026-08-17: a verifier applying the rule literally counted the floating bottom bar as a second container on every view, and it is right that a rounded, shadowed, 358px-wide element meets the test. The bar is navigation that never scrolls and never competes with content, so the rule is about CONTENT containers. Measured after the carve-out: Board 1, Chairs 0, Log 0, This screen 0. |
 | every other list | bare rows on the canvas: hairline above, `px-5 py-4`, no card, no box, no pill costume |
+| a waiting row | name leads, then `service · #ticket`, then the labelled wait ("waiting 44 min"). On the right: the assigned stylist's FACE, a plain `Start`, and the dots. The face answers "which chair" and tapping it changes the chair. **The stylist's NAME never goes on the button**: it put the same name on every row and then repeated it inside the menu one row below, which is the version the owner rejected ("why is there two start w mia"). |
+| the two menus | separate on purpose, because one menu doing two jobs made neither obvious. The FACE opens the chair picker, listing every stylist with the busy ones greyed rather than hidden (a list that silently drops a name reads as a bug the first time somebody looks for it). The DOTS hold only the endings that are not a haircut: did not turn up, remove from queue. Both are placed from the measured position of the control that opened them, and "does it fit below" stops above the floating bar, not at the window edge. |
 | rhythm | **32 between sections, 16 inside one.** Corrected 2026-08-17 after a verifier measured the claim: "binary only" was not true and could not be, because a title and its sub-line, or an icon and the text beside it, are not section spacing. The real ladder is 32 / 16 for LAYOUT, and 12 / 8 / 4 / 2 for the inside of a single text block or row (`gap-3` icon to control, `mt-2` inside the headline block, `mt-1` title to sub-line, `mt-0.5` name to meta). Measured live: 32 at five section boundaries, 16 for row and card padding, and nothing between 16 and 32 anywhere. |
 | type | 4 sizes (13 / 15 / 18 / 30), 3 weights (400 / 500 / 600). One 30px anchor per view, never two. |
 | the one ink CTA | Accept, inside the card. Every repeating row commit (Start, Done) uses the row rung instead: white + hairline + `shadow-whisper`. |

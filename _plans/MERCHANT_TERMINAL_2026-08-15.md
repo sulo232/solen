@@ -1556,3 +1556,50 @@ Owner: "make acc system and improve ui".
 - [x] R9-3 Binary rhythm `verified:` commit 905b1b35e, every `mt-6` (24px) on a section boundary is
       now `mt-8` (32px), with 16 inside a block. The merchant round fixes 16/32 and nothing else, and
       24 was the value drifting in between.
+
+## ROUND 10 , his punch list, and the two-Mias bug, 2026-08-17
+
+He ran the screen himself and sent a graded list. Everything below is his, in his order.
+
+- [x] R10-1 P0 the wait colour `verified:` commit 5fa09b449. He read it as index-based; it was
+      RELATIVE, red once someone passed the wait THEY were promised, so 28 showed red (promised 15)
+      while 33 showed grey (promised 45). Same defect, different cause, and the cause is worse: the
+      promise is not on screen, so the rule was unverifiable. His absolute thresholds now, verbatim:
+      under 25 quiet, 25 to 39 `#C2410C`, 40+ `#DC2626`. Cost named in `status.ts` rather than
+      buried: an absolute number ignores what we told the customer.
+- [x] R10-2 P0 the frozen 85 `verified:` it read `max(estimated_wait_minutes)`, written into the row
+      when the person joined, so it never moved. Computed now from the work in the shop: everyone
+      waiting at their own service duration plus what is left of each occupied chair, over the number
+      of chairs. Sub-line says what it is: "If you walk in now."
+- [x] R10-3 P0 the dead last row and the vanishing header `verified:` bottom inset is
+      `88px + safe-area + 24`, measured 119px of clearance at full scroll; the top band is `sticky`
+      and measured still at top 0 after scrolling to the end.
+- [x] R10-4 P0 waits contradicting arrival order `verified:` that was the SEED, not the code. Reseeded
+      so waited descends with position (60/44/31/26/18/11/5 against positions 1 to 7).
+- [x] R10-5 P1 the inverted rings `verified:` commit 5fa09b449. Free is green, working is ink, and a
+      working chair says when it frees from `services.duration_minutes`, a real column that the
+      loader was not selecting. Omitted, never guessed, when a service has no duration on file.
+- [x] R10-6 P1 the unlabelled number and the unlabelled Start `verified:` "waiting 44 min", and the
+      row carries the assigned stylist's face.
+- [x] R10-7 P1 conflicts and age on a decision `verified:` a request shows how long ago it was asked
+      (from its own `created_at`) and calls out both collisions: the same slot as another pending
+      request, and a slot that lands inside the queue's own reach.
+- [x] R10-8 P2 hierarchy `verified:` the name leads and the ticket code trails it; one section header
+      "Needs a decision · N" instead of one per card; the cards are rows, which took the block from
+      466px to 218px so queue rows sit above the fold; the tab bar has labels and a real active state.
+- [x] R10-9 "why is there two start w mia" , REAL BUG `verified:` commit 274a53778. The stylist's
+      name was printed on the button, so the same name sat on all six rows, and the dots menu then
+      offered the OTHER free stylist by name one row below. Two name-carrying controls, one row
+      apart. The name came off the button; WHO is the assigned stylist's FACE beside a plain Start,
+      and tapping the face changes the chair.
+- [x] R10-10 "inside the three dotts are not good at all" `verified:` one menu was doing two
+      unrelated jobs. The face owns the chair picker (every stylist listed, busy ones greyed rather
+      than hidden), the dots own only the two endings that are not a haircut, each with an icon.
+      Placement now stops above the floating bar instead of at the window edge; swept every visible
+      row and each menu lands inside the viewport and clear of the bar.
+
+**Still open from his list, deliberately, and he should know which:**
+- R10-11 #12 auto-expiry on a decision. Age is shown; nothing auto-declines. The 24h timeout cron
+  exists (`app/api/cron/pending-timeout`) and this screen does not surface a countdown against it.
+- R10-12 #10's projection is a WARNING, not a block. Accepting a conflicting slot is still allowed,
+  because refusing it would need a rescheduling flow this prototype does not have.
