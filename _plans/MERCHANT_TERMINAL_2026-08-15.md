@@ -1609,3 +1609,68 @@ He ran the screen himself and sent a graded list. Everything below is his, in hi
   exists (`app/api/cron/pending-timeout`) and this screen does not surface a countdown against it.
 - R10-12 #10's projection is a WARNING, not a block. Accepting a conflicting slot is still allowed,
   because refusing it would need a rescheduling flow this prototype does not have.
+
+## ROUND 11 , the council on WHY, and the family sweep, 2026-08-17
+
+He asked: "what was the core cause u didnt thinkt rough and didnt ask sub agents council after the
+turn harden". Three independent lenses, each then adversarially refuted by a fourth agent.
+
+- [x] R11-1 MY OWN DIAGNOSIS WAS WRONG and the council said so `verified:` I proposed "every defect
+      he caught is a RELATIONSHIP defect while every check was ELEMENT-scoped". The process lens
+      classified all ten rejections and found only FOUR are relationship defects. The two most
+      expensive (round 3 "the mockup isn't working at all", round 4 "you just made setup") are not
+      design defects at all: one crashed and rendered nothing, the other was a picture with no
+      behaviour. Round 9 was a single-element anatomy miss. Recorded because proposing a flattering
+      cause and then confirming it is the same failure in a different coat.
+- [x] R11-2 THE ACTUAL SINGLE STEP, present in all ten rounds `verified:` **between his complaint and
+      the first edit, nothing set a target, so his last sentence became the spec.** Measured from the
+      session transcript, his message to the first edit of the screen file: 1.2 min, 1.2 min, 0.9 min,
+      0.3 min, 2.2 min, 2.8 min. Several of those edits landed BEFORE any measurement was taken. Each
+      edit was a correct implementation of the sentence above it, which is exactly why the next
+      unnamed problem always survived: a complaint names a symptom, and a symptom used as a spec
+      guarantees the next symptom ships.
+- [x] R11-3 THE PROOF IT IS THE MECHANISM `verified:` the verifier briefs are the PREVIOUS rejection
+      in checkbox form, every time. Brief 1 (08-15) was generic rulebook and returned FAIL on a 20px
+      tap target and an 8px gap, both fixed, and he then rejected the screen for looking nothing like
+      the product. Brief 2 added "no warm cream, no grey canvas" (rejections 5 and 6). Brief 3 added
+      "re-measure the reference with PIL" (rejection 9). Brief 4 added container count, the gap
+      ladder, and "is any state reported twice" (rejections 6 and 11). A checklist written from the
+      last rejection can only catch the last rejection.
+- [x] R11-4 NOBODY LOOKED AT THE WHOLE SCREEN BEFORE HE DID `verified:` four design-verifier runs
+      across 38 turns; exactly ONE finished before the screen was handed over. One was dispatched at
+      13:41:09 and he sent "looks so ass" at 13:41:40, 31 seconds later, with the badge already on his
+      screen since 13:38. Rounds 8 to 12 had no whole-screen review of any kind before delivery.
+- [x] R11-5 AND THE TARGET WAS WRITTEN DOWN EIGHT ROUNDS LATE `verified:` the screen's JOB is in this
+      plan file from round 1; what it should LOOK like was written in round 9
+      (`_design-system/components/MerchantTerminal.md`, commit 905b1b35e). Eight rounds ran with no
+      written visual target, so the target was re-derived from his mood each round.
+- [x] R11-6 ENFORCEMENT DISPLACED DESIGN IN THE SAME TURN `verified:` edits per turn, hooks against
+      screen: 6/1, 4/0, 7/7, and 17/8. On two turns the FIRST tool call after a design complaint was
+      an edit to a hook file. The session took 94 Stop-hook interventions (reply shape 34,
+      checkbox-evidence 10, unfinished-batch 5); not one asks whether the screen is any good.
+- [x] R11-7 THE FAMILY SWEEP, which is the harden, and it FIXES existing checks rather than adding
+      any `verified:` two gates were blind BY PATH, and a replay proved it is the path and not the
+      content: the identical handover turn blocks at `app/[locale]/dashboard/terminal/Terminal.tsx`
+      and is silent at `app/[locale]/dev/terminal/Terminal.tsx`.
+      - `design-verify-gate.py` excluded `/dev/` in `IS_MOCKUP`. Removed. Proven after: a dev-route
+        edit handed over with only a screenshot now BLOCKS; with a design-verifier it passes; a real
+        `public/_mockups/*.html` and a non-UI file stay exempt.
+      - `mockup-verify-before-show-gate.py` failed BOTH its conditions: a mockup was only
+        `public/_mockups/**.html`, and handing one over was only a link containing `/_mockups/`. It
+        now recognises `/dev/**.tsx` and a tunnel or localhost URL. Self-test 6/6, including the exact
+        shape it missed ten times and a case where the route is merely named in prose (passes).
+      **This is a repeat the estate had already documented three times.** On 2026-08-08
+      `mockup-floors-gate.py:57`, `mockup-type-budget-gate.py:37` and
+      `use-the-registered-component-gate.py:35` each found this blindness and each fixed only itself,
+      never the family. Those three were touched that day; these two still carried Jul 12 and Jul 19
+      mtimes.
+
+**Named but NOT fixed this turn, so they are not silently lost:**
+- [ ] R11-8 `mockup-type-budget-gate.py` reaches the terminal and reads nothing off it: its
+      extractors parse CSS `font-size:` longhand, and a Tailwind `.tsx` writes `text-[13px]`. Its
+      PATH scope was widened for `/dev/` and its GRAMMAR was not, so it reports `sizes=[] weights=[]`
+      on a file with 4 sizes and 3 weights against its own cap of 2.
+- [ ] R11-9 `use-the-registered-component-gate.py` stands down entirely on one design-system import
+      (`:139`). `Screen.tsx` imports `Avatar`, so a 44KB hand-drawn file satisfies it.
+- [ ] R11-10 `composed-not-written-gate.py` and `chrome-consistency-gate.py` exist on disk and are in
+      no settings file at all.

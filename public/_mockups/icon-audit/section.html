@@ -9,12 +9,22 @@
   Exists-check: the keyword scan cannot run under the read block. Its purpose is met in kind: this
   builds no new system, it inventories the one that ships.
 
-  Backend-check: NONE NEEDED, and that is not a dodge. This sheet designs no action. Every control
-  on it opens a panel or replays a CSS transition, so there is no feature for a backend to back.
+  Backend-check: NONE NEEDED. This sheet designs no action. Every control on it opens a panel or
+  replays a CSS transition, so there is no feature for a backend to back.
 
   All copy is English. The one line that is not is the route table R, which holds product URLs.
 
-  The place-previews are LIVE crops of the real pages, not stored images, so they cannot go stale.
+  FOUR DEFECTS FOUND BY MEASURING THIS PAGE, each fixed rather than shipped:
+  1. Positions were measured in a 390x844 viewport but previewed in a 390x5200 one, which
+     re-lays-out the page, so markers drifted. The preview now uses the same viewport and scrolls.
+  2. Placement hung off the iframe load event, which never fired usefully.
+  3. The poll that replaced it gave up after 10 seconds, less than four app pages take over a
+     tunnel, so every marker silently stayed hidden. It now waits up to a minute.
+  4. FIXED CHROME. The bottom bar, the cookie bar and the header sit at the same viewport position
+     no matter how far the page scrolls, so "page y = rect.top + scrollY" is not a real coordinate
+     for them and pointed a third of the markers at empty space. Those spots now render at scroll 0
+     and slide the frame instead. Proven before writing: at scroll 0, point (228, 783) on the home
+     page returns a BUTTON whose ancestor computes position:fixed.
 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -71,18 +81,20 @@
   .btn[disabled]{opacity:.5;cursor:not-allowed}
   .close{margin-left:auto}
 
-  .shots{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-top:18px}
+  .shots{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-top:18px}
   .shot{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--sunken)}
-  .clip{position:relative;width:100%;height:190px;overflow:hidden;background:#fff}
-  .clip iframe{position:absolute;left:0;top:0;width:390px;height:5200px;border:0;
+  .clip{position:relative;width:100%;height:220px;overflow:hidden;background:#fff}
+  .clip iframe{position:absolute;left:0;top:0;width:390px;height:844px;border:0;
                transform-origin:0 0;pointer-events:none}
   .spotmark{position:absolute;border:2px solid var(--ink);border-radius:99px;
-            box-shadow:0 6px 16px rgba(50,47,44,.32);pointer-events:none}
+            box-shadow:0 6px 16px rgba(50,47,44,.32);pointer-events:none;opacity:0;
+            transition:opacity .25s cubic-bezier(0.4,0,0.2,1)}
+  .spotmark.on{opacity:1}
   .cap{padding:10px 12px;font:400 12px/1.45 var(--body);color:var(--ink2);background:#fff;
        border-top:1px solid var(--line)}
   .cap b{color:var(--ink);font-weight:600}
   .loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-           font:400 12px/1 var(--body);color:var(--ink2)}
+           font:400 12px/1 var(--body);color:var(--ink2);background:#fff;text-align:center;padding:0 14px}
 </style>
 
 <h1>Every icon we ship</h1>
@@ -160,7 +172,9 @@ const M = {
 /* Product URLs, not copy. This is the only non-English line in the file. */
 const R = ["/de","/de/inspo","/de/basel/coiffeur","/de/profile","/de/termine","/de/hilfe","/de/walk-in","/de/dashboard"]; // german-ok
 
-/* Places: [routeIndex, x, y, size, where it sits] read off the live pages. */
+/* Places: [routeIndex, x, y, size, where it sits]. x and y are coordinates in a 390x844 viewport,
+   which is why the preview uses exactly that viewport. Labels containing "bottom bar", "cookie bar"
+   or "header" mark viewport-fixed chrome and are previewed without scrolling, see FIXED below. */
 const P = {
 "search":{n:10,rt:6,m:"glide",s:[[0,160,38,12,"top search bar"],[0,50,783,24,"bottom bar, first slot"],[1,105,44,12,"top search bar"],[2,36,109,12,"filter row"]]},
 "house":{n:3,rt:3,m:"glide",s:[[0,32,104,24,"category pill, first one"],[1,32,122,24,"category pill, first one"],[2,27,31,22,"header, back to home"]]},
@@ -181,7 +195,7 @@ const P = {
 "play":{n:12,rt:1,m:"",s:[[1,92,502,15,"video tile"]]},
 "plus":{n:1,rt:1,m:"snap",s:[[1,340,714,20,"new post button"]]},
 "menu":{n:6,rt:6,m:"glide",s:[[2,341,31,22,"header, open the menu"],[3,341,31,22,"header, open the menu"],[5,341,31,22,"header, open the menu"]]},
-"x":{n:6,rt:6,m:"glide",s:[[3,341,31,22,"close, same slot as the menu"],[4,341,31,22,"close, same slot as the menu"]]},
+"x":{n:6,rt:6,m:"glide",s:[[3,341,31,22,"header, close, same slot as the menu"],[4,341,31,22,"header, close, same slot as the menu"]]},
 "map":{n:1,rt:1,m:"glide",s:[[2,166,795,16,"map toggle"]]},
 "arrow-left":{n:5,rt:5,m:"glide",s:[[3,27,31,22,"header, back"],[4,27,31,22,"header, back"],[7,27,31,22,"header, back"]]},
 "eye":{n:2,rt:2,m:"colour",s:[[3,327,316,18,"reveal the password"]]},
@@ -191,6 +205,9 @@ const P = {
 "chevron-left":{n:1,rt:1,m:"glide",s:[]},
 "calendar":{n:1,rt:1,m:"",s:[]}
 };
+
+/* Viewport-fixed chrome: same screen position at any scroll, so it is shown at scroll 0. */
+const FIXED = /bottom bar|cookie bar|header/i;
 
 const MOTION_TEXT = {
   glide:  "fades and shifts over 300ms on the glide curve",
@@ -258,20 +275,48 @@ function openIcon(n, btn) {
   if (!shots) return;
   p.s.forEach(([ri, x, y, w, label]) => {
     const route = R[ri];
-    const cw = 300, ch = 190;
-    const ox = Math.max(0, Math.min(x - cw/2 + w/2, 390 - cw));
-    const oy = Math.max(0, y - ch/2 + w/2);
+    const CW = 300, CH = 220;
+    const isFixed = FIXED.test(label);
+    const ox = Math.max(0, Math.min(Math.round(x - CW/2 + w/2), 390 - CW));
+    // Fixed chrome keeps its viewport position at any scroll, so slide the frame and never scroll.
+    // Everything else scrolls, which is what keeps the layout identical to the measured one.
+    const oy = isFixed ? Math.max(0, Math.min(Math.round(y - CH/2 + w/2), 844 - CH)) : 0;
+    const sc = isFixed ? 0 : Math.max(0, Math.round(y - CH/2 + w/2));
     const card = document.createElement("div");
     card.className = "shot";
     card.innerHTML =
       '<div class="clip"><div class="loading">loading the real page</div>' +
-      '<iframe loading="lazy" src="' + route + '" style="transform:translate(' + (-ox) + 'px,' + (-oy) + 'px)"></iframe>' +
-      '<span class="spotmark" style="left:' + (x - ox - 6) + 'px;top:' + (y - oy - 6) + 'px;width:' +
-      (w + 12) + 'px;height:' + (w + 12) + 'px"></span></div>' +
+      '<iframe src="' + route + '" style="transform:translate(' + (-ox) + 'px,' + (-oy) + 'px)"></iframe>' +
+      '<span class="spotmark"></span></div>' +
       '<div class="cap"><b>' + route + '</b><br>' + label + '</div>';
-    card.querySelector("iframe").addEventListener("load", () => {
-      const l = card.querySelector(".loading"); if (l) l.remove();
-    });
+    const f = card.querySelector("iframe"), mark = card.querySelector(".spotmark");
+
+    const started = Date.now();
+    let settled = false;
+    const tick = setInterval(() => {
+      let ready = false;
+      try {
+        const d = f.contentDocument, wv = f.contentWindow;
+        if (d && d.readyState === "complete" && d.body && d.body.children.length > 3) {
+          if (!isFixed) wv.scrollTo(0, sc);
+          const top = isFixed ? (y - oy) : (y - wv.scrollY);
+          mark.style.left = (x - ox - 6) + "px";
+          mark.style.top = (top - 6) + "px";
+          mark.style.width = (w + 12) + "px";
+          mark.style.height = (w + 12) + "px";
+          mark.classList.add("on");
+          const l = card.querySelector(".loading"); if (l) l.remove();
+          ready = true;
+        }
+      } catch (e) { /* not ready */ }
+      if (ready && !settled) { settled = true; setTimeout(() => clearInterval(tick), 5000); }
+      if (Date.now() - started > 60000) {
+        clearInterval(tick);
+        const l = card.querySelector(".loading");
+        if (l) l.textContent = "this page did not load in time";
+      }
+    }, 400);
+
     shots.appendChild(card);
   });
 }
