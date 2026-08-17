@@ -1706,11 +1706,19 @@ Two halves, running in parallel with file ownership named so they cannot collide
       React state and vanish on reload. A dev-only POST endpoint writes them to the database instead,
       scoped by salon as well as by id, with the legal status values VERIFIED against the live table
       rather than assumed.
-- [ ] R12-2 A booking can actually arrive. `bookings` is NOT in the `supabase_realtime` publication,
-      re-verified live this turn; `barber_walkin_queue` already is. That single missing line is why
-      arrivals have been scripted since round 1. An idempotent migration adds it.
-- [ ] R12-3 Wire the screen to both: every handler posts and then reflects what came back, and a
-      realtime subscription replaces the two scripted arrivals.
+- [x] R12-2 A booking can actually arrive, and THIS IS THE BLOCKER FROM ROUND 1, now cleared
+      `verified:` migration `add_bookings_to_realtime_publication` applied to the live project, and
+      re-queried after: `pg_publication_tables` for `supabase_realtime` now returns BOTH
+      `barber_walkin_queue` and `bookings`. Before this turn it returned only the queue, which is why
+      the salon's one booking subscription had never fired and why every arrival on this screen has
+      been scripted since 2026-08-15. The change is additive and idempotent: one table added to a
+      publication, no data, no column and no policy touched.
+- [ ] R12-3a Wire the six actions to the endpoint: each handler posts, and the row reflects what came
+      back rather than what it hoped for.
+- [ ] R12-3b Replace the two scripted arrivals with a real `postgres_changes` subscription on
+      `bookings`, now that the publication carries it.
+- [ ] R12-3c Prove it end to end: insert a booking straight into the database from outside the page
+      and watch it appear on the screen without a reload.
 - [ ] R12-4 `_design-system/TERMINAL_PRINCIPLES.md`, the rules someone builds from: hierarchy,
       spacing, type, colour, containers, density and the fold, actions, the build order, and a
       side-by-side against the dashboard console. Every principle traceable to one of the eleven
