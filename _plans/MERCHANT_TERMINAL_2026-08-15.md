@@ -1460,3 +1460,28 @@ edge) and said: "make it like ths yk for indicators too like green ir red etc" t
       **The lesson, and it is the same one twice in one round:** both misses came from measuring the
       wrong pair of edges and then reasoning perfectly from them. A ratio is only as good as the two
       things it is a ratio of, so name what each number is an edge OF before dividing them.
+- [x] R7-8 THIRD rejection, "still nth like it but alrdy better but now its too big j the pill evrth
+      no balance" `verified:` commit c3f280929. His reference is ONE avatar alone on an onboarding
+      screen, so its size is the size of the only thing there. Three of those in a row measured 108px
+      against a 30px headline: the supporting element was 3.6x the anchor it supports. Grounded in
+      OUR system instead of his: `SalonTeam.tsx:134` uses 88px for a staff avatar as the CONTENT of
+      its section, so stylists that are supporting information under a headline sit one step down at
+      64px (outer 78, ring 3, gap 4, badge 40x20). The pill is deliberately narrower than his, 0.63
+      of the photo against his 0.72, and that deviation is stated in the file rather than hidden.
+      An independent re-measure also CORRECTED my own reference number: his pill is 148-152px, not
+      the 165px first recorded, because the first pass took the widest anti-aliased row instead of
+      the plateau.
+- [x] R7-9 HARDENED, and it is a FIX to the existing check rather than a new one, because a mistake
+      that already has a gate is a binding failure (LAW_SYSTEM 6.9). `reference-measure-gate.py` v4:
+      all three rejections above were PIL-measured and all three PASSED it, because proving the ruler
+      was used says nothing about whether the answer belongs on our screen. It now also requires ONE
+      number from OUR side (our anchor, a locked component of ours, or an explicit `role:` note) on
+      any reference-derived file. Paid for by FIXING rather than adding: no new gate, and this one
+      got its first `--selftest` ever (12/12). `gate-eval.py`: PASS , 42 of 1633 real replies, 1/1
+      known-bad caught, 1/1 known-good passed.
+- [x] R7-10 Two real defects found INSIDE the evaluation layer while doing R7-9, both of which were
+      silently under-reporting every gate of this class: `gate-eval.py` probed PreToolUse gates with
+      a RELATIVE file path, which falls outside the `is_solen()` scope check several Solen gates use,
+      so they scored "blocked 0 of N" while blocking correctly in real life; and it only counted a
+      refusal as exit-code 2 or `"decision": "block"`, never the `permissionDecision: deny` JSON that
+      the PreToolUse docs actually recommend. Both fixed.
