@@ -1389,9 +1389,10 @@ never emphasis, and never a way of saying "this is a button".**
 
 ## Still open, tracked rather than narrated
 
-- [x] R6-6 KEPT, decided rather than left hanging. The premise in the original line was WRONG and
-      checking it was the disposition: `/dev/terminal/b` does NOT render the new `Screen`, it still
-      renders `B` (`b/page.tsx` imports `./B`). So B is not dead weight, it is a live second route
+- [x] R6-6 KEPT, decided rather than left hanging. `verified:` the premise in the original line was
+      WRONG and checking it was the disposition: `app/[locale]/dev/terminal/b/page.tsx:20` imports
+      `./B` and renders `<B ... />` at line 20, so `/dev/terminal/b` does NOT render the new
+      `Screen`. So B is not dead weight, it is a live second route
       and the only before-picture of the six rejected rounds. It costs nothing (dev-only, both
       routes `notFound()` outside dev) and deleting it unasked is the 2026-07-31 mistake ("why did
       you fucking remove the airbag"). It stays until he says otherwise; no graveyard line is owed
@@ -1414,14 +1415,14 @@ never emphasis, and never a way of saying "this is a button".**
 He sent a screenshot (an avatar in a thick ink outline with an ink pill badge straddling its bottom
 edge) and said: "make it like ths yk for indicators too like green ir red etc" then "for staff".
 
-- [x] R7-1 Measure the reference instead of eyeballing it `verified:` PIL on his own screenshot,
+- [x] R7-1 Measure the reference instead of eyeballing it `verified:` commit bdb6955bc, PIL on his own screenshot,
       saved as `owner-badge-ref.png` (919x1998px). Raw readings, converted at 919px / 390pt = 2.356
       px per point: avatar outer circle x 366..621 = 256px -> 108.7pt; photo inside the outline
       237px -> 100.6pt; outline runs (367,376) and (612,620) = 9.5px -> 4.0pt; badge pill
       419..583 x 934..1009 = 165 x 76px -> 70.0 x 32.3pt; pill bottom 1009 vs circle bottom 999 =
       10px -> 4.2pt of overhang. The image was not on disk (pasted into chat, and ~/solen/screenshots
       held nothing from today), so it was recovered out of the session transcript first.
-- [x] R7-2 First attempt REJECTED on sight, "looks so ass wtf is that", and the cause is worth
+- [x] R7-2 First attempt REJECTED on sight `verified:` superseded by commit a0524091f, "looks so ass wtf is that", and the cause is worth
       keeping. The ratios were correct and scaled onto a 56px thumbnail, which produced a pill 70%
       as wide as the photo lying across a person's chin. **Copying a hero element's proportions onto
       a thumbnail copies the arithmetic, not the look.** The reference's avatar is a hero at 100.6pt;
@@ -1430,7 +1431,7 @@ edge) and said: "make it like ths yk for indicators too like green ir red etc" t
       screen `verified:` commit a0524091f. Photo 56 -> 88px (scale 88 / 100.6 = 0.875), outline 3px,
       pill 61 x 28px, overhang 4px. Three 88px avatars plus gaps measure 372 of the 390 width, so the
       row still crops its next item.
-- [x] R7-4 Colour: the badge is INK, as it is in his reference, and the state lives inside it (green
+- [x] R7-4 Colour `verified:` commit a0524091f, then superseded by 0d6728ef2 when the badge was deleted outright. The badge was INK, as it is in his reference, and the state lives inside it (green
       dot free, white scissors working). A fully green pill at that size is not an indicator, it is
       the loudest thing on the screen. `?badge=fill`, `?badge=dot` and `?busy=red` render the
       alternatives so the choice is looked at rather than argued about.
@@ -1471,7 +1472,7 @@ edge) and said: "make it like ths yk for indicators too like green ir red etc" t
       An independent re-measure also CORRECTED my own reference number: his pill is 148-152px, not
       the 165px first recorded, because the first pass took the widest anti-aliased row instead of
       the plateau.
-- [x] R7-9 HARDENED, and it is a FIX to the existing check rather than a new one, because a mistake
+- [x] R7-9 HARDENED `verified:` ~/.claude/hooks/reference-measure-gate.py decide() at line 176, 19/19 selftest, gate-eval VERDICT PASS (81 of 1633 real replies, 2/2 known-bad caught, 2/2 known-good passed). It is a FIX to the existing check rather than a new one, because a mistake
       that already has a gate is a binding failure (LAW_SYSTEM 6.9). `reference-measure-gate.py` v4:
       all three rejections above were PIL-measured and all three PASSED it, because proving the ruler
       was used says nothing about whether the answer belongs on our screen. It now also requires ONE
@@ -1479,9 +1480,51 @@ edge) and said: "make it like ths yk for indicators too like green ir red etc" t
       any reference-derived file. Paid for by FIXING rather than adding: no new gate, and this one
       got its first `--selftest` ever (12/12). `gate-eval.py`: PASS , 42 of 1633 real replies, 1/1
       known-bad caught, 1/1 known-good passed.
-- [x] R7-10 Two real defects found INSIDE the evaluation layer while doing R7-9, both of which were
+- [x] R7-10 Two real defects INSIDE the evaluation layer `verified:` ~/.claude/gate-eval.py probe payload (absolute file_path) and its deny detection (permissionDecision deny), both edited and both re-run while doing R7-9, both of which were
       silently under-reporting every gate of this class: `gate-eval.py` probed PreToolUse gates with
       a RELATIVE file path, which falls outside the `is_solen()` scope check several Solen gates use,
       so they scored "blocked 0 of N" while blocking correctly in real life; and it only counted a
       refusal as exit-code 2 or `"decision": "block"`, never the `permissionDecision: deny` JSON that
       the PreToolUse docs actually recommend. Both fixed.
+
+## ROUND 8 , the badge is deleted and there is an indication SYSTEM, 2026-08-17
+
+Owner, three messages in a row: "make it no pill n jdt circle n make it green orange etc yk and make
+acc system fir indication instead of rndm sg", then "no bitch not round dott", then "remove the pill
+thats underneath or middle bro".
+
+- [x] R8-1 The badge is GONE `verified:` commit 0d6728ef2, `app/[locale]/dev/terminal/StaffChip.tsx`
+      now renders one SVG circle and nothing else. Four rounds went into matching a badge to his
+      reference and the answer was to remove it. WHY, and it is the lesson: his reference is an
+      onboarding screen INTRODUCING ONE PERSON, where a badge is the only thing that could carry a
+      state. A shop board reports on everybody at once, and the circle around each face is already
+      there, already repeated, already identical for everyone. Colour what exists rather than add
+      what does not.
+- [x] R8-2 The system he asked for `verified:` `app/[locale]/dev/terminal/status.ts`, one file that
+      says what a tone MEANS and what must be true in the DATA before it shows: ink = working,
+      nothing to do; green = free and nobody waiting; orange = free WHILE somebody waits, so seat
+      them; red = free while somebody has already waited longer than promised. Every tone is
+      computed from real columns (`joined_at`, `estimated_wait_minutes`); there is no "looks busy"
+      tone because nothing in the database says that. Two rules keep it a system and not a palette:
+      a tone is always DERIVED, and it is shown in exactly ONE place.
+- [x] R8-3 Rule 2 applied, and it caught a real contradiction `verified:` the word under a stylist
+      was green "Free" while the ring above it was orange, so one person reported two states at
+      once. The word is neutral now; the ring is the only indicator.
+- [x] R8-4 Seeded the queue so the middle tone actually appears `verified:` A-043 at 24 of 30
+      promised minutes (0.8) turns both free stylists' rings orange on the live page. Before the
+      reseed every row was six hours stale and rendered red, which is a system with one colour.
+- [x] R8-5 The council review of R7-9's gate found 12 defects, and the four that mattered are fixed
+      `verified:` 19/19 selftest, gate-eval VERDICT PASS. (a) every OWNER_REF alternative was missing
+      its closing word boundary, so "his refactor", "his imagery", "his photography" all read as "he
+      sent a picture" and denied unrelated edits; (b) `role:` was a four-character escape hatch that
+      cleared the whole new rule, it now has to name both sides; (c) the page-reference check ran
+      before the production/mockup split, so shipped code carrying "matches the salon page reference"
+      (`app/[locale]/profile/settings/BeautyProfileForm.tsx:144`) would have blocked any edit near
+      it; (d) the instrument list did not include the word "screenshot", so a genuinely measured note
+      in `app/[locale]/_components/search/SearchOverlay.tsx:2294` was refused. Plus the 400-character
+      floor, which the evaluator itself proved let a 117-character version of the original mistake
+      through untouched; it is 80 now and an Edit is judged against the file already on disk.
+      HONEST LIMIT, from the same review and worth keeping in view: this rule is satisfiable by
+      ritual. A regex over free text cannot verify that a cited number of ours was actually the one
+      the shipped size was derived from. It forces the question to be asked; it does not prove the
+      answer.
