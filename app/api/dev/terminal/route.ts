@@ -139,6 +139,32 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true, id: data.id, status: data.status });
     }
 
+    // arrived / unarrive -> bookings.arrived_at, a TIMESTAMP and deliberately not a status.
+    //
+    // The status column already 409s once a booking is cancelled, completed or no_show, and arrival
+    // has to land BEFORE completion, so a "checked_in" status would collide with that guard while a
+    // timestamp cannot. The column shipped on 2026-06-23 shaped exactly this way and never got a
+    // writer: 1 row of 984 carries a value, and a repo-wide grep finds it only in the generated
+    // types. This is that writer.
+    if (action === "arrived" || action === "unarrive") {
+      const { data, error } = await admin
+        .from("bookings")
+        .update({ arrived_at: action === "arrived" ? new Date().toISOString() : null })
+        .eq("id", id)
+        .eq("salon_id", TERMINAL_SALON_ID)
+        .select("id, arrived_at")
+        .maybeSingle();
+
+      if (error) {
+        console.error(`[terminal-api] ${action}: bookings arrived_at update failed:`, error);
+        return NextResponse.json({ error: `Failed to ${action}` }, { status: 500 });
+      }
+      if (!data) {
+        return NextResponse.json({ error: "Booking not found for this salon" }, { status: 404 });
+      }
+      return NextResponse.json({ ok: true, id: data.id, arrivedAt: data.arrived_at });
+    }
+
     // accept / decline -> bookings
     const status = BOOKING_STATUS_FOR_ACTION[action as BookingAction];
     const { data, error } = await admin

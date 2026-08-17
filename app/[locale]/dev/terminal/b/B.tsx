@@ -231,6 +231,7 @@ function buildArrivalBooking(
     price: template?.price ?? 65,
     paymentStatus: "none",
     createdAt: new Date().toISOString(),
+    arrivedAt: null,
     staffId: member?.id ?? null,
     staffName: member?.name ?? null,
   };

@@ -45,6 +45,10 @@ interface BookingRow {
   estimated_price: number | null;
   payment_status: string | null;
   created_at: string;
+  // arrived_at has existed on bookings since 2026-06-23 with ZERO write sites anywhere in the
+  // product: 1 row of 984 carries a value. It is the column the counter needs and nobody has ever
+  // been able to set. The terminal is the screen that sets it.
+  arrived_at: string | null;
   services: { name_de: string; name_en: string } | { name_de: string; name_en: string }[] | null;
   staff_members:
     | { id: string; name: string; avatar_url: string | null }
@@ -107,7 +111,7 @@ export async function loadTerminalData(): Promise<TerminalData> {
         admin
           .from("bookings")
           .select(
-            "id, starts_at, ends_at, status, guest_name, estimated_price, payment_status, created_at, services(name_de, name_en), staff_members(id, name, avatar_url)"
+            "id, starts_at, ends_at, status, guest_name, estimated_price, payment_status, created_at, arrived_at, services(name_de, name_en), staff_members(id, name, avatar_url)"
           )
           .eq("salon_id", TERMINAL_SALON_ID)
           .gte("starts_at", dayStart.toISOString())
@@ -143,6 +147,7 @@ export async function loadTerminalData(): Promise<TerminalData> {
         price: row.estimated_price ?? 0,
         paymentStatus: row.payment_status ?? "none",
         createdAt: row.created_at,
+        arrivedAt: row.arrived_at,
         staffId: member?.id ?? null,
         staffName: member?.name ?? null,
       };

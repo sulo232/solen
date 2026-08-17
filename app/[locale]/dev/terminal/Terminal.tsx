@@ -50,6 +50,7 @@ export interface TerminalBooking {
   price: number;
   paymentStatus: string;
   createdAt: string;
+  arrivedAt: string | null;
   staffId: string | null;
   staffName: string | null;
 }

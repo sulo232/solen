@@ -215,6 +215,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
             price: Number(row.estimated_price ?? 0),
             paymentStatus: String(row.payment_status ?? "none"),
             createdAt: String(row.created_at ?? new Date().toISOString()),
+            arrivedAt: (row.arrived_at as string) ?? null,
             staffId: (row.staff_id as string) ?? null,
             staffName: null,
           };
@@ -337,6 +338,27 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
     setReplayKey((k) => k + 1);
   }
 
+  // Somebody is standing at the counter and they are the 14:30. This is what a shop does all day and
+  // the product has never had a way to record it.
+  function handleArrived(booking: TerminalBooking) {
+    const before = { bookings, queue, log };
+    snapshot();
+    const at = new Date().toISOString();
+    setBookings((prev) => prev.map((b) => (b.id === booking.id ? { ...b, arrivedAt: at } : b)));
+    addToLog(`${booking.customerName} arrived`);
+    setUndo({ message: `${firstName(booking.customerName)} is here` });
+    void commit({ action: "arrived", id: booking.id }).then((ok) => ok || rollback(before));
+  }
+
+  function handleUnarrive(booking: TerminalBooking) {
+    const before = { bookings, queue, log };
+    snapshot();
+    setBookings((prev) => prev.map((b) => (b.id === booking.id ? { ...b, arrivedAt: null } : b)));
+    addToLog(`${booking.customerName} arrival undone`);
+    setUndo({ message: `${firstName(booking.customerName)} not here after all` });
+    void commit({ action: "unarrive", id: booking.id }).then((ok) => ok || rollback(before));
+  }
+
   function handleAccept(booking: TerminalBooking) {
     const before = { bookings, queue, log };
     snapshot();
@@ -444,9 +466,29 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
     return null;
   }
 
+  // A STYLIST IS BUSY IF EITHER KIND OF WORK IS ON THEM. This used to look only at the walk-in
+  // queue, so a stylist in the middle of a booked appointment had no queue entry and their ring
+  // rendered GREEN while they were cutting. Green is the one colour the counter acts on instantly,
+  // so the board was sending the next walk-in to an occupied chair. Found 2026-08-17 by a review
+  // that read the formula rather than the screen.
+  const bookingOnChair = (memberId: string) => {
+    const now = Date.now();
+    return (
+      bookings.find(
+        (b) =>
+          b.staffId === memberId &&
+          b.status === "confirmed" &&
+          new Date(b.startsAt).getTime() <= now &&
+          new Date(b.endsAt).getTime() > now,
+      ) ?? null
+    );
+  };
+
   const chairOf = (memberId: string) =>
     queue.find((q) => q.staffId === memberId && q.status === "in_chair") ?? null;
-  const freeStaff = staff.filter((member) => !chairOf(member.id));
+
+  const isBusy = (memberId: string) => Boolean(chairOf(memberId) || bookingOnChair(memberId));
+  const freeStaff = staff.filter((member) => !isBusy(member.id));
   const freeChairs = freeStaff.length;
   const aChairIsFree = freeChairs > 0;
 
@@ -458,11 +500,18 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
   // estimate rather than a promise. Falls back to the stored estimate only when no service on the
   // board has a duration on file.
   const chairsCount = Math.max(1, staff.length);
+  // Appointments count as work. Leaving them out was not a rounding error: a shop whose day is
+  // mostly booked appointments would have shown a near-zero wait while every chair was full.
+  const appointmentMinutesLeft = bookings
+    .filter((b) => b.status === "confirmed" && new Date(b.endsAt).getTime() > Date.now() &&
+      new Date(b.startsAt).getTime() <= Date.now())
+    .reduce((sum, b) => sum + Math.max(0, Math.round((new Date(b.endsAt).getTime() - Date.now()) / 60_000)), 0);
   const workAhead =
     waitingQueue.reduce((sum, q) => sum + (q.durationMinutes ?? 0), 0) +
     queue
       .filter((q) => q.status === "in_chair")
-      .reduce((sum, q) => sum + (minutesLeft(q.startedAt, q.durationMinutes) ?? 0), 0);
+      .reduce((sum, q) => sum + (minutesLeft(q.startedAt, q.durationMinutes) ?? 0), 0) +
+    appointmentMinutesLeft;
   const computedWait = Math.round(workAhead / chairsCount / 5) * 5;
   const storedWait = waitingQueue.length ? Math.max(...waitingQueue.map((q) => q.estimatedWaitMinutes)) : 0;
   const waitMinutes = workAhead > 0 ? computedWait : storedWait;
@@ -534,7 +583,12 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
             <div className="flex gap-4 px-5 pb-1 pt-5">
               {staff.map((member) => {
                 const inChair = chairOf(member.id);
-                const left = inChair ? minutesLeft(inChair.startedAt, inChair.durationMinutes) : null;
+                const appt = inChair ? null : bookingOnChair(member.id);
+                const left = inChair
+                  ? minutesLeft(inChair.startedAt, inChair.durationMinutes)
+                  : appt
+                    ? Math.max(0, Math.round((new Date(appt.endsAt).getTime() - Date.now()) / 60_000))
+                    : null;
                 return (
                   // 104 not 78: the cell is as wide as its widest LINE, not as wide as the photo.
                   // "Luca, 22 min" truncated to "Luca, 22 ..." at chip width, which is the one
@@ -546,7 +600,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                     <StaffChip
                       name={member.name}
                       avatarUrl={member.avatarUrl}
-                      tone={staffTone(Boolean(inChair))}
+                      tone={staffTone(isBusy(member.id))}
                     />
                     <p className="font-body mt-2 w-full truncate text-[13px] font-normal text-s-ink">
                       {firstName(member.name)}
@@ -557,11 +611,12 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                         minutes come from the service's own duration and are omitted, never guessed,
                         when the service has none on file. */}
                     <p className="font-body w-full truncate text-[13px] font-normal text-s-ink-2">
-                      {inChair
-                        ? left === null
-                          ? firstName(inChair.customerName)
-                          : `${firstName(inChair.customerName)}, ${left === 0 ? "now" : `${left}m`}`
-                        : "Free"}
+                      {(() => {
+                        const who = inChair ? inChair.customerName : appt?.customerName ?? null;
+                        if (!who) return "Free";
+                        if (left === null) return firstName(who);
+                        return `${firstName(who)}, ${left === 0 ? "now" : `${left}m`}`;
+                      })()}
                     </p>
                   </div>
                 );
@@ -853,11 +908,31 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                       <div className="min-w-0 flex-1">
                         <p className={ROW_TIME}>{zurichTime(booking.startsAt)}</p>
                         <p className={ROW_NAME}>{booking.customerName}</p>
-                        <p className={ROW_SUB}>{booking.serviceName}</p>
+                        <p className={ROW_SUB}>
+                          {booking.serviceName}, {chf(booking.price)}
+                        </p>
                       </div>
-                      <span className="font-body shrink-0 text-[13px] font-semibold tabular-nums text-s-ink">
-                        {chf(booking.price)}
-                      </span>
+                      {/* THE ONE TAP THIS SCREEN EXISTS FOR (owner: "click if showed up"). Once
+                          somebody is here the button is spent, so it becomes the time they arrived,
+                          which is a fact rather than a control. Tapping that time takes it back, for
+                          the tap that was meant for the row below. */}
+                      {booking.arrivedAt ? (
+                        <button
+                          type="button"
+                          onClick={() => handleUnarrive(booking)}
+                          className="font-body flex h-11 shrink-0 items-center px-2 text-[13px] font-normal tabular-nums text-s-ink-2"
+                        >
+                          here {zurichTime(booking.arrivedAt)}
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => handleArrived(booking)}
+                          className={ROW_BUTTON}
+                        >
+                          Here
+                        </button>
+                      )}
                     </li>
                   ))}
                 </ul>
@@ -873,7 +948,12 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
             <ul>
               {staff.map((member) => {
                 const inChair = chairOf(member.id);
-                const left = inChair ? minutesLeft(inChair.startedAt, inChair.durationMinutes) : null;
+                const appt = inChair ? null : bookingOnChair(member.id);
+                const left = inChair
+                  ? minutesLeft(inChair.startedAt, inChair.durationMinutes)
+                  : appt
+                    ? Math.max(0, Math.round((new Date(appt.endsAt).getTime() - Date.now()) / 60_000))
+                    : null;
                 const finished = queue.filter((q) => q.status === "done" && q.staffId === member.id).length;
                 return (
                   <li key={member.id} className={ROW}>
@@ -881,7 +961,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                     <StaffChip
                       name={member.name}
                       avatarUrl={member.avatarUrl}
-                      tone={staffTone(Boolean(inChair))}
+                      tone={staffTone(isBusy(member.id))}
                       size="row"
                     />
                     <div className="min-w-0 flex-1">
@@ -890,11 +970,12 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                       <p className="font-body mt-0.5 truncate text-[13px] font-normal text-s-ink-2">
                         {/* startedAt is nullable in the data, and a made-up elapsed time on a row
                             that never recorded one is exactly the fabrication rule. Name only. */}
-                        {inChair
-                          ? left === null
-                            ? inChair.customerName
-                            : `${inChair.customerName}, ${left === 0 ? "finishing now" : `${left} min left`}`
-                          : "Free"}
+                        {(() => {
+                          const who = inChair ? inChair.customerName : appt?.customerName ?? null;
+                          if (!who) return "Free";
+                          if (left === null) return who;
+                          return `${who}, ${left === 0 ? "finishing now" : `${left} min left`}`;
+                        })()}
                       </p>
                       {/* Colon-and-number rather than "3 finished today": a count sentence needs the
                           locale's plural grammar, and this screen has no translations yet. */}

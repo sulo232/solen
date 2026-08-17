@@ -644,7 +644,11 @@ export const walkinUpdateSchema = z.object({
 // only read on "start" (route enforces it there); optional here so the other five
 // actions don't need to send it.
 export const terminalActionSchema = z.object({
-  action: z.enum(['start', 'done', 'no_show', 'cancel', 'accept', 'decline']),
+  // `arrived` and `unarrive` added 2026-08-17. Every salon confirms instantly, so accept and decline
+  // describe a mode nobody uses; what a counter actually does all day is note that the person in
+  // front of them is the 14:30. `bookings.arrived_at` has existed since 2026-06-23 with no writer
+  // anywhere in the product, which is why nobody has ever been able to do it.
+  action: z.enum(['start', 'done', 'no_show', 'cancel', 'accept', 'decline', 'arrived', 'unarrive']),
   id: z.string().uuid(),
   staffId: z.string().uuid().optional(),
 });
