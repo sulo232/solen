@@ -31,12 +31,14 @@ import type { TerminalBooking, TerminalQueueEntry, TerminalStaff } from "./Termi
 import { getAudioContextCtor, playArrivalChime } from "./prototype";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import { TERMINAL_SALON_ID } from "./loadTerminalData";
+import type { TerminalService } from "./loadTerminalData";
 
 interface ScreenProps {
   salonName: string;
   bookings: TerminalBooking[];
   queue: TerminalQueueEntry[];
   staff: TerminalStaff[];
+  services: TerminalService[];
 }
 
 type NavKey = "board" | "staff" | "clock" | "profile";
@@ -85,7 +87,13 @@ const DECISION_CARD_CAP = 2;
 // MEANS and what has to be true in the data for it to appear. The ring around a stylist's photo is
 // where it shows (./StaffChip.tsx). Nothing here picks a colour on its own.
 
-export default function Screen({ salonName, bookings: initialBookings, queue: initialQueue, staff }: ScreenProps) {
+export default function Screen({
+  salonName,
+  bookings: initialBookings,
+  queue: initialQueue,
+  staff,
+  services,
+}: ScreenProps) {
   const [bookings, setBookings] = useState<TerminalBooking[]>(initialBookings);
   const [queue, setQueue] = useState<TerminalQueueEntry[]>(initialQueue);
   const [log, setLog] = useState<LogLine[]>([]);
@@ -106,6 +114,17 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
   // Whether the live booking feed is actually connected. Shown on the Shop view, because "no new
   // bookings" and "not listening" look identical on a board and mean opposite things.
   const [feedLive, setFeedLive] = useState(false);
+  // The phone-booking sheet. Open, three taps and a name, closed. It is a sheet rather than a row
+  // because it is the only thing on this screen that needs a keyboard, and the keyboard is the whole
+  // cost: the outside council's four-second nameless version broke on the case that decides this
+  // feature, a stylist calling in sick and the shop having to ring those customers back.
+  const [phoneOpen, setPhoneOpen] = useState(false);
+  const [phoneName, setPhoneName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [phoneStaff, setPhoneStaff] = useState<string | null>(null);
+  const [phoneService, setPhoneService] = useState<string | null>(null);
+  const [phoneWhen, setPhoneWhen] = useState(60);
+  const [phoneSaving, setPhoneSaving] = useState(false);
   // Where the menu goes, in viewport coordinates, measured from the button that opened it. Anchoring
   // it to the ROW put it under the floating bar for anything low on the screen and clean off the
   // screen for a row below the fold; a fixed menu placed from a measured rect cannot do either.
@@ -357,6 +376,40 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
     addToLog(`${booking.customerName} arrival undone`);
     setUndo({ message: `${firstName(booking.customerName)} not here after all` });
     void commit({ action: "unarrive", id: booking.id }).then((ok) => ok || rollback(before));
+  }
+
+  // Every name this salon has taken before, newest first, so a regular is two letters and a tap.
+  // Real rows only: no invented customers, and an empty list simply shows nothing.
+  const knownCustomers = Array.from(
+    new Map(
+      bookings
+        .filter((b) => b.customerName && b.customerName !== "Guest")
+        .map((b) => [b.customerName.toLowerCase(), b.customerName] as const),
+    ).values(),
+  );
+
+  async function savePhoneBooking() {
+    if (!phoneName.trim() || !phoneNumber.trim() || !phoneStaff || !phoneService) return;
+    setPhoneSaving(true);
+    const ok = await commit({
+      action: "phone_booking",
+      name: phoneName.trim(),
+      phone: phoneNumber.trim(),
+      staffId: phoneStaff,
+      serviceId: phoneService,
+      minutes: services.find((sv) => sv.id === phoneService)?.minutes ?? 30,
+      startsInMinutes: phoneWhen,
+    });
+    setPhoneSaving(false);
+    if (!ok) return;
+    addToLog(`${phoneName.trim()} booked by phone`);
+    setUndo({ message: `${firstName(phoneName.trim())} booked` });
+    setPhoneOpen(false);
+    setPhoneName("");
+    setPhoneNumber("");
+    // The row comes back from the database rather than being guessed into the list, so what the
+    // screen shows after saving is what actually landed.
+    router.refresh();
   }
 
   function handleAccept(booking: TerminalBooking) {
@@ -898,7 +951,23 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
 
             {/* Today. */}
             <div className="mt-8">
-              <p className={SECTION}>Today</p>
+              <div className="flex items-center justify-between px-5">
+                <p className="font-body text-[13px] font-semibold text-s-ink-2">Today</p>
+                {/* The one thing on this screen the shop does rather than reacts to. It sits with
+                    Today because a phone booking IS a row in that list, and putting it anywhere else
+                    would make it look like a separate feature instead of the same day. */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPhoneStaff(staff[0]?.id ?? null);
+                    setPhoneService(services[0]?.id ?? null);
+                    setPhoneOpen(true);
+                  }}
+                  className="font-body -mr-2 flex h-11 items-center px-2 text-[13px] font-semibold text-s-accent"
+                >
+                  Phone booking
+                </button>
+              </div>
               {todaysBookings.length === 0 ? (
                 <p className={QUIET_LINE + " pt-3"}>Nothing else booked today.</p>
               ) : (
@@ -1047,6 +1116,130 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
           </div>
         )}
       </div>
+
+      {/* THE PHONE SHEET. Everything on it is one tap except the two fields that cannot be, because a
+          booking you cannot ring back is one the shop keeps on paper as well, and paper as well is
+          exactly the double entry this exists to remove. */}
+      {phoneOpen && (
+        <>
+          <button
+            type="button"
+            aria-label="Close"
+            onClick={() => setPhoneOpen(false)}
+            className="fixed inset-0 z-[60] cursor-default bg-s-ink/20"
+          />
+          <div className="fixed inset-x-0 bottom-0 z-[70] rounded-t-[28px] bg-white pb-[calc(24px+env(safe-area-inset-bottom))] pt-2 shadow-elevation-3">
+            <div className="mx-auto mt-1 h-1 w-9 rounded-full bg-s-border" />
+            <h2 className="font-heading px-5 pt-5 text-[18px] font-semibold text-s-ink">
+              Booking on the phone
+            </h2>
+
+            <input
+              value={phoneName}
+              onChange={(e) => setPhoneName(e.target.value)}
+              placeholder="Name"
+              autoFocus
+              className="font-body mt-4 h-12 w-[calc(100%-40px)] rounded-xl bg-s-bg-sunken px-4 text-[15px] font-normal text-s-ink placeholder:text-s-ink-2 mx-5"
+            />
+            {/* Regulars are two letters and a tap. Real past customers only, never a suggestion the
+                shop has not actually served. */}
+            {phoneName.trim().length >= 2 && (
+              <div className="no-scrollbar mt-2 flex gap-2 overflow-x-auto px-5">
+                {knownCustomers
+                  .filter((n) => n.toLowerCase().includes(phoneName.trim().toLowerCase()) && n !== phoneName)
+                  .slice(0, 4)
+                  .map((n) => (
+                    <button
+                      key={n}
+                      type="button"
+                      onClick={() => setPhoneName(n)}
+                      className="font-body flex h-11 shrink-0 items-center rounded-full border border-s-border bg-white px-4 text-[13px] font-normal text-s-ink"
+                    >
+                      {n}
+                    </button>
+                  ))}
+              </div>
+            )}
+
+            <input
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              placeholder="Phone number"
+              inputMode="tel"
+              className="font-body mt-3 h-12 w-[calc(100%-40px)] rounded-xl bg-s-bg-sunken px-4 text-[15px] font-normal text-s-ink placeholder:text-s-ink-2 mx-5"
+            />
+
+            <div className="no-scrollbar mt-4 flex gap-2 overflow-x-auto px-5">
+              {staff.map((m) => (
+                <button
+                  key={m.id}
+                  type="button"
+                  onClick={() => setPhoneStaff(m.id)}
+                  className={
+                    "font-body flex h-11 shrink-0 items-center gap-2 rounded-full border px-3 text-[13px] " +
+                    (phoneStaff === m.id
+                      ? "border-s-ink bg-s-bg-sunken font-semibold text-s-ink"
+                      : "border-s-border bg-white font-normal text-s-ink-2")
+                  }
+                >
+                  <Avatar src={m.avatarUrl} name={m.name} size={24} />
+                  {firstName(m.name)}
+                </button>
+              ))}
+            </div>
+
+            <div className="no-scrollbar mt-2 flex gap-2 overflow-x-auto px-5">
+              {services.slice(0, 8).map((sv) => (
+                <button
+                  key={sv.id}
+                  type="button"
+                  onClick={() => setPhoneService(sv.id)}
+                  className={
+                    "font-body flex h-11 shrink-0 items-center rounded-full border px-4 text-[13px] " +
+                    (phoneService === sv.id
+                      ? "border-s-ink bg-s-bg-sunken font-semibold text-s-ink"
+                      : "border-s-border bg-white font-normal text-s-ink-2")
+                  }
+                >
+                  {sv.name}, {sv.minutes}m
+                </button>
+              ))}
+            </div>
+
+            <div className="no-scrollbar mt-2 flex gap-2 overflow-x-auto px-5">
+              {[30, 60, 120, 240, 1440].map((mins) => (
+                <button
+                  key={mins}
+                  type="button"
+                  onClick={() => setPhoneWhen(mins)}
+                  className={
+                    "font-body flex h-11 shrink-0 items-center rounded-full border px-4 text-[13px] tabular-nums " +
+                    (phoneWhen === mins
+                      ? "border-s-ink bg-s-bg-sunken font-semibold text-s-ink"
+                      : "border-s-border bg-white font-normal text-s-ink-2")
+                  }
+                >
+                  {mins === 1440 ? "tomorrow" : zurichTime(new Date(Date.now() + mins * 60_000).toISOString())}
+                </button>
+              ))}
+            </div>
+
+            <div className="px-5 pt-5">
+              <button
+                type="button"
+                onClick={savePhoneBooking}
+                disabled={phoneSaving || !phoneName.trim() || !phoneNumber.trim() || !phoneStaff || !phoneService}
+                className={
+                  "font-body flex h-12 w-full items-center justify-center rounded-full bg-s-ink text-[15px] font-semibold text-white" +
+                  (phoneSaving || !phoneName.trim() || !phoneNumber.trim() ? " opacity-50" : "")
+                }
+              >
+                {phoneSaving ? "Saving" : "Put it in the book"}
+              </button>
+            </div>
+          </div>
+        </>
+      )}
 
       {/* Floating bottom pill bar. */}
       <div className="fixed inset-x-4 bottom-[calc(16px+env(safe-area-inset-bottom))] z-20">

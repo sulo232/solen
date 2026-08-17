@@ -24,7 +24,15 @@ import Screen from "../[locale]/dev/terminal/Screen";
 export default async function BareTerminalPage() {
   if (process.env.NODE_ENV === "production") notFound();
 
-  const { salonName, bookings, queue, staff } = await loadTerminalData();
+  const { salonName, bookings, queue, staff, services } = await loadTerminalData();
 
-  return <Screen salonName={salonName} bookings={bookings} queue={queue} staff={staff} />;
+  return (
+    <Screen
+      salonName={salonName}
+      bookings={bookings}
+      queue={queue}
+      staff={staff}
+      services={services}
+    />
+  );
 }

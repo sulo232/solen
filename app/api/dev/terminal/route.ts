@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
-import { validateBody, terminalActionSchema } from "@/lib/validations";
+import { validateBody, terminalActionSchema, terminalPhoneBookingSchema } from "@/lib/validations";
 import { TERMINAL_SALON_ID } from "@/app/[locale]/dev/terminal/loadTerminalData";
 
 // -----------------------------------------------------------------
@@ -58,6 +58,79 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     console.error("[terminal-api] invalid JSON body:", err);
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+  }
+
+  // A BOOKING TAKEN ON THE PHONE. Until this existed a salon could not record one anywhere in the
+  // product, so the terminal showed only what came through the marketplace and understated the day:
+  // a chair reads free while somebody is on their way to it. Two attempts at this shipped on
+  // branches nobody merged (8bab79b80, ad0888a92), and the RLS policy `bookings_insert_auth` is
+  // `auth.uid() = user_id`, so an owner cannot insert a booking for a customer at all. This route
+  // writes through the admin client, which is the same seam the guest-booking path already uses.
+  if ((rawBody as { action?: string } | null)?.action === "phone_booking") {
+    const { data: phone, error: phoneError } = validateBody(terminalPhoneBookingSchema, rawBody);
+    if (phoneError) {
+      return NextResponse.json({ error: phoneError.message }, { status: 400 });
+    }
+    const admin = createAdminSupabaseClient();
+    const startsAt = new Date(Date.now() + phone.startsInMinutes * 60_000);
+    const endsAt = new Date(startsAt.getTime() + phone.minutes * 60_000);
+    try {
+      // The slot must exist first: bookings.slot_id is NOT NULL with ON DELETE RESTRICT.
+      const { data: slot, error: slotErr } = await admin
+        .from("availability_slots")
+        .insert({
+          salon_id: TERMINAL_SALON_ID,
+          service_id: phone.serviceId,
+          staff_member_id: phone.staffId,
+          starts_at: startsAt.toISOString(),
+          ends_at: endsAt.toISOString(),
+          status: "booked",
+        })
+        .select("id")
+        .single();
+      if (slotErr || !slot) {
+        // 23P01 is the double-booking exclusion: that stylist is already busy across this range.
+        const clash = (slotErr as { code?: string } | null)?.code === "23P01";
+        console.error("[terminal-api] phone_booking: slot insert failed:", slotErr);
+        return NextResponse.json(
+          { error: clash ? "That stylist is already booked then" : "Could not hold the time" },
+          { status: clash ? 409 : 500 },
+        );
+      }
+
+      const { data: booking, error: bookingErr } = await admin
+        .from("bookings")
+        .insert({
+          salon_id: TERMINAL_SALON_ID,
+          service_id: phone.serviceId,
+          slot_id: slot.id,
+          staff_member_id: phone.staffId,
+          starts_at: startsAt.toISOString(),
+          ends_at: endsAt.toISOString(),
+          status: "confirmed",
+          guest_name: phone.name,
+          guest_phone: phone.phone,
+          price_paid: 0,
+          payment_status: "none",
+          // The salon's existing "Quellen" chart already reads this column, so a phone booking shows
+          // up there for free instead of needing a new report.
+          acquisition_source: "phone",
+        })
+        .select("id, starts_at, guest_name")
+        .single();
+      if (bookingErr || !booking) {
+        console.error("[terminal-api] phone_booking: booking insert failed:", bookingErr);
+        // Leave nothing holding the time if the booking itself did not land.
+        await admin.from("availability_slots").delete().eq("id", slot.id);
+        return NextResponse.json({ error: "Could not save the booking" }, { status: 500 });
+      }
+
+      await admin.from("availability_slots").update({ booking_id: booking.id }).eq("id", slot.id);
+      return NextResponse.json({ ok: true, id: booking.id, startsAt: booking.starts_at });
+    } catch (err) {
+      console.error("[terminal-api] phone_booking: unexpected error:", err);
+      return NextResponse.json({ error: "Unexpected server error" }, { status: 500 });
+    }
   }
 
   const { data: validated, error: validationError } = validateBody(terminalActionSchema, rawBody);

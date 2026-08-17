@@ -97,14 +97,28 @@ interface ScheduleRow {
   is_working: boolean | null;
 }
 
+interface ServiceRow {
+  id: string;
+  name_en: string | null;
+  name_de: string | null;
+  duration_minutes: number | null;
+}
+
 interface StaffRow {
   id: string;
   name: string;
   avatar_url: string | null;
 }
 
+export interface TerminalService {
+  id: string;
+  name: string;
+  minutes: number;
+}
+
 export interface TerminalData {
   salonName: string;
+  services: TerminalService[];
   bookings: TerminalBooking[];
   queue: TerminalQueueEntry[];
   staff: TerminalStaff[];
@@ -119,6 +133,7 @@ export async function loadTerminalData(): Promise<TerminalData> {
   let bookings: TerminalBooking[] = [];
   let queue: TerminalQueueEntry[] = [];
   let staff: TerminalStaff[] = [];
+  let services: TerminalService[] = [];
   let salonName = "The Fade Factory";
 
   try {
@@ -127,6 +142,7 @@ export async function loadTerminalData(): Promise<TerminalData> {
       { data: bookingRows },
       { data: queueRows },
       { data: staffRows },
+      { data: serviceRows },
       { data: scheduleRows },
     ] =
       await Promise.all([
@@ -157,6 +173,11 @@ export async function loadTerminalData(): Promise<TerminalData> {
         // stylist as a chair puts somebody on the board on their day off and counts their empty
         // chair in the wait. `staff_schedules` is real, the nightly slot-generation cron already
         // reads it, and this screen was ignoring it.
+        admin
+          .from("services")
+          .select("id, name_en, name_de, duration_minutes")
+          .eq("salon_id", TERMINAL_SALON_ID)
+          .order("duration_minutes", { ascending: true }),
         admin
           .from("staff_schedules")
           .select("staff_member_id, start_time, end_time, is_working")
@@ -219,6 +240,14 @@ export async function loadTerminalData(): Promise<TerminalData> {
         name: row.name,
         avatarUrl: row.avatar_url,
       }));
+    // The shop's own service list, so a phone booking picks a real service with its real length
+    // instead of a made-up duration. Ordered short to long because the quick picks want the common
+    // short ones first.
+    services = ((serviceRows ?? []) as ServiceRow[]).map((row) => ({
+      id: row.id,
+      name: row.name_en ?? row.name_de ?? "Service",
+      minutes: row.duration_minutes ?? 30,
+    }));
   } catch (err) {
     console.error("[loadTerminalData] failed to load salon terminal data:", err);
     bookings = [];
@@ -226,5 +255,5 @@ export async function loadTerminalData(): Promise<TerminalData> {
     staff = [];
   }
 
-  return { salonName, bookings, queue, staff };
+  return { salonName, bookings, queue, staff, services };
 }

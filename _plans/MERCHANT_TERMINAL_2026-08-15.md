@@ -1868,7 +1868,45 @@ it and then stop using it. That is a sharper statement of the risk than anything
       Grok also named the physical reality we would have designed past: the call arrives while the
       owner is mid-colour with the phone on their shoulder, so a screen tap is awkward and, in a Swiss
       salon, rude in front of the customer in the chair.
-- [ ] R14-2 Subagent lens running: what the tools these shops actually use do about a phone booking,
-      and specifically whether any of them can READ a calendar the shop already keeps rather than only
-      pushing to it. If they all only push, option (a) is dead for us and should be recorded as dead
-      rather than re-proposed every few months.
+- [x] R14-2 THE COMPETITOR AND MARKET RESEARCH, and MY ASSUMPTION WAS WRONG `verified:` sourced
+      sweep. I briefed the lens expecting these tools to only PUSH to Google. They mostly READ from
+      it, and the closest analogue to us reads only:
+      - **Treatwell**, the one that is a marketplace rather than salon software, mirrors a shop's
+        existing calendar IN as blocked time and never pushes out, and states it collects
+        "free/busy information" only, never customer data. Its two-way integration with Salonized is
+        live in Switzerland today.
+      - **Booksy** has no calendar sync at all, only a one-time .ics import, and its own migration
+        guide tells a salon to BLOCK existing appointments rather than re-enter them.
+      - **Fresha** two-way with Google, imported events land as blocked time. Its manual entry is the
+        fastest of the group: the client is OPTIONAL ("Walk-in"), service required, staff optional.
+      - **Shore's** quick mode only works if the customer ALREADY exists, which is the worst possible
+        flow for a cold phone call.
+      So (a) and (c) are not competing options: a calendar sync DELIVERS a busy block, nothing more.
+- [x] R14-3 WHY (a) IS STILL THE WRONG FIRST BUILD FOR US, and it is the counterparty, not the tech
+      `verified:` the calendar a small Swiss coiffeur "already keeps" is usually not Google.
+      Measured: 16,847 Coiffeursalons in Switzerland (BFS STATENT 2023) at 1.77 employees each;
+      82.1% of personal-service enterprises are ONE person and 95.9% are under five; only 3% of Swiss
+      SMEs have a website with a booking tool (localsearch/HSLU 2025, n=47,079); and of local.ch's
+      14,202 coiffeur listings just 1.7% are instantly bookable. The largest Swiss chain, GIDOR, is
+      95+ branches and walk-in by design. Apple has no usable API for this segment and Fresha has no
+      public write API, so "sync with what they use" means bilateral deals, not a standard.
+- [x] R14-4 HIS FEAR HAS A NUMBER ON IT `verified:` Wickens and Dixon 2007, a meta-analysis of 20
+      studies, put the crossover at roughly 0.70 reliability: below that, unreliable automation is
+      WORSE than no automation, and the effect strengthens under high workload. That is his sentence
+      ("a screen that is sometimes wrong is worse than no screen") as a measured finding, and it is
+      the strongest argument for making entry cheap rather than for adding a second source of truth.
+      Operator voices matching it exactly: a Square user keeping "a paper appointment book as well",
+      and a Treatwell salon that ended up advertising only its off-peak hours because keeping two
+      systems in sync was not worth the risk.
+- [x] R14-5 PHONE BOOKING BUILT AND PROVEN `verified:` typed "Beatrice Meyer" with a number in the
+      browser, picked Mia and Men's Haircut, and the database now carries the row: guest_phone
+      +41 79 123 45 67, `acquisition_source` "phone" (a column the salon's existing Quellen chart
+      already reads, so it charts itself), status confirmed, stylist Mia. Slot created first because
+      `bookings.slot_id` is NOT NULL, the double-booking exclusion is caught and returned as a 409 in
+      plain words, and a failed booking deletes the slot it was holding rather than leaving the time
+      blocked by nothing.
+- [ ] PARKED 2026-08-17 · Do we ever add read-only calendar sync as a SECOND way in, given the
+      research says it can only ever deliver a busy block? · from: the block model has its own failure
+      and it is the mirror of his fear. A shop under pressure over-blocks, so the board stops lying
+      about free chairs and starts lying about busy ones, which is invisible to us and to the
+      customer and quietly strangles supply. If we ever build it, blocks need an expiry or a nudge.

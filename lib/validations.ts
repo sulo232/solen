@@ -653,6 +653,21 @@ export const terminalActionSchema = z.object({
   staffId: z.string().uuid().optional(),
 });
 
+// A booking taken ON THE PHONE, typed by the shop rather than by the customer. Name and phone are
+// REQUIRED and that is the whole point: the outside council's first answer was a nameless "chair
+// busy until X" block, and it broke on the case that decides this feature, a stylist calling in sick
+// and the shop having to ring those people back. A block you cannot call back is a block that gets
+// kept on paper as well, which is the double entry we are trying to remove.
+export const terminalPhoneBookingSchema = z.object({
+  action: z.literal('phone_booking'),
+  name: z.string().trim().min(1).max(120),
+  phone: z.string().trim().min(4).max(40),
+  staffId: z.string().uuid(),
+  serviceId: z.string().uuid(),
+  minutes: z.number().int().min(5).max(480),
+  startsInMinutes: z.number().int().min(-720).max(10080),
+});
+
 export const cutHistorySchema = z.object({
   customer_id: z.string().uuid().optional(),
   customer_name: z.string().max(100).optional(),
