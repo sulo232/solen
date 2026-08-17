@@ -1445,3 +1445,18 @@ edge) and said: "make it like ths yk for indicators too like green ir red etc" t
 - [x] R7-6 Killed the Next.js dev-tools badge (`devIndicators: false`). It floats bottom-left,
       directly on top of this screen's own bottom bar, and put an unexplained black disc in every
       screenshot of the terminal. Dev chrome only, a build is unaffected.
+- [x] R7-7 SECOND rejection, "that sh is nth like the refference", and this one had a single
+      measurable cause I had never looked for `verified:` commit 851cbb7d3, rebuilt as a new file
+      `StaffChip.tsx` rather than edited in place. A vertical PIL scan down the centre of his
+      screenshot (x = 493) reads BLACK y743..752, then **WHITE y753..767**, then photo pixels from
+      768. His ring is a FLOATING circle with 15px of air between it and the photo; mine was a
+      border painted onto the photo edge with zero gap, which is the difference between a ringed
+      portrait and a bordered thumbnail. The same scan also proved the earlier badge ratio was taken
+      against the ring's INNER edge (237px) instead of the photo (208px), so the badge had been
+      sized against a circle 14% too large. Rendered at 1:1 with his screenshot now, no scaling
+      factor at all: photo 88, gap 6, ring 4, outer 108, badge 70 x 32, overhang 4. Verified live in
+      the browser: outer 108x108, border 4px, photo 88x88 inset 6px, badge 70x32 sitting 4px below
+      the ring, no page overflow at 390.
+      **The lesson, and it is the same one twice in one round:** both misses came from measuring the
+      wrong pair of edges and then reasoning perfectly from them. A ratio is only as good as the two
+      things it is a ratio of, so name what each number is an edge OF before dividing them.
