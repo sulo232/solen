@@ -488,7 +488,14 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                 const finished = queue.filter((q) => q.status === "done" && q.staffId === member.id).length;
                 return (
                   <li key={member.id} className={ROW}>
-                    <Avatar src={member.avatarUrl} name={member.name} size={44} />
+                    {/* Same chip as the board, in its row size: one stylist, one anatomy. */}
+                    <StaffChip
+                      name={member.name}
+                      avatarUrl={member.avatarUrl}
+                      busy={Boolean(inChair)}
+                      busyIsRed={busyIsRed}
+                      size="row"
+                    />
                     <div className="min-w-0 flex-1">
                       <p className="font-body truncate text-[15px] font-medium text-s-ink">{member.name}</p>
                       <p

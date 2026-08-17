@@ -34,41 +34,65 @@
 import { Scissors } from "lucide-react";
 import { Avatar } from "@/app/[locale]/_components/primitives";
 
-export const CHIP_PHOTO = 88;
-export const CHIP_OUTER = 108; // photo 88 + gap 6 x2 + ring 4 x2
+// ONE component, two documented sizes, never a second implementation (FLOORS LAW 8: a stylist that
+// appears on two screens renders through the same anatomy, and a different density is a VARIANT).
+// "row" is "hero" with every reference ratio held: gap 0.072 of the photo, ring 0.048, badge
+// 0.793 x 0.365, overhang 0.048.
+const SIZES = {
+  hero: { photo: 88, gap: 6, ring: 4, outer: 108, badgeW: 70, badgeH: 32, drop: 4, glyph: 18, dot: 12 },
+  row: { photo: 44, gap: 3, ring: 2, outer: 54, badgeW: 35, badgeH: 16, drop: 2, glyph: 9, dot: 6 },
+} as const;
+
+export const CHIP_OUTER = SIZES.hero.outer;
+export const CHIP_ROW_OUTER = SIZES.row.outer;
 
 interface StaffChipProps {
   name: string;
   avatarUrl: string | null;
-  /** Null when the chair is free. */
+  /** False when the chair is free. */
   busy: boolean;
   /** `?busy=red` renders the alternative reading, where a working stylist is an alarm colour. */
   busyIsRed?: boolean;
+  size?: keyof typeof SIZES;
 }
 
-export default function StaffChip({ name, avatarUrl, busy, busyIsRed = false }: StaffChipProps) {
+export default function StaffChip({
+  name,
+  avatarUrl,
+  busy,
+  busyIsRed = false,
+  size = "hero",
+}: StaffChipProps) {
+  const s = SIZES[size];
   return (
-    <div className="relative" style={{ width: CHIP_OUTER, height: CHIP_OUTER }}>
-      {/* The ring: its own circle, 4px of ink, with 6px of white between it and the photo. */}
-      <div className="absolute inset-0 rounded-full border-4 border-s-ink" />
+    <div className="relative shrink-0" style={{ width: s.outer, height: s.outer }}>
+      {/* The ring: its own circle of ink, with white air between it and the photo. That air is the
+          whole difference between a ringed portrait and a bordered thumbnail. */}
+      <div
+        className="absolute inset-0 rounded-full border-s-ink"
+        style={{ borderWidth: s.ring }}
+      />
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-        <Avatar src={avatarUrl} name={name} size={CHIP_PHOTO} />
+        <Avatar src={avatarUrl} name={name} size={s.photo} />
       </div>
       {/* The badge: ink like his, straddling the ring's bottom edge, one white glyph inside. Green
-          is the free signal and it sits INSIDE the ink rather than replacing it, because a 70px
-          saturated pill stops being an indicator and becomes the loudest thing on the screen. */}
+          is the free signal and it sits INSIDE the ink rather than replacing it, because a pill that
+          size in a saturated fill stops being an indicator and becomes the loudest thing on screen. */}
       <span
         aria-hidden="true"
         className={
-          "absolute left-1/2 flex h-[32px] w-[70px] -translate-x-1/2 items-center justify-center rounded-full " +
+          "absolute left-1/2 flex -translate-x-1/2 items-center justify-center rounded-full " +
           (busy && busyIsRed ? "bg-s-error" : "bg-s-ink")
         }
-        style={{ bottom: -4 }}
+        style={{ width: s.badgeW, height: s.badgeH, bottom: -s.drop }}
       >
         {busy ? (
-          <Scissors size={18} strokeWidth={2} className="text-white" />
+          <Scissors size={s.glyph} strokeWidth={2} className="text-white" />
         ) : (
-          <span className="h-3 w-3 rounded-full bg-s-success" />
+          <span
+            className="rounded-full bg-s-success"
+            style={{ width: s.dot, height: s.dot }}
+          />
         )}
       </span>
     </div>
