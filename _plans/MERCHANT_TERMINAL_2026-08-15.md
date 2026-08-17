@@ -1534,3 +1534,25 @@ thats underneath or middle bro".
       ritual. A regex over free text cannot verify that a cited number of ours was actually the one
       the shipped size was derived from. It forces the question to be asked; it does not prove the
       answer.
+
+## ROUND 9 , the system written down, and the one card, 2026-08-17
+
+Owner: "make acc system and improve ui".
+
+- [x] R9-1 The terminal is a documented system now, not a screen living in one file's head
+      `verified:` commit 905b1b35e, `_design-system/components/MerchantTerminal.md` plus two rows in
+      `_design-system/COMPONENT_REGISTRY.md` (StaffChip, and the terminal tone table). The doc states
+      the screen's job in one sentence, the tone table with what must be TRUE in the data for each
+      colour, the two rules that keep it a system, the anatomy, the four views, and the five rules
+      that eight rejected rounds actually settled. It also names what is deliberately NOT reused: the
+      dashboard console is 41 routes of blue-accent panels on a sunken canvas, and this is its
+      opposite on purpose, so no `Dash*` primitive belongs here and `StaffChip` does not belong there.
+- [x] R9-2 The one card `verified:` commit 905b1b35e, `Screen.tsx` decision block is
+      `rounded-[24px] border border-s-border p-4`. The merchant law allows exactly ONE container per
+      screen and demands bare text for everything else, and nothing was using the allowance, so the
+      only thing on the board that will not resolve itself looked exactly like the two lists under
+      it. A container is earned when it does something whitespace cannot; separating one decision
+      from lists directly beneath it is that.
+- [x] R9-3 Binary rhythm `verified:` commit 905b1b35e, every `mt-6` (24px) on a section boundary is
+      now `mt-8` (32px), with 16 inside a block. The merchant round fixes 16/32 and nothing else, and
+      24 was the value drifting in between.
