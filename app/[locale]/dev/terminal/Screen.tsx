@@ -21,7 +21,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Bell, BellOff, Clock, LayoutGrid, RotateCcw, Users } from "lucide-react";
+import { Bell, BellOff, Clock, LayoutGrid, MoreHorizontal, RotateCcw, Users } from "lucide-react";
 import { Avatar } from "@/app/[locale]/_components/primitives";
 import StaffChip from "./StaffChip";
 import { minutesLeft, staffTone, waitingTone, TONE_TEXT } from "./status";
@@ -81,6 +81,12 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
   const [history, setHistory] = useState<Snapshot[]>([]);
   const [freshId, setFreshId] = useState<string | null>(null);
   const [replayKey, setReplayKey] = useState(0);
+  // Which row has its menu open. One at a time, by id, so a second tap elsewhere closes the first.
+  const [menuFor, setMenuFor] = useState<string | null>(null);
+  // Where the menu goes, in viewport coordinates, measured from the button that opened it. Anchoring
+  // it to the ROW put it under the floating bar for anything low on the screen and clean off the
+  // screen for a row below the fold; a fixed menu placed from a measured rect cannot do either.
+  const [menuAt, setMenuAt] = useState<{ top: number; right: number } | null>(null);
   const [, forceTick] = useState(0);
 
   const audioCtxRef = useRef<AudioContext | null>(null);
@@ -212,12 +218,18 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
   // Start must MOVE the person, not delete them. The staff row shows who is in each chair by
   // matching `q.staffId === member.id`, so a start that leaves staffId null drops the customer off
   // the waiting list and out of every other list at once. Caught in verification 2026-08-17.
-  function handleStart(entry: TerminalQueueEntry) {
+  // `member` is optional on purpose. The button is the fast path and picks the first free chair,
+  // because at a counter the common case is "next person, next free chair" and it should cost one
+  // tap. Choosing a specific stylist is a real need too (owner 2026-08-17: a customer waiting too
+  // long should be movable to whoever is free), so it lives one tap deeper in the row's menu rather
+  // than turning every start into a two-step picker.
+  function handleStart(entry: TerminalQueueEntry, member?: TerminalStaff) {
     const occupied = new Set(
       queue.filter((q) => q.status === "in_chair" && q.staffId).map((q) => q.staffId as string),
     );
-    const free = staff.find((member) => !occupied.has(member.id));
+    const free = member && !occupied.has(member.id) ? member : staff.find((m) => !occupied.has(m.id));
     if (!free) return;
+    setMenuFor(null);
     snapshot();
     setQueue((prev) =>
       prev.map((q) =>
@@ -228,6 +240,25 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
     );
     addToLog(`${entry.customerName} started with ${firstName(free.name)}`);
     setUndo({ message: `${firstName(entry.customerName)} started` });
+  }
+
+  // Both are real states on `barber_walkin_queue.status`, not invented ones: a person who never
+  // turned up and a person who left. Neither is a delete, so the log keeps them and Undo restores
+  // them for eight seconds like every other action.
+  function handleNoShow(entry: TerminalQueueEntry) {
+    setMenuFor(null);
+    snapshot();
+    setQueue((prev) => prev.map((q) => (q.id === entry.id ? { ...q, status: "no_show" } : q)));
+    addToLog(`${entry.customerName} did not turn up`);
+    setUndo({ message: `${firstName(entry.customerName)} marked no-show` });
+  }
+
+  function handleRemove(entry: TerminalQueueEntry) {
+    setMenuFor(null);
+    snapshot();
+    setQueue((prev) => prev.map((q) => (q.id === entry.id ? { ...q, status: "cancelled" } : q)));
+    addToLog(`${entry.customerName} left the queue`);
+    setUndo({ message: `${firstName(entry.customerName)} removed` });
   }
 
   // staffId is KEPT on a finished entry on purpose: `chairOf` matches on status "in_chair" as well,
@@ -267,7 +298,8 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
 
   const chairOf = (memberId: string) =>
     queue.find((q) => q.staffId === memberId && q.status === "in_chair") ?? null;
-  const freeChairs = staff.filter((member) => !chairOf(member.id)).length;
+  const freeStaff = staff.filter((member) => !chairOf(member.id));
+  const freeChairs = freeStaff.length;
   const aChairIsFree = freeChairs > 0;
 
   // THE JOIN-NOW WAIT, computed rather than read off a column. It used to be
@@ -380,7 +412,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                       {inChair
                         ? left === null
                           ? firstName(inChair.customerName)
-                          : `${firstName(inChair.customerName)} · ${left}m`
+                          : `${firstName(inChair.customerName)} · ${left === 0 ? "any minute" : `${left}m`}`
                         : "Free"}
                     </p>
                   </div>
@@ -492,9 +524,9 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                     // data supports, not a state invented to have something to colour.
                     const waited = entry.joinedAt ? elapsedMinutes(entry.joinedAt) : null;
                     const tone = waitingTone(waited);
-                    const nextFree = staff.find((m) => !chairOf(m.id));
+                    const nextFree = freeStaff[0] ?? null;
                     return (
-                    <li key={entry.id} className={ROW}>
+                    <li key={entry.id} className={ROW + " relative"}>
                       <div className="min-w-0 flex-1">
                         {/* The NAME leads. The ticket code used to sit above it, which gave the least
                             useful thing on the row the top line; it trails the name now. */}
@@ -515,17 +547,81 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                         >
                           {waited === null ? `${entry.estimatedWaitMinutes} min` : `waiting ${waited} min`}
                         </span>
-                        {/* The button names the chair it will use. "Start" alone did not say who,
-                            and the answer was invisible logic (the first free stylist). */}
-                        <button
-                          type="button"
-                          onClick={() => handleStart(entry)}
-                          disabled={!aChairIsFree}
-                          className={ROW_BUTTON + (aChairIsFree ? "" : " opacity-50 cursor-not-allowed")}
-                        >
-                          {nextFree ? `Start with ${firstName(nextFree.name)}` : "Start"}
-                        </button>
+                        <div className="flex items-center gap-1">
+                          {/* The button names the chair it will use. "Start" alone did not say who,
+                              and the answer was invisible logic (the first free stylist). */}
+                          <button
+                            type="button"
+                            onClick={() => handleStart(entry)}
+                            disabled={!aChairIsFree}
+                            className={ROW_BUTTON + (aChairIsFree ? "" : " opacity-50 cursor-not-allowed")}
+                          >
+                            {nextFree ? `Start with ${firstName(nextFree.name)}` : "Start"}
+                          </button>
+                          {/* Everything that is NOT the common case lives behind the dots: choosing a
+                              different chair when somebody has been waiting too long, and the two
+                              endings that are not a haircut. Keeping them out of the row is what lets
+                              the row stay one tap. */}
+                          <button
+                            type="button"
+                            aria-label={`More for ${entry.customerName}`}
+                            aria-expanded={menuFor === entry.id}
+                            onClick={(e) => {
+                              const r = (e.currentTarget as HTMLElement).getBoundingClientRect();
+                              const MENU_H = 200;
+                              const top = r.bottom + MENU_H > window.innerHeight - 16 ? r.top - MENU_H : r.bottom + 8;
+                              setMenuAt({ top: Math.max(16, top), right: window.innerWidth - r.right });
+                              setMenuFor(menuFor === entry.id ? null : entry.id);
+                            }}
+                            className="flex h-11 w-8 items-center justify-center rounded-full text-s-ink-2"
+                          >
+                            <MoreHorizontal size={20} strokeWidth={1.75} />
+                          </button>
+                        </div>
                       </div>
+                      {menuFor === entry.id && (
+                        <>
+                          {/* A full-screen catcher rather than a document listener: one tap anywhere
+                              closes it, including a tap on another row's dots. */}
+                          <button
+                            type="button"
+                            aria-label="Close menu"
+                            onClick={() => setMenuFor(null)}
+                            className="fixed inset-0 z-40 cursor-default"
+                          />
+                          <div
+                            className="fixed z-50 w-[220px] overflow-hidden rounded-[20px] bg-white shadow-elevation-3"
+                            style={{ top: menuAt?.top ?? 16, right: menuAt?.right ?? 16 }}
+                          >
+                            {freeStaff
+                              .filter((m) => m.id !== nextFree?.id)
+                              .map((m) => (
+                                <button
+                                  key={m.id}
+                                  type="button"
+                                  onClick={() => handleStart(entry, m)}
+                                  className="font-body flex h-12 w-full items-center px-4 text-left text-[15px] font-medium text-s-ink"
+                                >
+                                  Start with {firstName(m.name)}
+                                </button>
+                              ))}
+                            <button
+                              type="button"
+                              onClick={() => handleNoShow(entry)}
+                              className="font-body flex h-12 w-full items-center border-t border-s-border px-4 text-left text-[15px] font-normal text-s-ink"
+                            >
+                              Did not turn up
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleRemove(entry)}
+                              className="font-body flex h-12 w-full items-center border-t border-s-border px-4 text-left text-[15px] font-normal text-s-error"
+                            >
+                              Remove from queue
+                            </button>
+                          </div>
+                        </>
+                      )}
                     </li>
                     );
                   })}
@@ -585,7 +681,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                         {inChair
                           ? left === null
                             ? inChair.customerName
-                            : `${inChair.customerName} · ${left} min left`
+                            : `${inChair.customerName} · ${left === 0 ? "finishing now" : `${left} min left`}`
                           : "Free"}
                       </p>
                       {/* Colon-and-number rather than "3 finished today": a count sentence needs the
