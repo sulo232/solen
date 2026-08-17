@@ -31,6 +31,16 @@ function zurichTodayDateStr(): string {
   return `${y}-${m}-${d}`;
 }
 
+// Postgres `day_of_week` on staff_schedules is 0 = Sunday, matching JS getDay(), read in Zurich time
+// rather than the server's, because a salon's Monday is Zurich's Monday.
+function zurichDayOfWeek(): number {
+  const wd = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Europe/Zurich",
+    weekday: "short",
+  }).format(new Date());
+  return ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(wd);
+}
+
 function addDaysToDateStr(dateStr: string, days: number): string {
   const [y, m, d] = dateStr.split("-").map(Number);
   return new Date(Date.UTC(y, m - 1, d + days)).toISOString().slice(0, 10);
@@ -80,6 +90,13 @@ interface QueueRow {
     | null;
 }
 
+interface ScheduleRow {
+  staff_member_id: string;
+  start_time: string | null;
+  end_time: string | null;
+  is_working: boolean | null;
+}
+
 interface StaffRow {
   id: string;
   name: string;
@@ -105,7 +122,13 @@ export async function loadTerminalData(): Promise<TerminalData> {
   let salonName = "The Fade Factory";
 
   try {
-    const [{ data: salonRow }, { data: bookingRows }, { data: queueRows }, { data: staffRows }] =
+    const [
+      { data: salonRow },
+      { data: bookingRows },
+      { data: queueRows },
+      { data: staffRows },
+      { data: scheduleRows },
+    ] =
       await Promise.all([
         admin.from("salons").select("name").eq("id", TERMINAL_SALON_ID).single(),
         admin
@@ -129,6 +152,17 @@ export async function loadTerminalData(): Promise<TerminalData> {
           .from("staff_members")
           .select("id, name, avatar_url")
           .eq("salon_id", TERMINAL_SALON_ID)
+          .eq("is_active", true),
+        // WHO IS ACTUALLY IN TODAY. "Active" means employed, not rostered, so treating every active
+        // stylist as a chair puts somebody on the board on their day off and counts their empty
+        // chair in the wait. `staff_schedules` is real, the nightly slot-generation cron already
+        // reads it, and this screen was ignoring it.
+        admin
+          .from("staff_schedules")
+          .select("staff_member_id, start_time, end_time, is_working")
+          .eq("salon_id", TERMINAL_SALON_ID)
+          .eq("day_of_week", zurichDayOfWeek())
+          .eq("is_working", true)
           .eq("is_active", true),
       ]);
 
@@ -172,11 +206,19 @@ export async function loadTerminalData(): Promise<TerminalData> {
       };
     });
 
-    staff = ((staffRows ?? []) as StaffRow[]).map((row) => ({
-      id: row.id,
-      name: row.name,
-      avatarUrl: row.avatar_url,
-    }));
+    // Only the people rostered for today become chairs. If a salon has no schedule rows at all the
+    // set is empty, and in that case everyone active is shown rather than an empty board: a shop with
+    // no roster on file is a shop we know nothing about, not a shop with nobody in it.
+    const rostered = new Set(
+      ((scheduleRows ?? []) as ScheduleRow[]).map((r) => r.staff_member_id),
+    );
+    staff = ((staffRows ?? []) as StaffRow[])
+      .filter((row) => rostered.size === 0 || rostered.has(row.id))
+      .map((row) => ({
+        id: row.id,
+        name: row.name,
+        avatarUrl: row.avatar_url,
+      }));
   } catch (err) {
     console.error("[loadTerminalData] failed to load salon terminal data:", err);
     bookings = [];
