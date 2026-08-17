@@ -803,6 +803,112 @@ plain icon pass.
 `/de/dev/mock/versions/business-teaser` (three stops).
 ---
 
+## 2026-08-09 to 2026-08-16 , the home / search-panel / chrome weeks, ON `main` and unrecorded
+
+Recorded 2026-08-17 by the weekly law pass. **extends** the 2026-08-09, 08-12 and 08-14 blocks above,
+which already hold six of this window's decisions; supersedes nothing in any of them.
+
+**These ARE live.** Unlike the branch block below, every row here is on `main` and is what the site
+does today. `main` took 306 commits in this window (383 including the merge of
+`agent-flow-design-overhaul-2af2c2`), and this log had recorded six of them.
+
+Rows marked approved-but-unquoted carry no verbatim from him; the commit records a pick, an approval or
+a rejection without quoting him. Labelled, not dressed up as his words.
+
+### Home feed and its sections (2026-08-14 to 08-16)
+
+| # | Decision | Owner, verbatim | Record |
+|---|---|---|---|
+| M1 | Popular looks ships as **variant B**: the look name sits on the photo in a solid white pill, no blur, no border. The TikTok credit badge comes off the photo; the creator's name stays beside the price. | *"Remove the TikTok part thingy"* | `041c09674`, 08-16 |
+| M2 | **All 26 stacked section versions rejected**, then one design named per section: Looks takes the Inspo card anatomy at 9:16 (not a 150 square), no TikTok badge, no black gradient, elevation-3 instead; Walk-in leads with the waiting count at 30px with colour-coded marks and `walkin.png` back; Reviews go 260x147 with the read-more inline in the quote. | approved-but-unquoted | `2ceddbd91`, 08-16 |
+| M4 | **Popular looks and Find your inspiration merge into one looks section.** Measured: same query, same eight image ids, two headings. | *"doesn't make any sense"* | `e848dd9c7`, 08-15 |
+| M5 | The Recently-viewed row renders through the page's own `SalonCard`, not a smaller bespoke card. Measured: his card 242x194 against mine at 112x90 on the same screen. Confirms FLOORS LAW 8 and 9. | *"make it like this"* · *"a normal section of the page"* | `87cf6e193`, 08-15 |
+| M6 | **The square 86x86 tile row (`RecentlyViewedTiles`) is deleted from the homepage**, said twice: hiding it inside a mockup was not what remove meant. Square photo tiles rejected by name again; every direction uses our 5:4. | approved-but-unquoted | `f614fa3e9`, `721b25f77`, 08-15 |
+| M7 | **Continue card = direction A**, reading as a sentence over two lines ("Continue searching for skin fades in Basel") with service and place in ink and a quiet lead-in. The grey page band under it is removed: on our white page it reads as a divider. | approved-but-unquoted | `20c3f0683`, `1a63b0dff`, 08-15 |
+| M8 | **Every block sits on the page's own 16px left line**, not Airbnb's 23.6pt gutter. The card keeps its shadow and drops its border. The category-pill LABEL goes 14 -> 13 while the icons stay 28. | approved-but-unquoted (he drew a red line down the left of the screenshot) | `fa5039d79`, 08-15 |
+| M9 | Continue-card corrections: not that tall (104px), no square photo (our 5/4), no dates or weekdays, no head count, no stacked photos (one photo), A shows the search itself and not a category, C uses fewer words, and the see-all is the circular Lucide arrow button this page already uses , a text link there was the inconsistency. | approved-but-unquoted | `588c1bb90`, 08-15 |
+| M10 | The city line comes OFF the continue card (all 20 salons are in one city, so it says nothing). The card gets TALLER, explicitly not wider. Category-pill icons shrink: 28px inside a 40px pill was 55% bigger than the reference's 18.4pt. | approved-but-unquoted | `150ac548e`, 08-15 |
+| M11 | The stylist row moves to the BOTTOM of the home feed, and the top card's photo becomes three fanned photos. **The stacked photos were reversed by him the next round (M9).** | approved-but-unquoted | `5dd12e4c8`, 08-15 |
+| M12 | The recent-search **icon stands alone at 26px with no container** , the 87x70 sunken rectangle standing in for a photo is gone, because a search is not a place. And the salon card's price goes 12/400 grey to **12/600 ink**, so the card carries two ink anchors again. | *"not balanced ... it looks empty"* | `d89dafdee`, 08-15 |
+| M13 | For a card on white with no photo: the sunken tray is rejected by name, the hairline is rejected, and elevation-2 is invisible to him, so the card steps to **elevation-3** as a documented deviation from FLOORS LAW 4. Whether the surface table gains a "card on white with no photo" row is his call, not mine. | approved-but-unquoted | `0762366f0`, 08-15 |
+| M15 | The "Solen for your business" block does not belong on the mobile home , desktop only. Measured 0 height on a phone against 401pt on desktop. | approved-but-unquoted | `77b268979`, 08-14 |
+| M14 | Delete the `/business` and `/fuer-salons` page files, keep the redirects. (Decision dated 08-14 in the body.) | approved-but-unquoted | `58db2c974`, 08-15 |
+
+### Category icons (2026-08-10 to 08-14) , still OPEN
+
+| # | Decision | Owner, verbatim | Record |
+|---|---|---|---|
+| M16 | **Five proposed icon styles rejected in a row:** 3D in colour, gloss on the circle, gloss on the glyph, a generated coral set, and the generated BLACK set. The family is back to the two sets already in the repo and the question is still open. | approved-but-unquoted | `77b268979`, 08-14 |
+| M22 | Category icons: black, flat, normal. One row, four solid black silhouettes, no colour, no shine, no gradient, no options; the coral set and the three gloss versions deleted. **Later rejected, see M16.** | approved-but-unquoted | `e68db7b84`, 08-12 |
+| M23 | Gloss belongs on the ICON, never on the pill or container; the container stays plain in every variant. | approved-but-unquoted | `fcbff0e92`, 08-12 |
+| M24 | Every category icon must mean its own category: a diamond is not a nail, and hair salon and barbershop may not share one scissors. | approved-but-unquoted | `d2ffb8db6`, 08-12 |
+| M25 | 2D, not 3D: the 3D renders come out of the search panel. Colour is sampled off the 2D set we own, which is monochrome coral, so per-category colour contradicts that set. | approved-but-unquoted | `1a49c87b9`, 08-12 |
+| M26 | The category rows use the drawn icon set already in the repo, and each tile's colour is READ OFF its own drawing rather than chosen (dryer hue 90, chair 50, polish 20, leaf 120; one lightness and one chroma across the set). | approved-but-unquoted | `6b71e5e73`, 08-12 |
+| M47 | **His own icon artwork is what ships** , barber chair, hair dryer, nail polish, spa stones, extracted from `solen-icon-motion.html` , not the old 1254px PNGs. | approved-but-unquoted (he named the branch) | `24927506e`, 08-10 |
+
+### Search panel and search field (2026-08-11 to 08-12)
+
+| # | Decision | Owner, verbatim | Record |
+|---|---|---|---|
+| M27 | Search-panel batch approved: salon rows carry the cover photo, gold star and rating value and **no review count**; category tiles take the computed tint system; the look card takes Inspo's own 9:16 (not squeezed to 3:4) with a two-line title; the section heading becomes the way into the Inspo feed (ink + chevron). | approved-but-unquoted | `d97bb4d4e`, `7ec174f8b`, `3992908f2`, 08-12 |
+| M32 | **The search field is variant B** , a white box with the back arrow INSIDE it on the left , with our own grey hairline instead of the reference's near-black (56 tall, radius 15). Settles the service field and the `Wo?` field as one control. | *"B but not black like gray sh yk."* | `a4e2cde2f`, 08-11 |
+| M33 | Earlier the same day he picked variant A: filled grey capsule, back chevron OUTSIDE the field, clear on a soft disc inside. **Superseded by M32 the same evening.** | approved-but-unquoted (one letter) | `f4905a364`, 08-11 |
+| M34 | **Revert the search-panel body**: recents, popular stores with live addresses, categories, then the "Für dich" look grid. A live rejection outranks the earlier one-list approval. What stays killed: the loading dots, the old no-result state, keyboard-on-open, and the hardcoded eight-city list. | *"Revert whats inside of the search search bar i had like inspo n allat u replaced w ass categorys."* | `85ae2d218`, 08-11 |
+| M35 | Picked off `/dev/search-states`: 1b one list on tap, 2b no loading dots (the clear X owns the field's right edge), 3b a no-result state with a way out and category rows under it. **1b was reversed hours later by M34.** | *"1b 2b 3 b"* | `a5b177c7d`, 08-11 |
+| M36 | Tapping the home search bar opens the sheet **unfocused with no keyboard**; tapping the FIELD is a separate second step. | *"i dont like when u click once yk from home search bar yk once u click its alrdy keyboard mode."* | `edcf44fe3`, 08-11 |
+| M37 | The collapsed row above the open step shows an ANSWER, never the field's placeholder: it reads "Alle Services", matching "Keine Präferenz" and "Jederzeit". | *"the on top of the wo yk once its expanded there is residue of search thats whats fucked."* | `d606fca3c`, 08-11 |
+| M53 | The category pill row renders on the home page with the current category selected (All pill + Inspo pill), and the home search bar opens the overlay **in place** rather than navigating to `/search`. His branch's `Header.tsx` and `HomeSearchPill.tsx` are canonical. The 2x3 tile grid restore is reverted. | *"look like there being on a category"* · *"it jumps me into another version"* | `f5ed1d9de`, `66217cdc4`, 08-10 |
+
+### Calendar , and the one that collides with a LOCKFILE row
+
+| # | Decision | Owner, verbatim | Record |
+|---|---|---|---|
+| M30 | **The tapped calendar day is INK (`rgb(10,10,10)`) with white numerals, not accent blue**, and the home search bar keeps its height on scroll (the 64 -> 44 shrink-and-swap is gone). **COLLIDES with the design-contract line that keeps blue for the calendar date/slot fill , flagged, not resolved, because this row carries no verbatim.** | approved-but-unquoted | `0cb12ca7e`, 08-12 |
+| M31 | Today's date in the calendar is NOT blue: it takes the calm grey sunken fill with bold ink. Blue is only the fill of the date you actually picked. | *"in wann why is it blue."* | `b6c20d937`, 08-11 |
+
+### Chrome: top bar, bottom bar, control shape (2026-08-09 to 08-11)
+
+| # | Decision | Owner, verbatim | Record |
+|---|---|---|---|
+| M38 | The bottom nav bar yields while a full-screen sheet is up; it was crossing the panel's own Suchen commit button by 12px. | *"bottom nav bar is everywhere."* | `0ba846668`, 08-11 |
+| M39 | The collapsed bottom bar keeps its WIDTH , it loses labels and height only (Instagram's is full-bleed and never narrows). Home search bar height goes 59 -> **64** on his call. | approved-but-unquoted (he named Instagram) | `7bc5c23ee`, 08-11 |
+| M40 | The gap between the search bar and the category-pill row is **20px** (was 36 from three stacked spacings); the row's own padding is the entire gap. | approved-but-unquoted (he drew a box around the band) | `f66ce5c0b`, 08-11 |
+| M41 | Home search bar holds Airbnb's aspect at OUR width (358/6.11 = 59 tall), label back to 14px/**500**, pill row to 80 tall so the 40px pill stops dominating. **Names a floor broken on his live instruction: three font weights (400/500/600) against the two-weight ceiling.** | approved-but-unquoted | `144167ab1`, 08-11 |
+| M42 | Everything at the top of the home page sits on one left edge, **16** , our own gutter beats copying Airbnb's absolute 342px pill width. | approved-but-unquoted | `ba47eebc4`, 08-10 |
+| M43 | **The bottom bar CONDENSES on scroll and never leaves** (labels go, glass stays, reachable throughout). Hide-on-scroll is a web pattern and is out. **Reverses `beae3e770` the same day.** | *"the bottom bar not being removed and get smaller, i told you go research w mobbin why did u not do it."* | `84a835b2f`, 08-10 |
+| M44 | The home search bar's outline is a light grey hairline `#E4E4E7`, not black. | *"when you scroll down and up on the phones"* | `beae3e770`, 08-10 |
+| M45 | The home search-bar ring goes from ink `#0A0A0A` to `s-ink-2` `#6B6B6B`: at 19.8:1 it was the heaviest mark on the page. | *"why is it black outline bro just make it gray or something."* | `d4ee7af12`, 08-10 |
+| M46 | His "c" meant BOTH: the search bar settles as one control (54 tall with the ring at rest, 44 with the hairline once scrolled), and the bottom bar is **frosted glass, floating** (12px inset, 12 off the bottom, fully rounded), variant B. **The height swap was later removed by M30.** | approved-but-unquoted | `d65674315`, 08-10 |
+| M48 | His locked home search-bar values are restored verbatim and outrank Airbnb's measurements: `py-2.5` (a pinned bar does not shrink, V3-D421d), the 1:1 copied `0 2px 8px 0 rgba(0,0,0,0.07)` shadow, 16px/500 label. | approved-but-unquoted | `110a31fac`, 08-10 |
+| M49 | **No hamburger in the bottom bar or the search bar**; the fourth item is a profile/User item; saved uses a **heart**, not a bookmark. | approved-but-unquoted | `56de9e3f8`, `3e7c7a4cc`, 08-10 |
+| M50 | **Mobile web ships a bottom nav bar** (four items), reversing two `REMOVED.md` rows that had banned a second nav. | approved-but-unquoted (the commit says a verbatim yes was filed in the graveyard, but does not quote it here) | `bae83e692`, 08-10 |
+| M51 | Sizes: home search bar 55 tall at top 12 with elevation-3; category pills 40 tall, 14px side padding, 28px icon; the 79px dead gap between the pill row and the first heading goes to 0 on mobile. The first bottom-bar item is **not "Home"**, and the replacement word never arrived. | *"I wanted the icons like this, the sizes"* | `ffb5eec8b`, 08-10 |
+| M52 | Five of his fifteen: the divider under the hero is deleted; the "In der Nähe" map block has no heading and no arrow and its chip leads with the city; the see-all arrow becomes a **circle in the right-hand slot** (36px in a 44px cell) instead of inline after the title; the pill row moves under the search bar on home, category and Inspo; pills shrink so the row visibly crops. The pill TREATMENT is untouched by name. | *"not on a category, it's already good."* | `d0979aeed`, 08-10 |
+| M54 | **No boxing:** review cards lose their per-card 1px border, 16px radius and 14px padding , the section container already draws that edge. A container edge PLUS per-row dividers is doubled chrome; pick one. Already LOCKFILE §17.2 law; this is the week it was enforced. | approved-but-unquoted (*"the boxing is the problem"*, twice this week) | `42ee4f35c`, `3f774b17d`, 08-10 |
+| M55 | **Round is the house control shape.** Measured: 890 round controls against 36 boxed in customer code. The system had no rule at all, which is why both shipped. | approved-but-unquoted | `fac03788e`, 08-10 |
+| M57 | **Every task screen keeps a way out.** Seven screens (walk-in join, both tipping screens, confirmation, staff invite, voucher and gift-card purchase) had been left with zero back or close controls; the back control goes back. **Corrects M58.** | approved-but-unquoted | `3107da56d`, 08-10 |
+| M58 | Top bars split three ways: browse keeps the full bar, detail gets a back arrow and the name only (never a notification count), task screens strip everything and put the action at the bottom, legal and marketing pages keep a menu for a cold landing. | approved-but-unquoted | `9300abfbd`, `c72e06527`, 08-09 |
+
+### The mockup format, corrected twice in four days
+
+| # | Decision | Owner, verbatim | Record |
+|---|---|---|---|
+| M29 | **What a mockup IS, said four times:** ONE real screen, full-bleed, silent, viewed on his phone, with before and after on a toggle. Not a comparison page with paragraphs, not a list, not a document, not two phone panes on a desktop page. | approved-but-unquoted | `5fa047bb4`, 08-12 |
+| M3 | **Amends M29 on SCOPE:** the mockup's scope matches the ask. One section or element under discussion means show THAT, at real width, with the variants STACKED , no top bar, no Before/After toggle, no iframe. The whole-page switcher template is banned for single-section work. Already applied to the CLAUDE.md mockup block. | *"remove the gate or anything that's making you do this shit so annoying"* · *"I can't even see a difference"* | `ca4b6b324`, `68d7804b9`, 08-15 |
+| M17 | The eleven-version comparison page is dropped and graveyarded: from v2 on the versions are indistinguishable on screen, so there was no choice in it. | approved-but-unquoted (*"nothing changes after v2"*) | `a91ed19b9`, 08-14 |
+| M18 | **Standing rule: anything he would SEE is never applied on a sensible default.** It is shown, and it waits for him. Both coming-soon icons were reverted to sparkles until he picked. | approved-but-unquoted | `fea79295c`, `1816db14f`, 08-14 |
+
+**Two collisions this block exposes, stated rather than resolved** (they are in the report's owner-
+decision section):
+
+1. **M30 against the design-contract date/slot row.** The contract keeps blue as the calendar's selected
+   fill; the shipped calendar has been ink since 08-12. M30 carries no verbatim, so the newest-owner-
+   decision rule cannot be applied to it safely.
+2. **M41 against the two-weight ceiling.** Three weights (400/500/600) ship on the home first viewport
+   on his live instruction, and the ceiling is not a taste axis he waived by name.
+
+---
+
 ## 2026-08-14 to 2026-08-16 , the PDP / terminal / iOS week, recorded off UNMERGED branches
 
 Recorded 2026-08-17 by the weekly law pass. **extends** the "2026-08-03 to 2026-08-10, the account-hub
