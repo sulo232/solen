@@ -50,6 +50,17 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // DEV-ONLY, 2026-08-17 (owner: "safari dead"). /terminal is the merchant terminal preview and it
+  // deliberately lives OUTSIDE the [locale] segment, so it inherits only the root layout instead of
+  // the whole site (header, breadcrumb, footer, fixed bottom nav, cookie provider, PostHog, the
+  // page-transition wrapper). All of that renders underneath a full-screen overlay nobody can see it
+  // through, and on a phone in dev it is what kills the tab. Without this bypass the locale
+  // redirect below sends /terminal to /en/terminal, which does not exist, so the page 404s.
+  // Guarded on NODE_ENV so it cannot affect production, where the route itself calls notFound().
+  if (process.env.NODE_ENV === "development" && pathname === "/terminal") {
+    return NextResponse.next();
+  }
+
   // CORS headers for API routes
   if (pathname.startsWith("/api")) {
     const origin = request.headers.get("origin") ?? "";
