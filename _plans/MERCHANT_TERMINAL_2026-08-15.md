@@ -1507,13 +1507,19 @@ thats underneath or middle bro".
       computed from real columns (`joined_at`, `estimated_wait_minutes`); there is no "looks busy"
       tone because nothing in the database says that. Two rules keep it a system and not a palette:
       a tone is always DERIVED, and it is shown in exactly ONE place.
-- [x] R8-3 Rule 2 applied, and it caught a real contradiction `verified:` the word under a stylist
+- [x] R8-3 Rule 2 applied, and it caught a real contradiction `verified:` commit 0d6728ef2, the two
+      `text-s-success` sub-lines in `app/[locale]/dev/terminal/Screen.tsx` are gone (grep returns
+      zero). The word under a stylist
       was green "Free" while the ring above it was orange, so one person reported two states at
       once. The word is neutral now; the ring is the only indicator.
-- [x] R8-4 Seeded the queue so the middle tone actually appears `verified:` A-043 at 24 of 30
+- [x] R8-4 Seeded the queue so the middle tone actually appears `verified:` live SQL on
+      `barber_walkin_queue` returned promised/waited pairs 15/13, 30/24, 45/18, 55/12, 70/8, 85/4, and
+      the rendered board showed both free rings orange. A-043 at 24 of 30
       promised minutes (0.8) turns both free stylists' rings orange on the live page. Before the
       reseed every row was six hours stale and rendered red, which is a system with one colour.
-- [x] R8-5 The council review of R7-9's gate found 12 defects, and the four that mattered are fixed
+- [x] R8-5 The council review of R7-9's gate found 12 defects, four fixed at
+      `~/.claude/hooks/reference-measure-gate.py` OWNER_REF line 54, OURS_GROUNDED line 113,
+      the kind-scoped PAGE_REF at line 192 and MEASURED line 116
       `verified:` 19/19 selftest, gate-eval VERDICT PASS. (a) every OWNER_REF alternative was missing
       its closing word boundary, so "his refactor", "his imagery", "his photography" all read as "he
       sent a picture" and denied unrelated edits; (b) `role:` was a four-character escape hatch that

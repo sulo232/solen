@@ -337,7 +337,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
         )}
 
         {/* Headline block. One 30px anchor per view, never two. */}
-        <div className={activeNav === "board" ? "px-5 pt-6" : "px-5 pt-7"}>
+        <div className={activeNav === "board" ? "px-5 pt-8" : "px-5 pt-8"}>
           <h1 className="font-heading text-[30px] font-semibold leading-[1.1] text-s-ink">{headline}</h1>
           <p className="font-body mt-1 text-[13px] font-normal text-s-ink-2">{subline}</p>
           {undo && (
@@ -360,12 +360,17 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                 one booking can be waiting on a decision at once, which is exactly what happens when
                 the second scripted arrival lands before the first is answered. */}
             {pendingBookings.length > 0 && (
-              <div className="mt-6">
+              <div className="mt-8 px-5">
                 {pendingBookings.map((booking) => (
+                  // THE ONE CARDED HERO. The merchant law (TASTE_LOG 2026-07-15) allows exactly one
+                  // container per screen and demands bare text for everything else, and this is what
+                  // earns it: it is the only thing on the board that will not resolve itself. The
+                  // container is what says "this one is different from the lists below it", which is
+                  // a job whitespace cannot do when lists sit directly underneath.
                   <div
                     key={booking.id}
                     className={
-                      "border-b border-s-border px-5 pb-5 pt-1 " +
+                      "mb-4 rounded-[24px] border border-s-border p-4 " +
                       TINT +
                       (freshId === booking.id ? " bg-s-bg-sunken" : " bg-white")
                     }
@@ -393,7 +398,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
             )}
 
             {/* Waiting. */}
-            <div className="mt-6">
+            <div className="mt-8">
               <p className={SECTION}>Waiting</p>
               {/* Start is disabled while every chair is taken, so the screen has to say why rather
                   than hand the counter a button that does nothing. Renders only when it is true. */}
@@ -447,7 +452,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
             </div>
 
             {/* Today. */}
-            <div className="mt-6">
+            <div className="mt-8">
               <p className={SECTION}>Today</p>
               {todaysBookings.length === 0 ? (
                 <p className={QUIET_LINE + " pt-3"}>Nothing else booked today.</p>
@@ -474,7 +479,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
         {/* Chairs: the one place a chair gets freed, which is why Start can tell the counter to come
             here when everything is full. */}
         {activeNav === "staff" && (
-          <div className="mt-6">
+          <div className="mt-8">
             <ul>
               {staff.map((member) => {
                 const inChair = chairOf(member.id);
@@ -519,7 +524,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
         {/* Log: what he asked for by name, "they can choose to actually have, like, logs and stuff".
             Every action this screen took, newest first, with the time it happened. */}
         {activeNav === "clock" && (
-          <div className="mt-6">
+          <div className="mt-8">
             {log.length === 0 ? (
               <p className={QUIET_LINE}>
                 Nothing has happened yet. Every accept, start and finish lands here with its time.
@@ -539,7 +544,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
 
         {/* This screen. Real derived numbers and an honest line about what is not wired yet. */}
         {activeNav === "profile" && (
-          <div className="mt-6">
+          <div className="mt-8">
             <ul>
               <li className={ROW}>
                 <p className="font-body min-w-0 flex-1 text-[15px] font-medium text-s-ink">Finished today</p>
