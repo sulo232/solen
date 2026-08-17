@@ -10,12 +10,12 @@
  */
 import { notFound } from "next/navigation";
 import { loadTerminalData } from "./loadTerminalData";
-import B from "./b/B";
+import Screen from "./Screen";
 
 export default async function TerminalPage() {
   if (process.env.NODE_ENV === "production") notFound();
 
   const { salonName, bookings, queue, staff } = await loadTerminalData();
 
-  return <B salonName={salonName} bookings={bookings} queue={queue} staff={staff} />;
+  return <Screen salonName={salonName} bookings={bookings} queue={queue} staff={staff} />;
 }
