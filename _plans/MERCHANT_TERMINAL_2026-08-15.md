@@ -1567,24 +1567,30 @@ He ran the screen himself and sent a graded list. Everything below is his, in hi
       promise is not on screen, so the rule was unverifiable. His absolute thresholds now, verbatim:
       under 25 quiet, 25 to 39 `#C2410C`, 40+ `#DC2626`. Cost named in `status.ts` rather than
       buried: an absolute number ignores what we told the customer.
-- [x] R10-2 P0 the frozen 85 `verified:` it read `max(estimated_wait_minutes)`, written into the row
+- [x] R10-2 P0 the frozen 85 `verified:` commit 5fa09b449, Screen.tsx `computedWait`. It read `max(estimated_wait_minutes)`, written into the row
       when the person joined, so it never moved. Computed now from the work in the shop: everyone
       waiting at their own service duration plus what is left of each occupied chair, over the number
       of chairs. Sub-line says what it is: "If you walk in now."
-- [x] R10-3 P0 the dead last row and the vanishing header `verified:` bottom inset is
+- [x] R10-3 P0 the dead last row and the vanishing header `verified:` commit 5fa09b449, Screen.tsx
+      sheet class `pb-[calc(88px+env(safe-area-inset-bottom)+24px)]` and the band on `sticky top-0`.
+      Bottom inset is
       `88px + safe-area + 24`, measured 119px of clearance at full scroll; the top band is `sticky`
       and measured still at top 0 after scrolling to the end.
-- [x] R10-4 P0 waits contradicting arrival order `verified:` that was the SEED, not the code. Reseeded
+- [x] R10-4 P0 waits contradicting arrival order `verified:` live SQL on `barber_walkin_queue`
+      returned 60/44/31/26/18/11/5 against positions 1 to 7. That was the SEED, not the code. Reseeded
       so waited descends with position (60/44/31/26/18/11/5 against positions 1 to 7).
 - [x] R10-5 P1 the inverted rings `verified:` commit 5fa09b449. Free is green, working is ink, and a
       working chair says when it frees from `services.duration_minutes`, a real column that the
       loader was not selecting. Omitted, never guessed, when a service has no duration on file.
-- [x] R10-6 P1 the unlabelled number and the unlabelled Start `verified:` "waiting 44 min", and the
+- [x] R10-6 P1 the unlabelled number and the unlabelled Start `verified:` commits 5fa09b449 then
+      274a53778, "waiting 44 min", and the
       row carries the assigned stylist's face.
-- [x] R10-7 P1 conflicts and age on a decision `verified:` a request shows how long ago it was asked
+- [x] R10-7 P1 conflicts and age on a decision `verified:` commit 5fa09b449, Screen.tsx
+      `conflictOf()`; rendered live as "Same slot as Elias" / "Same slot as Noah" on two requests, a request shows how long ago it was asked
       (from its own `created_at`) and calls out both collisions: the same slot as another pending
       request, and a slot that lands inside the queue's own reach.
-- [x] R10-8 P2 hierarchy `verified:` the name leads and the ticket code trails it; one section header
+- [x] R10-8 P2 hierarchy `verified:` commit 5fa09b449; measured the decision block at 218px against
+      466px before, with 2 queue rows fully above the fold, the name leads and the ticket code trails it; one section header
       "Needs a decision · N" instead of one per card; the cards are rows, which took the block from
       466px to 218px so queue rows sit above the fold; the tab bar has labels and a real active state.
 - [x] R10-9 "why is there two start w mia" , REAL BUG `verified:` commit 274a53778. The stylist's
