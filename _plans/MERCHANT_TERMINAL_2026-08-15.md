@@ -1358,3 +1358,42 @@ never emphasis, and never a way of saying "this is a button".**
 6. **A fact appears once.** If the bar says "12 need you", nothing else on the screen says it again.
 7. **A control is named after what you will SEE, not after what it does to the screen.** "Hide" tells
    you nothing. "Show the whole day" tells you where you will be.
+
+---
+
+# ROUND 6 , THE RESTART, AND THE SAFARI KILL (owner 2026-08-17)
+
+> "its nth like the ss and problem is u keep ittirating on the last mockup the first mockup of
+> terminal u did so u keep not changing almst anth instead of starting from scratch"
+> then "safari dead"
+
+- [x] R6-1 Build the screen FROM SCRATCH rather than editing the rejected one `verified:` commit
+      a45003243, new file `app/[locale]/dev/terminal/Screen.tsx` written without opening `b/B.tsx`,
+      which stays on disk untouched for comparison.
+- [x] R6-2 Correct the reference reading `verified:` the light grey in his weto screenshot is the
+      PRESENTATION BACKDROP behind three phone renders, not the app. The app is white. Round 5 had
+      copied the mounting board, which is why it looked nothing like the reference.
+- [x] R6-3 Harden the iterate-instead-of-restart loop, and pay for it `verified:` commit a45003243,
+      `restart-dont-repaint-gate.py` 7/7 self-test, wired into settings.json Stop. Retired
+      `mockup-gate.py` to pay: its skip flag was touched 21 times in 7 days, it only fired on the
+      mobile repo, and its documented workflow ("mock by editing the REAL screen IN PLACE") is the
+      precise opposite of the rule being armed.
+- [x] R6-4 "safari dead" , find the cause and fix it `verified:` commit 69d8b3c96. Measured, not
+      guessed: the old route sits inside the locale segment, so the WHOLE site rendered underneath a
+      full-screen overlay. Site header, footer and fixed bottom nav all present; 36 script tags; 254
+      DOM nodes. On the new bare route: all three absent, 21 scripts, 152 DOM nodes.
+- [x] R6-5 Rule out the production-build route so nobody retries it `verified:` `npm run build`
+      exits 1 on a pre-existing webpack error in `app/[locale]/salon/[slug]/team/page.tsx`, unrelated
+      to this work, AND both terminal routes call `notFound()` outside dev, so a production build
+      could never serve either one.
+
+## Still open, tracked rather than narrated
+
+- [ ] R6-6 The old `b/B.tsx` and its `/dev/terminal/b` route are now dead weight: the new `Screen`
+      is what both routes render. Decide with him whether B goes to the graveyard or stays as the
+      before-picture, then act. Not deleting it unasked, because he has rejected an unrequested
+      removal before (2026-07-31, "why did you fucking remove the airbag").
+- [ ] R6-7 The pending-approval decision block, the live arrivals, the undo stack, the sound control
+      and Replay all exist in `b/B.tsx` and are NOT in the new `Screen.tsx`. It renders and it acts,
+      but it is not yet the working prototype B was. Port them onto the new bones once he has said
+      the bones are right, so the work is not thrown away twice.
