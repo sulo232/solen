@@ -1228,7 +1228,30 @@ Subagents take their block from this table to avoid collisions.
 
 ## §10 — Conflict-resolution rule + DUAL-AXIS SOURCE-OF-TRUTH (V3-D338, 2026-05-28)
 
-### §10.0 — The dual-axis rule (THE MOST IMPORTANT RULE — read first)
+### §10.0 — The dual-axis rule (SUPERSEDED 2026-08-12 — read the banner first)
+
+> **SUPERSEDED BY A DATED OWNER DECISION, 2026-08-12. Banner added 2026-08-17 by the weekly law pass.**
+> **Owner, verbatim: "airbnb te is source of truth"**, answering a question that quoted this exact rule
+> and named the precedent against it, so it was taken with the collision in front of him. **Airbnb is now
+> the source of truth on BOTH axes.** Fresha is no longer the structural authority, and `AESTHETIC = Uber`
+> falls with it wherever the two disagree. Recorded in `CLAUDE.md` (the design-system block) and in
+> `TASTE_LOG.md`, "2026-08-12 , AIRBNB BECOMES THE SOURCE OF TRUTH".
+>
+> This section was found unchanged five days later, still labelled THE MOST IMPORTANT RULE, while its own
+> header tells readers that a captured Fresha spec loses to the values here. Anyone reading the LOCKFILE
+> top-down and following the precedence chain literally would still be capturing Fresha today.
+>
+> **What did NOT move, because he did not move it and a taste source cannot outrank a floor:** the
+> statutory tier (WCAG AA, nFADP/GDPR, the PBV total-price rule), the FLOORS LAW minimums, no dark mode on
+> web, no fabricated data, and any dated TASTE_LOG decision he made by name. An Airbnb detail that collides
+> with one of those is surfaced as a conflict, never applied , the treatment
+> `_design-system/references/AIRBNB_SYSTEM_VS_OURS.md` already gives its seven.
+>
+> **Mockup-first still binds**, and he restated it in the same breath: *"no apply mockups i told u"*.
+>
+> The text below is kept verbatim, not deleted, so the reversal stays legible and so the axis DISCIPLINE
+> it teaches (identify structure vs aesthetic before reaching for a reference) survives the change of
+> which reference you reach for.
 
 User flag 2026-05-28: "structure n evrth like fresha but colorways typography contrast like ubers."
 
