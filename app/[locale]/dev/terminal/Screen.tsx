@@ -311,9 +311,9 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
             "who is in a chair", so it belongs to the board and not to every view. */}
         {activeNav === "board" && (
           <div className="overflow-x-auto no-scrollbar">
-            {/* gap-3: three 108px chips plus two 12px gaps plus the 20px page padding either side
-                comes to 388 of 390, so the row fills the width and a fourth stylist crops. */}
-            <div className="flex gap-3 px-5 pb-1 pt-5">
+            {/* Three 78px chips plus two 16px gaps plus the 20px page padding either side comes to
+                314 of 390, so a fourth stylist starts and crops, which is the scroll promise. */}
+            <div className="flex gap-4 px-5 pb-1 pt-5">
               {staff.map((member) => {
                 const inChair = chairOf(member.id);
                 return (

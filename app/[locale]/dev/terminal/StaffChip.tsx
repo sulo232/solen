@@ -36,14 +36,35 @@ import { Avatar } from "@/app/[locale]/_components/primitives";
 
 // ONE component, two documented sizes, never a second implementation (FLOORS LAW 8: a stylist that
 // appears on two screens renders through the same anatomy, and a different density is a VARIANT).
-// "row" is "hero" with every reference ratio held: gap 0.072 of the photo, ring 0.048, badge
-// 0.793 x 0.365, overhang 0.048.
+// "row" is "board" at list scale, with the reference ratios held: gap 0.072 of the photo, ring
+// 0.048, overhang 0.048.
+//
+// THIRD PASS, 2026-08-17: "still nth like it but alrdy better but now its too big j the pill evrth
+// no balance". Two separate things, and only the first is about the reference.
+//
+// SIZE. His reference is ONE avatar, centred, alone, with a speech bubble above it and nothing else.
+// Rendering it at his absolute size put three hero portraits in a row directly under the black bar,
+// where they out-shouted the 30px headline that is supposed to be the anchor. getBoundingClientRect
+// on the live board measured the old chip at 108 x 108px against a headline of 30px, so the
+// supporting element was 3.6x the anchor. Copying a hero's SIZE into a row of three is the same
+// error as copying its ratios onto a thumbnail, in the other direction: the number was right for his
+// screen and wrong for ours. Grounded in our own system instead: our shipped team row
+// (SalonTeam.tsx:134, read from source) uses an 88px avatar as the CONTENT of its section, and here
+// the stylists are supporting information under a headline, so they sit one step down at 64px.
+//
+// THE PILL, a DELIBERATE DEVIATION from the reference, stated rather than hidden. PIL on
+// owner-badge-ref.png put his pill at 165px wide against a 208px photo, so 0.79. An independent
+// re-measure (flat-plateau across y 974..984, stable against an anti-alias threshold from 60 to 200)
+// read it narrower at 148-152px, so his true ratio is closer to 0.72; my first number took the
+// widest anti-aliased row rather than the plateau. Either way it reads as a neat chip under one hero
+// portrait and as a black bar when it repeats three times in a row, so here it is 0.63 (40px of
+// 64px), narrower than his on purpose. Every other proportion below is still his, unchanged.
 const SIZES = {
-  hero: { photo: 88, gap: 6, ring: 4, outer: 108, badgeW: 70, badgeH: 32, drop: 4, glyph: 18, dot: 12 },
-  row: { photo: 44, gap: 3, ring: 2, outer: 54, badgeW: 35, badgeH: 16, drop: 2, glyph: 9, dot: 6 },
+  board: { photo: 64, gap: 4, ring: 3, outer: 78, badgeW: 40, badgeH: 20, drop: 3, glyph: 12, dot: 8 },
+  row: { photo: 44, gap: 3, ring: 2, outer: 54, badgeW: 28, badgeH: 14, drop: 2, glyph: 9, dot: 6 },
 } as const;
 
-export const CHIP_OUTER = SIZES.hero.outer;
+export const CHIP_OUTER = SIZES.board.outer;
 export const CHIP_ROW_OUTER = SIZES.row.outer;
 
 interface StaffChipProps {
@@ -61,7 +82,7 @@ export default function StaffChip({
   avatarUrl,
   busy,
   busyIsRed = false,
-  size = "hero",
+  size = "board",
 }: StaffChipProps) {
   const s = SIZES[size];
   return (
