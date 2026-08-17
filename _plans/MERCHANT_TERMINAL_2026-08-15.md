@@ -1692,3 +1692,26 @@ turn harden". Three independent lenses, each then adversarially refuted by a fou
       `~/.claude/settings.local.json`, Stop and PreToolUse respectively, with the file re-parsed as
       valid JSON afterwards. Neither is new; both were written, tested, and never switched on, which
       is the same silence as the two path-blind ones and the reason this sweep exists.
+
+
+## ROUND 12 , make it actually work, and write the rules, 2026-08-17
+
+Owner: "make the terminal thing accbwork like build it out and write down design n evrh fir the
+terminal and compare to the othr one like rules we need to establish yj like principles for terminal
+for u to build like hierarchy or spacing etc"
+
+Two halves, running in parallel with file ownership named so they cannot collide.
+
+- [ ] R12-1 The actions become REAL. Today Start, Done, Accept, Decline, no-show and remove change
+      React state and vanish on reload. A dev-only POST endpoint writes them to the database instead,
+      scoped by salon as well as by id, with the legal status values VERIFIED against the live table
+      rather than assumed.
+- [ ] R12-2 A booking can actually arrive. `bookings` is NOT in the `supabase_realtime` publication,
+      re-verified live this turn; `barber_walkin_queue` already is. That single missing line is why
+      arrivals have been scripted since round 1. An idempotent migration adds it.
+- [ ] R12-3 Wire the screen to both: every handler posts and then reflects what came back, and a
+      realtime subscription replaces the two scripted arrivals.
+- [ ] R12-4 `_design-system/TERMINAL_PRINCIPLES.md`, the rules someone builds from: hierarchy,
+      spacing, type, colour, containers, density and the fold, actions, the build order, and a
+      side-by-side against the dashboard console. Every principle traceable to one of the eleven
+      rejections or to a measurement taken off the live screen.
