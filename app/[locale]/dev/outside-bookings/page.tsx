@@ -131,6 +131,40 @@ const FACTS = [
   },
 ];
 
+// WHAT THEY CHARGE, and it is on this page because the fee model decides the product. A platform
+// paid per booking builds demand and charges the shop for its own popularity; a platform paid a flat
+// fee builds tools. Every figure below was read off the vendor's own page or an SEC filing this week.
+const MONEY = [
+  {
+    who: "OpenTable",
+    model: "USD 149 to 499 a month, plus a dollar for every diner they send you",
+    note:
+      "Bookings from the restaurant's own website are free at the higher tiers. That is the tell: they sell demand, not software.",
+  },
+  {
+    who: "TheFork, the European one",
+    model: "A percentage of your average spend per guest, on every booking they send",
+    note:
+      "Same shape as OpenTable but the fee grows with your prices. Their own filing calls it a per seated diner fee. Owned by Tripadvisor, and they have a Swiss company.",
+  },
+  {
+    who: "Resy and Tock",
+    model: "USD 289 or 459 a month flat, nothing per booking",
+    note:
+      "American Express now owns both and has put them on one identical price list. The independent flat-fee challengers of ten years ago are all gone or bought.",
+  },
+  {
+    who: "Yelp",
+    model: "USD 129 to 279 a month, and they advertise never pay cover fees, ever",
+    note: "The cheap tier is capped at 500 bookings a month, so volume is charged for by tier instead.",
+  },
+  {
+    who: "The Swiss ones",
+    model: "foratable CHF 115 to 180 a month flat, aleno quotes per shop, neither takes commission",
+    note: "foratable says it plainly: a fixed price no matter how many reservations you get.",
+  },
+];
+
 const TONE: Record<Path["verdictTone"], string> = {
   good: "text-s-success",
   hard: "text-s-urgency",
@@ -180,6 +214,25 @@ export default async function OutsideBookingsBoard() {
             </li>
           ))}
         </ul>
+      </div>
+
+      <div className="mt-12">
+        <p className={LABEL}>What they charge, since it decides what they build</p>
+        <ul className="mt-1">
+          {MONEY.map((m) => (
+            <li key={m.who} className="border-t border-s-border py-5 first:border-t-0">
+              <p className={`${BODY} leading-[1.4]`}>{m.who}</p>
+              <p className={`${META} mt-1`}>{m.model}</p>
+              <p className={`${META} mt-1`}>{m.note}</p>
+            </li>
+          ))}
+        </ul>
+        <p className={`${META} mt-4`}>
+          The split is clean. Charge per booking and you end up building demand, then charging the
+          shop for its own popularity, which is what drove a wave of restaurants off OpenTable. Charge
+          a flat fee and you end up building tools, because you have no reason to route anybody. Both
+          Swiss products took the flat side.
+        </p>
       </div>
 
       <div className="mt-12 border-t border-s-border pt-6">
