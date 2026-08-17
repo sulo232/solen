@@ -125,6 +125,12 @@ export default function Screen({
   const [phoneService, setPhoneService] = useState<string | null>(null);
   const [phoneWhen, setPhoneWhen] = useState(60);
   const [phoneSaving, setPhoneSaving] = useState(false);
+  // WHEN THE SHOP LAST TOLD US ANYTHING. His concern, and the one my phone-booking form did not
+  // answer: the risk is not that they cannot type a booking in, it is what happens when they stop.
+  // The moment they stop, this board keeps stating a wait and painting chairs green with total
+  // confidence, and confident and wrong is the thing that makes people abandon a screen. So it
+  // tracks its own freshness and says plainly when it is out of date instead of guessing on.
+  const [lastTouched, setLastTouched] = useState<string | null>(null);
   // Where the menu goes, in viewport coordinates, measured from the button that opened it. Anchoring
   // it to the ROW put it under the floating bar for anything low on the screen and clean off the
   // screen for a row below the fold; a fixed menu placed from a measured rect cannot do either.
@@ -167,6 +173,7 @@ export default function Screen({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
+      touch();
       if (!res.ok) {
         const detail = await res.json().catch(() => ({}));
         console.error("[Terminal] the write was refused:", res.status, detail);
@@ -185,6 +192,8 @@ export default function Screen({
       return false;
     }
   }, []);
+
+  const touch = useCallback(() => setLastTouched(new Date().toISOString()), []);
 
   const addToLog = useCallback((text: string) => {
     setLog((prev) => [{ id: `log-${prev.length}-${Date.now()}`, at: new Date().toISOString(), text }, ...prev]);
@@ -552,6 +561,23 @@ export default function Screen({
   // plus what is left of each chair, over the number of stylists. Rounded to five so it reads as an
   // estimate rather than a promise. Falls back to the stored estimate only when no service on the
   // board has a duration on file.
+  // The freshest thing the shop has actually done, from the data itself: somebody started, somebody
+  // arrived, somebody joined the queue. On first load there is no click to go on, so this is what
+  // tells the board whether the day is being kept up or has been left alone since the morning.
+  const lastSignal = [
+    lastTouched,
+    ...queue.map((q) => q.startedAt),
+    ...queue.map((q) => q.joinedAt),
+    ...bookings.map((b) => b.arrivedAt),
+  ]
+    .filter(Boolean)
+    .sort()
+    .pop() as string | undefined;
+  const staleMinutes = lastSignal ? elapsedMinutes(lastSignal) : null;
+  // 90 minutes is a HOUSE NUMBER and named as one: long enough that a quiet hour does not nag,
+  // short enough that a half-day of silence is called out while the day can still be fixed.
+  const boardIsStale = staleMinutes !== null && staleMinutes > 90;
+
   const chairsCount = Math.max(1, staff.length);
   // Appointments count as work. Leaving them out was not a rounding error: a shop whose day is
   // mostly booked appointments would have shown a near-zero wait while every chair was full.
@@ -579,7 +605,9 @@ export default function Screen({
     activeNav === "board"
       ? waitingQueue.length === 0
         ? "Nobody is waiting"
-        : `The wait is ${waitMinutes} minutes`
+        : boardIsStale
+          ? `About ${waitMinutes} minutes`
+          : `The wait is ${waitMinutes} minutes`
       : activeNav === "staff"
         ? freeChairs === 0
           ? "Every chair is busy"
@@ -682,6 +710,15 @@ export default function Screen({
         <div className={activeNav === "board" ? "px-5 pt-8" : "px-5 pt-8"}>
           <h1 className="font-heading text-[30px] font-semibold leading-[1.1] text-s-ink">{headline}</h1>
           <p className="font-body mt-1 text-[13px] font-normal text-s-ink-2">{subline}</p>
+          {/* THE BOARD ADMITS WHAT IT DOES NOT KNOW. A screen that states a wait confidently while
+              nobody has touched it since the morning is the exact failure that makes staff stop
+              trusting it, and a screen people stopped trusting is worse than no screen. */}
+          {activeNav === "board" && boardIsStale && lastSignal && (
+            <p className="font-body mt-2 text-[13px] font-medium text-s-urgency">
+              Nobody has updated this since {zurichTime(lastSignal)}. Chairs may be busier than this
+              shows.
+            </p>
+          )}
           {/* Only ever visible when a write did NOT land. Red because a board that disagrees with the
               database is the one genuinely wrong state this screen can be in. */}
           {writeError && (
