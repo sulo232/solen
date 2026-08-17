@@ -637,6 +637,18 @@ export const walkinUpdateSchema = z.object({
   assigned_barber_id: z.string().uuid().optional(),
 });
 
+// Ring 12 (R12-1, _plans/MERCHANT_TERMINAL_2026-08-15.md): dev-only merchant-terminal
+// action endpoint (app/api/dev/terminal/route.ts). "action" is the six real
+// transitions the terminal mockup performs: start/done/no_show/cancel write
+// barber_walkin_queue.status, accept/decline write bookings.status. `staffId` is
+// only read on "start" (route enforces it there); optional here so the other five
+// actions don't need to send it.
+export const terminalActionSchema = z.object({
+  action: z.enum(['start', 'done', 'no_show', 'cancel', 'accept', 'decline']),
+  id: z.string().uuid(),
+  staffId: z.string().uuid().optional(),
+});
+
 export const cutHistorySchema = z.object({
   customer_id: z.string().uuid().optional(),
   customer_name: z.string().max(100).optional(),

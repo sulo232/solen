@@ -1702,7 +1702,12 @@ for u to build like hierarchy or spacing etc"
 
 Two halves, running in parallel with file ownership named so they cannot collide.
 
-- [ ] R12-1 The actions become REAL. Today Start, Done, Accept, Decline, no-show and remove change
+- [x] R12-1 The actions are REAL `verified:` `app/api/dev/terminal/route.ts`, dev-only, 404 in
+      production. The status values were checked against the live CHECK constraints rather than
+      assumed, every branch is scoped by salon as well as id, and a 0-row match returns 404 instead
+      of a silent 200. Twelve kill-test cases passed against the live database, including a booking
+      id passed to a queue action, which 404s rather than quietly matching nothing. Original text of
+      this box: the actions become REAL. Today Start, Done, Accept, Decline, no-show and remove change
       React state and vanish on reload. A dev-only POST endpoint writes them to the database instead,
       scoped by salon as well as by id, with the legal status values VERIFIED against the live table
       rather than assumed.
@@ -1713,12 +1718,27 @@ Two halves, running in parallel with file ownership named so they cannot collide
       the salon's one booking subscription had never fired and why every arrival on this screen has
       been scripted since 2026-08-15. The change is additive and idempotent: one table added to a
       publication, no data, no column and no policy touched.
-- [ ] R12-3a Wire the six actions to the endpoint: each handler posts, and the row reflects what came
-      back rather than what it hoped for.
-- [ ] R12-3b Replace the two scripted arrivals with a real `postgres_changes` subscription on
-      `bookings`, now that the publication carries it.
-- [ ] R12-3c Prove it end to end: insert a booking straight into the database from outside the page
-      and watch it appear on the screen without a reload.
+- [x] R12-3a The six actions are wired `verified:` clicked Start on Ravi Sharma in the browser, then
+      queried the database: `A-042` is `in_chair` with a chair assigned and a start time recorded.
+      The board still moves instantly, because a counter cannot wait on a round trip, and a refused
+      write rolls it back and says so in red rather than leaving the screen disagreeing with the shop.
+- [x] R12-3b The scripted arrivals are gone, replaced by a real `postgres_changes` subscription on
+      `bookings` `verified:` `prototype.ts`'s `buildArrivalBooking` is no longer imported anywhere.
+- [x] R12-3c PROVEN END TO END `verified:` a booking inserted straight into the database, from
+      outside the page, appeared on the screen with no reload: "Fuenfte Ohne Reload", the decision
+      count went 3 to 4, and it landed at the top of the list. Screenshotted.
+      **AND IT TOOK THREE SILENT FAILURES TO GET THERE, which is the finding worth keeping.** Two
+      separate causes, both invisible:
+      (a) `bookings` is protected by `bookings_select_own`, so realtime only delivers a row to a
+          subscriber whose token can read it. The page has to be signed in AS the salon. In dev that
+          is `/api/dev/login?to=/terminal`, and in production it is the salon's own session, which is
+          exactly the sign-up-and-receive model this workstream is for.
+      (b) even signed in, the socket does not carry the token unless `realtime.setAuth()` is called
+          with it. Without that the channel reported `SUBSCRIBED` and never fired once. Three
+          inserts reached the database and none reached the screen while the log said everything was
+          fine, which is this project's named worst failure mode wearing a green light.
+      The status is now logged and shown on the Shop view, because "no new bookings" and "not
+      listening" look identical on a board and mean opposite things.
 - [ ] R12-4 `_design-system/TERMINAL_PRINCIPLES.md`, the rules someone builds from: hierarchy,
       spacing, type, colour, containers, density and the fold, actions, the build order, and a
       side-by-side against the dashboard console. Every principle traceable to one of the eleven

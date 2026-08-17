@@ -3,7 +3,7 @@
 // exists-check: net-new vs app/[locale]/dev/terminal/Terminal.tsx and .../b/B.tsx (both are the
 // PRIOR terminal layouts being replaced, explicitly not extended per this build's brief) and vs
 // app/[locale]/dev/terminal/page.tsx / loadTerminalData.ts (those stay as-is; page.tsx renders this
-// component). The scripted-arrival and chime helpers live in ./prototype.ts rather than being
+// component). The chime helper lives in ./prototype.ts rather than being
 // re-declared here. components-legacy/ui/FilterBottomSheet.tsx, staff/StaffProfilePage.tsx,
 // staff/StaffReviewsSheet.tsx, booking/StaffProfileSheet.tsx and _plans/motion-audit/
 // PROFILE_LOYALTY_QUEUE.md are unrelated surfaces. This file is a from-scratch screen for the SAME
@@ -20,6 +20,7 @@
 // can be freed, the four bottom buttons each open a real view, and Replay resets the whole thing.
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { createPortal } from "react-dom";
 import { Bell, BellOff, Check, Clock, LayoutGrid, MoreHorizontal, RotateCcw, Trash2, UserX, Users } from "lucide-react";
 import { Avatar } from "@/app/[locale]/_components/primitives";
@@ -27,7 +28,9 @@ import StaffChip from "./StaffChip";
 import { minutesLeft, staffTone, waitingTone, TONE_TEXT } from "./status";
 import { chf, elapsedMinutes, firstName, zurichTime } from "./Terminal";
 import type { TerminalBooking, TerminalQueueEntry, TerminalStaff } from "./Terminal";
-import { buildArrivalBooking, getAudioContextCtor, playArrivalChime } from "./prototype";
+import { getAudioContextCtor, playArrivalChime } from "./prototype";
+import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
+import { TERMINAL_SALON_ID } from "./loadTerminalData";
 
 interface ScreenProps {
   salonName: string;
@@ -86,14 +89,22 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
   // Which of the two menus is open. They are separate on purpose: one picks a chair, the other ends
   // a queue entry, and a single menu doing both was the version he rejected.
   const [menuKind, setMenuKind] = useState<"chair" | "more">("more");
+  // Shown only when a write did NOT land, so the board never quietly disagrees with the database.
+  const [writeError, setWriteError] = useState<string | null>(null);
+  // Whether the live booking feed is actually connected. Shown on the Shop view, because "no new
+  // bookings" and "not listening" look identical on a board and mean opposite things.
+  const [feedLive, setFeedLive] = useState(false);
   // Where the menu goes, in viewport coordinates, measured from the button that opened it. Anchoring
   // it to the ROW put it under the floating bar for anything low on the screen and clean off the
   // screen for a row below the fold; a fixed menu placed from a measured rect cannot do either.
   const [menuAt, setMenuAt] = useState<{ top: number; right: number } | null>(null);
   const [, forceTick] = useState(0);
 
+  const router = useRouter();
   const audioCtxRef = useRef<AudioContext | null>(null);
-  const usedNamesRef = useRef<Set<string>>(new Set());
+  // Read inside the subscription callback, which is created once: a state value captured there would
+  // be the value from mount forever, so turning the sound on later would never be heard.
+  const soundOnRef = useRef(false);
   // The wait each person had when the page first opened, captured ONCE. Replay rebases to these, so
   // the tenth run of the demo opens exactly as the first one did rather than a little later.
   const openingWaitsRef = useRef<Record<string, number>>(
@@ -113,31 +124,111 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
     return () => clearInterval(id);
   }, []);
 
+  // EVERY ACTION IS A REAL WRITE NOW (R12-1/R12-3a). It used to change React state and vanish on
+  // reload, which meant a chair you freed came back occupied. The screen still moves immediately,
+  // because a counter cannot wait on a round trip, and then the write either confirms it or the
+  // error line says it did not land. A silent failure here would be worse than no write at all: the
+  // board would say one thing and the shop would be another.
+  const commit = useCallback(async (body: Record<string, unknown>) => {
+    try {
+      const res = await fetch("/api/dev/terminal", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) {
+        const detail = await res.json().catch(() => ({}));
+        console.error("[Terminal] the write was refused:", res.status, detail);
+        setWriteError(
+          res.status === 409
+            ? "That chair is already taken. The board has been put back."
+            : "That did not save. The board has been put back.",
+        );
+        return false;
+      }
+      setWriteError(null);
+      return true;
+    } catch (err) {
+      console.error("[Terminal] could not reach the server:", err);
+      setWriteError("No connection. The board has been put back.");
+      return false;
+    }
+  }, []);
+
   const addToLog = useCallback((text: string) => {
     setLog((prev) => [{ id: `log-${prev.length}-${Date.now()}`, at: new Date().toISOString(), text }, ...prev]);
   }, []);
 
-  const addArrival = useCallback(
-    (seq: number) => {
-      const booking = buildArrivalBooking(seq, initialBookings, staff, usedNamesRef.current);
-      setBookings((prev) => [booking, ...prev]);
-      setFreshId(booking.id);
-      setTimeout(() => setFreshId((cur) => (cur === booking.id ? null : cur)), 1500);
-      addToLog(`${booking.customerName} booked ${booking.serviceName}`);
-      if (soundOn && audioCtxRef.current) playArrivalChime(audioCtxRef.current);
-    },
-    [initialBookings, staff, soundOn, addToLog],
-  );
-
-  // The two scripted arrivals, 6s then 20s after that. Rescheduled by Replay.
+  // A REAL ARRIVAL (R12-3b). Until 2026-08-17 `bookings` was not in the `supabase_realtime`
+  // publication, so no subscription could fire and the two arrivals on this screen were scripted in
+  // prototype.ts. The publication carries it now, so this listens for the real thing: a booking
+  // inserted for this salon by anyone, from anywhere, lands here with the same tint and the same
+  // chime the scripted ones had.
+  //
+  // The insert payload is the raw row, so the service name is not on it. Rather than invent one, the
+  // row is added with what the database actually said and the screen reloads its data in the
+  // background to fill in the joined names. A guessed service name would be exactly the fabrication
+  // this project bans.
   useEffect(() => {
-    const t1 = setTimeout(() => addArrival(0), 6_000);
-    const t2 = setTimeout(() => addArrival(1), 26_000);
+    const supabase = createBrowserSupabaseClient();
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+
+    // THE SOCKET NEEDS THE TOKEN, EXPLICITLY. `bookings` is protected by `bookings_select_own`, so
+    // realtime only delivers a row to a subscriber whose token can read it. Without this the channel
+    // still reports SUBSCRIBED and simply never fires, which is the exact silent-no-op this project
+    // names as its worst failure: measured here first, three inserts that reached the database and
+    // never reached the screen while the log said SUBSCRIBED.
+    void (async () => {
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+      if (token) await supabase.realtime.setAuth(token);
+      channel = subscribeToBookings(supabase);
+    })();
+
+    function subscribeToBookings(client: typeof supabase) {
+      return client
+      .channel("terminal-bookings")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "bookings", filter: `salon_id=eq.${TERMINAL_SALON_ID}` },
+        (payload) => {
+          const row = payload.new as Record<string, unknown>;
+          const arrival: TerminalBooking = {
+            id: String(row.id),
+            startsAt: String(row.starts_at),
+            endsAt: String(row.ends_at ?? row.starts_at),
+            status: String(row.status ?? "pending_approval"),
+            customerName: String(row.guest_name ?? "Guest"),
+            serviceName: "Booking",
+            price: Number(row.estimated_price ?? 0),
+            paymentStatus: String(row.payment_status ?? "none"),
+            createdAt: String(row.created_at ?? new Date().toISOString()),
+            staffId: (row.staff_id as string) ?? null,
+            staffName: null,
+          };
+          setBookings((prev) => (prev.some((b) => b.id === arrival.id) ? prev : [arrival, ...prev]));
+          setFreshId(arrival.id);
+          setTimeout(() => setFreshId((cur) => (cur === arrival.id ? null : cur)), 1500);
+          addToLog(`${arrival.customerName} booked`);
+          if (soundOnRef.current && audioCtxRef.current) playArrivalChime(audioCtxRef.current);
+          router.refresh();
+        },
+      )
+      // The status is LOGGED, not assumed. A postgres_changes subscription that is refused by RLS or
+      // by the publication fails silently and looks exactly like a quiet shop, which is this
+      // project's named worst failure mode. CHANNEL_ERROR here means the session cannot read
+      // `bookings`: the policy is `bookings_select_own`, so the screen must be signed in as the
+      // salon owner (in dev: /api/dev/login?to=/terminal).
+      .subscribe((status) => {
+        console.log("[Terminal] booking feed:", status);
+        setFeedLive(status === "SUBSCRIBED");
+      });
+    }
+
     return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
+      if (channel) void supabase.removeChannel(channel);
     };
-  }, [replayKey, addArrival]);
+  }, [addToLog, router, replayKey]);
 
   // Every action is reversible for eight seconds and then it is not, which is the honest version:
   // an undo that lives forever is a second source of truth.
@@ -146,6 +237,15 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
     const t = setTimeout(() => setUndo(null), 8_000);
     return () => clearTimeout(t);
   }, [undo]);
+
+  // Put the board back exactly as it was. Used when a write is refused, so the screen never keeps
+  // showing a change the database rejected.
+  function rollback(before: Snapshot) {
+    setBookings(before.bookings);
+    setQueue(before.queue);
+    setLog(before.log);
+    setUndo(null);
+  }
 
   function snapshot() {
     setHistory((prev) => [{ bookings, queue, log }, ...prev].slice(0, 20));
@@ -184,6 +284,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
   async function toggleSound() {
     if (soundOn) {
       setSoundOn(false);
+      soundOnRef.current = false;
       return;
     }
     try {
@@ -195,6 +296,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
       await audioCtxRef.current.resume();
       playArrivalChime(audioCtxRef.current);
       setSoundOn(true);
+      soundOnRef.current = true;
     } catch (err) {
       console.error("[Terminal] could not start the arrival sound:", err);
     }
@@ -206,7 +308,6 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
   // opened already late. Every waiting entry restarts at the same fraction of its own promise it had
   // when the page first loaded, which is what "replay" has to mean for anything time-derived.
   function handleReplay() {
-    usedNamesRef.current = new Set();
     setBookings(initialBookings);
     const now = Date.now();
     setQueue(
@@ -225,17 +326,21 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
   }
 
   function handleAccept(booking: TerminalBooking) {
+    const before = { bookings, queue, log };
     snapshot();
     setBookings((prev) => prev.map((b) => (b.id === booking.id ? { ...b, status: "confirmed" } : b)));
     addToLog(`${booking.customerName} confirmed`);
     setUndo({ message: `${firstName(booking.customerName)} confirmed` });
+    void commit({ action: "accept", id: booking.id }).then((ok) => ok || rollback(before));
   }
 
   function handleDecline(booking: TerminalBooking) {
+    const before = { bookings, queue, log };
     snapshot();
     setBookings((prev) => prev.map((b) => (b.id === booking.id ? { ...b, status: "cancelled" } : b)));
     addToLog(`${booking.customerName} declined`);
     setUndo({ message: `${firstName(booking.customerName)} declined` });
+    void commit({ action: "decline", id: booking.id }).then((ok) => ok || rollback(before));
   }
 
   // Start must MOVE the person, not delete them. The staff row shows who is in each chair by
@@ -247,6 +352,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
   // long should be movable to whoever is free), so it lives one tap deeper in the row's menu rather
   // than turning every start into a two-step picker.
   function handleStart(entry: TerminalQueueEntry, member?: TerminalStaff) {
+    const before = { bookings, queue, log };
     const occupied = new Set(
       queue.filter((q) => q.status === "in_chair" && q.staffId).map((q) => q.staffId as string),
     );
@@ -263,35 +369,42 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
     );
     addToLog(`${entry.customerName} started with ${firstName(free.name)}`);
     setUndo({ message: `${firstName(entry.customerName)} started` });
+    void commit({ action: "start", id: entry.id, staffId: free.id }).then((ok) => ok || rollback(before));
   }
 
   // Both are real states on `barber_walkin_queue.status`, not invented ones: a person who never
   // turned up and a person who left. Neither is a delete, so the log keeps them and Undo restores
   // them for eight seconds like every other action.
   function handleNoShow(entry: TerminalQueueEntry) {
+    const before = { bookings, queue, log };
     setMenuFor(null);
     snapshot();
     setQueue((prev) => prev.map((q) => (q.id === entry.id ? { ...q, status: "no_show" } : q)));
     addToLog(`${entry.customerName} did not turn up`);
     setUndo({ message: `${firstName(entry.customerName)} marked no-show` });
+    void commit({ action: "no_show", id: entry.id }).then((ok) => ok || rollback(before));
   }
 
   function handleRemove(entry: TerminalQueueEntry) {
+    const before = { bookings, queue, log };
     setMenuFor(null);
     snapshot();
     setQueue((prev) => prev.map((q) => (q.id === entry.id ? { ...q, status: "cancelled" } : q)));
     addToLog(`${entry.customerName} left the queue`);
     setUndo({ message: `${firstName(entry.customerName)} removed` });
+    void commit({ action: "cancel", id: entry.id }).then((ok) => ok || rollback(before));
   }
 
   // staffId is KEPT on a finished entry on purpose: `chairOf` matches on status "in_chair" as well,
   // so the chair frees itself, and holding the id is what lets each stylist's own finished count be
   // a real derived number instead of an invented one.
   function handleDone(entry: TerminalQueueEntry) {
+    const before = { bookings, queue, log };
     snapshot();
     setQueue((prev) => prev.map((q) => (q.id === entry.id ? { ...q, status: "done" } : q)));
     addToLog(`${entry.customerName} done`);
     setUndo({ message: `${firstName(entry.customerName)} done` });
+    void commit({ action: "done", id: entry.id }).then((ok) => ok || rollback(before));
   }
 
   const pendingBookings = bookings.filter((b) => b.status === "pending_approval");
@@ -449,6 +562,11 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
         <div className={activeNav === "board" ? "px-5 pt-8" : "px-5 pt-8"}>
           <h1 className="font-heading text-[30px] font-semibold leading-[1.1] text-s-ink">{headline}</h1>
           <p className="font-body mt-1 text-[13px] font-normal text-s-ink-2">{subline}</p>
+          {/* Only ever visible when a write did NOT land. Red because a board that disagrees with the
+              database is the one genuinely wrong state this screen can be in. */}
+          {writeError && (
+            <p className="font-body mt-2 text-[13px] font-medium text-s-error">{writeError}</p>
+          )}
           {undo && (
             <div className="mt-2 flex items-center gap-3">
               <p className="font-body text-[13px] font-normal text-s-ink-2">{undo.message}</p>
@@ -801,8 +919,9 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
               </li>
             </ul>
             <p className={QUIET_LINE + " pt-4"}>
-              Bookings arrive on a script here. Live arrivals need the realtime publication, which is
-              the one thing this screen is still waiting on.
+              {feedLive
+                ? "Live. A new booking lands here on its own, no reload."
+                : "Not listening. This screen has to be signed in as the salon to receive bookings."}
             </p>
           </div>
         )}
