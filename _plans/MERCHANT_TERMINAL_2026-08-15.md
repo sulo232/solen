@@ -1939,3 +1939,29 @@ you about typing phone calls or some shit ... Why are you repeating the same fuc
       finish-autonomously gate already blocks, and this is the same failure from the other side. A
       purely conversational turn is exempt, because a forced next-step line on a two-line answer is
       noise.
+
+## ROUND 16 , the council was never off, and the outside-appointment board, 2026-08-17
+
+Owner: "i still havent gotten the idea board or smth from u n subagents n evrth like critical stuff
+like appointments made outside of our platform that isnt using out full dashboard like how does othr
+fresha etc do it or booking.com for example and is there smth for dashboarditself to like be able to
+conncet and also i notice alsot that. dont use subagents council alot and o also expanded subagent
+councils view oon anthr session to have more perspective why is that switched off investigate"
+
+- [x] R16-1 THE EXPANDED COUNCIL WAS NEVER SWITCHED OFF, I NEVER ASKED FOR IT `verified:` measured on
+      this session's transcript: the auto-trigger asked for a council 11 times, 4 of those naming
+      TIER 4 by name, and 7 councils actually ran. **Not one of the 7 passed a `tier` argument**, so
+      all 7 took the file's default of 3 and the six lenses he added on 2026-08-14 (done-for,
+      done-against, owner-eye, regression, half-landed, already-decided) have not run once. The tier
+      table, the lens definitions and the wiring were all intact the whole time.
+      An opt-in expansion that every call site forgets to opt into is indistinguishable from a
+      feature that is off, and he read it correctly.
+      FIXED at the default rather than by remembering: `~/.claude/workflows/council.workflow.js` now
+      defaults to tier 4, and the out-of-range fallback was also still the four-lens list, so an odd
+      tier quietly landed back on the small panel too. Asking for LESS review is now the thing that
+      takes a deliberate argument.
+- [ ] R16-2 THE IDEA BOARD he has asked for twice: appointments made outside our platform. Three
+      lenses running: what the salon tools actually do about an outside booking and whether any of
+      them READ an external calendar rather than only writing to it; the hotel channel-manager model
+      he named via Booking.com, including what a four-room B&B with no software actually gets; and
+      our own code, what exists half-built and what the shortest honest path would be.
