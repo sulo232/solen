@@ -1960,8 +1960,29 @@ councils view oon anthr session to have more perspective why is that switched of
       defaults to tier 4, and the out-of-range fallback was also still the four-lens list, so an odd
       tier quietly landed back on the small panel too. Asking for LESS review is now the thing that
       takes a deliberate argument.
-- [ ] R16-2 THE IDEA BOARD he has asked for twice: appointments made outside our platform. Three
-      lenses running: what the salon tools actually do about an outside booking and whether any of
-      them READ an external calendar rather than only writing to it; the hotel channel-manager model
-      he named via Booking.com, including what a four-room B&B with no software actually gets; and
-      our own code, what exists half-built and what the shortest honest path would be.
+- [x] R16-2 THE IDEA BOARD IS BUILT AND HANDED OVER `verified:` commits c6f546291 and c0297eb11,
+      `app/[locale]/dev/outside-bookings/page.tsx`, opened on the tunnel and read back: four paths,
+      six findings, the fee comparison, and a recommendation. Four research lenses fed it, 25+ live
+      vendor pages fetched, every number sourced rather than recalled.
+      WHAT IT SETTLED, and it is stronger than the answer I expected:
+      (a) CALENDAR SYNC IS DEAD FOR US, and a competitor says so in writing. Shore's own support page
+          asks whether Google Calendar is suitable as a two-way bridge between two booking systems
+          and answers "Nein". Five of seven tools DO read an external calendar, and every one of them
+          turns what it finds into BLOCKED TIME, never an appointment. Square and Treatwell both say
+          in writing that they refuse to read the details on purpose. So sync buys double-booking
+          protection and yields no name, no service, no price, no money record.
+      (b) NOBODY IN THE MARKET DETECTS A SHOP THAT WENT QUIET. Seven products, zero alerts, zero
+          till-versus-calendar checks. Square owns both in one account and still never flags a sale
+          with no appointment.
+      (c) THE FEE MODEL DECIDES THE PRODUCT. OpenTable USD 149-499/month plus ~USD 1 per diner they
+          send, free on the shop's own website; TheFork a percentage of average spend per seated
+          diner (Tripadvisor's own 10-K wording); Resy and Tock flat USD 289/459 with nothing per
+          booking, both now owned by Amex on one price list; Yelp flat and advertising "never pay
+          cover fees, ever". BOTH Swiss products took the flat side: foratable CHF 115-180 flat,
+          aleno quoted per shop, neither on commission.
+      (d) 93% of Swiss small businesses have no online booking at all, and hairdressers are the third
+          most-wanted category people want to book online. Swiss study, 2025, n=947k businesses.
+      MY RECOMMENDATION ON THE BOARD: keep typing as the fallback, build send-a-link next, because it
+      removes the typing rather than moving it.
+- [ ] R16-3 HIS DECISION, and it is genuinely his: which of the four paths. Everything else on this
+      workstream is now downstream of that pick, so this is the one box I cannot close myself.
