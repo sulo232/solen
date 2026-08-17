@@ -2,41 +2,27 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-14T23:50:51 (trigger: auto)
-- branch: claude/agent-flow-design-overhaul-2af2c2
+- taken: 2026-08-17T15:17:48 (trigger: auto)
+- branch: claude/offline-booking-device-266b10
 
 ## git
 ```
-92ff09582 Second copy merged, sixteen clashes settled one at a time
-317c0ee72 First copy actually merged, conflicts resolved one by one, and the personal row is on
-4a5d6d694 Proof on the hands-off line
-613fdb974 Hands off the phone-app copy, he said leave it entirely
-9503cd5a3 Your English, French and Italian visitors were reading German in the top menu, on every page
+5fe57d279 Record round 6, and track the two remaining items as boxes rather than prose
+69d8b3c96 Serve the terminal on its own bare route, because the whole site was loading under it
+a45003243 A new screen written from nothing, and the gate for why that took seven rounds
+af53ff51e Strip back to the terminal, and restyle it toward his weto reference
+aba41e3b7 Point the tunnel config at the dev server's actual port
 ```
 ```
-M  _design-system/QUESTIONS.md
-A  app/[locale]/_components/business/AssetPlaceholder.tsx
-A  app/[locale]/_components/business/CountUp.tsx
-A  app/[locale]/_components/business/EarningsCalculator.tsx
-A  app/[locale]/_components/business/MotionProvider.tsx
-A  app/[locale]/_components/business/Reveal.tsx
-UU app/[locale]/_components/homepage/BusinessTeaser.tsx
-UU app/[locale]/_components/homepage/WhySolen.tsx
-UU app/[locale]/_components/layout/Footer.tsx
-UU app/[locale]/_components/layout/Header.tsx
-UU app/[locale]/_components/layout/MobileMenu.tsx
-UD app/[locale]/business/page.tsx
-UU app/[locale]/fuer-salons/page.tsx
-D  app/[locale]/partner/layout.tsx
-UD app/[locale]/partner/page.tsx
-M  app/[locale]/warum-solen/page.tsx
-UU app/sitemap.ts
-DU components-legacy/home/PartnerBlock.tsx
-DU components-legacy/layout/Footer.tsx
-UU messages/de.json
+?? _tmp_verify_measure.mjs
+?? _tmp_verify_measure2.mjs
+?? _tmp_verify_measure3.mjs
+?? _tmp_verify_measure4.mjs
+?? _tmp_verify_measure5.mjs
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
+68 | MERCHANT TERMINAL , the Uber-Eats-style "just receive bookings" screen for salons, browser-only, no device, no app (owner 2026-08-15: "so that the store doesn't need to actually use a dashboard... instead of this complicated thing so that these people can just sign up and then receive it. Bookings. Easy as that" + "I do not want, like, a physical device... subdomain or something") | **ACTIVE** (2026-08-15)
 67 | BRANCH RECONCILIATION , 40 unmerged branches, ~1800 commits, none on main (owner 2026-08-14: "look in deeep theres gnna be alot of conflicts ... merge them or delete but ask me alot") | **ACTIVE** (2026-08-14) , four questions asked
 66 | CATEGORY ROW: circles that morph into pills, flat icons with a glare (owner 2026-08-12: "instead of pills like circle n once u click then it bcms pill all morphism and also the icon i want it like abit glare yk like 3d liquid style icons") | **ACTIVE** (2026-08-12)
 64 | SEARCH PANEL FLATNESS , no colour on the idle list, and the for-you feed (owner 2026-08-12: "i wanna improve design sh looks flat n no color n the fur sie ui too") | **ACTIVE** (2026-08-12) , mockup delivered, awaiting his pick
@@ -97,8 +83,15 @@ UU messages/de.json
 50 | DESIGN principle deep-research (the rules we ALREADY have) | **ACTIVE** (2026-07-28)
 51 | DESIGN RE-ENGINEER , improve the system we have, measured against live Airbnb | **ACTIVE** (2026-07-28)
 
+## MERCHANT_TERMINAL_2026-08-15.md
+Open boxes:
+- [ ] PARKED 2026-08-15 · Should a booking land already confirmed (what every salon tool does), or should the salon have to accept each one (what Uber Eats does)? · from: the terminal definition, and our own numbers say 28 of 28 salons already run auto-confirm
+- [ ] PARKED 2026-08-15 · When a salon moves an appointment, does the customer just get told, or do they have to agree first? · from: three database columns for a customer-agreement handshake exist from migration 022 and no code was ever written against them
+- [ ] PARKED 2026-08-15 · The salon page uses three text weights on purpose and the design rule allows two. Does the rule become three, or does the salon page have to change? · from: measured on the shipped salon page while rebuilding the terminal out of its own parts
+- [ ] R6-6 The old `b/B.tsx` and its `/dev/terminal/b` route are now dead weight: the new `Screen`
+- [ ] R6-7 The pending-approval decision block, the live arrivals, the undo stack, the sound control
+
 ## BRANCH_RECONCILIATION_2026-08-14.md
 Open boxes:
 - [ ] C10. The remaining copies, one at a time. Each one: open it, rescue anything uncommitted that
-- [ ] C13. Delete `quirky-ellis-ef5559` once those three checks are either copied by a session that
 - [ ] C14. Those eight files reach main. Nothing to build; it is the merge, which is his.
