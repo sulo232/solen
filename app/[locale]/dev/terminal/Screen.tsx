@@ -74,9 +74,17 @@ const TINT = "transition-colors duration-500";
 //   ring thickness    runs (367,376) and (612,620) = 9.5px -> 4.0pt
 //   badge pill        419..583 x 934..1009 = 165 x 76px    -> 70.0 x 32.3pt
 //   badge overshoot   pill bottom 1009 vs circle bottom 999 = 10px -> 4.2pt below the outline
-// Scaled to our 56px staff photo (56 / 100.6 = 0.557), which keeps every ratio he liked:
-//   ring 4.0 x 0.557 = 2.2  -> 2px      badge 70 x 0.557 = 39  -> 39px wide
-//   overshoot 4.2 x 0.557 = 2.3 -> 2px  badge 32.3 x 0.557 = 18 -> 18px tall
+// FIRST ATTEMPT, AND WHY IT WAS WRONG (owner, immediately: "looks so ass wtf is that"). The ratios
+// were scaled onto a 56px thumbnail, giving a 39 x 18px pill: 70% as wide as the photo, sitting
+// across the person's chin. The ratio was right and the RESULT was wrong, because in his reference
+// the avatar is 100.6pt, a hero, and the badge reads as a small chip on a large face. Copying a
+// hero element's proportions onto a thumbnail does not copy the look, it copies the arithmetic.
+// So the photo goes to 88px, close to the reference's own size, and the badge follows it:
+//   scale 88 / 100.6 = 0.875
+//   outline 4.0 x 0.875 = 3.5  -> 3px    badge 70 x 0.875 = 61   -> 61px wide
+//   overshoot 4.2 x 0.875 = 3.7 -> 4px   badge 32.3 x 0.875 = 28 -> 28px tall
+// Three 88px avatars plus gaps come to 372 of the 390 width, so the row still crops its next item.
+// `?badge=dot` renders the small-dot alternative instead, for comparison.
 // Built from a border rather than a Tailwind outline utility on purpose, so nothing here can be
 // mistaken for the focus halo that is dead by name three times over.
 //
@@ -89,9 +97,11 @@ const TINT = "transition-colors duration-500";
 // A stylist cutting hair is not a fault, so painting them red spends the alarm colour on the most
 // ordinary event in the shop, and then the counter stops reading red as meaning anything. Add
 // `?busy=red` to the URL to render the other choice and compare them instead of arguing.
-const AVATAR_OUTLINE = "rounded-full border-2 border-s-ink";
-const BADGE =
-  "absolute -bottom-[2px] left-1/2 flex h-[18px] w-[39px] -translate-x-1/2 items-center justify-center rounded-full";
+const AVATAR_OUTLINE = "rounded-full border-[3px] border-s-ink";
+const BADGE_PILL =
+  "absolute -bottom-1 left-1/2 flex h-[28px] w-[61px] -translate-x-1/2 items-center justify-center rounded-full";
+const BADGE_DOT =
+  "absolute bottom-1 right-1 flex h-[18px] w-[18px] items-center justify-center rounded-full border-2 border-white";
 
 export default function Screen({ salonName, bookings: initialBookings, queue: initialQueue, staff }: ScreenProps) {
   const [bookings, setBookings] = useState<TerminalBooking[]>(initialBookings);
@@ -108,13 +118,18 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
   // `?busy=red` renders the alternative reading of the badge, so the two can be looked at rather
   // than argued about. Read after mount so the server render and the first client render match.
   const [busyIsRed, setBusyIsRed] = useState(false);
+  const [badgeIsDot, setBadgeIsDot] = useState(false);
+  const [badgeIsFilled, setBadgeIsFilled] = useState(false);
 
   const audioCtxRef = useRef<AudioContext | null>(null);
   const usedNamesRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     setMounted(true);
-    setBusyIsRed(new URLSearchParams(window.location.search).get("busy") === "red");
+    const params = new URLSearchParams(window.location.search);
+    setBusyIsRed(params.get("busy") === "red");
+    setBadgeIsDot(params.get("badge") === "dot");
+    setBadgeIsFilled(params.get("badge") === "fill");
   }, []);
 
   // Only the in-chair elapsed minutes are derived from the wall clock, and a minute is the smallest
@@ -328,22 +343,39 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
             <div className="flex gap-4 px-5 pb-1 pt-5">
               {staff.map((member) => {
                 const inChair = chairOf(member.id);
+                // The badge itself stays INK, exactly as it is in his reference, and the state is
+                // carried by what sits inside it: a green dot when the chair is free, white scissors
+                // when it is not. A fully green pill was the first try and it read as a coloured
+                // slab pasted over someone's face, because a saturated fill that size stops being an
+                // indicator and becomes the loudest thing on the screen. `?badge=fill` still renders
+                // that version, and `?busy=red` turns the busy pill red, for comparison.
+                const badgeFill = badgeIsFilled
+                  ? inChair
+                    ? busyIsRed
+                      ? " bg-s-error"
+                      : " bg-s-ink"
+                    : " bg-s-success"
+                  : inChair && busyIsRed
+                    ? " bg-s-error"
+                    : " bg-s-ink";
                 return (
-                  <div key={member.id} className="flex w-[64px] shrink-0 flex-col items-center text-center">
+                  <div key={member.id} className="flex w-[100px] shrink-0 flex-col items-center text-center">
                     <div className="relative">
                       <div className={AVATAR_OUTLINE}>
-                        <Avatar src={member.avatarUrl} name={member.name} size={56} />
+                        <Avatar src={member.avatarUrl} name={member.name} size={88} />
                       </div>
                       <span
-                        className={
-                          BADGE + (inChair ? (busyIsRed ? " bg-s-error" : " bg-s-ink") : " bg-s-success")
-                        }
+                        className={(badgeIsDot ? BADGE_DOT : BADGE_PILL) + badgeFill}
                         aria-hidden="true"
                       >
-                        {inChair ? (
-                          <Scissors size={11} strokeWidth={2} className="text-white" />
+                        {badgeIsDot ? null : inChair ? (
+                          <Scissors size={16} strokeWidth={2} className="text-white" />
                         ) : (
-                          <span className="h-1.5 w-1.5 rounded-full bg-white" />
+                          <span
+                            className={
+                              "h-2.5 w-2.5 rounded-full " + (badgeIsFilled ? "bg-white" : "bg-s-success")
+                            }
+                          />
                         )}
                       </span>
                     </div>
