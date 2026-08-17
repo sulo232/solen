@@ -1822,3 +1822,17 @@ connected w dashboard n stuff ... bro im confused can u ask sub agent council".
       bookings at 14:00 on different days read as a clash, and the live feed already has no date
       filter at all. Two days is a different screen, not a wider query, so it is his call whether the
       terminal grows a tomorrow or stays a today board.
+
+- [ ] PARKED 2026-08-17 · Should the accept/decline card come back on the terminal? · from: it was
+      removed on his own words ("there is jo accpt or decilne we have an auto system"), and the data
+      agreed (28 of 28 salons on instant, and the only pending rows were ones I had seeded to feed
+      the card). Removed rather than kept, so this is the line that says he can have it back.
+- [ ] PARKED 2026-08-17 · Should the terminal show tomorrow as well as today? · from: the loader is
+      filtered to the current Zurich day, and widening it breaks four things that are not cosmetic
+      (today's list has no date, the money line sums both days, the clash warning compares clock time
+      only, the live feed has no date filter at all). Two days is a different screen, not a wider query.
+- [ ] PARKED 2026-08-17 · Bring the phone-booking flow across from the branch it is stranded on? ·
+      from: a salon cannot record an appointment taken by phone anywhere in the product. Built twice
+      (8bab79b80, ad0888a92), merged neither time, and one left its migration behind so
+      `availability_slots.client_id` is live and unused. Until it lands the terminal's wait and free
+      chairs understate a real day.
