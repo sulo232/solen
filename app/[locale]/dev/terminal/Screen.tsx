@@ -68,6 +68,11 @@ const ROW_BUTTON =
   "font-body flex h-11 items-center justify-center rounded-full border border-s-border bg-white px-4 text-[15px] font-semibold text-s-ink shadow-whisper";
 // The only non-white surface this screen paints, and only for a second and a half.
 const TINT = "transition-colors duration-500";
+// How many decisions get the boxed treatment before the rest fall back to bare rows. Measured on the
+// live screen at 390x844: four boxes took 57.8% of the viewport, three took 43%, and in both cases
+// not one waiting person was visible. Two is 29%, which clears the 35% ceiling and leaves the queue
+// on screen. The number is the answer to a measurement, not a preference.
+const DECISION_CARD_CAP = 2;
 
 // Every colour on this screen comes from ./status.ts, which is the one place that says what a tone
 // MEANS and what has to be true in the data for it to appear. The ring around a stylist's photo is
@@ -525,7 +530,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                 const left = inChair ? minutesLeft(inChair.startedAt, inChair.durationMinutes) : null;
                 return (
                   // 104 not 78: the cell is as wide as its widest LINE, not as wide as the photo.
-                  // "Luca · 22 min" truncated to "Luca · 22 ..." at chip width, which is the one
+                  // "Luca, 22 min" truncated to "Luca, 22 ..." at chip width, which is the one
                   // number the line exists to carry.
                   <div
                     key={member.id}
@@ -548,7 +553,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                       {inChair
                         ? left === null
                           ? firstName(inChair.customerName)
-                          : `${firstName(inChair.customerName)} · ${left === 0 ? "now" : `${left}m`}`
+                          : `${firstName(inChair.customerName)}, ${left === 0 ? "now" : `${left}m`}`
                         : "Free"}
                     </p>
                   </div>
@@ -593,10 +598,10 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                 {/* ONE section header for the whole group. Every card used to repeat "Needs a
                     decision", which cost about 90px of a phone screen to say the same thing twice. */}
                 <p className={SECTION + " pb-3"}>
-                  Needs a decision · {pendingBookings.length}
+                  Needs a decision ({pendingBookings.length})
                 </p>
                 <div className="px-5">
-                {pendingBookings.map((booking) => (
+                {pendingBookings.slice(0, DECISION_CARD_CAP).map((booking) => (
                   // A ROW, not a stacked card. Two stacked cards cost 466px of a 844px screen and
                   // pushed every queue row below the fold, so the counter opened the board and could
                   // not see a single person waiting. Accept keeps the ink pill on the right; Decline
@@ -617,7 +622,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                           rots quietly and the counter cannot tell a four-minute-old one from
                           yesterday's. */}
                       <p className={ROW_SUB}>
-                        {booking.serviceName} at {zurichTime(booking.startsAt)} · asked{" "}
+                        {booking.serviceName} at {zurichTime(booking.startsAt)}, asked{" "}
                         {elapsedMinutes(booking.createdAt)} min ago
                       </p>
                       {/* THE CONFLICT, said out loud instead of left as arithmetic for somebody
@@ -640,6 +645,32 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                         Decline
                       </button>
                     </div>
+                  </div>
+                ))}
+                {/* THE CAP. A box is a container and a container is earned once; the Board used to
+                    draw one per pending request with no ceiling, so four requests filled 58% of the
+                    screen with boxes and pushed every waiting person out of sight. Past the cap the
+                    rest are bare rows, which is what everything else on this screen already is. */}
+                {pendingBookings.slice(DECISION_CARD_CAP).map((booking) => (
+                  <div
+                    key={booking.id}
+                    className="flex items-center gap-3 border-t border-s-border py-4"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <p className="font-body truncate text-[15px] font-medium text-s-ink">
+                        {booking.customerName}
+                      </p>
+                      <p className={ROW_SUB}>
+                        {booking.serviceName} at {zurichTime(booking.startsAt)}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleAccept(booking)}
+                      className={ROW_BUTTON}
+                    >
+                      Accept
+                    </button>
                   </div>
                 ))}
                 </div>
@@ -673,7 +704,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                             useful thing on the row the top line; it trails the name now. */}
                         <p className={ROW_NAME + " !mt-0"}>{entry.customerName}</p>
                         <p className={ROW_SUB}>
-                          {entry.serviceName} · #{entry.ticketCode}
+                          {entry.serviceName}, #{entry.ticketCode}
                         </p>
                       </div>
                       <div className="flex shrink-0 flex-col items-end gap-2">
@@ -855,7 +886,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                         {inChair
                           ? left === null
                             ? inChair.customerName
-                            : `${inChair.customerName} · ${left === 0 ? "finishing now" : `${left} min left`}`
+                            : `${inChair.customerName}, ${left === 0 ? "finishing now" : `${left} min left`}`
                           : "Free"}
                       </p>
                       {/* Colon-and-number rather than "3 finished today": a count sentence needs the
@@ -895,7 +926,9 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
           </div>
         )}
 
-        {/* This screen. Real derived numbers and an honest line about what is not wired yet. */}
+        {/* Shop. Real derived numbers and an honest line about whether the live feed is connected.
+            Named Shop everywhere, including in the docs: it used to be "This screen" in the doc and
+            "Shop" on the tab, which is two names for one view. */}
         {activeNav === "profile" && (
           <div className="mt-8">
             <ul>
@@ -955,7 +988,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
           ))}
           <button
             type="button"
-            aria-label="This screen"
+            aria-label="Shop"
             aria-current={activeNav === "profile" ? "page" : undefined}
             onClick={() => setActiveNav("profile")}
             className="flex h-11 min-w-[56px] flex-col items-center justify-center gap-0.5 rounded-full px-2"

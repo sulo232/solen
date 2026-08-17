@@ -1712,19 +1712,20 @@ Two halves, running in parallel with file ownership named so they cannot collide
       scoped by salon as well as by id, with the legal status values VERIFIED against the live table
       rather than assumed.
 - [x] R12-2 A booking can actually arrive, and THIS IS THE BLOCKER FROM ROUND 1, now cleared
-      `verified:` migration `add_bookings_to_realtime_publication` applied to the live project, and
+      `verified:` commit 24fec4552; migration `add_bookings_to_realtime_publication` applied to the live project, and
       re-queried after: `pg_publication_tables` for `supabase_realtime` now returns BOTH
       `barber_walkin_queue` and `bookings`. Before this turn it returned only the queue, which is why
       the salon's one booking subscription had never fired and why every arrival on this screen has
       been scripted since 2026-08-15. The change is additive and idempotent: one table added to a
       publication, no data, no column and no policy touched.
-- [x] R12-3a The six actions are wired `verified:` clicked Start on Ravi Sharma in the browser, then
+- [x] R12-3a The six actions are wired `verified:` commit 108e3ce40, Screen.tsx `commit()` and the
+      six `void commit({...})` call sites; clicked Start on Ravi Sharma in the browser, then
       queried the database: `A-042` is `in_chair` with a chair assigned and a start time recorded.
       The board still moves instantly, because a counter cannot wait on a round trip, and a refused
       write rolls it back and says so in red rather than leaving the screen disagreeing with the shop.
 - [x] R12-3b The scripted arrivals are gone, replaced by a real `postgres_changes` subscription on
-      `bookings` `verified:` `prototype.ts`'s `buildArrivalBooking` is no longer imported anywhere.
-- [x] R12-3c PROVEN END TO END `verified:` a booking inserted straight into the database, from
+      `bookings` `verified:` commit 108e3ce40; `prototype.ts`'s `buildArrivalBooking` is no longer imported anywhere.
+- [x] R12-3c PROVEN END TO END `verified:` commit 108e3ce40, booking id acae578c-72b3-4371-a06f-921409dc5e02; a booking inserted straight into the database, from
       outside the page, appeared on the screen with no reload: "Fuenfte Ohne Reload", the decision
       count went 3 to 4, and it landed at the top of the list. Screenshotted.
       **AND IT TOOK THREE SILENT FAILURES TO GET THERE, which is the finding worth keeping.** Two
@@ -1739,7 +1740,24 @@ Two halves, running in parallel with file ownership named so they cannot collide
           fine, which is this project's named worst failure mode wearing a green light.
       The status is now logged and shown on the Shop view, because "no new bookings" and "not
       listening" look identical on a board and mean opposite things.
-- [ ] R12-4 `_design-system/TERMINAL_PRINCIPLES.md`, the rules someone builds from: hierarchy,
-      spacing, type, colour, containers, density and the fold, actions, the build order, and a
-      side-by-side against the dashboard console. Every principle traceable to one of the eleven
-      rejections or to a measurement taken off the live screen.
+- [x] R12-4 `_design-system/TERMINAL_PRINCIPLES.md` `verified:` 633 lines, eleven sections plus a
+      five-line summary: whose law governs and which customer laws explicitly do not, hierarchy,
+      spacing, type, colour, containers, density and the fold, actions, the side-by-side against the
+      dashboard console, the build order, and an honest contradictions section. Every number is
+      either quoted with its pointer or was measured on the running screen at 390x844 and labelled.
+      Registered in the canon list in the same turn, per that gate's own instruction.
+- [x] R12-5 The doc found TWELVE contradictions between the written law and the running screen, and
+      the ones I own are fixed rather than filed `verified:` measured after, on the live screen:
+      - the `·` middot is banned by name in LOCKFILE 0.1 and the screen used it in five strings.
+        Now zero on the page.
+      - the boxed decisions were UNCAPPED, one per pending request: four took 57.8% of the screen and
+        three took 43%, and in both cases not a single waiting person was visible. Capped at two,
+        measured at 29%, and past the cap a request is a bare row like everything else on this
+        screen. The cap is the answer to a measurement, not a preference.
+      - the fourth view had two names, "This screen" in the doc and "Shop" on the tab. It is Shop in
+        both now.
+- [ ] R12-6 PARKED FOR HIM, because it is a rule change and not mine to make: the terminal runs
+      THREE text weights (400/500/600) against a written ceiling of two. This is the same parked
+      question from 2026-08-15, now with a second screen breaking the same ceiling: the shipped salon
+      page also runs three. Either the ceiling becomes three, or both screens drop one. It currently
+      has neither a fix nor a dated carve-out.

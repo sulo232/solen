@@ -100,7 +100,7 @@ is a dead affordance.
 - **Board**: the stylist row, the wait headline, the decision card, Waiting, Today.
 - **Chairs**: one row per stylist, the same chip at list size, and the only place a chair is freed.
 - **Log**: every action taken today with its time, newest first. The owner asked for this by name.
-- **This screen**: the day's real derived numbers, and one honest line naming what is not wired yet.
+- **Shop**: the day's real derived numbers, and one honest line saying whether the live booking feed is connected. Named Shop here and on the tab; it used to be "This screen" in this doc and "Shop" on the tab, which is two names for one view.
 
 ---
 
