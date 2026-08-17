@@ -21,7 +21,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Bell, BellOff, Clock, LayoutGrid, MoreHorizontal, RotateCcw, Users } from "lucide-react";
+import { Bell, BellOff, Check, Clock, LayoutGrid, MoreHorizontal, RotateCcw, Trash2, UserX, Users } from "lucide-react";
 import { Avatar } from "@/app/[locale]/_components/primitives";
 import StaffChip from "./StaffChip";
 import { minutesLeft, staffTone, waitingTone, TONE_TEXT } from "./status";
@@ -83,6 +83,9 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
   const [replayKey, setReplayKey] = useState(0);
   // Which row has its menu open. One at a time, by id, so a second tap elsewhere closes the first.
   const [menuFor, setMenuFor] = useState<string | null>(null);
+  // Which of the two menus is open. They are separate on purpose: one picks a chair, the other ends
+  // a queue entry, and a single menu doing both was the version he rejected.
+  const [menuKind, setMenuKind] = useState<"chair" | "more">("more");
   // Where the menu goes, in viewport coordinates, measured from the button that opened it. Anchoring
   // it to the ROW put it under the floating bar for anything low on the screen and clean off the
   // screen for a row below the fold; a fixed menu placed from a measured rect cannot do either.
@@ -146,6 +149,26 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
 
   function snapshot() {
     setHistory((prev) => [{ bookings, queue, log }, ...prev].slice(0, 20));
+  }
+
+  // One placement rule for both menus, measured off the control that opened it. Anchoring to the row
+  // put the menu under the floating bar for anything low on the screen.
+  function openMenu(
+    e: React.MouseEvent,
+    id: string,
+    kind: "chair" | "more",
+    rect?: DOMRect,
+  ) {
+    const r = rect ?? (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const height = kind === "chair" ? 56 * Math.max(1, staff.length) + 8 : 56 * 2 + 8;
+    // The floating bar owns the bottom ~96px, so "fits below" has to stop above it, not at the
+    // window edge. Without this the menu opened downward and sat behind the bar by about 20px.
+    const usableBottom = window.innerHeight - 96;
+    const top = r.bottom + height > usableBottom ? r.top - height : r.bottom + 8;
+    setMenuAt({ top: Math.max(16, top), right: Math.max(16, window.innerWidth - r.right) });
+    const sameOne = menuFor === id && menuKind === kind;
+    setMenuKind(kind);
+    setMenuFor(sameOne ? null : id);
   }
 
   function handleUndo() {
@@ -412,7 +435,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                       {inChair
                         ? left === null
                           ? firstName(inChair.customerName)
-                          : `${firstName(inChair.customerName)} · ${left === 0 ? "any minute" : `${left}m`}`
+                          : `${firstName(inChair.customerName)} · ${left === 0 ? "now" : `${left}m`}`
                         : "Free"}
                     </p>
                   </div>
@@ -547,32 +570,40 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                         >
                           {waited === null ? `${entry.estimatedWaitMinutes} min` : `waiting ${waited} min`}
                         </span>
-                        <div className="flex items-center gap-1">
-                          {/* The button names the chair it will use. "Start" alone did not say who,
-                              and the answer was invisible logic (the first free stylist). */}
+                        <div className="flex items-center gap-2">
+                          {/* WHO, as a face rather than a name. The name used to sit on the button,
+                              which put the same stylist on all six rows and then repeated her inside
+                              the menu, so the screen read as if it were stuck. The avatar answers
+                              "which chair" once per row and doubles as the way to change it. */}
+                          {nextFree && (
+                            <button
+                              type="button"
+                              aria-label={`Chair for ${entry.customerName}: ${nextFree.name}. Change it.`}
+                              onClick={(e) => {
+                                const r = (e.currentTarget as HTMLElement).getBoundingClientRect();
+                                openMenu(e, entry.id, "chair", r);
+                              }}
+                              className="flex h-11 w-11 items-center justify-center rounded-full"
+                            >
+                              <Avatar src={nextFree.avatarUrl} name={nextFree.name} size={32} />
+                            </button>
+                          )}
                           <button
                             type="button"
                             onClick={() => handleStart(entry)}
                             disabled={!aChairIsFree}
                             className={ROW_BUTTON + (aChairIsFree ? "" : " opacity-50 cursor-not-allowed")}
                           >
-                            {nextFree ? `Start with ${firstName(nextFree.name)}` : "Start"}
+                            Start
                           </button>
-                          {/* Everything that is NOT the common case lives behind the dots: choosing a
-                              different chair when somebody has been waiting too long, and the two
-                              endings that are not a haircut. Keeping them out of the row is what lets
-                              the row stay one tap. */}
+                          {/* The dots hold the two ENDINGS that are not a haircut, and nothing else.
+                              Mixing the chair picker in here was the mistake: one menu was doing two
+                              unrelated jobs, so neither was obvious. */}
                           <button
                             type="button"
                             aria-label={`More for ${entry.customerName}`}
                             aria-expanded={menuFor === entry.id}
-                            onClick={(e) => {
-                              const r = (e.currentTarget as HTMLElement).getBoundingClientRect();
-                              const MENU_H = 200;
-                              const top = r.bottom + MENU_H > window.innerHeight - 16 ? r.top - MENU_H : r.bottom + 8;
-                              setMenuAt({ top: Math.max(16, top), right: window.innerWidth - r.right });
-                              setMenuFor(menuFor === entry.id ? null : entry.id);
-                            }}
+                            onClick={(e) => openMenu(e, entry.id, "more")}
                             className="flex h-11 w-8 items-center justify-center rounded-full text-s-ink-2"
                           >
                             <MoreHorizontal size={20} strokeWidth={1.75} />
@@ -582,7 +613,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                       {menuFor === entry.id && (
                         <>
                           {/* A full-screen catcher rather than a document listener: one tap anywhere
-                              closes it, including a tap on another row's dots. */}
+                              closes it, including a tap on another row's control. */}
                           <button
                             type="button"
                             aria-label="Close menu"
@@ -590,35 +621,60 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                             className="fixed inset-0 z-40 cursor-default"
                           />
                           <div
-                            className="fixed z-50 w-[220px] overflow-hidden rounded-[20px] bg-white shadow-elevation-3"
+                            className="fixed z-50 w-[240px] overflow-hidden rounded-[20px] bg-white py-1 shadow-elevation-3"
                             style={{ top: menuAt?.top ?? 16, right: menuAt?.right ?? 16 }}
                           >
-                            {freeStaff
-                              .filter((m) => m.id !== nextFree?.id)
-                              .map((m) => (
+                            {menuKind === "chair" ? (
+                              // Every stylist, so the menu answers "who is even here", with the busy
+                              // ones shown and unpickable rather than hidden. A list that silently
+                              // drops people reads as a bug the first time somebody looks for a name.
+                              staff.map((m) => {
+                                const busy = Boolean(chairOf(m.id));
+                                const picked = m.id === nextFree?.id;
+                                return (
+                                  <button
+                                    key={m.id}
+                                    type="button"
+                                    disabled={busy}
+                                    onClick={() => handleStart(entry, m)}
+                                    className={
+                                      "font-body flex h-14 w-full items-center gap-3 px-4 text-left text-[15px] " +
+                                      (busy ? "opacity-50 cursor-not-allowed font-normal" : "font-medium") +
+                                      " text-s-ink"
+                                    }
+                                  >
+                                    <Avatar src={m.avatarUrl} name={m.name} size={32} />
+                                    <span className="min-w-0 flex-1 truncate">{firstName(m.name)}</span>
+                                    {busy ? (
+                                      <span className="font-body shrink-0 text-[13px] font-normal text-s-ink-2">
+                                        busy
+                                      </span>
+                                    ) : picked ? (
+                                      <Check size={18} strokeWidth={2} className="shrink-0 text-s-ink" />
+                                    ) : null}
+                                  </button>
+                                );
+                              })
+                            ) : (
+                              <>
                                 <button
-                                  key={m.id}
                                   type="button"
-                                  onClick={() => handleStart(entry, m)}
-                                  className="font-body flex h-12 w-full items-center px-4 text-left text-[15px] font-medium text-s-ink"
+                                  onClick={() => handleNoShow(entry)}
+                                  className="font-body flex h-14 w-full items-center gap-3 px-4 text-left text-[15px] font-medium text-s-ink"
                                 >
-                                  Start with {firstName(m.name)}
+                                  <UserX size={18} strokeWidth={1.75} className="shrink-0 text-s-ink-2" />
+                                  Did not turn up
                                 </button>
-                              ))}
-                            <button
-                              type="button"
-                              onClick={() => handleNoShow(entry)}
-                              className="font-body flex h-12 w-full items-center border-t border-s-border px-4 text-left text-[15px] font-normal text-s-ink"
-                            >
-                              Did not turn up
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => handleRemove(entry)}
-                              className="font-body flex h-12 w-full items-center border-t border-s-border px-4 text-left text-[15px] font-normal text-s-error"
-                            >
-                              Remove from queue
-                            </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleRemove(entry)}
+                                  className="font-body flex h-14 w-full items-center gap-3 px-4 text-left text-[15px] font-medium text-s-error"
+                                >
+                                  <Trash2 size={18} strokeWidth={1.75} className="shrink-0" />
+                                  Remove from queue
+                                </button>
+                              </>
+                            )}
                           </div>
                         </>
                       )}
