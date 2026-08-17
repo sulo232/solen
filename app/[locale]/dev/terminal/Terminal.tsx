@@ -61,6 +61,7 @@ export interface TerminalQueueEntry {
   position: number;
   ticketCode: string;
   estimatedWaitMinutes: number;
+  joinedAt: string | null;
   startedAt: string | null;
   serviceName: string;
   staffId: string | null;

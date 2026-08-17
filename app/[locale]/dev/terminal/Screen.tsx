@@ -21,7 +21,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Bell, BellOff, Clock, LayoutGrid, RotateCcw, Users } from "lucide-react";
+import { Bell, BellOff, Clock, LayoutGrid, RotateCcw, Scissors, Users } from "lucide-react";
 import { Avatar } from "@/app/[locale]/_components/primitives";
 import { chf, elapsedMinutes, firstName, zurichTime } from "./Terminal";
 import type { TerminalBooking, TerminalQueueEntry, TerminalStaff } from "./Terminal";
@@ -64,6 +64,35 @@ const ROW_BUTTON =
 // The only non-white surface this screen paints, and only for a second and a half.
 const TINT = "transition-colors duration-500";
 
+// The stylist status badge, taken from the reference the owner sent on 2026-08-17: a thick ink
+// outline around the photo with an ink pill straddling its bottom edge, carrying one glyph.
+//
+// measured: PIL on his own screenshot (owner-badge-ref.png, 919x1998px), not eyeballed. Raw pixel
+// readings, then converted at 919px / 390pt = 2.356 px per point:
+//   avatar outer circle   x 366..621  = 256px  -> 108.7pt
+//   photo inside the ring          237px       -> 100.6pt
+//   ring thickness    runs (367,376) and (612,620) = 9.5px -> 4.0pt
+//   badge pill        419..583 x 934..1009 = 165 x 76px    -> 70.0 x 32.3pt
+//   badge overshoot   pill bottom 1009 vs circle bottom 999 = 10px -> 4.2pt below the outline
+// Scaled to our 56px staff photo (56 / 100.6 = 0.557), which keeps every ratio he liked:
+//   ring 4.0 x 0.557 = 2.2  -> 2px      badge 70 x 0.557 = 39  -> 39px wide
+//   overshoot 4.2 x 0.557 = 2.3 -> 2px  badge 32.3 x 0.557 = 18 -> 18px tall
+// Built from a border rather than a Tailwind outline utility on purpose, so nothing here can be
+// mistaken for the focus halo that is dead by name three times over.
+//
+// WHAT THE COLOURS MEAN, which is the part worth arguing about rather than just picking:
+//   green  = this chair is free, somebody can be started right now
+//   ink    = this stylist is working, which is the normal state and therefore the quiet one
+//   red    = something is WRONG, and on this screen exactly one thing can be wrong: a walk-in has
+//            now waited longer than the wait we promised them. That lives on the waiting row, next
+//            to the number it contradicts.
+// A stylist cutting hair is not a fault, so painting them red spends the alarm colour on the most
+// ordinary event in the shop, and then the counter stops reading red as meaning anything. Add
+// `?busy=red` to the URL to render the other choice and compare them instead of arguing.
+const AVATAR_OUTLINE = "rounded-full border-2 border-s-ink";
+const BADGE =
+  "absolute -bottom-[2px] left-1/2 flex h-[18px] w-[39px] -translate-x-1/2 items-center justify-center rounded-full";
+
 export default function Screen({ salonName, bookings: initialBookings, queue: initialQueue, staff }: ScreenProps) {
   const [bookings, setBookings] = useState<TerminalBooking[]>(initialBookings);
   const [queue, setQueue] = useState<TerminalQueueEntry[]>(initialQueue);
@@ -76,12 +105,16 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
   const [freshId, setFreshId] = useState<string | null>(null);
   const [replayKey, setReplayKey] = useState(0);
   const [, forceTick] = useState(0);
+  // `?busy=red` renders the alternative reading of the badge, so the two can be looked at rather
+  // than argued about. Read after mount so the server render and the first client render match.
+  const [busyIsRed, setBusyIsRed] = useState(false);
 
   const audioCtxRef = useRef<AudioContext | null>(null);
   const usedNamesRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     setMounted(true);
+    setBusyIsRed(new URLSearchParams(window.location.search).get("busy") === "red");
   }, []);
 
   // Only the in-chair elapsed minutes are derived from the wall clock, and a minute is the smallest
@@ -205,9 +238,12 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
     setUndo({ message: `${firstName(entry.customerName)} started` });
   }
 
+  // staffId is KEPT on a finished entry on purpose: `chairOf` matches on status "in_chair" as well,
+  // so the chair frees itself, and holding the id is what lets each stylist's own finished count be
+  // a real derived number instead of an invented one.
   function handleDone(entry: TerminalQueueEntry) {
     snapshot();
-    setQueue((prev) => prev.map((q) => (q.id === entry.id ? { ...q, status: "done", staffId: null } : q)));
+    setQueue((prev) => prev.map((q) => (q.id === entry.id ? { ...q, status: "done" } : q)));
     addToLog(`${entry.customerName} done`);
     setUndo({ message: `${firstName(entry.customerName)} done` });
   }
@@ -294,7 +330,23 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                 const inChair = chairOf(member.id);
                 return (
                   <div key={member.id} className="flex w-[64px] shrink-0 flex-col items-center text-center">
-                    <Avatar src={member.avatarUrl} name={member.name} size={56} />
+                    <div className="relative">
+                      <div className={AVATAR_OUTLINE}>
+                        <Avatar src={member.avatarUrl} name={member.name} size={56} />
+                      </div>
+                      <span
+                        className={
+                          BADGE + (inChair ? (busyIsRed ? " bg-s-error" : " bg-s-ink") : " bg-s-success")
+                        }
+                        aria-hidden="true"
+                      >
+                        {inChair ? (
+                          <Scissors size={11} strokeWidth={2} className="text-white" />
+                        ) : (
+                          <span className="h-1.5 w-1.5 rounded-full bg-white" />
+                        )}
+                      </span>
+                    </div>
                     <p className="font-body mt-2 w-full truncate text-[13px] font-medium text-s-ink">
                       {firstName(member.name)}
                     </p>
@@ -381,7 +433,14 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                 <p className={QUIET_LINE + " pt-3"}>Nobody is waiting right now.</p>
               ) : (
                 <ul>
-                  {waitingQueue.map((entry) => (
+                  {waitingQueue.map((entry) => {
+                    // The ONE honest red on this screen. joined_at is a real column on
+                    // barber_walkin_queue (confirmed against the live table, and it was missing from
+                    // the loader until 2026-08-17), so "waited longer than we promised" is a fact the
+                    // data supports, not a state invented to have something to colour.
+                    const waited = entry.joinedAt ? elapsedMinutes(entry.joinedAt) : null;
+                    const overdue = waited !== null && waited > entry.estimatedWaitMinutes;
+                    return (
                     <li key={entry.id} className={ROW}>
                       <div className="min-w-0 flex-1">
                         <p className={ROW_LEAD}>#{entry.ticketCode}</p>
@@ -389,7 +448,14 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                         <p className={ROW_SUB}>{entry.serviceName}</p>
                       </div>
                       <div className="flex shrink-0 flex-col items-end gap-2">
-                        <span className={ROW_TIME}>{entry.estimatedWaitMinutes} min</span>
+                        <span
+                          className={
+                            "font-body text-[13px] tabular-nums " +
+                            (overdue ? "font-medium text-s-error" : "font-normal text-s-ink-2")
+                          }
+                        >
+                          {waited === null ? `${entry.estimatedWaitMinutes} min` : `${waited} min`}
+                        </span>
                         <button
                           type="button"
                           onClick={() => handleStart(entry)}
@@ -400,7 +466,8 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                         </button>
                       </div>
                     </li>
-                  ))}
+                    );
+                  })}
                 </ul>
               )}
             </div>
@@ -437,6 +504,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
             <ul>
               {staff.map((member) => {
                 const inChair = chairOf(member.id);
+                const finished = queue.filter((q) => q.status === "done" && q.staffId === member.id).length;
                 return (
                   <li key={member.id} className={ROW}>
                     <Avatar src={member.avatarUrl} name={member.name} size={44} />
@@ -456,6 +524,9 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                             : inChair.customerName
                           : "Free"}
                       </p>
+                      {/* Colon-and-number rather than "3 finished today": a count sentence needs the
+                          locale's plural grammar, and this screen has no translations yet. */}
+                      <p className={ROW_SUB}>Finished today: {finished}</p>
                     </div>
                     {inChair && (
                       <button type="button" onClick={() => handleDone(inChair)} className={ROW_BUTTON}>
