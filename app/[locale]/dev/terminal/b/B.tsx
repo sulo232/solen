@@ -121,18 +121,28 @@ const SMALL_INK = "font-body text-[13px] font-normal text-s-ink";
 // (about 88% of 390), which is the measured content-divider inset in
 // LOCKFILE:586. first:border-t-0 means the list's own top edge is whitespace.
 const BARE_ROW = "border-t border-s-border py-4 first:border-t-0";
+// The list sheet: white, soft, floating on the grey ground. Rows keep their hairlines
+// INSIDE it, which is the reference's pattern (one soft sheet, quiet lines within).
+const LIST_SHEET = "mt-4 rounded-[32px] bg-white px-5 py-2 shadow-[0_8px_30px_rgba(0,0,0,0.06)]";
 // boxed-ok: GROUPED_CARD is used exactly ONCE on this screen, on the chairs,
 // and with no inner ROW hairlines (the tiles sit side by side, so there is
 // nothing to double against). It is the shipped grouped-list-card container
 // (SalonServices.tsx:118 / SalonTeam.tsx:70), composed not re-declared.
-const CHAIRS_CARD = GROUPED_CARD + " mt-4 p-4";
+// WETO PASS, 2026-08-17. The owner's reference: soft oversized radius, a white card floating on a
+// very light ground with a soft shadow and no hard border. Radius reads far larger than our 24.
+// NOTE ON METHOD, stated because eyeballing a reference is the banned failure here: his screenshot
+// did not land on disk, so this is read off the image on screen, not sampled. The numbers below are
+// therefore PROPOSALS to react to, not measurements, and the moment the file lands they get sampled.
+const CHAIRS_CARD =
+  "mt-4 rounded-[32px] bg-white p-5 shadow-[0_8px_30px_rgba(0,0,0,0.06)]";
 
 // Chrome. The two bars live in ONE sticky wrapper. Round 6 gave the lower bar a
 // hardcoded `top-11` (44px) while the bar above it rendered 65px tall, so the
 // two top-level sections overlapped by 21px the moment the screen scrolled.
 // Stacking them inside one sticky parent deletes the arithmetic that produced
 // the overlap instead of correcting its constant.
-const CHROME_STACK = "sticky top-0 z-30 border-b border-s-border bg-white";
+const CHROME_STACK =
+  "sticky top-0 z-30 mx-auto mt-3 w-[calc(100%-24px)] max-w-[736px] rounded-[28px] bg-white shadow-[0_6px_24px_rgba(0,0,0,0.06)]";
 const CHROME_ROW = "mx-auto flex h-14 w-full max-w-[760px] items-center gap-3 px-6";
 
 // A ROW-scale commit action: the shipped SECONDARY_BUTTON's exact geometry
@@ -520,8 +530,8 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
     <div
       className={
         mounted
-          ? "fixed inset-0 z-[10000] overflow-y-auto overscroll-contain bg-white"
-          : "relative z-[10000] min-h-[100dvh] w-full bg-white"
+          ? "fixed inset-0 z-[10000] overflow-y-auto overscroll-contain bg-[#EDEDED]"
+          : "relative z-[10000] min-h-[100dvh] w-full bg-[#EDEDED]"
       }
     >
       {/* CHROME. One sticky stack, so the bars cannot overlap each other. */}
@@ -558,7 +568,7 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
           24px (about 88% of 390), which is the measured divider inset.
           gap-8 = the 32px between sections. Nothing else lives between them. */}
       {/* pb clears the pinned attention card so the last row never sits under it. 96px is the card (72) plus the 16 gap plus the safe area. */}
-      <div className="mx-auto flex w-full max-w-[760px] flex-col gap-8 px-6 pt-8 pb-[calc(96px+env(safe-area-inset-bottom))]">
+      <div className="mx-auto flex w-full max-w-[760px] flex-col gap-8 px-6 pt-8 pb-[calc(124px+env(safe-area-inset-bottom))]">
         {showingAttention && displayAttentionItems.length > 0 ? (
           <div>
             {/* 2026-08-16: the 28px "{n} need you" heading that used to sit here is DELETED. The
@@ -566,7 +576,7 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
                 (the 2026-07-15 operator decision: "a person or event appears in EXACTLY ONE
                 place"). He selected both of them in the same message, which is what a duplicated
                 fact looks like from the outside. The bar is now the heading for this state. */}
-            <ul>
+            <ul className={LIST_SHEET}>
               <AnimatePresence initial={false}>
                 {displayAttentionItems.map(({ booking, reason }) => (
                   <motion.li
@@ -709,7 +719,7 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
             {waitingActive.length > 0 || waitingNoShow.length > 0 ? (
               <div>
                 <h2 className={HEADING}>Waiting</h2>
-                <ul className="mt-4">
+                <ul className={LIST_SHEET}>
                   <AnimatePresence initial={false}>
                     {waitingActive.map((entry) => {
                       const key = `waiting:${entry.id}`;
@@ -786,7 +796,7 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
                   <h2 className={HEADING}>Later today</h2>
                   <span className={SMALL + " shrink-0 tabular-nums"}>{laterTodayActive.length} to go</span>
                 </div>
-                <ul className="mt-4">
+                <ul className={LIST_SHEET}>
                   <AnimatePresence initial={false}>
                     {laterTodayActive.map((booking) => {
                       const isNew = booking.status === "pending_approval";
