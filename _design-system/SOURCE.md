@@ -113,7 +113,7 @@ Solen uses **the colors humans already recognize** from a lifetime of UI exposur
 | Success / Go / Open | Green | `s-success` | `#16A34A` | Toast success, StatusPill "Geöffnet", booking confirmed states |
 | Error / Danger / Closed | Red | `s-error` | `#DC2626` | Toast error, FormFieldError border + text, "Geschlossen", critical alerts |
 | Warning / Caution | Amber | `s-warning` | `#F1AE27` | Toast warning, "Letzte Plätze" notices, validation that's not-blocking |
-| Interactive / Info | Blue | `s-accent` | `#276EF1` | Links, see-all/view-all, active tab/segment, ghost & secondary buttons, tappable rows, inline action labels, interactive icon tints; plus Toast info, focus rings, Spinner, input focus. OFF non-interactive text (eyebrows, body, prices, headings) |
+| Interactive / Info | Blue | `s-accent` | `#276EF1` | Links, inline body links, review counts, Mehr lesen, checkout jump-links; plus Toast info, Spinner, §13.2 stepper discs. ~~see-all/view-all, active tab/segment, ghost & secondary buttons, tappable rows, interactive icon tints, focus rings, input focus~~ , **RETIRED by LOCKFILE §1.5 v3 (2026-06-11, council), which supersedes the v2 "generous" scope by name: see-all / tabs / secondary buttons / icon tints = INK with affordance. Focus rings and input focus are additionally dead by the owner's 2026-08-09 decision (TASTE_LOG). Marker added 2026-08-17 by the weekly law pass; the two rows at §1 lines 80 and 97 already carried it and these two did not.** OFF non-interactive text (eyebrows, body, prices, headings) |
 | Rating | Yellow | `s-star` | `-> LOCKFILE` | Stars only, universal across review surfaces |
 | Save / Love | Hot pink | `--heart-active` | `#FF3366` | Saved-favorite heart fill only |
 | Urgency / Hot | Vermilion | `s-urgency` | `#C2410C` text on `#FFF1E6` bg (V3-D424; was #9A3412) | "Nur X heute" Flame badge only |
@@ -178,7 +178,7 @@ on the page too.
 
 | Token | Hex | Tailwind class | Use |
 |---|---|---|---|
-| `s-accent.DEFAULT` | `#276EF1` | `bg-s-accent` / `text-s-accent` / `border-s-accent` | Text links, see-all/view-all, active/selected tab text, ghost & secondary button text+border, tappable row affordances, inline action labels (Buchen/Wegbeschreibung/Verwalten), "NEW" pill bg, interactive icon tints. NOT eyebrows/bullets, NOT data-emphasis (non-interactive text stays ink) |
+| `s-accent.DEFAULT` | `#276EF1` | `bg-s-accent` / `text-s-accent` / `border-s-accent` | Text that reads as an `<a href>` inside prose: inline body links, review counts, Mehr lesen, Passwort vergessen, checkout Ändern jump-links. ~~see-all/view-all, active/selected tab text, ghost & secondary button text+border, tappable row affordances, "NEW" pill bg, interactive icon tints~~ , **RETIRED by LOCKFILE §1.5 v3 (2026-06-11), same supersession as the §2.5 row above; marker added 2026-08-17.** NOT eyebrows/bullets, NOT data-emphasis (non-interactive text stays ink) |
 | `s-accent.deep` | `-> LOCKFILE` | `bg-s-accent-deep` / `text-s-accent-deep` | Link `:hover`, accent-on-bg `:hover` (DS-6 2026-06-11 re-activation; corrected 2026-07-12, was stale #0F2A99) |
 | `s-accent.pale` | `-> LOCKFILE` | `bg-s-accent-pale` | "Selected" row bg, focus-glow tint, NEW pill bg-light variant |
 
