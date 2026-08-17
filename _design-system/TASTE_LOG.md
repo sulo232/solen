@@ -39,13 +39,22 @@ price number). Confirmed verbatim: **"all ur count correct"** (all 4 "my read" p
 - **Coherent emphasis** (-> CLAUDE.md taste rule #5): weight or colour maps to a
   WHOLE meaningful unit, never an orphan sub-token. The rejected version coloured
   only the "65" but not "from / CHF", which reads as a glitch, not a decision.
-- **Semantic availability = green pill** (-> universal-color convention): an
+- ~~**Semantic availability = green pill** (-> universal-color convention): an
   "open / free / available / next-slot" signal uses the green pastel pill
-  (`text-s-success` on a green-pale bg), not ink text, not a dot.
+  (`text-s-success` on a green-pale bg), not ink text, not a dot.~~
+  **REVERSED , struck 2026-08-17 by the weekly law pass, using the supersession that was already
+  written into the table twelve lines above this one (V3-D443, CONSISTENCY_AUDIT.md:8): the owner
+  rejected the green pill and card availability is plain ink text with no pill. The row was struck;
+  this bullet, which promoted the same dead rule to a UNIVERSAL convention, was not, so the reversal
+  was only half-applied inside one file. `CLAUDE.md`'s availability row ("plain ink text , NO green
+  pill, owner call, do not re-add") is canonical. `REJECTED_TREATMENTS.json` goes further still and
+  deletes the next-slot row from the card entirely (`card-next-slot-row`, 2026-07-15); which of those
+  two is live is a question for him, and it is in the 2026-08-17 report.**
 
 ### Applied in code?
-- ✅ **Green availability pill** applied in `SalonResultCard` (grid + list nextSlot),
-  verified on the real grid results (V3-D442). tsc clean.
+- ~~✅ **Green availability pill** applied in `SalonResultCard` (grid + list nextSlot),
+  verified on the real grid results (V3-D442). tsc clean.~~ Struck by the same reversal; kept so the
+  history stays legible.
 - Pending: card shadow `0_20px_40px_rgba(0,0,0,0.04)` -> `shadow-elevation-2`
   (deferred to the shadow sweep so all card families change together, no divergence).
 
