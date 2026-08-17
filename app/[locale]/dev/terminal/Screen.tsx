@@ -23,8 +23,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Bell, BellOff, Clock, LayoutGrid, RotateCcw, Users } from "lucide-react";
 import { Avatar } from "@/app/[locale]/_components/primitives";
-import StaffChip, { CHIP_OUTER } from "./StaffChip";
-import { staffTone, waitingTone, worstTone } from "./status";
+import StaffChip from "./StaffChip";
+import { minutesLeft, staffTone, waitingTone, TONE_TEXT } from "./status";
 import { chf, elapsedMinutes, firstName, zurichTime } from "./Terminal";
 import type { TerminalBooking, TerminalQueueEntry, TerminalStaff } from "./Terminal";
 import { buildArrivalBooking, getAudioContextCtor, playArrivalChime } from "./prototype";
@@ -250,18 +250,42 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
   const doneCount = queue.filter((q) => q.status === "done").length;
   const bookedToday = todaysBookings.reduce((sum, b) => sum + (b.price ?? 0), 0);
 
-  // The queue's most urgent state, computed once and handed to every free stylist's ring: a chair
-  // standing open while somebody waits is the thing the counter is meant to notice.
-  const queueTone = worstTone(
-    waitingQueue.map((q) => waitingTone(q.joinedAt ? elapsedMinutes(q.joinedAt) : null, q.estimatedWaitMinutes)),
-  );
+  // Two requests for the same slot are both acceptable on their own, so accepting both double-books
+  // the shop with no warning. And a slot that lands inside the queue's own reach collides with the
+  // walk-ins already standing there. Both are said on the card rather than left as arithmetic.
+  function conflictOf(booking: TerminalBooking): string | null {
+    const clash = pendingBookings.find(
+      (b) => b.id !== booking.id && zurichTime(b.startsAt) === zurichTime(booking.startsAt),
+    );
+    if (clash) return `Same slot as ${firstName(clash.customerName)}`;
+    const minutesAway = Math.round((new Date(booking.startsAt).getTime() - Date.now()) / 60_000);
+    if (minutesAway >= 0 && minutesAway < waitMinutes) {
+      return `Queue runs ${waitMinutes} min, this is in ${minutesAway}`;
+    }
+    return null;
+  }
 
   const chairOf = (memberId: string) =>
     queue.find((q) => q.staffId === memberId && q.status === "in_chair") ?? null;
   const freeChairs = staff.filter((member) => !chairOf(member.id)).length;
   const aChairIsFree = freeChairs > 0;
 
-  const waitMinutes = waitingQueue.length ? Math.max(...waitingQueue.map((q) => q.estimatedWaitMinutes)) : 0;
+  // THE JOIN-NOW WAIT, computed rather than read off a column. It used to be
+  // `max(estimated_wait_minutes)`, a number written into the row when the person joined, so it never
+  // moved while every row beneath it ticked, and it reconciled with nothing on screen. This is the
+  // work still in the shop divided by the chairs: everyone waiting at their service's own duration,
+  // plus what is left of each chair, over the number of stylists. Rounded to five so it reads as an
+  // estimate rather than a promise. Falls back to the stored estimate only when no service on the
+  // board has a duration on file.
+  const chairsCount = Math.max(1, staff.length);
+  const workAhead =
+    waitingQueue.reduce((sum, q) => sum + (q.durationMinutes ?? 0), 0) +
+    queue
+      .filter((q) => q.status === "in_chair")
+      .reduce((sum, q) => sum + (minutesLeft(q.startedAt, q.durationMinutes) ?? 0), 0);
+  const computedWait = Math.round(workAhead / chairsCount / 5) * 5;
+  const storedWait = waitingQueue.length ? Math.max(...waitingQueue.map((q) => q.estimatedWaitMinutes)) : 0;
+  const waitMinutes = workAhead > 0 ? computedWait : storedWait;
 
   const navButtons: { key: NavKey; icon: typeof LayoutGrid; label: string }[] = [
     { key: "board", icon: LayoutGrid, label: "Board" },
@@ -284,7 +308,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
 
   const subline =
     activeNav === "board"
-      ? `${waitingQueue.length} people in the queue`
+      ? `If you walk in now. ${waitingQueue.length} people ahead of you.`
       : activeNav === "staff"
         ? `${staff.length} people working today`
         : activeNav === "clock"
@@ -295,7 +319,9 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
     <div className={mounted ? "fixed inset-0 z-[10000] overflow-y-auto bg-white" : "relative z-[10000] min-h-[100dvh] w-full bg-white"}>
       {/* Dark band the white sheet overlaps. Both buttons do something: a control that is only a
           costume is a dead affordance, and this screen has none. */}
-      <div className="relative flex h-[110px] items-center justify-center bg-s-ink px-4">
+      {/* Sticky, 2026-08-17: scrolling 400px used to take the shop's name and both controls off the
+          screen entirely, so the counter lost every piece of context at once. */}
+      <div className="sticky top-0 z-30 flex h-[110px] items-center justify-center bg-s-ink px-4">
         <button
           type="button"
           aria-label="Replay the demo"
@@ -316,37 +342,46 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
       </div>
 
       {/* Sheet: overlaps the band by 20px, very round top corners, drag handle. */}
-      <div className="relative z-10 -mt-5 min-h-[calc(100dvh-90px)] rounded-t-[32px] bg-white pb-[calc(96px+env(safe-area-inset-bottom))]">
+      <div className="relative z-10 -mt-5 min-h-[calc(100dvh-90px)] rounded-t-[32px] bg-white pb-[calc(88px+env(safe-area-inset-bottom)+24px)]">
         <div className="mx-auto mt-[10px] h-1 w-9 rounded-full bg-s-border" />
 
         {/* Staff row: full-bleed horizontal scroll of circular avatars. The board's own answer to
             "who is in a chair", so it belongs to the board and not to every view. */}
         {activeNav === "board" && (
           <div className="overflow-x-auto no-scrollbar">
-            {/* Three 78px chips plus two 16px gaps plus the 20px page padding either side comes to
-                314 of 390, so a fourth stylist starts and crops, which is the scroll promise. */}
+            {/* Three 104px cells plus two 16px gaps plus the 20px page padding either side comes to
+                392 of 390, so a fourth stylist crops immediately, which is the scroll promise. */}
             <div className="flex gap-4 px-5 pb-1 pt-5">
               {staff.map((member) => {
                 const inChair = chairOf(member.id);
+                const left = inChair ? minutesLeft(inChair.startedAt, inChair.durationMinutes) : null;
                 return (
+                  // 104 not 78: the cell is as wide as its widest LINE, not as wide as the photo.
+                  // "Luca · 22 min" truncated to "Luca · 22 ..." at chip width, which is the one
+                  // number the line exists to carry.
                   <div
                     key={member.id}
-                    className="flex shrink-0 flex-col items-center text-center"
-                    style={{ width: CHIP_OUTER }}
+                    className="flex w-[104px] shrink-0 flex-col items-center text-center"
                   >
                     <StaffChip
                       name={member.name}
                       avatarUrl={member.avatarUrl}
-                      tone={staffTone(Boolean(inChair), queueTone)}
+                      tone={staffTone(Boolean(inChair))}
                     />
                     <p className="font-body mt-2 w-full truncate text-[13px] font-medium text-s-ink">
                       {firstName(member.name)}
                     </p>
                     {/* Neutral on purpose: the ring is the indicator, so the word underneath must
-                        not also be a colour. Green "Free" under an orange ring is one stylist
-                        reporting two different states. */}
+                        not also be a colour. And a busy chair says WHEN it frees, because "who is in
+                        it" without "for how long" is the half of the answer nobody needs. The
+                        minutes come from the service's own duration and are omitted, never guessed,
+                        when the service has none on file. */}
                     <p className="font-body w-full truncate text-[13px] font-normal text-s-ink-2">
-                      {inChair ? firstName(inChair.customerName) : "Free"}
+                      {inChair
+                        ? left === null
+                          ? firstName(inChair.customerName)
+                          : `${firstName(inChair.customerName)} · ${left}m`
+                        : "Free"}
                     </p>
                   </div>
                 );
@@ -381,40 +416,60 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                 one booking can be waiting on a decision at once, which is exactly what happens when
                 the second scripted arrival lands before the first is answered. */}
             {pendingBookings.length > 0 && (
-              <div className="mt-8 px-5">
+              <div className="mt-8">
+                {/* ONE section header for the whole group. Every card used to repeat "Needs a
+                    decision", which cost about 90px of a phone screen to say the same thing twice. */}
+                <p className={SECTION + " pb-3"}>
+                  Needs a decision · {pendingBookings.length}
+                </p>
+                <div className="px-5">
                 {pendingBookings.map((booking) => (
-                  // THE ONE CARDED HERO. The merchant law (TASTE_LOG 2026-07-15) allows exactly one
-                  // container per screen and demands bare text for everything else, and this is what
-                  // earns it: it is the only thing on the board that will not resolve itself. The
-                  // container is what says "this one is different from the lists below it", which is
-                  // a job whitespace cannot do when lists sit directly underneath.
+                  // A ROW, not a stacked card. Two stacked cards cost 466px of a 844px screen and
+                  // pushed every queue row below the fold, so the counter opened the board and could
+                  // not see a single person waiting. Accept keeps the ink pill on the right; Decline
+                  // is the rarer action and sits as a text button under the meta.
                   <div
                     key={booking.id}
                     className={
-                      "mb-4 rounded-[24px] border border-s-border p-4 " +
+                      "mb-3 flex items-center gap-3 rounded-[24px] border border-s-border p-4 " +
                       TINT +
                       (freshId === booking.id ? " bg-s-bg-sunken" : " bg-white")
                     }
                   >
-                    <p className="font-body text-[13px] font-semibold text-s-ink-2">Needs a decision</p>
-                    <p className="font-body mt-2 truncate text-[15px] font-medium text-s-ink">
-                      {booking.customerName}
-                    </p>
-                    <p className={ROW_SUB}>
-                      {booking.serviceName} at {zurichTime(booking.startsAt)}
-                    </p>
-                    <div className="mt-3 flex gap-3">
-                      <button type="button" onClick={() => handleAccept(booking)} className="font-body flex h-11 flex-1 items-center justify-center rounded-full bg-s-ink text-[15px] font-semibold text-white">Accept</button> {/* row-ink-ok: the single page-level "needs a decision" commit, not a peer-list row */}
+                    <div className="min-w-0 flex-1">
+                      <p className="font-body truncate text-[15px] font-medium text-s-ink">
+                        {booking.customerName}
+                      </p>
+                      {/* One meta line, not three. The AGE is in it because a request with no age
+                          rots quietly and the counter cannot tell a four-minute-old one from
+                          yesterday's. */}
+                      <p className={ROW_SUB}>
+                        {booking.serviceName} at {zurichTime(booking.startsAt)} · asked{" "}
+                        {elapsedMinutes(booking.createdAt)} min ago
+                      </p>
+                      {/* THE CONFLICT, said out loud instead of left as arithmetic for somebody
+                          mid-cut. Two requests for one slot can BOTH be accepted otherwise, and a
+                          slot inside the current queue's reach collides with the people already
+                          standing there. */}
+                      {conflictOf(booking) && (
+                        <p className="font-body mt-0.5 truncate text-[13px] font-medium text-s-urgency">
+                          {conflictOf(booking)}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex shrink-0 flex-col items-center">
+                      <button type="button" onClick={() => handleAccept(booking)} className="font-body flex h-11 items-center justify-center rounded-full bg-s-ink px-5 text-[15px] font-semibold text-white">Accept</button> {/* row-ink-ok: the single page-level "needs a decision" commit, not a peer-list row */}
                       <button
                         type="button"
                         onClick={() => handleDecline(booking)}
-                        className="font-body flex h-11 w-[120px] items-center justify-center rounded-full border border-s-border bg-white text-[15px] font-medium text-s-ink"
+                        className="font-body flex h-11 items-center px-2 text-[13px] font-medium text-s-ink-2"
                       >
                         Decline
                       </button>
                     </div>
                   </div>
                 ))}
+                </div>
               </div>
             )}
 
@@ -436,33 +491,39 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                     // the loader until 2026-08-17), so "waited longer than we promised" is a fact the
                     // data supports, not a state invented to have something to colour.
                     const waited = entry.joinedAt ? elapsedMinutes(entry.joinedAt) : null;
-                    const tone = waitingTone(waited, entry.estimatedWaitMinutes);
+                    const tone = waitingTone(waited);
+                    const nextFree = staff.find((m) => !chairOf(m.id));
                     return (
                     <li key={entry.id} className={ROW}>
                       <div className="min-w-0 flex-1">
-                        <p className={ROW_LEAD}>#{entry.ticketCode}</p>
-                        <p className={ROW_NAME}>{entry.customerName}</p>
-                        <p className={ROW_SUB}>{entry.serviceName}</p>
+                        {/* The NAME leads. The ticket code used to sit above it, which gave the least
+                            useful thing on the row the top line; it trails the name now. */}
+                        <p className={ROW_NAME + " !mt-0"}>{entry.customerName}</p>
+                        <p className={ROW_SUB}>
+                          {entry.serviceName} · #{entry.ticketCode}
+                        </p>
                       </div>
                       <div className="flex shrink-0 flex-col items-end gap-2">
-                        {/* The row shows only the tone that is legible AND load-bearing: warning
-                            orange measures 1.94:1 on white, below the text floor, so "soon" is
-                            carried by the ring on the board and not faked here with a coloured pip. */}
+                        {/* LABELLED, because "31 min" alone reads as either waited-31 or seen-in-31,
+                            which are opposite meanings on the most important number in the row. */}
                         <span
                           className={
                             "font-body text-[13px] tabular-nums " +
-                            (tone === "late" ? "font-medium text-s-error" : "font-normal text-s-ink-2")
+                            (tone === "free" ? "font-normal " : "font-medium ") +
+                            TONE_TEXT[tone]
                           }
                         >
-                          {waited === null ? `${entry.estimatedWaitMinutes} min` : `${waited} min`}
+                          {waited === null ? `${entry.estimatedWaitMinutes} min` : `waiting ${waited} min`}
                         </span>
+                        {/* The button names the chair it will use. "Start" alone did not say who,
+                            and the answer was invisible logic (the first free stylist). */}
                         <button
                           type="button"
                           onClick={() => handleStart(entry)}
                           disabled={!aChairIsFree}
                           className={ROW_BUTTON + (aChairIsFree ? "" : " opacity-50 cursor-not-allowed")}
                         >
-                          Start
+                          {nextFree ? `Start with ${firstName(nextFree.name)}` : "Start"}
                         </button>
                       </div>
                     </li>
@@ -504,6 +565,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
             <ul>
               {staff.map((member) => {
                 const inChair = chairOf(member.id);
+                const left = inChair ? minutesLeft(inChair.startedAt, inChair.durationMinutes) : null;
                 const finished = queue.filter((q) => q.status === "done" && q.staffId === member.id).length;
                 return (
                   <li key={member.id} className={ROW}>
@@ -511,7 +573,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                     <StaffChip
                       name={member.name}
                       avatarUrl={member.avatarUrl}
-                      tone={staffTone(Boolean(inChair), queueTone)}
+                      tone={staffTone(Boolean(inChair))}
                       size="row"
                     />
                     <div className="min-w-0 flex-1">
@@ -521,9 +583,9 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                         {/* startedAt is nullable in the data, and a made-up elapsed time on a row
                             that never recorded one is exactly the fabrication rule. Name only. */}
                         {inChair
-                          ? inChair.startedAt
-                            ? `${inChair.customerName}, ${elapsedMinutes(inChair.startedAt)} min in the chair`
-                            : inChair.customerName
+                          ? left === null
+                            ? inChair.customerName
+                            : `${inChair.customerName} · ${left} min left`
                           : "Free"}
                       </p>
                       {/* Colon-and-number rather than "3 finished today": a count sentence needs the
@@ -596,20 +658,28 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
 
       {/* Floating bottom pill bar. */}
       <div className="fixed inset-x-4 bottom-[calc(16px+env(safe-area-inset-bottom))] z-20">
-        <div className="mx-auto flex max-w-[360px] items-center justify-between rounded-full bg-white px-3 py-2 shadow-elevation-2">
+        <div className="mx-auto flex max-w-[360px] items-center justify-between rounded-full bg-white px-2 py-2 shadow-elevation-2">
           {navButtons.map(({ key, icon: Icon, label }) => (
             <button
               key={key}
               type="button"
-              aria-label={label}
               aria-current={activeNav === key ? "page" : undefined}
               onClick={() => setActiveNav(key)}
-              className={
-                "flex h-11 w-11 items-center justify-center rounded-full " +
-                (activeNav === key ? "bg-s-bg-sunken" : "")
-              }
+              className="flex h-11 min-w-[56px] flex-col items-center justify-center gap-0.5 rounded-full px-2"
             >
-              <Icon size={20} strokeWidth={1.75} className="text-s-ink" />
+              <Icon
+                size={20}
+                strokeWidth={activeNav === key ? 2 : 1.75}
+                className={activeNav === key ? "text-s-ink" : "text-s-ink-2"}
+              />
+              <span
+                className={
+                  "font-body text-[13px] leading-none " +
+                  (activeNav === key ? "font-semibold text-s-ink" : "font-normal text-s-ink-2")
+                }
+              >
+                {label}
+              </span>
             </button>
           ))}
           <button
@@ -617,16 +687,21 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
             aria-label="This screen"
             aria-current={activeNav === "profile" ? "page" : undefined}
             onClick={() => setActiveNav("profile")}
-            className={
-              "flex h-11 w-11 items-center justify-center rounded-full " +
-              (activeNav === "profile" ? "bg-s-bg-sunken" : "")
-            }
+            className="flex h-11 min-w-[56px] flex-col items-center justify-center gap-0.5 rounded-full px-2"
           >
             {staff[0] ? (
-              <Avatar src={staff[0].avatarUrl} name={staff[0].name} size={36} />
+              <Avatar src={staff[0].avatarUrl} name={staff[0].name} size={20} />
             ) : (
-              <Avatar name="?" size={36} />
+              <Avatar name="?" size={20} />
             )}
+            <span
+              className={
+                "font-body text-[13px] leading-none " +
+                (activeNav === "profile" ? "font-semibold text-s-ink" : "font-normal text-s-ink-2")
+              }
+            >
+              Shop
+            </span>
           </button>
         </div>
       </div>

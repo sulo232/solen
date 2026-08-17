@@ -63,7 +63,13 @@ interface QueueRow {
   // Without it the screen can only repeat the estimate it gave, never notice the estimate was wrong.
   joined_at: string | null;
   started_at: string | null;
-  services: { name_de: string; name_en: string } | { name_de: string; name_en: string }[] | null;
+  // duration_minutes is a real column on `services`, confirmed on the live table. Without it the
+  // board can say who is in a chair but never when that chair frees, which is the one thing the
+  // person at the counter is actually asked all day.
+  services:
+    | { name_de: string; name_en: string; duration_minutes: number | null }
+    | { name_de: string; name_en: string; duration_minutes: number | null }[]
+    | null;
   staff_members:
     | { id: string; name: string; avatar_url: string | null }
     | { id: string; name: string; avatar_url: string | null }[]
@@ -110,7 +116,7 @@ export async function loadTerminalData(): Promise<TerminalData> {
         admin
           .from("barber_walkin_queue")
           .select(
-            "id, customer_name, status, position, ticket_code, estimated_wait_minutes, joined_at, started_at, services(name_de, name_en), staff_members!assigned_barber_id(id, name, avatar_url)"
+            "id, customer_name, status, position, ticket_code, estimated_wait_minutes, joined_at, started_at, services(name_de, name_en, duration_minutes), staff_members!assigned_barber_id(id, name, avatar_url)"
           )
           .eq("salon_id", TERMINAL_SALON_ID)
           .in("status", ["waiting", "in_chair"])
@@ -154,6 +160,7 @@ export async function loadTerminalData(): Promise<TerminalData> {
         estimatedWaitMinutes: row.estimated_wait_minutes ?? 0,
         joinedAt: row.joined_at,
         startedAt: row.started_at,
+        durationMinutes: service?.duration_minutes ?? null,
         serviceName: service?.name_en ?? service?.name_de ?? "Service",
         staffId: member?.id ?? null,
         staffName: member?.name ?? null,
