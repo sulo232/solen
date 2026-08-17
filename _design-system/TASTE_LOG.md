@@ -803,6 +803,88 @@ plain icon pass.
 `/de/dev/mock/versions/business-teaser` (three stops).
 ---
 
+## 2026-08-14 to 2026-08-16 , the PDP / terminal / iOS week, recorded off UNMERGED branches
+
+Recorded 2026-08-17 by the weekly law pass. **extends** the "2026-08-03 to 2026-08-10, the account-hub
+week" block above, which is the same shape of record; supersedes nothing in it.
+
+**Read the caveat before the table.** Every decision below sits on a branch that is NOT merged into
+`main`, so this is a record of what he DECIDED, not a description of what the live site does. The three
+branches, measured 2026-08-17: `claude/pdp-styling-updates-b2582b` (56 commits ahead, tip 08-16),
+`claude/offline-booking-device-266b10` (36, tip 08-17), `claude/airbnb-animated-icons-ee4329` (24, tip
+08-15). Anyone building on `main` today will find the old treatment still there and must not read that
+as permission to keep it. This is the fourth consecutive pass to flag stranded branch work (07-27 D5,
+08-03 D5, 08-10 D5), though the pile did shrink this week: `agent-flow-design-overhaul-2af2c2` merged,
+carrying 383 commits onto `main`.
+
+**Rows marked approved-but-unquoted carry no verbatim quote from him.** The commit records an approval,
+a pick or a rejection without quoting him. They are labelled rather than dressed up as his words; if one
+of them was never actually approved, say so and the row comes out.
+
+### Salon PDP (`claude/pdp-styling-updates-b2582b`)
+
+| # | Decision | Owner, verbatim | Record |
+|---|---|---|---|
+| B1 | PDP round 2: the report control comes off every placement (header circle, hero frost, per-review flag, per-photo); rating + count + open status share one line; open status names the hour again ("Geöffnet bis 17:00"); services split one card each; About moves under the address; reviews get a 28px star row with the count in accent; discover-more becomes area pills over a two-column list. Open-green corrected `#22C55E` -> `#1F8900` (2.32:1 -> 4.53:1). | approved-but-unquoted | `1e855dfb7`, 08-15 |
+| B2 | Services group by CATEGORY, one card per category, inline cap 5 -> 6, copied from the booking service step. About collapses to a clamp with an inline toggle. Review rows lose the card AND the per-row hairline, gap -> 28px. The neighbourhood pill is gone from Discover more. | *"separate it"* | `26dc0fa18`, 08-15 |
+| B3 | "Small selection" on Zusatzinformationen was the LIST, not the type: 9 null amenity flags filled, 3 items -> 7. Type unchanged. | *"So small the selection"* | `7ea26870c`, 08-15 |
+| B4 | Review stars measured off his Fresha capture: summary row 26px, per-review row stars stay 13px (a 16px bump reverted). **Superseded one day later by B21.** | *"Make the stars bigger"* | `bcd84d4b0`, `fa0ab16e7`, 08-15 |
+| B5 | Gallery rebalanced to his Bildergalerie reference: venue tab = one column of full-bleed 16/9 photos (358x201), stylist tab = one full-width square plus two half-width. | *"not balance at all, it's just all weird"* | `498d55161`, 08-15 |
+| B6 | Soft black `#1C1C1F` selected state on salon filter pills, review tier pills and booking category pills. **Overruled by B19 the next day. Do not build from this row.** | approved-but-unquoted | `edc5a19a9`, 08-15 |
+| B7 | The About clamp is the documented copy-economy limit (~150 chars / 3 lines); the 4-line / 170-char variant was invented, not law. Collapsed block 91px -> 68px. | approved-but-unquoted | `edc5a19a9`, 08-15 |
+| B8 | Staff gallery switches by avatar disc: 75px discs, 12px spacing, count badge on the disc, name beneath. Measured off his screenshot. | approved-but-unquoted | `edc5a19a9`, 08-15 |
+| B9 | Every already-black FILL becomes soft black `#1C1C1F`; ink TEXT stays `#0A0A0A` by his carve-out; borders, glyphs and alpha scrims untouched. | approved-but-unquoted | `de4dac2ac`, 08-15 |
+| B10 | He picked C: TWO font weights on customer screens (semibold/bold demote to medium), dashboard exempt by name. Accepted cost: the salon name leads by size alone, not weight. | approved-but-unquoted | `66b2a52cc`, `3511941fb`, 08-15 |
+| B11 | "Pakete" is renamed **Combos** in all four locales plus dashboard nav and icon. The retail products section comes off the salon page (component, API and Stripe path kept). | approved-but-unquoted | `b0b5b836e`, 08-15 |
+| B12 | Combo icon = the two-merging-into-one glyph. Same turn: the multi-decision mockup page was rejected as unreadable, so it is one question at a time, one preview, options restyling it in place. | *"the combined two drilling into one"* | `b7b927ca6`, 08-15 |
+| B13 | Green A for the opening-hours dots; the word beside it takes the AA-legible `.text` variant of the same green (4.53:1), because A alone is 2.68:1. Combo card takes "One font". | approved-but-unquoted | `eedd98083`, 08-15 |
+| B14 | His nearby-rail ask ships as TWO rails: "Zuletzt angesehen" (history, hides when empty) and "Ähnliche Stores" (same category, renamed from the old rail). | approved-but-unquoted | `21a9655ff`, `2d6ab4b7f`, 08-15 |
+| B15 | Reviews section rejected as out of place: 8 type sizes -> 4, initials disc 56 -> 44px with the name the heaviest thing in its row, owner-reply tray becomes a left rule instead of a filled box. The big star row was checked and deliberately kept. | *"Looks weird"* | `f052c6e7d`, 08-15 |
+| B16 | Stop producing mockups this round and apply what he had already picked. | approved-but-unquoted | `70ab64cff`, 08-15 |
+| B17 | Review filter pills drop the brackets around the count, on both copies of the reviews list and on the Alle pill in all four locales. | the pill read *"5 star (10)"*; he wants the count with no brackets | `b5a191eb2`, `2a95b7b7d`, 08-15 |
+| B18 | Counts come OFF the star filter pills entirely (asked twice); the total stays on the Alle pill; the star glyph inside the pill gets bigger. **Reverses the counts half of the 2026-07-24 F2 pick (`REMOVED.md`).** | approved-but-unquoted | `d194a86f6`, 08-16 |
+| B19 | The selected pill reverts from black to the calm grey: the black is too harsh and does not match. **Restores the locked design-contract row and `REMOVED.md:41` (owner 2026-06-29); overrules B6.** | approved-but-unquoted | `d194a86f6`, 08-16 |
+| B20 | Chips beat a rating bar chart on the reviews screen, and that stands even though Airbnb uses a chart, because 16 reviews is not a distribution. Only the counts half of the 07-24 pick reverses. | approved-but-unquoted | `ba248514b`, 08-16 |
+| B21 | He tapped the option carrying four changes, now on the real screens: reviewer photo 44 -> 62px; filter pills stop being stretched capsules and take a deliberate 16px corner (this edits the every-button-is-a-capsule rule and a shared control 29 files import); row stars 13 -> 18px, past both references, his taste; the review score becomes the page anchor at 44px, above the "Reviews" heading. **Supersedes B4 on row-star size.** | approved-but-unquoted | `f0ab90328`, `41174f1b9`, `ac1ec574c`, 08-16 |
+| B22 | Preview and mockup pages carry none of the app's furniture (no header, no bottom bar, no cookie strip), and the comparison numbers sit UNDER the thing being judged, never between the controls and it. | approved-but-unquoted | `16c8c6e2c`, `59fcc5ac4`, 08-16 |
+| B23 | The body typeface was never loading on any screen (zero body font files, an empty variable killing the whole stack); he had said repeatedly he kept seeing a font he did not want. Confirms the locked font row, changes nothing in it. | approved-but-unquoted | `cf20e6f52`, 08-16 |
+| B37 | **Left OPEN on purpose:** our own written rules contradict each other on type sizes (one demands 6-7, another caps at 4), named as the third cause of the clutter he complained about. Reconciling it rewrites a locked row across every screen, so it waits on him. | approved-but-unquoted (a question, not an answer) | `2b4f75120`, `cf69073dd`, 08-16 |
+
+### Merchant terminal (`claude/offline-booking-device-266b10`)
+
+| # | Decision | Owner, verbatim | Record |
+|---|---|---|---|
+| B24 | The merchant terminal is the Uber Eats merchant screen MINUS the physical device he explicitly does not want; auto-accept stays the default, so it is a live board and not an approval gate. | approved-but-unquoted | `f94c485be`, 08-15 |
+| B25 | A mockup is composed from the shipping components (Avatar, TabPill, the PDP's grouped-list-card, row and button class strings), never hand-written Tailwind. Confirms FLOORS LAW 9 in his own words. | *"this mockup doesn't reflect our design system ... you're just using inconsistent everything"* | `85f03144a`, 08-15 |
+| B26 | The seven-tab operator screen is rejected: ONE bar of chrome (116px of stacked chrome was measured), it must hold high volume and several people at once, and its rows must be clickable and actionable. | *"why are you making me such a sloppy fucking shit"* · *"what if there is a lot and multiple people"* · *"why don't you make it clickable, for example new booking, how are we gonna do that"* | `50203db09`, 08-15 |
+| B27 | A prototype must DO something on tap: state changes, arrivals, undo, sound. Rendering the data is not a prototype. | *"you just made setup and didn't change the design or nothing ... make actual, like, a fucking prototype"* | `3f8919113`, 08-15 |
+| B28 | A mockup must be in the server HTML from the first byte, not client-only after hydration. | *"The mockup isn't working at all."* | `2d0eb6e2a`, 08-15 |
+| B29 | The operator canvas is WHITE, not grey, and 14 is the workhorse text size, both matching the salon PDP. Measured: the PDP uses 14 forty-five times and 13 thirty-two times; the terminal was 13 forty-nine times and 14 zero times. | *"i dont like ths gray backrgrounf evrth container sh bro and the fonts arent it too bro look how we do it in pdp page of a salon"* | `e31a1b8a8`, 08-16 |
+| B30 | The beige sticky bar is rejected. `#FDF6E7` (`s-warning.bg`) is a legal token in an illegal ROLE: a pastel `.bg` lives on an inline chip or badge, and a bar is white. Third case of the same disease. | *"You made up a random fucking collar that's beige. I don't fucking know it."* | `367442f04`, 08-16 |
+| B31 | Colour means state and nothing else: Accept goes green `#16A34A`, "New" carries no colour because new is an AGE not a state, the black dot and black count are deleted (black is for words), a fact appears once, and a control is named after what you will SEE ("Show the whole day", the whole bar is the button). | approved-but-unquoted (his selections reported, not quoted) | `11d255b31`, 08-16 |
+| B32 | The sixth rejection settles the Screen Principle: a screen is NAMED operator or customer before it is built, and the customer FLOORS LAW is scoped so it stops demanding the sunken grey tray (floor 4) and a semantic-colour moment (floor 1d) on photo-less operator screens. A list of people is ROWS, not a card each. | approved-but-unquoted (expressed by rejection) | `5aa1e12da`, `9ca5063b3`, 08-16 |
+
+### iOS app (`claude/airbnb-animated-icons-ee4329`)
+
+| # | Decision | Owner, verbatim | Record |
+|---|---|---|---|
+| B33 | The whole iOS app is overhauled to match the web's look but with liquid glass and real native motion. **Superseded the same day by B34.** | approved-but-unquoted | `bcbf8c0bd`, 08-14 |
+| B34 | iOS canon = the main web. Light only (his 2026-07-15 rule), and glass kept ONLY in the three placements `THEMING.md` already names. | approved-but-unquoted | `b774dc86c`, 08-14 |
+| B35 | The app must be one to one with the web: every customer web route gets an app equivalent (34 gaps -> 0), with killed features excluded from the denominator by name (chat/messages, vouchers/gift cards). | approved-but-unquoted | `9f6f7ac0d`, `81f88e872`, 08-14 |
+| B36 | The booking time step's SAMPLE slots are fabrication and come out; real availability and a real confirmation screen replace them. Confirms taste rule 1. | approved-but-unquoted | `06255bb23`, `252060ce0`, 08-14 |
+
+**Three collisions this harvest exposes, stated rather than resolved:**
+
+1. **B6 against B19, one day apart.** He picked soft-black selected pills on 08-15, overruling the locked
+   calm-grey row and `REMOVED.md:41` by name, then on 08-16 called the black too harsh and sent it back to
+   calm grey , the same objection he made in June. The newer call wins and `main` was right all along.
+2. **B18 against the 2026-07-24 F2 pick.** He chose chips-with-counts then and killed the counts now.
+   Chips-over-bars survives (B20), so only half of that pick reverses.
+3. **B21 against B4, one day apart.** Row stars measured to 13 on 08-15 off his own Fresha capture, then
+   raised to 18 on 08-16 as his taste deliberately going past both references.
+
+---
+
 ## Locked-rule keyword index (governance backfill, 2026-07-10)
 
 These are LOCKFILE-locked calls that never ran through the Rounds 1-4 mockup-elicitation
