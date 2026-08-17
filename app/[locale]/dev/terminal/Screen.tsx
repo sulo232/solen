@@ -55,9 +55,16 @@ interface Snapshot {
 
 // One shared row grammar for every list on this screen: a hairline above, generous vertical air, no
 // card, no box. The bare row IS the merchant treatment (TASTE_LOG 2026-07-15).
+//
+// TWO WEIGHTS, 2026-08-17. The screen ran three (400/500/600) against a written ceiling of two, and
+// the doc recorded the breach as if it were the spec. The 500 is gone, and nothing was lost, because
+// this system's own contract already says the name leads BY SIZE: a customer's name is 15 against a
+// 13 meta line, which is a clear step without a second lever. 600 is now reserved for the four
+// things that genuinely commit or label: the anchor, the section labels, the buttons, and anything
+// wrong. Measured before: 18 elements at 500. After: none.
 const ROW = "flex items-center gap-3 border-t border-s-border px-5 py-4 first:border-t-0";
 const ROW_LEAD = "font-body text-[13px] font-normal text-s-ink-2";
-const ROW_NAME = "font-body mt-0.5 truncate text-[15px] font-medium text-s-ink";
+const ROW_NAME = "font-body mt-0.5 truncate text-[15px] font-normal text-s-ink";
 const ROW_SUB = "font-body mt-0.5 truncate text-[13px] font-normal text-s-ink-2";
 const ROW_TIME = "font-body text-[13px] font-normal tabular-nums text-s-ink-2";
 const SECTION = "font-body px-5 text-[13px] font-semibold text-s-ink-2";
@@ -541,7 +548,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                       avatarUrl={member.avatarUrl}
                       tone={staffTone(Boolean(inChair))}
                     />
-                    <p className="font-body mt-2 w-full truncate text-[13px] font-medium text-s-ink">
+                    <p className="font-body mt-2 w-full truncate text-[13px] font-normal text-s-ink">
                       {firstName(member.name)}
                     </p>
                     {/* Neutral on purpose: the ring is the indicator, so the word underneath must
@@ -570,7 +577,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
           {/* Only ever visible when a write did NOT land. Red because a board that disagrees with the
               database is the one genuinely wrong state this screen can be in. */}
           {writeError && (
-            <p className="font-body mt-2 text-[13px] font-medium text-s-error">{writeError}</p>
+            <p className="font-body mt-2 text-[13px] font-semibold text-s-error">{writeError}</p>
           )}
           {undo && (
             <div className="mt-2 flex items-center gap-3">
@@ -580,7 +587,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                 onClick={handleUndo}
                 // px-3: the target was 44 tall and 33 wide, which is a thumb-sized miss on the one
                 // control that exists to rescue a mis-tap.
-                className="font-body -mx-3 flex h-11 items-center px-3 text-[13px] font-medium text-s-accent"
+                className="font-body -mx-3 flex h-11 items-center px-3 text-[13px] font-semibold text-s-accent"
               >
                 Undo
               </button>
@@ -615,7 +622,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                     }
                   >
                     <div className="min-w-0 flex-1">
-                      <p className="font-body truncate text-[15px] font-medium text-s-ink">
+                      <p className="font-body truncate text-[15px] font-normal text-s-ink">
                         {booking.customerName}
                       </p>
                       {/* One meta line, not three. The AGE is in it because a request with no age
@@ -630,7 +637,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                           slot inside the current queue's reach collides with the people already
                           standing there. */}
                       {conflictOf(booking) && (
-                        <p className="font-body mt-0.5 truncate text-[13px] font-medium text-s-urgency">
+                        <p className="font-body mt-0.5 truncate text-[13px] font-semibold text-s-urgency">
                           {conflictOf(booking)}
                         </p>
                       )}
@@ -640,7 +647,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                       <button
                         type="button"
                         onClick={() => handleDecline(booking)}
-                        className="font-body flex h-11 items-center px-2 text-[13px] font-medium text-s-ink-2"
+                        className="font-body flex h-11 items-center px-2 text-[13px] font-normal text-s-ink-2"
                       >
                         Decline
                       </button>
@@ -657,7 +664,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                     className="flex items-center gap-3 border-t border-s-border py-4"
                   >
                     <div className="min-w-0 flex-1">
-                      <p className="font-body truncate text-[15px] font-medium text-s-ink">
+                      <p className="font-body truncate text-[15px] font-normal text-s-ink">
                         {booking.customerName}
                       </p>
                       <p className={ROW_SUB}>
@@ -713,7 +720,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                         <span
                           className={
                             "font-body text-[13px] tabular-nums " +
-                            (tone === "free" ? "font-normal " : "font-medium ") +
+                            (tone === "free" ? "font-normal " : "font-semibold ") +
                             TONE_TEXT[tone]
                           }
                         >
@@ -788,7 +795,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                                     onClick={() => handleStart(entry, m)}
                                     className={
                                       "font-body flex h-14 w-full items-center gap-3 px-4 text-left text-[15px] " +
-                                      (busy ? "opacity-50 cursor-not-allowed font-normal" : "font-medium") +
+                                      (busy ? "opacity-50 cursor-not-allowed font-normal" : "font-semibold") +
                                       " text-s-ink"
                                     }
                                   >
@@ -809,7 +816,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                                 <button
                                   type="button"
                                   onClick={() => handleNoShow(entry)}
-                                  className="font-body flex h-14 w-full items-center gap-3 px-4 text-left text-[15px] font-medium text-s-ink"
+                                  className="font-body flex h-14 w-full items-center gap-3 px-4 text-left text-[15px] font-normal text-s-ink"
                                 >
                                   <UserX size={18} strokeWidth={1.75} className="shrink-0 text-s-ink-2" />
                                   Did not turn up
@@ -817,7 +824,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                                 <button
                                   type="button"
                                   onClick={() => handleRemove(entry)}
-                                  className="font-body flex h-14 w-full items-center gap-3 px-4 text-left text-[15px] font-medium text-s-error"
+                                  className="font-body flex h-14 w-full items-center gap-3 px-4 text-left text-[15px] font-normal text-s-error"
                                 >
                                   <Trash2 size={18} strokeWidth={1.75} className="shrink-0" />
                                   Remove from queue
@@ -848,7 +855,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                         <p className={ROW_NAME}>{booking.customerName}</p>
                         <p className={ROW_SUB}>{booking.serviceName}</p>
                       </div>
-                      <span className="font-body shrink-0 text-[13px] font-medium tabular-nums text-s-ink">
+                      <span className="font-body shrink-0 text-[13px] font-semibold tabular-nums text-s-ink">
                         {chf(booking.price)}
                       </span>
                     </li>
@@ -878,7 +885,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                       size="row"
                     />
                     <div className="min-w-0 flex-1">
-                      <p className="font-body truncate text-[15px] font-medium text-s-ink">{member.name}</p>
+                      <p className="font-body truncate text-[15px] font-normal text-s-ink">{member.name}</p>
                       {/* Neutral for the same reason as the board: the ring reports the state. */}
                       <p className="font-body mt-0.5 truncate text-[13px] font-normal text-s-ink-2">
                         {/* startedAt is nullable in the data, and a made-up elapsed time on a row
@@ -918,7 +925,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                 {log.map((line) => (
                   <li key={line.id} className={ROW}>
                     <span className={ROW_TIME + " w-[52px] shrink-0"}>{zurichTime(line.at)}</span>
-                    <p className="font-body min-w-0 flex-1 text-[15px] font-medium text-s-ink">{line.text}</p>
+                    <p className="font-body min-w-0 flex-1 text-[15px] font-normal text-s-ink">{line.text}</p>
                   </li>
                 ))}
               </ul>
@@ -933,20 +940,20 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
           <div className="mt-8">
             <ul>
               <li className={ROW}>
-                <p className="font-body min-w-0 flex-1 text-[15px] font-medium text-s-ink">Finished today</p>
-                <span className="font-body shrink-0 text-[15px] font-medium tabular-nums text-s-ink">
+                <p className="font-body min-w-0 flex-1 text-[15px] font-normal text-s-ink">Finished today</p>
+                <span className="font-body shrink-0 text-[15px] font-normal tabular-nums text-s-ink">
                   {doneCount}
                 </span>
               </li>
               <li className={ROW}>
-                <p className="font-body min-w-0 flex-1 text-[15px] font-medium text-s-ink">Booked today</p>
-                <span className="font-body shrink-0 text-[15px] font-medium tabular-nums text-s-ink">
+                <p className="font-body min-w-0 flex-1 text-[15px] font-normal text-s-ink">Booked today</p>
+                <span className="font-body shrink-0 text-[15px] font-normal tabular-nums text-s-ink">
                   {chf(bookedToday)}
                 </span>
               </li>
               <li className={ROW}>
-                <p className="font-body min-w-0 flex-1 text-[15px] font-medium text-s-ink">Arrival sound</p>
-                <span className="font-body shrink-0 text-[15px] font-medium text-s-ink">
+                <p className="font-body min-w-0 flex-1 text-[15px] font-normal text-s-ink">Arrival sound</p>
+                <span className="font-body shrink-0 text-[15px] font-normal text-s-ink">
                   {soundOn ? "On" : "Off"}
                 </span>
               </li>

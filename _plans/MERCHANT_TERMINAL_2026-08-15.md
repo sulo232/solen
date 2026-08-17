@@ -1761,3 +1761,33 @@ Two halves, running in parallel with file ownership named so they cannot collide
       question from 2026-08-15, now with a second screen breaking the same ceiling: the shipped salon
       page also runs three. Either the ceiling becomes three, or both screens drop one. It currently
       has neither a fix nor a dated carve-out.
+
+
+## ROUND 13 , he called the accept/decline wrong, and he is right, 2026-08-17
+
+Owner: "u understand that there is jo accpt or decilne we have an auto system that tell the booking
+that theres an appointment for ths date not an accept or decline so what is ths" plus a red flag
+about phone bookings, a question about scheduled appointments, and "i want ths terminal sh to be
+connected w dashboard n stuff ... bro im confused can u ask sub agent council".
+
+- [x] R13-1 HE IS RIGHT, AND I HAD ALREADY WRITTEN THE PROOF IN ROUND 1 `verified:` live query this
+      turn: 28 of 28 salons are `booking_confirmation_mode = 'instant'`, ZERO are manual, and 1 of
+      984 bookings has ever been `pending_approval`. Round 1 of this very plan recorded exactly that
+      and concluded "auto-accept stays default and the terminal is a live board rather than a gate".
+      I then built a decision card as the screen's one boxed hero, gave it the only ink button, and
+      spent rounds tuning it. **The research was right and the build ignored it**, which is a worse
+      failure than not having researched: the finding existed, in this file, and did not reach the
+      markup.
+- [ ] R13-2 What replaces the decision card. Council lens running: what is the real "needs a human"
+      event for a salon that auto-confirms, and which of those is DETECTABLE with a column that
+      exists today rather than one we wish existed.
+- [ ] R13-3 THE PHONE-CALL RED FLAG. A Swiss salon takes a large share of bookings by phone. Searched
+      before briefing: `npm run exists "phone booking"` and `"manual booking"` both return 0, the
+      dashboard calendar route contains only `page.tsx` with no insert. Council lens establishing
+      whether a salon can create a booking at all today, why not if not, and which numbers on the
+      terminal silently understate reality while phone bookings live outside the system.
+- [ ] R13-4 TERMINAL VERSUS DASHBOARD. Council lens with a forced recommendation between: separate
+      counter screen, terminal as the mobile home of the dashboard, or terminal replaces the
+      salon-facing dashboard. Must name the cost, what breaks, and the first thing to build.
+- [ ] R13-5 Scheduled appointments beyond today. The loader filters to the current Zurich day, so
+      the terminal cannot show tomorrow. Named, not yet changed.
