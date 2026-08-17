@@ -1991,4 +1991,14 @@ councils view oon anthr session to have more perspective why is that switched of
       picture), or their existing software (weeks, and only for shops that have some). Everything else
       on this workstream is downstream of that pick, so building any of it before he answers is
       building on a guess, which is the failure mode this plan exists to avoid.
-      The board is delivered and measured; nothing else is waiting on me.
+      `verified:` commits c6f546291, c0297eb11, 2cbb023bb, 9a186ecc6 and dc047fdbf, the board at
+      `app/[locale]/dev/outside-bookings/page.tsx`, opened on the tunnel and measured on the rendered
+      page: 4 sizes (13/15/18/30), 2 weights, 3% of characters at weight >= 600 against a 30%
+      ceiling, no horizontal overflow. Five sections: four paths, nine findings, what the hotels did,
+      what the platforms charge, and a recommendation. Nothing else on this workstream waits on me.
+      THE HOTEL LENS ADDED ONE THING WE DO NOT HAVE, and it earns its own line: Booking.com charges
+      no commission on a double booking if the property has had four or fewer in twelve months. That
+      is a PUBLISHED, PRICED TOLERANCE for the platform being wrong. We have the technical half of
+      that defence, `prevent_double_booking` raising 23P01, and nothing at all for the collision that
+      will actually happen, our slot against their paper book, which no constraint can see coming.
+      Parked as its own decision rather than smuggled into this one.
