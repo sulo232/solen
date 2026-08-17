@@ -181,6 +181,36 @@ const MONEY = [
   },
 ];
 
+// THE HOTELS, because he named Booking.com and it is the sharpest comparison available: hotels hit
+// this exact problem thirty years before salons had it. The answer is not what anyone expects.
+const HOTELS = [
+  {
+    point: "They did not solve it with syncing. They solved it by being the book.",
+    detail:
+      "The hotel keeps one system, and everything else is a copy of it. Booking.com says so in its own help pages: always update in your own system, never in ours, because ours gets overwritten.",
+  },
+  {
+    point: "For the small place with no software, the platform IS the book",
+    detail:
+      "A four-room bed and breakfast gets a free calendar they keep by hand. That is Booking.com's whole answer for them. Exactly our shops.",
+  },
+  {
+    point: "They budget for getting it wrong, out loud",
+    detail:
+      "Booking.com charges no commission on a double booking if you have had four or fewer in a year. A company does not write a free-pass rule for something that never happens. It expects about four mistakes a year per place and eats them.",
+  },
+  {
+    point: "Their own calendar sync runs two hours behind",
+    detail:
+      "And they admit in writing it causes double bookings. Airbnb's runs three hours behind and their blocked-out times may not even cross over. Our slots are 15 minutes long. That is not a slow feature, that is noise.",
+  },
+  {
+    point: "Restaurants: only about 17 in 100 bookings came through the platform",
+    detail:
+      "The other 83 arrived by phone or somebody walking in, and staff typed them into the book on the counter. OpenTable was never the main way people booked. It was the book, and the book swallowed the phone.",
+  },
+];
+
 const TONE: Record<Path["verdictTone"], string> = {
   good: "text-s-success",
   hard: "text-s-urgency",
@@ -221,7 +251,7 @@ export default async function OutsideBookingsBoard() {
       </div>
 
       <div className="mt-12">
-        <p className={LABEL}>Six things worth knowing</p>
+        <p className={LABEL}>Nine things worth knowing</p>
         <ul className="mt-1">
           {FACTS.map((f) => (
             <li key={f.fact} className="border-t border-s-border py-5 first:border-t-0">
@@ -230,6 +260,24 @@ export default async function OutsideBookingsBoard() {
             </li>
           ))}
         </ul>
+      </div>
+
+      <div className="mt-12">
+        <p className={LABEL}>What the hotels did, since you asked about Booking.com</p>
+        <ul className="mt-1">
+          {HOTELS.map((h) => (
+            <li key={h.point} className="border-t border-s-border py-5 first:border-t-0">
+              <p className={`${BODY} leading-[1.4]`}>{h.point}</p>
+              <p className={`${META} mt-1`}>{h.detail}</p>
+            </li>
+          ))}
+        </ul>
+        <p className={`${META} mt-4`}>
+          The one thing here we do not have is the last idea in a different form: a published, priced
+          tolerance for getting it wrong. We have the technical half, the database refuses a
+          double booking. We have nothing for the collision that will actually happen, which is our
+          slot against their paper book, and no database can see that one coming.
+        </p>
       </div>
 
       <div className="mt-12">
