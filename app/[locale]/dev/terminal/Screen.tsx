@@ -85,6 +85,13 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
 
   const audioCtxRef = useRef<AudioContext | null>(null);
   const usedNamesRef = useRef<Set<string>>(new Set());
+  // The wait each person had when the page first opened, captured ONCE. Replay rebases to these, so
+  // the tenth run of the demo opens exactly as the first one did rather than a little later.
+  const openingWaitsRef = useRef<Record<string, number>>(
+    Object.fromEntries(
+      initialQueue.filter((q) => q.joinedAt).map((q) => [q.id, elapsedMinutes(q.joinedAt as string)]),
+    ),
+  );
 
   useEffect(() => {
     setMounted(true);
@@ -164,10 +171,22 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
     }
   }
 
+  // Replay has to rebase the CLOCK, not just the rows. Caught by a verifier 2026-08-17: two waiting
+  // people read "waited longer than promised" the instant the demo restarted, because the rows came
+  // back from the seed while their `joined_at` stayed where it was in real time, so a fresh run
+  // opened already late. Every waiting entry restarts at the same fraction of its own promise it had
+  // when the page first loaded, which is what "replay" has to mean for anything time-derived.
   function handleReplay() {
     usedNamesRef.current = new Set();
     setBookings(initialBookings);
-    setQueue(initialQueue);
+    const now = Date.now();
+    setQueue(
+      initialQueue.map((q) => {
+        const opening = openingWaitsRef.current[q.id];
+        if (opening === undefined) return q;
+        return { ...q, joinedAt: new Date(now - opening * 60_000).toISOString() };
+      }),
+    );
     setLog([]);
     setHistory([]);
     setUndo(null);
@@ -346,7 +365,9 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
               <button
                 type="button"
                 onClick={handleUndo}
-                className="font-body flex h-11 items-center text-[13px] font-medium text-s-accent"
+                // px-3: the target was 44 tall and 33 wide, which is a thumb-sized miss on the one
+                // control that exists to rescue a mis-tap.
+                className="font-body -mx-3 flex h-11 items-center px-3 text-[13px] font-medium text-s-accent"
               >
                 Undo
               </button>

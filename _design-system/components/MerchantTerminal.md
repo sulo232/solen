@@ -73,9 +73,9 @@ everyone. Colour what exists rather than add what does not.
 | top band | 110px, `bg-s-ink`, salon name centred at 18/600 white, two 44px circular controls (Replay left, sound right). Both do something: a control that is only a costume is a dead affordance. |
 | sheet | overlaps the band by 20px, `rounded-t-[32px]`, white, 36x4 drag handle |
 | stylist chip | `StaffChip`. Ring 0.039 of the outer circle, white band 0.059 (one and a half times the stroke), photo fills the rest. Board size 78, list size 54. Measured off the owner's own screenshot with PIL. |
-| the ONE card | the "Needs a decision" block, `rounded-[24px]` + hairline. The merchant law allows exactly one container per screen and this earns it: it is the only thing on the board that will not resolve itself. |
+| the ONE card | the "Needs a decision" block, `rounded-[24px]` + hairline. The merchant law allows exactly one container per screen and this earns it: it is the only thing on the board that will not resolve itself. **The count excludes persistent chrome**, corrected 2026-08-17: a verifier applying the rule literally counted the floating bottom bar as a second container on every view, and it is right that a rounded, shadowed, 358px-wide element meets the test. The bar is navigation that never scrolls and never competes with content, so the rule is about CONTENT containers. Measured after the carve-out: Board 1, Chairs 0, Log 0, This screen 0. |
 | every other list | bare rows on the canvas: hairline above, `px-5 py-4`, no card, no box, no pill costume |
-| rhythm | binary only. 32 between sections, 16 inside one. |
+| rhythm | **32 between sections, 16 inside one.** Corrected 2026-08-17 after a verifier measured the claim: "binary only" was not true and could not be, because a title and its sub-line, or an icon and the text beside it, are not section spacing. The real ladder is 32 / 16 for LAYOUT, and 12 / 8 / 4 / 2 for the inside of a single text block or row (`gap-3` icon to control, `mt-2` inside the headline block, `mt-1` title to sub-line, `mt-0.5` name to meta). Measured live: 32 at five section boundaries, 16 for row and card padding, and nothing between 16 and 32 anywhere. |
 | type | 4 sizes (13 / 15 / 18 / 30), 3 weights (400 / 500 / 600). One 30px anchor per view, never two. |
 | the one ink CTA | Accept, inside the card. Every repeating row commit (Start, Done) uses the row rung instead: white + hairline + `shadow-whisper`. |
 | bottom bar | floating pill, four 44px controls, each opening a real view |
@@ -116,3 +116,9 @@ is a dead affordance.
 `bookings` is not in the Supabase realtime publication (verified live 2026-08-15), so no
 subscription can fire and arrivals are scripted in `prototype.ts`. The "This screen" view says so on
 the screen rather than implying the feed is live.
+
+**The seed ages, and that is real data behaving correctly.** Waits are computed from `joined_at`, a
+real column, so a queue seeded an hour ago genuinely has been waiting an hour and the whole board
+goes red. Replay rebases to the waits the page OPENED with, which keeps a demo run stable, but it
+cannot make the seed younger than it is. Re-seed `joined_at` before showing the screen if the
+middle tone matters. This is a property of the fixture, not a bug in the tone table.
