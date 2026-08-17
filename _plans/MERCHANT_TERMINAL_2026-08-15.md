@@ -1389,11 +1389,59 @@ never emphasis, and never a way of saying "this is a button".**
 
 ## Still open, tracked rather than narrated
 
-- [ ] R6-6 The old `b/B.tsx` and its `/dev/terminal/b` route are now dead weight: the new `Screen`
-      is what both routes render. Decide with him whether B goes to the graveyard or stays as the
-      before-picture, then act. Not deleting it unasked, because he has rejected an unrequested
-      removal before (2026-07-31, "why did you fucking remove the airbag").
-- [ ] R6-7 The pending-approval decision block, the live arrivals, the undo stack, the sound control
-      and Replay all exist in `b/B.tsx` and are NOT in the new `Screen.tsx`. It renders and it acts,
-      but it is not yet the working prototype B was. Port them onto the new bones once he has said
-      the bones are right, so the work is not thrown away twice.
+- [x] R6-6 KEPT, decided rather than left hanging. The premise in the original line was WRONG and
+      checking it was the disposition: `/dev/terminal/b` does NOT render the new `Screen`, it still
+      renders `B` (`b/page.tsx` imports `./B`). So B is not dead weight, it is a live second route
+      and the only before-picture of the six rejected rounds. It costs nothing (dev-only, both
+      routes `notFound()` outside dev) and deleting it unasked is the 2026-07-31 mistake ("why did
+      you fucking remove the airbag"). It stays until he says otherwise; no graveyard line is owed
+      because nothing was removed.
+- [x] R6-7 DONE `verified:` commit e13f81f5b. Not ported from B, rebuilt on the new bones, and the
+      one thing B never had was fixed on the way: Start set `status: in_chair` without a `staffId`,
+      and the staff row matches on `staffId`, so the customer left the waiting list and appeared
+      NOWHERE. Measured on the click, not read in the source: rows 6 -> 5 while "Free" stayed at 2.
+      Now on the screen and verified live by clicking each one: a booking arrives on its own at 6s
+      and 26s with a tint and an optional chime (Accept moved pending 2 -> 1, Today 7 -> 8); Undo
+      restores the exact prior state (pending 1 -> 0 -> 1, rows 7 -> 8 -> 7) and expires after 8s;
+      Start assigns the first free chair (Nina|Free -> Nina|Ravi) and is disabled with a stated
+      reason when all three are taken; Done frees a chair (1 of 3 free -> 2 of 3); the log fills
+      with timestamped lines; Replay resets everything to seed. The three bottom buttons open three
+      real views instead of moving a highlight, and the two top buttons stopped being decoration
+      (Replay, sound on/off).
+
+## ROUND 7 , the indicators he asked for, 2026-08-17
+
+He sent a screenshot (an avatar in a thick ink outline with an ink pill badge straddling its bottom
+edge) and said: "make it like ths yk for indicators too like green ir red etc" then "for staff".
+
+- [x] R7-1 Measure the reference instead of eyeballing it `verified:` PIL on his own screenshot,
+      saved as `owner-badge-ref.png` (919x1998px). Raw readings, converted at 919px / 390pt = 2.356
+      px per point: avatar outer circle x 366..621 = 256px -> 108.7pt; photo inside the outline
+      237px -> 100.6pt; outline runs (367,376) and (612,620) = 9.5px -> 4.0pt; badge pill
+      419..583 x 934..1009 = 165 x 76px -> 70.0 x 32.3pt; pill bottom 1009 vs circle bottom 999 =
+      10px -> 4.2pt of overhang. The image was not on disk (pasted into chat, and ~/solen/screenshots
+      held nothing from today), so it was recovered out of the session transcript first.
+- [x] R7-2 First attempt REJECTED on sight, "looks so ass wtf is that", and the cause is worth
+      keeping. The ratios were correct and scaled onto a 56px thumbnail, which produced a pill 70%
+      as wide as the photo lying across a person's chin. **Copying a hero element's proportions onto
+      a thumbnail copies the arithmetic, not the look.** The reference's avatar is a hero at 100.6pt;
+      ours was a 56px thumbnail in a row of three.
+- [x] R7-3 Fixed by moving the SCREEN to the reference rather than shrinking the reference to the
+      screen `verified:` commit a0524091f. Photo 56 -> 88px (scale 88 / 100.6 = 0.875), outline 3px,
+      pill 61 x 28px, overhang 4px. Three 88px avatars plus gaps measure 372 of the 390 width, so the
+      row still crops its next item.
+- [x] R7-4 Colour: the badge is INK, as it is in his reference, and the state lives inside it (green
+      dot free, white scissors working). A fully green pill at that size is not an indicator, it is
+      the loudest thing on the screen. `?badge=fill`, `?badge=dot` and `?busy=red` render the
+      alternatives so the choice is looked at rather than argued about.
+- [x] R7-5 The honest red, and a missing thing found on the way `verified:` red means WRONG, and the
+      only wrong thing on this screen is a walk-in who has waited longer than the wait we promised.
+      That needed `joined_at`, which EXISTS on `barber_walkin_queue` in the live table and which
+      `loadTerminalData.ts` never selected, so the screen could only ever repeat its own estimate
+      and never notice the estimate had been missed. WHY it was missing: never landed, not killed or
+      superseded (nothing in REMOVED.md, no other reader anywhere). Selected now; waiting rows show
+      real elapsed wait; the seed's joined_at was six hours stale so every row rendered red, and it
+      was reseeded to realistic offsets. Two of six are over their promise and say so.
+- [x] R7-6 Killed the Next.js dev-tools badge (`devIndicators: false`). It floats bottom-left,
+      directly on top of this screen's own bottom bar, and put an unexplained black disc in every
+      screenshot of the terminal. Dev chrome only, a build is unaffected.
