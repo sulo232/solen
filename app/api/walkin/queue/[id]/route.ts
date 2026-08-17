@@ -92,6 +92,93 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     return NextResponse.json({ error: "Queue entry status changed concurrently, please retry" }, { status: 409 });
   }
 
+  // ── A WALK-IN IN A CHAIR NOW BLOCKS THAT STYLIST ONLINE ────────────────────────────────────
+  // Found 2026-08-17 while answering the owner's worry that a screen which does not know the whole
+  // day will lie about free chairs. It was already true inside our own product, in the more
+  // dangerous direction: this route put somebody in a chair and touched `availability_slots` not at
+  // all, so a stylist mid-walk-in stayed bookable online and a customer could book the seat that
+  // person was sitting in.
+  //
+  // Blocked rather than deleted, and reversed on every ending, so nothing is lost when a walk-in is
+  // cancelled a minute later. `block_reason` is 'system' because that CHECK is closed to five values
+  // and it is the one meaning "we did this, not the owner", which is also what lets the release
+  // below touch only our own blocks and never one the owner set by hand.
+  //
+  // cas-ok: this is a BULK status flip over a time WINDOW, not a single-row claim, so there is no
+  // one row to re-assert and .maybeSingle() cannot express it. The race it could lose is a customer
+  // booking that same slot in the same instant, and that race is already held by the real guard:
+  // lib/bookings/claim-slot.ts does the compare-and-set on `status='available'`, and the
+  // prevent_double_booking GIST exclusion refuses the overlap at the database. Losing this update
+  // means one slot stays bookable for a few more seconds, which is the state that existed before
+  // this block was written at all. It is deliberately best-effort and never fails the request: the
+  // queue transition above is the source of truth and has already been claimed.
+  const chairStaffId = (update.assigned_barber_id as string | undefined) ?? entry.assigned_barber_id;
+  if (chairStaffId) {
+    try {
+      if (validated.status === "in_chair") {
+        // service_id is nullable on a queue entry, so the duration lookup is conditional and the
+        // fallback is a plain 30 minutes. Blocking the wrong LENGTH is recoverable in a tap; not
+        // blocking at all is the bug being fixed.
+        const { data: svc } = entry.service_id
+          ? await admin
+              .from("services").select("duration_minutes").eq("id", entry.service_id).maybeSingle()
+          : { data: null };
+        const minutes = svc?.duration_minutes ?? 30;
+        const from = new Date();
+        const to = new Date(from.getTime() + minutes * 60_000);
+        // ONE ROW AT A TIME, each with its own compare-and-set, and a conflict on one row skipped
+        // rather than losing the batch. Measured the first time this ran against the live database:
+        // the whole window update was refused with 23P01, because `prevent_double_booking` covers
+        // booked AND blocked, and this stylist had an `available` slot overlapping an already-booked
+        // one. Available rows are exempt from that exclusion, so overlapping availability is legal
+        // to CREATE and illegal to BLOCK, and one statement over a window therefore dies on the
+        // first such row and leaves every other slot bookable. A row that cannot be blocked is one
+        // already overlapping a real booking, which is the case least in need of protection.
+        const { data: candidates } = await admin
+          .from("availability_slots")
+          .select("id")
+          .eq("salon_id", entry.salon_id)
+          .eq("staff_member_id", chairStaffId)
+          .eq("status", "available")
+          .lt("starts_at", to.toISOString())
+          .gt("ends_at", from.toISOString());
+        let blocked = 0;
+        for (const slot of candidates ?? []) {
+          // cas-ok: `.eq("status","available")` IS the precondition and `.select().maybeSingle()`
+          // below reads back whether this row was the one claimed. A null result means a customer
+          // booked it in the same instant, which is a race this deliberately loses: their booking
+          // stands and the chair simply stays unblocked for that slot.
+          const { data: claimed, error: oneErr } = await admin
+            .from("availability_slots")
+            .update({ status: "blocked", block_reason: "system" })
+            .eq("id", slot.id)
+            .eq("status", "available")
+            .select("id")
+            .maybeSingle();
+          if (claimed) blocked += 1;
+          else if (oneErr && oneErr.code !== "23P01") {
+            console.error("[walkin-queue] could not block a chair slot:", slot.id, oneErr);
+          }
+        }
+        if ((candidates?.length ?? 0) && !blocked) {
+          console.error("[walkin-queue] every overlapping slot refused the block for staff", chairStaffId);
+        }
+      } else if (["completed", "no_show", "cancelled"].includes(validated.status)) {
+        const { error: freeErr } = await admin
+          .from("availability_slots")
+          .update({ status: "available", block_reason: null })
+          .eq("salon_id", entry.salon_id)
+          .eq("staff_member_id", chairStaffId)
+          .eq("status", "blocked")
+          .eq("block_reason", "system")
+          .gt("ends_at", new Date().toISOString());
+        if (freeErr) console.error("[walkin-queue] could not release the chair's online slots:", freeErr);
+      }
+    } catch (err) {
+      console.error("[walkin-queue] chair and slot sync failed:", err);
+    }
+  }
+
   // Capture the held card payment when the visit completes: the manual-capture hold
   // becomes an actual charge. Idempotent: a double "done" tap won't double-charge.
   let paymentCaptured: boolean | null = null;
