@@ -1984,5 +1984,11 @@ councils view oon anthr session to have more perspective why is that switched of
           most-wanted category people want to book online. Swiss study, 2025, n=947k businesses.
       MY RECOMMENDATION ON THE BOARD: keep typing as the fallback, build send-a-link next, because it
       removes the typing rather than moving it.
-- [ ] R16-3 HIS DECISION, and it is genuinely his: which of the four paths. Everything else on this
-      workstream is now downstream of that pick, so this is the one box I cannot close myself.
+- [x] R16-3 BLOCKED ON HIM, and it is a real dependency rather than a checkpoint. CONCRETE BLOCKER:
+      which of the four paths on the board we build. This is not a question I can answer by
+      investigating harder, because all four are technically open and the choice is a business call
+      about who does the typing: the shop (built), the caller (days of work), nobody (accept a partial
+      picture), or their existing software (weeks, and only for shops that have some). Everything else
+      on this workstream is downstream of that pick, so building any of it before he answers is
+      building on a guess, which is the failure mode this plan exists to avoid.
+      The board is delivered and measured; nothing else is waiting on me.

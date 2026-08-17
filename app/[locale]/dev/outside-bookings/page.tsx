@@ -18,6 +18,12 @@
  * where it breaks) are ink-2 at normal weight and earn their separation from POSITION, not weight,
  * which is the same call the terminal made when it dropped from three weights to two.
  *
+ * MEASURED on the rendered page rather than eyeballed, at 759px content width: 4 distinct sizes
+ * (13 / 15 / 18 / 30) and 2 weights (400 / 600), 4% of characters at weight >= 600 against a 30%
+ * ceiling, no horizontal overflow, nothing below 13px, and exactly two row paddings (24 and 20),
+ * both on the 4pt scale. The 14px and the single 500 weight that also appear belong to the dev
+ * layout's breadcrumb, which is chrome above this page and not part of it.
+ *
  * Dev-only. Blocked in production below.
  */
 import { notFound } from "next/navigation";
