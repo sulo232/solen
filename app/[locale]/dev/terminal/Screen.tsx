@@ -24,6 +24,7 @@ import { createPortal } from "react-dom";
 import { Bell, BellOff, Clock, LayoutGrid, RotateCcw, Users } from "lucide-react";
 import { Avatar } from "@/app/[locale]/_components/primitives";
 import StaffChip, { CHIP_OUTER } from "./StaffChip";
+import { staffTone, waitingTone, worstTone } from "./status";
 import { chf, elapsedMinutes, firstName, zurichTime } from "./Terminal";
 import type { TerminalBooking, TerminalQueueEntry, TerminalStaff } from "./Terminal";
 import { buildArrivalBooking, getAudioContextCtor, playArrivalChime } from "./prototype";
@@ -65,18 +66,9 @@ const ROW_BUTTON =
 // The only non-white surface this screen paints, and only for a second and a half.
 const TINT = "transition-colors duration-500";
 
-// The ringed avatar and its status badge live in ./StaffChip.tsx, which carries the PIL measurements
-// taken off the owner's own screenshot and the record of the two attempts that missed.
-//
-// WHAT THE COLOURS MEAN, which is the part worth arguing about rather than just picking:
-//   green  = this chair is free, somebody can be started right now
-//   ink    = this stylist is working, which is the normal state and therefore the quiet one
-//   red    = something is WRONG, and on this screen exactly one thing can be wrong: a walk-in has
-//            now waited longer than the wait we promised them. That lives on the waiting row, next
-//            to the number it contradicts.
-// A stylist cutting hair is not a fault, so painting them red spends the alarm colour on the most
-// ordinary event in the shop, and then the counter stops reading red as meaning anything. Add
-// `?busy=red` to the URL to render the other choice and compare them instead of arguing.
+// Every colour on this screen comes from ./status.ts, which is the one place that says what a tone
+// MEANS and what has to be true in the data for it to appear. The ring around a stylist's photo is
+// where it shows (./StaffChip.tsx). Nothing here picks a colour on its own.
 
 export default function Screen({ salonName, bookings: initialBookings, queue: initialQueue, staff }: ScreenProps) {
   const [bookings, setBookings] = useState<TerminalBooking[]>(initialBookings);
@@ -90,17 +82,12 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
   const [freshId, setFreshId] = useState<string | null>(null);
   const [replayKey, setReplayKey] = useState(0);
   const [, forceTick] = useState(0);
-  // `?busy=red` renders the alternative reading of the badge, so the two can be looked at rather
-  // than argued about. Read after mount so the server render and the first client render match.
-  const [busyIsRed, setBusyIsRed] = useState(false);
 
   const audioCtxRef = useRef<AudioContext | null>(null);
   const usedNamesRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     setMounted(true);
-    const params = new URLSearchParams(window.location.search);
-    setBusyIsRed(params.get("busy") === "red");
   }, []);
 
   // Only the in-chair elapsed minutes are derived from the wall clock, and a minute is the smallest
@@ -244,6 +231,12 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
   const doneCount = queue.filter((q) => q.status === "done").length;
   const bookedToday = todaysBookings.reduce((sum, b) => sum + (b.price ?? 0), 0);
 
+  // The queue's most urgent state, computed once and handed to every free stylist's ring: a chair
+  // standing open while somebody waits is the thing the counter is meant to notice.
+  const queueTone = worstTone(
+    waitingQueue.map((q) => waitingTone(q.joinedAt ? elapsedMinutes(q.joinedAt) : null, q.estimatedWaitMinutes)),
+  );
+
   const chairOf = (memberId: string) =>
     queue.find((q) => q.staffId === memberId && q.status === "in_chair") ?? null;
   const freeChairs = staff.filter((member) => !chairOf(member.id)).length;
@@ -325,18 +318,15 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                     <StaffChip
                       name={member.name}
                       avatarUrl={member.avatarUrl}
-                      busy={Boolean(inChair)}
-                      busyIsRed={busyIsRed}
+                      tone={staffTone(Boolean(inChair), queueTone)}
                     />
                     <p className="font-body mt-2 w-full truncate text-[13px] font-medium text-s-ink">
                       {firstName(member.name)}
                     </p>
-                    <p
-                      className={
-                        "font-body w-full truncate text-[13px] font-normal " +
-                        (inChair ? "text-s-ink-2" : "text-s-success")
-                      }
-                    >
+                    {/* Neutral on purpose: the ring is the indicator, so the word underneath must
+                        not also be a colour. Green "Free" under an orange ring is one stylist
+                        reporting two different states. */}
+                    <p className="font-body w-full truncate text-[13px] font-normal text-s-ink-2">
                       {inChair ? firstName(inChair.customerName) : "Free"}
                     </p>
                   </div>
@@ -420,7 +410,7 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                     // the loader until 2026-08-17), so "waited longer than we promised" is a fact the
                     // data supports, not a state invented to have something to colour.
                     const waited = entry.joinedAt ? elapsedMinutes(entry.joinedAt) : null;
-                    const overdue = waited !== null && waited > entry.estimatedWaitMinutes;
+                    const tone = waitingTone(waited, entry.estimatedWaitMinutes);
                     return (
                     <li key={entry.id} className={ROW}>
                       <div className="min-w-0 flex-1">
@@ -429,10 +419,13 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                         <p className={ROW_SUB}>{entry.serviceName}</p>
                       </div>
                       <div className="flex shrink-0 flex-col items-end gap-2">
+                        {/* The row shows only the tone that is legible AND load-bearing: warning
+                            orange measures 1.94:1 on white, below the text floor, so "soon" is
+                            carried by the ring on the board and not faked here with a coloured pip. */}
                         <span
                           className={
                             "font-body text-[13px] tabular-nums " +
-                            (overdue ? "font-medium text-s-error" : "font-normal text-s-ink-2")
+                            (tone === "late" ? "font-medium text-s-error" : "font-normal text-s-ink-2")
                           }
                         >
                           {waited === null ? `${entry.estimatedWaitMinutes} min` : `${waited} min`}
@@ -492,18 +485,13 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
                     <StaffChip
                       name={member.name}
                       avatarUrl={member.avatarUrl}
-                      busy={Boolean(inChair)}
-                      busyIsRed={busyIsRed}
+                      tone={staffTone(Boolean(inChair), queueTone)}
                       size="row"
                     />
                     <div className="min-w-0 flex-1">
                       <p className="font-body truncate text-[15px] font-medium text-s-ink">{member.name}</p>
-                      <p
-                        className={
-                          "font-body mt-0.5 truncate text-[13px] font-normal " +
-                          (inChair ? "text-s-ink-2" : "text-s-success")
-                        }
-                      >
+                      {/* Neutral for the same reason as the board: the ring reports the state. */}
+                      <p className="font-body mt-0.5 truncate text-[13px] font-normal text-s-ink-2">
                         {/* startedAt is nullable in the data, and a made-up elapsed time on a row
                             that never recorded one is exactly the fabrication rule. Name only. */}
                         {inChair
