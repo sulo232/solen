@@ -1836,3 +1836,39 @@ connected w dashboard n stuff ... bro im confused can u ask sub agent council".
       (8bab79b80, ad0888a92), merged neither time, and one left its migration behind so
       `availability_slots.client_id` is live and unused. Until it lands the terminal's wait and free
       chairs understate a real day.
+
+
+## ROUND 14 , the phone-booking design, and his fragility question, 2026-08-17
+
+Owner: "ye but shouldnt there be phone appointment but isnt it rlly fragile if we dont have info abt
+the stores own calender etc how can we do ths can u help it not like uber eats yk can u acc think n
+ask llm council and subagent council".
+
+His worry, stated precisely and correctly: if the shop's real day lives in their own book, then
+typing every phone call into ours as well is DOUBLE ENTRY. Double entry gets forgotten under
+pressure, and the moment it is forgotten the board lies: a free chair that is not free, a wait that
+is too short. A screen that is sometimes wrong is worse than no screen, because staff stop trusting
+it and then stop using it. That is a sharper statement of the risk than anything in our own docs.
+
+- [x] R14-1 OUTSIDE COUNCIL RUN `verified:` `~/.claude/skills/llm-council/scripts/query_llms.py`,
+      two rounds. Gemini answered on the second attempt (the configured `gemini-3-pro-preview` 404s,
+      `gemini-2.5-flash` works, worth fixing in the skill), Grok answered both rounds, and the Claude
+      CLI is unavailable in this sandbox so that seat was empty both times. Round 2 was adversarial:
+      the same models were asked to ATTACK the round 1 answer.
+      ROUND 1, both models independently picked the same option and rejected calendar sync for this
+      segment: make entry so cheap it stops being double entry. Grok's shape: tap a chair, pick
+      15/30/45/60, a block appears in its own colour labelled only with the end time, no name, no
+      service, under four seconds, no keyboard. Its own named failure: shops that need the service or
+      the customer for later recall keep a parallel note anyway.
+      ROUND 2 broke it, and on the question both had dodged. **A nameless block cannot survive a
+      stylist calling in sick, because the shop has to ring those customers back.** Grok's revision:
+      a persistent phone-log entry with a big name field and recent-customer autocomplete, phone
+      number, chair, duration chips; under eight seconds for a repeat customer. Its measurable test:
+      the share of phone bookings that reach the board WITH a name and number, four weeks in.
+      Grok also named the physical reality we would have designed past: the call arrives while the
+      owner is mid-colour with the phone on their shoulder, so a screen tap is awkward and, in a Swiss
+      salon, rude in front of the customer in the chair.
+- [ ] R14-2 Subagent lens running: what the tools these shops actually use do about a phone booking,
+      and specifically whether any of them can READ a calendar the shop already keeps rather than only
+      pushing to it. If they all only push, option (a) is dead for us and should be recorded as dead
+      rather than re-proposed every few months.
