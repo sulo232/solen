@@ -534,21 +534,6 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
             trying to tap is the sentence you just read.
             THE LABEL SAYS WHERE YOU WILL BE, not what happens to the screen. "Hide" describes an
             action on pixels; "Show the whole day" describes the place you land. */}
-        {displayAttentionItems.length > 0 ? (
-          <button
-            type="button"
-            onClick={() => setShowingAttention((v) => !v)}
-            className={CHROME_ROW + " border-b border-s-border text-left"}
-          >
-            <span className="font-body min-w-0 flex-1 truncate text-[15px] font-semibold text-s-ink">
-              {attentionLabel(attentionCount)}
-            </span>
-            <span className={SECONDARY_BUTTON + " pointer-events-none"}>
-              {showingAttention ? "Show the whole day" : "Show only these"}
-            </span>
-          </button>
-        ) : null}
-
         <div className={CHROME_ROW + " justify-between"}>
           <span className="font-body min-w-0 flex-1 truncate text-[15px] font-semibold text-s-ink">{salonName}</span>
           <div className="flex shrink-0 items-center gap-4">
@@ -572,7 +557,8 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
           rule is a border-top on the row child, insets the hairlines to the same
           24px (about 88% of 390), which is the measured divider inset.
           gap-8 = the 32px between sections. Nothing else lives between them. */}
-      <div className="mx-auto flex w-full max-w-[760px] flex-col gap-8 px-6 pb-16 pt-8">
+      {/* pb clears the pinned attention card so the last row never sits under it. 96px is the card (72) plus the 16 gap plus the safe area. */}
+      <div className="mx-auto flex w-full max-w-[760px] flex-col gap-8 px-6 pt-8 pb-[calc(96px+env(safe-area-inset-bottom))]">
         {showingAttention && displayAttentionItems.length > 0 ? (
           <div>
             {/* 2026-08-16: the 28px "{n} need you" heading that used to sit here is DELETED. The
@@ -648,12 +634,25 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
           </div>
         ) : (
           <>
-            {/* The one 28px anchor. Bare on the canvas, no card, no heading:
-                the number IS the heading. */}
+            {/* 2026-08-17. MEASURED off the reference he named as source of truth, not remembered.
+                Airbnb runs a LABEL and a SENTENCE on the same screen and they do different jobs:
+                the small label names the room you are in ("Earnings"), and the big line below it is
+                a SENTENCE carrying the live number inside it, at 2.2x to 2.9x the body:
+                "You've made $0.00 this month"
+                (https://mobbin.com/screens/31c6f0ae-6f71-4866-a25d-25a930e3550f).
+                Ours read "85 min wait", which is a label with a number stuck to it, and it had no
+                title above it at all. Both halves fixed here. */}
             <div>
-              <p className={ANCHOR}>{waitingActive.length === 0 ? "No wait" : `${maxWait} min wait`}</p>
-              <p className={SMALL + " mt-4 tabular-nums"}>
-                {waitingActive.length === 0 ? "Nobody waiting" : `${waitingActive.length} people waiting`}
+              <p className={SMALL}>Today</p>
+              <p className={ANCHOR + " mt-1"}>
+                {waitingActive.length === 0
+                  ? "Nobody is waiting"
+                  : `The wait is ${maxWait} minutes`}
+              </p>
+              <p className={SMALL + " mt-2 tabular-nums"}>
+                {waitingActive.length === 0
+                  ? "Walk-ins go straight to a chair"
+                  : `${waitingActive.length} people in the queue`}
               </p>
             </div>
 
@@ -892,6 +891,30 @@ export default function B({ salonName, bookings: initialBookings, queue: initial
               Undo
             </button>
           </div>
+        </div>
+      ) : null}
+
+      {/* 2026-08-17. THE ATTENTION CARD MOVED FROM THE TOP TO THE BOTTOM, and it is measured off
+          the reference rather than reasoned about: Airbnb's host home puts the thing needing action
+          in a CARD PINNED AT THE BOTTOM, next to the thumb, not in a bar above the fold
+          (https://mobbin.com/screens/8249f9ca-1fdc-4f97-870f-974d6811a36c). A counter terminal is
+          held or reached across, so the same argument applies with more force.
+          It hides while the undo bar is up, because two pinned bars stacked is the 116px of chrome
+          he rejected in round 2, in a new position. */}
+      {displayAttentionItems.length > 0 && !undo ? (
+        <div className="fixed inset-x-0 bottom-0 z-20 px-6 pb-[calc(16px+env(safe-area-inset-bottom))]">
+          <button
+            type="button"
+            onClick={() => setShowingAttention((v) => !v)}
+            className="mx-auto flex w-full max-w-[760px] items-center gap-3 rounded-[24px] border border-s-border bg-white px-5 py-4 text-left shadow-elevation"
+          >
+            <span className="font-body min-w-0 flex-1 truncate text-[15px] font-semibold text-s-ink">
+              {attentionLabel(attentionCount)}
+            </span>
+            <span className={SECONDARY_BUTTON + " pointer-events-none"}>
+              {showingAttention ? "Show the whole day" : "Show only these"}
+            </span>
+          </button>
         </div>
       ) : null}
     </div>
