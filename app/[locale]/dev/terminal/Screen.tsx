@@ -21,8 +21,9 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Bell, BellOff, Clock, LayoutGrid, RotateCcw, Scissors, Users } from "lucide-react";
+import { Bell, BellOff, Clock, LayoutGrid, RotateCcw, Users } from "lucide-react";
 import { Avatar } from "@/app/[locale]/_components/primitives";
+import StaffChip, { CHIP_OUTER } from "./StaffChip";
 import { chf, elapsedMinutes, firstName, zurichTime } from "./Terminal";
 import type { TerminalBooking, TerminalQueueEntry, TerminalStaff } from "./Terminal";
 import { buildArrivalBooking, getAudioContextCtor, playArrivalChime } from "./prototype";
@@ -64,29 +65,8 @@ const ROW_BUTTON =
 // The only non-white surface this screen paints, and only for a second and a half.
 const TINT = "transition-colors duration-500";
 
-// The stylist status badge, taken from the reference the owner sent on 2026-08-17: a thick ink
-// outline around the photo with an ink pill straddling its bottom edge, carrying one glyph.
-//
-// measured: PIL on his own screenshot (owner-badge-ref.png, 919x1998px), not eyeballed. Raw pixel
-// readings, then converted at 919px / 390pt = 2.356 px per point:
-//   avatar outer circle   x 366..621  = 256px  -> 108.7pt
-//   photo inside the ring          237px       -> 100.6pt
-//   ring thickness    runs (367,376) and (612,620) = 9.5px -> 4.0pt
-//   badge pill        419..583 x 934..1009 = 165 x 76px    -> 70.0 x 32.3pt
-//   badge overshoot   pill bottom 1009 vs circle bottom 999 = 10px -> 4.2pt below the outline
-// FIRST ATTEMPT, AND WHY IT WAS WRONG (owner, immediately: "looks so ass wtf is that"). The ratios
-// were scaled onto a 56px thumbnail, giving a 39 x 18px pill: 70% as wide as the photo, sitting
-// across the person's chin. The ratio was right and the RESULT was wrong, because in his reference
-// the avatar is 100.6pt, a hero, and the badge reads as a small chip on a large face. Copying a
-// hero element's proportions onto a thumbnail does not copy the look, it copies the arithmetic.
-// So the photo goes to 88px, close to the reference's own size, and the badge follows it:
-//   scale 88 / 100.6 = 0.875
-//   outline 4.0 x 0.875 = 3.5  -> 3px    badge 70 x 0.875 = 61   -> 61px wide
-//   overshoot 4.2 x 0.875 = 3.7 -> 4px   badge 32.3 x 0.875 = 28 -> 28px tall
-// Three 88px avatars plus gaps come to 372 of the 390 width, so the row still crops its next item.
-// `?badge=dot` renders the small-dot alternative instead, for comparison.
-// Built from a border rather than a Tailwind outline utility on purpose, so nothing here can be
-// mistaken for the focus halo that is dead by name three times over.
+// The ringed avatar and its status badge live in ./StaffChip.tsx, which carries the PIL measurements
+// taken off the owner's own screenshot and the record of the two attempts that missed.
 //
 // WHAT THE COLOURS MEAN, which is the part worth arguing about rather than just picking:
 //   green  = this chair is free, somebody can be started right now
@@ -97,11 +77,6 @@ const TINT = "transition-colors duration-500";
 // A stylist cutting hair is not a fault, so painting them red spends the alarm colour on the most
 // ordinary event in the shop, and then the counter stops reading red as meaning anything. Add
 // `?busy=red` to the URL to render the other choice and compare them instead of arguing.
-const AVATAR_OUTLINE = "rounded-full border-[3px] border-s-ink";
-const BADGE_PILL =
-  "absolute -bottom-1 left-1/2 flex h-[28px] w-[61px] -translate-x-1/2 items-center justify-center rounded-full";
-const BADGE_DOT =
-  "absolute bottom-1 right-1 flex h-[18px] w-[18px] items-center justify-center rounded-full border-2 border-white";
 
 export default function Screen({ salonName, bookings: initialBookings, queue: initialQueue, staff }: ScreenProps) {
   const [bookings, setBookings] = useState<TerminalBooking[]>(initialBookings);
@@ -118,8 +93,6 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
   // `?busy=red` renders the alternative reading of the badge, so the two can be looked at rather
   // than argued about. Read after mount so the server render and the first client render match.
   const [busyIsRed, setBusyIsRed] = useState(false);
-  const [badgeIsDot, setBadgeIsDot] = useState(false);
-  const [badgeIsFilled, setBadgeIsFilled] = useState(false);
 
   const audioCtxRef = useRef<AudioContext | null>(null);
   const usedNamesRef = useRef<Set<string>>(new Set());
@@ -128,8 +101,6 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
     setMounted(true);
     const params = new URLSearchParams(window.location.search);
     setBusyIsRed(params.get("busy") === "red");
-    setBadgeIsDot(params.get("badge") === "dot");
-    setBadgeIsFilled(params.get("badge") === "fill");
   }, []);
 
   // Only the in-chair elapsed minutes are derived from the wall clock, and a minute is the smallest
@@ -340,45 +311,23 @@ export default function Screen({ salonName, bookings: initialBookings, queue: in
             "who is in a chair", so it belongs to the board and not to every view. */}
         {activeNav === "board" && (
           <div className="overflow-x-auto no-scrollbar">
-            <div className="flex gap-4 px-5 pb-1 pt-5">
+            {/* gap-3: three 108px chips plus two 12px gaps plus the 20px page padding either side
+                comes to 388 of 390, so the row fills the width and a fourth stylist crops. */}
+            <div className="flex gap-3 px-5 pb-1 pt-5">
               {staff.map((member) => {
                 const inChair = chairOf(member.id);
-                // The badge itself stays INK, exactly as it is in his reference, and the state is
-                // carried by what sits inside it: a green dot when the chair is free, white scissors
-                // when it is not. A fully green pill was the first try and it read as a coloured
-                // slab pasted over someone's face, because a saturated fill that size stops being an
-                // indicator and becomes the loudest thing on the screen. `?badge=fill` still renders
-                // that version, and `?busy=red` turns the busy pill red, for comparison.
-                const badgeFill = badgeIsFilled
-                  ? inChair
-                    ? busyIsRed
-                      ? " bg-s-error"
-                      : " bg-s-ink"
-                    : " bg-s-success"
-                  : inChair && busyIsRed
-                    ? " bg-s-error"
-                    : " bg-s-ink";
                 return (
-                  <div key={member.id} className="flex w-[100px] shrink-0 flex-col items-center text-center">
-                    <div className="relative">
-                      <div className={AVATAR_OUTLINE}>
-                        <Avatar src={member.avatarUrl} name={member.name} size={88} />
-                      </div>
-                      <span
-                        className={(badgeIsDot ? BADGE_DOT : BADGE_PILL) + badgeFill}
-                        aria-hidden="true"
-                      >
-                        {badgeIsDot ? null : inChair ? (
-                          <Scissors size={16} strokeWidth={2} className="text-white" />
-                        ) : (
-                          <span
-                            className={
-                              "h-2.5 w-2.5 rounded-full " + (badgeIsFilled ? "bg-white" : "bg-s-success")
-                            }
-                          />
-                        )}
-                      </span>
-                    </div>
+                  <div
+                    key={member.id}
+                    className="flex shrink-0 flex-col items-center text-center"
+                    style={{ width: CHIP_OUTER }}
+                  >
+                    <StaffChip
+                      name={member.name}
+                      avatarUrl={member.avatarUrl}
+                      busy={Boolean(inChair)}
+                      busyIsRed={busyIsRed}
+                    />
                     <p className="font-body mt-2 w-full truncate text-[13px] font-medium text-s-ink">
                       {firstName(member.name)}
                     </p>
