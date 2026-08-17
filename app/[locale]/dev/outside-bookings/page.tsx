@@ -1,0 +1,199 @@
+/**
+ * Mockup-scope: whole-page
+ *
+ * Exists-check: `npm run exists outside-bookings` returns 0 matches, run 2026-08-17. The nearest
+ * things are `_plans/MERCHANT_TERMINAL_2026-08-15.md` (the workstream record, prose, not a page) and
+ * `_design-system/TERMINAL_PRINCIPLES.md` (design law, not product options). Net-new: the board he
+ * asked for twice, as something he can open rather than a file he will not.
+ *
+ * THE ASK, verbatim, 2026-08-17: "i still havent gotten the idea board or smth from u n subagents n
+ * evrth like critical stuff like appointments made outside of our platform that isnt using out full
+ * dashboard like how does othr fresha etc do it or booking.com for example and is there smth for
+ * dashboarditself to like be able to conncet".
+ *
+ * Every number and quote here came from a sourced research pass this session: four agents, 25+ live
+ * vendor pages fetched, plus our own database and code. Nothing on this page is recalled.
+ *
+ * EMPHASIS: one weight per section, on the anchor only. The row labels (who does it, what it costs,
+ * where it breaks) are ink-2 at normal weight and earn their separation from POSITION, not weight,
+ * which is the same call the terminal made when it dropped from three weights to two.
+ *
+ * Dev-only. Blocked in production below.
+ */
+import { notFound } from "next/navigation";
+
+const INK = "text-s-ink";
+const MUTED = "text-s-ink-2";
+const LABEL = `font-body text-[13px] font-normal ${MUTED}`;
+const BODY = `font-body text-[15px] font-normal leading-[1.5] ${INK}`;
+const META = `font-body text-[13px] font-normal leading-[1.5] ${MUTED}`;
+
+interface Path {
+  n: string;
+  title: string;
+  what: string;
+  who: string;
+  cost: string;
+  risk: string;
+  verdict: string;
+  verdictTone: "good" | "hard" | "no";
+}
+
+const PATHS: Path[] = [
+  {
+    n: "1",
+    title: "The shop types it in",
+    what:
+      "A phone booking gets entered on the terminal: name, number, stylist, service, time. Built and working today.",
+    who:
+      "What every salon tool does. Fresha 5 steps, Treatwell 5 clicks, Shore 6, Square 9. Phorest wants first name, last name, mobile and email.",
+    cost: "Done. It is on the terminal now.",
+    risk:
+      "This is the fragile one, and you named it before I did. It only works while somebody keeps typing. The day they stop, the board says a chair is free that is not.",
+    verdict: "Necessary, and not enough on its own",
+    verdictTone: "hard",
+  },
+  {
+    n: "2",
+    title: "The caller types it in",
+    what:
+      "The shop says I will send you a link, taps once, and the customer fills in their own name and number on their phone while still on the call.",
+    who:
+      "Nobody in salons does this. Fresha went further in May and had an AI answer the phone instead, English-speaking markets first.",
+    cost: "A send-link button, a short booking page, and one text message. Days, not weeks.",
+    risk:
+      "Some callers will not do it. Older regulars, somebody ringing from a landline. There has to be a fallback, and that is path 1.",
+    verdict: "The one I would build next",
+    verdictTone: "good",
+  },
+  {
+    n: "3",
+    title: "Read the calendar they already keep",
+    what: "We connect to their Google or Apple calendar and block whatever is in it.",
+    who:
+      "Five of seven tools do this. Every single one turns what it finds into busy, never into an appointment.",
+    cost: "Weeks, plus login handling and a stack of edge cases.",
+    risk:
+      "It gives us no name, no service, no price, no money record. Square says so outright and so does Treatwell. Both could have read the event titles and chose not to. And 93% of Swiss small businesses have no online calendar to read in the first place.",
+    verdict: "Not worth it, and a vendor says so in writing",
+    verdictTone: "no",
+  },
+  {
+    n: "4",
+    title: "Plug into the software they already pay for",
+    what:
+      "If the shop runs Salonized or something like it, we talk to that directly. They keep working exactly as they do now and our side stays true.",
+    who:
+      "The only model where the shop enters nothing and the platform stays right. Live in Switzerland today between two other products.",
+    cost: "One integration per product. Real work, and it only pays off once many shops run the same tool.",
+    risk:
+      "Depends entirely on what a shop already has. Useless for the paper-book shops, which is most of them.",
+    verdict: "Later, once we know what they run",
+    verdictTone: "hard",
+  },
+];
+
+const FACTS = [
+  {
+    fact: "Our own product already had the bug you were worried about",
+    detail:
+      "A walk-in sitting in a chair did not stop that stylist being booked online. Measured live, then fixed today.",
+  },
+  {
+    fact: "Every calendar sync gives you busy, never a booking",
+    detail:
+      "Square, Treatwell and Fresha all bring outside events in as blocked time with no customer attached. Two of them say in writing that they refuse to read the details on purpose.",
+  },
+  {
+    fact: "Nobody notices a shop that went quiet",
+    detail:
+      "Across seven products: no alert, no nudge, no check of the till against the calendar. Square runs both in one account and still never flags a sale with no appointment.",
+  },
+  {
+    fact: "93% of Swiss small businesses have no online booking at all",
+    detail:
+      "And hairdressers are the third most-wanted thing people want to book online, behind restaurants and doctors. Swiss study, 2025.",
+  },
+  {
+    fact: "Blocking time out is often more work than entering the booking",
+    detail:
+      "In Fresha it is 9 steps to block versus 5 to enter the real appointment, so telling shops to just block it out makes things worse.",
+  },
+  {
+    fact: "One of them answers your question on their own support page",
+    detail:
+      "Shore asks, as a heading: is Google Calendar suitable as a two-way bridge between two booking systems? Their answer is one word. No.",
+  },
+  {
+    fact: "Phorest gave up on this in public",
+    detail:
+      "Their walk-in sales do not create calendar appointments at all, because a real appointment needs a name, a mobile and an email. A market leader shipping a permanent hole in its own numbers.",
+  },
+];
+
+const TONE: Record<Path["verdictTone"], string> = {
+  good: "text-s-success",
+  hard: "text-s-urgency",
+  no: "text-s-ink-2",
+};
+
+export default async function OutsideBookingsBoard() {
+  if (process.env.NODE_ENV === "production") notFound();
+
+  return (
+    <main className="mx-auto min-h-[100dvh] w-full max-w-[720px] bg-white px-5 pb-24 pt-10">
+      <p className={LABEL}>The question</p>
+      <h1 className={`font-heading mt-2 text-[30px] font-semibold leading-[1.15] ${INK}`}>
+        A shop takes half its bookings by phone. How does our screen know?
+      </h1>
+      <p className={`${META} mt-3 text-[15px]`}>
+        Four ways out, what each really costs, and what the shops that already solved it did. Every
+        number here was checked against a live source this week, not remembered.
+      </p>
+
+      <div className="mt-10">
+        <p className={LABEL}>The four paths</p>
+        <ul className="mt-1">
+          {PATHS.map((p) => (
+            <li key={p.n} className="border-t border-s-border py-6 first:border-t-0">
+              <div className="flex items-baseline gap-3">
+                <span className={`font-body text-[13px] font-normal tabular-nums ${MUTED}`}>{p.n}</span>
+                <h2 className={`font-heading text-[18px] font-semibold ${INK}`}>{p.title}</h2>
+              </div>
+              <p className={`${BODY} mt-2`}>{p.what}</p>
+              <p className={`${META} mt-3`}>Who does it. {p.who}</p>
+              <p className={`${META} mt-2`}>What it costs us. {p.cost}</p>
+              <p className={`${META} mt-2`}>Where it breaks. {p.risk}</p>
+              <p className={`font-body mt-3 text-[15px] font-normal ${TONE[p.verdictTone]}`}>{p.verdict}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="mt-12">
+        <p className={LABEL}>Six things worth knowing</p>
+        <ul className="mt-1">
+          {FACTS.map((f) => (
+            <li key={f.fact} className="border-t border-s-border py-5 first:border-t-0">
+              <p className={`${BODY} leading-[1.4]`}>{f.fact}</p>
+              <p className={`${META} mt-1`}>{f.detail}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="mt-12 border-t border-s-border pt-6">
+        <p className={LABEL}>What I would do</p>
+        <p className={`font-heading mt-2 text-[18px] font-semibold leading-[1.35] ${INK}`}>
+          Keep the typing as the fallback it is, and build the send-a-link version next.
+        </p>
+        <p className={`${META} mt-3 text-[15px]`}>
+          It is the only path that removes the typing instead of moving it, the customer ends up in
+          the system properly with their own details, and it is days of work rather than weeks. The
+          calendar-reading idea sounds like the answer and is not: it would hand us busy blocks with
+          nobody attached, from a calendar most of these shops do not keep.
+        </p>
+      </div>
+    </main>
+  );
+}
