@@ -211,6 +211,19 @@ INK_TERNARY = re.compile(
     re.IGNORECASE,
 )
 
+# 2026-08-18. The gate's OWN docstring names this case and it passed anyway: an ink fill written as
+# an inline style rather than a class, `style={{background: sel === x ? "#0A0A0A" : "#fff"}}`.
+# INK_TERNARY only ever looked inside a className string, so a selected state painted through the
+# style prop was invisible to it. Same banned fill, different spelling, which is the second of the
+# five failure shapes in GATE_LAW.md: the scope reached the file and the grammar did not.
+INK_STYLE_TERNARY = re.compile(
+    r"style\s*=\s*\{\{[^}]{0,200}?"                       # inside an inline style object
+    r"(?:background|backgroundColor|background-color)\s*:\s*"
+    r"[^}]{0,120}?\?[^}]{0,120}?"                         # a ternary in the value
+    r"[\"'`]\s*(?:#0a0a0a|#000000|#000|black|rgb\(\s*0\s*,\s*0\s*,\s*0\s*\))\s*[\"'`]",
+    re.IGNORECASE,
+)
+
 # Const-based selected classes: `const SEL = "border-s-accent bg-s-accent ..."` then
 # `selected ? SEL : REST` , the token is off the ternary line, so INK_TERNARY misses it.
 SEL_CONST = re.compile(
@@ -310,6 +323,16 @@ def offenders(text):
         if NOT_SELECTION.search(cond) or is_booking_exempt(cond):
             continue
         if not SELECTION_COND.search(cond):
+            continue
+        out.append(m)
+    # The same banned fill written as an inline style rather than a class (2026-08-18). The
+    # condition is inside the match, so read the whole match as the context for the same
+    # selection / not-selection / booking tests the className path uses.
+    for m in INK_STYLE_TERNARY.finditer(text):
+        ctx = m.group(0)
+        if NOT_SELECTION.search(ctx) or is_booking_exempt(ctx):
+            continue
+        if not SELECTION_COND.search(ctx):
             continue
         out.append(m)
     # Const-based selected class (blue/ink off the ternary line). Same date/slot/commit exemption.
