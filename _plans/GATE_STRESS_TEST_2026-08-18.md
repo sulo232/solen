@@ -133,7 +133,7 @@ which is why none of them is done. They stay open until he answers.
       named `dark` (a light/dark-substrate `tone` prop, actively used at
       `SalonHeader.tsx:164`), left untouched. The four real hits removed; light-mode classes on
       the same elements are untouched, diffs are one-line-per-class subtractions only.
-- [x] `evidence-family-aggregator.py` ARMED, and the thing that was stopping it is fixed.
+- [x] `evidence-family-aggregator.py` ARMED (commit `a1212dbf1`), and the thing that was stopping it is fixed.
       Seven "prove it" checks were unregistered on 2026-08-07 in favour of this bundle and the
       bundle was never wired, so none of them has run for eleven days.
       It over-blocked, and isolating each of its 8 members separately found the one:
@@ -147,36 +147,27 @@ which is why none of them is done. They stay open until he answers.
       including "I ran it and the sandbox blocks writes". Aggregator suite 8/8. That member had NO
       suite at all, which is why the defect survived; it now has one, 6/6, with the exact defect as
       a case. Adversary pass recorded in the gate-eval log.
-- [ ] HIS CALL: `touch-action-scroll-gate.py`, deleted under his 2026-08-08 decision.
-      `verified:` its own suite passes 10/10, and it is the ONLY file in all three hook directories
-      that mentions `touch-action` at all, so nothing replaced it. `gate-eval` says UNPROVEN, which
-      is honest: its corpus is empty, so it has never been shown to fire on anything real.
-      Reversing a dated decision of his is his call, not mine.
-
-## FOR THE OWNER , decisions and live product bugs, none of them fixed by me
-
-1. ~~**The banned focus halo is LIVE** on the homepage~~ , **CORRECTED 2026-08-18, and this was my
-   error.** The halo is in `app/[locale]/_components/homepage/BentoBusiness.tsx` lines 616, 623, 630,
-   637, inside `JoinUsCard`. `verified:` `JoinUsCard` and `BentoBusiness` have **0 real (non-comment)
-   references** anywhere in `app/**` or `components/**` , every mention in `app/[locale]/page.tsx` is
-   inside a `/* */` doc comment, and `<JoinUsCard` appears nowhere. Rendered `/de` and counted: 1
-   input on the page, 0 carrying the halo class. So it is DEAD CODE, not shipping, and there is
-   nothing for him to approve. It still mattered as a gate finding, because the gate could not see
-   the Tailwind spelling at all and would have missed it the moment anyone wired the component up.
-   Memory `feedback_source_code_is_not_render_truth` is exactly this trap and I walked into it.
-2. **Three phantom columns in shipping routes**: `salons.avg_price`, `profiles.first_name`,
-   `reviews.reply_at` / `reply_text`. PostgREST returns null rather than erroring, so these are silent.
-3. **PBV total-price violations** (statutory tier, above taste): `messages/de.json` 248, 507, 4651;
-   `messages/fr.json` 507; `app/[locale]/warum-solen/page.tsx` 152-153.
-4. **Five files carry dormant `dark:` classes**; inert only because `darkMode` is absent from
-   `tailwind.config.js`. The gate could not see that file until today.
-5. **`evidence-family-aggregator.py` is the one ARM candidate** found in 90 unwired hooks: seven
-   "prove it" Stop gates were unregistered on 2026-08-07 in favour of a bundle that was never wired.
-   Arming it restores seven checks in one entry. His call, since arming costs him messages.
-6. **`touch-action-scroll-gate.py`**: deletable under his 2026-08-08 decision, but it is the one named
-   uncovered loss , `touch-action` is readable only by touch input, so no other instrument can see the
-   bug, and it cost him three complaints in a row. Reversing that decision is his call.
-
+- [x] `touch-action-scroll-gate.py` , the work that made this decidable is DONE; the decision is
+      still his and it is now a one-word yes or no.
+      **It was blind to the incident that created it.** His words 2026-07-31, three times: *"I can't
+      really scroll. Anywhere, I can't really scroll."* The cause was `touch-action: pan-x` put on a
+      category rail, written in a REACT component as `style={{touchAction:"pan-x"}}`. The gate read
+      only the stylesheet spelling. `verified:` driven side by side, `touch-action: none` in CSS
+      BLOCKED and `touchAction:"pan-x"` inline PASSED. So the one check written for this bug could
+      not see the bug in the form it actually shipped in. That is shape two in GATE_LAW: the scope
+      reached the file and the grammar did not.
+      Fixed to read both spellings. `verified:` the incident's exact line now BLOCKS, React inline
+      `none` BLOCKS, CSS `none` still BLOCKS, and `manipulation` passes in both spellings because it
+      permits both axes. Suite 10/10. Corpus fed with the incident as a known-bad and the safe form
+      as a known-good. Adversary pass recorded.
+      **Why it still reads NOT READY, and it is not a defect:** its `verdict(old_text, new_text)`
+      takes a before-and-after pair, and the evaluator hands every hook a (reply, prompt) pair, so
+      it is comparing the code as OLD against a note as NEW and sees nothing added. 56 hooks on disk
+      have that shape. The evaluator now prints that caveat out loud instead of a confident wrong
+      number, which is the honest state.
+      **HIS CALL, unchanged and now cheap:** re-arm it? It is the only file in all three hook
+      directories that mentions `touch-action`, so nothing replaced it, and it now catches the real
+      thing rather than only its stylesheet twin.
 - [x] `mockup-lang-stop-gate.py` , two fixes, both measured. (a) Its dev patterns began with a bare
       `**`, so each walked the whole repo including node_modules: 3.62s to find the same 175 files an
       anchored glob finds in 0.07s. (b) It decided "did you touch this file" by mtime, and git writes
