@@ -136,7 +136,7 @@ fixed AND re-attacked by an agent that did not write the fix (run `wf_3859ceaf-7
       documented allow path: `plan_touched_since()` is True in the worktree because I edited
       `_plans/GATE_STRESS_TEST_2026-08-18.md` this turn, and False in main. Proved by calling it
       directly with the same 10-minute stamp against both roots. Selftest 10/10.
-- [x] `exists-guard.py` , CLOSED, after the adversary broke the first attempt two ways.
+- [x] `exists-guard.py` (commit `6d207e9d3`) , CLOSED, after the adversary broke the first attempt two ways.
       `verified:` all four of its escapes now BLOCK end to end (`skipped, ship it`,
       `assumed net-new`, `probably fine`, `I will look at this later`) and all three real forms
       still pass (the documented marker, the markdown bullet, `extends SalonCard.tsx`).
@@ -151,7 +151,7 @@ fixed AND re-attacked by an agent that did not write the fix (run `wf_3859ceaf-7
       estate-wide by global rule 15.
 - [ ] `information-is-not-action-gate.py` , a multi-sentence imperative escapes, because only the last sentence is read
 - [ ] `say-whats-next-gate.py` , misses implemented/updated/refactored/created/wrote; blocks "nothing was measured"
-- [x] `mockup-base-gate.py` , over-block cut from 98 to 59 of the repo's own 175 dev files, suite 9/9.
+- [x] `mockup-base-gate.py` (commit `a7f3bb175`) , over-block cut from 98 to 59 of the repo's own 175 dev files, suite 9/9.
       `verified:` all 98 denials were the imagery floor, applied to EVERY dev `.tsx` once the scope
       widened. FLOORS LAW 2 does not say every screen: it says "every customer browse/discovery/PDP
       viewport" and exempts forms, checkout, legal and receipts by name. A motion demo or a
@@ -161,10 +161,17 @@ fixed AND re-attacked by an agent that did not write the fix (run `wf_3859ceaf-7
       The remaining 59 are PDP/salon/search pages with no photo, which is the floor doing its job.
       Two fixtures had encoded the over-broad rule and were NOT edited to suit the change: the rule
       was widened until it satisfied both the law and the existing suite.
-- [ ] `mockup-preflight-manifest.py` , denies 99 of 175, every one for a missing `Grounded-in`
-      citation. Same over-block class, different cause: a citation requirement applied retroactively
-      to files written before it existed. Not yet fixed.
-- [x] `no-focus-ring-gate.py` , CLOSED. `verified:` I drove all three adversary payloads myself:
+- [x] `mockup-preflight-manifest.py` , over-block cut from 99 to 24 of the repo's own 175 dev files,
+      suite 8/8. `verified:` a NEW mockup with no citation still BLOCKS (driven against a path that
+      does not exist on disk, so the grandfather cannot be reached); an EXISTING file rewritten
+      unchanged now passes.
+      My first attempt asked "did it have a citation before" and the measured count did not move at
+      all, which is how I learned the real cause: most of these files DO carry a citation, it just
+      points at a component that has since moved or been renamed. The right question is whether
+      THIS EDIT made it worse, so the check now runs against the on-disk content first and stays
+      quiet when it was already failing. The other eleven checks in the aggregator still run on
+      every file, so this buys the aggregator its survival rather than weakening it.
+- [x] `no-focus-ring-gate.py` (commit `6d207e9d3`) , CLOSED. `verified:` I drove all three adversary payloads myself:
       `focus:shadow-[0px_0px_0px_3px_rgba(255,255,255,0.4)]` -> BLOCK(deny);
       `outline:2px solid var(--s-ink)` -> pass; `outline:solid 2px #276EF1` (reversed order) ->
       BLOCK(deny). Today's four earlier cases still hold.
@@ -172,13 +179,13 @@ fixed AND re-attacked by an agent that did not write the fix (run `wf_3859ceaf-7
 - [ ] `no-black-selected-gate.py` , inline `style={{background:'#0A0A0A'}}` passes; filter pills wrongly exempted
 - [ ] `entity-card-gate.py` , `rounded-3xl` (same 24px) still blocks; 400-char exemption window leaks
 - [ ] `unfinished-batch-gate.py` , a `HEAD~3` window cannot mean "this turn"
-- [x] `no-verify-commit-gate.py` , CLOSED. `verified:` a backslash-continued
+- [x] `no-verify-commit-gate.py` (commit `6d207e9d3`) , CLOSED. `verified:` a backslash-continued
       `git commit -m "x" \` newline `--no-verify` -> BLOCK(deny), and the read-only
       `grep -n "no-verify-commit-gate" ~/.claude/settings.json` still -> pass.
-- [x] `white-only-web-gate.py` , CLOSED. `verified:` `type P={darkMode:"on"|"off"}` in a .tsx ->
+- [x] `white-only-web-gate.py` (commit `6d207e9d3`) , CLOSED. `verified:` `type P={darkMode:"on"|"off"}` in a .tsx ->
       pass; `module.exports={darkMode:"class"}` in `tailwind.config.js` -> BLOCK(deny). The iOS
       exemption and the CSS `prefers-color-scheme` case were re-checked earlier and hold.
-- [x] `mockup-lang-stop-gate.py` , CLOSED, on the fourth attempt, and the first three all failed the
+- [x] `mockup-lang-stop-gate.py` (commits `6b9b319f6`, `7ae44f110`) , CLOSED, on the fourth attempt, and the first three all failed the
       same way: each answered "did this turn WRITE the file" with a different proxy. mtime said yes
       for every file in a worktree. `git status` said no the moment you committed, and this project
       commits often. Diffing against HEAD, my own first attempt today, reintroduced the commit bug
