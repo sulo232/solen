@@ -133,8 +133,20 @@ which is why none of them is done. They stay open until he answers.
       named `dark` (a light/dark-substrate `tone` prop, actively used at
       `SalonHeader.tsx:164`), left untouched. The four real hits removed; light-mode classes on
       the same elements are untouched, diffs are one-line-per-class subtractions only.
-- [ ] HIS CALL: arm `evidence-family-aggregator.py`, which restores seven "prove it" checks in one
-      entry. It costs him messages, and message count is his standing complaint, so it is his.
+- [x] `evidence-family-aggregator.py` ARMED, and the thing that was stopping it is fixed.
+      Seven "prove it" checks were unregistered on 2026-08-07 in favour of this bundle and the
+      bundle was never wired, so none of them has run for eleven days.
+      It over-blocked, and isolating each of its 8 members separately found the one:
+      `env-claim-needs-evidence-gate.py` accepted only SEVEN magic phrases, so the vague "just
+      tested" passed while the specific "I tried the Edit tool on settings.json just now and it
+      wrote successfully" was REFUSED, with a real Bash probe and a real Edit both sitting in the
+      transcript. It punished the reply that names what ran.
+      `verified:` widened to ordinary descriptions of having run something and seen a result; the
+      `probed` requirement (a real tool call in the transcript, which is the half that stops a claim
+      from memory) is untouched. A memory claim with no probe still BLOCKS in three wordings,
+      including "I ran it and the sandbox blocks writes". Aggregator suite 8/8. That member had NO
+      suite at all, which is why the defect survived; it now has one, 6/6, with the exact defect as
+      a case. Adversary pass recorded in the gate-eval log.
 - [ ] HIS CALL: `touch-action-scroll-gate.py`, deleted under his 2026-08-08 decision.
       `verified:` its own suite passes 10/10, and it is the ONLY file in all three hook directories
       that mentions `touch-action` at all, so nothing replaced it. `gate-eval` says UNPROVEN, which
