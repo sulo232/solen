@@ -2050,6 +2050,49 @@ possible or no?"
       the three that just left. Those 29 can no longer happen at all, and the 15 resend-delta fires
       were largely caused BY them, so the real reduction is bigger than 29.
 
+## ROUND 23 , "optimize n improve design", and the design was not the problem, 2026-08-19
+
+He said "uiux asss" about my duplicate, then after the direction changed said "ok optimize n improve
+design". I measured the EXISTING dashboard calendar on the rendered page signed in as a real salon
+owner rather than guessing, per the taste-diagnosis protocol.
+
+- [x] R23-1 THE WORST DEFECT WAS NOT A LOOK, IT WAS A BLANK CONTROL `verified:` commit a17c6676f.
+      `/api/services` returns `name_de`, `name_en`, `name_fr`, `name_it`, and there is NO `name`
+      column. The page's state type claimed `{ id, name }` and every render site read `s.name`, so
+      all six options in BOTH the Slot picker and the Plan picker rendered as EMPTY STRINGS. I read
+      the live option list to confirm it. A shop opening either form saw six nothing-shaped choices,
+      which is the most probable reason this salon has zero slots and therefore an empty calendar.
+      The same missing field made every booked row in the day list say only "booked" instead of
+      naming the service. Now reads Haarschnitt Damen, Haarschnitt Herren, Farben, Balayage and the
+      rest, in the shop's own language, falling back to German because German is the one the service
+      editor makes required.
+- [x] R23-2 FIVE OF TEN OPENING-HOUR FIELDS HUNG OFF THE EDGE `verified:` commit a17c6676f. Modal
+      measured 358px wide with five inputs ending past its right edge, so Monday to Friday closing
+      times were unreachable on a phone. Each weekday is now the day pill, then its times underneath
+      on ONE shared row, measured 5 of 5 pairs sharing a top edge, zero overflow, 48px tall. An
+      intermediate attempt put every time on its own line and turned seven weekdays into twenty one
+      rows; that was caught by rendering it and reverted.
+- [x] R23-3 THE CLOCK WAS AMERICAN `verified:` commit pending this turn. The fields read "09:00 AM"
+      and "06:00 PM" inside a German form for a Swiss salon. WHY, and the reason is the fix: a native
+      `<input type="time">` takes its display format from the BROWSER's locale and ignores both the
+      page language and the element's own `lang`. A pass added `lang="de-CH"` and I rendered it and
+      read the field back: attribute present, still "09:00 AM". So the control itself had to go. It
+      is now four selects per weekday, hour 00 to 23 and minute 00/15/30/45, which are 24 hour by
+      construction and no browser can reformat them. Measured after: 20 selects, 0 native time
+      inputs, the strings AM and PM absent from the whole page, aria-labels reading "Montag Start
+      Stunde". The stored value is still the same "HH:MM" string, so the save path did not change.
+- [x] R23-4 WEIGHTS FIXED, SIZES NOT, and the reason is a gate `verified:` measured 4 weights before
+      and 2 after. Sizes are still SIX (16, 17, 14, 13.5, 12.5, 12) against a cap of four, and the
+      two worst are 12.5 and 13.5, half a pixel from their neighbours, which buys no hierarchy and
+      costs consistency. WHY it is not fixed: `mockup-visual-gate.py` refuses a font-size change
+      without a shown mockup, and the coder correctly declined to bypass it rather than forcing six
+      one-word edits through. It needs a mockup pass, which is a separate turn.
+- [ ] R23-5 HONEST NOTE ON THE NEW TIME CONTROL, since it is a downgrade in one respect: four boxes
+      per weekday is more chrome than two were, and the hour and minute read as equal siblings when
+      they are one value. The gap between hour and minute is the same as the gap to the dash, which
+      `locked-value-gate.py` forced by refusing a nested wrapper. Correct treatment is a tighter gap
+      inside each pair than between the pair and the dash. Worth one small pass.
+
 ## ROUND 22 , he caught a duplicate, and he was right, 2026-08-18
 
 His words: *"we alrdy have a dashboard so what if we make a light version of dashboard or we make it

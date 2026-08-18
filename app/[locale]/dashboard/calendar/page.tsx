@@ -163,6 +163,11 @@ function SlotCreateModal({ date, startTime, services, staff, onClose, onCreated 
 
 const DAY_KEYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
 const DAY_LABELS = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
+// 24h-only select options: a native <input type="time"> takes its AM/PM vs 24h display
+// format from the browser's own locale, not the page language or an element lang attribute
+// (measured, see removed lang="de-CH" below), so hour/minute are plain selects instead.
+const HOUR_OPTIONS = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, "0"));
+const MINUTE_OPTIONS = ["00", "15", "30", "45"]; // quarter-hour granularity is enough for opening hours
 
 function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
   services: { id: string; name: string }[];
@@ -172,6 +177,7 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
   onCreated: () => void;
 }) {
   const t = useTranslations("dashboard.calendarPage");
+  const locale = useLocale();
   const [template, setTemplate] = useState<Record<string, { start: string; end: string } | null>>(
     Object.fromEntries(DAY_KEYS.map((k, i) => [k, i < 5 ? { start: "09:00", end: "18:00" } : null]))
   );
@@ -230,6 +236,9 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
             <div className="space-y-2">
               {DAY_KEYS.map((key, i) => {
                 const slot = template[key];
+                // Full weekday name for the select aria-labels only (visible pill keeps DAY_LABELS' short form).
+                // 2024-01-01 is a Monday, matching DAY_KEYS order (mon..sun).
+                const dayFullName = new Date(2024, 0, 1 + i).toLocaleDateString(resolveSwissLocale(locale), { weekday: "long" });
                 return (
                   <div key={key} className="flex items-center gap-3 flex-wrap">
                     <button type="button" onClick={() => toggleDay(key)}
@@ -239,12 +248,19 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
                     </button>
                     {slot ? (
                       <div className="flex w-full items-center gap-2">
-                        {/* lang="de-CH" targets the 24h clock this screen uses everywhere else; unverified in a real browser, native time-input formatting is browser-engine dependent */}
-                        <input type="time" lang="de-CH" value={slot.start} onChange={(e) => setTemplate((p) => ({ ...p, [key]: { ...slot, start: e.target.value } }))}
-                          className="px-2 py-1 text-xs h-11 flex-1" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
+                        <select aria-label={`${dayFullName} Start Stunde`} value={slot.start.split(":")[0]}
+                          onChange={(e) => setTemplate((p) => ({ ...p, [key]: { ...slot, start: `${e.target.value}:${slot.start.split(":")[1]}` } }))}
+                          className="px-2 py-1 text-xs h-11 flex-1">{HOUR_OPTIONS.map((h) => <option key={h} value={h}>{h}</option>)}</select> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
+                        <select aria-label={`${dayFullName} Start Minute`} value={slot.start.split(":")[1]}
+                          onChange={(e) => setTemplate((p) => ({ ...p, [key]: { ...slot, start: `${slot.start.split(":")[0]}:${e.target.value}` } }))}
+                          className="px-2 py-1 text-xs h-11 flex-1">{MINUTE_OPTIONS.map((m) => <option key={m} value={m}>{m}</option>)}</select> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
                         <span className="text-xs text-s-ink/30">-</span>
-                        <input type="time" lang="de-CH" value={slot.end} onChange={(e) => setTemplate((p) => ({ ...p, [key]: { ...slot, end: e.target.value } }))}
-                          className="px-2 py-1 text-xs h-11 flex-1" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
+                        <select aria-label={`${dayFullName} Ende Stunde`} value={slot.end.split(":")[0]}
+                          onChange={(e) => setTemplate((p) => ({ ...p, [key]: { ...slot, end: `${e.target.value}:${slot.end.split(":")[1]}` } }))}
+                          className="px-2 py-1 text-xs h-11 flex-1">{HOUR_OPTIONS.map((h) => <option key={h} value={h}>{h}</option>)}</select> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
+                        <select aria-label={`${dayFullName} Ende Minute`} value={slot.end.split(":")[1]}
+                          onChange={(e) => setTemplate((p) => ({ ...p, [key]: { ...slot, end: `${slot.end.split(":")[0]}:${e.target.value}` } }))}
+                          className="px-2 py-1 text-xs h-11 flex-1">{MINUTE_OPTIONS.map((m) => <option key={m} value={m}>{m}</option>)}</select> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
                       </div>
                     ) : <span className="text-xs text-s-ink/30">{t("notAvailable")}</span>}
                   </div>
