@@ -166,7 +166,18 @@ fixed AND re-attacked by an agent that did not write the fix (run `wf_3859ceaf-7
 - [x] `white-only-web-gate.py` , CLOSED. `verified:` `type P={darkMode:"on"|"off"}` in a .tsx ->
       pass; `module.exports={darkMode:"class"}` in `tailwind.config.js` -> BLOCK(deny). The iOS
       exemption and the CSS `prefers-color-scheme` case were re-checked earlier and hold.
-- [ ] `mockup-lang-stop-gate.py` , committing your work disarms it, and the rule is commit often
+- [x] `mockup-lang-stop-gate.py` , CLOSED, on the fourth attempt, and the first three all failed the
+      same way: each answered "did this turn WRITE the file" with a different proxy. mtime said yes
+      for every file in a worktree. `git status` said no the moment you committed, and this project
+      commits often. Diffing against HEAD, my own first attempt today, reintroduced the commit bug
+      exactly, and its own suite caught me at 5/7.
+      The question was never "did I write it", it is **"did I introduce the German"**, and the
+      transcript answers that with no proxy at all: every Write and Edit carries the text it wrote.
+      German in the file but not in anything I wrote is pre-existing. German I wrote that is no
+      longer in the file was reverted. German in both is mine.
+      `verified:` suite 7/7 including the two committed cases; the live false positive
+      (`public/_mockups/account-messages.html`, whose 8 German words come from a June commit and
+      which I touched and reverted) now passes. Both copies match.
 - [ ] Re-drive all 13 myself after the run lands (the fixer is never the grader)
 
 - [x] `map-style-gate.py` , THIRD hook found with the worktree-blindness defect, fixed and verified

@@ -95,7 +95,7 @@ def turn_writes(transcript_path):
     transcript_path = os.path.expanduser(transcript_path)
     if not os.path.exists(transcript_path):
         return None
-    paths, cmds = set(), []
+    paths, cmds, written = set(), [], {}
     try:
         with open(transcript_path, encoding="utf-8", errors="ignore") as fh:
             for ln in fh:
@@ -123,18 +123,30 @@ def turn_writes(transcript_path):
                                 ap = os.path.normpath(os.path.abspath(v))
                                 paths.add(ap)
                                 paths.add(os.path.realpath(ap))
+                                # 2026-08-18 (fourth fix): keep the TEXT that was written, per
+                                # path. introduced_here() needs it to tell German I put there
+                                # from German that was already in the file.
+                                blob = []
+                                for k in ("content", "new_string"):
+                                    if isinstance(inp.get(k), str):
+                                        blob.append(inp[k])
+                                for e in (inp.get("edits") or []):
+                                    if isinstance(e, dict) and isinstance(e.get("new_string"), str):
+                                        blob.append(e["new_string"])
+                                if blob:
+                                    written.setdefault(ap, []).append("\n".join(blob))
                     elif name == "bash":
                         c = inp.get("command")
                         if isinstance(c, str) and SHELL_WRITE.search(c):
                             cmds.append(c)
     except Exception:
         return None
-    return paths, cmds
+    return paths, cmds, written
 
 
 def was_written(fp, proj, touched):
     """Did this session write THIS file? Exact path for a tool write, path text for a shell write."""
-    paths, cmds = touched
+    paths, cmds = touched[0], touched[1]
     if not paths and not cmds:
         return False
     ap = os.path.normpath(os.path.abspath(fp))
@@ -145,6 +157,39 @@ def was_written(fp, proj, touched):
         if ap in c or rel in c:
             return True
     return False
+
+
+# 2026-08-18, FOURTH fix, and the last three all had the same root: "did this turn write it" is not
+# the question. THIS is: did this turn INTRODUCE the German? Measured today, the gate named
+# public/_mockups/account-messages.html. That file's committed version already carries 8 of the
+# words, from a commit in June, and the working copy is byte-identical to it. What I did was append
+# a German test line and revert it, so the transcript truthfully says I wrote the file, and the gate
+# then charged me for German that was there before I was. Reverted work counting as done work is
+# the same class of wrong as the mtime and the uncommitted proxies it already replaced.
+# So: only count German the working copy has and the committed version does not.
+def introduced_here(fp, hits, written_text):
+    """True when a flagged word is BOTH in the file now AND in what this turn actually wrote.
+
+    First attempt diffed against HEAD, and that reintroduced the exact bug the previous fix had
+    just removed: commit your German and HEAD contains it, so it reads as not-introduced-here. Its
+    own suite caught that, two cases of seven.
+
+    The transcript already holds the answer without any proxy. Every Write and Edit carries the
+    text it wrote, so:
+      german in the file now, and NOT in anything I wrote  -> pre-existing, not mine
+      german I wrote that is no longer in the file          -> reverted, not a problem
+      german in both                                        -> mine, block
+    Immune to commits and to reverts alike, because it never asks git anything.
+    Fail-closed: no written text captured means fall back to flagging, since a missed German
+    mockup is the failure this gate exists to prevent.
+    """
+    if not written_text:
+        return True
+    wrote = {w.lower() for w in GERMAN.findall(visible_text(written_text))
+             if not ALLOWED.fullmatch(w)}
+    if not wrote:
+        return False
+    return any(h.lower() in wrote for h in hits)
 
 
 def main():
@@ -219,7 +264,10 @@ def main():
             # without filtering with it is how a gate keeps crying wolf while looking fixed.
             hits = sorted({m.group(0).lower() for m in GERMAN.finditer(visible_text(txt))
                            if not ALLOWED.fullmatch(m.group(0))})
-            if len(hits) >= 3:
+            _wrote_here = "\n".join(
+                (touched[2] if touched and len(touched) > 2 else {}).get(
+                    os.path.normpath(os.path.abspath(fp)), []))
+            if len(hits) >= 3 and introduced_here(fp, hits, _wrote_here):
                 offenders.append((os.path.relpath(fp, proj), hits[:6]))
     if offenders:
         lines = ["MOCKUP-LANG (owner 2026-07-17, FURIOUS second recurrence): a mockup you touched",
