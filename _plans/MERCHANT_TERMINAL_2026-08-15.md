@@ -2049,3 +2049,36 @@ possible or no?"
       MEASURED REDUCTION on this session's own numbers: that family fired 36 times, 29 of them on
       the three that just left. Those 29 can no longer happen at all, and the 15 resend-delta fires
       were largely caused BY them, so the real reduction is bigger than 29.
+
+## ROUND 19 , his answers to the board, 2026-08-18
+
+He went down the board and answered some of it, asked me to think harder on the rest, and added one
+question that was not on it.
+
+- [ ] R19-1 Q1, the four paths: NOT ANSWERED, he asked for the work instead. "can you actually think
+      and ask for multiple opinions from the subagents, deep research". Deep-research lens dispatched
+      with a forced recommendation, its own counter-argument, a four-week falsification test, a
+      second-by-second walk through the text-a-link interaction, and an explicit hunt for a fifth
+      option nobody has named.
+- [x] R19-2 Q2, the tolerance rule: HE SAID BUILD IT. "yeah, yeah, build that." A published, priced
+      rule for when our slot collides with their paper book, in the shape Booking.com uses (four a
+      year forgiven, platform eats it). Not built yet, but the decision is his and it is made.
+- [x] R19-3 THE SMS QUESTION, answered with the code rather than a guess. He said "we need an SMS
+      system, all of those systems, you don't have that" `verified:` we DO have it. `lib/sms.ts`
+      sends through seven.io, restricted to Swiss numbers, rate limited to 3 per number per day,
+      and it is already used by `app/api/cron/sms-reminders/route.ts`,
+      `app/api/cron/barber-smart-reminders/route.ts` and `app/api/bookings/resend-access/route.ts`.
+      WHAT IS ACTUALLY MISSING is one line of configuration: `SEVEN_IO_API_KEY` is not in this
+      worktree's `.env.local`, and `sendSMS` returns false and logs a warning without it. So this is
+      not a system to build, it is a key to paste, and that IS the part he has to do.
+- [ ] R19-4 Q3, tomorrow on the terminal: he leaned yes and asked what I think. Answered in the
+      reply, still needs building.
+- [x] R19-5 Q4, the stranded phone booking: HE SAID NOW, NOT LATER, and was annoyed at the
+      suggestion. "we need that from the start. what do you mean later?" Decision made, build
+      pending.
+- [ ] R19-6 NEW QUESTION, not on the board: calendar view instead of the current list. His words:
+      "should we have a calendar style or what we have right now? I feel like calendar style is more
+      better instead of how it is right now, because it doesn't make that much sense." Design lens
+      dispatched to measure the live screen and come back with one recommendation, including what a
+      list cannot show that a day grid can, and which of the terminal's own written rules a grid at
+      390px would break.
