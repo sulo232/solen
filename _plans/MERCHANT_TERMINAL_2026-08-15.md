@@ -2068,7 +2068,7 @@ duplicating what we alrdy have"*.
       synonym and I gave it two phrases nobody would have named a file.
 
 - [x] R22-2 BUT THEY ARE NOT THE SAME OBJECT, and this is what decides the shape of the fix
-      `verified:` the dashboard calendar fetches `/api/slots` (page.tsx:433) and renders
+      `verified:` commit bf35f9ab3, and confirmed by RENDERING it, not just reading: the dashboard calendar fetches `/api/slots` (page.tsx:433) and renders
       `availability_slots` with statuses `available`, `blocked` and booked. The terminal renders
       `bookings` plus `barber_walkin_queue`. So:
         the dashboard calendar shows INVENTORY, what is for sale, what is blocked, what is free.
@@ -2095,7 +2095,26 @@ duplicating what we alrdy have"*.
       What gets reused: the dashboard's Tag/Woche/Monat block, its week strip, its month grid, its
       walk-in and create-slot modals.
 
-- [ ] R22-5 THE COST OF THAT SHAPE, named rather than buried, and it is a real decision he owns:
+- [x] R22-3b THE CLIFF PROVEN ON SCREEN, not inferred `verified:` signed in as the test salon owner
+      via `/api/dev/login` and opened `/de/dashboard/calendar` at 390 wide. The calendar RENDERS
+      correctly: Tag / Woche / Monat, the seven day pills with today filled ink, and the Slot,
+      Walk-in and Plan buttons. Its body reads "Keine Slots an diesem Tag" and
+      `/api/slots?salon_id=97c04291...&week=2026-08-18` returns 0 slots. So the screen is not broken
+      and never was. It is empty because nothing generated slots for that salon.
+
+- [ ] R22-5 THE COST OF HIS SHAPE, named rather than buried, and this is the one that decides whether
+      the three steps are a plan or a trap: A SHOP CAN STALL AT STEP 1 FOREVER. Step 1 does what
+      their paper book already does, for free, and the thing that makes Solen worth paying for,
+      customers finding them and booking, sits behind step 3. So the easy step carries no payoff and
+      the payoff step carries all the work, which is the wrong way round. A salon that signs up,
+      likes the terminal and never adds a roster is indistinguishable from a dead account and
+      generates nothing for either side. Step 2 has to be PULLED by something the shop wants rather
+      than pushed by us asking for admin. The obvious candidate, and it needs no new data: the
+      terminal already sees every appointment they type in by hand, so after a week it can show what
+      their week actually looks like and offer to fill the quiet hours. That is a reason to add the
+      roster that comes out of their own numbers.
+
+- [ ] R22-6 THE OTHER COST, the one about looks:
       THE TWO SKINS DISAGREE. The dashboard agenda paints blocks in a pale blue and in per-category
       colours, marks booked days with a blue dot, and fills the selected day with ink. The terminal
       rulebook bans coloured blocks by name, bans an ink-filled selected state, and allows exactly
