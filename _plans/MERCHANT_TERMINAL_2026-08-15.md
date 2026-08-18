@@ -2050,6 +2050,84 @@ possible or no?"
       the three that just left. Those 29 can no longer happen at all, and the 15 resend-delta fires
       were largely caused BY them, so the real reduction is bigger than 29.
 
+## ROUND 21 , "so", and he answered the scoping questions with "all", 2026-08-18
+
+He asked one word, "so", meaning what now. Asked what to dig into he picked **all of it plus a page
+to visualise a calendar mockup**, and on the horizon he picked **a full week**, not today plus
+tomorrow.
+
+THE FRAME THAT MAKES THIS ROUND DIFFERENT, and it follows from R20-6 rather than being new: once
+Solen IS the shop's book, the test stops being "is the screen good" and becomes "is there anything a
+real salon does in a normal week that this screen cannot record". Every such thing is a reason to
+keep a paper book alongside ours, and two books is the exact double-booking failure the whole
+workstream exists to avoid.
+
+- [ ] R21-1 THE HORIZON IS A WEEK, his pick. The loader covers today plus tomorrow after 73b1fc123.
+      A shop books weeks out, so a counter that cannot see next Thursday writes it somewhere else.
+      Widening the window also re-opens the money hazard fixed in that same commit, and every
+      derived figure has to be re-checked against the wider list, not just `bookedToday`.
+- [x] R21-2 THE GAP AUDIT, DONE. Six lenses read the code, produced 70 findings, and every one that
+      was not "present" went to a second agent told to REFUTE it. Three were refuted and dropped
+      (moving an appointment, creating a block with a shape, and recording a one-off interruption are
+      all possible in the data model). EIGHT SURVIVED AT "KEEPS A SECOND BOOK", meaning a real salon
+      cannot get through a normal week without writing it somewhere else:
+        1. cannot see past tomorrow, or open a specific future day
+        2. the phone-booking sheet does not know the shop's opening hours or who works that day
+        3. cannot see a stylist's real availability: who is actually in, once leave and closures count
+        4. cannot record a whole day off, sick today or holiday next week
+        5. cannot record a lunch break or any recurring daily gap
+        6. cannot see a block created anywhere else in the product
+        7. a booking taken for next week does not come back onto the board
+        8. cannot cancel an appointment that is already confirmed
+      Three more confirmed at "annoying but survivable": closing the whole shop for a day, marking a
+      chair out of action, and the rulebook never saying what a day contains besides bookings.
+      AND ONE LIVE DEFECT IN THE ANCHOR NUMBER, which is the sentence the whole screen is built
+      around: `appointmentMinutesLeft` counts only an appointment ALREADY RUNNING, so the wait
+      figure ignores every chair booked out later today and overstates capacity by exactly the
+      minutes it cannot see. A shop that notices this stops trusting the number.
+- [ ] R21-2b was: THE GAP AUDIT, six lenses: what a day contains besides bookings (lunch, a day
+      off, a chair out of action), editing what is already in the book (move, cancel, retype a
+      name), what the customer is told when the SALON changes something, whether any number on the
+      screen can be quietly wrong, the calendar question, and what it takes to get a shop off the
+      software they already run. Every claimed gap is then handed to a second agent told to refute
+      it, and graded by one test: could a real salon get through a normal Tuesday without writing
+      this down somewhere other than our screen.
+- [x] R21-6 THE CALENDAR QUESTION, ANSWERED FROM THE CODE, and the answer is YES BUT AS A SECOND
+      SCREEN, never as a replacement for the board. Four things a grid shows that a time-ordered list
+      structurally cannot, each measured on the live payload:
+        - WHO is cutting. In a grid it is the column and costs zero ink. In a list the row's lead
+          slot is the customer's name, so the stylist can only be a third meta line.
+        - HOW LONG. A grid encodes duration as block height for free. Today's real durations run 10,
+          20, 20, 25, 30, 30, 45 and 60 minutes and the list renders every one of them identically.
+        - FREE TIME. Measured right now: Mia free 13:08 to 15:43, Nina 14:03 to 16:33, Jonas 15:23
+          to 17:28, and none of it is on screen, because a list is a sequence of things that exist
+          and absence has no row. This is also exactly what the phone-booking sheet lacks: it offers
+          every quarter hour from a hardcoded loop and filters only what is already past.
+        - OVERLAP. Lea 16:33 to 17:33 on Nina and Fabio 17:28 to 17:58 on Jonas overlap by five
+          minutes on two different chairs, and in the list they are two adjacent rows that look
+          exactly like a sequence.
+      GRAVEYARD CHECKED AND CLEAN. `REMOVED.md:134` killed "terminal direction A, one continuous
+      time-ordered stream" and direction C. BOTH KILLED DIRECTIONS ARE LISTS, and the thing killed by
+      name is closer to what we ship today than to a grid. Nothing in the graveyard mentions a
+      calendar, a grid, columns or a week. So a grid is genuinely new and needs no override.
+      WHY IT CANNOT REPLACE THE BOARD, measured against the board's own rulebook: a day grid on
+      today's data is 8 blocks plus 11 hour rules plus 3 column rules, which is boxes and hairlines
+      at once, the named box-soup failure; the type budget is already full at 4 sizes and over by one
+      at 3 weights; a grid is N identical blocks in identical costume, which is precisely the "equal
+      visual weight" failure Round D1 diagnosed as the cause of "cluttered", and it would take the
+      single anchor away; and its height is a function of opening hours, a constant, so it cannot
+      yield the way the rulebook requires. At 390 wide there is 310px after the time gutter, so three
+      stylists get 103px each and six get 45px, at which point the truncated thing is the customer's
+      name, the one thing the counter says out loud.
+      THE SPLIT: the day board is GLANCED at with a customer standing there. The week is ENTERED ON
+      PURPOSE, when the phone rings or a stylist calls in sick. Two different screens, and today is
+      the one left open all day.
+
+- [ ] R21-3 THE WEEK CALENDAR MOCKUP, his words: "a page to visualize mockup for calender etc". A
+      real page, not a description. Spec being written against the confirmed gaps, the operator
+      rulebook and the tone meanings already fixed in `status.ts`, so nothing is invented.
+- [ ] R21-4 THE TOLERANCE RULE, finally being written rather than parked. Carries R19-2 forward.
+
 ## ROUND 20 , the direction decision, 2026-08-18
 
 He asked what we do about a salon already running someone else's software, using hotels as the
