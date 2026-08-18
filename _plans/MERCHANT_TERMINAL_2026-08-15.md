@@ -2032,7 +2032,7 @@ Owner: "u repeated so many times whats the cause", after four near-identical mes
 Owner: "can you make it so it runs in a background before you even type up or say anything. Is that
 possible or no?"
 
-- [x] R18-1 YES, AND IT IS THE ONLY PLACE THOSE RULES COULD EVER WORK `verified:`
+- [x] R18-1 YES, AND IT IS THE ONLY PLACE THOSE RULES COULD EVER WORK `verified:` commit b71190bc6,
       `~/.claude/hooks/reply-shape-preflight.py`, new, 8/8 self-test, wired as the first
       UserPromptSubmit hook in `~/.claude/settings.json` (21 hooks on that event now, file still
       parses). Driven live from a file: a real turn gets the reminder, a background task
@@ -2041,7 +2041,8 @@ possible or no?"
       exists. It cannot inspect a reply, and it does not need to. The em-dash rule, the plain-words
       rule and the list rule are all knowable before the sentence is written; they only ever needed
       to be in mind, not to sit in judgement afterwards.
-- [x] R18-2 THE THREE MOVED OFF THE STOP PATH `verified:` `reply-family-aggregator.py` MEMBERS is
+- [x] R18-2 THE THREE MOVED OFF THE STOP PATH `verified:` commit b71190bc6,
+      `~/.claude/hooks/reply-family-aggregator.py:70` MEMBERS is
       now a single entry, `resend-delta-gate.py`. It was four. The three that left judge SHAPE, which
       is why they belong before; the one that stayed judges a message that already exists ("you are
       about to send him the same thing twice"), which cannot be known in advance.
