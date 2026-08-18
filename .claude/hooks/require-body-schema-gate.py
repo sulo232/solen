@@ -11,13 +11,28 @@ hand-rolled inline check (`if (!code || typeof code !== "string")`) that has to 
 correctly re-derived by hand at every call site instead of being enforced once.
 
 Fires on Write|Edit to app/api/**/route.ts that introduces a req.json()/request.json()
-call with no validateBody/safeParse/.parse( anywhere in the resulting file content.
+call (or a hand-rolled JSON.parse(await req.text())) with no real zod-shaped validation
+anywhere in the resulting file content.
 EXEMPT: files whose only json() call is inside a GET handler (GET has no body to
 validate); files that already have a schema call (adding a second req.json() call
 elsewhere in the same file does not re-trigger this, since the check is file-wide).
 Override (rare, justified): touch .claude/body-schema-skip.flag (5 min TTL).
 
 House rules: fail OPEN on any parse/IO error; reason on stderr + exit 2 to block.
+
+2026-08-18 audit (real payloads driven through the gate) found two misses:
+  - The validation check was a BARE `.parse(`, so `JSON.parse(` and `Date.parse(` anywhere in
+    the file disarmed it, whether or not the route had any real schema validation at all. FIVE
+    real routes (app/api/translate, app/api/discovery/generate-description,
+    app/api/admin/generate-roadmap, app/api/admin/discovery/smart-import,
+    app/api/stripe/booking-pay-intent) call both req.json() and JSON.parse and all five happen to
+    also have real validateBody/safeParse, so nothing shipped broken, but a future route with
+    ONLY a stray JSON.parse (e.g. parsing an AI response) and no schema would have passed
+    silently. Now excludes `.parse(` calls whose receiver is literally `JSON` or `Date`.
+  - `JSON.parse(await req.text())` , reading the raw body via req.text() and hand-parsing it,
+    the exact shape app/api/salon-draft/route.ts:56 uses (with real validation) , was invisible
+    because the gate only looked for req.json()/request.json(), never req.text(). Now also
+    treated as a body-read call when both req.text()/request.text() and JSON.parse( appear.
 """
 import json
 import os
@@ -58,11 +73,22 @@ def _has_unvalidated_json_call(text):
     scanned = _strip_get_handler_json_calls(text)
     has_json_call = bool(re.search(r"\b(req|request)\.json\s*\(", scanned))
     if not has_json_call:
+        # JSON.parse(await req.text()) reads the mutating body exactly like req.json() does,
+        # just through a different pair of calls (2026-08-18 audit, real shape at
+        # app/api/salon-draft/route.ts:56). Only counts when BOTH appear: req.text() alone is
+        # legitimate (e.g. a raw webhook signature check) and must not trip this on its own.
+        has_json_call = bool(
+            re.search(r"\b(req|request)\.text\s*\(", scanned)
+            and re.search(r"\bJSON\.parse\s*\(", scanned)
+        )
+    if not has_json_call:
         return False
     has_validation = bool(
         re.search(r"\bvalidateBody\s*\(", text)
         or re.search(r"\.safeParse\s*\(", text)
-        or re.search(r"\.parse\s*\(", text)
+        # a real schema parse, not JSON.parse(...)/Date.parse(...) (2026-08-18: a bare `.parse(`
+        # let ANY JSON.parse/Date.parse call anywhere in the file count as "validated").
+        or re.search(r"(?<!JSON)(?<!Date)\.parse\s*\(", text)
     )
     return not has_validation
 
@@ -130,6 +156,44 @@ def main():
     print(msg, file=sys.stderr)
     sys.exit(2)
 
+
+def _selftest():
+    cases = [
+        # (file content, should_block, label)
+        ('export async function POST(req) {\n  const body = await req.json();\n  return Response.json(body);\n}',
+         True, "req.json() with zero validation"),
+        ('export async function POST(req) {\n  const body = await req.json();\n  const parsed = JSON.parse(aiText);\n  return Response.json(parsed);\n}',
+         True, "req.json() + a stray JSON.parse( elsewhere , must NOT count as validation"),
+        ('export async function POST(req) {\n  const body = await req.json();\n  const validated = schema.parse(body);\n  return Response.json(validated);\n}',
+         False, "req.json() + a real schema.parse( is validated"),
+        ('export async function POST(req) {\n  const body = await req.json();\n  const { data } = validateBody(mySchema, body);\n  return Response.json(data);\n}',
+         False, "req.json() + validateBody("),
+        ('export async function POST(req) {\n  const body = await req.json();\n  const parsed = mySchema.safeParse(body);\n  return Response.json(parsed);\n}',
+         False, "req.json() + .safeParse("),
+        ('export async function GET(req) {\n  const body = await req.json();\n  return Response.json(body);\n}',
+         False, "GET handler , no body to validate"),
+        ('export async function POST(req) {\n  const raw = await req.text();\n  const body = JSON.parse(raw);\n  return Response.json(body);\n}',
+         True, "req.text() + JSON.parse(raw) with zero validation (the second miss)"),
+        ('export async function PUT(req) {\n  const raw = await req.text();\n  const body = putSchema.parse(JSON.parse(raw));\n  return Response.json(body);\n}',
+         False, "real salon-draft shape: req.text() + JSON.parse wrapped in schema.parse("),
+        ('export async function POST(req) {\n  const raw = await req.text();\n  const event = stripe.webhooks.constructEvent(raw, sig, secret);\n  return Response.json({ ok: true });\n}',
+         False, "req.text() with no JSON.parse at all (real stripe webhook shape) , must not trip the new check"),
+        ('export async function POST(req) {\n  const rawBody = await req.text();\n  const reports = normalizeCspReports(ct, rawBody);\n  return new Response(null, { status: 204 });\n}',
+         False, "req.text() delegated to a lib parser, no local JSON.parse (real csp-report shape)"),
+    ]
+    failed = 0
+    for content, should_block, label in cases:
+        blocked = _has_unvalidated_json_call(content)
+        ok = blocked == should_block
+        print(("PASS" if ok else "FAIL") + f": {label} -> blocked={blocked} want={should_block}")
+        if not ok:
+            failed += 1
+    print(f"\n{len(cases) - failed}/{len(cases)} passed")
+    return 1 if failed else 0
+
+
+if __name__ == "__main__" and "--selftest" in sys.argv:
+    sys.exit(_selftest())
 
 try:
     main()
