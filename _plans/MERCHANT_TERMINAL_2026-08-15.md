@@ -2050,6 +2050,60 @@ possible or no?"
       the three that just left. Those 29 can no longer happen at all, and the 15 resend-delta fires
       were largely caused BY them, so the real reduction is bigger than 29.
 
+## ROUND 22 , he caught a duplicate, and he was right, 2026-08-18
+
+His words: *"we alrdy have a dashboard so what if we make a light version of dashboard or we make it
+like scalable cz from scratch we need setup for the staff etc but ye integration n they can scale up
+bit by bit acc think it out and the building ths calender sh from scratch is not correct its jst
+duplicating what we alrdy have"*.
+
+- [x] R22-1 HE IS RIGHT AND THE EXISTS-CHECK IS WHAT FAILED `verified:` `app/[locale]/dashboard/calendar/page.tsx`,
+      1156 lines, and its mobile block at line 695 is literally commented "MOBILE (lg:hidden), Tag /
+      Woche / Monat in the approved skin". It already has a day/week/month segmented control, a week
+      date strip with a dot per booked day, a month grid with up to three dots per day, an agenda
+      renderer, a walk-in modal, a create-slot modal and a bulk plan modal. I built a second week
+      calendar next to it. THE PROCESS FAILURE, named precisely: I ran `npm run exists "week
+      calendar"` and `npm run exists "day grid"`, both zero, and never ran `npm run exists calendar`,
+      which returns that route as its first hit. The whole point of the protocol is to survive a
+      synonym and I gave it two phrases nobody would have named a file.
+
+- [x] R22-2 BUT THEY ARE NOT THE SAME OBJECT, and this is what decides the shape of the fix
+      `verified:` the dashboard calendar fetches `/api/slots` (page.tsx:433) and renders
+      `availability_slots` with statuses `available`, `blocked` and booked. The terminal renders
+      `bookings` plus `barber_walkin_queue`. So:
+        the dashboard calendar shows INVENTORY, what is for sale, what is blocked, what is free.
+        the terminal shows PEOPLE, who is in a chair, who is waiting, who is coming.
+      A shop needs both, and neither is a lighter version of the other.
+
+- [x] R22-3 THE SETUP CLIFF HE NAMED IS REAL AND MEASURED `verified:`
+      `app/api/cron/generate-slots/route.ts:87` reads `if (!schedules?.length) continue;` and
+      line 188 reads `if (!serviceIds.length) { slotStart = slotEnd; continue; }`. Slots are
+      generated overnight FROM the staff roster and the service list, so a salon that has just
+      signed up and set up neither gets zero slots, and the dashboard calendar renders an empty
+      grid on every day. That is exactly the friction the terminal exists to avoid, and it is why
+      "just send them to the dashboard" was never the answer.
+
+- [ ] R22-4 THE SHAPE, my recommendation, HIS CALL. Not a light dashboard and not a second app: ONE
+      product that turns on in three steps, so a shop is useful on day one and grows into the rest.
+        step 1, nothing set up: the terminal. Phone bookings, walk-ins, who is here, who is next.
+                Needs no roster, no services, no hours. This is what exists today.
+        step 2, add staff and hours: the calendar lights up, because the cron now has something to
+                generate from. Same navigation, one more tab, and it is the EXISTING dashboard
+                calendar, not a new one.
+        step 3, add services and prices: online booking turns on and the marketplace starts selling.
+      What gets deleted: `app/[locale]/dev/terminal-week`, my duplicate.
+      What gets reused: the dashboard's Tag/Woche/Monat block, its week strip, its month grid, its
+      walk-in and create-slot modals.
+
+- [ ] R22-5 THE COST OF THAT SHAPE, named rather than buried, and it is a real decision he owns:
+      THE TWO SKINS DISAGREE. The dashboard agenda paints blocks in a pale blue and in per-category
+      colours, marks booked days with a blue dot, and fills the selected day with ink. The terminal
+      rulebook bans coloured blocks by name, bans an ink-filled selected state, and allows exactly
+      ONE boxed kind per screen. Reusing the component therefore means one of the two rulebooks has
+      to give. My read: the terminal's rules were written for a screen read from across the room and
+      the dashboard's for a screen read at a desk, so if they become one product they need one
+      rulebook, and choosing which is a decision rather than a merge.
+
 ## ROUND 21 , "so", and he answered the scoping questions with "all", 2026-08-18
 
 He asked one word, "so", meaning what now. Asked what to dig into he picked **all of it plus a page
