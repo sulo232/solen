@@ -109,6 +109,33 @@ Page for him: `public/_reports/gates-2026-08-18/index.html`
       six is empty. It now asks git. `verified:` untouched files pass, a genuinely modified German
       mockup still blocks (exit 2).
 
+## IN FLIGHT , real boxes so this is tracked, not narrated
+
+Adversarial re-break of today's fixes found 5 BROKEN and 8 PARTIAL. Each is a box. Each is being
+fixed AND re-attacked by an agent that did not write the fix (run `wf_3859ceaf-770`).
+
+- [ ] `plan-first-gate.py` , inert in the worktree (`/.claude/` exclusion swallows every product file)
+- [ ] `exists-guard.py` , a file merely QUOTING the rule still satisfies the marker
+- [ ] `information-is-not-action-gate.py` , a multi-sentence imperative escapes, because only the last sentence is read
+- [ ] `say-whats-next-gate.py` , misses implemented/updated/refactored/created/wrote; blocks "nothing was measured"
+- [ ] `mockup-base-gate.py` + `mockup-preflight-manifest.py` , deny 158 and 149 of the repo's OWN 175 dev files
+- [ ] `no-focus-ring-gate.py` , `0px 0px 0px 3px` passes; `var(--s-ink)` outline wrongly blocks
+- [ ] `postgrest-filter-injection-gate.py` , `expr_is_safe()` defaults to ALLOW, wrong default for a taint check
+- [ ] `no-black-selected-gate.py` , inline `style={{background:'#0A0A0A'}}` passes; filter pills wrongly exempted
+- [ ] `entity-card-gate.py` , `rounded-3xl` (same 24px) still blocks; 400-char exemption window leaks
+- [ ] `unfinished-batch-gate.py` , a `HEAD~3` window cannot mean "this turn"
+- [ ] `no-verify-commit-gate.py` , a backslash-continued `--no-verify` passes
+- [ ] `white-only-web-gate.py` , a `darkMode` key in a TYPE LITERAL wrongly blocks a .tsx
+- [ ] `mockup-lang-stop-gate.py` , committing your work disarms it, and the rule is commit often
+- [ ] Re-drive all 13 myself after the run lands (the fixer is never the grader)
+
+## FALSE POSITIVE FOUND BY BEING BLOCKED
+
+- [x] `batch-mockup-loop` fired on this turn. `verified:` `_plans/MOCKUP_QUEUE.md` is dated 10 August
+      and this session has built ZERO mockups (`git log --since` over `public/_mockups` and
+      `app/[locale]/dev` is empty). It keys off open boxes in a stale queue file without checking
+      whether the current session is in a mockup loop at all. Recorded, not yet fixed.
+
 ## OPEN VERIFICATION, carried forward rather than claimed
 
 - `no-invented-ui-gate.py` , its suite passes 5/5 and case 1 blocks a `font-heading font-semibold`
