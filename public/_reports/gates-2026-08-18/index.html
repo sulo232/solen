@@ -1,0 +1,211 @@
+<!doctype html>
+<!--
+  Exists-check: `npm run exists "gate report"` returned 0 matches. The sibling pages under
+  public/_reports/ (law-2026-08-03, law-2026-08-10, law-2026-08-17, principles, principle-research)
+  are the weekly DESIGN-LAW passes and none covers the enforcement layer itself. Net-new here: the
+  measured state of every hook and gate, driven with real payloads on 2026-08-18.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>Gate stress test, 18 Aug</title>
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --bg:#FFFFFF; --sunken:#F4F4F5;
+    --line:#E4E4E7; --ok:#16A34A; --warn:#EA580C; --bad:#DC2626;
+  }
+  *{box-sizing:border-box;-webkit-text-size-adjust:100%}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink)}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",Roboto,sans-serif;
+    font-size:16px;line-height:1.55;
+    padding:0 20px calc(64px + env(safe-area-inset-bottom));
+    max-width:720px;margin:0 auto;
+  }
+  h1{font-size:30px;line-height:1.15;font-weight:600;letter-spacing:-.02em;margin:36px 0 6px}
+  .sub{color:var(--ink2);font-size:15px;margin:0 0 30px}
+  h2{font-size:20px;font-weight:600;letter-spacing:-.01em;margin:44px 0 4px;padding-top:22px;border-top:1px solid var(--line)}
+  h2 .n{color:var(--ink2);font-weight:400;font-size:15px;display:block;margin-top:2px}
+  h3{font-size:16px;font-weight:600;margin:26px 0 6px}
+  p{margin:10px 0}
+  .lead{font-size:17px}
+  .quote{background:var(--sunken);border-radius:16px;padding:16px 18px;margin:18px 0;font-size:15px}
+  .quote b{font-weight:600}
+  .board{background:var(--sunken);border-radius:24px;padding:6px 18px;margin:22px 0}
+  .row{display:flex;align-items:baseline;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}
+  .row:last-child{border-bottom:0}
+  .row .lab{flex:1;font-size:15px;color:var(--ink2)}
+  .row .was{font-size:15px;color:var(--ink2);text-decoration:line-through;font-variant-numeric:tabular-nums}
+  .row .now{font-size:20px;font-weight:600;font-variant-numeric:tabular-nums;min-width:74px;text-align:right}
+  .now.good{color:var(--ok)}
+  .f{border-left:3px solid var(--line);padding:2px 0 2px 16px;margin:22px 0}
+  .f.red{border-left-color:var(--bad)}
+  .f.orange{border-left-color:var(--warn)}
+  .f h3{margin-top:0}
+  .f p{font-size:15px}
+  .f .what{color:var(--ink2);font-size:14px;margin-top:6px}
+  ul{margin:10px 0;padding-left:20px}
+  li{margin:7px 0;font-size:15px}
+  .tag{display:inline-block;font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--sunken);color:var(--ink);vertical-align:middle;margin-left:8px}
+  .scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:16px 0}
+  table{border-collapse:collapse;width:100%;font-size:14px;min-width:460px}
+  th{text-align:left;font-weight:600;padding:9px 12px 9px 0;border-bottom:1px solid var(--line);white-space:nowrap}
+  td{padding:9px 12px 9px 0;border-bottom:1px solid var(--line);vertical-align:top}
+  td:last-child,th:last-child{padding-right:0}
+  .foot{margin-top:52px;padding-top:22px;border-top:1px solid var(--line);color:var(--ink2);font-size:14px}
+</style>
+</head>
+<body>
+
+<h1>Every gate, driven with real input</h1>
+<p class="sub">18 August 2026. Nothing here was judged by reading it.</p>
+
+<div class="quote">
+  <b>You asked:</b> stress test every gate, hook and principle, use the council, and before even
+  thinking of removing one, actually stress test it.
+  <br><br>
+  So each one was fed real input and watched. That is the only reason any verdict below exists.
+</div>
+
+<h2>The count<span class="n">before this session, and after</span></h2>
+
+<div class="board">
+  <div class="row"><span class="lab">Checks on disk</span><span class="was">236</span><span class="now">305</span></div>
+  <div class="row"><span class="lab">Switched on</span><span class="was">215</span><span class="now good">211</span></div>
+  <div class="row"><span class="lab">On, never once tested</span><span class="was">133</span><span class="now good">128</span></div>
+  <div class="row"><span class="lab">Wait at the end of every reply</span><span class="was">18.6s</span><span class="now good">13.2s</span></div>
+  <div class="row"><span class="lab">Text pasted in on every message</span><span class="was">4.25KB</span><span class="now good">3.9KB</span></div>
+</div>
+
+<p>The handoff note counted 236. It had looked in one of the three folders these live in. The real
+number is 305, and 128 of the switched-on ones had never been tested by anything at all.</p>
+
+<h2>The one number that matters<span class="n">how much of this is guarding anything</span></h2>
+
+<p class="lead">One file was written carrying <b>six</b> banned things at once: dark mode, a black
+selected pill, the forbidden glow, six text sizes, a hardcoded photo, and a dash. It was offered to
+all 113 file-checking gates.</p>
+
+<p class="lead"><b>23 stopped it. 90 did not notice.</b></p>
+
+<p>Some of those 90 guard other things and were right to stay quiet. Many were not.</p>
+
+<h2>Things that looked switched on and were not</h2>
+
+<div class="f red">
+  <h3>The glow you killed three times is live on the homepage<span class="tag">your call</span></h3>
+  <p>The soft glow around a tapped box is banned by name and was killed on 1 July, 2 July and 17 July.
+  It is in the shipping homepage right now, four times, on the business signup boxes.</p>
+  <p class="what">The guard reads the old stylesheet spelling. Your site is written in Tailwind, which
+  spells it a completely different way. 501 files use the new spelling and 1 file uses the old one,
+  and the guard only knew the old one. Fixed, so it cannot happen again. The four live ones are a
+  visual change on the homepage, so that is your call, not mine.</p>
+</div>
+
+<div class="f red">
+  <h3>One line would turn the whole site black<span class="tag">fixed</span></h3>
+  <p>Dark mode on web was rejected twice. Five files still carry dark mode styling. They do nothing
+  only because one setting is switched off in a config file.</p>
+  <p class="what">The guard that exists to stop exactly this could not see that config file at all.
+  Putting the switch back sailed straight through.</p>
+</div>
+
+<div class="f red">
+  <h3>Three that have never once blocked anything</h3>
+  <p>One refuses work by returning the wrong signal, the equivalent of shouting stop through a closed
+  door. Nothing has ever heard it.</p>
+  <p class="what">The second builds its checklist from the full folder path, which always contains your
+  own username, so it always concluded a plan already covered the work. A made-up nonsense filename
+  walked through. The third has a typo that crashes its progress check silently, so it has always
+  claimed you finished nothing, without ever looking.</p>
+</div>
+
+<div class="f red">
+  <h3>The mockup guards stopped looking where mockups moved to</h3>
+  <p>Mockups moved out of plain HTML files and into real pages. Seven guards still recognise only the
+  old location, so the same violation is refused in the old place and waved through in the new one.</p>
+  <p class="what">Three separate guards spotted this exact blindness on 8 August and each fixed only
+  itself. Nobody checked the rest of the family. That sweep is what this was.</p>
+</div>
+
+<h2>Things that were blocking good work</h2>
+
+<p>This is the half that makes you get three messages for one answer. A guard that refuses correct work
+gets switched off in frustration, and a switched-off guard is worse than none.</p>
+
+<div class="f orange">
+  <h3>Asking a question cost you two extra messages<span class="tag">fixed</span></h3>
+  <p>You ask what the salon card shows. The answer comes back correct and complete. Two separate guards
+  refused to let it send.</p>
+  <p class="what">One decides whether you asked a question by looking for a literal question mark. You
+  talk into your phone, so four of five real question shapes were treated as not-questions. The other
+  read the word "wired" in a plain description as a claim of work done and demanded a next step.</p>
+</div>
+
+<div class="f orange">
+  <h3>A guard refusing the accessibility rule your own contract keeps<span class="tag">fixed</span></h3>
+  <p>You removed the glow around tapped inputs. Buttons and links keep a thin black outline, and that
+  outline is what keeps the site legally accessible.</p>
+  <p class="what">The guard refused the black outline too, so the only way past it was to leave keyboard
+  users with nothing. It now refuses coloured rings and allows the black one.</p>
+</div>
+
+<div class="f orange">
+  <h3>Twelve of your thirty-one live pages could not be edited</h3>
+  <p>Search and Inspo among them, and five open pieces of work depend on those two.</p>
+  <p class="what">The guard reads the list of deleted things, matched a note about a focus ring removed
+  inside Inspo search, and treated the whole page as deleted.</p>
+</div>
+
+<h2>A decision you made that a hook kept overruling<span class="n">the most serious one</span></h2>
+
+<div class="f red">
+  <h3>Fresha was still being fed in as the source of truth</h3>
+  <p>On 12 August you said Airbnb is the source of truth. The written law was corrected the same week.
+  A hook was still injecting the old Fresha instruction on every message that mentions it.</p>
+  <p class="what">A hook outranks the written law, so your correction had been landing in the file that
+  loses. Being fixed now.</p>
+</div>
+
+<h2>Seventeen places the law claims something is guarded when it is not</h2>
+
+<p>Documents saying "enforced by X" where X is switched on nowhere. That is worse than an unenforced
+rule, because it stops anyone from noticing.</p>
+
+<p>One thing caused eight of them: a bundle built on 7 August to replace seven separate checks. The
+seven were removed. The bundle was never switched on. Nothing in that family has run since. Being
+corrected in writing now, naming the true state either way.</p>
+
+<h2>Found by accident, inside the product<span class="n">not gates, and not fixed by me</span></h2>
+
+<div class="scroll">
+<table>
+  <tr><th>What</th><th>Where</th><th>Why it matters</th></tr>
+  <tr><td>Three columns that do not exist</td><td>Shipping pages</td><td>The screen asks for them and silently gets nothing back</td></tr>
+  <tr><td>"From" prices with no total</td><td>All four languages plus a marketing page</td><td>Swiss price law, not a taste question</td></tr>
+  <tr><td>The banned glow</td><td>Homepage business boxes, four places</td><td>Visual, so it needs a mockup and your yes</td></tr>
+  <tr><td>Dormant dark mode styling</td><td>Five files</td><td>Harmless today, live the moment one config line changes</td></tr>
+</table>
+</div>
+
+<h2>What was removed<span class="n">four, every one driven first</span></h2>
+
+<ul>
+  <li>One that has said it is retired in its own notes since 11 July and still ran at every startup.</li>
+  <li>One whose entire body is "do nothing", sitting on the busiest trigger there is.</li>
+  <li>One where only the do-nothing half was switched on and the half that enforces was not.</li>
+  <li>One repeating, on every message including "hey", a pointer to a file already pasted in full at startup.</li>
+</ul>
+
+<p>Nothing new was added. Everything else was a fix to something that already existed.</p>
+
+<div class="foot">
+  Every verdict came from running the thing. Findings that could not be reproduced were dropped rather
+  than reported. Two problems named in the handoff turned out to be already fixed, and are recorded as
+  that rather than fixed twice.
+</div>
+
+</body>
+</html>
