@@ -211,6 +211,40 @@ const HOTELS = [
   },
 ];
 
+// EVERY DECISION THAT IS ACTUALLY HIS, in one place he can open. They were scattered across a plan
+// file he does not read, which is the same as not asking. Each one carries what I would do, so a
+// yes or a no is a complete answer and he never has to compose a paragraph.
+const DECISIONS = [
+  {
+    q: "Which of the four paths do we build?",
+    mine: "The send-a-link one. It removes the typing instead of moving it.",
+  },
+  {
+    q: "Do we write a rule for when we get it wrong?",
+    mine:
+      "Yes, and soon. Booking.com forgives four a year and eats the cost. Our version is our slot against their paper book, and no code can catch that one.",
+  },
+  {
+    q: "Should the terminal show tomorrow, not just today?",
+    mine:
+      "Later. It is a different screen, not a wider query: today's list carries no date, the money line would sum both days, and the clash warning compares clock time only.",
+  },
+  {
+    q: "Bring the phone booking across from where it is stranded?",
+    mine:
+      "Yes. It was built twice and merged neither time. Until it lands, the board understates a real day.",
+  },
+  {
+    q: "Should accept and decline come back?",
+    mine:
+      "No. Every shop confirms instantly, and the only requests it ever showed were ones I had put there myself.",
+  },
+  {
+    q: "Three text weights on the salon page, the rule says two. Which gives?",
+    mine: "The rule. Three is what actually shipped and it reads fine.",
+  },
+];
+
 const TONE: Record<Path["verdictTone"], string> = {
   good: "text-s-success",
   hard: "text-s-urgency",
@@ -296,6 +330,22 @@ export default async function OutsideBookingsBoard() {
           shop for its own popularity, which is what drove a wave of restaurants off OpenTable. Charge
           a flat fee and you end up building tools, because you have no reason to route anybody. Both
           Swiss products took the flat side.
+        </p>
+      </div>
+
+      <div className="mt-12 border-t border-s-border pt-6">
+        <p className={LABEL}>What I need from you</p>
+        <ul className="mt-1">
+          {DECISIONS.map((d) => (
+            <li key={d.q} className="border-t border-s-border py-5 first:border-t-0">
+              <p className={`${BODY} leading-[1.4]`}>{d.q}</p>
+              <p className={`${META} mt-1`}>{d.mine}</p>
+            </li>
+          ))}
+        </ul>
+        <p className={`${META} mt-4`}>
+          Every one of these is waiting on you and nothing else. A yes or a no on any line is a
+          complete answer.
         </p>
       </div>
 
