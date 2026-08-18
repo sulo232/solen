@@ -49,7 +49,13 @@
   ul{margin:10px 0;padding-left:20px}
   li{margin:7px 0;font-size:15px}
   .tag{display:inline-block;font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--sunken);color:var(--ink);vertical-align:middle;margin-left:8px}
-  .scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:16px 0}
+  /* 2026-08-18: measured on a 375px viewport, the body scrolled sideways to 469px. Two causes,
+     both fixed here: a long <code> path could not break, and the table sat outside its own
+     scroller because .scroll had no width bound of its own. Wide content scrolls inside its box;
+     the page never does. */
+  code{overflow-wrap:anywhere;word-break:break-word}
+  .scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:16px 0;max-width:100%}
+  .f,.board,.quote,p,li,h1,h2,h3{min-width:0;overflow-wrap:anywhere}
   table{border-collapse:collapse;width:100%;font-size:14px;min-width:460px}
   th{text-align:left;font-weight:600;padding:9px 12px 9px 0;border-bottom:1px solid var(--line);white-space:nowrap}
   td{padding:9px 12px 9px 0;border-bottom:1px solid var(--line);vertical-align:top}
@@ -208,6 +214,45 @@ corrected in writing now, naming the true state either way.</p>
   <tr><td>The banned glow</td><td>Homepage business boxes, four places</td><td>Visual, so it needs a mockup and your yes</td></tr>
   <tr><td>Dormant dark mode styling</td><td>Five files</td><td>Harmless today, live the moment one config line changes</td></tr>
 </table>
+</div>
+
+<h2>Gates pointing at things that do not exist<span class="n">found late, and it is a family</span></h2>
+
+<div class="f red">
+  <h3>Refused, then sent somewhere empty</h3>
+  <p>One gate stops you and says: go add your entry to this other file. That file has never existed,
+  anywhere. The gate was renamed and its own instructions were not.</p>
+  <p class="what">A second one stops you and tells you to run four browser tools that are not in this
+  build. Its detection was already looking for the right ones, so only the advice was wrong, which is
+  the worse half: you get blocked and then sent nowhere.</p>
+  <p class="what"><b>Why they were pointing at nothing:</b> the old browser tools were not deleted,
+  they were replaced. That was checked and written down on 12 July, in one memory file. The
+  correction never travelled: eleven guards and two of the always-loaded rule files still name the
+  old ones. A pass is going through all of them now.</p>
+</div>
+
+<h2>A deletion I nearly made, and did not<span class="n">this is the one you asked for by name</span></h2>
+
+<div class="f orange">
+  <h3>The audit said delete it. Driving it said keep it.</h3>
+  <p>One guard looked like a duplicate of another: both stop the same turn, which is two refusals for
+  one mistake. Deleting it was the obvious call.</p>
+  <p class="what">Then I tested the case that separates them: a page file edited so it renders
+  differently, but with no design change. The "duplicate" catches that. The other one does not.
+  It was never a duplicate. Deleting it would have removed real cover and nothing would have said so
+  until something shipped unlooked-at.</p>
+</div>
+
+<h2>Half my own fixes were not running<span class="n">and a gate is what told me</span></h2>
+
+<div class="f red">
+  <h3>Two copies of every guard, and only one of them counts</h3>
+  <p>A language guard kept accusing me of touching six files I had never opened. I fixed it. It fired
+  again with the same six.</p>
+  <p class="what">Because guards live in two places, and the one that runs is not the one I had
+  fixed. Five other fixes from today were sitting in the copy nobody reads, doing nothing. All five
+  are now in the live copy and re-tested there. Without that gate being annoying twice, they would
+  have looked done and been dead.</p>
 </div>
 
 <h2>What was removed<span class="n">four, every one driven first</span></h2>
