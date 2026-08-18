@@ -103,10 +103,23 @@ another tab scrolls 0 to 600. So the browser is fine and the page is genuinely s
 Every measurement above is from the automation browser, and the one thing I proved about that
 browser is that it reports a zero viewport in a background tab, which is not normal.
 
-- [ ] SCROLL: reproduce on a real device before diagnosing further. The next person should open
-      `/de` on a phone and simply try to scroll. If it scrolls there, the whole thing above is an
-      automation artifact and the six dead theories cost nothing. If it does not, the next
-      measurement is a `wheel` listener trace, which is the one instrument not yet tried.
+- [x] SCROLL: reproduced at a phone viewport and with real input, so it is not a desktop-only or a
+      scripting-only artifact. `verified:` at 375x812 the page has 4479px of content against an
+      812px viewport and `scrollTop` stays 0; a real `End` keypress also leaves it at 0 of a
+      possible 3667; a dispatched cancelable wheel and touchmove are NOT default-prevented, so
+      nothing is intercepting the gesture; `html` computes `overflow: visible`, `position: static`,
+      `height: 4479px`, `max-height: none`. Control run in the same tab each time (viewport height
+      non-zero) per the per-instrument rule.
+      **ONE NEW OBSERVATION, recorded as an observation and NOT as the cause, because publishing a
+      cause on one surprising reading is the exact failure this session documented:** the page's
+      `<header class="sticky top-0 left-0 right-0 z-...">` computes to `position: static` with
+      `height: 0`, and `<main>` sits at `top: 0` as a result. A sticky header that is not sticky and
+      has collapsed to nothing is a real anomaly on the same page, and it may be unrelated to the
+      scroll. It needs its own discriminating test before anyone calls it the cause.
+- [ ] SCROLL: the one measurement I cannot take from here is his own phone. Everything above is the
+      automation browser, and the one thing proved about that browser today is that it reports a
+      zero viewport in a background tab. Open `/de` on the phone and try to scroll: that single
+      answer either kills the whole investigation or promotes the header anomaly to prime suspect.
 
 ## OPEN, WAITING ON HIM , tracked as boxes so they cannot be lost in prose
 
@@ -178,7 +191,7 @@ which is why none of them is done. They stay open until he answers.
       including "I ran it and the sandbox blocks writes". Aggregator suite 8/8. That member had NO
       suite at all, which is why the defect survived; it now has one, 6/6, with the exact defect as
       a case. Adversary pass recorded in the gate-eval log.
-- [x] `touch-action-scroll-gate.py` , the work that made this decidable is DONE; the decision is
+- [x] `touch-action-scroll-gate.py` (commit `2c2c996ca`) , the work that made this decidable is DONE; the decision is
       still his and it is now a one-word yes or no.
       **It was blind to the incident that created it.** His words 2026-07-31, three times: *"I can't
       really scroll. Anywhere, I can't really scroll."* The cause was `touch-action: pan-x` put on a
