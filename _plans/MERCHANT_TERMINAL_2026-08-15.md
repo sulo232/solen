@@ -2055,11 +2055,14 @@ possible or no?"
 He went down the board and answered some of it, asked me to think harder on the rest, and added one
 question that was not on it.
 
-- [ ] R19-1 Q1, the four paths: NOT ANSWERED, he asked for the work instead. "can you actually think
-      and ask for multiple opinions from the subagents, deep research". Deep-research lens dispatched
-      with a forced recommendation, its own counter-argument, a four-week falsification test, a
-      second-by-second walk through the text-a-link interaction, and an explicit hunt for a fifth
-      option nobody has named.
+- [x] R19-1 Q1, the four paths: ANSWERED and published. The deep-research lens came back and its
+      findings are on the board at `/dev/outside-bookings`, five sections, every claim sourced. It
+      killed path 3 outright (read the shop's own calendar): five competitors all import an outside
+      calendar as busy time only, no name, no service, no price, Shore's own help page asks whether
+      Google Calendar works as a two-way bridge and answers "No", and 93 in 100 Swiss small
+      businesses have no online booking to read from in the first place. It recommended a FIFTH
+      option nobody had put on the board, make the screen's own uncertainty act, which is built and
+      shipped (commit 8e96fd937).
 - [ ] R19-2 Q2, the tolerance rule: HIS DECISION IS MADE, the work is NOT done. "yeah, yeah, build that." A published, priced
       rule for when our slot collides with their paper book, in the shape Booking.com uses (four a
       year forgiven, platform eats it). Not built yet, but the decision is his and it is made.
@@ -2093,3 +2096,18 @@ question that was not on it.
       dispatched to measure the live screen and come back with one recommendation, including what a
       list cannot show that a day grid can, and which of the terminal's own written rules a grid at
       390px would break.
+- [x] R19-7 HIS QUESTION, 2026-08-18: did the research already prove the terminal will not work?
+      ANSWERED: no, and the research points the other way. What it killed is calendar sync, which is
+      one WAY IN, not the screen. On the screen itself the strongest number in the whole study is
+      OpenTable's: only about 17 in 100 bookings came through the platform, so 83 in 100 were typed
+      into the book at the counter by staff, and that is exactly what a terminal is. Booking.com's
+      own answer for a four-room place with no software is a free calendar they keep by hand. The
+      real risk the research DID name is different and it is not "the terminal fails", it is TWO
+      BOOKS: a shop that keeps its paper book AND our screen gets double-booked, and no code can
+      catch that. That is what R19-2's tolerance rule exists to absorb.
+- [x] R19-8 HIS SECOND ASK, 2026-08-18, and it is a REPEAT he had to make twice: a visual board,
+      "boxes and lines connecting each other", not another page of prose. Built at
+      `/dev/how-it-works`: one drawing showing the three ways in that reach the screen joining into
+      one spine, what we hold, the screen itself, and the two ways in whose lines stop dead before
+      they get there. First build came back as a numbered list wearing arrows and was rejected
+      before he saw it, because a list of arrows is not a map.

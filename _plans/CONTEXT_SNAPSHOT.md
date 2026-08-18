@@ -2,23 +2,19 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-17T15:17:48 (trigger: auto)
+- taken: 2026-08-18T16:30:34 (trigger: auto)
 - branch: claude/offline-booking-device-266b10
 
 ## git
 ```
-5fe57d279 Record round 6, and track the two remaining items as boxes rather than prose
-69d8b3c96 Serve the terminal on its own bare route, because the whole site was loading under it
-a45003243 A new screen written from nothing, and the gate for why that took seven rounds
-af53ff51e Strip back to the terminal, and restyle it toward his weto reference
-aba41e3b7 Point the tunnel config at the dev server's actual port
+8e96fd937 The stale warning does something now, and the ring stops lying while it waits
+f4b0e744a A phone booking can name a day now, which it could not, and that made the feature half useless
+633e8575b A salon can record its own appointment now, in production, not just on the dev screen
+8af261b8b Record his answers to the board, and correct the SMS premise with the code
+04b9a99df Give this worktree its own port and tunnel, because another session had taken 3000
 ```
 ```
-?? _tmp_verify_measure.mjs
-?? _tmp_verify_measure2.mjs
-?? _tmp_verify_measure3.mjs
-?? _tmp_verify_measure4.mjs
-?? _tmp_verify_measure5.mjs
+?? app/[locale]/dev/how-it-works/
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
@@ -88,8 +84,16 @@ Open boxes:
 - [ ] PARKED 2026-08-15 · Should a booking land already confirmed (what every salon tool does), or should the salon have to accept each one (what Uber Eats does)? · from: the terminal definition, and our own numbers say 28 of 28 salons already run auto-confirm
 - [ ] PARKED 2026-08-15 · When a salon moves an appointment, does the customer just get told, or do they have to agree first? · from: three database columns for a customer-agreement handshake exist from migration 022 and no code was ever written against them
 - [ ] PARKED 2026-08-15 · The salon page uses three text weights on purpose and the design rule allows two. Does the rule become three, or does the salon page have to change? · from: measured on the shipped salon page while rebuilding the terminal out of its own parts
-- [ ] R6-6 The old `b/B.tsx` and its `/dev/terminal/b` route are now dead weight: the new `Screen`
-- [ ] R6-7 The pending-approval decision block, the live arrivals, the undo stack, the sound control
+- [ ] R12-6 PARKED FOR HIM, because it is a rule change and not mine to make: the terminal runs
+- [ ] R13-5 PARKED FOR HIM: scheduled appointments beyond today. The loader filters to the current
+- [ ] PARKED 2026-08-17 · Should the accept/decline card come back on the terminal? · from: it was
+- [ ] PARKED 2026-08-17 · Should the terminal show tomorrow as well as today? · from: the loader is
+- [ ] PARKED 2026-08-17 · Bring the phone-booking flow across from the branch it is stranded on? ·
+- [ ] PARKED 2026-08-17 · Do we ever add read-only calendar sync as a SECOND way in, given the
+- [ ] R19-1 Q1, the four paths: NOT ANSWERED, he asked for the work instead. "can you actually think
+- [ ] R19-2 Q2, the tolerance rule: HIS DECISION IS MADE, the work is NOT done. "yeah, yeah, build that." A published, priced
+- [ ] R19-4 Q3, tomorrow on the terminal: he leaned yes and asked what I think. Answered in the
+- [ ] R19-6 NEW QUESTION, not on the board: calendar view instead of the current list. His words:
 
 ## BRANCH_RECONCILIATION_2026-08-14.md
 Open boxes:
