@@ -2066,7 +2066,8 @@ workstream exists to avoid.
       A shop books weeks out, so a counter that cannot see next Thursday writes it somewhere else.
       Widening the window also re-opens the money hazard fixed in that same commit, and every
       derived figure has to be re-checked against the wider list, not just `bookedToday`.
-- [x] R21-2 THE GAP AUDIT, DONE. Six lenses read the code, produced 70 findings, and every one that
+- [x] R21-2 THE GAP AUDIT, DONE `verified:` commit 4f056eb48, workflow wf_4131b3ae-812, journal at
+      `subagents/workflows/wf_4131b3ae-812/journal.jsonl` (6 map results plus 14 refute verdicts). Six lenses read the code, produced 70 findings, and every one that
       was not "present" went to a second agent told to REFUTE it. Three were refuted and dropped
       (moving an appointment, creating a block with a shape, and recording a one-off interruption are
       all possible in the data model). EIGHT SURVIVED AT "KEEPS A SECOND BOOK", meaning a real salon
@@ -2085,14 +2086,16 @@ workstream exists to avoid.
       around: `appointmentMinutesLeft` counts only an appointment ALREADY RUNNING, so the wait
       figure ignores every chair booked out later today and overstates capacity by exactly the
       minutes it cannot see. A shop that notices this stops trusting the number.
-- [ ] R21-2b was: THE GAP AUDIT, six lenses: what a day contains besides bookings (lunch, a day
       off, a chair out of action), editing what is already in the book (move, cancel, retype a
       name), what the customer is told when the SALON changes something, whether any number on the
       screen can be quietly wrong, the calendar question, and what it takes to get a shop off the
       software they already run. Every claimed gap is then handed to a second agent told to refute
       it, and graded by one test: could a real salon get through a normal Tuesday without writing
       this down somewhere other than our screen.
-- [x] R21-6 THE CALENDAR QUESTION, ANSWERED FROM THE CODE, and the answer is YES BUT AS A SECOND
+- [x] R21-6 THE CALENDAR QUESTION, ANSWERED FROM THE CODE `verified:` commit 4f056eb48; graveyard
+      line read at `_design-system/REMOVED.md:134`; grid geometry measured on the live page at 390
+      wide (350px row content, `Screen.tsx:68`); durations and free windows read off the live payload;
+      the anchor defect at `Screen.tsx:747-758`. The answer is and the answer is YES BUT AS A SECOND
       SCREEN, never as a replacement for the board. Four things a grid shows that a time-ordered list
       structurally cannot, each measured on the live payload:
         - WHO is cutting. In a grid it is the column and costs zero ink. In a list the row's lead
@@ -2256,7 +2259,8 @@ question that was not on it.
       read it back from the database. and was annoyed at the
       suggestion. "we need that from the start. what do you mean later?" Decision made, build
       pending.
-- [ ] R19-6 NEW QUESTION, not on the board: calendar view instead of the current list. His words:
+- [x] R19-6 ANSWERED, see R21-6 `verified:` commit 4f056eb48. Yes to a grid, as a SECOND screen, and
+      the graveyard is clean because both killed terminal directions were lists. Original ask:
       "should we have a calendar style or what we have right now? I feel like calendar style is more
       better instead of how it is right now, because it doesn't make that much sense." Design lens
       dispatched to measure the live screen and come back with one recommendation, including what a
