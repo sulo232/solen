@@ -74,13 +74,27 @@
 <div class="board">
   <div class="row"><span class="lab">Checks on disk</span><span class="was">236</span><span class="now">305</span></div>
   <div class="row"><span class="lab">Switched on</span><span class="was">215</span><span class="now good">211</span></div>
-  <div class="row"><span class="lab">On, never once tested</span><span class="was">133</span><span class="now good">128</span></div>
-  <div class="row"><span class="lab">Wait at the end of every reply</span><span class="was">18.6s</span><span class="now good">13.2s</span></div>
+  <div class="row"><span class="lab">On, never once tested</span><span class="was">133</span><span class="now good">112</span></div>
+  <div class="row"><span class="lab">Wait at the end of every reply</span><span class="was">18.6s</span><span class="now good">2.7s</span></div>
   <div class="row"><span class="lab">Text pasted in on every message</span><span class="was">4.25KB</span><span class="now good">3.9KB</span></div>
+  <div class="row"><span class="lab">Text pasted in at session start</span><span class="was">16.3KB</span><span class="now">16.1KB</span></div>
 </div>
 
 <p>The handoff note counted 236. It had looked in one of the three folders these live in. The real
-number is 305, and 128 of the switched-on ones had never been tested by anything at all.</p>
+number is 305, and 133 of the switched-on ones had never been tested by anything at all.</p>
+
+<p><b>The seven seconds.</b> The wait after every reply was 18.6 seconds and is now 2.7. Two things
+were nearly all of it. One check spawned a separate process per commit reference and re-checked the
+same ones over and over: 1,424 processes, 14.3 seconds, now one batched call at half a second. The
+other searched the entire project for any folder called dev, including inside the downloaded
+libraries, on every reply: 4.5 seconds to find exactly the same 175 files that a targeted search
+finds in a tenth of a second.</p>
+
+<p><b>Being straight about the one that did not move.</b> The text pasted in at session start is
+16.1KB, down 192 bytes, which is nothing. The prescribed fix could never have worked: the size is not
+the number of workstreams, it is two fixed limits in the code, and how much of your plan is worth
+that space is your decision, not mine. Related, and probably the real answer: your workstream index
+now has 65 rows marked in flight.</p>
 
 <h2>The one number that matters<span class="n">how much of this is guarding anything</span></h2>
 
