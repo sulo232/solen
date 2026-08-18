@@ -547,9 +547,10 @@ export default function Screen({
     if (!phoneName.trim() || !phoneNumber.trim() || !phoneStaff || !phoneService || !selectedTime) return;
     setPhoneSaving(true);
     // One ISO instant from the day pill and the time pill together, via the shared Zurich helper
-    // (never a hand-rolled offset, Zurich is +1 or +2 depending on the date). The save endpoint takes
-    // minutes-from-now rather than an instant (app/api/dev/terminal/route.ts), so the instant is
-    // converted back to that shape here instead of editing the route.
+    // (never a hand-rolled offset, Zurich is +1 or +2 depending on the date). Sent as the absolute
+    // instant, not minutes-from-now (2026-08-18 fix): a duration meant the route re-derived it
+    // against its own Date.now(), a second clock reading, so the seconds between the two leaked
+    // into the stored time and a 10:30 pick could land on 10:29.
     const target = zurichWallClockToUtc(phoneDay, selectedTime.hour, selectedTime.minute);
     const ok = await commit({
       action: "phone_booking",
@@ -558,7 +559,7 @@ export default function Screen({
       staffId: phoneStaff,
       serviceId: phoneService,
       minutes: services.find((sv) => sv.id === phoneService)?.minutes ?? 30,
-      startsInMinutes: Math.round((target.getTime() - Date.now()) / 60_000),
+      startsAt: target.toISOString(),
     });
     setPhoneSaving(false);
     if (!ok) return;
@@ -1504,7 +1505,9 @@ export default function Screen({
                 }
                 className={
                   "font-body flex h-12 w-full items-center justify-center rounded-full bg-s-ink text-[15px] font-semibold text-white" +
-                  (phoneSaving || !phoneName.trim() || !phoneNumber.trim() ? " opacity-50" : "")
+                  (phoneSaving || !phoneName.trim() || !phoneNumber.trim() || !phoneStaff || !phoneService || !selectedTime
+                    ? " opacity-50 cursor-not-allowed"
+                    : "")
                 }
               >
                 {phoneSaving ? "Saving" : "Put it in the book"}

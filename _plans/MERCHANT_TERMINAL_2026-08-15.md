@@ -2112,6 +2112,16 @@ integration question is closed underneath it.
       accepts a per-staff external iCal URL. It carries no name, no service and no price, so it is
       a compatibility hedge and never the product. Time-box it: if it runs past roughly two weeks,
       the length itself is the signal to stop, because the payoff is capped by design.
+      WEAKENED THE SAME DAY IT WAS PARKED, by a second research pass, and this is close to fatal:
+      iCal has NO CANCELLATION CHANNEL AT ALL. Cloudbeds, on its own feature: "Cancelations from a
+      calendar channel cannot be transmitted to any 3rd parties", so a cancelled appointment never
+      frees the slot and somebody has to do it by hand. Refresh is 2 to 6 hours, not minutes:
+      Airbnb every 3 hours, Booking.com every 2, Cloudbeds "30 minutes to several hours".
+      Booking.com's own FAQ says it plainly: sync "doesn't happen in real time. This means
+      reservations made on other platforms might not sync right away, which can lead to double
+      bookings." And Cloudbeds' documented mitigation is the one we cannot take: "we recommend to
+      turn off 'Instant Booking' when using calendar channels to prevent overbookings". Instant
+      booking IS our product, so the hedge costs the thing we sell. Reconsider before building it.
 - [ ] R20-8 THE FIRST PER-VENDOR DEAL WORTH ASKING FOR, when we want one: Phorest. It is the only
       vendor found with a real appointment-write endpoint and no competing marketplace. Not now,
       and named so it is not re-researched.

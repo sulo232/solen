@@ -72,9 +72,26 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: phoneError.message }, { status: 400 });
     }
     const admin = createAdminSupabaseClient();
-    const startsAt = new Date(Date.now() + phone.startsInMinutes * 60_000);
+    // The ABSOLUTE instant the shop picked, taken directly (2026-08-18 fix): the old
+    // startsInMinutes duration was reconstructed against this route's own Date.now(), a second
+    // clock reading later by the network round trip, so the stored time could drift by up to a
+    // minute from what was chosen. There is only one clock reading here now: the client's.
+    const startsAt = new Date(phone.startsAt);
     const endsAt = new Date(startsAt.getTime() + phone.minutes * 60_000);
     try {
+      // Price is read server-side, never trusted from the client (same rule the customer booking
+      // route and app/api/bookings/salon/route.ts both follow). This also confirms the service
+      // actually belongs to this salon before a slot is ever held for it.
+      const { data: service, error: serviceErr } = await admin
+        .from("services")
+        .select("id, price")
+        .eq("id", phone.serviceId)
+        .eq("salon_id", TERMINAL_SALON_ID)
+        .single();
+      if (serviceErr || !service) {
+        return NextResponse.json({ error: "Service not found" }, { status: 404 });
+      }
+
       // The slot must exist first: bookings.slot_id is NOT NULL with ON DELETE RESTRICT.
       const { data: slot, error: slotErr } = await admin
         .from("availability_slots")
@@ -110,7 +127,12 @@ export async function POST(req: NextRequest) {
           status: "confirmed",
           guest_name: phone.name,
           guest_phone: phone.phone,
-          price_paid: 0,
+          price_paid: service.price ?? 0,
+          // The board (loadTerminalData.ts) renders estimated_price per row and sums it into
+          // "Booked today"; it never reads price_paid. This was hardcoded to 0 and never touched
+          // estimated_price at all, so every phone booking taken here showed CHF 0.00 on its own
+          // board regardless of the real service price.
+          estimated_price: service.price ?? 0,
           payment_status: "none",
           // The salon's existing "Quellen" chart already reads this column, so a phone booking shows
           // up there for free instead of needing a new report.

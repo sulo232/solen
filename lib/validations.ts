@@ -678,6 +678,12 @@ export const terminalActionSchema = z.object({
 // busy until X" block, and it broke on the case that decides this feature, a stylist calling in sick
 // and the shop having to ring those people back. A block you cannot call back is a block that gets
 // kept on paper as well, which is the double entry we are trying to remove.
+// startsAt (2026-08-18 fix): was startsInMinutes, a duration the route reconstructed against
+// its OWN Date.now(), a second clock reading later by the network round trip. Whatever seconds
+// had ticked between the client's read and the server's leaked into the stored time, so a
+// 10:30 pick could land on 10:29. An absolute instant removes the second clock reading. The
+// horizon stays the same 15 days (was 21600 minutes) so the wire-format change does not widen
+// what a client may ask for; the past is now rejected outright rather than allowed 12 hours back.
 export const terminalPhoneBookingSchema = z.object({
   action: z.literal('phone_booking'),
   name: z.string().trim().min(1).max(120),
@@ -685,11 +691,14 @@ export const terminalPhoneBookingSchema = z.object({
   staffId: z.string().uuid(),
   serviceId: z.string().uuid(),
   minutes: z.number().int().min(5).max(480),
-  // 21600 minutes is 15 days. Was 10080 (7 days), which silently rejected the second half of the
-  // day picker: the sheet offers today plus 13 days, and a save on day 8 or later came back as a
-  // validation error the shop could not see, because the error line renders behind the open sheet.
-  // Proven live 2026-08-18 by booking the last pill and reading the 400 back.
-  startsInMinutes: z.number().int().min(-720).max(21600),
+  startsAt: z.string().datetime().refine(
+    (v) => {
+      const t = new Date(v).getTime();
+      const now = Date.now();
+      return t >= now && t <= now + 21600 * 60_000;
+    },
+    { message: "startsAt must not be in the past or more than 15 days out" },
+  ),
 });
 
 export const cutHistorySchema = z.object({

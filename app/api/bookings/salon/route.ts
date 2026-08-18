@@ -135,6 +135,12 @@ export async function POST(req: NextRequest) {
       guest_phone: validated.guest_phone ?? "",
       guest_email: validated.guest_email ?? null,
       price_paid: service.price ?? 0,
+      // The merchant terminal board (loadTerminalData.ts) reads estimated_price, not price_paid,
+      // for the number it renders per row and sums into "Booked today". price_paid alone left this
+      // column null, so a phone booking landed with the right price everywhere EXCEPT the one
+      // screen the salon is looking at when it takes the call. Same value as price_paid: nothing
+      // here has actually been paid (payment_status stays "none"), this is the quoted price.
+      estimated_price: service.price ?? 0,
       payment_status: "none",
       acquisition_source: validated.source,
       customer_note: validated.customer_note?.trim() || null,
