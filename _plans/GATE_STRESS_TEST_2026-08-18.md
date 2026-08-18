@@ -171,6 +171,15 @@ fixed AND re-attacked by an agent that did not write the fix (run `wf_3859ceaf-7
       THIS EDIT made it worse, so the check now runs against the on-disk content first and stays
       quiet when it was already failing. The other eleven checks in the aggregator still run on
       every file, so this buys the aggregator its survival rather than weakening it.
+      THEN asked WHY the citations do not resolve, instead of assuming they were stale. Of the 9
+      that fail, 4 are parser junk, 2 are `/dev/...` route references that were never files, and
+      the real ones are BARE BASENAMES: `Grounded-in: SalonServices.tsx`, whose component is alive
+      at `app/[locale]/_components/salon/SalonServices.tsx`, and `FilterSheet.tsx` at
+      `app/[locale]/_components/search/FilterSheet.tsx`. Nothing was missing. The check demanded a
+      repo-root-relative path, so a correct citation written the natural way never resolved.
+      It now accepts a basename when exactly ONE file in the tree carries that name.
+      `verified:` a new mockup citing `SalonServices.tsx` by basename passes; one citing
+      `TotallyMadeUpThing.tsx` still blocks; suite 8/8.
 - [x] `no-focus-ring-gate.py` (commit `6d207e9d3`) , CLOSED. `verified:` I drove all three adversary payloads myself:
       `focus:shadow-[0px_0px_0px_3px_rgba(255,255,255,0.4)]` -> BLOCK(deny);
       `outline:2px solid var(--s-ink)` -> pass; `outline:solid 2px #276EF1` (reversed order) ->
