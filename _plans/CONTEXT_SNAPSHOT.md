@@ -2,24 +2,16 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-16T21:25:49 (trigger: auto)
-- branch: claude/agent-flow-design-overhaul-2af2c2
+- taken: 2026-08-18T23:43:14 (trigger: auto)
+- branch: claude/stress-test-gates-hooks-6dc8e8
 
 ## git
 ```
-e99649943 Two dead controls in the reviews mockup, caught by clicking them
-801e6213b Mockups for walk-in and reviews, nine versions each, plus the four bugs they exposed
-8ff7a1c40 An independent reviewer broke my gate change in 8 ways. Fixed with the mechanism this repo already had
-68d7804b9 One section, eight versions, stacked. No top bar, no toggle, no frame
-ca4b6b324 Remove the gate that was forcing the whole-page template, and rule 4 with it
-```
-```
-M _design-system/REMOVED.md
- M _plans/ACTIVE.md
-?? _plans/HOME_SECTION_ROUND2_2026-08-16.md
-?? public/_mockups/looks-round2/
-?? public/_mockups/reviews-round2/
-?? public/_mockups/walkin-round2/
+45ba2690e Scroll reproduces on a phone viewport and with real keys, so it is not my tooling
+c5b73a778 Scroll: symptom confirmed, cause not found, six dead ends written down
+2c2c996ca The scroll check could not see the bug it was written for
+a1212dbf1 Seven checks are back on, and the thing blocking them was punishing honesty
+08377912f Remove dark: styling from four orphaned components, owner approved
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
@@ -84,22 +76,4 @@ M _design-system/REMOVED.md
 48 | PRINCIPLE DEEP-RESEARCH , re-test every principle we already have against external evidence | **ACTIVE** (design) + handoff (rest) 2026-07-28
 50 | DESIGN principle deep-research (the rules we ALREADY have) | **ACTIVE** (2026-07-28)
 51 | DESIGN RE-ENGINEER , improve the system we have, measured against live Airbnb | **ACTIVE** (2026-07-28)
-
-## HOME_SECTION_ROUND2_2026-08-16.md
-Open boxes:
-- [ ] **A1. Keep the Popular looks section.** He said keep it, so it is not going in the graveyard.
-- [ ] **A2. Give it the Inspo card anatomy.** measured on the live Inspo row: card 200 x 380, photo
-- [ ] **A3. Remove the TikTok badge from the card.** measured: 38 x 12 pill, top left.
-- [ ] **A4. Remove the black gradient over the photo.** measured: `bg-gradient-to-t from-black/80`
-- [ ] **A5. Put a real shadow BEHIND the card instead.** measured: the live Inspo card and its photo
-- [ ] **A6. "Find your inspiration" is replaced by Popular looks.** One section, not two. They were
-- [ ] **A7. Graveyard line for the removed section, same turn.**
-- [ ] **B1. Keep the "N ahead of you" count.** He named it twice.
-- [ ] **B2. Keep the mark indicators.** measured in version 5 of my page: 8 marks, 6 x 16 each,
-- [ ] **B3. Colour-code the marks by how busy it is.** His words: "if it's get more, then...".
-- [ ] **B4. Put the walk-in icon back.** I swapped it for a lucide door glyph. The live band uses
-- [ ] **B5. Fix the text hierarchy.** measured on my own page: 120 of 162 text elements render at
-- [ ] **B6. BLOCKED, and this is the one real dependency: the N-ahead emphasis treatment.** He said
-- [ ] **B7. Harden the hierarchy failure**, because he asked for it by name ("you do harden on that
-- [ ] **C1. The cards are too big and too long.** measured live: 260 x 220 per card.
-- [ ] **C2. Read more is the right idea in the wrong place.** measured: it currently sits in its own
+71 | GATE + HOOK STRESS TEST , all 305 hooks driven with real payloads, not read (owner 2026-08-17: "actually evaluate and stress test each one") | **ACTIVE** (2026-08-18)
