@@ -120,6 +120,17 @@ function addDays(dateStr: string, days: number): string {
   return new Date(Date.UTC(y, m - 1, d + days)).toISOString().slice(0, 10);
 }
 
+// The loader window now reaches one day past today (R19-4), so bookings need to be split by Zurich
+// CALENDAR DAY, not a fixed 24-hour offset from now: "add a day" gets a booking at 23:30 tonight and
+// one at 00:30 tomorrow onto the wrong sides of each other across the DST switch.
+function zurichDateOf(iso: string): string {
+  const parts = ZURICH_DATE_FMT.formatToParts(new Date(iso));
+  const y = parts.find((p) => p.type === "year")?.value ?? "1970";
+  const m = parts.find((p) => p.type === "month")?.value ?? "01";
+  const d = parts.find((p) => p.type === "day")?.value ?? "01";
+  return `${y}-${m}-${d}`;
+}
+
 // Today plus the next 13, fourteen pills, because a salon books a few weeks out and a row scrolls.
 function dayOptions(todayStr: string): { value: string; label: string }[] {
   return Array.from({ length: 14 }, (_, i) => {
@@ -647,10 +658,15 @@ export default function Screen({
   const waitingQueue = [...queue]
     .filter((q) => q.status === "waiting")
     .sort((a, b) => a.position - b.position);
-  const todaysBookings = [...bookings]
+  const activeBookings = [...bookings]
     .filter((b) => b.status !== "pending_approval" && b.status !== "cancelled")
     .sort((a, b) => a.startsAt.localeCompare(b.startsAt));
+  const todaysBookings = activeBookings.filter((b) => zurichDateOf(b.startsAt) === todayStr);
+  const tomorrowsBookings = activeBookings.filter((b) => zurichDateOf(b.startsAt) === addDays(todayStr, 1));
   const doneCount = queue.filter((q) => q.status === "done").length;
+  // Scoped to `todaysBookings` on purpose, not `activeBookings`: the loader window now reaches one
+  // day further (R19-4) so the board can show tomorrow's appointments too, and summing the wider list
+  // here would silently fold tomorrow's takings into today's figure with nothing on screen to say so.
   const bookedToday = todaysBookings.reduce((sum, b) => sum + (b.price ?? 0), 0);
 
   // Two requests for the same slot are both acceptable on their own, so accepting both double-books
@@ -1207,6 +1223,28 @@ export default function Screen({
                     </li>
                   ))}
                 </ul>
+              )}
+              {/* Tomorrow, in the same section as Today (R19-4): the loader now reaches one day
+                  further so a shop can answer a closing-time phone call. Same row grammar, no
+                  arrival button, nobody arrives tomorrow. Renders nothing at all when empty, this is
+                  not an empty state, it is the absence of a section that has nothing to say. */}
+              {tomorrowsBookings.length > 0 && (
+                <>
+                  <p className="font-body mt-3 px-5 text-[13px] font-semibold text-s-ink-2">Tomorrow</p>
+                  <ul>
+                    {tomorrowsBookings.map((booking) => (
+                      <li key={booking.id} className={ROW}>
+                        <div className="min-w-0 flex-1">
+                          <p className={ROW_TIME}>{zurichTime(booking.startsAt)}</p>
+                          <p className={ROW_NAME}>{booking.customerName}</p>
+                          <p className={ROW_SUB}>
+                            {booking.serviceName}, {chf(booking.price)}
+                          </p>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </>
               )}
             </div>
           </>

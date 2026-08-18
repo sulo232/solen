@@ -128,7 +128,10 @@ export async function loadTerminalData(): Promise<TerminalData> {
   const admin = createAdminSupabaseClient();
   const dateStr = zurichTodayDateStr();
   const dayStart = zurichWallClockToUtc(dateStr, 0, 0);
-  const dayEnd = zurichWallClockToUtc(addDaysToDateStr(dateStr, 1), 0, 0);
+  // Widened by one more day (R19-4) so the board can also show tomorrow's appointments, for a shop
+  // that gets a phone call near closing time. Screen.tsx re-splits this window by Zurich calendar day
+  // and keeps the money figure scoped to today only, see the comment beside `bookedToday` there.
+  const dayEnd = zurichWallClockToUtc(addDaysToDateStr(dateStr, 2), 0, 0);
 
   let bookings: TerminalBooking[] = [];
   let queue: TerminalQueueEntry[] = [];
