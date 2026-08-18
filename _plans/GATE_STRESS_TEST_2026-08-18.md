@@ -138,6 +138,19 @@ his verbatim words:
 scope. Static, empty and zero-tall is the union of three dated decisions working correctly. Nothing
 to restore, and per the graveyard rule it must not be restored without his yes.
 
+**Measured live on `/de`, dev server, both widths, each reading taken after a scroll round-trip
+control (scroll to 1px, read back 1px) so the instrument proved the same verb it was about to
+report:**
+
+| `/de` viewport | header height | position | visible controls in it |
+|---|---|---|---|
+| 375x812 | 0px | static | 0 |
+| 1280x800 | 64px | sticky | 9 (Solen, Services, Fur Unternehmen, Inspo, Uber uns, Basel, DE, avatar) |
+
+So nothing is missing from the product. The header is fully built and fully working; it is switched
+off below the 768px breakpoint only, which is exactly the scope of the three `max-md:` rules his two
+instructions produced.
+
 This also closes the loose end from the scroll hunt: `!static` is `position: static !important`,
 which is why an inline `position: sticky` would not take. The rule scan that "found no !important"
 was the same broken walker that read 189 of 3,186 rules, so it never saw it.
