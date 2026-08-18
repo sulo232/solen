@@ -129,10 +129,16 @@ Before ending the turn, DO ONE of:
 
   1. VERIFY FOR REAL — make sure the dev server is up, then click through the changed
      screen and confirm it works:
-       • preview tools:  preview_snapshot / preview_click / preview_screenshot / preview_inspect
+       • preview_start to bring the page up, then mcp__Claude_Browser__navigate,
+         read_page, computer (click / screenshot), read_console_messages
        • or the agent browser (claude-in-chrome), or a playwright run
        • or a design-verifier subagent
      A single such call this turn clears the gate.
+     (Tool names corrected 2026-08-18: this text named preview_snapshot, preview_click,
+     preview_screenshot and preview_inspect, and NONE of those exist in this build. The
+     gate's own detection above already looks for the real mcp__Claude_Browser__* names,
+     so only the instructions were wrong, which is worse: it refused the turn and then
+     told you to call four tools that are not there.)
 
   2. CAN'T VERIFY RIGHT NOW (no browser connected, nothing runnable, or a backend-only
      change that renders nothing)? Release the gate AND tell the owner why in your reply:
