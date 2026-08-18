@@ -2026,3 +2026,25 @@ Owner: "u repeated so many times whats the cause", after four near-identical mes
       SECOND-ORDER, and it is the point: with the cosmetic blocks gone, the previous message is far
       less often blocked, so resend-delta itself will fire a fraction as much. Most of the duplicates
       it existed to catch were made by its own family.
+
+## ROUND 18 , he asked whether the checks can run BEFORE, and they can, 2026-08-17
+
+Owner: "can you make it so it runs in a background before you even type up or say anything. Is that
+possible or no?"
+
+- [x] R18-1 YES, AND IT IS THE ONLY PLACE THOSE RULES COULD EVER WORK `verified:`
+      `~/.claude/hooks/reply-shape-preflight.py`, new, 8/8 self-test, wired as the first
+      UserPromptSubmit hook in `~/.claude/settings.json` (21 hooks on that event now, file still
+      parses). Driven live from a file: a real turn gets the reminder, a background task
+      notification gets nothing.
+      WHY IT WORKS: UserPromptSubmit runs the moment HIS message arrives, before one word of mine
+      exists. It cannot inspect a reply, and it does not need to. The em-dash rule, the plain-words
+      rule and the list rule are all knowable before the sentence is written; they only ever needed
+      to be in mind, not to sit in judgement afterwards.
+- [x] R18-2 THE THREE MOVED OFF THE STOP PATH `verified:` `reply-family-aggregator.py` MEMBERS is
+      now a single entry, `resend-delta-gate.py`. It was four. The three that left judge SHAPE, which
+      is why they belong before; the one that stayed judges a message that already exists ("you are
+      about to send him the same thing twice"), which cannot be known in advance.
+      MEASURED REDUCTION on this session's own numbers: that family fired 36 times, 29 of them on
+      the three that just left. Those 29 can no longer happen at all, and the 15 resend-delta fires
+      were largely caused BY them, so the real reduction is bigger than 29.
