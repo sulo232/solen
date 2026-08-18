@@ -251,7 +251,7 @@ fixed AND re-attacked by an agent that did not write the fix (run `wf_3859ceaf-7
       suite 8/8. Worth naming why this needed re-checking at all: every measurement I took before
       `hook-probe.py` was fixed had been reading the repo copy instead of the worktree copy, so a
       "still broken" reading from earlier proves nothing either way.
-- [x] `unfinished-batch-gate.py` , CLOSED. `verified:` the `HEAD~3` window is gone; it now reads
+- [x] `unfinished-batch-gate.py` (commit `d1987f36f`) , CLOSED. `verified:` the `HEAD~3` window is gone; it now reads
       the timestamp of the last real user message from the transcript (`turn_start_epoch`, used at
       line 693), which is an actual turn boundary and works in a repo with two commits. Suite
       11/11.
@@ -273,7 +273,7 @@ fixed AND re-attacked by an agent that did not write the fix (run `wf_3859ceaf-7
       `verified:` suite 7/7 including the two committed cases; the live false positive
       (`public/_mockups/account-messages.html`, whose 8 German words come from a June commit and
       which I touched and reverted) now passes. Both copies match.
-- [x] Re-drove all 13 myself with the corrected probe, absolute paths, one payload each, the
+- [x] Re-drove all 13 myself (commit `d1987f36f`, harness `scratchpad/redrive13.py`) with the corrected probe, absolute paths, one payload each, the
       expected verdict written down before the run. **13 of 13 behave as claimed.**
       `verified:` plan-first BLOCK, exists-guard BLOCK, information-is-not-action BLOCK,
       say-whats-next BLOCK, mockup-base pass (a motion helper), no-focus-ring BLOCK, postgrest
