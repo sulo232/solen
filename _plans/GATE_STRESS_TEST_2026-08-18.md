@@ -177,8 +177,16 @@ fixed AND re-attacked by an agent that did not write the fix (run `wf_3859ceaf-7
       identifier, or a stated act of checking. The one wordlist left is the hedge set
       (assumed / probably / skipped / will look later), which is closed and already banned
       estate-wide by global rule 15.
-- [ ] `information-is-not-action-gate.py` , a multi-sentence imperative escapes, because only the last sentence is read
-- [ ] `say-whats-next-gate.py` , misses implemented/updated/refactored/created/wrote; blocks "nothing was measured"
+- [x] `information-is-not-action-gate.py` , CLOSED. `verified:` a multi-sentence imperative
+      ("Fix the gate. Do not stop until it is done.") with a pure-commentary reply now BLOCKS, and a
+      voice-dictated question with no question mark ("whats on the salon card") still passes. Both
+      re-driven with the corrected probe, since the earlier readings were taken against the wrong
+      copy of the file.
+- [x] `say-whats-next-gate.py` , CLOSED. `verified:` "I implemented the new availability filter and
+      it discriminates correctly now." now BLOCKS (the missing agentive verbs are in), "Nothing was
+      measured this turn, the page never rendered." now passes (an absence is not a work claim), and
+      today's known-good "Nothing else is wired to it." still passes. gate-eval reports PASS with an
+      adversary recorded.
 - [x] `mockup-base-gate.py` (commit `a7f3bb175`) , over-block cut from 98 to 59 of the repo's own 175 dev files, suite 9/9.
       `verified:` all 98 denials were the imagery floor, applied to EVERY dev `.tsx` once the scope
       widened. FLOORS LAW 2 does not say every screen: it says "every customer browse/discovery/PDP
@@ -235,7 +243,14 @@ fixed AND re-attacked by an agent that did not write the fix (run `wf_3859ceaf-7
       inside the instrument, which is the worst place for it: it makes a working fix look broken and
       invites a second wrong fix on top. Now resolved to an absolute path before the run, and it
       refuses outright if the file does not exist.
-- [ ] `entity-card-gate.py` , `rounded-3xl` (same 24px) still blocks; 400-char exemption window leaks
+- [x] `entity-card-gate.py` , CLOSED, and it was already fixed by the parallel run; what I added is
+      the proof, taken with the corrected probe.
+      `verified:` the locked grouped card passes in BOTH spellings (`rounded-[24px]` and
+      `rounded-3xl`, the same 24 pixels); a genuine entity-card violation BLOCKS standalone AND when
+      nested next to a legal grouped card, so the character-window leak the adversary found is gone;
+      suite 8/8. Worth naming why this needed re-checking at all: every measurement I took before
+      `hook-probe.py` was fixed had been reading the repo copy instead of the worktree copy, so a
+      "still broken" reading from earlier proves nothing either way.
 - [ ] `unfinished-batch-gate.py` , a `HEAD~3` window cannot mean "this turn"
 - [x] `no-verify-commit-gate.py` (commit `6d207e9d3`) , CLOSED. `verified:` a backslash-continued
       `git commit -m "x" \` newline `--no-verify` -> BLOCK(deny), and the read-only
