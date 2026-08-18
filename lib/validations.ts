@@ -405,6 +405,26 @@ export const walkInSchema = z.object({
   staff_member_id: z.string().uuid().optional(),
 });
 
+// POST /api/bookings/salon: a salon recording an appointment IT took itself, by phone or at the
+// counter (never the customer-facing createBookingSchema, that route carries guards written for
+// a customer: a per-user rate limit, the online_booking_enabled 403, the deposit/prepay 400, a
+// duplicate check keyed on user_id. A shop logging its sixth call of the hour would be throttled
+// by its own tool, backwards for the walk-in-only shop this exists for). Only the name is
+// required: a shop taking a call often has just a first name, and a fabricated placeholder phone
+// is worse than null because it LOOKS callable.
+export const salonBookingSchema = z.object({
+  guest_name: z.string().min(2).max(100),
+  guest_phone: z.string().regex(/^\+41[0-9]{9}$/).optional(),
+  guest_email: z.string().email().optional(),
+  service_id: z.string().uuid(),
+  staff_member_id: z.string().uuid().optional(),
+  // The instant the SHOP chose, not a slot id: the shop is telling us when the appointment is,
+  // there is no pre-existing available slot to pick from like the customer flow.
+  starts_at: z.string().datetime(),
+  source: z.enum(["phone", "walk_in", "in_person"]).default("phone"),
+  customer_note: z.string().max(140).optional().nullable(),
+});
+
 export const groupBookingSchema = z.object({
   organizer_name: z.string().min(2).max(100),
   organizer_phone: z.string().optional(),

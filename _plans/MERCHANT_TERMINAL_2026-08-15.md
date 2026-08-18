@@ -2060,7 +2060,7 @@ question that was not on it.
       with a forced recommendation, its own counter-argument, a four-week falsification test, a
       second-by-second walk through the text-a-link interaction, and an explicit hunt for a fifth
       option nobody has named.
-- [x] R19-2 Q2, the tolerance rule: HE SAID BUILD IT. "yeah, yeah, build that." A published, priced
+- [ ] R19-2 Q2, the tolerance rule: HIS DECISION IS MADE, the work is NOT done. "yeah, yeah, build that." A published, priced
       rule for when our slot collides with their paper book, in the shape Booking.com uses (four a
       year forgiven, platform eats it). Not built yet, but the decision is his and it is made.
 - [x] R19-3 THE SMS QUESTION, answered with the code rather than a guess. He said "we need an SMS
@@ -2073,7 +2073,7 @@ question that was not on it.
       not a system to build, it is a key to paste, and that IS the part he has to do.
 - [ ] R19-4 Q3, tomorrow on the terminal: he leaned yes and asked what I think. Answered in the
       reply, still needs building.
-- [x] R19-5 Q4, the stranded phone booking: HE SAID NOW, NOT LATER, and was annoyed at the
+- [ ] R19-5 Q4, the stranded phone booking: HIS DECISION IS MADE, the work is NOT done. He said NOW, not later, and was annoyed at the
       suggestion. "we need that from the start. what do you mean later?" Decision made, build
       pending.
 - [ ] R19-6 NEW QUESTION, not on the board: calendar view instead of the current list. His words:
