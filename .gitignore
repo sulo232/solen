@@ -98,3 +98,4 @@ _shot*.cjs
 /Untitled*
 supabase/.temp/
 scratchpad/
+_tmp_*.mjs
