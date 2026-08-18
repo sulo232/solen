@@ -118,8 +118,21 @@ which is why none of them is done. They stay open until he answers.
       Not request-tested: the coder could not reach the dev server from its sandbox, so this is
       verified against the live schema and against the existing working query in the same file,
       not against a live response.
-- [ ] HIS CALL: five files carrying `dark:` styling, inert only while `darkMode` stays out of
-      `tailwind.config.js`. Deleting dormant styling from shipped components is a visual change.
+- [x] HIS CALL, ANSWERED: five files carrying `dark:` styling. DONE, and the premise above was
+      WRONG, `verified:` empirically. `darkMode` missing from `tailwind.config.js` does NOT make
+      `dark:` inert, Tailwind v3 defaults the missing key to `'media'`, so `dark:` classes compile
+      to real CSS gated by `@media (prefers-color-scheme: dark)`, confirmed by running this repo's
+      actual config through PostCSS (`.dark\:bg-s-coral\/10` emitted a real media-query rule). The
+      "no visual change" claim in the brief was true for a different reason than stated: all five
+      files (`components/QuartierTile.tsx`, `components/WeatherBanner.tsx`,
+      `components/ui/BlobBackground.tsx`, `components/discovery/PriceRangeBadge.tsx`, plus
+      `Logo.tsx`) turned out to have ZERO live import sites anywhere in `app/**` or `components/**`
+      today (grepped the whole tree, only self-references and a static string list in
+      `lib/editor-prompts.ts`), so the CSS never paints on any reachable route either way.
+      `Logo.tsx`'s two `dark:` hits are NOT Tailwind variants at all, they're `cva` variant keys
+      named `dark` (a light/dark-substrate `tone` prop, actively used at
+      `SalonHeader.tsx:164`), left untouched. The four real hits removed; light-mode classes on
+      the same elements are untouched, diffs are one-line-per-class subtractions only.
 - [ ] HIS CALL: arm `evidence-family-aggregator.py`, which restores seven "prove it" checks in one
       entry. It costs him messages, and message count is his standing complaint, so it is his.
 - [ ] HIS CALL: `touch-action-scroll-gate.py`, deleted under his 2026-08-08 decision.

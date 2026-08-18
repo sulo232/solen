@@ -17,7 +17,7 @@ export default function PriceRangeBadge({ priceMin, priceMax }: PriceRangeBadgeP
   if (!label) return null;
 
   return (
-    <span className="text-[10px] px-2 py-1 rounded-pill bg-white/90 dark:bg-s-dm-surface/90 text-s-ink dark:text-s-dm-text font-medium backdrop-blur-sm">
+    <span className="text-[10px] px-2 py-1 rounded-pill bg-white/90 text-s-ink font-medium backdrop-blur-sm">
       {label}
     </span>
   );
