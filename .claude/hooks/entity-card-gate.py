@@ -31,6 +31,13 @@ FAIL-OPEN on any parse error.
 list-card grammar (radius 24 + shadow-whisper + divided rows) and any card carrying a single
 `border-b` header. See the dated comments at rule 2 below for the measurements. Also added the
 file's first `--selftest`, this gate never had one.
+
+2026-08-18 stress-test fix 2: that exemption only recognised the literal `rounded-[24px]`, so the
+SAME locked grouped list-card written with Tailwind's own 24px token measured BLOCK
+(`rounded-3xl shadow-whisper bg-white divide-y divide-s-border` -> deny), and it ran over a plus or
+minus 400-character window, so a genuine entity-card violation nested inside an unrelated
+`rounded-[24px] shadow-whisper` section measured pass. The exemption now accepts the token spellings
+of the same radius and is scoped to the container the match actually sits in.
 """
 import json, os, re, sys, time
 
@@ -71,6 +78,28 @@ def selftest():
          '<div className="overflow-hidden rounded-[24px] shadow-whisper">'
          '{staff.map(s => <Row key={s.id} {...s}/>)}</div>',
          True),
+        # 2026-08-18 fix 2: token spelling of the same radius + container-scoped exemption
+        ("the SAME locked grouped list-card written as rounded-3xl (Tailwind's own 24px) must pass",
+         "/Users/sulo/Documents/solen/components/ServicesList.tsx",
+         '<div className="rounded-3xl shadow-whisper bg-white divide-y divide-s-border">'
+         '<div className="p-4">Cut</div><div className="p-4">Color</div></div>',
+         False),
+        ("a genuine entity-card violation NESTED inside a legal grouped section must still block",
+         "/Users/sulo/Documents/solen/components/SalonCard.tsx",
+         '<section className="rounded-[24px] shadow-whisper bg-white">'
+         '<h2 className="p-4 font-semibold">Services</h2>'
+         '<div className="rounded-card border border-s-border bg-white divide-y divide-s-border">'
+         '<div className="p-4">A</div><div className="p-4">B</div></div></section>',
+         True),
+        ("a grouped list-card whose rows sit in a child element must pass",
+         "/Users/sulo/Documents/solen/components/ServicesList.tsx",
+         '<div className="rounded-3xl shadow-whisper bg-white">'
+         '<ul className="divide-y divide-s-border"><li className="p-4">Cut</li></ul></div>',
+         False),
+        ("a class-list-only edit of the locked grouped card (no tag in the blob) must pass",
+         "/Users/sulo/Documents/solen/components/ServicesList.tsx",
+         'className="rounded-3xl shadow-whisper bg-white divide-y divide-s-border"',
+         False),
     ]
     ok = 0
     for name, fp, content, expect in cases:
@@ -176,7 +205,9 @@ CONTAINER = re.compile(
 # shape IS, not doubled chrome. Radius-24 + shadow-whisper together is the grouped-list-card
 # signature (LOCKFILE "grouped LIST-card 24"); when both co-occur, skip , this rule still governs
 # the INDIVIDUAL entity-card shape (radius 16 + border, LOCKFILE "individual entity-card 16").
-GROUPED_LIST_SHAPE = re.compile(r"rounded-\[?24px\]?", re.I)
+# 2026-08-18: `rounded-3xl` is Tailwind's OWN 24px token (1.5rem) and 13 sites in app/components
+# already spell it that way, so the identical locked card passed or blocked on spelling alone.
+GROUPED_LIST_SHAPE = re.compile(r"(rounded-\[?24px\]?|rounded-3xl|rounded-\[1\.5rem\])", re.I)
 ROWLINES_STRONG = re.compile(r"(divide-y|divide-s-border)", re.I)
 # a single `border-b`/`border-t` is a HEADER (or footer) divider inside one card, not a per-row
 # divider , MEASURED it blocked a card carrying a border-b header. A genuine per-row divider is
@@ -186,10 +217,40 @@ ROWLINES_WEAK = re.compile(r"(border-b[\s\"'`]|borderBottom|border-t[\s\"'`])", 
 MAP_NEARBY = re.compile(r"\.map\s*\(")
 
 
+def _container_scope(blob, m):
+    """2026-08-18: the grouped-list exemption below read a plus or minus 400-character window, so a
+    legal grouped card ANYWHERE nearby exempted an unrelated card nested inside it (MEASURED: a
+    `rounded-card border border-s-border ... divide-y` entity card inside a `rounded-[24px]
+    shadow-whisper` section passed). Scope it to the element the match actually sits in: the
+    enclosing JSX/HTML opening tag, else the enclosing class string when an edit replaces only a
+    class list. None = neither was found, and the caller keeps the old window (fail-open)."""
+    start = blob.rfind("<", 0, m.start())
+    if start != -1:
+        i = m.end()
+        while True:
+            j = blob.find(">", i)
+            if j == -1:
+                break
+            if j and blob[j - 1] in "=!<":   # `=>` / `>=` inside an attribute expression
+                i = j + 1
+                continue
+            if j - start <= 1200:
+                return blob[start:j + 1]
+            break
+    quoted = []
+    for q in ('"', "'", "`"):
+        a = blob.rfind(q, 0, m.start())
+        b = blob.find(q, m.end())
+        if a != -1 and b != -1 and b - a <= 600:
+            quoted.append(blob[a:b + 1])
+    return min(quoted, key=len) if quoted else None
+
+
 def _has_row_signal(blob, m):
     win_start = max(0, m.start() - 400)
     window = blob[win_start:m.end() + 400]
-    if GROUPED_LIST_SHAPE.search(window) and re.search(r"shadow-whisper", window, re.I):
+    scope = _container_scope(blob, m) or window
+    if GROUPED_LIST_SHAPE.search(scope) and re.search(r"shadow-whisper", scope, re.I):
         return False, window  # the LOCKED grouped list-card shape, legal by design
     if ROWLINES_STRONG.search(window):
         return True, window

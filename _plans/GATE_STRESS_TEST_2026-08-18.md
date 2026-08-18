@@ -131,10 +131,15 @@ fixed AND re-attacked by an agent that did not write the fix (run `wf_3859ceaf-7
 
 ## FALSE POSITIVE FOUND BY BEING BLOCKED
 
-- [x] `batch-mockup-loop` fired on this turn. `verified:` `_plans/MOCKUP_QUEUE.md` is dated 10 August
-      and this session has built ZERO mockups (`git log --since` over `public/_mockups` and
-      `app/[locale]/dev` is empty). It keys off open boxes in a stale queue file without checking
-      whether the current session is in a mockup loop at all. Recorded, not yet fixed.
+- [ ] `finish-autonomously-gate.py` BATCH-MOCKUP arm fired on this turn and **I could not reproduce
+      it**, so the diagnosis I first wrote here was wrong and is retracted. What I actually know:
+      this session built ZERO mockups (`git log --since` over `public/_mockups` and
+      `app/[locale]/dev` is empty), and `_plans/MOCKUP_QUEUE.md` is dated 10 August. What I
+      GUESSED and then disproved: that it keys off the stale queue file (it does not read that file
+      at all), and that it was reading another gate's feedback as the owner's message (driven both
+      ways, both pass). Its arm needs "mockup" AND an all-word in his CURRENT message, and his was
+      "go fix em all". Trigger still unidentified. NOT fixed, and not to be "fixed" until it is
+      reproduced, because a change to a trigger I cannot reproduce is a guess.
 
 ## OPEN VERIFICATION, carried forward rather than claimed
 
