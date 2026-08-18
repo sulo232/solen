@@ -168,6 +168,12 @@ function timeLabel(t: { hour: number; minute: number }): string {
   return `${String(t.hour).padStart(2, "0")}:${String(t.minute).padStart(2, "0")}`;
 }
 
+// WHERE "THE SHOP LAST TOLD US ANYTHING" SURVIVES A RELOAD (2026-08-18). `lastTouched` used to be
+// forgotten the moment the tablet refreshed, which meant the one thing that could clear the stale
+// warning on purpose reset itself every reload. Keyed per salon, not globally, so a browser that
+// ever tests a second salon's terminal never reads the wrong shop's "I checked this".
+const LAST_TOUCHED_KEY = `terminal:${TERMINAL_SALON_ID}:last-touched`;
+
 export default function Screen({
   salonName,
   bookings: initialBookings,
@@ -236,6 +242,22 @@ export default function Screen({
     setMounted(true);
   }, []);
 
+  // READ THE LAST CONFIRMATION BACK. Deliberately a post-mount effect, not the `useState`
+  // initialiser: `page.tsx` server-renders this screen, the server has no localStorage, and reading
+  // it synchronously during render would make the first client render disagree with the server's
+  // HTML the instant a real confirmation exists. Waiting for mount costs one extra render and buys a
+  // hydration that never mismatches.
+  useEffect(() => {
+    try {
+      const stored = window.localStorage.getItem(LAST_TOUCHED_KEY);
+      if (stored) setLastTouched((cur) => cur ?? stored);
+    } catch (err) {
+      // Storage can be unavailable (private mode, quota). The board simply opens as if nobody had
+      // confirmed it yet, which is the safe direction to be wrong in.
+      console.error("[Terminal] could not read the last-checked time:", err);
+    }
+  }, []);
+
   // Only the in-chair elapsed minutes are derived from the wall clock, and a minute is the smallest
   // unit any of them render, so 15s is as often as this can possibly change anything on screen.
   useEffect(() => {
@@ -275,7 +297,17 @@ export default function Screen({
     }
   }, []);
 
-  const touch = useCallback(() => setLastTouched(new Date().toISOString()), []);
+  const touch = useCallback(() => {
+    const now = new Date().toISOString();
+    setLastTouched(now);
+    try {
+      window.localStorage.setItem(LAST_TOUCHED_KEY, now);
+    } catch (err) {
+      // Same fallback as the read above: the state still updates for this session, it just will
+      // not survive a reload. Not fatal, nothing downstream depends on the write succeeding.
+      console.error("[Terminal] could not save the last-checked time:", err);
+    }
+  }, []);
 
   const addToLog = useCallback((text: string) => {
     setLog((prev) => [{ id: `log-${prev.length}-${Date.now()}`, at: new Date().toISOString(), text }, ...prev]);
@@ -469,6 +501,17 @@ export default function Screen({
     void commit({ action: "unarrive", id: booking.id }).then((ok) => ok || rollback(before));
   }
 
+  // THE SHOP SAYING "I LOOKED, THE DAY IS RIGHT" (2026-08-18). Before this the stale state only
+  // ever cleared by accident, when someone happened to start a walk-in or mark an arrival; there
+  // was no way to say it on purpose. One tap, nothing to type, no undo, because confirming that a
+  // board is still right is not a destructive act with something to roll back. No server round
+  // trip either: `touch()` already writes the moment to `localStorage`, which is the smallest
+  // thing that survives the reload this control exists to survive.
+  function handleConfirmBoard() {
+    touch();
+    addToLog("Board checked, up to date");
+  }
+
   // Every name this salon has taken before, newest first, so a regular is two letters and a tap.
   // Real rows only: no invented customers, and an empty list simply shows nothing.
   const knownCustomers = Array.from(
@@ -658,9 +701,16 @@ export default function Screen({
   // plus what is left of each chair, over the number of stylists. Rounded to five so it reads as an
   // estimate rather than a promise. Falls back to the stored estimate only when no service on the
   // board has a duration on file.
-  // The freshest thing the shop has actually done, from the data itself: somebody started, somebody
-  // arrived, somebody joined the queue. On first load there is no click to go on, so this is what
-  // tells the board whether the day is being kept up or has been left alone since the morning.
+  // The freshest thing the shop has actually done: somebody started, somebody arrived, somebody
+  // joined the queue, from the data itself, plus `lastTouched`, which is set by `touch()` inside
+  // EVERY `commit()` (accept, decline, start, done, arrived, and a phone booking the shop just took)
+  // and now persisted to `localStorage`, so a phone booking the shop typed in five minutes ago still
+  // counts as life after the tablet reloads, not only for the rest of this tab's session. A
+  // CUSTOMER'S own online booking is deliberately not in this list: it lands through the realtime
+  // subscription above, which never calls `touch()`, because the shop noticing a booking arrive is
+  // not the same fact as the shop having looked at the board. On first load there is no click to go
+  // on, so this is what tells the board whether the day is being kept up or has been left alone
+  // since the morning.
   const lastSignal = [
     lastTouched,
     ...queue.map((q) => q.startedAt),
@@ -778,7 +828,7 @@ export default function Screen({
                     <StaffChip
                       name={member.name}
                       avatarUrl={member.avatarUrl}
-                      tone={staffTone(isBusy(member.id))}
+                      tone={staffTone(isBusy(member.id), boardIsStale)}
                     />
                     <p className="font-body mt-2 w-full truncate text-[13px] font-normal text-s-ink">
                       {firstName(member.name)}
@@ -791,7 +841,12 @@ export default function Screen({
                     <p className="font-body w-full truncate text-[13px] font-normal text-s-ink-2">
                       {(() => {
                         const who = inChair ? inChair.customerName : appt?.customerName ?? null;
-                        if (!who) return "Free";
+                        // "Not checked", not "Free", once the board has gone quiet. The ring already
+                        // turned orange for this, and leaving the word at "Free" underneath it is the
+                        // same contradiction he caught on 2026-08-17, when a green "Free" sat under an
+                        // orange ring: one stylist reporting two states. The word does not repeat the
+                        // colour, it says what the colour is about.
+                        if (!who) return boardIsStale ? "Not checked" : "Free";
                         if (left === null) return firstName(who);
                         return `${firstName(who)}, ${left === 0 ? "now" : `${left}m`}`;
                       })()}
@@ -807,14 +862,25 @@ export default function Screen({
         <div className={activeNav === "board" ? "px-5 pt-8" : "px-5 pt-8"}>
           <h1 className="font-heading text-[30px] font-semibold leading-[1.1] text-s-ink">{headline}</h1>
           <p className="font-body mt-1 text-[13px] font-normal text-s-ink-2">{subline}</p>
-          {/* THE BOARD ADMITS WHAT IT DOES NOT KNOW. A screen that states a wait confidently while
-              nobody has touched it since the morning is the exact failure that makes staff stop
-              trusting it, and a screen people stopped trusting is worse than no screen. */}
+          {/* THE BOARD ADMITS WHAT IT DOES NOT KNOW, AND OFFERS THE ONE WAY OUT. A screen that
+              states a wait confidently while nobody has touched it since the morning is the exact
+              failure that makes staff stop trusting it, and a screen people stopped trusting is
+              worse than no screen. The remedy sits in the same block as the sentence it clears
+              (2026-08-18): it only exists when there is something for it to fix. */}
           {activeNav === "board" && boardIsStale && lastSignal && (
-            <p className="font-body mt-2 text-[13px] font-medium text-s-urgency">
-              Nobody has updated this since {zurichTime(lastSignal)}. Chairs may be busier than this
-              shows.
-            </p>
+            <div className="mt-2">
+              <p className="font-body text-[13px] font-medium text-s-urgency">
+                Nobody has updated this since {zurichTime(lastSignal)}. Chairs may be busier than
+                this shows.
+              </p>
+              <button
+                type="button"
+                onClick={handleConfirmBoard}
+                className="font-body -ml-2 mt-1 flex h-11 items-center px-2 text-[13px] font-semibold text-s-accent"
+              >
+                I checked. The day is right.
+              </button>
+            </div>
           )}
           {/* Only ever visible when a write did NOT land. Red because a board that disagrees with the
               database is the one genuinely wrong state this screen can be in. */}
@@ -1166,7 +1232,7 @@ export default function Screen({
                     <StaffChip
                       name={member.name}
                       avatarUrl={member.avatarUrl}
-                      tone={staffTone(isBusy(member.id))}
+                      tone={staffTone(isBusy(member.id), boardIsStale)}
                       size="row"
                     />
                     <div className="min-w-0 flex-1">
@@ -1177,7 +1243,9 @@ export default function Screen({
                             that never recorded one is exactly the fabrication rule. Name only. */}
                         {(() => {
                           const who = inChair ? inChair.customerName : appt?.customerName ?? null;
-                          if (!who) return "Free";
+                          // Same truthfulness rule as the board: an unconfirmed chair does not get
+                          // to call itself free in words while its ring says otherwise.
+                          if (!who) return boardIsStale ? "Not checked" : "Free";
                           if (left === null) return who;
                           return `${who}, ${left === 0 ? "finishing now" : `${left} min left`}`;
                         })()}

@@ -2073,7 +2073,18 @@ question that was not on it.
       not a system to build, it is a key to paste, and that IS the part he has to do.
 - [ ] R19-4 Q3, tomorrow on the terminal: he leaned yes and asked what I think. Answered in the
       reply, still needs building.
-- [ ] R19-5 Q4, the stranded phone booking: HIS DECISION IS MADE, the work is NOT done. He said NOW, not later, and was annoyed at the
+- [x] R19-5 Q4, the phone booking, DONE `verified:` commits 633e8575b and f4b0e744a. He said NOW,
+      not later, and he was right. `app/api/bookings/salon/route.ts` is the production path, kept
+      separate from the customer endpoint because that one throttles at five an hour and refuses a
+      salon with online booking off, which would have throttled a shop with its own tool. Proven
+      against the live database: a booking lands, a clash is refused with no orphan slot left, a
+      service from another salon is refused, no session is refused.
+      AND THE RESEARCH FOUND THE HOLE IN IT: the sheet could not name a DAY. Its buttons were
+      minutes from now and "tomorrow" meant 24 hours from that instant, so Thursday at 14:00 could
+      not be written down at all. Fourteen day pills and quarter-hour time pills now. That build
+      then found a second one: the save was capped at seven days, so the back half of the picker
+      failed with an error rendering BEHIND the open sheet. Cap raised, booked Mon 31 Aug 19:00 and
+      read it back from the database. and was annoyed at the
       suggestion. "we need that from the start. what do you mean later?" Decision made, build
       pending.
 - [ ] R19-6 NEW QUESTION, not on the board: calendar view instead of the current list. His words:

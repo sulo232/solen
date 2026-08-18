@@ -28,9 +28,10 @@
  *
  * RING TONES, corrected 2026-08-17 after he caught the inversion: a free stylist used to go red when
  * somebody in the queue was overdue, so red meant "problem" on a number and "available" on a face.
- * One colour, two meanings, in one viewport.
- *      green   free, a chair is open
- *      ink     working, and the row says when they finish
+ * One colour, three meanings now, in one viewport (orange added 2026-08-18, see `staffTone` below).
+ *      green    free, a chair is confirmed open
+ *      orange   unconfirmed, the chair reads open only because the board has gone quiet
+ *      ink      working, and the row says when they finish
  *
  * TWO RULES that keep it a system rather than a palette:
  *   1. Every tone is DERIVED from data that exists. There is no "looks busy" tone, because nothing
@@ -61,10 +62,17 @@ export const TONE_TEXT: Record<Tone, string> = {
   idle: "text-s-ink-2",
 };
 
-/** What the counter would say out loud. Used for the accessible label. */
+/**
+ * What the counter (or a screen reader) would say out loud. Only `StaffChip.tsx` reads this today
+ * (a waiting-queue row colours its number from `TONE_TEXT`, never speaks `TONE_LABEL`), so `soon`
+ * is worded for the stylist it now actually describes rather than for the queue entry it was
+ * originally written for: a chair that reads open only because the board itself has gone quiet is
+ * UNCONFIRMED, not "waiting". If a queue row ever reads this label too, its `soon` case will need
+ * its own wording, because "unconfirmed" is not true of a person we measured waiting 30 minutes.
+ */
 export const TONE_LABEL: Record<Tone, string> = {
   free: "free",
-  soon: "waiting a while",
+  soon: "unconfirmed",
   late: "waiting a long time",
   idle: "working",
 };
@@ -80,9 +88,31 @@ export function waitingTone(waitedMinutes: number | null): Tone {
   return "free";
 }
 
-/** A stylist: green when a chair is open, ink while they are working. Nothing else. */
-export function staffTone(busy: boolean): Tone {
-  return busy ? "idle" : "free";
+/**
+ * A stylist: green when a chair is confirmed open, ink while they are working, and now ORANGE
+ * when the chair reads open only because the board itself has gone quiet.
+ *
+ * Added 2026-08-18. Green is this file's own "the one colour the counter acts on without
+ * thinking" (see the header above), which is exactly why a STALE board cannot keep painting it
+ * with full confidence: an empty chair on a board nobody has touched in ninety minutes
+ * (`boardIsStale`, Screen.tsx ~line 676) is exactly as likely to be a stylist who stepped away
+ * without logging it as it is to be genuinely free.
+ *
+ * The honest tone for that case is `soon`, not a new one, and not `late` or `idle` either.
+ * `late`/red would claim we KNOW something is wrong, which we do not, we only know the data has
+ * gone quiet. `idle`/ink would claim we KNOW they are working, which we also do not. `soon`'s own
+ * definition in this file, "does this need me, and how soon", is exactly the true answer to an
+ * unconfirmed chair: maybe, go look. A chair we KNOW is occupied (`busy=true`, from `joined_at`,
+ * `started_at` or a live appointment) still wins outright regardless of staleness, because that IS
+ * data that exists (rule 1 above); the absence of a queue entry is not proof of anything once the
+ * board has stopped being updated.
+ *
+ * `boardIsStale` defaults to false so a caller that has not been touched by this change (there is
+ * currently only one, Screen.tsx) keeps compiling and keeps its old, correct behaviour.
+ */
+export function staffTone(busy: boolean, boardIsStale = false): Tone {
+  if (busy) return "idle";
+  return boardIsStale ? "soon" : "free";
 }
 
 /** A booking: the only thing about one that needs the counter is an unanswered one. */
