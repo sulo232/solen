@@ -109,6 +109,34 @@ Page for him: `public/_reports/gates-2026-08-18/index.html`
       six is empty. It now asks git. `verified:` untouched files pass, a genuinely modified German
       mockup still blocks (exit 2).
 
+## CORRECTIONS, owner 2026-08-18 (he flagged a repeat)
+
+His words: *"why did you not finish like what did you just say now doing the injection gate ... then
+you just stop ... do we even have a principal to how to make it cause like we had so many issues on
+the gate that I made ... can you do you even have like an evaluation stage of like gates and I'm
+stresse and salvage counsel and all of those stuff so it actually works"*
+
+- [x] CORRECTION: I announced the next gate and stopped instead of doing it. The check for this
+      already exists and already fired on me (`finish-autonomously-gate.py`, ANTI-TEE-UP), so it is
+      a BINDING failure, not a missing check, and the harden is not another gate.
+      What actually changes it: the tee-up fires at Stop, after the message is written, so it can
+      only ever produce a second message. The structural fix is the one this session keeps proving,
+      and it is now written down in `~/.claude/GATE_LAW.md`: do the next step in the same turn, and
+      judge a turn by what closed, not by what there was to say. This turn closed four boxes and
+      named none it did not do.
+- [x] CORRECTION: PRINCIPLE written , `~/.claude/GATE_LAW.md`, and routed from the always-loaded
+      `~/.claude/CLAUDE.md` rule 12.4, because a law with no route from the file that is always in
+      context does not get read. Holds the five failure shapes that recurred today (scope moved,
+      grammar not widened, a stand-down too cheap to satisfy, a proxy answering a different
+      question, a gate refusing the existing codebase), the eight-step procedure with the adversary
+      as step 6, cost as a correctness property, and why a DELETION needs the same proof as a build.
+- [x] CORRECTION: the evaluation layer now REFUSES to say PASS without an adversary.
+      `verified:` a gate passing every internal check reported `UNPROVEN` with nothing recorded;
+      after `gate-eval.py attacked <hook> "<note>"` the same gate reported `PASS`; a genuinely
+      broken gate still reports `NOT READY` and a missing file still refuses to grade at all.
+      Four real adversary passes from today are logged with what they tried.
+- [x] Did the injection gate I named, in the same turn I named it. See the entry above.
+
 ## ROUND 2 RESULT, and it is the finding of the session
 
 13 fixes were made, then each was re-attacked by an agent that did not write it.
@@ -184,7 +212,14 @@ fixed AND re-attacked by an agent that did not write the fix (run `wf_3859ceaf-7
       `focus:shadow-[0px_0px_0px_3px_rgba(255,255,255,0.4)]` -> BLOCK(deny);
       `outline:2px solid var(--s-ink)` -> pass; `outline:solid 2px #276EF1` (reversed order) ->
       BLOCK(deny). Today's four earlier cases still hold.
-- [ ] `postgrest-filter-injection-gate.py` , `expr_is_safe()` defaults to ALLOW, wrong default for a taint check
+- [x] `postgrest-filter-injection-gate.py` , CLOSED. `verified:` all three bypasses the adversary
+      found now BLOCK (raw searchParams inline into `.ilike`, a one-hop alias from `body`, and
+      let-then-assign), and the over-block that inverting the default introduced is gone: a
+      zod-validated destructured value passes, while `JSON.parse` still does not count as
+      sanitising. Suite 13/13.
+      One case left deliberately strict: a `safeParse` result destructured through a second hop
+      without checking `.success` still blocks. That value can be undefined on failure, so a taint
+      check refusing it is correct, not a defect.
 - [ ] `no-black-selected-gate.py` , inline `style={{background:'#0A0A0A'}}` passes; filter pills wrongly exempted
 - [ ] `entity-card-gate.py` , `rounded-3xl` (same 24px) still blocks; 400-char exemption window leaks
 - [ ] `unfinished-batch-gate.py` , a `HEAD~3` window cannot mean "this turn"
