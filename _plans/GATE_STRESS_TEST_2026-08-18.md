@@ -114,7 +114,15 @@ Page for him: `public/_reports/gates-2026-08-18/index.html`
 Adversarial re-break of today's fixes found 5 BROKEN and 8 PARTIAL. Each is a box. Each is being
 fixed AND re-attacked by an agent that did not write the fix (run `wf_3859ceaf-770`).
 
-- [ ] `plan-first-gate.py` , inert in the worktree (`/.claude/` exclusion swallows every product file)
+- [x] `plan-first-gate.py` , FIXED and the "still broken" reading was MY TEST, not the gate.
+      `verified:` three real defects were found and fixed: `is_substantive()` excluded every product
+      file in a worktree; `path_keywords()` had the same bug separately and still yielded
+      {claude, gates, nonsense, stress, worktrees, zzqqxx}; and the strip pattern demanded a leading
+      slash that is gone by the time the root is removed, so it matched nothing. Keywords are now
+      {nonsense, zzqqxx}, identical at both paths. The remaining difference is the gate's own
+      documented allow path: `plan_touched_since()` is True in the worktree because I edited
+      `_plans/GATE_STRESS_TEST_2026-08-18.md` this turn, and False in main. Proved by calling it
+      directly with the same 10-minute stamp against both roots. Selftest 10/10.
 - [ ] `exists-guard.py` , a file merely QUOTING the rule still satisfies the marker
 - [ ] `information-is-not-action-gate.py` , a multi-sentence imperative escapes, because only the last sentence is read
 - [ ] `say-whats-next-gate.py` , misses implemented/updated/refactored/created/wrote; blocks "nothing was measured"

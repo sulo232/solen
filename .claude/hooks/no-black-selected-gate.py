@@ -47,6 +47,19 @@ is_booking_exempt(). (2) `bg-black`, `bg-[#0A0A0A]`, `bg-[#000]`, `bg-[#000000]`
 `style={{background:'#0A0A0A'}}` all painted the exact banned ink fill and passed, only the
 `bg-s-ink` token spelling was caught; extended is_ink_fill() and FILL to the literal spellings.
 Also added the file's first `--selftest`, this gate never had one.
+
+2026-08-18 second stress-test pass, THREE more defects MEASURED with hook-probe.py, each one
+verdict "pass" where a block was required: (1) this docstring's OWN named case,
+`style={{background:'#0A0A0A'}}` on a selected ternary, passed , SEL_NONTERNARY's gap class
+`[^\n;{}]` cannot cross the `? {` that opens an object literal, so FILL's `background:`
+alternative was unreachable on every inline style; the gap is now `[^\n;]`. (2) `bg-neutral-900`
+passed , the near-black Tailwind scale (neutral/zinc/gray/slate/stone at 900/950) was in no
+pattern, though it paints the same banned fill as `bg-black`. (3) a FILTER PILL,
+`selectedDateFilter === opt ? "bg-black text-white"`, passed , is_booking_exempt() fired on any
+identifier merely CONTAINING "date", so a search filter inherited the booking picker's carve-out.
+The exemption now also requires booking-picker CONTEXT and refuses on a filter/facet/sort
+identifier; the contract keeps filter pills calm gray and exempts the booking date/slot picker
+only.
 """
 import json
 import os
@@ -81,19 +94,36 @@ def selftest():
     """2026-08-18: this gate never had a self-test. Added with the booking-exemption +
     literal-black fix."""
     fp = "/Users/sulo/Documents/solen/components/BookingSlots.tsx"
+    # 2026-08-18 second pass: the path became load-bearing (booking-picker context), so each case
+    # now carries its own.
+    pill = "/Users/sulo/Documents/solen/components/TabPillGroup.tsx"
+    filt = "/Users/sulo/Documents/solen/components/search/FilterPills.tsx"
+    bkfilt = "/Users/sulo/Documents/solen/components/booking/DateFilterPills.tsx"
+    picker = "/Users/sulo/Documents/solen/components/booking/DateTimePicker.tsx"
     cases = [
-        ("booking date/slot exception (camelCase) must pass",
+        ("booking date/slot exception (camelCase) must pass", fp,
          'const cls = selectedSlot === t ? "bg-s-accent text-white" : "bg-white";', 0),
-        ("bg-black on a selected pill must block",
+        ("bg-black on a selected pill must block", fp,
          'const cls = selected ? "bg-black text-white" : "bg-white";', 2),
-        ("bg-[#0A0A0A] on a selected pill must block",
+        ("bg-[#0A0A0A] on a selected pill must block", fp,
          'const cls = selected ? "bg-[#0A0A0A] text-white" : "bg-white";', 2),
-        ("existing token-spelling case must still block",
+        ("existing token-spelling case must still block", fp,
          'const cls = selected ? "bg-s-ink text-white" : "bg-white";', 2),
+        # 2026-08-18 second pass, the three defects this file's own docstring did not catch.
+        ("inline style={{background:'#0A0A0A'}} on a selected ternary must block", pill,
+         "const pillStyle = isSelected ? { background: '#0A0A0A', color: '#fff' } : { background: '#fff' };", 2),
+        ("bg-neutral-900 on a selected pill must block", pill,
+         'const cls = isSelected ? "bg-neutral-900 text-white" : "bg-white";', 2),
+        ("a FILTER pill is never the booking picker, must block", filt,
+         'const cls = selectedDateFilter === opt ? "bg-black text-white" : "bg-white";', 2),
+        ("a filter pill inside the booking folder must still block", bkfilt,
+         'const cls = selectedDateFilter === opt ? "bg-black text-white" : "bg-white";', 2),
+        ("the genuine booking date picker must still pass", picker,
+         'const cls = selectedDate === d ? "bg-s-accent text-white" : "bg-white";', 0),
     ]
     ok = 0
-    for name, content, expect_rc in cases:
-        rc = _drive(fp, content)
+    for name, case_fp, content, expect_rc in cases:
+        rc = _drive(case_fp, content)
         good = rc == expect_rc
         ok += good
         print(f"  {'PASS' if good else 'FAIL'}  {name}  (exit={rc}, expected={expect_rc})")
@@ -175,7 +205,9 @@ INK_TERNARY = re.compile(
     # 2026-08-18: added the literal-black spellings (bg-black, bg-[#0A0A0A], bg-[#000],
     # bg-[#000000]) , without these here, is_ink_fill()'s BLACK_TW check below could never fire
     # on a ternary at all, this capture group is the gate that decides what reaches it.
-    r"[`\"']([^`\"']*?(?:bg-s-ink|bg-s-accent|border-s-accent|bg-black|bg-\[#0a0a0a\]|bg-\[#000000\]|bg-\[#000\])[^`\"']*?)[`\"']",
+    # 2026-08-18: added the near-black Tailwind scale (`bg-neutral-900` and its family), same
+    # reason the literal spellings were added above , it paints the identical banned fill.
+    r"[`\"']([^`\"']*?(?:bg-s-ink|bg-s-accent|border-s-accent|bg-black|bg-\[#0a0a0a\]|bg-\[#000000\]|bg-\[#000\]|bg-(?:neutral|zinc|gray|slate|stone)-9(?:00|50))[^`\"']*?)[`\"']",
     re.IGNORECASE,
 )
 
@@ -219,14 +251,34 @@ BOOKING_SNAKE = re.compile(r"(?<=_)" + _BOOK + r"(?=[A-Z_]|\b)", re.IGNORECASE)
 BOOKING_CAMEL = re.compile(r"(?<=[a-z])" + _BOOK_CAP + r"(?=[A-Z_]|\b)")  # case-sensitive
 
 
+# 2026-08-18: the word match above used to BE the whole test, so any identifier merely CONTAINING
+# "date" inherited the picker's carve-out. MEASURED: a search filter pill,
+# `selectedDateFilter === opt ? "bg-black text-white"`, verdict "pass". The design contract exempts
+# the booking date/slot picker only and keeps every filter pill calm gray, so the word now has to
+# land in picker CONTEXT (the edited text or the file path), and a filter/facet/sort identifier is
+# never the picker however booking-adjacent its folder happens to be.
+BOOKING_CONTEXT = re.compile(
+    r"booking|buchung|slot|calendar|datelayout|datepicker|timepicker|datetimepicker|date-time-picker",
+    re.IGNORECASE,
+)
+NOT_PICKER = re.compile(r"filter|facet|\bsort\b", re.IGNORECASE)
+
+
 def is_booking_exempt(text):
+    ctx = text + " " + globals().get("low", "")  # `low` = lowercased file path, absent under --selftest
+    if NOT_PICKER.search(ctx) or not BOOKING_CONTEXT.search(ctx):
+        return False
     return bool(BOOKING_LEADING.search(text) or BOOKING_SNAKE.search(text) or BOOKING_CAMEL.search(text))
 
 
 # 2026-08-18 fix: MEASURED `bg-black`, `bg-[#0A0A0A]`, `bg-[#000]`, `bg-[#000000]` all passed on a
 # selected pill , only the `bg-s-ink` TOKEN spelling was caught, not the literal black spellings
 # that paint the exact same banned ink fill.
-BLACK_TW = re.compile(r"bg-black\b|bg-\[#0a0a0a\]|bg-\[#000000\]|bg-\[#000\]", re.IGNORECASE)
+BLACK_TW = re.compile(
+    r"bg-black\b|bg-\[#0a0a0a\]|bg-\[#000000\]|bg-\[#000\]"
+    r"|bg-(?:neutral|zinc|gray|slate|stone)-9(?:00|50)\b",  # 2026-08-18: bg-neutral-900 measured "pass"
+    re.IGNORECASE,
+)
 
 # The true branch must actually be a fill (bg-s-ink + white text), not e.g. `text-s-ink`
 # or a border-only treatment.
@@ -283,7 +335,8 @@ def offenders(text):
 # non-word (a quote) , ending the match on the hex digit keeps the boundary check meaningful.
 FILL = (
     r"bg-s-ink|border-s-ink|bg-s-accent|border-s-accent"
-    r"|bg-black|bg-\[#0a0a0a(?=\])|bg-\[#000000(?=\])|bg-\[#000(?=\])"
+    r"|bg-black|bg-(?:neutral|zinc|gray|slate|stone)-9(?:00|50)"
+    r"|bg-\[#0a0a0a(?=\])|bg-\[#000000(?=\])|bg-\[#000(?=\])"
     r"|background(?:Color)?\s*[:=]\s*['\"]?\s*(?:#0a0a0a\b|#000000\b|#000\b|black\b)"
 )
 # (?!:) on the bare `active`/`checked` tokens: Tailwind's `active:`/`checked:` pseudo-class
@@ -295,8 +348,12 @@ SEL_TOKEN = r"isSelected|isActive|aria-pressed|\bselected\b|\bactive\b(?!:)|\bpi
 # A selection token co-occurring with a banned fill within ~80 chars, EITHER order , not
 # confined to a ternary, so a helper function or a multi-expression className is also caught.
 SEL_NONTERNARY = re.compile(
-    r"(" + SEL_TOKEN + r")[^\n;{}]{0,80}(" + FILL + r")\b"
-    r"|(" + FILL + r")\b[^\n;{}]{0,80}(" + SEL_TOKEN + r")",
+    # 2026-08-18: the gap class used to exclude `{}` as well, which left an inline
+    # `style={{background:'#0A0A0A'}}` unreachable , the gap can never cross the `? {` that opens
+    # the object literal, so FILL's `background:` alternative never fired once. `\n` and `;` still
+    # bound the match to a single statement.
+    r"(" + SEL_TOKEN + r")[^\n;]{0,80}(" + FILL + r")\b"
+    r"|(" + FILL + r")\b[^\n;]{0,80}(" + SEL_TOKEN + r")",
     re.IGNORECASE,
 )
 
