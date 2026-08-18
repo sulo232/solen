@@ -19,6 +19,13 @@ unambiguous German words in the remaining visible text -> block the stop.
 No in-file marker escape (the marker is exactly what gets abused). Escape only via a fresh reasoned
 skip flag: echo "<why>" > .claude/mockup-lang-skip.flag (10-min TTL, must be non-empty).
 Fail-open on any error.
+
+2026-08-18 (third fix of the day): the second fix answered "did I touch this file?" with
+`git status`, which lists only UNCOMMITTED files. Measured on identical fixtures, one German
+mockup: BLOCK(exit2) while dirty, pass the moment it was committed. This project's law is to
+commit often and autonomously, so finishing a commit disarmed the gate. The record that actually
+knows what the turn did is the TRANSCRIPT; git status is now only the fallback for when no
+transcript is readable.
 """
 import os, re, sys, time, glob, json
 
@@ -63,11 +70,88 @@ def visible_text(html):
     s = re.sub(r"<[^>]+>", " ", s)                              # strip tags -> visible text only
     return s
 
+# 2026-08-18, THIRD fix, the mirror of the second one below. `git status --porcelain` lists only
+# UNCOMMITTED files, so committing your work turned the gate off: measured, an identical German
+# mockup BLOCKED while dirty and PASSED once committed. The second fix had traded an over-answering
+# proxy (mtime, true for every file in a fresh worktree) for an under-answering one. The record that
+# actually knows what this turn did is the TRANSCRIPT: every Write/Edit names its file_path, and a
+# shell command that wrote a file carries that path in its command text, which is the script-write
+# hole this whole gate exists to close. git status stays, as the fallback when no transcript reads.
+WRITE_TOOLS = {"write", "edit", "multiedit", "notebookedit"}
+# A shell command counts only when it actually WRITES: a redirect (`2>/dev/null` does not count),
+# tee/cp/mv/sed -i, or a script-side write call. A `cat` or `grep` of an old mockup must not count.
+SHELL_WRITE = re.compile(r"(?<![0-9&])>|\btee\b|\bcp\b|\bmv\b|\bsed\s+-i|write_text|writeFile", re.I)
+
+
+def turn_writes(transcript_path):
+    """Files this session's tool calls WROTE, read from the transcript.
+
+    Returns (abs_paths, shell_commands), or None when no transcript is readable, which is the only
+    case that falls back to git. The two-substring prefilter keeps it cheap: measured on the largest
+    transcript on this machine, 171.8MB over 33,715 lines, a full line scan costs 0.11s.
+    """
+    if not transcript_path:
+        return None
+    transcript_path = os.path.expanduser(transcript_path)
+    if not os.path.exists(transcript_path):
+        return None
+    paths, cmds = set(), []
+    try:
+        with open(transcript_path, encoding="utf-8", errors="ignore") as fh:
+            for ln in fh:
+                # only lines that are a tool call AND name a path this gate could ever scan
+                if '"tool_use"' not in ln or ("_mockups" not in ln and "/dev/" not in ln):
+                    continue
+                try:
+                    row = json.loads(ln)
+                except Exception:
+                    continue
+                content = (row.get("message") or {}).get("content")
+                if not isinstance(content, list):
+                    continue
+                for blk in content:
+                    if not isinstance(blk, dict) or blk.get("type") != "tool_use":
+                        continue
+                    inp = blk.get("input")
+                    if not isinstance(inp, dict):
+                        continue
+                    name = str(blk.get("name") or "").lower()
+                    if name in WRITE_TOOLS:
+                        for key in ("file_path", "notebook_path"):
+                            v = inp.get(key)
+                            if isinstance(v, str) and v:
+                                ap = os.path.normpath(os.path.abspath(v))
+                                paths.add(ap)
+                                paths.add(os.path.realpath(ap))
+                    elif name == "bash":
+                        c = inp.get("command")
+                        if isinstance(c, str) and SHELL_WRITE.search(c):
+                            cmds.append(c)
+    except Exception:
+        return None
+    return paths, cmds
+
+
+def was_written(fp, proj, touched):
+    """Did this session write THIS file? Exact path for a tool write, path text for a shell write."""
+    paths, cmds = touched
+    if not paths and not cmds:
+        return False
+    ap = os.path.normpath(os.path.abspath(fp))
+    if ap in paths or os.path.realpath(ap) in paths:
+        return True
+    rel = os.path.relpath(ap, proj)
+    for c in cmds:
+        if ap in c or rel in c:
+            return True
+    return False
+
+
 def main():
     try:
-        json.load(sys.stdin)
+        payload = json.load(sys.stdin)
     except Exception:
-        pass
+        payload = {}
     proj = os.environ.get("CLAUDE_PROJECT_DIR") or os.getcwd()
     flag = os.path.join(proj, ".claude", "mockup-lang-skip.flag")
     try:
@@ -100,25 +184,30 @@ def main():
     # shows this session touched none of them. So it accused work nobody had done, which is the
     # fastest way to get a gate skip-flagged into uselessness.
     # Ask git what actually changed. mtime stays as the fallback for a non-git tree only.
+    touched = turn_writes(payload.get("transcript_path"))
     changed = None
-    try:
-        import subprocess
-        r = subprocess.run(["git", "-C", proj, "status", "--porcelain", "--untracked-files=all"],
-                           capture_output=True, text=True, timeout=8)
-        if r.returncode == 0:
-            changed = set()
-            for ln in r.stdout.splitlines():
-                rel = ln[3:].strip().strip('"')
-                if rel:
-                    changed.add(os.path.normpath(os.path.join(proj, rel)))
-    except Exception:
-        changed = None
+    if touched is None:
+        try:
+            import subprocess
+            r = subprocess.run(["git", "-C", proj, "status", "--porcelain", "--untracked-files=all"],
+                               capture_output=True, text=True, timeout=8)
+            if r.returncode == 0:
+                changed = set()
+                for ln in r.stdout.splitlines():
+                    rel = ln[3:].strip().strip('"')
+                    if rel:
+                        changed.add(os.path.normpath(os.path.join(proj, rel)))
+        except Exception:
+            changed = None
 
     offenders = []
     for pat in patterns:
         for fp in glob.glob(pat, recursive=True):
             try:
-                if changed is not None:
+                if touched is not None:
+                    if not was_written(fp, proj, touched):
+                        continue
+                elif changed is not None:
                     if os.path.normpath(fp) not in changed:
                         continue
                 elif now - os.path.getmtime(fp) > 180 * 60:
@@ -145,7 +234,81 @@ def main():
         sys.exit(2)
     sys.exit(0)
 
+def _selftest():
+    """The bad case BLOCKS and the innocent case PASSES, on real git fixtures. Cases only grow."""
+    import subprocess, tempfile
+    here = os.path.abspath(__file__)
+    GER = ("<html><body><h1>Termine buchen</h1><p>Jetzt und nicht teuer</p>"
+           "<p>Keine Buchung</p></body></html>")
+    ENG = ("<html><body><h1>Appointments</h1><p>Book now, no fee</p>"
+           "<p>Nothing needed</p></body></html>")
+
+    def build(html, commit, how, flag, transcript):
+        root = tempfile.mkdtemp(prefix="mlsg-")
+        os.makedirs(os.path.join(root, "public", "_mockups"))
+        os.makedirs(os.path.join(root, ".claude"))
+        fp = os.path.join(root, "public", "_mockups", "demo.html")
+        open(fp, "w", encoding="utf-8").write(html)
+        env = dict(os.environ)
+        env.update(GIT_AUTHOR_NAME="t", GIT_COMMITTER_NAME="t",
+                   GIT_AUTHOR_EMAIL="t@t", GIT_COMMITTER_EMAIL="t@t")
+        subprocess.run(["git", "init", "-q"], cwd=root, env=env, capture_output=True)
+        if commit:
+            subprocess.run(["git", "add", "-A"], cwd=root, env=env, capture_output=True)
+            subprocess.run(["git", "commit", "-qm", "x"], cwd=root, env=env, capture_output=True)
+        rows = [{"type": "user", "message": {"role": "user", "content": "build the mockup"}}]
+        if how == "write":
+            rows.append({"type": "assistant", "message": {"role": "assistant", "content": [
+                {"type": "tool_use", "id": "a", "name": "Write",
+                 "input": {"file_path": fp, "content": html}}]}})
+        elif how == "bash":
+            rows.append({"type": "assistant", "message": {"role": "assistant", "content": [
+                {"type": "tool_use", "id": "a", "name": "Bash",
+                 "input": {"command": "cat > public/_mockups/demo.html <<'EOF'\n" + html + "\nEOF"}}]}})
+        elif how == "read":
+            rows.append({"type": "assistant", "message": {"role": "assistant", "content": [
+                {"type": "tool_use", "id": "a", "name": "Read", "input": {"file_path": fp}}]}})
+        tp = os.path.join(root, "t.jsonl")
+        with open(tp, "w") as f:
+            for r in rows:
+                f.write(json.dumps(r) + "\n")
+        payload = {"session_id": "st", "hook_event_name": "Stop", "cwd": root,
+                   "stop_hook_active": False}
+        if transcript:
+            payload["transcript_path"] = tp
+        if flag:
+            open(os.path.join(root, ".claude", "mockup-lang-skip.flag"), "w").write("selftest")
+        return root, payload, env
+
+    cases = [
+        ("german written this turn, UNCOMMITTED",              GER, False, "write", False, True,  2),
+        ("german written this turn, COMMITTED (2026-08-18)",   GER, True,  "write", False, True,  2),
+        ("german written by a shell script, COMMITTED",        GER, True,  "bash",  False, True,  2),
+        ("german committed, only READ this turn",              GER, True,  "read",  False, True,  0),
+        ("german UNCOMMITTED, no transcript (git fallback)",   GER, False, "read",  False, False, 2),
+        ("english written this turn",                          ENG, False, "write", False, True,  0),
+        ("german written this turn, skip flag set",            GER, False, "write", True,  True,  0),
+    ]
+    bad = 0
+    for name, html, commit, how, flag, tr, want in cases:
+        root, payload, env = build(html, commit, how, flag, tr)
+        e = dict(env)
+        e["CLAUDE_PROJECT_DIR"] = root
+        p = subprocess.run([sys.executable, here], input=json.dumps(payload),
+                           capture_output=True, text=True, env=e, cwd=root, timeout=60)
+        ok = p.returncode == want
+        if not ok:
+            bad += 1
+        print(("  ok    " if ok else "  FAIL  ") + name +
+              "   (want exit " + str(want) + ", got " + str(p.returncode) + ")")
+    total = len(cases)
+    print(("SELFTEST PASS " if not bad else "SELFTEST FAIL ") + str(total - bad) + "/" + str(total))
+    return 1 if bad else 0
+
+
 if __name__ == "__main__":
+    if "--selftest" in sys.argv:
+        sys.exit(_selftest())
     try:
         main()
     except Exception:

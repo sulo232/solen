@@ -14,6 +14,19 @@ Fires at most ONCE per session (a marker file), so it never nags turn after turn
 
 Event contract: stdin is the hook JSON; a JSON hookSpecificOutput.additionalContext on
 stdout (exit 0) is added to Claude's context. Non-backend input exits 0 silently.
+
+2026-08-18 audit: "add a column for consumed_at to bookings" did not fire, the exact shape of
+this project's own consumed_at case study (CLAUDE.md's MISSING THINGS section: a migration
+that adds `bookings.consumed_at` was written and never merged, and without it the one-click
+confirm/cancel email link has no replay protection at all). None of the prior keywords name a
+schema-shape phrase like "add a column", so a schema-change ask with no other backend word in
+it (no "migration", no "database", no "supabase") passed through un-pointed. Added phrase-based
+triggers for add/create/drop/alter + column, scoped to that PHRASE rather than the bare word
+"column" (which also means a CSS grid/layout column in a frontend ask, and bare-word matching
+would fire on nearly every "make it a 2-column layout" prompt). Known accepted residual: the
+phrase form still fires on the rarer "add a column to the grid" CSS ask, since this hook is a
+POINTER that injects at most once per session, never a blocking gate, so the cost of that
+residual is one extra doc pointer, not a blocked turn.
 """
 import hashlib
 import json
@@ -38,7 +51,11 @@ PROMPT_PATTERNS = re.compile(
     r"storage\s*bucket|\bbucket\b|file\s*upload|"
     r"rate[-\s]?limit|zod|validation\s*schema|audit\s*log|service[-\s]?role|"
     r"rpc|pgvector|embedding|"
-    r"idor|ownership\s*check|feature\s*flag"
+    r"idor|ownership\s*check|feature\s*flag|"
+    # 2026-08-18: schema-change PHRASES (not the bare word "column"/"table", which are also
+    # common frontend/CSS terms , "add a column" is unambiguous, bare "column" is not).
+    r"(?:add|adding|create|creating|drop|dropping|alter|altering)\s+(?:a\s+|an\s+|the\s+)?(?:new\s+)?column|"
+    r"new\s+column|alter\s+table"
     r")\b",
     re.IGNORECASE,
 )
@@ -125,7 +142,31 @@ def main():
     sys.exit(0)
 
 
+def _selftest():
+    cases = [
+        ("add a column for consumed_at to bookings", True, "the audit's own miss (this project's consumed_at case study)"),
+        ("adding a new column to the salons table", True, "add-a-column phrase, another wording"),
+        ("alter table bookings add column foo", True, "alter table phrase"),
+        ("make it a 2-column layout", False, "bare CSS 'column' must not match"),
+        ("flex column on mobile please", False, "bare CSS 'column' must not match"),
+        ("the pricing table needs a redesign", False, "bare 'table' must not match"),
+        ("add a supabase migration for the new column", True, "existing coverage still works (migration/supabase)"),
+        ("make the hero bigger", False, "pure frontend prompt, existing exemption still holds"),
+    ]
+    failed = 0
+    for prompt, should_fire, label in cases:
+        fired = bool(PROMPT_PATTERNS.search(prompt))
+        ok = fired == should_fire
+        print(("PASS" if ok else "FAIL") + f": {label} -> fired={fired} want={should_fire}")
+        if not ok:
+            failed += 1
+    print(f"\n{len(cases) - failed}/{len(cases)} passed")
+    return 1 if failed else 0
+
+
 if __name__ == "__main__":
+    if "--selftest" in sys.argv:
+        sys.exit(_selftest())
     try:
         main()
     except Exception:

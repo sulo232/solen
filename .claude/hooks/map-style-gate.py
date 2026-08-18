@@ -32,6 +32,10 @@ VIOL = [
     (re.compile(r":\s*mapboxgl\.StyleSpecification\s*="), "an inline StyleSpecification object"),
 ]
 EXEMPT = re.compile(r"(map-style|_design-system/|\.claude/|node_modules)", re.I)
+# The leading slash is optional: by the time a path has had its project root removed it reads
+# `.claude/worktrees/<name>/app/...` with no leading slash, and a pattern demanding one matches
+# nothing. That exact omission cost plan-first-gate a third round of fixes today.
+WORKTREE_PREFIX = re.compile(r"^(?:.*?/)?\.claude/worktrees/[^/]+/")
 
 
 def strip_comments(s):
@@ -106,7 +110,13 @@ def recent(data=None):
     for pat in ("app/**/*.ts", "app/**/*.tsx", "components/**/*.tsx", "components-legacy/**/*.tsx", "lib/**/*.ts"):
         try:
             for f in glob.glob(os.path.join(PDIR, pat), recursive=True):
-                if EXEMPT.search(f): continue
+                # 2026-08-18, third hook found with this same defect (plan-first-gate and
+                # orchestration-gate were the first two). `\.claude/` in EXEMPT is meant to skip
+                # hook and config files, but every git worktree here lives at
+                # <root>/.claude/worktrees/<name>/, so the pattern matched EVERY product file in
+                # the checkout the session actually runs in. Strip the worktree prefix first, then
+                # judge the path on its own project-relative shape.
+                if EXEMPT.search(WORKTREE_PREFIX.sub("/", f)): continue
                 try:
                     if turn_files is not None:
                         # 2026-08-18: key off what THIS TURN wrote, not a 15-min wall-clock window.

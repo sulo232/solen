@@ -109,6 +109,19 @@ Page for him: `public/_reports/gates-2026-08-18/index.html`
       six is empty. It now asks git. `verified:` untouched files pass, a genuinely modified German
       mockup still blocks (exit 2).
 
+## ROUND 2 RESULT, and it is the finding of the session
+
+13 fixes were made, then each was re-attacked by an agent that did not write it.
+**12 of 13 came back BROKEN.** Two of those reports say the new defects were INTRODUCED BY THE FIX
+("three defects reproduced, all introduced by this fix"). One holds on its named defect and is
+broken on the premise underneath it.
+
+The lesson is not that the fixers were careless. It is that **fixing a gate without an adversary
+produces new defects at roughly the rate it removes them**, and every previous round in this
+estate's history graded itself. That is why 133 armed checks had never been tested.
+
+These stay OPEN. Ticking them would be the exact failure this whole session documents.
+
 ## IN FLIGHT , real boxes so this is tracked, not narrated
 
 Adversarial re-break of today's fixes found 5 BROKEN and 8 PARTIAL. Each is a box. Each is being
@@ -136,6 +149,12 @@ fixed AND re-attacked by an agent that did not write the fix (run `wf_3859ceaf-7
 - [ ] `white-only-web-gate.py` , a `darkMode` key in a TYPE LITERAL wrongly blocks a .tsx
 - [ ] `mockup-lang-stop-gate.py` , committing your work disarms it, and the rule is commit often
 - [ ] Re-drive all 13 myself after the run lands (the fixer is never the grader)
+
+- [x] `map-style-gate.py` , THIRD hook found with the worktree-blindness defect, fixed and verified
+      this turn. `verified:` `EXEMPT` matched `\.claude/` against the raw path, so every product
+      file in the running checkout was exempt. Now strips the worktree prefix first: a worktree
+      product file is NOT exempt, a real hook file and `_design-system/` still are, selftest OK.
+      This is the harden for this turn, and it is FIX THE EXISTING ONE, not a new check.
 
 ## FALSE POSITIVE FOUND BY BEING BLOCKED
 
