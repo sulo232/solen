@@ -264,9 +264,16 @@ def main():
             # without filtering with it is how a gate keeps crying wolf while looking fixed.
             hits = sorted({m.group(0).lower() for m in GERMAN.finditer(visible_text(txt))
                            if not ALLOWED.fullmatch(m.group(0))})
-            _wrote_here = "\n".join(
-                (touched[2] if touched and len(touched) > 2 else {}).get(
-                    os.path.normpath(os.path.abspath(fp)), []))
+            # A SHELL write leaves no per-path content, only the command text, and that text IS
+            # what got written (`printf '<h1>Jetzt buchen</h1>' >> mockup.html`). Without this the
+            # fail-closed default flagged every shell-touched file for its PRE-EXISTING German:
+            # measured minutes after the fix landed, on a file whose 8 German words come from a
+            # June commit and whose working copy is byte-identical to it.
+            _ap = os.path.normpath(os.path.abspath(fp))
+            _rel = os.path.relpath(_ap, proj)
+            _parts = list((touched[2] if touched and len(touched) > 2 else {}).get(_ap, []))
+            _parts += [c for c in (touched[1] if touched else []) if _ap in c or _rel in c]
+            _wrote_here = "\n".join(_parts)
             if len(hits) >= 3 and introduced_here(fp, hits, _wrote_here):
                 offenders.append((os.path.relpath(fp, proj), hits[:6]))
     if offenders:
