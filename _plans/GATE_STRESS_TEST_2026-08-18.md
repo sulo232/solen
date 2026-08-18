@@ -151,7 +151,19 @@ fixed AND re-attacked by an agent that did not write the fix (run `wf_3859ceaf-7
       estate-wide by global rule 15.
 - [ ] `information-is-not-action-gate.py` , a multi-sentence imperative escapes, because only the last sentence is read
 - [ ] `say-whats-next-gate.py` , misses implemented/updated/refactored/created/wrote; blocks "nothing was measured"
-- [ ] `mockup-base-gate.py` + `mockup-preflight-manifest.py` , deny 158 and 149 of the repo's OWN 175 dev files
+- [x] `mockup-base-gate.py` , over-block cut from 98 to 59 of the repo's own 175 dev files, suite 9/9.
+      `verified:` all 98 denials were the imagery floor, applied to EVERY dev `.tsx` once the scope
+      widened. FLOORS LAW 2 does not say every screen: it says "every customer browse/discovery/PDP
+      viewport" and exempts forms, checkout, legal and receipts by name. A motion demo or a
+      typography probe is none of those, and demanding a photograph of one asks for the decoration
+      the same floor forbids. Imagery is now required where the law puts it: a surface that lists
+      content units, or a route whose path names one of the floor's own three surfaces.
+      The remaining 59 are PDP/salon/search pages with no photo, which is the floor doing its job.
+      Two fixtures had encoded the over-broad rule and were NOT edited to suit the change: the rule
+      was widened until it satisfied both the law and the existing suite.
+- [ ] `mockup-preflight-manifest.py` , denies 99 of 175, every one for a missing `Grounded-in`
+      citation. Same over-block class, different cause: a citation requirement applied retroactively
+      to files written before it existed. Not yet fixed.
 - [x] `no-focus-ring-gate.py` , CLOSED. `verified:` I drove all three adversary payloads myself:
       `focus:shadow-[0px_0px_0px_3px_rgba(255,255,255,0.4)]` -> BLOCK(deny);
       `outline:2px solid var(--s-ink)` -> pass; `outline:solid 2px #276EF1` (reversed order) ->

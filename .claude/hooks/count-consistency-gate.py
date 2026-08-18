@@ -16,7 +16,7 @@ non-`<` text, so a locked blue "Mehr lesen" link (a real, correct accent link wi
 its own) sitting up to 160 chars before an UNRELATED "(54)" review count elsewhere blocked, even
 though the two have nothing to do with each other. FIX: the gap is tightened (160/60 -> 40 both
 directions) AND a real violation now requires the gap to be free of known non-count CTA/link
-phrases ("Mehr lesen", "read more", etc.) — i.e. the accent styling and the count must plausibly be
+phrases ("Mehr lesen", "read more", etc.), i.e. the accent styling and the count must plausibly be
 the SAME element, not two unrelated ones that happen to sit near each other in the source.
 """
 import os, re, sys, time, glob, json
@@ -26,7 +26,7 @@ COUNT  = r"\(\s*\d[\d'’.,]*\s*\)"
 GAP_MAX = 40  # tightened 2026-08-18, was 160/60
 # a real "bare accent count" violation is the accent styling and the count being the SAME element,
 # so a gap that contains a normal readable CTA/link phrase means they are TWO DIFFERENT things
-# (e.g. a "Mehr lesen" link sitting near an unrelated, already-pilled review count) — not a hit.
+# (e.g. a "Mehr lesen" link sitting near an unrelated, already-pilled review count), not a hit.
 NON_COUNT_LABEL = re.compile(
     r"(mehr lesen|read more|learn more|weiterlesen|en savoir plus|voir plus|leggi di più|"
     r"mostra di più|view all|alle anzeigen|voir tout|show more|zeig mehr|reservieren|book now|"
