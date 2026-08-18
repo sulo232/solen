@@ -109,6 +109,15 @@ Page for him: `public/_reports/gates-2026-08-18/index.html`
       six is empty. It now asks git. `verified:` untouched files pass, a genuinely modified German
       mockup still blocks (exit 2).
 
+## OPEN VERIFICATION, carried forward rather than claimed
+
+- `no-invented-ui-gate.py` , its suite passes 5/5 and case 1 blocks a `font-heading font-semibold`
+  card name, but my own payload carrying that name PLUS a `fill-s-star` rating still passes. Either
+  my payload trips an exemption I have not isolated, or the fixture and the live path diverge. NOT
+  claimed as fixed until that is resolved. My first two probes of `card-radius-gate.py` were also
+  too thin and I called them failures before re-testing with the real grouped-card grammar, which
+  blocks correctly, so the same caution applies here.
+
 ## Unplanned additions
 
 - `mockup-grounding-gate.sh` false-positives on report pages (fixed this turn, exempted by name).
