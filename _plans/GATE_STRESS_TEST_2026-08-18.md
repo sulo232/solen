@@ -82,25 +82,25 @@ Page for him: `public/_reports/gates-2026-08-18/index.html`
 These are the only things left in this workstream. Every one needs a decision only he can make,
 which is why none of them is done. They stay open until he answers.
 
-- [ ] HIS CALL, and the investigation made it smaller than I first described.
-      Measured on the live page: the Inspo card reads `ab 500 CHF` (12px, weight 400,
-      rgb(107,107,107)), and the look page it opens reads `ab CHF {priceFrom}` at 14.5px weight 700
-      (`DetailPage.tsx:409`). Two screens, no payable number on either. Every other salon card in
-      the app reaches real prices in one screen.
-      **The data already answers the objection I raised.** `app/[locale]/inspo/[id]/page.tsx:218`
-      fills `priceFrom` as `Math.min(...services.map(x => x.price))`, and the same row already
-      carries `serviceId`, the single matching service. So where a look maps to ONE service, the
-      minimum IS that service's price and the word "from" is misleading rather than cautious. Where
-      it maps to several, "from" stays correct.
-      So the change is conditional and needs no new data: show the exact price when there is one
-      service, keep "from" when there are several. The clutter cost I warned about does not arise.
-      **THE QUESTION, now just a yes or no:** make that conditional change?
+- [x] HE SAID YES. Built: `services.length === 1` -> `priceFrom` is a payable total, not a floor, so
+      the row drops "ab"/"from" and renders the bare price, with the exact service's name as a
+      12px/400 `text-s-ink-2` subline (falls through the row's own `chosen` service, locale ->
+      `name_de` -> `name_en`, `name_fr`/`name_it` exist as live columns per `_inventory/_db-columns.json`
+      but are not reliably backfilled). Several-service rows are byte-identical to before.
+      Files: `app/[locale]/inspo/[id]/page.tsx` (adds `priceExact`/`exactServiceName` to the per-salon
+      map, extends the `services!inner()` select to `name_fr, name_it`), `components-legacy/discovery/DetailPage.tsx`
+      (extends `SalonLite`, branches the price span at the old `ab CHF {s.priceFrom}` line).
+      Mockup built first per the mockup-visual gate: `app/[locale]/dev/decision-inspo-exact-price`
+      (real row markup, both treatments stacked full-width at 402px). `verified:` `npx tsc --noEmit`
+      clean on both edited files; could not reach `localhost:3000` from this sandbox to screenshot the
+      live render (known sandbox network block, not a claim of a render never seen).
       Not touched either way: `app/[locale]/warum-solen/page.tsx` renders four hardcoded prices in
       decorative map pins with no data source, and `MockCompare()` above it invents salon names and
       ratings.
       Also surfaced, his to settle, not mine: `DetailPage.tsx:404` renders the blue `(54)` review
       count, and a gate refuses that citing his 2026-07-13 converged-card decision which dropped the
-      count. The shipping code carries a treatment the record calls superseded.
+      count. The shipping code carries a treatment the record calls superseded. Left untouched this
+      turn (out of the scope handed to the coder that closed this box).
 - [x] The three silently-empty database reads , DONE (commit `1f7f21aee`), he said "2 fix".
       `verified:` checked with `npm run exists` against a CONTROL first (`display_name`, which
       returns three real hits, proving the lookup works) before trusting any negative.
