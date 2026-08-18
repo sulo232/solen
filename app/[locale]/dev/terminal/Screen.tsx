@@ -32,6 +32,7 @@ import { getAudioContextCtor, playArrivalChime } from "./prototype";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import { TERMINAL_SALON_ID } from "./loadTerminalData";
 import type { TerminalService } from "./loadTerminalData";
+import { zurichWallClockToUtc } from "@/lib/time/zurich";
 
 interface ScreenProps {
   salonName: string;
@@ -87,6 +88,86 @@ const DECISION_CARD_CAP = 2;
 // MEANS and what has to be true in the data for it to appear. The ring around a stylist's photo is
 // where it shows (./StaffChip.tsx). Nothing here picks a colour on its own.
 
+// DAY + TIME for the phone-booking sheet (2026-08-18). The old chip row was minutes from now, so
+// "tomorrow" silently meant this exact minute in 24 hours and a call asking for Thursday at 14:00
+// could not be recorded at all. These replace it with two pill rows in the same grammar as the
+// service and stylist rows above. Local to this screen: the Zurich date helpers in
+// loadTerminalData.ts are not exported and that file is out of scope for this fix.
+const ZURICH_DATE_FMT = new Intl.DateTimeFormat("en-CA", {
+  timeZone: "Europe/Zurich",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+});
+const ZURICH_CLOCK_FMT = new Intl.DateTimeFormat("en-GB", {
+  timeZone: "Europe/Zurich",
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: false,
+});
+const ZURICH_WEEKDAY_FMT = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Zurich", weekday: "short" });
+
+function zurichToday(): string {
+  const parts = ZURICH_DATE_FMT.formatToParts(new Date());
+  const y = parts.find((p) => p.type === "year")?.value ?? "1970";
+  const m = parts.find((p) => p.type === "month")?.value ?? "01";
+  const d = parts.find((p) => p.type === "day")?.value ?? "01";
+  return `${y}-${m}-${d}`;
+}
+
+function addDays(dateStr: string, days: number): string {
+  const [y, m, d] = dateStr.split("-").map(Number);
+  return new Date(Date.UTC(y, m - 1, d + days)).toISOString().slice(0, 10);
+}
+
+// Today plus the next 13, fourteen pills, because a salon books a few weeks out and a row scrolls.
+function dayOptions(todayStr: string): { value: string; label: string }[] {
+  return Array.from({ length: 14 }, (_, i) => {
+    const value = addDays(todayStr, i);
+    if (i === 0) return { value, label: "Today" };
+    if (i === 1) return { value, label: "Tomorrow" };
+    const [y, m, d] = value.split("-").map(Number);
+    const noon = new Date(Date.UTC(y, m - 1, d, 12, 0, 0));
+    return { value, label: `${ZURICH_WEEKDAY_FMT.format(noon)} ${d}` };
+  });
+}
+
+// Quarter hours 08:00 to 19:00, fixed regardless of which day is picked.
+const ALL_TIME_SLOTS: { hour: number; minute: number }[] = (() => {
+  const slots: { hour: number; minute: number }[] = [];
+  for (let h = 8; h <= 19; h++) {
+    for (const m of [0, 15, 30, 45]) {
+      if (h === 19 && m > 0) break;
+      slots.push({ hour: h, minute: m });
+    }
+  }
+  return slots;
+})();
+
+function zurichNow(): { hour: number; minute: number } {
+  const parts = ZURICH_CLOCK_FMT.formatToParts(new Date());
+  return {
+    hour: Number(parts.find((p) => p.type === "hour")?.value ?? "0"),
+    minute: Number(parts.find((p) => p.type === "minute")?.value ?? "0"),
+  };
+}
+
+// TODAY drops every slot already past. If that empties the row (the shop is calling after 19:00),
+// fall back to the next quarter hour from now, so the row is never empty.
+function timeOptionsFor(dateStr: string, todayStr: string): { hour: number; minute: number }[] {
+  if (dateStr !== todayStr) return ALL_TIME_SLOTS;
+  const now = zurichNow();
+  const nowTotal = now.hour * 60 + now.minute;
+  const upcoming = ALL_TIME_SLOTS.filter((s) => s.hour * 60 + s.minute > nowTotal);
+  if (upcoming.length > 0) return upcoming;
+  const nextTotal = Math.ceil((nowTotal + 1) / 15) * 15;
+  return [{ hour: Math.floor(nextTotal / 60) % 24, minute: nextTotal % 60 }];
+}
+
+function timeLabel(t: { hour: number; minute: number }): string {
+  return `${String(t.hour).padStart(2, "0")}:${String(t.minute).padStart(2, "0")}`;
+}
+
 export default function Screen({
   salonName,
   bookings: initialBookings,
@@ -123,7 +204,8 @@ export default function Screen({
   const [phoneNumber, setPhoneNumber] = useState("");
   const [phoneStaff, setPhoneStaff] = useState<string | null>(null);
   const [phoneService, setPhoneService] = useState<string | null>(null);
-  const [phoneWhen, setPhoneWhen] = useState(60);
+  const [phoneDay, setPhoneDay] = useState<string>(() => zurichToday());
+  const [phoneTime, setPhoneTime] = useState<{ hour: number; minute: number } | null>(null);
   const [phoneSaving, setPhoneSaving] = useState(false);
   // WHEN THE SHOP LAST TOLD US ANYTHING. His concern, and the one my phone-booking form did not
   // answer: the risk is not that they cannot type a booking in, it is what happens when they stop.
@@ -397,9 +479,24 @@ export default function Screen({
     ).values(),
   );
 
+  // Derived every render so a sheet left open past midnight still offers the right "Today". The
+  // fallback in timeOptionsFor means this is never empty, so the picker always has a selection.
+  const todayStr = zurichToday();
+  const dayChoices = dayOptions(todayStr);
+  const timeChoices = timeOptionsFor(phoneDay, todayStr);
+  const selectedTime =
+    phoneTime && timeChoices.some((t) => t.hour === phoneTime.hour && t.minute === phoneTime.minute)
+      ? phoneTime
+      : (timeChoices[0] ?? null);
+
   async function savePhoneBooking() {
-    if (!phoneName.trim() || !phoneNumber.trim() || !phoneStaff || !phoneService) return;
+    if (!phoneName.trim() || !phoneNumber.trim() || !phoneStaff || !phoneService || !selectedTime) return;
     setPhoneSaving(true);
+    // One ISO instant from the day pill and the time pill together, via the shared Zurich helper
+    // (never a hand-rolled offset, Zurich is +1 or +2 depending on the date). The save endpoint takes
+    // minutes-from-now rather than an instant (app/api/dev/terminal/route.ts), so the instant is
+    // converted back to that shape here instead of editing the route.
+    const target = zurichWallClockToUtc(phoneDay, selectedTime.hour, selectedTime.minute);
     const ok = await commit({
       action: "phone_booking",
       name: phoneName.trim(),
@@ -407,7 +504,7 @@ export default function Screen({
       staffId: phoneStaff,
       serviceId: phoneService,
       minutes: services.find((sv) => sv.id === phoneService)?.minutes ?? 30,
-      startsInMinutes: phoneWhen,
+      startsInMinutes: Math.round((target.getTime() - Date.now()) / 60_000),
     });
     setPhoneSaving(false);
     if (!ok) return;
@@ -998,6 +1095,8 @@ export default function Screen({
                   onClick={() => {
                     setPhoneStaff(staff[0]?.id ?? null);
                     setPhoneService(services[0]?.id ?? null);
+                    setPhoneDay(zurichToday());
+                    setPhoneTime(null);
                     setPhoneOpen(true);
                   }}
                   className="font-body -mr-2 flex h-11 items-center px-2 text-[13px] font-semibold text-s-accent"
@@ -1243,20 +1342,44 @@ export default function Screen({
               ))}
             </div>
 
+            {/* DAY, today plus the next 13. */}
             <div className="no-scrollbar mt-2 flex gap-2 overflow-x-auto px-5">
-              {[30, 60, 120, 240, 1440].map((mins) => (
+              {dayChoices.map((d) => (
                 <button
-                  key={mins}
+                  key={d.value}
                   type="button"
-                  onClick={() => setPhoneWhen(mins)}
+                  onClick={() => {
+                    setPhoneDay(d.value);
+                    setPhoneTime(null);
+                  }}
                   className={
-                    "font-body flex h-11 shrink-0 items-center rounded-full border px-4 text-[13px] tabular-nums " +
-                    (phoneWhen === mins
+                    "font-body flex h-11 shrink-0 items-center rounded-full border px-4 text-[13px] " +
+                    (phoneDay === d.value
                       ? "border-s-ink bg-s-bg-sunken font-semibold text-s-ink"
                       : "border-s-border bg-white font-normal text-s-ink-2")
                   }
                 >
-                  {mins === 1440 ? "tomorrow" : zurichTime(new Date(Date.now() + mins * 60_000).toISOString())}
+                  {d.label}
+                </button>
+              ))}
+            </div>
+
+            {/* TIME, quarter hours 08:00 to 19:00. On Today, already-past slots are dropped and the
+                fallback (next quarter hour from now) can render outside that window on purpose. */}
+            <div className="no-scrollbar mt-2 flex gap-2 overflow-x-auto px-5">
+              {timeChoices.map((t) => (
+                <button
+                  key={`${t.hour}-${t.minute}`}
+                  type="button"
+                  onClick={() => setPhoneTime(t)}
+                  className={
+                    "font-body flex h-11 shrink-0 items-center rounded-full border px-4 text-[13px] tabular-nums " +
+                    (selectedTime && selectedTime.hour === t.hour && selectedTime.minute === t.minute
+                      ? "border-s-ink bg-s-bg-sunken font-semibold text-s-ink"
+                      : "border-s-border bg-white font-normal text-s-ink-2")
+                  }
+                >
+                  {timeLabel(t)}
                 </button>
               ))}
             </div>
@@ -1265,7 +1388,14 @@ export default function Screen({
               <button
                 type="button"
                 onClick={savePhoneBooking}
-                disabled={phoneSaving || !phoneName.trim() || !phoneNumber.trim() || !phoneStaff || !phoneService}
+                disabled={
+                  phoneSaving ||
+                  !phoneName.trim() ||
+                  !phoneNumber.trim() ||
+                  !phoneStaff ||
+                  !phoneService ||
+                  !selectedTime
+                }
                 className={
                   "font-body flex h-12 w-full items-center justify-center rounded-full bg-s-ink text-[15px] font-semibold text-white" +
                   (phoneSaving || !phoneName.trim() || !phoneNumber.trim() ? " opacity-50" : "")

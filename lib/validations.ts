@@ -685,7 +685,11 @@ export const terminalPhoneBookingSchema = z.object({
   staffId: z.string().uuid(),
   serviceId: z.string().uuid(),
   minutes: z.number().int().min(5).max(480),
-  startsInMinutes: z.number().int().min(-720).max(10080),
+  // 21600 minutes is 15 days. Was 10080 (7 days), which silently rejected the second half of the
+  // day picker: the sheet offers today plus 13 days, and a save on day 8 or later came back as a
+  // validation error the shop could not see, because the error line renders behind the open sheet.
+  // Proven live 2026-08-18 by booking the last pill and reading the 400 back.
+  startsInMinutes: z.number().int().min(-720).max(21600),
 });
 
 export const cutHistorySchema = z.object({
