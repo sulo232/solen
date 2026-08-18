@@ -82,22 +82,25 @@ Page for him: `public/_reports/gates-2026-08-18/index.html`
 These are the only things left in this workstream. Every one needs a decision only he can make,
 which is why none of them is done. They stay open until he answers.
 
-- [ ] HIS CALL, NARROWED to one question. He said "for 1 from fix it", and the investigation says
-      most of it needs no fix. Every "from" price was traced to what it links to:
-        - the salon-card price leads in ONE hop to the salon page, which lists every service's real
-          price. Compliant, left alone.
-        - the search-suggestion row shows a real single service price and navigates nowhere, but it
-          shares its translation string with the compliant salon card, so a copy edit cannot fix it.
-        - the Inspo card prices lead to a look-detail page that shows only MORE from-prices, so the
-          first real number is two hops away. This is the only genuine gap and it is a navigation
-          gap, not a wording one. A translation string cannot add a total or repoint a link.
-        - `home.heroCarousel.fromPrice` renders nowhere at all. Dead key.
-      **THE ONE QUESTION:** should the Inspo look cards link toward real pricing the way every salon
-      card already does, or is the two-hop path acceptable given the booking flow shows the full
-      breakdown before you commit? That is a product decision, so nothing was changed.
-      Also found, not touched: `app/[locale]/warum-solen/page.tsx` renders four hardcoded prices in
-      decorative map pins with no data source, and `MockCompare()` just above it has the same shape
-      with invented salon names and ratings.
+- [ ] HIS CALL, and the investigation made it smaller than I first described.
+      Measured on the live page: the Inspo card reads `ab 500 CHF` (12px, weight 400,
+      rgb(107,107,107)), and the look page it opens reads `ab CHF {priceFrom}` at 14.5px weight 700
+      (`DetailPage.tsx:409`). Two screens, no payable number on either. Every other salon card in
+      the app reaches real prices in one screen.
+      **The data already answers the objection I raised.** `app/[locale]/inspo/[id]/page.tsx:218`
+      fills `priceFrom` as `Math.min(...services.map(x => x.price))`, and the same row already
+      carries `serviceId`, the single matching service. So where a look maps to ONE service, the
+      minimum IS that service's price and the word "from" is misleading rather than cautious. Where
+      it maps to several, "from" stays correct.
+      So the change is conditional and needs no new data: show the exact price when there is one
+      service, keep "from" when there are several. The clutter cost I warned about does not arise.
+      **THE QUESTION, now just a yes or no:** make that conditional change?
+      Not touched either way: `app/[locale]/warum-solen/page.tsx` renders four hardcoded prices in
+      decorative map pins with no data source, and `MockCompare()` above it invents salon names and
+      ratings.
+      Also surfaced, his to settle, not mine: `DetailPage.tsx:404` renders the blue `(54)` review
+      count, and a gate refuses that citing his 2026-07-13 converged-card decision which dropped the
+      count. The shipping code carries a treatment the record calls superseded.
 - [x] The three silently-empty database reads , DONE (commit `1f7f21aee`), he said "2 fix".
       `verified:` checked with `npm run exists` against a CONTROL first (`display_name`, which
       returns three real hits, proving the lookup works) before trusting any negative.
