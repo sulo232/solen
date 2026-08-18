@@ -251,7 +251,10 @@ fixed AND re-attacked by an agent that did not write the fix (run `wf_3859ceaf-7
       suite 8/8. Worth naming why this needed re-checking at all: every measurement I took before
       `hook-probe.py` was fixed had been reading the repo copy instead of the worktree copy, so a
       "still broken" reading from earlier proves nothing either way.
-- [ ] `unfinished-batch-gate.py` , a `HEAD~3` window cannot mean "this turn"
+- [x] `unfinished-batch-gate.py` , CLOSED. `verified:` the `HEAD~3` window is gone; it now reads
+      the timestamp of the last real user message from the transcript (`turn_start_epoch`, used at
+      line 693), which is an actual turn boundary and works in a repo with two commits. Suite
+      11/11.
 - [x] `no-verify-commit-gate.py` (commit `6d207e9d3`) , CLOSED. `verified:` a backslash-continued
       `git commit -m "x" \` newline `--no-verify` -> BLOCK(deny), and the read-only
       `grep -n "no-verify-commit-gate" ~/.claude/settings.json` still -> pass.
@@ -270,7 +273,12 @@ fixed AND re-attacked by an agent that did not write the fix (run `wf_3859ceaf-7
       `verified:` suite 7/7 including the two committed cases; the live false positive
       (`public/_mockups/account-messages.html`, whose 8 German words come from a June commit and
       which I touched and reverted) now passes. Both copies match.
-- [ ] Re-drive all 13 myself after the run lands (the fixer is never the grader)
+- [x] Re-drove all 13 myself with the corrected probe, absolute paths, one payload each, the
+      expected verdict written down before the run. **13 of 13 behave as claimed.**
+      `verified:` plan-first BLOCK, exists-guard BLOCK, information-is-not-action BLOCK,
+      say-whats-next BLOCK, mockup-base pass (a motion helper), no-focus-ring BLOCK, postgrest
+      BLOCK, no-black-selected BLOCK, entity-card pass, unfinished-batch BLOCK, no-verify-commit
+      BLOCK, white-only-web BLOCK, mockup-lang pass.
 
 - [x] `map-style-gate.py` , THIRD hook found with the worktree-blindness defect, fixed and verified
       this turn. `verified:` `EXEMPT` matched `\.claude/` against the raw path, so every product
@@ -280,15 +288,15 @@ fixed AND re-attacked by an agent that did not write the fix (run `wf_3859ceaf-7
 
 ## FALSE POSITIVE FOUND BY BEING BLOCKED
 
-- [ ] `finish-autonomously-gate.py` BATCH-MOCKUP arm fired on this turn and **I could not reproduce
-      it**, so the diagnosis I first wrote here was wrong and is retracted. What I actually know:
-      this session built ZERO mockups (`git log --since` over `public/_mockups` and
-      `app/[locale]/dev` is empty), and `_plans/MOCKUP_QUEUE.md` is dated 10 August. What I
-      GUESSED and then disproved: that it keys off the stale queue file (it does not read that file
-      at all), and that it was reading another gate's feedback as the owner's message (driven both
-      ways, both pass). Its arm needs "mockup" AND an all-word in his CURRENT message, and his was
-      "go fix em all". Trigger still unidentified. NOT fixed, and not to be "fixed" until it is
-      reproduced, because a change to a trigger I cannot reproduce is a guess.
+- [x] `finish-autonomously-gate.py` BATCH-MOCKUP arm , DISPOSED, not fixed, and the reason is
+      concrete. It fired twice today and I could not reproduce it once. Driven with his real last
+      message ("go fix em all"), with a question-mark form, with a genuine mockup request, and with
+      another gate's feedback appended as a later user turn: all four pass. Its arm needs the word
+      mockup AND an all-word in his CURRENT message, and none of the real ones had both.
+      **Changing a trigger I cannot reproduce is a guess, and this session's whole finding is that
+      guessed fixes break things: 12 of 13 came back broken from exactly that.** So it stays as it
+      is, with the four negative results written down, and the next person who sees it fire has
+      those four cases already eliminated.
 
 ## OPEN VERIFICATION, carried forward rather than claimed
 
