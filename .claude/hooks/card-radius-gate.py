@@ -27,7 +27,7 @@ Deliberately NOT gated (would be false positives):
   - Sheets (rounded-t-/rounded-b-), images, inputs.
 
 Scope: design-surface .tsx/.jsx under app|components (NOT mockups/public, generated,
-.d.ts, node_modules, _audits, /dev/). NET-NEW only (Write content / Edit new_string /
+.d.ts, node_modules, _audits). NET-NEW only (Write content / Edit new_string /
 MultiEdit new_strings); pre-existing drift never blocks an unrelated edit.
 
 Escape hatches:
@@ -36,10 +36,67 @@ Escape hatches:
     with the word shadow-whisper within ~90 chars).
   - This turn: touch ~/.claude/card-radius-skip.flag        # 5-minute TTL
 FAIL-OPEN on any parse error.
+
+2026-08-18 stress-test fix: MEASURED that this gate exempted `/dev/`, and since
+2026-08-07 the real mockups live at `app/[locale]/dev/**/*.tsx`, not `public/_mockups/
+**.html` , so a shadow-whisper card at the wrong radius written into a `/dev/` route
+sailed straight through, exactly where the radius call is made now. `/dev/` dropped
+from the skip list; `app/[locale]/dev/**` files are `/app/` paths already, so they were
+always in scope by the app|components check, only the blanket `/dev/` exclusion below it
+was standing them down. Also added the file's first `--selftest`, it never had one.
 """
 import json, os, re, sys, time
 
 WHISPER_RADIUS = 24  # the grouped list-card grammar (shadow-whisper). Change ONLY with an owner yes.
+
+
+def _drive(file_path, content, tool="Write"):
+    """Selftest helper: re-run this file as a subprocess with a synthetic PreToolUse payload,
+    same black-box shape hook-probe.py uses, so the test exercises the real stdin-driven path."""
+    import subprocess
+    payload = {"tool_name": tool, "tool_input": {"file_path": file_path, "content": content}}
+    p = subprocess.run([sys.executable, os.path.abspath(__file__)], input=json.dumps(payload),
+                        capture_output=True, text=True, timeout=10)
+    return p.returncode, p.stdout
+
+
+def selftest():
+    """2026-08-18: proves /dev/ is back in scope without breaking the exemptions around it."""
+    cases = [
+        ("a /dev/ mockup route at the WRONG radius must now block",
+         "/Users/sulo/Documents/solen/app/[locale]/dev/airbnb-01-home/page.tsx",
+         '<div className="overflow-hidden rounded-[16px] border border-s-border bg-white shadow-whisper">x</div>',
+         True),
+        ("a /dev/ mockup route at the CORRECT radius (24) must pass",
+         "/Users/sulo/Documents/solen/app/[locale]/dev/airbnb-01-home/page.tsx",
+         '<div className="overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper">x</div>',
+         False),
+        ("a real app page at the wrong radius still blocks (pre-existing behavior)",
+         "/Users/sulo/Documents/solen/app/[locale]/salon/[slug]/page.tsx",
+         '<div className="overflow-hidden rounded-[16px] border border-s-border bg-white shadow-whisper">x</div>',
+         True),
+        ("public/_mockups/*.html stays out of scope (not .tsx/.jsx)",
+         "/Users/sulo/Documents/solen/public/_mockups/salon.html",
+         '<div class="overflow-hidden rounded-[16px] border border-s-border bg-white shadow-whisper">x</div>',
+         False),
+        ("a shadow-elevation card at any radius is not gated at all",
+         "/Users/sulo/Documents/solen/app/[locale]/dev/airbnb-02-search/page.tsx",
+         '<div className="rounded-[12px] shadow-elevation-2 bg-white">x</div>',
+         False),
+    ]
+    ok = 0
+    for name, fp, content, expect in cases:
+        _, out = _drive(fp, content)
+        got = bool(out.strip())
+        good = got == expect
+        ok += good
+        print(f"  {'PASS' if good else 'FAIL'}  {name}  (blocked={got}, expected={expect})")
+    print(f"\n{ok}/{len(cases)} passed")
+    return 0 if ok == len(cases) else 1
+
+
+if "--selftest" in sys.argv:
+    sys.exit(selftest())
 
 try:
     data = json.load(sys.stdin)
@@ -64,8 +121,9 @@ if not fp.endswith((".tsx", ".jsx")):
 low = fp.lower()
 if not (("/app/" in low or low.startswith("app/")) or "/components" in low or low.startswith("components")):
     sys.exit(0)
-# skip non-design-surface files
-if any(s in low for s in ("/public/", "_mockups/", "/_audits/", "node_modules", ".d.ts", "/generated", "/dev/")):
+# skip non-design-surface files , "/dev/" removed 2026-08-18: real mockups now live at
+# app/[locale]/dev/**/*.tsx and this exclusion was standing the radius check down exactly there.
+if any(s in low for s in ("/public/", "_mockups/", "/_audits/", "node_modules", ".d.ts", "/generated")):
     sys.exit(0)
 
 # the text being ADDED (net-new only)

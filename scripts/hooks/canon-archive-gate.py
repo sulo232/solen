@@ -44,7 +44,10 @@ ARMING ORDER MATTERS: run the one-time sweep first, arm this second. A gate arme
 before the sweep would deny the sweep's own commit. Same order COPY_LAW.md section 8
 used for the register ratchet.
 
-CLI:  python3 design-canon-gate.py --audit [repo_root]
+CLI:  python3 scripts/hooks/canon-archive-gate.py --audit [repo_root]
+      (2026-08-18: this line said `design-canon-gate.py`, which exists nowhere on disk,
+      in either repo copy or under ~/.claude. The gate was renamed and its own
+      instructions were not. Anyone following them ran a file that is not there.)
       Prints every top-level file that is not on the list, with its destination.
       Always exits 0. Safe for the weekly law pass.
 """
@@ -252,7 +255,7 @@ def check_file_write(data):
         "%s\n\n"
         "The canon list, one file per concern:\n%s\n\n"
         "If this really is a new concern that no row above owns, add the basename to "
-        "CANON in .claude/hooks/design-canon-gate.py with the concern it owns, in "
+        "CANON in scripts/hooks/canon-archive-gate.py with the concern it owns, in "
         "the same turn. If it is not, put the content in the canon file that owns its "
         "concern and leave a pointer, or move the file to its destination with "
         "`git mv`."
@@ -292,7 +295,7 @@ def check_commit(data):
         "  mkdir -p _design-system/archive _design-system/reports\n%s\n\n"
         "An entry stays at the top level only if it is the ONE canon file for a "
         "concern. If one of these is, add its basename to CANON in "
-        ".claude/hooks/design-canon-gate.py with the concern it owns. Emergency "
+        "scripts/hooks/canon-archive-gate.py with the concern it owns. Emergency "
         "escape: touch .claude/design-canon-skip.flag (5 minutes)."
         % (len(bad), "\n".join(rows), "\n".join(moves))
     )
