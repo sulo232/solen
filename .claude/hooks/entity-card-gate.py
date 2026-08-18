@@ -26,10 +26,65 @@ Escape hatches:
   - Per line:  add `entity-ok: <reason>` on/near the offending line.
   - This turn: touch ~/.claude/entity-card-skip.flag        # 5-minute TTL
 FAIL-OPEN on any parse error.
+
+2026-08-18 stress-test fix: rule 2 (doubled chrome) refused the contract's own LOCKED grouped
+list-card grammar (radius 24 + shadow-whisper + divided rows) and any card carrying a single
+`border-b` header. See the dated comments at rule 2 below for the measurements. Also added the
+file's first `--selftest`, this gate never had one.
 """
 import json, os, re, sys, time
 
 ENTITY_NAME = re.compile(r"(staff|stylist|team|barber|therapist|employee|provider|people|member)", re.I)
+
+
+def _drive(file_path, content, tool="Write"):
+    """Selftest helper: re-run this file as a subprocess with a synthetic PreToolUse payload,
+    same black-box shape hook-probe.py uses, so the test exercises the real stdin-driven path."""
+    import subprocess
+    payload = {"tool_name": tool, "tool_input": {"file_path": file_path, "content": content}}
+    p = subprocess.run([sys.executable, os.path.abspath(__file__)], input=json.dumps(payload),
+                        capture_output=True, text=True, timeout=10)
+    return p.returncode, p.stdout
+
+
+def selftest():
+    """2026-08-18: this gate never had a self-test. Added with the grouped-list-card + border-b fix."""
+    cases = [
+        ("LOCKED grouped list-card (radius 24 + shadow-whisper + divided rows) must pass",
+         "/Users/sulo/Documents/solen/components/ServicesList.tsx",
+         '<div className="rounded-[24px] shadow-whisper bg-white divide-y divide-s-border">'
+         '<div className="p-4">Cut</div><div className="p-4">Color</div></div>',
+         False),
+        ("genuine entity-card violation (radius-16 + border container carrying row dividers) must block",
+         "/Users/sulo/Documents/solen/components/SalonCard.tsx",
+         '<div className="rounded-card border border-s-border bg-white divide-y divide-s-border">'
+         '<div className="p-4">A</div><div className="p-4">B</div></div>',
+         True),
+        ("a single border-b HEADER inside a card must pass",
+         "/Users/sulo/Documents/solen/components/ReviewSummaryCard.tsx",
+         '<div className="rounded-card border border-s-border p-4">'
+         '<div className="border-b border-s-border pb-2 font-semibold">Reviews</div>'
+         '<p>Great salon</p></div>',
+         False),
+        ("the original entity-list rule (Staff list rendering a grouped card) must still block",
+         "/Users/sulo/Documents/solen/components/StaffList.tsx",
+         '<div className="overflow-hidden rounded-[24px] shadow-whisper">'
+         '{staff.map(s => <Row key={s.id} {...s}/>)}</div>',
+         True),
+    ]
+    ok = 0
+    for name, fp, content, expect in cases:
+        _, out = _drive(fp, content)
+        got = bool(out.strip())
+        good = got == expect
+        ok += good
+        print(f"  {'PASS' if good else 'FAIL'}  {name}  (blocked={got}, expected={expect})")
+    print(f"\n{ok}/{len(cases)} passed")
+    return 0 if ok == len(cases) else 1
+
+
+if "--selftest" in sys.argv:
+    sys.exit(selftest())
 
 try:
     data = json.load(sys.stdin)
@@ -115,12 +170,41 @@ CONTAINER = re.compile(
     r"|borderRadius\s*[:=]\s*['\"]?\s*[1-9]"     # the JS form a mockup injection uses
     r"|rounded-\[?2[04]px\]?|rounded-card"
     r"|shadow-whisper|shadow-elevation)", re.I)
-ROWLINES = re.compile(r"(divide-y|divide-s-border|border-b[\s\"'`]|borderBottom|border-t[\s\"'`])", re.I)
+# 2026-08-18 fix: this rule refused the contract's OWN locked grouped list-card grammar. MEASURED
+# `rounded-[24px] shadow-whisper bg-white divide-y divide-s-border` (category members in one card,
+# hairline-divided rows) returned BLOCK , a container carrying row dividers is exactly what that
+# shape IS, not doubled chrome. Radius-24 + shadow-whisper together is the grouped-list-card
+# signature (LOCKFILE "grouped LIST-card 24"); when both co-occur, skip , this rule still governs
+# the INDIVIDUAL entity-card shape (radius 16 + border, LOCKFILE "individual entity-card 16").
+GROUPED_LIST_SHAPE = re.compile(r"rounded-\[?24px\]?", re.I)
+ROWLINES_STRONG = re.compile(r"(divide-y|divide-s-border)", re.I)
+# a single `border-b`/`border-t` is a HEADER (or footer) divider inside one card, not a per-row
+# divider , MEASURED it blocked a card carrying a border-b header. A genuine per-row divider is
+# written once in source but rendered per-row via `.map(`; only count it as a row-divider signal
+# when a `.map(` sits just before it, the way this codebase actually renders repeated rows.
+ROWLINES_WEAK = re.compile(r"(border-b[\s\"'`]|borderBottom|border-t[\s\"'`])", re.I)
+MAP_NEARBY = re.compile(r"\.map\s*\(")
+
+
+def _has_row_signal(blob, m):
+    win_start = max(0, m.start() - 400)
+    window = blob[win_start:m.end() + 400]
+    if GROUPED_LIST_SHAPE.search(window) and re.search(r"shadow-whisper", window, re.I):
+        return False, window  # the LOCKED grouped list-card shape, legal by design
+    if ROWLINES_STRONG.search(window):
+        return True, window
+    for wm in ROWLINES_WEAK.finditer(window):
+        abs_pos = win_start + wm.start()
+        if MAP_NEARBY.search(blob[max(0, abs_pos - 300):abs_pos]):
+            return True, window
+    return False, window
+
+
 boxed = None
 if rule2_applies and not offend:
     for m in CONTAINER.finditer(blob):
-        window = blob[max(0, m.start() - 400):m.end() + 400]
-        if not ROWLINES.search(window):
+        rowsig, window = _has_row_signal(blob, m)
+        if not rowsig:
             continue
         if re.search(r"(entity-ok|boxed-ok)\s*:", window, re.I):
             continue

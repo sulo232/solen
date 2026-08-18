@@ -109,13 +109,19 @@ all 113 file-checking gates.</p>
 <h2>Things that looked switched on and were not</h2>
 
 <div class="f red">
-  <h3>The glow you killed three times is live on the homepage<span class="tag">your call</span></h3>
-  <p>The soft glow around a tapped box is banned by name and was killed on 1 July, 2 July and 17 July.
-  It is in the shipping homepage right now, four times, on the business signup boxes.</p>
-  <p class="what">The guard reads the old stylesheet spelling. Your site is written in Tailwind, which
-  spells it a completely different way. 501 files use the new spelling and 1 file uses the old one,
-  and the guard only knew the old one. Fixed, so it cannot happen again. The four live ones are a
-  visual change on the homepage, so that is your call, not mine.</p>
+  <h3>The glow you killed three times, and where it actually is<span class="tag">corrected</span></h3>
+  <p><b>I got this wrong the first time and here is the correction.</b> I said the banned glow was
+  live on your homepage. It is not. It sits in the partner signup boxes inside a component called
+  JoinUsCard, and nothing in the app renders that component. Every mention of it is a comment. I
+  opened the homepage, focused the inputs and counted: one input on the page, and it does not carry
+  the glow.</p>
+  <p class="what">So the glow is real code carrying a banned treatment, four times, in
+  <code>app/[locale]/_components/homepage/BentoBusiness.tsx</code> at lines 616, 623, 630 and 637.
+  It is not on your screen. Nothing to approve. It matters only because the moment anyone wires that
+  component up it ships, and until today the guard could not see it: the guard reads the old
+  stylesheet spelling and your site is written in Tailwind, which spells it a completely different
+  way. 501 files use the new spelling and 1 uses the old one. That is fixed, so the next one gets
+  stopped wherever it is written.</p>
 </div>
 
 <div class="f red">

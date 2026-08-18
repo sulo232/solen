@@ -78,17 +78,50 @@ def main():
         pass
 
     now = time.time()
+    # 2026-08-18, stress-test pass. The three dev patterns began with a bare `**`, so with
+    # recursive=True each one walked the WHOLE repo hunting for any directory called dev, and this
+    # repo carries node_modules, node_modules.nosync, node_modules_old and .next, all of which
+    # contain one. Measured: `**/dev/**/*.tsx` takes 3.62s and returns 175 files;
+    # `app/**/dev/**/*.tsx` takes 0.07s and returns THE SAME 175 files, because every real dev
+    # directory here is under app/ (app/[locale]/dev and app/api/dev, verified by find). This hook
+    # runs at the end of every single reply, so that walk was roughly 4 of the 11 seconds he waits
+    # after each one. Same coverage, anchored.
     patterns = [
         os.path.join(proj, "public", "_mockups", "**", "*.htm*"),
-        os.path.join(proj, "**", "dev", "**", "*.tsx"),
-        os.path.join(proj, "**", "dev", "**", "*.jsx"),
-        os.path.join(proj, "**", "dev", "**", "*.htm*"),
+        os.path.join(proj, "app", "**", "dev", "**", "*.tsx"),
+        os.path.join(proj, "app", "**", "dev", "**", "*.jsx"),
+        os.path.join(proj, "app", "**", "dev", "**", "*.htm*"),
     ]
+    # 2026-08-18, second stress-test fix, and this one was firing on the owner's screen. "Did I
+    # touch this file?" was answered by mtime. Git writes EVERY file in a worktree at checkout, so
+    # in a worktree every file in the repo has an mtime of minutes ago and the answer is yes for all
+    # of them. Measured today: this gate named six mockups from June, July and 15 August as "a
+    # mockup you touched this session"; `git status --porcelain` on all six is empty and `git log`
+    # shows this session touched none of them. So it accused work nobody had done, which is the
+    # fastest way to get a gate skip-flagged into uselessness.
+    # Ask git what actually changed. mtime stays as the fallback for a non-git tree only.
+    changed = None
+    try:
+        import subprocess
+        r = subprocess.run(["git", "-C", proj, "status", "--porcelain", "--untracked-files=all"],
+                           capture_output=True, text=True, timeout=8)
+        if r.returncode == 0:
+            changed = set()
+            for ln in r.stdout.splitlines():
+                rel = ln[3:].strip().strip('"')
+                if rel:
+                    changed.add(os.path.normpath(os.path.join(proj, rel)))
+    except Exception:
+        changed = None
+
     offenders = []
     for pat in patterns:
         for fp in glob.glob(pat, recursive=True):
             try:
-                if now - os.path.getmtime(fp) > 180 * 60:
+                if changed is not None:
+                    if os.path.normpath(fp) not in changed:
+                        continue
+                elif now - os.path.getmtime(fp) > 180 * 60:
                     continue
                 txt = open(fp, encoding="utf-8", errors="ignore").read()
             except Exception:

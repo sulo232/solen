@@ -79,9 +79,15 @@ Page for him: `public/_reports/gates-2026-08-18/index.html`
 
 ## FOR THE OWNER , decisions and live product bugs, none of them fixed by me
 
-1. **The banned focus halo is LIVE**, four times, `app/[locale]/_components/homepage/BentoBusiness.tsx`
-   lines 616, 623, 630, 637. Killed by name 2026-07-01, 07-02, 07-17. Visual change on the homepage,
-   so it needs a mockup and his yes.
+1. ~~**The banned focus halo is LIVE** on the homepage~~ , **CORRECTED 2026-08-18, and this was my
+   error.** The halo is in `app/[locale]/_components/homepage/BentoBusiness.tsx` lines 616, 623, 630,
+   637, inside `JoinUsCard`. `verified:` `JoinUsCard` and `BentoBusiness` have **0 real (non-comment)
+   references** anywhere in `app/**` or `components/**` , every mention in `app/[locale]/page.tsx` is
+   inside a `/* */` doc comment, and `<JoinUsCard` appears nowhere. Rendered `/de` and counted: 1
+   input on the page, 0 carrying the halo class. So it is DEAD CODE, not shipping, and there is
+   nothing for him to approve. It still mattered as a gate finding, because the gate could not see
+   the Tailwind spelling at all and would have missed it the moment anyone wired the component up.
+   Memory `feedback_source_code_is_not_render_truth` is exactly this trap and I walked into it.
 2. **Three phantom columns in shipping routes**: `salons.avg_price`, `profiles.first_name`,
    `reviews.reply_at` / `reply_text`. PostgREST returns null rather than erroring, so these are silent.
 3. **PBV total-price violations** (statutory tier, above taste): `messages/de.json` 248, 507, 4651;

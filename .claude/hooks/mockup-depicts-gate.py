@@ -26,6 +26,14 @@ TWO ARMS (PreToolUse on Write|Edit to public/_mockups/**):
 
 Override (you have genuinely traced every surface another way):
   echo "<reason>" > .claude/depicts-skip.flag     (non-blank reason on line 1, 15-min TTL)
+
+2026-08-18 stress-test fix: mockup-first design work moved to real dev routes
+(app/[locale]/dev/**/*.tsx, 2026-08-07) and this gate stayed pinned to public/_mockups/**.html
+only, so a dev-route mockup could draw a killed or invented feature and nothing here checked it.
+Widened scope to also match app/**/dev/**/*.tsx. No grammar change was needed: the `Depicts:`
+manifest search and the graveyard visible-copy search are both plain text matches, not tied to
+HTML syntax, so they already work unchanged on a .tsx file's content. Also added the file's first
+`--selftest`, this gate never had one.
 """
 import json
 import os
@@ -89,9 +97,16 @@ def main():
 
     ti = payload.get("tool_input") or {}
     path = ti.get("file_path") or ""
-    if "public/_mockups/" not in path.replace("\\", "/"):
-        sys.exit(0)
-    if not path.lower().endswith(HTML_EXT):
+    low = path.replace("\\", "/").lower()
+    # 2026-08-18 stress-test fix: mockup-first design work moved to real dev routes
+    # (app/[locale]/dev/**/*.tsx, 2026-08-07) and this gate stayed pinned to public/_mockups/**.html
+    # only, so a dev-route mockup could draw a killed/invented feature with nothing checking it.
+    # visible_copy()'s tag-stripping regex and the `Depicts:`/graveyard text search are both
+    # comment-syntax-agnostic (a `// Depicts:` line matches the same as a `<!-- Depicts:` one), so
+    # no grammar change is needed here, only scope.
+    is_mockup_html = "public/_mockups/" in low and low.endswith(HTML_EXT)
+    is_dev_tsx = bool(re.search(r"/app/.*?/dev/.*?\.tsx$", low)) and "solen-mobile" not in low
+    if not (is_mockup_html or is_dev_tsx):
         sys.exit(0)
 
     project = os.environ.get("CLAUDE_PROJECT_DIR") or os.getcwd()
@@ -184,6 +199,42 @@ def main():
 
     sys.exit(0)
 
+
+def _drive(file_path, content, tool="Write"):
+    import subprocess
+    payload = {"tool_name": tool, "tool_input": {"file_path": file_path, "content": content}}
+    p = subprocess.run([sys.executable, os.path.abspath(__file__)], input=json.dumps(payload),
+                        capture_output=True, text=True, timeout=10)
+    return p.returncode
+
+
+def selftest():
+    """2026-08-18: this gate never had a self-test. Added with the /dev/*.tsx scope fix."""
+    no_manifest = '<div className="rounded-card">no manifest here</div>'
+    with_manifest = ('// Depicts: gallery photos -> app/[locale]/dev/pdp/portfolio/page.tsx (seed photos)\n'
+                      '<div className="rounded-card">gallery</div>')
+    cases = [
+        ("missing Depicts manifest in public/_mockups/x.html must block",
+         "/Users/sulo/Documents/solen/public/_mockups/x.html", no_manifest, 2),
+        ("traced Depicts manifest in public/_mockups/x.html must pass",
+         "/Users/sulo/Documents/solen/public/_mockups/x.html", with_manifest, 0),
+        ("missing Depicts manifest in a .tsx dev route must block",
+         "/Users/sulo/Documents/solen/app/[locale]/dev/pdp/portfolio/page.tsx", no_manifest, 2),
+        ("traced Depicts manifest in a .tsx dev route must pass",
+         "/Users/sulo/Documents/solen/app/[locale]/dev/pdp/portfolio/page.tsx", with_manifest, 0),
+    ]
+    ok = 0
+    for name, fp, content, expect_rc in cases:
+        rc = _drive(fp, content)
+        good = rc == expect_rc
+        ok += good
+        print(f"  {'PASS' if good else 'FAIL'}  {name}  (exit={rc}, expected={expect_rc})")
+    print(f"\n{ok}/{len(cases)} passed")
+    return 0 if ok == len(cases) else 1
+
+
+if "--selftest" in sys.argv:
+    sys.exit(selftest())
 
 if __name__ == "__main__":
     main()
