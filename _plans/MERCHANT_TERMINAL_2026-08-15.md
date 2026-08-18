@@ -2050,12 +2050,81 @@ possible or no?"
       the three that just left. Those 29 can no longer happen at all, and the 15 resend-delta fires
       were largely caused BY them, so the real reduction is bigger than 29.
 
+## ROUND 20 , the direction decision, 2026-08-18
+
+He asked what we do about a salon already running someone else's software, using hotels as the
+analogy: "an hotel it has booking platform on multiple othr companies right how do they do that".
+Research went out to live sources. Then he decided, verbatim: **"direction i want is solen being
+both yk"**. Solen is the marketplace AND the shop's own book. That is now the direction and the
+integration question is closed underneath it.
+
+- [x] R20-1 HOW HOTELS ACTUALLY DO IT, answered from primary sources. The layer is a CHANNEL
+      MANAGER, and the shape is asymmetric: availability and rates flow outward from the hotel's own
+      system to every platform, reservations flow inward, and the hotel's PMS is the one system of
+      record. Every platform is a display of one central number, and nobody syncs calendars with
+      anybody. Booking.com's connectivity docs name the APIs; Expedia runs the same shape in XML.
+      Two findings that matter more than the mechanism: Booking.com is CURRENTLY PAUSED to new
+      connectivity providers ("we are pausing integrations with new connectivity providers until
+      further notice", connect.booking.com) and Expedia's Booking Notification API is likewise shut
+      to new partners. And Booking.com makes the two mutually exclusive by rule: iCal is allowed
+      only for a property with 20 room types or fewer that uses NO channel manager.
+- [x] R20-2 WHAT iCal CAN CARRY, and this is what kills the sync path for good. Cloudbeds, on its
+      own feature: "Calendar channels do not send rates or the number of occupants (PAX), and only
+      availability can be updated". Airbnb stripped the rest deliberately in December 2019, so an
+      iCal reservation "will not contain the guest name, phone number, or any other Personally
+      Identifiable Information". Airbnb refreshes every 3 hours, Cloudbeds imports take 30 minutes
+      to several hours, and Cloudbeds tells its own customers to use the API instead.
+- [x] R20-3 THE SALON EQUIVALENT, per vendor, and the pattern is the finding. Fresha: no public API,
+      graded F by an August 2026 audit, no write API for appointments; documents ICS import as
+      BLOCKED TIME only. Treatwell: no public developer documentation found; accepts an inbound
+      iCal URL per staff member. Booksy: partner-gated, its docs endpoint returns 401. Salonized:
+      no API at all, and it holds the one official cross-marketplace link in the industry.
+      Shore: has an API with a self-serve token and the WRONG SCOPE, products and invoices, not
+      appointments; its public docs repo was archived in 2019. Phorest: the only vendor found with
+      a real partner-gated CREATE BOOKING endpoint, no webhooks, polling only.
+      THE PATTERN: Fresha, Treatwell, Booksy and Salonkee are marketplaces. Shore, Salonized,
+      Phorest and Belbo are pure software. The ones with no write API are exactly the ones that
+      compete with us, and that is a business model, not neglect.
+- [x] R20-4 IS THERE A CHANNEL MANAGER FOR SALONS: essentially NO. The category has no name, no
+      vendors and no market in English or German; German search returns only holiday-rental
+      products. One product exists, Booking Connect, at ten pounds a month, syncing Phorest to
+      Treatwell with an iCal feed out and FORWARDED EMAIL back in, built by its authors for
+      themselves. After it shipped the market produced no competitor and no funded version.
+      Salonized and Treatwell have an official two-way link, live in Switzerland, and it carries the
+      identical hotel semantic: an appointment crosses as a "bezet moment", an occupied moment.
+- [x] R20-5 SWITZERLAND, not asked for and load-bearing: Art. 8a UWG, the Lex Booking, in force
+      1 December 2022, bans price and availability parity clauses, and covers ONLY an "online
+      booking platform of accommodation services". Salons are not covered. The legal shield that
+      makes hotel multi-listing safe does not extend to this industry.
+- [x] R20-6 HIS DIRECTION: SOLEN IS BOTH. Marketplace and the shop's book, which is exactly the
+      structure Fresha, Treatwell, Booksy and Salonkee all run, so this is the proven shape rather
+      than an odd one, and the research says the alternative was refused anyway. THE COST, named
+      rather than buried: it moves the hard part from engineering to SALES. Our answer to "I
+      already use Fresha" becomes "leave Fresha", which is a switching decision rather than an
+      add-a-channel decision, so being both improves retention and economics while making
+      acquisition harder. The mitigation is an on-ramp, not a destination: see R20-7.
+
+- [ ] R20-7 THE ON-RAMP, and it is the one piece of the integration question that survives his
+      decision. A shop already on Fresha or Treatwell can list with us WITHOUT switching, via the
+      ICS busy-block loop that needs nobody's permission: we subscribe to their export to learn
+      when they are busy, they paste our ICS so our bookings block on their side. Fresha documents
+      importing external events as blocked time within 15 minutes and exporting too; Treatwell
+      accepts a per-staff external iCal URL. It carries no name, no service and no price, so it is
+      a compatibility hedge and never the product. Time-box it: if it runs past roughly two weeks,
+      the length itself is the signal to stop, because the payoff is capped by design.
+- [ ] R20-8 THE FIRST PER-VENDOR DEAL WORTH ASKING FOR, when we want one: Phorest. It is the only
+      vendor found with a real appointment-write endpoint and no competing marketplace. Not now,
+      and named so it is not re-researched.
+
 ## ROUND 19 , his answers to the board, 2026-08-18
 
 He went down the board and answered some of it, asked me to think harder on the rest, and added one
 question that was not on it.
 
-- [x] R19-1 Q1, the four paths: ANSWERED and published. The deep-research lens came back and its
+- [x] R19-1 Q1, the four paths: ANSWERED and published `verified:` commit 5ea3f0dc0, page at
+      `app/[locale]/dev/outside-bookings/page.tsx`, served 200 and read back in the browser
+      2026-08-18 (its first line renders "A shop takes half its bookings by phone. How does our
+      screen know?"). The deep-research lens came back and its
       findings are on the board at `/dev/outside-bookings`, five sections, every claim sourced. It
       killed path 3 outright (read the shop's own calendar): five competitors all import an outside
       calendar as busy time only, no name, no service, no price, Shore's own help page asks whether
@@ -2074,8 +2143,17 @@ question that was not on it.
       WHAT IS ACTUALLY MISSING is one line of configuration: `SEVEN_IO_API_KEY` is not in this
       worktree's `.env.local`, and `sendSMS` returns false and logs a warning without it. So this is
       not a system to build, it is a key to paste, and that IS the part he has to do.
-- [ ] R19-4 Q3, tomorrow on the terminal: he leaned yes and asked what I think. Answered in the
-      reply, still needs building.
+- [x] R19-4 Q3, tomorrow on the terminal: BUILT `verified:` commit 73b1fc123. The loader window
+      opens one day wider and `Screen.tsx` splits the result by Zurich CALENDAR DAY, so 23:30
+      tonight and 00:30 tomorrow land on opposite sides even across the daylight-saving switch.
+      Tomorrow renders below today, same rows, no card and no colour, nothing at all when empty,
+      and no arrival button because nobody arrives tomorrow.
+      THE TRAP, and it is why this was not a one-line change: `bookedToday` summed whatever the
+      query returned, so widening the window would have folded tomorrow's takings into today's
+      figure with nothing on screen to reveal it. Proven against the live database: 8 active
+      bookings today totalling CHF 350, one real booking inserted for tomorrow at 14:00 for CHF 55,
+      figure still read CHF 350 and the row appeared under Tomorrow. The naive version reads CHF
+      405, so the hazard was real. Test rows deleted.
 - [x] R19-5 Q4, the phone booking, DONE `verified:` commits 633e8575b and f4b0e744a. He said NOW,
       not later, and he was right. `app/api/bookings/salon/route.ts` is the production path, kept
       separate from the customer endpoint because that one throttles at five an hour and refuses a
@@ -2097,6 +2175,10 @@ question that was not on it.
       list cannot show that a day grid can, and which of the terminal's own written rules a grid at
       390px would break.
 - [x] R19-7 HIS QUESTION, 2026-08-18: did the research already prove the terminal will not work?
+      `verified:` answered in the reply itself, sourced from the strings live in
+      `app/[locale]/dev/outside-bookings/page.tsx` ("Restaurants: only about 17 in 100 bookings came
+      through the platform", "They did not solve it with syncing. They solved it by being the
+      book.", "93% of Swiss small businesses have no online booking at all").
       ANSWERED: no, and the research points the other way. What it killed is calendar sync, which is
       one WAY IN, not the screen. On the screen itself the strongest number in the whole study is
       OpenTable's: only about 17 in 100 bookings came through the platform, so 83 in 100 were typed
@@ -2105,7 +2187,11 @@ question that was not on it.
       real risk the research DID name is different and it is not "the terminal fails", it is TWO
       BOOKS: a shop that keeps its paper book AND our screen gets double-booked, and no code can
       catch that. That is what R19-2's tolerance rule exists to absorb.
-- [x] R19-8 HIS SECOND ASK, 2026-08-18, and it is a REPEAT he had to make twice: a visual board,
+- [x] R19-8 HIS SECOND ASK, 2026-08-18, a REPEAT he had to make twice: a visual board,
+      `verified:` commit baac2784c, `app/[locale]/dev/how-it-works/page.tsx`. Rendered and measured
+      at 390x844: scrollWidth 390 so no sideways scroll, main 1319px tall against 2985 for the
+      rejected first build, one svg at 350x646 carrying 7 boxes / 11 lines / 19 labels, 4 text
+      sizes, 2 weights, and strokes resolving to E4E4E7, 16A34A, C2410C, 6B6B6B and 0A0A0A.
       "boxes and lines connecting each other", not another page of prose. Built at
       `/dev/how-it-works`: one drawing showing the three ways in that reach the screen joining into
       one spine, what we hold, the screen itself, and the two ways in whose lines stop dead before
