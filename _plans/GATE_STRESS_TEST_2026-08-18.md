@@ -82,12 +82,39 @@ Page for him: `public/_reports/gates-2026-08-18/index.html`
 These are the only things left in this workstream. Every one needs a decision only he can make,
 which is why none of them is done. They stay open until he answers.
 
-- [ ] HIS CALL: the "from" prices with no total, `messages/de.json` 248, 507, 4651, `fr.json` 507,
-      and `app/[locale]/warum-solen/page.tsx` 152-153. Statutory tier (Swiss PBV total-price), so it
-      outranks taste, but it is customer-facing copy in four languages and that is his to approve.
-- [ ] HIS CALL: three columns pages ask for that the live database does not have
-      (`salons.avg_price`, `profiles.first_name`, `reviews.reply_at` / `reply_text`). Fixing means
-      either a migration or changing what the screens read, and both are product decisions.
+- [ ] HIS CALL, NARROWED to one question. He said "for 1 from fix it", and the investigation says
+      most of it needs no fix. Every "from" price was traced to what it links to:
+        - the salon-card price leads in ONE hop to the salon page, which lists every service's real
+          price. Compliant, left alone.
+        - the search-suggestion row shows a real single service price and navigates nowhere, but it
+          shares its translation string with the compliant salon card, so a copy edit cannot fix it.
+        - the Inspo card prices lead to a look-detail page that shows only MORE from-prices, so the
+          first real number is two hops away. This is the only genuine gap and it is a navigation
+          gap, not a wording one. A translation string cannot add a total or repoint a link.
+        - `home.heroCarousel.fromPrice` renders nowhere at all. Dead key.
+      **THE ONE QUESTION:** should the Inspo look cards link toward real pricing the way every salon
+      card already does, or is the two-hop path acceptable given the booking flow shows the full
+      breakdown before you commit? That is a product decision, so nothing was changed.
+      Also found, not touched: `app/[locale]/warum-solen/page.tsx` renders four hardcoded prices in
+      decorative map pins with no data source, and `MockCompare()` just above it has the same shape
+      with invented salon names and ratings.
+- [x] The three silently-empty database reads , DONE (commit `1f7f21aee`), he said "2 fix".
+      `verified:` checked with `npm run exists` against a CONTROL first (`display_name`, which
+      returns three real hits, proving the lookup works) before trusting any negative.
+      None of the three needed a schema change, and only one was really absent:
+        - `reviews.reply_text` / `reply_at` , SUPERSEDED. Migration 041 moved them to the
+          `review_replies` table and 076 carried the data across. `app/api/profile/live-state/route.ts`
+          was still reading the old home; it now joins the table the way the same file already joins
+          `loyalty_stamps`. `reply_at` exists nowhere at all, so it uses `created_at`.
+        - `profiles.first_name` , SUPERSEDED by `display_name`. `app/api/me/route.ts` now reads
+          `display_name` and takes the first word, so the route keeps its promise of a first name
+          rather than silently returning "Anna Muller" under the same key.
+        - `salons.avg_price` , NEVER LANDED, no migration ever created it, and three other places
+          compute it from the service prices. `app/api/brand/[slug]/route.ts` now computes it the
+          same way instead of asking the database.
+      Not request-tested: the coder could not reach the dev server from its sandbox, so this is
+      verified against the live schema and against the existing working query in the same file,
+      not against a live response.
 - [ ] HIS CALL: five files carrying `dark:` styling, inert only while `darkMode` stays out of
       `tailwind.config.js`. Deleting dormant styling from shipped components is a visual change.
 - [ ] HIS CALL: arm `evidence-family-aggregator.py`, which restores seven "prove it" checks in one
