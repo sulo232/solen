@@ -136,17 +136,36 @@ fixed AND re-attacked by an agent that did not write the fix (run `wf_3859ceaf-7
       documented allow path: `plan_touched_since()` is True in the worktree because I edited
       `_plans/GATE_STRESS_TEST_2026-08-18.md` this turn, and False in main. Proved by calling it
       directly with the same 10-minute stamp against both roots. Selftest 10/10.
-- [ ] `exists-guard.py` , a file merely QUOTING the rule still satisfies the marker
+- [x] `exists-guard.py` , CLOSED, after the adversary broke the first attempt two ways.
+      `verified:` all four of its escapes now BLOCK end to end (`skipped, ship it`,
+      `assumed net-new`, `probably fine`, `I will look at this later`) and all three real forms
+      still pass (the documented marker, the markdown bullet, `extends SalonCard.tsx`).
+      Selftest 16/16, including the bullet case that the first attempt broke.
+      What changed, and it is the lesson: the first attempt enumerated the words for "I did not
+      look" and lost, because English has unlimited ways to say it. This version asks two
+      STRUCTURAL questions instead. POSITION: a real claim is a header, so only the opening 15
+      lines count, which kills a document that merely quotes the protocol in its body.
+      REFERENT: the claim must name something checkable, a quoted term, a path, a filename, an
+      identifier, or a stated act of checking. The one wordlist left is the hedge set
+      (assumed / probably / skipped / will look later), which is closed and already banned
+      estate-wide by global rule 15.
 - [ ] `information-is-not-action-gate.py` , a multi-sentence imperative escapes, because only the last sentence is read
 - [ ] `say-whats-next-gate.py` , misses implemented/updated/refactored/created/wrote; blocks "nothing was measured"
 - [ ] `mockup-base-gate.py` + `mockup-preflight-manifest.py` , deny 158 and 149 of the repo's OWN 175 dev files
-- [ ] `no-focus-ring-gate.py` , `0px 0px 0px 3px` passes; `var(--s-ink)` outline wrongly blocks
+- [x] `no-focus-ring-gate.py` , CLOSED. `verified:` I drove all three adversary payloads myself:
+      `focus:shadow-[0px_0px_0px_3px_rgba(255,255,255,0.4)]` -> BLOCK(deny);
+      `outline:2px solid var(--s-ink)` -> pass; `outline:solid 2px #276EF1` (reversed order) ->
+      BLOCK(deny). Today's four earlier cases still hold.
 - [ ] `postgrest-filter-injection-gate.py` , `expr_is_safe()` defaults to ALLOW, wrong default for a taint check
 - [ ] `no-black-selected-gate.py` , inline `style={{background:'#0A0A0A'}}` passes; filter pills wrongly exempted
 - [ ] `entity-card-gate.py` , `rounded-3xl` (same 24px) still blocks; 400-char exemption window leaks
 - [ ] `unfinished-batch-gate.py` , a `HEAD~3` window cannot mean "this turn"
-- [ ] `no-verify-commit-gate.py` , a backslash-continued `--no-verify` passes
-- [ ] `white-only-web-gate.py` , a `darkMode` key in a TYPE LITERAL wrongly blocks a .tsx
+- [x] `no-verify-commit-gate.py` , CLOSED. `verified:` a backslash-continued
+      `git commit -m "x" \` newline `--no-verify` -> BLOCK(deny), and the read-only
+      `grep -n "no-verify-commit-gate" ~/.claude/settings.json` still -> pass.
+- [x] `white-only-web-gate.py` , CLOSED. `verified:` `type P={darkMode:"on"|"off"}` in a .tsx ->
+      pass; `module.exports={darkMode:"class"}` in `tailwind.config.js` -> BLOCK(deny). The iOS
+      exemption and the CSS `prefers-color-scheme` case were re-checked earlier and hold.
 - [ ] `mockup-lang-stop-gate.py` , committing your work disarms it, and the rule is commit often
 - [ ] Re-drive all 13 myself after the run lands (the fixer is never the grader)
 
