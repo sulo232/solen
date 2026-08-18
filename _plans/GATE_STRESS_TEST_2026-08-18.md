@@ -119,16 +119,32 @@ correctly; none of it was ever the cause, because there was no cause.**
 - An inner scroller owning the scroll. Exactly one element on the page scrolls: the Mapbox canvas.
 - JS locking it after hydration. That test was invalid (`clientHeight: 0` in the tab it ran in).
 
-**THE ONE REAL DEFECT THIS TURNED UP, still open and unrelated to scrolling.** The page's
-`<header class="sticky top-0 left-0 right-0 z-50 transition-all duration-300">` computes to
-`position: static` with `height: 0`, one child, also 0 tall. It is absent from the rendered
-screenshot: the page begins at the search bar with no header at all. Setting `position: sticky` on
-the element inline does not take, which normally means an `!important` rule, and a walk of all 3,186
-rules found none touching it. Forcing it to a real 58px sticky bar changed nothing about scrolling,
-so it is INDEPENDENT of the scroll question and needs its own investigation.
+**THE HEADER ANOMALY IS NOT A DEFECT. IT IS HIS OWN INSTRUCTION, TWICE, BY NAME.** I reported it as
+a real bug before finding out why it was missing, which is the exact failure the MISSING THINGS rule
+exists to stop. The reason is category 1, deliberately removed, and it is written in the code with
+his verbatim words:
+
+- `Header.tsx:580` , `showCategoryChrome && "max-md:!static"`. Owner 2026-08-01: *"why is the
+  category pills still sticky? What the fuck are you doing bro? No."* Two things were sticky at
+  once; the category row moved out of the header and the header was forced to plain flow on mobile
+  so the search pill is the only thing that pins.
+- `Header.tsx:685` , `showCategoryChrome && "max-md:hidden"`. The header's own utility row is hidden
+  on mobile for these routes, so the box carries no content at all on a phone.
+- `Header.tsx:612` , `showCategoryChrome && "max-md:!py-0"`. Owner 2026-08-02: *"the header, the
+  category and the search bar, they're placed too low and it looks kind of weird."* With no content
+  inside, its padding was a measured 24px of dead band above the first thing the eye lands on.
+
+`showCategoryChrome = isHome || categorySegment || isDiscover` (line 421), so mobile home is in
+scope. Static, empty and zero-tall is the union of three dated decisions working correctly. Nothing
+to restore, and per the graveyard rule it must not be restored without his yes.
+
+This also closes the loose end from the scroll hunt: `!static` is `position: static !important`,
+which is why an inline `position: sticky` would not take. The rule scan that "found no !important"
+was the same broken walker that read 189 of 3,186 rules, so it never saw it.
 
 - [x] SCROLL: closed. Not a page bug. `scroll-behavior: smooth` plus a throttled hidden pane.
-- [ ] HEADER: `<header>` renders 0px tall and unstuck on `/de`. Independent defect, not yet diagnosed.
+- [x] HEADER: renders 0px tall and static on mobile home BY HIS OWN INSTRUCTION (2026-08-01 and
+      2026-08-02, both quoted in Header.tsx). Not a defect. Do not restore.
 
 ## OPEN, WAITING ON HIM , tracked as boxes so they cannot be lost in prose
 
