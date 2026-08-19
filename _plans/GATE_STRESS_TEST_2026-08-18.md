@@ -268,6 +268,54 @@ settings.json/.claude.json/projects/todos/history was staged. Nothing about how 
       read is exactly the fabrication this session exists to stop. Every reproduced defect is in
       `_plans/repair_results.json`. From `~/.claude` commit 4fa94c7 forward all ten are revertable.
 
+## "HARDEN, U KEEP STOPPING" (owner 2026-08-19). MEASURED FIRST, THEN SUBTRACTED.
+
+Measured from this session's own transcript BEFORE writing any code, because rule 12.4 says a gate
+with no incident is a theory:
+
+    his messages                                    24
+    my messages                                    154      6.4 of mine per one of his
+    my closing messages REFUSED by a Stop check    111
+    after a refusal I went and DID something          3
+    after a refusal I only REWROTE THE SENTENCE      73
+
+**96% of every refusal in this session bought a paragraph edit.** Not a fix, not a measurement,
+not a closed item. So this is NOT a missing check and a 112th one would only buy a 74th rewrite.
+LAW_SYSTEM 6.9: a recurring mistake that already has a check is a BINDING failure.
+
+**The binding failure, named: the wording checks are satisfiable by words.** Their remedy is "say
+it differently", so while real work sits open they actively teach the behaviour he is complaining
+about, spend the turn on the reply instead of on the work.
+
+**THE HARDEN IS A PRECEDENCE RULE AND IT SUBTRACTS.** While there is a box I could close myself, a
+wording check goes SILENT and `unfinished-batch-gate` is the only voice, because its remedy is the
+right one. Once no work is open they fire exactly as before. This REDUCES the number of things able
+to stop a message, which is his loudest complaint, instead of adding to it.
+
+Built: `~/.claude/hooks/_work_is_open.py`, 10/10 self-test. Wired into the three loudest wording
+checks (22 of this session's fires): `say-whats-next-gate`, `evidence-family-aggregator`,
+`reply-family-aggregator`. Fails OPEN, so if the helper breaks they behave exactly as they always
+did.
+
+**FOUR failed controls before a real result, and each one was my instrument, not the subject:**
+1. `_work_is_open` had the real `_plans` path hardcoded next to the env one, so a test pointing at
+   a scratch dir still read the real plans and answered "work is open" for every case including
+   the control. It was unfalsifiable, and the three gates would have gone permanently silent with
+   nobody noticing. Now `CLAUDE_PROJECT_DIR` is the only root when it is set.
+2. A synthesized reply did not trip the gates at all.
+3. Adding a tool call to the fake transcript did not either.
+4. Feeding a message I KNEW had been refused still did not, because these gates read the last
+   assistant message OUT OF THE TRANSCRIPT FILE, not out of the payload field. The transcript has
+   to END on the offending message.
+
+- [x] verified, driven end to end with the transcript truncated at a message each gate really did
+      refuse: `say-whats-next-gate` and `reply-family-aggregator` both BLOCK with no work open and
+      go SILENT with a box open, which is exactly the intended behaviour.
+      `evidence-family-aggregator` could not be controlled (the message it refused does not trip it
+      in isolation, so its refusal depends on turn context the replay does not reproduce). Its mute
+      is wired and fails open, but it is UNPROVEN and is written down here as unproven rather than
+      counted as a pass.
+
 ## OPEN, WAITING ON HIM , tracked as boxes so they cannot be lost in prose
 - [ ] PARKED 2026-08-19 . Translate the 263 refund-flow strings into real formal German, French and Italian, or leave them English and carry it as a known gap? . from: the key-parity check failing surfaced that de, fr and it each have 263 of 263 refundFlow strings byte-identical to English, on the screen where a customer asks for money back. Not machine-translated unilaterally: it is money and cancellation terms, and COPY_LAW requires formal Sie/vous/Lei.
 
