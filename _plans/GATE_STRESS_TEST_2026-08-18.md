@@ -257,7 +257,7 @@ credentials, settings, projects, todos and history re-ignored explicitly so a br
 pull one back. verified before committing that nothing matching credential/oauth/token/secret/
 settings.json/.claude.json/projects/todos/history was staged. Nothing about how hooks run changed.
 
-- [x] The 13 regressions: 3 revertable, 10 not. verified: each of the 13 checked for existence in
+- [x] The 13 regressions: 3 revertable, 10 not. verified: commit d5295dccd. Each of the 13 checked
       all three hook roots and for a pre-2026-08-19 version in project git. Exactly three
       (`browser-verify-gate.sh`, `no-getsession-authz-gate.py`, `pre-edit-psychology-gate.py`) live
       in the project repo and have a pre-today commit; the other ten exist ONLY in `~/.claude/hooks`
@@ -308,7 +308,7 @@ did.
    assistant message OUT OF THE TRANSCRIPT FILE, not out of the payload field. The transcript has
    to END on the offending message.
 
-- [x] verified, driven end to end with the transcript truncated at a message each gate really did
+- [x] verified: commit 2c0a209 in ~/.claude, driven end to end with the transcript truncated at a
       refuse: `say-whats-next-gate` and `reply-family-aggregator` both BLOCK with no work open and
       go SILENT with a box open, which is exactly the intended behaviour.
       `evidence-family-aggregator` could not be controlled (the message it refused does not trip it
