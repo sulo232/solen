@@ -34,6 +34,72 @@
 
 set -uo pipefail
 
+# 2026-08-19 stress-test pass: drives THIS script as a real subprocess (same stdin-JSON wire
+# format the harness uses), not the underlying check.py functions in isolation, so the
+# self-test cannot drift from what actually runs at PreToolUse. Verified live that day: a new
+# raw hex (A1) correctly BLOCKs on both Write and Edit, a tokenized edit / an out-of-scope path
+# (lib/**) / a mockup path (public/**) / a non-edit tool (Bash) / the per-line `drift-ok:`
+# escape hatch all correctly ALLOW, and net-new counting does not re-fire when a pre-existing
+# violation's surrounding text is edited without adding a new one. No reproducible defect found
+# in this pass -- the earlier "could not be driven" note was jq/check.py tooling on the
+# tester's side (both are present and gate-stdin-capable in this worktree), not a gate bug.
+if [[ "${1:-}" == "--selftest" ]]; then
+  SELF="${BASH_SOURCE[0]}"
+  # Self-test must not depend on the caller having exported CLAUDE_PROJECT_DIR (the real
+  # harness always does, but a bare `bash pre-edit-drift-gate.sh --selftest` from a shell
+  # would otherwise silently fall back to `$(pwd)` in the recursive $SELF calls below and
+  # look for check.py in the wrong place). Derive it from the script's own path instead:
+  # this file lives at <PROJECT_DIR>/.claude/hooks/pre-edit-drift-gate.sh.
+  export CLAUDE_PROJECT_DIR="$(cd "$(dirname "$SELF")/../.." && pwd)"
+  PASS=0; FAIL=0
+  run_case() {
+    local label="$1" expect="$2" json="$3"
+    local out rc
+    out=$(printf '%s' "$json" | "$SELF" 2>&1)
+    rc=$?
+    local got="allow"; [[ $rc -eq 2 ]] && got="deny"
+    if [[ "$got" == "$expect" ]]; then
+      echo "[PASS] $label: expected $expect, got $got"
+      PASS=$((PASS+1))
+    else
+      echo "[FAIL] $label: expected $expect, got $got"
+      echo "       output: $out"
+      FAIL=$((FAIL+1))
+    fi
+  }
+  BASE="/Users/sulo/Documents/solen"
+  run_case "BAD (new raw hex, Write)" "deny" \
+    "$(jq -nc --arg fp "$BASE/app/probe-drift/page.tsx" \
+      '{tool_name:"Write", tool_input:{file_path:$fp, content:"export default function Page(){ return <div style={{color:\"#FF00AA\"}}>hi</div>; }"}}')"
+  run_case "GOOD (tokenized, Write)" "allow" \
+    "$(jq -nc --arg fp "$BASE/app/probe-nodrift/page.tsx" \
+      '{tool_name:"Write", tool_input:{file_path:$fp, content:"export default function Page(){ return <div className=\"text-s-ink bg-s-bg-sunken\">hi</div>; }"}}')"
+  run_case "BAD (new raw hex, Edit)" "deny" \
+    "$(jq -nc --arg fp "$BASE/app/probe-edit-drift/page.tsx" \
+      '{tool_name:"Edit", tool_input:{file_path:$fp, old_string:"className=\"text-s-ink\"", new_string:"style={{color:\"#123ABC\"}}"}}')"
+  run_case "GOOD (pre-existing violation, text moved not added)" "allow" \
+    "$(jq -nc --arg fp "$BASE/app/probe-edit-drift2/page.tsx" \
+      '{tool_name:"Edit", tool_input:{file_path:$fp, old_string:"const x = \"#123ABC\"; // old comment", new_string:"const x = \"#123ABC\"; // renamed comment"}}')"
+  run_case "GOOD (out-of-scope path, lib/)" "allow" \
+    "$(jq -nc --arg fp "$BASE/lib/probe.ts" \
+      '{tool_name:"Write", tool_input:{file_path:$fp, content:"const x = \"#FF00AA\";"}}')"
+  run_case "GOOD (mockup path excluded, public/)" "allow" \
+    "$(jq -nc --arg fp "$BASE/public/_mockups/probe/page.tsx" \
+      '{tool_name:"Write", tool_input:{file_path:$fp, content:"export default function Page(){ return <div style={{color:\"#FF00AA\"}}>hi</div>; }"}}')"
+  run_case "GOOD (drift-ok escape hatch)" "allow" \
+    "$(jq -nc --arg fp "$BASE/app/probe-driftok/page.tsx" \
+      '{tool_name:"Write", tool_input:{file_path:$fp, content:"export default function Page(){ return <div style={{color:\"#FF00AA\"}}>hi</div>; } // drift-ok: brand exception"}}')"
+  run_case "GOOD (non Edit/Write/MultiEdit tool)" "allow" \
+    "$(jq -nc '{tool_name:"Bash", tool_input:{command:"echo hi"}}')"
+  echo ""
+  if [[ $FAIL -gt 0 ]]; then
+    echo "$FAIL/$((PASS+FAIL)) cases FAILED."
+    exit 1
+  fi
+  echo "All $PASS cases PASSED."
+  exit 0
+fi
+
 PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$(pwd)}"
 CHECK="$PROJECT_DIR/.claude/skills/solen-drift-check/scripts/check.py"
 
