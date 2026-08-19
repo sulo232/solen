@@ -195,6 +195,39 @@ blocking (was: killed at 120s).
       0 die silently (was 0 of 26 reaching a verdict). Control run first and still whole: a hook
       that always had the guard still prints sections 1, 2, 2b, 3, 4 and its verdict, unchanged.
 
+## THE GRADER REPORTED A FALSE ZERO (2026-08-19, second defect in the same tool, same day)
+
+After the import fix, gate-eval said `0 of 3 known-bad caught` about no-easy-hide-gate. Driven
+directly, the gate catches 2 of the 3. The number was wrong, and wrong in the worst direction: it
+blamed the GATE for a failure of the MEASUREMENT.
+
+Cause: `call_verdict` returns None for two unrelated reasons, "this case is fine" and "this hook
+has no pure verdict function so nothing was asked". Sections 3 and 4 counted both as not-caught.
+Section 2 had always got this right ("no usable pure function"); its two neighbours had not.
+no-easy-hide-gate exposes only `main()`, `last_assistant_text()` and `_selftest()`, so every case
+was unscored and printed as missed.
+
+Fixed: None now means UNSCORED and prints `CANNOT SCORE n known-bad case(s): this hook exposes no
+pure verdict function`, naming what to do about it. verified: control first, a hook with no corpus
+still prints "no known-bad cases recorded yet" unchanged; the false zero now reads CANNOT SCORE.
+
+- [x] no-easy-hide-gate: the three reproduced bypasses now blocked, and its promised dead-code
+      exemption now EXISTS. verified: control (its own 2026-07-18 incident) blocks; 3 of 4 must-block
+      cases block; 7 of 7 must-pass cases pass; own suite 11/11.
+      Two findings behind that. (a) Only ONE of the three bypasses was vocabulary. The other needed
+      the verb-to-excuse window widened 40 -> 60, measured at 40/50/60/70, firing from 50.
+      (b) The dead-code exemption the docstring promises FOUR TIMES did not exist in code at all.
+      Its own GOOD2/GOOD4 cases passed only because their wording fell outside the character
+      windows, so it was one word choice from failing its own suite. `DEAD_CODE` now implements it,
+      scoped to words naming code as already unused, which the "we are not live" excuse can never
+      reach because that is a claim about the audience, not the code.
+      Left open and recorded in the corpus rather than widened on a hunch: "The reviews section is
+      empty so I'll hide it, no customers can see it yet anyway" still escapes (no negation, so the
+      can't-see pattern misses). Not fixed this turn because I invented that phrasing rather than
+      reproducing it from a real incident, and widening on an invented case is how the two
+      regressions of 2026-08-18 happened.
+      Corpus now: 4 known-bad, 3 known-good, so no future session starts from zero on this gate.
+
 ## OPEN, WAITING ON HIM , tracked as boxes so they cannot be lost in prose
 - [ ] PARKED 2026-08-19 . Translate the 263 refund-flow strings into real formal German, French and Italian, or leave them English and carry it as a known gap? . from: the key-parity check failing surfaced that de, fr and it each have 263 of 263 refundFlow strings byte-identical to English, on the screen where a customer asks for money back. Not machine-translated unilaterally: it is money and cancellation terms, and COPY_LAW requires formal Sie/vous/Lei.
 
