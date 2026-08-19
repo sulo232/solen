@@ -12,6 +12,16 @@
       "autoPort": false
     },
     {
+      "name": "Tunnel (sheet 3300)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "/opt/homebrew/bin/cloudflared tunnel --url http://localhost:3300 --metrics localhost:20261 --no-autoupdate"
+      ],
+      "port": 20261,
+      "autoPort": false
+    },
+    {
       "name": "Sheet preview (scratchpad 3300)",
       "runtimeExecutable": "npx",
       "runtimeArgs": [
