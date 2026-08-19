@@ -6055,6 +6055,7 @@
     "genericError": "Something went wrong. Please try again."
   },
   "refundFlow": {
+    "_todo_translate": false,
     "back": "Back",
     "close": "Close",
     "loading": "Loading…",
