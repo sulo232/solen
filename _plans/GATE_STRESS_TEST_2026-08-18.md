@@ -374,17 +374,24 @@ both German, both shipped, both completely invisible to this gate before today. 
 Then 49 real files were driven through it: 14 refused, 12 genuine, and **0 of the false positives
 came from either of today's changes**.
 
-- [x] Three PRE-EXISTING false positives in `i18n-write-gate.py`, found during that sweep, none of
-      them from today's changes, all recorded rather than fixed on the spot because widening on the
-      way out of a long session is how the 2026-08-18 regressions happened:
-      (a) the brand logotype `<Link>Solen</Link>` trips the single-word floor. The gate's own
-      message anticipates this class ("a brand name? put i18n-ok"), so it is a nuisance, not a hole.
-      (b) NO COMMENT STRIPPING AT ALL, so example JSX inside a `/** ... */` doc block reads as a
-      live violation (`CardText.tsx`, `<CardName>Salon Maria</CardName>`). Its sibling
-      `mockup-english-gate.py` does strip comments; this one never learned to.
-      (c) `JSX_TEXT` matches `>...<`, and an arrow function `(sl) => sl.available` supplies a stray
-      `>`, so a chunk of raw TypeScript in `DateTimeStep.tsx` is captured as if it were prose.
-      (b) and (c) are real defects on real shipped files and are the next thing to fix here.
+- [x] (a) brand logotype `<Link>Solen</Link>` trips the single-word floor. verified: LEFT ALONE
+      deliberately. The gate's own deny message already names this class and offers `i18n-ok`, so it
+      is a nuisance with a documented escape, not a hole. Fixing it would mean weakening the
+      single-word floor that correctly catches `Wegbeschreibung` and `Kategorien`.
+- [x] (b) NO COMMENT STRIPPING. verified: FIXED (~/.claude, this turn). `components/primitives/
+      CardText.tsx` documents itself with `<CardName>Salon Maria</CardName>` inside a `/** */`
+      block, never rendered, and the gate read it as live copy. Comments are now blanked to
+      same-length spaces before matching, so every downstream offset still lines up.
+- [x] (c) arrow function stray `>`. verified: FIXED (same change). `JSX_TEXT` matches `>...<` and
+      `slots.filter((sl) => sl.available)` let it run from that `>` to the next `<`, capturing raw
+      TypeScript as prose in `components-legacy/booking/DateTimeStep.tsx`. Arrows are blanked too.
+- [x] AND THE FIX BROKE THE ESCAPE, caught by its own suite in under a minute. verified: case K
+      went red immediately, because `i18n-ok` is WRITTEN IN A COMMENT and blanking comments deleted
+      the only way to excuse a real violation. That is a fix reintroducing a worse bug than the one
+      it closed, the exact 2026-08-18 pattern. Blanking now preserves the marker. Suite 18/18.
+      Re-swept 60 real `.tsx` files after: 10 refused, and the ones inspected are genuine German
+      copy (`Bewertet 4.9 / 5`, `Spezialitäten`, `Das war unser Fehler.`). The two live
+      `ImageUploader` catches still fire.
 
 ## OPEN, WAITING ON HIM , tracked as boxes so they cannot be lost in prose
 - [ ] PARKED 2026-08-19 . Translate the 263 refund-flow strings into real formal German, French and Italian, or leave them English and carry it as a known gap? . from: the key-parity check failing surfaced that de, fr and it each have 263 of 263 refundFlow strings byte-identical to English, on the screen where a customer asks for money back. Not machine-translated unilaterally: it is money and cancellation terms, and COPY_LAW requires formal Sie/vous/Lei.
