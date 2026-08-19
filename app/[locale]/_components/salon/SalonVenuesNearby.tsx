@@ -159,7 +159,7 @@ export function SalonVenuesNearby({
             aria-label="Vorherige"
             className="grid h-10 w-10 place-items-center rounded-full border border-s-border bg-white transition-[colors,transform] hover:bg-s-bg-sunken active:scale-[0.94] active:duration-[80ms] active:ease-glide disabled:opacity-30"
           >
-            <ChevronLeft size={16} className="text-s-ink" />
+            <ChevronLeft size={16} strokeWidth={1.9} className="text-s-ink" />
           </button>
           <button
             type="button"
@@ -168,7 +168,7 @@ export function SalonVenuesNearby({
             aria-label="Nächste"
             className="grid h-10 w-10 place-items-center rounded-full border border-s-border bg-white transition-[colors,transform] hover:bg-s-bg-sunken active:scale-[0.94] active:duration-[80ms] active:ease-glide disabled:opacity-30"
           >
-            <ChevronRight size={16} className="text-s-ink" />
+            <ChevronRight size={16} strokeWidth={1.9} className="text-s-ink" />
           </button>
         </div>
       </div>

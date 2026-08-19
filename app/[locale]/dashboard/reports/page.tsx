@@ -300,7 +300,7 @@ export default function ReportsAdminPage() {
               disabled={loadingMore}
               className="mt-4 w-full py-2.5 border border-s-border rounded-btn text-sm text-s-ink-2 hover:border-s-ink/[0.18] hover:text-s-ink/80 transition-[colors,transform] active:scale-[0.98] active:duration-[80ms] active:ease-glide disabled:opacity-50"
             >
-              {loadingMore ? <Loader2 size={14} className="animate-spin mx-auto" /> : t("loadMore")}
+              {loadingMore ? <Loader2 size={14} strokeWidth={1.6} className="animate-spin mx-auto" /> : t("loadMore")}
             </button>
           )}
         </>

@@ -96,7 +96,7 @@ export default function FilterDrawer({
             className="p-1 rounded-pill hover:bg-s-ink/5 text-s-ink-2"
             aria-label={t('closeFilter')}
           >
-            <X size={20} aria-hidden />
+            <X size={20} strokeWidth={2.2} aria-hidden />
           </button>
         </div>
       )}

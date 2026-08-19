@@ -653,7 +653,7 @@ export function JoinUsCard() {
                       className="inline-flex items-center gap-2 self-start rounded-full bg-white px-7 py-3.5 font-body text-[15px] font-semibold text-s-ink shadow-elevation-2 transition-all duration-200 ease-glide hover:scale-[1.02] active:scale-[0.97] disabled:opacity-60 disabled:hover:scale-100 md:self-auto"
                     >
                       {status === "submitting" ? "Wird gesendet..." : "Jetzt anmelden"}
-                      <ArrowRight size={16} aria-hidden />
+                      <ArrowRight size={16} strokeWidth={1.9} aria-hidden />
                     </button>
                   </div>
                 </form>

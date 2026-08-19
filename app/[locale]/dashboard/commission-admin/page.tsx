@@ -100,7 +100,7 @@ export default function CommissionAdminPage() {
       {loading ? (
         <div className="flex justify-center py-16">
           {/* mockup-ok: WCAG 2.2.2 conformance, page-load spinner bounded (see tailwind.config.js spin-bounded) */}
-          <Loader2 size={24} className="animate-spin-bounded text-s-ink/40" />
+          <Loader2 size={24} strokeWidth={2.4} className="animate-spin-bounded text-s-ink/40" />
         </div>
       ) : loadError ? (
         <ErrorState
@@ -170,7 +170,7 @@ export default function CommissionAdminPage() {
           {/* Error banner */}
           {state === "error" && (
             <div className="mt-4 flex items-center gap-2.5 rounded-[11px] bg-s-error-bg px-3.5 py-3">
-              <AlertTriangle size={17} className="shrink-0 text-s-error" />
+              <AlertTriangle size={17} strokeWidth={1.9} className="shrink-0 text-s-error" />
               <div className="text-[12px] text-s-error">{t("errorMessage")}</div>
             </div>
           )}
@@ -193,7 +193,7 @@ export default function CommissionAdminPage() {
           >
             {state === "saving" ? (
               <>
-                <Loader2 size={16} className="animate-spin" />
+                <Loader2 size={16} strokeWidth={1.9} className="animate-spin" />
                 {t("saving")}
               </>
             ) : state === "saved" ? (
@@ -203,12 +203,12 @@ export default function CommissionAdminPage() {
               </>
             ) : state === "error" ? (
               <>
-                <AlertTriangle size={16} />
+                <AlertTriangle size={16} strokeWidth={1.9} />
                 {t("retry")}
               </>
             ) : (
               <>
-                <Save size={16} />
+                <Save size={16} strokeWidth={1.9} />
                 {t("save")}
               </>
             )}

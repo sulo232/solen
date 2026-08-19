@@ -86,7 +86,7 @@ export default function HomepageAdminPage() {
       {loading ? (
         <div className="flex justify-center py-16">
           {/* mockup-ok: WCAG 2.2.2 conformance, page-load spinner bounded (see tailwind.config.js spin-bounded) */}
-          <Loader2 size={24} className="animate-spin-bounded text-s-coral" />
+          <Loader2 size={24} strokeWidth={2.4} className="animate-spin-bounded text-s-coral" />
         </div>
       ) : (
         <div className="bg-white rounded-[12px] shadow-warm-md p-6 max-w-xl space-y-1">
@@ -96,7 +96,7 @@ export default function HomepageAdminPage() {
               className="flex items-center justify-between py-3 border-b border-s-ink/5 last:border-0"
             >
               <div className="flex items-center gap-3">
-                <LayoutGrid size={16} className="text-s-ink/30" />
+                <LayoutGrid size={16} strokeWidth={1.9} className="text-s-ink/30" />
                 <span className="text-sm font-medium text-s-ink font-body">
                   {SECTION_LABELS[key] ?? key}
                 </span>
@@ -130,12 +130,12 @@ export default function HomepageAdminPage() {
               disabled={saving}
               className="px-5 py-2.5 rounded-btn bg-s-accent text-white text-sm font-medium hover:brightness-[1.06] transition-colors disabled:opacity-50 flex items-center gap-2"
             >
-              {saving && <Loader2 size={14} className="animate-spin" />}
+              {saving && <Loader2 size={14} strokeWidth={1.6} className="animate-spin" />}
               {t("save")}
             </button>
             {saved && (
               <span className="text-sm text-s-coral flex items-center gap-1">
-                <Check size={14} /> {t("saved")}
+                <Check size={14} strokeWidth={1.6} /> {t("saved")}
               </span>
             )}
           </div>

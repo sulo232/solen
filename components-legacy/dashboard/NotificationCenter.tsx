@@ -72,7 +72,7 @@ export default function NotificationCenter({ salonId }: NotificationCenterProps)
         aria-label={t("notifications")}
         className="relative w-8 h-8 rounded-pill flex items-center justify-center hover:bg-s-bg-sunken:bg-white/[0.06] transition-colors"
       >
-        <Bell size={16} className="text-s-ink-2" />
+        <Bell size={16} strokeWidth={1.9} className="text-s-ink-2" />
       </button>
 
       {/* In-place stack */}

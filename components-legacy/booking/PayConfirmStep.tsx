@@ -644,7 +644,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
               </div>
             </div>
             <p className="flex items-center gap-1.5 text-[12px] text-s-success mt-2">
-              <ShieldCheck size={14} aria-hidden /> {tp('secureWithDeposit', { percent: depositPct })}
+              <ShieldCheck size={14} strokeWidth={1.6} aria-hidden /> {tp('secureWithDeposit', { percent: depositPct })}
             </p>
           </>
         ) : (
@@ -699,7 +699,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
 
       {/* Cancellation policy mini-banner (below Zahlung per owner, mockup 24c/24d) */}
       <div className="flex items-start gap-2 px-1">
-        <ShieldCheck size={14} className="mt-[2px] shrink-0 text-s-success" aria-hidden />
+        <ShieldCheck size={14} strokeWidth={1.6} className="mt-[2px] shrink-0 text-s-success" aria-hidden />
         <p className="font-body text-[12.5px] leading-[1.5] text-s-ink-2">
           {tp('cancellationPolicy', { hours: cancellationHours })}
         </p>

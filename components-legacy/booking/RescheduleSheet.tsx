@@ -195,7 +195,7 @@ export default function RescheduleSheet({
           </p>
         ) : (
           <div className="flex gap-2 rounded-[12px] border border-s-border px-3 py-2.5 text-[12px] leading-relaxed text-s-ink-2">
-            <Info size={14} className="mt-0.5 shrink-0" aria-hidden />
+            <Info size={14} strokeWidth={1.6} className="mt-0.5 shrink-0" aria-hidden />
             <span>{paidChf > 0 ? t("rescheduleLeadPaid", { amount: formatCurrency(paidChf, locale) }) : t("rescheduleLead")}</span>
           </div>
         )}

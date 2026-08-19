@@ -71,7 +71,7 @@ export default function SetupBanner() {
       {/* Taste rule 6: pastel .bg + ink text + saturated icon, never a saturated solid block. */}
       {awaitingApproval && (
         <div className="rounded-[12px] bg-s-warning-bg border border-s-warning/30 px-3 py-2.5 mb-4 flex items-start gap-2.5">
-          <Clock size={16} className="text-s-warning shrink-0 mt-0.5" />
+          <Clock size={16} strokeWidth={1.9} className="text-s-warning shrink-0 mt-0.5" />
           <div>
             <p className="text-sm font-heading font-semibold text-s-ink">{tApproval("pendingTitle")}</p>
             <p className="text-xs text-s-ink-2 mt-0.5">{tApproval("pendingBody")}</p>
@@ -80,7 +80,7 @@ export default function SetupBanner() {
       )}
       {wasRejected && (
         <div className="rounded-[12px] bg-s-error-bg border border-s-error/30 px-3 py-2.5 mb-4 flex items-start gap-2.5">
-          <AlertTriangle size={16} className="text-s-error shrink-0 mt-0.5" />
+          <AlertTriangle size={16} strokeWidth={1.9} className="text-s-error shrink-0 mt-0.5" />
           <div>
             <p className="text-sm font-heading font-semibold text-s-ink">{tApproval("rejectedTitle")}</p>
             {data.rejection_reason && (

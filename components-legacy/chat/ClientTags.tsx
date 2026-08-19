@@ -105,7 +105,7 @@ export default function ClientTags({ salonId, customerId, compact }: ClientTagsP
       {/* Allergy warning banner */}
       {hasAllergyTag && (
         <div className="flex items-center gap-2 bg-s-error-bg border border-s-error/20 rounded-btn px-3 py-2">
-          <AlertTriangle size={14} className="text-s-error shrink-0" />
+          <AlertTriangle size={14} strokeWidth={1.6} className="text-s-error shrink-0" />
           <p className="text-xs text-s-error font-medium">
             {t("allergyWarning")}
           </p>

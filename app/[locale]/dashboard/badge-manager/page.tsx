@@ -96,7 +96,7 @@ function BadgeModal({
           <h3 className="font-heading text-base text-s-ink">
             {badge?.id ? t("editBadgeTitle") : t("createBadgeTitle")}
           </h3>
-          <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
+          <button onClick={onClose}><X size={18} strokeWidth={1.9} className="text-s-ink/30" /></button>
         </div>
 
         <div className="space-y-4">
@@ -367,7 +367,7 @@ export default function BadgeManagerPage() {
           onClick={() => setModalBadge("new")}
           className="inline-flex items-center gap-1.5 bg-s-accent text-white rounded-btn px-4 py-2 text-sm font-medium hover:brightness-[1.06] transition-colors shrink-0"
         >
-          <Plus size={15} />
+          <Plus size={15} strokeWidth={1.9} />
           {t("newBadge")}
         </button>
       </div>
@@ -446,7 +446,7 @@ export default function BadgeManagerPage() {
             <div className="bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md p-5 space-y-4">
               {/* Salon search */}
               <div className="relative max-w-sm">
-                <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-s-ink/30" />
+                <Search size={15} strokeWidth={1.9} className="absolute left-3 top-1/2 -translate-y-1/2 text-s-ink/30" />
                 <input
                   type="text"
                   placeholder={t("salonSearchPlaceholder")}

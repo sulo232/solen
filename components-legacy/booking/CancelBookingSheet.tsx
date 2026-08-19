@@ -92,7 +92,7 @@ export default function CancelBookingSheet({
             aria-expanded={showPolicy}
             className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-s-bg-sunken text-s-ink-2 transition active:scale-90"
           >
-            <HelpCircle size={19} aria-hidden />
+            <HelpCircle size={19} strokeWidth={2.2} aria-hidden />
           </button>
         </div>
 
@@ -117,7 +117,7 @@ export default function CancelBookingSheet({
               {formatCurrency(refundChf)}
             </div>
             <div className="mt-3 flex items-center gap-2 border-t border-s-border pt-3 text-[13.5px] font-medium text-s-ink-2">
-              <RotateCcw size={16} className="shrink-0 text-s-success" aria-hidden />
+              <RotateCcw size={16} strokeWidth={1.9} className="shrink-0 text-s-success" aria-hidden />
               <span>{t("refundEta")}</span>
             </div>
             {hasFee && (

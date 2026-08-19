@@ -425,7 +425,7 @@ export function SearchBar() {
               aria-label="Schliessen"
               className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-s-ink-2 transition-[colors,transform] hover:bg-s-bg-sunken hover:text-s-ink active:scale-[0.94] active:duration-[80ms] active:ease-glide"
             >
-              <X size={18} />
+              <X size={18} strokeWidth={1.9} />
             </button>
           </div>
 

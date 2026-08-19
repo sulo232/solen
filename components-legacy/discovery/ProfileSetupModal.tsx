@@ -144,7 +144,7 @@ export default function ProfileSetupModal({ open, onClose, onSave }: ProfileSetu
             <p className="text-xs font-body text-s-ink/45 mt-1">{t.subtitle}</p>
           </div>
           <button onClick={onClose} className="p-2 rounded-[8px] hover:bg-s-bg-sunken" aria-label="Close">
-            <X size={16} className="text-s-ink-2" />
+            <X size={16} strokeWidth={1.9} className="text-s-ink-2" />
           </button>
         </div>
 

@@ -397,7 +397,7 @@ export function MorphingDialogClose({
       exit="exit"
       variants={variants}
     >
-      <XIcon size={20} aria-hidden />
+      <XIcon size={20} strokeWidth={2.2} aria-hidden />
     </motion.button>
   );
 }

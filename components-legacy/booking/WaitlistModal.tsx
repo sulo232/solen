@@ -124,7 +124,7 @@ export default function WaitlistModal({
             <div className="flex items-start justify-between">
               <h2 className="font-heading text-xl font-bold leading-tight text-s-ink">{t('title')}</h2>
               <button onClick={onClose} aria-label={t('close')} className="-mr-1 p-1 text-s-ink/40">
-                <X size={20} />
+                <X size={20} strokeWidth={2.2} />
               </button>
             </div>
             <p className="mt-1.5 mb-4 text-sm text-s-ink-2">{t('lead')}</p>

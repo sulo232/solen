@@ -136,7 +136,7 @@ export default function ServiceDetailSheet({
           aria-label={t('close')}
           className="grid h-10 w-10 place-items-center rounded-full bg-s-bg-sunken transition-colors hover:bg-s-bg-sunken"
         >
-          <X size={20} className="text-s-ink" />
+          <X size={20} strokeWidth={2.2} className="text-s-ink" />
         </button>
       </div>
 

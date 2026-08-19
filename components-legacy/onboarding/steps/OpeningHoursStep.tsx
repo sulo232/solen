@@ -83,7 +83,7 @@ export default function OpeningHoursStep({ salonId, onSaved }: OpeningHoursStepP
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-2">
         <div className="w-12 h-12 rounded-[12px] bg-s-ink/10 flex items-center justify-center">
-          <Clock size={22} className="text-s-ink-2" />
+          <Clock size={22} strokeWidth={2.2} className="text-s-ink-2" />
         </div>
         <div>
           <h2 className="font-heading text-xl text-s-ink">

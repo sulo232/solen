@@ -50,7 +50,7 @@ export default function InspoUploader({ bookingId, onImagesChange, onOpenBoard }
         onDragOver={(e) => e.preventDefault()}
         className="border-2 border-dashed border-s-border rounded-[16px] p-4 text-center hover:border-s-accent/30 transition-colors"
       >
-        <Upload size={24} className="mx-auto text-s-ink/20 mb-2" />
+        <Upload size={24} strokeWidth={2.4} className="mx-auto text-s-ink/20 mb-2" />
         <p className="text-xs text-s-ink/40 mb-3">
           {t("inspo_drag_or")}
         </p>

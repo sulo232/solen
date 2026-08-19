@@ -181,20 +181,20 @@ function StockImportTab() {
           {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
         </select>
         <button onClick={handleSearch} disabled={loading} className="px-4 py-2.5 rounded-btn bg-s-accent text-white text-sm font-medium flex items-center gap-2 disabled:opacity-50">
-          {loading ? <Spinner size="sm" /> : <Search size={16} />} {t("searchBtn")}
+          {loading ? <Spinner size="sm" /> : <Search size={16} strokeWidth={1.9} />} {t("searchBtn")}
         </button>
         <button onClick={handleBulkImport} disabled={bulkImporting} className="px-4 py-2.5 rounded-btn bg-s-amber text-white text-sm font-medium flex items-center gap-2 disabled:opacity-50">
-          {bulkImporting ? <Spinner size="sm" /> : <Download size={16} />} {t("autoImportBtn")}
+          {bulkImporting ? <Spinner size="sm" /> : <Download size={16} strokeWidth={1.9} />} {t("autoImportBtn")}
         </button>
       </div>
 
       {importing && <ImportProgressBar current={importProgress.current} total={importProgress.total} label={t("importingToStaging")} />}
       {bulkResult && (
         <div className="flex items-center gap-2 p-3 rounded-[12px] bg-s-success-bg border border-s-success/20">
-          <CheckCircle size={16} className="text-s-success" />
+          <CheckCircle size={16} strokeWidth={1.9} className="text-s-success" />
           <span className="text-sm text-s-success">{bulkResult}</span>
           <button onClick={() => setBulkResult(null)} className="ml-auto text-s-ink/30 hover:text-s-ink-2" aria-label={t("dismiss")}>
-            <XCircle size={14} />
+            <XCircle size={14} strokeWidth={1.6} />
           </button>
         </div>
       )}
@@ -222,7 +222,7 @@ function StockImportTab() {
             <Image src={photo.thumbnail} alt={photo.alt_text || ""} fill className="object-cover" sizes="200px" />
             {selected.has(photo.id) && (
               <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-s-accent flex items-center justify-center">
-                <CheckCircle size={14} className="text-white" />
+                <CheckCircle size={14} strokeWidth={1.6} className="text-white" />
               </div>
             )}
             <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2">
@@ -312,14 +312,14 @@ function TikTokImportTab() {
         <AIProcessingIndicator text={progress ? `${t("tiktokProcessing")} ${progress.done}/${progress.total}` : t("tiktokProcessing")} />
       )}
       <button onClick={handleImport} disabled={loading} className="px-4 py-2.5 rounded-btn bg-s-accent text-white text-sm font-medium flex items-center gap-2 disabled:opacity-50">
-        {loading ? <Spinner size="sm" /> : <Video size={16} />} {t("importTikToksBtn")}
+        {loading ? <Spinner size="sm" /> : <Video size={16} strokeWidth={1.9} />} {t("importTikToksBtn")}
       </button>
       {result && (
         <div className="flex flex-wrap gap-4 text-sm">
-          {result.published > 0 && <span className="text-s-success flex items-center gap-1"><CheckCircle size={14} /> {t("resultPublished", { n: result.published })}</span>}
-          {result.rejected > 0 && <span className="text-s-star flex items-center gap-1"><AlertTriangle size={14} /> {t("resultAutoRejected", { n: result.rejected })}</span>}
-          {result.pending > 0 && <span className="text-s-ink-2 flex items-center gap-1"><Eye size={14} /> {t("resultSentToStaging", { n: result.pending })}</span>}
-          {result.failed > 0 && <span className="text-s-error flex items-center gap-1"><XCircle size={14} /> {t("resultFailed", { n: result.failed })}</span>}
+          {result.published > 0 && <span className="text-s-success flex items-center gap-1"><CheckCircle size={14} strokeWidth={1.6} /> {t("resultPublished", { n: result.published })}</span>}
+          {result.rejected > 0 && <span className="text-s-star flex items-center gap-1"><AlertTriangle size={14} strokeWidth={1.6} /> {t("resultAutoRejected", { n: result.rejected })}</span>}
+          {result.pending > 0 && <span className="text-s-ink-2 flex items-center gap-1"><Eye size={14} strokeWidth={1.6} /> {t("resultSentToStaging", { n: result.pending })}</span>}
+          {result.failed > 0 && <span className="text-s-error flex items-center gap-1"><XCircle size={14} strokeWidth={1.6} /> {t("resultFailed", { n: result.failed })}</span>}
         </div>
       )}
     </div>
@@ -397,7 +397,7 @@ function ManualUploadTab() {
 
       {uploadedItem && !analyzing && (
         <div className="flex items-center gap-3 p-3 rounded-[12px] bg-s-success-bg border border-s-success/20">
-          <CheckCircle size={18} className="text-s-success" />
+          <CheckCircle size={18} strokeWidth={1.9} className="text-s-success" />
           <span className="text-sm text-s-success">{t("uploadSuccess")}</span>
         </div>
       )}
@@ -468,7 +468,7 @@ function StagingTab() {
           {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
         </select>
         <button onClick={fetchItems} disabled={loading} aria-label={t("loadStagingAria")} className="px-3 py-2 rounded-btn bg-s-ink/5 text-sm flex items-center gap-1.5">
-          <RefreshCw size={14} className={loading ? "animate-spin" : ""} /> {t("loadBtn")}
+          <RefreshCw size={14} strokeWidth={1.6} className={loading ? "animate-spin" : ""} /> {t("loadBtn")}
         </button>
         {items.length > 0 && (
           <>
@@ -478,10 +478,10 @@ function StagingTab() {
             {selected.size > 0 && (
               <>
                 <button onClick={() => handleAction("approve")} disabled={processing} className="px-3 py-2 rounded-btn bg-s-success text-white text-sm font-medium flex items-center gap-1.5 disabled:opacity-50">
-                  <CheckCircle size={14} /> {t("approveN", { n: selected.size })}
+                  <CheckCircle size={14} strokeWidth={1.6} /> {t("approveN", { n: selected.size })}
                 </button>
                 <button onClick={() => handleAction("reject")} disabled={processing} className="px-3 py-2 rounded-btn bg-s-error text-white text-sm font-medium flex items-center gap-1.5 disabled:opacity-50">
-                  <XCircle size={14} /> {t("rejectN", { n: selected.size })}
+                  <XCircle size={14} strokeWidth={1.6} /> {t("rejectN", { n: selected.size })}
                 </button>
               </>
             )}
@@ -504,7 +504,7 @@ function StagingTab() {
                 <Image src={item.thumbnail_url || item.image_url!} alt={item.alt_text || ""} fill className="object-cover" sizes="200px" />
               ) : (
                 <div className="flex items-center justify-center h-full">
-                  <Video size={24} className="text-s-ink/20" />
+                  <Video size={24} strokeWidth={2.4} className="text-s-ink/20" />
                 </div>
               )}
               {item.media_type === "tiktok" && (
@@ -514,7 +514,7 @@ function StagingTab() {
               )}
               {selected.has(item.id) && (
                 <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-s-accent flex items-center justify-center">
-                  <CheckCircle size={14} className="text-white" />
+                  <CheckCircle size={14} strokeWidth={1.6} className="text-white" />
                 </div>
               )}
             </div>
@@ -556,11 +556,11 @@ function SortablePublishedCard({ item, onArchive }: { item: DiscoveryItem; onArc
         ) : item.tiktok_thumbnail_url ? (
           <Image src={item.tiktok_thumbnail_url} alt="" fill className="object-cover" sizes="200px" />
         ) : (
-          <div className="flex items-center justify-center h-full"><Video size={24} className="text-s-ink/20" /></div>
+          <div className="flex items-center justify-center h-full"><Video size={24} strokeWidth={2.4} className="text-s-ink/20" /></div>
         )}
         <div className="absolute top-2 left-2">
           <button {...attributes} {...listeners} aria-label={t("dragToReorderAria")} className="w-7 h-7 rounded-full bg-s-ink/50 flex items-center justify-center cursor-grab active:cursor-grabbing touch-none">
-            <GripVertical size={14} className="text-white" />
+            <GripVertical size={14} strokeWidth={1.6} className="text-white" />
           </button>
         </div>
         <div className="absolute top-2 right-2 flex gap-1">
@@ -646,7 +646,7 @@ function PublishedTab() {
           {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
         </select>
         <button onClick={fetchItems} disabled={loading} className="px-3 py-2 rounded-btn bg-s-ink/5 text-sm flex items-center gap-1.5">
-          <RefreshCw size={14} className={loading ? "animate-spin" : ""} /> {t("loadBtn")}
+          <RefreshCw size={14} strokeWidth={1.6} className={loading ? "animate-spin" : ""} /> {t("loadBtn")}
         </button>
         <span className="text-sm text-s-ink/40">{t("itemsCount", { n: items.length })}</span>
         {items.length > 0 && (
@@ -703,7 +703,7 @@ function FlaggedTab() {
     <div className="space-y-4">
       <div className="flex gap-3 items-center">
         <button onClick={fetchItems} disabled={loading} className="px-3 py-2 rounded-btn bg-s-ink/5 text-sm flex items-center gap-1.5">
-          <RefreshCw size={14} className={loading ? "animate-spin" : ""} /> {t("loadFlaggedBtn")}
+          <RefreshCw size={14} strokeWidth={1.6} className={loading ? "animate-spin" : ""} /> {t("loadFlaggedBtn")}
         </button>
         <span className="text-sm text-s-ink/40">{t("flaggedItemsCount", { n: items.length })}</span>
       </div>
@@ -715,7 +715,7 @@ function FlaggedTab() {
               {item.image_url ? (
                 <Image src={item.image_url} alt="" fill className="object-cover" sizes="400px" />
               ) : (
-                <div className="flex items-center justify-center h-full"><AlertTriangle size={24} className="text-s-ink/20" /></div>
+                <div className="flex items-center justify-center h-full"><AlertTriangle size={24} strokeWidth={2.4} className="text-s-ink/20" /></div>
               )}
             </div>
             <div className="p-3 space-y-2">
@@ -728,10 +728,10 @@ function FlaggedTab() {
               )}
               <div className="flex gap-2">
                 <button onClick={() => handleAction(item.id, "approve")} className="flex-1 py-2 rounded-btn bg-s-success text-white text-sm font-medium flex items-center justify-center gap-1">
-                  <CheckCircle size={14} /> {t("approve")}
+                  <CheckCircle size={14} strokeWidth={1.6} /> {t("approve")}
                 </button>
                 <button onClick={() => handleAction(item.id, "remove")} className="flex-1 py-2 rounded-btn bg-s-error text-white text-sm font-medium flex items-center justify-center gap-1">
-                  <Trash2 size={14} /> {t("remove")}
+                  <Trash2 size={14} strokeWidth={1.6} /> {t("remove")}
                 </button>
               </div>
             </div>

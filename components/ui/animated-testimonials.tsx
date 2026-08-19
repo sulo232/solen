@@ -432,7 +432,7 @@ function ArtistProfileDialog({ testimonial }: { testimonial: Testimonial }) {
                 style={{ boxShadow: "0 4px 14px rgba(31,92,66,0.25)" }}
               >
                 Termin bei {firstName} buchen
-                <ArrowRight size={16} aria-hidden />
+                <ArrowRight size={16} strokeWidth={1.9} aria-hidden />
               </Link>
             </div>
           </MorphingDialogDescription>

@@ -92,7 +92,7 @@ export default function CitiesAdminPage() {
       {loading ? (
         <div className="flex justify-center py-16">
           {/* mockup-ok: WCAG 2.2.2 conformance, page-load spinner bounded (see tailwind.config.js spin-bounded) */}
-          <Loader2 size={24} className="animate-spin-bounded text-s-ink/40" />
+          <Loader2 size={24} strokeWidth={2.4} className="animate-spin-bounded text-s-ink/40" />
         </div>
       ) : (
         <div className="max-w-md overflow-hidden rounded-[14px] border border-s-border bg-white px-4 shadow-warm-md">
@@ -112,7 +112,7 @@ export default function CitiesAdminPage() {
 
       {error && (
         <div className="mt-4 flex max-w-md items-center gap-2.5 rounded-[11px] bg-s-error-bg px-3.5 py-3">
-          <AlertTriangle size={17} className="shrink-0 text-s-error" />
+          <AlertTriangle size={17} strokeWidth={1.9} className="shrink-0 text-s-error" />
           <div className="text-[12px] text-s-error">{t("errorMessage")}</div>
         </div>
       )}

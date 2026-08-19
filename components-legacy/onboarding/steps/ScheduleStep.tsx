@@ -56,7 +56,7 @@ export default function ScheduleStep({ onSaved }: ScheduleStepProps) {
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-2">
         <div className="w-12 h-12 rounded-[12px] bg-s-ink/10 flex items-center justify-center">
-          <Calendar size={22} className="text-s-ink-2" />
+          <Calendar size={22} strokeWidth={2.2} className="text-s-ink-2" />
         </div>
         <div>
           <h2 className="font-heading text-xl text-s-ink">
@@ -75,7 +75,7 @@ export default function ScheduleStep({ onSaved }: ScheduleStepProps) {
 
         {applied ? (
           <div className="bg-s-ink/5 border border-s-accent/20 rounded-[12px] px-4 py-3 flex items-center gap-2">
-            <Check size={14} className="text-s-accent shrink-0" />
+            <Check size={14} strokeWidth={1.6} className="text-s-accent shrink-0" />
             <div>
               <p className="text-xs text-s-accent font-medium">
                 {t("schedule.autoConfigured")}
@@ -92,7 +92,7 @@ export default function ScheduleStep({ onSaved }: ScheduleStepProps) {
             // mockup-ok: hook-enforced no-caps compliance fix (CLAUDE.md rule 10), ported from reviewed commit 37e703762
             className="w-full py-3 rounded-btn active:scale-[0.97] bg-s-ink text-white text-[13px] font-semibold disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter]"
           >
-            {applying && <Loader2 size={14} className="animate-spin" />}
+            {applying && <Loader2 size={14} strokeWidth={1.6} className="animate-spin" />}
             {t("schedule.applyHours")}
           </button>
         )}
@@ -108,7 +108,7 @@ export default function ScheduleStep({ onSaved }: ScheduleStepProps) {
         )}
 
         <div className="bg-s-bg-surface rounded-[12px] px-4 py-3 flex items-start gap-2">
-          <Lightbulb size={14} className="text-s-ink/30 mt-0.5 shrink-0" />
+          <Lightbulb size={14} strokeWidth={1.6} className="text-s-ink/30 mt-0.5 shrink-0" />
           <p className="text-xs text-s-ink/40">
             {t("schedule.individualHint")}
           </p>

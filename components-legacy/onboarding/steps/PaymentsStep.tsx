@@ -64,7 +64,7 @@ export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-2">
         <div className="w-12 h-12 rounded-[12px] bg-s-ink/10 flex items-center justify-center">
-          <CreditCard size={22} className="text-s-accent" />
+          <CreditCard size={22} strokeWidth={2.2} className="text-s-accent" />
         </div>
         <div>
           <h2 className="font-heading text-xl text-s-ink">
@@ -112,7 +112,7 @@ export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
         <div className="bg-white rounded-[12px] border border-s-border p-6 space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <CreditCard size={16} className="text-s-ink/40" />
+              <CreditCard size={16} strokeWidth={1.9} className="text-s-ink/40" />
               <p className="text-sm font-medium text-s-ink">
                 {t("payments.connectBank")}
               </p>
@@ -133,7 +133,7 @@ export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
                 disabled={connectLoading || connectStatus === "loading"}
                 className="flex items-center gap-2 px-4 py-2.5 rounded-btn border border-s-border text-sm font-medium text-s-ink hover:border-s-accent hover:text-s-accent transition-colors disabled:opacity-50"
               >
-                {connectLoading ? <Loader2 size={14} className="animate-spin" /> : <ExternalLink size={14} />}
+                {connectLoading ? <Loader2 size={14} strokeWidth={1.6} className="animate-spin" /> : <ExternalLink size={14} strokeWidth={1.6} />}
                 {t("payments.connectBank")}
               </button>
               {connectError && (
@@ -151,7 +151,7 @@ export default function PaymentsStep({ salonId, onSaved }: PaymentsStepProps) {
         // mockup-ok: hook-enforced no-caps compliance fix (CLAUDE.md rule 10), ported from reviewed commit 37e703762
         className="w-full py-3 rounded-btn active:scale-[0.97] bg-s-ink text-white text-[13px] font-semibold disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter]"
       >
-        {saving && <Loader2 size={14} className="animate-spin" />}
+        {saving && <Loader2 size={14} strokeWidth={1.6} className="animate-spin" />}
         {t("setup.saveAndContinue")}
       </button>
     </div>

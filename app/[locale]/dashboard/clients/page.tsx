@@ -138,7 +138,7 @@ export default function ClientsPage() {
 
       {/* Search */}
       <div className="flex items-center gap-2 border border-s-border rounded-[14px] px-3.5 py-2.5 text-s-ink-2 mb-4">
-        <Search size={17} className="shrink-0" />
+        <Search size={17} strokeWidth={1.9} className="shrink-0" />
         {/* mockup-ok: !important prevents a look change, not a new one. The wrapper div owns
             the visible chrome (border+radius+padding); this input must stay invisible AND
             keep its compact size inside it, or the widened base input law (globals.css,
@@ -321,7 +321,7 @@ function ClientDetail({ client, salonId, onBack }: { client: Client; salonId: st
     <div>
       {/* Header */}
       <button onClick={onBack} className="flex items-center gap-1 text-sm text-s-ink-2 hover:text-s-ink transition-[colors,transform] active:scale-[0.98] active:duration-[80ms] active:ease-glide mb-4">
-        <ChevronLeft size={16} /> {t("back")}
+        <ChevronLeft size={16} strokeWidth={1.9} /> {t("back")}
       </button>
       <div className="flex items-center gap-3 mb-5">
         {client.avatar_url ? (

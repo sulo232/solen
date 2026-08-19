@@ -57,7 +57,7 @@ export function ServiceDisclosureRow({
         {/* No description means no chevron: a chevron that opens nothing is a dead click. */}
         {desc && (
           <ChevronDown
-            size={18}
+            size={18} strokeWidth={1.9}
             aria-hidden
             className={cn(
               // mockup-ok: owner-approved 2026-07-18 liftup-booking-services-tiered mockup

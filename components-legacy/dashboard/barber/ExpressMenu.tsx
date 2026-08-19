@@ -99,7 +99,7 @@ export default function ExpressMenu({ salonId }: ExpressMenuProps) {
             } disabled:opacity-60`}
             aria-label={`${svc.name} — ${svc.duration_minutes} min, ${svc.price} CHF`}
           >
-            <Scissors size={19} className="text-s-ink mb-[9px]" />
+            <Scissors size={19} strokeWidth={2.2} className="text-s-ink mb-[9px]" />
             <p className="font-heading font-semibold text-[13.5px] text-s-ink truncate">
               {svc.name}
             </p>

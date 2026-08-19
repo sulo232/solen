@@ -89,7 +89,7 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
         className="overflow-hidden"
       >
         <div className="rounded-input border border-s-success/20 p-4 flex items-center gap-3 bg-s-success/[0.06]">
-          <Check size={16} className="text-s-success" />
+          <Check size={16} strokeWidth={1.9} className="text-s-success" />
           <p className="text-sm font-heading text-s-success">Gespeichert!</p>
         </div>
       </motion.div>
@@ -106,7 +106,7 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
         className="w-full flex items-center gap-3 px-4 py-3.5 text-left"
       >
         <div className="w-8 h-8 rounded-[10px] flex items-center justify-center shrink-0 bg-s-ink/10">
-          <Sparkles size={14} className="text-s-ink-2" />
+          <Sparkles size={14} strokeWidth={1.6} className="text-s-ink-2" />
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-heading text-s-ink">{t.banner}</p>
@@ -119,7 +119,7 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
             </span>
           )}
           <ChevronDown
-            size={14}
+            size={14} strokeWidth={1.6}
             className={`text-s-ink-2 transition-transform duration-200 ${expanded ? "rotate-180" : ""}`}
           />
         </div>

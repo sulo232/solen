@@ -172,7 +172,7 @@ function PayInner({
       {/* DECLINED (mockup state 5) — nothing charged, slot not reserved, retry inline. */}
       {declined && (
         <div role="alert" className="flex items-start gap-2 rounded-[10px] bg-s-error-bg px-3 py-2.5">
-          <AlertCircle size={14} className="mt-[1px] shrink-0 text-s-error" aria-hidden />
+          <AlertCircle size={14} strokeWidth={1.6} className="mt-[1px] shrink-0 text-s-error" aria-hidden />
           <p className="font-body text-[12px] leading-[1.4] text-s-error">{declined}</p>
         </div>
       )}

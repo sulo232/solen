@@ -107,7 +107,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <BookHeart size={16} className="text-s-coral" />
+          <BookHeart size={16} strokeWidth={1.9} className="text-s-coral" />
           <p className="text-[12px] font-heading uppercase tracking-[.18em] text-s-star">
             {t("wellness_journal")}
           </p>
@@ -118,7 +118,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
             aria-label={t("add_entry")}
             className="flex items-center gap-1 text-xs text-s-coral hover:text-s-coral/80 transition-colors duration-150"
           >
-            <Plus size={14} /> {t("add_entry")}
+            <Plus size={14} strokeWidth={1.6} /> {t("add_entry")}
           </button>
         )}
       </div>
@@ -129,7 +129,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
           <div className="flex items-center justify-between mb-1">
             <p className="text-xs font-heading text-s-ink">{t("new_entry")}</p>
             <button onClick={resetForm} aria-label={t("cancel")} className="text-s-ink/30 hover:text-s-ink transition-colors">
-              <X size={14} />
+              <X size={14} strokeWidth={1.6} />
             </button>
           </div>
 
@@ -255,7 +255,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
                 aria-label={t("add_product")}
                 className="px-2 py-1 rounded-[8px] bg-s-bg-sunken text-s-ink-2 hover:bg-s-bg-sunken transition-colors duration-150"
               >
-                <Plus size={14} />
+                <Plus size={14} strokeWidth={1.6} />
               </button>
             </div>
             {form.products_used.length > 0 && (
@@ -325,7 +325,7 @@ export default function WellnessJournal({ salonId, clientId }: { salonId: string
       {/* Timeline */}
       {entries.length === 0 && !showForm ? (
         <div className="rounded-[12px] border border-s-ink/[0.06] border-dashed p-6 text-center bg-[--raised]">
-          <BookHeart size={20} className="mx-auto mb-2 text-s-ink/20" />
+          <BookHeart size={20} strokeWidth={2.2} className="mx-auto mb-2 text-s-ink/20" />
           <p className="text-xs text-s-ink/30">{t("no_entries")}</p>
         </div>
       ) : (

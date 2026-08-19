@@ -78,7 +78,7 @@ export default function GoLiveStep({ onGoLive, steps, goTo }: GoLiveStepProps) {
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-2">
         <div className="w-12 h-12 rounded-[12px] bg-s-ink/10 flex items-center justify-center">
-          <Rocket size={22} className="text-s-accent" />
+          <Rocket size={22} strokeWidth={2.2} className="text-s-accent" />
         </div>
         <div>
           <h2 className="font-heading text-xl text-s-ink">
@@ -121,7 +121,7 @@ export default function GoLiveStep({ onGoLive, steps, goTo }: GoLiveStepProps) {
 
       {!isCoreReady && (
         <div className="bg-s-warning-bg border border-s-warning/30 rounded-[12px] px-4 py-3 flex items-center gap-2">
-          <AlertTriangle size={16} className="text-s-warning shrink-0" />
+          <AlertTriangle size={16} strokeWidth={1.9} className="text-s-warning shrink-0" />
           <p className="text-sm text-s-warning">
             {t("goLive.warning")}
           </p>
@@ -132,7 +132,7 @@ export default function GoLiveStep({ onGoLive, steps, goTo }: GoLiveStepProps) {
           the owner's to clear, so it is named here instead of leaving a dead activate button. */}
       {awaitingApproval && ( // mockup-ok: no new treatment, reuses the shipped warning block directly above verbatim (same bg/border/radius/padding), applied to a new state; taste rule 6 keeps the copy ink and the icon saturated
         <div className="bg-s-warning-bg border border-s-warning/30 rounded-[12px] px-4 py-3 flex items-start gap-2"> {/* mockup-ok: same as above */}
-          <Clock size={16} className="text-s-warning shrink-0 mt-0.5" />
+          <Clock size={16} strokeWidth={1.9} className="text-s-warning shrink-0 mt-0.5" />
           <div>
             <p className="text-sm font-semibold text-s-ink">{t("goLive.awaitingTitle")}</p>
             <p className="text-sm text-s-ink-2 mt-0.5">{t("goLive.awaitingBody")}</p>
@@ -142,7 +142,7 @@ export default function GoLiveStep({ onGoLive, steps, goTo }: GoLiveStepProps) {
 
       {wasRejected && ( // mockup-ok: locked s-error token, mirrors the existing error block in this same file (line pattern ported from reviewed commit 869287867)
         <div className="bg-s-error-bg border border-s-error/30 rounded-[12px] px-4 py-3 flex items-start gap-2"> {/* mockup-ok: same as the errorMsg block below */}
-          <AlertTriangle size={16} className="text-s-error shrink-0 mt-0.5" />
+          <AlertTriangle size={16} strokeWidth={1.9} className="text-s-error shrink-0 mt-0.5" />
           <div>
             <p className="text-sm font-semibold text-s-ink">{t("goLive.rejectedTitle")}</p>
             {readiness?.rejection_reason && (
@@ -154,7 +154,7 @@ export default function GoLiveStep({ onGoLive, steps, goTo }: GoLiveStepProps) {
 
       {errorMsg && ( // mockup-ok: locked s-error token, mirrors existing warning block pattern above, ported from reviewed commit 869287867
         <div className="bg-s-error/10 border border-s-error/30 rounded-[12px] px-4 py-3 flex items-center gap-2">
-          <AlertTriangle size={16} className="text-s-error shrink-0" />
+          <AlertTriangle size={16} strokeWidth={1.9} className="text-s-error shrink-0" />
           <p className="text-sm text-s-error">{errorMsg}</p>
         </div>
       )}
@@ -193,7 +193,7 @@ export default function GoLiveStep({ onGoLive, steps, goTo }: GoLiveStepProps) {
         disabled={!canActivate || going}
         className="w-full py-4 rounded-btn active:scale-[0.97] bg-s-ink text-white text-base font-bold disabled:opacity-50 flex items-center justify-center gap-2 hover:brightness-[1.06] transition-[transform,filter] shadow-warm-sm"
       >
-        {going ? <Spinner size="sm" invert /> : <PartyPopper size={18} />}
+        {going ? <Spinner size="sm" invert /> : <PartyPopper size={18} strokeWidth={1.9} />}
         {t("goLive.activate")}
       </button>
     </div>

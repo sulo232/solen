@@ -90,7 +90,7 @@ export default function ConsultationNotes({ clientId, salonId }: ConsultationNot
   if (!clientId) {
     return (
       <div className="rounded-[12px] border border-s-ink/[0.06] p-6 bg-white text-center">
-        <ClipboardList size={20} className="mx-auto mb-2 text-s-ink/20" />
+        <ClipboardList size={20} strokeWidth={2.2} className="mx-auto mb-2 text-s-ink/20" />
         <p className="text-xs text-s-ink/30">{t("select_client_first")}</p>
       </div>
     );

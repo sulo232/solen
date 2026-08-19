@@ -113,7 +113,7 @@ export default function CityPage({ city, locale, initialCategory = undefined, ci
       {/* mockup-ok: saloncard-before-after/index.html, owner-approved 2026-07-26 */}
       <section className="max-w-5xl mx-auto px-4 pt-12 pb-8">
         <div className="flex items-center gap-2 mb-2">
-          <MapPin size={16} className="text-s-ink-2" />
+          <MapPin size={16} strokeWidth={1.9} className="text-s-ink-2" />
           <span className="font-body text-[12px] font-semibold text-s-ink-2">
             {cityName}
           </span>

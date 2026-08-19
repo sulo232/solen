@@ -74,7 +74,7 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
   const getRankIcon = (rank: number) => {
     // #1 = yellow trophy (s-star, the universal achievement/rating signal, matches mockup).
     // Ranks 2+ render as a plain number in the card (mockup 10b shows numbers, not medals).
-    if (rank === 0) return <Trophy size={18} className="text-s-star shrink-0" />;
+    if (rank === 0) return <Trophy size={18} strokeWidth={1.9} className="text-s-star shrink-0" />;
     return null;
   };
 
@@ -90,7 +90,7 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
     <div className="rounded-[16px] bg-white border border-s-border p-4">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <Trophy size={18} className="text-s-star" />
+          <Trophy size={18} strokeWidth={1.9} className="text-s-star" />
           <h3 className="font-heading text-sm font-semibold text-s-ink">{t("title")}</h3>
         </div>
         <div className="flex items-center gap-2">
@@ -102,7 +102,7 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
             title={viewMode === "table" ? t("view_chart") : t("view_table")}
             aria-label={viewMode === "table" ? t("view_chart") : t("view_table")}
           >
-            {viewMode === "table" ? <BarChart2 size={14} /> : <Table2 size={14} />}
+            {viewMode === "table" ? <BarChart2 size={14} strokeWidth={1.6} /> : <Table2 size={14} strokeWidth={1.6} />}
           </button>
           {/* Anonymize toggle */}
           <button
@@ -112,7 +112,7 @@ export default function BarberLeaderboard({ salonId }: BarberLeaderboardProps) {
             title={anonymized ? t("show_names") : t("anonymize")}
             aria-label={anonymized ? t("show_names") : t("anonymize")}
           >
-            {anonymized ? <EyeOff size={14} /> : <Eye size={14} />}
+            {anonymized ? <EyeOff size={14} strokeWidth={1.6} /> : <Eye size={14} strokeWidth={1.6} />}
           </button>
           {/* Period toggle */}
           <div className="flex rounded-btn border border-s-border overflow-hidden">

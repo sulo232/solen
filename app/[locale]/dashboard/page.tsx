@@ -152,7 +152,7 @@ export default function DashboardPage() {
         {showCelebration && (
           <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.28 }} /* mockup-ok: retime only, motion-ok: pre-existing entrance retimed to THE SPEED LAW reveal tier, not net-new */
             className="mb-6 rounded-card-lg bg-s-success-bg border border-s-success/20 px-5 py-4 flex items-center gap-3">
-            <CheckCircle2 size={20} className="shrink-0 text-s-success" />
+            <CheckCircle2 size={20} strokeWidth={2.2} className="shrink-0 text-s-success" />
             <div>
               <p className="text-[15px] font-semibold text-s-ink">{t("welcomeTitle")}</p>
               <p className="text-[13px] text-s-ink-2 mt-0.5">{t("welcomeBody")}</p>

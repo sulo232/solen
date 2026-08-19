@@ -122,7 +122,7 @@ export default function RoomManager({ salonId }: { salonId: string }) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <DoorOpen size={16} className="text-s-coral" />
+          <DoorOpen size={16} strokeWidth={1.9} className="text-s-coral" />
           <p className="text-[12px] font-heading uppercase tracking-[.18em] text-s-star">
             {t("treatment_rooms")}
           </p>
@@ -133,7 +133,7 @@ export default function RoomManager({ salonId }: { salonId: string }) {
             aria-label={t("add_room")}
             className="flex items-center gap-1 text-xs text-s-coral hover:text-s-coral/80 transition-colors duration-150"
           >
-            <Plus size={14} /> {t("add_room")}
+            <Plus size={14} strokeWidth={1.6} /> {t("add_room")}
           </button>
         )}
       </div>
@@ -146,7 +146,7 @@ export default function RoomManager({ salonId }: { salonId: string }) {
               {editingId ? t("edit_room") : t("new_room")}
             </p>
             <button onClick={resetForm} aria-label={t("cancel")} className="text-s-ink/30 hover:text-s-ink transition-colors">
-              <X size={14} />
+              <X size={14} strokeWidth={1.6} />
             </button>
           </div>
 
@@ -278,7 +278,7 @@ export default function RoomManager({ salonId }: { salonId: string }) {
       {/* Room List */}
       {rooms.length === 0 && !showForm ? (
         <div className="rounded-[12px] border border-s-ink/[0.06] border-dashed p-6 text-center bg-[--raised]">
-          <DoorOpen size={20} className="mx-auto mb-2 text-s-ink/20" />
+          <DoorOpen size={20} strokeWidth={2.2} className="mx-auto mb-2 text-s-ink/20" />
           <p className="text-xs text-s-ink/30">{t("no_rooms")}</p>
         </div>
       ) : (

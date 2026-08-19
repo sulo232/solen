@@ -161,7 +161,7 @@ export default function WalkInBand() {
             className="mt-4 flex items-center justify-center gap-1.5 rounded-[13px] border border-s-border bg-white px-4 py-3 font-heading text-[14px] font-semibold text-s-ink transition-[background-color,transform] duration-200 ease-glide hover:bg-s-bg-sunken active:scale-[0.97] active:duration-[80ms]"
           >
             {t("allWalkIns")}
-            <ArrowRight size={16} />
+            <ArrowRight size={16} strokeWidth={1.9} />
           </a>
       </div>
     </section>

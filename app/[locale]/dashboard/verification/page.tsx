@@ -128,7 +128,7 @@ export default function VerificationPage() {
                 disabled={!file || uploading}
                 className="w-full flex items-center justify-center gap-2 py-2.5 rounded-btn bg-s-accent text-white font-medium text-sm disabled:opacity-50"
               >
-                {uploading ? <Spinner size="sm" invert /> : <Upload size={16} />}
+                {uploading ? <Spinner size="sm" invert /> : <Upload size={16} strokeWidth={1.9} />}
                 {t('upload')}
               </button>
             </div>
@@ -147,7 +147,7 @@ export default function VerificationPage() {
                 {documents.map((doc) => (
                   <div key={doc.id} className="bg-white rounded-[12px] shadow-elevation-1 border border-s-ink/5 p-4 flex items-start gap-3">
                     <div className="p-2 bg-s-bg-surface rounded-btn shrink-0 text-s-ink/40">
-                      <File size={20} />
+                      <File size={20} strokeWidth={2.2} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-s-ink truncate">{doc.file_name}</p>
@@ -161,9 +161,9 @@ export default function VerificationPage() {
                       </p>
                       
                       <div className="mt-2 flex items-center gap-1.5">
-                        {doc.status === 'approved' && <><CheckCircle2 size={14} className="text-s-sage" /><span className="text-xs font-medium text-s-sage">{t('statusApproved')}</span></>}
-                        {doc.status === 'pending' && <><Clock size={14} className="text-s-ink/40" /><span className="text-xs font-medium text-s-ink-2">{t('statusPending')}</span></>}
-                        {doc.status === 'rejected' && <><AlertCircle size={14} className="text-s-error" /><span className="text-xs font-medium text-s-error">{t('statusRejected')}</span></>}
+                        {doc.status === 'approved' && <><CheckCircle2 size={14} strokeWidth={1.6} className="text-s-sage" /><span className="text-xs font-medium text-s-sage">{t('statusApproved')}</span></>}
+                        {doc.status === 'pending' && <><Clock size={14} strokeWidth={1.6} className="text-s-ink/40" /><span className="text-xs font-medium text-s-ink-2">{t('statusPending')}</span></>}
+                        {doc.status === 'rejected' && <><AlertCircle size={14} strokeWidth={1.6} className="text-s-error" /><span className="text-xs font-medium text-s-error">{t('statusRejected')}</span></>}
                         
                         {doc.admin_note && <span className="text-xs text-s-error ml-2 italic truncate">"{doc.admin_note}"</span>}
                       </div>
@@ -174,7 +174,7 @@ export default function VerificationPage() {
                       className="p-1.5 text-s-ink/30 hover:text-s-error hover:bg-s-error/5 rounded transition-colors"
                       title={t('deleteTitle')}
                     >
-                      <Trash2 size={16} />
+                      <Trash2 size={16} strokeWidth={1.9} />
                     </button>
                   </div>
                 ))}

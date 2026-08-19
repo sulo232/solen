@@ -115,7 +115,7 @@ export default function HelpEditorPage() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-[12px] bg-s-coral/10 flex items-center justify-center">
-              <BookOpen size={20} className="text-s-coral" />
+              <BookOpen size={20} strokeWidth={2.2} className="text-s-coral" />
             </div>
             <div>
               <h1 className="font-heading text-xl text-s-ink">{t("title")}</h1>
@@ -126,7 +126,7 @@ export default function HelpEditorPage() {
             onClick={openNew}
             className="inline-flex items-center gap-1.5 px-4 py-2 rounded-btn bg-s-accent text-white text-sm font-body font-medium hover:brightness-[1.06] transition-colors"
           >
-            <Plus size={16} />
+            <Plus size={16} strokeWidth={1.9} />
             {t("newArticle")}
           </button>
         </div>
@@ -237,19 +237,19 @@ export default function HelpEditorPage() {
                     className="p-1.5 rounded-btn text-s-ink/30 hover:text-s-ink-2 transition-colors"
                     title={article.published ? t("hide") : t("publish")}
                   >
-                    {article.published ? <Eye size={14} /> : <EyeOff size={14} />}
+                    {article.published ? <Eye size={14} strokeWidth={1.6} /> : <EyeOff size={14} strokeWidth={1.6} />}
                   </button>
                   <button
                     onClick={() => openEdit(article)}
                     className="p-1.5 rounded-btn text-s-ink/30 hover:text-s-coral transition-colors"
                   >
-                    <Pencil size={14} />
+                    <Pencil size={14} strokeWidth={1.6} />
                   </button>
                   <button
                     onClick={() => handleDelete(article.id)}
                     className="p-1.5 rounded-btn text-s-ink/30 hover:text-s-coral transition-colors"
                   >
-                    <Trash2 size={14} />
+                    <Trash2 size={14} strokeWidth={1.6} />
                   </button>
                 </div>
               </div>

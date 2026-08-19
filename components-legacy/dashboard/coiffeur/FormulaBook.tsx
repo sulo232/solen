@@ -123,7 +123,7 @@ export default function FormulaBook({ clientId, salonId }: FormulaBookProps) {
   if (!clientId) {
     return (
       <div className="rounded-[12px] border border-s-ink/[0.06] p-6 bg-white text-center">
-        <Beaker size={20} className="mx-auto mb-2 text-s-ink/20" />
+        <Beaker size={20} strokeWidth={2.2} className="mx-auto mb-2 text-s-ink/20" />
         <p className="text-xs text-s-ink/30">{t("select_client_first")}</p>
       </div>
     );
@@ -276,7 +276,7 @@ export default function FormulaBook({ clientId, salonId }: FormulaBookProps) {
                     >
                       {copied === f.id ? <Check size={12} className="text-s-sage" /> : <Copy size={12} />}
                     </button>
-                    {isExpanded ? <ChevronUp size={14} className="text-s-ink/30" /> : <ChevronDown size={14} className="text-s-ink/30" />}
+                    {isExpanded ? <ChevronUp size={14} strokeWidth={1.6} className="text-s-ink/30" /> : <ChevronDown size={14} strokeWidth={1.6} className="text-s-ink/30" />}
                   </div>
                 </div>
 

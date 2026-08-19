@@ -68,7 +68,7 @@ export default function EmptyServicesState({
               <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[13px]">
                 {rating != null && rating > 0 && (
                   <span className="flex items-center gap-1">
-                    <Star size={14} className="fill-s-star text-s-star" aria-hidden />
+                    <Star size={14} strokeWidth={1.6} className="fill-s-star text-s-star" aria-hidden />
                     <span className="font-semibold tabular-nums text-s-ink">{rating.toFixed(1)}</span>
                     {reviewCount != null && reviewCount > 0 && (
                       <span className="tabular-nums text-s-accent">({reviewCount})</span>

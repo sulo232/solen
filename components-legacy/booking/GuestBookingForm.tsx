@@ -137,7 +137,7 @@ const GuestBookingForm = forwardRef<GuestBookingFormHandle, GuestBookingFormProp
             htmlFor="guest-name"
             className="flex items-center gap-1.5 text-[13px] font-medium text-s-ink mb-[7px]"
           >
-            <User size={14} className="text-s-ink-2" aria-hidden />
+            <User size={14} strokeWidth={1.6} className="text-s-ink-2" aria-hidden />
             {t("nameLabel")}
           </label>
           {/* mockup-ok: dead-class removal only, base input law already renders this fill/border/radius (V3-D-input-fill-2026-07-17) */}
@@ -173,7 +173,7 @@ const GuestBookingForm = forwardRef<GuestBookingFormHandle, GuestBookingFormProp
             htmlFor="guest-phone"
             className="flex items-center gap-1.5 text-[13px] font-medium text-s-ink mb-[7px]"
           >
-            <Phone size={14} className="text-s-ink-2" aria-hidden />
+            <Phone size={14} strokeWidth={1.6} className="text-s-ink-2" aria-hidden />
             {t("phoneLabel")}
           </label>
           <div className="flex gap-2">
@@ -220,7 +220,7 @@ const GuestBookingForm = forwardRef<GuestBookingFormHandle, GuestBookingFormProp
             htmlFor="guest-email"
             className="flex items-center gap-1.5 text-[13px] font-medium text-s-ink mb-[7px]"
           >
-            <Mail size={14} className="text-s-ink-2" aria-hidden />
+            <Mail size={14} strokeWidth={1.6} className="text-s-ink-2" aria-hidden />
             {t("emailLabel")}
             <span className="font-normal text-s-ink-2 text-[12px]">| {t("optional")}</span>
           </label>

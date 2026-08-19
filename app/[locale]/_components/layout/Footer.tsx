@@ -224,7 +224,7 @@ function NewsletterForm() {
   if (status === "done") {
     return (
       <p className="flex w-full max-w-[360px] items-center gap-2 font-body text-[14px] text-s-ink" role="status">
-        <Check size={18} className="text-s-success" aria-hidden />
+        <Check size={18} strokeWidth={1.9} className="text-s-success" aria-hidden />
         Danke! Sie sind eingetragen.
       </p>
     );
@@ -256,7 +256,7 @@ function NewsletterForm() {
         disabled={status === "loading"}
         className="absolute right-[6px] top-[6px] grid h-9 w-9 place-items-center rounded-[6px] bg-s-ink text-white transition-transform duration-200 ease-glide active:scale-95 active:duration-[80ms] disabled:opacity-60"
       >
-        <ChevronRight size={18} aria-hidden />
+        <ChevronRight size={18} strokeWidth={1.9} aria-hidden />
       </button>
       {status === "error" && (
         <p className="mt-1.5 font-body text-[12px] text-s-error" role="alert">

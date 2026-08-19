@@ -79,21 +79,21 @@ export default function SalonAboutEditor({ salon, onUpdate }: SalonAboutEditorPr
           aria-label={t("save_button")}
           className="flex items-center justify-center gap-2 bg-s-accent text-white py-2 px-5 rounded-pill font-heading text-[12px] uppercase tracking-[.06em] hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] active:duration-[80ms] active:ease-glide disabled:opacity-50 disabled:cursor-not-allowed shadow-elevation-2"
         >
-          {isSaving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
+          {isSaving ? <Loader2 size={16} strokeWidth={1.9} className="animate-spin" /> : <Save size={16} strokeWidth={1.9} />}
           {t("save_button")}
         </button>
       </div>
 
       {status === "success" && (
         <div className="flex items-center gap-2 bg-s-success-bg text-s-success px-3 py-2 rounded-input text-sm font-medium mb-4 animate-in fade-in slide-in-from-top-1 duration-[200ms]">
-          <CheckCircle2 size={14} />
+          <CheckCircle2 size={14} strokeWidth={1.6} />
           {t("success_message")}
         </div>
       )}
 
       {status === "error" && (
         <div className="flex items-center gap-2 bg-s-error-bg text-s-error px-3 py-2 rounded-input text-sm font-medium mb-4 animate-in fade-in slide-in-from-top-1 duration-[200ms]">
-          <AlertCircle size={14} />
+          <AlertCircle size={14} strokeWidth={1.6} />
           {errorMsg}
         </div>
       )}

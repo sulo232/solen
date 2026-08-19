@@ -277,7 +277,7 @@ export default function RevenuePage() {
               {data.gift_card_revenue != null && (
                 <motion.div variants={itemVariants} className="bg-white rounded-[12px] border border-s-ink/5 p-4 shadow-warm-md flex items-center gap-3">
                   <div className="w-10 h-10 rounded-btn bg-s-coral/5 flex items-center justify-center shrink-0">
-                    <Gift size={18} className="text-s-coral" />
+                    <Gift size={18} strokeWidth={1.9} className="text-s-coral" />
                   </div>
                   <div>
                     <p className="data-text font-bold text-xl text-s-ink">{formatCurrency(data.gift_card_revenue, locale)}</p>
@@ -288,7 +288,7 @@ export default function RevenuePage() {
               {data.tips_total != null && (
                 <motion.div variants={itemVariants} className="bg-white rounded-[12px] border border-s-ink/5 p-4 shadow-warm-md flex items-center gap-3">
                   <div className="w-10 h-10 rounded-btn bg-s-coral/5 flex items-center justify-center shrink-0">
-                    <Heart size={18} className="text-s-coral" />
+                    <Heart size={18} strokeWidth={1.9} className="text-s-coral" />
                   </div>
                   <div>
                     <p className="data-text font-bold text-xl text-s-ink">{formatCurrency(data.tips_total, locale)}</p>

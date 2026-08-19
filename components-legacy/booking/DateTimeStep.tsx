@@ -175,13 +175,13 @@ export default function DateTimeStep({ salonId, staffList, isLoggedIn, salonName
                 className="h-full w-full object-cover"
               />
             ) : (
-              <Users size={14} className="text-s-ink-2" />
+              <Users size={14} strokeWidth={1.6} className="text-s-ink-2" />
             )}
           </span>
           <span className="text-[14px] font-medium text-s-ink">
             {selectedStaff ? selectedStaff.name : tStaff('any')}
           </span>
-          <ChevronDown size={16} className="text-s-ink-2" />
+          <ChevronDown size={16} strokeWidth={1.9} className="text-s-ink-2" />
         </button>
       </div>
 

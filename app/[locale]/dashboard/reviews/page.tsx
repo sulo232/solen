@@ -215,7 +215,7 @@ export default function SalonReviewsPage() {
                   className="text-s-ink/30 hover:text-s-error p-1 transition-colors"
                   title={t("flagTitle")}
                 >
-                  <Flag size={14} />
+                  <Flag size={14} strokeWidth={1.6} />
                 </button>
               </div>
 

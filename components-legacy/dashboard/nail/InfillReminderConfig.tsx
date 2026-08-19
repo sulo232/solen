@@ -71,7 +71,7 @@ export default function InfillReminderConfig({ salonId }: { salonId: string }) {
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2 mb-2">
-        <Bell size={16} className="text-s-coral" />
+        <Bell size={16} strokeWidth={1.9} className="text-s-coral" />
         <h3 className="font-heading text-sm text-s-ink">{t("infill_title")}</h3>
       </div>
 
@@ -112,7 +112,7 @@ export default function InfillReminderConfig({ salonId }: { salonId: string }) {
       {dueClients.length > 0 && (
         <div className="mt-4 p-3 rounded-[16px] bg-s-amber-subtle border border-s-amber/20">
           <p className="text-sm font-medium text-s-star-text flex items-center gap-1.5">
-            <Users size={14} />
+            <Users size={14} strokeWidth={1.6} />
             {t("infill_due_clients", { count: dueClients.length })}
           </p>
         </div>

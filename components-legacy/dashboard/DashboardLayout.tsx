@@ -350,7 +350,7 @@ export default function DashboardLayout({
               {/* Salon header */}
               <div className="px-4 py-4 border-b border-s-border flex items-center gap-3">
                 <SalonSwitcher variant="sidebar" fallbackName={salonName ?? fetchedSalonName ?? undefined} />
-                <button onClick={() => setMobileSidebarOpen(false)} aria-label="Menü schließen" className="p-1 -mr-1 text-s-ink-2 hover:text-s-ink transition-colors"><X size={20} /></button>
+                <button onClick={() => setMobileSidebarOpen(false)} aria-label="Menü schließen" className="p-1 -mr-1 text-s-ink-2 hover:text-s-ink transition-colors"><X size={20} strokeWidth={2.2} /></button>
               </div>
 
               {/* Scrollable grouped nav */}
@@ -443,11 +443,11 @@ export default function DashboardLayout({
         {/* Mobile top bar */}
         <div className="md:hidden sticky top-0 z-20 bg-white border-b border-s-ink/[0.06] px-4 py-3 flex items-center gap-3">
           <button onClick={() => setMobileSidebarOpen(true)} className="p-1.5 -ml-1.5 text-s-ink-2" aria-label="Menu öffnen">
-            <Menu size={20} />
+            <Menu size={20} strokeWidth={2.2} />
           </button>
           <div className="flex-1 min-w-0"><SalonSwitcher variant="bar" fallbackName={salonName ?? fetchedSalonName ?? undefined} /></div>
           <button onClick={() => setPaletteOpen(true)} aria-label="Suche öffnen (Ctrl+K)" className="p-1.5 text-s-ink/40 hover:text-s-ink/70 transition-colors">
-            <Search size={16} />
+            <Search size={16} strokeWidth={1.9} />
           </button>
           <NotificationCenter salonId={fetchedSalonId ?? undefined} />
         </div>
@@ -455,7 +455,7 @@ export default function DashboardLayout({
         {/* Admin preview banner */}
         {isPreviewing && (
           <div className="sticky top-0 z-30 flex items-center gap-3 px-5 py-2.5 bg-s-warning-bg border-b border-s-warning/20 text-s-ink text-[13px] font-medium">
-            <FlaskConical size={15} className="shrink-0 text-s-warning" />
+            <FlaskConical size={15} strokeWidth={1.9} className="shrink-0 text-s-warning" />
             <span className="flex-1 truncate">
               {t("previewBanner")} <span className="font-semibold">{previewSalonName}</span>
             </span>

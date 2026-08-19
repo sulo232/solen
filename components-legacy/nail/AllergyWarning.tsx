@@ -42,7 +42,7 @@ export default function AllergyWarning({ customerId }: AllergyWarningProps) {
       }`}
     >
       <AlertTriangle
-        size={18}
+        size={18} strokeWidth={1.9}
         className={`shrink-0 mt-0.5 ${isSevere ? "text-s-accent" : "text-s-star"}`}
       />
       <div>

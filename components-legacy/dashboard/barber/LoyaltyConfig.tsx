@@ -76,7 +76,7 @@ export default function LoyaltyConfig({ salonId }: LoyaltyConfigProps) {
   return (
     <div className="rounded-[16px] bg-white border border-s-ink/5 p-4">
       <div className="flex items-center gap-2 mb-4">
-        <Award size={18} className="text-s-coral" />
+        <Award size={18} strokeWidth={1.9} className="text-s-coral" />
         <h3 className="font-heading text-sm font-semibold text-s-ink">{t("title")}</h3>
       </div>
 
@@ -157,9 +157,9 @@ export default function LoyaltyConfig({ salonId }: LoyaltyConfigProps) {
         <div className="flex flex-wrap gap-1.5">
           {previewStamps.map((i) => (
             i < previewFilled ? (
-              <Check key={i} size={18} className="text-s-coral" />
+              <Check key={i} size={18} strokeWidth={1.9} className="text-s-coral" />
             ) : (
-              <Circle key={i} size={18} className="text-s-ink/15" />
+              <Circle key={i} size={18} strokeWidth={1.9} className="text-s-ink/15" />
             )
           ))}
         </div>
@@ -173,7 +173,7 @@ export default function LoyaltyConfig({ salonId }: LoyaltyConfigProps) {
         disabled={saving}
         className="mt-4 w-full flex items-center justify-center gap-2 rounded-pill active:scale-[0.97] bg-s-accent text-white font-medium py-2 text-sm hover:brightness-[1.06] disabled:opacity-50 shadow-elevation-2 transition-[transform,filter] active:duration-[80ms] active:ease-glide"
       >
-        <Save size={14} />
+        <Save size={14} strokeWidth={1.6} />
         {saving ? tc("saving") : saved ? tc("saved") : tc("save")}
       </button>
     </div>

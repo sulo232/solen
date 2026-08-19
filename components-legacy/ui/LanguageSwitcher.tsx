@@ -73,7 +73,7 @@ export default function LanguageSwitcher({ locale, variant = "header" }: { local
         >
           <Globe size={16} strokeWidth={1.9} className="text-s-ink-2" aria-hidden />
           <span>{LOCALE_FULL[locale]?.name ?? "Deutsch"}</span>
-          <ChevronRight size={15} className="text-s-ink-2" aria-hidden />
+          <ChevronRight size={15} strokeWidth={1.9} className="text-s-ink-2" aria-hidden />
         </button>
         <Sheet isOpen={open} onOpenChange={setOpen} height="auto" aria-label={tSD("selectLanguage")}>
           <div className="px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-1">

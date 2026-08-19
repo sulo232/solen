@@ -137,7 +137,7 @@ export function SalonReviews({
             DirectionSegmented.tsx). Compact star + average + grey count line, replacing the
             old 5-star row + big number. */}
         <div className="mt-4 flex items-center gap-2">
-          <Star size={16} stroke="none" aria-hidden className="fill-s-star" />
+          <Star size={16} strokeWidth={1.9} stroke="none" aria-hidden className="fill-s-star" />
           <span className="font-display text-[20px] font-bold leading-none text-s-ink tabular-nums">
             {average?.toFixed(1) ?? "-"}
           </span>

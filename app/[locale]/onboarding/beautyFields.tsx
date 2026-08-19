@@ -86,8 +86,8 @@ export function CatIcon({ name }: { name: string }) {
 }
 
 export const INTEREST_ICON: Record<string, React.ReactNode> = {
-  top_rated: <Star size={20} aria-hidden />,
-  deals: <Tag size={20} aria-hidden />,
-  favorites: <Heart size={20} aria-hidden />,
-  spa: <Droplet size={20} aria-hidden />,
+  top_rated: <Star size={20} strokeWidth={2.2} aria-hidden />,
+  deals: <Tag size={20} strokeWidth={2.2} aria-hidden />,
+  favorites: <Heart size={20} strokeWidth={2.2} aria-hidden />,
+  spa: <Droplet size={20} strokeWidth={2.2} aria-hidden />,
 };

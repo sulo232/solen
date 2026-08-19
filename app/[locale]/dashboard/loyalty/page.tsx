@@ -91,7 +91,7 @@ export default function LoyaltyDashboardPage() {
           {/* Scanner */}
           <div className="rounded-[12px] bg-white border border-s-ink/5 p-4">
             <div className="flex items-center gap-2 mb-4">
-              <QrCode size={18} className="text-s-coral" />
+              <QrCode size={18} strokeWidth={1.9} className="text-s-coral" />
               <h3 className="font-heading text-sm font-semibold text-s-ink">
                 {t("scanHeading")}
               </h3>

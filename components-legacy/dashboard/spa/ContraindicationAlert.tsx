@@ -29,7 +29,7 @@ export default function ContraindicationAlert({ intakeData }: ContraindicationAl
 
   return (
     <div className="flex gap-3 p-3 rounded-[10px] bg-orange-50 border border-orange-200 mb-4">
-      <ShieldAlert size={15} className="text-orange-500 shrink-0 mt-0.5" />
+      <ShieldAlert size={15} strokeWidth={1.9} className="text-orange-500 shrink-0 mt-0.5" />
       <div className="flex-1 min-w-0">
         <p className="text-xs font-heading text-orange-600 mb-1">
           {t("contraindicationTitle")}

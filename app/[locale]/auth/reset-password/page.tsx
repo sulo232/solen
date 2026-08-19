@@ -118,7 +118,7 @@ export default function ResetPasswordPage() {
         <div className="rounded-card border border-s-border bg-white p-8 shadow-elevation-1">
           <div className="text-center mb-6">
             <div className="mx-auto w-14 h-14 rounded-[14px] flex items-center justify-center mb-3 bg-s-bg-sunken">
-              <Lock size={24} className="text-s-ink" />
+              <Lock size={24} strokeWidth={2.4} className="text-s-ink" />
             </div>
             <p className="text-[12px] font-heading uppercase tracking-[.18em] text-s-ink/45 mb-2">
               Konto-Wiederherstellung
@@ -132,7 +132,7 @@ export default function ResetPasswordPage() {
           {linkError ? (
             <div className="flex flex-col items-center gap-3 py-4 text-center">
               <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-[14px] bg-s-error-bg">
-                <AlertCircle size={22} className="text-s-error" />
+                <AlertCircle size={22} strokeWidth={2.2} className="text-s-error" />
               </div>
               <p className="font-heading text-base text-s-ink">Link ungültig oder abgelaufen</p>
               <p className="text-xs font-body text-s-ink-2">
@@ -166,7 +166,7 @@ export default function ResetPasswordPage() {
                   className="absolute right-1 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center text-s-ink-2 hover:text-s-ink transition-colors"
                   aria-label={showPassword ? "Passwort verbergen" : "Passwort anzeigen"}
                 >
-                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  {showPassword ? <EyeOff size={16} strokeWidth={1.9} /> : <Eye size={16} strokeWidth={1.9} />}
                 </button>
               </div>
 

@@ -126,7 +126,7 @@ export function SalonLightbox({
           onClick={onClose}
           className="grid h-10 w-10 place-items-center rounded-full bg-white/10 text-white backdrop-blur-md transition-[colors,transform] hover:bg-white/20 active:scale-[0.94] active:duration-[80ms] active:ease-glide"
         >
-          <X size={20} />
+          <X size={20} strokeWidth={2.2} />
         </button>
       </div>
 
@@ -146,8 +146,8 @@ export function SalonLightbox({
             onClick={prev}
             className="absolute left-1 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-white/10 text-white backdrop-blur-md transition-[colors,transform] hover:bg-white/20 active:scale-[0.94] active:duration-[80ms] active:ease-glide md:left-4 md:h-11 md:w-11"
           >
-            <ChevronLeft size={20} className="md:hidden" />
-            <ChevronLeft size={22} className="hidden md:block" />
+            <ChevronLeft size={20} strokeWidth={2.2} className="md:hidden" />
+            <ChevronLeft size={22} strokeWidth={2.2} className="hidden md:block" />
           </button>
         )}
 
@@ -165,8 +165,8 @@ export function SalonLightbox({
             onClick={next}
             className="absolute right-1 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-white/10 text-white backdrop-blur-md transition-[colors,transform] hover:bg-white/20 active:scale-[0.94] active:duration-[80ms] active:ease-glide md:right-4 md:h-11 md:w-11"
           >
-            <ChevronRight size={20} className="md:hidden" />
-            <ChevronRight size={22} className="hidden md:block" />
+            <ChevronRight size={20} strokeWidth={2.2} className="md:hidden" />
+            <ChevronRight size={22} strokeWidth={2.2} className="hidden md:block" />
           </button>
         )}
       </div>

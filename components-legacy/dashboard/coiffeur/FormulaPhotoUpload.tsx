@@ -78,11 +78,11 @@ export default function FormulaPhotoUpload({
           </>
         ) : uploading === type ? (
           <div className="absolute inset-0 flex items-center justify-center bg-s-bg-sunken">
-            <Upload size={16} className="text-s-ink/30 animate-bounce" />
+            <Upload size={16} strokeWidth={1.9} className="text-s-ink/30 animate-bounce" />
           </div>
         ) : (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-1">
-            <Camera size={16} className="text-s-ink/25" />
+            <Camera size={16} strokeWidth={1.9} className="text-s-ink/25" />
             <span className="text-[12px] text-s-ink/30">{t("photoAdd")}</span>
           </div>
         )}

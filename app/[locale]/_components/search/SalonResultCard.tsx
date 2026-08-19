@@ -324,7 +324,7 @@ function SalonResultCardInner(props: SalonResultCardProps) {
             </CardMeta>
           )}
         </div>
-        <ArrowRight size={18} className="shrink-0 self-center text-s-ink" aria-hidden />
+        <ArrowRight size={18} strokeWidth={1.9} className="shrink-0 self-center text-s-ink" aria-hidden />
       </Link>
     );
   }

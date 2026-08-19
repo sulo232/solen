@@ -133,9 +133,9 @@ export default function RewardsView({ status, locale }: { status: LoyaltyStatus;
             {tierLabel(status.tier)}
           </span>
           {status.tier === "platinum" ? (
-            <Crown size={24} className="text-s-ink" aria-hidden />
+            <Crown size={24} strokeWidth={2.4} className="text-s-ink" aria-hidden />
           ) : status.tier === "gold" ? (
-            <Award size={24} className="text-s-star" aria-hidden />
+            <Award size={24} strokeWidth={2.4} className="text-s-star" aria-hidden />
           ) : null}
         </div>
 
@@ -238,7 +238,7 @@ export default function RewardsView({ status, locale }: { status: LoyaltyStatus;
           href={`/${locale}/search`}
           className="flex h-[52px] w-full items-center justify-center gap-2 rounded-btn bg-s-ink text-[15.5px] font-bold text-white transition-transform active:scale-[0.985]"
         >
-          <Search size={16} aria-hidden /> {t("cta")}
+          <Search size={16} strokeWidth={1.9} aria-hidden /> {t("cta")}
         </Link>
       </motion.div>
     </motion.main>

@@ -46,7 +46,7 @@ export default function TeamStep({ onSaved }: TeamStepProps) {
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-2">
         <div className="w-12 h-12 rounded-[12px] bg-s-ink/10 flex items-center justify-center">
-          <Users size={22} className="text-s-accent" />
+          <Users size={22} strokeWidth={2.2} className="text-s-accent" />
         </div>
         <div>
           <h2 className="font-heading text-xl text-s-ink">
@@ -104,7 +104,7 @@ export default function TeamStep({ onSaved }: TeamStepProps) {
           {invites.map((inv, i) => (
             <div key={i} className={["flex items-center gap-3 px-5 py-3", i > 0 ? "border-t border-s-border" : ""].join(" ")}>
               <div className="w-8 h-8 rounded-full bg-s-ink/10 flex items-center justify-center">
-                <UserPlus size={14} className="text-s-accent" />
+                <UserPlus size={14} strokeWidth={1.6} className="text-s-accent" />
               </div>
               <div>
                 <p className="text-sm text-s-ink">{inv.name || inv.email}</p>
@@ -118,7 +118,7 @@ export default function TeamStep({ onSaved }: TeamStepProps) {
       )}
 
       <div className="bg-s-bg-surface rounded-[12px] px-4 py-3 flex items-start gap-2">
-        <Lightbulb size={14} className="text-s-ink/30 mt-0.5 shrink-0" />
+        <Lightbulb size={14} strokeWidth={1.6} className="text-s-ink/30 mt-0.5 shrink-0" />
         <p className="text-xs text-s-ink/40">
           {t("team.soloHint")}
         </p>
