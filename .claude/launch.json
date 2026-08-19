@@ -12,6 +12,20 @@
       "autoPort": false
     },
     {
+      "name": "Sheet preview (scratchpad 3300)",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--yes",
+        "serve",
+        "/private/tmp/claude-501/-Users-sulo-Documents-solen--claude-worktrees-design-system-consolidation-10167f/68d78dad-21dd-4632-a5a9-f1861516a718/scratchpad",
+        "--no-clipboard",
+        "--listen",
+        "3300"
+      ],
+      "port": 3300,
+      "autoPort": false
+    },
+    {
       "name": "Next dev (quirky-ellis on 3000)",
       "runtimeExecutable": "bash",
       "runtimeArgs": [
