@@ -2366,7 +2366,7 @@ function C1State({
         onClick={primary.onClick}
         className="mt-6 flex w-full max-w-xs items-center justify-center gap-2 rounded-btn bg-s-ink px-6 py-3.5 font-body text-[15px] font-semibold text-white transition-colors duration-150 hover:bg-black"
       >
-        {primary.Icon ? <primary.Icon size={18} strokeWidth={2} /> : null}
+        {primary.Icon ? <primary.Icon size={18} strokeWidth={1.9} /> : null}
         {primary.label}
       </button>
       {secondary ? (
