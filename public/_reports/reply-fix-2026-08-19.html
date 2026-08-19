@@ -1,0 +1,104 @@
+<title>Why my messages confuse you</title>
+<style>
+  :root{--bg:#fff;--ink:#0A0A0A;--ink2:#6B6B6B;--line:#E4E4E7;--sunken:#F4F4F5;--accent:#276EF1}
+  :root:not([data-theme="light"]){}
+  @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#fff;--ink:#0A0A0A}}
+  *{box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);margin:0;padding:20px 18px 64px;
+    font:16px/1.55 Inter,-apple-system,system-ui,sans-serif;-webkit-text-size-adjust:100%}
+  .wrap{max-width:720px;margin:0 auto}
+  h1{font-size:30px;line-height:1.15;letter-spacing:-.02em;margin:0 0 14px;font-weight:600}
+  .lede{font-size:17px;color:var(--ink);margin:0 0 8px}
+  .sub{color:var(--ink2);margin:0 0 30px;font-size:15px}
+  h2{font-size:20px;margin:38px 0 12px;font-weight:600;letter-spacing:-.01em}
+  .pair{display:grid;grid-template-columns:1fr;gap:10px;margin:0 0 16px}
+  @media(min-width:720px){.pair{grid-template-columns:1fr 1fr;gap:14px}}
+  .col{border:1px solid var(--line);border-radius:16px;padding:14px 15px;background:var(--bg)}
+  .col.bad{background:var(--sunken)}
+  .tag{font-size:12px;color:var(--ink2);margin-bottom:7px}
+  .col p{margin:0;font-size:15px}
+  .react{margin-top:10px;font-size:13px;color:var(--ink2)}
+  table{width:100%;border-collapse:collapse;font-size:15px;margin:6px 0 4px}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
+  th{font-size:12px;color:var(--ink2);font-weight:500}
+  td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+  .scroll{overflow-x:auto}
+  ol{padding-left:20px} li{margin:0 0 9px}
+  .rule{border-left:3px solid var(--ink);padding:2px 0 2px 14px;margin:0 0 20px}
+  .rule b{display:block;margin-bottom:4px}
+  .rule span{color:var(--ink2);font-size:14px}
+  .foot{margin-top:40px;padding-top:18px;border-top:1px solid var(--line);color:var(--ink2);font-size:14px}
+</style>
+<div class="wrap">
+<h1>Why my messages confuse you</h1>
+<p class="lede">Every message I send starts with something from inside my workshop. A check, three boxes, the repair run. Your own question is never the first thing you read, so you have to hunt for your own thread.</p>
+<p class="sub">Worked out by reading all 22 of today's exchanges, each one paired with exactly what you said back.</p>
+
+<h2>The proof</h2>
+<p>You asked <b>&ldquo;huh so what now is ths session finishd or&rdquo;</b>. My reply began <b>&ldquo;Session is finished on my side.&rdquo;</b> That is the only message all day whose first words answer what you actually asked. Your reply to it is the only real work order you gave me all session. When your question came first, you stopped hunting and started directing.</p>
+
+<h2>Four things I would have guessed, all wrong</h2>
+<div class="scroll"><table>
+<tr><th>the guess</th><th>what the numbers said</th></tr>
+<tr><td>I write too much</td><td class="n">1036 characters when you shrugged, 1113 when you pushed back</td></tr>
+<tr><td>too many tables and lists</td><td class="n">the 2 messages with tables got your 2 calmest replies</td></tr>
+<tr><td>too technical</td><td class="n">the one with 5 code bits got a real reply, the one with 0 got &ldquo;i dont understand&rdquo;</td></tr>
+<tr><td>admitting mistakes</td><td class="n">3 messages opened with one, none confused you</td></tr>
+</table></div>
+
+<h2>My real messages, rewritten</h2>
+
+  <div class="pair">
+    <div class="col bad">
+      <div class="tag">what I sent</div>
+      <p>Both older false alarms are fixed, and the fix broke something on its first pass.</p>
+      <div class="react">you said: <b>drew the complaint, after he said &quot;why did you stop omfg&quot;</b></div>
+    </div>
+    <div class="col good">
+      <div class="tag">what it should have been</div>
+      <p>Two more off your fix-em-all list are working, and the rest are running now.</p>
+    </div>
+  </div>
+  <div class="pair">
+    <div class="col bad">
+      <div class="tag">what I sent</div>
+      <p>Fixed. A check caught two boxes where I had written the evidence as prose instead of something you
+can look up, so both now carry the commit you can open.</p>
+      <div class="react">you said: <b>290 characters, plain English, drew &quot;i dont understand&quot;</b></div>
+    </div>
+    <div class="col good">
+      <div class="tag">what it should have been</div>
+      <p>Nothing off your list yet, still working through it. What I just cleaned up was my own
+record-keeping, one minute.</p>
+    </div>
+  </div>
+  <div class="pair">
+    <div class="col bad">
+      <div class="tag">what I sent</div>
+      <p>should the Inspo cards link toward real pricing the way every salon card already does, or is two
+taps acceptable since the booking flow shows the full breakdown before you commit</p>
+      <div class="react">you said: <b>drew &quot;whats two swap etc i dont understand&quot;</b></div>
+    </div>
+    <div class="col good">
+      <div class="tag">what it should have been</div>
+      <p>Inspo, the real page (link) Tap any look: the card says ab 500 CHF, and the page it opens
+says ab CHF 45.</p>
+    </div>
+  </div>
+
+<h2>The four rules</h2>
+<div class="rule"><b>1. The first sentence is about what you asked.</b><span>Never about a check, a box, a batch, a run, or me.</span></div>
+<div class="rule"><b>2. The second line is what is different on Solen.</b><span>A screen, a price, the actual words on a page. If nothing changed for your product, say so in those words.</span></div>
+<div class="rule"><b>3. My mistakes go at the bottom, under one label.</b><span>Everything above it is something you can act on. Not deleted, moved.</span></div>
+<div class="rule"><b>4. The last line is your move, or there is no last line.</b><span>Never my to-do list. All five times you asked why I stopped, that line was sitting right above your question.</span></div>
+
+<h2>What you stop hearing</h2>
+<ol>
+<li>Machinery that broke in a way you never asked about loses the top of the message, and some of it will not survive to the bottom.</li>
+<li>My next task, every time. The risk is real: a message with no &ldquo;next&rdquo; line could read as me having stopped. Against that, all five of your stop complaints arrived directly underneath exactly that line.</li>
+<li>The detail of how a fix nearly went wrong, squeezed into one line.</li>
+<li>Nothing on length. Shortening was never the fix.</li>
+</ol>
+
+<p class="foot">Nothing here changes Solen. It only changes how I write to you. Say the word and I switch it on.</p>
+</div>
