@@ -348,6 +348,44 @@ Order: the three that can be undone from git first, since a bad repair there is 
 - [x] `prelaunch-reality-gate.py` commit 1e0e98dc7. REPRODUCED AND FIXED (~/.claude 72d62b1). Two verbatim idioms were unconditional, so an ordinary staging sentence was refused. My FIRST fix was worse: putting the environment words in the general hedge defused the whole message, so a real harm claim with an unrelated "Staging is fine." stopped blocking. Caught by an abuse case in the same run. Final scoping attaches the qualifier to those two branches only, within one sentence. verified: suite 15/15, founding incident blocks, real harm blocks, staging sentence passes, tunnel-preview passes, abuse case blocks.
 - [x] `stock-photo-gate.py` commit 1e0e98dc7. NOT REPRODUCED. verified: I imported its own 15 fixtures and drove EVERY one through the real hook end to end, comparing the pure function against the hook itself. 0 of 15 disagree, and the case I thought was a false positive passes correctly. My earlier reading was wrong because I RETYPED the fixture from a grep and joined two string literals into a sentence its suite never contained.
 
+## THE ADVERSARY ON TODAY'S OWN WORK (2026-08-19). TWO DEFECTS, IN THE THING BUILT TO FIND DEFECTS.
+
+`_endtoend.py` was written this session to close the gap between "the rule is right" and "the gate
+actually stops something". An agent that did not write it broke it in under an hour, twice, and one
+of the two is THE SAME defect that produced a false verdict earlier the same day:
+
+1. **A relative hook name drove whichever copy sat nearest the caller's cwd.** Several hooks exist
+   twice on disk under one name with genuinely different contents: `mockup-english-gate.py` is live
+   in `~/.claude` and dead in the project copy; `no-black-selected-gate.py` is 155 lines against
+   425. Reproduced: same name, same payload, only `cwd` changed, blocked=True from one directory
+   and blocked=False from the other. A harness that flips a verdict on the caller's working
+   directory is worse than no harness, because it reports confidently either way.
+2. **A hanging hook crashed the caller** instead of being recorded, so one hang would kill a whole
+   batch run. `hook-probe.py` has always reported HANG and carried on.
+
+Both fixed (~/.claude 5bd3915), suite 5/5 -> 8/8. An ambiguous name now RAISES rather than guessing.
+Its four-shape refusal detection survived six adversarial shapes with no false positive.
+
+### The i18n widening: it works, and it had live ammunition
+
+**Exactly two real sites in the whole repo** carry the widened shape, both in
+`components-legacy/ui/ImageUploader.tsx`: a file-too-large message and an upload-failed message,
+both German, both shipped, both completely invisible to this gate before today. Both now block.
+Then 49 real files were driven through it: 14 refused, 12 genuine, and **0 of the false positives
+came from either of today's changes**.
+
+- [x] Three PRE-EXISTING false positives in `i18n-write-gate.py`, found during that sweep, none of
+      them from today's changes, all recorded rather than fixed on the spot because widening on the
+      way out of a long session is how the 2026-08-18 regressions happened:
+      (a) the brand logotype `<Link>Solen</Link>` trips the single-word floor. The gate's own
+      message anticipates this class ("a brand name? put i18n-ok"), so it is a nuisance, not a hole.
+      (b) NO COMMENT STRIPPING AT ALL, so example JSX inside a `/** ... */` doc block reads as a
+      live violation (`CardText.tsx`, `<CardName>Salon Maria</CardName>`). Its sibling
+      `mockup-english-gate.py` does strip comments; this one never learned to.
+      (c) `JSX_TEXT` matches `>...<`, and an arrow function `(sl) => sl.available` supplies a stray
+      `>`, so a chunk of raw TypeScript in `DateTimeStep.tsx` is captured as if it were prose.
+      (b) and (c) are real defects on real shipped files and are the next thing to fix here.
+
 ## OPEN, WAITING ON HIM , tracked as boxes so they cannot be lost in prose
 - [ ] PARKED 2026-08-19 . Translate the 263 refund-flow strings into real formal German, French and Italian, or leave them English and carry it as a known gap? . from: the key-parity check failing surfaced that de, fr and it each have 263 of 263 refundFlow strings byte-identical to English, on the screen where a customer asks for money back. Not machine-translated unilaterally: it is money and cancellation terms, and COPY_LAW requires formal Sie/vous/Lei.
 
