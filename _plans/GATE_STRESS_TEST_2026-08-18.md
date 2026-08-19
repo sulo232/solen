@@ -395,6 +395,8 @@ came from either of today's changes**.
 
 ## OPEN, WAITING ON HIM , tracked as boxes so they cannot be lost in prose
 - [ ] PARKED 2026-08-19 . Translate the 263 refund-flow strings into real formal German, French and Italian, or leave them English and carry it as a known gap? . from: the key-parity check failing surfaced that de, fr and it each have 263 of 263 refundFlow strings byte-identical to English, on the screen where a customer asks for money back. Not machine-translated unilaterally: it is money and cancellation terms, and COPY_LAW requires formal Sie/vous/Lei.
+- [ ] PARKED 2026-08-19 . Swap in the new reply rules at `_plans/REPLY_FIX_PROPOSAL.md`, or tell me the version you actually want? . from: two councils read all 22 real message-and-reaction pairs of this session and found the cause of "i dont understand what ur talking abt ths output": every message opens with a noun from inside my own work instead of the thing he asked about. Proposal is 222 lines against the 381 it would replace, four rules, each with a real before/after from his own transcript. `~/.claude/REPLY_TEMPLATES.md` deliberately untouched: replacing how I talk to him is his call, not mine.
+
 
 
 These are the only things left in this workstream. Every one needs a decision only he can make,
