@@ -160,6 +160,8 @@ was the same broken walker that read 189 of 3,186 rules, so it never saw it.
       2026-08-02, both quoted in Header.tsx). Not a defect. Do not restore.
 
 ## OPEN, WAITING ON HIM , tracked as boxes so they cannot be lost in prose
+- [ ] PARKED 2026-08-19 . Translate the 263 refund-flow strings into real formal German, French and Italian, or leave them English and carry it as a known gap? . from: the key-parity check failing surfaced that de, fr and it each have 263 of 263 refundFlow strings byte-identical to English, on the screen where a customer asks for money back. Not machine-translated unilaterally: it is money and cancellation terms, and COPY_LAW requires formal Sie/vous/Lei.
+
 
 These are the only things left in this workstream. Every one needs a decision only he can make,
 which is why none of them is done. They stay open until he answers.
