@@ -159,6 +159,33 @@ was the same broken walker that read 189 of 3,186 rules, so it never saw it.
 - [x] HEADER: renders 0px tall and static on mobile home BY HIS OWN INSTRUCTION (2026-08-01 and
       2026-08-02, both quoted in Header.tsx). Not a defect. Do not restore.
 
+## THE CHECKER ITSELF WAS BROKEN (2026-08-19, found by an adversary, fixed same turn)
+
+`gate-eval.py` is the tool GATE_LAW step 8 requires before arming anything. It grades a hook by
+IMPORTING it. 26 of 263 python hooks run their stdin-reading `main()` at module scope with no
+`if __name__ == "__main__":` guard, so importing one RUNS it: it reads stdin, gets nothing, and
+calls `sys.exit(0)`. `SystemExit` inherits from `BaseException`, not `Exception`, so it walked
+through every `except Exception` in gate-eval and killed the process right after section 1.
+
+No error. No message. Output identical in shape to a clean finish. Of the four security gates
+driven this session, THREE were never graded at all and every report read as if they had been.
+One (`storage-rls-bypass-gate`) could hang the evaluator indefinitely rather than exit, whenever
+stdin was not already at EOF.
+
+**Fixed in `~/.claude/gate-eval.py`, two narrow changes.** Stdin is closed for the duration of the
+import, so a hook that reads it cannot block. A module that exits during import raises a named
+error the caller reports as NOT READY with the one-line remedy, and exits 2, instead of dying
+silently. Production behaviour is untouched: as a real hook each is run as a subprocess where
+`__name__` is always `"__main__"`.
+
+verified: control first (a hook WITH the guard still prints all 4 sections and its closing line);
+then the three that used to die now each print "NOT READY , the evaluation could not run on this
+hook"; then the hang case re-driven with a deliberately open pipe returns a verdict instead of
+blocking (was: killed at 120s).
+
+- [ ] 26 hooks still lack the guard, so gate-eval reports NOT READY on each until they get it.
+      That is the correct report and not a regression: it was always true, it was just invisible.
+
 ## OPEN, WAITING ON HIM , tracked as boxes so they cannot be lost in prose
 - [ ] PARKED 2026-08-19 . Translate the 263 refund-flow strings into real formal German, French and Italian, or leave them English and carry it as a known gap? . from: the key-parity check failing surfaced that de, fr and it each have 263 of 263 refundFlow strings byte-identical to English, on the screen where a customer asks for money back. Not machine-translated unilaterally: it is money and cancellation terms, and COPY_LAW requires formal Sie/vous/Lei.
 

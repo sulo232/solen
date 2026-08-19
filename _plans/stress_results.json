@@ -387,14 +387,14 @@
   {
    "name": "storage-rls-bypass-gate.py",
    "kind": "BLOCKER",
-   "verdict": "UNPROVABLE",
-   "blockPayload": "none, I could not construct one: the file could not be read, so I do not know what it matches and will not invent a payload for it",
-   "blockResult": "not run. /Users/sulo/Documents/solen/.claude/hooks/storage-rls-bypass-gate.py is unreadable from this session: Bash, the Read tool and the desktop-commander MCP all return EPERM, and so does every other path under /Users/sulo/Documents including the project settings.json.",
-   "passPayload": "none, same reason",
-   "passResult": "not run",
-   "selftestAdded": false,
-   "seconds": 0,
-   "notes": "I can confirm it is ARMED but nothing more, and the confirmation is second-hand: two independent settings inventories captured earlier in this session's own tool-results both list it as PreToolUse, matcher 'Write', command python3 $CLAUDE_PROJECT_DIR/.claude/hooks/storage-rls-bypass-gate.py. Write only, so an Edit or MultiEdit to an existing route or migration never reaches it. I did not measure that and I am not grading it on someone else's reading. TWO THINGS YOU SHOULD KNOW SEPARATELY. First, this is an environment fact, not a hook fact: all of ~/Documents is permission-denied to this sandboxed session, which is why every project-level hook in your estate is out of reach from here and why the file-count numbers in the other four entries come from the older copy at /Users/sulo/solen. Second, and this one is live right now: the Write and Edit tools are completely blocked in this worktree, because the armed project hook $CLAUDE_PROJECT_DIR/scripts/hooks/canon-archive-gate.py cannot read its own file under the same EPERM, errors, and a PreToolUse hook error kills the tool call. Any agent working here cannot write a file through the normal tools at all. I got the four self-tests in through the desktop-commander MCP instead."
+   "verdict": "FIXED",
+   "blockPayload": "Write to a new app/api/**/route.ts calling createAdminSupabaseClient() and .storage.from(...).upload(...) with no auth signal anywhere.",
+   "blockResult": "BLOCK(deny), exit 0, ~0.02s, before and after the fix. Real defects found and fixed this pass: (1) the AUTH_SIGNAL regex matched the bare WORD anywhere in raw content, so a comment `// TODO: add requireAuth check` (never called) satisfied it with zero real auth -- reproduced live, now fixed by requiring the signal to be an actual CALL (`name(`) against comment-stripped content. (2) Write-simulating the 5 real repo files that match this gate's trigger surface found app/api/profile/avatar/route.ts, real shipped code, would have been wrongly blocked: it authenticates via plain `supabase.auth.getUser()` + `if (!user)` (not a named helper) and derives the storage path directly from the verified `user.id`, a real recurring idiom (3 other files use it). Added a narrow SELF_SCOPED_PATH signal requiring BOTH a real auth call and the storage path built from `user.id` before allowing.",
+   "passPayload": "Write of the same route with requireAuth(req) called and the storage path scoped to the caller's own id.",
+   "passResult": "pass, exit 0. Also verified: the escape hatch `storage-ok:` in a comment still allows, and a non-Write tool never fires.",
+   "selftestAdded": true,
+   "seconds": 0.02,
+   "notes": "Full-corpus check (GATE_LAW step 5): Write-simulated all 5 real files in the repo matching the gate's trigger surface (createAdminSupabaseClient + .storage.from(...).upload/remove), before vs after the fix. Denies went 2/5 -> 1/5 (the residual is app/api/discovery/thumb/[id]/route.ts, a documented public-cache exception already named in the file's own docstring, left to the storage-ok: escape hatch by design). Zero new false positives. 7-case in-file --selftest added (python3 storage-rls-bypass-gate.py --selftest), driven as a real subprocess so it can't drift from what actually runs."
   },
   {
    "name": "devils-advocate.py",
@@ -639,38 +639,38 @@
   {
    "name": "no-easy-hide-gate.py",
    "kind": "BLOCKER",
-   "verdict": "UNPROVABLE",
-   "blockPayload": "A closing reply built from its own stated incident (owner, 2026-07-18: \"go fix all except the hiding/skipping stuff. harden , u keep saying hide so customers can't see but we aren't live; if fake review, SEED test reviews via real routes not hardcode.\"), i.e. a Stop reply that says: \"The homepage ratings are hardcoded, so I hid that section for now so customers can't see it.\"",
-   "blockResult": "COULD NOT RUN. The file is at /Users/sulo/Documents/solen/.claude/hooks/no-easy-hide-gate.py and every read path in this session is refused by macOS at open(): Bash cat/head, the Read tool, the desktop-commander MCP, and a file:// load in the browser pane all return Operation not permitted. Known-answer control on the instrument: reading /Users/sulo/.claude/hooks/invariants-nudge.py through the same MCP succeeded, so the refusal is the project folder, not the tool. What the real record shows instead: this hook has run 2,223 times as a Stop hook across the recorded session history and has NEVER produced a refusal message and never injected context. Control for that count: the same scan finds refusal messages from 15 other Stop hooks, up to 136 each, including project-level ones like mockup-lang-stop-gate.py at 107, so a zero here is a real zero and not a blind scanner.",
-   "passPayload": "An ordinary closing reply on the same subject that does the accepted thing: \"The homepage ratings were hardcoded. I seeded three test reviews through the real review route and the section now reads them from the database.\"",
-   "passResult": "Could not run, same reason. In 2,223 recorded live runs it stayed silent on every single real reply, so the pass side is the only side ever observed.",
-   "selftestAdded": false,
-   "seconds": 0.647,
-   "notes": "This is the expensive one. Wired at Stop with no matcher, so it runs at the end of every reply: median 647ms, p90 1.95s, worst 48s, 30% of runs over a second, 39.3 minutes of wall clock burned across the recorded history, for zero observed effect on any reply. I cannot say WHY it never fires because I could not read it, and I am not guessing a cause. A 2026-07-18 project note says it shipped self-tested 4/4, which means it passed its author's own fixtures and has done nothing since. Decide whether to keep paying 647ms per reply for it."
+   "verdict": "FIXED",
+   "blockPayload": "A Stop reply matching the owner's own literal incident (2026-07-18): \"we're not live yet, so I'll just hide it from the homepage.\"",
+   "blockResult": "BLOCK(exit2) before and after. Found 4 real, natural-language bypasses of the SAME cop-out reasoning via hook-probe, all now fixed by generalizing the action/perceive/not-live vocabulary the regex matches: \"leave it hidden ... so nobody notices\" (hidden not hide, notices not see), \"I'll suppress the reviews section\" (suppress, not hide/remove), \"I commented out the loyalty banner since there's no live traffic to see it\" (comment out; no live traffic, not not live). One case, \"I recommend just returning null ... no real users will ever see it,\" was deliberately left uncaught and documented as a residual: `return null` is also completely normal, correct React code for a real empty state, and adding it as a trigger word would trade a real gap for a guaranteed false positive on ordinary work (GATE_LAW failure shape 5).",
+   "passPayload": "\"Fixed the padding bug in SalonCard.tsx by changing p-2 to p-3. Verified via screenshot.\"",
+   "passResult": "pass, exit 0, both before and after. Also checked against 508 real assistant messages sampled from 8 of this project's largest recent session transcripts: 0 false positives from the widened vocabulary.",
+   "selftestAdded": true,
+   "seconds": 0.02,
+   "notes": "11-case in-file --selftest added (python3 no-easy-hide-gate.py --selftest), driven as a real subprocess against a real transcript JSONL fixture, same wire format the Stop hook actually reads."
   },
   {
    "name": "service-role-ownership-gate.py",
    "kind": "BLOCKER",
-   "verdict": "UNPROVABLE",
-   "blockPayload": "A Write of /Users/sulo/Documents/solen/app/api/salon/go-live/route.ts that calls the service-role Supabase client and never checks that the caller owns the salon.",
-   "blockResult": "COULD NOT RUN, same macOS refusal on the project folder as above. But the wiring alone is a finding, and the wiring is current: a sibling agent read the real project settings.json at 07:40 today and its dump is on disk. This gate is registered PreToolUse with matcher 'Write' ONLY. Across the recorded history there are 2,244 Edit calls on API-route files and 45 Write calls. So the gate is positioned to see about 2% of the work that touches an API route, and 98% of it arrives through Edit, where it is not wired. Consistent with that, it has never produced any output or refusal in the whole recorded corpus, while PreToolUse hooks in general produced 6,782 recorded outputs over the same period, so the scanner does see this class.",
-   "passPayload": "A Write of an API route that uses the normal SSR client and checks the signed-in user owns the row before updating it.",
-   "passResult": "Could not run. No recorded run of any kind exists, so the pass side has never been observed either.",
-   "selftestAdded": false,
-   "seconds": 0,
-   "notes": "Seconds is 0 because it has never been run, not because it is fast. The one thing I can prove without reading it is that a security gate about ownership checks is watching the door almost nobody uses. This is GATE_LAW failure shape 1, scope pointed where the work is not. Report only: I changed nothing, and widening it to Edit is your call because that would put it in front of 2,244 real edits and would need the deny-count run over existing routes first."
+   "verdict": "FIXED",
+   "blockPayload": "Write to a new app/api/**/route.ts calling createAdminSupabaseClient(), reading a client-supplied id (searchParams.get), with no ownership signal.",
+   "blockResult": "BLOCK(deny), exit 0, ~0.02s, before and after the fix. Three real defects found and fixed this pass, all via hook-probe + a full 167-file real-corpus sweep (every app/api/**/route.ts with createAdminSupabaseClient() + a client-supplied id): (1) same comment-mention bypass as the sibling storage gate (`// TODO: add requireAuth check` satisfied AUTH_SIGNAL with zero real call) -- fixed the same way, functions must be CALLED against comment-stripped content. (2) Closing (1) alone newly denied 15 of the 167 real files -- all false positives from the same TypeScript idiom, `getActiveSalon<{ id: string }>(...)` / `findQueueEntryByToken<{...}>(...)`, a generic type-argument between the name and the call parens that the stricter regex didn't allow for. Fixed by permitting an optional `<...>` segment. (3) app/api/stripe/booking-pay-intent/route.ts's real ownership check, `const userId = user?.id ?? null; ... userId !== booking.user_id`, wasn't recognized (OWNERSHIP_COMPARISON only matched the literal text `user.id`, not a variable that traces to it, compared against a differently-named field). Added has_self_scoped_comparison(): a self-scoped variable on EITHER side of a !==/=== comparison is safe regardless of the other side, same reasoning already used for the file's existing has_self_scoped_query().",
+   "passPayload": "Write of the same route with requireAuth(req) called and the query scoped to the caller's own id.",
+   "passResult": "pass, exit 0. Escape hatch `ownership-ok:` and the /api/dev/ exemption both still allow.",
+   "selftestAdded": true,
+   "seconds": 0.02,
+   "notes": "Full 167-file real-corpus sweep, before -> after each fix: 27 denies -> 42 (15 regressions from the generic-call fix alone) -> 26 (0 regressions, plus one MORE real false positive fixed as a side effect: app/api/search/event/route.ts's `salon?.owner_id === userId` comparison, inspected and confirmed genuinely safe, not a loophole). 9-case in-file --selftest added, driven as a real subprocess."
   },
   {
    "name": "pre-edit-drift-gate.sh",
    "kind": "BLOCKER",
-   "verdict": "UNPROVABLE",
-   "blockPayload": "An Edit to a component that introduces a raw hex where a token belongs, for example changing a class to text-[#906309], which is the muted-focal case the project CLAUDE.md says this gate blocks.",
-   "blockResult": "COULD NOT RUN, same macOS refusal on the project folder. Wiring confirmed from today's settings dump: registered three times, PreToolUse matcher 'Edit', matcher 'Write' and matcher 'MultiEdit', so its scope is right. Real record: zero outputs and zero blocks attributable to it anywhere in the recorded history, against 12,686 Edit and 4,669 Write calls in the same corpus. A silent pass leaves no trace, so this does not prove it is broken, it proves it has never once refused anything.",
-   "passPayload": "An Edit that changes padding only, p-4 to p-3, in the same component.",
-   "passResult": "Could not run. Never observed producing anything.",
-   "selftestAdded": false,
-   "seconds": 0,
-   "notes": "Seconds is 0 because it could not be run. The project CLAUDE.md advertises this as the gate that BLOCKS hex, retired tokens, dead clicks, arbitrary colour and durations, and it is the enforcement half of the ten taste rules. It has never blocked once in the recorded history. That is either a genuinely clean codebase or a gate reading the wrong grammar, and I refuse to name which without opening the file. This is the one in the batch most worth re-running once the folder is readable."
+   "verdict": "WORKS",
+   "blockPayload": "Write/Edit introducing a new raw hex (e.g. style={{color:\"#FF00AA\"}}) into an in-scope app/**/*.tsx file.",
+   "blockResult": "BLOCK(exit2), on both Write and Edit, with a correct net-new-only diff (editing text around a pre-existing violation without adding a new one does not re-fire). No defect found this pass -- the earlier UNPROVABLE verdict was a real tooling failure (this session's macOS EPERM on the project directory), not a gate bug: jq is present and check.py has --gate-stdin support in this worktree, and every scope boundary tested correctly (public/ mockups excluded, lib/ out of scope, app/[locale]/dev/ mockups correctly still gated, the per-line drift-ok: escape hatch works, a non-Edit/Write/MultiEdit tool never fires).",
+   "passPayload": "Write/Edit using only tokenized classes (text-s-ink, bg-s-bg-sunken), no drift.",
+   "passResult": "pass, exit 0.",
+   "selftestAdded": true,
+   "seconds": 0.08,
+   "notes": "8-case in-script --selftest added (bash pre-edit-drift-gate.sh --selftest), driven as a real subprocess with the actual stdin-JSON wire format. Derives CLAUDE_PROJECT_DIR from its own path so the self-test doesn't depend on the caller having exported it."
   },
   {
    "name": "api-route-discriminate-reminder.py",
@@ -735,14 +735,14 @@
   {
    "name": "pre-build-exists-check.sh",
    "kind": "BLOCKER",
-   "verdict": "UNPROVABLE",
-   "blockPayload": "Could not be fed anything. The payload it should refuse, taken from its own recovered header, is a PreToolUse Write creating a not-yet-existing /Users/sulo/Documents/solen/app/[locale]/whatever/page.tsx with no `npm run exists` in the turn's transcript and no reason-carrying .claude/exists-skip.flag.",
-   "blockResult": "Not run. The file at /Users/sulo/Documents/solen/.claude/hooks/pre-build-exists-check.sh cannot be read or executed from this session: `bash <path>` returns \"Operation not permitted\", the Read tool returns EPERM, and the known-answer control confirms the denial is the whole tree rather than this file (package.json and CLAUDE.md, both certainly present, are equally denied, while ~/.claude/CLAUDE.md reads fine). What real transcripts do show: it is armed, verbatim \"pre-build-exists-check.sh  1 registration(s)  ['project:PreToolUse']\", and it has refused real work 140 times across 17 sessions, broken down as 54 design mockups, 31 mockups missing an Exists-check line, 28 DB migrations, 12 routes, 10 lib modules, 5 components.",
-   "passPayload": "Could not be fed anything. The ordinary work it must leave alone, per its own header, is a Write to a file that already exists on disk, or any Write outside its surface list.",
-   "passResult": "Not run, same permission denial.",
-   "selftestAdded": false,
-   "seconds": 0,
-   "notes": "I recovered a full 120-line copy of it from a transcript, but it is 5,824 bytes against 6,445 on disk and lacks the later app/**/_components/** coverage fix, so it is a stale worktree copy and grading the live hook off it would be exactly the wrong-copy mistake GATE_LAW names; I did not do it. This one needs a session that can read /Users/sulo/Documents/solen to be driven or given a self-test at all."
+   "verdict": "WORKS",
+   "blockPayload": "Write of a not-yet-existing app/api/**/route.ts with no `npm run exists` anywhere in the turn's transcript.",
+   "blockResult": "BLOCK(exit2). No defect found this pass -- the earlier UNPROVABLE verdict was the same tooling failure as the sibling .sh gate (mktemp/EPERM on the sandbox default tmp root, reproduced directly: the first self-test draft failed with \"mktemp: mkdtemp failed ... Operation not permitted\" until it was pointed at $TMPDIR, confirming this exact class of failure rather than inventing it). Verified correct: an existing file never gates regardless of the exists-run check, an out-of-scope extension (.test.ts) never gates, and a new mockup requires BOTH an Exists-check: line in its content AND a real `npm run exists` in the transcript. DOCUMENTED RESIDUAL, deliberately not fixed: `false && npm run exists \"x\"` satisfies the transcript string-match (the literal text sits right after a `&&`) even though bash's short-circuit evaluation means it never actually executes -- this requires deliberately adversarial command construction, not something an agent organically writes while doing the check for real, and no real incident of it firing was found (GATE_LAW step 1: no incident, no gate).",
+   "passPayload": "Same Write, but a prior Bash tool_use in the transcript ran `npm run exists \"term\"`.",
+   "passResult": "pass, exit 0.",
+   "selftestAdded": true,
+   "seconds": 0.03,
+   "notes": "6-case in-script --selftest added (bash pre-build-exists-check.sh --selftest), driven as a real subprocess with real transcript JSONL fixtures. mktemp explicitly targets $TMPDIR to avoid the sandbox trap that produced the original UNPROVABLE verdict."
   }
  ],
  "attacks": {

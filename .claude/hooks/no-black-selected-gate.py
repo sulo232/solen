@@ -120,6 +120,37 @@ def selftest():
          'const cls = selectedDateFilter === opt ? "bg-black text-white" : "bg-white";', 2),
         ("the genuine booking date picker must still pass", picker,
          'const cls = selectedDate === d ? "bg-s-accent text-white" : "bg-white";', 0),
+        # 2026-08-19 third stress-test pass, two defects reproduced with hook-probe.py.
+        ("a real <button> filter pill with a banned fill must block (reproduced "
+         "2026-08-19: was exempted by the bare tag name, and every accessible "
+         "filter pill IS a real <button>)", filt,
+         'function FilterPill({ active, label }) {\n'
+         '  const isSelected = active;\n'
+         '  const cls = isSelected && "bg-black text-white";\n'
+         '  return <button className={cls}>{label}</button>;\n'
+         '}', 2),
+        ("the identical content in a <div> must ALSO still block (known-answer "
+         "control for the case above)", filt,
+         'function FilterPill({ active, label }) {\n'
+         '  const isSelected = active;\n'
+         '  const cls = isSelected && "bg-black text-white";\n'
+         '  return <div className={cls}>{label}</div>;\n'
+         '}', 2),
+        ("a genuine primary commit <button> near an unrelated isActive tracker "
+         "must still pass (the specific commit words, not the tag name, do the "
+         "exempting)", fp,
+         'function WizardFooter({ isActive }) {\n'
+         '  const stepLabel = isActive ? "current" : "upcoming";\n'
+         '  return <button className="bg-s-ink text-white rounded-btn py-3" '
+         'onClick={onNext}>Weiter</button>;\n'
+         '}', 0),
+        ("an 80%-opacity ink tint near an unrelated 'selected' count must pass "
+         "(measured false positive, app/[locale]/dashboard/discovery-admin/"
+         "page.tsx:475, avoided by requiring the fill token not be opacity-"
+         "suffixed)", fp,
+         '<button onClick={selectAll} aria-label={selected.size === items.length '
+         '? t("deselectAllAria") : t("selectAllAria")} className="px-3 py-2 '
+         'rounded-btn bg-s-ink/5 text-sm">', 0),
     ]
     ok = 0
     for name, case_fp, content, expect_rc in cases:
@@ -356,8 +387,18 @@ def offenders(text):
 # it literally, because the caller appends a mandatory `\b` right after this group (see
 # SEL_NONTERNARY below) and `\b` cannot fire right after a `]` when the char after THAT is also
 # non-word (a quote) , ending the match on the hex digit keeps the boundary check meaningful.
+# 2026-08-19 stress-test fix: `(?!/)` on the four token alternatives. MEASURED,
+# app/[locale]/dashboard/discovery-admin/page.tsx:475: `bg-s-ink/5` (a 5%-opacity
+# tint, the kind used on countless ordinary buttons for a barely-visible resting
+# background) sitting near an UNRELATED `selected.size === items.length` aria-label
+# computation. Without the lookahead this reads as the banned solid selected-state
+# fill; is_ink_fill() (the ternary path, below) already requires bg-s-ink to be
+# paired with text-white/text-s-bg for exactly this reason, so this brings the
+# non-ternary co-occurrence path to the same bar instead of matching the bare
+# substring. A real banned fill is never opacity-suffixed (LOCKFILE: selected = a
+# SOLID bg-s-bg-sunken/bg-s-ink fill, never a tint), so this costs no true positive.
 FILL = (
-    r"bg-s-ink|border-s-ink|bg-s-accent|border-s-accent"
+    r"bg-s-ink(?!/)|border-s-ink(?!/)|bg-s-accent(?!/)|border-s-accent(?!/)"
     r"|bg-black|bg-(?:neutral|zinc|gray|slate|stone)-9(?:00|50)"
     r"|bg-\[#0a0a0a(?=\])|bg-\[#000000(?=\])|bg-\[#000(?=\])"
     r"|background(?:Color)?\s*[:=]\s*['\"]?\s*(?:#0a0a0a\b|#000000\b|#000\b|black\b)"
@@ -392,10 +433,23 @@ SEL_CSS = re.compile(
 # Window exclusion for the non-ternary/CSS checks: commit-button context. The booking date/slot/
 # calendar/time exception moved to is_booking_exempt() (2026-08-18, same camelCase/snake_case fix
 # as NOT_SELECTION above , this list had the identical `\bdate\b|\bslot\b|...` whole-word bug).
+#
+# 2026-08-19 stress-test fix: `\bbutton\b`, `\bbtn\b`, and `role="button"` REMOVED.
+# MEASURED, reproduced against this exact file with hook-probe.py: a selected filter
+# pill painted with a banned ink fill (`isSelected && "bg-black text-white"`) blocks
+# inside a `<div>` and PASSES inside a `<button>`, purely because the tag name itself
+# disarmed the exclusion , and per this repo's own accessibility practice, an
+# accessible filter/toggle pill IS a real `<button>` element, so this exempted every
+# selectable button in the product, not "the ONE primary commit button" the docstring
+# names. The other tokens below (commit/submit/pay/buchen/bezahlen/checkout/confirm/
+# primary/cta/weiter/continue/next-step/place order/.submit) already identify a
+# genuine commit action by what it SAYS, not by its tag name, and Solen's own copy
+# rules (project CLAUDE.md copy economy: "label-only for commitments, Buchen,
+# Bezahlen") guarantee the real primary commit button always carries one of them
+# nearby, so dropping the bare tag-name markers costs no legitimate exemption.
 WINDOW_EXCLUDE = re.compile(
     r"\bcommit\b|\bsubmit\b|\bpay\b|\bpayment\b|\bbezahlen\b|\bbuchen\b|\bcheckout\b|\bconfirm\b|"
-    r"\bprimary\b|\bcta\b|\bweiter\b|\bcontinue\b|\bnext-step\b|\bplace.?order\b|\.submit\b|"
-    r"\bbutton\b|\bbtn\b|role=[\"']button[\"']",
+    r"\bprimary\b|\bcta\b|\bweiter\b|\bcontinue\b|\bnext-step\b|\bplace.?order\b|\.submit\b",
     re.IGNORECASE,
 )
 
