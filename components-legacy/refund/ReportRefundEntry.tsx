@@ -586,7 +586,7 @@ function Shell({
             aria-label={t("back")}
             className="flex h-9 w-9 items-center justify-center rounded-pill border border-s-border bg-white text-s-ink"
           >
-            <ArrowLeft size={18} strokeWidth={2.2} aria-hidden />
+            <ArrowLeft size={18} strokeWidth={1.9} aria-hidden />
           </button>
         )}
         {title && (

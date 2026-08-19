@@ -109,7 +109,7 @@ export default function StaffReviewsSheet({
               return (
                 <button key={n} type="button" onClick={() => toggleFilter(n)} className="flex w-full items-center gap-3 text-left">
                   <span className={`grid h-[22px] w-[22px] shrink-0 place-items-center rounded-[6px] border transition-colors ${on ? "border-s-ink bg-s-ink" : "border-s-ink/25"}`}>
-                    {on && <Check size={14} strokeWidth={3} className="text-white" />}
+                    {on && <Check size={14} strokeWidth={1.6} className="text-white" />}
                   </span>
                   <span className="w-2 shrink-0 text-[14px] font-medium text-s-ink tabular-nums">{n}</span>
                   <span className="h-1 flex-1 overflow-hidden rounded-full bg-s-bg-sunken">

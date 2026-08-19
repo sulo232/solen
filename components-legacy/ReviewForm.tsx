@@ -444,7 +444,7 @@ export default function ReviewForm({
                           aria-label={t("photos_label")}
                           className="flex h-[72px] w-full cursor-pointer items-center justify-center rounded-[16px] border border-s-border bg-white text-s-ink-2 transition-colors hover:bg-s-bg-sunken hover:text-s-ink-2"
                         >
-                          <ImagePlus size={24} strokeWidth={1.75} />
+                          <ImagePlus size={24} strokeWidth={2.4} />
                           <input
                             type="file"
                             accept="image/jpeg, image/png, image/webp"

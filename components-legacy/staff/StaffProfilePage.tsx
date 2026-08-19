@@ -237,7 +237,7 @@ export default function StaffProfilePage({
           onClick={() => shareOrCopy(staff.name, window.location.href)}
           className="ml-auto grid h-9 w-9 shrink-0 place-items-center rounded-full hover:bg-s-bg-sunken"
         >
-          <Share size={18} strokeWidth={2.1} className="text-s-ink" />
+          <Share size={18} strokeWidth={1.9} className="text-s-ink" />
         </button>
       </div>
 
@@ -485,7 +485,7 @@ export default function StaffProfilePage({
             onClick={() => onSelect(staff.id)}
             className="flex w-full items-center justify-center gap-2 rounded-btn bg-s-ink py-3.5 font-heading text-[15px] font-semibold text-white transition-[filter] hover:brightness-[1.06]"
           >
-            <Check size={18} strokeWidth={2.5} />
+            <Check size={18} strokeWidth={1.9} />
             Auswählen
           </button>
         ) : (

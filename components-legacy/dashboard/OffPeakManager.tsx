@@ -147,7 +147,7 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
           onClick={() => { setAddOpen((v) => !v); setError(""); }}
           className="w-full flex items-center gap-2 px-3.5 py-3 text-s-accent-bright font-heading font-semibold text-[13.5px]"
         >
-          <Plus size={16} strokeWidth={2.4} />{t("newRule")}
+          <Plus size={16} strokeWidth={1.9} />{t("newRule")}
         </button>
       </div>
 
@@ -217,7 +217,7 @@ export default function OffPeakManager({ salonId }: { salonId: string }) {
             disabled={saving}
             className="w-full py-3 rounded-btn bg-s-ink text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-2"
           >
-            {saving ? <Spinner size="sm" invert /> : <Plus size={16} strokeWidth={2.4} />}{t("add")}
+            {saving ? <Spinner size="sm" invert /> : <Plus size={16} strokeWidth={1.9} />}{t("add")}
           </button>
         </div>
       )}

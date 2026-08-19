@@ -35,7 +35,7 @@ export function FAQItem({ q, a, defaultOpen = false }: FAQItemProps) {
         {q}
         <ChevronDown
           size={18}
-          strokeWidth={2.5}
+          strokeWidth={1.9}
           aria-hidden
           className="shrink-0 text-s-ink-2 transition-transform duration-200 ease-glide group-open:rotate-180"
         />

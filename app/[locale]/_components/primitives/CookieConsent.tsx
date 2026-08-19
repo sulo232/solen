@@ -308,7 +308,7 @@ function CookieBanner() {
             aria-hidden
             className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#A1672F]/15 text-[#A1672F]"
           >
-            <Cookie size={20} strokeWidth={2} />
+            <Cookie size={20} strokeWidth={2.2} />
           </span>
           <div className="min-w-0 flex-1">
             <div className="font-body font-semibold text-[15px] md:text-[16px] leading-[1.3] text-s-ink mb-0.5">
@@ -335,7 +335,7 @@ function CookieBanner() {
               "md:hidden",
             )}
           >
-            <Settings2 size={16} strokeWidth={2} aria-hidden />
+            <Settings2 size={16} strokeWidth={1.9} aria-hidden />
           </button>
         </div>
 

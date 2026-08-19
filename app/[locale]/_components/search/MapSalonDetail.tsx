@@ -128,7 +128,7 @@ export function MapSalonDetail({
         onClick={onBack}
         className="mb-3 inline-flex items-center gap-1 rounded-full border border-s-border bg-white px-3 py-1.5 text-[12.5px] font-medium text-s-ink transition-transform duration-150 active:scale-95 active:duration-[80ms] active:ease-glide"
       >
-        <ChevronLeft size={15} strokeWidth={2.2} aria-hidden /> {backLabel}
+        <ChevronLeft size={15} strokeWidth={1.9} aria-hidden /> {backLabel}
       </button>
 
       <div className="relative aspect-[5/4] w-full overflow-hidden rounded-2xl bg-s-bg-sunken"> {/* mockup-ok: CARD_REDESIGN_2026-07-13 C1, matches SalonCard/SalonResultCard aspect-[5/4] */}

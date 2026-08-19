@@ -276,7 +276,7 @@ function ProductRow({
             // inline row icon, and its saturated category color carries no product meaning
             // here) (approved fixes-refined)
             <div className="absolute inset-0 flex items-center justify-center bg-s-bg-sunken">
-              <Package size={18} strokeWidth={1.8} className="text-s-ink-2" aria-hidden />
+              <Package size={18} strokeWidth={1.9} className="text-s-ink-2" aria-hidden />
             </div>
           )}
         </div>
@@ -311,7 +311,7 @@ function ProductRow({
               : "border-s-border bg-white text-s-ink hover:bg-s-bg-sunken"
           }`}
         >
-          {selected ? <Check size={18} strokeWidth={2.25} aria-hidden /> : <Plus size={18} strokeWidth={2.25} aria-hidden />}
+          {selected ? <Check size={18} strokeWidth={1.9} aria-hidden /> : <Plus size={18} strokeWidth={1.9} aria-hidden />}
         </button>
       </div>
     </div>

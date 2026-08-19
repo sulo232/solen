@@ -336,7 +336,7 @@ function BundleForm({
               {enoughServices ? (
                 <div className="overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper">
                   <div className="flex items-center gap-2 px-4 pt-4 pb-2">
-                    <Package size={16} strokeWidth={2} className="text-s-ink" aria-hidden />
+                    <Package size={16} strokeWidth={1.9} className="text-s-ink" aria-hidden />
                     <p className="font-heading text-[16px] font-bold text-s-ink">{name || t("namePlaceholder")}</p>
                   </div>
                   <div>
@@ -542,7 +542,7 @@ export default function BundlesPage() {
           disabled={!salonId || services.length < 2}
           className="inline-flex items-center gap-1.5 bg-s-ink text-white font-heading font-semibold text-[13px] rounded-[12px] px-3.5 py-2.5 disabled:opacity-50"
         >
-          <Plus size={15} strokeWidth={2.4} /> {t("add")}
+          <Plus size={15} strokeWidth={1.9} /> {t("add")}
         </button>
       </div>
 

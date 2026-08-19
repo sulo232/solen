@@ -38,7 +38,7 @@ export const BackButton = React.forwardRef<HTMLButtonElement, BackButtonProps>(
         )}
         {...props}
       >
-        <ArrowLeft size={18} strokeWidth={2.1} aria-hidden className="text-s-ink" />
+        <ArrowLeft size={18} strokeWidth={1.9} aria-hidden className="text-s-ink" />
       </button>
     );
   },

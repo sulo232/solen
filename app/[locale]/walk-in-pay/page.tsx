@@ -585,7 +585,7 @@ export default function WalkInPayPage() {
                 className="flex h-[54px] w-full items-center justify-center gap-2 rounded-btn bg-s-ink font-body text-[15px] font-semibold text-white shadow-elevation-2 transition-[transform,filter] hover:brightness-[1.06] active:scale-[0.98] disabled:opacity-50"
               >
                 {payCta}
-                {paying ? <Spinner size="sm" invert /> : <ArrowRight size={16} strokeWidth={2.4} />}
+                {paying ? <Spinner size="sm" invert /> : <ArrowRight size={16} strokeWidth={1.9} />}
               </button>
               <div className="mt-3 flex items-center justify-center gap-1.5 text-[12px] font-medium text-s-ink-2">
                 <Lock size={12} />

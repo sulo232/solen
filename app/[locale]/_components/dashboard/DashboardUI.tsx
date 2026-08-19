@@ -106,7 +106,7 @@ export function DashPanel({
               className="inline-flex items-center gap-1 text-[13px] font-medium text-s-ink hover:text-s-ink-2 transition-[colors,transform] active:scale-[0.98] active:duration-[80ms] active:ease-glide"
             >
               {actionLabel}
-              <ArrowRight size={15} strokeWidth={2} />
+              <ArrowRight size={15} strokeWidth={1.9} />
             </Link>
           )}
         </div>
@@ -195,7 +195,7 @@ export function DashQuickAction({
       className="group flex items-center gap-3.5 rounded-card-lg border border-s-border bg-white p-5 transition-[colors,transform] hover:bg-s-bg-sunken active:scale-[0.97] active:duration-[80ms] active:ease-glide"
     >
       <span className="grid place-items-center w-[42px] h-[42px] rounded-xl bg-s-bg-sunken text-s-ink shrink-0 transition-colors group-hover:bg-white">
-        <Icon size={20} strokeWidth={1.9} />
+        <Icon size={20} strokeWidth={2.2} />
       </span>
       <span className="min-w-0">
         <span className="block text-[15px] font-semibold tracking-[-0.005em] text-s-ink">{title}</span>

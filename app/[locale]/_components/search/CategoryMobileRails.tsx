@@ -99,7 +99,7 @@ function RailHeading({ title }: { title: string }) {
         aria-hidden="true"
         className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-s-bg-sunken text-s-ink"
       >
-        <ArrowRight size={20} strokeWidth={2} aria-hidden />
+        <ArrowRight size={20} strokeWidth={2.2} aria-hidden />
       </span>
     </div>
   );

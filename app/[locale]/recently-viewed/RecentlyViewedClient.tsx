@@ -115,7 +115,7 @@ export default function RecentlyViewedClient() {
                       {s.address && <span className="truncate text-s-ink-2">{s.address}</span>}
                     </div>
                   </div>
-                  <ChevronRight size={18} strokeWidth={2.2} className="shrink-0 text-s-ink" aria-hidden />
+                  <ChevronRight size={18} strokeWidth={1.9} className="shrink-0 text-s-ink" aria-hidden />
                 </Link>
               </li>
             ))}

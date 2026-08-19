@@ -72,7 +72,7 @@ export function SalonLoyalty() {
                 className="font-body group flex w-full items-center gap-4 rounded-2xl border border-s-border bg-white p-5 text-left transition-[box-shadow,transform] hover:shadow-elevation-2 active:scale-[0.99] active:duration-[80ms] active:ease-glide md:p-6"
               >
                 <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white md:h-12 md:w-12">
-                  <Icon size={20} strokeWidth={2} className="text-s-ink" />
+                  <Icon size={20} strokeWidth={2.2} className="text-s-ink" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="text-[14px] font-semibold text-s-ink md:text-[15px]">
@@ -84,7 +84,7 @@ export function SalonLoyalty() {
                 </div>
                 <ChevronRight
                   size={16}
-                  strokeWidth={2.5}
+                  strokeWidth={1.9}
                   className={cn(
                     "shrink-0 text-s-ink-2 transition-transform duration-150",
                     isOpen && "rotate-90"

@@ -144,7 +144,7 @@ export default function SalonOfMonthAdminPage() {
           {current?.salons ? (
             <div className="mt-3 flex items-center gap-3">
               <div className="grid h-11 w-11 shrink-0 place-items-center rounded-[12px] bg-s-bg-sunken text-s-ink">
-                <Crown size={20} strokeWidth={1.75} />
+                <Crown size={20} strokeWidth={2.2} />
               </div>
               <div className="min-w-0 flex-1">
                 <div className="truncate font-body text-[15px] font-medium text-s-ink">

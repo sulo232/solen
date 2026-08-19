@@ -229,7 +229,7 @@ export default function PaymentMethods() {
         disabled={creatingIntent}
         className="mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-btn bg-s-ink text-[15px] font-medium tracking-[-0.005em] text-white transition-[opacity,transform] duration-200 disabled:opacity-50 active:scale-[0.97] active:duration-[80ms] active:ease-glide"
       >
-        {creatingIntent ? <Spinner size="sm" invert /> : <Plus size={18} strokeWidth={2.4} aria-hidden />}
+        {creatingIntent ? <Spinner size="sm" invert /> : <Plus size={18} strokeWidth={1.9} aria-hidden />}
         {t("payAddCard")}
       </button>
 

@@ -108,7 +108,7 @@ export default function EmptyStateDiscovery({
           className="inline-flex items-center gap-0.5 font-body text-[13.5px] font-semibold text-s-ink transition-colors hover:text-s-ink-2"
         >
           Alle
-          <ChevronRight size={14} strokeWidth={2.2} aria-hidden />
+          <ChevronRight size={14} strokeWidth={1.6} aria-hidden />
         </Link>
       </div>
       <div className="-mx-4 mt-3 flex gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">

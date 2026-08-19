@@ -126,7 +126,7 @@ export default function HeroHeadline({ className }: { className?: string }) {
           {slogan.cta.label}
           <ArrowRight
             size={14}
-            strokeWidth={2.5}
+            strokeWidth={1.6}
             aria-hidden
             className="transition-transform duration-200 ease-out group-hover:translate-x-1"
           />

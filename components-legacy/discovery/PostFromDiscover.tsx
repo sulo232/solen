@@ -153,7 +153,7 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
         className="fixed bottom-24 right-4 z-40 w-12 h-12 rounded-full flex items-center justify-center bg-s-ink text-white active:scale-[0.97] transition-[transform,filter] duration-150 shadow-elevation-2"
         aria-label={t.newPost}
       >
-        <Plus size={20} strokeWidth={2.5} />
+        <Plus size={20} strokeWidth={2.2} />
       </button>
 
       {/* Modal */}

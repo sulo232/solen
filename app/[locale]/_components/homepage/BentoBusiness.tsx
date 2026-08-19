@@ -80,7 +80,7 @@ function VisualBooking() {
       >
         <div className="mb-3 flex items-center gap-3">
           <div className="grid h-9 w-9 place-items-center rounded-full bg-s-ink text-white">
-            <Check size={16} strokeWidth={2.5} aria-hidden />
+            <Check size={16} strokeWidth={1.9} aria-hidden />
           </div>
           <div className="flex-1">
             <div className="text-[12px] font-semibold leading-tight text-s-ink">
@@ -530,7 +530,7 @@ export function JoinUsCard() {
               aria-hidden
               className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-white text-s-ink shadow-elevation-2"
             >
-              <ChevronRight size={22} strokeWidth={2.5} aria-hidden />
+              <ChevronRight size={22} strokeWidth={2.2} aria-hidden />
             </div>
           </div>
           {/* Trust line — only in trigger.
@@ -591,7 +591,7 @@ export function JoinUsCard() {
               {status === "success" ? (
                 <div className="mt-8 flex items-start gap-4 rounded-input bg-white/10 p-6">
                   <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white text-s-ink">
-                    <Check size={18} strokeWidth={2.5} aria-hidden />
+                    <Check size={18} strokeWidth={1.9} aria-hidden />
                   </div>
                   <div>
                     <p className="font-display text-[17px] font-semibold tracking-[-0.02em] text-white">

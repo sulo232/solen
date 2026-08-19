@@ -134,7 +134,7 @@ export default function AiLimitsAdminPage() {
           {/* Saved banner */}
           {state === "saved" && (
             <div className="mt-4 flex items-center gap-2.5 rounded-[11px] bg-s-success-bg px-3.5 py-3">
-              <Check size={18} strokeWidth={3} className="shrink-0 text-s-success" />
+              <Check size={18} strokeWidth={1.9} className="shrink-0 text-s-success" />
               <div>
                 <div className="font-heading text-[13px] font-semibold text-s-success">{t("savedTitle")}</div>
                 <div className="mt-0.5 text-[12px] text-s-ink-2">{t("savedDescription", { cap: loadedCap })}</div>
@@ -173,7 +173,7 @@ export default function AiLimitsAdminPage() {
               </>
             ) : state === "saved" ? (
               <>
-                <Check size={16} strokeWidth={3} />
+                <Check size={16} strokeWidth={1.9} />
                 {t("saved")}
               </>
             ) : state === "error" ? (

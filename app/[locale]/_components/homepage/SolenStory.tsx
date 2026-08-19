@@ -82,7 +82,7 @@ export default function SolenStory() {
               Book Solen Now
               <ArrowRight
                 size={14}
-                strokeWidth={2.5}
+                strokeWidth={1.6}
                 className="transition-transform duration-200 ease-out group-hover:translate-x-1"
               />
             </Link>

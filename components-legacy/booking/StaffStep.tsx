@@ -111,7 +111,7 @@ export default function StaffStep({
             className={rowCls(selected === 'any')}
           >
             <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-white">
-              <Users size={22} strokeWidth={2} className="text-s-ink" aria-hidden />
+              <Users size={22} strokeWidth={2.2} className="text-s-ink" aria-hidden />
             </span>
             <span className="min-w-0 flex-1">
               <span className={`block text-[15px] font-heading ${selected === 'any' ? 'font-semibold' : 'font-medium'} text-s-ink`}>

@@ -471,7 +471,7 @@ export default function ServicesPage() {
           </button>
           <button onClick={() => setAddOpen(true)}
             className="inline-flex items-center gap-1.5 bg-s-ink text-white font-heading font-semibold text-[13px] rounded-[12px] px-3.5 py-2.5 transition-transform active:scale-[0.97] active:duration-[80ms] active:ease-glide">
-            <Plus size={15} strokeWidth={2.4} /> {t('add')}
+            <Plus size={15} strokeWidth={1.9} /> {t('add')}
           </button>
         </div>
       </div>

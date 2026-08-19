@@ -552,7 +552,7 @@ export default function ServicesStaffStep({
               className="group pointer-events-auto flex items-center gap-2 pl-4 pr-3.5 py-2 rounded-full bg-white text-s-ink border border-s-border shadow-elevation-2 text-[13px] font-heading font-semibold transition-transform duration-200 ease-glide active:scale-[0.97]"
             >
               <span key={formData.services.length} className="animate-count-bump inline-block">{formData.services.length}</span> {t('selected')}
-              <ArrowUp size={15} strokeWidth={2.4} className="transition-transform duration-200 ease-glide group-hover:-translate-y-0.5" />
+              <ArrowUp size={15} strokeWidth={1.9} className="transition-transform duration-200 ease-glide group-hover:-translate-y-0.5" />
             </button>
           </motion.div>
         )}

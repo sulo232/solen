@@ -331,7 +331,7 @@ export default function SalonWalkInPanel({
             <ul className="mt-4 space-y-3.5">
               {l.bullets.map((b, i) => (
                 <li key={i} className="flex items-start gap-3 font-body text-[13.5px] leading-relaxed text-s-ink-2">
-                  <Check size={15} strokeWidth={2.4} className="mt-[3px] shrink-0 text-s-open" aria-hidden />
+                  <Check size={15} strokeWidth={1.9} className="mt-[3px] shrink-0 text-s-open" aria-hidden />
                   <span>{b}</span>
                 </li>
               ))}

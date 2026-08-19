@@ -103,7 +103,7 @@ export default function DesktopCitySelector({ locale }: Props) {
           "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
         )}
       >
-        <MapPin size={14} strokeWidth={2} aria-hidden className="text-s-ink-2" />
+        <MapPin size={14} strokeWidth={1.6} aria-hidden className="text-s-ink-2" />
         <span>{cityName}</span>
         <ChevronDown
           size={13}

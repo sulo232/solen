@@ -1410,7 +1410,7 @@ export default function SearchTemplate({
                 "h-11 w-11",
               )}
             >
-              <MapIcon size={16} strokeWidth={2} aria-hidden />
+              <MapIcon size={16} strokeWidth={1.9} aria-hidden />
             </span>
           </motion.div>
         </div>
@@ -1468,7 +1468,7 @@ export default function SearchTemplate({
             <span className="relative grid h-4 w-4 place-items-center" aria-hidden>
               <SlidersHorizontal
                 size={16}
-                strokeWidth={2}
+                strokeWidth={1.9}
                 className={cn(
                   "absolute transition-all duration-300 ease-glide",
                   activeFilterCount > 0
@@ -1478,7 +1478,7 @@ export default function SearchTemplate({
               />
               <X
                 size={16}
-                strokeWidth={2.5}
+                strokeWidth={1.9}
                 className={cn(
                   "absolute transition-all duration-300 ease-glide",
                   activeFilterCount > 0
@@ -1524,7 +1524,7 @@ export default function SearchTemplate({
                       Active state is the blue tint alone; the chevron (dropdowns only) is the
                       one affordance marker. No decorative pips — see LOCKFILE no-dots rule. */}
                   {p.label}
-                  {!TOGGLE_PILLS.has(p.key) && <ChevronDown size={14} strokeWidth={2} className={p.active ? "text-s-ink" : "opacity-50"} aria-hidden />}
+                  {!TOGGLE_PILLS.has(p.key) && <ChevronDown size={14} strokeWidth={1.6} className={p.active ? "text-s-ink" : "opacity-50"} aria-hidden />}
                 </button>
               ))}
             {/* (Old right-side Filter button removed — V3-D421k: it's now the far-left
@@ -1864,7 +1864,7 @@ export default function SearchTemplate({
                       <Loader2
                         size={16}
                         className="animate-spin"
-                        strokeWidth={2}
+                        strokeWidth={1.9}
                         aria-hidden
                       />
                     ) : null}
@@ -1994,7 +1994,7 @@ export default function SearchTemplate({
                   aria-label={t("backToList")}
                   className="-my-2.5 grid h-11 w-8 shrink-0 place-items-center text-s-ink transition-transform active:scale-95"
                 >
-                  <ArrowLeft size={20} strokeWidth={2} aria-hidden />
+                  <ArrowLeft size={20} strokeWidth={2.2} aria-hidden />
                 </button>
                 <button
                   type="button"
@@ -2003,7 +2003,7 @@ export default function SearchTemplate({
                   aria-haspopup="dialog"
                   className="flex min-w-0 flex-1 items-center gap-2.5 text-left"
                 >
-                  <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" />
+                  <Search size={18} strokeWidth={1.9} className="shrink-0 text-s-ink-2" />
                   {/* Two lines (query/category + city), matching the normal bar's content; the pill's
                       min-h-[67px] pins the height IDENTICAL to the normal bar (owner: identical size).
                       No "Suchen" placeholder (owner). */}
@@ -2076,7 +2076,7 @@ export default function SearchTemplate({
                           )}
                         >
                           {p.label}
-                          {!TOGGLE_PILLS.has(p.key) && <ChevronDown size={14} strokeWidth={2} className={p.active ? "text-s-ink" : "opacity-50"} aria-hidden />}
+                          {!TOGGLE_PILLS.has(p.key) && <ChevronDown size={14} strokeWidth={1.6} className={p.active ? "text-s-ink" : "opacity-50"} aria-hidden />}
                         </button>
                       ))}
                     </div>
@@ -2196,9 +2196,9 @@ export default function SearchTemplate({
         )}
       >
         {mapOpen || mobileView === "map" ? (
-          <ListIcon size={16} strokeWidth={2} aria-hidden />
+          <ListIcon size={16} strokeWidth={1.9} aria-hidden />
         ) : (
-          <MapIcon size={16} strokeWidth={2} aria-hidden />
+          <MapIcon size={16} strokeWidth={1.9} aria-hidden />
         )}
         {mapOpen || mobileView === "map"
           ? LIST_FAB_LABEL[locale] ?? LIST_FAB_LABEL.de

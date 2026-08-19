@@ -280,7 +280,7 @@ function Frame({
           aria-label={t("back")}
           className="flex h-[36px] w-[36px] flex-shrink-0 items-center justify-center rounded-pill border border-s-border bg-white text-s-ink"
         >
-          <ArrowLeft size={18} strokeWidth={2} aria-hidden />
+          <ArrowLeft size={18} strokeWidth={1.9} aria-hidden />
         </Link>
         <div className="font-heading text-[16px] font-semibold tracking-[-0.01em]">
           {isGuest ? t("caseTitleGuest") : t("caseTitle")}

@@ -572,7 +572,7 @@ export default function QueueTrackingPage() {
         )}
         {isWaiting ? (
           <button onClick={requestCancel} disabled={cancelling} aria-label={l.cancel} className="flex h-[54px] w-[54px] shrink-0 items-center justify-center rounded-full bg-s-error text-white transition active:scale-[0.98] disabled:opacity-50">
-            <X size={22} strokeWidth={3} />
+            <X size={22} strokeWidth={2.2} />
           </button>
         ) : (
           <button onClick={fetchStatus} aria-label={l.autoUpdate} className="flex h-[54px] w-[54px] shrink-0 items-center justify-center rounded-full border border-s-border bg-white text-s-ink active:scale-[0.98]">

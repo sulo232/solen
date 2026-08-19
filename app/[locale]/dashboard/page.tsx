@@ -173,7 +173,7 @@ export default function DashboardPage() {
           href={`/${locale}/dashboard/calendar`}
           className="inline-flex items-center gap-2 shrink-0 whitespace-nowrap rounded-full bg-s-ink px-[18px] py-2.5 text-[15px] font-medium tracking-[-0.005em] text-white transition-[colors,transform] hover:bg-black active:scale-[0.97] active:duration-[80ms] active:ease-glide"
         >
-          <Plus size={17} strokeWidth={2} />{t("createAppointment")}
+          <Plus size={17} strokeWidth={1.9} />{t("createAppointment")}
         </Link>
       </div>
 

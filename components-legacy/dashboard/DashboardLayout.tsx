@@ -294,7 +294,7 @@ export default function DashboardLayout({
             return (
               <Link key={key} href={`/${locale}${href}`} aria-current={active ? "page" : undefined}
                 className={`group relative w-10 h-10 rounded-xl grid place-items-center transition-colors ${active ? "bg-s-border text-s-ink" : "text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink"}`}>
-                <Icon size={20} strokeWidth={1.9} />
+                <Icon size={20} strokeWidth={2.2} />
                 {/* messaging unread badge removed — feature off (owner 2026-06-13) */}
                 <span className="pointer-events-none absolute left-[52px] top-1/2 -translate-y-1/2 whitespace-nowrap rounded-md bg-s-ink px-2 py-1 text-[12px] font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity z-50">{label}</span>
               </Link>
@@ -308,7 +308,7 @@ export default function DashboardLayout({
                 return (
                   <Link key={key} href={`/${locale}${href}`} aria-current={active ? "page" : undefined}
                     className={`group relative w-10 h-10 rounded-xl grid place-items-center transition-colors ${active ? "bg-s-border text-s-ink" : "text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink"}`}>
-                    <Icon size={19} strokeWidth={1.9} />
+                    <Icon size={19} strokeWidth={2.2} />
                     <span className="pointer-events-none absolute left-[52px] top-1/2 -translate-y-1/2 whitespace-nowrap rounded-md bg-s-ink px-2 py-1 text-[12px] font-medium text-white opacity-0 group-hover:opacity-100 transition-opacity z-50">{t(key)}</span>
                   </Link>
                 );
@@ -361,7 +361,7 @@ export default function DashboardLayout({
                     return (
                       <Link key={href} href={`/${locale}${href}`} onClick={() => setMobileSidebarOpen(false)} aria-current={active ? "page" : undefined}
                         className={`flex items-center gap-3 px-3 py-2.5 rounded-[12px] text-[15px] font-medium transition-colors ${active ? "bg-s-bg-sunken text-s-ink font-semibold" : "text-s-ink-2 hover:text-s-ink hover:bg-s-bg-sunken"}`}>
-                        <Icon size={20} strokeWidth={1.9} className={active ? "text-s-ink" : "text-s-ink-2"} />
+                        <Icon size={20} strokeWidth={2.2} className={active ? "text-s-ink" : "text-s-ink-2"} />
                         <span className="flex-1">{t(key)}</span>
                       </Link>
                     );
@@ -384,7 +384,7 @@ export default function DashboardLayout({
                             return (
                               <Link key={key} href={`/${locale}${href}`} onClick={() => setMobileSidebarOpen(false)} aria-current={active ? "page" : undefined}
                                 className={`flex items-center gap-3 px-3 py-2.5 rounded-[12px] text-[15px] font-medium transition-colors ${active ? "bg-s-bg-sunken text-s-ink font-semibold" : "text-s-ink-2 hover:text-s-ink hover:bg-s-bg-sunken"}`}>
-                                <Icon size={20} strokeWidth={1.9} className={active ? "text-s-ink" : "text-s-ink-2"} />
+                                <Icon size={20} strokeWidth={2.2} className={active ? "text-s-ink" : "text-s-ink-2"} />
                                 <span className="flex-1">{label}</span>
                                 {/* messaging unread badge removed — feature off (owner 2026-06-13) */}
                               </Link>
@@ -403,7 +403,7 @@ export default function DashboardLayout({
                           return (
                             <Link key={href} href={`/${locale}${href}`} onClick={() => setMobileSidebarOpen(false)} aria-current={active ? "page" : undefined}
                               className={`flex items-center gap-3 px-3 py-2.5 rounded-[12px] text-[15px] font-medium transition-colors ${active ? "bg-s-bg-sunken text-s-ink font-semibold" : "text-s-ink-2 hover:text-s-ink hover:bg-s-bg-sunken"}`}>
-                              <Icon size={20} strokeWidth={1.9} className={active ? "text-s-ink" : "text-s-ink-2"} />
+                              <Icon size={20} strokeWidth={2.2} className={active ? "text-s-ink" : "text-s-ink-2"} />
                               <span className="flex-1">{t(key)}</span>
                             </Link>
                           );
@@ -418,7 +418,7 @@ export default function DashboardLayout({
               <div className="border-t border-s-border px-2 py-2">
                 <Link href={`/${locale}`} onClick={() => setMobileSidebarOpen(false)}
                   className="flex items-center gap-3 px-3 py-2.5 rounded-[12px] text-[15px] font-medium text-s-ink-2 hover:text-s-ink hover:bg-s-bg-sunken transition-colors">
-                  <ArrowLeft size={20} strokeWidth={1.9} className="text-s-ink-2" />
+                  <ArrowLeft size={20} strokeWidth={2.2} className="text-s-ink-2" />
                   <span className="flex-1">{t("backToSite")}</span>
                 </Link>
               </div>
@@ -436,7 +436,7 @@ export default function DashboardLayout({
           </div>
           <div className="flex-1" />
           <button onClick={() => setPaletteOpen(true)} aria-label="Suche öffnen (Ctrl+K)" className="w-[38px] h-[38px] rounded-full grid place-items-center text-s-ink-2 hover:bg-s-bg-sunken hover:text-s-ink transition-colors">
-            <Search size={19} strokeWidth={1.9} />
+            <Search size={19} strokeWidth={2.2} />
           </button>
           <NotificationCenter salonId={fetchedSalonId ?? undefined} />
         </div>

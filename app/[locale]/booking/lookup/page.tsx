@@ -275,9 +275,9 @@ function AppBar({
         className="flex h-11 w-11 items-center justify-center rounded-[12px] bg-s-bg-sunken text-s-ink transition-colors duration-150 ease-snap hover:brightness-[0.97]"
       >
         {closeMode ? (
-          <X size={19} strokeWidth={2.1} aria-hidden />
+          <X size={19} strokeWidth={2.2} aria-hidden />
         ) : (
-          <ArrowLeft size={19} strokeWidth={2.1} aria-hidden />
+          <ArrowLeft size={19} strokeWidth={2.2} aria-hidden />
         )}
       </Link>
       <span className="flex items-center gap-[7px] font-display text-[15px] font-bold tracking-[-0.02em]">

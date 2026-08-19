@@ -60,7 +60,7 @@ export function SalonBuy({
         className="font-body group flex items-center gap-4 rounded-2xl bg-white shadow-float p-4 transition-shadow hover:shadow-elevation-3 md:p-5"
       >
         <div className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-white md:h-16 md:w-16">
-          <Gift size={24} strokeWidth={2} className="text-s-ink md:h-7 md:w-7" />
+          <Gift size={24} strokeWidth={2.4} className="text-s-ink md:h-7 md:w-7" />
         </div>
         <div className="min-w-0 flex-1">
           <h3 className="font-body text-[15px] font-medium tracking-tight text-s-ink md:text-[16px]">
@@ -70,7 +70,7 @@ export function SalonBuy({
             Verschenke einen Tag Wohlbefinden bei {salonName}.
           </p>
         </div>
-        <ChevronRight size={18} strokeWidth={2.5} className="shrink-0 text-s-ink-2 transition-transform group-hover:translate-x-1" />
+        <ChevronRight size={18} strokeWidth={1.9} className="shrink-0 text-s-ink-2 transition-transform group-hover:translate-x-1" />
       </Link>
     </section>
   );

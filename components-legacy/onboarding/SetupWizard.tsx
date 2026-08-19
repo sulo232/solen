@@ -89,7 +89,7 @@ export default function SetupWizard({ salonId, initialSteps, children, locale, o
                     ].join(" ")}
                   >
                     {step.complete && i !== currentStep ? (
-                      <Check size={14} strokeWidth={3} />
+                      <Check size={14} strokeWidth={1.6} />
                     ) : (
                       i + 1
                     )}

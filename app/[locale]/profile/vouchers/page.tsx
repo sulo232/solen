@@ -131,7 +131,7 @@ export default function VouchersPage() {
         <div className="rounded-card border border-s-border bg-white p-4">
           <div className="flex items-center gap-3">
             <div className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-s-bg-sunken">
-              <Wallet size={20} strokeWidth={1.9} className="text-s-ink" aria-hidden />
+              <Wallet size={20} strokeWidth={2.2} className="text-s-ink" aria-hidden />
             </div>
             <div className="min-w-0 flex-1">
               <p className="text-[13px] text-s-ink-2">{t("creditLabel")}</p>

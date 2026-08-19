@@ -278,7 +278,7 @@ function _DeprecatedSearchBar() {
     >
       {/* Service — active by default to telegraph affordance */}
       <SearchRow
-        icon={<Search size={18} strokeWidth={2} />}
+        icon={<Search size={18} strokeWidth={1.9} />}
         label="Service suchen"
         value="Service"
         isPlaceholder
@@ -287,14 +287,14 @@ function _DeprecatedSearchBar() {
       />
 
       <SearchRow
-        icon={<MapPin size={18} strokeWidth={2} />}
+        icon={<MapPin size={18} strokeWidth={1.9} />}
         label="Standort wählen"
         value="Stadt"
         isPlaceholder
       />
 
       <SearchRow
-        icon={<Calendar size={18} strokeWidth={2} />}
+        icon={<Calendar size={18} strokeWidth={1.9} />}
         label="Zeit wählen"
         value="Zeit"
         isPlaceholder

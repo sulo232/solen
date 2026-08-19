@@ -819,7 +819,7 @@ export default function CalendarPage() {
 
               {/* Slot / Walk-in / Plan — unchanged, kept under the views */}
               <div className="flex gap-2 mt-3">
-                <button onClick={() => setCreateModal({ date: ymdLocal(currentDate), time: "09:00" })} className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-[12px] bg-s-ink text-white font-heading font-semibold text-[13.5px] py-2.5"><Plus size={15} strokeWidth={2.4} /> {t("slot")}</button>
+                <button onClick={() => setCreateModal({ date: ymdLocal(currentDate), time: "09:00" })} className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-[12px] bg-s-ink text-white font-heading font-semibold text-[13.5px] py-2.5"><Plus size={15} strokeWidth={1.9} /> {t("slot")}</button>
                 <button onClick={() => setWalkInModal(true)} className="inline-flex items-center justify-center rounded-[12px] bg-white border border-s-border text-s-ink font-heading font-semibold text-[13.5px] px-4 py-2.5">{t("walkIn")}</button>
                 <button onClick={() => setBulkModal(true)} className="inline-flex items-center justify-center rounded-[12px] bg-white border border-s-border text-s-ink font-heading font-semibold text-[13.5px] px-4 py-2.5">{t("plan")}</button>
               </div>

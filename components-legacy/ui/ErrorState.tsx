@@ -55,7 +55,7 @@ export default function ErrorState({
       {...animationProps}
     >
       <div className="mb-5 flex items-center justify-center w-12 h-12 rounded-[14px] bg-s-error-bg">
-        <Icon size={24} className="text-s-error" strokeWidth={1.75} />
+        <Icon size={24} className="text-s-error" strokeWidth={2.4} />
       </div>
       <h3 className="font-heading text-s-ink text-lg mb-1.5">{title}</h3>
       {message && (

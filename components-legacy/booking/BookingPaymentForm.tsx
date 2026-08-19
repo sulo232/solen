@@ -184,7 +184,7 @@ function PayInner({
         disabled={!stripe || !elements}
         className="flex h-[52px] w-full items-center justify-center gap-2 rounded-full bg-s-ink font-body text-[14.5px] font-semibold text-white transition-[transform,filter] duration-150 hover:brightness-[1.06] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
       >
-        <Lock size={16} strokeWidth={2.2} aria-hidden />
+        <Lock size={16} strokeWidth={1.9} aria-hidden />
         {payCta}
       </button>
 

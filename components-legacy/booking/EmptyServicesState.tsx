@@ -87,14 +87,14 @@ export default function EmptyServicesState({
           className="mt-6 flex h-[52px] w-full max-w-[420px] items-center justify-center gap-2 rounded-btn bg-s-ink text-[15px] font-semibold text-white transition-transform duration-150 active:scale-[0.98]"
         >
           {t("emptyToSalon")}
-          <ArrowRight size={17} strokeWidth={2.2} aria-hidden />
+          <ArrowRight size={17} strokeWidth={1.9} aria-hidden />
         </Link>
         {phone && (
           <a
             href={`tel:${phone.replace(/\s+/g, "")}`}
             className="mt-4 flex items-center justify-center gap-1.5 text-[15px] font-semibold text-s-accent transition-opacity active:opacity-60"
           >
-            <Phone size={15} strokeWidth={2} aria-hidden />
+            <Phone size={15} strokeWidth={1.9} aria-hidden />
             {t("emptyCallSalon")}
           </a>
         )}

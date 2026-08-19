@@ -294,7 +294,7 @@ function SalonResultCardInner(props: SalonResultCardProps) {
             <Image src={photoUrl} alt={`Foto von ${name}`} fill sizes="70px" className="object-cover" />
           ) : (
             <span className="grid h-full w-full place-items-center text-s-ink-2" aria-hidden>
-              <Store size={22} strokeWidth={1.5} />
+              <Store size={22} strokeWidth={2.2} />
             </span>
           )}
         </div>
