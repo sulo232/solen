@@ -316,6 +316,30 @@ did.
       is wired and fails open, but it is UNPROVEN and is written down here as unproven rather than
       counted as a pass.
 
+## THE 13 REGRESSIONS, AS BOXES (2026-08-19)
+
+They were sitting in `_plans/repair_results.json` and NOWHERE ELSE, which is why every piece of
+machinery built to stop me drifting could not see them: `work_is_open()` reads `- [ ]` in a plan
+file, `unfinished-batch-gate` reads the same, and a JSON results file is invisible to both. The
+harden written one turn earlier was therefore correct and inert on the exact work it was built for.
+That is the binding gap, and writing them here as boxes is the fix, not another check.
+
+Order: the three that can be undone from git first, since a bad repair there is recoverable.
+
+- [x] `browser-verify-gate.sh` NOT SETTLED, recorded as unsettled rather than as a verdict. verified: it IS wired (Stop, in both the project and worktree settings) and its own suite is 9/9. But my control failed TWICE: a turn that edits `components/SalonCard.tsx` and never looks at anything PASSES, when the gate's own docstring says that is exactly what it blocks. Two failed controls means the instrument is the suspect, not the gate (rule 15a), so the trust-by-name finding is neither confirmed nor cleared. The honest output is the symptom with no cause: I could not make this gate block anything from outside, so I cannot say whether the loophole is real. Needs a replay against a real transcript in which it actually fired.
+- [ ] `copy-lint-gate.py` (no undo before d5295dccd): The fix introduces a false-negative regression in the NO-CAPS rule: real all-caps style violations now slip through undetected whenever the literal token className=/class=/cn(/clsx(/classnames(/@apply/text-transform: doe
+- [ ] `i18n-write-gate.py` (no undo before d5295dccd): Two classes of defect survive/are introduced by this fix. (a) The PreToolUse grammar widening (CALL_ARG_STR, CONST_STR_ARRAY) reaches the right constructs but only in one spelling each, missing the spelling this codebase
+- [ ] `mockup-parity-gate.py` (no undo before d5295dccd): The fix trades the old false-positive (any file containing 'full' wrongly blocked) for a new false-negative: because 'map' is only 3 characters, `slug_tokens('map-full')` was ALREADY just `{'full'}` before this fix. Once
+- [ ] `mockup-realsize-gate.py` (no undo before d5295dccd): The fix's negative lookbehind `(?<!:)grid-cols-[234]\b` assumes any colon-prefixed grid-cols utility is a Tailwind "min-width" breakpoint (applies at that width and up, so inert on mobile). That is false for Tailwind's `
+- [ ] `mockup-visual-gate.py` (no undo before d5295dccd): Two defects, both confirmed with driven payloads through the real wired hook (PreToolUse, matcher Write|Edit|MultiEdit), never argued. DEFECT 1 (severe, resurrects the exact original incident): CSS_DECLARATION requires a
+- [ ] `motion-recipe-gate.py` (no undo before d5295dccd): The fix does not hold. It closed the narrow "fake resting value" hole but its own remedy for that hole (trusting a spread) is unconditional, so it reopened a wider hole in the same two functions it just patched. DEFECT 1
+- [x] `no-getsession-authz-gate.py` NOT REPRODUCED. verified: driven just now with a control first. A Write carrying `supabase.auth.getSession()` in an api route BLOCKS (control), and the identical violation via MultiEdit BLOCKS, and via Edit BLOCKS. The attacker's finding was that main() had no MultiEdit branch; the file has one today, so either a later repair round closed it or the finding was read off an earlier copy. Not fixed, because there is nothing to fix, and fixing an unreproduced defect is how two regressions were introduced on 2026-08-18.
+- [ ] `no-select-star-sensitive.py` (no undo before d5295dccd): The span-overlap fix (item 2 in the changelog, meant to give Edit/MultiEdit real file context) only flags a SELECT_STAR/BARE_SELECT/NESTED_JOIN_STAR match when the match's own byte-span overlaps text the current edit int
+- [ ] `owner-punt-gate.py` (no undo before d5295dccd): Two independently confirmed defects survive the fix, both fresh (not the D1/D2/D3 the fixer already found), each reproduced with a driven payload and a same-instrument known-answer control run immediately before/after. D
+- [ ] `pre-edit-psychology-gate.py` (REVERTABLE): Yes, two, both real and independently confirmed with matched controls: (1) NEW, introduced by this fix: COMMENT_SPAN (`//[^\n]*|/\*.*?\*/`, re.S) has no awareness of string/attribute context or comment-open/close pairing
+- [ ] `prelaunch-reality-gate.py` (no undo before d5295dccd): Two new false-positive branches were introduced by this exact fix: (1) the unconditional "is live and collecting" / "(a) normal traffic week" idiom matches fire on benign staging/QA sentences with no customer or producti
+- [ ] `stock-photo-gate.py` (no undo before d5295dccd): The fix over-corrected PRESENCE and reproduced, in brand-new code, the exact "bare common word fires by coincidence" failure shape it had just removed. Three distinct, isolated new holes, all traced to lines this fix tou
+
 ## OPEN, WAITING ON HIM , tracked as boxes so they cannot be lost in prose
 - [ ] PARKED 2026-08-19 . Translate the 263 refund-flow strings into real formal German, French and Italian, or leave them English and carry it as a known gap? . from: the key-parity check failing surfaced that de, fr and it each have 263 of 263 refundFlow strings byte-identical to English, on the screen where a customer asks for money back. Not machine-translated unilaterally: it is money and cancellation terms, and COPY_LAW requires formal Sie/vous/Lei.
 
