@@ -183,7 +183,7 @@ function SaveHeart({ name }: { name: string }) {
     >
       <Heart
         size={14}
-        strokeWidth={2.25}
+        strokeWidth={1.6}
         fill={saved ? "#FF3366" : "none"}
         stroke={saved ? "none" : "var(--color-heading)"}
         aria-hidden

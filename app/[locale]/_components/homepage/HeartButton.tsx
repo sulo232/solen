@@ -222,7 +222,11 @@ export function HeartButton({
             // V2-D43: key re-mounts SVG on each save → CSS animation restarts.
             key={popKey}
             size={iconSize}
-            strokeWidth={2.25}
+            // 2026-08-19: was 2.25. The heart is only SOLID when saved; unsaved it is a
+            // stroke, and at 16px his approved table (lib/icon-stroke.ts, 2026-07-16) says
+            // 1.9. The sweep skipped it because of the conditional fill, so it is set here
+            // by hand. Saved state is unaffected: fill wins and the stroke is not drawn.
+            strokeWidth={1.9}
             // V3-D103 (2026-05-23): heart fill aligned with universal semantic
             // --heart-active #FF3366 per brand spec. Was held over at V2 muted
             // #CC4A60 from the old warm-reduction era — should have swapped at
