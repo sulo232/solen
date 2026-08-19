@@ -153,10 +153,22 @@ CLIENT_SUPPLIED = re.compile(
 # mentioning requireAuth passed clean, the same IDOR shape this gate exists to catch.
 # GATE_LAW failure shape 3 ("the stand-down that costs nothing to satisfy"). ESCAPE stays on
 # the raw content because `ownership-ok:` is meant to live in a comment.
+#
+# 2026-08-19, same pass, second real regression found by the full-corpus sweep required by
+# GATE_LAW step 5: `getActiveSalon<{ id: string }>(supabase, user.id, "id")` and
+# `findQueueEntryByToken<{...}>(` -- a TypeScript generic type-argument list between the name
+# and the call parens -- are the ACTUAL, common shapes at 14 real call sites (grepped, not
+# guessed: app/api/bookings/walk-in, clients/[id]/nail-preferences, dashboard/clients,
+# dashboard/spa/rooms, nail-discovery/publish, salon/{bundles,chairs,dynamic-pricing,loyalty,
+# retail,stations}, walkin/{queue/status,review,tip}), all real safe ownership-scoped calls
+# the plain `name\s*\(` pattern above does not match. `(?:<[^<>]*>)?` accepts one level of
+# generic (this codebase's real usage: `<{ id: string }>`, no nested angle brackets); a more
+# exotic nested generic just fails to match here, same MISS-over-false-positive tradeoff this
+# file already states throughout, not a new one.
 FUNCTION_SIGNAL = re.compile(
     r"\b(requireAuth|requireAdmin|requireSalonOwner|requireRole|resolveBookingActor|"
     r"createHmac|timingSafeEqual|getActiveSalon|clientBelongsToSalon|verifyAccessToken|"
-    r"findQueueEntryByToken)\s*\("
+    r"findQueueEntryByToken)\s*(?:<[^<>]*>)?\s*\("
 )
 STRING_SIGNAL = re.compile(r"\b(CRON_SECRET|stripe-signature)\b")
 # Category 1 (2026-07-16 fix): the inline admin check used ~35+ times instead
@@ -221,16 +233,47 @@ def local_self_id_fn_names(content):
     return names
 
 
-def has_self_scoped_query(content):
+def self_scoped_vars(content):
     self_vars = set(SELF_ID_VAR_ASSIGN.findall(content))
     local_self_id_fns = local_self_id_fn_names(content)
     for varname, fnname in VAR_FROM_CALL.findall(content):
         if fnname in local_self_id_fns:
             self_vars.add(varname)
+    return self_vars
+
+
+def has_self_scoped_query(content):
+    self_vars = self_scoped_vars(content)
     for m in EQ_CALL.finditer(content):
         val = m.group(1).strip()
         if SELF_ID_ONLY.match(val) or val in self_vars:
             return True
+    return False
+
+
+# 2026-08-19 stress-test fix: app/api/stripe/booking-pay-intent/route.ts is real, shipped
+# ownership-checking code this gate would have blocked if rewritten from scratch (proven via
+# hook-probe Write-simulation) -- `const userId = user?.id ?? null; ... if (!userId ||
+# userId !== booking.user_id) return 403`. `userId` IS a self-scoped var per SELF_ID_VAR_ASSIGN
+# (assigned straight from `user?.id`), but the OLD OWNERSHIP_COMPARISON regex only recognized
+# a comparison against the literal text `user.id`/`session.user.id`, not a comparison against
+# a variable that traces back to it, and EQ_CALL only covers `.eq()` calls, not a plain JS `if`
+# comparison. Same reasoning as has_self_scoped_query: once one side of a `!==`/`===` is
+# PROVABLY the caller's own verified identity (a direct `user.id`/`session.user.id` expression,
+# or a var whose entire initializer is exactly that), the comparison is safe no matter what the
+# other side is, because the anchor side cannot be attacker-controlled. This does not verify the
+# comparison's result actually GATES access (no control-flow tracing) -- same accepted
+# MISS-over-false-positive tradeoff already stated for OWNERSHIP_COMPARISON and EQ_CALL above,
+# not a new relaxation.
+COMPARISON = re.compile(r"([\w.$?\[\]]+)\s*(?:!==|===)\s*([\w.$?\[\]]+)")
+
+
+def has_self_scoped_comparison(content):
+    self_vars = self_scoped_vars(content)
+    for m in COMPARISON.finditer(content):
+        for side in (m.group(1).strip(), m.group(2).strip()):
+            if SELF_ID_ONLY.match(side) or side in self_vars:
+                return True
     return False
 
 
@@ -306,6 +349,42 @@ def _selftest():
         "  return Response.json(data);\n"
         "}"
     )
+    # Reproduces app/api/bookings/walk-in/route.ts's real shape (14 real files use this):
+    # createAdminSupabaseClient() + a client-supplied id, ownership resolved via
+    # `getActiveSalon<{ id: string }>(...)` -- a TypeScript generic argument between the name
+    # and the call parens. Must ALLOW.
+    GENERIC_CALL = (
+        'import { createAdminSupabaseClient, createServerSupabaseClient } from "@/lib/supabase";\n'
+        'import { getActiveSalon } from "@/lib/active-salon";\n'
+        "export async function POST(req) {\n"
+        "  const supabase = await createServerSupabaseClient();\n"
+        "  const { data: { user } } = await supabase.auth.getUser();\n"
+        '  const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id");\n'
+        "  const admin = createAdminSupabaseClient();\n"
+        '  const staffId = req.nextUrl.searchParams.get("staff_id");\n'
+        '  const { data } = await admin.from("staff").select("*").eq("id", staffId).eq("salon_id", salon.id);\n'
+        "  return Response.json(data);\n"
+        "}"
+    )
+    # Reproduces app/api/stripe/booking-pay-intent/route.ts's real shape: ownership is a plain
+    # JS comparison between a self-scoped var and a DIFFERENTLY NAMED field on another object
+    # (`userId !== booking.user_id`), not the literal `user.id` text OWNERSHIP_COMPARISON alone
+    # recognizes. Must ALLOW.
+    SELF_SCOPED_COMPARISON = (
+        'import { createAdminSupabaseClient, createServerSupabaseClient } from "@/lib/supabase";\n'
+        "export async function POST(req) {\n"
+        "  const supabase = await createServerSupabaseClient();\n"
+        "  const { data: { user } } = await supabase.auth.getUser();\n"
+        "  const userId = user?.id ?? null;\n"
+        "  const admin = createAdminSupabaseClient();\n"
+        '  const bookingId = (await req.json()).booking_id;\n'
+        '  const { data: booking } = await admin.from("bookings").select("*").eq("id", bookingId).single();\n'
+        "  if (!userId || userId !== booking.user_id) {\n"
+        '    return Response.json({ error: "Not authorized" }, { status: 403 });\n'
+        "  }\n"
+        "  return Response.json(booking);\n"
+        "}"
+    )
 
     cases = [
         ("BAD (no auth, client id)", "Write", "app/api/probe-bad2/route.ts", BAD, "deny"),
@@ -318,6 +397,10 @@ def _selftest():
          ESCAPE_HATCH, "allow"),
         ("wrong tool (Edit, scope check)", "Edit", "app/api/probe-bad2/route.ts", BAD, "allow"),
         ("dev-only route exempt", "Write", "app/api/dev/probe/route.ts", BAD, "allow"),
+        ("GENERIC_CALL (getActiveSalon<{...}>()", "Write", "app/api/probe-generic/route.ts",
+         GENERIC_CALL, "allow"),
+        ("SELF_SCOPED_COMPARISON (userId !== booking.user_id)", "Write",
+         "app/api/probe-selfcompare/route.ts", SELF_SCOPED_COMPARISON, "allow"),
     ]
 
     failures = []
@@ -383,7 +466,8 @@ try:
             and not STRING_SIGNAL.search(code)
             and not ROLE_CHECK.search(code)
             and not OWNERSHIP_COMPARISON.search(code)
-            and not has_self_scoped_query(code)):
+            and not has_self_scoped_query(code)
+            and not has_self_scoped_comparison(code)):
         deny(
             "BLOCKED (service-role IDOR risk): this new route calls createAdminSupabaseClient() "
             "(service-role key, BYPASSES RLS entirely) AND reads a client-supplied identifier "

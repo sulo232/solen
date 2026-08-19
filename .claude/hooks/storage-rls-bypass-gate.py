@@ -94,10 +94,16 @@ ADMIN_CLIENT = re.compile(r"createAdminSupabaseClient\(")
 # failure shape 3 ("the stand-down that costs nothing to satisfy"). Both signals are now
 # matched against comment-stripped content (see strip_comments below); ESCAPE stays on the
 # raw content because `storage-ok:` is meant to live in a comment.
+# 2026-08-19: `\s*(?:<[^<>]*>)?\s*\(` (not plain `\s*\(`) because the sibling
+# service-role-ownership-gate.py's full-corpus sweep the same day found 14 real files calling
+# these with a TypeScript generic type-argument between the name and the parens
+# (`getActiveSalon<{ id: string }>(...)`, `findQueueEntryByToken<{...}>(...)`), which the
+# plain pattern does not match. Mirrored here defensively for the same identifier list even
+# though this gate's own 5-file corpus didn't happen to hit it.
 FUNCTION_SIGNAL = re.compile(
     r"\b(requireAuth|requireAdmin|requireSalonOwner|requireRole|resolveBookingActor|"
     r"createHmac|timingSafeEqual|getActiveSalon|clientBelongsToSalon|verifyAccessToken|"
-    r"findQueueEntryByToken)\s*\("
+    r"findQueueEntryByToken)\s*(?:<[^<>]*>)?\s*\("
 )
 STRING_SIGNAL = re.compile(r"\b(CRON_SECRET|stripe-signature)\b")
 ROLE_CHECK = re.compile(
@@ -209,6 +215,19 @@ def _selftest():
         "  return Response.json({ url: data });\n"
         "}"
     )
+    GENERIC_CALL = (
+        'import { createAdminSupabaseClient, createServerSupabaseClient } from "@/lib/supabase";\n'
+        'import { getActiveSalon } from "@/lib/active-salon";\n'
+        "export async function POST(req) {\n"
+        "  const supabase = await createServerSupabaseClient();\n"
+        "  const { data: { user } } = await supabase.auth.getUser();\n"
+        '  const salon = await getActiveSalon<{ id: string }>(supabase, user.id, "id");\n'
+        "  const admin = createAdminSupabaseClient();\n"
+        "  const path = `salons/${salon.id}/gallery/${file.name}`;\n"
+        '  const { data } = await admin.storage.from("gallery").upload(path, file);\n'
+        "  return Response.json({ url: data });\n"
+        "}"
+    )
 
     cases = [
         ("BAD (no auth at all)", "Write", "app/api/probe-bad/route.ts", BAD, "deny"),
@@ -220,6 +239,8 @@ def _selftest():
         ("ESCAPE_HATCH (storage-ok: in comment)", "Write", "app/api/probe-escape/route.ts",
          ESCAPE_HATCH, "allow"),
         ("wrong tool (Edit, scope check)", "Edit", "app/api/probe-bad/route.ts", BAD, "allow"),
+        ("GENERIC_CALL (getActiveSalon<{...}>()", "Write", "app/api/probe-generic/route.ts",
+         GENERIC_CALL, "allow"),
     ]
 
     failures = []
