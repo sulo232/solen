@@ -183,8 +183,17 @@ then the three that used to die now each print "NOT READY , the evaluation could
 hook"; then the hang case re-driven with a deliberately open pipe returns a verdict instead of
 blocking (was: killed at 120s).
 
-- [ ] 26 hooks still lack the guard, so gate-eval reports NOT READY on each until they get it.
-      That is the correct report and not a regression: it was always true, it was just invisible.
+- [x] CLOSED the same turn, and the first fix was the wrong shape. Refusing to grade 26 hooks was
+      honest but useless, and it was also unnecessary: only the PURE-FUNCTION half of the grading
+      needs the import. Section 2b runs the hook as a real subprocess and never touches the module.
+      So the grader now degrades to the end-to-end half, prints exactly which half is missing and
+      the one-line remedy, and carries on.
+      Rejected the alternative deliberately: auto-adding `if __name__ == "__main__":` to 26 live
+      files. Their tails are all different shapes (surveyed: no two alike), and a bad wrap silently
+      disarms a running security gate. One careful change to the grader beats 26 risky ones.
+      verified: all 26 driven through the fixed grader, 26 of 26 now reach a printed VERDICT,
+      0 die silently (was 0 of 26 reaching a verdict). Control run first and still whole: a hook
+      that always had the guard still prints sections 1, 2, 2b, 3, 4 and its verdict, unchanged.
 
 ## OPEN, WAITING ON HIM , tracked as boxes so they cannot be lost in prose
 - [ ] PARKED 2026-08-19 . Translate the 263 refund-flow strings into real formal German, French and Italian, or leave them English and carry it as a known gap? . from: the key-parity check failing surfaced that de, fr and it each have 263 of 263 refundFlow strings byte-identical to English, on the screen where a customer asks for money back. Not machine-translated unilaterally: it is money and cancellation terms, and COPY_LAW requires formal Sie/vous/Lei.

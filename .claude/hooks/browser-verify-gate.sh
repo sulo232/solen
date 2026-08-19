@@ -29,16 +29,25 @@
 #     The health check had already flagged this exact phantom string.)
 #   • an mcp__Claude_Preview__*    tool call (retired prefix, kept so old transcripts score)
 #   • an mcp__playwright__*        tool call
-#   • an Agent call with subagent_type "design-verifier" (2026-08-19 fix: this line named a
-#     "Task" tool. There is no Task tool in this build; the subagent dispatch tool is Agent.
-#     Measured over 4,225 transcripts: 0 Task tool_use rows, 856 Agent dispatches. So this
-#     release was closed by construction, on every turn, since the gate first shipped.)
 #   • a Bash curl/wget of localhost / 127.0.0.1 on ANY port  (or a `playwright` run)
-#   • ANY subagent dispatched this turn (any subagent_type, not just design-verifier) whose
-#     OWN transcript shows it did one of the above itself (2026-08-19 fix: measured 36 of 234
-#     real blocks, 15.4%, fired on a turn whose subagent HAD driven a browser — the gate read
-#     only the parent transcript and never looked at subagents/<id>.jsonl, so real verification
-#     that happened one level down was invisible to it. See SUBAGENT VERIFICATION LOOKUP below.)
+#   • ANY subagent dispatched this turn (Agent tool call, ANY subagent_type — including
+#     "design-verifier", which carries NO special trust) whose OWN transcript shows it did
+#     one of the above itself (2026-08-19 fix: measured 36 of 234 real blocks, 15.4%, fired
+#     on a turn whose subagent HAD driven a browser — the gate read only the parent
+#     transcript and never looked at subagents/<id>.jsonl, so real verification that happened
+#     one level down was invisible to it. See SUBAGENT VERIFICATION LOOKUP below.)
+#     CORRECTED 2026-08-19, second pass: the first pass fixed the tool name for the
+#     design-verifier case (the old detector checked for a "Task" tool that does not exist in
+#     this build — 0 of 4,225 real transcripts, so that branch was dead by construction) but
+#     changed it into an UNCONDITIONAL pass on the literal string "design-verifier" in
+#     subagent_type, with zero inspection of what that subagent actually did. An Agent
+#     dispatch with subagent_type:"design-verifier" and a fabricated "PASS" tool_result, and
+#     NO browser/curl signal anywhere in its own transcript (or no transcript captured at
+#     all), cleared the gate. Confirmed via hook-probe against constructed transcripts shaped
+#     like real ones (parent .jsonl + subagents/agent-<id>.jsonl + .meta.json). There is now
+#     no special case for design-verifier: it is checked by the EXACT SAME subagent-transcript
+#     lookup as every other subagent_type. Dispatching one does not by itself clear the gate;
+#     it must actually have driven a browser or hit localhost, same bar as any subagent.
 #
 # ESCAPE (loop-safety — a Stop gate can otherwise trap the turn):
 #   touch .claude/browser-verify-skip.flag     # 30-min TTL
@@ -119,9 +128,13 @@ write("t2_control_pass", [
     tool_result("toolu_NAV01"),
 ])
 
-# 3 REPRODUCED DEFECT A (now fixed): Agent dispatch, subagent_type design-verifier. The
-# release text promises this clears the gate; the old detector checked for a "Task" tool,
-# which does not exist in this build, so it never actually cleared anything.
+# 3 REPRODUCED DEFECT A (now fixed): Agent dispatch, subagent_type design-verifier, whose
+# OWN transcript shows it genuinely drove a browser. The FIRST 2026-08-19 fix pass checked
+# for a "Task" tool, which does not exist in this build, so it never actually cleared
+# anything (dead code, 0 of 4,225 real transcripts). The SECOND pass, this one, closes the
+# follow-on defect the first pass introduced (case 8/9 below): a design-verifier dispatch
+# alone, with no real verification in its own transcript, must NOT clear the gate. This case
+# is the legitimate positive: a real design-verifier subagent that actually verified.
 write("t3_defect_a_design_verifier", [
     user_prompt("make the salon card padding tighter"),
     asst([UI_EDIT]), tool_result("toolu_EDIT01"),
@@ -129,6 +142,12 @@ write("t3_defect_a_design_verifier", [
            "input": {"description": "verify padding", "subagent_type": "design-verifier",
                       "prompt": "verify the padding change on /de"}}]),
     tool_result("toolu_DV01", "PASS: padding matches spec"),
+])
+write_subagent("t3_defect_a_design_verifier", "aDV01", "toolu_DV01", [
+    user_prompt("verify the padding change on /de"),
+    asst([{"id": "toolu_SUBNAV02", "name": "mcp__Claude_Browser__navigate",
+           "input": {"url": "http://localhost:3000/de"}}]),
+    tool_result("toolu_SUBNAV02"),
 ])
 
 # 4 REPRODUCED DEFECT B (now fixed): Agent dispatch of an ORDINARY subagent (not named
@@ -188,6 +207,39 @@ write_subagent("t7_safety_unrelated_subagent_work", "aUNRELATED01", "toolu_GEN03
     tool_result("toolu_SUBWEB01", "..."),
 ])
 
+# 8 REPRODUCED DEFECT (grader's attack payload 1, 2026-08-19 second pass): Agent dispatch,
+# subagent_type "design-verifier", tool_result claims "PASS", but the subagent's OWN
+# transcript contains no browser/curl signal at all (just a Read). The first fix pass
+# unconditionally trusted the subagent_type string alone; this must now BLOCK, exactly like
+# case 5 does for an ordinary subagent that didn't verify.
+write("t8_defect_fake_design_verifier_no_evidence", [
+    user_prompt("make the salon card padding tighter"),
+    asst([UI_EDIT]), tool_result("toolu_EDIT01"),
+    asst([{"id": "toolu_DVFAKE01", "name": "Agent",
+           "input": {"description": "verify padding", "subagent_type": "design-verifier",
+                      "prompt": "verify the padding change on /de"}}]),
+    tool_result("toolu_DVFAKE01", "PASS: padding matches spec"),
+])
+write_subagent("t8_defect_fake_design_verifier_no_evidence", "aFAKE01", "toolu_DVFAKE01", [
+    user_prompt("verify the padding change on /de"),
+    asst([{"id": "toolu_SUBREAD02", "name": "Read",
+           "input": {"file_path": "/Users/sulo/Documents/solen/app/[locale]/page.tsx"}}]),
+    tool_result("toolu_SUBREAD02", "...file contents..."),
+])
+
+# 9 REPRODUCED DEFECT (grader's attack payload 1b, 2026-08-19 second pass): same fake
+# design-verifier dispatch, but no subagents/ entry was ever captured for it (as if the
+# subagent never ran or its transcript was lost). Must also BLOCK: the subagent_type string
+# alone, real or fake evidence file or none, must never be sufficient on its own.
+write("t9_defect_fake_design_verifier_no_transcript", [
+    user_prompt("make the salon card padding tighter"),
+    asst([UI_EDIT]), tool_result("toolu_EDIT01"),
+    asst([{"id": "toolu_DVFAKE02", "name": "Agent",
+           "input": {"description": "verify padding", "subagent_type": "design-verifier",
+                      "prompt": "verify the padding change on /de"}}]),
+    tool_result("toolu_DVFAKE02", "PASS: padding matches spec"),
+])
+
 print("built")
 PYEOF
 
@@ -215,7 +267,7 @@ PYEOF
     "$ST_DIR/t1_control_block.jsonl" "BLOCK"
   run_case "2 CONTROL: UI edit + real browser nav -> OK (known-answer round trip)" \
     "$ST_DIR/t2_control_pass.jsonl" "OK"
-  run_case "3 REPRODUCED DEFECT A (now fixed): Agent + design-verifier -> OK" \
+  run_case "3 REPRODUCED DEFECT A (now fixed): design-verifier that actually verified -> OK" \
     "$ST_DIR/t3_defect_a_design_verifier.jsonl" "OK"
   run_case "4 REPRODUCED DEFECT B (now fixed): ordinary subagent verified in its own transcript -> OK" \
     "$ST_DIR/t4_defect_b_subagent_verified.jsonl" "OK"
@@ -225,6 +277,10 @@ PYEOF
     "$ST_DIR/t6_safety_no_ui_edit.jsonl" "OK"
   run_case "7 SAFETY: subagent did unrelated work, no verification -> still BLOCK" \
     "$ST_DIR/t7_safety_unrelated_subagent_work.jsonl" "BLOCK"
+  run_case "8 REPRODUCED DEFECT (second pass, now fixed): fake design-verifier PASS, subagent transcript has no verify signal -> still BLOCK" \
+    "$ST_DIR/t8_defect_fake_design_verifier_no_evidence.jsonl" "BLOCK"
+  run_case "9 REPRODUCED DEFECT (second pass, now fixed): fake design-verifier PASS, no subagent transcript captured at all -> still BLOCK" \
+    "$ST_DIR/t9_defect_fake_design_verifier_no_transcript.jsonl" "BLOCK"
 
   echo ""
   echo "$st_ok/$((st_ok + st_bad)) passed"
@@ -275,8 +331,6 @@ TOKENS=$(tail -n 1200 "$TRANSCRIPT" | jq -R -r '
                     or ($n | startswith("mcp__Claude_Browser__"))
                     or ($n | startswith("mcp__Claude_Preview__"))
                     or ($n | startswith("mcp__playwright__")))
-               then "V"
-             elif ($n=="Agent" and (($i.subagent_type // "")=="design-verifier"))
                then "V"
              elif ($n=="Bash" and (($i.command // "")
                     | test("(curl|wget)[^\\n]*(localhost|127\\.0\\.0\\.1):[0-9]+|playwright")))
@@ -391,7 +445,9 @@ Before ending the turn, DO ONE of:
        • preview_start to bring the page up, then mcp__Claude_Browser__navigate,
          read_page, computer (click / screenshot), read_console_messages
        • or the agent browser (claude-in-chrome), or a playwright run
-       • or a design-verifier subagent
+       • or a design-verifier subagent that ITSELF drives a browser or hits localhost
+         (dispatching one is not enough by itself; its own transcript is checked the same
+         as any subagent's, so it has to actually verify, not just report "PASS")
      A single such call this turn clears the gate.
      (Tool names corrected 2026-08-18: this text named preview_snapshot, preview_click,
      preview_screenshot and preview_inspect, and NONE of those exist in this build. The

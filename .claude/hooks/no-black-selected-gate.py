@@ -60,6 +60,27 @@ identifier merely CONTAINING "date", so a search filter inherited the booking pi
 The exemption now also requires booking-picker CONTEXT and refuses on a filter/facet/sort
 identifier; the contract keeps filter pills calm gray and exempts the booking date/slot picker
 only.
+
+2026-08-19 third stress-test pass: MEASURED, via hook-probe.py, a real accessible `<button>`
+filter pill painted with a banned ink fill (`isSelected && "bg-black text-white"`) blocked inside
+a `<div>` and PASSED inside a `<button>`, because WINDOW_EXCLUDE's bare `\bbutton\b`/`\bbtn\b`/
+`role="button"` tokens exempted ANY button-shaped element, not just the one primary commit button
+the docstring names. Fixed by removing those three generic tag-name markers from WINDOW_EXCLUDE;
+the remaining tokens (commit/submit/pay/buchen/bezahlen/checkout/confirm/primary/cta/weiter/
+continue/next-step/place order) already identify a genuine commit action by what it SAYS.
+
+2026-08-19 REPAIR to that same-day fix (one round, grader-found regression): while adding the
+button-tag removal above, also added `(?!/)` to FILL's four token alternatives to stop
+`bg-s-ink/5` (a genuinely faint 5% tint on an unrelated button) from tripping the non-ternary
+co-occurrence check next to an unrelated `selected.size` computation. That lookahead was
+unconditional on ANY opacity value, so `bg-s-ink/100`, `/95`, `/90`, and `bg-s-accent/95`
+(visually solid fills, indistinguishable from the bare token) silently bypassed detection too,
+confirmed fix-introduced by diffing against the untouched pre-fix hook copy at
+/Users/sulo/Documents/solen/.claude/hooks/no-black-selected-gate.py, which still blocks the
+identical /95 payload. Repaired by bounding the exemption to opacity suffixes under 50 only (see
+`_LOW_OPACITY` above FILL); 50 and above still counts as a fill. The button/btn/role="button"
+removal itself was re-verified clean (zero verdict flips across two independent repo-wide scans,
+scripts left at /tmp/claude-501/scan.py and /tmp/claude-501/scan2.py) and needed no change.
 """
 import json
 import os
@@ -144,13 +165,39 @@ def selftest():
          '  return <button className="bg-s-ink text-white rounded-btn py-3" '
          'onClick={onNext}>Weiter</button>;\n'
          '}', 0),
-        ("an 80%-opacity ink tint near an unrelated 'selected' count must pass "
+        ("a 5%-opacity ink tint near an unrelated 'selected' count must pass "
          "(measured false positive, app/[locale]/dashboard/discovery-admin/"
-         "page.tsx:475, avoided by requiring the fill token not be opacity-"
-         "suffixed)", fp,
+         "page.tsx:475, avoided by exempting only opacity suffixes under 50)", fp,
          '<button onClick={selectAll} aria-label={selected.size === items.length '
          '? t("deselectAllAria") : t("selectAllAria")} className="px-3 py-2 '
          'rounded-btn bg-s-ink/5 text-sm">', 0),
+        # 2026-08-19 REPAIR: the opacity lookahead above was unconditional, so
+        # near-solid tints (90/95/100%) bypassed detection too. Reproduced with
+        # hook-probe.py; these four must go back to blocking.
+        ("bg-s-ink/100 on a selected pill must block (grader-found regression: "
+         "the unconditional opacity lookahead let a 100%-opaque, visually solid "
+         "fill through)", filt,
+         'function pillClass({ selected }) { return selected && '
+         '"bg-s-ink/100 text-white"; }', 2),
+        ("bg-s-ink/95 on a selected pill must block (same regression, /95)", filt,
+         'function pillClass({ selected }) { return selected && '
+         '"bg-s-ink/95 text-white"; }', 2),
+        ("bg-s-ink/90 on a selected pill must block (same regression, /90)", filt,
+         'function pillClass({ selected }) { return selected && '
+         '"bg-s-ink/90 text-white"; }', 2),
+        ("bg-s-accent/95 on a selected pill must block (same regression, blue "
+         "variant)", filt,
+         'function pillClass({ selected }) { return selected && '
+         '"bg-s-accent/95 text-white"; }', 2),
+        ("bg-s-ink/49 near a selected token must still pass (just under the "
+         "boundary, a genuine low tint)", fp,
+         '<button onClick={selectAll} aria-label={selected.size === items.length '
+         '? t("deselectAllAria") : t("selectAllAria")} className="px-3 py-2 '
+         'rounded-btn bg-s-ink/49 text-sm">', 0),
+        ("bg-s-ink/50 near a selected token must block (boundary case, at the "
+         "line not under it)", filt,
+         'function pillClass({ selected }) { return selected && '
+         '"bg-s-ink/50 text-white"; }', 2),
     ]
     ok = 0
     for name, case_fp, content, expect_rc in cases:
@@ -397,8 +444,31 @@ def offenders(text):
 # non-ternary co-occurrence path to the same bar instead of matching the bare
 # substring. A real banned fill is never opacity-suffixed (LOCKFILE: selected = a
 # SOLID bg-s-bg-sunken/bg-s-ink fill, never a tint), so this costs no true positive.
+#
+# 2026-08-19 REPAIR (same day, grader-found regression): the lookahead above was
+# unconditional on ANY opacity value, not just low ones. MEASURED with
+# hook-probe.py against this exact file: `bg-s-ink/100`, `/95`, `/90`, and
+# `bg-s-accent/95` all silently PASSED a selected pill written in the
+# non-ternary co-occurrence form (`selected && "bg-s-ink/100 text-white"`), and
+# the untouched pre-fix hook copy at
+# /Users/sulo/Documents/solen/.claude/hooks/no-black-selected-gate.py correctly
+# BLOCKS the identical /95 payload, confirming the /100 bypass was introduced by
+# this fix, not pre-existing. A 90-100% tint is visually and semantically a
+# solid fill (there is no perceptible difference from bare `bg-s-ink`), so the
+# lookahead now only exempts a genuinely LOW opacity suffix, `/0` through
+# `/49`: any one-or-two-digit number under 50, immediately after the slash and
+# not followed by a further digit (so it can't partially match inside `/100`).
+# 50 and above, including 90/95/100, still count as a fill and reach the same
+# co-occurrence check as the bare token. Every real bg-s-ink/border-s-accent
+# opacity suffix already in this codebase's app/components/components-legacy
+# trees was greped before picking 50 as the line: the low tints in real use
+# top out at /60 (a small remove-button chip, not a selected state) and the
+# high ones (/80, /95, /55) are all modal/lightbox scrim backdrops with no
+# selection token anywhere near them, so this boundary costs no real exemption.
+_LOW_OPACITY = r"(?!/(?:[0-9]|[1-4][0-9])(?!\d))"
 FILL = (
-    r"bg-s-ink(?!/)|border-s-ink(?!/)|bg-s-accent(?!/)|border-s-accent(?!/)"
+    r"bg-s-ink" + _LOW_OPACITY + r"|border-s-ink" + _LOW_OPACITY
+    + r"|bg-s-accent" + _LOW_OPACITY + r"|border-s-accent" + _LOW_OPACITY + r""
     r"|bg-black|bg-(?:neutral|zinc|gray|slate|stone)-9(?:00|50)"
     r"|bg-\[#0a0a0a(?=\])|bg-\[#000000(?=\])|bg-\[#000(?=\])"
     r"|background(?:Color)?\s*[:=]\s*['\"]?\s*(?:#0a0a0a\b|#000000\b|#000\b|black\b)"

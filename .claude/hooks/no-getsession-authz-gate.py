@@ -9,10 +9,11 @@ use supabase.auth.getUser() (verifies the JWT against the Supabase Auth server,
 returns a null user on failure so it fails CLOSED). The whole backend was migrated
 off getSession() on 2026-07-10 (commit 9783e5711); this gate stops it coming back.
 
-Fires on Write|Edit to app/**/*.ts(x) or lib/**/*.ts(x) that introduces
-`auth.getSession()`. EXEMPT: client components ("use client" at the top of the
-file) reading their own session for UI state , that is not a security boundary.
-Override (rare, justified): touch .claude/getsession-skip.flag  (5 min TTL).
+Fires on Write|Edit|MultiEdit to app/**/*.ts(x) or lib/**/*.ts(x) that
+introduces `auth.getSession()`. EXEMPT: client components ("use client" at
+the top of the file) reading their own session for UI state , that is not a
+security boundary. Override (rare, justified): touch
+.claude/getsession-skip.flag  (5 min TTL).
 
 House rules: fail OPEN on any parse/IO error; reason on stderr + exit 2 to block.
 
@@ -28,6 +29,20 @@ package that happens to ship a folder named app or lib; it is now anchored
 to the actual project root (see `_in_project_app_or_lib`). Also fixed: a
 multi-line `/* ... */` block comment whose interior lines don't each start
 with `*` was read as real code and wrongly blocked (see `_has_real_getsession`).
+
+FIXED 2026-08-19, ROUND 2 (grading round; this is the repair the owner capped
+at one retry): `main()` was only ever branching on tool_name == "Write" or
+"Edit"; MultiEdit is registered on the same PreToolUse matcher in
+settings.json but fell into the catch-all `else: sys.exit(0)` with ZERO
+content inspection, so the exact two-step rename this file's first FIXED
+note claims to have closed for Edit walked straight through when submitted
+as a single MultiEdit call (the tool this harness actually reaches for on a
+multi-line rename). Fixed by adding a MultiEdit branch and generalizing the
+single-edit reconstruction into `_reconstruct_edits_text`, which chains every
+entry in `edits` against the file's real on-disk content IN ORDER, each edit
+operating on the result of the previous , matching how the real MultiEdit
+tool applies its edits array, and making the same recombination visible
+regardless of how many edits or which tool carried them.
 """
 import json
 import os
@@ -164,6 +179,55 @@ if "--selftest" in sys.argv:
         lambda: _run("Edit", _CLIENT_TSX, old_string="return null;",
                      new_string="const { data: { session } } = await supabase.auth.getSession(); return session;")))
 
+    # 11. THE ROUND-2 GRADED DEFECT, KNOWN-ANSWER CONTROL: the exact same
+    #     two-step surgical rename as cases 2-4, submitted as ONE MultiEdit
+    #     call (two entries in `edits`) instead of two separate Edit calls.
+    #     This is the payload the grader proved bypassed silently -> must
+    #     now BLOCK, same as the chained-Edit version already does.
+    _cases.append((
+        "11 MultiEdit: two-step rename in one call -> BLOCK", True,
+        lambda: _run("MultiEdit", _REQUIRE_TS, edits=[
+            {"old_string": "getUser()", "new_string": "getSession()"},
+            {"old_string": "{ user }", "new_string": "{ session }"},
+        ])))
+
+    # 12. MultiEdit direct control (mirrors case 1): a single edit inside a
+    #     MultiEdit call whose own new_string already contains a real
+    #     getSession() call -> must BLOCK. Proves the MultiEdit branch itself
+    #     inspects content at all, independent of the chaining logic case 11
+    #     depends on.
+    _cases.append((
+        "12 MultiEdit: direct getSession() in one edit -> BLOCK", True,
+        lambda: _run("MultiEdit", _ROUTE_TS, edits=[
+            {"old_string": "return Response.json({});",
+             "new_string": "const { data: { session } } = await supabase.auth.getSession(); return Response.json({ session });"},
+        ])))
+
+    # 13. NEGATIVE: a genuinely unrelated MultiEdit (two edits, neither one
+    #     mentions getSession) must still pass. Proves the new branch does
+    #     not turn every MultiEdit call into a block.
+    _cases.append((
+        "13 MultiEdit: unrelated multi-file-style edits -> pass", False,
+        lambda: _run("MultiEdit", _ROUTE_TS, edits=[
+            {"old_string": "export async function GET() {", "new_string": "export async function GET(req: Request) {"},
+            {"old_string": "return Response.json({});", "new_string": "return Response.json({ ok: true });"},
+        ])))
+
+    # 14. EDGE CASE: an empty `edits` array must not crash and must not
+    #     falsely block (fail open on a malformed/empty payload).
+    _cases.append((
+        "14 MultiEdit: empty edits array -> pass, no crash", False,
+        lambda: _run("MultiEdit", _ROUTE_TS, edits=[])))
+
+    # 15. NEGATIVE: the "use client" exemption holds for MultiEdit too, not
+    #     just Edit/Write (mirrors case 10).
+    _cases.append((
+        "15 MultiEdit: \"use client\" component reading own session -> pass", False,
+        lambda: _run("MultiEdit", _CLIENT_TSX, edits=[
+            {"old_string": "return null;",
+             "new_string": "const { data: { session } } = await supabase.auth.getSession(); return session;"},
+        ])))
+
     _ok = _bad = 0
     for _name, _expect, _fn in _cases:
         _got = _fn()
@@ -196,46 +260,74 @@ def _in_project_app_or_lib(fp):
     return bool(re.match(r"(app|lib)/", rel))
 
 
-def _reconstruct_edit_text(fp, old_string, new_string, replace_all):
-    """An Edit's new_string alone misses a surgical rename: renaming
-    `getUser` -> `getSession` in isolation never contains the substring
-    `auth.getSession()`, because the `auth.` prefix was already sitting in
-    the UNCHANGED surrounding text on that line. Read the file's current
-    on-disk content and reconstruct what the edit actually produces (just
-    the touched line for a normal Edit, the whole file for replace_all) so
-    that recombination is visible to the check below. Falls back to
-    new_string alone (the prior behavior) whenever the file can't be read or
-    old_string isn't found there, so this only ADDS coverage, never removes
-    any case the gate already caught."""
+def _reconstruct_edits_text(fp, edits):
+    """Reconstruct what a WHOLE Edit/MultiEdit call actually produces on
+    disk, chaining every entry in `edits` IN ORDER against the file's real
+    on-disk content, each one operating on the result of the previous , this
+    is how the real MultiEdit tool applies its `edits` array. Needed because
+    a two-step surgical rename split across two chained edits (edit 1 renames
+    `getUser()` -> `getSession()`, edit 2 renames `{ user }` -> `{ session }`)
+    never puts the literal substring `auth.getSession()` inside either edit's
+    OWN new_string in isolation , it only appears once edit 1's result is
+    combined with the unchanged `auth.` prefix already on that line, which is
+    exactly what chaining against `current` (not the original file, and not
+    each edit read alone) reveals. Returns the touched-line reconstruction
+    from EVERY edit in the chain (every textual occurrence at each step, same
+    widening rationale as before this fix, since which occurrence the real
+    tool targets when a string is non-unique is not reliably the first
+    match), joined by newlines. Falls back gracefully on any read/match
+    failure; this only ever ADDS coverage, never removes a case the gate
+    already caught."""
     try:
         with open(fp, "r", encoding="utf-8", errors="ignore") as f:
             current = f.read()
     except OSError:
-        return new_string
-    if not old_string or old_string not in current:
-        return new_string
-    if replace_all:
-        return current.replace(old_string, new_string)
-    # old_string can textually occur more than once (a doc comment mentioning
-    # the same call above the real code line, for example, as in this repo's
-    # own lib/auth/require.ts). Which occurrence the real Edit tool targets
-    # is not reliably the first textual match, so reconstruct EVERY
-    # occurrence's resulting line and let the caller inspect them all. This
-    # only widens what gets INSPECTED, never what counts as a real call.
-    pieces = []
-    start = 0
-    while True:
-        idx = current.find(old_string, start)
-        if idx == -1:
-            break
-        end_idx = idx + len(old_string)
-        line_start = current.rfind("\n", 0, idx) + 1
-        line_end = current.find("\n", end_idx)
-        if line_end == -1:
-            line_end = len(current)
-        pieces.append(current[line_start:idx] + new_string + current[end_idx:line_end])
-        start = end_idx
-    return "\n".join(pieces) if pieces else new_string
+        return "\n".join((e.get("new_string", "") or "") for e in edits)
+
+    touched = []
+    for e in edits:
+        old_string = e.get("old_string", "") or ""
+        new_string = e.get("new_string", "") or ""
+        replace_all = bool(e.get("replace_all"))
+        if not old_string or old_string not in current:
+            touched.append(new_string)
+            continue
+        if replace_all:
+            current = current.replace(old_string, new_string)
+            touched.append(current)
+            continue
+        pieces = []
+        start = 0
+        while True:
+            idx = current.find(old_string, start)
+            if idx == -1:
+                break
+            end_idx = idx + len(old_string)
+            line_start = current.rfind("\n", 0, idx) + 1
+            line_end = current.find("\n", end_idx)
+            if line_end == -1:
+                line_end = len(current)
+            pieces.append(current[line_start:idx] + new_string + current[end_idx:line_end])
+            start = end_idx
+        touched.extend(pieces if pieces else [new_string])
+        # Apply THIS edit to `current` (first occurrence, matching the real
+        # tool's non-replace_all semantics) so the NEXT edit in the chain
+        # sees this edit's effect, not the original untouched file , this is
+        # the line that makes the two-step attack visible: after edit 1 is
+        # applied here, `current` already reads `auth.getSession()` before
+        # edit 2 is even inspected.
+        current = current.replace(old_string, new_string, 1)
+    return "\n".join(touched) if touched else ""
+
+
+def _reconstruct_edit_text(fp, old_string, new_string, replace_all):
+    """Single-Edit convenience wrapper over `_reconstruct_edits_text`, kept
+    so the Edit code path (and its self-test cases) is byte-for-byte the
+    same reconstruction as before this refactor , a chain of exactly one
+    edit produces identical output to the old dedicated implementation."""
+    return _reconstruct_edits_text(
+        fp, [{"old_string": old_string, "new_string": new_string, "replace_all": replace_all}]
+    )
 
 
 def main():
@@ -262,6 +354,16 @@ def main():
         old_string = ti.get("old_string", "") or ""
         new_string = ti.get("new_string", "") or ""
         new_text = _reconstruct_edit_text(fp, old_string, new_string, bool(ti.get("replace_all")))
+    elif tool == "MultiEdit":
+        # Registered on this matcher in settings.json same as Edit/Write; had
+        # NO branch here before this fix, so it fell into the catch-all
+        # `else: sys.exit(0)` below with zero content inspection regardless
+        # of what the edits actually did (the reproduced defect: a chained
+        # two-step rename submitted as one MultiEdit call bypassed silently).
+        edits = ti.get("edits", []) or []
+        if not isinstance(edits, list) or not edits:
+            sys.exit(0)
+        new_text = _reconstruct_edits_text(fp, edits)
     else:
         sys.exit(0)
 
