@@ -146,7 +146,10 @@ export default function Footer({ locale }: { locale: string }) {
                   // 36px button is a trivially-snappable notation fix.
                   className="grid h-9 w-9 place-items-center rounded-xl bg-s-bg-sunken text-s-ink-2 transition-[colors,transform] duration-150 ease-glide hover:bg-s-ink hover:text-white active:scale-[0.94] active:duration-[80ms]"
                 >
-                  <Icon size={16} aria-hidden />
+                  {/* 1.9 is strokeForSize(16) from lib/icon-stroke.ts. Set by hand because
+                      `Icon` here is a variable holding Instagram or Facebook (see the list
+                      above), so the sweep could not prove it was an icon and skipped it. */}
+                  <Icon size={16} strokeWidth={1.9} aria-hidden />
                 </a>
               ))}
             </div>
