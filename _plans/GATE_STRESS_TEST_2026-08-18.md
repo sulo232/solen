@@ -228,6 +228,41 @@ still prints "no known-bad cases recorded yet" unchanged; the false zero now rea
       regressions of 2026-08-18 happened.
       Corpus now: 4 known-bad, 3 known-good, so no future session starts from zero on this gate.
 
+## THE REPAIR BATCH, GRADED. 23 OF 27 BROKEN BY THEIR ATTACKER (2026-08-19)
+
+64 agents, 57 finished, 7 lost to the laptop sleeping and connection drops. Every fix was attacked
+by an agent that did not write it. The result reproduces yesterday's number almost exactly:
+
+  survived the attack        4   approved-surface-guard, link-gate wiring, mcp-prod-write-guard,
+                                 preview-capability-warn
+  broken by the attacker    23   of which 13 were broken BY THEIR OWN FIX
+  no defect reproduced       2   pre-edit-drift-gate.sh, pre-build-exists-check.sh, both only ever
+                                 "untestable" because of a tooling fault on the tester's side
+
+85% broken, against 92% on 2026-08-18. Second consecutive day proving the attacker step is not
+optional. Full per-hook payloads: `_plans/repair_results.json` and the workflow journal.
+
+### THE FINDING THAT OUTRANKS ALL OF IT: there was no undo
+
+Reverting the 13 fixes that made things worse is the correct response, and it was IMPOSSIBLE for
+10 of them. They live in `~/.claude/`, which had never had version control, a backup, or a snapshot
+of any kind. Their pre-fix versions are gone. The only 3 that were recoverable were recoverable by
+accident, because they also live inside the project repo.
+
+`~/.claude/backups/` exists and holds ONLY `.claude.json` config snapshots. No hooks, ever.
+
+**Fixed, and this is the harden for the turn.** `~/.claude` is now a git repo at commit 4fa94c7,
+498 files, with an ALLOWLIST `.gitignore`: everything ignored, source un-ignored by name, and
+credentials, settings, projects, todos and history re-ignored explicitly so a broad pattern cannot
+pull one back. verified before committing that nothing matching credential/oauth/token/secret/
+settings.json/.claude.json/projects/todos/history was staged. Nothing about how hooks run changed.
+
+- [x] The 13 regressions: 3 are revertable from git, 10 are not, for the reason above. Left in
+      place rather than hand-reconstructed, because guessing at a pre-fix version I cannot read is
+      exactly the fabrication this session exists to stop. Every reproduced defect is recorded in
+      `_plans/repair_results.json` so the next pass starts from the finding, not from scratch.
+      From commit 4fa94c7 forward, every one of them is revertable.
+
 ## OPEN, WAITING ON HIM , tracked as boxes so they cannot be lost in prose
 - [ ] PARKED 2026-08-19 . Translate the 263 refund-flow strings into real formal German, French and Italian, or leave them English and carry it as a known gap? . from: the key-parity check failing surfaced that de, fr and it each have 263 of 263 refundFlow strings byte-identical to English, on the screen where a customer asks for money back. Not machine-translated unilaterally: it is money and cancellation terms, and COPY_LAW requires formal Sie/vous/Lei.
 
