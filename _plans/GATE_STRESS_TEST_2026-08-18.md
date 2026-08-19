@@ -257,11 +257,16 @@ credentials, settings, projects, todos and history re-ignored explicitly so a br
 pull one back. verified before committing that nothing matching credential/oauth/token/secret/
 settings.json/.claude.json/projects/todos/history was staged. Nothing about how hooks run changed.
 
-- [x] The 13 regressions: 3 are revertable from git, 10 are not, for the reason above. Left in
-      place rather than hand-reconstructed, because guessing at a pre-fix version I cannot read is
-      exactly the fabrication this session exists to stop. Every reproduced defect is recorded in
-      `_plans/repair_results.json` so the next pass starts from the finding, not from scratch.
-      From commit 4fa94c7 forward, every one of them is revertable.
+- [x] The 13 regressions: 3 revertable, 10 not. verified: each of the 13 checked for existence in
+      all three hook roots and for a pre-2026-08-19 version in project git. Exactly three
+      (`browser-verify-gate.sh`, `no-getsession-authz-gate.py`, `pre-edit-psychology-gate.py`) live
+      in the project repo and have a pre-today commit; the other ten exist ONLY in `~/.claude/hooks`
+      and have no earlier version anywhere. ROOTS ENUMERATED, not assumed: `~/.claude/hooks`,
+      `/Users/sulo/Documents/solen/.claude/hooks`, and this worktree's `.claude/hooks`, which are
+      the only three directories any settings.json references.
+      Left in place rather than hand-reconstructed, because guessing at a pre-fix version I cannot
+      read is exactly the fabrication this session exists to stop. Every reproduced defect is in
+      `_plans/repair_results.json`. From `~/.claude` commit 4fa94c7 forward all ten are revertable.
 
 ## OPEN, WAITING ON HIM , tracked as boxes so they cannot be lost in prose
 - [ ] PARKED 2026-08-19 . Translate the 263 refund-flow strings into real formal German, French and Italian, or leave them English and carry it as a known gap? . from: the key-parity check failing surfaced that de, fr and it each have 263 of 263 refundFlow strings byte-identical to English, on the screen where a customer asks for money back. Not machine-translated unilaterally: it is money and cancellation terms, and COPY_LAW requires formal Sie/vous/Lei.
