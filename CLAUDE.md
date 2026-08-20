@@ -256,6 +256,53 @@ restored or added back when the graveyard has an entry for it.
 
 ---
 
+## 🎭 NO DECORATION: a thing that looks finished and is wired to nothing (owner 2026-08-19)
+
+**Owner, verbatim:** *"when you build something, you keep making these decorations or, like,
+unfinished stuff, right, even though I thought it actually finishes loop. Finish it as a loop. But,
+you know, it's like the requirement, like, at the end. It's gonna cause more harm than good, right,
+because you're being too lazy."*
+
+**MEASURED THE SAME DAY, with a control run first on keys known to be rendered: 1,716 of the 5,849
+copy keys in `messages/en.json`, 29 percent, have a name that appears in NO source file** under
+`app/`, `components/`, `components-legacy/` or `lib/`. Written, reviewed, translated into four
+languages, and shown on no screen. 87 of them are in `refundFlow`, which had just been translated
+into three languages that same day, so roughly 261 translations were produced for text nobody can
+ever see.
+
+**Two of those were PROMISES**, which is what makes this worse than waste: `reportWindowNote` ("You
+can report up to 14 days after your appointment") and `respondsBy` ("Salon responds by {date}") were
+both written and both rendered nowhere. The refund screens told a customer a deadline existed while
+nothing measured it, enforced it, or displayed it.
+
+**THE RULE.** A feature is not done when its pieces exist. It is done when the last one is
+connected. Specifically, and these are the shapes this project actually produces:
+- Copy written but rendered nowhere. A string in `messages/*.json` with no render site is not a
+  half-built feature, it is a finished-LOOKING one, which is worse, because nothing will ever tell
+  you it is missing.
+- A deadline printed but never computed, enforced or acted on. If a screen names a date, something
+  must own that date.
+- A column, table or flag that exists and nothing reads. Consent toggles are the dangerous member of
+  this family: the user is told they turned something off while a separate sender keeps going.
+- A control that renders and does nothing (the existing dead-affordance rule).
+
+**Why it is worse than leaving it out:** an absent feature is visibly absent and gets built. A
+decorated one is invisibly absent, passes every review, and is discovered by a customer.
+
+**THE CLOSE CONDITION, and this is the half he was naming.** The loop is not finished when the
+build agents return. It is finished when the LAST MILE is proven: the thing renders, the guard
+refuses something, the job runs. Take one real end-to-end path and drive it. "The code is there" is
+the exact claim this rule exists to refuse.
+
+**Enforced, not advice:** `~/.claude/hooks/i18n-write-gate.py` refuses a copy key added with nothing
+rendering it (`f888f11`). Scope is deliberately narrow: only keys being added right now. The 1,716
+already present are grandfathered, because a check that refused 29 percent of existing copy would be
+switched off within a day. `scripts/check-i18n-parity.mjs` does NOT cover this and never did: it
+compares the four locale key sets against each other, so a key present in all four and rendered in
+zero files passes clean.
+
+---
+
 ## 🚨 Surgical edits only
 
 1. Never rewrite a whole file — change only the lines that cause the reported bug.

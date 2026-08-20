@@ -1,0 +1,84 @@
+<title>Your refund process, answered</title>
+<style>
+ :root{--bg:#fff;--ink:#0A0A0A;--ink2:#6B6B6B;--line:#E4E4E7;--sunken:#F4F4F5;
+       --ok:#16A34A;--bad:#DC2626;--warn:#EA580C}
+ @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#fff;--ink:#0A0A0A}}
+ *{box-sizing:border-box}
+ body{background:var(--bg);color:var(--ink);margin:0;padding:20px 18px 64px;
+   font:16px/1.55 Inter,-apple-system,system-ui,sans-serif;-webkit-text-size-adjust:100%}
+ .wrap{max-width:720px;margin:0 auto}
+ h1{font-size:30px;line-height:1.15;letter-spacing:-.02em;margin:0 0 10px;font-weight:600}
+ .sub{color:var(--ink2);margin:0 0 30px;font-size:15px}
+ h2{font-size:20px;margin:36px 0 10px;font-weight:600;letter-spacing:-.01em}
+ .q{border:1px solid var(--line);border-radius:16px;padding:15px 16px;margin:0 0 12px;background:var(--bg)}
+ .q .ask{font-size:13px;color:var(--ink2);margin-bottom:8px}
+ .q .ans{font-size:16px;margin:0}
+ .tag{display:inline-block;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;
+      margin-bottom:9px}
+ .yes{background:#DCFCE7;color:#14532D}
+ .no{background:#FEE2E2;color:#7F1D1D}
+ .part{background:#FFEDD5;color:#7C2D12}
+ .flow{background:var(--sunken);border-radius:16px;padding:16px;margin:8px 0 6px}
+ .flow ol{margin:0;padding-left:20px}
+ .flow li{margin:0 0 10px}
+ .flow li b{display:block}
+ .flow li span{color:var(--ink2);font-size:14px}
+ table{width:100%;border-collapse:collapse;font-size:15px;margin:6px 0}
+ th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+ th{font-size:12px;color:var(--ink2);font-weight:500}
+ .scroll{overflow-x:auto}
+ .foot{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);color:var(--ink2);font-size:14px}
+</style>
+<div class="wrap">
+<h1>Your refund process, answered</h1>
+<p class="sub">You asked six things. Every answer below came from reading your actual code and database today, not from memory.</p>
+
+<div class="q"><div class="ask">1. Is there even a refund process?</div>
+<span class="tag yes">YES, and more than I expected</span>
+<p class="ans">A customer can file a complaint, the salon sees it, and you can step in above them. It is real, it is wired, and money genuinely moves.</p></div>
+
+<div class="q"><div class="ask">2. How does it proceed?</div>
+<div class="flow"><ol>
+<li><b>The customer files</b><span>Picks a reason: salon cancelled, did not happen, wrong amount, charged twice, unhappy with the result, other. Adds a description and photos.</span></li>
+<li><b>The salon sees it and answers</b><span>It lands in their dashboard. They can approve it or push back.</span></li>
+<li><b>You decide if it goes further</b><span>You can dismiss it, resolve with a note, refund it, approve, reject, or warn either side.</span></li>
+<li><b>The money actually moves</b><span>It comes back out of the salon's payout, and your commission goes back to the customer too. One place in the code does this, which is the right design.</span></li>
+</ol></div></div>
+
+<div class="q"><div class="ask">3. Who decides?</div>
+<span class="tag yes">The salon first, then you</span>
+<p class="ans">Nothing is ever decided automatically. That is deliberate and it is written into the code as a rule. A person always makes the call.</p></div>
+
+<div class="q"><div class="ask">4. Tax, and is it legal?</div>
+<span class="tag part">TAX IS HANDLED. LEGAL IS BEING RESEARCHED NOW</span>
+<p class="ans">Swiss VAT already works: when a booking carried VAT and the salon is registered, a proper credit note is produced for the refunded amount. That surprised me. The legal questions, who actually owes the refund when you are the marketplace and the salon did the work, are with a researcher using real sources right now.</p></div>
+
+<div class="q"><div class="ask">5. Build what is missing</div>
+<span class="tag no">RUNNING NOW</span>
+<p class="ans">The gap is below. It is being built, and each piece gets attacked afterwards by someone who did not build it.</p></div>
+
+<div class="q"><div class="ask">6. Do it as a loop</div>
+<span class="tag yes">YES, running</span>
+<p class="ans">Build, then break, then one repair round, then a judge on anything still argued over.</p></div>
+
+<h2>The real problem: your deadlines are decoration</h2>
+<p>Every date those screens promise a customer is printed and enforced nowhere. I checked all 28 of your scheduled jobs and not one of them looks at a refund case.</p>
+<div class="scroll"><table>
+<tr><th>what the screen says</th><th>what actually happens</th></tr>
+<tr><td>Salon responds by (date)</td><td>Never shown to anyone. Appears on no screen at all.</td></tr>
+<tr><td>Decision expected by (date)</td><td>Shown, but nothing counts down and nothing acts when it passes.</td></tr>
+<tr><td>Solen decides within 3 business days</td><td>No timer, no queue, no alert.</td></tr>
+<tr><td>You can report up to 14 days after</td><td>Appears on no screen, and the server accepts a report from any date.</td></tr>
+<tr><td>You can escalate for (n) more days</td><td>Shown, but a late escalation is not refused.</td></tr>
+</table></div>
+<p><b>What this costs you:</b> a salon that simply ignores a complaint blocks it forever, and the customer sits watching a date that means nothing.</p>
+
+<h2>What is being built</h2>
+<ol>
+<li><b>A stuck case comes to you.</b> If a salon does not answer in time, it escalates to you for a decision instead of sitting there. It never refunds on its own.</li>
+<li><b>The 14 day window becomes real.</b> Enforced on the server, and shown to the customer while they still have time.</li>
+<li><b>Both dates appear where people need them.</b> Same date for the customer and the salon, from one source, so they can never disagree.</li>
+</ol>
+
+<p class="foot">Not touched: how much anyone gets back, or on what grounds. That is your call, not a build.</p>
+</div>

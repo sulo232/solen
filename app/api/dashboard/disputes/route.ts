@@ -3,6 +3,7 @@ export const runtime = "nodejs";
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, paymentLimiter } from "@/lib/ratelimit";
+import { salonRespondsByDeadline, salonResponseOverdue, type DisputeStatus } from "@/lib/bookings/dispute-engine";
 
 // SP-5 Endpoint 1 — Salon-scoped refund/complaint REVIEW QUEUE (list only).
 //
@@ -79,7 +80,17 @@ export async function GET(req: NextRequest) {
   const bookingById = new Map(salonBookings.map((b) => [b.id, b]));
   const bookingIds = salonBookings.map((b) => b.id);
 
-  // Cases on those bookings, filtered by status, recency-ordered, keyset paginated.
+  // Cases on those bookings, filtered by status, keyset paginated.
+  //
+  // SORT: oldest-first (ascending) whenever the requested statuses include one
+  // still awaiting a salon response (open / salon_reviewing), newest-first
+  // otherwise. This is a TRIAGE queue against a live salonRespondsByDeadline()
+  // clock: newest-first buried the most-overdue case (oldest created_at, the
+  // one closest to auto-escalation) at the bottom of the default "open" view,
+  // the one screen this endpoint exists to surface it on (response-deadline-
+  // visible review, 2026-08-20). Terminal/resolved views keep recency-first,
+  // there is no clock left to triage by there.
+  const hasPendingSalonAction = statuses.some((s) => s === "open" || s === "salon_reviewing");
   let query = admin
     .from("booking_disputes")
     .select(
@@ -87,9 +98,11 @@ export async function GET(req: NextRequest) {
     )
     .in("booking_id", bookingIds)
     .in("status", statuses)
-    .order("created_at", { ascending: false })
+    .order("created_at", { ascending: hasPendingSalonAction })
     .limit(limit);
-  if (cursor) query = query.lt("created_at", cursor);
+  // Keyset direction must follow the sort direction above, or ascending pages
+  // would re-request the same already-seen rows instead of advancing.
+  if (cursor) query = hasPendingSalonAction ? query.gt("created_at", cursor) : query.lt("created_at", cursor);
 
   const { data: disputes, error: disputeErr } = await query;
   if (disputeErr) {
@@ -148,6 +161,17 @@ export async function GET(req: NextRequest) {
       status: d.status,
       description: d.description,
       customer_name: customerName,
+      // Same function the customer-facing report route uses (dispute-engine.ts),
+      // so the date shown to the salon and the date shown to the customer are
+      // computed from the one place, never two copies drifting apart.
+      salon_responds_by: d.created_at
+        ? salonRespondsByDeadline(d.status as DisputeStatus, d.created_at)?.toISOString() ?? null
+        : null,
+      // Same status/created_at inputs as salon_responds_by above, so this can
+      // never disagree with it about which cases are overdue.
+      salon_response_overdue: d.created_at
+        ? salonResponseOverdue(d.status as DisputeStatus, d.created_at)
+        : false,
       created_at: d.created_at,
       booking: {
         starts_at: b?.starts_at ?? null,

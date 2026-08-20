@@ -32,6 +32,12 @@ interface SalonCase {
   customer_name: string | null;
   resolution?: string | null;
   created_at: string;
+  /** Computed by the API (dispute-engine.ts salonRespondsByDeadline), not a raw
+   * column. null once this case is no longer awaiting a first salon decision. */
+  salon_responds_by: string | null;
+  /** Computed by the API (dispute-engine.ts salonResponseOverdue), not a raw
+   * column. True once salon_responds_by has already passed. */
+  salon_response_overdue: boolean;
   booking?: { starts_at: string | null; service_name: string | null };
 }
 
@@ -203,6 +209,13 @@ export default function SalonRefundsPage() {
                     <div className="min-w-0">
                       <p className="text-[16px] font-semibold text-s-ink font-heading tracking-[-0.01em]">{c.customer_name || t("unknown")}</p>
                       <p className="text-[12px] text-s-ink-2 mt-0.5">{[c.booking?.service_name, fmtDate(c.booking?.starts_at, locale), ref].filter(Boolean).join(" ")}</p>
+                      {c.salon_responds_by && (
+                        <p className="text-[12px] text-s-ink-2 mt-0.5"> {/* mockup-ok: reuses the byte-identical classes already shipped on the line above in this same file, same role (small meta caption) */}
+                          {c.salon_response_overdue
+                            ? t("respondByOverdue", { date: fmtDate(c.salon_responds_by, locale) })
+                            : t("respondBy", { date: fmtDate(c.salon_responds_by, locale) })}
+                        </p>
+                      )}
                     </div>
                     <DashStatusPill tone={st.tone} pulse={st.pulse}>{t(`status.${c.status}`)}</DashStatusPill>
                   </div>

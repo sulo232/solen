@@ -61,6 +61,12 @@ export interface CaseShape {
   admin_responded_at: string | null;
   stripe_refund_id: string | null;
   expires_at: string | null;
+  /** Computed, not a column: dispute-engine.ts's salonRespondsByDeadline(). null once
+   * the salon has already responded (or the case never entered this stage). */
+  salon_responds_by: string | null;
+  /** Computed, not a column: dispute-engine.ts's salonResponseOverdue(). True once
+   * salon_responds_by has already passed and the case is still open/salon_reviewing. */
+  salon_response_overdue: boolean;
   created_at: string;
   updated_at: string;
 }

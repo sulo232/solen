@@ -34,13 +34,57 @@ them including the controls, so that reading was thrown away.
 `booking_disputes` for timing (checked all 28), and there is no business-day arithmetic anywhere in
 `app/` or `lib/`.
 
-- [ ] A salon that ignores a case blocks it forever. There is no timeout and no auto-escalation.
-      The screen says "Salon responds by {date}" and nothing enforces that date.
+- [x] A salon that ignores a case blocks it forever. FIXED 2026-08-20: `app/api/cron/dispute-timeout`
+      (new, GET, CRON_SECRET-gated, wired to the daily-03-utc nightly-maintenance job in
+      `.github/workflows/cron-jobs.yml`) escalates a refund-direction case still sitting in
+      `open`/`salon_reviewing` past `SALON_RESPONSE_WINDOW_HOURS` (48h, `dispute-engine.ts`, the
+      same constant the "Salon responds by {date}" copy now computes from) via a new shared
+      `escalateCase()` transition (same status write + `mediation_started_at`/`mediation_deadline_at`
+      columns the admin "escalate" action already used, plus a `case_events` row so the customer's
+      timeline shows it happened, actor_role='system', new `tlEscalatedAuto` copy so it never reads
+      "by you"). Never refunds or approves anything, review-first line 13 holds; a human still
+      decides via the now-escalated case. Idempotent: CAS-guarded, verified with a mocked-DB test
+      (double-call does not double-escalate, a case that moved off-status is skipped). Does NOT
+      close the box at line 39 below (Solen's own post-escalation 3-business-day SLA still has no
+      timer); that is a separate, unbuilt item.
 - [ ] "Solen typically decides within 3 business days" (`escSolenTypical`, `escFormSla`) has no
       timer, no queue age, and no alert behind it.
-- [ ] "You can report up to 14 days after your appointment" (`reportWindowNote`) is RENDERED IN
-      ZERO FILES. The window is never shown to a customer and never enforced on the server.
-- [ ] "Salon responds by {date}" (`respondsBy`) is also RENDERED IN ZERO FILES.
+- [x] "You can report up to 14 days after your appointment" (`reportWindowNote`) is RENDERED IN
+      ZERO FILES. CORRECTED 2026-08-20: the "never enforced on the server" half of this line was
+      already stale before this pass started. `app/api/bookings/[id]/report/route.ts` POST already
+      rejects a case filed more than 14 days after `starts_at` with 400 `REPORTING_WINDOW_CLOSED`,
+      shipped 2026-07-27 (commit 584fc3f7c, `REPORTING_WINDOW_DAYS = 14`, ToS section 13.1a). Not
+      re-built here, verified: live POST against a real 78-day-old paid booking (5e2650c6, logged in
+      as its real owner) returns the 400, and zero rows landed in `booking_disputes` afterward
+      (SQL count = 0). The boundary formula was re-derived line-for-line from the file and asserted
+      at +-10s either side of the 14-day line (Node script, all 5 cases pass, including a future
+      confirmed booking staying open). The RENDERED half was the real gap: `reportWindowNote` never
+      appeared in any component. FIXED: added it to `ReportRefundEntry.tsx` (the report-entry
+      screen, above the reason list) using the identical treatment already shipped 5 lines below it
+      in the same file (`reviewTimelineNote`'s Info-icon note), not a new visual decision. Mockup at
+      `/dev/report-window-note` (real booking data, real i18n string), rendered and screenshotted;
+      applied to the real component and verified live on the real route
+      `/en/bookings/[id]/report`, logged in as a real customer, screenshot confirms the note renders
+      between the booking summary and "What went wrong?".
+- [x] "Salon responds by {date}" (`respondsBy`) is also RENDERED IN ZERO FILES. FIXED 2026-08-20:
+      added `salonRespondsByDeadline()` + `SALON_RESPONSE_WINDOW_HOURS = 48` to `dispute-engine.ts`
+      (the number was already live in copy, 5 strings x 4 locales, "48 hours" / "up to 48h" / "2
+      days", just never turned into a real Date anywhere; not invented here). No new column: the
+      deadline is computed from `created_at`, null once the case leaves open/salon_reviewing. Wired
+      into `shapeCase()` (customer GET /api/bookings/[id]/report) and `/api/dashboard/disputes`
+      (salon list), both importing the SAME function, so the date and the dispute-timeout cron's
+      escalation cutoff (line 40 above) read the identical constant and can never drift apart.
+      Rendered: customer case screen (`RefundCaseView.tsx`, the existing `respondsBy` i18n key,
+      open/salon_reviewing only) and the salon refund queue list (`dashboard/refunds/page.tsx`, new
+      `respondBy` key, en/de/fr/it). Verified: `npx tsx` against the real imported function on a
+      real row's created_at (2026-05-29T16:33:07Z) matches created_at+48h exactly, and returns null
+      for all 9 other statuses plus a malformed date; live GET on booking 7325d90a (salon_rejected)
+      returns `"salon_responds_by":null` correctly. Could NOT live-render the positive path or the
+      salon-dashboard wiring: no live row is currently `open`, and `/api/dashboard/disputes` has a
+      SEPARATE PRE-EXISTING BUG (confirmed via revert-and-retest, unrelated to this change: it 500s
+      with `{"error":"Bad Request"}` on every filter while the identical query succeeds directly
+      against PostgREST) that blocks that screen entirely, flagged separately (task_b25dba12), not
+      fixed here per the off-limits/scope boundary for this item.
 - [ ] "You can escalate for {days} more days" (`escWindowOpen`) is rendered, but nothing on the
       server refuses a late escalation.
 

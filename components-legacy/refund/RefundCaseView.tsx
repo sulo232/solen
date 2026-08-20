@@ -623,7 +623,10 @@ function buildTimeline(
           state: "done",
           title: t("tlEscalated"),
           time,
-          meta: t("tlEscalatedByYou"),
+          // actor_role "system" = the timeout cron escalated it, not the customer
+          // (app/api/cron/dispute-timeout). Mirrors the guest/non-guest branch on
+          // "created" above: the label must match who/what actually acted.
+          meta: e.actor_role === "customer" || e.actor_role === "guest" ? t("tlEscalatedByYou") : t("tlEscalatedAuto"),
           note: e.note ? { who: t("tlYourNote"), body: e.note, tone: "neutral" } : undefined,
         });
         break;
@@ -877,6 +880,13 @@ function ActionInner({
     return (
       <>
         <ShieldNote text={t("footEmailUpdate")} />
+        {c.salon_responds_by && (
+          <p className="mb-3 text-center text-[12px] leading-[1.5] text-s-ink-2"> {/* mockup-ok: restores the already-shipped escWindowOpen caption pattern, RefundCaseView.tsx:868, byte-identical classes, same role (small print under the CTA) */}
+            {c.salon_response_overdue
+              ? t("respondsByOverdue", { date: fmtDate(c.salon_responds_by, locale) })
+              : t("respondsBy", { date: fmtDate(c.salon_responds_by, locale) })}
+          </p>
+        )}
         <Link href={reportHref} className={secondaryBtn}>
           <MessageSquare size={17} aria-hidden />
           {t("addMoreDetails")}
