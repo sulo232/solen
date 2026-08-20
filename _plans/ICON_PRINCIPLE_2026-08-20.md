@@ -174,14 +174,14 @@ for.
 
 ## Where the icons actually live (he asked "where do we use most of em")
 
-- [x] **More than half of all icon usage is on screens a customer never opens.** `verified:`
+- [x] **More than half of all icon usage is on screens a customer never opens.** `verified:` commit 1314862b4.
       `where_used.py` reads each file's real `lucide-react` import list and counts both the
       `<Name>` form and the value form. 1966 icon drawings in total, **1083 of them in the salon
       dashboard and the dev prototypes.** The dashboard alone needs **141 different icons**.
-- [x] **161 of the 219 can reach a customer, 54 exist only in the back office.** `verified:`
+- [x] **161 of the 219 can reach a customer, 54 exist only in the back office.** `verified:` commit 1314862b4,
       same scan, intersected against the 219 in `ours_all.json`. So a swap aimed at how the app
       looks to a customer is a 161-icon job.
-- [x] **Two instrument bugs caught in this one measurement, both the ticket shape.** `verified:`
+- [x] **Two instrument bugs caught in this one measurement, both the ticket shape.** `verified:` `app/[locale]/_components/layout/BottomNav.tsx:93` and commit 1314862b4;
       the corrected numbers above versus the first run.
       1. `Link` is a Lucide icon name AND `next/link`'s component, so counting `<Link` made it
          the top "icon" on six surfaces. Fixed by counting only what a file really imported.
