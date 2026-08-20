@@ -420,10 +420,25 @@ quotation refuses the act of DESCRIBING a violation. Both are real and neither i
 widening a check at the tail end of a fourteen-hour session is precisely how the 2026-08-18
 regressions happened, and I introduced one an hour ago doing exactly that.
 
-- [ ] Two checks refuse a QUOTED violation as if it were an assertion: `prelaunch-reality-gate.py`
-      (blocks a message quoting its own fixture) and `i18n-write-gate.py` (blocks example JSX inside
-      a `/** */` doc comment). `mockup-english-gate.py` already strips comments and is the model to
-      copy. Both need the same treatment plus a quotation-aware span, driven with their own fixtures.
+- [x] Two checks stop refusing a QUOTED violation as if it were a claim. verified: ~/.claude
+      d166869, driven with a control first in both cases.
+      `prelaunch-reality-gate.py`: quoted spans blanked SPACE FOR SPACE before scanning, so the
+      240-char hedge window and the quoted excerpt still point at the right characters. The shared
+      `strip_quotes_backticks_heredocs` collapses each span to one space, which shifts every later
+      offset, so with a length guard it never engaged and all three quoted reports still blocked.
+      **The laundering hole my own fix opened, found by attacking my own change:** wrapping the
+      whole claim in quotes and saying nothing else passed cleanly. A quotation only earns an
+      exemption when something around it is doing the reporting, so under 30 characters left after
+      blanking means the original is judged. Suite 18/18 -> 22/22.
+      `i18n-write-gate.py`: blanking the arrow closed one source of a stray `>` and left the bigger
+      one open, a COMPARISON operator. `SalonReviews.tsx:532` and `DetailPage.tsx:431` both had raw
+      TypeScript captured as prose. Only a SPACED `>` is blanked, since a real tag close is never
+      written `" > "`. Real-repo sweep 9 of 60 -> 7 of 60, and it surfaced two genuine catches the
+      noise had been masking.
+      Remaining 7 refusals: 5 are brand and place names (Solen, TikTok, Basel), which is the
+      nuisance the gate's own message already names and offers `i18n-ok` for, so building a second
+      mechanism for it at the tail of a long session is exactly the 2026-08-18 mistake. 2 are real
+      untranslated strings and are true catches.
 
 ## OPEN, WAITING ON HIM , tracked as boxes so they cannot be lost in prose
 - [x] ANSWERED 2026-08-19, recorded at commit 01b26d85f: "Leave it until launch". The refund flow stays English in de/fr/it and is carried as a KNOWN GAP, not a defect to fix. Do not translate it without him saying so. Original question: translate the 263 refund-flow strings into real formal German, French and Italian, or leave them? Raised by the key-parity check failing, which surfaced that de, fr and it each have 263 of 263 refundFlow strings byte-identical to English on the screen where a customer asks for money back.
