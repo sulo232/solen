@@ -157,6 +157,11 @@ for.
 - [x] **Why it drifted: the checker exists and nothing runs it.** `verified:` package.json
       defines `check:press` and `gate:press`; grep across `.github` and `.claude` returns no
       caller, so it fires only when a human types it.
-- [ ] **Five presses are written and cannot play.** Two in `MobileMenu.tsx` (line 294 and 416
-      list only `transition-shadow`, so the `active:scale` beneath them never animates) and
-      three on `queue/[token]/page.tsx` with no transition at all. Dispatched to the coder.
+- [x] **Five presses were written and could not play. Fixed.** `verified:` commit c5eb5d4a9,
+      graded PASS by a reviewer that re-read every line off disk, and `npm run check:press` now
+      reports DEAD=0 where it reported DEAD=2. The two in `MobileMenu.tsx` were added by the
+      9 June press sweep, the one that recorded itself as done, so they had never played once:
+      the element listed only a shadow transition, leaving the scale nothing to animate on. The
+      three on `queue/[token]/page.tsx` had no transition at all and two were off the ladder.
+      The one remaining NO-TRANSITION is `components-legacy/chat/ClientTags.tsx:175`, and chat
+      is a killed feature, so it is left alone.
