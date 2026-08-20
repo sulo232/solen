@@ -47,12 +47,14 @@ three:
 
 ## What the fix looks like now
 
-- [x] **Their real names pulled, 6496 of them, with categories.** `verified:` catalogue.json.
-- [x] **Matching runs against names that EXIST.** `verified:` every hand-written mapping is checked
+- [x] **Their real names, 6496 with categories.** `verified:` commit 84eeb4eee, and re-runnable:
+      `catalogue.py 1 300` pages their own search and prints the count it reached.
+- [x] **Matching runs against names that EXIST.** `verified:` commit 84eeb4eee. Every hand mapping is checked
       against the catalogue before use, and my own guard rejected **11 of my own entries** because I
       had invented those names too (`Award`, `Bank`, `Box`, `Minus`, `Wifi`, `Brush` and others).
       That guard is the principle enforcing itself on the person who wrote it.
-- [x] **160 of 219 matched, 59 refused.** Refusing is the feature.
+- [x] **160 of 219 matched, 59 refused.** `verified:` commit 84eeb4eee; rematch.py prints both
+      counts on every run. Refusing is the feature.
 
 ## Which icons should move, and which should not
 
@@ -77,7 +79,7 @@ Measured against our 219:
 
 **Sparkles is still in 10 shipping files, and you killed it by name on 2026-08-14.**
 
-- [ ] **Why it is still there, and it is NOT that the cleanup failed.** `verified:` commit b80f87bb0
+- [x] **Why it is still there, and it is NOT that the cleanup failed.** `verified:` commit b80f87bb0
       did the removal and it holds: every file it touched is still clean today. The problem is the
       root set. It swept `app/` and never looked in `components-legacy/`, which is where 10 of the
       11 leftovers live, in files that really render (SalonCard is imported by 42 live files,
