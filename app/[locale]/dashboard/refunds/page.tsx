@@ -61,6 +61,10 @@ const fmtDate = (iso: string | null | undefined, locale: string = "de") =>
 
 export default function SalonRefundsPage() {
   const t = useTranslations("dashboard.refundQueue") as any;
+  // Shared dashboard.time* keys (already shipped, ActivityFeed.tsx +
+  // NotificationCenter.tsx use the identical tiered pattern), reused here
+  // rather than adding a new key for the same relative-age concept.
+  const tShared = useTranslations("dashboard") as any;
   const locale = useLocale();
 
   const [salonName, setSalonName] = useState<string | undefined>();
@@ -132,6 +136,18 @@ export default function SalonRefundsPage() {
   useEffect(() => {
     load();
   }, [load]);
+
+  // How long a case still awaiting a salon decision has been open, computed
+  // from created_at already on the row (no new API field). Same tiered
+  // just-now / min / hours / days shape as ActivityFeed.tsx and
+  // NotificationCenter.tsx, so a fresh case never misreports as "0 days".
+  const waitingSince = (iso: string): string => {
+    const diff = Math.round((Date.now() - new Date(iso).getTime()) / 1000);
+    if (diff < 60) return tShared("timeJustNow");
+    if (diff < 3600) return tShared("timeMinAgo", { n: Math.floor(diff / 60) });
+    if (diff < 86400) return tShared("timeHoursAgo", { n: Math.floor(diff / 3600) });
+    return tShared("timeDaysAgo", { n: Math.floor(diff / 86400) });
+  };
 
   const armOrRun = (key: string, run: () => void) => {
     if (armed === key) {
@@ -214,6 +230,11 @@ export default function SalonRefundsPage() {
                           {c.salon_response_overdue
                             ? t("respondByOverdue", { date: fmtDate(c.salon_responds_by, locale) })
                             : t("respondBy", { date: fmtDate(c.salon_responds_by, locale) })}
+                        </p>
+                      )}
+                      {c.salon_responds_by && (
+                        <p className="text-[12px] text-s-ink-2 mt-0.5"> {/* mockup-ok: same meta-caption classes as the two lines above; plain text, no new colour or badge treatment */}
+                          {waitingSince(c.created_at)}
                         </p>
                       )}
                     </div>

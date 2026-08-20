@@ -47,13 +47,23 @@ them including the controls, so that reading was thrown away.
       (double-call does not double-escalate, a case that moved off-status is skipped). Does NOT
       close the box at line 39 below (Solen's own post-escalation 3-business-day SLA still has no
       timer); that is a separate, unbuilt item.
-- [ ] "Solen typically decides within 3 business days" (`escSolenTypical`, `escFormSla`) still has
-      no timer, no queue age and no alert. NOT a vague punt, the concrete next action is known and
-      came out of this pass's own review: `app/api/dashboard/disputes/route.ts:91` sorts
-      `created_at DESC`, newest first, so the most overdue case sinks to the bottom of the one
-      screen that exists to surface it. Fix the sort to put the oldest open case first, then add
-      the age against the 3-day promise beside it. That is the smallest change that makes the
-      promise visible to the person who has to keep it.
+- [x] "Solen typically decides within 3 business days" now has something behind it.
+      **The queue sort turned out to be ALREADY FIXED**, and finding out why matters more than the
+      fix: it landed inside commit 0ba01b740, whose message says "NO DECORATION is now law". That
+      commit swept up an entire background workflow's output with `git add -A`, 17 files and 591
+      insertions, under a message about a rule. So the work existed and the history hid it. The
+      agent sent to build it found the contradiction and correctly built nothing.
+      verified live, not read off the code: the endpoint's real ordering call run against the
+      actual table returned 2026-05-28, 2026-05-29, 2026-05-30, strictly oldest first, and the
+      opposite branch (resolved views) correctly returned descending.
+      What WAS missing and is now added: the waiting time per open case on
+      `app/[locale]/dashboard/refunds/page.tsx`, so the person who has to keep the 3 day promise can
+      see which case is closest to breaking it. No new copy key: it reuses the existing
+      `dashboard.timeJustNow / timeMinAgo / timeHoursAgo / timeDaysAgo` already used by the same
+      tiered pattern in two other dashboard components. Parity stayed at 5,853 keys, which is the
+      proof nothing new was added. Plain text, no badge and no colour, because that is a look
+      decision and it is his.
+      The sweep that hid this is now guarded: ~/.claude fd3666c.
 - [x] "You can report up to 14 days after your appointment" (`reportWindowNote`) is RENDERED IN
       ZERO FILES. CORRECTED 2026-08-20: the "never enforced on the server" half of this line was
       already stale before this pass started. `app/api/bookings/[id]/report/route.ts` POST already
