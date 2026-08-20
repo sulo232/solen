@@ -113,3 +113,50 @@ confident wrong answer.
 
 **Not fixed, and deliberately not:** replacing 10 icons is a visual change on live screens and he
 has said, by name, that choosing icons independently is exactly what he does not want.
+
+## Flat, motion or 3D: the answer, and it is not the one I drafted
+
+He asked *"is it too much thn"* and *"i feel like many of em could have motions when pressed etc
+or not like back buttons n sh"*. I drafted "cut fifteen animated icons to three". Three
+independent adversarial reads killed all three survivors against rules and code that already
+exist, so the answer is **zero**.
+
+- **The loading spinner.** Our own loading rule says a content-shaped skeleton, and that spinners
+  live only inside a button. `verified:` CLAUDE.md states row, MOTION.md sheet 22.
+- **The success tick.** `SuccessMark` already owns that moment.
+  `verified:` `app/[locale]/_components/primitives/SuccessMark.tsx` exists on disk.
+- **The rating star.** Already pops to 1.38 over 450ms, staggered, edge-triggered on fill. A
+  bought file cannot be edge-triggered like that.
+
+**The rule that settles the library question, quoted rather than paraphrased:** LOCKFILE §13.7,
+*"different icon STYLES may coexist only in visually separate zones ... mixing within one zone is
+drift."* An animated Iconly tick in a row beside 79 static Lucide ticks is one zone, two styles.
+So the icon question is all or nothing, which is exactly what the six columns in the sheet are
+for.
+
+**Two claims of mine that the reads proved FALSE, corrected in the sheet the same hour:**
+
+- [x] **"3D belongs in a slot we do not have yet."** Wrong. 3D category icons already render on
+      five customer surfaces. `verified:` `MobileCategoriesRow.tsx`, `WalkInBand.tsx`,
+      `CategoryPillRow.tsx`, `SearchOverlay.tsx`, `SearchTemplate.tsx` all reference
+      `icons/categories`. The real leftover is that the empty states still show the grey disc
+      the rules ban.
+- [x] **"Roughly half the files have no press response."** Half is the number including the
+      salon dashboard. Customer-facing it is **65 of 182**, and my own cruder filter said 94 of
+      227 because it matched paths rather than following what a customer route actually reaches.
+
+## The press finding, which is the bigger one
+
+- [x] **65 of 182 customer files with something tappable do nothing when pressed, 244 controls.**
+      The five worst are global chrome on every route: the bottom tab bar, the breadcrumb, the
+      language switcher, the desktop city pill, the toast.
+- [x] **His back-button instinct was backwards, and that is good news.** The back arrows already
+      press. `verified:` `queue/[token]/page.tsx` and `SalonLightbox.tsx` both carry
+      `active:scale` on the back control. What does not press is the bottom tab bar.
+      `verified:` `BottomNav.tsx` contains zero `active:scale`.
+- [x] **Why it drifted: the checker exists and nothing runs it.** `verified:` package.json
+      defines `check:press` and `gate:press`; grep across `.github` and `.claude` returns no
+      caller, so it fires only when a human types it.
+- [ ] **Five presses are written and cannot play.** Two in `MobileMenu.tsx` (line 294 and 416
+      list only `transition-shadow`, so the `active:scale` beneath them never animates) and
+      three on `queue/[token]/page.tsx` with no transition at all. Dispatched to the coder.
