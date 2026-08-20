@@ -2097,6 +2097,7 @@
       "statusBooked": "Gebucht",
       "statusBlocked": "Blockiert",
       "statusFree": "Frei",
+      "freeRange": "{start} bis {end} frei, {count} {count, plural, one {Slot} other {Slots}}",
       "timeLabel": "Zeit:",
       "dateLabel": "Datum:",
       "staffDetailLabel": "Mitarbeiter:",
