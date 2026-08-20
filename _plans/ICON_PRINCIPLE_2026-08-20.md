@@ -171,3 +171,21 @@ for.
       three on `queue/[token]/page.tsx` had no transition at all and two were off the ladder.
       The one remaining NO-TRANSITION is `components-legacy/chat/ClientTags.tsx:175`, and chat
       is a killed feature, so it is left alone.
+
+## Where the icons actually live (he asked "where do we use most of em")
+
+- [x] **More than half of all icon usage is on screens a customer never opens.** `verified:`
+      `where_used.py` reads each file's real `lucide-react` import list and counts both the
+      `<Name>` form and the value form. 1966 icon drawings in total, **1083 of them in the salon
+      dashboard and the dev prototypes.** The dashboard alone needs **141 different icons**.
+- [x] **161 of the 219 can reach a customer, 54 exist only in the back office.** `verified:`
+      same scan, intersected against the 219 in `ours_all.json`. So a swap aimed at how the app
+      looks to a customer is a 161-icon job.
+- [x] **Two instrument bugs caught in this one measurement, both the ticket shape.** `verified:`
+      the corrected numbers above versus the first run.
+      1. `Link` is a Lucide icon name AND `next/link`'s component, so counting `<Link` made it
+         the top "icon" on six surfaces. Fixed by counting only what a file really imported.
+      2. Counting only `<Name>` said **68 icons are drawn nowhere**, which I was one sentence
+         from reporting as dead code. They are not dead. `BottomNav.tsx:93` does
+         `{ key: "inspo", Icon: Compass }` and renders `<Icon>`; `dashboard/badge-manager`
+         puts a dozen into a lookup object. The angle bracket is not the usage.
