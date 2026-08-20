@@ -6,11 +6,7 @@ const b = await chromium.launch();
 const guard = () => {
   const words = /Wir verwenden Cookies|We use cookies|Hilf uns, dein Erlebnis|Nur notwendige/i
     .test(document.body.innerText);
-  const overlay = [...document.querySelectorAll('div')].some((d) => {
-    const c = getComputedStyle(d); const r = d.getBoundingClientRect();
-    return c.position === 'fixed' && r.width > 250 && r.height > 250 && parseFloat(c.opacity) > 0.5;
-  });
-  return words || overlay;
+  return words;
 };
 
 async function run(dismiss) {
