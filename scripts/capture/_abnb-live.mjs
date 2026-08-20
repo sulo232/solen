@@ -68,8 +68,19 @@ for (const [name, url] of targets) {
       await p.waitForTimeout(3500);
       const notes = await dismissChrome(p);
       // Refuse to report numbers off a page still wearing a consent sheet.
-      const blocked = await p.evaluate(() =>
-        /Wir verwenden Cookies|We use cookies|Hilf uns, dein Erlebnis/i.test(document.body.innerText.slice(0, 3000)));
+      // The guard failed its own test the first time: it read only the first 3000 characters,
+      // and the consent sheet's copy sits far below the page content in DOM order, so it never
+      // saw the thing it exists to catch. It now reads the WHOLE text and, more importantly,
+      // looks for a large fixed overlay, which is what a consent sheet is regardless of language.
+      const blocked = await p.evaluate(() => {
+        const words = /Wir verwenden Cookies|We use cookies|Hilf uns, dein Erlebnis|Nur notwendige/i
+          .test(document.body.innerText);
+        const overlay = [...document.querySelectorAll('div')].some((d) => {
+          const c = getComputedStyle(d); const r = d.getBoundingClientRect();
+          return c.position === 'fixed' && r.width > 250 && r.height > 250 && parseFloat(c.opacity) > 0.5;
+        });
+        return words || overlay;
+      });
       await p.screenshot({ path:`${OUT}/${name}-${tag}.png` });
       result[`${name}-${tag}`] = blocked
         ? { error: 'consent sheet still covering the page, numbers withheld', notes }

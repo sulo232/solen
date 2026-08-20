@@ -4,6 +4,17 @@
  *
  * Mockup-scope: whole-page
  *
+ * REBUILT 2026-08-20, owner verbatim: "the day list doesnt make any scence so much clutter". The
+ * page used to stack all three treatments full length, one after another, eighteen rows then nine
+ * then the Airbnb version, so comparing the top block to the bottom one meant scrolling about three
+ * thousand pixels and holding the first one in memory. That is the defect, not the treatments
+ * themselves. FIXED by turning the three stacked lists into ONE list under a segmented control
+ * (Today / Grouped / Airbnb way, matching the Tag / Woche / Monat control at
+ * app/[locale]/dashboard/calendar/page.tsx:786) that swaps the same fixture in place, plus one
+ * caption line under the list naming what the current option changed. The three treatments below
+ * (BeforeAgenda, AfterAgenda, AirbnbWayAgenda) are byte-for-byte the same components as before this
+ * rebuild, only the page shell around them changed.
+ *
  * BEFORE and AFTER comparison of the dashboard day agenda list. renderAgenda() in
  * app/[locale]/dashboard/calendar/page.tsx renders eighteen equal-weight "Frei" rows for a
  * populated Wednesday, and a direct edit to that real component was correctly refused by the
@@ -39,8 +50,9 @@
  *     green-on-green 2.93 to 1 contrast failure as a side effect rather than as a patch.
  *   - A sentence with the live number as the anchor, at 28px (rule 5). Both figures are DERIVED
  *     from the fixture in the component, not typed, and the copy is written so it stays honest at
- *     zero. The page h1 moves 20px to 28px in the same pass so the page stays inside the four-size
- *     budget (28 / 14 / 13.5 / 12); the 13.5 is the BEFORE block's faithful copy of the defect.
+ *     zero. 28px sits outside the four-size body budget as the one display anchor (FLOORS LAW 6);
+ *     the body budget itself is 14 / 13.5 / 12, the 13.5 is the BEFORE block's faithful copy of
+ *     the defect.
  *   - Free time collapses to one bare line per run carrying a count (rule 4 and rule 7): a
  *     single-line row does not earn a container, and free time is not something the owner acts on,
  *     so it goes quiet. Blocked time is quieter still, struck through, since it cannot be acted on
@@ -53,10 +65,16 @@
  *     this fixture, so printing one would be inventing data.
  *   - The selected row uses OUR locked treatment, the calm gray sunken fill. Airbnb's answer is a
  *     2px black border and it is NOT used here: a black surround on a selected state was killed
- *     2026-07-02 and a gate enforces it. That divergence is CONFLICT 3 on /dev/airbnb-rules.
+ *     2026-07-02 and a gate enforces it. That collision is written up in
+ *     _design-system/references/airbnb--host-and-rules.md (the "black selected state" conflict);
+ *     /dev/airbnb-rules itself no longer lists it since its 2026-08-20 rebuild to real screenshots
+ *     only keeps rules visible in the two captures it renders.
  *
  * Dev-only preview route, blocked in production below like every other page under app/[locale]/dev/.
  */
+"use client";
+
+import { useState } from "react";
 import { notFound } from "next/navigation";
 
 type FixtureSlot = {
@@ -234,32 +252,60 @@ function AirbnbWayAgenda({ slots }: { slots: FixtureSlot[] }) {
   );
 }
 
+// One list, three treatments, a segmented control instead of three stacked copies. Control
+// treatment matched to app/[locale]/dashboard/calendar/page.tsx:786-793 (bg-s-bg-sunken pill,
+// white selected pill + soft shadow, ink text). Size stepped from that control's 12.5px to 14px
+// so this page still fits inside the four-size body budget already spent by the three treatments.
+type ViewOption = "today" | "grouped" | "airbnb";
+
+const VIEW_OPTIONS: { key: ViewOption; label: string; caption: string }[] = [
+  {
+    key: "today",
+    label: "Today",
+    caption: "Ships today: every slot gets its own row, and a free half hour fills it green edge to edge, eighteen times on a quiet day.",
+  },
+  {
+    key: "grouped",
+    label: "Grouped",
+    caption: "Consecutive free slots collapse into one quiet grey line with a count. Bookings and the blocked lunch keep their own row, unchanged.",
+  },
+  {
+    key: "airbnb",
+    label: "Airbnb way",
+    caption: "Same Wednesday rebuilt to the nine Airbnb rules: no colour anywhere, a sentence with the live count as the anchor, and a card only where a row carries three facts.",
+  },
+];
+
 export default function CalendarAgendaMockupPage() {
   if (process.env.NODE_ENV === "production") notFound();
+  const [view, setView] = useState<ViewOption>("today");
+  const active = VIEW_OPTIONS.find((o) => o.key === view)!;
 
   return (
     <div className="min-h-screen w-full bg-white">
       <div className="mx-auto w-full max-w-[390px] p-4">
-        <h1 className="font-heading font-semibold text-[28px] leading-tight text-s-ink mb-5">Day agenda: free time grouping</h1>
-
-        <p className="font-heading font-semibold text-[14px] text-s-ink mb-2">Before, shipped today</p>
-        <BeforeAgenda slots={DAY_SLOTS} />
-
-        <p className="font-heading font-semibold text-[14px] text-s-ink mt-6 mb-2">After, proposed</p>
-        <AfterAgenda slots={DAY_SLOTS} />
-
-        <p className="font-heading font-semibold text-[14px] text-s-ink mt-10 mb-2">Their way, same Wednesday</p>
-        <AirbnbWayAgenda slots={DAY_SLOTS} />
-
-        <div className="mt-6 space-y-1">
-          <p className="text-[12px] text-s-ink-2">Third block, the Airbnb rules applied: no colour at all, a sentence with the live number as the biggest thing, free time as one quiet line with a count, blocked struck through, and a card only on the rows that carry three facts.</p>
-          <p className="text-[12px] text-s-ink-2">The 13:00 booking shows the selected state in our locked gray. Airbnb uses a 2px black border there and we do not, because you killed black surrounds on selected states on 2026-07-02.</p>
-          <p className="text-[12px] text-s-ink-2">Both numbers in the sentence are counted from the same fixture the other two blocks render, so at zero it reads 0 appointments today rather than swapping to an empty screen.</p>
-          <p className="text-[12px] text-s-ink-2">No price on a row: this fixture has no price source and inventing one would be fabricated data.</p>
-          <p className="text-[12px] text-s-ink-2">Free time collapses into one band per run. Booked and blocked rows keep their own row, unchanged.</p>
-          <p className="text-[12px] text-s-ink-2">The free band is neutral sunken and grey now, not green, so a booking is what your eye lands on.</p>
-          <p className="text-[12px] text-s-ink-2">Two labels move from 13.5px to 14px, onto a size already used on this screen.</p>
+        <div className="flex bg-s-bg-sunken rounded-full p-[3px] gap-[2px]">
+          {VIEW_OPTIONS.map((o) => (
+            <button
+              key={o.key}
+              onClick={() => setView(o.key)}
+              className={[
+                "flex-1 font-heading font-semibold text-[14px] py-[7px] rounded-full transition-colors",
+                view === o.key ? "bg-white text-s-ink shadow-[0_1px_3px_rgba(0,0,0,0.09)]" : "text-s-ink-2",
+              ].join(" ")}
+            >
+              {o.label}
+            </button>
+          ))}
         </div>
+
+        <div className="mt-4">
+          {view === "today" && <BeforeAgenda slots={DAY_SLOTS} />}
+          {view === "grouped" && <AfterAgenda slots={DAY_SLOTS} />}
+          {view === "airbnb" && <AirbnbWayAgenda slots={DAY_SLOTS} />}
+        </div>
+
+        <p className="mt-3 text-[14px] leading-relaxed text-s-ink-2">{active.caption}</p>
       </div>
     </div>
   );
