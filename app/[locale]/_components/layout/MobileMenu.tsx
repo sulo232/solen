@@ -291,7 +291,8 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
                   "mb-4 flex items-center justify-between gap-4",
                   "rounded-[16px] bg-s-bg-surface p-4",
                   "shadow-[0_1px_3px_rgba(26,18,9,0.04)]",
-                  "transition-shadow duration-200 ease-glide",
+                  // transform must be in the transition list or the press scale never animates
+                  "transition-[transform,box-shadow] duration-200 ease-glide",
                   "hover:shadow-[0_4px_14px_rgba(26,18,9,0.08)]",
                   "active:scale-[0.98] active:duration-[80ms]",
                 )}
@@ -413,7 +414,8 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
                 // V3-D168: padding p-5 → p-4 (tighter Fresha-style row)
                 "rounded-[16px] bg-s-bg-surface p-4",
                 "shadow-[0_1px_3px_rgba(26,18,9,0.04)]",
-                "transition-shadow duration-200 ease-glide",
+                // transform must be in the transition list or the press scale never animates
+                "transition-[transform,box-shadow] duration-200 ease-glide",
                 "hover:shadow-[0_4px_14px_rgba(26,18,9,0.08)]",
                 "active:scale-[0.98] active:duration-[80ms]",
               )}

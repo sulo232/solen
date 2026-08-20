@@ -366,7 +366,7 @@ export default function QueueTrackingPage() {
         <Link
           href={`/${locale}`}
           aria-label={l.home}
-          className="absolute left-3.5 top-3.5 flex h-11 w-11 items-center justify-center rounded-full border border-white/60 bg-white/85 text-s-ink shadow-[0_2px_8px_rgba(10,10,10,.12)] backdrop-blur-md active:scale-95"
+          className="absolute left-3.5 top-3.5 flex h-11 w-11 items-center justify-center rounded-full border border-white/60 bg-white/85 text-s-ink shadow-[0_2px_8px_rgba(10,10,10,.12)] backdrop-blur-md transition-transform duration-150 active:scale-[0.94] active:duration-[80ms] active:ease-glide"
         >
           <ArrowLeft size={20} strokeWidth={2.2} />
         </Link>
@@ -375,7 +375,7 @@ export default function QueueTrackingPage() {
           <Link
             href={`/${locale}/salon/${data.salonSlug}`}
             aria-label={l.helpTitle}
-            className="absolute right-3.5 top-3.5 flex h-11 w-11 items-center justify-center rounded-full border border-white/60 bg-white/85 text-s-ink shadow-[0_2px_8px_rgba(10,10,10,.12)] backdrop-blur-md active:scale-95"
+            className="absolute right-3.5 top-3.5 flex h-11 w-11 items-center justify-center rounded-full border border-white/60 bg-white/85 text-s-ink shadow-[0_2px_8px_rgba(10,10,10,.12)] backdrop-blur-md transition-transform duration-150 active:scale-[0.94] active:duration-[80ms] active:ease-glide"
           >
             <HelpCircle size={20} strokeWidth={2.2} />
           </Link>
@@ -575,7 +575,7 @@ export default function QueueTrackingPage() {
             <X size={22} strokeWidth={2.2} />
           </button>
         ) : (
-          <button onClick={fetchStatus} aria-label={l.autoUpdate} className="flex h-[54px] w-[54px] shrink-0 items-center justify-center rounded-full border border-s-border bg-white text-s-ink active:scale-[0.98]">
+          <button onClick={fetchStatus} aria-label={l.autoUpdate} className="flex h-[54px] w-[54px] shrink-0 items-center justify-center rounded-full border border-s-border bg-white text-s-ink transition-transform duration-150 active:scale-[0.94] active:duration-[80ms] active:ease-glide">
             {/* mockup-ok: WCAG 2.2.2 conformance, this also fires from the un-clicked adaptive poll, so it is bounded (see tailwind.config.js spin-bounded) */}
             <RefreshCw size={18} strokeWidth={1.9} className={refreshing ? "animate-spin-bounded" : ""} />
           </button>
