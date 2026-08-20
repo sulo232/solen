@@ -75,6 +75,25 @@ Measured against our 219:
   Search (28), the arrows (28 and 27), MapPin (24), Scissors (24).
 - **18 should never move.** Chrome and legal: the cookie icon, shields, locks, the social logos.
 
+## The same principle, caught twice more while building the fix
+
+Both were found by the control rather than by noticing, and both would have shipped as a
+confident wrong answer.
+
+1. **"Iconly has no artwork for any of your 160 icons."** The run reported artwork for
+   **zero of 160**, cleanly, with no error. The control: run the same query for one icon
+   whose answer I knew, `Checkmark`, on its own. Ten rows came back. So the library was
+   fine and my instrument was broken, and it was broken in the most deniable way, an
+   `IncompleteRead` on their streamed response that my own `except Exception` was quietly
+   turning into "no results". **A total failure is almost never the subject and almost
+   always the instrument.**
+2. **The star that was a sparkle.** Matching on their exact name still produced a row where
+   the Light column held a decorative burst and the Bold column held a plain star. Iconly
+   reuses one name across unrelated icons, so "one row per look" silently assembled six
+   different drawings. Fixed by taking one coherent FAMILY, and where that family lacks a
+   look, the cell stays blank. Same lesson as the ticket, one level down: **the name is not
+   the drawing.**
+
 ## A separate finding, surfaced by that classification
 
 **Sparkles is still in 10 shipping files, and you killed it by name on 2026-08-14.**
