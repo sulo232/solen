@@ -440,9 +440,39 @@ regressions happened, and I introduced one an hour ago doing exactly that.
       mechanism for it at the tail of a long session is exactly the 2026-08-18 mistake. 2 are real
       untranslated strings and are true catches.
 
+## REFUND FLOW TRANSLATED (2026-08-19, he chose "just land it all")
+
+| | before | after |
+|---|---|---|
+| German, strings still English | 263 of 263 | **6** |
+| French | 263 of 263 | **5** |
+| Italian | 263 of 263 | **1** |
+
+verified: measured by me after the agents reported, not taken from their word, at commit 7def0e388
+onward. Placeholder sets compared key by key against English: **0 mismatches** in any language, so
+nothing renders as literal braces on the screen where someone is asking for money back. Informal
+address (du / tu / tu): **0**. Em or en dashes: **0**. Swiss eszett in German: **0**. All three
+files parse.
+
+The 12 remaining identical strings are words that are genuinely the same in that language:
+`Problem`, `Details`, `Service`, `Salon`, `Description`, `Photos`, `optional`, and the counter
+`{count} / {max}` which is pure formatting. None is an unfinished translation.
+
+**Wording calls the translators flagged for a native speaker, worth his eyes and not blocking:**
+German splits the English word "extra" into `Mehrbelastung` for the action and `Nachbelastung` for
+the amount, matching what the salon dashboard already says. German renders "a Solen specialist"
+as `Solen-Team` rather than invent a gendered noun with no precedent in the file. French introduces
+`dossier` for "case" where the admin side says `litige`. Italian standardises "escalate to Solen"
+on `coinvolgere Solen` across ten strings.
+
+**One string is worth a real legal read before launch in all three languages:** `escUpheldRecourse`,
+the line shown after Solen decides against the customer, which tells them their bank's dispute
+process is still open to them. It is translated literally and adds nothing, but it is the sentence
+that tells an unhappy customer what recourse they have left.
+
 ## OPEN, WAITING ON HIM , tracked as boxes so they cannot be lost in prose
 - [x] SUPERSEDED 2026-08-19 by his own reframe, then by "fix evrth". He first said "Leave it until launch", then pointed out the answer depends on which language the customer selects, which is the whole problem: the site honours their choice at 92 to 96 percent everywhere and then drops to 0 percent on the one flow about getting money back. Asked how he wanted to review it, he chose "Just land it all", so all 263 strings are being translated into formal German (Sie), French (vous) and Italian (Lei), each graded by an agent that did not write it. Measured before: de 263/263 English, fr 263/263, it 263/263. The refund flow stays English in de/fr/it and is carried as a KNOWN GAP, not a defect to fix. Do not translate it without him saying so. Original question: translate the 263 refund-flow strings into real formal German, French and Italian, or leave them? Raised by the key-parity check failing, which surfaced that de, fr and it each have 263 of 263 refundFlow strings byte-identical to English on the screen where a customer asks for money back.
-- [ ] PARKED 2026-08-19 . Swap in the new reply rules at `_plans/REPLY_FIX_PROPOSAL.md`, or tell me the version you actually want? . from: two councils read all 22 real message-and-reaction pairs of this session and found the cause of "i dont understand what ur talking abt ths output": every message opens with a noun from inside my own work instead of the thing he asked about. Proposal is 222 lines against the 381 it would replace, four rules, each with a real before/after from his own transcript. `~/.claude/REPLY_TEMPLATES.md` deliberately untouched: replacing how I talk to him is his call, not mine.
+- [ ] PARKED 2026-08-19 . Swap in the new reply rules at `_plans/REPLY_FIX_PROPOSAL.md`, replacing `~/.claude/REPLY_TEMPLATES.md`? He asked to see the proposal first and it was delivered as a page he can open (artifact 695f7458). Waiting on his read. . from: the two councils on "i dont understand what ur talking abt ths output"
 
 
 
