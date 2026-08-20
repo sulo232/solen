@@ -345,7 +345,23 @@ Order: the three that can be undone from git first, since a bad repair there is 
 - [x] `no-select-star-sensitive.py` NOT REPRODUCED. verified: commit bde21a03f, driven against a real file written to `app/api/_probe_tmp/route.ts` and removed after. The reported defect was that an Edit which only RETARGETS an existing `select("*")` to a sensitive table goes unflagged: driven `from("salons")` -> `from("profiles")` with the `select("*")` untouched on disk, and it BLOCKS. My first control was itself wrong (introducing `select("*")` against `salons`, which is not a sensitive table, so passing is correct behaviour and not a control failure).
 - [x] `owner-punt-gate.py` commit 1e0e98dc7. NOT REPRODUCED by anything I can run. verified: its suite already drives the real hook as a subprocess (it calls `subprocess.run(["python3", HERE])`), so its 19/19 IS an end-to-end result, not a pure-function one. That is the strongest evidence available for this gate and it is green. The reported defects were read off the code; nothing I drove reproduces them.
 - [x] `pre-edit-psychology-gate.py` NOT REPRODUCED. verified: commit bde21a03f, driven with its own known-bad fixture as the control. Control blocks. The reported defect was that a `//` inside a URL is read as a comment start, hiding everything after it on that line: driven with `<a href="https://solen.ch/de">` before the violation, still BLOCKS, and with a protocol-relative `src="//cdn..."` before it, still BLOCKS. Not fixed, because there is nothing to fix.
-- [x] `prelaunch-reality-gate.py` commit 1e0e98dc7. REPRODUCED AND FIXED (~/.claude 72d62b1). Two verbatim idioms were unconditional, so an ordinary staging sentence was refused. My FIRST fix was worse: putting the environment words in the general hedge defused the whole message, so a real harm claim with an unrelated "Staging is fine." stopped blocking. Caught by an abuse case in the same run. Final scoping attaches the qualifier to those two branches only, within one sentence. verified: suite 15/15, founding incident blocks, real harm blocks, staging sentence passes, tunnel-preview passes, abuse case blocks.
+- [x] `prelaunch-reality-gate.py` SETTLED, DEFECT REAL AND FIXED (~/.claude 1d3cc20). The first of
+      the four unsettled ones to turn out real. Method that cracked it: lift its own 15 fixtures out
+      of the source with an AST parse instead of retyping them, drive all 15 end to end, confirm
+      0 of 15 disagree, and only then read anything into a new result.
+      **The defect, reproduced:** the `is live and collecting` pattern exempted staging / preview /
+      tunnel / localhost with a LOOKAHEAD, and a lookahead only reads forward while English puts the
+      environment word first. Both of these were refused: "The tunnel is live and collecting
+      requests, so the phone can reach it." and "The seed script is live and collecting rows into
+      the local database." Neither mentions a customer or production. `local` was also missing from
+      the list, which had only `localhost`. Refusing correct work is the one failure he named.
+      **The leak my own fix introduced, caught before shipping:** defusing any match whose window
+      held an environment word let "We tested on staging, and customers could not book on production
+      all week" straight through. One environment word anywhere excused a direct harm claim, which
+      is GATE_LAW failure shape 3. Fixed by scoping the new exemption to the two traffic-assertion
+      shapes only, never to a customer-harm claim.
+      verified: suite 15/15 -> 18/18, all four false positives now pass, all five real violations
+      including the leak case still block.
 - [x] `stock-photo-gate.py` commit 1e0e98dc7. NOT REPRODUCED. verified: I imported its own 15 fixtures and drove EVERY one through the real hook end to end, comparing the pure function against the hook itself. 0 of 15 disagree, and the case I thought was a false positive passes correctly. My earlier reading was wrong because I RETYPED the fixture from a grep and joined two string literals into a sentence its suite never contained.
 
 ## THE ADVERSARY ON TODAY'S OWN WORK (2026-08-19). TWO DEFECTS, IN THE THING BUILT TO FIND DEFECTS.
