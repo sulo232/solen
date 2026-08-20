@@ -155,7 +155,15 @@ export default function RefundCaseView({
         return;
       }
       const j = await res.json().catch(() => ({}));
-      setActionError(j?.error || t("toastEscalateError"));
+      // app/api/bookings/[id]/escalate/route.ts returns the raw code ESCALATION_WINDOW_CLOSED,
+      // not a sentence. Map it here rather than falling through to j.error, which would render
+      // that literal string in the styled error box in every locale. Never toastEscalateError
+      // for this one: the deadline does not move, so "please try again" is wrong advice.
+      const message =
+        j?.error === "ESCALATION_WINDOW_CLOSED"
+          ? t("toastEscalateWindowClosed")
+          : j?.error || t("toastEscalateError");
+      setActionError(message);
     } catch (err) {
       console.error("[RefundCaseView] escalate failed:", err);
       setActionError(t("toastEscalateError"));
@@ -862,6 +870,22 @@ function ActionInner({
   // ----- salon_rejected: shield note + the BLUE escalate CTA (the mockup state) -----
   if (c.status === "salon_rejected") {
     const daysLeft = escalateDaysLeft(c.salon_responded_at);
+    // escalateDaysLeft only reaches 0 once the 14-day window has fully lapsed (13d23h59m
+    // still returns 1), and no cron ever moves a case out of salon_rejected, so this is
+    // permanent, not a one-tick race. app/api/bookings/[id]/escalate/route.ts now refuses
+    // every tap here with ESCALATION_WINDOW_CLOSED, so the CTA and the escWindowToday
+    // "still today" copy retire together: a state that cannot exist gets no screen.
+    if (daysLeft <= 0) {
+      return (
+        <>
+          <ShieldNote text={t("escWindowClosedNote")} />
+          <Link href={`/${locale}/help`} className={secondaryBtn}>
+            {t("contactSupport")}
+          </Link>
+          <p className="mt-2 text-center text-[12px] leading-[1.5] text-s-ink-2">{t("footClosedNoAction")}</p>
+        </>
+      );
+    }
     return (
       <>
         <ShieldNote text={t("footEscalateNoGuarantee")} />
@@ -869,7 +893,7 @@ function ActionInner({
           {t("escalateToSolen")}
         </button>
         <p className="mt-2 text-center text-[12px] leading-[1.5] text-s-ink-2">
-          {daysLeft > 0 ? t("escWindowOpen", { days: daysLeft }) : t("escWindowToday")} {t("escFree")}
+          {t("escWindowOpen", { days: daysLeft })} {t("escFree")}
         </p>
       </>
     );

@@ -10,6 +10,7 @@ import { logAuditEvent } from "@/lib/audit";
 import { resolveBookingActor } from "@/lib/bookings/authorize";
 import { writeCaseEvent } from "@/lib/bookings/dispute-engine";
 import { sendEmail } from "@/lib/email";
+import { escalateDaysLeft, ESCALATE_WINDOW_DAYS } from "@/components-legacy/refund/shared";
 
 // SP-3 Endpoint 4 — customer/guest escalates a salon-REJECTED refund to Solen
 // admin. CAS-guarded salon_rejected → escalated; one timeline row; reuse the
@@ -47,7 +48,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   // Find the salon_rejected refund case (CAS target).
   const { data: dispute } = await admin
     .from("booking_disputes")
-    .select("id, status, reporter_id, reported_id")
+    .select("id, status, reporter_id, reported_id, salon_responded_at")
     .eq("booking_id", bookingId)
     .eq("direction", "refund")
     .eq("status", "salon_rejected")
@@ -55,6 +56,19 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   if (!dispute) {
     // Can only escalate a salon-rejected case.
     return NextResponse.json({ error: "No rejected refund case to escalate" }, { status: 409 });
+  }
+
+  // The escWindowOpen copy on RefundCaseView.tsx:872 tells the customer "you can escalate
+  // for {days} more days", but until now this endpoint only checked status, so a countdown
+  // reaching zero was decoration, not a real gate. Owner 2026-08-19: "you keep making these
+  // decorations or, like, unfinished stuff ... it's gonna cause more harm than good ...
+  // because you're being too lazy." Reuse the same helper the screen renders from, so the
+  // server and the countdown the customer is staring at can never disagree.
+  if (escalateDaysLeft(dispute.salon_responded_at) <= 0) {
+    return NextResponse.json(
+      { error: "ESCALATION_WINDOW_CLOSED", windowDays: ESCALATE_WINDOW_DAYS },
+      { status: 400 },
+    );
   }
 
   const { data: updated, error: updErr } = await admin
