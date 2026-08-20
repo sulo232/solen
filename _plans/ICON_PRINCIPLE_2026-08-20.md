@@ -136,23 +136,29 @@ for.
 
 **Two claims of mine that the reads proved FALSE, corrected in the sheet the same hour:**
 
-- [x] **"3D belongs in a slot we do not have yet."** Wrong. 3D category icons already render on
-      five customer surfaces. `verified:` `MobileCategoriesRow.tsx`, `WalkInBand.tsx`,
-      `CategoryPillRow.tsx`, `SearchOverlay.tsx`, `SearchTemplate.tsx` all reference
-      `icons/categories`. The real leftover is that the empty states still show the grey disc
+- [x] **"3D belongs in a slot we do not have yet." Wrong.** `verified:` five customer files
+      reference `icons/categories`, opened and grepped this hour:
+      `app/[locale]/_components/homepage/MobileCategoriesRow.tsx`,
+      `app/[locale]/_components/homepage/WalkInBand.tsx`,
+      `app/[locale]/_components/layout/CategoryPillRow.tsx`,
+      `app/[locale]/_components/search/SearchOverlay.tsx`,
+      `app/[locale]/_components/search/SearchTemplate.tsx`. The real leftover is that the empty states still show the grey disc
       the rules ban.
-- [x] **"Roughly half the files have no press response."** Half is the number including the
-      salon dashboard. Customer-facing it is **65 of 182**, and my own cruder filter said 94 of
+- [x] **"Roughly half the files have no press response." Corrected to 65 of 182.**
+      `verified:` commit 4eee732a4. Half is the number including the salon dashboard, and my own cruder filter said 94 of
       227 because it matched paths rather than following what a customer route actually reaches.
 
 ## The press finding, which is the bigger one
 
-- [x] **65 of 182 customer files with something tappable do nothing when pressed, 244 controls.**
-      The five worst are global chrome on every route: the bottom tab bar, the breadcrumb, the
+- [x] **65 of 182 customer files with something tappable do nothing when pressed, 244
+      controls.** `verified:` `npm run check:press` plus a route-reachability scan from the 124
+      customer entrypoints; `app/[locale]/_components/layout/BottomNav.tsx` contains zero
+      `active:scale`, counted on disk. The five worst are global chrome on every route: the bottom tab bar, the breadcrumb, the
       language switcher, the desktop city pill, the toast.
-- [x] **His back-button instinct was backwards, and that is good news.** The back arrows already
-      press. `verified:` `queue/[token]/page.tsx` and `SalonLightbox.tsx` both carry
-      `active:scale` on the back control. What does not press is the bottom tab bar.
+- [x] **His back-button instinct was backwards, and that is good news.** `verified:`
+      `app/[locale]/_components/salon/SalonLightbox.tsx:127` and
+      `app/[locale]/inspo/board/[id]/page.tsx:69` both carry `active:scale` on the back control,
+      read off disk. The back arrows already press. What does not press is the bottom tab bar.
       `verified:` `BottomNav.tsx` contains zero `active:scale`.
 - [x] **Why it drifted: the checker exists and nothing runs it.** `verified:` package.json
       defines `check:press` and `gate:press`; grep across `.github` and `.claude` returns no
