@@ -31,6 +31,30 @@
  * Times are pre-formatted strings rather than parsed from an ISO Date, since this file has no
  * real timezone to be correct about, only the display.
  *
+ * ADDED 2026-08-20, a THIRD block: the same Wednesday, same fixture, built to the nine Airbnb
+ * rules written up in _design-system/references/airbnb--host-and-rules.md and shown at
+ * /dev/airbnb-rules. The first two blocks are untouched. What the third one changes and why:
+ *   - ZERO colour (rule 1 and rule 2). Their host screens measure 0.00% chromatic, and an operator
+ *     day list has no irreversible commit on it, so nothing here earns a hue. That removes the
+ *     green-on-green 2.93 to 1 contrast failure as a side effect rather than as a patch.
+ *   - A sentence with the live number as the anchor, at 28px (rule 5). Both figures are DERIVED
+ *     from the fixture in the component, not typed, and the copy is written so it stays honest at
+ *     zero. The page h1 moves 20px to 28px in the same pass so the page stays inside the four-size
+ *     budget (28 / 14 / 13.5 / 12); the 13.5 is the BEFORE block's faithful copy of the defect.
+ *   - Free time collapses to one bare line per run carrying a count (rule 4 and rule 7): a
+ *     single-line row does not earn a container, and free time is not something the owner acts on,
+ *     so it goes quiet. Blocked time is quieter still, struck through, since it cannot be acted on
+ *     at all.
+ *   - A booking carries time plus service plus stylist, so it is the only complex row on the
+ *     screen, and complexity is what earns it a white card with a hairline (rule 7).
+ *   - Weight does two jobs only (rule 6): the anchor, and the identifying label on a booking. Times,
+ *     counts and stylist names are all regular.
+ *   - NO PRICE on the row, on purpose. Their slot row carries one and ours has no price source in
+ *     this fixture, so printing one would be inventing data.
+ *   - The selected row uses OUR locked treatment, the calm gray sunken fill. Airbnb's answer is a
+ *     2px black border and it is NOT used here: a black surround on a selected state was killed
+ *     2026-07-02 and a gate enforces it. That divergence is CONFLICT 3 on /dev/airbnb-rules.
+ *
  * Dev-only preview route, blocked in production below like every other page under app/[locale]/dev/.
  */
 import { notFound } from "next/navigation";
@@ -150,13 +174,73 @@ function AfterAgenda({ slots }: { slots: FixtureSlot[] }) {
   );
 }
 
+function pluralAppointments(count: number): string {
+  return count === 1 ? "appointment" : "appointments";
+}
+
+// AIRBNB WAY: the same fixture, rebuilt to the nine rules. See the file header for the reasoning.
+// The one row shown in the selected state is the 13:00 booking.
+function AirbnbWayAgenda({ slots }: { slots: FixtureSlot[] }) {
+  const items = groupRuns(slots);
+  const bookedCount = slots.filter((s) => s.status === "booked").length;
+  const freeHours = slots.filter((s) => s.status === "available").length * 0.5;
+  const selectedId = "9"; // static in a mockup, the 13:00 booking, so the state is visible
+
+  return (
+    <div>
+      <p className="text-[12px] text-s-ink-2">Wednesday</p>
+      <p className="font-heading font-semibold text-[28px] leading-tight text-s-ink mt-1">
+        {bookedCount} {pluralAppointments(bookedCount)} today
+      </p>
+      <p className="text-[14px] text-s-ink-2 mt-1">{freeHours} hours still open</p>
+
+      <div className="mt-4 space-y-2">
+        {items.map((item) => {
+          if (item.kind === "free") {
+            const first = item.runSlots[0];
+            const last = item.runSlots[item.runSlots.length - 1];
+            return (
+              <p key={first.id} className="text-[14px] text-s-ink-2 py-1">
+                <span className="tabular-nums">{first.start} to {last.end}</span> open, {item.runSlots.length}{" "}
+                {pluralSlots(item.runSlots.length)}
+              </p>
+            );
+          }
+          const s = item.slot;
+          if (s.status === "blocked") {
+            return (
+              <p key={s.id} className="text-[14px] text-s-ink-2 py-1 line-through">
+                <span className="tabular-nums">{s.start} to {s.end}</span> blocked
+              </p>
+            );
+          }
+          const isSelected = s.id === selectedId;
+          return (
+            <div
+              key={s.id}
+              className={[
+                "rounded-[16px] border px-3 py-3 min-h-[44px]",
+                isSelected ? "border-s-border bg-s-bg-sunken" : "border-s-border bg-white",
+              ].join(" ")}
+            >
+              <p className="text-[12px] text-s-ink-2 tabular-nums">{s.start} to {s.end}</p>
+              <p className="font-heading font-semibold text-[14px] text-s-ink mt-0.5">{s.serviceLabel}</p>
+              <p className="text-[12px] text-s-ink-2 mt-0.5">{s.staffFirstName}</p>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export default function CalendarAgendaMockupPage() {
   if (process.env.NODE_ENV === "production") notFound();
 
   return (
     <div className="min-h-screen w-full bg-white">
       <div className="mx-auto w-full max-w-[390px] p-4">
-        <h1 className="font-heading font-semibold text-[20px] text-s-ink mb-5">Day agenda: free time grouping</h1>
+        <h1 className="font-heading font-semibold text-[28px] leading-tight text-s-ink mb-5">Day agenda: free time grouping</h1>
 
         <p className="font-heading font-semibold text-[14px] text-s-ink mb-2">Before, shipped today</p>
         <BeforeAgenda slots={DAY_SLOTS} />
@@ -164,7 +248,14 @@ export default function CalendarAgendaMockupPage() {
         <p className="font-heading font-semibold text-[14px] text-s-ink mt-6 mb-2">After, proposed</p>
         <AfterAgenda slots={DAY_SLOTS} />
 
+        <p className="font-heading font-semibold text-[14px] text-s-ink mt-10 mb-2">Their way, same Wednesday</p>
+        <AirbnbWayAgenda slots={DAY_SLOTS} />
+
         <div className="mt-6 space-y-1">
+          <p className="text-[12px] text-s-ink-2">Third block, the Airbnb rules applied: no colour at all, a sentence with the live number as the biggest thing, free time as one quiet line with a count, blocked struck through, and a card only on the rows that carry three facts.</p>
+          <p className="text-[12px] text-s-ink-2">The 13:00 booking shows the selected state in our locked gray. Airbnb uses a 2px black border there and we do not, because you killed black surrounds on selected states on 2026-07-02.</p>
+          <p className="text-[12px] text-s-ink-2">Both numbers in the sentence are counted from the same fixture the other two blocks render, so at zero it reads 0 appointments today rather than swapping to an empty screen.</p>
+          <p className="text-[12px] text-s-ink-2">No price on a row: this fixture has no price source and inventing one would be fabricated data.</p>
           <p className="text-[12px] text-s-ink-2">Free time collapses into one band per run. Booked and blocked rows keep their own row, unchanged.</p>
           <p className="text-[12px] text-s-ink-2">The free band is neutral sunken and grey now, not green, so a booking is what your eye lands on.</p>
           <p className="text-[12px] text-s-ink-2">Two labels move from 13.5px to 14px, onto a size already used on this screen.</p>
