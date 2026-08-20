@@ -47,8 +47,13 @@ them including the controls, so that reading was thrown away.
       (double-call does not double-escalate, a case that moved off-status is skipped). Does NOT
       close the box at line 39 below (Solen's own post-escalation 3-business-day SLA still has no
       timer); that is a separate, unbuilt item.
-- [ ] "Solen typically decides within 3 business days" (`escSolenTypical`, `escFormSla`) has no
-      timer, no queue age, and no alert behind it.
+- [ ] "Solen typically decides within 3 business days" (`escSolenTypical`, `escFormSla`) still has
+      no timer, no queue age and no alert. NOT a vague punt, the concrete next action is known and
+      came out of this pass's own review: `app/api/dashboard/disputes/route.ts:91` sorts
+      `created_at DESC`, newest first, so the most overdue case sinks to the bottom of the one
+      screen that exists to surface it. Fix the sort to put the oldest open case first, then add
+      the age against the 3-day promise beside it. That is the smallest change that makes the
+      promise visible to the person who has to keep it.
 - [x] "You can report up to 14 days after your appointment" (`reportWindowNote`) is RENDERED IN
       ZERO FILES. CORRECTED 2026-08-20: the "never enforced on the server" half of this line was
       already stale before this pass started. `app/api/bookings/[id]/report/route.ts` POST already
@@ -85,8 +90,20 @@ them including the controls, so that reading was thrown away.
       with `{"error":"Bad Request"}` on every filter while the identical query succeeds directly
       against PostgREST) that blocks that screen entirely, flagged separately (task_b25dba12), not
       fixed here per the off-limits/scope boundary for this item.
-- [ ] "You can escalate for {days} more days" (`escWindowOpen`) is rendered, but nothing on the
-      server refuses a late escalation.
+- [x] "You can escalate for {days} more days" is now enforced AND the screen matches it.
+      verified: commit b71980a71. The server refuses a late escalation with a 400, computed from
+      the SAME helper the screen calls (`escalateDaysLeft`, `components-legacy/refund/shared.ts`)
+      so the two can never disagree. Boundary-driven against the real imported function: 2 days ago
+      allows, 20 days ago refuses, 13d 23h 59m allows, null allows.
+      **My first attempt FAILED review, for exactly the class this session is about.** I made the
+      server honest and left the screen lying: at zero days the CTA still rendered and still said
+      "you can still escalate today", and the error box would have shown a German customer the raw
+      code ESCALATION_WINDOW_CLOSED. Both closed in one repair round. `escWindowToday` is retired
+      because the reviewer's control proved it described a state that cannot exist.
+      Two new keys in all four locales, each rendered in the same change: `escWindowClosedNote`,
+      `toastEscalateWindowClosed`. Checked by me rather than taken from the report: both render in
+      `RefundCaseView.tsx`, `escWindowToday` renders nowhere, no eszett and no dashes in the added
+      German, typecheck clean, parity OK at 5,853 keys.
 
 ## THE ONE RULE ANY FIX MUST NOT BREAK
 
