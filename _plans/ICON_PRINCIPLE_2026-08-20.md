@@ -1,0 +1,94 @@
+# Why our tick became their ticket, and the principle behind it (2026-08-20)
+
+Owner, verbatim: *"the icons u chose for alt makes no scence at all ... like check s alt gnna be a
+ticket like what are u good why did ths even happen tell me i want to fix the principle"*
+
+## The immediate cause
+
+I needed to find Iconly's version of each of our icons. My method was:
+
+1. take our icon's name, `Check`
+2. turn it into a search word **out of my own head**, `"tick"`
+3. search their library for that word
+4. take the top text result
+
+`tick` is inside `ticket`. Their search ranked **Ticket** first. I took it and moved on.
+
+Nothing in that method ever looked at the drawing, and nothing ever asked their library what it
+actually calls a checkmark. When I finally asked, the answer was **"Checkmark"**, and getting their
+whole vocabulary took 45 seconds for 6496 names.
+
+## The principle, and it is not about icons
+
+**I keep measuring a proxy instead of the thing, because the proxy is easier to reach.**
+
+Three times in two days, same shape, different subject:
+
+| what I wanted to know | the proxy I used | what it cost |
+|---|---|---|
+| which icons the product uses | the ones that RENDERED on pages I opened | 60, when the answer is 219 |
+| whether two icons are the same drawing | whether my regex output matched | said identical, they differ |
+| what Iconly calls our icon | a word I invented, text-searched | our tick became their ticket |
+
+Every one of those is the same move: the direct question was available and slightly harder, so I
+answered a nearby easier question and reported it as the answer.
+
+**The rule going forward, in one line: name the thing you actually want to know, ask whether you are
+measuring THAT or something standing next to it, and if it is a proxy, say so in the sentence.**
+
+Two consequences worth stating separately, because they are the ones that would have caught all
+three:
+
+1. **Ask the other system for its own vocabulary rather than guessing the key.** A library knows its
+   names. One call gets them. A word I make up is a guess wearing a search query.
+2. **When the match cannot be justified, leave it BLANK.** A blank cell says "they do not have
+   this". A wrong cell says "this is yours", and that is a lie the sheet tells quietly. The first
+   version told it 22 times.
+
+## What the fix looks like now
+
+- [x] **Their real names pulled, 6496 of them, with categories.** `verified:` catalogue.json.
+- [x] **Matching runs against names that EXIST.** `verified:` every hand-written mapping is checked
+      against the catalogue before use, and my own guard rejected **11 of my own entries** because I
+      had invented those names too (`Award`, `Bank`, `Box`, `Minus`, `Wifi`, `Brush` and others).
+      That guard is the principle enforcing itself on the person who wrote it.
+- [x] **160 of 219 matched, 59 refused.** Refusing is the feature.
+
+## Which icons should move, and which should not
+
+**The rule: motion marks a CHANGE. Nothing else.**
+
+An icon may move only if, at the moment it moves, something became true that was not true a second
+ago: it got saved, it succeeded, it arrived, it started loading, it flipped on.
+
+Everything else holds still. Not because motion is expensive, but because motion is a SIGNAL, and a
+signal spent everywhere is spent nowhere. If the back arrow and every chevron move, the heart
+filling in when a customer saves a salon has to compete with them for the eye.
+
+Measured against our 219:
+
+- **39 should move.** They mark a moment: Check (75 files), Star (45), Plus (29), the loading
+  spinner (27), Heart (23), the warning triangle (23), Trash (18), Bell (10).
+- **162 should hold still.** They point or they name: X (78 files), the chevrons (40 and 34),
+  Search (28), the arrows (28 and 27), MapPin (24), Scissors (24).
+- **18 should never move.** Chrome and legal: the cookie icon, shields, locks, the social logos.
+
+## A separate finding, surfaced by that classification
+
+**Sparkles is still in 10 shipping files, and you killed it by name on 2026-08-14.**
+
+- [ ] **Why it is still there, and it is NOT that the cleanup failed.** `verified:` commit b80f87bb0
+      did the removal and it holds: every file it touched is still clean today. The problem is the
+      root set. It swept `app/` and never looked in `components-legacy/`, which is where 10 of the
+      11 leftovers live, in files that really render (SalonCard is imported by 42 live files,
+      DashboardLayout by 48).
+
+      **That is the same incomplete-root-set error as the July registry count**, which globbed
+      `app/` and `components/` and missed `components-legacy/` holding most of the components. Twice
+      now, the same folder.
+
+      The eleventh is not a use at all: `BottomNav.tsx:89` only mentions Sparkles in a comment
+      explaining why Compass was chosen instead. Checked rather than counted.
+
+**Not fixed, and deliberately not:** replacing 10 icons is a visual change on live screens and he
+has said, by name, that choosing icons independently is exactly what he does not want.
