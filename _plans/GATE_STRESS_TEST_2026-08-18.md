@@ -345,7 +345,7 @@ Order: the three that can be undone from git first, since a bad repair there is 
 - [x] `no-select-star-sensitive.py` NOT REPRODUCED. verified: commit bde21a03f, driven against a real file written to `app/api/_probe_tmp/route.ts` and removed after. The reported defect was that an Edit which only RETARGETS an existing `select("*")` to a sensitive table goes unflagged: driven `from("salons")` -> `from("profiles")` with the `select("*")` untouched on disk, and it BLOCKS. My first control was itself wrong (introducing `select("*")` against `salons`, which is not a sensitive table, so passing is correct behaviour and not a control failure).
 - [x] `owner-punt-gate.py` commit 1e0e98dc7. NOT REPRODUCED by anything I can run. verified: its suite already drives the real hook as a subprocess (it calls `subprocess.run(["python3", HERE])`), so its 19/19 IS an end-to-end result, not a pure-function one. That is the strongest evidence available for this gate and it is green. The reported defects were read off the code; nothing I drove reproduces them.
 - [x] `pre-edit-psychology-gate.py` NOT REPRODUCED. verified: commit bde21a03f, driven with its own known-bad fixture as the control. Control blocks. The reported defect was that a `//` inside a URL is read as a comment start, hiding everything after it on that line: driven with `<a href="https://solen.ch/de">` before the violation, still BLOCKS, and with a protocol-relative `src="//cdn..."` before it, still BLOCKS. Not fixed, because there is nothing to fix.
-- [x] `prelaunch-reality-gate.py` SETTLED, DEFECT REAL AND FIXED (~/.claude 1d3cc20). The first of
+- [x] `prelaunch-reality-gate.py` SETTLED, DEFECT REAL AND FIXED. verified: ~/.claude 1d3cc20, recorded here at commit 54c4662d3. The first of
       the four unsettled ones to turn out real. Method that cracked it: lift its own 15 fixtures out
       of the source with an AST parse instead of retyping them, drive all 15 end to end, confirm
       0 of 15 disagree, and only then read anything into a new result.
@@ -408,6 +408,22 @@ came from either of today's changes**.
       Re-swept 60 real `.tsx` files after: 10 refused, and the ones inspected are genuine German
       copy (`Bewertet 4.9 / 5`, `Spezialitäten`, `Das war unser Fehler.`). The two live
       `ImageUploader` catches still fire.
+
+## THE GATE FIRED ON ITS OWN TEST CASE (2026-08-19, found by accident, NOT fixed)
+
+Writing up the prelaunch fix, my closing message QUOTED the test payload so he could see what the
+leak had been. The gate blocked my message, because the quoted fixture reads to it exactly like an
+assertion. It cannot tell a sentence I am reporting from a sentence I am claiming.
+
+Same family as the `i18n-write-gate` comment-blindness found the same day: a check with no notion of
+quotation refuses the act of DESCRIBING a violation. Both are real and neither is fixed, because
+widening a check at the tail end of a fourteen-hour session is precisely how the 2026-08-18
+regressions happened, and I introduced one an hour ago doing exactly that.
+
+- [ ] Two checks refuse a QUOTED violation as if it were an assertion: `prelaunch-reality-gate.py`
+      (blocks a message quoting its own fixture) and `i18n-write-gate.py` (blocks example JSX inside
+      a `/** */` doc comment). `mockup-english-gate.py` already strips comments and is the model to
+      copy. Both need the same treatment plus a quotation-aware span, driven with their own fixtures.
 
 ## OPEN, WAITING ON HIM , tracked as boxes so they cannot be lost in prose
 - [x] ANSWERED 2026-08-19, recorded at commit 01b26d85f: "Leave it until launch". The refund flow stays English in de/fr/it and is carried as a KNOWN GAP, not a defect to fix. Do not translate it without him saying so. Original question: translate the 263 refund-flow strings into real formal German, French and Italian, or leave them? Raised by the key-parity check failing, which surfaced that de, fr and it each have 263 of 263 refundFlow strings byte-identical to English on the screen where a customer asks for money back.
