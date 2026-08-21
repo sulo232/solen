@@ -44,6 +44,7 @@ And I want you to first make a mockup of a few flows so I can actually see that 
 - [ ] M5 MOCKUP, the empty first day for a salon that just signed up.
 - [ ] M6 The per-staff visibility picker, owner-configurable per person. Design only at this stage,
       it is not in the four flows he picked.
+- [ ] PARKED 2026-08-21 · Does the dashboard land on Heute or on the Kalender? · from: he leaned calendar first ("im thinking of 3 but w today too") and the four-lens council landed on Heute first and said so plainly rather than softening it. Only the LANDING tab is in dispute, his shape survives either way, and the mockups are being built Heute first because that is what the council argued for.
 - [ ] M7 Hand over the four mockups on one link and get his read before any real dashboard code
       changes. He asked for the mockups FIRST so he can see whether I understood.
 
