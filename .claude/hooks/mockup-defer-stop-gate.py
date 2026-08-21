@@ -96,9 +96,15 @@ def last_assistant_text(tp):
                 except Exception: continue
                 if o.get("type")!="assistant": continue
                 c=o.get("message",{}).get("content",[])
-                if isinstance(c,str): txt=c
+                if isinstance(c,str): got=c
                 elif isinstance(c,list):
-                    txt=" ".join(p.get("text","") for p in c if isinstance(p,dict) and p.get("type")=="text")
+                    got=" ".join(p.get("text","") for p in c if isinstance(p,dict) and p.get("type")=="text")
+                else: got=""
+                # 2026-08-21: this used to assign unconditionally, so a final assistant entry
+                # carrying only a tool call and no words BLANKED the real answer found moments
+                # earlier and the check then judged an empty string. Reproduced with a two line
+                # fixture. Keep the last entry that actually said something.
+                if got.strip(): txt=got
     except OSError: return ""
     return txt
 # 2026-08-09 (plan box K0e). mtime alone is not authorship: creating or syncing a git worktree
