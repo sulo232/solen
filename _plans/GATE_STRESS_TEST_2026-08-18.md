@@ -1048,3 +1048,34 @@ a migration, and it is the one worth writing a suite for.
 
 **None of the four can be armed today without breaking rule 12.5**, which requires a hook to be
 tested before it is wired. All four ship no `--selftest` at all, so there is nothing to run.
+
+## 2026-08-21, "why dont we have harness to do or do we have n its not turned on"
+
+His question, about parallel work and the subagent council, answered by measuring rather than
+guessing. THREE things exist, and they cover different parts:
+
+| what | state | covers |
+|---|---|---|
+| `council-trigger.py` | ARMED | after a substantial build, blocks the stop once and orders a read-only review council. The REVIEW council is covered. |
+| `fan-out-not-one-agent-gate.py` | was NEVER WIRED, armed 2026-08-21 | one agent handed a whole-system job. `git log -S` over settings.json returns zero commits, so the reason is "never landed", not removed and not superseded. Own suite 7/7, and driven over all 59 real single-agent dispatches this session it refuses 2, both the same oversized job. |
+| `no-concurrent-coders-same-repo-gate.py` | ARMED | two builders in one repo at once, the opposite failure. |
+
+**NOTHING covers the shape he actually caught**, which is two INDEPENDENT jobs done one after
+another, with one of them handed back to him as a choice.
+
+**I BUILT THAT ARM AND REMOVED IT THE SAME HOUR. Recorded so nobody rebuilds it.** Keyed on the
+brief saying the work was independent or could run at the same time, it refused **15 of the 59**
+real dispatches from this session, a quarter of correct work, and broke one of the file's own
+controls by refusing a big job that DOES fan out ("dispatch 12 agents in parallel"). The cause is
+not fixable by tightening the words: **"independent" is what I write when I mean an independent
+REVIEWER**, which is the estate's most common brief of all. GATE_LAW failure shape 5 says a check
+that refuses a quarter of good work is worse than none.
+
+**So this one is NOT mechanically decidable, and that is the honest answer rather than a regex
+pretending otherwise.** What it needs instead is a judgement at the moment of planning: when a turn
+holds two things that do not depend on each other, they go out at once. That belongs in the
+decision-authority file being built, not in a check.
+
+**The other half of his question, answered:** the review council fires and did fire. What did not
+fire is anything asking "could these two run at the same time", because that thing does not exist,
+for the reason above.
