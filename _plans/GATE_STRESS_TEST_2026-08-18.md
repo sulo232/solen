@@ -1017,3 +1017,31 @@ MultiEdit.
    than a dead one, because it gets switched off.
 4. Registered is not the same as reached, proven by the plan-tracker case.
 5. None of this says a check is still defending something the owner still wants.
+
+## 2026-08-21, the eight unwired checks in this worktree, and WHY each one is unwired
+
+Three of the eight were never unwired at all. `expand_command_path` in `system-health-check.py`
+tested each word of a command with a bare `endswith(".py")`, so the guarded-assignment shape this
+estate actually uses,
+`f="$CLAUDE_PROJECT_DIR/.claude/hooks/backend-doc-pointer.py"; [ -r "$f" ] || exit 0; python3 "$f"`,
+resolved to nothing: its first word ends in `";`. `backend-doc-pointer`, `frontend-doc-pointer` and
+`user-prompt-binary-triggers` are each in BOTH settings files and were each listed as orphans.
+Fixed (`333bea6`), driven with controls, orphan list 8 -> 5.
+
+The remaining five, each with the reason, per the MISSING THINGS rule:
+
+| check | reason | fix that follows the reason |
+|---|---|---|
+| `mockup-english-gate.py` | **Deliberately removed**, 2026-08-07 `4978e9070`: "removed the two project-side registrations, a weaker copy of the global one ... global copy still armed". Verified: `~/.claude/settings.json` wires it once. | Nothing to restore. The rule IS enforced. CLAUDE.md named the dead project path; corrected this turn. |
+| `migration-fabrication-gate.py` | **Half-landed.** Commit `6705143c4` is titled "data-money-03: add migration-fabrication-gate to stop the next hashtext-seeded identity claim" and its file list is the hook plus `_rules/LESSONS_LEARNED.md`. It never touched a settings file. `git log -S` over settings: 0 commits. | Needs wiring, and it has NO test suite at all, so rule 12.5 forbids arming it as it stands. Write the suite first. |
+| `admin-client-check-reminder.py` | **Never landed.** Created 2026-07-27 `4a4a79061` ("warn-only reminder hooks"). No settings file has ever mentioned it: `git log -S` returns 0. | Same: no suite, so it cannot be armed yet. Warn-only, so the cost of the gap is low. |
+| `idor-object-check-reminder.py` | **Never landed**, same commit, same evidence. | Same. |
+| `rowcount-check-reminder.py` | **Never landed**, same commit, same evidence. | Same. |
+
+**The pattern across the four that never landed:** a commit created the hook, the commit message
+described it as active, and the wiring was never part of the change. Three of the four are
+warn-only reminders; one, `migration-fabrication-gate`, is a real refusal about fabricated data in
+a migration, and it is the one worth writing a suite for.
+
+**None of the four can be armed today without breaking rule 12.5**, which requires a hook to be
+tested before it is wired. All four ship no `--selftest` at all, so there is nothing to run.
