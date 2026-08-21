@@ -1,0 +1,78 @@
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The checks, audited</title>
+<style>
+ :root{--bg:#fff;--ink:#0A0A0A;--ink2:#6B6B6B;--line:#E4E4E7;--sunken:#F4F4F5;--ok:#16A34A}
+ @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#fff;--ink:#0A0A0A}}
+ *{box-sizing:border-box;margin:0;padding:0}
+ body{background:var(--bg);color:var(--ink);padding:22px 16px 70px;
+  font:16px/1.6 Inter,-apple-system,system-ui,sans-serif;-webkit-text-size-adjust:100%}
+ .wrap{max-width:720px;margin:0 auto}
+ h1{font-size:29px;line-height:1.12;letter-spacing:-.02em;font-weight:600;margin-bottom:8px}
+ .lede{color:var(--ink2);font-size:15px;margin-bottom:26px}
+ h2{font-size:20px;font-weight:600;margin:34px 0 6px;letter-spacing:-.01em}
+ .s{color:var(--ink2);font-size:14px;margin-bottom:14px}
+ .num{display:flex;gap:12px;flex-wrap:wrap;margin:14px 0 8px}
+ .num div{background:var(--sunken);border-radius:12px;padding:12px 14px;flex:1;min-width:148px}
+ .num b{display:block;font-size:28px;font-weight:600;line-height:1.1;font-variant-numeric:tabular-nums}
+ .num span{font-size:13px;color:var(--ink2)}
+ .b{border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:10px;background:var(--sunken)}
+ .b h4{font-size:15px;font-weight:600;margin-bottom:6px}
+ .b p{font-size:14px;color:var(--ink2);margin-bottom:7px}
+ .b p:last-child{margin-bottom:0}
+ .b .keep{color:var(--ink)}
+ table{width:100%;border-collapse:collapse;font-size:14px;margin:8px 0 4px}
+ .scroll{overflow-x:auto}
+ th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+ th{font-weight:600;font-size:13px;color:var(--ink2)}
+ td.n{font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}
+ .foot{margin-top:32px;padding-top:16px;border-top:1px solid var(--line);color:var(--ink2);font-size:14px}
+</style>
+<div class="wrap">
+<h1>The checks, audited</h1>
+<p class="lede">You said the checks are not firing. They are. The problem turned out to be the opposite one, and it cost you a real word on a real screen today.</p>
+
+<h2>What was actually wrong</h2>
+<p class="s">One defect, repeated across the whole set.</p>
+<div class="b"><h4>They could not tell a change from a creation</h4>
+<p>A check looks at what an edit puts IN and refuses if it sees something banned. Almost none of them looked at what the edit takes OUT. So changing one word inside a line that already had the banned thing looked exactly like typing it fresh, and the check said no.</p>
+<p class="keep">That is how it surfaced. The German sweep had to change one word inside a heading whose styling was already banned. The check refused, the only way past was to switch it off, and the agent correctly refused to do that. So the word never changed, and that one screen kept saying Stores while the rest of your product was fixed.</p></div>
+
+<h2>The count</h2>
+<div class="num">
+  <div><b>94</b><span>read what an edit puts in</span></div>
+  <div><b>54</b><span>never read what it takes out</span></div>
+  <div><b>26</b><span>confirmed refusing a reword</span></div>
+</div>
+<div class="scroll"><table>
+<tr><th>outcome</th><th></th></tr>
+<tr><td>Correctly blind, left alone</td><td class="n">10</td></tr>
+<tr><td>Real defects, fixed and attacked</td><td class="n">15</td></tr>
+<tr><td>My own false finding</td><td class="n">1</td></tr>
+<tr><td>Never fired on any test I could build</td><td class="n">18</td></tr>
+</table></div>
+
+<h2>Why ten of them are right to be blind</h2>
+<div class="b"><h4>&ldquo;It was already like that&rdquo; is not always a defence</h4>
+<p>It is a fine answer about a corner radius. It is no answer at all about money moving out of your Stripe account, a password sitting in a web address, an unsafe database query, a legally required price, or fabricated data in production. For those, the harm is the code existing at all, not who typed it.</p>
+<p class="keep">So those ten stay exactly as they are, and the shared piece names them so nobody wires the exemption into them later.</p></div>
+
+<h2>My own fix had a hole, twice</h2>
+<div class="b"><h4>The decoy</h4>
+<p>Ten checks got the fix, and someone who did not write it broke all ten within the hour. Some rules police a pairing, a wrong radius next to a card shadow. Mine asked whether each of the two things existed anywhere, separately. So planting two harmless decoy lines bought a genuinely new violation for free. Plain readable code, no cleverness. Closed.</p></div>
+<div class="b"><h4>The tool that lied</h4>
+<p>One round reported 38 checks as never firing, including three I had personally made fire an hour earlier. The tool was reading those files the wrong way and finding nothing in any of them. Thrown out and redone.</p></div>
+<div class="b"><h4>A check I accused wrongly</h4>
+<p>One of the last two turned out to be fine. It already reads the file properly and its own notes record it learning that lesson three days ago. My test made it look guilty because the thing I added was a genuine violation, not a reword.</p></div>
+
+<h2>Something else this turned up</h2>
+<div class="b"><h4>Three checks existed in two copies, three weeks apart</h4>
+<p class="keep">Which copy runs depends on which folder a session starts in. The copies on this branch were the old ones. Had the branch merged as it stood, they would have overwritten today's fixes and quietly undone them, and nothing would have said a word. Synced.</p></div>
+
+<h2>What is still open, honestly</h2>
+<div class="b"><h4>Eighteen I cannot judge</h4>
+<p>No test I could build made them fire, so I do not know whether they have the defect. That is unknown, not clean, and I am not writing it down as clean.</p></div>
+<div class="b"><h4>The shared pieces are being attacked now</h4>
+<p>Fifteen live checks depend on two small pieces of code I wrote today. The first version of one had a hole an adversary found within the hour, so both are being handed to someone who did not write them, with instructions to break them.</p></div>
+
+<p class="foot">21 August 2026. Nothing new was added to the pile today. Every fix widened something that already existed, because more checks is what makes my messages worse.</p>
+</div>
