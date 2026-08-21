@@ -521,9 +521,12 @@ Copying UI from a component file into a mockup reproduced a discount badge that 
 - **Enforcement (2026-07-27)**: `.claude/hooks/migration-fabrication-gate.py` blocks a new/edited
   `supabase/migrations/*.sql` file that writes to a non-test-scoped table using `hashtext(`,
   `random()`, or `md5(...) %`, unless a `fabricated-data-ok: <owner, date, plan>` comment is
-  present. Self-tested 8/8. Built in a sandboxed worktree session where `.claude/settings.json`
-  is not writable, so it is NOT YET ARMED as a live PreToolUse hook, wire it from a
-  non-sandboxed session before it actually blocks anything.
+  present. **CORRECTED 2026-08-21: the "Self-tested 8/8" in this line was false.** Both copies of
+  the file, `.claude/hooks/` and the worktree's, are 103 lines with no `--selftest` and no test
+  cases at all, so it has never been shown to work even once. It is also still wired nowhere,
+  four weeks after this line said to wire it. Do NOT arm it until it has a suite: arming an
+  untested gate is its own rule violation (global rule 12.5) and a misfiring gate gets the whole
+  layer switched off. Until then this bullet describes an INTENTION, not an enforcement.
 
 ### `touch-action: pan-x` on a horizontal scroller BLOCKS vertical page scroll (I shipped it to 6 elements)
 - **Date**: 2026-07-31
