@@ -20,7 +20,7 @@ type HelpArticle = {
 // V3-D305: retired s-coral icon-chip colors → neutral s-bg-sunken + s-ink-2 (Layer 1 chrome per LOCKFILE §1 — icon-chips don't need accent)
 const CATEGORIES = [
   { key: "customers", label: "Für Kunden", Icon: Users, color: "bg-s-bg-sunken text-s-ink" },
-  { key: "salons", label: "Für Stores", Icon: Store, color: "bg-s-bg-sunken text-s-ink" },
+  { key: "salons", label: "Für Salons", Icon: Store, color: "bg-s-bg-sunken text-s-ink" },
   { key: "contact", label: "Kontakt", Icon: Mail, color: "bg-s-bg-sunken text-s-ink" },
 ];
 

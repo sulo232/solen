@@ -36,7 +36,7 @@ export default async function PressePage({ params }: { params: Promise<{ locale:
             </h2>
             <p className="text-sm text-s-ink-2 leading-relaxed">
               Solen ist eine Schweizer Online-Plattform für Beauty- und Wellness-Buchungen.
-              Coiffeur, Barber, Nägel, Spa und Massage. Store finden, in rund 30 Sekunden
+              Coiffeur, Barber, Nägel, Spa und Massage. Salon finden, in rund 30 Sekunden
               buchen, ohne Anrufen, mit sofortiger Bestätigung.
             </p>
           </section>

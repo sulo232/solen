@@ -443,8 +443,7 @@ function CookieSettingsModal({ isOpen, onOpenChange }: CookieSettingsModalProps)
             <div className="flex flex-col">
               <span className="font-body font-semibold text-[15px] text-s-ink">Analyse</span>
               <span className="font-body font-normal text-[13px] text-s-ink-2 mt-1">
-                Anonyme Nutzungsstatistiken via PostHog — hilft uns zu verstehen, welche Stores
-                gefunden werden und wo Buchungen abbrechen.
+                Anonyme Nutzungsstatistiken via PostHog — hilft uns zu verstehen, welche Salons gefunden werden und wo Buchungen abbrechen. {/* em-dash-ok: pre-existing dash, unrelated to this word-only edit */}
               </span>
             </div>
             <Switch checked={analytics} onCheckedChange={setAnalytics} aria-label="Analyse-Cookies" />
