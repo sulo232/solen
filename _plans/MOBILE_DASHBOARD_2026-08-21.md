@@ -14,22 +14,28 @@ And I want you to first make a mockup of a few flows so I can actually see that 
       dashboard" can only mean our WEB dashboard on a phone. Nothing to ask him.
 - [x] HOW BIG `verified:` `app/[locale]/dashboard/` holds 51 entries against Airbnb's five tabs.
       The work is therefore mostly demotion, not drawing.
-- [x] THE CALENDAR HE SAID WAS EMPTY ON MOBBIN, FOUND `verified:` it is there under the Airbnb
+- [x] THE CALENDAR HE SAID WAS EMPTY ON MOBBIN, FOUND `verified:` I read the screen image myself in
+      the Mobbin flow result, flow id 249c7fed-31a7-461a-983c-e33caa562064 named "Calendar",
+      https://mobbin.com/flows/249c7fed-31a7-461a-983c-e33caa562064 . It is there under the Airbnb
       iOS "Calendar" flow: a month grid with a PRICE under every single date, day letters across
       the top, a listing switcher with a calendar icon and a gear at the top, "1 promotion" as a
       per-month link, and months stacking and scrolling continuously into the next.
 
 ## His answers, 2026-08-21
-- [x] TABS: leaning calendar-led but with a Today as well, because a salon is not a rental.
+- [x] TABS `verified:` his own answer text, quoted below verbatim from the AskUserQuestion result
+      this session. Leaning calendar-led but with a Today as well, because a salon is not a rental.
       Verbatim: "im thinking of 3 but w today too yk cz its more salon but idk can u acc use sub
       agents councils". So the shape is HIS to confirm and he asked for a council to work it out.
-- [x] WHO: the owner picks what each individual staff member can see. Verbatim: "can select owner
+- [x] WHO `verified:` his own answer text this session. The owner picks what each individual staff
+      member can see. Verbatim: "can select owner
       can select what staff sees specific staffs sees yk". Note this is PER PERSON and configurable,
       not two fixed roles, which is more than the per-staff permissions already in the database.
-- [x] FLOWS: all four, he selected every one.
+- [x] FLOWS `verified:` his multi-select returned all four options: the five tabs and the Menu, a
+      day in the calendar, taking a booking by phone, and the empty first day.
 
 ## The work
-- [ ] M1 COUNCIL on the tab shape, because he asked for one by name. What are the tabs for a SALON
+- [x] M1 COUNCIL DONE, four proposals judged. Verdict in full at the bottom of this file.
+- [ ] M1b was: COUNCIL on the tab shape, because he asked for one by name. What are the tabs for a SALON
       rather than a rental, does Today survive beside a calendar, and what happens to the other 46
       sections.
 - [ ] M2 MOCKUP, the five tabs and the Menu.
@@ -40,3 +46,76 @@ And I want you to first make a mockup of a few flows so I can actually see that 
       it is not in the four flows he picked.
 - [ ] M7 Hand over the four mockups on one link and get his read before any real dashboard code
       changes. He asked for the mockups FIRST so he can see whether I understood.
+
+
+---
+
+## The council's verdict, 2026-08-21
+
+## 1. THE RECOMMENDED SHAPE
+
+**Four tabs, left to right: Heute, Kalender, Kund:innen, Menü. You land on Heute.**
+
+**Heute** is today's page of the book, in time order, painted with people instead of inventory. Who is in a chair, who is waiting and how long, the next appointments each with a one tap "angekommen", anything sitting on a yes or a no, and one live line for what the day has taken so far. It never draws a grid, and it never shows an empty slot as if it were an event. On the first day of a brand new salon it holds the setup steps instead, which is what Airbnb's own Today actually holds when a host has nothing booked.
+
+**Kalender** is every day that is not today. Months stacking and scrolling into each other with no paging and a number under every date, and tapping a date opens that day as blocks of time so you can block it, open it or drop an appointment into it. Today's cell links across to Heute. It does not draw today a second time.
+
+**Kund:innen** is one person at a time: their visits, their notes, their colour formula or allergy or intake form, their number, and a button to book them again.
+
+**Menü** is everything else, as plain rows with a line icon and a chevron on bare canvas, in two labelled groups, with the account rows and a black log out button at the bottom.
+
+Both Heute and Kalender carry one black Add that is pre filled by where you are standing: on Heute it opens a walk in, on Kalender it opens an appointment on the day you are looking at. Airbnb's bar has no reason to do this because a host almost never creates a booking. A salon creates most of its own.
+
+Where the pieces came from: the four tab count and Kund:innen where Airbnb puts Listings is in proposals 2 and 3 both. The single best idea in the whole batch is proposal 3's, that Kalender holds every day that is not today and today's cell links across rather than redrawing, because that is the only formulation that kills the "two tabs look like the same screen" problem instead of promising to police it. Proposal 1 supplied the correction that the number under every date has to be a count and not a price, since a salon's price lives on the service. Proposal 4 supplied the reason Heute cannot just be the calendar's current day, and I checked it: `app/[locale]/dashboard/calendar/page.tsx` line 750 paints every available slot with a green background and a green label, so a quiet morning renders as a column of green "Frei" rows. Free time is painted louder than a booking. The pre filled Add is proposal 3's alone.
+
+Where I depart from all four: none of them made Heute the day itself. Proposals 1 and 4 both restrict Heute to exceptions only, which makes it thin on a coiffeur day and hands the actual day back to the calendar. Making Heute the day in time order is what lets his option 3 survive, because today genuinely is the current day of the book, it is just painted with people.
+
+## 2. WHY, FROM THE SALON DAY
+
+Count a real day for a two chair shop: twelve people arrive, three ring up asking for Thursday, two walk in, four get looked up at the chair, one gets moved, and once at the end you check the money. Every single customer arrives, and only some of them ring, so the action that repeats most is "this person is here now", which is a Heute action, while the action that repeats a few times is "where does this caller fit", which is a Kalender action. Landing on Heute costs about four extra taps a day and landing on Kalender costs about fifteen, and the reason is not that a calendar matters less, it is that a calendar is a surface you arrive at with an intent while Heute answers a question just by being looked at.
+
+## 3. WHERE THE TERMINAL GOES
+
+It stays its own full screen route on its own address, it does not become a tab, and it graduates out of the dev segment. Decided, not hedged.
+
+It cannot be a tab because its own rulebook says it is never opened, it is already open, and it carries its own floating bar with four views. Putting it inside a bottom bar puts a bar under a bar, which is the exact thing that document bans. It is also a different device and a different posture: a tablet standing at the counter read from a metre away, versus a phone in a pocket for twenty seconds.
+
+Heute is its phone sized variant, reading the same data through the same loader, `app/[locale]/dev/terminal/loadTerminalData.ts`, as a documented variant and not a second implementation. A walk in must not be two different objects on two screens.
+
+One thing to say plainly rather than file: the terminal does not ship. `middleware.ts` line 72 gates `/terminal` on NODE_ENV not being production, and `app/terminal/page.tsx` calls notFound outside dev. I checked why before proposing to move it: it is not in the graveyard and nothing has superseded it, it was built as a prototype and never graduated. So the fix follows the reason, it needs a real route before any shop can leave it open, and that is a separate item from this tab shape.
+
+Take proposal 3's skin call, though, because it is right and it is a decision worth making now: the terminal's white canvas, bare rows, no blue and one black commit is the newer operator law, and the four tabs should migrate to that rather than the terminal being repainted grey to match the older console. If both skins sit in one bottom bar, the older one loses.
+
+## 4. THE MENU
+
+There are 48 folders under `app/[locale]/dashboard/`. They sort into three piles with nothing left over except one I refuse to guess at.
+
+**GESCHÄFT**, the same job as their HOSTING: Buchungen (bookings), Einnahmen (earnings), Berichte (analytics), Team (staff), Leistungen (services), Pakete (bundles), Produkte (products), Bewertungen (reviews), Galerie (gallery), Beiträge (discovery-posts), Marketing, Treueprogramm (loyalty), Rückerstattungen (refunds), Mehrbelastung (upcharge), Warteschlangen-Anzeige (queue-display), Terminal once it graduates. Then the category rows, shown only to a shop of that category the way the nav already filters them: barber-ops, barber-clients, nail-admin, nail-clients, spa-admin, coiffeur-crm.
+
+**KONTO**, the same job as their ACCOUNT: Einstellungen (settings), Verifizierung (verification), Einrichtung (setup, which disappears once the shop goes live), Hilfe, Salon-Seite ansehen (our version of their "Switch to traveling" pill), and Abmelden as a black filled button at the bottom.
+
+**PLATFORM ADMIN, a salon must never see these.** Nineteen are already listed together as ADMIN_NAV in `components-legacy/dashboard/DashboardLayout.tsx` lines 38 to 57, so this is read off the code: approvals, all-salons, all-users, revenue, commission-admin, platform-analytics, ai-limits-admin, badge-manager, content-editor, review-moderation, reports, segments, editor, discovery-admin, homepage-admin, cities-admin, salon-of-month-admin, feature-flags-admin, admin-sandbox. Add **cases**, and note the defect: it is flagged `adminOnly: true` and is sitting in the salon facing rail in the Abrechnung group on the same line.
+
+**DEAD, one:** messages, turned off 2026-06-13, a redirect. No row and no tab.
+
+**Unclassified, one:** help-editor appears in no navigation list at all. I did not classify it and I am not going to guess.
+
+Two traps for whoever sorts these. First, "revenue" is platform money and "earnings" is the salon's own money, and those two names are the pair most likely to get swapped. Second, the word admin in a folder name sorts nothing: nail-admin and spa-admin are salon screens for one category, and "editor" is platform only.
+
+**Three salon sections are currently unreachable, and this is the real work in the menu.** `earnings`, `products` and `queue-display` have zero references anywhere in app, components-legacy or lib. I ran the same grep against two paths I knew were linked as a control: dashboard/calendar returns ten hits and dashboard/bundles returns two, so the grep works and the zeros are real. A shop cannot currently reach the screen that tells it how much money it made. None of the three is in the graveyard and none has been superseded, they simply never got a nav entry when the nav was written, so the fix is a menu row. Einnahmen should be the row this menu earns its keep with, anchored the way Airbnb anchors Earnings, on a sentence carrying the live number and showing zero honestly rather than hiding.
+
+**And two links in the staff nav point at nothing.** STAFF_NAV points at `/dashboard/my-breaks` and `/dashboard/my-portfolio` and neither folder exists. I checked why before saying it: neither is in the graveyard, and `git log --all` for both paths returns nothing while the same query on an existing path returns commits, so they were never built on any branch. But the tables did land: `staff_breaks` and `staff_portfolio_images` are both in the live snapshot, and the portfolio one already has twelve rows. So this is half landed, the data shipped and the screens did not, which means the fix is to build the two screens rather than to reroute the links.
+
+## 5. THE PER STAFF VISIBILITY PICKER
+
+The owner opens Team, taps a person, and sees the same four tabs and the same menu rows they saw a minute ago, each with a toggle, grouped exactly the way the menu is grouped, plus one line at the top saying what that person will land on when they log in. This does not need a new system and it must not get one: the live column snapshot shows `staff_members` already carries both `access_role` and `permissions`, and `staff_invites` carries the identical pair, so per person storage exists today. It is close to dormant, though. `permissions` is written by `app/api/staff/[id]/route.ts` and returned by `app/api/staff/route.ts`, but I found exactly one place that enforces it, `app/api/staff/my-schedule/route.ts` line 75, where the vocabulary is a string list with two values in use, `edit_own_schedule` and `manage_all`. So the work is to grow that vocabulary to one string per toggle and enforce it server side on every route, never by hiding a row, because hiding a row in a menu is not access control. One thing to fix on the way past: `lib/types.ts` lines 158 to 160 declare `can_edit_schedule`, `can_view_own_bookings` and `can_manage_portfolio`, and none of those three is in the live column list for `staff_members`, so any code trusting that type is reading fields that are not there.
+
+## 6. THE STRONGEST ARGUMENT AGAINST THIS
+
+**He leaned calendar led and I am landing somewhere else, so I will say it plainly: I am recommending Heute first, against his lean.** His shape survives in substance, since today really is the current day of the book, but the landing tab is not what he leaned toward and he should know that before he reads the rest.
+
+The argument against me is a single assumption doing all the work. My tap count only wins because I assumed arrivals get marked on the phone. If a shop has the terminal on the counter, every one of those twelve arrivals moves off the phone, the gap collapses from roughly fifteen against four to roughly four against four, and calendar first wins outright, because the phone calls stay on the phone no matter what is sitting at the counter. So my recommendation is really a bet that most Swiss salons on this product are small enough that the phone is the till, and I did not measure that.
+
+The second cost is a rule somebody will break later. In my shape Heute is the appointments, so the drift risk runs the other way from what the other proposals feared: the danger is that Kalender grows its own today view, and it already has one, a Tag view that is the default on mobile at line 432 of the calendar page. Kalender's today cell has to be a link and never a render, and the first time somebody makes it draw the day instead, there are two screens for one Monday and nobody knows which is true.
+
+What would change my mind, and it is measurable rather than arguable: take one real week of seeded data and count how many bookings a salon creates by phone against how many arrivals get marked from a phone rather than from the counter. If arrivals from a phone come in under about a third of appointments, land on Kalender instead and change nothing else in this shape. The tab order, the four tabs, the today cell link, the menu sort and the terminal decision all hold either way.
