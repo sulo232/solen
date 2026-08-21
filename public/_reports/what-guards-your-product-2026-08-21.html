@@ -1,0 +1,84 @@
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What guards your product</title>
+<style>
+ :root{--bg:#fff;--ink:#0A0A0A;--ink2:#6B6B6B;--line:#E4E4E7;--sunken:#F4F4F5;--ok:#16A34A;--bad:#DC2626}
+ *{box-sizing:border-box;margin:0;padding:0}
+ body{background:var(--bg);color:var(--ink);padding:22px 16px 70px;
+  font:16px/1.6 Inter,-apple-system,system-ui,sans-serif;-webkit-text-size-adjust:100%}
+ .wrap{max-width:720px;margin:0 auto}
+ h1{font-size:29px;line-height:1.12;letter-spacing:-.02em;font-weight:600;margin-bottom:8px}
+ .lede{color:var(--ink2);font-size:15px;margin-bottom:24px}
+ h2{font-size:20px;font-weight:600;margin:34px 0 6px}
+ .s{color:var(--ink2);font-size:14px;margin-bottom:14px}
+ .num{display:flex;gap:12px;flex-wrap:wrap;margin:14px 0 20px}
+ .num div{background:var(--sunken);border-radius:12px;padding:11px 14px;flex:1;min-width:140px}
+ .num b{display:block;font-size:26px;font-weight:600;line-height:1.1;font-variant-numeric:tabular-nums}
+ .num span{font-size:13px;color:var(--ink2)}
+ .r{border:1px solid var(--line);border-radius:14px;padding:13px 15px;margin-bottom:9px}
+ .r p{font-size:15px}
+ .r .st{font-size:13px;font-weight:600;color:var(--ok);margin-top:7px}
+ .r.x{border-color:var(--ink)}
+ .r.x .st{color:var(--bad)}
+ .b{border:1px solid var(--line);border-radius:14px;padding:13px 15px;margin-bottom:9px;background:var(--sunken)}
+ .b h4{font-size:15px;font-weight:600;margin-bottom:5px}
+ .b p{font-size:14px;color:var(--ink2)}
+ .b p+p{margin-top:7px}
+ .foot{margin-top:32px;padding-top:16px;border-top:1px solid var(--line);color:var(--ink2);font-size:14px}
+</style>
+<div class="wrap">
+<h1>What guards your product</h1>
+<p class="lede">Your project has automatic rules that watch every file I change. Nineteen of them I could not get to react to anything, so I did not know whether they protect you or do nothing. Here is the answer.</p>
+
+<div class="num">
+  <div><b>18</b><span>really do protect something</span></div>
+  <div><b>1</b><span>was doing nothing at all</span></div>
+  <div><b>0</b><span>of the security ones were dead</span></div>
+</div>
+
+<h2>The one that was doing nothing</h2>
+<p class="s">And it is a rule about a complaint you made four times in a row.</p>
+<div class="r x">
+  <p><b>What it is meant to stop.</b> You say "overhaul this screen, I want it nothing like it is now", and you get back the same rows, in the same order, with new paint on them. That happened to you four rounds running on the profile page on 3 August.</p>
+  <p style="margin-top:9px"><b>Why it stopped working.</b> It compares a proposed design against your screen as it actually ships. When your product was translated into four languages, the screen stopped containing words: its labels became internal codes. A real design never contains those codes, so the comparison always came out at zero and the rule could never object to anything, on any input, ever.</p>
+  <p style="margin-top:9px"><b>The part that should worry you more.</b> It was reporting itself as fully working the whole time, because its own test hands it a list of real words instead of making it look at the real screen. A rule that reports green while being blind is worse than no rule, because it makes everything look guarded.</p>
+  <p class="st">Fixed. It now looks each code up in your language files. Tested against your own 3 August case: the repaint is refused, the same repaint written in German is refused, a genuine redesign passes, and the same rows pass when you only asked for a small tweak.</p>
+</div>
+
+<h2>The five that guard money and data</h2>
+<p class="s">All five work. Each one refused a real bad change and allowed a real good one.</p>
+<div class="r"><p>A customer's private booking link being stored readable in your database, so a leak of the database leaks their appointments too.</p><p class="st">Working</p></div>
+<div class="r"><p>A private access key being put into a web address, where every server it passes through writes it into a log, and anyone reading those logs can act as that customer.</p><p class="st">Working</p></div>
+<div class="r"><p>Your company AI key going into a web address the same way, where someone reading the logs can spend your money.</p><p class="st">Working</p></div>
+<div class="r"><p>A new part of the backend trusting an ID sent by the customer's own browser while holding full database powers, so anyone could change that ID and read another salon's clients and bookings.</p><p class="st">Working</p></div>
+<div class="r"><p>A part of the backend deleting or overwriting stored files with no check of who owns them, so one salon could wipe another salon's photos.</p><p class="st">Working</p></div>
+
+<h2>The thirteen about how your product looks and how I work</h2>
+<p class="s">All working. Short version of what each one stops.</p>
+<div class="r"><p>A screen you already approved getting quietly rebuilt when you only asked for one small fix.</p><p class="st">Working</p></div>
+<div class="r"><p>A new profile design shipping with the exact box, bell and hamburger you rejected by name, so you have to say the same thing a tenth time.</p><p class="st">Working</p></div>
+<div class="r"><p>A page hand-drawing its own version of a salon card instead of using the real one, so a customer sees a differently shaped card on every screen.</p><p class="st">Working</p></div>
+<div class="r"><p>A screen written with almost every line bold, so nothing stands out and a customer cannot tell the price from the small print.</p><p class="st">Working</p></div>
+<div class="r"><p>A text box painting a second grey box poking out of its own edge, the doubled look you caught once on the profile search field.</p><p class="st">Working</p></div>
+<div class="r"><p>A filter or option you tapped being painted solid black or blue, so a customer cannot tell what they picked.</p><p class="st">Working</p></div>
+<div class="r"><p>The search bar being rebuilt as an instant jump instead of growing as you drag, the feel you rejected four separate times.</p><p class="st">Working</p></div>
+<div class="r"><p>One styling rule flattening the text weight of a whole page at once, erasing the difference between a heading, a price and body text.</p><p class="st">Working</p></div>
+<div class="r"><p>A measuring script grading a broken or deleted page as fine, and handing you that as proof the design is good.</p><p class="st">Working</p></div>
+<div class="r"><p>The phone preview restarting itself every couple of seconds until we get rate limited, so you never get a working phone link at all.</p><p class="st">Working</p></div>
+<div class="r"><p>Code changes starting before your asks are written down, which is how something you asked for goes quietly missing.</p><p class="st">Working</p></div>
+<div class="r"><p>Two sessions editing the same file in different copies of the project, so one session's finished work is silently wiped by another that never knew it existed.</p><p class="st">Working</p></div>
+<div class="r"><p>The work tracker being overwritten and losing every other job in flight, the way an earlier plan vanished with no trace.</p><p class="st">Working, and the missing half is now connected: it only guarded replacing the file, not quietly deleting the line that protects it.</p></div>
+
+<h2>The finding that is bigger than the dead rule</h2>
+<div class="b">
+  <h4>A test that hands over the answer instead of making the rule look</h4>
+  <p>That is the exact reason a completely blind rule reported itself as working for months. So wherever that same shape exists, a green result there is not evidence of anything either.</p>
+  <p>I scanned all 189 rules that carry their own test. The shape appears in eleven of them, one of which is the one already fixed. Ten are being checked now, one at a time, by actually calling the part that reads your product and seeing whether anything comes back.</p>
+</div>
+
+<h2>What this still does not tell you</h2>
+<div class="b"><h4>This is nineteen out of seventy</h4><p>The other fifty-one were graded by the same measuring method that got this batch wrong in the opposite direction. That method is now known to be unreliable.</p></div>
+<div class="b"><h4>Reacting to my test is not the same as reacting during real work</h4><p>I proved each one CAN object. I did not prove it objects at the moment it matters, mid-build, on a real file.</p></div>
+<div class="b"><h4>I did not measure false alarms at all</h4><p>A rule that catches real mistakes and also blocks a third of legitimate work is worse than a dead one, because it gets switched off and then nothing is enforced.</p></div>
+
+<p class="foot">21 August 2026.</p>
+</div>
