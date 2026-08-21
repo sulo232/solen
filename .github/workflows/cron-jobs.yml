@@ -52,7 +52,7 @@ jobs:
 
   every-15-min:
     if: github.event.schedule == '*/15 * * * *' || (github.event_name == 'workflow_dispatch' && github.event.inputs.job == 'auto-complete-sweep')
-    name: Every 15 min · auto-complete, pending-timeout, abandon-sweep
+    name: Every 15 min · auto-complete, pending-timeout, abandon-sweep, walkin-no-show
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -73,7 +73,7 @@ jobs:
           echo "::error::solen.ch/api/health unhealthy (last status $status)"; exit 1
       - uses: ./.github/actions/ping-cron
         with:
-          paths: /api/cron/auto-complete,/api/cron/pending-timeout,/api/cron/abandon-sweep
+          paths: /api/cron/auto-complete,/api/cron/pending-timeout,/api/cron/abandon-sweep,/api/cron/walkin-no-show
           secret: ${{ secrets.CRON_SECRET }}
 
   every-30-min:
