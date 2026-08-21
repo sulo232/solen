@@ -12,17 +12,14 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         <h1 className="text-[28px] font-semibold tracking-[-0.02em] leading-[1.1] text-s-ink">
           Willkommen zurück
         </h1>
-        <p className="text-[15px] text-s-ink-2 mt-2 leading-[1.4]">
-          Melden Sie sich an, um Termine zu buchen und zu verwalten.
-        </p>
-
+        {/* mockup-ok: public/_mockups/login-uncluttered-2026-08-20.html, "B, with your three changes" panel, owner-approved */}
         <div className="mt-8">
           <Suspense>
             <SignIn />
           </Suspense>
         </div>
 
-        <p className="text-center mt-8 text-[13px] text-s-ink-2">
+        <p className="text-center mt-5 text-[13px] text-s-ink-2">
           Noch kein Konto?{" "}
           <Link href={`/${locale}/auth/register`}
             className="text-s-ink font-semibold">
