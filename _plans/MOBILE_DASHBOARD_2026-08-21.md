@@ -76,7 +76,11 @@ And I want you to first make a mockup of a few flows so I can actually see that 
       actually gate something, then add what the tab shape needs (which tabs a person sees at all,
       whether they see money, whether they see other stylists' columns or only their own).
       Design first, and it is not in the four flows he picked, so it does not block the mockups.
-- [x] ANSWERED 2026-08-21 · "those arent at all good n terminal i thought we gnna ditch that sh it
+- [x] ANSWERED 2026-08-21 `verified:` commit 77a6795a4, and the walk-in cost was checked in the code
+      rather than asserted: `app/[locale]/dev/terminal/loadTerminalData.ts:76-79` and its
+      `barber_walkin_queue` select at line 163 carry `joined_at`, `started_at`, `position` and
+      `estimated_wait_minutes` with no start time, while `app/[locale]/dashboard/calendar/page.tsx:468`
+      reads `/api/slots`. His words: "those arent at all good n terminal i thought we gnna ditch that sh it
       wont work bro n calender is superior". THE CALENDAR IS THE PRODUCT. The terminal is ditched as
       a separate thing and there is no Today tab. This is the second time he has said it: he already
       picked option 3 ("im thinking of 3"), the council argued him down to Heute-first, and I built
