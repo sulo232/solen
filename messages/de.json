@@ -2582,7 +2582,7 @@
         "Name + Adresse gehören zu einem echten Geschäft (Website, Bewertungsseite oder Handelsregister-Treffer auf zefix.ch)",
         "Telefonnummer ist echt und wird beantwortet",
         "Adresse entspricht einem tatsächlichen Ladenlokal (Street View)",
-        "Hochgeladene Dokumente (falls vorhanden) sind lesbar und passen zum Store-Namen",
+        "Hochgeladene Dokumente (falls vorhanden) sind lesbar und passen zum Salon-Namen",
         "Kein Duplikat-Hinweis unten angezeigt"
       ]
     },
@@ -6540,15 +6540,15 @@
   },
   "api": {
     "goLive": {
-      "frozen": "Der Store wurde von einem Administrator gesperrt. Bitte kontaktiere den Support.",
-      "pendingApproval": "Der Store wartet noch auf die Freigabe durch einen Administrator.",
+      "frozen": "Der Salon wurde von einem Administrator gesperrt. Bitte kontaktiere den Support.",
+      "pendingApproval": "Der Salon wartet noch auf die Freigabe durch einen Administrator.",
       "stripeRequired": "Stripe Connect muss zuerst vollständig eingerichtet werden (KYC, Bankkonto).",
       "coverPhotoRequired": "Ein Titelbild ist erforderlich.",
       "serviceRequired": "Mindestens ein Service muss aktiv sein."
     },
     "salonRejected": {
-      "title": "Store abgelehnt",
-      "body": "Ihr Store {salon} wurde leider nicht genehmigt. Grund: {reason}"
+      "title": "Salon abgelehnt",
+      "body": "Ihr Salon {salon} wurde leider nicht genehmigt. Grund: {reason}"
     }
   }
 }
