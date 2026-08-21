@@ -1,0 +1,76 @@
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Six decisions</title>
+<style>
+ :root{--bg:#fff;--ink:#0A0A0A;--ink2:#6B6B6B;--line:#E4E4E7;--sunken:#F4F4F5}
+ @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#fff;--ink:#0A0A0A}}
+ *{box-sizing:border-box;margin:0;padding:0}
+ body{background:var(--bg);color:var(--ink);padding:22px 16px 70px;
+  font:16px/1.6 Inter,-apple-system,system-ui,sans-serif;-webkit-text-size-adjust:100%}
+ .wrap{max-width:720px;margin:0 auto}
+ h1{font-size:29px;line-height:1.12;letter-spacing:-.02em;font-weight:600;margin-bottom:8px}
+ .lede{color:var(--ink2);font-size:15px;margin-bottom:26px}
+ .d{border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px}
+ .h{display:flex;align-items:baseline;gap:9px;margin-bottom:10px}
+ .h .n{background:var(--ink);color:#fff;width:22px;height:22px;border-radius:999px;
+  display:grid;place-items:center;font-size:12px;font-weight:600;flex:none}
+ .h h3{font-size:17px;font-weight:600;letter-spacing:-.01em;flex:1}
+ .h .age{color:var(--ink2);font-size:13px;white-space:nowrap}
+ .w{font-size:15px;margin-bottom:9px}
+ .w b{font-weight:600}
+ .opts{display:flex;flex-direction:column;gap:8px;margin:12px 0}
+ .o{background:var(--sunken);border-radius:12px;padding:11px 13px;font-size:15px;display:flex;gap:10px}
+ .o span{font-weight:700;flex:none}
+ .cost{font-size:14px;color:var(--ink2);border-left:3px solid var(--line);padding-left:11px}
+ h2{font-size:20px;font-weight:600;margin:34px 0 6px}
+ .s{color:var(--ink2);font-size:14px;margin-bottom:12px}
+ .b{border:1px solid var(--line);border-radius:14px;padding:13px 15px;margin-bottom:9px;background:var(--sunken)}
+ .b h4{font-size:15px;font-weight:600;margin-bottom:5px}
+ .b p{font-size:14px;color:var(--ink2)}
+ .b .need{margin-top:5px;color:var(--ink)}
+ .foot{margin-top:32px;padding-top:16px;border-top:1px solid var(--line);color:var(--ink2);font-size:14px}
+</style>
+<div class="wrap">
+<h1>Six decisions</h1>
+<p class="lede">Each one written out properly: what it is in your product, why it is stuck, and what happens either way. You can answer any of them with a letter.</p>
+<div class="d">
+  <div class="h"><span class="n">1</span><h3>The discount box on the payment screen</h3><span class="age">12 days</span></div>
+  <p class="w"><b>What it is.</b> When someone pays, there is one box to type a code into. Today that box is for GIFT VOUCHERS only. It shows for every salon, including salons that have never issued a voucher, so most people who type a code into it get an error.</p>
+  <p class="w"><b>Why it is stuck.</b> Two different features share one box, and nobody decided which one it is.</p>
+  <div class="opts"><div class="o"><span>A</span>Hide the box unless that salon actually has a voucher with money on it. Smallest change, and the box stops lying.</div>
+  <div class="o"><span>B</span>Build a real promo-code box, so a salon can run its own discounts. Bigger, and it is a feature you have not asked for yet.</div></div>
+  <p class="cost">Every week this sits, customers keep hitting a code box that cannot work for them.</p></div><div class="d">
+  <div class="h"><span class="n">2</span><h3>Rating a salon you never booked</h3><span class="age">12 days</span></div>
+  <p class="w"><b>What it is.</b> Right now one person can leave one rating per salon without ever having an appointment there. I built it that way and you never asked for it.</p>
+  <p class="w"><b>Why it is stuck.</b> I made a product decision that was not mine to make, and flagged it instead of guessing again.</p>
+  <div class="opts"><div class="o"><span>A</span>Keep it. More ratings, faster. Anyone can rate anyone, including competitors.</div>
+  <div class="o"><span>B</span>Only people with a real completed booking can rate. Slower, and every star is earned.</div></div>
+  <p class="cost">Whatever is live now is what launches if nobody decides.</p></div><div class="d">
+  <div class="h"><span class="n">3</span><h3>What I do when I run out of room mid-job</h3><span class="age">12 days</span></div>
+  <p class="w"><b>What it is.</b> On a long job my memory of the conversation fills up. I can either compress it myself and carry on alone, or stop and hand back to you.</p>
+  <p class="w"><b>Why it is stuck.</b> Carrying on alone risks me forgetting something you said. Stopping costs you a turn every time.</p>
+  <div class="opts"><div class="o"><span>A</span>Keep going on my own. Fewer interruptions, small risk I drop something.</div>
+  <div class="o"><span>B</span>Stop and check in. Nothing gets dropped, you get pulled in more often.</div></div>
+  <p class="cost">Today I stop, which is why long jobs keep bouncing back to you.</p></div><div class="d">
+  <div class="h"><span class="n">4</span><h3>Two button sizes on the salon page</h3><span class="age">7 days</span></div>
+  <p class="w"><b>What it is.</b> The Buchen button on a salon page is 13px on a phone. Your own floor says a button is never below 13, so it is sitting exactly on the line. 14 is the normal size everywhere else.</p>
+  <p class="w"><b>Why it is stuck.</b> It may be deliberate for density on that row. A mockup was built and you never picked.</p>
+  <div class="opts"><div class="o"><span>A</span>Bump both to 14, so every button in the product matches.</div>
+  <div class="o"><span>B</span>Leave 13 on that row, because it is a dense list and 14 crowds it.</div></div>
+  <p class="cost">Tiny either way. It is on this list because it is the last thing blocking that punchlist from closing.</p></div><div class="d">
+  <div class="h"><span class="n">5</span><h3>The German word for “Salon”</h3><span class="age">21 days</span></div>
+  <p class="w"><b>What it is.</b> Everywhere the product says “Salon” in German. It is a normal German word, so it is not a translation problem, it is a naming choice. Store, Studio, Betrieb and Salon all read differently to a Swiss customer.</p>
+  <p class="w"><b>Why it is stuck.</b> This is brand voice, not a rule I can derive. Picking it myself would put my taste in your product name.</p>
+  <div class="opts"><div class="o"><span>A</span>Keep Salon.</div>
+  <div class="o"><span>B</span>Give me the word you want and I sweep it everywhere in one pass.</div></div>
+  <p class="cost">It appears on nearly every screen, so the longer it waits the bigger the eventual sweep.</p></div><div class="d">
+  <div class="h"><span class="n">6</span><h3>How I write to you</h3><span class="age">2 days</span></div>
+  <p class="w"><b>What it is.</b> Two councils read all 22 of our exchanges and found why my messages do not land: they always open with something from my workshop instead of the thing you asked about. New rules are written and not switched on.</p>
+  <p class="w"><b>Why it is stuck.</b> Changing how I talk to you is not a change I should make without you seeing it.</p>
+  <div class="opts"><div class="o"><span>A</span>Switch them on.</div>
+  <div class="o"><span>B</span>Read the page first, then decide.</div></div>
+  <p class="cost">Every message until then opens the way you have been objecting to.</p></div>
+<h2>Three more, not your call</h2>
+<p class="s">These are stuck on something other than a decision. Listed so you know they are not waiting on you.</p>
+<div class='b'><h4>A second city in the data</h4><p>The Cities row on the homepage shows exactly one tile, because all 20 test salons are in Basel. That row cannot be designed until a second city exists.</p><p class='need'>Needs seed data, not a decision.</p></div><div class='b'><h4>Buying a product end to end</h4><p>Nobody can complete a real product purchase in test mode, because no salon is set up to take online payment yet.</p><p class='need'>Needs a Stripe connection, not a decision.</p></div><div class='b'><h4>Distance and “near you”</h4><p>Distances and the nearby row cannot be real until location is on and real salons are seeded.</p><p class='need'>Needs both were deferred by you earlier.</p></div>
+<p class="foot">Age is how long since the question was written down. Answering one with just its number and a letter is enough.</p>
+</div>
