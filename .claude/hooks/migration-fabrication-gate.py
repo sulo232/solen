@@ -32,7 +32,21 @@ anything.
 """
 import json, re, sys
 
-MIGRATION_PATH = re.compile(r"supabase/migrations/.*\.sql$")
+# IGNORECASE added 2026-08-21 (adversary bypass E). This machine's filesystem is case-insensitive,
+# verified, so `supabase/Migrations/x.sql` lands in the very directory Supabase reads, while a
+# case-sensitive pattern skipped the file without even opening it.
+MIGRATION_PATH = re.compile(r"supabase/migrations/.*\.sql$", re.IGNORECASE)
+
+
+def strip_sql_comments(text):
+    """Remove -- line comments and block comments before any structural matching.
+
+    2026-08-21, adversary bypass D. `TEST_SCOPED` greps for `_test` anywhere in the window, so a
+    throwaway trailing comment, `-- for the _test dataset only`, laundered a real UPDATE against
+    the live `salons` table. A comment can never be evidence about a WHERE clause or a table name.
+    """
+    text = re.sub(r"/\*.*?\*/", " ", text, flags=re.S)
+    return re.sub(r"--[^\n]*", " ", text)
 FABRICATION_FN = re.compile(r"hashtext\(|(?<![\w.])random\(\)|md5\([^)]*\)\s*%")
 TEST_SCOPED = re.compile(r"is_test\s*=\s*true|where\s+is_test\b|_test\b|_demo\b", re.IGNORECASE)
 WAIVER = re.compile(r"fabricated-data-ok\s*:", re.IGNORECASE)
@@ -47,11 +61,57 @@ WRITE_STMT = re.compile(r"\b(update|insert\s+into)\s+([a-z_][\w]*)", re.IGNORECA
 ADVISORY_LOCK_ONLY = re.compile(r"pg_advisory(?:_xact)?_lock\s*\(", re.IGNORECASE)
 # ... unless the same statement ALSO sets a column from a hash, in which case the lock is
 # incidental and the fabrication is real.
+# `[\s\S]{0,200}?` not `[^,;\n]*`, 2026-08-21 (adversary bypass C): a long assignment wrapped over
+# several lines, which is ordinary SQL formatting, made this fail to match while the plain
+# fabrication pattern still did, and the lock skip then waved the real fabrication through.
 ASSIGNS_FROM_HASH = re.compile(
-    r"\b[a-z_][\w]*\s*=\s*[^,;\n]*(?:hashtext\(|(?<![\w.])random\(\)|md5\()", re.IGNORECASE)
+    r"\b[a-z_][\w]*\s*=\s*[\s\S]{0,200}?(?:hashtext\(|(?<![\w.])random\(\)|md5\()", re.IGNORECASE)
 # Setting a column to NULL is an UNDO. The cleanup migration uses the same hash to recognise the
 # fabricated rows and erase them; refusing that would have blocked the fix for this exact bug.
 UNDOES_TO_NULL = re.compile(r"=\s*case\s+when[^;]{0,400}?\bthen\s+null\b|=\s*null\b", re.IGNORECASE)
+
+
+def is_pure_undo(window):
+    """True only when EVERY hash in this window belongs to an assignment that ends in NULL.
+
+    2026-08-21, adversary bypasses A and B, both driven against the live hook.
+      A. `kid_friendly = case when true then null end, wheelchair_accessible = (hash...)`.
+         One harmless nulled column anywhere in the window waved the whole window through,
+         including the real fabrication sitting beside it.
+      B. `wheelchair_accessible = case when x is null then null else (hash...) end`.
+         The undo pattern stops at the first "then null" and never reads the ELSE branch, where
+         the hash actually lands on every row.
+    Both are fixed by asking the question per ASSIGNMENT rather than per window: split on
+    top-level commas, and treat the window as an undo only if no assignment sets a column FROM a
+    hash. An assignment whose hash sits inside a CASE that also has a non-null ELSE is not an undo.
+    """
+    depth, cur, parts = 0, [], []
+    for ch in window:
+        if ch == "(":
+            depth += 1
+        elif ch == ")":
+            depth = max(0, depth - 1)
+        if ch == "," and depth == 0:
+            parts.append("".join(cur))
+            cur = []
+            continue
+        cur.append(ch)
+    parts.append("".join(cur))
+    saw_undo = False
+    for part in parts:
+        if not FABRICATION_FN.search(part):
+            continue
+        # This clause contains a hash. It is only an undo if the hash is used to RECOGNISE a value
+        # and the result is NULL, i.e. there is no non-null branch after the hash.
+        m = re.search(r"\bthen\s+null\b", part, re.IGNORECASE)
+        if not m:
+            return False
+        tail = part[m.end():]
+        if re.search(r"\belse\b(?!\s+" + r"[a-z_][\w]*\s*\bend\b)", tail, re.IGNORECASE) and \
+                FABRICATION_FN.search(tail):
+            return False        # the ELSE branch fabricates, bypass B
+        saw_undo = True
+    return saw_undo
 
 
 def get_new_content(tool_input: dict) -> str:
@@ -70,10 +130,13 @@ def main() -> int:
     if not MIGRATION_PATH.search(file_path):
         return 0
 
-    content = get_new_content(tool_input)
-    if not content:
+    raw = get_new_content(tool_input)
+    # The waiver is BY DESIGN a comment, so it has to be read before comments are stripped. Caught
+    # by the suite the moment comment-stripping went in: case 7 flipped to a block.
+    if WAIVER.search(raw):
         return 0
-    if WAIVER.search(content):
+    content = strip_sql_comments(raw)
+    if not content:
         return 0
     if not FABRICATION_FN.search(content):
         return 0
@@ -100,7 +163,7 @@ def main() -> int:
         # Both are now skipped by what they DO rather than by name, so a future one is covered too.
         if ADVISORY_LOCK_ONLY.search(window) and not ASSIGNS_FROM_HASH.search(window):
             continue
-        if UNDOES_TO_NULL.search(window):
+        if UNDOES_TO_NULL.search(window) and is_pure_undo(window):
             continue
         if FABRICATION_FN.search(window):
             print(json.dumps({
@@ -173,6 +236,25 @@ def selftest():
          "update salons set wifi_friendly = (abs(hashtext(id::text)) % 100 < 60);"),
         ("8  NOT a migration path -> never our business", False,
          "update salons set wheelchair_accessible = (abs(hashtext(id::text)) % 100 < 45);"),
+        # --- The five an adversary found after this was wired, 2026-08-21. Each is that agent's
+        # own SQL, kept verbatim so the hole cannot reopen quietly.
+        ("9  BYPASS A: one harmless nulled column beside a real fabrication", True,
+         "update salons set\n  kid_friendly = case when true then null else kid_friendly end,\n"
+         "  wheelchair_accessible = (abs(hashtext(id::text || 'wheel')) % 100 < 45)\n"
+         "where is_active;"),
+        ("10 BYPASS B: the hash hidden in the ELSE branch of an undo", True,
+         "update salons set wheelchair_accessible = case when kid_friendly is null then null "
+         "else (abs(hashtext(id::text || 'wheel')) % 100 < 45) end where is_active;"),
+        ("11 BYPASS C: an assignment wrapped over lines, with a lock further down", True,
+         "update salons set\n  wheelchair_accessible = (abs(\n"
+         "    hashtext(id::text || 'wheel')\n  ) % 100 < 45)\nwhere is_active;\n\n"
+         "do $$\nbegin\n  perform pg_advisory_xact_lock(hashtext('seed'));\nend\n$$;"),
+        ("12 BYPASS D: a trailing comment mentioning a test table launders a live write", True,
+         "update salons set wheelchair_accessible = (abs(hashtext(id::text || 'wheel')) % 100 < 45)"
+         " where is_active; -- for the _test dataset only, remove before ship"),
+        ("13 the same SQL fully commented out fabricates nothing", False,
+         "-- update salons set wheelchair_accessible = "
+         "(abs(hashtext(id::text || 'wheel')) % 100 < 45) where is_active;"),
     ]
     ok = 0
     for name, want, sql in cases:
