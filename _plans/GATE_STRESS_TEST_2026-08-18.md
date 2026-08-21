@@ -922,3 +922,37 @@ existed anywhere in the old text, independently. Two harmless decoy lines bought
 violation for free, with plain readable markup and no cleverness. Closed with `co_located()`, which
 asks the old text the same proximity question the rule asks the new one, and driven with the
 attacker's own payload.
+
+
+## 2026-08-21, the last two, and a DIFFERENT defect in the final pair
+
+`peer-list-ink-cta-gate` and `no-invented-ui-gate` are fixed and driven. Both needed a different
+test from the token compare: their offense is a SHAPE, not a class name, so the right question is
+"did my own verdict already refuse the text being REPLACED". If yes, this edit did not create the
+shape. A MultiEdit whose second hunk lands a genuinely new violation is still refused in both.
+
+**THE OTHER TWO ARE A DIFFERENT DEFECT AND ARE NOT FIXED.**
+`mockup-compose-registered-card-gate` and `reference-measure-gate` judge a WHOLE-FILE property:
+"this mockup builds a card and names no registered component anywhere", and "this mockup is built
+from a reference and carries no measured sizes". Both read only the fragment an Edit supplies, so
+they conclude the whole file lacks the thing when it may sit fifty lines above the edit. Rewording
+one word inside such a mockup is refused with a reason about the file, not about the edit.
+
+The both-sides test does NOT fix this and applying it would be wrong: the property is genuinely
+about the file, so forgiving on the fragment would let a real violation through. THE ACTUAL FIX is
+for them to read the file from disk, splice the new fragment in, and judge the RESULT. That is a
+larger change than today's pattern, it needs its own controls, and it is written down here rather
+than half-done.
+
+**FINAL TALLY for the live-check audit:**
+
+| | |
+|---|---|
+| live checks reading an Edit's replacement text | 94 |
+| never reading what it replaced | 54 |
+| confirmed refusing a reword | 26 |
+| correctly blind (security, money, legal, data integrity) | 10 |
+| genuine defects | 16 |
+| fixed, driven, and adversary-tested | 14 |
+| genuine, needing the read-the-file fix instead | 2 |
+| never fired on any payload, UNKNOWN not clean | 18 |
