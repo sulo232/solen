@@ -877,3 +877,48 @@ genuine addition, a genuine change of value, and any whole-file Write.
 
 **HONEST LIMIT.** The 24 that never fired are UNKNOWN, not clean. My payloads did not exercise
 them; that says nothing about the gates. The way in is each one's own selftest fixtures.
+
+
+## 2026-08-21 later , the last pass, and the instrument failed once on the way
+
+Continues the live-check audit above. Two more rounds after the first twelve were fixed.
+
+**A FAILED CONTROL, recorded because the number it produced was meaningless.** The second pass
+imported each gate as a module and read its case lists to get its own fixtures. It reported 38
+checks as never firing, including three I had driven successfully by hand an hour earlier. Control
+failed, so the instrument was the broken thing, not the gates. THE CAUSE: these files define their
+cases inside `if __name__ == "__main__":`, which never runs on import, so the extractor found zero
+fixtures for every one of them and every gate then looked inert.
+
+**THE CORRECT INSTRUMENT: parse, do not import.** Walk the file's AST and take every string literal
+in it, including the ones inside the `__main__` block. No execution, no selftest side effects.
+Control now returns 34, 45 and 40 fixtures for the same three gates.
+
+**NINE MORE CONFIRMED**, and five of them are correctly blind, which is the same split as before:
+- CORRECTLY BLIND, leave them: `money-update-cas-gate`, `postgrest-filter-injection-gate`,
+  `legal-price-gate`, `demo-data-not-live-gate`, `enforcement-in-product-gate`. Money, an unsafe
+  filter, a statutory price claim, fabricated data in production, enforcement code leaking into
+  the product. For all five the harm is the code existing, not who typed it.
+- GENUINE TASTE DEFECTS, still to fix: `mockup-compose-registered-card-gate`, `no-invented-ui-gate`,
+  `peer-list-ink-cta-gate`, `reference-measure-gate`.
+
+**RUNNING TOTAL across the whole live-check audit:**
+
+| | |
+|---|---|
+| live checks that read an Edit's replacement text | 94 |
+| never read what it replaced | 54 |
+| confirmed refusing a reword | 26 |
+| of those, CORRECTLY blind (security, money, legal, data integrity) | 10 |
+| genuine taste defects | 16 |
+| fixed and adversary-tested | 12 |
+| genuine, still to fix | 4 |
+| never fired on any payload, UNKNOWN not clean | 18 |
+
+**AND THE FIX ITSELF HAD A BYPASS, mine.** The ten fixed in the batch were all broken by an
+adversary the same hour. Rules that police a PAIRING (a wrong radius next to a card shadow, a boxed
+container next to a row divider, a big size next to a heavy weight) were asking whether each token
+existed anywhere in the old text, independently. Two harmless decoy lines bought a genuinely new
+violation for free, with plain readable markup and no cleverness. Closed with `co_located()`, which
+asks the old text the same proximity question the rule asks the new one, and driven with the
+attacker's own payload.
