@@ -76,7 +76,20 @@ And I want you to first make a mockup of a few flows so I can actually see that 
       actually gate something, then add what the tab shape needs (which tabs a person sees at all,
       whether they see money, whether they see other stylists' columns or only their own).
       Design first, and it is not in the four flows he picked, so it does not block the mockups.
-- [ ] PARKED 2026-08-21 · Does the dashboard land on Heute or on the Kalender? · from: he leaned calendar first ("im thinking of 3 but w today too") and the four-lens council landed on Heute first and said so plainly rather than softening it. Only the LANDING tab is in dispute, his shape survives either way, and the mockups are being built Heute first because that is what the council argued for.
+- [x] ANSWERED 2026-08-21 · "those arent at all good n terminal i thought we gnna ditch that sh it
+      wont work bro n calender is superior". THE CALENDAR IS THE PRODUCT. The terminal is ditched as
+      a separate thing and there is no Today tab. This is the second time he has said it: he already
+      picked option 3 ("im thinking of 3"), the council argued him down to Heute-first, and I built
+      the council's answer over his stated lean. That is the error, and the standing rule says his
+      literal call outranks a council recommendation.
+      THE ONE COST, verified rather than asserted, and it needs solving rather than arguing:
+      `barber_walkin_queue` carries `joined_at`, `started_at`, `position` and
+      `estimated_wait_minutes` and NO start time, while the calendar reads `availability_slots`
+      through `/api/slots`. So a walk-in has no time to sit at on a calendar until somebody puts
+      them in a chair. Ditching the terminal without answering that leaves walk-ins nowhere. It is
+      solvable inside the calendar (a standing area above the grid for people with no time yet) and
+      that is the thing to design, not a reason to keep two apps.
+- [ ] was PARKED 2026-08-21 · Does the dashboard land on Heute or on the Kalender? · from: he leaned calendar first ("im thinking of 3 but w today too") and the four-lens council landed on Heute first and said so plainly rather than softening it. Only the LANDING tab is in dispute, his shape survives either way, and the mockups are being built Heute first because that is what the council argued for.
 - [ ] M7 Hand over the four mockups on one link and get his read before any real dashboard code
       changes. He asked for the mockups FIRST so he can see whether I understood.
 
