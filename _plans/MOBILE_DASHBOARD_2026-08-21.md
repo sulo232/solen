@@ -38,6 +38,21 @@ And I want you to first make a mockup of a few flows so I can actually see that 
 - [ ] M1b was: COUNCIL on the tab shape, because he asked for one by name. What are the tabs for a SALON
       rather than a rental, does Today survive beside a calendar, and what happens to the other 46
       sections.
+- [x] CORRECTION 2026-08-21 · "Why are you using Opus five as a subagents. I told you only counsel
+      and also why are you building with only one or two sub agents? It's gonna take so fucking
+      long." · Both true and both mine. WHY OPUS: standalone `coder` dispatches were already sonnet
+      by their own frontmatter, but every `agent()` inside a WORKFLOW inherits the session model,
+      which is Opus 5, and I never passed one. WHY IT WAS NOT CAUGHT: `no-opus-subagent-gate.py`
+      has an arm for exactly this and it did not fire, because my build stage interpolated
+      `${verdict}` (it is handed the council's decision to build from) and `verdict` is one of its
+      judgment markers, so the stage exempted itself by quoting its own input. Proven
+      discriminating: the real script is ALLOWED as written and DENIED with that one variable
+      renamed and nothing else touched. Gate fixed to strip interpolations before the judgment
+      read, graded on four cases plus its own suite, including one it must still allow.
+      WHY ONE BUILDER: no good reason. The concurrent-builder rule already permits a fan-out when
+      each owns disjoint files; I simply never wrote the briefs that way. The single Opus builder
+      ran 25 minutes without writing a line and was stopped. Four sonnet builders now run in
+      parallel, one flow each, none of them touching git.
 - [ ] M2 MOCKUP, the five tabs and the Menu.
 - [ ] M3 MOCKUP, a day in the calendar, following their month grid with a number under every date.
 - [ ] M4 MOCKUP, taking a booking by phone, end to end.
