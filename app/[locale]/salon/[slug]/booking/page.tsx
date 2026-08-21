@@ -66,10 +66,14 @@ export default async function BookingSalonPage({
 
   // Owner 2026-08-21: the gift-voucher code box was showing for every salon, including salons
   // that never issued a voucher, so most people who typed a code just hit an error. Hide the box
-  // unless this salon actually has at least one redeemable voucher. "Redeemable" mirrors
-  // app/api/vouchers/validate/route.ts exactly: remaining_amount not null and greater than zero
-  // (null means the purchase was never paid), not yet redeemed, and not expired. Head-only count
-  // query, no rows returned.
+  // unless this salon actually has at least one redeemable voucher. "Redeemable" is functionally
+  // equivalent to app/api/vouchers/validate/route.ts: remaining_amount not null (null means the
+  // purchase was never paid), not yet redeemed, and not expired. The one difference: this query
+  // also requires remaining_amount above zero, which validate never tests directly. That is safe
+  // today because the redeem UPDATE (supabase/migrations/20260714160410_fix_redeem_credit_voucher_advisory_lock.sql)
+  // sets redeemed_at in the same atomic statement whenever remaining_amount drops to zero or below,
+  // so remaining_amount = 0 with redeemed_at still null cannot occur. Head-only count query, no
+  // rows returned.
   const { count: redeemableVoucherCount, error: voucherCountError } = await supabase
     .from('vouchers')
     .select('id', { head: true, count: 'exact' })
