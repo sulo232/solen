@@ -145,6 +145,8 @@ Capture method, settled by him earlier and unchanged: the live site in mobile vi
 
 Per-component rules: `_design-system/components/<Name>.md`. Open questions: `_design-system/QUESTIONS.md`. Taste decisions: `_design-system/TASTE_LOG.md` (read before design on a covered surface).
 
+**MAY YOU DECIDE IT YOURSELF? `_design-system/TASTE_AUTHORITY.md` answers that, and every subagent brief on a visual question must name it.** The four documents above say what is ALLOWED. None of them ever says what is YOURS, so with two legal values and no rule the default was always to ask him, which is exactly how a 13px versus 14px question reached the founder. Owner 2026-08-21, verbatim: *"why would you need my opinion for these small stuff? ... I cannot fucking understand with thirteen pixel, fourteen pixel ... we need to have like a file actually ... My taste is right to like actually make decisions."* TASTE_AUTHORITY holds a seven-step test returning DECIDE, SHOW, ASK or PARK, an indifference band read off the LOCKFILE §12 scale (one adjacent step, since his own system already ships both sides of every pair at two widths), the defaults per area with his dated words behind each, and the short absolute list that is never decided without him. It NARROWS TASTE_LOG M18, it does not cancel it: mockup-first still binds on anything he could tell apart.
+
 ---
 
 ## 🖼️ Mockup FIRST (visual changes) — ALWAYS
@@ -376,7 +378,7 @@ Walk top down; higher wins. Latest DATED owner decision wins; "supersedes X" kil
 3. Hooks and gates (a deny message is an instruction, not an obstacle)
 4. _design-system/LOCKFILE.md frozen literals
 5. This file's pinned blocks (taste rules, design contract, binary triggers, exists protocol)
-6. _design-system/TASTE_LOG.md dated decisions
+6. _design-system/TASTE_LOG.md dated decisions, then _design-system/TASTE_AUTHORITY.md (2026-08-21), which sits directly BELOW the log on purpose: it only ever routes a question to DECIDE / SHOW / ASK / PARK and cites the log for every value, so a dated entry always wins over it
 7. Memory feedback files
 8. Global ~/.claude/CLAUDE.md rules, together with the ~/.claude system docs it points to (LAW_SYSTEM.md, LOOP_SYSTEM.md, MODEL_ROUTING.md, REPORT_SYSTEM.md, REGRESSION_SYSTEM.md, CONTEXT_SYSTEM.md, FABLE_DNA.md) , same tier, the doctrine layer for cross-project behavior
 9. Generic checklists (uiux-audit) and legacy _rules/* (anything palette, Figma, Vercel, or push flavored there is history) (_rules cleaned 2026-07-07; if push/Vercel/Figma/palette-flavored text ever resurfaces there, it is history, never law)
