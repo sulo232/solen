@@ -44,66 +44,99 @@ import json, os, re, sys, time
 ENTITY_NAME = re.compile(r"(staff|stylist|team|barber|therapist|employee|provider|people|member)", re.I)
 
 
-def _drive(file_path, content, tool="Write"):
+def _drive(file_path, content, tool="Write", old_string=None):
     """Selftest helper: re-run this file as a subprocess with a synthetic PreToolUse payload,
-    same black-box shape hook-probe.py uses, so the test exercises the real stdin-driven path."""
+    same black-box shape hook-probe.py uses, so the test exercises the real stdin-driven path.
+    When old_string is given, drives an Edit (content becomes new_string) so the
+    already-present-in-old-text forgiveness path can be exercised too (2026-08-21)."""
     import subprocess
-    payload = {"tool_name": tool, "tool_input": {"file_path": file_path, "content": content}}
+    if old_string is not None:
+        payload = {"tool_name": "Edit", "tool_input": {
+            "file_path": file_path, "old_string": old_string, "new_string": content}}
+    else:
+        payload = {"tool_name": tool, "tool_input": {"file_path": file_path, "content": content}}
     p = subprocess.run([sys.executable, os.path.abspath(__file__)], input=json.dumps(payload),
                         capture_output=True, text=True, timeout=10)
     return p.returncode, p.stdout
 
 
 def selftest():
-    """2026-08-18: this gate never had a self-test. Added with the grouped-list-card + border-b fix."""
+    """2026-08-18: this gate never had a self-test. Added with the grouped-list-card + border-b fix.
+    2026-08-21: proves a reword that leaves an already-offending rule-1 or rule-2 pair untouched
+    is forgiven, while a genuine addition still blocks for both rules."""
+    ENTITY_OFFEND = '<div className="overflow-hidden rounded-[24px] shadow-whisper">{staff.map(s => <Row key={s.id} {...s}/>)}<p>%s</p></div>'
+    BOXED_OFFEND = '<div className="border border-s-border bg-white">{items.map(i => <div key={i.id} className="border-b border-s-border">%s</div>)}</div>'
     cases = [
         ("LOCKED grouped list-card (radius 24 + shadow-whisper + divided rows) must pass",
          "/Users/sulo/Documents/solen/components/ServicesList.tsx",
          '<div className="rounded-[24px] shadow-whisper bg-white divide-y divide-s-border">'
          '<div className="p-4">Cut</div><div className="p-4">Color</div></div>',
-         False),
+         False, None),
         ("genuine entity-card violation (radius-16 + border container carrying row dividers) must block",
          "/Users/sulo/Documents/solen/components/SalonCard.tsx",
          '<div className="rounded-card border border-s-border bg-white divide-y divide-s-border">'
          '<div className="p-4">A</div><div className="p-4">B</div></div>',
-         True),
+         True, None),
         ("a single border-b HEADER inside a card must pass",
          "/Users/sulo/Documents/solen/components/ReviewSummaryCard.tsx",
          '<div className="rounded-card border border-s-border p-4">'
          '<div className="border-b border-s-border pb-2 font-semibold">Reviews</div>'
          '<p>Great salon</p></div>',
-         False),
+         False, None),
         ("the original entity-list rule (Staff list rendering a grouped card) must still block",
          "/Users/sulo/Documents/solen/components/StaffList.tsx",
          '<div className="overflow-hidden rounded-[24px] shadow-whisper">'
          '{staff.map(s => <Row key={s.id} {...s}/>)}</div>',
-         True),
+         True, None),
         # 2026-08-18 fix 2: token spelling of the same radius + container-scoped exemption
         ("the SAME locked grouped list-card written as rounded-3xl (Tailwind's own 24px) must pass",
          "/Users/sulo/Documents/solen/components/ServicesList.tsx",
          '<div className="rounded-3xl shadow-whisper bg-white divide-y divide-s-border">'
          '<div className="p-4">Cut</div><div className="p-4">Color</div></div>',
-         False),
+         False, None),
         ("a genuine entity-card violation NESTED inside a legal grouped section must still block",
          "/Users/sulo/Documents/solen/components/SalonCard.tsx",
          '<section className="rounded-[24px] shadow-whisper bg-white">'
          '<h2 className="p-4 font-semibold">Services</h2>'
          '<div className="rounded-card border border-s-border bg-white divide-y divide-s-border">'
          '<div className="p-4">A</div><div className="p-4">B</div></div></section>',
-         True),
+         True, None),
         ("a grouped list-card whose rows sit in a child element must pass",
          "/Users/sulo/Documents/solen/components/ServicesList.tsx",
          '<div className="rounded-3xl shadow-whisper bg-white">'
          '<ul className="divide-y divide-s-border"><li className="p-4">Cut</li></ul></div>',
-         False),
+         False, None),
         ("a class-list-only edit of the locked grouped card (no tag in the blob) must pass",
          "/Users/sulo/Documents/solen/components/ServicesList.tsx",
          'className="rounded-3xl shadow-whisper bg-white divide-y divide-s-border"',
-         False),
+         False, None),
+        ("2026-08-21 rule 1: a text-only reword inside an already-offending entity-list grouped "
+         "card (shadow-whisper + overflow-hidden untouched) must be forgiven",
+         "/Users/sulo/Documents/solen/components/StaffList.tsx",
+         ENTITY_OFFEND % "Neue Beschreibung",
+         False, ENTITY_OFFEND % "Alte Beschreibung"),
+        ("2026-08-21 rule 1 narrowness: a genuine ADDITION of the grouped-card grammar (old had "
+         "none) must still block",
+         "/Users/sulo/Documents/solen/components/StaffList.tsx",
+         '<div className="overflow-hidden rounded-[24px] shadow-whisper">'
+         '{staff.map(s => <Row key={s.id} {...s}/>)}</div>',
+         True, '<div className="p-4">{staff.map(s => <Row key={s.id} {...s}/>)}</div>'),
+        ("2026-08-21 rule 2: a text-only reword inside an already-doubled-chrome list (container "
+         "border + border-b row divider untouched) must be forgiven",
+         "/Users/sulo/Documents/solen/components/SettingsList.tsx",
+         BOXED_OFFEND % "{i.newLabel}",
+         False, BOXED_OFFEND % "{i.oldLabel}"),
+        ("2026-08-21 rule 2 narrowness: a genuine ADDITION of the row-divider (old had none) "
+         "must still block",
+         "/Users/sulo/Documents/solen/components/SettingsList.tsx",
+         '<div className="border border-s-border bg-white">{items.map(i => '
+         '<div key={i.id} className="border-b border-s-border">{i.label}</div>)}</div>',
+         True, '<div className="border border-s-border bg-white">{items.map(i => '
+         '<div key={i.id}>{i.label}</div>)}</div>'),
     ]
     ok = 0
-    for name, fp, content, expect in cases:
-        _, out = _drive(fp, content)
+    for name, fp, content, expect, old_string in cases:
+        _, out = _drive(fp, content, old_string=old_string)
         got = bool(out.strip())
         good = got == expect
         ok += good
@@ -170,6 +203,17 @@ blob = "\n".join(a for a in added if a)
 if not blob.strip():
     sys.exit(0)
 
+# 2026-08-21 stress-test fix: both rules in this file used to read only the ADDED text (Write
+# content / Edit new_string), so a reword that leaves an already-offending pair of tokens
+# byte-identical on both sides of an Edit got refused as if the edit had just introduced them.
+# Fails closed: if the helper cannot be imported, the gate keeps refusing exactly as before.
+try:
+    sys.path.insert(0, os.path.expanduser("~/.claude/hooks/_lib"))
+    from unchanged_by_this_edit import co_located
+except Exception:
+    def co_located(_data, _offenders, window=400):
+        return False
+
 # the GROUPED list-card signature: shadow-whisper co-occurring with overflow-hidden
 offend = False
 for m in (re.finditer(r"shadow-whisper", blob) if rule1_applies else []):
@@ -178,6 +222,13 @@ for m in (re.finditer(r"shadow-whisper", blob) if rule1_applies else []):
         continue
     esc = blob[max(0, m.start() - 160):m.end() + 160]
     if re.search(r"entity-ok\s*:", esc, re.I):
+        continue
+    # 2026-08-21, CORRECTED WITHIN THE HOUR by an adversary. any_already_present asks whether each
+    # token exists ANYWHERE in the old text, independently, so two unrelated comment lines
+    # mentioning shadow-whisper and overflow-hidden three hundred lines apart forgave a grouped
+    # card that had never existed. The offense is the PAIRING, so ask the old text the same
+    # proximity question this rule asks the new one.
+    if co_located(data, [m.group(0), "overflow-hidden"], window=120):
         continue
     offend = True
     break
@@ -251,23 +302,28 @@ def _has_row_signal(blob, m):
     window = blob[win_start:m.end() + 400]
     scope = _container_scope(blob, m) or window
     if GROUPED_LIST_SHAPE.search(scope) and re.search(r"shadow-whisper", scope, re.I):
-        return False, window  # the LOCKED grouped list-card shape, legal by design
-    if ROWLINES_STRONG.search(window):
-        return True, window
+        return False, window, None  # the LOCKED grouped list-card shape, legal by design
+    sm = ROWLINES_STRONG.search(window)
+    if sm:
+        return True, window, sm.group(0)
     for wm in ROWLINES_WEAK.finditer(window):
         abs_pos = win_start + wm.start()
         if MAP_NEARBY.search(blob[max(0, abs_pos - 300):abs_pos]):
-            return True, window
-    return False, window
+            return True, window, wm.group(0)
+    return False, window, None
 
 
 boxed = None
 if rule2_applies and not offend:
     for m in CONTAINER.finditer(blob):
-        rowsig, window = _has_row_signal(blob, m)
+        rowsig, window, row_text = _has_row_signal(blob, m)
         if not rowsig:
             continue
         if re.search(r"(entity-ok|boxed-ok)\s*:", window, re.I):
+            continue
+        # Same correction as rule 1: the offense is a bordered container NEXT TO a row divider,
+        # not either token existing somewhere in the file.
+        if co_located(data, [m.group(0), row_text], window=200):
             continue
         boxed = m.group(0).strip()
         break
