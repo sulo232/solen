@@ -1096,11 +1096,20 @@ not laziness, it is a missing tier: the system says what is ALLOWED and never sa
 **The fix, same day:** `_design-system/TASTE_AUTHORITY.md`, which grants a subagent the authority
 to decide inside a stated indifference band and names what still needs him.
 
-**On his "the gates are not firing", measured rather than agreed with.** 287 hook files sit on
-disk. 209 are wired into a settings file and 78 are not, and 50 of those 78 ship their own passing
-test suite. The one gate that refuses the exact message that produced this complaint,
+**On his "the gates are not firing", measured rather than agreed with, and the FIRST count was
+wrong.** 287 hook files sit on disk. The first pass called a gate live only if its filename appears
+in a settings file, and reported 209 live with 50 tested-but-dead. That method is wrong twice over,
+and a known-answer control caught it: `measurement-needs-scope-gate.py` fired on a real reply the
+same hour while the method called it dead. Three ARMED aggregators (`evidence-family`, `link-family`,
+`reply-family`) dispatch member gates that never appear in settings by name. Counting those as live
+went too far in the other direction and resurrected `concise-response-gate.py`, which he killed on
+2026-08-08, because another hook's DOCSTRING mentions it by name. Corrected method: a gate is live
+when settings names it, or when a live hook EXECUTES it, docstring prose excluded. Corrected
+numbers: **231 live, 11 shelved helpers, 41 running nowhere, 28 of those with a passing suite.**
+
+The one gate that refuses the exact message that produced this complaint,
 `no-permission-question-gate.py`, was among the unwired. Built, tested, never armed. Armed
 2026-08-21 along with `measure-dont-ask-gate.py` and `mockup-already-answered-gate.py`, each driven
 first over 198 real closing messages from this session to confirm it does not refuse ordinary work.
-The remaining 47 were NOT mass-armed: the standing wiring tool would have re-armed
+The remaining 25 were NOT mass-armed: the standing wiring tool would have re-armed
 `concise-response-gate.py` and `reply-length-gate.py`, which he killed by name on 2026-08-08.
