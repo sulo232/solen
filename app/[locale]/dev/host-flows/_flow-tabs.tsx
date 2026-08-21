@@ -96,6 +96,33 @@
 // VERIFICATION: `npx tsc --noEmit` and `npx eslint` were run against this file this turn (see the
 // build report). A local dev server could not be reached from this shell, so nothing below has been
 // screenshotted or rendered; that is stated plainly rather than claimed.
+//
+// ROUND 2026-08-21, CUT, not redesign. Owner: "did u accc look at design from airbnb". The prior
+// CalendarScreen below drew 46 elements carrying text or a background fill (counted literally, with
+// the day-grid's weekday letters and date cells collapsed to one pattern-unit each, the same
+// treatment the tab bar already gets, since both are uniform repeated shapes scanned as a set rather
+// than read item by item, the same convention the owner used counting Airbnb's own 5-tab bar as one
+// thing). This round's CalendarScreen renders 19. Structure, tabs, the standing strip, and the frame
+// stepper API are unchanged; only content was subtracted or merged. What moved:
+//   - Chairs: three separate name+status lines (one per face) became one sentence under the row of
+//     faces, built from the same CHAIRS array (CHAIR_SUMMARY). The state ring is unchanged.
+//   - The anchor's row no longer carries the Add-walk-in button; nothing shares it now.
+//   - The decision card KEEPS its box (still the one earned CONTAINER TEST case 2 on this file) but
+//     its two text lines merged into one sentence that leads with the name, and its own section label
+//     is gone; Accept/Decline already say what kind of row it is.
+//   - The standing strip keeps its own label (protected, per the brief); the walk-in Add button now
+//     lives on that label's row, since it feeds this section, not the anchor.
+//   - "Coming up today" shows 2 of the day's appointments instead of 4, each one merged sentence
+//     (time, name, service, price) instead of four separate nodes, and the per-row "Arrived" action is
+//     gone; the list is reference now, tap-to-open, the way the grid below already was. The "more"
+//     count folds in the unshown itemised rows, so it still adds up to TODAY_TOTAL (unchanged).
+//   - The month line lost its own separate "August 2026" heading, both facts (label + total) are one
+//     sentence now.
+//   - The day grid renders the CURRENT WEEK (one row of the existing AUGUST_WEEKS data, not six), and
+//     each day shows a dot instead of a per-day count number; MONTH_TOTAL (unchanged) still carries
+//     the whole month's number on the line above.
+// TODAY_TOTAL and MONTH_TOTAL are unchanged formulas; nothing was fabricated to make a number smaller,
+// only which of the already-defined fixture rows get drawn.
 
 import type { LucideIcon } from "lucide-react";
 import {
@@ -147,6 +174,14 @@ const CHAIRS: Stylist[] = [
   { name: "Nina Suter", state: "busy", customer: "Elena Wyss", minutesLeft: 20 },
   { name: "Jonas Keller", state: "busy", customer: "Noah Baumann", minutesLeft: 5 },
 ];
+// ROUND 2026-08-21 CUT: replaces three separate name+status lines (one per chip) with one sentence
+// under the row of faces. Built from CHAIRS above, nothing invented. TERMINAL_PRINCIPLES section 2
+// rule 5 puts the name first inside any row; this keeps that even though the three rows are now one
+// line.
+const CHAIR_SUMMARY =
+  CHAIRS.map((s) =>
+    s.state === "busy" ? `${s.name.split(" ")[0]} with ${s.customer}, ${s.minutesLeft}m left` : `${s.name.split(" ")[0]} free`,
+  ).join(". ") + ".";
 
 const PENDING_REQUEST = {
   customer: "Sara Meier",
@@ -181,6 +216,10 @@ const TODAY_APPOINTMENTS: TodayAppointment[] = [
 const MORE_TODAY_COUNT = 2;
 const TODAY_TOTAL = CHAIRS.filter((s) => s.state === "busy").length + TODAY_APPOINTMENTS.length + MORE_TODAY_COUNT;
 const TAKEN_SO_FAR = 640;
+// ROUND 2026-08-21 CUT: the list itemises fewer rows than the fixture defines; the "more" count folds
+// in the unshown itemised rows too, so the number stays honest against TODAY_TOTAL above (unchanged).
+const VISIBLE_TODAY_COUNT = 2;
+const MORE_TODAY_DISPLAY_COUNT = TODAY_APPOINTMENTS.length - VISIBLE_TODAY_COUNT + MORE_TODAY_COUNT;
 
 interface Client {
   name: string;
@@ -242,6 +281,11 @@ const AUGUST_WEEKS: DayCell[][] = [
 const TODAY_DATE = 19;
 const MONTH_TOTAL = AUGUST_WEEKS.flat().reduce((sum, cell) => sum + (cell?.count ?? 0), 0);
 const WEEKDAY_LETTERS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+// ROUND 2026-08-21 CUT: the grid renders the CURRENT WEEK, one row of the same AUGUST_WEEKS data
+// already defined above, instead of all six rows of the month. MONTH_TOTAL (unchanged) still sums the
+// full array, so the one-line total above the grid stays correct even though most of the month is no
+// longer drawn. This is the week containing TODAY_DATE.
+const THIS_WEEK: DayCell[] = AUGUST_WEEKS[3]!;
 
 interface MenuItem {
   label: string;
@@ -380,54 +424,42 @@ function PhoneFrame({ active, children }: { active: NavKey; children: React.Reac
 function CalendarScreen() {
   return (
     <>
-      {/* Who is in a chair right now. Unchanged from the old Today screen: a name and a face, not a
-          slot. */}
-      <div className="overflow-x-auto">
-        <div className="flex gap-4 px-5 pb-1 pt-5">
-          {CHAIRS.map((stylist) => (
-            <div key={stylist.name} className="flex w-[104px] shrink-0 flex-col items-center text-center">
-              {/* The chair state lives on the avatar's own edge, a real 2px border (never a Tailwind
-                  `ring` utility, which the focus-ring gate treats as a glow regardless of intent). */}
-              <span
-                className={
-                  "flex h-[64px] w-[64px] items-center justify-center rounded-full border-2 " +
-                  (stylist.state === "busy" ? "border-s-ink" : "border-s-success")
-                }
-              >
-                <Avatar name={stylist.name} size={56} />
-              </span>
-              <p className="font-body mt-2 w-full truncate text-[13px] font-normal text-s-ink">
-                {stylist.name.split(" ")[0]}
-              </p>
-              {/* Neutral text under a coloured edge, the edge is the only indicator. */}
-              <p className="font-body w-full truncate text-[13px] font-normal text-s-ink-2">
-                {stylist.state === "free" ? "Free" : `${stylist.customer}, ${stylist.minutesLeft}m`}
-              </p>
-            </div>
-          ))}
-        </div>
+      {/* Who is in a chair right now: a row of faces (a genuine repeated pattern, same size, same
+          shape, scanned as one set, the state ring the only per-face signal) plus ONE sentence below
+          naming each in the same left-to-right order, replacing three separate name+status lines
+          (ROUND 2026-08-21 CUT). The chair-state ring is unchanged: it lives on the avatar's own edge,
+          a real 2px border, never a Tailwind `ring` utility. */}
+      <div className="flex gap-4 px-5 pb-2 pt-5">
+        {CHAIRS.map((stylist) => (
+          <span
+            key={stylist.name}
+            className={
+              "flex h-[64px] w-[64px] shrink-0 items-center justify-center rounded-full border-2 " +
+              (stylist.state === "busy" ? "border-s-ink" : "border-s-success")
+            }
+          >
+            <Avatar name={stylist.name} size={56} />
+          </span>
+        ))}
+      </div>
+      <p className="font-body px-5 text-[13px] font-normal text-s-ink">{CHAIR_SUMMARY}</p>
+
+      {/* The one anchor on this screen. Nothing shares this row any more (the walk-in Add control
+          moved to the section it actually belongs to, below), so it has the room instruction 3 asks
+          for. */}
+      <div className="px-5 pt-8">
+        <h1 className={ANCHOR}>{TODAY_TOTAL} appointments today</h1>
+        <p className={SUBLINE}>CHF {TAKEN_SO_FAR} taken so far.</p>
       </div>
 
-      {/* The one anchor on this screen. Today lives here now, not on a fourth tab, so the sentence
-          a glance answers first has to be about today. */}
-      <div className="flex items-start justify-between px-5 pt-8">
-        <div className="min-w-0">
-          <h1 className={ANCHOR}>{TODAY_TOTAL} appointments today</h1>
-          <p className={SUBLINE}>CHF {TAKEN_SO_FAR} taken so far.</p>
-        </div>
-        <button type="button" aria-label="Add a walk-in" className={INK_PILL + " mt-1"}>
-          <Plus size={16} strokeWidth={2} aria-hidden />
-          Add
-        </button>
-      </div>
-
-      {/* The one thing on this screen sitting on a yes or a no. Unchanged. */}
+      {/* The one thing on this screen sitting on a yes or a no. The box is kept (CONTAINER TEST case
+          2, the one earned container on this file, cap 2 shown 1); the sentence now leads with the
+          name (TERMINAL_PRINCIPLES section 2 rule 5) and the label line is gone, since Accept/Decline
+          already say what kind of row this is. */}
       <div className="mt-8 px-5">
-        <p className="font-body pb-3 text-[13px] font-semibold text-s-ink-2">Needs a decision (1)</p>
-        <div className="rounded-[24px] border border-s-border p-4"> {/* boxed-ok: the one earned box on this file, CONTAINER TEST case 2, a peer item that will not resolve itself if nobody acts, capped at 2, one shown. */}
-          <p className="font-body text-[15px] font-normal text-s-ink">{PENDING_REQUEST.customer}</p>
-          <p className={ROW_SUB}>
-            {PENDING_REQUEST.service} at {PENDING_REQUEST.time}, asked {PENDING_REQUEST.askedMinutesAgo} min ago
+        <div className="rounded-[24px] border border-s-border p-4"> {/* boxed-ok: unchanged, CONTAINER TEST case 2, a peer item that will not resolve itself if nobody acts, capped at 2, one shown. */}
+          <p className="font-body text-[15px] font-normal text-s-ink">
+            {PENDING_REQUEST.customer} asked about {PENDING_REQUEST.service} at {PENDING_REQUEST.time}, {PENDING_REQUEST.askedMinutesAgo} min ago.
           </p>
           <div className="mt-3 flex items-center gap-3">
             <button type="button" className={ROW_BUTTON}>
@@ -443,66 +475,56 @@ function CalendarScreen() {
       {/* The standing strip. THE answer to the one real problem this shape creates: a walk-in has no
           time to sit at on a calendar until somebody puts them in a chair. It sits here, directly
           above the list it feeds, because the person waiting needs to be seen before the day's own
-          book is read, not after it (see the PLACEMENT note at the top of this file). Reused, not
-          invented: the file's own prior "Waiting" section, relabelled. */}
+          book is read, not after it (see the PLACEMENT note at the top of this file). The walk-in Add
+          control now lives on this section's own label row, since it is the section this action
+          feeds, not the anchor it used to crowd. */}
       <div className="mt-8">
-        <p className={SECTION}>Here, waiting for a chair. No time yet.</p>
+        <div className="flex items-center justify-between px-5 pb-3">
+          <p className="font-body text-[13px] font-semibold text-s-ink-2">Here, waiting for a chair. No time yet.</p>
+          <button type="button" aria-label="Add a walk-in" className={INK_PILL}>
+            <Plus size={16} strokeWidth={2} aria-hidden />
+            Add
+          </button>
+        </div>
         <div className={ROW}>
-          <div className="min-w-0 flex-1">
-            <p className={ROW_NAME}>{WAITING.customer}</p>
-            <p className={ROW_SUB}>
-              {WAITING.service}, waiting {WAITING.waitedMinutes} min
-            </p>
-          </div>
+          <p className="font-body min-w-0 flex-1 truncate text-[15px] font-normal text-s-ink">
+            {WAITING.customer}, {WAITING.service}, waiting {WAITING.waitedMinutes} min
+          </p>
           <button type="button" className={ROW_BUTTON}>
             Start
           </button>
         </div>
       </div>
 
-      {/* The day's own book, in time order, each with a one-tap arrival. 16px (not 32) above this
-          list: the strip and the list it feeds are one section, waiting then seated, not two. Once a
-          chair takes the person above, they are not a second invented object with a time, they
-          become a row here. */}
+      {/* The day's own book. 16px (not 32) above this list: the strip and the list it feeds are one
+          section, waiting then seated, not two. Shows the first two, the rest folded into the count in
+          the label rather than a separate line; time, name, service and price are one sentence per row
+          instead of four, and the per-row arrival action is gone, this list is now reference (tap a
+          row to open it), the way the day grid below is already tap-to-open. */}
       <div className="mt-4">
-        <p className={SECTION}>Coming up today</p>
+        <p className={SECTION}>Coming up today ({MORE_TODAY_DISPLAY_COUNT} more)</p>
         <ul>
-          {TODAY_APPOINTMENTS.map((appt) => (
+          {TODAY_APPOINTMENTS.slice(0, VISIBLE_TODAY_COUNT).map((appt) => (
             <li key={appt.time + appt.customer} className={ROW}>
-              <span className="font-body w-[44px] shrink-0 text-[13px] font-normal tabular-nums text-s-ink-2">
-                {appt.time}
-              </span>
-              <div className="min-w-0 flex-1">
-                <p className={ROW_NAME}>{appt.customer}</p>
-                <p className={ROW_SUB}>
-                  {appt.service}, CHF {appt.price}
-                </p>
-              </div>
-              {appt.arrivedAt ? (
-                <span className="font-body shrink-0 text-[13px] font-normal tabular-nums text-s-ink-2">
-                  here {appt.arrivedAt}
-                </span>
-              ) : (
-                <button type="button" className={ROW_BUTTON}>
-                  Arrived
-                </button>
-              )}
+              <p className="font-body min-w-0 flex-1 truncate text-[15px] font-normal text-s-ink">
+                {appt.time}, {appt.customer}, {appt.service}, CHF {appt.price}
+              </p>
             </li>
           ))}
         </ul>
-        <p className={QUIET_LINE + " pt-4"}>{MORE_TODAY_COUNT} more today.</p>
       </div>
 
-      {/* This month, demoted to a plain 13px line rather than a second anchor. */}
+      {/* This month, one sentence, demoted to a plain 13px line rather than a second anchor. */}
       <div className="mt-8 px-5">
-        <p className="font-body pb-1 text-[13px] font-semibold text-s-ink-2">August 2026</p>
         <p className="font-body text-[13px] font-normal text-s-ink-2">
-          {MONTH_TOTAL} appointments this month. Tap a date to open it.
+          August 2026, {MONTH_TOTAL} appointments this month. Tap a date to open it.
         </p>
       </div>
 
-      {/* The day grid. No card and no grid lines: one hairline separates the weekday letters from
-          the dates and nothing else. */}
+      {/* The current week, one row of the month grid rather than all six (ROUND 2026-08-21 CUT); the
+          month total above already carries the whole-month number. No card and no grid lines: one
+          hairline separates the weekday letters from the dates. Per-day counts are gone, replaced by a
+          dot for a day with appointments, today's own filled circle already carries today's signal. */}
       <div className="mt-8 px-5">
         <div className="grid grid-cols-7 border-b border-s-border pb-2">
           {WEEKDAY_LETTERS.map((day) => (
@@ -512,8 +534,8 @@ function CalendarScreen() {
           ))}
         </div>
         <div className="grid grid-cols-7">
-          {AUGUST_WEEKS.flat().map((cell, i) => (
-            <div key={i} className="flex h-[52px] flex-col items-center justify-center gap-0.5">
+          {THIS_WEEK.map((cell, i) => (
+            <div key={i} className="flex h-[52px] flex-col items-center justify-center gap-1">
               {cell && (
                 <>
                   {cell.date === TODAY_DATE ? (
@@ -523,17 +545,15 @@ function CalendarScreen() {
                   ) : (
                     <span className="font-body text-[13px] font-normal tabular-nums text-s-ink">{cell.date}</span>
                   )}
-                  <span className="font-body text-[13px] font-normal tabular-nums text-s-ink-2">
-                    {cell.count > 0 ? cell.count : ""}
-                  </span>
+                  {cell.count > 0 && cell.date !== TODAY_DATE && (
+                    <span className="h-1 w-1 rounded-full bg-s-ink-2" aria-hidden />
+                  )}
                 </>
               )}
             </div>
           ))}
         </div>
       </div>
-
-      <p className={QUIET_LINE + " mt-8"}>Today&apos;s cell is highlighted here. Tap another date to open it.</p>
     </>
   );
 }
@@ -629,7 +649,7 @@ export const FLOW_TABS_FRAMES: { key: NavKey; caption: string }[] = [
   {
     key: "calendar",
     caption:
-      "Calendar, the landing tab. Today's chairs and decisions, then the standing strip for walk-ins with no time yet, right above the day's own book.",
+      "Calendar, the landing tab, cut hard for element count (46 to 19): a face row plus one sentence, one anchor, the decision box with its text merged to one sentence, the standing strip, two of today's rows, and a one-week grid with dots instead of per-day counts.",
   },
   {
     key: "clients",
