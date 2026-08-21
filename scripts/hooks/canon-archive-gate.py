@@ -99,6 +99,12 @@ CANON = {
     # instrument; the load-bearing column is what each one is BLIND to.
     "INSTRUMENT_CALIBRATION.md": "what each measuring instrument has proved, and what it is blind to",
     "_rebuilt_routes.json":  "the drift checker's strict-scope allowlist (config)",
+    # Added 2026-08-21. Sibling of TASTE_AUTHORITY.md but for a different concern: TASTE_AUTHORITY
+    # decides how things LOOK, this decides WHO DECIDES an operational call (fix now, park, ask).
+    # TASTE_AUTHORITY.md had never been registered here either, a pre-existing gap; both rows land
+    # together because the two files are siblings and a helper reads them as a pair.
+    "TASTE_AUTHORITY.md":     "who may decide a small visual/taste question without asking him",
+    "DECISION_AUTHORITY.md":  "who may decide a small operational question (fix now/park/ask) without asking him",
 }
 
 # Sanctioned subdirectories. Everything below them governs itself.
