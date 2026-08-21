@@ -624,6 +624,31 @@ and product decisions, `REMOVED.md` for things he has killed, `LOCKFILE.md` for 
 `PREFERENCES.md` for how he wants work done.
 
 
+## 2026-08-21, login screen: he approved the stripped version (variant B)
+
+He shared a Quizlet login and asked: *"make the login uncluttered n like ths no blue but yk simple
+and shapes n colors yk"*. Then, on the mockup: *"B but the apple google sh not monochrome and also
+more up bro"* and *"and what abt create account"*. Approved with **"approved"**.
+
+| axis | decision |
+|---|---|
+| login inputs | **grey fill `#F4F4F5`, NO border.** SUPERSEDES the 2026-08-09 white-fill-plus-hairline decision FOR THIS SCREEN. The no-focus-treatment half of 08-09 STANDS: tapping a field still changes nothing visible, no ring, no halo, no colour change. |
+| forgot password | ink `#0A0A0A`, underlined. No longer blue `#276EF1`. |
+| the two ways in | **must not match.** Apple = ink fill, white label. Google = `bg-s-bg-sunken`, ink label, no border. Measured cause: they matched on all 5 properties compared (342x56, radius 99, white, same 1px hairline), so they read as one button printed twice. |
+| brand marks | the REAL svgs already in `SignIn.tsx`. He rejected hand-drawn stand-ins by name: *"fk are those colors"*, after I drew a blue letter G in a circle and a white disc behind the Apple glyph. Real icons only, never approximations. |
+| the divider | **the "oder" rule is dead.** The empty gap between the two groups does that job, which is what the reference does. |
+| the terms line | off the login screen. It belongs where an account is created. |
+| the subtitle | off. It explains what signing in is, to someone who already tapped sign in. |
+| the two ways in, position | pushed down but NOT pinned to the floor. A fixed 120px gap above them, never flex-grow. |
+| create account | stays, below the two buttons. It was never missing, it was buried under the fold with the cookie banner over it. |
+
+**What the reference actually contributed, measured rather than eyeballed.** PIL-sampled his
+screenshot (881x1999) after pixel-spec-auto failed on it: side margin 56px scales to 25 at our 390
+(ours is 24), field width 768 scales to 340 (ours is 342), field height scales to 56 (ours is 56).
+So the sizes were ALREADY the same. The only real difference was an empty band of 548px, 27% of the
+screen, between the forgot link and the first social button. The gap was the whole effect.
+
+
 ## 2026-08-10, the three top-bar controls, settled by him after I guessed wrong
 
 His words: *"the back button maybe, like, a circle, or the x button, that, like, the circle too and
