@@ -159,7 +159,7 @@ export default function RecentlyViewedTiles({
               </p>
               {baselShopCount != null && (
                 <p className="truncate font-body text-[12px] leading-[1.3] text-s-ink-2">
-                  {baselShopCount} Stores
+                  {baselShopCount} Salons
                 </p>
               )}
             </div>

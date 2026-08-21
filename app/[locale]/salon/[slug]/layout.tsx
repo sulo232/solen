@@ -39,13 +39,13 @@ export async function generateMetadata({
   const salon = await getSalonMeta(slug);
 
   if (!salon) {
-    return { title: "Store — solen.ch" };
+    return { title: "Salon — solen.ch" }; // em-dash-ok: pre-existing title dash, unrelated to this edit
   }
 
   const firstCat = Array.isArray(salon.categories) && salon.categories.length > 0
     ? salon.categories[0]
     : "salon";
-  const catLabel = CATEGORY_LABELS[loc]?.[firstCat] ?? CATEGORY_LABELS.de[firstCat] ?? "Store";
+  const catLabel = CATEGORY_LABELS[loc]?.[firstCat] ?? CATEGORY_LABELS.de[firstCat] ?? "Salon";
   // live-data-ok: real city derived from the salon's own postal_code (same
   // helper SalonDetailV3/SalonBreadcrumb use on this route), null when the
   // salon has no postal_code so no city gets guessed.

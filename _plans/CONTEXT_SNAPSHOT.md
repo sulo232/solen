@@ -2,16 +2,16 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-18T23:43:14 (trigger: auto)
+- taken: 2026-08-21T11:07:08 (trigger: auto)
 - branch: claude/stress-test-gates-hooks-6dc8e8
 
 ## git
 ```
-45ba2690e Scroll reproduces on a phone viewport and with real keys, so it is not my tooling
-c5b73a778 Scroll: symptom confirmed, cause not found, six dead ends written down
-2c2c996ca The scroll check could not see the bug it was written for
-a1212dbf1 Seven checks are back on, and the thing blocking them was punishing honesty
-08377912f Remove dark: styling from four orphaned components, owner approved
+48c9f6b44 Park the six refund repro scripts instead of leaving them loose in the root
+8c56a8599 The six decisions, written out so they can actually be answered
+dedaf081b checkpoint(auto): 7 uncommitted file(s) at turn end
+37ad66a9f checkpoint(auto): 5 uncommitted file(s) at turn end
+53fb1c6f1 A page he can tap through, and the number was overstated
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
@@ -76,4 +76,5 @@ a1212dbf1 Seven checks are back on, and the thing blocking them was punishing ho
 48 | PRINCIPLE DEEP-RESEARCH , re-test every principle we already have against external evidence | **ACTIVE** (design) + handoff (rest) 2026-07-28
 50 | DESIGN principle deep-research (the rules we ALREADY have) | **ACTIVE** (2026-07-28)
 51 | DESIGN RE-ENGINEER , improve the system we have, measured against live Airbnb | **ACTIVE** (2026-07-28)
+72 | REFUND PROCESS: does it exist, who decides, is it legal (owner 2026-08-19: "Is there even a refund process, and how does it even proceed? Who is gonna decide it? ... with the tax and fix if it's legal or not") | **ACTIVE** (2026-08-19)
 71 | GATE + HOOK STRESS TEST , all 305 hooks driven with real payloads, not read (owner 2026-08-17: "actually evaluate and stress test each one") | **ACTIVE** (2026-08-18)

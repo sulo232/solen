@@ -109,7 +109,7 @@ export default function Nearby({
         <NearbyMap
           salons={mapSalons}
           href={`/${locale}/search?view=map`}
-          ariaLabel={`Stores in ${CITY} auf der Karte ansehen`}
+          ariaLabel={`Salons in ${CITY} auf der Karte ansehen`}
           // The CITY leads, because naming the city is the thing he asked for. The count follows
           // and drops out entirely rather than being invented. No separator dot between them: they
           // already differ in weight, and taste rule 2 says that contrast IS the separator.
@@ -123,7 +123,7 @@ export default function Nearby({
           // number and the picture cannot drift apart. `nearbyCount` stays a prop for any caller
           // that wants the countrywide figure.
           countLabel={CITY}
-          countSubLabel={mapSalons.length > 0 ? `${mapSalons.length} Stores` : null}
+          countSubLabel={mapSalons.length > 0 ? `${mapSalons.length} Salons` : null}
         />
       </SectionFrame>
     </Section>

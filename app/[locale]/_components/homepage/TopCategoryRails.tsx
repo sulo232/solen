@@ -77,7 +77,7 @@ function CategoryRail({
           title={`Top ${label}`}
           // Same "Alle {label}-Stores" template ForYouSalonRows.tsx already ships for its own
           // category-scoped rows, not a new string.
-          link={{ label: `Alle ${label}-Stores`, href: `/${locale}/${route}` }}
+          link={{ label: `Alle ${label}-Salons`, href: `/${locale}/${route}` }}
           scrollRef={scrollRef}
         />
         <ScrollRow ref={scrollRef}>

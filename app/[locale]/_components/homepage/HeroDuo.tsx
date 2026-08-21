@@ -68,7 +68,7 @@ const DUO: [DuoCard, DuoCard] = [
     href: "/de/search?sort=top-rated",
     mark: "T",
     title: "Top bewertet\nin der Schweiz.",
-    cta: "4.8★ Stores",
+    cta: "4.8★ Salons",
     bg: "#E9DFC8",
     ink: "#E58840",
     pillBg: "#1A1A1A",
