@@ -1,0 +1,234 @@
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What is protecting you</title>
+<style>
+ :root{--bg:#fff;--ink:#0A0A0A;--ink2:#6B6B6B;--line:#E4E4E7;--sunken:#F4F4F5}
+ *{box-sizing:border-box;margin:0;padding:0}
+ body{background:var(--bg);color:var(--ink);padding:22px 16px 70px;
+  font:16px/1.6 Inter,-apple-system,system-ui,sans-serif;-webkit-text-size-adjust:100%}
+ .wrap{max-width:720px;margin:0 auto}
+ h1{font-size:29px;line-height:1.12;letter-spacing:-.02em;font-weight:600;margin-bottom:8px}
+ .lede{color:var(--ink2);font-size:15px;margin-bottom:8px}
+ .note{background:var(--sunken);border-radius:12px;padding:12px 14px;font-size:14px;
+  color:var(--ink2);margin-bottom:24px}
+ h2{font-size:20px;font-weight:600;margin:34px 0 4px}
+ .s{color:var(--ink2);font-size:14px;margin-bottom:12px}
+ .r{border:1px solid var(--line);border-radius:12px;padding:11px 13px;margin-bottom:7px}
+ .r p{font-size:15px}
+ .foot{margin-top:32px;padding-top:16px;border-top:1px solid var(--line);color:var(--ink2);font-size:14px}
+</style>
+<div class="wrap">
+<h1>What is protecting you</h1>
+<p class="lede">You said you do not know what these rules are. Here is every one of them, in one sentence each, saying what mistake it stops and what you or a customer would see if it shipped.</p>
+<p class="note">No file names, because you cannot act on one. Read the money and customer-data sections if you only read two. The rest are mostly aimed at me.</p>
+<h2>Money</h2>
+<p class="s">Three rules stand between a mistake and your Stripe account. <b>3</b> in total.</p>
+<div class="r"><p>Stops a database change that touches money, an appointment slot, or a booking&#x27;s status from skipping the check that it actually took effect, the exact gap that once let a card get charged without re-confirming the booking was still valid.</p></div>
+<div class="r"><p>Stops a brand-new payment, voucher, or gift-card endpoint from being built with no login check at all, the exact hole that once let anyone anonymously mint free voucher codes or reset a voucher&#x27;s balance.</p></div>
+<div class="r"><p>Keeps the most expensive AI model reserved for genuine judgment calls instead of routine build work, so money isn&#x27;t spent on the costliest option for a job a cheaper one could do.</p></div>
+<h2>Customer data and security</h2>
+<p class="s">These are the ones that matter most. Each stops a specific way a customer&#x27;s private information could leak or be changed by the wrong person. <b>14</b> in total.</p>
+<div class="r"><p>Stops a customer&#x27;s own typed words from being fed straight into an AI request with nothing wrapping them, which is how a customer could sneak hidden instructions into what the AI writes back.</p></div>
+<div class="r"><p>Stops a security check that trusts a browser cookie without verifying it&#x27;s genuine, the exact hole that would let someone forge another customer&#x27;s identity and see or change their bookings.</p></div>
+<div class="r"><p>Stops a new endpoint that changes data like a booking from accepting whatever a customer&#x27;s request sends with no real checking, which is how bad or malicious input could corrupt a booking.</p></div>
+<div class="r"><p>Stops a new backend route with elevated database access from skipping the check that the data actually belongs to the person asking for it, the exact gap that could let one salon see or touch another salon&#x27;s data.</p></div>
+<div class="r"><p>Stops a new file upload or delete route with elevated storage access from skipping an ownership check, the exact gap that could let one customer or salon delete or read another&#x27;s photos.</p></div>
+<div class="r"><p>Stops a database change from inventing a real fact about a real salon, like claiming it&#x27;s wheelchair-accessible or LGBTQ+ friendly, from a random-number trick instead of an actual answer someone gave.</p></div>
+<div class="r"><p>Same protection as the sibling rule: stops any future database change from assigning a real fact about a real business using randomness instead of a genuine source.</p></div>
+<div class="r"><p>Stops any command run through a database tool from deleting a table, turning off a table&#x27;s protections, or wiping every row with no filter, the class of mistake that could destroy or expose real customer data in one shot.</p></div>
+<div class="r"><p>Stops an AI service&#x27;s secret access key from being placed directly in a web address, since a key sitting in a link leaks into server logs where it could be found and reused by someone else.</p></div>
+<div class="r"><p>Stops backend code from pulling every single column off a table that holds payment or moderation details when only specific fields are needed, which is how far more private data than necessary could end up exposed.</p></div>
+<div class="r"><p>Stops raw customer-typed search text from being spliced directly into a database search with no cleanup, the kind of gap that could let a crafted search manipulate results or reach data it shouldn&#x27;t.</p></div>
+<div class="r"><p>Stops a private access code, like a walk-in queue link, from being saved to the database in its raw, readable form instead of scrambled, which is how someone with database access could impersonate that link.</p></div>
+<div class="r"><p>Stops a private access code, like a booking or invite link, from being placed into a web address, since that leaks into browser history and server logs where it could be found and misused.</p></div>
+<div class="r"><p>A reminder, not a block: flags a known-unsafe security shortcut, like trusting an unverified login cookie or turning off a table&#x27;s built-in protection, if it&#x27;s written into code or a document, so a bad instruction can&#x27;t quietly re-teach itself later.</p></div>
+<h2>How your product looks</h2>
+<p class="s">These stop your product drifting into looking like several different products. <b>95</b> in total.</p>
+<div class="r"><p>A reminder, not a block: nudges me to double-check that a new search or filter box actually narrows the results, the bug that once made an &#x27;open now&#x27; filter show every salon whether it was open or not.</p></div>
+<div class="r"><p>Stops me telling you a screen change is finished without actually opening a browser and looking at it, the exact complaint you&#x27;ve raised about claiming things work when they were never tested.</p></div>
+<div class="r"><p>Stops the rounded corners on grouped list cards, like services or staff, from drifting to a different roundness on a new screen, so one page doesn&#x27;t quietly look different from another.</p></div>
+<div class="r"><p>Stops a review count like &#x27;(16)&#x27; from being painted as loose text instead of inside the small pill background used everywhere else, so the same kind of number doesn&#x27;t look different from screen to screen.</p></div>
+<div class="r"><p>Stops a list of separate people, like stylists, from being squashed into one shared box the way a list of grouped services is, which would make individual staff look bundled together like one thing.</p></div>
+<div class="r"><p>Stops a fake star rating, review count, distance, price, discount, or &#x27;saved&#x27; state from being typed in by hand, which is how a customer could be shown a number for a salon that was simply made up.</p></div>
+<div class="r"><p>Stops a page from quietly defining its own map colors instead of using the shared one, so the map doesn&#x27;t look different, or fail to load at all, on one page versus another.</p></div>
+<div class="r"><p>Stops me showing you a mockup that draws a feature that doesn&#x27;t exist and was never approved, like a waiting-list you&#x27;d already told me to kill, so what you&#x27;re asked to approve is grounded in something real.</p></div>
+<div class="r"><p>Stops me proposing a design change with no real, measured problem behind it, so you&#x27;re not shown a &#x27;fix&#x27; for something that was already fine or a repeat of a change you already turned down.</p></div>
+<div class="r"><p>Stops a mockup from being shown as a cramped side-by-side comparison page instead of the actual full-screen phone view you&#x27;d see in the app, so what you&#x27;re judging looks like the real thing.</p></div>
+<div class="r"><p>Stops a mockup from being handed to you with German text when it should read in English, catching the case where the file was generated by a script instead of typed directly.</p></div>
+<div class="r"><p>Stops me re-proposing the flat, borderless card look you already rejected and told me to drop for good.</p></div>
+<div class="r"><p>Stops a design detail you already rejected from quietly reappearing in a new mockup because it was copied from old leftover code instead of from what&#x27;s actually approved.</p></div>
+<div class="r"><p>Stops a selected option, like a filter or menu choice, from being painted solid black, which you rejected in favor of a calm grey highlight, so a selected item doesn&#x27;t suddenly look like a button.</p></div>
+<div class="r"><p>Stops me recommending we just hide or delete a broken or fake-looking feature because we&#x27;re not live yet, instead of fixing it properly with real seeded test data.</p></div>
+<div class="r"><p>Stops me editing a screen right after measuring a reference image without first confirming the measurements were read correctly, so a mismatch doesn&#x27;t get built into the real screen.</p></div>
+<div class="r"><p>Stops a raw, hand-typed color or an outdated style value from creeping back into a screen instead of the shared design values, which is how two screens end up in slightly different shades of the same grey.</p></div>
+<div class="r"><p>Stops a star rating from being shown with no review count next to it, and stops a made-up round number like &#x27;14 salons near you&#x27; from replacing the real, computed count.</p></div>
+<div class="r"><p>Stops me editing a page that was deliberately taken off the app without first confirming with you it&#x27;s still meant to be live, so a dead page doesn&#x27;t quietly come back to life.</p></div>
+<div class="r"><p>Stops me handing you a rough, hand-built approximation instead of the actual thing that would ship, so what you approve is literally what gets built, not a look-alike.</p></div>
+<div class="r"><p>Stops a mockup from being shown to you in German when it should be in English, so the design work you&#x27;re reviewing is always in a language you can judge.</p></div>
+<div class="r"><p>Stops the labels and captions I write on top of a comparison image or mockup from being in German, so my own notes stay in English even when the app screenshot underneath them is German.</p></div>
+<div class="r"><p>Stops me calling a desktop comparison page, a bullet list, or a wall of reasoning a mockup, when what you asked for was one real phone-sized screen you can actually look at.</p></div>
+<div class="r"><p>Stops me changing the real, live customer screen when what you asked for was a mockup to review first, so nothing goes live without your say-so.</p></div>
+<div class="r"><p>Stops an approved design detail from being applied to only one version of a screen while quietly missing a related one, like the list view getting it but the selected view not.</p></div>
+<div class="r"><p>Stops a mockup of an existing screen from being drawn out of thin air, requiring it to actually include a real screenshot of the current page as its starting point.</p></div>
+<div class="r"><p>Stops a card design from being shown to you shrunk to half its real width, so you can actually judge how it will look at full size on your phone.</p></div>
+<div class="r"><p>A reminder, not a block: when you ask for several different design directions to compare, nudges me to actually build several distinct options instead of quietly collapsing them into one.</p></div>
+<div class="r"><p>Stops me handing you a mockup link before actually measuring it against the design rules, like tap-target size and spacing, instead of just eyeballing a screenshot and calling it good.</p></div>
+<div class="r"><p>Stops me changing the color, shape, shadow, or spacing on a real, live customer screen directly, requiring it to be shown to you as a mockup and approved first.</p></div>
+<div class="r"><p>Stops a new animation from only fading in without also scaling and softening the way every other element does, the mismatch that made one screen&#x27;s motion read as sloppy next to the rest of the product.</p></div>
+<div class="r"><p>Stops a search box or text field from rendering as a visible box inside another box, the exact glitch that made the profile search bar look broken.</p></div>
+<div class="r"><p>Stops any AI-generated image from being used as a real photo in the product, since you&#x27;ve said only genuine photography should appear.</p></div>
+<div class="r"><p>Stops a selected filter or menu option from being painted solid black instead of the calm grey highlight you approved.</p></div>
+<div class="r"><p>Stops a font-weight or size change from being applied to literally everything on a screen at once, the mistake that erased all visual hierarchy because bold and normal text became indistinguishable.</p></div>
+<div class="r"><p>Stops a hardcoded decorative photo from being glued onto a page, since you&#x27;ve said the space should be filled with real salon photos pulled from actual data, never a stock image added for looks.</p></div>
+<div class="r"><p>Stops the blue glow or halo outline from appearing around a tapped button or field, since you&#x27;ve said repeatedly you don&#x27;t want that look anywhere.</p></div>
+<div class="r"><p>Stops a new mockup from drawing its own made-up version of a salon card instead of using the real, approved one, so a card in a mockup always looks like the card that will ship.</p></div>
+<div class="r"><p>Stops me building a visual effect, like an animated puff of air, purely from your written description without first finding a real reference for it, the gap that burned nine failed attempts on one icon.</p></div>
+<div class="r"><p>Stops italic text from appearing anywhere in the product, since it&#x27;s a font style you explicitly said was never approved and never wanted.</p></div>
+<div class="r"><p>Stops me handing you a preview link that only works on my own machine and can&#x27;t be opened on your phone, instead of a real shareable link.</p></div>
+<div class="r"><p>Stops a homepage section built from placeholder demo data from being switched on for real visitors, and stops fake sample data from creeping back into a real customer screen.</p></div>
+<div class="r"><p>Stops a finished screen from being called done without checking it against the design rules and the approved mockup, the mistake that let approved details like a search bar or a color quietly get dropped during a build.</p></div>
+<div class="r"><p>Surfaces a past instance of me re-inventing something from scratch when the current work touches the same area, so it isn&#x27;t repeated after a fresh start.</p></div>
+<div class="r"><p>Stops me silently dropping a specific detail you dictated, like &#x27;roads should be grey, tiles white,&#x27; when you&#x27;ve flagged that I keep forgetting it, forcing me to explicitly confirm each one landed.</p></div>
+<div class="r"><p>Stops a screen from having so much bold text that nothing stands out anymore, the exact flatness that made an early product screen read as busy instead of clear.</p></div>
+<div class="r"><p>Stops a form field&#x27;s error styling from being hand-rolled differently on one screen than the standard look, so an invalid entry doesn&#x27;t look different depending on which form it&#x27;s in.</p></div>
+<div class="r"><p>After you&#x27;ve rejected the same animation fix three or more times, stops me closing it out on a measured number alone and forces a real side-by-side so your eyes and the measurement look at the same thing.</p></div>
+<div class="r"><p>Stops me handing over a mockup with tap or hover animations without actually triggering them and checking they work, since a still screenshot can look perfect while the animation itself never fires.</p></div>
+<div class="r"><p>Stops a mockup from showing an action, like &#x27;change date&#x27; or &#x27;add a note,&#x27; without me having checked whether the backend to actually make it work exists, so you don&#x27;t approve a feature that&#x27;s a fantasy.</p></div>
+<div class="r"><p>One combined check that stops an unapproved bright color, a washed-out focal color, German text, a hand-drawn icon instead of a real one, or oversized bold labels from slipping into a mockup.</p></div>
+<div class="r"><p>Stops ALL-CAPS text, long dashes, decorative dot separators, and vague filler like &#x27;(optional)&#x27; from creeping into the product&#x27;s screens or mockups.</p></div>
+<div class="r"><p>Stops me hand-drawing a new card or grid layout in a mockup when a real, already-approved version exists, so what you&#x27;re shown to approve matches what would actually ship.</p></div>
+<div class="r"><p>Stops me adding a new animation effect straight onto a real, live screen, forcing it to be tried in a throwaway mockup first so you can approve the motion before it touches production.</p></div>
+<div class="r"><p>Stops a mockup of an existing screen from being drawn from memory instead of a real screenshot of the actual page, so it doesn&#x27;t diverge from what&#x27;s really there.</p></div>
+<div class="r"><p>Combines a dozen separate mockup-quality checks into one list of what&#x27;s missing, so fixing a mockup takes one round instead of getting turned back one issue at a time.</p></div>
+<div class="r"><p>Stops backend code from trying to read a piece of data that doesn&#x27;t actually exist, which can silently return blank information or crash a page instead of showing the real thing.</p></div>
+<div class="r"><p>Stops the search-bar expand animation from snapping open instantly instead of smoothly following your finger as you swipe, the exact motion you rejected four separate times.</p></div>
+<div class="r"><p>Stops me editing a mockup meant to match a reference image without having actually measured the reference first, instead of eyeballing sizes and guessing.</p></div>
+<div class="r"><p>Stops a fresh, hand-typed list of cities or service categories from being written into a new screen when the real, shared list already exists, so screens don&#x27;t drift out of sync with each other.</p></div>
+<div class="r"><p>Stops me describing a bug as if it&#x27;s currently hurting real paying customers, when Solen hasn&#x27;t launched yet, so a hypothetical risk isn&#x27;t reported to you as an active emergency.</p></div>
+<div class="r"><p>Stops me building a design change based on a named app you referenced, like &#x27;how Instagram does it,&#x27; from memory, requiring the reference to actually be looked at first.</p></div>
+<div class="r"><p>Stops a mockup that name-drops a brand as inspiration, like &#x27;Apple-style,&#x27; from being built without first actually capturing a real screenshot of that brand&#x27;s design.</p></div>
+<div class="r"><p>Stops a mockup built from a reference screenshot from using guessed sizes, requiring the spacing to actually be measured off the reference image first.</p></div>
+<div class="r"><p>Stops a redesigned screen from still containing specific elements, like a boxed border or a hamburger menu, that you already told me repeatedly to remove.</p></div>
+<div class="r"><p>After you reject the same piece of visual work twice in a row, automatically switches from more guessing to actually measuring the real result and getting a second opinion.</p></div>
+<div class="r"><p>Stops me repainting the same rejected mockup file over and over with small tweaks when you rejected the whole thing, requiring a genuine fresh start instead of polishing something fundamentally wrong.</p></div>
+<div class="r"><p>Stops me guessing a color from a written description, like &#x27;make it more pink,&#x27; when an already-approved image holding the exact right color is sitting right there to sample instead.</p></div>
+<div class="r"><p>Automatically captures a screenshot of the phone simulator right after a mobile-app edit, so a screen change actually gets looked at instead of assumed to look right.</p></div>
+<div class="r"><p>Stops a hardcoded placeholder photo link from being built directly into a real page, and stops me claiming Solen already has real salon photography when the database still has zero real photos.</p></div>
+<div class="r"><p>Reminds me, when you reject a design and ask for a full rebuild, that keeping the same layout and only changing colors is not enough if you&#x27;re actually rejecting the structure itself.</p></div>
+<div class="r"><p>When a delegated helper finishes editing a screen, reminds me the design-check step still needs to happen, since work done by a helper was otherwise getting less scrutiny than work I did myself.</p></div>
+<div class="r"><p>Surfaces a design decision you already settled, like &#x27;selected is grey, not blue,&#x27; when new work touches that area, so a resolved call doesn&#x27;t get silently re-argued after a fresh start.</p></div>
+<div class="r"><p>Checks at the start of a turn whether the preview link and dev server from earlier are still alive, so a dead link gets caught before it&#x27;s handed to you instead of you clicking on a blank page.</p></div>
+<div class="r"><p>Stops a new screen from hand-building its own search bar, card, or tabs when the real shared version already exists, the exact pattern that once made one screen&#x27;s search bar and cards look and behave differently from the rest of the app.</p></div>
+<div class="r"><p>Stops me saying a screen change is &#x27;done&#x27; or &#x27;fixed&#x27; when nothing actually verified it that turn, no browser check, no test, so a completion claim isn&#x27;t just taken on faith.</p></div>
+<div class="r"><p>Stops me telling you a mockup or recording is &#x27;coming&#x27; or &#x27;running now&#x27; without either a real link you can look at right now or a named reason I&#x27;m stuck, so a promise never stands in for the real thing.</p></div>
+<div class="r"><p>Stops me asking you to choose between visual options using only written descriptions, requiring the options to actually be rendered and looked at first, since you can&#x27;t judge a look from text.</p></div>
+<div class="r"><p>Stops me showing you a screen only in its desktop size and calling it checked, since Solen is a phone-first product and a desktop-only look misses how most people will actually see it.</p></div>
+<div class="r"><p>Before asking you a design question, checks whether an approved mockup already answers it, so you&#x27;re not asked the same question twice.</p></div>
+<div class="r"><p>Stops every row in a list of equal choices, like a list of available stylists, from being painted with a solid black button, since that turns every row into what should be the one main action on the page.</p></div>
+<div class="r"><p>Stops me trying to match a reference screenshot by pasting new colors onto our own existing page when the reference actually has different pieces entirely, which can never produce a real match no matter how many tweaks are layered on.</p></div>
+<div class="r"><p>Stops me responding to &#x27;rebuild this completely&#x27; with just a coat of paint, new colors and spacing, while keeping the exact same rows and layout, when you actually asked for the structure to change.</p></div>
+<div class="r"><p>Stops me silently picking my own interpretation when your instruction mixes an approval and a rejection in one sentence, forcing me to state out loud which reading I chose so a misread shows up right away.</p></div>
+<div class="r"><p>A reminder, not a block: stops me citing the no-fake-data rule as a reason to leave a section of the app empty, when the real fix, since there are no real customers yet, is to add real seeded test data instead of a blank space.</p></div>
+<div class="r"><p>Stops me declaring an animation fixed after checking only a few sample frames instead of the whole clip, the mistake that let a &#x27;fixed&#x27; object still miss its target on every single frame.</p></div>
+<div class="r"><p>Stops me redesigning or rewriting a screen you already approved or said you loved, just because you asked a question about it.</p></div>
+<div class="r"><p>Stops me finding a real design-rule break, like a blue icon where it should be black, and just flagging it as &#x27;a possible exception&#x27; to leave alone, instead of actually fixing it.</p></div>
+<div class="r"><p>Stops new hardcoded German text from being written into a customer screen, and checks that a new piece of text was actually translated into all four languages, so a non-German customer doesn&#x27;t see the wrong language or a broken translation key.</p></div>
+<div class="r"><p>After the same animation problem has been rejected three or more times, requires the real thing to be put side by side with the reference so your eyes and the measurement are looking at the same object.</p></div>
+<div class="r"><p>Stops me quietly changing a value you explicitly locked, like a photo&#x27;s shape, just because a different request made that value inconvenient.</p></div>
+<div class="r"><p>Stops me claiming &#x27;nothing on this screen is too small to tap&#x27; after only checking the screen&#x27;s starting state, when some controls only appear after you tap something open.</p></div>
+<div class="r"><p>Stops an automated visual check from grading a page that actually errored or hadn&#x27;t finished loading and calling it a passing result, since that hides real problems behind a false all-clear.</p></div>
+<div class="r"><p>Stops a new mockup from drawing its own made-up version of a salon card instead of the real, approved one, so a card in a mockup always looks like the card that would ship.</p></div>
+<div class="r"><p>Stops me deleting or disabling a feature you like just because you said something vague like &#x27;never mind&#x27; about a related complaint, when you never actually asked for it to be removed.</p></div>
+<h2>How I work</h2>
+<p class="s">These are aimed at me, not at your code. Most of them exist because you told me the same thing more than once. <b>90</b> in total.</p>
+<div class="r"><p>A reminder, not a block: points me at the doc explaining how bookings, payments, and logins actually work, so I don&#x27;t guess at how the backend behaves.</p></div>
+<div class="r"><p>A reminder, not a block: points me at the map of what each screen does and where it leads, so I don&#x27;t build a screen without knowing what it&#x27;s meant to do next.</p></div>
+<div class="r"><p>Stops loose one-off reports and half-finished notes from piling up unfiled in the design folder, so they don&#x27;t get mistaken for current rules later.</p></div>
+<div class="r"><p>Stops me telling you &#x27;I&#x27;ll build the mockup next&#x27; instead of actually building and showing it in the same reply, so you&#x27;re not left waiting on a promise.</p></div>
+<div class="r"><p>Stops a question or decision I set aside mid-task from vanishing, forcing it into the written plan so it actually reaches you instead of getting lost.</p></div>
+<div class="r"><p>Stops me building a brand-new page, endpoint, or database change without first checking whether something doing that job already exists, so you don&#x27;t end up with two competing versions of the same feature.</p></div>
+<div class="r"><p>Stops me deleting a page or feature without writing down why, so it doesn&#x27;t quietly get rebuilt from scratch later by a session that didn&#x27;t know it was removed on purpose.</p></div>
+<div class="r"><p>Stops me promising &#x27;I&#x27;ll do better next time&#x27; about a mistake you flagged as repeating, without actually building something that makes it structurally impossible to repeat.</p></div>
+<div class="r"><p>Keeps a running, plain-English log of what got done each session so a new session, and you, can see recent work without having to ask.</p></div>
+<div class="r"><p>Reminds me, the moment you mention a screenshot or a specific situation, to actually use the matching measuring tool first instead of eyeballing it.</p></div>
+<div class="r"><p>Stops me handing you a written design document with no link to an actual page you can look at, since you&#x27;ve said repeatedly you need to see it, not read about it.</p></div>
+<div class="r"><p>Stops me closing a turn on a repeat mistake you flagged with just &#x27;understood&#x27; and nothing actually built or fixed.</p></div>
+<div class="r"><p>Stops me reporting an animation as broken when I measured it in a background browser tab, which freezes animations and produces a false reading.</p></div>
+<div class="r"><p>Before starting a big, multi-step autonomous job, forces me to ask you clarifying questions first instead of guessing at scope and burning a whole run on a wrong assumption.</p></div>
+<div class="r"><p>Stops me marking a task as done in the plan with no real proof, a file, a commit, a measurement, behind the checkmark, the exact way a &#x27;done&#x27; item once turned out to still be broken.</p></div>
+<div class="r"><p>Automatically saves and safely merges finished work at the end of each turn so nothing is ever left sitting unsaved and at risk of being lost.</p></div>
+<div class="r"><p>Stops me declaring a feature &#x27;missing&#x27; without having actually checked the code, the mistake that once would have had a whole feature rebuilt from scratch even though it already existed.</p></div>
+<div class="r"><p>Stops a delegated build-helper from running commands that could wipe out another session&#x27;s in-progress work on the same project.</p></div>
+<div class="r"><p>Stops a new shared building block, like a card or button, from being created without also being logged in the master list, so a future screen doesn&#x27;t hand-build its own copy instead of reusing the real one.</p></div>
+<div class="r"><p>After a big code change, forces a second, independent look at it for bugs, security holes, and hardcoded values before I call it finished.</p></div>
+<div class="r"><p>Stops me finishing the interesting part of a task and quietly punting the rest as &#x27;I&#x27;ll do it later,&#x27; instead of just finishing it.</p></div>
+<div class="r"><p>Routes bulk reading of screenshots and video to a helper instead of burning my own working memory on it, so I stay able to hold the rest of the conversation.</p></div>
+<div class="r"><p>Reminds me at the start of a task to load the right internal playbook, debugging, UI work, backend work, instead of winging it from memory.</p></div>
+<div class="r"><p>Stops me handing one single helper a job that&#x27;s really several independent pieces of work, when running them side by side would finish faster.</p></div>
+<div class="r"><p>Stops me stopping partway through a task you asked me to finish completely and asking &#x27;should I continue?&#x27; instead of just continuing.</p></div>
+<div class="r"><p>Stops me telling you something is fixed or improved without showing the actual before-and-after numbers, so you can see whether the change really moved anything instead of taking my word for it.</p></div>
+<div class="r"><p>Stops me disarming every single safety check at once when one blocks me, which would otherwise quietly turn off the whole protection system in one move.</p></div>
+<div class="r"><p>Stops me reporting a task as blocked when a safety check actually told me exactly how to fix it, and I stopped one step short of finishing instead of following through.</p></div>
+<div class="r"><p>When I try to build a brand-new safety check, nudges me to check whether an existing one already covers the same ground so I improve that one instead of creating a near-duplicate.</p></div>
+<div class="r"><p>Stops me saying a new safety check is &#x27;done and armed&#x27; until it&#x27;s both been tested against real material and reviewed independently, since a check that only tests itself can pass while still being broken.</p></div>
+<div class="r"><p>The moment you flag a repeating mistake, signals that a permanent fix needs to be built now, before I even plan the rest of the turn.</p></div>
+<div class="r"><p>Reminds me that when you point out a repeating mistake, the right response is to build something that makes it impossible, not to just say I&#x27;ll be more careful.</p></div>
+<div class="r"><p>When you ask for ideas or options, stops me handing you just my own take instead of actually gathering a spread of independent perspectives first.</p></div>
+<div class="r"><p>Stops an obviously broken measurement, like an impossible usage number, from being repeated back to you as if it meant something.</p></div>
+<div class="r"><p>Stops me closing a turn with a paragraph explaining a situation when nothing was actually built, changed, or asked, so a reply either does something or asks something instead of just narrating.</p></div>
+<div class="r"><p>Once a day, checks for rot in my own setup, dead links, orphaned files, and flags it instead of letting it silently pile up for weeks.</p></div>
+<div class="r"><p>When I&#x27;m about to edit a file where a specific bug bit before, surfaces that past bug and its fix so the same mistake doesn&#x27;t happen twice.</p></div>
+<div class="r"><p>Combines many separate &#x27;you promised a link and it&#x27;s missing or dead&#x27; warnings into one, instead of nine near-identical messages that make you re-read the same paragraph hunting for what changed.</p></div>
+<div class="r"><p>Sets the default way I work at the start of every session to build real work through a build-then-independently-check process, instead of me doing everything alone with no second look.</p></div>
+<div class="r"><p>Stops me asking you a question I could have answered myself by actually looking at the live site, instead of making you spend a turn answering something I could see.</p></div>
+<div class="r"><p>Nudges me to clean up my own notes and memory files once they&#x27;ve grown too large, so old stale facts don&#x27;t keep getting treated as current.</p></div>
+<div class="r"><p>Stops me reporting that a feature is missing without explaining why, killed on purpose, replaced, never finished, or blocked, so a real gap doesn&#x27;t get shrugged off.</p></div>
+<div class="r"><p>Combines many separate &#x27;you asserted something without proof&#x27; warnings into one, instead of eight near-identical denials for the same unproven sentence.</p></div>
+<div class="r"><p>Stops me creating a brand-new file, page, component, or database change without first searching for whether something doing that job already exists, so you don&#x27;t end up with duplicate versions.</p></div>
+<div class="r"><p>Stops me running one script that blindly rewrites many files at once, requiring changes to go one file at a time so each one is actually checked, after a blanket rewrite once broke seven files in one command.</p></div>
+<div class="r"><p>Stops me running two build-helpers on the same project at the same time, which once caused one helper&#x27;s save to accidentally overwrite files the other had just written.</p></div>
+<div class="r"><p>Stops me ending an autonomous &#x27;finish everything&#x27; task early by claiming it&#x27;s too much for one session, when the remaining work doesn&#x27;t actually need any input from you.</p></div>
+<div class="r"><p>Stops me running commands that dump a wall of raw code-looking text onto your screen, since that reads as noise you can&#x27;t act on.</p></div>
+<div class="r"><p>Stops me telling you that you asked for something when you never actually said it, so I own my own suggestions instead of putting words in your mouth.</p></div>
+<div class="r"><p>Stops a command that permanently deletes files, branches, or work from running until a backup is made first, after one such deletion once destroyed hours of downloaded work with no way to recover it.</p></div>
+<div class="r"><p>Stops me telling you a command is blocked and that you&#x27;ll need to run it yourself, after only trying it one way, when a different tool could have done it for you.</p></div>
+<div class="r"><p>Stops me re-trying the exact same tool call after it was rejected once in the same turn, since retrying the identical thing wastes time instead of finding another way to get the answer.</p></div>
+<div class="r"><p>Stops the phone-preview link setup from being written to endlessly retry every two seconds when it fails, since that hammering was the exact thing that once got the preview link service to start refusing all requests.</p></div>
+<div class="r"><p>Stops me saving code changes with the safety checks turned off out of habit, so every save still goes through the checks meant to catch mistakes before they land.</p></div>
+<div class="r"><p>Mid-task, quietly reminds me of unfinished items still open in the current plan so a long working session doesn&#x27;t wrap up having silently left some undone.</p></div>
+<div class="r"><p>Stops me hand-editing the actual product code myself, requiring real code changes to go through a build-helper and a separate reviewer, so changes get a second set of eyes before they land.</p></div>
+<div class="r"><p>Stops me telling you what a system does, costs, or is blocked by without actually running or checking it first, the kind of guess that once wrongly told you a safety check would fail when it had already passed.</p></div>
+<div class="r"><p>Saves the screenshots you attach in chat to an actual file so they can be properly measured, since without this they could only ever be looked at, not measured.</p></div>
+<div class="r"><p>Stops a reply from ending with no indication of what happens next, so you&#x27;re not left having to ask &#x27;okay, so what now.&#x27;</p></div>
+<div class="r"><p>Stops me dismissing a real, confirmed problem by saying it&#x27;s fine because we&#x27;re small right now, when the problem is something that already doesn&#x27;t work correctly no matter the scale.</p></div>
+<div class="r"><p>Stops me reporting a task as blocked or untestable after only trying one approach, requiring a second, different approach to be tried first, since one tool failing once is a hypothesis, not a fact.</p></div>
+<div class="r"><p>Stops a turn from ending when I admit to the exact same kind of mistake for the second time in one session, forcing it to become a permanent fix instead of just another apology.</p></div>
+<div class="r"><p>Combines many separate &#x27;your reply&#x27;s wording is a problem&#x27; checks into one, so one imperfect reply gets one clear correction instead of several overlapping near-identical warnings that make you re-read the same thing.</p></div>
+<div class="r"><p>A reminder, not a block: goes over the reply-writing rules before I even start typing, so a flaw gets avoided instead of caught and re-sent after you&#x27;ve already read a flawed version.</p></div>
+<div class="r"><p>Logs every time I use an override to skip a safety check, so those exceptions stay visible to you instead of silently piling up and quietly weakening the whole system.</p></div>
+<div class="r"><p>When you reference a screenshot without naming the file, automatically points me at the newest real image in your screenshots folder instead of me guessing which one you meant.</p></div>
+<div class="r"><p>Stops me stating a persuasion statistic, like &#x27;70% of users do X,&#x27; with no real source behind it, since past &#x27;famous&#x27; stats like that have turned out to be made up.</p></div>
+<div class="r"><p>A reminder, not a block: when work touches a design decision you&#x27;ve already told me you prefer done a certain way, surfaces that preference before I act instead of after.</p></div>
+<div class="r"><p>A reminder, not a block: warns me early, before I promise you a preview link, if the environment might not be able to serve one, instead of discovering the failure after I&#x27;ve already said &#x27;here&#x27;s your link.&#x27;</p></div>
+<div class="r"><p>Removes an unnecessary approval pop-up for edits to my own configuration files in safe, trusted folders, while still requiring your explicit approval for anything that grants new permissions or touches core project settings.</p></div>
+<div class="r"><p>Stops me agreeing with a suggestion you make without naming at least one real risk or downside first, so you can tell the difference between me actually checking your idea and me just going along with it.</p></div>
+<div class="r"><p>Stops a reply from skipping the numbered summary of everything you asked for in a long message, since burying that summary in a file you never open means it never actually reaches you.</p></div>
+<div class="r"><p>A reminder, not a block: nudges me, when a request touches something that could be outdated, a price, a version, a specific file, to actually go check the real current state instead of relying on memory.</p></div>
+<div class="r"><p>Stops me stating what a rule fired or found without checking the record for a case whose answer I already know, so a broken check doesn&#x27;t get mistaken for a real finding.</p></div>
+<div class="r"><p>Re-loads the current active plan at the start of every session so a fresh session doesn&#x27;t forget what was already in progress.</p></div>
+<div class="r"><p>Stops me diving straight into code changes without first writing your current batch of requests into the plan, so nothing gets started before it&#x27;s actually been captured.</p></div>
+<div class="r"><p>Quietly timestamps the start of each new request so the plan-first check can tell whether the plan was actually updated for it.</p></div>
+<div class="r"><p>After a memory reset mid-session, reminds me that everything I &#x27;remember&#x27; about the code is now just a summary and needs to be re-checked against the real files before I act on it.</p></div>
+<div class="r"><p>Before a memory reset, saves a snapshot of exactly what was in progress so the next session picks up from real working state instead of just a high-level list.</p></div>
+<div class="r"><p>A reminder, not a block: listens for you correcting the same mistake in your own words and logs it, so repeated corrections actually build a record instead of only counting when I happen to admit the mistake myself.</p></div>
+<div class="r"><p>Recognizes your standing phrases, like &#x27;test it&#x27; or &#x27;design suggestions,&#x27; and automatically runs the matching full check instead of relying on me to remember to do it.</p></div>
+<div class="r"><p>Stops me inventing a setup chore for you to do yourself, like adding an API key, when I actually have the access to just do it myself.</p></div>
+<div class="r"><p>Stops a turn from ending while items in your list of requests are still unresolved, vaguely punted with no real specifics, or bundled together without each piece actually being checked off.</p></div>
+<div class="r"><p>Stops me telling you that you refused to let a tool run, when actually your message just happened to arrive mid-call and cancelled it automatically, so you&#x27;re not blamed for something you didn&#x27;t do.</p></div>
+<div class="r"><p>The first time a preview tool is used each session, checks that the basic setup is actually working, so a broken environment gets caught and fixed early instead of silently pushing me back to guessing.</p></div>
+<div class="r"><p>Stops the master list of in-progress work from being overwritten by a single new plan, the exact bug that once caused an entire in-progress plan to be silently wiped out.</p></div>
+<div class="r"><p>Stops two parallel working sessions on the same project from silently editing the same file at the same time, which once caused duplicate, conflicting builds of the same feature.</p></div>
+<div class="r"><p>Once per session, checks that the whole safety-check system itself is still correctly connected, nothing silently disconnected or pointing at a file that no longer exists, and flags it if something&#x27;s broken.</p></div>
+<div class="r"><p>Cleans up old temporary marker and override files so they don&#x27;t silently pile up forever.</p></div>
+<div class="r"><p>Automatically runs the right safe, read-only check for a request, like research or a status check, instead of requiring you to remember and type the exact command.</p></div>
+<p class="foot">21 August 2026. 202 rules.</p>
+</div>
