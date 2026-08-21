@@ -42,8 +42,21 @@ And I want you to first make a mockup of a few flows so I can actually see that 
 - [ ] M3 MOCKUP, a day in the calendar, following their month grid with a number under every date.
 - [ ] M4 MOCKUP, taking a booking by phone, end to end.
 - [ ] M5 MOCKUP, the empty first day for a salon that just signed up.
-- [ ] M6 The per-staff visibility picker, owner-configurable per person. Design only at this stage,
-      it is not in the four flows he picked.
+- [x] M6a THE FOUNDATION ALREADY EXISTS, AND IT IS DECORATIVE `verified:` `lib/types.ts:158-160`
+      carries `can_edit_schedule`, `can_view_own_bookings` and `can_manage_portfolio` on
+      `StaffMember`, created by `supabase/migrations/069_megabuild_staff.sql`, and
+      `app/[locale]/dashboard/staff/page.tsx:77-79` reads them into a form while lines 113-115
+      write them back. So an owner can already set three per-person switches today.
+      AND NOTHING CHECKS THEM. Grepped `app/api/` and `lib/` for all three names: zero hits outside
+      the type file and that one form. They are saved and never read by anything that decides what
+      a person may do. That is this project's named number one failure, a control that looks wired
+      and does nothing, and it is the same shape as the notification toggles caught on 2026-07-07.
+      So his ask is not new construction: it is finishing something half-built, then widening it.
+- [ ] M6b The per-staff visibility picker proper. EXTEND the three existing columns rather than
+      inventing a table, per the exists-check protocol. Two halves: make the three that exist
+      actually gate something, then add what the tab shape needs (which tabs a person sees at all,
+      whether they see money, whether they see other stylists' columns or only their own).
+      Design first, and it is not in the four flows he picked, so it does not block the mockups.
 - [ ] PARKED 2026-08-21 · Does the dashboard land on Heute or on the Kalender? · from: he leaned calendar first ("im thinking of 3 but w today too") and the four-lens council landed on Heute first and said so plainly rather than softening it. Only the LANDING tab is in dispute, his shape survives either way, and the mockups are being built Heute first because that is what the council argued for.
 - [ ] M7 Hand over the four mockups on one link and get his read before any real dashboard code
       changes. He asked for the mockups FIRST so he can see whether I understood.
