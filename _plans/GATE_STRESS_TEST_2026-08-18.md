@@ -830,3 +830,50 @@ fixed AND re-attacked by an agent that did not write the fix (run `wf_3859ceaf-7
 - `no-blind-sweep-gate.py` blocked a read-only analysis script because the script's own text named
    several file paths. Not fixed, logged here: it fires on a Bash command that WRITES a script
    mentioning paths, not on a command that writes source files.
+
+
+## 2026-08-21 , the LIVE checks, and the defect that runs through them
+
+The dead-gate audit ended with "if checks are not flagging obvious things, the cause is in the 231
+that run, not the 41 that do not". This is that pass, and it found one defect shape repeated.
+
+**THE SHAPE.** A PreToolUse gate reads an Edit's `new_string` and never reads `old_string`. Change
+one WORD inside a line that already carried the thing the gate polices, and the untouched property
+in the replacement looks exactly like a freshly added one. Every one of these gates says "this edit
+ADDS X" in its own refusal, and none of them could tell.
+
+**IT COST A REAL STRING, which is how it was found.** The German copy sweep had to change one word
+inside a heading that was already uppercase. The caps rule refused it, the only escape on offer was
+a skip flag, the agent correctly refused to create one, and that screen kept the wrong word while
+the rest of the product was fixed.
+
+**MEASURED.** 94 live checks read an Edit's replacement text. 54 never read what it replaced.
+Driven, each with a payload proved to make it fire first:
+
+| | |
+|---|---|
+| confirmed refusing a reword | 17 |
+| of those, CORRECTLY blind (security / data integrity) | 5 |
+| genuine taste-check defects | 12 |
+| let the reword through already | 4 |
+| never fired on any payload, so UNKNOWN not clean | 24 |
+
+**THE HALF THAT REVERSES THE FIRST FRAMING.** Being fragment-blind is not automatically a defect.
+For `token-in-url-query-gate`, `no-getsession-authz-gate`, `migration-fabricated-data-gate`,
+`postgrest-filter-injection-gate` and `money-update-cas-gate`, "it was already like that" is not a
+defence: the harm is the code existing at all, not who typed it. Those stay exactly as they are, and
+the shared helper's docstring says so by name so nobody wires it in later.
+
+**THE FIX, one shared piece rather than a dozen copies.**
+`~/.claude/hooks/_lib/unchanged_by_this_edit.py`, self-tested 8/8. Forgive only text that is
+byte-identical on both sides of the edit. Two shapes, and picking the wrong one already went wrong
+once today: BYTE-IDENTICAL when the offender is a token a reword does not touch, SKELETON (strip
+the text between the tags first) when the offender is a whole line, because a reword changes the
+line and a byte compare would forgive nothing.
+
+Fixed and driven with controls: `copy-lint-gate` (caps arm), `no-focus-ring-gate`,
+`no-decorative-image-gate`, `stock-photo-gate`, `mockup-first-gate`. Every one keeps refusing a
+genuine addition, a genuine change of value, and any whole-file Write.
+
+**HONEST LIMIT.** The 24 that never fired are UNKNOWN, not clean. My payloads did not exercise
+them; that says nothing about the gates. The way in is each one's own selftest fixtures.
