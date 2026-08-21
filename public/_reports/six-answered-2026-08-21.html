@@ -98,6 +98,30 @@
 <div class="b"><h4>Three checks were refusing correct work</h4>
 <p>Separately, three of the ones already switched on were wrong: one refused a whole job because of a label, one refused a one-line change for an hour because of the folder it was in, and one refused three correct file backups in a row because it only recognised the command for copying folders, not files. All three fixed and driven against real cases, not just re-tested.</p></div>
 
+<h2>Then I went and audited the 25</h2>
+<p class="s">You said the gates are not firing. I did not stop at switching three on. Twenty of the finished-but-dead ones got driven with real input, and then handed to someone who did not audit them, told to break them.</p>
+<div class="num">
+  <div><b>20</b><span>audited properly</span></div>
+  <div><b>8</b><span>looked ready to switch on</span></div>
+  <div><b>8</b><span>broke when attacked</span></div>
+  <div><b>0</b><span>switched on</span></div>
+</div>
+<div class="b"><h4>Every single one that looked ready would have blocked correct work</h4>
+<p>The clearest three. One would refuse a carousel written exactly like a carousel already shipping in your app, blaming a bug that has nothing to do with it. One would accuse a session of fixing the same thing three times because three different checks were each fixed once. One would refuse an honest report that something got faster from 800ms to 320ms, because the exception its own documentation promises was written and never connected.</p></div>
+<div class="b"><h4>Two were beaten by checks you already have</h4>
+<p>And one of those two you personally switched off on 9 August for producing the repeated messages you are still annoyed about. Switching it back on would have been the exact mistake this audit exists to catch.</p></div>
+<div class="b"><h4>The finding that actually answers your complaint</h4>
+<p>Seven of the eight had never been shown to catch a single real thing. So the dead pile is not a pile of missed protection. If checks are not flagging obvious things, the problem is in the 231 that ARE running, not in the ones that are not. That is the next thing to look at, and it is a different job from this one.</p></div>
+
+<h2>Your voucher change, proven on the real screen</h2>
+<p class="s">Not "the code is there". I walked the actual booking flow twice.</p>
+<div class="b"><h4>Before</h4>
+<p>On the pay screen for Atelier Haarwerk, the word Gutschein did not appear anywhere and there was no code field. That salon has no voucher with money on it.</p></div>
+<div class="b"><h4>After I put one real voucher on that salon</h4>
+<p>Same screen, same clicks: the Gutschein-Code field is there. So the field follows the data, in both directions.</p></div>
+<div class="b"><h4>Something worth knowing that this turned up</h4>
+<p>Exactly one salon in your whole test set ever reaches the online payment screen. Every other one books in person, where the code box never showed anyway. So before today the box could not have worked anywhere at all, not just on most salons.</p></div>
+
 <div class="ask">
   <h3>The only thing left that is yours</h3>
   <p class="w">Say <b>keep</b> and the Salon word is settled and the three mismatched Google-listing strings get swept to match your homepage.</p>

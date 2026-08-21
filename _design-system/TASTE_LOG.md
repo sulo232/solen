@@ -1113,3 +1113,41 @@ The one gate that refuses the exact message that produced this complaint,
 first over 198 real closing messages from this session to confirm it does not refuse ordinary work.
 The remaining 25 were NOT mass-armed: the standing wiring tool would have re-armed
 `concise-response-gate.py` and `reply-length-gate.py`, which he killed by name on 2026-08-08.
+
+
+## 2026-08-21, the 20 dead gates audited, and the arm list came out EMPTY
+
+After correcting the count (231 live, 41 running nowhere, 28 of those tested), 20 of the dead ones
+that are not reply-shape gates were driven with real input, then handed to an adversary who had not
+audited them and was told to break them.
+
+**Eight were recommended for arming. All eight broke.** Seven of the eight breaks were re-checked
+against the real files by the arbiter rather than taken on report. Examples, so the shape is clear:
+
+- `touch-action-scroll-gate.py` would refuse a carousel written the same way as one already
+  shipping in this repo (`components/ui/animated-testimonials.tsx:139` carries `touchAction:
+  "pan-y"` as a committed, deliberate fix, and the gate refuses exactly that value).
+- `repeat-fix-simplify-gate.py` matches the bare nouns check/gate/hook/rule, so three DIFFERENT
+  gates each fixed once in one session trips its "you fixed the same defect three times" accusation.
+  That is the exact shape of a hardening session.
+- `halved-is-not-fixed-gate.py` defines `REDUCTION_IS_THE_GOAL` at line 71 and references it
+  nowhere, so the performance exemption its own docstring promises is dead code and an honest
+  "800ms to 320ms" is refused.
+- `brand-claim-needs-capture-gate.py` fails BOTH ways: it blocks "Stripe uses idempotency keys"
+  and lets through "Airbnb fades the fields in", which is the founding sin it was built for.
+
+**Two are DELETE, not LEAVE.** `loop-does-not-report-gate.py` is beaten by the live
+`unfinished-batch-gate.py`. `repeat-claim-needs-repro-gate.py` was already live once and HE ordered
+it off on 2026-08-09 for causing repeated messages; re-arming it would repeat the mistake the audit
+exists to catch. Re-measured today at 22% of real closing messages.
+
+**THE FINDING THAT ACTUALLY ANSWERS HIS COMPLAINT, and it reframes it.** Seven of the eight had
+never been shown to catch a single real thing before any attacker touched them. The dead pile is
+therefore not a pile of missed protection. If checks are not flagging obvious things, the cause is
+in the 231 that ARE running, not in the 41 that are not, and that is a different job from this one.
+
+**Honest limit, stated because the measuring tool has real blind spots.** The shared driver feeds
+closing-message text only, so a "0 of 200, therefore safe" number is guaranteed zero for any gate
+that inspects a tool call before it runs, needs several turns of history, or scans project files
+instead of messages. Three of the eight fall in those categories and their safety numbers were not
+evidence.
