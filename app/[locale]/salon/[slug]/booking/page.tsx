@@ -64,6 +64,27 @@ export default async function BookingSalonPage({
     notFound();
   }
 
+  // Owner 2026-08-21: the gift-voucher code box was showing for every salon, including salons
+  // that never issued a voucher, so most people who typed a code just hit an error. Hide the box
+  // unless this salon actually has at least one redeemable voucher. "Redeemable" mirrors
+  // app/api/vouchers/validate/route.ts exactly: remaining_amount not null and greater than zero
+  // (null means the purchase was never paid), not yet redeemed, and not expired. Head-only count
+  // query, no rows returned.
+  const { count: redeemableVoucherCount, error: voucherCountError } = await supabase
+    .from('vouchers')
+    .select('id', { head: true, count: 'exact' })
+    .eq('salon_id', salon.id)
+    .not('remaining_amount', 'is', null)
+    .gt('remaining_amount', 0)
+    .is('redeemed_at', null)
+    .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
+    .limit(1);
+
+  if (voucherCountError) {
+    console.error("[BookingSalonPage] voucher availability check failed:", voucherCountError);
+  }
+  const salonHasRedeemableVoucher = voucherCountError ? false : (redeemableVoucherCount ?? 0) > 0;
+
   // Fetch salon services
   const { data: services, error: servicesError } = await supabase
     .from('services')
@@ -243,6 +264,7 @@ export default async function BookingSalonPage({
               serviceAddons={serviceAddons}
               serviceOptions={serviceOptions}
               isLoggedIn={isLoggedIn}
+              salonHasRedeemableVoucher={salonHasRedeemableVoucher}
             />
           ) : (
             <EmptyServicesState
