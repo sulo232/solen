@@ -12,13 +12,13 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const titles: Record<string, string> = {
-    de: "Stores in Basel suchen | solen.ch",
+    de: "Salons in Basel suchen | solen.ch",
     en: "Search stores in Basel | solen.ch",
     fr: "Chercher des stores à Bâle | solen.ch",
     it: "Cerca store a Basilea | solen.ch",
   };
   const descriptions: Record<string, string> = {
-    de: "Finden Sie Ihren perfekten Store in Basel. Filter nach Kategorie, Verfügbarkeit und Preis.",
+    de: "Finden Sie Ihren perfekten Salon in Basel. Filter nach Kategorie, Verfügbarkeit und Preis.",
     en: "Find your perfect store in Basel. Filter by category, availability and price.",
     fr: "Trouvez votre store idéal à Bâle. Filtrez par catégorie, disponibilité et prix.",
     it: "Trova il tuo store perfetto a Basilea. Filtra per categoria, disponibilità e prezzo.",

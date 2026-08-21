@@ -95,7 +95,7 @@ const CITY_CATEGORY_FAQ_COPY: Record<
     items: (cityName, categoryName) => [
       {
         q: `Wie viel kostet ein Besuch bei einem ${categoryName} in ${cityName}?`,
-        a: "Die Preise variieren je nach Store und Service. Nutzen Sie unsere Filterfunktion, um Stores nach Preisbereich zu vergleichen.",
+        a: "Die Preise variieren je nach Salon und Service. Nutzen Sie unsere Filterfunktion, um Salons nach Preisbereich zu vergleichen.",
       },
       {
         q: `Wie finde ich den besten ${categoryName} in ${cityName}?`,
@@ -103,7 +103,7 @@ const CITY_CATEGORY_FAQ_COPY: Record<
       },
       {
         q: "Kann ich online einen Termin buchen?",
-        a: "Ja. Alle Stores auf Solen ermöglichen Online-Buchungen.",
+        a: "Ja. Alle Salons auf Solen ermöglichen Online-Buchungen.",
       },
     ],
   },

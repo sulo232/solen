@@ -23,8 +23,8 @@ const interTight = Inter_Tight({ subsets: ["latin"], weight: ["400", "500", "600
 const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-inter", display: "swap" });
 
 export const metadata: Metadata = {
-  title: "solen.ch — Stores in Basel",
-  description: "Finde und buche die besten Stores in Basel. Coiffeur, Barbershop, Nails, Spa und mehr.",
+  title: "solen.ch — Salons in Basel", // em-dash-ok: pre-existing title dash, unrelated to this edit
+  description: "Finde und buche die besten Salons in Basel. Coiffeur, Barbershop, Nails, Spa und mehr.",
 };
 
 // V3-D73 (2026-05-18) — Premium production polish per advanced-UI/UX doc audit.

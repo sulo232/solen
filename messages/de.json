@@ -295,7 +295,7 @@
       "headlineLine2": "Ihr Geschäft.",
       "teaserSub": "Mehr Buchungen, weniger Aufwand, für Ihr Salon-Team.",
       "learnMore": "Mehr erfahren",
-      "forStores": "Für Stores"
+      "forStores": "Für Salons"
     },
     "trust": {
       "securePayment": "Sichere Zahlung — Stripe verschlüsselt",
@@ -828,11 +828,11 @@
     "forSalonsDashboard": "Dashboard",
     "legalTitle": "Rechtliches",
     "newsletterTitle": "Bleib auf dem Laufenden",
-    "newsletterSub": "Neue Stores, Trends und Tipps. Einmal im Monat.",
+    "newsletterSub": "Neue Salons, Trends und Tipps. Einmal im Monat.",
     "careers": "Karriere",
     "press": "Presse",
     "blog": "Blog",
-    "salonHelp": "Store-Hilfe",
+    "salonHelp": "Salon-Hilfe",
     "customerHelp": "Kund:innen-Hilfe",
     "safety": "Sicherheit",
     "contact": "Kontakt",
@@ -3855,7 +3855,7 @@
     "noPastBookings": "Keine vergangenen Termine",
     "favorites": "Favoriten",
     "noFavorites": "Noch keine Favoriten",
-    "salonsCount": "{count, plural, one {# Store} other {# Stores}}",
+    "salonsCount": "{count, plural, one {# Salon} other {# Salons}}",
     "discoverSalons": "Salons entdecken",
     "removeFromFavorites": "Aus Favoriten entfernen",
     "stampCards": "Ihre Stempelkarten",
@@ -4623,7 +4623,7 @@
     "instantBookable": "Sofort buchbar",
     "deals": "Angebot",
     "walkIn": "Walk-in",
-    "salonsFoundCount": "{count, plural, one {# Store gefunden} other {# Stores gefunden}}"
+    "salonsFoundCount": "{count, plural, one {# Salon gefunden} other {# Salons gefunden}}"
   },
   "discover": {
     "title": "Inspo",
@@ -4914,7 +4914,7 @@
       "citySearchPlaceholder": "Stadt suchen",
       "tabDates": "Daten",
       "tabFlexible": "Flexibel",
-      "storesLabel": "Beliebte Stores",
+      "storesLabel": "Beliebte Salons",
       "uhrzeitLabel": "Uhrzeit",
       "periodForenoon": "Vormittag",
       "periodAfternoonShort": "Nachmittag",
@@ -5212,7 +5212,7 @@
     "showOriginal": "Original anzeigen",
     "showTranslation": "Übersetzung anzeigen",
     "replyFrom": "Antwort von {salon}",
-    "replyFromSalon": "Antwort vom Store"
+    "replyFromSalon": "Antwort vom Salon"
   },
   "reviewsPage": {
     "metaTitle": "Bewertungen · Solen",
@@ -5797,14 +5797,14 @@
     "minutesUnit": "Min",
     "additionalInfo": "Zusatzinformationen",
     "reviewsHeading": "Bewertungen",
-    "discoverMoreSalons": "Weitere Stores entdecken",
+    "discoverMoreSalons": "Weitere Salons entdecken",
     "noReviewsYet": "Noch keine Bewertungen.",
     "noReviewsInGroup": "Noch keine Bewertungen in dieser Gruppe.",
     "allNReviews": "Alle {count} Bewertungen",
     "showNReviews": "{count} Bewertungen anzeigen",
     "showOpeningHours": "Öffnungszeiten anzeigen",
     "contact": "Kontakt",
-    "discoverMore": "Weitere Stores entdecken",
+    "discoverMore": "Weitere Salons entdecken",
     "bundles": "Pakete",
     "showLocation": "Standort anzeigen",
     "openInGoogleMaps": "{name}: In Google Maps öffnen",
