@@ -404,6 +404,15 @@ export default function Header({ locale }: { locale: string }) {
   // Owner 2026-06-29 (council-confirmed): on the HOMEPAGE the far-left slot shows the Solen logo (the
   // home icon is redundant on home). Other top-level pages keep the Home icon as a go-home affordance.
   const isHome = !!pathname && /^\/[a-z]{2}\/?$/.test(pathname);
+  // 2026-08-21 (owner, measured live at 390x844, not eyeballed: 2 chrome controls on
+  // /auth/login top row against the approved login mockup's 1). The four auth screens
+  // (login/register/signup/reset-password) are a single focused flow with nothing the
+  // hamburger menu needs to reach, same reasoning the salon-detail / dashboard branches
+  // already use elsewhere in this file to drop chrome that doesn't belong on a narrow
+  // task. Scoped narrowly: this only feeds the hamburger button's own className below
+  // (the far-left back-arrow tile from isTopLevel stays, desktop nav is untouched since
+  // the hamburger is already md:hidden there).
+  const isFocusedAuthFlow = !!pathname && /^\/[a-z]{2}\/auth\/(login|register|signup|reset-password)(\/|$)/.test(pathname);
   // V3-D (2026-08-01, owner "why is homepage still that bro"): the home route now renders the
   // SAME mobile category-chrome as the category/search routes (the All pill selected via
   // HEADER_CATEGORIES' `home` entry above), so it opts into every MOBILE-ONLY categorySegment
@@ -945,6 +954,11 @@ export default function Header({ locale }: { locale: string }) {
               // target 40px; folds with the header on category-route scroll.
               "md:hidden relative grid h-11 w-11 place-items-center rounded-input shadow-elevation-2 transition-[transform,background-color,border-color] duration-200 ease-glide active:scale-[0.94] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
               isDark ? "border-white/30 bg-white/10 text-white" : "border-s-border bg-white text-s-ink",
+              // 2026-08-21: the auth screens are a single focused flow (login/register/signup/
+              // reset-password), so the menu control is dropped there. The back arrow above
+              // (isTopLevel branch) is untouched, this hides only the hamburger, and only on
+              // those four routes; every other route keeps it exactly as before.
+              isFocusedAuthFlow && "hidden",
             )}
           >
             <span
