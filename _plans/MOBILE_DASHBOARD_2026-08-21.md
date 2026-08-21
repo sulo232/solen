@@ -38,7 +38,11 @@ And I want you to first make a mockup of a few flows so I can actually see that 
 - [ ] M1b was: COUNCIL on the tab shape, because he asked for one by name. What are the tabs for a SALON
       rather than a rental, does Today survive beside a calendar, and what happens to the other 46
       sections.
-- [x] CORRECTION 2026-08-21 · "Why are you using Opus five as a subagents. I told you only counsel
+- [x] CORRECTION 2026-08-21 `verified:` commit f84a6a4d4, and the gate fix is live at
+      `~/.claude/hooks/no-opus-subagent-gate.py:326` (the "THIRD FIX" block). Graded this turn on
+      four payloads: a model-less workflow build stage BLOCKS, the exact script that spent the
+      tokens BLOCKS, a genuine judgment stage still ALLOWS, and its own suite passes 4/4.
+      His words: "Why are you using Opus five as a subagents. I told you only counsel
       and also why are you building with only one or two sub agents? It's gonna take so fucking
       long." · Both true and both mine. WHY OPUS: standalone `coder` dispatches were already sonnet
       by their own frontmatter, but every `agent()` inside a WORKFLOW inherits the session model,
