@@ -1065,3 +1065,42 @@ Card/block = 16 (`rounded-card`); button/chip = pill; input = 16; sheet = 28; im
 (0), with the SalonResultCard photo exception (`rounded-card`, V3-D350). CLAUDE.md design
 contract "radius" row.
 - keywords: radius, border radius, rounded, rounded card, rounded pill, rounded input, rounded sheet, corner radius
+
+## 2026-08-21, the six-decisions page, and why four of the six should never have reached him
+
+He answered a page of six decisions with one message. Four of his six answers were a version of
+"why are you asking me this at all", so the answers and the reason each question was wrong are both
+recorded here, because the reason is the reusable part.
+
+Verbatim: *"I like these dumb stupid shit. I told you to use some agents counsel, you know, for
+these small stuff. Like, why would you need my opinion for these small stuff? ... I'm seeing, like,
+a core pattern of you not actually firing the fucking gates. The gate is not flagging and stuff.
+Right? These are obvious fucking questions."*
+
+| # | the question | his answer | should it have been asked |
+|---|---|---|---|
+| 1 | the code box on the payment screen shows for salons with no vouchers | **A: hide the box unless that salon has a voucher with money on it** | yes, a real product fork |
+| 2 | can someone rate a salon they never booked | **already answered, stop asking** | NO. He settled it on 2026-08-09 in the ten-decisions message: *"4B like google maps"*. The answer is quoted in `app/api/reviews/route.ts` at the top of the eligibility branch. I asked him to re-decide something the code cites him deciding. |
+| 3 | what I do when context runs out mid-job | **already solved, we have a system** | NO. `_plans/ACTIVE.md` auto-injects and survives compaction, and a SessionStart hook re-verifies after one. The machinery he is describing already runs. |
+| 4 | 13px or 14px on one button | **cannot judge it, use a council, what is the core cause** | NO. See below. |
+| 5 | the German word for "Salon" | **research it with a sub-council, look at other platforms** | the question was fair, the FORM was not: it was a menu, not a researched recommendation |
+| 6 | switch on the new reply rules | **I do not understand it and should not have to approve it** | NO. Nothing about it is his taste. |
+
+**The core cause of number 4, which is the one he asked for by name.** This system has ceilings
+(at most 4 sizes, at most 2 weights) and floors (a button is never below 13px, a display anchor is
+at least 28px). It has no rule for the case where BOTH candidate values are legal. 13 and 14 both
+clear the floor and both sit on the scale, so nothing in 80KB of design law says who picks, and the
+default with no rule is to ask him. That is the whole mechanism. It is not forgetfulness and it is
+not laziness, it is a missing tier: the system says what is ALLOWED and never says what is MINE.
+
+**The fix, same day:** `_design-system/TASTE_AUTHORITY.md`, which grants a subagent the authority
+to decide inside a stated indifference band and names what still needs him.
+
+**On his "the gates are not firing", measured rather than agreed with.** 287 hook files sit on
+disk. 209 are wired into a settings file and 78 are not, and 50 of those 78 ship their own passing
+test suite. The one gate that refuses the exact message that produced this complaint,
+`no-permission-question-gate.py`, was among the unwired. Built, tested, never armed. Armed
+2026-08-21 along with `measure-dont-ask-gate.py` and `mockup-already-answered-gate.py`, each driven
+first over 198 real closing messages from this session to confirm it does not refuse ordinary work.
+The remaining 47 were NOT mass-armed: the standing wiring tool would have re-armed
+`concise-response-gate.py` and `reply-length-gate.py`, which he killed by name on 2026-08-08.
