@@ -1,131 +1,97 @@
-// exists-check: `npm run exists host-flows` run this turn, zero matches, safe to build new. The
-// route this file will be mounted under does not exist yet either (checked with ls on
-// app/[locale]/dev/host-flows/, empty of a page.tsx). The decision this file BUILDS was already made
-// and is not re-opened here: _plans/MOBILE_DASHBOARD_2026-08-21.md, "The council's verdict,
-// 2026-08-21", read end to end before a line of markup was written. The real dashboard section names
-// below were read off `ls app/[locale]/dashboard/` this turn (48 real folders), not guessed and not
-// carried over from memory of the verdict's own prose.
+// exists-check: `npm run exists host-flows` run this turn, matches only this route's own five
+// files (page.tsx and the four _flow-*.tsx components). `npm run exists "walk in standing strip"`
+// and `npm run exists "walkin queue calendar"` returned 0. Nothing in `_design-system/REMOVED.md`
+// covers a three tab shop nav or a standing strip. This is an EDIT of the file that shipped the
+// four tab shape (Today, Calendar, Customers, Menu), not a new build.
 //
 // Grounded-in: app/[locale]/dev/terminal/Screen.tsx (the bare-row grammar, the 32/16 section
-// spacing, the floating tab-bar shape, and the avatar-edge-as-state device all come from this real,
-// currently-rendering file, not invented for this one) and app/[locale]/dashboard/ (the live
-// directory listing the Menu screen below sorts, read this turn, not recalled from the verdict).
+// spacing, the floating tab-bar shape and the avatar-edge-as-state device this file already used
+// before this edit, unchanged here) and app/[locale]/dashboard/ (the live directory the Menu screen
+// below still sorts, unchanged by this edit). Both read from source this turn, this shell could not
+// reach localhost, stated plainly rather than claimed otherwise, same limitation as the file this
+// edits.
 //
-// measure-ok: the reference above was read from its SOURCE, not rendered in a browser (this shell
-// could not reach localhost this turn, stated plainly rather than claimed otherwise). That is a
-// weaker proof than a live measurement, but it is not the same gap the PDP case behind this gate
-// named: the PDP complaint was about page-level facts that only exist once rendered (the canvas
-// colour ratio across the whole viewport, the size distribution across many elements interacting
-// with the cascade). What is borrowed from Screen.tsx here is the opposite kind of fact, literal
-// Tailwind utility-class values with no cascade and no runtime computation: `py-4`/`mt-8` spacing,
-// `text-[13/15/18/30px]` sizes, `text-s-ink`/`text-s-ink-2` colour tokens, the `shadow-whisper` row
-// rung, and the `rounded-full` floating-bar shape. A literal `text-[15px]` in that file's source is
-// 15px on the rendered page by construction, Tailwind does not recompute a bracketed pixel value from
-// context, so reading it off the source is not an estimate the way eyeballing a screenshot would be.
-// Cited from app/[locale]/dev/terminal/Screen.tsx lines 68-85 (the ROW/ROW_BUTTON constants) and the
-// floating bar block near the end of that file (`shadow-elevation-2`, `rounded-full`, the nav-button
-// sizing), read this turn.
+// THE REJECTION THIS TURN FIXES, owner verbatim: "those arent at all good n terminal i thought we
+// gnna ditch that sh it wont work bro n calender is superior". Two things follow from that sentence.
+// First, the terminal is out of scope for this file already (it was never in it). Second, and this
+// is what changes here: a four lens council argued the tab shape down to landing on a Today tab,
+// this file built the council's answer, and the owner has now overruled it in plain words for the
+// second time (his first lean, quoted in _plans/MOBILE_DASHBOARD_2026-08-21.md, was already "im
+// thinking of 3"). His literal call outranks a council recommendation, so this file drops to THREE
+// tabs, Calendar first and landing, no Today tab at all. Today's own content (who is in a chair,
+// what needs a decision, what is coming up) does not disappear, it moves inside the Calendar screen,
+// because that is what "today is simply the current day inside the calendar" means.
 //
-// LANGUAGE NOTE, and why the tab names differ from the brief's own wording. The brief that produced
-// this file, quoting the council's verdict, names the four tabs in German. This file renders them in
-// English instead: the armed `mockup-english-gate.py` refused the write with German tab text
-// present ("mockups must be written in ENGLISH... this rule is mockup/dev comparison surfaces only")
-// and named its own remedy in the deny text, rewrite the mockup text in English. That gate outranks a
-// literal copy match to the brief per this project's own precedence chain (hooks and gates sit above
-// a pinned instruction), and the fix it names is exactly what CLAUDE.md's mockup policy already says
-// for a hardcoded, non-i18n file: give the English rendering, because the real app would show English
-// tab labels on its own /en locale through next-intl, which this static file does not run through.
-// So "Today, Calendar, Customers, Menu" below is the /en reading of the same four tabs the brief
-// named, not a fifth, different shape. Flagged as a concern in the build report rather than resolved
-// silently.
+// CLASS: operator screen. Unchanged from the prior build. Governed by TASTE_LOG.md 2026-07-15
+// (Round D1) plus `_design-system/TERMINAL_PRINCIPLES.md`. The customer FLOORS LAW does not apply:
+// no imagery floor, no required semantic-colour moment, no sunken grey tray. White canvas only, no
+// dark mode.
 //
-// CLASS: operator screen. Governed by TASTE_LOG.md 2026-07-15 (Round D1) plus
-// _design-system/TERMINAL_PRINCIPLES.md, per this build's own brief. The customer FLOORS LAW does
-// not apply here: no imagery floor, no required semantic-colour moment, no sunken grey tray. White
-// canvas only, no dark mode.
+// JOB, one sentence with a person in it, unchanged: a salon owner in Basel, mid-Wednesday, picks up
+// her phone to see who is in a chair right now, whether anyone still needs a yes or a no, and where
+// the rest of the shop's day and its other sections live. The only thing that changed is that
+// "where today lives" is now Calendar, not a fourth tab next to it.
 //
-// JOB, one sentence with a person in it: a salon owner in Basel, mid-Wednesday, picks up her phone
-// to see who is in a chair right now, whether anyone still needs a yes or a no, and where the rest
-// of the shop's day and its other sections live.
+// FIXTURE DATA, unchanged and still not wired to anything live: the same Basel coiffeur, three
+// stylists, the same normal Wednesday, 19 August 2026. Every number is invented for this mockup and
+// stated as such, same as the prior build.
 //
-// FIXTURE DATA, not wired to anything live. A Basel coiffeur, three stylists (Mia, Nina, Jonas) and a
-// normal Wednesday, 19 August 2026. Every number below (chair state, the pending request, the queue,
-// today's appointments, the client list, the month grid, the client and month totals) is invented for
-// this mockup and stated as such here rather than left for a reader to mistake for a real query. The
-// council's own doc frames this stage as M2, a MOCKUP of the tab shape and the menu, before any of it
-// touches a real loader.
+// THE ONE REAL PROBLEM THIS SHAPE CREATES, and the standing strip below is the answer to it. Carried
+// from the brief that asked for this edit, not independently re-run against the database in this
+// turn (this shell has no database access): `barber_walkin_queue` carries `joined_at`, `started_at`,
+// `position` and `estimated_wait_minutes` and NO start time, while the calendar reads
+// `availability_slots`. So a walk-in has no time to sit at on a calendar until somebody puts them in
+// a chair. Dropping the terminal without answering that leaves walk-ins nowhere.
 //
-// ANCHOR SENTENCES, written before the markup per TERMINAL_PRINCIPLES section 10 step 4, one per
-// frame, each carrying the live (fixture) number and the fixture "column" it would read from once
-// wired:
-//   Today      "8 appointments today"             a count of TODAY_APPOINTMENTS plus the two
-//                                                  stylists currently in a chair (CHAIRS below).
-//   Calendar   "156 appointments this month"       MONTH_TOTAL, summed from AUGUST_WEEKS, not typed
-//                                                  by hand twice, so the grid and the headline cannot
-//                                                  drift apart.
-//   Customers  "24 clients"                        CLIENT_TOTAL, a fixture count; six sample rows are
-//                                                  shown and the rest are named in one summary line.
-//   Menu       no 30px anchor. A menu is navigation, not a state report, so it carries the group
-//              labels (13px) and the row labels (15px) only. Adding an anchor here would be a size
-//              used once for no role, which section 4 rule 3 of TERMINAL_PRINCIPLES calls a mistake
-//              with a number on it.
+// PLACEMENT, CORRECTED ONCE DURING THIS BUILD. The first pass here read "above the day grid" as the
+// literal `grid-cols-7` block of dates further down this screen, and put the strip just above it.
+// The coordinator corrected that: it belongs directly above "Coming up today", the day's own
+// appointment list, reasoned from the job rather than the markup. Someone standing at the counter
+// with a person in front of them needs to see "there is a human here with no time yet" before they
+// read the day, because that person is the one currently being ignored, and a strip sitting near the
+// bottom of a scrolling screen cannot do that. So the strip sits right under "Needs a decision" and
+// right above "Coming up today", 16px beneath it rather than the usual 32, because the strip and the
+// list it feeds are one section (waiting, then seated), not two. Reused, not invented: this strip is
+// the file's own prior "Waiting" section (a SECTION label plus one ROW, the same fixture person, Luca
+// Frei), relabelled and repositioned rather than built fresh. Once a chair takes someone, they stop
+// being invented as a second object with a time; the honest thing a static mockup can show is that
+// they become a new row in the very list the strip now sits above, which the fixture's own
+// TODAY_TOTAL/AUGUST_WEEKS numbers already account for. The screen is not too tall to show both: it
+// scrolls inside its own 844px frame the same way the pre-merge Today screen already did, so no
+// appointment row was cut to make room.
 //
-// TARGETS, written before the markup per the same build order:
-//   Boxes: ONE kind on the whole file, the "Needs a decision" card on Today (`boxed-ok` on its own
-//          line), cap 2 shown (1 used here). Calendar's month grid carries no border of any kind, one
-//          hairline separates the weekday-letter row from the dates and nothing else, so there is no
-//          container to compete with. Customers and Menu render zero content boxes. Every remaining
-//          bordered or shadowed element on the file (the dev-tool frame outline, ROW_BUTTON's own
-//          pill border, the client-search input's own border, the floating tab bar's own shadow) is
-//          chrome or a standalone control, never a container wrapping grouped rows, and each is
-//          marked `boxed-ok` on its own line for the static checker, the same exclusion
-//          TERMINAL_PRINCIPLES section 6 gives the terminal's own floating bar.
-//   Gaps:  32 between sections (`mt-8`), 16 is not used as a section gap anywhere in this file (row
-//          padding uses the terminal's own `py-4` device instead); 12/8/4/2 only inside one block
-//          (a title to its sub-line, an icon to its label). The 20px horizontal gutter (`px-5`) and
-//          the frame's own top inset are off the layout ladder, per TERMINAL_PRINCIPLES section 3.
-//   Type:  4 sizes (13, 15, 18, 30), 2 weights (400, 600). The anchor-to-workhorse ratio is 30/13,
-//          2.31x, over the 1.8x floor. This is a tighter budget than the terminal itself currently
-//          ships (which admits a third weight as an open defect in its own doc); this file does not
-//          repeat that breach.
+// ONE ANCHOR PER SCREEN, and this is the actual mechanical risk in merging two screens into one.
+// The old Today screen anchored on "{TODAY_TOTAL} appointments today" and the old Calendar screen
+// anchored separately on "{MONTH_TOTAL} appointments this month". Both cannot survive on one merged
+// screen (TERMINAL_PRINCIPLES section 2 rule 3: "One anchor. Never two."). Today's anchor wins,
+// because landing on Calendar means landing on today, so the sentence a glance answers first has to
+// be about today. The month total is demoted to a plain 13px line ("August 2026" plus the count),
+// same size as the workhorse, not a second 30px anchor.
 //
-// TONES, and the fixture column each is derived from: the chair indicator is green when
-// `stylist.state === "free"` and ink when `"busy"`, mirroring the terminal's own `staffTone`. Nothing
-// else on any of the four frames carries colour, because a normal Wednesday with one pending request
-// and one twelve-minute wait has very little that needs a person, and TERMINAL_PRINCIPLES section 5
-// is explicit that colour is proportional to how much is wrong, not a fixed decoration budget. The
-// indicator is a 2px solid border, not a Tailwind `ring` utility, per the no-focus-ring-gate: a real
-// border reads as a real border, a `ring-*` class reads as a focus glow regardless of intent.
+// LANGUAGE NOTE, unchanged. The council's verdict names the tabs in German (Kalender, Kund:innen,
+// Menü). This file renders them in English: the armed `mockup-english-gate.py` refuses hardcoded
+// German in a dev/mockup surface, and CLAUDE.md's own mockup policy says a hardcoded, non-i18n file
+// should give the English reading the real app would show on `/en` through next-intl. So "Calendar,
+// Customers, Menu" below is the `/en` reading of the same three tabs, not a fourth, different shape.
 //
-// ELEMENTS ALREADY REPEATED, checked before adding anything new to carry a state (section 5 rule):
-// the avatar's own edge (colours the chair state, nothing new added), the row's own hairline
-// (separates every list without a card), the chevron already on every Menu and client row (implies
-// "opens something" without a second affordance). The one genuinely new element is the ink "Add"
-// pill, because nothing already on Today or Calendar could carry "start something new" without being
-// mistaken for a state.
+// MENU SORTING, unchanged from the prior build: the BUSINESS group is the verdict's own list,
+// English labels for the same mockup-english-gate reason above. Platform admin folders stay out by
+// name. "calendar" and "clients" are not menu rows because they are tabs. "messages" is dead
+// (REMOVED.md, 2026-06-13). "help-editor" is left out rather than guessed into a group. "Terminal"
+// was written up here before as a future row once it "graduates out of the dev segment"; the owner
+// has since said plainly it is being ditched, not graduated, so that row is not rendered and will
+// not be added on this file's own initiative. "Setup" stays out for the same reason as before (this
+// fixture salon is already live). The six category-conditional rows are not rendered because this
+// fixture's applicable subset was never specified.
 //
-// ONE INK COMMIT PER SCREEN, a deliberate departure from the terminal's own precedent named here
-// rather than silently copied: on the terminal, Accept is the page's one ink fill. On Today, the
-// verdict itself names "Add" as this shape's own headline feature (both landing tabs carry one black
-// Add), so Add takes the one ink fill on both of those frames and Accept moves to the same white
-// hairline rung as Start elsewhere in this system, staying visually primary inside its own card by
-// being the only filled pill in that card rather than by being the page's ink colour.
-//
-// MENU SORTING: the BUSINESS group is the verdict's own list, English labels because this file is a
-// hardcoded mockup (CLAUDE.md mockup-english-gate). Platform-admin folders (approvals, all-salons,
-// all-users, revenue, commission-admin, platform-analytics, ai-limits-admin, badge-manager,
-// content-editor, review-moderation, reports, segments, editor, discovery-admin, homepage-admin,
-// cities-admin, salon-of-month-admin, feature-flags-admin, admin-sandbox, cases) are left out by
-// name, per the verdict: a salon must never see these. "calendar" and "clients" are not menu rows
-// because the verdict promotes both to their own tabs (Calendar, Customers). "messages" is dead
-// (REMOVED.md, 2026-06-13) and does not appear. "help-editor" is the verdict's own unclassified
-// folder and is left out rather than guessed into a group. "Terminal" is named in the verdict as a
-// future row once it graduates out of the dev segment; it has not, so it is not rendered here.
-// "Setup" is the verdict's own conditional row (it disappears once the shop goes live); this fixture
-// salon is mid-Wednesday with a normal day of bookings, so it is already live and Setup is left out
-// for the same reason the verdict gives. The six category-conditional rows (barber-ops,
-// barber-clients, nail-admin, nail-clients, spa-admin, coiffeur-crm) are not rendered because this
-// fixture's own applicable subset was not specified in the brief and is not guessed here.
+// TARGETS, restated for the three tab shape, written before the markup per TERMINAL_PRINCIPLES
+// section 10 step 5:
+//   Boxes: unchanged, ONE kind on the whole file, the "Needs a decision" card, cap 2 shown 1.
+//   Gaps:  32 between sections (`mt-8`) unchanged everywhere except one place, which is now 16
+//          (`mt-4`): the standing strip to "Coming up today" directly beneath it, per the placement
+//          note above.
+//   Type:  unchanged, 4 sizes (13, 15, 18, 30), 2 weights (400, 600). Anchor to workhorse ratio
+//          unchanged at 30/13, 2.31x.
 //
 // VERIFICATION: `npx tsc --noEmit` and `npx eslint` were run against this file this turn (see the
 // build report). A local dev server could not be reached from this shell, so nothing below has been
@@ -156,7 +122,6 @@ import {
   ShoppingBag,
   Star,
   Store,
-  Sun,
   Tv,
   Users,
   Wallet,
@@ -165,7 +130,7 @@ import { Avatar } from "@/app/[locale]/_components/primitives";
 
 // ---------------------------------------------------------------------------------------------
 // Fixture data. Nothing below reads from a database. A Basel coiffeur, three stylists, a normal
-// Wednesday, invented for this mockup only.
+// Wednesday, invented for this mockup only. Unchanged from the prior build.
 // ---------------------------------------------------------------------------------------------
 
 const SALON_NAME = "Salon Kleinbasel";
@@ -190,6 +155,8 @@ const PENDING_REQUEST = {
   askedMinutesAgo: 6,
 };
 
+// The standing strip's one fixture person. Real columns this would read from once wired:
+// barber_walkin_queue.joined_at (for waitedMinutes) and barber_walkin_queue.position.
 const WAITING = {
   customer: "Luca Frei",
   service: "Men's Haircut",
@@ -230,8 +197,7 @@ const CLIENTS: Client[] = [
 const CLIENT_TOTAL = 24;
 
 // August 2026, Monday-first weeks. Wed 19 is the fixture "today". Counts are the count of
-// appointments booked that day, per the verdict's own correction (a salon's number is a count, not
-// a price, the price lives on the service). Sundays render 0, this salon is closed Sundays.
+// appointments booked that day. Sundays render 0, this salon is closed Sundays.
 type DayCell = { date: number; count: number } | null;
 const AUGUST_WEEKS: DayCell[][] = [
   [null, null, null, null, null, { date: 1, count: 5 }, { date: 2, count: 0 }],
@@ -310,7 +276,7 @@ const MENU_ACCOUNT: MenuItem[] = [
 
 // ---------------------------------------------------------------------------------------------
 // Shared type and row grammar. Exactly 4 sizes (13, 15, 18, 30) and 2 weights (400, 600) are used
-// anywhere in this file, including the dev-tool frame captions below.
+// anywhere in this file. Unchanged from the prior build.
 // ---------------------------------------------------------------------------------------------
 
 const ANCHOR = "font-heading text-[30px] font-semibold leading-[1.1] text-s-ink";
@@ -329,13 +295,12 @@ const INK_PILL =
   "font-body flex h-11 shrink-0 items-center justify-center gap-1 rounded-full bg-s-ink px-4 text-[15px] font-semibold text-white";
 const QUIET_LINE = "font-body px-5 text-[13px] font-normal text-s-ink-2";
 
-type NavKey = "today" | "calendar" | "clients" | "menu";
+// THREE tabs, not four. Calendar first, and it is what you land on. No Today tab: today is simply
+// the current day inside the calendar (see CalendarScreen below).
+type NavKey = "calendar" | "clients" | "menu";
 
-// English tab labels. The brief and the council's verdict name these four tabs in German (see the
-// LANGUAGE NOTE above); this file renders the /en reading because the armed mockup-english-gate
-// refuses hardcoded German in a dev/mockup surface.
+// English tab labels, see the LANGUAGE NOTE above.
 const TABS: { key: NavKey; label: string; icon: LucideIcon }[] = [
-  { key: "today", label: "Today", icon: Sun },
   { key: "calendar", label: "Calendar", icon: Calendar },
   { key: "clients", label: "Customers", icon: Contact },
   { key: "menu", label: "Menu", icon: Menu },
@@ -384,34 +349,39 @@ function TabBar({ active }: { active: NavKey }) {
 }
 
 // A phone-sized frame for the dev comparison page. Not a drawn phone: no bezel, no notch, no home
-// button, just the viewport bounds so four screens can sit side by side without their content
-// bleeding into one another. 390x844 matches TERMINAL_PRINCIPLES's own measurement viewport.
-function PhoneFrame({ caption, active, children }: { caption: string; active: NavKey; children: React.ReactNode }) {
+// button, just the viewport bounds so one screen renders full width with nothing beside it. 390x844
+// matches TERMINAL_PRINCIPLES's own measurement viewport. The caption that used to render here now
+// lives one level up, in page.tsx's own stepper control, so it is not duplicated in two places.
+// Width is fluid with a cap (`w-full max-w-[390px]`), not a hard `w-[390px]`: a fixed 390 cannot fit
+// inside a 390 viewport that also carries page.tsx's own horizontal padding, which is exactly the
+// sideways-scroll defect the coordinator measured and asked fixed. Height stays a fixed `h-[844px]`,
+// untouched, per the same instruction: the defect was a width problem, not a height one.
+function PhoneFrame({ active, children }: { active: NavKey; children: React.ReactNode }) {
   return (
-    <figure className="shrink-0">
-      <figcaption className="font-body mb-3 text-[13px] font-semibold text-s-ink-2">{caption}</figcaption>
-      <div className="relative h-[844px] w-[390px] overflow-hidden border border-s-border bg-white"> {/* boxed-ok: dev-tool viewport boundary only, not a content card; every list inside is separated by its own row hairline instead. */}
-        <div className="flex h-full flex-col overflow-y-auto">
-          <ChromeHeader />
-          {/* The scroll container's own bottom padding clears the floating bar plus one gap-ladder
-              step (TERMINAL_PRINCIPLES section 3), so the last row is never hidden behind it. */}
-          <div className="flex-1 pb-24">{children}</div>
-        </div>
-        <TabBar active={active} />
+    <div className="relative h-[844px] w-full max-w-[390px] overflow-hidden border border-s-border bg-white"> {/* boxed-ok: dev-tool viewport boundary only, not a content card; every list inside is separated by its own row hairline instead. */}
+      <div className="flex h-full flex-col overflow-y-auto">
+        <ChromeHeader />
+        {/* The scroll container's own bottom padding clears the floating bar plus one gap-ladder
+            step (TERMINAL_PRINCIPLES section 3), so the last row is never hidden behind it. */}
+        <div className="flex-1 pb-24">{children}</div>
       </div>
-    </figure>
+      <TabBar active={active} />
+    </div>
   );
 }
 
 // ---------------------------------------------------------------------------------------------
-// Frame 1: Today, the landing tab.
+// Frame 1: Calendar, the landing tab. Today's own content (chairs, decisions, the day's book) lives
+// here now, because there is no separate Today tab any more. The standing strip sits directly above
+// the day's own appointment list (see the PLACEMENT note at the top of this file); the month grid
+// follows further down as a plain line plus the grid itself, demoted from its own former anchor.
 // ---------------------------------------------------------------------------------------------
 
-function TodayScreen() {
+function CalendarScreen() {
   return (
     <>
-      {/* Who is in a chair right now. The board's own answer to that question, painted with
-          people: a name and a face, not a slot. */}
+      {/* Who is in a chair right now. Unchanged from the old Today screen: a name and a face, not a
+          slot. */}
       <div className="overflow-x-auto">
         <div className="flex gap-4 px-5 pb-1 pt-5">
           {CHAIRS.map((stylist) => (
@@ -429,8 +399,7 @@ function TodayScreen() {
               <p className="font-body mt-2 w-full truncate text-[13px] font-normal text-s-ink">
                 {stylist.name.split(" ")[0]}
               </p>
-              {/* Neutral text under a coloured edge, the edge is the only indicator, per
-                  TERMINAL_PRINCIPLES section 2 rule 7: a state is reported in one place. */}
+              {/* Neutral text under a coloured edge, the edge is the only indicator. */}
               <p className="font-body w-full truncate text-[13px] font-normal text-s-ink-2">
                 {stylist.state === "free" ? "Free" : `${stylist.customer}, ${stylist.minutesLeft}m`}
               </p>
@@ -439,8 +408,8 @@ function TodayScreen() {
         </div>
       </div>
 
-      {/* The anchor. One sentence, the live number inside it, plus the one ink commit for this
-          screen: Add, pre-filled to open a walk-in from wherever you are standing. */}
+      {/* The one anchor on this screen. Today lives here now, not on a fourth tab, so the sentence
+          a glance answers first has to be about today. */}
       <div className="flex items-start justify-between px-5 pt-8">
         <div className="min-w-0">
           <h1 className={ANCHOR}>{TODAY_TOTAL} appointments today</h1>
@@ -452,7 +421,7 @@ function TodayScreen() {
         </button>
       </div>
 
-      {/* The one thing on this screen sitting on a yes or a no. */}
+      {/* The one thing on this screen sitting on a yes or a no. Unchanged. */}
       <div className="mt-8 px-5">
         <p className="font-body pb-3 text-[13px] font-semibold text-s-ink-2">Needs a decision (1)</p>
         <div className="rounded-[24px] border border-s-border p-4"> {/* boxed-ok: the one earned box on this file, CONTAINER TEST case 2, a peer item that will not resolve itself if nobody acts, capped at 2, one shown. */}
@@ -471,9 +440,13 @@ function TodayScreen() {
         </div>
       </div>
 
-      {/* Who is waiting, and how long. */}
+      {/* The standing strip. THE answer to the one real problem this shape creates: a walk-in has no
+          time to sit at on a calendar until somebody puts them in a chair. It sits here, directly
+          above the list it feeds, because the person waiting needs to be seen before the day's own
+          book is read, not after it (see the PLACEMENT note at the top of this file). Reused, not
+          invented: the file's own prior "Waiting" section, relabelled. */}
       <div className="mt-8">
-        <p className={SECTION}>Waiting</p>
+        <p className={SECTION}>Here, waiting for a chair. No time yet.</p>
         <div className={ROW}>
           <div className="min-w-0 flex-1">
             <p className={ROW_NAME}>{WAITING.customer}</p>
@@ -487,8 +460,11 @@ function TodayScreen() {
         </div>
       </div>
 
-      {/* The rest of today's book, in time order, each with a one-tap arrival. */}
-      <div className="mt-8">
+      {/* The day's own book, in time order, each with a one-tap arrival. 16px (not 32) above this
+          list: the strip and the list it feeds are one section, waiting then seated, not two. Once a
+          chair takes the person above, they are not a second invented object with a time, they
+          become a row here. */}
+      <div className="mt-4">
         <p className={SECTION}>Coming up today</p>
         <ul>
           {TODAY_APPOINTMENTS.map((appt) => (
@@ -516,30 +492,17 @@ function TodayScreen() {
         </ul>
         <p className={QUIET_LINE + " pt-4"}>{MORE_TODAY_COUNT} more today.</p>
       </div>
-    </>
-  );
-}
 
-// ---------------------------------------------------------------------------------------------
-// Frame 2: Calendar. Every day that is not today, months stacking with a count under every date.
-// No card and no grid lines: one hairline separates the weekday letters from the dates, and that is
-// the only border in this frame.
-// ---------------------------------------------------------------------------------------------
-
-function CalendarScreen() {
-  return (
-    <>
-      <div className="flex items-start justify-between px-5 pt-8">
-        <div className="min-w-0">
-          <h1 className={ANCHOR}>{MONTH_TOTAL} appointments this month</h1>
-          <p className={SUBLINE}>August 2026. Tap a date to open it.</p>
-        </div>
-        <button type="button" aria-label="Add an appointment on this day" className={INK_PILL + " mt-1"}>
-          <Plus size={16} strokeWidth={2} aria-hidden />
-          Add
-        </button>
+      {/* This month, demoted to a plain 13px line rather than a second anchor. */}
+      <div className="mt-8 px-5">
+        <p className="font-body pb-1 text-[13px] font-semibold text-s-ink-2">August 2026</p>
+        <p className="font-body text-[13px] font-normal text-s-ink-2">
+          {MONTH_TOTAL} appointments this month. Tap a date to open it.
+        </p>
       </div>
 
+      {/* The day grid. No card and no grid lines: one hairline separates the weekday letters from
+          the dates and nothing else. */}
       <div className="mt-8 px-5">
         <div className="grid grid-cols-7 border-b border-s-border pb-2">
           {WEEKDAY_LETTERS.map((day) => (
@@ -570,13 +533,13 @@ function CalendarScreen() {
         </div>
       </div>
 
-      <p className={QUIET_LINE + " mt-8"}>The cell for today opens Today. It is never drawn twice.</p>
+      <p className={QUIET_LINE + " mt-8"}>Today&apos;s cell is highlighted here. Tap another date to open it.</p>
     </>
   );
 }
 
 // ---------------------------------------------------------------------------------------------
-// Frame 3: Customers. One person at a time, starting from the directory.
+// Frame 2: Customers. One person at a time, starting from the directory. Unchanged.
 // ---------------------------------------------------------------------------------------------
 
 function CustomersScreen() {
@@ -612,8 +575,8 @@ function CustomersScreen() {
 }
 
 // ---------------------------------------------------------------------------------------------
-// Frame 4: Menu. Plain rows, a line icon, a label, a chevron, on bare canvas, two labelled groups,
-// a black log out button at the bottom.
+// Frame 3: Menu. Plain rows, a line icon, a label, a chevron, on bare canvas, two labelled groups,
+// a black log out button at the bottom. Unchanged.
 // ---------------------------------------------------------------------------------------------
 
 function MenuRow({ icon: Icon, label }: MenuItem) {
@@ -657,32 +620,34 @@ function MenuScreen() {
 }
 
 // ---------------------------------------------------------------------------------------------
-// The four frames, side by side, plus the two things the brief asked to be visible in every one of
-// them: the bottom bar itself, and what that tab actually lands on.
+// The indexed, one-frame-at-a-time API page.tsx steps through. FLOW_TABS_FRAMES is the ordered list
+// (also the source of each frame's short caption); the default export renders exactly the one frame
+// at `index`, full width, nothing beside it.
 // ---------------------------------------------------------------------------------------------
 
-export default function FlowTabs() {
+export const FLOW_TABS_FRAMES: { key: NavKey; caption: string }[] = [
+  {
+    key: "calendar",
+    caption:
+      "Calendar, the landing tab. Today's chairs and decisions, then the standing strip for walk-ins with no time yet, right above the day's own book.",
+  },
+  {
+    key: "clients",
+    caption: "Customers. One person at a time: their visits, their notes, a way to book them again.",
+  },
+  {
+    key: "menu",
+    caption: "Menu. The real Solen sections, in two groups, on bare canvas. No platform admin.",
+  },
+];
+
+export default function FlowTabsFrame({ index }: { index: number }) {
+  const frame = FLOW_TABS_FRAMES[index] ?? FLOW_TABS_FRAMES[0]!;
   return (
-    <div className="min-h-screen w-full bg-white py-10">
-      <div className="px-6">
-        <p className="font-body text-[13px] font-semibold text-s-ink-2">
-          Flow 1: the tabs and the menu. Four phone-sized frames, 390 wide each, no fake phone.
-        </p>
-      </div>
-      <div className="mt-6 flex gap-8 overflow-x-auto px-6 pb-4">
-        <PhoneFrame caption="1. Today, landing tab" active="today">
-          <TodayScreen />
-        </PhoneFrame>
-        <PhoneFrame caption="2. Calendar" active="calendar">
-          <CalendarScreen />
-        </PhoneFrame>
-        <PhoneFrame caption="3. Customers" active="clients">
-          <CustomersScreen />
-        </PhoneFrame>
-        <PhoneFrame caption="4. Menu" active="menu">
-          <MenuScreen />
-        </PhoneFrame>
-      </div>
-    </div>
+    <PhoneFrame active={frame.key}>
+      {frame.key === "calendar" && <CalendarScreen />}
+      {frame.key === "clients" && <CustomersScreen />}
+      {frame.key === "menu" && <MenuScreen />}
+    </PhoneFrame>
   );
 }
