@@ -241,6 +241,16 @@ Short and absolute. No size of change makes any of these small.
 
 1. **Words a customer reads.** Any naming, label, headline, button copy, or product-noun change, in
    any of the four locales. Copy is not a pixel and it has no indifference band.
+   **AMENDED 2026-08-21, the same day this file was written, by him, twice.** On the German word for
+   Salon he said *"you need that shit think that I use a sub counselor and look into other platform
+   how they use what they say what is it mean"*, and when the council's answer came back to him as a
+   recommendation to approve, he said *"i told u let subagent decide it"*. So: **when he hands a
+   naming question to a council, the council's researched answer IS the decision and it gets applied
+   without him.** Rule 1 still governs naming he has NOT delegated. The test is his words, not the
+   subject: "research it and decide" is a delegation, silence is not. Bringing back a researched
+   recommendation for a one-word yes is the failure this amendment names, because it costs him the
+   turn the council was supposed to save. Recorded because this file's own rule 1 is what sent that
+   question back to him.
 2. **Anything that changes what a customer is promised.** A deadline, a cancellation or refund term,
    a response time, a guarantee, a consent meaning. CLAUDE.md, 2026-08-19: two refund-screen strings
    promised a 14-day report window and a salon response date while nothing computed or enforced
