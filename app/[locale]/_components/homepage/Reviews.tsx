@@ -180,7 +180,7 @@ function ReviewCard({
           <Link
             href={`/${locale}/salon/${review.salonSlug}`}
             onClick={(e) => e.stopPropagation()}
-            aria-label={`Store ${review.salonName} ansehen`}
+            aria-label={`Salon ${review.salonName} ansehen`}
             className={cn(
               "relative z-10 mt-0.5 inline-flex items-center gap-1",
               "font-body text-[12px] font-normal text-s-ink-2",

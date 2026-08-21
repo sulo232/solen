@@ -115,7 +115,7 @@ export function SalonHero({
         <div className="absolute right-4 top-4 flex items-center gap-3">
           <button
             type="button"
-            aria-label="Store teilen"
+            aria-label="Salon teilen"
             onClick={() => shareOrCopy(salon.name, window.location.href)}
             className="group grid h-11 w-11 place-items-center bg-transparent focus-visible:rounded-full focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2"
           >

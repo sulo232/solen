@@ -205,7 +205,7 @@ export function SalonImageGallery({
             grammar. Never two stacked rows or the old underline content-tab treatment. */}
         <div className="flex items-center gap-2 overflow-x-auto border-b border-s-border px-4 py-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <Pill active={tab === "salon"} onClick={() => setTab("salon")}>
-            Store ({venuePhotos.length})
+            Salon ({venuePhotos.length})
           </Pill>
           {teamTotal > 0 && (
             <Pill active={tab === "team"} onClick={() => setTab("team")}>
