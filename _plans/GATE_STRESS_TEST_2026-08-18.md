@@ -956,3 +956,64 @@ than half-done.
 | fixed, driven, and adversary-tested | 14 |
 | genuine, needing the read-the-file fix instead | 2 |
 | never fired on any payload, UNKNOWN not clean | 18 |
+
+## 2026-08-21 final, the nineteen silent checks, and the shape that hid a dead one
+
+**THE PREMISE WAS WRONG AND THE INSTRUMENT WAS THE REASON.** 19 checks were carried as "can refuse
+but never did". 18 of them refuse on the first honest attempt, each proven with a bad payload that
+was refused and a near-identical good payload that passed, so a check that simply refuses
+everything could not be mistaken for one that works. The earlier count was measured with a driver
+that fed generic payloads instead of each check's own recorded incident.
+
+**No security check is dead.** All five refuse: the token-at-rest check, the token-in-a-URL check,
+the AI-key-in-a-URL check, the ownership check on a new backend route, and the file-ownership check.
+
+**ONE WAS GENUINELY DEAD, and it is `overhaul-means-structure-gate.py`.** It stops an overhaul ask
+being answered with the same rows in the same order under new paint, which the owner complained
+about by name across four consecutive rounds on 2026-08-03. It compares a proposed design against
+the screen as it ships, and that screen stopped containing words when the product was translated:
+its labels are now keys like `tileWallet`. Overlap was zero on every possible input.
+FIXED (`f123b66`): it resolves each key through `messages/*.json`, and one row now carries its key
+and its translations as a group rather than three separate rows. Driven on his own case, the
+repaint is refused at 100 percent, the same repaint in German at 83, a genuine redesign passes, and
+the same rows pass when he only asked for a small fix. Suite 6/6 -> 9/9 with three cases that feed
+it the shape the live product really produces.
+
+**THE BIGGEST FINDING IS THE SHAPE, NOT THE CHECK.** That gate reported 6 of 6 for months while
+being unable to refuse anything, because its suite handed it the answer instead of making it look.
+Wherever that shape exists, a green suite is not evidence.
+
+Scanned all 189 live checks that ship a suite. The narrow shape (a reader fetches the CONTENT the
+decision is about, its result is passed to the decision function, and the suite never calls it)
+appears in **11**, one of which is the one already fixed:
+
+| check | the reader its suite never calls |
+|---|---|
+| `overhaul-means-structure-gate.py` | `current_component_labels` (FIXED) |
+| `mobile-view-gate.py` | `load_lines` |
+| `no-localhost-handoff-gate.py` | `last_assistant_text` |
+| `open-boxes-midturn.py` | `active_detail_file` |
+| `plan-first-gate.py` | `plan_already_covers`, `read_stamp` |
+| `pushback-gate.py` | `escape_uses` |
+| `repeat-mistake-detector.py` | `armed_hooks_for` |
+| `unfinished-batch-gate.py` | `closed_plan_basenames` |
+| `mockup-defer-stop-gate.py` | `last_assistant_text` |
+| `system-health-check.py` | `safe_listdir` |
+| `worklog.py` | `render_start_context` |
+
+A wider scan flagged 68, but most of those are plumbing (the skip flag, the transcript reader) that
+a suite driving the pure decision correctly skips. Shape is not proof either way: each of the ten
+still needs its reader called against the live product to say BLIND or merely under-tested.
+
+**ALSO FIXED THIS PASS:** `workstreams-index-guard` was registered on Write only, so replacing the
+plan tracker wholesale was refused and quietly stripping its protection line was not. Its logic for
+the edit case already existed and worked when called directly. Now registered on Write, Edit and
+MultiEdit.
+
+**HONEST LIMITS, and these are specific rather than modest:**
+1. This is 19 of 70. The other 51 were graded by the same instrument that got this batch wrong.
+2. Refusing a crafted payload is not the same as firing during real work on a real file.
+3. False alarms were not measured at all. A check that refuses a third of legitimate edits is worse
+   than a dead one, because it gets switched off.
+4. Registered is not the same as reached, proven by the plan-tracker case.
+5. None of this says a check is still defending something the owner still wants.
