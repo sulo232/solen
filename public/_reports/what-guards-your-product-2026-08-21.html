@@ -72,7 +72,21 @@
 <div class="b">
   <h4>A test that hands over the answer instead of making the rule look</h4>
   <p>That is the exact reason a completely blind rule reported itself as working for months. So wherever that same shape exists, a green result there is not evidence of anything either.</p>
-  <p>I scanned all 189 rules that carry their own test. The shape appears in eleven of them, one of which is the one already fixed. Ten are being checked now, one at a time, by actually calling the part that reads your product and seeing whether anything comes back.</p>
+  <p>I scanned all 189 rules that carry their own test. The shape appears in eleven. One was the dead one. <b>The other ten were checked one at a time by calling the part that reads your product, and all ten came back with real, correct content.</b> None of them is blind. I hand-checked three of those answers against the underlying files rather than trusting the rule's own claim.</p>
+  <p>So the alarm was over-broad. The shape was a fair reason to look and it was not evidence of the same defect.</p>
+</div>
+
+<h2>Two real gaps that search did turn up</h2>
+<div class="b">
+  <h4>The health checker was never looking at the copy of the project I work in</h4>
+  <p>There is one tool whose entire job is noticing when a safety rule quietly stops being connected. Its idea of where your project lives was fixed to one folder, and it never asked which copy the current session was actually using. Most sessions run in a separate working copy, so for those it inspected a folder nobody was touching and reported everything fine about a place it had not looked.</p>
+  <p>Not theoretical. Three rules had drifted three weeks apart between the two copies today with nothing reporting it, and the very first run after the fix found eight more rules sitting in this working copy connected to nothing, two of which a rulebook claims are actively protecting you.</p>
+  <p style="color:var(--ok);font-weight:600">Fixed. It now checks both copies, not one instead of the other.</p>
+</div>
+<div class="b">
+  <h4>A reader that could wipe the answer it had just found</h4>
+  <p>One rule reads back what I last told you, to judge whether I was deferring work. If my final action of a turn was a tool call rather than words, it replaced the real answer with nothing and then judged the nothing.</p>
+  <p style="color:var(--ok);font-weight:600">Fixed, reproduced first with a two-line test so it was not guesswork.</p>
 </div>
 
 <h2>What this still does not tell you</h2>
