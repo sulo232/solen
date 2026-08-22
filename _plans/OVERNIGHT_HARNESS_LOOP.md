@@ -54,8 +54,20 @@ if u think ur finishd ur not okay?"*
 - [ ] mockup-diagnosis-gate.py fails its own test and has since 7 August. pushback-gate scores 21/22.
 - [ ] Three separate answers to "is there open work in the plan file" disagree; one interrupts real
       work demanding a box be ticked that he parked himself.
-- [ ] The 07:03 promise: move the checks that only read my words to before I write. One of twenty
-      moved so far (the settled-decisions block). Nineteen to go.
+- [ ] The 07:03 promise: move the checks that only read my words to before I write. THE LIST NOW
+      EXISTS, delivered 2026-08-23 by a reader that counted real fires in this session rather than
+      guessing. Roster: 62 registered Stop checks, three of which dispatch others, so 77 individual
+      checks, 34 of which fired at least once. SEVEN read nothing but my own words AND fired more
+      than five times, together 99 of the 254 individual fires, 39 percent of every interruption:
+        missing-needs-a-reason 27, say-whats-next 23, no-regression-by-fix 14,
+        fix-needs-before-after 12, measurement-needs-scope 9, repeat-mistake-detector 8, readback 6.
+      Four more are movable but quieter: visual-promised-needs-link 4, prelaunch-reality 3,
+      pushback 2, no-permission-question 1.
+      The reader wrote the exact before-you-write sentence for each of the seven. MOVING them is a
+      wiring change and arming is HIS call, so the sentences get prepared and the switch is left to
+      him.
+      Caveat it flagged itself: the transcript grew from 15,482 to 15,598 lines while it worked, so
+      the counts come from a frozen snapshot rather than the whole session.
 - [ ] gate-eval reports NOT READY or UNPROVEN on all four of the batch marked finished, and the log
       recording three consecutive failing grades is uncommitted.
 
