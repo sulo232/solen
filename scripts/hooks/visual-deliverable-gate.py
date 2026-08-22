@@ -76,9 +76,21 @@ PRONOUN_OBJECT = re.compile(r"^\s*(it|that|this|them|those|these|both|all three|
 INHERENTLY_VISUAL = re.compile(r"\b(show (you|it|them)|render it|preview it|put it on screen)\b", re.I)
 
 
+# MENTION IS NOT USE, 2026-08-22. Quoting an offer in order to say it was refused, or to report
+# what a check matched, is not making the offer. This arm blocked the report of its own repair
+# twice in one turn: once on `"should make"` and once on `"I can build the queue in a day"`, both
+# inside quotation marks, both being described rather than said.
+# Four rules under ~/.claude/hooks carry this same inline strip (flag-instead-of-fix, defer-bulk,
+# owner-punt, no-permission-question). It is written here a fifth time rather than shared, because
+# the shared module would live in a different repository from this file and a cross-repo import in
+# a hook is a new failure mode for a four-line regex. Worth folding together the next time one of
+# the five needs a change for another reason.
+QUOTED_SPAN = re.compile(r"\"[^\"]{0,160}\"")
+
+
 def promised_a_visual(final):
     """True only when an offer verb and the thing it offers are close enough to be one offer."""
-    final = final or ""
+    final = QUOTED_SPAN.sub(" ", final or "")
     if INHERENTLY_VISUAL.search(final) and PROMISE_PAT.search(final):
         return True
     nouns = [(m.start(), m.end()) for m in VISUAL_NOUN_PAT.finditer(final)]

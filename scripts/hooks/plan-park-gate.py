@@ -445,6 +445,38 @@ def distinctive_words(text: str):
     return {w for w in words if w not in STOPWORDS}
 
 
+def already_parked(pdir: str, claims) -> bool:
+    """True when an OPEN PARKED line for this same decision is already in the plan files.
+
+    Same distinctive-word technique arm B uses on freshly added lines, pointed at what is on disk
+    instead. Conservative on purpose: it needs at least two distinctive words in common, so a park
+    that merely shares the word "design" with an existing row still gets its own line.
+    """
+    claim_words = distinctive_words(" ".join(claims))
+    if len(claim_words) < 2:
+        return False
+    plans = os.path.join(pdir, "_plans")
+    if not os.path.isdir(plans):
+        return False
+    for root, _dirs, names in os.walk(plans):
+        for name in names:
+            if not name.endswith(".md"):
+                continue
+            try:
+                with open(os.path.join(root, name), encoding="utf-8", errors="replace") as fh:
+                    for line in fh:
+                        if not PARK_LINE_RE.search(line):
+                            continue
+                        body = question_text(line).lower()
+                        hits = [w for w in claim_words
+                                if re.search(r"\b" + re.escape(w) + r"\b", body)]
+                        if len(hits) >= 2:
+                            return True
+            except OSError:
+                continue
+    return False
+
+
 def main() -> int:
     try:
         data = json.load(sys.stdin)
@@ -515,6 +547,16 @@ def main() -> int:
         return 0
 
     park_lines = [ln for ln in added if PARK_LINE_RE.search(ln)]
+
+    # ALREADY PARKED ON AN EARLIER TURN, added 2026-08-22 after this arm demanded a duplicate.
+    # It only ever looked at lines added THIS turn, so merely REPORTING a still-open park, which is
+    # what the say-whats-next rule asks every closing message to do, read as a fresh unrecorded
+    # park. The real case: the customer-severity ladder was parked in his own words on 2026-08-21,
+    # the line is in the plan file, and saying "still open: the customer-severity ladder" the next
+    # day was refused unless a SECOND line for the same decision was written. Two rows for one
+    # decision is precisely what this gate exists to prevent, so the demand was self-defeating.
+    if not park_lines and already_parked(pdir, claims):
+        return 0
 
     today = time.strftime("%Y-%m-%d")
     recipe = (
