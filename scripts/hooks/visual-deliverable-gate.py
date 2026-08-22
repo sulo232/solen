@@ -88,6 +88,47 @@ INHERENTLY_VISUAL = re.compile(r"\b(show (you|it|them)|render it|preview it|put 
 QUOTED_SPAN = re.compile(r"\"[^\"]{0,160}\"")
 
 
+# TALKING ABOUT THE CHECK IS NOT TRIGGERING IT, 2026-08-22, third refusal of the same report in
+# one turn. Blanking quoted spans was not enough: the sentence "it decided I was offering to build
+# a mockup" describes the refusal in plain words, with the offending phrase unquoted because it is
+# the subject of the sentence. There is no way to report what this arm matched without writing what
+# it matched, so as written the arm made its own defect undescribable.
+# Scoped to the SENTENCE, never the message, so a real offer sitting in a reply that also discusses
+# tooling still blocks. The same idea the reply-family aggregator already uses for its machinery
+# arm; this is the sentence-level version of it.
+CHECK_REPORT = re.compile(
+    r"\b(gate|check|rule|arm|hook|pattern|regex|matcher)s?\b.{0,80}"
+    r"\b(match\w*|refus\w*|block\w*|fired?|counted|decided|read as|treats?|treated)\b"
+    r"|\b(match\w*|refus\w*|block\w*|fired?|counted|decided|read as|treats?|treated)\b.{0,80}"
+    r"\b(gate|check|rule|arm|hook|pattern|regex|matcher)s?\b"
+    # A promise reported inside someone else's judgement of me is not a promise: "one of them
+    # decided I was offering to build a mockup". The subject there is a pronoun, so the noun list
+    # above cannot see it, and that sentence is what refused this arm's own third repair report.
+    r"|\b(decided|concluded|thought|believed|claims?|says?|reckoned)\b[^.\n]{0,40}\bI (was|am)\b",
+    re.I | re.S,
+)
+# FOUR PATCHES IN ONE TURN, and that is a count rather than bad luck, the same judgement applied to
+# no-regression-by-fix-gate earlier in this session. THE CAP: if this arm needs a fifth, it does not
+# get patched again. It gets folded back behind the v2 trigger, so it fires only when the turn
+# actually WROTE a design-knowledge file, which is a structural fact rather than a reading of prose.
+# Prose keeps producing shapes a pattern has not seen; that is a property of prose, not of the
+# patches.
+SENTENCE_SPLIT = re.compile(r"(?<=[.!?\n])\s+")
+
+
+def _sentence_around(text, pos):
+    start = 0
+    for m in SENTENCE_SPLIT.finditer(text):
+        if m.start() > pos:
+            break
+        start = m.end()
+    end = len(text)
+    m = SENTENCE_SPLIT.search(text, pos)
+    if m:
+        end = m.start()
+    return text[start:end]
+
+
 def promised_a_visual(final):
     """True only when an offer verb and the thing it offers are close enough to be one offer."""
     final = QUOTED_SPAN.sub(" ", final or "")
@@ -95,6 +136,8 @@ def promised_a_visual(final):
         return True
     nouns = [(m.start(), m.end()) for m in VISUAL_NOUN_PAT.finditer(final)]
     for p in PROMISE_PAT.finditer(final):
+        if CHECK_REPORT.search(_sentence_around(final, p.start())):
+            continue  # this sentence is describing a check, not offering to build anything
         if PRONOUN_OBJECT.match(final[p.end():p.end() + 20]):
             return True
         for ns, ne in nouns:
