@@ -15,7 +15,7 @@ if u think ur finishd ur not okay?"*
 
 ## Round log
 
-- [x] ROUND 2 , the readback defect confirmed and closed (a numbered answer list buried under 19
+- [x] ROUND 2 (verified: commits 62ad4a7, a5552e0, 16be327, d8c997d in ~/.claude; e5a1a015e, abdc27b97 in the product repo) , the readback defect confirmed and closed (a numbered answer list buried under 19
       lines counted as one he could see at a glance; its suite said 18/18 because every buried case
       it had used a prompt with no numbers, which switched the new counter off). The plain-English
       miss closed: a message about my own mockup CHECKS counted as being about his mockups, and
@@ -23,7 +23,7 @@ if u think ur finishd ur not okay?"*
       stuck states added to the health report, 35 confirmed-but-past bookings and 2 walk-in rows
       in the chair since 3 June, both matching an independent count. The loop rule stopped
       demanding questions after he hands the work over, with its own limit recorded.
-- [x] ROUND 1 , the nine-reader scan. Acted on: the "said" false alarm (205 to 133 refusals over
+- [x] ROUND 1 (verified: commits 9e3f6e7, caf1286, 91f82d3, 929326f, dee92db, f83474c, 7b339ea, cb13052, b951861 in ~/.claude; b899a914b, 69ae5392c, 388031545, 24c99fefa in the product repo) , the nine-reader scan. Acted on: the "said" false alarm (205 to 133 refusals over
       4,279 link-free replies), plain-English calling his own walk-in queue irrelevant, the
       armed-check claim counting files nothing runs (69 to 59), the walk-in in-chair sweep (built,
       graded PASS on all ten items by a second reader), the decision-file contradiction, the repeat
