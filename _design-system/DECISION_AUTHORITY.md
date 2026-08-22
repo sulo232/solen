@@ -61,6 +61,27 @@ answer "leave the false wait up".
 The size limit from Step 1 carries over unchanged: **the fix stays the size of the lie.** Stop the
 screen from stating the false thing. The wider cleanup around it is parked and named, per section 7.
 
+**HOW THIS SITS WITH SECTION 4, WRITTEN 2026-08-22 THE SAME DAY, BECAUSE A READER FOUND THE TWO
+GIVING OPPOSITE ORDERS ON THE SAME CASE.** Section 4 items 3 and 4 say a customer-facing word and
+a customer-facing promise are never changed without him, with no size threshold. Step 1b says a
+false statement is fixed this turn. Both are right, and they are about different halves of the
+same screen:
+
+- **The DATA is mine and gets fixed now.** A number computed from rows nobody clears, a wait built
+  from a dead queue, a count that no longer counts anything. Fixing the query, the job or the rows
+  changes no word he wrote. Do it this turn.
+- **The WORDS are his and are never rewritten without him.** If stopping the lie means editing
+  what the customer READS (rewriting a promise, changing a deadline, softening a guarantee, or
+  deleting the sentence), that is section 4 and it stops, however small it looks.
+- **When the only available fix is to change the words**, the screen still must not keep lying, so
+  the legal move is to stop RENDERING the false element until he decides its wording, and tell him
+  in the same turn that it is hidden and why. Hiding a lie is not the same as fixing it, and it is
+  named as a holding action, never reported as a fix.
+
+The refund-flow case both documents cite lands cleanly under this: the deadline that nothing
+measured was a PROMISE, so its wording was always his, and what was mine was building the thing
+that measures it.
+
 **Step 2. Is a second, unasked-for problem blocking the task you were given?**
 **FIX BOTH.** His words, 2026-08-21: *"Fix both, tell me what Y was."* Do not fix the blocker,
 finish the task, and report only the task. Name the second problem back to him, one line, per
