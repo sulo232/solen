@@ -1,0 +1,29 @@
+{
+  "generatedAt": "2026-08-22T07:41:59.990Z",
+  "checks": [
+    {
+      "label": "barber_walkin_queue still \"waiting\" more than 45 minutes after joined_at",
+      "table": "barber_walkin_queue",
+      "count": 0,
+      "oldest": null
+    },
+    {
+      "label": "bookings still \"pending\" more than 2 days after created_at",
+      "table": "bookings",
+      "count": 7,
+      "oldest": {
+        "id": "d854f489-eb43-4ab7-913b-2078e8bebd7f",
+        "date": "2026-06-12T13:10:30.976478+00:00",
+        "daysOld": 70,
+        "salonId": "5784b1ab-7314-437a-a608-01a729f02cdd",
+        "salonName": "Cuts & Culture"
+      }
+    },
+    {
+      "label": "vouchers with remaining_amount still null more than 7 days after created_at",
+      "table": "vouchers",
+      "count": 0,
+      "oldest": null
+    }
+  ]
+}

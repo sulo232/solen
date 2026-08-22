@@ -40,6 +40,27 @@ column with live rows, changing a price, or rewriting a customer promise, the ho
 way that does not touch those, and the part that does is parked and named. "Fix it now" is
 permission to act, not permission to reach past the never-list.
 
+**Step 1b. Is the product telling a customer something that is not true, right now?**
+**FIX IT THIS TURN. It is never a menu item.** Not "here are six things, which do you want first",
+not a bullet inside a longer message, not a line in a plan file. A screen that states a false fact
+is the same family as a security hole: the product is actively doing harm every hour it stays up,
+and unlike a design question there is no version of it he could reasonably prefer.
+
+Members of this family, and it is deliberately narrow so it cannot be stretched into "everything is
+urgent": a number, a wait, a count, a price or an availability that is computed from stale or dead
+rows; a promise rendered to a customer that nothing enforces (a deadline nobody measures, a policy
+nobody applies); a state the product says is one thing while the database says another.
+
+**The case that put this here, 2026-08-15.** His homepage advertised a 70 to 98 minute walk-in wait
+and "4 ahead of you", built from four people who had joined the queue on 3 June, 3 June, 13 June and
+1 July and were never removed. I found it, wrote it as the third bullet of eight in a message mostly
+about mockups, ended with "I have not touched any of it. Which do you want first?", and it stayed
+live for seven more days. Nothing about that was a decision he needed to make. He was never going to
+answer "leave the false wait up".
+
+The size limit from Step 1 carries over unchanged: **the fix stays the size of the lie.** Stop the
+screen from stating the false thing. The wider cleanup around it is parked and named, per section 7.
+
 **Step 2. Is a second, unasked-for problem blocking the task you were given?**
 **FIX BOTH.** His words, 2026-08-21: *"Fix both, tell me what Y was."* Do not fix the blocker,
 finish the task, and report only the task. Name the second problem back to him, one line, per
