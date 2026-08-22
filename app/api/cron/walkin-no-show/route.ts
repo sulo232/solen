@@ -46,6 +46,19 @@ function getGraceMinutes(): number {
   return Number.isFinite(parsed) && parsed > 0 ? parsed : DEFAULT_GRACE_MINUTES;
 }
 
+// Grace period for "in_chair" rows: much longer than the waiting grace above, because
+// in_chair legitimately means a person is being served and a colour or long treatment
+// can genuinely run past two hours. 6 hours by default, overridable via
+// WALKIN_IN_CHAIR_GRACE_HOURS.
+const DEFAULT_IN_CHAIR_GRACE_HOURS = 6;
+
+function getInChairGraceHours(): number {
+  const raw = process.env.WALKIN_IN_CHAIR_GRACE_HOURS;
+  if (!raw) return DEFAULT_IN_CHAIR_GRACE_HOURS;
+  const parsed = Number(raw);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : DEFAULT_IN_CHAIR_GRACE_HOURS;
+}
+
 export async function GET(req: NextRequest) {
   const cronSecret = getServerEnv().CRON_SECRET;
   if (!cronSecret) return NextResponse.json({ error: "Cron not configured" }, { status: 503 });
@@ -114,10 +127,63 @@ export async function GET(req: NextRequest) {
     }
   }
 
+  // ---- Sweep 2: stale "in_chair" rows -> "completed" -------------------------------
+  // Measured 2026-08-22: the live table has two "in_chair" rows sitting since 2026-06-03
+  // (roughly 80 days), because nothing ever closes an in_chair row if staff forgets to
+  // check the customer out. app/api/walkin/queue-stats/route.ts line 26 counts "waiting"
+  // AND "in_chair" together, so a forgotten in_chair row inflates the walk-in band's
+  // queue count indefinitely, the same defect this file exists to fix, one state along.
+  const inChairCutoff = new Date(Date.now() - getInChairGraceHours() * 60 * 60 * 1000).toISOString();
+
+  const { data: staleInChair, error: selErr2 } = await admin
+    .from("barber_walkin_queue")
+    .select("id")
+    .eq("status", "in_chair")
+    .lt("joined_at", inChairCutoff)
+    .limit(200);
+
+  let inChairCompleted = 0;
+
+  if (selErr2) {
+    console.error("[cron/walkin-no-show] failed to load stale in_chair queue entries:", selErr2);
+    errors.push(`In-chair query failed: ${selErr2.message}`);
+  } else {
+    for (const entry of staleInChair ?? []) {
+      // Same CAS discipline as the waiting sweep: re-assert status:"in_chair" in the
+      // UPDATE's own WHERE clause and chain .select().maybeSingle(), because PostgREST
+      // returns error:null on a zero-row update too, so error alone can't prove the write
+      // landed. No resequencing here: an in_chair row holds no queue position to renumber,
+      // that only applies to rows still waiting.
+      const { data: updatedEntry, error: updErr } = await admin
+        .from("barber_walkin_queue")
+        .update({ status: "completed", completed_at: new Date().toISOString() })
+        .eq("id", entry.id)
+        .eq("status", "in_chair")
+        .select("id")
+        .maybeSingle();
+
+      if (updErr) {
+        console.error(`[cron/walkin-no-show] failed to mark entry ${entry.id} completed:`, updErr);
+        errors.push(`entry ${entry.id}: completed update failed: ${updErr.message}`);
+        continue;
+      }
+
+      if (!updatedEntry) {
+        // 0 rows matched: staff closed this entry between our SELECT and now.
+        // Not an error, just a lost race, don't count it.
+        continue;
+      }
+
+      inChairCompleted++;
+    }
+  }
+
   return {
     processed: (stale ?? []).length,
     noShowed,
     resequencedSalons: affectedSalonIds.size,
+    inChairProcessed: (staleInChair ?? []).length,
+    inChairCompleted,
     errors,
   };
   });

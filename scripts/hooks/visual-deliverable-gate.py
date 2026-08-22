@@ -40,10 +40,17 @@ ESCAPE_PAT = re.compile(r"(large build.{0,40}nothing viewable|nothing viewable y
 # build the thing and paste the link.
 PROMISE_PAT = re.compile(
     r"("
-    r"(want|would you like|should) (me |i )?(to )?\w{0,12} ?(build|mock|draw|make|do|start)"
-    r"|(i('| w)?(ll|d| will| can| could| should)|let me|next up,? i)\s+\w{0,18}\s*"
-    r"(build|mock|draw|render|put together|show you)"
-    r"|(build|mock|draw)(ing)? (out )?(the|a|3|three|two|both|all) [\w\s-]{0,30}"
+    # WORD BOUNDARIES, 2026-08-22, and their absence made this refuse two correct messages that a
+    # reader drove through it. The second branch began `i('| w)?(ll|d| ...)`, unanchored, so the
+    # bare letters `i` then `d` matched inside sa-ID: "I said 238 mockup files. I counted them:
+    # 253." was read as an offer to build a mockup. So was "you said make mockups, so I should
+    # have built them, not announced them", which is me admitting the exact failure this check
+    # exists to catch. Refusing an admission of the mistake is the worst possible false alarm,
+    # because it makes owning it impossible.
+    r"\b(want|would you like|should) (me |i )?(to )?\w{0,12} ?\b(build|mock|draw|make|do|start)\b"
+    r"|\b(i('| w)?(ll|d\b| will| can| could| should)|let me|next up,? i)\b\s+\w{0,18}\s*"
+    r"\b(build|mock|draw|render|put together|show you)\b"
+    r"|\b(build|mock|draw)(ing)?\b (out )?(the|a|3|three|two|both|all) [\w\s-]{0,30}"
     r"(mockup|mock-up|direction|variant|version|page|screen|preview)"
     r")",
     re.I,
