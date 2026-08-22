@@ -33,9 +33,18 @@ if u think ur finishd ur not okay?"*
 
 ## Carried into the next rounds, from the nine readers. None of these are done.
 
-- [ ] FIVE OF TODAY'S FIXES HAVE TESTS THAT PASS WITH THE FIX REMOVED. A reader undid each change
-      and every suite reported the same pass count. Find which five, and give each a case that
-      fails when the change is reverted.
+- [x] TEN, NOT FIVE (verified: commit b510b2c in ~/.claude, plus the product-repo commit of the
+      same name). A reader undid every change made today and re-ran each suite. Fifteen files
+      changed; ten reported the identical pass count with the repair gone. The other four genuinely
+      noticed: fix-needs-before-after 12 of 14, no-opus-subagent 1 of 2, reply-shape-preflight 9 of
+      11, visual-deliverable 7 of 9. Each of the ten now carries one case drawn from the real defect
+      its own commit message names. All ten suites re-run by me and green at their new counts, one
+      case spot-checked against the pre-change code where it correctly fails, and every diff is
+      additions only.
+- [ ] _stopgate_lib.py has NO self-test at all, and the recap-phrase widening it got today has zero
+      coverage in any of the four checks that import it. Driven directly by the reader: 8 of 8 now
+      against 4 of 8 before, so the repair is real and nothing guards it. It has no suite to add a
+      case to, which is the actual work item.
 - [ ] THE READBACK CHANGE IS WRONG, not merely untested: a numbered answer list buried far down a
       long reply now satisfies it, which is the failure that file says it exists to catch.
 - [ ] 1,720 of 5,853 pieces of customer text in messages/en.json render nowhere (roots scanned:

@@ -784,6 +784,34 @@ def selftest() -> int:
         tests.append(("real message, genuine park of a still-open decision",
                       run(real_park, d, "a15"), 2))
 
+        # 16 REAL (2026-08-22, the customer-severity-ladder case named in the commit that added
+        # already_parked()). A decision parked and COMMITTED on an earlier turn, then merely
+        # reported again with no new park_lines this turn, must PASS. None of cases 1-15 exercise
+        # already_parked() at all: they either write a fresh park line this turn or write none, so
+        # this suite passed 15/15 whether or not already_parked() existed. Uses a real "now"
+        # timestamp for the turn (not the fixed 2026-08-07 default) so the earlier-turn commit is
+        # provably BEFORE the turn window, the same distinction already_parked() depends on.
+        d = fresh_repo(stack)
+        with open(os.path.join(d, "_plans", "WORK.md"), "a") as fh:
+            fh.write("- [ ] PARKED 2026-08-21 · Which severity ladder for a customer complaint, "
+                     "three tier or five tier? · from: owner call\n")
+        subprocess.run(["git", "-C", d, "add", "-A"], capture_output=True)
+        subprocess.run(["git", "-C", d, "commit", "-q", "-m", "park committed on an earlier turn"],
+                       capture_output=True)
+        time.sleep(1.1)  # strictly separate the earlier-turn commit from the turn tested below
+        already_parked_reply = (
+            "I parked the customer severity question for you again, still open from before, "
+            "unchanged, waiting on your call.")
+        now_ts = time.strftime("%Y-%m-%dT%H:%M:%S.000Z", time.gmtime())
+        rc16 = subprocess.run(
+            [sys.executable, __file__],
+            input=json.dumps({"transcript_path": transcript(already_parked_reply, now_ts),
+                              "session_id": f"{run_tag}-a16", "cwd": d}),
+            capture_output=True, text=True,
+            env={**os.environ, "CLAUDE_PROJECT_DIR": d}).returncode
+        tests.append(("real message, already-parked decision reported with no new line this turn",
+                      rc16, 0))
+
     ok = True
     for name, got, want in tests:
         hit = got == want
