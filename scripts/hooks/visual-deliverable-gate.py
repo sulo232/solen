@@ -50,6 +50,50 @@ PROMISE_PAT = re.compile(
 )
 VISUAL_NOUN_PAT = re.compile(r"(mock ?-?up|mock the|direction[s]?\b|variant|preview|screen|page|visual)", re.I)
 
+# CO-LOCATION, added 2026-08-22 after this arm refused a correct message. The two patterns used to
+# be searched independently across the WHOLE reply, so any offer-shaped verb anywhere plus any
+# visual noun anywhere counted as an offer to build a visual. The message that exposed it was about
+# repairing two rules: it said "the 313 real refusals it should make are untouched" in one
+# paragraph and "if a screen is telling a customer something untrue" 1,400 characters away in
+# another. Neither sentence offers to build anything, and together they blocked the reply.
+# Same defect, same session, third instance: the edit-guard's two-token check and the focus-ring
+# substring check both had it. Independent search over one long text is not a conjunction.
+# Two windows, not one, and they are different sizes on purpose. FORWARD is the verb's object
+# ("build the reviews mockup"), so it is tight. BACKWARD is the thing just named being offered
+# ("...directions mockup first. Want me to start there?"), so it is looser. A single symmetric
+# window was tried first and the real false positive landed at 119 characters, one under a
+# 120-character bound, which is not a threshold, it is a coin toss.
+PROMISE_FORWARD = 40
+PROMISE_BACKWARD = 60
+
+
+# An offer whose object is a PRONOUN is still an offer: "Want me to build that", "I'll render it".
+# The thing being promised was named a paragraph earlier, so no noun sits inside the window, and a
+# pure distance rule frees 79 real replies including several genuine promised-visuals. Measured,
+# not assumed: that count came from replaying every link-free closing reply on disk.
+PRONOUN_OBJECT = re.compile(r"^\s*(it|that|this|them|those|these|both|all three|the same)\b", re.I)
+# Some verbs ARE the visual, with or without a noun. "show it" / "render it" promise a look.
+INHERENTLY_VISUAL = re.compile(r"\b(show (you|it|them)|render it|preview it|put it on screen)\b", re.I)
+
+
+def promised_a_visual(final):
+    """True only when an offer verb and the thing it offers are close enough to be one offer."""
+    final = final or ""
+    if INHERENTLY_VISUAL.search(final) and PROMISE_PAT.search(final):
+        return True
+    nouns = [(m.start(), m.end()) for m in VISUAL_NOUN_PAT.finditer(final)]
+    for p in PROMISE_PAT.finditer(final):
+        if PRONOUN_OBJECT.match(final[p.end():p.end() + 20]):
+            return True
+        for ns, ne in nouns:
+            if 0 <= ns - p.end() <= PROMISE_FORWARD:
+                return True
+            if 0 <= p.start() - ne <= PROMISE_BACKWARD:
+                return True
+            if ns >= p.start() and ne <= p.end():
+                return True  # the noun is inside the promise itself
+    return False
+
 def project_dir():
     return os.environ.get("CLAUDE_PROJECT_DIR") or os.getcwd()
 
@@ -147,7 +191,7 @@ def main():
         # over budget: it has become the exit, not the exception , fall through and block
 
     # v3 arm: a PROMISED visual with no link is its own failure, independent of file writes.
-    if PROMISE_PAT.search(final) and VISUAL_NOUN_PAT.search(final):
+    if promised_a_visual(final):
         print(
             "PROMISED-VISUAL (visual-deliverable-gate v3, 2026-08-10): your closing message offers to "
             "build a mockup / direction / page and contains NO link to look at. To him that is a "
@@ -245,7 +289,17 @@ def selftest():
         "I would build on the existing table rather than adding a second one.",
         "The account hub page renders no bell now.",
     ]
-    over = [x for x in innocent if PROMISE_PAT.search(x) and VISUAL_NOUN_PAT.search(x)]
+    # 2026-08-22: the real message this arm wrongly refused, kept whole because the defect was the
+    # DISTANCE between its two halves and a trimmed version cannot reproduce it.
+    innocent.append(
+        "The rule that stops me handing decisions back was refusing my own repair reports. Seven "
+        "of your real replies were wrongly refused that way, all of them me saying I would stop "
+        "doing a thing. Fixed, and the 313 real refusals it should make are untouched.\n\n"
+        "A live false fact is no longer a menu item. It now sits above everything except a "
+        "security hole: if a screen is telling a customer something untrue, it gets fixed that "
+        "turn."
+    )
+    over = [x for x in innocent if promised_a_visual(x)]
     print("innocent sentences quiet: " + ("ok" if not over else "FALSE-POSITIVE on " + repr(over)))
 
     good = not over
