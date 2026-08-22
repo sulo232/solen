@@ -145,8 +145,14 @@ def promised_a_visual(final):
                 return True
             if 0 <= p.start() - ne <= PROMISE_BACKWARD:
                 return True
-            if ns >= p.start() and ne <= p.end():
-                return True  # the noun is inside the promise itself
+            # OVERLAP, not containment. 2026-08-22: this line used to require the noun to sit
+            # wholly INSIDE the promise, and an independent reader found five real offers with no
+            # link that now slip through because the two spans CROSS instead. "build the reviews
+            # mockup" is one of them: the promise match ends inside the noun match, so both gaps
+            # above go negative and both fail their `0 <=` floor, and containment is false because
+            # neither span holds the other. Any intersection means the words are the same phrase.
+            if ns < p.end() and p.start() < ne:
+                return True  # the noun and the promise are the same span of words
     return False
 
 def project_dir():

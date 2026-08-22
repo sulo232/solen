@@ -83,7 +83,7 @@ import tempfile
 import time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from _park_marker import PARK_LINE_RE, question_text  # noqa: E402
+from _park_marker import PARK_LINE_RE, is_open_park_line, question_text  # noqa: E402
 from _session_files import files_written_this_session  # noqa: E402
 
 SKIP_TTL = 90          # seconds; matches the raised-skip-cost convention
@@ -465,7 +465,12 @@ def already_parked(pdir: str, claims) -> bool:
             try:
                 with open(os.path.join(root, name), encoding="utf-8", errors="replace") as fh:
                     for line in fh:
-                        if not PARK_LINE_RE.search(line):
+                        # is_open_park_line, not PARK_LINE_RE. 2026-08-22, caught by a reader
+                        # who ran it rather than read it: the docstring above says OPEN and the
+                        # code said any park line at all, so a decision already ANSWERED or
+                        # DROPPED could wave a genuinely new one through. Three closed lines are
+                        # sitting in this tree right now, so it was live, not theoretical.
+                        if not is_open_park_line(line):
                             continue
                         body = question_text(line).lower()
                         hits = [w for w in claim_words
