@@ -25,6 +25,8 @@ import { join } from "node:path";
 const WALKIN_WAITING_MINUTES = 45;
 const BOOKINGS_PENDING_DAYS = 2;
 const VOUCHERS_UNRESOLVED_DAYS = 7;
+const BOOKINGS_CONFIRMED_PAST_APPOINTMENT_HOURS = 24;
+const WALKIN_IN_CHAIR_HOURS = 12;
 
 /** How old a stuck-rows report is allowed to get before a reader should be told not to trust it. */
 export const STUCK_ROWS_MAX_AGE_DAYS = 2;
@@ -114,7 +116,7 @@ async function checkStuck(db, { table, eq = {}, isNull = [], dateCol, cutoffIso,
 }
 
 /**
- * Runs the three live stuck-row checks and returns { generatedAt, checks } on success, or
+ * Runs the five live stuck-row checks and returns { generatedAt, checks } on success, or
  * { generatedAt, error } if the DB could not be reached (missing credentials, network, etc).
  * Never throws, so a failed live query cannot take down the rest of `npm run inventory`.
  */
@@ -143,6 +145,10 @@ export async function computeStuckRows(repoRoot) {
   const walkinCutoff = new Date(now - WALKIN_WAITING_MINUTES * 60_000).toISOString();
   const bookingsCutoff = new Date(now - BOOKINGS_PENDING_DAYS * 86_400_000).toISOString();
   const vouchersCutoff = new Date(now - VOUCHERS_UNRESOLVED_DAYS * 86_400_000).toISOString();
+  const bookingsConfirmedCutoff = new Date(
+    now - BOOKINGS_CONFIRMED_PAST_APPOINTMENT_HOURS * 3_600_000,
+  ).toISOString();
+  const walkinInChairCutoff = new Date(now - WALKIN_IN_CHAIR_HOURS * 3_600_000).toISOString();
 
   try {
     const checks = await Promise.all([
@@ -166,6 +172,20 @@ export async function computeStuckRows(repoRoot) {
         dateCol: "created_at",
         cutoffIso: vouchersCutoff,
         label: `vouchers with remaining_amount still null more than ${VOUCHERS_UNRESOLVED_DAYS} days after created_at`,
+      }),
+      checkStuck(db, {
+        table: "bookings",
+        eq: { status: "confirmed" },
+        dateCol: "starts_at",
+        cutoffIso: bookingsConfirmedCutoff,
+        label: `bookings still "confirmed" more than ${BOOKINGS_CONFIRMED_PAST_APPOINTMENT_HOURS} hours after their appointment time (starts_at)`,
+      }),
+      checkStuck(db, {
+        table: "barber_walkin_queue",
+        eq: { status: "in_chair" },
+        dateCol: "joined_at",
+        cutoffIso: walkinInChairCutoff,
+        label: `barber_walkin_queue still "in_chair" more than ${WALKIN_IN_CHAIR_HOURS} hours after joined_at`,
       }),
     ]);
     return { generatedAt, checks };
