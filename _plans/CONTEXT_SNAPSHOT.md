@@ -2,19 +2,20 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-21T11:07:08 (trigger: auto)
+- taken: 2026-08-22T09:38:16 (trigger: auto)
 - branch: claude/stress-test-gates-hooks-6dc8e8
 
 ## git
 ```
-48c9f6b44 Park the six refund repro scripts instead of leaving them loose in the root
-8c56a8599 The six decisions, written out so they can actually be answered
-dedaf081b checkpoint(auto): 7 uncommitted file(s) at turn end
-37ad66a9f checkpoint(auto): 5 uncommitted file(s) at turn end
-53fb1c6f1 A page he can tap through, and the number was overstated
+774c091f1 Rescope the correction to what he actually asked, and answer the state file
+7e2aae9f4 The detection half is three lines of SQL, and it found a second case
+850d159c7 The walk-in queue now empties itself, six weeks after it was written
+0733729dd Put a runnable proof on the last tick
+44bc0d15d My test runs were writing into a real record, and I cleaned it
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
+73 | GERMAN SAYS SALON, NOT STORE , round 2 (coordinator 2026-08-21: "your own sweep found roughly 30 more files still saying Store in German. Leaving them means the product still uses two words for one thing... So finish it") | **ACTIVE** (2026-08-21)
 68 | HOME: continue-search card + recently-viewed (owner 2026-08-15: "big size difference between the screenshot Airbnb reference and ours" + "mock ups in direction based on other websites and apps" + "recently viewed, we didn't do anything for that") | **ACTIVE** (2026-08-15)
 69 | HOME SECTIONS one by one (owner 2026-08-15: search icon without the box, card font/spacing "not balanced ... looks empty", Popular looks "doesn't make any sense" with "tons" of options, then Walk-in, then Reviews) | **ACTIVE** (2026-08-15)
 70 | HOME SECTIONS round 2 (owner 2026-08-16, rejected all 26 stacked versions and specified ONE design per section: Popular looks takes the Inspo card minus the TikTok badge and the black gradient plus a real shadow and replaces Find-your-inspiration; walk-in keeps the N-ahead count and the mark indicators, colour-coded, real icon back, hierarchy fixed; reviews cards smaller with read-more repositioned) | **ACTIVE** (2026-08-16)
