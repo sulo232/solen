@@ -15,6 +15,14 @@ if u think ur finishd ur not okay?"*
 
 ## Round log
 
+- [x] ROUND 2 , the readback defect confirmed and closed (a numbered answer list buried under 19
+      lines counted as one he could see at a glance; its suite said 18/18 because every buried case
+      it had used a prompt with no numbers, which switched the new counter off). The plain-English
+      miss closed: a message about my own mockup CHECKS counted as being about his mockups, and
+      over 6,027 replies the flag count is 3,837 before and after, so no new false alarm. Two more
+      stuck states added to the health report, 35 confirmed-but-past bookings and 2 walk-in rows
+      in the chair since 3 June, both matching an independent count. The loop rule stopped
+      demanding questions after he hands the work over, with its own limit recorded.
 - [x] ROUND 1 , the nine-reader scan. Acted on: the "said" false alarm (205 to 133 refusals over
       4,279 link-free replies), plain-English calling his own walk-in queue irrelevant, the
       armed-check claim counting files nothing runs (69 to 59), the walk-in in-chair sweep (built,
@@ -35,9 +43,14 @@ if u think ur finishd ur not okay?"*
       with NO withdraw action anywhere in the code or on any branch, a 30-day retention line, and
       the customer's rights to see, correct and delete their data.
 - [ ] 35 bookings marked confirmed whose appointment time has already passed, oldest 80 days.
-- [ ] 87 files wired to nothing (56 in ~/.claude/hooks, 19 across the project's .claude/hooks and
-      scripts/hooks). Includes the no-dash, plain-English and bullets-when-you-promise-a-count
-      rules, whose text was retyped into the pre-write reminder.
+- [ ] 64 files wired to nothing, RE-DERIVED MYSELF and the reader's 87 was wrong. Roots scanned:
+      ~/.claude/hooks (243 files, 51 orphaned), the project's scripts/hooks (16 files, 10) and its
+      .claude/hooks (36 files, 3). Registered set = 241 names from three settings files plus three
+      dispatchers; underscore-prefixed shared libraries excluded because imports keep them alive.
+      HOW THE READER GOT 87: its own leftover scratch files are still on disk and registered_all.txt
+      is 0 bytes, so its registered list was empty and every file counted as orphaned. The later
+      corrected run landed at 87, still high. Includes the no-dash, plain-English and
+      bullets-when-you-promise-a-count rules, whose text was retyped into the pre-write reminder.
 - [ ] mockup-diagnosis-gate.py fails its own test and has since 7 August. pushback-gate scores 21/22.
 - [ ] Three separate answers to "is there open work in the plan file" disagree; one interrupts real
       work demanding a box be ticked that he parked himself.
