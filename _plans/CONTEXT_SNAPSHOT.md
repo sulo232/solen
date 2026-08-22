@@ -2,16 +2,25 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-22T09:38:16 (trigger: auto)
+- taken: 2026-08-22T23:14:05 (trigger: unknown)
 - branch: claude/stress-test-gates-hooks-6dc8e8
 
 ## git
 ```
-774c091f1 Rescope the correction to what he actually asked, and answer the state file
-7e2aae9f4 The detection half is three lines of SQL, and it found a second case
-850d159c7 The walk-in queue now empties itself, six weeks after it was written
-0733729dd Put a runnable proof on the last tick
-44bc0d15d My test runs were writing into a real record, and I cleaned it
+abc8d2b5e Proof on the box, and two of its own numbers corrected by running them
+af7af5d2f The five defects and the numbers behind each, recorded
+b899a914b Five defects in this morning's five fixes, found by re-measuring them instead of trusting them
+a6785806d Describing what this arm matched is not making the offer it matched
+83ecc9018 The five wrong refusals of this turn, recorded with their measurements
+```
+```
+M _inventory/STUCK_ROWS.md
+ M _inventory/_stuck-rows.json
+?? disk_global.txt
+?? disk_project.txt
+?? registered_all.txt
+?? unreg_global.txt
+?? unreg_project.txt
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
