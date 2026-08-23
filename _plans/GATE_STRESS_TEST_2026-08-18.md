@@ -1112,3 +1112,26 @@ decision-authority file being built, not in a check.
 **The other half of his question, answered:** the review council fires and did fire. What did not
 fire is anything asking "could these two run at the same time", because that thing does not exist,
 for the reason above.
+
+## 2026-08-23 . the raw-text defect, driven rather than noted
+
+Found while replacing the destruction check: it decided by matching words anywhere in a shell
+command, so a word inside a search pattern, a quoted string or a heredoc counted as if the command
+had performed the action. Measured on this session's real commands: 5 of the 6 it refused were
+wrong, including blocking a file restore four times.
+
+A scan said three other checks had the same shape. Rather than write that down, each was driven
+with the payload that would expose it: an ACTION command that really does the thing, and a MENTION
+command that only searches for or prints the same words. Driver kept at
+`~/.claude/gate-fixtures/` alongside the destruction fixtures.
+
+- [x] `canon-archive-gate.py` . no defect. It fires on a NEW FILE appearing at the top level of
+      `_design-system/`, on Write, not on a shell command at all. The scan's "reads a command"
+      label was wrong about it.
+- [x] `skip-flag-ledger.py` . no defect, and it never blocks by design. Its own first paragraph:
+      "This hook does NOT block anything: it appends every flag-creating Bash command to a ledger".
+      Three mention-shaped commands, including a heredoc that documents the flag, all passed.
+- [x] `runnable-claim-gate.py` . no defect. It reads a closing reply, not a command; the one
+      command it looks at is matched from the start of the string, so a mention cannot reach it.
+- [x] Conclusion recorded: the defect was in one check, not in a class of four. Nothing further
+      to fix here, and the claim is now backed by running them rather than by reading them.
