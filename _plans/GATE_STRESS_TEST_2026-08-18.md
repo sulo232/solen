@@ -1429,11 +1429,25 @@ load-bearing facts were then re-checked by me before any of them went in a messa
       the fix happens after he has read something. That is why moving them earlier works and
       deleting them would not.
       verified: ~/.claude/gate-fixtures/did_the_stop_cause_work.py, run this turn.
-- [ ] SUPERSEDED by the line above: a live record of whether each stop was right
+- [x] SUPERSEDED, and the line above says why: the answer needed no new logging, it was already in the record.
       a record of whether each stop was right, written when a check fires and only then. Anything
       under half right over its last 30 firings stops blocking on its own. Zero cost on a clean
       turn. He would notice the annoying ones going quiet without him having to say so.
-- [ ] THE SWEEP THAT COSTS NOTHING: when something is hardened, search the same turn for the same
+- [x] BUILT AND RUN. The sweep takes a defect SHAPE rather than a file and finds everything else
+      carrying it. Four shapes so far, each named after the case that produced it. Run over all 282
+      files this turn:
+        negation-blind    0. The one fixed today was the only one.
+        no-baseline       1. fabricated-value-gate computes a rate with nothing to compare it to.
+        raw-text-match    6. A heuristic list, not a verdict: three similar ones were driven
+                          earlier today and turned out clean, so these are places to look.
+        reads-own-words  28. Sits at the end of a reply and only reads the reply, so it can only
+                          ever produce a second message. Eleven were moved earlier today. These
+                          are the next 28.
+      Every future fix adds its shape, which is three lines.
+      verified: ~/.claude/gate-fixtures/sibling_sweep.py, run this turn.
+- [ ] THE 28: move the ones that only read my own words to before-the-message, the same way the
+      eleven went today. Not done, and it is the largest single thing left.
+- [ ] OLD LINE, kept so the change is legible: search the same turn for the same
       shape worded differently and fix those too. This setup has three documented cases of one
       behaviour being banned and reappearing in a new shape.
 
@@ -1457,8 +1471,9 @@ by me before it went in a message.
       of his message roughly 40 to 51 percent of the time, tacked onto the end of a complaint about
       something else. Example he sent this week: "i told u loop if u arent done why are u stoppin
       harden". That shape is measurably tied to needing to re-ask. It does NOT explain the council
-      case, where he asked short and clean 25 times and it still never stuck.
+      case, where he asked short and clean 25 times and it still never stuck. verified: run wf_c68981fb-891, the three attack agents each derived it independently, full returns in tasks/watk3wee4.output.
 - [x] HONEST LIMIT: two readers counting the same five instructions over the same 25 files got
       counts 20 to 55 percent apart from each other. A third re-derived them independently and got
       the same rough picture. So the shape is solid and the exact numbers are not. Reported as
       ranges, never as precise figures.
+ verified: tasks/watk3wee4.output, the attacks array, first attacker's strongest_objection.
