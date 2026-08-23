@@ -44,6 +44,14 @@ type EnrichedReview = Review & {
   // never `.length` / `[0]` directly (2026-07-25 fix, see _shared.ts).
   review_replies?: ReviewReply | ReviewReply[] | null;
   booking_id?: string;
+  // The booking's guest_name, forwarded ONLY when the reviewer has no account (no
+  // review_id -> profiles join). Optional: rows loaded via the "Mehr laden" pagination
+  // fetch (handleShowMore below, GET /api/reviews/salon/[salon_id]) do not carry this
+  // field at all, since that route is a shared loader used by other screens
+  // (dashboard/reviews, the marketplace-wide reviews page) and was not touched here;
+  // for those rows this stays undefined and the fallback chain below reaches the
+  // translated anonymous label instead, same as it always has.
+  guestName?: string | null;
 };
 
 interface SalonReviewsProps {
@@ -112,6 +120,7 @@ export default function SalonReviews({
   isOwner = false,
 }: SalonReviewsProps) {
   const t = useTranslations("salonDetail");
+  const tCommon = useTranslations("common");
   const [reviewSort, setReviewSort] = useState<"newest" | "highest" | "lowest">("newest");
   const [reviewPage, setReviewPage] = useState(1);
   // Ring 2b: the parent page now loads only the first page of reviews (was
@@ -369,6 +378,12 @@ export default function SalonReviews({
                 const needsTruncation = (rev.comment?.length ?? 0) > 150;
                 const displayText =
                   !isExpanded && needsTruncation ? rev.comment?.slice(0, 150) + "..." : rev.comment;
+                // Account name first, then the booking's guest name, then the translated
+                // anonymous label. ONE resolved value so the avatar initial (below) and the
+                // printed name can never disagree, per the fix this fallback chain exists for:
+                // a guest who books and reviews used to be permanently "Anonym" because this
+                // component only ever read rev.profiles, never the booking's own guest_name.
+                const reviewerName = rev.profiles?.display_name ?? rev.guestName ?? tCommon("anonymous");
 
                 return (
                   <div key={rev.id}>
@@ -381,12 +396,12 @@ export default function SalonReviews({
                           {rev.profiles?.avatar_url ? (
                             <Image src={rev.profiles.avatar_url} alt="" width={56} height={56} className="h-full w-full object-cover" />
                           ) : (
-                            rev.profiles?.display_name?.[0] ?? "?"
+                            reviewerName[0]
                           )}
                         </div>
                         <div className="min-w-0 flex-1">
                           <div className="truncate text-[15px] font-semibold text-s-ink">
-                            {rev.profiles?.display_name ?? "Anonym"}
+                            {reviewerName}
                           </div>
                           <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[13px] text-s-ink-2">
                             <span>

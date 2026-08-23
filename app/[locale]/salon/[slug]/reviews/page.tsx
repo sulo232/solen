@@ -89,7 +89,8 @@ export default async function SalonReviewsPage({
         id, rating, comment, created_at,
         profiles(display_name, avatar_url),
         review_photos(id, photo_url),
-        review_replies(id, reply_text, is_public, created_at)
+        review_replies(id, reply_text, is_public, created_at),
+        bookings(guest_name)
       `)
       .eq("salon_id", salon.id)
       .eq("is_hidden", false)
@@ -173,6 +174,11 @@ export default async function SalonReviewsPage({
   // SalonReviews never reads them (the write-review gate uses unreviewedBookingId), so
   // shipping every reviewer's auth UUID + booking UUID into the client HTML was a
   // needless exposure. The write-review dedup uses its own server-side query above.
+  // guestName is the ONE field pulled OUT of the bookings embed (guest_name only,
+  // never the booking id or anything else on that row): a guest who books and leaves a
+  // review has no profiles row, so SalonReviews.tsx's fallback chain reads this before
+  // falling back to the translated anonymous label. The nested `bookings` object itself
+  // is never forwarded, same discipline as the stripped user_id/booking_id above.
   const enrichedReviews = (reviewsRes.data ?? []).map((r: any) => ({
     id: r.id,
     rating: r.rating,
@@ -181,6 +187,7 @@ export default async function SalonReviewsPage({
     profiles: r.profiles ?? null,
     review_photos: r.review_photos ?? [],
     review_replies: r.review_replies ?? [],
+    guestName: r.bookings?.guest_name ?? null,
   }));
 
   return (
