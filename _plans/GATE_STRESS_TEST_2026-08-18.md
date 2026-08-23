@@ -1282,3 +1282,32 @@ the flag-instead-of-fix rule exists for, applied to my own measuring rather than
       commit 3f0c1d7a4 in ~/.claude.
 - [ ] BLOCKED ON HIM, and he already answered it once so this is only the follow-up: the branch
       survey he asked for is running. Nothing to decide until it reports.
+
+### 2026-08-23 . the 17 abandoned branches, surveyed
+
+Twelve read in parallel, one judgement pass over the results, then the biggest claim re-run by me
+before it went in a message.
+
+- [x] REPRODUCED MYSELF, and it is the one that matters. `app/api/unsubscribe/route.ts` on main
+      takes an email address out of the request body and runs `.update({ email: null })
+      .eq("email", body.email)` with nothing proving the caller owns that address. So once live,
+      anyone could wipe the contact email of any salon in the outreach directory, and that salon
+      could then never claim its own listing. The fix, `lib/unsubscribe-token.ts`, exists ONLY on
+      claude/agent-flow-design-overhaul-2af2c2 and is absent from main. Pre-launch, so nobody is
+      affected today. verified: read both files this turn.
+- [x] Worth rescuing, six things across five branches: the unsubscribe fix above; the finished
+      French, German and Italian refund copy (live code still shows English words on those screens);
+      one file that moves the salon sign-up check to the server instead of after the page draws;
+      four small safety checks that exist in neither checks folder; the sheet motion nobody ever
+      wrote; and a walk-in queue cleanup job that has to be rebuilt rather than copied.
+- [x] Safe to leave, eight findings: one branch is genuinely empty and can be deleted outright, and
+      the rest were already redone independently on main, in one case better.
+- [ ] BLOCKED ON HIM, four product calls nobody else can make:
+  - [ ] The Aurora dashboard skin on bold-hellman: merge it, rebuild it against Airbnb, or bin it.
+        It competes with the locked dashboard and predates the move to Airbnb as source of truth.
+  - [ ] Three extra sign-up questions (how they heard of Solen, team size, goals). The columns are
+        already live and empty and nothing reads them. Ask new salons, or drop the columns.
+  - [ ] The staff rota. The server side is live and working; there is no screen anywhere, so no
+        salon owner can see a rota or set anyone's access. Build the screens or call it post-launch.
+  - [ ] The /behandlungen page: one branch deleted it as a duplicate, main still links to it from
+        three places and edited it three weeks ago. One of those two calls is wrong.
