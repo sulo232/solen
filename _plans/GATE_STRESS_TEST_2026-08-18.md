@@ -1154,7 +1154,7 @@ one three times. The problem is that nobody measured what a WRONG refusal costs 
 
 - [x] SUPERSEDED by 1d below.
 
-- [ ] Decide with the owner whether a check that can END HIS TURN is ever worth it, versus one that
+- [ ] BLOCKED ON HIM, and only he can answer it: whether a check that can END HIS TURN is ever worth it, versus one that
       only warns. That is his call and it is the real question underneath this.
 
 ## 2026-08-23 CORRECTION, owner: "why did you not deal with the left of my card" + "did you really cover every single inch of the harness"
@@ -1182,20 +1182,20 @@ a 486-line rulebook and eight doctrine files.
   - [x] 2c. DONE, per area. Where a community source was thin or contradicted itself the reader was told to say so rather than launder it.
 
   - [x] 2d. DONE. Ranked worst first. The top three I reproduced myself before repeating them, and my numbers differ from the readers' because my count covers all four settings files rather than one.
-
+ verified: run wf_cb0e18bb-b37, 15 agents, full result at tasks/w42zalcp5.output (48KB) and per-agent returns in subagents/workflows/wf_cb0e18bb-b37/journal.jsonl. verified: scratchpad/verify_sweep_top.py, run this turn, counts read from the four settings files directly. verified: the sources array of each compare agent in subagents/workflows/wf_cb0e18bb-b37/journal.jsonl. verified: same journal, same sources arrays. verified: tasks/w42zalcp5.output, worst_first array; the top three re-run by me in scratchpad/verify_sweep_top.py.
 - [x] CORRECTION 3. DONE. A new arm refuses a stop when the turn opened boxes and started none of them, unless a box's own line names what is stopping it. 12 of 12 on its own cases, 3 of which fail without it, and the check's existing 11 still pass.
 
 
 ### PARKED by him, to start only after the above is done
-- [ ] SKILLS. Use the skills Claude Code already has, install good ones from Anthropic and the
+- [ ] PARKED BY HIM 2026-08-23, his words "park the thing that I just told you after you're done with it". Waiting on the sweep clean-up finishing first. SKILLS. Use the skills Claude Code already has, install good ones from Anthropic and the
       community, and write our own where nothing fits, then build on them.
-  - [ ] Inventory what skills exist here already and what each does.
-  - [ ] Find what Anthropic and the community publish, and judge what is worth having.
-  - [ ] SECURITY FIRST: read anything from the community before installing it and say what it does,
+  - [ ] PARKED BY HIM, under the skills item above. Inventory what skills exist here already and what each does.
+  - [ ] PARKED BY HIM, under the skills item above. Find what Anthropic and the community publish, and judge what is worth having.
+  - [ ] PARKED BY HIM, under the skills item above. SECURITY FIRST: read anything from the community before installing it and say what it does,
         what it reads, what it sends anywhere. Nothing gets installed unread.
-  - [ ] Write skills for the gaps, including for the two he named as core problems: not researching
+  - [ ] PARKED BY HIM, under the skills item above. Write skills for the gaps, including for the two he named as core problems: not researching
         when told to, and not executing the task.
-  - [ ] Look back through past sessions for small recurring problems that a skill would solve.
+  - [ ] PARKED BY HIM, under the skills item above. Look back through past sessions for small recurring problems that a skill would solve.
 
 ### 2026-08-23 . the repeat problem, cause found and fixed
 
@@ -1205,13 +1205,18 @@ Measured, then fixed, then re-measured by me rather than by the builder who did 
       written and the SAME check runs on it again. The product ships the answer, a flag on the
       payload saying "you already blocked this turn", and the documented behaviour is to stand
       down while it is set. BEFORE: 31 of 69 end-of-reply checks did that. AFTER: 69 of 69.
-      Every touched file compiles and every suite that passed before still passes.
+      Every touched file compiles and every suite that passed before still passes. verified: commits ccd6187 and 9314ee8 in ~/.claude, e8d6af9c0 here; counted by scratchpad/verify_guard_running_copy.py, which resolves each registration the way the shell does.
 - [x] Two of the three checks the always-loaded rulebook names as its proof of enforcement were
-      in the unguarded group.
+      in the unguarded group. verified: pushback-gate.py and stat-source-gate.py both appear in the changed-file list of commit ccd6187.
 - [ ] The eight things the sweep says it did NOT cover, and one of them is the one that matters:
       nobody ran a single check against a real message in that sweep, it was all reading.
-  - [ ] What the checks cost in seconds per turn. Cost is called a correctness property here and
-        the sweep produced no cost number at all.
+  - [x] What the checks cost in seconds per turn. DONE, and it is the first cost number this
+        system has ever had, which means the gate law's "cost is a correctness property" has been
+        unenforceable since the day it was written. Measured over all 68 end-of-reply checks, one
+        realistic message each: SLOWEST 1.38s, which is what a reply actually waits for since they
+        run at the same time; 28.89s if they ran one after another; median 0.287s; only 4 of 68
+        cost a second or more, the worst being no-defer-excuse at 1.38s and unfinished-batch at
+        1.27s. verified: scratchpad/measure_check_cost.py, run this turn.
   - [ ] How often each check actually fires. One that never fires is invisible to a reader and is
         the best deletion candidate there is.
   - [ ] The roughly 245 scripts on disk against 202 wired: which are shelved on purpose and which
