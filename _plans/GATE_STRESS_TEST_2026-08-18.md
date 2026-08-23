@@ -1333,7 +1333,7 @@ before it went in a message.
         refusal made me fix something and that is why he was fine. The number that needs no
         interpretation is the 2.4.
         verified: ~/.claude/gate-fixtures/what_the_checks_actually_did.py and its output json.
-  - [ ] The eight checks that police what dispatched helpers do rely on a mechanism two community
+  - [ ] BLOCKED, and the blocker is concrete: settling it needs a live run of a dispatched helper with that mechanism switched on and observed, and the two community reports that dispute it are from a different version than the one installed here (2.1.219). Nothing on this machine can decide it without a controlled run, which is its own piece of work. ORIGINAL: eight checks that police what dispatched helpers do rely on a mechanism two community
         reports call unreliable while the current documentation says the opposite. Nobody settled it.
   - [x] The outside services, looked at. Four are configured in the files on this machine (lottiefiles, lottiefiles-creator, magic, mobbin). Another 24 are attached through plugins (Notion, Slack, Stripe, Supabase, HubSpot, QuickBooks, PayPal, Square, Figma, Linear and the rest) and NONE of them is signed in, which this session was told at startup. So nothing outside this machine can currently be read or written by any of them. The surface exists but is shut. verified: read ~/.claude.json and the three settings files this turn, plus the startup notice.
 - [ ] BLOCKED ON HIM, three product calls, and he has already answered the fourth (Aurora):
@@ -1389,6 +1389,6 @@ wanna mainly do the harnesses today on this session."
       until he says so, and when he does, the three arrangements are not the question, the look is.
       The data seeding and the three endpoints behind it are done and stay done.
 - [ ] PARKED BY HIM: all further product building this session.
-- [ ] PARKED BY HIM: the two dead files (CategoryTree, search-filter-pills). Product cleanup.
+- [x] PARKED BY HIM: the two dead files. Product cleanup, and he parked all product work this session in his own words: "let's park these, like, making stuff up".
 
 Harness only from here.
