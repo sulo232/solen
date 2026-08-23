@@ -1231,27 +1231,54 @@ Measured, then fixed, then re-measured by me rather than by the builder who did 
 His words: "wasnt the core task abt researchin n sourcin sh". Right. A number I called unreliable
 and left there is a defect I found in my own instrument and did not fix, which is the exact shape
 the flag-instead-of-fix rule exists for, applied to my own measuring rather than to the product.
-
+ commit 5b5e0f0a1.
 - [x] The instrument was the fault, and it is named: every judge was handed the SAME file and an
       index. Four judges at four different indexes reported the same command, so nothing tied a
       verdict to a command. Rebuilt: 60 files, one command each, each judge given its own path and
       made to echo the first line back so a mix-up shows. verified: scratchpad/cmds/ and run
-      wf_9189e4a3-111.
+      wf_9189e4a3-111. commit 1cc6a49f9.
 - [x] Fidelity check on the new instrument, done the way rule 15a asks. 60 files echoed 50 distinct
       first lines, and the sample itself has exactly 50 distinct first lines (five commands start
       `python3 - <<'PY'`, three start with the same scratch path). So the echoes match the sample
       perfectly. My automatic flag called it untrustworthy because it compared against 57 rather
       than against the sample's own count; the flag was wrong, not the run.
-      verified: scratchpad/on_disk_vs_wired.py sibling check in the same turn.
+      verified: scratchpad/on_disk_vs_wired.py sibling check in the same turn. commit 1cc6a49f9.
 - [x] THE NUMBER, on real traffic: 1 refusal in 60 commands, 1.7 percent, and ZERO of them ordinary
       work. The single refusal is a branch delete I typed myself to test it. All four git commits in
       the sample were allowed. The threshold set earlier this turn was one in fifty, so the
       rewritten wording clears it. The version that broke his session was the FIRST wording, which
-      refused a commit; the rewrite fixed that and this measures the rewrite.
+      refused a commit; the rewrite fixed that and this measures the rewrite. commit 1cc6a49f9.
 - [x] What is on disk and runs nothing: 280 check scripts, 207 run, 13 are off with a stated reason,
       60 are off with nothing saying why. Two of those 60 looked like they were falsely claimed as
       enforcing; both checked by hand and both are honest (one is documented as NOT WIRED in the
       rulebook itself, the other is named only as a past example). So the false-enforcement problem
-      is the one already found, not a pool of sixty. verified: scratchpad/on_disk_vs_wired.py.
+      is the one already found, not a pool of sixty. verified: scratchpad/on_disk_vs_wired.py. commit 1cc6a49f9.
 - [ ] BLOCKED ON HIM: whether to switch the command check back on now that it clears the bar. He
       watched the first version break his session, so this is his call and not mine to take back.
+
+### 2026-08-23 . his four answers, and what each one changed
+
+- [x] The command check is back on and can ONLY WARN. His pick: "On, but only warn". The wording is
+      unchanged, the answer shape is not: it never emits a decision, so it cannot end a turn.
+      Proven live, a destructive command shape ran instead of being refused.
+      commit c4a1f38e2 in ~/.claude.
+- [x] Permissions left exactly as they are. His pick: "Leave it as is". Recording what that means so
+      it is a decision and not a gap: everything allowed, nothing denied, nothing asks, and the only
+      thing between a mistake and his files is the folder list plus the warn-only check above.
+      verified: scratchpad/three_open_items.py section B.
+- [x] How often each check really fires, over this whole session: 67 of the 207 that run fired at
+      least once. So 140 have never fired here, and those are the deletion candidates.
+      verified: scratchpad/three_open_items.py section A.
+- [x] The product risk behind the missing-things rule, checked rather than cited. It is 17 unmerged
+      branches, not 40. And the named safety case is REAL: `bookings.consumed_at` is in two
+      migration files and in the shipped route `app/api/bookings/[id]/quick-action/route.ts`, and it
+      is NOT in the live database snapshot captured 2026-08-14. Nothing is broken for anyone because
+      nothing is live, but the one-click confirm link in an email would have no reuse protection the
+      day it is. verified: scratchpad/three_open_items.py section C plus a direct read of the
+      snapshot and the route.
+- [x] He reads every command and cannot tell what they do. 43 percent of my commands carried an
+      inline script, 53 percent ran over 400 characters. Now a rule in the rulebook rather than a
+      check, because a check refusing half my commands would end his turn every second command.
+      commit 3f0c1d7a4 in ~/.claude.
+- [ ] BLOCKED ON HIM, and he already answered it once so this is only the follow-up: the branch
+      survey he asked for is running. Nothing to decide until it reports.
