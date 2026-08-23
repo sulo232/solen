@@ -291,3 +291,28 @@ No product file is touched and there is no crash.
 
 BLOCKER: none. This is a choice not to spend more on a route that was never required.
 IMPACT: none on the product. `LookPreview.tsx` is imported by nothing, so it ships nowhere.
+
+## A clickable preview for the Inspo screen: two approaches failed, the numbers are in hand (2026-08-23)
+
+WHAT IS DONE: the treatment for Inspo is measured and proven on the real page. Injected into the
+live screen at 390x844, the biggest text goes from 14px to 17px and the gap between biggest and
+smallest goes from 1.17x to 1.42x. For reference the store page he likes sits at 30px and 2.31x, so
+this is a step toward it and not the whole distance.
+
+THE ONE VISIBLE COST, seen in the picture and not hidden: at 17px the style label on a picture can
+run out of room, so "Brow Lamination" truncates to "Brow Lamina...". Either the label wraps to two
+lines or it stays smaller. That is a real decision, not a rendering bug.
+
+WHAT IS NOT DONE: a link he can tap to compare the looks himself. Two approaches failed:
+  1. Mounting a URL-driven switch in the shared page frame crashed the build twice (SIGSEGV while
+     collecting page data). Written up separately above.
+  2. Rendering the real Inspo page component inside a preview route redirects straight to the home
+     page, because that page navigates on mount to set its own default filters. Route deleted; a
+     copy is in the session scratch directory.
+This is the second failed theory for one goal, which is the point at which the method should change
+rather than a third variant of the same idea being tried.
+
+BLOCKER: none technical. It needs a different method, not more attempts at this one. The obvious
+untried one: apply the treatment as a real, committed change behind a switch on the preview server
+only, so no embedding or URL reading is involved.
+IMPACT: none on the product. Nothing was applied to any real screen.
