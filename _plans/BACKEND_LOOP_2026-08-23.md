@@ -306,13 +306,50 @@ Three things need him, and nothing else in this loop does.
 
 Carried into the next batch, each with the reason it is not done rather than a bare later:
 
-- The translation cache serves a hidden review, because the is_hidden guard sits only on the
-  cache-miss path.
-- A card can be charged twice: when the paid-marking write matches no row, the money has left
-  Stripe and nothing stops tomorrow's run selecting the same booking.
+- [x] **fixed:** the translation cache serves a hidden review, because the is_hidden guard sits
+  only on the cache-miss path. `app/api/reviews/translate/route.ts` now re-checks the cached ids
+  against `reviews.is_hidden` before returning them.
+- [x] **fixed:** a card can be charged twice: when the paid-marking write matches no row, the
+  money has left Stripe and nothing stops tomorrow's run selecting the same booking.
+  `app/api/cron/pre-charge/route.ts` now destructures the update error, alerts the admin and
+  distinguishes it from the harmless zero-rows case, and the SELECT excludes any booking that
+  already carries a `payment_intent_id`.
 - The admin payment-mode override and the customer's own booking page read different columns. I
   have proven the two reads differ; I have NOT proven the charged amount is wrong.
-- The review-translate route calls a paid AI service with no auth and no per-user cap, while the
-  rate-limit file names that exact route in the list that must carry both.
+- [x] **fixed:** the review-translate route calls a paid AI service with no auth and no per-user
+  cap, while the rate-limit file names that exact route in the list that must carry both.
+  `app/api/reviews/translate/route.ts` now applies the same global AI budget and daily-cap
+  limiter `app/api/translate/route.ts` uses, keyed by IP instead of user id since the route is
+  reached from a public, possibly-signed-out salon page. Whether to require sign-in instead is
+  his call, not made here.
 - Account deletion does not purge the new avatar bucket.
 - The admin photo takedown deletes the row and leaves the file.
+
+## Batch 2, and the two checks I ran myself that the builder said it could not
+
+- [x] **The hidden-review fix DISCRIMINATES, proven against the live database.** `verified:` a
+      rolled-back transaction: picked a review that has a cached translation, counted how many
+      pass the new visibility filter (**1**), flipped `is_hidden` exactly as moderation would,
+      counted again (**0**), rolled back. Both numbers in one result set on purpose, because if
+      the "before" had also been 0 the test would be the broken thing rather than the code. The
+      builder reported this as reasoned from the code path and NOT run live; it is now run.
+- [x] **The new pre-charge guard does not silently stop legitimate charges.** `verified:` this
+      was the dangerous half. The guard skips any booking that already carries a
+      `payment_intent_id`, and `app/api/stripe/booking-pay-intent/route.ts:704` stamps that
+      column when the PaymentIntent is CREATED, before any money is captured. So if a booking
+      could be `card_saved` and `confirmed` and already carry an intent, the guard would stop it
+      being charged at all, which is worse than the bug. Counted on the live table: **1**
+      pre-charge candidate today, **0** would be skipped, and **0** bookings are `card_saved`
+      with an intent in any status, out of 997. Stated precisely: proven empty on 997 real rows,
+      not proven impossible by construction.
+
+- [x] **Batch 2 graded PASS by a separate reader, which independently answered the dangerous
+      question.** It greped every writer of `bookings.payment_intent_id` and traced that
+      `payment_status = 'card_saved'` is set only by the setup-intent webhook, which never
+      writes `payment_intent_id`. So the new guard cannot silently stop a booking that still
+      needs charging. That is the stronger form of my own count, which only showed the collision
+      is empty on today's 997 rows.
+- [ ] **Left open on purpose, by the reader, and worth keeping:** a translation cached for a
+      review that is later hidden is never deleted from `review_translations`. Harmless today,
+      because that table has exactly one reader and it now filters on every path. It becomes a
+      leak the moment anyone writes a second reader without the same filter.
