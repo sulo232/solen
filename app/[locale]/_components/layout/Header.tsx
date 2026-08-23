@@ -27,6 +27,7 @@ import { getCityName, type CitySlug } from "@/lib/cities";
 import { getPersistedCity, setPersistedCity } from "@/lib/city-cookie";
 import { useActiveCities } from "@/hooks/useActiveCities";
 import { strokeForSize } from "@/lib/icon-stroke";
+import { isTaskStep } from "./FooterGate";
 
 /**
  * V3 Header, V2-D46 (2026-05-09).
@@ -383,6 +384,18 @@ export default function Header({ locale }: { locale: string }) {
     const parts = seg.split("/").filter(Boolean); // city-category browse, e.g. /basel/coiffeur
     if (parts.length === 2 && ["coiffeur", "barbershop", "nails", "spa"].includes(parts[1])) return true;
     return false;
+  }, [pathname]);
+
+  // Task-step sub-views (booking, confirmation, salon/[slug]/reviews, salon/[slug]/team) own
+  // their own local back control, per FooterGate.tsx's own docstring and the single-global-back
+  // doctrine collision it names. isTaskStep is IMPORTED from FooterGate.tsx, not copied: that
+  // file already owns TASK_STEP_PREFIXES/TASK_STEP_PATTERNS, and a second list here would be the
+  // exact drift this project complains about most. On these routes the header renders neither
+  // the home tile nor its own back in the far-left slot, since the page below already has one.
+  const isTaskStepRoute = React.useMemo(() => {
+    if (!pathname) return false;
+    const seg = pathname.replace(/^\/[a-z]{2}/, "").replace(/\/$/, "") || "/";
+    return isTaskStep(seg);
   }, [pathname]);
 
   // V3-D349 (2026-05-28): detect a category/search route so the fused compact
@@ -750,6 +763,13 @@ export default function Header({ locale }: { locale: string }) {
           >
             <Home size={22} strokeWidth={2.2} aria-hidden />
           </Link>
+        ) : isTaskStepRoute ? (
+          // Task-step sub-view (isTaskStep, imported from FooterGate.tsx): the page below owns
+          // its own local back, so this slot renders neither home nor back. Same h-11 w-11
+          // footprint as the tile it replaces, kept in the layout (not unmounted) via the same
+          // opacity-0 pointer-events-none technique this file already uses on the logo/home tile
+          // above to hold space while menuOpen, so the hamburger slot never shifts.
+          <div className="h-11 w-11 shrink-0 opacity-0 pointer-events-none" aria-hidden />
         ) : (
           // V3-D461: deep page → BACK (router.back with a home fallback for direct loads). Same tile.
           <button
