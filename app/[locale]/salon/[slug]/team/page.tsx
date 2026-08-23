@@ -1,4 +1,9 @@
-"use client";
+// NOT a client component, and the stray "use client" that used to sit here took the whole app
+// down. Next.js forbids a browser-only file from exporting generateMetadata, and the failure is
+// not local: it stops everything compiling, so every page in every language answered 500.
+// This file uses no browser feature at all, no useState, no useEffect, no onClick, so the marker
+// was wrong rather than load-bearing. It loads salon data on the server and awaits params, which
+// is server work by definition.
 
 // exists-check: `npm run exists team` (2026-07-24, this turn) , only hit is the dev-only
 // /dev/pdp/team-all route + the SalonTeam/SalonTeamOverhaul/TeamAllOverhaul components (all

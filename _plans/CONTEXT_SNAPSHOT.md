@@ -2,25 +2,16 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-22T23:14:05 (trigger: unknown)
+- taken: 2026-08-23T12:20:32 (trigger: unknown)
 - branch: claude/stress-test-gates-hooks-6dc8e8
 
 ## git
 ```
-abc8d2b5e Proof on the box, and two of its own numbers corrected by running them
-af7af5d2f The five defects and the numbers behind each, recorded
-b899a914b Five defects in this morning's five fixes, found by re-measuring them instead of trusting them
-a6785806d Describing what this arm matched is not making the offer it matched
-83ecc9018 The five wrong refusals of this turn, recorded with their measurements
-```
-```
-M _inventory/STUCK_ROWS.md
- M _inventory/_stuck-rows.json
-?? disk_global.txt
-?? disk_project.txt
-?? registered_all.txt
-?? unreg_global.txt
-?? unreg_project.txt
+f0db9a70c Two boxes closed with the commits that prove them
+cd0f4f3bb Ten of today's repairs had tests that passed with the repair removed, not five
+9b8cd06c0 The 07:03 promise finally has its list, counted from real fires rather than guessed
+7c83689a4 Every ticked round now carries the commits that prove it, and all nineteen resolve
+72822562f The 87 I told him was wrong, and its own leftover files show why
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
