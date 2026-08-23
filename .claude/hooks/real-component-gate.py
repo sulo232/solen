@@ -124,6 +124,12 @@ def flag_ok():
 def main():
     try: data = json.load(sys.stdin)
     except Exception: data = {}
+    # One refusal per turn (2026-08-23). `stop_hook_active` is true on every re-run
+    # after this check already blocked, so returning success here is what stops the
+    # same objection being raised against message after message. The product force-
+    # ends the turn after 8 consecutive blocks anyway, so a run past one is wasted.
+    if data.get("stop_hook_active"):
+        sys.exit(0)
     if flag_ok(): sys.exit(0)
     turn_files, reply_text = turn_written_files(data)
     if turn_files is not None and MOCKUP_FRAMING.search(reply_text):

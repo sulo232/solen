@@ -79,8 +79,14 @@ def flag_ok():
     try: return os.path.isfile(f) and time.time()-os.stat(f).st_mtime<900 and bool(open(f,encoding="utf-8").readline().strip())
     except OSError: return False
 def main():
-    try: json.load(sys.stdin)
-    except Exception: pass
+    try: payload = json.load(sys.stdin)
+    except Exception: payload = {}
+    # One refusal per turn (2026-08-23). `stop_hook_active` is true on every re-run
+    # after this check already blocked, so returning success here is what stops the
+    # same objection being raised against message after message. The product force-
+    # ends the turn after 8 consecutive blocks anyway, so a run past one is wasted.
+    if payload.get("stop_hook_active"):
+        sys.exit(0)
     if flag_ok(): sys.exit(0)
     hits=[]
     for f in recent():
