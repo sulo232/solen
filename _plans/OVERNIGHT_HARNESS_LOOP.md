@@ -41,7 +41,11 @@ if u think ur finishd ur not okay?"*
       its own commit message names. All ten suites re-run by me and green at their new counts, one
       case spot-checked against the pre-change code where it correctly fails, and every diff is
       additions only.
-- [ ] _stopgate_lib.py has NO self-test at all, and the recap-phrase widening it got today has zero
+- [x] DONE (verified: commit c8ffab3 in ~/.claude, 13/13, and the four checks that import it still
+      pass unchanged). The discriminating case took a second measurement to find: his real sentence
+      "what did u change and bfr after" proves nothing because another branch catches it either
+      way, while "what did u fix" is False before the widening and True after.
+      Original item: _stopgate_lib.py has NO self-test at all, and the recap-phrase widening it got today has zero
       coverage in any of the four checks that import it. Driven directly by the reader: 8 of 8 now
       against 4 of 8 before, so the repair is real and nothing guards it. It has no suite to add a
       case to, which is the actual work item.
@@ -63,8 +67,14 @@ if u think ur finishd ur not okay?"*
 - [ ] mockup-diagnosis-gate.py fails its own test and has since 7 August. pushback-gate scores 21/22.
 - [ ] Three separate answers to "is there open work in the plan file" disagree; one interrupts real
       work demanding a box be ticked that he parked himself.
-- [ ] The 07:03 promise: move the checks that only read my words to before I write. THE LIST NOW
-      EXISTS, delivered 2026-08-23 by a reader that counted real fires in this session rather than
+- [x] DONE (verified: commit 7692fe6 in ~/.claude). All seven moved. Five were registered directly
+      and are unregistered, 63 Stop entries down to 58. Two were dispatched by the evidence
+      aggregator and are commented out of its member list, 7 members down to 5, its suite 8/8 with
+      the remaining 5. All seven rules are now in the note delivered when his message arrives,
+      confirmed present in its output. Every file stays on disk, so restoring one is a single line.
+      THE COST, stated rather than buried: those seven can no longer BLOCK, so a rule ignored while
+      writing now produces a worse message instead of a second one.
+      Original item: THE LIST NOW EXISTS, delivered 2026-08-23 by a reader that counted real fires in this session rather than
       guessing. Roster: 62 registered Stop checks, three of which dispatch others, so 77 individual
       checks, 34 of which fired at least once. SEVEN read nothing but my own words AND fired more
       than five times, together 99 of the 254 individual fires, 39 percent of every interruption:
