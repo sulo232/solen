@@ -4,8 +4,8 @@
     "routes": 241,
     "endpoints": 363,
     "components": 410,
-    "lib": 155,
-    "rpcs": 67,
+    "lib": 159,
+    "rpcs": 68,
     "tables": 151,
     "columns": 1729
   },
@@ -5690,6 +5690,10 @@
       "file": "lib/map-style.ts"
     },
     {
+      "name": "min-price-service",
+      "file": "lib/min-price-service.ts"
+    },
+    {
       "name": "ai-budget",
       "file": "lib/nail/ai-budget.ts"
     },
@@ -5736,6 +5740,10 @@
     {
       "name": "bundle",
       "file": "lib/pricing/bundle.ts"
+    },
+    {
+      "name": "resolve-promo-discount",
+      "file": "lib/promo/resolve-promo-discount.ts"
     },
     {
       "name": "issue-purchase-refund",
@@ -5846,6 +5854,10 @@
       "file": "lib/stock-photos.ts"
     },
     {
+      "name": "storage",
+      "file": "lib/storage.ts"
+    },
+    {
       "name": "strikes",
       "file": "lib/strikes.ts"
     },
@@ -5872,6 +5884,10 @@
     {
       "name": "types",
       "file": "lib/types.ts"
+    },
+    {
+      "name": "unsubscribe-token",
+      "file": "lib/unsubscribe-token.ts"
     },
     {
       "name": "upload-security",
@@ -5994,6 +6010,10 @@
     {
       "name": "get_nearby_salon_ids",
       "file": "supabase/migrations/077_geospatial_search.sql"
+    },
+    {
+      "name": "guard_booking_protected_fields",
+      "file": "supabase/migrations/20260711211500_audit_fix_bookings_protected_fields_guard.sql"
     },
     {
       "name": "guard_booking_status_escalation",

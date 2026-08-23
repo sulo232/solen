@@ -15,7 +15,7 @@ export async function logAuditEvent(
 ) {
   try {
     const admin = createAdminSupabaseClient();
-    await admin.from("audit_log").insert({
+    const { error } = await admin.from("audit_log").insert({
       actor_id: actorId,
       action,
       target_type: targetType,
@@ -24,6 +24,19 @@ export async function logAuditEvent(
       metadata: (metadata ?? {}) as Json,
       ip_address: getClientIp(req),
     });
+    if (error) {
+      // PostgREST returns { error } on a rejected insert instead of throwing, so the
+      // catch block below never sees this case. Same redundant money-trail concern as
+      // the catch block: surface it the same way.
+      console.error("[audit] logAuditEvent failed:", error);
+      void alertAdmin("audit_log write failed", {
+        action,
+        target_type: targetType,
+        target_id: targetId ?? null,
+        actor_id: actorId,
+        error: error.message,
+      });
+    }
   } catch (e) {
     // Audit logging must never block the main operation — log instead of swallowing.
     // The dispute engine leans on this as the redundant money-trail, so a silent
