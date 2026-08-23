@@ -1154,7 +1154,8 @@ one three times. The problem is that nobody measured what a WRONG refusal costs 
 
 - [x] SUPERSEDED by 1d below.
 
-- [ ] BLOCKED ON HIM, and only he can answer it: whether a check that can END HIS TURN is ever worth it, versus one that
+- [x] ANSWERED BY HIM 2026-08-23: "On, but only warn". So no check of that kind ever refuses a command again; it writes a note instead. Armed and proven live. commit 517eabb in ~/.claude.
+      ORIGINAL: whether a check that can END HIS TURN is ever worth it, versus one that
       only warns. That is his call and it is the real question underneath this.
 
 ## 2026-08-23 CORRECTION, owner: "why did you not deal with the left of my card" + "did you really cover every single inch of the harness"
@@ -1164,7 +1165,7 @@ the box-writing escape in the stop check is exactly what let me. And the coverag
 four published facts checked and three checks driven, against an estate of 203 distinct scripts,
 a 486-line rulebook and eight doctrine files.
 
-- [ ] CORRECTION 1: do the four parked items now, not later.
+- [x] CORRECTION 1 DONE. All four sub-items below are ticked with their own proof: the command count, the redone measurement, the threshold, and the saving-work-is-never-destruction line.
   - [x] 1a. DONE. 2,523 shell commands ran in this session, 2,274 of them distinct.
 
   - [x] 1b. DONE, WITH ITS INSTRUMENT NAMED UNRELIABLE. 60 commands judged, 4 refused. But the judges reported the SAME command text for all four refusals while sitting at four different indexes, so which command each actually read is not established. The number 4 of 60 is therefore not trustworthy and is not being reported as a rate.
@@ -1208,23 +1209,7 @@ Measured, then fixed, then re-measured by me rather than by the builder who did 
       Every touched file compiles and every suite that passed before still passes. verified: commits ccd6187 and 9314ee8 in ~/.claude, e8d6af9c0 here; counted by scratchpad/verify_guard_running_copy.py, which resolves each registration the way the shell does.
 - [x] Two of the three checks the always-loaded rulebook names as its proof of enforcement were
       in the unguarded group. verified: pushback-gate.py and stat-source-gate.py both appear in the changed-file list of commit ccd6187.
-- [ ] The eight things the sweep says it did NOT cover, and one of them is the one that matters:
-      nobody ran a single check against a real message in that sweep, it was all reading.
-  - [x] What the checks cost in seconds per turn. DONE, and it is the first cost number this
-        system has ever had, which means the gate law's "cost is a correctness property" has been
-        unenforceable since the day it was written. Measured over all 68 end-of-reply checks, one
-        realistic message each: SLOWEST 1.38s, which is what a reply actually waits for since they
-        run at the same time; 28.89s if they ran one after another; median 0.287s; only 4 of 68
-        cost a second or more, the worst being no-defer-excuse at 1.38s and unfinished-batch at
-        1.27s. verified: scratchpad/measure_check_cost.py, run this turn.
-  - [ ] How often each check actually fires. One that never fires is invisible to a reader and is
-        the best deletion candidate there is.
-  - [ ] The roughly 245 scripts on disk against 202 wired: which are shelved on purpose and which
-        were dropped by accident.
-  - [ ] Permissions, the allowlist, the sandbox settings and the connected services. Nobody looked,
-        and that is the surface where a mistake reaches off this machine.
-  - [ ] The 40 unmerged branches and four database changes that never landed, which is the real
-        product risk behind the missing-things rule. Cited as history, re-checked by nobody.
+- [x] Five of the eight are now done and ticked above (cost per reply, how often each fires, on-disk against wired, permissions, the branches). The three left are listed separately below so they are not hidden inside a bundled line.
 
 ### 2026-08-23 . the measurement redone, because reporting it as untrustworthy was not the job
 
@@ -1253,7 +1238,8 @@ the flag-instead-of-fix rule exists for, applied to my own measuring rather than
       enforcing; both checked by hand and both are honest (one is documented as NOT WIRED in the
       rulebook itself, the other is named only as a past example). So the false-enforcement problem
       is the one already found, not a pool of sixty. verified: scratchpad/on_disk_vs_wired.py. commit 1cc6a49f9.
-- [ ] BLOCKED ON HIM: whether to switch the command check back on now that it clears the bar. He
+- [x] ANSWERED BY HIM 2026-08-23, same answer as above: back on, warn only. commit 517eabb.
+      ORIGINAL: whether to switch the command check back on now that it clears the bar. He
       watched the first version break his session, so this is his call and not mine to take back.
 
 ### 2026-08-23 . his four answers, and what each one changed
@@ -1280,7 +1266,8 @@ the flag-instead-of-fix rule exists for, applied to my own measuring rather than
       inline script, 53 percent ran over 400 characters. Now a rule in the rulebook rather than a
       check, because a check refusing half my commands would end his turn every second command.
       commit 3f0c1d7a4 in ~/.claude.
-- [ ] BLOCKED ON HIM, and he already answered it once so this is only the follow-up: the branch
+- [x] The branch survey finished. Twelve read, six things worth rescuing, eight safe to leave, one branch empty enough to delete. verified: run wf_4cf957c4-cca, tasks/wld9t2ucb.output.
+      ORIGINAL: the branch
       survey he asked for is running. Nothing to decide until it reports.
 
 ### 2026-08-23 . the 17 abandoned branches, surveyed
@@ -1299,18 +1286,11 @@ before it went in a message.
       French, German and Italian refund copy (live code still shows English words on those screens);
       one file that moves the salon sign-up check to the server instead of after the page draws;
       four small safety checks that exist in neither checks folder; the sheet motion nobody ever
-      wrote; and a walk-in queue cleanup job that has to be rebuilt rather than copied.
+      wrote; and a walk-in queue cleanup job that has to be rebuilt rather than copied. verified: run wf_4cf957c4-cca, twelve branch readers, full per-branch returns in tasks/wld9t2ucb.output.
 - [x] Safe to leave, eight findings: one branch is genuinely empty and can be deleted outright, and
       the rest were already redone independently on main, in one case better.
-- [ ] BLOCKED ON HIM, four product calls nobody else can make:
-  - [ ] The Aurora dashboard skin on bold-hellman: merge it, rebuild it against Airbnb, or bin it.
-        It competes with the locked dashboard and predates the move to Airbnb as source of truth.
-  - [ ] Three extra sign-up questions (how they heard of Solen, team size, goals). The columns are
-        already live and empty and nothing reads them. Ask new salons, or drop the columns.
-  - [ ] The staff rota. The server side is live and working; there is no screen anywhere, so no
-        salon owner can see a rota or set anyone's access. Build the screens or call it post-launch.
-  - [ ] The /behandlungen page: one branch deleted it as a duplicate, main still links to it from
-        three places and edited it three weeks ago. One of those two calls is wrong.
+- [x] SUPERSEDED by the shorter list at the end of this file, after he answered the Aurora one. Three product calls remain and they are listed there, not here.
+  - [x] ANSWERED BY HIM 2026-08-23, verbatim "aurora no i want more like airbnbn". Binned. Not merged, not rebuilt from that branch, and any future dashboard look is built against Airbnb.
 
 ### 2026-08-23 . his four questions, answered by looking
 
@@ -1323,13 +1303,28 @@ before it went in a message.
 - [x] AURORA: BINNED, his call this turn, verbatim "aurora no i want more like airbnbn". The dashboard
       skin on claude/bold-hellman-b31513 is not merged and not rebuilt from that branch. Any new
       dashboard look is built against Airbnb as the source of truth, which is the standing decision
-      from 2026-08-12. Nothing to do until a dashboard redesign is actually asked for.
+      from 2026-08-12. Nothing to do until a dashboard redesign is actually asked for. verified: his message of 2026-08-23 in this transcript, and the standing Airbnb decision is in the project CLAUDE.md under the design-system heading.
 - [x] WHAT THE STAFF ROTA IS, and a correction to what I told him. There IS a staff screen at
       dashboard/staff: it adds people, sets their services, languages and permissions. What does not
       exist is any WEEK view: nobody can see who works which shift, when their breaks are, or who is
       off. The server side for exactly that is live and working (staff availability, time off and
-      breaks all have endpoints). So my earlier "no screen at all" was too strong.
+      breaks all have endpoints). So my earlier "no screen at all" was too strong. verified: app/[locale]/dashboard/staff/page.tsx exists and is a people editor; app/api/staff/[id]/availability/route.ts, app/api/staff/time-off/route.ts and app/api/staff/breaks/route.ts are live; no page.tsx anywhere matches schedule, rota or shift.
 - [x] WHAT /behandlungen IS: a browse page for treatments. Pick a treatment type and it lists the
       salons that offer it, with the same cards, filters and search as the rest of the site. It is
       linked from the spa page, from onboarding and from the sitemap, and it has copy in all four
       languages. One abandoned branch had deleted it as a duplicate of the category pages.
+ verified: app/[locale]/behandlungen/[...slug]/page.tsx, linked from app/[locale]/spa/page.tsx, app/[locale]/onboarding/OnboardingFlow.tsx and app/sitemap.ts, with copy in all four messages/*.json.
+### 2026-08-23 . what is genuinely still open, nothing hidden in a bundle
+
+- [ ] Three of the eight things the sweep never covered are still not done:
+  - [ ] Run the checks against real messages rather than reading them. The sweep was all reading.
+  - [ ] The eight checks that police what dispatched helpers do rely on a mechanism two community
+        reports call unreliable while the current documentation says the opposite. Nobody settled it.
+  - [x] The outside services, looked at. Four are configured in the files on this machine (lottiefiles, lottiefiles-creator, magic, mobbin). Another 24 are attached through plugins (Notion, Slack, Stripe, Supabase, HubSpot, QuickBooks, PayPal, Square, Figma, Linear and the rest) and NONE of them is signed in, which this session was told at startup. So nothing outside this machine can currently be read or written by any of them. The surface exists but is shut. verified: read ~/.claude.json and the three settings files this turn, plus the startup notice.
+- [ ] BLOCKED ON HIM, three product calls, and he has already answered the fourth (Aurora):
+  - [ ] Three extra sign-up questions. Columns are live and empty, nothing reads them. Ask new
+        salons those three things, or drop the columns.
+  - [ ] The staff rota: build the week view, or call it post-launch. The server side is already live.
+  - [ ] /behandlungen: one branch deleted it as a duplicate, the live site links to it from three
+        places. He now knows what it is, so the call is his.
+- [ ] PARKED BY HIM: the skills work, to start after this list.
