@@ -18,29 +18,12 @@
 // English chrome; the real card renders its own locale, which the rule exempts.
 
 import { notFound } from "next/navigation";
-import { createAdminSupabaseClient } from "@/lib/supabase";
-import { SALON_PUBLIC_COLS } from "@/lib/salons/public-columns";
 import { UnifyClient } from "./UnifyClient";
 
 export default async function UnifyPage() {
   if (process.env.NODE_ENV === "production" && process.env.SOLEN_DEV_PAGES !== "1") notFound();
 
-  const admin = createAdminSupabaseClient();
-  // The SAME column list the real search API selects, imported rather than retyped
-  // (lib/salons/public-columns.ts). My first attempt invented column names from memory, `city` and
-  // `cover_url` and `price_from`, and the build refused them: the real ones are `city_id`,
-  // `cover_photo_url`, `quartier`. Reusing the constant means this page cannot drift from the API.
-  const { data, error } = await admin
-    .from("salons")
-    .select(SALON_PUBLIC_COLS)
-    .eq("is_active", true)
-    .eq("listed_on_marketplace", true)
-    .eq("is_test", false)
-    .not("cover_photo_url", "is", null)
-    .order("review_count", { ascending: false })
-    .limit(6);
-
-  if (error) console.error("[dev/unify] salon fetch failed:", error);
-
-  return <UnifyClient salons={(data ?? []) as unknown as Record<string, unknown>[]} />;
+  // No hand-picked data any more: the real page fetches its own, exactly as it does in the
+  // product. That is the point of the rebuild.
+  return <UnifyClient locale="de" />;
 }
