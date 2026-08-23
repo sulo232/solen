@@ -87,7 +87,28 @@ What nothing can see: cross-screen consistency (FLOORS LAW 8), size SPREAD rathe
 (7c), sticky-CTA reachability (3b), the trust floor on paid actions, and the contrast bounds.
 Finding 3 above is the shape of the whole harness problem: the law says armed, the settings say no.
 
-## Findings still open
+## HIS PICK, 2026-08-23: Now. Search results stays as it ships
 
-- The mockup at `/en/dev/unify` is the deliverable for asks 5 and 7. His pick drives what gets
-  applied and to which screen first.
+He was shown four directions on the real screen and chose to leave it. Logged in TASTE_LOG the same
+day, so it is settled and never returns as a finding. Nothing was applied to the search screen.
+
+## A CORRECTION I OWE HIM, from this same round
+
+I told him "the stylist card is still contradicting itself in two places". THAT IS WRONG, and I
+repeated it from a reader without driving it myself, which is the exact failure the reply rules
+name. Checked properly:
+
+  - `SalonTeam.tsx:70`, the team block on the store page, is ONE card at 24px holding the whole
+    team. That is the grouped-members rule, correctly applied.
+  - `app/[locale]/salon/[slug]/team/page.tsx:96,157`, the full team page, is one card per stylist
+    at 16px. That is the individual-entity rule, correctly applied.
+
+The two LOCKFILE rows describe two different shapes and both ship correctly. They read as opposed
+only if you take the words without looking at what renders. No fix is needed and none was made.
+
+Still standing from the audit, unverified by me and therefore NOT to be repeated to him until it
+is: the availability-colour wording, the duplicate component rows, and the two rules with no check.
+
+## Not covered by his pick
+
+Inspo, help and login also measured out of step and he has been shown no direction for them.
