@@ -1135,3 +1135,26 @@ command that only searches for or prints the same words. Driver kept at
       command it looks at is matched from the start of the string, so a mention cannot reach it.
 - [x] Conclusion recorded: the defect was in one check, not in a class of four. Nothing further
       to fix here, and the claim is now backed by running them rather than by reading them.
+
+## 2026-08-23 . the destruction check is OFF, and what has to be true before it goes back on
+
+Armed, then switched off the same hour. It refused a `git commit`, which preserves rather than
+destroys, and every refusal ends the turn, so each wrong one costs the owner a message. He said it
+plainly: "u made it unusuable". Parked in `~/.claude/settings.json` under a dead key; the old
+word-matching version stays unregistered because it was worse (19 of 25, wrong on 5 of the 6 real
+commands it refused that day). Fixtures, the four attack rounds and the final wording are in
+`~/.claude/gate-fixtures/`.
+
+The judgement was not the problem: 46 of 47 after four rounds against reviewers who broke version
+one three times. The problem is that nobody measured what a WRONG refusal costs before arming it.
+
+- [ ] Measure the refusal cost before any check that can refuse a tool call goes on again. Count,
+      over a real session transcript, how many of the commands actually run would be refused, and
+      state that number. Anything above roughly one in fifty is unusable regardless of its score.
+- [ ] Replay the final wording over every Bash command in this session's transcript (several
+      thousand), not over 47 hand-written cases, and report the refusal rate on real traffic.
+- [ ] Add "SAVING WORK IS NEVER DESTRUCTION" as the first line of any future version: a command
+      that commits, stages, pushes or tags must never be refused, whatever its message says. That
+      clause was written but the check was turned off before it could be tested.
+- [ ] Decide with the owner whether a check that can END HIS TURN is ever worth it, versus one that
+      only warns. That is his call and it is the real question underneath this.
