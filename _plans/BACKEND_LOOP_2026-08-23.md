@@ -150,3 +150,73 @@ someone undid them.
       either; `app/api/analytics/platform/route.ts` has no `unstable_cache` on either. The plan
       file recording them as fixed is on main; the code is stranded on unmerged branches. This is
       workstream 67 (40 unmerged branches, none on main) showing up as backend risk.
+
+---
+
+## Round 2 (2026-08-23): how it is stored, read from the live database
+
+Everything below was measured against the live Postgres catalogue with my own queries, not read
+off a report. 151 tables, RLS on all of them, biggest is `availability_slots` at 9,365 rows.
+
+### Fixed and verified live
+
+- [x] C3. **Seven foreign keys on money tables had no index. Now zero do.** `verified:` before
+      7 of 260 foreign-key columns uncovered, after 0 of 260, both counted by the same
+      pg_constraint-to-pg_index query. Migrations
+      `20260823120000_backend_loop_fk_indexes_money_tables.sql` and commit 2756782ee. Tables:
+      credit_redemptions, package_purchases, voucher_redemptions, salon_of_month_winners. They
+      were missed because all four were created AFTER the 2026-06-24 pass that added 142 such
+      indexes, so that sweep was complete when it ran.
+- [x] C7. **The one remaining policy that asked who you are once per row now asks once per
+      query.** `verified:` `salon_portfolio_images_manage_owner`, migration
+      `20260823120100_...`, re-read from pg_policy afterwards: still owner-scoped, now wrapped.
+      Same story as above, the table postdates the June pass.
+- [x] B6. **Security advisor run and every WARN chased to the source.** `verified:` the four
+      SECURITY DEFINER functions it flags as callable by anon or by any signed-in user
+      (`create_group_booking`, `toggle_discovery_like`, `toggle_discovery_save`,
+      `set_customer_persona`) ALL check `auth.uid()` in their own bodies, read from
+      pg_get_functiondef. `toggle_discovery_like` and `toggle_discovery_save` take a
+      `p_user_id` parameter, which looks like an IDOR until you read them: both raise
+      'unauthorized' unless it equals `auth.uid()`. Not findings.
+- [x] B5. **19 tables have RLS on and no policy, and that is correct here.** `verified:` no
+      client-side code reads any of them; every access is a server route on the admin client.
+      A policy-less table is fail-closed, so this is deliberate service-role-only storage, not
+      a hole and not a silent no-op.
+
+### Real, not yet fixed
+
+- [ ] C7b. **Three functions have no fixed search_path**: `booking_revenue_sum`,
+      `salons_with_slot_in_hours`, `record_csp_violation`. `verified:` all three are SECURITY
+      INVOKER (`prosecdef=false`), so this is NOT the privilege-escalation vector the linter
+      warns about. It is hygiene: a one-line ALTER each.
+- [ ] C7c. **55 stacked permissive policies, 24 of them on `discovery_items` alone.** Postgres
+      evaluates every permissive policy for every row, so a table with 24 of them does 24
+      predicate evaluations per row read. `discovery_items` is already the second-biggest table
+      at 1,071 rows and it is the Inspo feed, so it grows fastest.
+- [ ] B7. **Leaked-password protection is off.** A Supabase dashboard toggle, so it is his to
+      flip, and it changes sign-up behaviour (it rejects passwords found in known breaches).
+
+### Deliberately NOT reported as findings
+
+- **100 "unused index" notices.** Pre-launch with no traffic, so every index looks unused. That
+  number means nothing until there are real requests, and dropping any of them now would be
+  acting on an artefact of having no customers.
+
+## Round 3 (2026-08-23): waste, measured
+
+- [x] D2. **107 `select("*")` calls across 74 API files.** `verified:` `npm run select-star:census`.
+      Worst single file is `app/api/profile/export/route.ts` with 27, which is the data-export
+      route, so selecting everything there is arguably correct. The other 80 are over-fetching.
+- [x] D1. **48 places make a database call one row at a time, inside a loop, across 27 files.**
+      `verified:` a scan that excludes anything already wrapped in `Promise.all`, since that is
+      the fixed shape. Most are crons, where batching matters less. The one in a customer's own
+      request is `app/api/bookings/[id]/cancel/route.ts:310`, and I checked it: the loop is
+      capped at 3 by `.limit(3)`, so the round trips are bounded. The real cost there is not the
+      queries, it is that up to three EMAILS are sent inside the cancel request while the
+      customer waits.
+- [x] D4. **99 duplicated code blocks, 4,179 lines, 2.49% of the tree.** `verified:`
+      `npm run duplication:census`.
+- [x] D2b. **1,755 error responses in the old shape** against 19 in the agreed one, and 44
+      "created" responses that do not say where the thing was created. `verified:`
+      `npm run contracts:census`. The backend law already decided not to mass-migrate these, so
+      this is a number to watch, not work to do.
