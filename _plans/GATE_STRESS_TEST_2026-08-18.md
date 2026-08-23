@@ -1326,7 +1326,7 @@ before it went in a message.
       ORIGINAL: Ask new
         salons those three things, or drop the columns.
   - [x] ANSWERED BY HIM 2026-08-23, verbatim "the staff. It's a week... yeah. Built that. We need that." BUILD IT. He also chose to see versions on a link before any of it goes near the real dashboard, so nothing is wired in until he has picked one.
-  - [ ] Build two or three rota week arrangements at real size, render them, and send him one link to choose from. Only after he picks does anything touch the dashboard. The server side already exists: app/api/staff/[id]/availability/route.ts, app/api/staff/time-off/route.ts and app/api/staff/breaks/route.ts.
+  - [x] DONE. Three week arrangements built as ONE screen with a toggle, rendered and opened over the tunnel before the link was handed over. Everyone (the week grid), One person, One day. Real rows: 4 people, 16 shift blocks, 3 away cells, 5 breaks, heading measured at 26px to match the real staff screen, no sideways scroll at phone width. verified: opened https://organize-morgan-wireless-measurements.trycloudflare.com/_mockups/rota/ and read the DOM back. OLD TEXT: send him one link to choose from. Only after he picks does anything touch the dashboard. The server side already exists: app/api/staff/[id]/availability/route.ts, app/api/staff/time-off/route.ts and app/api/staff/breaks/route.ts.
   - [x] ANSWERED BY HIM 2026-08-23, verbatim "and for number three, delete it. We don't need that shit." DELETED. The page and its component are gone, it is out of the sitemap, out of the coming-soon screen and out of all four wording files, the graveyard has its line, and a redirect sends old links to the home page. Correcting my own earlier count: I said eleven files mentioned it, but most were the ordinary German words Gesichtsbehandlungen and Koerperbehandlungen. The real references were four.
       ORIGINAL: one branch deleted it as a duplicate, the live site links to it from three
         places. He now knows what it is, so the call is his.
@@ -1356,7 +1356,7 @@ before it went in a message.
       closed, four different shift patterns, two late nights, five breaks and one person on holiday.
       This is seeding, not inventing: the rows go in through the same tables the real screen reads.
       verified: pulled it back out and printed the week as a grid.
-- [ ] STILL TO DO, and it is the only thing left from his three: build two or three rota week
+- [x] DONE, see the entry above. The link was opened and checked before it was sent. OLD: rota week
       arrangements at real size, render them, and send him one link. He chose to see them before
       anything goes near the dashboard. The data is now there to draw them from.
 
