@@ -1322,9 +1322,12 @@ before it went in a message.
         reports call unreliable while the current documentation says the opposite. Nobody settled it.
   - [x] The outside services, looked at. Four are configured in the files on this machine (lottiefiles, lottiefiles-creator, magic, mobbin). Another 24 are attached through plugins (Notion, Slack, Stripe, Supabase, HubSpot, QuickBooks, PayPal, Square, Figma, Linear and the rest) and NONE of them is signed in, which this session was told at startup. So nothing outside this machine can currently be read or written by any of them. The surface exists but is shut. verified: read ~/.claude.json and the three settings files this turn, plus the startup notice.
 - [ ] BLOCKED ON HIM, three product calls, and he has already answered the fourth (Aurora):
-  - [ ] Three extra sign-up questions. Columns are live and empty, nothing reads them. Ask new
+  - [x] ANSWERED BY HIM 2026-08-23, verbatim "the extra sign up question. I think that's good". ASK THEM. The three columns already exist on the salons table and are empty: acquisition_source, team_size, onboarding_goals. Being wired into salon onboarding now, built and graded by two different agents. He also said build it straight in rather than send him a link first, since it reuses controls he already has. verified: _inventory/_db-columns.json lists all three under columns/salons, and nothing outside lib/database.types.ts mentions them.
+      ORIGINAL: Ask new
         salons those three things, or drop the columns.
-  - [ ] The staff rota: build the week view, or call it post-launch. The server side is already live.
-  - [ ] /behandlungen: one branch deleted it as a duplicate, the live site links to it from three
+  - [x] ANSWERED BY HIM 2026-08-23, verbatim "the staff. It's a week... yeah. Built that. We need that." BUILD IT. He also chose to see versions on a link before any of it goes near the real dashboard, so nothing is wired in until he has picked one.
+  - [ ] Build two or three rota week arrangements at real size, render them, and send him one link to choose from. Only after he picks does anything touch the dashboard. The server side already exists: app/api/staff/[id]/availability/route.ts, app/api/staff/time-off/route.ts and app/api/staff/breaks/route.ts.
+  - [x] ANSWERED BY HIM 2026-08-23, verbatim "and for number three, delete it. We don't need that shit." DELETED. The page and its component are gone, it is out of the sitemap, out of the coming-soon screen and out of all four wording files, the graveyard has its line, and a redirect sends old links to the home page. Correcting my own earlier count: I said eleven files mentioned it, but most were the ordinary German words Gesichtsbehandlungen and Koerperbehandlungen. The real references were four.
+      ORIGINAL: one branch deleted it as a duplicate, the live site links to it from three
         places. He now knows what it is, so the call is his.
 - [ ] PARKED BY HIM: the skills work, to start after this list.
