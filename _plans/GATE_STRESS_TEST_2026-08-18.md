@@ -1173,13 +1173,16 @@ a 486-line rulebook and eight doctrine files.
 
   - [x] 1d. DONE. It is the first allow line in the parked wording: a command that commits, stages, pushes or tags is never a destruction, whatever its message says. Not proven live, because the check was switched off before it could be, and switching it back on to prove one line is not worth another refused turn.
 
-- [ ] CORRECTION 2: cover the whole harness, not a slice.
-  - [ ] 2a. Inventory everything we built: every check, every doctrine file, every skill, every
-        workflow, every agent, with what each is for.
-  - [ ] 2b. Read what Anthropic publishes on each area and compare ours against it, per area.
-  - [ ] 2c. Read what the community publishes (GitHub, Reddit) on the same areas and compare.
-  - [ ] 2d. One list at the end: what we do that they warn against, what they do that we lack, and
-        what we do that is genuinely better, each with its source.
+- [x] CORRECTION 2. DONE. Seven readers inventoried one area each, seven more compared each area against the published docs and the community, one judged and ranked the merged result. Sources opened are recorded per area.
+
+  - [x] 2a. DONE. 202 distinct check scripts wired across four settings files, 69 of them at the end of a reply; two rulebooks at 486 and 386 lines; ten doctrine files; the skills, workflows and agents directories; the memory index; the grading tool and its 58-script case file.
+
+  - [x] 2b. DONE, per area, with quotes and URLs kept in the run output.
+
+  - [x] 2c. DONE, per area. Where a community source was thin or contradicted itself the reader was told to say so rather than launder it.
+
+  - [x] 2d. DONE. Ranked worst first. The top three I reproduced myself before repeating them, and my numbers differ from the readers' because my count covers all four settings files rather than one.
+
 - [x] CORRECTION 3. DONE. A new arm refuses a stop when the turn opened boxes and started none of them, unless a box's own line names what is stopping it. 12 of 12 on its own cases, 3 of which fail without it, and the check's existing 11 still pass.
 
 
@@ -1193,3 +1196,27 @@ a 486-line rulebook and eight doctrine files.
   - [ ] Write skills for the gaps, including for the two he named as core problems: not researching
         when told to, and not executing the task.
   - [ ] Look back through past sessions for small recurring problems that a skill would solve.
+
+### 2026-08-23 . the repeat problem, cause found and fixed
+
+Measured, then fixed, then re-measured by me rather than by the builder who did it:
+
+- [x] The cause of the repeating: when a check refuses a closing message, the next message is
+      written and the SAME check runs on it again. The product ships the answer, a flag on the
+      payload saying "you already blocked this turn", and the documented behaviour is to stand
+      down while it is set. BEFORE: 31 of 69 end-of-reply checks did that. AFTER: 69 of 69.
+      Every touched file compiles and every suite that passed before still passes.
+- [x] Two of the three checks the always-loaded rulebook names as its proof of enforcement were
+      in the unguarded group.
+- [ ] The eight things the sweep says it did NOT cover, and one of them is the one that matters:
+      nobody ran a single check against a real message in that sweep, it was all reading.
+  - [ ] What the checks cost in seconds per turn. Cost is called a correctness property here and
+        the sweep produced no cost number at all.
+  - [ ] How often each check actually fires. One that never fires is invisible to a reader and is
+        the best deletion candidate there is.
+  - [ ] The roughly 245 scripts on disk against 202 wired: which are shelved on purpose and which
+        were dropped by accident.
+  - [ ] Permissions, the allowlist, the sandbox settings and the connected services. Nobody looked,
+        and that is the surface where a mistake reaches off this machine.
+  - [ ] The 40 unmerged branches and four database changes that never landed, which is the real
+        product risk behind the missing-things rule. Cited as history, re-checked by nobody.
