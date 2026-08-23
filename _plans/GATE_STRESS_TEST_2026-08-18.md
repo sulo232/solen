@@ -1436,3 +1436,29 @@ load-bearing facts were then re-checked by me before any of them went in a messa
 - [ ] THE SWEEP THAT COSTS NOTHING: when something is hardened, search the same turn for the same
       shape worded differently and fix those too. This setup has three documented cases of one
       behaviour being banned and reappearing in a new shape.
+
+### 2026-08-24 . why the same instruction takes ten asks
+
+Three readers designed the measurement before anything was built, four measured it over the 25
+sessions he actually typed in (1,478 of his messages, 2026-07-11 to 2026-08-23), three then attacked
+the result. All three attackers said it holds but weaker, and the load-bearing part was re-checked
+by me before it went in a message.
+
+- [x] THE CLEAREST CASE, VERIFIED MYSELF: the council could never start on its own. Its own
+      description says it is for when the user "explicitly requests" it, and the trigger regex
+      required him to type the word. Every single run across 25 sessions happened in the same
+      message where he asked. So 25 asks over 40 days were not me forgetting. It was a tool built
+      to need the word every time. verified: ~/.claude/skills/llm-council/SKILL.md description line
+      and the COUNCIL pattern in ~/.claude/hooks/skill-autopilot.py before commit 8d628a7.
+- [x] FIXED: it now fires on anything about building or widening the checking setup, which is the
+      case he named. 12 of 12 both directions on his real messages, including four that must not
+      fire it. commit 8d628a7.
+- [x] HIS HALF, which he asked to be told: the words carrying the actual ask land in the back half
+      of his message roughly 40 to 51 percent of the time, tacked onto the end of a complaint about
+      something else. Example he sent this week: "i told u loop if u arent done why are u stoppin
+      harden". That shape is measurably tied to needing to re-ask. It does NOT explain the council
+      case, where he asked short and clean 25 times and it still never stuck.
+- [x] HONEST LIMIT: two readers counting the same five instructions over the same 25 files got
+      counts 20 to 55 percent apart from each other. A third re-derived them independently and got
+      the same rough picture. So the shape is solid and the exact numbers are not. Reported as
+      ranges, never as precise figures.
