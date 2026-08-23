@@ -220,3 +220,28 @@ off a report. 151 tables, RLS on all of them, biggest is `availability_slots` at
       "created" responses that do not say where the thing was created. `verified:`
       `npm run contracts:census`. The backend law already decided not to mass-migrate these, so
       this is a number to watch, not work to do.
+
+### C4. The one that actually decides whether this scales
+
+- [x] **`availability_slots` grows forever and nothing ever removes a slot.** `verified:` counted
+      live, not from the snapshot. **58,999 rows, 76 MB on disk, for 21 salons.** That is 2,809
+      slots per salon over a six-month horizon. **17,572 of them (29.8%) are already in the past,
+      and 16,711 of those were never booked**, so they can never matter again. The only two
+      DELETE statements in the whole codebase (`availability/manage/[slot_id]`, `slots/[id]`) are
+      a salon owner removing one slot by hand. `generate-slots` skips CREATING past slots; it
+      removes nothing. No retention job exists.
+      Straight-line: 3.6 MB per salon and rising. 500 salons on the same pattern is roughly 1.4M
+      rows and 1.8 GB; 2,000 salons is 5.6M rows and 7 GB. The backend law's own trigger for
+      revisiting primary keys is "a few million rows", so that trigger is reachable.
+- [x] **The indexes on that table are bigger than the table.** `verified:` 11 indexes totalling
+      about 43 MB against 33 MB of data. Every query path is covered, so this is not an indexing
+      gap. Deleting dead rows shrinks both halves.
+- [ ] **DECISION FOR HIM, and the only one in this whole loop.** Removing rows is a data
+      deletion, which is his call by standing rule, so nothing was deleted. The proposal: a
+      nightly job that removes slots that are in the past AND were never booked AND are older
+      than 90 days. On today's data that is 795 rows; it matters at scale, not now.
+- [x] **The snapshot everything trusts is stale.** `verified:` `_inventory/_db-snapshot.json`
+      (captured 2026-08-14) records `availability_slots` at 9,365 rows. The live count is 58,999,
+      so it is off by 6x on the biggest table, and it is the file `npm run exists` reads and that
+      every audit in this project treats as column truth. The backend law quotes the stale number
+      too, in its own primary-key trigger row.
