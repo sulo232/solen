@@ -4004,7 +4004,8 @@
       "hours": "Hours",
       "extras": "Extras",
       "review": "Review",
-      "photos": "Photos"
+      "photos": "Photos",
+      "about": "About you"
     },
     "nav": {
       "back": "Back",
@@ -4128,6 +4129,34 @@
       "hint": "Recommended: 5+ photos",
       "hintDesc": "Salons with photos receive up to 3× more bookings. You can add photos anytime in the dashboard.",
       "skip": "Skip"
+    },
+    "stepAbout": {
+      "title": "A few questions about your salon",
+      "subtitle": "Optional · you can skip this",
+      "acquisitionLabel": "How did you hear about Solen?",
+      "acquisitionOptions": {
+        "instagram": "Instagram",
+        "google": "Google search",
+        "referral": "Personal recommendation",
+        "event": "Event or trade fair",
+        "other": "Other"
+      },
+      "acquisitionOtherPlaceholder": "Please specify…",
+      "teamSizeLabel": "How big is your team?",
+      "teamSizeOptions": {
+        "solo": "Just me",
+        "small": "2 to 5",
+        "medium": "6 to 15",
+        "large": "More than 15"
+      },
+      "goalsLabel": "What do you want to get out of Solen?",
+      "goalsOptions": {
+        "more_bookings": "More bookings",
+        "save_time": "Save time on admin",
+        "fewer_no_shows": "Fewer no-shows",
+        "marketing": "Reach new customers",
+        "payments": "Digitize payments"
+      }
     },
     "done": {
       "title": "Salon created!",

@@ -1331,3 +1331,36 @@ before it went in a message.
       ORIGINAL: one branch deleted it as a duplicate, the live site links to it from three
         places. He now knows what it is, so the call is his.
 - [ ] PARKED BY HIM: the skills work, to start after this list.
+
+### 2026-08-23 . his three answers built, and what the reviewer caught
+
+- [x] THE TREATMENTS PAGE IS GONE, and the review found three leftovers I had missed. All three
+      fixed: middleware.ts still listed it among the coming-soon routes, the surface inventory still
+      pointed at both deleted files, and the redirect needed adding. Checked myself afterwards: the
+      only remaining mentions anywhere live are the ordinary German words Gesichtsbehandlungen,
+      Koerperbehandlungen and Chemische Behandlungen inside salon copy, which are not links.
+      verified: middleware.ts:96 now reads three routes, _inventory/SURFACE.md has zero hits after
+      `npm run inventory`, and next.config.mjs carries the two redirect rules.
+- [x] THE THREE SIGN-UP QUESTIONS ARE WIRED, and the review passed them after following the answer
+      from the control to the database. They save to acquisition_source, team_size and
+      onboarding_goals on the salons table, the three columns that already existed and sat empty.
+      Wording is in all four languages. Skipping still works.
+      verified: app/[locale]/onboarding/salon/page.tsx, app/api/salons/route.ts, lib/validations.ts
+      and all four messages/*.json in this commit.
+- [x] Two smaller things the review raised, both fixed: a type cast that would have left a new lint
+      error, and the component registry marking the option control as unused and due for deletion,
+      which would have broken the new step in sixty days. The registry row now names the real
+      call-site and is marked to keep.
+- [x] Seeded one test salon with a week that actually varies, so a rota drawn from it shows
+      something. It was 24 identical nine-to-six shifts, no breaks, nobody away. It is now Monday
+      closed, four different shift patterns, two late nights, five breaks and one person on holiday.
+      This is seeding, not inventing: the rows go in through the same tables the real screen reads.
+      verified: pulled it back out and printed the week as a grid.
+- [ ] STILL TO DO, and it is the only thing left from his three: build two or three rota week
+      arrangements at real size, render them, and send him one link. He chose to see them before
+      anything goes near the dashboard. The data is now there to draw them from.
+
+### 2026-08-23 . flagged, not fixed, because nobody asked
+- [ ] Two files are dead: components-legacy/ui/CategoryTree.tsx and lib/search-filter-pills.ts both
+      reference the deleted page and NOTHING imports either of them. Pre-existing, unrelated to this
+      work, and deleting files nobody asked about is not mine to decide.

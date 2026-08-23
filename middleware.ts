@@ -93,7 +93,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Ghost page redirects → Coming Soon
-  const COMING_SOON_ROUTES = ["/vouchers", "/loyalty", "/referral", "/behandlungen"];
+  const COMING_SOON_ROUTES = ["/vouchers", "/loyalty", "/referral"];
   const pathWithoutLocale = pathname.replace(/^\/(de|en|fr|it)/, "");
   if (COMING_SOON_ROUTES.includes(pathWithoutLocale)) {
     const locale = pathname.match(/^\/(de|en|fr|it)/)?.[1] ?? "de";

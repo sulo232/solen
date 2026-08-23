@@ -345,6 +345,11 @@ export const createSalonSchema = z.object({
   google_place_id: z.string().optional().or(z.literal("")),
   cancellation_policy: z.string().optional().or(z.literal("")),
   tos_accepted: z.literal(true).optional(),
+  // Extra onboarding questions (owner 2026-08-23, "the extra sign up question"). All three are
+  // optional so the wizard step stays skippable; the columns already exist on public.salons.
+  acquisition_source: z.string().max(200).optional().or(z.literal("")),
+  team_size: z.string().max(50).optional().or(z.literal("")),
+  onboarding_goals: z.array(z.string()).optional(),
 });
 
 export const discoveryLikeSchema = z.object({

@@ -3987,7 +3987,8 @@
       "hours": "Orari",
       "extras": "Extra",
       "review": "Revisione",
-      "photos": "Foto"
+      "photos": "Foto",
+      "about": "Riguardo a Lei"
     },
     "nav": {
       "back": "Indietro",
@@ -4111,6 +4112,34 @@
       "hint": "Consigliato: 5+ foto",
       "hintDesc": "I saloni con foto ricevono fino a 3× più prenotazioni. Puoi aggiungere foto in qualsiasi momento nella dashboard.",
       "skip": "Salta"
+    },
+    "stepAbout": {
+      "title": "Qualche domanda sul Suo salone",
+      "subtitle": "Opzionale · può saltare questo passaggio",
+      "acquisitionLabel": "Come ha conosciuto Solen?",
+      "acquisitionOptions": {
+        "instagram": "Instagram",
+        "google": "Ricerca Google",
+        "referral": "Consiglio personale",
+        "event": "Evento o fiera",
+        "other": "Altro"
+      },
+      "acquisitionOtherPlaceholder": "Specifichi…",
+      "teamSizeLabel": "Quanto è grande il Suo team?",
+      "teamSizeOptions": {
+        "solo": "Solo io",
+        "small": "Da 2 a 5",
+        "medium": "Da 6 a 15",
+        "large": "Più di 15"
+      },
+      "goalsLabel": "Cosa vuole ottenere con Solen?",
+      "goalsOptions": {
+        "more_bookings": "Più prenotazioni",
+        "save_time": "Risparmiare tempo nella gestione",
+        "fewer_no_shows": "Meno mancate presentazioni",
+        "marketing": "Raggiungere nuova clientela",
+        "payments": "Digitalizzare i pagamenti"
+      }
     },
     "done": {
       "title": "Salone creato!",
