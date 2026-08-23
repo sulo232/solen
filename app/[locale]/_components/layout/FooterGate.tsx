@@ -41,6 +41,23 @@ export function isTaskStep(pathnameWithoutLocale: string): boolean {
   );
 }
 
+// ownsItsOwnBack answers a DIFFERENT question than isTaskStep above, and the two are not the
+// same list on purpose. isTaskStep is about FOOTER visibility only. This one is about whether
+// the PAGE ITSELF renders a local back control, which the global Header needs to know so it
+// does not stack a second one on top. The two questions coincided for a while (both team and
+// reviews were "task step" AND both rendered a local back) and then drifted apart: reviews
+// deliberately gave up its own local back on 2026-08-09 (see SalonReviews.tsx's dated comment)
+// and now relies entirely on the header's back, while team's local back was restored (this
+// route history, 2026-08-23) because its target is a stable anchor on the salon page, not
+// router.back()'s history-dependent, home-falling-back behaviour. Reusing isTaskStep for the
+// header-suppression question broke reviews (zero back controls, confirmed live); this export
+// exists so that mistake cannot repeat. Today only the team picker owns its own back.
+const OWNS_BACK_PATTERNS = [/^\/salon\/[^/]+\/team(\/|$)/];
+
+export function ownsItsOwnBack(pathnameWithoutLocale: string): boolean {
+  return OWNS_BACK_PATTERNS.some((pattern) => pattern.test(pathnameWithoutLocale));
+}
+
 export default function FooterGate({ locale }: { locale: string }) {
   const pathname = usePathname() ?? "/";
   const withoutLocale = pathname.replace(`/${locale}`, "") || "/";
