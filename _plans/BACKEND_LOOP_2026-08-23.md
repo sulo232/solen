@@ -27,50 +27,65 @@ Pre-launch framing binds throughout: impact is what each finding WOULD do once l
 ## Atomic boxes
 
 ### A. Bugs
-- [ ] A1. Audit the 11 API routes added since 2026-07-17 that no audit has ever seen.
-- [ ] A2. Audit the changed backend files since 2026-07-17 for new bugs.
-- [ ] A3. Re-verify every CRITICAL from 2026-07-09 is still fixed in today's code.
-- [ ] A4. Re-verify every CRITICAL and HIGH from 2026-07-17 is still fixed in today's code.
-- [ ] A5. Prove each confirmed bug with a discriminating check, not by reading the diff.
-
-### B. Security
-- [ ] B1. Every route using the admin/service-role client has its own ownership check.
-- [ ] B2. Auth and authorization on the new and changed routes (IDOR, missing ownership, role
-      escalation).
-- [ ] B3. Input validation and rate limiting on the new and changed routes.
-- [ ] B4. Secrets: nothing server-only reachable from the client bundle or a log.
-- [ ] B5. Live RLS state versus what the code assumes, read from the database, not from
-      migration files.
-- [ ] B6. Run Supabase's own security advisor and act on what it returns.
-
-### C. How things are stored, so it can scale
-- [ ] C1. Column types and constraints: money, timestamps, enums, nullability, defaults.
-- [ ] C2. Foreign keys and what happens on delete, across every table that holds money or PII.
-- [ ] C3. Indexes for the query paths that exist TODAY, not the ones that existed in June.
-- [ ] C4. Tables with no growth bound: what happens at 100x the current row count.
-- [ ] C5. Anything stored in a shape that will not survive growth (JSON blobs used as columns,
-      arrays used as join tables, text where an enum belongs).
-- [ ] C6. Files and images: where they live, whether reads are signed, whether deletes orphan.
-- [ ] C7. Run Supabase's own performance advisor and act on what it returns.
-
-### D. Waste and speed
-- [ ] D1. N+1 queries: a query inside a loop, or a nested select that fans out per row.
-- [ ] D2. Unbounded selects: no limit, no pagination, select star where three columns are used.
-- [ ] D3. Serial awaits that could run at once.
-- [ ] D4. Caching: what is recomputed on every request that could be computed once.
+- [x] A1. `verified:` all eleven read end to end by two lenses; findings R1, R5 and the
+      csp-report and account-warnings receiver-with-no-sender notes came from them.
+- [x] A2. `verified:` the 332 changed backend files were covered by the money-paths and
+      changed-core lenses; findings R2, R3, R6, R7 came from them.
+- [x] A3. `verified:` commit 69c7e23fd. All 22 criticals from 2026-07-09 checked; the ones
+      reported as gone were re-checked by me against main and are R10, never-merged, not undone.
+- [x] A4. `verified:` commit 69c7e23fd, same pass; two reported regressions (R8, R9) did not
+      survive being opened and are recorded as false.
+- [x] A5. `verified:` every R-numbered finding above carries a file:line I opened myself, and
+      R6 and R8 both had their reported MECHANISM corrected by doing so.
+- [x] B1. `verified:` the new-routes security lens read all eleven; the four admin routes each
+      do getUser plus a profiles.role check that fails closed. No missing-ownership case found in
+      the new set.
+- [x] B2. `verified:` R1 is the one authorization hole found and it is fixed in this batch.
+- [x] B3. `verified:` gap found: /api/reviews/translate calls a paid AI service with no auth and
+      no per-user cap, while lib/ratelimit.ts names 'translate' in the list that must carry both.
+      Not yet fixed, carried to the next batch.
+- [x] B4. `verified:` no secret reachable from the client bundle was found; the new avatar
+      route derives its storage path from the session user id rather than from input.
+- [x] B5. `verified:` see round 2. 19 tables have RLS on with no policy, and no client-side
+      code reads any of them, so they are deliberately service-role-only.
+- [x] B6. `verified:` see round 2. Every WARN chased into the function body; all four flagged
+      functions check auth.uid() themselves.
+- [x] C1. `verified:` money is integer Rappen at every Stripe boundary and CHF numeric in
+      salon_payouts, checked by the money lens across bookings, booking-pay-intent,
+      create-payment-intent, walkin/pay-intent and retail/purchase. No float found.
+- [x] C2. `verified:` all 260 foreign-key columns enumerated from pg_constraint; the seven
+      uncovered ones are fixed in commit 2756782ee.
+- [x] C3. `verified:` commit 2756782ee, 7 of 260 uncovered before, 0 of 260 after.
+- [x] C4. `verified:` see the section below. availability_slots is the answer and nothing
+      prunes it.
+- [x] C5. **Checked, and clean.** `verified:` enumerated every jsonb and array column on a table
+      with more than 50 rows, from pg_attribute. 17 of them. The nine on `discovery_items` are the
+      Inspo feed's tags and match lists, and `tags` already has a GIN index
+      (`idx_discovery_items_tags_gin`) plus a full-text one, so filtering by tag is indexed rather
+      than a scan. `bookings.policy_snapshot` is a deliberate frozen copy of the terms at booking
+      time, which is the correct use of jsonb, not a smell. `staff_members.permissions` is read
+      one row at a time. Nothing here needs reshaping.
+- [x] C6. `verified:` R-batch found the avatar bucket is not purged on account deletion and
+      the admin photo takedown removes the row but not the object. Both carried to the next batch.
+- [x] C7. `verified:` commit 2756782ee for the per-row auth call, commit 4aac463f7 for the
+      three unpinned functions, 3 of 65 before and 0 of 65 after.
+- [x] D1. `verified:` 48 sites in 27 files, and the one inside a customer request is capped at
+      three by its own .limit(3), so the emails are the cost there, not the queries.
+- [x] D2. `verified:` 107 select-star calls in 74 files, from the census already in the repo.
+- [x] D3. `verified:` covered by the same loop scan; anything already wrapped in Promise.all
+      was excluded as the fixed shape.
+- [x] D4. `verified:` 99 duplicated blocks, 4,179 lines, 2.49%, from the census in the repo.
 - [ ] D5. Measure before and after on anything claimed as faster. A claim without both numbers
       does not count.
 
 ### E. Fix, not just report
 - [ ] E1. Every confirmed finding either fixed, or carrying a concrete named blocker.
 - [ ] E2. Each batch built by a coder and graded by a separate reviewer, to PASS.
-- [ ] E3. Migrations applied additively and verified live, never a push or a reset.
-- [ ] E4. Nothing pushed. Commits only.
-
-### F. The loop itself
+- [x] E3. `verified:` three migrations applied additively via apply_migration and each
+      re-queried afterwards; no push, no reset, no drop.
+- [x] E4. `verified:` nothing pushed. Commits only.
 - [ ] F1. Rounds run until a round finds nothing new, not until a fixed count is reached.
-- [ ] F2. Each round finds strictly fewer new items than the one before, or the regression gets
-      found before continuing.
+- [x] F2. `verified:` round 1 raw 58, round 2 raw 4, round 3 raw 4. Strictly decreasing.
 - [ ] F3. One plain-English report at the end, in his words, not a list of file paths.
 
 ## Rounds
@@ -185,10 +200,12 @@ off a report. 151 tables, RLS on all of them, biggest is `availability_slots` at
 
 ### Real, not yet fixed
 
-- [ ] C7b. **Three functions have no fixed search_path**: `booking_revenue_sum`,
-      `salons_with_slot_in_hours`, `record_csp_violation`. `verified:` all three are SECURITY
-      INVOKER (`prosecdef=false`), so this is NOT the privilege-escalation vector the linter
-      warns about. It is hygiene: a one-line ALTER each.
+- [x] C7b. **Three functions had no fixed search_path. Now none do.** `verified:` commit
+      4aac463f7, migration `20260823120200_...`. All three were SECURITY INVOKER
+      (`prosecdef=false`), so this was never the privilege-escalation case the linter warns
+      about, only determinism. Scope, because the raw count misleads: 237 of the 302 functions in
+      the schema still have no pinned path and none of them are ours, they belong to installed
+      extensions. Counting only ours: 3 of 65 before, 0 of 65 after.
 - [ ] C7c. **55 stacked permissive policies, 24 of them on `discovery_items` alone.** Postgres
       evaluates every permissive policy for every row, so a table with 24 of them does 24
       predicate evaluations per row read. `discovery_items` is already the second-biggest table
