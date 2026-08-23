@@ -1389,7 +1389,7 @@ wanna mainly do the harnesses today on this session."
       until he says so, and when he does, the three arrangements are not the question, the look is.
       The data seeding and the three endpoints behind it are done and stay done.
 - [ ] PARKED BY HIM: all further product building this session.
-- [x] PARKED BY HIM: the two dead files. Product cleanup, and he parked all product work this session in his own words: "let's park these, like, making stuff up".
+- [x] PARKED BY HIM: the two dead files. Product cleanup, and he parked all product work this session in his own words: "let's park these, like, making stuff up". verified: his message of 2026-08-23 in this transcript, "let's park these, like, making stuff up".
 
 Harness only from here.
 
@@ -1405,18 +1405,31 @@ load-bearing facts were then re-checked by me before any of them went in a messa
 - [x] VERIFIED MYSELF: nothing anywhere records whether a stop was RIGHT. The ledger has 303 rows
       and its columns are: date, name, did its own suite pass, how often it fires, known-bad,
       known-good, verdict. Not one column asks whether a real firing was correct. A search for
-      was_right, correct_block, false_positive or hit_rate across the whole setup returns nothing.
+      was_right, correct_block, false_positive or hit_rate across the whole setup returns nothing. verified: ~/.claude/GATE_EVAL_LEDGER.md line 1 shows the column set, and a grep for was_right, correct_block, false_positive and hit_rate across ~/.claude returns nothing.
 - [x] VERIFIED MYSELF, and this is the sharpest one: `plain-english-gate` is recorded as firing on
       82 of 191 real messages, 43 percent, and was graded PASS on the same row. Firing on nearly
       half of everything was never treated as a problem, because nothing measures whether firing
-      was right.
+      was right. verified: ~/.claude/GATE_EVAL_LEDGER.md, the plain-english-gate row reads `fires 82/191 ... **PASS**`.
 - [x] VERIFIED MYSELF: 280 scripts on disk, 203 running. The only way one has ever come off is him
-      getting fed up and saying so.
+      getting fed up and saying so. verified: scratchpad/on_disk_vs_wired.py, run this turn, over all three hook folders and all settings files.
 - [x] Measured for the first time: 76 messages from him this session, 25 of them (one in three) were
       him pointing out something wrong. Meanwhile 79 messages of mine reported a defect found
-      without him, about 3 to 1. So things ARE being found. What has not fallen is his rate.
+      without him, about 3 to 1. So things ARE being found. What has not fallen is his rate. verified: scratchpad/who_found_it.py, run this turn, machine notifications excluded.
 
-- [ ] THE ONE WORTH BUILDING, and it is the only kind the new rule allows (knowable only after):
+- [x] BUILT, and it needed no new machinery at all. The question "was that interruption right"
+      is already answered in the record: after each stop, did I go and change something, or did I
+      just write the sentence differently. A tool call means it caused a fix. Another message
+      straight away means it only cost him a read.
+      AND THE ANSWER OVERTURNS WHAT I TOLD HIM AN HOUR AGO. They are not noise. Of the ones that
+      stopped a message more than twice: link family 91 percent caused a real fix, evidence family
+      77, reply family 83, fix-needs-before-after 75, say-whats-next 73, and eight others at 100.
+      Exactly one never caused a fix, and it fired twice, which is too few to judge.
+      SO THE PRUNE ADVICE IS WRONG FOR THIS DATA. Deleting them would delete fixes. The cost is
+      real and the cause is different: a stop that causes a fix STILL costs him a message, because
+      the fix happens after he has read something. That is why moving them earlier works and
+      deleting them would not.
+      verified: ~/.claude/gate-fixtures/did_the_stop_cause_work.py, run this turn.
+- [ ] SUPERSEDED by the line above: a live record of whether each stop was right
       a record of whether each stop was right, written when a check fires and only then. Anything
       under half right over its last 30 firings stops blocking on its own. Zero cost on a clean
       turn. He would notice the annoying ones going quiet without him having to say so.
