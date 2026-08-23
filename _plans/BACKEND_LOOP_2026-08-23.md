@@ -106,7 +106,7 @@ Pre-launch framing binds throughout: impact is what each finding WOULD do once l
       padding. What continues it is not another sweep of the same code, it is the batch of fixes
       below that is still open.
 - [x] F2. `verified:` round 1 raw 58, round 2 raw 4, round 3 raw 4. Strictly decreasing.
-- [ ] F3. One plain-English report at the end, in his words, not a list of file paths.
+- [x] F3. Delivered in the closing message of 2026-08-23.
 
 ## Rounds
 
@@ -286,3 +286,35 @@ off a report. 151 tables, RLS on all of them, biggest is `availability_slots` at
       so it is off by 6x on the biggest table, and it is the file `npm run exists` reads and that
       every audit in this project treats as column truth. The backend law quotes the stale number
       too, in its own primary-key trigger row.
+
+
+---
+
+## What is still open, and who owns it
+
+Three things need him, and nothing else in this loop does.
+
+- [ ] **HIS CALL: prune old slots.** 17,572 of the 62,913 slots are in the past and 16,711 of
+      those were never booked. Nothing removes them, ever. Deleting rows is his decision by
+      standing rule, so nothing was deleted. Proposal: a nightly job removing past, never-booked
+      slots older than 90 days. Today that is 795 rows. It matters at 500 salons, not at 21.
+- [ ] **HIS CALL: leaked-password protection.** Off today. It is a toggle in the Supabase
+      dashboard, not code, and it changes sign-up: it rejects passwords that appear in known
+      breaches.
+- [ ] **HIS CALL: the stranded July fixes.** A timeout on the AI calls, a timeout on the search
+      embedding, and the cached-analytics fix were all written on 2026-07-17 and are on neither
+      this branch nor main. Bringing them across is part of the branch reconciliation workstream
+      (67), not something to cherry-pick blind.
+
+Carried into the next batch, each with the reason it is not done rather than a bare later:
+
+- The translation cache serves a hidden review, because the is_hidden guard sits only on the
+  cache-miss path.
+- A card can be charged twice: when the paid-marking write matches no row, the money has left
+  Stripe and nothing stops tomorrow's run selecting the same booking.
+- The admin payment-mode override and the customer's own booking page read different columns. I
+  have proven the two reads differ; I have NOT proven the charged amount is wrong.
+- The review-translate route calls a paid AI service with no auth and no per-user cap, while the
+  rate-limit file names that exact route in the list that must carry both.
+- Account deletion does not purge the new avatar bucket.
+- The admin photo takedown deletes the row and leaves the file.
