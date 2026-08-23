@@ -2,16 +2,16 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-23T12:20:32 (trigger: unknown)
+- taken: 2026-08-23T17:53:30 (trigger: auto)
 - branch: claude/stress-test-gates-hooks-6dc8e8
 
 ## git
 ```
-f0db9a70c Two boxes closed with the commits that prove them
-cd0f4f3bb Ten of today's repairs had tests that passed with the repair removed, not five
-9b8cd06c0 The 07:03 promise finally has its list, counted from real fires rather than guessed
-7c83689a4 Every ticked round now carries the commits that prove it, and all nineteen resolve
-72822562f The 87 I told him was wrong, and its own leftover files show why
+e139cac69 A guest who reviews could never show a name, because the screen never asked for one
+13fe7b171 Fifteen ratings with nothing to read under them, and the gap was the data
+b590753cf Two questions that coincided once and drifted: hide the footer, and own your own back
+8fb819e90 checkpoint(auto): 2 uncommitted file(s) at turn end
+9eec2ab3e checkpoint(auto): 1 uncommitted file(s) at turn end
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
