@@ -1225,3 +1225,33 @@ Measured, then fixed, then re-measured by me rather than by the builder who did 
         and that is the surface where a mistake reaches off this machine.
   - [ ] The 40 unmerged branches and four database changes that never landed, which is the real
         product risk behind the missing-things rule. Cited as history, re-checked by nobody.
+
+### 2026-08-23 . the measurement redone, because reporting it as untrustworthy was not the job
+
+His words: "wasnt the core task abt researchin n sourcin sh". Right. A number I called unreliable
+and left there is a defect I found in my own instrument and did not fix, which is the exact shape
+the flag-instead-of-fix rule exists for, applied to my own measuring rather than to the product.
+
+- [x] The instrument was the fault, and it is named: every judge was handed the SAME file and an
+      index. Four judges at four different indexes reported the same command, so nothing tied a
+      verdict to a command. Rebuilt: 60 files, one command each, each judge given its own path and
+      made to echo the first line back so a mix-up shows. verified: scratchpad/cmds/ and run
+      wf_9189e4a3-111.
+- [x] Fidelity check on the new instrument, done the way rule 15a asks. 60 files echoed 50 distinct
+      first lines, and the sample itself has exactly 50 distinct first lines (five commands start
+      `python3 - <<'PY'`, three start with the same scratch path). So the echoes match the sample
+      perfectly. My automatic flag called it untrustworthy because it compared against 57 rather
+      than against the sample's own count; the flag was wrong, not the run.
+      verified: scratchpad/on_disk_vs_wired.py sibling check in the same turn.
+- [x] THE NUMBER, on real traffic: 1 refusal in 60 commands, 1.7 percent, and ZERO of them ordinary
+      work. The single refusal is a branch delete I typed myself to test it. All four git commits in
+      the sample were allowed. The threshold set earlier this turn was one in fifty, so the
+      rewritten wording clears it. The version that broke his session was the FIRST wording, which
+      refused a commit; the rewrite fixed that and this measures the rewrite.
+- [x] What is on disk and runs nothing: 280 check scripts, 207 run, 13 are off with a stated reason,
+      60 are off with nothing saying why. Two of those 60 looked like they were falsely claimed as
+      enforcing; both checked by hand and both are honest (one is documented as NOT WIRED in the
+      rulebook itself, the other is named only as a past example). So the false-enforcement problem
+      is the one already found, not a pool of sixty. verified: scratchpad/on_disk_vs_wired.py.
+- [ ] BLOCKED ON HIM: whether to switch the command check back on now that it clears the bar. He
+      watched the first version break his session, so this is his call and not mine to take back.
