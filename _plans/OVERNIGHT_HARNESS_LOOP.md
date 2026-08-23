@@ -96,3 +96,38 @@ if u think ur finishd ur not okay?"*
   an account that keeps causing problems.
 - Anything that changes the WORDS a customer reads.
 - Arming or disarming anything.
+
+## Round 3, the product sweep (2026-08-23). What the 23 readers found, none of it done unless ticked.
+
+- [x] THE WHOLE SITE WAS DOWN AND IS BACK (verified: commit 501b843aa; all four languages answer,
+      the salon team page renders real staff, and /favicon.ico and /abc no longer throw). Two
+      separate breaks: a stray browser-only marker on the salon team page stopped the entire app
+      compiling, and any unknown first segment of a url was passed in as if it were a language.
+- [ ] SIGNED-OUT VISITORS LAND ON BLANK PAGES: edit profile, change password, onboarding, saved
+      looks, and a salon gift-card link. Header, bottom bar, nothing between. The dashboard pages
+      do this correctly, so the shape to copy already exists in this repo.
+- [ ] SIX PAGES ARE GERMAN FOR EN, FR AND IT VISITORS: password reset (worst, it is account
+      recovery for someone locked out), the login headline, Safety, About, Blog, the legal notice.
+      Confirmed file by file, they contain no translation calls at all. NOT on this list and
+      wrongly reported by the first pass: the Privacy Policy and the Discovery Terms are correctly
+      translated, do not let anyone "fix" those.
+- [ ] SCREEN READERS HEAR GERMAN ON EVERY PAGE OF THE ENGLISH SITE: top navigation, the home link,
+      the newsletter field and its button, the loading spinner used app-wide. Invisible in a
+      screenshot, which is why it survived, and it sits on the accessibility floor.
+- [ ] ABOUT TWENTY ACCOUNT PAGES SHOW THE GERMAN TITLE ON THE ENGLISH SITE, because the shared
+      header keeps a fixed list of titles that never looks at the language.
+- [ ] A PROMISE WITH MONEY BEHIND IT AND NOTHING ENFORCING IT: the text says an account cannot be
+      deleted while an appointment is active, that text renders nowhere, and the deletion path only
+      checks salon owners, never the customer's own appointments.
+- [ ] NOBODY IS TOLD WHEN A REFUND ARRIVES. Both sentences exist, the approved-refund screen shows
+      neither.
+- [ ] "WITHDRAW THIS REQUEST" HAS NO BUTTON AND NO BACK END. Searched every branch: only report and
+      escalate exist. The 14 day window itself is real and enforced; the right the sentence
+      describes is not.
+- [ ] THE COOKIE POLICY NAMES TWO KINDS AND THE CONSENT BAR OFFERS THREE.
+- [ ] TWO BACK ARROWS STACKED on the salon team screen, against the locked one-back-per-screen
+      rule. Seen on a 390x844 screenshot, being fixed now.
+- [ ] ZURICH SEARCH SHOWS NOTHING UNDER A TAB THAT SAYS BASEL. Empty by design (Zurich is not
+      switched on) and mislabelled by accident (that page has no title of its own). HIS CALL
+      whether Zurich goes live.
+- [ ] THE HELP CENTRE HAS NO ARTICLES AT ALL, and its own "not found" message is German only.
