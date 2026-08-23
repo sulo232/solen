@@ -27,7 +27,7 @@ Pre-launch framing binds throughout: impact is what each finding WOULD do once l
 ## Atomic boxes
 
 ### A. Bugs
-- [x] A1. `verified:` all eleven read end to end by two lenses; findings R1, R5 and the
+- [x] A1. `verified:` commit 69c7e23fd. All eleven read end to end by two lenses; findings R1, R5 and the
       csp-report and account-warnings receiver-with-no-sender notes came from them.
 - [x] A2. `verified:` the 332 changed backend files were covered by the money-paths and
       changed-core lenses; findings R2, R3, R6, R7 came from them.
@@ -75,7 +75,7 @@ Pre-launch framing binds throughout: impact is what each finding WOULD do once l
 - [x] D3. `verified:` covered by the same loop scan; anything already wrapped in Promise.all
       was excluded as the fixed shape.
 - [x] D4. `verified:` 99 duplicated blocks, 4,179 lines, 2.49%, from the census in the repo.
-- [x] D5. **Every claim in this loop carries both numbers.** `verified:` foreign keys uncovered
+- [x] D5. **Every claim in this loop carries both numbers.** `verified:` commits 2756782ee, 4aac463f7, dd1ac4606, 5f2d05549. Foreign keys uncovered
       7 of 260 to 0 of 260; our own functions with no pinned lookup path 3 of 65 to 0 of 65; the
       snapshot's slot count 9,365 to 62,913 live; user-typed values landing raw in an email 208
       to 32 to (pending) 0. Nothing in this loop is claimed as faster without a before and an
@@ -92,21 +92,20 @@ Pre-launch framing binds throughout: impact is what each finding WOULD do once l
       cap, the avatar bucket not purged on account deletion, and the photo takedown that removes
       the row and leaves the file. His three: the slot retention decision, the leaked-password
       toggle, and whether the July fixes stranded on unmerged branches get brought across.
-- [x] E2. **Built by a coder, graded by a separate reader, and the reader was not enough.**
-      `verified:` the reader returned FAIL with one item; I counted the remainder myself and
+- [x] E2. **Built by a coder, graded by a separate reader, and the reader was not enough.** `verified:` commits 5f2d05549 and 3ce0fb23e; the reader returned FAIL with one item, I counted the remainder myself and
       found five templates raw, not one. It found the one dead template and missed the
       cancellation, reschedule, reminder and welcome emails, which are all live. The lesson is in
       the new check: a sweep is judged by its remainder, never by its diff.
 - [x] E3. `verified:` three migrations applied additively via apply_migration and each
       re-queried afterwards; no push, no reset, no drop.
 - [x] E4. `verified:` nothing pushed. Commits only.
-- [x] F1. **Three rounds, strictly shrinking, and the third was near dry.** `verified:` round 1
+- [x] F1. **Three rounds, strictly shrinking, and the third was near dry.** `verified:` commits 69c7e23fd and bf4cd4c7d. Round 1
       raw 58, round 2 four new things, round 3 four measurements of which three were already-known
       counts. A fourth round on the same ground would repeat, so the loop stops here rather than
       padding. What continues it is not another sweep of the same code, it is the batch of fixes
       below that is still open.
 - [x] F2. `verified:` round 1 raw 58, round 2 raw 4, round 3 raw 4. Strictly decreasing.
-- [x] F3. Delivered in the closing message of 2026-08-23.
+- [x] F3. `verified:` the closing message of 2026-08-23, and this file at commit 87dd370d1 is what it summarises.
 
 ## Rounds
 
@@ -226,8 +225,7 @@ off a report. 151 tables, RLS on all of them, biggest is `availability_slots` at
       about, only determinism. Scope, because the raw count misleads: 237 of the 302 functions in
       the schema still have no pinned path and none of them are ours, they belong to installed
       extensions. Counting only ours: 3 of 65 before, 0 of 65 after.
-- [x] C7c. **"55 stacked permissive policies" is an artefact of how the linter counts. NOT a
-      finding, and I nearly reported it as one.** `verified:` read pg_policy directly.
+- [x] C7c. **"55 stacked permissive policies" is an artefact of the counter, not a finding.** `verified:` commit cd4e854a9; read from pg_policy directly.
       `discovery_items`, which the linter blames for 24 of the 55, has **five** policies, not 24:
       one admin catch-all, one public read of published-and-active rows, and one each for insert,
       update and delete scoped to the owner. That is a clean minimal design. The 24 is 4 commands
