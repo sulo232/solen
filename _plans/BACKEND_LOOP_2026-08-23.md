@@ -81,3 +81,72 @@ Pre-launch framing binds throughout: impact is what each finding WOULD do once l
 | 2 | Storage, schema, indexes, growth | pending |
 | 3 | Waste and speed, measured | pending |
 | 4+ | Until a round is dry | pending |
+
+---
+
+## Round 1 result (2026-08-23)
+
+Six lenses read the new and changed backend code and returned **58 raw findings**. The
+adversarial pass that normally kills the weak ones could not run: the weekly limit hit and all
+174 skeptics errored. So I verified the top of the list MYSELF, off disk, before writing any of
+it down. That turned out to matter.
+
+### Reproduced by me, and REAL
+
+- [x] R1. **`/api/unsubscribe` lets any anonymous caller permanently lock a salon out of claiming
+      its own listing.** `verified:` `app/api/unsubscribe/route.ts:39-43` nulls
+      `salon_directory.email` for any email posted to it, with only an IP rate limit;
+      `app/api/directory/[id]/claim/route.ts:138` then answers "No email address on file for this
+      listing" forever. Directory emails are scraped from Google Places, so they are public. 48
+      rows.
+- [x] R2. **A salon's own name reaches a customer's inbox as raw HTML.** `verified:` `lib/email.ts`
+      escapes `vars.address` at :235 and `vars.replyText` at :936 and :970-973, and does NOT
+      escape `vars.salon` or `vars.service` in the booking-confirmation bodies at :242, nor
+      `vars.salon` in the review-reply bodies. Same file, same function, two treatments.
+- [x] R3. **Money can move with no ledger row and nothing notices.** `verified:`
+      `app/api/stripe/webhook/route.ts:268` and `:396` both `await admin.from("salon_payouts")
+      .upsert({...})` with the result discarded. This exact class already cost this project once
+      (the 42P10 constraint mismatch, re-audit item 1).
+- [x] R4. **The audit trail can fail silently.** `verified:` `lib/audit.ts:18` awaits the insert
+      without reading `{error}`. PostgREST returns an error object rather than throwing, so the
+      try/catch around it never fires on a normal rejection.
+- [x] R5. **A hidden review is still translatable back into view.** `verified:`
+      `app/api/reviews/translate/route.ts:43-51` reads the translation cache with no `is_hidden`
+      filter and returns early when every id is cached; the guard sits only on the miss path,
+      where its own comment claims it is checked "as well as at the read site".
+- [x] R6. **A card can be charged twice.** `verified:` `app/api/cron/pre-charge/route.ts:131-145`.
+      When the paid-marking update matches no row, the code logs "charged in Stripe but not marked
+      paid, needs reconciliation" and continues. Nothing marks the booking, so the next daily run
+      selects it again and charges the same card again. NOTE: the finding as reported said the
+      error was discarded. It is not; `updatedRows` is checked. The mechanism is different from
+      the one reported, and the outcome is the same.
+- [x] R7. **The admin payment-mode override and the customer's own booking page disagree.**
+      `verified:` `app/api/bookings/route.ts` selects `payment_mode_enforced`, while
+      `app/[locale]/salon/[slug]/booking/page.tsx` selects raw `payment_mode`. Two sources for one
+      decision. I have NOT yet proven the charged amount is wrong, only that the two reads differ.
+
+### Reproduced by me, and NOT TRUE
+
+Both were reported as HIGH. Neither survived being opened.
+
+- [x] R8. "payment_intent.payment_failed frees a slot with no compare-and-set." FALSE.
+      `verified:` `app/api/stripe/webhook/route.ts:508-516` guards on
+      `.in("payment_status", ["pending","none","card_saved"])` and only frees the slot inside
+      `if (cancelledRows?.length)`, with a comment naming that exact race as already fixed.
+- [x] R9. "The reviews authenticity gate is gone and nothing replaced the per-person cap." FALSE
+      on both halves. `verified:` the gate was removed on purpose by
+      `20260809120000_reviews_open_rating_no_visit_check.sql`, whose own header quotes the owner
+      ("no no real visit check jst normal su bro") and records the fake-rating cost as knowingly
+      accepted. And a per-person cap DOES exist, at `app/api/reviews/route.ts:79-88`, which blocks
+      one account posting twice for the same salon.
+
+### Why so many "the July fix is gone" reports, and it is not a regression
+
+Several lenses reported 2026-07-17 fixes as missing. They ARE missing, and the reason is not that
+someone undid them.
+
+- [x] R10. **The fixes were written and never merged.** `verified:` `lib/ai/gemini.ts` does not
+      exist on this branch OR on `main`; `lib/search/embeddings.ts` has no `AbortController` on
+      either; `app/api/analytics/platform/route.ts` has no `unstable_cache` on either. The plan
+      file recording them as fixed is on main; the code is stranded on unmerged branches. This is
+      workstream 67 (40 unmerged branches, none on main) showing up as backend risk.
