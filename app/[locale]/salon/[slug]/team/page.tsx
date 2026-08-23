@@ -32,7 +32,7 @@ export const dynamic = "force-dynamic";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { ArrowLeft, Shuffle, Star } from "lucide-react";
+import { Shuffle, Star } from "lucide-react";
 import { loadSalonDetailWithStatus } from "@/lib/salon-detail";
 import type { StaffMember } from "@/app/[locale]/_components/salon/_shared";
 import { MetaDot } from "@/app/[locale]/_components/salon/MetaDot";
@@ -58,7 +58,6 @@ export default async function SalonTeamPage({
 }: {
   params: Promise<{ locale: string; slug: string }>;
 }) {
-  const tBack = await getTranslations("common");
   const { locale, slug } = await params;
   const result = await loadSalonDetailWithStatus(slug);
   if (!result) notFound();
@@ -75,15 +74,10 @@ export default async function SalonTeamPage({
   return (
     <main className="min-h-screen bg-white pb-16">
       <div className="mx-auto max-w-[480px] px-4 pt-6">
-        <Link
-          href={`/${locale}/salon/${slug}#section-team`}
-          aria-label={tBack("back")}
-          className="grid h-11 w-11 place-items-center rounded-full border border-s-border bg-white transition-[colors,transform] hover:bg-s-bg-sunken active:scale-[0.94] active:duration-[80ms] active:ease-glide"
-        >
-          <ArrowLeft size={20} strokeWidth={2.1} aria-hidden className="text-s-ink" />
-        </Link>
+        {/* No local back control here: the global Header owns the one back per screen
+            (single-global-back doctrine), so this page adds none. */}
 
-        <h1 className="mt-5 font-display text-[28px] font-semibold tracking-[-0.02em] text-s-ink">
+        <h1 className="font-display text-[28px] font-semibold tracking-[-0.02em] text-s-ink" /* mockup-ok: revert, removes the mt-5 that compensated for the deleted duplicate back arrow; matches components-legacy/salon/SalonReviews.tsx's 2026-08-09 fix of the same bug, whose heading also carries no extra top margin */>
           {t("title")}
         </h1>
 
