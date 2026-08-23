@@ -1311,3 +1311,25 @@ before it went in a message.
         salon owner can see a rota or set anyone's access. Build the screens or call it post-launch.
   - [ ] The /behandlungen page: one branch deleted it as a duplicate, main still links to it from
         three places and edited it three weeks ago. One of those two calls is wrong.
+
+### 2026-08-23 . his four questions, answered by looking
+
+- [x] "these stuff didnt we make gate for u to fix": no, and it is now measured rather than assumed.
+      Five checks that looked like they should catch an unprotected write endpoint were driven
+      against the real unsubscribe file and all five stayed silent. The reason: the one that comes
+      closest counts a rate limit as a sufficient guard for a public endpoint. That is right for a
+      contact form and wrong for a write to a row the caller names. Fixed, and it fires on 1 of the
+      363 route files. commit 7a2f61b3c in ~/.claude.
+- [x] AURORA: BINNED, his call this turn, verbatim "aurora no i want more like airbnbn". The dashboard
+      skin on claude/bold-hellman-b31513 is not merged and not rebuilt from that branch. Any new
+      dashboard look is built against Airbnb as the source of truth, which is the standing decision
+      from 2026-08-12. Nothing to do until a dashboard redesign is actually asked for.
+- [x] WHAT THE STAFF ROTA IS, and a correction to what I told him. There IS a staff screen at
+      dashboard/staff: it adds people, sets their services, languages and permissions. What does not
+      exist is any WEEK view: nobody can see who works which shift, when their breaks are, or who is
+      off. The server side for exactly that is live and working (staff availability, time off and
+      breaks all have endpoints). So my earlier "no screen at all" was too strong.
+- [x] WHAT /behandlungen IS: a browse page for treatments. Pick a treatment type and it lists the
+      salons that offer it, with the same cards, filters and search as the rest of the site. It is
+      linked from the spa page, from onboarding and from the sitemap, and it has copy in all four
+      languages. One abandoned branch had deleted it as a duplicate of the category pages.
