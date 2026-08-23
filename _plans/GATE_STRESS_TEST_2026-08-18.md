@@ -1364,3 +1364,16 @@ before it went in a message.
 - [ ] Two files are dead: components-legacy/ui/CategoryTree.tsx and lib/search-filter-pills.ts both
       reference the deleted page and NOTHING imports either of them. Pre-existing, unrelated to this
       work, and deleting files nobody asked about is not mine to decide.
+
+### 2026-08-23 . PRODUCT WORK PARKED BY HIM, harness only from here
+
+Owner, verbatim: "The design is fucked up, and let's park these, like, making stuff up. Like, I
+wanna mainly do the harnesses today on this session."
+
+- [ ] PARKED BY HIM: the rota screen. He looked at it and the design is wrong. Not to be rebuilt
+      until he says so, and when he does, the three arrangements are not the question, the look is.
+      The data seeding and the three endpoints behind it are done and stay done.
+- [ ] PARKED BY HIM: all further product building this session.
+- [ ] PARKED BY HIM: the two dead files (CategoryTree, search-filter-pills). Product cleanup.
+
+Harness only from here.
