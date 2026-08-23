@@ -1392,3 +1392,34 @@ wanna mainly do the harnesses today on this session."
 - [x] PARKED BY HIM: the two dead files. Product cleanup, and he parked all product work this session in his own words: "let's park these, like, making stuff up".
 
 Harness only from here.
+
+### 2026-08-23 . why he still has to be the one who spots things
+
+His question: "I don't want to tell you what the problem is. I want you to actually figure out. And
+I tried building multiple gates principle about this, but it's really hard. Why is that so? And what
+can we actually build around it? If not, you can tell me no."
+
+Five readers, five different angles, each with outside sources, then one judgement pass. The three
+load-bearing facts were then re-checked by me before any of them went in a message.
+
+- [x] VERIFIED MYSELF: nothing anywhere records whether a stop was RIGHT. The ledger has 303 rows
+      and its columns are: date, name, did its own suite pass, how often it fires, known-bad,
+      known-good, verdict. Not one column asks whether a real firing was correct. A search for
+      was_right, correct_block, false_positive or hit_rate across the whole setup returns nothing.
+- [x] VERIFIED MYSELF, and this is the sharpest one: `plain-english-gate` is recorded as firing on
+      82 of 191 real messages, 43 percent, and was graded PASS on the same row. Firing on nearly
+      half of everything was never treated as a problem, because nothing measures whether firing
+      was right.
+- [x] VERIFIED MYSELF: 280 scripts on disk, 203 running. The only way one has ever come off is him
+      getting fed up and saying so.
+- [x] Measured for the first time: 76 messages from him this session, 25 of them (one in three) were
+      him pointing out something wrong. Meanwhile 79 messages of mine reported a defect found
+      without him, about 3 to 1. So things ARE being found. What has not fallen is his rate.
+
+- [ ] THE ONE WORTH BUILDING, and it is the only kind the new rule allows (knowable only after):
+      a record of whether each stop was right, written when a check fires and only then. Anything
+      under half right over its last 30 firings stops blocking on its own. Zero cost on a clean
+      turn. He would notice the annoying ones going quiet without him having to say so.
+- [ ] THE SWEEP THAT COSTS NOTHING: when something is hardened, search the same turn for the same
+      shape worded differently and fix those too. This setup has three documented cases of one
+      behaviour being banned and reappearing in a new shape.
