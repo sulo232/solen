@@ -1317,7 +1317,22 @@ before it went in a message.
 ### 2026-08-23 . what is genuinely still open, nothing hidden in a bundle
 
 - [ ] Three of the eight things the sweep never covered are still not done:
-  - [ ] Run the checks against real messages rather than reading them. The sweep was all reading.
+  - [x] DONE, and two ways of doing it failed first, which is the useful part.
+        ATTEMPT 1: hand each check the message in its payload. Result: 0 of 68 fired on 24 real
+        messages. False, because most of these checks do not read that field at all, they open the
+        transcript and take the last assistant entry.
+        ATTEMPT 2: build a fake one-exchange transcript per message. The known-answer control
+        refused to fire, so the run was abandoned rather than printed. These checks look at more of
+        a turn than one message.
+        ATTEMPT 3, and the one that works: stop simulating. The transcript already records every
+        refusal that really happened, which check, on which message, and what he said next.
+        THE NUMBERS, from real events: 115 messages from him, 281 refusals of mine, so 2.4 refusals
+        for every message he sends. Longest unbroken run 25. The three loudest are say-whats-next
+        (31), the evidence family (31) and the link family (27).
+        HONEST LIMIT: "he was fine afterwards" does NOT prove a refusal was wrong. It may mean the
+        refusal made me fix something and that is why he was fine. The number that needs no
+        interpretation is the 2.4.
+        verified: ~/.claude/gate-fixtures/what_the_checks_actually_did.py and its output json.
   - [ ] The eight checks that police what dispatched helpers do rely on a mechanism two community
         reports call unreliable while the current documentation says the opposite. Nobody settled it.
   - [x] The outside services, looked at. Four are configured in the files on this machine (lottiefiles, lottiefiles-creator, magic, mobbin). Another 24 are attached through plugins (Notion, Slack, Stripe, Supabase, HubSpot, QuickBooks, PayPal, Square, Figma, Linear and the rest) and NONE of them is signed in, which this session was told at startup. So nothing outside this machine can currently be read or written by any of them. The surface exists but is shut. verified: read ~/.claude.json and the three settings files this turn, plus the startup notice.
