@@ -109,3 +109,111 @@ Already measured today, carry forward:
 
 One message. What is now true, the numbers that decide something, and the short list of things that
 need his yes because they would refuse his work. Not a tour of the files I touched.
+
+---
+
+# WHAT THE SIX READERS FOUND, and what was done about it
+
+## THE EFFICIENCY ANSWER: they have a common cause, so one thing fixes both
+
+He said he does not know whether speed or money is worse. Measured, both:
+
+**SPEED.** Median wait per turn 8.0 minutes (suspend-corrected), p90 35.9. 59.5 percent of that is
+the model generating text across a median of 32 round-trips per turn, which no setting fixes. The
+largest REMOVABLE block is the refusal loop: 80.4 percent of his turns get refused by at least one
+end-of-reply check, 2,135 rounds, 15.0 seconds each (2.96s of checks plus 12.08s of rewriting),
+**31.9 seconds per turn and about 16.2 minutes per session.** Hooks run in PARALLEL, verified in the
+installed binary (`Promise.all` on one path, an unlimited-concurrency merge on the REPL path), so
+the old "1.74 seconds serial per edit" framing was the wrong model: real cost is the slowest hook,
+about 688ms on an edit. The count was also wrong: 85 fire on an Edit and 95 on a Write, not 58.
+
+**MONEY.** 22.73 billion tokens across the 49 sessions, about $25,761 at list. **97.12 percent of
+every token is cache read**, i.e. re-reading context that already exists. His own replies are **1.7
+percent of the bill.** The single biggest lever is the size of the context being re-read: at a
+200,000 working ceiling the read bill falls 64.8 percent, about 57 million tokens per session.
+Ranked consumers of the read bill: tool results 22.9, the commands and file contents Claude itself
+writes out 17.1, system prompt plus both CLAUDE.md files plus tool definitions 15.1, hook injections
+10.7, images 6.5. Stop-gates throwing away a finished reply cost 1.68 billion tokens, about $839.
+
+**SO THE ANSWER IS: the refusal loop is the one thing that is simultaneously the biggest removable
+time cost and a top money cost.** Cutting it helps both, which is why it was cut first.
+
+## THE METHOD AUDIT, his own named ask
+
+1. **Research stops at the edge of this machine.** 154 of 43,422 tool calls looked outside it, 0.35
+   percent. Three separate asks for a multi-hour research session produced 0, 0 and 0 web calls; the
+   four-hour one ran 323 tool calls, all local. Airbnb, the declared source of truth since
+   2026-08-12, has been visited 15 times in six weeks.
+2. **19 published claims about this machine turned out false**, all about the tooling not the
+   product: a `shadow-elevation` class that never existed and silently shipped every card flat, a
+   `no-black-selected` gate cited by three law files, a "hook-enforced" mockup rule that was not.
+   16 of the 19 were found by a later audit, not at the time.
+3. **"Everywhere" gets answered with a sample.** 115 sweep-shaped asks, median distinct pages opened
+   1, and 57 opened none. The clean case delivered 8 of a hundred-plus and closed with "everything
+   else is queued", which hides the ratio. He types "dont stop" or "as a loop" pre-emptively in 35
+   of his messages because stopping short is the expected behaviour.
+4. **807 subagents dispatched, 78 percent solo.** Anthropic publishes 3 to 5 in parallel for
+   read-only gathering, and up to 90 percent time saved.
+5. **3 of 807 briefs mentioned searching a synonym**, 0.4 percent, which is why duplicates keep
+   being found rather than prevented.
+
+**AND THE PROOF THAT GATES BEAT ADVICE, from the same audit:** source-only design sweeps ran at 73
+percent before a gate was armed on 2026-07-15 and 31 percent after. Advice never moved it.
+
+## WHAT LANDED TONIGHT
+
+- **A check built this morning was refuted and retired the same day** by the after-build reader round
+  he asked for. It duplicated `harden-needs-council-gate.py`, which is armed, exits 2, and already
+  refuses a closing message claiming a check was built with no independent reviewer. Its stated
+  reason for choosing a weaker channel was factually false.
+- **All 83 checks that can end a turn now carry the one-refusal guard.** Nine did not, so each could
+  refuse a turn it had already refused. Verified one at a time.
+- **The note arriving with every message went from 9,470 characters to 3,471**, a 63 percent cut,
+  with all 14 rules kept and every dated case moved to CLAUDE_WHY.md, which is not auto-loaded.
+  Anthropic's docs are explicit that this is the cause of rules being ignored: "Shorter files
+  produce better adherence" and "If Claude keeps doing something you don't want despite having a
+  rule against it, the file is probably too long and the rule is getting lost."
+- **A look complaint now starts the diagnosis by itself.** The project rulebook has claimed that
+  trigger for months and nothing implemented it; all 9 real runs happened because the model
+  remembered a table. 25/25 both directions on his real phrasings.
+- **Research and sweep asks now carry what the audit found**, on the hook that already fires on
+  prompt shapes. That file had no suite at all; it has 18 now.
+- **Two false enforcement claims corrected** (`missing-needs-a-reason-gate`, and the taste trigger,
+  which was fixed by wiring rather than by editing the sentence).
+
+## THE NUMBER THAT ALMOST WENT OUT WRONG, TWICE
+
+A reader killed the retired check with "inject-only reminders are obeyed 11.1 percent of the time",
+which is true and decided nothing, because it had no baseline. Measured: the behaviour happens 2.4
+percent of the time WITHOUT the reminder and 4.6 percent WITH it, a **1.92x lift**, and 1.89x when
+restricted to sessions where the situation was present throughout so the lift cannot be the
+situation. **Injected reminders roughly double what they ask for.** That reversed a
+cut-everything conclusion. Written into GATE_LAW.md as a rule: judge a reminder by its lift, never
+by its obedience rate, in both directions.
+
+Separately, a second reader independently measured em-dash compliance at 80.8 percent against the
+same 11 percent figure, which confirms the 11 percent describes one narrow class and not obedience
+in general.
+
+## STILL OPEN
+
+- [ ] The pre-action replay (114 checks over 1,200 real tool calls) is still running. It answers
+      which pre-action checks ever refuse real historical work, which gate-eval cannot drive.
+- [ ] 19 registered checks have no suite; 8 of those can refuse something, including the Swiss
+      price-indication one and the security one. Suites being written. (The first count of this was
+      inverted by my own parser and said 194; the control caught it.)
+- [ ] The skills cleanup: 8 of his own skills have never run, `uiux-audit` is broken (5 of its 6
+      referenced files are missing), and 225 vendored plugin skills have never run once.
+- [ ] `tunnel`: the skill loaded 5 times while `cloudflared` was run by hand 4,560 times across 38
+      of 49 sessions. The work happens constantly and the thing built to do it is skipped.
+
+## NEEDS HIS YES, because each would make something refuse his work
+
+1. Key `harden-needs-council-gate.py` to the ARTIFACT rather than the turn, and widen what it counts
+   as machinery using the 87 blind-spot files found today (skip flags, gate-eval.py, hooks/tests/,
+   hooks/_lib/, pending-gates/, commands/).
+2. A gate for the research finding. The measured precedent is strong: the design-verify gate moved
+   source-only sweeps from 73 percent to 31, where advice moved nothing. Tonight's version is a
+   note only, because he forbade new blocking checks while asleep.
+3. Lowering the working context ceiling, which is 65 percent of the bill. Not a code change, a
+   working-habit change, and the read-side saving is only half the model.
