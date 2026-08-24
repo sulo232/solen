@@ -251,10 +251,19 @@ link in an email has **no replay protection at all**: verified on the shipped ro
 no single-use check of any kind. The feature was not cancelled and it was not superseded. It was
 written, reviewed, and stranded on a branch nobody merged. Nothing in this system said so.
 
-**ACTIVE, not a silent default.** He asked for this to be armed rather than advice, so:
-`~/.claude/hooks/missing-needs-a-reason-gate.py` (Stop) refuses a closing message that reports
-something missing, absent, or not there without naming WHY, and refuses a claim that something was
-restored or added back when the graveyard has an entry for it.
+**ACTIVE, not a silent default, and CORRECTED 2026-08-24 so the claim matches what runs.** It is
+live as rule 1 of the before-you-write note (`~/.claude/hooks/reply-shape-preflight.py`, verbatim:
+"MISSING NEEDS A REASON. If you call something missing, absent, or never landed, say WHY"), which
+arrives BEFORE the reply is written, so acting on it costs him nothing.
+
+~~This line used to say `~/.claude/hooks/missing-needs-a-reason-gate.py` (Stop) enforced it.~~ That
+file exists, its 11 checks pass, and it is registered in NO settings file and dispatched by no
+aggregator, verified 2026-08-24 against a control of three hooks known to be armed. So the sentence
+was claiming an enforcement that has never run once. It is left unarmed deliberately, for a reason
+worth keeping: it has no `stop_hook_active` guard, so it can refuse the same turn repeatedly, which
+is the exact behaviour that made a session unusable on 2026-08-23. A refusal at Stop also arrives
+after the message is already written, so the most it can ever produce is a second message. The
+principle he asked for is enforced; the file named here was not the thing enforcing it.
 
 ---
 
