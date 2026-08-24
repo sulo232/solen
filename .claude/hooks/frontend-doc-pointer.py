@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
-"""frontend-doc-pointer , points customer-frontend work at _docs/FRONTEND.md (2026-07-17).
+"""SHELVED-NOTE 2026-08-24 (record only, logic below untouched, nothing armed/disarmed here):
+owner instruction, his words: "stand down the ones that fire rarely, fix the ones that fire a
+lot." Measured across his 49 sessions: 0 real firings. KNOWN DEFECT, verified 2026-08-24: the
+customer-facing-path detection misses 36 real files under components-legacy/, including
+SalonCard, ReviewForm and MapView, plus the whole root components/ folder, so most real
+customer-frontend edits never match and the pointer never injects. Wiring/arming stays the
+owner's call; see ~/.claude/hooks/SHELVED.txt.
+
+frontend-doc-pointer , points customer-frontend work at _docs/FRONTEND.md (2026-07-17).
 
 Why this exists (owner ask, workstream #29): the design was defined but not the FUNCTION , what each
 customer surface does, what you can do on it, and how it hands off to the next screen. _docs/FRONTEND.md
