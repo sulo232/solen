@@ -99,5 +99,113 @@ def main() -> int:
     return 0
 
 
+def _drive(sql, path="/x/supabase/migrations/20260901_probe.sql"):
+    """Run the real decision on one payload, the way the runtime does."""
+    import io
+    import contextlib
+    buf = io.StringIO()
+    real_stdin = sys.stdin
+    sys.stdin = io.StringIO(json.dumps({
+        "tool_name": "Write", "hook_event_name": "PreToolUse",
+        "tool_input": {"file_path": path, "content": sql}}))
+    try:
+        with contextlib.redirect_stdout(buf):
+            main()
+    finally:
+        sys.stdin = real_stdin
+    return "deny" in buf.getvalue()
+
+
+def selftest():
+    """Added 2026-08-24. THIS COPY was armed with no test behind it since it was written.
+
+    READ THIS FIRST. This file is the ORIGINAL gate, commit 6705143c4. The copy on main has
+    since had two rounds of hardening (42ebfbfef, f3ad2c868) that this branch never picked up,
+    so four of the cases below assert behaviour that main already gets RIGHT and this armed
+    copy still gets WRONG. They are marked STALE and they are recorded, not fixed: the brief
+    was to test the gate, not to retune it. The fix is to bring this file up to main's version.
+
+    Every case is a real migration shape from supabase/migrations/, source named.
+    """
+    real_seed = ("update salons set\n"
+                 "  wheelchair_accessible = (abs(hashtext(id::text || 'wheel'))   % 100 < 45),\n"
+                 "  near_public_transport = (abs(hashtext(id::text || 'transit')) % 100 < 70);")
+    real_cleanup = ("update salons set\n"
+                    "  wheelchair_accessible = case when wheelchair_accessible = "
+                    "(abs(hashtext(id::text || 'wheel')) % 100 < 45) then null "
+                    "else wheelchair_accessible end;")
+    real_lock = ("create or replace function f(p_user uuid) returns void as $$\nbegin\n"
+                 "  PERFORM pg_advisory_xact_lock(hashtext('mdisc:' || p_user::text));\n"
+                 "end;\n$$ language plpgsql;")
+
+    cases = [
+        # ---- must be REFUSED --------------------------------------------------
+        ("1  THE REAL BUG, verbatim from supabase/migrations/20260530_seed_salon_amenities.sql: "
+         "an accessibility claim about real businesses derived from a hash of the row id",
+         True, real_seed, None),
+        ("2  the same shape on a new column, an identity claim from a hash",
+         True, "update salons set lgbtq_friendly = (abs(hashtext(id::text || 'lgbtq')) % 100 < 40);",
+         None),
+        ("3  a bare random() filling a live column",
+         True, "update salons set rating = random() * 5 where is_active;", None),
+        ("4  an INSERT that fabricates rows from a hash",
+         True, "insert into salon_amenities (salon_id, wifi) "
+               "select id, (abs(hashtext(id::text)) % 100 < 60) from salons;", None),
+
+        # ---- must PASS UNTOUCHED (ordinary good work) -------------------------
+        ("5  an ordinary schema migration, no hash anywhere",
+         False, "alter table salons add column contact_email text;", None),
+        ("6  the same hash scoped to a test table",
+         False, "update salons_test set wheelchair_accessible = "
+                "(abs(hashtext(id::text)) % 100 < 45);", None),
+        ("7  real 20260711233100 audit fix: pg_advisory_xact_lock(hashtext(...)) is a Postgres "
+         "lock identifier and assigns to no column, so it can fabricate nothing",
+         False, real_lock, None),
+        ("8  the owner-approved waiver comment lets a genuinely decorative facet through",
+         False, "-- fabricated-data-ok: owner 2026-08-21, decorative only, re-seeded at launch\n"
+                "update salons set wifi = (abs(hashtext(id::text)) % 100 < 60);", None),
+        ("9  a real RLS policy migration, nothing to do with data values",
+         False, "alter table public.bookings enable row level security;\n"
+                "create policy bookings_own on public.bookings for select "
+                "using (auth.uid() = customer_id);", None),
+        ("10 an app route is never this gate's business, even carrying the same SQL",
+         False, "update salons set wheelchair_accessible = (abs(hashtext(id::text)) % 100 < 45);",
+         "/x/app/api/salons/route.ts"),
+        ("11 a plain UPDATE with real values and no hash",
+         False, "update salons set contact_email = 'hallo@salon.ch' where id = "
+                "'97c04291-0000-0000-0000-000000000000';", None),
+
+        # ---- STALE, recorded not fixed: main already gets these right ---------
+        ("12 STALE (over-block, main fixed in 42ebfbfef): real 20260716150000_null_fabricated_"
+         "salon_amenities.sql is the CLEANUP that repaired this exact bug. It uses the same hash "
+         "to RECOGNISE the fabricated values and set them to NULL. This copy refuses the repair.",
+         True, real_cleanup, None),
+        ("13 STALE (bypass D open, main fixed in f3ad2c868): a throwaway trailing comment naming "
+         "a _test table launders a live write against salons straight past this copy",
+         False, "update salons set wheelchair_accessible = "
+                "(abs(hashtext(id::text || 'wheel')) % 100 < 45) where is_active; "
+                "-- for the _test dataset only, remove before ship", None),
+        ("14 STALE (bypass E open, main fixed in f3ad2c868): this machine's filesystem is "
+         "case-insensitive, so supabase/Migrations/x.SQL lands in the directory Supabase reads, "
+         "and this copy never opens the file",
+         False, real_seed, "/x/supabase/Migrations/20260901_probe.SQL"),
+        ("15 STALE (over-block, main fixed in f3ad2c868): SQL that is entirely commented out "
+         "writes nothing, and this copy refuses it",
+         True, "-- update salons set wheelchair_accessible = "
+               "(abs(hashtext(id::text || 'wheel')) % 100 < 45) where is_active;", None),
+    ]
+    ok = 0
+    for name, want, sql, path in cases:
+        got = _drive(sql, path or "/x/supabase/migrations/20260901_probe.sql")
+        good = got == want
+        ok += good
+        print(("  PASS  " if good else "  FAIL  ") + name
+              + ("" if good else "   expected block=%s got %s" % (want, got)))
+    print("\n%d/%d passed" % (ok, len(cases)))
+    return 0 if ok == len(cases) else 1
+
+
 if __name__ == "__main__":
+    if "--selftest" in sys.argv:
+        sys.exit(selftest())
     sys.exit(main())
