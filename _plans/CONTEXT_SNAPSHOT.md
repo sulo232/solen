@@ -2,16 +2,16 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-23T17:53:30 (trigger: auto)
+- taken: 2026-08-24T00:28:25 (trigger: auto)
 - branch: claude/stress-test-gates-hooks-6dc8e8
 
 ## git
 ```
-e139cac69 A guest who reviews could never show a name, because the screen never asked for one
-13fe7b171 Fifteen ratings with nothing to read under them, and the gap was the data
-b590753cf Two questions that coincided once and drifted: hide the footer, and own your own back
-8fb819e90 checkpoint(auto): 2 uncommitted file(s) at turn end
-9eec2ab3e checkpoint(auto): 1 uncommitted file(s) at turn end
+a6b42a163 The sibling sweep, built and run: one fix, then find every other place with the same shape
+59320e337 Why an instruction takes ten asks: the council case was a tool that needed the word every time
+6efd5f5db I was wrong an hour ago: the interruptions mostly do cause real fixes
+ad0b32835 Why he is still the detector, five lenses plus three facts I re-checked myself
+5ed9fc6f4 Name the real blocker on the helper-mechanism item, close the parked one
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
