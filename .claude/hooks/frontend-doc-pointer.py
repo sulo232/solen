@@ -97,7 +97,99 @@ def main():
         emit(event or "PreToolUse")
     sys.exit(0)
 
+def selftest():
+    """Added 2026-08-24. This pointer was armed with no test behind it since it was written.
+
+    It has two independent decisions and both are tested here: does a PROMPT look like
+    customer-frontend work, and is a FILE a customer surface. The session-marker that limits
+    it to once per session is bookkeeping, not a judgement, so it is left out.
+
+    Every file path below is a real one from the Solen repo.
+    """
+    prompt_cases = [
+        # ---- must FIRE -------------------------------------------------------
+        ("a question about how the booking flow hands off",
+         "how does the booking flow hand off to the confirmation screen?", True),
+        ("a question naming the checkout flow",
+         "the checkout flow drops the promo code on step 3, can you look", True),
+        ("a question about what each screen does",
+         "walk me through what each screen does in the walk-in flow", True),
+        ("customer-facing work named as such",
+         "I want to redo the customer facing search page", True),
+        ("the PDP named by its abbreviation",
+         "the pdp gallery only shows two photos", True),
+
+        # ---- must stay QUIET -------------------------------------------------
+        ("a pure backend ask, which belongs to the backend pointer",
+         "add a covering index on bookings(salon_id, starts_at)", False),
+        ("a plain operational ask",
+         "run the type check and tell me what breaks", False),
+        ("a design-token ask with no flow vocabulary",
+         "make the hairline #E4E4E7 everywhere", False),
+        ("a git ask", "commit what is staged and show me the log", False),
+        ("a task notification, which is never a real prompt",
+         "<task-notification>agent finished</task-notification> the booking flow is done", False),
+    ]
+
+    file_cases = [
+        # ---- must FIRE -------------------------------------------------------
+        ("real app/[locale]/confirmation/page.tsx, a customer route",
+         "app/[locale]/confirmation/page.tsx", True),
+        ("real app/[locale]/_components/homepage/SalonCard.tsx",
+         "app/[locale]/_components/homepage/SalonCard.tsx", True),
+        ("real app/[locale]/_components/search/SalonResultCard.tsx",
+         "app/[locale]/_components/search/SalonResultCard.tsx", True),
+        ("real components-legacy/booking/BookingWizard.tsx",
+         "components-legacy/booking/BookingWizard.tsx", True),
+        ("real app/[locale]/inspo/[id]/page.tsx",
+         "app/[locale]/inspo/[id]/page.tsx", True),
+
+        # ---- must stay QUIET on ordinary good work ---------------------------
+        ("real app/[locale]/dashboard/page.tsx is the salon owner's surface, not a customer's",
+         "app/[locale]/dashboard/page.tsx", False),
+        ("real app/api/waitlist/route.ts is backend",
+         "app/api/waitlist/route.ts", False),
+        ("real lib/supabase.ts is backend",
+         "lib/supabase.ts", False),
+        ("a migration is not a rendering surface",
+         "supabase/migrations/20260815010000_chat_media_read_own_folder_only.sql", False),
+        ("real messages/de.json is copy, not a screen",
+         "messages/de.json", False),
+        ("real app/[locale]/dev/login/page.tsx is a dev-only route",
+         "app/[locale]/dev/login/page.tsx", False),
+
+        # ---- GAPS found by this suite, recorded, NOT fixed -------------------
+        ("GAP 1: real components-legacy/SalonCard.tsx sits at the TOP level of the folder, and "
+         "the pattern requires one of eight named subfolders, so it is missed",
+         "components-legacy/SalonCard.tsx", False),
+        ("GAP 2: real components-legacy/search/ is missed even though 'search' IS named for the "
+         "app/[locale]/_components branch. The two lists were never reconciled.",
+         "components-legacy/search/SearchBar.tsx", False),
+        ("GAP 3: the whole root components/ folder is missed. Real files there today include "
+         "QuartierTile.tsx and WeatherBanner.tsx.",
+         "components/QuartierTile.tsx", False),
+    ]
+
+    ok = 0
+    total = len(prompt_cases) + len(file_cases)
+    for name, prompt, expect in prompt_cases:
+        is_notification = bool(re.match(r"^\s*(<task-notification>|\[SYSTEM NOTIFICATION)", prompt))
+        got = (not is_notification) and bool(PROMPT_PATTERNS.search(prompt))
+        good = got == expect
+        ok += good
+        print(f"  {'PASS' if good else 'FAIL'}  PROMPT  {name}  (fired={got}, expected={expect})")
+    for name, fp, expect in file_cases:
+        got = is_customer_frontend_file(fp)
+        good = got == expect
+        ok += good
+        print(f"  {'PASS' if good else 'FAIL'}  FILE    {name}  (fired={got}, expected={expect})")
+    print(f"\n{ok}/{total} passed")
+    return 0 if ok == total else 1
+
+
 if __name__ == "__main__":
+    if "--selftest" in sys.argv:
+        sys.exit(selftest())
     try:
         main()
     except Exception:
