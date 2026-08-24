@@ -217,3 +217,23 @@ in general.
    note only, because he forbade new blocking checks while asleep.
 3. Lowering the working context ceiling, which is 65 percent of the bill. Not a code change, a
    working-habit change, and the read-side saving is only half the model.
+
+---
+
+# CLOSING STATE, 2026-08-24
+
+25 commits under the config repo. Every check that can end a turn and is named directly in a
+settings file carries the one-refusal guard, 70 of 70. The five that demand evidence deliberately
+do NOT, because their second pass is the check, and each carries a comment saying so.
+
+Regression pass, every registered check's own suite run: **203 pass, 8 fail, and all 8 were failing
+before tonight.** None of the 8 is a file that was touched. At least three of the 8 pass when run
+from the project directory, so my runner's working directory was part of the problem, not the
+checks. Genuinely failing and worth a look later: `mockup-diagnosis-gate.py`.
+
+A claim I nearly published and did not: that the biggest single interrupter, `recurrence-harden-
+gate.py` at 465 of 4,753 refusals, could not pass its own test. Run properly it passes all seven.
+The failure was my runner's working directory. Reproduced before repeating it, which is the rule.
+
+Still running at close: the pre-action replay, 83 of 114 checks driven over 1,200 of his real tool
+calls.
