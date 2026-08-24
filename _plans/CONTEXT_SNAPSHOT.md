@@ -2,20 +2,24 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-24T00:28:25 (trigger: auto)
+- taken: 2026-08-24T14:17:53 (trigger: auto)
 - branch: claude/stress-test-gates-hooks-6dc8e8
 
 ## git
 ```
-a6b42a163 The sibling sweep, built and run: one fix, then find every other place with the same shape
-59320e337 Why an instruction takes ten asks: the council case was a tool that needed the word every time
-6efd5f5db I was wrong an hour ago: the interruptions mostly do cause real fixes
-ad0b32835 Why he is still the detector, five lenses plus three facts I re-checked myself
-5ed9fc6f4 Name the real blocker on the helper-mechanism item, close the parked one
+ffdbb8b4c Everything he asked today, and what happened for each
+10242f37a Put the proof on the line the check reads
+166b0d7f1 All twelve closed, each with the commit that closed it
+90e2353a0 Tick the reply-family-aggregator.py box, with proof it is actually fixed
+35ad45d6b Record why two rarely-firing project checks are shelved, no logic touched
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
 73 | GERMAN SAYS SALON, NOT STORE , round 2 (coordinator 2026-08-21: "your own sweep found roughly 30 more files still saying Store in German. Leaving them means the product still uses two words for one thing... So finish it") | **ACTIVE** (2026-08-21)
+74 | OVERNIGHT LOOP: how I work + efficiency (speed/money) + harness + skills (owner 2026-08-24, going to sleep: "finish evrth as a. loop") | **ACTIVE** (2026-08-24)
+75 | HIS OPEN ASKS, the ones I measured instead of doing (owner 2026-08-24: "are you sure you finished everything? What about the one... like, the number three and also about the context and about the price and also the skills") | **ACTIVE** (2026-08-24)
+76 | FIX ALL OF THEM, not report them (owner 2026-08-24: "instead of just telling me? You should fix all of them... stop telling me I fixed it") | **ACTIVE** (2026-08-24)
+77 | EVERYTHING HE ASKED TODAY, and what happened for each (owner 2026-08-24: "you have to tell me everything that I told you what you did for that") | **ACTIVE** (2026-08-24)
 68 | HOME: continue-search card + recently-viewed (owner 2026-08-15: "big size difference between the screenshot Airbnb reference and ours" + "mock ups in direction based on other websites and apps" + "recently viewed, we didn't do anything for that") | **ACTIVE** (2026-08-15)
 69 | HOME SECTIONS one by one (owner 2026-08-15: search icon without the box, card font/spacing "not balanced ... looks empty", Popular looks "doesn't make any sense" with "tons" of options, then Walk-in, then Reviews) | **ACTIVE** (2026-08-15)
 70 | HOME SECTIONS round 2 (owner 2026-08-16, rejected all 26 stacked versions and specified ONE design per section: Popular looks takes the Inspo card minus the TikTok badge and the black gradient plus a real shadow and replaces Find-your-inspiration; walk-in keeps the N-ahead count and the mark indicators, colour-coded, real icon back, hierarchy fixed; reviews cards smaller with read-more repositioned) | **ACTIVE** (2026-08-16)
