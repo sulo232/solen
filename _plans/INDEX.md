@@ -12,7 +12,7 @@ Generated from the files on disk, so it cannot go stale. Regenerate with `python
 | 2026-08-24 |  |  | **NO** | Every plan file, and which ones still have work in them | `INDEX.md` |
 | 2026-08-24 |  | 50 | yes | EVERY ASK HE MADE THIS SESSION, AND WHICH ARE ACTUALLY OPEN | `OPEN_ASKS_2026-08-24.md` |
 | 2026-08-24 |  | 16 | yes | OVERNIGHT LOOP, 2026-08-24, four workstreams | `OVERNIGHT_2026-08-24.md` |
-| 2026-08-24 | 8 | 14 | yes | SKILLS AND WORKFLOWS , what he actually asked for (2026-08-24) | `SKILLS_2026-08-24.md` |
+| 2026-08-24 | 8 | 16 | yes | SKILLS AND WORKFLOWS , what he actually asked for (2026-08-24) | `SKILLS_2026-08-24.md` |
 | 2026-08-24 |  |  | **NO** | What is out there, read on 2026-08-24 | `SKILLS_RESEARCH_2026-08-24.md` |
 | 2026-08-24 |  |  | yes | EVERYTHING HE ASKED TODAY, AND WHAT HAPPENED FOR EACH | `WHAT_HE_ASKED_2026-08-24.md` |
 | 2026-08-23 | 18 | 6 | **NO** | OVERNIGHT HARNESS LOOP , standing order 2026-08-22 | `OVERNIGHT_HARNESS_LOOP.md` |
