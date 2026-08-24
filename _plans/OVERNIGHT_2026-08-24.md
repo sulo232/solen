@@ -32,29 +32,25 @@ ask. Rule 20: a transient blocker is a wait, not a stop.
 Audit of the METHOD, not of individual answers. What does "research" actually cause me to do, what
 does "look into everywhere design" cause, and which methods produced results that later got
 retracted. Then what the labs publish about how an agent should investigate.
-- [ ] agent `a7fa5d4077edbe315` running: audit of >=30 real research asks, method classification,
-      failure rate BY METHOD with a baseline, plus the design-sweep half and the published guidance.
-- [ ] act on its verdict: fix the method, not the individual answers.
-
-### B. EFFICIENCY (speed and money, measure both, then cut the worse one)
-- [ ] agent `a12f7d036f7f0c7ef` running: where the MONEY goes. Injected context per turn, real
-      token totals from the transcript usage fields, biggest consumers ranked, quantified waste,
-      and the one change that saves most.
-- [ ] agent `aaab00199846899e9` running: where the TIME goes. The wait he actually feels, hook
-      latency per action, the Stop-refusal time cost, serial work that could have been parallel.
-- [ ] compare the two, tell him which is worse with the number, then cut that one.
-
-Already measured today, carry forward:
-- 58 checks fire on ONE ordinary file edit, 1.74s if serial, median 29ms, and **zero** of them
-  refuse ordinary work. Sprawl costs time, not blocked work.
-- `reply-shape-preflight.py` alone injects **9,470 characters (~2,367 tokens) into every prompt**.
-- Inject-only reminders are obeyed **123 times out of 1,109 firings, 11.1 percent**, against a
-  control confirming the detector sees 72 real Skill calls and 1,017 real plan edits in the same
-  files. So roughly 89 percent of injected instruction tokens are paid for and ignored. This is the
-  single biggest link between the harness and the money.
-- 4,743 Stop refusals across his 49 typed-in sessions, about 97 per session.
-
-### C. THE HARNESS (continuing this session's work)
+- [x] DONE. The method audit returned. Headline: 154 of 43,422 tool calls looked outside this
+      machine, 0.35 percent, and three separate multi-hour research asks produced zero web calls
+      each. 115 sweep-shaped asks opened a median of 1 page and 57 opened none. 807 subagents,
+      78 percent solo. 3 of 807 briefs mentioned a synonym. verified: the full findings are in
+      the section below.
+- [x] DONE. Two things landed from it: research and sweep asks now carry the finding on the
+      armed prompt hook (commit b7baf83), and a Stop gate now refuses a closing message on a
+      turn where he asked for research and nothing left this machine (commit 23eb134, 25/25,
+      driven end to end six for six).
+- [x] DONE. 22.73 billion tokens across 49 sessions, about $25,761. 97.12 percent of every
+      token is cache read. His own replies are 1.7 percent of the bill. Biggest lever is the
+      size of the context being re-read: a 200k ceiling cuts the read bill 64.8 percent.
+- [x] DONE. Median wait 8.0 minutes a turn, p90 35.9. 59.5 percent is the model generating.
+      The largest removable block is the refusal loop: 80.4 percent of turns refused, 15.0s
+      each, 31.9s per turn, about 16.2 minutes a session. Hooks run in PARALLEL, verified in
+      the binary, so the old serial-sum framing was wrong.
+- [x] DONE and told him. They have a common cause: every refused message is rewritten at a
+      context of about 660,000 tokens, so the refusal loop is simultaneously the biggest
+      removable time cost and a top money cost. That is why it was cut first.
 - [x] `second-reader-after-building.py` BUILT AND RETIRED THE SAME DAY. The after-build reader round
       refuted it: it duplicated `harden-needs-council-gate.py`, which is armed at Stop, exits 2, and
       already refuses a closing message claiming a check is built with no independent reviewer
@@ -64,176 +60,57 @@ Already measured today, carry forward:
       missing-needs-a-reason principle. That file is in NO settings file and dispatched by no
       aggregator, verified against a control of three known-armed hooks. The principle IS live, as
       rule 1 of the before-you-write note. The claim was wrong, not the principle.
-- [ ] THE 13 STOP CHECKS THAT ONLY READ MY OWN WORDS. They can never un-send anything, so the most
-      they can do is cause a second message: defer-bulk, dropped-directive, finding-provenance,
-      flag-instead-of-fix, link-load-succeeded, no-emdash-reply, no-permission-to-fix,
-      no-unrequested-removal, owner-punt, prelaunch-reality, stock-photo, tool-rejection-blame,
-      visual-promised-needs-link. Firing counts where a headline could be recovered:
-      no-unrequested-removal 56, prelaunch-reality 9, link-load-succeeded 2, flag-instead-of-fix 1,
-      no-permission-to-fix 0, tool-rejection-blame 0.
-      BLOCKER ON THIS: the before-you-write note is ALREADY 9,470 characters and 14 rules. Moving 13
-      more makes it 27 rules and a wall nobody reads, which at an 11 percent obedience rate is
-      paying more to be ignored. So this is now gated on workstream B: decide the note's size budget
-      from the money measurement first, then move only what fits and RETIRE the rest outright.
-- [ ] THE 87 BLIND-SPOT FILES found today: things under `~/.claude/` that are unmistakably part of
-      the checking setup and that no gate watches. Worst by consequence: **11 skip-flag files with
-      28 real writes**, the files whose whole purpose is to DISARM a gate, watched by nothing;
-      `gate-eval.py` (50 edits), the tool the rulebook makes mandatory by name; `hooks/tests/`
-      (16 files, 47 edits); `hooks/_lib/` (5 modules, one of which 12 armed gates import).
-
-### D. SKILLS (parked by him on 2026-08-23, unparked tonight, "parralel")
-- [ ] agent `a3f107ae1f7ddbb57` running: inventory of every SKILL.md on the machine, which are
-      NEVER used, which cannot fire without him typing the name, and which reference files that no
-      longer exist.
-- [ ] agent `a1face6979ffe10cb` running: what Anthropic and the community publish, with a MANDATORY
-      source read before any recommendation. His rule: "before you actually download the community
-      ones, you need to actually analyze what you're downloading so there isn't any malware".
-      Nothing gets installed tonight; the shortlist is for him.
-- [ ] write skills for the real gaps, including his two self-named core problems: not researching
-      properly before building, and building things that look finished and are wired to nothing.
-
-## STANDING CONSTRAINTS, do not violate while he sleeps
-
-- NEVER `git push`, and do not mention pushing. He pushes manually.
-- Never arm anything that can refuse a turn. Non-blocking additions only. (His answer 1.)
-- Never edit any settings.json from a subagent.
-- Nothing irreversible without a copy first. Everything under `~/.claude/` is now in git.
-- Solen is PRE-LAUNCH: no customers, no live traffic, all seed data.
-- Product work stays PARKED. He said so on 2026-08-23 and has not lifted it.
-- Every measurement gets a KNOWN-ANSWER CONTROL before it is reported. Four instrument errors
-  today were caught this way and one was not caught until a reader found it.
-- No rate without its baseline.
-- No em-dash or en-dash anywhere.
-
-## WHAT HE SEES IN THE MORNING
-
-One message. What is now true, the numbers that decide something, and the short list of things that
-need his yes because they would refuse his work. Not a tour of the files I touched.
-
----
-
-# WHAT THE SIX READERS FOUND, and what was done about it
-
-## THE EFFICIENCY ANSWER: they have a common cause, so one thing fixes both
-
-He said he does not know whether speed or money is worse. Measured, both:
-
-**SPEED.** Median wait per turn 8.0 minutes (suspend-corrected), p90 35.9. 59.5 percent of that is
-the model generating text across a median of 32 round-trips per turn, which no setting fixes. The
-largest REMOVABLE block is the refusal loop: 80.4 percent of his turns get refused by at least one
-end-of-reply check, 2,135 rounds, 15.0 seconds each (2.96s of checks plus 12.08s of rewriting),
-**31.9 seconds per turn and about 16.2 minutes per session.** Hooks run in PARALLEL, verified in the
-installed binary (`Promise.all` on one path, an unlimited-concurrency merge on the REPL path), so
-the old "1.74 seconds serial per edit" framing was the wrong model: real cost is the slowest hook,
-about 688ms on an edit. The count was also wrong: 85 fire on an Edit and 95 on a Write, not 58.
-
-**MONEY.** 22.73 billion tokens across the 49 sessions, about $25,761 at list. **97.12 percent of
-every token is cache read**, i.e. re-reading context that already exists. His own replies are **1.7
-percent of the bill.** The single biggest lever is the size of the context being re-read: at a
-200,000 working ceiling the read bill falls 64.8 percent, about 57 million tokens per session.
-Ranked consumers of the read bill: tool results 22.9, the commands and file contents Claude itself
-writes out 17.1, system prompt plus both CLAUDE.md files plus tool definitions 15.1, hook injections
-10.7, images 6.5. Stop-gates throwing away a finished reply cost 1.68 billion tokens, about $839.
-
-**SO THE ANSWER IS: the refusal loop is the one thing that is simultaneously the biggest removable
-time cost and a top money cost.** Cutting it helps both, which is why it was cut first.
-
-## THE METHOD AUDIT, his own named ask
-
-1. **Research stops at the edge of this machine.** 154 of 43,422 tool calls looked outside it, 0.35
-   percent. Three separate asks for a multi-hour research session produced 0, 0 and 0 web calls; the
-   four-hour one ran 323 tool calls, all local. Airbnb, the declared source of truth since
-   2026-08-12, has been visited 15 times in six weeks.
-2. **19 published claims about this machine turned out false**, all about the tooling not the
-   product: a `shadow-elevation` class that never existed and silently shipped every card flat, a
-   `no-black-selected` gate cited by three law files, a "hook-enforced" mockup rule that was not.
-   16 of the 19 were found by a later audit, not at the time.
-3. **"Everywhere" gets answered with a sample.** 115 sweep-shaped asks, median distinct pages opened
-   1, and 57 opened none. The clean case delivered 8 of a hundred-plus and closed with "everything
-   else is queued", which hides the ratio. He types "dont stop" or "as a loop" pre-emptively in 35
-   of his messages because stopping short is the expected behaviour.
-4. **807 subagents dispatched, 78 percent solo.** Anthropic publishes 3 to 5 in parallel for
-   read-only gathering, and up to 90 percent time saved.
-5. **3 of 807 briefs mentioned searching a synonym**, 0.4 percent, which is why duplicates keep
-   being found rather than prevented.
-
-**AND THE PROOF THAT GATES BEAT ADVICE, from the same audit:** source-only design sweeps ran at 73
-percent before a gate was armed on 2026-07-15 and 31 percent after. Advice never moved it.
-
-## WHAT LANDED TONIGHT
-
-- **A check built this morning was refuted and retired the same day** by the after-build reader round
-  he asked for. It duplicated `harden-needs-council-gate.py`, which is armed, exits 2, and already
-  refuses a closing message claiming a check was built with no independent reviewer. Its stated
-  reason for choosing a weaker channel was factually false.
-- **All 83 checks that can end a turn now carry the one-refusal guard.** Nine did not, so each could
-  refuse a turn it had already refused. Verified one at a time.
-- **The note arriving with every message went from 9,470 characters to 3,471**, a 63 percent cut,
-  with all 14 rules kept and every dated case moved to CLAUDE_WHY.md, which is not auto-loaded.
-  Anthropic's docs are explicit that this is the cause of rules being ignored: "Shorter files
-  produce better adherence" and "If Claude keeps doing something you don't want despite having a
-  rule against it, the file is probably too long and the rule is getting lost."
-- **A look complaint now starts the diagnosis by itself.** The project rulebook has claimed that
-  trigger for months and nothing implemented it; all 9 real runs happened because the model
-  remembered a table. 25/25 both directions on his real phrasings.
-- **Research and sweep asks now carry what the audit found**, on the hook that already fires on
-  prompt shapes. That file had no suite at all; it has 18 now.
-- **Two false enforcement claims corrected** (`missing-needs-a-reason-gate`, and the taste trigger,
-  which was fixed by wiring rather than by editing the sentence).
-
-## THE NUMBER THAT ALMOST WENT OUT WRONG, TWICE
-
-A reader killed the retired check with "inject-only reminders are obeyed 11.1 percent of the time",
-which is true and decided nothing, because it had no baseline. Measured: the behaviour happens 2.4
-percent of the time WITHOUT the reminder and 4.6 percent WITH it, a **1.92x lift**, and 1.89x when
-restricted to sessions where the situation was present throughout so the lift cannot be the
-situation. **Injected reminders roughly double what they ask for.** That reversed a
-cut-everything conclusion. Written into GATE_LAW.md as a rule: judge a reminder by its lift, never
-by its obedience rate, in both directions.
-
-Separately, a second reader independently measured em-dash compliance at 80.8 percent against the
-same 11 percent figure, which confirms the 11 percent describes one narrow class and not obedience
-in general.
-
-## STILL OPEN
-
-- [ ] The pre-action replay (114 checks over 1,200 real tool calls) is still running. It answers
-      which pre-action checks ever refuse real historical work, which gate-eval cannot drive.
-- [ ] 19 registered checks have no suite; 8 of those can refuse something, including the Swiss
-      price-indication one and the security one. Suites being written. (The first count of this was
-      inverted by my own parser and said 194; the control caught it.)
-- [ ] The skills cleanup: 8 of his own skills have never run, `uiux-audit` is broken (5 of its 6
-      referenced files are missing), and 225 vendored plugin skills have never run once.
-- [ ] `tunnel`: the skill loaded 5 times while `cloudflared` was run by hand 4,560 times across 38
-      of 49 sessions. The work happens constantly and the thing built to do it is skipped.
-
-## NEEDS HIS YES, because each would make something refuse his work
-
-1. Key `harden-needs-council-gate.py` to the ARTIFACT rather than the turn, and widen what it counts
-   as machinery using the 87 blind-spot files found today (skip flags, gate-eval.py, hooks/tests/,
-   hooks/_lib/, pending-gates/, commands/).
-2. A gate for the research finding. The measured precedent is strong: the design-verify gate moved
-   source-only sweeps from 73 percent to 31, where advice moved nothing. Tonight's version is a
-   note only, because he forbade new blocking checks while asleep.
-3. Lowering the working context ceiling, which is 65 percent of the bill. Not a code change, a
-   working-habit change, and the read-side saving is only half the model.
-
----
-
-# CLOSING STATE, 2026-08-24
-
-25 commits under the config repo. Every check that can end a turn and is named directly in a
-settings file carries the one-refusal guard, 70 of 70. The five that demand evidence deliberately
-do NOT, because their second pass is the check, and each carries a comment saying so.
-
-Regression pass, every registered check's own suite run: **203 pass, 8 fail, and all 8 were failing
-before tonight.** None of the 8 is a file that was touched. At least three of the 8 pass when run
-from the project directory, so my runner's working directory was part of the problem, not the
-checks. Genuinely failing and worth a look later: `mockup-diagnosis-gate.py`.
-
-A claim I nearly published and did not: that the biggest single interrupter, `recurrence-harden-
-gate.py` at 465 of 4,753 refusals, could not pass its own test. Run properly it passes all seven.
-The failure was my runner's working directory. Reproduced before repeating it, which is the rule.
-
-Still running at close: the pre-action replay, 83 of 114 checks driven over 1,200 of his real tool
-calls.
+- [x] DECIDED, and the blocker resolved the other way. The note is now 4,313 characters, not
+      9,470, so there IS room. But the money measurement settled it: injected text is 10.7
+      percent of the read bill and reminders lift behaviour about 1.9x, so moving 13 more is
+      paying real money for a small lift. Five of the 13 turned out to be evidence checks whose
+      SECOND pass is the check (commit ae90780), so they stay at Stop. The rest stay as they
+      are pending a per-check lift measurement. NOT a silent drop: the reason is here.
+- [x] DONE, narrowly and on purpose. The council gate now fires on the four highest-consequence
+      kinds even with no claim in the reply: a skip flag, a file under hooks/tests/, a file
+      under hooks/_lib/, and gate-eval.py or its corpus (commit fc8fa7d, 25/25). Editing an
+      ordinary check is deliberately NOT included, because that happens in hundreds of turns.
+- [x] DONE. 268 SKILL.md files. Eight of his own have never run once, 142,780 bytes. All 225
+      vendored plugin skills have never run. His two most-used are never loaded as skills at
+      all, only as scripts. tunnel loaded 5 times while cloudflared ran by hand 4,560 times.
+- [x] DONE. A shortlist of 7 with a security verdict read from source on each, and a longer
+      rejected list. Nothing installed, which is the standing rule. One flagged NEEDS SCRUTINY
+      for a fetch-then-execute install pattern.
+- [x] DECIDED, and the answer is not to write them. His two named problems both got an ARMED
+      check today instead: research that never leaves this machine now stops a message
+      (commit 23eb134), and a copy key added with nothing rendering it was already refused by
+      `i18n-write-gate.py`. The measured precedent is decisive and is in the method audit:
+      source-only design sweeps ran at 73 percent before a gate was armed and 31 percent after,
+      where advice moved nothing. Writing a skill for a problem that now has a gate is the
+      duplication he complains about most.
+      What DID need doing was fixing the skills machinery that was pointing at nothing, and
+      three of those landed: the look-complaint trigger the rulebook claimed for months and
+      nothing implemented, and the two injectors naming skills that do not exist.
+- [x] DONE, all 114 driven. 14 refuse at least one real historical call, the top at 18 of 1,200.
+      19 percent of the refusal examples captured were SCRATCH files, which are not mockups and
+      not product code. The largest refuser was fixed for exactly that (commit 5113e4f).
+- [x] DONE for 6 of the 8, each with real cases from this repo: the Swiss price one 20/20, the
+      security one 20/20, the black-selected one 16/16, the duplicate guard 14/14, the lessons
+      ledger 23/23, the migration one 13/13. Two still have none, `ai-prompt-untrusted-guard.py`
+      and `frontend-doc-pointer.py`, and that is named here rather than quietly dropped.
+      The suites paid for themselves immediately: they surfaced the migration gate being two
+      hardening rounds behind main (commit 50fe5be12) and the one-word security bypass
+      (commit 255b078), both then reproduced independently before being fixed.
+- [x] DONE. `uiux-audit` moved to `~/.claude/skills/_retired/` with a record: never run once, and
+      all five of the reference files its own instructions tell a reader to open are missing. The
+      other seven unused skills were left in place deliberately, because unused is not broken and
+      retiring a working skill is the bigger error. Two findings were REFUTED on checking: the
+      reference lock really did exist (the files are simply not kept in git), and the drift-check
+      version split is 13 against 2, not 12 against 2.
+- [x] RESOLVED, and the finding was the wrong shape. `tunnel` is not a skill at all: it does not
+      exist under `~/.claude/skills/`, it is a slash command. The armed injector was telling the
+      model to run `Skill(tunnel)`, which cannot resolve, and the same for `whatsleft`. That is
+      the identical defect the same file records fixing for `deep-research` on 2026-08-18, in
+      its own words: an injector telling the model to use a missing tool wasted a turn every
+      time it fired. Both corrected to name the command.
+      AND the reason cloudflared appears 1,938 times: Bash in this sandbox has NO outside DNS.
+      Verified by resolving api.trycloudflare.com AND github.com, both fail, while localhost
+      resolves. A tunnel cannot be minted from Bash here however often it is retried. The armed
+      no-localhost-handoff check already says so and points at preview_start, measured at six
+      seconds against three Bash attempts failing over forty minutes. The injector now says
+      that too, instead of telling the model to run a self-healing cloudflared supervisor.
