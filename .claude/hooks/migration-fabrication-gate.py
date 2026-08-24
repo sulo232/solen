@@ -32,7 +32,21 @@ anything.
 """
 import json, re, sys
 
-MIGRATION_PATH = re.compile(r"supabase/migrations/.*\.sql$")
+# IGNORECASE added 2026-08-21 (adversary bypass E). This machine's filesystem is case-insensitive,
+# verified, so `supabase/Migrations/x.sql` lands in the very directory Supabase reads, while a
+# case-sensitive pattern skipped the file without even opening it.
+MIGRATION_PATH = re.compile(r"supabase/migrations/.*\.sql$", re.IGNORECASE)
+
+
+def strip_sql_comments(text):
+    """Remove -- line comments and block comments before any structural matching.
+
+    2026-08-21, adversary bypass D. `TEST_SCOPED` greps for `_test` anywhere in the window, so a
+    throwaway trailing comment, `-- for the _test dataset only`, laundered a real UPDATE against
+    the live `salons` table. A comment can never be evidence about a WHERE clause or a table name.
+    """
+    text = re.sub(r"/\*.*?\*/", " ", text, flags=re.S)
+    return re.sub(r"--[^\n]*", " ", text)
 FABRICATION_FN = re.compile(r"hashtext\(|(?<![\w.])random\(\)|md5\([^)]*\)\s*%")
 TEST_SCOPED = re.compile(r"is_test\s*=\s*true|where\s+is_test\b|_test\b|_demo\b", re.IGNORECASE)
 WAIVER = re.compile(r"fabricated-data-ok\s*:", re.IGNORECASE)
@@ -40,6 +54,64 @@ WAIVER = re.compile(r"fabricated-data-ok\s*:", re.IGNORECASE)
 # per-statement split is unnecessary for a deny-by-default gate; a false positive costs one
 # extra `fabricated-data-ok:` comment, a false negative ships a repeat of the exact bug above.
 WRITE_STMT = re.compile(r"\b(update|insert\s+into)\s+([a-z_][\w]*)", re.IGNORECASE)
+
+# See the note at the deny site. Both added 2026-08-21 after driving this over all 374 real
+# migrations, where two of its three hits were correct work.
+# A lock identifier assigns to no column, so it can fabricate nothing.
+ADVISORY_LOCK_ONLY = re.compile(r"pg_advisory(?:_xact)?_lock\s*\(", re.IGNORECASE)
+# ... unless the same statement ALSO sets a column from a hash, in which case the lock is
+# incidental and the fabrication is real.
+# `[\s\S]{0,200}?` not `[^,;\n]*`, 2026-08-21 (adversary bypass C): a long assignment wrapped over
+# several lines, which is ordinary SQL formatting, made this fail to match while the plain
+# fabrication pattern still did, and the lock skip then waved the real fabrication through.
+ASSIGNS_FROM_HASH = re.compile(
+    r"\b[a-z_][\w]*\s*=\s*[\s\S]{0,200}?(?:hashtext\(|(?<![\w.])random\(\)|md5\()", re.IGNORECASE)
+# Setting a column to NULL is an UNDO. The cleanup migration uses the same hash to recognise the
+# fabricated rows and erase them; refusing that would have blocked the fix for this exact bug.
+UNDOES_TO_NULL = re.compile(r"=\s*case\s+when[^;]{0,400}?\bthen\s+null\b|=\s*null\b", re.IGNORECASE)
+
+
+def is_pure_undo(window):
+    """True only when EVERY hash in this window belongs to an assignment that ends in NULL.
+
+    2026-08-21, adversary bypasses A and B, both driven against the live hook.
+      A. `kid_friendly = case when true then null end, wheelchair_accessible = (hash...)`.
+         One harmless nulled column anywhere in the window waved the whole window through,
+         including the real fabrication sitting beside it.
+      B. `wheelchair_accessible = case when x is null then null else (hash...) end`.
+         The undo pattern stops at the first "then null" and never reads the ELSE branch, where
+         the hash actually lands on every row.
+    Both are fixed by asking the question per ASSIGNMENT rather than per window: split on
+    top-level commas, and treat the window as an undo only if no assignment sets a column FROM a
+    hash. An assignment whose hash sits inside a CASE that also has a non-null ELSE is not an undo.
+    """
+    depth, cur, parts = 0, [], []
+    for ch in window:
+        if ch == "(":
+            depth += 1
+        elif ch == ")":
+            depth = max(0, depth - 1)
+        if ch == "," and depth == 0:
+            parts.append("".join(cur))
+            cur = []
+            continue
+        cur.append(ch)
+    parts.append("".join(cur))
+    saw_undo = False
+    for part in parts:
+        if not FABRICATION_FN.search(part):
+            continue
+        # This clause contains a hash. It is only an undo if the hash is used to RECOGNISE a value
+        # and the result is NULL, i.e. there is no non-null branch after the hash.
+        m = re.search(r"\bthen\s+null\b", part, re.IGNORECASE)
+        if not m:
+            return False
+        tail = part[m.end():]
+        if re.search(r"\belse\b(?!\s+" + r"[a-z_][\w]*\s*\bend\b)", tail, re.IGNORECASE) and \
+                FABRICATION_FN.search(tail):
+            return False        # the ELSE branch fabricates, bypass B
+        saw_undo = True
+    return saw_undo
 
 
 def get_new_content(tool_input: dict) -> str:
@@ -58,10 +130,13 @@ def main() -> int:
     if not MIGRATION_PATH.search(file_path):
         return 0
 
-    content = get_new_content(tool_input)
-    if not content:
+    raw = get_new_content(tool_input)
+    # The waiver is BY DESIGN a comment, so it has to be read before comments are stripped. Caught
+    # by the suite the moment comment-stripping went in: case 7 flipped to a block.
+    if WAIVER.search(raw):
         return 0
-    if WAIVER.search(content):
+    content = strip_sql_comments(raw)
+    if not content:
         return 0
     if not FABRICATION_FN.search(content):
         return 0
@@ -75,6 +150,20 @@ def main() -> int:
         # in the same file doesn't false-positive off a hashtext() used elsewhere.
         window = content[m.start():m.start() + 2000]
         if TEST_SCOPED.search(window):
+            continue
+        # 2026-08-21, MEASURED AGAINST ALL 374 REAL MIGRATIONS BEFORE WIRING THIS. It fired on
+        # three, and only one of the three is the bug: the 2026-05-30 seed. The other two are the
+        # shape that would have got this switched off in a week.
+        #   1. `pg_advisory_xact_lock(hashtext('credit-redeem:' || id))`. A lock identifier is the
+        #      standard Postgres idiom for a hash and it assigns to no column at all, so it can
+        #      fabricate nothing.
+        #   2. The CLEANUP migration, `20260716150000_null_fabricated_salon_amenities.sql`. It uses
+        #      the same hash to RECOGNISE the fabricated values and set them to NULL. This gate
+        #      would have refused the migration that fixed the very bug it exists to prevent.
+        # Both are now skipped by what they DO rather than by name, so a future one is covered too.
+        if ADVISORY_LOCK_ONLY.search(window) and not ASSIGNS_FROM_HASH.search(window):
+            continue
+        if UNDOES_TO_NULL.search(window) and is_pure_undo(window):
             continue
         if FABRICATION_FN.search(window):
             print(json.dumps({
@@ -117,86 +206,61 @@ def _drive(sql, path="/x/supabase/migrations/20260901_probe.sql"):
 
 
 def selftest():
-    """Added 2026-08-24. THIS COPY was armed with no test behind it since it was written.
+    """Every case here is a REAL migration shape from this repo, not an invention.
 
-    READ THIS FIRST. This file is the ORIGINAL gate, commit 6705143c4. The copy on main has
-    since had two rounds of hardening (42ebfbfef, f3ad2c868) that this branch never picked up,
-    so four of the cases below assert behaviour that main already gets RIGHT and this armed
-    copy still gets WRONG. They are marked STALE and they are recorded, not fixed: the brief
-    was to test the gate, not to retune it. The fix is to bring this file up to main's version.
-
-    Every case is a real migration shape from supabase/migrations/, source named.
+    Cases 3 and 5 are the two this gate wrongly refused when it was driven over all 374 real
+    migrations on 2026-08-21, before it was ever wired. Case 5 is the migration that FIXED the
+    bug this gate exists to prevent, so shipping without these two would have meant a gate that
+    blocks the repair and gets switched off in a week.
     """
-    real_seed = ("update salons set\n"
-                 "  wheelchair_accessible = (abs(hashtext(id::text || 'wheel'))   % 100 < 45),\n"
-                 "  near_public_transport = (abs(hashtext(id::text || 'transit')) % 100 < 70);")
-    real_cleanup = ("update salons set\n"
-                    "  wheelchair_accessible = case when wheelchair_accessible = "
-                    "(abs(hashtext(id::text || 'wheel')) % 100 < 45) then null "
-                    "else wheelchair_accessible end;")
-    real_lock = ("create or replace function f(p_user uuid) returns void as $$\nbegin\n"
-                 "  PERFORM pg_advisory_xact_lock(hashtext('mdisc:' || p_user::text));\n"
-                 "end;\n$$ language plpgsql;")
-
     cases = [
-        # ---- must be REFUSED --------------------------------------------------
-        ("1  THE REAL BUG, verbatim from supabase/migrations/20260530_seed_salon_amenities.sql: "
-         "an accessibility claim about real businesses derived from a hash of the row id",
-         True, real_seed, None),
-        ("2  the same shape on a new column, an identity claim from a hash",
-         True, "update salons set lgbtq_friendly = (abs(hashtext(id::text || 'lgbtq')) % 100 < 40);",
-         None),
-        ("3  a bare random() filling a live column",
-         True, "update salons set rating = random() * 5 where is_active;", None),
-        ("4  an INSERT that fabricates rows from a hash",
-         True, "insert into salon_amenities (salon_id, wifi) "
-               "select id, (abs(hashtext(id::text)) % 100 < 60) from salons;", None),
-
-        # ---- must PASS UNTOUCHED (ordinary good work) -------------------------
-        ("5  an ordinary schema migration, no hash anywhere",
-         False, "alter table salons add column contact_email text;", None),
-        ("6  the same hash scoped to a test table",
-         False, "update salons_test set wheelchair_accessible = "
-                "(abs(hashtext(id::text)) % 100 < 45);", None),
-        ("7  real 20260711233100 audit fix: pg_advisory_xact_lock(hashtext(...)) is a Postgres "
-         "lock identifier and assigns to no column, so it can fabricate nothing",
-         False, real_lock, None),
-        ("8  the owner-approved waiver comment lets a genuinely decorative facet through",
-         False, "-- fabricated-data-ok: owner 2026-08-21, decorative only, re-seeded at launch\n"
-                "update salons set wifi = (abs(hashtext(id::text)) % 100 < 60);", None),
-        ("9  a real RLS policy migration, nothing to do with data values",
-         False, "alter table public.bookings enable row level security;\n"
-                "create policy bookings_own on public.bookings for select "
-                "using (auth.uid() = customer_id);", None),
-        ("10 an app route is never this gate's business, even carrying the same SQL",
-         False, "update salons set wheelchair_accessible = (abs(hashtext(id::text)) % 100 < 45);",
-         "/x/app/api/salons/route.ts"),
-        ("11 a plain UPDATE with real values and no hash",
-         False, "update salons set contact_email = 'hallo@salon.ch' where id = "
-                "'97c04291-0000-0000-0000-000000000000';", None),
-
-        # ---- STALE, recorded not fixed: main already gets these right ---------
-        ("12 STALE (over-block, main fixed in 42ebfbfef): real 20260716150000_null_fabricated_"
-         "salon_amenities.sql is the CLEANUP that repaired this exact bug. It uses the same hash "
-         "to RECOGNISE the fabricated values and set them to NULL. This copy refuses the repair.",
-         True, real_cleanup, None),
-        ("13 STALE (bypass D open, main fixed in f3ad2c868): a throwaway trailing comment naming "
-         "a _test table launders a live write against salons straight past this copy",
-         False, "update salons set wheelchair_accessible = "
-                "(abs(hashtext(id::text || 'wheel')) % 100 < 45) where is_active; "
-                "-- for the _test dataset only, remove before ship", None),
-        ("14 STALE (bypass E open, main fixed in f3ad2c868): this machine's filesystem is "
-         "case-insensitive, so supabase/Migrations/x.SQL lands in the directory Supabase reads, "
-         "and this copy never opens the file",
-         False, real_seed, "/x/supabase/Migrations/20260901_probe.SQL"),
-        ("15 STALE (over-block, main fixed in f3ad2c868): SQL that is entirely commented out "
-         "writes nothing, and this copy refuses it",
-         True, "-- update salons set wheelchair_accessible = "
-               "(abs(hashtext(id::text || 'wheel')) % 100 < 45) where is_active;", None),
+        ("1  THE REAL BUG: a live column set from a hash of the row id", True,
+         "update salons set wheelchair_accessible = "
+         "(abs(hashtext(id::text || 'wheel')) % 100 < 45);"),
+        ("2  the same thing scoped to a test table -> allowed", False,
+         "update salons_test set wheelchair_accessible = (abs(hashtext(id::text)) % 100 < 45);"),
+        ("3  FALSE POSITIVE FOUND 2026-08-21: a Postgres lock id, assigns to no column", False,
+         "create function f() returns void as $$ begin "
+         "perform pg_advisory_xact_lock(hashtext('credit-redeem:' || p::text)); "
+         "end; $$ language plpgsql;"),
+        ("4  a lock id AND a hashed column in one statement is still the bug", True,
+         "perform pg_advisory_xact_lock(hashtext('x')); "
+         "update salons set lgbtq_friendly = (abs(hashtext(id::text)) % 100 < 40);"),
+        ("5  FALSE POSITIVE FOUND 2026-08-21: the CLEANUP, hash recognises and sets null", False,
+         "update salons set kid_friendly = case when kid_friendly = "
+         "(abs(hashtext(id::text||'kid')) % 100 < 40) then null else kid_friendly end;"),
+        ("6  an ordinary migration with no hash at all", False,
+         "alter table salons add column foo boolean default false;"),
+        ("7  the owner-approved waiver comment lets a decorative facet through", False,
+         "-- fabricated-data-ok: owner 2026-08-21, decorative only, re-seeded at launch\n"
+         "update salons set wifi_friendly = (abs(hashtext(id::text)) % 100 < 60);"),
+        ("8  NOT a migration path -> never our business", False,
+         "update salons set wheelchair_accessible = (abs(hashtext(id::text)) % 100 < 45);"),
+        # --- The five an adversary found after this was wired, 2026-08-21. Each is that agent's
+        # own SQL, kept verbatim so the hole cannot reopen quietly.
+        ("9  BYPASS A: one harmless nulled column beside a real fabrication", True,
+         "update salons set\n  kid_friendly = case when true then null else kid_friendly end,\n"
+         "  wheelchair_accessible = (abs(hashtext(id::text || 'wheel')) % 100 < 45)\n"
+         "where is_active;"),
+        ("10 BYPASS B: the hash hidden in the ELSE branch of an undo", True,
+         "update salons set wheelchair_accessible = case when kid_friendly is null then null "
+         "else (abs(hashtext(id::text || 'wheel')) % 100 < 45) end where is_active;"),
+        ("11 BYPASS C: an assignment wrapped over lines, with a lock further down", True,
+         "update salons set\n  wheelchair_accessible = (abs(\n"
+         "    hashtext(id::text || 'wheel')\n  ) % 100 < 45)\nwhere is_active;\n\n"
+         "do $$\nbegin\n  perform pg_advisory_xact_lock(hashtext('seed'));\nend\n$$;"),
+        ("12 BYPASS D: a trailing comment mentioning a test table launders a live write", True,
+         "update salons set wheelchair_accessible = (abs(hashtext(id::text || 'wheel')) % 100 < 45)"
+         " where is_active; -- for the _test dataset only, remove before ship"),
+        ("13 the same SQL fully commented out fabricates nothing", False,
+         "-- update salons set wheelchair_accessible = "
+         "(abs(hashtext(id::text || 'wheel')) % 100 < 45) where is_active;"),
     ]
     ok = 0
-    for name, want, sql, path in cases:
-        got = _drive(sql, path or "/x/supabase/migrations/20260901_probe.sql")
+    for name, want, sql in cases:
+        path = ("/x/app/api/route.ts" if name.startswith("8")
+                else "/x/supabase/migrations/20260901_probe.sql")
+        got = _drive(sql, path)
         good = got == want
         ok += good
         print(("  PASS  " if good else "  FAIL  ") + name
