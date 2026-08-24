@@ -2,13 +2,14 @@
 
 Generated from the files on disk, so it cannot go stale. Regenerate with `python3 ~/.claude/index-my-archives.py --plans`.
 
-**212 plan files. 91 are NOT named in ACTIVE.md**, which is the one document meant to survive a conversation being trimmed, so those are invisible to it. **54 still have unticked boxes in them.**
+**213 plan files. 92 are NOT named in ACTIVE.md**, which is the one document meant to survive a conversation being trimmed, so those are invisible to it. **54 still have unticked boxes in them.**
 
 | when | open | done | in the index? | what it is | file |
 |---|---|---|---|---|---|
 | 2026-08-24 |  |  | **NO** | CONTEXT SNAPSHOT (pre-compaction working state) | `CONTEXT_SNAPSHOT.md` |
 | 2026-08-24 |  | 13 | yes | FIX ALL OF THEM, not report them | `FIX_ALL_2026-08-24.md` |
 | 2026-08-24 | 16 | 165 | yes | GATE + HOOK + PRINCIPLE STRESS TEST , 2026-08-18 | `GATE_STRESS_TEST_2026-08-18.md` |
+| 2026-08-24 |  |  | **NO** | Every plan file, and which ones still have work in them | `INDEX.md` |
 | 2026-08-24 |  | 50 | yes | EVERY ASK HE MADE THIS SESSION, AND WHICH ARE ACTUALLY OPEN | `OPEN_ASKS_2026-08-24.md` |
 | 2026-08-24 |  | 16 | yes | OVERNIGHT LOOP, 2026-08-24, four workstreams | `OVERNIGHT_2026-08-24.md` |
 | 2026-08-24 | 8 | 14 | yes | SKILLS AND WORKFLOWS , what he actually asked for (2026-08-24) | `SKILLS_2026-08-24.md` |
