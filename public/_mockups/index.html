@@ -1,66 +1,376 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Solen · Design language v2 + mockups</title>
-<style>
-  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--ink3:#9B9B9B;--blue:#276EF1;--green:#15803D;--border:#E5E5E5}
-  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
-  body{font-family:Inter,-apple-system,system-ui,sans-serif;background:#FAFAFA;color:var(--ink);padding:28px 16px 64px;max-width:640px;margin:0 auto}
-  h1{font-family:"Inter Tight",Inter,sans-serif;font-size:22px;font-weight:700;letter-spacing:-.01em;margin-bottom:4px}
-  .sub{color:var(--ink2);font-size:13px;margin-bottom:24px;line-height:1.55}
-  a.card{display:block;text-decoration:none;color:inherit;background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:14px;box-shadow:0 4px 14px rgba(0,0,0,.04);transition:transform .15s,box-shadow .15s}
-  a.card:hover{box-shadow:0 8px 22px rgba(0,0,0,.07);transform:translateY(-1px)}
-  a.card:active{transform:scale(.99)}
-  a.hero{border:1.5px solid var(--blue);background:linear-gradient(#fff,#fff) padding-box}
-  .k{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:6px}
-  .k.b{color:var(--blue)}
-  .t{font-family:"Inter Tight",Inter,sans-serif;font-size:17px;font-weight:700;letter-spacing:-.01em;margin-bottom:6px}
-  .s{font-size:13px;color:var(--ink2);line-height:1.55}
-  .go{display:inline-flex;align-items:center;gap:6px;margin-top:12px;font-size:13px;font-weight:600;color:var(--blue)}
-  .note{font-size:12px;color:var(--ink2);margin-top:18px;line-height:1.55;border-top:1px solid var(--border);padding-top:16px}
-</style>
-</head>
-<body>
-  <h1>Design language v2 + mockups</h1>
-  <p class="sub">Your pivot, applied: <b>blue for everything tappable</b>, white surfaces (cream dropped), no dark panels, <b>deep dark-green success + light check</b>, and visible animation. Start with the system spec, then the 4 screens. Tell me: approve v2 (I codify it + build) or adjust.</p>
-
-  <a class="card hero" href="design-language-v2.html">
-    <div class="k b">★ Start here · the system</div>
-    <div class="t">Design language v2 — spec</div>
-    <div class="s">One screen that defines the new rules: blue = interactivity (links, tabs, tappable) vs ink body text + one ink commit anchor; white/cool surfaces (no cream); deep-green success disc + white animated check; on-load motion + hover lift. Approve this and it becomes the locked system.</div>
-    <div class="go">View the system →</div>
-  </a>
-
-  <a class="card" href="reset-password.html">
-    <div class="k">1 · /auth/reset-password</div>
-    <div class="t">Clean B&amp;W + deep-green animated success</div>
-    <div class="s">Warm-glass dropped → flat white card. The "done" state is now a deep dark-green disc with a white checkmark that animates (ring pulse → spring pop → stroke-draw → text rise). Blue "back to sign in" link, ink commit.</div>
-    <div class="go">View before / after →</div>
-  </a>
-
-  <a class="card" href="account-messages.html">
-    <div class="k">2 · /account/messages</div>
-    <div class="t">Responsive list ↔ thread, blue-interactive</div>
-    <div class="s">Mobile list opens a thread on tap (back link). v2: blue on rows/unread/active tab/composer, ink sent bubbles, on-load stagger.</div>
-    <div class="go">View before / after →</div>
-  </a>
-
-  <a class="card" href="city-landing.html">
-    <div class="k">3 · /[city] landing</div>
-    <div class="t">Unified search landing, blue-interactive</div>
-    <div class="s">Old city page → the SearchTemplate every route uses, scoped to the city. v2: blue search/chips/sort/map + tappable salon-name links, card hover-lift + stagger.</div>
-    <div class="go">View before / after →</div>
-  </a>
-
-  <a class="card" href="empty-states.html">
-    <div class="k">4 · Empty states (Saved / Queue / generic)</div>
-    <div class="t">One EmptyState + light queue (no dark)</div>
-    <div class="s">The live-queue display is now LIGHT (dark surface dropped). One consistent empty-state anatomy with a blue link/CTA + on-load fade-up.</div>
-    <div class="go">View before / after →</div>
-  </a>
-
-  <p class="note">All v2, grounded in real code + real content. Throwaway previews (public/_mockups/) , deleted once the real builds land. The "vibrating blue" guardrail is kept: blue is on interactive things, body text stays ink, one ink commit per screen.</p>
-</body>
-</html>
+<title>Every mockup, and which one is current</title>
+<style>body{font:15px/1.5 -apple-system,system-ui,sans-serif;max-width:1100px;margin:2rem auto;padding:0 1rem;color:#0A0A0A;background:#fff}h1{font-size:26px;margin:0 0 .3rem}p{color:#6B6B6B;margin:.3rem 0 1.2rem}table{border-collapse:collapse;width:100%;font-size:14px}td,th{border-bottom:1px solid #E4E4E7;padding:.5rem .6rem;text-align:left;vertical-align:top}th{font-weight:600}tr.old{color:#6B6B6B}.tag{font-size:11px;font-weight:600;padding:.1rem .4rem;border-radius:4px;background:#F4F4F5}.now{background:#0A0A0A;color:#fff}a{color:#276EF1;text-decoration:none}a:hover{text-decoration:underline}</style>
+<h1>Every mockup, and which one is current</h1>
+<p>369 mockups across 172 surfaces, 172 of them current. Generated from the files on disk, so it cannot go stale. The page it replaced was written 2026-06-09 and listed five.</p>
+<p><b>How current is decided, so you can disagree with it knowingly:</b> the newest file for a surface is current and the older ones for that same surface are marked superseded. Nothing is deleted and nothing is moved. If a superseded one is actually the approved one, the date is what is wrong, not the file.</p>
+<table><tr><th>surface</th><th>what it is</th><th>when</th><th></th><th>open</th></tr>
+<tr class="old"><td>account</td><td>Profile hub, ruthless merge (Direction C)</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='account-v2/overhaul-c-merged.html'>open</a></td></tr>
+<tr class="old"><td>account</td><td>Account, Direction B: two content surfaces, not a settings menu</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='account-v2/overhaul-b-content.html'>open</a></td></tr>
+<tr class="old"><td>account</td><td>Account hub, one to one</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='account-v2/account-hub-lines.html'>open</a></td></tr>
+<tr><td>account</td><td>Account hub, current vs proposed</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='account-v2/system-current-vs-proposed.html'>open</a></td></tr>
+<tr><td>account-messages</td><td>Account · Messages - v2</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='account-messages.html'>open</a></td></tr>
+<tr><td>admin-review-approval</td><td>Mockup , Review moderation: reviews without a visit (3 directions)</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='admin-review-approval/index.html'>open</a></td></tr>
+<tr class="old"><td>backend-law</td><td>AuthZ</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='backend-law/authz.html'>open</a></td></tr>
+<tr class="old"><td>backend-law</td><td>API design</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='backend-law/api-design.html'>open</a></td></tr>
+<tr class="old"><td>backend-law</td><td>Caching</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='backend-law/caching.html'>open</a></td></tr>
+<tr class="old"><td>backend-law</td><td>Backend law</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='backend-law/index.html'>open</a></td></tr>
+<tr class="old"><td>backend-law</td><td>Rate limiting &amp;amp; abuse</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='backend-law/rate-limiting.html'>open</a></td></tr>
+<tr class="old"><td>backend-law</td><td>Migrations</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='backend-law/migrations.html'>open</a></td></tr>
+<tr class="old"><td>backend-law</td><td>AuthN</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='backend-law/authn.html'>open</a></td></tr>
+<tr class="old"><td>backend-law</td><td>Background jobs &amp;amp; async</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='backend-law/jobs-async.html'>open</a></td></tr>
+<tr class="old"><td>backend-law</td><td>Observability</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='backend-law/observability.html'>open</a></td></tr>
+<tr class="old"><td>backend-law</td><td>Security</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='backend-law/security.html'>open</a></td></tr>
+<tr class="old"><td>backend-law</td><td>Data modeling &amp;amp; storage</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='backend-law/data-modeling.html'>open</a></td></tr>
+<tr class="old"><td>backend-law</td><td>Transactions &amp;amp; concurrency</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='backend-law/transactions-concurrency.html'>open</a></td></tr>
+<tr class="old"><td>backend-law</td><td>File &amp;amp; object storage</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='backend-law/file-storage.html'>open</a></td></tr>
+<tr><td>backend-law</td><td>Webhooks</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='backend-law/webhooks.html'>open</a></td></tr>
+<tr class="old"><td>backend-law</td><td>Reliability</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='backend-law/reliability.html'>open</a></td></tr>
+<tr class="old"><td>backend-law</td><td>Backup &amp;amp; recovery</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='backend-law/backup-recovery.html'>open</a></td></tr>
+<tr><td>badge-options</td><td>Solen · discount badge options</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='badge-options.html'>open</a></td></tr>
+<tr><td>booking-select</td><td>Booking selected state, made to match the salon page</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='booking-select/index.html'>open</a></td></tr>
+<tr><td>booking-structure</td><td>Booking structure and motion</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='booking-structure/index.html'>open</a></td></tr>
+<tr><td>card-redesign</td><td>Salon card , redesign mockup (2026-07-13)</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='card-redesign.html'>open</a></td></tr>
+<tr><td>cc-statusbar-panel</td><td>Claude statusbar panel , mockup</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='cc-statusbar-panel/index.html'>open</a></td></tr>
+<tr><td>checkout-scroll-pill</td><td>Checkout: scroll-expanding pay pill</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='checkout-scroll-pill.html'>open</a></td></tr>
+<tr><td>city-landing</td><td>Solen · City landing (v2): Before / After</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='city-landing.html'>open</a></td></tr>
+<tr><td>confirmation</td><td>Confirmation v2 + slot picker</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='confirmation-v2.html'>open</a></td></tr>
+<tr><td>confirmation-redesign</td><td>Confirmation redesign , paid recedes, owed is the hero</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='confirmation-redesign.html'>open</a></td></tr>
+<tr><td>confirmation-spec</td><td>Solen , Booking-confirmation screen: full handoff spec</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='confirmation-spec.html'>open</a></td></tr>
+<tr><td>continue-card-directions</td><td>Continue card: three directions, round 2</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='continue-card-directions/index.html'>open</a></td></tr>
+<tr><td>council-0611</td><td>Council round 2026-06-11 — staff profile + booking step 1</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='council-0611/index.html'>open</a></td></tr>
+<tr><td>customer-frontend</td><td>Customer frontend overhaul, the full pass</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='customer-frontend/index.html'>open</a></td></tr>
+<tr><td>dash-ds-variations</td><td>Dashboard , Design System Directions</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='dash-ds-variations/index.html'>open</a></td></tr>
+<tr class="old"><td>dashboard-overhaul</td><td>Solen Dashboard, integrated home</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='dashboard-overhaul/integrated.html'>open</a></td></tr>
+<tr class="old"><td>dashboard-overhaul</td><td>Solen Dashboard Design Overhaul</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='dashboard-overhaul/index.html'>open</a></td></tr>
+<tr><td>dashboard-overhaul</td><td>Solen Dashboard Refined A v2</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='dashboard-overhaul/v2.html'>open</a></td></tr>
+<tr class="old"><td>dashboard-overhaul</td><td>Solen Dashboard, Refined A v2, whole operator app</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='dashboard-overhaul/comp.html'>open</a></td></tr>
+<tr class="old"><td>dashboard-overhaul</td><td>Solen Dashboard, 3 fresh structures from scratch</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='dashboard-overhaul/fresh.html'>open</a></td></tr>
+<tr class="old"><td>dashboard-overhaul</td><td>Solen Dashboard, chairs first</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='dashboard-overhaul/chairs.html'>open</a></td></tr>
+<tr class="old"><td>dashboard-overhaul</td><td>Solen Dashboard, traced to real data</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='dashboard-overhaul/traced.html'>open</a></td></tr>
+<tr><td>design-axes-fs</td><td>Design axes , live page versus proposed (toggle)</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='design-axes-fs/index.html'>open</a></td></tr>
+<tr><td>design-language</td><td>Solen — Design language v2</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='design-language-v2.html'>open</a></td></tr>
+<tr><td>design-principles</td><td>Design principles: current versus proposed</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='design-principles/index.html'>open</a></td></tr>
+<tr class="old"><td>discovery</td><td>Discovery · Look detail</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='discovery/detail-embed.html'>open</a></td></tr>
+<tr class="old"><td>discovery</td><td>Inspo filter + category, redesigned</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='discovery/filter-category-redesign.html'>open</a></td></tr>
+<tr class="old"><td>discovery</td><td>Inspo category + filter revamp</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='discovery/category-filter.html'>open</a></td></tr>
+<tr class="old"><td>discovery</td><td>Discovery · Look detail</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='discovery/detail-refined.html'>open</a></td></tr>
+<tr class="old"><td>discovery</td><td>Discovery · Lookbooks (saved)</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='discovery/lookbooks.html'>open</a></td></tr>
+<tr class="old"><td>discovery</td><td>Search history + filter sheet</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='discovery/search-and-filter.html'>open</a></td></tr>
+<tr class="old"><td>discovery</td><td>Discovery · Feed + Save to lookbook</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='discovery/feed-save.html'>open</a></td></tr>
+<tr class="old"><td>discovery</td><td>Discovery · States (loading / empty / error)</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='discovery/states.html'>open</a></td></tr>
+<tr class="old"><td>discovery</td><td>Discovery , Look detail · 3 directions</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='discovery/detail-variations.html'>open</a></td></tr>
+<tr><td>discovery</td><td>Discovery · Video player · 2 options</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='discovery/video-players.html'>open</a></td></tr>
+<tr class="old"><td>discovery</td><td>Filter sheet rich</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='discovery/filter-rich.html'>open</a></td></tr>
+<tr class="old"><td>discovery</td><td>Inspo search, focused state</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='discovery/search-focused.html'>open</a></td></tr>
+<tr class="old"><td>discovery</td><td>Search + filter , surface treatments</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='discovery/surface-treatments.html'>open</a></td></tr>
+<tr class="old"><td>discovery</td><td>Discovery · Add a look (upload)</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='discovery/upload.html'>open</a></td></tr>
+<tr class="old"><td>discovery</td><td>Discovery · Onboarding (personalize feed)</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='discovery/onboarding.html'>open</a></td></tr>
+<tr class="old"><td>discovery/_explore</td><td>Inspo Filter, voll Farbe</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='discovery/_explore/filter-color-b.html'>open</a></td></tr>
+<tr class="old"><td>discovery/_explore</td><td>filter-visual</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='discovery/_explore/filter-visual.html'>open</a></td></tr>
+<tr class="old"><td>discovery/_explore</td><td>filter-soft</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='discovery/_explore/filter-soft.html'>open</a></td></tr>
+<tr><td>discovery/_explore</td><td>Icon-Check</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='discovery/_explore/icon-review.html'>open</a></td></tr>
+<tr class="old"><td>discovery/_explore</td><td>Drill-down v3</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='discovery/_explore/drill.html'>open</a></td></tr>
+<tr class="old"><td>discovery/_explore</td><td>Inspo Filter, editorial calm</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='discovery/_explore/filter-editorial.html'>open</a></td></tr>
+<tr class="old"><td>discovery/_explore</td><td>Inspo Filter, Precision und Rhythm</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='discovery/_explore/filter-precision.html'>open</a></td></tr>
+<tr class="old"><td>discovery/_explore</td><td>Kategorie-Icons</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='discovery/_explore/category-icons.html'>open</a></td></tr>
+<tr class="old"><td>discovery/_explore</td><td>Inspo Filter, Naegel</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='discovery/_explore/filter-nails.html'>open</a></td></tr>
+<tr class="old"><td>discovery/_explore</td><td>Inspo Filter, Precision + Foto-Banner</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='discovery/_explore/filter-color-a.html'>open</a></td></tr>
+<tr><td>discovery/_explore/_clean</td><td>Clean Icons</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='discovery/_explore/_clean/review.html'>open</a></td></tr>
+<tr><td>discovery/_explore/_detailed</td><td>Detailed Icons</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='discovery/_explore/_detailed/review.html'>open</a></td></tr>
+<tr class="old"><td>discovery/_explore/_modern</td><td>inverted</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='discovery/_explore/_modern/inverted.html'>open</a></td></tr>
+<tr><td>discovery/_explore/_modern</td><td>Nails modern?</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='discovery/_explore/_modern/nails-compare.html'>open</a></td></tr>
+<tr><td>empty-states</td><td>Solen - Empty-state standardization (v2)</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='empty-states.html'>open</a></td></tr>
+<tr class="old"><td>everystate</td><td>07 Profile hub + bookings, every state</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='everystate-v2/07-profile.html'>open</a></td></tr>
+<tr class="old"><td>everystate</td><td>24b-pay-wallet-saved</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='everystate-v2/24b-pay-wallet-saved.html'>open</a></td></tr>
+<tr class="old"><td>everystate</td><td>22 v2 — NEW animation ideas (big live demos)</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='everystate-v2/22-motion-icon-system.html'>open</a></td></tr>
+<tr class="old"><td>everystate</td><td>12 Register, chooser + both variants + errors</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='everystate-v2/12-register.html'>open</a></td></tr>
+<tr class="old"><td>everystate</td><td>24d-pay-no-radio-blue</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='everystate-v2/24d-pay-no-radio-blue.html'>open</a></td></tr>
+<tr class="old"><td>everystate</td><td>24d-pay-no-radio-ink</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='everystate-v2/24d-pay-no-radio-ink.html'>open</a></td></tr>
+<tr class="old"><td>everystate</td><td>08 Profile subpages, hair profile + vouchers + notifications</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='everystate-v2/08-profile-sub.html'>open</a></td></tr>
+<tr><td>everystate</td><td>Every-state mockups, all frontend surfaces</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='everystate-v2/index.html'>open</a></td></tr>
+<tr class="old"><td>everystate</td><td>02 Search results, full page, new rules</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='everystate-v2/02-search.html'>open</a></td></tr>
+<tr class="old"><td>everystate</td><td>16 Account + last-minute, treatments applied</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='everystate-v2/16-account-lastminute.html'>open</a></td></tr>
+<tr class="old"><td>everystate</td><td>13 Discover feed, live structure + new rules</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='everystate-v2/13-discover.html'>open</a></td></tr>
+<tr class="old"><td>everystate</td><td>03 Salon PDP, ALL live sections, new rules</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='everystate-v2/03-salon-pdp.html'>open</a></td></tr>
+<tr class="old"><td>everystate</td><td>17 Walk-in tip (standalone route)</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='everystate-v2/17-walkin-tip.html'>open</a></td></tr>
+<tr class="old"><td>everystate</td><td>18 Staff profile v2, Fresha employee-profile bones + Solen skin</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='everystate-v2/18-staff-profile.html'>open</a></td></tr>
+<tr class="old"><td>everystate</td><td>20 Booking flow — exact Fresha bones + Solen skin</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='everystate-v2/20-booking-fresha-bones.html'>open</a></td></tr>
+<tr class="old"><td>everystate</td><td>28-contact-summary-row</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='everystate-v2/28-contact-summary-row.html'>open</a></td></tr>
+<tr class="old"><td>everystate</td><td>01 Home, full page, new rules</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='everystate-v2/01-home.html'>open</a></td></tr>
+<tr class="old"><td>everystate</td><td>26-compact-booking-header</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='everystate-v2/26-compact-booking-header.html'>open</a></td></tr>
+<tr class="old"><td>everystate</td><td>06 Walk-in pay + queue, mirrors the real pages</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='everystate-v2/06-walkin-queue.html'>open</a></td></tr>
+<tr class="old"><td>everystate</td><td>04 Booking wizard, all 4 steps + states</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='everystate-v2/04-booking.html'>open</a></td></tr>
+<tr class="old"><td>everystate</td><td>Cuts &amp;amp; Culture — Barbershop in Basel | Solen</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='everystate-v2/27-walkin-card-v2.html'>open</a></td></tr>
+<tr class="old"><td>everystate</td><td>15 Booking lookup + customer onboarding</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='everystate-v2/15-lookup-onboarding.html'>open</a></td></tr>
+<tr class="old"><td>everystate</td><td>24-pay-method-choice</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='everystate-v2/24-pay-method-choice.html'>open</a></td></tr>
+<tr class="old"><td>everystate</td><td>28b-contact-missing-phone</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='everystate-v2/28b-contact-missing-phone.html'>open</a></td></tr>
+<tr class="old"><td>everystate</td><td>23-profile-grouped-list</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='everystate-v2/23-profile-grouped-list.html'>open</a></td></tr>
+<tr class="old"><td>everystate</td><td>10 Errors, 404 + crash + offline</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='everystate-v2/10-errors.html'>open</a></td></tr>
+<tr class="old"><td>everystate</td><td>11 Auth, login every state</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='everystate-v2/11-auth.html'>open</a></td></tr>
+<tr class="old"><td>everystate</td><td>19 Profile empty states v3, Option B at real phone size (390x844)</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='everystate-v2/19-profile-empty.html'>open</a></td></tr>
+<tr class="old"><td>everystate</td><td>Cuts &amp;amp; Culture — Barbershop in Basel | Solen</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='everystate-v2/27b-walkin-card-v3.html'>open</a></td></tr>
+<tr class="old"><td>everystate</td><td>21 v2 — /fuer-salons per Fresha for-business bones + dedicated signup </td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='everystate-v2/21-backend-run-frontends.html'>open</a></td></tr>
+<tr class="old"><td>everystate</td><td>09 Favorites, filled + empty</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='everystate-v2/09-favorites.html'>open</a></td></tr>
+<tr class="old"><td>everystate</td><td>24c-pay-method-v2</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='everystate-v2/24c-pay-method-v2.html'>open</a></td></tr>
+<tr class="old"><td>everystate</td><td>05 Confirmation, mirrors the real component</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='everystate-v2/05-confirmation.html'>open</a></td></tr>
+<tr class="old"><td>everystate</td><td>25-hair-banner-neutral</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='everystate-v2/25-hair-banner-neutral.html'>open</a></td></tr>
+<tr class="old"><td>everystate</td><td>14 Gift card, de-uppercased + real card preview</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='everystate-v2/14-giftcard-packages.html'>open</a></td></tr>
+<tr><td>everystate-v2/compare</td><td>Favorites empty, V1 vs V2 (live-page captures)</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='everystate-v2/compare/index.html'>open</a></td></tr>
+<tr><td>featured-stylists-real</td><td>Stylists row on the homepage, live page comparison</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='featured-stylists-real/index.html'>open</a></td></tr>
+<tr><td>feed-card-redesign</td><td>Feed card , redesign directions</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='feed-card-redesign.html'>open</a></td></tr>
+<tr><td>fixes-refined</td><td>Fixes, refined</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='fixes-refined/index.html'>open</a></td></tr>
+<tr><td>floors-law</td><td>The Floors Law , why mockups looked unfinished, and the fix</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='floors-law/index.html'>open</a></td></tr>
+<tr><td>foryou-real-price</td><td>For-You row , real from-price</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='foryou-real-price.html'>open</a></td></tr>
+<tr class="old"><td>giftcard-variants</td><td>Solen gift card — 8 rich directions</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='giftcard-variants/index.html'>open</a></td></tr>
+<tr class="old"><td>giftcard-variants</td><td>Gift Card · Old Town Barbers — Solen</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='giftcard-variants/v2-editorial-warm.html'>open</a></td></tr>
+<tr class="old"><td>giftcard-variants</td><td>Gift Card - v3 Recipient Preview</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='giftcard-variants/v3-recipient-preview.html'>open</a></td></tr>
+<tr class="old"><td>giftcard-variants</td><td>Gift Card — Old Town Barbers · Solen</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='giftcard-variants/v5-apple-minimal-rich.html'>open</a></td></tr>
+<tr class="old"><td>giftcard-variants</td><td>Gift Card — v6 Dark Premium</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='giftcard-variants/v6-dark-premium-card.html'>open</a></td></tr>
+<tr class="old"><td>giftcard-variants</td><td>Gift Card — v4 Denomination Cards</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='giftcard-variants/v4-denomination-cards.html'>open</a></td></tr>
+<tr class="old"><td>giftcard-variants</td><td>Gift Card v7 – Immersive Photo · Old Town Barbers</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='giftcard-variants/v7-immersive-photo.html'>open</a></td></tr>
+<tr class="old"><td>giftcard-variants</td><td>Gift Card — Old Town Barbers · Solen</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='giftcard-variants/v1-hero-photo-card.html'>open</a></td></tr>
+<tr class="old"><td>giftcard-variants</td><td>Solen Gift Card: 3 directions</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='giftcard-variants/solen-giftcard-options.html'>open</a></td></tr>
+<tr class="old"><td>giftcard-variants</td><td>Solen Gift Card</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='giftcard-variants/solen-giftcard.html'>open</a></td></tr>
+<tr class="old"><td>giftcard-variants</td><td>Solen Gift Card: generated card photography</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='giftcard-variants/solen-giftcard-photo.html'>open</a></td></tr>
+<tr><td>giftcard-variants</td><td>Gift Card · v8 Celebration</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='giftcard-variants/v8-celebration.html'>open</a></td></tr>
+<tr><td>home</td><td>less-white</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='home-v4/less-white.html'>open</a></td></tr>
+<tr class="old"><td>home</td><td>n1-v2</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='home-v3/n1-v2.html'>open</a></td></tr>
+<tr class="old"><td>home</td><td>Solen search results, current and proposed</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='home-v3/search-a.html'>open</a></td></tr>
+<tr class="old"><td>home</td><td>index</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='home-v3/index.html'>open</a></td></tr>
+<tr class="old"><td>home</td><td>sections</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='home-v3/sections.html'>open</a></td></tr>
+<tr class="old"><td>home</td><td>n1</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='home-v3/n1.html'>open</a></td></tr>
+<tr><td>home-cheap</td><td>index</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='home-cheap/index.html'>open</a></td></tr>
+<tr class="old"><td>home-directions</td><td>Recently viewed: three directions, Airbnb only</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='home-directions-v3/index.html'>open</a></td></tr>
+<tr class="old"><td>home-directions</td><td>why</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='home-directions-v2/why.html'>open</a></td></tr>
+<tr class="old"><td>home-directions</td><td>Home, eight arguments</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='home-directions-v2/index.html'>open</a></td></tr>
+<tr class="old"><td>home-directions</td><td>direction-I</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='home-directions-v2/direction-I.html'>open</a></td></tr>
+<tr class="old"><td>home-directions</td><td>direction-E</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='home-directions-v2/direction-E.html'>open</a></td></tr>
+<tr class="old"><td>home-directions</td><td>Direction H, the Solen home feed salon card grounded in SalonCard</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='home-directions-v2/direction-H.html'>open</a></td></tr>
+<tr class="old"><td>home-directions</td><td>direction-K</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='home-directions-v2/direction-K.html'>open</a></td></tr>
+<tr class="old"><td>home-directions</td><td>direction-G</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='home-directions-v2/direction-G.html'>open</a></td></tr>
+<tr class="old"><td>home-directions</td><td>direction-F</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='home-directions-v2/direction-F.html'>open</a></td></tr>
+<tr class="old"><td>home-directions</td><td>direction-J</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='home-directions-v2/direction-J.html'>open</a></td></tr>
+<tr class="old"><td>home-directions</td><td>Direction L, one Solen homepage, the sections know you</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='home-directions-v2/direction-L.html'>open</a></td></tr>
+<tr class="old"><td>home-directions</td><td>Direction C, pinned intent home feed, salon cards</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='home-directions/direction-C.html'>open</a></td></tr>
+<tr><td>home-directions</td><td>(this page owns those), and asset paths are normalised to root-relativ</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='home-directions/index.html'>open</a></td></tr>
+<tr class="old"><td>home-directions</td><td>direction-B</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='home-directions/direction-B.html'>open</a></td></tr>
+<tr class="old"><td>home-directions</td><td>Home feed direction D, editorial, homepage SalonCard</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='home-directions/direction-D.html'>open</a></td></tr>
+<tr class="old"><td>home-directions</td><td>direction-A</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='home-directions/direction-A.html'>open</a></td></tr>
+<tr><td>home-feed-order</td><td>Continue card with stacked photos, stylists lower</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='home-feed-order/index.html'>open</a></td></tr>
+<tr class="old"><td>home-fixes</td><td>Fix PLACEHOLDER: the homepage BusinessTeaser failed-image box on /de</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='home-fixes/fix-PLACEHOLDER.html'>open</a></td></tr>
+<tr><td>home-fixes</td><td>index</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='home-fixes/index.html'>open</a></td></tr>
+<tr class="old"><td>home-fixes</td><td>Fix LOUDEST - the walk-in wait estimate is the loudest text in the fee</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='home-fixes/fix-LOUDEST.html'>open</a></td></tr>
+<tr class="old"><td>home-fixes</td><td>Home feed rhythm: SectionHeader and SalonCard gaps</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='home-fixes/fix-RHYTHM.html'>open</a></td></tr>
+<tr class="old"><td>home-fixes</td><td>Fix DUPES: SalonCard photo reuse</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='home-fixes/fix-DUPES.html'>open</a></td></tr>
+<tr class="old"><td>home-fixes</td><td>Fix EDGES: Reviews card edge + map typeface</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='home-fixes/fix-EDGES.html'>open</a></td></tr>
+<tr class="old"><td>home-fixes</td><td>fix-CARDFIELD: SalonCard price, address and category look identical</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='home-fixes/fix-CARDFIELD.html'>open</a></td></tr>
+<tr class="old"><td>home-landing-split</td><td>hC</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='home-landing-split/hC.html'>open</a></td></tr>
+<tr><td>home-landing-split</td><td>Home, four directions</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='home-landing-split/home.html'>open</a></td></tr>
+<tr class="old"><td>home-landing-split</td><td>hB</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='home-landing-split/hB.html'>open</a></td></tr>
+<tr class="old"><td>home-landing-split</td><td>_hC_probe</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='home-landing-split/_hC_probe.html'>open</a></td></tr>
+<tr class="old"><td>home-landing-split</td><td>hD</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='home-landing-split/hD.html'>open</a></td></tr>
+<tr class="old"><td>home-landing-split</td><td>hA</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='home-landing-split/hA.html'>open</a></td></tr>
+<tr><td>home-refined</td><td>Homepage, refined</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='home-refined/index.html'>open</a></td></tr>
+<tr><td>home-type</td><td>Home type directions (A8)</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='home-type/index.html'>open</a></td></tr>
+<tr><td>home-uber</td><td>Solen · card badges (grounded)</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='home-uber.html'>open</a></td></tr>
+<tr><td>homepage-collections</td><td>Homepage Collections , promo banner + collection rows + opened page</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='homepage-collections.html'>open</a></td></tr>
+<tr class="old"><td>homepage-rhythm</td><td>Homepage hero: how far down the search card sits, measured against the</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='homepage-rhythm/hero.html'>open</a></td></tr>
+<tr class="old"><td>homepage-rhythm</td><td>Homepage: where the bottom sheet starts</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='homepage-rhythm/hero-sheet.html'>open</a></td></tr>
+<tr class="old"><td>homepage-rhythm</td><td>Homepage rhythm: how the real homepage breathes, current vs uniform vs</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='homepage-rhythm/index.html'>open</a></td></tr>
+<tr class="old"><td>homepage-rhythm</td><td>Homepage hero: the two gaps, and what balancing them costs</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='homepage-rhythm/hero-balance.html'>open</a></td></tr>
+<tr><td>homepage-rhythm</td><td>Homepage rhythm, round 2: tighter gaps on the real homepage (16 vs 24 </td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='homepage-rhythm/tighter.html'>open</a></td></tr>
+<tr><td>icons</td><td>Generated category icons</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='icons.html'>open</a></td></tr>
+<tr class="old"><td>ig-principles</td><td>All 217 verdicts on the register: what was excluded and exactly why</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='ig-principles/all-verdicts.html'>open</a></td></tr>
+<tr><td>ig-principles</td><td>IG principles on the register, settings and salon surfaces: the 12 ADD</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='ig-principles/index.html'>open</a></td></tr>
+<tr><td>ig-principles-designparser</td><td>Design principles from @designparser</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='ig-principles-designparser/index.html'>open</a></td></tr>
+<tr class="old"><td>improve</td><td>Home feed , seven Airbnb learnings, measured (Current/Proposed toggle)</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='improve/home.html'>open</a></td></tr>
+<tr><td>improve</td><td>Home feed type scale, which tiers die (Current/Proposed toggle)</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='improve/type-scale.html'>open</a></td></tr>
+<tr class="old"><td>improve</td><td>Category page (/de/coiffeur): the seven Airbnb learnings, measured and</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='improve/category.html'>open</a></td></tr>
+<tr class="old"><td>improve</td><td>Account hub rows: bigger glyph, fewer explanations</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='improve/account-hub-rows.html'>open</a></td></tr>
+<tr class="old"><td>improve</td><td>inspo</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='improve/inspo.html'>open</a></td></tr>
+<tr><td>input-decision</td><td>Input decision: the fill and the focus on the booking lookup form</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='input-decision/index.html'>open</a></td></tr>
+<tr><td>konto-redesign</td><td>Konto redesign</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='konto-redesign.html'>open</a></td></tr>
+<tr><td>liftup</td><td>Solen borderless mockups , all of them</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='liftup/index.html'>open</a></td></tr>
+<tr><td>liftup-ba-side</td><td>Booking services , before vs after side by side</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='liftup-ba-side/index.html'>open</a></td></tr>
+<tr><td>liftup-booking</td><td>Borderless booking , services, staff, datetime, hair, pay, confirmatio</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='liftup-booking/index.html'>open</a></td></tr>
+<tr><td>liftup-booking-services-tiered</td><td>Booking services , salon-page tier-card display (mockup)</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='liftup-booking-services-tiered/index.html'>open</a></td></tr>
+<tr><td>liftup-directions</td><td>Lift-up directions , Profile</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='liftup-directions/index.html'>open</a></td></tr>
+<tr><td>liftup-home-fs</td><td>Homepage , full screen before/after (toggle)</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='liftup-home-fs/index.html'>open</a></td></tr>
+<tr><td>liftup-inspo-fs</td><td>Inspo feed , full screen before/after (toggle)</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='liftup-inspo-fs/index.html'>open</a></td></tr>
+<tr><td>liftup-integration</td><td>Lift-up integration , settings, bookings, search, salon</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='liftup-integration/index.html'>open</a></td></tr>
+<tr><td>liftup-salon-fs</td><td>Salon page , full screen before/after (toggle)</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='liftup-salon-fs/index.html'>open</a></td></tr>
+<tr><td>liftup-salon-services-expand</td><td>Salon services , tap-to-expand rows (mockup)</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='liftup-salon-services-expand/index.html'>open</a></td></tr>
+<tr><td>liftup-search-fs</td><td>Search results , full screen before/after (toggle)</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='liftup-search-fs/index.html'>open</a></td></tr>
+<tr><td>liftup-services-expand</td><td>Borderless services , simple rows with expand on tap / hover</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='liftup-services-expand/index.html'>open</a></td></tr>
+<tr><td>liftup-services-fs</td><td>Services , full screen, scroll-linked pills, before/after toggle</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='liftup-services-fs/index.html'>open</a></td></tr>
+<tr><td>liftup-services-motion</td><td>Booking services , total motion morph (mockup)</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='liftup-services-motion/index.html'>open</a></td></tr>
+<tr><td>like-dislike-walk</td><td>The like/dislike walk , open each real screen, judge it, reply</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='like-dislike-walk/index.html'>open</a></td></tr>
+<tr><td>login-uncluttered-2026-08</td><td>Login, uncluttered</td><td>2026-08-20</td><td><span class="tag now">current</span></td><td><a href='login-uncluttered-2026-08-20.html'>open</a></td></tr>
+<tr class="old"><td>looks</td><td>_shadow-probe</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='looks-round2/_shadow-probe.html'>open</a></td></tr>
+<tr><td>looks</td><td>Popular looks, rebuilt as the Inspo card</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='looks-round2/section.html'>open</a></td></tr>
+<tr class="old"><td>looks-directions</td><td>Looks section: seven directions for one merged section</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='looks-directions/index.html'>open</a></td></tr>
+<tr><td>looks-directions</td><td>Looks section: eight versions, stacked</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='looks-directions/sections.html'>open</a></td></tr>
+<tr><td>loyalty-card</td><td>Solen Status: improved UI variations</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='loyalty-card/solen-rewards-variations.html'>open</a></td></tr>
+<tr class="old"><td>loyalty-card</td><td>Solen Status: rank model</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='loyalty-card/solen-rewards-status.html'>open</a></td></tr>
+<tr class="old"><td>loyalty-card</td><td>Solen Rewards: improved</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='loyalty-card/solen-rewards-ui-v2.html'>open</a></td></tr>
+<tr class="old"><td>loyalty-card</td><td>Solen Rewards: normal UI</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='loyalty-card/solen-rewards-ui.html'>open</a></td></tr>
+<tr class="old"><td>loyalty-card</td><td>Solen Plus: final (tier card + better perks)</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='loyalty-card/solen-plus-final.html'>open</a></td></tr>
+<tr class="old"><td>loyalty-card</td><td>Solen Rewards: Solen-wide loyalty card</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='loyalty-card/solen-loyalty-photo.html'>open</a></td></tr>
+<tr><td>nearby-homepage-variants</td><td>nearby-homepage-variants</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='nearby-homepage-variants.html'>open</a></td></tr>
+<tr><td>nearby-map-color</td><td>nearby-map-color</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='nearby-map-color.html'>open</a></td></tr>
+<tr><td>nearby-map-fix</td><td>nearby-map-fix</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='nearby-map-fix.html'>open</a></td></tr>
+<tr><td>nearby-map-minimal</td><td>nearby-map-minimal</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='nearby-map-minimal.html'>open</a></td></tr>
+<tr><td>nearby-map-modern</td><td>nearby-map-modern</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='nearby-map-modern.html'>open</a></td></tr>
+<tr class="old"><td>onboarding</td><td>Solen · Welcome (High-Fidelity)</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='onboarding/_hifi-welcome.html'>open</a></td></tr>
+<tr class="old"><td>onboarding</td><td>Solen Onboarding · Version 1 — Warm</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='onboarding/av1.html'>open</a></td></tr>
+<tr><td>onboarding</td><td>Solen Onboarding · Aby-Versionen</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='onboarding/index.html'>open</a></td></tr>
+<tr class="old"><td>onboarding</td><td>Solen · Illustration-Stil (Kalibrierung)</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='onboarding/_illus-onboarding.html'>open</a></td></tr>
+<tr class="old"><td>onboarding</td><td>Solen Onboarding · Version 6 — Flat bold</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='onboarding/av6.html'>open</a></td></tr>
+<tr class="old"><td>onboarding</td><td>Solen Onboarding · 1 Welcome</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='onboarding/01-welcome.html'>open</a></td></tr>
+<tr class="old"><td>onboarding</td><td>Solen Onboarding · Version 5 — Dark</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='onboarding/av5.html'>open</a></td></tr>
+<tr class="old"><td>onboarding</td><td>Solen Onboarding · 6 Processing → Feier</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='onboarding/06-celebration.html'>open</a></td></tr>
+<tr class="old"><td>onboarding</td><td>Solen Onboarding · 7 Payoff</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='onboarding/07-payoff.html'>open</a></td></tr>
+<tr class="old"><td>onboarding</td><td>Solen Onboarding · Version 4 — Weiß minimal</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='onboarding/av4.html'>open</a></td></tr>
+<tr class="old"><td>onboarding</td><td>Solen Onboarding · 4 Was ist dir wichtig</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='onboarding/04-interests.html'>open</a></td></tr>
+<tr class="old"><td>onboarding</td><td>Solen Onboarding · Version 3 — Dawn</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='onboarding/av3.html'>open</a></td></tr>
+<tr class="old"><td>onboarding</td><td>Solen Onboarding · 5 Gender</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='onboarding/05-gender.html'>open</a></td></tr>
+<tr class="old"><td>onboarding</td><td>Solen · Aby-Stil v2 (minimal, korrekt)</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='onboarding/_aby-style.html'>open</a></td></tr>
+<tr class="old"><td>onboarding</td><td>Solen Onboarding · Version 2 — Cool</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='onboarding/av2.html'>open</a></td></tr>
+<tr class="old"><td>onboarding</td><td>Solen Onboarding · 2 Standort</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='onboarding/02-location.html'>open</a></td></tr>
+<tr class="old"><td>onboarding</td><td>Solen Onboarding · Cool (animiert)</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='onboarding/cool.html'>open</a></td></tr>
+<tr class="old"><td>onboarding</td><td>Solen Onboarding · 3 Kategorie</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='onboarding/03-category.html'>open</a></td></tr>
+<tr><td>open-compare</td><td>Open compare, SearchOverlay</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='open-compare/index.html'>open</a></td></tr>
+<tr class="old"><td>parts</td><td>hdr</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='parts/hdr.html'>open</a></td></tr>
+<tr><td>parts</td><td>tok</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='parts/tok.html'>open</a></td></tr>
+<tr><td>payment-model</td><td>Mockup , Payment model: salon settings, admin override, customer pay s</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='payment-model/index.html'>open</a></td></tr>
+<tr><td>pinterest-ref-copy</td><td>Reference copy , IMG_6647, full-bleed on the real phone</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='pinterest-ref-copy/index.html'>open</a></td></tr>
+<tr><td>pinterest-ref-solen</td><td>Solen profile , the approved geometry iterated to real Solen content</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='pinterest-ref-solen/index.html'>open</a></td></tr>
+<tr><td>principles-50</td><td>The 50 , Solen&#x27;s design principles</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='principles-50/index.html'>open</a></td></tr>
+<tr><td>principles-pairs</td><td>The 50, shown , each principle broken vs used</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='principles-pairs/index.html'>open</a></td></tr>
+<tr><td>principles-rethink</td><td>The rethink , why approved mockups keep turning into wtf live pages</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='principles-rethink/index.html'>open</a></td></tr>
+<tr><td>profile-typescale-fs</td><td>Profile hub, type scale current and proposed</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='profile-typescale-fs/index.html'>open</a></td></tr>
+<tr class="old"><td>research</td><td>Icon terminals and weight ceiling: two findings, rendered</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='research/terminals-and-weight.html'>open</a></td></tr>
+<tr><td>research</td><td>What changed after the Airbnb profile principles research</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='research/what-changes.html'>open</a></td></tr>
+<tr><td>reset-password</td><td>Solen — Reset Password (v2)</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='reset-password.html'>open</a></td></tr>
+<tr class="old"><td>restraint</td><td>Solen, Restraint mockups</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='restraint/index.html'>open</a></td></tr>
+<tr class="old"><td>restraint</td><td>Solen — Bewertungen (Restraint)</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='restraint/reviews-distribution.html'>open</a></td></tr>
+<tr class="old"><td>restraint</td><td>Solen — Sprache wählen</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='restraint/language-picker.html'>open</a></td></tr>
+<tr class="old"><td>restraint</td><td>Booking — Haare step v3 (punch-list pass)</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='restraint/booking-hair-step-v2.html'>open</a></td></tr>
+<tr class="old"><td>restraint</td><td>Booking — Deine Haare step</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='restraint/booking-hair-step.html'>open</a></td></tr>
+<tr class="old"><td>restraint</td><td>Solen Buchung — keine Online-Buchung</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='restraint/booking-empty-services.html'>open</a></td></tr>
+<tr class="old"><td>restraint</td><td>Walk-in rate → tip (smooth, one screen)</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='restraint/walkin-rate-tip.html'>open</a></td></tr>
+<tr class="old"><td>restraint</td><td>Solen — Benachrichtigungen</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='restraint/notifications-panel.html'>open</a></td></tr>
+<tr class="old"><td>restraint</td><td>Walk-in — 2 mockups (map + DoorDash steps + barber card)</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='restraint/walkin-rich-v2.html'>open</a></td></tr>
+<tr><td>restraint</td><td>Walk-in Live Status — 6 directions</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='restraint/walkin-status-variations.html'>open</a></td></tr>
+<tr class="old"><td>restraint</td><td>Solen — Konto</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='restraint/account-hub.html'>open</a></td></tr>
+<tr class="old"><td>restraint</td><td>Buchung stornieren — Solen</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='restraint/cancel-confirm-sheet.html'>open</a></td></tr>
+<tr class="old"><td>restraint</td><td>Solen — Team (PDP)</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='restraint/stylist-cards.html'>open</a></td></tr>
+<tr class="old"><td>restraint</td><td>Booking stepper, softening options</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='restraint/booking-stepper-options.html'>open</a></td></tr>
+<tr class="old"><td>restraint</td><td>Zuletzt angesehen — Solen</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='restraint/recently-viewed-page.html'>open</a></td></tr>
+<tr class="old"><td>restraint</td><td>Solen — PDP hero</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='restraint/pdp-hero.html'>open</a></td></tr>
+<tr class="old"><td>restraint</td><td>Solen — REAL component kit (copy this, do not invent)</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='restraint/_KIT.html'>open</a></td></tr>
+<tr class="old"><td>restraint</td><td>Solen Icons, Steps and Badges</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='restraint/design-system-icons-steps-badges.html'>open</a></td></tr>
+<tr class="old"><td>restraint</td><td>Booking — Bezahlen step (walk-in-aligned, v2)</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='restraint/booking-pay-step.html'>open</a></td></tr>
+<tr class="old"><td>restraint</td><td>Solen — Service-Gruppierung (PDP)</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='restraint/service-grouping.html'>open</a></td></tr>
+<tr class="old"><td>restraint</td><td>Solen — Haarprofil</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='restraint/haarprofil.html'>open</a></td></tr>
+<tr class="old"><td>restraint</td><td>Solen — Walk-in error states</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='restraint/walkin-error-states.html'>open</a></td></tr>
+<tr class="old"><td>restraint</td><td>Walk-in live status — rich directions</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='restraint/walkin-rich.html'>open</a></td></tr>
+<tr class="old"><td>restraint</td><td>Walk-in v2 — Uber-style &quot;while you wait&quot; + small ticket</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='restraint/walkin-live-status-v2.html'>open</a></td></tr>
+<tr class="old"><td>restraint</td><td>Solen — Buchung bestätigt</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='restraint/confirmation-moment.html'>open</a></td></tr>
+<tr class="old"><td>restraint</td><td>Walk-in Live Status</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='restraint/walkin-live-status.html'>open</a></td></tr>
+<tr><td>review-directions</td><td>Review , directions</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='review-directions.html'>open</a></td></tr>
+<tr><td>review-form-redesign</td><td>Review , motion</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='review-form-redesign.html'>open</a></td></tr>
+<tr><td>reviews</td><td>Reviews, shorter</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='reviews-round2/section.html'>open</a></td></tr>
+<tr><td>reviews-abc</td><td>Reviews section , full screen before/after (two directions)</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='reviews-abc/index.html'>open</a></td></tr>
+<tr class="old"><td>reviews-abc</td><td>Reviews section , full screen before/after (two directions)</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='reviews-abc/index 2.html'>open</a></td></tr>
+<tr><td>reviews-directions</td><td>Reviews row: nine versions, stacked</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='reviews-directions/sections.html'>open</a></td></tr>
+<tr><td>reviews-redesign</td><td>Reviews , redesign directions</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='reviews-redesign.html'>open</a></td></tr>
+<tr><td>rota</td><td>Rota</td><td>2026-08-23</td><td><span class="tag now">current</span></td><td><a href='rota/index.html'>open</a></td></tr>
+<tr><td>salon-of-month-leaderboard</td><td>Salon des Monats + Leaderboard mockup</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='salon-of-month-leaderboard.html'>open</a></td></tr>
+<tr><td>search-curve</td><td>Search open curve, A / B / C</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='search-curve/index.html'>open</a></td></tr>
+<tr><td>search-keyboard</td><td>index</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='search-keyboard/index.html'>open</a></td></tr>
+<tr><td>selected-states-redesign</td><td>Selected states , gray not black</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='selected-states-redesign.html'>open</a></td></tr>
+<tr><td>settings-airbnb-fs</td><td>Settings rows, current spacing and the proposed rhythm</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='settings-airbnb-fs/index.html'>open</a></td></tr>
+<tr><td>settings-rows-fs</td><td>Settings rows, chevron now vs animated vs removed</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='settings-rows-fs/index.html'>open</a></td></tr>
+<tr><td>sie-register</td><td>Homepage and Profile: German register, du vs Sie</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sie-register/index.html'>open</a></td></tr>
+<tr><td>sweep-auth-grammar</td><td>Auth reset-password , grammar , full page before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-auth-grammar/index.html'>open</a></td></tr>
+<tr><td>sweep-booking-panel-radii</td><td>Booking panel radii , full screen before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-booking-panel-radii/index.html'>open</a></td></tr>
+<tr><td>sweep-booking-payment-selected</td><td>Booking payment selector , full screen before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-booking-payment-selected/index.html'>open</a></td></tr>
+<tr><td>sweep-bookings-skeleton</td><td>Bookings loading , full screen before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-bookings-skeleton/index.html'>open</a></td></tr>
+<tr><td>sweep-brand-hero</td><td>Brand group hero , full screen before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-brand-hero/index.html'>open</a></td></tr>
+<tr><td>sweep-card-count-dupe</td><td>Search card , full screen before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-card-count-dupe/index.html'>open</a></td></tr>
+<tr class="old"><td>sweep-card-count-dupe</td><td>Search card , full screen before/after</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='sweep-card-count-dupe/index 2.html'>open</a></td></tr>
+<tr><td>sweep-categories-tile</td><td>Homepage category tile , full screen before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-categories-tile/index.html'>open</a></td></tr>
+<tr><td>sweep-city-picker-selected</td><td>City picker , selected option , full page before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-city-picker-selected/index.html'>open</a></td></tr>
+<tr><td>sweep-cookie-consent</td><td>Cookie consent , badge + link , full page before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-cookie-consent/index.html'>open</a></td></tr>
+<tr><td>sweep-dash-card-signature</td><td>Dashboard card signature , full screen before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-dash-card-signature/index.html'>open</a></td></tr>
+<tr><td>sweep-dash-selected-state</td><td>Dashboard selected state , full screen before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-dash-selected-state/index.html'>open</a></td></tr>
+<tr><td>sweep-dash-status-pill</td><td>Dashboard status pills , full screen before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-dash-status-pill/index.html'>open</a></td></tr>
+<tr><td>sweep-dash-vibrancy</td><td>Dashboard calendar , vibrancy , full page before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-dash-vibrancy/index.html'>open</a></td></tr>
+<tr><td>sweep-datastate-filters</td><td>Data-state filters: hide while empty?</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-datastate-filters.html'>open</a></td></tr>
+<tr><td>sweep-empty-consolidation</td><td>Empty states , full screen before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-empty-consolidation/index.html'>open</a></td></tr>
+<tr class="old"><td>sweep-gallery</td><td>Mockups v2 , live before/after gallery</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='sweep-gallery-v2/index.html'>open</a></td></tr>
+<tr><td>sweep-gallery</td><td>Frontend sweep , mockup gallery</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-gallery/index.html'>open</a></td></tr>
+<tr><td>sweep-help-h1</td><td>Help H1 scale , full screen before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-help-h1/index.html'>open</a></td></tr>
+<tr><td>sweep-help-rows</td><td>Help rows , full screen before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-help-rows/index.html'>open</a></td></tr>
+<tr><td>sweep-modal-scrim</td><td>Modal scrim , warm vs cool , full page before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-modal-scrim/index.html'>open</a></td></tr>
+<tr><td>sweep-nail-tech-badge</td><td>Nail-tech tier badge , full screen before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-nail-tech-badge/index.html'>open</a></td></tr>
+<tr><td>sweep-nav-hover</td><td>Header nav hover , full screen before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-nav-hover/index.html'>open</a></td></tr>
+<tr><td>sweep-notif-grouping</td><td>Notifications grouping , full screen before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-notif-grouping/index.html'>open</a></td></tr>
+<tr><td>sweep-partner-cards</td><td>Partner cards , full screen before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-partner-cards/index.html'>open</a></td></tr>
+<tr><td>sweep-partner-faq</td><td>Partner FAQ , full screen before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-partner-faq/index.html'>open</a></td></tr>
+<tr><td>sweep-payment-empty-fix</td><td>Payment empty state , fix</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-payment-empty-fix/index.html'>open</a></td></tr>
+<tr><td>sweep-payment-methods</td><td>Zahlungsmethoden , proposed account screen</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-payment-methods/index.html'>open</a></td></tr>
+<tr><td>sweep-products-cta</td><td>Salon PDP , retail checkout CTA , full screen before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-products-cta/index.html'>open</a></td></tr>
+<tr><td>sweep-profile-faithful</td><td>Profile , faithful to the Pinterest reference</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-profile-faithful/index.html'>open</a></td></tr>
+<tr><td>sweep-profile-loading</td><td>Profile loading , full screen before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-profile-loading/index.html'>open</a></td></tr>
+<tr><td>sweep-profile-loyalty-meta</td><td>Profile loyalty row , full screen before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-profile-loyalty-meta/index.html'>open</a></td></tr>
+<tr><td>sweep-profile-pinterest</td><td>Profile , Pinterest profile model , 3 directions</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-profile-pinterest/index.html'>open</a></td></tr>
+<tr><td>sweep-profile-rebook</td><td>Profile , the council direction (rebook list, not a collage board)</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-profile-rebook/index.html'>open</a></td></tr>
+<tr><td>sweep-queue-feedback</td><td>Walk-in feedback CTA , full screen before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-queue-feedback/index.html'>open</a></td></tr>
+<tr><td>sweep-queue-skeleton</td><td>Walk-in tracker loading , full screen before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-queue-skeleton/index.html'>open</a></td></tr>
+<tr><td>sweep-referral-buttons</td><td>Referral share buttons , full screen before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-referral-buttons/index.html'>open</a></td></tr>
+<tr><td>sweep-referral-hero</td><td>Referral hero , full screen before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-referral-hero/index.html'>open</a></td></tr>
+<tr><td>sweep-result-card-variants</td><td>Result card variants , full screen before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-result-card-variants/index.html'>open</a></td></tr>
+<tr><td>sweep-reviews-direction</td><td>Reviews section , direction A , full page before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-reviews-direction/index.html'>open</a></td></tr>
+<tr><td>sweep-rewards-hero-gradient</td><td>Rewards hero , full screen before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-rewards-hero-gradient/index.html'>open</a></td></tr>
+<tr><td>sweep-rewards-tier-ladder</td><td>Rewards tier ladder , full screen before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-rewards-tier-ladder/index.html'>open</a></td></tr>
+<tr><td>sweep-salon-sections</td><td>Salon PDP , sections carded , full page before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-salon-sections/index.html'>open</a></td></tr>
+<tr><td>sweep-salon-services-tier</td><td>Salon services , tier-card + select , full page before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-salon-services-tier/index.html'>open</a></td></tr>
+<tr><td>sweep-salon-team</td><td>Salon PDP , Team wrapper , full page before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-salon-team/index.html'>open</a></td></tr>
+<tr><td>sweep-search-empty</td><td>Search empty state , full screen before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-search-empty/index.html'>open</a></td></tr>
+<tr><td>sweep-selected-ink-pill</td><td>Settings language pill , selected fill , full page before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-selected-ink-pill/index.html'>open</a></td></tr>
+<tr><td>sweep-settings-insta</td><td>Settings , Insta-style rows , full page before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-settings-insta/index.html'>open</a></td></tr>
+<tr><td>sweep-settings-pinterest</td><td>Settings , Pinterest account model , 3 directions</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-settings-pinterest/index.html'>open</a></td></tr>
+<tr><td>sweep-settings-whitefirst</td><td>Settings , white-first (less gray) , full page before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-settings-whitefirst/index.html'>open</a></td></tr>
+<tr><td>sweep-stampcard-generation</td><td>Stamp card generation , full screen before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-stampcard-generation/index.html'>open</a></td></tr>
+<tr><td>sweep-ueber-uns</td><td>About page (ueber-uns) , full screen before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-ueber-uns/index.html'>open</a></td></tr>
+<tr><td>sweep-voucher-status-chip</td><td>Voucher status chip , full screen before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-voucher-status-chip/index.html'>open</a></td></tr>
+<tr><td>sweep-warum-badge</td><td>Why-Solen (warum) badge , full screen before/after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='sweep-warum-badge/index.html'>open</a></td></tr>
+<tr><td>system-overhaul-questions</td><td>System overhaul, question round 2</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='system-overhaul-questions/index.html'>open</a></td></tr>
+<tr class="old"><td>taste</td><td>taste-round2: the integrated, tappable probe pages</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='taste-round2/index.html'>open</a></td></tr>
+<tr class="old"><td>taste</td><td>Round 2 integrated: the dashboard page, tappable</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='taste-round2/dashboard.html'>open</a></td></tr>
+<tr class="old"><td>taste</td><td>C3 selected filter pills + C5 staging color, the two open picks</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='taste-round2/c3-c5.html'>open</a></td></tr>
+<tr class="old"><td>taste</td><td>Round 2 rules and the missing refs probes, Wrong and Right</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='taste-round2/round2-rules.html'>open</a></td></tr>
+<tr class="old"><td>taste</td><td>Round 2 explained: what it added, where its mockups are, and what it a</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='taste-round2/round2-explained.html'>open</a></td></tr>
+<tr><td>taste</td><td>Round 2 integrated: the real search overlay, tappable</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='taste-round2/search.html'>open</a></td></tr>
+<tr><td>taste-audit-w1</td><td>Taste Audit, Wave 1</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='taste-audit-w1/index.html'>open</a></td></tr>
+<tr><td>taste-book</td><td>The Taste Book</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='taste-book/index.html'>open</a></td></tr>
+<tr><td>taste-lab</td><td>Taste Lab: SalonCard variants</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='taste-lab/index.html'>open</a></td></tr>
+<tr><td>taste-questions</td><td>Taste questions , pick what Solen should FEEL like</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='taste-questions/index.html'>open</a></td></tr>
+<tr><td>taste-r3-review</td><td>Taste Research Round 3, before and after</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='taste-r3-review/index.html'>open</a></td></tr>
+<tr><td>taste-refs</td><td>Taste refs: the 30 references, applied to Solen</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='taste-refs/index.html'>open</a></td></tr>
+<tr class="old"><td>video-audit</td><td>Profile rows + outcome feedback (DS-7 / DS-8 / DS-1)</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='video-audit/profile-and-feedback.html'>open</a></td></tr>
+<tr><td>video-audit</td><td>Sheet physics, grabber + drag-dismiss + background options (DS-11)</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='video-audit/sheets-motion.html'>open</a></td></tr>
+<tr class="old"><td>video-audit</td><td>Home cards, grammar + resilience (DS-7 / DS-9 / DS-5 / DS-6)</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='video-audit/home-cards.html'>open</a></td></tr>
+<tr class="old"><td>video-audit</td><td>Personality zones, 404 + empty states, 3 voices (DS-12)</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='video-audit/personality.html'>open</a></td></tr>
+<tr class="old"><td>video-audit</td><td>Salon PDP, gallery dots + scrim + rhythm (DS-10 / DS-A4 / DS-5)</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='video-audit/salon-pdp.html'>open</a></td></tr>
+<tr class="old"><td>video-audit</td><td>DS upgrade, the system itself (DS-1…DS-12)</td><td>2026-08-18</td><td><span class="tag">superseded</span></td><td><a href='video-audit/ds-site.html'>open</a></td></tr>
+<tr><td>walk-in-B-refined</td><td>Walk-in B , refined</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='walk-in-B-refined.html'>open</a></td></tr>
+<tr><td>walk-in-section-redesign</td><td>Walk-in section , redesign directions</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='walk-in-section-redesign.html'>open</a></td></tr>
+<tr><td>walkin</td><td>Walk-in band: the count leads, the marks carry the load</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='walkin-round2/section.html'>open</a></td></tr>
+<tr><td>walkin-directions</td><td>Walk-in band: nine versions, stacked</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='walkin-directions/sections.html'>open</a></td></tr>
+<tr><td>walkin-real</td><td>walkin-real</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='walkin-real.html'>open</a></td></tr>
+<tr><td>walkin-redesign</td><td>walkin-redesign</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='walkin-redesign.html'>open</a></td></tr>
+<tr><td>walkin-refined</td><td>walkin-refined</td><td>2026-08-18</td><td><span class="tag now">current</span></td><td><a href='walkin-refined.html'>open</a></td></tr>
+</table>
