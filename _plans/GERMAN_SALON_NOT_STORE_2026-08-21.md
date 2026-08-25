@@ -36,4 +36,32 @@ correction, continuing what pass 1 (commit `ffb09aba1`) already started.
   `DetailPage.tsx:436`, `queue/[token]/page.tsx:359,390`.
 
 ## Status
-Round 2 in progress this turn.
+**GERMAN: DONE, verified 2026-08-25 by re-scan, not by assumption.** Zero German strings call a
+salon a store, measured two ways: every VALUE in `messages/de.json` (0 hits) and every inline
+`de: { ... }` locale branch across `app/**` and `components*/**` (0 hits, 19 files carry one).
+What still greps as "Store" in German-adjacent files is the Lucide `<Store />` ICON, code
+identifiers, and stale code comments quoting the old strings. None of it renders as a word.
+
+**FRENCH: found carrying the identical defect, and fixed the same day** (commit `07efec6f4`).
+This was NOT in either round's scope, which is exactly why it survived. In French "store" means a
+window blind, so the defect is worse there than in German: a French visitor read "Aide stores",
+"Reponse du store", "Decouvrir d'autres stores", "Montrez ce code au store". 24 strings changed,
+12 in `messages/fr.json` (against 376 that already said salon) and 12 in the inline `fr:` branches
+of `walk-in-pay` and `queue/[token]`. English is byte-identical: the replace was scoped to the
+`fr:` LINE because `salonEyebrow: "Store"` is correct in the English branch of the same object.
+
+**Two defects found while in there, both fixed:**
+- `api.salonRejected.body` in `messages/it.json` interpolated `{store}`, but
+  `app/api/admin/salons/[id]/reject/route.ts:72` passes `{ salon, reason }`. An Italian-locale
+  owner's rejection message could never render the salon name. A shipped bug, not a preference.
+- tu/vous mixing in French. `blockedPausedBody` said "Reessaie plus tard ou choisis" and the queue
+  page said "Ton retour", while every sibling string in the same object uses Veuillez/Votre/Vous
+  and both German siblings are formal. COPY_LAW fixes French at vous.
+
+**PARKED, needs the owner: the Italian WORD "store", 25 uses** (12 in `messages/it.json`, 13 in
+inline `it:` branches). Deliberately NOT changed. Unlike French, "store" is a real borrowed word
+in Italian commerce, so replacing it is a branding call that needs the same market research the
+German decision got. Changing it on the German precedent alone would be a guess.
+
+The French one-off this file already tracked, `salon/[slug]/layout.tsx:10` "Store d'ongles"
+(window blind, mistranslation), was verified fixed: that line now reads `nails: "Onglerie"`.
