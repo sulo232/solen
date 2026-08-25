@@ -2,16 +2,16 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-24T14:17:53 (trigger: auto)
+- taken: 2026-08-25T08:31:54 (trigger: auto)
 - branch: claude/stress-test-gates-hooks-6dc8e8
 
 ## git
 ```
-ffdbb8b4c Everything he asked today, and what happened for each
-10242f37a Put the proof on the line the check reads
-166b0d7f1 All twelve closed, each with the commit that closed it
-90e2353a0 Tick the reply-family-aggregator.py box, with proof it is actually fixed
-35ad45d6b Record why two rarely-firing project checks are shelved, no logic touched
+cd33b1241 The check that hunts dead enforcement was wrong about 21 checks
+5971b4207 Proof moved onto the lines the checkbox check reads, for the three boxes it caught
+ddb99e9a2 Box 4 closed as a workflow, not more skills; one box left and it needs his password
+a69da58a9 Three boxes closed with evidence: skill eval redone honestly, archives indexed, totals corrected
+6b1247f6c Merged check family armed; box 8b closed with its evidence
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
@@ -83,3 +83,4 @@ ffdbb8b4c Everything he asked today, and what happened for each
 51 | DESIGN RE-ENGINEER , improve the system we have, measured against live Airbnb | **ACTIVE** (2026-07-28)
 72 | REFUND PROCESS: does it exist, who decides, is it legal (owner 2026-08-19: "Is there even a refund process, and how does it even proceed? Who is gonna decide it? ... with the tax and fix if it's legal or not") | **ACTIVE** (2026-08-19)
 71 | GATE + HOOK STRESS TEST , all 305 hooks driven with real payloads, not read (owner 2026-08-17: "actually evaluate and stress test each one") | **ACTIVE** (2026-08-18)
+78 | SKILLS AND WORKFLOWS ARE OWNED BUT NOT USED (owner 2026-08-24: "multiple skills right, skills and they often don't use ours... look into Anthropic official and also out there... for example dictation") | **ACTIVE** (2026-08-24)
