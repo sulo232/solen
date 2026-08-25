@@ -45,3 +45,26 @@ no agents; the rejected message is right there.
 ## Close condition
 His own last reply, rewritten, with every row of the table applied, and no sentence in it that
 fails the could-he-act-on-it test. Not "the table exists".
+
+
+## Still open, tracked as boxes so they are not just narrated
+
+- [ ] **A. Italian still calls a salon a "store", 25 places** (12 in the shared Italian text, 13 in
+      pages that carry their own text). NOT a bug and NOT guessable: unlike French, "store" is a
+      genuinely borrowed word in Italian commerce, so this is a branding call that needs either his
+      word or the same market research the German decision got.
+      PLAN A , he says switch it: replace with "salone" throughout, same scoped method as the
+      French pass (commit `07efec6f4`), one command, verified by re-scan and key parity.
+      PLAN B , he says leave it: close this box, and add a line to the German decision file saying
+      Italian deliberately keeps the borrowed word, so no future sweep re-opens it.
+      PLAN C , he does not answer: leave it alone. Italian reads acceptably today; it is the one
+      language where the word is not wrong, only inconsistent with the other three.
+
+- [ ] **B. One of the three council models is logged out.** Verified by asking all three the same
+      one-word question: Gemini and Grok answer, the third returns "OAuth session expired and could
+      not be refreshed". Only he can fix it, because signing in needs his password.
+      The exact line, read off the tool's own help rather than guessed (`claude auth --help`,
+      version 2.1.219): `claude auth login`
+      PLAN A , he runs it: nothing else needed, the third model rejoins on its own.
+      PLAN B , he does not: the council keeps running at two of three, which is why every consult
+      this session has been two opinions. Not a blocker for anything else.
