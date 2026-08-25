@@ -828,11 +828,11 @@
     "forSalonsDashboard": "Tableau de bord",
     "legalTitle": "Mentions légales",
     "newsletterTitle": "Restez informé",
-    "newsletterSub": "Nouveaux stores, tendances et conseils. Une fois par mois.",
+    "newsletterSub": "Nouveaux salons, tendances et conseils. Une fois par mois.",
     "careers": "Carrières",
     "press": "Presse",
     "blog": "Blog",
-    "salonHelp": "Aide stores",
+    "salonHelp": "Aide salons",
     "customerHelp": "Aide clients",
     "safety": "Sécurité",
     "contact": "Contact",
@@ -987,7 +987,7 @@
     "removeFromFavorites": "Retirer des favoris",
     "addToFavorites": "Ajouter aux favoris",
     "appointmentsToday": "Réservé aujourd'hui",
-    "topSalon": "Store Top",
+    "topSalon": "Salon Top",
     "solenTopPick": "Coup de cœur Solen",
     "partOfBrand": "Fait partie de",
     "bookedTimesThisWeek": "{count}× réservé cette semaine",
@@ -3855,7 +3855,7 @@
     "noPastBookings": "Aucun rendez-vous passé",
     "favorites": "Favoris",
     "noFavorites": "Pas encore de favoris",
-    "salonsCount": "{count, plural, one {# store} other {# stores}}",
+    "salonsCount": "{count, plural, one {# salon} other {# salons}}",
     "discoverSalons": "Découvrir les salons",
     "removeFromFavorites": "Retirer des favoris",
     "stampCards": "Vos cartes de fidélité",
@@ -4652,7 +4652,7 @@
     "instantBookable": "Réservable instantanément",
     "deals": "Offres",
     "walkIn": "Sans rendez-vous",
-    "salonsFoundCount": "{count, plural, one {# store trouvé} other {# stores trouvés}}"
+    "salonsFoundCount": "{count, plural, one {# salon trouvé} other {# salons trouvés}}"
   },
   "discover": {
     "title": "Inspo",
@@ -5241,7 +5241,7 @@
     "showOriginal": "Voir l'original",
     "showTranslation": "Voir la traduction",
     "replyFrom": "Réponse de {salon}",
-    "replyFromSalon": "Réponse du store"
+    "replyFromSalon": "Réponse du salon"
   },
   "reviewsPage": {
     "metaTitle": "Avis · Solen",
@@ -5826,14 +5826,14 @@
     "minutesUnit": "min",
     "additionalInfo": "Informations complémentaires",
     "reviewsHeading": "Avis",
-    "discoverMoreSalons": "Découvrir d'autres stores",
+    "discoverMoreSalons": "Découvrir d'autres salons",
     "noReviewsYet": "Pas encore d'avis.",
     "noReviewsInGroup": "Pas encore d'avis dans ce groupe.",
     "allNReviews": "Tous les {count} avis",
     "showNReviews": "Afficher {count} avis",
     "showOpeningHours": "Afficher les horaires",
     "contact": "Contact",
-    "discoverMore": "Découvrir d'autres stores",
+    "discoverMore": "Découvrir d'autres salons",
     "bundles": "Forfaits",
     "showLocation": "Afficher l'emplacement",
     "openInGoogleMaps": "{name} : ouvrir dans Google Maps",
@@ -6568,15 +6568,15 @@
   },
   "api": {
     "goLive": {
-      "frozen": "Ce store a été suspendu par un administrateur. Veuillez contacter le support.",
-      "pendingApproval": "Le store attend encore la validation d'un administrateur.",
+      "frozen": "Ce salon a été suspendu par un administrateur. Veuillez contacter le support.",
+      "pendingApproval": "Le salon attend encore la validation d'un administrateur.",
       "stripeRequired": "Stripe Connect doit d'abord être entièrement configuré (KYC, compte bancaire).",
       "coverPhotoRequired": "Une photo de couverture est requise.",
       "serviceRequired": "Au moins un service doit être actif."
     },
     "salonRejected": {
-      "title": "Store refusé",
-      "body": "Votre store {salon} n'a malheureusement pas été approuvé. Motif : {reason}"
+      "title": "Salon refusé",
+      "body": "Votre salon {salon} n'a malheureusement pas été approuvé. Motif : {reason}"
     }
   }
 }

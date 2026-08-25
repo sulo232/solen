@@ -6576,7 +6576,7 @@
     },
     "salonRejected": {
       "title": "Store rifiutato",
-      "body": "Il tuo store {store} purtroppo non è stato approvato. Motivo: {reason}"
+      "body": "Il tuo store {salon} purtroppo non è stato approvato. Motivo: {reason}"
     }
   }
 }
