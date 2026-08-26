@@ -127,7 +127,7 @@
  */
 
 import { useState } from "react";
-import { ArrowUpRight, Lock, Plus, Unlock } from "lucide-react";
+import { ArrowUpRight, Check, Lock, Plus, Unlock } from "lucide-react";
 
 // ---------------------------------------------------------------------------------------------
 // Fixture data. See the file header. Nothing below reads a table, a clock or a random source.
@@ -272,10 +272,28 @@ function plural(count: number, word: string): string {
 
 // ---------------------------------------------------------------------------------------------
 
-export default function FlowCalendar() {
+export const FRAMES: { key: string; caption: string }[] = [
+  {
+    key: "month",
+    caption:
+      "The month. A number under each day says how many appointments it holds, the way Airbnb puts a price under every date. Today carries a link to the Heute tab instead of a number, because today lives there.",
+  },
+  {
+    key: "day",
+    caption:
+      "Tap a day and it opens as its own hours: what is booked, what is free, what is blocked. Free time is the point, so it is named, not left blank.",
+  },
+];
+
+export default function FlowCalendar({ index }: { index: number }) {
   const [selected, setSelected] = useState(DEFAULT_SELECTED);
   const [todayTapped, setTodayTapped] = useState(false);
   const [openRow, setOpenRow] = useState<string | null>(null);
+  // Which bookings have been marked arrived, keyed the same way openRow is (String(startMin)), so
+  // more than one booking can be arrived at once. A Set, not a boolean per block, because the same
+  // key is reused across days (DAY_TEMPLATE is one literal day, see file header), matching the
+  // reset openRow already gets below.
+  const [arrivedRows, setArrivedRows] = useState<Set<string>>(new Set());
 
   function onCellTap(cell: DateCell) {
     if (cell.isToday) {
@@ -284,6 +302,7 @@ export default function FlowCalendar() {
     }
     setTodayTapped(false);
     setOpenRow(null);
+    setArrivedRows(new Set());
     setSelected({ year: cell.year, month: cell.month, day: cell.day });
   }
 
@@ -295,10 +314,13 @@ export default function FlowCalendar() {
     .reduce((sum, b) => sum + (b.endMin - b.startMin), 0);
   const freeHours = freeMinutes / 60;
 
+  const frame = FRAMES[index] ?? FRAMES[0]!;
+
   return (
-    <div className="flex flex-col sm:flex-row gap-8 overflow-x-auto bg-white p-6">
-      {/* Frame one: the month grid, every day that is not today. */}
-      <div className="shrink-0 w-[390px] rounded-[16px] border border-s-border bg-white">
+    <div className="relative h-[844px] w-full max-w-[390px] overflow-hidden rounded-[16px] border border-s-border bg-white">
+    <div className="h-full overflow-y-auto">
+    {frame.key === "month" && (
+      <div className="">
         <div className="px-5 pt-4">
           <span className="text-[13px] text-s-ink-2">Calendar tab</span>
         </div>
@@ -368,9 +390,10 @@ export default function FlowCalendar() {
           })}
         </div>
       </div>
+    )}
 
-      {/* Frame two: tap a date, it opens as blocks of time. Today never opens here, see above. */}
-      <div className="shrink-0 w-[390px] rounded-[16px] border border-s-border bg-white">
+    {frame.key === "day" && (
+      <div className="">
         <div className="px-5 pt-4">
           <span className="text-[13px] text-s-ink-2">Opens when you tap a date</span>
         </div>
@@ -400,15 +423,45 @@ export default function FlowCalendar() {
                   const key = String(block.startMin);
 
                   if (block.kind === "booking") {
+                    // A booking used to be the one row in this list nothing could be done with:
+                    // FREE and BLOCKED both toggle openRow and reveal an action pill, this row was a
+                    // plain div. That was the actual gap, the row holding a real person had no tap.
+                    // Same grammar as its neighbours below: tap opens it, one pill, no menu.
+                    const open = openRow === key;
+                    const arrived = arrivedRows.has(key);
                     return (
                       <div key={key} className="rounded-[16px] border border-s-border bg-white px-3 py-3">
-                        <div className="text-[13px] text-s-ink-2 tabular-nums">
-                          {fmt(block.startMin)} to {fmt(block.endMin)}
-                        </div>
-                        <div className="font-heading font-semibold text-[15px] text-s-ink mt-0.5">
-                          {block.service}
-                        </div>
-                        <div className="text-[13px] text-s-ink-2 mt-0.5">{block.stylist}</div>
+                        <button
+                          type="button"
+                          onClick={() => setOpenRow(open ? null : key)}
+                          aria-label={`${block.service}, ${block.stylist}, ${fmt(block.startMin)} to ${fmt(block.endMin)}`}
+                          className="block w-full text-left"
+                        >
+                          <div className="text-[13px] text-s-ink-2 tabular-nums">
+                            {fmt(block.startMin)} to {fmt(block.endMin)}
+                          </div>
+                          <div className="font-heading font-semibold text-[15px] text-s-ink mt-0.5">
+                            {block.service}
+                          </div>
+                          <div className="text-[13px] text-s-ink-2 mt-0.5">{block.stylist}</div>
+                        </button>
+                        {open && (
+                          arrived ? (
+                            <div className="mt-2 flex items-center gap-1.5 text-[13px] text-s-ink-2">
+                              <Check size={14} strokeWidth={2.2} aria-hidden />
+                              Arrived
+                            </div>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => setArrivedRows((prev) => new Set(prev).add(key))}
+                              className="mt-2 flex h-11 items-center gap-2 rounded-full border border-s-border px-3 text-[13px] font-semibold text-s-ink"
+                            >
+                              <Check size={14} strokeWidth={2.2} aria-hidden />
+                              They showed up
+                            </button>
+                          )
+                        )}
                       </div>
                     );
                   }
@@ -481,6 +534,8 @@ export default function FlowCalendar() {
           )}
         </div>
       </div>
+    )}
+    </div>
     </div>
   );
 }

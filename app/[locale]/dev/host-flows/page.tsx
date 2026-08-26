@@ -10,7 +10,10 @@
  * FIX 2 below, not re-implemented), app/[locale]/dev/calendar-agenda/page.tsx (the segmented
  * flow-switcher pill row, unchanged from the prior build) and ./_flow-tabs.tsx (the frame this page
  * now steps through by index). All three read from source this turn; this shell could not reach
- * localhost, stated plainly rather than claimed otherwise.
+ * localhost, stated plainly rather than claimed otherwise. This edit also read
+ * app/[locale]/_components/layout/Footer.tsx and its FooterGate.tsx wrapper to ground FIX 3 below,
+ * and grepped all four sibling flow files for `export const FRAMES` / `FLOW_TABS_FRAMES` to ground
+ * the FIX 1 correction below.
  *
  * THE MEASURED DEFECT THIS EDIT FIXES, taken on the rendered page rather than guessed: frame width
  * 390px each, three of them laid out in a row; visible window 358px against 438px of content, so a
@@ -19,25 +22,21 @@
  * Search, Inspo, Saved, Sign in, because this route is nested under app/[locale]/ and inherits the
  * customer layout's chrome.
  *
- * FIX 1, ONE FRAME AT A TIME. This page now owns a `frameIndex` and a prev/next stepper. The "Tabs
- * and Menu" flow (`_flow-tabs.tsx`, the one file in this folder this page's author also owns) was
- * rebuilt to expose an indexed, single-frame API (`FLOW_TABS_FRAMES` plus a `{ index }` prop on its
- * default export), so that flow gets a real stepper: one 390 wide frame, full width, a caption
- * naming it, and a Frame X of Y control whose own layout does not move as you step (the caption
- * paragraph carries a `min-h` so a short caption and a long one do not shift the buttons beneath
- * it).
+ * FIX 1, ONE FRAME AT A TIME, now uniform across all four flows. This page owns a `frameIndex` and
+ * a prev/next stepper. The "Tabs and Menu" flow (`_flow-tabs.tsx`, the one file in this folder this
+ * page's author also owns) was the first rebuilt to expose an indexed, single-frame API
+ * (`FLOW_TABS_FRAMES` plus a `{ index }` prop on its default export); the other three
+ * (`_flow-phone.tsx`, `_flow-empty.tsx`, `_flow-calendar.tsx`) rendered every frame of their flow at
+ * once at that point, with no prop to select one, and this page fell back to a capped-width panning
+ * strip plus an on-screen note saying so.
  *
- * The other three flows (`_flow-phone.tsx`, `_flow-empty.tsx`, `_flow-calendar.tsx`) still render
- * every frame of their flow at once, with no prop to select one and no exported per-frame list,
- * because that is how they were built and this page does not own them; they are not edited here.
- * What each would need to gain the same stepper (a `{ frameIndex: number }` prop, a captions export,
- * five steps for phone, two for empty, two for calendar, the calendar pair sharing interactive state
- * so splitting it may need a design call and not just a mechanical prop) is handed back as its own
- * job rather than guessed at here. The fix applied inside this file alone: their mount point is
- * capped to one phone width, `w-full max-w-[390px]`, so what used to render as an uncapped row now
- * reads as a single strip a reader pans sideways through, starting flush at the first frame instead
- * of landing mid-content, plus a one line note on screen saying plainly that these three are not yet
- * split into single-frame steps.
+ * All three have since gained the same indexed API on their own. Verified this turn, not assumed:
+ * grepping all four sibling files for `export const FRAMES` and `export const FLOW_TABS_FRAMES`
+ * hits in all four, and all four default exports take a `{ index }` prop. So the fallback branch
+ * and its note are gone; every flow now gets the identical stepper, one 390 wide frame, full width,
+ * a caption naming it, and a Frame X of Y control whose own layout does not move as you step (the
+ * caption paragraph carries a `min-h` so a short caption and a long one do not shift the buttons
+ * beneath it).
  *
  * FIXED ONCE DURING THIS EDIT, and named rather than smoothed over: the "tabs" frame's own wrapper
  * first shipped as a hard `w-[390px]`, which cannot fit inside a 390 viewport that also carries this
@@ -63,15 +62,30 @@
  * below uses `position: fixed` or `sticky`, so nothing this page renders is at risk of being swept
  * away by its own chrome-hiding hook.
  *
+ * FIX 3, CUSTOMER FOOTER HIDDEN. `useOwnTheScreen` (FIX 2) only sweeps elements computed `position:
+ * fixed` or `sticky`; the customer marketing footer (`Footer.tsx`, mounted by `FooterGate` at the
+ * locale-layout level) is `position: relative`, so it survives that sweep and rendered below the
+ * phone frame: a newsletter band ("Stay in the loop"), then Company / For Salons / Help / Legal
+ * link columns, in German in places, on a page whose own rule is English copy. Measured on the
+ * rendered page, not guessed. `FooterGate.tsx` already carries a `DEV_TASK_STEP_PREFIXES` extension
+ * point built for exactly this case (dev mockup routes standing in for task-step screens), which
+ * would be the more idiomatic fix, but that file is out of scope for this edit, so the same result
+ * lands here instead as a small local effect: the page's own root carries `data-host-flows-root`,
+ * and the effect hides any `<footer>` in the document that sits OUTSIDE that root. It can never hide
+ * this page's own content, because anything inside the tagged root is explicitly skipped before the
+ * hide runs. `Footer` mounts synchronously as part of the initial locale-layout tree, not behind a
+ * later fetch or a Suspense boundary, so a single pass on mount is enough; unlike FIX 2's repeating
+ * sweep, which exists only because the cookie banner and the PWA prompt mount late.
+ *
  * SCREEN CLASS: operator screen. Governed by `_design-system/TERMINAL_PRINCIPLES.md`, not the
  * customer FLOORS LAW, per that file's section 1: no imagery floor, no required semantic-colour
  * moment, no sunken-tray canvas requirement for grouped content.
  *
  * Type budget on the chrome this file adds (not the mounted flows, which carry their own budgets):
  * two sizes, 30px for the page title and 13px for everything else (the description line, the four
- * flow-switcher labels, the stepper caption and counter, the per-flow fallback note); two weights,
- * 600 (title, active flow-switcher/stepper label) and 400 (description, inactive labels, notes).
- * Both inside the four-size/two-weight ceiling.
+ * flow-switcher labels, the stepper caption and counter); two weights, 600 (title, active
+ * flow-switcher/stepper label) and 400 (description, inactive labels). Both inside the
+ * four-size/two-weight ceiling.
  *
  * White canvas only, no dark mode, no grey page background; tokens throughout (s-ink, s-ink-2,
  * s-border, s-bg-sunken, rounded-card); English copy; no em dash, en dash or middot anywhere in
@@ -80,11 +94,14 @@
  *
  * VERIFICATION: `npx tsc --noEmit` and `npx eslint` were run against this file this turn (see the
  * build report). This shell could not reach localhost, so nothing below has been screenshotted or
- * rendered; that is stated plainly rather than claimed.
+ * rendered; that is stated plainly rather than claimed. This pass (FIX 3, the FIX 1 correction, the
+ * NOT_STEPPED_NOTE removal) ran `npx tsc --noEmit -p tsconfig.json` again afterward and printed
+ * nothing for this file; also stated plainly, not claimed without having run it, and this shell
+ * still could not reach localhost so nothing here is screenshotted either.
  */
 "use client";
 
-import { useState, type ReactElement } from "react";
+import { useEffect, useState, type ReactElement } from "react";
 import { notFound } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useOwnTheScreen } from "../mock/_shell/MockShell";
@@ -95,9 +112,11 @@ import * as TabsMod from "./_flow-tabs";
 
 type FlowKey = "tabs" | "calendar" | "phone" | "first-day";
 
-/** A flow module either exposes the stepped API (a FRAMES list plus an `{ index }` default export)
- *  or it does not, in which case its default export renders every frame at once and this page falls
- *  back to the panning strip. Namespace imports above keep both shapes compiling. */
+/** All four flow modules now expose the stepped API: a FRAMES (or FLOW_TABS_FRAMES) list plus a
+ *  default export that takes `{ index }`. The `?` on both fields stays defensive typing only, so a
+ *  future flow file added before it gains its own frame list still compiles; framesOf returns null
+ *  for it rather than crashing. Namespace imports above keep every module's exact export shape
+ *  compiling regardless of which of the two frame-list names it uses. */
 type FlowFrame = { key: string; caption: string };
 type FlowModule = {
   default: (props: { index: number }) => ReactElement;
@@ -117,17 +136,37 @@ const FLOW_OPTIONS: { key: FlowKey; label: string; mod: FlowModule }[] = [
   { key: "first-day", label: "First day", mod: EmptyMod as unknown as FlowModule },
 ];
 
-// A one line, honest note for the three flows this page cannot yet step through frame by frame (see
-// the file header, FIX 1). Not shown for "tabs", which has a real stepper below.
-const NOT_STEPPED_NOTE =
-  "This flow is not yet split into single-frame steps. It is capped to one phone width below; pan sideways to see the rest.";
-
 export default function HostFlowsPage() {
   if (process.env.NODE_ENV === "production") notFound();
 
   // Hides the customer BottomNav (and any other fixed/sticky customer chrome) while this dev page is
   // open, without touching app/[locale]/layout.tsx. See the file header, FIX 2.
   useOwnTheScreen();
+
+  // Hides the customer marketing footer (position: relative, so FIX 2's fixed/sticky sweep above
+  // never touches it). Scoped to elements OUTSIDE this page's own root (data-host-flows-root on the
+  // wrapper below) so it can never hide this page's own content. See the file header, FIX 3.
+  //
+  // THE CLEANUP IS THE POINT, and the first version of this effect did not have one. The footer is
+  // mounted by app/[locale]/layout.tsx, which OUTLIVES this page: a client-side navigation away
+  // unmounts this component but keeps that same footer node alive, so an inline display:none set
+  // here stayed on it for the rest of the browser session and the real site lost its footer on
+  // every page until a hard reload. Caught on the running dev server by a reviewer, not by a
+  // typecheck, because nothing about it is a type error. Restoring the exact prior inline value
+  // (usually the empty string) rather than assigning "block" keeps a footer that was already
+  // hidden for its own reasons hidden.
+  useEffect(() => {
+    const root = document.querySelector("[data-host-flows-root]");
+    const touched: { el: HTMLElement; prev: string }[] = [];
+    for (const footer of Array.from(document.querySelectorAll<HTMLElement>("footer"))) {
+      if (root?.contains(footer)) continue;
+      touched.push({ el: footer, prev: footer.style.display });
+      footer.style.display = "none";
+    }
+    return () => {
+      for (const { el, prev } of touched) el.style.display = prev;
+    };
+  }, []);
 
   const [flow, setFlow] = useState<FlowKey>("tabs");
   const [frameIndex, setFrameIndex] = useState(0);
@@ -139,12 +178,11 @@ export default function HostFlowsPage() {
 
   const active = FLOW_OPTIONS.find((o) => o.key === flow) ?? FLOW_OPTIONS[0];
   const frames = framesOf(active.mod);
-  const stepped = frames !== null;
   const frame = frames ? (frames[frameIndex] ?? frames[0]) : null;
   const Flow = active.mod.default;
 
   return (
-    <div className="min-h-[100dvh] w-full bg-white px-4 py-10">
+    <div data-host-flows-root className="min-h-[100dvh] w-full bg-white px-4 py-10">
       <div className="mx-auto w-full max-w-[390px]">
         <p className="font-display text-[30px] font-semibold leading-tight text-s-ink">
           Host flow proposals
@@ -169,10 +207,11 @@ export default function HostFlowsPage() {
           ))}
         </div>
 
-        {/* The frame stepper. Only the "tabs" flow has a real per-frame index, see the file header
-            for why the other three do not yet. `min-h` on the caption keeps the prev/next row from
-            moving as a short caption swaps for a longer one. */}
-        {stepped && frame && frames && (
+        {/* The frame stepper. All four flows carry a real per-frame index now (file header, FIX 1);
+            `frame && frames` stays as a defensive guard rather than an actual either/or today.
+            `min-h` on the caption keeps the prev/next row from moving as a short caption swaps for a
+            longer one. */}
+        {frame && frames && (
           <div className="mt-6">
             <p className="font-body min-h-[34px] text-[13px] font-normal text-s-ink-2">{frame.caption}</p>
             <div className="mt-2 flex items-center justify-between">
@@ -203,18 +242,9 @@ export default function HostFlowsPage() {
       </div>
 
       <div className="mt-8 w-full">
-        {stepped ? (
-          <div className="mx-auto w-full max-w-[390px]">
-            <Flow index={frameIndex} />
-          </div>
-        ) : (
-          <div className="mx-auto w-full max-w-[390px]">
-            <p className="px-1 pb-3 font-body text-[13px] font-normal text-s-ink-2">{NOT_STEPPED_NOTE}</p>
-            <div className="overflow-x-auto">
-              <Flow index={0} />
-            </div>
-          </div>
-        )}
+        <div className="mx-auto w-full max-w-[390px]">
+          <Flow index={frameIndex} />
+        </div>
       </div>
     </div>
   );

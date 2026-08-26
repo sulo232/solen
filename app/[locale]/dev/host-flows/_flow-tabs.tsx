@@ -97,13 +97,20 @@
 // build report). A local dev server could not be reached from this shell, so nothing below has been
 // screenshotted or rendered; that is stated plainly rather than claimed.
 //
-// ROUND 2026-08-21, CUT, not redesign. Owner: "did u accc look at design from airbnb". The prior
-// CalendarScreen below drew 46 elements carrying text or a background fill (counted literally, with
-// the day-grid's weekday letters and date cells collapsed to one pattern-unit each, the same
-// treatment the tab bar already gets, since both are uniform repeated shapes scanned as a set rather
-// than read item by item, the same convention the owner used counting Airbnb's own 5-tab bar as one
-// thing). This round's CalendarScreen renders 19. Structure, tabs, the standing strip, and the frame
-// stepper API are unchanged; only content was subtracted or merged. What moved:
+// ROUND 2026-08-21, CUT, not redesign. Owner: "did u accc look at design from airbnb".
+//
+// TWO COUNTS, AND THEY ARE BOTH REAL, WHICH IS WHY THIS PARAGRAPH EXISTS. Raw, every element in the
+// frame that carries its own text or paints its own background: 111 before, 41 after, re-measured
+// on the rendered frame at 390x844 on 2026-08-26 and landing at 45 once the caption itself grew.
+// Collapsed, where a uniform repeated shape (the weekday letters, the date cells, the tab bar) is
+// counted as one pattern-unit because it is scanned as a set rather than read item by item: 46
+// before, 19 after. The caption on his screen used to quote one pair while this paragraph quoted the
+// other, with nothing saying they measured different things, so the file contradicted itself about
+// its own edit. The caption now carries no number at all, since a measurement dispute is not what a
+// caption is for.
+//
+// Structure, tabs, the walk-in line, and the frame stepper API are unchanged; only content was
+// subtracted or merged. What moved:
 //   - Chairs: three separate name+status lines (one per face) became one sentence under the row of
 //     faces, built from the same CHAIRS array (CHAIR_SUMMARY). The state ring is unchanged.
 //   - The anchor's row no longer carries the Add-walk-in button; nothing shares it now.
@@ -567,7 +574,9 @@ function CustomersScreen() {
     <>
       <div className="px-5 pt-8">
         <h1 className={ANCHOR}>{CLIENT_TOTAL} clients</h1>
-        <p className={SUBLINE}>Their visits, notes and a way to book them again.</p>
+        {/* Says what THIS screen holds. It used to promise notes and a way to re-book, neither of
+            which appears on this frame: both live behind a client's own row, one tap further in. */}
+        <p className={SUBLINE}>Everyone who has been in, most recent first.</p>
       </div>
 
       <div className="mx-5 mt-4 flex h-11 items-center gap-2 rounded-[12px] border border-s-border bg-white px-3"> {/* boxed-ok: an input field's own border, a form control, not a container wrapping the client rows below it. */}
@@ -649,11 +658,11 @@ export const FLOW_TABS_FRAMES: { key: NavKey; caption: string }[] = [
   {
     key: "calendar",
     caption:
-      "Calendar, the landing tab, cut hard, 111 things on screen down to 41, measured on the rendered frame: a face row plus one sentence, one anchor, the decision box with its text merged to one sentence, the standing strip, two of today's rows, and a one-week grid with dots instead of per-day counts.",
+      "Calendar, the tab you land on. Who is in a chair, one line for how the day is going, the one thing waiting on a yes or no, the walk-in line, the next two appointments, and this week with a dot on the busy days.",
   },
   {
     key: "clients",
-    caption: "Customers. One person at a time: their visits, their notes, a way to book them again.",
+    caption: "Customers. Everyone who has been in, most recent first. Tapping a name opens that person, which is where notes and booking them again live.",
   },
   {
     key: "menu",
