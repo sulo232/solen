@@ -1,0 +1,61 @@
+{
+  "generatedAt": "2026-08-26T20:54:11.200Z",
+  "items": [
+    {
+      "id": "confirmed",
+      "file": "art-confirmed.jpg",
+      "width": 1200,
+      "height": 1304,
+      "bytes": 94037
+    },
+    {
+      "id": "cancelled",
+      "file": "art-cancelled.jpg",
+      "width": 1200,
+      "height": 1304,
+      "bytes": 79213
+    },
+    {
+      "id": "reminder",
+      "file": "art-reminder.jpg",
+      "width": 1200,
+      "height": 1304,
+      "bytes": 93086
+    },
+    {
+      "id": "wordmark-ink",
+      "file": "wordmark-ink.png",
+      "width": 271,
+      "height": 84,
+      "bytes": 5320
+    },
+    {
+      "id": "wordmark-white",
+      "file": "wordmark-white.png",
+      "width": 271,
+      "height": 84,
+      "bytes": 4567
+    },
+    {
+      "id": "obj-confirmed",
+      "file": "obj-confirmed.png",
+      "width": 420,
+      "height": 420,
+      "bytes": 8290
+    },
+    {
+      "id": "obj-cancelled",
+      "file": "obj-cancelled.png",
+      "width": 420,
+      "height": 420,
+      "bytes": 28806
+    },
+    {
+      "id": "obj-reminder",
+      "file": "obj-reminder.png",
+      "width": 420,
+      "height": 420,
+      "bytes": 28320
+    }
+  ]
+}
