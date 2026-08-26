@@ -28,6 +28,12 @@
  * breaking out of the block's bottom edge instead of a photographed card underneath it, the
  * same overlap IMG_7994's own scooter makes. Rows/cta/footer are shared by all three; only the
  * top block and the picture slot change.
+ *
+ * This module and anything importing it must run via `npx tsx`, not plain `node`: it imports
+ * EMAIL_FONT_STACK from lib/email.ts, which itself imports other lib files through the `@/`
+ * path alias, and plain node's native TS type-stripping does not resolve tsconfig path
+ * aliases (checked by hand: plain `node` throws ERR_MODULE_NOT_FOUND on `@/lib`), only tsx
+ * does. Same constraint v1 (_email-proposal.mjs) already documents on itself.
  */
 import { EMAIL_FONT_STACK } from "../lib/email.ts";
 
