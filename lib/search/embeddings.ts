@@ -30,6 +30,9 @@ export async function generateEmbedding(
         outputDimensionality: EMBEDDING_DIMS,
         taskType,
       }),
+      // 10000ms: every search which misses cache goes through this call,
+      // same bound as app/api/auth/verify-phone/send/route.ts (gateway/short call)
+      signal: AbortSignal.timeout(10000),
     },
   );
   if (!res.ok) {

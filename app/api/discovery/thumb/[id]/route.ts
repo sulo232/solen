@@ -131,9 +131,10 @@ export async function GET(req: NextRequest, ctx: RouteContext) {
     freshUrl = cachedOembed.thumbnailUrl;
   } else {
     try {
+      // 8000ms: oEmbed fetch, same bound as the import-tiktok oEmbed call
       const oembedRes = await fetch(
         `${OEMBED_BASE}?url=${encodeURIComponent(item.tiktok_url)}`,
-        { cache: "no-store" },
+        { cache: "no-store", signal: AbortSignal.timeout(8000) },
       );
       if (!oembedRes.ok) {
         console.error("[thumb proxy] oembed status", oembedRes.status);
@@ -169,7 +170,8 @@ export async function GET(req: NextRequest, ctx: RouteContext) {
     throw err;
   }
   try {
-    const imgRes = await fetch(freshUrl);
+    // 8000ms: image-bytes fetch, same bound as lib/ai-vision.ts and the tiktok import
+    const imgRes = await fetch(freshUrl, { signal: AbortSignal.timeout(8000) });
     if (!imgRes.ok) {
       console.error("[thumb proxy] image fetch status", imgRes.status);
       return new NextResponse("image fetch failed", { status: 502 });

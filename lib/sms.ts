@@ -63,6 +63,9 @@ export async function sendSMS(
         text: message,
         from: "solen.ch",
       }),
+      // 10000ms: this sends booking confirmations and reminders, same bound
+      // as app/api/auth/verify-phone/send/route.ts (gateway/short call)
+      signal: AbortSignal.timeout(10000),
     });
 
     if (!response.ok) {

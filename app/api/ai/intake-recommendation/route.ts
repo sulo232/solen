@@ -80,6 +80,8 @@ Gib eine konkrete, hilfreiche Empfehlung für den Stylisten, inklusive empfohlen
           contents: [{ parts: [{ text: prompt }] }],
           generationConfig: { maxOutputTokens: 400, temperature: 0.7 },
         }),
+        // 25000ms: text-generation call, same bound as app/api/admin/nail/generate/route.ts
+        signal: AbortSignal.timeout(25000),
       }
     );
 

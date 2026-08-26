@@ -29,7 +29,8 @@ async function searchUnsplash(query: string, page: number): Promise<StockPhoto[]
   try {
     const res = await fetch(
       `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&orientation=portrait&page=${page}&per_page=30`,
-      { headers: { Authorization: `Client-ID ${key}` } }
+      // 8000ms: third-party API read, same bound as lib/ai-vision.ts
+      { headers: { Authorization: `Client-ID ${key}` }, signal: AbortSignal.timeout(8000) }
     );
     if (!res.ok) return [];
     const data = await res.json();
@@ -58,7 +59,8 @@ async function searchPexels(query: string, page: number): Promise<StockPhoto[]> 
   try {
     const res = await fetch(
       `https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&orientation=portrait&page=${page}&per_page=30`,
-      { headers: { Authorization: key } }
+      // 8000ms: third-party API read, same bound as lib/ai-vision.ts
+      { headers: { Authorization: key }, signal: AbortSignal.timeout(8000) }
     );
     if (!res.ok) return [];
     const data = await res.json();
@@ -86,7 +88,9 @@ async function searchPixabay(query: string, page: number): Promise<StockPhoto[]>
   if (!key) return [];
   try {
     const res = await fetch(
-      `https://pixabay.com/api/?key=${key}&q=${encodeURIComponent(query)}&orientation=vertical&page=${page}&per_page=30&image_type=photo`
+      `https://pixabay.com/api/?key=${key}&q=${encodeURIComponent(query)}&orientation=vertical&page=${page}&per_page=30&image_type=photo`,
+      // 8000ms: third-party API read, same bound as lib/ai-vision.ts
+      { signal: AbortSignal.timeout(8000) }
     );
     if (!res.ok) return [];
     const data = await res.json();
