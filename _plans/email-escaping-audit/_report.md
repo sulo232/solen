@@ -1,6 +1,6 @@
 # Email escaping checker
 
-Generated: 2026-08-23T15:42:46.124Z
+Generated: 2026-08-26T12:37:34.057Z
 Files scanned: 1  Files missing: none
 
 Static source scan (no browser, no type-checker) for a typed value (a salon name, a service

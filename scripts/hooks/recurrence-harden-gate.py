@@ -216,6 +216,12 @@ def enforcement_built_since(pdir, since_epoch):
 def main():
     try:
         data = json.load(sys.stdin)
+        # One refusal per turn (2026-08-23). `stop_hook_active` is true on every re-run
+        # after this check already blocked, so returning success here is what stops the
+        # same objection being raised against message after message. The product force-
+        # ends the turn after 8 consecutive blocks anyway, so a run past one is wasted.
+        if data.get("stop_hook_active"):
+            sys.exit(0)
     except Exception:
         return 0
     pdir = project_dir()

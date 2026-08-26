@@ -187,6 +187,12 @@ def verdict(reply, owner="", asked_at=None):
 def main():
     try: data=json.load(sys.stdin)
     except Exception: sys.exit(0)
+    # One refusal per turn (2026-08-23). `stop_hook_active` is true on every re-run
+    # after this check already blocked, so returning success here is what stops the
+    # same objection being raised against message after message. The product force-
+    # ends the turn after 8 consecutive blocks anyway, so a run past one is wasted.
+    if data.get("stop_hook_active"):
+        sys.exit(0)
     tp=data.get("transcript_path") or ""
     if not tp or not os.path.isfile(tp): sys.exit(0)
     text=last_assistant_text(tp)
