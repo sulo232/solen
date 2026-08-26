@@ -322,7 +322,7 @@ n go too old yk analyze gimme ur opinion on the nexgt step"*
       "main's worktree has uncommitted changes", 35 are a failing typecheck, 22 are a clash in
       `.claude/launch.json`, 6 in `_plans/ACTIVE.md`, 2 a genuine divergence. The 2026-08-14 pass
       fixed the first reason and the second quietly took over from it.
-- [x] **What was blocking it: nine unsaved files, the oldest untouched since 2026-08-17.**
+- [x] **What was blocking it: nine unsaved files, the oldest untouched since 2026-08-17.** `verified:` commit acff03259 lists all nine.
       `verified:` seven gate edits last modified 2026-08-23, the rebuilt mockup index from
       2026-08-24, and one Playwright scratch file from 2026-08-17. The merge refuses while ANY
       change is uncommitted, and `git status --porcelain` counts untracked files, so a single
@@ -332,10 +332,10 @@ n go too old yk analyze gimme ur opinion on the nexgt step"*
       main's worktree is now empty. The rebuilt mockup index that had been sitting there unsaved
       for two days is a real deliverable of his: 367 mockups across 170 surfaces, replacing a page
       written 2026-06-09 that listed five.
-- [x] **Proved it rather than asserting it.** `verified:` merged
+- [x] **Proved it rather than asserting it.** `verified:` commit fa6fb1099 on main, merged
       `claude/hook-permission-error-bc75ea`, the only remaining branch with zero clashing files,
       two commits and five lines in one plan document. It went through clean.
-- [x] **The honest limit of the unjamming.** The checkpoint uses `--ff-only`, so it only helps a
+- [x] **The honest limit of the unjamming.** `verified:` read from `~/.claude/checkpoint-merge.py`, and `git rev-list --left-right --count` on each branch. The checkpoint uses `--ff-only`, so it only helps a
       branch that is strictly ahead of main. Every branch here is also BEHIND main (this one by 54
       commits at the time of the merge), so they still need a real merge commit, which the
       checkpoint will not make on its own. Unjamming stops the log filling with skips; it does not
@@ -363,7 +363,7 @@ was then handed to a separate adversary told to REFUTE it. 20 were claimed worth
 **13 of those were knocked down**, which is the number that matters: the second pass killed two
 thirds of the first pass's recommendations.
 
-- [x] **The seven that survived, each with the live check that settles it.** `verified:` workflow
+- [x] **The seven that survived, each with the live check that settles it, recorded at commit 9c801c29f.** `verified:` workflow
       wf_60abb1ee-20f, 31 agents, 0 errors, verdicts read from `journal.jsonl` rather than the
       summary.
 
@@ -401,7 +401,7 @@ thirds of the first pass's recommendations.
       7. **`scripts/app-parity.mjs`** (airbnb-animated-icons, HANDS-OFF). Dev tooling that diffs
          web routes against the iOS app. No runtime impact. Reported, not touched.
 
-- [x] **The thirteen that did not survive, in one line: they were real files with real absences
+- [x] **The thirteen that did not survive**, `verified:` same journal, commit 9c801c29f. In one line: they were real files with real absences
       and no real consequence.** `verified:` same journal. `lib/api-error.ts`, `lib/posthog-lazy.ts`,
       `lib/supabase-browser-lazy.ts`, `lib/coachmark-seen.ts`, `Coachmark.tsx`, `NextStepsStack.tsx`,
       `RotaPlanner.tsx`, `CalendarColorTab.tsx`, `[city]/loading.tsx`, `stuck-rows.mjs`,
@@ -427,8 +427,19 @@ thirds of the first pass's recommendations.
 - [x] **The AI-timeout file does not exist on main at all.** `verified:` `lib/ai/` holds
       recommendations, translate and untrusted, and no gemini. Eight files on main call Google's
       API without it.
-- [ ] **The search-embedding timeout is the one that is genuinely missing, and it is worse than
-      one file.** `verified:` `lib/search/embeddings.ts:23` calls Google with a bare `fetch(` and
+- [x] **FIXED, `717cae6cb`. All 17 now carry a ceiling, and a remainder sweep found 2 more.**
+      `verified:` guarded outbound calls went 8 to 25, `npx tsc --noEmit` clean, and every value
+      was copied from a call that already ships here rather than invented: 4000 transit, 8000
+      image bytes, 10000 a gateway, 25000 a text generation. The two worst are closed:
+      `lib/sms.ts`, which sends booking confirmations, and `lib/search/embeddings.ts`, which every
+      cache-missing search goes through. **THE REMAINDER, named rather than skipped:** the builder
+      was given a 12-file allowlist and its own leftover scan found 2 genuine unguarded calls
+      outside it, `app/[locale]/_components/salon/SalonLocation.tsx:740` (map directions) and
+      `app/api/admin/nail/generate/route.ts:138` (an image download, whose sibling call in the
+      same file already has one). It refused to widen its own scope, which is correct. A third hit
+      was a false positive it diagnosed itself: `SearchTemplate.tsx:1079` builds a relative url to
+      our own API. See the box below.
+- [x] **Original measurement, kept for the record.** `verified:` `lib/search/embeddings.ts:23` calls Google with a bare `fetch(` and
       no ceiling. Swept the whole estate for the same shape: **17 outbound calls to another
       company's server have no time limit, against 12 that do.** The detector was checked against
       the 12 guarded ones so it can tell them apart. The worst once live are `lib/sms.ts:55`,
@@ -438,7 +449,27 @@ thirds of the first pass's recommendations.
 
 ### Four delete paths that keep the file after removing the row
 
-- [ ] **Measured, and the worst one is a takedown that does not take down.** `verified:` swept
+- [x] **FIXED in two rounds, `5d8a5f045`. Round 1 closed the leak and opened a worse one; round 2
+      closed both, graded by three reviewers who did not write it.** `verified:` round 1 checked
+      which bucket a url pointed at and never who owned it, so a person could paste a stranger's
+      photo address into their own profile and have our own cleanup delete that stranger's file.
+      All three reviewers returned FAIL. Round 2 made the owner a REQUIRED argument with no
+      default, taken from the row being deleted and never parsed out of the url, so a call site
+      cannot compile without it. Two reviewers replayed both attacks and both now fail at
+      `lib/storage.ts` before any removal runs. The two call sites that made the attack reachable
+      were deleted outright rather than patched, because nothing writes those columns: no upload
+      route fills them and 0 of 70 staff rows point at our storage. A fifth site was found and
+      fixed, `app/api/services/[id]/route.ts`, where deleting a service left up to twenty photos
+      behind in a public bucket. `npx tsc --noEmit` clean.
+      **THE REMAINDER, and it is a real one.** The third reviewer returned FAIL for a sixth site:
+      `app/api/admin/test-salon/route.ts` deletes a whole test salon, and the database cascade
+      wipes eleven more tables that carry file columns, with no cleanup on any of them. Measured
+      against the live database rather than the migration files: **every one of those columns
+      holds zero of our own files today.** All 174 gallery rows, all 264 service rows and all 70
+      staff rows point at Unsplash seed photos, and 11 of our 15 buckets are empty. So the sixth
+      site cannot orphan anything at present, and it will the moment a real salon uploads a real
+      photo. Left open deliberately rather than silently: see the box below.
+- [x] **Original measurement, kept for the record.** `verified:` swept
       every table delete in `app/` and `lib/`: 64 of them, 8 sit next to a file column, 3 remove
       the object and **5 do not**. Two of the five are false positives (`notifications` and
       `discovery_search_events` have no file column in the live schema). The four real ones:
@@ -451,7 +482,7 @@ thirds of the first pass's recommendations.
 
 ### The orphan-file fix, round 1: three lenses, three FAILs, and the reviewers were right
 
-- [x] **Round 1 fixed the leak and opened a worse hole. Recorded here rather than quietly
+- [x] **Round 1 fixed the leak and opened a worse hole**, `verified:` commit dcd4159a5 records it, workflow wf_f64b13a4-62b is the run. Recorded here rather than quietly
       re-rolled, because it is the clearest case this session of why the writer is never the
       grader.** `verified:` workflow wf_f64b13a4-62b, 1 builder and 3 reviewers, 10 findings, 4 of
       them HIGH. The builder did good work: it extended `lib/storage.ts` rather than adding a
@@ -492,6 +523,51 @@ thirds of the first pass's recommendations.
       `nail_inspo_images` has 0 rows. Exactly **one** profile avatar sits in our own bucket. So
       these fixes are correct code with zero present effect, and they matter only once salons
       upload real photos. Saying otherwise would be inventing an emergency.
+
+### Round 5: switches that exist and are obeyed by nothing
+
+Same class as the permission crash below, asked of every other switch a person can set.
+Measured over 27 owner-settable switches across profiles, salons, services, staff and bookings.
+The detector was checked against two switches known to be live (`walkin_enabled`, `permissions`)
+before any result was believed, and a hit only counts when something BRANCHES on the value, never
+when a query merely carries it along.
+
+**23 of 27 are genuinely obeyed.** The four that are not, each with the reason, because a dead
+thing with no reason gets restored by mistake later:
+
+- [x] **`bookings.price_increase_approved` , SUPERSEDED, leave it.** `verified:` the commit that
+      deleted its code is on main and says so by name: "retire legacy System B + upcharge ledger".
+      The replacement shipped and is customer-facing: `app/[locale]/bookings/[id]/upcharge/` is a
+      whole approve-or-decline screen. Nothing is broken. The column is a leftover of a deliberate
+      swap, and dropping it is a tidy-up, not a fix.
+- [x] **`services.station_required` , DORMANT, part of a feature that is switched off.**
+      `verified:` introduced by `supabase/migrations/072_nail_foundation.sql`, and the nail
+      feature set is gated off. It appears in exactly one place in the code, a column list, and
+      nothing reads it. Correct while nail stays off.
+- [x] **`salons.is_featured` , NEVER LANDED.** `verified:` zero code branches on it on any branch.
+      The only commits touching it are performance passes trimming column lists. So an admin
+      marking a salon as featured today changes nothing anywhere. Not in the graveyard, so it was
+      never rejected, it was simply never built. It is a one-line filter if he ever wants it.
+- [x] **`staff_members.is_publicly_listed` , NEVER LANDED.** `verified:` zero mentions in code
+      outside the generated type file. It arrived in a bulk migration backfill. A stylist cannot
+      be hidden from a salon page by this switch, because nothing reads it.
+
+None of the four is in `_design-system/REMOVED.md`, so none was killed on purpose, and none should
+be re-proposed as new work without saying which of these four reasons applies.
+
+### Round 5: a staff permission that crashes rather than refuses
+
+- [ ] **Every staff member hitting the schedule-edit route gets a 500 today, not a 403.**
+      `verified:` `app/api/staff/my-schedule/route.ts` reads `permissions` as a string array and
+      calls `.includes()` on it. The dashboard at `app/[locale]/dashboard/staff/page.tsx` SAVES an
+      object, and `lib/validations.ts` only accepts an object, so the array shape can never occur.
+      All 70 staff rows hold `{}`. Ran the real line against five shapes with a control that
+      passed: a string array allows, `{}` throws `perms.includes is not a function`.
+      `_design-system/ONBOARDING_SPEC.md` already flagged this and called it a permanent 403,
+      which is wrong in the detail; it is a crash. Also true and worth his attention: two of the
+      three toggles that dashboard shows (`can_view_own_bookings`, `can_manage_portfolio`) are
+      read by nothing at all, so they are decoration, and the eight-area model he chose on
+      2026-08-14 is not built.
 
 ## What is still open, and who owns it
 
