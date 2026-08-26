@@ -80,25 +80,40 @@
  * reminder.png, 1024x1024, matte clay on white, siblings of the category icons already in
  * public/icons/categories/v2/). They arrived at 232-397 KB, too heavy to mail as-is, so this
  * script also resizes each to 420px wide and writes the result under public/_email-assets/art/
- * (never touching the originals). This step DOES bring sharp back, unlike the cards above:
- * the output filename is contractually `obj-<state>.png`, so unlike the cards this can't move
- * to JPEG to shed weight, and Chromium's own lossless PNG encoder alone only gets a resized
- * object to ~90-110 KB. A 128-colour adaptive palette (sharp, `palette:true`, same technique
- * the cards briefly used) gets every object to 8-28 KB with no visible banding on their smooth
- * clay gradients (checked by eye against the un-quantized resize before picking 128), because
- * an icon-style illustration with a handful of flat colour regions is exactly what palette PNG
- * is for, unlike the photographic card that technique was wrong for.
+ * (never touching the originals). The output filename is contractually `obj-<state>.png`, so
+ * unlike the cards this can't move to JPEG to shed weight, and Chromium's own lossless PNG
+ * encoder alone only gets a resized object to ~90-110 KB, so it still needs a palette pass.
+ *
+ * FOURTH CORRECTION, removing sharp entirely (2026-08-26): the palette step above was running
+ * on sharp, and `npm ls sharp` reports `sharp@0.34.5 extraneous -> ../../../node_modules/sharp`
+ * , not in package.json, only present because this worktree's node_modules sits under a parent
+ * checkout that happens to have it. A clean `npm ci` would not, and this script would fail on
+ * that one step. Rather than declaring sharp for a single call site, the resize+quantize step
+ * moved to scripts/resize-email-objects.py (PIL, run as a subprocess below), reusing the same
+ * technique scripts/build-email-assets.py already uses for the category icons. Do not re-add
+ * sharp to fix this a second time , extend that Python script instead.
+ *
+ * FIFTH CORRECTION, per-locale art (2026-08-26): the card was baking German copy (day
+ * abbreviation, service name, status label, "Total") into the picture regardless of which
+ * locale the surrounding email rendered in, so a French or Italian customer got a correct
+ * translated email with a German picture inside it, worse than no picture. A flat image can't
+ * localise itself at render time the way the surrounding HTML does, so the only fix is to bake
+ * one picture per locale: this script now renders 3 states x 4 locales = 12 cards, named
+ * art-<state>-<locale>.jpg, from the LOCALE table below. Once real bookings carry the salon's
+ * own photo and the customer's own service name (see PHOTO note above), this baking happens
+ * per booking rather than per state, and the locale problem disappears with it , the picture
+ * gets built once, at send time, already in the recipient's language.
  *
  * Run: node scripts/build-email-art.mjs
- * Out: public/_email-assets/art/*.jpg (the three cards) + *.png (two wordmarks + three resized
+ * Out: public/_email-assets/art/*.jpg (twelve cards) + *.png (two wordmarks + three resized
  *      objects) + manifest.json
  */
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { execFileSync } from "node:child_process";
 
 import { chromium } from "playwright";
-import sharp from "sharp";
 
 // Node 24 strips TS type syntax natively, so this import runs under plain `node`, no `tsx`
 // needed , confirmed by hand before writing the rest of this file. lib/email-colors.ts is the
@@ -110,7 +125,8 @@ const ROOT = resolve(HERE, "..");
 const OUT_DIR = resolve(ROOT, "public/_email-assets/art");
 const FONTS_DIR = resolve(ROOT, "public/_mockups/_assets/fonts");
 const PHOTOS_DIR = resolve(ROOT, "public/_mockups/_assets/salon-photos");
-const GENERATED_DIR = resolve(ROOT, "public/_email-assets/generated");
+// public/_email-assets/generated/ (the 3D object sources) is read by resize-email-objects.py
+// directly, not by this file , see the OBJECTS block below.
 
 // Clean rebuild every run: an earlier pass wrote art-confirmed.png etc (before the JPEG
 // switch), and a stale file with a different extension sitting next to the new one is exactly
@@ -159,11 +175,63 @@ function icon(name, colorHex) {
 // one net-new pair, a pale green chip + dark green text, deliberately NOT s-success's own
 // #E8F5E9 bg since that token reads too close to white once flattened off Tailwind's opacity
 // blend; kept pastel-chip-plus-ink-text per the design contract (never a saturated block).
-const PILL = {
-  confirmed: { bg: "#DCFCE7", fg: "#166534", label: "Bestätigt" },
-  cancelled: { bg: EMAIL_COLORS.bgSunken, fg: EMAIL_COLORS.ink2, label: "Storniert" },
-  reminder: { bg: EMAIL_COLORS.warningBg, fg: EMAIL_COLORS.warningText, label: "Bald" },
+// Colour only, not the label , the label is per-locale, see LOCALE below.
+const PILL_COLORS = {
+  confirmed: { bg: "#DCFCE7", fg: "#166534" },
+  cancelled: { bg: EMAIL_COLORS.bgSunken, fg: EMAIL_COLORS.ink2 },
+  reminder: { bg: EMAIL_COLORS.warningBg, fg: EMAIL_COLORS.warningText },
 };
+
+// ONE table for every string this card renders that changes by locale. Adding a fifth locale
+// is one new row here, nothing else in this file needs to change. Two sources, named per row
+// group rather than scattered as inline comments:
+//   dow / total / status , these already exist verbatim in the live app and are copied from
+//     there, not invented: messages/{de,en,fr,it}.json share one `statusConfirmed`/
+//     `statusCancelled` key pair (checked: de "Bestätigt"/"Storniert", en "Confirmed"/
+//     "Cancelled", fr "Confirmé"/"Annulé", it "Confermato"/"Annullato", all four files, e.g.
+//     line 2069), the reminder state reuses the app's own `tomorrow` key (de "Morgen", en
+//     "Tomorrow", fr "Demain", it "Domani", e.g. line 377), and en/fr/it `total` already reads
+//     "Total"/"Total"/"Totale" at messages/*.json:989, and German reads "Gesamt" on the same
+//     line. CORRECTED 2026-08-26: the brief for this asset said "Total" for German, the builder
+//     followed it literally and flagged the mismatch rather than quietly picking a side, which
+//     is the right call. Reconciled here toward the app: this picture IS a picture of the
+//     booking card, so a German customer must read the same word in the email that the product
+//     shows them on screen, and that word is "Gesamt".
+//   day / month abbreviations, service name , none of these exist as static strings anywhere
+//     in the app (BookingCard.tsx derives dow/month at runtime via toLocaleDateString, and a
+//     service name is per-salon database content, not UI copy), so these are net new, taken
+//     directly as given for this asset.
+const LOCALE = {
+  de: {
+    dow: { tue: "Di", wed: "Mi" },
+    month: { aug: "Aug" },
+    service: "Damenhaarschnitt & Föhnen",
+    status: { confirmed: "Bestätigt", cancelled: "Storniert", reminder: "Morgen" },
+    total: "Gesamt",
+  },
+  en: {
+    dow: { tue: "Tue", wed: "Wed" },
+    month: { aug: "Aug" },
+    service: "Women's cut & blow dry",
+    status: { confirmed: "Confirmed", cancelled: "Cancelled", reminder: "Tomorrow" },
+    total: "Total",
+  },
+  fr: {
+    dow: { tue: "Mar", wed: "Mer" },
+    month: { aug: "août" },
+    service: "Coupe femme & brushing",
+    status: { confirmed: "Confirmé", cancelled: "Annulé", reminder: "Demain" },
+    total: "Total",
+  },
+  it: {
+    dow: { tue: "Mar", wed: "Mer" },
+    month: { aug: "ago" },
+    service: "Taglio donna & piega",
+    status: { confirmed: "Confermato", cancelled: "Annullato", reminder: "Domani" },
+    total: "Totale",
+  },
+};
+const LOCALES = ["de", "en", "fr", "it"];
 
 /**
  * bookingCard() , the recorded anatomy of components-legacy/booking/BookingCard.tsx, with the
@@ -185,8 +253,21 @@ const PILL = {
  * so it shares the salon name's size instead of adding a fifth. BookingCard.tsx itself is
  * unchanged; only this flattened copy folds those steps.
  */
-function bookingCard({ state, photoFile, dow, day, month, salon, service, address, time, price }) {
-  const pill = PILL[state];
+function bookingCard({
+  state,
+  photoFile,
+  dow,
+  day,
+  month,
+  salon,
+  service,
+  address,
+  time,
+  price,
+  statusLabel,
+  totalLabel,
+}) {
+  const pill = PILL_COLORS[state];
   // The chip alone is easy to miss at a glance; a desaturated photo is not.
   const photoFilter = state === "cancelled" ? "filter:grayscale(1) opacity(.72);" : "";
   return `<div style="width:520px;background:#ffffff;border-radius:22px;overflow:hidden;
@@ -212,11 +293,11 @@ function bookingCard({ state, photoFile, dow, day, month, salon, service, addres
             ${icon("clock", EMAIL_COLORS.ink2)}${time}
           </p>
         </div>
-        <div style="flex:none;border-radius:9999px;padding:4px 10px;font-size:12px;font-weight:600;background:${pill.bg};color:${pill.fg};">${pill.label}</div>
+        <div style="flex:none;border-radius:9999px;padding:4px 10px;font-size:12px;font-weight:600;background:${pill.bg};color:${pill.fg};">${statusLabel}</div>
       </div>
       <div style="margin-top:12px;padding-top:12px;border-top:1px solid ${EMAIL_COLORS.border};display:flex;justify-content:flex-end;">
         <div style="font-size:16px;font-weight:600;color:${EMAIL_COLORS.ink};">
-          <span style="margin-right:6px;font-size:12px;font-weight:400;color:${EMAIL_COLORS.ink2};">Total</span>${price}
+          <span style="margin-right:6px;font-size:12px;font-weight:400;color:${EMAIL_COLORS.ink2};">${totalLabel}</span>${price}
         </div>
       </div>
     </div>
@@ -252,78 +333,55 @@ function pageHtml(bodyHtml, { background, padding }) {
   <body><div id="art">${bodyHtml}</div></body></html>`;
 }
 
-const SERVICE = "Damenhaarschnitt & Föhnen";
 const SALON = "Coiffure Belle Époque Niederdorf";
 // Copied, not imported: lib/email-preview-samples.ts:53 holds the same string in its `S`
 // fixture object, but `S` is a module-local const there, not exported, so there is nothing to
 // import. Copying the literal keeps this picture and that file's preview email in agreement;
 // if that address ever changes, grep both files rather than assume this one followed along.
+// The German service name that used to live here moved into LOCALE.de.service above, since it
+// is now one of four translations rather than the only one.
 const ADDRESS = "Niederdorfstrasse 42, 8001 Zürich";
 const PRICE = "CHF 89.00";
 
-const PIECES = [
-  {
-    id: "confirmed",
-    file: "art-confirmed.jpg",
-    type: "jpeg",
-    html: bookingCard({
-      state: "confirmed",
-      photoFile: "p09.jpg",
-      dow: "Di",
-      day: "26",
-      month: "Aug",
-      salon: SALON,
-      service: SERVICE,
-      address: ADDRESS,
-      time: "14:30",
-      price: PRICE,
-    }),
-  },
-  {
-    id: "cancelled",
-    file: "art-cancelled.jpg",
-    type: "jpeg",
-    html: bookingCard({
-      state: "cancelled",
-      photoFile: "p09.jpg",
-      dow: "Di",
-      day: "26",
-      month: "Aug",
-      salon: SALON,
-      service: SERVICE,
-      address: ADDRESS,
-      time: "14:30",
-      price: PRICE,
-    }),
-  },
-  {
-    id: "reminder",
-    file: "art-reminder.jpg",
-    type: "jpeg",
-    html: bookingCard({
-      state: "reminder",
-      photoFile: "p09.jpg",
-      dow: "Mi",
-      day: "27",
-      month: "Aug",
-      salon: SALON,
-      service: SERVICE,
-      address: ADDRESS,
-      time: "14:30",
-      price: PRICE,
-    }),
-  },
-  { id: "wordmark-ink", file: "wordmark-ink.png", type: "png", html: wordmark(EMAIL_COLORS.ink) },
-  { id: "wordmark-white", file: "wordmark-white.png", type: "png", html: wordmark("#FFFFFF") },
+// The card's own facts that do NOT vary by locale (a date, a photo, a price is the same
+// appointment in every language). What varies is only which LOCALE row supplies the copy.
+const STATES = [
+  { id: "confirmed", weekday: "tue", day: "26" },
+  { id: "cancelled", weekday: "tue", day: "26" },
+  { id: "reminder", weekday: "wed", day: "27" },
 ];
 
-// The three 3D object renders: read-only sources in GENERATED_DIR, resized + quantized copies
-// written to OUT_DIR. Not part of PIECES above because they need sharp, not a browser render.
-const OBJECTS = [
-  { id: "obj-confirmed", src: "obj-confirmed.png", file: "obj-confirmed.png" },
-  { id: "obj-cancelled", src: "obj-cancelled.png", file: "obj-cancelled.png" },
-  { id: "obj-reminder", src: "obj-reminder.png", file: "obj-reminder.png" },
-];
+const PIECES = [];
+for (const s of STATES) {
+  for (const locale of LOCALES) {
+    const L = LOCALE[locale];
+    PIECES.push({
+      id: `${s.id}-${locale}`,
+      file: `art-${s.id}-${locale}.jpg`,
+      type: "jpeg",
+      html: bookingCard({
+        state: s.id,
+        photoFile: "p09.jpg",
+        dow: L.dow[s.weekday],
+        day: s.day,
+        month: L.month.aug,
+        salon: SALON,
+        service: L.service,
+        address: ADDRESS,
+        time: "14:30",
+        price: PRICE,
+        statusLabel: L.status[s.id],
+        totalLabel: L.total,
+      }),
+    });
+  }
+}
+PIECES.push({ id: "wordmark-ink", file: "wordmark-ink.png", type: "png", html: wordmark(EMAIL_COLORS.ink) });
+PIECES.push({ id: "wordmark-white", file: "wordmark-white.png", type: "png", html: wordmark("#FFFFFF") });
+
+// The three 3D object renders: resized + quantized by scripts/resize-email-objects.py (PIL),
+// not part of PIECES above because they're a pure image-resize job, not a browser render, and
+// no longer sharp because of the FOURTH CORRECTION in the header comment.
 const OBJECT_MAX_BYTES = 60 * 1024;
 const CARD_MAX_BYTES = 120 * 1024;
 
@@ -373,29 +431,17 @@ async function main() {
     await browser.close();
   }
 
-  // Pure image work, no browser needed: resize each object to 420px wide and quantize to a
-  // small palette PNG. 128 colours (checked by eye against the un-quantized resize for all
-  // three before picking it): no visible banding on these flat-region clay renders, landing
-  // well inside the 60 KB ceiling these were given.
-  for (const obj of OBJECTS) {
-    const srcPath = join(GENERATED_DIR, obj.src);
-    const srcBuffer = readFileSync(srcPath);
-    const buffer = await sharp(srcBuffer)
-      .resize(420, null)
-      .png({ palette: true, colors: 128, dither: 1.0, effort: 10 })
-      .toBuffer();
-    const outPath = join(OUT_DIR, obj.file);
-    writeFileSync(outPath, buffer);
-
-    const meta = await sharp(buffer).metadata();
-    results.push({
-      id: obj.id,
-      file: obj.file,
-      bytes: buffer.length,
-      width: meta.width,
-      height: meta.height,
-      maxBytes: OBJECT_MAX_BYTES,
-    });
+  // Pure image work, no browser needed, and no sharp (see FOURTH CORRECTION above): hand the
+  // resize+quantize step to scripts/resize-email-objects.py, which writes the three files
+  // straight into OUT_DIR itself and prints one JSON line back on stdout describing what it
+  // made. execFileSync throws on a non-zero exit, so the object budget check inside that
+  // script already fails this build loudly before the combined check below ever runs.
+  const pyOut = execFileSync("python3", [join(ROOT, "scripts/resize-email-objects.py")], {
+    encoding: "utf8",
+  });
+  const objectResults = JSON.parse(pyOut.trim().split("\n").pop());
+  for (const r of objectResults) {
+    results.push({ id: r.file.replace(/\.png$/, ""), file: r.file, bytes: r.bytes, width: r.width, height: r.height, maxBytes: OBJECT_MAX_BYTES });
   }
 
   console.log("\nbuild-email-art:");

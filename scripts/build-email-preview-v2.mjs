@@ -17,21 +17,25 @@
  *      cannot resolve the `@/` import inside lib/email.ts)
  * Out: public/_email-preview/v2.html
  */
-import { mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { framedEmail, frameDoc, INK, INK2, SUNKEN, WHITE } from "./_email-frame-v2.mjs";
 
-const OUT = resolve(dirname(fileURLToPath(import.meta.url)), "../public/_email-preview/v2.html");
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const OUT = resolve(ROOT, "public/_email-preview/v2.html");
 const LOCALES = ["de", "en", "fr", "it"];
 const TREATMENTS = ["band", "plain", "object"];
 
-const ART = {
-  confirmed: "/_email-assets/art/art-confirmed.jpg",
-  cancelled: "/_email-assets/art/art-cancelled.jpg",
-  reminder: "/_email-assets/art/art-reminder.jpg",
-};
+// The picture is now baked per locale (scripts/build-email-art.mjs, LOCALE table, 2026-08-26
+// fix): a French or Italian customer used to get a correct translated email wrapped around a
+// German picture, which is worse than no picture. artPath() is the one place that filename
+// gets built, so every caller below asks for the locale it is actually rendering, never a
+// fixed default.
+function artPath(stateId, locale) {
+  return `/_email-assets/art/art-${stateId}-${locale}.jpg`;
+}
 const OBJECT = {
   confirmed: "/_email-assets/art/obj-confirmed.png",
   cancelled: "/_email-assets/art/obj-cancelled.png",
@@ -43,12 +47,20 @@ const OBJECT = {
 const SALON = "Coiffure Belle Époque Niederdorf";
 const ADDRESS = "Niederdorfstrasse 42, 8001 Zürich";
 const AMOUNT = "CHF 89.00";
-// The art is a flattened picture baked in German regardless of locale (no venue photography
-// or per-locale service name exists to draw from yet, see build-email-art.mjs's own PHOTO
-// note). Showing a translated service name in the surrounding copy while the picture still
-// reads German would contradict itself, so the reminder's service row stays German in every
-// locale on purpose , not a missed translation.
-const SERVICE_DE = "Damenhaarschnitt & Föhnen";
+// Must match LOCALE.<lang>.service in scripts/build-email-art.mjs , copied, not imported, same
+// reason ADDRESS above is copied rather than pulled from lib/email-preview-samples.ts (that
+// script's LOCALE table is a module-local const, nothing to import even if it were desirable
+// to run that script's browser/Python side effects just to read four strings). Before the
+// picture was localised, this stayed hardcoded German on purpose so a translated row wouldn't
+// contradict a German picture; now that the picture is localised too, that reason is gone, and
+// leaving this German-only would have reintroduced the same defect in the opposite direction
+// (an Italian picture next to a German row in one email).
+const SERVICE = {
+  de: "Damenhaarschnitt & Föhnen",
+  en: "Women's cut & blow dry",
+  fr: "Coupe femme & brushing",
+  it: "Taglio donna & piega",
+};
 
 const WHEN = {
   de: "Di, 26. August, 14:30",
@@ -72,7 +84,6 @@ const LABEL_SERVICE = { de: "Was", en: "Service", fr: "Prestation", it: "Servizi
 const EMAILS = [
   {
     id: "confirmed",
-    art: ART.confirmed,
     object: OBJECT.confirmed,
     subject: {
       de: "Bestätigt: 26. Aug, 14:30",
@@ -103,7 +114,6 @@ const EMAILS = [
   },
   {
     id: "cancelled",
-    art: ART.cancelled,
     object: OBJECT.cancelled,
     subject: {
       de: "Storniert: 26. Aug, 14:30",
@@ -138,7 +148,6 @@ const EMAILS = [
   },
   {
     id: "reminder",
-    art: ART.reminder,
     object: OBJECT.reminder,
     subject: {
       de: "Morgen 14:30: Ihr Termin",
@@ -160,7 +169,7 @@ const EMAILS = [
       it: "Domani alle 14:30",
     },
     rows: (l) => [
-      { label: LABEL_SERVICE[l], value: SERVICE_DE },
+      { label: LABEL_SERVICE[l], value: SERVICE[l] },
       { label: LABEL_WHERE[l], value: ADDRESS },
     ],
     cta: CTA_MANAGE,
@@ -206,7 +215,7 @@ function frameGroup(email, treatment) {
       preheader: email.preheader[locale],
       eyebrow: email.eyebrow[locale],
       headline: email.headline[locale],
-      art: treatment === "object" ? null : email.art,
+      art: treatment === "object" ? null : artPath(email.id, locale),
       object: treatment === "object" ? email.object : null,
       rows: email.rows(locale),
       cta: { label: email.cta[locale], href: "https://solen.ch" },
@@ -343,6 +352,24 @@ const html = `<!doctype html>
 </script>
 </body>
 </html>`;
+
+// Every art/object path this page's HTML embeds, checked against the real filesystem before a
+// single byte of the page is written. A silently missing picture is exactly the failure this
+// whole preview surface exists to catch (that is how the German-picture bug above went
+// unnoticed in the first place) , this must fail loudly, naming the file, not render a broken
+// <img> for someone to spot later.
+const REFERENCED_ASSETS = new Set();
+for (const email of EMAILS) {
+  for (const locale of LOCALES) {
+    REFERENCED_ASSETS.add(artPath(email.id, locale));
+  }
+  REFERENCED_ASSETS.add(email.object);
+}
+const MISSING = [...REFERENCED_ASSETS].filter((p) => !existsSync(resolve(ROOT, "public" + p)));
+if (MISSING.length > 0) {
+  console.error("[build-email-preview-v2] referenced art file(s) missing on disk:\n  " + MISSING.join("\n  "));
+  process.exit(1);
+}
 
 mkdirSync(dirname(OUT), { recursive: true });
 writeFileSync(OUT, html, "utf-8");

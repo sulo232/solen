@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-08-26T21:14:35.753Z",
+  "generatedAt": "2026-08-26T21:16:27.415Z",
   "items": [
     {
       "id": "confirmed-de",
       "file": "art-confirmed-de.jpg",
       "width": 1200,
       "height": 1304,
-      "bytes": 94037
+      "bytes": 94357
     },
     {
       "id": "confirmed-en",
@@ -34,7 +34,7 @@
       "file": "art-cancelled-de.jpg",
       "width": 1200,
       "height": 1304,
-      "bytes": 79213
+      "bytes": 79495
     },
     {
       "id": "cancelled-en",
@@ -62,7 +62,7 @@
       "file": "art-reminder-de.jpg",
       "width": 1200,
       "height": 1304,
-      "bytes": 93636
+      "bytes": 93938
     },
     {
       "id": "reminder-en",
