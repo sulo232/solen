@@ -2,23 +2,21 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-18T16:30:34 (trigger: auto)
+- taken: 2026-08-26T14:04:53 (trigger: auto)
 - branch: claude/offline-booking-device-266b10
 
 ## git
 ```
-8e96fd937 The stale warning does something now, and the ring stops lying while it waits
-f4b0e744a A phone booking can name a day now, which it could not, and that made the feature half useless
-633e8575b A salon can record its own appointment now, in production, not just on the dev screen
-8af261b8b Record his answers to the board, and correct the SMS premise with the code
-04b9a99df Give this worktree its own port and tunnel, because another session had taken 3000
-```
-```
-?? app/[locale]/dev/how-it-works/
+cd651d2d2 The screen was drawing 111 things and Airbnb draws about eight
+4d8917ad7 He could not see the flows, and the shape was the one he had already refused
+b1a1e042a Cite the two files behind the walk-in problem
+77a6795a4 He said calendar the first time and I built the council's answer instead
+e01266ee7 Four flows, built four at once instead of one after another
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
 68 | MERCHANT TERMINAL , the Uber-Eats-style "just receive bookings" screen for salons, browser-only, no device, no app (owner 2026-08-15: "so that the store doesn't need to actually use a dashboard... instead of this complicated thing so that these people can just sign up and then receive it. Bookings. Easy as that" + "I do not want, like, a physical device... subdomain or something") | **ACTIVE** (2026-08-15)
+70 | MOBILE DASHBOARD , the salon-facing dashboard rebuilt for a phone in the shape of Airbnb's host app (owner 2026-08-21: "we need that ... make it so mobile dashboards improve and actually like the Airbnb ... use Mobbin a lot a lot") | **ACTIVE** (2026-08-21)
 67 | BRANCH RECONCILIATION , 40 unmerged branches, ~1800 commits, none on main (owner 2026-08-14: "look in deeep theres gnna be alot of conflicts ... merge them or delete but ask me alot") | **ACTIVE** (2026-08-14) , four questions asked
 66 | CATEGORY ROW: circles that morph into pills, flat icons with a glare (owner 2026-08-12: "instead of pills like circle n once u click then it bcms pill all morphism and also the icon i want it like abit glare yk like 3d liquid style icons") | **ACTIVE** (2026-08-12)
 64 | SEARCH PANEL FLATNESS , no colour on the idle list, and the for-you feed (owner 2026-08-12: "i wanna improve design sh looks flat n no color n the fur sie ui too") | **ACTIVE** (2026-08-12) , mockup delivered, awaiting his pick
@@ -90,10 +88,27 @@ Open boxes:
 - [ ] PARKED 2026-08-17 · Should the terminal show tomorrow as well as today? · from: the loader is
 - [ ] PARKED 2026-08-17 · Bring the phone-booking flow across from the branch it is stranded on? ·
 - [ ] PARKED 2026-08-17 · Do we ever add read-only calendar sync as a SECOND way in, given the
-- [ ] R19-1 Q1, the four paths: NOT ANSWERED, he asked for the work instead. "can you actually think
+- [ ] R23-5 HONEST NOTE ON THE NEW TIME CONTROL, since it is a downgrade in one respect: four boxes
+- [ ] R22-4 THE SHAPE, my recommendation, HIS CALL. Not a light dashboard and not a second app: ONE
+- [ ] R22-5 THE COST OF HIS SHAPE, named rather than buried, and this is the one that decides whether
+- [ ] R22-6 THE OTHER COST, the one about looks:
+- [ ] R21-1 THE HORIZON IS A WEEK, his pick. The loader covers today plus tomorrow after 73b1fc123.
+- [ ] R21-3 THE WEEK CALENDAR MOCKUP, his words: "a page to visualize mockup for calender etc". A
+- [ ] R21-4 THE TOLERANCE RULE, finally being written rather than parked. Carries R19-2 forward.
+- [ ] R20-7 THE ON-RAMP, and it is the one piece of the integration question that survives his
+- [ ] R20-8 THE FIRST PER-VENDOR DEAL WORTH ASKING FOR, when we want one: Phorest. It is the only
 - [ ] R19-2 Q2, the tolerance rule: HIS DECISION IS MADE, the work is NOT done. "yeah, yeah, build that." A published, priced
-- [ ] R19-4 Q3, tomorrow on the terminal: he leaned yes and asked what I think. Answered in the
-- [ ] R19-6 NEW QUESTION, not on the board: calendar view instead of the current list. His words:
+
+## MOBILE_DASHBOARD_2026-08-21.md
+Open boxes:
+- [ ] M1b was: COUNCIL on the tab shape, because he asked for one by name. What are the tabs for a SALON
+- [ ] M2 MOCKUP, the five tabs and the Menu.
+- [ ] M3 MOCKUP, a day in the calendar, following their month grid with a number under every date.
+- [ ] M4 MOCKUP, taking a booking by phone, end to end.
+- [ ] M5 MOCKUP, the empty first day for a salon that just signed up.
+- [ ] M6b The per-staff visibility picker proper. EXTEND the three existing columns rather than
+- [ ] was PARKED 2026-08-21 · Does the dashboard land on Heute or on the Kalender? · from: he leaned calendar first ("im thinking of 3 but w today too") and the four-lens council landed on Heute first and said so plainly rather than softening it. Only the LANDING tab is in dispute, his shape survives either way, and the mockups are being built Heute first because that is what the council argued for.
+- [ ] M7 Hand over the four mockups on one link and get his read before any real dashboard code
 
 ## BRANCH_RECONCILIATION_2026-08-14.md
 Open boxes:
