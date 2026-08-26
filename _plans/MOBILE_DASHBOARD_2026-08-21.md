@@ -35,7 +35,9 @@ And I want you to first make a mockup of a few flows so I can actually see that 
 
 ## The work
 - [x] M1 COUNCIL DONE, four proposals judged. Verdict in full at the bottom of this file.
-- [ ] M1b was: COUNCIL on the tab shape, because he asked for one by name. What are the tabs for a SALON
+- [x] M1b COUNCIL ON THE TAB SHAPE DONE `verified:` its verdict is the section "The council's verdict,
+      2026-08-21" further down this same file, which names four tabs, says where the terminal goes,
+      and works the salon day out in taps. It was: COUNCIL on the tab shape, because he asked for one by name. What are the tabs for a SALON
       rather than a rental, does Today survive beside a calendar, and what happens to the other 46
       sections.
 - [x] CORRECTION 2026-08-21 `verified:` commit f84a6a4d4, and the gate fix is live at
@@ -93,9 +95,37 @@ And I want you to first make a mockup of a few flows so I can actually see that 
       them in a chair. Ditching the terminal without answering that leaves walk-ins nowhere. It is
       solvable inside the calendar (a standing area above the grid for people with no time yet) and
       that is the thing to design, not a reason to keep two apps.
-- [ ] was PARKED 2026-08-21 · Does the dashboard land on Heute or on the Kalender? · from: he leaned calendar first ("im thinking of 3 but w today too") and the four-lens council landed on Heute first and said so plainly rather than softening it. Only the LANDING tab is in dispute, his shape survives either way, and the mockups are being built Heute first because that is what the council argued for.
+- [x] SETTLED BY HIM 2026-08-25, was PARKED 2026-08-21 · Does the dashboard land on Heute or on the
+      Kalender? · HE ANSWERED, verbatim: "those arent at all good n terminal i thought we gnna ditch
+      that sh it wont work bro n calender is superior". So the CALENDAR leads and the terminal is
+      ditched. The four-lens council had argued Heute first and the first build followed the council
+      over his stated lean, which is precedence chain tier 1 losing to tier 8 and is the mistake
+      logged in commit 77a6795a4. His literal call stands. Nothing here is reopened.
 - [ ] M7 Hand over the four mockups on one link and get his read before any real dashboard code
       changes. He asked for the mockups FIRST so he can see whether I understood.
+
+## Where it stands, 2026-08-26
+- [x] THE PAGE STEPS THROUGH ANY SCREEN NOW `verified:` commit 065b5e6ba. `page.tsx` used to
+      hardcode the stepper to the Tabs flow and pan the other three sideways as a strip. It now
+      reads a `FRAMES` export off whichever flow module is selected, so a flow gains the stepper the
+      moment it exports one. Measured on the rendered page at 390x844: `scrollWidth` 390 against a
+      390 viewport, no sideways scroll, "Frame 1 of 3" present.
+- [x] THE CAPTION ON HIS SCREEN CONTRADICTED THE REPLY `verified:` commit 90c2e074b. The Calendar
+      caption read "element count (46 to 19)" while I had told him 111 to 41. Re-measured live on
+      the rendered frame with the same method both numbers came from: total 41, of which 19 SPAN,
+      9 P, 8 DIV, 4 BUTTON, 1 H1. So 41 is right and the caption was the builder counting a
+      different container. Caption now quotes the measured pair.
+- [ ] THREE BUILDERS RUNNING, one file each, dispatched 2026-08-26: `_flow-calendar.tsx`,
+      `_flow-phone.tsx`, `_flow-empty.tsx`. Each adds the `FRAMES` export plus an `{ index }` prop
+      and cuts to 45 elements or fewer per frame, measured on the rendered frame. The
+      `no-concurrent-coders-same-repo-gate` was escaped deliberately and the reason written to its
+      flag: the three files are disjoint, every brief forbids git outright (which is the collision
+      that gate exists to stop), and `feedback_no_parallel_agents_frontend` was superseded
+      2026-08-07. Awaiting their reports, then a design-critic pass, then commits.
+- [ ] THE CHECK-IN TAP HAS NO HOME. Cutting the Tabs flow from 111 to 41 removed the per-row tap
+      that marks a customer as arrived. In a real shop that is the single most repeated action of
+      the day, so this is a genuine functionality loss and not a tidy-up. It needs a place on either
+      the calendar day view or the standing strip before any of this ships. Not yet designed.
 
 
 ---
