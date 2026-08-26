@@ -649,7 +649,7 @@ export const FLOW_TABS_FRAMES: { key: NavKey; caption: string }[] = [
   {
     key: "calendar",
     caption:
-      "Calendar, the landing tab, cut hard for element count (46 to 19): a face row plus one sentence, one anchor, the decision box with its text merged to one sentence, the standing strip, two of today's rows, and a one-week grid with dots instead of per-day counts.",
+      "Calendar, the landing tab, cut hard, 111 things on screen down to 41, measured on the rendered frame: a face row plus one sentence, one anchor, the decision box with its text merged to one sentence, the standing strip, two of today's rows, and a one-week grid with dots instead of per-day counts.",
   },
   {
     key: "clients",
