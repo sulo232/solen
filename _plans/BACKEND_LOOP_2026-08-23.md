@@ -316,13 +316,70 @@ n go too old yk analyze gimme ur opinion on the nexgt step"*
 ### The finding that changes what to do about it
 
 - [x] **Most of what looks stranded is stuff he deleted on purpose.** `verified:` the naive count
-      says 653 files exist on those branches and not on main. Subtracting anything named in
-      `_design-system/REMOVED.md` and anything main deleted in a commit of its own leaves **62**.
+      says **651** files exist on those branches and not on main. **421** of them are named in
+      `_design-system/REMOVED.md`, the graveyard, and another **177** were deleted by main in a
+      commit of its own. That leaves **53** genuinely stranded, 8 percent of the scary number.
+      (The first draft of this line said 653 and 62; both were arithmetic done by eye rather than
+      by the script, and the script prints the totals now so it cannot happen again.)
       On the oldest branch, 83 of its 107 unique files are corpses: `MarketplaceVisual`, `Step`,
       `business/page.tsx`, `fuer-salons` and `SalonServicesSheet` were all deleted by his own
       decisions on 2026-07-19 and 2026-08-14. Merging an old branch wholesale would bring them
       all back. This is the strongest argument for the strategy he already picked on 2026-08-14:
       main is the truth, lift one thing across at a time.
+
+
+### What is actually worth rescuing: 53 files read, 7 survive
+
+Eleven readers judged all 53 genuinely-stranded files, one branch each, and every BRING verdict
+was then handed to a separate adversary told to REFUTE it. 20 were claimed worth bringing, and
+**13 of those were knocked down**, which is the number that matters: the second pass killed two
+thirds of the first pass's recommendations.
+
+- [x] **The seven that survived, each with the live check that settles it.** `verified:` workflow
+      wf_60abb1ee-20f, 31 agents, 0 errors, verdicts read from `journal.jsonl` rather than the
+      summary.
+
+      1. **`lib/staff-permissions.ts`** (nice-hugle). The EIGHT-AREA staff permission model. **He
+         chose this by name on 2026-08-14, answering "Eight separate areas".** Measured live just
+         now: `staff_members` has both `access_role` and `permissions`, there are **70 staff rows,
+         0 carry a role and 0 carry a permission object**, and nothing on main reads either. His
+         own decision is sitting on a branch that never merged. This is the most decision-relevant
+         thing in the whole pile.
+      2. **`lib/ai/gemini.ts`** (quirky-ellis). One place for the model id plus a 15 second
+         ceiling on the AI call, feeding 9 AI-backed customer routes. Found independently by this
+         session's own timeout sweep, which is two measurements converging rather than one.
+      3. **`lib/auth/request-user.ts`** (airbnb-animated-icons, HANDS-OFF branch). Identifies an
+         API caller from either the web cookie or an iOS bearer token. Without it a logged-in iOS
+         customer is written as a guest on a booking: no user id, no ban check, wrong rate-limit
+         key. NOTE: he said "leave all commit n eveth from ths branch" on 2026-08-14, so this one
+         is not touched, only reported.
+      4. **`lib/service-category-resolve.ts`** (clever-mirzakhani). Turns a saved favourite
+         category into the salons that actually offer it. Main's recommendations route reads
+         `favorite_service_slugs` only to decide whether to take the personalised path, then
+         filters on quartier alone. Someone who saves categories and no district gets generic
+         popularity and is told it is personalised.
+      5. **`app/[locale]/_components/salon/SalonRecentlyViewed.tsx`** (pdp-styling). Main's own
+         `TASTE_LOG.md` row B14 records this as approved on 2026-08-15 and cites commit 21a9655ff,
+         which exists on that branch only. The decision is written down as settled and the code
+         never landed.
+      6. **`20260817120000_add_bookings_to_realtime_publication.sql`** (offline-booking-device).
+         **The reader flagged a contradiction rather than smoothing it, and the reader was right
+         to.** Its own comment claims it was already applied. Settled with a live query, control
+         row included: `bookings` IS already published for realtime, so the claim that the live
+         activity feed never fires is FALSE. What is genuinely missing is `REPLICA IDENTITY FULL`
+         (live value is `d`), which only affects what an update or cancel event carries, not
+         whether the feed fires. Impact reduced from "staff-facing gap" to "update events arrive
+         with only the primary key".
+      7. **`scripts/app-parity.mjs`** (airbnb-animated-icons, HANDS-OFF). Dev tooling that diffs
+         web routes against the iOS app. No runtime impact. Reported, not touched.
+
+- [x] **The thirteen that did not survive, in one line: they were real files with real absences
+      and no real consequence.** `verified:` same journal. `lib/api-error.ts`, `lib/posthog-lazy.ts`,
+      `lib/supabase-browser-lazy.ts`, `lib/coachmark-seen.ts`, `Coachmark.tsx`, `NextStepsStack.tsx`,
+      `RotaPlanner.tsx`, `CalendarColorTab.tsx`, `[city]/loading.tsx`, `stuck-rows.mjs`,
+      `seed-guest-names.mjs`, `seed-review-text.mjs`, `pair-measure.py`. The commonest refutation
+      was not "main already has it" but "bringing the file across does nothing without a caller
+      that would have to be written fresh against a route that has since drifted".
 
 ### Two stale claims in the older plan, corrected against the live database
 
@@ -362,6 +419,51 @@ n go too old yk analyze gimme ur opinion on the nexgt step"*
       named; the GDPR erasure job purges two buckets by name and not `avatars`, so an erased
       person keeps their face in a public bucket; `app/api/staff/[id]/route.ts:87`; and
       `app/api/nail-inspo/images/route.ts:90`.
+
+
+### The orphan-file fix, round 1: three lenses, three FAILs, and the reviewers were right
+
+- [x] **Round 1 fixed the leak and opened a worse hole. Recorded here rather than quietly
+      re-rolled, because it is the clearest case this session of why the writer is never the
+      grader.** `verified:` workflow wf_f64b13a4-62b, 1 builder and 3 reviewers, 10 findings, 4 of
+      them HIGH. The builder did good work: it extended `lib/storage.ts` rather than adding a
+      second helper, matched the existing `purge-*-storage.ts` sibling pattern, got the ordering
+      right (read the url before deleting the row), and named its own uncertainty about two
+      buckets instead of papering over it.
+
+      What it got wrong is one dropped half of one guard. The reference it copied,
+      `app/api/salons/[slug]/gallery/route.ts` around :282, checks TWO things: that the path is in
+      the right bucket, and that its first segment is the caller's own folder. The generalised
+      helper kept the first and dropped the second. Two reviewers independently walked the same
+      consequence, and I re-checked every link myself rather than taking it on trust:
+
+      - `GET /api/reviews/salon/[salon_id]` is explicitly PUBLIC and its select list at :44
+        returns `profiles(display_name, avatar_url)`. Anyone can read anyone's avatar url.
+      - `updateProfileSchema.avatar_url` is `z.string().url()` with no origin restriction
+        (`lib/validations.ts:163`), written through by `PATCH /api/profile`.
+      - So a normal customer could point their own avatar at someone else's file, request their
+        own account deletion, and the erasure job would delete the other person's photo.
+      - A second, higher-privilege version of the same thing runs through
+        `staffUpdateSchema.avatar_url` (`lib/validations.ts:1444`) and `DELETE /api/staff/[id]`.
+
+      Before the fix, neither was possible, because that route never touched storage at all. A
+      cleanup miss had been turned into a weapon. Round 2 is scoping every removal to its owner,
+      dropping the two sites whose columns no upload flow ever writes, and adding a fifth site the
+      remainder lens found.
+
+- [x] **The remainder lens found a fifth site the sweep missed, and it is the most ordinary one.**
+      `verified:` `app/api/services/[id]/route.ts:133` deletes a service and never reads
+      `photo_urls`. `app/api/services/[id]/photos/route.ts:71` uploads up to 20 photos per service
+      into the PUBLIC `service-photos` bucket. A salon owner deleting a service is routine, unlike
+      the other four (an admin takedown, an erasure job, a staff removal, a nail board), so this is
+      the one that would actually accumulate. Confirmed by reading both files myself.
+
+- [x] **How much is leaking TODAY: nothing.** `verified:` queried the live rows rather than
+      assuming. Every seed photo is an Unsplash link: 174 of 174 portfolio images and all 22
+      salons' gallery urls point off our storage, 0 of 70 staff rows point at it,
+      `nail_inspo_images` has 0 rows. Exactly **one** profile avatar sits in our own bucket. So
+      these fixes are correct code with zero present effect, and they matter only once salons
+      upload real photos. Saying otherwise would be inventing an emergency.
 
 ## What is still open, and who owns it
 
