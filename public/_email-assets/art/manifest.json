@@ -1,26 +1,89 @@
 {
-  "generatedAt": "2026-08-26T21:00:11.714Z",
+  "generatedAt": "2026-08-26T21:14:35.753Z",
   "items": [
     {
-      "id": "confirmed",
-      "file": "art-confirmed.jpg",
+      "id": "confirmed-de",
+      "file": "art-confirmed-de.jpg",
       "width": 1200,
       "height": 1304,
       "bytes": 94037
     },
     {
-      "id": "cancelled",
-      "file": "art-cancelled.jpg",
+      "id": "confirmed-en",
+      "file": "art-confirmed-en.jpg",
+      "width": 1200,
+      "height": 1304,
+      "bytes": 93399
+    },
+    {
+      "id": "confirmed-fr",
+      "file": "art-confirmed-fr.jpg",
+      "width": 1200,
+      "height": 1304,
+      "bytes": 93721
+    },
+    {
+      "id": "confirmed-it",
+      "file": "art-confirmed-it.jpg",
+      "width": 1200,
+      "height": 1304,
+      "bytes": 93381
+    },
+    {
+      "id": "cancelled-de",
+      "file": "art-cancelled-de.jpg",
       "width": 1200,
       "height": 1304,
       "bytes": 79213
     },
     {
-      "id": "reminder",
-      "file": "art-reminder.jpg",
+      "id": "cancelled-en",
+      "file": "art-cancelled-en.jpg",
       "width": 1200,
       "height": 1304,
-      "bytes": 93086
+      "bytes": 78611
+    },
+    {
+      "id": "cancelled-fr",
+      "file": "art-cancelled-fr.jpg",
+      "width": 1200,
+      "height": 1304,
+      "bytes": 78691
+    },
+    {
+      "id": "cancelled-it",
+      "file": "art-cancelled-it.jpg",
+      "width": 1200,
+      "height": 1304,
+      "bytes": 78233
+    },
+    {
+      "id": "reminder-de",
+      "file": "art-reminder-de.jpg",
+      "width": 1200,
+      "height": 1304,
+      "bytes": 93636
+    },
+    {
+      "id": "reminder-en",
+      "file": "art-reminder-en.jpg",
+      "width": 1200,
+      "height": 1304,
+      "bytes": 93341
+    },
+    {
+      "id": "reminder-fr",
+      "file": "art-reminder-fr.jpg",
+      "width": 1200,
+      "height": 1304,
+      "bytes": 93284
+    },
+    {
+      "id": "reminder-it",
+      "file": "art-reminder-it.jpg",
+      "width": 1200,
+      "height": 1304,
+      "bytes": 92580
     },
     {
       "id": "wordmark-ink",
@@ -41,21 +104,21 @@
       "file": "obj-confirmed.png",
       "width": 420,
       "height": 420,
-      "bytes": 8290
+      "bytes": 9268
     },
     {
       "id": "obj-cancelled",
       "file": "obj-cancelled.png",
       "width": 420,
       "height": 420,
-      "bytes": 28806
+      "bytes": 12058
     },
     {
       "id": "obj-reminder",
       "file": "obj-reminder.png",
       "width": 420,
       "height": 420,
-      "bytes": 28320
+      "bytes": 13733
     }
   ]
 }
