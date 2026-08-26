@@ -61,14 +61,28 @@ migrated file is re-run.
 pins its current behaviour first, then migrate, then re-run.
 
 ## Done, in order, each verified before the next started
-- [x] `_lib/transcript.py` built, then DEMOTED: see below
-- [x] `_lib/already_read.py` , 158 lines of duplicated reading deleted
-- [x] `resend-delta-gate.py` , 2 copies that had already drifted from each other
-- [x] `plain-english-gate.py` , 4 copies, the most in one file
-- [x] `selftest-before-done-gate.py`, `dictation-decode.py`, `pick-reading-gate.py`,
-      `finish-autonomously-gate.py`
-- [x] `pushback-gate.py`, `owner-sees-it-measure-it-gate.py`, `reply-shape-preflight.py`
-- [x] `link-verified-gate.py`, `_toolproof.py`
+Every tick carries the commit that landed it, so the claim can be checked without trusting this file.
+
+- [x] `_lib/transcript.py` built (20/20), then DEMOTED to a delegate. verified: `e129306`, `e4b0f16`
+- [x] `_lib/already_read.py` , 158 lines of duplicated reading deleted, suite 12/12.
+      verified: `e129306`, diff `33 insertions(+), 158 deletions(-)`
+- [x] `resend-delta-gate.py` , 2 copies that had already drifted from each other, suite 8/8.
+      verified: `e129306`. Driven afterwards: it now blocks a repeat with a background agent
+      finishing in between, and stays silent when he genuinely replied.
+- [x] `plain-english-gate.py` , 4 copies, the most in one file, suite 21/21. verified: `e129306`
+- [x] `selftest-before-done-gate.py` 9/9, `dictation-decode.py` 17/17, `pick-reading-gate.py`
+      SELFTEST OK, `finish-autonomously-gate.py` 5/5. verified: `61e6821`
+- [x] `pushback-gate.py` 22/22. verified: `4d03c23`, and `_turnboundary` 31/31 with the
+      `(?-i:` fix its own suite caught
+- [x] `owner-sees-it-measure-it-gate.py` external suite 15/15, `reply-shape-preflight.py` 54/54.
+      verified: `7378cc9`
+- [x] `link-verified-gate.py` external suite 14/14, `_toolproof.py` 9/9. verified: `3b1bbec`
+- [x] `delegate-media-read-gate.py` , NO CHANGE NEEDED, and this was proved rather than assumed.
+      verified: walked the file's own syntax tree. It compiles exactly two regexes, both for image
+      FILENAMES (`^img_\d+\.(png|jpe?g|heic|heif)$` at line 58 and a UUID at line 59), neither
+      carrying a machinery marker. Exactly one string literal in the file contains one, at line
+      343, and it is a transcript being BUILT for a test case. The file contains no speaker
+      classification at all: no `is_owner_turn`, no user-role marker test. Suite 22/22.
 
 ## The mistake I made in the middle of it, kept because it is the same mistake
 I measured 15 private copies, built a shared module to end them, and never found that a SIXTEENTH
@@ -84,7 +98,7 @@ landing on text he never wrote.
 ## Result
 | | start | end |
 |---|---|---|
-| files with a private copy | 15 | 1, and that one is comments and fixtures |
+| files with a private copy | 15 | 0 |
 | verdicts moved, 240 real runs | , | 2, both the same named bug, both BLOCK to PASS |
 | suites passing | , | 19 of 19 |
 
@@ -95,6 +109,4 @@ second is the exact failure `_turnboundary.py` was written for on 2026-07-31, st
 gate it was named after, because that gate kept its own copy.
 
 ## Still open
-- [ ] `delegate-media-read-gate.py` is the last name on the list and needs no change: its markers
-      are in comments and test fixtures, not in a live pattern. Left as a box so the claim gets
-      re-checked rather than trusted.
+Nothing. Every file on the list is either migrated or proved not to need it.
