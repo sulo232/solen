@@ -2,19 +2,20 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-20T11:54:37 (trigger: auto)
+- taken: 2026-08-26T14:02:17 (trigger: auto)
 - branch: claude/agent-flow-design-overhaul-2af2c2
 
 ## git
 ```
-84eeb4eee Why our tick became their ticket: I keep measuring the easy thing next to it
-98c261a13 Put the proof on the checkbox line, not two lines under it
-1a3b5758d Two free duplicate names collapsed, and a third that only looked like one
-4bd2488e6 The duplicate cleanup runs the other way round from what I assumed
-d8ce59006 I said two icon pairs were identical. They are not. Corrected.
+1a0a7332d A hidden review could still be read, and a card could be charged twice
+c6e509911 Put the sha on the first line of six boxes, and re-prove all nine
+87dd370d1 Close the loop: what got fixed, and the three calls that are his
+d364947ae A check that counts what a sweep LEFT, not what it did
+3ce0fb23e Close the fix boxes, including the one where the reader was not enough
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
+71 | BACKEND LOOP: bugs, security, storage, scale, waste (owner 2026-08-23: "analyze, like, every single inch of back end ... as a loop, and also fix up those stuff, like, how everything is stored ... so it can scale ... And also that if it's, like, inefficient") | **ACTIVE** (2026-08-23) , 4 holes closed + 3 database fixes applied live; 3 decisions waiting on him
 68 | HOME: continue-search card + recently-viewed (owner 2026-08-15: "big size difference between the screenshot Airbnb reference and ours" + "mock ups in direction based on other websites and apps" + "recently viewed, we didn't do anything for that") | **ACTIVE** (2026-08-15)
 69 | HOME SECTIONS one by one (owner 2026-08-15: search icon without the box, card font/spacing "not balanced ... looks empty", Popular looks "doesn't make any sense" with "tons" of options, then Walk-in, then Reviews) | **ACTIVE** (2026-08-15)
 70 | HOME SECTIONS round 2 (owner 2026-08-16, rejected all 26 stacked versions and specified ONE design per section: Popular looks takes the Inspo card minus the TikTok badge and the black gradient plus a real shadow and replaces Find-your-inspiration; walk-in keeps the N-ahead count and the mark indicators, colour-coded, real icon back, hierarchy fixed; reviews cards smaller with read-more repositioned) | **ACTIVE** (2026-08-16)
@@ -76,3 +77,12 @@ d8ce59006 I said two icon pairs were identical. They are not. Corrected.
 48 | PRINCIPLE DEEP-RESEARCH , re-test every principle we already have against external evidence | **ACTIVE** (design) + handoff (rest) 2026-07-28
 50 | DESIGN principle deep-research (the rules we ALREADY have) | **ACTIVE** (2026-07-28)
 51 | DESIGN RE-ENGINEER , improve the system we have, measured against live Airbnb | **ACTIVE** (2026-07-28)
+
+## BACKEND_LOOP_2026-08-23.md
+Open boxes:
+- [ ] B7. **Leaked-password protection is off.** A Supabase dashboard toggle, so it is his to
+- [ ] **DECISION FOR HIM, and the only one in this whole loop.** Removing rows is a data
+- [ ] **HIS CALL: prune old slots.** 17,572 of the 62,913 slots are in the past and 16,711 of
+- [ ] **HIS CALL: leaked-password protection.** Off today. It is a toggle in the Supabase
+- [ ] **HIS CALL: the stranded July fixes.** A timeout on the AI calls, a timeout on the search
+- [ ] **Left open on purpose, by the reader, and worth keeping:** a translation cached for a

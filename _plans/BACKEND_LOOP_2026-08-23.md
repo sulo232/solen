@@ -292,6 +292,13 @@ off a report. 151 tables, RLS on all of them, biggest is `availability_slots` at
 
 Three things need him, and nothing else in this loop does.
 
+Each one is on the standing open-decisions page as of today, so it does not die with a context
+window. The detail for each sits in the box below it.
+
+- [ ] PARKED 2026-08-26 · Should a nightly job delete past time slots that were never booked and are older than 90 days? · from: the storage pass, 17,572 of 62,913 slots are already in the past and nothing has ever removed one
+- [ ] PARKED 2026-08-26 · Do you want leaked-password protection switched on, knowing it rejects sign-ups using passwords from known breach lists? · from: the Supabase security advisor, it is a dashboard toggle and not code
+- [ ] PARKED 2026-08-26 · Do you want the three July backend fixes brought across from the branches they were stranded on? · from: the regression pass, they exist on neither this branch nor main
+
 - [ ] **HIS CALL: prune old slots.** 17,572 of the 62,913 slots are in the past and 16,711 of
       those were never booked. Nothing removes them, ever. Deleting rows is his decision by
       standing rule, so nothing was deleted. Proposal: a nightly job removing past, never-booked
