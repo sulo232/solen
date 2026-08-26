@@ -557,7 +557,19 @@ be re-proposed as new work without saying which of these four reasons applies.
 
 ### Round 5: a staff permission that crashes rather than refuses
 
-- [ ] **Every staff member hitting the schedule-edit route gets a 500 today, not a 403.**
+- [x] **FIXED, `91624012f`. It discriminates now instead of crashing.** `verified:` the check
+      understands both shapes, and the proof is the refuse case, not the allow case: an explicit
+      `can_edit_schedule: false` returns 403, `{}` and null and both legacy array forms allow, and
+      nothing throws. Absent means allowed on purpose, matching the dashboard's own
+      `?? true` at `app/[locale]/dashboard/staff/page.tsx:77`, because refusing would silently
+      remove a permission the owner's screen says the staff member already has.
+      **NOT DONE, and the reason is a gate, not an oversight:** the stale line in
+      `_design-system/ONBOARDING_SPEC.md:253` still says this permission always returns 403. The
+      canon gate refuses an edit to that file and offers only two ways round, moving the file or
+      editing the gate's own allowlist. Both are structural changes nobody asked for, so the
+      builder stopped, which was right. The correct facts live here instead. HIS CALL if he wants
+      that file corrected: allow it into the gate's list, or archive it.
+- [x] **Original measurement, kept for the record.**
       `verified:` `app/api/staff/my-schedule/route.ts` reads `permissions` as a string array and
       calls `.includes()` on it. The dashboard at `app/[locale]/dashboard/staff/page.tsx` SAVES an
       object, and `lib/validations.ts` only accepts an object, so the array shape can never occur.
