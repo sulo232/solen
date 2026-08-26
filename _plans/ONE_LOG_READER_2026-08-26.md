@@ -77,7 +77,7 @@ Every tick carries the commit that landed it, so the claim can be checked withou
 - [x] `owner-sees-it-measure-it-gate.py` external suite 15/15, `reply-shape-preflight.py` 54/54.
       verified: `7378cc9`
 - [x] `link-verified-gate.py` external suite 14/14, `_toolproof.py` 9/9. verified: `3b1bbec`
-- [x] `delegate-media-read-gate.py` , NO CHANGE NEEDED, and this was proved rather than assumed.
+- [x] `delegate-media-read-gate.py` , NO CHANGE NEEDED, proved not assumed. verified: `514a0d510`, and the proof itself:
       verified: walked the file's own syntax tree. It compiles exactly two regexes, both for image
       FILENAMES (`^img_\d+\.(png|jpe?g|heic|heif)$` at line 58 and a UUID at line 59), neither
       carrying a machinery marker. Exactly one string literal in the file contains one, at line
