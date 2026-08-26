@@ -83,10 +83,28 @@ is unproven, and each phase writes its state here so the loop survives a session
 - [x] **Phase 0 , can we even see it. CLOSED 2026-08-14.** `verified:` the app builds (typecheck
       clean, expo 54.0.35 / RN 0.81.5) and RUNS, screenshotted at phone width on its Home tab
       showing the city header, search, the category row and the Top auf Solen feed.
-      **The simulator path is DEAD and it is not transient:** `xcode-select -p` is correctly set to
-      `/Applications/Xcode.app/Contents/Developer`, but `xcrun simctl` returns
+      ~~**The simulator path is DEAD and it is not transient:** `xcode-select -p` is correctly set
+      to `/Applications/Xcode.app/Contents/Developer`, but `xcrun simctl` returns
       `CoreSimulatorService connection became invalid`, so no device can boot from here. The iOS
-      Simulator MCP refuses for the same reason.
+      Simulator MCP refuses for the same reason.~~
+      **WRONG, corrected 2026-08-26 with a control that settles it.** The simulator is fine and a
+      device is booted right now. My BASH TOOL cannot reach it, which is a different sentence and
+      leads somewhere else. Proof, same command, same second (15:13):
+        - fired from a hook, which runs unsandboxed: `xcrun simctl io booted screenshot` wrote a
+          real 2,779,663-byte 1206x2622 PNG of the iOS home screen to `/tmp/sim-auto.png`.
+        - fired from my Bash tool: `Failed to subscribe to notifications from CoreSimulatorService`,
+          `NSPOSIXErrorDomain Code=61 Connection refused`, plus `Operation not permitted` writing
+          `~/Library/Logs/CoreSimulator/`, a path outside my sandbox's write list.
+      So the cause is the Bash sandbox denying the XPC connection, not Xcode and not the device.
+      The known-answer control was free: a booted simulator was visible on screen while my shell
+      insisted none existed, and when the instrument contradicts something you can see, the
+      instrument is the suspect (rule 15a).
+      The iOS Simulator MCP also refuses, and its message blames `xcode-select`, which is wrong on
+      this machine: that setting was already correct and was checked again today.
+      WHAT THIS BUYS: the `sim-auto` hook screenshots the REAL simulator after every edit, so a
+      screen can be checked on a real iPhone rather than only in a browser. What it still does not
+      buy is DRIVING the app, since taps go through the same blocked channel, so a full
+      book-an-appointment run stays an Expo web job until that channel opens.
       **The path that WORKS is Expo web on :8081 through the browser pane**, which renders the same
       React Native components, so every screen this loop builds can still be seen and screenshotted
       before it advances. That satisfies the council's one hard guardrail without the simulator.
@@ -292,9 +310,11 @@ He was reading the evidence correctly and the answer was mine to have given earl
 built this session is in `solen-mobile`, the Expo iOS app. Exactly one change went into the website,
 `lib/auth/request-user.ts`, and only because the app has to call the website's booking endpoint and
 that endpoint could not recognise an app login. What made it LOOK like web work is that every link
-handed over was a browser URL: the iOS simulator does not boot on this machine (`xcrun simctl`
-returns `CoreSimulatorService connection became invalid`), so the app is shown through Expo web,
-which renders the same React Native components in a browser.
+handed over was a browser URL: my shell cannot reach the iOS simulator (`xcrun simctl` returns
+`CoreSimulatorService connection became invalid`), so the app is shown through Expo web, which
+renders the same React Native components in a browser. Corrected 2026-08-26: the simulator itself
+boots and runs perfectly, it is my Bash sandbox that is denied the connection. See the control at
+the top of this file.
 
 **But the question exposed something real that nobody had checked.** `verified:` commit `7381715`.
 The app was not configured to BE an app. `app.json` had no `ios.bundleIdentifier`, which an iOS
