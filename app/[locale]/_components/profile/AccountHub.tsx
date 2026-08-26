@@ -273,7 +273,7 @@ function Row({
             reference measures 17.3-22.7pt per account-list glyph
             (airbnb--profile-list.md:52,83), so 19 sat at the bottom of the band, and the
             wrapper span above already reserves exactly 22px. */}
-        <Icon size={22} strokeWidth={1.9} className={iconClassName} aria-hidden />
+        <Icon size={22} strokeWidth={2.2} className={iconClassName} aria-hidden />
       </span>
       <span className="min-w-0 flex-1">
         <span className="block font-heading text-[15.5px] font-medium tracking-[-0.01em] text-s-ink">{label}</span>

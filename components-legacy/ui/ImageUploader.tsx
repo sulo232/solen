@@ -144,7 +144,7 @@ export default function ImageUploader({
             className="absolute top-2 right-2 p-1.5 rounded-full bg-white/90 text-s-ink-2 hover:text-s-accent transition-colors shadow-warm-sm"
             aria-label="Bild entfernen"
           >
-            <X size={14} />
+            <X size={14} strokeWidth={1.6} />
           </button>
           {uploading && (
             <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-s-sand">
@@ -166,13 +166,13 @@ export default function ImageUploader({
         >
           {uploading ? (
             <>
-              <Loader2 size={24} className="text-s-accent animate-spin" />
+              <Loader2 size={24} strokeWidth={2.4} className="text-s-accent animate-spin" />
               <span className="text-xs text-s-ink/40">Wird hochgeladen…</span>
             </>
           ) : (
             <>
               <div className="w-12 h-12 rounded-full bg-s-ink/10 flex items-center justify-center">
-                <Camera size={20} className="text-s-accent" />
+                <Camera size={20} strokeWidth={2.2} className="text-s-accent" />
               </div>
               <span className="text-sm font-medium text-s-ink-2">{label}</span>
               <span className="text-xs text-s-ink/30">

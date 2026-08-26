@@ -24,6 +24,7 @@ import { SalonCard, type SalonCardProps } from "./SalonCard";
 // this task: "No German added beyond existing i18n keys").
 import { TITLES, pick } from "../search/CategoryBrowseRails";
 import type { SalonCardDataMap } from "./salonCardData";
+import { nameForLocale, type ServiceNameLocale } from "@/lib/min-price-service";
 
 interface AvailableRow {
   id: string;
@@ -36,8 +37,7 @@ interface AvailableRow {
   postalCode: string | null;
   city: string | null;
   priceFromCHF: number | null;
-  priceFromServiceDe: string | null;
-  priceFromServiceEn: string | null;
+  priceFromServiceNames: Record<ServiceNameLocale, string | null> | null;
 }
 
 /**
@@ -76,8 +76,7 @@ export default function AvailableThisWeek({
         postalCode: real.postalCode,
         city: real.city,
         priceFromCHF: real.priceFromCHF,
-        priceFromServiceDe: real.priceFromServiceDe,
-        priceFromServiceEn: real.priceFromServiceEn,
+        priceFromServiceNames: real.priceFromServiceNames,
       };
     })
     .filter((row): row is AvailableRow => row !== null);
@@ -101,7 +100,7 @@ export default function AvailableThisWeek({
               photoUrl={s.photoUrl ?? undefined}
               variant="availability"
               priceFromCHF={s.priceFromCHF}
-              priceFromService={locale === "en" ? (s.priceFromServiceEn ?? s.priceFromServiceDe) : s.priceFromServiceDe}
+              priceFromService={nameForLocale(s.priceFromServiceNames, locale)}
               postalCode={s.postalCode ?? undefined}
               city={s.city ?? undefined}
             />

@@ -55,7 +55,7 @@ export default function ErrorState({
       {...animationProps}
     >
       <div className="mb-5 flex items-center justify-center w-12 h-12 rounded-[14px] bg-s-error-bg">
-        <Icon size={24} className="text-s-error" strokeWidth={1.75} />
+        <Icon size={24} className="text-s-error" strokeWidth={2.4} />
       </div>
       <h3 className="font-heading text-s-ink text-lg mb-1.5">{title}</h3>
       {message && (
@@ -65,7 +65,7 @@ export default function ErrorState({
         onClick={onRetry}
         className="inline-flex items-center gap-2 px-5 py-2.5 rounded-pill bg-s-ink text-white text-sm font-medium hover:brightness-[1.06] active:scale-[0.97] transition-[transform,filter] duration-150 shadow-warm-sm"
       >
-        <RotateCcw size={14} />
+        <RotateCcw size={14} strokeWidth={1.6} />
         {retryLabel}
       </button>
     </motion.div>

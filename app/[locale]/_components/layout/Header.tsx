@@ -181,7 +181,7 @@ function DropdownMenu({
         {label}
         <ChevronDown
           size={14}
-          strokeWidth={2.25}
+          strokeWidth={1.6}
           className={cn(
             "transition-transform duration-200 ease-glide",
             open && "rotate-180",
@@ -297,11 +297,11 @@ function MobileCityChip({ locale }: { locale: string }) {
           "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
         )}
       >
-        <MapPin size={15} strokeWidth={2} aria-hidden className="text-s-ink-2" />
+        <MapPin size={15} strokeWidth={1.9} aria-hidden className="text-s-ink-2" />
         <span>{getCityName(city, locale, activeCities.find((c) => c.slug === city))}</span>
         <ChevronDown
           size={14}
-          strokeWidth={2.5}
+          strokeWidth={1.6}
           aria-hidden
           className={cn("text-s-ink-2 transition-transform duration-150 ease-glide", open && "rotate-180")}
         />

@@ -424,7 +424,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
         {formData.services.map((s, i) => (
           <div key={s.id} className="mt-3 flex items-center gap-3 border-t border-s-border pt-3">
             <div className="grid h-11 w-11 shrink-0 place-items-center text-s-ink-2">
-              <Scissors size={20} strokeWidth={1.9} aria-hidden />
+              <Scissors size={20} strokeWidth={2.2} aria-hidden />
             </div>
             <div className="min-w-0 flex-1">
               <p className="truncate font-heading text-[15px] font-semibold text-s-ink">{locale === 'en' ? s.name_en : s.name_de}</p>
@@ -441,7 +441,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
         {/* When */}
         <div className="mt-3 flex items-center gap-3 border-t border-s-border pt-3">
           <div className="grid h-11 w-11 shrink-0 place-items-center text-s-ink-2">
-            <Calendar size={20} strokeWidth={1.9} aria-hidden />
+            <Calendar size={20} strokeWidth={2.2} aria-hidden />
           </div>
           <div className="min-w-0 flex-1">
             <p className="font-heading text-[15px] font-semibold tabular-nums text-s-ink">{dateLabel} {timeLabel}</p>
@@ -514,7 +514,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
         contactName.trim() && contactPhone.replace(/\D/g, '').length >= 9 && !editingContact ? (
           <div className="rounded-input border border-s-border bg-s-bg-surface p-4">
             <div className="flex items-center gap-3">
-              <UserRound size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" aria-hidden />
+              <UserRound size={18} strokeWidth={1.9} className="shrink-0 text-s-ink-2" aria-hidden />
               <div className="min-w-0 flex-1">
                 <p className="font-body text-[14.5px] font-semibold text-s-ink">{contactName}</p>
                 <p className="font-body mt-px text-[13px] text-s-ink-2">{contactPhone}</p>
@@ -532,7 +532,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
           <div className="rounded-input border border-s-border bg-s-bg-surface p-4">
             {contactName.trim() && !editingContact ? (
               <div className="flex items-center gap-3">
-                <UserRound size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" aria-hidden />
+                <UserRound size={18} strokeWidth={1.9} className="shrink-0 text-s-ink-2" aria-hidden />
                 <p className="font-body text-[14.5px] font-semibold text-s-ink">{contactName}</p>
               </div>
             ) : (
@@ -597,7 +597,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
               }`}
             >
               <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-s-accent-pale">
-                <CreditCard size={20} strokeWidth={2.1} className="text-s-accent" aria-hidden />
+                <CreditCard size={20} strokeWidth={2.2} className="text-s-accent" aria-hidden />
               </span>
               <span className="min-w-0 flex-1">
                 <span className="block font-body text-[14px] font-semibold text-s-ink">{tp('payOnlineTitle')}</span>
@@ -614,7 +614,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
               }`}
             >
               <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-s-bg-sunken">
-                <Store size={20} strokeWidth={2.1} className="text-s-ink" aria-hidden />
+                <Store size={20} strokeWidth={2.2} className="text-s-ink" aria-hidden />
               </span>
               <span className="min-w-0 flex-1">
                 <span className="block font-body text-[14px] font-semibold text-s-ink">{tp('payAtSalonTitle')}</span>
@@ -644,7 +644,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
               </div>
             </div>
             <p className="flex items-center gap-1.5 text-[12px] text-s-success mt-2">
-              <ShieldCheck size={14} aria-hidden /> {tp('secureWithDeposit', { percent: depositPct })}
+              <ShieldCheck size={14} strokeWidth={1.6} aria-hidden /> {tp('secureWithDeposit', { percent: depositPct })}
             </p>
           </>
         ) : (
@@ -699,7 +699,7 @@ export default function PayConfirmStep({ salon, staff, isLoggedIn }: PayConfirmS
 
       {/* Cancellation policy mini-banner (below Zahlung per owner, mockup 24c/24d) */}
       <div className="flex items-start gap-2 px-1">
-        <ShieldCheck size={14} className="mt-[2px] shrink-0 text-s-success" aria-hidden />
+        <ShieldCheck size={14} strokeWidth={1.6} className="mt-[2px] shrink-0 text-s-success" aria-hidden />
         <p className="font-body text-[12.5px] leading-[1.5] text-s-ink-2">
           {tp('cancellationPolicy', { hours: cancellationHours })}
         </p>

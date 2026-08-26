@@ -283,7 +283,7 @@ function SeeAllCircle({ href, label }: { href: string; label: string }) {
           "group-active:scale-[0.94] group-active:duration-[80ms]", // mockup-ok
         )}
       >
-        <ArrowRight size={20} strokeWidth={2} aria-hidden />
+        <ArrowRight size={20} strokeWidth={2.2} aria-hidden />
       </span>
     </Link>
   );
@@ -321,7 +321,7 @@ function ScrollCircleButton({
         "disabled:opacity-30 disabled:pointer-events-none",
       )}
     >
-      <Icon size={16} strokeWidth={2.25} aria-hidden />
+      <Icon size={16} strokeWidth={1.9} aria-hidden />
     </button>
   );
 }

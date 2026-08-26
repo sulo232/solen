@@ -75,7 +75,7 @@ export default function Breadcrumb() {
 
           return (
             <span key={href} className="flex items-center gap-1.5">
-              <ChevronRight size={14} className="text-s-ink/20" />
+              <ChevronRight size={14} strokeWidth={1.6} className="text-s-ink/20" />
               {isLast ? (
                 <span className="text-s-ink/70 font-medium">{label}</span>
               ) : (

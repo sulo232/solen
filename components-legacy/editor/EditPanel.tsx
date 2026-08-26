@@ -224,7 +224,7 @@ export default function EditPanel({
             Edit Panel
           </h3>
           <button onClick={onClose} className="p-1 rounded-btn hover:bg-s-bg-sunken transition-colors">
-            <X size={20} className="text-s-ink-2" />
+            <X size={20} strokeWidth={2.2} className="text-s-ink-2" />
           </button>
         </div>
 
@@ -333,7 +333,7 @@ export default function EditPanel({
               : "bg-s-ink text-white hover:brightness-[1.06] disabled:opacity-50 disabled:cursor-not-allowed"
           }`}
         >
-          {saving ? <Spinner size="sm" invert /> : justSaved ? <Check size={16} /> : null}
+          {saving ? <Spinner size="sm" invert /> : justSaved ? <Check size={16} strokeWidth={1.9} /> : null}
           {saving ? "Saving..." : justSaved ? "Saved! Copy below to use with Claude" : "Save Request"}
         </button>
 
@@ -341,7 +341,7 @@ export default function EditPanel({
         {requests.length > 0 && (
           <div className="border border-s-border rounded-[12px] p-3 space-y-2 bg-s-bg-sunken/50">
             <div className="flex items-center gap-1.5">
-              <ClipboardList size={14} className="text-s-accent" />
+              <ClipboardList size={14} strokeWidth={1.6} className="text-s-accent" />
               <p className="text-xs font-medium text-s-ink">
                 Copy for Claude Code
               </p>

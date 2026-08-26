@@ -160,7 +160,7 @@ export default function BookingCard({
                 className="grid h-[38px] w-[38px] place-items-center rounded-pill border border-s-border bg-white text-s-ink transition-transform duration-150 active:scale-[0.97]"
                 aria-label={t('reschedule') + ' / ' + t('cancel')}
               >
-                <MoreVertical size={18} />
+                <MoreVertical size={18} strokeWidth={1.9} />
               </button>
               {showMenu && (
                 <div className="absolute right-0 top-full z-50 mt-2 min-w-[160px] rounded-card border border-s-border bg-[--raised] shadow-elevation-3" onClick={stop}>

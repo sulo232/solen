@@ -108,7 +108,7 @@ export default function CategoryStack() {
                   />
                   <ChevronRight
                     size={20}
-                    strokeWidth={2.25}
+                    strokeWidth={2.2}
                     aria-hidden
                     className="text-s-ink-2 transition-transform group-hover:translate-x-0.5"
                   />

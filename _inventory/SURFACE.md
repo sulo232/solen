@@ -8,7 +8,7 @@
 >
 > For *status* (partial · deprecated · don't-reuse-for) see `_inventory/STATUS.md` (hand-kept).
 
-**Totals:** 241 routes · 363 API endpoints · 410 components · 155 lib/hooks modules · 67 DB functions · 151 DB tables · 1729 columns indexed
+**Totals:** 241 routes · 363 API endpoints · 410 components · 159 lib/hooks modules · 68 DB functions · 151 DB tables · 1729 columns indexed
 
 ## Routes (pages)
 
@@ -813,6 +813,7 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | `generate_referral_code` | `supabase/migrations/049_referrals.sql` |
 | `get_last_minute_slots` | `supabase/migrations/014_new_schema.sql` |
 | `get_nearby_salon_ids` | `supabase/migrations/077_geospatial_search.sql` |
+| `guard_booking_protected_fields` | `supabase/migrations/20260711211500_audit_fix_bookings_protected_fields_guard.sql` |
 | `guard_booking_status_escalation` | `supabase/migrations/20260709184246_audit_fix_bookings_status_escalation_guard.sql` |
 | `guard_profile_privilege_columns` | `supabase/migrations/20260707095749_security_phase1_profiles_privilege_guard.sql` |
 | `guard_salon_activation` | `supabase/migrations/20260714144715_harden_salon_activation_requires_approval.sql` |
@@ -1279,7 +1280,7 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 
 ## lib/ modules
 
-<details><summary>155 modules — click to expand</summary>
+<details><summary>159 modules — click to expand</summary>
 
 | Module | File |
 |---|---|
@@ -1385,6 +1386,7 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | perks | `lib/loyalty/perks.ts` |
 | status | `lib/loyalty/status.ts` |
 | map-style | `lib/map-style.ts` |
+| min-price-service | `lib/min-price-service.ts` |
 | ai-budget | `lib/nail/ai-budget.ts` |
 | ai-prompts | `lib/nail/ai-prompts.ts` |
 | notifications | `lib/notifications.ts` |
@@ -1397,6 +1399,7 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | posthog-api | `lib/posthog-api.ts` |
 | posthog-server | `lib/posthog-server.ts` |
 | bundle | `lib/pricing/bundle.ts` |
+| resolve-promo-discount | `lib/promo/resolve-promo-discount.ts` |
 | issue-purchase-refund | `lib/purchases/issue-purchase-refund.ts` |
 | notify-purchase-refund | `lib/purchases/notify-purchase-refund.ts` |
 | ratelimit | `lib/ratelimit.ts` |
@@ -1424,6 +1427,7 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | overlap | `lib/slots/overlap.ts` |
 | sms | `lib/sms.ts` |
 | stock-photos | `lib/stock-photos.ts` |
+| storage | `lib/storage.ts` |
 | strikes | `lib/strikes.ts` |
 | stripe | `lib/stripe.ts` |
 | supabase-browser | `lib/supabase-browser.ts` |
@@ -1431,6 +1435,7 @@ _Defined in `supabase/migrations/`. Call from app code via `supabase.rpc('<name>
 | zurich | `lib/time/zurich.ts` |
 | tos-version | `lib/tos-version.ts` |
 | types | `lib/types.ts` |
+| unsubscribe-token | `lib/unsubscribe-token.ts` |
 | upload-security | `lib/upload-security.ts` |
 | utils | `lib/utils.ts` |
 | validations | `lib/validations.ts` |

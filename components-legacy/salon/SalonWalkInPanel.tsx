@@ -325,13 +325,13 @@ export default function SalonWalkInPanel({
             <div className="flex items-start justify-between gap-4">
               <h3 className="font-display text-[17px] font-bold tracking-[-.01em] text-s-ink">{l.howTitle}</h3>
               <button type="button" onClick={() => setInfoOpen(false)} aria-label={l.close} className="-mr-1 -mt-1 grid h-8 w-8 shrink-0 place-items-center rounded-full text-s-ink-2 transition active:scale-[0.94] active:duration-[80ms] active:ease-glide">
-                <X size={20} />
+                <X size={20} strokeWidth={2.2} />
               </button>
             </div>
             <ul className="mt-4 space-y-3.5">
               {l.bullets.map((b, i) => (
                 <li key={i} className="flex items-start gap-3 font-body text-[13.5px] leading-relaxed text-s-ink-2">
-                  <Check size={15} strokeWidth={2.4} className="mt-[3px] shrink-0 text-s-open" aria-hidden />
+                  <Check size={15} strokeWidth={1.9} className="mt-[3px] shrink-0 text-s-open" aria-hidden />
                   <span>{b}</span>
                 </li>
               ))}

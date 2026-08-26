@@ -86,7 +86,7 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved, onD
       <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-md p-6 overflow-y-auto max-h-[90vh] scroll-stable-gutter">
         <div className="flex items-start justify-between mb-4">
           <h3 className="font-heading text-base">{initial ? t('editService') : t('addService')}</h3>
-          <button onClick={onClose} className="transition-transform active:scale-[0.94] active:duration-[80ms] active:ease-glide"><X size={18} className="text-s-ink/30" /></button>
+          <button onClick={onClose} className="transition-transform active:scale-[0.94] active:duration-[80ms] active:ease-glide"><X size={18} strokeWidth={1.9} className="text-s-ink/30" /></button>
         </div>
         <div className="space-y-3 mb-5">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -163,7 +163,7 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved, onD
               ))}
               {photos.length < 3 && (
                 <label className="w-16 h-16 rounded-btn border-2 border-dashed border-s-border flex items-center justify-center cursor-pointer hover:border-s-accent-bright/40 transition-colors">
-                  {uploading ? <Spinner size="sm" /> : <Camera size={16} className="text-s-ink/30" />}
+                  {uploading ? <Spinner size="sm" /> : <Camera size={16} strokeWidth={1.9} className="text-s-ink/30" />}
                   <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
                     const file = e.target.files?.[0];
                     if (!file || !initial?.id) return;
@@ -225,7 +225,7 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved, onD
           </div>
           <label className="flex items-center gap-3 cursor-pointer">
             <button type="button" onClick={() => setForm({ ...form, is_active: !form.is_active })} className={form.is_active ? "text-s-accent-bright" : "text-s-ink/30"}>
-              {form.is_active ? <ToggleRight size={22} /> : <ToggleLeft size={22} />}
+              {form.is_active ? <ToggleRight size={22} strokeWidth={2.2} /> : <ToggleLeft size={22} strokeWidth={2.2} />}
             </button>
             <span className="text-sm text-s-ink-2">{t('active')}</span>
           </label>
@@ -234,7 +234,7 @@ function ServiceModal({ initial, salonId, salonCategories, onClose, onSaved, onD
           {initial && onDelete && (
             <button type="button" onClick={() => { onClose(); onDelete(initial); }} aria-label={t('delete')}
               className="text-s-ink-2 hover:text-s-error transition-[colors,transform] active:scale-[0.94] active:duration-[80ms] active:ease-glide grid place-items-center px-1.5 py-2.5">
-              <Trash2 size={18} />
+              <Trash2 size={18} strokeWidth={1.9} />
             </button>
           )}
           <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2 transition-transform active:scale-[0.97] active:duration-[80ms] active:ease-glide">{t('cancel')}</button>
@@ -298,7 +298,7 @@ function TemplateQuickAdd({ salonCategories, existingNames, salonId, onAdded, lo
         className="w-full border border-s-border rounded-[14px] px-3.5 py-3 text-[13px] text-s-ink-2 font-medium flex items-center justify-between mb-3.5"
       >
         <span>{collapsed ? t('showTemplates') : t('hideTemplates')}</span>
-        <ChevronDown size={16} className={`transition-transform ${collapsed ? "" : "rotate-180"}`} />
+        <ChevronDown size={16} strokeWidth={1.9} className={`transition-transform ${collapsed ? "" : "rotate-180"}`} />
       </button>
       {!collapsed && (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -329,9 +329,9 @@ function TemplateQuickAdd({ salonCategories, existingNames, salonId, onAdded, lo
                 {adding === tmpl.name_de ? (
                   <Spinner size="sm" />
                 ) : added ? (
-                  <Check size={14} className="text-s-accent-bright shrink-0 ml-2" />
+                  <Check size={14} strokeWidth={1.6} className="text-s-accent-bright shrink-0 ml-2" />
                 ) : (
-                  <Plus size={14} className="text-s-accent-bright shrink-0 ml-2" />
+                  <Plus size={14} strokeWidth={1.6} className="text-s-accent-bright shrink-0 ml-2" />
                 )}
               </button>
             );
@@ -467,11 +467,11 @@ export default function ServicesPage() {
         <div className="flex items-center gap-2">
           <button onClick={() => setImportOpen(true)}
             className="inline-flex items-center gap-1.5 px-3 py-2.5 rounded-[12px] border border-s-border text-s-ink-2 text-[13px] font-medium hover:border-s-ink transition-[colors,transform] active:scale-[0.97] active:duration-[80ms] active:ease-glide">
-            <FileUp size={14} /> {t('csvImport')}
+            <FileUp size={14} strokeWidth={1.6} /> {t('csvImport')}
           </button>
           <button onClick={() => setAddOpen(true)}
             className="inline-flex items-center gap-1.5 bg-s-ink text-white font-heading font-semibold text-[13px] rounded-[12px] px-3.5 py-2.5 transition-transform active:scale-[0.97] active:duration-[80ms] active:ease-glide">
-            <Plus size={15} strokeWidth={2.4} /> {t('add')}
+            <Plus size={15} strokeWidth={1.9} /> {t('add')}
           </button>
         </div>
       </div>
@@ -491,7 +491,7 @@ export default function ServicesPage() {
       {services.length > 0 && (
         <>
           <div className="flex items-center gap-2 border border-s-border rounded-[14px] px-3.5 py-2.5 text-s-ink-2 mb-3.5">
-            <Search size={17} className="shrink-0" />
+            <Search size={17} strokeWidth={1.9} className="shrink-0" />
             {/* mockup-ok: !important prevents a look change, not a new one. The wrapper div
                 owns the visible chrome + padding; this input must stay invisible AND compact
                 inside it, or the widened base input law (globals.css, 2026-07-17, also sets
@@ -560,14 +560,14 @@ export default function ServicesPage() {
                     <span {...provided.dragHandleProps}
                       className="cursor-grab active:cursor-grabbing text-s-ink-2 hover:text-s-ink-2 transition-colors shrink-0"
                       aria-label={t('dragHandle')}>
-                      <GripVertical size={20} />
+                      <GripVertical size={20} strokeWidth={2.2} />
                     </span>
                     {hasDetails ? (
                     <button type="button" onClick={() => toggleExpanded(s.id)} aria-expanded={isExpanded}
                       className="flex-1 min-w-0 text-left">
                       <div className="flex items-center gap-1.5">
                         <p className="font-heading font-semibold text-[14.5px] text-s-ink truncate">{s.name_de}</p>
-                        <ChevronDown size={15} className={`shrink-0 text-s-ink-2 transition-transform ${isExpanded ? "rotate-180" : ""}`} />
+                        <ChevronDown size={15} strokeWidth={1.9} className={`shrink-0 text-s-ink-2 transition-transform ${isExpanded ? "rotate-180" : ""}`} />
                       </div>
                       {s.name_en && <p className="text-[12px] text-s-ink-2 truncate">{s.name_en}</p>}
                       <div className="flex items-center gap-2 mt-1.5">
@@ -599,7 +599,7 @@ export default function ServicesPage() {
                       <span className={`absolute top-[2.5px] left-[2.5px] w-[18px] h-[18px] rounded-full bg-white shadow-warm-sm transition-transform ${s.is_active ? "translate-x-[14.5px]" : "translate-x-0"}`} />
                     </button>
                     <button onClick={() => setEditTarget(s)} aria-label={t('edit')} className="text-s-ink shrink-0 grid place-items-center transition-transform active:scale-[0.94] active:duration-[80ms] active:ease-glide">
-                      <Pencil size={19} />
+                      <Pencil size={19} strokeWidth={2.2} />
                     </button>
                   </div>
                   {hasDetails && (
@@ -636,7 +636,7 @@ export default function ServicesPage() {
           <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-md p-6">
             <div className="flex items-start justify-between mb-4">
               <h3 className="font-heading text-base">{t('csvImport')}</h3>
-              <button onClick={() => setImportOpen(false)} className="transition-transform active:scale-[0.94] active:duration-[80ms] active:ease-glide"><X size={18} className="text-s-ink/30" /></button>
+              <button onClick={() => setImportOpen(false)} className="transition-transform active:scale-[0.94] active:duration-[80ms] active:ease-glide"><X size={18} strokeWidth={1.9} className="text-s-ink/30" /></button>
             </div>
             <p className="text-sm text-s-ink-2 mb-4">
               {t('csvImportHelp')}
@@ -669,7 +669,7 @@ export default function ServicesPage() {
                 className="w-full px-3 py-2 rounded-btn border border-s-border text-sm mb-4 file:mr-3 file:px-3 file:py-1 file:rounded-btn file:border-0 file:bg-s-accent-bright/10 file:text-s-accent-bright file:font-medium file:text-xs file:cursor-pointer" />
               <button type="submit"
                 className="w-full py-2.5 rounded-btn bg-s-accent-bright text-white text-sm font-medium flex items-center justify-center gap-2 transition-transform active:scale-[0.97] active:duration-[80ms] active:ease-glide">
-                <Upload size={14} /> {t('importButton')}
+                <Upload size={14} strokeWidth={1.6} /> {t('importButton')}
               </button>
             </form>
           </div>

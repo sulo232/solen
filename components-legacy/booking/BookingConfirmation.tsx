@@ -410,14 +410,14 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
             />
             <div className="absolute inset-x-4 top-4 flex items-center justify-end">
               <Link href={helpHref} aria-label={t("helpAria")} className={iconBtnClass} style={FROST_GLASS}>
-                <HelpCircle size={20} aria-hidden />
+                <HelpCircle size={20} strokeWidth={2.2} aria-hidden />
               </Link>
             </div>
           </div>
         ) : (
           <div className="flex items-center justify-end px-4 pt-4"> {/* mockup-ok */}
             <Link href={helpHref} aria-label={t("helpAria")} className={iconBtnClass}>
-              <HelpCircle size={20} aria-hidden />
+              <HelpCircle size={20} strokeWidth={2.2} aria-hidden />
             </Link>
           </div>
         )}
@@ -439,7 +439,7 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
                 </div>
               )}
             </div>
-            <ChevronRight size={17} className="shrink-0 text-s-ink-2" aria-hidden />
+            <ChevronRight size={17} strokeWidth={1.9} className="shrink-0 text-s-ink-2" aria-hidden />
           </Link>
 
           {/* ── headline: one receipt position/size for every state, only colour + copy branch ,
@@ -464,7 +464,7 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
                 aria-label={tBookings("rescheduleTitle")}
                 className="flex w-full items-center gap-3 p-4 text-left focus-visible:bg-s-bg-sunken focus-visible:outline-none" // mockup-ok
               >
-                <Calendar size={18} className="shrink-0 text-s-ink-2" aria-hidden />
+                <Calendar size={18} strokeWidth={1.9} className="shrink-0 text-s-ink-2" aria-hidden />
                 <div className="min-w-0 flex-1">
                   <div className="font-display text-[14.5px] font-semibold tracking-[-0.01em] text-s-ink">
                     {dateStr}
@@ -474,11 +474,11 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
                     {props.durationMinutes ? <span>{props.durationMinutes} min</span> : null}
                   </div>
                 </div>
-                <ChevronRight size={17} className="shrink-0 text-s-ink-2" aria-hidden />
+                <ChevronRight size={17} strokeWidth={1.9} className="shrink-0 text-s-ink-2" aria-hidden />
               </button>
             ) : (
               <div className="flex items-center gap-3 p-4">
-                <Calendar size={18} className="shrink-0 text-s-ink-2" aria-hidden />
+                <Calendar size={18} strokeWidth={1.9} className="shrink-0 text-s-ink-2" aria-hidden />
                 <div className="min-w-0 flex-1">
                   <div className="font-display text-[14.5px] font-semibold tracking-[-0.01em] text-s-ink">
                     {dateStr}
@@ -493,7 +493,7 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
             <hr className="border-s-border" />
             {/* service row , no chevron, no edit backend (dead-click contract) */}
             <div className="flex items-center gap-3 p-4">
-              <Scissors size={18} className="shrink-0 text-s-ink-2" aria-hidden />
+              <Scissors size={18} strokeWidth={1.9} className="shrink-0 text-s-ink-2" aria-hidden />
               <div className="min-w-0 flex-1">
                 <div className="truncate font-display text-[14.5px] font-semibold tracking-[-0.01em] text-s-ink">
                   {props.serviceName}
@@ -574,7 +574,7 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
           className="celebrate-rise mt-5 flex h-[52px] w-full items-center justify-center gap-2 rounded-btn bg-s-ink font-body text-[15px] font-semibold text-white transition-[filter,transform] duration-150 hover:brightness-[0.94] active:scale-[0.98]"
           style={{ animationDelay: "0.68s" }}
         >
-          <Calendar size={17} aria-hidden />
+          <Calendar size={17} strokeWidth={1.9} aria-hidden />
           {t("addToCalendar")}
         </button>
         <a
@@ -583,7 +583,7 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
           rel="noopener noreferrer"
           className="mt-2.5 flex h-[50px] w-full items-center justify-center gap-2 rounded-btn border border-s-border bg-s-bg-surface font-body text-[15px] font-semibold text-s-ink"
         >
-          <MapPin size={17} aria-hidden />
+          <MapPin size={17} strokeWidth={1.9} aria-hidden />
           {t("directions")}
         </a>
 
@@ -603,7 +603,7 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
         {props.isGuest && props.accessLink && (
           <div className="mt-4 rounded-card border border-s-border bg-s-bg-surface p-3.5 shadow-float">
             <div className="flex items-center gap-2 text-[13px] text-s-ink-2">
-              <KeyRound size={15} className="shrink-0 text-s-ink" aria-hidden />
+              <KeyRound size={15} strokeWidth={1.9} className="shrink-0 text-s-ink" aria-hidden />
               <span>{t("saveLinkShort")}</span>
             </div>
             <div className="mt-2.5 flex h-[44px] items-center gap-2 rounded-[12px] border border-s-border bg-s-bg-sunken pl-3 pr-1.5">
@@ -620,7 +620,7 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
                   copiedLink ? "text-s-success" : "text-s-ink",
                 ].join(" ")}
               >
-                {copiedLink ? <Check size={16} aria-hidden /> : <Copy size={16} aria-hidden />}
+                {copiedLink ? <Check size={16} strokeWidth={1.9} aria-hidden /> : <Copy size={16} strokeWidth={1.9} aria-hidden />}
               </button>
             </div>
           </div>
@@ -634,7 +634,7 @@ export default function BookingConfirmation(props: BookingConfirmationProps) {
             className="inline-flex items-center gap-0.5 font-semibold text-s-accent transition-opacity duration-150 hover:opacity-80"
           >
             {t("manageBooking")}
-            <ChevronRight size={15} aria-hidden />
+            <ChevronRight size={15} strokeWidth={1.9} aria-hidden />
           </Link>
         </div>
         {showVat && props.salonVatNumber && (

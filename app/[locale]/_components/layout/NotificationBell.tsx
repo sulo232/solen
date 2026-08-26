@@ -43,7 +43,7 @@ export default function NotificationBell({ hidden }: { hidden?: boolean }) {
         hidden && "opacity-0 pointer-events-none",
       )}
     >
-      <Bell size={21} strokeWidth={2} aria-hidden />
+      <Bell size={21} strokeWidth={2.2} aria-hidden />
       {unread > 0 && (
         <span className="absolute right-1 top-1 grid h-[16px] min-w-[16px] place-items-center rounded-full bg-s-accent px-[3px] text-[10px] font-bold leading-none text-white">
           {unread > 9 ? "9+" : unread}

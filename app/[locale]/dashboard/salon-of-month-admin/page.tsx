@@ -144,7 +144,7 @@ export default function SalonOfMonthAdminPage() {
           {current?.salons ? (
             <div className="mt-3 flex items-center gap-3">
               <div className="grid h-11 w-11 shrink-0 place-items-center rounded-[12px] bg-s-bg-sunken text-s-ink">
-                <Crown size={20} strokeWidth={1.75} />
+                <Crown size={20} strokeWidth={2.2} />
               </div>
               <div className="min-w-0 flex-1">
                 <div className="truncate font-body text-[15px] font-medium text-s-ink">
@@ -241,7 +241,7 @@ export default function SalonOfMonthAdminPage() {
                           className="shrink-0 rounded-pill bg-s-ink px-4 py-1.5 font-body text-[13px] font-semibold text-white transition-[filter,transform] duration-150 active:scale-[0.97] active:duration-[80ms] active:ease-glide hover:brightness-[1.06] disabled:cursor-not-allowed disabled:opacity-50"
                         >
                           {selectingId === c.id ? (
-                            <Loader2 size={14} className="animate-spin" />
+                            <Loader2 size={14} strokeWidth={1.6} className="animate-spin" />
                           ) : (
                             t("selectButton")
                           )}

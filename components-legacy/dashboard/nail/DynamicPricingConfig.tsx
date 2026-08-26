@@ -105,7 +105,7 @@ export default function DynamicPricingConfig({ salonId }: { salonId: string }) {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <TrendingUp size={16} className="text-s-coral" />
+          <TrendingUp size={16} strokeWidth={1.9} className="text-s-coral" />
           <h3 className="font-heading text-sm text-s-ink">{t("pricing_title")}</h3>
         </div>
         <button onClick={() => setNewRule({ rule_type: "peak_hour", modifier: 1.2, day_of_week: 6, start_time: "10:00", end_time: "14:00" })}
@@ -222,7 +222,7 @@ export default function DynamicPricingConfig({ salonId }: { salonId: string }) {
             <button onClick={() => deleteRule(rule.id)}
               aria-label={t("delete")}
               className="p-1.5 min-h-12 rounded-btn hover:bg-s-error-bg:bg-s-error/10 text-s-ink/30 hover:text-s-error">
-              <Trash2 size={14} />
+              <Trash2 size={14} strokeWidth={1.6} />
             </button>
           </div>
         ))}

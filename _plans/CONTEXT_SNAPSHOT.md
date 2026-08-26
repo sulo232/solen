@@ -2,27 +2,20 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-16T21:25:49 (trigger: auto)
+- taken: 2026-08-26T14:02:17 (trigger: auto)
 - branch: claude/agent-flow-design-overhaul-2af2c2
 
 ## git
 ```
-e99649943 Two dead controls in the reviews mockup, caught by clicking them
-801e6213b Mockups for walk-in and reviews, nine versions each, plus the four bugs they exposed
-8ff7a1c40 An independent reviewer broke my gate change in 8 ways. Fixed with the mechanism this repo already had
-68d7804b9 One section, eight versions, stacked. No top bar, no toggle, no frame
-ca4b6b324 Remove the gate that was forcing the whole-page template, and rule 4 with it
-```
-```
-M _design-system/REMOVED.md
- M _plans/ACTIVE.md
-?? _plans/HOME_SECTION_ROUND2_2026-08-16.md
-?? public/_mockups/looks-round2/
-?? public/_mockups/reviews-round2/
-?? public/_mockups/walkin-round2/
+1a0a7332d A hidden review could still be read, and a card could be charged twice
+c6e509911 Put the sha on the first line of six boxes, and re-prove all nine
+87dd370d1 Close the loop: what got fixed, and the three calls that are his
+d364947ae A check that counts what a sweep LEFT, not what it did
+3ce0fb23e Close the fix boxes, including the one where the reader was not enough
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
+71 | BACKEND LOOP: bugs, security, storage, scale, waste (owner 2026-08-23: "analyze, like, every single inch of back end ... as a loop, and also fix up those stuff, like, how everything is stored ... so it can scale ... And also that if it's, like, inefficient") | **ACTIVE** (2026-08-23) , 4 holes closed + 3 database fixes applied live; 3 decisions waiting on him
 68 | HOME: continue-search card + recently-viewed (owner 2026-08-15: "big size difference between the screenshot Airbnb reference and ours" + "mock ups in direction based on other websites and apps" + "recently viewed, we didn't do anything for that") | **ACTIVE** (2026-08-15)
 69 | HOME SECTIONS one by one (owner 2026-08-15: search icon without the box, card font/spacing "not balanced ... looks empty", Popular looks "doesn't make any sense" with "tons" of options, then Walk-in, then Reviews) | **ACTIVE** (2026-08-15)
 70 | HOME SECTIONS round 2 (owner 2026-08-16, rejected all 26 stacked versions and specified ONE design per section: Popular looks takes the Inspo card minus the TikTok badge and the black gradient plus a real shadow and replaces Find-your-inspiration; walk-in keeps the N-ahead count and the mark indicators, colour-coded, real icon back, hierarchy fixed; reviews cards smaller with read-more repositioned) | **ACTIVE** (2026-08-16)
@@ -85,21 +78,11 @@ M _design-system/REMOVED.md
 50 | DESIGN principle deep-research (the rules we ALREADY have) | **ACTIVE** (2026-07-28)
 51 | DESIGN RE-ENGINEER , improve the system we have, measured against live Airbnb | **ACTIVE** (2026-07-28)
 
-## HOME_SECTION_ROUND2_2026-08-16.md
+## BACKEND_LOOP_2026-08-23.md
 Open boxes:
-- [ ] **A1. Keep the Popular looks section.** He said keep it, so it is not going in the graveyard.
-- [ ] **A2. Give it the Inspo card anatomy.** measured on the live Inspo row: card 200 x 380, photo
-- [ ] **A3. Remove the TikTok badge from the card.** measured: 38 x 12 pill, top left.
-- [ ] **A4. Remove the black gradient over the photo.** measured: `bg-gradient-to-t from-black/80`
-- [ ] **A5. Put a real shadow BEHIND the card instead.** measured: the live Inspo card and its photo
-- [ ] **A6. "Find your inspiration" is replaced by Popular looks.** One section, not two. They were
-- [ ] **A7. Graveyard line for the removed section, same turn.**
-- [ ] **B1. Keep the "N ahead of you" count.** He named it twice.
-- [ ] **B2. Keep the mark indicators.** measured in version 5 of my page: 8 marks, 6 x 16 each,
-- [ ] **B3. Colour-code the marks by how busy it is.** His words: "if it's get more, then...".
-- [ ] **B4. Put the walk-in icon back.** I swapped it for a lucide door glyph. The live band uses
-- [ ] **B5. Fix the text hierarchy.** measured on my own page: 120 of 162 text elements render at
-- [ ] **B6. BLOCKED, and this is the one real dependency: the N-ahead emphasis treatment.** He said
-- [ ] **B7. Harden the hierarchy failure**, because he asked for it by name ("you do harden on that
-- [ ] **C1. The cards are too big and too long.** measured live: 260 x 220 per card.
-- [ ] **C2. Read more is the right idea in the wrong place.** measured: it currently sits in its own
+- [ ] B7. **Leaked-password protection is off.** A Supabase dashboard toggle, so it is his to
+- [ ] **DECISION FOR HIM, and the only one in this whole loop.** Removing rows is a data
+- [ ] **HIS CALL: prune old slots.** 17,572 of the 62,913 slots are in the past and 16,711 of
+- [ ] **HIS CALL: leaked-password protection.** Off today. It is a toggle in the Supabase
+- [ ] **HIS CALL: the stranded July fixes.** A timeout on the AI calls, a timeout on the search
+- [ ] **Left open on purpose, by the reader, and worth keeping:** a translation cached for a

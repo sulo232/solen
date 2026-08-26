@@ -120,7 +120,7 @@ export function SalonHero({
             className="group grid h-11 w-11 place-items-center bg-transparent focus-visible:rounded-full focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2"
           >
             <span aria-hidden style={FROST_GLASS} className="grid h-[38px] w-[38px] place-items-center rounded-full transition-transform duration-200 ease-glide group-hover:scale-110 group-active:scale-[0.97] group-active:duration-[80ms]">
-              <Share size={18} strokeWidth={2.1} stroke="var(--color-heading)" aria-hidden />
+              <Share size={18} strokeWidth={1.9} stroke="var(--color-heading)" aria-hidden />
             </span>
           </button>
           <HeartButton

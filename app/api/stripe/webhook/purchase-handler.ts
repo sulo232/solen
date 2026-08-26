@@ -57,7 +57,7 @@ async function writePurchasePayout(
   const commissionPercent = await resolveCommissionPercent(admin, grossAmount, pi.application_fee_amount);
   const commissionAmount = Math.round(grossAmount * (commissionPercent / 100) * 100) / 100;
   const netAmount = Math.round((grossAmount - commissionAmount) * 100) / 100;
-  await admin.from("salon_payouts").upsert(
+  const { error: payoutUpsertError } = await admin.from("salon_payouts").upsert(
     {
       booking_id: null, // purchases are not bookings.
       salon_id: salonId,
@@ -70,6 +70,17 @@ async function writePurchasePayout(
     },
     { onConflict: "stripe_payment_intent_id" },
   );
+  if (payoutUpsertError) {
+    console.error("[purchase-handler] salon_payouts upsert failed:", payoutUpsertError.message, { pi: pi.id, salon_id: salonId });
+    // Never throw here: the payment already succeeded on Stripe, and this function's
+    // caller must still let the webhook return 200 so Stripe does not retry forever.
+    // The missing ledger row is surfaced via the alert instead.
+    void alertAdmin("salon_payouts upsert failed (purchase)", {
+      pi: pi.id,
+      salon_id: salonId,
+      error: payoutUpsertError.message,
+    });
+  }
 }
 
 export async function handlePurchasePaid(pi: any): Promise<boolean> {

@@ -273,7 +273,7 @@ export default function ReportRefundEntry({
           </p>
           <Link href={caseHref} className={cn(ctaInk, "mt-7 max-w-[260px]")}>
             {t("viewCase")}
-            <ArrowRight size={17} aria-hidden />
+            <ArrowRight size={17} strokeWidth={1.9} aria-hidden />
           </Link>
         </div>
       </Shell>
@@ -532,7 +532,7 @@ export default function ReportRefundEntry({
             role="alert"
             className="mt-3.5 flex items-center gap-1.5 rounded-[10px] bg-s-closed/[0.06] px-3 py-2.5 text-[12px] font-medium text-s-closed"
           >
-            <CircleAlert size={14} aria-hidden />
+            <CircleAlert size={14} strokeWidth={1.6} aria-hidden />
             {submitError}
           </p>
         )}
@@ -541,7 +541,7 @@ export default function ReportRefundEntry({
       {/* sticky CTA bar */}
       <div className="flex-shrink-0 border-t border-s-border bg-white px-1 pb-1 pt-3">
         <div className="mb-3 flex gap-2 text-[12px] leading-[1.4] text-s-ink-2">
-          <Info size={15} className="mt-[1px] flex-shrink-0 text-s-ink-2 opacity-70" aria-hidden />
+          <Info size={15} strokeWidth={1.9} className="mt-[1px] flex-shrink-0 text-s-ink-2 opacity-70" aria-hidden />
           <span>{t("reviewTimelineNote")}</span>
         </div>
         <button type="button" onClick={submit} disabled={cannotSend || submitting} className={ctaAccent}>
@@ -549,7 +549,7 @@ export default function ReportRefundEntry({
             <span className="h-[17px] w-[17px] animate-[spin_0.7s_linear_infinite] rounded-full border-2 border-white/35 border-t-white" />
           ) : (
             <>
-              <Send size={17} aria-hidden />
+              <Send size={17} strokeWidth={1.9} aria-hidden />
               {t("sendRequest")}
             </>
           )}
@@ -586,7 +586,7 @@ function Shell({
             aria-label={t("back")}
             className="flex h-9 w-9 items-center justify-center rounded-pill border border-s-border bg-white text-s-ink"
           >
-            <ArrowLeft size={18} strokeWidth={2.2} aria-hidden />
+            <ArrowLeft size={18} strokeWidth={1.9} aria-hidden />
           </button>
         )}
         {title && (

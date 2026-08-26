@@ -38,7 +38,7 @@ export default function DiscoverySearchBar({ value, onChange, placeholder = "Sea
           bar also the same": this bar now carries the SAME geometry as the home pill
           (HomeSearchPill / SearchTemplate: 66px tall, 18px icon at 14px inset, 16px medium label,
           hairline + the 0 2px 8px 7% lift), instead of a second pill stacked above it. */}
-      <Search size={18} strokeWidth={2} className="absolute left-[14px] top-1/2 -translate-y-1/2 text-s-ink-2" /> {/* mockup-ok: search-a.html Inspo tab, .sa-pill leading icon, copied 1:1 */}
+      <Search size={18} strokeWidth={1.9} className="absolute left-[14px] top-1/2 -translate-y-1/2 text-s-ink-2" /> {/* mockup-ok: search-a.html Inspo tab, .sa-pill leading icon, copied 1:1 */}
       <input
         type="search"
         value={local}
@@ -71,7 +71,7 @@ export default function DiscoverySearchBar({ value, onChange, placeholder = "Sea
           aria-label="Clear search"
           className="absolute right-3 top-1/2 -translate-y-1/2 text-s-ink/30 transition-colors duration-150 hover:text-s-ink-2"
         >
-          <X size={14} />
+          <X size={14} strokeWidth={1.6} />
         </button>
       )}
     </div>

@@ -93,6 +93,7 @@ import { formatDateLabel, nextAvailableSlotLabel } from "@/lib/format";
 import { useActiveCities } from "@/hooks/useActiveCities";
 import { useScrollRestoration } from "@/lib/hooks/useScrollRestoration";
 import CategoryPillRow from "@/app/[locale]/_components/layout/CategoryPillRow";
+import { nameForLocale } from "@/lib/min-price-service";
 
 type LucideIcon = React.ComponentType<{ size?: number; strokeWidth?: number }>;
 
@@ -170,6 +171,11 @@ type Salon = {
   min_price?: number | null;
   min_price_service_de?: string | null;
   min_price_service_en?: string | null;
+  // fr/it added 2026-08-16. They were absent because a comment in the API route asserted the
+  // services table had no French or Italian names. Measured against the live database that day:
+  // all 264 service rows carry all four.
+  min_price_service_fr?: string | null;
+  min_price_service_it?: string | null;
   distance_meters?: number | null;
   latitude?: number | null;
   longitude?: number | null;
@@ -1404,7 +1410,7 @@ export default function SearchTemplate({
                 "h-11 w-11",
               )}
             >
-              <MapIcon size={16} strokeWidth={2} aria-hidden />
+              <MapIcon size={16} strokeWidth={1.9} aria-hidden />
             </span>
           </motion.div>
         </div>
@@ -1462,7 +1468,7 @@ export default function SearchTemplate({
             <span className="relative grid h-4 w-4 place-items-center" aria-hidden>
               <SlidersHorizontal
                 size={16}
-                strokeWidth={2}
+                strokeWidth={1.9}
                 className={cn(
                   "absolute transition-all duration-300 ease-glide",
                   activeFilterCount > 0
@@ -1472,7 +1478,7 @@ export default function SearchTemplate({
               />
               <X
                 size={16}
-                strokeWidth={2.5}
+                strokeWidth={1.9}
                 className={cn(
                   "absolute transition-all duration-300 ease-glide",
                   activeFilterCount > 0
@@ -1518,7 +1524,7 @@ export default function SearchTemplate({
                       Active state is the blue tint alone; the chevron (dropdowns only) is the
                       one affordance marker. No decorative pips — see LOCKFILE no-dots rule. */}
                   {p.label}
-                  {!TOGGLE_PILLS.has(p.key) && <ChevronDown size={14} strokeWidth={2} className={p.active ? "text-s-ink" : "opacity-50"} aria-hidden />}
+                  {!TOGGLE_PILLS.has(p.key) && <ChevronDown size={14} strokeWidth={1.6} className={p.active ? "text-s-ink" : "opacity-50"} aria-hidden />}
                 </button>
               ))}
             {/* (Old right-side Filter button removed — V3-D421k: it's now the far-left
@@ -1746,7 +1752,7 @@ export default function SearchTemplate({
                           // less than it, so the advertised starting price was unreachable. PBV
                           // Art. 13 requires a from-price to be the genuine lower limit.
                           priceFromCHF={s.min_price ?? null}
-                          priceFromService={locale === "en" ? (s.min_price_service_en ?? s.min_price_service_de ?? null) : (s.min_price_service_de ?? null)}
+                          priceFromService={nameForLocale({ de: s.min_price_service_de ?? null, en: s.min_price_service_en ?? null, fr: s.min_price_service_fr ?? null, it: s.min_price_service_it ?? null }, locale)}
                           reviewCount={s.review_count ?? null}
                           services={s.services}
                           isSaved={favoriteIds.has(s.id)}
@@ -1821,7 +1827,7 @@ export default function SearchTemplate({
                     distanceMeters={s.distance_meters ?? null}
                     // min_price, not avg_price , see the note on the sibling card above.
                     priceFromCHF={s.min_price ?? null}
-                    priceFromService={locale === "en" ? (s.min_price_service_en ?? s.min_price_service_de ?? null) : (s.min_price_service_de ?? null)}
+                    priceFromService={nameForLocale({ de: s.min_price_service_de ?? null, en: s.min_price_service_en ?? null, fr: s.min_price_service_fr ?? null, it: s.min_price_service_it ?? null }, locale)}
                     // V3-D373 (Fresha-match): review count -> its own "category · N
                     // reviews" line; location is "area, town" (built in city= above).
                     reviewCount={s.review_count ?? null}
@@ -1858,7 +1864,7 @@ export default function SearchTemplate({
                       <Loader2
                         size={16}
                         className="animate-spin"
-                        strokeWidth={2}
+                        strokeWidth={1.9}
                         aria-hidden
                       />
                     ) : null}
@@ -1934,7 +1940,7 @@ export default function SearchTemplate({
           distanceMeters: s.distance_meters ?? null,
           // min_price, not avg_price , an average under a "from" label is not a floor.
           priceFromCHF: s.min_price ?? null,
-          priceFromService: locale === "en" ? (s.min_price_service_en ?? s.min_price_service_de ?? null) : (s.min_price_service_de ?? null),
+          priceFromService: nameForLocale({ de: s.min_price_service_de ?? null, en: s.min_price_service_en ?? null, fr: s.min_price_service_fr ?? null, it: s.min_price_service_it ?? null }, locale),
           reviewCount: s.review_count ?? null,
           nextSlot: nextSlotLabel(s.services, locale),
           services: s.services,
@@ -1988,7 +1994,7 @@ export default function SearchTemplate({
                   aria-label={t("backToList")}
                   className="-my-2.5 grid h-11 w-8 shrink-0 place-items-center text-s-ink transition-transform active:scale-95"
                 >
-                  <ArrowLeft size={20} strokeWidth={2} aria-hidden />
+                  <ArrowLeft size={20} strokeWidth={2.2} aria-hidden />
                 </button>
                 <button
                   type="button"
@@ -1997,7 +2003,7 @@ export default function SearchTemplate({
                   aria-haspopup="dialog"
                   className="flex min-w-0 flex-1 items-center gap-2.5 text-left"
                 >
-                  <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" />
+                  <Search size={18} strokeWidth={1.9} className="shrink-0 text-s-ink-2" />
                   {/* Two lines (query/category + city), matching the normal bar's content; the pill's
                       min-h-[67px] pins the height IDENTICAL to the normal bar (owner: identical size).
                       No "Suchen" placeholder (owner). */}
@@ -2070,7 +2076,7 @@ export default function SearchTemplate({
                           )}
                         >
                           {p.label}
-                          {!TOGGLE_PILLS.has(p.key) && <ChevronDown size={14} strokeWidth={2} className={p.active ? "text-s-ink" : "opacity-50"} aria-hidden />}
+                          {!TOGGLE_PILLS.has(p.key) && <ChevronDown size={14} strokeWidth={1.6} className={p.active ? "text-s-ink" : "opacity-50"} aria-hidden />}
                         </button>
                       ))}
                     </div>
@@ -2190,9 +2196,9 @@ export default function SearchTemplate({
         )}
       >
         {mapOpen || mobileView === "map" ? (
-          <ListIcon size={16} strokeWidth={2} aria-hidden />
+          <ListIcon size={16} strokeWidth={1.9} aria-hidden />
         ) : (
-          <MapIcon size={16} strokeWidth={2} aria-hidden />
+          <MapIcon size={16} strokeWidth={1.9} aria-hidden />
         )}
         {mapOpen || mobileView === "map"
           ? LIST_FAB_LABEL[locale] ?? LIST_FAB_LABEL.de
@@ -2360,7 +2366,7 @@ function C1State({
         onClick={primary.onClick}
         className="mt-6 flex w-full max-w-xs items-center justify-center gap-2 rounded-btn bg-s-ink px-6 py-3.5 font-body text-[15px] font-semibold text-white transition-colors duration-150 hover:bg-black"
       >
-        {primary.Icon ? <primary.Icon size={18} strokeWidth={2} /> : null}
+        {primary.Icon ? <primary.Icon size={18} strokeWidth={1.9} /> : null}
         {primary.label}
       </button>
       {secondary ? (

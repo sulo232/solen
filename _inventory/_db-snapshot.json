@@ -1,763 +1,763 @@
 {
-  "_note": "Live snapshot of public base tables (name, rows, rls). Source: pg_class + pg_stat_user_tables. Refresh TOGETHER with _db-columns.json, then `npm run inventory`. Tables/columns come from here, NOT migration files (which drift).",
-  "schema": "public",
-  "tables": [
-    {
-      "name": "account_actions",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "account_warnings",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "addons",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "audit_log",
-      "rows": 59,
-      "rls": true
-    },
-    {
-      "name": "availability_slots",
-      "rows": 9365,
-      "rls": true
-    },
-    {
-      "name": "barber_chairs",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "barber_cut_history",
-      "rows": 10,
-      "rls": true
-    },
-    {
-      "name": "barber_loyalty_cards",
-      "rows": 2,
-      "rls": true
-    },
-    {
-      "name": "barber_loyalty_history",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "barber_loyalty_programs",
-      "rows": 3,
-      "rls": true
-    },
-    {
-      "name": "barber_walkin_queue",
-      "rows": 21,
-      "rls": true
-    },
-    {
-      "name": "booking_disputes",
-      "rows": 3,
-      "rls": true
-    },
-    {
-      "name": "booking_waitlist",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "bookings",
-      "rows": 956,
-      "rls": true
-    },
-    {
-      "name": "bridal_workflows",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "calendar_tokens",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "case_events",
-      "rows": 7,
-      "rls": true
-    },
-    {
-      "name": "chat_templates",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "cities",
-      "rows": 7,
-      "rls": true
-    },
-    {
-      "name": "client_formulas",
-      "rows": 3,
-      "rls": true
-    },
-    {
-      "name": "client_notes",
-      "rows": 1,
-      "rls": true
-    },
-    {
-      "name": "client_photos",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "client_tags",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "consultation_notes",
-      "rows": 2,
-      "rls": true
-    },
-    {
-      "name": "content_reports",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "conversations",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "credit_redemptions",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "cron_runs",
-      "rows": 1,
-      "rls": true
-    },
-    {
-      "name": "csp_violation_reports",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "customer_segment_members",
-      "rows": 14,
-      "rls": true
-    },
-    {
-      "name": "customer_segments",
-      "rows": 5,
-      "rls": true
-    },
-    {
-      "name": "data_deletion_log",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "discovery_board_pins",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "discovery_boards",
-      "rows": 3,
-      "rls": true
-    },
-    {
-      "name": "discovery_collections",
-      "rows": 2,
-      "rls": true
-    },
-    {
-      "name": "discovery_comments",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "discovery_interactions",
-      "rows": 86,
-      "rls": true
-    },
-    {
-      "name": "discovery_items",
-      "rows": 1071,
-      "rls": true
-    },
-    {
-      "name": "discovery_likes",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "discovery_product_recommendations",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "discovery_products",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "discovery_saves",
-      "rows": 2,
-      "rls": true
-    },
-    {
-      "name": "discovery_search_events",
-      "rows": 132,
-      "rls": true
-    },
-    {
-      "name": "discovery_staging",
-      "rows": 3,
-      "rls": true
-    },
-    {
-      "name": "fade_blueprints",
-      "rows": 4,
-      "rls": true
-    },
-    {
-      "name": "favorites",
-      "rows": 5,
-      "rls": true
-    },
-    {
-      "name": "feature_flags",
-      "rows": 19,
-      "rls": true
-    },
-    {
-      "name": "feature_requests",
-      "rows": 5,
-      "rls": true
-    },
-    {
-      "name": "gift_cards",
-      "rows": 2,
-      "rls": true
-    },
-    {
-      "name": "group_bookings",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "guest_bookings",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "hand_chart_notes",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "help_articles",
-      "rows": 4,
-      "rls": true
-    },
-    {
-      "name": "intake_form_responses",
-      "rows": 2,
-      "rls": true
-    },
-    {
-      "name": "inventory",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "loyalty_cards",
-      "rows": 2,
-      "rls": true
-    },
-    {
-      "name": "loyalty_stamps",
-      "rows": 9,
-      "rls": true
-    },
-    {
-      "name": "loyalty_status",
-      "rows": 8,
-      "rls": true
-    },
-    {
-      "name": "makeup_face_charts",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "makeup_kit_items",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "messages",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "nail_client_preferences",
-      "rows": 2,
-      "rls": true
-    },
-    {
-      "name": "nail_design_history",
-      "rows": 4,
-      "rls": true
-    },
-    {
-      "name": "nail_dynamic_pricing_rules",
-      "rows": 2,
-      "rls": true
-    },
-    {
-      "name": "nail_inspo_boards",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "nail_inspo_images",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "nail_retail_products",
-      "rows": 7,
-      "rls": true
-    },
-    {
-      "name": "nail_stations",
-      "rows": 1,
-      "rls": true
-    },
-    {
-      "name": "notification_preferences",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "notifications",
-      "rows": 5,
-      "rls": true
-    },
-    {
-      "name": "off_peak_slots",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "package_purchases",
-      "rows": 1,
-      "rls": true
-    },
-    {
-      "name": "partner_leads",
-      "rows": 5,
-      "rls": true
-    },
-    {
-      "name": "platform_settings",
-      "rows": 3,
-      "rls": true
-    },
-    {
-      "name": "platform_stats",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "price_disputes",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "price_offers",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "pricing_rules",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "processed_webhook_events",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "profiles",
-      "rows": 49,
-      "rls": true
-    },
-    {
-      "name": "promo_codes",
-      "rows": 13,
-      "rls": true
-    },
-    {
-      "name": "promo_redemptions",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "push_subscriptions",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "quartier_subscriptions",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "recurring_booking_rules",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "referrals",
-      "rows": 50,
-      "rls": true
-    },
-    {
-      "name": "retail_purchases",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "retail_sales",
-      "rows": 11,
-      "rls": true
-    },
-    {
-      "name": "review_attributes",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "review_photos",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "review_replies",
-      "rows": 1,
-      "rls": true
-    },
-    {
-      "name": "review_translations",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "reviews",
-      "rows": 260,
-      "rls": true
-    },
-    {
-      "name": "sale_line_items",
-      "rows": 1,
-      "rls": true
-    },
-    {
-      "name": "sales",
-      "rows": 1,
-      "rls": true
-    },
-    {
-      "name": "salon_analytics",
-      "rows": 120,
-      "rls": true
-    },
-    {
-      "name": "salon_badge_assignments",
-      "rows": 7,
-      "rls": true
-    },
-    {
-      "name": "salon_badges",
-      "rows": 4,
-      "rls": true
-    },
-    {
-      "name": "salon_clients",
-      "rows": 1,
-      "rls": true
-    },
-    {
-      "name": "salon_closures",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "salon_directory",
-      "rows": 48,
-      "rls": true
-    },
-    {
-      "name": "salon_documents",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "salon_drafts",
-      "rows": 8,
-      "rls": true
-    },
-    {
-      "name": "salon_engagement",
-      "rows": 21,
-      "rls": true
-    },
-    {
-      "name": "salon_groups",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "salon_last_minute_settings",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "salon_of_month_winners",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "salon_pace",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "salon_page_views",
-      "rows": 427,
-      "rls": true
-    },
-    {
-      "name": "salon_payouts",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "salon_photos",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "salon_portfolio_images",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "salons",
-      "rows": 28,
-      "rls": true
-    },
-    {
-      "name": "search_embeddings",
-      "rows": 283,
-      "rls": true
-    },
-    {
-      "name": "search_events",
-      "rows": 2,
-      "rls": true
-    },
-    {
-      "name": "search_ranking_weights",
-      "rows": 1,
-      "rls": true
-    },
-    {
-      "name": "search_synonyms",
-      "rows": 84,
-      "rls": true
-    },
-    {
-      "name": "service_addons",
-      "rows": 10,
-      "rls": true
-    },
-    {
-      "name": "service_bundle_items",
-      "rows": 2,
-      "rls": true
-    },
-    {
-      "name": "service_bundles",
-      "rows": 1,
-      "rls": true
-    },
-    {
-      "name": "service_categories",
-      "rows": 67,
-      "rls": true
-    },
-    {
-      "name": "service_options",
-      "rows": 6,
-      "rls": true
-    },
-    {
-      "name": "service_packages",
-      "rows": 2,
-      "rls": true
-    },
-    {
-      "name": "services",
-      "rows": 263,
-      "rls": true
-    },
-    {
-      "name": "site_content",
-      "rows": 7,
-      "rls": true
-    },
-    {
-      "name": "sms_reminders",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "spa_treatment_outcomes",
-      "rows": 2,
-      "rls": true
-    },
-    {
-      "name": "spa_treatment_rooms",
-      "rows": 3,
-      "rls": true
-    },
-    {
-      "name": "staff_breaks",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "staff_calendars",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "staff_invites",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "staff_members",
-      "rows": 70,
-      "rls": true
-    },
-    {
-      "name": "staff_portfolio_images",
-      "rows": 12,
-      "rls": true
-    },
-    {
-      "name": "staff_schedules",
-      "rows": 390,
-      "rls": true
-    },
-    {
-      "name": "staff_services",
-      "rows": 254,
-      "rls": true
-    },
-    {
-      "name": "staff_time_off",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "tier_perks",
-      "rows": 3,
-      "rls": true
-    },
-    {
-      "name": "tips",
-      "rows": 1,
-      "rls": true
-    },
-    {
-      "name": "user_credits",
-      "rows": 2,
-      "rls": true
-    },
-    {
-      "name": "user_preferences",
-      "rows": 1,
-      "rls": true
-    },
-    {
-      "name": "user_salon_affinity",
-      "rows": 121,
-      "rls": true
-    },
-    {
-      "name": "user_style_affinity",
-      "rows": 46,
-      "rls": true
-    },
-    {
-      "name": "voucher_purchases",
-      "rows": 2,
-      "rls": true
-    },
-    {
-      "name": "voucher_redemptions",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "vouchers",
-      "rows": 2,
-      "rls": true
-    },
-    {
-      "name": "waitlist",
-      "rows": 1,
-      "rls": true
-    },
-    {
-      "name": "warnings",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "waxing_sensitivity_log",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "waxing_zone_packages",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "waxing_zone_preferences",
-      "rows": 0,
-      "rls": true
-    },
-    {
-      "name": "wellness_journals",
-      "rows": 2,
-      "rls": true
-    }
-  ],
-  "capturedAt": "2026-08-14 (tables reconciled against pg_class live; the 2026-07-12 capture was missing csp_violation_reports, promo_redemptions and salon_of_month_winners, so `npm run exists` answered 'nothing found' for three real tables, one of them the one behind Salon of the Month. search_zero_results is a VIEW, not a base table, so it belongs in _db-columns.json only, which is where it is.)",
-  "rlsDisabled": []
+ "_note": "Live snapshot of public base tables (name, rows, rls). Source: pg_class + pg_stat_user_tables. Refresh TOGETHER with _db-columns.json, then `npm run inventory`. Tables/columns come from here, NOT migration files (which drift).",
+ "schema": "public",
+ "tables": [
+  {
+   "name": "account_actions",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "account_warnings",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "addons",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "audit_log",
+   "rows": 63,
+   "rls": true
+  },
+  {
+   "name": "availability_slots",
+   "rows": 62913,
+   "rls": true
+  },
+  {
+   "name": "barber_chairs",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "barber_cut_history",
+   "rows": 10,
+   "rls": true
+  },
+  {
+   "name": "barber_loyalty_cards",
+   "rows": 2,
+   "rls": true
+  },
+  {
+   "name": "barber_loyalty_history",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "barber_loyalty_programs",
+   "rows": 3,
+   "rls": true
+  },
+  {
+   "name": "barber_walkin_queue",
+   "rows": 32,
+   "rls": true
+  },
+  {
+   "name": "booking_disputes",
+   "rows": 3,
+   "rls": true
+  },
+  {
+   "name": "booking_waitlist",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "bookings",
+   "rows": 997,
+   "rls": true
+  },
+  {
+   "name": "bridal_workflows",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "calendar_tokens",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "case_events",
+   "rows": 7,
+   "rls": true
+  },
+  {
+   "name": "chat_templates",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "cities",
+   "rows": 7,
+   "rls": true
+  },
+  {
+   "name": "client_formulas",
+   "rows": 3,
+   "rls": true
+  },
+  {
+   "name": "client_notes",
+   "rows": 1,
+   "rls": true
+  },
+  {
+   "name": "client_photos",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "client_tags",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "consultation_notes",
+   "rows": 2,
+   "rls": true
+  },
+  {
+   "name": "content_reports",
+   "rows": 2,
+   "rls": true
+  },
+  {
+   "name": "conversations",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "credit_redemptions",
+   "rows": 1,
+   "rls": true
+  },
+  {
+   "name": "cron_runs",
+   "rows": 1,
+   "rls": true
+  },
+  {
+   "name": "csp_violation_reports",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "customer_segment_members",
+   "rows": 14,
+   "rls": true
+  },
+  {
+   "name": "customer_segments",
+   "rows": 5,
+   "rls": true
+  },
+  {
+   "name": "data_deletion_log",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "discovery_board_pins",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "discovery_boards",
+   "rows": 3,
+   "rls": true
+  },
+  {
+   "name": "discovery_collections",
+   "rows": 2,
+   "rls": true
+  },
+  {
+   "name": "discovery_comments",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "discovery_interactions",
+   "rows": 129,
+   "rls": true
+  },
+  {
+   "name": "discovery_items",
+   "rows": 1071,
+   "rls": true
+  },
+  {
+   "name": "discovery_likes",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "discovery_product_recommendations",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "discovery_products",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "discovery_saves",
+   "rows": 2,
+   "rls": true
+  },
+  {
+   "name": "discovery_search_events",
+   "rows": 332,
+   "rls": true
+  },
+  {
+   "name": "discovery_staging",
+   "rows": 3,
+   "rls": true
+  },
+  {
+   "name": "fade_blueprints",
+   "rows": 4,
+   "rls": true
+  },
+  {
+   "name": "favorites",
+   "rows": 4,
+   "rls": true
+  },
+  {
+   "name": "feature_flags",
+   "rows": 19,
+   "rls": true
+  },
+  {
+   "name": "feature_requests",
+   "rows": 5,
+   "rls": true
+  },
+  {
+   "name": "gift_cards",
+   "rows": 2,
+   "rls": true
+  },
+  {
+   "name": "group_bookings",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "guest_bookings",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "hand_chart_notes",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "help_articles",
+   "rows": 4,
+   "rls": true
+  },
+  {
+   "name": "intake_form_responses",
+   "rows": 2,
+   "rls": true
+  },
+  {
+   "name": "inventory",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "loyalty_cards",
+   "rows": 2,
+   "rls": true
+  },
+  {
+   "name": "loyalty_stamps",
+   "rows": 13,
+   "rls": true
+  },
+  {
+   "name": "loyalty_status",
+   "rows": 8,
+   "rls": true
+  },
+  {
+   "name": "makeup_face_charts",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "makeup_kit_items",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "messages",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "nail_client_preferences",
+   "rows": 2,
+   "rls": true
+  },
+  {
+   "name": "nail_design_history",
+   "rows": 4,
+   "rls": true
+  },
+  {
+   "name": "nail_dynamic_pricing_rules",
+   "rows": 2,
+   "rls": true
+  },
+  {
+   "name": "nail_inspo_boards",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "nail_inspo_images",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "nail_retail_products",
+   "rows": 7,
+   "rls": true
+  },
+  {
+   "name": "nail_stations",
+   "rows": 1,
+   "rls": true
+  },
+  {
+   "name": "notification_preferences",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "notifications",
+   "rows": 6,
+   "rls": true
+  },
+  {
+   "name": "off_peak_slots",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "package_purchases",
+   "rows": 1,
+   "rls": true
+  },
+  {
+   "name": "partner_leads",
+   "rows": 5,
+   "rls": true
+  },
+  {
+   "name": "platform_settings",
+   "rows": 3,
+   "rls": true
+  },
+  {
+   "name": "platform_stats",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "price_disputes",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "price_offers",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "pricing_rules",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "processed_webhook_events",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "profiles",
+   "rows": 50,
+   "rls": true
+  },
+  {
+   "name": "promo_codes",
+   "rows": 13,
+   "rls": true
+  },
+  {
+   "name": "promo_redemptions",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "push_subscriptions",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "quartier_subscriptions",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "recurring_booking_rules",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "referrals",
+   "rows": 52,
+   "rls": true
+  },
+  {
+   "name": "retail_purchases",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "retail_sales",
+   "rows": 11,
+   "rls": true
+  },
+  {
+   "name": "review_attributes",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "review_photos",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "review_replies",
+   "rows": 2,
+   "rls": true
+  },
+  {
+   "name": "review_translations",
+   "rows": 15,
+   "rls": true
+  },
+  {
+   "name": "reviews",
+   "rows": 260,
+   "rls": true
+  },
+  {
+   "name": "sale_line_items",
+   "rows": 1,
+   "rls": true
+  },
+  {
+   "name": "sales",
+   "rows": 1,
+   "rls": true
+  },
+  {
+   "name": "salon_analytics",
+   "rows": 120,
+   "rls": true
+  },
+  {
+   "name": "salon_badge_assignments",
+   "rows": 7,
+   "rls": true
+  },
+  {
+   "name": "salon_badges",
+   "rows": 4,
+   "rls": true
+  },
+  {
+   "name": "salon_clients",
+   "rows": 1,
+   "rls": true
+  },
+  {
+   "name": "salon_closures",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "salon_directory",
+   "rows": 48,
+   "rls": true
+  },
+  {
+   "name": "salon_documents",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "salon_drafts",
+   "rows": 8,
+   "rls": true
+  },
+  {
+   "name": "salon_engagement",
+   "rows": 21,
+   "rls": true
+  },
+  {
+   "name": "salon_groups",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "salon_last_minute_settings",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "salon_of_month_winners",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "salon_pace",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "salon_page_views",
+   "rows": 977,
+   "rls": true
+  },
+  {
+   "name": "salon_payouts",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "salon_photos",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "salon_portfolio_images",
+   "rows": 174,
+   "rls": true
+  },
+  {
+   "name": "salons",
+   "rows": 28,
+   "rls": true
+  },
+  {
+   "name": "search_embeddings",
+   "rows": 283,
+   "rls": true
+  },
+  {
+   "name": "search_events",
+   "rows": 2,
+   "rls": true
+  },
+  {
+   "name": "search_ranking_weights",
+   "rows": 1,
+   "rls": true
+  },
+  {
+   "name": "search_synonyms",
+   "rows": 84,
+   "rls": true
+  },
+  {
+   "name": "service_addons",
+   "rows": 10,
+   "rls": true
+  },
+  {
+   "name": "service_bundle_items",
+   "rows": 2,
+   "rls": true
+  },
+  {
+   "name": "service_bundles",
+   "rows": 1,
+   "rls": true
+  },
+  {
+   "name": "service_categories",
+   "rows": 67,
+   "rls": true
+  },
+  {
+   "name": "service_options",
+   "rows": 6,
+   "rls": true
+  },
+  {
+   "name": "service_packages",
+   "rows": 2,
+   "rls": true
+  },
+  {
+   "name": "services",
+   "rows": 264,
+   "rls": true
+  },
+  {
+   "name": "site_content",
+   "rows": 7,
+   "rls": true
+  },
+  {
+   "name": "sms_reminders",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "spa_treatment_outcomes",
+   "rows": 2,
+   "rls": true
+  },
+  {
+   "name": "spa_treatment_rooms",
+   "rows": 3,
+   "rls": true
+  },
+  {
+   "name": "staff_breaks",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "staff_calendars",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "staff_invites",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "staff_members",
+   "rows": 70,
+   "rls": true
+  },
+  {
+   "name": "staff_portfolio_images",
+   "rows": 24,
+   "rls": true
+  },
+  {
+   "name": "staff_schedules",
+   "rows": 390,
+   "rls": true
+  },
+  {
+   "name": "staff_services",
+   "rows": 254,
+   "rls": true
+  },
+  {
+   "name": "staff_time_off",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "tier_perks",
+   "rows": 3,
+   "rls": true
+  },
+  {
+   "name": "tips",
+   "rows": 1,
+   "rls": true
+  },
+  {
+   "name": "user_credits",
+   "rows": 3,
+   "rls": true
+  },
+  {
+   "name": "user_preferences",
+   "rows": 1,
+   "rls": true
+  },
+  {
+   "name": "user_salon_affinity",
+   "rows": 121,
+   "rls": true
+  },
+  {
+   "name": "user_style_affinity",
+   "rows": 46,
+   "rls": true
+  },
+  {
+   "name": "voucher_purchases",
+   "rows": 2,
+   "rls": true
+  },
+  {
+   "name": "voucher_redemptions",
+   "rows": 2,
+   "rls": true
+  },
+  {
+   "name": "vouchers",
+   "rows": 6,
+   "rls": true
+  },
+  {
+   "name": "waitlist",
+   "rows": 1,
+   "rls": true
+  },
+  {
+   "name": "warnings",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "waxing_sensitivity_log",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "waxing_zone_packages",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "waxing_zone_preferences",
+   "rows": 0,
+   "rls": true
+  },
+  {
+   "name": "wellness_journals",
+   "rows": 2,
+   "rls": true
+  }
+ ],
+ "capturedAt": "2026-08-23 (refreshed live from pg_stat_user_tables + pg_class during the backend loop. The 2026-08-14 capture had drifted badly: it recorded availability_slots at 9,365 rows against a live 62,913, a factor of 6.7 on the single biggest table, and this is the file `npm run exists` answers from and that every audit in this project treats as column truth. _backend-system/LAW.md quotes the stale number too, in its own primary-key trigger row. search_popularity is a MATERIALIZED VIEW, not a base table, so it is absent here on purpose: matviews cannot carry RLS, and neither anon nor authenticated can select from it.)",
+ "rlsDisabled": []
 }

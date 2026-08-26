@@ -75,7 +75,7 @@ export default async function SalonTeamPage({
           aria-label={tBack("back")}
           className="grid h-11 w-11 place-items-center rounded-full border border-s-border bg-white transition-[colors,transform] hover:bg-s-bg-sunken active:scale-[0.94] active:duration-[80ms] active:ease-glide"
         >
-          <ArrowLeft size={20} strokeWidth={2.1} aria-hidden className="text-s-ink" />
+          <ArrowLeft size={20} strokeWidth={2.2} aria-hidden className="text-s-ink" />
         </Link>
 
         <h1 className="mt-5 font-display text-[28px] font-semibold tracking-[-0.02em] text-s-ink">
@@ -85,7 +85,7 @@ export default async function SalonTeamPage({
         <div className="mt-6 flex flex-col gap-3">
           <div className="flex items-center gap-4 rounded-[16px] border border-s-border bg-white p-4">
             <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-s-accent-pale">
-              <Shuffle size={22} strokeWidth={2} aria-hidden className="text-s-accent" />
+              <Shuffle size={22} strokeWidth={2.2} aria-hidden className="text-s-accent" />
             </span>
             <div className="min-w-0 flex-1">
               <div className="font-body text-[17px] font-semibold text-s-ink">{tStep("any")}</div>

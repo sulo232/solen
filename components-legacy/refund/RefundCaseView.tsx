@@ -190,7 +190,7 @@ export default function RefundCaseView({
           </p>
           {isGuest && (
             <Link href={`/${locale}/booking/resend-link`} className={cn(ctaAccent, "mt-7 max-w-[260px]")}>
-              <RefreshCw size={16} aria-hidden />
+              <RefreshCw size={16} strokeWidth={1.9} aria-hidden />
               {t("requestNewLink")}
             </Link>
           )}
@@ -280,7 +280,7 @@ function Frame({
           aria-label={t("back")}
           className="flex h-[36px] w-[36px] flex-shrink-0 items-center justify-center rounded-pill border border-s-border bg-white text-s-ink"
         >
-          <ArrowLeft size={18} strokeWidth={2} aria-hidden />
+          <ArrowLeft size={18} strokeWidth={1.9} aria-hidden />
         </Link>
         <div className="font-heading text-[16px] font-semibold tracking-[-0.01em]">
           {isGuest ? t("caseTitleGuest") : t("caseTitle")}
@@ -289,7 +289,7 @@ function Frame({
 
       {isGuest && (
         <div className="flex items-center gap-2 border-b border-s-border bg-s-accent-pale px-4 py-[9px]">
-          <ShieldCheck size={15} className="flex-shrink-0 text-s-accent" aria-hidden />
+          <ShieldCheck size={15} strokeWidth={1.9} className="flex-shrink-0 text-s-accent" aria-hidden />
           <span className="text-[12px] leading-[1.35] text-s-ink">{t("guestBanner")}</span>
         </div>
       )}
@@ -744,7 +744,7 @@ function ActionZone({
     return (
       <div className="mx-auto w-full max-w-[460px] px-4 pb-8 md:max-w-[1120px] md:px-8">
         <div className="flex items-start gap-2.5 rounded-[12px] bg-s-accent-pale px-3 py-[11px]">
-          <ShieldCheck size={16} className="mt-[1px] flex-shrink-0 text-s-accent" aria-hidden />
+          <ShieldCheck size={16} strokeWidth={1.9} className="mt-[1px] flex-shrink-0 text-s-accent" aria-hidden />
           <p className="text-[12px] leading-[1.45] text-s-ink">{t("escFormSla")}</p>
         </div>
 
@@ -794,7 +794,7 @@ function ActionZone({
 
         {actionError && (
           <p role="alert" className="mt-3 flex items-center gap-1.5 text-[12px] font-medium text-s-error">
-            <CircleAlert size={14} aria-hidden />
+            <CircleAlert size={14} strokeWidth={1.6} aria-hidden />
             {actionError}
           </p>
         )}
@@ -878,7 +878,7 @@ function ActionInner({
       <>
         <ShieldNote text={t("footEmailUpdate")} />
         <Link href={reportHref} className={secondaryBtn}>
-          <MessageSquare size={17} aria-hidden />
+          <MessageSquare size={17} strokeWidth={1.9} aria-hidden />
           {t("addMoreDetails")}
         </Link>
       </>
@@ -891,7 +891,7 @@ function ActionInner({
       <>
         <ShieldNote text={t("escSolenTypical")} />
         <Link href={reportHref} className={secondaryBtn}>
-          <MessageSquare size={17} aria-hidden />
+          <MessageSquare size={17} strokeWidth={1.9} aria-hidden />
           {t("addMoreInformation")}
         </Link>
         {isGuest && (
@@ -908,11 +908,11 @@ function ActionInner({
     return (
       <>
         <Link href={bookAgainHref} className={secondaryBtn}>
-          <CalendarPlus size={17} aria-hidden />
+          <CalendarPlus size={17} strokeWidth={1.9} aria-hidden />
           {t("bookAgain")}
         </Link>
         <Link href={receiptHref} className={cn(ghostBtn, "mt-2")}>
-          <Receipt size={16} aria-hidden />
+          <Receipt size={16} strokeWidth={1.9} aria-hidden />
           {t("viewBookingReceipt")}
         </Link>
         <p className="mt-1 text-center text-[12px] leading-[1.5] text-s-ink-2">{t("footClosedNoAction")}</p>
@@ -939,7 +939,7 @@ function ActionInner({
   return (
     <>
       <Link href={receiptHref} className={secondaryBtn}>
-        <Receipt size={16} aria-hidden />
+        <Receipt size={16} strokeWidth={1.9} aria-hidden />
         {t("viewBookingReceipt")}
       </Link>
       <p className="mt-2 text-center text-[12px] text-s-ink-2">{t("footClosedNoAction")}</p>
@@ -951,7 +951,7 @@ function ActionInner({
 function ShieldNote({ text }: { text: string }) {
   return (
     <div className="mb-3 flex gap-2 text-[12px] leading-[1.4] text-s-ink-2">
-      <ShieldCheck size={15} className="mt-[1px] flex-shrink-0 text-s-ink-2" aria-hidden />
+      <ShieldCheck size={15} strokeWidth={1.9} className="mt-[1px] flex-shrink-0 text-s-ink-2" aria-hidden />
       <span>{text}</span>
     </div>
   );

@@ -275,9 +275,9 @@ function AppBar({
         className="flex h-11 w-11 items-center justify-center rounded-[12px] bg-s-bg-sunken text-s-ink transition-colors duration-150 ease-snap hover:brightness-[0.97]"
       >
         {closeMode ? (
-          <X size={19} strokeWidth={2.1} aria-hidden />
+          <X size={19} strokeWidth={2.2} aria-hidden />
         ) : (
-          <ArrowLeft size={19} strokeWidth={2.1} aria-hidden />
+          <ArrowLeft size={19} strokeWidth={2.2} aria-hidden />
         )}
       </Link>
       <span className="flex items-center gap-[7px] font-display text-[15px] font-bold tracking-[-0.02em]">
@@ -432,7 +432,7 @@ function FormView(props: {
 
       {/* security note */}
       <div className="mt-4 flex gap-2.5 rounded-[14px] bg-s-bg-sunken px-3.5 py-3.5">
-        <Lock size={18} className="mt-[1px] flex-shrink-0 text-s-ink-2" aria-hidden />
+        <Lock size={18} strokeWidth={1.9} className="mt-[1px] flex-shrink-0 text-s-ink-2" aria-hidden />
         <p className="text-[12px] leading-[1.5] text-s-ink-2">{t("securityNote")}</p>
       </div>
 
@@ -442,7 +442,7 @@ function FormView(props: {
         {submitting ? (
           <span className="h-[17px] w-[17px] animate-[spin_0.7s_linear_infinite] rounded-full border-2 border-white/35 border-t-white" />
         ) : (
-          <Send size={17} aria-hidden />
+          <Send size={17} strokeWidth={1.9} aria-hidden />
         )}
         {t("submit")}
       </button>
@@ -486,7 +486,7 @@ function SentView(props: {
       </p>
 
       <div className="mt-[22px] flex gap-2.5 rounded-[14px] bg-s-bg-sunken px-3.5 py-3.5 text-left">
-        <Clock size={18} className="mt-[1px] flex-shrink-0 text-s-ink-2" aria-hidden />
+        <Clock size={18} strokeWidth={1.9} className="mt-[1px] flex-shrink-0 text-s-ink-2" aria-hidden />
         <p className="text-[12px] leading-[1.5] text-s-ink-2">{t("sentValidity")}</p>
       </div>
 
@@ -558,7 +558,7 @@ function LinkInvalidView({
       </div>
       <div className="mt-7">
         <Link href={`/${locale}/booking/resend-link`} className={ctaInk}>
-          <Send size={17} aria-hidden />
+          <Send size={17} strokeWidth={1.9} aria-hidden />
           {t("requestNewLink")}
         </Link>
       </div>
@@ -624,16 +624,16 @@ function OpenedView({
           className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-[10px] border border-s-border bg-white"
         >
           {copied ? (
-            <Check size={16} className="text-s-success" aria-hidden />
+            <Check size={16} strokeWidth={1.9} className="text-s-success" aria-hidden />
           ) : (
-            <Copy size={16} className="text-s-ink-2" aria-hidden />
+            <Copy size={16} strokeWidth={1.9} className="text-s-ink-2" aria-hidden />
           )}
         </button>
       </div>
 
       {/* refund-window note */}
       <div className="mt-4 flex gap-2.5 rounded-[14px] bg-s-bg-sunken px-3.5 py-3.5">
-        <Clock size={18} className="mt-[1px] flex-shrink-0 text-s-ink-2" aria-hidden />
+        <Clock size={18} strokeWidth={1.9} className="mt-[1px] flex-shrink-0 text-s-ink-2" aria-hidden />
         <p className="text-[12px] leading-[1.5] text-s-ink-2">
           {t("refundWindow", { days: 14 })}
         </p>
@@ -643,12 +643,12 @@ function OpenedView({
       <div className="mt-4 flex flex-col gap-2.5">
         {bookingId ? (
           <Link href={`/${locale}/bookings/${bookingId}/report`} className={ctaInk}>
-            <TriangleAlert size={17} aria-hidden />
+            <TriangleAlert size={17} strokeWidth={1.9} aria-hidden />
             {t("reportOrRefund")}
           </Link>
         ) : (
           <button type="button" disabled className={ctaInk}>
-            <TriangleAlert size={17} aria-hidden />
+            <TriangleAlert size={17} strokeWidth={1.9} aria-hidden />
             {t("reportOrRefund")}
           </button>
         )}

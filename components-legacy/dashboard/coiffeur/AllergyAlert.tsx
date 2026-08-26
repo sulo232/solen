@@ -23,7 +23,7 @@ export default function AllergyAlert({ allergies, chemicalSensitivities, patchTe
 
   return (
     <div className="flex gap-3 p-3 rounded-[10px] bg-s-error/8 border border-s-error/20 mb-4">
-      <AlertTriangle size={15} className="text-s-error shrink-0 mt-0.5" />
+      <AlertTriangle size={15} strokeWidth={1.9} className="text-s-error shrink-0 mt-0.5" />
       <div className="flex-1 min-w-0">
         <p className="text-xs font-heading text-s-error mb-0.5">
           {t("allergyAlertTitle")}

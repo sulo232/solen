@@ -22,6 +22,7 @@ export default function UnsubscribePage() {
   const t = useTranslations("unsubscribe");
   const searchParams = useSearchParams();
   const email = searchParams.get("email") ?? "";
+  const token = searchParams.get("t") ?? "";
   const [state, setState] = useState<"idle" | "loading" | "done" | "error">("idle");
 
   const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -32,7 +33,7 @@ export default function UnsubscribePage() {
       const res = await fetch("/api/unsubscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, token }),
       });
       if (!res.ok) throw new Error("unsubscribe failed");
       setState("done");

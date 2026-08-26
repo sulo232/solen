@@ -1824,11 +1824,11 @@ export function SearchOverlay({
         {inputFocused ? (
           <button onClick={() => { serviceRef.current?.blur(); setInputFocused(false); collapse(); setServiceQ(""); }} aria-label={backTxt}
             className="relative grid h-8 w-8 shrink-0 place-items-center text-s-ink before:absolute before:-inset-x-1.5 before:-inset-y-2.5 before:content-['']">
-            <ChevronLeft size={22} strokeWidth={2} />
+            <ChevronLeft size={22} strokeWidth={2.2} />
           </button>
         ) : (
           <span className="grid h-6 w-6 shrink-0 place-items-center">
-            <Search size={19} strokeWidth={2} className="text-s-ink-2" />
+            <Search size={19} strokeWidth={2.2} className="text-s-ink-2" />
           </span>
         )}
       {/* R4b (2026-08-02 round 3, owner "it reads zoomed in"): this input computed to 15px.
@@ -1997,7 +1997,7 @@ export function SearchOverlay({
                 onClick={() => handleSubmit()}
                 className="mt-2 flex w-full items-center justify-center gap-1 py-2 text-[13px] font-semibold text-s-ink transition-transform duration-150 active:scale-[0.98] active:duration-[80ms] active:ease-glide"
               >
-                {seeAllResultsTxt} <ChevronRight size={15} strokeWidth={2.2} />
+                {seeAllResultsTxt} <ChevronRight size={15} strokeWidth={1.9} />
               </button>
             </>
           )}
@@ -2136,7 +2136,7 @@ export function SearchOverlay({
           The text, the weight and the underline-on-hover are untouched. */}
       <button onClick={reset} className="flex h-11 items-center text-[14px] font-semibold text-s-ink underline-offset-4 hover:underline">{resetTxt}</button>
       <button onClick={handleSubmit} className="flex items-center gap-2 rounded-full bg-s-ink px-6 py-3 font-heading text-[15px] font-bold text-white transition-transform duration-150 active:scale-[0.98] active:duration-[80ms] active:ease-glide" /* selected-ok: primary commit CTA */>
-        <Search size={16} strokeWidth={2.2} />{submitTxt}
+        <Search size={16} strokeWidth={1.9} />{submitTxt}
       </button>
     </div>
   );
@@ -2170,7 +2170,7 @@ export function SearchOverlay({
           <motion.button key="closeX" onClick={close} aria-label={closeTxt}
             className="fixed right-3 z-[102] grid h-11 w-11 place-items-center rounded-full border border-s-border bg-white text-s-ink"
             style={{ opacity: closeXOpacity, top: closeXTop, pointerEvents: closeXHit }} /* motion-ok: close-X fade, now openT-driven; S3: hit-testing tied to its own opacity */>
-            <X size={18} strokeWidth={2.2} />
+            <X size={18} strokeWidth={1.9} />
           </motion.button>
 
           {/* A7/A8/A9 (2026-08-02 REOPENED): top/left/width/height are continuously driven by
@@ -2232,7 +2232,7 @@ export function SearchOverlay({
                   visual echo of the collapsed bar (aria-hidden, no pointer-events), not a
                   second control. mockup-ok: SEARCH_MORPH.md H5 */}
               <motion.div aria-hidden style={{ opacity: ghostLabelOp }} className="pointer-events-none absolute inset-x-0 top-0 flex h-14 items-center gap-2.5 px-4"> {/* mockup-ok: SEARCH_MORPH.md H5 */}
-                <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" />
+                <Search size={18} strokeWidth={1.9} className="shrink-0 text-s-ink-2" />
                 <span className="truncate font-body text-[16px] font-medium text-s-ink">{ghostLabelTxt}</span>
               </motion.div> {/* mockup-ok: SEARCH_MORPH.md H5 */}
               <motion.div inert={activeStep !== "service"} style={{ opacity: svcT, pointerEvents: svcBodyHit }} className="absolute inset-0 flex flex-col"> {/* S7: inert when this slot is not the active step */}
@@ -2367,10 +2367,10 @@ export function SearchOverlay({
                         <button type="button" aria-label={backTxt}
                           onClick={() => { cityRef.current?.blur(); setInputFocused(false); collapse(); }}
                           className="relative grid h-8 w-6 shrink-0 place-items-center text-s-ink before:absolute before:-inset-y-1.5 before:-inset-x-3 before:content-['']">
-                          <ChevronLeft size={22} strokeWidth={2} />
+                          <ChevronLeft size={22} strokeWidth={2.2} />
                         </button>
                       ) : (
-                        <Search size={18} strokeWidth={2} className="shrink-0 text-s-ink-2" />
+                        <Search size={18} strokeWidth={1.9} className="shrink-0 text-s-ink-2" />
                       )}
                       {/* mockup-ok: !important preserves the existing look, not a new one; same
                           carve-out as the service query input above (V3-D-input-fill-2026-07-17). */}
@@ -2452,11 +2452,11 @@ export function SearchOverlay({
                               <div className="flex items-center gap-1">
                                 <button onClick={() => setMonthOffset((o) => Math.max(0, o - 1))} disabled={monthOffset <= 0} aria-label="Vorheriger Monat"
                                   className="grid h-9 w-9 place-items-center rounded-full text-s-ink hover:bg-s-bg-sunken disabled:opacity-25">
-                                  <ChevronLeft size={20} strokeWidth={2} />
+                                  <ChevronLeft size={20} strokeWidth={2.2} />
                                 </button>
                                 <button onClick={() => setMonthOffset((o) => Math.min(maxMonthOffset, o + 1))} disabled={monthOffset >= maxMonthOffset} aria-label="Naechster Monat"
                                   className="grid h-9 w-9 place-items-center rounded-full text-s-ink hover:bg-s-bg-sunken disabled:opacity-25">
-                                  <ChevronRight size={20} strokeWidth={2} />
+                                  <ChevronRight size={20} strokeWidth={2.2} />
                                 </button>
                               </div>
                             </div>
@@ -2551,7 +2551,7 @@ function FeedSectionLabel({ children, className = "", href, seeAll }: {
       <p className="text-[13px] font-semibold text-s-ink">{children}</p>
       <Link href={href} className="flex items-center gap-0.5 text-[13px] font-semibold text-s-ink">
         {seeAll}
-        <ChevronRight size={15} strokeWidth={2.2} />
+        <ChevronRight size={15} strokeWidth={1.9} />
       </Link>
     </div>
   );
@@ -2644,9 +2644,9 @@ function LookCard({ image, title, onClick }: { image: string; title: string; onC
 function AutocompleteRow({ label, primary, onClick }: { label: string; primary?: boolean; onClick: () => void }) {
   return (
     <button onClick={onClick} className="flex w-full items-center gap-3 py-2.5 text-left">
-      <Search size={16} strokeWidth={2} className="shrink-0 text-s-ink-2" />
+      <Search size={16} strokeWidth={1.9} className="shrink-0 text-s-ink-2" />
       <span className={`min-w-0 flex-1 truncate text-[14px] text-s-ink ${primary ? "font-semibold" : "font-medium"}`}>{label}</span>
-      <ArrowUpLeft size={15} strokeWidth={2} className="shrink-0 text-s-ink-2" />
+      <ArrowUpLeft size={15} strokeWidth={1.9} className="shrink-0 text-s-ink-2" />
     </button>
   );
 }
@@ -2729,7 +2729,7 @@ function SuggestRow({ name, sub, Icon, img, photo, rating, tintBg, tintFg, art, 
           </span>
         ) : (
           <span className={`grid h-12 w-12 shrink-0 place-items-center rounded-2xl ${tintBg ?? "bg-s-bg-sunken"} ${tintFg ?? "text-s-ink-2"}`}>
-            {Icon ? <Icon size={20} strokeWidth={1.9} /> : null}
+            {Icon ? <Icon size={20} strokeWidth={2.2} /> : null}
           </span>
         )}
         <span className="min-w-0">
@@ -2748,7 +2748,7 @@ function SuggestRow({ name, sub, Icon, img, photo, rating, tintBg, tintFg, art, 
       </button>
       {onRemove && (
         <button onClick={onRemove} aria-label="Entfernen" className="grid h-8 w-8 shrink-0 place-items-center text-s-ink-2">
-          <X size={17} strokeWidth={2} />
+          <X size={17} strokeWidth={1.9} />
         </button>
       )}
     </div>

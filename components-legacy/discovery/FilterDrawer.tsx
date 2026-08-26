@@ -70,7 +70,7 @@ export default function FilterDrawer(props: FilterDrawerProps) {
         aria-label={t("open_filters")}
         className="relative z-10 grid h-10 w-10 shrink-0 place-items-center rounded-[14px] border border-s-border bg-white text-s-ink-2 shadow-[0_2px_8px_0_rgba(0,0,0,0.07)] transition-colors duration-150 hover:text-s-ink"
       >
-        <SlidersHorizontal size={18} />
+        <SlidersHorizontal size={18} strokeWidth={1.9} />
       </button>
 
       {open && (
@@ -84,7 +84,7 @@ export default function FilterDrawer(props: FilterDrawerProps) {
             <div className="flex items-center justify-between px-5 pb-1 pt-3">
               <p className="font-heading text-[18px] font-bold tracking-[-0.02em] text-s-ink">{t("filter_label")}</p>
               <button onClick={() => setOpen(false)} aria-label={t("close")} className="grid h-[34px] w-[34px] place-items-center rounded-full border border-s-border bg-white text-s-ink transition-colors duration-150 hover:bg-s-bg-sunken">
-                <X size={15} />
+                <X size={15} strokeWidth={1.9} />
               </button>
             </div>
 
@@ -118,7 +118,7 @@ export default function FilterDrawer(props: FilterDrawerProps) {
                       aria-label={t("reset")}
                       className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-s-border bg-white text-s-ink transition-colors duration-150 hover:bg-s-bg-sunken"
                     >
-                      <RotateCcw size={18} />
+                      <RotateCcw size={18} strokeWidth={1.9} />
                     </button>
                   )}
                   <button

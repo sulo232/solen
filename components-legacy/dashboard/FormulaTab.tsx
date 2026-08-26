@@ -76,7 +76,7 @@ export default function FormulaTab({ customerId }: FormulaTabProps) {
     <div>
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-heading text-sm text-s-ink flex items-center gap-2">
-          <Beaker size={14} className="text-s-coral" /> {t("title")}
+          <Beaker size={14} strokeWidth={1.6} className="text-s-coral" /> {t("title")}
         </h3>
         <button onClick={() => setShowAdd(!showAdd)} className="flex items-center gap-1 text-xs text-s-coral hover:text-s-coral/80 transition-colors">
           <Plus size={12} /> {t("addFormula")}

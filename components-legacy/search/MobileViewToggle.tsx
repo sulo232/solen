@@ -16,7 +16,7 @@ export default function MobileViewToggle({ view, onToggle }: MobileViewTogglePro
       className="fixed bottom-24 right-4 z-40 md:hidden bg-s-ink text-white p-4 rounded-pill shadow-elevation-2 hover:shadow-warm-md transition-[transform,box-shadow]"
       aria-label={view === "grid" ? t("mapView") : t("gridView")}
     >
-      {view === "grid" ? <Map size={20} /> : <LayoutGrid size={20} />}
+      {view === "grid" ? <Map size={20} strokeWidth={2.2} /> : <LayoutGrid size={20} strokeWidth={2.2} />}
     </button>
   );
 }

@@ -213,11 +213,11 @@ export default function StaffProfilePage({
       <div className="sticky top-0 z-20 flex items-center gap-2 border-b border-s-border bg-white px-3 py-2.5">
         {onClose ? (
           <button type="button" onClick={onClose} aria-label="Schliessen" className="grid h-9 w-9 shrink-0 place-items-center rounded-full hover:bg-s-bg-sunken">
-            <X size={20} className="text-s-ink" />
+            <X size={20} strokeWidth={2.2} className="text-s-ink" />
           </button>
         ) : (
           <button type="button" onClick={handleBack} aria-label="Zurück" className="grid h-9 w-9 shrink-0 place-items-center rounded-full hover:bg-s-bg-sunken">
-            <ArrowLeft size={20} className="text-s-ink" />
+            <ArrowLeft size={20} strokeWidth={2.2} className="text-s-ink" />
           </button>
         )}
         <div className={`flex min-w-0 items-center gap-2 transition-opacity duration-200 ${condensed ? "opacity-100" : "opacity-0"}`}>
@@ -237,7 +237,7 @@ export default function StaffProfilePage({
           onClick={() => shareOrCopy(staff.name, window.location.href)}
           className="ml-auto grid h-9 w-9 shrink-0 place-items-center rounded-full hover:bg-s-bg-sunken"
         >
-          <Share size={18} strokeWidth={2.1} className="text-s-ink" />
+          <Share size={18} strokeWidth={1.9} className="text-s-ink" />
         </button>
       </div>
 
@@ -255,7 +255,7 @@ export default function StaffProfilePage({
           )}
           {staff.instagram_url && (
             <a href={staff.instagram_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[14px] text-s-ink-2 transition-colors hover:text-s-accent">
-              <Instagram size={14} />
+              <Instagram size={14} strokeWidth={1.6} />
               Instagram
             </a>
           )}
@@ -405,7 +405,7 @@ export default function StaffProfilePage({
         <div className="mb-6 flex items-baseline gap-2.5">
           <div className="flex items-center gap-0.5">
             {[0, 1, 2, 3, 4].map((i) => (
-              <Star key={i} size={18} stroke="none" className={i < Math.floor(staff.average_rating) ? "fill-s-star" : "fill-s-border"} />
+              <Star key={i} size={18} strokeWidth={1.9} stroke="none" className={i < Math.floor(staff.average_rating) ? "fill-s-star" : "fill-s-border"} />
             ))}
           </div>
           <span className="font-body text-[18px] font-semibold tabular-nums text-s-ink">{staff.average_rating.toFixed(1)}</span>
@@ -449,7 +449,7 @@ export default function StaffProfilePage({
       {lightboxIndex !== null && portfolio[lightboxIndex] && (
         <div className="fixed inset-0 z-[120] flex items-center justify-center bg-s-ink/80 backdrop-blur-sm" onClick={() => setLightboxIndex(null)}>
           <button type="button" onClick={(e) => { e.stopPropagation(); setLightboxIndex(null); }} aria-label="Schließen" className="absolute right-4 top-4 text-white/80 hover:text-white">
-            <X size={24} />
+            <X size={24} strokeWidth={2.4} />
           </button>
           {lightboxIndex > 0 && (
             <button type="button" onClick={(e) => { e.stopPropagation(); setLightboxIndex(lightboxIndex - 1); }} aria-label="Zurück" className="absolute left-4 text-white/80 hover:text-white">
@@ -485,7 +485,7 @@ export default function StaffProfilePage({
             onClick={() => onSelect(staff.id)}
             className="flex w-full items-center justify-center gap-2 rounded-btn bg-s-ink py-3.5 font-heading text-[15px] font-semibold text-white transition-[filter] hover:brightness-[1.06]"
           >
-            <Check size={18} strokeWidth={2.5} />
+            <Check size={18} strokeWidth={1.9} />
             Auswählen
           </button>
         ) : (

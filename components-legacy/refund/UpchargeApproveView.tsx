@@ -333,7 +333,7 @@ export default function UpchargeApproveView({
             {closed ? t("upNoneBody") : t("notFoundBody")}
           </p>
           <Link href={receiptHref} className={cn(secondaryBtn, "mt-7 max-w-[260px]")}>
-            <Receipt size={16} aria-hidden />
+            <Receipt size={16} strokeWidth={1.9} aria-hidden />
             {t("viewBookingReceipt")}
           </Link>
         </div>
@@ -375,7 +375,7 @@ export default function UpchargeApproveView({
         <div className="sticky bottom-0 mt-auto border-t border-s-border bg-gradient-to-t from-white from-[78%] to-transparent px-4 pb-[18px] pt-3.5 md:px-8">
           <div className="mx-auto w-full max-w-[460px]">
             <div className="flex items-center justify-center gap-1.5 text-[12px] font-medium text-s-ink-2">
-              <ShieldCheck size={14} aria-hidden />
+              <ShieldCheck size={14} strokeWidth={1.6} aria-hidden />
               {t("upSecuredStripe")}
             </div>
           </div>
@@ -420,7 +420,7 @@ export default function UpchargeApproveView({
 
             <div className="mt-4">
               <Link href={receiptHref} className={cn(secondaryBtn, "md:max-w-[260px]")}>
-                <Receipt size={17} aria-hidden />
+                <Receipt size={17} strokeWidth={1.9} aria-hidden />
                 {t("upViewReceipt")}
               </Link>
             </div>
@@ -463,13 +463,13 @@ export default function UpchargeApproveView({
             </KvCard>
 
             <div className="mt-4 flex items-start gap-2.5 rounded-card bg-s-accent-pale px-3.5 py-[13px]">
-              <Info size={17} className="mt-[1px] flex-shrink-0 text-s-accent" aria-hidden />
+              <Info size={17} strokeWidth={1.9} className="mt-[1px] flex-shrink-0 text-s-accent" aria-hidden />
               <p className="text-[12.5px] leading-[1.5] text-s-ink">{t("upDeclinedNote")}</p>
             </div>
 
             <div className="mt-4">
               <Link href={reportHref} className={cn(secondaryBtn, "md:max-w-[260px]")}>
-                <MessageSquare size={17} aria-hidden />
+                <MessageSquare size={17} strokeWidth={1.9} aria-hidden />
                 {t("upReportProblem")}
               </Link>
             </div>
@@ -523,7 +523,7 @@ export default function UpchargeApproveView({
         <div className="sticky bottom-0 mt-auto border-t border-s-border bg-gradient-to-t from-white from-[78%] to-transparent px-4 pb-[18px] pt-3.5 md:px-8">
           <div className="mx-auto w-full max-w-[460px]">
             <div className="mb-3 flex items-center gap-2 text-[12px] text-s-ink-2">
-              <Info size={16} className="flex-shrink-0 text-s-ink/40" aria-hidden />
+              <Info size={16} strokeWidth={1.9} className="flex-shrink-0 text-s-ink/40" aria-hidden />
               <span>{t("upUnchanged")}</span>
             </div>
             <button type="button" onClick={retry} className={cn(ctaSurcharge, "bg-s-error active:scale-[0.985]")}>
@@ -617,7 +617,7 @@ export default function UpchargeApproveView({
         <div className="mx-auto w-full max-w-[460px]">
           {actionError && (
             <p role="alert" className="mb-3 flex items-center gap-1.5 text-[12.5px] font-medium text-s-closed">
-              <CircleAlert size={14} aria-hidden />
+              <CircleAlert size={14} strokeWidth={1.6} aria-hidden />
               {actionError}
             </p>
           )}
@@ -628,7 +628,7 @@ export default function UpchargeApproveView({
               subdued grey (mockup's connective text); only the AMOUNT carries weight
               (mockup emphasizes the charge amount, not a label). */}
           <div className="mb-3 flex items-center gap-2 text-[12px] text-s-ink-2">
-            <CreditCard size={16} className="flex-shrink-0 text-s-ink/40" aria-hidden />
+            <CreditCard size={16} strokeWidth={1.9} className="flex-shrink-0 text-s-ink/40" aria-hidden />
             <span>
               {t("upSavedCard")}
               {" "}
@@ -694,7 +694,7 @@ function Frame({
           aria-label={t("back")}
           className="flex h-[34px] w-[34px] flex-shrink-0 items-center justify-center rounded-pill bg-s-bg-sunken text-s-ink"
         >
-          <ArrowLeft size={18} strokeWidth={2} aria-hidden />
+          <ArrowLeft size={18} strokeWidth={1.9} aria-hidden />
         </Link>
         <div className="min-w-0">
           <div className="font-display text-[15px] font-semibold leading-tight tracking-[-0.01em]">
@@ -710,7 +710,7 @@ function Frame({
 
       {isGuest && (
         <div className="flex items-center gap-2 border-b border-s-border bg-s-accent-pale px-4 py-[9px] md:px-8">
-          <Lock size={15} className="flex-shrink-0 text-s-accent" aria-hidden />
+          <Lock size={15} strokeWidth={1.9} className="flex-shrink-0 text-s-accent" aria-hidden />
           <span className="text-[12px] leading-[1.35] text-s-ink">{t("guestBanner")}</span>
         </div>
       )}

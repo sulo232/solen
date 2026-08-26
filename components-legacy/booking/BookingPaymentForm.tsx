@@ -172,7 +172,7 @@ function PayInner({
       {/* DECLINED (mockup state 5) — nothing charged, slot not reserved, retry inline. */}
       {declined && (
         <div role="alert" className="flex items-start gap-2 rounded-[10px] bg-s-error-bg px-3 py-2.5">
-          <AlertCircle size={14} className="mt-[1px] shrink-0 text-s-error" aria-hidden />
+          <AlertCircle size={14} strokeWidth={1.6} className="mt-[1px] shrink-0 text-s-error" aria-hidden />
           <p className="font-body text-[12px] leading-[1.4] text-s-error">{declined}</p>
         </div>
       )}
@@ -184,7 +184,7 @@ function PayInner({
         disabled={!stripe || !elements}
         className="flex h-[52px] w-full items-center justify-center gap-2 rounded-full bg-s-ink font-body text-[14.5px] font-semibold text-white transition-[transform,filter] duration-150 hover:brightness-[1.06] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
       >
-        <Lock size={16} strokeWidth={2.2} aria-hidden />
+        <Lock size={16} strokeWidth={1.9} aria-hidden />
         {payCta}
       </button>
 

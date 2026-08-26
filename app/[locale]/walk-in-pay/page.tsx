@@ -373,7 +373,7 @@ export default function WalkInPayPage() {
       ) : cancelled ? (
         <motion.div {...fade} className="mx-auto flex w-full max-w-md flex-1 flex-col items-center justify-center px-5 text-center">
           <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-s-bg-sunken">
-            <Check size={24} className="text-s-ink-2" />
+            <Check size={24} strokeWidth={2.4} className="text-s-ink-2" />
           </div>
           <h2 className="font-heading text-[18px] font-semibold text-s-ink">{l.cancelled}</h2>
           <p className="mt-1.5 max-w-[280px] font-body text-[13.5px] leading-relaxed text-s-ink-2">{cancelPayment === "released" ? l.cancelledReleased : cancelPayment === "refunded" ? l.cancelledRefunded : l.cancelledDesc}</p>
@@ -406,7 +406,7 @@ export default function WalkInPayPage() {
             {payBlocked && (
               <div className="mb-3 flex items-start gap-3 rounded-2xl bg-s-warning/10 p-4">
                 <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-s-warning/15">
-                  <AlertTriangle size={18} className="text-s-warning" aria-hidden />
+                  <AlertTriangle size={18} strokeWidth={1.9} className="text-s-warning" aria-hidden />
                 </div>
                 <div className="min-w-0">
                   <div className="font-heading text-[15px] font-semibold text-s-ink">{payBlocked === "paused" ? l.blockedPausedTitle : l.blockedCounterTitle}</div>
@@ -496,14 +496,14 @@ export default function WalkInPayPage() {
               {/* Service */}
               <div className="mt-3 flex items-center gap-3 border-t border-s-border pt-3">
                 <div className="flex h-11 w-11 shrink-0 items-center justify-center">
-                  <Scissors size={20} className="text-s-ink-2" />
+                  <Scissors size={20} strokeWidth={2.2} className="text-s-ink-2" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1.5">
                     <span className="font-heading text-[15px] font-semibold text-s-ink">{booking.service_name}</span>
                     {booking.service_description && (
                       <button type="button" onClick={() => setServiceInfoOpen((v) => !v)} aria-label={booking.service_name} className="grid h-5 w-5 shrink-0 place-items-center rounded-full text-s-ink-2 transition active:scale-90">
-                        <Info size={14} />
+                        <Info size={14} strokeWidth={1.6} />
                       </button>
                     )}
                   </div>
@@ -517,7 +517,7 @@ export default function WalkInPayPage() {
               {/* When — adaptive: walk-in (Sofort + ETA + ticket-after-pay) vs scheduled (date/time) */}
               <div className="mt-3 flex items-center gap-3 border-t border-s-border pt-3">
                 <div className="flex h-11 w-11 shrink-0 items-center justify-center">
-                  <Clock size={20} className="text-s-ink-2" />
+                  <Clock size={20} strokeWidth={2.2} className="text-s-ink-2" />
                 </div>
                 <div className="min-w-0 flex-1">
                   {booking.is_walkin ? (
@@ -585,7 +585,7 @@ export default function WalkInPayPage() {
                 className="flex h-[54px] w-full items-center justify-center gap-2 rounded-btn bg-s-ink font-body text-[15px] font-semibold text-white shadow-elevation-2 transition-[transform,filter] hover:brightness-[1.06] active:scale-[0.98] disabled:opacity-50"
               >
                 {payCta}
-                {paying ? <Spinner size="sm" invert /> : <ArrowRight size={16} strokeWidth={2.4} />}
+                {paying ? <Spinner size="sm" invert /> : <ArrowRight size={16} strokeWidth={1.9} />}
               </button>
               <div className="mt-3 flex items-center justify-center gap-1.5 text-[12px] font-medium text-s-ink-2">
                 <Lock size={12} />

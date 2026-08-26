@@ -183,7 +183,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
   return (
     <div ref={containerRef} className="relative w-full max-w-md">
       <div className="relative glass-search rounded-input">
-        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-s-ink/30" />
+        <Search size={16} strokeWidth={1.9} className="absolute left-3 top-1/2 -translate-y-1/2 text-s-ink/30" />
         <input
           type="text"
           value={query}
@@ -198,7 +198,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
             onClick={() => { setQuery(""); setOpen(false); setServices([]); setSalons([]); }}
             className="absolute right-2.5 top-1/2 -translate-y-1/2 text-s-ink/30 hover:text-s-ink-2"
           >
-            <X size={14} />
+            <X size={14} strokeWidth={1.6} />
           </button>
         )}
       </div>
@@ -314,7 +314,7 @@ export default function SearchAutocomplete({ category, onServiceSelect }: Search
           {/* Cross-category suggestion */}
           {suggestedCategory && suggestedCategory !== category && (
             <div className="px-3 py-2.5 flex items-center gap-2 bg-s-ink/5 border-t border-s-border">
-              <Search size={14} className="text-s-ink-2 shrink-0" />
+              <Search size={14} strokeWidth={1.6} className="text-s-ink-2 shrink-0" />
               <span className="text-xs text-s-ink-2 font-body">
                 {t("didYouMean")} <strong>{categoryLabels[suggestedCategory]}</strong>?
               </span>

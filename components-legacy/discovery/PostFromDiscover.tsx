@@ -153,7 +153,7 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
         className="fixed bottom-24 right-4 z-40 w-12 h-12 rounded-full flex items-center justify-center bg-s-ink text-white active:scale-[0.97] transition-[transform,filter] duration-150 shadow-elevation-2"
         aria-label={t.newPost}
       >
-        <Plus size={20} strokeWidth={2.5} />
+        <Plus size={20} strokeWidth={2.2} />
       </button>
 
       {/* Modal */}
@@ -181,7 +181,7 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-heading text-s-ink">{t.newPost}</h2>
               <button onClick={() => setOpen(false)} className="text-s-ink/30" aria-label="Close">
-                <X size={20} />
+                <X size={20} strokeWidth={2.2} />
               </button>
             </div>
 
@@ -198,14 +198,14 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
                     onClick={() => setMode("photo")}
                     className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-btn text-[12px] font-heading transition-colors duration-150 ${mode === "photo" ? "bg-s-bg-sunken text-s-ink font-semibold" : "bg-s-ink/5 text-s-ink-2"}`}
                   >
-                    <Upload size={14} /> {t.photo}
+                    <Upload size={14} strokeWidth={1.6} /> {t.photo}
                   </button>
                   <button
                     aria-pressed={mode === "tiktok"}
                     onClick={() => setMode("tiktok")}
                     className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-btn text-[12px] font-heading transition-colors duration-150 ${mode === "tiktok" ? "bg-s-bg-sunken text-s-ink font-semibold" : "bg-s-ink/5 text-s-ink-2"}`}
                   >
-                    <LinkIcon size={14} /> {t.tiktok}
+                    <LinkIcon size={14} strokeWidth={1.6} /> {t.tiktok}
                   </button>
                 </div>
 
@@ -296,7 +296,7 @@ export default function PostFromDiscover({ isAuthenticated, onAuthRequired }: Po
                   disabled={posting || !tosAccepted}
                   className="w-full py-3 rounded-pill bg-s-ink hover:brightness-[1.06] text-white font-medium text-sm disabled:opacity-40 transition-[transform,filter] duration-150 shadow-elevation-2 flex items-center justify-center gap-2"
                 >
-                  {posting && <Loader2 size={14} className="animate-spin" />}
+                  {posting && <Loader2 size={14} strokeWidth={1.6} className="animate-spin" />}
                   {t.post}
                 </button>
               </div>

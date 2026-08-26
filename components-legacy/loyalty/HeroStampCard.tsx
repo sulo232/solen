@@ -93,7 +93,7 @@ export default function HeroStampCard({
               ].join(" ")}
               aria-hidden
             >
-              {isFilled && <Check size={14} strokeWidth={3} className="text-s-accent" />}
+              {isFilled && <Check size={14} strokeWidth={1.6} className="text-s-accent" />}
             </span>
           );
         })}

@@ -106,7 +106,7 @@ function SlotCreateModal({ date, startTime, services, staff, onClose, onCreated 
       <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-sm p-6">
         <div className="flex items-start justify-between mb-4">
           <h3 className="font-heading text-base">{t("createSlotTitle")}</h3>
-          <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
+          <button onClick={onClose}><X size={18} strokeWidth={1.9} className="text-s-ink/30" /></button>
         </div>
         <p className="text-sm text-s-ink-2 mb-4">{t("dateAtTime", { date, time: startTime })}</p>
         <div className="space-y-3 mb-5">
@@ -188,7 +188,7 @@ function BulkCreateModal({ services, staff, salonId, onClose, onCreated }: {
       <div className="bg-white rounded-[12px] shadow-warm-lg w-full max-w-md p-6 overflow-y-auto max-h-[90vh]">
         <div className="flex items-start justify-between mb-4">
           <h3 className="font-heading text-base">{t("createWeekScheduleTitle")}</h3>
-          <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
+          <button onClick={onClose}><X size={18} strokeWidth={1.9} className="text-s-ink/30" /></button>
         </div>
         <div className="space-y-4 mb-5">
           <div>
@@ -299,7 +299,7 @@ function SlotDetailModal({ slot, staff, onClose, onReschedule, onDelete }: SlotD
           <h3 className="font-heading text-base">
             {rescheduleMode ? t("rescheduleTitle") : t("detailsTitle")}
           </h3>
-          <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
+          <button onClick={onClose}><X size={18} strokeWidth={1.9} className="text-s-ink/30" /></button>
         </div>
 
         {rescheduleMode ? (
@@ -320,7 +320,7 @@ function SlotDetailModal({ slot, staff, onClose, onReschedule, onDelete }: SlotD
               <button onClick={handleReschedule} disabled={loading}
                 className="flex-1 py-2.5 rounded-btn bg-s-ink text-white text-sm font-medium disabled:opacity-50 flex items-center justify-center gap-1">
                 {loading && <Spinner size="sm" invert />}
-                <ArrowRight size={14} /> {t("reschedule")}
+                <ArrowRight size={14} strokeWidth={1.6} /> {t("reschedule")}
               </button>
             </div>
           </div>
@@ -336,7 +336,7 @@ function SlotDetailModal({ slot, staff, onClose, onReschedule, onDelete }: SlotD
               {slot.status !== "blocked" && (
                 <button onClick={() => setRescheduleMode(true)}
                   className="flex-1 py-2.5 rounded-btn border border-s-accent-bright text-s-coral text-sm font-medium flex items-center justify-center gap-1 hover:bg-s-coral/5 transition-colors">
-                  <Clock size={14} /> {t("reschedule")}
+                  <Clock size={14} strokeWidth={1.6} /> {t("reschedule")}
                 </button>
               )}
               <button onClick={() => { onDelete(slot.id); onClose(); }}
@@ -741,10 +741,10 @@ export default function CalendarPage() {
             <>
               {/* Header: chevrons + label + Heute */}
               <div className="flex items-center gap-2 mb-3">
-                <button onClick={goPrev} aria-label={t("previous")} className="w-9 h-9 grid place-items-center text-s-ink"><ChevronLeft size={18} /></button>
+                <button onClick={goPrev} aria-label={t("previous")} className="w-9 h-9 grid place-items-center text-s-ink"><ChevronLeft size={18} strokeWidth={1.9} /></button>
                 <span className="flex-1 font-heading font-bold text-[17px] tracking-[-0.01em] text-s-ink">{headerLabel}</span>
                 <button onClick={goTodayMobile} className="text-[12px] font-semibold text-s-accent">{t("today")}</button>
-                <button onClick={goNext} aria-label={t("next")} className="w-9 h-9 grid place-items-center text-s-ink"><ChevronRight size={18} /></button>
+                <button onClick={goNext} aria-label={t("next")} className="w-9 h-9 grid place-items-center text-s-ink"><ChevronRight size={18} strokeWidth={1.9} /></button>
               </div>
 
               {/* Segmented control (Tag / Woche / Monat) */}
@@ -819,7 +819,7 @@ export default function CalendarPage() {
 
               {/* Slot / Walk-in / Plan — unchanged, kept under the views */}
               <div className="flex gap-2 mt-3">
-                <button onClick={() => setCreateModal({ date: ymdLocal(currentDate), time: "09:00" })} className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-[12px] bg-s-ink text-white font-heading font-semibold text-[13.5px] py-2.5"><Plus size={15} strokeWidth={2.4} /> {t("slot")}</button>
+                <button onClick={() => setCreateModal({ date: ymdLocal(currentDate), time: "09:00" })} className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-[12px] bg-s-ink text-white font-heading font-semibold text-[13.5px] py-2.5"><Plus size={15} strokeWidth={1.9} /> {t("slot")}</button>
                 <button onClick={() => setWalkInModal(true)} className="inline-flex items-center justify-center rounded-[12px] bg-white border border-s-border text-s-ink font-heading font-semibold text-[13.5px] px-4 py-2.5">{t("walkIn")}</button>
                 <button onClick={() => setBulkModal(true)} className="inline-flex items-center justify-center rounded-[12px] bg-white border border-s-border text-s-ink font-heading font-semibold text-[13.5px] px-4 py-2.5">{t("plan")}</button>
               </div>
@@ -838,7 +838,7 @@ export default function CalendarPage() {
             else if (viewMode === "day") { setCurrentDate((d) => addDays(d, -1)); setWeekStart(startOfWeek(addDays(currentDate, -1))); }
             else { const d = new Date(currentDate); d.setMonth(d.getMonth() - 1); setCurrentDate(d); setWeekStart(startOfWeek(d)); }
           }} className="p-2 rounded-btn border border-s-border hover:border-s-accent-bright transition-colors">
-            <ChevronLeft size={16} className="text-s-ink" />
+            <ChevronLeft size={16} strokeWidth={1.9} className="text-s-ink" />
           </button>
           <button onClick={() => { const today = new Date(); setCurrentDate(today); setWeekStart(startOfWeek(today)); }}
             className="px-3 py-1.5 rounded-btn border border-s-border text-sm text-s-ink hover:border-s-accent-bright transition-colors">
@@ -849,7 +849,7 @@ export default function CalendarPage() {
             else if (viewMode === "day") { setCurrentDate((d) => addDays(d, 1)); setWeekStart(startOfWeek(addDays(currentDate, 1))); }
             else { const d = new Date(currentDate); d.setMonth(d.getMonth() + 1); setCurrentDate(d); setWeekStart(startOfWeek(d)); }
           }} className="p-2 rounded-btn border border-s-border hover:border-s-accent-bright transition-colors">
-            <ChevronRight size={16} className="text-s-ink" />
+            <ChevronRight size={16} strokeWidth={1.9} className="text-s-ink" />
           </button>
           <span className="text-sm font-medium text-s-ink ml-2">
             {viewMode === "day"
@@ -872,7 +872,7 @@ export default function CalendarPage() {
           </div>
           <button onClick={() => setWalkInModal(true)}
             className="flex items-center gap-1.5 px-3 py-2 rounded-btn border border-s-border text-sm text-s-ink-2 hover:border-s-accent-bright hover:text-s-coral transition-colors">
-            <UserPlus size={14} /> {t("walkIn")}
+            <UserPlus size={14} strokeWidth={1.6} /> {t("walkIn")}
           </button>
           <button onClick={() => setBulkModal(true)}
             className="flex items-center gap-1.5 px-3 py-2 rounded-btn border border-s-border text-sm text-s-ink-2 hover:border-s-accent-bright hover:text-s-coral transition-colors">
@@ -880,7 +880,7 @@ export default function CalendarPage() {
           </button>
           <button onClick={() => setCreateModal({ date: ymdLocal(new Date()), time: "09:00" })}
             className="flex items-center gap-1.5 px-3 py-2 rounded-btn bg-s-ink text-white text-sm font-medium">
-            <Plus size={14} /> {t("slot")}
+            <Plus size={14} strokeWidth={1.6} /> {t("slot")}
           </button>
         </div>
       </div>

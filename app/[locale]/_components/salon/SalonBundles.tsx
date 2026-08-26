@@ -137,7 +137,7 @@ function BundleCard({ bundle, slug, locale }: { bundle: Bundle; slug: string; lo
   return (
     <div className="overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper">
       <div className="flex items-center gap-2 px-4 pt-4 pb-2">
-        <Package size={16} strokeWidth={2} className="text-s-ink" aria-hidden />
+        <Package size={16} strokeWidth={1.9} className="text-s-ink" aria-hidden />
         <p className="font-heading text-[16px] font-bold text-s-ink">{bundle.name}</p>
       </div>
 

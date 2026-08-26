@@ -152,7 +152,7 @@ export default function GlassModal({
                   className="p-3 rounded-[8px] text-s-ink-2 hover:text-s-ink hover:bg-s-ink/10 transition-colors duration-150"
                   aria-label={t("close")}
                 >
-                  <X size={20} />
+                  <X size={20} strokeWidth={2.2} />
                 </button>
               </div>
             )}

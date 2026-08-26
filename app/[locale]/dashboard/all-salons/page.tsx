@@ -72,7 +72,7 @@ function ConfirmModal({
       <div className="bg-white rounded-input shadow-v5-float w-full max-w-sm p-6">
         <div className="flex items-start justify-between mb-3">
           <h3 className="font-heading text-base text-s-ink">{title}</h3>
-          <button onClick={onClose}><X size={18} className="text-s-ink/30" /></button>
+          <button onClick={onClose}><X size={18} strokeWidth={1.9} className="text-s-ink/30" /></button>
         </div>
         <p className="text-sm text-s-ink-2 mb-5">{message}</p>
         <div className="flex gap-2">
@@ -196,7 +196,7 @@ export default function AllSalonsPage() {
 
       {/* Search */}
       <div className="relative mb-5 max-w-sm">
-        <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-s-ink/30" />
+        <Search size={15} strokeWidth={1.9} className="absolute left-3 top-1/2 -translate-y-1/2 text-s-ink/30" />
         <input
           type="text"
           placeholder={t("searchPlaceholder")}
@@ -233,7 +233,7 @@ export default function AllSalonsPage() {
                     {salon.cover_photo_url ? (
                       <Image src={salon.cover_photo_url} alt="" fill className="object-cover" />
                     ) : (
-                      <Store size={16} className="text-s-ink/20" />
+                      <Store size={16} strokeWidth={1.9} className="text-s-ink/20" />
                     )}
                   </div>
 

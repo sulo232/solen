@@ -158,7 +158,7 @@ export default function OnboardingFlow({ locale, redirect, customerPreferences }
       <div className="flex items-center gap-3 mb-5">
         <button type="button" onClick={back} disabled={i === 0} aria-label="Zurück"
           className="grid place-items-center w-8 h-8 rounded-full border border-s-border text-s-ink disabled:opacity-40 hover:bg-s-bg-sunken transition-colors">
-          <ArrowLeft size={16} aria-hidden />
+          <ArrowLeft size={16} strokeWidth={1.9} aria-hidden />
         </button>
         <div className="flex-1">
           <div className="h-[5px] rounded-pill bg-s-bg-sunken overflow-hidden">

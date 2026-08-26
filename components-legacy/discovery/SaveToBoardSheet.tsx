@@ -86,7 +86,7 @@ export default function SaveToBoardSheet({ itemId, open, onClose, onSaved }: Pro
       <div className="absolute inset-0 bg-s-ink/40 backdrop-blur-[6px] animate-in fade-in duration-200" onClick={onClose} />
       <div className="relative flex max-h-[80vh] w-full flex-col overflow-hidden rounded-t-[22px] bg-white shadow-elevation-3 animate-in slide-in-from-bottom duration-300">
         <div className="flex items-center justify-between px-5 pb-3 pt-4">
-          <button onClick={onClose} aria-label="Schließen" className="text-s-ink transition-colors hover:text-s-ink-2"><X size={20} /></button>
+          <button onClick={onClose} aria-label="Schließen" className="text-s-ink transition-colors hover:text-s-ink-2"><X size={20} strokeWidth={2.2} /></button>
           <p className="font-heading text-[16px] font-semibold text-s-ink">Speichern in</p>
           <span className="w-5" />
         </div>
@@ -122,7 +122,7 @@ export default function SaveToBoardSheet({ itemId, open, onClose, onSaved }: Pro
                   <span className="grid h-12 w-12 shrink-0 grid-cols-2 grid-rows-2 gap-px overflow-hidden rounded-[12px] bg-s-bg-sunken">
                     {c.covers && c.covers.length > 0
                       ? c.covers.slice(0, 4).map((src, i) => <img key={i} src={src} alt="" className="h-full w-full object-cover" />)
-                      : <span className="col-span-2 row-span-2 grid place-items-center text-s-ink-2"><Images size={18} /></span>}
+                      : <span className="col-span-2 row-span-2 grid place-items-center text-s-ink-2"><Images size={18} strokeWidth={1.9} /></span>}
                   </span>
                   <span className="flex min-w-0 flex-1 flex-col">
                     <span className="truncate font-heading text-[15px] font-semibold text-s-ink">{c.name}</span>
@@ -131,7 +131,7 @@ export default function SaveToBoardSheet({ itemId, open, onClose, onSaved }: Pro
                 </button>
               ))}
               <button onClick={() => setCreating(true)} className="mt-1 flex w-full items-center gap-3 rounded-xl px-1.5 py-2.5 text-left transition-colors duration-150 hover:bg-s-bg-sunken">
-                <span className="grid h-12 w-12 shrink-0 place-items-center rounded-[12px] bg-s-bg-sunken text-s-ink-2"><Plus size={20} /></span>
+                <span className="grid h-12 w-12 shrink-0 place-items-center rounded-[12px] bg-s-bg-sunken text-s-ink-2"><Plus size={20} strokeWidth={2.2} /></span>
                 <span className="font-heading text-[15px] font-semibold text-s-ink">Neue Kollektion</span>
               </button>
             </>

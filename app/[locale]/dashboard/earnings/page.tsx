@@ -96,7 +96,7 @@ export default function SalonEarningsPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="bg-white rounded-[12px] border border-s-ink/5 p-5 shadow-warm-md flex items-center gap-4">
               <div className="w-12 h-12 rounded-btn bg-s-coral/10 flex items-center justify-center shrink-0">
-                <Wallet size={24} className="text-s-coral" />
+                <Wallet size={24} strokeWidth={2.4} className="text-s-coral" />
               </div>
               <div>
                 <p className="text-xs font-medium text-s-ink-2 uppercase tracking-widest mb-1">{t("availableBalance")}</p>
@@ -107,7 +107,7 @@ export default function SalonEarningsPage() {
 
             <div className="bg-white rounded-[12px] border border-s-ink/5 p-5 shadow-warm-md flex items-center gap-4">
               <div className="w-12 h-12 rounded-btn bg-green-50 flex items-center justify-center shrink-0">
-                <DollarSign size={24} className="text-green-600" />
+                <DollarSign size={24} strokeWidth={2.4} className="text-green-600" />
               </div>
               <div>
                 <p className="text-xs font-medium text-s-ink-2 uppercase tracking-widest mb-1">{t("totalPaidOut")}</p>
@@ -139,7 +139,7 @@ export default function SalonEarningsPage() {
                     {data.payouts.map((p) => (
                       <tr key={p.id} className="border-t border-s-ink/5 hover:bg-s-bg-surface/60 transition-colors">
                         <td className="px-5 py-4 text-s-ink flex items-center gap-2">
-                          <Calendar size={14} className="text-s-ink/30" />
+                          <Calendar size={14} strokeWidth={1.6} className="text-s-ink/30" />
                           {new Date(p.created_at).toLocaleDateString(resolveSwissLocale(locale))}
                         </td>
                         <td className="px-5 py-4">
@@ -162,7 +162,7 @@ export default function SalonEarningsPage() {
                             className="inline-flex items-center justify-center p-2 rounded-full hover:bg-s-coral/10 text-s-coral transition-[colors,transform] active:scale-[0.94] active:duration-[80ms] active:ease-glide"
                             title={t("printInvoice")}
                           >
-                            <FileText size={16} />
+                            <FileText size={16} strokeWidth={1.9} />
                           </a>
                         </td>
                       </tr>
@@ -181,7 +181,7 @@ export default function SalonEarningsPage() {
           {/* Staff Payout Table */}
           <div className="bg-white rounded-[12px] border border-s-ink/5 shadow-warm-md overflow-hidden">
             <div className="px-5 py-4 border-b border-s-ink/5 flex items-center gap-2">
-              <Users size={16} className="text-s-coral" />
+              <Users size={16} strokeWidth={1.9} className="text-s-coral" />
               <h2 className="font-heading text-s-ink text-sm">{t("staffPayoutTitle")}</h2>
             </div>
             {staffLoading ? (

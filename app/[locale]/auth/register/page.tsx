@@ -31,26 +31,26 @@ function StepRole({ onCustomer, onSalon }: { onCustomer: () => void; onSalon: ()
       <button onClick={onCustomer}
         className="group flex items-center gap-4 p-4 rounded-[12px] border border-s-border hover:border-s-ink/30 hover:bg-s-bg-sunken transition-colors duration-150 text-left">
         <div className="w-11 h-11 rounded-[10px] flex items-center justify-center shrink-0 bg-s-bg-sunken">
-          <User size={20} className="text-s-ink" />
+          <User size={20} strokeWidth={2.2} className="text-s-ink" />
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-[15px] font-medium text-s-ink">{t("roleCustomerTitle")}</p>
           <p className="text-[12px] text-s-ink-2 mt-0.5">{t("roleCustomerDesc")}</p>
         </div>
-        <ChevronRight size={18} className="text-s-ink/30 group-hover:text-s-ink transition-colors shrink-0" />
+        <ChevronRight size={18} strokeWidth={1.9} className="text-s-ink/30 group-hover:text-s-ink transition-colors shrink-0" />
       </button>
 
       {/* Salon choice */}
       <button onClick={onSalon}
         className="group flex items-center gap-4 p-4 rounded-[12px] border border-s-border hover:border-s-ink/30 hover:bg-s-bg-sunken transition-colors duration-150 text-left">
         <div className="w-11 h-11 rounded-[10px] flex items-center justify-center shrink-0 bg-s-bg-sunken">
-          <Building2 size={20} className="text-s-ink" />
+          <Building2 size={20} strokeWidth={2.2} className="text-s-ink" />
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-[15px] font-medium text-s-ink">{t("roleSalonTitle")}</p>
           <p className="text-[12px] text-s-ink-2 mt-0.5">{t("roleSalonDesc")}</p>
         </div>
-        <ChevronRight size={18} className="text-s-ink/30 group-hover:text-s-ink transition-colors shrink-0" />
+        <ChevronRight size={18} strokeWidth={1.9} className="text-s-ink/30 group-hover:text-s-ink transition-colors shrink-0" />
       </button>
     </div>
   );
@@ -157,7 +157,7 @@ function StepRegister({ onNext, isSalon }: { onNext: () => void; isSalon?: boole
     return (
       <div className="text-center py-6 flex flex-col items-center gap-4">
         <div className="w-14 h-14 rounded-[14px] flex items-center justify-center bg-s-bg-sunken">
-          <Mail size={24} className="text-s-ink" />
+          <Mail size={24} strokeWidth={2.4} className="text-s-ink" />
         </div>
         <div>
           <p className="text-[18px] font-semibold text-s-ink">{t("successTitle")}</p>

@@ -6,13 +6,13 @@ extraction over `NextResponse.json(...)` call sites), not a type-checker.
 
 ## Error response shapes (status 400-599)
 
-- **1373** : legacy: error alone
-- **196** : legacy: message+code
-- **79** : legacy: error+code
-- **38** : legacy: other
-- **32** : legacy: message alone
+- **1394** : legacy: error alone
+- **203** : legacy: message+code
+- **81** : legacy: error+code
+- **39** : legacy: other
+- **33** : legacy: message alone
 - **5** : legacy: error+code+message combined
-- **1723** total classified call sites
+- **1755** total classified call sites
 
 Canonical target (LAW.md section 7, "Error shape" row): the RFC 9457 subset
 `{type, title, status, detail}`, extension keys (e.g. `code`) allowed. No mass
@@ -26,8 +26,7 @@ canonical bucket.
 - **1** : legacy (list, non-items key): reports+total+page+limit
 - **1** : legacy (list, non-items key): bookings+total+page+limit
 - **1** : legacy (list, non-items key): images+total+page+limit
-- **1** : legacy (list, non-items key): portfolio+staff+total+page+limit
-- **24** total classified call sites
+- **23** total classified call sites
 
 Canonical target (api-contracts-02): `{items, total, page, limit}`, never a
 domain-named key (`bookings`, `results`, ...) in place of `items`.
@@ -89,6 +88,6 @@ three counts against a frozen baseline and fails only if one of them
 INCREASES (a new route introducing a legacy shape or an unlabeled 201), never
 because the pre-existing count is nonzero.
 
-RATCHET_LEGACY_ERROR_SHAPES=1723
-RATCHET_LEGACY_SUCCESS_SHAPES=5
+RATCHET_LEGACY_ERROR_SHAPES=1755
+RATCHET_LEGACY_SUCCESS_SHAPES=4
 RATCHET_MISSING_LOCATION_201=44

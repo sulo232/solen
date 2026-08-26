@@ -350,7 +350,7 @@ function ToastItem({ toast: t }: { toast: InternalToast }) {
               t.iconClassName ?? cn(badge.bg, badge.fg),
             )}
           >
-            <Glyph size={15} strokeWidth={3} aria-hidden />
+            <Glyph size={15} strokeWidth={1.9} aria-hidden />
           </span>
         );
       })()}

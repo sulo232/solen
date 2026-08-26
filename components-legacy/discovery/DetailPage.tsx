@@ -254,7 +254,7 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
             style={FROST_GLASS}
             className="grid h-11 w-11 place-items-center rounded-full text-s-ink transition-transform duration-150 active:scale-95"
           >
-            <ArrowLeft size={18} />
+            <ArrowLeft size={18} strokeWidth={1.9} />
           </button>
           <button
             type="button"
@@ -283,7 +283,7 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
           <div className="absolute inset-0 bg-s-ink/60 backdrop-blur-[6px] animate-in fade-in duration-200" onClick={closePlayer} />
           <div className="relative w-full overflow-hidden rounded-t-[22px] bg-black shadow-elevation-3 animate-in slide-in-from-bottom duration-300">
             <button type="button" onClick={closePlayer} aria-label={t.back} style={FROST_GLASS} className="absolute right-3 top-3 z-10 grid h-11 w-11 place-items-center rounded-full text-s-ink transition-transform duration-150 active:scale-95">
-              <X size={18} />
+              <X size={18} strokeWidth={1.9} />
             </button>
             <div className="relative w-full" style={{ aspectRatio: videoAspect ?? "9 / 16", maxHeight: "82vh" }}>
               <TikTokPlayer videoId={videoId} title={item.style_name ?? undefined} aspect={videoAspect ?? undefined} tiktokUrl={item.tiktok_url ?? undefined} />
@@ -296,7 +296,7 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
       {playing && videoId && playVariant === "fullscreen" && (
         <div className="fixed inset-0 z-[60] bg-black animate-in fade-in duration-200" role="dialog" aria-modal="true" aria-label={item.style_name || "TikTok"}>
           <button type="button" onClick={closePlayer} aria-label={t.back} style={{ ...FROST_GLASS, top: "calc(env(safe-area-inset-top, 0px) + 14px)" }} className="absolute right-4 z-10 grid h-10 w-10 place-items-center rounded-full text-s-ink transition-transform duration-150 active:scale-95">
-            <X size={18} />
+            <X size={18} strokeWidth={1.9} />
           </button>
           <TikTokPlayer videoId={videoId} title={item.style_name ?? undefined} aspect={videoAspect ?? undefined} tiktokUrl={item.tiktok_url ?? undefined} />
         </div>
@@ -350,7 +350,7 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
               className="mt-2 inline-flex items-center gap-1 text-[13.5px] font-medium text-s-accent"
             >
               {descOpen ? t.less : t.more}
-              <ChevronDown size={15} className={`transition-transform duration-200 ${descOpen ? "rotate-180" : ""}`} />
+              <ChevronDown size={15} strokeWidth={1.9} className={`transition-transform duration-200 ${descOpen ? "rotate-180" : ""}`} />
             </button>
           </div>
         )}
@@ -365,7 +365,7 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
               className="flex w-full items-center justify-between px-0.5 py-4"
             >
               <span className="font-heading text-[15px] font-semibold tracking-[-0.01em] text-s-ink">{t.details}</span>
-              <ChevronDown size={18} className={`text-s-ink-2 transition-transform duration-200 ${detailsOpen ? "rotate-180" : ""}`} />
+              <ChevronDown size={18} strokeWidth={1.9} className={`text-s-ink-2 transition-transform duration-200 ${detailsOpen ? "rotate-180" : ""}`} />
             </button>
             {detailsOpen && (
               <div className="pb-2">

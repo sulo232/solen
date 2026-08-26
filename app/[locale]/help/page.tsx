@@ -69,7 +69,7 @@ export default function HelpPage() {
 
           {/* Search */}
           <div className="relative max-w-md mx-auto mt-6">
-            <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-s-ink-2" />
+            <Search size={18} strokeWidth={1.9} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-s-ink-2" />
             <input
               type="text"
               value={search}
@@ -165,7 +165,7 @@ export default function HelpPage() {
                         <span className="font-body text-sm text-s-ink transition-colors">
                           {article.title}
                         </span>
-                        <ChevronRight size={16} className="text-s-ink-2 group-hover:text-s-ink transition-colors shrink-0" />
+                        <ChevronRight size={16} strokeWidth={1.9} className="text-s-ink-2 group-hover:text-s-ink transition-colors shrink-0" />
                       </Link>
                     ))}
                   </div>

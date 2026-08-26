@@ -40,7 +40,7 @@ export default function ReferralDashboard({ salonId }: ReferralDashboardProps) {
   return (
     <div>
       <h3 className="font-heading text-sm text-s-ink flex items-center gap-2 mb-4">
-        <Share2 size={14} className="text-s-accent-bright" /> {t("heading")}
+        <Share2 size={14} strokeWidth={1.6} className="text-s-accent-bright" /> {t("heading")}
       </h3>
 
       {/* Stats */}

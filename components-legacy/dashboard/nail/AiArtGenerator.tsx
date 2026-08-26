@@ -62,7 +62,7 @@ export default function AiArtGenerator() {
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2 mb-2">
-        <Wand2 size={16} className="text-s-coral" />
+        <Wand2 size={16} strokeWidth={1.9} className="text-s-coral" />
         <h3 className="font-heading text-sm text-s-ink">{t("title")}</h3>
       </div>
 
@@ -138,7 +138,7 @@ export default function AiArtGenerator() {
       {/* Generate button */}
       <button onClick={handleGenerate} disabled={generating}
         className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-pill active:scale-[0.97] bg-s-accent text-white text-[12px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter] active:duration-[80ms] active:ease-glide disabled:opacity-50">
-        <Wand2 size={16} />
+        <Wand2 size={16} strokeWidth={1.9} />
         {generating ? t("generating") : t("generate")}
       </button>
 

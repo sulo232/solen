@@ -141,7 +141,7 @@ export default function NailPreferencesForm({ customerId }: NailPreferencesFormP
       {/* Allergies */}
       <div>
         <span className="text-sm font-medium text-s-ink flex items-center gap-1">
-          <AlertTriangle size={14} className="text-s-error" />
+          <AlertTriangle size={14} strokeWidth={1.6} className="text-s-error" />
           {t("prefs_allergies")}
         </span>
         <div className="flex flex-wrap gap-1.5 mt-2">
@@ -193,7 +193,7 @@ export default function NailPreferencesForm({ customerId }: NailPreferencesFormP
         disabled={saving}
         className="flex items-center gap-2 px-4 py-2 rounded-pill active:scale-[0.97] bg-s-accent text-white text-[12px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] shadow-elevation-2 transition-[transform,filter] active:duration-[80ms] active:ease-glide disabled:opacity-50"
       >
-        <Save size={14} />
+        <Save size={14} strokeWidth={1.6} />
         {saving ? t("saving") : t("prefs_save")}
       </button>
     </div>

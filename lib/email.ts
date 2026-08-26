@@ -6,6 +6,7 @@
 import { getServerEnv } from "@/lib/env";
 import { EMAIL_COLORS } from "@/lib/email-colors";
 import { buildBookingIcs } from "@/lib/ics";
+import { unsubscribeToken } from "@/lib/unsubscribe-token";
 
 export type EmailLocale = "de" | "en" | "fr" | "it";
 
@@ -231,7 +232,7 @@ export function bookingConfirmation(
         `<tr><td style="padding:3px 24px 3px 0;color:${EMAIL_COLORS.ink2}">${PL.vat} ${vars.rate}%</td><td style="padding:3px 0;text-align:right">${vars.vat}</td></tr>` +
         `<tr><td style="padding:6px 24px 0 0;font-weight:700">${PL.total}</td><td style="padding:6px 0 0;text-align:right;font-weight:700">${vars.total}</td></tr>` +
         `</table>` +
-        (vars.vatNumber ? `<p style="margin-top:6px;color:${EMAIL_COLORS.ink2};font-size:12px">${PL.nr} ${vars.vatNumber}</p>` : "");
+        (vars.vatNumber ? `<p style="margin-top:6px;color:${EMAIL_COLORS.ink2};font-size:12px">${PL.nr} ${escapeHtml(vars.vatNumber)}</p>` : "");
     } else {
       priceHtml = `<p style="margin-top:12px;font-size:14px"><strong>${PL.amount}: ${vars.total}</strong></p>`;
     }
@@ -253,10 +254,10 @@ export function bookingConfirmation(
     : "";
 
   const bodies: Record<EmailLocale, string> = {
-    de: `<p>Hallo,</p><p><strong>${vars.service}</strong> bei <strong>${vars.salon}</strong> am ${vars.date} um ${vars.time} Uhr ist bestätigt. Wir freuen uns auf Sie!</p>${priceHtml}${addressHtml}${manageHtml}<p>solen.ch</p>`,
-    en: `<p>Hello,</p><p><strong>${vars.service}</strong> at <strong>${vars.salon}</strong> on ${vars.date} at ${vars.time} is confirmed. See you there!</p>${priceHtml}${addressHtml}${manageHtml}<p>solen.ch</p>`,
-    fr: `<p>Bonjour,</p><p><strong>${vars.service}</strong> chez <strong>${vars.salon}</strong> le ${vars.date} à ${vars.time} est confirmé. À bientôt!</p>${priceHtml}${addressHtml}${manageHtml}<p>solen.ch</p>`,
-    it: `<p>Ciao,</p><p><strong>${vars.service}</strong> presso <strong>${vars.salon}</strong> il ${vars.date} alle ${vars.time} è confermato. A presto!</p>${priceHtml}${addressHtml}${manageHtml}<p>solen.ch</p>`,
+    de: `<p>Hallo,</p><p><strong>${escapeHtml(vars.service)}</strong> bei <strong>${escapeHtml(vars.salon)}</strong> am ${vars.date} um ${vars.time} Uhr ist bestätigt. Wir freuen uns auf Sie!</p>${priceHtml}${addressHtml}${manageHtml}<p>solen.ch</p>`,
+    en: `<p>Hello,</p><p><strong>${escapeHtml(vars.service)}</strong> at <strong>${escapeHtml(vars.salon)}</strong> on ${vars.date} at ${vars.time} is confirmed. See you there!</p>${priceHtml}${addressHtml}${manageHtml}<p>solen.ch</p>`,
+    fr: `<p>Bonjour,</p><p><strong>${escapeHtml(vars.service)}</strong> chez <strong>${escapeHtml(vars.salon)}</strong> le ${vars.date} à ${vars.time} est confirmé. À bientôt!</p>${priceHtml}${addressHtml}${manageHtml}<p>solen.ch</p>`,
+    it: `<p>Ciao,</p><p><strong>${escapeHtml(vars.service)}</strong> presso <strong>${escapeHtml(vars.salon)}</strong> il ${vars.date} alle ${vars.time} è confermato. A presto!</p>${priceHtml}${addressHtml}${manageHtml}<p>solen.ch</p>`,
   };
 
   // seo-comms-09: attach a .ics calendar file when the caller supplied raw ISO
@@ -289,10 +290,10 @@ export function bookingCancellation(
     it: `Prenotazione cancellata: ${vars.service} presso ${vars.salon}`,
   };
   const bodies: Record<EmailLocale, string> = {
-    de: `<p>${vars.service} bei ${vars.salon} am ${vars.date} wurde storniert.</p>`,
-    en: `<p>${vars.service} at ${vars.salon} on ${vars.date} has been cancelled.</p>`,
-    fr: `<p>${vars.service} chez ${vars.salon} le ${vars.date} a été annulé.</p>`,
-    it: `<p>${vars.service} presso ${vars.salon} il ${vars.date} è stata cancellata.</p>`,
+    de: `<p>${escapeHtml(vars.service)} bei ${escapeHtml(vars.salon)} am ${vars.date} wurde storniert.</p>`,
+    en: `<p>${escapeHtml(vars.service)} at ${escapeHtml(vars.salon)} on ${vars.date} has been cancelled.</p>`,
+    fr: `<p>${escapeHtml(vars.service)} chez ${escapeHtml(vars.salon)} le ${vars.date} a été annulé.</p>`,
+    it: `<p>${escapeHtml(vars.service)} presso ${escapeHtml(vars.salon)} il ${vars.date} è stata cancellata.</p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -309,13 +310,13 @@ export function bookingReschedule(
     it: `Prenotazione riprogrammata: ${vars.service} presso ${vars.salon}`,
   };
   const bodies: Record<EmailLocale, string> = {
-    de: `<p>Ihre Buchung für ${vars.service} bei ${vars.salon} wurde von ${new Date(vars.oldDate).toLocaleString("de-CH")} auf den ${new Date(vars.newDate).toLocaleString("de-CH")} verschoben.</p>`,
+    de: `<p>Ihre Buchung für ${escapeHtml(vars.service)} bei ${escapeHtml(vars.salon)} wurde von ${new Date(vars.oldDate).toLocaleString("de-CH")} auf den ${new Date(vars.newDate).toLocaleString("de-CH")} verschoben.</p>`,
     // en-CH (not en-US, fixed 2026-07-26 de-CH sweep): every other locale here uses its Swiss
     // regional variant (de-CH/fr-CH/it-CH); en-US would show US date order + AM/PM to a Swiss
     // English-locale user, inconsistent with lib/format.ts's SWISS_DATE_LOCALES (en -> en-CH).
-    en: `<p>Your booking for ${vars.service} at ${vars.salon} has been rescheduled from ${new Date(vars.oldDate).toLocaleString("en-CH")} to ${new Date(vars.newDate).toLocaleString("en-CH")}.</p>`,
-    fr: `<p>Votre réservation pour ${vars.service} chez ${vars.salon} a été reprogrammée du ${new Date(vars.oldDate).toLocaleString("fr-CH")} au ${new Date(vars.newDate).toLocaleString("fr-CH")}.</p>`,
-    it: `<p>La tua prenotazione per ${vars.service} presso ${vars.salon} è stata riprogrammata dal ${new Date(vars.oldDate).toLocaleString("it-CH")} al ${new Date(vars.newDate).toLocaleString("it-CH")}.</p>`,
+    en: `<p>Your booking for ${escapeHtml(vars.service)} at ${escapeHtml(vars.salon)} has been rescheduled from ${new Date(vars.oldDate).toLocaleString("en-CH")} to ${new Date(vars.newDate).toLocaleString("en-CH")}.</p>`,
+    fr: `<p>Votre réservation pour ${escapeHtml(vars.service)} chez ${escapeHtml(vars.salon)} a été reprogrammée du ${new Date(vars.oldDate).toLocaleString("fr-CH")} au ${new Date(vars.newDate).toLocaleString("fr-CH")}.</p>`,
+    it: `<p>La tua prenotazione per ${escapeHtml(vars.service)} presso ${escapeHtml(vars.salon)} è stata riprogrammata dal ${new Date(vars.oldDate).toLocaleString("it-CH")} al ${new Date(vars.newDate).toLocaleString("it-CH")}.</p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -332,10 +333,10 @@ export function bookingReminder(
     it: `Promemoria: ${vars.service} domani alle ${vars.time}`,
   };
   const bodies: Record<EmailLocale, string> = {
-    de: `<p>${vars.service} bei ${vars.salon} ist morgen um ${vars.time} Uhr. Wir freuen uns auf Sie!</p>`,
-    en: `<p>${vars.service} at ${vars.salon} is tomorrow at ${vars.time}. See you there!</p>`,
-    fr: `<p>${vars.service} chez ${vars.salon} est demain à ${vars.time}. À bientôt!</p>`,
-    it: `<p>${vars.service} presso ${vars.salon} è domani alle ${vars.time}. A presto!</p>`,
+    de: `<p>${escapeHtml(vars.service)} bei ${escapeHtml(vars.salon)} ist morgen um ${vars.time} Uhr. Wir freuen uns auf Sie!</p>`,
+    en: `<p>${escapeHtml(vars.service)} at ${escapeHtml(vars.salon)} is tomorrow at ${vars.time}. See you there!</p>`,
+    fr: `<p>${escapeHtml(vars.service)} chez ${escapeHtml(vars.salon)} est demain à ${vars.time}. À bientôt!</p>`,
+    it: `<p>${escapeHtml(vars.service)} presso ${escapeHtml(vars.salon)} è domani alle ${vars.time}. A presto!</p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -352,10 +353,10 @@ export function recurringConfirmation(
     it: `Prenotazione ricorrente impostata: ${vars.service} presso ${vars.salon}`,
   };
   const bodies: Record<EmailLocale, string> = {
-    de: `<p>Ihre ${vars.frequency} Serienbuchung für <strong>${vars.service}</strong> bei <strong>${vars.salon}</strong> ist eingerichtet.</p>`,
-    en: `<p>Your ${vars.frequency} recurring booking for <strong>${vars.service}</strong> at <strong>${vars.salon}</strong> has been set up.</p>`,
-    fr: `<p>Votre abonnement ${vars.frequency} pour <strong>${vars.service}</strong> chez <strong>${vars.salon}</strong> a été configuré.</p>`,
-    it: `<p>La tua prenotazione ricorrente ${vars.frequency} per <strong>${vars.service}</strong> presso <strong>${vars.salon}</strong> è stata impostata.</p>`,
+    de: `<p>Ihre ${vars.frequency} Serienbuchung für <strong>${escapeHtml(vars.service)}</strong> bei <strong>${escapeHtml(vars.salon)}</strong> ist eingerichtet.</p>`,
+    en: `<p>Your ${vars.frequency} recurring booking for <strong>${escapeHtml(vars.service)}</strong> at <strong>${escapeHtml(vars.salon)}</strong> has been set up.</p>`,
+    fr: `<p>Votre abonnement ${vars.frequency} pour <strong>${escapeHtml(vars.service)}</strong> chez <strong>${escapeHtml(vars.salon)}</strong> a été configuré.</p>`,
+    it: `<p>La tua prenotazione ricorrente ${vars.frequency} per <strong>${escapeHtml(vars.service)}</strong> presso <strong>${escapeHtml(vars.salon)}</strong> è stata impostata.</p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -372,10 +373,10 @@ export function recurringFailed(
     it: `Prenotazione ricorrente fallita: ${vars.service} il ${vars.date}`,
   };
   const bodies: Record<EmailLocale, string> = {
-    de: `<p>Wir konnten <strong>${vars.service}</strong> bei ${vars.salon} für ${vars.date} nicht automatisch buchen. Der Zeitslot ist nicht verfügbar. Bitte buchen Sie manuell auf <a href="https://solen.ch">solen.ch</a>.</p>`,
-    en: `<p>We couldn't auto-book <strong>${vars.service}</strong> at ${vars.salon} for ${vars.date}. The time slot is not available. Please rebook manually at <a href="https://solen.ch">solen.ch</a>.</p>`,
-    fr: `<p>Nous n'avons pas pu réserver automatiquement <strong>${vars.service}</strong> chez ${vars.salon} pour le ${vars.date}. Le créneau n'est pas disponible. Veuillez réserver manuellement sur <a href="https://solen.ch">solen.ch</a>.</p>`,
-    it: `<p>Non è stato possibile prenotare automaticamente <strong>${vars.service}</strong> presso ${vars.salon} per il ${vars.date}. Lo slot non è disponibile. Si prega di prenotare manualmente su <a href="https://solen.ch">solen.ch</a>.</p>`,
+    de: `<p>Wir konnten <strong>${escapeHtml(vars.service)}</strong> bei ${escapeHtml(vars.salon)} für ${vars.date} nicht automatisch buchen. Der Zeitslot ist nicht verfügbar. Bitte buchen Sie manuell auf <a href="https://solen.ch">solen.ch</a>.</p>`,
+    en: `<p>We couldn't auto-book <strong>${escapeHtml(vars.service)}</strong> at ${escapeHtml(vars.salon)} for ${vars.date}. The time slot is not available. Please rebook manually at <a href="https://solen.ch">solen.ch</a>.</p>`,
+    fr: `<p>Nous n'avons pas pu réserver automatiquement <strong>${escapeHtml(vars.service)}</strong> chez ${escapeHtml(vars.salon)} pour le ${vars.date}. Le créneau n'est pas disponible. Veuillez réserver manuellement sur <a href="https://solen.ch">solen.ch</a>.</p>`,
+    it: `<p>Non è stato possibile prenotare automaticamente <strong>${escapeHtml(vars.service)}</strong> presso ${escapeHtml(vars.salon)} per il ${vars.date}. Lo slot non è disponibile. Si prega di prenotare manualmente su <a href="https://solen.ch">solen.ch</a>.</p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -392,10 +393,10 @@ export function salonNewBooking(
     it: `Nuova prenotazione: ${vars.service} il ${vars.date}`,
   };
   const bodies: Record<EmailLocale, string> = {
-    de: `<p>Hallo,</p><p>Sie haben eine neue Buchung erhalten:</p><ul><li><strong>Kunde:</strong> ${vars.customerName}</li><li><strong>Service:</strong> ${vars.service}</li><li><strong>Datum:</strong> ${vars.date} um ${vars.time} Uhr</li><li><strong>Preis:</strong> CHF ${vars.price.toFixed(2)}</li></ul><p>Bitte loggen Sie sich in Ihr Dashboard auf <a href="https://solen.ch">solen.ch</a> ein.</p>`,
-    en: `<p>Hello,</p><p>You have received a new booking:</p><ul><li><strong>Customer:</strong> ${vars.customerName}</li><li><strong>Service:</strong> ${vars.service}</li><li><strong>Date:</strong> ${vars.date} at ${vars.time}</li><li><strong>Price:</strong> CHF ${vars.price.toFixed(2)}</li></ul><p>Please log in to your dashboard at <a href="https://solen.ch">solen.ch</a>.</p>`,
-    fr: `<p>Bonjour,</p><p>Vous avez reçu une nouvelle réservation:</p><ul><li><strong>Client:</strong> ${vars.customerName}</li><li><strong>Service:</strong> ${vars.service}</li><li><strong>Date:</strong> ${vars.date} à ${vars.time}</li><li><strong>Prix:</strong> CHF ${vars.price.toFixed(2)}</li></ul><p>Connectez-vous à votre tableau de bord sur <a href="https://solen.ch">solen.ch</a>.</p>`,
-    it: `<p>Ciao,</p><p>Hai ricevuto una nuova prenotazione:</p><ul><li><strong>Cliente:</strong> ${vars.customerName}</li><li><strong>Servizio:</strong> ${vars.service}</li><li><strong>Data:</strong> ${vars.date} alle ${vars.time}</li><li><strong>Prezzo:</strong> CHF ${vars.price.toFixed(2)}</li></ul><p>Accedi alla tua dashboard su <a href="https://solen.ch">solen.ch</a>.</p>`,
+    de: `<p>Hallo,</p><p>Sie haben eine neue Buchung erhalten:</p><ul><li><strong>Kunde:</strong> ${escapeHtml(vars.customerName)}</li><li><strong>Service:</strong> ${escapeHtml(vars.service)}</li><li><strong>Datum:</strong> ${vars.date} um ${vars.time} Uhr</li><li><strong>Preis:</strong> CHF ${vars.price.toFixed(2)}</li></ul><p>Bitte loggen Sie sich in Ihr Dashboard auf <a href="https://solen.ch">solen.ch</a> ein.</p>`,
+    en: `<p>Hello,</p><p>You have received a new booking:</p><ul><li><strong>Customer:</strong> ${escapeHtml(vars.customerName)}</li><li><strong>Service:</strong> ${escapeHtml(vars.service)}</li><li><strong>Date:</strong> ${vars.date} at ${vars.time}</li><li><strong>Price:</strong> CHF ${vars.price.toFixed(2)}</li></ul><p>Please log in to your dashboard at <a href="https://solen.ch">solen.ch</a>.</p>`,
+    fr: `<p>Bonjour,</p><p>Vous avez reçu une nouvelle réservation:</p><ul><li><strong>Client:</strong> ${escapeHtml(vars.customerName)}</li><li><strong>Service:</strong> ${escapeHtml(vars.service)}</li><li><strong>Date:</strong> ${vars.date} à ${vars.time}</li><li><strong>Prix:</strong> CHF ${vars.price.toFixed(2)}</li></ul><p>Connectez-vous à votre tableau de bord sur <a href="https://solen.ch">solen.ch</a>.</p>`,
+    it: `<p>Ciao,</p><p>Hai ricevuto una nuova prenotazione:</p><ul><li><strong>Cliente:</strong> ${escapeHtml(vars.customerName)}</li><li><strong>Servizio:</strong> ${escapeHtml(vars.service)}</li><li><strong>Data:</strong> ${vars.date} alle ${vars.time}</li><li><strong>Prezzo:</strong> CHF ${vars.price.toFixed(2)}</li></ul><p>Accedi alla tua dashboard su <a href="https://solen.ch">solen.ch</a>.</p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -412,10 +413,10 @@ export function salonVerificationRequest(
     it: `Il tuo salone è ancora attivo? Conferma`,
   };
   const bodies: Record<EmailLocale, string> = {
-    de: `<p>Hallo,</p><p>Ist <strong>${vars.salon}</strong> noch aktiv auf solen.ch? Bitte klicken Sie auf den Link, um zu bestätigen:</p><p><a href="${vars.confirmUrl}">Salon bestätigen</a></p>`,
-    en: `<p>Hello,</p><p>Is <strong>${vars.salon}</strong> still active on solen.ch? Please click the link to confirm:</p><p><a href="${vars.confirmUrl}">Confirm salon</a></p>`,
-    fr: `<p>Bonjour,</p><p><strong>${vars.salon}</strong> est-il toujours actif sur solen.ch? Veuillez cliquer sur le lien pour confirmer:</p><p><a href="${vars.confirmUrl}">Confirmer le salon</a></p>`,
-    it: `<p>Ciao,</p><p><strong>${vars.salon}</strong> è ancora attivo su solen.ch? Clicca il link per confermare:</p><p><a href="${vars.confirmUrl}">Conferma salone</a></p>`,
+    de: `<p>Hallo,</p><p>Ist <strong>${escapeHtml(vars.salon)}</strong> noch aktiv auf solen.ch? Bitte klicken Sie auf den Link, um zu bestätigen:</p><p><a href="${vars.confirmUrl}">Salon bestätigen</a></p>`,
+    en: `<p>Hello,</p><p>Is <strong>${escapeHtml(vars.salon)}</strong> still active on solen.ch? Please click the link to confirm:</p><p><a href="${vars.confirmUrl}">Confirm salon</a></p>`,
+    fr: `<p>Bonjour,</p><p><strong>${escapeHtml(vars.salon)}</strong> est-il toujours actif sur solen.ch? Veuillez cliquer sur le lien pour confirmer:</p><p><a href="${vars.confirmUrl}">Confirmer le salon</a></p>`,
+    it: `<p>Ciao,</p><p><strong>${escapeHtml(vars.salon)}</strong> è ancora attivo su solen.ch? Clicca il link per confermare:</p><p><a href="${vars.confirmUrl}">Conferma salone</a></p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -432,10 +433,10 @@ export function salonVerificationWarning(
     it: `Avviso ${vars.warningNum}/3: Conferma il tuo salone`,
   };
   const bodies: Record<EmailLocale, string> = {
-    de: `<p>Warnung ${vars.warningNum} von 3: <strong>${vars.salon}</strong> wurde noch nicht bestätigt. Bitte bestätigen Sie jetzt, sonst wird Ihr Salon eingefroren: <a href="${vars.confirmUrl}">Jetzt bestätigen</a></p>`,
-    en: `<p>Warning ${vars.warningNum} of 3: <strong>${vars.salon}</strong> has not been confirmed. Please confirm now or your salon will be frozen: <a href="${vars.confirmUrl}">Confirm now</a></p>`,
-    fr: `<p>Avertissement ${vars.warningNum} sur 3: <strong>${vars.salon}</strong> n'a pas été confirmé. Veuillez confirmer maintenant ou votre salon sera suspendu: <a href="${vars.confirmUrl}">Confirmer maintenant</a></p>`,
-    it: `<p>Avviso ${vars.warningNum} di 3: <strong>${vars.salon}</strong> non è stato confermato. Conferma ora o il tuo salone verrà sospeso: <a href="${vars.confirmUrl}">Conferma ora</a></p>`,
+    de: `<p>Warnung ${vars.warningNum} von 3: <strong>${escapeHtml(vars.salon)}</strong> wurde noch nicht bestätigt. Bitte bestätigen Sie jetzt, sonst wird Ihr Salon eingefroren: <a href="${vars.confirmUrl}">Jetzt bestätigen</a></p>`,
+    en: `<p>Warning ${vars.warningNum} of 3: <strong>${escapeHtml(vars.salon)}</strong> has not been confirmed. Please confirm now or your salon will be frozen: <a href="${vars.confirmUrl}">Confirm now</a></p>`,
+    fr: `<p>Avertissement ${vars.warningNum} sur 3: <strong>${escapeHtml(vars.salon)}</strong> n'a pas été confirmé. Veuillez confirmer maintenant ou votre salon sera suspendu: <a href="${vars.confirmUrl}">Confirmer maintenant</a></p>`,
+    it: `<p>Avviso ${vars.warningNum} di 3: <strong>${escapeHtml(vars.salon)}</strong> non è stato confermato. Conferma ora o il tuo salone verrà sospeso: <a href="${vars.confirmUrl}">Conferma ora</a></p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -452,10 +453,10 @@ export function salonFrozen(
     it: `Il tuo salone è stato sospeso per inattività`,
   };
   const bodies: Record<EmailLocale, string> = {
-    de: `<p><strong>${vars.salon}</strong> wurde auf solen.ch wegen Inaktivität gesperrt. Um Ihren Salon wieder zu aktivieren, kontaktieren Sie uns unter support@solen.ch.</p>`,
-    en: `<p><strong>${vars.salon}</strong> has been frozen on solen.ch due to inactivity. To reactivate, contact us at support@solen.ch.</p>`,
-    fr: `<p><strong>${vars.salon}</strong> a été suspendu sur solen.ch pour inactivité. Pour réactiver, contactez-nous à support@solen.ch.</p>`,
-    it: `<p><strong>${vars.salon}</strong> è stato sospeso su solen.ch per inattività. Per riattivare, contattaci a support@solen.ch.</p>`,
+    de: `<p><strong>${escapeHtml(vars.salon)}</strong> wurde auf solen.ch wegen Inaktivität gesperrt. Um Ihren Salon wieder zu aktivieren, kontaktieren Sie uns unter support@solen.ch.</p>`,
+    en: `<p><strong>${escapeHtml(vars.salon)}</strong> has been frozen on solen.ch due to inactivity. To reactivate, contact us at support@solen.ch.</p>`,
+    fr: `<p><strong>${escapeHtml(vars.salon)}</strong> a été suspendu sur solen.ch pour inactivité. Pour réactiver, contactez-nous à support@solen.ch.</p>`,
+    it: `<p><strong>${escapeHtml(vars.salon)}</strong> è stato sospeso su solen.ch per inattività. Per riattivare, contattaci a support@solen.ch.</p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -472,10 +473,10 @@ export function customerBookingSuspended(
     it: `La tua prenotazione presso ${vars.salon} è stata cancellata`,
   };
   const bodies: Record<EmailLocale, string> = {
-    de: `<p>Ihre Buchung für <strong>${vars.service}</strong> bei <strong>${vars.salon}</strong> am ${vars.date} wurde storniert, da der Salon nicht mehr aktiv ist. Es tut uns leid für die Unannehmlichkeiten.</p>`,
-    en: `<p>Your booking for <strong>${vars.service}</strong> at <strong>${vars.salon}</strong> on ${vars.date} has been cancelled because the salon is no longer active. We apologise for the inconvenience.</p>`,
-    fr: `<p>Votre réservation pour <strong>${vars.service}</strong> chez <strong>${vars.salon}</strong> le ${vars.date} a été annulée car le salon n'est plus actif. Nous nous excusons pour la gêne occasionnée.</p>`,
-    it: `<p>La tua prenotazione per <strong>${vars.service}</strong> presso <strong>${vars.salon}</strong> il ${vars.date} è stata cancellata perché il salone non è più attivo. Ci scusiamo per l'inconveniente.</p>`,
+    de: `<p>Ihre Buchung für <strong>${escapeHtml(vars.service)}</strong> bei <strong>${escapeHtml(vars.salon)}</strong> am ${vars.date} wurde storniert, da der Salon nicht mehr aktiv ist. Es tut uns leid für die Unannehmlichkeiten.</p>`,
+    en: `<p>Your booking for <strong>${escapeHtml(vars.service)}</strong> at <strong>${escapeHtml(vars.salon)}</strong> on ${vars.date} has been cancelled because the salon is no longer active. We apologise for the inconvenience.</p>`,
+    fr: `<p>Votre réservation pour <strong>${escapeHtml(vars.service)}</strong> chez <strong>${escapeHtml(vars.salon)}</strong> le ${vars.date} a été annulée car le salon n'est plus actif. Nous nous excusons pour la gêne occasionnée.</p>`,
+    it: `<p>La tua prenotazione per <strong>${escapeHtml(vars.service)}</strong> presso <strong>${escapeHtml(vars.salon)}</strong> il ${vars.date} è stata cancellata perché il salone non è più attivo. Ci scusiamo per l'inconveniente.</p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -492,10 +493,10 @@ export function salonApproved(
     it: `🎉 Il tuo salone è ora live su solen.ch!`,
   };
   const bodies: Record<EmailLocale, string> = {
-    de: `<p>Hallo,</p><p>Gute Neuigkeiten! <strong>${vars.salon}</strong> wurde genehmigt und ist ab sofort auf <a href="https://solen.ch">solen.ch</a> für Buchungen verfügbar.</p><p>Kunden können dich jetzt finden und buchen. Viel Erfolg!</p><p>Das solen.ch Team</p>`,
-    en: `<p>Hello,</p><p>Great news! <strong>${vars.salon}</strong> has been approved and is now live on <a href="https://solen.ch">solen.ch</a> for bookings.</p><p>Customers can now find and book you. Good luck!</p><p>The solen.ch team</p>`,
-    fr: `<p>Bonjour,</p><p>Bonne nouvelle ! <strong>${vars.salon}</strong> a été approuvé et est désormais disponible sur <a href="https://solen.ch">solen.ch</a> pour les réservations.</p><p>Les clients peuvent maintenant vous trouver et vous réserver. Bonne chance !</p><p>L'équipe solen.ch</p>`,
-    it: `<p>Ciao,</p><p>Ottime notizie! <strong>${vars.salon}</strong> è stato approvato ed è ora disponibile su <a href="https://solen.ch">solen.ch</a> per le prenotazioni.</p><p>I clienti possono ora trovarti e prenotare. In bocca al lupo!</p><p>Il team solen.ch</p>`,
+    de: `<p>Hallo,</p><p>Gute Neuigkeiten! <strong>${escapeHtml(vars.salon)}</strong> wurde genehmigt und ist ab sofort auf <a href="https://solen.ch">solen.ch</a> für Buchungen verfügbar.</p><p>Kunden können dich jetzt finden und buchen. Viel Erfolg!</p><p>Das solen.ch Team</p>`,
+    en: `<p>Hello,</p><p>Great news! <strong>${escapeHtml(vars.salon)}</strong> has been approved and is now live on <a href="https://solen.ch">solen.ch</a> for bookings.</p><p>Customers can now find and book you. Good luck!</p><p>The solen.ch team</p>`,
+    fr: `<p>Bonjour,</p><p>Bonne nouvelle ! <strong>${escapeHtml(vars.salon)}</strong> a été approuvé et est désormais disponible sur <a href="https://solen.ch">solen.ch</a> pour les réservations.</p><p>Les clients peuvent maintenant vous trouver et vous réserver. Bonne chance !</p><p>L'équipe solen.ch</p>`,
+    it: `<p>Ciao,</p><p>Ottime notizie! <strong>${escapeHtml(vars.salon)}</strong> è stato approvato ed è ora disponibile su <a href="https://solen.ch">solen.ch</a> per le prenotazioni.</p><p>I clienti possono ora trovarti e prenotare. In bocca al lupo!</p><p>Il team solen.ch</p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -512,10 +513,10 @@ export function salonRejected(
     it: `La tua richiesta di salone non è stata approvata`,
   };
   const bodies: Record<EmailLocale, string> = {
-    de: `<p>Hallo,</p><p>Leider konnten wir <strong>${vars.salon}</strong> aktuell nicht genehmigen.</p><p><strong>Grund:</strong> ${vars.reason}</p><p>Bei Fragen wende dich an <a href="mailto:support@solen.ch">support@solen.ch</a>.</p><p>Das solen.ch Team</p>`,
-    en: `<p>Hello,</p><p>Unfortunately we were unable to approve <strong>${vars.salon}</strong> at this time.</p><p><strong>Reason:</strong> ${vars.reason}</p><p>If you have questions, contact <a href="mailto:support@solen.ch">support@solen.ch</a>.</p><p>The solen.ch team</p>`,
-    fr: `<p>Bonjour,</p><p>Malheureusement, nous n'avons pas pu approuver <strong>${vars.salon}</strong> pour le moment.</p><p><strong>Raison :</strong> ${vars.reason}</p><p>Pour toute question, contactez <a href="mailto:support@solen.ch">support@solen.ch</a>.</p><p>L'équipe solen.ch</p>`,
-    it: `<p>Ciao,</p><p>Purtroppo non è stato possibile approvare <strong>${vars.salon}</strong> al momento.</p><p><strong>Motivo:</strong> ${vars.reason}</p><p>Per domande, contatta <a href="mailto:support@solen.ch">support@solen.ch</a>.</p><p>Il team solen.ch</p>`,
+    de: `<p>Hallo,</p><p>Leider konnten wir <strong>${escapeHtml(vars.salon)}</strong> aktuell nicht genehmigen.</p><p><strong>Grund:</strong> ${escapeHtml(vars.reason)}</p><p>Bei Fragen wende dich an <a href="mailto:support@solen.ch">support@solen.ch</a>.</p><p>Das solen.ch Team</p>`,
+    en: `<p>Hello,</p><p>Unfortunately we were unable to approve <strong>${escapeHtml(vars.salon)}</strong> at this time.</p><p><strong>Reason:</strong> ${escapeHtml(vars.reason)}</p><p>If you have questions, contact <a href="mailto:support@solen.ch">support@solen.ch</a>.</p><p>The solen.ch team</p>`,
+    fr: `<p>Bonjour,</p><p>Malheureusement, nous n'avons pas pu approuver <strong>${escapeHtml(vars.salon)}</strong> pour le moment.</p><p><strong>Raison :</strong> ${escapeHtml(vars.reason)}</p><p>Pour toute question, contactez <a href="mailto:support@solen.ch">support@solen.ch</a>.</p><p>L'équipe solen.ch</p>`,
+    it: `<p>Ciao,</p><p>Purtroppo non è stato possibile approvare <strong>${escapeHtml(vars.salon)}</strong> al momento.</p><p><strong>Motivo:</strong> ${escapeHtml(vars.reason)}</p><p>Per domande, contatta <a href="mailto:support@solen.ch">support@solen.ch</a>.</p><p>Il team solen.ch</p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -540,7 +541,7 @@ export function salonOutreachInvitation(
     subject: `${vars.salonName} ist jetzt auf solen.ch gelistet — kostenlos Buchungen aktivieren`,
     html: `
       <p>Guten Tag,</p>
-      <p>Ihr Salon <strong>${vars.salonName}</strong> ist ab sofort auf <a href="https://solen.ch">solen.ch</a> gelistet — dem führenden Beauty-Buchungsportal der Region Basel.</p>
+      <p>Ihr Salon <strong>${escapeHtml(vars.salonName)}</strong> ist ab sofort auf <a href="https://solen.ch">solen.ch</a> gelistet — dem führenden Beauty-Buchungsportal der Region Basel.</p>
       <p>Kunden können Ihren Salon bereits finden und Ihre Kontaktdaten einsehen. Wenn Sie Online-Buchungen aktivieren möchten, können Sie Ihren Salon kostenlos beanspruchen:</p>
       <p><a href="${vars.claimUrl}" style="display:inline-block;padding:12px 24px;background:${EMAIL_COLORS.ink};color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Salon jetzt beanspruchen →</a></p>
       <p>Vorteile:</p>
@@ -552,7 +553,7 @@ export function salonOutreachInvitation(
       <p>Bei Fragen: <a href="mailto:support@solen.ch">support@solen.ch</a></p>
       <p style="font-size:11px;color:${EMAIL_COLORS.ink2};margin-top:32px">
         solen.ch · Booking platform Basel ·
-        <a href="https://solen.ch/unsubscribe?email=${encodeURIComponent(to)}" style="color:${EMAIL_COLORS.ink2}">Abmelden</a>
+        <a href="https://solen.ch/unsubscribe?email=${encodeURIComponent(to)}&t=${unsubscribeToken(to)}" style="color:${EMAIL_COLORS.ink2}">Abmelden</a>
         · Diese E-Mail wurde an ${to} gesendet, da Ihr Salon öffentlich gelistet ist (nDSG Art. 31).
       </p>
     `,
@@ -565,8 +566,9 @@ export function newMessageNotification(
   locale: EmailLocale = "de"
 ): EmailPayload {
   const name = vars.senderName ?? vars.sender ?? "Jemand";
+  const nameHtml = escapeHtml(name);
   const link = vars.conversationUrl ?? "https://solen.ch";
-  const previewLine = vars.preview ? `<p style="color:${EMAIL_COLORS.ink2};font-style:italic">"${vars.preview}"</p>` : "";
+  const previewLine = vars.preview ? `<p style="color:${EMAIL_COLORS.ink2};font-style:italic">"${escapeHtml(vars.preview)}"</p>` : "";
   const subjects: Record<EmailLocale, string> = {
     de: `Neue Nachricht von ${name}`,
     en: `New message from ${name}`,
@@ -574,10 +576,10 @@ export function newMessageNotification(
     it: `Nuovo messaggio da ${name}`,
   };
   const bodies: Record<EmailLocale, string> = {
-    de: `<p><strong>${name}</strong> hat Ihnen eine Nachricht auf solen.ch gesendet.</p>${previewLine}<p><a href="${link}">Nachricht lesen →</a></p>`,
-    en: `<p><strong>${name}</strong> sent you a message on solen.ch.</p>${previewLine}<p><a href="${link}">Read message →</a></p>`,
-    fr: `<p><strong>${name}</strong> vous a envoyé un message sur solen.ch.</p>${previewLine}<p><a href="${link}">Lire le message →</a></p>`,
-    it: `<p><strong>${name}</strong> ti ha inviato un messaggio su solen.ch.</p>${previewLine}<p><a href="${link}">Leggi messaggio →</a></p>`,
+    de: `<p><strong>${nameHtml}</strong> hat Ihnen eine Nachricht auf solen.ch gesendet.</p>${previewLine}<p><a href="${link}">Nachricht lesen →</a></p>`,
+    en: `<p><strong>${nameHtml}</strong> sent you a message on solen.ch.</p>${previewLine}<p><a href="${link}">Read message →</a></p>`,
+    fr: `<p><strong>${nameHtml}</strong> vous a envoyé un message sur solen.ch.</p>${previewLine}<p><a href="${link}">Lire le message →</a></p>`,
+    it: `<p><strong>${nameHtml}</strong> ti ha inviato un messaggio su solen.ch.</p>${previewLine}<p><a href="${link}">Leggi messaggio →</a></p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -598,10 +600,10 @@ export function rebookingNudge(
     it: `È ora di un nuovo appuntamento da ${vars.salon}?`,
   };
   const bodies: Record<EmailLocale, string> = {
-    de: `<p>Dein letzter <strong>${vars.service}</strong>-Termin bei <strong>${vars.salon}</strong> war vor ${vars.daysSince} Tagen.</p><p><a href="https://solen.ch">Neuen Termin buchen →</a></p>`,
-    en: `<p>Your last <strong>${vars.service}</strong> appointment at <strong>${vars.salon}</strong> was ${vars.daysSince} days ago.</p><p><a href="https://solen.ch">Book a new appointment →</a></p>`,
-    fr: `<p>Votre dernier rendez-vous <strong>${vars.service}</strong> chez <strong>${vars.salon}</strong> remonte à ${vars.daysSince} jours.</p><p><a href="https://solen.ch">Réserver un nouveau rendez-vous →</a></p>`,
-    it: `<p>Il tuo ultimo appuntamento <strong>${vars.service}</strong> presso <strong>${vars.salon}</strong> risale a ${vars.daysSince} giorni fa.</p><p><a href="https://solen.ch">Prenota un nuovo appuntamento →</a></p>`,
+    de: `<p>Dein letzter <strong>${escapeHtml(vars.service)}</strong>-Termin bei <strong>${escapeHtml(vars.salon)}</strong> war vor ${vars.daysSince} Tagen.</p><p><a href="https://solen.ch">Neuen Termin buchen →</a></p>`,
+    en: `<p>Your last <strong>${escapeHtml(vars.service)}</strong> appointment at <strong>${escapeHtml(vars.salon)}</strong> was ${vars.daysSince} days ago.</p><p><a href="https://solen.ch">Book a new appointment →</a></p>`,
+    fr: `<p>Votre dernier rendez-vous <strong>${escapeHtml(vars.service)}</strong> chez <strong>${escapeHtml(vars.salon)}</strong> remonte à ${vars.daysSince} jours.</p><p><a href="https://solen.ch">Réserver un nouveau rendez-vous →</a></p>`,
+    it: `<p>Il tuo ultimo appuntamento <strong>${escapeHtml(vars.service)}</strong> presso <strong>${escapeHtml(vars.salon)}</strong> risale a ${vars.daysSince} giorni fa.</p><p><a href="https://solen.ch">Prenota un nuovo appuntamento →</a></p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -622,10 +624,10 @@ export function reviewPrompt(
     it: `Com'è stata la tua visita da ${vars.salon}?`,
   };
   const bodies: Record<EmailLocale, string> = {
-    de: `<p>Vielen Dank für deinen <strong>${vars.service}</strong>-Termin bei <strong>${vars.salon}</strong>!</p><p>Hilf anderen Kunden und teile deine Erfahrung.</p><p><a href="${vars.reviewUrl}">Bewertung schreiben →</a></p>`,
-    en: `<p>Thanks for your <strong>${vars.service}</strong> appointment at <strong>${vars.salon}</strong>!</p><p>Help other customers by sharing your experience.</p><p><a href="${vars.reviewUrl}">Write a review →</a></p>`,
-    fr: `<p>Merci pour votre rendez-vous <strong>${vars.service}</strong> chez <strong>${vars.salon}</strong> !</p><p>Aidez les autres clients en partageant votre expérience.</p><p><a href="${vars.reviewUrl}">Écrire un avis →</a></p>`,
-    it: `<p>Grazie per il tuo appuntamento <strong>${vars.service}</strong> presso <strong>${vars.salon}</strong>!</p><p>Aiuta gli altri clienti condividendo la tua esperienza.</p><p><a href="${vars.reviewUrl}">Scrivi una recensione →</a></p>`,
+    de: `<p>Vielen Dank für deinen <strong>${escapeHtml(vars.service)}</strong>-Termin bei <strong>${escapeHtml(vars.salon)}</strong>!</p><p>Hilf anderen Kunden und teile deine Erfahrung.</p><p><a href="${vars.reviewUrl}">Bewertung schreiben →</a></p>`,
+    en: `<p>Thanks for your <strong>${escapeHtml(vars.service)}</strong> appointment at <strong>${escapeHtml(vars.salon)}</strong>!</p><p>Help other customers by sharing your experience.</p><p><a href="${vars.reviewUrl}">Write a review →</a></p>`,
+    fr: `<p>Merci pour votre rendez-vous <strong>${escapeHtml(vars.service)}</strong> chez <strong>${escapeHtml(vars.salon)}</strong> !</p><p>Aidez les autres clients en partageant votre expérience.</p><p><a href="${vars.reviewUrl}">Écrire un avis →</a></p>`,
+    it: `<p>Grazie per il tuo appuntamento <strong>${escapeHtml(vars.service)}</strong> presso <strong>${escapeHtml(vars.salon)}</strong>!</p><p>Aiuta gli altri clienti condividendo la tua esperienza.</p><p><a href="${vars.reviewUrl}">Scrivi una recensione →</a></p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -650,19 +652,19 @@ export function welcomeEmail(
 ): EmailPayload {
   const steps: Record<EmailLocale, { subject: string; html: string }[]> = {
     de: [
-      { subject: `Willkommen bei solen.ch, ${vars.name}!`, html: `<p>Hallo <strong>${vars.name}</strong>,</p><p>Willkommen bei solen.ch — deiner Plattform für Beauty & Wellness in Basel.</p><p><a href="https://solen.ch/de/explore">Entdecke Salons in deiner Nähe →</a></p>` },
+      { subject: `Willkommen bei solen.ch, ${vars.name}!`, html: `<p>Hallo <strong>${escapeHtml(vars.name)}</strong>,</p><p>Willkommen bei solen.ch — deiner Plattform für Beauty & Wellness in Basel.</p><p><a href="https://solen.ch/de/explore">Entdecke Salons in deiner Nähe →</a></p>` },
       { subject: `Dein Profil vervollständigen`, html: `<p>Vervollständige dein Profil, um personalisierte Empfehlungen zu erhalten und schneller zu buchen.</p><p><a href="https://solen.ch/de/account">Profil bearbeiten →</a></p>` },
     ],
     en: [
-      { subject: `Welcome to solen.ch, ${vars.name}!`, html: `<p>Hello <strong>${vars.name}</strong>,</p><p>Welcome to solen.ch — your beauty & wellness platform in Basel.</p><p><a href="https://solen.ch/en/explore">Discover salons near you →</a></p>` },
+      { subject: `Welcome to solen.ch, ${vars.name}!`, html: `<p>Hello <strong>${escapeHtml(vars.name)}</strong>,</p><p>Welcome to solen.ch — your beauty & wellness platform in Basel.</p><p><a href="https://solen.ch/en/explore">Discover salons near you →</a></p>` },
       { subject: `Complete your profile`, html: `<p>Complete your profile to get personalized recommendations and faster bookings.</p><p><a href="https://solen.ch/en/account">Edit profile →</a></p>` },
     ],
     fr: [
-      { subject: `Bienvenue sur solen.ch, ${vars.name} !`, html: `<p>Bonjour <strong>${vars.name}</strong>,</p><p>Bienvenue sur solen.ch — votre plateforme beauté & bien-être à Bâle.</p><p><a href="https://solen.ch/fr/explore">Découvrir les salons →</a></p>` },
+      { subject: `Bienvenue sur solen.ch, ${vars.name} !`, html: `<p>Bonjour <strong>${escapeHtml(vars.name)}</strong>,</p><p>Bienvenue sur solen.ch — votre plateforme beauté & bien-être à Bâle.</p><p><a href="https://solen.ch/fr/explore">Découvrir les salons →</a></p>` },
       { subject: `Complétez votre profil`, html: `<p>Complétez votre profil pour des recommandations personnalisées.</p><p><a href="https://solen.ch/fr/account">Modifier le profil →</a></p>` },
     ],
     it: [
-      { subject: `Benvenuto su solen.ch, ${vars.name}!`, html: `<p>Ciao <strong>${vars.name}</strong>,</p><p>Benvenuto su solen.ch — la tua piattaforma beauty & wellness a Basilea.</p><p><a href="https://solen.ch/it/explore">Scopri i saloni vicini →</a></p>` },
+      { subject: `Benvenuto su solen.ch, ${vars.name}!`, html: `<p>Ciao <strong>${escapeHtml(vars.name)}</strong>,</p><p>Benvenuto su solen.ch — la tua piattaforma beauty & wellness a Basilea.</p><p><a href="https://solen.ch/it/explore">Scopri i saloni vicini →</a></p>` },
       { subject: `Completa il tuo profilo`, html: `<p>Completa il tuo profilo per raccomandazioni personalizzate.</p><p><a href="https://solen.ch/it/account">Modifica profilo →</a></p>` },
     ],
   };
@@ -686,10 +688,10 @@ export function walkInPaymentEmail(
     it: `Pagamento per ${vars.serviceName} presso ${vars.salonName}`,
   };
   const bodies: Record<EmailLocale, string> = {
-    de: `<p>Hallo ${vars.customerName},</p><p>Bitte bezahlen Sie <strong>${vars.amount}</strong> für <strong>${vars.serviceName}</strong> bei <strong>${vars.salonName}</strong>:</p><p><a href="${vars.paymentUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Jetzt bezahlen →</a></p><p>solen.ch</p>`,
-    en: `<p>Hello ${vars.customerName},</p><p>Please pay <strong>${vars.amount}</strong> for <strong>${vars.serviceName}</strong> at <strong>${vars.salonName}</strong>:</p><p><a href="${vars.paymentUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Pay now →</a></p><p>solen.ch</p>`,
-    fr: `<p>Bonjour ${vars.customerName},</p><p>Veuillez payer <strong>${vars.amount}</strong> pour <strong>${vars.serviceName}</strong> chez <strong>${vars.salonName}</strong> :</p><p><a href="${vars.paymentUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Payer maintenant →</a></p><p>solen.ch</p>`,
-    it: `<p>Ciao ${vars.customerName},</p><p>Si prega di pagare <strong>${vars.amount}</strong> per <strong>${vars.serviceName}</strong> presso <strong>${vars.salonName}</strong>:</p><p><a href="${vars.paymentUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Paga ora →</a></p><p>solen.ch</p>`,
+    de: `<p>Hallo ${escapeHtml(vars.customerName)},</p><p>Bitte bezahlen Sie <strong>${vars.amount}</strong> für <strong>${escapeHtml(vars.serviceName)}</strong> bei <strong>${escapeHtml(vars.salonName)}</strong>:</p><p><a href="${vars.paymentUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Jetzt bezahlen →</a></p><p>solen.ch</p>`,
+    en: `<p>Hello ${escapeHtml(vars.customerName)},</p><p>Please pay <strong>${vars.amount}</strong> for <strong>${escapeHtml(vars.serviceName)}</strong> at <strong>${escapeHtml(vars.salonName)}</strong>:</p><p><a href="${vars.paymentUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Pay now →</a></p><p>solen.ch</p>`,
+    fr: `<p>Bonjour ${escapeHtml(vars.customerName)},</p><p>Veuillez payer <strong>${vars.amount}</strong> pour <strong>${escapeHtml(vars.serviceName)}</strong> chez <strong>${escapeHtml(vars.salonName)}</strong> :</p><p><a href="${vars.paymentUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Payer maintenant →</a></p><p>solen.ch</p>`,
+    it: `<p>Ciao ${escapeHtml(vars.customerName)},</p><p>Si prega di pagare <strong>${vars.amount}</strong> per <strong>${escapeHtml(vars.serviceName)}</strong> presso <strong>${escapeHtml(vars.salonName)}</strong>:</p><p><a href="${vars.paymentUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Paga ora →</a></p><p>solen.ch</p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -704,7 +706,7 @@ export function tipPromptEmail(
   locale: EmailLocale = "de"
 ): EmailPayload {
   const photoHtml = vars.stylistPhoto
-    ? `<img src="${vars.stylistPhoto}" alt="${vars.stylistName}" style="width:64px;height:64px;border-radius:50%;object-fit:cover;margin:12px auto;display:block" />`
+    ? `<img src="${vars.stylistPhoto}" alt="${escapeHtml(vars.stylistName)}" style="width:64px;height:64px;border-radius:50%;object-fit:cover;margin:12px auto;display:block" />`
     : "";
   const subjects: Record<EmailLocale, string> = {
     de: `Trinkgeld für ${vars.stylistName}?`,
@@ -713,10 +715,10 @@ export function tipPromptEmail(
     it: `Mancia per ${vars.stylistName}?`,
   };
   const bodies: Record<EmailLocale, string> = {
-    de: `<p>Hallo ${vars.customerName},</p><p>Waren Sie zufrieden mit Ihrem Termin? Hinterlassen Sie ein Trinkgeld für <strong>${vars.stylistName}</strong>!</p>${photoHtml}<p><a href="${vars.tipUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Trinkgeld geben →</a></p>`,
-    en: `<p>Hello ${vars.customerName},</p><p>Happy with your appointment? Leave a tip for <strong>${vars.stylistName}</strong>!</p>${photoHtml}<p><a href="${vars.tipUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Leave a tip →</a></p>`,
-    fr: `<p>Bonjour ${vars.customerName},</p><p>Satisfait(e) de votre rendez-vous ? Laissez un pourboire à <strong>${vars.stylistName}</strong> !</p>${photoHtml}<p><a href="${vars.tipUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Laisser un pourboire →</a></p>`,
-    it: `<p>Ciao ${vars.customerName},</p><p>Soddisfatto del tuo appuntamento? Lascia una mancia a <strong>${vars.stylistName}</strong>!</p>${photoHtml}<p><a href="${vars.tipUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Lascia una mancia →</a></p>`,
+    de: `<p>Hallo ${escapeHtml(vars.customerName)},</p><p>Waren Sie zufrieden mit Ihrem Termin? Hinterlassen Sie ein Trinkgeld für <strong>${escapeHtml(vars.stylistName)}</strong>!</p>${photoHtml}<p><a href="${vars.tipUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Trinkgeld geben →</a></p>`,
+    en: `<p>Hello ${escapeHtml(vars.customerName)},</p><p>Happy with your appointment? Leave a tip for <strong>${escapeHtml(vars.stylistName)}</strong>!</p>${photoHtml}<p><a href="${vars.tipUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Leave a tip →</a></p>`,
+    fr: `<p>Bonjour ${escapeHtml(vars.customerName)},</p><p>Satisfait(e) de votre rendez-vous ? Laissez un pourboire à <strong>${escapeHtml(vars.stylistName)}</strong> !</p>${photoHtml}<p><a href="${vars.tipUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Laisser un pourboire →</a></p>`,
+    it: `<p>Ciao ${escapeHtml(vars.customerName)},</p><p>Soddisfatto del tuo appuntamento? Lascia una mancia a <strong>${escapeHtml(vars.stylistName)}</strong>!</p>${photoHtml}<p><a href="${vars.tipUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Lascia una mancia →</a></p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -737,10 +739,10 @@ export function birthdayEmail(
     it: `Buon compleanno, ${vars.customerName}! 🎂`,
   };
   const bodies: Record<EmailLocale, string> = {
-    de: `<p>Hallo ${vars.customerName},</p><p>Alles Gute zum Geburtstag! <strong>${vars.salonName}</strong> wünscht Ihnen einen wunderbaren Tag.</p><p>Gönnen Sie sich etwas Besonderes — buchen Sie Ihren nächsten Termin mit einem Geburtstagsrabatt!</p><p><a href="https://solen.ch">Jetzt buchen →</a></p>`,
-    en: `<p>Hello ${vars.customerName},</p><p>Happy Birthday! <strong>${vars.salonName}</strong> wishes you a wonderful day.</p><p>Treat yourself — book your next appointment with a birthday discount!</p><p><a href="https://solen.ch">Book now →</a></p>`,
-    fr: `<p>Bonjour ${vars.customerName},</p><p>Joyeux anniversaire ! <strong>${vars.salonName}</strong> vous souhaite une merveilleuse journée.</p><p>Faites-vous plaisir — réservez votre prochain rendez-vous avec une réduction d'anniversaire !</p><p><a href="https://solen.ch">Réserver →</a></p>`,
-    it: `<p>Ciao ${vars.customerName},</p><p>Buon compleanno! <strong>${vars.salonName}</strong> ti augura una splendida giornata.</p><p>Concediti qualcosa di speciale — prenota il tuo prossimo appuntamento con uno sconto di compleanno!</p><p><a href="https://solen.ch">Prenota ora →</a></p>`,
+    de: `<p>Hallo ${escapeHtml(vars.customerName)},</p><p>Alles Gute zum Geburtstag! <strong>${escapeHtml(vars.salonName)}</strong> wünscht Ihnen einen wunderbaren Tag.</p><p>Gönnen Sie sich etwas Besonderes — buchen Sie Ihren nächsten Termin mit einem Geburtstagsrabatt!</p><p><a href="https://solen.ch">Jetzt buchen →</a></p>`,
+    en: `<p>Hello ${escapeHtml(vars.customerName)},</p><p>Happy Birthday! <strong>${escapeHtml(vars.salonName)}</strong> wishes you a wonderful day.</p><p>Treat yourself — book your next appointment with a birthday discount!</p><p><a href="https://solen.ch">Book now →</a></p>`,
+    fr: `<p>Bonjour ${escapeHtml(vars.customerName)},</p><p>Joyeux anniversaire ! <strong>${escapeHtml(vars.salonName)}</strong> vous souhaite une merveilleuse journée.</p><p>Faites-vous plaisir — réservez votre prochain rendez-vous avec une réduction d'anniversaire !</p><p><a href="https://solen.ch">Réserver →</a></p>`,
+    it: `<p>Ciao ${escapeHtml(vars.customerName)},</p><p>Buon compleanno! <strong>${escapeHtml(vars.salonName)}</strong> ti augura una splendida giornata.</p><p>Concediti qualcosa di speciale — prenota il tuo prossimo appuntamento con uno sconto di compleanno!</p><p><a href="https://solen.ch">Prenota ora →</a></p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -754,7 +756,7 @@ export function giftCardDeliveryEmail(
   vars: { recipientName: string; senderName: string; amount: string; code: string; message?: string },
   locale: EmailLocale = "de"
 ): EmailPayload {
-  const msgHtml = vars.message ? `<p style="background:${EMAIL_COLORS.bgSunken};padding:12px;border-radius:8px;font-style:italic;margin:16px 0">"${vars.message}"</p>` : "";
+  const msgHtml = vars.message ? `<p style="background:${EMAIL_COLORS.bgSunken};padding:12px;border-radius:8px;font-style:italic;margin:16px 0">"${escapeHtml(vars.message)}"</p>` : "";
   const subjects: Record<EmailLocale, string> = {
     de: `${vars.senderName} hat dir eine Geschenkkarte geschickt!`,
     en: `${vars.senderName} sent you a gift card!`,
@@ -762,10 +764,10 @@ export function giftCardDeliveryEmail(
     it: `${vars.senderName} ti ha inviato una carta regalo!`,
   };
   const bodies: Record<EmailLocale, string> = {
-    de: `<p>Hallo ${vars.recipientName},</p><p><strong>${vars.senderName}</strong> hat dir eine Geschenkkarte im Wert von <strong>${vars.amount}</strong> auf solen.ch geschenkt!</p>${msgHtml}<p style="text-align:center;margin:20px 0"><span style="font-family:${EMAIL_FONT_STACK};font-weight:700;font-variant-numeric:tabular-nums;font-size:24px;letter-spacing:3px;background:${EMAIL_COLORS.bgSunken};padding:12px 20px;border-radius:8px;border:2px dashed #0A0A0A;display:inline-block">${vars.code}</span></p><p>Verwende diesen Code bei deiner nächsten Buchung auf <a href="https://solen.ch">solen.ch</a>.</p>`,
-    en: `<p>Hello ${vars.recipientName},</p><p><strong>${vars.senderName}</strong> sent you a gift card worth <strong>${vars.amount}</strong> on solen.ch!</p>${msgHtml}<p style="text-align:center;margin:20px 0"><span style="font-family:${EMAIL_FONT_STACK};font-weight:700;font-variant-numeric:tabular-nums;font-size:24px;letter-spacing:3px;background:${EMAIL_COLORS.bgSunken};padding:12px 20px;border-radius:8px;border:2px dashed #0A0A0A;display:inline-block">${vars.code}</span></p><p>Use this code on your next booking at <a href="https://solen.ch">solen.ch</a>.</p>`,
-    fr: `<p>Bonjour ${vars.recipientName},</p><p><strong>${vars.senderName}</strong> vous a offert une carte cadeau d'une valeur de <strong>${vars.amount}</strong> sur solen.ch !</p>${msgHtml}<p style="text-align:center;margin:20px 0"><span style="font-family:${EMAIL_FONT_STACK};font-weight:700;font-variant-numeric:tabular-nums;font-size:24px;letter-spacing:3px;background:${EMAIL_COLORS.bgSunken};padding:12px 20px;border-radius:8px;border:2px dashed #0A0A0A;display:inline-block">${vars.code}</span></p><p>Utilisez ce code lors de votre prochaine réservation sur <a href="https://solen.ch">solen.ch</a>.</p>`,
-    it: `<p>Ciao ${vars.recipientName},</p><p><strong>${vars.senderName}</strong> ti ha regalato una carta regalo del valore di <strong>${vars.amount}</strong> su solen.ch!</p>${msgHtml}<p style="text-align:center;margin:20px 0"><span style="font-family:${EMAIL_FONT_STACK};font-weight:700;font-variant-numeric:tabular-nums;font-size:24px;letter-spacing:3px;background:${EMAIL_COLORS.bgSunken};padding:12px 20px;border-radius:8px;border:2px dashed #0A0A0A;display:inline-block">${vars.code}</span></p><p>Usa questo codice per la tua prossima prenotazione su <a href="https://solen.ch">solen.ch</a>.</p>`,
+    de: `<p>Hallo ${escapeHtml(vars.recipientName)},</p><p><strong>${escapeHtml(vars.senderName)}</strong> hat dir eine Geschenkkarte im Wert von <strong>${vars.amount}</strong> auf solen.ch geschenkt!</p>${msgHtml}<p style="text-align:center;margin:20px 0"><span style="font-family:${EMAIL_FONT_STACK};font-weight:700;font-variant-numeric:tabular-nums;font-size:24px;letter-spacing:3px;background:${EMAIL_COLORS.bgSunken};padding:12px 20px;border-radius:8px;border:2px dashed #0A0A0A;display:inline-block">${vars.code}</span></p><p>Verwende diesen Code bei deiner nächsten Buchung auf <a href="https://solen.ch">solen.ch</a>.</p>`,
+    en: `<p>Hello ${escapeHtml(vars.recipientName)},</p><p><strong>${escapeHtml(vars.senderName)}</strong> sent you a gift card worth <strong>${vars.amount}</strong> on solen.ch!</p>${msgHtml}<p style="text-align:center;margin:20px 0"><span style="font-family:${EMAIL_FONT_STACK};font-weight:700;font-variant-numeric:tabular-nums;font-size:24px;letter-spacing:3px;background:${EMAIL_COLORS.bgSunken};padding:12px 20px;border-radius:8px;border:2px dashed #0A0A0A;display:inline-block">${vars.code}</span></p><p>Use this code on your next booking at <a href="https://solen.ch">solen.ch</a>.</p>`,
+    fr: `<p>Bonjour ${escapeHtml(vars.recipientName)},</p><p><strong>${escapeHtml(vars.senderName)}</strong> vous a offert une carte cadeau d'une valeur de <strong>${vars.amount}</strong> sur solen.ch !</p>${msgHtml}<p style="text-align:center;margin:20px 0"><span style="font-family:${EMAIL_FONT_STACK};font-weight:700;font-variant-numeric:tabular-nums;font-size:24px;letter-spacing:3px;background:${EMAIL_COLORS.bgSunken};padding:12px 20px;border-radius:8px;border:2px dashed #0A0A0A;display:inline-block">${vars.code}</span></p><p>Utilisez ce code lors de votre prochaine réservation sur <a href="https://solen.ch">solen.ch</a>.</p>`,
+    it: `<p>Ciao ${escapeHtml(vars.recipientName)},</p><p><strong>${escapeHtml(vars.senderName)}</strong> ti ha regalato una carta regalo del valore di <strong>${vars.amount}</strong> su solen.ch!</p>${msgHtml}<p style="text-align:center;margin:20px 0"><span style="font-family:${EMAIL_FONT_STACK};font-weight:700;font-variant-numeric:tabular-nums;font-size:24px;letter-spacing:3px;background:${EMAIL_COLORS.bgSunken};padding:12px 20px;border-radius:8px;border:2px dashed #0A0A0A;display:inline-block">${vars.code}</span></p><p>Usa questo codice per la tua prossima prenotazione su <a href="https://solen.ch">solen.ch</a>.</p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -786,10 +788,10 @@ export function nailInfillReminderEmail(
     it: `È ora del ritocco presso ${vars.salonName}!`,
   };
   const bodies: Record<EmailLocale, string> = {
-    de: `<p>Hallo ${vars.customerName},</p><p>Dein letzter <strong>${vars.serviceName}</strong>-Termin bei <strong>${vars.salonName}</strong> war am ${vars.lastVisitDate}. Es ist Zeit für eine Auffüllung!</p><p><a href="${vars.bookingUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Jetzt Termin buchen →</a></p><p>solen.ch</p>`,
-    en: `<p>Hello ${vars.customerName},</p><p>Your last <strong>${vars.serviceName}</strong> appointment at <strong>${vars.salonName}</strong> was on ${vars.lastVisitDate}. Time for an infill!</p><p><a href="${vars.bookingUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Book now →</a></p><p>solen.ch</p>`,
-    fr: `<p>Bonjour ${vars.customerName},</p><p>Votre dernier rendez-vous <strong>${vars.serviceName}</strong> chez <strong>${vars.salonName}</strong> était le ${vars.lastVisitDate}. C'est l'heure du remplissage !</p><p><a href="${vars.bookingUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Réserver maintenant →</a></p><p>solen.ch</p>`,
-    it: `<p>Ciao ${vars.customerName},</p><p>Il tuo ultimo appuntamento <strong>${vars.serviceName}</strong> presso <strong>${vars.salonName}</strong> era il ${vars.lastVisitDate}. È ora del ritocco!</p><p><a href="${vars.bookingUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Prenota ora →</a></p><p>solen.ch</p>`,
+    de: `<p>Hallo ${escapeHtml(vars.customerName)},</p><p>Dein letzter <strong>${escapeHtml(vars.serviceName)}</strong>-Termin bei <strong>${escapeHtml(vars.salonName)}</strong> war am ${vars.lastVisitDate}. Es ist Zeit für eine Auffüllung!</p><p><a href="${vars.bookingUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Jetzt Termin buchen →</a></p><p>solen.ch</p>`,
+    en: `<p>Hello ${escapeHtml(vars.customerName)},</p><p>Your last <strong>${escapeHtml(vars.serviceName)}</strong> appointment at <strong>${escapeHtml(vars.salonName)}</strong> was on ${vars.lastVisitDate}. Time for an infill!</p><p><a href="${vars.bookingUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Book now →</a></p><p>solen.ch</p>`,
+    fr: `<p>Bonjour ${escapeHtml(vars.customerName)},</p><p>Votre dernier rendez-vous <strong>${escapeHtml(vars.serviceName)}</strong> chez <strong>${escapeHtml(vars.salonName)}</strong> était le ${vars.lastVisitDate}. C'est l'heure du remplissage !</p><p><a href="${vars.bookingUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Réserver maintenant →</a></p><p>solen.ch</p>`,
+    it: `<p>Ciao ${escapeHtml(vars.customerName)},</p><p>Il tuo ultimo appuntamento <strong>${escapeHtml(vars.serviceName)}</strong> presso <strong>${escapeHtml(vars.salonName)}</strong> era il ${vars.lastVisitDate}. È ora del ritocco!</p><p><a href="${vars.bookingUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Prenota ora →</a></p><p>solen.ch</p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -810,10 +812,10 @@ export function nailAllergyAlertEmail(
     it: `Avviso allergia: ${vars.customerName} ha prenotato un appuntamento`,
   };
   const bodies: Record<EmailLocale, string> = {
-    de: `<p>Hallo <strong>${vars.salonName}</strong>,</p><p><strong>${vars.customerName}</strong> hat einen Termin am ${vars.bookingDate} gebucht und hat folgende Allergien vermerkt:</p><p style="background:${EMAIL_COLORS.warningBg};padding:12px;border-radius:8px;border-left:4px solid ${EMAIL_COLORS.warningText}"><strong>${vars.allergies}</strong></p><p>Bitte stellen Sie sicher, dass die verwendeten Produkte kompatibel sind.</p><p>solen.ch</p>`,
-    en: `<p>Hello <strong>${vars.salonName}</strong>,</p><p><strong>${vars.customerName}</strong> has booked an appointment on ${vars.bookingDate} and has the following allergies on file:</p><p style="background:${EMAIL_COLORS.warningBg};padding:12px;border-radius:8px;border-left:4px solid ${EMAIL_COLORS.warningText}"><strong>${vars.allergies}</strong></p><p>Please ensure compatible products are used.</p><p>solen.ch</p>`,
-    fr: `<p>Bonjour <strong>${vars.salonName}</strong>,</p><p><strong>${vars.customerName}</strong> a réservé un rendez-vous le ${vars.bookingDate} et a les allergies suivantes :</p><p style="background:${EMAIL_COLORS.warningBg};padding:12px;border-radius:8px;border-left:4px solid ${EMAIL_COLORS.warningText}"><strong>${vars.allergies}</strong></p><p>Veuillez utiliser des produits compatibles.</p><p>solen.ch</p>`,
-    it: `<p>Ciao <strong>${vars.salonName}</strong>,</p><p><strong>${vars.customerName}</strong> ha prenotato un appuntamento il ${vars.bookingDate} e ha le seguenti allergie registrate:</p><p style="background:${EMAIL_COLORS.warningBg};padding:12px;border-radius:8px;border-left:4px solid ${EMAIL_COLORS.warningText}"><strong>${vars.allergies}</strong></p><p>Si prega di utilizzare prodotti compatibili.</p><p>solen.ch</p>`,
+    de: `<p>Hallo <strong>${escapeHtml(vars.salonName)}</strong>,</p><p><strong>${escapeHtml(vars.customerName)}</strong> hat einen Termin am ${vars.bookingDate} gebucht und hat folgende Allergien vermerkt:</p><p style="background:${EMAIL_COLORS.warningBg};padding:12px;border-radius:8px;border-left:4px solid ${EMAIL_COLORS.warningText}"><strong>${escapeHtml(vars.allergies)}</strong></p><p>Bitte stellen Sie sicher, dass die verwendeten Produkte kompatibel sind.</p><p>solen.ch</p>`,
+    en: `<p>Hello <strong>${escapeHtml(vars.salonName)}</strong>,</p><p><strong>${escapeHtml(vars.customerName)}</strong> has booked an appointment on ${vars.bookingDate} and has the following allergies on file:</p><p style="background:${EMAIL_COLORS.warningBg};padding:12px;border-radius:8px;border-left:4px solid ${EMAIL_COLORS.warningText}"><strong>${escapeHtml(vars.allergies)}</strong></p><p>Please ensure compatible products are used.</p><p>solen.ch</p>`,
+    fr: `<p>Bonjour <strong>${escapeHtml(vars.salonName)}</strong>,</p><p><strong>${escapeHtml(vars.customerName)}</strong> a réservé un rendez-vous le ${vars.bookingDate} et a les allergies suivantes :</p><p style="background:${EMAIL_COLORS.warningBg};padding:12px;border-radius:8px;border-left:4px solid ${EMAIL_COLORS.warningText}"><strong>${escapeHtml(vars.allergies)}</strong></p><p>Veuillez utiliser des produits compatibles.</p><p>solen.ch</p>`,
+    it: `<p>Ciao <strong>${escapeHtml(vars.salonName)}</strong>,</p><p><strong>${escapeHtml(vars.customerName)}</strong> ha prenotato un appuntamento il ${vars.bookingDate} e ha le seguenti allergie registrate:</p><p style="background:${EMAIL_COLORS.warningBg};padding:12px;border-radius:8px;border-left:4px solid ${EMAIL_COLORS.warningText}"><strong>${escapeHtml(vars.allergies)}</strong></p><p>Si prega di utilizzare prodotti compatibili.</p><p>solen.ch</p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -834,10 +836,10 @@ export function barberSmartReminderEmail(
     it: `È ora di un nuovo taglio da ${vars.salonName}!`,
   };
   const bodies: Record<EmailLocale, string> = {
-    de: `<p>Hey ${vars.customerName},</p><p>Dein letzter Schnitt bei <strong>${vars.salonName}</strong> war vor ${vars.daysSince} Tagen. Bereit für ein frisches Styling?</p><p><a href="${vars.bookingUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Jetzt Termin buchen →</a></p><p style="color:${EMAIL_COLORS.ink2};font-size:12px;margin-top:24px">— Dein Solen Team</p>`,
-    en: `<p>Hey ${vars.customerName},</p><p>Your last cut at <strong>${vars.salonName}</strong> was ${vars.daysSince} days ago. Ready for a fresh look?</p><p><a href="${vars.bookingUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Book now →</a></p><p style="color:${EMAIL_COLORS.ink2};font-size:12px;margin-top:24px">— Your Solen Team</p>`,
-    fr: `<p>Salut ${vars.customerName},</p><p>Ta dernière coupe chez <strong>${vars.salonName}</strong> remonte à ${vars.daysSince} jours. Prêt pour un nouveau look ?</p><p><a href="${vars.bookingUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Réserver maintenant →</a></p><p style="color:${EMAIL_COLORS.ink2};font-size:12px;margin-top:24px">— Ton équipe Solen</p>`,
-    it: `<p>Ciao ${vars.customerName},</p><p>Il tuo ultimo taglio da <strong>${vars.salonName}</strong> risale a ${vars.daysSince} giorni fa. Pronto per un nuovo look?</p><p><a href="${vars.bookingUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Prenota ora →</a></p><p style="color:${EMAIL_COLORS.ink2};font-size:12px;margin-top:24px">— Il tuo team Solen</p>`,
+    de: `<p>Hey ${escapeHtml(vars.customerName)},</p><p>Dein letzter Schnitt bei <strong>${escapeHtml(vars.salonName)}</strong> war vor ${vars.daysSince} Tagen. Bereit für ein frisches Styling?</p><p><a href="${vars.bookingUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Jetzt Termin buchen →</a></p><p style="color:${EMAIL_COLORS.ink2};font-size:12px;margin-top:24px">— Dein Solen Team</p>`,
+    en: `<p>Hey ${escapeHtml(vars.customerName)},</p><p>Your last cut at <strong>${escapeHtml(vars.salonName)}</strong> was ${vars.daysSince} days ago. Ready for a fresh look?</p><p><a href="${vars.bookingUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Book now →</a></p><p style="color:${EMAIL_COLORS.ink2};font-size:12px;margin-top:24px">— Your Solen Team</p>`,
+    fr: `<p>Salut ${escapeHtml(vars.customerName)},</p><p>Ta dernière coupe chez <strong>${escapeHtml(vars.salonName)}</strong> remonte à ${vars.daysSince} jours. Prêt pour un nouveau look ?</p><p><a href="${vars.bookingUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Réserver maintenant →</a></p><p style="color:${EMAIL_COLORS.ink2};font-size:12px;margin-top:24px">— Ton équipe Solen</p>`,
+    it: `<p>Ciao ${escapeHtml(vars.customerName)},</p><p>Il tuo ultimo taglio da <strong>${escapeHtml(vars.salonName)}</strong> risale a ${vars.daysSince} giorni fa. Pronto per un nuovo look?</p><p><a href="${vars.bookingUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Prenota ora →</a></p><p style="color:${EMAIL_COLORS.ink2};font-size:12px;margin-top:24px">— Il tuo team Solen</p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -892,10 +894,10 @@ export function barberLoyaltyRewardEmail(
     it: `La tua carta fedeltà da ${vars.salonName} è completa!`,
   };
   const bodies: Record<EmailLocale, string> = {
-    de: `<p>Hey ${vars.customerName},</p><p>Glückwunsch! Deine Treuekarte bei <strong>${vars.salonName}</strong> ist voll. Du hast dir folgende Belohnung verdient:</p><p style="background:${EMAIL_COLORS.bgSunken};padding:16px;border-radius:8px;text-align:center;font-size:18px;font-weight:600;color:#0A0A0A">${vars.reward}</p><p><a href="${vars.redeemUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Belohnung einlösen →</a></p><p style="color:${EMAIL_COLORS.ink2};font-size:12px;margin-top:24px">— Dein Solen Team</p>`,
-    en: `<p>Hey ${vars.customerName},</p><p>Congrats! Your loyalty card at <strong>${vars.salonName}</strong> is complete. You've earned:</p><p style="background:${EMAIL_COLORS.bgSunken};padding:16px;border-radius:8px;text-align:center;font-size:18px;font-weight:600;color:#0A0A0A">${vars.reward}</p><p><a href="${vars.redeemUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Redeem reward →</a></p><p style="color:${EMAIL_COLORS.ink2};font-size:12px;margin-top:24px">— Your Solen Team</p>`,
-    fr: `<p>Salut ${vars.customerName},</p><p>Félicitations ! Ta carte fidélité chez <strong>${vars.salonName}</strong> est complète. Tu as gagné :</p><p style="background:${EMAIL_COLORS.bgSunken};padding:16px;border-radius:8px;text-align:center;font-size:18px;font-weight:600;color:#0A0A0A">${vars.reward}</p><p><a href="${vars.redeemUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Utiliser la récompense →</a></p><p style="color:${EMAIL_COLORS.ink2};font-size:12px;margin-top:24px">— Ton équipe Solen</p>`,
-    it: `<p>Ciao ${vars.customerName},</p><p>Complimenti! La tua carta fedeltà da <strong>${vars.salonName}</strong> è completa. Hai guadagnato:</p><p style="background:${EMAIL_COLORS.bgSunken};padding:16px;border-radius:8px;text-align:center;font-size:18px;font-weight:600;color:#0A0A0A">${vars.reward}</p><p><a href="${vars.redeemUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Riscatta il premio →</a></p><p style="color:${EMAIL_COLORS.ink2};font-size:12px;margin-top:24px">— Il tuo team Solen</p>`,
+    de: `<p>Hey ${escapeHtml(vars.customerName)},</p><p>Glückwunsch! Deine Treuekarte bei <strong>${escapeHtml(vars.salonName)}</strong> ist voll. Du hast dir folgende Belohnung verdient:</p><p style="background:${EMAIL_COLORS.bgSunken};padding:16px;border-radius:8px;text-align:center;font-size:18px;font-weight:600;color:#0A0A0A">${escapeHtml(vars.reward)}</p><p><a href="${vars.redeemUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Belohnung einlösen →</a></p><p style="color:${EMAIL_COLORS.ink2};font-size:12px;margin-top:24px">— Dein Solen Team</p>`,
+    en: `<p>Hey ${escapeHtml(vars.customerName)},</p><p>Congrats! Your loyalty card at <strong>${escapeHtml(vars.salonName)}</strong> is complete. You've earned:</p><p style="background:${EMAIL_COLORS.bgSunken};padding:16px;border-radius:8px;text-align:center;font-size:18px;font-weight:600;color:#0A0A0A">${escapeHtml(vars.reward)}</p><p><a href="${vars.redeemUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Redeem reward →</a></p><p style="color:${EMAIL_COLORS.ink2};font-size:12px;margin-top:24px">— Your Solen Team</p>`,
+    fr: `<p>Salut ${escapeHtml(vars.customerName)},</p><p>Félicitations ! Ta carte fidélité chez <strong>${escapeHtml(vars.salonName)}</strong> est complète. Tu as gagné :</p><p style="background:${EMAIL_COLORS.bgSunken};padding:16px;border-radius:8px;text-align:center;font-size:18px;font-weight:600;color:#0A0A0A">${escapeHtml(vars.reward)}</p><p><a href="${vars.redeemUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Utiliser la récompense →</a></p><p style="color:${EMAIL_COLORS.ink2};font-size:12px;margin-top:24px">— Ton équipe Solen</p>`,
+    it: `<p>Ciao ${escapeHtml(vars.customerName)},</p><p>Complimenti! La tua carta fedeltà da <strong>${escapeHtml(vars.salonName)}</strong> è completa. Hai guadagnato:</p><p style="background:${EMAIL_COLORS.bgSunken};padding:16px;border-radius:8px;text-align:center;font-size:18px;font-weight:600;color:#0A0A0A">${escapeHtml(vars.reward)}</p><p><a href="${vars.redeemUrl}" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Riscatta il premio →</a></p><p style="color:${EMAIL_COLORS.ink2};font-size:12px;margin-top:24px">— Il tuo team Solen</p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -963,10 +965,10 @@ export function reviewPostedEmail(
     it: "Visualizza recensioni nella dashboard",
   };
   const bodies: Record<EmailLocale, string> = {
-    de: `<h3>Neue Kundenbewertung</h3><p>Dein Salon <strong>${vars.salon}</strong> hat eine neue Bewertung mit ${starText.de} erhalten.</p>${commentHtml}<p><a href="https://solen.ch/de/dashboard/reviews" style="display:inline-block;padding:10px 20px;background:${EMAIL_COLORS.ink};color:#fff;text-decoration:none;border-radius:8px;margin-top:20px;">${ctas.de}</a></p>`,
-    en: `<h3>New customer review</h3><p>Your salon <strong>${vars.salon}</strong> received a new review with ${starText.en}.</p>${commentHtml}<p><a href="https://solen.ch/en/dashboard/reviews" style="display:inline-block;padding:10px 20px;background:${EMAIL_COLORS.ink};color:#fff;text-decoration:none;border-radius:8px;margin-top:20px;">${ctas.en}</a></p>`,
-    fr: `<h3>Nouvel avis client</h3><p>Votre salon <strong>${vars.salon}</strong> a reçu un nouvel avis avec ${starText.fr}.</p>${commentHtml}<p><a href="https://solen.ch/fr/dashboard/reviews" style="display:inline-block;padding:10px 20px;background:${EMAIL_COLORS.ink};color:#fff;text-decoration:none;border-radius:8px;margin-top:20px;">${ctas.fr}</a></p>`,
-    it: `<h3>Nuova recensione cliente</h3><p>Il tuo salone <strong>${vars.salon}</strong> ha ricevuto una nuova recensione con ${starText.it}.</p>${commentHtml}<p><a href="https://solen.ch/it/dashboard/reviews" style="display:inline-block;padding:10px 20px;background:${EMAIL_COLORS.ink};color:#fff;text-decoration:none;border-radius:8px;margin-top:20px;">${ctas.it}</a></p>`,
+    de: `<h3>Neue Kundenbewertung</h3><p>Dein Salon <strong>${escapeHtml(vars.salon)}</strong> hat eine neue Bewertung mit ${starText.de} erhalten.</p>${commentHtml}<p><a href="https://solen.ch/de/dashboard/reviews" style="display:inline-block;padding:10px 20px;background:${EMAIL_COLORS.ink};color:#fff;text-decoration:none;border-radius:8px;margin-top:20px;">${ctas.de}</a></p>`,
+    en: `<h3>New customer review</h3><p>Your salon <strong>${escapeHtml(vars.salon)}</strong> received a new review with ${starText.en}.</p>${commentHtml}<p><a href="https://solen.ch/en/dashboard/reviews" style="display:inline-block;padding:10px 20px;background:${EMAIL_COLORS.ink};color:#fff;text-decoration:none;border-radius:8px;margin-top:20px;">${ctas.en}</a></p>`,
+    fr: `<h3>Nouvel avis client</h3><p>Votre salon <strong>${escapeHtml(vars.salon)}</strong> a reçu un nouvel avis avec ${starText.fr}.</p>${commentHtml}<p><a href="https://solen.ch/fr/dashboard/reviews" style="display:inline-block;padding:10px 20px;background:${EMAIL_COLORS.ink};color:#fff;text-decoration:none;border-radius:8px;margin-top:20px;">${ctas.fr}</a></p>`,
+    it: `<h3>Nuova recensione cliente</h3><p>Il tuo salone <strong>${escapeHtml(vars.salon)}</strong> ha ricevuto una nuova recensione con ${starText.it}.</p>${commentHtml}<p><a href="https://solen.ch/it/dashboard/reviews" style="display:inline-block;padding:10px 20px;background:${EMAIL_COLORS.ink};color:#fff;text-decoration:none;border-radius:8px;margin-top:20px;">${ctas.it}</a></p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -989,10 +991,10 @@ export function reviewRepliedEmail(
     it: "Vai al profilo del salone",
   };
   const bodies: Record<EmailLocale, string> = {
-    de: `<h3>Antwort auf deine Bewertung</h3><p>Der Salon <strong>${vars.salon}</strong> hat auf deine Bewertung geantwortet:</p><blockquote style="border-left: 4px solid ${EMAIL_COLORS.ink}; padding-left: 12px; margin-left: 0; color: ${EMAIL_COLORS.ink2};">${escapeHtml(vars.replyText)}</blockquote><p><a href="https://solen.ch/de/salon/${vars.salonSlug}" style="display:inline-block;padding:10px 20px;background:${EMAIL_COLORS.ink};color:#fff;text-decoration:none;border-radius:8px;margin-top:20px;">${ctas.de}</a></p>`,
-    en: `<h3>Reply to your review</h3><p>The salon <strong>${vars.salon}</strong> replied to your review:</p><blockquote style="border-left: 4px solid ${EMAIL_COLORS.ink}; padding-left: 12px; margin-left: 0; color: ${EMAIL_COLORS.ink2};">${escapeHtml(vars.replyText)}</blockquote><p><a href="https://solen.ch/en/salon/${vars.salonSlug}" style="display:inline-block;padding:10px 20px;background:${EMAIL_COLORS.ink};color:#fff;text-decoration:none;border-radius:8px;margin-top:20px;">${ctas.en}</a></p>`,
-    fr: `<h3>Réponse à votre avis</h3><p>Le salon <strong>${vars.salon}</strong> a répondu à votre avis :</p><blockquote style="border-left: 4px solid ${EMAIL_COLORS.ink}; padding-left: 12px; margin-left: 0; color: ${EMAIL_COLORS.ink2};">${escapeHtml(vars.replyText)}</blockquote><p><a href="https://solen.ch/fr/salon/${vars.salonSlug}" style="display:inline-block;padding:10px 20px;background:${EMAIL_COLORS.ink};color:#fff;text-decoration:none;border-radius:8px;margin-top:20px;">${ctas.fr}</a></p>`,
-    it: `<h3>Risposta alla tua recensione</h3><p>Il salone <strong>${vars.salon}</strong> ha risposto alla tua recensione:</p><blockquote style="border-left: 4px solid ${EMAIL_COLORS.ink}; padding-left: 12px; margin-left: 0; color: ${EMAIL_COLORS.ink2};">${escapeHtml(vars.replyText)}</blockquote><p><a href="https://solen.ch/it/salon/${vars.salonSlug}" style="display:inline-block;padding:10px 20px;background:${EMAIL_COLORS.ink};color:#fff;text-decoration:none;border-radius:8px;margin-top:20px;">${ctas.it}</a></p>`,
+    de: `<h3>Antwort auf deine Bewertung</h3><p>Der Salon <strong>${escapeHtml(vars.salon)}</strong> hat auf deine Bewertung geantwortet:</p><blockquote style="border-left: 4px solid ${EMAIL_COLORS.ink}; padding-left: 12px; margin-left: 0; color: ${EMAIL_COLORS.ink2};">${escapeHtml(vars.replyText)}</blockquote><p><a href="https://solen.ch/de/salon/${vars.salonSlug}" style="display:inline-block;padding:10px 20px;background:${EMAIL_COLORS.ink};color:#fff;text-decoration:none;border-radius:8px;margin-top:20px;">${ctas.de}</a></p>`,
+    en: `<h3>Reply to your review</h3><p>The salon <strong>${escapeHtml(vars.salon)}</strong> replied to your review:</p><blockquote style="border-left: 4px solid ${EMAIL_COLORS.ink}; padding-left: 12px; margin-left: 0; color: ${EMAIL_COLORS.ink2};">${escapeHtml(vars.replyText)}</blockquote><p><a href="https://solen.ch/en/salon/${vars.salonSlug}" style="display:inline-block;padding:10px 20px;background:${EMAIL_COLORS.ink};color:#fff;text-decoration:none;border-radius:8px;margin-top:20px;">${ctas.en}</a></p>`,
+    fr: `<h3>Réponse à votre avis</h3><p>Le salon <strong>${escapeHtml(vars.salon)}</strong> a répondu à votre avis :</p><blockquote style="border-left: 4px solid ${EMAIL_COLORS.ink}; padding-left: 12px; margin-left: 0; color: ${EMAIL_COLORS.ink2};">${escapeHtml(vars.replyText)}</blockquote><p><a href="https://solen.ch/fr/salon/${vars.salonSlug}" style="display:inline-block;padding:10px 20px;background:${EMAIL_COLORS.ink};color:#fff;text-decoration:none;border-radius:8px;margin-top:20px;">${ctas.fr}</a></p>`,
+    it: `<h3>Risposta alla tua recensione</h3><p>Il salone <strong>${escapeHtml(vars.salon)}</strong> ha risposto alla tua recensione:</p><blockquote style="border-left: 4px solid ${EMAIL_COLORS.ink}; padding-left: 12px; margin-left: 0; color: ${EMAIL_COLORS.ink2};">${escapeHtml(vars.replyText)}</blockquote><p><a href="https://solen.ch/it/salon/${vars.salonSlug}" style="display:inline-block;padding:10px 20px;background:${EMAIL_COLORS.ink};color:#fff;text-decoration:none;border-radius:8px;margin-top:20px;">${ctas.it}</a></p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -1016,10 +1018,10 @@ export function directoryClaimCode(
     it: `Il tuo codice di verifica solen.ch: ${vars.code}`,
   };
   const bodies: Record<EmailLocale, string> = {
-    de: `<p>Guten Tag,</p><p>Sie haben beantragt, den Salon <strong>${vars.salonName}</strong> auf solen.ch zu beanspruchen.</p><p>Ihr Bestätigungscode lautet: <strong style="font-size:24px;letter-spacing:4px">${vars.code}</strong></p><p>Der Code ist 15 Minuten gültig.</p><p>Falls Sie diese Anfrage nicht gestellt haben, können Sie diese E-Mail ignorieren.</p><p>Das solen.ch Team</p>`,
-    en: `<p>Hello,</p><p>You requested to claim the salon <strong>${vars.salonName}</strong> on solen.ch.</p><p>Your verification code is: <strong style="font-size:24px;letter-spacing:4px">${vars.code}</strong></p><p>The code is valid for 15 minutes.</p><p>If you did not request this, you can ignore this email.</p><p>The solen.ch team</p>`,
-    fr: `<p>Bonjour,</p><p>Vous avez demandé à revendiquer le salon <strong>${vars.salonName}</strong> sur solen.ch.</p><p>Votre code de vérification est : <strong style="font-size:24px;letter-spacing:4px">${vars.code}</strong></p><p>Le code est valable 15 minutes.</p><p>Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer cet e-mail.</p><p>L'équipe solen.ch</p>`,
-    it: `<p>Buongiorno,</p><p>Hai richiesto di rivendicare il salone <strong>${vars.salonName}</strong> su solen.ch.</p><p>Il tuo codice di verifica è: <strong style="font-size:24px;letter-spacing:4px">${vars.code}</strong></p><p>Il codice è valido per 15 minuti.</p><p>Se non hai richiesto tu questa operazione, puoi ignorare questa email.</p><p>Il team solen.ch</p>`,
+    de: `<p>Guten Tag,</p><p>Sie haben beantragt, den Salon <strong>${escapeHtml(vars.salonName)}</strong> auf solen.ch zu beanspruchen.</p><p>Ihr Bestätigungscode lautet: <strong style="font-size:24px;letter-spacing:4px">${vars.code}</strong></p><p>Der Code ist 15 Minuten gültig.</p><p>Falls Sie diese Anfrage nicht gestellt haben, können Sie diese E-Mail ignorieren.</p><p>Das solen.ch Team</p>`,
+    en: `<p>Hello,</p><p>You requested to claim the salon <strong>${escapeHtml(vars.salonName)}</strong> on solen.ch.</p><p>Your verification code is: <strong style="font-size:24px;letter-spacing:4px">${vars.code}</strong></p><p>The code is valid for 15 minutes.</p><p>If you did not request this, you can ignore this email.</p><p>The solen.ch team</p>`,
+    fr: `<p>Bonjour,</p><p>Vous avez demandé à revendiquer le salon <strong>${escapeHtml(vars.salonName)}</strong> sur solen.ch.</p><p>Votre code de vérification est : <strong style="font-size:24px;letter-spacing:4px">${vars.code}</strong></p><p>Le code est valable 15 minutes.</p><p>Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer cet e-mail.</p><p>L'équipe solen.ch</p>`,
+    it: `<p>Buongiorno,</p><p>Hai richiesto di rivendicare il salone <strong>${escapeHtml(vars.salonName)}</strong> su solen.ch.</p><p>Il tuo codice di verifica è: <strong style="font-size:24px;letter-spacing:4px">${vars.code}</strong></p><p>Il codice è valido per 15 minuti.</p><p>Se non hai richiesto tu questa operazione, puoi ignorare questa email.</p><p>Il team solen.ch</p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -1095,10 +1097,10 @@ export function platformBirthdayEmail(
   const heading: Record<EmailLocale, string> = { de: "Happy Birthday!", en: "Happy Birthday!", fr: "Joyeux anniversaire !", it: "Buon compleanno!" };
   const cta: Record<EmailLocale, string> = { de: "Jetzt entdecken →", en: "Discover now →", fr: "Découvrir maintenant →", it: "Scopri ora →" };
   const bodies: Record<EmailLocale, string> = {
-    de: `<div style="font-family:sans-serif;max-width:400px;margin:0 auto;text-align:center"><h2 style="color:${EMAIL_COLORS.ink}">${heading.de}</h2><p>Liebe/r ${vars.customerName || "Kunde/in"},</p><p>Wir wünschen dir alles Gute zum Geburtstag! 🎉</p><p>Als kleines Geschenk haben wir eine Überraschung für dich.</p><p><a href="https://www.solen.ch" style="display:inline-block;padding:12px 24px;background:${EMAIL_COLORS.ink};color:#fff;border-radius:8px;text-decoration:none">${cta.de}</a></p></div>`,
-    en: `<div style="font-family:sans-serif;max-width:400px;margin:0 auto;text-align:center"><h2 style="color:${EMAIL_COLORS.ink}">${heading.en}</h2><p>Dear ${vars.customerName || "customer"},</p><p>We wish you a wonderful birthday! 🎉</p><p>As a little gift, we have a surprise for you.</p><p><a href="https://www.solen.ch" style="display:inline-block;padding:12px 24px;background:${EMAIL_COLORS.ink};color:#fff;border-radius:8px;text-decoration:none">${cta.en}</a></p></div>`,
-    fr: `<div style="font-family:sans-serif;max-width:400px;margin:0 auto;text-align:center"><h2 style="color:${EMAIL_COLORS.ink}">${heading.fr}</h2><p>Cher/chère ${vars.customerName || "client(e)"},</p><p>Nous vous souhaitons un merveilleux anniversaire ! 🎉</p><p>Nous avons une petite surprise pour vous.</p><p><a href="https://www.solen.ch" style="display:inline-block;padding:12px 24px;background:${EMAIL_COLORS.ink};color:#fff;border-radius:8px;text-decoration:none">${cta.fr}</a></p></div>`,
-    it: `<div style="font-family:sans-serif;max-width:400px;margin:0 auto;text-align:center"><h2 style="color:${EMAIL_COLORS.ink}">${heading.it}</h2><p>Caro/a ${vars.customerName || "cliente"},</p><p>Ti auguriamo un felice compleanno! 🎉</p><p>Abbiamo una piccola sorpresa per te.</p><p><a href="https://www.solen.ch" style="display:inline-block;padding:12px 24px;background:${EMAIL_COLORS.ink};color:#fff;border-radius:8px;text-decoration:none">${cta.it}</a></p></div>`,
+    de: `<div style="font-family:sans-serif;max-width:400px;margin:0 auto;text-align:center"><h2 style="color:${EMAIL_COLORS.ink}">${heading.de}</h2><p>Liebe/r ${escapeHtml(vars.customerName) || "Kunde/in"},</p><p>Wir wünschen dir alles Gute zum Geburtstag! 🎉</p><p>Als kleines Geschenk haben wir eine Überraschung für dich.</p><p><a href="https://www.solen.ch" style="display:inline-block;padding:12px 24px;background:${EMAIL_COLORS.ink};color:#fff;border-radius:8px;text-decoration:none">${cta.de}</a></p></div>`,
+    en: `<div style="font-family:sans-serif;max-width:400px;margin:0 auto;text-align:center"><h2 style="color:${EMAIL_COLORS.ink}">${heading.en}</h2><p>Dear ${escapeHtml(vars.customerName) || "customer"},</p><p>We wish you a wonderful birthday! 🎉</p><p>As a little gift, we have a surprise for you.</p><p><a href="https://www.solen.ch" style="display:inline-block;padding:12px 24px;background:${EMAIL_COLORS.ink};color:#fff;border-radius:8px;text-decoration:none">${cta.en}</a></p></div>`,
+    fr: `<div style="font-family:sans-serif;max-width:400px;margin:0 auto;text-align:center"><h2 style="color:${EMAIL_COLORS.ink}">${heading.fr}</h2><p>Cher/chère ${escapeHtml(vars.customerName) || "client(e)"},</p><p>Nous vous souhaitons un merveilleux anniversaire ! 🎉</p><p>Nous avons une petite surprise pour vous.</p><p><a href="https://www.solen.ch" style="display:inline-block;padding:12px 24px;background:${EMAIL_COLORS.ink};color:#fff;border-radius:8px;text-decoration:none">${cta.fr}</a></p></div>`,
+    it: `<div style="font-family:sans-serif;max-width:400px;margin:0 auto;text-align:center"><h2 style="color:${EMAIL_COLORS.ink}">${heading.it}</h2><p>Caro/a ${escapeHtml(vars.customerName) || "cliente"},</p><p>Ti auguriamo un felice compleanno! 🎉</p><p>Abbiamo una piccola sorpresa per te.</p><p><a href="https://www.solen.ch" style="display:inline-block;padding:12px 24px;background:${EMAIL_COLORS.ink};color:#fff;border-radius:8px;text-decoration:none">${cta.it}</a></p></div>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -1126,10 +1128,10 @@ export function salonVoucherDeliveryEmail(
   const cta: Record<EmailLocale, string> = { de: "Jetzt einlösen →", en: "Redeem now →", fr: "Utiliser maintenant →", it: "Riscatta ora →" };
   const validUntil: Record<EmailLocale, string> = { de: "Gültig bis", en: "Valid until", fr: "Valable jusqu'au", it: "Valido fino al" };
   const bodies: Record<EmailLocale, string> = {
-    de: `<div style="font-family:sans-serif;max-width:400px;margin:0 auto;text-align:center"><h2 style="color:#0A0A0A">${heading.de}</h2><p>Hallo ${vars.recipientName ?? ""},</p><p>Du hast einen Gutschein für <strong>${vars.salonName}</strong> erhalten!</p><div style="background:#F4F4F5;border-radius:12px;padding:20px;margin:16px 0"><p style="font-size:24px;font-weight:bold;color:#0A0A0A;margin:0">CHF ${vars.amountChf}</p><p style="font-size:14px;color:${EMAIL_COLORS.ink2};margin:4px 0 0">${codeLabel.de}: <strong>${vars.code}</strong></p></div>${msgHtml}<p><a href="https://www.solen.ch" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none">${cta.de}</a></p><p style="font-size:11px;color:${EMAIL_COLORS.ink2}">${validUntil.de} ${vars.expiresDate}</p></div>`,
-    en: `<div style="font-family:sans-serif;max-width:400px;margin:0 auto;text-align:center"><h2 style="color:#0A0A0A">${heading.en}</h2><p>Hello ${vars.recipientName ?? ""},</p><p>You received a voucher for <strong>${vars.salonName}</strong>!</p><div style="background:#F4F4F5;border-radius:12px;padding:20px;margin:16px 0"><p style="font-size:24px;font-weight:bold;color:#0A0A0A;margin:0">CHF ${vars.amountChf}</p><p style="font-size:14px;color:${EMAIL_COLORS.ink2};margin:4px 0 0">${codeLabel.en}: <strong>${vars.code}</strong></p></div>${msgHtml}<p><a href="https://www.solen.ch" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none">${cta.en}</a></p><p style="font-size:11px;color:${EMAIL_COLORS.ink2}">${validUntil.en} ${vars.expiresDate}</p></div>`,
-    fr: `<div style="font-family:sans-serif;max-width:400px;margin:0 auto;text-align:center"><h2 style="color:#0A0A0A">${heading.fr}</h2><p>Bonjour ${vars.recipientName ?? ""},</p><p>Vous avez reçu un bon pour <strong>${vars.salonName}</strong> !</p><div style="background:#F4F4F5;border-radius:12px;padding:20px;margin:16px 0"><p style="font-size:24px;font-weight:bold;color:#0A0A0A;margin:0">CHF ${vars.amountChf}</p><p style="font-size:14px;color:${EMAIL_COLORS.ink2};margin:4px 0 0">${codeLabel.fr}: <strong>${vars.code}</strong></p></div>${msgHtml}<p><a href="https://www.solen.ch" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none">${cta.fr}</a></p><p style="font-size:11px;color:${EMAIL_COLORS.ink2}">${validUntil.fr} ${vars.expiresDate}</p></div>`,
-    it: `<div style="font-family:sans-serif;max-width:400px;margin:0 auto;text-align:center"><h2 style="color:#0A0A0A">${heading.it}</h2><p>Ciao ${vars.recipientName ?? ""},</p><p>Hai ricevuto un buono per <strong>${vars.salonName}</strong>!</p><div style="background:#F4F4F5;border-radius:12px;padding:20px;margin:16px 0"><p style="font-size:24px;font-weight:bold;color:#0A0A0A;margin:0">CHF ${vars.amountChf}</p><p style="font-size:14px;color:${EMAIL_COLORS.ink2};margin:4px 0 0">${codeLabel.it}: <strong>${vars.code}</strong></p></div>${msgHtml}<p><a href="https://www.solen.ch" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none">${cta.it}</a></p><p style="font-size:11px;color:${EMAIL_COLORS.ink2}">${validUntil.it} ${vars.expiresDate}</p></div>`,
+    de: `<div style="font-family:sans-serif;max-width:400px;margin:0 auto;text-align:center"><h2 style="color:#0A0A0A">${heading.de}</h2><p>Hallo ${escapeHtml(vars.recipientName ?? "")},</p><p>Du hast einen Gutschein für <strong>${escapeHtml(vars.salonName)}</strong> erhalten!</p><div style="background:#F4F4F5;border-radius:12px;padding:20px;margin:16px 0"><p style="font-size:24px;font-weight:bold;color:#0A0A0A;margin:0">CHF ${vars.amountChf}</p><p style="font-size:14px;color:${EMAIL_COLORS.ink2};margin:4px 0 0">${codeLabel.de}: <strong>${vars.code}</strong></p></div>${msgHtml}<p><a href="https://www.solen.ch" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none">${cta.de}</a></p><p style="font-size:11px;color:${EMAIL_COLORS.ink2}">${validUntil.de} ${vars.expiresDate}</p></div>`,
+    en: `<div style="font-family:sans-serif;max-width:400px;margin:0 auto;text-align:center"><h2 style="color:#0A0A0A">${heading.en}</h2><p>Hello ${escapeHtml(vars.recipientName ?? "")},</p><p>You received a voucher for <strong>${escapeHtml(vars.salonName)}</strong>!</p><div style="background:#F4F4F5;border-radius:12px;padding:20px;margin:16px 0"><p style="font-size:24px;font-weight:bold;color:#0A0A0A;margin:0">CHF ${vars.amountChf}</p><p style="font-size:14px;color:${EMAIL_COLORS.ink2};margin:4px 0 0">${codeLabel.en}: <strong>${vars.code}</strong></p></div>${msgHtml}<p><a href="https://www.solen.ch" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none">${cta.en}</a></p><p style="font-size:11px;color:${EMAIL_COLORS.ink2}">${validUntil.en} ${vars.expiresDate}</p></div>`,
+    fr: `<div style="font-family:sans-serif;max-width:400px;margin:0 auto;text-align:center"><h2 style="color:#0A0A0A">${heading.fr}</h2><p>Bonjour ${escapeHtml(vars.recipientName ?? "")},</p><p>Vous avez reçu un bon pour <strong>${escapeHtml(vars.salonName)}</strong> !</p><div style="background:#F4F4F5;border-radius:12px;padding:20px;margin:16px 0"><p style="font-size:24px;font-weight:bold;color:#0A0A0A;margin:0">CHF ${vars.amountChf}</p><p style="font-size:14px;color:${EMAIL_COLORS.ink2};margin:4px 0 0">${codeLabel.fr}: <strong>${vars.code}</strong></p></div>${msgHtml}<p><a href="https://www.solen.ch" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none">${cta.fr}</a></p><p style="font-size:11px;color:${EMAIL_COLORS.ink2}">${validUntil.fr} ${vars.expiresDate}</p></div>`,
+    it: `<div style="font-family:sans-serif;max-width:400px;margin:0 auto;text-align:center"><h2 style="color:#0A0A0A">${heading.it}</h2><p>Ciao ${escapeHtml(vars.recipientName ?? "")},</p><p>Hai ricevuto un buono per <strong>${escapeHtml(vars.salonName)}</strong>!</p><div style="background:#F4F4F5;border-radius:12px;padding:20px;margin:16px 0"><p style="font-size:24px;font-weight:bold;color:#0A0A0A;margin:0">CHF ${vars.amountChf}</p><p style="font-size:14px;color:${EMAIL_COLORS.ink2};margin:4px 0 0">${codeLabel.it}: <strong>${vars.code}</strong></p></div>${msgHtml}<p><a href="https://www.solen.ch" style="display:inline-block;padding:12px 24px;background:#0A0A0A;color:#fff;border-radius:8px;text-decoration:none">${cta.it}</a></p><p style="font-size:11px;color:${EMAIL_COLORS.ink2}">${validUntil.it} ${vars.expiresDate}</p></div>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }
@@ -1146,10 +1148,10 @@ export function waitlistSlotFreed(
     it: `Si è liberato uno slot presso ${vars.salon}!`,
   };
   const bodies: Record<EmailLocale, string> = {
-    de: `<p>Ein Termin für <strong>${vars.service}</strong> am <strong>${vars.date}</strong> ist jetzt verfügbar.</p><p><a href="https://solen.ch">Jetzt buchen →</a></p>`,
-    en: `<p>A slot for <strong>${vars.service}</strong> on <strong>${vars.date}</strong> is now available.</p><p><a href="https://solen.ch">Book now →</a></p>`,
-    fr: `<p>Un créneau pour <strong>${vars.service}</strong> le <strong>${vars.date}</strong> est maintenant disponible.</p><p><a href="https://solen.ch">Réserver maintenant →</a></p>`,
-    it: `<p>Uno slot per <strong>${vars.service}</strong> il <strong>${vars.date}</strong> è ora disponibile.</p><p><a href="https://solen.ch">Prenota ora →</a></p>`,
+    de: `<p>Ein Termin für <strong>${escapeHtml(vars.service)}</strong> am <strong>${vars.date}</strong> ist jetzt verfügbar.</p><p><a href="https://solen.ch">Jetzt buchen →</a></p>`,
+    en: `<p>A slot for <strong>${escapeHtml(vars.service)}</strong> on <strong>${vars.date}</strong> is now available.</p><p><a href="https://solen.ch">Book now →</a></p>`,
+    fr: `<p>Un créneau pour <strong>${escapeHtml(vars.service)}</strong> le <strong>${vars.date}</strong> est maintenant disponible.</p><p><a href="https://solen.ch">Réserver maintenant →</a></p>`,
+    it: `<p>Uno slot per <strong>${escapeHtml(vars.service)}</strong> il <strong>${vars.date}</strong> è ora disponibile.</p><p><a href="https://solen.ch">Prenota ora →</a></p>`,
   };
   return { to, subject: subjects[locale], html: bodies[locale] };
 }

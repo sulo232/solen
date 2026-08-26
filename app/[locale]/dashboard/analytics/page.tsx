@@ -206,7 +206,7 @@ export default function AnalyticsPage() {
             {data.percentile_rank != null && (
               <div className="bg-s-accent-bright/[0.06] rounded-[16px] border border-s-accent-bright/20 p-4 flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-s-accent-bright/15 flex items-center justify-center shrink-0">
-                  <TrendingUp size={20} className="text-s-accent-bright" />
+                  <TrendingUp size={20} strokeWidth={2.2} className="text-s-accent-bright" />
                 </div>
                 <div>
                   <p className="font-heading text-s-ink text-sm">

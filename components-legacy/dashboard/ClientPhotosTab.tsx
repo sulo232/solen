@@ -84,7 +84,7 @@ export default function ClientPhotosTab({ customerId }: ClientPhotosTabProps) {
     <div>
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-heading text-sm text-s-ink flex items-center gap-2">
-          <Camera size={14} className="text-s-coral" /> {t("photos")}
+          <Camera size={14} strokeWidth={1.6} className="text-s-coral" /> {t("photos")}
         </h3>
         <div className="flex items-center gap-2">
           <select value={photoType} onChange={(e) => setPhotoType(e.target.value as "before" | "after" | "progress")}

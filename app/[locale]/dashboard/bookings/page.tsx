@@ -85,7 +85,7 @@ function SalonCancelModal({
         <div className="flex items-start justify-between mb-4">
           <h3 className="text-[18px] font-semibold tracking-[-0.01em] text-s-ink">{t("cancelModalTitle")}</h3>
           {/* mockup-ok: a11y touch-target fix (FRONTEND_AUDIT_2026-07-08.md, dash-ops), 18px raised to the locked 44px icon-button spec via a padded hit-area, no visual redesign */}
-          <button onClick={onClose} className="grid place-items-center h-11 w-11 -m-2.5 rounded-full hover:bg-s-bg-sunken transition-[colors,transform] active:scale-[0.94] active:duration-[80ms] active:ease-glide"><X size={18} className="text-s-ink-2" /></button>
+          <button onClick={onClose} className="grid place-items-center h-11 w-11 -m-2.5 rounded-full hover:bg-s-bg-sunken transition-[colors,transform] active:scale-[0.94] active:duration-[80ms] active:ease-glide"><X size={18} strokeWidth={1.9} className="text-s-ink-2" /></button>
         </div>
         <p className="text-sm text-s-ink-2 mb-4">{t("cancelModalDescription")}</p>
         <div className="space-y-2 mb-5">
@@ -153,19 +153,19 @@ function BookingActionSheet({
             onClick={() => onComplete(booking.id)}
             className="flex items-center justify-center gap-2 w-full min-h-[44px] rounded-xl bg-s-success text-white font-heading font-semibold text-[13.5px] transition-[opacity,transform] hover:opacity-90 active:scale-[0.97] active:duration-[80ms] active:ease-glide"
           >
-            <Check size={15} strokeWidth={2.4} />{t("complete")}
+            <Check size={15} strokeWidth={1.9} />{t("complete")}
           </button>
           <button
             onClick={() => onNoShow(booking.id)}
             className="flex items-center justify-center gap-2 w-full min-h-[44px] rounded-xl bg-white border border-s-border text-s-ink font-heading font-semibold text-[13.5px] transition-[colors,transform] hover:bg-s-bg-sunken active:scale-[0.97] active:duration-[80ms] active:ease-glide"
           >
-            <UserX size={15} strokeWidth={2.4} />{t("noShow")}
+            <UserX size={15} strokeWidth={1.9} />{t("noShow")}
           </button>
           <button
             onClick={() => onCancel(booking.id)}
             className="flex items-center justify-center gap-2 w-full min-h-[44px] rounded-xl bg-white border border-s-error/30 text-s-error font-heading font-semibold text-[13.5px] transition-[colors,transform] hover:bg-s-error/5 active:scale-[0.97] active:duration-[80ms] active:ease-glide"
           >
-            <X size={15} strokeWidth={2.4} />{t("cancelBooking")}
+            <X size={15} strokeWidth={1.9} />{t("cancelBooking")}
           </button>
         </div>
       </div>

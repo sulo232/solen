@@ -258,7 +258,7 @@ export default function TipFlow({
         {demo ? (
           <div className="mt-4">
             <div className="flex items-center gap-2.5 rounded-input border border-s-border bg-s-bg-sunken px-3.5 py-4 text-[13px] text-s-ink-2">
-              <CreditCard size={18} className="shrink-0 text-s-ink" /> Karte MM / JJ CVC
+              <CreditCard size={18} strokeWidth={1.9} className="shrink-0 text-s-ink" /> Karte MM / JJ CVC
             </div>
             <button
               type="button"
@@ -274,7 +274,7 @@ export default function TipFlow({
               <PaymentElement />
               {error && (
                 <div className="mt-3 flex items-start gap-1.5 rounded-input bg-s-error-bg p-3 text-[12px] text-s-error">
-                  <AlertCircle size={14} className="mt-0.5 shrink-0" /> <span>{error}</span>
+                  <AlertCircle size={14} strokeWidth={1.6} className="mt-0.5 shrink-0" /> <span>{error}</span>
                 </div>
               )}
               <SendButton
@@ -292,7 +292,7 @@ export default function TipFlow({
           <div className="mt-8 flex justify-center">
             {error ? (
               <div className="flex items-start gap-1.5 rounded-input bg-s-error-bg p-3 text-[13px] text-s-error">
-                <AlertCircle size={15} className="mt-0.5 shrink-0" /> <span>{error}</span>
+                <AlertCircle size={15} strokeWidth={1.9} className="mt-0.5 shrink-0" /> <span>{error}</span>
               </div>
             ) : (
               <Spinner size="md" />

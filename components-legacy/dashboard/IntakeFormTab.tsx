@@ -116,7 +116,7 @@ export default function IntakeFormTab({ customerId }: IntakeFormTabProps) {
     <div>
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-heading text-sm text-s-ink flex items-center gap-2">
-          <ClipboardList size={14} className="text-s-coral" /> {t("title")}
+          <ClipboardList size={14} strokeWidth={1.6} className="text-s-coral" /> {t("title")}
         </h3>
         <button onClick={() => setShowForm(!showForm)} className="flex items-center gap-1 text-xs text-s-coral hover:text-s-coral/80 transition-colors">
           <ClipboardList size={12} /> {t("newForm")}

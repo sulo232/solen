@@ -70,7 +70,7 @@ export default function SearchAutocomplete({ query, onSelect, onSalonSelect }: S
                   <Image src={thumb} alt="" fill className="object-cover" sizes="48px" />
                 </span>
               ) : (
-                <span className="grid h-12 w-12 shrink-0 place-items-center rounded-[12px] bg-s-bg-sunken text-s-ink-2"><Search size={16} aria-hidden /></span>
+                <span className="grid h-12 w-12 shrink-0 place-items-center rounded-[12px] bg-s-bg-sunken text-s-ink-2"><Search size={16} strokeWidth={1.9} aria-hidden /></span>
               )}
               <span className="min-w-0 flex-1 truncate font-heading text-[15px] font-semibold text-s-ink">{term}</span>
               <span className="shrink-0 rounded-pill border border-s-border bg-s-bg-sunken px-2 py-0.5 text-[12px] font-heading font-medium text-s-ink-2">Look</span>
@@ -108,7 +108,7 @@ export default function SearchAutocomplete({ query, onSelect, onSalonSelect }: S
                   />
                 )}
               </span>
-              <ChevronRight size={18} className="shrink-0 text-s-ink-2" aria-hidden />
+              <ChevronRight size={18} strokeWidth={1.9} className="shrink-0 text-s-ink-2" aria-hidden />
             </button>
           ))}
         </>
@@ -121,7 +121,7 @@ export default function SearchAutocomplete({ query, onSelect, onSalonSelect }: S
         onClick={() => onSelect(q)}
         className="mt-0.5 flex w-full items-center gap-3 rounded-lg px-1.5 py-2.5 text-left transition-[colors,transform] duration-150 hover:bg-s-bg-sunken active:scale-[0.98] active:duration-[80ms]"
       >
-        <Search size={16} className="shrink-0 text-s-ink-2" aria-hidden />
+        <Search size={16} strokeWidth={1.9} className="shrink-0 text-s-ink-2" aria-hidden />
         <span className="truncate text-[15px] text-s-ink-2">Suche nach „<span className="font-semibold text-s-ink">{q}</span>"</span>
       </button>
     </div>

@@ -139,7 +139,7 @@ export default function SignIn() {
     return (
       <div className="text-center py-6 flex flex-col items-center gap-4">
         <div className="w-14 h-14 rounded-[14px] flex items-center justify-center bg-s-success-bg">
-          <Mail size={24} className="text-s-success" />
+          <Mail size={24} strokeWidth={2.4} className="text-s-success" />
         </div>
         <div>
           <p className="text-[13px] text-s-ink-2 mb-2">
@@ -187,7 +187,7 @@ export default function SignIn() {
             type="submit"
             disabled={loading || !email}
             className="w-full py-4 rounded-btn bg-s-ink text-white text-[15px] font-medium tracking-[-0.005em] active:scale-[0.97] transition-[transform,filter] duration-150 disabled:opacity-50 flex items-center justify-center gap-2">
-            {loading ? <Spinner size="sm" invert /> : <Mail size={15} />}
+            {loading ? <Spinner size="sm" invert /> : <Mail size={15} strokeWidth={1.9} />}
             Reset-Link senden
           </button>
         </form>
@@ -230,7 +230,7 @@ export default function SignIn() {
             className="absolute right-2 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center text-s-ink-2 hover:text-s-ink transition-colors"
             aria-label={showPassword ? "Passwort verbergen" : "Passwort anzeigen"}
           >
-            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            {showPassword ? <EyeOff size={18} strokeWidth={1.9} /> : <Eye size={18} strokeWidth={1.9} />}
           </button>
         </div>
         <button

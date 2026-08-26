@@ -93,7 +93,7 @@ export default function AiLimitsAdminPage() {
       {loading ? (
         <div className="flex justify-center py-16">
           {/* mockup-ok: WCAG 2.2.2 conformance, page-load spinner bounded (see tailwind.config.js spin-bounded) */}
-          <Loader2 size={24} className="animate-spin-bounded text-s-ink/40" />
+          <Loader2 size={24} strokeWidth={2.4} className="animate-spin-bounded text-s-ink/40" />
         </div>
       ) : (
         <div className="max-w-md rounded-[14px] border border-s-border bg-white p-6 shadow-warm-md">
@@ -134,7 +134,7 @@ export default function AiLimitsAdminPage() {
           {/* Saved banner */}
           {state === "saved" && (
             <div className="mt-4 flex items-center gap-2.5 rounded-[11px] bg-s-success-bg px-3.5 py-3">
-              <Check size={18} strokeWidth={3} className="shrink-0 text-s-success" />
+              <Check size={18} strokeWidth={1.9} className="shrink-0 text-s-success" />
               <div>
                 <div className="font-heading text-[13px] font-semibold text-s-success">{t("savedTitle")}</div>
                 <div className="mt-0.5 text-[12px] text-s-ink-2">{t("savedDescription", { cap: loadedCap })}</div>
@@ -145,7 +145,7 @@ export default function AiLimitsAdminPage() {
           {/* Error banner */}
           {state === "error" && (
             <div className="mt-4 flex items-center gap-2.5 rounded-[11px] bg-s-error-bg px-3.5 py-3">
-              <AlertTriangle size={17} className="shrink-0 text-s-error" />
+              <AlertTriangle size={17} strokeWidth={1.9} className="shrink-0 text-s-error" />
               <div className="text-[12px] text-s-error">{t("errorMessage")}</div>
             </div>
           )}
@@ -168,22 +168,22 @@ export default function AiLimitsAdminPage() {
           >
             {state === "saving" ? (
               <>
-                <Loader2 size={16} className="animate-spin" />
+                <Loader2 size={16} strokeWidth={1.9} className="animate-spin" />
                 {t("saving")}
               </>
             ) : state === "saved" ? (
               <>
-                <Check size={16} strokeWidth={3} />
+                <Check size={16} strokeWidth={1.9} />
                 {t("saved")}
               </>
             ) : state === "error" ? (
               <>
-                <AlertTriangle size={16} />
+                <AlertTriangle size={16} strokeWidth={1.9} />
                 {t("retry")}
               </>
             ) : (
               <>
-                <Save size={16} />
+                <Save size={16} strokeWidth={1.9} />
                 {t("save")}
               </>
             )}

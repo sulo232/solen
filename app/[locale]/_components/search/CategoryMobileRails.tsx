@@ -36,6 +36,8 @@ import WalkInBand from "../homepage/WalkInBand";
 // moment two salons in the same rail sit in different cities, so each card derives its
 // own city from ITS postal_code instead of inheriting the page's.
 import { postalToCity } from "../salon/_shared";
+import { useLocale } from "next-intl";
+import { nameForLocale } from "@/lib/min-price-service";
 
 /**
  * CategoryMobileRails , owner 2026-08-01 ("remove cz we made it carousel right did u forget"):
@@ -70,6 +72,12 @@ type MobileRailSalon = {
   cover_photo_url: string | null;
   postal_code?: string | null;
   min_price?: number | null;
+  // Art. 13 PBV: the from-price must name the offer it buys. These arrive on every /api/salons
+  // response; this type simply never declared them, so the rail printed a bare number.
+  min_price_service_de?: string | null;
+  min_price_service_en?: string | null;
+  min_price_service_fr?: string | null;
+  min_price_service_it?: string | null;
   distance_meters?: number | null;
   services?: { slots?: string[] | null }[];
 };
@@ -91,7 +99,7 @@ function RailHeading({ title }: { title: string }) {
         aria-hidden="true"
         className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-s-bg-sunken text-s-ink"
       >
-        <ArrowRight size={20} strokeWidth={2} aria-hidden />
+        <ArrowRight size={20} strokeWidth={2.2} aria-hidden />
       </span>
     </div>
   );
@@ -110,6 +118,9 @@ function Rail({
   cityName: string;
   favoriteIds: Set<string>;
 }) {
+  // Read here rather than threaded through three call sites: this is a client component and the
+  // locale is the only thing the price label needs that the salon row does not carry.
+  const locale = useLocale();
   // Same self-hide floor CategoryBrowseRails' own Rail() already uses: a 1-card rail is not a
   // rail, and an empty one is never rendered , never a section with no data.
   if (salons.length < 2) return null;
@@ -129,6 +140,7 @@ function Rail({
             photoUrl={s.cover_photo_url ?? undefined}
             variant="availability"
             priceFromCHF={s.min_price ?? undefined}
+            priceFromService={nameForLocale({ de: s.min_price_service_de ?? null, en: s.min_price_service_en ?? null, fr: s.min_price_service_fr ?? null, it: s.min_price_service_it ?? null }, locale)}
             postalCode={s.postal_code ?? undefined}
             // Per-salon city from its own postal_code (postalToCity), not the page-level
             // cityName ("4051 Schweizweit" bug: every card showed the countrywide fallback

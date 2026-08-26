@@ -3,7 +3,15 @@ export const runtime = "nodejs";
 
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
-import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
+import {
+  applyRateLimit,
+  generalLimiter,
+  getClientIp,
+  getAiDailyLimiter,
+  getAiGlobalDailyLimiter,
+  AI_GLOBAL_BUDGET_KEY,
+  AI_GLOBAL_BUDGET_EXCEEDED_BODY,
+} from "@/lib/ratelimit";
 import { validateBody, reviewTranslateSchema } from "@/lib/validations";
 import { translateField, type TranslateLocale } from "@/lib/ai/translate";
 
@@ -24,8 +32,21 @@ import { translateField, type TranslateLocale } from "@/lib/ai/translate";
 // never silently become what a customer said about a business.
 
 export async function POST(req: NextRequest) {
-  const limited = await applyRateLimit(generalLimiter, { ip: getClientIp(req) });
+  const ip = getClientIp(req);
+  const limited = await applyRateLimit(generalLimiter, { ip });
   if (limited) return limited;
+
+  // This calls Gemini for a real generation, the same AI-cost category as app/api/translate
+  // (lib/ratelimit.ts names "translate" by name in the routes that must carry a daily cap +
+  // the global AI budget). That sibling route keys its per-user cap on the signed-in user id.
+  // This route is fetched from a public salon page (SalonReviews.tsx) where the reader may be
+  // signed out, so there is no user id to key on; applied per-IP instead of skipped, on the
+  // SAME daily-cap limiter and the SAME house-wide budget, never a new one.
+  const globalLimited = await applyRateLimit(await getAiGlobalDailyLimiter(), { userId: AI_GLOBAL_BUDGET_KEY }, AI_GLOBAL_BUDGET_EXCEEDED_BODY);
+  if (globalLimited) return globalLimited;
+
+  const dailyLimited = await applyRateLimit(await getAiDailyLimiter(), { ip });
+  if (dailyLimited) return dailyLimited;
 
   let raw: unknown;
   try {
@@ -49,11 +70,30 @@ export async function POST(req: NextRequest) {
   const out: Record<string, string> = {};
   for (const row of cached ?? []) out[row.review_id as string] = row.translated as string;
 
+  // The cache carries no visibility state: a review can be hidden by moderation AFTER it was
+  // translated and cached, and the cache-hit path used to return it anyway. Re-check the cached
+  // ids against the live table with the same is_hidden filter the miss path applies below, and
+  // drop anything hidden or gone. One extra query on the ids already in hand, never a per-row
+  // loop, so the fast (all-cached) path stays one query away from what it was.
+  const cachedIds = Object.keys(out);
+  if (cachedIds.length > 0) {
+    const { data: visible } = await admin
+      .from("reviews")
+      .select("id")
+      .in("id", cachedIds)
+      .eq("is_hidden", false);
+    const visibleIds = new Set((visible ?? []).map((r) => r.id as string));
+    for (const id of cachedIds) {
+      if (!visibleIds.has(id)) delete out[id];
+    }
+  }
+
   const missing = ids.filter((id) => !out[id]);
   if (missing.length === 0) return NextResponse.json({ translations: out, cached: true });
 
-  // 2. Fetch the originals for whatever is missing. is_hidden is re-checked here as well as at
-  //    the read site: a moderated-away review must not be translatable back into visibility.
+  // 2. Fetch the originals for whatever is missing. is_hidden is checked here too, same as the
+  //    cache-hit path above: a moderated-away review must not be translatable back into
+  //    visibility from either path.
   const { data: reviews } = await admin
     .from("reviews")
     .select("id, comment")

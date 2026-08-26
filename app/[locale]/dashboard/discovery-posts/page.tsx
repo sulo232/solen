@@ -125,9 +125,9 @@ export default function DiscoveryPostsPage() {
               className={`px-4 py-2 rounded-pill text-sm font-medium transition-colors ${tab === tabKey ? "bg-white text-s-ink shadow-elevation-1" : "text-s-ink/40"}`}
             >
               {tabKey === "new" ? (
-                <span className="flex items-center gap-1.5"><Plus size={14} /> {t("tabNew")}</span>
+                <span className="flex items-center gap-1.5"><Plus size={14} strokeWidth={1.6} /> {t("tabNew")}</span>
               ) : (
-                <span className="flex items-center gap-1.5"><BarChart size={14} /> {t("tabHistory")}</span>
+                <span className="flex items-center gap-1.5"><BarChart size={14} strokeWidth={1.6} /> {t("tabHistory")}</span>
               )}
             </button>
           ))}
@@ -145,10 +145,10 @@ export default function DiscoveryPostsPage() {
             <div className="flex gap-2">
               {/* selected-ok: dashboard vibrant skin (LOCKFILE §12.2/§12.4), s-coral retired, s-accent is the locked active fill */}
               <button onClick={() => setMode("photo")} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-btn text-sm font-medium transition-colors ${mode === "photo" ? "bg-s-accent text-white" : "bg-s-ink/5 text-s-ink-2"}`}>
-                <Upload size={14} /> {t("modePhoto")}
+                <Upload size={14} strokeWidth={1.6} /> {t("modePhoto")}
               </button>
               <button onClick={() => setMode("tiktok")} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-btn text-sm font-medium transition-colors ${mode === "tiktok" ? "bg-s-accent text-white" : "bg-s-ink/5 text-s-ink-2"}`}>
-                <LinkIcon size={14} /> TikTok
+                <LinkIcon size={14} strokeWidth={1.6} /> TikTok
               </button>
             </div>
 
@@ -184,7 +184,7 @@ export default function DiscoveryPostsPage() {
             {error && <p className="text-xs text-s-error">{error}</p>}
 
             <button onClick={handlePost} disabled={posting || !tosAccepted} className="w-full py-3 rounded-btn bg-s-accent hover:brightness-[1.06] text-white font-medium text-sm disabled:opacity-40 transition-[transform,filter] flex items-center justify-center gap-2">
-              {posting && <Loader2 size={14} className="animate-spin" />}
+              {posting && <Loader2 size={14} strokeWidth={1.6} className="animate-spin" />}
               {t("publish")}
             </button>
           </div>

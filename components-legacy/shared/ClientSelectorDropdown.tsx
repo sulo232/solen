@@ -65,12 +65,12 @@ export default function ClientSelectorDropdown({ salonId, value, onChange, place
         className={`w-full flex items-center justify-between px-3 py-2 rounded-[6px] border bg-white transition-[border-color,box-shadow] ${isOpen ? 'border-s-accent ring-2 ring-s-accent/10' : 'border-s-border'}`}
       >
         <div className="flex items-center gap-2 overflow-hidden">
-          <User size={14} className="text-s-ink/40 shrink-0" />
+          <User size={14} strokeWidth={1.6} className="text-s-ink/40 shrink-0" />
           <span className={`text-xs truncate ${selectedClient ? 'text-s-ink font-medium' : 'text-s-ink/40'}`}>
             {selectedClient ? `${selectedClient.display_name} (${selectedClient.user_id.split('-')[0]})` : placeholder}
           </span>
         </div>
-        <ChevronDown size={14} className="text-s-ink/40" />
+        <ChevronDown size={14} strokeWidth={1.6} className="text-s-ink/40" />
       </button>
 
       {isOpen && (
@@ -94,7 +94,7 @@ export default function ClientSelectorDropdown({ salonId, value, onChange, place
           <div className="max-h-48 overflow-y-auto p-1">
             {loading ? (
               <div className="p-4 flex justify-center text-s-ink/40">
-                <Loader2 size={16} className="animate-spin" />
+                <Loader2 size={16} strokeWidth={1.9} className="animate-spin" />
               </div>
             ) : filtered.length > 0 ? filtered.map((c) => (
               <button

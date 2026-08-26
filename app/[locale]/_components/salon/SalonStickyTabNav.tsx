@@ -202,7 +202,7 @@ export function SalonStickyTabNav({
             onClick={shareSalon}
             className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-s-ink transition-transform active:scale-95 active:duration-[80ms] active:ease-glide"
           >
-            <Share size={18} strokeWidth={2.1} aria-hidden />
+            <Share size={18} strokeWidth={1.9} aria-hidden />
           </button>
           <HeartButton salonId={salon.id} salonName={salon.name} className="!relative !right-auto !top-auto" bare iconSize={18} />
         </div>

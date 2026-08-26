@@ -83,7 +83,7 @@ export function SalonAdditionalInfo({ salon }: { salon: SalonDetail }) {
               className="font-body flex items-start gap-3 text-[14px] text-s-ink"
             >
               <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center text-s-ink-2">
-                <Icon size={16} strokeWidth={2} />
+                <Icon size={16} strokeWidth={1.9} />
               </span>
               <span className="leading-relaxed">{item.label}</span>
             </li>

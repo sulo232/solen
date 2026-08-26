@@ -49,7 +49,7 @@ export default function BookingActionPage() {
         ) : error ? (
           <>
             <div className="w-14 h-14 rounded-full mx-auto mb-4 flex items-center justify-center bg-s-warning-bg">
-              <AlertTriangle size={24} className="text-s-warning" />
+              <AlertTriangle size={24} strokeWidth={2.4} className="text-s-warning" />
             </div>
             <h2 className="font-heading text-lg text-s-ink mb-2">{t("error")}</h2>
             <p className="text-sm text-s-ink-2">{error}</p>
@@ -57,7 +57,7 @@ export default function BookingActionPage() {
         ) : result === "confirmed" ? (
           <>
             <div className="w-14 h-14 rounded-full mx-auto mb-4 flex items-center justify-center bg-s-ink/10">
-              <Check size={24} className="text-s-success" />
+              <Check size={24} strokeWidth={2.4} className="text-s-success" />
             </div>
             <h2 className="font-heading text-lg text-s-ink mb-2">{t("confirmed")}</h2>
             <p className="text-sm text-s-ink-2">{t("confirmedDesc")}</p>
@@ -65,7 +65,7 @@ export default function BookingActionPage() {
         ) : (
           <>
             <div className="w-14 h-14 rounded-full mx-auto mb-4 flex items-center justify-center bg-s-ink/5">
-              <X size={24} className="text-s-ink/40" />
+              <X size={24} strokeWidth={2.4} className="text-s-ink/40" />
             </div>
             <h2 className="font-heading text-lg text-s-ink mb-2">{t("cancelled")}</h2>
             <p className="text-sm text-s-ink-2">{t("cancelledDesc")}</p>

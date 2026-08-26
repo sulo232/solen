@@ -66,7 +66,7 @@ export default function SaveButton(props: SaveButtonProps) {
         aria-pressed={saved}
       >
         <Heart
-          size={18}
+          size={18} strokeWidth={1.9}
           className={[
             "transition-[fill,color] duration-150",
             saved ? "fill-s-love text-s-love" : "text-s-ink/30 group-hover:text-s-ink-2",

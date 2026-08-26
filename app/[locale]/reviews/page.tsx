@@ -99,7 +99,7 @@ export default async function ReviewsPage({
         {reviews.length === 0 ? (
           <div className="flex flex-col items-center justify-center rounded-2xl border border-s-border bg-s-bg-sunken px-6 py-16 text-center">
             <div className="grid h-12 w-12 place-items-center rounded-full bg-s-bg-sunken text-s-ink">
-              <MessageSquare size={22} aria-hidden />
+              <MessageSquare size={22} strokeWidth={2.2} aria-hidden />
             </div>
             <h2 className="mt-4 font-display text-[18px] font-semibold text-s-ink">
               {t("emptyTitle")}

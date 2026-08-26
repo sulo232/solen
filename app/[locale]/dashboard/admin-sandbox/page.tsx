@@ -189,7 +189,7 @@ export default function AdminSandboxPage() {
       {/* ── Platform Test-Salon Seeder ────────────────────────────── */}
       <div className="mb-6 rounded-[14px] border border-s-amber/30 bg-s-amber/[0.05] p-4 space-y-3">
         <div className="flex items-center gap-2">
-          <FlaskConical size={14} className="text-s-star" />
+          <FlaskConical size={14} strokeWidth={1.6} className="text-s-star" />
           <p className="text-[12px] font-heading uppercase tracking-[.18em] text-s-star">
             Platform Test-Stores
           </p>
@@ -259,7 +259,7 @@ export default function AdminSandboxPage() {
         <p className="text-[12px] font-heading tracking-[0.08em] text-s-ink-2 mb-1">Admin</p>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <FlaskConical size={20} className="text-s-coral" />
+            <FlaskConical size={20} strokeWidth={2.2} className="text-s-coral" />
             <h1 className="font-heading text-[28px] text-s-ink leading-none">
               {t("pageTitle")}
             </h1>
@@ -331,7 +331,7 @@ export default function AdminSandboxPage() {
         </div>
       ) : salons.length === 0 ? (
         <div className="rounded-[12px] border border-dashed border-s-ink/[0.08] p-12 text-center">
-          <FlaskConical size={24} className="mx-auto mb-3 text-s-ink/20" />
+          <FlaskConical size={24} strokeWidth={2.4} className="mx-auto mb-3 text-s-ink/20" />
           <p className="text-xs font-heading text-s-ink-2 uppercase tracking-[.10em]">
             {t("noSalons")}
           </p>
@@ -349,7 +349,7 @@ export default function AdminSandboxPage() {
                 {/* Salon header row */}
                 <div className="flex items-center gap-3 p-4">
                   <div className="w-9 h-9 rounded-[10px] bg-s-coral/10 flex items-center justify-center shrink-0">
-                    <FlaskConical size={16} className="text-s-coral" />
+                    <FlaskConical size={16} strokeWidth={1.9} className="text-s-coral" />
                   </div>
 
                   <div className="flex-1 min-w-0">

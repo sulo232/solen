@@ -26,7 +26,7 @@ export default function SalonModeToggle({
   const l = COPY[locale] ?? COPY.de;
   const segs: { key: Mode; label: string; icon: ReactNode }[] = [
     { key: "book", label: l.book, icon: <Calendar className="w-[18px] h-[18px]" /> },
-    { key: "walkin", label: l.walkin, icon: <Footprints size={19} strokeWidth={2.25} /> },
+    { key: "walkin", label: l.walkin, icon: <Footprints size={19} strokeWidth={2.2} /> },
   ];
   return (
     <div className="flex rounded-btn bg-s-sand p-1">
