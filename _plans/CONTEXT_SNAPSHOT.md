@@ -2,16 +2,26 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-26T14:02:17 (trigger: auto)
+- taken: 2026-08-26T15:23:25 (trigger: auto)
 - branch: claude/agent-flow-design-overhaul-2af2c2
 
 ## git
 ```
+9c801c29f The pile had a cause, and it was nine unsaved files
+dcd4159a5 Round 1 fixed the leak and opened a hole, so round 2 is running
+d9bd21958 He was right that it piles up, and here is the number
+cdd44bd0f Put the three calls that are his on the standing open page
 1a0a7332d A hidden review could still be read, and a card could be charged twice
-c6e509911 Put the sha on the first line of six boxes, and re-prove all nine
-87dd370d1 Close the loop: what got fixed, and the three calls that are his
-d364947ae A check that counts what a sweep LEFT, not what it did
-3ce0fb23e Close the fix boxes, including the one where the reader was not enough
+```
+```
+M _plans/BACKEND_LOOP_2026-08-23.md
+M  app/api/admin/reports/[id]/route.ts
+M  app/api/cron/process-deletions/route.ts
+M  app/api/nail-inspo/images/route.ts
+M  app/api/services/[id]/route.ts
+M  app/api/staff/[id]/route.ts
+M  lib/storage.ts
+?? lib/gdpr/purge-avatar-storage.ts
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
@@ -80,9 +90,8 @@ d364947ae A check that counts what a sweep LEFT, not what it did
 
 ## BACKEND_LOOP_2026-08-23.md
 Open boxes:
-- [ ] B7. **Leaked-password protection is off.** A Supabase dashboard toggle, so it is his to
-- [ ] **DECISION FOR HIM, and the only one in this whole loop.** Removing rows is a data
-- [ ] **HIS CALL: prune old slots.** 17,572 of the 62,913 slots are in the past and 16,711 of
-- [ ] **HIS CALL: leaked-password protection.** Off today. It is a toggle in the Supabase
-- [ ] **HIS CALL: the stranded July fixes.** A timeout on the AI calls, a timeout on the search
-- [ ] **Left open on purpose, by the reader, and worth keeping:** a translation cached for a
+- [ ] **The search-embedding timeout is the one that is genuinely missing, and it is worse than
+- [ ] **Measured, and the worst one is a takedown that does not take down.** `verified:` swept
+- [ ] PARKED 2026-08-26 · Should a nightly job delete past time slots that were never booked and are older than 90 days? · from: the storage pass, 17,572 of 62,913 slots are already in the past and nothing has ever removed one
+- [ ] PARKED 2026-08-26 · Do you want leaked-password protection switched on, knowing it rejects sign-ups using passwords from known breach lists? · from: the Supabase security advisor, it is a dashboard toggle and not code
+- [ ] PARKED 2026-08-26 · Do you want the three July backend fixes brought across from the branches they were stranded on? · from: the regression pass, they exist on neither this branch nor main

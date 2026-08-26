@@ -335,7 +335,7 @@ n go too old yk analyze gimme ur opinion on the nexgt step"*
 - [x] **Proved it rather than asserting it.** `verified:` commit fa6fb1099 on main, merged
       `claude/hook-permission-error-bc75ea`, the only remaining branch with zero clashing files,
       two commits and five lines in one plan document. It went through clean.
-- [x] **The honest limit of the unjamming.** `verified:` read from `~/.claude/checkpoint-merge.py`, and `git rev-list --left-right --count` on each branch. The checkpoint uses `--ff-only`, so it only helps a
+- [x] **The honest limit of the unjamming.** `verified:` `~/.claude/checkpoint-merge.py:1` plus `git rev-list --left-right --count` per branch; the unjam itself is commit `acff03259` and the first branch it let through is `fa6fb1099`. The checkpoint uses `--ff-only`, so it only helps a
       branch that is strictly ahead of main. Every branch here is also BEHIND main (this one by 54
       commits at the time of the merge), so they still need a real merge commit, which the
       checkpoint will not make on its own. Unjamming stops the log filling with skips; it does not
@@ -535,7 +535,7 @@ when a query merely carries it along.
 **23 of 27 are genuinely obeyed.** The four that are not, each with the reason, because a dead
 thing with no reason gets restored by mistake later:
 
-- [x] **`bookings.price_increase_approved` , SUPERSEDED, leave it.** `verified:` the commit that
+- [x] **`bookings.price_increase_approved` , SUPERSEDED, leave it.** `verified:` retired by commit `14d180635`, replacement live at `app/[locale]/bookings/[id]/upcharge/page.tsx:2`. The commit that
       deleted its code is on main and says so by name: "retire legacy System B + upcharge ledger".
       The replacement shipped and is customer-facing: `app/[locale]/bookings/[id]/upcharge/` is a
       whole approve-or-decline screen. Nothing is broken. The column is a leftover of a deliberate
@@ -544,11 +544,11 @@ thing with no reason gets restored by mistake later:
       `verified:` introduced by `supabase/migrations/072_nail_foundation.sql`, and the nail
       feature set is gated off. It appears in exactly one place in the code, a column list, and
       nothing reads it. Correct while nail stays off.
-- [x] **`salons.is_featured` , NEVER LANDED.** `verified:` zero code branches on it on any branch.
+- [x] **`salons.is_featured` , NEVER LANDED.** `verified:` its only site in the repo is a column list, `lib/salon-detail.ts:67`; zero code branches on it on any branch.
       The only commits touching it are performance passes trimming column lists. So an admin
       marking a salon as featured today changes nothing anywhere. Not in the graveyard, so it was
       never rejected, it was simply never built. It is a one-line filter if he ever wants it.
-- [x] **`staff_members.is_publicly_listed` , NEVER LANDED.** `verified:` zero mentions in code
+- [x] **`staff_members.is_publicly_listed` , NEVER LANDED.** `verified:` its ONLY appearance anywhere is the generated type at `lib/database.types.ts:7617`. Zero mentions in code
       outside the generated type file. It arrived in a bulk migration backfill. A stylist cannot
       be hidden from a salon page by this switch, because nothing reads it.
 
@@ -580,6 +580,29 @@ be re-proposed as new work without saying which of these four reasons applies.
       three toggles that dashboard shows (`can_view_own_bookings`, `can_manage_portfolio`) are
       read by nothing at all, so they are decoration, and the eight-area model he chose on
       2026-08-14 is not built.
+
+### The remainder of this session, tracked rather than narrated
+
+- [ ] **BUILD THE EIGHT AREAS. It is written, it is stranded, and today proved what it replaces
+      is broken.** `verified:` `git ls-tree -r claude/nice-hugle-c0b706` lists
+      `lib/staff-permissions.ts`, 80 lines, and its eight keys are calendar, schedule, clients,
+      catalog, marketing, finance, team, settings, with four preset roles over them. It already
+      uses `Partial<Record<PermissionKey, boolean>>`, an OBJECT, which is exactly the shape the
+      dashboard already saves and the validator already accepts, so it slots in rather than
+      needing a data migration. `staff_members` already has both `permissions` and `access_role`.
+      Today's fix at `91624012f` stopped the crash but left the dashboard showing three switches
+      of which two (`can_view_own_bookings`, `can_manage_portfolio`) are read by no code anywhere.
+      **A CORRECTION TO MY OWN CHECK, because it changed the recommendation.** Earlier this turn I
+      ran a loop over every branch and reported that this file exists on none of them. That was my
+      test being broken, not the truth: `git ls-tree` finds it on `nice-hugle` immediately. The
+      plan line that said so was right and I contradicted it from a bad measurement.
+      PLAN A: lift the file across, wire the eight areas into the dashboard modal and into every
+      route that should gate on them, keeping the array fallback that already ships.
+      PLAN B, if he does not want staff logins next: the search and booking speed pass, since the
+      one Google call every cache-missing search makes is now the only third-party call on the
+      customer path and it is measurable end to end.
+
+- [ ] PARKED 2026-08-26 · A spec file still says this staff permission always refuses, when it actually crashed. Do you want that file allowed past the check that guards it, or moved to the archive so it can be corrected? · from: the permission fix, the builder correctly refused to move a file or edit a check's own list just to get an edit through
 
 ## What is still open, and who owns it
 
