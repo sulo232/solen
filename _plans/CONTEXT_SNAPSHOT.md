@@ -2,42 +2,25 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-01T00:10:10 (trigger: auto)
+- taken: 2026-08-26T14:43:10 (trigger: auto)
 - branch: claude/airbnb-animated-icons-ee4329
 
 ## git
 ```
-56ff3b9f4 Cite the sha and the exact line for the stale-frame guard
-cfa17d2ff Put the air back where he approved it, and stop the renderer eating stale frames
-6624bf282 Cite the shas, and close the constraint box that round 27 superseded
-d64a1a069 I fixed the teleport by deleting the air, and he caught it
-d3ca76765 Stop the air being cut, and name the constraint that limits it
+e75281fda The homepage was shipping 8MB of icons to every phone
+f174bea38 The app is recognised across the rest of the customer write path
+81f88e872 Every customer route the website has, the app now has
+a3c39af7c Open step 3, the rest of the write path, ranked by damage
+ab764941e Close step 2 of the write path, and split out the screen wiring
 ```
 ```
-M public/_pixel-refs/solen-icons/frames/set-barber/026.png
- M public/_pixel-refs/solen-icons/frames/set-barber/027.png
- M public/_pixel-refs/solen-icons/frames/set-barber/028.png
- M public/_pixel-refs/solen-icons/frames/set-barber/029.png
- M public/_pixel-refs/solen-icons/frames/set-barber/030.png
- M public/_pixel-refs/solen-icons/frames/set-barber/031.png
- M public/_pixel-refs/solen-icons/frames/set-barber/032.png
- M public/_pixel-refs/solen-icons/frames/set-barber/033.png
- M public/_pixel-refs/solen-icons/frames/set-barber/034.png
- M public/_pixel-refs/solen-icons/frames/set-barber/035.png
- M public/_pixel-refs/solen-icons/frames/set-barber/036.png
- M public/_pixel-refs/solen-icons/frames/set-barber/037.png
- M public/_pixel-refs/solen-icons/frames/set-barber/038.png
- M public/_pixel-refs/solen-icons/frames/set-barber/039.png
- M public/_pixel-refs/solen-icons/frames/set-barber/040.png
- M public/_pixel-refs/solen-icons/frames/set-barber/041.png
- M public/_pixel-refs/solen-icons/frames/set-barber/042.png
- M public/_pixel-refs/solen-icons/frames/set-barber/043.png
- M public/_pixel-refs/solen-icons/frames/set-barber/044.png
- M public/_pixel-refs/solen-icons/frames/set-barber/045.png
+M .pdptunnel.js
+ M _plans/CONTEXT_SNAPSHOT.md
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
 45 | ANIMATED ICONS ROUND 2 , owner feedback on build 1 (2026-07-31: brighter lighting, the red is not vibrant, the chair does not face straight, and a coiffeur version that is NOT the same chair) | **ACTIVE** (2026-07-31)
+46 | SOLEN iOS APP FULL REBUILD , autonomous phase loop (owner 2026-08-11: "i want an app all made by the time the loop finishes all backend and frontend", "w need to overhaul evrth okay on the app sh cz rn it has dumb rule etc evrth") | **ACTIVE** (2026-08-11)
 44 | AIRBNB ANIMATED ICONS , capture the real reference, then build a Solen animated icon (owner 2026-07-31 "go actually research", scoped by the owner mid-turn to research FIRST) | **ACTIVE** (2026-07-31)
 43 | COPY + VOICE LAW , how we write, in four languages (owner 2026-07-29 "research everything and make a whole principle about when you're writing something, how to do it") | **ACTIVE** (2026-07-29)
 42 | PRINCIPLE RESEARCH , deep-research every non-design principle we already have (backend, security, silent-no-op, psychology, i18n, motion, the rest of `_rules/*`) | **ACTIVE** (2026-07-29)
@@ -65,6 +48,11 @@ M public/_pixel-refs/solen-icons/frames/set-barber/026.png
 37 | Mockup ROOT-CAUSE + principles (owner 2026-07-19, 5th-round fury: "step back, use subagents") | **ACTIVE** (2026-07-19)
 36 | Mockup QUALITY system , stop shipping unchecked/unbalanced mockups (owner 2026-07-19, FURIOUS recurrence) | **ACTIVE** (2026-07-19)
 35 | Full frontend sweep , audit every surface vs the design system + mockup improvements (owner 2026-07-19, LOOP) | **ACTIVE** (2026-07-19)
+
+## SOLEN_APP_REBUILD.md
+Open boxes:
+- [ ] **THE REAL BLOCKER, found 2026-08-14 and bigger than the fake slots were: the app cannot
+  - [ ] Step 2b, the booking SCREEN calls it. `src/app/booking.tsx` still ends at the confirmation
 
 ## COPY_VOICE_LAW.md
 Open boxes:
