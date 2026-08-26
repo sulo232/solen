@@ -173,7 +173,8 @@ async function routedWalk(
         "https://api.mapbox.com/directions/v5/mapbox/walking/" +
         `${fromLng},${fromLat};${toLng},${toLat}` +
         `?overview=false&access_token=${token}`;
-      const res = await fetch(u, { next: { revalidate: 604800 } });
+      // 4000ms: transit lookup, same bound as the opendata.ch fetch above in this file
+      const res = await fetch(u, { next: { revalidate: 604800 }, signal: AbortSignal.timeout(4000) });
       if (res.ok) {
         const j = (await res.json()) as { routes?: { duration?: number }[] };
         const secs = j.routes?.[0]?.duration;

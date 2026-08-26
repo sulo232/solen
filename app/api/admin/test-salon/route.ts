@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
 import { validateBody, adminTestSalonCreateSchema } from "@/lib/validations";
+import { purgeSalonStorage } from "@/lib/gdpr/purge-salon-storage";
 
 const TEST_PREFIX = "[TEST]";
 
@@ -163,6 +164,18 @@ export async function DELETE(request: NextRequest) {
     adminClient.from("services").delete().eq("salon_id", salonId),
     adminClient.from("staff_members").delete().eq("salon_id", salonId),
   ]);
+
+  // GDPR deletion completeness, salon storage half: this route deletes the
+  // salon row directly, the second of the two real salon-delete paths (see
+  // lib/gdpr/purge-salon-storage.ts). Run BEFORE the delete below, after it
+  // there is no way left to know which files belonged to this salon.
+  // Log-not-fatal: a storage purge failure must never block the row delete
+  // an admin explicitly requested.
+  const salonStoragePurge = await purgeSalonStorage(adminClient, [salonId]);
+  if (salonStoragePurge.errors.length) {
+    console.error("[api/admin/test-salon] salon storage purge failed:", salonStoragePurge.errors);
+  }
+
   await adminClient.from("salons").delete().eq("id", salonId);
 
   return NextResponse.json({ deleted: true });

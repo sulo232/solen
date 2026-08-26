@@ -86,6 +86,8 @@ Return ONLY valid JSON:
           contents: [{ parts: [{ text: prompt }] }],
           generationConfig: { temperature: 0.7, maxOutputTokens: 1024 },
         }),
+        // 25000ms: text-generation call, same bound as app/api/admin/nail/generate/route.ts
+        signal: AbortSignal.timeout(25000),
       }
     );
 

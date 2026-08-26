@@ -93,5 +93,14 @@ export async function DELETE(req: NextRequest) {
     .eq("user_id", user.id);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  // NO storage cleanup here on purpose (round-1 review finding, same shape as the staff
+  // fix): nail_inspo_images.image_url is a free-text z.string().url() field, no upload
+  // route in this codebase ever writes it, the "nail-inspo-images" bucket holds zero
+  // objects and has zero writers, and the table itself has zero rows. Round 1 added a
+  // removeObjectForUrl() call here keyed only on bucket, not on an owner prefix, the same
+  // unscoped shape that made the staff-avatar site a cross-user delete primitive
+  // elsewhere. Nothing to clean up and nothing to gain by re-adding this before a real
+  // uploader for this column exists.
   return NextResponse.json({ success: true });
 }

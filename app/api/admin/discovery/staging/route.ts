@@ -82,7 +82,8 @@ export async function PUT(req: NextRequest) {
       try {
         await assertSafeFetchUrl(item.image_url);
         const sharp = (await import("sharp")).default;
-        const imgRes = await fetch(item.image_url);
+        // 8000ms: image-bytes fetch, same bound as lib/ai-vision.ts and the tiktok import
+        const imgRes = await fetch(item.image_url, { signal: AbortSignal.timeout(8000) });
         const buffer = await imgRes.arrayBuffer();
         const webp = await sharp(Buffer.from(buffer)).webp({ quality: 85 }).toBuffer();
         const fileName = `curated/${crypto.randomUUID()}.webp`;

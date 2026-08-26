@@ -26,8 +26,12 @@ export async function fetchPostHogProfileViews(salonId: string, days: number = 3
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
       },
-      // Cache this request for 1 hour to prevent hitting PostHog rate limits
+      // Cache this request for 1 hour to prevent hitting PostHog rate limits.
+      // revalidate caps how OFTEN we call, not how long one call may hang, so
+      // it is not a substitute for a timeout.
       next: { revalidate: 3600 },
+      // 8000ms: third-party API read, same bound as lib/ai-vision.ts
+      signal: AbortSignal.timeout(8000),
     });
 
     if (!res.ok) {
@@ -91,6 +95,8 @@ export async function deletePostHogPerson(distinctId: string): Promise<{ ok: boo
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
       },
+      // 8000ms: third-party API read, same bound as lib/ai-vision.ts
+      signal: AbortSignal.timeout(8000),
     });
 
     if (!lookupRes.ok) {
@@ -109,11 +115,14 @@ export async function deletePostHogPerson(distinctId: string): Promise<{ ok: boo
     }
 
     const deleteUrl = `https://eu.posthog.com/api/projects/${projectId}/persons/${personId}/?delete_events=true`;
+    // 8000ms: this runs inside the erasure cron, so a hang stalls the whole
+    // batch. Same bound as lib/ai-vision.ts (third-party API call).
     const deleteRes = await fetch(deleteUrl, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${apiKey}`,
       },
+      signal: AbortSignal.timeout(8000),
     });
 
     if (!deleteRes.ok && deleteRes.status !== 404) {

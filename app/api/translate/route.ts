@@ -61,6 +61,8 @@ export async function POST(req: NextRequest) {
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
         }),
+        // 25000ms: text-generation call, same bound as app/api/admin/nail/generate/route.ts
+        signal: AbortSignal.timeout(25000),
       }
     );
 

@@ -12,6 +12,8 @@ import { applyRateLimit, adminLimiter } from "@/lib/ratelimit";
 import { validateBody, adminReportActionSchema } from "@/lib/validations";
 import { isLegalReportStatusTransition, type ReportStatus } from "@/lib/content-reports";
 import { logAuditEvent } from "@/lib/audit";
+import { removeObjectForUrl } from "@/lib/storage";
+import { alertAdmin } from "@/lib/alert-admin";
 import type { Database } from "@/lib/database.types";
 
 /**
@@ -93,6 +95,25 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       if (photoErr) return NextResponse.json({ error: photoErr.message }, { status: 500 });
       if (!photoRow) {
         return NextResponse.json({ error: "Reported photo no longer exists" }, { status: 404 });
+      }
+
+      // The takedown's whole point is the bytes disappearing, not just the row: a reported
+      // photo that stays reachable at its old public "salon-gallery" URL is a takedown that
+      // did not take down. Remove the object BEFORE the row delete below so image_url is
+      // still available if the removal needs retrying. Storage failure here is not fatal to
+      // the request (the row delete below still runs, so the grid entry is gone either way),
+      // but it IS the point of an admin takedown, so it must reach a human, same discipline
+      // the money paths use, not just a log line.
+      const { error: storageError } = await removeObjectForUrl(
+        admin, photoRow.image_url, "salon-gallery", photoRow.salon_id, "[admin/reports]",
+      );
+      if (storageError) {
+        void alertAdmin("Admin photo takedown: storage removal failed", {
+          report_id: id,
+          salon_id: photoRow.salon_id,
+          image_url: photoRow.image_url,
+          error: storageError,
+        });
       }
 
       const { error: delErr } = await admin
