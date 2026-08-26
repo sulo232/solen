@@ -737,7 +737,10 @@ function LocationMapCanvas({
         const url =
           `https://api.mapbox.com/directions/v5/mapbox/walking/${longitude},${latitude};${transitLng},${transitLat}` +
           `?geometries=geojson&overview=full&access_token=${token}`;
-        const res = await fetch(url);
+        // 8000ms: matches this codebase's existing timeout for reading a third-party
+        // API response (lib/ai-vision.ts). Degrades to no route on timeout, same as
+        // any other fetch failure per the graceful-degrade contract noted above.
+        const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
         if (!res.ok || cancelled) return;
         const json = (await res.json()) as MapboxDirectionsResponse;
         const route = json.routes?.[0];

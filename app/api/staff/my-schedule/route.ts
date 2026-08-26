@@ -5,6 +5,31 @@ import { createServerSupabaseClient } from "@/lib/supabase";
 import { validateBody, scheduleSchema } from "@/lib/validations";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
 
+// Answers "may this staff member edit their own schedule?" against every shape
+// staff_members.permissions can actually hold. app/[locale]/dashboard/staff/page.tsx
+// (around line 112) is the only writer today and it saves an OBJECT
+// { can_edit_schedule, can_view_own_bookings, can_manage_portfolio }, which
+// lib/validations.ts (staffUpdateSchema) validates as z.record(z.string(), z.unknown()),
+// so the object shape is the only one the API will ever accept going forward. The
+// string-array shape (["edit_own_schedule", "manage_all"]) is kept honoured so nothing
+// regresses if a row ever holds the legacy vocabulary this line was originally written for.
+function canEditOwnSchedule(permissions: unknown): boolean {
+  if (Array.isArray(permissions)) {
+    return permissions.includes("edit_own_schedule") || permissions.includes("manage_all");
+  }
+  if (permissions && typeof permissions === "object") {
+    const flag = (permissions as Record<string, unknown>).can_edit_schedule;
+    // Absent key defaults to ALLOWED, deliberately. The dashboard's own toggle loads
+    // with `p.can_edit_schedule ?? true` (app/[locale]/dashboard/staff/page.tsx:77),
+    // so the owner's screen already shows this permission as ON when it has never
+    // been set. Refusing here would silently take away what the owner's own screen
+    // says the staff member has. Only an explicit `false` refuses.
+    return flag !== false;
+  }
+  // null or any other unexpected shape: same default as the missing-key case above.
+  return true;
+}
+
 // GET /api/staff/my-schedule — Staff views their own schedule
 export async function GET(req: NextRequest) {
   const supabase = await createServerSupabaseClient();
@@ -72,8 +97,7 @@ export async function PUT(req: NextRequest) {
   if (!staff) return NextResponse.json({ error: "Not a staff member" }, { status: 403 });
 
   // Check if staff has schedule edit permission
-  const perms = (staff.permissions as string[]) ?? [];
-  if (!perms.includes("edit_own_schedule") && !perms.includes("manage_all")) {
+  if (!canEditOwnSchedule(staff.permissions)) {
     return NextResponse.json({ error: "No permission to edit schedule" }, { status: 403 });
   }
 

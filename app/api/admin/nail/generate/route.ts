@@ -135,7 +135,10 @@ export async function POST(req: NextRequest) {
       // input-abuse-04 (2026-07-27): imageUrl is fal.ai's own generation-response URL, not
       // a hardcoded host, so guard against SSRF before the server-side fetch fires.
       await assertSafeFetchUrl(imageUrl);
-      const imgRes = await fetch(imageUrl);
+      // 8000ms: matches this codebase's existing timeout for fetching image bytes,
+      // same value the fal.ai call above uses via its own sibling pattern (25000ms
+      // there is for generation itself, not a byte download).
+      const imgRes = await fetch(imageUrl, { signal: AbortSignal.timeout(8000) });
       if (imgRes.ok) {
         const imgBuffer = Buffer.from(await imgRes.arrayBuffer());
         const fileName = `${stagingSourceId}.webp`;
