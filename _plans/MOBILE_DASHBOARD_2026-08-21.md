@@ -113,9 +113,11 @@ And I want you to first make a mockup of a few flows so I can actually see that 
       ditched. The four-lens council had argued Heute first and the first build followed the council
       over his stated lean, which is precedence chain tier 1 losing to tier 8 and is the mistake
       logged in commit 77a6795a4. His literal call stands. Nothing here is reopened.
-- [x] M7 HANDED OVER 2026-08-26, one link, all four screens, stepped one frame at a time. What is
-      still HIS to answer, and it is the only thing blocking the next step: whether these four are
-      the right shape. No real dashboard code changes until he says.
+- [ ] M7 GET HIS READ ON THE FOUR SCREENS. The link went out 2026-08-26 and the four screens are
+      built, but this box is about HIS ANSWER, not about my sending, so it stays open until he has
+      actually looked and said whether the shape is right. Ticking it on the strength of having sent
+      a link would be the exact move that makes a plan say done while the ask is still live. No real
+      dashboard code changes before he answers, because he asked for mockups first.
 
 ## Where it stands, 2026-08-26
 - [x] THE PAGE STEPS THROUGH ANY SCREEN NOW `verified:` commit 065b5e6ba. `page.tsx` used to
