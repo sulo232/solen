@@ -8,6 +8,7 @@ import { deletePostHogPerson } from "@/lib/posthog-api";
 import { alertAdmin } from "@/lib/alert-admin";
 import { purgeClientPhotoStorage } from "@/lib/gdpr/purge-client-photo-storage";
 import { purgeReviewPhotoStorage } from "@/lib/gdpr/purge-review-photo-storage";
+import { purgeAvatarStorage } from "@/lib/gdpr/purge-avatar-storage";
 import { purgeStripeCustomers } from "@/lib/gdpr/purge-stripe-customer";
 
 export async function GET(request: NextRequest) {
@@ -140,6 +141,13 @@ export async function GET(request: NextRequest) {
     const reviewPhotoPurge = await purgeReviewPhotoStorage(admin, userIds);
     if (reviewPhotoPurge.errors.length) batchErrors.push(...reviewPhotoPurge.errors.map((e) => `review-photos storage: ${e}`));
 
+    // GDPR deletion completeness, avatar storage half: app/api/profile/avatar/route.ts
+    // writes to the PUBLIC "avatars" bucket, and the erasure trigger only nulls
+    // profiles.avatar_url, it cannot reach Storage. Same ordering requirement as the two
+    // purges above, before deleteUser() below cascades and nulls the pointer.
+    const avatarPurge = await purgeAvatarStorage(admin, userIds);
+    if (avatarPurge.errors.length) batchErrors.push(...avatarPurge.errors.map((e) => `avatars storage: ${e}`));
+
     // privacy-compliance-06: Stripe holds a separate copy of this user's PII
     // (name/email/payment methods on the Customer object) that nothing in
     // this pipeline touched before. See lib/gdpr/purge-stripe-customer.ts.
@@ -209,7 +217,7 @@ export async function GET(request: NextRequest) {
       // must page someone, not just land in a log line. (Previously only the PostHog step alerted,
       // which made a third-party sync failure louder than a failure to erase real photo bytes.)
       const purgeErrors = batchErrors.filter(
-        (e) => e.startsWith("client-photos storage:") || e.startsWith("review-photos storage:"),
+        (e) => e.startsWith("client-photos storage:") || e.startsWith("review-photos storage:") || e.startsWith("avatars storage:"),
       );
       if (purgeErrors.length) {
         void alertAdmin("GDPR erasure: photo-storage purge failed", {
