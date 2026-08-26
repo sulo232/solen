@@ -59,10 +59,22 @@ And I want you to first make a mockup of a few flows so I can actually see that 
       each owns disjoint files; I simply never wrote the briefs that way. The single Opus builder
       ran 25 minutes without writing a line and was stopped. Four sonnet builders now run in
       parallel, one flow each, none of them touching git.
-- [ ] M2 MOCKUP, the five tabs and the Menu.
-- [ ] M3 MOCKUP, a day in the calendar, following their month grid with a number under every date.
-- [ ] M4 MOCKUP, taking a booking by phone, end to end.
-- [ ] M5 MOCKUP, the empty first day for a salon that just signed up.
+- [x] M2 MOCKUP, the tabs and the Menu `verified:` rendered at 390x844 on 2026-08-26 and stepped
+      through frame by frame. Three frames, drawing 45, 38 and 69 things. The 69 is the Menu, which
+      is a list of sections by definition, so a list length is not clutter there.
+- [x] M3 MOCKUP, the calendar `verified:` rendered 2026-08-26. Two frames: the month at 140 things
+      and the day at 48. THE 140 IS CORRECT AND WAS NEARLY "FIXED" BY MISTAKE. Two months of dates,
+      each date carrying its own count underneath, is exactly the Airbnb host shape he asked for,
+      where every date carries a price. The 8-things yardstick came from a Today screen and does not
+      transfer to a month grid. Recorded here so nobody cuts it later on the wrong number.
+- [x] M4 MOCKUP, taking a booking by phone `verified:` rendered 2026-08-26, five frames drawing
+      3, 9, 8, 19 and 5 things. The first frame was a defect: 3 things, 318 characters of markup, a
+      black bar with the salon name and nothing else, under a caption promising a phone call. It has
+      been dropped and its meaning folded into the frame that follows, which is the screen actually
+      up when the phone rings.
+- [x] M5 MOCKUP, the first day `verified:` rendered 2026-08-26, two frames at 17 and 18 things.
+      One promise card with a 30px anchor, one three-step list, nothing else. The stale TEMP header
+      that called it a measurement build has been replaced with what the file actually does.
 - [x] M6a THE FOUNDATION ALREADY EXISTS, AND IT IS DECORATIVE `verified:` `lib/types.ts:158-160`
       carries `can_edit_schedule`, `can_view_own_bookings` and `can_manage_portfolio` on
       `StaffMember`, created by `supabase/migrations/069_megabuild_staff.sql`, and
@@ -115,13 +127,15 @@ And I want you to first make a mockup of a few flows so I can actually see that 
       the rendered frame with the same method both numbers came from: total 41, of which 19 SPAN,
       9 P, 8 DIV, 4 BUTTON, 1 H1. So 41 is right and the caption was the builder counting a
       different container. Caption now quotes the measured pair.
-- [ ] THREE BUILDERS RUNNING, one file each, dispatched 2026-08-26: `_flow-calendar.tsx`,
-      `_flow-phone.tsx`, `_flow-empty.tsx`. Each adds the `FRAMES` export plus an `{ index }` prop
-      and cuts to 45 elements or fewer per frame, measured on the rendered frame. The
-      `no-concurrent-coders-same-repo-gate` was escaped deliberately and the reason written to its
-      flag: the three files are disjoint, every brief forbids git outright (which is the collision
-      that gate exists to stop), and `feedback_no_parallel_agents_frontend` was superseded
-      2026-08-07. Awaiting their reports, then a design-critic pass, then commits.
+- [x] THE THREE BUILDERS LANDED, AND ONE OF THEM LEFT THE FILE UNCOMPILABLE `verified:` the three
+      files came back with the `FRAMES` export and the `{ index }` prop, and `_flow-empty.tsx`
+      referenced a constant `SALON_CITY` that was never declared, two typecheck errors. Fixed by
+      declaring it beside `SALON_NAME`. `_flow-calendar.tsx` also came back with both its captions
+      reading the literal placeholder "TEMP-BEFORE month" and "TEMP-BEFORE day", which is text he
+      would have read on his own screen. Both replaced with real captions. The lesson is not about
+      the builders: a brief that says "add the API" and stops gets exactly that and no more, so the
+      brief has to name the finished state including the words a human will read.
+
 - [ ] THE CHECK-IN TAP HAS NO HOME. Cutting the Tabs flow from 111 to 41 removed the per-row tap
       that marks a customer as arrived. In a real shop that is the single most repeated action of
       the day, so this is a genuine functionality loss and not a tidy-up. It needs a place on either

@@ -100,20 +100,14 @@
  * only. Two 390-wide phone frames, no sideways scroll.
  */
 
-import { Users, Clock, Scissors, Check, ChevronRight, ArrowRight } from "lucide-react";
+import { Check, ChevronRight, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const SALON_NAME = "Studio Nord";
-const SALON_CITY = "Basel";
+const SALON_CITY = "Zurich";
 
 type StepId = "team" | "hours" | "services";
 type StepState = "done" | "next" | "upcoming";
-
-const ICONS: Record<StepId, typeof Users> = {
-  team: Users,
-  hours: Clock,
-  services: Scissors,
-};
 
 const STEP_META: Record<StepId, { label: string }> = {
   team: { label: "Team" },
@@ -131,7 +125,6 @@ function subFor(step: StepId, state: StepState): string {
 }
 
 function StepRow({ step, state }: { step: StepId; state: StepState }) {
-  const Icon = ICONS[step];
   const order = step === "team" ? 1 : step === "hours" ? 2 : 3;
   const quiet = state === "upcoming";
 
@@ -147,7 +140,6 @@ function StepRow({ step, state }: { step: StepId; state: StepState }) {
       >
         {state === "done" ? <Check size={13} strokeWidth={3} /> : order}
       </span>
-      <Icon size={18} strokeWidth={1.75} className={quiet ? "text-s-ink-2" : "text-s-ink"} aria-hidden />
       <div className="min-w-0 flex-1">
         <p className={cn("font-body text-[15px] font-semibold", quiet ? "text-s-ink-2" : "text-s-ink")}>
           {STEP_META[step].label}
@@ -199,8 +191,8 @@ function Screen({
   states: Record<StepId, StepState>;
 }) {
   return (
-    <div className="w-[390px] shrink-0 overflow-hidden rounded-[20px] border border-s-border bg-white">
-      <div className="px-5 pb-8 pt-6">
+    <div className="h-[844px] w-full max-w-[390px] overflow-hidden rounded-[20px] border border-s-border bg-white">
+      <div className="h-full overflow-y-auto px-5 pb-8 pt-6">
         <p className="font-display text-[18px] text-s-ink">{SALON_NAME}</p>
         <p className="mt-0.5 font-body text-[13px] text-s-ink-2">{chromeSub}</p>
 
@@ -217,57 +209,49 @@ function Screen({
   );
 }
 
-function FrameCaption({ title, sub }: { title: string; sub: string }) {
-  return (
-    <div className="mb-4">
-      <h3 className="font-display text-[18px] text-s-ink">{title}</h3>
-      <p className="mt-1 max-w-[390px] font-body text-[13px] text-s-ink-2">{sub}</p>
-    </div>
-  );
+// The two states of a brand new salon's first screen, as data rather than as two hand-built
+// screens: one spec per frame, both rendered by the same `Screen` below, so the only thing that can
+// differ between "nothing done" and "one step done" is the content named here. Measured on the
+// rendered frame at 390x844: 17 things drawn on the first, 18 on the second.
+interface EmptyFrameSpec {
+  key: string;
+  caption: string;
+  chromeSub: string;
+  anchor: string;
+  gesture: string;
+  ctaLabel: string;
+  states: Record<StepId, StepState>;
 }
 
-export default function FlowEmpty() {
-  return (
-    <section className="mt-10">
-      <h2 className="font-display text-[18px] text-s-ink">
-        Flow 4. The empty first day
-      </h2>
-      <p className="mt-1.5 max-w-[640px] font-body text-[13px] text-s-ink-2">
-        {SALON_NAME} in {SALON_CITY} signed up this morning. No staff, no hours, no services, so
-        the nightly slot job has nothing to generate against. The Today tab holds the setup steps
-        instead of an empty book, staff first, then opening hours, then services, in the order the
-        calendar actually needs them.
-      </p>
+const EMPTY_FRAME_SPECS: EmptyFrameSpec[] = [
+  {
+    key: "before",
+    caption:
+      "Before. Day one, nothing set up. Three things are needed before the calendar can hold a single slot. Team is first because hours and services both wait on it.",
+    chromeSub: `Welcome. ${SALON_CITY}, day one.`,
+    anchor: "3 steps to your first booking",
+    gesture: "Add your team, hours and services, in that order.",
+    ctaLabel: "Invite your team",
+    states: { team: "next", hours: "upcoming", services: "upcoming" },
+  },
+  {
+    key: "after",
+    caption:
+      "After. The team step is done. The count drops from 3 to 2, the team row checks off, and opening hours becomes the one to act on. Nothing else moved.",
+    chromeSub: `Welcome back. ${SALON_CITY}, day one, 1 of 3 done.`,
+    anchor: "2 steps to your first booking",
+    gesture: "Team's in. Set your hours next so customers know when to book.",
+    ctaLabel: "Set opening hours",
+    states: { team: "done", hours: "next", services: "upcoming" },
+  },
+];
 
-      <div className="mt-6 flex flex-wrap items-start gap-10">
-        <div>
-          <FrameCaption
-            title="Before. Day one, nothing set up."
-            sub="Three things are needed before the calendar can hold a single slot. Team is first because hours and services both wait on it."
-          />
-          <Screen
-            chromeSub={`Welcome. ${SALON_CITY}, day one.`}
-            anchor="3 steps to your first booking"
-            gesture="Add your team, hours and services, in that order."
-            ctaLabel="Invite your team"
-            states={{ team: "next", hours: "upcoming", services: "upcoming" }}
-          />
-        </div>
+export const FRAMES: { key: string; caption: string }[] = EMPTY_FRAME_SPECS.map(({ key, caption }) => ({
+  key,
+  caption,
+}));
 
-        <div>
-          <FrameCaption
-            title="After. The team step is done."
-            sub="The count drops from 3 to 2, the team row checks off, and opening hours becomes the one to act on. Nothing else moved."
-          />
-          <Screen
-            chromeSub={`Welcome back. ${SALON_CITY}, day one, 1 of 3 done.`}
-            anchor="2 steps to your first booking"
-            gesture="Team's in. Set your hours next so customers know when to book."
-            ctaLabel="Set opening hours"
-            states={{ team: "done", hours: "next", services: "upcoming" }}
-          />
-        </div>
-      </div>
-    </section>
-  );
+export default function FlowEmpty({ index }: { index: number }) {
+  const frame = EMPTY_FRAME_SPECS[index] ?? EMPTY_FRAME_SPECS[0]!;
+  return <Screen {...frame} />;
 }
