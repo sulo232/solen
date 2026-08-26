@@ -84,22 +84,37 @@
  */
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactElement } from "react";
 import { notFound } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useOwnTheScreen } from "../mock/_shell/MockShell";
-import FlowPhone from "./_flow-phone";
-import FlowEmpty from "./_flow-empty";
-import FlowCalendar from "./_flow-calendar";
-import FlowTabsFrame, { FLOW_TABS_FRAMES } from "./_flow-tabs";
+import * as PhoneMod from "./_flow-phone";
+import * as EmptyMod from "./_flow-empty";
+import * as CalendarMod from "./_flow-calendar";
+import * as TabsMod from "./_flow-tabs";
 
 type FlowKey = "tabs" | "calendar" | "phone" | "first-day";
 
-const FLOW_OPTIONS: { key: FlowKey; label: string }[] = [
-  { key: "tabs", label: "Tabs and Menu" },
-  { key: "calendar", label: "Calendar" },
-  { key: "phone", label: "Phone booking" },
-  { key: "first-day", label: "First day" },
+/** A flow module either exposes the stepped API (a FRAMES list plus an `{ index }` default export)
+ *  or it does not, in which case its default export renders every frame at once and this page falls
+ *  back to the panning strip. Namespace imports above keep both shapes compiling. */
+type FlowFrame = { key: string; caption: string };
+type FlowModule = {
+  default: (props: { index: number }) => ReactElement;
+  FRAMES?: FlowFrame[];
+  FLOW_TABS_FRAMES?: FlowFrame[];
+};
+
+function framesOf(mod: FlowModule): FlowFrame[] | null {
+  const list = mod.FRAMES ?? mod.FLOW_TABS_FRAMES;
+  return list && list.length > 0 ? list : null;
+}
+
+const FLOW_OPTIONS: { key: FlowKey; label: string; mod: FlowModule }[] = [
+  { key: "tabs", label: "Tabs and Menu", mod: TabsMod as unknown as FlowModule },
+  { key: "calendar", label: "Calendar", mod: CalendarMod as unknown as FlowModule },
+  { key: "phone", label: "Phone booking", mod: PhoneMod as unknown as FlowModule },
+  { key: "first-day", label: "First day", mod: EmptyMod as unknown as FlowModule },
 ];
 
 // A one line, honest note for the three flows this page cannot yet step through frame by frame (see
@@ -122,8 +137,11 @@ export default function HostFlowsPage() {
     setFrameIndex(0);
   }
 
-  const stepped = flow === "tabs";
-  const frame = stepped ? (FLOW_TABS_FRAMES[frameIndex] ?? FLOW_TABS_FRAMES[0]) : null;
+  const active = FLOW_OPTIONS.find((o) => o.key === flow) ?? FLOW_OPTIONS[0];
+  const frames = framesOf(active.mod);
+  const stepped = frames !== null;
+  const frame = frames ? (frames[frameIndex] ?? frames[0]) : null;
+  const Flow = active.mod.default;
 
   return (
     <div className="min-h-[100dvh] w-full bg-white px-4 py-10">
@@ -154,7 +172,7 @@ export default function HostFlowsPage() {
         {/* The frame stepper. Only the "tabs" flow has a real per-frame index, see the file header
             for why the other three do not yet. `min-h` on the caption keeps the prev/next row from
             moving as a short caption swaps for a longer one. */}
-        {stepped && frame && (
+        {stepped && frame && frames && (
           <div className="mt-6">
             <p className="font-body min-h-[34px] text-[13px] font-normal text-s-ink-2">{frame.caption}</p>
             <div className="mt-2 flex items-center justify-between">
@@ -168,13 +186,13 @@ export default function HostFlowsPage() {
                 <ChevronLeft size={18} strokeWidth={2} aria-hidden />
               </button>
               <span className="font-body text-[13px] font-semibold text-s-ink">
-                Frame {frameIndex + 1} of {FLOW_TABS_FRAMES.length}
+                Frame {frameIndex + 1} of {frames.length}
               </span>
               <button
                 type="button"
                 aria-label="Next frame"
-                disabled={frameIndex === FLOW_TABS_FRAMES.length - 1}
-                onClick={() => setFrameIndex((i) => Math.min(FLOW_TABS_FRAMES.length - 1, i + 1))}
+                disabled={frameIndex === frames.length - 1}
+                onClick={() => setFrameIndex((i) => Math.min(frames.length - 1, i + 1))}
                 className="flex h-11 w-11 items-center justify-center rounded-full border border-s-border text-s-ink disabled:opacity-50"
               >
                 <ChevronRight size={18} strokeWidth={2} aria-hidden />
@@ -187,15 +205,13 @@ export default function HostFlowsPage() {
       <div className="mt-8 w-full">
         {stepped ? (
           <div className="mx-auto w-full max-w-[390px]">
-            <FlowTabsFrame index={frameIndex} />
+            <Flow index={frameIndex} />
           </div>
         ) : (
           <div className="mx-auto w-full max-w-[390px]">
             <p className="px-1 pb-3 font-body text-[13px] font-normal text-s-ink-2">{NOT_STEPPED_NOTE}</p>
             <div className="overflow-x-auto">
-              {flow === "calendar" && <FlowCalendar />}
-              {flow === "phone" && <FlowPhone />}
-              {flow === "first-day" && <FlowEmpty />}
+              <Flow index={0} />
             </div>
           </div>
         )}
