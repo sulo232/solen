@@ -113,8 +113,9 @@ And I want you to first make a mockup of a few flows so I can actually see that 
       ditched. The four-lens council had argued Heute first and the first build followed the council
       over his stated lean, which is precedence chain tier 1 losing to tier 8 and is the mistake
       logged in commit 77a6795a4. His literal call stands. Nothing here is reopened.
-- [ ] M7 Hand over the four mockups on one link and get his read before any real dashboard code
-      changes. He asked for the mockups FIRST so he can see whether I understood.
+- [x] M7 HANDED OVER 2026-08-26, one link, all four screens, stepped one frame at a time. What is
+      still HIS to answer, and it is the only thing blocking the next step: whether these four are
+      the right shape. No real dashboard code changes until he says.
 
 ## Where it stands, 2026-08-26
 - [x] THE PAGE STEPS THROUGH ANY SCREEN NOW `verified:` commit 065b5e6ba. `page.tsx` used to
@@ -136,11 +137,27 @@ And I want you to first make a mockup of a few flows so I can actually see that 
       the builders: a brief that says "add the API" and stops gets exactly that and no more, so the
       brief has to name the finished state including the words a human will read.
 
-- [ ] THE CHECK-IN TAP HAS NO HOME. Cutting the Tabs flow from 111 to 41 removed the per-row tap
-      that marks a customer as arrived. In a real shop that is the single most repeated action of
-      the day, so this is a genuine functionality loss and not a tidy-up. It needs a place on either
-      the calendar day view or the standing strip before any of this ships. Not yet designed.
+- [x] THE CHECK-IN TAP HAS A HOME `verified:` commit f7fb41ed4, proven on the rendered page rather
+      than asserted. It sits on the calendar day view, reusing the grammar the free and blocked rows
+      already had: tap the appointment row, one pill appears reading "They showed up", tap that and
+      the row reads "Arrived" and stops offering the action. Measured live: eight appointment rows
+      on the day, the pill measures 44px tall (the touch floor), and after the tap the frame contains
+      "Arrived" and no longer contains "They showed up". The arrived marks reset when the owner taps
+      a different date, because the row key encodes only time of day, so without the reset an arrival
+      at 09:30 on one day would show as arrived at 09:30 on every day.
 
+- [x] TWO DEFECTS A TYPECHECK COULD NEVER HAVE CAUGHT, both found by a read-only reviewer on the
+      running server `verified:` commit f7fb41ed4.
+      ONE, THE REVIEW PAGE WAS BREAKING THE REAL SITE. It hid the customer marketing footer with an
+      inline `display: none` and never restored it. That footer is mounted by
+      `app/[locale]/layout.tsx`, which OUTLIVES this page, so a client-side walk from the review page
+      to any other page left the whole site with no footer until a hard reload. The effect now
+      records each footer's prior inline value and puts it back on unmount. Proven by clicking Home
+      from the review page and reading `display: block` with an empty inline style on the other side.
+      TWO, COPY THAT PROMISED WHAT THE SCREEN DOES NOT SHOW. The customers screen's own subline said
+      it held notes and a way to book again; it holds neither, both live one tap further in. The
+      calendar caption said "today is the black one" when every date renders the same ink and today
+      is actually marked by a blue link to the Heute tab. Both rewritten to describe what renders.
 
 ---
 
