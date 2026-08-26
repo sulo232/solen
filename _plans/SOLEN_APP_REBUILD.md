@@ -477,3 +477,46 @@ He asked for the list. In order of cost.
 **The thread through all of it:** I kept treating the plan and the report as the work. Points 3, 4
 and 5 are one mistake wearing three hats, which is asserting the state of the estate from memory
 instead of reading it, and that is what the new gate stops.
+
+## PARKED, found 2026-08-26 while answering a one-line question
+
+**23 Stop checks cannot tell the owner apart from a compaction summary or from their own
+feedback, and one of them proved it by locking a turn.**
+
+Three different things carry `type: "user"` in a Claude Code transcript, and one real transcript
+today held 2296 of the first, 303 of the second and 3 of the third:
+
+| what it is | how the transcript labels it |
+|---|---|
+| the owner actually typing | neither flag set |
+| the auto-written compaction summary | `isCompactSummary: true` |
+| a check's own block message, echoed back | `isMeta: true` |
+
+`dropped-directive-gate.py` read all three as the owner. It picked the 15,909-character compaction
+summary and reported a design instruction he never gave, then picked its OWN refusal, whose worked
+examples are literally "roads are now gray, tiles white, blue dots". Every one of those is a
+(thing, colour) pair, so from that point it re-fired off its own vocabulary and no reply could
+satisfy it.
+
+FIXED TODAY, with the loop reproduced and then gone:
+  - `_stopgate_lib.py` gained `is_owner_message` / `last_owner_message`, 19/19.
+  - `dropped-directive-gate.py` uses it, 8/8, and the live transcript that looped now passes while
+    the known-answer control ("i told you the roads should be gray" against a reply that never says
+    gray) still blocks.
+  - `no-defer-excuse-gate.py`, a SEPARATE cause: its blocker and its deflection were bare word
+    matches with no subject and no shape, so "the swap cannot leave two styles on one screen" plus
+    "two notes on your side" fired it, 101 characters apart inside one sentence. Proximity was not
+    the fix; requiring the blocker to have ME as its subject and the deflection to be an
+    INSTRUCTION rather than a location was. 11/11, and today's false alarm is now a corpus case.
+
+STILL OPEN, 23 files, each needs the same two-field test at its own selection site (they differ in
+shape, so this is not a sed sweep):
+acknowledgement-is-not-action, ask-before-loop, design-verify, finish-autonomously,
+gate-block-is-not-a-stop, harden-needs-council, ideas-need-the-council, information-is-not-action,
+instrument-corroboration, link, link-relevance, loop-summary, mockup-must-be-a-screen,
+mockup-parity, mockup-verify-before-show, no-retry-rejected-tool, overstep, owner-sees-it-measure-it,
+readback, repeat-mistake-detector, reply-repeat, restart-dont-repaint, scope-creep.
+
+Not done now on purpose: it is work on my own checks, not on his product, and he has said five
+times that it is the wrong thing to spend his turn on. It is one focused pass whenever the app work
+gives out.
