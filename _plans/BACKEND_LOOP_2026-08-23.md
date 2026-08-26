@@ -313,6 +313,34 @@ n go too old yk analyze gimme ur opinion on the nexgt step"*
       hold 428 commits, 2 are one to four weeks old and hold 26, and 11 are over a month old and
       hold 1,178. The oldest last moved 2026-05-31.
 
+
+### THE ROOT CAUSE OF THE PILE, and it was not "nobody remembered to merge"
+
+- [x] **The machine that exists to prevent this has run 1,253 times and merged nothing.**
+      `verified:` `~/.claude/checkpoint-merge.log`, skip reasons counted rather than sampled:
+      **984** are the old "main is checked out, cannot safely update it from here", **186** are
+      "main's worktree has uncommitted changes", 35 are a failing typecheck, 22 are a clash in
+      `.claude/launch.json`, 6 in `_plans/ACTIVE.md`, 2 a genuine divergence. The 2026-08-14 pass
+      fixed the first reason and the second quietly took over from it.
+- [x] **What was blocking it: nine unsaved files, the oldest untouched since 2026-08-17.**
+      `verified:` seven gate edits last modified 2026-08-23, the rebuilt mockup index from
+      2026-08-24, and one Playwright scratch file from 2026-08-17. The merge refuses while ANY
+      change is uncommitted, and `git status --porcelain` counts untracked files, so a single
+      stray `.tmp-` file was enough to hold the whole thing shut.
+- [x] **Unjammed.** `verified:` commit acff03259 on main saves all nine, `.gitignore` learns
+      `.tmp-verify-*` so the next scratch file cannot repeat it, and `git status --porcelain` in
+      main's worktree is now empty. The rebuilt mockup index that had been sitting there unsaved
+      for two days is a real deliverable of his: 367 mockups across 170 surfaces, replacing a page
+      written 2026-06-09 that listed five.
+- [x] **Proved it rather than asserting it.** `verified:` merged
+      `claude/hook-permission-error-bc75ea`, the only remaining branch with zero clashing files,
+      two commits and five lines in one plan document. It went through clean.
+- [x] **The honest limit of the unjamming.** The checkpoint uses `--ff-only`, so it only helps a
+      branch that is strictly ahead of main. Every branch here is also BEHIND main (this one by 54
+      commits at the time of the merge), so they still need a real merge commit, which the
+      checkpoint will not make on its own. Unjamming stops the log filling with skips; it does not
+      by itself clear the fifteen that are left.
+
 ### The finding that changes what to do about it
 
 - [x] **Most of what looks stranded is stuff he deleted on purpose.** `verified:` the naive count
