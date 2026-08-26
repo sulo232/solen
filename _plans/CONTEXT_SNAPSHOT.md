@@ -2,38 +2,16 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-14T23:50:51 (trigger: auto)
-- branch: claude/agent-flow-design-overhaul-2af2c2
+- taken: 2026-08-26T22:17:49 (trigger: auto)
+- branch: claude/email-29c154
 
 ## git
 ```
-92ff09582 Second copy merged, sixteen clashes settled one at a time
-317c0ee72 First copy actually merged, conflicts resolved one by one, and the personal row is on
-4a5d6d694 Proof on the hands-off line
-613fdb974 Hands off the phone-app copy, he said leave it entirely
-9503cd5a3 Your English, French and Italian visitors were reading German in the top menu, on every page
-```
-```
-M  _design-system/QUESTIONS.md
-A  app/[locale]/_components/business/AssetPlaceholder.tsx
-A  app/[locale]/_components/business/CountUp.tsx
-A  app/[locale]/_components/business/EarningsCalculator.tsx
-A  app/[locale]/_components/business/MotionProvider.tsx
-A  app/[locale]/_components/business/Reveal.tsx
-UU app/[locale]/_components/homepage/BusinessTeaser.tsx
-UU app/[locale]/_components/homepage/WhySolen.tsx
-UU app/[locale]/_components/layout/Footer.tsx
-UU app/[locale]/_components/layout/Header.tsx
-UU app/[locale]/_components/layout/MobileMenu.tsx
-UD app/[locale]/business/page.tsx
-UU app/[locale]/fuer-salons/page.tsx
-D  app/[locale]/partner/layout.tsx
-UD app/[locale]/partner/page.tsx
-M  app/[locale]/warum-solen/page.tsx
-UU app/sitemap.ts
-DU components-legacy/home/PartnerBlock.tsx
-DU components-legacy/layout/Footer.tsx
-UU messages/de.json
+8f296d224 Four ways the emails could look, on one screen
+b3235d5db Checked it on a phone, and the card did not fit
+d25b731d6 Shorter, with our own pictures and one moving mark
+d3c18d3c3 The preview reads properly on a phone now
+7a573e543 A frame to react to: same emails, one toggle between what ships and what is proposed
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
@@ -100,5 +78,4 @@ UU messages/de.json
 ## BRANCH_RECONCILIATION_2026-08-14.md
 Open boxes:
 - [ ] C10. The remaining copies, one at a time. Each one: open it, rescue anything uncommitted that
-- [ ] C13. Delete `quirky-ellis-ef5559` once those three checks are either copied by a session that
 - [ ] C14. Those eight files reach main. Nothing to build; it is the merge, which is his.
