@@ -158,6 +158,16 @@ the direction of the screen he already likes.
   on a photo reads heavy and that page is the benchmark. The three pages with none get one.
   CLOSE CONDITION: every page that is not a bottom-tab destination has a back control, and the sweep
   returns exactly two variants, on-photo and on-white, with nothing else.
+  DONE 2026-08-27, and it is the measurement half, not the close: reading every back control out of
+  shipped source gives **13**, in 4 box sizes (32/36/40/44), 4 icon sizes (16/18/20/22), 2 glyphs
+  and 6 fill treatments. The shared `BackButton` primitive is imported by exactly ONE screen
+  (SalonHero) while 21 files draw their own inline, and the primitive itself contradicts his dated
+  2026-08-03 pick: it is 40px white with a hairline, his is a 44px `#F2F2F2` circle at 0px border.
+  Three of the 13 sit under the global header, which `REMOVED.md:22` already deleted on purpose, so
+  those are removals not restyles; one is 32px, under the 44px touch floor. All 13 are on one page,
+  at real size, no tap needed: `public/_mockups/compare-back-arrow/index.html` (`58c0d98de`),
+  verified rendering at 402x844.
+  STILL OPEN: nothing has moved in the product. The sweep still returns 13 variants, not 2.
 
 - [ ] **S4. Write the nine missing screen specs.** Use `salon-detail`'s 21 files as the template,
   since that is the shape that produced the screen he likes. Each of the nine gets its sections
@@ -170,6 +180,14 @@ the direction of the screen he already likes.
   S4, or genuinely still open. Mark each. Fix the duplicate IDs.
   CLOSE CONDITION: the ACTIVE design row count is under 10 and every survivor names what it is
   waiting on.
+  DONE 2026-08-27 (`4bc731360`): 35 rows audited against the CODE, not against their own detail
+  files. **20 closed** , FINISHED 4/19/36/37/38/41/47/64/68/78/104/107/109, SUPERSEDED 22 by 13,
+  42 by 43, 52 and 55 by 81, 69 by 70, DEAD 35 and 53. Every one of the 15 survivors now carries a
+  WAITING ON line naming one concrete blocker, and 9 of those blockers are one word from him.
+  Index recount: 21 CLOSED, 48 ACTIVE across all workstreams.
+  STILL OPEN: **14 design rows** are still ACTIVE against a target of under 10, and roughly 5 design
+  rows were never handed to an audit. Those five need judging, and then the survivors that wait only
+  on him need to be put to him as one list rather than fourteen.
 
 - [ ] **S6. Then and only then, the look.** Gray, the dashboard direction, typography. Those are
   taste calls and they are his. They are LAST on purpose: fixing them before S1 to S4 means fixing
