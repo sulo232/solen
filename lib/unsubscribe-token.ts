@@ -52,9 +52,20 @@ async function hmacSha256Hex(key: string, message: string): Promise<string> {
 /** HMAC of the lowercased, trimmed email. Appended to the outreach email's unsubscribe link. */
 export async function unsubscribeToken(email: string): Promise<string> {
   const secret = getSecret();
+  if (!secret) {
+    console.error(
+      "[unsubscribe-token] no UNSUBSCRIBE_SECRET or SUPABASE_SERVICE_ROLE_KEY configured: " +
+        "the unsubscribe link in this email will be minted with a placeholder key and will never verify."
+    );
+  }
   // No secret at all (both env vars unset): still return a deterministic hex string so
-  // callers building a link don't crash, but it will never verify (see below, fail closed).
-  const key = secret ?? "";
+  // callers building a link don't crash. Node's createHmac("sha256", "") accepted an empty
+  // key, but crypto.subtle.importKey rejects one ("Zero-length key is not supported"), so the
+  // placeholder below must be non-empty, do not simplify this back to `secret ?? ""`. The
+  // placeholder's actual value is irrelevant to security: verifyUnsubscribeToken fails closed
+  // (returns false before ever comparing) whenever no secret is configured, so a token minted
+  // here can never verify regardless of what key produced it.
+  const key = secret ?? "unsubscribe-token-no-secret-configured";
   return hmacSha256Hex(key, email.trim().toLowerCase());
 }
 
