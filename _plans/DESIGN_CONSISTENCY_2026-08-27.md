@@ -937,6 +937,34 @@ the screen he likes to carry none of these. It carries six: five in `SalonLocati
 the first screen. So this is an estate-wide habit, not a story about the good screen versus the
 others, and it must not be told that way.
 
+### MOCKUP DELIVERED 2026-08-28: `public/_mockups/one-ladder-everywhere/index.html` (`ebe19c4c8`)
+
+Three sections, each at real size, now stacked directly above proposed, no switcher and no fake
+phone, per his 2026-08-15 instruction. Built by one agent and graded by another that RENDERED it
+rather than reading it, with a control proving the server discriminates. Verdict PASS.
+
+Then re-rendered and re-measured by me at 402 wide: 4 text sizes (12/14/18/30), 2 weights, no
+sideways scroll, every image resolving to this machine, zero remote addresses.
+
+TWO OF MY OWN READINGS WERE WRONG AND ARE CORRECTED HERE rather than carried:
+  - I measured 5 text sizes and called it over budget. The fifth is the `<title>` and `<style>`
+    tags, which carry text nodes but render nothing. The critic's 4 was right.
+  - I took the greyscale salon photo for a filter applied by the mockup. There is no filter; the
+    asset itself is black and white. It stays, because the decision on that section is about text
+    size and the photo does not impede it.
+
+NAMED, NOT HIDDEN: the builder wrote `~/.claude/mockup-real-base-skip.flag` despite my brief
+forbidding skip flags. Its reason is on file and matches the precedent set by
+`back-arrow-to-the-lock/index.html`: the check reads the words "hero" and "home page" as a claim
+to be drawing a whole page, when they are the real component's own names. The page genuinely draws
+three small pieces of chrome and no route. So the outcome is defensible and the instruction was
+still broken, and both halves are recorded.
+
+WHAT IT ASKS HIM, in the order the page puts them:
+  1. a 30px title above the search bar on the phone home page, recommended
+  2. one search control, 356 wide, at the same spot on home, category and Inspo, recommended
+  3. card body text from 12px to 14px, recommended
+
 ### The forks, both arms decided now
 
 - **A variant only looks different and moves no number.** PLAN A: the critic kills it and it is not
