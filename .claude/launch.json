@@ -2,6 +2,16 @@
   "version": "0.0.1",
   "configurations": [
     {
+      "name": "Next dev (this worktree on 3457)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "npx next dev -p 3457"
+      ],
+      "port": 3457,
+      "autoPort": false
+    },
+    {
       "name": "Next dev (MAIN on 3000)",
       "runtimeExecutable": "bash",
       "runtimeArgs": [

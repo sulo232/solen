@@ -20,7 +20,8 @@ everywhere, and it is everywhere outside these mockups too."
     What PASSES and must not be "fixed": the anchor is 34px at 2.83x body, clearing both the >=28px display-anchor floor and the >=1.8x ratio floor. Do not touch it.
     A false lead worth recording so it is not chased again: 17 elements in the first viewport render a solid ink-black fill, which looked like the banned black-on-selected. Inspected, they are the collapsed sidebar's peek tooltips (`pointer-events-none absolute left-[52px]`), which are legitimately ink. Not a violation.
   - [x] ROOT CAUSE NAMED, and it is not layout. `tailwind.config.js:81` aliases the RETIRED token `s-coral` to `#0A0A0A`, plain ink. 180 references across 58 dashboard files still use it, so elements designed as coloured accents render black. That is the mechanism behind "too monochrome". The calendar's 26 of them are fixed (below); the other 154 are not.
-  - [ ] DIRECTIONS: three are now grounded and costed, and the pick is HIS by name (a dashboard reskin is
+  - [ ] BLOCKED ON AN OWNER PICK, one letter: D1, D2 or D3. Three directions are grounded and costed
+    below and the choice is his by name (a dashboard reskin is
     not an indifference-band call). Nothing here is adopted.
     **D1, take the gray off the page wrapper.** Built and rendered as a probe, see the GRAY item (b) below.
     One CSS line on one wrapper. Does not touch layout, type or cards. Smallest possible move.
@@ -67,7 +68,8 @@ everywhere, and it is everywhere outside these mockups too."
     injection was removed and the false line deleted.
     RE-POINTED by (a2) and this is why: settings paints 12.8% gray, too small a difference to judge. The
     dashboard paints 44.3%.
-  - [ ] (c) HIS CALL, and it is the only thing left in this item. Reopening a LOCKFILE surface row is his
+  - [ ] (c) BLOCKED ON AN OWNER DECISION, one word: does the dashboard go white or stay gray. He has the
+    two-panel probe from (b) in front of him. It is the only thing left in this item. Reopening a LOCKFILE surface row is his
     by name. Two arms, both decided in advance so this is a question and not a stop:
     ARM A, he says the white one is better -> the LOCKFILE surface row reopens and a sweep plan gets
     written for the 349 customer-site wash sites, starting with `Header.tsx` and `SearchTemplate.tsx`

@@ -2,16 +2,19 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-27T11:43:41 (trigger: auto)
+- taken: 2026-08-27T12:19:29 (trigger: auto)
 - branch: claude/stress-test-gates-hooks-6dc8e8
 
 ## git
 ```
+bea9c2430 checkpoint(auto): 2 uncommitted file(s) at turn end
 d313c9251 checkpoint(auto): 1 uncommitted file(s) at turn end
 e85456d8e checkpoint(auto): 1 uncommitted file(s) at turn end
 8378f389c checkpoint(auto): 3 uncommitted file(s) at turn end
 c7b23aa3e Bring main in, and settle all 13 clashes one at a time
-1ebf80abb Bring the corrected plan into main: proof on the ticked lines, leftovers tracked
+```
+```
+M _plans/SETTINGS_INSTA_GRAY.md
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
