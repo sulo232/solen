@@ -341,8 +341,22 @@ the direction of the screen he already likes.
        blobs in the research file and md5ing them against disk shows FOUR finished clips; two were
        never extracted to `out/`.
   Index recount: **34 CLOSED, 35 ACTIVE, 10 PAUSED** across all 110 rows.
-  STILL OPEN: the design ACTIVE count is still above the target of under 10. What is left is mostly
-  not audit work any more, it is nine one-word answers that need to reach him as ONE list.
+  ROUND 5, 2026-08-27: the list exists. `_plans/TEN_ANSWERS_2026-08-27.md`, both arms written for
+  every item, ordered by how much moves when he answers, biggest first. It is TEN, not nine: the
+  back arrow joined the list today with its own mockup, and rows 62 and 63 are counted as the one
+  act they actually are rather than as two questions.
+  TWO CORRECTIONS FOUND WHILE BUILDING IT, both of which had been keeping a row open:
+    - Row 51's remaining item is A2, a SIGN-IN question about whether the flow may leak that an
+      email is registered. That is a privacy trade, not a design one, so it stops counting as a
+      design row the moment its chrome half closes.
+    - Row 66 may not be his to answer at all yet: `_plans/ICON_SWAP_2026-08-17.md` is a live
+      whole-set icon replacement at 52 of 52 coverage that has NO row in the index, and it may
+      already own the Line-or-Solid decision. Flagged on the list rather than resolved quietly.
+  CLOSE CONDITION NOT MET, and it cannot be met from this side. The design ACTIVE count is 13
+  against a target of under 10, and 10 of those 13 are waiting on one word or one look from him.
+  That is a real dependency on him, not unfinished audit work: every one of the 10 has both arms
+  decided and written, so none of them needs a follow-up question. Answering all ten takes the
+  count from 13 to 3. The remaining 3 are the ones with actual build work left in them.
 
 - [x] **S8. The English site speaks German to anyone who cannot see it. FIXED AND VERIFIED
   2026-08-27, commit `5975ef6f9`.**
