@@ -327,7 +327,11 @@
       "allWalkIns": "All walk-ins",
       "untilFree": "until free",
       "queueEmpty": "Nobody waiting",
-      "queueAhead": "{n} ahead of you"
+      "queueAhead": "{n} ahead of you",
+      "reviewsTitle": "Reviews",
+      "reviewsLinkLabel": "All reviews →",
+      "freeNow": "Free now",
+      "waitRange": "{min}-{max} min"
     },
     "heroCarousel": {
       "label": "Popular near you",

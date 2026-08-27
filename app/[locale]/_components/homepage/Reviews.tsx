@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { ChevronRight, Star, Store } from "lucide-react";
 import { Section, SectionTitle, SectionFrame, ScrollRow } from "./SectionHeader";
 import { formatReviewDate } from "@/app/[locale]/_components/salon/_shared";
@@ -45,6 +45,10 @@ interface Review {
 // renders nothing (see the null-guard below) until reviews actually exist.
 
 export default function Reviews() {
+  // 2026-08-27 i18n fix: title + link label were hardcoded German literals, so they
+  // rendered German on /en, /fr and /it. Same class the 2026-08-15 sweep caught on
+  // WalkInBand and the recently-viewed row.
+  const t = useTranslations("home.sections");
   const scrollRef = React.useRef<HTMLDivElement>(null);
   const router = useRouter();
   const locale = useLocale();
@@ -101,8 +105,8 @@ export default function Reviews() {
     <Section>
       <SectionFrame>
         <SectionTitle
-          title="Bewertungen"
-          link={{ label: "Alle Bewertungen →", href: `/${locale}/reviews` }}
+          title={t("reviewsTitle")}
+          link={{ label: t("reviewsLinkLabel"), href: `/${locale}/reviews` }}
           scrollRef={scrollRef}
         />
         <ScrollRow ref={scrollRef}>

@@ -327,7 +327,11 @@
       "allWalkIns": "Tous les sans-rendez-vous",
       "untilFree": "avant libre",
       "queueEmpty": "Personne n'attend",
-      "queueAhead": "{n} devant vous"
+      "queueAhead": "{n} devant vous",
+      "reviewsTitle": "Avis",
+      "reviewsLinkLabel": "Tous les avis →",
+      "freeNow": "Libre",
+      "waitRange": "{min}-{max} min"
     },
     "heroCarousel": {
       "label": "Populaire près de chez vous",
