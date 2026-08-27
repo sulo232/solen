@@ -452,6 +452,9 @@ export default function Header({ locale }: { locale: string }) {
   const tNav = useTranslations("navigation");
   const tCommon = useTranslations("common");
   const tCities = useTranslations("cities");
+  const tDashboardNav = useTranslations("dashboard.nav");
+  const tBeautyTabs = useTranslations("account.beauty.tabs");
+  const tProfileHub = useTranslations("profileHub");
 
   // Owner 2026-06-11: profile-subpage titles sit BESIDE the back tile (the stacked
   // page h1 below the header read unbalanced). Same slot idea as the V3-D410
@@ -460,42 +463,64 @@ export default function Header({ locale }: { locale: string }) {
   // favorites/stamps/looks), "you didn't apply it everywhere". Each page's own
   // body <h1> is removed in the same change, so the title shows once, in the bar.
   // Labels mirror the hub rows the owner taps to get here (chip == the tile that
-  // navigated in); intake-forms is shortened to "Formulare" so the long
-  // "Konsultationsformulare" can't overflow the mobile bar. Hardcoded de on
-  // purpose: this span renders on the global header for every route, and a missing
-  // i18n key here would throw and white-screen the app, i18n is tracked separately.
+  // navigated in); intake-forms is shortened to "Formulare"/"Forms"/"Formulaires"/
+  // "Moduli" so the long "Konsultationsformulare" can't overflow the mobile bar
+  // (measured live at 390px: even the longest of the four, French "Formulaires",
+  // renders well inside the bar with room to spare next to the back tile).
+  // 2026-08-27 i18n fix: this used to render 20 hardcoded German literals on the
+  // GLOBAL header, so every deep profile route read German on /en, /fr and /it
+  // too. The comment here used to say the German was hardcoded "on purpose"
+  // because "a missing i18n key here would throw and white-screen the app" , but
+  // this file already calls useTranslations five other times above, and reading
+  // i18n.ts shows the app-wide config already closes that exact risk: `onError`
+  // only logs, never throws, and `getMessageFallback` resolves any missing key to
+  // the German string automatically. So the fear was never actually true for this
+  // codebase. `safeTitle` below adds a second, local layer of the same guarantee
+  // (try/catch -> the same German literal used before this fix), so a missing key
+  // here cannot throw and cannot white-screen the app, verified two ways rather
+  // than asserted. All 20 keys already existed in all four locales before this
+  // change (profileHub / dashboard.nav / account.beauty.tabs), zero new keys.
+  const safeTitle = React.useCallback((translate: () => string, de: string): string => {
+    try {
+      const val = translate();
+      return val || de;
+    } catch (err) {
+      console.error("[Header] deepPageTitle: translation key missing, falling back to German:", err);
+      return de;
+    }
+  }, []);
   const deepPageTitle = React.useMemo(() => {
     if (!pathname) return null;
-    const TITLES: [RegExp, string][] = [
-      [/\/rewards\/?$/, "Treueprogramm"],
-      [/\/profile\/bookings\/?$/, "Termine"],
-      [/\/profile\/favorites\/?$/, "Favoriten"],
-      [/\/profile\/stamps\/?$/, "Stempel"],
-      [/\/profile\/looks\/?$/, "Looks"],
-      [/\/profile\/gift-cards\/?$/, "Geschenkkarten"],
-      [/\/profile\/haarprofil\/?$/, "Haarprofil"],
-      [/\/profile\/vouchers\/?$/, "Gutscheine"],
-      [/\/profile\/intake-forms\/?$/, "Formulare"],
-      [/\/profile\/referral\/?$/, "Freunde einladen"],
-      [/\/profile\/edit\/?$/, "Profil bearbeiten"],
-      [/\/profile\/settings\/?$/, "Einstellungen"],
-      // Settings hub sub-pages (restructure 2026-07-20): same hardcoded-de pattern as the
-      // rest of this map, see the comment at the top of this block.
-      [/\/profile\/settings\/personal\/?$/, "Persönliche Angaben"],
-      [/\/profile\/settings\/password\/?$/, "Passwort"],
-      [/\/profile\/settings\/payment\/?$/, "Zahlungsmethoden"],
-      [/\/profile\/settings\/language\/?$/, "Sprache"],
-      [/\/profile\/settings\/beauty\/?$/, "Beauty-Profil"],
-      [/\/profile\/settings\/notifications\/?$/, "Benachrichtigungen"],
-      [/\/profile\/settings\/delete\/?$/, "Konto löschen"],
+    const TITLES: [RegExp, string, () => string][] = [
+      [/\/rewards\/?$/, "Treueprogramm", () => tDashboardNav("loyalty")],
+      [/\/profile\/bookings\/?$/, "Termine", () => tProfileHub("tileAppointments")],
+      [/\/profile\/favorites\/?$/, "Favoriten", () => tProfileHub("statFavorites")],
+      [/\/profile\/stamps\/?$/, "Stempel", () => tProfileHub("statStamps")],
+      [/\/profile\/looks\/?$/, "Looks", () => tBeautyTabs("looks")],
+      [/\/profile\/gift-cards\/?$/, "Geschenkkarten", () => tProfileHub("walletDesc")],
+      [/\/profile\/haarprofil\/?$/, "Haarprofil", () => tProfileHub("haarprofil")],
+      [/\/profile\/vouchers\/?$/, "Gutscheine", () => tProfileHub("vouchers")],
+      [/\/profile\/intake-forms\/?$/, "Formulare", () => tProfileHub("hubForms")],
+      [/\/profile\/referral\/?$/, "Freunde einladen", () => tProfileHub("refer")],
+      [/\/profile\/edit\/?$/, "Profil bearbeiten", () => tProfileHub("editProfile")],
+      [/\/profile\/settings\/?$/, "Einstellungen", () => tProfileHub("settingsTitle")],
+      // Settings hub sub-pages (restructure 2026-07-20): same key-per-route pattern as
+      // the rest of this map, see the comment at the top of this block.
+      [/\/profile\/settings\/personal\/?$/, "Persönliche Angaben", () => tProfileHub("hubPersonal")],
+      [/\/profile\/settings\/password\/?$/, "Passwort", () => tProfileHub("hubPassword")],
+      [/\/profile\/settings\/payment\/?$/, "Zahlungsmethoden", () => tProfileHub("hubPayment")],
+      [/\/profile\/settings\/language\/?$/, "Sprache", () => tProfileHub("hubLanguage")],
+      [/\/profile\/settings\/beauty\/?$/, "Beauty-Profil", () => tProfileHub("secBeauty")],
+      [/\/profile\/settings\/notifications\/?$/, "Benachrichtigungen", () => tProfileHub("secNotifications")],
+      [/\/profile\/settings\/delete\/?$/, "Konto löschen", () => tProfileHub("hubDeleteAccount")],
       // The content hub (2026-07-20/21 D1 rebuild split /profile into content-only,
       // "Konto" moved to /profile/settings, which already says "Solen Konto" in its
       // own identity block). $-anchored so it never matches the sub-pages above.
-      [/\/profile\/?$/, "Profil"],
+      [/\/profile\/?$/, "Profil", () => tProfileHub("secProfile")],
     ];
-    for (const [re, label] of TITLES) if (re.test(pathname)) return label;
+    for (const [re, de, translate] of TITLES) if (re.test(pathname)) return safeTitle(translate, de);
     return null;
-  }, [pathname]);
+  }, [pathname, tDashboardNav, tBeautyTabs, tProfileHub, safeTitle]);
 
   React.useEffect(() => {
     const HEADER_H = 80; // approximate header height incl. padding
@@ -849,7 +874,7 @@ export default function Header({ locale }: { locale: string }) {
             listed yk thats ass", dropdowns surface categories on demand
             instead of cluttering the always-on header. */}
         <nav
-          aria-label="Hauptnavigation"
+          aria-label={tNav("mainNavigation")}
           className="hidden md:flex min-w-0 flex-1 items-center justify-center gap-2"
         >
           {/* Two more German literals in the global header, found 2026-08-14 on the live English

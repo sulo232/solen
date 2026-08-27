@@ -214,6 +214,15 @@ export const REVIEWS_LABEL: Record<string, string> = {
   it: "recensioni",
 };
 
+// Photo alt-text prefix ("Foto von {name}"). Same words as common.photoOf in
+// messages/*.json; kept as an inline locale record (not useTranslations) because
+// this component is RSC-safe (no "use client", every useTranslations call in this
+// codebase carries "use client", verified) and used inside server-rendered card
+// grids, so adding the hook would force a client boundary here, a structural
+// change outside this fix's scope. Exported so MapSalonDetail.tsx reuses it
+// instead of re-declaring the same lookup data.
+export const PHOTO_OF_LABEL: Record<string, string> = { de: "Foto von", en: "Photo of", fr: "Photo de", it: "Foto di" };
+
 function SalonResultCardInner(props: SalonResultCardProps) {
   const {
     slug, name, locale, rating, reviewCount, photoUrl, category,
@@ -228,6 +237,7 @@ function SalonResultCardInner(props: SalonResultCardProps) {
   // GAP #5: carry the searched date onto the PDP link (dropped silently if malformed).
   const href = withDateParam(`/${locale}/salon/${slug}`, date);
   const fromLabel = FROM_LABEL[locale] ?? "ab";
+  const photoOfLabel = PHOTO_OF_LABEL[locale] ?? PHOTO_OF_LABEL.de;
   const wl = WALKIN_LABEL[locale] ?? WALKIN_LABEL.de;
   const catLabel = category ? CATEGORY_LABEL[category] ?? category : null;
   // V3-D374 (user: "just put in address", "too many lines"): location line = the
@@ -247,7 +257,7 @@ function SalonResultCardInner(props: SalonResultCardProps) {
   const photoInner = photoUrl ? (
     <Image
       src={photoUrl}
-      alt={`Foto von ${name}`}
+      alt={`${photoOfLabel} ${name}`}
       fill
       // draggable=false: the native image drag fires pointercancel and kills the map
       // sheet's scroll<->drag gesture when a thumb starts on the photo (2026-07-02). mockup-ok
@@ -291,7 +301,7 @@ function SalonResultCardInner(props: SalonResultCardProps) {
             the exact bulge case LOCKFILE:430 calls out). */}
         <div className="relative h-[70px] w-[70px] shrink-0 overflow-hidden rounded bg-s-bg-sunken">
           {photoUrl ? (
-            <Image src={photoUrl} alt={`Foto von ${name}`} fill sizes="70px" className="object-cover" />
+            <Image src={photoUrl} alt={`${photoOfLabel} ${name}`} fill sizes="70px" className="object-cover" />
           ) : (
             <span className="grid h-full w-full place-items-center text-s-ink-2" aria-hidden>
               <Store size={22} strokeWidth={2.2} />

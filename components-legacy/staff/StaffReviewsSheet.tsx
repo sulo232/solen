@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
+import { useTranslations } from "next-intl";
 import { ArrowLeft, ChevronDown, Star, Check } from "lucide-react";
 import { Avatar, RatingStars } from "@/app/[locale]/_components/primitives";
 import { formatReviewDate } from "@/app/[locale]/_components/salon/_shared";
@@ -36,6 +37,7 @@ export default function StaffReviewsSheet({
   locale: string;
   onClose: () => void;
 }) {
+  const t = useTranslations("common");
   const [mounted, setMounted] = useState(false);
   const [filters, setFilters] = useState<Set<number>>(new Set());
   const [sort, setSort] = useState<Sort>("best");
@@ -78,7 +80,7 @@ export default function StaffReviewsSheet({
     <div className="fixed inset-0 z-[75] flex flex-col bg-white">
       {/* Header */}
       <div className="sticky top-0 z-10 flex items-center gap-3 border-b border-s-border bg-white px-4 py-3">
-        <button type="button" onClick={onClose} aria-label="Zurück" className="grid h-9 w-9 place-items-center rounded-full hover:bg-s-bg-sunken">
+        <button type="button" onClick={onClose} aria-label={t("back")} className="grid h-9 w-9 place-items-center rounded-full hover:bg-s-bg-sunken">
           <ArrowLeft size={20} strokeWidth={2.2} className="text-s-ink" />
         </button>
         <span className="font-heading text-[17px] font-bold text-s-ink">Bewertungen</span>

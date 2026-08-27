@@ -157,6 +157,7 @@
     "search": "Search",
     "menu": "Menu",
     "searchCompact": "What · Where · When",
+    "mainNavigation": "Main navigation",
     "mobileNavigation": "Navigation",
     "loginToSave": "Sign in to save salons",
     "loginToProfile": "Sign in to view your profile",
@@ -238,7 +239,8 @@
       "beliebtInBern": "Popular in Berne",
       "nearbyPros": "Pros near you",
       "forYou": "Recommended for you",
-      "artistOfMonth": "Artist of the month"
+      "artistOfMonth": "Artist of the month",
+      "portraitOf": "Portrait of {name}"
     },
     "trending": {
       "eyebrow": "Trending",
@@ -330,6 +332,7 @@
       "queueAhead": "{n} ahead of you",
       "reviewsTitle": "Reviews",
       "reviewsLinkLabel": "All reviews →",
+      "reviewOpenAria": "Open review from {name}",
       "freeNow": "Free now",
       "waitRange": "{min}-{max} min"
     },
@@ -465,6 +468,7 @@
     }
   },
   "breadcrumb": {
+    "landmark": "Breadcrumb",
     "back": "Back",
     "coiffeur": "Hair Salon",
     "barbershop": "Barbershop",
@@ -528,6 +532,12 @@
     "previousPhoto": "Previous photo",
     "nextPhoto": "Next photo",
     "showPhoto": "Show photo {number}",
+    "photoOf": "Photo of {name}",
+    "photoOfSalon": "Photo {number} of {name}",
+    "photoCountOf": "Photo {number} of {total}",
+    "photoGalleryLabel": "Photo gallery, image {number} of {total}",
+    "closeOverlay": "Close",
+    "removeImage": "Remove image",
     "choose": "Choose",
     "add": "Add",
     "minutes": "minutes",
@@ -1727,6 +1737,7 @@
       "settings": "Settings",
       "verification": "Verification",
       "backToSite": "Back to Website",
+      "closeMenu": "Close menu",
       "myCalendar": "My Calendar",
       "myBreaks": "My Breaks",
       "myPortfolio": "My Portfolio",
@@ -4968,7 +4979,8 @@
       "help": "Help",
       "signIn": "Sign in or register",
       "whySolen": "Why Solen",
-      "language": "English"
+      "language": "English",
+      "selectCity": "Select city"
     },
     "filterSheet": {
       "title": "Filters",

@@ -198,7 +198,7 @@ export function SalonStickyTabNav({
           </span>
           <button
             type="button"
-            aria-label="Salon teilen"
+            aria-label={tr("shareProfile")}
             onClick={shareSalon}
             className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-s-ink transition-transform active:scale-95 active:duration-[80ms] active:ease-glide"
           >

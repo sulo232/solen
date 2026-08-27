@@ -142,7 +142,7 @@ export default function ImageUploader({
             type="button"
             onClick={clearImage}
             className="absolute top-2 right-2 p-1.5 rounded-full bg-white/90 text-s-ink-2 hover:text-s-accent transition-colors shadow-warm-sm"
-            aria-label="Bild entfernen"
+            aria-label={tc("removeImage")}
           >
             <X size={14} strokeWidth={1.6} />
           </button>

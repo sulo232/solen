@@ -136,6 +136,7 @@ export function SearchBar() {
   const t = useTranslations("home.guidedSearch");
   const tCat = useTranslations("home.categories");
   const tSearch = useTranslations("ui.searchOverlay");
+  const tCommon = useTranslations("common");
   const router = useRouter();
   const params = useParams<{ locale: string }>()!;
   const locale = params?.locale ?? "de";
@@ -422,7 +423,7 @@ export function SearchBar() {
             <button
               type="button"
               onClick={() => setActive(null)}
-              aria-label="Schliessen"
+              aria-label={tCommon("close")}
               className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-s-ink-2 transition-[colors,transform] hover:bg-s-bg-sunken hover:text-s-ink active:scale-[0.94] active:duration-[80ms] active:ease-glide"
             >
               <X size={18} strokeWidth={1.9} />

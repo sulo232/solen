@@ -157,6 +157,7 @@
     "search": "Rechercher",
     "menu": "Menu",
     "searchCompact": "Quoi · Où · Quand",
+    "mainNavigation": "Navigation principale",
     "mobileNavigation": "Navigation",
     "loginToSave": "Connectez-vous pour enregistrer des salons",
     "loginToProfile": "Connectez-vous pour voir votre profil",
@@ -238,7 +239,8 @@
       "beliebtInBern": "Populaire à Berne",
       "nearbyPros": "Pros près de chez vous",
       "forYou": "Recommandé pour vous",
-      "artistOfMonth": "Artiste du mois"
+      "artistOfMonth": "Artiste du mois",
+      "portraitOf": "Portrait de {name}"
     },
     "trending": {
       "eyebrow": "Tendance",
@@ -330,6 +332,7 @@
       "queueAhead": "{n} devant vous",
       "reviewsTitle": "Avis",
       "reviewsLinkLabel": "Tous les avis →",
+      "reviewOpenAria": "Ouvrir l'avis de {name}",
       "freeNow": "Libre",
       "waitRange": "{min}-{max} min"
     },
@@ -465,6 +468,7 @@
     }
   },
   "breadcrumb": {
+    "landmark": "Fil d'Ariane",
     "back": "Retour",
     "coiffeur": "Coiffeur",
     "barbershop": "Barbershop",
@@ -528,6 +532,12 @@
     "previousPhoto": "Photo précédente",
     "nextPhoto": "Photo suivante",
     "showPhoto": "Afficher la photo {number}",
+    "photoOf": "Photo de {name}",
+    "photoOfSalon": "Photo {number} de {name}",
+    "photoCountOf": "Photo {number} sur {total}",
+    "photoGalleryLabel": "Galerie de photos, image {number} sur {total}",
+    "closeOverlay": "Fermer",
+    "removeImage": "Supprimer l'image",
     "choose": "Choisir",
     "add": "Ajouter",
     "minutes": "minutes",
@@ -1701,6 +1711,7 @@
       "settings": "Paramètres",
       "verification": "Vérification",
       "backToSite": "Retour au site",
+      "closeMenu": "Fermer le menu",
       "myCalendar": "Mon calendrier",
       "myBreaks": "Mes pauses",
       "myPortfolio": "Mon portfolio",
@@ -4968,7 +4979,8 @@
       "help": "Aide",
       "signIn": "Se connecter ou s'inscrire",
       "whySolen": "Pourquoi Solen",
-      "language": "Francais"
+      "language": "Francais",
+      "selectCity": "Choisir une ville"
     },
     "filterSheet": {
       "title": "Filtres",

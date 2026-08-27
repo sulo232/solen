@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import { X, Plus, Images } from "lucide-react";
 
 // V3-D414 (Phase 2): "Speichern in" sheet. Lists the user's collections + a create row; picking one saves the
@@ -15,6 +16,7 @@ interface Props {
 }
 
 export default function SaveToBoardSheet({ itemId, open, onClose, onSaved }: Props) {
+  const t = useTranslations("common");
   const [collections, setCollections] = useState<Collection[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
@@ -86,7 +88,7 @@ export default function SaveToBoardSheet({ itemId, open, onClose, onSaved }: Pro
       <div className="absolute inset-0 bg-s-ink/40 backdrop-blur-[6px] animate-in fade-in duration-200" onClick={onClose} />
       <div className="relative flex max-h-[80vh] w-full flex-col overflow-hidden rounded-t-[22px] bg-white shadow-elevation-3 animate-in slide-in-from-bottom duration-300">
         <div className="flex items-center justify-between px-5 pb-3 pt-4">
-          <button onClick={onClose} aria-label="Schließen" className="text-s-ink transition-colors hover:text-s-ink-2"><X size={20} strokeWidth={2.2} /></button>
+          <button onClick={onClose} aria-label={t("closeOverlay")} className="text-s-ink transition-colors hover:text-s-ink-2"><X size={20} strokeWidth={2.2} /></button>
           <p className="font-heading text-[16px] font-semibold text-s-ink">Speichern in</p>
           <span className="w-5" />
         </div>

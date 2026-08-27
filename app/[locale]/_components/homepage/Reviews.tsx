@@ -130,6 +130,7 @@ function ReviewCard({
   review: Review;
   onOpenReview: () => void;
 }) {
+  const t = useTranslations("home.sections");
   const locale = useLocale();
   // V3-D169 (2026-05-26): split `meta` ("Basel · vor 2 Wochen") so the
   // time-relative portion can sit top-right (Fresha/TexBazar pattern)
@@ -157,7 +158,7 @@ function ReviewCard({
       <button
         type="button"
         onClick={onOpenReview}
-        aria-label={`Bewertung von ${review.name} öffnen`}
+        aria-label={t("reviewOpenAria", { name: review.name })}
         className={cn(
           "absolute inset-0 z-0 rounded-2xl",
           "active:scale-[0.98] active:duration-[80ms] transition-transform",

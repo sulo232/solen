@@ -61,7 +61,7 @@ export default function Breadcrumb() {
     // deep pages) — the old mobile back button here was the redundant second affordance the owner flagged.
     <div className="hidden md:block max-w-7xl mx-auto px-4 sm:px-6 py-2">
       {/* Desktop breadcrumb */}
-      <nav className="hidden md:flex items-center gap-1.5 text-sm" aria-label="Breadcrumb">
+      <nav className="hidden md:flex items-center gap-1.5 text-sm" aria-label={t("landmark")}>
         <Link
           href={`/${locale}`}
           className="text-s-ink/40 hover:text-s-ink transition-colors"

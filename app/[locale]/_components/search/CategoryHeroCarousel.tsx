@@ -3,6 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { HeartButton } from "../homepage/HeartButton";
 import { RatingStars } from "@/app/[locale]/_components/primitives";
 
@@ -59,6 +60,7 @@ export function CategoryHeroCarousel({
   locale: string;
   favoriteIds: Set<string>;
 }) {
+  const t = useTranslations("common");
   const ref = React.useRef<HTMLDivElement>(null);
   const [active, setActive] = React.useState(0);
 
@@ -119,7 +121,7 @@ export function CategoryHeroCarousel({
                 >
                   <Image
                     src={s.cover_photo_url as string}
-                    alt={`Foto von ${s.name}`}
+                    alt={t("photoOf", { name: s.name })}
                     fill
                     sizes="(max-width: 768px) 100vw, 680px"
                     className="object-cover transition-transform duration-300 ease-glide group-hover:scale-[1.03]"

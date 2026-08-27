@@ -19,12 +19,14 @@ export type BackButtonVariant = "glass" | "flat";
 export interface BackButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: BackButtonVariant;
-  /** Accessible label. Defaults to German "Zurück"; pass your i18n string. */
+  /** Accessible label. No default on purpose: this primitive holds no copy,
+   *  so pass your i18n string. A German default here shipped "Zurück" to
+   *  English, French and Italian visitors of any caller that omitted one. */
   label?: string;
 }
 
 export const BackButton = React.forwardRef<HTMLButtonElement, BackButtonProps>(
-  function BackButton({ variant = "flat", label = "Zurück", className, ...props }, ref) {
+  function BackButton({ variant = "flat", label, className, ...props }, ref) {
     return (
       <button
         ref={ref}

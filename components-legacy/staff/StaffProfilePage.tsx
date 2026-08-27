@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { Share, Star, X, ArrowLeft, Instagram, ChevronLeft, ChevronRight, Check } from "lucide-react";
 import { Avatar, RatingStars, SeeAllButton } from "@/app/[locale]/_components/primitives";
@@ -76,6 +76,7 @@ export default function StaffProfilePage({
   onSelect?: (staffId: string) => void;
 }) {
   const locale = useLocale();
+  const t = useTranslations("common");
   const router = useRouter();
   // Back goes BACK in history (the old <Link> PUSHED the salon page, so the
   // salon's back returned here — endless ping-pong, owner 2026-06-12).
@@ -212,11 +213,11 @@ export default function StaffProfilePage({
       {/* Top bar — back (left) + name on scroll */}
       <div className="sticky top-0 z-20 flex items-center gap-2 border-b border-s-border bg-white px-3 py-2.5">
         {onClose ? (
-          <button type="button" onClick={onClose} aria-label="Schliessen" className="grid h-9 w-9 shrink-0 place-items-center rounded-full hover:bg-s-bg-sunken">
+          <button type="button" onClick={onClose} aria-label={t("close")} className="grid h-9 w-9 shrink-0 place-items-center rounded-full hover:bg-s-bg-sunken">
             <X size={20} strokeWidth={2.2} className="text-s-ink" />
           </button>
         ) : (
-          <button type="button" onClick={handleBack} aria-label="Zurück" className="grid h-9 w-9 shrink-0 place-items-center rounded-full hover:bg-s-bg-sunken">
+          <button type="button" onClick={handleBack} aria-label={t("back")} className="grid h-9 w-9 shrink-0 place-items-center rounded-full hover:bg-s-bg-sunken">
             <ArrowLeft size={20} strokeWidth={2.2} className="text-s-ink" />
           </button>
         )}
@@ -448,16 +449,16 @@ export default function StaffProfilePage({
       {/* Portfolio lightbox */}
       {lightboxIndex !== null && portfolio[lightboxIndex] && (
         <div className="fixed inset-0 z-[120] flex items-center justify-center bg-s-ink/80 backdrop-blur-sm" onClick={() => setLightboxIndex(null)}>
-          <button type="button" onClick={(e) => { e.stopPropagation(); setLightboxIndex(null); }} aria-label="Schließen" className="absolute right-4 top-4 text-white/80 hover:text-white">
+          <button type="button" onClick={(e) => { e.stopPropagation(); setLightboxIndex(null); }} aria-label={t("closeOverlay")} className="absolute right-4 top-4 text-white/80 hover:text-white">
             <X size={24} strokeWidth={2.4} />
           </button>
           {lightboxIndex > 0 && (
-            <button type="button" onClick={(e) => { e.stopPropagation(); setLightboxIndex(lightboxIndex - 1); }} aria-label="Zurück" className="absolute left-4 text-white/80 hover:text-white">
+            <button type="button" onClick={(e) => { e.stopPropagation(); setLightboxIndex(lightboxIndex - 1); }} aria-label={t("back")} className="absolute left-4 text-white/80 hover:text-white">
               <ChevronLeft size={32} />
             </button>
           )}
           {lightboxIndex < portfolio.length - 1 && (
-            <button type="button" onClick={(e) => { e.stopPropagation(); setLightboxIndex(lightboxIndex + 1); }} aria-label="Weiter" className="absolute right-4 text-white/80 hover:text-white">
+            <button type="button" onClick={(e) => { e.stopPropagation(); setLightboxIndex(lightboxIndex + 1); }} aria-label={t("next")} className="absolute right-4 text-white/80 hover:text-white">
               <ChevronRight size={32} />
             </button>
           )}

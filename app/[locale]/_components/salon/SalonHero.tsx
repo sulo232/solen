@@ -42,6 +42,7 @@ export function SalonHero({
   onOpenGallery: () => void;
 }) {
   const tBack = useTranslations("common");
+  const tSalon = useTranslations("salonDetail");
   const router = useRouter();
   const photos = salon.gallery_urls?.length
     ? salon.gallery_urls
@@ -82,7 +83,7 @@ export function SalonHero({
               >
                 <Image
                   src={u}
-                  alt={`Foto ${i + 1} von ${salon.name}`}
+                  alt={tBack("photoOfSalon", { number: i + 1, name: salon.name })}
                   fill
                   sizes="100vw"
                   className="object-cover"
@@ -107,7 +108,6 @@ export function SalonHero({
         <BackButton
           variant="glass"
           aria-label={tBack("back")}
-          label="Zurück"
           onClick={() => router.back()}
           className="absolute left-4 top-4"
         />
@@ -115,7 +115,7 @@ export function SalonHero({
         <div className="absolute right-4 top-4 flex items-center gap-3">
           <button
             type="button"
-            aria-label="Salon teilen"
+            aria-label={tSalon("shareProfile")}
             onClick={() => shareOrCopy(salon.name, window.location.href)}
             className="group grid h-11 w-11 place-items-center bg-transparent focus-visible:rounded-full focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2"
           >
@@ -151,7 +151,7 @@ export function SalonHero({
             <div
               className="absolute inset-x-0 bottom-8 z-[1] flex justify-center gap-[5px]"
               role="tablist"
-              aria-label={`Foto ${activeIndex + 1} von ${photos.length}`}
+              aria-label={tBack("photoCountOf", { number: activeIndex + 1, total: photos.length })}
             >
               {photos.map((_, i) => (
                 <span

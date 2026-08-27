@@ -157,6 +157,7 @@
     "search": "Cerca",
     "menu": "Menu",
     "searchCompact": "Cosa · Dove · Quando",
+    "mainNavigation": "Navigazione principale",
     "mobileNavigation": "Navigazione",
     "loginToSave": "Accedi per salvare i saloni",
     "loginToProfile": "Acceda per vedere il Suo profilo",
@@ -238,7 +239,8 @@
       "beliebtInBern": "Popolare a Berna",
       "nearbyPros": "Professionisti vicino a te",
       "forYou": "Consigliato per te",
-      "artistOfMonth": "Artista del mese"
+      "artistOfMonth": "Artista del mese",
+      "portraitOf": "Ritratto di {name}"
     },
     "trending": {
       "eyebrow": "Tendenza",
@@ -330,6 +332,7 @@
       "queueAhead": "{n} prima di te",
       "reviewsTitle": "Recensioni",
       "reviewsLinkLabel": "Tutte le recensioni →",
+      "reviewOpenAria": "Apri la recensione di {name}",
       "freeNow": "Libero ora",
       "waitRange": "{min}-{max} min"
     },
@@ -511,6 +514,12 @@
     "previousPhoto": "Foto precedente",
     "nextPhoto": "Foto successiva",
     "showPhoto": "Mostra foto {number}",
+    "photoOf": "Foto di {name}",
+    "photoOfSalon": "Foto {number} di {name}",
+    "photoCountOf": "Foto {number} di {total}",
+    "photoGalleryLabel": "Galleria foto, immagine {number} di {total}",
+    "closeOverlay": "Chiudi",
+    "removeImage": "Rimuovi immagine",
     "choose": "Scegli",
     "add": "Aggiungi",
     "minutes": "minuti",
@@ -1710,6 +1719,7 @@
       "settings": "Impostazioni",
       "verification": "Verifica",
       "backToSite": "Torna al sito",
+      "closeMenu": "Chiudi il menu",
       "myCalendar": "Il mio calendario",
       "myBreaks": "Le mie pause",
       "myPortfolio": "Il mio portfolio",
@@ -4951,7 +4961,8 @@
       "help": "Aiuto",
       "signIn": "Accedi o registrati",
       "whySolen": "Perche Solen",
-      "language": "Italiano"
+      "language": "Italiano",
+      "selectCity": "Seleziona città"
     },
     "filterSheet": {
       "title": "Filtri",
@@ -5180,6 +5191,7 @@
     "quickReplyChips": {}
   },
   "breadcrumb": {
+    "landmark": "Percorso di navigazione",
     "back": "Indietro",
     "coiffeur": "Parrucchiere",
     "barbershop": "Barbershop",

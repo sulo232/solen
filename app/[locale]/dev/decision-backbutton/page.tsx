@@ -44,7 +44,7 @@ export default async function DecisionBackButtonPage() {
                 className="object-cover"
               />
               <div className="absolute left-3 top-3 z-10">
-                <BackButton variant="glass" className={sizeClass} />
+                <BackButton variant="glass" label="Back" className={sizeClass} />
               </div>
             </div>
             <div className="mt-2 flex items-center justify-between">
