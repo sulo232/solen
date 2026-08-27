@@ -27,6 +27,7 @@ import {
   CircleAlert,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { BackButton } from "@/app/[locale]/_components/primitives/BackButton";
 
 type Channel = "email" | "phone";
 type View = "form" | "sent" | "limited";
@@ -159,15 +160,13 @@ export default function ResendAccessLinkPage() {
     <div className="min-h-[100dvh] bg-white text-s-ink">
       {/* top app bar */}
       <header className="sticky top-0 z-10 flex h-[52px] items-center gap-3 border-b border-s-border bg-white px-4">
-        <Link
-          href={`/${locale}/booking/lookup`}
-          aria-label={t("back")}
-          // mockup-ok: a11y touch-target fix (FRONTEND_AUDIT_2026-07-08.md) , 34px raised
-          // to the locked 44px icon-button floor, fits the 52px header, no redesign.
-          className="flex h-11 w-11 items-center justify-center rounded-pill border border-s-border bg-white text-s-ink transition-colors duration-150 ease-snap hover:bg-s-bg-sunken"
-        >
-          <ChevronLeft size={18} strokeWidth={1.9} aria-hidden />
-        </Link>
+        {/* mockup-ok: restores the NAV CONTROLS lock (_design-system/LOCKFILE.md#L2096,
+            owner-measured 2026-08-10), superseding the FRONTEND_AUDIT_2026-07-08.md a11y note
+            above (h-11 w-11 rounded-pill border-s-border text-s-ink, no shadow). BackButton
+            variant="flat" renders the identical h-11 w-11 rounded-full border-s-border sizing
+            and text-s-ink glyph (rounded-pill = rounded-full = 9999px, tailwind.config.js:253),
+            only adding the shadow-elevation-2 the 2026-08-10 lock requires. */}
+        <BackButton variant="flat" href={`/${locale}/booking/lookup`} label={t("back")} />
         <span className="font-display text-[15px] font-semibold tracking-[-0.01em]">
           {t("appBarTitle")}
         </span>

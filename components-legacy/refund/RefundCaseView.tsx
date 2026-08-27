@@ -31,7 +31,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import {
-  ChevronLeft,
   Check,
   X,
   Clock,
@@ -43,6 +42,7 @@ import {
   CalendarPlus,
 } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
+import { BackButton } from "@/app/[locale]/_components/primitives/BackButton";
 import { cn } from "@/lib/utils";
 import {
   type Tr,
@@ -283,13 +283,11 @@ function Frame({
     <div className="relative flex min-h-[100dvh] flex-col bg-white text-s-ink">
       {/* back-nav header (mockup .nav) */}
       <header className="flex items-center gap-3 border-b border-s-border px-4 py-2.5">
-        <Link
-          href={backHref}
-          aria-label={t("back")}
-          className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-pill border border-s-border bg-white text-s-ink"
-        >
-          <ChevronLeft size={18} strokeWidth={1.9} aria-hidden />
-        </Link>
+        {/* mockup-ok: restores the shipped NAV CONTROLS look (LOCKFILE.md, 2026-08-10:
+            circle, ChevronLeft never ArrowLeft, white, shadow-elevation-2), already live
+            via BackButton elsewhere; this hand-drawn Link had drifted from it (rounded-pill,
+            no shadow). Composing the registered primitive per FLOORS LAW 9. */}
+        <BackButton href={backHref} label={t("back")} variant="flat" className="flex-shrink-0" />
         <div className="font-heading text-[16px] font-semibold tracking-[-0.01em]">
           {isGuest ? t("caseTitleGuest") : t("caseTitle")}
         </div>
