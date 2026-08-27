@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Every screen that fails, and the first fix for each</title>
+<!-- Base: elicitation -->
+<!-- Scale: full-page -->
+<!--
+  Base is `elicitation` because this file REBUILDS NO EXISTING SURFACE. It is an index: a list of
+  links to the nine mockups already on disk, each of which is itself a real page copy in the
+  ordinary before and after form. It renders no product UI, proposes no treatment, and there is
+  therefore no capture for it to stand on. It carries the full header block anyway so it is never
+  mistaken for an untracked page.
+
+  Grounded-in: public/_mockups/floor-fix-*/index.html, the nine files it links
+  Grounded-in: _design-system/research/FLOORS_LIVE_2026-08-27.md, the 15 route measurement
+
+  Depicts: the index list itself -> NET-NEW: a static list of links to files on disk. No product
+    surface is drawn here, so there is nothing to trace to a route.
+  Depicts: Barber row -> public/_mockups/floor-fix-barbershop/index.html (which copies /de/barbershop)
+  Depicts: Coiffeur, Nails and Spa row -> public/_mockups/floor-fix-category-pages/index.html (which copies /de/coiffeur)
+  Depicts: Home row -> public/_mockups/floor-fix-home/index.html (which copies /de)
+  Depicts: Search results row -> public/_mockups/floor-fix-search-results/index.html (which copies /de/basel/coiffeur)
+  Depicts: Basel row -> public/_mockups/floor-fix-city-page/index.html (which copies /de/basel)
+  Depicts: Inspo row -> public/_mockups/floor-fix-inspo/index.html (which copies /de/inspo)
+  Depicts: Salon reviews row -> public/_mockups/floor-fix-salon-reviews/index.html (which copies /de/salon/cuts-and-culture/reviews)
+  Depicts: Notifications row -> public/_mockups/floor-fix-notifications/index.html (which copies /de/notifications)
+  Depicts: Why Solen row -> public/_mockups/floor-fix-why-solen/index.html (which copies /de/warum-solen)
+
+  Diagnosis: 14 of the 15 customer routes measured break at least one design floor | re-measured
+    WARM at 390x844 with scripts/check-geometry.mjs on 2026-08-27, floors failed per route: salon
+    detail 0, help 1, profile/settings 2, then 3 each for coiffeur, nails, spa, barbershop,
+    basel/coiffeur, inspo, salon reviews, notifications and warum-solen, and 4 each for home, basel
+    and profile | violates FLOORS LAW items 2, 6 and 7 in CLAUDE.md | target 0, which is what
+    /de/salon/cuts-and-culture already scores
+  Diagnosis: six customer screens have no type hierarchy at all | the largest text on /de/coiffeur,
+    /de/nails, /de/spa, /de/barbershop, /de/basel/coiffeur and /de/inspo measures 14px, the same
+    size as their body text, an anchor ratio of 1.02x to 1.17x, and /de/notifications is worse at
+    12px and 1.00x | violates the display anchor floor (>= 28px) and the anchor ratio floor
+    (>= 1.8x) | target 30px at 2.14x, the salon page's own numbers
+
+  CORRECTED IN THIS FILE, 2026-08-27. The first sweep ran against a COLD dev server and three routes
+  came out wrong, which is recorded in full at _design-system/research/FLOORS_WARM_2026-08-27.md.
+  Barber measured 5 floors failed when it actually measures the same 3 as the other category pages,
+  because it is the same template. Notifications and profile/settings had their readings transposed.
+  The numbers on this page are the warm ones.
+
+  Exists-check: `npm run exists mockups-index` run this turn. ONE hit: MockupsIndex at
+  app/[locale]/dev/mockups/page.tsx. That index lists DEV ROUTES under app/[locale]/dev/, which
+  these static before and after files are not, so it cannot list them and this page does not
+  duplicate it. No component is created. `_design-system/REMOVED.md` has no entry covering the
+  floors work or a static mockup index.
+
+  Treatment-only: nothing. This file changes no product pixel.
+-->
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100dvh;
+    background: #FFFFFF;
+    color: #0A0A0A;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { width: 100%; max-width: 402px; margin: 0 auto; padding: 0 0 64px; }
+
+  .lede { padding: 30px 16px 8px; }
+  .lede h1 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 30px; font-weight: 600; line-height: 1.12; letter-spacing: -0.02em;
+  }
+  .lede p { margin-top: 12px; font-size: 14px; line-height: 1.55; color: #6B6B6B; }
+  .nums { font-variant-numeric: tabular-nums; }
+
+  .tray { margin-top: 24px; background: #F4F4F5; padding: 18px 16px; }
+  .tray h2 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 17px; font-weight: 500; line-height: 1.25; letter-spacing: -0.01em;
+  }
+  .tray p { margin-top: 8px; font-size: 14px; line-height: 1.55; color: #6B6B6B; }
+
+  .list { margin-top: 8px; }
+  a.row {
+    display: block; text-decoration: none; color: inherit;
+    padding: 16px; border-bottom: 1px solid #E4E4E7;
+  }
+  a.row:first-child { border-top: 1px solid #E4E4E7; }
+  a.row .name { font-size: 17px; font-weight: 500; line-height: 1.3; letter-spacing: -0.01em; }
+  a.row .what { margin-top: 5px; font-size: 14px; line-height: 1.5; color: #6B6B6B; }
+  a.row .open { margin-top: 8px; font-size: 14px; font-weight: 500; color: #276EF1; }
+  a.row .count { float: right; margin-left: 10px; font-size: 14px; color: #6B6B6B; }
+
+  .note { padding: 22px 16px 0; font-size: 14px; line-height: 1.55; color: #6B6B6B; }
+  .note strong { color: #0A0A0A; font-weight: 500; }
+  .note + .note { padding-top: 14px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="lede">
+    <h1>Every screen that fails</h1>
+    <p>I measured all <span class="nums">15</span> of your customer screens on a phone.
+       <span class="nums">14</span> of them break at least one of your own design rules. Your salon
+       page breaks none, and it is the one you said you like.</p>
+  </div>
+
+  <div class="tray">
+    <h2>The one number worth knowing</h2>
+    <p>On six of your screens the biggest text is <span class="nums">14px</span>, which is the same
+       size as the ordinary body text. Nothing on those screens is bigger than anything else, so
+       there is no headline and nothing to look at first. Your salon page puts a
+       <span class="nums">30px</span> headline over the same <span class="nums">14px</span> body.</p>
+  </div>
+
+  <div class="list">
+
+    <a class="row" href="/_mockups/floor-fix-category-pages/index.html">
+      <div class="name">Coiffeur, Nails, Spa and Barber <span class="count nums">3 of 6</span></div>
+      <div class="what">All four measured identical, so one fix covers all four. No headline at all,
+        and almost no photos on the first screen.</div>
+      <div class="open">Open</div>
+    </a>
+
+    <a class="row" href="/_mockups/floor-fix-barbershop/index.html">
+      <div class="name">Barber, second look <span class="count nums">3 of 6</span></div>
+      <div class="what">Built separately before I re-measured. Barber turned out to be the same
+        template as the three above, not a worse one, so this is a second opinion on the same fix.</div>
+      <div class="open">Open</div>
+    </a>
+
+    <a class="row" href="/_mockups/floor-fix-home/index.html">
+      <div class="name">Home <span class="count nums">4 of 6</span></div>
+      <div class="what">The biggest words on your home page are "Top auf Solen" at
+        <span class="nums">18px</span>. The salons sit below the fold.</div>
+      <div class="open">Open</div>
+    </a>
+
+    <a class="row" href="/_mockups/floor-fix-search-results/index.html">
+      <div class="name">Search results <span class="count nums">3 of 6</span></div>
+      <div class="what">The screen someone lands on after searching. Zero photos on the first
+        screen, no headline, and nothing bold anywhere.</div>
+      <div class="open">Open</div>
+    </a>
+
+    <a class="row" href="/_mockups/floor-fix-city-page/index.html">
+      <div class="name">Basel <span class="count nums">4 of 6</span></div>
+      <div class="what">More than half the text is bold, the most in your whole product, and there
+        are no photos on the first screen.</div>
+      <div class="open">Open</div>
+    </a>
+
+    <a class="row" href="/_mockups/floor-fix-inspo/index.html">
+      <div class="name">Inspo <span class="count nums">3 of 6</span></div>
+      <div class="what">No headline: the biggest text is the search box placeholder at
+        <span class="nums">14px</span>. Its photo share I could not pin down, it read under
+        <span class="nums">1%</span> twice and <span class="nums">58%</span> once, because the tiles
+        load late. So treat only the headline as proven here.</div>
+      <div class="open">Open</div>
+    </a>
+
+    <a class="row" href="/_mockups/floor-fix-salon-reviews/index.html">
+      <div class="name">Salon reviews <span class="count nums">3 of 6</span></div>
+      <div class="what">A sub page of the salon page you like, and it breaks three rules its parent
+        does not. Seven text sizes crowded into a few pixels of each other.</div>
+      <div class="open">Open</div>
+    </a>
+
+    <a class="row" href="/_mockups/floor-fix-notifications/index.html">
+      <div class="name">Notifications <span class="count nums">3 of 6</span></div>
+      <div class="what">Every word on the screen is <span class="nums">12px</span>, one single size,
+        nothing bigger and nothing bolder. The flattest screen you own. The mockup behind this link
+        was built against an earlier wrong reading, so it fixes shadows rather than this.</div>
+      <div class="open">Open</div>
+    </a>
+
+    <a class="row" href="/_mockups/floor-fix-why-solen/index.html">
+      <div class="name">Why Solen <span class="count nums">3 of 6</span></div>
+      <div class="what">Seven text sizes bunched together, and the greyest screen you own at
+        <span class="nums">74%</span> painted grey.</div>
+      <div class="open">Open</div>
+    </a>
+
+  </div>
+
+  <div class="note">
+    <strong>What each link shows.</strong> Your real page twice, one above the other. The top one is
+    live and untouched. The bottom one is the same live page with one change applied. Nothing is
+    drawn by hand, so what you see is what the change actually does.
+  </div>
+  <div class="note">
+    <strong>Not here.</strong> Your profile breaks four and your settings screen breaks two, and
+    their fixes are still building. Your salon page is not here because it passes everything, and
+    the help page is not here because the only thing it misses is photos.
+  </div>
+  <div class="note">
+    <strong>Three numbers here changed while I was checking them.</strong> The first pass measured
+    your site on a cold server and read three screens wrong. Barber looked like your worst screen at
+    five failures and is actually the same as the other three category pages at three. Notifications
+    and settings had their readings swapped. Everything on this page is the second, warm reading.
+  </div>
+  <div class="note">
+    <strong>This is the first of five options per screen.</strong> Each of these is the smallest
+    possible change. Four more ways to fix each screen are building now, so you will have five to
+    compare per screen rather than one to accept.
+  </div>
+
+</div>
+</body>
+</html>
