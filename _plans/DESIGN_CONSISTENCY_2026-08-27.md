@@ -231,8 +231,39 @@ the direction of the screen he already likes.
   Two more contradictions inside the same lock, both currently ticked as done in workstream 51 and
   both false: there is NO close control in the header at all, and the only `X` on screen is the
   hamburger's open state, which is a square, not the frozen pill.
-  STILL OPEN, but now as a BUILD and not a question: nothing has moved in the product. The sweep
-  still returns 13 variants, not 2.
+  RE-MEASURED PROPERLY 2026-08-27, and the old 13 was wrong in both directions. Three regex
+  sweeps of this same question returned 44, then 16, then 6, and none survived a control: the 44
+  counted carousel and calendar arrows as back controls, the 16 missed the global header, and the
+  6 missed it again because the label it keyed on is now translated. So a reader opened all 44
+  left-arrow glyph sites in shipped source one at a time. The real numbers:
+    20 page-level back controls, in 17 distinct looks
+    20 of 20 draw ArrowLeft; 0 draw the ChevronLeft the lock names
+    11 of the 20 sit below the 44px touch floor, the smallest at 28px
+    1 of the 20 uses the shared primitive; the other 19 hand-draw their own
+    4 more are wizard previous-step controls, counted separately
+    12 are carousel or calendar arrows and were never back controls at all
+    1 screen, `app/[locale]/coming-soon/page.tsx:103`, shows TWO back controls at once (its own
+      20px text link plus the global header's 44px circle), which is exactly the shape
+      REMOVED.md deleted on purpose, so its fix is a REMOVAL not a restyle
+  MEASURED LIVE on the salon page at 390x844: the back control is 40x40 at (16,16) while the
+  share, save and report buttons on the same row are 44x44 each. One control in a row of four is
+  smaller than the other three, and it is the one people press most.
+  ALREADY WRITTEN DOWN AND NEVER PROPAGATED: `COMPONENT_REGISTRY.md:85` says the primitive
+  "Ships at 40px, under the locked 44px touch-target floor: flagged 2026-07-12 as an open owner
+  question, not silently changed." The 2026-08-10 lock ANSWERED that question with 44. The
+  registry line was never updated, so the answer sat next to the question for six weeks.
+  MOCKUP DELIVERED 2026-08-27, `public/_mockups/back-arrow-to-the-lock/index.html`, commit
+  `dca5ffd6b`. Component scope per his 2026-08-15 instruction, not a whole page. Verified
+  rendering at 402x844: 6 swatches, 3 at 40px ArrowLeft against 3 at 44px ChevronLeft, on photo,
+  on white and on the grey tray; 3 type sizes, 2 weights, anchor 30px at 2.14x body, bold share
+  29% by characters, no sideways scroll, no console or network errors.
+  THE COLLISION IS SURFACED, NOT SILENTLY RESOLVED: the lock says white fill; the salon page uses
+  see-through over its photo; this plan's own earlier carve-out said keep the see-through 40x40.
+  The 40 cannot stand, because 44 is a touch floor and floors outrank a carve-out. The see-through
+  is a real question and the mockup keeps it see-through on BOTH sides and says so in one line.
+  STILL OPEN because it waits on one look from him, and on nothing else. The moment he answers,
+  the build is: primitive to 44 + ChevronLeft + the named shadow, then 19 hand-drawn call sites
+  onto it, then one removal.
 
 - [x] **S4. Write the nine missing screen specs. CLOSED 2026-08-27.** Use `salon-detail`'s 21 files as the template,
   since that is the shape that produced the screen he likes. Each of the nine gets its sections
