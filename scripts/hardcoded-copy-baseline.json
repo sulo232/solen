@@ -1,0 +1,14 @@
+{
+ "sites": [
+  "app/[locale]/_components/homepage/MobileCategoriesRow.tsx:89",
+  "app/[locale]/_components/homepage/WhySolen.tsx:216",
+  "app/[locale]/brand/[slug]/page.tsx:111",
+  "app/[locale]/inspo/board/[id]/page.tsx:94",
+  "app/[locale]/inspo/saved/[id]/page.tsx:71",
+  "app/[locale]/inspo/saved/page.tsx:72",
+  "app/[locale]/onboarding/OnboardingFlow.tsx:143",
+  "app/[locale]/onboarding/salon/page.tsx:149",
+  "app/[locale]/salon/[slug]/layout.tsx:66",
+  "components-legacy/shared/ClientSelectorDropdown.tsx:18"
+ ]
+}
