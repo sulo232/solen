@@ -196,3 +196,64 @@ made to agree in the direction of the salon page.
 HIS, and both arms decided in advance so none of them is a stop: the search pill's winning position
 (S2, Plan A unless he says otherwise), whether the dashboard goes white, and which dashboard
 direction. Those three are already written up in `_plans/SETTINGS_INSTA_GRAY.md`.
+
+---
+
+## S7. The wide mockup pass, and both arms of every fork decided up front
+
+Owner 2026-08-27, on the first pass being ten agents wide: *"why one per screen didnt we fix ths in
+harness only one agent is too low u need to run tons tons bro are u dunb why is this happening
+again"*. He is right and the mechanical cause is recorded in section 0b below.
+
+**His answer to the one question asked before this loop started:** SAME LADDER EVERYWHERE. Every
+screen is pulled onto the salon detail page's exact numbers, not merely pushed over the failing line.
+
+### The ladder, stated as numbers a builder can apply without asking
+
+Read off `/de/salon/cuts-and-culture`, the only route in the product that clears all six floors and
+the one screen he says he likes:
+
+| axis | the number | measured on the salon page |
+|---|---|---|
+| display anchor | >= 28px, and 30px is the house value | 30px |
+| body | 14px | 14px |
+| anchor ratio | >= 1.8x | 2.14x |
+| distinct sizes on one screen | at most 5, and at most 4 inside any 8px window | 5 distinct, densest 4 |
+| text at weight >= 600 | at most 30% | 30% |
+| what carries emphasis | size and colour, weight 500 not 600 | Airbnb runs 3.1% at >= 600 |
+| distinct shadows | at least 2 | 3 |
+| photographic share of the first screen | >= 33%, by real salon content only | 34.66% |
+
+### The forks, both arms decided now
+
+- **A variant only looks different and moves no number.** PLAN A: the critic kills it and it is not
+  shown to him. PLAN B, if a whole screen's five variants are all cosmetic: that screen's failure is
+  structural, not stylistic, so it goes to the recompose arm alone and the file says so in one line.
+- **A screen cannot clear the imagery floor without content he has not approved.** PLAN A: show the
+  arrangement using real seeded salons and mark it as his call at the bottom of the page. PLAN B, if
+  there is genuinely no salon content for that surface (Why Solen, notifications): declare the floor
+  inapplicable in the file with the reason, do not invent a photo, and do not silently skip it.
+- **The critic cannot render because the browser pane is busy.** PLAN A: it says so and grades from
+  the file. PLAN B: the orchestrator re-renders the three highest-value comparison pages itself
+  before handing over any link, since the Stop gate refuses an unmeasured mockup link anyway.
+- **Two screens fix the same floor by two different mechanisms.** PLAN A: that is a defect in the
+  set, not taste, and the arbiter picks one mechanism for both. PLAN B, if the two screens genuinely
+  differ (Barber has content, Coiffeur does not): it is a documented VARIANT of one rule, named as
+  such, per FLOORS LAW 8.
+- **He rejects the ladder once he sees it.** PLAN A: the ladder is the only thing that changes, so it
+  reverts by dropping one stylesheet per screen. PLAN B: fall back to the "just clear the line"
+  option he did not pick, which is already built as variant A on every screen.
+
+### 0b. Why the harness did not stop a ten agent fan-out
+
+`~/.claude/hooks/fan-out-not-one-agent-gate.py` exists, he asked for it by name on 2026-08-03
+(*"ye 12 and 40, but in any othr sub agent work i wanr alot of agents, make a whole gate for that"*),
+and it IS registered in settings.json at line 492. Two holes, both measured this turn:
+
+1. **Its matcher is `Agent`, not `Agent|Workflow`.** The fan-out went through the Workflow tool, so
+   the check never ran. Every other gate that needs to see both is registered as `Agent|Workflow`
+   (`no-opus-subagent-gate.py`, `no-overstep-launch-gate.py`), so this one is the odd one out.
+2. **It only refuses ONE agent.** It has a ceiling on bigness and no FLOOR on width, so ten agents on
+   a job he sized at forty passes it silently. His own numbers, 12 and 40, were never encoded.
+
+Both fixed this turn in the existing file rather than a new one.

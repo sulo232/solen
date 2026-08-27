@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Fixing the top of Why Solen</title>
+<!-- Base: capture -->
+<!-- Scale: section -->
+<!--
+  Scale is section, not whole-page. The thing being decided is the hero and the type sizes right
+  under it, the part of the page the floor check actually graded. Nothing past the start of the
+  chat section is shown. All frames below load the REAL running route from the dev server. Nothing
+  is redrawn.
+
+  Frame width is 390, not the usual 402 mockup constant. Reason: every number in this file, and
+  every number I was handed, was measured by check-geometry.mjs at a fixed 390x844, and I re-ran
+  that exact measurement live against the running page before writing this file. Matching 390
+  means every badge below is the number you'd get if you measured the frame yourself. I checked
+  whether this creates a false pass at the real 402 constant: the two changed rules are
+  clamp(28px,7vw,30px) and clamp(18px,2vw,20px); at 402px both land slightly ABOVE their 390px
+  values (28.1px and 18px), so nothing that passes at 390 fails at 402.
+
+  Grounded-in: app/[locale]/warum-solen/page.tsx (hero section + Section 1 "chat", lines 191-253)
+  Grounded-in: app/[locale]/[city]/[category]/page.tsx (the real salon-card route used in the
+    photo option panel, e.g. /de/basel/coiffeur, unmodified)
+
+  Depicts: panel 1 "Now" -> /de/warum-solen (app/[locale]/warum-solen/page.tsx)
+  Depicts: panel 2 "Text sizes fixed" -> /de/warum-solen (app/[locale]/warum-solen/page.tsx)
+  Depicts: panel 3 option A "leave it as a feature page" -> /de/warum-solen (app/[locale]/warum-solen/page.tsx)
+  Depicts: panel 3 option B, top half "real hero copy, unmodified" -> /de/warum-solen (app/[locale]/warum-solen/page.tsx)
+  Depicts: panel 3 option B, bottom half "real salon cards" -> /de/basel/coiffeur (app/[locale]/[city]/[category]/page.tsx)
+
+  Panel 2 is /de/warum-solen with one stylesheet of 3 rules injected client-side after load,
+  nothing else in the document touched. Panel 3 option B is two of the above iframes stitched
+  in one column to show a proposed arrangement, not a route that exists on its own; both halves
+  individually trace to real, unmodified routes, named above.
+
+  Diagnosis: F6 display anchor | measured 27.3px | violates FLOORS LAW 6, display anchor >= 28px | target 28px
+  The 27.3 is exact, not approximate: the class is text-[clamp(26px,7vw,30px)], and 7vw at 390px
+  is exactly 27.3px, read live off the rendered <h1> today via getComputedStyle. This is a 0.7px
+  miss on the clamp's own minimum, a rounding gap, and should be named as exactly that size and
+  no bigger, not dramatized. Fix: raise the clamp minimum to clamp(28px,7vw,30px), which computes
+  to 28.14px at 390px.
+
+  Diagnosis: F7c size spread | measured 6 sizes in one 8px window | violates FLOORS LAW 7c, densest cluster <= 4 | target 4 sizes
+  Measured live today across every visible leaf-text node at 390x844: 7 distinct sizes total in
+  the first viewport (12, 14, 15, 16, 18, 20, 27.3px), and a sliding 8px window finds 6 of them
+  (12 through 20) inside one window. Two of the seven are not real decisions: 16px is Tailwind's
+  un-set default on three bullet paragraphs (className="flex items-start gap-2" with no size
+  class at all), while the locked text-size row already puts body text at 14px. 20px is the hero
+  subtitle, which has no locked role of its own on that row (name/meta/H2/body/CTA/eyebrow are
+  all locked; "hero subtitle" is not one of them). Fix: fold both into locked values already on
+  this same screen, not a new one.
+
+  Diagnosis: F2 imagery | measured 0% photographic area | violates FLOORS LAW 2, imagery >= 33% | target 33%
+  Measured live today: no <img> and no background-image url() anywhere in the first viewport.
+  No stylesheet fixes this, it needs real content, which is why it gets its own panel below with
+  both arms named rather than a change applied. Measured for scale: one real SalonCard photo, the
+  same card used on every browse page in the product, is 230.7 x 184.5px at this exact viewport,
+  12.9% of it. Clearing 33% takes two to three of them on screen together, not one decorative
+  hero photo.
+
+  Also measured, named here but not addressed in any panel below, because it is not mine to
+  decide: 73.5% of this page was measured painted gray by a 5,500-point hit-test at 402x880, the
+  highest of any screen in the product (the dashboard is next at 44.3%; every customer browse
+  screen is under 4.2%, per the same measurement already recorded in
+  public/_mockups/dashboard-without-the-gray/index.html). On this page it comes from two
+  full-width bg-s-bg-sunken sections, the hero and the alternating Chat/Compare/Map sections
+  beneath it, not from one wrapper like the dashboard. Taste rule 3 puts the sunken gray in an
+  ~80% surfaces budget alongside white, not stacked as whole-section washes, and FLOORS LAW 4
+  says cool chrome like this is only legal when photography or a semantic-color moment shares the
+  viewport, which today it does not. Nothing in this file changes it. It is named so it is on the
+  record, the same way the dashboard mockup left its four stray corner radii on the record
+  without touching them.
+
+  Exists-check: `npm run exists warum-solen` run this turn. 21 hits: the route itself
+    (app/[locale]/warum-solen/page.tsx), 19 named inline sections inside it, and the exported
+    WarumSolenPage symbol. Per protocol, a hit means reuse, which is what every panel below does,
+    the real route loaded live, never rebuilt. `npm run exists SalonCard` run this turn: 3 live
+    components (the active one at app/[locale]/_components/homepage/SalonCard.tsx) plus 9
+    graveyard entries for retired card variants, none of which concern this page. The photo-option
+    panel loads the real category route that already renders that component; nothing here builds
+    a new one.
+
+  Treatment-only, panel 2: exactly 3 CSS rules, injected into the iframe's own document after it
+    loads, verified live before this file was written (getComputedStyle read back after
+    injection, not assumed):
+      h1 { font-size: clamp(28px, 7vw, 30px) !important; }                    -> fixes F6
+      section:first-of-type p { font-size: clamp(18px, 2vw, 20px) !important; } -> hero subtitle
+        now uses the SAME locked recipe as every section-H2 on this page, rather than its own
+        unlocked 20px. Computes to 18px at this width, so it merges into a size already present.
+      p.flex.items-start.gap-2 { font-size: 14px !important; }                -> the three bullet
+        paragraphs move from Tailwind's un-set 16px default to the locked body-14 value, applied
+        sitewide inside the frame (every section uses the identical class), not only above the
+        fold, so the fix does not create a new inconsistency between the visible part of the page
+        and the part you'd reach by scrolling.
+    Verified result, read back live after injection: distinct sizes in the first viewport drop
+    from 7 to 5 (12, 14, 15, 18, 28), and the densest 8px window drops from 6 to 4 (12, 14, 15,
+    18), exactly at the ceiling, not under it by luck. Layout, copy, icons, spacing, and every
+    color are untouched. Nothing is added.
+
+  Panel 3 is explicitly NOT treatment-only. It is a content decision and is presented as one,
+  with both arms shown and neither applied.
+
+  Every label in this file is English. The frames render the product's own German through its
+  own translations and are exempt. Single light theme, no dark mode.
+-->
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100dvh;
+    background: #FFFFFF;
+    color: #0A0A0A;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { width: 100%; max-width: 390px; margin: 0 auto; padding: 0 0 64px; }
+
+  .lede { padding: 28px 16px 6px; }
+  .lede h1 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 26px; font-weight: 600; line-height: 1.18; letter-spacing: -0.02em;
+  }
+  .lede p { margin-top: 10px; font-size: 14px; line-height: 1.5; color: #6B6B6B; }
+
+  .panel { margin-top: 28px; }
+  .cap { padding: 0 16px 8px; }
+  .cap h2 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 17px; font-weight: 600; line-height: 1.25; letter-spacing: -0.01em;
+  }
+  .cap p { margin-top: 3px; font-size: 13px; line-height: 1.45; color: #6B6B6B; }
+  .nums { font-variant-numeric: tabular-nums; }
+
+  .frame {
+    position: relative; width: 100%; height: 620px;
+    border-top: 1px solid #E4E4E7; border-bottom: 1px solid #E4E4E7;
+    overflow: hidden;
+  }
+  .frame iframe { width: 390px; height: 620px; border: 0; display: block; }
+
+  .badges { position: absolute; top: 10px; left: 10px; right: 10px; z-index: 2;
+    display: flex; flex-wrap: wrap; gap: 6px; }
+  .badge {
+    padding: 5px 9px; border-radius: 40px;
+    background: rgba(255,255,255,0.94); border: 1px solid #E4E4E7;
+    font-size: 11px; font-weight: 600; color: #0A0A0A;
+    font-variant-numeric: tabular-nums;
+  }
+  .badge.fail { color: #DC2626; border-color: rgba(220,38,38,0.35); }
+  .badge.pass { color: #16A34A; border-color: rgba(22,163,74,0.35); }
+
+  .note { padding: 20px 16px 0; font-size: 13px; line-height: 1.55; color: #6B6B6B; }
+  .note strong { color: #0A0A0A; font-weight: 600; }
+  .note + .note { padding-top: 14px; }
+
+  .split { display: flex; flex-direction: column; gap: 14px; padding: 0 16px; }
+  .opt { border: 1px solid #E4E4E7; border-radius: 16px; overflow: hidden; }
+  .opt .optcap { padding: 12px 14px 10px; border-bottom: 1px solid #E4E4E7; background: #FAFAFA; }
+  .opt .optcap h3 { font-size: 14px; font-weight: 600; color: #0A0A0A; }
+  .opt .optcap p { margin-top: 3px; font-size: 12.5px; line-height: 1.4; color: #6B6B6B; }
+  .opt .frame { border: 0; height: 300px; }
+  .opt .frame iframe { width: 390px; height: 300px; }
+  .stitch { display: flex; flex-direction: column; }
+  .stitch .frame { height: 150px; }
+  .stitch .frame iframe { height: 150px; }
+  .stitch .seam { text-align: center; font-size: 10.5px; color: #9CA3AF; padding: 4px 0; background: #FAFAFA; border-top: 1px dashed #E4E4E7; border-bottom: 1px dashed #E4E4E7; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="lede">
+    <h1>Fixing the top of Why Solen</h1>
+    <p>Three panels below. Same real page in every one of them, loaded live from your site.
+       Only what's named under each panel changed.</p>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>1. Now</h2>
+      <p>What's live today. Nothing touched.</p>
+    </div>
+    <div class="frame">
+      <div class="badges">
+        <span class="badge fail nums">27.3px anchor, needs 28</span>
+        <span class="badge fail nums">7 sizes crowded</span>
+        <span class="badge fail nums">0% photo</span>
+      </div>
+      <iframe id="before" src="/de/warum-solen" scrolling="no" title="Why Solen as it is today"></iframe>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>2. Text sizes fixed</h2>
+      <p>Three type rules changed. Nothing else.</p>
+    </div>
+    <div class="frame">
+      <div class="badges">
+        <span class="badge pass nums">28.1px anchor, passes</span>
+        <span class="badge pass nums">4 sizes in the tight cluster, passes</span>
+        <span class="badge fail nums">0% photo, still open</span>
+      </div>
+      <iframe id="after" src="/de/warum-solen" scrolling="no" title="Why Solen with the type sizes fixed"></iframe>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>What actually changed here.</strong> The big heading gets 0.8px taller at its
+    smallest. The line under it drops from 20px to 18px, the exact size your section headings
+    already use everywhere else on this page. Three small paragraphs go from an unset 16px,
+    a gap in the code, to the 14px your body text is supposed to be. That's the whole change.
+    I read every size back off the live page after making it, the numbers in the badges are not
+    estimates.
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>3. The photo decision</h2>
+      <p>This one I can't fix with a style change. It needs a call from you.</p>
+    </div>
+    <div class="split">
+      <div class="opt">
+        <div class="optcap">
+          <h3>Option A: leave it as a feature page</h3>
+          <p>The three demo panels below (chat, price quote, compare) stay the whole story.
+             No photo anywhere above the fold. This fails the photo rule on purpose, if you
+             decide this page's job is explaining what Solen does, not browsing salons.</p>
+        </div>
+        <div class="frame"><iframe src="/de/warum-solen" scrolling="no" title="Option A, unchanged, no photo"></iframe></div>
+      </div>
+      <div class="opt">
+        <div class="optcap">
+          <h3>Option B: pull real salons in under the headline</h3>
+          <p>Same headline and button, untouched. Under it, the real card grid from your own
+             coiffeur page, real photos, real names, real prices, the same card you already use
+             everywhere. Nothing here is a stock photo or a placeholder.</p>
+        </div>
+        <div class="stitch">
+          <div class="frame"><iframe src="/de/warum-solen" scrolling="no" title="Real hero copy, unmodified"></iframe></div>
+          <div class="seam">your real card grid would continue here</div>
+          <div class="frame"><iframe id="cards" src="/de/basel/coiffeur" scrolling="no" title="Real salon cards, pulled from your live coiffeur page"></iframe></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>Why I didn't just build one of these.</strong> Option A is legitimate if this page's
+    job is explaining the product, not selling one visit. Option B is legitimate if you want every
+    page a customer lands on to prove there's a real shop behind it. Neither is a style question,
+    each changes what this page is FOR, so I'm showing you both, real, rather than picking one for
+    you.
+  </div>
+  <div class="note">
+    <strong>What this whole file does not touch.</strong> The gray behind everything (measured at
+    73.5% of this page, the highest of anything I've measured on the site) is not changed in any
+    panel above. That's a bigger call than a type-size fix and it's named above, not decided here.
+    The compare table, the loyalty stamp card, and the map further down the page were not
+    measured for this file and are not touched.
+  </div>
+
+</div>
+
+<script>
+  // Panel 2's "after" frame is the SAME document as panel 1's "before" frame, loaded from the
+  // same real route. After it loads, exactly 3 rules are added inside it. Nothing else in that
+  // document changes. See the header comment for the numbers this was verified against.
+  var after = document.getElementById("after");
+  after.addEventListener("load", function () {
+    try {
+      var doc = after.contentDocument;
+      if (!doc) { return; }
+      var style = doc.createElement("style");
+      style.textContent =
+        "h1 { font-size: clamp(28px, 7vw, 30px) !important; }" +
+        "section:first-of-type p { font-size: clamp(18px, 2vw, 20px) !important; }" +
+        "p.flex.items-start.gap-2 { font-size: 14px !important; }";
+      doc.head.appendChild(style);
+    } catch (err) {
+      console.error("[floor-fix-why-solen] could not restyle the after panel:", err);
+    }
+  });
+
+  // The real card-grid frame in Option B: scroll past its own header and search bar so what
+  // shows is the same thing a customer sees on that page, the "Top Coiffeur" heading and the
+  // first real card, not a second copy of chrome already shown above it in this same option.
+  var cards = document.getElementById("cards");
+  cards.addEventListener("load", function () {
+    try {
+      var win = cards.contentWindow;
+      if (!win) { return; }
+      win.scrollTo(0, 90);
+    } catch (err) {
+      console.error("[floor-fix-why-solen] could not scroll the cards panel:", err);
+    }
+  });
+</script>
+</body>
+</html>
