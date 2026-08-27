@@ -69,7 +69,7 @@ export default function SalonProfileStep({ salonId, onSaved }: SalonProfileStepP
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-2">
         <div className="w-12 h-12 rounded-[12px] bg-s-ink/10 flex items-center justify-center">
-          <Store size={22} className="text-s-accent" />
+          <Store size={22} strokeWidth={2.2} className="text-s-accent" />
         </div>
         <div>
           <h2 className="font-heading text-xl text-s-ink">

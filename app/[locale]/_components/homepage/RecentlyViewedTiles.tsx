@@ -151,7 +151,7 @@ export default function RecentlyViewedTiles({
             className="block min-w-0 text-left"
           >
             <div className="grid aspect-square w-full place-items-center rounded-[14px] bg-s-bg-sunken text-s-ink">
-              <MapPin size={17} strokeWidth={2} aria-hidden />
+              <MapPin size={17} strokeWidth={1.9} aria-hidden />
             </div>
             <div className="mt-[7px] min-w-0">
               <p className="truncate font-body text-[12px] font-medium leading-[1.3] text-s-ink">

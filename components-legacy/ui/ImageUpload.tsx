@@ -258,7 +258,7 @@ export default function ImageUpload({
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-s-error-bg">
-                  <AlertCircle size={16} className="text-s-error" />
+                  <AlertCircle size={16} strokeWidth={1.9} className="text-s-error" />
                 </div>
               )}
 
@@ -275,7 +275,7 @@ export default function ImageUpload({
               {/* Uploading overlay */}
               {item.status === "uploading" && (
                 <div className="absolute inset-0 bg-s-ink/20 flex items-center justify-center">
-                  <Loader2 size={16} className="text-white animate-spin" />
+                  <Loader2 size={16} strokeWidth={1.9} className="text-white animate-spin" />
                 </div>
               )}
 
@@ -293,7 +293,7 @@ export default function ImageUpload({
               {/* Error overlay */}
               {item.status === "error" && (
                 <div className="absolute inset-0 bg-red-500/80 flex items-center justify-center">
-                  <AlertCircle size={16} className="text-white" />
+                  <AlertCircle size={16} strokeWidth={1.9} className="text-white" />
                 </div>
               )}
 
@@ -338,7 +338,7 @@ export default function ImageUpload({
               isDragOver ? "bg-s-ink/20" : "bg-s-ink/10"
             }`}
           >
-            <Camera size={20} className="text-s-accent" />
+            <Camera size={20} strokeWidth={2.2} className="text-s-accent" />
           </div>
           <div className="text-center px-4">
             <p className="text-sm font-medium text-s-ink-2">

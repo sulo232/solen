@@ -88,7 +88,7 @@ export default function BookingExitButton({ slug }: { slug: string }) {
         aria-label={t('exit')}
         className="grid h-11 w-11 shrink-0 place-items-center rounded-full transition-[colors,transform] hover:bg-s-bg-sunken active:scale-[0.94] active:duration-[80ms] active:ease-glide"
       >
-        <X size={20} className="text-s-ink" />
+        <X size={20} strokeWidth={2.2} className="text-s-ink" />
       </button>
 
       {mounted &&
@@ -113,7 +113,7 @@ export default function BookingExitButton({ slug }: { slug: string }) {
                 aria-label={t('cancel')}
                 className="grid h-11 w-11 place-items-center rounded-full transition-[colors,transform] hover:bg-s-bg-sunken active:scale-[0.94] active:duration-[80ms] active:ease-glide"
               >
-                <X size={20} className="text-s-ink" />
+                <X size={20} strokeWidth={2.2} className="text-s-ink" />
               </button>
             </div>
 

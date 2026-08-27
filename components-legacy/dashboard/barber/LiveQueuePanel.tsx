@@ -161,7 +161,7 @@ export default function LiveQueuePanel({ salonId }: LiveQueuePanelProps) {
                     inChair ? "text-s-success" : "text-s-ink-2"
                   }`}
                 >
-                  {inChair ? <Scissors size={18} /> : waitingPos}
+                  {inChair ? <Scissors size={18} strokeWidth={1.9} /> : waitingPos}
                 </span>
 
                 <div className="flex-1 min-w-0">
@@ -193,7 +193,7 @@ export default function LiveQueuePanel({ salonId }: LiveQueuePanelProps) {
                         aria-label={t("complete")}
                         title={t("complete")}
                       >
-                        <Check size={17} />
+                        <Check size={17} strokeWidth={1.9} />
                       </button>
                       <button
                         onClick={() => updateStatus(entry.id, "no_show")}
@@ -201,7 +201,7 @@ export default function LiveQueuePanel({ salonId }: LiveQueuePanelProps) {
                         aria-label={t("no_show")}
                         title={t("no_show")}
                       >
-                        <UserX size={17} />
+                        <UserX size={17} strokeWidth={1.9} />
                       </button>
                     </>
                   ) : (
@@ -212,7 +212,7 @@ export default function LiveQueuePanel({ salonId }: LiveQueuePanelProps) {
                         aria-label={t("start")}
                         title={t("start")}
                       >
-                        <Play size={17} />
+                        <Play size={17} strokeWidth={1.9} />
                       </button>
                       <button
                         onClick={() => updateStatus(entry.id, "cancelled")}
@@ -220,7 +220,7 @@ export default function LiveQueuePanel({ salonId }: LiveQueuePanelProps) {
                         aria-label={t("cancel")}
                         title={t("cancel")}
                       >
-                        <X size={17} />
+                        <X size={17} strokeWidth={1.9} />
                       </button>
                     </>
                   )}

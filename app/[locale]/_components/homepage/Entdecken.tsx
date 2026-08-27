@@ -412,7 +412,7 @@ export default function Entdecken() {
                   "md:group-hover:scale-110",
                 )}
               >
-                <ArrowRight size={20} strokeWidth={2.5} aria-hidden />
+                <ArrowRight size={20} strokeWidth={2.2} aria-hidden />
               </div>
               {/* mockup-ok: 16px -> 14px, owner-approved public/_mockups/improve/type-scale.html
                   (8 -> 4 type-scale merge), the other named real cost of that merge. */}

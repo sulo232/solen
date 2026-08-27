@@ -43,7 +43,7 @@ import {
   type Transition,
   type Variant,
 } from "motion/react";
-import { XIcon } from "lucide-react";
+import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface MorphingDialogContextType {
@@ -397,7 +397,7 @@ export function MorphingDialogClose({
       exit="exit"
       variants={variants}
     >
-      <XIcon size={20} aria-hidden />
+      <X size={20} strokeWidth={2.2} aria-hidden />
     </motion.button>
   );
 }

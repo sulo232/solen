@@ -33,6 +33,12 @@ import { postalToCity, safeCategory, type SalonCardCategory } from "../salon/_sh
 // the same enum safeCategory() above validates against) - reused here rather than a new
 // inline ["coiffeur","barbershop","nails","spa"] array, per the owner's reinvent-data rule.
 import { SALON_CATEGORY_SLUGS } from "@/lib/validations";
+import {
+  minPriceService,
+  MIN_PRICE_SERVICE_COLUMNS,
+  type PricedServiceRow,
+  type ServiceNameLocale,
+} from "@/lib/min-price-service";
 
 export interface SalonCardData {
   /** Salon name. Only null if the salon id wasn't found in the salons table. */
@@ -51,10 +57,11 @@ export interface SalonCardData {
   address: string | null;
   /** Cheapest ACTIVE service price for the salon, null if it has none. */
   priceFromCHF: number | null;
-  /** Name of the service that priceFromCHF came from, per locale. Art. 13 PBV: an advertised
-   *  from-price must name the concrete offer it buys. Null when the salon has no active service. */
-  priceFromServiceDe: string | null;
-  priceFromServiceEn: string | null;
+  /** Name of the service that priceFromCHF came from, in all four locales. Art. 13 PBV: an
+   *  advertised from-price must name the concrete offer it buys. Null when the salon has no
+   *  active service. Read it with nameForLocale() rather than indexing by hand, so the de/en
+   *  fallback stays in one place. */
+  priceFromServiceNames: Record<ServiceNameLocale, string | null> | null;
   /** Real coordinates (salons.latitude/longitude). Null when the salon has none,
    *  in which case it simply gets no marker on the Nearby map (never a fake one). */
   latitude: number | null;
@@ -81,13 +88,14 @@ export async function getSalonCardDataMap(salonIds: string[]): Promise<SalonCard
         .select("id, name, slug, categories, cover_photo_url, average_rating, review_count, postal_code, address, latitude, longitude")
         .in("id", uniqueIds),
       supabase
-        // name_de/name_en travel with the price because Art. 13 PBV makes a from-price lawful in
-        // advertising only when the copy names the concrete offer it buys. The API route does the
-        // same thing for the search page; this is the homepage's copy of that query and it was
-        // selecting the price alone, so the homepage card could never render the service even
-        // when the API half was working.
+        // The service names travel with the price because Art. 13 PBV makes a from-price lawful
+        // in advertising only when the copy names the concrete offer it buys. This query used to
+        // select the price alone, so the homepage card could never render the service even while
+        // the API half was working. Column list and the pick rule now both come from
+        // lib/min-price-service.ts, shared with app/api/salons/route.ts, because two independent
+        // copies of one legal rule is how they drifted to different locale coverage.
         .from("services")
-        .select("salon_id, price, name_de, name_en")
+        .select(`salon_id, ${MIN_PRICE_SERVICE_COLUMNS}`)
         .eq("is_active", true)
         .in("salon_id", uniqueIds),
     ]);
@@ -97,22 +105,15 @@ export async function getSalonCardDataMap(salonIds: string[]): Promise<SalonCard
 
   // Cheapest active service price per salon, computed in JS from the bulk
   // services result (same shape as buildPriceTask() in app/api/salons/route.ts).
-  const minPriceBySalon = new Map<string, number>();
-  // The NAME of whichever service won the min, kept in lockstep with the price above so the two
-  // can never disagree (same guarantee the API route makes).
-  const minServiceBySalon = new Map<string, { de: string | null; en: string | null }>();
+  const rowsBySalon = new Map<string, PricedServiceRow[]>();
   for (const svc of services ?? []) {
     const salonId = svc.salon_id as string;
-    const price = svc.price as number;
-    const current = minPriceBySalon.get(salonId);
-    if (current === undefined || price < current) {
-      minPriceBySalon.set(salonId, price);
-      minServiceBySalon.set(salonId, {
-        de: (svc.name_de as string | null) ?? null,
-        en: (svc.name_en as string | null) ?? null,
-      });
-    }
+    const list = rowsBySalon.get(salonId);
+    if (list) list.push(svc as PricedServiceRow);
+    else rowsBySalon.set(salonId, [svc as PricedServiceRow]);
   }
+  const minBySalon = new Map<string, ReturnType<typeof minPriceService>>();
+  for (const [salonId, rows] of rowsBySalon) minBySalon.set(salonId, minPriceService(rows));
 
   const map: SalonCardDataMap = {};
   for (const salon of salons ?? []) {
@@ -127,9 +128,8 @@ export async function getSalonCardDataMap(salonIds: string[]): Promise<SalonCard
       postalCode,
       city: postalCode ? postalToCity(postalCode) : null,
       address: (salon.address as string | null) ?? null,
-      priceFromCHF: minPriceBySalon.get(salon.id as string) ?? null,
-      priceFromServiceDe: minServiceBySalon.get(salon.id as string)?.de ?? null,
-      priceFromServiceEn: minServiceBySalon.get(salon.id as string)?.en ?? null,
+      priceFromCHF: minBySalon.get(salon.id as string)?.minPrice ?? null,
+      priceFromServiceNames: minBySalon.get(salon.id as string)?.names ?? null,
       latitude: (salon.latitude as number | null) ?? null,
       longitude: (salon.longitude as number | null) ?? null,
     };

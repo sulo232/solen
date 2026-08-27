@@ -138,13 +138,13 @@ function Hairline() {
 function Row({ href, icon: Icon, label, sub, value }: { href: string; icon: LucideIcon; label: string; sub?: string; value?: string }) {
   return (
     <Link href={href} className="flex items-center gap-[14px] bg-white px-4 py-[13px] transition-transform duration-150 active:scale-[0.98] active:duration-[80ms] active:ease-glide">
-      <Icon size={22} strokeWidth={1.9} className="shrink-0 text-s-ink" aria-hidden />
+      <Icon size={22} strokeWidth={2.2} className="shrink-0 text-s-ink" aria-hidden />
       <span className="min-w-0 flex-1">
         <span className="block text-[15px] font-medium text-s-ink">{label}</span>
         {sub ? <span className="mt-px block text-[12.5px] text-s-ink-2">{sub}</span> : null}
       </span>
       {value ? <span className="mr-0.5 text-[13.5px] text-s-ink-2">{value}</span> : null}
-      <ChevronRight size={16} className="shrink-0 text-s-ink-2" aria-hidden />
+      <ChevronRight size={16} strokeWidth={1.9} className="shrink-0 text-s-ink-2" aria-hidden />
     </Link>
   );
 }
@@ -159,7 +159,7 @@ function ExternalRow({ href, label }: { href: string; label: string }) {
   return (
     <Link href={href} className="flex items-center gap-[14px] bg-white px-4 py-[13px] transition-transform duration-150 active:scale-[0.98] active:duration-[80ms] active:ease-glide">
       <span className="min-w-0 flex-1 text-[15px] font-medium text-s-ink">{label}</span>
-      <ArrowUpRight size={16} className="shrink-0 text-s-ink-2" aria-hidden />
+      <ArrowUpRight size={16} strokeWidth={1.9} className="shrink-0 text-s-ink-2" aria-hidden />
     </Link>
   );
 }

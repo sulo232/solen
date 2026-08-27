@@ -24,8 +24,12 @@ export const tosAcceptSchema = z.object({
 });
 
 // seo-comms-08: the salon_directory outreach unsubscribe link's own body.
+// token is the HMAC (lib/unsubscribe-token.ts) proving the caller actually received the
+// outreach email at this address, so a bare email can no longer null out any salon's
+// email column (that column is the only way to re-claim a listing, see the route).
 export const unsubscribeSchema = z.object({
   email: z.string().email().max(320),
+  token: z.string().min(1),
 });
 
 // POST /api/profile/accept-tos: a second, separately-named TOS-accept route (field is

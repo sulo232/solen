@@ -271,7 +271,7 @@ export default function SalonRefundsPage() {
                           disabled={acting === c.id || !noteOk}
                           className={"flex items-center justify-center gap-2 w-full min-h-[44px] px-3.5 rounded-[10px] bg-s-success text-white text-[13.5px] font-semibold hover:opacity-90 disabled:opacity-50 transition-all" + (armed === `${c.id}:approve` ? " ring-2 ring-s-ink/30 ring-offset-1" : "")}
                         >
-                          <Check size={15} strokeWidth={2.4} />
+                          <Check size={15} strokeWidth={1.9} />
                           {armed === `${c.id}:approve` ? t("confirmShort") : t("approveFull")}
                         </button>
                         <div className="flex items-center gap-2">
@@ -289,7 +289,7 @@ export default function SalonRefundsPage() {
                           disabled={acting === c.id || !noteOk}
                           className={"flex items-center justify-center gap-2 w-full min-h-[44px] px-3.5 rounded-[10px] bg-white border border-s-error/30 text-s-error text-[13.5px] font-semibold hover:bg-s-error-bg disabled:opacity-50 transition-all" + (armed === `${c.id}:reject` ? " ring-2 ring-s-error/40 ring-offset-1" : "")}
                         >
-                          <X size={15} strokeWidth={2.4} />
+                          <X size={15} strokeWidth={1.9} />
                           {armed === `${c.id}:reject` ? t("confirmShort") : t("reject")}
                         </button>
                       </div>

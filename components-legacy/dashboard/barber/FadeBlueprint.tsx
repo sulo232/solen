@@ -162,7 +162,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
               className="p-1.5 rounded-[8px] bg-s-bg-sunken text-s-ink-2 hover:bg-s-border transition-colors duration-150"
               aria-label={t("reset")}
             >
-              <RotateCcw size={14} />
+              <RotateCcw size={14} strokeWidth={1.6} />
             </button>
           )}
         </div>
@@ -361,7 +361,7 @@ export default function FadeBlueprint({ salonId, clientId }: FadeBlueprintProps)
             className="w-full flex items-center justify-center gap-2 py-2.5 rounded-[12px] bg-s-ink text-white text-sm font-heading hover:bg-black active:scale-[0.98] transition-[transform,background-color] duration-150 disabled:opacity-50"
             aria-label={t("save_blueprint")}
           >
-            <Save size={14} />
+            <Save size={14} strokeWidth={1.6} />
             {saved ? t("saved") : saving ? t("saving") : t("save_blueprint")}
           </button>
         )}

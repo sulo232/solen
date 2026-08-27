@@ -167,7 +167,7 @@ export default function ResendAccessLinkPage() {
           // to the locked 44px icon-button floor, fits the 52px header, no redesign.
           className="flex h-11 w-11 items-center justify-center rounded-pill border border-s-border bg-white text-s-ink transition-colors duration-150 ease-snap hover:bg-s-bg-sunken"
         >
-          <ArrowLeft size={18} strokeWidth={2} aria-hidden />
+          <ArrowLeft size={18} strokeWidth={1.9} aria-hidden />
         </Link>
         <span className="font-display text-[15px] font-semibold tracking-[-0.01em]">
           {t("appBarTitle")}
@@ -432,7 +432,7 @@ function FormView(props: {
         {submitting ? (
           <span className="h-[17px] w-[17px] animate-[spin_0.7s_linear_infinite] rounded-full border-2 border-white/35 border-t-white" />
         ) : (
-          <Send size={17} aria-hidden />
+          <Send size={17} strokeWidth={1.9} aria-hidden />
         )}
         {t("submit")}
       </button>
@@ -477,7 +477,7 @@ function SentView(props: {
       {/* destination card */}
       <div className="mt-[18px] flex items-center gap-3 rounded-card border border-s-border bg-white px-[15px] py-3.5">
         <span className="flex h-[38px] w-[38px] flex-shrink-0 items-center justify-center rounded-[11px] bg-s-bg-sunken text-s-ink">
-          <Mail size={19} aria-hidden />
+          <Mail size={19} strokeWidth={2.2} aria-hidden />
         </span>
         <div>
           <div className="text-[12px] text-s-ink-2">{t("sentToLabel")}</div>
@@ -487,7 +487,7 @@ function SentView(props: {
 
       {/* privacy / anti-enumeration note */}
       <div className="mt-4 flex items-start gap-2.5 rounded-[12px] bg-s-bg-sunken px-3.5 py-3">
-        <Lock size={15} className="mt-[1px] flex-shrink-0 text-s-ink-2" aria-hidden />
+        <Lock size={15} strokeWidth={1.9} className="mt-[1px] flex-shrink-0 text-s-ink-2" aria-hidden />
         <p className="text-[12px] leading-[1.5] text-s-ink-2">{t("privacyNote")}</p>
       </div>
 
@@ -534,7 +534,7 @@ function LimitedView(props: {
       <p className="mt-2.5 text-[13.5px] leading-[1.55] text-s-ink-2">{t("limitLead")}</p>
 
       <div className="mt-[18px] flex items-start gap-2.5 rounded-card border border-s-warning/30 bg-s-warning-bg px-[15px] py-3.5">
-        <AlertTriangle size={19} className="mt-[1px] flex-shrink-0 text-s-warning-text" aria-hidden />
+        <AlertTriangle size={19} strokeWidth={2.2} className="mt-[1px] flex-shrink-0 text-s-warning-text" aria-hidden />
         <div>
           <div className="text-[13px] font-semibold text-s-ink">{t("limitTitle")}</div>
           <div className="mt-[3px] text-[12px] leading-[1.45] text-s-warning-text">
@@ -572,7 +572,7 @@ function LimitedView(props: {
             user mechanism to stop it, and fabricated feedback (implied work happening when
             it wasn't). The real live signal is the countdown clock and progress bar above,
             tied to actual state. */}
-        <Lock size={17} strokeWidth={2.2} className="shrink-0" aria-hidden />
+        <Lock size={17} strokeWidth={1.9} className="shrink-0" aria-hidden />
         {t("lockedCta", { minutes: minsLeft })}
       </button>
 
@@ -620,7 +620,7 @@ function HowItWorksRail({ t }: { t: ReturnType<typeof useTranslations> }) {
         ))}
       </div>
       <div className="mt-[22px] flex items-start gap-2.5 border-t border-s-border pt-[18px]">
-        <Lock size={16} className="mt-[1px] flex-shrink-0 text-s-ink-2" aria-hidden />
+        <Lock size={16} strokeWidth={1.9} className="mt-[1px] flex-shrink-0 text-s-ink-2" aria-hidden />
         <p className="text-[12px] leading-[1.5] text-s-ink-2">{t("railSecurity")}</p>
       </div>
     </div>
@@ -651,7 +651,7 @@ function HurryRail({ t }: { t: ReturnType<typeof useTranslations> }) {
         ))}
       </div>
       <div className="mt-[22px] flex items-start gap-2.5 border-t border-s-border pt-[18px]">
-        <Lock size={16} className="mt-[1px] flex-shrink-0 text-s-ink-2" aria-hidden />
+        <Lock size={16} strokeWidth={1.9} className="mt-[1px] flex-shrink-0 text-s-ink-2" aria-hidden />
         <p className="text-[12px] leading-[1.5] text-s-ink-2">{t("railSecurity")}</p>
       </div>
     </div>

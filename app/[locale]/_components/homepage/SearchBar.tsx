@@ -312,7 +312,7 @@ export function SearchBar() {
           )}
         >
           <CollapsedRow
-            icon={<Search size={18} strokeWidth={2} />}
+            icon={<Search size={18} strokeWidth={1.9} />}
             ariaLabel="Service suchen"
             value={service || "Service"}
             isPlaceholder={!service}
@@ -320,14 +320,14 @@ export function SearchBar() {
             onClick={() => openOverlay("service")}
           />
           <CollapsedRow
-            icon={<MapPin size={18} strokeWidth={2} />}
+            icon={<MapPin size={18} strokeWidth={1.9} />}
             ariaLabel="Standort wählen"
             value={stadt || "Stadt"}
             isPlaceholder={!stadt}
             onClick={() => openOverlay("stadt")}
           />
           <CollapsedRow
-            icon={<Calendar size={18} strokeWidth={2} />}
+            icon={<Calendar size={18} strokeWidth={1.9} />}
             ariaLabel="Zeit wählen"
             value={zeit || "Zeit"}
             isPlaceholder={!zeit}
@@ -425,7 +425,7 @@ export function SearchBar() {
               aria-label="Schliessen"
               className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-s-ink-2 transition-[colors,transform] hover:bg-s-bg-sunken hover:text-s-ink active:scale-[0.94] active:duration-[80ms] active:ease-glide"
             >
-              <X size={18} />
+              <X size={18} strokeWidth={1.9} />
             </button>
           </div>
 
@@ -469,7 +469,7 @@ export function SearchBar() {
                         >
                           <Icon
                             size={14}
-                            strokeWidth={2.25}
+                            strokeWidth={1.6}
                             className={cn("shrink-0", !isPicked && "text-s-ink")}
                           />
                           {s.label}
@@ -510,7 +510,7 @@ export function SearchBar() {
                     className="mt-5 flex w-full items-center gap-3 rounded-2xl border border-s-border bg-white px-4 py-3 transition-[colors,transform] hover:bg-s-bg-sunken active:scale-[0.98] active:duration-[80ms] active:ease-glide"
                   >
                     <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-s-ink text-white">
-                      <Navigation size={16} strokeWidth={2.5} />
+                      <Navigation size={16} strokeWidth={1.9} />
                     </span>
                     <span className="font-body font-semibold text-s-ink">
                       {tSearch("currentLocation")}
@@ -584,7 +584,7 @@ export function SearchBar() {
                           >
                             <Icon
                               size={14}
-                              strokeWidth={2.25}
+                              strokeWidth={1.6}
                               className={cn("shrink-0", !isPicked && "text-s-ink")}
                             />
                             {p.label}

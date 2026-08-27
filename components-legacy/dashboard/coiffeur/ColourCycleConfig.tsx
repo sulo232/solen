@@ -56,7 +56,7 @@ export default function ColourCycleConfig({ salonId }: ColourCycleConfigProps) {
   return (
     <div className="rounded-[12px] border border-s-ink/[0.06] p-4 bg-white w-full max-w-lg">
       <div className="flex items-center gap-2 mb-3">
-        <Bell size={16} className="text-s-coral" />
+        <Bell size={16} strokeWidth={1.9} className="text-s-coral" />
         <p className="text-[12px] font-heading uppercase tracking-[.18em] text-s-star">
           {t("colour_cycle_title")}
         </p>

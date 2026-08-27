@@ -57,7 +57,7 @@ export default function AiArtGallery({ salonId }: AiArtGalleryProps) {
     return (
       <div className="flex flex-col items-center gap-3 py-12 text-center">
         <div className="w-12 h-12 rounded-full bg-s-bg-sunken flex items-center justify-center">
-          <ImageOff size={20} className="text-s-ink/30" />
+          <ImageOff size={20} strokeWidth={2.2} className="text-s-ink/30" />
         </div>
         <p className="text-sm text-s-ink/40">{t("gallery_empty")}</p>
       </div>
@@ -67,7 +67,7 @@ export default function AiArtGallery({ salonId }: AiArtGalleryProps) {
   return (
     <div>
       <div className="flex items-center gap-2 mb-4">
-        <Sparkles size={14} className="text-s-coral" />
+        <Sparkles size={14} strokeWidth={1.6} className="text-s-coral" />
         <p className="text-sm font-heading text-s-ink">
           {t("gallery_title")}
         </p>

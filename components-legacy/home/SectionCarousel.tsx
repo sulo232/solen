@@ -63,7 +63,7 @@ export default function SectionCarousel({
             className="shrink-0 inline-flex items-center gap-1 font-body text-[12px] font-semibold text-s-accent hover:text-s-accent transition-colors duration-150"
           >
             Alle
-            <ArrowRight size={14} aria-hidden />
+            <ArrowRight size={14} strokeWidth={1.6} aria-hidden />
           </Link>
         )}
       </div>

@@ -106,7 +106,7 @@ export default function CommandPalette({ open, onClose }: CommandPaletteProps) {
       <div className="w-full max-w-[560px] bg-[--raised] rounded-card border border-s-ink/[0.08] shadow-v5-float overflow-hidden">
         {/* Search input */}
         <div className="flex items-center gap-3 px-4 py-3.5 border-b border-s-ink/[0.06]">
-          <Search size={15} className="text-s-ink-2 shrink-0" />
+          <Search size={15} strokeWidth={1.9} className="text-s-ink-2 shrink-0" />
           {/* mockup-ok: !important prevents a look change, not a new one. The dialog row owns
               the visible chrome + padding; this input must stay invisible AND compact inside
               it, or the widened base input law (globals.css, 2026-07-17, also sets
@@ -121,7 +121,7 @@ export default function CommandPalette({ open, onClose }: CommandPaletteProps) {
             className="flex-1 text-s-ink !border-0 !bg-transparent !min-h-0 !px-0 !text-sm outline-none placeholder:text-s-ink/30"
           />
           <button onClick={onClose} aria-label={t("close")} className="p-2 rounded-pill hover:bg-s-ink/5:bg-white/5 transition-[colors,transform] duration-150 active:scale-[0.94] active:duration-[80ms] active:ease-glide">
-            <X size={16} className="text-s-ink/40" />
+            <X size={16} strokeWidth={1.9} className="text-s-ink/40" />
           </button>
         </div>
 

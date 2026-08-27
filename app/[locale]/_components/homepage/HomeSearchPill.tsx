@@ -275,7 +275,7 @@ export default function HomeSearchPill({
               "text-s-ink transition-all duration-300 ease-glide hover:text-s-ink-2", // mockup-ok
             )}
           >
-            <Heart size={16} strokeWidth={2} aria-hidden />
+            <Heart size={16} strokeWidth={1.9} aria-hidden />
           </Link>
         ) : null}
         {/* mockup-ok , THE HAMBURGER IS GONE FROM HERE. Owner 2026-08-10: "I don't think this

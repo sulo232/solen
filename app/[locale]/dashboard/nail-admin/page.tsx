@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Bot, Tag, Layers, ShoppingBag, ImageIcon, Bell } from "lucide-react";
+import { Bot, Tag, Layers, ShoppingBag, Image, Bell } from "lucide-react";
 import { useTranslations } from "next-intl";
 import DashboardLayout from "@/components-legacy/dashboard/DashboardLayout";
 import AiArtGenerator from "@/components-legacy/dashboard/nail/AiArtGenerator";
@@ -16,7 +16,7 @@ type Tab = "ai" | "gallery" | "prices" | "stations" | "retail" | "sales" | "remi
 
 const TABS: { id: Tab; labelKey: string; icon: React.ElementType }[] = [
   { id: "ai", labelKey: "tabAI", icon: Bot },
-  { id: "gallery", labelKey: "tabGallery", icon: ImageIcon },
+  { id: "gallery", labelKey: "tabGallery", icon: Image },
   { id: "prices", labelKey: "tabPrices", icon: Tag },
   { id: "stations", labelKey: "tabStations", icon: Layers },
   { id: "retail", labelKey: "tabRetail", icon: ShoppingBag },

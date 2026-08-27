@@ -71,7 +71,7 @@ function AdviceRow({
           className="inline-flex items-center gap-1 mt-2.5 text-[13px] font-medium text-s-ink hover:text-s-ink-2 transition-[colors,transform] active:scale-[0.98] active:duration-[80ms] active:ease-glide"
         >
           {actionLabel}
-          <ArrowRight size={15} strokeWidth={2} />
+          <ArrowRight size={15} strokeWidth={1.9} />
         </Link>
       )}
     </div>

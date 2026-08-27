@@ -85,13 +85,13 @@ export default function ComingSoonPage() {
               aria-label={t("notify")}
               className="px-5 py-3 rounded-btn bg-s-ink text-white text-sm font-body font-semibold hover:brightness-110 active:scale-[0.97] transition-[transform,filter] duration-200 flex items-center gap-2"
             >
-              <Bell size={14} />
+              <Bell size={14} strokeWidth={1.6} />
               {t("notify")}
             </button>
           </div>
         ) : (
           <div className="flex items-center justify-center gap-2 text-s-success text-sm font-medium mb-6">
-            <Check size={16} />
+            <Check size={16} strokeWidth={1.9} />
             {t("notifySuccess")}
           </div>
         )}
@@ -100,7 +100,7 @@ export default function ComingSoonPage() {
           href={`/${locale}`}
           className="inline-flex items-center gap-1.5 text-sm text-s-ink-2 hover:text-s-ink transition-colors duration-200"
         >
-          <ArrowLeft size={14} />
+          <ArrowLeft size={14} strokeWidth={1.6} />
           {t("backHome")}
         </Link>
       </motion.div>

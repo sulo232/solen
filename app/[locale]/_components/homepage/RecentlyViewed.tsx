@@ -9,6 +9,7 @@ import { useLocale, useTranslations } from "next-intl";
 // page.tsx (type-only import, the Supabase fetch code never reaches this
 // client bundle). Same pattern as Nearby.tsx.
 import type { SalonCardDataMap } from "./salonCardData";
+import { nameForLocale, type ServiceNameLocale } from "@/lib/min-price-service";
 
 /**
  * Recently Viewed - V3 (LIVE_TRUTH §Q51.0 + V2-D34 cards).
@@ -173,7 +174,7 @@ export default function RecentlyViewed({
                 photoUrl={s.photoUrl}
                 variant="availability"
                 priceFromCHF={real?.priceFromCHF ?? null}
-                priceFromService={locale === "en" ? (real?.priceFromServiceEn ?? real?.priceFromServiceDe ?? null) : (real?.priceFromServiceDe ?? null)}
+                priceFromService={nameForLocale(real?.priceFromServiceNames, locale)}
                 citySelected={false}
                 postalCode={real?.postalCode ?? undefined}
                 city={real?.city ?? undefined}

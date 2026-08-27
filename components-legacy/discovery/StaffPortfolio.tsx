@@ -69,7 +69,7 @@ export default function StaffPortfolio({ staff, salonId, instagramUrl, onBookWit
         <div className="flex items-center gap-1.5">
           {instagramUrl && (
             <a href={instagramUrl} target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-full hover:bg-s-ink/5 text-s-ink/30 hover:text-s-ink transition-colors">
-              <Instagram size={14} />
+              <Instagram size={14} strokeWidth={1.6} />
             </a>
           )}
           {onBookWith && (

@@ -255,7 +255,7 @@ export function SalonLocation({
                   // optically size-matched, icon noticeably bigger, and NO station name —
                   // the name + tram/bus glyph live on the map marker instead.
                   <span className="flex shrink-0 flex-col items-center gap-0.5 leading-none">
-                    <Footprints size={20} strokeWidth={2} className="shrink-0 text-s-accent" />
+                    <Footprints size={20} strokeWidth={2.2} className="shrink-0 text-s-accent" />
                     <span className="text-[13px] font-semibold text-s-accent">{formatWalkMinutes(transitStop.walkMinutes)}</span>
                   </span>
                 ) : (
@@ -285,7 +285,7 @@ export function SalonLocation({
           )}
           <div className="min-w-0 flex-1 font-body text-[14px]">
             <span className="flex items-start gap-1.5 text-s-ink-2">
-              <MapPin size={14} className="mt-0.5 shrink-0 text-s-ink-2" strokeWidth={2} />
+              <MapPin size={14} className="mt-0.5 shrink-0 text-s-ink-2" strokeWidth={1.6} />
               <span className="leading-snug">{salon.address}</span>
             </span>
             <a
@@ -320,7 +320,7 @@ export function SalonLocation({
       {/* Street stays plain ink; "Wegbeschreibung" is the link BESIDE it (no blue street). */}
       <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 font-body text-[14px]">
         <span className="inline-flex items-center gap-1.5 text-s-ink-2">
-          <MapPin size={14} className="shrink-0 text-s-ink-2" strokeWidth={2} />
+          <MapPin size={14} className="shrink-0 text-s-ink-2" strokeWidth={1.6} />
           {salon.address}
         </span>
         <a
@@ -421,7 +421,7 @@ function TransitChip({
     return (
       <span className="flex shrink-0 flex-col items-center gap-1">
         <span className="flex h-9 w-9 items-center justify-center rounded-full bg-s-bg-sunken">
-          <Icon size={18} strokeWidth={2} className="text-s-ink-2" />
+          <Icon size={18} strokeWidth={1.9} className="text-s-ink-2" />
         </span>
         <span className="text-[12px] font-bold leading-none text-s-accent">{minutesLabel}</span>
         <span className="max-w-[88px] truncate text-[10.5px] font-medium leading-none text-s-ink">{name}</span>
@@ -437,7 +437,7 @@ function TransitChip({
     return (
       <span className="flex shrink-0 items-center gap-2">
         <span className="flex items-center gap-1.5 rounded-full bg-s-bg-sunken px-2.5 py-1">
-          <Icon size={14} strokeWidth={2} className="shrink-0 text-s-ink-2" />
+          <Icon size={14} strokeWidth={1.6} className="shrink-0 text-s-ink-2" />
           <span className="max-w-[76px] truncate text-[11.5px] font-medium text-s-ink">{name}</span>
         </span>
         <span className="text-[12px] font-bold text-s-accent">{minutesLabel}</span>
@@ -737,7 +737,10 @@ function LocationMapCanvas({
         const url =
           `https://api.mapbox.com/directions/v5/mapbox/walking/${longitude},${latitude};${transitLng},${transitLat}` +
           `?geometries=geojson&overview=full&access_token=${token}`;
-        const res = await fetch(url);
+        // 8000ms: matches this codebase's existing timeout for reading a third-party
+        // API response (lib/ai-vision.ts). Degrades to no route on timeout, same as
+        // any other fetch failure per the graceful-degrade contract noted above.
+        const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
         if (!res.ok || cancelled) return;
         const json = (await res.json()) as MapboxDirectionsResponse;
         const route = json.routes?.[0];

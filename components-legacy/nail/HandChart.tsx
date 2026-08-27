@@ -178,7 +178,7 @@ export default function HandChart({ customerId }: HandChartProps) {
                 aria-label={t("close")}
                 className="p-1 rounded-pill text-s-ink/40 hover:text-s-ink transition-colors duration-150"
               >
-                <X size={20} />
+                <X size={20} strokeWidth={2.2} />
               </button>
             </div>
             <textarea

@@ -207,7 +207,7 @@ function RatingBar({
     <div className="pt-1">
       {/* Selected value: star + the current stop. */}
       <div className="mb-4 flex items-center gap-1.5 font-body text-[15px] font-semibold text-s-ink">
-        <Star size={16} stroke="none" aria-hidden className="fill-s-star" />
+        <Star size={16} strokeWidth={1.9} stroke="none" aria-hidden className="fill-s-star" />
         {label}
       </div>
       {/* Swipeable/drag bar - ink track fill + ink thumb, stepping across the 5 stops.

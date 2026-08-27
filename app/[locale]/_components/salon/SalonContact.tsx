@@ -37,7 +37,7 @@ export function SalonContact({ salon }: { salon: SalonDetail }) {
               href={`tel:${salon.phone}`}
               className="font-body flex items-center gap-3 text-[14px] text-s-ink transition-colors hover:text-s-ink"
             >
-              <Phone size={16} strokeWidth={2} className="shrink-0 text-s-ink-2" />
+              <Phone size={16} strokeWidth={1.9} className="shrink-0 text-s-ink-2" />
               <span>{salon.phone}</span>
             </a>
           </li>
@@ -50,7 +50,7 @@ export function SalonContact({ salon }: { salon: SalonDetail }) {
               rel="noreferrer noopener"
               className="font-body flex items-center gap-3 text-[14px] text-s-ink transition-colors hover:text-s-ink"
             >
-              <Globe size={16} strokeWidth={2} className="shrink-0 text-s-ink-2" />
+              <Globe size={16} strokeWidth={1.9} className="shrink-0 text-s-ink-2" />
               <span className="flex-1 truncate">
                 {salon.website_url.replace(/^https?:\/\//, "").replace(/\/$/, "")}
               </span>
@@ -66,7 +66,7 @@ export function SalonContact({ salon }: { salon: SalonDetail }) {
               rel="noreferrer noopener"
               className="font-body flex items-center gap-3 text-[14px] text-s-ink transition-colors hover:text-s-ink"
             >
-              <Instagram size={16} strokeWidth={2} className="shrink-0 text-s-ink-2" />
+              <Instagram size={16} strokeWidth={1.9} className="shrink-0 text-s-ink-2" />
               <span className="flex-1 truncate">
                 {salon.instagram_url
                   .replace(/^https?:\/\/(www\.)?instagram\.com\//, "@")

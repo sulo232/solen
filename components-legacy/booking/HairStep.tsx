@@ -157,7 +157,7 @@ export default function HairStep({
                 b: (chunks) => <span className="font-semibold text-s-ink">{chunks}</span>,
               })}
             </span>
-            <Check size={14} className="ml-auto shrink-0 text-s-success" aria-hidden />
+            <Check size={14} strokeWidth={1.6} className="ml-auto shrink-0 text-s-success" aria-hidden />
           </div>
         )}
         <PillGroup label={t("hairTypeLabel")} opts={HAIR_OPTS.filter((o) => o.value !== "unknown")} value={hairType} onSelect={setHairType} />
@@ -210,7 +210,7 @@ export default function HairStep({
       {/* Mismatch, non-blocking, one line */}
       {mismatch && (
         <div className="mt-3 flex items-start gap-2.5 rounded-[12px] bg-s-warning/10 px-3.5 py-2.5">
-          <AlertTriangle size={15} className="mt-0.5 shrink-0 text-s-warning" aria-hidden />
+          <AlertTriangle size={15} strokeWidth={1.9} className="mt-0.5 shrink-0 text-s-warning" aria-hidden />
           <p className="text-[12.5px] leading-relaxed text-s-ink-2">
             <span className="font-semibold text-s-ink">{t("hairMismatchTitle")}</span>{" "}
             {t("hairMismatchBody", { length: lengthLabel })}{" "}

@@ -74,7 +74,7 @@ export default function ApprovalsPage() {
   return (
     <DashboardLayout>
       <div className="mb-6 flex items-center gap-3">
-        <ShieldCheck size={22} className="text-s-ink" />
+        <ShieldCheck size={22} strokeWidth={2.2} className="text-s-ink" />
         <div>
           <h1 className="text-[26px] font-semibold tracking-[-0.015em] text-s-ink">{t("title")}</h1>
           <p className="text-sm text-s-ink/40 mt-0.5">{t("subtitle")}</p>
@@ -144,7 +144,7 @@ export default function ApprovalsPage() {
                     disabled={actionLoading === salon.id}
                     className="flex items-center gap-1.5 px-4 py-2 rounded-btn bg-s-ink text-white text-sm font-medium hover:bg-black transition-colors disabled:opacity-50"
                   >
-                    <Check size={15} />
+                    <Check size={15} strokeWidth={1.9} />
                     {t("approve")}
                   </button>
                   <button
@@ -152,7 +152,7 @@ export default function ApprovalsPage() {
                     disabled={actionLoading === salon.id}
                     className="flex items-center gap-1.5 px-4 py-2 rounded-btn border border-s-error/40 text-s-error text-sm font-medium hover:bg-s-error-bg transition-colors disabled:opacity-50"
                   >
-                    <X size={15} />
+                    <X size={15} strokeWidth={1.9} />
                     {t("reject")}
                   </button>
                 </div>

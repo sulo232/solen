@@ -87,7 +87,7 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-2">
         <div className="w-12 h-12 rounded-[12px] bg-s-ink/10 flex items-center justify-center">
-          <Scissors size={22} className="text-s-accent" />
+          <Scissors size={22} strokeWidth={2.2} className="text-s-accent" />
         </div>
         <div>
           <h2 className="font-heading text-xl text-s-ink">
@@ -113,7 +113,7 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
                   </div>
                   {s.id && (
                     <button onClick={() => removeService(s.id!)} className="p-1.5 text-s-ink/20 hover:text-s-accent transition-colors">
-                      <Trash2 size={14} />
+                      <Trash2 size={14} strokeWidth={1.6} />
                     </button>
                   )}
                 </div>
@@ -126,7 +126,7 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
               <div className="flex items-center justify-between">
                 <p className="text-sm font-medium text-s-ink">{t("services.new")}</p>
                 <button onClick={() => setShowAdd(false)} className="text-s-ink/30 hover:text-s-ink">
-                  <X size={16} />
+                  <X size={16} strokeWidth={1.9} />
                 </button>
               </div>
               <div>
@@ -172,7 +172,7 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
               onClick={() => setShowAdd(true)}
               className="w-full py-3 rounded-btn border-2 border-dashed border-s-border text-sm text-s-ink/40 hover:border-s-accent/40 hover:text-s-accent transition-colors flex items-center justify-center gap-2"
             >
-              <Plus size={16} />
+              <Plus size={16} strokeWidth={1.9} />
               {t("services.add")}
             </button>
           )}
@@ -202,7 +202,7 @@ export default function ServicesStep({ onSaved }: ServicesStepProps) {
 
           {services.length > 0 && (
             <div className="bg-s-ink/5 border border-s-accent/20 rounded-[12px] px-4 py-3 flex items-center gap-2">
-              <Check size={14} className="text-s-accent shrink-0" />
+              <Check size={14} strokeWidth={1.6} className="text-s-accent shrink-0" />
               <div>
                 <p className="text-xs text-s-accent font-medium">
                   {services.length} {services.length === 1 ? "Service" : "Services"} {t("services.added")}

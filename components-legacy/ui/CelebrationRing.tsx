@@ -85,7 +85,7 @@ export default function CelebrationRing({
           className="w-9 h-9 rounded-full flex items-center justify-center text-white"
           style={{ background: t.checkmark.ringColor }}
         >
-          <Check size={18} strokeWidth={3} />
+          <Check size={18} strokeWidth={1.9} />
         </div>
       </div>
     ) : null;
@@ -122,7 +122,7 @@ export default function CelebrationRing({
             className="w-9 h-9 rounded-full flex items-center justify-center text-white shadow-md"
             style={{ background: t.checkmark.ringColor }}
           >
-            <Check size={18} strokeWidth={3} />
+            <Check size={18} strokeWidth={1.9} />
           </motion.div>
         )}
       </AnimatePresence>

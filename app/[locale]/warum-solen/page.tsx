@@ -225,7 +225,7 @@ export default function WarumSolenPage() {
             <div>
               <div className="mb-5">
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-pill mb-4 bg-s-bg-sunken border border-s-border">
-                  <MessageCircle size={14} className="text-s-ink-2" />
+                  <MessageCircle size={14} strokeWidth={1.6} className="text-s-ink-2" />
                   <SolenExclusiveBadge featureDescription="Chatten Sie direkt mit Ihrem Salon, nur bei Solen." />
                 </div>
                 <h2 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.25] tracking-[-0.01em] text-s-ink">
@@ -277,7 +277,7 @@ export default function WarumSolenPage() {
             <div className="order-1 md:order-2">
               <div className="mb-5">
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-pill mb-4 bg-s-bg-sunken border border-s-border">
-                  <Camera size={14} className="text-s-ink-2" />
+                  <Camera size={14} strokeWidth={1.6} className="text-s-ink-2" />
                   <SolenExclusiveBadge featureDescription="Schick ein Foto und erhalte einen individuellen Preis." />
                 </div>
                 <h2 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.25] tracking-[-0.01em] text-s-ink">
@@ -309,7 +309,7 @@ export default function WarumSolenPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-10">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-pill mb-4 bg-s-bg-sunken border border-s-border">
-              <BarChart3 size={14} className="text-s-ink-2" />
+              <BarChart3 size={14} strokeWidth={1.6} className="text-s-ink-2" />
               <SolenExclusiveBadge featureDescription="Vergleiche bis zu 3 Salons, nur bei Solen." /> {/* psych-ok: fixed compare-tool cap (max 3 salons), pre-existing product limit, not a live/fabricated count */}
             </div>
             <h2 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.25] tracking-[-0.01em] text-s-ink mb-3">
@@ -331,7 +331,7 @@ export default function WarumSolenPage() {
             <div>
               <div className="mb-5">
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-pill mb-4 bg-s-bg-sunken border border-s-border">
-                  <Star size={14} className="text-s-ink-2" />
+                  <Star size={14} strokeWidth={1.6} className="text-s-ink-2" />
                   <SolenExclusiveBadge featureDescription="Sammle Stempel bei jedem Besuch." />
                 </div>
                 <h2 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.25] tracking-[-0.01em] text-s-ink">
@@ -375,7 +375,7 @@ export default function WarumSolenPage() {
             <div>
               <div className="mb-5">
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-pill mb-4 bg-s-bg-sunken border border-s-border">
-                  <MapPin size={14} className="text-s-ink-2" />
+                  <MapPin size={14} strokeWidth={1.6} className="text-s-ink-2" />
                   <SolenExclusiveBadge featureDescription="Sieh Preise direkt auf der Karte." />
                 </div>
                 <h2 className="font-heading text-[clamp(18px,2vw,20px)] font-semibold leading-[1.25] tracking-[-0.01em] text-s-ink">

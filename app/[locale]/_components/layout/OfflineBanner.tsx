@@ -94,9 +94,9 @@ export default function OfflineBanner() {
       }}
     >
       {offline ? (
-        <WifiOff size={15} strokeWidth={2} aria-hidden />
+        <WifiOff size={15} strokeWidth={1.9} aria-hidden />
       ) : (
-        <Wifi size={15} strokeWidth={2} aria-hidden />
+        <Wifi size={15} strokeWidth={1.9} aria-hidden />
       )}
       {offline ? l.off : l.on}
     </div>

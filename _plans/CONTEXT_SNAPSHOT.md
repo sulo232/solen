@@ -2,24 +2,30 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-25T08:31:54 (trigger: auto)
-- branch: claude/stress-test-gates-hooks-6dc8e8
+- taken: 2026-08-26T15:23:25 (trigger: auto)
+- branch: claude/agent-flow-design-overhaul-2af2c2
 
 ## git
 ```
-cd33b1241 The check that hunts dead enforcement was wrong about 21 checks
-5971b4207 Proof moved onto the lines the checkbox check reads, for the three boxes it caught
-ddb99e9a2 Box 4 closed as a workflow, not more skills; one box left and it needs his password
-a69da58a9 Three boxes closed with evidence: skill eval redone honestly, archives indexed, totals corrected
-6b1247f6c Merged check family armed; box 8b closed with its evidence
+9c801c29f The pile had a cause, and it was nine unsaved files
+dcd4159a5 Round 1 fixed the leak and opened a hole, so round 2 is running
+d9bd21958 He was right that it piles up, and here is the number
+cdd44bd0f Put the three calls that are his on the standing open page
+1a0a7332d A hidden review could still be read, and a card could be charged twice
+```
+```
+M _plans/BACKEND_LOOP_2026-08-23.md
+M  app/api/admin/reports/[id]/route.ts
+M  app/api/cron/process-deletions/route.ts
+M  app/api/nail-inspo/images/route.ts
+M  app/api/services/[id]/route.ts
+M  app/api/staff/[id]/route.ts
+M  lib/storage.ts
+?? lib/gdpr/purge-avatar-storage.ts
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
-73 | GERMAN SAYS SALON, NOT STORE , round 2 (coordinator 2026-08-21: "your own sweep found roughly 30 more files still saying Store in German. Leaving them means the product still uses two words for one thing... So finish it") | **ACTIVE** (2026-08-21)
-74 | OVERNIGHT LOOP: how I work + efficiency (speed/money) + harness + skills (owner 2026-08-24, going to sleep: "finish evrth as a. loop") | **ACTIVE** (2026-08-24)
-75 | HIS OPEN ASKS, the ones I measured instead of doing (owner 2026-08-24: "are you sure you finished everything? What about the one... like, the number three and also about the context and about the price and also the skills") | **ACTIVE** (2026-08-24)
-76 | FIX ALL OF THEM, not report them (owner 2026-08-24: "instead of just telling me? You should fix all of them... stop telling me I fixed it") | **ACTIVE** (2026-08-24)
-77 | EVERYTHING HE ASKED TODAY, and what happened for each (owner 2026-08-24: "you have to tell me everything that I told you what you did for that") | **ACTIVE** (2026-08-24)
+71 | BACKEND LOOP: bugs, security, storage, scale, waste (owner 2026-08-23: "analyze, like, every single inch of back end ... as a loop, and also fix up those stuff, like, how everything is stored ... so it can scale ... And also that if it's, like, inefficient") | **ACTIVE** (2026-08-23) , 4 holes closed + 3 database fixes applied live; 3 decisions waiting on him
 68 | HOME: continue-search card + recently-viewed (owner 2026-08-15: "big size difference between the screenshot Airbnb reference and ours" + "mock ups in direction based on other websites and apps" + "recently viewed, we didn't do anything for that") | **ACTIVE** (2026-08-15)
 69 | HOME SECTIONS one by one (owner 2026-08-15: search icon without the box, card font/spacing "not balanced ... looks empty", Popular looks "doesn't make any sense" with "tons" of options, then Walk-in, then Reviews) | **ACTIVE** (2026-08-15)
 70 | HOME SECTIONS round 2 (owner 2026-08-16, rejected all 26 stacked versions and specified ONE design per section: Popular looks takes the Inspo card minus the TikTok badge and the black gradient plus a real shadow and replaces Find-your-inspiration; walk-in keeps the N-ahead count and the mark indicators, colour-coded, real icon back, hierarchy fixed; reviews cards smaller with read-more repositioned) | **ACTIVE** (2026-08-16)
@@ -81,6 +87,11 @@ a69da58a9 Three boxes closed with evidence: skill eval redone honestly, archives
 48 | PRINCIPLE DEEP-RESEARCH , re-test every principle we already have against external evidence | **ACTIVE** (design) + handoff (rest) 2026-07-28
 50 | DESIGN principle deep-research (the rules we ALREADY have) | **ACTIVE** (2026-07-28)
 51 | DESIGN RE-ENGINEER , improve the system we have, measured against live Airbnb | **ACTIVE** (2026-07-28)
-72 | REFUND PROCESS: does it exist, who decides, is it legal (owner 2026-08-19: "Is there even a refund process, and how does it even proceed? Who is gonna decide it? ... with the tax and fix if it's legal or not") | **ACTIVE** (2026-08-19)
-71 | GATE + HOOK STRESS TEST , all 305 hooks driven with real payloads, not read (owner 2026-08-17: "actually evaluate and stress test each one") | **ACTIVE** (2026-08-18)
-78 | SKILLS AND WORKFLOWS ARE OWNED BUT NOT USED (owner 2026-08-24: "multiple skills right, skills and they often don't use ours... look into Anthropic official and also out there... for example dictation") | **ACTIVE** (2026-08-24)
+
+## BACKEND_LOOP_2026-08-23.md
+Open boxes:
+- [ ] **The search-embedding timeout is the one that is genuinely missing, and it is worse than
+- [ ] **Measured, and the worst one is a takedown that does not take down.** `verified:` swept
+- [ ] PARKED 2026-08-26 · Should a nightly job delete past time slots that were never booked and are older than 90 days? · from: the storage pass, 17,572 of 62,913 slots are already in the past and nothing has ever removed one
+- [ ] PARKED 2026-08-26 · Do you want leaked-password protection switched on, knowing it rejects sign-ups using passwords from known breach lists? · from: the Supabase security advisor, it is a dashboard toggle and not code
+- [ ] PARKED 2026-08-26 · Do you want the three July backend fixes brought across from the branches they were stranded on? · from: the regression pass, they exist on neither this branch nor main

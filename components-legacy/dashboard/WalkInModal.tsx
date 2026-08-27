@@ -64,14 +64,14 @@ export default function WalkInModal({ salonId, services, staff, onClose, onCreat
       <div className="bg-white rounded-card shadow-elevation-2 w-full max-w-sm p-6" onClick={e => e.stopPropagation()}>
         <div className="flex items-start justify-between mb-4">
           <h3 id="walkin-modal-title" className="font-heading text-base text-s-ink">{t("title")}</h3>
-          <button onClick={onClose} aria-label={t("close")} className="p-2 rounded-pill hover:bg-s-ink/5 transition-colors duration-150"><X size={18} className="text-s-ink/40" /></button>
+          <button onClick={onClose} aria-label={t("close")} className="p-2 rounded-pill hover:bg-s-ink/5 transition-colors duration-150"><X size={18} strokeWidth={1.9} className="text-s-ink/40" /></button>
         </div>
 
         {ticketNumber !== null ? (
           // Success: cash walk-in is now in the live queue — show the issued ticket number.
           <div className="flex flex-col items-center text-center py-2">
             <div className="w-12 h-12 rounded-full bg-s-success-bg flex items-center justify-center mb-3">
-              <Check size={24} className="text-s-success" />
+              <Check size={24} strokeWidth={2.4} className="text-s-success" />
             </div>
             <p className="text-sm text-s-ink-2 mb-1">{t("added")}</p>
             <p className="font-heading text-3xl text-s-ink tracking-tight mb-5">{ticketNumber}</p>
@@ -120,7 +120,7 @@ export default function WalkInModal({ salonId, services, staff, onClose, onCreat
               <button onClick={onClose} className="flex-1 py-2.5 rounded-pill border border-s-border text-sm text-s-ink-2 hover:border-s-ink/30 hover:text-s-ink active:scale-[0.97] transition-[transform,border-color,color] duration-150">{t("cancel")}</button>
               <button onClick={handleCreate} disabled={!serviceId || loading}
                 className="flex-1 py-2.5 rounded-pill active:scale-[0.97] bg-s-ink text-white text-[12px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-[transform,filter] active:duration-[80ms] active:ease-glide shadow-elevation-2">
-                {loading && <Spinner size="sm" invert />}<Send size={14} /> {t("create")}
+                {loading && <Spinner size="sm" invert />}<Send size={14} strokeWidth={1.6} /> {t("create")}
               </button>
             </div>
           </>

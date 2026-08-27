@@ -249,7 +249,7 @@ function CarouselInner({
                 aria-label="Vorheriger Artist"
                 className="grid h-10 w-10 place-items-center rounded-full bg-s-bg-sunken text-s-ink transition-[colors,transform] duration-200 ease-glide hover:bg-white hover:text-s-ink active:scale-[0.95] active:duration-[80ms] active:ease-glide focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2"
               >
-                <ChevronLeft size={18} strokeWidth={2.25} aria-hidden />
+                <ChevronLeft size={18} strokeWidth={1.9} aria-hidden />
               </button>
               <button
                 type="button"
@@ -257,7 +257,7 @@ function CarouselInner({
                 aria-label="Nächster Artist"
                 className="grid h-10 w-10 place-items-center rounded-full bg-s-bg-sunken text-s-ink transition-[colors,transform] duration-200 ease-glide hover:bg-white hover:text-s-ink active:scale-[0.95] active:duration-[80ms] active:ease-glide focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2"
               >
-                <ChevronRight size={18} strokeWidth={2.25} aria-hidden />
+                <ChevronRight size={18} strokeWidth={1.9} aria-hidden />
               </button>
             </div>
           </div>
@@ -294,7 +294,7 @@ function ArtistProfileDialog({ testimonial }: { testimonial: Testimonial }) {
           aria-label="Schliessen"
           className="absolute right-4 top-4 z-30 grid h-10 w-10 place-items-center rounded-full bg-black/30 text-white backdrop-blur-md transition-colors hover:bg-black/45 focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
         >
-          <X size={18} strokeWidth={2.5} aria-hidden />
+          <X size={18} strokeWidth={1.9} aria-hidden />
         </button>
 
         {/* Scrollable inner — close button stays put while user scrolls this */}
@@ -432,7 +432,7 @@ function ArtistProfileDialog({ testimonial }: { testimonial: Testimonial }) {
                 style={{ boxShadow: "0 4px 14px rgba(31,92,66,0.25)" }}
               >
                 Termin bei {firstName} buchen
-                <ArrowRight size={16} aria-hidden />
+                <ArrowRight size={16} strokeWidth={1.9} aria-hidden />
               </Link>
             </div>
           </MorphingDialogDescription>

@@ -86,7 +86,7 @@ export default function RetailManager({ salonId }: { salonId: string }) {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Package size={16} className="text-s-coral" />
+          <Package size={16} strokeWidth={1.9} className="text-s-coral" />
           <h3 className="font-heading text-sm text-s-ink">{t("retail_title")}</h3>
         </div>
         <button
@@ -101,7 +101,7 @@ export default function RetailManager({ salonId }: { salonId: string }) {
 
       {/* Revenue summary */}
       <div className="flex items-center gap-2 p-3 rounded-[16px] bg-s-bg-surface">
-        <DollarSign size={14} className="text-s-sage" />
+        <DollarSign size={14} strokeWidth={1.6} className="text-s-sage" />
         <span className="text-xs text-s-ink-2">{t("retail_products_count", { count: products.length })}</span>
       </div>
 
@@ -164,7 +164,7 @@ export default function RetailManager({ salonId }: { salonId: string }) {
       {/* Low-stock alert */}
       {lowStockProducts.length > 0 && (
         <div className="flex items-center gap-2 p-3 rounded-[16px] bg-s-warning-bg">
-          <AlertTriangle size={14} className="text-s-warning shrink-0" />
+          <AlertTriangle size={14} strokeWidth={1.6} className="text-s-warning shrink-0" />
           <span className="text-xs text-s-warning">
             {t("retail_low_stock_alert", { count: lowStockProducts.length })}
           </span>
@@ -180,7 +180,7 @@ export default function RetailManager({ salonId }: { salonId: string }) {
               isLowStock ? "border-s-warning/30 bg-s-warning-bg/30" : "border-s-ink/5"
             }`}>
               <div className="w-10 h-10 rounded-[8px] bg-s-ink/5 flex items-center justify-center shrink-0">
-                <Package size={16} className="text-s-ink/30" />
+                <Package size={16} strokeWidth={1.9} className="text-s-ink/30" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-s-ink truncate">{product.name}</p>

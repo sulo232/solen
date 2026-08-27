@@ -79,7 +79,7 @@ export default function StaffReviewsSheet({
       {/* Header */}
       <div className="sticky top-0 z-10 flex items-center gap-3 border-b border-s-border bg-white px-4 py-3">
         <button type="button" onClick={onClose} aria-label="Zurück" className="grid h-9 w-9 place-items-center rounded-full hover:bg-s-bg-sunken">
-          <ArrowLeft size={20} className="text-s-ink" />
+          <ArrowLeft size={20} strokeWidth={2.2} className="text-s-ink" />
         </button>
         <span className="font-heading text-[17px] font-bold text-s-ink">Bewertungen</span>
       </div>
@@ -109,7 +109,7 @@ export default function StaffReviewsSheet({
               return (
                 <button key={n} type="button" onClick={() => toggleFilter(n)} className="flex w-full items-center gap-3 text-left">
                   <span className={`grid h-[22px] w-[22px] shrink-0 place-items-center rounded-[6px] border transition-colors ${on ? "border-s-ink bg-s-ink" : "border-s-ink/25"}`}>
-                    {on && <Check size={14} strokeWidth={3} className="text-white" />}
+                    {on && <Check size={14} strokeWidth={1.6} className="text-white" />}
                   </span>
                   <span className="w-2 shrink-0 text-[14px] font-medium text-s-ink tabular-nums">{n}</span>
                   <span className="h-1 flex-1 overflow-hidden rounded-full bg-s-bg-sunken">
@@ -132,7 +132,7 @@ export default function StaffReviewsSheet({
               className="inline-flex items-center gap-1.5 rounded-full border border-s-border px-4 py-2 font-heading text-[14px] font-semibold text-s-ink"
             >
               {sort === "best" ? "Bestbewertet" : "Neueste"}
-              <ChevronDown size={15} className={`transition-transform ${sortOpen ? "rotate-180" : ""}`} />
+              <ChevronDown size={15} strokeWidth={1.9} className={`transition-transform ${sortOpen ? "rotate-180" : ""}`} />
             </button>
             {sortOpen && (
               <div className="absolute right-0 z-10 mt-1.5 w-44 overflow-hidden rounded-input border border-s-border bg-white shadow-[0_8px_24px_-8px_rgba(10,10,10,0.18)]">
@@ -144,7 +144,7 @@ export default function StaffReviewsSheet({
                     className={`flex w-full items-center justify-between px-4 py-2.5 text-left text-[14px] ${sort === s ? "font-semibold text-s-ink" : "text-s-ink-2"}`}
                   >
                     {s === "best" ? "Bestbewertet" : "Neueste"}
-                    {sort === s && <Check size={15} className="text-s-ink" />}
+                    {sort === s && <Check size={15} strokeWidth={1.9} className="text-s-ink" />}
                   </button>
                 ))}
               </div>

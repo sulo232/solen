@@ -87,6 +87,8 @@ export async function POST(
           contents: [{ parts: [{ text: prompt }] }],
           generationConfig: { maxOutputTokens: 300, temperature: 0.7 },
         }),
+        // 25000ms: text-generation call, same bound as app/api/admin/nail/generate/route.ts
+        signal: AbortSignal.timeout(25000),
       }
     );
 

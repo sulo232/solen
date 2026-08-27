@@ -12,6 +12,40 @@
       "autoPort": false
     },
     {
+      "name": "Tunnel (sheet 3300)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "/opt/homebrew/bin/cloudflared tunnel --url http://localhost:3300 --metrics localhost:20261 --no-autoupdate"
+      ],
+      "port": 20261,
+      "autoPort": false
+    },
+    {
+      "name": "Sheet preview (scratchpad 3300)",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--yes",
+        "serve",
+        "/private/tmp/claude-501/-Users-sulo-Documents-solen--claude-worktrees-design-system-consolidation-10167f/68d78dad-21dd-4632-a5a9-f1861516a718/scratchpad",
+        "--no-clipboard",
+        "--listen",
+        "3300"
+      ],
+      "port": 3300,
+      "autoPort": false
+    },
+    {
+      "name": "Next dev (quirky-ellis on 3000)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "cd /Users/sulo/Documents/solen/.claude/worktrees/quirky-ellis-ef5559 && npx next dev -p 3000"
+      ],
+      "port": 3000,
+      "autoPort": false
+    },
+    {
       "name": "Next.js dev",
       "runtimeExecutable": "npm",
       "runtimeArgs": [

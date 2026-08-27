@@ -161,7 +161,7 @@ export function SalonSidebar({
         {salon.opening_hours && (
           <ChevronDown
             size={15}
-            strokeWidth={2.25}
+            strokeWidth={1.9}
             className={cn(
               "ml-auto shrink-0 text-s-ink-2 transition-transform duration-150",
               showHours && "rotate-180",
@@ -193,7 +193,7 @@ export function SalonSidebar({
 
       {/* 6. Address + Route */}
       <div className="font-body mt-3 flex items-start gap-2 text-[15px] text-s-ink-2">
-        <MapPin size={16} className="mt-0.5 shrink-0 text-s-ink-2" strokeWidth={2} />
+        <MapPin size={16} className="mt-0.5 shrink-0 text-s-ink-2" strokeWidth={1.9} />
         <div className="min-w-0 flex-1">
           <span>{fullAddress}</span>
           {" "}

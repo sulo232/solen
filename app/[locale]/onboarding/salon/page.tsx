@@ -253,7 +253,7 @@ function Step3({ data, onChange, category, t }: {
             {suggesting && (
               <div className="absolute right-3 top-1/2 -translate-y-1/2">
                 {/* mockup-ok: WCAG 2.2.2 conformance, fires on step-mount via useEffect (AI suggest), no click; bounded (see tailwind.config.js spin-bounded) */}
-                <Loader2 size={16} className="animate-spin-bounded text-s-accent" />
+                <Loader2 size={16} strokeWidth={1.9} className="animate-spin-bounded text-s-accent" />
               </div>
             )}
           </div>
@@ -819,7 +819,7 @@ export default function SalonOnboardingPage() {
       {submitError && step >= TOTAL_STEPS - 1 && (
         <div className="max-w-xl mx-auto px-4 mb-4">
           <div className="flex items-start gap-3 rounded-[12px] border border-s-error/20 p-4 bg-s-error-bg">
-            <AlertCircle size={15} className="text-s-error shrink-0 mt-0.5" />
+            <AlertCircle size={15} strokeWidth={1.9} className="text-s-error shrink-0 mt-0.5" />
             <p className="text-xs font-body text-s-error">{submitError}</p>
           </div>
         </div>
@@ -834,7 +834,7 @@ export default function SalonOnboardingPage() {
               onClick={goPrev}
               className="flex items-center gap-1.5 px-4 py-3 rounded-btn border border-s-ink/[0.08] text-xs font-heading tracking-[0.08em] text-s-ink-2 hover:bg-s-bg-sunken hover:border-s-border active:translate-y-[1px] active:shadow-pressed transition-[transform,filter]"
             >
-              <ArrowLeft size={16} /> {t("nav.back")}
+              <ArrowLeft size={16} strokeWidth={1.9} /> {t("nav.back")}
             </button>
           )}
           {step < TOTAL_STEPS ? (
@@ -844,7 +844,7 @@ export default function SalonOnboardingPage() {
               className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 rounded-btn bg-s-ink text-white text-xs font-heading tracking-[0.08em] hover:brightness-[1.06] active:translate-y-[1px] active:shadow-pressed transition-[transform,filter] group shadow-elevation-2"
             >
               <span>{t("nav.next")}</span>
-              <ChevronRight size={16} className="transition-transform group-hover:translate-x-1" />
+              <ChevronRight size={16} strokeWidth={1.9} className="transition-transform group-hover:translate-x-1" />
             </button>
           ) : (
             <div className="flex-1" onClick={submitting ? undefined : handleSubmit}>

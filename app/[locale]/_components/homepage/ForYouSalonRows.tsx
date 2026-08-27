@@ -22,6 +22,7 @@ import { FORYOU_SALONS, FORYOU_LABEL, FORYOU_CATEGORIES, type ForYouCategory } f
 // page.tsx (type-only import, the Supabase fetch code never reaches this
 // client bundle).
 import type { SalonCardDataMap } from "./salonCardData";
+import { nameForLocale, type ServiceNameLocale } from "@/lib/min-price-service";
 
 const MAX_ROWS = 2; // don't flood the feed — top 2 picks get a "Weil du X magst" row
 
@@ -77,7 +78,7 @@ function ForYouRow({
                 photoUrl={real?.photoUrl ?? undefined}
                 variant="service"
                 priceFromCHF={real?.priceFromCHF ?? null}
-                priceFromService={locale === "en" ? (real?.priceFromServiceEn ?? real?.priceFromServiceDe ?? null) : (real?.priceFromServiceDe ?? null)}
+                priceFromService={nameForLocale(real?.priceFromServiceNames, locale)}
                 citySelected={false}
                 postalCode={real?.postalCode ?? undefined}
                 city={real?.city ?? undefined}

@@ -184,7 +184,7 @@ export default function CityTopBar({ locale }: Props) {
         aria-label={copy.aria_close}
         className="grid h-6 w-6 shrink-0 place-items-center rounded-full text-s-ink-2 transition-colors hover:bg-white hover:text-s-ink focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2"
       >
-        <X size={14} strokeWidth={2.5} aria-hidden />
+        <X size={14} strokeWidth={1.6} aria-hidden />
       </button>
 
       {/* Message — truncates on narrow viewports */}
@@ -212,7 +212,7 @@ export default function CityTopBar({ locale }: Props) {
           <span>{cityName}</span>
           <ChevronDown
             size={14}
-            strokeWidth={2.5}
+            strokeWidth={1.6}
             aria-hidden
             className={`transition-transform duration-150 ${open ? "rotate-180" : ""}`}
           />
@@ -257,7 +257,7 @@ export default function CityTopBar({ locale }: Props) {
         aria-label={copy.aria_confirm}
         className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-s-ink text-white shadow-[0_2px_6px_rgba(0,0,0,0.20)] transition-[transform,box-shadow,background-color] duration-150 ease-glide hover:-translate-y-[1px] hover:bg-black hover:shadow-[0_4px_10px_rgba(0,0,0,0.30)] focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2"
       >
-        <ArrowRight size={14} strokeWidth={2.5} aria-hidden />
+        <ArrowRight size={14} strokeWidth={1.6} aria-hidden />
       </button>
     </div>
   );

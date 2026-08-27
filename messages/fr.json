@@ -6199,7 +6199,7 @@
     "respondsBy": "Le salon répond avant le {date}",
     "respondsByOverdue": "La réponse du salon était attendue avant le {date}",
     "decisionExpectedBy": "Décision attendue avant le {date}",
-    "rowService": "Service",
+    "rowService": "Prestation",
     "rowAppointment": "Rendez-vous",
     "rowAppointmentWith": "avec {staff}",
     "rowPaid": "Payé",

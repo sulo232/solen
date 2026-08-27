@@ -170,7 +170,7 @@ export default function EditorPage() {
           className="p-1.5 rounded-btn hover:bg-s-bg-sunken transition-colors"
           title="Back to Dashboard"
         >
-          <ArrowLeft size={16} className="text-s-ink" />
+          <ArrowLeft size={16} strokeWidth={1.9} className="text-s-ink" />
         </button>
 
         {/* URL bar */}
@@ -214,7 +214,7 @@ export default function EditorPage() {
           className="p-1.5 rounded-btn hover:bg-s-bg-sunken text-s-ink-2 hover:text-s-ink transition-colors"
           title="Revert to live"
         >
-          <RotateCcw size={14} />
+          <RotateCcw size={14} strokeWidth={1.6} />
         </button>
 
         {/* Edit mode toggle */}

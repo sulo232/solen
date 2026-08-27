@@ -131,7 +131,7 @@ export default function RecentSearches({ onSelect }: RecentSearchesProps) {
                 </span>
               ) : (
                 <span className="grid h-[52px] w-[52px] shrink-0 place-items-center rounded-[14px] bg-s-bg-sunken text-s-ink-2">
-                  <Search size={18} aria-hidden />
+                  <Search size={18} strokeWidth={1.9} aria-hidden />
                 </span>
               )}
               <span className="truncate font-heading text-[16px] font-semibold text-s-ink">{term}</span>
@@ -143,7 +143,7 @@ export default function RecentSearches({ onSelect }: RecentSearchesProps) {
               onClick={() => remove(term)}
               className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-s-ink-2 transition-colors duration-150 hover:text-s-ink"
             >
-              <X size={18} />
+              <X size={18} strokeWidth={1.9} />
             </button>
           </li>
         ))}

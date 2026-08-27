@@ -111,7 +111,7 @@ export default function WeatherBanner() {
           className="shrink-0 p-1 text-s-ink/30 hover:text-s-ink/60 transition-colors"
           aria-label="Banner schliessen"
         >
-          <X size={14} />
+          <X size={14} strokeWidth={1.6} />
         </button>
       </div>
     </div>

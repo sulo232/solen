@@ -169,7 +169,7 @@ export default function TikTokPlayer({ videoId, title, aspect, tiktokUrl }: { vi
               style={FROST_GLASS}
               className="grid h-11 w-11 place-items-center rounded-full text-s-ink transition-transform duration-150 active:scale-95 active:duration-[80ms]"
             >
-              {muted ? <VolumeX size={19} /> : <Volume2 size={19} />}
+              {muted ? <VolumeX size={19} strokeWidth={2.2} /> : <Volume2 size={19} strokeWidth={2.2} />}
             </button>
           </div>
         </div>

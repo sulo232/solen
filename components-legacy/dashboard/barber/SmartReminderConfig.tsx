@@ -80,11 +80,11 @@ export default function SmartReminderConfig({ salonId }: SmartReminderConfigProp
     <div className="rounded-[16px] bg-white border border-s-ink/5 p-4">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <Bell size={18} className="text-s-star" />
+          <Bell size={18} strokeWidth={1.9} className="text-s-star" />
           <h3 className="font-heading text-sm font-semibold text-s-ink">{t("smartReminders")}</h3>
         </div>
         <span className="flex items-center gap-1 text-xs text-s-ink-2">
-          <Users size={14} />
+          <Users size={14} strokeWidth={1.6} />
           {dueClients.length} {t("dueThisWeek")}
         </span>
       </div>
@@ -125,7 +125,7 @@ export default function SmartReminderConfig({ salonId }: SmartReminderConfigProp
 
                       {justSent ? (
                         <span className="flex items-center gap-1 text-xs text-s-success font-medium">
-                          <CheckCircle2 size={14} />
+                          <CheckCircle2 size={14} strokeWidth={1.6} />
                           {t("sent")}
                         </span>
                       ) : cooldown ? (
@@ -164,7 +164,7 @@ export default function SmartReminderConfig({ salonId }: SmartReminderConfigProp
                 aria-label={t("cancel")}
                 className="p-1 rounded-btn text-s-ink/40 hover:bg-s-bg-surface transition-colors duration-150"
               >
-                <X size={16} />
+                <X size={16} strokeWidth={1.9} />
               </button>
             </div>
             <p className="text-sm text-s-ink/70 mb-4">

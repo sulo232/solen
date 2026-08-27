@@ -329,8 +329,8 @@ function QuickRepliesTab() {
                   when toggling edit mode (V3-D-input-fill-2026-07-17). */}
               <input value={editValue} onChange={(e) => setEditValue(e.target.value)}
                 className="flex-1 !border-0 !bg-transparent !min-h-0 !px-0 !text-sm focus:outline-none" autoFocus />
-              <button onClick={() => { const a = [...replies]; a[i] = editValue; save(a); setEditing(null); }} aria-label={t("save")} className="text-s-coral"><Check size={14} /></button>
-              <button onClick={() => setEditing(null)} aria-label={t("cancel")} className="text-s-ink/30"><X size={14} /></button>
+              <button onClick={() => { const a = [...replies]; a[i] = editValue; save(a); setEditing(null); }} aria-label={t("save")} className="text-s-coral"><Check size={14} strokeWidth={1.6} /></button>
+              <button onClick={() => setEditing(null)} aria-label={t("cancel")} className="text-s-ink/30"><X size={14} strokeWidth={1.6} /></button>
             </>
           ) : (
             <>
@@ -345,7 +345,7 @@ function QuickRepliesTab() {
         <input value={newValue} onChange={(e) => setNewValue(e.target.value)} placeholder={t("newTemplatePlaceholder")}
           className="flex-1 px-3 py-2 text-sm focus:outline-none" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
         <button onClick={() => { if (newValue.trim()) { save([...replies, newValue.trim()]); setNewValue(""); } }}
-          className="px-3 py-2 rounded-btn bg-s-accent text-white text-sm"><Plus size={14} /></button>
+          className="px-3 py-2 rounded-btn bg-s-accent text-white text-sm"><Plus size={14} strokeWidth={1.6} /></button>
       </div>
     </div>
   );
@@ -515,7 +515,7 @@ function CancellationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<
 
       {/* Guest preview */}
       <div className="flex items-start gap-2 bg-s-bg-sunken rounded-[12px] px-3.5 py-3">
-        <Eye size={15} className="text-s-ink-2 shrink-0 mt-0.5" />
+        <Eye size={15} strokeWidth={1.9} className="text-s-ink-2 shrink-0 mt-0.5" />
         <p className="text-xs text-s-ink-2 leading-relaxed">
           <span className="font-semibold text-s-ink">{t("customersSee")}</span> {previewText}
         </p>
@@ -649,7 +649,7 @@ function VerificationTab({ salon }: { salon: Salon }) {
     <div className="py-4 max-w-md space-y-4">
       {warnings > 0 && (
         <div className="bg-s-coral/5 border border-s-coral/20 rounded-[12px] px-4 py-3 flex items-start gap-3">
-          <AlertTriangle size={16} className="text-s-coral shrink-0 mt-0.5" />
+          <AlertTriangle size={16} strokeWidth={1.9} className="text-s-coral shrink-0 mt-0.5" />
           <div>
             <p className="text-sm font-medium text-s-ink">{t("salonWarnings", { count: warnings })}</p>
             <button onClick={handleVerify} disabled={confirming}
@@ -730,7 +730,7 @@ function VacationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
     <div className="py-4 max-w-sm space-y-5">
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 rounded-btn bg-s-coral/5 flex items-center justify-center">
-          <Palmtree size={18} className="text-s-coral" />
+          <Palmtree size={18} strokeWidth={1.9} className="text-s-coral" />
         </div>
         <div>
           <p className="text-sm font-medium text-s-ink">{t("vacationModeTitle")}</p>
@@ -740,7 +740,7 @@ function VacationTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
 
       {isActive && (
         <div className="bg-s-amber-subtle border border-s-amber/20 rounded-[12px] px-4 py-3 flex items-center gap-3">
-          <Palmtree size={16} className="text-s-star shrink-0" />
+          <Palmtree size={16} strokeWidth={1.9} className="text-s-star shrink-0" />
           <p className="text-sm text-s-star-text">
             {t("vacationActive", { start: new Date(start).toLocaleDateString(resolveSwissLocale(locale)), end: new Date(end).toLocaleDateString(resolveSwissLocale(locale)) })}
           </p>
@@ -999,8 +999,8 @@ function PaymentsTab({ salon, onSave }: { salon: Salon; onSave: (d: Partial<Salo
             noShowFeeType === "free" ? "bg-s-success-bg" : "bg-s-surcharge-bg",
           ].join(" ")}>
             {noShowFeeType === "free"
-              ? <ShieldCheck size={15} className="text-s-success shrink-0 mt-0.5" />
-              : <AlertTriangle size={15} className="text-s-surcharge shrink-0 mt-0.5" />}
+              ? <ShieldCheck size={15} strokeWidth={1.9} className="text-s-success shrink-0 mt-0.5" />
+              : <AlertTriangle size={15} strokeWidth={1.9} className="text-s-surcharge shrink-0 mt-0.5" />}
             <p className="text-xs leading-relaxed text-s-ink/80">
               <span className="font-semibold text-s-ink">{t("customersSee")}</span>{" "}
               {noShowFeeType === "free"
@@ -1080,7 +1080,7 @@ function ClosuresTab({ salon }: { salon: Salon }) {
           className="flex-1 px-3 py-2 text-sm focus:outline-none" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
         <button onClick={addClosure} disabled={!date}
           className="px-3 py-2 rounded-btn bg-s-accent text-white text-sm disabled:opacity-50">
-          <Plus size={14} />
+          <Plus size={14} strokeWidth={1.6} />
         </button>
       </div>
       {closures.length === 0 ? (
@@ -1094,7 +1094,7 @@ function ClosuresTab({ salon }: { salon: Salon }) {
                 {c.reason && <span className="text-xs text-s-ink/40 ml-2">{c.reason}</span>}
               </div>
               <button onClick={() => removeClosure(c.id)} className="text-s-ink/30 hover:text-s-coral transition-colors">
-                <Trash2 size={14} />
+                <Trash2 size={14} strokeWidth={1.6} />
               </button>
             </div>
           ))}
@@ -1410,7 +1410,7 @@ function MobileSettingsIndex({
                   <Icon size={19} className="text-s-ink shrink-0" />
                   <span className="flex-1 font-heading font-semibold text-[14.5px] text-s-ink">{row.label}</span>
                   {row.pill && <DashStatusPill tone={row.pill.tone}>{row.pill.label}</DashStatusPill>}
-                  <ChevronRight size={18} className="text-s-ink-2 shrink-0" />
+                  <ChevronRight size={18} strokeWidth={1.9} className="text-s-ink-2 shrink-0" />
                 </button>
               );
             })}
@@ -1556,7 +1556,7 @@ export default function SettingsPage() {
                       onClick={() => setMobilePanelOpen(false)}
                       className="inline-flex items-center gap-1.5 text-[14px] font-heading font-semibold text-s-ink mb-3"
                     >
-                      <ChevronRight size={18} className="rotate-180" />
+                      <ChevronRight size={18} strokeWidth={1.9} className="rotate-180" />
                       {t("pageTitle")}
                     </button>
                     <h2 className="font-heading text-[22px] font-bold tracking-[-0.02em] text-s-ink leading-none mb-2">{activeLabel}</h2>

@@ -55,7 +55,7 @@ export default function GiftCardManager({ salonId }: GiftCardManagerProps) {
   return (
     <div>
       <h3 className="font-heading text-sm text-s-ink flex items-center gap-2 mb-4">
-        <Gift size={14} className="text-s-accent-bright" /> {t("title")}
+        <Gift size={14} strokeWidth={1.6} className="text-s-accent-bright" /> {t("title")}
       </h3>
 
       {/* Stats */}

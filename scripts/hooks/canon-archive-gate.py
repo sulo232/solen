@@ -45,6 +45,9 @@ before the sweep would deny the sweep's own commit. Same order COPY_LAW.md secti
 used for the register ratchet.
 
 CLI:  python3 scripts/hooks/canon-archive-gate.py --audit [repo_root]
+      (2026-08-18: this line said `design-canon-gate.py`, which exists nowhere on disk,
+      in either repo copy or under ~/.claude. The gate was renamed and its own
+      instructions were not. Anyone following them ran a file that is not there.)
       Prints every top-level file that is not on the list, with its destination.
       Always exits 0. Safe for the weekly law pass.
 

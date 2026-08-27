@@ -138,7 +138,7 @@ export function SalonHeader({
               aria-label={t("showLocation")}
               className="inline-flex items-center gap-1 text-left text-s-ink-2 transition-[colors,transform] hover:text-s-ink active:scale-[0.98] active:duration-[80ms] active:ease-glide"
             >
-              <MapPin size={14} className="shrink-0 text-s-ink-2" strokeWidth={2} />
+              <MapPin size={14} className="shrink-0 text-s-ink-2" strokeWidth={1.6} />
               {fullAddress}
             </button>
           </div>
@@ -156,7 +156,7 @@ export function SalonHeader({
             onClick={() => shareOrCopy(salon.name, window.location.href)}
             className="grid h-11 w-11 place-items-center rounded-full border border-s-border bg-white transition-transform hover:scale-105 active:scale-95 active:duration-[80ms] active:ease-glide"
           >
-            <Share size={18} strokeWidth={2.1} className="text-s-ink" aria-hidden />
+            <Share size={18} strokeWidth={1.9} className="text-s-ink" aria-hidden />
           </button>
           <HeartButton
             salonId={salon.id}

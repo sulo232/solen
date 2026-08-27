@@ -80,7 +80,7 @@ function VisualBooking() {
       >
         <div className="mb-3 flex items-center gap-3">
           <div className="grid h-9 w-9 place-items-center rounded-full bg-s-ink text-white">
-            <Check size={16} strokeWidth={2.5} aria-hidden />
+            <Check size={16} strokeWidth={1.9} aria-hidden />
           </div>
           <div className="flex-1">
             <div className="text-[12px] font-semibold leading-tight text-s-ink">
@@ -529,7 +529,7 @@ export function JoinUsCard() {
               aria-hidden
               className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-white text-s-ink shadow-elevation-2"
             >
-              <ChevronRight size={22} strokeWidth={2.5} aria-hidden />
+              <ChevronRight size={22} strokeWidth={2.2} aria-hidden />
             </div>
           </div>
           {/* Trust line — only in trigger.
@@ -589,7 +589,7 @@ export function JoinUsCard() {
               {status === "success" ? (
                 <div className="mt-8 flex items-start gap-4 rounded-input bg-white/10 p-6">
                   <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white text-s-ink">
-                    <Check size={18} strokeWidth={2.5} aria-hidden />
+                    <Check size={18} strokeWidth={1.9} aria-hidden />
                   </div>
                   <div>
                     <p className="font-display text-[17px] font-semibold tracking-[-0.02em] text-white">
@@ -651,7 +651,7 @@ export function JoinUsCard() {
                       className="inline-flex items-center gap-2 self-start rounded-full bg-white px-7 py-3.5 font-body text-[15px] font-semibold text-s-ink shadow-elevation-2 transition-all duration-200 ease-glide hover:scale-[1.02] active:scale-[0.97] disabled:opacity-60 disabled:hover:scale-100 md:self-auto"
                     >
                       {status === "submitting" ? "Wird gesendet..." : "Jetzt anmelden"}
-                      <ArrowRight size={16} aria-hidden />
+                      <ArrowRight size={16} strokeWidth={1.9} aria-hidden />
                     </button>
                   </div>
                 </form>

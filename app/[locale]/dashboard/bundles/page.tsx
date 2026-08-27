@@ -171,7 +171,7 @@ function BundleForm({
         <div className="flex items-start justify-between mb-4">
           <h3 className="font-heading text-base">{initial ? t("editBundle") : t("addBundle")}</h3>
           <button onClick={onClose} aria-label={t("cancel")}>
-            <X size={18} className="text-s-ink/30" />
+            <X size={18} strokeWidth={1.9} className="text-s-ink/30" />
           </button>
         </div>
 
@@ -312,7 +312,7 @@ function BundleForm({
                   aria-label={t("delete")}
                   className="text-s-ink-2 hover:text-s-error transition-colors grid place-items-center px-1.5 py-2.5"
                 >
-                  <Trash2 size={18} />
+                  <Trash2 size={18} strokeWidth={1.9} />
                 </button>
               )}
               <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2">
@@ -336,7 +336,7 @@ function BundleForm({
               {enoughServices ? (
                 <div className="overflow-hidden rounded-[24px] border border-s-border bg-white shadow-whisper">
                   <div className="flex items-center gap-2 px-4 pt-4 pb-2">
-                    <Package size={16} strokeWidth={2} className="text-s-ink" aria-hidden />
+                    <Package size={16} strokeWidth={1.9} className="text-s-ink" aria-hidden />
                     <p className="font-heading text-[16px] font-bold text-s-ink">{name || t("namePlaceholder")}</p>
                   </div>
                   <div>
@@ -542,7 +542,7 @@ export default function BundlesPage() {
           disabled={!salonId || services.length < 2}
           className="inline-flex items-center gap-1.5 bg-s-ink text-white font-heading font-semibold text-[13px] rounded-[12px] px-3.5 py-2.5 disabled:opacity-50"
         >
-          <Plus size={15} strokeWidth={2.4} /> {t("add")}
+          <Plus size={15} strokeWidth={1.9} /> {t("add")}
         </button>
       </div>
 
@@ -563,7 +563,7 @@ export default function BundlesPage() {
             return (
               <div key={b.id} className="border-b border-s-border last:border-b-0 flex items-center gap-3 px-3.5 py-3">
                 <div className="w-10 h-10 rounded-[10px] bg-s-bg-sunken flex items-center justify-center shrink-0">
-                  <Package size={16} className="text-s-ink-2" />
+                  <Package size={16} strokeWidth={1.9} className="text-s-ink-2" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-heading font-semibold text-[14.5px] text-s-ink truncate">{b.name}</p>
@@ -583,7 +583,7 @@ export default function BundlesPage() {
                   aria-label={t("active")}
                 />
                 <button onClick={() => setEditTarget(b)} aria-label={t("edit")} className="text-s-ink shrink-0 grid place-items-center">
-                  <Pencil size={19} />
+                  <Pencil size={19} strokeWidth={2.2} />
                 </button>
               </div>
             );

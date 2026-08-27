@@ -6,6 +6,7 @@ import { sendEmail, type EmailLocale } from "@/lib/email";
 import { paymentFailedNotification } from "@/lib/email-templates/booking-notifications";
 import { toRappen } from "@/lib/stripe";
 import { chargeOffSession } from "@/lib/bookings/off-session-charge";
+import { alertAdmin } from "@/lib/alert-admin";
 import { getServerEnv } from "@/lib/env";
 import { verifyCronSecret } from "@/lib/cron-auth";
 import { DEFAULT_COMMISSION_RATE_PERCENT } from "@/lib/constants/billing";
@@ -40,6 +41,9 @@ export async function GET(req: NextRequest) {
     .lt("starts_at", fiveDaysFromNow)
     .not("stripe_customer_id", "is", null)
     .not("stripe_payment_method_id", "is", null)
+    // A payment_intent_id already on the row means Stripe was already called for it; exclude
+    // it so a booking is never picked up for a second charge.
+    .is("payment_intent_id", null)
     .limit(50);
 
   let charged = 0;
@@ -128,7 +132,7 @@ export async function GET(req: NextRequest) {
       // that found it and this UPDATE (a concurrent cron overlap or a customer
       // cancellation racing the batch). Confirm the update actually matched a row
       // before counting it as charged, mirroring app/api/cron/no-show/route.ts.
-      const { data: updatedRows } = await admin
+      const { data: updatedRows, error: updateError } = await admin
         .from("bookings")
         .update({
           payment_status: "paid",
@@ -140,7 +144,26 @@ export async function GET(req: NextRequest) {
         .eq("status", "confirmed")
         .select("id");
 
+      if (updateError) {
+        // The UPDATE itself errored: the row is untouched, still card_saved/confirmed, and
+        // payment_intent_id was never written, so tomorrow's SELECT above would pick this
+        // booking up again and charge the same card a second time. The Stripe charge already
+        // succeeded, so this needs a human, not another automatic attempt.
+        console.error(`[pre-charge] booking ${booking.id} charged in Stripe but the paid-marking update errored:`, updateError.message);
+        void alertAdmin("pre-charge: paid-marking update failed after a successful Stripe charge", {
+          booking_id: booking.id,
+          payment_intent: result.paymentIntentId,
+          amount_rappen: amountRappen,
+          error: updateError.message,
+        });
+        continue;
+      }
+
       if (!updatedRows || updatedRows.length === 0) {
+        // Zero rows matched, no error: the booking was cancelled between the SELECT and this
+        // UPDATE, so status is no longer 'confirmed'. Bad (charged, not recorded) but not a
+        // repeat-charge risk, tomorrow's SELECT filters on status='confirmed' and will not
+        // select this row again.
         console.error(`[pre-charge] booking ${booking.id} no longer confirmed after charge (changed between select and update); charged in Stripe but not marked paid, needs reconciliation`);
         continue;
       }

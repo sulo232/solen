@@ -286,7 +286,7 @@ export default function SalonReviews({
             {/* mockup-ok: compact star + average + GREY count (was s-accent blue), matching
                 the approved reviews-full page. */}
             <div className="mt-5 flex items-center gap-2">
-              <Star size={20} stroke="none" aria-hidden className="fill-s-star" />
+              <Star size={20} strokeWidth={2.2} stroke="none" aria-hidden className="fill-s-star" />
               <span className="font-heading text-[20px] font-bold leading-none tracking-[-0.01em] tabular-nums text-s-ink">{averageRating.toFixed(1)}</span>
               {/* mockup-ok: PDP-grammar transfer (owner round 10 Y1) , one grey count,
                   "N Bewertungen" (was a bare "(N)"), reusing the same reviewsCount key the
@@ -367,7 +367,7 @@ export default function SalonReviews({
                 className="flex h-11 items-center gap-1.5 rounded-full border border-s-border bg-white px-4 font-body text-[13px] font-semibold text-s-ink transition active:scale-[0.98] active:duration-[80ms] active:ease-glide"
               >
                 {sortLabel}
-                <ChevronDown size={16} className="text-s-ink-2" />
+                <ChevronDown size={16} strokeWidth={1.9} className="text-s-ink-2" />
               </button>
             </div>
 
@@ -430,7 +430,7 @@ export default function SalonReviews({
                             title={t("flagReview")}
                             className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-s-ink-2 transition-[colors,transform] duration-150 hover:bg-s-bg-sunken hover:text-s-ink-2 active:scale-[0.94] active:duration-[80ms] active:ease-glide"
                           >
-                            <Flag size={15} aria-hidden />
+                            <Flag size={15} strokeWidth={1.9} aria-hidden />
                           </button>
                         )
                       ) : (

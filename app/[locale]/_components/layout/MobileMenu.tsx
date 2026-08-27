@@ -273,7 +273,7 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
                   "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2",
                 )}
               >
-                <X size={19} strokeWidth={2} aria-hidden />
+                <X size={19} strokeWidth={2.2} aria-hidden />
               </button>
             </div>
 
@@ -291,21 +291,22 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
                   "mb-4 flex items-center justify-between gap-4",
                   "rounded-[16px] bg-s-bg-surface p-4",
                   "shadow-[0_1px_3px_rgba(26,18,9,0.04)]",
-                  "transition-shadow duration-200 ease-glide",
+                  // transform must be in the transition list or the press scale never animates
+                  "transition-[transform,box-shadow] duration-200 ease-glide",
                   "hover:shadow-[0_4px_14px_rgba(26,18,9,0.08)]",
                   "active:scale-[0.98] active:duration-[80ms]",
                 )}
               >
                 <span className="flex min-w-0 items-center gap-3">
                   <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-s-ink text-white">
-                    <LayoutDashboard size={17} strokeWidth={2} aria-hidden />
+                    <LayoutDashboard size={17} strokeWidth={1.9} aria-hidden />
                   </span>
                   <span className="min-w-0">
                     <span className="block font-body text-[15px] font-bold text-s-ink">Dashboard</span>
                     <span className="mt-0.5 block font-body text-[12px] font-medium text-s-ink-2">Salon verwalten</span>
                   </span>
                 </span>
-                <ChevronRight size={18} strokeWidth={2.2} className="shrink-0 text-s-ink-2" aria-hidden />
+                <ChevronRight size={18} strokeWidth={1.9} className="shrink-0 text-s-ink-2" aria-hidden />
               </Link>
             )}
 
@@ -317,25 +318,25 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
               <QuickTile
                 href={`/${locale}/profile`}
                 label={tNav("account")}
-                icon={<User size={22} strokeWidth={1.8} aria-hidden />}
+                icon={<User size={22} strokeWidth={2.2} aria-hidden />}
                 onClick={onClose}
               />
               <QuickTile
                 href={`/${locale}/profile/stamps`}
                 label={t("loyalty")}
-                icon={<Award size={22} strokeWidth={1.8} aria-hidden />}
+                icon={<Award size={22} strokeWidth={2.2} aria-hidden />}
                 onClick={onClose}
               />
               <QuickTile
                 href={`/${locale}/profile/referral`}
                 label={t("invite")}
-                icon={<Users size={22} strokeWidth={1.8} aria-hidden />}
+                icon={<Users size={22} strokeWidth={2.2} aria-hidden />}
                 onClick={onClose}
               />
               <QuickTile
                 href={`/${locale}/help`}
                 label={t("help")}
-                icon={<HelpCircle size={22} strokeWidth={1.8} aria-hidden />}
+                icon={<HelpCircle size={22} strokeWidth={2.2} aria-hidden />}
                 onClick={onClose}
               />
             </div>
@@ -349,7 +350,7 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
                 <MenuRow
                   href={`/${locale}/auth/login`}
                   label={t("signIn")}
-                  icon={<LogIn size={20} strokeWidth={1.75} aria-hidden />}
+                  icon={<LogIn size={20} strokeWidth={2.2} aria-hidden />}
                   primary
                   onClick={onClose}
                 />
@@ -357,7 +358,7 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
               <MenuRow
                 href={`/${locale}/warum-solen`}
                 label={t("whySolen")}
-                icon={<Info size={20} strokeWidth={1.75} aria-hidden />}
+                icon={<Info size={20} strokeWidth={2.2} aria-hidden />}
                 onClick={onClose}
               />
               {/* Language — real locale switch via the existing LanguageSwitcher (sets the
@@ -365,7 +366,7 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
                   linked to its own homepage and never changed language (audit #13). */}
               <div className="flex w-full items-center justify-between gap-3 px-4 py-3.5">
                 <span className="flex items-center gap-3 text-[15px] font-medium text-s-ink">
-                  <Globe size={20} strokeWidth={1.75} aria-hidden />
+                  <Globe size={20} strokeWidth={2.2} aria-hidden />
                   {t("language")}
                 </span>
                 <LanguageSwitcher locale={locale} variant="sheet" />
@@ -413,7 +414,8 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
                 // V3-D168: padding p-5 → p-4 (tighter Fresha-style row)
                 "rounded-[16px] bg-s-bg-surface p-4",
                 "shadow-[0_1px_3px_rgba(26,18,9,0.04)]",
-                "transition-shadow duration-200 ease-glide",
+                // transform must be in the transition list or the press scale never animates
+                "transition-[transform,box-shadow] duration-200 ease-glide",
                 "hover:shadow-[0_4px_14px_rgba(26,18,9,0.08)]",
                 "active:scale-[0.98] active:duration-[80ms]",
               )}
@@ -427,7 +429,7 @@ export default function MobileMenu({ open, onClose, locale, loggedIn = false }: 
                 </span>
               </span>
               <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-s-ink text-white">
-                <ArrowRight size={16} strokeWidth={2.4} aria-hidden />
+                <ArrowRight size={16} strokeWidth={1.9} aria-hidden />
               </span>
             </Link>
           </div>
@@ -473,7 +475,7 @@ function MenuRow({
       </span>
       <ChevronRight
         size={18}
-        strokeWidth={2}
+        strokeWidth={1.9}
         className={primary ? "text-s-ink" : "text-s-ink-2"}
         aria-hidden
       />

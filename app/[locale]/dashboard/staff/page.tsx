@@ -159,7 +159,7 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
         <div className="flex items-start justify-between mb-4">
           <h3 className="font-heading text-base text-s-ink">{initial ? t("editTitle") : t("addTitle")}</h3>
           {/* mockup-ok: a11y touch-target fix (FRONTEND_AUDIT_2026-07-08.md, dash-ops), 18px raised to the locked 44px icon-button spec via a padded hit-area, no visual redesign */}
-          <button onClick={onClose} aria-label={t("close")} className="grid place-items-center h-11 w-11 -m-2.5 rounded-full hover:bg-s-bg-sunken transition-colors"><X size={18} className="text-s-ink/30" /></button>
+          <button onClick={onClose} aria-label={t("close")} className="grid place-items-center h-11 w-11 -m-2.5 rounded-full hover:bg-s-bg-sunken transition-colors"><X size={18} strokeWidth={1.9} className="text-s-ink/30" /></button>
         </div>
         <div className="space-y-3 mb-5">
           <div>
@@ -179,7 +179,7 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
                 onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addSpec(); } }}
                 placeholder={t("specialtyPlaceholder")}
                 className="flex-1 px-3 py-2 text-sm text-s-ink focus:outline-none" /> {/* mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17) */}
-              <button type="button" onClick={addSpec} aria-label={t("addSpecialty")} className="px-2.5 rounded-btn bg-s-bg-sunken text-s-ink-2"><Plus size={14} /></button>
+              <button type="button" onClick={addSpec} aria-label={t("addSpecialty")} className="px-2.5 rounded-btn bg-s-bg-sunken text-s-ink-2"><Plus size={14} strokeWidth={1.6} /></button>
             </div>
             <div className="flex flex-wrap gap-1">
               {specialties.map((s, i) => (
@@ -271,7 +271,7 @@ function StaffModal({ initial, salonId, services, onClose, onSaved }: StaffModal
 
           <label className="flex items-center gap-3 cursor-pointer">
             <button type="button" onClick={() => setActive(!active)} className={active ? "text-s-ink" : "text-s-ink/30"}>
-              {active ? <ToggleRight size={22} /> : <ToggleLeft size={22} />}
+              {active ? <ToggleRight size={22} strokeWidth={2.2} /> : <ToggleLeft size={22} strokeWidth={2.2} />}
             </button>
             <span className="text-sm text-s-ink-2">{t("active")}</span>
           </label>
@@ -327,11 +327,11 @@ function InviteModal({ salonId, onClose, onSent }: { salonId: string; onClose: (
       <div className="bg-white rounded-2xl shadow-warm-lg w-full max-w-sm p-6">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-2">
-            <Mail size={16} className="text-s-ink" />
+            <Mail size={16} strokeWidth={1.9} className="text-s-ink" />
             <h3 className="font-heading text-base text-s-ink">{t("inviteTitle")}</h3>
           </div>
           {/* mockup-ok: a11y touch-target fix (FRONTEND_AUDIT_2026-07-08.md, dash-ops), 18px raised to the locked 44px icon-button spec via a padded hit-area, no visual redesign */}
-          <button onClick={onClose} aria-label={t("close")} className="grid place-items-center h-11 w-11 -m-2.5 rounded-full hover:bg-s-bg-sunken transition-colors"><X size={18} className="text-s-ink/30" /></button>
+          <button onClick={onClose} aria-label={t("close")} className="grid place-items-center h-11 w-11 -m-2.5 rounded-full hover:bg-s-bg-sunken transition-colors"><X size={18} strokeWidth={1.9} className="text-s-ink/30" /></button>
         </div>
         <div className="space-y-3 mb-4">
           <div>
@@ -350,7 +350,7 @@ function InviteModal({ salonId, onClose, onSent }: { salonId: string; onClose: (
           <button onClick={onClose} className="flex-1 py-2.5 rounded-btn border border-s-border text-sm text-s-ink-2 hover:bg-s-bg-sunken transition-colors">{t("cancel")}</button>
           <button onClick={handleSend} disabled={!email || !name.trim() || sending}
             className="flex-1 py-2.5 rounded-btn bg-s-ink text-white text-sm font-medium hover:bg-black disabled:opacity-50 flex items-center justify-center gap-2 transition-colors">
-            {sending && <Spinner size="sm" invert />}<Send size={14} /> {t("invite")}
+            {sending && <Spinner size="sm" invert />}<Send size={14} strokeWidth={1.6} /> {t("invite")}
           </button>
         </div>
       </div>
@@ -435,7 +435,7 @@ function PendingInvites({ salonId }: { salonId: string }) {
   return (
     <div className="mb-6">
       <h2 className="text-sm font-medium text-s-ink-2 mb-2 flex items-center gap-1.5">
-        <ClockIcon size={14} /> {t("pendingInvites")}
+        <ClockIcon size={14} strokeWidth={1.6} /> {t("pendingInvites")}
       </h2>
       <div className="space-y-2">
         {invites.map(inv => (
@@ -526,11 +526,11 @@ export default function StaffPage() {
         <div className="flex items-center gap-2">
           <button onClick={() => setInviteOpen(true)}
             className="flex items-center gap-1.5 px-3 py-2 rounded-btn border border-s-ink text-s-ink text-sm font-medium hover:bg-s-bg-sunken transition-colors">
-            <Mail size={14} /> {t("invite")}
+            <Mail size={14} strokeWidth={1.6} /> {t("invite")}
           </button>
           <button onClick={() => setAddOpen(true)}
             className="flex items-center gap-1.5 px-3 py-2 rounded-btn bg-s-ink text-white text-sm font-medium hover:bg-black transition-colors">
-            <Plus size={14} /> {t("add")}
+            <Plus size={14} strokeWidth={1.6} /> {t("add")}
           </button>
         </div>
       </div>
@@ -596,15 +596,15 @@ export default function StaffPage() {
               <div className="flex items-center gap-0.5 shrink-0 -mr-1.5">
                 <button onClick={() => toggleActive(s.id, s.is_active)} aria-label={s.is_active ? t("deactivate") : t("activate")}
                   className={`grid place-items-center w-11 h-11 rounded-full transition-colors ${s.is_active ? "text-s-ink" : "text-s-ink/20"} hover:bg-s-bg-sunken`}>
-                  {s.is_active ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
+                  {s.is_active ? <ToggleRight size={18} strokeWidth={1.9} /> : <ToggleLeft size={18} strokeWidth={1.9} />}
                 </button>
                 <button onClick={() => setEditTarget(s)} aria-label={t("edit")}
                   className="grid place-items-center w-11 h-11 rounded-full text-s-ink/30 hover:text-s-ink hover:bg-s-bg-sunken transition-colors">
-                  <Pencil size={14} />
+                  <Pencil size={14} strokeWidth={1.6} />
                 </button>
                 <button onClick={() => setDeleteTarget(s)} aria-label={t("delete")}
                   className="grid place-items-center w-11 h-11 rounded-full text-s-ink/30 hover:text-s-error hover:bg-s-bg-sunken transition-colors">
-                  <Trash2 size={14} />
+                  <Trash2 size={14} strokeWidth={1.6} />
                 </button>
               </div>
             </div>

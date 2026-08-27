@@ -236,7 +236,7 @@ export default function QueueTrackingPage() {
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={data.recipientPhoto} alt="" className="h-[30px] w-[30px] rounded-full object-cover" />
               ) : (
-                <span className="flex h-[30px] w-[30px] items-center justify-center rounded-full bg-white text-s-ink-2"><Scissors size={15} /></span>
+                <span className="flex h-[30px] w-[30px] items-center justify-center rounded-full bg-white text-s-ink-2"><Scissors size={15} strokeWidth={1.9} /></span>
               )}
               <span className="font-heading text-[14px] font-bold text-s-ink">{data.recipientName}</span>
             </div>
@@ -285,15 +285,15 @@ export default function QueueTrackingPage() {
                 />
                 {data.salonSlug && (
                   <Link href={`/${locale}/salon/${data.salonSlug}`} className="mt-3 flex items-center gap-3 rounded-[14px] border border-s-border p-3 transition-transform active:scale-[0.98]">
-                    <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-[9px] bg-s-accent-pale text-s-accent"><HelpCircle size={19} /></span>
+                    <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-[9px] bg-s-accent-pale text-s-accent"><HelpCircle size={19} strokeWidth={2.2} /></span>
                     <div className="flex-1"><div className="text-[13.5px] font-semibold text-s-ink">{l.helpTitle}</div><div className="mt-0.5 text-[11.5px] text-s-ink-2">{l.helpSub}</div></div>
-                    <ChevronRight size={18} className="text-s-ink-2" />
+                    <ChevronRight size={18} strokeWidth={1.9} className="text-s-ink-2" />
                   </Link>
                 )}
               </div>
               <div className="mt-5 w-full max-w-sm">
                 <button type="button" onClick={() => exitHome(true)} className="flex w-full items-center justify-center gap-2 rounded-full bg-s-accent py-3.5 font-heading text-[14px] font-semibold text-white transition-transform active:scale-[0.98]">
-                  <Send size={17} /> {l.fbSend}
+                  <Send size={17} strokeWidth={1.9} /> {l.fbSend}
                 </button>
                 <button type="button" onClick={() => exitHome(false)} className="mt-3 block w-full text-center text-[13.5px] font-medium text-s-ink-2">{l.skip2}</button>
               </div>
@@ -366,18 +366,18 @@ export default function QueueTrackingPage() {
         <Link
           href={`/${locale}`}
           aria-label={l.home}
-          className="absolute left-3.5 top-3.5 flex h-11 w-11 items-center justify-center rounded-full border border-white/60 bg-white/85 text-s-ink shadow-[0_2px_8px_rgba(10,10,10,.12)] backdrop-blur-md active:scale-95"
+          className="absolute left-3.5 top-3.5 flex h-11 w-11 items-center justify-center rounded-full border border-white/60 bg-white/85 text-s-ink shadow-[0_2px_8px_rgba(10,10,10,.12)] backdrop-blur-md transition-transform duration-150 active:scale-[0.94] active:duration-[80ms] active:ease-glide"
         >
-          <ArrowLeft size={20} />
+          <ArrowLeft size={20} strokeWidth={2.2} />
         </Link>
         {/* top-right help — same frosted-circle treatment as the back button */}
         {data.salonSlug && (
           <Link
             href={`/${locale}/salon/${data.salonSlug}`}
             aria-label={l.helpTitle}
-            className="absolute right-3.5 top-3.5 flex h-11 w-11 items-center justify-center rounded-full border border-white/60 bg-white/85 text-s-ink shadow-[0_2px_8px_rgba(10,10,10,.12)] backdrop-blur-md active:scale-95"
+            className="absolute right-3.5 top-3.5 flex h-11 w-11 items-center justify-center rounded-full border border-white/60 bg-white/85 text-s-ink shadow-[0_2px_8px_rgba(10,10,10,.12)] backdrop-blur-md transition-transform duration-150 active:scale-[0.94] active:duration-[80ms] active:ease-glide"
           >
-            <HelpCircle size={20} />
+            <HelpCircle size={20} strokeWidth={2.2} />
           </Link>
         )}
         {/* photo counter (Fresha/PDP pattern) — only with more than one photo */}
@@ -489,12 +489,12 @@ export default function QueueTrackingPage() {
             >
               <div className="p-4">
                 <span className="flex h-[34px] w-[34px] items-center justify-center rounded-[10px] bg-s-accent-pale text-s-accent">
-                  <Scissors size={18} />
+                  <Scissors size={18} strokeWidth={1.9} />
                 </span>
                 <div className="mt-2.5 font-heading text-[16px] font-bold tracking-[-.01em] text-s-ink">{l.inspoTitle}</div>
                 <div className="mt-1 text-[13px] leading-[1.42] text-s-ink-2">{l.inspoSub}</div>
                 <span className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-s-accent-pale px-[15px] py-[9px] text-[13.5px] font-semibold text-s-accent">
-                  {l.seeLooks} <ArrowRight size={15} />
+                  {l.seeLooks} <ArrowRight size={15} strokeWidth={1.9} />
                 </span>
               </div>
             </Link>
@@ -511,7 +511,7 @@ export default function QueueTrackingPage() {
                   <img src={data.recipientPhoto} alt="" className="h-12 w-12 flex-shrink-0 rounded-full object-cover" />
                 ) : (
                   <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-s-bg-sunken text-s-ink-2">
-                    <Scissors size={20} />
+                    <Scissors size={20} strokeWidth={2.2} />
                   </div>
                 )}
                 <div>
@@ -545,9 +545,9 @@ export default function QueueTrackingPage() {
             href={mapsHref} target="_blank" rel="noopener noreferrer"
             className="mt-4 flex items-center gap-3 rounded-[20px] border border-s-border bg-white p-4 shadow-[0_8px_26px_-16px_rgba(10,10,10,.16)] transition-transform active:scale-[0.98]"
           >
-            <MapPin size={18} className="text-s-ink-2" />
+            <MapPin size={18} strokeWidth={1.9} className="text-s-ink-2" />
             <div className="flex-1 font-heading text-[14px] font-semibold text-s-ink">{data.salonAddress}</div>
-            <ChevronRight size={18} className="text-s-ink-2" />
+            <ChevronRight size={18} strokeWidth={1.9} className="text-s-ink-2" />
           </a>
         )}
 
@@ -563,7 +563,7 @@ export default function QueueTrackingPage() {
       <div className="flex gap-2.5 px-5 pb-6 pt-4">
         {mapsHref ? (
           <a href={mapsHref} target="_blank" rel="noopener noreferrer" className="flex flex-1 items-center justify-center gap-[7px] rounded-full bg-s-accent py-3.5 font-heading text-[14px] font-semibold text-white transition-transform active:scale-[0.98]">
-            <Navigation size={17} className="fill-white" /> {l.directions}
+            <Navigation size={17} strokeWidth={1.9} className="fill-white" /> {l.directions}
           </a>
         ) : (
           <Link href={`/${locale}`} className="flex flex-1 items-center justify-center rounded-full bg-s-ink py-3.5 font-heading text-[14px] font-semibold text-white transition-transform active:scale-[0.98]">
@@ -572,12 +572,12 @@ export default function QueueTrackingPage() {
         )}
         {isWaiting ? (
           <button onClick={requestCancel} disabled={cancelling} aria-label={l.cancel} className="flex h-[54px] w-[54px] shrink-0 items-center justify-center rounded-full bg-s-error text-white transition active:scale-[0.98] disabled:opacity-50">
-            <X size={22} strokeWidth={3} />
+            <X size={22} strokeWidth={2.2} />
           </button>
         ) : (
-          <button onClick={fetchStatus} aria-label={l.autoUpdate} className="flex h-[54px] w-[54px] shrink-0 items-center justify-center rounded-full border border-s-border bg-white text-s-ink active:scale-[0.98]">
+          <button onClick={fetchStatus} aria-label={l.autoUpdate} className="flex h-[54px] w-[54px] shrink-0 items-center justify-center rounded-full border border-s-border bg-white text-s-ink transition-transform duration-150 active:scale-[0.94] active:duration-[80ms] active:ease-glide">
             {/* mockup-ok: WCAG 2.2.2 conformance, this also fires from the un-clicked adaptive poll, so it is bounded (see tailwind.config.js spin-bounded) */}
-            <RefreshCw size={18} className={refreshing ? "animate-spin-bounded" : ""} />
+            <RefreshCw size={18} strokeWidth={1.9} className={refreshing ? "animate-spin-bounded" : ""} />
           </button>
         )}
       </div>

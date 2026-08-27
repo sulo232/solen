@@ -30,7 +30,7 @@ export default function DiscoveryAdmin() {
         onClick={() => setOpen(true)}
         className="mb-4 flex items-center gap-2 px-4 py-2 rounded-[16px] bg-s-ink text-white text-[12px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] transition-colors"
       >
-        <Download size={16} />
+        <Download size={16} strokeWidth={1.9} />
         {t("importButton")}
       </button>
     );
@@ -41,11 +41,11 @@ export default function DiscoveryAdmin() {
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 bg-s-ink/5 border-b border-s-accent/10">
         <div className="flex items-center gap-2">
-          <Sparkles size={16} className="text-s-accent" />
+          <Sparkles size={16} strokeWidth={1.9} className="text-s-accent" />
           <span className="text-sm font-medium text-s-ink">{t("title")}</span>
         </div>
         <button onClick={() => setOpen(false)} className="text-s-ink/40 hover:text-s-ink">
-          <X size={16} />
+          <X size={16} strokeWidth={1.9} />
         </button>
       </div>
 
@@ -188,7 +188,7 @@ function SmartSearchTab() {
           disabled={searching || !description.trim()}
           className="flex items-center gap-2 px-4 py-2 rounded-[16px] bg-s-ink text-white text-[12px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
-          {searching ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
+          {searching ? <Loader2 size={14} strokeWidth={1.6} className="animate-spin" /> : <Sparkles size={14} strokeWidth={1.6} />}
           {searching ? t("searchingGemini") : t("smartSearchButton")}
         </button>
       </div>
@@ -322,7 +322,7 @@ function TikTokImportTab() {
         disabled={importing || !urls.trim()}
         className="flex items-center gap-2 px-4 py-2 rounded-[16px] bg-s-ink text-white text-[12px] font-heading uppercase tracking-[.06em] hover:brightness-[1.06] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
-        {importing ? <Loader2 size={14} className="animate-spin" /> : <Play size={14} />}
+        {importing ? <Loader2 size={14} strokeWidth={1.6} className="animate-spin" /> : <Play size={14} strokeWidth={1.6} />}
         {importing ? t("importing") : t("importTiktoks")}
       </button>
 
@@ -340,7 +340,7 @@ function TikTokImportTab() {
                   : "bg-s-error-bg text-s-error"
               }`}
             >
-              {r.status === "imported" ? <Check size={14} className="shrink-0 mt-0.5" /> : <X size={14} className="shrink-0 mt-0.5" />}
+              {r.status === "imported" ? <Check size={14} strokeWidth={1.6} className="shrink-0 mt-0.5" /> : <X size={14} strokeWidth={1.6} className="shrink-0 mt-0.5" />}
               <div className="min-w-0">
                 <p className="truncate font-mono">{r.url}</p>
                 <p className="text-[12px] opacity-70">
@@ -399,9 +399,9 @@ function CategoryImportTab() {
             } disabled:opacity-50`}
           >
             {importing === cat ? (
-              <Loader2 size={14} className="animate-spin" />
+              <Loader2 size={14} strokeWidth={1.6} className="animate-spin" />
             ) : (
-              <ImageIcon size={14} />
+              <ImageIcon size={14} strokeWidth={1.6} />
             )}
             {cat.charAt(0).toUpperCase() + cat.slice(1)}
           </button>

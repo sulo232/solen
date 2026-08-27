@@ -89,7 +89,7 @@ export default function SetupWizard({ salonId, initialSteps, children, locale, o
                     ].join(" ")}
                   >
                     {step.complete && i !== currentStep ? (
-                      <Check size={14} strokeWidth={3} />
+                      <Check size={14} strokeWidth={1.6} />
                     ) : (
                       i + 1
                     )}
@@ -141,7 +141,7 @@ export default function SetupWizard({ salonId, initialSteps, children, locale, o
             disabled={currentStep === 0}
             className="flex items-center gap-1.5 px-4 py-2.5 rounded-btn text-sm text-s-ink-2 hover:text-s-ink transition-colors disabled:opacity-0 disabled:pointer-events-none"
           >
-            <ArrowLeft size={16} />
+            <ArrowLeft size={16} strokeWidth={1.9} />
             {t("setup.back")}
           </button>
 
@@ -159,7 +159,7 @@ export default function SetupWizard({ salonId, initialSteps, children, locale, o
               className="flex items-center gap-1.5 px-6 py-2.5 rounded-btn active:scale-[0.97] bg-s-ink text-white text-sm font-medium hover:brightness-[1.06] transition-[transform,filter] shadow-warm-sm"
             >
               {isLast ? t("setup.goLive") : t("setup.next")}
-              {!isLast && <ChevronRight size={16} />}
+              {!isLast && <ChevronRight size={16} strokeWidth={1.9} />}
             </button>
           </div>
         </div>

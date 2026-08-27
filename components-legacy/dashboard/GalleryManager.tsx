@@ -241,7 +241,7 @@ export default function GalleryManager({
           role="alert"
           className="flex items-center gap-2 bg-red-50 text-red-600 p-3 rounded-[12px] text-sm mb-6"
         >
-          <AlertCircle size={16} className="shrink-0" />
+          <AlertCircle size={16} strokeWidth={1.9} className="shrink-0" />
           {error}
         </div>
       )}
@@ -275,14 +275,14 @@ export default function GalleryManager({
                 <div className="absolute inset-0 bg-s-ink/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-2">
                   <div className="flex justify-between items-start">
                     <div className="bg-white/90 text-s-ink p-1.5 rounded-md backdrop-blur-[6px] cursor-grab">
-                      <GripVertical size={14} />
+                      <GripVertical size={14} strokeWidth={1.6} />
                     </div>
                     <button
                       onClick={() => handleDelete(photo, index)}
                       aria-label={t("gallery_confirm_delete")}
                       className="bg-white/90 text-red-500 hover:bg-red-500 hover:text-white p-1.5 rounded-md backdrop-blur-[6px] transition-[colors,transform] active:scale-[0.94] active:duration-[80ms] active:ease-glide"
                     >
-                      <Trash2 size={14} />
+                      <Trash2 size={14} strokeWidth={1.6} />
                     </button>
                   </div>
                   {index === 0 && (

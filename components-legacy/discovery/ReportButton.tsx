@@ -182,7 +182,7 @@ export default function ReportButton({ type, targetId, variant = "subtle" }: Rep
       >
         {variant === "frost" ? (
           <span aria-hidden className="grid h-[38px] w-[38px] place-items-center rounded-full bg-white/80 backdrop-blur-sm border border-white/40 transition-transform duration-200 ease-glide group-hover:scale-110 group-active:scale-[0.97] group-active:duration-[80ms]">
-            <Flag size={18} strokeWidth={2.1} stroke="var(--color-heading)" aria-hidden />
+            <Flag size={18} strokeWidth={1.9} stroke="var(--color-heading)" aria-hidden />
           </span>
         ) : (
           <Flag size={variant === "header" ? 18 : variant === "row" ? 15 : 10} strokeWidth={variant === "subtle" ? undefined : 2.1} aria-hidden />

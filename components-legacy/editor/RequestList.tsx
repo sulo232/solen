@@ -126,7 +126,7 @@ export default function RequestList({
       {requests.length > 0 && (
         <div className="border border-s-border rounded-[12px] p-3 space-y-2 bg-s-bg-sunken/50">
           <div className="flex items-center gap-1.5">
-            <ClipboardList size={14} className="text-s-accent" />
+            <ClipboardList size={14} strokeWidth={1.6} className="text-s-accent" />
             <p className="text-xs font-medium text-s-ink">
               Copy for Claude Code
             </p>

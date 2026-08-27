@@ -4,7 +4,7 @@
     "routes": 243,
     "endpoints": 365,
     "components": 409,
-    "lib": 158,
+    "lib": 162,
     "rpcs": 68,
     "tables": 151,
     "columns": 1729
@@ -5652,12 +5652,20 @@
       "file": "lib/gdpr/anonymize-guest.ts"
     },
     {
+      "name": "purge-avatar-storage",
+      "file": "lib/gdpr/purge-avatar-storage.ts"
+    },
+    {
       "name": "purge-client-photo-storage",
       "file": "lib/gdpr/purge-client-photo-storage.ts"
     },
     {
       "name": "purge-review-photo-storage",
       "file": "lib/gdpr/purge-review-photo-storage.ts"
+    },
+    {
+      "name": "purge-salon-storage",
+      "file": "lib/gdpr/purge-salon-storage.ts"
     },
     {
       "name": "purge-stripe-customer",
@@ -5710,6 +5718,10 @@
     {
       "name": "map-style",
       "file": "lib/map-style.ts"
+    },
+    {
+      "name": "min-price-service",
+      "file": "lib/min-price-service.ts"
     },
     {
       "name": "ai-budget",
@@ -5902,6 +5914,10 @@
     {
       "name": "types",
       "file": "lib/types.ts"
+    },
+    {
+      "name": "unsubscribe-token",
+      "file": "lib/unsubscribe-token.ts"
     },
     {
       "name": "upload-security",
@@ -6227,12 +6243,12 @@
       },
       {
         "name": "audit_log",
-        "rows": 59,
+        "rows": 63,
         "rls": true
       },
       {
         "name": "availability_slots",
-        "rows": 9365,
+        "rows": 62913,
         "rls": true
       },
       {
@@ -6262,7 +6278,7 @@
       },
       {
         "name": "barber_walkin_queue",
-        "rows": 21,
+        "rows": 32,
         "rls": true
       },
       {
@@ -6277,7 +6293,7 @@
       },
       {
         "name": "bookings",
-        "rows": 956,
+        "rows": 997,
         "rls": true
       },
       {
@@ -6332,7 +6348,7 @@
       },
       {
         "name": "content_reports",
-        "rows": 0,
+        "rows": 2,
         "rls": true
       },
       {
@@ -6342,7 +6358,7 @@
       },
       {
         "name": "credit_redemptions",
-        "rows": 0,
+        "rows": 1,
         "rls": true
       },
       {
@@ -6392,7 +6408,7 @@
       },
       {
         "name": "discovery_interactions",
-        "rows": 86,
+        "rows": 129,
         "rls": true
       },
       {
@@ -6422,7 +6438,7 @@
       },
       {
         "name": "discovery_search_events",
-        "rows": 132,
+        "rows": 332,
         "rls": true
       },
       {
@@ -6437,7 +6453,7 @@
       },
       {
         "name": "favorites",
-        "rows": 5,
+        "rows": 4,
         "rls": true
       },
       {
@@ -6492,7 +6508,7 @@
       },
       {
         "name": "loyalty_stamps",
-        "rows": 9,
+        "rows": 13,
         "rls": true
       },
       {
@@ -6557,7 +6573,7 @@
       },
       {
         "name": "notifications",
-        "rows": 5,
+        "rows": 6,
         "rls": true
       },
       {
@@ -6607,7 +6623,7 @@
       },
       {
         "name": "profiles",
-        "rows": 49,
+        "rows": 50,
         "rls": true
       },
       {
@@ -6637,7 +6653,7 @@
       },
       {
         "name": "referrals",
-        "rows": 50,
+        "rows": 52,
         "rls": true
       },
       {
@@ -6662,12 +6678,12 @@
       },
       {
         "name": "review_replies",
-        "rows": 1,
+        "rows": 2,
         "rls": true
       },
       {
         "name": "review_translations",
-        "rows": 0,
+        "rows": 15,
         "rls": true
       },
       {
@@ -6752,7 +6768,7 @@
       },
       {
         "name": "salon_page_views",
-        "rows": 427,
+        "rows": 977,
         "rls": true
       },
       {
@@ -6767,7 +6783,7 @@
       },
       {
         "name": "salon_portfolio_images",
-        "rows": 0,
+        "rows": 174,
         "rls": true
       },
       {
@@ -6827,7 +6843,7 @@
       },
       {
         "name": "services",
-        "rows": 263,
+        "rows": 264,
         "rls": true
       },
       {
@@ -6872,7 +6888,7 @@
       },
       {
         "name": "staff_portfolio_images",
-        "rows": 12,
+        "rows": 24,
         "rls": true
       },
       {
@@ -6902,7 +6918,7 @@
       },
       {
         "name": "user_credits",
-        "rows": 2,
+        "rows": 3,
         "rls": true
       },
       {
@@ -6927,12 +6943,12 @@
       },
       {
         "name": "voucher_redemptions",
-        "rows": 0,
+        "rows": 2,
         "rls": true
       },
       {
         "name": "vouchers",
-        "rows": 2,
+        "rows": 6,
         "rls": true
       },
       {
@@ -6966,7 +6982,7 @@
         "rls": true
       }
     ],
-    "capturedAt": "2026-08-14 (tables reconciled against pg_class live; the 2026-07-12 capture was missing csp_violation_reports, promo_redemptions and salon_of_month_winners, so `npm run exists` answered 'nothing found' for three real tables, one of them the one behind Salon of the Month. search_zero_results is a VIEW, not a base table, so it belongs in _db-columns.json only, which is where it is.)",
+    "capturedAt": "2026-08-23 (refreshed live from pg_stat_user_tables + pg_class during the backend loop. The 2026-08-14 capture had drifted badly: it recorded availability_slots at 9,365 rows against a live 62,913, a factor of 6.7 on the single biggest table, and this is the file `npm run exists` answers from and that every audit in this project treats as column truth. _backend-system/LAW.md quotes the stale number too, in its own primary-key trigger row. search_popularity is a MATERIALIZED VIEW, not a base table, so it is absent here on purpose: matviews cannot carry RLS, and neither anon nor authenticated can select from it.)",
     "rlsDisabled": []
   },
   "dbColumns": {

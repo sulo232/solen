@@ -26,6 +26,8 @@
     "gate:motion": "node scripts/check-motion.mjs --gate",
     "check:press": "node scripts/check-press.mjs",
     "gate:press": "node scripts/check-press.mjs --gate",
+    "check:email-escaping": "node scripts/check-email-escaping.mjs",
+    "gate:email-escaping": "node scripts/check-email-escaping.mjs --gate",
     "check:migrations": "node scripts/check-migrations.mjs",
     "gate:migrations": "node scripts/check-migrations.mjs --gate",
     "test:visual": "playwright test",

@@ -135,7 +135,7 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
         {/* Header */}
         <div className="flex items-center justify-between px-6 pt-5 pb-4">
           <div className="flex items-center gap-2">
-            <Sparkles size={18} className="text-s-accent" />
+            <Sparkles size={18} strokeWidth={1.9} className="text-s-accent" />
             <span className="font-heading text-s-ink text-sm tracking-[0.1em] uppercase">
               {t("ai_badge")}
             </span>
@@ -145,7 +145,7 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
             className="w-8 h-8 flex items-center justify-center rounded-pill hover:bg-s-ink/5:bg-white/5 transition-colors duration-150"
             aria-label={t("close")}
           >
-            <X size={20} className="text-s-ink-2" />
+            <X size={20} strokeWidth={2.2} className="text-s-ink-2" />
           </button>
         </div>
 
@@ -198,7 +198,7 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
                 className="w-full flex items-center justify-center gap-2 py-3 rounded-pill active:scale-[0.97] bg-s-ink text-white font-heading uppercase tracking-[.04em] text-xs disabled:opacity-40 disabled:cursor-not-allowed hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-elevation-2"
               >
                 {step < STEPS.length - 1 ? t("next") : t("show_result")}
-                <ChevronRight size={16} />
+                <ChevronRight size={16} strokeWidth={1.9} />
               </button>
             </>
           ) : (
@@ -221,7 +221,7 @@ export default function AiMatcherModal({ open, onClose }: AiMatcherModalProps) {
                 onClick={onClose}
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-pill active:scale-[0.97] bg-s-ink text-white font-heading uppercase tracking-[.04em] text-xs hover:brightness-[1.06] transition-[transform,filter] duration-150 shadow-elevation-2"
               >
-                {t("result_cta")} <ChevronRight size={16} />
+                {t("result_cta")} <ChevronRight size={16} strokeWidth={1.9} />
               </Link>
             </div>
           )}

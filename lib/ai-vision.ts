@@ -226,7 +226,8 @@ export async function analyzeDiscoveryImage(imageUrl: string, category?: string 
     // Fetch image as base64. redirect:"manual" so a 30x response can't bounce the fetch
     // into internal space after the guard above already cleared the original host, a 3xx
     // status makes `imageRes.ok` false and falls into the same failed-fetch branch.
-    const imageRes = await fetch(imageUrl, { redirect: "manual" });
+    // 8000ms: image-bytes fetch, same bound as the other fetch below in this file
+    const imageRes = await fetch(imageUrl, { redirect: "manual", signal: AbortSignal.timeout(8000) });
     if (!imageRes.ok) {
       console.error(`[ai-vision] Failed to fetch image: ${imageRes.status}`);
       return null;

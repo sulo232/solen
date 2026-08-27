@@ -8,6 +8,7 @@ import { trackServerEvent } from "@/lib/posthog-server";
 import { getServerEnv } from "@/lib/env";
 import { DEFAULT_COMMISSION_RATE_PERCENT } from "@/lib/constants/billing";
 import { reportError } from "@/lib/error-report";
+import { alertAdmin } from "@/lib/alert-admin";
 import { resolveSwissLocale } from "@/lib/format";
 import type { DisputeStatus } from "@/lib/bookings/dispute-engine";
 import { getRequestId } from "@/lib/request-id";
@@ -265,7 +266,7 @@ export async function POST(req: NextRequest) {
           // Upsert on the unique stripe_payment_intent_id index so a webhook
           // re-delivery after a mid-handler failure (claim released) doesn't
           // create a second payout ledger row or 500 on the unique violation.
-          await admin.from("salon_payouts").upsert({
+          const { error: payoutUpsertError } = await admin.from("salon_payouts").upsert({
             booking_id: bookingId,
             salon_id: pi.metadata.salon_id,
             stripe_payment_intent_id: pi.id,
@@ -275,6 +276,18 @@ export async function POST(req: NextRequest) {
             net_amount: netAmount,
             status: "recorded",
           }, { onConflict: "stripe_payment_intent_id" });
+          if (payoutUpsertError) {
+            console.error(`[stripe/webhook]:${rid} salon_payouts upsert failed for PI ${pi.id}:`, payoutUpsertError.message);
+            // Never fail the webhook response here: a non-200 makes Stripe retry the
+            // whole event forever, and the charge already succeeded. The missing
+            // ledger row is surfaced via the alert instead.
+            void alertAdmin("salon_payouts upsert failed (booking payment)", {
+              pi: pi.id,
+              booking_id: bookingId,
+              salon_id: pi.metadata.salon_id,
+              error: payoutUpsertError.message,
+            });
+          }
         }
 
         // Send booking confirmation email to customer
@@ -393,7 +406,7 @@ export async function POST(req: NextRequest) {
             const netCharge = Math.round((grossCharge - commissionCharge) * 100) / 100;
             const commissionPercentCharge =
               grossCharge > 0 ? Math.round((commissionCharge / grossCharge) * 100 * 100) / 100 : 0;
-            await admin.from("salon_payouts").upsert({
+            const { error: chargePayoutUpsertError } = await admin.from("salon_payouts").upsert({
               booking_id: chargeBookingId,
               salon_id: chargeSalonId,
               stripe_payment_intent_id: pi.id,
@@ -403,6 +416,19 @@ export async function POST(req: NextRequest) {
               net_amount: netCharge,
               status: "recorded",
             }, { onConflict: "stripe_payment_intent_id" });
+            if (chargePayoutUpsertError) {
+              console.error(`[stripe/webhook]:${rid} salon_payouts upsert failed for off-session PI ${pi.id}:`, chargePayoutUpsertError.message);
+              // Never fail the webhook response here: a non-200 makes Stripe retry the
+              // whole event forever, and the charge already succeeded. The missing
+              // ledger row is surfaced via the alert instead.
+              void alertAdmin("salon_payouts upsert failed (off-session charge)", {
+                pi: pi.id,
+                booking_id: chargeBookingId,
+                salon_id: chargeSalonId,
+                type: offSessionType,
+                error: chargePayoutUpsertError.message,
+              });
+            }
           } else {
             console.error(
               `[stripe/webhook]:${rid} off-session charge missing salon_id/amount, skipping payout row:`,

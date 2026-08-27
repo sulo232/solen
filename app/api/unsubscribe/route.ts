@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 import { applyRateLimit, generalLimiter, getClientIp } from "@/lib/ratelimit";
 import { validateBody, unsubscribeSchema } from "@/lib/validations";
+import { verifyUnsubscribeToken } from "@/lib/unsubscribe-token";
 
 // seo-comms-08 (2026-07-27): this is the route lib/email.ts's salonOutreachInvitation
 // footer has always linked to (https://solen.ch/unsubscribe?email=...), which 404'd
@@ -33,6 +34,14 @@ export async function POST(req: NextRequest) {
   const { data: body, error: validationError } = validateBody(unsubscribeSchema, rawBody);
   if (validationError) {
     return NextResponse.json({ error: validationError.message }, { status: 400 });
+  }
+
+  // Prove the caller actually received the outreach email at this address BEFORE
+  // touching the database. A bare, unauthenticated email would otherwise let anyone
+  // null out any of the 48 salon_directory rows' email column, which is that
+  // listing's only way to ever be claimed again (see claim/route.ts:138).
+  if (!verifyUnsubscribeToken(body.email, body.token)) {
+    return NextResponse.json({ error: "Invalid or expired unsubscribe link" }, { status: 400 });
   }
 
   const admin = createAdminSupabaseClient();

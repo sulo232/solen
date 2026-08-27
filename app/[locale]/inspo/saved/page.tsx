@@ -68,7 +68,7 @@ export default function SavedPage() {
           aria-label={tBack("back")}
           className="grid h-10 w-10 place-items-center rounded-full border border-s-border text-s-ink transition-transform duration-150 active:scale-95"
         >
-          <ArrowLeft size={18} />
+          <ArrowLeft size={18} strokeWidth={1.9} />
         </button>
         <h1 className="font-heading text-[22px] font-bold tracking-[-0.02em] text-s-ink">Gespeichert</h1>
       </div>
