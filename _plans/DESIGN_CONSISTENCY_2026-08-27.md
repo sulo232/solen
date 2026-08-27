@@ -144,7 +144,7 @@ the direction of the screen he already likes.
   will fail CI until the surfaces are fixed, which is why it is not armed in the same breath as the
   port fix. That widening is the first thing S4 earns.
 
-- [ ] **S2. Chrome becomes one component, not six.** The search pill and the category row are
+- [x] **S2. Chrome becomes one component, not six.** The search pill and the category row are
   cross-screen furniture, and this project's own FLOORS LAW 8 already says an entity on more than
   one screen renders through the same component. Today they are re-implemented per route family.
   CLOSE CONDITION: the pill's measured y, height and width are identical on `/de`, all four category
@@ -236,6 +236,33 @@ the direction of the screen he already likes.
   So on the city page the breadcrumb thinks it is a category route and the header thinks it is
   not. Widening only Header's regex would fix the bar and leave two of the three copies behind,
   so the edit has to name what else `showCategoryChrome` gates before it is made.
+  **DONE 2026-08-27, commit `391ecb23c`. The close condition is met and re-measured independently.**
+  All seven routes at 390x844, at rest AND scrolled to 300, read by a reviewer that wrote none of
+  the code and again by me on a separate tab:
+      /de  /de/coiffeur  /de/nails  /de/spa  /de/barbershop  /de/inspo  /de/basel/coiffeur
+      every one: x 16, y 12, 358 wide, 64 tall, at scrollY 0 and at scrollY 300
+  Before: four vertical positions (4 / 12 / 18 / 88) and two heights (54 / 64). The Basel page
+  jumped 76px between resting and scrolled, which is the movement he described, and it is gone.
+  THE FORK WAS NOT HIS AND NEVER HAD BEEN. Commit `7bc5c23ee`, 2026-08-11: "Search bar 59 to 64
+  tall on his call. Their proportion gave 59; he asked for more, so it steps to 64." The home pill
+  took it the next day. `SearchTemplate` never did. This was a half-finished sweep, not an open
+  question, and I had it recorded as an open question for weeks.
+  THE 84px WAS ONE REGEX, in two files that each keep their own copy of it. `Header.tsx:409` and
+  `CategoryPillRow.tsx:122` both matched exactly two path segments. Widened together, because
+  folding the header without the row appearing vacates the slot and leaves nothing in it.
+  Typecheck exits 0 with no output. FLOORS LAW 3 on `/de/coiffeur` survives at exactly the floor,
+  4 cards partly visible with a cropped next one per row, which was the named price of the 64.
+  I CORRECTED MYSELF HERE RATHER THAN COSTING HIM A TURN: I first wrote that E5 deletes the
+  hamburger and therefore needed his word. `BottomNav.tsx:80-85` records his own 2026-08-10 call
+  to remove that menu item, having first traced both things that lived only in that sheet to a
+  second home. Reading one more file answered it.
+  PRE-EXISTING, FOUND AND NOT FIXED: the floating "Karte" button shows before any scroll while
+  `SearchTemplate.tsx:2180` says it is scroll-revealed. The observer gap was 14px before this
+  change and 6px after, so it never closed in either version. The comment is wrong, the behaviour
+  is old, and it belongs to whoever owns that FAB.
+  STILL OPEN AND DELIBERATELY A SEPARATE STEP: E7 to E11, collapsing the two pills into ONE
+  component per FLOORS LAW 8. Today makes them measure identically; it does not make them one
+  implementation, and a third hand-rolled copy still sits at `SearchTemplate.tsx:1983`.
   THE BUILD PLAN, arbitrated 2026-08-27 from four independent route traces plus a survey of every
   component in the repo that draws a search-bar-shaped control. Written out here because the next
   person to open this step should not have to re-derive it.
@@ -254,13 +281,18 @@ the direction of the screen he already likes.
     E5/E6  widening the two-segment regex in `Header.tsx:409` AND its byte-identical copy in
         `CategoryPillRow.tsx:122`. Together they fold the header on `/de/basel/coiffeur` and put
         its bar at 12 like its siblings. But that 84px is not dead space. It holds two controls,
-        the home tile and the hamburger. The home tile survives, because the bottom bar's first
-        item already goes home. THE HAMBURGER DOES NOT. On that route the header hamburger is the
-        only thing that opens the menu, and the bottom bar has no menu item. So E5 deletes a
-        visible control from one route. That is exactly the hand-off the four sibling routes
-        already made with his approval, so it is defensible, but it is his call and it needs the
-        before and after in front of him. E5 without E6 is forbidden: it would fold the header
-        and leave the row that should take over still returning null.
+        the home tile and the hamburger.
+        I FIRST WROTE THAT THIS WAS HIS CALL BECAUSE THE HAMBURGER WOULD BE LOST. That was wrong,
+        and reading one more file settled it instead of asking him. `BottomNav.tsx:80-85` records
+        his own dated 2026-08-10 decision to drop the menu item, and states that both things which
+        lived only in that sheet were traced to a second home BEFORE it was removed: language to
+        `/profile/settings/language` (linked from `/profile/settings:95`), city to the search
+        overlay's own "Wo?" field on every search entry point. Its words: "Neither is reachable
+        only through the sheet, so nothing is lost." The home tile survives too, because
+        `BottomNav.tsx:88`'s first item resolves to `/de`. So E5 is not a deletion he has to weigh,
+        it is the same hand-off he already approved reaching the fifth route.
+        E5 without E6 is still forbidden: it would fold the header and leave the row that should
+        take over still returning null.
   WHAT IS A SEPARATE STEP, not this one: E7 to E11, actually collapsing the two pills into one
   component. `HomeSearchPill` already carries a variant mechanism (label, trailing, onActivate)
   and two callers already use it, so the extraction is real work rather than a rewrite. It also

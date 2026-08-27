@@ -33,14 +33,21 @@ Three more items hang off this one, so answering it unblocks four.
 
 ## 3. The back arrow (workstream 81, step S3)
 
-New today. Page: `public/_mockups/back-arrow-to-the-lock/index.html`. Everything except one value
-was already locked by him on 2026-08-10 and never built.
+**SHRUNK 2026-08-27. The other two locked values are BUILT and live (`ee7b06813`), so this item is
+now one value, not three.** All 21 page back controls draw the `ChevronLeft` he asked for, up from
+0 of 21, and all 21 are 44 across, up from 12 of 21, which took nine controls off the wrong side of
+the touch floor. On the salon page the back control now measures 44x44 next to the share, save and
+report buttons it used to be 4px smaller than, read live at 390x844.
+
+Page, unchanged and still the thing to look at:
+`public/_mockups/back-arrow-to-the-lock/index.html`.
+
+The one value left, and it is the only one that was ever his:
 
 - **WHITE** , the salon page control becomes a solid white circle, matching the lock exactly.
 - **LEAVE IT** , the salon page keeps its see-through fill over the photo, as a named variant.
 
-Either answer applies the other two locked changes (44 across, and the chevron he asked for) to
-all 20 places at once.
+Every one of the 21 kept exactly the fill it had, so nothing prejudged this either way.
 
 ## 4. Home sections B and C (row 70)
 
