@@ -313,8 +313,8 @@ the direction of the screen he already likes.
   STILL OPEN: the design ACTIVE count is still above the target of under 10. What is left is mostly
   not audit work any more, it is nine one-word answers that need to reach him as ONE list.
 
-- [ ] **S8. The English site speaks German to anyone who cannot see it. MEASURED 2026-08-27, NOT
-  YET FIXED, and no decision is needed to fix it.**
+- [x] **S8. The English site speaks German to anyone who cannot see it. FIXED AND VERIFIED
+  2026-08-27, commit `5975ef6f9`.**
   Found while fixing two visible German strings on the home page. The visible ones were two. The
   INVISIBLE ones are **31, across 19 customer-facing files**, counted with a script that skips any
   string already routed through the translation system and skips the dev routes (6 more hits there,
@@ -335,6 +335,25 @@ the direction of the screen he already likes.
   site does not move.
   CLOSE CONDITION: the same script returns 0 customer-facing hits, and a screen reader label read
   off the running `/en`, `/fr` and `/it` salon page matches that page's language.
+  MET. The count went 31 -> 36 (the checker under-counted at first: it matched `Schliessen` with
+  the eszett only and walked past five spelled with `ss`) -> 0. Two MORE were then found that the
+  checker could never have seen, because they are not German words it knows: the desktop nav
+  landmark said `Hauptnavigation` and the breadcrumb trail said the English word `Breadcrumb`, both
+  to every French and Italian visitor. 38 total. On top of those, 20 page titles in the header,
+  which are VISIBLE, not screen-reader-only, now come from the translation files.
+  VERIFIED BY ME, not relayed: one browser per language, labels read off the rendered page.
+  `/de` Zurueck, Hauptnavigation, Stadt waehlen, Navigationspfad, Profil teilen.
+  `/en` Back, Main navigation, Select city, Breadcrumb, Share profile.
+  `/fr` Retour, Navigation principale, Choisir une ville, Fil d'Ariane, Partager le profil.
+  `/it` Indietro, Navigazione principale, Seleziona citta, Percorso di navigazione, Condividi profilo.
+  KNOWN-ANSWER CONTROL before publishing the zero: a probe file carrying one German label moved the
+  count 0 -> 1 -> 0, so the counter measures rather than sitting stuck at zero.
+  ONE GERMAN WORD DID MOVE, named rather than buried: the share button's spoken label went from
+  `Salon teilen` to `Profil teilen`, because that is what the translation file already held in all
+  four languages. Inventing a fifth string for German alone was the worse trade.
+  ONE ROOT CAUSE FIXED, not just its symptoms: `BackButton.tsx` carried the German word `Zurueck`
+  as its DEFAULT label, so every future screen that forgot to pass one would have shipped German to
+  everybody. The primitive now holds no copy at all.
 
 - [ ] **S6. Then and only then, the look.** Gray, the dashboard direction, typography. Those are
   taste calls and they are his. They are LAST on purpose: fixing them before S1 to S4 means fixing
