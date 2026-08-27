@@ -335,12 +335,12 @@ function SlotDetailModal({ slot, staff, onClose, onReschedule, onDelete }: SlotD
             <div className="flex gap-2">
               {slot.status !== "blocked" && (
                 <button onClick={() => setRescheduleMode(true)}
-                  className="flex-1 py-2.5 rounded-btn border border-s-accent-bright text-s-coral text-sm font-medium flex items-center justify-center gap-1 hover:bg-s-coral/5 transition-colors">
+                  className="flex-1 py-2.5 rounded-btn border border-s-accent-bright text-s-accent-bright text-sm font-medium flex items-center justify-center gap-1 hover:bg-s-accent-bright/5 transition-colors">
                   <Clock size={14} strokeWidth={1.6} /> {t("reschedule")}
                 </button>
               )}
               <button onClick={() => { onDelete(slot.id); onClose(); }}
-                className="flex-1 py-2.5 rounded-btn border border-s-accent-bright text-s-coral text-sm font-medium hover:bg-s-coral/5 transition-colors">
+                className="flex-1 py-2.5 rounded-btn border border-s-accent-bright text-s-accent-bright text-sm font-medium hover:bg-s-accent-bright/5 transition-colors">
                 {t("delete")}
               </button>
             </div>
@@ -609,7 +609,7 @@ export default function CalendarPage() {
     if (s.staff_member_id && staffColorMap.has(s.staff_member_id)) {
       return staffColorMap.get(s.staff_member_id)! + ` border ${catBorder}`;
     }
-    return `bg-s-coral/15 border border-s-accent-bright/30 text-s-coral ${catBorder}`;
+    return `bg-s-accent-bright/15 border border-s-accent-bright/30 text-s-accent-bright ${catBorder}`;
   };
 
   // Mobile agenda block fill by service category (approved skin: pastel, no bars / no last-minute).
@@ -865,17 +865,17 @@ export default function CalendarPage() {
           <div className="flex rounded-btn border border-s-border overflow-hidden">
             {(["day", "week", "month"] as ViewMode[]).map((mode) => (
               <button key={mode} onClick={() => setViewMode(mode)} // mockup-ok: C2 fix, locked TabPill treatment (approved public/_mockups/fixes-refined)
-                className={`px-3 py-1.5 text-xs font-medium transition-colors ${viewMode === mode ? "bg-s-bg-sunken text-s-ink font-semibold" : "text-s-ink-2 hover:bg-s-coral/5"}`}>
+                className={`px-3 py-1.5 text-xs font-medium transition-colors ${viewMode === mode ? "bg-s-bg-sunken text-s-ink font-semibold" : "text-s-ink-2 hover:bg-s-accent-bright/5"}`}>
                 {mode === "day" ? t("viewDay") : mode === "week" ? t("viewWeek") : t("viewMonth")}
               </button>
             ))}
           </div>
           <button onClick={() => setWalkInModal(true)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-btn border border-s-border text-sm text-s-ink-2 hover:border-s-accent-bright hover:text-s-coral transition-colors">
+            className="flex items-center gap-1.5 px-3 py-2 rounded-btn border border-s-border text-sm text-s-ink-2 hover:border-s-accent-bright hover:text-s-accent-bright transition-colors">
             <UserPlus size={14} strokeWidth={1.6} /> {t("walkIn")}
           </button>
           <button onClick={() => setBulkModal(true)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-btn border border-s-border text-sm text-s-ink-2 hover:border-s-accent-bright hover:text-s-coral transition-colors">
+            className="flex items-center gap-1.5 px-3 py-2 rounded-btn border border-s-border text-sm text-s-ink-2 hover:border-s-accent-bright hover:text-s-accent-bright transition-colors">
             {t("weekSchedule")}
           </button>
           <button onClick={() => setCreateModal({ date: ymdLocal(new Date()), time: "09:00" })}
@@ -900,13 +900,13 @@ export default function CalendarPage() {
                 const dateStr = ymdLocal(d);
                 return (
                   <div key={i} className="py-3 px-2 text-center border-l border-s-ink/5">
-                    <p className={`text-xs font-medium ${isToday ? "text-s-coral" : "text-s-ink-2"}`}>{DAYS_LABEL[i]}</p>
+                    <p className={`text-xs font-medium ${isToday ? "text-s-accent-bright" : "text-s-ink-2"}`}>{DAYS_LABEL[i]}</p>
                     <button onClick={() => { setCurrentDate(d); setViewMode("day"); }}
-                      className={`text-sm font-bold mt-0.5 hover:text-s-coral transition-colors ${isToday ? "text-s-coral" : "text-s-ink"}`}>
+                      className={`text-sm font-bold mt-0.5 hover:text-s-accent-bright transition-colors ${isToday ? "text-s-accent-bright" : "text-s-ink"}`}>
                       {d.getDate()}
                     </button>
                     <button onClick={() => blockDay(dateStr)} title={t("blockDay")}
-                      className="mt-1 w-4 h-4 flex items-center justify-center mx-auto text-s-ink/20 hover:text-s-coral transition-colors">
+                      className="mt-1 w-4 h-4 flex items-center justify-center mx-auto text-s-ink/20 hover:text-s-accent-bright transition-colors">
                       <Lock size={10} />
                     </button>
                   </div>
@@ -933,7 +933,7 @@ export default function CalendarPage() {
                             <div 
                               ref={provided.innerRef}
                               {...provided.droppableProps}
-                              className={`border-l border-s-ink/5 p-0.5 cursor-pointer transition-colors group relative ${snapshot.isDraggingOver ? "bg-s-coral/10" : "hover:bg-s-coral/5"}`}
+                              className={`border-l border-s-ink/5 p-0.5 cursor-pointer transition-colors group relative ${snapshot.isDraggingOver ? "bg-s-accent-bright/10" : "hover:bg-s-accent-bright/5"}`}
                               onClick={() => setCreateModal({ date: dateStr, time: `${String(hour).padStart(2, "0")}:00` })}>
                               {cellSlots.map((s, idx) => {
                                 const staffMember = staff.find((st) => st.id === s.staff_member_id);
@@ -958,7 +958,7 @@ export default function CalendarPage() {
                               })}
                               {provided.placeholder}
                               {cellSlots.length === 0 && !snapshot.isDraggingOver && (
-                                <div className="opacity-100 md:opacity-0 group-hover:md:opacity-100 text-[12px] text-s-coral absolute inset-0 flex items-center justify-center"><Plus size={10} /></div>
+                                <div className="opacity-100 md:opacity-0 group-hover:md:opacity-100 text-[12px] text-s-accent-bright absolute inset-0 flex items-center justify-center"><Plus size={10} /></div>
                               )}
                             </div>
                           )}
@@ -1015,7 +1015,7 @@ export default function CalendarPage() {
                           <div
                             ref={provided.innerRef}
                             {...provided.droppableProps}
-                            className={`border-l border-s-ink/5 p-0.5 cursor-pointer transition-colors group relative ${snapshot.isDraggingOver ? "bg-s-coral/10" : "hover:bg-s-coral/5"}`}
+                            className={`border-l border-s-ink/5 p-0.5 cursor-pointer transition-colors group relative ${snapshot.isDraggingOver ? "bg-s-accent-bright/10" : "hover:bg-s-accent-bright/5"}`}
                             onClick={() => setCreateModal({ date: dateStr, time: `${String(hour).padStart(2, "0")}:00` })}>
                             {cellSlots.map((s, idx) => (
                               <Draggable key={s.id} draggableId={s.id} index={idx} isDragDisabled={s.status !== "available"}>
@@ -1036,7 +1036,7 @@ export default function CalendarPage() {
                             ))}
                             {provided.placeholder}
                             {cellSlots.length === 0 && !snapshot.isDraggingOver && (
-                              <div className="opacity-100 md:opacity-0 group-hover:md:opacity-100 text-[12px] text-s-coral absolute inset-0 flex items-center justify-center"><Plus size={10} /></div>
+                              <div className="opacity-100 md:opacity-0 group-hover:md:opacity-100 text-[12px] text-s-accent-bright absolute inset-0 flex items-center justify-center"><Plus size={10} /></div>
                             )}
                           </div>
                         )}
@@ -1048,7 +1048,7 @@ export default function CalendarPage() {
                         <div
                           ref={provided.innerRef}
                           {...provided.droppableProps}
-                          className={`border-l border-s-ink/5 p-0.5 cursor-pointer transition-colors group relative ${snapshot.isDraggingOver ? "bg-s-coral/10" : "hover:bg-s-coral/5"}`}
+                          className={`border-l border-s-ink/5 p-0.5 cursor-pointer transition-colors group relative ${snapshot.isDraggingOver ? "bg-s-accent-bright/10" : "hover:bg-s-accent-bright/5"}`}
                           onClick={() => setCreateModal({ date: dateStr, time: `${String(hour).padStart(2, "0")}:00` })}>
                           {slotForCell(dateStr, hour).map((s, idx) => {
                             const sm = staff.find((st) => st.id === s.staff_member_id);
@@ -1103,14 +1103,14 @@ export default function CalendarPage() {
                 return (
                   <div key={i}
                     onClick={() => { setCurrentDate(d); setViewMode("day"); }}
-                    className={`min-h-[80px] p-1.5 border-b border-r border-s-ink/5 cursor-pointer hover:bg-s-coral/5 transition-colors ${!isCurrentMonth ? "opacity-40" : ""}`}>
+                    className={`min-h-[80px] p-1.5 border-b border-r border-s-ink/5 cursor-pointer hover:bg-s-accent-bright/5 transition-colors ${!isCurrentMonth ? "opacity-40" : ""}`}>
                     <p className={`text-xs font-medium mb-1 ${isToday ? "w-5 h-5 rounded-full bg-s-accent-bright text-white flex items-center justify-center" : "text-s-ink"}`}>
                       {d.getDate()}
                     </p>
                     {daySlots.length > 0 && (
                       <div className="flex flex-wrap gap-0.5">
                         {bookedCount > 0 && <span className="w-2 h-2 rounded-full bg-s-ink" title={t("bookedCount", { count: bookedCount })} />}
-                        {availableCount > 0 && <span className="w-2 h-2 rounded-full bg-s-coral/40" title={t("availableCount", { count: availableCount })} />}
+                        {availableCount > 0 && <span className="w-2 h-2 rounded-full bg-s-accent-bright/40" title={t("availableCount", { count: availableCount })} />}
                         {blockedCount > 0 && <span className="w-2 h-2 rounded-full bg-s-ink/20" title={t("blockedCount", { count: blockedCount })} />}
                         {daySlots.length > 3 && <span className="text-[12px] text-s-ink/40">{daySlots.length}</span>}
                       </div>
@@ -1125,13 +1125,13 @@ export default function CalendarPage() {
 
       {/* Legend */}
       <div className="flex flex-wrap gap-4 mt-3 text-xs text-s-ink/40">
-        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-coral/15 border border-s-accent-bright/30" />{t("statusFree")}</span>
+        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-accent-bright/15 border border-s-accent-bright/30" />{t("statusFree")}</span>
         <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-ink" />{t("statusBooked")}</span>
         <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-bg-sunken border border-dashed border-s-border" />{t("statusBlocked")}</span>
         <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-s-urgency-bg border-2 border-s-urgency" />{t("lastMinute")}</span>
         {/* Service category colors */}
         <span className="w-px h-4 bg-s-sand" />
-        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded border-l-4 border-l-s-coral bg-s-coral/10" />{t("categoryHair")}</span>
+        <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded border-l-4 border-l-s-accent-bright bg-s-accent-bright/10" />{t("categoryHair")}</span>
         <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded border-l-4 border-l-s-blue bg-s-blue/10" />{t("categoryNails")}</span>
         <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded border-l-4 border-l-s-sage bg-s-sage/10" />{t("categorySpa")}</span>
         {staff.length > 0 && (
