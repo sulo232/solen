@@ -755,7 +755,7 @@ export default function Header({ locale }: { locale: string }) {
              and taps → home. Breadcrumbs are reserved for deep pages (SOURCE.md §20 navigation pattern). */
           <Link
             href={`/${locale}`}
-            aria-label={`${tDiscover("title")}, zur Solen Startseite`}
+            aria-label={tNav("homeLinkTitled", { title: tDiscover("title") })}
             className={cn(
               "font-display shrink-0 text-[25px] font-semibold leading-none tracking-normal md:text-[26px]",
               "transition-opacity duration-200 ease-glide focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2 focus-visible:rounded-sm",
@@ -769,7 +769,7 @@ export default function Header({ locale }: { locale: string }) {
           // Owner 2026-06-29: homepage shows the Solen wordmark, not the redundant home icon.
           <Link
             href={`/${locale}`}
-            aria-label="Solen, zur Startseite"
+            aria-label={tNav("homeLink")}
             className={cn(
               "shrink-0 transition-opacity duration-200 ease-glide",
               "focus-visible:outline-2 focus-visible:outline-s-ink focus-visible:outline-offset-2 focus-visible:rounded-sm",
@@ -781,7 +781,7 @@ export default function Header({ locale }: { locale: string }) {
         ) : isTopLevel ? (
           <Link
             href={`/${locale}`}
-            aria-label="Zur Startseite"
+            aria-label={tNav("homeIconLabel")}
             className={cn(
               // V3-D421h (2026-06-05): home-icon button in the far-left slot. V3-D421k:
               // rounded-SQUARE tile. V3-D421L (2026-06-06, council 3/3): FLAT, no shadow

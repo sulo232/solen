@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { Copy, Check, Users, Gift, Share2, LogIn } from "lucide-react";
 import { Skeleton } from "@/app/[locale]/_components/primitives";
@@ -10,6 +10,7 @@ import { formatCurrency } from "@/lib/format-currency";
 
 export default function ReferralPage() {
   const locale = useLocale();
+  const t = useTranslations("profileReferral");
   const [data, setData] = useState<{
     referral_code: string;
     friends_invited: number;
@@ -42,7 +43,7 @@ export default function ReferralPage() {
     // speaker, sending this to their own friend, so Solen is not the one talking and "Sie" would
     // put the customer in a register nobody uses with a friend. Named exception to COPY_LAW section
     // 1, converted back on 2026-08-10 after the hardcoded-German sweep formalised it by mistake.
-    const text = `Hey! Buch deinen nächsten Termin auf Solen und du bekommst CHF 10 Guthaben mit meinem Code: ${data?.referral_code}\n${shareUrl}`;
+    const text = t("shareText", { code: data?.referral_code ?? "", url: shareUrl });
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
   };
 
@@ -69,14 +70,14 @@ export default function ReferralPage() {
       <div className="min-h-screen bg-s-bg-surface flex items-center justify-center px-4">
         <EmptyState
           icon={LogIn}
-          title="Anmelden erforderlich"
-          message="Bitte melden Sie sich an, um Ihre Empfehlungen zu sehen."
+          title={t("loginRequired")}
+          message={t("loginMessage")}
           action={
             <Link
               href={`/${locale}/auth/login?redirect=${encodeURIComponent(`/${locale}/profile/referral`)}`}
               className="inline-flex px-6 py-3 rounded-btn bg-s-ink text-white font-semibold text-sm hover:brightness-[1.06] transition-colors"
             >
-              Anmelden
+              {t("login")}
             </Link>
           }
         />
@@ -96,13 +97,13 @@ export default function ReferralPage() {
           </div>
           {/* Title sits beside the global back tile (Header deepPageTitle). */}
           <p className="text-sm text-s-ink-2 max-w-xs mx-auto">
-            Teilen Sie Ihren Code und erhalten Sie CHF 10 Guthaben, Ihr Freund bekommt auch CHF 10!
+            {t("heroSubtitle")}
           </p>
         </div>
 
         {/* Referral code card */}
         <div className="bg-white/80 rounded-[12px] border border-s-ink/5 shadow-elevation-1 p-5">
-          <p className="text-xs font-medium text-s-ink-2 mb-2">Ihr Empfehlungscode</p>
+          <p className="text-xs font-medium text-s-ink-2 mb-2">{t("codeLabel")}</p>
           <div className="flex items-center gap-2">
             <div className="flex-1 bg-s-bg-surface border border-s-border rounded-btn px-4 py-3 data-text font-bold text-lg text-s-ink tracking-wider text-center">
               {data.referral_code}
@@ -131,35 +132,35 @@ export default function ReferralPage() {
             className="flex items-center justify-center gap-2 py-3 rounded-btn bg-s-bg-sunken text-s-ink text-sm font-medium hover:bg-s-ink/10 transition-colors"
           >
             <Copy className="w-4 h-4" />
-            Link kopieren
+            {t("copyLink")}
           </button>
         </div>
 
         {/* Stats */}
         <div className="bg-white/80 rounded-[12px] border border-s-ink/5 shadow-elevation-1 p-5">
-          <h2 className="font-heading text-base text-s-ink mb-3">Ihre Statistiken</h2>
+          <h2 className="font-heading text-base text-s-ink mb-3">{t("statsTitle")}</h2>
           <div className="grid grid-cols-2 gap-4">
             <div className="text-center p-3 bg-s-bg-surface rounded-btn">
               <Users className="w-5 h-5 text-s-ink-2 mx-auto mb-1" />
               <p className="data-text font-bold text-2xl text-s-ink">{data.friends_invited}</p>
-              <p className="text-xs text-s-ink-2">Freunde eingeladen</p>
+              <p className="text-xs text-s-ink-2">{t("friendsInvited")}</p>
             </div>
             <div className="text-center p-3 bg-s-bg-surface rounded-btn">
               <Gift className="w-5 h-5 text-s-ink-2 mx-auto mb-1" />
               <p className="data-text font-bold text-2xl text-s-ink">{formatCurrency(data.total_earned, locale)}</p>
-              <p className="text-xs text-s-ink-2">Verdient</p>
+              <p className="text-xs text-s-ink-2">{t("earned")}</p>
             </div>
           </div>
         </div>
 
         {/* How it works */}
         <div className="bg-white/80 rounded-[12px] border border-s-ink/5 shadow-elevation-1 p-5">
-          <h2 className="font-heading text-base text-s-ink mb-3">So funktioniert&apos;s</h2>
+          <h2 className="font-heading text-base text-s-ink mb-3">{t("howItWorks")}</h2>
           <div className="space-y-3">
             {[
-              { step: "1", text: "Teilen Sie Ihren Empfehlungscode mit Freunden" },
-              { step: "2", text: "Ihr Freund registriert sich und bucht einen Termin" },
-              { step: "3", text: "Sie beide erhalten CHF 10 Guthaben!" },
+              { step: "1", text: t("step1") },
+              { step: "2", text: t("step2") },
+              { step: "3", text: t("step3") },
             ].map((item) => (
               <div key={item.step} className="flex items-start gap-3">
                 <span className="w-6 h-6 rounded-full bg-s-ink/10 text-s-ink text-xs font-bold flex items-center justify-center shrink-0">

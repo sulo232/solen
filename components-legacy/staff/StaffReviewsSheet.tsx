@@ -86,7 +86,7 @@ export default function StaffReviewsSheet({
             SalonStickyTabNav.tsx and BookingWizard.tsx; composing the registered primitive per
             FLOORS LAW 9, no new appearance invented here. */}
         <BackButton variant="flat" label={t("back")} onClick={onClose} />
-        <span className="font-heading text-[17px] font-bold text-s-ink">Bewertungen</span>
+        <span className="font-heading text-[17px] font-bold text-s-ink">{t("reviews")}</span>
       </div>
 
       <div className="flex-1 overflow-y-auto px-5 pb-12">
@@ -183,7 +183,7 @@ export default function StaffReviewsSheet({
               </article>
             );
           })}
-          {shown.length === 0 && <p className="text-[14px] italic text-s-ink-2">Keine Bewertungen mit dieser Bewertung.</p>}
+          {shown.length === 0 && <p className="text-[14px] italic text-s-ink-2">{t("noReviewsForRating")}</p>}
         </div>
       </div>
     </div>,

@@ -4,6 +4,7 @@
 // Requires NEXT_PUBLIC_MAPBOX_TOKEN in env.
 
 import { useEffect, useRef, useState, useCallback, useMemo } from "react";
+import { useTranslations } from "next-intl";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { MapPin } from "lucide-react";
@@ -65,6 +66,7 @@ interface MapViewProps {
 }
 
 export default function MapView({ salons, selectedId, onSelect, enhanced = false, onAreaSearch, emptyCenter }: MapViewProps) {
+  const tCommon = useTranslations("common");
   const containerRef = useRef<HTMLDivElement>(null);
   // mapbox-gl v3's Map/Marker types are so deeply recursive that tsc throws
   // TS2321 "Excessive stack depth" when comparing them on assignment — a known
@@ -403,7 +405,7 @@ export default function MapView({ salons, selectedId, onSelect, enhanced = false
       {mapError && (
         <div className="w-full h-full min-h-[280px] md:min-h-[400px] flex flex-col items-center justify-center p-6 text-center bg-s-bg-sunken rounded-[12px] border border-s-border">
           <MapPin className="w-10 h-10 text-s-ink/40 mb-3" />
-          <h3 className="font-heading text-lg font-semibold text-s-ink mb-1">Karte nicht verfügbar</h3>
+          <h3 className="font-heading text-lg font-semibold text-s-ink mb-1">{tCommon("mapUnavailable")}</h3>
           <p className="text-sm font-body text-s-ink-2 mb-4 max-w-sm">
             Die interaktive Karte kann momentan nicht geladen werden.
           </p>

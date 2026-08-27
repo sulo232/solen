@@ -628,7 +628,7 @@ export function SearchBar() {
               // "go apply evrth" on /dev/flatness Demo 1's emphasis-inflation fix).
               className="font-body shrink-0 rounded-full border-0 bg-s-ink px-6 py-3 text-[15px] font-medium text-white transition-[colors,transform] hover:bg-black active:scale-[0.97] active:duration-[80ms] active:ease-glide"
             >
-              Suchen
+              {tSearch("submit")}
             </button>
           </div>
         </motion.div>

@@ -165,7 +165,9 @@
     "aboutUs": "About us",
     "myAccount": "My account",
     "forBusiness": "For business",
-    "services": "Services"
+    "services": "Services",
+    "homeLinkTitled": "{title}, go to Solen homepage",
+    "homeIconLabel": "Go to homepage"
   },
   "home": {
     "hero_title": "Your salon in Basel",
@@ -334,7 +336,8 @@
       "reviewsLinkLabel": "All reviews →",
       "reviewOpenAria": "Open review from {name}",
       "freeNow": "Free now",
-      "waitRange": "{min}-{max} min"
+      "waitRange": "{min}-{max} min",
+      "viewSalonAria": "View salon {name}"
     },
     "heroCarousel": {
       "label": "Popular near you",
@@ -784,7 +787,18 @@
     "women": "Women",
     "men": "Men",
     "makeup": "Makeup",
-    "waxing": "Waxing"
+    "waxing": "Waxing",
+    "previous": "Previous",
+    "percentOffAria": "{percent}% discount",
+    "bookWithAria": "{name}, book appointment",
+    "previousMonthAria": "Previous month",
+    "unavailable": "Not available",
+    "slotTimeAria": "{time} {status}",
+    "mapUnavailable": "Map unavailable",
+    "viewAll": "View all",
+    "noReviewsForRating": "No reviews with this rating.",
+    "viewReviewsCountAria": "View {count} reviews",
+    "share": "Share"
   },
   "cookies": {
     "title": "We use cookies",
@@ -6533,6 +6547,14 @@
     "saved": "Saved",
     "saveError": "Saving failed. Please try again."
   },
+  "looks": {
+    "title": "No looks yet.",
+    "lead": "Collect inspiration from salon profiles and Inspo, and find it again here.",
+    "bannerTitle": "Open Inspo",
+    "bannerSub": "Fresh looks from salons in Basel",
+    "hintText": "Save looks directly from the Discovery feed and from salon portfolios.",
+    "railTitle": "Top rated"
+  },
   "notifications": {
     "title": "Notifications",
     "unread": "unread",
@@ -6594,5 +6616,41 @@
       "title": "Store rejected",
       "body": "Your store {salon} was unfortunately not approved. Reason: {reason}"
     }
+  },
+  "profileFavorites": {
+    "title": "No favorites yet.",
+    "lead": "Tap the heart on a salon and it lands here, your shortlist for next time.",
+    "bannerTitle": "Open Inspo",
+    "bannerSub": "Styles, salons and inspiration from Basel",
+    "hintText": "You'll find the heart in the top right of every salon photo.",
+    "railTitle": "Top rated"
+  },
+  "profileStamps": {
+    "title": "No stamps yet.",
+    "lead": "Book at a salon with a loyalty card and collect stamps toward your next reward.",
+    "bannerTitle": "How it works",
+    "bannerSub": "One stamp per visit, full card = reward",
+    "hintText": "The stamp is added automatically after every completed appointment.",
+    "railTitle": "Popular in Basel",
+    "cardsCount": "{count} cards",
+    "sectionActive": "Active",
+    "sectionCompleted": "Completed {count}",
+    "rewardAvailable": "Reward available"
+  },
+  "profileReferral": {
+    "loginRequired": "Sign in required",
+    "loginMessage": "Please sign in to see your referrals.",
+    "login": "Sign in",
+    "heroSubtitle": "Share your code and get CHF 10 credit, your friend gets CHF 10 too!",
+    "codeLabel": "Your referral code",
+    "copyLink": "Copy link",
+    "statsTitle": "Your stats",
+    "friendsInvited": "Friends invited",
+    "earned": "Earned",
+    "howItWorks": "How it works",
+    "step1": "Share your referral code with friends",
+    "step2": "Your friend signs up and books an appointment",
+    "step3": "You both get CHF 10 credit!",
+    "shareText": "Hey! Book your next appointment on Solen and get CHF 10 credit with my code: {code}\n{url}"
   }
 }

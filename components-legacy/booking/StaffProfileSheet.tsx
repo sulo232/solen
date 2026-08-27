@@ -46,6 +46,7 @@ export default function StaffProfileSheet({
   onClose: () => void;
 }) {
   const t = useTranslations('booking.staffStep');
+  const tCommon = useTranslations('common');
   const [reviews, setReviews] = useState<SheetReview[]>([]);
   const [loadingReviews, setLoadingReviews] = useState(true);
   const [showAllReviews, setShowAllReviews] = useState(false);
@@ -99,13 +100,13 @@ export default function StaffProfileSheet({
           </div>
 
           <div className="pt-6">
-            <p className="mb-4 font-heading text-[16px] font-bold text-s-ink">Bewertungen</p>
+            <p className="mb-4 font-heading text-[16px] font-bold text-s-ink">{tCommon('reviews')}</p>
             {loadingReviews ? (
               <div className="grid place-items-center py-6">
                 <Spinner size="sm" />
               </div>
             ) : reviews.length === 0 ? (
-              <p className="text-[14px] italic text-s-ink-2">Noch keine Bewertungen.</p>
+              <p className="text-[14px] italic text-s-ink-2">{tCommon('noReviewsModeration')}</p>
             ) : (
               <>
                 <div className="space-y-6">

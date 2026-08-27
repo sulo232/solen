@@ -84,12 +84,12 @@ export default function SaveToBoardSheet({ itemId, open, onClose, onSaved }: Pro
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-end" role="dialog" aria-modal="true" aria-label="Speichern in">
+    <div className="fixed inset-0 z-[60] flex items-end" role="dialog" aria-modal="true" aria-label={t("savedToBoard")}>
       <div className="absolute inset-0 bg-s-ink/40 backdrop-blur-[6px] animate-in fade-in duration-200" onClick={onClose} />
       <div className="relative flex max-h-[80vh] w-full flex-col overflow-hidden rounded-t-[22px] bg-white shadow-elevation-3 animate-in slide-in-from-bottom duration-300">
         <div className="flex items-center justify-between px-5 pb-3 pt-4">
           <button onClick={onClose} aria-label={t("closeOverlay")} className="text-s-ink transition-colors hover:text-s-ink-2"><X size={20} strokeWidth={2.2} /></button>
-          <p className="font-heading text-[16px] font-semibold text-s-ink">Speichern in</p>
+          <p className="font-heading text-[16px] font-semibold text-s-ink">{t("savedToBoard")}</p>
           <span className="w-5" />
         </div>
 
@@ -106,7 +106,7 @@ export default function SaveToBoardSheet({ itemId, open, onClose, onSaved }: Pro
                 className="mt-1.5 w-full px-3.5 py-3 font-body text-s-ink placeholder:text-s-ink/40" // mockup-ok: dead-class removal only (V3-D-input-fill-2026-07-17)
               />
               <div className="mt-3.5 flex gap-2.5">
-                <button onClick={() => setCreating(false)} className="h-12 flex-1 rounded-pill bg-s-bg-sunken font-heading text-[14px] font-semibold text-s-ink">Zurück</button>
+                <button onClick={() => setCreating(false)} className="h-12 flex-1 rounded-pill bg-s-bg-sunken font-heading text-[14px] font-semibold text-s-ink">{t("back")}</button>
                 <button onClick={createAndSave} disabled={!newName.trim() || busy} className="h-12 flex-1 rounded-pill bg-s-ink font-heading text-[14px] font-semibold text-white transition-opacity disabled:opacity-40">Erstellen</button>
               </div>
             </div>

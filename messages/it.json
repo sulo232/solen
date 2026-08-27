@@ -165,7 +165,9 @@
     "aboutUs": "Chi siamo",
     "myAccount": "Il mio account",
     "forBusiness": "Per le attività",
-    "services": "Servizi"
+    "services": "Servizi",
+    "homeLinkTitled": "{title}, vada alla homepage Solen",
+    "homeIconLabel": "Vada alla homepage"
   },
   "home": {
     "hero_title": "Il Suo salone a Basilea",
@@ -334,7 +336,8 @@
       "reviewsLinkLabel": "Tutte le recensioni →",
       "reviewOpenAria": "Apri la recensione di {name}",
       "freeNow": "Libero ora",
-      "waitRange": "{min}-{max} min"
+      "waitRange": "{min}-{max} min",
+      "viewSalonAria": "Vedi il salone {name}"
     },
     "heroCarousel": {
       "label": "Popolari vicino a Lei",
@@ -766,7 +769,18 @@
     "women": "Donne",
     "men": "Uomini",
     "makeup": "Trucco",
-    "waxing": "Ceretta"
+    "waxing": "Ceretta",
+    "previous": "Precedente",
+    "percentOffAria": "{percent}% di sconto",
+    "bookWithAria": "{name}, prenota un appuntamento",
+    "previousMonthAria": "Mese precedente",
+    "unavailable": "Non disponibile",
+    "slotTimeAria": "{time} {status}",
+    "mapUnavailable": "Mappa non disponibile",
+    "viewAll": "Vedi tutto",
+    "noReviewsForRating": "Nessuna recensione con questa valutazione.",
+    "viewReviewsCountAria": "Vedi {count} recensioni",
+    "share": "Condividi"
   },
   "cookies": {
     "title": "Utilizziamo i cookie",
@@ -6533,6 +6547,14 @@
     "saved": "Salvato",
     "saveError": "Salvataggio non riuscito. Riprova."
   },
+  "looks": {
+    "title": "Ancora nessun look.",
+    "lead": "Raccolga ispirazione dai profili dei saloni e da Inspo: la ritroverà qui.",
+    "bannerTitle": "Apra Inspo",
+    "bannerSub": "Look freschi dai saloni di Basilea",
+    "hintText": "Salvi i look direttamente dal feed Discovery e dai portfolio dei saloni.",
+    "railTitle": "Più votato"
+  },
   "notifications": {
     "title": "Notifiche",
     "unread": "non lette",
@@ -6594,5 +6616,41 @@
       "title": "Store rifiutato",
       "body": "Il tuo store {salon} purtroppo non è stato approvato. Motivo: {reason}"
     }
+  },
+  "profileFavorites": {
+    "title": "Ancora nessun preferito.",
+    "lead": "Tocchi il cuore su un salone: apparirà qui, la Sua lista per la prossima volta.",
+    "bannerTitle": "Apra Inspo",
+    "bannerSub": "Stili, saloni e ispirazione da Basilea",
+    "hintText": "Troverà il cuore in alto a destra su ogni foto del salone.",
+    "railTitle": "Più votati"
+  },
+  "profileStamps": {
+    "title": "Ancora nessun timbro.",
+    "lead": "Prenoti in un salone con carta fedeltà e raccolga timbri per il Suo prossimo premio.",
+    "bannerTitle": "Come funziona",
+    "bannerSub": "Un timbro per visita, carta completa = premio",
+    "hintText": "Il timbro viene aggiunto automaticamente dopo ogni appuntamento completato.",
+    "railTitle": "Popolare a Basilea",
+    "cardsCount": "{count} carte",
+    "sectionActive": "Attivo",
+    "sectionCompleted": "Completato {count}",
+    "rewardAvailable": "Premio disponibile"
+  },
+  "profileReferral": {
+    "loginRequired": "Accesso richiesto",
+    "loginMessage": "Acceda per vedere i Suoi referral.",
+    "login": "Accedi",
+    "heroSubtitle": "Condivida il Suo codice e riceva CHF 10 di credito, anche il Suo amico riceve CHF 10!",
+    "codeLabel": "Il Suo codice di referral",
+    "copyLink": "Copia link",
+    "statsTitle": "Le Sue statistiche",
+    "friendsInvited": "Amici invitati",
+    "earned": "Guadagnato",
+    "howItWorks": "Come funziona",
+    "step1": "Condivida il Suo codice di referral con gli amici",
+    "step2": "Il Suo amico si registra e prenota un appuntamento",
+    "step3": "Ricevete entrambi CHF 10 di credito!",
+    "shareText": "Ehi! Prenota il tuo prossimo appuntamento su Solen e ricevi CHF 10 di credito con il mio codice: {code}\n{url}"
   }
 }

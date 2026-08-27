@@ -116,7 +116,7 @@ export function CategoryHeroCarousel({
               <article key={s.id} className="relative h-full shrink-0 basis-full snap-start">
                 <Link
                   href={`/${locale}/salon/${s.slug}`}
-                  aria-label={`${s.name}, Termin buchen`}
+                  aria-label={t("bookWithAria", { name: s.name })}
                   className="group relative block h-full w-full"
                 >
                   <Image

@@ -46,7 +46,7 @@ import * as React from "react";
 import Image from "next/image";
 import { Link } from "next-view-transitions";
 import { usePathname } from "next/navigation";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Home } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { strokeForSize } from "@/lib/icon-stroke";
@@ -114,6 +114,7 @@ const HEADER_CATEGORIES: { slug: string; route: string; label: string; iconSrc?:
  */
 export default function CategoryPillRow() {
   const locale = useLocale();
+  const tNav = useTranslations("navigation");
   const pathname = usePathname() ?? "/";
 
   // Reproduced 1:1 from Header.tsx's own derivation (not invented): isHome / isDiscover /
@@ -197,7 +198,7 @@ export default function CategoryPillRow() {
     >
       <div
         role="tablist"
-        aria-label="Kategorien"
+        aria-label={tNav("categories")}
         // mockup-ok , owner 2026-08-10: "maybe, like, a little bit smaller, so it fits more,
         // and right now it just has All and those. So it has maybe three and a half or
         // something, so people can know that it's actually scrollable."

@@ -165,7 +165,9 @@
     "aboutUs": "Über uns",
     "myAccount": "Mein Konto",
     "forBusiness": "Für Unternehmen",
-    "services": "Services"
+    "services": "Services",
+    "homeLinkTitled": "{title}, zur Solen Startseite",
+    "homeIconLabel": "Zur Startseite"
   },
   "home": {
     "hero_title": "Ihr Salon in Basel",
@@ -334,7 +336,8 @@
       "reviewsLinkLabel": "Alle Bewertungen →",
       "reviewOpenAria": "Bewertung von {name} öffnen",
       "freeNow": "Jetzt frei",
-      "waitRange": "{min}-{max} Min"
+      "waitRange": "{min}-{max} Min",
+      "viewSalonAria": "Salon {name} ansehen"
     },
     "heroCarousel": {
       "label": "Beliebt in Ihrer Nähe",
@@ -784,7 +787,18 @@
     "women": "Frauen",
     "men": "Männer",
     "makeup": "Make-up",
-    "waxing": "Waxing"
+    "waxing": "Waxing",
+    "previous": "Vorherige",
+    "percentOffAria": "{percent} Prozent Rabatt",
+    "bookWithAria": "{name}, Termin buchen",
+    "previousMonthAria": "Voriger Monat",
+    "unavailable": "Nicht verfügbar",
+    "slotTimeAria": "{time} Uhr {status}",
+    "mapUnavailable": "Karte nicht verfügbar",
+    "viewAll": "Alle ansehen",
+    "noReviewsForRating": "Keine Bewertungen mit dieser Bewertung.",
+    "viewReviewsCountAria": "{count} Bewertungen ansehen",
+    "share": "Teilen"
   },
   "cookies": {
     "title": "Wir verwenden Cookies",
@@ -6533,6 +6547,14 @@
     "saved": "Gespeichert",
     "saveError": "Speichern fehlgeschlagen. Bitte erneut versuchen."
   },
+  "looks": {
+    "title": "Noch keine Looks.",
+    "lead": "Sammeln Sie Inspiration aus Salon-Profilen und Inspo, hier finden Sie sie wieder.",
+    "bannerTitle": "Inspo öffnen",
+    "bannerSub": "Frische Looks aus Basler Salons",
+    "hintText": "Speichere Looks direkt aus dem Discovery-Feed und aus Salon-Portfolios.",
+    "railTitle": "Top bewertet"
+  },
   "notifications": {
     "title": "Benachrichtigungen",
     "unread": "ungelesen",
@@ -6594,5 +6616,41 @@
       "title": "Salon abgelehnt",
       "body": "Ihr Salon {salon} wurde leider nicht genehmigt. Grund: {reason}"
     }
+  },
+  "profileFavorites": {
+    "title": "Noch keine Favoriten.",
+    "lead": "Tippen Sie auf das Herz bei einem Salon und er landet hier, Ihre Merkliste fürs nächste Mal.",
+    "bannerTitle": "Inspo öffnen",
+    "bannerSub": "Styles, Salons und Inspiration aus Basel",
+    "hintText": "Das Herz finden Sie oben rechts auf jedem Salon-Foto.",
+    "railTitle": "Top bewertet"
+  },
+  "profileStamps": {
+    "title": "Noch keine Stempel.",
+    "lead": "Buchen Sie bei einem Salon mit Treuekarte und sammeln Sie Stempel für Ihre nächste Belohnung.",
+    "bannerTitle": "So funktioniert's",
+    "bannerSub": "Pro Besuch ein Stempel, volle Karte = Belohnung",
+    "hintText": "Der Stempel kommt automatisch nach jedem abgeschlossenen Termin.",
+    "railTitle": "Beliebt in Basel",
+    "cardsCount": "{count} Karten",
+    "sectionActive": "Aktiv",
+    "sectionCompleted": "Abgeschlossen {count}",
+    "rewardAvailable": "Belohnung verfügbar"
+  },
+  "profileReferral": {
+    "loginRequired": "Anmelden erforderlich",
+    "loginMessage": "Bitte melden Sie sich an, um Ihre Empfehlungen zu sehen.",
+    "login": "Anmelden",
+    "heroSubtitle": "Teilen Sie Ihren Code und erhalten Sie CHF 10 Guthaben, Ihr Freund bekommt auch CHF 10!",
+    "codeLabel": "Ihr Empfehlungscode",
+    "copyLink": "Link kopieren",
+    "statsTitle": "Ihre Statistiken",
+    "friendsInvited": "Freunde eingeladen",
+    "earned": "Verdient",
+    "howItWorks": "So funktioniert's",
+    "step1": "Teilen Sie Ihren Empfehlungscode mit Freunden",
+    "step2": "Ihr Freund registriert sich und bucht einen Termin",
+    "step3": "Sie beide erhalten CHF 10 Guthaben!",
+    "shareText": "Hey! Buch deinen nächsten Termin auf Solen und du bekommst CHF 10 Guthaben mit meinem Code: {code}\n{url}"
   }
 }

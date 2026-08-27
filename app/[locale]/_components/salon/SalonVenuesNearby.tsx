@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useTranslations } from "next-intl";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { SalonCard } from "../homepage/SalonCard";
 import { safeCategory } from "./_shared";
@@ -40,6 +41,7 @@ export function SalonVenuesNearby({
    *  Kept in the type so SalonDetailV3's existing `locale={locale}` call needs no change. */
   locale: string;
 }) {
+  const t = useTranslations("common");
   const [items, setItems] = React.useState<NearbyVenue[]>([]);
   const [loading, setLoading] = React.useState(true);
   const scrollRef = React.useRef<HTMLDivElement>(null);
@@ -156,7 +158,7 @@ export function SalonVenuesNearby({
             type="button"
             onClick={() => scroll("left")}
             disabled={!canScrollLeft}
-            aria-label="Vorherige"
+            aria-label={t("previous")}
             className="grid h-10 w-10 place-items-center rounded-full border border-s-border bg-white transition-[colors,transform] hover:bg-s-bg-sunken active:scale-[0.94] active:duration-[80ms] active:ease-glide disabled:opacity-30"
           >
             <ChevronLeft size={16} strokeWidth={1.9} className="text-s-ink" />

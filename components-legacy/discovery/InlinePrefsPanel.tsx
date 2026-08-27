@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { ChevronDown, Sparkles, X, Check } from "lucide-react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "motion/react";
 
 interface InlinePrefsPanelProps {
@@ -55,6 +55,7 @@ const L: Record<string, {
 export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanelProps) {
   const locale = useLocale();
   const t = L[locale] ?? L.en;
+  const tCommon = useTranslations("common");
 
   const [expanded, setExpanded] = useState(false);
   const [gender, setGender] = useState<string | null>(null);
@@ -90,7 +91,7 @@ export default function InlinePrefsPanel({ onSave, onDismiss }: InlinePrefsPanel
       >
         <div className="rounded-input border border-s-success/20 p-4 flex items-center gap-3 bg-s-success/[0.06]">
           <Check size={16} strokeWidth={1.9} className="text-s-success" />
-          <p className="text-sm font-heading text-s-success">Gespeichert!</p>
+          <p className="text-sm font-heading text-s-success">{tCommon("saved")}</p>
         </div>
       </motion.div>
     );
