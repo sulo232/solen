@@ -703,6 +703,53 @@ the one screen he says he likes:
 | distinct shadows | at least 2 | 3 |
 | photographic share of the first screen | >= 33%, by real salon content only | 34.66% |
 
+### MEASURED 2026-08-28: every customer screen against that ladder, live
+
+Read off the RENDERED first viewport at 390x844 on the dev server, one screen at a time, never
+from source. CONTROL FIRST: the salon page must reproduce the numbers this plan already recorded
+for it, or the instrument is wrong and nothing below counts. It reproduced them exactly, anchor 30,
+body 14, ratio 2.14, 5 sizes, densest 4, photo 34.7%.
+
+| screen | anchor | body | ratio | sizes | densest | bold % | shadows | photo % |
+|---|---|---|---|---|---|---|---|---|
+| salon detail, CONTROL, the one he likes | 30 | 14 | 2.14 | 5 | 4 | 26.5 | 4 | 34.7 |
+| his account | 28 | 13 | 2.15 | **7** | **5** | 24.1 | 2 | 1.1 |
+| pick a stylist | 28 | 13 | 2.15 | **6** | **5** | **52.8** | 4 | 7.1 |
+| find a booking | **21** | 12 | **1.75** | 5 | 4 | 4.9 | **1** | 0 |
+| home | **18** | 12 | **1.50** | 3 | 3 | **38.5** | 7 | **27.9** |
+| a category page | **18** | 12 | **1.50** | 3 | 3 | **33.4** | 7 | 41.8 |
+| inspo | **14** | 12 | **1.17** | 2 | 2 | 7.4 | 8 | 64.3 |
+
+Ladder targets, from the table above: anchor >= 28 and 30 is the house value; body 14; ratio >= 1.8;
+at most 5 distinct sizes and at most 4 inside any 8px window; at most 30% of characters at weight
+>= 600; at least 2 distinct shadows; photographic share >= 33% on browse and discovery surfaces.
+
+**THE SINGLE BIGGEST FINDING, and it is the answer to "I like the PDP page, everywhere else looks
+ass": the salon page's headline is 30px and the biggest text of ANY kind on his home page is 18px.**
+His own floor is 28. Home, category and inspo all fail the anchor floor and the ratio floor
+together, which is the same defect twice: nothing on those screens is decisively the biggest thing,
+so the eye has no anchor and the screen reads flat.
+
+**SECOND FINDING, and nothing in this plan had caught it: the salon page is the ONLY screen in the
+product whose body text is 14px.** Every other screen reads at 12px or 13px. So the screen he likes
+is also the only one set at the body size the ladder names, and the rest of the site is literally
+smaller to read.
+
+Failure count per axis, so the fan-out can be sized to the work rather than to the screens:
+      anchor below 28          4 screens   home, category, inspo, find a booking
+      body not 14              6 screens   every screen except the salon page
+      ratio below 1.8          3 screens   home, category, inspo
+      more than 5 sizes        2 screens   his account (7), pick a stylist (6)
+      more than 4 in 8px       2 screens   his account, pick a stylist
+      bold share over 30%      3 screens   pick a stylist (52.8), home (38.5), category (33.4)
+      fewer than 2 shadows     1 screen    find a booking
+      photo share below 33%    2 screens   home (27.9), his account and pick a stylist are
+                                           exempt, they are not browse or discovery surfaces
+
+NOT A FORK: he already answered this exact question with "same ladder everywhere", so the direction
+is decided and the work is execution. What still binds is mockup-first, because moving a home page
+headline from 18px to 30px is the most visible change in the product.
+
 ### The forks, both arms decided now
 
 - **A variant only looks different and moves no number.** PLAN A: the critic kills it and it is not
