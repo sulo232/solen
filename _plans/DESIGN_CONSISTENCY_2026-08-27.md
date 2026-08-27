@@ -152,14 +152,23 @@ the direction of the screen he already likes.
   HIS CALL, one line, not a stop: WHICH position wins. Plan A is the home page's (y 12, h 64), since
   it is the first thing anyone sees. Plan B is the category page's (y 4, h 54), which buys 10px of
   content. I will take Plan A if he says nothing.
-  MEASURED 2026-08-27, all seven routes that carry a search control, live at 390x844:
+  MEASURED 2026-08-27, all seven routes that carry a search control, live at 390x844, re-taken after
+  the compaction with `scripts/measure-search-bar.mjs` so the numbers are re-derived from disk and
+  not carried in memory:
       /de                  x 16  y 12  358x64  r 40px  1px border  sticky   "Suchen"
-      /de/coiffeur         x 16  y  4  358x54  r 40px  1px border  sticky   "Suche bearbeiten"
-      /de/nails            x 16  y  4  358x54  r 40px  1px border  sticky   "Suche bearbeiten"
-      /de/spa              x 16  y  4  358x54  r 40px  1px border  sticky   "Suche bearbeiten"
-      /de/barbershop       x 16  y  4  358x54  r 40px  1px border  sticky   "Suche bearbeiten"
+      /de/coiffeur         x 16  y  4  358x54  r 40px  1px border  sticky   "Coiffeur Schweizweit"
+      /de/nails            x 16  y  4  358x54  r 40px  1px border  sticky   "Nails Schweizweit"
+      /de/spa              x 16  y  4  358x54  r 40px  1px border  sticky   "Spa Schweizweit"
+      /de/barbershop       x 16  y  4  358x54  r 40px  1px border  sticky   "Barber Schweizweit"
       /de/inspo            x 16  y 18  358x64  r 40px  1px border  SCROLLS AWAY  "Styles suchen..."
-      /de/basel/coiffeur   x 16  y 88  358x54  r 40px  1px border  sticky   "Suche bearbeiten"
+      /de/basel/coiffeur   x 16  y 88  358x54  r 40px  1px border  sticky   "Coiffeur Basel"
+  CORRECTION to the row above, and the reason it matters: the first version of this table recorded
+  the label on five of the seven routes as "Suche bearbeiten". That is wrong. Away from home and
+  Inspo the bar shows the CURRENT SEARCH, "Coiffeur Basel", never the word "Suche". The wrong label
+  came from a measuring script that matched the bar by its TEXT, which is also why its first re-run
+  reported "no search bar" on five of the seven routes. Rule 15a's known-answer control caught it:
+  the script was the broken thing, not the product. Matching on shape finds all seven, and the
+  script now carries that note so nobody repeats it.
   So the pill is NOT six re-implementations of six different looks. Width, radius, inset and border
   are identical on all seven. What differs is exactly three things, and all three are what he was
   pointing at:
@@ -170,6 +179,13 @@ the direction of the screen he already likes.
          keeps it. That is the "moves to other places" half of his complaint, exactly.
   This narrows S2 a long way. It is not a rebuild, it is picking one y, one height, and making
   Inspo sticky like everything else.
+  SHOWN, not just written: all four positions are drawn at real size inside real 390-wide frames on
+  one page, nothing to tap, at `public/_mockups/compare-search-bar-position/index.html` (`b9b2ae7b6`).
+  Verified rendering at 402x844: four frames, bars at 12/4/18/88 at 54 and 64 tall, anchor 30px at
+  2.14x over a 14px body, three sizes, no sideways scroll. The page carries the recommendation and
+  its cost, so his answer can be one word.
+  STILL OPEN: nothing has moved in the product. The sweep still returns four positions and two
+  heights, and Inspo still scrolls away.
 
 - [ ] **S3. Back arrow becomes one rule.** Standard is the 44x44 at (16,20) that seven pages already
   use. The salon page KEEPS its see-through 40x40, as a named variant, because a solid white circle
@@ -193,6 +209,33 @@ the direction of the screen he already likes.
   component.
   CLOSE CONDITION: ten folders, each with a per-section spec, and each spec's numbers matching what
   the live page actually renders.
+  DONE 2026-08-27 (`e677e612c` and `7950cc249`), first half met: **12 screen folders now hold
+  per-section specs**, against 1 this morning. salon-detail 20 files, home-feed 13, profile-hub 9,
+  confirmation 8, search-results 8, booking-service 7, checkout-pay 7, booking-datetime 6,
+  saved-salons 5, saved 5, booking-staff 4, saved-looks 4.
+  Four product bugs came out of the writing, none of them design:
+    1. The pay step's cancellation term renders 26px BELOW the fold while the pay button is pinned,
+       so a customer can pay without it ever having been on screen. It also never names the 50
+       percent late-cancellation fee that the salon's own row carries.
+    2. The pay button reads "Buchung bestaetigen" whether the customer pays now or at the salon,
+       because `PayConfirmStep.tsx:725-731` keys the label on `paymentMode` and never on
+       `payChoice`. Someone paying online is not told they are about to pay.
+    3. Two specs documented the bottom nav's fourth item as firing `solen:open-menu`. `BottomNav.tsx`
+       contains no `dispatchEvent` at all; it is a plain link to the profile. The false claim came
+       from a source comment at `SearchTemplate.tsx:1383` and was inherited twice.
+    4. There are TWO different components named `SalonCard`. The profile renders
+       `components-legacy/SalonCard.tsx` at radius 16, home renders `homepage/SalonCard.tsx` at
+       radius 22. One salon, two shapes, and the registry lists only one of them.
+  CORRECTION to this plan's own earlier note: `_design-system/sections/saved/` was NOT built on the
+  404 measurement. Its README diagnoses the 404 correctly and every one of its section files says
+  "not measured" in its Measured block. It refused the bad data instead of publishing it, so it is
+  kept and cited, not retired.
+  STILL OPEN, second half of the close condition: `saved-looks` measured the LOADING SKELETON, not
+  the screen, proved four ways (12 tiles matching the skeleton's 12 ratio entries, a 196px tile
+  width matching the skeleton's wrapper arithmetic rather than the real grid's 186px, and zero
+  images). The cause is in the measuring script: its settle check watches text count, largest font
+  and image area, and a shimmering skeleton holds all three constant, so it declares itself
+  finished. That is being fixed at the instrument, not worked around per screen.
 
 - [ ] **S5. Fold the 38 rows.** Every one of them is either finished, superseded by a spec written in
   S4, or genuinely still open. Mark each. Fix the duplicate IDs.
