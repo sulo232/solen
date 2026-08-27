@@ -418,157 +418,542 @@
 </div>
 
 <script>
-  // Panel A: the 3-rule minimal fix, verbatim from floor-fix-why-solen/index.html.
-  var vA = document.getElementById("vA");
-  vA.addEventListener("load", function () {
-    try {
-      var doc = vA.contentDocument;
-      if (!doc) { return; }
-      var style = doc.createElement("style");
-      style.textContent =
-        "h1 { font-size: clamp(28px, 7vw, 30px) !important; }" +
-        "section:first-of-type p { font-size: clamp(18px, 2vw, 20px) !important; }" +
-        "p.flex.items-start.gap-2 { font-size: 14px !important; }";
-      doc.head.appendChild(style);
-    } catch (err) {
-      console.error("[compare-why-solen] could not restyle panel A:", err);
-    }
-  });
+  // ---------------------------------------------------------------------------------------------
+  // REPAIR (this turn): this file was the one sibling in this folder that never got the fix every
+  // other compare-*.html already has. Before: all 8 iframes carried a real `src` from the start
+  // (unsequenced, concurrent), and the pass/fail badges above were hand-written HTML with no DOM
+  // check behind them at all, so a caption could claim "0.0% bold after" while the live page
+  // measured 17.7% still bold and nobody would know. Follows the same pattern already proven in
+  // compare-notifications/index.html: iframes carry `data-src` and only get a real `src` once the
+  // panel before them has settled; every badge is written by reading the iframe's own DOM for the
+  // injected marker, never by a timer; on failure the caption is rewritten to say the fix did not
+  // apply. No third pattern invented.
+  // ---------------------------------------------------------------------------------------------
 
-  // Panel B: the 30px / weight-500 house-anchor fix, verbatim from
-  // fix-why-solen--b-hierarchy/index.html.
-  var vB = document.getElementById("vB");
-  vB.addEventListener("load", function () {
-    try {
-      var doc = vB.contentDocument;
-      if (!doc) { return; }
-      var style = doc.createElement("style");
-      style.textContent =
-        "h1 { font-size: 30px !important; font-weight: 500 !important; line-height: 1.15 !important; letter-spacing: -0.02em !important; }" +
-        "section:first-of-type p { font-size: clamp(18px, 2vw, 20px) !important; }" +
-        "p.flex.items-start.gap-2 { font-size: 14px !important; }";
-      doc.head.appendChild(style);
-    } catch (err) {
-      console.error("[compare-why-solen] could not restyle panel B:", err);
-    }
-  });
+  var PATCH_TIMEOUT_MS = 60000;
+  var POLL_INTERVAL_MS = 300;
 
-  // Panel C top strip: hero padding tightened, verbatim mechanism from
-  // fix-why-solen--c-content-forward/index.html.
-  var vCHero = document.getElementById("vC-hero");
-  vCHero.addEventListener("load", function () {
-    try {
-      var doc = vCHero.contentDocument;
-      if (!doc) { return; }
-      var h1 = doc.querySelector("h1");
-      var section = h1 ? h1.closest("section") : null;
-      if (!section) { return; }
-      var style = doc.createElement("style");
-      style.textContent =
-        "section.herotight-target{padding-top:20px !important;padding-bottom:16px !important}" +
-        "section.herotight-target p{margin-top:10px !important}" +
-        "section.herotight-target button{margin-top:16px !important}";
-      doc.head.appendChild(style);
-      section.classList.add("herotight-target");
-    } catch (err) {
-      console.error("[compare-why-solen] could not tighten panel C hero:", err);
-    }
-  });
+  function px1(v) { return Math.round(v * 10) / 10; }
+  function safeDoc(iframe) { try { return iframe.contentDocument; } catch (err) { return null; } }
 
-  // Panel C bottom strip: crop the real Coiffeur Basel page to its own "Top Coiffeur" heading via
-  // a CSS offset, the same fallback fix-why-solen--c-content-forward/index.html landed on after
-  // confirming scrollTo does not work on that route.
-  var vCCards = document.getElementById("vC-cards");
-  vCCards.addEventListener("load", function () {
-    try {
-      vCCards.style.marginTop = "-171px";
-    } catch (err) {
-      console.error("[compare-why-solen] could not crop panel C cards:", err);
-    }
-  });
+  function heroReady(doc) {
+    var h1 = doc.querySelector("h1");
+    if (!h1) return false;
+    var r = h1.getBoundingClientRect();
+    return r.width > 0 && r.height > 0;
+  }
 
-  // Panel D: weight-600+ demoted to weight-500 on every leaf-text element, verbatim mechanism
-  // from fix-why-solen--d-airbnb-weight/index.html.
-  var vD = document.getElementById("vD");
-  vD.addEventListener("load", function () {
-    try {
-      var doc = vD.contentDocument;
-      var win = vD.contentWindow;
-      if (!doc || !win) { return; }
-      setTimeout(function () {
-        function isLeafText(el) {
-          for (var i = 0; i < el.childNodes.length; i++) {
-            var n = el.childNodes[i];
-            if (n.nodeType === 3 && n.textContent.trim().length > 0) return true;
-          }
-          return false;
-        }
-        var all = doc.querySelectorAll("body *");
-        all.forEach(function (el) {
-          if (!isLeafText(el)) return;
-          var cs = win.getComputedStyle(el);
-          var w = parseInt(cs.fontWeight, 10) || 400;
-          if (w >= 600) {
-            el.style.setProperty("font-weight", "500", "important");
-          }
-        });
-      }, 400);
-    } catch (err) {
-      console.error("[compare-why-solen] could not demote weight in panel D:", err);
+  function leafTextEls(doc) {
+    var all = doc.querySelectorAll("body *");
+    var out = [];
+    for (var i = 0; i < all.length; i++) {
+      var el = all[i];
+      if (el.children.length > 0) continue;
+      var text = (el.textContent || "").trim();
+      if (!text) continue;
+      var r = el.getBoundingClientRect();
+      if (r.width <= 0 || r.height <= 0) continue;
+      out.push(el);
     }
-  });
+    return out;
+  }
 
-  // Panel E top strip: the same type fix as panel A/B, verbatim from
-  // fix-why-solen--e-recompose/index.html's own panel 2/3 hero treatment.
-  var vEHero = document.getElementById("vE-hero");
-  vEHero.addEventListener("load", function () {
-    try {
-      var doc = vEHero.contentDocument;
-      if (!doc) { return; }
-      var style = doc.createElement("style");
-      style.textContent =
-        "h1 { font-size: clamp(28px, 7vw, 30px) !important; }" +
-        "section:first-of-type p { font-size: clamp(18px, 2vw, 20px) !important; }" +
-        "p.flex.items-start.gap-2 { font-size: 14px !important; }";
-      doc.head.appendChild(style);
-    } catch (err) {
-      console.error("[compare-why-solen] could not restyle panel E hero:", err);
-    }
-  });
+  function boldPercent(doc, win) {
+    var leaves = leafTextEls(doc);
+    if (leaves.length === 0) return { pct: 0, bold: 0, total: 0 };
+    var bold = 0;
+    leaves.forEach(function (el) {
+      var w = parseInt(win.getComputedStyle(el).fontWeight, 10) || 400;
+      if (w >= 600) bold++;
+    });
+    return { pct: (bold / leaves.length) * 100, bold: bold, total: leaves.length };
+  }
 
-  // Panel E bottom strip: scroll the real homepage to its own real "Top Coiffeur" rail, finding
-  // the heading by its own text and re-asserting the scroll position on a short poll, the same
-  // fix fix-why-solen--e-recompose/index.html landed on after a one-time scrollTo drifted as the
-  // homepage's own images finished loading and reflowed the page.
-  var vERail = document.getElementById("vE-rail");
-  vERail.addEventListener("load", function () {
-    try {
-      var win = vERail.contentWindow;
-      var doc = vERail.contentDocument;
-      if (!win || !doc) { return; }
-      function findRailTop() {
-        var heads = doc.querySelectorAll("h2");
-        for (var i = 0; i < heads.length; i++) {
-          if (/coiffeur/i.test(heads[i].textContent || "")) {
-            return heads[i].getBoundingClientRect().top + win.scrollY - 20;
-          }
-        }
-        return 1029;
+  function sizeSpread(doc) {
+    var sizes = [];
+    leafTextEls(doc).forEach(function (el) {
+      var s = parseFloat(getComputedStyle(el).fontSize);
+      if (sizes.indexOf(s) === -1) sizes.push(s);
+    });
+    sizes.sort(function (a, b) { return a - b; });
+    var maxCluster = sizes.length ? 1 : 0;
+    for (var i = 0; i < sizes.length; i++) {
+      var count = 0;
+      for (var j = i; j < sizes.length; j++) {
+        if (sizes[j] - sizes[i] <= 8) count++; else break;
       }
-      var tries = 0;
-      (function tick() {
-        try {
-          win.scrollTo(0, findRailTop());
-        } catch (err) {
-          console.error("[compare-why-solen] could not scroll panel E rail:", err);
-        }
-        tries++;
-        if (tries < 10) { setTimeout(tick, 300); }
-      })();
-    } catch (err) {
-      console.error("[compare-why-solen] could not scroll panel E rail:", err);
+      if (count > maxCluster) maxCluster = count;
     }
-  });
+    return { distinct: sizes.length, densestCluster: maxCluster };
+  }
+
+  // Photo coverage measured against the panel's OWN rendered viewport (its iframe width/height
+  // attributes), the same "clipped area / viewport area" method this codebase's other floor
+  // checks use, counting both <img> tags and CSS background-image fills.
+  function photoPercent(doc, w, h) {
+    var total = w * h;
+    if (total <= 0) return 0;
+    var covered = 0;
+    function addRect(r) {
+      var x1 = Math.max(0, r.left), y1 = Math.max(0, r.top);
+      var x2 = Math.min(w, r.right), y2 = Math.min(h, r.bottom);
+      var iw = Math.max(0, x2 - x1), ih = Math.max(0, y2 - y1);
+      covered += iw * ih;
+    }
+    doc.querySelectorAll("img").forEach(function (img) { addRect(img.getBoundingClientRect()); });
+    doc.querySelectorAll("body *").forEach(function (el) {
+      var bg = getComputedStyle(el).backgroundImage;
+      if (bg && bg !== "none" && /url\(/.test(bg)) addRect(el.getBoundingClientRect());
+    });
+    return (covered / total) * 100;
+  }
+
+  function setBadge(id, text, kind) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = text;
+    el.classList.remove("pass", "fail", "measuring");
+    if (kind) el.classList.add(kind);
+  }
+
+  // On failure, rewrite that panel's ".moves" caption instead of leaving a stale numeric claim
+  // standing next to a screen that never actually changed.
+  function markPanelFailed(panelId, msg) {
+    var panel = document.getElementById("panel-" + panelId);
+    if (!panel) return;
+    var moves = panel.querySelector(".moves");
+    if (!moves) return;
+    moves.innerHTML = "";
+    var wrap = document.createElement("div");
+    var n = document.createElement("div");
+    n.className = "n";
+    n.style.color = "#DC2626";
+    n.textContent = "Did not apply";
+    var l = document.createElement("div");
+    l.className = "l";
+    l.textContent = msg || "This fix did not apply on this page load. Reload the page to try again.";
+    wrap.appendChild(n);
+    wrap.appendChild(l);
+    moves.appendChild(wrap);
+  }
+
+  function hidePlaceholder(iframe) {
+    var wrap = iframe.closest(".frame") || iframe.closest(".strip");
+    if (!wrap) return;
+    var ph = wrap.querySelector(".placeholder");
+    if (ph) ph.style.display = "none";
+  }
+
+  function pollUntil(fn, timeoutMs, intervalMs, onDone) {
+    var beginAt = Date.now();
+    var settled = false;
+    var iv = setInterval(function () {
+      if (settled) return;
+      var result = null;
+      try { result = fn(); } catch (err) { console.error("[compare-why-solen] poll fn threw:", err); }
+      if (result) {
+        settled = true;
+        clearInterval(iv);
+        onDone(result);
+      } else if (Date.now() - beginAt > timeoutMs) {
+        settled = true;
+        clearInterval(iv);
+        onDone(null);
+      }
+    }, intervalMs);
+  }
+
+  // Idempotent attempt+verify+reapply, ported verbatim in shape from compare-notifications.html's
+  // runPatch: reattempts on an interval AND on every DOM mutation, reports success the first time
+  // verify() reads true from the live DOM, keeps reasserting forever after success (no disconnect,
+  // same as the sibling file) so a later hydration pass that discards the fix gets caught, and
+  // reports failure once PATCH_TIMEOUT_MS passes with no success.
+  function runFix(doc, win, attemptFn, verifyFn, onDone) {
+    var beginAt = Date.now();
+    var reported = false;
+    var iv = null, mo = null;
+    function tick() {
+      try { attemptFn(doc, win); } catch (err) { console.error("[compare-why-solen] attempt failed:", err); }
+      var ok = false;
+      try { ok = !!verifyFn(doc, win); } catch (err) { console.error("[compare-why-solen] verify failed:", err); }
+      if (reported) return;
+      if (ok) {
+        reported = true;
+        if (iv) clearInterval(iv);
+        onDone(true);
+      } else if (Date.now() - beginAt > PATCH_TIMEOUT_MS) {
+        reported = true;
+        if (iv) clearInterval(iv);
+        if (mo) mo.disconnect();
+        onDone(false);
+      }
+    }
+    iv = setInterval(tick, POLL_INTERVAL_MS);
+    try {
+      mo = new MutationObserver(function () { tick(); });
+      mo.observe(doc.body, { childList: true, subtree: true, characterData: true, attributes: true });
+    } catch (err) {
+      console.error("[compare-why-solen] mutation observer setup failed:", err);
+    }
+    tick();
+  }
+
+  // ---- Panel: Now (baseline, no fix, measurement only) ----------------------------------------
+  function loadNow(done) {
+    var iframe = document.getElementById("vNow");
+    iframe.addEventListener("load", function () {
+      hidePlaceholder(iframe);
+      pollUntil(function () {
+        var doc = safeDoc(iframe);
+        if (!doc || !heroReady(doc)) return null;
+        var h1 = doc.querySelector("h1");
+        return {
+          h1: px1(parseFloat(getComputedStyle(h1).fontSize)),
+          spread: sizeSpread(doc),
+          photo: px1(photoPercent(doc, 390, 640))
+        };
+      }, PATCH_TIMEOUT_MS, POLL_INTERVAL_MS, function (m) {
+        if (!m) {
+          setBadge("badge-now-h1", "could not measure, reload", "fail");
+          setBadge("badge-now-sizes", "could not measure, reload", "fail");
+          setBadge("badge-now-photo", "could not measure, reload", "fail");
+          done();
+          return;
+        }
+        setBadge("badge-now-h1", m.h1 + "px headline, needs 28", m.h1 >= 28 ? "pass" : "fail");
+        setBadge("badge-now-sizes", m.spread.densestCluster + " sizes crowded", m.spread.densestCluster <= 4 ? "pass" : "fail");
+        setBadge("badge-now-photo", m.photo + "% real photo", m.photo >= 33 ? "pass" : "fail");
+        done();
+      });
+    });
+    iframe.src = iframe.getAttribute("data-src");
+  }
+
+  // ---- Panel A: the 3-rule minimal fix, verbatim from floor-fix-why-solen/index.html ----------
+  function loadA(done) {
+    var iframe = document.getElementById("vA");
+    iframe.addEventListener("load", function () {
+      hidePlaceholder(iframe);
+      var doc = safeDoc(iframe), win = iframe.contentWindow;
+      if (!doc) {
+        setBadge("badge-a-h1", "could not read frame", "fail");
+        setBadge("badge-a-sizes", "could not read frame", "fail");
+        setBadge("badge-a-photo", "could not read frame", "fail");
+        markPanelFailed("a");
+        done();
+        return;
+      }
+      function attempt(doc) {
+        if (doc.head.querySelector('style[data-cmp="a"]')) return;
+        var style = doc.createElement("style");
+        style.setAttribute("data-cmp", "a");
+        style.textContent =
+          "h1 { font-size: clamp(28px, 7vw, 30px) !important; }" +
+          "section:first-of-type p { font-size: clamp(18px, 2vw, 20px) !important; }" +
+          "p.flex.items-start.gap-2 { font-size: 14px !important; }";
+        doc.head.appendChild(style);
+      }
+      function verify(doc) {
+        if (!heroReady(doc)) return false;
+        var h1 = doc.querySelector("h1");
+        return parseFloat(getComputedStyle(h1).fontSize) >= 27.5;
+      }
+      runFix(doc, win, attempt, verify, function (ok) {
+        var h1 = doc.querySelector("h1");
+        var h1v = h1 ? px1(parseFloat(getComputedStyle(h1).fontSize)) : null;
+        var spread = sizeSpread(doc);
+        var photo = px1(photoPercent(doc, 390, 640));
+        if (ok) {
+          setBadge("badge-a-h1", h1v + "px headline, passes", h1v >= 28 ? "pass" : "fail");
+          setBadge("badge-a-sizes", spread.densestCluster + " sizes in the tight cluster, " + (spread.densestCluster <= 4 ? "passes" : "still crowded"), spread.densestCluster <= 4 ? "pass" : "fail");
+        } else {
+          setBadge("badge-a-h1", (h1v != null ? h1v : "?") + "px headline, did not reach 28", "fail");
+          setBadge("badge-a-sizes", "did not apply, reload", "fail");
+          markPanelFailed("a", "the headline/type CSS did not apply on this load.");
+        }
+        setBadge("badge-a-photo", photo + "% photo, still open", "fail");
+        done();
+      });
+    });
+    iframe.src = iframe.getAttribute("data-src");
+  }
+
+  // ---- Panel B: the 30px / weight-500 house-anchor fix, verbatim from
+  // fix-why-solen--b-hierarchy/index.html ----------------------------------------------------
+  function loadB(done) {
+    var iframe = document.getElementById("vB");
+    iframe.addEventListener("load", function () {
+      hidePlaceholder(iframe);
+      var doc = safeDoc(iframe), win = iframe.contentWindow;
+      if (!doc) {
+        setBadge("badge-b-h1", "could not read frame", "fail");
+        setBadge("badge-b-sizes", "could not read frame", "fail");
+        setBadge("badge-b-photo", "could not read frame", "fail");
+        markPanelFailed("b");
+        done();
+        return;
+      }
+      function attempt(doc) {
+        if (doc.head.querySelector('style[data-cmp="b"]')) return;
+        var style = doc.createElement("style");
+        style.setAttribute("data-cmp", "b");
+        style.textContent =
+          "h1 { font-size: 30px !important; font-weight: 500 !important; line-height: 1.15 !important; letter-spacing: -0.02em !important; }" +
+          "section:first-of-type p { font-size: clamp(18px, 2vw, 20px) !important; }" +
+          "p.flex.items-start.gap-2 { font-size: 14px !important; }";
+        doc.head.appendChild(style);
+      }
+      function verify(doc) {
+        if (!heroReady(doc)) return false;
+        var h1 = doc.querySelector("h1");
+        var cs = getComputedStyle(h1);
+        return Math.abs(parseFloat(cs.fontSize) - 30) < 1 && parseInt(cs.fontWeight, 10) === 500;
+      }
+      runFix(doc, win, attempt, verify, function (ok) {
+        var h1 = doc.querySelector("h1");
+        var h1v = h1 ? px1(parseFloat(getComputedStyle(h1).fontSize)) : null;
+        var spread = sizeSpread(doc);
+        var photo = px1(photoPercent(doc, 390, 640));
+        if (ok) {
+          setBadge("badge-b-h1", h1v + "px headline, passes with margin", "pass");
+          setBadge("badge-b-sizes", spread.densestCluster + " sizes in the tight cluster, " + (spread.densestCluster <= 4 ? "passes" : "still crowded"), spread.densestCluster <= 4 ? "pass" : "fail");
+        } else {
+          setBadge("badge-b-h1", (h1v != null ? h1v : "?") + "px headline, did not reach 30", "fail");
+          setBadge("badge-b-sizes", "did not apply, reload", "fail");
+          markPanelFailed("b", "the headline/type CSS did not apply on this load.");
+        }
+        setBadge("badge-b-photo", photo + "% photo, still open", "fail");
+        done();
+      });
+    });
+    iframe.src = iframe.getAttribute("data-src");
+  }
+
+  // ---- Panel C: hero-tighten (top strip) then real Coiffeur Basel cards (bottom strip),
+  // verbatim mechanism from fix-why-solen--c-content-forward/index.html --------------------------
+  function loadC(done) {
+    var heroFrame = document.getElementById("vC-hero");
+
+    function finishCFail(msg) {
+      setBadge("badge-c-photo", "did not apply, reload", "fail");
+      markPanelFailed("c", msg);
+      done();
+    }
+
+    function loadCCards() {
+      var cardsFrame = document.getElementById("vC-cards");
+      cardsFrame.addEventListener("load", function () {
+        hidePlaceholder(cardsFrame);
+        cardsFrame.style.marginTop = "-171px";
+        pollUntil(function () {
+          var doc = safeDoc(cardsFrame);
+          if (!doc) return null;
+          // /de/basel/coiffeur renders through SalonResultCard, not the .card-listing-classed
+          // SalonCard used on the favorites page (confirmed live, the two are different
+          // components with no shared class); it also renders a hidden md:grid desktop variant
+          // of every card alongside the visible mobile rails, so filter to cards actually
+          // visible at this viewport, not merely present in the DOM.
+          var cards = Array.prototype.filter.call(doc.querySelectorAll('a[href^="/de/salon/"]'), function (a) {
+            return a.offsetWidth > 0 && a.offsetHeight > 0;
+          });
+          return cards.length > 0 ? doc : null;
+        }, PATCH_TIMEOUT_MS, POLL_INTERVAL_MS, function (doc) {
+          if (!doc) { finishCFail("the real salon cards did not load on this load."); return; }
+          var photo = px1(photoPercent(doc, 390, 844));
+          setBadge("badge-c-photo", photo + "% real photo, " + (photo >= 33 ? "passes" : "short of 33%"), photo >= 33 ? "pass" : "fail");
+          done();
+        });
+      });
+      cardsFrame.src = cardsFrame.getAttribute("data-src");
+    }
+
+    heroFrame.addEventListener("load", function () {
+      hidePlaceholder(heroFrame);
+      var doc = safeDoc(heroFrame), win = heroFrame.contentWindow;
+      if (!doc) { setBadge("badge-c-h1", "could not read frame", "fail"); finishCFail("the hero frame could not be read."); return; }
+
+      function attempt(doc) {
+        var h1 = doc.querySelector("h1");
+        var section = h1 ? h1.closest("section") : null;
+        if (!section) return;
+        if (!doc.head.querySelector('style[data-cmp="c"]')) {
+          var style = doc.createElement("style");
+          style.setAttribute("data-cmp", "c");
+          style.textContent =
+            "section.herotight-target{padding-top:20px !important;padding-bottom:16px !important}" +
+            "section.herotight-target p{margin-top:10px !important}" +
+            "section.herotight-target button{margin-top:16px !important}";
+          doc.head.appendChild(style);
+        }
+        section.classList.add("herotight-target");
+      }
+      function verify(doc) {
+        var section = doc.querySelector("section.herotight-target");
+        if (!section) return false;
+        return Math.abs(parseFloat(getComputedStyle(section).paddingTop) - 20) < 2;
+      }
+      runFix(doc, win, attempt, verify, function (heroOk) {
+        var h1 = doc.querySelector("h1");
+        var h1v = h1 ? px1(parseFloat(getComputedStyle(h1).fontSize)) : null;
+        setBadge("badge-c-h1", (h1v != null ? h1v : "?") + "px headline, unchanged", "fail");
+        if (!heroOk) { finishCFail("the hero padding did not tighten on this load."); return; }
+        loadCCards();
+      });
+    });
+    heroFrame.src = heroFrame.getAttribute("data-src");
+  }
+
+  // ---- Panel D: weight-600+ demoted to weight-500 on every leaf-text element, verbatim
+  // mechanism from fix-why-solen--d-airbnb-weight/index.html --------------------------------------
+  function loadD(done) {
+    var iframe = document.getElementById("vD");
+    iframe.addEventListener("load", function () {
+      hidePlaceholder(iframe);
+      var doc = safeDoc(iframe), win = iframe.contentWindow;
+      if (!doc) {
+        setBadge("badge-d-before", "could not read frame", "fail");
+        setBadge("badge-d-after", "could not read frame", "fail");
+        markPanelFailed("d");
+        done();
+        return;
+      }
+      pollUntil(function () { return heroReady(doc) ? true : null; }, PATCH_TIMEOUT_MS, POLL_INTERVAL_MS, function (ready) {
+        if (!ready) {
+          setBadge("badge-d-before", "could not measure, reload", "fail");
+          setBadge("badge-d-after", "could not measure, reload", "fail");
+          markPanelFailed("d");
+          done();
+          return;
+        }
+        var before = boldPercent(doc, win);
+        setBadge("badge-d-before", px1(before.pct) + "% bold, already under the 30% ceiling", before.pct <= 30 ? "pass" : "fail");
+
+        function attempt(doc, win) {
+          leafTextEls(doc).forEach(function (el) {
+            var w = parseInt(win.getComputedStyle(el).fontWeight, 10) || 400;
+            if (w >= 600) el.style.setProperty("font-weight", "500", "important");
+          });
+        }
+        function verify(doc, win) {
+          return boldPercent(doc, win).pct <= 1;
+        }
+        runFix(doc, win, attempt, verify, function (ok) {
+          var after = boldPercent(doc, win);
+          if (ok) {
+            setBadge("badge-d-after", px1(after.pct) + "% bold after, further under", "pass");
+          } else {
+            setBadge("badge-d-after", px1(after.pct) + "% bold after, did not clear", "fail");
+            markPanelFailed("d", "the bold-weight demotion did not clear on this load.");
+          }
+          done();
+        });
+      });
+    });
+    iframe.src = iframe.getAttribute("data-src");
+  }
+
+  // ---- Panel E: type fix (top strip, same as A/B) then homepage rail scroll (bottom strip),
+  // verbatim mechanism from fix-why-solen--e-recompose/index.html ---------------------------------
+  function loadE(done) {
+    var heroFrame = document.getElementById("vE-hero");
+
+    function finishEFail(msg) {
+      setBadge("badge-e-photo", "did not apply, reload", "fail");
+      markPanelFailed("e", msg);
+      done();
+    }
+
+    function loadERail() {
+      var railFrame = document.getElementById("vE-rail");
+      railFrame.addEventListener("load", function () {
+        hidePlaceholder(railFrame);
+        var doc = safeDoc(railFrame), win = railFrame.contentWindow;
+        if (!doc || !win) { finishEFail("the rail frame could not be read."); return; }
+        function findRailTop() {
+          var heads = doc.querySelectorAll("h2");
+          for (var i = 0; i < heads.length; i++) {
+            if (/coiffeur/i.test(heads[i].textContent || "")) {
+              return heads[i].getBoundingClientRect().top + win.scrollY - 20;
+            }
+          }
+          return null;
+        }
+        pollUntil(function () {
+          var target = findRailTop();
+          if (target == null) return null;
+          win.scrollTo(0, target);
+          var afterTarget = findRailTop();
+          return afterTarget != null && Math.abs(win.scrollY - afterTarget) < 40 ? true : null;
+        }, PATCH_TIMEOUT_MS, POLL_INTERVAL_MS, function (ok) {
+          if (!ok) { finishEFail("the homepage did not scroll to the Top Coiffeur row on this load."); return; }
+          var photo = px1(photoPercent(doc, 390, 424));
+          setBadge("badge-e-photo", photo + "% real photo, " + (photo >= 33 ? "passes" : "short of 33%"), photo >= 33 ? "pass" : "fail");
+          done();
+        });
+      });
+      railFrame.src = railFrame.getAttribute("data-src");
+    }
+
+    heroFrame.addEventListener("load", function () {
+      hidePlaceholder(heroFrame);
+      var doc = safeDoc(heroFrame), win = heroFrame.contentWindow;
+      if (!doc) { setBadge("badge-e-h1", "could not read frame", "fail"); finishEFail("the hero frame could not be read."); return; }
+      function attempt(doc) {
+        if (doc.head.querySelector('style[data-cmp="e"]')) return;
+        var style = doc.createElement("style");
+        style.setAttribute("data-cmp", "e");
+        style.textContent =
+          "h1 { font-size: clamp(28px, 7vw, 30px) !important; }" +
+          "section:first-of-type p { font-size: clamp(18px, 2vw, 20px) !important; }" +
+          "p.flex.items-start.gap-2 { font-size: 14px !important; }";
+        doc.head.appendChild(style);
+      }
+      function verify(doc) {
+        if (!heroReady(doc)) return false;
+        var h1 = doc.querySelector("h1");
+        return parseFloat(getComputedStyle(h1).fontSize) >= 27.5;
+      }
+      runFix(doc, win, attempt, verify, function (ok) {
+        var h1 = doc.querySelector("h1");
+        var h1v = h1 ? px1(parseFloat(getComputedStyle(h1).fontSize)) : null;
+        if (!ok) {
+          setBadge("badge-e-h1", (h1v != null ? h1v : "?") + "px headline, did not reach 28", "fail");
+          finishEFail("the headline fix did not apply on this load.");
+          return;
+        }
+        setBadge("badge-e-h1", h1v + "px headline, passes", "pass");
+        loadERail();
+      });
+    });
+    heroFrame.src = heroFrame.getAttribute("data-src");
+  }
+
+  // ---- Visibility gate + strict one-panel-at-a-time chain, same shape as compare-notifications --
+  function whenNearViewport(panelId) {
+    return new Promise(function (resolve) {
+      var el = document.getElementById("panel-" + panelId);
+      if (!el || typeof IntersectionObserver === "undefined") { resolve(); return; }
+      var obs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) { obs.disconnect(); resolve(); }
+        });
+      }, { root: null, rootMargin: "1000px 0px 1000px 0px", threshold: 0 });
+      obs.observe(el);
+    });
+  }
+
+  var QUEUE = ["now", "a", "b", "c", "d", "e"];
+  var LOADERS = { now: loadNow, a: loadA, b: loadB, c: loadC, d: loadD, e: loadE };
+
+  function runChain(index) {
+    if (index >= QUEUE.length) return;
+    var id = QUEUE[index];
+    whenNearViewport(id).then(function () {
+      return new Promise(function (resolve) { LOADERS[id](resolve); });
+    }).then(function () { runChain(index + 1); });
+  }
+
+  runChain(0);
 </script>
 </body>
 </html>
