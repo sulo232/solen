@@ -135,6 +135,46 @@ function sampleSettleSignature() {
   return `${textCount}|${Math.round(maxFont * 100)}|${Math.round(imageArea)}`;
 }
 
+// SETTLE note, part two (2026-08-27, /de/inspo/saved). sampleSettleSignature above holds
+// three quantities steady to decide a page is done: text-leaf count, max font size, loaded
+// image area. A loading skeleton holds all three of those constant while it shimmers, so the
+// settle loop was declaring a skeleton settled and the whole run measured the loading state
+// instead of the real screen. Proven four ways on that route: (1) the capture had 12 cards
+// and DiscoveryGridSkeleton's RATIOS array has exactly 12 entries, (2) measured tile width
+// 196px matches the skeleton's "-mx-4 px-1.5" wrapper math, not the real grid's "-mx-0 px-1.5"
+// (186px), (3) tile height 261px = 196 * 4/3 = RATIOS[0] of "3 / 4", (4) card background was
+// rgba(0,0,0,0) with zero images, where a real ItemCard frame is bg-s-bg-sunken and holds an
+// <img>. Known-answer control that passed at the same time: the identical width arithmetic on
+// /de/profile/favorites predicts 358 and the capture measures 358, so the instrument itself was
+// never the problem, only what it was willing to call "done". countVisibleSkeletons below is
+// the fix: the settle loop now also requires zero visible skeleton elements before it returns
+// settled, on top of the unchanged signature it already required.
+//
+// CORRECTED same day: the pattern first shipped here as /animate-pulse|skeleton/i and never
+// matched the one component it was built for. The registered <Skeleton> primitive
+// (app/[locale]/_components/primitives/Skeleton.tsx), which DiscoveryGridSkeleton wraps for
+// /de/inspo/saved, renders "animate-shimmer" (Tailwind keyframe), not "animate-pulse", and its
+// class list contains no substring "skeleton" either. A check that cannot fire on the one case
+// it was written for is worse than no check, it reads as coverage it does not have. Widened to
+// also match animate-shimmer; animate-pulse and skeleton stay in the pattern because the design
+// contract still names <Skeleton> for loading states generally and other surfaces may use
+// either token.
+function countVisibleSkeletons() {
+  let count = 0;
+  for (const el of document.body.querySelectorAll("*")) {
+    const rect = el.getBoundingClientRect();
+    if (rect.width <= 0 || rect.height <= 0) continue;
+    let className = el.className;
+    if (typeof className !== "string") {
+      // SVG elements expose className as an SVGAnimatedString, not a plain string.
+      if (className && typeof className.baseVal === "string") className = className.baseVal;
+      else continue;
+    }
+    if (/animate-pulse|animate-shimmer|skeleton/i.test(className)) count++;
+  }
+  return count;
+}
+
 async function waitForPageSettle(page) {
   await page.waitForLoadState("networkidle", { timeout: 3000 }).catch((err) => {
     console.error("[measure-sections] networkidle wait did not resolve, continuing without it:", err && err.message ? err.message : err);
@@ -142,6 +182,7 @@ async function waitForPageSettle(page) {
   await page.waitForTimeout(SETTLE_FLOOR_MS);
   const start = Date.now();
   let previous = null;
+  let skeletonCount = 0;
   while (Date.now() - start < SETTLE_CAP_MS) {
     let current;
     try { current = await page.evaluate(sampleSettleSignature); }
@@ -149,9 +190,18 @@ async function waitForPageSettle(page) {
       console.error("[measure-sections] settle sample failed, treating this route as unsettled:", err);
       return { settled: false };
     }
-    if (current === previous) return { settled: true };
+    try { skeletonCount = await page.evaluate(countVisibleSkeletons); }
+    catch (err) {
+      console.error("[measure-sections] skeleton count failed, treating this route as unsettled:", err);
+      return { settled: false };
+    }
+    if (current === previous && skeletonCount === 0) return { settled: true };
     previous = current;
     await page.waitForTimeout(SETTLE_POLL_MS);
+  }
+  if (skeletonCount > 0) {
+    console.error(`[measure-sections] settle cap reached with ${skeletonCount} visible skeleton element(s) still on screen, this route is skeleton blocked, not just slow to settle`);
+    return { settled: false, skeletonBlocked: true, skeletonCount };
   }
   return { settled: false };
 }
@@ -431,12 +481,15 @@ async function main() {
         measuredAtViewport: "390x844",
         httpStatus: status,
         settled: settle.settled,
+        skeletonBlocked: !!settle.skeletonBlocked,
+        skeletonElementsVisible: settle.skeletonCount || 0,
         redirectedAway: redirected,
         finalUrl,
         ...data,
       };
       const flags = [];
-      if (!settle.settled) flags.push("UNSETTLED");
+      if (settle.skeletonBlocked) flags.push(`SKELETON_BLOCKED (${settle.skeletonCount} visible)`);
+      else if (!settle.settled) flags.push("UNSETTLED");
       if (redirected) flags.push(`REDIRECTED to ${new URL(finalUrl).pathname}`);
       if (status >= 400) flags.push(`HTTP ${status}`);
       summary.push(`${target.folder.padEnd(20)} ${String(data.sections.length).padStart(3)} sections  ${String(data.screen.distinctSizes.length).padStart(2)} sizes  ${flags.length ? flags.join(" + ") : "ok"}`);
