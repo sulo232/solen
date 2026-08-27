@@ -404,12 +404,22 @@ export default function Header({ locale }: { locale: string }) {
   // V3-D349 (2026-05-28): detect a category/search route so the fused compact
   // search pill only ever appears there. Matches /{locale}/{segment} exactly
   // (trailing slash tolerated); query string is irrelevant to pathname.
+  // E5 (2026-08-27, owner: the search bar "moves to other places" and "should be a
+  // permanent spot", measured live at y 88 on this route against y 4 on its four
+  // siblings): widened to also recognise /{locale}/{city}/{category} (e.g.
+  // /de/basel/coiffeur) as a category route, since that path was falling through to
+  // null and leaving the global header unfolded on mobile there while every sibling
+  // category route folds it away. Mirrors isTopLevel's own two-segment derivation
+  // above (:384-385) rather than inventing a new one. The candidate segment still
+  // has to pass the CATEGORY_SEARCH_SEGMENTS check below, so an arbitrary third
+  // segment (a salon slug, a profile subpage) does not match.
   const categorySegment = React.useMemo<CategorySearchSegment | null>(() => {
     if (!pathname) return null;
-    const m = pathname.match(/^\/[a-z]{2}\/([^/?#]+)\/?$/);
-    const seg = m?.[1];
-    return seg && (CATEGORY_SEARCH_SEGMENTS as readonly string[]).includes(seg)
-      ? (seg as CategorySearchSegment)
+    const seg = pathname.replace(/^\/[a-z]{2}/, "").replace(/\/$/, "");
+    const parts = seg.split("/").filter(Boolean);
+    const candidate = parts.length === 1 ? parts[0] : parts.length === 2 ? parts[1] : undefined;
+    return candidate && (CATEGORY_SEARCH_SEGMENTS as readonly string[]).includes(candidate)
+      ? (candidate as CategorySearchSegment)
       : null;
   }, [pathname]);
 

@@ -103,10 +103,11 @@ const HEADER_CATEGORIES: { slug: string; route: string; label: string; iconSrc?:
 /**
  * CategoryPillRow, the mobile-only scrollable category strip (All / Coiffeur / Barber / Nails /
  * Spa / Inspo), rendered directly under a page's own search pill on home, every category/search
- * route, and /inspo. Self-gates its own visibility (mirrors Header.tsx's former
- * `showCategoryChrome`), so mounting it unconditionally in a shared file like SearchTemplate.tsx
- * (which also renders on 2-segment city-category routes, e.g. /basel/coiffeur, where the row
- * never showed) is safe , it renders null there exactly like Header used to.
+ * route (including a /{city}/{category} route like /basel/coiffeur, per E6 2026-08-27), and
+ * /inspo. Self-gates its own visibility (mirrors Header.tsx's own `showCategoryChrome`), so
+ * mounting it unconditionally in a shared file like SearchTemplate.tsx (which also renders on
+ * plain profile/salon-slug routes with an unrelated second segment) is safe , it renders null
+ * there exactly like Header does.
  *
  * Deliberately NON-STICKY (owner 2026-08-01, quoted above): a plain child in normal document flow,
  * no `sticky`/`fixed` class anywhere in this file.
@@ -119,12 +120,19 @@ export default function CategoryPillRow() {
   // categorySegment, and the showCategoryChrome gate built from them.
   const isHome = !!pathname && /^\/[a-z]{2}\/?$/.test(pathname);
   const isDiscover = !!pathname && /^\/[a-z]{2}\/inspo\/?$/.test(pathname);
+  // E6 (2026-08-27), widened alongside Header.tsx's own copy of this same derivation:
+  // /{locale}/{city}/{category} (e.g. /de/basel/coiffeur) now counts as a category route
+  // too. Header folding away its chrome on that route while this row still returned null
+  // would vacate the slot and leave nothing in it, worse than not folding at all, so the
+  // two files' derivations have to move together. Candidate still validated against
+  // CATEGORY_SEARCH_SEGMENTS below, same as the single-segment case already did.
   const categorySegment = React.useMemo<CategorySearchSegment | null>(() => {
     if (!pathname) return null;
-    const m = pathname.match(/^\/[a-z]{2}\/([^/?#]+)\/?$/);
-    const seg = m?.[1];
-    return seg && (CATEGORY_SEARCH_SEGMENTS as readonly string[]).includes(seg)
-      ? (seg as CategorySearchSegment)
+    const seg = pathname.replace(/^\/[a-z]{2}/, "").replace(/\/$/, "");
+    const parts = seg.split("/").filter(Boolean);
+    const candidate = parts.length === 1 ? parts[0] : parts.length === 2 ? parts[1] : undefined;
+    return candidate && (CATEGORY_SEARCH_SEGMENTS as readonly string[]).includes(candidate)
+      ? (candidate as CategorySearchSegment)
       : null;
   }, [pathname]);
   const showCategoryChrome = isHome || !!categorySegment || isDiscover;

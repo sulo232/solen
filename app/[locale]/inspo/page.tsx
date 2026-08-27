@@ -464,8 +464,11 @@ function DiscoverPageContent() {
     setSearchInput("");
   };
 
+  // pt-0 (was pt-1.5): the extra 6px pushed this page's HomeSearchPill to y18 instead of the
+  // locked y12 every other screen uses (HomeSearchPill.tsx:230-236, "one height, 64, whatever
+  // the scroll position"); removed so this bar sits on the same 12 as home/coiffeur/etc.
   return (
-    <main className="min-h-screen bg-white pt-1.5 pb-24">
+    <main className="min-h-screen bg-white pt-0 pb-24">
       <div className="max-w-7xl mx-auto px-4">
         {/* V3-D410 (user): the page title ("Entdecken") + a "Solen › Entdecken" breadcrumb now live in the global
             header's logo slot (see Header.tsx, route-gated to /inspo) — so the standalone h1 here is removed to
