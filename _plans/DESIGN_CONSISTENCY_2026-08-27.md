@@ -121,12 +121,28 @@ Ordered so that each step makes the next one cheaper. Nothing here is a mockup o
 every step either restores a rule that already exists or makes two screens agree with each other in
 the direction of the screen he already likes.
 
-- [ ] **S1. Make the floors check real again.** One line: `BASE_URL: http://localhost:3002` in the
-  `floors:` job. Then run it against a live local server and READ THE OUTPUT. It will not be green.
-  CLOSE CONDITION: the failure list exists as a file, per route, per floor. This converts "everywhere
-  looks ass" into a list with numbers.
-  ALSO: fix the silent-skip. A route that could not be measured must fail the gate under `--gate`,
-  not be skipped, or the same class of bug returns the next time a port changes.
+- [x] **S1. Make the floors check real again. DONE 2026-08-27, commit `16eb8782e`.**
+  Both bugs fixed: the `floors:` job's `BASE_URL` now says 3002, the port its own job serves; and an
+  unmeasurable route now FAILS the gate instead of being skipped.
+  PROVED by control, not by claim: old code against a dead port exits **0** printing "GATE: PASSED";
+  new code, same input, exits **1** printing "GATE: FAILED".
+  Corrected while doing it: I had written that Playwright cannot launch in this sandbox. It can. The
+  earlier failure was a different script, and the assumption was wrong.
+  **THE MEASURED LIST, 15 routes at 390x844 on the live site, floors failed out of six:**
+  `/de/salon/cuts-and-culture` **0** - help 1 - notifications 2 - inspo 3 - `/de/coiffeur` 3 -
+  `/de/nails` 3 - `/de/spa` 3 - `/de/basel/coiffeur` 3 - salon reviews 3 - warum-solen 3 - `/de` 4 -
+  `/de/basel` 4 - profile 4 - profile/settings 4 - `/de/barbershop` 5.
+  **The salon detail page is the only page in the product that breaks nothing.** Every other page
+  breaks between one and five. His eye and the numbers agree exactly, with no interpretation needed.
+  Sharpest single number: on `/de/coiffeur`, `/de/nails`, `/de/spa`, `/de/basel/coiffeur` and
+  `/de/inspo` the **largest text on the screen is 14px** against a floor of 28, an anchor ratio of
+  1.02x to 1.17x. Those screens have no hierarchy at all, which is his "placement hierarchy is not
+  correct", measured.
+  STILL OPEN, and it is the bigger half of S1: the gate visits only **three** routes
+  (`/de`, `/de/salon/old-town-barbers`, `/de/booking/lookup`) and all ten of their current failures
+  sit in `FLOORS_ALLOWLIST`. So even with the port right it was toothless. Widening the route list
+  will fail CI until the surfaces are fixed, which is why it is not armed in the same breath as the
+  port fix. That widening is the first thing S4 earns.
 
 - [ ] **S2. Chrome becomes one component, not six.** The search pill and the category row are
   cross-screen furniture, and this project's own FLOORS LAW 8 already says an entity on more than
