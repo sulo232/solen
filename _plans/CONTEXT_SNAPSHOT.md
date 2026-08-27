@@ -2,16 +2,20 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-28T00:19:43 (trigger: auto)
+- taken: 2026-08-28T01:22:10 (trigger: auto)
 - branch: claude/stress-test-gates-hooks-6dc8e8
 
 ## git
 ```
-fa1b7f8bb Record the language work, and correct a reviewer who called an inconsistency a leak
-d05e31d75 A check that finds German baked into a page, because the last sweep said done and was not
-3eb1fee6c Your English, French and Italian site stops speaking German
-ceec0f825 The last six hand-drawn back controls now compose the shared button
-f1d504ac4 The shared back button can now be a link, which unblocks eight more pages
+b6989aebb Trace the two odd sizes, count the habit at 350, and record one wrong hypothesis
+de086ea0e Name the account screen's seven text sizes, four of them inside 3.5 pixels
+b2bf2696b The search bar does not move between categories, it disappears
+35261dde8 Trace the ladder to 10 places, and find that his home page headline is off on phones
+ec9e63eaa Name the cost of the ladder before a builder hits it: 187 headings grow in translation
+```
+```
+M _plans/ACTIVE.md
+?? public/_mockups/one-ladder-everywhere/
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
