@@ -212,7 +212,27 @@ the direction of the screen he already likes.
   those are removals not restyles; one is 32px, under the 44px touch floor. All 13 are on one page,
   at real size, no tap needed: `public/_mockups/compare-back-arrow/index.html` (`58c0d98de`),
   verified rendering at 402x844.
-  STILL OPEN: nothing has moved in the product. The sweep still returns 13 variants, not 2.
+  **THE STANDARD IS ALREADY DECIDED AND I HAD IT WRONG. CORRECTED 2026-08-27.**
+  This step, and workstream 51's chrome half, both recorded the standard as his 2026-08-03 pick: a
+  44px `#F2F2F2` circle at `border-0` with `ArrowLeft size={22} strokeWidth={2.2}`. There is a LATER
+  dated decision that supersedes it, and it is recorded with his own words.
+  `_design-system/LOCKFILE.md`, NAV CONTROLS, **LOCKED 2026-08-10**, frozen after he caught us
+  shipping two shapes for one control:
+      back   circle 44   glyph **`ChevronLeft`, NEVER `ArrowLeft`**   white fill   shadow only
+      close  pill with the word "Close", never a bare X, 68 x 44      white fill   shadow only
+      menu   SQUARE (`rounded-input`) 44, `Menu` glyph                white fill   shadow
+  His words in that same block: *"the back button maybe, like, a circle... and, also, like,
+  shadow"*, then *"I wanna get, like, not, like, an arrow. Like, I want, like, a good triangle."*
+  A triangle is a chevron. He asked for it by shape, not by name, and the lock wrote it down.
+  So under the precedence chain the later dated decision wins, and **S3 has NO fork and needs no
+  word from him.** What ships today contradicts his own lock in the most visible place: the global
+  header renders `ArrowLeft size={22}` at `Header.tsx:797`. The chevron correction was made in the
+  auth mockup and never in the header.
+  Two more contradictions inside the same lock, both currently ticked as done in workstream 51 and
+  both false: there is NO close control in the header at all, and the only `X` on screen is the
+  hamburger's open state, which is a square, not the frozen pill.
+  STILL OPEN, but now as a BUILD and not a question: nothing has moved in the product. The sweep
+  still returns 13 variants, not 2.
 
 - [x] **S4. Write the nine missing screen specs. CLOSED 2026-08-27.** Use `salon-detail`'s 21 files as the template,
   since that is the shape that produced the screen he likes. Each of the nine gets its sections
@@ -292,6 +312,29 @@ the direction of the screen he already likes.
   Index recount: **34 CLOSED, 35 ACTIVE, 10 PAUSED** across all 110 rows.
   STILL OPEN: the design ACTIVE count is still above the target of under 10. What is left is mostly
   not audit work any more, it is nine one-word answers that need to reach him as ONE list.
+
+- [ ] **S8. The English site speaks German to anyone who cannot see it. MEASURED 2026-08-27, NOT
+  YET FIXED, and no decision is needed to fix it.**
+  Found while fixing two visible German strings on the home page. The visible ones were two. The
+  INVISIBLE ones are **31, across 19 customer-facing files**, counted with a script that skips any
+  string already routed through the translation system and skips the dev routes (6 more hits there,
+  which do not matter).
+  These are the `alt` and `aria-label` texts, the words a screen reader speaks out loud and the
+  words that appear when a photo fails to load. On the English, French and Italian site they are all
+  German. A blind customer on the English site hears "Zurueck", "Schliessen", "Vorheriges Foto",
+  "Foto 3 von 9", "Bewertung von Anna oeffnen".
+  Worst concentration, and it is on the screen he likes: `SalonLightbox.tsx` has FIVE in one file
+  (`:117`, `:125`, `:145`, `:157`, `:164`), so the whole photo viewer is German in every language.
+  `SalonHero.tsx` has two, `SalonResultCard.tsx` two, `StaffProfilePage.tsx` four.
+  WHY IT WAS NEVER CAUGHT: `scripts/check-i18n-parity.mjs` compares the four locale files against
+  each other and passes clean, because these strings are not in any locale file at all. They are
+  typed straight into the components. This is the same shape as the 1,716 copy keys rendered on no
+  screen: the checker measures the thing that is easy to measure.
+  NO FORK, so this is not a stop. It is one sweep: route all 31 through the existing translation
+  system, add the keys in all four languages, keep the German values byte-identical so the German
+  site does not move.
+  CLOSE CONDITION: the same script returns 0 customer-facing hits, and a screen reader label read
+  off the running `/en`, `/fr` and `/it` salon page matches that page's language.
 
 - [ ] **S6. Then and only then, the look.** Gray, the dashboard direction, typography. Those are
   taste calls and they are his. They are LAST on purpose: fixing them before S1 to S4 means fixing
