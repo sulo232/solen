@@ -720,6 +720,22 @@ body 14, ratio 2.14, 5 sizes, densest 4, photo 34.7%.
 | a category page | **18** | 12 | **1.50** | 3 | 3 | **33.4** | 7 | 41.8 |
 | inspo | **14** | 12 | **1.17** | 2 | 2 | 7.4 | 8 | 64.3 |
 
+Three more read the same way, added after the first pass:
+
+| screen | anchor | body | ratio | sizes | densest | bold % | shadows | photo % |
+|---|---|---|---|---|---|---|---|---|
+| his saved salons | **18** | 12 | **1.50** | **6** | **5** | 20.2 | 4 | 62.3 |
+| his saved looks | **22** | 12 | 1.83 | 2 | 1 | 19.6 | 3 | 37.4 |
+
+**AND ONE READING WAS THROWN OUT RATHER THAN PUBLISHED.** `/de/walk-in-pay` measured anchor 14,
+body 14, ratio 1.0, 2 sizes, 0% bold. Those numbers are absurd for a payment screen, so the screen
+was read rather than the instrument trusted: without a token in the URL the route renders an ERROR
+state whose entire visible text is "FEHLER Kein Token oder Salon angegeben", 58 characters. The
+numbers are that error page's, not the payment screen's, and publishing them would have put a false
+row in this table. The payment screen needs a real token to measure and has not been measured.
+Noticed on the way and not fixed: that error state shouts "FEHLER" in capitals, which is the
+tracked-uppercase treatment this project bans in mockups and has never ruled on in production.
+
 Ladder targets, from the table above: anchor >= 28 and 30 is the house value; body 14; ratio >= 1.8;
 at most 5 distinct sizes and at most 4 inside any 8px window; at most 30% of characters at weight
 >= 600; at least 2 distinct shadows; photographic share >= 33% on browse and discovery surfaces.
