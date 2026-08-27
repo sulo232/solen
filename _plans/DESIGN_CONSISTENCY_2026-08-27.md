@@ -886,6 +886,29 @@ face value.
 ONE mockup, and every ladder item follows from his answer to it.** Which is the right shape anyway.
 The split above stands as a description of blast radius, not as a route past the gate.
 
+### THE ACCOUNT SCREEN'S SEVEN SIZES, NAMED (2026-08-28)
+
+The ladder allows 5 distinct sizes and at most 4 inside any 8px window. His account screen renders
+7, with 5 inside one 8px window. Read live at 390x844, with what actually carries each size:
+
+      28px    x1   his name
+      18px    x1   the word "Profil"
+      15.5px  x7   the row titles: Buchungen, Wallet, Gutscheine
+      14px    x1   "Profil bearbeiten"
+      13px    x6   the row sublines: "Ihre Buchungen ansehen", "Karte hinzufügen", "1 aktiv"
+      12px    x8   the bottom tab labels: Konto, Buchungen, Wallet
+      10px    x1   a badge count, the single character "3"
+
+**Four sizes, 15.5 / 14 / 13 / 12, live inside 3.5 pixels of each other.** That is the exact failure
+the EMPHASIS BUDGET clause (c) names: breaking the size ceiling while every size sits within a few
+pixels costs consistency and buys no hierarchy, because no reader can tell 15.5 from 14 from 13. It
+is why the screen reads busy without reading structured, and it is a different defect from the body
+size, so it needs its own fix rather than riding along on the 13-to-14 move.
+
+Also worth naming: 15.5px is not a value in this system's scale at all, and 10px is below anything
+this product uses for text elsewhere. Neither is explained by the traced sites, so both need a
+source found before either is changed.
+
 ### The forks, both arms decided now
 
 - **A variant only looks different and moves no number.** PLAN A: the critic kills it and it is not
