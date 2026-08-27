@@ -149,9 +149,27 @@ the direction of the screen he already likes.
   one screen renders through the same component. Today they are re-implemented per route family.
   CLOSE CONDITION: the pill's measured y, height and width are identical on `/de`, all four category
   routes, and `/de/inspo`, verified by re-running the live sweep in section 1(c).
-  HIS CALL, one line, not a stop: WHICH position wins. Plan A is the home page's (y 13, h 62), since
-  it is the first thing anyone sees. Plan B is the category page's (y 4, h 54), which buys 8px of
+  HIS CALL, one line, not a stop: WHICH position wins. Plan A is the home page's (y 12, h 64), since
+  it is the first thing anyone sees. Plan B is the category page's (y 4, h 54), which buys 10px of
   content. I will take Plan A if he says nothing.
+  MEASURED 2026-08-27, all seven routes that carry a search control, live at 390x844:
+      /de                  x 16  y 12  358x64  r 40px  1px border  sticky   "Suchen"
+      /de/coiffeur         x 16  y  4  358x54  r 40px  1px border  sticky   "Suche bearbeiten"
+      /de/nails            x 16  y  4  358x54  r 40px  1px border  sticky   "Suche bearbeiten"
+      /de/spa              x 16  y  4  358x54  r 40px  1px border  sticky   "Suche bearbeiten"
+      /de/barbershop       x 16  y  4  358x54  r 40px  1px border  sticky   "Suche bearbeiten"
+      /de/inspo            x 16  y 18  358x64  r 40px  1px border  SCROLLS AWAY  "Styles suchen..."
+      /de/basel/coiffeur   x 16  y 88  358x54  r 40px  1px border  sticky   "Suche bearbeiten"
+  So the pill is NOT six re-implementations of six different looks. Width, radius, inset and border
+  are identical on all seven. What differs is exactly three things, and all three are what he was
+  pointing at:
+      1. FOUR different vertical positions, 4 / 12 / 18 / 88. The 88 is the jump you actually feel:
+         on a city-plus-category route the bar sits 84px lower than on the four category routes.
+      2. TWO heights, 64 and 54, so the bar changes size as you move between screens.
+      3. ONE screen where it is not sticky at all: on Inspo it scrolls away, and every other screen
+         keeps it. That is the "moves to other places" half of his complaint, exactly.
+  This narrows S2 a long way. It is not a rebuild, it is picking one y, one height, and making
+  Inspo sticky like everything else.
 
 - [ ] **S3. Back arrow becomes one rule.** Standard is the 44x44 at (16,20) that seven pages already
   use. The salon page KEEPS its see-through 40x40, as a named variant, because a solid white circle
