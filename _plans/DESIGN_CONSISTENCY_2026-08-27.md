@@ -442,6 +442,38 @@ the direction of the screen he already likes.
   exactly two variants among everything migrated; the three holdouts are the only thing between
   this and closed.
 
+  **ALL FOUR OPEN QUESTIONS ARE NOW ON ONE PAGE, 2026-08-28.** The mockup gained a fourth section
+  drawing the three holdouts at real size beside the locked look, on the ground each actually sits
+  on. So his one word covers the salon page AND the three, instead of four separate asks. The page
+  now offers him two literal answers to pick between: "over a photo it stays see-through", which
+  gives white circle on a page and see-through circle on a photo; or "white everywhere".
+  Re-rendered and re-measured at 402x844 after the edit: 12 controls; ghost `rgba(0,0,0,0)` at
+  radius 999 with no shadow, darkglass `rgba(0,0,0,0.3)`, squircle radius 12px white with a
+  shadow, each 44x44; 4 type sizes (30/14/12/11) and 2 weights, inside the <=4 and <=2 ceiling;
+  body 402 against a 402 viewport, so no sideways scroll; the photo resolves to the real
+  self-hosted `p03.jpg`.
+
+  STALE NUMBERS ON THAT PAGE CORRECTED IN THE SAME EDIT, because it still told him "20 places, 17
+  different looks, all 20 draw the straight arrow, 11 too small to press", every word of which the
+  week's work had already made false. It now reads: all 20 draw the triangle, all 20 are 44
+  across, 17 of the 20 are the same one thing. The six `Diagnosis:` lines in its header carried
+  the same stale claims and were rewritten to the four that are still true, with the five
+  corrections named rather than quietly swapped.
+
+  THE THIRD HOLDOUT'S TRACE LIVES HERE, not on a `Depicts:` line in the mockup, and the reason is
+  recorded rather than skipped: the depicts check refuses the route's name because the graveyard
+  holds an entry for a DIFFERENT feature on that same route, its status, number, stepper and
+  wait-time UI. The mockup draws none of that. Writing the skip flag to force the line through
+  would have been the wrong move, so the trace is here where it is equally checkable:
+  `app/[locale]/walk-in-pay/page.tsx:362`, and the mockup's header comment says exactly this.
+
+  REMOVAL IS NOT AN OPTION FOR THESE THREE, checked instead of assumed, because the graveyard also
+  deletes per-screen controls drawn under the global header and two of the three tripped that
+  entry on their route name alone. Measured live at 390x844: `/de/walk-in-pay` and
+  `/de/inspo/saved` render NO global header element at all, and each draws exactly ONE control, at
+  (16,16), 44x44. There is nothing to stack under. Removing them would leave those screens with no
+  way back at all.
+
 - [x] **S4. Write the nine missing screen specs. CLOSED 2026-08-27.** Use `salon-detail`'s 21 files as the template,
   since that is the shape that produced the screen he likes. Each of the nine gets its sections
   named, its type scale fixed, its surface decided, and its card anatomy pinned to the registered

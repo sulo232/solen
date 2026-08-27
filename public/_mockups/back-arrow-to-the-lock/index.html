@@ -43,6 +43,22 @@
   Depicts: salon page over-photo control -> app/[locale]/_components/salon/SalonHero.tsx:107
   Depicts: the shared primitive, both variants -> app/[locale]/_components/primitives/BackButton.tsx:29
   Depicts: on-white and on-grey chrome control -> app/[locale]/_components/layout/Header.tsx:822
+  Depicts: the saved-look holdout -> app/[locale]/inspo/saved/[id]/page.tsx:60
+  Depicts: the board holdout -> app/[locale]/inspo/board/[id]/page.tsx:73
+
+  THE THIRD HOLDOUT'S TRACE IS IN _plans/DESIGN_CONSISTENCY_2026-08-27.md, S3, not on a Depicts
+  line here, and the reason is worth stating rather than working around. Its route name collides
+  with a graveyard entry that covers a DIFFERENT feature on that same route, the status, number,
+  stepper and wait-time UI that was deleted on purpose. Nothing of that kind is drawn on this page.
+  Writing the skip flag to get the line in would have been the wrong move, so the trace is recorded
+  where it is equally checkable and the collision is named here instead.
+
+  NOT THE DELETED SHAPE, checked rather than asserted, because the graveyard also carries an entry
+  for per-screen controls drawn under the global header. Measured live this turn at 390x844: both
+  of those routes and the pay route render NO global header element at all, and each draws exactly
+  ONE control, at (16,16), 44x44. There is nothing to stack under, so the deleted duplicate shape
+  is absent and these three are the only way back their screens have. Removing them would strand
+  the customer.
 
   SCALE NOTE, because the real-base gate reads a filename as a page-level claim: the only reason
   a page-level word appears anywhere in this file is that one Depicts line traces the control to
@@ -66,12 +82,19 @@
   GAINS the shadow the lock names. Icon size and stroke are NOT touched, because the lock names no
   icon size and inventing one is the exact thing the lock exists to stop.
 
-  Diagnosis: shared primitive box | measured 40px | violates LOCKFILE NAV CONTROLS 2026-08-10 back row, size 44 | target 44px
-  Diagnosis: salon page control vs its own row | measured 40px next to 3 siblings at 44px | violates LOCKFILE touch target 44px floor | target 44px
-  Diagnosis: glyph across every page-level control | measured ArrowLeft in 20 of 20 | violates LOCKFILE NAV CONTROLS 2026-08-10, ChevronLeft NEVER ArrowLeft | target ChevronLeft in 20 of 20
-  Diagnosis: on-white treatment | measured 0 shadow layers on the shared primitive on-white variant | violates LOCKFILE NAV CONTROLS 2026-08-10 back row, shadow only | target 1 layer at shadow-elevation-2
-  Diagnosis: distinct looks across the 20 page-level controls | measured 17 | violates LOCKFILE NAV CONTROLS 2026-08-10, one frozen shape | target 1
-  Diagnosis: page-level controls under the touch floor | measured 11 of 20 below 44px, smallest 28px | violates LOCKFILE touch target 44px floor | target 0 of 20
+  Diagnosis: distinct looks across the 20 controls | measured 4 remaining, was 17 | violates LOCKFILE NAV CONTROLS 2026-08-10, one frozen shape | target 1
+  Diagnosis: saved-look control fill | measured background transparent, 0 shadow layers | violates LOCKFILE NAV CONTROLS 2026-08-10 back row, white fill and shadow | target white fill plus shadow-elevation-2
+  Diagnosis: board control fill | measured rgba(0,0,0,0.30) with a white glyph | violates LOCKFILE NAV CONTROLS 2026-08-10 back row, white fill | target the one over-photo treatment, whichever he picks
+  Diagnosis: pay-to-walk-in control shape | measured border-radius 12px | violates LOCKFILE NAV CONTROLS 2026-08-10 back row, circle | target border-radius 999px
+  Diagnosis: pay-to-walk-in glyph | measured 22px at stroke 2.2 against 18px at 1.9 on the other 19 | violates FLOORS LAW 8, the same thing looks the same everywhere | target 18px at stroke 1.9
+
+  STALE CLAIMS CORRECTED 2026-08-28, because five of the six diagnoses above were fixed after this
+  page was written and leaving them would have been a false current-state claim of exactly the kind
+  rule 15 exists to catch. What they said and what is true now, all re-measured live this turn:
+  the shared primitive was 40px, it is 44px; the salon control was 40px beside three 44px siblings,
+  the row is even; the glyph was ArrowLeft in 20 of 20, it is ChevronLeft in 20 of 20; the on-white
+  variant carried 0 shadow layers, it carries shadow-elevation-2; 11 of 20 were under the 44px
+  touch floor, 0 are. The looks count went 17 to 4.
 
   Backend-check: this page has no actions. Nothing on it submits, saves, books, pays, removes or
   sends. Every control drawn here is inert by construction: each is a static div, never a button,
@@ -169,6 +192,21 @@
     border: 1px solid rgba(255,255,255,0.6);
     box-shadow: 0 1px 3px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.4);
   }
+  /* The three holdouts, values copied off their real source files and confirmed live. */
+  .btn.ghost { background: transparent; border: 1px solid var(--border); }
+  .btn.darkglass {
+    background: rgba(0,0,0,0.30);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    color: #fff;
+  }
+  .btn.squircle {
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 6px 18px rgba(26,18,9,0.10);
+  }
+  .trio { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .trio .cap { font-size: 11px; padding: 8px 8px 10px; }
 
   .note { margin-top: 40px; border-radius: 16px; background: var(--sunken); padding: 16px; }
   .note p { margin: 0 0 12px; }
@@ -180,11 +218,12 @@
 <div class="wrap">
 
   <h1>Your back arrow</h1>
-  <p class="lede">Left is what is on your site right now. Right is what you already decided on
-  10 August. <b>Three things differ, and none of them is a new idea.</b></p>
+  <p class="lede">Left is what your site looked like a week ago. Right is what it looks like today,
+  which is what you decided on 10 August. <b>Seventeen of the twenty are done. The last three are
+  at the bottom, and one word from you finishes them.</b></p>
 
   <h2>On a photo, which is your salon page</h2>
-  <p class="sub">The see-through fill stays. The size and the shape of the arrow move.</p>
+  <p class="sub">The see-through fill stayed. The size and the shape of the arrow moved.</p>
   <div class="row">
     <div class="cell on-photo">
       <div class="stage photo">
@@ -192,7 +231,7 @@
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
         </div>
       </div>
-      <div class="cap"><b>On your site now</b>40 across, straight arrow</div>
+      <div class="cap"><b>Before</b>40 across, straight arrow</div>
     </div>
     <div class="cell on-photo">
       <div class="stage photo">
@@ -200,7 +239,7 @@
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left"><path d="m15 18-6-6 6-6"/></svg>
         </div>
       </div>
-      <div class="cap"><b>What you locked</b>44 across, the triangle you asked for</div>
+      <div class="cap"><b>Now</b>44 across, the triangle you asked for</div>
     </div>
   </div>
 
@@ -213,7 +252,7 @@
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
         </div>
       </div>
-      <div class="cap"><b>On your site now</b>40 across, nothing lifts it</div>
+      <div class="cap"><b>Before</b>40 across, nothing lifts it</div>
     </div>
     <div class="cell">
       <div class="stage">
@@ -221,7 +260,7 @@
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left"><path d="m15 18-6-6 6-6"/></svg>
         </div>
       </div>
-      <div class="cap"><b>What you locked</b>44 across, soft shadow</div>
+      <div class="cap"><b>Now</b>44 across, soft shadow</div>
     </div>
   </div>
 
@@ -234,7 +273,7 @@
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
         </div>
       </div>
-      <div class="cap"><b>On your site now</b>Melts into the grey</div>
+      <div class="cap"><b>Before</b>Melts into the grey</div>
     </div>
     <div class="cell">
       <div class="stage sunken">
@@ -242,7 +281,64 @@
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left"><path d="m15 18-6-6 6-6"/></svg>
         </div>
       </div>
-      <div class="cap"><b>What you locked</b>Lifts off the grey</div>
+      <div class="cap"><b>Now</b>Lifts off the grey</div>
+    </div>
+  </div>
+
+  <h2>The last three that still look different</h2>
+  <p class="sub">Seventeen of your twenty now draw the same one. These three still draw their own.
+  All three are already the right size and already the triangle. Only the fill differs.</p>
+  <div class="trio">
+    <div class="cell">
+      <div class="stage">
+        <div class="btn lock ghost" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left"><path d="m15 18-6-6 6-6"/></svg>
+        </div>
+      </div>
+      <div class="cap"><b>A saved look</b>See-through, nothing lifts it</div>
+    </div>
+    <div class="cell on-photo">
+      <div class="stage photo">
+        <div class="btn lock darkglass" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left"><path d="m15 18-6-6 6-6"/></svg>
+        </div>
+      </div>
+      <div class="cap"><b>A board</b>Dark glass, white mark</div>
+    </div>
+    <div class="cell">
+      <div class="stage">
+        <div class="btn lock squircle" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left"><path d="m15 18-6-6 6-6"/></svg>
+        </div>
+      </div>
+      <div class="cap"><b>Paying to walk in</b>Rounded square, bigger mark</div>
+    </div>
+  </div>
+  <p class="sub" style="margin-top:12px">Against the one you locked, on the same three grounds:</p>
+  <div class="trio">
+    <div class="cell">
+      <div class="stage">
+        <div class="btn lock white shadowed" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left"><path d="m15 18-6-6 6-6"/></svg>
+        </div>
+      </div>
+      <div class="cap"><b>Locked</b>White, circle, lifted</div>
+    </div>
+    <div class="cell on-photo">
+      <div class="stage photo">
+        <div class="btn lock frost" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left"><path d="m15 18-6-6 6-6"/></svg>
+        </div>
+      </div>
+      <div class="cap"><b>Locked</b>See-through over a photo</div>
+    </div>
+    <div class="cell">
+      <div class="stage">
+        <div class="btn lock white shadowed" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left"><path d="m15 18-6-6 6-6"/></svg>
+        </div>
+      </div>
+      <div class="cap"><b>Locked</b>White, circle, lifted</div>
     </div>
   </div>
 
@@ -251,17 +347,19 @@
     one site and froze the answer, in your words: a circle, with a shadow, and
     <b>"not, like, an arrow. Like, I want, like, a good triangle."</b> A triangle is the chevron on
     the right. It was written down and then it was never built.</p>
-    <p><b>How far it drifted, counted by reading every one of them.</b> Your site has 20 places
-    where a customer goes back a screen. They come in <b>17 different looks.</b> All 20 draw the
-    straight arrow, none draws the triangle you asked for, and <b>11 of the 20 are too small to
-    press comfortably</b>, the smallest at 28 across where the floor is 44.</p>
-    <p><b>The one on the screen you like.</b> Measured today: it is 40 across, while the share,
-    save and report buttons beside it on the same row are all 44. One control in that row of four
-    is smaller than the other three, and it is the one people press most.</p>
-    <p><b>The one thing I am not deciding for you.</b> On the salon page it is see-through so the
-    photo shows through. Your lock says white. I kept it see-through on both sides here, because
-    the salon page is the one you told me looks right and a solid white circle sits heavy on a
-    photo. If you want it white there too, say so and it is a one line change.</p>
+    <p><b>Where it stands now, counted by reading every one of them.</b> Your site has 20 places
+    where a customer goes back a screen. A week ago they came in <b>17 different looks</b>, every
+    one drew the straight arrow, and 11 of the 20 were too small to press comfortably, the smallest
+    at 28 across where the floor is 44. Today <b>all 20 draw the triangle, all 20 are 44 across,
+    and 17 of the 20 are the same one thing.</b> The three above are what is left.</p>
+    <p><b>The one on the screen you like.</b> It was 40 across while the share, save and report
+    buttons beside it on the same row were all 44. It is 44 now, so that row is even.</p>
+    <p><b>The one word I need from you, and it settles all four.</b> Your lock says white. But on
+    the salon page it is see-through today so the photo shows through, and the same is true of the
+    board. Say <b>"over a photo it stays see-through"</b> and I move all four to that rule: white
+    circle on a page, see-through circle on a photo, nothing else anywhere. Say <b>"white
+    everywhere"</b> and all four go white. Either way it is one change and the last three stop
+    looking different.</p>
   </div>
 
 </div>

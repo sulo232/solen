@@ -2,28 +2,16 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-27T22:39:07 (trigger: auto)
+- taken: 2026-08-28T00:19:43 (trigger: auto)
 - branch: claude/stress-test-gates-hooks-6dc8e8
 
 ## git
 ```
-3c46def36 Close S2, and shrink two of his ten questions to one
-391ecb23c The search bar stops moving: one spot and one size on all seven screens
-3eb590a4d The arbitrated search bar plan, and what does not land without him
-ee7b06813 Every back control on the site is now the triangle he asked for, and 44 across
-e90c89a3c The rules said the category page draws its own trail. It draws nothing.
-```
-```
-M _plans/DESIGN_CONSISTENCY_2026-08-27.md
- M app/[locale]/_components/salon/SalonImageGallery.tsx
- M app/[locale]/_components/salon/SalonStickyTabNav.tsx
- M app/[locale]/inspo/saved/page.tsx
- M app/[locale]/onboarding/OnboardingFlow.tsx
- M components-legacy/booking/BookingWizard.tsx
- M components-legacy/discovery/DetailPage.tsx
- M components-legacy/refund/ReportRefundEntry.tsx
- M components-legacy/staff/StaffProfilePage.tsx
- M components-legacy/staff/StaffReviewsSheet.tsx
+fa1b7f8bb Record the language work, and correct a reviewer who called an inconsistency a leak
+d05e31d75 A check that finds German baked into a page, because the last sweep said done and was not
+3eb1fee6c Your English, French and Italian site stops speaking German
+ceec0f825 The last six hand-drawn back controls now compose the shared button
+f1d504ac4 The shared back button can now be a link, which unblocks eight more pages
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
