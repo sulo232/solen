@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Where your search bar sits, screen by screen</title>
+<!-- Base: capture -->
+<!-- Scale: component -->
+<!--
+  SCOPE is component. One control, the search bar, drawn at the real vertical position it holds on
+  each of the seven screens that carry one, stacked so every difference is visible in one glance
+  with nothing to tap. Owner 2026-08-15: "If we're talking about one, like, element or, like, one
+  section, the fuck." So this is not a whole-page mockup and does not pretend to be.
+
+  Base is capture. Every bar below is drawn at geometry read off the running site, not redrawn from
+  taste. Each frame is 390 wide, the real phone viewport, and each bar sits at the y it really sits
+  at, so the gaps between the frames ARE the finding.
+
+  Backend-check: NO ACTIONS RENDER ON THIS PAGE. Nothing here is tappable, submits anything, or
+  reaches any endpoint. Every frame is a static drawing of where one control sits, so there is no
+  action to trace to a table or a route.
+
+  measured: 2026-08-27 with Playwright at 390x844 against the running dev server, reading
+  getBoundingClientRect plus getComputedStyle, and walking each bar's ancestors for a sticky or
+  fixed position. Script kept at scripts/measure-search-bar.mjs so this is repeatable.
+    /de                 x 16px  y 12px  358x64px  radius 40px  border 1px  sticky   "Suchen"
+    /de/coiffeur        x 16px  y  4px  358x54px  radius 40px  border 1px  sticky   "Coiffeur Schweizweit"
+    /de/nails           x 16px  y  4px  358x54px  radius 40px  border 1px  sticky   "Nails Schweizweit"
+    /de/spa             x 16px  y  4px  358x54px  radius 40px  border 1px  sticky   "Spa Schweizweit"
+    /de/barbershop      x 16px  y  4px  358x54px  radius 40px  border 1px  sticky   "Barber Schweizweit"
+    /de/inspo           x 16px  y 18px  358x64px  radius 40px  border 1px  static   "Styles suchen..."
+    /de/basel/coiffeur  x 16px  y 88px  358x54px  radius 40px  border 1px  sticky   "Coiffeur Basel"
+  Width 358px, radius 40px, the 16px inset and the 1px #E4E4E7 border are IDENTICAL on all seven.
+  measure-ok.
+
+  Instrument correction, rule 15a, recorded because it nearly produced a wrong finding: the first
+  version of the measuring script matched the pill by its TEXT and reported "no search bar" on five
+  of the seven routes. Re-run against a known-answer control it was the script that was wrong, not
+  the product: away from home and Inspo the pill shows the CURRENT search ("Coiffeur Basel"), never
+  the word "Suche". Matching on shape finds all seven. The script now carries that note.
+
+  Diagnosis: 1 search bar sits at 4 different distances from the top across 7 screens | measured 2026-08-27 live at 390x844: y 4px on the four category screens, y 12px on home, y 18px on Inspo, y 88px on a city plus category screen, an 84px spread | violates FLOORS LAW 8, one entity on more than one screen renders through one component | target 1 y value on all 7 screens
+  Diagnosis: the same bar ships at 2 heights | measured 2026-08-27, 64px on /de and /de/inspo against 54px on the other 5 routes, a 10px difference on a control that is otherwise identical | violates FLOORS LAW 8, and the design contract row that gives cross-screen furniture one shape | target 1 height on all 7 screens
+  Diagnosis: 1 of 7 screens lets the bar scroll away | measured 2026-08-27, /de/inspo has no sticky or fixed ancestor on the bar while the other 6 do, so it leaves the screen on scroll | violates the owner's own words on 2026-08-27, that the search bar "should be, like, a permanent spot" | target 7 of 7 sticky
+  Diagnosis: 0 of these 3 differences are look differences | measured 2026-08-27, width 358px, radius 40px, inset 16px and border 1px #E4E4E7 are identical on all 7 routes, so only position, height and stickiness differ | violates nothing by itself, and that is the point: 3 values decide this, it is not a rebuild | target 1 y, 1 height, 7 sticky
+
+  Exists-check: `npm run exists "search bar"` run this turn. THIRTEEN hits, all read.
+    COMPONENTS: `SearchBar` at app/[locale]/_components/homepage/SearchBar.tsx, a second `SearchBar`
+      at components-legacy/discovery/SearchBar.tsx, and `SearchBarVariants` at
+      app/[locale]/dev/search-bar/SearchBarVariants.tsx. Two live SearchBar components for one
+      control is itself part of what is measured here. NO new component is created by this file.
+    ROUTE: /dev/search-bar exists. It shows VARIANTS of how the bar LOOKS, side by side on one
+      screen. It does not show WHERE the bar sits on each real screen, which is the only thing this
+      page does and the only net-new thing in it.
+    PAGE SECTIONS: nine hits, eight of them dev map and results probes, plus a note at
+      app/[locale]/page.tsx:235 recording the owner's 2026-08-01 fix ("it should be search bar
+      instead of category bar"). None of the nine compares position across routes.
+    GRAVEYARD: two hits, and both are the SAME removal, the search field that used to sit inside
+      the profile hub, killed 2026-08-02 under FLOORS LAW 10 when the owner picked the account hub
+      ("konto hub better"), because nobody searches their own saved list. That screen carries no
+      search field today and none is drawn or proposed here. The seven screens below are the
+      discovery side of the product, which is untouched by that removal.
+    TASTE_LOG: the Inspo home chrome entry, 2026-06-20, settles the category pills, the filter
+      model, the default feed and the cards. It says nothing about whether the search bar sticks, so
+      the stickiness finding above is not re-opening a settled call.
+  Grounded-in: app/[locale]/_components/homepage/SearchBar.tsx, the live component
+  Grounded-in: scripts/measure-search-bar.mjs, the measurement this page renders
+  Grounded-in: _plans/DESIGN_CONSISTENCY_2026-08-27.md, item S2, which this measures
+
+  Depicts: the /de frame -> app/[locale]/page.tsx
+  Depicts: the four category frames -> app/[locale]/coiffeur/page.tsx, app/[locale]/nails/page.tsx, app/[locale]/spa/page.tsx, app/[locale]/barbershop/page.tsx
+  Depicts: the /de/inspo frame -> app/[locale]/inspo/page.tsx
+  Depicts: the /de/basel/coiffeur frame -> app/[locale]/[city]/[category]/page.tsx
+
+  Treatment-only: nothing changes. Every frame shows what ships today, at real size, at the real
+  vertical position, with the real text.
+
+  Type ladder on this page itself at 402px: anchor 30px over a 14px body, ratio 2.14x, three
+  distinct sizes. That is the salon page's own ladder, the one the owner picked for every screen.
+-->
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100dvh; background: #FFFFFF; color: #0A0A0A;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { width: 100%; max-width: 402px; margin: 0 auto; padding: 0 0 72px; }
+  .nums { font-variant-numeric: tabular-nums; }
+
+  .lede { padding: 30px 16px 6px; }
+  .lede h1 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 30px; font-weight: 600; line-height: 1.12; letter-spacing: -0.02em;
+  }
+  .lede p { margin-top: 12px; font-size: 14px; line-height: 1.55; color: #6B6B6B; }
+
+  .tray { margin-top: 22px; background: #F4F4F5; padding: 18px 16px; }
+  .tray h2 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 17px; font-weight: 500; line-height: 1.25; letter-spacing: -0.01em;
+  }
+  .tray p { margin-top: 8px; font-size: 14px; line-height: 1.55; color: #6B6B6B; }
+
+  h2.band {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 17px; font-weight: 500; line-height: 1.3; letter-spacing: -0.01em;
+    padding: 26px 16px 2px;
+  }
+  .bandnote { padding: 0 16px 12px; font-size: 14px; line-height: 1.55; color: #6B6B6B; }
+
+  .screen { border-top: 1px solid #E4E4E7; padding: 0 0 14px; }
+  .frame {
+    position: relative; width: 390px; max-width: 100%; margin: 0 auto; height: 170px;
+    background: #FFFFFF; border: 1px solid #E4E4E7; overflow: hidden;
+  }
+  .frame .topline { position: absolute; left: 0; top: 0; width: 100%; border-top: 1px dashed #E4E4E7; }
+  .frame .topline span {
+    position: absolute; left: 8px; top: 2px; font-size: 14px; color: #6B6B6B;
+    font-variant-numeric: tabular-nums;
+  }
+  .bar {
+    position: absolute; left: 16px; width: 358px; border-radius: 40px;
+    background: #FFFFFF; border: 1px solid #E4E4E7;
+    display: flex; align-items: center; padding: 0 20px;
+  }
+  .bar .txt { font-size: 14px; color: #6B6B6B; white-space: nowrap; overflow: hidden; }
+  .cap { padding: 12px 16px 0; }
+  .cap .name { font-size: 14px; font-weight: 500; line-height: 1.35; }
+  .cap .spec { margin-top: 3px; font-size: 14px; line-height: 1.45; color: #6B6B6B; }
+
+  .note { padding: 24px 16px 0; font-size: 14px; line-height: 1.55; color: #6B6B6B; }
+  .note strong { color: #0A0A0A; font-weight: 500; }
+  .note + .note { padding-top: 14px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="lede">
+    <h1>Where your search bar sits</h1>
+    <p>You said it moves around and should have one permanent spot. It does move. Each box below is
+       your real phone screen, <span class="nums">390</span> wide, with the bar drawn exactly where
+       it really sits. The dotted line is the top of the screen.</p>
+  </div>
+
+  <div class="tray">
+    <h2>The good news first</h2>
+    <p>It is not seven different search bars. The width, the roundness, the outline and the
+       <span class="nums">16</span> gap from the edge are the same on all seven screens. Only three
+       things move, and all three are small.</p>
+  </div>
+
+  <h2 class="band">Home</h2>
+  <div class="bandnote">Sits <span class="nums">12</span> down from the top and stays put when you
+    scroll.</div>
+  <div class="screen">
+    <div class="frame">
+      <div class="topline"><span>0</span></div>
+      <div class="bar" style="top:12px; height:64px;"><span class="txt">Suchen</span></div>
+    </div>
+    <div class="cap">
+      <div class="name">/de</div>
+      <div class="spec"><span class="nums">12</span> down, <span class="nums">64</span> tall, stays put</div>
+    </div>
+  </div>
+
+  <h2 class="band">The four category screens</h2>
+  <div class="bandnote">All four identical to each other. They sit <span class="nums">4</span> down,
+    which is <span class="nums">8</span> higher than home, and they are <span class="nums">10</span>
+    shorter.</div>
+  <div class="screen">
+    <div class="frame">
+      <div class="topline"><span>0</span></div>
+      <div class="bar" style="top:4px; height:54px;"><span class="txt">Coiffeur Schweizweit</span></div>
+    </div>
+    <div class="cap">
+      <div class="name">/de/coiffeur, and Nails, Spa, Barber the same</div>
+      <div class="spec"><span class="nums">4</span> down, <span class="nums">54</span> tall, stays put</div>
+    </div>
+  </div>
+
+  <h2 class="band">Inspo</h2>
+  <div class="bandnote">The only screen where the bar leaves when you scroll. This is the half of
+    your complaint about a permanent spot.</div>
+  <div class="screen">
+    <div class="frame">
+      <div class="topline"><span>0</span></div>
+      <div class="bar" style="top:18px; height:64px;"><span class="txt">Styles suchen...</span></div>
+    </div>
+    <div class="cap">
+      <div class="name">/de/inspo</div>
+      <div class="spec"><span class="nums">18</span> down, <span class="nums">64</span> tall,
+        scrolls away</div>
+    </div>
+  </div>
+
+  <h2 class="band">A city plus a category</h2>
+  <div class="bandnote">The one you feel. The bar lands <span class="nums">84</span> lower here than
+    on the category screens, so it sits in a different place on the glass after one tap.</div>
+  <div class="screen">
+    <div class="frame">
+      <div class="topline"><span>0</span></div>
+      <div class="bar" style="top:88px; height:54px;"><span class="txt">Coiffeur Basel</span></div>
+    </div>
+    <div class="cap">
+      <div class="name">/de/basel/coiffeur</div>
+      <div class="spec"><span class="nums">88</span> down, <span class="nums">54</span> tall, stays put</div>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>Three things to decide, and each is one value.</strong> One height for all seven, one
+    distance from the top, and Inspo stays put like the other six.
+  </div>
+  <div class="note">
+    <strong>My pick, if you say nothing:</strong> the home one, <span class="nums">12</span> down at
+    <span class="nums">64</span> tall, because home is the first screen anyone sees and the bar is
+    the point of that screen. The cost of picking it: it is <span class="nums">10</span> taller than
+    the one the salon lists use today, so every list screen shows that much less of your first salon.
+  </div>
+  <div class="note">
+    <strong>Nothing here is changed yet.</strong> Every box is your product exactly as it is today.
+  </div>
+
+</div>
+</body>
+</html>
