@@ -766,6 +766,29 @@ NOT A FORK: he already answered this exact question with "same ladder everywhere
 is decided and the work is execution. What still binds is mockup-first, because moving a home page
 headline from 18px to 30px is the most visible change in the product.
 
+**THE NAMED COST OF HIS DECISION, found before any builder started, so it is designed for rather
+than discovered after.** The salon page clears the ladder in all four languages, verified: `/fr`
+and `/it` both render the same 30px anchor on one line. But that anchor is the SALON NAME, a proper
+noun that never translates. Every other screen's anchor is translated copy, and translated copy
+does not hold still:
+
+      heading-shaped copy keys examined                          488
+      that run 20% or more longer in some language than German   187
+
+The concrete case, all four locales of one heading:
+
+      de  14  "Buchung finden"
+      en  17  "Find your booking"
+      it  25  "Trovi la Sua prenotazione"
+      fr  27  "Retrouver votre réservation"
+
+At 30px on a 390px screen roughly 23 characters fit on a line, so that heading is one line in
+German and two in French. Two lines is not a defect, but it has to be the design rather than a
+surprise. So the anchor floor is measured against the LONGEST of the four locales, never against
+German, which is what FLOORS LAW 1(f) already demands in its worst-case-content clause and what
+`copy-i18n-09` already warns about for fixed-height controls. Written here because a builder
+reading only the German page would ship a headline that breaks in French.
+
 ### The forks, both arms decided now
 
 - **A variant only looks different and moves no number.** PLAN A: the critic kills it and it is not
