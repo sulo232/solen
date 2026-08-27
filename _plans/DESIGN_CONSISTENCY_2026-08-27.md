@@ -789,6 +789,63 @@ German, which is what FLOORS LAW 1(f) already demands in its worst-case-content 
 `copy-i18n-09` already warns about for fixed-height controls. Written here because a builder
 reading only the German page would ship a headline that breaks in French.
 
+### TRACED 2026-08-28: it is 10 places, not 7 screens, and two of them are not size problems
+
+Eight agents, seven tracing one screen each and one arbiter colliding them. The arbiter re-opened
+16 of the seven readers' file:line citations itself and every one held, so these are checked
+findings rather than relayed ones.
+
+**ANSWER: 10 distinct places have to change**, because a screen is not the unit. Grouped:
+
+      SalonCard.tsx                 12px body at 4 sibling sites, 10 importers   fixes home AND category
+      SectionHeader.tsx             18px section h2, 23 importers                widest blast radius found
+      CategoryMobileRails.tsx       the SAME clamp string, hand-copied           FLOORS LAW 9 defect
+      HomeSearchPill.tsx            14px pill label                             also renders on home
+      CategoryPillRow.tsx           14px tab label                              also renders on home
+      ItemCard.tsx + VideoCard.tsx  12px, byte-identical, 4 importers each       must move together
+      AccountHub.tsx                13px row subline, 1 importer                 SAFE, single screen
+      team/page.tsx                 13px at 3 sites, 0 other importers           SAFE, single screen
+      booking/lookup/page.tsx       21px anchor and 12px body                    see below
+
+**TWO OF THE TEN ARE NOT SIZE PROBLEMS AT ALL, and both were verified by me live, not relayed.**
+
+1. **His home page HAS a headline. On a phone it is switched off.** Measured at 390px wide: the
+   `<h1>` "Termine, sofort bestätigt." is in the page, computes to 31.2px, and measures **0 by 0**.
+   CONTROL, the same page at 1024px wide: the same headline is 44px and 960 by 48, fully visible.
+   So the biggest thing a phone visitor sees is a section header at 18px, and a desktop visitor
+   sees a 44px headline.
+   **WHY IT IS MISSING, and the answer is that he did it on purpose.** `Hero.tsx:159` carries the
+   reason in the file: *"V3-D (2026-08-01, owner 'why is homepage still that bro'): this whole
+   block ... is the 'old hero' the task named. Mobile now renders HomeSearchPill below instead,
+   matching the category-page chrome; desktop is untouched."* So this is a dated owner deletion and
+   it is NOT to be quietly restored.
+   **WHAT WAS NEVER HANDLED IS WHAT IT WAS CARRYING.** Hiding that block took the screen's only
+   display anchor with it, and nothing replaced it. FLOORS LAW 6 waives the anchor only when the
+   photograph is the focal, and this screen's photographic share measures 27.9%, under its own 33%
+   floor. So the mobile home page has neither an anchor nor a photo focal. Same half-landed shape
+   as the breadcrumb: the removal shipped, the replacement did not.
+2. **Inspo has no `<h1>` at all.** Zero, at any width, confirmed by me on the rendered page and by
+   the arbiter in the source. Its "anchor" of 14px is a search-pill placeholder label. So the fix
+   there is not resizing anything, it is that the screen has no title element to resize.
+
+**AND ONE MORE HALF-SCREEN, found while verifying rather than looked for:** `booking/lookup`'s
+headline is 21px on a phone and 38px only from 768px up, so mobile visitors never see a compliant
+anchor there either. Its sibling route `booking/resend-link` hand-rolls a SECOND independent copy
+of the same form, already drifted (different line-height on the same hint style). Fixing one leaves
+the other, which is the complaint recurring one route away.
+
+**SPLIT INTO WHAT IS SAFE AND WHAT NEEDS HIM**, per his standing "change the safe ones show me the
+rest":
+  SAFE, single screen, zero other importers, pure ladder compliance, no taste in it:
+      `AccountHub.tsx:280` 13px to 14px
+      `salon/[slug]/team/page.tsx` 13px to 14px at lines 99, 171, 179
+  NEEDS A MOCKUP, because each changes screens he has approved or has cross-screen reach:
+      SalonCard's 12px (10 importers, moves home, category, the PDP rail and his saved salons)
+      SectionHeader's 18px (23 importers, moves every section header on the feed at once)
+      the mobile home page's missing anchor, which is his 2026-08-01 deletion to re-answer
+      Inspo having no title element
+      booking/lookup's mobile anchor, together with its drifted twin
+
 ### The forks, both arms decided now
 
 - **A variant only looks different and moves no number.** PLAN A: the critic kills it and it is not
