@@ -846,6 +846,46 @@ rest":
       Inspo having no title element
       booking/lookup's mobile anchor, together with its drifted twin
 
+### MEASURED 2026-08-28: the search bar he says moves. It does not move, it DISAPPEARS.
+
+His words: *"if you switch between, like, in home page, like, between categories. Right? And then a
+search bar somehow, like, move with... moves, like, to other places, like, you know, that should be,
+like, a permanent spot."* Walked exactly that gesture at 390x844 and measured the top of each
+screen:
+
+      /de                    search bar at y 13, 356 wide, reads "Suchen"        tabs at y 96
+      /de/basel/coiffeur     NO search control in the top 240px at all           tabs at y 104
+      /de/basel/nagelstudio  the same, none                                      tabs at y 104
+      /de/inspo              search bar at y 13, 304 wide, reads "Styles suchen..."
+
+So the honest finding is worse than the one he described. He said it moves. On a category page it
+is **gone**: the top 240 pixels contain the six category tabs and then straight into salon cards,
+with nothing where he had just been typing. And the tabs he tapped shift down 8px in the same
+gesture, which is the small wrongness that makes a screen feel unglued even when you cannot name it.
+
+On Inspo it does move: same y, but 52px narrower and with different words in it, so the same control
+is three different controls across three screens. That is FLOORS LAW 8 exactly, the same thing
+looking different on different screens, measured rather than asserted.
+
+NOT FIXED IN THIS PASS, and named as its own item rather than folded into the type work: putting one
+search control in one position on all three is a visible change to surfaces he has approved, so it
+goes to him with a mockup. It is now the second item on that mockup, after the home page's missing
+big text.
+
+### THE TWO "SAFE" FIXES WERE REFUSED, AND THE REFUSAL WAS RIGHT (2026-08-28)
+
+I split the ten places into two that looked safe (a 13px body moving to 14px on two screens with no
+other importers) and eight needing a mockup, then sent the safe two through the loop. All four edits
+were BLOCKED by the mockup-visual gate: changing a `text-[Npx]` token on a real component needs a
+prior approved mockup, cited on the line. The builder refused to write the skip flag or to invent a
+`mockup-ok:` reference, and routed back up instead. The reviewer graded it FAIL on an empty diff,
+which is correct, and checked the stash for a hidden change rather than taking the empty diff at
+face value.
+
+**So there is no such thing as a safe type change here, and that collapses the plan into one thing:
+ONE mockup, and every ladder item follows from his answer to it.** Which is the right shape anyway.
+The split above stands as a description of blast radius, not as a route past the gate.
+
 ### The forks, both arms decided now
 
 - **A variant only looks different and moves no number.** PLAN A: the critic kills it and it is not
