@@ -148,6 +148,11 @@ const ABUSE_PRONE_LIMITERS = new Set<Ratelimit>([
 
 const RATE_LIMITED_BODY = { error: "Too many requests. Please try again later.", code: "RATE_LIMITED" } as const;
 
+// Retry-After sent when an abuse-prone limiter fails CLOSED with no Redis to ask. We have no
+// real reset time to report, so this is a plain "come back in a minute" rather than a
+// fabricated window.
+const FAIL_CLOSED_RETRY_AFTER_SECONDS = 60;
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Configurable AI daily cap (platform_settings.key='ai_daily_cap', value.cap),
 // editable via /api/admin/ai-limits. In-memory TTL cache, same style as the
@@ -354,7 +359,20 @@ export async function applyRateLimit(
       });
     }
   } catch (err) {
-    // Redis connection failed, allow request through rather than blocking
+    // RL-LIVE-01 (HIGH, 2026-07-17): a RUNTIME Redis failure (configured but unreachable,
+    // timing out, or rate-limiting US). No Redis to ask is no Redis to ask, however we got
+    // there, so this mirrors the unconfigured-branch guard above. The fix was stranded on
+    // claude/quirky-ellis-ef5559 (c2cc6929c) while its test reached main alone, brought
+    // across 2026-08-27.
+    if (
+      process.env.CONTEXT === "production" &&
+      process.env.NODE_ENV === "production" &&
+      ABUSE_PRONE_LIMITERS.has(limiter)
+    ) {
+      console.error("[ratelimit] abuse-prone limiter failing CLOSED, Upstash unreachable at runtime:", err);
+      return NextResponse.json(body, { status: 429, headers: { "Retry-After": String(FAIL_CLOSED_RETRY_AFTER_SECONDS) } });
+    }
+    // Everything else still fails OPEN: a Redis blip must not break browsing.
     console.error("[ratelimit] Redis error, skipping rate limit:", err);
   }
   return null;
@@ -378,6 +396,14 @@ export async function checkRateLimit(limiter: Ratelimit, key: string): Promise<b
     const { success } = await limiter.limit(key);
     return success;
   } catch (err) {
+    if (
+      process.env.CONTEXT === "production" &&
+      process.env.NODE_ENV === "production" &&
+      ABUSE_PRONE_LIMITERS.has(limiter)
+    ) {
+      console.error("[ratelimit] abuse-prone limiter failing CLOSED, Upstash unreachable at runtime:", err);
+      return false;
+    }
     console.error("[ratelimit] Redis error, allowing through:", err);
     return true;
   }
