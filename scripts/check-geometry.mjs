@@ -77,6 +77,8 @@
 //   node scripts/check-geometry.mjs --floors-only            (FLOORS section only, skips a-d)
 //   node scripts/check-geometry.mjs --floors-only /de /de/salon/some-slug
 //   node scripts/check-geometry.mjs --floors-only --gate     (FAILS the run on an un-allowlisted floor)
+//   node scripts/check-geometry.mjs --auth /de/profile       (signs in as kunde@solen.ch first, dev-only route)
+//   node scripts/check-geometry.mjs --auth=owner@example.com /de/dashboard
 //   BASE_URL=http://localhost:3000 node scripts/check-geometry.mjs
 //   npm run check:floors                                     (= --floors-only, package.json)
 //   npm run gate:floors                                      (= --floors-only --gate, package.json)
@@ -352,6 +354,26 @@ function isFloorAllowlisted(route, floorCode) {
 }
 
 // ----------------------------------------------------------------------------
+// Settle config (2026-08-27 fix). A fixed 4000ms sleep is a bet on how fast the
+// machine is: measured live, /de/coiffeur read imagery 0.71% and display anchor
+// 14px on a machine at ~91% CPU (40 other agents driving the same dev server),
+// vs 41.75% and 18px on a quiet machine, reproduced on demand by cutting the
+// settle wait short. SETTLE_FLOOR_MS keeps the old 4000ms as a minimum so
+// nothing is measured earlier than it was before; the poll loop then waits for
+// two identical consecutive samples of the same three quantities FLOORS reads
+// (text-leaf count, max font-size, loaded image area), capped so a page that
+// never stops animating (a poll, a live socket) cannot hang the run.
+// ----------------------------------------------------------------------------
+const SETTLE_FLOOR_MS = 4000;
+const SETTLE_POLL_MS = 300;
+const SETTLE_CAP_MS = 25_000;
+
+// Dev-only sign-in (app/api/dev/login/route.ts, NODE_ENV==="development" only,
+// 404s in production). kunde@solen.ch is the seeded customer used successfully
+// to reach a logged-in route in the session that produced this fix.
+const DEFAULT_AUTH_EMAIL = "kunde@solen.ch";
+
+// ----------------------------------------------------------------------------
 // CLI args
 // ----------------------------------------------------------------------------
 function parseArgs(argv) {
@@ -361,6 +383,8 @@ function parseArgs(argv) {
   let viewportExplicit = false; // responsive-desktop-01: did the caller actually pass --viewport?
   let floorsOnly = false;
   let gate = false; // RANGE LAW G1, 2026-07-25: --gate flips FLOORS from report-only to failing
+  let auth = false; // opt-in only (2026-08-27 fix): an unauthenticated run must behave exactly as before
+  let authEmail = DEFAULT_AUTH_EMAIL;
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === "--base-url") baseUrl = argv[++i];
@@ -369,7 +393,11 @@ function parseArgs(argv) {
       viewportExplicit = true;
     } else if (a === "--floors-only") floorsOnly = true;
     else if (a === "--gate") gate = true;
-    else if (!a.startsWith("--")) routes.push(a);
+    else if (a === "--auth") auth = true;
+    else if (a.startsWith("--auth=")) {
+      auth = true;
+      authEmail = a.slice("--auth=".length);
+    } else if (!a.startsWith("--")) routes.push(a);
   }
   if (!VIEWPORTS[viewport]) {
     console.error(`[check-geometry] unknown --viewport "${viewport}", falling back to mobile`);
@@ -381,6 +409,8 @@ function parseArgs(argv) {
     viewportExplicit,
     floorsOnly,
     gate,
+    auth,
+    authEmail,
     routes: routes.length > 0 ? routes : DEFAULT_ROUTES,
   };
 }
@@ -413,6 +443,126 @@ async function dismissCookies(page) {
   if (await btn.isVisible({ timeout: 3000 }).catch(() => false)) {
     await btn.click().catch(() => {});
     await page.waitForTimeout(400);
+  }
+}
+
+// Serialized into the page via page.evaluate, same self-containment rule as
+// extractGeometry/extractFloors below. Samples the same three quantities
+// FLOORS reads (visible text-leaf count, largest font-size, loaded image
+// area) so "the page stopped changing" is measured on the exact signal the
+// numbers depend on, not a generic proxy. An IMG only counts once its bytes
+// have actually arrived (el.complete && el.naturalWidth > 0) - a broken/
+// pending <img> has neither and would otherwise look "settled" at 0 area
+// forever.
+function sampleSettleSignature() {
+  const SVG_NS = "http://www.w3.org/2000/svg";
+  let textCount = 0;
+  let maxFont = 0;
+  let imageArea = 0;
+  for (const el of document.body.querySelectorAll("*")) {
+    const tag = el.tagName.toLowerCase();
+    if (el.namespaceURI === SVG_NS && tag !== "svg") continue;
+    const rect = el.getBoundingClientRect();
+    if (rect.width <= 0 || rect.height <= 0) continue;
+    const style = getComputedStyle(el);
+    if (style.display === "none" || style.visibility === "hidden") continue;
+    let hasOwnText = false;
+    for (const node of el.childNodes) {
+      if (node.nodeType === 3 && node.textContent && node.textContent.trim().length > 0) {
+        hasOwnText = true;
+        break;
+      }
+    }
+    if (hasOwnText) {
+      textCount++;
+      const fontSize = parseFloat(style.fontSize) || 0;
+      if (fontSize > maxFont) maxFont = fontSize;
+    }
+    if (tag === "img") {
+      if (el.complete && el.naturalWidth > 0) imageArea += rect.width * rect.height;
+    } else if (/url\(/.test(style.backgroundImage || "")) {
+      imageArea += rect.width * rect.height;
+    }
+  }
+  return `${textCount}|${Math.round(maxFont * 100)}|${Math.round(imageArea)}`;
+}
+
+// Replaces the old flat `await page.waitForTimeout(4000)` (2026-08-27 fix).
+// Measured cause: /de/coiffeur read imagery 0.71% / display anchor 14px on a
+// machine at ~91% CPU (40 other agents driving the same dev server) vs
+// 41.75% / 18px on a quiet machine, reproduced on demand by cutting this
+// wait short. Waits for two consecutive identical samples of
+// sampleSettleSignature() instead of betting on a fixed duration; keeps the
+// old 4000ms as a floor (never measure earlier than before) and caps the
+// total wait so a page that never stops changing (an open poll/socket, a
+// looping animation) cannot hang the run.
+async function waitForPageSettle(page) {
+  await page.waitForLoadState("networkidle", { timeout: 3000 }).catch((err) => {
+    // Best effort only. A page holding an open poll or socket (queue tracker,
+    // dashboard live view) never reaches networkidle, and that is expected
+    // for this codebase, not a settle failure.
+    console.error("[check-geometry] networkidle wait did not resolve, continuing without it:", err && err.message ? err.message : err);
+  });
+
+  await page.waitForTimeout(SETTLE_FLOOR_MS);
+
+  const start = Date.now();
+  let previous = null;
+  while (Date.now() - start < SETTLE_CAP_MS) {
+    let current;
+    try {
+      current = await page.evaluate(sampleSettleSignature);
+    } catch (err) {
+      console.error("[check-geometry] settle sample failed, treating this route as unsettled:", err);
+      return { settled: false };
+    }
+    if (current === previous) return { settled: true };
+    previous = current;
+    await page.waitForTimeout(SETTLE_POLL_MS);
+  }
+  return { settled: false };
+}
+
+// FIX 2 (--auth): signs the given browser context in through the dev-only
+// login route (app/api/dev/login/route.ts, 404s outside NODE_ENV===
+// "development") before the route loop runs. Cookies land on `context`, so
+// every subsequent page opened from it carries the session. Failure is
+// non-fatal by design (task brief: "print a clear error... and CARRY ON
+// rather than dying") - a route that needs auth will simply be measured
+// signed out, which the redirect check below then names explicitly rather
+// than silently presenting the login page's numbers as that route's own.
+async function signInDevAuth(context, baseUrl, email) {
+  const page = await context.newPage();
+  try {
+    const url = new URL(`/api/dev/login?to=/&email=${encodeURIComponent(email)}`, baseUrl).toString();
+    const response = await page.goto(url, { waitUntil: "domcontentloaded", timeout: 30_000 });
+    const finalUrl = page.url();
+    const landedOnLogin = /\/auth\/login(?:$|[/?])/.test(finalUrl);
+    const ok = !!response && response.ok() && !landedOnLogin;
+    return { ok, status: response ? response.status() : 0, finalUrl };
+  } catch (err) {
+    console.error("[check-geometry] --auth sign-in request failed:", err);
+    return { ok: false, status: 0, finalUrl: "", error: err && err.message ? err.message : String(err) };
+  } finally {
+    await page.close().catch((err) => console.error("[check-geometry] --auth sign-in page.close() failed:", err));
+  }
+}
+
+// SEPARATE from --auth and ALWAYS on (task brief: "this is the half that
+// matters most, because it is what stayed silent"). Compares the page's
+// final URL pathname against the route that was requested, so a redirect to
+// /auth/login (or anywhere else) is named instead of its numbers being
+// printed under the requested route's heading, which is what happened to
+// every logged-in route (/de/profile, /de/profile/settings,
+// /de/notifications) before this fix.
+function isRedirectedAway(finalUrl, baseUrl, route) {
+  try {
+    const expected = new URL(route, baseUrl);
+    const actual = new URL(finalUrl);
+    return actual.pathname !== expected.pathname;
+  } catch (err) {
+    console.error("[check-geometry] redirect check could not parse a URL, assuming no redirect:", err);
+    return false;
   }
 }
 
@@ -1532,7 +1682,7 @@ async function main() {
   selfTestNestedRadiusLogic();
   selfTestFloorsLogic();
 
-  const { baseUrl, viewport, viewportExplicit, floorsOnly, gate, routes } = parseArgs(process.argv.slice(2));
+  const { baseUrl, viewport, viewportExplicit, floorsOnly, gate, auth, authEmail, routes } = parseArgs(process.argv.slice(2));
   const vp = VIEWPORTS[viewport];
   // responsive-desktop-01: only switch the FLOORS viewport away from the
   // 390x844 default when the caller EXPLICITLY passed --viewport - an
@@ -1559,15 +1709,35 @@ async function main() {
     // -----------------------------------------------------------------
     if (!floorsOnly) {
       const context = await browser.newContext({ viewport: vp });
+      if (auth) {
+        const signIn = await signInDevAuth(context, baseUrl, authEmail);
+        if (!signIn.ok) {
+          console.error(
+            `[check-geometry] --auth sign-in failed (status=${signIn.status} finalUrl=${signIn.finalUrl}); logged-in routes will be measured signed out.`,
+          );
+        } else {
+          console.log(`[check-geometry] --auth signed in as ${authEmail}`);
+        }
+      }
       for (const route of routes) {
         const page = await context.newPage();
         const url = new URL(route, baseUrl).toString();
         try {
-          await page.goto(url, { waitUntil: "commit", timeout: 90_000 });
+          const response = await page.goto(url, { waitUntil: "commit", timeout: 90_000 });
+          // A measurement of an error page is worse than no measurement (measure-guard-gate,
+          // 2026-07-31): a 500 mid-navigation must not be printed as this route's geometry.
+          if (response && response.status() >= 400) {
+            throw new Error(`HTTP ${response.status()}, this is an error page, not the screen`);
+          }
           await page.waitForLoadState("domcontentloaded");
-          await page.waitForTimeout(4000); // let images/fonts/API fetches/animations settle
+          const settle = await waitForPageSettle(page);
           await dismissCookies(page);
           await page.waitForTimeout(600);
+
+          const redirected = isRedirectedAway(page.url(), baseUrl, route);
+          if (redirected) {
+            console.error(`[check-geometry] ${route} REDIRECTED to ${page.url()}; the numbers below are NOT ${route}'s numbers.`);
+          }
 
           const result = await page.evaluate(extractGeometry, {
             grid: GRID,
@@ -1579,9 +1749,9 @@ async function main() {
             pillRadiusPx: PILL_RADIUS_PX,
             radiusGapCap: RADIUS_GAP_CAP,
           });
-          geometryByRoute.set(route, { result });
+          geometryByRoute.set(route, { result, settled: settle.settled, redirected, finalUrl: page.url() });
           console.log(
-            `[check-geometry] ${route}: scanned=${result.elementsScanned} offGrid=${result.offGrid.length} brokenAxis=${result.brokenAxis.length} nestedRadius=${result.nestedRadius.length} asymmetricPair=${result.asymmetricPair.length}`,
+            `[check-geometry] ${route}: scanned=${result.elementsScanned} offGrid=${result.offGrid.length} brokenAxis=${result.brokenAxis.length} nestedRadius=${result.nestedRadius.length} asymmetricPair=${result.asymmetricPair.length}${settle.settled ? "" : " UNSETTLED"}${redirected ? ` REDIRECTED(${page.url()})` : ""}`,
           );
         } catch (err) {
           console.error(`[check-geometry] route ${route} failed:`, err);
@@ -1603,15 +1773,35 @@ async function main() {
     // -----------------------------------------------------------------
     {
       const floorsContext = await browser.newContext({ viewport: floorsViewport });
+      if (auth) {
+        const signIn = await signInDevAuth(floorsContext, baseUrl, authEmail);
+        if (!signIn.ok) {
+          console.error(
+            `[check-geometry] --auth sign-in failed for the FLOORS pass (status=${signIn.status} finalUrl=${signIn.finalUrl}); logged-in routes will be measured signed out.`,
+          );
+        } else {
+          console.log(`[check-geometry] --auth signed in as ${authEmail} (FLOORS pass)`);
+        }
+      }
       for (const route of routes) {
         const page = await floorsContext.newPage();
         const url = new URL(route, baseUrl).toString();
         try {
-          await page.goto(url, { waitUntil: "commit", timeout: 90_000 });
+          const response = await page.goto(url, { waitUntil: "commit", timeout: 90_000 });
+          // Same rule as the geometry pass above (measure-guard-gate, 2026-07-31): an
+          // error-page response must not be measured and printed as this route's FLOORS.
+          if (response && response.status() >= 400) {
+            throw new Error(`HTTP ${response.status()}, this is an error page, not the screen`);
+          }
           await page.waitForLoadState("domcontentloaded");
-          await page.waitForTimeout(4000); // let images/fonts/API fetches/animations settle
+          const settle = await waitForPageSettle(page);
           await dismissCookies(page);
           await page.waitForTimeout(600);
+
+          const redirected = isRedirectedAway(page.url(), baseUrl, route);
+          if (redirected) {
+            console.error(`[check-geometry] ${route} REDIRECTED to ${page.url()}; the FLOORS numbers below are NOT ${route}'s numbers.`);
+          }
 
           const exempt = isFloorsImageryExempt(route);
           const floors = await page.evaluate(extractFloors, {
@@ -1627,8 +1817,10 @@ async function main() {
             elevationFloorCount: FLOOR_ELEVATION_COUNT,
             imageryExempt: exempt,
           });
-          floorsByRoute.set(route, { floors });
-          console.log(`[check-geometry] ${route} FLOORS: ${formatFloorsConsoleLine(floors)}`);
+          floorsByRoute.set(route, { floors, settled: settle.settled, redirected, finalUrl: page.url() });
+          console.log(
+            `[check-geometry] ${route} FLOORS: ${formatFloorsConsoleLine(floors)}${settle.settled ? "" : " UNSETTLED"}${redirected ? ` REDIRECTED(${page.url()})` : ""}`,
+          );
         } catch (err) {
           console.error(`[check-geometry] FLOORS route ${route} failed:`, err);
           floorsByRoute.set(route, { floors: null, error: err && err.message ? err.message : String(err) });
@@ -1699,10 +1891,18 @@ async function main() {
       const lines = [`## ${route}`, ""];
       if (!floorsOnly) {
         if (g && g.error) lines.push(`GEOMETRY ERROR: ${g.error}`, "");
-        else if (g) lines.push(formatGeometrySection(g.result));
+        else if (g) {
+          if (g.redirected) lines.push(`**REDIRECTED** to \`${g.finalUrl}\` , the geometry numbers below are NOT ${route}'s numbers.`, "");
+          if (g.settled === false) lines.push("**UNSETTLED**: the page did not stop changing within 25s (geometry pass); numbers below may be a partial paint.", "");
+          lines.push(formatGeometrySection(g.result));
+        }
       }
       if (f && f.error) lines.push(`FLOORS ERROR: ${f.error}`, "");
-      else if (f && f.floors) lines.push(formatFloorsSection(f.floors));
+      else if (f && f.floors) {
+        if (f.redirected) lines.push(`**REDIRECTED** to \`${f.finalUrl}\` , the FLOORS numbers below are NOT ${route}'s numbers.`, "");
+        if (f.settled === false) lines.push("**UNSETTLED**: the page did not stop changing within 25s (FLOORS pass); numbers below may be a partial paint.", "");
+        lines.push(formatFloorsSection(f.floors));
+      }
       return lines.join("\n");
     })
     .join("\n---\n\n");
