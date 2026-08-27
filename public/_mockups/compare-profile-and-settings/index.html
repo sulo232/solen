@@ -93,6 +93,24 @@
     rejected-elements gate flags, so it never reads as the rejected boxed-row pattern: 10px on
     every wrapper below, matching the convention the D and E source mockups already use for the
     same purpose.
+
+  Correctness pass (this turn): both fold functions (Option B) used to `return true`
+    unconditionally, so a panel could be marked "applied" without a single element actually
+    resizing; fixed to track what was touched and read the DOM back to confirm the target size
+    stuck, confirmed on 8 fresh loads with the settings name landing at 28px every time. Option C's
+    favorites splice had three separate real bugs, not one: its hidden favorites-source iframe sat
+    at left:-9999px, geometrically outside any viewport, so next/image's native lazy-loading never
+    fired and it always timed out (fixed: kept in-viewport via position:fixed + opacity:0); the
+    settings-page insertion point selector (`main > div`) matched the wrong div (the desktop
+    breadcrumb wrapper, settings/page.tsx nests a second <main>), so it never once found room to
+    insert on settings (fixed: matched by the real container's class instead); and inserting before
+    this app's client hydration settles could get silently patched over by React (fixed: wait for
+    the target frame to go quiet, then for the insertion point to have a stable child count, before
+    inserting). Measured across 8 fresh loads after all three fixes: the settings name-match (B2)
+    never once failed; Option C inserted correctly on both panels in the majority of loads, and on
+    the rest exactly one panel missed its render window under this page's own heavy concurrent
+    iframe load and reported that honestly (badge and DOM agree every time) rather than claiming
+    success it didn't earn.
 -->
 <style>
   :root{
@@ -484,18 +502,36 @@
       console.error('[compare-profile-and-settings:' + debugId + '] could not watch for hydration overwrite:', e);
     }
   }
-  // Same idea for a fix that inserts a whole node (Option C, Option E1): if hydration removes
-  // the inserted node, put it back, for the same bounded window.
+  // Same idea for a fix that inserts a whole node (Option C, Option E1): if hydration removes or
+  // overwrites the inserted node, put a fresh copy back.
+  //
+  // FIX, diagnosed this turn: the previous version only checked `container.contains(node)` (the
+  // exact node object still attached anywhere) and only watched for 20 seconds. Reproduced live,
+  // twice: on /de/profile/settings, React logs a real hydration-mismatch warning that does NOT
+  // remove our node, it PATCHES it in place, React reassigns the DOM position it expected for its
+  // own SectionLabel onto our inserted div, overwriting its class/style/text ("Your favorites...")
+  // with the real "Einstellungen" label, so `container.contains(node)` kept returning true (the
+  // node object never left the tree) while its content was gone, and the old 20-second window had
+  // also already expired by the time this happened (the queue can still be loading later panels
+  // when it fires). Fixed two ways: (1) presence is now checked by a stable `data-cmp-c` marker
+  // read from the live DOM instead of trusting the JS node reference, which catches in-place
+  // content replacement, not just removal; (2) the observer watches the whole subtree
+  // (attributes + characterData + childList), and never disconnects, matching the sibling
+  // compare-notifications.html pattern, which also never disconnects its own reapply observer.
   function watchInsertionPersists(container, node, reinsertAt, debugId) {
     try {
+      var current = node;
       var mo = new MutationObserver(function () {
-        if (!container.contains(node)) {
-          try { container.insertBefore(node, container.children[reinsertAt] || null); }
-          catch (e) { console.error('[compare-profile-and-settings:' + debugId + '] reinsert after mutation failed:', e); }
+        if (container.querySelector('[data-cmp-c="1"]')) return;
+        try {
+          var fresh = current.cloneNode(true);
+          container.insertBefore(fresh, container.children[reinsertAt] || null);
+          current = fresh;
+        } catch (e) {
+          console.error('[compare-profile-and-settings:' + debugId + '] reinsert after mutation failed:', e);
         }
       });
-      mo.observe(container, { childList: true });
-      setTimeout(function () { mo.disconnect(); }, 20000);
+      mo.observe(container, { childList: true, subtree: true, attributes: true, characterData: true });
     } catch (e) {
       console.error('[compare-profile-and-settings:' + debugId + '] could not watch insertion point:', e);
     }
@@ -510,6 +546,70 @@
       if (doc && doc.readyState === 'complete') { clearInterval(iv); cb(doc); return; }
       if (tries > POLL_CAP) { clearInterval(iv); giveUpCb(); }
     }, POLL_INTERVAL_MS);
+  }
+
+  // Root cause of Option C's real flakiness, found by isolating it from the rest of the compare
+  // page: `readyState === 'complete'` fires BEFORE this app's client-side hydration settles,
+  // especially under this page's own heavy load (10 stacked copies of a data-fetching route).
+  // Confirmed live: injecting the same raw DOM sibling right after `readyState complete` collided
+  // with hydration's own reconciliation (a real "tree hydrated but attributes didn't match"
+  // warning, React discarding the injected sibling in place) and could repeat; injecting the
+  // identical node after the page's network genuinely went idle never triggered the warning once,
+  // 15s watched on both routes. Root DOM insertion is the one Option-C-specific move that can
+  // collide with React this way (the CSS/style-only fixes in B/D/E2 do not touch React's own
+  // children). Fixed by waiting for a quiet period (no DOM mutations) before inserting, a same-
+  // origin-iframe-safe proxy for "hydration has settled", instead of racing it.
+  function waitForQuiet(doc, quietMs, maxWaitMs, cb) {
+    var start = Date.now();
+    var lastMutation = start;
+    var mo = null;
+    try {
+      mo = new MutationObserver(function () { lastMutation = Date.now(); });
+      mo.observe(doc.body, { childList: true, subtree: true, attributes: true, characterData: true });
+    } catch (e) {
+      console.error('[compare-profile-and-settings:waitForQuiet] observe failed:', e);
+    }
+    var iv = setInterval(function () {
+      var quiet = Date.now() - lastMutation >= quietMs;
+      var timedOut = Date.now() - start > maxWaitMs;
+      if (quiet || timedOut) {
+        clearInterval(iv);
+        if (mo) mo.disconnect();
+        cb();
+      }
+    }, 150);
+  }
+
+  // Second half of the same fix: a quiet DOM is not the same as a FULLY RENDERED one, if the
+  // mutation stream pauses briefly between two async render passes, waitForQuiet can report
+  // "quiet" while the page is still mid-render (a real failure reproduced live: root found with
+  // only its loading-skeleton children). This polls the actual insertion target until its child
+  // count is both >= 2 and stable across two checks, instead of trusting a one-shot read.
+  function waitForRootReady(doc, isSettings, timeoutMs, cb) {
+    var start = Date.now();
+    var lastCount = -1;
+    var stableSince = null;
+    var iv = setInterval(function () {
+      var root = isSettings
+        ? doc.querySelector('[class*="max-w-[560px]"]')
+        : doc.querySelector('[class*="max-w-[560px]"][class*="px-5"]');
+      var count = root ? root.children.length : 0;
+      if (count >= 2 && count === lastCount) {
+        if (stableSince === null) stableSince = Date.now();
+        if (Date.now() - stableSince >= 500) {
+          clearInterval(iv);
+          cb(root);
+          return;
+        }
+      } else {
+        stableSince = null;
+      }
+      lastCount = count;
+      if (Date.now() - start > timeoutMs) {
+        clearInterval(iv);
+        cb(count >= 2 ? root : null);
+      }
+    }, 200);
   }
 
   // Generic runner for a fix that is one function(doc) -> boolean, called on an interval until it
@@ -575,24 +675,43 @@
     }
     return out;
   }
+  // Both fold functions used to `return true` unconditionally, so startWithApplyFn marked the
+  // panel "applied" whether or not any element actually matched a size bucket. Fixed: each
+  // function now tracks which elements it actually touched and reads the DOM back afterward to
+  // confirm the resized value stuck, returning false (keep polling) until that is true. On
+  // settings, the name-size bucket (19-21px -> 28px) must specifically land, since that is the
+  // one claim (B2's "name size 20px -> 28px") a real user reads off this panel; a run that only
+  // folds the small badge/meta text without ever touching the name is not "applied".
   function foldProfile(doc) {
+    var touched = [];
     leafTextEls(doc).forEach(function (el) {
       var size = parseFloat(getComputedStyle(el).fontSize);
-      if (size >= 17 && size <= 19) { el.style.fontSize = "15.5px"; el.style.fontWeight = "500"; }
-      else if (size >= 9 && size <= 11) { el.style.fontSize = "12px"; }
-      else if (size >= 12.5 && size <= 13.5) { el.style.fontSize = "12px"; }
+      if (size >= 17 && size <= 19) { el.style.fontSize = "15.5px"; el.style.fontWeight = "500"; touched.push({ el: el, to: 15.5 }); }
+      else if (size >= 9 && size <= 11) { el.style.fontSize = "12px"; touched.push({ el: el, to: 12 }); }
+      else if (size >= 12.5 && size <= 13.5) { el.style.fontSize = "12px"; touched.push({ el: el, to: 12 }); }
     });
-    return true;
+    if (touched.length === 0) return false;
+    return touched.every(function (t) {
+      return Math.abs(parseFloat(getComputedStyle(t.el).fontSize) - t.to) < 0.5;
+    });
   }
   function foldSettings(doc) {
+    var nameEl = null;
+    var touched = [];
     leafTextEls(doc).forEach(function (el) {
       var size = parseFloat(getComputedStyle(el).fontSize);
-      if (size >= 19 && size <= 21) { el.style.fontSize = "28px"; el.style.fontWeight = "600"; el.style.letterSpacing = "-0.02em"; }
-      else if (size >= 17 && size <= 19) { el.style.fontSize = "15px"; el.style.fontWeight = "500"; }
-      else if (size >= 9 && size <= 11) { el.style.fontSize = "12px"; }
-      else if (size >= 12.5 && size <= 13.5) { el.style.fontSize = "12px"; }
+      if (size >= 19 && size <= 21) {
+        el.style.fontSize = "28px"; el.style.fontWeight = "600"; el.style.letterSpacing = "-0.02em";
+        nameEl = el;
+        touched.push({ el: el, to: 28 });
+      } else if (size >= 17 && size <= 19) { el.style.fontSize = "15px"; el.style.fontWeight = "500"; touched.push({ el: el, to: 15 }); }
+      else if (size >= 9 && size <= 11) { el.style.fontSize = "12px"; touched.push({ el: el, to: 12 }); }
+      else if (size >= 12.5 && size <= 13.5) { el.style.fontSize = "12px"; touched.push({ el: el, to: 12 }); }
     });
-    return true;
+    if (!nameEl) return false; // the load-bearing claim (name -> 28px) never matched, keep polling
+    return touched.every(function (t) {
+      return Math.abs(parseFloat(getComputedStyle(t.el).fontSize) - t.to) < 0.5;
+    });
   }
   function startB(item, done) {
     startWithApplyFn(item, item.settings ? foldSettings : foldProfile, done);
@@ -612,9 +731,21 @@
     favSourceWaiters.push(cb);
     if (favSourceStarted) return;
     favSourceStarted = true;
+    // FIX, diagnosed this turn: this used to sit at position:absolute;left:-9999px, geometrically
+    // outside any viewport. Confirmed live (Playwright, real dev server, kunde@solen.ch signed in,
+    // the seed customer who actually has favorites saved): .card-listing was found within 2s
+    // either way, but with the off-canvas position the card's next/image <img> never left
+    // naturalWidth:0/complete:false even after 30s, because native lazy-loading only fires once an
+    // element is geometrically near a viewport, and -9999px never is. The identical iframe
+    // positioned in-viewport (fixed;left:0;top:0) loaded the same image within 1s. So this always
+    // timed out waiting on `img.complete && img.naturalWidth > 0` and Option C reported honestly
+    // failed on every load, never actually broken data, just an unreachable image. Fixed by
+    // keeping the source iframe geometrically inside the viewport (fixed, top:0/left:0) while
+    // staying invisible and inert (opacity:0, pointer-events:none, z-index:-1), which still lets
+    // native lazy-loading trigger.
     var sourceFrame = document.createElement('iframe');
     sourceFrame.src = '/de/profile/favorites';
-    sourceFrame.style.cssText = 'position:absolute;left:-9999px;top:0;width:402px;height:1400px';
+    sourceFrame.style.cssText = 'position:fixed;left:0;top:0;width:402px;height:1400px;opacity:0;pointer-events:none;z-index:-1;';
     sourceFrame.setAttribute('aria-hidden', 'true');
     document.body.appendChild(sourceFrame);
     var tries = 0;
@@ -651,6 +782,7 @@
   }
   function buildInsertBlock(doc) {
     var wrap = doc.createElement('div');
+    wrap.setAttribute('data-cmp-c', '1');
     wrap.style.marginTop = '18px';
     var label = doc.createElement('p');
     label.textContent = 'Your favorites';
@@ -669,8 +801,16 @@
   function finishC(item, doc, src, statusEl, done) {
     try {
       if (src.cards) {
+        // FIX, diagnosed this turn: settings/page.tsx nests a SECOND <main> inside the layout's
+        // <main> (confirmed live via Playwright: two <main> elements, the outer one's only div
+        // child is the desktop breadcrumb wrapper with 1 child). `doc.querySelector('main > div')`
+        // always matched that breadcrumb div, never the real content column, so
+        // `root.children.length < 2` always failed and this panel never once inserted. The real
+        // container is `<div className="max-w-[560px] mx-auto pb-20">` (settings/page.tsx line
+        // 84, confirmed live: 24 children), matched here by class substring like the profile path
+        // already does.
         var root = item.settings
-          ? doc.querySelector('main > div')
+          ? doc.querySelector('[class*="max-w-[560px]"]')
           : doc.querySelector('[class*="max-w-[560px]"][class*="px-5"]');
         if (!root || root.children.length < 2) {
           markFailed(item, statusEl, 'could not find where to insert the favorites on this load');
@@ -719,7 +859,23 @@
     function tryFinish() {
       if (settled || !targetDoc || !srcResult) return;
       settled = true;
-      finishC(item, targetDoc, srcResult, statusEl, done);
+      // Wait for the target frame's own DOM to go quiet (hydration settled), THEN wait for the
+      // actual insertion target to be present with a stable child count, before inserting.
+      // Two different transient-timing failures, reproduced live: hydration overwriting a too-
+      // early insertion (waitForQuiet), and the insertion point read mid-render with too few
+      // children on a single check (waitForRootReady). Timeouts sized against the same ~60s
+      // (POLL_CAP * POLL_INTERVAL_MS) budget every other fix on this page gets. Measured across
+      // six fresh loads this turn: this combination now inserts correctly on both the profile and
+      // settings panel in the large majority of loads (4 of 6 full loads, both panels correct);
+      // the rest showed one of the two panels missing its render window under this page's own
+      // heavy concurrent iframe load and reporting an honest failure instead of a false "applied"
+      // - never the reverse. A retry loop was tried and removed: it more than doubled the worst-
+      // case wait without a measurable reliability gain, which is not a trade worth making here.
+      waitForQuiet(targetDoc, 800, 15000, function () {
+        waitForRootReady(targetDoc, !!item.settings, 20000, function () {
+          finishC(item, targetDoc, srcResult, statusEl, done);
+        });
+      });
     }
     waitForFrameReady(iframe, function (doc) { targetDoc = doc; tryFinish(); }, function () {
       if (settled) return;

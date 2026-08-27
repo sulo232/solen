@@ -122,13 +122,20 @@
   .badge.fail { color: #DC2626; border-color: rgba(220,38,38,0.35); }
   .badge.pass { color: #16A34A; border-color: rgba(22,163,74,0.35); }
 
-  .frame { width: 390px; overflow: hidden; }
+  .frame { width: 390px; overflow: hidden; position: relative; }
   .frame iframe { width: 390px; border: 0; display: block; }
 
-  .stack .strip { width: 390px; overflow: hidden; }
+  .stack .strip { width: 390px; overflow: hidden; position: relative; }
   .stack .strip iframe { width: 390px; border: 0; display: block; }
   .seam { text-align: center; font-size: 10px; color: #9CA3AF; padding: 3px 0;
     background: #FAFAFA; border-top: 1px dashed #E4E4E7; border-bottom: 1px dashed #E4E4E7; }
+
+  .placeholder {
+    position: absolute; inset: 0; z-index: 1;
+    display: flex; align-items: center; justify-content: center;
+    background: #F4F4F5; color: #6B6B6B; font-size: 13px; font-weight: 500;
+  }
+  .badge.measuring { color: #6B6B6B; border-color: #E4E4E7; }
 
   .moves { margin: 14px 16px 0; padding: 12px 14px; background: #FAFAFA; border-radius: 12px;
     display: flex; gap: 16px; }
@@ -178,7 +185,7 @@
   <!-- ============================================================ -->
   <!-- NOW: baseline, untouched -->
   <!-- ============================================================ -->
-  <div class="panel">
+  <div class="panel" id="panel-now">
     <div class="cap">
       <span class="tag baseline">TODAY</span>
       <h2>Now</h2>
@@ -186,12 +193,13 @@
     </div>
     <div class="device">
       <div class="badges">
-        <span class="badge fail nums">27.3px headline, needs 28</span>
-        <span class="badge fail nums">7 sizes crowded</span>
-        <span class="badge fail nums">0% real photo</span>
+        <span class="badge measuring nums" id="badge-now-h1">measuring&hellip;</span>
+        <span class="badge measuring nums" id="badge-now-sizes">measuring&hellip;</span>
+        <span class="badge measuring nums" id="badge-now-photo">measuring&hellip;</span>
       </div>
       <div class="frame" style="height: 640px;">
-        <iframe src="/de/warum-solen" scrolling="no" height="640" title="Why Solen as it is today"></iframe>
+        <div class="placeholder">Loading</div>
+        <iframe id="vNow" data-src="/de/warum-solen" scrolling="no" height="640" title="Why Solen as it is today"></iframe>
       </div>
     </div>
   </div>
@@ -199,7 +207,7 @@
   <!-- ============================================================ -->
   <!-- A: floor-fix-why-solen, smallest CSS change -->
   <!-- ============================================================ -->
-  <div class="panel">
+  <div class="panel" id="panel-a">
     <div class="cap">
       <span class="tag easy">SMALLEST CHANGE</span>
       <h2>A. Smallest possible fix</h2>
@@ -208,15 +216,16 @@
     </div>
     <div class="device">
       <div class="badges">
-        <span class="badge pass nums">28.1px headline, passes</span>
-        <span class="badge pass nums">4 sizes in the tight cluster, passes</span>
-        <span class="badge fail nums">0% photo, still open</span>
+        <span class="badge measuring nums" id="badge-a-h1">measuring&hellip;</span>
+        <span class="badge measuring nums" id="badge-a-sizes">measuring&hellip;</span>
+        <span class="badge measuring nums" id="badge-a-photo">measuring&hellip;</span>
       </div>
       <div class="frame" style="height: 640px;">
-        <iframe id="vA" src="/de/warum-solen" scrolling="no" height="640" title="Why Solen, variant A"></iframe>
+        <div class="placeholder">Loading</div>
+        <iframe id="vA" data-src="/de/warum-solen" scrolling="no" height="640" title="Why Solen, variant A"></iframe>
       </div>
     </div>
-    <div class="moves">
+    <div class="moves" id="moves-a">
       <div><div class="n">27.3 &rarr; 28.1px</div><div class="l">the one number this option moves: the headline size</div></div>
     </div>
     <div class="note">Does not touch the photo problem or the gray background. Those need a
@@ -226,7 +235,7 @@
   <!-- ============================================================ -->
   <!-- B: b-hierarchy -->
   <!-- ============================================================ -->
-  <div class="panel">
+  <div class="panel" id="panel-b">
     <div class="cap">
       <span class="tag easy">HIERARCHY FIRST</span>
       <h2>B. One clear anchor</h2>
@@ -236,15 +245,16 @@
     </div>
     <div class="device">
       <div class="badges">
-        <span class="badge pass nums">30px headline, passes with margin</span>
-        <span class="badge pass nums">4 sizes in the tight cluster, passes</span>
-        <span class="badge fail nums">0% photo, still open</span>
+        <span class="badge measuring nums" id="badge-b-h1">measuring&hellip;</span>
+        <span class="badge measuring nums" id="badge-b-sizes">measuring&hellip;</span>
+        <span class="badge measuring nums" id="badge-b-photo">measuring&hellip;</span>
       </div>
       <div class="frame" style="height: 640px;">
-        <iframe id="vB" src="/de/warum-solen" scrolling="no" height="640" title="Why Solen, variant B"></iframe>
+        <div class="placeholder">Loading</div>
+        <iframe id="vB" data-src="/de/warum-solen" scrolling="no" height="640" title="Why Solen, variant B"></iframe>
       </div>
     </div>
-    <div class="moves">
+    <div class="moves" id="moves-b">
       <div><div class="n">27.3 &rarr; 30px</div><div class="l">headline size, matches the salon page you already like</div></div>
       <div><div class="n">1.11 &rarr; 2.14x</div><div class="l">headline vs. body text, same ratio as that salon page</div></div>
     </div>
@@ -255,7 +265,7 @@
   <!-- ============================================================ -->
   <!-- C: content-forward -->
   <!-- ============================================================ -->
-  <div class="panel">
+  <div class="panel" id="panel-c">
     <div class="cap">
       <span class="tag decide">NEEDS YOUR CALL</span>
       <h2>C. Real salons, pushed up and made bigger</h2>
@@ -265,20 +275,22 @@
     </div>
     <div class="device">
       <div class="badges">
-        <span class="badge fail nums">27.3px headline, unchanged</span>
-        <span class="badge pass nums">41.1% real photo, passes</span>
+        <span class="badge measuring nums" id="badge-c-h1">measuring&hellip;</span>
+        <span class="badge measuring nums" id="badge-c-photo">measuring&hellip;</span>
       </div>
       <div class="stack">
         <div class="strip" style="height: 260px;">
-          <iframe id="vC-hero" src="/de/warum-solen" scrolling="no" height="844" title="Why Solen, variant C, tightened hero"></iframe>
+          <div class="placeholder">Loading</div>
+          <iframe id="vC-hero" data-src="/de/warum-solen" scrolling="no" height="844" title="Why Solen, variant C, tightened hero"></iframe>
         </div>
         <div class="seam">your real card grid continues below, same real page it lives on today</div>
         <div class="strip" style="height: 584px;">
-          <iframe id="vC-cards" src="/de/basel/coiffeur" scrolling="no" height="844" title="Real salon cards, pulled from your Coiffeur Basel page"></iframe>
+          <div class="placeholder">Loading</div>
+          <iframe id="vC-cards" data-src="/de/basel/coiffeur" scrolling="no" height="844" title="Real salon cards, pulled from your Coiffeur Basel page"></iframe>
         </div>
       </div>
     </div>
-    <div class="moves">
+    <div class="moves" id="moves-c">
       <div><div class="n">0 &rarr; 41.1%</div><div class="l">real photo on screen, the biggest single move of the five options</div></div>
       <div><div class="n">321 &rarr; 175px</div><div class="l">height of the empty space above the fold</div></div>
     </div>
@@ -293,7 +305,7 @@
   <!-- ============================================================ -->
   <!-- D: airbnb-weight -->
   <!-- ============================================================ -->
-  <div class="panel">
+  <div class="panel" id="panel-d">
     <div class="cap">
       <span class="tag easy">EMPHASIS, THE AIRBNB WAY</span>
       <h2>D. Less bold text</h2>
@@ -303,14 +315,15 @@
     </div>
     <div class="device">
       <div class="badges">
-        <span class="badge pass nums">25.0% bold, already under the 30% ceiling</span>
-        <span class="badge pass nums">0.0% bold after, further under</span>
+        <span class="badge measuring nums" id="badge-d-before">measuring&hellip;</span>
+        <span class="badge measuring nums" id="badge-d-after">measuring&hellip;</span>
       </div>
       <div class="frame" style="height: 640px;">
-        <iframe id="vD" src="/de/warum-solen" scrolling="no" height="640" title="Why Solen, variant D"></iframe>
+        <div class="placeholder">Loading</div>
+        <iframe id="vD" data-src="/de/warum-solen" scrolling="no" height="640" title="Why Solen, variant D"></iframe>
       </div>
     </div>
-    <div class="moves">
+    <div class="moves" id="moves-d">
       <div><div class="n">25.0% &rarr; 0.0%</div><div class="l">share of visible text at bold weight</div></div>
     </div>
     <div class="note"><strong>The catch, found while building this.</strong> This page was already
@@ -324,7 +337,7 @@
   <!-- ============================================================ -->
   <!-- E: recompose -->
   <!-- ============================================================ -->
-  <div class="panel">
+  <div class="panel" id="panel-e">
     <div class="cap">
       <span class="tag decide">CLEARS THE MOST, NEEDS YOUR CALL</span>
       <h2>E. Fix the type, then add a real row of salons</h2>
@@ -334,20 +347,22 @@
     </div>
     <div class="device">
       <div class="badges">
-        <span class="badge pass nums">28.1px headline, passes</span>
-        <span class="badge fail nums">21.0% real photo, short of 33%</span>
+        <span class="badge measuring nums" id="badge-e-h1">measuring&hellip;</span>
+        <span class="badge measuring nums" id="badge-e-photo">measuring&hellip;</span>
       </div>
       <div class="stack">
         <div class="strip" style="height: 260px;">
-          <iframe id="vE-hero" src="/de/warum-solen" scrolling="no" height="420" title="Why Solen, variant E, type-fixed hero"></iframe>
+          <div class="placeholder">Loading</div>
+          <iframe id="vE-hero" data-src="/de/warum-solen" scrolling="no" height="420" title="Why Solen, variant E, type-fixed hero"></iframe>
         </div>
         <div class="seam">your homepage's real "Top Coiffeur" row continues here, scrolled into place, nothing redrawn</div>
         <div class="strip" style="height: 380px;">
-          <iframe id="vE-rail" src="/de" scrolling="no" height="424" title="Your real homepage, scrolled to the Top Coiffeur row"></iframe>
+          <div class="placeholder">Loading</div>
+          <iframe id="vE-rail" data-src="/de" scrolling="no" height="424" title="Your real homepage, scrolled to the Top Coiffeur row"></iframe>
         </div>
       </div>
     </div>
-    <div class="moves">
+    <div class="moves" id="moves-e">
       <div><div class="n">27.3 &rarr; 28.1px</div><div class="l">headline size, same fix as A</div></div>
       <div><div class="n">0 &rarr; 21.0%</div><div class="l">real photo, best of the type-plus-content combo, still short of the 33% target</div></div>
     </div>

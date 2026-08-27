@@ -372,25 +372,43 @@ Treatment-only: this file adds NOTHING to any panel's content or styling beyond 
   }
 
   // ---- Option 3, lifted verbatim from fix-search-results--c-content-forward/index.html ----
+  // CORRECTION, found live this session: the original guard set data-sweep-applied the moment ANY
+  // one sub-effect landed, even when the card-resize sub-effect found zero elements on that tick
+  // (the 16 card anchors render slightly after the container/head/scroller/search-wrap elements on
+  // this route). Once the flag was set, the early-return at the top of this function skipped the
+  // card-resize check forever, so the cards were never actually resized while the badge stayed
+  // green. Fixed so the flag is only set once EVERY sub-effect this option claims has landed; a
+  // partial application keeps returning false so armPersistentWatch keeps retrying the parts that
+  // did not, and if a part still has not landed when the poll cap expires the caller's existing
+  // failure path (markFailed) takes over instead of a false-positive badge.
   function applyOption3(doc) {
     if (doc.documentElement.getAttribute("data-sweep-applied")) return true;
+    var required = 0;
     var applied = 0;
     var container = Array.prototype.find.call(
       doc.querySelectorAll("div"),
       function (d) { return /max-w-\[1280px\]/.test(d.className) && /pt-4/.test(d.className); }
     );
+    required++;
     if (container) { container.style.paddingTop = "4px"; applied++; }
     var headWraps = doc.querySelectorAll("div.mb-\\[14px\\]");
-    headWraps.forEach(function (hw) { hw.style.marginBottom = "6px"; });
-    if (headWraps.length) applied++;
+    required++;
+    if (headWraps.length) {
+      headWraps.forEach(function (hw) { hw.style.marginBottom = "6px"; });
+      applied++;
+    }
     var scrollers = doc.querySelectorAll("div.mt-1.flex.gap-3.overflow-x-auto");
-    scrollers.forEach(function (s) {
-      s.style.marginTop = "0px";
-      s.style.paddingTop = "0px";
-      s.style.paddingBottom = "0px";
-    });
-    if (scrollers.length) applied++;
+    required++;
+    if (scrollers.length) {
+      scrollers.forEach(function (s) {
+        s.style.marginTop = "0px";
+        s.style.paddingTop = "0px";
+        s.style.paddingBottom = "0px";
+      });
+      applied++;
+    }
     var searchWrap = doc.querySelector(".max-md\\:sticky.max-md\\:top-0.max-md\\:z-\\[55\\]");
+    required++;
     if (searchWrap) {
       var inner = searchWrap.querySelector(".mx-auto.w-full.max-w-\\[680px\\].px-4");
       if (inner) { inner.style.paddingTop = "2px"; inner.style.paddingBottom = "2px"; applied++; }
@@ -399,9 +417,12 @@ Treatment-only: this file adds NOTHING to any panel's content or styling beyond 
       doc.querySelectorAll("a"),
       function (a) { return /w-\[calc\(\(100vw-44px\)\/1\.5\)\]/.test(a.className); }
     );
-    cardWraps.forEach(function (a) { a.style.width = "calc((100vw - 32px) / 1.15)"; });
-    if (cardWraps.length) applied++;
-    if (applied > 0) { doc.documentElement.setAttribute("data-sweep-applied", "1"); return true; }
+    required++;
+    if (cardWraps.length) {
+      cardWraps.forEach(function (a) { a.style.width = "calc((100vw - 32px) / 1.15)"; });
+      applied++;
+    }
+    if (applied === required) { doc.documentElement.setAttribute("data-sweep-applied", "1"); return true; }
     return false;
   }
 
