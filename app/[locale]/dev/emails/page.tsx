@@ -21,7 +21,7 @@
  * Dev-only: notFound() in production, same hard gate as /api/dev/login.
  */
 import { notFound } from "next/navigation";
-import type { EmailLocale } from "@/lib/email";
+import type { EmailLocale, EmailPayload } from "@/lib/email";
 import { wrapEmailHtml } from "@/lib/email";
 import { EMAIL_PREVIEWS, EMAIL_PREVIEW_GROUPS } from "@/lib/email-preview-samples";
 
@@ -51,6 +51,21 @@ export default async function DevEmailsPage({
 
   const href = (next: { l?: string; w?: string }) =>
     `/${routeLocale}/dev/emails?l=${next.l ?? locale}&w=${next.w ?? width}`;
+
+  // Some template builders are async now (salon-outreach-invitation, see lib/unsubscribe-token.ts).
+  // A .map() callback used inline in JSX below cannot itself be async, so every entry is built and
+  // awaited HERE, before render, and the render below only ever does a synchronous lookup.
+  const built = new Map<string, { payload?: EmailPayload; error: string | null }>();
+  await Promise.all(
+    EMAIL_PREVIEWS.map(async (entry) => {
+      try {
+        const payload = await entry.build(locale);
+        built.set(entry.id, { payload, error: null });
+      } catch (err) {
+        built.set(entry.id, { error: err instanceof Error ? err.message : String(err) });
+      }
+    })
+  );
 
   return (
     <main className="min-h-screen bg-s-bg-sunken text-s-ink">
@@ -119,13 +134,9 @@ export default async function DevEmailsPage({
 
               <div className="mt-4 space-y-6">
                 {entries.map((entry) => {
-                  let payload;
-                  let error: string | null = null;
-                  try {
-                    payload = entry.build(locale);
-                  } catch (err) {
-                    error = err instanceof Error ? err.message : String(err);
-                  }
+                  const result = built.get(entry.id);
+                  const payload = result?.payload;
+                  const error = result?.error ?? null;
 
                   return (
                     <article

@@ -34,8 +34,10 @@ export interface EmailPreviewEntry {
   group: string;
   /** Who receives it. Drives the badge. */
   audience: "customer" | "salon" | "admin";
-  /** Build the payload for one locale. */
-  build: (locale: EmailLocale) => EmailPayload;
+  /** Build the payload for one locale. Some templates (salon-outreach-invitation) are async
+   *  now that unsubscribeToken() runs on Web Crypto, so this returns either shape and the
+   *  caller (app/[locale]/dev/emails/page.tsx) always awaits it. */
+  build: (locale: EmailLocale) => EmailPayload | Promise<EmailPayload>;
 }
 
 const TO = "preview@solen.ch";

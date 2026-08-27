@@ -2,7 +2,6 @@ import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { NextRequest, NextResponse } from "next/server";
 import { getServerEnv } from "@/lib/env";
-import { alertAdmin } from "@/lib/alert-admin";
 import { createAdminSupabaseClient } from "@/lib/supabase";
 
 const env = getServerEnv();
@@ -279,18 +278,31 @@ let alertedMisconfiguredRedis = false;
  * Pages ADMIN_EMAIL once when a non-abuse-prone limiter is about to fail open
  * because Upstash is unconfigured on a real production boot. Fire-and-forget:
  * alertAdmin is itself best-effort and never throws.
+ *
+ * alertAdmin is loaded with a dynamic import, not a static one, on purpose:
+ * lib/alert-admin.ts pulls in lib/email.ts, which pulls in the Node-only
+ * "crypto" module. This file is imported by API routes that declare
+ * runtime = "edge", and a static import of that chain does not resolve in
+ * the edge bundle, so the whole build fails. This function only ever runs
+ * during a Node production boot with Upstash unconfigured, so deferring the
+ * import to call time keeps the Node-only chain out of edge bundles. Do not
+ * change this back to a static import.
  */
 function alertMisconfiguredRedisOnce(): void {
   if (alertedMisconfiguredRedis) return;
   alertedMisconfiguredRedis = true;
-  void alertAdmin(
-    "Rate limiting is fail-open in production",
-    "UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN are unset on a production boot " +
-      "(CONTEXT=production). Abuse-prone limiters (auth, payment, booking, guest lookup, " +
-      "referral validate, resend-access, referral complete, AI daily cost cap) are failing " +
-      "closed, but every other rate limiter is disabled and requests to those routes are " +
-      "passing through unthrottled."
-  );
+  import("@/lib/alert-admin")
+    .then(({ alertAdmin }) =>
+      alertAdmin(
+        "Rate limiting is fail-open in production",
+        "UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN are unset on a production boot " +
+          "(CONTEXT=production). Abuse-prone limiters (auth, payment, booking, guest lookup, " +
+          "referral validate, resend-access, referral complete, AI daily cost cap) are failing " +
+          "closed, but every other rate limiter is disabled and requests to those routes are " +
+          "passing through unthrottled."
+      )
+    )
+    .catch((err) => console.error("[ratelimit] admin alert failed:", err));
 }
 
 type RateLimitIdentifier = { ip: string } | { userId: string };

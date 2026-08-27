@@ -532,10 +532,15 @@ export function adminNewSalonNotification(
   };
 }
 
-export function salonOutreachInvitation(
+// async: unsubscribeToken() now runs on Web Crypto (crypto.subtle), which is async in every
+// runtime (see lib/unsubscribe-token.ts). Both callers were updated to await this: the
+// "salon-outreach-invitation" entry in lib/email-preview-samples.ts, and the
+// /dev/emails page (app/[locale]/dev/emails/page.tsx) that resolves it before rendering.
+export async function salonOutreachInvitation(
   to: string,
   vars: { salonName: string; claimUrl: string }
-): EmailPayload {
+): Promise<EmailPayload> {
+  const unsubToken = await unsubscribeToken(to);
   return {
     to,
     subject: `${vars.salonName} ist jetzt auf solen.ch gelistet — kostenlos Buchungen aktivieren`,
@@ -553,7 +558,7 @@ export function salonOutreachInvitation(
       <p>Bei Fragen: <a href="mailto:support@solen.ch">support@solen.ch</a></p>
       <p style="font-size:11px;color:${EMAIL_COLORS.ink2};margin-top:32px">
         solen.ch · Booking platform Basel ·
-        <a href="https://solen.ch/unsubscribe?email=${encodeURIComponent(to)}&t=${unsubscribeToken(to)}" style="color:${EMAIL_COLORS.ink2}">Abmelden</a>
+        <a href="https://solen.ch/unsubscribe?email=${encodeURIComponent(to)}&t=${unsubToken}" style="color:${EMAIL_COLORS.ink2}">Abmelden</a>
         · Diese E-Mail wurde an ${to} gesendet, da Ihr Salon öffentlich gelistet ist (nDSG Art. 31).
       </p>
     `,
