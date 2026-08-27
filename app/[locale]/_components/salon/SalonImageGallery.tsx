@@ -127,6 +127,22 @@ export function SalonImageGallery({
     };
   }, [open]);
 
+  // accessibility-06 (2026-07-27): url -> category lookup so the grid's alt text can name
+  // WHAT the photo shows (its portfolio category) instead of just a bare index. Real
+  // metadata already fetched into `salonPhotos`, just never threaded through to alt=.
+  const categoryByUrl = React.useMemo(() => {
+    const m = new Map<string, string | null>();
+    for (const p of salonPhotos) m.set(p.url, p.category);
+    return m;
+  }, [salonPhotos]);
+
+  // Same shape as categoryByUrl above: the grid renders urls, but a report must name the row.
+  const idByUrl = React.useMemo(() => {
+    const m = new Map<string, string>();
+    for (const p of salonPhotos) m.set(p.url, p.id);
+    return m;
+  }, [salonPhotos]);
+
   if (!open) return null;
 
   const stylistsWithPhotos = staff.filter((s) => (portfolios[s.id]?.length ?? 0) > 0);
@@ -158,22 +174,6 @@ export function SalonImageGallery({
   // work a photo shows instead of alt="" (these are evaluative haircut-result photos, the
   // exact content 1.1.1 does not let a gallery mark decorative).
   const activeStylistName = staff.find((s) => s.id === activeStylist)?.name ?? null;
-
-  // accessibility-06 (2026-07-27): url -> category lookup so the grid's alt text can name
-  // WHAT the photo shows (its portfolio category) instead of just a bare index. Real
-  // metadata already fetched into `salonPhotos`, just never threaded through to alt=.
-  const categoryByUrl = React.useMemo(() => {
-    const m = new Map<string, string | null>();
-    for (const p of salonPhotos) m.set(p.url, p.category);
-    return m;
-  }, [salonPhotos]);
-
-  // Same shape as categoryByUrl above: the grid renders urls, but a report must name the row.
-  const idByUrl = React.useMemo(() => {
-    const m = new Map<string, string>();
-    for (const p of salonPhotos) m.set(p.url, p.id);
-    return m;
-  }, [salonPhotos]);
 
   const openLb = (photos: string[], i: number) => setLb({ open: true, photos, index: i });
 
