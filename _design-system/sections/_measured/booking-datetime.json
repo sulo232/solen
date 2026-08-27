@@ -1,0 +1,231 @@
+{
+  "folder": "booking-datetime",
+  "route": "/de/salon/cuts-and-culture/booking",
+  "measuredAtViewport": "402x844",
+  "httpStatus": 200,
+  "settled": true,
+  "redirectedAway": false,
+  "finalUrl": "http://localhost:3457/de/salon/cuts-and-culture/booking",
+  "reachedBy": {
+    "why": "Same reason as booking-staff: BookingWizard holds the step in React state via lib/booking-context and reads no searchParams, so ?step=datetime returns step one. The wizard has to be driven.",
+    "stateMeasured": "The POPULATED state, a date picked and its time slots rendered. FLOORS LAW 3 makes the populated state the design target, so that is what the record below describes. The landing state, which is what a user actually sees on arrival at this step, is measured separately under bandAnatomy.landingStateBeforeADateIsPicked.",
+    "steps": [
+      "1 to 4. Everything in _measured/booking-staff.json reachedBy.steps, which lands on the staff step.",
+      "5. On the staff step, click the row whose text contains 'Jonas' (aria-pressed flips to true on that row), then click Weiter. A named stylist was picked rather than leaving the pre-selected 'Keine Praeferenz' so the downstream steps carry a real stylist name, which the pay step's trust floor turns on.",
+      "6. h1 becomes 'Datum & Zeit'. The date strip renders 14 day tiles, 27 Aug to 9 Sep. Five of the 14 are disabled for Jonas: 27, 28 and 30 Aug, 4 and 6 Sep. The time panel is the empty state until a date is picked.",
+      "7. Click the day tile 'Mo 31 Aug', the first enabled tile more than one day out. It fills blue and 18 time slots render under 'Waehlen Sie eine Uhrzeit', split 'Morgens' 6 and 'Nachmittags' 12.",
+      "8. Settle: sample the settle signature from scripts/measure-sections.mjs twice, 3 s apart. Both returned '70|2200|676'.",
+      "9. Run the extractSections function body from scripts/measure-sections.mjs via javascript_tool."
+    ],
+    "inputMethod": "Same as booking-staff: clicks were dispatched as HTMLElement.click() through javascript_tool because mcp__Claude_Browser__computer left_click timed out after 30 s on three consecutive attempts and delivered no event. Hover and focus-visible states were therefore never exercised and nothing here describes them.",
+    "notMeasured": "The waitlist route ('Kein passender Termin? Auf die Warteliste' opens WaitlistModal.tsx) was not opened. The slot-selected state of a time pill was measured separately, after this extract, and is recorded under bandAnatomy.slotPillSelected.",
+    "measuredAt": "2026-08-27T16:12Z"
+  },
+  "title": "Book your appointment | Solen",
+  "pathname": "/de/salon/cuts-and-culture/booking",
+  "documentHeight": 911,
+  "screen": {
+    "distinctSizes": [
+      22,
+      18,
+      16.5,
+      16,
+      14,
+      13.5,
+      12.5,
+      12
+    ],
+    "distinctWeights": [
+      "700",
+      "600",
+      "400",
+      "500"
+    ],
+    "textElements": 70,
+    "boldElements": 39
+  },
+  "sizeCountCaveat": "The 16px entry is the sr-only skip link 'Zum Inhalt springen', a 1x1 px clipped anchor that extractSections counts because sr-only uses neither display:none, visibility:hidden nor opacity:0. Distinct sizes a reader can see: 7 (22, 18, 16.5, 14, 13.5, 12.5, 12).",
+  "sections": [
+    {
+      "index": 0,
+      "tag": "main",
+      "className": "isolate pb-[calc(56px+env(safe-area-inset-bottom))] md:pb-[env(safe-area-inset-bottom)]",
+      "heading": "Datum & Zeit",
+      "box": { "top": 0, "left": 0, "width": 402, "height": 911 },
+      "surface": { "background": "rgba(0, 0, 0, 0)", "padding": "0px 0px 56px", "borderRadius": "0px" },
+      "textRoles": [
+        { "fontSizePx": 22, "fontWeight": "700", "fontFamily": "Inter", "color": "rgba(10, 10, 10, 0.3)", "textTransform": "none", "lineHeightPx": 22, "letterSpacing": "normal", "count": 5, "sample": "27" },
+        { "fontSizePx": 22, "fontWeight": "700", "fontFamily": "Inter", "color": "rgb(10, 10, 10)", "textTransform": "none", "lineHeightPx": 22, "letterSpacing": "normal", "count": 8, "sample": "29" },
+        { "fontSizePx": 22, "fontWeight": "700", "fontFamily": "Inter", "color": "rgb(255, 255, 255)", "textTransform": "none", "lineHeightPx": 22, "letterSpacing": "normal", "count": 1, "sample": "31" },
+        { "fontSizePx": 18, "fontWeight": "700", "fontFamily": "Inter Tight", "color": "rgb(10, 10, 10)", "textTransform": "none", "lineHeightPx": 28, "letterSpacing": "normal", "count": 2, "sample": "Datum wählen" },
+        { "fontSizePx": 16.5, "fontWeight": "600", "fontFamily": "Inter Tight", "color": "rgb(10, 10, 10)", "textTransform": "none", "lineHeightPx": 24.75, "letterSpacing": "-0.165px", "count": 1, "sample": "Datum & Zeit" },
+        { "fontSizePx": 14, "fontWeight": "500", "fontFamily": "Inter", "color": "rgb(10, 10, 10)", "textTransform": "none", "lineHeightPx": 21, "letterSpacing": "normal", "count": 1, "sample": "Jonas" },
+        { "fontSizePx": 14, "fontWeight": "600", "fontFamily": "Inter", "color": "rgb(10, 10, 10)", "textTransform": "none", "lineHeightPx": 21, "letterSpacing": "normal", "count": 18, "sample": "09:00" },
+        { "fontSizePx": 14, "fontWeight": "600", "fontFamily": "Inter Tight", "color": "rgb(255, 255, 255)", "textTransform": "none", "lineHeightPx": 20, "letterSpacing": "normal", "count": 1, "sample": "Weiter" },
+        { "fontSizePx": 13.5, "fontWeight": "600", "fontFamily": "Inter", "color": "rgb(107, 107, 107)", "textTransform": "none", "lineHeightPx": 20.25, "letterSpacing": "normal", "count": 1, "sample": "Kein passender Termin? Auf die Warteliste" },
+        { "fontSizePx": 12.5, "fontWeight": "600", "fontFamily": "Inter", "color": "rgb(107, 107, 107)", "textTransform": "none", "lineHeightPx": 18.75, "letterSpacing": "normal", "count": 2, "sample": "Morgens" },
+        { "fontSizePx": 12, "fontWeight": "500", "fontFamily": "Inter", "color": "rgba(10, 10, 10, 0.3)", "textTransform": "capitalize", "lineHeightPx": 18, "letterSpacing": "normal", "count": 5, "sample": "Do" },
+        { "fontSizePx": 12, "fontWeight": "400", "fontFamily": "Inter", "color": "rgba(10, 10, 10, 0.3)", "textTransform": "capitalize", "lineHeightPx": 18, "letterSpacing": "normal", "count": 5, "sample": "Aug" },
+        { "fontSizePx": 12, "fontWeight": "500", "fontFamily": "Inter", "color": "rgb(10, 10, 10)", "textTransform": "capitalize", "lineHeightPx": 18, "letterSpacing": "normal", "count": 8, "sample": "Sa" },
+        { "fontSizePx": 12, "fontWeight": "400", "fontFamily": "Inter", "color": "rgb(10, 10, 10)", "textTransform": "capitalize", "lineHeightPx": 18, "letterSpacing": "normal", "count": 8, "sample": "Aug" },
+        { "fontSizePx": 12, "fontWeight": "500", "fontFamily": "Inter", "color": "rgb(255, 255, 255)", "textTransform": "capitalize", "lineHeightPx": 18, "letterSpacing": "normal", "count": 1, "sample": "Mo" },
+        { "fontSizePx": 12, "fontWeight": "400", "fontFamily": "Inter", "color": "rgb(255, 255, 255)", "textTransform": "capitalize", "lineHeightPx": 18, "letterSpacing": "normal", "count": 1, "sample": "Aug" },
+        { "fontSizePx": 12, "fontWeight": "500", "fontFamily": "Inter", "color": "rgb(107, 107, 107)", "textTransform": "none", "lineHeightPx": 15, "letterSpacing": "normal", "count": 1, "sample": "Datum wählen" }
+      ],
+      "cards": [
+        { "radiusPx": 9999, "boxShadow": "none", "border": "1px solid rgb(228, 228, 231)", "background": "rgb(255, 255, 255)", "padding": "10px 14px", "count": 18, "exampleSize": "77x43" },
+        { "radiusPx": 16, "boxShadow": "none", "border": "1px solid rgb(228, 228, 231)", "background": "rgb(255, 255, 255)", "padding": "12px 0px", "count": 8, "exampleSize": "72x88" },
+        { "radiusPx": 16, "boxShadow": "none", "border": "1px solid rgb(228, 228, 231)", "background": "rgba(0, 0, 0, 0)", "padding": "12px 0px", "count": 5, "exampleSize": "72x88" },
+        { "radiusPx": 9999, "boxShadow": "none", "border": "1px solid rgb(228, 228, 231)", "background": "rgba(0, 0, 0, 0)", "padding": "6px 12px 6px 6px", "count": 1, "exampleSize": "120x42" },
+        { "radiusPx": 16, "boxShadow": "none", "border": "1px solid rgb(39, 110, 241)", "background": "rgb(39, 110, 241)", "padding": "12px 0px", "count": 1, "exampleSize": "72x88" },
+        { "radiusPx": 16, "boxShadow": "none", "border": "1px solid rgb(228, 228, 231)", "background": "rgb(255, 255, 255)", "padding": "0px", "count": 1, "exampleSize": "72x88" },
+        { "radiusPx": 12, "boxShadow": "none", "border": "1px solid rgb(228, 228, 231)", "background": "rgb(255, 255, 255)", "padding": "16px", "count": 1, "exampleSize": "360x337" },
+        { "radiusPx": 99, "boxShadow": "none", "border": "none", "background": "rgb(10, 10, 10)", "padding": "14px 0px", "count": 1, "exampleSize": "370x48" }
+      ],
+      "imagery": { "imageCount": 1, "imageAreaPx": 676 }
+    },
+    {
+      "index": 1,
+      "tag": "div",
+      "className": "flex items-center justify-between pt-1 pb-1",
+      "heading": "Datum & Zeit",
+      "box": { "top": 12, "left": 16, "width": 370, "height": 52 },
+      "surface": { "background": "rgba(0, 0, 0, 0)", "padding": "4px 0px", "borderRadius": "0px" },
+      "textRoles": [
+        { "fontSizePx": 16.5, "fontWeight": "600", "fontFamily": "Inter Tight", "color": "rgb(10, 10, 10)", "textTransform": "none", "lineHeightPx": 24.75, "letterSpacing": "-0.165px", "count": 1, "sample": "Datum & Zeit" }
+      ],
+      "cards": [],
+      "imagery": { "imageCount": 0, "imageAreaPx": 0 }
+    },
+    {
+      "index": 2,
+      "tag": "div",
+      "className": "",
+      "heading": "Datum wählen",
+      "box": { "top": 138, "left": 16, "width": 370, "height": 132 },
+      "surface": { "background": "rgba(0, 0, 0, 0)", "padding": "0px", "borderRadius": "0px" },
+      "textRoles": [
+        { "fontSizePx": 22, "fontWeight": "700", "fontFamily": "Inter", "color": "rgba(10, 10, 10, 0.3)", "textTransform": "none", "lineHeightPx": 22, "letterSpacing": "normal", "count": 5, "sample": "27" },
+        { "fontSizePx": 22, "fontWeight": "700", "fontFamily": "Inter", "color": "rgb(10, 10, 10)", "textTransform": "none", "lineHeightPx": 22, "letterSpacing": "normal", "count": 8, "sample": "29" },
+        { "fontSizePx": 22, "fontWeight": "700", "fontFamily": "Inter", "color": "rgb(255, 255, 255)", "textTransform": "none", "lineHeightPx": 22, "letterSpacing": "normal", "count": 1, "sample": "31" },
+        { "fontSizePx": 18, "fontWeight": "700", "fontFamily": "Inter Tight", "color": "rgb(10, 10, 10)", "textTransform": "none", "lineHeightPx": 28, "letterSpacing": "normal", "count": 1, "sample": "Datum wählen" },
+        { "fontSizePx": 12, "fontWeight": "500", "fontFamily": "Inter", "color": "rgba(10, 10, 10, 0.3)", "textTransform": "capitalize", "lineHeightPx": 18, "letterSpacing": "normal", "count": 5, "sample": "Do" },
+        { "fontSizePx": 12, "fontWeight": "400", "fontFamily": "Inter", "color": "rgba(10, 10, 10, 0.3)", "textTransform": "capitalize", "lineHeightPx": 18, "letterSpacing": "normal", "count": 5, "sample": "Aug" },
+        { "fontSizePx": 12, "fontWeight": "500", "fontFamily": "Inter", "color": "rgb(10, 10, 10)", "textTransform": "capitalize", "lineHeightPx": 18, "letterSpacing": "normal", "count": 8, "sample": "Sa" },
+        { "fontSizePx": 12, "fontWeight": "400", "fontFamily": "Inter", "color": "rgb(10, 10, 10)", "textTransform": "capitalize", "lineHeightPx": 18, "letterSpacing": "normal", "count": 8, "sample": "Aug" },
+        { "fontSizePx": 12, "fontWeight": "500", "fontFamily": "Inter", "color": "rgb(255, 255, 255)", "textTransform": "capitalize", "lineHeightPx": 18, "letterSpacing": "normal", "count": 1, "sample": "Mo" },
+        { "fontSizePx": 12, "fontWeight": "400", "fontFamily": "Inter", "color": "rgb(255, 255, 255)", "textTransform": "capitalize", "lineHeightPx": 18, "letterSpacing": "normal", "count": 1, "sample": "Aug" },
+        { "fontSizePx": 12, "fontWeight": "500", "fontFamily": "Inter", "color": "rgb(107, 107, 107)", "textTransform": "none", "lineHeightPx": 15, "letterSpacing": "normal", "count": 1, "sample": "Datum wählen" }
+      ],
+      "cards": [
+        { "radiusPx": 16, "boxShadow": "none", "border": "1px solid rgb(228, 228, 231)", "background": "rgb(255, 255, 255)", "padding": "12px 0px", "count": 8, "exampleSize": "72x88" },
+        { "radiusPx": 16, "boxShadow": "none", "border": "1px solid rgb(228, 228, 231)", "background": "rgba(0, 0, 0, 0)", "padding": "12px 0px", "count": 5, "exampleSize": "72x88" },
+        { "radiusPx": 16, "boxShadow": "none", "border": "1px solid rgb(39, 110, 241)", "background": "rgb(39, 110, 241)", "padding": "12px 0px", "count": 1, "exampleSize": "72x88" },
+        { "radiusPx": 16, "boxShadow": "none", "border": "1px solid rgb(228, 228, 231)", "background": "rgb(255, 255, 255)", "padding": "0px", "count": 1, "exampleSize": "72x88" }
+      ],
+      "imagery": { "imageCount": 0, "imageAreaPx": 0 }
+    },
+    {
+      "index": 3,
+      "tag": "div",
+      "className": "",
+      "heading": "Wählen Sie eine Uhrzeit",
+      "box": { "top": 298, "left": 16, "width": 370, "height": 377 },
+      "surface": { "background": "rgba(0, 0, 0, 0)", "padding": "0px", "borderRadius": "0px" },
+      "textRoles": [
+        { "fontSizePx": 18, "fontWeight": "700", "fontFamily": "Inter Tight", "color": "rgb(10, 10, 10)", "textTransform": "none", "lineHeightPx": 28, "letterSpacing": "normal", "count": 1, "sample": "Wählen Sie eine Uhrzeit" },
+        { "fontSizePx": 14, "fontWeight": "600", "fontFamily": "Inter", "color": "rgb(10, 10, 10)", "textTransform": "none", "lineHeightPx": 21, "letterSpacing": "normal", "count": 18, "sample": "09:00" },
+        { "fontSizePx": 12.5, "fontWeight": "600", "fontFamily": "Inter", "color": "rgb(107, 107, 107)", "textTransform": "none", "lineHeightPx": 18.75, "letterSpacing": "normal", "count": 2, "sample": "Morgens" }
+      ],
+      "cards": [
+        { "radiusPx": 9999, "boxShadow": "none", "border": "1px solid rgb(228, 228, 231)", "background": "rgb(255, 255, 255)", "padding": "10px 14px", "count": 18, "exampleSize": "77x43" },
+        { "radiusPx": 12, "boxShadow": "none", "border": "1px solid rgb(228, 228, 231)", "background": "rgb(255, 255, 255)", "padding": "16px", "count": 1, "exampleSize": "360x337" }
+      ],
+      "imagery": { "imageCount": 0, "imageAreaPx": 0 }
+    }
+  ],
+  "bandAnatomy": {
+    "_note": "Separate getBoundingClientRect + getComputedStyle reads in the same settled state and the same tab, because extractSections finds bands by landmark or direct-child heading and reports the whole screen plus three bands, which is not enough resolution to spec a day tile or a slot pill. Each entry names the selector it came from.",
+    "stepTitle": { "selector": "h1", "rect": [60, 26, 282, 25], "fontSize": "16.5px", "fontWeight": "600", "fontFamily": "Inter Tight" },
+    "staffChip": {
+      "selector": "the pill wrapping the text node 'Jonas'",
+      "rect": [16, 68, 120, 42],
+      "borderRadius": "9999px",
+      "background": "rgba(0, 0, 0, 0)",
+      "border": "1px solid rgb(228, 228, 231)",
+      "padding": "6px 12px 6px 6px",
+      "nameFontSize": "14px",
+      "nameFontWeight": "500",
+      "avatarImageAreaPx": 676
+    },
+    "sectionHeading": { "selector": "h3, text 'Datum wählen'", "rect": [16, 138, 370, 28], "fontSize": "18px", "fontWeight": "700", "fontFamily": "Inter Tight" },
+    "dayStrip": {
+      "container": { "rect": [0, 178, 402, 92], "gap": "10px", "overflowX": "auto" },
+      "tileCount": 14,
+      "tileSize": [72, 88],
+      "tileClassName": "shrink-0 w-[72px] rounded-2xl border py-3 flex flex-col items-center gap-0.5 transition-[colors,transform] duration-150 ease-snap",
+      "firstTileRect": [16, 178, 72, 88],
+      "secondTileRect": [98, 178, 72, 88],
+      "enabled": { "background": "rgb(255, 255, 255)", "border": "1px rgb(228, 228, 231)", "color": "rgb(10, 10, 10)", "cursor": "pointer", "opacity": "1" },
+      "disabled": { "background": "rgba(0, 0, 0, 0)", "border": "1px rgb(228, 228, 231)", "color": "rgba(10, 10, 10, 0.3)", "cursor": "not-allowed", "opacity": "1" },
+      "selected": { "background": "rgb(39, 110, 241)", "border": "1px solid rgb(39, 110, 241)", "color": "rgb(255, 255, 255)" },
+      "innerType": [
+        { "role": "weekday", "fontSize": "12px", "fontWeight": "500", "textTransform": "capitalize" },
+        { "role": "day number", "fontSize": "22px", "fontWeight": "700" },
+        { "role": "month", "fontSize": "12px", "fontWeight": "400", "textTransform": "capitalize" }
+      ],
+      "disabledDaysForJonasOnThisRun": ["Do 27 Aug", "Fr 28 Aug", "So 30 Aug", "Fr 4 Sep", "So 6 Sep"]
+    },
+    "slotPanel": {
+      "rect": [16, 298, 370, 377],
+      "cardRect": [21, 338, 360, 337],
+      "cardRadius": "12px",
+      "cardBackground": "rgb(255, 255, 255)",
+      "cardBorder": "1px solid rgb(228, 228, 231)",
+      "cardPadding": "16px",
+      "groupLabels": [
+        { "text": "Morgens", "fontSize": "12.5px", "fontWeight": "600", "color": "rgb(107, 107, 107)", "slots": 6 },
+        { "text": "Nachmittags", "fontSize": "12.5px", "fontWeight": "600", "color": "rgb(107, 107, 107)", "slots": 12 }
+      ],
+      "slotPill": {
+        "count": 18,
+        "size": [77, 43],
+        "borderRadius": "9999px",
+        "background": "rgb(255, 255, 255)",
+        "border": "1px solid rgb(228, 228, 231)",
+        "padding": "10px 14px",
+        "labelFontSize": "14px",
+        "labelFontWeight": "600"
+      }
+    },
+    "waitlistLink": { "text": "Kein passender Termin? Auf die Warteliste", "rect": [63, 529, 277, 20], "fontSize": "13.5px", "fontWeight": "600", "color": "rgb(107, 107, 107)" },
+    "stickyBar": { "rect": [0, 771, 402, 73], "background": "rgba(255, 255, 255, 0.95)", "borderTop": "1px rgb(228, 228, 231)" },
+    "continueCta": { "rect": [16, 784, 370, 48], "borderRadius": "99px", "background": "rgb(10, 10, 10)", "padding": "14px 0px", "disabledOpacity": "0.5", "disabledUntil": "a time slot is picked" },
+    "landingStateBeforeADateIsPicked": {
+      "_what": "What the step renders the moment it opens, before any day tile is tapped. Measured on the same run, immediately after arriving on the step and before step 7.",
+      "documentHeight": 900,
+      "sectionHeading": { "text": "Datum wählen", "rect": [16, 138, 370, 28], "fontSize": "18px", "fontWeight": "700" },
+      "emptySlotBlock": {
+        "headline": "Wähle einen Tag",
+        "subline": "Verfügbare Zeiten erscheinen hier.",
+        "sublineRect": [49, 436, 294, 21],
+        "sublineFontSize": "14px",
+        "sublineColor": "rgb(107, 107, 107)",
+        "containerBackground": "rgba(0, 0, 0, 0)",
+        "containerBorder": "0px rgb(228, 228, 231)",
+        "containerRadius": "0px",
+        "containerPadding": "0px"
+      },
+      "waitlistLink": { "rect": [63, 529, 277, 20] },
+      "stickyBar": { "rect": [0, 771, 402, 73] },
+      "continueCta": { "rect": [16, 784, 370, 48], "disabled": true, "opacity": "0.5" }
+    },
+    "slotPillSelected": {
+      "_what": "Measured after this record's extract, when the 10:00 pill was tapped to advance to the next step. Read after the React re-render, and compared against the 11:00 pill in the same read so the unselected values come from the same frame.",
+      "className": "px-3.5 py-2.5 rounded-full font-body font-semibold text-[14px] border transition-[colors,transform] duration-150 ease-snap",
+      "selected": { "background": "rgb(39, 110, 241)", "border": "1px solid rgb(39, 110, 241)", "color": "rgb(255, 255, 255)", "size": [77, 43], "borderRadius": "9999px", "fontSize": "14px", "fontWeight": "600" },
+      "unselected": { "background": "rgb(255, 255, 255)", "border": "1px solid rgb(228, 228, 231)", "color": "rgb(10, 10, 10)", "size": [77, 43], "borderRadius": "9999px", "fontSize": "14px", "fontWeight": "600" },
+      "continueCtaAfterSlotPick": { "disabled": false, "opacity": "1" }
+    }
+  }
+}

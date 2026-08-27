@@ -57,7 +57,11 @@ const SPECLESS_SCREENS = [
   { folder: "home-feed", route: "/de", auth: false },
   { folder: "search-results", route: "/de/basel/coiffeur", auth: false },
   { folder: "profile-hub", route: "/de/profile", auth: true },
-  { folder: "saved", route: "/de/profile/saved", auth: true },
+  // CORRECTED 2026-08-27: /de/profile/saved is not a route. The first run measured the 404
+  // page and filed it as the saved screen. There are two real saved surfaces and they are
+  // different screens, so both get measured rather than one standing in for the other.
+  { folder: "saved-salons", route: "/de/profile/favorites", auth: true },
+  { folder: "saved-looks", route: "/de/inspo/saved", auth: true },
   { folder: "booking-service", route: "/de/salon/cuts-and-culture/booking", auth: false },
   // confirmation is NOT here either. `/de/confirmation` with no parameters renders an error
   // state headed "Diese Seite wurde abgeschnitten." The page requires a booking_id

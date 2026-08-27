@@ -1,0 +1,75 @@
+{
+  "folder": "de-inspo-saved",
+  "route": "/de/inspo/saved",
+  "measuredAtViewport": "390x844",
+  "httpStatus": 200,
+  "settled": true,
+  "redirectedAway": false,
+  "finalUrl": "http://localhost:3457/de/inspo/saved",
+  "title": "solen.ch — Salons in Basel",
+  "pathname": "/de/inspo/saved",
+  "documentHeight": 2019,
+  "screen": {
+    "distinctSizes": [
+      22,
+      16,
+      15,
+      14,
+      13
+    ],
+    "distinctWeights": [
+      "700",
+      "400",
+      "600"
+    ],
+    "textElements": 6,
+    "boldElements": 4
+  },
+  "sections": [
+    {
+      "index": 0,
+      "tag": "main",
+      "className": "isolate pb-[calc(56px+env(safe-area-inset-bottom))] md:pb-[env(safe-area-inset-bottom)]",
+      "heading": "Gespeichert",
+      "box": {
+        "top": 0,
+        "left": 0,
+        "width": 390,
+        "height": 2019
+      },
+      "surface": {
+        "background": "rgba(0, 0, 0, 0)",
+        "padding": "0px 0px 56px",
+        "borderRadius": "0px"
+      },
+      "textRoles": [
+        {
+          "fontSizePx": 22,
+          "fontWeight": "700",
+          "fontFamily": "Inter Tight",
+          "color": "rgb(10, 10, 10)",
+          "textTransform": "none",
+          "lineHeightPx": 33,
+          "letterSpacing": "-0.44px",
+          "count": 1,
+          "sample": "Gespeichert"
+        }
+      ],
+      "cards": [
+        {
+          "radiusPx": 16,
+          "boxShadow": "none",
+          "border": "none",
+          "background": "rgba(0, 0, 0, 0)",
+          "padding": "0px",
+          "count": 12,
+          "exampleSize": "196x261"
+        }
+      ],
+      "imagery": {
+        "imageCount": 0,
+        "imageAreaPx": 0
+      }
+    }
+  ]
+}

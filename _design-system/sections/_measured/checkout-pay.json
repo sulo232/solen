@@ -1,0 +1,183 @@
+{
+  "folder": "checkout-pay",
+  "route": "/de/salon/cuts-and-culture/booking",
+  "measuredAtViewport": "402x844",
+  "httpStatus": 200,
+  "settled": true,
+  "redirectedAway": false,
+  "finalUrl": "http://localhost:3457/de/salon/cuts-and-culture/booking",
+  "reachedBy": {
+    "why": "Same reason as the other two booking steps: BookingWizard holds the step in React state via lib/booking-context and reads no searchParams, so ?step=pay returns step one. The wizard has to be driven.",
+    "steps": [
+      "1 to 7. Everything in _measured/booking-datetime.json reachedBy.steps, which lands on the date and time step with 'Mo 31 Aug' picked.",
+      "8. Click the time pill '10:00'. It fills blue and the Weiter button leaves its disabled state.",
+      "9. Click Weiter. This does NOT land on the pay step. Every service at cuts-and-culture is category 'barbershop', which is in BookingWizard's HAIR_CATEGORIES, so a fifth step 'Ihre Haare' (HairStep.tsx) is inserted between datetime and pay-confirm. That step is not one of the four in this assignment.",
+      "10. Click 'Ueberspringen' on the hair step. h1 becomes 'Bestaetigen & Zahlen'.",
+      "11. Settle: sample the settle signature from scripts/measure-sections.mjs twice, 4 s apart. Both returned '27|2200|3961'.",
+      "12. Run the extractSections function body from scripts/measure-sections.mjs via javascript_tool.",
+      "13. STOPPED HERE. 'Buchung bestaetigen' was never pressed. No booking was created and nothing was written to the database."
+    ],
+    "authState": "LOGGED IN, and not by anything this run did: the browser context already carried a Supabase session cookie (sb-tocfnsmxmdxkrcmjzzdw-auth-token). Decoding it names the account as hiroseseiju@proton.me, user id 3f7d3d5d-73b9-4277-a797-7b24c2dc962b, which is the seed test salon-owner fixture that /api/dev/login signs in by default. Its profile renders on this screen as the name 'QA Test'. Because isLoggedIn is true, PayConfirmStep renders its logged-in branch. The GUEST branch (GuestBookingForm.tsx, name plus email plus phone) was NOT measured and nothing in this record describes it. The only input rendered here is one optional tel field. To reproduce the same state deliberately: GET /api/dev/login?to=/de/salon/cuts-and-culture/booking before step 1.",
+    "salonPaymentConfig": "cuts-and-culture: payment_mode 'at_salon', accepts_online_payment true, vat_registered FALSE, vat_number null, vat_rate 8.1, cancellation_window_hours 24, cancellation_fee_type 'free', free_cancel_hours 24, late_cancel_fee_percent 50. Read from the live DB with the service-role key, read only.",
+    "inputMethod": "Same as the other two steps: clicks were dispatched as HTMLElement.click() through javascript_tool because mcp__Claude_Browser__computer left_click timed out after 30 s on three consecutive attempts and delivered no event.",
+    "paymentChoiceState": "Measured with the default choice, 'Jetzt online bezahlen', selected. The other choice was tapped once to read its selected styling and then the default was restored before this record was written.",
+    "measuredAt": "2026-08-27T16:20Z"
+  },
+  "title": "Book your appointment | Solen",
+  "pathname": "/de/salon/cuts-and-culture/booking",
+  "documentHeight": 1081,
+  "screen": {
+    "distinctSizes": [
+      22,
+      16.5,
+      16,
+      15,
+      14.5,
+      14,
+      13,
+      12.5,
+      12
+    ],
+    "distinctWeights": [
+      "700",
+      "600",
+      "400"
+    ],
+    "textElements": 27,
+    "boldElements": 16
+  },
+  "sizeCountCaveat": "One of the two 16px sources is the sr-only skip link 'Zum Inhalt springen'. The other is real: the tel input renders at 16px. Distinct sizes a reader can see: 9, unchanged, because 16px survives as the input's own size.",
+  "sections": [
+    {
+      "index": 0,
+      "tag": "main",
+      "className": "isolate pb-[calc(56px+env(safe-area-inset-bottom))] md:pb-[env(safe-area-inset-bottom)]",
+      "heading": "Bestätigen & Zahlen",
+      "box": { "top": 0, "left": 0, "width": 402, "height": 1081 },
+      "surface": { "background": "rgba(0, 0, 0, 0)", "padding": "0px 0px 56px", "borderRadius": "0px" },
+      "textRoles": [
+        { "fontSizePx": 22, "fontWeight": "700", "fontFamily": "Inter Tight", "color": "rgb(10, 10, 10)", "textTransform": "none", "lineHeightPx": 33, "letterSpacing": "-0.22px", "count": 1, "sample": "CHF 45" },
+        { "fontSizePx": 16.5, "fontWeight": "600", "fontFamily": "Inter Tight", "color": "rgb(10, 10, 10)", "textTransform": "none", "lineHeightPx": 24.75, "letterSpacing": "-0.165px", "count": 1, "sample": "Bestätigen & Zahlen" },
+        { "fontSizePx": 15, "fontWeight": "600", "fontFamily": "Inter Tight", "color": "rgb(10, 10, 10)", "textTransform": "none", "lineHeightPx": 22.5, "letterSpacing": "-0.15px", "count": 1, "sample": "Cuts & Culture" },
+        { "fontSizePx": 15, "fontWeight": "600", "fontFamily": "Inter Tight", "color": "rgb(10, 10, 10)", "textTransform": "none", "lineHeightPx": 22.5, "letterSpacing": "normal", "count": 4, "sample": "Jonas" },
+        { "fontSizePx": 15, "fontWeight": "600", "fontFamily": "Inter", "color": "rgb(255, 255, 255)", "textTransform": "none", "lineHeightPx": 22.5, "letterSpacing": "normal", "count": 1, "sample": "Buchung bestätigen" },
+        { "fontSizePx": 14.5, "fontWeight": "600", "fontFamily": "Inter", "color": "rgb(10, 10, 10)", "textTransform": "none", "lineHeightPx": 21.75, "letterSpacing": "normal", "count": 1, "sample": "QA Test" },
+        { "fontSizePx": 14, "fontWeight": "400", "fontFamily": "Inter", "color": "rgb(10, 10, 10)", "textTransform": "none", "lineHeightPx": 21, "letterSpacing": "normal", "count": 2, "sample": "Herrenschnitt" },
+        { "fontSizePx": 14, "fontWeight": "600", "fontFamily": "Inter", "color": "rgb(10, 10, 10)", "textTransform": "none", "lineHeightPx": 21, "letterSpacing": "normal", "count": 2, "sample": "Jetzt online bezahlen" },
+        { "fontSizePx": 13, "fontWeight": "600", "fontFamily": "Inter", "color": "rgb(10, 10, 10)", "textTransform": "none", "lineHeightPx": 19.5, "letterSpacing": "normal", "count": 2, "sample": "4.8" },
+        { "fontSizePx": 13, "fontWeight": "400", "fontFamily": "Inter", "color": "rgb(39, 110, 241)", "textTransform": "none", "lineHeightPx": 19.5, "letterSpacing": "normal", "count": 1, "sample": "( 16 )" },
+        { "fontSizePx": 13, "fontWeight": "400", "fontFamily": "Inter", "color": "rgb(107, 107, 107)", "textTransform": "none", "lineHeightPx": 19.5, "letterSpacing": "normal", "count": 3, "sample": "Elsässerstrasse 10, Basel" },
+        { "fontSizePx": 13, "fontWeight": "600", "fontFamily": "Inter", "color": "rgb(39, 110, 241)", "textTransform": "none", "lineHeightPx": 19.5, "letterSpacing": "normal", "count": 3, "sample": "Ändern" },
+        { "fontSizePx": 12.5, "fontWeight": "400", "fontFamily": "Inter", "color": "rgb(107, 107, 107)", "textTransform": "none", "lineHeightPx": 18.75, "letterSpacing": "normal", "count": 3, "sample": "Karte oder TWINT, sicher per Stripe" },
+        { "fontSizePx": 12, "fontWeight": "400", "fontFamily": "Inter", "color": "rgb(107, 107, 107)", "textTransform": "none", "lineHeightPx": 18, "letterSpacing": "normal", "count": 1, "sample": "Für die Terminbestätigung. Wird gespeichert." }
+      ],
+      "cards": [
+        { "radiusPx": 16, "boxShadow": "rgba(50, 47, 44, 0.04) 0px 1px 3px 0px, rgba(50, 47, 44, 0.03) 0px 1px 2px 0px", "border": "1px solid rgb(228, 228, 231)", "background": "rgb(255, 255, 255)", "padding": "16px", "count": 2, "exampleSize": "370x286" },
+        { "radiusPx": 16, "boxShadow": "none", "border": "1px solid rgb(228, 228, 231)", "background": "rgb(255, 255, 255)", "padding": "16px", "count": 1, "exampleSize": "370x140" },
+        { "radiusPx": 12, "boxShadow": "none", "border": "1px solid rgb(228, 228, 231)", "background": "rgb(255, 255, 255)", "padding": "0px 16px", "count": 1, "exampleSize": "336x48" },
+        { "radiusPx": 12, "boxShadow": "none", "border": "2px solid rgb(10, 10, 10)", "background": "rgb(255, 255, 255)", "padding": "16px", "count": 1, "exampleSize": "370x78" },
+        { "radiusPx": 12, "boxShadow": "none", "border": "1px solid rgb(228, 228, 231)", "background": "rgb(255, 255, 255)", "padding": "16px", "count": 1, "exampleSize": "370x76" },
+        { "radiusPx": 9999, "boxShadow": "none", "border": "none", "background": "rgb(10, 10, 10)", "padding": "0px 20px", "count": 1, "exampleSize": "338x52" }
+      ],
+      "imagery": { "imageCount": 2, "imageAreaPx": 3961 }
+    },
+    {
+      "index": 1,
+      "tag": "div",
+      "className": "flex items-center justify-between pt-1 pb-1",
+      "heading": "Bestätigen & Zahlen",
+      "box": { "top": 12, "left": 16, "width": 370, "height": 52 },
+      "surface": { "background": "rgba(0, 0, 0, 0)", "padding": "4px 0px", "borderRadius": "0px" },
+      "textRoles": [
+        { "fontSizePx": 16.5, "fontWeight": "600", "fontFamily": "Inter Tight", "color": "rgb(10, 10, 10)", "textTransform": "none", "lineHeightPx": 24.75, "letterSpacing": "-0.165px", "count": 1, "sample": "Bestätigen & Zahlen" }
+      ],
+      "cards": [],
+      "imagery": { "imageCount": 0, "imageAreaPx": 0 }
+    }
+  ],
+  "trustFloor": {
+    "_what": "CLAUDE.md FLOORS LAW item 8, checked against the RENDERED DOM at 402x844, scrollY 0, not against source strings. Each verdict names the evidence it rests on.",
+    "commitButton": {
+      "label": "Buchung bestätigen",
+      "viewportRect": { "x": 32, "y": 776, "w": 338, "h": 52 },
+      "positionContext": "inside DIV.fixed bottom-0 left-0 right-0 border-t border-s-border bg-white p-4 z-20, so it is pinned to the bottom of the viewport at every scroll position",
+      "background": "rgb(10, 10, 10)",
+      "borderRadius": "9999px"
+    },
+    "a_priceBreakdown": {
+      "verdict": "PASS",
+      "evidence": "Two money rows render above the commit button and both are in the DOM, not only in an i18n object. Line item 'Herrenschnitt' with 'CHF 45' at doc y 387, 14px weight 400. Then a rule (1px rgb(228,228,231), 10px padding-top, 10px margin-top) and the total row at doc y 418: label 'Total' 15px weight 600, amount 'CHF 45' 22px weight 700 Inter Tight, ink. The rendered total equals the rendered line item, so the PBV total-price rule is satisfied: nothing is added after the fact.",
+      "vat": "No VAT row renders, and that is CORRECT here rather than missing. The floor says 'VAT where applicable'. PayConfirmStep.tsx:469 gates the row on salonVatRegistered, which reads salons.vat_registered. cuts-and-culture has vat_registered = false and vat_number = null, so no VAT is applicable and no row is due. A search of the rendered body text for MWST, Mehrwertsteuer, VAT, 'inkl.' and 'exkl.' returned nothing, which matches.",
+      "vatNotProvable": "I could not measure the VAT row rendering, because 0 of the 28 seeded salons have vat_registered = true and I am read only. The render site exists at PayConfirmStep.tsx:469-473 and the row is real JSX, but this run is not evidence that it renders correctly with a registered salon.",
+      "surcharge": "No surcharge line renders, and none is due: the cart holds one service at its list price and no staff or duration surcharge applies. Not evidence about how a surcharge would render."
+    },
+    "b_cancellationTermAboveCommit": {
+      "verdict": "PASS on the letter of the floor, with a named caveat that is worth acting on",
+      "evidence": "The term renders as real JSX at PayConfirmStep.tsx:707-712: a ShieldCheck icon in text-s-success beside a <p class='font-body text-[12.5px] leading-[1.5] text-s-ink-2'>. In the live DOM the text node reads 'Kostenlos bis 24h vorher stornieren.' at doc y 870, 12.5px, rgb(107,107,107), with the green icon at doc y 872, rgb(22,163,74). compareDocumentPosition puts it BEFORE the commit button in DOM order. This is NOT the walk-in-pay failure: that file defined cancelPolicy in four locale objects with zero JSX render sites, and this one has a render site with live text in it.",
+      "caveat": "At the measured viewport and at scrollY 0 the term sits at doc y 870, which is 26px below the 844px fold, while the commit button is pinned on screen at viewport y 776 at every scroll position. So the button is reachable before the term has ever been on screen. The document is 1081px tall against an 844px viewport, so 237px of scroll is available and the term does come into view at full scroll (viewport y 633, clear of the fixed bar). The floor's words are 'renders in the DOM above the commit button' and it does; the ordering is right and the visibility is not.",
+      "secondCaveat": "The rendered term states only the free half of the policy. The salon row carries late_cancel_fee_percent = 50, so cancelling inside 24 hours costs half the price, and no rendered string on this screen says so."
+    },
+    "c_whoYouAreBookingWith": {
+      "verdict": "PASS",
+      "evidence": "Salon name 'Cuts & Culture' renders at doc y 81, 15px weight 600 Inter Tight, with its cover photo 44x44 at radius 12 beside it and the address 'Elsässerstrasse 10, Basel' at doc y 106, 13px rgb(107,107,107). The stylist 'Jonas' renders at doc y 152, 15px weight 600, with a 45x45 round avatar. Both are above the commit button at viewport y 776 in position AND before it in DOM order, and both are inside the first viewport at scrollY 0, so unlike the cancellation term they cannot be missed. This is a salon and a person, not a category."
+    },
+    "adjacentDefectFound": {
+      "_what": "Not one of the three named conditions, recorded because it was measured on the same screen and it is a trust problem of the same family.",
+      "finding": "The commit button label never says money is about to be taken. It reads 'Buchung bestätigen' with 'Jetzt online bezahlen' selected, and it still reads 'Buchung bestätigen' after tapping 'Zahlung im Salon'. Verified by reading the label before and after the tap.",
+      "cause": "PayConfirmStep.tsx:725-731 keys the label on paymentMode, which line 161 derives from salons.payment_mode and which is 'at_salon' for this salon. The customer's own choice lives in a different variable, payChoice, which line 179 folds into paymentMethod. The label never reads payChoice, so the 'Weiter zur Zahlung CHF 45' branch is unreachable whenever the salon is at_salon, which is every seeded salon path that offers the online option at all."
+    }
+  },
+  "bandAnatomy": {
+    "_note": "Separate getBoundingClientRect + getComputedStyle reads in the same settled state and the same tab. extractSections reports only main plus the nav bar on this screen, because every band below main is a plain div with no landmark tag and no direct-child heading. Each entry names the selector it came from.",
+    "stepTitle": { "selector": "h1", "rect": [60, 26, 282, 25], "fontSize": "16.5px", "fontWeight": "600", "fontFamily": "Inter Tight" },
+    "summaryCard": {
+      "className": "rounded-card border border-s-border bg-white p-4 shadow-elevation-1",
+      "rect": [16, 64, 370, 286],
+      "borderRadius": "16px",
+      "border": "1px rgb(228, 228, 231)",
+      "boxShadow": "rgba(50, 47, 44, 0.04) 0px 1px 3px 0px, rgba(50, 47, 44, 0.03) 0px 1px 2px 0px",
+      "padding": "16px",
+      "rows": [
+        { "role": "salon", "photoRect": [33, 81, 44, 44], "photoRadius": "12px", "nameRect": [89, 81, 280, 23], "nameFontSize": "15px", "nameFontWeight": "600", "ratingFontSize": "13px", "ratingFontWeight": "600", "countColor": "rgb(39, 110, 241)", "addressRect": [167, 106, 154, 20], "addressFontSize": "13px" },
+        { "role": "stylist", "avatarRect": [33, 150, 45, 45], "avatarRadius": "9999px", "nameRect": [90, 152, 221, 23], "nameFontSize": "15px", "nameFontWeight": "600", "changeLinkRect": [323, 163, 46, 20] },
+        { "role": "service", "changeLinkRect": [323, 232, 46, 20] },
+        { "role": "date and time", "text": "Mo., 31. August 10:00", "changeLinkRect": [323, 301, 46, 20] }
+      ],
+      "changeLink": { "fontSize": "13px", "fontWeight": "600", "color": "rgb(39, 110, 241)", "count": 3 }
+    },
+    "priceCard": {
+      "className": "rounded-card border border-s-border bg-white p-4 shadow-elevation-1",
+      "rect": [16, 370, 370, 109],
+      "borderRadius": "16px",
+      "border": "1px rgb(228, 228, 231)",
+      "padding": "16px",
+      "lineItem": { "text": "Herrenschnitt", "amountRect": [318, 387, 51, 21], "fontSize": "14px", "fontWeight": "400" },
+      "totalRow": { "rect": [33, 418, 336, 44], "borderTop": "1px rgb(228, 228, 231)", "paddingTop": "10px", "marginTop": "10px", "labelFontSize": "15px", "labelFontWeight": "600", "amountRect": [294, 429, 75, 33], "amountFontSize": "22px", "amountFontWeight": "700", "amountColor": "rgb(10, 10, 10)" },
+      "staleComment": "The source comment above this card at PayConfirmStep.tsx:460 says 'blue total'. The rendered total is ink rgb(10, 10, 10), not blue. The comment is stale, the render is correct against the locked palette."
+    },
+    "contactCard": {
+      "className": "rounded-input border border-s-border bg-s-bg-surface p-4",
+      "rect": [16, 499, 370, 140],
+      "borderRadius": "16px",
+      "boxShadow": "none",
+      "nameFontSize": "14.5px",
+      "nameFontWeight": "600",
+      "helperText": "Für die Terminbestätigung. Wird gespeichert.",
+      "helperFontSize": "12px",
+      "phoneInput": { "rect": [33, 550, 336, 48], "height": 48, "borderRadius": "12px", "border": "1px rgb(228, 228, 231)", "background": "rgb(255, 255, 255)", "fontSize": "16px", "placeholder": "Telefonnummer" }
+    },
+    "paymentOptions": [
+      { "text": "Jetzt online bezahlen / Karte oder TWINT, sicher per Stripe", "rect": [16, 686, 370, 78], "borderRadius": "12px", "border": "2px rgb(10, 10, 10)", "background": "rgb(255, 255, 255)", "padding": "16px", "selected": true, "titleFontSize": "14px", "titleFontWeight": "600", "sublineFontSize": "12.5px" },
+      { "text": "Zahlung im Salon / CHF 45 direkt vor Ort", "rect": [16, 774, 370, 76], "borderRadius": "12px", "border": "1px rgb(228, 228, 231)", "background": "rgb(255, 255, 255)", "padding": "16px", "selected": false, "titleFontSize": "14px", "titleFontWeight": "600", "sublineFontSize": "12.5px" }
+    ],
+    "cancellationBanner": {
+      "icon": { "rect": [20, 872, 14, 14], "color": "rgb(22, 163, 74)", "component": "lucide ShieldCheck size 14 strokeWidth 1.6" },
+      "text": { "value": "Kostenlos bis 24h vorher stornieren.", "rect": [42, 870, 214, 19], "fontSize": "12.5px", "lineHeight": "1.5", "color": "rgb(107, 107, 107)" }
+    },
+    "stickyBar": {
+      "className": "fixed bottom-0 left-0 right-0 border-t border-s-border bg-white p-4 z-20",
+      "commitButton": { "rect": [32, 776, 338, 52], "minHeight": "52px", "borderRadius": "9999px", "background": "rgb(10, 10, 10)", "fontSize": "15px", "fontWeight": "600", "padding": "0px 20px" }
+    },
+    "overlapAtRest": "At scrollY 0 the fixed bar covers the lower half of the second payment option, which starts at doc y 774 while the bar's top edge sits at about viewport y 760. The scroll container carries pb-28 so the content clears the bar once scrolled. Recorded as measured, not judged."
+  }
+}

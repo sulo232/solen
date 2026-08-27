@@ -1,0 +1,5 @@
+{
+  "folder": "saved-salons-saved-looks",
+  "route": "saved-salons,saved-looks",
+  "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3000/saved-salons,saved-looks\nCall log:\n  - navigating to \"http://localhost:3000/saved-salons,saved-looks\", waiting until \"domcontentloaded\"\n"
+}
