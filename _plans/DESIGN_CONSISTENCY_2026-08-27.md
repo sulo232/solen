@@ -184,8 +184,19 @@ the direction of the screen he already likes.
   Verified rendering at 402x844: four frames, bars at 12/4/18/88 at 54 and 64 tall, anchor 30px at
   2.14x over a 14px body, three sizes, no sideways scroll. The page carries the recommendation and
   its cost, so his answer can be one word.
-  STILL OPEN: nothing has moved in the product. The sweep still returns four positions and two
-  heights, and Inspo still scrolls away.
+  ONE OF THE THREE IS NOW FIXED IN THE PRODUCT (`b5c5b28d4`): Inspo keeps its search bar on screen,
+  the same way the other six screens do. Measured before and after at 390x844: at rest the bar is
+  unchanged at x 16, 358 wide, 64 tall; scrolled 600 down it is still on screen instead of gone.
+  Tapping it still opens the typing field and the suggestions panel still paints over the feed,
+  checked by hit-testing three points inside it rather than by reading a z-index. Graded by a second
+  reader against a 9-item list, all 9 pass, and the reader re-ran both of the builder's own claims
+  rather than accepting them.
+  Two things that reader confirmed and that are worth keeping: the class list I first handed the
+  builder would have DELETED the bar on desktop, because this page carries no desktop rules at all,
+  and the pinned bar sitting 6px higher than at rest is native sticky behaviour that the untouched
+  `/de/coiffeur` shows identically at 8px, not something this change introduced.
+  STILL OPEN: the other two. The sweep still returns four vertical positions and two heights, and
+  which one wins is one word from him.
 
 - [ ] **S3. Back arrow becomes one rule.** Standard is the 44x44 at (16,20) that seven pages already
   use. The salon page KEEPS its see-through 40x40, as a named variant, because a solid white circle
@@ -203,7 +214,7 @@ the direction of the screen he already likes.
   verified rendering at 402x844.
   STILL OPEN: nothing has moved in the product. The sweep still returns 13 variants, not 2.
 
-- [ ] **S4. Write the nine missing screen specs.** Use `salon-detail`'s 21 files as the template,
+- [x] **S4. Write the nine missing screen specs. CLOSED 2026-08-27.** Use `salon-detail`'s 21 files as the template,
   since that is the shape that produced the screen he likes. Each of the nine gets its sections
   named, its type scale fixed, its surface decided, and its card anatomy pinned to the registered
   component.
@@ -230,12 +241,23 @@ the direction of the screen he already likes.
   404 measurement. Its README diagnoses the 404 correctly and every one of its section files says
   "not measured" in its Measured block. It refused the bad data instead of publishing it, so it is
   kept and cited, not retired.
-  STILL OPEN, second half of the close condition: `saved-looks` measured the LOADING SKELETON, not
-  the screen, proved four ways (12 tiles matching the skeleton's 12 ratio entries, a 196px tile
-  width matching the skeleton's wrapper arithmetic rather than the real grid's 186px, and zero
-  images). The cause is in the measuring script: its settle check watches text count, largest font
-  and image area, and a shimmering skeleton holds all three constant, so it declares itself
-  finished. That is being fixed at the instrument, not worked around per screen.
+  SECOND HALF NOW MET TOO. `saved-looks` had measured the LOADING SKELETON rather than the screen,
+  proved four ways (12 tiles matching the skeleton's 12 ratio entries, a 196px tile width matching
+  the skeleton's wrapper arithmetic against the real grid's 186px, and zero images). The cause was
+  in the measuring script, not in that one screen: its settle check watched text count, largest font
+  and image area, and a shimmering skeleton holds all three constant, so it declared itself
+  finished. FIXED AT THE INSTRUMENT (`cc69b05c2`): it now counts shimmering elements and refuses to
+  call a page settled while any are visible, with its own flag when it times out with some still up.
+  Proven both ways rather than argued: holding the saves request open, the counter sees 24 shimmering
+  elements on that screen, which is 12 tiles times the 2 shimmer blocks each draws, and a screen that
+  already measured fine still returns zero. Graded by a second reader against an 11-item list, all 11
+  verified, both controls re-run rather than taken on trust.
+  The spec was then rewritten against the re-taken capture (`0fe3cc713`), with all 12 corrections
+  named in its README rather than swapped in quietly. It turned out the seeded customer has no saved
+  looks at all, so what that screen really renders is its EMPTY state: 651px of nothing below the
+  button, 77 percent of the screen, against a floor of 30. One thing is still unmeasurable and is
+  labelled as such: the populated grid, because no seeded account has a saved look and seeding is a
+  database write.
 
 - [ ] **S5. Fold the 38 rows.** Every one of them is either finished, superseded by a spec written in
   S4, or genuinely still open. Mark each. Fix the duplicate IDs.
@@ -246,9 +268,30 @@ the direction of the screen he already likes.
   42 by 43, 52 and 55 by 81, 69 by 70, DEAD 35 and 53. Every one of the 15 survivors now carries a
   WAITING ON line naming one concrete blocker, and 9 of those blockers are one word from him.
   Index recount: 21 CLOSED, 48 ACTIVE across all workstreams.
-  STILL OPEN: **14 design rows** are still ACTIVE against a target of under 10, and roughly 5 design
-  rows were never handed to an audit. Those five need judging, and then the survivors that wait only
-  on him need to be put to him as one list rather than fourteen.
+  ROUND 3 and ROUND 4, 2026-08-27 (`dba7d7325`): 17 more rows judged against the CODE. The four
+  search-panel rows: 59 and 61 FINISHED, 62 and 63 still open and WAITING ON THE SAME SINGLE ACT, one
+  look at the `Wo?` step with the keyboard up on his own iPhone, so they go to him as one question,
+  not two. Then 13 more: **2 closed** (13 folded into this workstream, since the 12 screen specs
+  written in S4 ARE the per-screen vehicle it spent two months failing to build; 25 DEAD, its rounds
+  2 to 9 never existed) and **11 survivors each naming ONE thing they wait on, nine of them one word
+  from him.**
+  **THREE ROWS WERE HELD OPEN BY A CLAIM THAT WAS FALSE**, which is the same disease this whole
+  workstream exists to treat:
+    1. Row 100 said the booking calendar cannot tell a booked day from a free one. The calendar does
+       not use that route. `DateTimeStep.tsx:80,106` and `RescheduleSheet.tsx:91,119` call
+       `/api/availability/unavailable-dates`, which uses an admin client and bypasses RLS. The route
+       that HAS the problem has zero callers anywhere. Control: the same grep finds five real callers
+       for `/api/salons`.
+    2. Row 39 said it waits on his gray-or-white word. The two-panel comparison that word depends on
+       was never built: `git log --all --diff-filter=A` on its path returns nothing, and its link
+       returns 200 only because the app falls back to a breadcrumb page. Control: two real mockups
+       return their own titles. Nothing was ever put in front of him.
+    3. Row 48 said only 2 of 5 categories have a finished animated clip. Decoding the four base64
+       blobs in the research file and md5ing them against disk shows FOUR finished clips; two were
+       never extracted to `out/`.
+  Index recount: **34 CLOSED, 35 ACTIVE, 10 PAUSED** across all 110 rows.
+  STILL OPEN: the design ACTIVE count is still above the target of under 10. What is left is mostly
+  not audit work any more, it is nine one-word answers that need to reach him as ONE list.
 
 - [ ] **S6. Then and only then, the look.** Gray, the dashboard direction, typography. Those are
   taste calls and they are his. They are LAST on purpose: fixing them before S1 to S4 means fixing
