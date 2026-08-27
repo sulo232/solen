@@ -2,16 +2,16 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-27T10:17:16 (trigger: auto)
+- taken: 2026-08-27T11:10:20 (trigger: auto)
 - branch: claude/stress-test-gates-hooks-6dc8e8
 
 ## git
 ```
+e85456d8e checkpoint(auto): 1 uncommitted file(s) at turn end
 8378f389c checkpoint(auto): 3 uncommitted file(s) at turn end
 c7b23aa3e Bring main in, and settle all 13 clashes one at a time
 1ebf80abb Bring the corrected plan into main: proof on the ticked lines, leftovers tracked
 ae3fa907f Put the proof on the ticked line, and track the leftovers as boxes not prose
-0c73517e0 Bring today's backend work into main: five fixes, all graded by someone else
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
