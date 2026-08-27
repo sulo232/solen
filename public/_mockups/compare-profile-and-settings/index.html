@@ -148,6 +148,7 @@
   .panel .badge.status{ margin-left: 6px; }
   .panel .badge.status.applied{ color: var(--good); background: #F0FDF4; }
   .panel .badge.status.needsyes{ color: var(--ink); background: #FEF3C7; }
+  .panel .badge.status.failed{ color: var(--bad); background: #FEF2F2; }
 
   .frame{
     margin-top: 12px; border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
@@ -157,6 +158,11 @@
 
   .not-fixed{ margin-top: 10px; font-size: 12.5px; line-height: 1.55; color: var(--ink3); }
   .not-fixed b{ color: var(--ink2); font-weight: 600; }
+
+  .not-applied-note{
+    margin-top: 10px; background: #FEF2F2; border-left: 3px solid var(--bad);
+    border-radius: 10px; padding: 10px 12px; font-size: 12.5px; line-height: 1.55; color: var(--ink2);
+  }
 
   .closer{ margin-top: 44px; background: var(--sunken); border-radius: 10px; padding: 18px 16px; }
   .closer h2{ font-family: var(--font); font-size: 15px; font-weight: 600; margin-bottom: 10px; }
@@ -217,8 +223,9 @@
         below is a copy of. Your name already renders at 28px, big and clear. Underneath it,
         seven different text sizes are doing a job three could do, and there is almost no photo
         anywhere on the screen.</div>
+      <span class="badge status" id="statusNowProfile">queued</span>
     </div>
-    <div class="frame"><iframe id="nowProfile" src="/de/profile" title="your profile page, now, untouched"></iframe></div>
+    <div class="frame"><iframe id="nowProfile" data-src="/de/profile" title="your profile page, now, untouched"></iframe></div>
   </div>
 
   <div class="panel">
@@ -229,9 +236,9 @@
         and the small grey title at the very top all step into one matching secondary size
         instead of splitting across three sizes that were 1-2px apart.</div>
       <span class="badge">moves: how many sizes are on screen, 7 down to 4</span>
-      <span class="badge status" id="statusB1">applying&hellip;</span>
+      <span class="badge status" id="statusB1">queued</span>
     </div>
-    <div class="frame"><iframe id="frameB1" src="/de/profile" scrolling="no" title="profile page, option B, small text folded"></iframe></div>
+    <div class="frame"><iframe id="frameB1" data-src="/de/profile" scrolling="no" title="profile page, option B, small text folded"></iframe></div>
     <div class="not-fixed"><b>Does not touch:</b> the photo (still ~1.1%) or how much text is
       bold. This option only cleans up sizes, it does not add content.</div>
   </div>
@@ -244,9 +251,9 @@
         favorites page (the one behind the heart icon) and shows them directly under your name,
         so the first thing you see is a real photo instead of a list of icons.</div>
       <span class="badge">moves: real photo on screen, from ~1% toward 33%+</span>
-      <span class="badge status needsyes" id="statusC1">applying&hellip;</span>
+      <span class="badge status needsyes" id="statusC1">queued</span>
     </div>
-    <div class="frame"><iframe id="frameC1" src="/de/profile" scrolling="no" title="profile page, option C, real favorites pulled up"></iframe></div>
+    <div class="frame"><iframe id="frameC1" data-src="/de/profile" scrolling="no" title="profile page, option C, real favorites pulled up"></iframe></div>
     <div class="not-fixed"><b>Does not touch:</b> the seven-sizes problem or how much text is
       bold. <b>Needs your yes:</b> a salon-photo section on this exact screen was removed twice
       before, on 2026-07-21 and 2026-08-02 ("konto hub better"), so this is shown for you to
@@ -262,9 +269,9 @@
         title, your name, every section label. This makes all of that one step lighter, medium
         instead of semibold or bold. No sizes, spacing, or colors change.</div>
       <span class="badge">moves: how much text is bold, down to 0%</span>
-      <span class="badge status" id="statusD1">applying&hellip;</span>
+      <span class="badge status" id="statusD1">queued</span>
     </div>
-    <div class="frame"><iframe id="frameD1" src="/de/profile" scrolling="no" title="profile page, option D, lighter bold weight"></iframe></div>
+    <div class="frame"><iframe id="frameD1" data-src="/de/profile" scrolling="no" title="profile page, option D, lighter bold weight"></iframe></div>
     <div class="not-fixed"><b>Does not touch:</b> the photo, the sizes problem, or your name
       (already big enough at 28px, this option leaves it alone).</div>
   </div>
@@ -276,9 +283,9 @@
       <div class="desc">The same idea as Option C, your real favorite salons shown under your
         name, but here it is cropped to a fixed height as it loads.</div>
       <span class="badge">moves: real photo on screen, live</span>
-      <span class="badge status needsyes" id="statusE1">applying&hellip;</span>
+      <span class="badge status needsyes" id="statusE1">queued</span>
     </div>
-    <div class="frame"><iframe id="frameE1" src="/de/profile" scrolling="no" title="profile page, option E, real favorites cropped and measured"></iframe></div>
+    <div class="frame"><iframe id="frameE1" data-src="/de/profile" scrolling="no" title="profile page, option E, real favorites cropped and measured"></iframe></div>
     <div class="not-fixed"><b>Does not touch:</b> the seven-sizes problem or bold text.
       <b>Needs your yes,</b> the same graveyard collision as Option C: this exact kind of section
       was removed twice before. This builder argues the earlier removal was about a search bar
@@ -301,8 +308,9 @@
       <div class="desc">Nothing changed here. The exact same name that renders at 28px on your
         profile page renders at 20px here, one tap later. That is the single biggest problem on
         this screen: your name is not the clear anchor it should be.</div>
+      <span class="badge status" id="statusNowSettings">queued</span>
     </div>
-    <div class="frame"><iframe id="nowSettings" src="/de/profile/settings" title="settings page, now, untouched"></iframe></div>
+    <div class="frame"><iframe id="nowSettings" data-src="/de/profile/settings" title="settings page, now, untouched"></iframe></div>
   </div>
 
   <div class="panel">
@@ -313,9 +321,9 @@
         renders at one tap away on the profile page. The same small-text fold as above (badge,
         subtext, grey title) is applied here too.</div>
       <span class="badge">moves: name size 20px -> 28px, sizes 7 -> 4</span>
-      <span class="badge status" id="statusB2">applying&hellip;</span>
+      <span class="badge status" id="statusB2">queued</span>
     </div>
-    <div class="frame"><iframe id="frameB2" src="/de/profile/settings" scrolling="no" title="settings page, option B, name matched and small text folded"></iframe></div>
+    <div class="frame"><iframe id="frameB2" data-src="/de/profile/settings" scrolling="no" title="settings page, option B, name matched and small text folded"></iframe></div>
     <div class="not-fixed"><b>Does not touch:</b> the photo, still under 1.3%, or bold text,
       which lands just over the 30% ceiling after this fix (about 30.4%), reported as-is.</div>
   </div>
@@ -327,9 +335,9 @@
       <div class="desc">The same real-favorites splice as the profile page above, inserted under
         the identity card on settings instead.</div>
       <span class="badge">moves: real photo on screen, from ~1.2% toward 33%+</span>
-      <span class="badge status needsyes" id="statusC2">applying&hellip;</span>
+      <span class="badge status needsyes" id="statusC2">queued</span>
     </div>
-    <div class="frame"><iframe id="frameC2" src="/de/profile/settings" scrolling="no" title="settings page, option C, real favorites pulled up"></iframe></div>
+    <div class="frame"><iframe id="frameC2" data-src="/de/profile/settings" scrolling="no" title="settings page, option C, real favorites pulled up"></iframe></div>
     <div class="not-fixed"><b>Does not touch:</b> the 20px name or the sizes problem. <b>Needs
       your yes,</b> same graveyard collision as the profile version above. This option also
       raises a real question this builder flagged: settings is an admin screen (change your
@@ -344,9 +352,9 @@
       <div class="desc">The section labels and row titles go from bold to medium, the same
         change as the profile page above.</div>
       <span class="badge">moves: how much text is bold, down to 0%</span>
-      <span class="badge status" id="statusD2">applying&hellip;</span>
+      <span class="badge status" id="statusD2">queued</span>
     </div>
-    <div class="frame"><iframe id="frameD2" src="/de/profile/settings" scrolling="no" title="settings page, option D, lighter bold weight"></iframe></div>
+    <div class="frame"><iframe id="frameD2" data-src="/de/profile/settings" scrolling="no" title="settings page, option D, lighter bold weight"></iframe></div>
     <div class="not-fixed"><b>Does not touch:</b> the 20px name (still under the 28px floor) or
       the 1.43x ratio (still under 1.8x). Lightening bold text cannot create a headline that
       isn't there.</div>
@@ -360,9 +368,9 @@
         name grows from 20px/700 to 28px/600, matching your profile page's own recipe exactly.
         Nothing else on the screen moves.</div>
       <span class="badge">moves: name size 20px -> 28px, ratio 1.43x -> 2.0x</span>
-      <span class="badge status" id="statusE2">applying&hellip;</span>
+      <span class="badge status" id="statusE2">queued</span>
     </div>
-    <div class="frame"><iframe id="frameE2" src="/de/profile/settings" scrolling="no" title="settings page, option E, name matched to profile page"></iframe></div>
+    <div class="frame"><iframe id="frameE2" data-src="/de/profile/settings" scrolling="no" title="settings page, option E, name matched to profile page"></iframe></div>
     <div class="not-fixed"><b>Does not touch:</b> the photo (stays ~1.24%) or the seven-sizes
       problem. This builder recommends leaving the photo off settings on purpose (an admin
       screen's job isn't browsing), and says so as a recommendation, not a decision made
@@ -407,38 +415,152 @@
   </div>
 
 <script>
-  // Same technique as the sibling compare-home page: every AFTER panel loads the SAME real
-  // route as its matching Now panel, and once each finishes loading, exactly the rule or script
-  // that option's own source mockup already proposed is applied to it, lifted verbatim from
-  // that file. Nothing here invents a new fix.
+  // SEQUENTIAL LOAD FIX, added this turn. The mechanisms below (Option B fold, Option C splice,
+  // Option D weight-500, Option E crop + name-match) are byte-for-byte the same functions that
+  // were already here. What changed is WHEN they run: every iframe below started with no src
+  // (see data-src in the HTML), because six live copies of a real Next.js route loading at once
+  // overloaded the dev server and the browser badly enough that fix-detection polls hit their
+  // cap before the target element ever appeared, and once a cap was hit the panel stayed broken
+  // for the life of the page. Panels now load ONE AT A TIME, in the order they appear on the
+  // page, gated by an IntersectionObserver so a panel below the fold never starts before one the
+  // owner can actually see. A panel whose fix is not confirmed applied replaces its own caption
+  // with a plain "did not apply, reload" note and hides the claimed numbers, it never leaves a
+  // claim standing next to an unchanged screen.
 
-  function whenReady(iframeId, statusId, fn) {
+  var POLL_INTERVAL_MS = 200;
+  var POLL_CAP = 300; // 300 * 200ms = 60 seconds, raised from the previous 30 second cap
+
+  // ---------------- shared status/caption helpers ----------------
+  function markApplied(item, statusEl) {
+    if (!statusEl) return;
+    statusEl.classList.remove('failed');
+    statusEl.classList.add('applied');
+    statusEl.textContent = statusEl.classList.contains('needsyes') ? 'applied (needs your yes to ship)' : 'applied';
+  }
+  function markAppliedWithText(statusEl, text) {
+    if (!statusEl) return;
+    statusEl.classList.remove('failed');
+    statusEl.classList.add('applied');
+    statusEl.textContent = text;
+  }
+  function markFailed(item, statusEl, customMessage) {
+    var iframe = document.getElementById(item.id);
+    var panel = iframe ? iframe.closest('.panel') : null;
+    if (statusEl) {
+      statusEl.classList.remove('applied');
+      statusEl.classList.add('failed');
+      statusEl.textContent = customMessage || 'not applied on this load';
+    }
+    if (panel) {
+      var claimBadge = panel.querySelector('.badge:not(.status)');
+      if (claimBadge) claimBadge.style.display = 'none';
+      if (!panel.querySelector('.not-applied-note')) {
+        var note = document.createElement('div');
+        note.className = 'not-applied-note';
+        note.textContent = 'This change did not apply when the page loaded. Reload the page to try again.';
+        var frame = panel.querySelector('.frame');
+        if (frame) { frame.insertAdjacentElement('afterend', note); } else { panel.appendChild(note); }
+      }
+    }
+  }
+
+  // Keeps a fix alive across the real page re-rendering over the injected node. One variant was
+  // measured applying and then being silently discarded by hydration, this watches for that and
+  // re-applies for a bounded window rather than trusting a single pass.
+  function observeAndReapply(doc, applyFn, debugId) {
+    try {
+      var scheduled = false;
+      var mo = new MutationObserver(function () {
+        if (scheduled) return;
+        scheduled = true;
+        setTimeout(function () {
+          scheduled = false;
+          try { applyFn(doc); } catch (e) { console.error('[compare-profile-and-settings:' + debugId + '] reapply after mutation failed:', e); }
+        }, 50);
+      });
+      mo.observe(doc.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'style'] });
+      setTimeout(function () { mo.disconnect(); }, 20000);
+    } catch (e) {
+      console.error('[compare-profile-and-settings:' + debugId + '] could not watch for hydration overwrite:', e);
+    }
+  }
+  // Same idea for a fix that inserts a whole node (Option C, Option E1): if hydration removes
+  // the inserted node, put it back, for the same bounded window.
+  function watchInsertionPersists(container, node, reinsertAt, debugId) {
+    try {
+      var mo = new MutationObserver(function () {
+        if (!container.contains(node)) {
+          try { container.insertBefore(node, container.children[reinsertAt] || null); }
+          catch (e) { console.error('[compare-profile-and-settings:' + debugId + '] reinsert after mutation failed:', e); }
+        }
+      });
+      mo.observe(container, { childList: true });
+      setTimeout(function () { mo.disconnect(); }, 20000);
+    } catch (e) {
+      console.error('[compare-profile-and-settings:' + debugId + '] could not watch insertion point:', e);
+    }
+  }
+
+  function waitForFrameReady(iframe, cb, giveUpCb) {
     var tries = 0;
-    var MAX_POLLS = 150; // poll cap, never a displayed count
     var iv = setInterval(function () {
       tries++;
-      var f = document.getElementById(iframeId);
-      var status = document.getElementById(statusId);
+      var doc = null;
+      try { doc = iframe.contentDocument; } catch (e) { doc = null; }
+      if (doc && doc.readyState === 'complete') { clearInterval(iv); cb(doc); return; }
+      if (tries > POLL_CAP) { clearInterval(iv); giveUpCb(); }
+    }, POLL_INTERVAL_MS);
+  }
+
+  // Generic runner for a fix that is one function(doc) -> boolean, called on an interval until it
+  // returns true or the cap is hit. Covers Option B (fold), Option D (weight-500), Option E2
+  // (settings name match). Mechanisms unchanged from before this turn.
+  function startWithApplyFn(item, applyFn, done) {
+    var iframe = document.getElementById(item.id);
+    var statusEl = document.getElementById(item.statusId);
+    if (statusEl) { statusEl.classList.remove('applied', 'failed'); statusEl.textContent = 'loading...'; }
+    iframe.src = iframe.getAttribute('data-src');
+    var tries = 0;
+    var iv = setInterval(function () {
+      tries++;
+      var doc = null;
+      try { doc = iframe.contentDocument; } catch (e) { doc = null; }
       try {
-        var doc = f.contentDocument;
-        if (doc && doc.readyState === 'complete' && fn(doc)) {
+        if (doc && doc.readyState === 'complete' && applyFn(doc)) {
           clearInterval(iv);
-          if (status) {
-            status.textContent = status.classList.contains('needsyes') ? 'applied (needs your yes to ship)' : 'applied';
-            status.classList.add('applied');
-          }
+          observeAndReapply(doc, applyFn, item.id);
+          markApplied(item, statusEl);
+          done(true);
+          return;
         }
       } catch (e) {
-        console.error('[compare-profile-and-settings:' + iframeId + '] could not restyle the panel:', e);
+        console.error('[compare-profile-and-settings:' + item.id + '] apply failed:', e);
       }
-      if (tries > MAX_POLLS) {
+      if (tries > POLL_CAP) {
         clearInterval(iv);
-        if (status && status.textContent.indexOf('applying') === 0) { status.textContent = 'could not confirm'; }
+        markFailed(item, statusEl);
+        done(false);
       }
-    }, 200);
+    }, POLL_INTERVAL_MS);
+  }
+
+  // ================= plain "Now" panels: no fix, just load and confirm the load =================
+  function startPlain(item, done) {
+    var iframe = document.getElementById(item.id);
+    var statusEl = document.getElementById(item.statusId);
+    if (statusEl) { statusEl.classList.remove('applied', 'failed'); statusEl.textContent = 'loading...'; }
+    iframe.src = iframe.getAttribute('data-src');
+    waitForFrameReady(iframe, function () {
+      markAppliedWithText(statusEl, 'loaded');
+      done(true);
+    }, function () {
+      markFailed(item, statusEl, 'could not load, reload the page');
+      done(false);
+    });
   }
 
   // ================= Option B: fold small text (fix-profile-and-settings--b-hierarchy) =================
+  // Mechanism unchanged.
   function leafTextEls(doc) {
     var all = doc.querySelectorAll("body *");
     var out = [];
@@ -472,130 +594,144 @@
     });
     return true;
   }
-  (function wireB() {
-    ['frameB1', 'frameB2'].forEach(function (id, i) {
-      var frame = document.getElementById(id);
-      var statusId = i === 0 ? 'statusB1' : 'statusB2';
-      var applyFn = i === 0 ? foldProfile : foldSettings;
-      frame.addEventListener('load', function () {
-        try {
-          var doc = frame.contentDocument;
-          if (!doc) return;
-          applyFn(doc);
-          setTimeout(function () { applyFn(doc); }, 500);
-          var status = document.getElementById(statusId);
-          if (status) { status.textContent = 'applied'; status.classList.add('applied'); }
-        } catch (err) {
-          console.error('[compare-profile-and-settings:' + id + '] option B failed:', err);
-        }
-      });
-    });
-  })();
+  function startB(item, done) {
+    startWithApplyFn(item, item.settings ? foldSettings : foldProfile, done);
+  }
 
   // ================= Option C: real favorites splice (fix-profile-and-settings--c-content-forward) =================
-  (function wireC() {
-    var MAX_POLLS = 200;
-    function frameReady(f) { try { return f.contentDocument && f.contentDocument.readyState === 'complete'; } catch (e) { return false; } }
-    function waitFor(check, onReady, onGiveUp) {
-      var tries = 0;
-      var iv = setInterval(function () {
-        tries++;
-        var r;
-        try { r = check(); } catch (e) { r = null; }
-        if (r) { clearInterval(iv); onReady(r); return; }
-        if (tries > MAX_POLLS) { clearInterval(iv); onGiveUp(); }
-      }, 150);
-    }
+  // Mechanism unchanged: fetch the real /de/profile/favorites cards once into a hidden iframe,
+  // then clone them into whichever panel needs them. Only the timing changed: the hidden source
+  // frame used to load eagerly at parse time regardless of whether any C panel had started; now
+  // it loads lazily, the first time a C panel reaches the front of the queue, and its result is
+  // cached and shared so the second C panel does not reload it.
+  var favSourceStarted = false;
+  var favSourceResult = null;
+  var favSourceWaiters = [];
+  function ensureFavoritesSource(cb) {
+    if (favSourceResult) { cb(favSourceResult); return; }
+    favSourceWaiters.push(cb);
+    if (favSourceStarted) return;
+    favSourceStarted = true;
     var sourceFrame = document.createElement('iframe');
     sourceFrame.src = '/de/profile/favorites';
     sourceFrame.style.cssText = 'position:absolute;left:-9999px;top:0;width:402px;height:1400px';
     sourceFrame.setAttribute('aria-hidden', 'true');
     document.body.appendChild(sourceFrame);
-    var sourceResult = null;
-    waitFor(
-      function () {
-        if (!frameReady(sourceFrame)) return null;
-        var doc = sourceFrame.contentDocument;
-        if (/\/auth\/login/.test(sourceFrame.contentWindow.location.pathname)) return { loggedOut: true };
-        var cards = Array.prototype.slice.call(doc.querySelectorAll('.card-listing')).slice(0, 2);
-        if (cards.length === 0) return null;
-        var img = cards[0].querySelector('img');
-        if (img && !(img.complete && img.naturalWidth > 0)) return null;
-        return { cards: cards };
-      },
-      function (r) { sourceResult = r; },
-      function () {
-        try {
+    var tries = 0;
+    var iv = setInterval(function () {
+      tries++;
+      var result = null;
+      try {
+        var ready = sourceFrame.contentDocument && sourceFrame.contentDocument.readyState === 'complete';
+        if (ready) {
           var doc = sourceFrame.contentDocument;
-          sourceResult = doc && doc.querySelectorAll('.card-listing').length === 0 ? { empty: true } : { timeout: true };
-        } catch (e) { sourceResult = { timeout: true }; }
+          if (/\/auth\/login/.test(sourceFrame.contentWindow.location.pathname)) {
+            result = { loggedOut: true };
+          } else {
+            var cards = Array.prototype.slice.call(doc.querySelectorAll('.card-listing')).slice(0, 2);
+            if (cards.length > 0) {
+              var img = cards[0].querySelector('img');
+              if (!img || (img.complete && img.naturalWidth > 0)) result = { cards: cards };
+            } else if (tries > POLL_CAP) {
+              result = { empty: true };
+            }
+          }
+        }
+      } catch (e) {
+        console.error('[compare-profile-and-settings:favorites-source] read failed:', e);
       }
-    );
-    function buildInsertBlock(doc) {
-      var wrap = doc.createElement('div');
-      wrap.style.marginTop = '18px';
-      var label = doc.createElement('p');
-      label.textContent = 'Your favorites';
-      label.style.cssText = 'font-size:12px;font-weight:600;color:#52525B;margin-bottom:8px';
-      wrap.appendChild(label);
-      var cardsBox = doc.createElement('div');
-      cardsBox.style.cssText = 'display:flex;flex-direction:column;gap:10px';
-      wrap.appendChild(cardsBox);
-      var link = doc.createElement('a');
-      link.href = '/de/profile/favorites';
-      link.textContent = 'See all favorites';
-      link.style.cssText = 'display:inline-block;margin-top:10px;font-size:13px;font-weight:500;color:#276EF1';
-      wrap.appendChild(link);
-      return { wrap: wrap, cardsBox: cardsBox };
+      if (!result && tries > POLL_CAP) result = { timeout: true };
+      if (result) {
+        clearInterval(iv);
+        favSourceResult = result;
+        favSourceWaiters.forEach(function (fn) { fn(result); });
+        favSourceWaiters = [];
+      }
+    }, POLL_INTERVAL_MS);
+  }
+  function buildInsertBlock(doc) {
+    var wrap = doc.createElement('div');
+    wrap.style.marginTop = '18px';
+    var label = doc.createElement('p');
+    label.textContent = 'Your favorites';
+    label.style.cssText = 'font-size:12px;font-weight:600;color:#52525B;margin-bottom:8px';
+    wrap.appendChild(label);
+    var cardsBox = doc.createElement('div');
+    cardsBox.style.cssText = 'display:flex;flex-direction:column;gap:10px';
+    wrap.appendChild(cardsBox);
+    var link = doc.createElement('a');
+    link.href = '/de/profile/favorites';
+    link.textContent = 'See all favorites';
+    link.style.cssText = 'display:inline-block;margin-top:10px;font-size:13px;font-weight:500;color:#276EF1';
+    wrap.appendChild(link);
+    return { wrap: wrap, cardsBox: cardsBox };
+  }
+  function finishC(item, doc, src, statusEl, done) {
+    try {
+      if (src.cards) {
+        var root = item.settings
+          ? doc.querySelector('main > div')
+          : doc.querySelector('[class*="max-w-[560px]"][class*="px-5"]');
+        if (!root || root.children.length < 2) {
+          markFailed(item, statusEl, 'could not find where to insert the favorites on this load');
+          done(false);
+          return;
+        }
+        var header = root.children[0];
+        if (!item.settings) {
+          header.style.paddingTop = '10px';
+          var eyebrow = header.querySelector('p');
+          if (eyebrow) eyebrow.style.marginBottom = '8px';
+        } else {
+          header.style.marginTop = '10px';
+          header.style.marginBottom = '2px';
+        }
+        var built = buildInsertBlock(doc);
+        src.cards.forEach(function (c) { built.cardsBox.appendChild(doc.importNode(c, true)); });
+        root.insertBefore(built.wrap, root.children[1]);
+        markAppliedWithText(statusEl, 'applied (needs your yes to ship), ' + src.cards.length + ' real card' + (src.cards.length === 1 ? '' : 's'));
+        watchInsertionPersists(root, built.wrap, 1, item.id);
+        done(true);
+      } else if (src.loggedOut) {
+        markFailed(item, statusEl, 'no session, nothing real to show');
+        done(false);
+      } else if (src.empty) {
+        markFailed(item, statusEl, '0 favorites saved this session, nothing real to show');
+        done(false);
+      } else {
+        markFailed(item, statusEl);
+        done(false);
+      }
+    } catch (e) {
+      console.error('[compare-profile-and-settings:' + item.id + '] option C splice failed:', e);
+      markFailed(item, statusEl);
+      done(false);
     }
-    function applyTo(iframeId, statusId, isSettings) {
-      var f = document.getElementById(iframeId);
-      var statusEl = document.getElementById(statusId);
-      waitFor(
-        function () { return frameReady(f) ? f : null; },
-        function () {
-          waitFor(
-            function () { return sourceResult; },
-            function (src) {
-              var doc = f.contentDocument;
-              if (src.cards) {
-                var root = isSettings
-                  ? doc.querySelector('main > div')
-                  : doc.querySelector('[class*="max-w-[560px]"][class*="px-5"]');
-                if (!root || root.children.length < 2) { statusEl.textContent = 'could not find insert point'; return; }
-                var header = root.children[0];
-                if (!isSettings) {
-                  header.style.paddingTop = '10px';
-                  var eyebrow = header.querySelector('p');
-                  if (eyebrow) eyebrow.style.marginBottom = '8px';
-                } else {
-                  header.style.marginTop = '10px';
-                  header.style.marginBottom = '2px';
-                }
-                var built = buildInsertBlock(doc);
-                src.cards.forEach(function (c) { built.cardsBox.appendChild(doc.importNode(c, true)); });
-                root.insertBefore(built.wrap, root.children[1]);
-                statusEl.textContent = 'applied (needs your yes to ship), ' + src.cards.length + ' real card' + (src.cards.length === 1 ? '' : 's');
-                statusEl.classList.add('applied');
-              } else if (src.loggedOut) {
-                statusEl.textContent = 'no session, nothing real to show';
-              } else if (src.empty) {
-                statusEl.textContent = '0 favorites saved this session, nothing real to show';
-              } else {
-                statusEl.textContent = 'could not confirm';
-              }
-            },
-            function () { statusEl.textContent = 'could not confirm'; }
-          );
-        },
-        function () { statusEl.textContent = 'could not confirm'; }
-      );
+  }
+  function startC(item, done) {
+    var iframe = document.getElementById(item.id);
+    var statusEl = document.getElementById(item.statusId);
+    if (statusEl) { statusEl.classList.remove('applied', 'failed'); statusEl.textContent = 'loading...'; }
+    iframe.src = iframe.getAttribute('data-src');
+    var targetDoc = null;
+    var srcResult = null;
+    var settled = false;
+    function tryFinish() {
+      if (settled || !targetDoc || !srcResult) return;
+      settled = true;
+      finishC(item, targetDoc, srcResult, statusEl, done);
     }
-    applyTo('frameC1', 'statusC1', false);
-    applyTo('frameC2', 'statusC2', true);
-  })();
+    waitForFrameReady(iframe, function (doc) { targetDoc = doc; tryFinish(); }, function () {
+      if (settled) return;
+      settled = true;
+      markFailed(item, statusEl);
+      done(false);
+    });
+    ensureFavoritesSource(function (result) { srcResult = result; tryFinish(); });
+  }
 
   // ================= Option D: lighter bold (fix-profile-and-settings--d-airbnb-weight) =================
+  // Mechanism unchanged.
   function applyWeight500(doc) {
     if (doc.getElementById('weight-500-style')) return true;
     if (!doc.querySelector('.font-semibold') && !doc.querySelector('.font-bold')) return false;
@@ -605,74 +741,96 @@
     doc.head.appendChild(st);
     return true;
   }
-  whenReady('frameD1', 'statusD1', applyWeight500);
-  whenReady('frameD2', 'statusD2', applyWeight500);
+  function startD(item, done) {
+    startWithApplyFn(item, applyWeight500, done);
+  }
 
-  // ================= Option E: cropped favorites (profile) + name match (settings) (fix-profile-and-settings--e-recompose) =================
-  (function wireE1() {
-    var CROP_H = 520;
-    function insertSection(doc) {
-      if (doc.getElementById('mockup-fav-wrap')) return doc.getElementById('mockup-fav-wrap');
-      var h1 = doc.querySelector('h1');
-      if (!h1) return null;
-      var block = h1.parentElement && h1.parentElement.parentElement && h1.parentElement.parentElement.parentElement;
-      if (!block) return null;
-      var wrap = doc.createElement('div');
-      wrap.id = 'mockup-fav-wrap';
-      wrap.style.cssText = 'position:relative;overflow:hidden;height:' + CROP_H + 'px;margin:14px -20px 0;background:#F4F4F5;';
-      var innerFrame = doc.createElement('iframe');
-      innerFrame.id = 'mockup-fav-inner';
-      innerFrame.src = '/de/profile/favorites';
-      innerFrame.title = 'your real favorites, live';
-      innerFrame.style.cssText = 'position:absolute;top:0;left:0;width:390px;height:1400px;border:0;';
-      wrap.appendChild(innerFrame);
-      block.insertAdjacentElement('afterend', wrap);
-      return wrap;
-    }
-    function patchInner(idoc) {
-      var section = idoc.querySelector('main section');
-      if (!section) return false;
-      var header = idoc.querySelector('header');
-      var navs = idoc.querySelectorAll('nav');
-      var countP = idoc.querySelector('main > p');
-      if (header) header.style.display = 'none';
-      navs.forEach(function (n) { n.style.display = 'none'; });
-      if (countP) countP.style.display = 'none';
-      var main = idoc.querySelector('main');
-      if (main) main.style.cssText = 'padding:0 16px;margin:0;max-width:none;';
-      return true;
-    }
-    var afterFrame = document.getElementById('frameE1');
-    var status = document.getElementById('statusE1');
-    var outerTries = 0, MAX_OUTER = 150;
+  // ================= Option E1: cropped favorites on profile (fix-profile-and-settings--e-recompose) =================
+  // Mechanism unchanged: an outer poll waits for the profile page then inserts a cropped inner
+  // iframe of /de/profile/favorites; an inner poll waits for that inner iframe then strips its
+  // chrome. Only the poll cap and the sequencing into the shared queue changed.
+  var CROP_H = 520;
+  function insertFavSection(doc) {
+    if (doc.getElementById('mockup-fav-wrap')) return doc.getElementById('mockup-fav-wrap');
+    var h1 = doc.querySelector('h1');
+    if (!h1) return null;
+    var block = h1.parentElement && h1.parentElement.parentElement && h1.parentElement.parentElement.parentElement;
+    if (!block) return null;
+    var wrap = doc.createElement('div');
+    wrap.id = 'mockup-fav-wrap';
+    wrap.style.cssText = 'position:relative;overflow:hidden;height:' + CROP_H + 'px;margin:14px -20px 0;background:#F4F4F5;';
+    var innerFrame = doc.createElement('iframe');
+    innerFrame.id = 'mockup-fav-inner';
+    innerFrame.src = '/de/profile/favorites';
+    innerFrame.title = 'your real favorites, live';
+    innerFrame.style.cssText = 'position:absolute;top:0;left:0;width:390px;height:1400px;border:0;';
+    wrap.appendChild(innerFrame);
+    block.insertAdjacentElement('afterend', wrap);
+    return wrap;
+  }
+  function patchFavInner(idoc) {
+    var section = idoc.querySelector('main section');
+    if (!section) return false;
+    var header = idoc.querySelector('header');
+    var navs = idoc.querySelectorAll('nav');
+    var countP = idoc.querySelector('main > p');
+    if (header) header.style.display = 'none';
+    navs.forEach(function (n) { n.style.display = 'none'; });
+    if (countP) countP.style.display = 'none';
+    var main = idoc.querySelector('main');
+    if (main) main.style.cssText = 'padding:0 16px;margin:0;max-width:none;';
+    return true;
+  }
+  function startE1(item, done) {
+    var afterFrame = document.getElementById(item.id);
+    var statusEl = document.getElementById(item.statusId);
+    if (statusEl) { statusEl.classList.remove('applied', 'failed'); statusEl.textContent = 'loading...'; }
+    afterFrame.src = afterFrame.getAttribute('data-src');
+    var outerTries = 0;
     var outerIv = setInterval(function () {
       outerTries++;
       try {
         var doc = afterFrame.contentDocument;
         if (doc && doc.readyState === 'complete') {
-          var wrap = insertSection(doc);
+          var wrap = insertFavSection(doc);
           if (wrap) {
             clearInterval(outerIv);
             var innerFrame = doc.getElementById('mockup-fav-inner');
-            var innerTries = 0, MAX_INNER = 150;
+            var innerTries = 0;
             var innerIv = setInterval(function () {
               innerTries++;
               try {
                 var idoc = innerFrame.contentDocument;
-                if (idoc && idoc.readyState === 'complete' && patchInner(idoc)) {
+                if (idoc && idoc.readyState === 'complete' && patchFavInner(idoc)) {
                   clearInterval(innerIv);
-                  if (status) { status.textContent = 'applied (needs your yes to ship)'; status.classList.add('applied'); }
+                  markApplied(item, statusEl);
+                  done(true);
+                  return;
                 }
-              } catch (e) { console.error('[compare-profile-and-settings:frameE1] inner favorites patch failed', e); }
-              if (innerTries > MAX_INNER) { clearInterval(innerIv); if (status && status.textContent.indexOf('applying') === 0) status.textContent = 'could not confirm'; }
-            }, 200);
+              } catch (e) {
+                console.error('[compare-profile-and-settings:' + item.id + '] inner favorites patch failed:', e);
+              }
+              if (innerTries > POLL_CAP) {
+                clearInterval(innerIv);
+                markFailed(item, statusEl);
+                done(false);
+              }
+            }, POLL_INTERVAL_MS);
           }
         }
-      } catch (e) { console.error('[compare-profile-and-settings:frameE1] outer patch failed', e); }
-      if (outerTries > MAX_OUTER) { clearInterval(outerIv); if (status && status.textContent.indexOf('applying') === 0) status.textContent = 'could not confirm'; }
-    }, 200);
-  })();
+      } catch (e) {
+        console.error('[compare-profile-and-settings:' + item.id + '] outer patch failed:', e);
+      }
+      if (outerTries > POLL_CAP) {
+        clearInterval(outerIv);
+        markFailed(item, statusEl);
+        done(false);
+      }
+    }, POLL_INTERVAL_MS);
+  }
 
+  // ================= Option E2: settings name match (fix-profile-and-settings--e-recompose) =================
+  // Mechanism unchanged.
   function applySettingsNameMatch(doc) {
     if (doc.getElementById('mockup-settings-style')) return true;
     var nameEl = doc.querySelector('div[class*="text-[20px]"][class*="font-bold"]');
@@ -684,7 +842,55 @@
     nameEl.classList.add('mockup-name-match');
     return true;
   }
-  whenReady('frameE2', 'statusE2', applySettingsNameMatch);
+  function startE2(item, done) {
+    startWithApplyFn(item, applySettingsNameMatch, done);
+  }
+
+  // ================= the queue: one panel at a time, in page order, gated by viewport =================
+  var QUEUE = [
+    { id: 'nowProfile',   type: 'plain', statusId: 'statusNowProfile' },
+    { id: 'frameB1',      type: 'B',     statusId: 'statusB1' },
+    { id: 'frameC1',      type: 'C',     statusId: 'statusC1', settings: false },
+    { id: 'frameD1',      type: 'D',     statusId: 'statusD1' },
+    { id: 'frameE1',      type: 'E1',    statusId: 'statusE1' },
+    { id: 'nowSettings',  type: 'plain', statusId: 'statusNowSettings' },
+    { id: 'frameB2',      type: 'B',     statusId: 'statusB2', settings: true },
+    { id: 'frameC2',      type: 'C',     statusId: 'statusC2', settings: true },
+    { id: 'frameD2',      type: 'D',     statusId: 'statusD2' },
+    { id: 'frameE2',      type: 'E2',    statusId: 'statusE2' }
+  ];
+  var STARTERS = { plain: startPlain, B: startB, C: startC, D: startD, E1: startE1, E2: startE2 };
+  var currentIndex = 0;
+
+  function advanceQueue() {
+    if (currentIndex >= QUEUE.length) return;
+    var item = QUEUE[currentIndex];
+    if (item.started || !item.observed) return;
+    item.started = true;
+    STARTERS[item.type](item, function () {
+      currentIndex++;
+      advanceQueue();
+    });
+  }
+
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (!entry.isIntersecting) return;
+      var item = entry.target.__queueItem;
+      if (item) { item.observed = true; io.unobserve(entry.target); }
+    });
+    advanceQueue();
+  }, { root: null, rootMargin: '600px 0px 600px 0px', threshold: 0 });
+
+  QUEUE.forEach(function (item) {
+    var iframe = document.getElementById(item.id);
+    var frameWrap = iframe ? iframe.closest('.frame') : null;
+    if (!frameWrap) { console.error('[compare-profile-and-settings:' + item.id + '] no .frame wrapper found, skipping'); return; }
+    frameWrap.__queueItem = item;
+    io.observe(frameWrap);
+  });
+  // No manual kick needed: the first panel sits at the very top of the page, so the browser's own
+  // first IntersectionObserver callback (fired automatically once observe() runs) reports it as
+  // already in view and the chain starts itself from there.
 </script>
-</body>
 </html>

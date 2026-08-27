@@ -139,6 +139,12 @@
   .frame .badge.fail { color: #DC2626; }
   .frame .badge.pass { color: #16A34A; }
   .frame .badge.pending { color: #6B6B6B; }
+  .frame .waiting {
+    position: absolute; inset: 0; z-index: 1;
+    display: flex; align-items: center; justify-content: center;
+    background: #F4F4F5; color: #6B6B6B; font-size: 13px; text-align: center; padding: 0 24px;
+  }
+  .cap-fallback { margin-top: 4px; font-size: 13px; line-height: 1.5; color: #DC2626; }
   .scroll-hint { padding: 5px 16px 0; font-size: 11px; color: #9CA3AF; }
 
   .foot { margin: 30px 16px 0; padding-top: 16px; border-top: 1px solid #E4E4E7; }
@@ -186,7 +192,7 @@
     </ol>
   </div>
 
-  <div class="panel">
+  <div class="panel" data-frame="f0">
     <div class="cap">
       <span class="tag">NOW</span>
       <h2>Inspo today, untouched</h2>
@@ -194,88 +200,107 @@
          <span class="nums">28px</span> minimum a screen needs to have one clear focal point.</p>
     </div>
     <div class="frame">
-      <div class="badge fail nums">14px anchor</div>
-      <iframe id="f0" src="/de/inspo" title="Inspo, untouched"></iframe>
+      <div class="badge pending nums" id="badge0">queued</div>
+      <div class="waiting" id="wait0">Waiting to load</div>
+      <iframe id="f0" title="Inspo, untouched"></iframe>
     </div>
     <div class="scroll-hint">Scroll inside the box, the real feed continues below.</div>
   </div>
 
-  <div class="panel">
+  <div class="panel" data-frame="f1">
     <div class="cap">
       <span class="tag">OPTION A</span>
       <span class="sub">SMALLEST CHANGE</span>
       <h2>Just bring the title back</h2>
-      <p>One line, "Inspo", appears above the search bar. It is the exact same word your desktop
-         site already shows, just switched back on for phones. Nothing else on the screen moves.</p>
+      <p class="cap-claim" id="claim1">One line, "Inspo", appears above the search bar. It is the
+         exact same word your desktop site already shows, just switched back on for phones. Nothing
+         else on the screen moves.</p>
+      <p class="cap-fallback" id="fallback1" hidden>This change did not apply on this page load.
+         Reload the page and try again.</p>
     </div>
     <div class="frame">
-      <div class="badge pass nums">28px anchor</div>
-      <iframe id="f1" src="/de/inspo" title="Inspo, option A, title restored"></iframe>
+      <div class="badge pending nums" id="badge1">queued</div>
+      <div class="waiting" id="wait1">Waiting to load</div>
+      <iframe id="f1" title="Inspo, option A, title restored"></iframe>
     </div>
     <div class="scroll-hint">Scroll inside the box, the real feed continues below.</div>
   </div>
 
-  <div class="panel">
+  <div class="panel" data-frame="f2">
     <div class="cap">
       <span class="tag">OPTION B</span>
       <span class="sub">HIERARCHY FIRST</span>
       <h2>Title back, and re-rank what's under it</h2>
-      <p>Same title as option A, but bigger (<span class="nums">30px</span>), and the row of small
-         style tags under the filter bar (Defined Brows, Glossy Finish...) steps down a size, so
-         they read as optional extras instead of sitting at the same size as real section labels.</p>
+      <p class="cap-claim" id="claim2">Same title as option A, but bigger
+         (<span class="nums">30px</span>), and the row of small style tags under the filter bar
+         (Defined Brows, Glossy Finish...) steps down a size, so they read as optional extras
+         instead of sitting at the same size as real section labels.</p>
+      <p class="cap-fallback" id="fallback2" hidden>This change did not apply on this page load.
+         Reload the page and try again.</p>
     </div>
     <div class="frame">
-      <div class="badge pending nums" id="b1">loading</div>
-      <iframe id="f2" src="/de/inspo" title="Inspo, option B, title plus re-ranked tags"></iframe>
+      <div class="badge pending nums" id="badge2">queued</div>
+      <div class="waiting" id="wait2">Waiting to load</div>
+      <iframe id="f2" title="Inspo, option B, title plus re-ranked tags"></iframe>
     </div>
     <div class="scroll-hint">Scroll inside the box, the real feed continues below.</div>
   </div>
 
-  <div class="panel">
+  <div class="panel" data-frame="f3">
     <div class="cap">
       <span class="tag">OPTION C</span>
       <span class="sub">REAL CONTENT HIGHER</span>
       <h2>No new title, push the real photos up</h2>
-      <p>No text is added. Instead the button row above the photo grid loses a little of its own
-         empty air, so the real photo tiles start about <span class="nums">16px</span> higher on
-         the screen. This does not fix the missing-title problem; see the note at the bottom.</p>
+      <p class="cap-claim" id="claim3">No text is added. Instead the button row above the photo
+         grid loses a little of its own empty air, so the real photo tiles start about
+         <span class="nums">16px</span> higher on the screen. This does not fix the missing-title
+         problem; see the note at the bottom.</p>
+      <p class="cap-fallback" id="fallback3" hidden>This change did not apply on this page load.
+         Reload the page and try again.</p>
     </div>
     <div class="frame">
-      <div class="badge pending nums" id="b2">loading</div>
-      <iframe id="f3" src="/de/inspo" title="Inspo, option C, chrome tightened"></iframe>
+      <div class="badge pending nums" id="badge3">queued</div>
+      <div class="waiting" id="wait3">Waiting to load</div>
+      <iframe id="f3" title="Inspo, option C, chrome tightened"></iframe>
     </div>
     <div class="scroll-hint">Scroll inside the box, the real feed continues below.</div>
   </div>
 
-  <div class="panel">
+  <div class="panel" data-frame="f4">
     <div class="cap">
       <span class="tag">OPTION D</span>
       <span class="sub">LESS BOLD, THE AIRBNB WAY</span>
       <h2>Un-bold the two words that are bold today</h2>
-      <p>No text is added or resized. The selected category chip and the active "Inspo" tab at the
-         bottom both stop being bold. This was measured to not touch the missing-title problem
-         either; see the note at the bottom.</p>
+      <p class="cap-claim" id="claim4">No text is added or resized. The selected category chip and
+         the active "Inspo" tab at the bottom both stop being bold. This was measured to not touch
+         the missing-title problem either; see the note at the bottom.</p>
+      <p class="cap-fallback" id="fallback4" hidden>This change did not apply on this page load.
+         Reload the page and try again.</p>
     </div>
     <div class="frame">
-      <div class="badge pending nums" id="b3">loading</div>
-      <iframe id="f4" src="/de/inspo" title="Inspo, option D, two words un-bolded"></iframe>
+      <div class="badge pending nums" id="badge4">queued</div>
+      <div class="waiting" id="wait4">Waiting to load</div>
+      <iframe id="f4" title="Inspo, option D, two words un-bolded"></iframe>
     </div>
     <div class="scroll-hint">Scroll inside the box, the real feed continues below.</div>
   </div>
 
-  <div class="panel">
+  <div class="panel" data-frame="f5">
     <div class="cap">
       <span class="tag">OPTION E</span>
       <span class="sub">BIGGEST CHANGE</span>
       <h2>Title and subtitle, home page's own style</h2>
-      <p>A two-line block appears above the search bar: "Inspo" at <span class="nums">31px</span>,
-         and under it "Your next look" (a real subtitle string your product already has translated
-         into all four languages, currently shown nowhere). Both use the exact same recipe your
-         home page's own big heading already uses.</p>
+      <p class="cap-claim" id="claim5">A two-line block appears above the search bar: "Inspo" at
+         <span class="nums">31px</span>, and under it "Your next look" (a real subtitle string your
+         product already has translated into all four languages, currently shown nowhere). Both use
+         the exact same recipe your home page's own big heading already uses.</p>
+      <p class="cap-fallback" id="fallback5" hidden>This change did not apply on this page load.
+         Reload the page and try again.</p>
     </div>
     <div class="frame">
-      <div class="badge pending nums" id="b4">loading</div>
-      <iframe id="f5" src="/de/inspo" title="Inspo, option E, title plus subtitle"></iframe>
+      <div class="badge pending nums" id="badge5">queued</div>
+      <div class="waiting" id="wait5">Waiting to load</div>
+      <iframe id="f5" title="Inspo, option E, title plus subtitle"></iframe>
     </div>
     <div class="scroll-hint">Scroll inside the box, the real feed continues below.</div>
   </div>
@@ -324,8 +349,9 @@
 
 <script>
   // Every function below is copied verbatim from the variant file it applies to. Nothing here is
-  // a new treatment; this page only adds the polling harness wiring each script to its own iframe
-  // id (f1..f5) instead of the single "after" id each source file used on its own.
+  // a new treatment; this page only adds the harness further down that starts each panel's iframe
+  // one at a time and wires each script to its own iframe id (f1..f5) instead of the single
+  // "after" id each source file used on its own.
 
   // ---- Option A (floor-fix-inspo/index.html) ----
   function optionA_ensureHeading(doc, container) {
@@ -418,54 +444,186 @@
     return true;
   }
 
-  // ---- shared polling harness, one per panel, same settle strategy every source file used:
-  // this route is a client component whose grid remounts as data streams in, which can detach a
-  // one-shot DOM write, so each panel keeps re-checking on a plain interval for the whole review
-  // window rather than stopping after the first success. ----
-  function pollPanel(iframeId, badgeId, passLabel, run) {
-    var frame = document.getElementById(iframeId);
-    var badge = badgeId ? document.getElementById(badgeId) : null;
+  // ---- the stampede fix ----
+  // Six live copies of this real Next.js route loaded at once overloaded the dev server and the
+  // browser badly enough that the polls below hit their cap before the target element ever
+  // appeared, and once that cap was hit the interval cleared for good, so a panel stayed broken
+  // for the life of the page. Two changes fix that, both about WHEN a panel starts, never about
+  // what its fix does: panels load one at a time in order (readyIndex below), and a panel does
+  // not start even when it is its turn unless it is actually near the viewport, since the owner
+  // reads this on a phone and will scroll to panel 5 long after panel 1 has already run.
+  var POLL_INTERVAL_MS = 150;
+  var POLL_CAP_MS = 60000; // raised from the original 30s cap: one panel loading alone is fast,
+                            // but the dev server under review load can still be slow to respond.
+  var POLL_MAX_TRIES = Math.ceil(POLL_CAP_MS / POLL_INTERVAL_MS);
+
+  function startPanel(cfg, onSettle) {
+    var frame = document.getElementById(cfg.frameId);
+    var waiting = document.getElementById(cfg.waitId);
+    var badge = document.getElementById(cfg.badgeId);
+    var claim = cfg.claimId ? document.getElementById(cfg.claimId) : null;
+    var fallback = cfg.fallbackId ? document.getElementById(cfg.fallbackId) : null;
+
+    var settled = false;
     var tries = 0;
-    var iv = setInterval(function () {
+    var mo = null;
+    var iv = null;
+
+    function watchForReapply(doc) {
+      // (Re)watch doc.body, not the specific node the fix was injected into: the real route can
+      // replace that node wholesale on a re-render, which would silently detach an observer bound
+      // to it. body is far more stable. Every firing re-queries the container fresh instead of
+      // closing over a possibly-stale reference.
+      if (!cfg.apply || !doc || !doc.body) { return; }
+      if (mo) { mo.disconnect(); }
+      mo = new MutationObserver(function () {
+        try {
+          var d = frame.contentDocument;
+          var c = d && d.querySelector("main.min-h-screen .max-w-7xl");
+          if (d && c) { cfg.apply(d, c); }
+        } catch (reErr) {
+          console.error("[compare-inspo] " + cfg.frameId + " re-apply after mutation failed:", reErr);
+        }
+      });
+      mo.observe(doc.body, { childList: true, subtree: true });
+    }
+
+    function markPass() {
+      if (settled) { return; }
+      settled = true;
+      if (badge) {
+        badge.textContent = cfg.passLabel;
+        badge.classList.remove("pending");
+        badge.classList.add(cfg.passClass);
+      }
+      clearInterval(iv);
+      onSettle();
+      // the MutationObserver (mo) is deliberately left running past this point: one variant was
+      // measured applying its fix and then having it discarded by a later hydration pass, so a
+      // panel that already passed keeps re-applying on every mutation for the life of the page.
+    }
+
+    function markFail() {
+      if (settled) { return; }
+      settled = true;
+      if (badge) {
+        badge.textContent = "could not confirm";
+        badge.classList.remove("pending");
+        badge.classList.add("fail");
+      }
+      if (claim) { claim.hidden = true; }
+      if (fallback) { fallback.hidden = false; }
+      clearInterval(iv);
+      if (mo) { mo.disconnect(); }
+      onSettle();
+    }
+
+    iv = setInterval(function () {
       tries += 1;
       try {
         var doc = frame.contentDocument;
         var container = doc && doc.querySelector("main.min-h-screen .max-w-7xl");
-        var ok = false;
         if (doc && container) {
-          ok = run(doc, container);
-        }
-        if (ok && badge && badge.classList.contains("pending")) {
-          badge.textContent = passLabel;
-          badge.classList.remove("pending");
-          badge.classList.add("pass");
+          if (!mo) { watchForReapply(doc); }
+          var ok = cfg.apply ? cfg.apply(doc, container) : true;
+          if (ok) { markPass(); return; }
         }
       } catch (err) {
-        clearInterval(iv);
-        console.error("[compare-inspo] a panel could not be treated:", err);
+        console.error("[compare-inspo] " + cfg.frameId + " could not be checked:", err);
+        markFail();
+        return;
       }
-      if (tries > 150) { clearInterval(iv); }
-    }, 150);
+      if (tries >= POLL_MAX_TRIES) { markFail(); }
+    }, POLL_INTERVAL_MS);
+
+    // A full iframe reload, not just a React re-render, tears down the whole document, which
+    // silently orphans any MutationObserver bound to it (it goes on watching a document nobody
+    // can see any more). The load event is the one reliable signal that a fresh document exists,
+    // so re-establish watching and re-apply the fix immediately whenever it fires, including on a
+    // reload that happens after the initial one.
+    frame.addEventListener("load", function () {
+      if (!cfg.apply) { return; }
+      try {
+        var freshDoc = frame.contentDocument;
+        watchForReapply(freshDoc);
+        var freshContainer = freshDoc && freshDoc.querySelector("main.min-h-screen .max-w-7xl");
+        if (freshDoc && freshContainer) { cfg.apply(freshDoc, freshContainer); }
+      } catch (loadErr) {
+        console.error("[compare-inspo] " + cfg.frameId + " reload re-apply failed:", loadErr);
+      }
+    });
+
+    if (waiting) { waiting.hidden = true; }
+    if (badge) { badge.textContent = "checking"; }
+    frame.src = cfg.src;
   }
 
-  pollPanel("f1", null, null, function (doc, container) {
-    optionA_ensureHeading(doc, container);
-    return true;
-  });
-  pollPanel("f2", "b1", "30px anchor", function (doc, container) {
-    optionB_ensureAnchor(doc, container);
-    optionB_demoteChips(doc);
-    return true;
-  });
-  pollPanel("f3", "b2", "chrome tightened", function (doc, container) {
-    return optionC_apply(doc);
-  });
-  pollPanel("f4", "b3", "2 words un-bolded", function (doc, container) {
-    return optionD_apply(doc);
-  });
-  pollPanel("f5", "b4", "31px anchor", function (doc, container) {
-    return optionE_apply(doc, container);
-  });
+  var PANELS = [
+    { frameId: "f0", waitId: "wait0", badgeId: "badge0", src: "/de/inspo",
+      apply: null, passLabel: "14px anchor", passClass: "fail" },
+    { frameId: "f1", waitId: "wait1", badgeId: "badge1", src: "/de/inspo",
+      claimId: "claim1", fallbackId: "fallback1",
+      apply: function (doc, container) { optionA_ensureHeading(doc, container); return true; },
+      passLabel: "28px anchor", passClass: "pass" },
+    { frameId: "f2", waitId: "wait2", badgeId: "badge2", src: "/de/inspo",
+      claimId: "claim2", fallbackId: "fallback2",
+      apply: function (doc, container) {
+        optionB_ensureAnchor(doc, container);
+        optionB_demoteChips(doc);
+        return true;
+      },
+      passLabel: "30px anchor", passClass: "pass" },
+    { frameId: "f3", waitId: "wait3", badgeId: "badge3", src: "/de/inspo",
+      claimId: "claim3", fallbackId: "fallback3",
+      apply: function (doc, container) { return optionC_apply(doc); },
+      passLabel: "chrome tightened", passClass: "pass" },
+    { frameId: "f4", waitId: "wait4", badgeId: "badge4", src: "/de/inspo",
+      claimId: "claim4", fallbackId: "fallback4",
+      apply: function (doc, container) { return optionD_apply(doc); },
+      passLabel: "2 words un-bolded", passClass: "pass" },
+    { frameId: "f5", waitId: "wait5", badgeId: "badge5", src: "/de/inspo",
+      claimId: "claim5", fallbackId: "fallback5",
+      apply: function (doc, container) { return optionE_apply(doc, container); },
+      passLabel: "31px anchor", passClass: "pass" }
+  ];
+
+  var readyIndex = 0;
+  var nearViewport = {};
+  var startedPanels = {};
+
+  function tryAdvance() {
+    if (readyIndex >= PANELS.length) { return; }
+    var cfg = PANELS[readyIndex];
+    if (startedPanels[cfg.frameId]) { return; }
+    if (!nearViewport[cfg.frameId]) { return; }
+    startedPanels[cfg.frameId] = true;
+    startPanel(cfg, function () {
+      readyIndex += 1;
+      tryAdvance();
+    });
+  }
+
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (entries) {
+      for (var i = 0; i < entries.length; i++) {
+        var entry = entries[i];
+        if (entry.isIntersecting) {
+          nearViewport[entry.target.getAttribute("data-frame")] = true;
+        }
+      }
+      tryAdvance();
+    }, { rootMargin: "400px 0px" });
+    for (var p = 0; p < PANELS.length; p++) {
+      var wrap = document.querySelector('.panel[data-frame="' + PANELS[p].frameId + '"]');
+      if (wrap) { io.observe(wrap); }
+    }
+  } else {
+    // no IntersectionObserver in this browser: every panel counts as near the viewport, so only
+    // the sequential chain gates loading. That alone already stops the six-at-once stampede.
+    for (var q = 0; q < PANELS.length; q++) { nearViewport[PANELS[q].frameId] = true; }
+  }
+
+  tryAdvance();
 </script>
 </body>
 </html>

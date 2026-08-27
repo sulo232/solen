@@ -101,8 +101,18 @@
     font-variant-numeric: tabular-nums;
   }
   .frame .badge.now { color: #6B6B6B; }
+  .frame .badge.waiting { color: #6B6B6B; }
   .frame .badge.pending { color: #6B6B6B; }
   .frame .badge.applied { color: #16A34A; }
+  .frame .badge.failed { color: #DC2626; }
+
+  .frame .placeholder {
+    position: absolute; top: 0; right: 0; bottom: 0; left: 0; z-index: 1;
+    display: flex; align-items: center; justify-content: center; text-align: center;
+    padding: 24px; font-size: 13px; color: #6B6B6B; background: #F4F4F5;
+  }
+
+  .cap .fail-note { margin-top: 4px; font-size: 13px; color: #3F3F46; }
 
   .divider { height: 8px; background: #F4F4F5; margin-top: 28px; }
 
@@ -145,8 +155,9 @@
       <span class="move neutral">No change, this is what ships today</span>
     </div>
     <div class="frame">
-      <div class="badge now nums">unmodified</div>
-      <iframe id="f-now" src="/de/basel" scrolling="no" title="The Basel page as it is today"></iframe>
+      <div class="placeholder" id="ph-now">Not loaded yet. This is the first panel and starts as soon as the page opens.</div>
+      <div class="badge waiting nums" id="badge-now">waiting</div>
+      <iframe id="f-now" data-src="/de/basel" scrolling="no" title="The Basel page as it is today"></iframe>
     </div>
   </div>
 
@@ -156,13 +167,16 @@
     <div class="cap">
       <span class="tag">PANEL A. SMALLEST POSSIBLE CHANGE</span>
       <h2>A. Fix the title, fix the buttons</h2>
-      <p>Two rules. The title grows to your own 28px floor. Only the button you're actually on stays
+      <p id="desc-a">Two rules. The title grows to your own 28px floor. Only the button you're actually on stays
          bold, the other three go back to plain text.</p>
+      <p class="fail-note" id="fail-a" style="display:none">This panel's fix did not apply on this load. Loading six live copies of the page at once
+         can outrun the dev server before the change is confirmed. Reload the page to try again.</p>
       <span class="move nums" id="move-a">title 25px &rarr; 28px</span>
     </div>
     <div class="frame">
-      <div class="badge pending nums" id="badge-a">loading</div>
-      <iframe id="f-a" src="/de/basel" scrolling="no" title="Basel page, floor-fix-city-page variant"></iframe>
+      <div class="placeholder" id="ph-a">Not loaded yet. This panel loads after the one above it finishes, so all six copies of the live page never fight the dev server at once.</div>
+      <div class="badge waiting nums" id="badge-a">waiting</div>
+      <iframe id="f-a" data-src="/de/basel" scrolling="no" title="Basel page, floor-fix-city-page variant"></iframe>
     </div>
   </div>
 
@@ -172,13 +186,16 @@
     <div class="cap">
       <span class="tag">PANEL B. HIERARCHY FIRST</span>
       <h2>B. Bigger title, bigger salon names</h2>
-      <p>Title grows to 30px at medium weight. Every salon name on the grid grows from 15px to 16px
+      <p id="desc-b">Title grows to 30px at medium weight. Every salon name on the grid grows from 15px to 16px
          so the listings read as a clear second rank under the title.</p>
+      <p class="fail-note" id="fail-b" style="display:none">This panel's fix did not apply on this load. Loading six live copies of the page at once
+         can outrun the dev server before the change is confirmed. Reload the page to try again.</p>
       <span class="move nums" id="move-b">title 25px &rarr; 30px</span>
     </div>
     <div class="frame">
-      <div class="badge pending nums" id="badge-b">loading</div>
-      <iframe id="f-b" src="/de/basel" scrolling="no" title="Basel page, hierarchy-first variant"></iframe>
+      <div class="placeholder" id="ph-b">Not loaded yet. This panel loads after the one above it finishes, so all six copies of the live page never fight the dev server at once.</div>
+      <div class="badge waiting nums" id="badge-b">waiting</div>
+      <iframe id="f-b" data-src="/de/basel" scrolling="no" title="Basel page, hierarchy-first variant"></iframe>
     </div>
   </div>
 
@@ -188,13 +205,16 @@
     <div class="cap">
       <span class="tag">PANEL C. CONTENT FORWARD</span>
       <h2>C. Trim the empty space above the salons</h2>
-      <p>The title block and the filter row get tighter padding. Nothing shrinks, the salon grid
+      <p id="desc-c">The title block and the filter row get tighter padding. Nothing shrinks, the salon grid
          just moves up 70px, so more real salons show without scrolling.</p>
+      <p class="fail-note" id="fail-c" style="display:none">This panel's fix did not apply on this load. Loading six live copies of the page at once
+         can outrun the dev server before the change is confirmed. Reload the page to try again.</p>
       <span class="move nums" id="move-c">salon grid moves up 70px</span>
     </div>
     <div class="frame">
-      <div class="badge pending nums" id="badge-c">loading</div>
-      <iframe id="f-c" src="/de/basel" scrolling="no" title="Basel page, content-forward variant"></iframe>
+      <div class="placeholder" id="ph-c">Not loaded yet. This panel loads after the one above it finishes, so all six copies of the live page never fight the dev server at once.</div>
+      <div class="badge waiting nums" id="badge-c">waiting</div>
+      <iframe id="f-c" data-src="/de/basel" scrolling="no" title="Basel page, content-forward variant"></iframe>
     </div>
   </div>
 
@@ -204,13 +224,16 @@
     <div class="cap">
       <span class="tag">PANEL D. THE AIRBNB WAY</span>
       <h2>D. Take the bold off almost everything</h2>
-      <p>One rule: every bold element on the page drops from weight 600 to weight 500. Airbnb's own
+      <p id="desc-d">One rule: every bold element on the page drops from weight 600 to weight 500. Airbnb's own
          app runs about 3% bold; this alone takes Basel from roughly 44% down to about 6%.</p>
+      <p class="fail-note" id="fail-d" style="display:none">This panel's fix did not apply on this load. Loading six live copies of the page at once
+         can outrun the dev server before the change is confirmed. Reload the page to try again.</p>
       <span class="move nums" id="move-d">bold text 44% &rarr; 6%</span>
     </div>
     <div class="frame">
-      <div class="badge pending nums" id="badge-d">loading</div>
-      <iframe id="f-d" src="/de/basel" scrolling="no" title="Basel page, Airbnb-weight variant"></iframe>
+      <div class="placeholder" id="ph-d">Not loaded yet. This panel loads after the one above it finishes, so all six copies of the live page never fight the dev server at once.</div>
+      <div class="badge waiting nums" id="badge-d">waiting</div>
+      <iframe id="f-d" data-src="/de/basel" scrolling="no" title="Basel page, Airbnb-weight variant"></iframe>
     </div>
   </div>
 
@@ -220,14 +243,17 @@
     <div class="cap">
       <span class="tag">PANEL E. CLEAR EVERY FLOOR AT ONCE</span>
       <h2>E. Title fix plus the category buttons rebuilt properly</h2>
-      <p>Title grows to 30px. The four category buttons are rebuilt on your own locked button style,
+      <p id="desc-e">Title grows to 30px. The four category buttons are rebuilt on your own locked button style,
          the gray fill your other pills already use, replacing a black-fill button this page was
          never actually migrated onto.</p>
+      <p class="fail-note" id="fail-e" style="display:none">This panel's fix did not apply on this load. Loading six live copies of the page at once
+         can outrun the dev server before the change is confirmed. Reload the page to try again.</p>
       <span class="move nums" id="move-e">title 25px &rarr; 30px, buttons match the rest of the site</span>
     </div>
     <div class="frame">
-      <div class="badge pending nums" id="badge-e">loading</div>
-      <iframe id="f-e" src="/de/basel" scrolling="no" title="Basel page, recompose variant"></iframe>
+      <div class="placeholder" id="ph-e">Not loaded yet. This panel loads after the one above it finishes, so all six copies of the live page never fight the dev server at once.</div>
+      <div class="badge waiting nums" id="badge-e">waiting</div>
+      <iframe id="f-e" data-src="/de/basel" scrolling="no" title="Basel page, recompose variant"></iframe>
     </div>
   </div>
 
@@ -265,153 +291,298 @@
 </div>
 
 <script>
-  // Every panel below is the SAME real /de/basel route. Panel 0 stays untouched. Each other panel
-  // gets exactly the stylesheet (or, for panel E, the className rewrite) that its own source mockup
-  // file already built and verified live, lifted here verbatim, nothing rewritten.
+  // Six live copies of the same real /de/basel route used to all start loading at once, which
+  // overloaded the dev server badly enough that a panel's target element sometimes never appeared
+  // before the old 30 second cap, and once that cap hit, the panel stayed broken for the life of
+  // the page while its caption kept claiming the change had happened. This version loads one panel
+  // at a time, confirms each fix against the real rendered DOM (not just "the script did not
+  // throw"), and rewrites a panel's own caption to plain English the moment it cannot confirm.
 
-  function markApplied(id) {
+  var MAX_POLLS = 300; // 60s at 200ms, raised from the old 30s cap
+  var POLL_MS = 200;
+
+  function setPlaceholder(id, visible) {
     var el = document.getElementById(id);
-    if (el) { el.textContent = "applied"; el.classList.remove("pending"); el.classList.add("applied"); }
+    if (el) { el.style.display = visible ? "flex" : "none"; }
   }
 
-  // --- Panel A: floor-fix-city-page ---------------------------------------------------------
-  (function () {
-    var frame = document.getElementById("f-a");
-    frame.addEventListener("load", function () {
+  function setBadge(id, text, cls) {
+    var el = document.getElementById(id);
+    if (!el) { return; }
+    el.textContent = text;
+    el.className = "badge nums " + cls;
+  }
+
+  function markFailed(cfg) {
+    setBadge(cfg.badgeId, "could not confirm", "failed");
+    if (cfg.descId) {
+      var desc = document.getElementById(cfg.descId);
+      if (desc) { desc.style.display = "none"; }
+    }
+    if (cfg.moveId) {
+      var move = document.getElementById(cfg.moveId);
+      if (move) { move.style.display = "none"; }
+    }
+    if (cfg.failId) {
+      var fail = document.getElementById(cfg.failId);
+      if (fail) { fail.style.display = "block"; }
+    }
+  }
+
+  // Loads cfg.src into cfg.frameId, polls cfg.apply/cfg.confirm against the frame's real DOM until
+  // confirmed or MAX_POLLS is hit, then calls onSettled(). Once confirmed, a MutationObserver keeps
+  // re-applying the fix, because one variant was measured applying correctly and then being
+  // silently discarded when the real page re-rendered over it.
+  function runVariant(cfg, onSettled) {
+    var frame = document.getElementById(cfg.frameId);
+    var polls = 0;
+    var iv = null;
+
+    function attempt() {
+      var doc;
+      try {
+        doc = frame.contentDocument;
+      } catch (err) {
+        console.error("[compare-city-page] " + cfg.label + " could not read its frame:", err);
+        return false;
+      }
+      if (!doc || doc.readyState !== "complete") { return false; }
+      try {
+        cfg.apply(doc);
+      } catch (err) {
+        console.error("[compare-city-page] " + cfg.label + " could not apply its fix:", err);
+        return false;
+      }
+      try {
+        return !!cfg.confirm(doc);
+      } catch (err) {
+        console.error("[compare-city-page] " + cfg.label + " could not confirm its fix:", err);
+        return false;
+      }
+    }
+
+    function guardAgainstRerender() {
       try {
         var doc = frame.contentDocument;
-        if (!doc) { return; }
-        var style = doc.createElement("style");
-        style.textContent =
-          "main h1.font-heading { font-size: clamp(28px, 4vw, 40px) !important; }\n" +
-          "section:nth-of-type(2) a.border-s-border { font-weight: 400 !important; }";
-        doc.head.appendChild(style);
-        markApplied("badge-a");
+        if (!doc || !doc.body) { return; }
+        var mo = new MutationObserver(function () {
+          try {
+            cfg.apply(doc);
+          } catch (err) {
+            console.error("[compare-city-page] " + cfg.label + " could not re-apply after a re-render:", err);
+          }
+        });
+        mo.observe(doc.body, { childList: true, subtree: true });
       } catch (err) {
-        console.error("[compare-city-page] panel A could not restyle its frame:", err);
+        console.error("[compare-city-page] " + cfg.label + " could not watch its frame for re-renders:", err);
       }
-    });
-  })();
+    }
 
-  // --- Panel B: fix-city-page--b-hierarchy --------------------------------------------------
-  (function () {
-    var frame = document.getElementById("f-b");
-    function applyHierarchy(doc) {
-      if (doc.getElementById("panel-b-style")) return;
+    function finish(ok) {
+      if (iv) { clearInterval(iv); iv = null; }
+      if (ok) {
+        setBadge(cfg.badgeId, cfg.appliedLabel || "applied", "applied");
+        guardAgainstRerender();
+      } else {
+        markFailed(cfg);
+      }
+      onSettled();
+    }
+
+    setPlaceholder(cfg.phId, false);
+    setBadge(cfg.badgeId, "loading", "pending");
+    iv = setInterval(function () {
+      polls++;
+      if (attempt()) { finish(true); return; }
+      if (polls >= MAX_POLLS) { finish(false); }
+    }, POLL_MS);
+    frame.src = cfg.src;
+  }
+
+  // ---- One config per panel. Every apply()/confirm() pair below is the same rule that already
+  // shipped in this file, only now confirm() reads getComputedStyle off the real element instead
+  // of trusting that appendChild did not throw. -----------------------------------------------
+
+  var panel0 = {
+    frameId: "f-now", badgeId: "badge-now", phId: "ph-now", label: "panel 0",
+    src: "/de/basel", appliedLabel: "unmodified",
+    apply: function () {},
+    confirm: function (doc) { return !!doc.querySelector("main"); }
+  };
+
+  var panelA = {
+    frameId: "f-a", badgeId: "badge-a", phId: "ph-a", label: "panel A",
+    descId: "desc-a", moveId: "move-a", failId: "fail-a",
+    src: "/de/basel",
+    apply: function (doc) {
+      if (doc.getElementById("panel-a-style")) { return; }
+      var style = doc.createElement("style");
+      style.id = "panel-a-style";
+      style.textContent =
+        "main h1.font-heading { font-size: clamp(28px, 4vw, 40px) !important; }\n" +
+        "section:nth-of-type(2) a.border-s-border { font-weight: 400 !important; }";
+      doc.head.appendChild(style);
+    },
+    confirm: function (doc) {
+      var h1 = doc.querySelector("main h1.font-heading");
+      if (!h1) { return false; }
+      return parseFloat(getComputedStyle(h1).fontSize) >= 28;
+    }
+  };
+
+  var panelB = {
+    frameId: "f-b", badgeId: "badge-b", phId: "ph-b", label: "panel B",
+    descId: "desc-b", moveId: "move-b", failId: "fail-b",
+    src: "/de/basel",
+    apply: function (doc) {
+      if (doc.getElementById("panel-b-style")) { return; }
       var style = doc.createElement("style");
       style.id = "panel-b-style";
       style.textContent =
         "main section:nth-of-type(1) h1 { font-size: 30px !important; font-weight: 500 !important; }\n" +
         "main section:nth-of-type(3) h3 { font-size: 16px !important; font-weight: 500 !important; }";
       doc.head.appendChild(style);
+    },
+    confirm: function (doc) {
+      var h1 = doc.querySelector("main section:nth-of-type(1) h1");
+      if (!h1 || Math.round(parseFloat(getComputedStyle(h1).fontSize)) !== 30) { return false; }
+      // salon listings render client-side after first paint, so this stays false (and keeps
+      // polling) until they actually exist, it never assumes them present.
+      var names = doc.querySelectorAll("main section:nth-of-type(3) h3");
+      if (!names.length) { return false; }
+      return Math.round(parseFloat(getComputedStyle(names[0]).fontSize)) === 16;
     }
-    frame.addEventListener("load", function () {
-      try {
-        var doc = frame.contentDocument;
-        if (!doc) { return; }
-        applyHierarchy(doc);
-        // salon listings render client-side after first paint; the selector still catches them
-        // once they appear, this second pass is a defensive re-check only, matching the source.
-        setTimeout(function () { applyHierarchy(doc); markApplied("badge-b"); }, 500);
-      } catch (err) {
-        console.error("[compare-city-page] panel B could not restyle its frame:", err);
-      }
-    });
-  })();
+  };
 
-  // --- Panel C: fix-city-page--c-content-forward --------------------------------------------
-  (function () {
-    var frame = document.getElementById("f-c");
-    var HEADING_SECTION_SELECTOR = "main.min-h-screen > section:nth-of-type" + "(1)";
-    var EYEBROW_ROW_SELECTOR = HEADING_SECTION_SELECTOR + " > div.mb-2";
-    var FILTER_SECTION_SELECTOR = "main.min-h-screen > section:nth-of-type" + "(2)";
-    frame.addEventListener("load", function () {
-      try {
-        var doc = frame.contentDocument;
-        if (!doc) { return; }
-        var style = doc.createElement("style");
-        style.textContent =
-          HEADING_SECTION_SELECTOR + " { padding-top: 22px !important; padding-bottom: 10px !important; }\n" +
-          EYEBROW_ROW_SELECTOR + " { margin-bottom: 4px !important; }\n" +
-          FILTER_SECTION_SELECTOR + " { padding-bottom: 6px !important; }";
-        doc.head.appendChild(style);
-        markApplied("badge-c");
-      } catch (err) {
-        console.error("[compare-city-page] panel C could not restyle its frame:", err);
-      }
-    });
-  })();
-
-  // --- Panel D: fix-city-page--d-airbnb-weight ----------------------------------------------
-  (function () {
-    function applyChange(doc) {
-      if (doc.getElementById("weight-500-style")) return 1;
-      if (!doc.querySelector(".font-semibold")) return 0;
-      var st = doc.createElement("style");
-      st.id = "weight-500-style";
-      st.textContent = ".font-semibold{font-weight:500 !important}";
-      doc.head.appendChild(st);
-      return 1;
-    }
-    var tries = 0;
-    var MAX_POLLS = 150;
-    var iv = setInterval(function () {
-      tries++;
-      var f = document.getElementById("f-d");
-      try {
-        var doc = f.contentDocument;
-        if (doc && doc.readyState === "complete" && applyChange(doc) > 0) {
-          clearInterval(iv);
-          markApplied("badge-d");
-        }
-      } catch (e) {}
-      if (tries > MAX_POLLS) { clearInterval(iv); }
-    }, 200);
-  })();
-
-  // --- Panel E: fix-city-page--e-recompose --------------------------------------------------
-  (function () {
-    function tryApply(doc) {
-      if (doc.getElementById("panel-e-style")) return true;
-      var h1 = doc.querySelector("main h1");
-      var secs = doc.querySelectorAll("main > section");
-      if (!h1 || secs.length < 2) return false;
-      var pills = secs[1].querySelectorAll("a");
-      if (!pills.length) return false;
-
+  var panelC = {
+    frameId: "f-c", badgeId: "badge-c", phId: "ph-c", label: "panel C",
+    descId: "desc-c", moveId: "move-c", failId: "fail-c",
+    src: "/de/basel",
+    apply: function (doc) {
+      if (doc.getElementById("panel-c-style")) { return; }
+      var HEADING_SECTION_SELECTOR = "main.min-h-screen > section:nth-of-type" + "(1)";
+      var EYEBROW_ROW_SELECTOR = HEADING_SECTION_SELECTOR + " > div.mb-2";
+      var FILTER_SECTION_SELECTOR = "main.min-h-screen > section:nth-of-type" + "(2)";
       var style = doc.createElement("style");
-      style.id = "panel-e-style";
-      style.textContent = "main h1.font-heading { font-size: clamp(30px, 4vw, 40px) !important; }";
+      style.id = "panel-c-style";
+      style.textContent =
+        HEADING_SECTION_SELECTOR + " { padding-top: 22px !important; padding-bottom: 10px !important; }\n" +
+        EYEBROW_ROW_SELECTOR + " { margin-bottom: 4px !important; }\n" +
+        FILTER_SECTION_SELECTOR + " { padding-bottom: 6px !important; }";
       doc.head.appendChild(style);
+    },
+    confirm: function (doc) {
+      var sec = doc.querySelector("main.min-h-screen > section:nth-of-type(1)");
+      if (!sec) { return false; }
+      return Math.round(parseFloat(getComputedStyle(sec).paddingTop)) === 22;
+    }
+  };
 
+  var panelD = {
+    frameId: "f-d", badgeId: "badge-d", phId: "ph-d", label: "panel D",
+    descId: "desc-d", moveId: "move-d", failId: "fail-d",
+    src: "/de/basel",
+    apply: function (doc) {
+      if (doc.getElementById("weight-500-style")) { return; }
+      if (!doc.querySelector(".font-semibold")) { return; }
+      var style = doc.createElement("style");
+      style.id = "weight-500-style";
+      style.textContent = ".font-semibold{font-weight:500 !important}";
+      doc.head.appendChild(style);
+    },
+    confirm: function (doc) {
+      var el = doc.querySelector(".font-semibold");
+      if (!el) { return false; }
+      return parseInt(getComputedStyle(el).fontWeight, 10) <= 500;
+    }
+  };
+
+  var panelE = {
+    frameId: "f-e", badgeId: "badge-e", phId: "ph-e", label: "panel E",
+    descId: "desc-e", moveId: "move-e", failId: "fail-e",
+    src: "/de/basel",
+    apply: function (doc) {
+      var h1 = doc.querySelector("main h1.font-heading");
+      if (h1 && !doc.getElementById("panel-e-style")) {
+        var style = doc.createElement("style");
+        style.id = "panel-e-style";
+        style.textContent = "main h1.font-heading { font-size: clamp(30px, 4vw, 40px) !important; }";
+        doc.head.appendChild(style);
+      }
+      var secs = doc.querySelectorAll("main > section");
+      if (secs.length < 2) { return; }
+      var pills = secs[1].querySelectorAll("a");
+      if (!pills.length) { return; }
       var TABPILL_BASE = "inline-flex items-center gap-1.5 shrink-0 select-none whitespace-nowrap " +
         "rounded-full font-body transition-[color,background-color,border-color,box-shadow,transform] " +
         "duration-150 ease-glide active:scale-[0.97] active:duration-[80ms] border h-11 px-4 text-[14px]";
       pills.forEach(function (a) {
+        // idempotency guard: without it, a MutationObserver re-run after the first patch reads
+        // its OWN output back and, since "bg-s-bg-sunken" no longer contains "bg-s-ink", flips an
+        // already-fixed pill straight back to the unselected treatment. Same visual outcome as
+        // before, just safe to call more than once.
+        if (a.className.indexOf("rounded-full") !== -1 && a.className.indexOf("h-11") !== -1) { return; }
         var wasKilledBlackFill = a.className.indexOf("bg-s-ink") !== -1 && a.className.indexOf("text-white") !== -1;
         a.className = TABPILL_BASE + (wasKilledBlackFill
           ? " border-s-border bg-s-bg-sunken text-s-ink font-semibold"
           : " border-s-border bg-white text-s-ink-2 hover:text-s-ink hover:border-s-border font-medium");
       });
-      return true;
+    },
+    confirm: function (doc) {
+      var h1 = doc.querySelector("main h1.font-heading");
+      if (!h1 || parseFloat(getComputedStyle(h1).fontSize) < 30) { return false; }
+      var secs = doc.querySelectorAll("main > section");
+      if (secs.length < 2) { return false; }
+      var pills = secs[1].querySelectorAll("a");
+      if (!pills.length) { return false; }
+      return pills[0].className.indexOf("rounded-full") !== -1;
     }
-    var tries = 0;
-    var MAX_POLLS = 150;
-    var iv = setInterval(function () {
-      tries++;
-      var f = document.getElementById("f-e");
-      try {
-        var doc = f.contentDocument;
-        if (doc && doc.readyState === "complete" && tryApply(doc)) {
-          clearInterval(iv);
-          markApplied("badge-e");
-        }
-      } catch (e) {
-        console.error("[compare-city-page] panel E could not patch its frame:", e);
-      }
-      if (tries > MAX_POLLS) { clearInterval(iv); }
-    }, 200);
-  })();
+  };
+
+  // ---- Sequential + near-viewport gated chain. A panel only starts once the one above it has
+  // settled (applied or given up) AND the panel itself is close to the viewport, so the owner
+  // scrolling down a phone never waits on panel E loading before panel A is even on screen. -----
+
+  var chain = [panel0, panelA, panelB, panelC, panelD, panelE];
+  var frameIndexById = {};
+  chain.forEach(function (cfg, idx) { frameIndexById[cfg.frameId] = idx; });
+  var started = chain.map(function () { return false; });
+  var settled = chain.map(function () { return false; });
+  var nearViewport = chain.map(function () { return false; });
+
+  function maybeStart(i) {
+    if (i < 0 || i >= chain.length) { return; }
+    if (started[i]) { return; }
+    if (i > 0 && !settled[i - 1]) { return; }
+    if (!nearViewport[i]) { return; }
+    started[i] = true;
+    runVariant(chain[i], function () {
+      settled[i] = true;
+      maybeStart(i + 1);
+    });
+  }
+
+  if ("IntersectionObserver" in window) {
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) { return; }
+        var idx = frameIndexById[entry.target.id];
+        if (idx === undefined) { return; }
+        nearViewport[idx] = true;
+        observer.unobserve(entry.target);
+        maybeStart(idx);
+      });
+    }, { root: null, rootMargin: "600px 0px", threshold: 0 });
+    chain.forEach(function (cfg) {
+      var frame = document.getElementById(cfg.frameId);
+      if (frame) { observer.observe(frame); }
+    });
+  } else {
+    // no IntersectionObserver support: every panel counts as already near the viewport, the
+    // sequential settle-then-start chain is still what gates the load order.
+    nearViewport = nearViewport.map(function () { return true; });
+    maybeStart(0);
+  }
 </script>
 </body>
 </html>

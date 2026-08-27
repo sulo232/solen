@@ -111,12 +111,21 @@
   }
   .panel .badge.status{ margin-left: 6px; }
   .panel .badge.status.applied{ color: var(--good); background: #F0FDF4; }
+  .panel .badge.status.failed{ color: var(--bad); background: #FEF2F2; }
 
   .frame{
+    position: relative;
     margin-top: 12px; border: 1px solid var(--line); border-radius: 16px; overflow: hidden;
     background: #fff; max-width: 402px;
   }
-  iframe{ display: block; width: 100%; height: 780px; border: 0; }
+  iframe{ display: block; width: 100%; height: 780px; border: 0; background: #fff; }
+  .frame-loading{
+    position: absolute; inset: 0; z-index: 2;
+    display: flex; align-items: center; justify-content: center;
+    background: #fff; color: var(--ink3); font-size: 13px; font-weight: 500;
+    text-align: center; padding: 16px; line-height: 1.5;
+  }
+  .frame-loading.hidden{ display: none; }
 
   .not-fixed{ margin-top: 10px; font-size: 12.5px; line-height: 1.55; color: var(--ink3); }
   .not-fixed b{ color: var(--ink2); font-weight: 600; }
@@ -165,7 +174,10 @@
       <h2>The home page as it is today</h2>
       <div class="desc">Nothing changed here. This is the same live page every panel below is a copy of.</div>
     </div>
-    <div class="frame"><iframe id="nowFrame" src="/de" title="home page, now, untouched"></iframe></div>
+    <div class="frame">
+      <div class="frame-loading" id="loadingNow">Waiting to load&hellip;</div>
+      <iframe id="nowFrame" data-src="/de" title="home page, now, untouched"></iframe>
+    </div>
   </div>
 
   <!-- ================= PANEL A: floor-fix-home ================= -->
@@ -173,13 +185,16 @@
     <div class="panel-cap">
       <span class="panel-tag fix">Option A</span>
       <h2>Pull the feed up (smallest possible change)</h2>
-      <div class="desc">The row of category buttons above the feed had 20px of air above and below
+      <div class="desc" id="descA">The row of category buttons above the feed had 20px of air above and below
         it. This brings that down to 12px, so the real salon cards start about 16px higher on the
         screen. One number, nothing else touched.</div>
-      <span class="badge">moves: photo share, a little</span>
-      <span class="badge status" id="statusA">applying&hellip;</span>
+      <span class="badge" id="badgeA">moves: photo share, a little</span>
+      <span class="badge status" id="statusA">waiting&hellip;</span>
     </div>
-    <div class="frame"><iframe id="frameA" src="/de" title="home page, option A, pull the feed up"></iframe></div>
+    <div class="frame">
+      <div class="frame-loading" id="loadingA">Waiting to load&hellip;</div>
+      <iframe id="frameA" data-src="/de" title="home page, option A, pull the feed up"></iframe>
+    </div>
     <div class="not-fixed"><b>Does not touch:</b> the 18px headline size, the 1.5x ratio, or how much text is bold. This option only reclaims 16px of space, not the roughly 4.4 percentage points of photo the screen is actually short by.</div>
   </div>
 
@@ -188,14 +203,17 @@
     <div class="panel-cap">
       <span class="panel-tag fix">Option B</span>
       <h2>Give the page one clear heading</h2>
-      <div class="desc">Every section title on this page prints at the exact same size right now,
+      <div class="desc" id="descB">Every section title on this page prints at the exact same size right now,
         ten of them, so nothing stands out as the anchor. Here the very first one you land on
         becomes bigger (30px), and the other nine step back to 16px and a lighter weight so they
         read as clearly secondary.</div>
-      <span class="badge">moves: headline size, headline ratio</span>
-      <span class="badge status" id="statusB">applying&hellip;</span>
+      <span class="badge" id="badgeB">moves: headline size, headline ratio</span>
+      <span class="badge status" id="statusB">waiting&hellip;</span>
     </div>
-    <div class="frame"><iframe id="frameB" src="/de" title="home page, option B, one clear heading"></iframe></div>
+    <div class="frame">
+      <div class="frame-loading" id="loadingB">Waiting to load&hellip;</div>
+      <iframe id="frameB" data-src="/de" title="home page, option B, one clear heading"></iframe>
+    </div>
     <div class="not-fixed"><b>Does not touch:</b> photo share (still 28.56%) or how much text is bold (still 37.14%). No photo is added anywhere.</div>
   </div>
 
@@ -204,14 +222,17 @@
     <div class="panel-cap">
       <span class="panel-tag fix">Option C</span>
       <h2>Make the real salon cards bigger</h2>
-      <div class="desc">Same salons, same photos, no new card. The first row of real cards gets
+      <div class="desc" id="descC">Same salons, same photos, no new card. The first row of real cards gets
         wider (our own 230px up to 277px, a step derived from this page's own existing card-width
         formula, not a competitor's number), so the same photo claims more of the screen. The
         category-pill row above it is also tightened, the same small change as Option A.</div>
-      <span class="badge">moves: photo share, meaningfully</span>
-      <span class="badge status" id="statusC">applying&hellip;</span>
+      <span class="badge" id="badgeC">moves: photo share, meaningfully</span>
+      <span class="badge status" id="statusC">waiting&hellip;</span>
     </div>
-    <div class="frame"><iframe id="frameC" src="/de" title="home page, option C, bigger real cards"></iframe></div>
+    <div class="frame">
+      <div class="frame-loading" id="loadingC">Waiting to load&hellip;</div>
+      <iframe id="frameC" data-src="/de" title="home page, option C, bigger real cards"></iframe>
+    </div>
     <div class="not-fixed"><b>Does not touch:</b> the 18px headline or the 1.5x ratio, this is a card-size lever, not a text-size lever. It reopens a card-width decision made in July on purpose. Fewer cards are visible per swipe once they're this wide.</div>
   </div>
 
@@ -220,13 +241,16 @@
     <div class="panel-cap">
       <span class="panel-tag fix">Option D</span>
       <h2>Let bold text calm down</h2>
-      <div class="desc">More than a third of the text on this screen is bold today, section titles,
+      <div class="desc" id="descD">More than a third of the text on this screen is bold today, section titles,
         salon names, prices, star ratings, all of it. When almost everything is bold, nothing is.
         This makes all of that text one step lighter. No size, spacing, or colour changes.</div>
-      <span class="badge">moves: how much text is bold, all the way to 0%</span>
-      <span class="badge status" id="statusD">applying&hellip;</span>
+      <span class="badge" id="badgeD">moves: how much text is bold, all the way to 0%</span>
+      <span class="badge status" id="statusD">waiting&hellip;</span>
     </div>
-    <div class="frame"><iframe id="frameD" src="/de" title="home page, option D, lighter bold weight"></iframe></div>
+    <div class="frame">
+      <div class="frame-loading" id="loadingD">Waiting to load&hellip;</div>
+      <iframe id="frameD" data-src="/de" title="home page, option D, lighter bold weight"></iframe>
+    </div>
     <div class="not-fixed"><b>Does not touch:</b> photo share, headline size, or headline ratio. Those are all about size, this lever is weight-only and can't reach them.</div>
   </div>
 
@@ -235,15 +259,18 @@
     <div class="panel-cap">
       <span class="panel-tag fix">Option E</span>
       <h2>Do the headline, the spacing, and the weight together</h2>
-      <div class="desc">Combines three of the moves above: it turns on the real headline your
+      <div class="desc" id="descE">Combines three of the moves above: it turns on the real headline your
         desktop site already shows (switched off for phones since August 1st), tightens the
         category-pill row, and lightens bold text everywhere except the salon name and price on a
         card, which stay bold on purpose. This is the option most likely to clear the most floors
         at once, and the most honest about what it costs.</div>
-      <span class="badge">moves: headline size, headline ratio, bold share</span>
-      <span class="badge status" id="statusE">applying&hellip;</span>
+      <span class="badge" id="badgeE">moves: headline size, headline ratio, bold share</span>
+      <span class="badge status" id="statusE">waiting&hellip;</span>
     </div>
-    <div class="frame"><iframe id="frameE" src="/de" title="home page, option E, everything at once"></iframe></div>
+    <div class="frame">
+      <div class="frame-loading" id="loadingE">Waiting to load&hellip;</div>
+      <iframe id="frameE" data-src="/de" title="home page, option E, everything at once"></iframe>
+    </div>
     <div class="not-fixed"><b>Does not touch, and actually gets worse:</b> photo share. The headline costs roughly 100px of screen height, the pill-row squeeze only buys back 16px, so the real photo underneath gets pushed down further, not closer to 33%. This is the one honest tradeoff in this whole page: a headline and a bigger photo are fighting for the same space, and nothing here found a way to give both without reopening another already-locked number.</div>
   </div>
 
@@ -277,58 +304,50 @@
     All six panels load the same live route, /de, from your dev server, not a redraw. Every fix
     above is copied from its own separate mockup file, named at the top of this page's source, and
     applied here exactly as it was built there. No shared component was edited to make this page.
+    Panels load one at a time, in order, and only once scrolled near, so the dev server never has
+    to render six copies of the route at once, which is what broke fix-detection on this page
+    before.
   </div>
 
 <script>
-  // Every AFTER panel below loads the SAME real /de route as the Now panel. Once each one finishes
-  // loading, exactly the rule(s) or script that panel's own source mockup already proposed is
-  // applied to it, lifted verbatim from that file. Nothing here invents a new fix.
+  // Panels load ONE AT A TIME: every iframe below starts with no src, and the next panel in the
+  // chain only begins once the panel before it has settled, either its fix confirmed applied, or
+  // it gave up after the poll cap. A panel also will not start loading until its frame has
+  // scrolled near the viewport, so a reader on a phone never pays for panel 5 loading before they
+  // have scrolled anywhere near panel 1.
+  //
+  // This replaces the old behavior: all six iframes got a src at once, which meant six live
+  // copies of a real Next.js route rendering at the same time. That overloaded the dev server and
+  // the browser badly enough that the fix-detection polls hit their cap before the target element
+  // ever appeared, and once the cap was hit the interval was cleared for good, so the panel
+  // stayed marked "could not confirm" for the rest of the page's life even though the same fix
+  // applied correctly and instantly when that panel's own source file was loaded alone.
 
-  function whenReady(iframeId, statusId, fn) {
-    var tries = 0;
-    var MAX_POLLS = 150; // poll cap, never a displayed count
-    var iv = setInterval(function () {
-      tries++;
-      var f = document.getElementById(iframeId);
-      var status = document.getElementById(statusId);
-      try {
-        var doc = f.contentDocument;
-        if (doc && doc.readyState === 'complete' && fn(doc)) {
-          clearInterval(iv);
-          if (status) { status.textContent = 'applied'; status.classList.add('applied'); }
-        }
-      } catch (e) {
-        console.error('[compare-home:' + iframeId + '] could not restyle the panel:', e);
-      }
-      if (tries > MAX_POLLS) {
-        clearInterval(iv);
-        if (status && status.textContent.indexOf('applying') === 0) { status.textContent = 'could not confirm'; }
-      }
-    }, 200);
-  }
+  (function () {
+    var POLL_INTERVAL_MS = 200;
+    var MAX_POLLS = 300; // 300 * 200ms = 60 seconds, raised from the original 30 second cap
 
-  // ---- Option A: floor-fix-home. Pill row padding 20px -> 12px. ----
-  whenReady('frameA', 'statusA', function (doc) {
-    if (doc.getElementById('floor-fix-home-style')) return true;
-    var tablist = doc.querySelector('[role="tablist"][aria-label="Kategorien"]');
-    if (!tablist) return false;
-    var st = doc.createElement('style');
-    st.id = 'floor-fix-home-style';
-    st.textContent = '[role="tablist"][aria-label="Kategorien"]{padding-top:12px !important;padding-bottom:12px !important}';
-    doc.head.appendChild(st);
-    return true;
-  });
+    // ---- Option A: floor-fix-home. Pill row padding 20px -> 12px. ----
+    function applyA(doc) {
+      if (doc.getElementById('floor-fix-home-style')) return true;
+      var tablist = doc.querySelector('[role="tablist"][aria-label="Kategorien"]');
+      if (!tablist) return false;
+      var st = doc.createElement('style');
+      st.id = 'floor-fix-home-style';
+      st.textContent = '[role="tablist"][aria-label="Kategorien"]{padding-top:12px !important;padding-bottom:12px !important}';
+      doc.head.appendChild(st);
+      return true;
+    }
 
-  // ---- Option B: fix-home--b-hierarchy. Resize section h2s. ----
-  whenReady('frameB', 'statusB', function (doc) {
-    var TITLE_MATCHES = ["Top auf Solen", "Zuletzt angesehen"];
-    function applyHierarchy() {
+    // ---- Option B: fix-home--b-hierarchy. Resize section h2s. ----
+    function applyB(doc) {
+      var TITLE_MATCHES = ["Top auf Solen", "Zuletzt angesehen"];
       var h2s = Array.prototype.slice.call(doc.querySelectorAll("h2"));
       var visible = h2s.filter(function (el) {
         var r = el.getBoundingClientRect();
         return r.width > 0 && r.height > 0;
       });
-      if (!visible.length) { return false; }
+      if (!visible.length) return false;
       var anchor = null;
       for (var i = 0; i < visible.length; i++) {
         var text = visible[i].textContent.trim();
@@ -348,79 +367,311 @@
       });
       return true;
     }
-    var ok = applyHierarchy();
-    // RecentlyViewed's title can flip slightly after mount; re-apply once more shortly.
-    setTimeout(applyHierarchy, 500);
-    return ok;
-  });
 
-  // ---- Option C: fix-home--c-content-forward. Pill padding + widen first card row. ----
-  whenReady('frameC', 'statusC', function (doc) {
-    if (doc.getElementById('cf-content-forward-style')) return true;
-    var tablist = doc.querySelector('[role="tablist"][aria-label="Kategorien"]');
-    var row = doc.querySelector('.mt-1.flex.gap-3.overflow-x-auto');
-    if (!tablist && !row) return false;
-    var st = doc.createElement('style');
-    st.id = 'cf-content-forward-style';
-    var rules = '';
-    if (tablist) {
-      rules += '[role="tablist"][aria-label="Kategorien"]{padding-top:12px !important;padding-bottom:12px !important}';
-    }
-    if (row) {
-      row.setAttribute('data-cf-row', '1');
-      rules += '[data-cf-row="1"] > a[href*="/salon/"]{width:calc((100vw - 44px) / 1.25) !important}';
-    }
-    st.textContent = rules;
-    doc.head.appendChild(st);
-    return true;
-  });
-
-  // ---- Option D: fix-home--d-airbnb-weight. font-semibold -> 500. ----
-  whenReady('frameD', 'statusD', function (doc) {
-    if (doc.getElementById('weight-500-style')) return true;
-    if (!doc.querySelector('.font-semibold')) return false;
-    var st = doc.createElement('style');
-    st.id = 'weight-500-style';
-    st.textContent = '.font-semibold{font-weight:500 !important}';
-    doc.head.appendChild(st);
-    return true;
-  });
-
-  // ---- Option E: fix-home--e-recompose. Headline reveal + pill tighten + weight-500 (2 anchors excepted). ----
-  whenReady('frameE', 'statusE', function (doc) {
-    if (doc.getElementById('mockup-recompose-style')) return true;
-
-    var heroBlock = doc.querySelector('[class*="max-md:hidden"][class*="justify-center"]');
-    if (!heroBlock) return false;
-    heroBlock.classList.remove('max-md:hidden');
-    heroBlock.id = 'mockup-hero-anchor';
-
-    var searchWrap = heroBlock.querySelector('[class*="rounded-[11px]"]');
-    if (searchWrap) { searchWrap.style.display = 'none'; }
-
-    var heroParas = heroBlock.querySelectorAll('p');
-    for (var i = 0; i < heroParas.length; i++) {
-      var pClass = heroParas[i].className || '';
-      if (pClass.indexOf('font-normal') !== -1) { heroParas[i].style.display = 'none'; }
+    // ---- Option C: fix-home--c-content-forward. Pill padding + widen first card row. ----
+    function applyC(doc) {
+      if (doc.getElementById('cf-content-forward-style')) return true;
+      var tablist = doc.querySelector('[role="tablist"][aria-label="Kategorien"]');
+      var row = doc.querySelector('.mt-1.flex.gap-3.overflow-x-auto');
+      if (!tablist && !row) return false;
+      var st = doc.createElement('style');
+      st.id = 'cf-content-forward-style';
+      var rules = '';
+      if (tablist) {
+        rules += '[role="tablist"][aria-label="Kategorien"]{padding-top:12px !important;padding-bottom:12px !important}';
+      }
+      if (row) {
+        row.setAttribute('data-cf-row', '1');
+        rules += '[data-cf-row="1"] > a[href*="/salon/"]{width:calc((100vw - 44px) / 1.25) !important}';
+      }
+      st.textContent = rules;
+      doc.head.appendChild(st);
+      return true;
     }
 
-    var tablist = doc.querySelector('[role="tablist"][aria-label="Kategorien"]');
-    if (tablist) {
-      tablist.style.setProperty('padding-top', '12px', 'important');
-      tablist.style.setProperty('padding-bottom', '12px', 'important');
+    // ---- Option D: fix-home--d-airbnb-weight. font-semibold -> 500. ----
+    function applyD(doc) {
+      if (doc.getElementById('weight-500-style')) return true;
+      if (!doc.querySelector('.font-semibold')) return false;
+      var st = doc.createElement('style');
+      st.id = 'weight-500-style';
+      st.textContent = '.font-semibold{font-weight:500 !important}';
+      doc.head.appendChild(st);
+      return true;
     }
 
-    var style = doc.createElement('style');
-    style.id = 'mockup-recompose-style';
-    style.textContent =
-      '#mockup-hero-anchor{padding-top:16px !important;padding-bottom:8px !important;}\n' +
-      '[class~="font-semibold"], [class~="font-bold"] { font-weight:500 !important; }\n' +
-      'h3[class~="font-semibold"] { font-weight:600 !important; }\n' +
-      'span.tabular-nums span[class~="font-semibold"] { font-weight:600 !important; }';
-    doc.head.appendChild(style);
+    // ---- Option E: fix-home--e-recompose. Headline reveal + pill tighten + weight-500 (2 anchors excepted). ----
+    function applyE(doc) {
+      if (doc.getElementById('mockup-recompose-style')) return true;
 
-    return true;
-  });
+      var heroBlock = doc.querySelector('[class*="max-md:hidden"][class*="justify-center"]');
+      if (!heroBlock) return false;
+      heroBlock.classList.remove('max-md:hidden');
+      heroBlock.id = 'mockup-hero-anchor';
+
+      var searchWrap = heroBlock.querySelector('[class*="rounded-[11px]"]');
+      if (searchWrap) { searchWrap.style.display = 'none'; }
+
+      var heroParas = heroBlock.querySelectorAll('p');
+      for (var i = 0; i < heroParas.length; i++) {
+        var pClass = heroParas[i].className || '';
+        if (pClass.indexOf('font-normal') !== -1) { heroParas[i].style.display = 'none'; }
+      }
+
+      var tablist = doc.querySelector('[role="tablist"][aria-label="Kategorien"]');
+      if (tablist) {
+        tablist.style.setProperty('padding-top', '12px', 'important');
+        tablist.style.setProperty('padding-bottom', '12px', 'important');
+      }
+
+      var style = doc.createElement('style');
+      style.id = 'mockup-recompose-style';
+      style.textContent =
+        '#mockup-hero-anchor{padding-top:16px !important;padding-bottom:8px !important;}\n' +
+        '[class~="font-semibold"], [class~="font-bold"] { font-weight:500 !important; }\n' +
+        'h3[class~="font-semibold"] { font-weight:600 !important; }\n' +
+        'span.tabular-nums span[class~="font-semibold"] { font-weight:600 !important; }';
+      doc.head.appendChild(style);
+
+      return true;
+    }
+
+    var FAIL_TEXT = 'This fix did not finish applying on this load, most likely because too many panels were loading at once. Reload the page to try again.';
+
+    var panels = [
+      { frameId: 'nowFrame', loadingId: 'loadingNow', apply: null },
+      { frameId: 'frameA', loadingId: 'loadingA', statusId: 'statusA', badgeId: 'badgeA', descId: 'descA', apply: applyA, failDesc: FAIL_TEXT },
+      { frameId: 'frameB', loadingId: 'loadingB', statusId: 'statusB', badgeId: 'badgeB', descId: 'descB', apply: applyB, failDesc: FAIL_TEXT },
+      { frameId: 'frameC', loadingId: 'loadingC', statusId: 'statusC', badgeId: 'badgeC', descId: 'descC', apply: applyC, failDesc: FAIL_TEXT },
+      { frameId: 'frameD', loadingId: 'loadingD', statusId: 'statusD', badgeId: 'badgeD', descId: 'descD', apply: applyD, failDesc: FAIL_TEXT },
+      { frameId: 'frameE', loadingId: 'loadingE', statusId: 'statusE', badgeId: 'badgeE', descId: 'descE', apply: applyE, failDesc: FAIL_TEXT }
+    ];
+
+    var chainReady = panels.map(function () { return false; });
+    var viewReady = panels.map(function () { return false; });
+    var started = panels.map(function () { return false; });
+    chainReady[0] = true; // the first panel has nothing before it to wait on
+
+    function setStatus(panel, text, cls) {
+      if (!panel.statusId) return;
+      var el = document.getElementById(panel.statusId);
+      if (!el) return;
+      el.textContent = text;
+      el.classList.remove('applied', 'failed');
+      if (cls) { el.classList.add(cls); }
+    }
+
+    function setLoadingText(panel, text) {
+      var el = document.getElementById(panel.loadingId);
+      if (el) { el.textContent = text; }
+    }
+
+    function hideLoading(panel) {
+      var el = document.getElementById(panel.loadingId);
+      if (el) { el.classList.add('hidden'); }
+    }
+
+    // A panel whose fix did not apply must say so, loudly, and stop claiming the change: hide the
+    // "moves: ..." badge and replace the description with plain English instead of leaving a
+    // caption that asserts a change the panel never made.
+    function markFailed(panel) {
+      setStatus(panel, 'did not apply, reload to retry', 'failed');
+      if (panel.badgeId) {
+        var badge = document.getElementById(panel.badgeId);
+        if (badge) { badge.style.display = 'none'; }
+      }
+      if (panel.descId && panel.failDesc) {
+        var desc = document.getElementById(panel.descId);
+        if (desc) { desc.textContent = panel.failDesc; }
+      }
+    }
+
+    function markApplied(panel) {
+      setStatus(panel, 'applied', 'applied');
+    }
+
+    // The page under each iframe is a hydrating, dev-mode Next.js route. Two separate things can
+    // undo a fix after it already applied, measured both happening while building this page:
+    // (1) a partial re-render removes just the node the fix injected, which a MutationObserver
+    // catches; (2) dev-mode hot reloading replaces the WHOLE document, which a MutationObserver
+    // bound to the old document cannot catch since that document is simply gone. The iframe's own
+    // "load" event fires again whenever (2) happens, so watching for a second load event and
+    // re-running the same poll-and-apply against whatever document is there now covers both.
+    function attachMutationObserver(panel, frame) {
+      if (!panel.apply) return;
+      if (panel._mo) {
+        try {
+          panel._mo.disconnect();
+        } catch (e) {
+          console.error('[compare-home:' + panel.frameId + '] could not disconnect the old persistence observer:', e);
+        }
+      }
+      var doc = frame.contentDocument;
+      if (!doc) return;
+      var scheduled = false;
+      function scheduleReapply() {
+        if (scheduled) return;
+        scheduled = true;
+        setTimeout(function () {
+          scheduled = false;
+          var liveDoc = frame.contentDocument;
+          if (!liveDoc) return;
+          try {
+            panel.apply(liveDoc);
+          } catch (e) {
+            console.error('[compare-home:' + panel.frameId + '] persistence re-apply failed:', e);
+          }
+        }, 150);
+      }
+      try {
+        panel._mo = new MutationObserver(scheduleReapply);
+        panel._mo.observe(doc.documentElement, { childList: true, subtree: true });
+      } catch (e) {
+        console.error('[compare-home:' + panel.frameId + '] could not attach the persistence observer:', e);
+      }
+    }
+
+    function advanceChain(panel) {
+      var idx = panels.indexOf(panel);
+      if (idx > -1 && idx + 1 < panels.length) {
+        chainReady[idx + 1] = true;
+        maybeStart(idx + 1);
+      }
+    }
+
+    // Shared by the first load and by every reload after it. isReapply is false only for the
+    // very first run: that is the only run allowed to hide the loading overlay, mark the panel
+    // failed on a timeout, and advance the chain to the next panel. A reapply after a later
+    // reload only needs to restore the fix; the panel already settled once and the chain already
+    // moved on.
+    function pollAndApply(panel, frame, isReapply) {
+      var tries = 0;
+      var iv = setInterval(function () {
+        tries++;
+        var doc = null;
+        try {
+          doc = frame.contentDocument;
+        } catch (e) {
+          console.error('[compare-home:' + panel.frameId + '] could not read the panel document:', e);
+        }
+        if (doc && doc.readyState === 'complete') {
+          if (!panel.apply) {
+            clearInterval(iv);
+            finish(true);
+            return;
+          }
+          var ok = false;
+          try {
+            ok = panel.apply(doc);
+          } catch (e) {
+            console.error('[compare-home:' + panel.frameId + '] fix threw while applying:', e);
+          }
+          if (ok) {
+            clearInterval(iv);
+            finish(true);
+            return;
+          }
+        }
+        if (tries > MAX_POLLS) {
+          clearInterval(iv);
+          finish(false);
+        }
+      }, POLL_INTERVAL_MS);
+
+      function finish(success) {
+        if (!isReapply) { hideLoading(panel); }
+        if (success) {
+          markApplied(panel);
+          attachMutationObserver(panel, frame);
+        } else if (!isReapply) {
+          markFailed(panel);
+        }
+        if (!isReapply) { advanceChain(panel); }
+      }
+    }
+
+    function start(panel) {
+      var idx = panels.indexOf(panel);
+      if (started[idx]) return;
+      started[idx] = true;
+      setLoadingText(panel, 'Loading…');
+      setStatus(panel, 'applying…');
+      var frame = document.getElementById(panel.frameId);
+      var src = frame.getAttribute('data-src');
+
+      var loadCount = 0;
+      frame.addEventListener('load', function () {
+        loadCount++;
+        if (loadCount === 1) return; // the first load is handled by the poll loop started below
+        if (panel.apply) { pollAndApply(panel, frame, true); }
+      });
+
+      frame.setAttribute('src', src);
+      pollAndApply(panel, frame, false);
+    }
+
+    function maybeStart(idx) {
+      if (started[idx]) return;
+      if (chainReady[idx] && viewReady[idx]) {
+        start(panels[idx]);
+      }
+    }
+
+    // A panel only begins loading once its frame is within 600px of the viewport, so a phone
+    // reader scrolling top to bottom never pays for panel 5 loading before panel 1 is even
+    // visible. The IntersectionObserver callback is asynchronous, so a panel that is already on
+    // screen the instant this script runs, which panel 0 always is, it opens the page, cannot be
+    // left depending on winning a timing race against that first callback (measured happening:
+    // a scroll issued right after load can land before the observer's first callback fires, and
+    // a panel already on screen then never gets marked near and never starts). Check every
+    // panel's own position synchronously once, right here, and only let the observer take over
+    // for panels that are not yet near.
+    var NEAR_MARGIN_PX = 600;
+
+    function isNearViewport(container) {
+      var r = container.getBoundingClientRect();
+      var viewportBottom = (window.innerHeight || document.documentElement.clientHeight) + NEAR_MARGIN_PX;
+      return r.bottom >= 0 && r.top <= viewportBottom;
+    }
+
+    function markNearAndMaybeStart(idx) {
+      if (viewReady[idx]) return;
+      viewReady[idx] = true;
+      maybeStart(idx);
+    }
+
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          var frameEl = entry.target.querySelector('iframe');
+          if (!frameEl) return;
+          var idx = -1;
+          for (var i = 0; i < panels.length; i++) {
+            if (panels[i].frameId === frameEl.id) { idx = i; break; }
+          }
+          if (idx === -1) return;
+          io.unobserve(entry.target);
+          markNearAndMaybeStart(idx);
+        });
+      }, { rootMargin: '0px 0px ' + NEAR_MARGIN_PX + 'px 0px' });
+
+      panels.forEach(function (panel, idx) {
+        var frameEl = document.getElementById(panel.frameId);
+        var container = frameEl ? frameEl.closest('.frame') : null;
+        if (!container) return;
+        io.observe(container);
+        if (isNearViewport(container)) {
+          io.unobserve(container);
+          markNearAndMaybeStart(idx);
+        }
+      });
+    } else {
+      // No IntersectionObserver in this browser: every panel counts as near the viewport, and the
+      // sequential chain alone still keeps the six from loading all at once.
+      panels.forEach(function (panel, idx) { markNearAndMaybeStart(idx); });
+    }
+  })();
 </script>
 </body>
 </html>

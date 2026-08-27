@@ -130,6 +130,17 @@
   }
   .frame .badge.pending { color: #6B6B6B; }
   .frame .badge.ok { color: #16A34A; }
+  .frame .badge.failed { color: #DC2626; }
+  .frame .placeholder {
+    position: absolute; inset: 0; z-index: 1;
+    display: flex; align-items: center; justify-content: center;
+    background: #F4F4F5; color: #6B6B6B; font-size: 13px; font-weight: 500;
+  }
+
+  .failnote {
+    margin-top: 6px; padding: 10px 12px; background: #FEF2F2; border-radius: 10px;
+    font-size: 12.5px; font-weight: 500; line-height: 1.5; color: #DC2626;
+  }
 
   .staticnote {
     margin-top: 10px; padding: 12px 14px; background: #F4F4F5; border-radius: 12px;
@@ -180,9 +191,10 @@
       <p>Your real inbox, live, untouched. Title 20px. Over a third of the text is bold. Five
          sizes bunched together. No photo anywhere.</p>
     </div>
-    <div class="frame">
-      <div class="badge">baseline</div>
-      <iframe id="f-now" src="/api/dev/login?to=/de/notifications" scrolling="yes" title="The notifications inbox as it is today"></iframe>
+    <div class="frame" id="frame-now">
+      <div class="placeholder">Loading</div>
+      <div class="badge pending" id="badge-now">waiting</div>
+      <iframe id="f-now" data-src="/api/dev/login?to=/de/notifications" scrolling="yes" title="The notifications inbox as it is today"></iframe>
     </div>
   </div>
 
@@ -192,11 +204,12 @@
       <h2>Two icons become photos</h2>
       <p>Nothing else on the screen moves. The two rows that already mention a real booking or
          salon get a real photo instead of a grey icon.</p>
-      <div class="move">Moves: imagery, 0% &rarr; roughly 4% (does not clear the 33% floor on its own)</div>
+      <div class="move" id="move-a">Moves: imagery, 0% &rarr; roughly 4% (does not clear the 33% floor on its own)</div>
     </div>
-    <div class="frame">
-      <div class="badge pending" id="badge-a">loading</div>
-      <iframe id="f-a" src="/api/dev/login?to=/de/notifications" scrolling="yes" title="Notifications with two rows swapped from icon to photo"></iframe>
+    <div class="frame" id="frame-a">
+      <div class="placeholder">Loading</div>
+      <div class="badge pending" id="badge-a">waiting</div>
+      <iframe id="f-a" data-src="/api/dev/login?to=/de/notifications" scrolling="yes" title="Notifications with two rows swapped from icon to photo"></iframe>
     </div>
     <div class="staticnote"><b>Also found, not a change:</b> this variant measured the shadow depth on this screen live and found 2 already there (the header icon buttons, the bottom nav bar). That already clears the floor, so nothing about shadows needs fixing here.</div>
   </div>
@@ -207,11 +220,12 @@
       <h2>A real title, and the clutter around it thinned out</h2>
       <p>The title grows to your house size. The row headlines step up one notch to stay clearly
          second. "Alle gelesen" steps down, since it is the least important line on the screen.</p>
-      <div class="move">Moves: title 20px &rarr; 30px (ratio 1.43x &rarr; 2.14x); five sizes in one band &rarr; three</div>
+      <div class="move" id="move-b">Moves: title 20px &rarr; 30px (ratio 1.43x &rarr; 2.14x); five sizes in one band &rarr; three</div>
     </div>
-    <div class="frame">
-      <div class="badge pending" id="badge-b">loading</div>
-      <iframe id="f-b" src="/api/dev/login?to=/de/notifications" scrolling="yes" title="Notifications with the title and size ladder fixed"></iframe>
+    <div class="frame" id="frame-b">
+      <div class="placeholder">Loading</div>
+      <div class="badge pending" id="badge-b">waiting</div>
+      <iframe id="f-b" data-src="/api/dev/login?to=/de/notifications" scrolling="yes" title="Notifications with the title and size ladder fixed"></iframe>
     </div>
   </div>
 
@@ -222,11 +236,12 @@
       <p>The header gives back some padding. The notification that already says "La Belle Ongle"
          moves to the front of the list and grows into a full-width photo card, using that
          salon's real photo, fetched live, not a stock swap.</p>
-      <div class="move">Moves: imagery, 0% &rarr; roughly 39% (clears the 33% floor)</div>
+      <div class="move" id="move-c">Moves: imagery, 0% &rarr; roughly 39% (clears the 33% floor)</div>
     </div>
-    <div class="frame">
-      <div class="badge pending" id="badge-c">loading</div>
-      <iframe id="f-c" src="/api/dev/login?to=/de/notifications" scrolling="yes" title="Notifications with the salon row promoted to a photo card"></iframe>
+    <div class="frame" id="frame-c">
+      <div class="placeholder">Loading</div>
+      <div class="badge pending" id="badge-c">waiting</div>
+      <iframe id="f-c" data-src="/api/dev/login?to=/de/notifications" scrolling="yes" title="Notifications with the salon row promoted to a photo card"></iframe>
     </div>
     <div class="staticnote"><b>One tradeoff this makes for you to weigh:</b> moving that row to the top means the list is no longer in strict newest-first order, two July notifications end up below a June one.</div>
   </div>
@@ -238,11 +253,12 @@
       <p>Every bold or semi-bold word on the screen (title, unread count, "Alle gelesen", the
          section label, unread row titles) gets one notch lighter. Nothing moves, nothing
          resizes, nothing changes colour.</p>
-      <div class="move">Moves: text at weight 600+, 36% &rarr; 0% (Airbnb's own reference screen runs 3.1%)</div>
+      <div class="move" id="move-d">Moves: text at weight 600+, 36% &rarr; 0% (Airbnb's own reference screen runs 3.1%)</div>
     </div>
-    <div class="frame">
-      <div class="badge pending" id="badge-d">loading</div>
-      <iframe id="f-d" src="/api/dev/login?to=/de/notifications" scrolling="yes" title="Notifications with bold text lightened"></iframe>
+    <div class="frame" id="frame-d">
+      <div class="placeholder">Loading</div>
+      <div class="badge pending" id="badge-d">waiting</div>
+      <iframe id="f-d" data-src="/api/dev/login?to=/de/notifications" scrolling="yes" title="Notifications with bold text lightened"></iframe>
     </div>
   </div>
 
@@ -254,11 +270,12 @@
          size, the list sitting inside a light gray tray (the same one your salon page's service
          list already uses), and a photo on the one row in today's data that is actually tied to
          a real booking.</p>
-      <div class="move">Moves: title, ratio, weight share and size spread all clear. Imagery moves 0% &rarr; roughly 0.6% only, one icon is still one icon at any size, it does not clear 33% on its own</div>
+      <div class="move" id="move-e">Moves: title, ratio, weight share and size spread all clear. Imagery moves 0% &rarr; roughly 0.6% only, one icon is still one icon at any size, it does not clear 33% on its own</div>
     </div>
-    <div class="frame">
-      <div class="badge pending" id="badge-e">loading</div>
-      <iframe id="f-e" src="/api/dev/login?to=/de/notifications" scrolling="yes" title="Notifications with five changes applied together"></iframe>
+    <div class="frame" id="frame-e">
+      <div class="placeholder">Loading</div>
+      <div class="badge pending" id="badge-e">waiting</div>
+      <iframe id="f-e" data-src="/api/dev/login?to=/de/notifications" scrolling="yes" title="Notifications with five changes applied together"></iframe>
     </div>
     <div class="staticnote"><b>Honest limit, named by this variant's own file:</b> a photo the size of an icon is still the size of an icon. Getting the imagery floor past 33% needs a genuinely bigger photo-card format, a different, bigger decision from anything shown here.</div>
   </div>
@@ -283,129 +300,205 @@
 </div>
 
 <script>
-  // Shared helper: NotificationsClient fetches its rows client-side after mount, so the real row
-  // list is not in the DOM at the iframe's own "load" event, only the empty shell is. This polls
-  // the real DOM until a genuine readiness signal has appeared, then hands the document to the
-  // caller's patch function exactly once.
-  // Notes on the stability check: NotificationsClient fetches its rows client-side, and this
-  // route's own skeleton loading state renders the same ".divide-y" wrapper class the real rows
-  // use, so a single readiness check can fire on the skeleton, one or more renders before React
-  // settles on the real rows (a login redirect plus a data fetch, both in flight while this
-  // polls). Rather than trust one true reading, this takes a content signature (row count plus
-  // each row's own text) every 250ms and only applies once that signature has come back IDENTICAL
-  // twice in a row, which is what "React is done re-rendering this list" actually looks like from
-  // the outside.
-  function rowSignature(doc) {
+  // ---------------------------------------------------------------------------------------------
+  // Loading model, rewritten so six live copies of the same route never load at once. Stacking
+  // six iframes of a real Next.js dev route overloads the dev server and the browser badly enough
+  // that the old fix-detection polls hit their cap before the target element ever appeared, and
+  // once a poll gave up it never ran again, so a panel stayed broken for the life of the page.
+  //
+  // The fix: nothing gets a src until it is both (a) this page's turn in a strict one-at-a-time
+  // chain, and (b) near the viewport (IntersectionObserver). A panel that has not started shows a
+  // plain "Loading" placeholder so an empty box is never mistaken for a broken page. Every applied
+  // change is re-verified against the live DOM, not assumed from having run the injection script,
+  // and a MutationObserver keeps reasserting a confirmed change for the life of the page, because
+  // one variant was measured applying correctly and then being silently discarded by hydration.
+  // A panel that cannot be confirmed within 60 seconds is marked failed and its caption is
+  // replaced with plain English instead of leaving a numeric claim next to an unchanged screen.
+  // ---------------------------------------------------------------------------------------------
+
+  var PATCH_TIMEOUT_MS = 60000;
+  var POLL_INTERVAL_MS = 300;
+
+  function rowsReady(doc) {
     var wrap = doc.querySelector("main .divide-y");
-    if (!wrap || wrap.children.length === 0) return null;
-    if (doc.querySelector(".animate-pulse")) return null;
-    return Array.prototype.map.call(wrap.children, function (r) {
-      return r.textContent.trim().slice(0, 60);
-    }).join("|");
+    if (!wrap || !wrap.children.length) return false;
+    if (doc.querySelector(".animate-pulse")) return false;
+    return true;
   }
 
-  function whenReady(iframeId, signatureFn, apply, maxTries) {
-    var el = document.getElementById(iframeId);
-    var tries = 0;
-    var cap = maxTries || 200;
-    var lastSig = null;
-    var streak = 0;
-    var STREAK_NEEDED = 16; // sixteen consecutive identical reads, 300ms apart: ~4.8s of no further re-renders
-    el.addEventListener("load", function () {
-      var iv = setInterval(function () {
-        tries++;
-        try {
-          var doc = el.contentDocument;
-          var win = el.contentWindow;
-          var sig = doc ? signatureFn(doc) : null;
-          if (sig && sig === lastSig) {
-            streak++;
-            if (streak >= STREAK_NEEDED) {
-              clearInterval(iv);
-              apply(doc, win);
-              return;
-            }
-          } else {
-            streak = 0;
-          }
-          lastSig = sig;
-        } catch (err) {
-          clearInterval(iv);
-          console.error("[compare-notifications] " + iframeId + " could not be read:", err);
-          return;
-        }
-        if (tries > cap) {
-          clearInterval(iv);
-          console.error("[compare-notifications] " + iframeId + " gave up waiting for real data to settle");
-        }
-      }, 300);
-    });
+  function closeTo(value, target, tolerance) {
+    return Math.abs(value - target) <= tolerance;
   }
 
-  function setBadge(id, text, ok) {
+  function setBadgeLoading(id) {
+    var b = document.getElementById(id);
+    if (!b) return;
+    b.textContent = "loading";
+  }
+
+  function setBadgeResult(id, text, kind) {
     var b = document.getElementById(id);
     if (!b) return;
     b.textContent = text;
-    b.classList.remove("pending");
-    if (ok) b.classList.add("ok");
+    b.classList.remove("pending", "ok", "failed");
+    if (kind === "ok") b.classList.add("ok");
+    if (kind === "failed") b.classList.add("failed");
   }
 
-  // ---- Panel 1, variant A: two rows swap their icon for a photo -------------------------------
-  // Lifted from floor-fix-notifications/index.html panel 3: two 56x56 self-hosted stock photos
-  // stand in for the rows' real stored photos (a static file cannot query the DB); positional,
-  // first row and last row, matching that file's own "changed" rows.
-  whenReady("f-a", rowSignature, function (doc) {
+  function markCaptionFailed(moveId) {
+    var el = moveId && document.getElementById(moveId);
+    if (!el) return;
+    el.classList.remove("move");
+    el.classList.add("failnote");
+    el.textContent = "This change did not apply on this page load. Reload the page to try again.";
+  }
+
+  // Runs attemptFn repeatedly (it must be safe to call more than once) until verifyFn(doc) is
+  // true, reporting success the first time that happens, or reporting failure once
+  // PATCH_TIMEOUT_MS has passed with no success. After success the MutationObserver is left
+  // running so a later hydration pass that discards the injected DOM gets caught and reapplied
+  // instead of quietly reverting. After a failure, all retries stop and the caller decides what
+  // the panel says.
+  function runPatch(doc, win, attemptFn, verifyFn, onDone) {
+    var start = Date.now();
+    var reported = false;
+    var iv = null;
+    var mo = null;
+
+    function tick() {
+      try {
+        attemptFn(doc, win);
+      } catch (err) {
+        console.error("[compare-notifications] patch attempt failed:", err);
+      }
+      var ok = false;
+      try {
+        ok = !!verifyFn(doc);
+      } catch (err) {
+        console.error("[compare-notifications] patch verify failed:", err);
+      }
+      if (reported) return;
+      if (ok) {
+        reported = true;
+        if (iv) clearInterval(iv);
+        onDone(true);
+      } else if (Date.now() - start > PATCH_TIMEOUT_MS) {
+        reported = true;
+        if (iv) clearInterval(iv);
+        if (mo) mo.disconnect();
+        onDone(false);
+      }
+    }
+
+    iv = setInterval(tick, POLL_INTERVAL_MS);
+    try {
+      mo = new MutationObserver(function () { tick(); });
+      mo.observe(doc.body, { childList: true, subtree: true, characterData: true });
+    } catch (err) {
+      console.error("[compare-notifications] mutation observer setup failed:", err);
+    }
+    tick();
+  }
+
+  // ---- Panel definitions --------------------------------------------------------------------
+  // Each attempt() must be idempotent (safe to call again once already applied), it is re-run on
+  // every DOM mutation, not just once. Each verify(doc) reads the live DOM to confirm the change
+  // actually stuck, it never trusts that the injection script merely ran.
+
+  function attemptNow() {}
+  function verifyNow(doc) { return rowsReady(doc); }
+
+  // Panel A: two rows swap their icon for a photo. Lifted from floor-fix-notifications/index.html
+  // panel 3: two 56x56 self-hosted stock photos stand in for the rows' real stored photos.
+  function attemptA(doc) {
+    if (!rowsReady(doc)) return;
     var wrap = doc.querySelector("main .divide-y");
-    var rows = wrap ? wrap.children : [];
-    if (!rows.length) { setBadge("badge-a", "no rows found"); return; }
+    var rows = wrap.children;
     var targets = [rows[0], rows[rows.length - 1]];
     var photos = ["/_mockups/_assets/salon-photos/p03.jpg", "/_mockups/_assets/salon-photos/p07.jpg"];
-    var swapped = 0;
     targets.forEach(function (row, i) {
       if (!row) return;
       var disc = row.querySelector('[class*="rounded-full"]');
-      if (!disc || disc.querySelector("img")) return;
+      if (!disc || disc.querySelector('img[data-cmp="a"]')) return;
       disc.innerHTML = "";
       disc.style.setProperty("overflow", "hidden", "important");
       disc.style.setProperty("border-radius", "14px", "important");
       var img = doc.createElement("img");
       img.src = photos[i];
       img.alt = "";
+      img.setAttribute("data-cmp", "a");
       img.style.cssText = "width:100%;height:100%;object-fit:cover;display:block";
       disc.appendChild(img);
-      swapped++;
     });
-    setBadge("badge-a", swapped + " of " + rows.length + " rows, photo", swapped > 0);
-  });
+  }
+  function verifyA(doc) {
+    if (!rowsReady(doc)) return false;
+    var wrap = doc.querySelector("main .divide-y");
+    var rows = wrap.children;
+    var first = rows[0], last = rows[rows.length - 1];
+    function hasPhoto(row) {
+      var disc = row && row.querySelector('[class*="rounded-full"]');
+      return !!(disc && disc.querySelector('img[data-cmp="a"]'));
+    }
+    return hasPhoto(first) && hasPhoto(last);
+  }
+  function describeA(doc) {
+    var wrap = doc.querySelector("main .divide-y");
+    var rows = wrap ? wrap.children : [];
+    var count = 0;
+    Array.prototype.forEach.call(rows, function (row) {
+      if (row.querySelector('img[data-cmp="a"]')) count++;
+    });
+    return count + " of " + rows.length + " rows, photo";
+  }
 
-  // ---- Panel 2, variant B: three font-size rules ----------------------------------------------
-  // Lifted verbatim from fix-notifications--b-hierarchy/index.html's injected <style>.
-  whenReady("f-b", rowSignature, function (doc) {
+  // Panel B: three font-size rules, lifted verbatim from fix-notifications--b-hierarchy/index.html.
+  function attemptB(doc) {
+    if (doc.head.querySelector('style[data-cmp="b"]')) return;
     var style = doc.createElement("style");
+    style.setAttribute("data-cmp", "b");
     style.textContent =
       'header.sticky.top-0.z-40 h1.text-\\[20px\\] { font-size: 30px !important; }' +
       'main .truncate.text-\\[15px\\] { font-size: 16px !important; }' +
       'header.sticky.top-0.z-40 button.text-\\[14px\\] { font-size: 13px !important; }';
     doc.head.appendChild(style);
-    setBadge("badge-b", "applied, 30px title", true);
-  });
+  }
+  function verifyB(doc) {
+    if (!doc.head.querySelector('style[data-cmp="b"]')) return false;
+    if (!rowsReady(doc)) return false;
+    var h1 = doc.querySelector('header.sticky.top-0.z-40 h1') || doc.querySelector("h1");
+    if (!h1) return false;
+    return closeTo(parseFloat(getComputedStyle(h1).fontSize), 30, 0.6);
+  }
 
-  // ---- Panel 3, variant C: header padding + promote the real salon row to a photo card --------
-  // Lifted from fix-notifications--c-content-forward/index.html, same live fetch to
-  // /api/salons?q=... for the real cover photo, same structural row read.
-  whenReady("f-c", rowSignature, function (doc, win) {
-    var style = doc.createElement("style");
-    style.textContent =
-      "header.py-5 { padding-top: 8px !important; padding-bottom: 8px !important; }\n" +
-      "header.border-b > div { padding-top: 8px !important; padding-bottom: 8px !important; }";
-    doc.head.appendChild(style);
-
+  // Panel C: header padding plus promoting the real salon row to a photo card. Lifted from
+  // fix-notifications--c-content-forward/index.html. The salon lookup runs once and is cached so
+  // a reapply after hydration wipes the promoted row does not refetch.
+  var cCache = null; // null = not tried, "pending" = fetch in flight, false = failed, object = salon
+  function findCTargetRow(doc) {
     var rowContainer = doc.querySelector("main .divide-y");
-    if (!rowContainer) { setBadge("badge-c", "no row list found"); return; }
+    if (!rowContainer) return null;
     var rows = Array.prototype.slice.call(rowContainer.children);
-    var targetRow = rows.filter(function (row) { return /La Belle Ongle/.test(row.textContent); })[0];
-    if (!targetRow) { setBadge("badge-c", "no salon row found"); return; }
+    var row = rows.filter(function (r) {
+      return r.getAttribute("data-cmp") !== "c" && /La Belle Ongle/.test(r.textContent);
+    })[0];
+    return row ? { rowContainer: rowContainer, targetRow: row } : null;
+  }
+  function attemptC(doc, win) {
+    if (!rowsReady(doc)) return;
+    if (!doc.head.querySelector('style[data-cmp="c"]')) {
+      var style = doc.createElement("style");
+      style.setAttribute("data-cmp", "c");
+      style.textContent =
+        "header.py-5 { padding-top: 8px !important; padding-bottom: 8px !important; }\n" +
+        "header.border-b > div { padding-top: 8px !important; padding-bottom: 8px !important; }";
+      doc.head.appendChild(style);
+    }
 
+    var found = findCTargetRow(doc);
+    if (!found) return; // already promoted (the data-cmp=c row is now first), or no such row exists
+
+    var targetRow = found.targetRow;
     var titleEl = targetRow.querySelector("p.truncate");
     var dateEl = targetRow.querySelector("span.shrink-0");
     var bodyPs = targetRow.querySelectorAll("p");
@@ -414,45 +507,70 @@
     var dateText = dateEl ? dateEl.textContent : "";
     var bodyText = bodyEl ? bodyEl.textContent : "";
     var salonName = bodyText.split(",")[0].trim();
-    if (!salonName) { setBadge("badge-c", "could not read salon name"); return; }
 
-    win.fetch("/api/salons?q=" + encodeURIComponent(salonName))
-      .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error("salons lookup " + r.status)); })
-      .then(function (j) {
-        var salon = j && j.items && j.items[0];
-        if (!salon || !salon.cover_photo_url) { throw new Error("no cover_photo_url"); }
-        rowContainer.insertBefore(targetRow, rowContainer.firstChild);
-        targetRow.className = "block w-full text-left";
-        targetRow.innerHTML =
-          '<img src="' + salon.cover_photo_url + '" alt="' + salon.name.replace(/"/g, "&quot;") + '" ' +
-          'style="width:100%;height:260px;object-fit:cover;display:block" />' +
-          '<div style="padding:12px 16px 14px;">' +
-          '<div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;">' +
-          '<p style="font-size:15px;font-weight:600;color:#0A0A0A;margin:0;">' + titleText + "</p>" +
-          '<span style="flex-shrink:0;font-size:12px;color:#6B6B6B;">' + dateText + "</span>" +
-          "</div>" +
-          '<p style="margin:2px 0 0;font-size:13px;line-height:1.4;color:#52525B;">' + bodyText + "</p>" +
-          "</div>";
-        setBadge("badge-c", "applied, photo promoted", true);
-      })
-      .catch(function (err) {
-        console.error("[compare-notifications] panel C fetch failed:", err);
-        setBadge("badge-c", "fetch failed, see console");
-      });
-  });
+    if (cCache === null) {
+      if (!salonName) { cCache = false; return; }
+      cCache = "pending";
+      win.fetch("/api/salons?q=" + encodeURIComponent(salonName))
+        .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error("salons lookup " + r.status)); })
+        .then(function (j) {
+          var salon = j && j.items && j.items[0];
+          if (!salon || !salon.cover_photo_url) throw new Error("no cover_photo_url");
+          cCache = { photo: salon.cover_photo_url, name: salon.name };
+        })
+        .catch(function (err) {
+          console.error("[compare-notifications] panel C fetch failed:", err);
+          cCache = false;
+        });
+      return;
+    }
+    if (cCache === "pending" || cCache === false) return;
 
-  // ---- Panel 4, variant D: one weight-demotion rule --------------------------------------------
-  // Lifted verbatim from fix-notifications--d-airbnb-weight/index.html's injected <style>.
-  whenReady("f-d", rowSignature, function (doc) {
+    found.rowContainer.insertBefore(targetRow, found.rowContainer.firstChild);
+    targetRow.setAttribute("data-cmp", "c");
+    targetRow.className = "block w-full text-left";
+    targetRow.innerHTML =
+      '<img src="' + cCache.photo + '" alt="' + cCache.name.replace(/"/g, "&quot;") + '" data-cmp="c" ' +
+      'style="width:100%;height:260px;object-fit:cover;display:block" />' +
+      '<div style="padding:12px 16px 14px;">' +
+      '<div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;">' +
+      '<p style="font-size:15px;font-weight:600;color:#0A0A0A;margin:0;">' + titleText + "</p>" +
+      '<span style="flex-shrink:0;font-size:12px;color:#6B6B6B;">' + dateText + "</span>" +
+      "</div>" +
+      '<p style="margin:2px 0 0;font-size:13px;line-height:1.4;color:#52525B;">' + bodyText + "</p>" +
+      "</div>";
+  }
+  function verifyC(doc) {
+    if (!rowsReady(doc)) return false;
+    var rowContainer = doc.querySelector("main .divide-y");
+    var first = rowContainer && rowContainer.firstElementChild;
+    return !!(first && first.getAttribute("data-cmp") === "c");
+  }
+  function describeCFailure() {
+    return cCache === false ? "salon lookup failed, reload" : "not confirmed, reload";
+  }
+
+  // Panel D: one weight-demotion rule, lifted verbatim from
+  // fix-notifications--d-airbnb-weight/index.html.
+  function attemptD(doc) {
+    if (doc.head.querySelector('style[data-cmp="d"]')) return;
     var style = doc.createElement("style");
+    style.setAttribute("data-cmp", "d");
     style.textContent = ".font-semibold, .font-bold { font-weight: 500 !important; }";
     doc.head.appendChild(style);
-    setBadge("badge-d", "applied, weight 500", true);
-  });
+  }
+  function verifyD(doc) {
+    if (!doc.head.querySelector('style[data-cmp="d"]')) return false;
+    if (!rowsReady(doc)) return false;
+    var el = doc.querySelector(".font-semibold, .font-bold");
+    if (!el) return true;
+    return getComputedStyle(el).fontWeight === "500";
+  }
 
-  // ---- Panel 5, variant E: five changes combined -------------------------------------------------
-  // Lifted from fix-notifications--e-recompose/index.html's applyChange(), same five patches.
-  whenReady("f-e", rowSignature, function (doc) {
+  // Panel E: five changes combined, lifted from fix-notifications--e-recompose/index.html's
+  // applyChange().
+  function attemptE(doc) {
+    if (!rowsReady(doc)) return;
     var h1 = doc.querySelector("h1");
     if (h1) {
       h1.style.setProperty("font-size", "30px", "important");
@@ -460,21 +578,24 @@
       h1.style.setProperty("line-height", "1.25", "important");
     }
     var headerButton = doc.querySelector("header button");
-    if (headerButton) { headerButton.style.setProperty("font-size", "15px", "important"); }
+    if (headerButton) headerButton.style.setProperty("font-size", "15px", "important");
 
-    var style = doc.createElement("style");
-    style.textContent =
-      '[class~="font-semibold"], [class~="font-bold"] { font-weight:500 !important; }\n' +
-      '.divide-y.divide-s-border {\n' +
-      '  background:#F4F4F5 !important;\n' +
-      '  border-radius:24px !important;\n' +
-      '  margin:0 16px !important;\n' +
-      '  padding:4px 0 !important;\n' +
-      '  overflow:hidden;\n' +
-      '  border:none !important;\n' +
-      '  box-shadow:0 1px 3px rgba(10,10,10,0.04), 0 10px 28px -14px rgba(10,10,10,0.10);\n' +
-      '}';
-    doc.head.appendChild(style);
+    if (!doc.head.querySelector('style[data-cmp="e"]')) {
+      var style = doc.createElement("style");
+      style.setAttribute("data-cmp", "e");
+      style.textContent =
+        '[class~="font-semibold"], [class~="font-bold"] { font-weight:500 !important; }\n' +
+        '.divide-y.divide-s-border {\n' +
+        '  background:#F4F4F5 !important;\n' +
+        '  border-radius:24px !important;\n' +
+        '  margin:0 16px !important;\n' +
+        '  padding:4px 0 !important;\n' +
+        '  overflow:hidden;\n' +
+        '  border:none !important;\n' +
+        '  box-shadow:0 1px 3px rgba(10,10,10,0.04), 0 10px 28px -14px rgba(10,10,10,0.10);\n' +
+        '}';
+      doc.head.appendChild(style);
+    }
 
     var photos = [
       "/_mockups/_assets/salon-photos/p03.jpg",
@@ -484,23 +605,127 @@
     var linkedRows = Array.prototype.slice.call(doc.querySelectorAll("a")).filter(function (a) {
       return a.querySelector('span[class*="rounded-full"]') && a.querySelector("p.truncate");
     });
-    var swapped = 0;
     linkedRows.forEach(function (a, i) {
       var photoSrc = photos[i];
       if (!photoSrc) return;
       var disc = a.querySelector('span[class*="rounded-full"]');
-      if (!disc || disc.querySelector("img")) return;
+      if (!disc || disc.querySelector('img[data-cmp="e"]')) return;
       disc.innerHTML = "";
       disc.style.setProperty("overflow", "hidden", "important");
       var img = doc.createElement("img");
       img.src = photoSrc;
       img.setAttribute("role", "presentation");
+      img.setAttribute("data-cmp", "e");
       img.style.cssText = "width:100%;height:100%;object-fit:cover;display:block";
       disc.appendChild(img);
-      swapped++;
     });
-    setBadge("badge-e", "applied, " + swapped + " row photo", true);
-  });
+  }
+  function verifyE(doc) {
+    if (!rowsReady(doc)) return false;
+    var h1 = doc.querySelector("h1");
+    var h1ok = h1 && closeTo(parseFloat(getComputedStyle(h1).fontSize), 30, 0.6);
+    var trayOk = !!doc.head.querySelector('style[data-cmp="e"]');
+    var photoOk = !!doc.querySelector('a img[data-cmp="e"]');
+    return !!(h1ok && trayOk && photoOk);
+  }
+  function describeE(doc) {
+    var count = doc.querySelectorAll('a img[data-cmp="e"]').length;
+    return "applied, " + count + " row photo";
+  }
+
+  // ---- Panel registry -------------------------------------------------------------------------
+  var PANELS = [
+    { id: "now", frame: "frame-now", iframeId: "f-now", badge: "badge-now", move: null,
+      attempt: attemptNow, verify: verifyNow,
+      onSuccess: function () { setBadgeResult("badge-now", "baseline", "plain"); },
+      onFailure: function () { setBadgeResult("badge-now", "could not load, reload", "failed"); } },
+    { id: "a", frame: "frame-a", iframeId: "f-a", badge: "badge-a", move: "move-a",
+      attempt: attemptA, verify: verifyA,
+      onSuccess: function (doc) { setBadgeResult("badge-a", describeA(doc), "ok"); },
+      onFailure: function () { setBadgeResult("badge-a", "not confirmed, reload", "failed"); markCaptionFailed("move-a"); } },
+    { id: "b", frame: "frame-b", iframeId: "f-b", badge: "badge-b", move: "move-b",
+      attempt: attemptB, verify: verifyB,
+      onSuccess: function () { setBadgeResult("badge-b", "applied, 30px title", "ok"); },
+      onFailure: function () { setBadgeResult("badge-b", "not confirmed, reload", "failed"); markCaptionFailed("move-b"); } },
+    { id: "c", frame: "frame-c", iframeId: "f-c", badge: "badge-c", move: "move-c",
+      attempt: attemptC, verify: verifyC,
+      onSuccess: function () { setBadgeResult("badge-c", "applied, photo promoted", "ok"); },
+      onFailure: function () { setBadgeResult("badge-c", describeCFailure(), "failed"); markCaptionFailed("move-c"); } },
+    { id: "d", frame: "frame-d", iframeId: "f-d", badge: "badge-d", move: "move-d",
+      attempt: attemptD, verify: verifyD,
+      onSuccess: function () { setBadgeResult("badge-d", "applied, weight 500", "ok"); },
+      onFailure: function () { setBadgeResult("badge-d", "not confirmed, reload", "failed"); markCaptionFailed("move-d"); } },
+    { id: "e", frame: "frame-e", iframeId: "f-e", badge: "badge-e", move: "move-e",
+      attempt: attemptE, verify: verifyE,
+      onSuccess: function (doc) { setBadgeResult("badge-e", describeE(doc), "ok"); },
+      onFailure: function () { setBadgeResult("badge-e", "not confirmed, reload", "failed"); markCaptionFailed("move-e"); } }
+  ];
+
+  // ---- Visibility gate: a panel only begins loading once it is near the viewport ---------------
+  function whenNearViewport(frameId) {
+    return new Promise(function (resolve) {
+      var el = document.getElementById(frameId);
+      if (!el || typeof IntersectionObserver === "undefined") { resolve(); return; }
+      var obs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            obs.disconnect();
+            resolve();
+          }
+        });
+      }, { root: null, rootMargin: "1000px 0px 1000px 0px", threshold: 0 });
+      obs.observe(el);
+    });
+  }
+
+  // ---- Start one panel: reveal it, load it, run + verify its patch, resolve when settled --------
+  function startPanel(panel) {
+    return new Promise(function (resolve) {
+      var frameEl = document.getElementById(panel.frame);
+      var iframeEl = document.getElementById(panel.iframeId);
+      var placeholder = frameEl ? frameEl.querySelector(".placeholder") : null;
+
+      if (!iframeEl) { resolve(); return; }
+
+      iframeEl.addEventListener("load", function () {
+        if (placeholder) placeholder.style.display = "none";
+        var doc, win;
+        try {
+          doc = iframeEl.contentDocument;
+          win = iframeEl.contentWindow;
+        } catch (err) {
+          console.error("[compare-notifications] " + panel.id + " could not be read:", err);
+          if (panel.badge) setBadgeResult(panel.badge, "could not read frame", "failed");
+          resolve();
+          return;
+        }
+        runPatch(doc, win, panel.attempt, panel.verify, function (ok) {
+          if (ok) {
+            if (panel.onSuccess) panel.onSuccess(doc, win);
+          } else {
+            if (panel.onFailure) panel.onFailure(doc, win);
+          }
+          resolve();
+        });
+      });
+
+      if (panel.badge) setBadgeLoading(panel.badge);
+      iframeEl.src = iframeEl.getAttribute("data-src");
+    });
+  }
+
+  // ---- The chain: strictly one panel at a time, each also gated by visibility -------------------
+  function runChain(index) {
+    if (index >= PANELS.length) return;
+    var panel = PANELS[index];
+    whenNearViewport(panel.frame).then(function () {
+      return startPanel(panel);
+    }).then(function () {
+      runChain(index + 1);
+    });
+  }
+
+  runChain(0);
 </script>
 </body>
 </html>

@@ -260,26 +260,71 @@
     return 1;
   }
 
-  var started = false;
-  function startAfter() {
-    if (started) return;
-    started = true;
-    var f = document.getElementById('afterFrame');
-    var tries = 0;
-    var MAX_POLLS = 150; // a poll cap, never a displayed count
-    var iv = setInterval(function () {
-      tries++;
+  // Reliability fix, 2026-08-27: the previous version was a plain setInterval that tried
+  // findFix() every 200ms and gave up for good after MAX_POLLS=150 (30s). Measured cause of
+  // the reported failure: this route is a client component (SearchTemplate.tsx, "use client",
+  // salons fetched client-side, starts loading:true) so the "Top Coiffeur" heading this script
+  // hangs off does not exist in the DOM until that fetch resolves. On a normal dev server that
+  // is under 1.3s (measured: 5 fresh loads, 456-1284ms). But this exact file's own "Correction"
+  // section already documents the dev server running under heavy load from other work in this
+  // project folder, and Next dev additionally compiles a route on first hit, either of which can
+  // push that past 30s. A fixed poll budget that stops forever once exhausted is a fix that is
+  // real on a quiet machine and silently absent on a loaded one, at the same code, no code change,
+  // just the DOM taking longer to exist. There is no code path here that re-writes the injected
+  // node once applied (checked with a MutationObserver watching document.body for 20s across 10
+  // fresh loads on this worktree's own dev server, 0 removals), so the fix below removes the
+  // giving-up behaviour rather than guarding against a removal that was never observed: keep
+  // trying to reach the iframe's document with no time limit, and once reached, watch it with a
+  // MutationObserver for as long as the panel exists, so a late-arriving heading still gets the
+  // fix, and it never has to stop watching to know it worked.
+  function watchFrame(iframeId) {
+    var f = document.getElementById(iframeId);
+    var observing = false;
+    var pending = null;
+
+    function applyNow(doc) {
+      try { findFix(doc); } catch (e) {}
+    }
+
+    function scheduleApply(doc) {
+      if (pending) return;
+      pending = setTimeout(function () {
+        pending = null;
+        applyNow(doc);
+      }, 50); // coalesce a burst of mutations into one re-check
+    }
+
+    function attach(doc) {
+      if (observing) return;
+      observing = true;
+      applyNow(doc);
+      var mo = new MutationObserver(function () { scheduleApply(doc); });
+      mo.observe(doc.body, { childList: true, subtree: true });
+    }
+
+    function tryAttach() {
       try {
         var doc = f.contentDocument;
-        if (doc && findFix(doc) > 0) {
-          clearInterval(iv);
+        if (doc && doc.body) {
+          attach(doc);
+          return true;
         }
       } catch (e) {}
-      if (tries > MAX_POLLS) clearInterval(iv);
+      return false;
+    }
+
+    f.addEventListener('load', function () {
+      observing = false; // same-origin src is static so this never re-fires, but stay correct if it did
+      tryAttach();
+    });
+
+    // No poll cap: keep checking for the iframe document to become reachable. Once attach()
+    // succeeds the interval below stops; the MutationObserver takes over indefinitely from there.
+    var iv = setInterval(function () {
+      if (tryAttach()) clearInterval(iv);
     }, 200);
   }
-  document.getElementById('afterFrame').addEventListener('load', startAfter);
-  startAfter();
+  watchFrame('afterFrame');
 </script>
 </body>
 </html>

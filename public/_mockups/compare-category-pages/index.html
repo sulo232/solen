@@ -96,6 +96,7 @@
   .panel-loading.hidden{display:none}
   .badge{display:inline-block; margin-top:8px; font-size:11px; font-weight:600; color:var(--ink2); background:var(--sunken); border-radius:999px; padding:3px 9px; font-variant-numeric:tabular-nums}
   .badge.pending{color:var(--ink3)}
+  .badge.ok{color:var(--good)}
   .badge.failed{color:var(--bad); background:#FEF2F2}
 
   .foot-list{margin-top:36px; background:var(--sunken); border-radius:16px; padding:16px}
@@ -337,10 +338,9 @@
     if (panel.move) {
       var moveEl = document.getElementById(panel.move);
       if (moveEl) {
-        moveEl.textContent = 'This change did not apply on this page load, most likely because the ' +
-          'six live panels overloaded the browser before this one settled. Reload the page to try ' +
-          'again. The numbers this option claims are not shown because this panel did not confirm ' +
-          'them this time.';
+        moveEl.textContent = 'This change did not apply on this page load. Reload the page to try ' +
+          'it again. The numbers this option claims are not shown because this panel did not ' +
+          'confirm them this time.';
         moveEl.classList.add('failed');
       }
     }
@@ -423,6 +423,7 @@
 
   function tryStart(index) {
     if (index >= PANELS.length) return;
+    if (index !== chainIndex) return; // not this panel's turn yet, an earlier one has not settled
     var panel = PANELS[index];
     if (panel.started) return;
     if (!nearViewport[panel.frame]) return; // this panel's turn, but it is not near the screen yet
@@ -430,11 +431,46 @@
     beginLoad(index);
   }
 
+  var NEAR_PX = 800; // how far below the fold a panel counts as "near", matches the IO rootMargin below
+
+  // Direct geometry fallback. Measured live: a single instant jump straight to the bottom of the
+  // page (window.scrollTo, also what a "scroll to end" gesture or a fast fling produces) can land
+  // past a panel's row without ever sampling it while it was inside the IntersectionObserver's
+  // detection band, so the observer reports no change and never fires for that row, and the chain
+  // then waits forever. This listener re-checks every not-yet-ready panel's real position on every
+  // scroll/resize, so a panel already scrolled past still gets marked near and started.
+  function checkAllNear() {
+    var threshold = window.innerHeight + NEAR_PX;
+    for (var i = 0; i < PANELS.length; i++) {
+      var p = PANELS[i];
+      if (nearViewport[p.frame]) continue;
+      var f = document.getElementById(p.frame);
+      var wrap = f ? f.parentElement : null;
+      if (!wrap) continue;
+      var rect = wrap.getBoundingClientRect();
+      if (rect.top <= threshold) {
+        nearViewport[p.frame] = true;
+        tryStart(i);
+      }
+    }
+  }
+
+  var scrollCheckQueued = false;
+  function queueScrollCheck() {
+    if (scrollCheckQueued) return;
+    scrollCheckQueued = true;
+    requestAnimationFrame(function () {
+      scrollCheckQueued = false;
+      checkAllNear();
+    });
+  }
+
   function setupViewportGate() {
+    window.addEventListener('scroll', queueScrollCheck, { passive: true });
+    window.addEventListener('resize', queueScrollCheck);
+    checkAllNear();
     if (!('IntersectionObserver' in window)) {
-      // no observer support in this browser: every panel counts as near, the sequential chain still binds
-      PANELS.forEach(function (p) { nearViewport[p.frame] = true; });
-      tryStart(chainIndex);
+      // no observer support in this browser: the scroll/resize fallback above still binds
       return;
     }
     var io = new IntersectionObserver(function (entries) {
@@ -447,7 +483,7 @@
           if (PANELS[i].frame === frameId) { tryStart(i); break; }
         }
       });
-    }, { rootMargin: '800px 0px', threshold: 0.01 });
+    }, { rootMargin: NEAR_PX + 'px 0px', threshold: 0.01 });
     PANELS.forEach(function (p) {
       var wrap = document.getElementById(p.frame).parentElement;
       wrap.setAttribute('data-frame-id', p.frame);

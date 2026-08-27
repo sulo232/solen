@@ -176,6 +176,21 @@ Treatment-only: this file adds NOTHING to any panel's content or styling beyond 
     padding:1px 6px;
     margin-right:6px;
   }
+  .tag.opt.unconfirmed{background:#52525B}
+  .pending-msg{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#fff;
+    color:var(--ink2);
+    font-size:13px;
+    font-weight:600;
+    z-index:6;
+  }
+  .badge.checking{background:rgba(82,82,91,.95)}
+  .badge.failed{background:rgba(220,38,38,.95)}
 </style>
 </head>
 <body>
@@ -197,10 +212,11 @@ Treatment-only: this file adds NOTHING to any panel's content or styling beyond 
   <div class="panel">
     <div class="panel-label">
       <span class="tag now">Now, live</span>
-      <span class="cap">The real page today.<br>No title, 18px is the biggest text, over-bold in places.</span>
+      <span class="cap" id="cap0">The real page today.<br>No title, 18px is the biggest text, over-bold in places.</span>
     </div>
-    <div class="frame-wrap">
-      <iframe id="frame0" src="/de/basel/coiffeur" title="Search results, now, real page"></iframe>
+    <div class="frame-wrap" data-frame="frame0">
+      <div class="pending-msg">Loading</div>
+      <iframe id="frame0" data-src="/de/basel/coiffeur" title="Search results, now, real page"></iframe>
     </div>
   </div>
 
@@ -208,56 +224,61 @@ Treatment-only: this file adds NOTHING to any panel's content or styling beyond 
 
   <div class="panel">
     <div class="panel-label">
-      <span class="tag opt"><span class="opt-num">1</span>Smallest change</span>
-      <span class="cap">Adds one real title line above the results, "Coiffeur in Basel", sized to match the salon page. Nothing else moves.</span>
+      <span class="tag opt" id="tag1"><span class="opt-num">1</span>Smallest change</span>
+      <span class="cap" id="cap1">Adds one real title line above the results, "Coiffeur in Basel", sized to match the salon page. Nothing else moves.</span>
     </div>
-    <div class="frame-wrap">
-      <span class="badge">+1 heading, nothing else changed</span>
-      <iframe id="frame1" src="/de/basel/coiffeur" title="Search results, option 1, smallest change"></iframe>
-    </div>
-  </div>
-
-  <div class="panel">
-    <div class="panel-label">
-      <span class="tag opt"><span class="opt-num">2</span>Hierarchy first</span>
-      <span class="cap">Same new title, plus the two section labels underneath it are turned down so the title is clearly the one biggest thing.</span>
-    </div>
-    <div class="frame-wrap">
-      <span class="badge">1 new headline, 2 labels calmed</span>
-      <iframe id="frame2" src="/de/basel/coiffeur" title="Search results, option 2, hierarchy first"></iframe>
+    <div class="frame-wrap" data-frame="frame1">
+      <div class="pending-msg">Loading</div>
+      <span class="badge" style="display:none">+1 heading, nothing else changed</span>
+      <iframe id="frame1" data-src="/de/basel/coiffeur" title="Search results, option 1, smallest change"></iframe>
     </div>
   </div>
 
   <div class="panel">
     <div class="panel-label">
-      <span class="tag opt"><span class="opt-num">3</span>Real content, higher and bigger</span>
-      <span class="cap">Trims the empty space above the first card and makes the salon photos in the row bigger, so real content shows sooner.</span>
+      <span class="tag opt" id="tag2"><span class="opt-num">2</span>Hierarchy first</span>
+      <span class="cap" id="cap2">Same new title, plus the two section labels underneath it are turned down so the title is clearly the one biggest thing.</span>
     </div>
-    <div class="frame-wrap">
-      <span class="badge">less empty space, bigger photos</span>
-      <iframe id="frame3" src="/de/basel/coiffeur" title="Search results, option 3, content forward"></iframe>
-    </div>
-  </div>
-
-  <div class="panel">
-    <div class="panel-label">
-      <span class="tag opt"><span class="opt-num">4</span>Turn down the bold</span>
-      <span class="cap">Turns every bold word on the page down to medium weight. No title added, nothing moves, only the weight changes.</span>
-    </div>
-    <div class="frame-wrap">
-      <span class="badge">every bold word turned down</span>
-      <iframe id="frame4" src="/de/basel/coiffeur" title="Search results, option 4, weight ceiling"></iframe>
+    <div class="frame-wrap" data-frame="frame2">
+      <div class="pending-msg">Loading</div>
+      <span class="badge" style="display:none">1 new headline, 2 labels calmed</span>
+      <iframe id="frame2" data-src="/de/basel/coiffeur" title="Search results, option 2, hierarchy first"></iframe>
     </div>
   </div>
 
   <div class="panel">
     <div class="panel-label">
-      <span class="tag opt"><span class="opt-num">5</span>Clear every failing number at once</span>
-      <span class="cap">Combines the new title with the page-wide weight turn-down. The salon name and price on each card stay bold, everything else calms down.</span>
+      <span class="tag opt" id="tag3"><span class="opt-num">3</span>Real content, higher and bigger</span>
+      <span class="cap" id="cap3">Trims the empty space above the first card and makes the salon photos in the row bigger, so real content shows sooner.</span>
     </div>
-    <div class="frame-wrap">
-      <span class="badge">new headline + page-wide weight fix</span>
-      <iframe id="frame5" src="/de/basel/coiffeur" title="Search results, option 5, recompose"></iframe>
+    <div class="frame-wrap" data-frame="frame3">
+      <div class="pending-msg">Loading</div>
+      <span class="badge" style="display:none">less empty space, bigger photos</span>
+      <iframe id="frame3" data-src="/de/basel/coiffeur" title="Search results, option 3, content forward"></iframe>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-label">
+      <span class="tag opt" id="tag4"><span class="opt-num">4</span>Turn down the bold</span>
+      <span class="cap" id="cap4">Turns every bold word on the page down to medium weight. No title added, nothing moves, only the weight changes.</span>
+    </div>
+    <div class="frame-wrap" data-frame="frame4">
+      <div class="pending-msg">Loading</div>
+      <span class="badge" style="display:none">every bold word turned down</span>
+      <iframe id="frame4" data-src="/de/basel/coiffeur" title="Search results, option 4, weight ceiling"></iframe>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-label">
+      <span class="tag opt" id="tag5"><span class="opt-num">5</span>Clear every failing number at once</span>
+      <span class="cap" id="cap5">Combines the new title with the page-wide weight turn-down. The salon name and price on each card stay bold, everything else calms down.</span>
+    </div>
+    <div class="frame-wrap" data-frame="frame5">
+      <div class="pending-msg">Loading</div>
+      <span class="badge" style="display:none">new headline + page-wide weight fix</span>
+      <iframe id="frame5" data-src="/de/basel/coiffeur" title="Search results, option 5, recompose"></iframe>
     </div>
   </div>
 
@@ -439,24 +460,233 @@ Treatment-only: this file adds NOTHING to any panel's content or styling beyond 
     frame5: applyOption5
   };
 
-  function startWatching(frameId, applyFn) {
-    var f = document.getElementById(frameId);
-    var tries = 0;
-    var iv = setInterval(function () {
-      tries++;
-      try {
-        var doc = f.contentDocument;
-        var ready = doc && (findRailHeadings(doc).length || doc.querySelector('a[class*="w-[calc((100vw-44px)/1.5)]"]'));
-        if (ready) { if (applyFn(doc)) clearInterval(iv); }
-      } catch (e) {}
-      if (tries > 150) clearInterval(iv);
-    }, 200);
+  // Marks the injected node each option leaves behind, used only to notice when the real page's
+  // own hydration wipes it out from under us so we know to run applyFn again. Not part of what
+  // any fix does, purely a survival check on top of it.
+  var MARKERS = {
+    frame1: function (doc) { return !!doc.getElementById("sweep-hero-h1"); },
+    frame2: function (doc) { return !!doc.getElementById("sweep-hero-h1"); },
+    frame3: function (doc) { return doc.documentElement.getAttribute("data-sweep-applied") === "1"; },
+    frame4: function (doc) { return !!doc.getElementById("sweep-weight-style"); },
+    frame5: function (doc) { return !!doc.getElementById("mockup-recompose-style"); }
+  };
+
+  // ---- Load orchestration: six live copies of one real Next.js route stampeded the dev server
+  // and the browser badly enough that fix-detection polls hit their old 30s cap before the target
+  // element ever appeared, and once a cap is hit the interval is cleared for good so that panel
+  // stayed broken for the life of the page. Fix: panels load ONE AT A TIME (a chain, driven by
+  // onFrameSettled below), gated further by an IntersectionObserver so a panel below the fold on a
+  // phone never starts before the ones above it are visible. The poll cap is raised to 60s, and a
+  // MutationObserver keeps re-applying a fix that hydration overwrites after the first success,
+  // which is the exact failure measured live on the option 5 source file.
+  var PANEL_ORDER = ["frame0", "frame1", "frame2", "frame3", "frame4", "frame5"];
+  var POLL_INTERVAL_MS = 200;
+  var POLL_CAP_MS = 60000;
+  var POLL_MAX_TRIES = Math.ceil(POLL_CAP_MS / POLL_INTERVAL_MS);
+
+  var panelState = {};
+  var panelVisible = {};
+  var chainPos = 0;
+  var originalBadgeText = {};
+
+  function wrapFor(frameId) {
+    return document.querySelector('.frame-wrap[data-frame="' + frameId + '"]');
+  }
+  function pendingFor(frameId) {
+    var w = wrapFor(frameId);
+    return w ? w.querySelector(".pending-msg") : null;
+  }
+  function badgeFor(frameId) {
+    var w = wrapFor(frameId);
+    return w ? w.querySelector(".badge") : null;
+  }
+  function hidePending(frameId) {
+    var p = pendingFor(frameId);
+    if (p) p.style.display = "none";
+  }
+  function markChecking(frameId) {
+    var b = badgeFor(frameId);
+    if (b) {
+      b.textContent = "Checking the fix";
+      b.classList.remove("failed");
+      b.classList.add("checking");
+      b.style.display = "";
+    }
+  }
+  function markApplied(frameId) {
+    var b = badgeFor(frameId);
+    if (b) {
+      b.textContent = originalBadgeText[frameId] || b.textContent;
+      b.classList.remove("checking", "failed");
+      b.style.display = "";
+    }
+  }
+  function markFailed(frameId) {
+    var num = frameId.replace("frame", "");
+    var b = badgeFor(frameId);
+    var cap = document.getElementById("cap" + num);
+    var tag = document.getElementById("tag" + num);
+    if (b) {
+      b.textContent = "Could not confirm, reload to try again";
+      b.classList.remove("checking");
+      b.classList.add("failed");
+      b.style.display = "";
+    }
+    if (cap) {
+      cap.textContent = "This change did not apply on this load. Reload the page to try again.";
+    }
+    if (tag) tag.classList.add("unconfirmed");
   }
 
-  Object.keys(OPTIONS).forEach(function (frameId) {
+  // The dev server under this page's own load, plus every other tab hitting the same route,
+  // was measured (this session) full-reloading an iframe's document AFTER our fix had already
+  // been confirmed inside it (Next.js Fast Refresh / HMR replaces the iframe's whole document,
+  // which a same-document MutationObserver cannot see since it is bound to the document that just
+  // got replaced). So the watch is armed on the iframe's own "load" event, and stays armed for
+  // the life of the panel, not just for the first load: every reload re-runs the same applyFn and
+  // re-arms a fresh MutationObserver against the NEW document. The first confirmation still drives
+  // the chain forward exactly once; a reload after that reapplies silently unless the fix fails to
+  // come back within the same 60s cap, in which case the badge is pulled back down to failed so
+  // the caption never sits next to a screen that quietly lost its change.
+  function armPersistentWatch(frameId, applyFn, markerFn) {
     var f = document.getElementById(frameId);
-    f.addEventListener("load", function () { startWatching(frameId, OPTIONS[frameId]); });
-    startWatching(frameId, OPTIONS[frameId]);
+    var firstSettleDone = false;
+    var activeInterval = null;
+
+    function currentDoc() {
+      try { return f.contentDocument; } catch (e) { return null; }
+    }
+
+    function attempt() {
+      var doc = currentDoc();
+      if (!doc) return false;
+      try {
+        return applyFn(doc);
+      } catch (e) {
+        console.error("[compare-search-results] apply failed for " + frameId, e);
+        return false;
+      }
+    }
+
+    function guardMutations(doc) {
+      try {
+        var mo = new MutationObserver(function () {
+          var stillThere = false;
+          try { stillThere = markerFn(doc); } catch (e) { stillThere = false; }
+          if (!stillThere) {
+            try { applyFn(doc); } catch (e) {
+              console.error("[compare-search-results] reapply after hydration failed for " + frameId, e);
+            }
+          }
+        });
+        mo.observe(doc.documentElement, { childList: true, subtree: true });
+      } catch (e) {
+        console.error("[compare-search-results] could not attach mutation guard for " + frameId, e);
+      }
+    }
+
+    function runOneWatchCycle() {
+      if (activeInterval) clearInterval(activeInterval);
+      var tries = 0;
+      var confirmed = false;
+      activeInterval = setInterval(function () {
+        tries++;
+        if (!confirmed && attempt()) {
+          confirmed = true;
+          clearInterval(activeInterval);
+          var doc = currentDoc();
+          if (doc) guardMutations(doc);
+          if (!firstSettleDone) {
+            firstSettleDone = true;
+            onFrameSettled(frameId, true);
+          }
+          return;
+        }
+        if (!confirmed && tries >= POLL_MAX_TRIES) {
+          clearInterval(activeInterval);
+          if (!firstSettleDone) {
+            firstSettleDone = true;
+            onFrameSettled(frameId, false);
+          } else {
+            // was confirmed once, a reload knocked it out, and it did not come back in time
+            markFailed(frameId);
+          }
+        }
+      }, POLL_INTERVAL_MS);
+    }
+
+    f.addEventListener("load", runOneWatchCycle);
+  }
+
+  function startPanel(frameId) {
+    panelState[frameId] = "loading";
+    hidePending(frameId);
+    var f = document.getElementById(frameId);
+    if (frameId === "frame0") {
+      var settled = false;
+      var timer = setTimeout(function () {
+        if (!settled) { settled = true; onFrameSettled(frameId, false); }
+      }, POLL_CAP_MS);
+      f.addEventListener("load", function () {
+        if (!settled) { settled = true; clearTimeout(timer); onFrameSettled(frameId, true); }
+      });
+      f.src = f.dataset.src;
+      return;
+    }
+    markChecking(frameId);
+    armPersistentWatch(frameId, OPTIONS[frameId], MARKERS[frameId]);
+    f.src = f.dataset.src;
+  }
+
+  function onFrameSettled(frameId, ok) {
+    panelState[frameId] = ok ? "applied" : "failed";
+    if (frameId === "frame0") {
+      if (!ok) {
+        var cap0 = document.getElementById("cap0");
+        if (cap0) cap0.innerHTML += "<br>The real page did not finish loading on this attempt. Reload to try again.";
+      }
+    } else if (ok) {
+      markApplied(frameId);
+    } else {
+      markFailed(frameId);
+    }
+    chainPos++;
+    tryStartNext();
+  }
+
+  function tryStartNext() {
+    if (chainPos >= PANEL_ORDER.length) return;
+    var id = PANEL_ORDER[chainPos];
+    if (panelState[id] === "pending" && panelVisible[id]) {
+      startPanel(id);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    PANEL_ORDER.forEach(function (id) {
+      panelState[id] = "pending";
+      panelVisible[id] = false;
+      var b = badgeFor(id);
+      if (b) originalBadgeText[id] = b.textContent;
+    });
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        var id = entry.target.getAttribute("data-frame");
+        if (entry.isIntersecting) {
+          panelVisible[id] = true;
+          io.unobserve(entry.target);
+          tryStartNext();
+        }
+      });
+    }, { root: null, rootMargin: "400px 0px 400px 0px", threshold: 0 });
+
+    PANEL_ORDER.forEach(function (id) {
+      var w = wrapFor(id);
+      if (w) io.observe(w);
+    });
+
+    tryStartNext();
   });
 </script>
 </body>
