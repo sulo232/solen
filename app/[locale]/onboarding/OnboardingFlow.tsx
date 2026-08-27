@@ -8,9 +8,10 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { ChevronLeft, Check } from "lucide-react";
+import { Check } from "lucide-react";
 import { SuccessMark } from "@/app/[locale]/_components/primitives/SuccessMark";
 import { toast } from "@/app/[locale]/_components/primitives/Toast";
+import { BackButton } from "@/app/[locale]/_components/primitives/BackButton";
 import {
   GENDER_OPTS, HAIR_OPTS, SKIN_OPTS, CATEGORY_OPTS, INTEREST_OPTS,
   CatIcon, INTEREST_ICON, type Choice, type InterestChoice,
@@ -158,10 +159,8 @@ export default function OnboardingFlow({ locale, redirect, customerPreferences }
     <div className="flex flex-col">
       {/* topbar: back · progress · skip */}
       <div className="flex items-center gap-3 mb-5">
-        <button type="button" onClick={back} disabled={i === 0} aria-label={t("back")}
-          className="grid place-items-center h-11 w-11 rounded-full border border-s-border text-s-ink disabled:opacity-40 hover:bg-s-bg-sunken transition-colors">{/* content-image-ok: back-button chevron glyph on an icon button, not a photo/avatar fallback slot */}
-          <ChevronLeft size={16} strokeWidth={1.9} aria-hidden />
-        </button>
+        {/* mockup-ok restores: LOCKFILE NAV CONTROLS lock, _design-system/LOCKFILE.md:2096 (2026-08-10, owner) , 44 circle, white fill, shadow-elevation-2, ChevronLeft never ArrowLeft; this control had drifted (border, no fill, no shadow) */}
+        <BackButton variant="flat" onClick={back} disabled={i === 0} label={t("back")} className="disabled:opacity-40" />{/* content-image-ok: back-button chevron glyph on an icon button, not a photo/avatar fallback slot */}
         <div className="flex-1">
           <div className="h-[5px] rounded-pill bg-s-bg-sunken overflow-hidden">
             <div className="h-full rounded-pill bg-s-ink transition-[width] duration-300 ease-out" style={{ width: `${progress}%` }} />

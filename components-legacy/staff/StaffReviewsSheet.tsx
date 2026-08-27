@@ -3,8 +3,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { useTranslations } from "next-intl";
-import { ChevronLeft, ChevronDown, Star, Check } from "lucide-react";
+import { ChevronDown, Star, Check } from "lucide-react";
 import { Avatar, RatingStars } from "@/app/[locale]/_components/primitives";
+import { BackButton } from "@/app/[locale]/_components/primitives/BackButton";
 import { formatReviewDate } from "@/app/[locale]/_components/salon/_shared";
 
 export interface SheetReview {
@@ -80,9 +81,11 @@ export default function StaffReviewsSheet({
     <div className="fixed inset-0 z-[75] flex flex-col bg-white">
       {/* Header */}
       <div className="sticky top-0 z-10 flex items-center gap-3 border-b border-s-border bg-white px-4 py-3">
-        <button type="button" onClick={onClose} aria-label={t("back")} className="grid h-11 w-11 place-items-center rounded-full hover:bg-s-bg-sunken">{/* content-image-ok: page-back chevron in an icon button, not a photo/avatar fallback slot */}
-          <ChevronLeft size={20} strokeWidth={2.2} className="text-s-ink" />
-        </button>
+        {/* mockup-ok: revert/restores , same 44px white/hairline/shadow-elevation-2 circle already
+            shipped 2026-08-10 (NAV CONTROLS lock) via this exact BackButton flat variant on
+            SalonStickyTabNav.tsx and BookingWizard.tsx; composing the registered primitive per
+            FLOORS LAW 9, no new appearance invented here. */}
+        <BackButton variant="flat" label={t("back")} onClick={onClose} />
         <span className="font-heading text-[17px] font-bold text-s-ink">Bewertungen</span>
       </div>
 

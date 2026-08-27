@@ -22,7 +22,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Spinner from "@/components-legacy/ui/Spinner";
 import {
-  ChevronLeft,
   X,
   ArrowRight,
   Check,
@@ -32,6 +31,7 @@ import {
   Info,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { BackButton } from "@/app/[locale]/_components/primitives/BackButton";
 import {
   type Tr,
   type BookingFacts,
@@ -587,14 +587,10 @@ function Shell({
     <div className="mx-auto flex min-h-[100dvh] w-full max-w-[460px] flex-col px-4 pb-4 pt-3">
       <header className="flex flex-shrink-0 items-center gap-3 border-b border-s-border pb-2.5">
         {onBack && (
-          <button
-            type="button"
-            onClick={onBack}
-            aria-label={t("back")}
-            className="flex h-11 w-11 items-center justify-center rounded-pill border border-s-border bg-white text-s-ink"
-          >
-            <ChevronLeft size={18} strokeWidth={1.9} aria-hidden />
-          </button>
+          // mockup-ok: restores the shipped NAV CONTROLS look (LOCKFILE.md, 2026-08-10), already
+          // live via BackButton in SalonStickyTabNav.tsx; this hand-drawn button had drifted from
+          // it (no shadow-elevation-2). Composing the registered primitive per FLOORS LAW 9.
+          <BackButton variant="flat" label={t("back")} onClick={onBack} />
         )}
         {title && (
           <span className="font-heading text-[16px] font-semibold tracking-[-0.01em]">{title}</span>

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ChevronLeft } from "lucide-react";
+import { BackButton } from "@/app/[locale]/_components/primitives";
 import MasonryGrid from "@/components-legacy/discovery/MasonryGrid";
 import ItemCard from "@/components-legacy/discovery/ItemCard";
 import VideoCard from "@/components-legacy/discovery/VideoCard";
@@ -63,13 +63,12 @@ export default function SavedPage() {
   return (
     <main className="min-h-screen bg-white pb-24">
       <div className="flex items-center gap-3 px-4 pb-3 pt-4">
-        <button
+        {/* mockup-ok: public/_mockups/back-arrow-to-the-lock/index.html (on-white swatch) , composing the registered BackButton primitive at its locked flat treatment, no photo behind this control */}
+        <BackButton
+          variant="flat"
           onClick={() => router.push(`/${locale}/inspo`)}
-          aria-label={tBack("back")}
-          className="grid h-11 w-11 place-items-center rounded-full border border-s-border text-s-ink transition-transform duration-150 active:scale-95"
-        >
-          <ChevronLeft size={18} strokeWidth={1.9} />
-        </button>
+          label={tBack("back")}
+        />
         <h1 className="font-heading text-[22px] font-bold tracking-[-0.02em] text-s-ink">Gespeichert</h1>
       </div>
 

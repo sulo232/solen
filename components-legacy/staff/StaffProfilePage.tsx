@@ -7,6 +7,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { Share, Star, X, Instagram, ChevronLeft, ChevronRight, Check } from "lucide-react";
 import { Avatar, RatingStars, SeeAllButton } from "@/app/[locale]/_components/primitives";
+import { BackButton } from "@/app/[locale]/_components/primitives/BackButton";
 import { formatReviewDate } from "@/app/[locale]/_components/salon/_shared";
 import Spinner from "@/components-legacy/ui/Spinner";
 import StaffReviewsSheet from "@/components-legacy/staff/StaffReviewsSheet";
@@ -217,9 +218,8 @@ export default function StaffProfilePage({
             <X size={20} strokeWidth={2.2} className="text-s-ink" />
           </button>
         ) : (
-          <button type="button" onClick={handleBack} aria-label={t("back")} className="grid h-11 w-11 shrink-0 place-items-center rounded-full hover:bg-s-bg-sunken">{/* content-image-ok: page back nav icon button, not a photo/avatar fallback slot */}
-            <ChevronLeft size={20} strokeWidth={2.2} className="text-s-ink" />
-          </button>
+          // mockup-ok: public/_mockups/back-arrow-to-the-lock/index.html (on-white swatch) , composing the registered BackButton primitive at its locked flat treatment; this top bar is bg-white with no photo behind the control
+          <BackButton variant="flat" label={t("back")} onClick={handleBack} className="shrink-0" />
         )}
         <div className={`flex min-w-0 items-center gap-2 transition-opacity duration-200 ${condensed ? "opacity-100" : "opacity-0"}`}>
           <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded-full bg-s-bg-sunken">

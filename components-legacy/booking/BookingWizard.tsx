@@ -6,8 +6,8 @@ import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'motion/react'; // mockup-ok: applying owner-approved /dev/motion-recipe ENTER RECIPE (2026-07-09)
 import { useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
-import { ChevronLeft } from 'lucide-react';
 import { useStepSwapMotion, SectionErrorBoundary } from '@/app/[locale]/_components/primitives';
+import { BackButton } from '@/app/[locale]/_components/primitives/BackButton';
 import {
   ServicesStaffStep,
   StaffStep,
@@ -183,19 +183,22 @@ export default function BookingWizard({ services, staffList, salon, staffService
           half of what he meant by "multiple design styles". Now the same circle: 44, white,
           hairline plus whisper shadow. The `-ml-1` pull is gone with it; it existed to hide
           the fact that a bare glyph has no box to align. */}
+      {/* mockup-ok: revert/restores , same 44px white/hairline/shadow circle this file already
+          shipped 2026-08-10 (NAV CONTROLS lock, see the comment above), now sourced from the
+          registered BackButton primitive per FLOORS LAW 9. BackButton.tsx's own docstring names
+          this exact file as one of the four approved migration targets. No new appearance. */}
       <div className="flex items-center justify-between pt-1 pb-1">
         {canGoBack ? (
-          <button
-            type="button"
+          <BackButton
+            variant="flat"
+            label={t('back')}
             onClick={handleBack}
-            aria-label={t('back')}
-            className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-s-border bg-white shadow-whisper transition-[colors,transform] hover:border-s-ink active:scale-[0.94] active:duration-[80ms] active:ease-glide"
-          >
-            <ChevronLeft size={22} strokeWidth={2.2} className="text-s-ink" />
-          </button>
+            className="shrink-0"
+          />
         ) : (
-          <button
-            type="button"
+          <BackButton
+            variant="flat"
+            label={t('back')}
             onClick={() => {
               // Step 1 back: return to where the user actually came from (the Inspo look, search, the salon page...).
               // It was hardcoded to the salon page, which dumped anyone arriving via Inspo "Book this look" onto a
@@ -203,11 +206,8 @@ export default function BookingWizard({ services, staffList, salon, staffService
               if (typeof window !== 'undefined' && window.history.length > 1) router.back();
               else router.push(`/${locale}/salon/${salon.slug}`);
             }}
-            aria-label={t('back')}
-            className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-s-border bg-white shadow-whisper transition-[colors,transform] hover:border-s-ink active:scale-[0.94] active:duration-[80ms] active:ease-glide"
-          >
-            <ChevronLeft size={22} strokeWidth={2.2} className="text-s-ink" />
-          </button>
+            className="shrink-0"
+          />
         )}
         {/* Compact header (mockup 26, owner-approved 2026-06-12): the step title sits
             small in the bar between back and X — the 30px page title read unbalanced. */}

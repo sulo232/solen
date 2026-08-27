@@ -2,12 +2,12 @@
 
 import * as React from "react";
 import { createPortal } from "react-dom";
-import { ChevronLeft } from "lucide-react";
 import { useLocale } from "next-intl";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import { SalonLightbox } from "./SalonLightbox";
 import type { StaffMember } from "./_shared";
 import { cn } from "@/lib/utils";
+import { BackButton } from "../primitives";
 import { getPortfolioCategoriesForSalon, getPortfolioCategoryLabel, PORTFOLIO_CATEGORY_ALL_LABEL, type PortfolioLocale } from "@/lib/portfolio-categories";
 import ReportButton from "@/components-legacy/discovery/ReportButton";
 import { useTranslations } from "next-intl";
@@ -181,14 +181,17 @@ export function SalonImageGallery({
     <div className="fixed inset-0 z-[70] flex flex-col bg-white">
       {/* Header */}
       <div className="flex items-center gap-3 border-b border-s-border px-4 py-3">
-        <button
-          type="button"
-          aria-label={tBack("back")}
+        {/* mockup-ok: restores the NAV CONTROLS lock (_design-system/LOCKFILE.md#L2096,
+            owner-measured 2026-08-10). This was the exact bare-glyph regression the lock names
+            verbatim ("no fill, no border and no shadow"); composing BackButton variant="flat"
+            here restores the locked white+shadow circle, matching the same fix already applied
+            at SalonStickyTabNav.tsx, not a new choice. */}
+        <BackButton
+          variant="flat"
+          label={tBack("back")}
           onClick={onClose}
-          className="-ml-1 grid h-11 w-11 shrink-0 place-items-center rounded-full text-s-ink transition-transform active:scale-95 active:duration-[80ms] active:ease-glide"
-        >
-          <ChevronLeft size={20} strokeWidth={2.2} aria-hidden />
-        </button>
+          className="-ml-1 shrink-0"
+        />
         <div className="min-w-0">
           <div className="font-display text-[16px] font-semibold leading-tight tracking-[-0.01em] text-s-ink">
             Galerie
