@@ -2,6 +2,16 @@
   "version": "0.0.1",
   "configurations": [
     {
+      "name": "Next dev (MAIN on 3000)",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-lc",
+        "cd /Users/sulo/Documents/solen && npx next dev -p 3000"
+      ],
+      "port": 3000,
+      "autoPort": false
+    },
+    {
       "name": "Tunnel (app 50723)",
       "runtimeExecutable": "bash",
       "runtimeArgs": [
