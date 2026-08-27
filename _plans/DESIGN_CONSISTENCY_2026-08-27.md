@@ -905,9 +905,37 @@ pixels costs consistency and buys no hierarchy, because no reader can tell 15.5 
 is why the screen reads busy without reading structured, and it is a different defect from the body
 size, so it needs its own fix rather than riding along on the 13-to-14 move.
 
-Also worth naming: 15.5px is not a value in this system's scale at all, and 10px is below anything
-this product uses for text elsewhere. Neither is explained by the traced sites, so both need a
-source found before either is changed.
+Both odd values were then traced rather than left as a question:
+
+  **15.5px is literal, and its own comment explains it.** `AccountHub.tsx:224` carries
+  `text-[15.5px]` with the inline note *"mockup-ok: consolidated to the row-label size (was 15px)
+  to hold the 4-size type budget"*. So a half pixel was invented to make the size COUNT pass. That
+  satisfies the ceiling and defeats what the ceiling is for, and it is the same shape as the
+  EMPHASIS BUDGET's own warning that size variety is not range.
+  **10px is the notification badge**, `NotificationBell.tsx:48`, the single digit inside a 16px
+  dot. That one is defensible: it is a count in a badge, not text a customer reads.
+
+**THEN THE HABIT WAS COUNTED ACROSS THE WHOLE ESTATE, and it is 350 sites.** Control first: the
+same scan finds 3,358 ordinary whole-pixel sizes, so the regex is sound and half pixels are the
+minority, not an artefact.
+
+      12.5px   170 sites
+      13.5px   119
+      14.5px    39
+      11.5px    12
+      10.5px     4
+      15.5px     4
+      9.5px      1
+      16.5px     1
+
+12.5 and 13.5 sit between 12 and 14, where no reader can see the difference, but each one still
+counts as another distinct size on its screen. That is a large part of why screens read busy.
+
+**AND A HYPOTHESIS OF MINE WAS WRONG, so it is recorded as wrong rather than dropped.** I expected
+the screen he likes to carry none of these. It carries six: five in `SalonLocation.tsx` and one in
+`SalonProducts.tsx`. They did not show up in its first-viewport reading because all six sit below
+the first screen. So this is an estate-wide habit, not a story about the good screen versus the
+others, and it must not be told that way.
 
 ### The forks, both arms decided now
 
