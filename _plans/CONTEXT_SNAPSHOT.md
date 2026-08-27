@@ -2,16 +2,28 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-27T21:30:05 (trigger: auto)
+- taken: 2026-08-27T22:39:07 (trigger: auto)
 - branch: claude/stress-test-gates-hooks-6dc8e8
 
 ## git
 ```
-7cc251677 Ten questions that were sitting in ten different files, now in one
-e5844b8f2 checkpoint(auto): 3 uncommitted file(s) at turn end
-cb41a338c Back-arrow box: replace a number I could not defend with one I read
-dca5ffd6b Back arrow: show the lock before applying it, and count how far it drifted
-33f8a1c99 Close the German-labels box: 38 fixed, four languages read off the live page
+3c46def36 Close S2, and shrink two of his ten questions to one
+391ecb23c The search bar stops moving: one spot and one size on all seven screens
+3eb590a4d The arbitrated search bar plan, and what does not land without him
+ee7b06813 Every back control on the site is now the triangle he asked for, and 44 across
+e90c89a3c The rules said the category page draws its own trail. It draws nothing.
+```
+```
+M _plans/DESIGN_CONSISTENCY_2026-08-27.md
+ M app/[locale]/_components/salon/SalonImageGallery.tsx
+ M app/[locale]/_components/salon/SalonStickyTabNav.tsx
+ M app/[locale]/inspo/saved/page.tsx
+ M app/[locale]/onboarding/OnboardingFlow.tsx
+ M components-legacy/booking/BookingWizard.tsx
+ M components-legacy/discovery/DetailPage.tsx
+ M components-legacy/refund/ReportRefundEntry.tsx
+ M components-legacy/staff/StaffProfilePage.tsx
+ M components-legacy/staff/StaffReviewsSheet.tsx
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
@@ -55,7 +67,6 @@ dca5ffd6b Back arrow: show the lock before applying it, and count how far it dri
 
 ## DESIGN_CONSISTENCY_2026-08-27.md
 Open boxes:
-- [ ] **S2. Chrome becomes one component, not six.** The search pill and the category row are
 - [ ] **S3. Back arrow becomes one rule.** Standard is the 44x44 at (16,20) that seven pages already
 - [ ] **S5. Fold the 38 rows.** Every one of them is either finished, superseded by a spec written in
 - [ ] **S6. Then and only then, the look.** Gray, the dashboard direction, typography. Those are

@@ -394,6 +394,54 @@ the direction of the screen he already likes.
   the build is: primitive to 44 + ChevronLeft + the named shadow, then 19 hand-drawn call sites
   onto it, then one removal.
 
+  **BUILT 2026-08-27, and here is exactly how far it got.** Everything above that did not need him
+  is done and committed. Measured from shipped source after the last commit, with a control (the
+  primitive itself must not count as one of its own call sites, and it does not):
+
+      composed from the shared BackButton   17
+      still hand-drawn                       3
+      distinct looks among the 17            2   (flat, and glass over a photo)
+
+  Commits: `ee7b06813` glyph and size on all 21, `054ae31a3` nine call sites composed,
+  `f1d504ac4` the primitive gains a Link mode, `ceec0f825` the last six Link call sites.
+
+  THE LINK MODE WAS THE REAL BLOCKER AND IT IS GONE. Eight call sites are `<Link href>`, and the
+  primitive could only render a `<button>`. A whole migration batch refused them rather than force
+  it, correctly: a forced button drops cmd and middle click into a new tab, right click copy link,
+  prefetch, and no-JS navigation. `BackButton` is now polymorphic on `href`. The no-href path is
+  byte-identical, verified against the previous version and against live markup.
+
+  LIVE, at 390x844, read by me on a separate tab after an independent reviewer could not (its
+  session had no browser tool, which is a tooling gap and not a code defect):
+      /de/booking/lookup          `<a href="/de">`                            44x44
+      /de/booking/resend-link     `<a href="/de/booking/lookup">`             44x44
+      .../cuts-and-culture/team   `<a href="/de/salon/...#section-team">`     44x44
+      CONTROL, same instrument: the salon page's two back controls still report `<button>`, so the
+      reading distinguishes the two shapes and the button path was genuinely untouched.
+
+  THE 3 THAT REMAIN ARE HIS, NOT MINE, and they are the same one word as the salon page:
+      `app/[locale]/inspo/saved/[id]/page.tsx:60`   transparent today, would gain a white fill
+      `app/[locale]/inspo/board/[id]/page.tsx:73`   dark glass today, `bg-black/30`
+      `app/[locale]/walk-in-pay/page.tsx:362`       a squircle today, `rounded-xl`, not a circle
+  Each one CHANGES HOW A SCREEN LOOKS, so the mockup gate refused them and was right to. Not one
+  agent used a skip flag on them.
+
+  COUNTED WRONG ONCE, corrected here rather than left: a first count said 4 remained. The fourth,
+  `components-legacy/staff/StaffProfilePage.tsx:457`, is the portfolio lightbox's previous-photo
+  arrow, paired with a next arrow four lines below. It is not a back control and must not be
+  migrated. FOUND ON THE WAY, not fixed: it carries `aria-label={t("back")}`, so a screen reader
+  announces "Back" on a control that moves to the previous photo. Separate defect, own line.
+
+  ALSO FOUND, NOT FIXED, and it is the one straight arrow left on a customer screen:
+  `SearchTemplate.tsx:2007` draws `ArrowLeft size={20}` inside the map view's unified search bar.
+  That bar is his own 2026-07-02 approval, so swapping its glyph is a visible change to an approved
+  component and goes to him, not into a sweep. Every other `ArrowLeft` in the estate is under
+  `app/[locale]/dev/`, the dashboard, or an inline text back link in a wizard footer.
+
+  SO THE CLOSE CONDITION IS AT 17 of 20 with the last 3 on one word. The sweep already returns
+  exactly two variants among everything migrated; the three holdouts are the only thing between
+  this and closed.
+
 - [x] **S4. Write the nine missing screen specs. CLOSED 2026-08-27.** Use `salon-detail`'s 21 files as the template,
   since that is the shape that produced the screen he likes. Each of the nine gets its sections
   named, its type scale fixed, its surface decided, and its card anatomy pinned to the registered
@@ -481,6 +529,47 @@ the direction of the screen he already likes.
     - Row 66 may not be his to answer at all yet: `_plans/ICON_SWAP_2026-08-17.md` is a live
       whole-set icon replacement at 52 of 52 coverage that has NO row in the index, and it may
       already own the Line-or-Solid decision. Flagged on the list rather than resolved quietly.
+  MOVED 2026-08-27, later the same day, and the movement came from the RECORD rather than from him,
+  which is the whole point of this step:
+    - **The duplicate IDs are gone.** Section 0 of this file listed #30 appearing three times and
+      #31, #42, #55 and #62 twice each. Re-counted just now across all 110 rows: zero duplicates.
+      That half of this step's ask is finished.
+    - **Row 51 stops counting as a design row.** Its chrome half is not just answered now, it is
+      BUILT and live (`ee7b06813`): 21 of 21 back controls draw the locked chevron and 21 of 21 are
+      44 across. Its only remaining item, A2, is a privacy question about whether the sign-in flow
+      may leak that an email is registered, and this step already wrote that such an item stops
+      being a design row the moment the chrome half closes.
+    - **One of his ten questions shrank from three values to one.** The back arrow needed a word on
+      the glyph, the size and the fill. Two of those were never his to give: the 2026-08-10 lock
+      already froze them in his own words and nobody had built them. Only the fill is his.
+    - **The search bar fork was never a fork at all**, per S2 above, so it never should have been
+      counted as waiting on him.
+  So the honest count moves from 13 design ACTIVE to 12, and from 10 waiting on him to 9. That is
+  real movement and it is not the close condition, which is under 10. I am not reclassifying rows to
+  reach the number; two of them genuinely changed state today and the rest genuinely have not.
+  WHAT THIS STEP IS NOW WAITING ON, named concretely rather than as "his input": the nine remaining
+  items in `TEN_ANSWERS_2026-08-27.md`. Eight are one word. The ninth is one look at the `Wo?` step
+  with the keyboard up on his own iPhone, which nothing on this machine can produce.
+
+  **RE-COUNTED FROM THE INDEX 2026-08-27, and the 12 above was a hand count that no longer holds.**
+  Walking all 110 rows of `ACTIVE.md` mechanically:
+
+      rows                                    110
+      ACTIVE                                   36
+      ACTIVE and design                        16     (close condition: under 10)
+      of those, waiting on one word from him    8
+      of those, naming no blocker at all        0
+
+  So the second half of the close condition IS met: every design survivor names a concrete blocker.
+  The first half is not, and it cannot be met by me. Eight of the sixteen close the moment he
+  answers, which lands the count at eight, under ten. This step is genuinely gated on him and
+  saying otherwise would be inventing progress.
+
+  THE COUNTER WAS WRONG FIRST AND IS CORRECTED HERE, because a number that only ever moves down is
+  the shape this workstream exists to distrust. A first pass returned 19 design ACTIVE. Reading the
+  matched rows one at a time showed two false positives: row 71 matched on the "back" inside "back
+  end" and row 91 on the "design" inside "non-design". Both are backend or research rows. The
+  exclusion is written into the counter by name rather than the number quietly kept.
   CLOSE CONDITION NOT MET, and it cannot be met from this side. The design ACTIVE count is 13
   against a target of under 10, and 10 of those 13 are waiting on one word or one look from him.
   That is a real dependency on him, not unfinished audit work: every one of the 10 has both arms
@@ -615,3 +704,59 @@ and it IS registered in settings.json at line 492. Two holes, both measured this
    a job he sized at forty passes it silently. His own numbers, 12 and 40, were never encoded.
 
 Both fixed this turn in the existing file rather than a new one.
+
+---
+
+## Unplanned addition, 2026-08-27 into 08-28: the site spoke German in three languages
+
+NOT on his list. Found while measuring the English home page for S2, and kept because it is his
+product being wrong in three of four languages rather than a design preference.
+
+**MEASURED ON THE SERVED PAGES, with a control, before and after.** Ten German words counted in
+the HTML the dev server actually returned:
+
+      /de   370 hits  ->  370     the control. German must stay German, and it did.
+      /en    30 hits  ->    1
+      /fr    same shape ->   1
+      /it    same shape ->   1
+
+The one survivor per locale is `aria-label="Kategorien"` on a section carrying `hidden`, which
+renders nowhere today. Named rather than counted as zero.
+
+**WHAT A CUSTOMER SAW, not only what a screen reader heard.** The English search sheet's black
+commit button read "Suchen". A stylist page headed its reviews "Bewertungen" and, with none yet,
+"Noch keine Bewertungen." Saving said "Gespeichert". Every salon card on the English home page
+announced itself as the salon name followed by "Termin buchen", 24 times on one page.
+
+**FOUR PAGES HAD NO SECOND LANGUAGE AT ALL**, which is a worse shape than a leftover string:
+`profile/favorites`, `profile/looks`, `profile/stamps` and `profile/referral` had no translations
+call in the file. `locale` was in scope and used for hrefs, never for copy. 36 strings moved,
+including a login wall reading "Anmelden erforderlich" and a WhatsApp share message in German.
+German values were RELOCATED, never rewritten: nobody approved new copy.
+
+Commits: `3eb1fee6c` the language fix, `d05e31d75` the check that finds this class.
+
+**THE HARDEN, and it is category 2 of the four: knowable before acting, but only by looking. So the
+artifact is the script that looks, not a check that scolds at the end of a turn.**
+`npm run check:hardcoded-copy` (`scripts/check-hardcoded-copy.mjs`). It carries its own
+known-answer control and exits 2 if its own detector stops matching, because a detector that
+silently matches nothing reports a clean site, which is precisely how the morning sweep came to
+report a job it had not finished.
+
+**ITS FIRST VERSION HAD THE SAME DISEASE IT WAS BUILT TO CURE**, and an independent reviewer caught
+it: it scanned two component directories and reported OK on 3 sites while whole page routes shipped
+German. Widened to the customer route tree, the count went 3 to 14, then to 10 once four were
+fixed. Its three proven blind spots are written into its own header rather than discovered later.
+
+PARKED, NAMED, NOT FIXED:
+  - The Italian copy runs informal in places this sweep did not touch, including the home page
+    hero. A count was taken and its own reviewer showed the classifier's verb rule is wrong, so
+    NO NUMBER IS PUBLISHED. It needs a proper pass.
+  - `EmptyStateDiscovery.tsx` renders a hardcoded "Alle" that two of the fixed pages share.
+  - `_shared.ts:380` builds "Geöffnet bis {time}" in a helper and passes it as a prop, which the
+    new check cannot see by design.
+  - Every `/profile/*` route returns 200 to a cookie-less request instead of redirecting the way
+    `/dashboard` does. CHECKED MYSELF rather than relayed, because a reviewer called it "no wall at
+    all": the visible text of `/de/profile/favorites` with no cookies is 166 characters of nav plus
+    the word "Anmelden", and zero signed-in markers. So it renders a signed-out shell, not
+    somebody's data. It is an inconsistency, not a leak, and the reviewer over-called it.
