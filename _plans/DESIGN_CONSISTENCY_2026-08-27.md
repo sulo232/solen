@@ -236,6 +236,50 @@ the direction of the screen he already likes.
   So on the city page the breadcrumb thinks it is a category route and the header thinks it is
   not. Widening only Header's regex would fix the bar and leave two of the three copies behind,
   so the edit has to name what else `showCategoryChrome` gates before it is made.
+  THE BUILD PLAN, arbitrated 2026-08-27 from four independent route traces plus a survey of every
+  component in the repo that draws a search-bar-shaped control. Written out here because the next
+  person to open this step should not have to re-derive it.
+  WHAT LANDS NOW, because it is geometry and it applies a decision he already made:
+    E1  `inspo/page.tsx:468`  `pt-1.5` to `pt-0`. Takes Inspo's bar from y 18 to y 12.
+        LABELLED UNVERIFIED AS TO INTENT: no comment explains why that 6px is there, and it is
+        page-level padding, so the whole Inspo page rises 6px, not only the bar.
+    E2  `SearchTemplate.tsx:906`  `useTransform(scrollProgress, [0, 1], [4, 12])` to `[12, 12]`.
+        Takes the four category routes from y 4 to y 12 and stops the bar moving on scroll.
+    E3  `SearchTemplate.tsx:1334`  `h-[54px]` to `h-[64px]`. His 2026-08-11 call, finally applied
+        to the sibling that never got it.
+    E4  `SearchTemplate.tsx:1134`  rootMargin `-72px` to `-82px`. Derived, not invented: the old
+        value was the pinned footprint 12+54 plus 6, the new footprint is 12+64, so 82. Without
+        it the floating Karte button appears at the wrong scroll point.
+  WHAT DOES NOT LAND WITHOUT HIM LOOKING, and this is a content change wearing a geometry fix:
+    E5/E6  widening the two-segment regex in `Header.tsx:409` AND its byte-identical copy in
+        `CategoryPillRow.tsx:122`. Together they fold the header on `/de/basel/coiffeur` and put
+        its bar at 12 like its siblings. But that 84px is not dead space. It holds two controls,
+        the home tile and the hamburger. The home tile survives, because the bottom bar's first
+        item already goes home. THE HAMBURGER DOES NOT. On that route the header hamburger is the
+        only thing that opens the menu, and the bottom bar has no menu item. So E5 deletes a
+        visible control from one route. That is exactly the hand-off the four sibling routes
+        already made with his approval, so it is defensible, but it is his call and it needs the
+        before and after in front of him. E5 without E6 is forbidden: it would fold the header
+        and leave the row that should take over still returning null.
+  WHAT IS A SEPARATE STEP, not this one: E7 to E11, actually collapsing the two pills into one
+  component. `HomeSearchPill` already carries a variant mechanism (label, trailing, onActivate)
+  and two callers already use it, so the extraction is real work rather than a rewrite. It also
+  reaches a THIRD hand-rolled copy inside the same file, the map-view bar at
+  `SearchTemplate.tsx:1983-2002`, whose own comment claims it is "IDENTICAL shape/size" to the bar
+  above and is not: 67 against 54 today, 67 against 64 after E3.
+  THE COST OF E3, NAMED BEFORE IT IS APPLIED rather than after. 54 is the only height in this
+  system that was ever MEASURED against anything: he picked variant C by letter on 2026-08-10 and
+  C was Airbnb read live at 390 wide. 64 came out of a different conversation the next day. So
+  unifying on 64 moves five routes onto the less-grounded number and costs each listing route 10px
+  of first viewport. It is still right, because his 08-11 words are the later dated decision and
+  they are unambiguous ("he asked for more"), but FLOORS LAW 3 wants at least 4 content units in
+  the mobile first viewport and that must be re-measured after E3, not assumed.
+  ONE MORE COST, on E2: collapsing the band padding to a constant removes the last bit of movement
+  from the search band, and he approved that movement twice. What survives is the pill's shadow,
+  which still ramps on scroll, so the bar still answers the scroll, it just stops moving. The same
+  file already collapsed `bandPaddingBottom` to `[8, 8]` for the same reason and left a comment
+  saying the mechanism is untouched, so this follows a precedent set in place rather than breaking
+  one.
   NOT A SEARCH BAR, FOUND ON THE WAY, PARKED WITH ITS REASON: the city page builds a breadcrumb
   chain at `[city]/[category]/page.tsx:222` and passes it to `SearchTemplate`, which declares the
   prop at `:137`, destructures it at `:429`, and renders it nowhere in 2546 lines.

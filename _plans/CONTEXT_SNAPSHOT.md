@@ -2,38 +2,16 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-27T20:35:20 (trigger: auto)
+- taken: 2026-08-27T21:30:05 (trigger: auto)
 - branch: claude/stress-test-gates-hooks-6dc8e8
 
 ## git
 ```
-4f5629426 A counter for the German words a screen reader speaks on the English site
-228704e19 The back button was never waiting on you, and I had that wrong
-0661380cd Your English home page said Bewertungen. It says Reviews now
-f0bb32d76 Screen specs step is closed; the Inspo half of the search bar step is done
-dba7d7325 Thirteen more rows judged against the code, and three of them were lying
-```
-```
-M _design-system/_geometry-report.md
- M _plans/CONTEXT_SNAPSHOT.md
- M app/[locale]/_components/homepage/FeaturedStylists.tsx
- M app/[locale]/_components/homepage/Reviews.tsx
- M app/[locale]/_components/homepage/SearchBar.tsx
- M app/[locale]/_components/layout/Header.tsx
- M app/[locale]/_components/layout/MobileMenu.tsx
- M app/[locale]/_components/primitives/BackButton.tsx
- M app/[locale]/_components/salon/SalonHeader.tsx
- M app/[locale]/_components/salon/SalonHero.tsx
- M app/[locale]/_components/salon/SalonLightbox.tsx
- M app/[locale]/_components/salon/SalonStickyTabNav.tsx
- M app/[locale]/_components/search/CategoryHeroCarousel.tsx
- M app/[locale]/_components/search/MapSalonDetail.tsx
- M app/[locale]/_components/search/SalonResultCard.tsx
- M app/[locale]/_components/tips/TipSheet.tsx
- M app/[locale]/dev/decision-backbutton/page.tsx
- M app/[locale]/inspo/board/[id]/page.tsx
- M app/[locale]/onboarding/OnboardingFlow.tsx
- M components-legacy/dashboard/DashboardLayout.tsx
+7cc251677 Ten questions that were sitting in ten different files, now in one
+e5844b8f2 checkpoint(auto): 3 uncommitted file(s) at turn end
+cb41a338c Back-arrow box: replace a number I could not defend with one I read
+dca5ffd6b Back arrow: show the lock before applying it, and count how far it drifted
+33f8a1c99 Close the German-labels box: 38 fixed, four languages read off the live page
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
@@ -80,5 +58,4 @@ Open boxes:
 - [ ] **S2. Chrome becomes one component, not six.** The search pill and the category row are
 - [ ] **S3. Back arrow becomes one rule.** Standard is the 44x44 at (16,20) that seven pages already
 - [ ] **S5. Fold the 38 rows.** Every one of them is either finished, superseded by a spec written in
-- [ ] **S8. The English site speaks German to anyone who cannot see it. MEASURED 2026-08-27, NOT
 - [ ] **S6. Then and only then, the look.** Gray, the dashboard direction, typography. Those are
