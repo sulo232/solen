@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Notifications: weight the Airbnb way</title>
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!-- Reference-checked: _design-system/LOCKFILE.md (line 2044, EMPHASIS BUDGET row: "Airbnb's
+     PDP measures 3.1% (7 of 388), so the honest target is far below 30 rather than just under
+     it"). This is the file the owner's own dated 2026-08-12 decision ("airbnb te is source of
+     truth") already ties the Airbnb weight-share number to; the 3.1% figure cited in this
+     mockup's Diagnosis lines is quoted from there, not re-derived from memory. -->
+<!-- Scale-note: F7a weight share is a whole-viewport measurement by definition, so a single
+     isolated row could not show the percentage moving. This mirrors the sibling variants built
+     the same day for other screens (fix-home--d-airbnb-weight etc.), all of which use
+     "full-page" for the same reason and name it here per rule 18 rather than silently picking
+     one value. -->
+<!--
+  Grounded-in: app/[locale]/notifications/NotificationsClient.tsx (real route /de/notifications).
+    Both panels are live iframes of the same real route, loaded via /api/dev/login?to=/de/notifications
+    so the authenticated inbox renders (the unauthenticated route redirects to the login page).
+
+  Depicts:
+    BEFORE panel -> app/[locale]/notifications/NotificationsClient.tsx (real route
+      /de/notifications, live iframe, untouched).
+    AFTER panel -> app/[locale]/notifications/NotificationsClient.tsx (real route
+      /de/notifications, same live iframe, with ONE CSS rule injected after load: every element
+      carrying Tailwind's font-semibold or font-bold utility, weight 600/700, is forced to
+      font-weight 500. Nothing else changes. This is the arm named "emphasis the Airbnb way":
+      demote weight, let size and colour carry hierarchy, matching the owner's 2026-08-12
+      "airbnb te is source of truth" call).
+
+  CORRECTION, rule 18 (surface contradictions), found before building anything:
+    The brief handed to this task read: display anchor 28px PASS, weight share 28.57% PASS,
+    ratio 1.87x PASS, size spread PASS, for this route, with only imagery and elevation named as
+    failing. Every one of those four PASS claims is wrong on the real route. Measured live,
+    2026-08-27, two independent ways:
+      1. node scripts/check-geometry.mjs --floors-only --base-url http://localhost:3457
+         "/api/dev/login?to=/de/notifications" (the house tool, authenticated):
+         F2 imagery 0% FAIL | F6 display anchor 20px FAIL, floor 28px |
+         F7a weight share 36.36% (8/22) FAIL, ceiling 30% | F7b anchor ratio 1.54x FAIL, floor
+         1.8x | F7c size spread FAIL (5 distinct sizes inside one 8px window, the densest-cluster
+         trap) | ELEVATION 2 distinct shadows, PASS.
+      2. A scratch in-page script (same leaf definition as the house tool: visible, own text
+         node, inside the 390x844 viewport) run directly in the authenticated tab found 21
+         leaves, 8 at weight 600 or above, 38.10%, the same 8 elements the house tool flags, off
+         by one leaf from a boundary-detection difference, not a substance difference.
+    Likely source of the brief's stale PASS numbers: elevation was ALSO given as 1 and FAIL, and
+    is actually 2 and PASS (matches what a sibling agent's public/_mockups/floor-fix-notifications/
+    already found and documented, read before this file was built), so the whole floor row for
+    this screen looks like it was copied from a different, unauthenticated or cached, measurement
+    pass. Only elevation was corrected in that sibling file; this file corrects the other three.
+    None of this changes this mockup's own job: F7a genuinely fails at 36.36%, comfortably inside
+    this mechanism's scope, so the assigned arm has real work to do here.
+
+  Diagnosis: F7a weight share | measured 36.36% (8/22 leaf-text elements at weight 600 or above,
+    house tool, authenticated route) | violates LOCKFILE EMPHASIS BUDGET / CLAUDE.md FLOORS LAW
+    7a ceiling | target 30% or under, house reference Airbnb PDP 3.1%
+  Diagnosis: F7a weight share after the fix | measured 0.00% (0/21, same in-page leaf script,
+    re-run after injecting the weight-500 override) | violates nothing, PASS | target 30% or under
+  Diagnosis: F6 display anchor (untouched by this mechanism, corrected number above) | measured
+    20px (the page heading) | violates CLAUDE.md NEVER-AGAIN floor 6 / LOCKFILE EMPHASIS BUDGET |
+    target 28px, house value 30px
+  Diagnosis: F7b anchor ratio (untouched by this mechanism, corrected number above) | measured
+    1.54x (20px over a 13px median) | violates LOCKFILE EMPHASIS BUDGET anchor-ratio row |
+    target 1.8x
+  Diagnosis: F2 imagery (untouched by this mechanism, matches the number this task was given) |
+    measured 0% of the first viewport | violates FLOORS LAW 2 / LOCKFILE imagery row |
+    target 33%
+
+  The 8 weight>=600 elements found (house tool and in-page script, identical set): the page's
+    own heading (700, translated copy via the product's locale system), the unread count inside
+    the "N unread" line (600), the mark-all-read link (600), the "earlier" section label (600),
+    the three unread row titles (600 each, translated copy: one cancelled-booking notice and two
+    salon-application-rejected notices), and the small unread-count badge on the header bell icon
+    in NotificationBell.tsx, which is shared global chrome, not part of this page. The one
+    already-read row title was already at 500 and stays untouched by the fix, same as before.
+
+  Exists-check: `npm run exists notifications` ran this turn, 17 matches, all reused
+    (NotificationsClient.tsx, both API endpoints, the notifications table, the two routes),
+    nothing new proposed. `npm run exists "fix-notifications--d-airbnb-weight"` also ran this
+    turn, 0 matches, this directory is genuinely new. A sibling mockup at
+    public/_mockups/floor-fix-notifications/ and public/_mockups/fix-notifications--b-hierarchy/
+    already exist for this same screen; both were read before writing this file. floor-fix-
+    notifications targets imagery via a row-photo swap and elevation via measurement, and says
+    nothing about weight. fix-notifications--b-hierarchy is a different mechanism (hierarchy
+    first). Neither touches font-weight, so this file is not a restyle of either.
+
+  Treatment-only: ONE injected stylesheet rule on the AFTER iframe only,
+    font-semibold and font-bold utilities forced to font-weight 500. No element added, removed,
+    resized, or recoloured. No DOM structure, copy, spacing, icon, or image change. No hero
+    photo added (owner has rejected a baked-in hero photo three times by name).
+
+  Honesty notes:
+    - This mechanism can move ONLY F7a. It cannot move F2 (imagery), F6 (anchor size), or F7b
+      (anchor ratio), because none of those three are about weight. Reporting that plainly
+      rather than shipping a panel that looks different but leaves those three exactly where
+      they were.
+    - The blanket font-semibold/font-bold override also reaches the NotificationBell chrome
+      badge on the bell icon, which is shared global chrome and off-limits to modify for real.
+      That is why the AFTER panel measures a clean 0.00% rather than the roughly 4.5% (1/22) a
+      page-scoped version would land on if the badge were correctly left untouched. Shipping
+      this for real means scoping the rule to NotificationsClient.tsx's own elements (a wrapper
+      class, not a global utility override), which still clears the 30% ceiling by a wide margin
+      either way.
+    - font-semibold and font-bold are Tailwind's own utilities, used across the whole product,
+      not Solen-authored components, so a global override is a test harness for this one iframe,
+      never something to ship as-is.
+-->
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#52525B; --line:#E4E4E7; --sunken:#F4F4F5;
+    --accent:#276EF1;
+    --font:'Inter Tight',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#fff}
+  body{
+    font-family:var(--font); color:var(--ink); -webkit-font-smoothing:antialiased;
+    -webkit-text-size-adjust:100%; text-size-adjust:100%;
+    max-width:402px; margin:0 auto; padding:20px 16px calc(28px + env(safe-area-inset-bottom));
+  }
+  h1{font-size:19px; font-weight:600; letter-spacing:-0.01em; line-height:1.3}
+  .sub{font-size:13px; color:var(--ink2); margin-top:6px; line-height:1.5}
+  .row{display:flex; align-items:center; justify-content:space-between; margin-top:22px; margin-bottom:8px}
+  .tag{font-size:12px; font-weight:600; color:var(--ink2)}
+  .tag.after{color:var(--ink)}
+  .badge{font-size:11px; font-weight:600; color:var(--ink2); background:var(--sunken); border-radius:999px; padding:3px 9px}
+  .badge.ok{color:#16A34A; background:#F0FDF4}
+  .frame{border:1px solid var(--line); border-radius:16px; overflow:hidden; background:#fff}
+  iframe{display:block; width:100%; height:844px; border:0}
+  .stat-row{display:flex; gap:8px; margin-top:10px}
+  .stat{flex:1; background:var(--sunken); border-radius:12px; padding:10px 12px}
+  .stat .num{font-size:20px; font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums}
+  .stat .num.good{color:#16A34A}
+  .stat .lbl{font-size:11px; color:var(--ink2); margin-top:2px}
+  .note{margin-top:24px; background:var(--sunken); border-radius:16px; padding:16px; font-size:13px; line-height:1.55; color:var(--ink2)}
+  .note b{color:var(--ink); font-weight:600}
+  .note .call{margin-top:12px; padding-top:12px; border-top:1px solid var(--line)}
+  .note .correction{margin-top:12px; padding-top:12px; border-top:1px solid var(--line)}
+  .foot{margin-top:20px; font-size:11px; color:var(--ink2); line-height:1.5; border-top:1px solid var(--line); padding-top:12px}
+</style>
+</head>
+<body>
+  <h1>Making the notifications page a little less bold</h1>
+  <p class="sub">Same inbox, twice. In the second one, every bold or semi-bold word on the screen (the title, the unread count line, the mark-all-read link, the section label, the unread row titles) gets a touch lighter. Nothing moves, nothing resizes, nothing changes colour. Scroll inside each box to compare.</p>
+
+  <div class="stat-row">
+    <div class="stat"><div class="num">36.36%</div><div class="lbl">text at heavy weight, before</div></div>
+    <div class="stat"><div class="num good">0.00%</div><div class="lbl">text at heavy weight, after</div></div>
+  </div>
+
+  <div class="row"><span class="tag">BEFORE (live, untouched)</span></div>
+  <div class="frame"><iframe id="beforeFrame" src="/api/dev/login?to=/de/notifications" title="real notifications inbox, before"></iframe></div>
+
+  <div class="row"><span class="tag after">AFTER (bold text lightened)</span><span class="badge" id="afterStatus">loading</span></div>
+  <div class="frame"><iframe id="afterFrame" src="/api/dev/login?to=/de/notifications" title="real notifications inbox, after (weight demoted)"></iframe></div>
+
+  <div class="note">
+    <b>What changed:</b> right now, a bit over a third of the words on this screen are bold. That includes the page title, the unread count line, the mark-all-read link, the section label, and the title of every unread row. When that much is bold, nothing stands out, it just reads heavy. This test makes all of that a touch lighter (medium instead of semibold or bold) everywhere on the screen. The sizes stay exactly the same, the title is still the biggest word on the page and the row titles are still bigger than their timestamps, so you can still tell what matters, that job just shifts from weight to size, which is already how the page is laid out.
+    <div class="call">
+      <b>What this does not fix:</b> three other things are still off on this screen and this change cannot touch them, because they are about size and photos, not weight: the biggest word on the page is only 20px (we want at least 28px, a real headline moment), the gap between the biggest and smallest text is too small, and the screen still has zero photos in the first view. Those need their own fix, and the imagery one needs your call first (row thumbnails only get to about 4% coverage, nowhere near the 33% target, without a bigger redesign of the row format).
+    </div>
+    <div class="correction">
+      <b>One correction:</b> the brief for this test said this screen already passed on size, ratio, and spread, and only had a weight problem to look at for completeness. Measuring the real, logged-in page directly found the opposite: only imagery was correctly flagged, everything else including the weight number itself was wrong. The real weight number is 36.36%, which is why this fix has real work to do here, not none.
+    </div>
+  </div>
+
+  <div class="foot">Both panels are the same live route, loaded through the dev login helper so the real inbox shows instead of the login redirect. The lightened weight is applied here as a test overlay on Tailwind's shared "semibold"/"bold" utilities, which are used across the whole product (including the bell icon's unread badge in the header, which is shared chrome), so shipping this for real would scope the rule to just this page's own elements instead of a global override.</div>
+
+<script>
+  function applyChange(doc){
+    if (doc.getElementById('weight-500-style')) return 1;
+    if (!doc.querySelector('.font-semibold, .font-bold')) return 0;
+    var st = doc.createElement('style');
+    st.id = 'weight-500-style';
+    st.textContent = '.font-semibold, .font-bold { font-weight: 500 !important; }';
+    doc.head.appendChild(st);
+    return 1;
+  }
+  var tries = 0;
+  var MAX_POLLS = 150; // poll cap, never a displayed count
+  var iv = setInterval(function () {
+    tries++;
+    var f = document.getElementById('afterFrame');
+    var status = document.getElementById('afterStatus');
+    try {
+      var doc = f.contentDocument;
+      if (doc && doc.readyState === 'complete' && applyChange(doc) > 0) {
+        clearInterval(iv);
+        if (status) { status.textContent = 'applied'; status.className = 'badge ok'; }
+      }
+    } catch (e) {}
+    if (tries > MAX_POLLS) {
+      clearInterval(iv);
+      if (status && status.textContent === 'loading') { status.textContent = 'could not confirm'; }
+    }
+  }, 200);
+</script>
+</body>
+</html>

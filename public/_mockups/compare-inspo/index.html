@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Inspo: every proposed fix, one page</title>
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!--
+  Grounded-in: public/_mockups/floor-fix-inspo/index.html (variant A, smallest CSS change: read in
+    full, its exact injected script and header-string lifted verbatim)
+  Grounded-in: public/_mockups/fix-inspo--b-hierarchy/index.html (variant B, hierarchy first: read
+    in full, its exact injected anchor + chip-demote script lifted verbatim)
+  Grounded-in: public/_mockups/fix-inspo--c-content-forward/index.html (variant C, content forward:
+    read in full, its exact injected padding rule lifted verbatim)
+  Grounded-in: public/_mockups/fix-inspo--d-airbnb-weight/index.html (variant D, Airbnb weight: read
+    in full, its exact injected stylesheet lifted verbatim)
+  Grounded-in: public/_mockups/fix-inspo--e-recompose/index.html (variant E, recompose: read in
+    full, its exact injected h1+p block and class names lifted verbatim)
+  Grounded-in: the running dev server, http://localhost:3457/de/inspo, every panel below loads it
+    live, six times, once untouched and once per variant
+
+  Depicts: panel 0 (Now) -> the real /de/inspo route, live iframe, untouched.
+  Depicts: panel 1 (A) -> the same real route, live iframe, with variant A's own script applied:
+    inserts one "Inspo" h1 at 28px/600 above the search pill. Nothing else touched.
+  Depicts: panel 2 (B) -> the same real route, live iframe, with variant B's own script applied:
+    inserts a 30px/500 "Inspo" h1, and demotes the nine quick-chip filter buttons from 12px/500 to
+    11px/400. Nothing else touched.
+  Depicts: panel 3 (C) -> the same real route, live iframe, with variant C's own script applied:
+    tightens CategoryPillRow's own [role="tablist"] padding from 20px to 12px top/bottom, so the
+    real photo grid starts 16px higher. Nothing else touched.
+  Depicts: panel 4 (D) -> the same real route, live iframe, with variant D's own script applied:
+    two elements (the selected category-tile label, the active "Inspo" bottom-nav label) go from
+    font-weight 600 to 500. Nothing else touched.
+  Depicts: panel 5 (E) -> the same real route, live iframe, with variant E's own script applied:
+    inserts an h1 ("Inspo") + p ("Your next look") pair above the search pill, styled with the
+    home route's own hero-heading classes copied verbatim. Nothing else touched.
+
+  This file writes no new treatment of its own. Every injected script below is copied character
+  for character from the variant file it depicts; this page's only original code is the panel
+  scaffold (labels, captions, badges, iframe wiring) and the summary text at the top and bottom.
+
+  Diagnosis: F6 display anchor | measured live by the five variant builders, converging on 14-16px
+    (the search placeholder, the single largest visible text in Inspo's first viewport at 390x844,
+    read via getComputedStyle by four independent scripts across the five variant files) | violates
+    CLAUDE.md NEVER-AGAIN floor 6 and the FLOORS LAW EMPHASIS BUDGET, which requires one on-screen
+    text element at least 28px | target: the settled ladder value, 30px (house value; the owner's
+    own reference screen, /de/salon/cuts-and-culture, uses 30px)
+  Diagnosis: F7b anchor ratio | measured live at 1.14x-1.17x across all five builders (largest text
+    over median/body text, same runs as above) | violates FLOORS LAW 7b, which requires the largest
+    text be at least 1.8x the body size | target: 1.8x (ladder value; the reference screen clears
+    2.14x)
+
+  A NUMBER GIVEN TO ALL FIVE BUILDERS WAS WRONG, and none of them built on it, so this comparison
+  does not repeat it either. All five were told Inspo's imagery measures 0.71% photographic. Four
+  of the five re-measured it live, independently, with different tools (scripts/check-geometry.mjs
+  with a known-answer control; a live occlusion-aware DOM scan; an isolated wait-for-real-photo
+  test) and converged on 63-67% photographic once the real masonry photos finish loading, which on
+  a live phone takes under a second, well past the 33% floor. The 0.71% reading is a cold/lazy-load
+  artifact (Next/Image loading="lazy" plus a page load caught mid-decode), not a missing-content
+  problem. Every variant below fixes F6/F7b; none of them needed to fix imagery, because imagery
+  was never actually broken here.
+
+  Exists-check: `npm run exists "inspo compare"` run this turn, 0 hits, this comparison page is new.
+    `npm run exists inspo` was already run by all five variant builders this same task, converging
+    on 52+ matches (the /inspo route family, 20 page-inline sections, 3 API endpoints, 2 DB tables,
+    2 components, 5 exported symbols), reused here, not re-run, since nothing about the underlying
+    route changed between their builds and this one.
+
+  Treatment-only: this file adds no new treatment to the real page. It stacks the five treatments
+  that already exist on disk, unmodified, each in its own iframe, plus one untouched control panel.
+  Single light theme, no dark mode. Every label written for this document is English; the real page
+  inside every iframe renders its own German through the product's translations, which is exempt.
+
+  measure-ok: every size cited in this file is OUR OWN screen's own measured number, not a
+  reference brand's. Anchor 30px and body 14px are Inspo's own live measurements (the same anchor
+  size the ladder settled on for THIS product, derived from /de/salon/cuts-and-culture, the one
+  Solen screen already at 30px/14px/2.14x); nothing here is Airbnb's or any other brand's raw size
+  carried over unadapted.
+-->
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100dvh;
+    background: #FFFFFF;
+    color: #0A0A0A;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { width: 100%; max-width: 402px; margin: 0 auto; padding: 0 0 64px; }
+  .nums { font-variant-numeric: tabular-nums; }
+
+  .lede { padding: 28px 16px 8px; }
+  .lede h1 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 26px; font-weight: 600; line-height: 1.15; letter-spacing: -0.02em;
+  }
+  .lede p { margin-top: 12px; font-size: 14px; line-height: 1.55; color: #3F3F46; }
+  .lede p + p { margin-top: 10px; }
+  .lede b { color: #0A0A0A; font-weight: 600; }
+
+  .opts { margin: 16px 16px 0; padding: 14px 14px; border-radius: 12px; background: #F4F4F5; border: 1px solid #E4E4E7; }
+  .opts h3 { font-size: 12px; font-weight: 600; color: #6B6B6B; text-transform: none; margin-bottom: 8px; }
+  .opts ol { padding-left: 18px; }
+  .opts li { font-size: 13px; line-height: 1.6; color: #3F3F46; margin-bottom: 4px; }
+  .opts li b { color: #0A0A0A; font-weight: 600; }
+
+  .panel { margin-top: 30px; }
+  .cap { padding: 0 16px 8px; }
+  .cap .tag {
+    display: block; font-size: 11px; font-weight: 600; color: #6B6B6B;
+    letter-spacing: 0.02em; margin-bottom: 2px;
+  }
+  .cap .sub {
+    display: block; font-size: 11px; font-weight: 400; color: #9CA3AF;
+    letter-spacing: 0.01em; margin-bottom: 4px;
+  }
+  .cap h2 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 17px; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em;
+  }
+  .cap p { margin-top: 4px; font-size: 13px; line-height: 1.5; color: #6B6B6B; }
+  .cap p .nums { color: #0A0A0A; font-weight: 600; }
+
+  .frame {
+    position: relative; width: 100%; height: 640px;
+    border-top: 1px solid #E4E4E7; border-bottom: 1px solid #E4E4E7;
+    overflow: hidden; background: #fff;
+  }
+  .frame iframe { width: 402px; height: 844px; border: 0; display: block; }
+  .frame .badge {
+    position: absolute; top: 10px; right: 10px; z-index: 2;
+    padding: 5px 10px; border-radius: 40px;
+    background: rgba(255,255,255,0.94); border: 1px solid #E4E4E7;
+    font-size: 11px; font-weight: 600; color: #0A0A0A;
+    font-variant-numeric: tabular-nums;
+  }
+  .frame .badge.fail { color: #DC2626; }
+  .frame .badge.pass { color: #16A34A; }
+  .frame .badge.pending { color: #6B6B6B; }
+  .scroll-hint { padding: 5px 16px 0; font-size: 11px; color: #9CA3AF; }
+
+  .foot { margin: 30px 16px 0; padding-top: 16px; border-top: 1px solid #E4E4E7; }
+  .foot h3 { font-size: 14px; font-weight: 600; margin-bottom: 10px; }
+  .foot .row { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid #E4E4E7; }
+  .foot .row:last-child { border-bottom: none; }
+  .foot .who {
+    flex: none; width: 74px; font-size: 11px; font-weight: 600; padding: 3px 8px;
+    border-radius: 20px; text-align: center; height: fit-content;
+  }
+  .foot .who.you { background: #EFF6FF; color: #276EF1; }
+  .foot .who.match { background: #F4F4F5; color: #3F3F46; }
+  .foot .txt { font-size: 13px; line-height: 1.5; color: #3F3F46; }
+  .foot .txt b { color: #0A0A0A; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="lede">
+    <h1>Every fix for Inspo, one after another</h1>
+    <p>Today, nothing on Inspo's phone screen is big. Scroll through it now and the biggest word
+       you will find is the little gray "Styles suchen..." placeholder text inside the search bar,
+       at 14px. Everything else on the screen sits at roughly that same small size, so nothing
+       tells your eye where to look first.</p>
+    <p>Below are <b>five different ways to fix that</b>, plus the page exactly as it is today for
+       comparison. Every box is your real, live Inspo page, not a redraw. Scroll inside each box
+       to see the real photo feed underneath. The only thing that changes between boxes is the one
+       treatment named in its caption.</p>
+  </div>
+
+  <div class="opts">
+    <h3>THE FIVE OPTIONS, IN ORDER BELOW</h3>
+    <ol>
+      <li><b>A, smallest change.</b> Add the title back. Nothing else moves.</li>
+      <li><b>B, hierarchy first.</b> Add the title, and also shrink the small filter tags so the
+        screen reads in clear layers, not one flat block.</li>
+      <li><b>C, real content higher.</b> No title added. Tightens the button row above the photos
+        so the real photo grid starts a little higher and sooner.</li>
+      <li><b>D, less bold, the Airbnb way.</b> No title added. The two bold words on the screen
+        become not-bold. Shown for completeness; measured to not actually fix the missing-title
+        problem, explained below.</li>
+      <li><b>E, biggest change.</b> Add both a title and a subtitle, in the same style your home
+        page already uses for its own heading, so this page's heading matches everywhere else.</li>
+    </ol>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <span class="tag">NOW</span>
+      <h2>Inspo today, untouched</h2>
+      <p>Biggest text on the whole screen: <span class="nums">14px</span>. Nothing reaches the
+         <span class="nums">28px</span> minimum a screen needs to have one clear focal point.</p>
+    </div>
+    <div class="frame">
+      <div class="badge fail nums">14px anchor</div>
+      <iframe id="f0" src="/de/inspo" title="Inspo, untouched"></iframe>
+    </div>
+    <div class="scroll-hint">Scroll inside the box, the real feed continues below.</div>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <span class="tag">OPTION A</span>
+      <span class="sub">SMALLEST CHANGE</span>
+      <h2>Just bring the title back</h2>
+      <p>One line, "Inspo", appears above the search bar. It is the exact same word your desktop
+         site already shows, just switched back on for phones. Nothing else on the screen moves.</p>
+    </div>
+    <div class="frame">
+      <div class="badge pass nums">28px anchor</div>
+      <iframe id="f1" src="/de/inspo" title="Inspo, option A, title restored"></iframe>
+    </div>
+    <div class="scroll-hint">Scroll inside the box, the real feed continues below.</div>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <span class="tag">OPTION B</span>
+      <span class="sub">HIERARCHY FIRST</span>
+      <h2>Title back, and re-rank what's under it</h2>
+      <p>Same title as option A, but bigger (<span class="nums">30px</span>), and the row of small
+         style tags under the filter bar (Defined Brows, Glossy Finish...) steps down a size, so
+         they read as optional extras instead of sitting at the same size as real section labels.</p>
+    </div>
+    <div class="frame">
+      <div class="badge pending nums" id="b1">loading</div>
+      <iframe id="f2" src="/de/inspo" title="Inspo, option B, title plus re-ranked tags"></iframe>
+    </div>
+    <div class="scroll-hint">Scroll inside the box, the real feed continues below.</div>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <span class="tag">OPTION C</span>
+      <span class="sub">REAL CONTENT HIGHER</span>
+      <h2>No new title, push the real photos up</h2>
+      <p>No text is added. Instead the button row above the photo grid loses a little of its own
+         empty air, so the real photo tiles start about <span class="nums">16px</span> higher on
+         the screen. This does not fix the missing-title problem; see the note at the bottom.</p>
+    </div>
+    <div class="frame">
+      <div class="badge pending nums" id="b2">loading</div>
+      <iframe id="f3" src="/de/inspo" title="Inspo, option C, chrome tightened"></iframe>
+    </div>
+    <div class="scroll-hint">Scroll inside the box, the real feed continues below.</div>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <span class="tag">OPTION D</span>
+      <span class="sub">LESS BOLD, THE AIRBNB WAY</span>
+      <h2>Un-bold the two words that are bold today</h2>
+      <p>No text is added or resized. The selected category chip and the active "Inspo" tab at the
+         bottom both stop being bold. This was measured to not touch the missing-title problem
+         either; see the note at the bottom.</p>
+    </div>
+    <div class="frame">
+      <div class="badge pending nums" id="b3">loading</div>
+      <iframe id="f4" src="/de/inspo" title="Inspo, option D, two words un-bolded"></iframe>
+    </div>
+    <div class="scroll-hint">Scroll inside the box, the real feed continues below.</div>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <span class="tag">OPTION E</span>
+      <span class="sub">BIGGEST CHANGE</span>
+      <h2>Title and subtitle, home page's own style</h2>
+      <p>A two-line block appears above the search bar: "Inspo" at <span class="nums">31px</span>,
+         and under it "Your next look" (a real subtitle string your product already has translated
+         into all four languages, currently shown nowhere). Both use the exact same recipe your
+         home page's own big heading already uses.</p>
+    </div>
+    <div class="frame">
+      <div class="badge pending nums" id="b4">loading</div>
+      <iframe id="f5" src="/de/inspo" title="Inspo, option E, title plus subtitle"></iframe>
+    </div>
+    <div class="scroll-hint">Scroll inside the box, the real feed continues below.</div>
+  </div>
+
+  <div class="foot">
+    <h3>His call versus what just matches the page he likes</h3>
+    <div class="row">
+      <span class="who you">HIS CALL</span>
+      <span class="txt">Which of the five options, if any. A and B only touch what is already
+        there today (bring the title back, optionally re-rank the small tags under it). E is the
+        only one that adds a second line of copy (the subtitle) that has never shown on any
+        screen before, so E is also a "show this new sentence for the first time" decision, not
+        only a sizing one.</span>
+    </div>
+    <div class="row">
+      <span class="who you">HIS CALL</span>
+      <span class="txt">Whether the "Inspo" title comes back at all. It was intentionally hidden
+        on phone as a side effect of a 2026-08-10 decision (V3-D410) about a different, desktop-only
+        stacking problem. Nobody has said the phone version should have no title, but nobody has
+        confirmed it should come back either, so this is a real reopen, not a formality.</span>
+    </div>
+    <div class="row">
+      <span class="who match">MATCHES HIS LIKED PAGE</span>
+      <span class="txt">The <span class="nums">30px</span> title size in A, B and the salon-page
+        ladder's target size are the same number, and E's <span class="nums">31.2px</span> comes
+        from the exact same responsive formula the home page already uses, not a new size picked
+        for this screen.</span>
+    </div>
+    <div class="row">
+      <span class="who match">MATCHES HIS LIKED PAGE</span>
+      <span class="txt">The 1.8x ratio between the title and the body text, and the fact that
+        weight 500 rather than 600 carries the emphasis, both come straight from
+        /de/salon/cuts-and-culture, the one screen already measured to hit every number he wants.</span>
+    </div>
+    <div class="row">
+      <span class="who match">MATCHES HIS LIKED PAGE</span>
+      <span class="txt">Photo coverage on Inspo already passes (measured live at 63-67% once the
+        real photos finish loading), so none of the five options needed to add or move a photo to
+        clear that floor. Options C and D were built and measured honestly to show that a
+        content-push or a weight change alone cannot fix the missing title either, they are shown
+        here so you can see why they were set aside, not because they are live contenders.</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Every function below is copied verbatim from the variant file it applies to. Nothing here is
+  // a new treatment; this page only adds the polling harness wiring each script to its own iframe
+  // id (f1..f5) instead of the single "after" id each source file used on its own.
+
+  // ---- Option A (floor-fix-inspo/index.html) ----
+  function optionA_ensureHeading(doc, container) {
+    if (container.querySelector(".mockup-inspo-anchor-a")) { return; }
+    var heading = doc.createElement("h1");
+    heading.className = "mockup-inspo-anchor-a";
+    heading.textContent = "Inspo";
+    heading.style.cssText = [
+      "font-family:'Inter Tight',Inter,-apple-system,sans-serif",
+      "font-size:28px",
+      "font-weight:600",
+      "line-height:1.15",
+      "letter-spacing:-0.02em",
+      "color:#0A0A0A",
+      "margin:14px 0 12px",
+    ].join(";");
+    container.insertBefore(heading, container.firstChild);
+  }
+
+  // ---- Option B (fix-inspo--b-hierarchy/index.html) ----
+  function optionB_ensureAnchor(doc, container) {
+    if (container.querySelector(".mockup-inspo-anchor-b")) { return; }
+    var heading = doc.createElement("h1");
+    heading.className = "mockup-inspo-anchor-b";
+    heading.textContent = "Inspo";
+    heading.style.cssText = [
+      "font-family:'Inter Tight',Inter,-apple-system,sans-serif",
+      "font-size:30px",
+      "font-weight:500",
+      "line-height:1.15",
+      "letter-spacing:-0.02em",
+      "color:#0A0A0A",
+      "margin:14px 0 12px",
+    ].join(";");
+    container.insertBefore(heading, container.firstChild);
+  }
+  function optionB_demoteChips(doc) {
+    var candidates = doc.querySelectorAll('button[aria-pressed]');
+    for (var i = 0; i < candidates.length; i++) {
+      var btn = candidates[i];
+      if (btn.children.length === 0 && btn.textContent.trim()) {
+        btn.style.fontSize = "11px";
+        btn.style.fontWeight = "400";
+      }
+    }
+  }
+
+  // ---- Option C (fix-inspo--c-content-forward/index.html) ----
+  function optionC_apply(doc) {
+    if (doc.getElementById('cf-inspo-style-c')) return true;
+    var tablist = doc.querySelector('[role="tablist"]');
+    if (!tablist) return false;
+    var st = doc.createElement('style');
+    st.id = 'cf-inspo-style-c';
+    st.textContent = '[role="tablist"]{padding-top:12px !important;padding-bottom:12px !important}';
+    doc.head.appendChild(st);
+    return true;
+  }
+
+  // ---- Option D (fix-inspo--d-airbnb-weight/index.html) ----
+  var OPTION_D_CSS = [
+    "span.rounded-pill.bg-s-bg-sunken.font-semibold { font-weight: 500 !important; }",
+    "nav span.font-semibold.max-h-4 { font-weight: 500 !important; }"
+  ].join("\n");
+  function optionD_apply(doc) {
+    if (doc.getElementById("mockup-airbnb-weight-d")) { return true; }
+    if (!doc.head) return false;
+    var style = doc.createElement("style");
+    style.id = "mockup-airbnb-weight-d";
+    style.textContent = OPTION_D_CSS;
+    doc.head.appendChild(style);
+    return true;
+  }
+
+  // ---- Option E (fix-inspo--e-recompose/index.html) ----
+  function optionE_apply(doc, container) {
+    if (container.querySelector(".mockup-e-recompose-anchor")) return true;
+    var wrap = doc.createElement("div");
+    wrap.className = "mockup-e-recompose-anchor";
+    wrap.style.cssText = "padding-top:18px;padding-bottom:6px;";
+    var h1 = doc.createElement("h1");
+    h1.className = "mb-1 font-display text-[clamp(30px,8vw,44px)] font-semibold leading-[1.08] tracking-[-0.02em] text-s-ink";
+    h1.textContent = "Inspo";
+    var p = doc.createElement("p");
+    p.className = "font-body text-[clamp(18px,2vw,20px)] font-normal leading-[1.35] tracking-[-0.005em] text-s-ink-2";
+    p.textContent = "Your next look";
+    wrap.appendChild(h1);
+    wrap.appendChild(p);
+    container.insertBefore(wrap, container.firstChild);
+    return true;
+  }
+
+  // ---- shared polling harness, one per panel, same settle strategy every source file used:
+  // this route is a client component whose grid remounts as data streams in, which can detach a
+  // one-shot DOM write, so each panel keeps re-checking on a plain interval for the whole review
+  // window rather than stopping after the first success. ----
+  function pollPanel(iframeId, badgeId, passLabel, run) {
+    var frame = document.getElementById(iframeId);
+    var badge = badgeId ? document.getElementById(badgeId) : null;
+    var tries = 0;
+    var iv = setInterval(function () {
+      tries += 1;
+      try {
+        var doc = frame.contentDocument;
+        var container = doc && doc.querySelector("main.min-h-screen .max-w-7xl");
+        var ok = false;
+        if (doc && container) {
+          ok = run(doc, container);
+        }
+        if (ok && badge && badge.classList.contains("pending")) {
+          badge.textContent = passLabel;
+          badge.classList.remove("pending");
+          badge.classList.add("pass");
+        }
+      } catch (err) {
+        clearInterval(iv);
+        console.error("[compare-inspo] a panel could not be treated:", err);
+      }
+      if (tries > 150) { clearInterval(iv); }
+    }, 150);
+  }
+
+  pollPanel("f1", null, null, function (doc, container) {
+    optionA_ensureHeading(doc, container);
+    return true;
+  });
+  pollPanel("f2", "b1", "30px anchor", function (doc, container) {
+    optionB_ensureAnchor(doc, container);
+    optionB_demoteChips(doc);
+    return true;
+  });
+  pollPanel("f3", "b2", "chrome tightened", function (doc, container) {
+    return optionC_apply(doc);
+  });
+  pollPanel("f4", "b3", "2 words un-bolded", function (doc, container) {
+    return optionD_apply(doc);
+  });
+  pollPanel("f5", "b4", "31px anchor", function (doc, container) {
+    return optionE_apply(doc, container);
+  });
+</script>
+</body>
+</html>

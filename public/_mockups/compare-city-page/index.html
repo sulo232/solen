@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Basel city page, five fixes stacked</title>
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!--
+  Grounded-in: app/[locale]/[city]/page.tsx
+  Grounded-in: components-legacy/CityPage.tsx
+  Grounded-in: the running dev server at http://localhost:3457, every panel loads /de/basel from it
+  directly, live, with the real seeded Basel salons in it.
+  Grounded-in: public/_mockups/floor-fix-city-page/index.html (A), fix-city-page--b-hierarchy/index.html (B),
+  fix-city-page--c-content-forward/index.html (C), fix-city-page--d-airbnb-weight/index.html (D),
+  fix-city-page--e-recompose/index.html (E). Every stylesheet below is lifted verbatim from those
+  five files, nothing rewritten, nothing invented new.
+
+  Depicts: panel 0 "Now" -> components-legacy/CityPage.tsx via app/[locale]/[city]/page.tsx, /de/basel unmodified
+  Depicts: panel A heading clamp 25px to 28px + unselected-button weight -> components-legacy/CityPage.tsx, /de/basel with floor-fix-city-page's stylesheet injected
+  Depicts: panel B heading 30px/500 + name 16px/500 -> components-legacy/CityPage.tsx, /de/basel with fix-city-page--b-hierarchy's stylesheet injected
+  Depicts: panel C heading/filter padding trim -> components-legacy/CityPage.tsx, /de/basel with fix-city-page--c-content-forward's stylesheet injected
+  Depicts: panel D font-semibold demoted to 500 -> components-legacy/CityPage.tsx, /de/basel with fix-city-page--d-airbnb-weight's stylesheet injected
+  Depicts: panel E heading 30px + category pills on the TabPill recipe -> components-legacy/CityPage.tsx, /de/basel with fix-city-page--e-recompose's script injected
+
+  Diagnosis: display anchor | measured 25px (node scripts/check-geometry.mjs --base-url http://localhost:3457 --floors-only /de/basel, re-run fresh this turn) | violates NEVER-AGAIN floor 6 / FLOORS LAW 7b (LOCKFILE: one element >= 28px per screen) | target 28px, house value 30px
+  Diagnosis: anchor ratio | measured 1.79x against the 14px body, same fresh script run | violates FLOORS LAW 7b, the emphasis-budget ratio floor | target >= 1.8x
+  Diagnosis: weight share | measured 43.75% of visible leaf text at weight >= 600 (7/16), same fresh script run | violates FLOORS LAW 7a, the emphasis-budget weight ceiling | target <= 30%, house reference (the salon page) runs 30%
+
+  Exists-check: `npm run exists "city page"` run this turn (twice, once before each retry). 1 hit:
+  CityPage -> components-legacy/CityPage.tsx. This file reuses that same real route in every panel;
+  nothing new is built or duplicated.
+
+  measure-ok: every number cited above (25px, 43.75%, 1.79x, 43.18%) was read off the RENDERED live
+  page this turn via `node scripts/check-geometry.mjs --base-url http://localhost:3457 --floors-only
+  /de/basel`, which walks the real DOM with getComputedStyle, not read out of source class strings.
+  The reference numbers (30px, 30%, 2.14x, 34.66%) are the same script's own prior live read of
+  /de/salon/cuts-and-culture, cited identically across all five source variant files this session.
+
+  Treatment-only: this comparison page injects each variant's own already-approved-for-mockup
+  stylesheet into a live iframe of the real route, after that iframe finishes loading. No component
+  file is edited. No markup, copy, icon, or photo is touched in any panel; only the CSS/className
+  rules named in the Depicts lines above. Panel E's pill className swap reuses the locked TabPill
+  gray-fill recipe from a dated 2026-06-29 kill of the black-fill pattern (REMOVED.md), it does not
+  reintroduce anything from the graveyard.
+-->
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100dvh;
+    background: #FFFFFF;
+    color: #0A0A0A;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { width: 100%; max-width: 402px; margin: 0 auto; padding: 0 0 64px; }
+
+  .lede { padding: 28px 16px 8px; }
+  .lede .eyebrow { font-size: 12px; font-weight: 600; color: #276EF1; text-transform: none; }
+  .lede h1 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 26px; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em;
+    margin-top: 6px;
+  }
+  .lede p { margin-top: 12px; font-size: 14px; line-height: 1.55; color: #3F3F46; }
+  .lede p + p { margin-top: 10px; }
+  .lede b { color: #0A0A0A; font-weight: 600; }
+
+  .panel { margin-top: 28px; }
+  .cap { padding: 0 16px 8px; }
+  .cap .tag {
+    display: block; font-size: 11px; font-weight: 600; color: #6B6B6B;
+    letter-spacing: 0.02em;
+  }
+  .cap h2 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 18px; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em;
+    margin-top: 2px;
+  }
+  .cap p { margin-top: 4px; font-size: 13px; line-height: 1.5; color: #6B6B6B; }
+  .cap .move {
+    display: inline-flex; align-items: center; gap: 4px; margin-top: 8px;
+    font-size: 12px; font-weight: 600; color: #16A34A;
+    font-variant-numeric: tabular-nums;
+  }
+  .cap .move.neutral { color: #6B6B6B; }
+  .nums { font-variant-numeric: tabular-nums; }
+
+  .frame {
+    position: relative; width: 100%; height: 600px;
+    border-top: 1px solid #E4E4E7; border-bottom: 1px solid #E4E4E7;
+    overflow: hidden; background: #F4F4F5;
+  }
+  .frame iframe { width: 402px; height: 600px; border: 0; display: block; }
+  .frame .badge {
+    position: absolute; top: 10px; right: 10px; z-index: 2;
+    padding: 5px 10px; border-radius: 40px;
+    background: rgba(255,255,255,0.94); border: 1px solid #E4E4E7;
+    font-size: 11px; font-weight: 600; color: #0A0A0A;
+    font-variant-numeric: tabular-nums;
+  }
+  .frame .badge.now { color: #6B6B6B; }
+  .frame .badge.pending { color: #6B6B6B; }
+  .frame .badge.applied { color: #16A34A; }
+
+  .divider { height: 8px; background: #F4F4F5; margin-top: 28px; }
+
+  .foot { padding: 26px 16px 0; }
+  .foot h3 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 16px; font-weight: 600; margin-bottom: 10px;
+  }
+  .foot ul { padding-left: 18px; }
+  .foot li { font-size: 13px; line-height: 1.6; color: #3F3F46; margin-top: 6px; }
+  .foot li b { color: #0A0A0A; font-weight: 600; }
+  .foot .box {
+    margin-top: 14px; padding: 14px; border-radius: 12px; background: #F4F4F5;
+  }
+  .foot .box p { font-size: 13px; line-height: 1.55; color: #3F3F46; }
+  .foot .box p + p { margin-top: 8px; }
+  .foot .box b { color: #0A0A0A; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="lede">
+    <span class="eyebrow">Basel city page</span>
+    <h1>What's wrong today, and five ways to fix it</h1>
+    <p>Right now the Basel page's title is smaller than it should be, and the four category buttons
+       under it (Coiffeur, Barbershop, Nails, Spa) are all bold, even the ones you have not tapped,
+       so nothing on the screen looks like it matters more than anything else.</p>
+    <p>Below is your <b>real</b> Basel page, live, six times in a row. The first is today, untouched.
+       Each one after it is the exact same live page with one proposed fix switched on. Nothing is
+       redrawn and nothing is fake, scroll down and compare.</p>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <span class="tag">PANEL 0. TODAY</span>
+      <h2>Now</h2>
+      <p>Title 25px. All four category buttons bold. About 44% of the visible text on this screen is
+         bold, against a limit of 30%.</p>
+      <span class="move neutral">No change, this is what ships today</span>
+    </div>
+    <div class="frame">
+      <div class="badge now nums">unmodified</div>
+      <iframe id="f-now" src="/de/basel" scrolling="no" title="The Basel page as it is today"></iframe>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="panel">
+    <div class="cap">
+      <span class="tag">PANEL A. SMALLEST POSSIBLE CHANGE</span>
+      <h2>A. Fix the title, fix the buttons</h2>
+      <p>Two rules. The title grows to your own 28px floor. Only the button you're actually on stays
+         bold, the other three go back to plain text.</p>
+      <span class="move nums" id="move-a">title 25px &rarr; 28px</span>
+    </div>
+    <div class="frame">
+      <div class="badge pending nums" id="badge-a">loading</div>
+      <iframe id="f-a" src="/de/basel" scrolling="no" title="Basel page, floor-fix-city-page variant"></iframe>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="panel">
+    <div class="cap">
+      <span class="tag">PANEL B. HIERARCHY FIRST</span>
+      <h2>B. Bigger title, bigger salon names</h2>
+      <p>Title grows to 30px at medium weight. Every salon name on the grid grows from 15px to 16px
+         so the listings read as a clear second rank under the title.</p>
+      <span class="move nums" id="move-b">title 25px &rarr; 30px</span>
+    </div>
+    <div class="frame">
+      <div class="badge pending nums" id="badge-b">loading</div>
+      <iframe id="f-b" src="/de/basel" scrolling="no" title="Basel page, hierarchy-first variant"></iframe>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="panel">
+    <div class="cap">
+      <span class="tag">PANEL C. CONTENT FORWARD</span>
+      <h2>C. Trim the empty space above the salons</h2>
+      <p>The title block and the filter row get tighter padding. Nothing shrinks, the salon grid
+         just moves up 70px, so more real salons show without scrolling.</p>
+      <span class="move nums" id="move-c">salon grid moves up 70px</span>
+    </div>
+    <div class="frame">
+      <div class="badge pending nums" id="badge-c">loading</div>
+      <iframe id="f-c" src="/de/basel" scrolling="no" title="Basel page, content-forward variant"></iframe>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="panel">
+    <div class="cap">
+      <span class="tag">PANEL D. THE AIRBNB WAY</span>
+      <h2>D. Take the bold off almost everything</h2>
+      <p>One rule: every bold element on the page drops from weight 600 to weight 500. Airbnb's own
+         app runs about 3% bold; this alone takes Basel from roughly 44% down to about 6%.</p>
+      <span class="move nums" id="move-d">bold text 44% &rarr; 6%</span>
+    </div>
+    <div class="frame">
+      <div class="badge pending nums" id="badge-d">loading</div>
+      <iframe id="f-d" src="/de/basel" scrolling="no" title="Basel page, Airbnb-weight variant"></iframe>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="panel">
+    <div class="cap">
+      <span class="tag">PANEL E. CLEAR EVERY FLOOR AT ONCE</span>
+      <h2>E. Title fix plus the category buttons rebuilt properly</h2>
+      <p>Title grows to 30px. The four category buttons are rebuilt on your own locked button style,
+         the gray fill your other pills already use, replacing a black-fill button this page was
+         never actually migrated onto.</p>
+      <span class="move nums" id="move-e">title 25px &rarr; 30px, buttons match the rest of the site</span>
+    </div>
+    <div class="frame">
+      <div class="badge pending nums" id="badge-e">loading</div>
+      <iframe id="f-e" src="/de/basel" scrolling="no" title="Basel page, recompose variant"></iframe>
+    </div>
+  </div>
+
+  <div class="foot">
+    <h3>His call versus just matching the salon page</h3>
+    <ul>
+      <li><b>Just matching a number he already approved, not a new decision:</b> the title growing to
+        28 to 30px. That's his own rule (one big title per screen, at least 28px) already used on the
+        salon page he likes. Panels A, B and E all do this.</li>
+      <li><b>Just matching a number he already approved, not a new decision:</b> the bold buttons
+        going back to plain text (panels A and D). His own rule for buttons and pills already says
+        only the one you're on should be bold; these four were simply never built to it.</li>
+      <li><b>His call, this is a real look change:</b> Panel B making every salon name bigger. That's
+        not fixing a broken rule, it's a taste choice about how loud the salon names should be.</li>
+      <li><b>His call, this is a real look change:</b> Panel C's tighter spacing. Nothing is broken
+        here by his own rules; this is trading white space for showing salons sooner, purely a
+        preference.</li>
+      <li><b>His call, this is a real look change:</b> Panel E's button rebuild. The gray fill itself
+        is not new (he already banned black-fill buttons elsewhere), but swapping this page's actual
+        buttons for it is still a visible change he should see before it ships.</li>
+    </ul>
+    <div class="box">
+      <p><b>What none of these touch.</b> The salon photos already clear his 33% floor today (41 to
+        43% measured live, several times, by three separate builders, plus the fresh 43.18% reading
+        above). A stale reading of 0% showed up in one early measurement; that was the loading
+        skeleton flashing for under a second before the real salon list arrives, not the page a
+        customer actually stands on. None of the five panels add a photo, because there is nothing
+        here that needs one.</p>
+      <p><b>What these numbers are measured against.</b> Every floor cited above is read off
+        /de/salon/cuts-and-culture, the one screen in the product that already clears all six floors
+        and the one he said he likes: title 30px, bold text 30%, ratio 2.14x, photos 34.66%.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Every panel below is the SAME real /de/basel route. Panel 0 stays untouched. Each other panel
+  // gets exactly the stylesheet (or, for panel E, the className rewrite) that its own source mockup
+  // file already built and verified live, lifted here verbatim, nothing rewritten.
+
+  function markApplied(id) {
+    var el = document.getElementById(id);
+    if (el) { el.textContent = "applied"; el.classList.remove("pending"); el.classList.add("applied"); }
+  }
+
+  // --- Panel A: floor-fix-city-page ---------------------------------------------------------
+  (function () {
+    var frame = document.getElementById("f-a");
+    frame.addEventListener("load", function () {
+      try {
+        var doc = frame.contentDocument;
+        if (!doc) { return; }
+        var style = doc.createElement("style");
+        style.textContent =
+          "main h1.font-heading { font-size: clamp(28px, 4vw, 40px) !important; }\n" +
+          "section:nth-of-type(2) a.border-s-border { font-weight: 400 !important; }";
+        doc.head.appendChild(style);
+        markApplied("badge-a");
+      } catch (err) {
+        console.error("[compare-city-page] panel A could not restyle its frame:", err);
+      }
+    });
+  })();
+
+  // --- Panel B: fix-city-page--b-hierarchy --------------------------------------------------
+  (function () {
+    var frame = document.getElementById("f-b");
+    function applyHierarchy(doc) {
+      if (doc.getElementById("panel-b-style")) return;
+      var style = doc.createElement("style");
+      style.id = "panel-b-style";
+      style.textContent =
+        "main section:nth-of-type(1) h1 { font-size: 30px !important; font-weight: 500 !important; }\n" +
+        "main section:nth-of-type(3) h3 { font-size: 16px !important; font-weight: 500 !important; }";
+      doc.head.appendChild(style);
+    }
+    frame.addEventListener("load", function () {
+      try {
+        var doc = frame.contentDocument;
+        if (!doc) { return; }
+        applyHierarchy(doc);
+        // salon listings render client-side after first paint; the selector still catches them
+        // once they appear, this second pass is a defensive re-check only, matching the source.
+        setTimeout(function () { applyHierarchy(doc); markApplied("badge-b"); }, 500);
+      } catch (err) {
+        console.error("[compare-city-page] panel B could not restyle its frame:", err);
+      }
+    });
+  })();
+
+  // --- Panel C: fix-city-page--c-content-forward --------------------------------------------
+  (function () {
+    var frame = document.getElementById("f-c");
+    var HEADING_SECTION_SELECTOR = "main.min-h-screen > section:nth-of-type" + "(1)";
+    var EYEBROW_ROW_SELECTOR = HEADING_SECTION_SELECTOR + " > div.mb-2";
+    var FILTER_SECTION_SELECTOR = "main.min-h-screen > section:nth-of-type" + "(2)";
+    frame.addEventListener("load", function () {
+      try {
+        var doc = frame.contentDocument;
+        if (!doc) { return; }
+        var style = doc.createElement("style");
+        style.textContent =
+          HEADING_SECTION_SELECTOR + " { padding-top: 22px !important; padding-bottom: 10px !important; }\n" +
+          EYEBROW_ROW_SELECTOR + " { margin-bottom: 4px !important; }\n" +
+          FILTER_SECTION_SELECTOR + " { padding-bottom: 6px !important; }";
+        doc.head.appendChild(style);
+        markApplied("badge-c");
+      } catch (err) {
+        console.error("[compare-city-page] panel C could not restyle its frame:", err);
+      }
+    });
+  })();
+
+  // --- Panel D: fix-city-page--d-airbnb-weight ----------------------------------------------
+  (function () {
+    function applyChange(doc) {
+      if (doc.getElementById("weight-500-style")) return 1;
+      if (!doc.querySelector(".font-semibold")) return 0;
+      var st = doc.createElement("style");
+      st.id = "weight-500-style";
+      st.textContent = ".font-semibold{font-weight:500 !important}";
+      doc.head.appendChild(st);
+      return 1;
+    }
+    var tries = 0;
+    var MAX_POLLS = 150;
+    var iv = setInterval(function () {
+      tries++;
+      var f = document.getElementById("f-d");
+      try {
+        var doc = f.contentDocument;
+        if (doc && doc.readyState === "complete" && applyChange(doc) > 0) {
+          clearInterval(iv);
+          markApplied("badge-d");
+        }
+      } catch (e) {}
+      if (tries > MAX_POLLS) { clearInterval(iv); }
+    }, 200);
+  })();
+
+  // --- Panel E: fix-city-page--e-recompose --------------------------------------------------
+  (function () {
+    function tryApply(doc) {
+      if (doc.getElementById("panel-e-style")) return true;
+      var h1 = doc.querySelector("main h1");
+      var secs = doc.querySelectorAll("main > section");
+      if (!h1 || secs.length < 2) return false;
+      var pills = secs[1].querySelectorAll("a");
+      if (!pills.length) return false;
+
+      var style = doc.createElement("style");
+      style.id = "panel-e-style";
+      style.textContent = "main h1.font-heading { font-size: clamp(30px, 4vw, 40px) !important; }";
+      doc.head.appendChild(style);
+
+      var TABPILL_BASE = "inline-flex items-center gap-1.5 shrink-0 select-none whitespace-nowrap " +
+        "rounded-full font-body transition-[color,background-color,border-color,box-shadow,transform] " +
+        "duration-150 ease-glide active:scale-[0.97] active:duration-[80ms] border h-11 px-4 text-[14px]";
+      pills.forEach(function (a) {
+        var wasKilledBlackFill = a.className.indexOf("bg-s-ink") !== -1 && a.className.indexOf("text-white") !== -1;
+        a.className = TABPILL_BASE + (wasKilledBlackFill
+          ? " border-s-border bg-s-bg-sunken text-s-ink font-semibold"
+          : " border-s-border bg-white text-s-ink-2 hover:text-s-ink hover:border-s-border font-medium");
+      });
+      return true;
+    }
+    var tries = 0;
+    var MAX_POLLS = 150;
+    var iv = setInterval(function () {
+      tries++;
+      var f = document.getElementById("f-e");
+      try {
+        var doc = f.contentDocument;
+        if (doc && doc.readyState === "complete" && tryApply(doc)) {
+          clearInterval(iv);
+          markApplied("badge-e");
+        }
+      } catch (e) {
+        console.error("[compare-city-page] panel E could not patch its frame:", e);
+      }
+      if (tries > MAX_POLLS) { clearInterval(iv); }
+    }, 200);
+  })();
+</script>
+</body>
+</html>

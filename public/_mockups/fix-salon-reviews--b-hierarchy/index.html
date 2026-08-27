@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<meta name="color-scheme" content="light">
+<title>Reviews page: hierarchy first</title>
+<!-- Base: capture live -->
+<!-- Scale: full-page -->
+<!--
+  SCALE NOTE: the task brief for this file asked for "Scale: section" (or full-page if the decision
+  is whole-page). The armed mockup-real-base-gate.py only recognizes full-page or component as
+  values, section is not one of its two accepted words. What this file actually renders is the
+  real, whole reviews route end to end in both iframes (390x844, nothing cropped), so full-page is
+  the accurate word for what is on screen, even though the DECISION itself, matching the sibling
+  file, is scoped to one component's typography. Flagging the mismatch here rather than silently
+  picking one, per CLAUDE.md's own instruction to surface a contradiction instead of guessing past
+  it.
+
+  Grounded-in: components-legacy/salon/SalonReviews.tsx (the file the reviews route renders end to
+    end; the route file itself, app/[locale]/salon/[slug]/reviews/page.tsx, wraps it in nothing but
+    a <main>, so the component IS the page).
+
+  MECHANISM, and it is a different arm from the sibling variant already on disk at
+  public/_mockups/floor-fix-salon-reviews/ (read first for contrast): that file nudges five
+  individual elements by a few px each. This file does the opposite move: it picks the screen's
+  one real anchor (the page-title heading, already 30px and already the biggest thing on the
+  page) and RE-RANKS everything under it into a small number of deliberate steps, instead of
+  leaving each element at whatever size it happened to ship with. Nothing on the page moves
+  position. Only what is biggest, what is second, and what recedes changes.
+
+  THE THREE RANKS THIS FILE ASSIGNS:
+    1. biggest  -> 30px, the page-title heading. Untouched, it already earns the anchor spot.
+    2. second   -> 20px, the average-rating number (e.g. "4.8"). The one other real, tabular
+       number on the screen, kept a clear step below the anchor and a clear step above everything
+       else.
+    3. recedes  -> 14px, one single size for every remaining piece of text: avatar initials,
+       reviewer names, dates, the filter label, the review body, replies, the write-review button.
+       These were shipped at five different sizes (17 / 15 / 14 / 13 / 12) that told the eye
+       nothing, they were never meant to be five different weights of importance, they were just
+       never collapsed. None of these elements need to out-rank another on THIS screen: a
+       reviewer's name is not more important than their review, a date is not less important than
+       the filter label. Folding them to one size is the honest reflection of that.
+
+  WHY NOT ALSO FIX THE PHOTO FLOOR (F2): this mechanism is about RANK, not about content. Adding a
+  photo is a genuinely different move (a different variant already covers it), and bolting one on
+  here to "clear more boxes" would blur which change caused which result. Said plainly, so it does
+  not read as an oversight: this file's mechanism CANNOT and does not move F2. Imagery stays FAIL
+  before and after, 0% both times, verified below.
+
+  Depicts: Before pane, the real reviews route, completely untouched -> components-legacy/salon/SalonReviews.tsx, no injection runs on this pane
+  Depicts: After pane, every text size inside the review section collapsed onto the three ranks above, the anchor and the secondary number both left alone -> components-legacy/salon/SalonReviews.tsx, all text-size classes on that file (lines 273 through 536), script-applied inline overrides only, nothing added or removed
+
+  Diagnosis: reviews page size spread | measured live on the real route at 390x844 via extractFloors (scripts/check-geometry.mjs, copied verbatim into the page and run in the browser): 8 distinct font sizes in the first viewport (10, 12, 13, 14, 15, 17, 20, 30px), densest 8px window holding 6 of them (12 through 20) | violates CLAUDE.md FLOORS LAW 7c / the settled ladder ceiling of at most 4 distinct sizes inside any 8px window | target <=4 in any 8px window, delivered 4, re-measured live on the same route after the fix (sizes 10, 12, 13, 14, 20, 30px; the 10 and one stray 12 are the shared header badge and bottom-nav labels, outside this file's scope)
+
+  CORRECTION TO A NUMBER THIS TASK WAS GIVEN, not a Diagnosis line because there is no violation
+  left to name: the brief for this task states reviews-page weight share (F7a) at 43.48% (ceiling
+  30%, would be a FAIL). Re-measured live on the real route, unmutated, at three points: on load
+  44% (11 of 25 elements), after a 2-second settle 0% (0 of 25), reloaded fresh and re-measured on
+  load 44% again. components-legacy/salon/SalonReviews.tsx imports `motion/react` (line 8) and its
+  entrance animation interpolates computed font-weight before settling, not just opacity or
+  position, so any single-moment reading taken during that window overstates the weight share.
+  F7a's real, steady-state number for this screen is 0%, comfortably under the 30% ceiling, so the
+  given 43.48% was very likely captured mid-animation, not at rest. This file's own mechanism never
+  touches font-weight, so this correction is reported because the task said to flag a wrong number
+  rather than build on it, not because this fix changed anything about it.
+
+  Verified unaffected by this fix, re-measured on the same live pass as the sizeSpread numbers
+    above: display anchor stayed 30px (floor 28px, PASS both times), anchor ratio moved from 2.31x
+    to 2.14x (floor 1.8x, PASS both times , the small drop is the collapse itself shifting the
+    median leaf size, expected and harmless), elevation stayed 2 (floor 2, PASS both times).
+
+  HOW THE NUMBERS ABOVE WERE PRODUCED: extractFloors was copied verbatim from
+    scripts/check-geometry.mjs (same constants: 390x844 viewport, 28px anchor floor, 30% weight
+    ceiling, 1.8x ratio floor, 4-distinct/8px window trap, 2-shadow elevation floor) and run inside
+    the real page via the browser devtools console against http://localhost:3457, both before any
+    change and again after this file's own three-rank collapse was applied to the live DOM. Both
+    runs are real measurements of the real route, not estimates. One clean before/after pair was
+    captured on the correct URL; a second confirmation attempt landed on a different route because
+    this dev server's browser tabs are shared with other agents working in parallel this session,
+    that contention is named here rather than hidden, and the numbers reported above are the clean
+    pair, not the contaminated one.
+
+  Exists-check: ran this turn. `npm run exists "SalonReviews"` returns 11 matches (both existing
+    review components, the route, and the dashboard reviews page); reused live via injection here,
+    nothing rebuilt. Component ownership confirmed by reading the source directly: the route
+    imports components-legacy/salon/SalonReviews.tsx (the 600+ line file), a different file from
+    app/[locale]/_components/salon/SalonReviews.tsx used elsewhere, every selector below targets
+    the file actually reused on this route.
+
+  Treatment-only, one rule applied uniformly, nothing removed, nothing reordered, nothing added:
+    inside the review section, any leaf text element already at 30px or 20px is left alone;
+    every other leaf text element (17px avatar initials, 15px reviewer names, 14px labels/body/
+    button, 13px meta, 12px captions) is set to 14px. Nothing outside that section is touched
+    (the global header and bottom nav are shared components this file does not own).
+-->
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --sunken:#F4F4F5; --hairline:#E4E4E7;
+    --font:'Inter Tight',system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#fff}
+  body{
+    font-family:var(--font);color:var(--ink);-webkit-font-smoothing:antialiased;
+    width:390px;margin:0 auto;padding:0 0 40px;-webkit-text-size-adjust:100%;
+  }
+  .intro{padding:20px 16px 16px;border-bottom:1px solid var(--hairline)}
+  .intro h1{font-size:17px;font-weight:600;line-height:1.35;color:var(--ink)}
+  .intro p{margin-top:6px;font-size:13px;line-height:1.5;color:var(--ink2)}
+  .intro p+p{margin-top:8px}
+
+  .row{padding:22px 16px 10px}
+  .row .tag{
+    display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;
+    letter-spacing:.02em;color:var(--ink2);
+  }
+  .row.before .tag::before{content:'';width:7px;height:7px;border-radius:999px;background:var(--ink2)}
+  .row.after .tag::before{content:'';width:7px;height:7px;border-radius:999px;background:#16A34A}
+  .row .cap{margin-top:4px;font-size:13px;line-height:1.4;color:var(--ink)}
+
+  .frame{
+    margin:12px 16px 0;width:358px;height:844px;border-radius:16px;overflow:hidden;
+    border:1px solid var(--hairline);background:var(--sunken);position:relative;
+  }
+  .frame iframe{width:390px;height:844px;border:0;display:block;transform:scale(0.9179);transform-origin:top left}
+  .frame .lbl{
+    position:absolute;top:8px;right:8px;z-index:2;background:rgba(10,10,10,.72);color:#fff;
+    font-size:11px;font-weight:600;padding:4px 8px;border-radius:999px;pointer-events:none;
+  }
+
+  .scale{margin:12px 16px 0;padding:14px 16px;border-radius:16px;background:var(--sunken)}
+  .scale h2{font-size:13px;font-weight:600;color:var(--ink2);letter-spacing:.02em;margin-bottom:10px}
+  .rank{display:flex;align-items:baseline;gap:10px;padding:7px 0;border-bottom:1px solid var(--hairline)}
+  .rank:last-child{border-bottom:0}
+  .rank .n{font-family:var(--font);font-weight:700;color:var(--ink);width:26px;flex-shrink:0}
+  .rank .n.r1{font-size:30px}
+  .rank .n.r2{font-size:20px}
+  .rank .n.r3{font-size:14px}
+  .rank .d{font-size:13px;color:var(--ink2);line-height:1.4}
+  .rank .d b{color:var(--ink);font-weight:600}
+
+  .foot{padding:20px 16px 0;font-size:12px;line-height:1.6;color:var(--ink2)}
+  .foot b{color:var(--ink);font-weight:600}
+  .foot .miss{margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--sunken);color:var(--ink)}
+</style>
+</head>
+<body>
+
+  <div class="intro">
+    <h1>Reviews page, hierarchy fix</h1>
+    <p>This screen already has a real anchor: the page title. Nothing else on the page respects it. Seven different sizes are crammed together right below it, so nothing reads as more or less important than anything else.</p>
+    <p>The fix does not add anything and does not move anything. It just decides: one thing is biggest, one thing is second, everything else recedes to one size.</p>
+  </div>
+
+  <div class="row before">
+    <div class="tag">Before</div>
+    <div class="cap">The live reviews page, untouched. Avatar letters, names, dates, labels and the review text all sit at slightly different sizes with no reason for any of them to differ.</div>
+  </div>
+  <div class="frame" id="paneBefore">
+    <iframe id="beforeFrame" src="/de/salon/cuts-and-culture/reviews" title="reviews page, before, unedited"></iframe>
+    <span class="lbl">live, unedited</span>
+  </div>
+
+  <div class="row after">
+    <div class="tag">After</div>
+    <div class="cap">Same live page. The title stays the biggest thing. The star rating stays the second-biggest thing. Every other piece of text, names, dates, the review itself, drops to one shared size.</div>
+  </div>
+  <div class="frame" id="paneAfter">
+    <iframe id="afterFrame" src="/de/salon/cuts-and-culture/reviews" title="reviews page, after, three ranks applied"></iframe>
+    <span class="lbl">live, fix applied</span>
+  </div>
+
+  <div class="scale">
+    <h2>THE THREE RANKS APPLIED</h2>
+    <div class="rank"><span class="n r1">Aa</span><span class="d"><b>Biggest, 30px.</b> The page title. Was already this size, already the anchor, left alone.</span></div>
+    <div class="rank"><span class="n r2">Aa</span><span class="d"><b>Second, 20px.</b> The average rating number. The one other real number on the screen.</span></div>
+    <div class="rank"><span class="n r3">Aa</span><span class="d"><b>Recedes, 14px.</b> Everything else: names, avatar letters, dates, labels, the review text, the write-review button.</span></div>
+  </div>
+
+  <div class="foot">
+    Both boxes above are the real page loading right now, not a drawing. <b>Before</b> is exactly what ships today. <b>After</b> has one rule applied by a script after the real page loads: any text that was not already the anchor or the rating number is set to 14px. Nothing is added, removed, or moved.
+    <div class="miss">What this fix does <b>not</b> touch: there is still no photo on this page, so the imagery floor stays failed either way. That needs real content added, a different kind of fix from re-sizing text, and is out of scope for this file on purpose.
+</div>
+  </div>
+
+<script>
+  // Same-origin cookie-consent record, written before either iframe loads, so the banner never
+  // covers the section in either pane.
+  try {
+    localStorage.setItem('solen-cookie-consent', JSON.stringify({
+      necessary: true, analytics: false, marketing: false, timestamp: new Date().toISOString()
+    }));
+  } catch (e) {}
+
+  var afterFrame = document.getElementById('afterFrame');
+
+  // The one rule from the Treatment-only comment above, and nothing else. Idempotent (marks the
+  // section once done), safe to call repeatedly.
+  function applyFix(doc) {
+    var section = doc.getElementById('section-bewertungen'); // german-ok: real production DOM id, not this mockup's copy
+    if (!section) return false;
+    if (section.getAttribute('data-rank-fix')) return true;
+
+    var all = section.querySelectorAll('*');
+    for (var i = 0; i < all.length; i++) {
+      var el = all[i];
+      if (el.children.length > 0) continue;
+      var t = (el.textContent || '').trim();
+      if (!t) continue;
+      var cs = doc.defaultView.getComputedStyle(el);
+      var size = parseFloat(cs.fontSize);
+      if (Math.abs(size - 30) < 0.5) continue; // rank 1, the anchor, untouched
+      if (Math.abs(size - 20) < 0.5) continue; // rank 2, the rating number, untouched
+      if (Math.abs(size - 14) < 0.5) continue; // already at rank 3
+      el.style.fontSize = '14px';
+    }
+
+    section.setAttribute('data-rank-fix', '1');
+    return true;
+  }
+
+  // Persistent watchdog, not a one-shot burst: this shared dev server hot-reloads on its own
+  // while other work touches the same worktree, which can replace the AFTER iframe's document
+  // out from under a one-shot fix. applyFix is idempotent, so polling is cheap and safe.
+  var tries = 0;
+  var iv = setInterval(function () {
+    tries++;
+    try {
+      var doc = afterFrame.contentDocument;
+      var sec = doc && doc.getElementById('section-bewertungen'); // german-ok: real production DOM id, not this mockup's copy
+      if (sec && !sec.getAttribute('data-rank-fix')) applyFix(doc);
+    } catch (e) {}
+    if (tries > 4000) clearInterval(iv); // ~33 minutes at 500ms, not truly infinite
+  }, 500);
+</script>
+</body>
+</html>

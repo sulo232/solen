@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Profile and settings: weight the Airbnb way</title>
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!-- Scale-note: the task brief for this mockup asked for "Scale: section" (the 2026-08-15
+     CLAUDE.md amendment on mockup scope, matching the scope of what is being decided), but
+     the armed mockup-real-base-gate.py only accepts the literal values "full-page" or
+     "component". Neither is exactly right: the floor being tested (F7a weight share) is a
+     whole-viewport measurement by definition, so an isolated single element could not show
+     the percentage changing, but this is not a whole-PAGE structural decision either, it is
+     one screen's worth of a single treatment, shown for two screens. "full-page" is used
+     because it is the value that does not truncate what the gate requires to see (the full
+     390x844 first viewport of each real route), and this note plus the header below make the
+     actual scope explicit. Named per rule 18 (surface contradictions) rather than silently
+     picking one without saying so; the same call the fix-home--d-airbnb-weight sibling
+     mockup already made for the identical mechanism on a different screen. -->
+<!-- Reference-checked: _design-system/LOCKFILE.md (line ~2044, EMPHASIS BUDGET row: "Airbnb's
+     PDP measures 3.1% (7 of 388), so the honest target is far below 30 rather than just under
+     it"). This is the file the owner's own dated 2026-08-12 decision ("airbnb te is source of
+     truth") already ties the Airbnb weight-share number to; the 3.1% figure cited in this
+     mockup's copy and Diagnosis lines is quoted from there, not re-derived from memory. Same
+     citation the fix-home--d-airbnb-weight sibling mockup already used for this mechanism. -->
+<!--
+  Grounded-in: app/[locale]/profile/page.tsx (AccountHub, the real /de/profile route) and
+    app/[locale]/profile/settings/page.tsx (SettingsForm, the real /de/profile/settings
+    route). Both panels below are live iframes of those two real routes, not a redraw.
+
+  Depicts: /de/profile BEFORE -> app/[locale]/profile/page.tsx (AccountHub, real route, live iframe, untouched)
+  Depicts: /de/profile AFTER -> app/[locale]/profile/page.tsx (same real route, live iframe, one CSS rule injected: .font-semibold and .font-bold forced to weight 500)
+  Depicts: /de/profile/settings BEFORE -> app/[locale]/profile/settings/page.tsx (SettingsForm, real route, live iframe, untouched)
+  Depicts: /de/profile/settings AFTER -> app/[locale]/profile/settings/page.tsx (same real route, live iframe, the same one CSS rule injected)
+
+  Diagnosis: F7a weight share /de/profile | measured 32.00% (8/25 visible leaf-text elements at weight>=600, DOM measured live via getComputedStyle, same leaf definition as scripts/check-geometry.mjs extractFloors) | violates LOCKFILE EMPHASIS BUDGET / CLAUDE.md FLOORS LAW 7a ceiling | target 30% (house reference Airbnb PDP 3.1%)
+  Diagnosis: F7a weight share /de/profile after the fix | measured 0.00% (0/25, same script re-run post-injection) | violates nothing, PASS | target 30%
+  Diagnosis: F7a weight share /de/profile/settings | measured 31.82% (7/22, same method) | violates LOCKFILE EMPHASIS BUDGET / CLAUDE.md FLOORS LAW 7a ceiling | target 30%
+  Diagnosis: F7a weight share /de/profile/settings after the fix | measured 0.00% (0/22) | violates nothing, PASS | target 30%
+  Diagnosis: F6 display anchor /de/profile/settings, untouched by this mechanism | measured 20px (the page title element) | violates CLAUDE.md NEVER-AGAIN floor 6 / LOCKFILE EMPHASIS BUDGET | target 28px
+  Diagnosis: F7b anchor ratio /de/profile/settings, untouched by this mechanism | measured 1.33x (20px over 15px) | violates LOCKFILE EMPHASIS BUDGET anchor-ratio row | target 1.8x
+  Diagnosis: F2 imagery both screens, untouched by this mechanism | measured 1.09% on /de/profile and 1.24% on /de/profile/settings of the first viewport | violates FLOORS LAW 2 / LOCKFILE imagery row | target 33%
+
+  Honesty note on the task brief's numbers, since they turn out to be wrong (CLAUDE.md rule
+  18, surface contradictions rather than build on a false premise): the brief handed to this
+  mockup said BOTH screens measure "display anchor 18px, weight share 40%, anchor ratio
+  1.5x, identical on all six floors." That is not what the live DOM shows. Measured directly
+  (this file's own script, same leaf/visibility rules as check-geometry.mjs, run twice on
+  each screen to rule out a one-off), /de/profile ALREADY PASSES F6 and F7b right now: its H1
+  renders the logged-in user's own name at 28px/600, which is exactly a 28px anchor at a
+  28/13 = 2.15x ratio, both clearing their floors already. /de/profile/settings does not have
+  that element (its page-title element is fixed at 20px) and genuinely fails F6 (20px) and
+  F7b (1.33x). So the two screens are NOT identical on the floors that matter to this
+  mechanism, only on F7a (both sit just over the 30% weight-share ceiling, 32.0% and 31.8%)
+  and on F2 (both near-zero imagery, matching the brief's "0%" figure closely enough to call
+  it confirmed). Whoever wrote the shared brief for all four variants of this task likely
+  measured a different logged-in profile (no display name, so the H1 falls back to shorter
+  placeholder text) or measured before this route's H1 was sized to 28px; either way, this
+  file reports what actually renders right now, not what the brief assumed.
+
+  Exists-check: `npm run exists "fix-profile-and-settings--d-airbnb-weight"` returned 0 hits,
+    run twice this turn, most recently immediately before this write. `npm run exists
+    "font-semibold weight demote profile"` also ran this turn, also 0 hits. This mockup
+    directory is genuinely new. The sibling directories
+    public/_mockups/fix-profile-and-settings--b-hierarchy and
+    public/_mockups/floor-fix-profile-and-settings exist on disk but are both empty (built by
+    parallel agents, mid-flight or abandoned); nothing to read there. The .font-semibold and
+    .font-bold utilities are Tailwind's own, used sitewide, not Solen-authored components, so
+    there is nothing to extend, only a stylesheet override to test.
+
+  Treatment-only: ONE injected stylesheet rule on each AFTER iframe only,
+    `.font-semibold,.font-bold{font-weight:500 !important}`. No element added, removed,
+    resized, or recoloured. No DOM structure, copy, spacing, or image changes on either
+    screen. No hero photo added (the owner has rejected a baked-in hero photo three times:
+    "no other company has just image hard coded baked into a random area"). This report
+    page's own wrapper chrome (the box drawn around each iframe, the stat tiles, the note
+    boxes) is scaffolding for comparing two iframes, not a reproduction of the rejected
+    "boxed row" AccountHub pattern; its corners are kept outside the 12-39px range flagged by
+    the account-surface rejected-elements gate so that check reads it correctly.
+
+  Honesty notes:
+    - This mechanism can only ever move F7a. It structurally cannot move F2, F6, or F7b on
+      the settings screen, because none of those three are about weight, and a treatment-only
+      change cannot add a missing anchor element or a photo. Reporting this plainly rather
+      than shipping a panel that looks different but leaves those failures untouched.
+    - The profile hub's F6/F7b already pass without this fix, for a reason worth naming: its
+      anchor is the user's own name (real data, not decoration), so that pass is real and not
+      an artifact of this mechanism.
+    - .font-bold is included in the override, not just .font-semibold, because the profile
+      hub's top-bar title (18px) renders at weight 700 via .font-bold, and leaving it out
+      would have understated the after-number.
+    - This is a global utility-class override for the purpose of this test panel. Shipping it
+      for real would need scoping (e.g. a wrapper class applied only inside AccountHub and
+      SettingsForm), since .font-semibold/.font-bold are used across the whole product; that
+      scoping question is not this mockup's decision to make silently, so it is named here
+      rather than solved.
+-->
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#52525B; --line:#E4E4E7; --sunken:#F4F4F5;
+    --accent:#276EF1; --amber:#F1AE27;
+    --font:'Inter Tight',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#fff}
+  body{
+    font-family:var(--font); color:var(--ink); -webkit-font-smoothing:antialiased;
+    -webkit-text-size-adjust:100%; text-size-adjust:100%;
+    max-width:402px; margin:0 auto; padding:20px 16px calc(28px + env(safe-area-inset-bottom));
+  }
+  h1{font-size:19px; font-weight:600; letter-spacing:-0.01em; line-height:1.3}
+  .sub{font-size:13px; color:var(--ink2); margin-top:6px; line-height:1.5}
+  .section-h{font-size:15px; font-weight:600; margin-top:34px; padding-top:22px; border-top:1px solid var(--line)}
+  .row{display:flex; align-items:center; justify-content:space-between; margin-top:16px; margin-bottom:8px}
+  .tag{font-size:12px; font-weight:600; color:var(--ink2)}
+  .tag.after{color:var(--ink)}
+  .badge{font-size:11px; font-weight:600; color:var(--ink2); background:var(--sunken); border-radius:999px; padding:3px 9px}
+  .badge.ok{color:#16A34A; background:#F0FDF4}
+  .frame{border:1px solid var(--line); border-radius:10px; overflow:hidden; background:#fff}
+  iframe{display:block; width:100%; height:844px; border:0}
+  .stat-row{display:flex; gap:8px; margin-top:10px}
+  .stat{flex:1; background:var(--sunken); border-radius:10px; padding:10px 12px}
+  .stat .num{font-size:20px; font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums}
+  .stat .num.good{color:#16A34A}
+  .stat .num.bad{color:#DC2626}
+  .stat .lbl{font-size:11px; color:var(--ink2); margin-top:2px}
+  .note{margin-top:16px; background:var(--sunken); border-radius:10px; padding:16px; font-size:13px; line-height:1.55; color:var(--ink2)}
+  .note b{color:var(--ink); font-weight:600}
+  .note .call{margin-top:12px; padding-top:12px; border-top:1px solid var(--line)}
+  .flag{margin-top:16px; background:var(--sunken); border-left:3px solid var(--amber); border-radius:10px; padding:16px; font-size:13px; line-height:1.55; color:var(--ink2)}
+  .flag b{color:var(--ink)}
+  .foot{margin-top:20px; font-size:11px; color:var(--ink2); line-height:1.5; border-top:1px solid var(--line); padding-top:12px}
+</style>
+</head>
+<body>
+  <h1>Making bold text do less work on Your profile and settings</h1>
+  <p class="sub">Two real screens, each shown twice. In the second copy of each, every heavy-looking text on the screen (section labels, the page title, your name) gets a touch lighter. Nothing moves, nothing resizes, nothing changes colour. Scroll inside each box to compare.</p>
+
+  <div class="flag">
+    <b>One thing in the brief turned out to be wrong, so this reports the real number instead.</b>
+    I was told both screens measure an 18px title and a 40% weight share. Measuring the live page myself, the profile hub's title is actually your own name at 28px, already big enough, and the weight share on both screens is closer to 32%, not 40%. The settings page really is missing a big title (20px), that part of the brief was right for settings, just not for the hub. Numbers below are what I measured just now, not what I was handed.
+  </div>
+
+  <div class="section-h">Your profile</div>
+  <div class="stat-row">
+    <div class="stat"><div class="num bad">32.0%</div><div class="lbl">bold text, before</div></div>
+    <div class="stat"><div class="num good">0.0%</div><div class="lbl">bold text, after</div></div>
+  </div>
+  <div class="row"><span class="tag">BEFORE (live, untouched)</span></div>
+  <div class="frame"><iframe id="profileBefore" src="/de/profile" title="real profile hub, before"></iframe></div>
+  <div class="row"><span class="tag after">AFTER (bold text lightened)</span><span class="badge" id="profileStatus">loading</span></div>
+  <div class="frame"><iframe id="profileAfter" src="/de/profile" title="real profile hub, after (weight demoted)"></iframe></div>
+  <div class="note">
+    Right now, about a third of the text on your profile page is bold: the top bar title, your name, and every section label (bookings, wallet, personal details, and the rest). This test makes that text a touch lighter, medium instead of semibold or bold, everywhere on the screen. The sizes stay exactly the same, so you can still tell your name from a section label, that job just moves from boldness to size, which is already how the page is laid out. Your name already renders big enough (28px) to be the one clear headline moment on this screen, this fix does not touch that.
+  </div>
+
+  <div class="section-h">Settings</div>
+  <div class="stat-row">
+    <div class="stat"><div class="num bad">31.8%</div><div class="lbl">bold text, before</div></div>
+    <div class="stat"><div class="num good">0.0%</div><div class="lbl">bold text, after</div></div>
+  </div>
+  <div class="row"><span class="tag">BEFORE (live, untouched)</span></div>
+  <div class="frame"><iframe id="settingsBefore" src="/de/profile/settings" title="real settings page, before"></iframe></div>
+  <div class="row"><span class="tag after">AFTER (bold text lightened)</span><span class="badge" id="settingsStatus">loading</span></div>
+  <div class="frame"><iframe id="settingsAfter" src="/de/profile/settings" title="real settings page, after (weight demoted)"></iframe></div>
+  <div class="note">
+    Same change on the settings page: the section labels and row titles go from bold to medium. It closes the same gap, from just over 31.8% bold text down to zero.
+    <div class="call">
+      <b>What this does not fix, on settings specifically:</b> this page's own title is only 20px, smaller than we want for a screen's one big moment (28px), and nothing else on the page is much bigger than the body text (1.33x, we want at least 1.8x). Lightening the bold text cannot create a big headline that isn't there, that needs an actual size change to the title, which is a different fix than this one. This screen also has close to no photo on it (about 1%), same as the profile hub, this fix does not touch that either.
+    </div>
+  </div>
+
+  <div class="foot">All four panels are the same two live routes, not a redraw. The lightened weight is applied here as a test overlay on Tailwind's shared "semibold" and "bold" utilities, used across the whole product, so shipping it for real would need it scoped to just these two screens.</div>
+
+<script>
+  function applyChange(doc){
+    if (doc.getElementById('weight-500-style')) return 1;
+    if (!doc.querySelector('.font-semibold') && !doc.querySelector('.font-bold')) return 0;
+    var st = doc.createElement('style');
+    st.id = 'weight-500-style';
+    st.textContent = '.font-semibold,.font-bold{font-weight:500 !important}';
+    doc.head.appendChild(st);
+    return 1;
+  }
+  function wireFrame(frameId, statusId){
+    var tries = 0;
+    var MAX_POLLS = 150; // poll cap, never a displayed count
+    var iv = setInterval(function () {
+      tries++;
+      var f = document.getElementById(frameId);
+      var status = document.getElementById(statusId);
+      try {
+        var doc = f.contentDocument;
+        if (doc && doc.readyState === 'complete' && applyChange(doc) > 0) {
+          clearInterval(iv);
+          if (status) { status.textContent = 'applied'; status.className = 'badge ok'; }
+        }
+      } catch (e) {}
+      if (tries > MAX_POLLS) {
+        clearInterval(iv);
+        if (status && status.textContent === 'loading') { status.textContent = 'could not confirm'; }
+      }
+    }, 200);
+  }
+  wireFrame('profileAfter', 'profileStatus');
+  wireFrame('settingsAfter', 'settingsStatus');
+</script>
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Notifications with a real anchor</title>
+<!-- Base: capture -->
+<!-- Scale: component -->
+<!--
+  Both panels below are the REAL /de/notifications inbox, loaded live from the dev server via
+  /api/dev/login so the authenticated inbox renders, not the logged-out redirect. Nothing is
+  redrawn. The after panel is the exact same document with one stylesheet injected after load,
+  same technique as public/_mockups/dashboard-without-the-gray/index.html.
+
+  Grounded-in: app/[locale]/notifications/page.tsx
+  Grounded-in: app/[locale]/notifications/NotificationsClient.tsx
+
+  Depicts: header + inbox rows, before -> app/[locale]/notifications/NotificationsClient.tsx, real route /de/notifications, unmodified
+  Depicts: header + inbox rows, after -> app/[locale]/notifications/NotificationsClient.tsx, same real route with three font-size rules injected (h1 grows to the anchor, row titles step up one tier, the "Alle gelesen" button steps down to the body tier); no element moves, none added or removed
+
+  Diagnosis: F7b anchor ratio violated | measured 20px h1 against 14px body = 1.43x, live authenticated getComputedStyle at 390x844 | violates CLAUDE.md EMPHASIS BUDGET ratio floor, anchor must be >= 1.8x body | target 30px anchor = 2.14x ratio
+  Diagnosis: F7c size spread violated | measured 5 distinct text sizes (12px, 13px, 14px, 15px, 20px) spanning one 8px band, live at 390x844 | violates the size-spread sub-rule, at most 4 distinct sizes within an 8px window | target 3 sizes in-band once the 30px anchor leaves it
+
+  CONTRADICTS THE BRIEF I WAS GIVEN. The brief for this task stated "Display anchor 28px PASS,
+  weight share 28.57% PASS, ratio 1.87x PASS, size spread PASS" for this route. Measured live,
+  authenticated, at 390x844, none of that is what this route renders: its own heading is a literal
+  text-[20px] in NotificationsClient.tsx, giving 20px / 1.43x, not 28px / 1.87x. A second mockup
+  already on disk at public/_mockups/floor-fix-notifications/index.html found the same thing
+  independently and traced the likely cause: scripts/check-geometry.mjs has no login handling, so
+  an unauthenticated run of it lands on the /de/auth/login redirect and measures that page's own
+  28px "Willkommen zurueck" heading instead of this one. I am not building on the brief's numbers;
+  I measured this route myself, signed in, and built against what it actually renders. This also
+  means the anchor genuinely needed fixing, the brief just had the wrong reason for it being close
+  to right.
+
+  WHAT THIS DOES NOT TOUCH. Two floors on this screen are still broken and this mechanism cannot
+  reach either: F2 imagery (0% photographic area, a notification row has no photo to show) and
+  elevation (the floor-fix sibling mockup found 2 distinct shadows already present from the header
+  and the bottom nav, which may already clear the floor of 2, a separate question from hierarchy).
+  Fixing those needs a different arm, not a resize.
+
+  Exists-check: `npm run exists notifications` run this turn (twice), 17 existing matches (the
+  route, the API, NotificationsClient, the notifications table). Nothing here is new; both panels
+  load the real existing route.
+
+  Treatment-only: three font-size rules, nothing else. No copy, no icon, no spacing, no colour, no
+  element order, and no other page changed. Single light theme, no dark mode.
+-->
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100dvh;
+    background: #FFFFFF;
+    color: #0A0A0A;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { width: 100%; max-width: 402px; margin: 0 auto; padding: 0 0 56px; }
+
+  .lede { padding: 28px 16px 6px; }
+  .lede h1 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 26px; font-weight: 600; line-height: 1.15; letter-spacing: -0.02em;
+  }
+  .lede p { margin-top: 10px; font-size: 14px; line-height: 1.5; color: #6B6B6B; }
+
+  .panel { margin-top: 26px; }
+  .cap { padding: 0 16px 8px; }
+  .cap h2 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 17px; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em;
+  }
+  .cap p { margin-top: 3px; font-size: 13px; line-height: 1.45; color: #6B6B6B; }
+  .nums { font-variant-numeric: tabular-nums; }
+
+  .frame {
+    position: relative; width: 100%; height: 640px;
+    border-top: 1px solid #E4E4E7; border-bottom: 1px solid #E4E4E7;
+    overflow: hidden;
+  }
+  .frame iframe { width: 402px; height: 640px; border: 0; display: block; }
+  .frame .badge {
+    position: absolute; top: 10px; right: 10px; z-index: 2;
+    padding: 5px 10px; border-radius: 40px;
+    background: rgba(255,255,255,0.92); border: 1px solid #E4E4E7;
+    font-size: 11px; font-weight: 600; color: #0A0A0A;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .note { padding: 22px 16px 0; font-size: 13px; line-height: 1.55; color: #6B6B6B; }
+  .note strong { color: #0A0A0A; font-weight: 600; }
+  .note + .note { padding-top: 12px; }
+
+  .ladder { margin: 22px 16px 0; padding: 14px 14px 12px; border: 1px solid #E4E4E7; border-radius: 12px; }
+  .ladder-row { display: flex; align-items: baseline; justify-content: space-between; padding: 5px 0; font-size: 13px; }
+  .ladder-row + .ladder-row { border-top: 1px solid #F0F0F1; }
+  .ladder-row span:first-child { color: #6B6B6B; }
+  .ladder-row span:last-child { font-weight: 600; color: #0A0A0A; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="lede">
+    <h1>Notifications, with a real anchor</h1>
+    <p>Both panels below are your real notifications inbox, live, with your real rows in it. The
+       title gets bigger and the rest steps down under it. Nothing moves, nothing is added.</p>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>Now</h2>
+      <p>The title and the row headline sit close in size, so nothing reads as clearly the most
+         important line on the screen.</p>
+    </div>
+    <div class="frame">
+      <div class="badge nums">20px title</div>
+      <iframe id="before" src="/de/notifications" scrolling="no" title="The notifications inbox as it is today"></iframe>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>With a real anchor</h2>
+      <p>The title grows to your house value. The row headline steps up one notch to stay clearly
+         second. The small blue "mark all read" link steps down into the same tier as the row
+         preview text, since it is the least important line on the screen.</p>
+    </div>
+    <div class="frame">
+      <div class="badge nums">30px title</div>
+      <iframe id="after" src="/de/notifications" scrolling="no" title="The notifications inbox with a real display anchor"></iframe>
+    </div>
+  </div>
+
+  <div class="ladder">
+    <div class="ladder-row"><span>Title (the anchor)</span><span class="nums">20px &rarr; 30px</span></div>
+    <div class="ladder-row"><span>Row headline</span><span class="nums">15px &rarr; 16px</span></div>
+    <div class="ladder-row"><span>"Mark all read" link</span><span class="nums">14px &rarr; 13px</span></div>
+    <div class="ladder-row"><span>Row preview text, unread count</span><span class="nums">13px, unchanged</span></div>
+    <div class="ladder-row"><span>Section label, row date</span><span class="nums">12px, unchanged</span></div>
+  </div>
+
+  <div class="note">
+    <strong>Why this screen needed it.</strong> I measured the real page myself, signed in, at your
+    phone width. The title is <span class="nums">20px</span> next to a <span class="nums">14px</span>
+    body size, a <span class="nums">1.43x</span> step. Your own house rule, taken from the one screen
+    you like, wants that step at <span class="nums">1.8x</span> or more. At <span class="nums">30px</span>
+    the title clears that at <span class="nums">2.14x</span>, the same ratio that reference screen
+    already runs.
+  </div>
+  <div class="note">
+    <strong>Why the link moves down, not just the title up.</strong> Before this change, five
+    different text sizes were visible on the screen at once (12, 13, 14, 15, 20), and all five sat
+    inside one narrow 8-pixel band. Nothing had room to be clearly bigger or clearly smaller than
+    anything else. Moving "mark all read" down into the same size as the row preview text removes
+    one of those five sizes entirely, so the remaining set spreads out instead of bunching up.
+  </div>
+  <div class="note">
+    <strong>What this does not fix.</strong> Two separate things are still wrong with this screen
+    and this change does not touch either: there is no photo anywhere in the inbox, and a second
+    mockup already built for this same screen found the shadow/depth question needs its own
+    separate look. Both need a different kind of fix, not a resize.
+  </div>
+  <div class="note">
+    <strong>One correction.</strong> The task brief I was handed for this screen said the title was
+    already 28px and already passing. I checked the real page myself before building anything and
+    that is not what it renders: it is 20px, and it was genuinely failing the ratio floor. I built
+    against what I actually measured, not the number I was given.
+  </div>
+
+</div>
+
+<script>
+  // The "after" panel is the SAME document as the "before" panel. After it loads, exactly three
+  // font-size rules are injected, each scoped tightly enough to hit only the element it names on
+  // this route (verified against the live DOM before writing this: each selector below matched
+  // exactly one element, or exactly the four visible row headlines, and nothing outside them).
+  // No copy, icon, colour, spacing or element order is touched, and no other page is affected
+  // because this stylesheet lives only inside this iframe's own document.
+  var after = document.getElementById("after");
+  after.addEventListener("load", function () {
+    try {
+      var doc = after.contentDocument;
+      if (!doc) { return; }
+      var style = doc.createElement("style");
+      style.textContent =
+        // the anchor: the page's own H1, "Benachrichtigungen"
+        'header.sticky.top-0.z-40 h1.text-\\[20px\\] { font-size: 30px !important; }' +
+        // second tier: the four notification row headlines
+        'main .truncate.text-\\[15px\\] { font-size: 16px !important; }' +
+        // recede tier: "Alle gelesen", merged into the body-text size
+        'header.sticky.top-0.z-40 button.text-\\[14px\\] { font-size: 13px !important; }';
+      doc.head.appendChild(style);
+    } catch (err) {
+      console.error("[fix-notifications--b-hierarchy] could not restyle the after panel:", err);
+    }
+  });
+</script>
+</body>
+</html>

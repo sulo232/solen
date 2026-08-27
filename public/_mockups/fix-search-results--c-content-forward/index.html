@@ -1,0 +1,339 @@
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!--
+Note on Scale: the assigned mechanism (arm C, "real content, higher and bigger") is a
+  section-level decision, not a whole-page redesign. Declared full-page anyway, following this
+  same task cluster's own precedent at public/_mockups/floor-fix-search-results/index.html and
+  public/_mockups/sweep-salon-sections/index.html: both card a narrower, section-level decision
+  and still declare Scale: full-page, because the DOCUMENT that loads in the iframe is the whole
+  real route either way. What changes here is one thing: the rail chrome above the first card,
+  and the size of the cards themselves. See Treatment-only below for the exact, exhaustive list.
+
+Grounded-in: app/[locale]/[city]/[category]/page.tsx (route)
+  -> app/[locale]/_components/search/SearchTemplate.tsx (SearchSummaryBar sticky wrap, the
+     "mx-auto max-w-[1280px] px-3 pb-12 pt-4" results container, the mb-[14px] rail heading wrap)
+  -> app/[locale]/_components/search/CategoryMobileRails.tsx (the first two horizontal-scroll result rails; its own wrapper <a> owns the w-[calc((100vw-44px)/1.5)] card width,
+     CategoryMobileRails.tsx line ~23 imports SalonCard directly and composes it, does not redraw it)
+  -> app/[locale]/_components/homepage/SalonCard.tsx (the card itself: aspect-[5/4] photo,
+     rounded-22, shadow-elevation-2, name/rating/price rows , READ for grounding, NEVER edited;
+     this mockup only resizes the CategoryMobileRails wrapper around it, so the photo grows because
+     its aspect-ratio is locked, not because SalonCard's own classes were touched)
+  Both panels below are the SAME real route, http://localhost:3457/de/basel/coiffeur, in an iframe.
+
+Depicts: before panel -> app/[locale]/[city]/[category]/page.tsx (real route, untouched)
+Depicts: after panel -> app/[locale]/[city]/[category]/page.tsx (same route; five inline style
+  overrides applied client-side to the already-loaded DOM once real cards render, see
+  Treatment-only; no markup added, no markup removed, no component edited on disk)
+
+Diagnosis: chrome above the first salon photo | measured 212px, 25.1% of the 844px fold, live on
+  /de/basel/coiffeur before any change | violates the FLOORS LAW imagery mandate (real content
+  pushed higher, never decoration) | target under 150px so a real card starts clearing the fold
+  sooner
+Diagnosis: salon-card size in the results rail | measured 231px wide, 5:4 photo about 185px tall,
+  live on /de/basel/coiffeur | violates the "bigger" half of this task's own mechanism, cards read
+  as thumbnails rather than the anchor of the screen | target a card wide enough to read as the
+  dominant object on the screen, not a thumbnail in a row of thumbnails
+Diagnosis: weight-share ceiling | measured 33.7% of visible fold text at weight>=600, live on
+  /de/basel/coiffeur | violates FLOORS LAW EMPHASIS BUDGET 7a (at most 30% of visible text may be
+  weight>=600) | target at most 30%, and this mockup's own treatment moves this number the WRONG
+  way, see the cost note in the intro and in Treatment-only
+
+Exists-check: `npm run exists "CategoryMobileRails card width"` and `npm run exists "search
+  results card size"` both ran this turn and both returned 0 matches ("Likely safe to build
+  new"). Nothing here proposes a new component; it resizes an existing wrapper via an inline
+  style override inside a mockup file only, real component files are untouched.
+
+Correction, surfaced rather than built past (CLAUDE.md rule 18 + rule 15a): the brief for this
+  task states imagery 0%, a 14px anchor, a 1.17x ratio, and weight share "0% PASS" for this route.
+  Measured live, twice, on the exact route (getBoundingClientRect + getComputedStyle, 390x844,
+  after the client fetch resolves): imagery is 41.0% (not 0%, and it already clears the 33% floor
+  before any change here), the anchor is 18px (not 14px), the ratio is 1.5x (not 1.17x), and
+  weight share is 33.7% (not 0%, and that is a FAIL against the <=30% ceiling, not the "PASS" the
+  brief states). This matches what public/_mockups/floor-fix-search-results/index.html found
+  independently the same day (41.4% / 18px / 33.3%). Two independent live reads agree with each
+  other and disagree with the brief on all four numbers. Not building on the brief's numbers;
+  building on the measured ones, both quoted below.
+
+Treatment-only, five changes, nothing else, applied by script to the already-rendered "after"
+  iframe once real cards are present (never to the "before" iframe, never to a component file):
+  1. the results container's top padding: 16px -> 4px (previously "pt-4" on the max-w-[1280px] wrapper)
+  2. each rail heading's bottom margin: 14px -> 6px (previously "mb-[14px]")
+  3. the rail scroller's top margin and vertical padding: removed (previously "mt-1" + "py-1")
+  4. the sticky search-summary pill's own wrapper padding: trimmed by a few px
+  5. the rail card's own width, CategoryMobileRails' wrapper only: from
+     calc((100vw-44px)/1.5) [~231px, 1.5 cards per screen] to calc((100vw-32px)/1.15)
+     [~311px, one dominant card + a cropped peek of the next, matching the "visibly cropped next
+     item" requirement in the density floor]
+  Nothing else moves: no card reordered, no copy changed, no photo added, no component edited.
+-->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Search results, real content pushed up and made bigger</title>
+<style>
+  :root{
+    --ink:#0A0A0A;
+    --ink2:#52525B;
+    --sunken:#F4F4F5;
+    --hairline:#E4E4E7;
+    --accent:#276EF1;
+    --green:#16A34A;
+    --font:'Inter Tight',system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#fff;color:var(--ink)}
+  body{
+    font-family:var(--font);
+    -webkit-font-smoothing:antialiased;
+    padding:28px 16px 64px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:22px;
+  }
+  .intro{max-width:402px;width:100%}
+  .intro h1{
+    font-size:22px;
+    font-weight:700;
+    letter-spacing:-0.01em;
+    line-height:1.25;
+    margin-bottom:12px;
+  }
+  .intro p{font-size:15px;line-height:1.55;color:var(--ink2);margin-bottom:10px}
+  .intro p strong{color:var(--ink)}
+  .stat-row{
+    display:flex;
+    gap:8px;
+    margin:14px 0;
+  }
+  .stat{
+    flex:1;
+    background:var(--sunken);
+    border-radius:12px;
+    padding:10px 12px;
+  }
+  .stat .label{font-size:11px;color:var(--ink2);font-weight:600;margin-bottom:2px}
+  .stat .before{font-size:13px;color:var(--ink2)}
+  .stat .after{font-size:16px;font-weight:700;color:var(--ink)}
+  .stat .after.up{color:var(--green)}
+  .stat .after.down{color:#DC2626}
+  .note{
+    background:var(--sunken);
+    border-radius:12px;
+    padding:12px 14px;
+    font-size:13.5px;
+    line-height:1.55;
+    color:var(--ink2);
+    margin-top:4px;
+  }
+  .note strong{color:var(--ink)}
+  .note.correction{border:1px solid var(--hairline);background:#fff}
+  .panel{width:402px;max-width:100%;position:relative}
+  .panel-label{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 2px 8px;
+    gap:10px;
+  }
+  .panel-label .tag{
+    font-size:11px;
+    font-weight:700;
+    padding:4px 10px;
+    border-radius:999px;
+    background:var(--ink);
+    color:#fff;
+    white-space:nowrap;
+  }
+  .panel-label .tag.after{background:var(--green)}
+  .panel-label .cap{font-size:12.5px;color:var(--ink2);text-align:right}
+  .frame-wrap{
+    width:402px;
+    max-width:100%;
+    height:760px;
+    border:1px solid var(--hairline);
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow:0 1px 2px rgba(10,10,10,.04), 0 10px 30px -18px rgba(10,10,10,.12);
+    background:#fff;
+    position:relative;
+  }
+  iframe{width:402px;height:900px;border:0;display:block}
+  .fold-line{
+    position:absolute;
+    left:0;
+    right:0;
+    top:844px;
+    height:0;
+    border-top:2px dashed rgba(220,38,38,.55);
+    z-index:6;
+    pointer-events:none;
+  }
+  .fold-line span{
+    position:absolute;
+    right:8px;
+    top:-20px;
+    background:rgba(220,38,38,.92);
+    color:#fff;
+    font-size:10px;
+    font-weight:700;
+    padding:3px 8px;
+    border-radius:999px;
+  }
+  .badge{
+    position:absolute;
+    top:8px;
+    left:8px;
+    background:rgba(22,163,74,.95);
+    color:#fff;
+    font-size:11px;
+    font-weight:700;
+    padding:4px 10px;
+    border-radius:999px;
+    z-index:5;
+    pointer-events:none;
+  }
+</style>
+</head>
+<body>
+
+  <div class="intro">
+    <h1>The results page, with the phone screen spent on salons instead of on bar and label</h1>
+    <p>Both copies below are the real Basel hair-salon results page, loaded live, scrollable like
+    the real thing. Nothing is redrawn from scratch.</p>
+    <p>Today, after the search bar, you scroll past a filter pill, empty space, and a small label
+    before you see a single salon photo. That is a real measured 212 pixels, about a quarter of a
+    phone screen, spent on nothing you can book.</p>
+    <p>The fix does two things to the exact same real cards: it trims that empty space, and it
+    makes each card meaningfully bigger. <strong>The size change is what actually moves the
+    number.</strong> Trimming the space above only bought about 12 pixels. Making the card itself
+    bigger is what turns this screen from mostly chrome into mostly salons.</p>
+
+    <div class="stat-row">
+      <div class="stat">
+        <div class="label">Photo share of the screen</div>
+        <div class="before">before: 41.0%</div>
+        <div class="after up">after: 55.4%</div>
+      </div>
+      <div class="stat">
+        <div class="label">Empty space before first photo</div>
+        <div class="before">before: 212px</div>
+        <div class="after up">after: 204px</div>
+      </div>
+    </div>
+
+    <div class="note">
+      <strong>Cost, not hidden:</strong> a bigger card means fewer price and distance labels fit
+      on screen at once, so the share of bold text on the page goes up too (33.7% to 37.5%),
+      moving further past the 30% ceiling this product holds itself to. That is a real trade this
+      mockup makes, not one it fixes.
+    </div>
+
+    <div class="note correction">
+      <strong>One correction before you read the numbers above:</strong> the brief for this task
+      said this screen has 0% photo coverage today. Checked twice on the live page: it is 41.0%,
+      and it already clears this product's own 33% minimum before any change here. The heading
+      size (18px, this task does not touch it) is a real problem on this screen, it is just not
+      this one.
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-label">
+      <span class="tag">Before, live</span>
+      <span class="cap">Today. 212px of chrome, then a 231px-wide card.</span>
+    </div>
+    <div class="frame-wrap">
+      <div class="fold-line"><span>phone screen ends here</span></div>
+      <iframe id="beforeFrame" src="/de/basel/coiffeur" title="Search results, before, real page"></iframe>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-label">
+      <span class="tag after">After, same data</span>
+      <span class="cap">Same real page. Trimmed chrome, a 311px-wide card.</span>
+    </div>
+    <div class="frame-wrap">
+      <div class="fold-line"><span>phone screen ends here</span></div>
+      <span class="badge">Cards bigger, gaps trimmed, nothing invented</span>
+      <iframe id="afterFrame" src="/de/basel/coiffeur" title="Search results, after, real page"></iframe>
+    </div>
+  </div>
+
+<script>
+  // Grounded in the five real elements named in the header comment's Treatment-only list.
+  // Every selector here is validated live against http://localhost:3457/de/basel/coiffeur
+  // this session before being written into this file.
+  function applyChange(doc) {
+    if (doc.documentElement.getAttribute("data-sweep-applied")) return true;
+
+    var applied = 0;
+
+    // 1) results container top padding
+    var container = Array.prototype.find.call(
+      doc.querySelectorAll("div"),
+      function (d) { return /max-w-\[1280px\]/.test(d.className) && /pt-4/.test(d.className); }
+    );
+    if (container) { container.style.paddingTop = "4px"; applied++; }
+
+    // 2) rail heading bottom margin
+    var headWraps = doc.querySelectorAll("div.mb-\\[14px\\]");
+    headWraps.forEach(function (hw) { hw.style.marginBottom = "6px"; });
+    if (headWraps.length) applied++;
+
+    // 3) rail scroller top margin + vertical padding
+    var scrollers = doc.querySelectorAll("div.mt-1.flex.gap-3.overflow-x-auto");
+    scrollers.forEach(function (s) {
+      s.style.marginTop = "0px";
+      s.style.paddingTop = "0px";
+      s.style.paddingBottom = "0px";
+    });
+    if (scrollers.length) applied++;
+
+    // 4) sticky search-summary pill wrapper padding
+    var searchWrap = doc.querySelector(".max-md\\:sticky.max-md\\:top-0.max-md\\:z-\\[55\\]");
+    if (searchWrap) {
+      var inner = searchWrap.querySelector(".mx-auto.w-full.max-w-\\[680px\\].px-4");
+      if (inner) { inner.style.paddingTop = "2px"; inner.style.paddingBottom = "2px"; applied++; }
+    }
+
+    // 5) rail card width, CategoryMobileRails' own wrapper, never SalonCard's classes
+    var cardWraps = Array.prototype.filter.call(
+      doc.querySelectorAll("a"),
+      function (a) { return /w-\[calc\(\(100vw-44px\)\/1\.5\)\]/.test(a.className); }
+    );
+    cardWraps.forEach(function (a) { a.style.width = "calc((100vw - 32px) / 1.15)"; });
+    if (cardWraps.length) applied++;
+
+    if (applied > 0) {
+      doc.documentElement.setAttribute("data-sweep-applied", "1");
+      return true;
+    }
+    return false;
+  }
+
+  function startWatching(frameId) {
+    var f = document.getElementById(frameId);
+    var tries = 0;
+    var iv = setInterval(function () {
+      tries++;
+      try {
+        var doc = f.contentDocument;
+        // wait for a real card (post client-fetch), not the skeleton state
+        var ready = doc && doc.querySelector('a[class*="w-[calc((100vw-44px)/1.5)]"]');
+        if (ready) { if (applyChange(doc)) clearInterval(iv); }
+      } catch (e) {}
+      if (tries > 150) clearInterval(iv);
+    }, 200);
+  }
+
+  document.getElementById("afterFrame").addEventListener("load", function () {
+    startWatching("afterFrame");
+  });
+  startWatching("afterFrame");
+</script>
+</body>
+</html>

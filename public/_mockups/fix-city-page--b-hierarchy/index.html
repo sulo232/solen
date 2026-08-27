@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Basel: one heading becomes the anchor</title>
+<!-- Base: capture -->
+<!-- Scale: component -->
+<!--
+  Grounded-in: app/[locale]/[city]/page.tsx (real /de/basel route, both panels are live iframes
+    of it, running on the dev server at http://localhost:3457).
+  Grounded-in: components-legacy/CityPage.tsx line 121-124 (the real H1, "Salons in Basel",
+    style={{ fontSize: "clamp(25px, 4vw, 40px)" }}, font-heading font-semibold).
+  Grounded-in: components-legacy/SalonCard.tsx line 310 (the real card-name H3, every salon card
+    on this page renders through it: font-heading text-s-ink text-[15px] leading-[1.1] truncate,
+    no weight class, so it computes at weight 400).
+  Grounded-in: public/_mockups/fix-home--b-hierarchy/index.html (same mechanism, same technique,
+    built for the home page in this same brief; this file repeats its shape on purpose).
+  Grounded-in: public/_mockups/floor-fix-city-page/index.html (the smallest-possible-CSS variant
+    of THIS SAME screen, already on disk; read before writing this file so the two stay
+    genuinely different mechanisms rather than two skins on one idea, see the divergence note
+    near the bottom of this comment block).
+  Reference-checked: _design-system/references/AIRBNB_SYSTEM_VS_OURS.md (the captured Airbnb
+    comparison this file's one Airbnb mention, the 3.1% weight>=600 calibration number, is drawn
+    from; that number is a settled house fact quoted in CLAUDE.md itself, not a fresh reference
+    pull made for this mockup).
+
+  Depicts:
+    BEFORE panel -> app/[locale]/[city]/page.tsx (real /de/basel route, live iframe, untouched).
+    AFTER panel -> app/[locale]/[city]/page.tsx (same real /de/basel route, live iframe) with one
+      stylesheet injected after load. Nothing is added, removed, or moved. Three things change
+      size, nothing else: the page heading grows and becomes the one real anchor, every visible
+      salon-card name grows one step to read as the clear second rank, and the rest of the
+      screen, unchanged, now reads as clearly third because there is finally something bigger
+      than it to compare against.
+
+  Diagnosis: F6 DISPLAY ANCHOR | measured 25px, live, this turn, on the rendered /de/basel route at 390x844 via a leaf-text scan matching scripts/check-geometry.mjs's own extractFloors logic | violates FLOORS LAW 6 and the design contract text-size row | target 28px, house value 30px per the ladder locked for this screen this session
+  Diagnosis: F7b ANCHOR RATIO | measured 1.79x, live, same run (25px anchor over a 14px median, the most common leaf-text size on this screen) | violates the EMPHASIS BUDGET anchor-ratio floor | target 1.8x
+
+  F7c SIZE SPREAD, named in the brief as an arm this mechanism affects, is NOT a Diagnosis line
+    here on purpose: it already passes. Measured live, same run: 5 distinct sizes on screen
+    (10, 12, 14, 15, 25), densest 8px-window cluster = 4 (10/12/14/15, the 25px anchor sits
+    alone), both inside the ceiling already. This panel's job on F7c is to not break it while
+    fixing the other two, and it does not, see the AFTER numbers below.
+
+  HOW MEASURED. Not the project's check-geometry.mjs script directly, because that script shells
+    out to a headless browser and needs a socket to localhost, which this turn's Bash sandbox
+    refuses outright (verified: curl to http://localhost:3457 from Bash returned "Immediate
+    connect fail... Operation not permitted" on both the IPv6 and IPv4 attempt). The
+    Claude_Browser tool reaches the same dev server over a different path and does not hit that
+    block, confirmed by successfully loading /de/basel through it. So the extraction logic was
+    read directly out of scripts/check-geometry.mjs (the visible-leaf-text population, the
+    isVisible/clip rules, the median/weight-share/anchor-ratio/densest-cluster formulas, copied
+    line-for-line) and run as a page script through that tool against the live, running route,
+    not against a static copy or a guess.
+
+  BEFORE numbers, measured live, this turn, at 390x844 on /de/basel:
+    displayAnchor=25px(FAIL) anchorRatio=1.79x(FAIL) sizeSpread=5 distinct/4 densest(PASS)
+    weightShare=47.06%(FAIL, 8 of 17 visible leaf-text elements at weight>=600)
+    imagery=43.18%(PASS)
+
+  AFTER numbers, measured live, this turn, by injecting the exact CSS this file ships (below)
+    into the real running page and re-running the identical scan, not computed by arithmetic:
+    displayAnchor=30px(PASS) anchorRatio=2.14x(PASS) sizeSpread=5 distinct/4 densest(still PASS,
+    unchanged in count, the two touched sizes moved from {15,25} to {16,30} without adding or
+    losing a bucket) weightShare=41.18%(still FAIL, 7 of 17, this panel's job was never F7a, see
+    the honesty note below on why it still moved)
+
+  ON THE WEIGHT-SHARE NUMBER IN THE BRIEF. I was handed 54.55%. My own live measurement, twice,
+    stable both times, reads 47.06% (8 of 17 leaf-text elements at weight>=600). A sibling
+    variant on this same screen, floor-fix-city-page, independently measured 43.75% the same way
+    a little earlier. All three numbers agree on the finding, well over half is not far off and
+    the ceiling is 30%, but they are not the same number, and per this project's own rule on
+    unverified numbers I am reporting what I measured, not the number I was handed. The likely
+    reason for the spread: this route fetches its salon list client-side after first paint, so
+    the exact count of leaf-text elements in the viewport at the instant of measurement depends
+    on how many salon cards have finished laying out, and that is not perfectly repeatable
+    run to run. Every number in THIS file's Diagnosis and AFTER lines is my own live reading,
+    taken this turn, not the brief's.
+
+  WHY THIS IS A DIFFERENT MECHANISM FROM floor-fix-city-page, ALREADY ON DISK. That file raises
+    the same H1 to the same 28px floor (a smaller move than this one, clamp(28px,4vw,40px) vs
+    this file's flat 30px) and separately fixes the four category buttons' weight (bold only when
+    selected). This file does not touch the category buttons at all, that is a weight-share fix
+    and weight-share is not this panel's assigned arm. What this file does that the other does
+    not: it treats the SALON CARD NAMES as a real second rank, not left alone. Before this panel,
+    the page had exactly one heading step (25px H1, then straight to 15px card names, then straight
+    to 14px body, a cliff with only one real stair). After, the card names move to 16px/500,
+    giving the screen three readable steps (30 / 16 / 14) instead of a peak and a flat floor. That
+    is the "re-rank everything under it" half of this brief's mechanism; the other file never
+    touches anything below the heading.
+
+  WHY WEIGHT 500, NOT 600, ON THE PARTS THIS PANEL TOUCHES. The ladder locked for every variant
+    of this screen this session says emphasis is carried by size and colour, weight 500 not 600,
+    the way Airbnb's own reference runs at 3.1% weight>=600 (per the captured comparison cited
+    above). The real H1 today is font-semibold (600); this panel drops it to 500 while growing it
+    to 30px, so the anchor gets louder in size and quieter in weight at the same time. The real
+    card-name H3 is weight 400 today; this panel raises it to 500, one step, matching the same
+    convention, never 600. Neither move was asked for by name, both fall out of following the one
+    settled ladder rather than inventing a second recipe for this screen.
+
+  Exists-check: `npm run exists "city page"` run this turn, 1 hit: CityPage ->
+    components-legacy/CityPage.tsx. Per protocol a hit means reuse, and that is exactly what both
+    panels do, they load the real route rather than rebuilding any part of it; the component
+    itself is never edited. `npm run exists "fix-city-page--b-hierarchy"` run this turn, 0 hits,
+    this mockup directory is new.
+
+  Treatment-only: font-size and font-weight on two already-rendered element groups (the page H1,
+    every visible salon-card H3), applied by a script after the real page has loaded, exactly as
+    the sibling home-page mockup does it. No DOM node is added, removed, or moved. No copy
+    changes. No section moves. No photo is added or altered (imagery already passes on this
+    screen, measured above, and is not this panel's job either). Single light theme, no dark mode
+    anywhere in this file. Every label I wrote is English; the city page inside both panels
+    renders its own German through the product's translations, which is the real page and is
+    exempt.
+-->
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --line:#E4E4E7; --sunken:#F4F4F5;
+    --font:'Inter Tight',Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  }
+  html { -webkit-text-size-adjust: 100%; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100dvh;
+    background: #FFFFFF;
+    color: var(--ink);
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { width: 100%; max-width: 402px; margin: 0 auto; padding: 0 0 56px; }
+
+  .lede { padding: 28px 16px 6px; }
+  .lede h1 {
+    font-family: var(--font);
+    font-size: 26px; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em;
+  }
+  .lede p { margin-top: 10px; font-size: 14px; line-height: 1.5; color: var(--ink2); }
+
+  .panel { margin-top: 26px; }
+  .cap { padding: 0 16px 8px; }
+  .cap h2 {
+    font-family: var(--font);
+    font-size: 16px; font-weight: 600; line-height: 1.25; letter-spacing: -0.01em;
+  }
+  .cap p { margin-top: 3px; font-size: 13px; line-height: 1.45; color: var(--ink2); }
+  .nums { font-variant-numeric: tabular-nums; }
+
+  /* the real page, held at its real phone width so nothing is scaled or distorted */
+  .frame {
+    position: relative; width: 100%; height: 640px;
+    border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    overflow: hidden; background: #fff;
+  }
+  .frame iframe { width: 402px; height: 900px; border: 0; display: block; }
+  .frame .badge {
+    position: absolute; top: 10px; right: 10px; z-index: 2;
+    padding: 5px 10px; border-radius: 40px;
+    background: rgba(255,255,255,0.94); border: 1px solid var(--line);
+    font-size: 11px; font-weight: 600; color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .frame .badge.bad { color: #DC2626; }
+  .frame .badge.good { color: #16A34A; }
+
+  .note { padding: 22px 16px 0; font-size: 13px; line-height: 1.55; color: var(--ink2); }
+  .note strong { color: var(--ink); font-weight: 600; }
+  .note + .note { padding-top: 12px; }
+  .note.warn { color: var(--ink); background: var(--sunken); margin: 22px 16px 0; padding: 14px 14px; border-radius: 12px; }
+  .note.warn strong { display: block; margin-bottom: 4px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="lede">
+    <h1>One heading becomes the anchor</h1>
+    <p>Right now the Basel page has one heading, "Salons in Basel", but it tops out at 25px, and
+       every salon name below it is smaller than the subtitle sentence next to it. There is a
+       peak and then a flat floor, nothing in between. Below, the heading grows to your own
+       house size, and every salon name gets one clear step of its own. Nothing moves. Nothing
+       new is added.</p>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>Now</h2>
+      <p>Heading tops out at 25px. Salon names sit at 15px, smaller than the subtitle text above
+         them. No real second step.</p>
+    </div>
+    <div class="frame">
+      <div class="badge nums bad">biggest text: 25px</div>
+      <iframe id="before" src="/de/basel" scrolling="no" title="The Basel page as it is today"></iframe>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>With one clear heading and a real second step</h2>
+      <p>The heading is now the standout. Every salon name reads as the next thing to look at.
+         Everything else was already fine where it sits.</p>
+    </div>
+    <div class="frame">
+      <div class="badge nums good">biggest text: 30px</div>
+      <iframe id="after" src="/de/basel" scrolling="no" title="The Basel page with a real display anchor and a second rank for salon names"></iframe>
+    </div>
+  </div>
+
+  <div class="note warn">
+    <strong>What actually changed.</strong>
+    Two things, both just size and weight, nothing else. The page heading, "Salons in Basel",
+    grows from 25px to 30px and drops from bold to medium weight, the same recipe this system
+    already locked for its display anchor. Every salon name on the page, all of them, the same
+    one component, grows from 15px to 16px and from regular to medium weight, so it reads as a
+    real second rank instead of sitting smaller than the paragraph above it. Nothing shrinks,
+    nothing moves, nothing is deleted or added.
+  </div>
+
+  <div class="note">
+    <strong>What this fixes.</strong> The heading was 25px against your 28px floor, one hair
+    under it, and only 1.79x the 14px body text against a 1.8x floor, also one hair under. Both
+    come from the same cause: the heading's own size formula bottoms out at 25px on a phone
+    screen. Raising that floor to 30px clears both numbers at once: <span class="nums">30px</span>
+    against the <span class="nums">28px</span> floor, and <span class="nums">2.14x</span> against
+    the <span class="nums">1.8x</span> floor, the exact ratio the one screen you already like,
+    the Cuts &amp; Culture salon's own page, runs at today.
+  </div>
+
+  <div class="note">
+    <strong>What this does not fix, and why I did not touch it.</strong> Just under half of the
+    visible text on this screen is bold today (I measured 47.06%, live, this turn, not the number
+    I was handed, see the full note in the file's header), against a 30% ceiling. That is a real
+    problem and it is not a small one, but it is a different bug with a different fix: the
+    category buttons under the heading (Coiffeur, Barbershop, Nails) are bold unconditionally in
+    the component's own code, whether or not you are standing on them. Making an anchor bigger
+    does not fix a button that is bold for no reason. A sibling variant of this same screen
+    targets exactly that. This panel's own two changes happen to nudge the number in the right
+    direction anyway, from 47.06% to 41.18%, because the heading itself went from bold to medium,
+    but that was not the job here and the number is still failing after this panel's fix.
+  </div>
+
+  <div class="note">
+    <strong>What this does not touch.</strong> The photos, the salon cards' layout, the category
+    buttons, the search bar, the colors, the copy. The photo share of this screen already clears
+    its own floor today (43.18% against a 33% minimum, measured live), so nothing needed adding
+    there either.
+  </div>
+
+</div>
+
+<script>
+  // Same technique as the sibling home-page mockup and the gray/white dashboard mockup before
+  // it: the AFTER panel loads the SAME real route as the BEFORE panel, and after it finishes
+  // loading, exactly one stylesheet is injected into it. It does not touch markup, copy, or
+  // layout, only the computed size and weight of two element groups that are already there.
+  function applyHierarchy(doc) {
+    var style = doc.getElementById("fix-city-page--b-hierarchy-style");
+    if (style) return; // already applied (guards the second delayed pass below)
+    style = doc.createElement("style");
+    style.id = "fix-city-page--b-hierarchy-style";
+    style.textContent =
+      "main section:nth-of-type(1) h1 { font-size: 30px !important; font-weight: 500 !important; }\n" +
+      "main section:nth-of-type(3) h3 { font-size: 16px !important; font-weight: 500 !important; }";
+    doc.head.appendChild(style);
+  }
+
+  var after = document.getElementById("after");
+  after.addEventListener("load", function () {
+    try {
+      var doc = after.contentDocument;
+      if (!doc) { return; }
+      applyHierarchy(doc);
+      // The salon grid on this route loads client-side after first paint, so the card H3s may
+      // not exist in the DOM yet at the load event. The stylesheet rule above is not
+      // per-element, it is a selector, so it applies to any h3 that appears in that section
+      // afterward without needing a second injection, but one delayed no-op pass is kept here
+      // (matching the sibling home mockup's own pattern) as a defensive re-check, not because
+      // this rule needed it in testing.
+      setTimeout(function () { applyHierarchy(doc); }, 500);
+    } catch (err) {
+      console.error("[fix-city-page--b-hierarchy] could not restyle the after panel:", err);
+    }
+  });
+</script>
+</body>
+</html>

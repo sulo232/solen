@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<meta name="color-scheme" content="light">
+<title>Reviews page: content higher and bigger</title>
+<!-- Base: capture live -->
+<!-- Scale: full-page -->
+<!-- lang-ok: every line a reader sees is English. The only non-English substrings in this file
+     live inside <script>, matched against the REAL production DOM id and REAL production label
+     text so the injected fix finds the right live elements. Each is marked german-ok on its own
+     line below. -->
+<!--
+  Grounded-in: components-legacy/salon/SalonReviews.tsx (607L, what the reviews route actually
+    renders; every selector in the script below targets this file's own real markup, nothing
+    rebuilt)
+  Route (context, not a component citation): app/[locale]/salon/[slug]/reviews/page.tsx wraps the
+    component above in nothing but a <main className="max-w-3xl mx-auto px-4 sm:px-6 py-6">, so
+    the component IS the page for this route.
+  Grounded-in (photo source only): app/[locale]/_components/salon/SalonDetailV3.tsx, the parent
+    PDP that already passes all six floors, used here only as a LIVE source for its own real
+    gallery photo (the src is read from the real rendered page at runtime, never typed into this
+    file, same technique already used by the sibling mockup at
+    public/_mockups/floor-fix-salon-reviews/index.html)
+
+  THE MECHANISM THIS FILE DEMONSTRATES, and how it differs from the sibling at
+  public/_mockups/floor-fix-salon-reviews/index.html (read for grounding before this one was
+  written): that file's primary diagnosis is typography (weight and size), and it adds one photo
+  strip as a secondary, separately-justified move. This file's assignment was the opposite
+  starting point: fix the imagery floor STRUCTURALLY, by pushing the page's own real content
+  higher and making it bigger, and touch nothing else. Concretely: (1) the real salon photo goes
+  in, sized to clear the imagery floor on its own; (2) the chrome AROUND that photo, the heading,
+  the rating line, the filter block, the sort row, gets its own vertical padding compacted so the
+  first real review card starts sooner than the photo alone would place it. No font size or font
+  weight is touched anywhere in this file; that is a different screen's job, named explicitly in
+  the Diagnosis lines below as NOT fixed here.
+
+  WHY STACKED, NOT A TOGGLE: CLAUDE.md's mockup-first block, amended 2026-08-15, verbatim: "Make
+  you, like, one section of it... remove the gate or anything that's making you do this shit so
+  annoying," closing with "the mockup's scope matches what is being decided" and banning the
+  switcher-plus-iframe template. Before and After sit stacked below, both real, both live, both
+  loaded from the same running dev server, compared by scrolling, never by tapping a tab.
+
+  TWO LITERAL <iframe src="/..."> ELEMENTS pointed straight at the real routes, plus a
+  contentDocument injection after the AFTER frame's own real page finishes loading. Same
+  technique as the sibling file and as public/_mockups/dashboard-without-the-gray/index.html
+  (read first, this file follows its shape); the src is a real relative path, not a JS-only
+  assignment, since this mockup file itself is served from the same Next.js origin.
+
+  BASE WIDTH IS 390, NOT THE USUAL 402: every number in this file, including the ones handed to
+  me, was measured at the LOCKFILE EMPHASIS BUDGET viewport, 390x844, the fixed measurement
+  convention this whole exercise is graded against, not the general 402pt phone-preview width.
+
+  Depicts: Before pane, the real reviews route, completely untouched -> components-legacy/salon/SalonReviews.tsx (607L, live iframe, no injection runs on this pane)
+  Depicts: After pane, one real photo inserted above the heading + five margin/padding values on the existing heading, rating, filter and sort blocks compacted -> components-legacy/salon/SalonReviews.tsx, the section-bewertungen wrapper and its five direct child blocks (lines 259-372 read directly), existing elements + one new photo container, nothing removed and no copy changed
+
+  Diagnosis: reviews page imagery | measured 0% photographic area in the first 390x844 viewport (F2, live route, re-verified this turn via a standalone copy of scripts/check-geometry.mjs's own extractFloors(), run against a genuinely fresh hard-navigation of the live route so no other running script's DOM state could contaminate the number) | violates CLAUDE.md FLOORS LAW 2, floor 33% | target >=33%, delivered 34.36%, verified live before this file was written
+
+  A CONTAMINATION FOUND AND DISCARDED, said plainly per rule 15/18: the FIRST live pass this turn read font-weight 500 on nearly everything (0% heavy-text), which would have contradicted the 43.48% this task started from. Tracing it: that pass ran in a browser tab another concurrent agent had already been driving on this same shared dev server, and a soft client-side navigation had inherited a still-running watchdog script from whatever that agent was testing, which had inline-styled several elements' font-weight to 500 before my script ever read the DOM. A forced hard reload of the same route cleared it: font-weight came back to 600 on the same elements, and a full re-run of extractFloors() then landed at 44% (11 of 25 leaves), matching the 43.48% this task was given within the session-to-session variance the sibling file already documents (its own unread-notification badge). The 43.48%/weight-share number this task handed me is correct; my own instrument needed a hard reload to prove it, and every number in this file's Diagnosis lines below was taken from that same hard-reloaded, single-atomic-call measurement, not the contaminated first pass.
+
+  Diagnosis: reviews page weight share | measured 43.48%-44% of visible leaf text at weight >=600 depending on session state (F7a, live route, hard-reloaded) | violates CLAUDE.md FLOORS LAW 7a, ceiling 30% | NOT TARGETED BY THIS FIX: no font-weight is touched anywhere in this file. Measured again after the imagery fix, on the same live route: 42.11% (8 of 19 leaves), still FAIL. The drop from 25 to 19 leaves is a side effect of the heading block getting shorter (fewer distinct-margin wrapper reads as fewer separately-measured leaves at this viewport crop), not a deliberate typography move. This screen's weight-share fix is a different mechanism's job (see the sibling files at public/_mockups/floor-fix-salon-reviews/ and the emphasis-focused variant).
+
+  Diagnosis: reviews page size spread | measured 8 distinct sizes, 6 of them inside one 8px window (F7c, live route, hard-reloaded; this run counted 8 distinct against the 7 this task quoted, both agree on the densest-cluster number, 6, which is the number the ceiling actually grades) | violates CLAUDE.md FLOORS LAW 7c, ceiling 4 distinct per 8px window | NOT TARGETED BY THIS FIX: measured again after the imagery fix, unchanged at 8 distinct / 6 densest. Still FAIL. Same reasoning as weight share: this fix touches spacing and one photo, never a font-size value.
+
+  Verified unaffected by the fix, not broken by it, re-measured after all four DOM changes on the
+  same live route: display anchor stayed 30px (floor 28px, PASS both before and after), anchor
+  ratio stayed 2.31x (floor 1.8x, PASS both before and after), elevation stayed at 2 distinct
+  shadow values (floor 2, PASS both before and after).
+
+  HOW THE NUMBERS ABOVE WERE PRODUCED: a standalone copy of scripts/check-geometry.mjs's own
+  extractFloors() function, copied unmodified, was injected into a hard-reloaded, single-atomic
+  browser-automation call against the real live route (navigate + inject + measure in one
+  round-trip, specifically to close the contamination window described above). It measured
+  Before once, then this file's own four DOM mutations were applied in that same live document
+  (not a copy, not a redraw) and the identical function measured After. Every percentage and
+  pixel figure in the Diagnosis lines above is that live output, not an estimate. That
+  measurement pass is not part of the delivered mockup; it only existed to prove the numbers
+  before this file was written.
+
+  IMAGERY IS STRUCTURAL, NOT A TREATMENT, said plainly: CLAUDE.md FLOORS LAW 2 requires imagery
+  be satisfied by real content, never a baked-in decorative photo, and a mockup file may never
+  hardcode an <img> src. Checked this turn, independent of the sibling file's own check: this
+  salon's reviews carry zero review_photos (both reviewers render an initial-only avatar, no
+  photo, confirmed live: document.querySelectorAll('img') on the real reviews route returns
+  zero elements). So the only real, live, data-driven photograph available anywhere on this
+  salon's own pages is the one its parent PDP already renders (real seeded photography, an
+  actual gallery image, not a stock placeholder baked into a component) and already passes floor
+  F2 with. This file's After panel reads that photo's src from the real live parent page at
+  runtime, through a hidden helper iframe, and never types a URL into this file's own markup.
+
+  THE HONEST COST OF THIS MECHANISM, which the assignment asked to be stated plainly rather than
+  hidden: the photo alone, sized to clear the 33% floor, costs roughly 290px of the 844px fold.
+  The chrome compaction below recovers about 45px of that back. Net, the AFTER panel shows less
+  full review TEXT within the first screen than the untouched page does today (the untouched page
+  shows all of the first review's comment plus its salon reply; the fixed page shows the first
+  review's photo, name and date, with its comment starting just past the fold). What the AFTER
+  panel gains is real proof the place exists, which the untouched page had zero of. This is
+  exactly the tradeoff FLOORS LAW 2 asks for by name (imagery is a floor, not optional), so it is
+  reported here rather than smoothed over: the fix trades one review's worth of visible text for
+  the photographic minimum the floor requires. A design that wants both (the photo AND a fully
+  visible first review) needs either a shorter photo close to the 33% floor's own minimum with no
+  slack, or a genuinely shorter review card treatment, which is the sibling files' job, not this
+  one's.
+
+  Exists-check: ran this turn (twice, once before this file's first write attempt and again just
+    before this successful write). `npm run exists "SalonReviews"` returns 11 matches (both
+    existing review components + the route + the dashboard reviews page + the dev mock), reused
+    here by live injection, nothing rebuilt. `npm run exists "cover photo strip"` and
+    `npm run exists "reviews photo"` both return 0, no graveyard hit, so the photo-strip
+    placement is the one new arrangement this file proposes, same finding the sibling file
+    independently reached. Component ownership confirmed: the route imports
+    components-legacy/salon/SalonReviews (607L), read directly to source every selector and
+    every margin/padding class this file's script targets (lines 259, 272, 277, 288, 304, 305,
+    355 of that file).
+
+  Treatment-only where the change IS a treatment (spacing values, nothing else); STRUCTURAL where
+    it genuinely is (a new photo element, stated here rather than disguised as a style tweak).
+    Exactly four moves, nothing else touched, no copy changed, no element removed or reordered
+    except the one new photo strip inserted first:
+    1. insert one real photo strip, height 290px, full-bleed, src read live from the real parent
+       page, margin -24px -16px 20px (cancels the page's own top padding and side padding so the
+       photo runs edge to edge, then leaves a 20px gap before the heading)
+    2. the wrapper holding the rating line, filter block and sort row: mt-3 (12px) -> 8px
+    3. the rating line's own top margin: mt-5 (20px) -> 12px; the filter block's own top margin:
+       mt-6 (24px) -> 16px; the "Filtern nach" label's own bottom margin: mb-2.5 (10px) -> 6px
+    4. the sort row's top margin, top padding and bottom margin: mt-6/pt-5/mb-4 (24/20/16px) ->
+       14px/10px/10px
+    The "Bewertung schreiben" CTA (signed-in viewers only) is not exercised in this anonymous
+    verification pass, same as the sibling file notes, and its own spacing is left untouched by
+    this fix.
+-->
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --sunken:#F4F4F5; --hairline:#E4E4E7;
+    --font:'Inter Tight',system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#fff}
+  body{
+    font-family:var(--font);color:var(--ink);-webkit-font-smoothing:antialiased;
+    width:390px;margin:0 auto;padding:0 0 40px;-webkit-text-size-adjust:100%;
+  }
+  .intro{
+    padding:20px 16px 16px;border-bottom:1px solid var(--hairline);
+  }
+  .intro h1{font-size:17px;font-weight:600;line-height:1.35;color:var(--ink)}
+  .intro p{margin-top:6px;font-size:13px;line-height:1.5;color:var(--ink2)}
+
+  .row{padding:22px 16px 10px}
+  .row .tag{
+    display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;
+    letter-spacing:.02em;color:var(--ink2);
+  }
+  .row.before .tag::before{content:'';width:7px;height:7px;border-radius:999px;background:var(--ink2)}
+  .row.after .tag::before{content:'';width:7px;height:7px;border-radius:999px;background:#16A34A}
+  .row .cap{margin-top:4px;font-size:13px;line-height:1.4;color:var(--ink)}
+  .row .measure{margin-top:6px;font-size:12px;line-height:1.5;color:var(--ink2)}
+  .row .measure b{color:var(--ink);font-weight:600}
+
+  .frame{
+    margin:12px 16px 0;width:358px;height:844px;border-radius:16px;overflow:hidden;
+    border:1px solid var(--hairline);background:var(--sunken);position:relative;
+  }
+  .frame iframe{
+    width:390px;height:844px;border:0;display:block;
+    transform:scale(0.9179);transform-origin:top left;
+  }
+  .frame .lbl{
+    position:absolute;top:8px;right:8px;z-index:2;background:rgba(10,10,10,.72);color:#fff;
+    font-size:11px;font-weight:600;padding:4px 8px;border-radius:999px;pointer-events:none;
+  }
+  /* the hidden third frame that only harvests the real parent page's photo src, never shown */
+  #harvestFrame{position:fixed;left:-9999px;top:0;width:390px;height:844px;border:0}
+
+  .foot{padding:20px 16px 0;font-size:12px;line-height:1.6;color:var(--ink2)}
+  .foot b{color:var(--ink);font-weight:600}
+  .foot ul{margin:8px 0 0 18px}
+  .foot li{margin-top:4px}
+</style>
+</head>
+<body>
+
+  <div class="intro">
+    <h1>Reviews page: content higher and bigger</h1>
+    <p>Today this page opens on chrome, a heading, a filter row, a sort button, and no photo at all. The fix below puts a real photo of the salon at the top and tightens the space around it, so the page opens on the actual place instead of only its controls.</p>
+  </div>
+
+  <div class="row before">
+    <div class="tag">Before</div>
+    <div class="cap">The live reviews page, untouched. No photo anywhere on the screen. The first review's full text and reply are visible, and the second review's avatar is just starting to peek in.</div>
+    <div class="measure">Measured: <b>0%</b> of the first screen is a photo (needs 33%+).</div>
+  </div>
+  <div class="frame" id="paneBefore">
+    <iframe id="beforeFrame" src="/de/salon/cuts-and-culture/reviews" title="reviews page, before, unedited"></iframe>
+    <span class="lbl">live, unedited</span>
+  </div>
+
+  <div class="row after">
+    <div class="tag">After</div>
+    <div class="cap">Same live page. A real photo of Cuts &amp; Culture, the actual salon this page belongs to, now sits at the top. The heading, rating line, filter row and sort button are pulled tighter together underneath it, so the first review still starts on this screen.</div>
+    <div class="measure">Measured: <b>34.36%</b> of the first screen is now a real photo. Trade-off, said plainly: the first review's name and date now clear the screen, but its comment text starts just below it, where before the full comment and the salon's reply were both visible.</div>
+  </div>
+  <div class="frame" id="paneAfter">
+    <iframe id="afterFrame" src="/de/salon/cuts-and-culture/reviews" title="reviews page, after, fix applied"></iframe>
+    <span class="lbl">live, fix applied</span>
+  </div>
+
+  <iframe id="harvestFrame" src="/de/salon/cuts-and-culture" title="hidden: reads the real cover photo from the live parent page"></iframe>
+
+  <div class="foot">
+    Both boxes above are the real page loading right now, not a drawing. <b>Before</b> is exactly what ships today. <b>After</b> has four DOM changes made by a script once the real page loads: one new photo element, and three spacing values tightened on existing elements. Nothing is redrawn, invented, or hardcoded.
+    <ul>
+      <li>Clears now: the imagery floor (0% &rarr; 34.36%, needs 33%).</li>
+      <li>Still short: how much of the screen is bold text, and how many different text sizes are crowded together, both unchanged by this fix. A different fix, shown in the other mockups from this same round, targets those two.</li>
+    </ul>
+  </div>
+
+<script>
+  // Same-origin cookie-consent record, written before the iframes finish loading, so the banner
+  // never covers the section in any pane (identical technique to the sibling mockup files). The
+  // iframes' src is already set directly in the markup above (this mockup file is served from the
+  // same Next.js origin as the real app, so a relative path resolves correctly); nothing here
+  // assigns src again.
+  try {
+    localStorage.setItem('solen-cookie-consent', JSON.stringify({
+      necessary: true, analytics: false, marketing: false, timestamp: new Date().toISOString()
+    }));
+  } catch (e) {}
+
+  var afterFrame = document.getElementById('afterFrame');
+  var harvestFrame = document.getElementById('harvestFrame');
+
+  // ---- harvest the real cover photo from the real parent page. Hidden, never rendered to the
+  // viewer, used only to read one live src string. Nothing here is typed as a fixed URL.
+  var realPhotoSrc = null;
+  var harvestTries = 0;
+  var harvestIv = setInterval(function () {
+    harvestTries++;
+    try {
+      var doc = harvestFrame.contentDocument;
+      var img = doc && doc.querySelector('img[src*="supabase"], img[src^="http"], img[src^="/_next/image"]');
+      if (img && img.src) {
+        realPhotoSrc = img.src;
+        clearInterval(harvestIv);
+      }
+    } catch (e) {}
+    if (harvestTries > 100) clearInterval(harvestIv);
+  }, 150);
+
+  // The exact four moves listed in the Treatment-only comment above, and nothing else. Same
+  // function verified live against a standalone copy of scripts/check-geometry.mjs's own
+  // extractFloors() before this file was written.
+  function applyFix(doc, photoSrc) {
+    var section = doc.getElementById('section-bewertungen'); // german-ok: real production DOM id, not this mockup's copy
+    if (!section) return false;
+    if (section.getAttribute('data-content-fix')) return true;
+
+    // 1. real photo strip, full-bleed, cancels the page's own top+side padding.
+    if (photoSrc) {
+      var strip = doc.createElement('div');
+      strip.style.margin = '-24px -16px 20px';
+      strip.style.height = '290px';
+      strip.style.overflow = 'hidden';
+      strip.style.position = 'relative';
+      strip.style.background = '#F4F4F5';
+      var img = doc.createElement('img');
+      img.src = photoSrc;
+      img.alt = '';
+      img.style.width = '100%';
+      img.style.height = '100%';
+      img.style.objectFit = 'cover';
+      img.style.display = 'block';
+      strip.appendChild(img);
+      section.parentElement.insertBefore(strip, section);
+    }
+
+    // 2. the wrapper holding rating + filter + sort: mt-3 -> 8px
+    var wrap = section.querySelector(':scope > div.mt-3');
+    if (wrap) wrap.style.marginTop = '8px';
+
+    // 3. rating line mt-5 -> 12px; filter block mt-6 -> 16px; filter label mb-2.5 -> 6px
+    var ratingRow = section.querySelector('.mt-5');
+    if (ratingRow) ratingRow.style.marginTop = '12px';
+    var filterWrap = section.querySelector('.mt-6');
+    if (filterWrap) filterWrap.style.marginTop = '16px';
+    var filterLabel = Array.prototype.find.call(section.querySelectorAll('p'), function (p) {
+      return p.textContent.trim() === 'Filtern nach'; // german-ok: real production label text, not this mockup's copy
+    });
+    if (filterLabel) filterLabel.style.marginBottom = '6px';
+
+    // 4. sort row mt-6/pt-5/mb-4 -> 14px/10px/10px
+    var sortRow = Array.prototype.find.call(section.querySelectorAll('div'), function (d) {
+      return d.className && d.className.indexOf('mb-4') !== -1 && d.className.indexOf('mt-6') !== -1 && d.className.indexOf('border-t') !== -1;
+    });
+    if (sortRow) {
+      sortRow.style.marginTop = '14px';
+      sortRow.style.paddingTop = '10px';
+      sortRow.style.marginBottom = '10px';
+    }
+
+    section.setAttribute('data-content-fix', '1');
+    return true;
+  }
+
+  // A PERSISTENT watchdog, not a one-shot burst: applyFix() is idempotent (checks
+  // data-content-fix and returns early once set), so calling it repeatedly is cheap and safe.
+  // Required, not defensive paranoia: this file was verified live on a shared dev server that
+  // rebuilds/hot-reloads on its own while other agents' work touches the same worktree, which can
+  // replace the AFTER iframe's whole document out from under a one-shot fix. A short burst missed
+  // that during this file's own verification pass; a standing watchdog does not.
+  var afterTries = 0;
+  var afterIv = setInterval(function () {
+    afterTries++;
+    try {
+      var doc = afterFrame.contentDocument;
+      var sec = doc && doc.getElementById('section-bewertungen'); // german-ok: real production DOM id, not this mockup's copy
+      if (sec && !sec.getAttribute('data-content-fix')) {
+        applyFix(doc, realPhotoSrc);
+      }
+    } catch (e) {}
+    if (afterTries > 4000) clearInterval(afterIv); // ~33 minutes at 500ms, not truly infinite
+  }, 500);
+</script>
+</body>
+</html>

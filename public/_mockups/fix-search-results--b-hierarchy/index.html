@@ -1,0 +1,327 @@
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!--
+Note on Scale: the decision under review is one screen's type hierarchy (the anchor plus the
+  ranking of everything under it), not a whole-page redesign, but the document renders the whole
+  real route either way, same precedent this repo already uses: public/_mockups/floor-fix-search-
+  results/index.html (the same route, same technique) also declares full-page for a narrower
+  decision. Followed that precedent. See Treatment-only below for the actual, small, edit list.
+
+Grounded-in: app/[locale]/[city]/[category]/page.tsx (route) -> app/[locale]/_components/search/SearchTemplate.tsx
+  -> app/[locale]/_components/search/CategoryMobileRails.tsx / CategoryBrowseRails.tsx (the two rail
+  headings, CategoryBrowseRails.tsx:73) -> the floating map pill (SearchTemplate.tsx:386). Both
+  panels below are the SAME real route, http://localhost:3457/de/basel/coiffeur, in an iframe.
+
+Depicts: before panel -> the real route /de/basel/coiffeur, untouched.
+Depicts: after panel -> the same real route, with three CSS/type edits injected client-side onto
+  the loaded DOM (see Treatment-only): one new heading, two weight/size merges on elements already
+  on the page. Nothing added, removed, resized in space, or reordered.
+
+Diagnosis: results-page display anchor | measured 18px (tallest text in the first viewport, the first rail heading) | violates LOCKFILE EMPHASIS BUDGET F6 / CLAUDE.md NEVER-AGAIN floor 6 (>= 28px) | target 30px
+Diagnosis: results-page anchor-to-body ratio | measured 1.29x (18px rail heading / 14px body tier) | violates LOCKFILE EMPHASIS BUDGET F7b (>= 1.8x) | target 2.14x (30px / 14px, matching /de/salon/cuts-and-culture)
+Diagnosis: distinct text sizes in the first viewport | measured 5 sizes already present (10, 12, 13.5, 14, 18px), none of them a display anchor | violates the F7c ceiling budget by leaving no room for a 6th size once an anchor is added | target 5 sizes held after the anchor exists (10, 12, 14, 18, 30px), by merging the 13.5px map-pill label into the 14px tier
+
+All three numbers above were measured LIVE this session at 390x844 via getBoundingClientRect +
+getComputedStyle on every visible leaf text node in the first viewport, after the client-side salon
+fetch settled (screenshot + raw JSON captured this turn).
+
+Contradiction worth surfacing, not smoothing over (CLAUDE.md rule 18): this task's brief states
+  imagery 0% (floor 33), a 14px anchor, a 1.17x ratio, and weight share 0% PASS for this route.
+  Measured live this session at 390x844, after the client fetch settles: imagery is clearly NOT 0%,
+  two full-bleed salon photos render in the first viewport before any scroll (screenshot taken this
+  session, roughly 40% of the viewport is photographic, matching the 41.4% another session already
+  logged in public/_mockups/floor-fix-search-results/index.html); the tallest text is 18px, not 14px,
+  giving a 1.29-1.5x ratio depending which size is called body, not 1.17x; and weight share is NOT
+  0%, both rail headings and every salon name + price render at font-weight 600 (measured, not
+  estimated). The F6/F7b FAIL direction the brief describes is correct, just off in its numbers; the
+  F2 imagery and F7a weight-share PASS/FAIL calls in the brief do not match what this session measured
+  live. This mockup does not depend on the wrong numbers: it targets the two failures that are real
+  (F6, F7b) and the one this session could independently verify (F7c, the 5-size ceiling already being
+  full with no anchor in it).
+
+Exists-check: `npm run exists search-results`, run this turn, returned two REMOVED.md hits, both
+  irrelevant to this fix (the retired legacy SearchResults.tsx component, and the deliberately-cut
+  result-count heading + standalone Sort button, owner 2026-07-31). Neither is a display anchor and
+  neither is being restored. `npm run exists "SearchTemplate hero"` (checked in the sibling mockup
+  this session read for grounding, floor-fix-search-results/index.html) returned 0 matches for a
+  render site: the hero.title prop already exists and is already computed server-side with real
+  city+category data, it just renders nowhere. This mockup reuses that same unused, already-correct
+  string.
+
+Treatment-only, the full edit list and nothing else: (1) insert one <h1> above the first rail,
+  reusing the real LOCKED H1 class string verbatim from app/[locale]/_components/salon/
+  SalonHeader.tsx (font-display text-[clamp(30px,2.8vw,34px)] font-semibold leading-[1.1]
+  tracking-[-0.02em] text-s-ink), then override its weight to 500 to follow this task's ladder
+  (emphasis is size and colour, not weight), filled with the real city + category name read off the
+  page's own <title> tag, the same string page.tsx already computes; (2) the two rail headings drop
+  from font-weight 600 to 500, size unchanged at 18px, so the new anchor is unambiguously the one
+  loud thing on the screen and the rail headings read as a calmer second tier under it; (3) the
+  floating map pill's label moves from 13.5px to 14px, folding it into the existing body-text tier
+  instead of being its own one-off size, which is what makes the total size count land at exactly 5
+  (10, 12, 14, 18, 30) once the anchor exists, not 6. Nothing else changes: no card resize, no
+  reorder, no touched photos, no touched salon-name or price weight. Those stay at their locked
+  value (LOCKFILE V3-D442 two-anchor rule locks SalonCard name+price at weight 600) because that is
+  a named, dated, locked decision on a shared component, and this fix's scope is the SCREEN's own
+  headings, not SalonCard's internals.
+
+Cost this does NOT hide: with the two rail headings demoted to 500 and the SalonCard names/prices
+  left at their locked 600, the screen's remaining bold weight is now concentrated entirely inside
+  SalonCard, which this fix does not touch and could not resize down further without breaking the
+  V3-D442 lock. If the founder wants weight share to fall further than what this treatment buys,
+  that next step is a SalonCard-level decision, not a screen-level one, and is out of scope here.
+
+Also true today, not fixed by this mockup, named per the brief: landing on this route directly (not
+  via in-app navigation) shows a HOME icon top-left, not a back control (checked live, this session).
+  That is a routing/header code change, not a treatment this file can show.
+-->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Search results, hierarchy fix</title>
+<style>
+  :root{
+    --ink:#0A0A0A;
+    --ink2:#52525B;
+    --sunken:#F4F4F5;
+    --hairline:#E4E4E7;
+    --font:'Inter Tight',system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#fff;color:var(--ink)}
+  body{
+    font-family:var(--font);
+    -webkit-font-smoothing:antialiased;
+    padding:28px 16px 64px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:20px;
+  }
+  .intro{max-width:402px;width:100%}
+  .intro h1{
+    font-size:22px;
+    font-weight:700;
+    letter-spacing:-0.01em;
+    line-height:1.25;
+    margin-bottom:10px;
+  }
+  .intro p{
+    font-size:15px;
+    line-height:1.5;
+    color:var(--ink2);
+    margin-bottom:10px;
+  }
+  .intro p strong{color:var(--ink)}
+  .intro table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13px;
+    margin:12px 0;
+  }
+  .intro table th, .intro table td{
+    text-align:left;
+    padding:6px 8px;
+    border-bottom:1px solid var(--hairline);
+  }
+  .intro table th{color:var(--ink2);font-weight:600}
+  .intro table td.num{font-variant-numeric:tabular-nums}
+  .cost-note{
+    background:var(--sunken);
+    border-radius:12px;
+    padding:12px 14px;
+    font-size:13.5px;
+    line-height:1.5;
+    color:var(--ink2);
+    margin-top:4px;
+  }
+  .cost-note strong{color:var(--ink)}
+  .panel{width:402px;max-width:100%;position:relative}
+  .panel-label{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 2px 8px;
+  }
+  .panel-label .tag{
+    font-size:11px;
+    font-weight:700;
+    padding:4px 10px;
+    border-radius:999px;
+    background:var(--ink);
+    color:#fff;
+  }
+  .panel-label .tag.after{background:#16A34A}
+  .panel-label .cap{
+    font-size:12.5px;
+    color:var(--ink2);
+    text-align:right;
+    max-width:250px;
+  }
+  .frame-wrap{
+    width:402px;
+    max-width:100%;
+    height:660px;
+    border:1px solid var(--hairline);
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow:0 1px 2px rgba(10,10,10,.04), 0 10px 30px -18px rgba(10,10,10,.12);
+    background:#fff;
+  }
+  iframe{width:402px;height:844px;border:0;display:block}
+  .badge{
+    position:absolute;
+    top:8px;
+    left:8px;
+    background:rgba(22,163,74,.95);
+    color:#fff;
+    font-size:11px;
+    font-weight:700;
+    padding:4px 10px;
+    border-radius:999px;
+    z-index:5;
+    pointer-events:none;
+  }
+</style>
+</head>
+<body>
+
+  <div class="intro">
+    <h1>Give the page a title, then quiet everything around it</h1>
+    <p>This is the real Coiffeur results page for Basel, loaded live on both sides below. Nothing
+    is redrawn from scratch.</p>
+    <p>Today, the page has no title at all. The biggest text on it is a rail label at 18px, a
+    section tag, not a headline. Nothing on the screen is clearly the one biggest thing.</p>
+    <p>The fix has two parts, on purpose: <strong>add the missing headline</strong> (sized to match
+    the salon page you already like), then <strong>turn down the two section labels underneath
+    it</strong> so the new headline is unmistakably the biggest thing on the screen, not just one
+    more bold line among several. Nothing moves. The photos, the cards, the order, all stay exactly
+    where they are.</p>
+    <table>
+      <tr><th>What</th><th>Before</th><th>After</th></tr>
+      <tr><td>Page headline</td><td class="num">none</td><td class="num">30px</td></tr>
+      <tr><td>Headline vs body size</td><td class="num">n/a</td><td class="num">2.14x</td></tr>
+      <tr><td>Distinct text sizes on screen</td><td class="num">5</td><td class="num">5</td></tr>
+      <tr><td>The two rail labels' weight</td><td class="num">bold</td><td class="num">medium</td></tr>
+    </table>
+    <div class="cost-note">
+      <strong>One thing to weigh:</strong> the salon name and price on each card stay exactly as
+      bold as they are today. That's the site's own locked rule for those two, so this fix does not
+      touch them. It means the page's bold text now lives almost entirely inside the cards, not in
+      the headings above them, which is the intended trade: one loud headline, calm labels, cards
+      unchanged.
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-label">
+      <span class="tag">Before, live</span>
+      <span class="cap">The real page today. No headline. The rail label is the biggest text at 18px.</span>
+    </div>
+    <div class="frame-wrap">
+      <iframe id="beforeFrame" src="/de/basel/coiffeur" title="Search results, before, real page"></iframe>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-label">
+      <span class="tag after">After, hierarchy fixed</span>
+      <span class="cap">Same real page. One headline added, two labels turned down. Nothing else moved.</span>
+    </div>
+    <div class="frame-wrap">
+      <span class="badge">1 new headline, 2 labels calmed</span>
+      <iframe id="afterFrame" src="/de/basel/coiffeur" title="Search results, after, real page"></iframe>
+    </div>
+  </div>
+
+<script>
+  // Grounded in app/[locale]/_components/salon/SalonHeader.tsx's own H1 class string, copied
+  // verbatim so the size/line-height/tracking of the new anchor is not invented. Weight is
+  // overridden to 500 below per this task's ladder (emphasis = size + colour, not weight).
+  var H1_CLASS = "font-display text-[clamp(30px,2.8vw,34px)] font-semibold leading-[1.1] tracking-[-0.02em] text-s-ink";
+
+  // Same rail-detector as the sibling mockup (floor-fix-search-results): the FAQ heading at the
+  // bottom renders immediately (server-rendered) and would be matched first by a bare "first h2"
+  // query, before the client-side salon fetch has even resolved. Only match an h2 whose own
+  // section contains a photo, true for a rail, false for the FAQ.
+  function findRailHeadings(doc) {
+    var h2s = doc.querySelectorAll("h2");
+    var rails = [];
+    for (var i = 0; i < h2s.length; i++) {
+      var h2 = h2s[i];
+      var sec = h2.closest("section") || h2.parentElement;
+      if (sec && sec.querySelector("img")) rails.push(h2);
+    }
+    return rails;
+  }
+
+  function findMapPill(doc) {
+    // Multiple pills share the 13.5px size (the city pill "Basel", the price filter "Preis"), so
+    // a size-only match is wrong (caught live this session: it silently resized "Basel" instead).
+    // The floating map toggle is the one fixed-position bottom pill; match on that, not on text,
+    // since its label is locale-dependent (SearchTemplate.tsx:381-390, "Karte" in German).
+    var candidates = doc.querySelectorAll("button, a");
+    for (var i = 0; i < candidates.length; i++) {
+      var cs = getComputedStyle(candidates[i]);
+      if (cs.position === "fixed" && cs.fontSize === "13.5px") return candidates[i];
+    }
+    return null;
+  }
+
+  function applyChange(doc) {
+    if (doc.getElementById("sweep-hero-h1")) return true; // already applied, idempotent
+    var rails = findRailHeadings(doc);
+    if (rails.length === 0) return false;
+
+    // 1) Insert the missing anchor above the first rail. Real copy, read off the page's own
+    // <title>, the same city+category string page.tsx already computes server-side.
+    var first = rails[0];
+    var anchor = first.closest("section") || first.parentElement;
+    if (anchor && anchor.parentElement) {
+      var m = /^Beste (.+?) in (.+?) - /.exec(doc.title || "");
+      var headingText = m ? (m[1] + " in " + m[2]) : "Coiffeur in Basel";
+      var h1 = doc.createElement("h1");
+      h1.id = "sweep-hero-h1";
+      h1.className = H1_CLASS;
+      h1.style.marginBottom = "16px";
+      h1.style.fontWeight = "500"; // ladder: emphasis = size + colour, not weight
+      h1.textContent = headingText;
+      anchor.parentElement.insertBefore(h1, anchor);
+    }
+
+    // 2) Demote every rail heading found (not just the first) from 600 to 500. Size untouched.
+    for (var i = 0; i < rails.length; i++) {
+      rails[i].style.fontWeight = "500";
+    }
+
+    // 3) Fold the floating map pill's 13.5px label into the 14px body tier, so the anchor does
+    // not push the screen's distinct-size count from 5 to 6.
+    var pill = findMapPill(doc);
+    if (pill) pill.style.fontSize = "14px";
+
+    return true;
+  }
+
+  function startWatching(frameId) {
+    var f = document.getElementById(frameId);
+    var tries = 0;
+    var iv = setInterval(function () {
+      tries++;
+      try {
+        var doc = f.contentDocument;
+        if (doc && findRailHeadings(doc).length) {
+          if (applyChange(doc)) clearInterval(iv);
+        }
+      } catch (e) {}
+      if (tries > 150) clearInterval(iv);
+    }, 200);
+  }
+
+  document.getElementById("afterFrame").addEventListener("load", function () {
+    startWatching("afterFrame");
+  });
+  startWatching("afterFrame");
+</script>
+</body>
+</html>

@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Your account: clear every floor at once</title>
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!--
+  Scale is full-page because both routes' entire real pages load end to end in every panel below,
+  nothing is cropped out of an iframe from the outside. The one exception is INSIDE the after
+  panels, where a second real route is loaded in a nested iframe and cropped on purpose, explained
+  in the Treatment-only note.
+
+  Grounded-in: app/[locale]/profile/page.tsx (real /de/profile route, all four profile panels are
+    live iframes of it)
+  Grounded-in: app/[locale]/_components/profile/AccountHub.tsx (the account hub component; its own
+    header comment documents the 2026-08 rebuild that already moved the name anchor to 28px/600)
+  Grounded-in: app/[locale]/profile/settings/page.tsx (real /de/profile/settings route)
+  Grounded-in: app/[locale]/profile/favorites/page.tsx + _components/profile/FavoritesList.tsx
+    (the real favorites content this mockup surfaces, unmodified, via a nested iframe)
+  Grounded-in: components-legacy/SalonCard.tsx (the exact registered card FavoritesList already
+    composes for every favorite; this mockup does not touch it, it only shows more of it)
+  Grounded-in: _design-system/COMPONENT_REGISTRY.md rows AccountHub (line 90, "don't fork a second
+    grouped-row account pattern, extend this one; don't add a row without a real destination + real
+    data source") and SalonCard (line 137, whose own text names the favorites route as a use site)
+  Grounded-in: _design-system/REMOVED.md, the 2026-08-02 graveyard entry for the earlier tab bar,
+    search field, sort control and photo-collage grid this hub used to carry
+
+  Depicts: the account page before -> app/[locale]/profile/page.tsx (real /de/profile route, live
+    iframe, untouched)
+  Depicts: the account page after, favorites section -> app/[locale]/profile/favorites/page.tsx and
+    components-legacy/SalonCard.tsx, nested via a live iframe right after the h1 name in
+    app/[locale]/_components/profile/AccountHub.tsx, header/nav/count-line hidden, cropped to a
+    fixed 520px window; every existing AccountHub row stays, pushed down by the new section's height
+  Depicts: the settings page before -> app/[locale]/profile/settings/page.tsx (real
+    /de/profile/settings route, live iframe, untouched)
+  Depicts: the settings page after, name anchor -> app/[locale]/profile/settings/page.tsx's own
+    identity-block name element, restyled via one injected CSS rule to the same 28px/600/tracking
+    values app/[locale]/_components/profile/AccountHub.tsx's h1 already carries; no markup added
+
+  Correction, not a Diagnosis line, context only (rule 15/18, surface the contradiction, don't build
+    on a wrong premise): the numbers this task was briefed with for the account route (anchor 18px,
+    weight share 40%, ratio 1.5x, size spread PASS) do not match what that route renders today.
+    Measured live this session, 2026-08-27, 390x844, getBoundingClientRect + getComputedStyle over
+    every element carrying its own text node, sr-only skip-links excluded: max text 28px, weight
+    share 22.3%, ratio 2.0x. Reading AccountHub.tsx explains why, its own header comment documents
+    an earlier session's rebuild that moved this exact anchor from a measured 24px to 28px and
+    dropped row-label weight from 600 to 500, specifically to clear these two floors. That fix is
+    already live; the briefing describes the screen before it landed. The settings route was NOT
+    touched by that rebuild (its own identity block is a separate component from AccountHub) and
+    still fails what the brief described, see the Diagnosis lines below. So "measured identical on
+    all six floors" does not hold today, the two routes diverge on F6/F7b and only agree on F2/F7c.
+
+  Diagnosis: F2 IMAGERY on the account route | measured 1.09% of the first 390x844 viewport is photographic | violates FLOORS LAW 2 (LOCKFILE design contract "imagery" row, >= 33%) | target 33%, house value 34.66% measured on cuts-and-culture
+  Diagnosis: F2 IMAGERY on the settings route | measured 1.24% of the first 390x844 viewport is photographic | violates FLOORS LAW 2 | target 33%
+  Diagnosis: F6 DISPLAY ANCHOR on the settings route | measured 20px (the identity block's name, bold weight) | violates FLOORS LAW 6, which requires >= 28px | target 28px, matching AccountHub.tsx's own h1 anchor
+  Diagnosis: F7b ANCHOR RATIO on the settings route | measured 1.43x (20px over a 14px body) | violates the EMPHASIS BUDGET floor, which requires >= 1.8x | target 2.0x, the same ratio AccountHub's 28px anchor already carries
+  Diagnosis: F7c SIZE SPREAD on the account route, whole rendered screen | measured 7 distinct text sizes (10px, 12px, 13px, 14px, 15.5px, 18px, 28px) with 6 of them inside one 8px window from 10px to 18px | violates the ladder's at-most-5-distinct, at-most-4-per-8px-window rule | target 5 distinct sizes, 4 in the densest window, already met by AccountHub's own content alone (12px, 13px, 14px, 15.5px, 28px) once the off-limits global Header (18px, 10px) and BottomNav (12px) chrome is excluded
+
+  Exists-check: `npm run exists AccountHub` -> HIT (app/[locale]/_components/profile/AccountHub.tsx,
+    plus 3 graveyard entries for the 2026-08-02 kill: the tab bar, the search field, the sort
+    control, and the bespoke 3-photo collage grid). Per protocol a graveyard hit on the OLD
+    mechanism is not a yes to revive it, and this mockup does not: no tab bar, no search field, no
+    sort control, and no collage grid are added anywhere in this file. `npm run exists SalonCard`
+    -> HIT (3 registered copies; the one FavoritesList.tsx actually imports is
+    components-legacy/SalonCard.tsx, one path off the registry's own line 137, which names
+    homepage/SalonCard.tsx for the same use site; flagging this as a small registry/reality drift
+    for the record, not something this mockup fixes). `npm run exists "profile hub"` -> HIT, the
+    same 2026-08-02 graveyard entry, reused as context above. `npm run exists
+    "fix-profile-and-settings--e-recompose"` -> 0 hits, genuinely new.
+
+  Treatment-only, and this arm is NOT treatment-only, so this line says exactly where it stops being
+    one: the settings-anchor panel is a pure treatment, one font-size/font-weight/tracking change on
+    an existing element, nothing added or removed. The account-page imagery panel is NOT a
+    treatment, it adds a new section to the screen. What makes it safe rather than invented: the
+    section is not a new component, not new markup, and not a new photo, it is a live nested iframe
+    of a route and a component that already exist, showing this exact signed-in session's own real
+    2 favorited salons with their own real seeded photos. No German is authored anywhere in this
+    file; every label outside the iframes is English. The real pages inside every iframe, nested
+    ones included, speak their own German through the product's own translations, which is exempt.
+
+  NOTE on this file's OWN report chrome (not product UI): the panels below sit inside plain
+  10px-radius text/frame boxes so the report is readable on a phone. That is this mockup's own
+  presentation, the same family of chrome dashboard-without-the-gray and fix-home--e-recompose
+  already use, and is not a re-creation of the 2026-08-03 rejected row-boxing pattern: today's real
+  AccountHub.tsx carries its own header comment stating its RowCard "takes no container" per
+  LOCKFILE.md:543-560, confirmed by reading that file above, and this mockup does not touch it. The
+  two small status pills below (needs-your-yes / low-risk) are plain ink-on-sunken text labels, no
+  saturated hue, to stay inside the closed palette.
+
+  Measured live this session via mcp__Claude_Browser__javascript_tool getBoundingClientRect and
+  getComputedStyle over the real rendered pages at 390x844 (both routes and the favorites route),
+  the numbers cited throughout this file. ~/.claude/ss-measured.flag set accordingly.
+-->
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#52525B; --ink3:#6B6B6B; --line:#E4E4E7; --sunken:#F4F4F5;
+    --good:#16A34A; --bad:#DC2626; --font:'Inter Tight',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#fff}
+  body{
+    font-family:var(--font); color:var(--ink); -webkit-font-smoothing:antialiased;
+    -webkit-text-size-adjust:100%; text-size-adjust:100%;
+    max-width:640px; margin:0 auto; padding:22px 16px calc(32px + env(safe-area-inset-bottom));
+  }
+  h1.page-title{font-size:20px; font-weight:600; letter-spacing:-0.01em; line-height:1.3}
+  .sub{font-size:13px; color:var(--ink3); margin-top:8px; line-height:1.55}
+
+  .route-heading{margin-top:34px; padding-bottom:6px; border-bottom:1px solid var(--line)}
+  .route-heading h2{font-size:15px; font-weight:600; letter-spacing:-0.01em}
+  .route-heading p{margin-top:3px; font-size:12.5px; color:var(--ink3)}
+
+  .panel-row{margin-top:18px}
+  .panel-cap{display:flex; align-items:baseline; justify-content:space-between; gap:8px; margin-bottom:8px}
+  .panel-tag{font-size:12px; font-weight:600; color:var(--ink3)}
+  .panel-tag.after{color:var(--ink)}
+  .badge{font-size:11px; font-weight:600; color:var(--ink2); background:var(--sunken); border-radius:999px; padding:3px 9px; font-variant-numeric:tabular-nums; white-space:nowrap}
+  .badge.pending{color:var(--ink3)}
+
+  .frame{border:1px solid var(--line); border-radius:10px; overflow:hidden; background:#fff; max-width:402px; margin:0 auto}
+  iframe{display:block; width:100%; height:844px; border:0}
+
+  .box{margin-top:28px; background:var(--sunken); border-radius:10px; padding:16px 16px 18px; font-size:13px; line-height:1.6; color:var(--ink2)}
+  .box b{color:var(--ink); font-weight:600}
+  .box + .box{margin-top:14px}
+  .box h2{font-size:14px; font-weight:600; color:var(--ink); margin-bottom:10px}
+
+  table.floors{width:100%; border-collapse:collapse; font-size:12.5px}
+  table.floors th, table.floors td{text-align:left; padding:7px 6px; border-bottom:1px solid var(--line)}
+  table.floors th{font-size:11px; font-weight:600; color:var(--ink3)}
+  table.floors td.num{font-variant-numeric:tabular-nums; white-space:nowrap}
+  .tag-clear{color:var(--good); font-weight:600}
+  .tag-open{color:var(--bad); font-weight:600}
+  .tag-live{color:var(--ink); font-weight:600}
+
+  .foot{margin-top:20px; font-size:11px; color:var(--ink3); line-height:1.5; border-top:1px solid var(--line); padding-top:12px}
+  .yesno{display:inline-block; margin-left:6px; padding:2px 8px; border-radius:999px; font-size:10.5px; font-weight:600; background:var(--sunken); color:var(--ink)}
+</style>
+</head>
+<body>
+
+  <h1 class="page-title">Clearing every floor on your account pages at once</h1>
+  <p class="sub">Four boxes below, two per screen: your account page and your settings page, each shown as it is now and then with a real change applied live. Nothing here is a new drawing, every panel loads from your dev server. I also found that the numbers I was handed for this run were already out of date for one of the two screens, that correction comes before the panels, not after.</p>
+
+  <div class="box">
+    <h2>What I found before touching anything</h2>
+    <p><b>Your account page had already been fixed for three of the six floors.</b> I was briefed with an 18px anchor, a 40% weight share and a 1.5x ratio. Measuring the live page just now, it is 28px, 22.3% and 2.0x, all already clearing their floors. Reading the component's own code explains why: it carries a comment from an earlier session documenting exactly this fix, moving the name from 24px to 28px and dropping row labels from bold to medium. I am not claiming credit for that or re-doing it, I am telling you the number you were given for this run does not match what is live, so you are not surprised later when someone re-measures and gets a different answer than this file.</p>
+    <p><b>Your settings page was not part of that fix and still needs it.</b> It has its own separate name element, 20px and bold, not the 28px/600 one the account page uses. Same person, same fact, two different sizes, that is the exact thing FLOORS LAW 8 exists to catch.</p>
+    <p><b>Both pages are genuinely thin on real content.</b> 1.09% and 1.24% photographic on the first screen, against a 33% floor. That part of the brief was right.</p>
+  </div>
+
+  <div class="route-heading">
+    <h2>Screen 1 of 2: your account page</h2>
+    <p>the account hub route</p>
+  </div>
+
+  <div class="panel-row">
+    <div class="panel-cap"><span class="panel-tag">BEFORE (live, untouched)</span></div>
+    <div class="frame"><iframe id="p1before" src="/de/profile" title="account page, before"></iframe></div>
+  </div>
+
+  <div class="panel-row">
+    <div class="panel-cap"><span class="panel-tag after">AFTER (your favorites, shown higher up)</span><span class="badge pending" id="p1status">loading</span></div>
+    <div class="frame"><iframe id="p1after" src="/de/profile" title="account page, after: real favorites surfaced under your name"></iframe></div>
+  </div>
+
+  <div class="box">
+    <h2>What you would actually see change on this one <span class="yesno">needs your yes</span></h2>
+    <p>Right under your name, a real photo appears: the salon, or two, you have actually favorited. It is not a new picture I made up, it is the exact same photo and the exact same card your favorites list already shows today on its own page, just moved up so you see it the moment you open the account page instead of having to tap through to find it. The favorites row further down the list stays exactly as it is, still tappable, still showing its real count.</p>
+    <p>This is the one part of this file that is not a small treatment. It adds a section that was not there before. The reason I still think it is safe to show you: it is not a new component and not a new photo, it is your own real data through the exact card your app already has, just surfaced earlier. But it is new, so it is marked for your yes, not applied.</p>
+  </div>
+
+  <div class="route-heading">
+    <h2>Screen 2 of 2: your settings page</h2>
+    <p>the settings hub route</p>
+  </div>
+
+  <div class="panel-row">
+    <div class="panel-cap"><span class="panel-tag">BEFORE (live, untouched)</span></div>
+    <div class="frame"><iframe id="p2before" src="/de/profile/settings" title="settings page, before"></iframe></div>
+  </div>
+
+  <div class="panel-row">
+    <div class="panel-cap"><span class="panel-tag after">AFTER (name matches your account page)</span><span class="badge" id="p2status">applied</span></div>
+    <div class="frame"><iframe id="p2after" src="/de/profile/settings" title="settings page, after: name resized to match the account page"></iframe></div>
+  </div>
+
+  <div class="box">
+    <h2>What you would actually see change on this one <span class="yesno">just a size match, low risk</span></h2>
+    <p>Your name at the top gets a little bigger, matching the exact size your account page already uses for the same name. Nothing else moves. This one is a one-line CSS change, not a new section, so it is lower-stakes than the salon photo above, but it is still a real visible change, so it is shown here rather than applied.</p>
+    <p><b>What this does NOT fix, on purpose:</b> settings is still thin on photos, same 1.24% as before. I chose not to copy the favorites section onto this screen too. Settings' job is changing your password, your notifications, your payment method, none of that is served by a browsing card, and putting one here would duplicate what the account page above it already carries one tap away through its own view-profile link. That is my recommendation, not a decision I made quietly: if you want the same photo section on settings too, the honest cost is a screen whose job is admin now also asking you to look at a salon photo, and I would rather you pick that trade than find it already made.</p>
+  </div>
+
+  <div class="box">
+    <h2>Which floors this clears</h2>
+    <div style="overflow-x:auto">
+    <table class="floors">
+      <tr><th>Floor</th><th>Screen</th><th>Before</th><th>Target</th><th>After</th></tr>
+      <tr><td>F6 display anchor</td><td>account</td><td class="num">28px</td><td class="num">&ge; 28px</td><td class="num tag-clear">already clear, not touched here</td></tr>
+      <tr><td>F7b anchor ratio</td><td>account</td><td class="num">2.0x</td><td class="num">&ge; 1.8x</td><td class="num tag-clear">already clear, not touched here</td></tr>
+      <tr><td>F7a weight share</td><td>account</td><td class="num">22.3%</td><td class="num">&le; 30%</td><td class="num tag-clear">already clear, not touched here</td></tr>
+      <tr><td>F7c size spread</td><td>account</td><td class="num">5 sizes / 4 in-window (content only)</td><td class="num">&le; 5 / &le; 4</td><td class="num tag-clear">already clear, not touched here</td></tr>
+      <tr><td>F2 imagery</td><td>account</td><td class="num">1.09%</td><td class="num">&ge; 33%</td><td class="num tag-live" id="p1badge2">measuring live, see badge above</td></tr>
+      <tr><td>F6 display anchor</td><td>settings</td><td class="num">20px</td><td class="num">&ge; 28px</td><td class="num tag-clear">clears, 28px, matched to the account page</td></tr>
+      <tr><td>F7b anchor ratio</td><td>settings</td><td class="num">1.43x</td><td class="num">&ge; 1.8x</td><td class="num tag-clear">clears, 2.0x at a 14px body</td></tr>
+      <tr><td>F7a weight share</td><td>settings</td><td class="num">29.7%</td><td class="num">&le; 30%</td><td class="num tag-clear">unaffected, still 29.7%</td></tr>
+      <tr><td>F2 imagery</td><td>settings</td><td class="num">1.24%</td><td class="num">&ge; 33%</td><td class="num tag-open">not addressed, see the argument above</td></tr>
+    </table>
+    </div>
+  </div>
+
+  <div class="box">
+    <h2>Where this mechanism cannot move the number, and why</h2>
+    <p>The size-spread floor still fails once you count the WHOLE rendered account screen, chrome included: the shared top header (an 18px bold page title, a 10px notification-count badge) and the shared bottom tab bar (12px labels) add three sizes that AccountHub's own content does not carry. Both are named off-limits in this task, so this mechanism cannot touch them, and neither can any of the sibling variants being built alongside this one. If that count matters more than the content-only count, it needs a separate, product-wide pass on the header and bottom-nav components themselves, not a fix scoped to this one screen.</p>
+    <p>Settings keeps 8 distinct content-plus-chrome sizes after this change, one swapped (20 became 28) rather than removed. Consolidating settings' own five nearby content sizes (12, 13, 14, 15, 16) into fewer values is a real, separate cleanup this mockup did not attempt, it touches every row on the page rather than one element.</p>
+  </div>
+
+  <div class="foot">The favorites section and the settings-name resize are both DOM patches applied live in your browser to the real running pages, nothing has been written to any component file. The imagery badge above the account-page after panel is computed by the script below the moment the nested favorites iframe finishes loading, from the real photo pixels on screen right now in your seed data, not a number I typed in.</div>
+
+<script>
+  function log(msg, err) { console.error('[fix-profile-and-settings--e-recompose] ' + msg, err || ''); }
+
+  // ---------- account page after: favorites section ----------
+  (function () {
+    var CROP_H = 520; // fixed crop height for the nested favorites iframe, see header comment
+    function insertSection(doc) {
+      if (doc.getElementById('mockup-fav-wrap')) return doc.getElementById('mockup-fav-wrap');
+      var h1 = doc.querySelector('h1');
+      if (!h1) return null;
+      // h1 -> div.min-w-0.flex-1 -> div.flex.items-center.gap-3\.5 -> div.pt-\[18px\] (the header block)
+      var block = h1.parentElement && h1.parentElement.parentElement && h1.parentElement.parentElement.parentElement;
+      if (!block) return null;
+      var wrap = doc.createElement('div');
+      wrap.id = 'mockup-fav-wrap';
+      wrap.style.cssText = 'position:relative;overflow:hidden;height:' + CROP_H + 'px;margin:14px -20px 0;background:#F4F4F5;';
+      var innerFrame = doc.createElement('iframe');
+      innerFrame.id = 'mockup-fav-inner';
+      innerFrame.src = '/de/profile/favorites';
+      innerFrame.title = 'your real favorites, live';
+      innerFrame.style.cssText = 'position:absolute;top:0;left:0;width:390px;height:1400px;border:0;';
+      wrap.appendChild(innerFrame);
+      block.insertAdjacentElement('afterend', wrap);
+      return wrap;
+    }
+
+    function patchInner(idoc) {
+      var section = idoc.querySelector('main section');
+      if (!section) return false; // real content not rendered yet
+      var header = idoc.querySelector('header');
+      var navs = idoc.querySelectorAll('nav');
+      var countP = idoc.querySelector('main > p');
+      if (header) header.style.display = 'none';
+      navs.forEach(function (n) { n.style.display = 'none'; });
+      if (countP) countP.style.display = 'none';
+      var main = idoc.querySelector('main');
+      if (main) main.style.cssText = 'padding:0 16px;margin:0;max-width:none;';
+      return true;
+    }
+
+    function measure(idoc, cropH) {
+      var imgs = idoc.querySelectorAll('img');
+      var area = 0;
+      imgs.forEach(function (img) {
+        var r = img.getBoundingClientRect();
+        var left = Math.max(r.left, 0), top = Math.max(r.top, 0);
+        var right = Math.min(r.right, 390), bottom = Math.min(r.bottom, cropH);
+        var w = Math.max(0, right - left), h = Math.max(0, bottom - top);
+        area += w * h;
+      });
+      return area;
+    }
+
+    var afterFrame = document.getElementById('p1after');
+    var status = document.getElementById('p1status');
+    var badge2 = document.getElementById('p1badge2');
+    var outerTries = 0, MAX_OUTER = 150;
+    var outerIv = setInterval(function () {
+      outerTries++;
+      try {
+        var doc = afterFrame.contentDocument;
+        if (doc && doc.readyState === 'complete') {
+          var wrap = insertSection(doc);
+          if (wrap) {
+            clearInterval(outerIv);
+            var innerFrame = doc.getElementById('mockup-fav-inner');
+            var innerTries = 0, MAX_INNER = 150;
+            var innerIv = setInterval(function () {
+              innerTries++;
+              try {
+                var idoc = innerFrame.contentDocument;
+                if (idoc && idoc.readyState === 'complete' && patchInner(idoc)) {
+                  clearInterval(innerIv);
+                  var newArea = measure(idoc, CROP_H);
+                  var baselineArea = 390 * 844 * 0.0109; // this route's own measured 1.09% baseline
+                  var totalPct = ((newArea + baselineArea) / (390 * 844) * 100).toFixed(1);
+                  if (status) { status.textContent = totalPct + '% photo, live'; status.classList.remove('pending'); }
+                  if (badge2) { badge2.textContent = 'measured live: ' + totalPct + '%'; badge2.className = (parseFloat(totalPct) >= 33) ? 'num tag-clear' : 'num tag-open'; }
+                }
+              } catch (e) { log('inner favorites patch failed', e); }
+              if (innerTries > MAX_INNER) { clearInterval(innerIv); if (status && status.textContent === 'loading') status.textContent = 'could not confirm'; }
+            }, 200);
+          }
+        }
+      } catch (e) { log('outer profile patch failed', e); }
+      if (outerTries > MAX_OUTER) { clearInterval(outerIv); if (status && status.textContent === 'loading') status.textContent = 'could not confirm'; }
+    }, 200);
+  })();
+
+  // ---------- settings page after: name anchor match ----------
+  (function () {
+    function patch(doc) {
+      if (doc.getElementById('mockup-settings-style')) return true;
+      var nameEl = doc.querySelector('div[class*="text-[20px]"][class*="font-bold"]');
+      if (!nameEl) return false;
+      var style = doc.createElement('style');
+      style.id = 'mockup-settings-style';
+      style.textContent =
+        '.mockup-name-match { font-size:28px !important; font-weight:600 !important; letter-spacing:-0.02em !important; }';
+      doc.head.appendChild(style);
+      nameEl.classList.add('mockup-name-match');
+      return true;
+    }
+    var frame = document.getElementById('p2after');
+    var tries = 0, MAX = 150;
+    var iv = setInterval(function () {
+      tries++;
+      try {
+        var doc = frame.contentDocument;
+        if (doc && doc.readyState === 'complete' && patch(doc)) { clearInterval(iv); }
+      } catch (e) { log('settings patch failed', e); }
+      if (tries > MAX) { clearInterval(iv); }
+    }, 200);
+  })();
+</script>
+</body>
+</html>

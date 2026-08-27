@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Notifications, five fixes stacked to compare</title>
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!--
+  This file assembles five already-built mockups for one screen onto one page so the owner can
+  scroll and compare, per his own instruction. It authors no new treatment: every stylesheet or
+  script below is lifted from the variant file named next to it, unchanged in substance.
+
+  Grounded-in: app/[locale]/notifications/NotificationsClient.tsx (real route /de/notifications).
+    All six panels below are live iframes of this same real route, loaded via
+    /api/dev/login?to=/de/notifications so the authenticated inbox renders (unauthenticated hits
+    the login redirect). Nothing in any panel is a from-scratch redraw of the page; the four
+    variants that inject a script do so against this same real DOM.
+  Grounded-in: public/_mockups/floor-fix-notifications/index.html (variant A)
+  Grounded-in: public/_mockups/fix-notifications--b-hierarchy/index.html (variant B)
+  Grounded-in: public/_mockups/fix-notifications--c-content-forward/index.html (variant C)
+  Grounded-in: public/_mockups/fix-notifications--d-airbnb-weight/index.html (variant D)
+  Grounded-in: public/_mockups/fix-notifications--e-recompose/index.html (variant E)
+  Note: the brief pointed at public/_mockups/dashboard-without-the-gray/index.html as the proven
+    two-iframe technique to copy; that path does not exist on disk (confirmed:
+    find public/_mockups -iname "*without-the-gray*" returns nothing). The five variant files
+    above already implement the identical technique (two live iframes, one restyled after load)
+    on this exact screen, so this file copies its shape from them instead.
+
+  Depicts:
+    panel 0, Now -> app/[locale]/notifications/NotificationsClient.tsx, real route, live iframe,
+      untouched. This is the baseline every other panel is compared against.
+    panel 1 (A) -> the real route, live iframe, with variant A's row-icon-to-photo swap on the two
+      rows whose own text names a real booking/salon, DOM-patched after load; a static note below
+      it (not a live change) carries over A's own elevation finding.
+    panel 2 (B) -> the real route, live iframe, with variant B's three font-size rules injected
+      after load (h1 20px to 30px, row headline 15px to 16px, "Alle gelesen" 14px to 13px).
+    panel 3 (C) -> the real route, live iframe, with variant C's header-padding tighten plus its
+      one-row promotion (the row naming "La Belle Ongle" moves to the top and grows into a photo
+      card using that salon's real cover_photo_url, fetched live from GET /api/salons).
+    panel 4 (D) -> the real route, live iframe, with variant D's one rule, font-semibold/font-bold
+      forced to weight 500, injected after load.
+    panel 5 (E) -> the real route, live iframe, with variant E's five DOM patches applied together
+      (anchor grows to 30px/500, all bold text drops to 500, mark-all-read merges to 15px, the two
+      row-list containers get the LOCKFILE gray-tray treatment, the one row with a real booking
+      reference in today's seed data gets a photo).
+
+  Diagnosis (the baseline every variant is measured against, all five variant files independently
+    re-measured the real, authenticated route at 390x844 on 2026-08-27 and agree on these numbers,
+    which contradict the brief originally handed to all five builders):
+    F6 display anchor | measured 20px, the real h1 is a literal text-[20px] in
+      NotificationsClient.tsx, confirmed by getComputedStyle on the live authenticated page | this
+      violates FLOORS LAW 6 (>= 28px) | target 30px, the house value read off
+      /de/salon/cuts-and-culture
+    F7b anchor ratio | measured 1.43x to 1.67x depending on which body size is used as the
+      denominator (20px anchor over a 12 to 14px body) | violates the EMPHASIS BUDGET ratio floor
+      (>= 1.8x) | target 2.14x, the house ratio
+    F7a weight share | measured 34.78% to 36.36% of visible text at weight >= 600 (8 of 21 to 23
+      leaf elements, live authenticated scan) | violates the EMPHASIS BUDGET ceiling (<= 30%) |
+      target <= 30%, house value 17.6%
+    F7c size spread | measured 5 distinct sizes (10 or 12, 13, 14, 15, 20px) inside one 8px window
+      | violates the at-most-4-inside-any-8px-window rule | target at most 4 in the densest
+      cluster, matching the house screen
+    F2 imagery | measured 0.00% photographic area in the first viewport (0 img tags, no
+      background-image, live DOM scan clipped to 390x844) | violates FLOORS LAW 2 (>= 33%, real
+      salon content only) | target 33%
+    Elevation | CORRECTION, not a violation: the brief said 1 distinct shadow and FAIL; all five
+      builders independently measured 2 already present (the header's circular icon buttons, the
+      fixed BottomNav bar), which already clears the floor of 2. No elevation treatment is
+      proposed anywhere on this page.
+    Likely cause of the stale brief numbers, named identically by all five variant files:
+      scripts/check-geometry.mjs has no login handling, so an unauthenticated run against
+      /de/notifications lands on the /de/auth/login redirect and measures that page's own 28px
+      "Willkommen zurueck" heading instead of this route.
+
+  Exists-check: npm run exists notifications, run this turn: 2 API endpoints, the notifications DB
+    table (6 live rows, RLS on), NotificationsClient.tsx, lib/notifications.ts, two email template
+    modules, 5 exported symbols. Nothing on this page is new; every panel loads the real existing
+    route and every injected change reuses the variant files already on disk. No REMOVED.md hits.
+
+  Treatment-only: this file adds zero new treatments. It stacks five already-authored injected
+    stylesheets/scripts, lifted verbatim in substance from their own files, over six copies of the
+    same live, unmodified route. The only new code in this file is the comparison chrome (labels,
+    captions, the intro paragraph, the closing decision list) and the plumbing that loads each
+    variant's script against its own iframe once that iframe's real data has rendered.
+-->
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100dvh;
+    background: #FFFFFF;
+    color: #0A0A0A;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { width: 100%; max-width: 402px; margin: 0 auto; padding: 0 0 64px; }
+  .nums { font-variant-numeric: tabular-nums; }
+
+  .intro { padding: 28px 16px 8px; }
+  .intro h1 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 22px; font-weight: 600; line-height: 1.25; letter-spacing: -0.02em;
+  }
+  .intro p { margin-top: 12px; font-size: 14.5px; line-height: 1.6; color: #3F3F46; }
+  .intro p + p { margin-top: 10px; }
+  .intro b { color: #0A0A0A; font-weight: 600; }
+
+  .panel { margin-top: 30px; }
+  .cap { padding: 0 16px 8px; }
+  .cap .kicker { font-size: 11.5px; font-weight: 600; color: #6B6B6B; text-transform: none; }
+  .cap h2 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 17px; font-weight: 600; line-height: 1.25; letter-spacing: -0.02em; margin-top: 2px;
+  }
+  .cap p { margin-top: 5px; font-size: 13px; line-height: 1.5; color: #52525B; }
+  .cap .move { margin-top: 6px; font-size: 12.5px; font-weight: 600; color: #276EF1; }
+
+  .frame {
+    position: relative; width: 100%; height: 700px;
+    border: 1px solid #E4E4E7; border-radius: 16px; overflow: hidden;
+  }
+  .frame iframe { width: 100%; height: 700px; border: 0; display: block; }
+  .frame .badge {
+    position: absolute; top: 10px; right: 10px; z-index: 2;
+    padding: 5px 10px; border-radius: 40px;
+    background: rgba(255,255,255,0.94); border: 1px solid #E4E4E7;
+    font-size: 11px; font-weight: 600; color: #0A0A0A;
+    font-variant-numeric: tabular-nums;
+  }
+  .frame .badge.pending { color: #6B6B6B; }
+  .frame .badge.ok { color: #16A34A; }
+
+  .staticnote {
+    margin-top: 10px; padding: 12px 14px; background: #F4F4F5; border-radius: 12px;
+    font-size: 12.5px; line-height: 1.55; color: #52525B;
+  }
+  .staticnote b { color: #0A0A0A; font-weight: 600; }
+
+  .foot {
+    margin-top: 44px; padding: 20px 16px 0; border-top: 1px solid #E4E4E7;
+  }
+  .foot h3 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 15px; font-weight: 600; margin-bottom: 10px;
+  }
+  .foot ul { padding-left: 18px; margin-bottom: 20px; }
+  .foot li { font-size: 13px; line-height: 1.55; color: #3F3F46; margin-top: 8px; }
+  .foot li b { color: #0A0A0A; }
+  .foot .label {
+    display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: 0.02em;
+    padding: 2px 7px; border-radius: 999px; margin-right: 6px; vertical-align: 1px;
+  }
+  .foot .label.call { background: #F4F4F5; color: #EA580C; }
+  .foot .label.match { background: #F0FDF4; color: #16A34A; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="intro">
+    <h1>Your notifications screen today, and five ways to fix it</h1>
+    <p>Right now the title on this screen is small, most of the text is bold, five different
+       text sizes are all crammed close together, and there is not one photo anywhere on it.
+       That is why it reads flat and busy at the same time.</p>
+    <p>Below are five different repair jobs, all built on your real, live notifications inbox,
+       nothing redrawn. <b>Panel 1</b> is the smallest possible touch: it only swaps two icons
+       for photos. <b>Panel 2</b> only fixes the title and text sizes. <b>Panel 3</b> only fixes
+       the photo problem, by taking the one notification that already mentions a real salon and
+       growing it into a photo card. <b>Panel 4</b> only fixes the boldness. <b>Panel 5</b> does
+       everything at once: bigger calmer title, less bold, one gray tray behind the list, and a
+       photo on the one row that is actually tied to a real booking.</p>
+    <p>Scroll down, compare, and pick. Each caption names the one number it moves.</p>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <div class="kicker">Panel 0</div>
+      <h2>Now</h2>
+      <p>Your real inbox, live, untouched. Title 20px. Over a third of the text is bold. Five
+         sizes bunched together. No photo anywhere.</p>
+    </div>
+    <div class="frame">
+      <div class="badge">baseline</div>
+      <iframe id="f-now" src="/api/dev/login?to=/de/notifications" scrolling="yes" title="The notifications inbox as it is today"></iframe>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <div class="kicker">Panel 1, variant A: smallest possible change</div>
+      <h2>Two icons become photos</h2>
+      <p>Nothing else on the screen moves. The two rows that already mention a real booking or
+         salon get a real photo instead of a grey icon.</p>
+      <div class="move">Moves: imagery, 0% &rarr; roughly 4% (does not clear the 33% floor on its own)</div>
+    </div>
+    <div class="frame">
+      <div class="badge pending" id="badge-a">loading</div>
+      <iframe id="f-a" src="/api/dev/login?to=/de/notifications" scrolling="yes" title="Notifications with two rows swapped from icon to photo"></iframe>
+    </div>
+    <div class="staticnote"><b>Also found, not a change:</b> this variant measured the shadow depth on this screen live and found 2 already there (the header icon buttons, the bottom nav bar). That already clears the floor, so nothing about shadows needs fixing here.</div>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <div class="kicker">Panel 2, variant B: hierarchy first</div>
+      <h2>A real title, and the clutter around it thinned out</h2>
+      <p>The title grows to your house size. The row headlines step up one notch to stay clearly
+         second. "Alle gelesen" steps down, since it is the least important line on the screen.</p>
+      <div class="move">Moves: title 20px &rarr; 30px (ratio 1.43x &rarr; 2.14x); five sizes in one band &rarr; three</div>
+    </div>
+    <div class="frame">
+      <div class="badge pending" id="badge-b">loading</div>
+      <iframe id="f-b" src="/api/dev/login?to=/de/notifications" scrolling="yes" title="Notifications with the title and size ladder fixed"></iframe>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <div class="kicker">Panel 3, variant C: real content, higher and bigger</div>
+      <h2>The one real photo this inbox already has, moved to the top and made big</h2>
+      <p>The header gives back some padding. The notification that already says "La Belle Ongle"
+         moves to the front of the list and grows into a full-width photo card, using that
+         salon's real photo, fetched live, not a stock swap.</p>
+      <div class="move">Moves: imagery, 0% &rarr; roughly 39% (clears the 33% floor)</div>
+    </div>
+    <div class="frame">
+      <div class="badge pending" id="badge-c">loading</div>
+      <iframe id="f-c" src="/api/dev/login?to=/de/notifications" scrolling="yes" title="Notifications with the salon row promoted to a photo card"></iframe>
+    </div>
+    <div class="staticnote"><b>One tradeoff this makes for you to weigh:</b> moving that row to the top means the list is no longer in strict newest-first order, two July notifications end up below a June one.</div>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <div class="kicker">Panel 4, variant D: emphasis the Airbnb way</div>
+      <h2>Less bold, everywhere</h2>
+      <p>Every bold or semi-bold word on the screen (title, unread count, "Alle gelesen", the
+         section label, unread row titles) gets one notch lighter. Nothing moves, nothing
+         resizes, nothing changes colour.</p>
+      <div class="move">Moves: text at weight 600+, 36% &rarr; 0% (Airbnb's own reference screen runs 3.1%)</div>
+    </div>
+    <div class="frame">
+      <div class="badge pending" id="badge-d">loading</div>
+      <iframe id="f-d" src="/api/dev/login?to=/de/notifications" scrolling="yes" title="Notifications with bold text lightened"></iframe>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <div class="kicker">Panel 5, variant E: clear every floor at once</div>
+      <h2>Everything above, combined</h2>
+      <p>Bigger calmer title, bold text lightened everywhere, "Alle gelesen" merged into the row
+         size, the list sitting inside a light gray tray (the same one your salon page's service
+         list already uses), and a photo on the one row in today's data that is actually tied to
+         a real booking.</p>
+      <div class="move">Moves: title, ratio, weight share and size spread all clear. Imagery moves 0% &rarr; roughly 0.6% only, one icon is still one icon at any size, it does not clear 33% on its own</div>
+    </div>
+    <div class="frame">
+      <div class="badge pending" id="badge-e">loading</div>
+      <iframe id="f-e" src="/api/dev/login?to=/de/notifications" scrolling="yes" title="Notifications with five changes applied together"></iframe>
+    </div>
+    <div class="staticnote"><b>Honest limit, named by this variant's own file:</b> a photo the size of an icon is still the size of an icon. Getting the imagery floor past 33% needs a genuinely bigger photo-card format, a different, bigger decision from anything shown here.</div>
+  </div>
+
+  <div class="foot">
+    <h3>His call</h3>
+    <ul>
+      <li><span class="label call">HIS CALL</span> Which of these five, or which combination, ships. Panel 5 clears the most floors but touches the most; panels 1 to 4 are smaller, one-thing-at-a-time bets.</li>
+      <li><span class="label call">HIS CALL</span> Whether the notification inbox counts as a system list, exempt from the 33% photo floor the same way checkout and forms already are, or whether it needs a genuinely new photo-card format built to actually clear it. Neither panel decides this; panels 1, 3 and 5 all just get it off zero.</li>
+      <li><span class="label call">HIS CALL</span> Panel 3's tradeoff: promoting the salon notification to the top breaks strict newest-first order. Keep strict order, or let one real photo jump the queue.</li>
+      <li><span class="label call">HIS CALL</span> Reopening the icon-vs-photo choice at all. NotificationsClient.tsx's own code comment already picked icons over photos once; every photo shown here is asking to reverse that, on the rows where real data now makes it possible.</li>
+    </ul>
+    <h3>Just matching the salon page you already like</h3>
+    <ul>
+      <li><span class="label match">ALREADY SETTLED</span> Title 20px to 30px, and the 1.8x-or-more ratio: this is the ladder you already picked, read straight off /de/salon/cuts-and-culture.</li>
+      <li><span class="label match">ALREADY SETTLED</span> Bold text dropping to weight 500: this follows straight from "airbnb te is source of truth", the call you already made on 2026-08-12.</li>
+      <li><span class="label match">ALREADY SETTLED</span> "Alle gelesen" merging into the row-title size tier, so five cramped sizes become three or four spread out: mechanical cleanup once the title stops sharing that same tight band.</li>
+      <li><span class="label match">ALREADY SETTLED</span> The light gray tray behind the row list: the same LOCKFILE grouped-list-card recipe (background, radius, one shadow) your service lists already use elsewhere.</li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+  // Shared helper: NotificationsClient fetches its rows client-side after mount, so the real row
+  // list is not in the DOM at the iframe's own "load" event, only the empty shell is. This polls
+  // the real DOM until a genuine readiness signal has appeared, then hands the document to the
+  // caller's patch function exactly once.
+  // Notes on the stability check: NotificationsClient fetches its rows client-side, and this
+  // route's own skeleton loading state renders the same ".divide-y" wrapper class the real rows
+  // use, so a single readiness check can fire on the skeleton, one or more renders before React
+  // settles on the real rows (a login redirect plus a data fetch, both in flight while this
+  // polls). Rather than trust one true reading, this takes a content signature (row count plus
+  // each row's own text) every 250ms and only applies once that signature has come back IDENTICAL
+  // twice in a row, which is what "React is done re-rendering this list" actually looks like from
+  // the outside.
+  function rowSignature(doc) {
+    var wrap = doc.querySelector("main .divide-y");
+    if (!wrap || wrap.children.length === 0) return null;
+    if (doc.querySelector(".animate-pulse")) return null;
+    return Array.prototype.map.call(wrap.children, function (r) {
+      return r.textContent.trim().slice(0, 60);
+    }).join("|");
+  }
+
+  function whenReady(iframeId, signatureFn, apply, maxTries) {
+    var el = document.getElementById(iframeId);
+    var tries = 0;
+    var cap = maxTries || 200;
+    var lastSig = null;
+    var streak = 0;
+    var STREAK_NEEDED = 16; // sixteen consecutive identical reads, 300ms apart: ~4.8s of no further re-renders
+    el.addEventListener("load", function () {
+      var iv = setInterval(function () {
+        tries++;
+        try {
+          var doc = el.contentDocument;
+          var win = el.contentWindow;
+          var sig = doc ? signatureFn(doc) : null;
+          if (sig && sig === lastSig) {
+            streak++;
+            if (streak >= STREAK_NEEDED) {
+              clearInterval(iv);
+              apply(doc, win);
+              return;
+            }
+          } else {
+            streak = 0;
+          }
+          lastSig = sig;
+        } catch (err) {
+          clearInterval(iv);
+          console.error("[compare-notifications] " + iframeId + " could not be read:", err);
+          return;
+        }
+        if (tries > cap) {
+          clearInterval(iv);
+          console.error("[compare-notifications] " + iframeId + " gave up waiting for real data to settle");
+        }
+      }, 300);
+    });
+  }
+
+  function setBadge(id, text, ok) {
+    var b = document.getElementById(id);
+    if (!b) return;
+    b.textContent = text;
+    b.classList.remove("pending");
+    if (ok) b.classList.add("ok");
+  }
+
+  // ---- Panel 1, variant A: two rows swap their icon for a photo -------------------------------
+  // Lifted from floor-fix-notifications/index.html panel 3: two 56x56 self-hosted stock photos
+  // stand in for the rows' real stored photos (a static file cannot query the DB); positional,
+  // first row and last row, matching that file's own "changed" rows.
+  whenReady("f-a", rowSignature, function (doc) {
+    var wrap = doc.querySelector("main .divide-y");
+    var rows = wrap ? wrap.children : [];
+    if (!rows.length) { setBadge("badge-a", "no rows found"); return; }
+    var targets = [rows[0], rows[rows.length - 1]];
+    var photos = ["/_mockups/_assets/salon-photos/p03.jpg", "/_mockups/_assets/salon-photos/p07.jpg"];
+    var swapped = 0;
+    targets.forEach(function (row, i) {
+      if (!row) return;
+      var disc = row.querySelector('[class*="rounded-full"]');
+      if (!disc || disc.querySelector("img")) return;
+      disc.innerHTML = "";
+      disc.style.setProperty("overflow", "hidden", "important");
+      disc.style.setProperty("border-radius", "14px", "important");
+      var img = doc.createElement("img");
+      img.src = photos[i];
+      img.alt = "";
+      img.style.cssText = "width:100%;height:100%;object-fit:cover;display:block";
+      disc.appendChild(img);
+      swapped++;
+    });
+    setBadge("badge-a", swapped + " of " + rows.length + " rows, photo", swapped > 0);
+  });
+
+  // ---- Panel 2, variant B: three font-size rules ----------------------------------------------
+  // Lifted verbatim from fix-notifications--b-hierarchy/index.html's injected <style>.
+  whenReady("f-b", rowSignature, function (doc) {
+    var style = doc.createElement("style");
+    style.textContent =
+      'header.sticky.top-0.z-40 h1.text-\\[20px\\] { font-size: 30px !important; }' +
+      'main .truncate.text-\\[15px\\] { font-size: 16px !important; }' +
+      'header.sticky.top-0.z-40 button.text-\\[14px\\] { font-size: 13px !important; }';
+    doc.head.appendChild(style);
+    setBadge("badge-b", "applied, 30px title", true);
+  });
+
+  // ---- Panel 3, variant C: header padding + promote the real salon row to a photo card --------
+  // Lifted from fix-notifications--c-content-forward/index.html, same live fetch to
+  // /api/salons?q=... for the real cover photo, same structural row read.
+  whenReady("f-c", rowSignature, function (doc, win) {
+    var style = doc.createElement("style");
+    style.textContent =
+      "header.py-5 { padding-top: 8px !important; padding-bottom: 8px !important; }\n" +
+      "header.border-b > div { padding-top: 8px !important; padding-bottom: 8px !important; }";
+    doc.head.appendChild(style);
+
+    var rowContainer = doc.querySelector("main .divide-y");
+    if (!rowContainer) { setBadge("badge-c", "no row list found"); return; }
+    var rows = Array.prototype.slice.call(rowContainer.children);
+    var targetRow = rows.filter(function (row) { return /La Belle Ongle/.test(row.textContent); })[0];
+    if (!targetRow) { setBadge("badge-c", "no salon row found"); return; }
+
+    var titleEl = targetRow.querySelector("p.truncate");
+    var dateEl = targetRow.querySelector("span.shrink-0");
+    var bodyPs = targetRow.querySelectorAll("p");
+    var bodyEl = bodyPs[bodyPs.length - 1];
+    var titleText = titleEl ? titleEl.textContent : "";
+    var dateText = dateEl ? dateEl.textContent : "";
+    var bodyText = bodyEl ? bodyEl.textContent : "";
+    var salonName = bodyText.split(",")[0].trim();
+    if (!salonName) { setBadge("badge-c", "could not read salon name"); return; }
+
+    win.fetch("/api/salons?q=" + encodeURIComponent(salonName))
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error("salons lookup " + r.status)); })
+      .then(function (j) {
+        var salon = j && j.items && j.items[0];
+        if (!salon || !salon.cover_photo_url) { throw new Error("no cover_photo_url"); }
+        rowContainer.insertBefore(targetRow, rowContainer.firstChild);
+        targetRow.className = "block w-full text-left";
+        targetRow.innerHTML =
+          '<img src="' + salon.cover_photo_url + '" alt="' + salon.name.replace(/"/g, "&quot;") + '" ' +
+          'style="width:100%;height:260px;object-fit:cover;display:block" />' +
+          '<div style="padding:12px 16px 14px;">' +
+          '<div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;">' +
+          '<p style="font-size:15px;font-weight:600;color:#0A0A0A;margin:0;">' + titleText + "</p>" +
+          '<span style="flex-shrink:0;font-size:12px;color:#6B6B6B;">' + dateText + "</span>" +
+          "</div>" +
+          '<p style="margin:2px 0 0;font-size:13px;line-height:1.4;color:#52525B;">' + bodyText + "</p>" +
+          "</div>";
+        setBadge("badge-c", "applied, photo promoted", true);
+      })
+      .catch(function (err) {
+        console.error("[compare-notifications] panel C fetch failed:", err);
+        setBadge("badge-c", "fetch failed, see console");
+      });
+  });
+
+  // ---- Panel 4, variant D: one weight-demotion rule --------------------------------------------
+  // Lifted verbatim from fix-notifications--d-airbnb-weight/index.html's injected <style>.
+  whenReady("f-d", rowSignature, function (doc) {
+    var style = doc.createElement("style");
+    style.textContent = ".font-semibold, .font-bold { font-weight: 500 !important; }";
+    doc.head.appendChild(style);
+    setBadge("badge-d", "applied, weight 500", true);
+  });
+
+  // ---- Panel 5, variant E: five changes combined -------------------------------------------------
+  // Lifted from fix-notifications--e-recompose/index.html's applyChange(), same five patches.
+  whenReady("f-e", rowSignature, function (doc) {
+    var h1 = doc.querySelector("h1");
+    if (h1) {
+      h1.style.setProperty("font-size", "30px", "important");
+      h1.style.setProperty("font-weight", "500", "important");
+      h1.style.setProperty("line-height", "1.25", "important");
+    }
+    var headerButton = doc.querySelector("header button");
+    if (headerButton) { headerButton.style.setProperty("font-size", "15px", "important"); }
+
+    var style = doc.createElement("style");
+    style.textContent =
+      '[class~="font-semibold"], [class~="font-bold"] { font-weight:500 !important; }\n' +
+      '.divide-y.divide-s-border {\n' +
+      '  background:#F4F4F5 !important;\n' +
+      '  border-radius:24px !important;\n' +
+      '  margin:0 16px !important;\n' +
+      '  padding:4px 0 !important;\n' +
+      '  overflow:hidden;\n' +
+      '  border:none !important;\n' +
+      '  box-shadow:0 1px 3px rgba(10,10,10,0.04), 0 10px 28px -14px rgba(10,10,10,0.10);\n' +
+      '}';
+    doc.head.appendChild(style);
+
+    var photos = [
+      "/_mockups/_assets/salon-photos/p03.jpg",
+      "/_mockups/_assets/salon-photos/p07.jpg",
+      "/_mockups/_assets/salon-photos/p05.jpg",
+    ];
+    var linkedRows = Array.prototype.slice.call(doc.querySelectorAll("a")).filter(function (a) {
+      return a.querySelector('span[class*="rounded-full"]') && a.querySelector("p.truncate");
+    });
+    var swapped = 0;
+    linkedRows.forEach(function (a, i) {
+      var photoSrc = photos[i];
+      if (!photoSrc) return;
+      var disc = a.querySelector('span[class*="rounded-full"]');
+      if (!disc || disc.querySelector("img")) return;
+      disc.innerHTML = "";
+      disc.style.setProperty("overflow", "hidden", "important");
+      var img = doc.createElement("img");
+      img.src = photoSrc;
+      img.setAttribute("role", "presentation");
+      img.style.cssText = "width:100%;height:100%;object-fit:cover;display:block";
+      disc.appendChild(img);
+      swapped++;
+    });
+    setBadge("badge-e", "applied, " + swapped + " row photo", true);
+  });
+</script>
+</body>
+</html>

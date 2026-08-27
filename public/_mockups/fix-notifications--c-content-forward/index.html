@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Notifications, the one real photo moved up and grown</title>
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!-- geometry-only: this is a floor-measurement before/after, not a finished-screen pitch, so the five-item finished-screen "floors:" note does not apply here. -->
+<!--
+  Grounded-in: app/[locale]/notifications/NotificationsClient.tsx (real route: /de/notifications)
+  Grounded-in: the running dev server at http://localhost:3457, both panels load /de/notifications from it directly, live, authenticated via /api/dev/login, with the real seeded inbox in it
+  Grounded-in: public/_mockups/floor-fix-notifications/index.html for the two-stacked-panel shape and for its own live correction of the elevation number.
+  Grounded-in: public/_mockups/fix-city-page--c-content-forward/index.html, same mechanism on a different route, already on disk, using two real iframes of the same live route with the "after" one restyled after it loads.
+  Note: the brief pointed at public/_mockups/dashboard-without-the-gray/index.html; that file does not exist on disk, confirmed by `find public/_mockups -iname "*gray*"` returning nothing this turn, so this file's shape is grounded in the two real on-disk siblings named above instead.
+
+  Depicts: panel 1, live inbox -> app/[locale]/notifications/NotificationsClient.tsx, real route /de/notifications via /api/dev/login, unmodified.
+  Depicts: panel 2, header padding -> app/[locale]/notifications/NotificationsClient.tsx's own sticky header plus the shared Header.tsx chrome above it, same real route, CSS-only padding override injected after load, structure and copy unchanged.
+  Depicts: panel 2, promoted row -> the same live route's own DOM, the existing NotificationsClient.tsx row whose real body text names "La Belle Ongle" is moved to the top of the same list container and redrawn using its own extracted title/date/body text plus that salon's real cover_photo_url, fetched live from GET /api/salons?q=La%20Belle%20Ongle (verified live before this file was written), NET-NEW: no such promoted-row layout exists in NotificationsClient.tsx today, this is a proposed structural change, not something already shipped.
+
+  Diagnosis: imagery | measured 0% (0 of 21 visible leaf elements in the viewport are an img or carry a background-image), live in-browser DOM scan of /de/notifications at 390x844, 2026-08-27 | violates FLOORS LAW F2, imagery presence floor (>= 33% of the first viewport photographic, from real content, never decoration) | target >= 33%
+  Result: after this file's own "after" panel finished loading and running its script, the same clipped-area scan, run live inside that panel by this file's own code (not typed in ahead of time, read straight off the badge and re-checked by hand), measured 38.9% photographic, which clears the 33% floor.
+  Diagnosis: elevation | measured 2 distinct box-shadow values among visible elements clipped to 390x844 (the two circular header icon buttons, and the fixed BottomNav pill), same live scan, 2026-08-27 | this is a CORRECTION not a violation: the brief said 1 and FAIL, the live page already carries 2 and already clears the floor of 2 | no elevation treatment is proposed here, floor-fix-notifications/index.html found the identical two shadow values independently the same day
+  Diagnosis: display anchor | measured 20px (the real h1 "Benachrichtigungen" computed font-size), live scan, 2026-08-27, contradicting the brief's "28px PASS" | violates NEVER-AGAIN floor 6 (>= 28px) | target 28px, out of scope for this arm, named not fixed
+  Diagnosis: anchor ratio | measured 1.67x (20px largest against a 12px most-common body size), same live scan | violates FLOORS LAW F7b (>= 1.8x), contradicting the brief's "1.87x PASS" | target 1.8x, out of scope for this arm, named not fixed
+
+  TASTE_LOG check: the promoted card's photo runs the full width of its own row with no side margin, the flush(0) image radius the LOCKFILE already gives every SalonCard and PDP photo. TASTE_LOG 2026-07-16 DENIED the page-level hero direction (home hero straddling search, PDP tall gallery hero, category/city landing hero, onboarding montage, tier-up ink takeover, dark marketing bands, all named by that entry's own table), which this is not: it is one row inside an existing list, sized to its own row, not a page-defining takeover. Named here because the drift hook that reads this file flags the shape, and it deserves a stated answer rather than a silent pass.
+
+  Exists-check: npm run exists notifications, run this turn, 17 matches: the route, page, NotificationsClient, both API endpoints, the notifications DB table (6 live rows), lib/notifications.ts, email templates; one graveyard hit (off-peak notification endpoint, unrelated). Nothing here is new, both panels load the real route and the real component as-is.
+
+  Treatment-only, stated precisely because this mechanism is not a pure treatment: the header padding change is a treatment, three padding rules, nothing added or removed. The row promotion is structural, one existing row is moved to a new position in the same list and its own real text is redrawn around a real photo, and is named as structural here rather than smuggled in as a treatment. Nothing outside that one row is touched: the other three rows, their icons, their copy, their order relative to each other, and the mark-all-read button are all untouched.
+-->
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100dvh;
+    background: #FFFFFF;
+    color: #0A0A0A;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { width: 100%; max-width: 402px; margin: 0 auto; padding: 0 0 56px; }
+
+  .lede { padding: 28px 16px 6px; }
+  .lede h1 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 24px; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em;
+  }
+  .lede p { margin-top: 10px; font-size: 14px; line-height: 1.5; color: #6B6B6B; }
+
+  .panel { margin-top: 26px; }
+  .cap { padding: 0 16px 8px; }
+  .cap h2 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 17px; font-weight: 600; line-height: 1.25; letter-spacing: -0.02em;
+  }
+  .cap p { margin-top: 3px; font-size: 13px; line-height: 1.45; color: #6B6B6B; }
+  .nums { font-variant-numeric: tabular-nums; }
+
+  .frame {
+    position: relative; width: 100%; height: 760px;
+    border-top: 1px solid #E4E4E7; border-bottom: 1px solid #E4E4E7;
+    overflow: hidden;
+  }
+  .frame iframe { width: 402px; height: 760px; border: 0; display: block; }
+  .frame .badge {
+    position: absolute; top: 10px; right: 10px; z-index: 2;
+    padding: 5px 10px; border-radius: 40px;
+    background: rgba(255,255,255,0.92); border: 1px solid #E4E4E7;
+    font-size: 11px; font-weight: 600; color: #0A0A0A;
+    font-variant-numeric: tabular-nums;
+  }
+  .frame .badge.neutral { color: #6B6B6B; }
+  .frame .badge.good { color: #16A34A; }
+
+  .note { padding: 22px 16px 0; font-size: 13px; line-height: 1.55; color: #6B6B6B; }
+  .note strong { color: #0A0A0A; font-weight: 600; }
+  .note + .note { padding-top: 12px; }
+  .note.flag { border-left: 2px solid #E4E4E7; padding-left: 14px; margin: 22px 16px 0; }
+  .note.decision { border-left: 2px solid #276EF1; padding-left: 14px; margin: 22px 16px 0; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="lede">
+    <h1>The one real photo this inbox already has, moved up and made big</h1>
+    <p>Both panels below are your real notifications inbox, live, signed in as the same test
+       account. In the second one, the one notification that already names a real salon is pulled
+       to the top and shown with that salon's real photo instead of a small grey icon.</p>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>Now</h2>
+      <p>Four real notifications, all as plain text rows with a grey icon. No photo anywhere on the
+         screen.</p>
+    </div>
+    <div class="frame">
+      <div class="badge nums neutral" id="before-badge">0% photos</div>
+      <iframe id="before" src="/api/dev/login?to=/de/notifications" scrolling="no" title="The notifications inbox as it is today"></iframe>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>Moved up and grown</h2>
+      <p>Same four notifications, same words. The one that names La Belle Ongle now leads the list
+         with its own real photo; the header above it also gives back some of its own padding.</p>
+    </div>
+    <div class="frame">
+      <div class="badge nums good" id="after-badge">measuring…</div>
+      <iframe id="after" src="/api/dev/login?to=/de/notifications" scrolling="no" title="The notifications inbox with the salon notification promoted to a photo card"></iframe>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>What actually changes.</strong> Two things, and only two. First, the icon-row header
+    above the list gives back some of its own top and bottom padding, real chrome, same content.
+    Second, one existing row, the June confirmation that already says "La Belle Ongle" in its own
+    text, moves to the front of the list and grows from a 44px grey circle into a full-width photo
+    using that salon's own real cover photo, fetched live, not a stock swap. The other three rows:
+    same icons, same copy, same order relative to each other, untouched.
+  </div>
+
+  <div class="note flag">
+    <strong>What this does not touch.</strong> The three rows that report a rejected salon
+    application or a cancelled booking have no salon to show a photo of, they name no salon in their
+    own text, so they keep their neutral icon rather than being given a fabricated one. And two
+    numbers in the brief for this screen did not hold up under a live measurement: the heading reads
+    20px, not 28px, and the largest-to-body ratio measures 1.67x, not 1.87x. Both actually fail their
+    floors. This mechanism does not fix either, that needs its own decision on the heading, named
+    here so it is not lost.
+  </div>
+
+  <div class="note decision">
+    <strong>The tradeoff worth a yes or no.</strong> Moving the June row to the top means the list is
+    no longer in pure newest-first order, the July items now sit below a June one. That is the one
+    real cost of "higher." The alternative is leaving it in place and only growing it, which keeps
+    the order honest but does not move anything up, since it is already the last row. This file takes
+    the "move it" option so the effect is visible and measurable; if you would rather keep strict
+    recency order, this is the one line to say so.
+  </div>
+
+</div>
+
+<script>
+  // "before" panel: unmodified. Its badge is a fixed number because the live scan above already
+  // confirmed 0% and re-running the exact same idle scan on a second live load of the same page
+  // would only ever read the same 0%.
+  //
+  // "after" panel: same real route, same real DOM. After it loads, this script (a) tightens the
+  // padding on the two real header bars already in that DOM, and (b) fetches the real cover photo
+  // for the one salon this inbox's own text already names, then moves that one row to the top of
+  // the list and redraws it as a photo card using ITS OWN existing text (read out of its own DOM
+  // nodes, never retyped here). Nothing else in the document is touched. Then it re-runs the same
+  // imagery scan the "before" badge used and writes the real number into the badge, so the number on
+  // screen is always what actually rendered, not a guess typed in ahead of time.
+  var after = document.getElementById("after");
+  var afterBadge = document.getElementById("after-badge");
+
+  function scanImageryPct(doc, win) {
+    var vw = 390, vh = win.innerHeight || 844;
+    function clippedArea(el) {
+      var b = el.getBoundingClientRect();
+      var left = Math.max(0, b.left), top = Math.max(0, b.top);
+      var right = Math.min(vw, b.right), bottom = Math.min(vh, b.bottom);
+      return Math.max(0, right - left) * Math.max(0, bottom - top);
+    }
+    var imgs = Array.prototype.slice.call(doc.querySelectorAll("img"));
+    var bgEls = Array.prototype.slice.call(doc.querySelectorAll("*")).filter(function (el) {
+      var cs = win.getComputedStyle(el);
+      return cs.backgroundImage && cs.backgroundImage !== "none";
+    });
+    var area = imgs.reduce(function (s, el) { return s + clippedArea(el); }, 0) +
+      bgEls.reduce(function (s, el) { return s + clippedArea(el); }, 0);
+    return (area / (vw * vh)) * 100;
+  }
+
+  // NotificationsClient fetches its rows client-side after mount (useEffect -> GET
+  // /api/profile/notifications), so the row list does not exist in the DOM at the iframe's own
+  // "load" event yet, only the empty <main> shell does. This polls the real DOM (no fixed sleep,
+  // no assumed timing) until the real row list has actually rendered, then runs once.
+  function whenRowsReady(doc, cb, triesLeft) {
+    if (triesLeft <= 0) { console.error("[fix-notifications--c-content-forward] gave up waiting for the real row list to render"); return; }
+    var rowContainer = doc.querySelector("main section > div.mt-1\\.5");
+    if (rowContainer && rowContainer.children.length > 0) { cb(rowContainer); return; }
+    setTimeout(function () { whenRowsReady(doc, cb, triesLeft - 1); }, 200);
+  }
+
+  after.addEventListener("load", function () {
+    try {
+      var doc = after.contentDocument;
+      var win = after.contentWindow;
+      if (!doc || !win) { return; }
+
+      // (a) header padding, treatment-only, nothing added or removed
+      var style = doc.createElement("style");
+      style.textContent =
+        "header.py-5 { padding-top: 8px !important; padding-bottom: 8px !important; }\n" +
+        "header.border-b > div { padding-top: 8px !important; padding-bottom: 8px !important; }";
+      doc.head.appendChild(style);
+
+      // (b) find the row that already names a real salon in its own text, once it has actually rendered
+      whenRowsReady(doc, function (rowContainer) {
+      var rows = Array.prototype.slice.call(rowContainer.children);
+      var targetRow = rows.filter(function (row) { return /La Belle Ongle/.test(row.textContent); })[0];
+      if (!targetRow) { console.error("[fix-notifications--c-content-forward] no row names a real salon, leaving the list as-is"); return; }
+
+      var titleEl = targetRow.querySelector("p.truncate");
+      var dateEl = targetRow.querySelector("span.shrink-0");
+      var bodyPs = targetRow.querySelectorAll("p");
+      var bodyEl = bodyPs[bodyPs.length - 1];
+      var titleText = titleEl ? titleEl.textContent : "";
+      var dateText = dateEl ? dateEl.textContent : "";
+      var bodyText = bodyEl ? bodyEl.textContent : "";
+      var salonName = bodyText.split(",")[0].trim();
+      if (!salonName) { console.error("[fix-notifications--c-content-forward] could not read a salon name out of the row's own body text"); return; }
+
+      win.fetch("/api/salons?q=" + encodeURIComponent(salonName))
+        .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error("salons lookup " + r.status)); })
+        .then(function (j) {
+          var salon = j && j.items && j.items[0];
+          if (!salon || !salon.cover_photo_url) { throw new Error("no cover_photo_url on the matched salon"); }
+
+          // move the existing row to the front of the same list, then redraw its own contents
+          rowContainer.insertBefore(targetRow, rowContainer.firstChild);
+          targetRow.className = "block w-full text-left";
+          targetRow.innerHTML =
+            '<img src="' + salon.cover_photo_url + '" alt="' + salon.name.replace(/"/g, "&quot;") + '" ' +
+            'style="width:100%;height:296px;object-fit:cover;display:block" />' +
+            '<div style="padding:12px 16px 14px;">' +
+            '<div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;">' +
+            '<p style="font-size:15px;font-weight:600;color:#0A0A0A;margin:0;">' + titleText + "</p>" +
+            '<span style="flex-shrink:0;font-size:12px;color:#6B6B6B;">' + dateText + "</span>" +
+            "</div>" +
+            '<p style="margin:2px 0 0;font-size:13px;line-height:1.4;color:#52525B;">' + bodyText + "</p>" +
+            "</div>";
+
+          var pct = scanImageryPct(doc, win);
+          afterBadge.textContent = pct.toFixed(1) + "% photos";
+        })
+        .catch(function (err) {
+          console.error("[fix-notifications--c-content-forward] could not load the real salon photo, row left as-is:", err);
+          afterBadge.textContent = "fetch failed, see console";
+        });
+      }, 25);
+    } catch (err) {
+      console.error("[fix-notifications--c-content-forward] could not restyle the after panel:", err);
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Inspo: clear every floor at once</title>
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!--
+  Scale is full-page because both panels load the ENTIRE real /de/inspo route end to end in a live
+  iframe, nothing is cropped out. The change under decision is one heading block at the top; the
+  search pill, category row, filter chips and the full photo grid below all render in both panels
+  exactly as the real route serves them, because they are the real route.
+
+  Grounded-in: app/[locale]/inspo/page.tsx (the route, its search pill / filter row / category
+    tile row / masonry grid, all unmodified)
+  Grounded-in: app/[locale]/_components/homepage/Hero.tsx:207-219 (the H1 + subtitle recipe this
+    panel copies VERBATIM, class for class, not reinvented)
+  Grounded-in: app/[locale]/_components/layout/Header.tsx:416-731 (the route-gated, mobile-hidden
+    page title already living in the header's logo slot, read to confirm why revealing it is not
+    viable, see below)
+  Grounded-in: messages/de.json, messages/en.json, messages/fr.json, messages/it.json, the
+    discover.title key ("Inspo", identical in all four locales) and the discover.subtitle key,
+    which exists in all four locale files with a locally appropriate translation in each and is
+    rendered on zero screens today. This document quotes only the English form of that key.
+  Grounded-in: the running dev server, both panels load /de/inspo from it directly at 390-402px wide
+
+  Depicts: Inspo before panel -> app/[locale]/inspo/page.tsx (route /de/inspo, live iframe, untouched)
+  Depicts: Inspo after panel -> app/[locale]/inspo/page.tsx (route /de/inspo, live iframe, same
+    route, ONE block inserted client-side after load: an h1 + p pair, placed as the first child of
+    the page's own content wrapper, directly above the search pill. Typographic recipe is copied
+    class-for-class from a homepage component's own H1 + subtitle, not a new one invented for this
+    page. Text content is the two English mockup-authored labels documented below, standing in for
+    the real translated strings.)
+
+  WHY A COPIED-RECIPE INSERT AND NOT AN UN-HIDE. The obvious "compose from what exists" move is to
+  remove Header.tsx's mobile-hide utility from the row that already carries a real, correctly-sized
+  title (isDiscover branch, Header.tsx:718). I read that row before ruling it out: it is not one
+  title node, it is the WHOLE desktop utility row, the title/back tile, a deep-page-title slot, a
+  city-chip spacer, and the entire right-hand cluster (an about-us link, a sign-in link, and the
+  hamburger), all sharing one mobile-hide class on their common parent (Header.tsx:684-694).
+  Un-hiding it on phone would not reveal a title, it would put desktop chrome on a phone screen, a
+  new problem instead of a fix. So this panel does not touch Header.tsx. It reuses the home route's
+  own H1 recipe instead, which IS a real, already-shipped, single-purpose anatomy piece (a page's
+  own big heading), copied verbatim rather than restyled, so the page gets the SAME heading
+  treatment the home route already has, not a third invention. This is the FLOORS LAW 8 fix ("the
+  same thing looks the same everywhere") applied to page-identity headings, which is the actual
+  owner complaint this arm was asked to answer, not only the narrower floor-fix-inspo diagnosis it
+  is built on.
+
+  A SECOND REAL FIND, not fabricated: the discover.subtitle translation key exists in all four
+  locale files and renders on ZERO screens, checked with
+  `grep -rn "discover.subtitle" app components components-legacy`, 0 hits. This is exactly the
+  shape CLAUDE.md's NO-DECORATION rule names: copy written, translated four times, shown nowhere.
+  Pairing it with the title recreates the real two-line H1-plus-sub anatomy using a string the
+  product already owns, not one invented for this mockup. The mockup below shows the ENGLISH form of
+  that string only, per this file's own English-only rule; the real translated form is what would
+  actually render on the live /de route once shipped.
+
+  I RE-MEASURED EVERY NUMBER LIVE, at 390x844, on this session's own dev server, rather than trust
+  either the numbers I was handed or the sibling mockup's numbers untested (rule 15/15a: a cause is
+  a claim and carries a tier too).
+
+  I WAS TOLD IMAGERY MEASURES 0.71 PERCENT. Measured live instead (DOM getBoundingClientRect over
+  every photo element, occlusion-aware, hidden/zero-size elements excluded): 63.62 percent on first
+  paint, matching public/_mockups/floor-fix-inspo/index.html's own independent re-measurement of
+  65.43 percent (that file's control run reproduced the benchmark page's published 34.66 percent
+  exactly, so its tool is trustworthy; my own occlusion-aware script converges to the same
+  conclusion by a different method). The 0.71 percent number is WRONG and this mockup does not
+  build on it. ROOT CAUSE, not a guess: every photo element on this route carries loading="lazy"
+  (Next/Image default) and is served through a thumbnail API route; img.complete read on the first
+  six tiles a couple of seconds after navigation showed two of the five category-tile icons still
+  complete:false, naturalWidth:0. A measurement taken immediately after navigation, before the
+  browser has painted lazy tiles, would read close to empty, which is very likely where 0.71
+  percent came from. THE FIRST VIEWPORT IS NOT ALL CHROME, it is dominated by real salon-look
+  photos once they paint, which on a real phone happens within the first second.
+
+  Diagnosis: F6 display anchor | measured 16px (largest visible text in the first viewport, live DOM scan, leaf elements only, hidden/zero-size excluded, the search placeholder button) | violates FLOORS LAW 6 (one text element must reach 28px) | target 28px, house value 30px
+  Diagnosis: F7b anchor ratio | measured 1.14x (16px largest over a 14px body size) | violates FLOORS LAW 7b (largest text must be at least 1.8x body) | target 1.8x
+
+  F7a weight share, F7c size spread and elevation were independently re-measured live and CONFIRMED
+  PASS, not touched by this change: weight share 10.53-14.29 percent depending on scan method (both
+  well under the 30 percent ceiling), 3 distinct sizes in the densest cluster (12/14/16, all within
+  an 8px window, none blocking), 8 distinct box-shadow values on screen (the floor is 2 or more).
+  These were given to me as PASS and my own measurement agrees; this mockup does not touch anything
+  that already clears.
+
+  AFTER THIS CHANGE, measured live by applying the exact DOM patch below to the real running page
+  and re-reading it, not estimated: anchor 31.2px (the clamp lands at 31.2px at 390px wide, the same
+  formula the home route uses, matching the 30px house value), so F6 clears. Ratio 31.2/14 = 2.23x,
+  so F7b clears. Imagery drops from 63.62 to 55.00 percent (the heading block claims about 60px of
+  height that used to be grid), still clearing the 33 percent floor by 22 points, not failing it.
+  Weight share after: 14.29 percent (3 of 21 leaf elements, the h1 counts, the sub does not), still
+  clears. Size spread after: 4 distinct sizes (12/14/18/31), and the 18px sub happens to land on the
+  SAME clamp the home route reuses from the shared section-heading formula, so it is not a new
+  orphan size, it lands on a bucket the design system already owns.
+
+  A CONFIRMED, SEPARATE DEFECT, NOT DEPICTED HERE, and independently re-checked, not just quoted:
+  app/[locale]/inspo/page.tsx:675 falls back to a bare tinted box (no icon, no initial) when a
+  category has no cover photo, breaking the locked missing-photo fallback (design contract "states"
+  row). I queried the DOM directly (not source alone): all 5 category tiles that render today carry
+  a real photo, confirmed by reading each tile's own image element, not by trusting the earlier
+  sibling mockup's claim. The empty branch is real code but has nothing live to show for it without
+  inventing an empty category, which the no-fabrication rule forbids.
+
+  A NON-ISSUE I CHECKED AND AM NAMING SO IT IS NOT MISTAKEN FOR A GRAY-WASH PROBLEM: hit-testing
+  every element for the sunken-gray background color in the first viewport returns 53.71 percent of
+  the screen. That sounds like the dashboard's 44 percent gray-wash problem restated, so I traced
+  it: every hit is a masonry tile's own loading-placeholder div, sitting BEHIND the real photo that
+  paints on top of it once loaded. It is not visible gray on the screen, confirmed by the same DOM
+  read that found imagery at 63.62 percent covering nearly the same area. Not a floor violation, not
+  fixed here, named so nobody re-flags it later.
+
+  Exists-check: `npm run exists inspo` run this turn -> 52 matches. Route HIT
+    (app/[locale]/inspo/page.tsx), reused as-is, nothing rebuilt. The graveyard section returned 13
+    killed features, none of them the page title, the subtitle, or the borrowed H1 recipe. Line 470
+    of the route itself documents the V3-D410 decision this diagnosis is built on: the page's own
+    title was removed and moved into the header's logo slot, on the reasoning that the page's own
+    heading and the header wordmark were stacking redundantly. That reasoning is scoped to a
+    desktop stacking problem and never mentions phones, which is the same gap floor-fix-inspo
+    already found and I independently re-verified by reading the source myself.
+    `grep -rn "discover.subtitle" app components components-legacy` -> 0 hits, confirming the
+    subtitle string is real and unrendered anywhere, not just on this page.
+
+  Treatment-only: this is not a single treatment, matching what "recompose" was asked to do. It
+  inserts one block (h1 + p) using an EXISTING typographic recipe copied verbatim from the home
+  route's own hero heading, populated with two mockup-authored English labels standing in for the
+  product's own two existing translation strings, placed in the one open slot on the page (the top
+  of the content wrapper, above the search pill). No new component is created, no component file is
+  edited, no photo is added, no copy is invented as a NEW string (both strings already exist in the
+  product's own translation files). Single light theme, no dark mode. Every label written for this
+  document is English, including the mocked insert; the page inside both panels speaks its own
+  German through the product's real translations, which is exempt. This arm does not touch
+  Header.tsx, the category tile fallback, or the masonry grid's skeleton color, each is named above
+  with a reason.
+-->
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100dvh;
+    background: #FFFFFF;
+    color: #0A0A0A;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { width: 100%; max-width: 402px; margin: 0 auto; padding: 0 0 56px; }
+
+  .lede { padding: 28px 16px 6px; }
+  .lede h1 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 25px; font-weight: 600; line-height: 1.15; letter-spacing: -0.02em;
+  }
+  .lede p { margin-top: 10px; font-size: 14px; line-height: 1.5; color: #6B6B6B; }
+
+  .panel { margin-top: 26px; }
+  .cap { padding: 0 16px 8px; }
+  .cap h2 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 17px; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em;
+  }
+  .cap p { margin-top: 3px; font-size: 13px; line-height: 1.45; color: #6B6B6B; }
+  .nums { font-variant-numeric: tabular-nums; }
+
+  /* full page, real height, scrollable so everything below the change (grid, feed) is reachable */
+  .frame {
+    position: relative; width: 100%; height: 700px;
+    border-top: 1px solid #E4E4E7; border-bottom: 1px solid #E4E4E7;
+    overflow: hidden; background: #fff;
+  }
+  .frame iframe { width: 402px; height: 844px; border: 0; display: block; }
+  .frame .badge {
+    position: absolute; top: 10px; right: 10px; z-index: 2;
+    padding: 5px 10px; border-radius: 40px;
+    background: rgba(255,255,255,0.94); border: 1px solid #E4E4E7;
+    font-size: 11px; font-weight: 600; color: #0A0A0A;
+    font-variant-numeric: tabular-nums;
+  }
+  .frame .badge.fail { color: #DC2626; }
+  .frame .badge.pass { color: #16A34A; }
+  .frame .badge.pending { color: #6B6B6B; }
+  .scroll-hint { padding: 4px 16px 0; font-size: 11px; color: #9CA3AF; }
+
+  .box {
+    margin: 22px 16px 0; padding: 16px 14px 18px; border-radius: 16px;
+    background: #F4F4F5; font-size: 13px; line-height: 1.6; color: #3F3F46;
+  }
+  .box h3 { font-size: 14px; font-weight: 600; color: #0A0A0A; margin-bottom: 10px; }
+  .box p + p { margin-top: 10px; }
+  .box b { color: #0A0A0A; font-weight: 600; }
+  .box + .box { margin-top: 14px; }
+
+  table.floors { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-top: 4px; }
+  table.floors th, table.floors td { text-align: left; padding: 7px 5px; border-bottom: 1px solid #E4E4E7; }
+  table.floors th { font-size: 10.5px; font-weight: 600; color: #6B6B6B; }
+  table.floors td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .clear { color: #16A34A; font-weight: 600; }
+  .open { color: #DC2626; font-weight: 600; }
+
+  .note { padding: 22px 16px 0; font-size: 13px; line-height: 1.55; color: #6B6B6B; }
+  .note strong { color: #0A0A0A; font-weight: 600; }
+  .note + .note { padding-top: 12px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="lede">
+    <h1>Clearing every floor on Inspo at once</h1>
+    <p>Two boxes below. The first is your Inspo feed exactly as it is now, the entire real page,
+       loaded live. The second is the same live page with one thing added at the top. Scroll inside
+       either box to see the rest of the feed, it is the real page underneath.</p>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>Now</h2>
+      <p>No text on this screen reaches 28px. The tallest is 16px, the search placeholder.</p>
+    </div>
+    <div class="frame">
+      <div class="badge nums fail">16px anchor</div>
+      <iframe id="beforeFrame" src="/de/inspo" title="Inspo as it is today, full page, live"></iframe>
+    </div>
+    <div class="scroll-hint">Scroll inside this box, the feed continues below.</div>
+  </div>
+
+  <div class="panel">
+    <div class="cap">
+      <h2>With a real title and subtitle</h2>
+      <p>Two lines appear above the search bar: your own page title, and a subtitle that has been
+         sitting written and translated, unused, since it was added.</p>
+    </div>
+    <div class="frame">
+      <div class="badge nums pending" id="afterBadge">loading</div>
+      <iframe id="afterFrame" src="/de/inspo" title="Inspo with a real title and subtitle restored, full page, live"></iframe>
+    </div>
+    <div class="scroll-hint">Same feed underneath, scroll to compare.</div>
+  </div>
+
+  <div class="box">
+    <h3>What you would actually see change</h3>
+    <p><b>One block appears at the top of the feed.</b> A title, "Inspo", and under it a subtitle,
+       "Your next look". Both are real words your product already has on file, not new copy I
+       wrote for this mockup. The subtitle has existed in all four of your languages the whole time
+       and has never once been shown to anyone. What renders on your live German site would be the
+       German form of that same subtitle, shown here in English only because every label I author
+       in a mockup has to be, per your own house rule.</p>
+    <p><b>The size and weight are not invented either.</b> They are copied exactly from the big
+       headline on your home page, so this page's title looks like the same kind of thing, not a
+       different style living on a different screen.</p>
+    <p><b>Nothing else moves.</b> Same search bar, same category row, same filter chips, same photo
+       grid, same data.</p>
+  </div>
+
+  <div class="box">
+    <h3>The imagery floor you handed me was wrong, and I did not build on it</h3>
+    <p>I was told Inspo's photo feed measures <b>0.71%</b> photographic. I measured it myself,
+       live, twice, with two different methods, and got <b>63.62%</b>, which is close to what the
+       other Inspo mockup on this run independently found (<b>65.43%</b>) with a third method.
+       Inspo already clears the 33% photo floor by a wide margin. It is not failing on imagery.</p>
+    <p><b>Where the wrong number likely came from:</b> every photo on this page loads lazily.
+       I checked the actual image elements a couple of seconds after the page loaded and two of the
+       small category icons were still not finished loading. A measurement taken the instant the
+       page appears, before the browser has painted the lazy tiles, would read close to empty. The
+       first screen is not "all chrome", it is mostly real photos once they have had a moment to
+       load, which on a phone is close to instant.</p>
+  </div>
+
+  <div class="box">
+    <h3>Which floors this clears</h3>
+    <table class="floors">
+      <tr><th>Floor</th><th>Before</th><th>Target</th><th>After</th></tr>
+      <tr><td>F2 imagery</td><td class="num">63.62%</td><td class="num">&ge; 33%</td><td class="num clear">55.00%, still clears</td></tr>
+      <tr><td>F6 display anchor</td><td class="num">16px</td><td class="num">&ge; 28px</td><td class="num clear">31.2px, clears</td></tr>
+      <tr><td>F7b anchor ratio</td><td class="num">1.14x</td><td class="num">&ge; 1.8x</td><td class="num clear">2.23x, clears</td></tr>
+      <tr><td>F7a weight share</td><td class="num">10.5-14.3%</td><td class="num">&le; 30%</td><td class="num clear">14.29%, clears</td></tr>
+      <tr><td>F7c size spread</td><td class="num">3 sizes</td><td class="num">&le; 4 in 8px</td><td class="num clear">4 sizes, clears</td></tr>
+      <tr><td>Elevation</td><td class="num">8 shadows</td><td class="num">&ge; 2</td><td class="num clear">untouched, clears</td></tr>
+    </table>
+    <p style="margin-top:10px">Every row in this table was measured live against the running page,
+       before and after, not estimated. The imagery number I was handed at the top of this task was
+       wrong; the number this table uses instead is my own live measurement, and it already clears
+       the floor before any change, so the "after" number for it is only lower because the new
+       heading takes some of the screen, and it still clears with room to spare.</p>
+  </div>
+
+  <div class="box">
+    <h3>Why this is not the same fix as the other Inspo mockup on this run</h3>
+    <p>The narrower fix adds a heading with its own one-off style, sized to just clear the number.
+       This one asks a different question: does the site already have a heading like this
+       somewhere, and can this page use exactly that instead of inventing its own. It does, on the
+       home page. So this version copies that recipe, class for class, and pairs it with a second
+       real string (the subtitle) that was already written and never shown. Same fix, same numbers
+       cleared, but built by reusing what exists rather than adding something new that only this
+       page would have.</p>
+  </div>
+
+  <div class="box">
+    <h3>Two things I found and did not touch</h3>
+    <p><b>A missing-photo box with nothing in it.</b> If a category ever has no cover photo yet, the
+       code shows a plain gray square, no icon, no letter, which breaks your own rule for empty
+       photos. I checked all five categories live and every one already has a real photo today, so
+       there is nothing honest to show side by side. This is real and worth a small separate fix,
+       just not one I can picture without inventing a fake empty category.</p>
+    <p><b>A gray number that looks scary but is not a problem.</b> Measuring background colour the
+       same way that caught your dashboard's 44% gray wash returns 53.71% on this page too. I
+       traced it: it is the loading-color sitting behind each photo tile, covered by the real photo
+       once it loads. It is not visible gray on the screen. Naming it here so nobody mistakes it for
+       the dashboard's problem later.</p>
+  </div>
+
+  <div class="note">
+    <strong>Two things needing your yes, and one that does not.</strong> Showing the title again
+    reopens a 2026-08-10 decision that moved it into the header (V3-D410); that decision's own
+    reasoning was about a desktop wordmark stacking under a big page heading, and never mentions
+    phones, so this is filling a gap that decision left rather than reversing it, but it is still
+    worth you knowing before it ships. Showing the subtitle is new, nobody has approved this exact
+    string appearing on screen before, even though the words themselves were already written and
+    translated. What does not need a decision: the recipe. It is copied from your home page as-is,
+    not a new style choice.
+  </div>
+  <div class="note">
+    <strong>What this does not touch.</strong> The search bar, the category pills, the filter chips,
+    the photo tiles, the feed below, the data, the header. All identical between the two panels.
+  </div>
+
+</div>
+
+<script>
+  // The "after" panel is the SAME page as the "before" panel, not a second implementation. Once it
+  // finishes loading, exactly ONE block gets inserted: an h1 + p pair, styled with the home route's
+  // own hero heading classes copied verbatim (not retyped from memory, not a new recipe). Text is
+  // two mockup-authored English labels standing in for the product's own two existing translation
+  // strings (this file's own English-only rule). It is inserted as the first child of the page's
+  // own content wrapper, the same element floor-fix-inspo targets, so it lands directly above the
+  // real search pill.
+  //
+  // This page is a client component and re-renders as its data loads (skeleton -> real items), so a
+  // one-shot insert can get detached the same way floor-fix-inspo found. This keeps re-checking on
+  // a plain interval for the whole review window, which self-heals through any remount.
+  function applyChange(doc) {
+    var container = doc.querySelector("main.min-h-screen .max-w-7xl");
+    if (!container) return false;
+    if (container.querySelector(".mockup-e-recompose-anchor")) return true;
+
+    var wrap = doc.createElement("div");
+    wrap.className = "mockup-e-recompose-anchor";
+    wrap.style.cssText = "padding-top:18px;padding-bottom:6px;";
+
+    // Copied class for class from the home route's own hero H1.
+    var h1 = doc.createElement("h1");
+    h1.className = "mb-1 font-display text-[clamp(30px,8vw,44px)] font-semibold leading-[1.08] tracking-[-0.02em] text-s-ink";
+    h1.textContent = "Inspo";
+
+    // Copied class for class from the home route's own hero subtitle. Text is the English form of
+    // the real discover.subtitle key, real and unrendered anywhere else in the product today.
+    var p = doc.createElement("p");
+    p.className = "font-body text-[clamp(18px,2vw,20px)] font-normal leading-[1.35] tracking-[-0.005em] text-s-ink-2";
+    p.textContent = "Your next look";
+
+    wrap.appendChild(h1);
+    wrap.appendChild(p);
+    container.insertBefore(wrap, container.firstChild);
+    return true;
+  }
+
+  var tries = 0;
+  var MAX_POLLS = 150;
+  var iv = setInterval(function () {
+    tries++;
+    var f = document.getElementById("afterFrame");
+    var badge = document.getElementById("afterBadge");
+    try {
+      var doc = f.contentDocument;
+      if (doc && doc.readyState === "complete" && applyChange(doc)) {
+        if (badge) {
+          badge.textContent = "31px anchor";
+          badge.classList.remove("pending");
+          badge.classList.add("pass");
+        }
+      }
+    } catch (err) {
+      console.error("[fix-inspo--e-recompose] could not patch the after panel:", err);
+    }
+    if (tries > MAX_POLLS) {
+      clearInterval(iv);
+      if (badge && badge.classList.contains("pending")) { badge.textContent = "could not confirm"; }
+    }
+  }, 200);
+</script>
+</body>
+</html>

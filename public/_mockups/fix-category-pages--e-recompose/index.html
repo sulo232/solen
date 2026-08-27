@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Category pages: clear every floor at once</title>
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!--
+  Scale is full-page: both panels load the entire real /de/coiffeur route end to end, nothing is
+  cropped out of the iframe, the same technique as the sibling e-recompose mockups. The DECISION
+  itself only concerns the very top of the page (whether a title exists at all); everything below
+  it, the rail carousels, the pill row, the search bar, the footer, renders in both panels untouched,
+  purely because they come along with the real page.
+
+  Grounded-in: app/[locale]/coiffeur/page.tsx (real /de/coiffeur route, both panels are live iframes
+    of it; app/[locale]/nails/page.tsx and app/[locale]/spa/page.tsx render the identical
+    SearchTemplate with only serviceFilter different, confirmed live below)
+  Grounded-in: app/[locale]/_components/search/SearchTemplate.tsx (the component that owns this
+    whole screen; grepped end to end, it renders ZERO h1 elements anywhere)
+  Grounded-in: app/[locale]/_components/search/CategoryMobileRails.tsx (the "Top Coiffeur" rail
+    heading this panel reads its category word FROM, live, never retyped; that heading itself is
+    left completely untouched)
+  Grounded-in: app/[locale]/_components/salon/SalonHeader.tsx:96 (the ONE locked page-title recipe
+    that exists anywhere in this codebase today: font-display text-[clamp(30px,2.8vw,34px)]
+    font-semibold leading-[1.1] tracking-[-0.02em] text-s-ink. The AFTER panel below copies this
+    verbatim except one word: font-semibold becomes font-medium. Why that one change is explained
+    in the honest-tradeoff box under the panels, and it is a measured swap, not a guess. This is not
+    read from source alone: RENDERED and MEASURED live via scripts/check-geometry.mjs --floors-only
+    against http://localhost:3457/de/salon/cuts-and-culture this turn, whose extractFloors function
+    walks every visible text node with getComputedStyle. Result: displayAnchor 30px, text "Cuts &
+    Culture", weightShare 30% (9/30), anchorRatio 2.14x, imagery 34.66%, all matching the numbers
+    this task's brief cited for the house reference. The class string above renders at 30px on the
+    real page, confirmed, not assumed from the source file.)
+  Grounded-in: app/[locale]/_components/landings/CategoryHero.tsx (the ONE component the registry
+    already owns that WOULD supply a page title here. TESTED, and DISQUALIFIED, both reasons below
+    in the "what I ruled out" box: (1) it was deliberately dropped from this exact route by a dated
+    owner decision, V3-D350 in coiffeur/page.tsx's own comment, 2026-05-28, quoted verbatim (see
+    Reference-checked line below); (2) its photo (CATEGORY_PHOTOS[category]) is a generic Unsplash
+    placeholder per its own file header comment ("T6 photo strategy doc is DEFERRED, tonight uses
+    Unsplash placeholders"), which fails FLOORS LAW 2 on its own terms regardless of the dated
+    decision: "SATISFIED BY CONTENT, NEVER BY DECORATION.")
+
+  Reference-checked: app/[locale]/coiffeur/page.tsx (the Uber/Fresha "no big category image" line
+    quoted below is copied verbatim from that real file's own V3-D350 comment, dated 2026-05-28;
+    this mockup did not go look at either brand's site, it is quoting a decision already on record)
+
+  Depicts: BEFORE panel -> app/[locale]/coiffeur/page.tsx (real /de/coiffeur route, live iframe, untouched)
+  Depicts: AFTER panel search bar, pill row, salon cards -> app/[locale]/_components/search/SearchTemplate.tsx (same live iframe, unmodified)
+  Depicts: AFTER panel rail headings, left untouched -> app/[locale]/_components/search/CategoryMobileRails.tsx
+  Depicts: AFTER panel new h1 text content -> read live from CategoryMobileRails.tsx's own rendered rail heading, never hardcoded
+  Depicts: AFTER panel new h1 className -> app/[locale]/_components/salon/SalonHeader.tsx:96 (verbatim except font-semibold to font-medium)
+  Depicts: CategoryHero considered and rejected -> app/[locale]/_components/landings/CategoryHero.tsx (NOT rendered in either panel)
+
+  Diagnosis: F6 DISPLAY ANCHOR | measured 18px live via scripts/check-geometry.mjs --floors-only against http://localhost:3457/de/coiffeur, re-verified with a second script | violates CLAUDE.md FLOORS LAW 6 | target 28px, achieves 30px
+  Diagnosis: F7b ANCHOR RATIO | measured 1.5x live, same run | violates the EMPHASIS BUDGET floor (LOCKFILE EMPHASIS BUDGET b) | target 1.8x, achieves 2.5x
+  Diagnosis: F7a WEIGHT SHARE | measured 28.13% live (passes today), but a font-semibold version of this same fix measured 30.3% live, a regression this exact change caused on its own | violates the EMPHASIS BUDGET ceiling (LOCKFILE EMPHASIS BUDGET a, at most 30%) | target 30%, achieves 27.27% at font-medium
+
+  Full reasoning behind the weight-600-vs-500 swap above is in the honest-tradeoff box under the panels.
+
+  CORRECTION on the numbers this task was handed: the brief said this page measures 0.71% imagery,
+    a 14px anchor and a 1.02x ratio. Measured live, three separate times (scripts/check-geometry.mjs
+    directly, then twice more through a second script built for this mockup), the settled page is
+    41.75% / 18px / 1.5x every single time, matching what a sibling mockup in this same batch
+    (public/_mockups/floor-fix-category-pages/index.html) found and flagged the same way. The
+    0.71%/14px numbers describe a loading-state snapshot, not the page a visitor actually sees.
+    Only two floors fail here (F6, F7b), not three, and imagery does not need fixing: 41.75% already
+    clears the 33% floor with room to spare. This mockup does not touch imagery at all.
+
+  Exists-check: npm run exists "category page anchor" run this turn -> 0 matches, safe to build
+    new. npm run exists "CategoryHero" run this turn -> 4 matches (CategoryHero.tsx +
+    CategoryHeroCarousel.tsx, both real, both already shipped); CategoryHero itself was read in full
+    and disqualified for the two reasons above, not reused. No REMOVED.md line exists for
+    CategoryHero specifically (the kill lives only as a dated inline comment in coiffeur/page.tsx,
+    V3-D350), flagging that gap since the graveyard protocol says a deletion should get a
+    REMOVED.md line; this mockup does not add one, since deciding the record is the owner's call.
+
+  Treatment-only: NOT applicable as written, same as the sibling floor-fix-category-pages mockup.
+    SearchTemplate owns this whole screen and contains no existing title element to restyle, so
+    there is nothing to apply a treatment TO. This is the one new element FLOORS LAW 6 asks for,
+    added once, nothing reordered, nothing else on the page touched.
+
+  What makes this mockup a DIFFERENT mechanism from floor-fix-category-pages (same batch, same
+  screen): that mockup writes its own new Tailwind classes by hand for the headline
+  (text-[28px] font-medium, invented for that one file). This mockup composes the SAME real class
+  string the codebase already ships and locks for a page title (SalonHeader.tsx:96), changed by
+  exactly one word for a measured reason, and it separately tests and rules out the one registered
+  component (CategoryHero) that could have supplied this slot instead of a hand-built element, with
+  the two disqualifying reasons on record. It also drops that mockup's revived salon-count line
+  entirely (a second owner-collision this version avoids by not needing it: the weight-500 swap
+  alone is enough to clear the weight-share floor, no extra text required).
+-->
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#52525B; --ink3:#6B6B6B; --line:#E4E4E7; --sunken:#F4F4F5;
+    --good:#16A34A; --bad:#DC2626; --font:'Inter Tight',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#fff}
+  body{
+    font-family:var(--font); color:var(--ink); -webkit-font-smoothing:antialiased;
+    -webkit-text-size-adjust:100%; text-size-adjust:100%;
+    max-width:640px; margin:0 auto; padding:22px 16px calc(32px + env(safe-area-inset-bottom));
+  }
+  h1.page-title{font-size:20px; font-weight:600; letter-spacing:-0.01em; line-height:1.3}
+  .sub{font-size:13px; color:var(--ink3); margin-top:6px; line-height:1.55}
+  .sub strong{color:var(--ink); font-weight:600}
+
+  .panel-row{margin-top:26px}
+  .panel-cap{display:flex; align-items:baseline; justify-content:space-between; gap:8px; margin-bottom:8px}
+  .panel-tag{font-size:12px; font-weight:600; color:var(--ink3)}
+  .panel-tag.after{color:var(--ink)}
+  .badge{font-size:11px; font-weight:600; color:var(--ink2); background:var(--sunken); border-radius:999px; padding:3px 9px; font-variant-numeric:tabular-nums}
+  .badge.pending{color:var(--ink3)}
+
+  .frame{border:1px solid var(--line); border-radius:16px; overflow:hidden; background:#fff; max-width:402px; margin:0 auto}
+  iframe{display:block; width:100%; height:760px; border:0}
+
+  .box{margin-top:28px; background:var(--sunken); border-radius:16px; padding:16px 16px 18px; font-size:13px; line-height:1.6; color:var(--ink2)}
+  .box b{color:var(--ink); font-weight:600}
+  .box + .box{margin-top:14px}
+  .box h2{font-size:14px; font-weight:600; color:var(--ink); margin-bottom:10px}
+  .box p + p{margin-top:8px}
+
+  table.floors{width:100%; border-collapse:collapse; font-size:13px}
+  table.floors th, table.floors td{text-align:left; padding:7px 6px; border-bottom:1px solid var(--line)}
+  table.floors th{font-size:11px; font-weight:600; color:var(--ink3); text-transform:none}
+  table.floors td.num{font-variant-numeric:tabular-nums; white-space:nowrap}
+  .tag-clear{color:var(--good); font-weight:600}
+  .tag-open{color:var(--bad); font-weight:600}
+
+  .arm{margin-top:10px; padding-left:14px; border-left:3px solid var(--line)}
+  .arm b{color:var(--ink)}
+  .foot{margin-top:20px; font-size:11px; color:var(--ink3); line-height:1.5; border-top:1px solid var(--line); padding-top:12px}
+  code{font-family:ui-monospace,monospace; font-size:0.92em; background:#fff; padding:1px 5px; border-radius:4px; border:1px solid var(--line)}
+</style>
+</head>
+<body>
+
+  <h1 class="page-title">Clearing every floor on your category pages at once</h1>
+  <p class="sub">This covers all three of your category pages at once: Coiffeur, Nails and Spa. They are the exact same screen with one word different, checked live below for Coiffeur and Nails. Two boxes below. The first is the real Coiffeur page exactly as it is now. The second is the same real page with one small change applied live, so you can scroll and compare.</p>
+
+  <div class="panel-row">
+    <div class="panel-cap"><span class="panel-tag">BEFORE (live, untouched)</span></div>
+    <div class="frame"><iframe id="beforeFrame" src="/de/coiffeur" title="real category page, before"></iframe></div>
+  </div>
+
+  <div class="panel-row">
+    <div class="panel-cap"><span class="panel-tag after">AFTER (one change applied live)</span><span class="badge pending" id="afterStatus">loading</span></div>
+    <div class="frame"><iframe id="afterFrame" src="/de/coiffeur" title="real category page, after (title added)"></iframe></div>
+  </div>
+
+  <div class="box">
+    <h2>What you would actually see change</h2>
+    <p><b>One line of large text appears at the very top: the category name.</b> Right now the biggest text anywhere on this screen is the same small size as your body text, there is no headline at all. The new line is set at the exact size, weight and letter-spacing your own salon pages already use for the salon's own name, the one page you said you like. Nothing below it moves. The small rail headings underneath it stay exactly as they are, the search bar stays where it is, every card stays where it is.</p>
+  </div>
+
+  <div class="box">
+    <h2>What I checked and ruled out</h2>
+    <p><b>Bringing back the old photo banner.</b> Your design system already owns a component built to do exactly this job, a big split headline-plus-photo block. I read it and did not use it, for two reasons. First, it was already turned off on this exact page by name, back in May, with your own note in the code reading it should keep no big category image, closer to a plain results grid. Second, even setting that aside, its photo is not a real photo of one of your salons, it is a generic stock photo baked into the component, which is exactly the kind of decoration you have rejected three times before. So this stays off, and this mockup adds text only, no photo.</p>
+  </div>
+
+  <div class="box">
+    <h2>Which floors this clears, measured live, not estimated</h2>
+    <table class="floors">
+      <tr><th>Floor</th><th>Before</th><th>Target</th><th>After this change</th></tr>
+      <tr><td>Photo coverage of the screen</td><td class="num">41.75%</td><td class="num">&ge; 33%</td><td class="num tag-clear">41.75%, already clears, untouched</td></tr>
+      <tr><td>Biggest text on screen</td><td class="num">18px</td><td class="num">&ge; 28px</td><td class="num tag-clear">30px, clears</td></tr>
+      <tr><td>Biggest text vs. body text</td><td class="num">1.5x</td><td class="num">&ge; 1.8x</td><td class="num tag-clear">2.5x, clears</td></tr>
+      <tr><td>Share of bold text on screen</td><td class="num">28.13%</td><td class="num">&le; 30%</td><td class="num tag-clear">27.27%, clears</td></tr>
+      <tr><td>Text-size variety</td><td class="num tag-clear">pass</td><td class="num">at most 4 sizes bunched together</td><td class="num tag-clear">pass, still 4 bunched together</td></tr>
+      <tr><td>Depth / shadow variety</td><td class="num tag-clear">7, pass</td><td class="num">at least 2</td><td class="num tag-clear">7, pass, untouched</td></tr>
+    </table>
+    <p style="margin-top:10px">All six pass after this change. Only two failed before (the anchor size and the anchor-to-body ratio). Photo coverage, bold-text share, size variety and shadow variety already passed today and are simply left alone.</p>
+  </div>
+
+  <div class="box">
+    <h2>The one number I had to test twice to get right</h2>
+    <p>Your salon page's own headline is bold (weight 600). I tried copying that exact weight first, since matching the page you like exactly seemed like the safer move. Measured live, it broke a floor that was already passing: the share of bold text on the screen went from 28.13% to 30.3%, just over your 30% ceiling, because one more bold element pushed the balance. Switching that one word from bold to medium weight, matching the rule you already settled on for this batch of fixes (size and colour carry emphasis, not weight), brought it back to 27.27% while the headline still reads exactly as big. So the new title matches your salon page's size, spacing and font exactly, and differs from it in weight only, and that one difference is what keeps this screen inside all six floors instead of just four of them.</p>
+  </div>
+
+  <div class="box">
+    <h2>What needs your yes, and what doesn't</h2>
+    <div class="arm"><b>Needs your yes:</b> putting any headline on this screen at all. Category pages have never had one; this adds a real, permanent piece of content, small as it is, not just a style tweak. If you would rather this screen stay headline-free and lean entirely on its photos to carry the screen, floor 6 explicitly allows that (it says a headline is not required when the photograph is the focal point) and none of this would be needed, this screen already clears photo coverage today.</div>
+    <div class="arm"><b>Does not need a fresh decision, it is just matching a page you already approved:</b> the exact size (30px), spacing and font of the new text, copied from your salon page's own title, and leaving the old photo-banner component switched off, which is simply honouring your own May call, not reopening it.</div>
+  </div>
+
+  <div class="foot">Both panels load the same live route, Coiffeur. Nails was spot-checked live with the identical change and measured the identical six results; Spa was not re-measured this session but renders through the exact same SearchTemplate component with only the category word different, so there is no separate code path for it to diverge on. Nothing here has been applied to the real component files.</div>
+
+<script>
+  // The AFTER panel loads the SAME real route as BEFORE. Once it finishes loading, one element is
+  // patched into that document in place: nothing is redrawn, nothing is a second implementation.
+  function applyChange(doc) {
+    if (doc.querySelector('[data-recompose-anchor]')) return true;
+
+    var h2s = Array.prototype.slice.call(doc.querySelectorAll('h2'));
+    var railH2 = h2s.filter(function (h) { return /^Top /.test(h.textContent || ''); })[0];
+    if (!railH2) return false;
+
+    var categoryText = (railH2.textContent || '').replace(/^Top\s+/, '').trim();
+
+    var container = railH2;
+    while (container && !/max-w-\[1280px\]/.test(container.className || '')) {
+      container = container.parentElement;
+    }
+    if (!container) return false;
+
+    // Verbatim SalonHeader.tsx:96 recipe, one word changed: font-semibold -> font-medium.
+    // Measured reason for that one change is in the box above the panels.
+    var h1 = doc.createElement('h1');
+    h1.setAttribute('data-recompose-anchor', '1');
+    h1.className = 'font-display text-[clamp(30px,2.8vw,34px)] font-medium leading-[1.1] tracking-[-0.02em] text-s-ink px-4 pt-5';
+    h1.textContent = categoryText;
+    container.insertBefore(h1, container.firstChild);
+    return true;
+  }
+
+  var tries = 0;
+  var MAX_POLLS = 150; // poll cap, never a displayed count
+  var iv = setInterval(function () {
+    tries++;
+    var f = document.getElementById('afterFrame');
+    var status = document.getElementById('afterStatus');
+    try {
+      var doc = f.contentDocument;
+      if (doc && doc.readyState === 'complete' && applyChange(doc)) {
+        clearInterval(iv);
+        if (status) { status.textContent = 'applied'; status.classList.remove('pending'); }
+      }
+    } catch (e) {
+      console.error('[fix-category-pages--e-recompose] could not patch the after panel:', e);
+    }
+    if (tries > MAX_POLLS) {
+      clearInterval(iv);
+      if (status && status.textContent === 'loading') { status.textContent = 'could not confirm'; }
+    }
+  }, 200);
+</script>
+</body>
+</html>

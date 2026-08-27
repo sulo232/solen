@@ -1,0 +1,559 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Why Solen: five fixes, one page</title>
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!-- Reference-checked: _design-system/LOCKFILE.md (line 2044, EMPHASIS BUDGET row: "For
+  calibration, Airbnb's PDP measures 3.1% (7 of 388)"), the same citation
+  public/_mockups/fix-why-solen--d-airbnb-weight/index.html already verified live before this
+  file existed. This file only quotes that already-checked number in panel D's caption, it does
+  not re-derive or re-guess the Airbnb reference. -->
+<!--
+  This file builds NOTHING new. It stacks the five variants already built and reviewed for this
+  screen so they can be scrolled and compared in one glance, per the owner's explicit ban on the
+  switcher-plus-iframe template ("I can't even see a difference. Stop doing this whole page mockup").
+  Every panel below is the SAME real /de/warum-solen route (or, where a variant pulls real content
+  in, that route plus /de/basel/coiffeur or /de), loaded live from the dev server in its own
+  iframe. Nothing is redrawn. Each "after" iframe gets exactly the one stylesheet or script that
+  variant's own file already proved, lifted verbatim from that file and injected client-side after
+  load, same technique as every sibling file in this folder.
+
+  Grounded-in: public/_mockups/floor-fix-why-solen/index.html (source of the 3-rule minimal CSS
+    fix and its measured numbers)
+  Grounded-in: public/_mockups/fix-why-solen--b-hierarchy/index.html (source of the 30px/weight-500
+    anchor fix and its measured numbers)
+  Grounded-in: public/_mockups/fix-why-solen--c-content-forward/index.html (source of the hero-
+    tighten + real-card-stitch mechanism and its measured numbers)
+  Grounded-in: public/_mockups/fix-why-solen--d-airbnb-weight/index.html (source of the weight-600
+    to weight-500 demotion script and its measured numbers)
+  Grounded-in: public/_mockups/fix-why-solen--e-recompose/index.html (source of the type-fix + real
+    TopCategoryRails stitch and its measured numbers)
+  Grounded-in: app/[locale]/warum-solen/page.tsx (the real route every panel loads)
+
+  Depicts: panel "Now" -> app/[locale]/warum-solen/page.tsx (real /de/warum-solen, unmodified)
+  Depicts: panel A -> app/[locale]/warum-solen/page.tsx (same route, 3 CSS rules injected)
+  Depicts: panel B -> app/[locale]/warum-solen/page.tsx (same route, house 30px/weight-500 anchor)
+  Depicts: panel C top -> app/[locale]/warum-solen/page.tsx (same route, hero padding tightened)
+  Depicts: panel C bottom -> app/[locale]/[city]/[category]/page.tsx (real /de/basel/coiffeur, cropped to its own card rows)
+  Depicts: panel D -> app/[locale]/warum-solen/page.tsx (same route, weight-600+ demoted to 500)
+  Depicts: panel E top -> app/[locale]/warum-solen/page.tsx (same route, the type fix from panel A/B)
+  Depicts: panel E bottom -> app/[locale]/page.tsx (real /de homepage, scrolled to its own TopCategoryRails row)
+
+  Diagnosis (baseline, all five variants target the same three measured failures, plus F2 where
+  named): F6 display anchor | measured 27.3px live | violates FLOORS LAW 6, anchor >= 28px |
+  target 28px, house value 30px. F7c size spread | measured 7 distinct sizes, 6 crowded in one
+  8px window | violates FLOORS LAW 7c, cluster <= 4 | target 4. F2 imagery | measured 0.00%
+  photographic area | violates FLOORS LAW 2, imagery >= 33% | target 33%. These three numbers are
+  quoted directly from the five variant files' own Diagnosis blocks, all independently measured
+  live at 390x844 against the running dev server by the agents that built them, cross-checked
+  against each other and matching within rounding across all five files. That cross-checked-live
+  measurement is this file's own measurement basis: no new number is asserted here that the five
+  source files did not already read off the real rendered page.
+
+  Exists-check: `npm run exists warum-solen` run this turn (twice, via Bash, before this write).
+    21 hits: the route itself (app/[locale]/warum-solen/page.tsx), 19 named inline sections
+    inside it, and the exported WarumSolenPage symbol. Per protocol a hit means reuse, which is
+    what this whole file does: five real, already-built treatments, stacked, nothing rebuilt and
+    nothing new proposed.
+
+  Treatment-only: this file adds zero new CSS rules and zero new measurement logic of its own. It
+  copies each variant's already-proven stylesheet or script verbatim into a fresh iframe of the
+  same real route and reports the same before/after numbers that variant's own file already
+  measured and recorded. The only things authored in this file are the page shell, the labels,
+  and the plain-English captions above and below each panel.
+
+  Every label in this file is English. The frames render the product's own German through its own
+  translations and are exempt. Single light theme, no dark mode.
+-->
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100dvh;
+    background: #FFFFFF;
+    color: #0A0A0A;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { width: 100%; max-width: 402px; margin: 0 auto; padding: 0 0 72px; }
+
+  .lede { padding: 28px 16px 8px; }
+  .lede .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.02em; color: #6B6B6B; }
+  .lede h1 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 24px; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em; margin-top: 6px;
+  }
+  .lede p { margin-top: 12px; font-size: 14px; line-height: 1.55; color: #3F3F46; }
+  .lede p + p { margin-top: 10px; }
+  .lede .opt-line { display: block; margin-top: 8px; }
+  .lede .opt-line b { color: #0A0A0A; }
+
+  .divider { height: 1px; background: #E4E4E7; margin: 24px 16px 0; }
+
+  .panel { margin-top: 28px; }
+  .cap { padding: 0 16px 8px; }
+  .cap .tag {
+    display: inline-block; font-size: 10.5px; font-weight: 600; letter-spacing: 0.02em;
+    padding: 3px 8px; border-radius: 20px; margin-bottom: 8px;
+  }
+  .cap .tag.baseline { background: #F4F4F5; color: #6B6B6B; }
+  .cap .tag.easy { background: #ECFDF5; color: #16A34A; }
+  .cap .tag.decide { background: #FFF7ED; color: #EA580C; }
+  .cap h2 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 17px; font-weight: 600; line-height: 1.25; letter-spacing: -0.01em;
+  }
+  .cap p { margin-top: 4px; font-size: 13px; line-height: 1.5; color: #6B6B6B; }
+  .nums { font-variant-numeric: tabular-nums; }
+
+  .device { width: 390px; max-width: 100%; margin: 0 auto; border: 1px solid #E4E4E7;
+    border-radius: 16px; overflow: hidden; background: #fff; position: relative; }
+  .device .badges { position: absolute; top: 10px; left: 10px; right: 10px; z-index: 2;
+    display: flex; flex-wrap: wrap; gap: 6px; }
+  .badge {
+    padding: 5px 9px; border-radius: 40px;
+    background: rgba(255,255,255,0.94); border: 1px solid #E4E4E7;
+    font-size: 11px; font-weight: 600; color: #0A0A0A;
+    font-variant-numeric: tabular-nums;
+  }
+  .badge.fail { color: #DC2626; border-color: rgba(220,38,38,0.35); }
+  .badge.pass { color: #16A34A; border-color: rgba(22,163,74,0.35); }
+
+  .frame { width: 390px; overflow: hidden; }
+  .frame iframe { width: 390px; border: 0; display: block; }
+
+  .stack .strip { width: 390px; overflow: hidden; }
+  .stack .strip iframe { width: 390px; border: 0; display: block; }
+  .seam { text-align: center; font-size: 10px; color: #9CA3AF; padding: 3px 0;
+    background: #FAFAFA; border-top: 1px dashed #E4E4E7; border-bottom: 1px dashed #E4E4E7; }
+
+  .moves { margin: 14px 16px 0; padding: 12px 14px; background: #FAFAFA; border-radius: 12px;
+    display: flex; gap: 16px; }
+  .moves div { flex: 1; }
+  .moves .n { font-size: 15px; font-weight: 600; color: #0A0A0A; font-variant-numeric: tabular-nums; }
+  .moves .l { font-size: 11px; color: #6B6B6B; margin-top: 2px; line-height: 1.3; }
+
+  .note { padding: 12px 16px 0; font-size: 13px; line-height: 1.55; color: #6B6B6B; }
+  .note strong { color: #0A0A0A; font-weight: 600; }
+
+  .closing { margin-top: 40px; padding: 20px 16px 0; border-top: 1px solid #E4E4E7; }
+  .closing h2 {
+    font-family: "Inter Tight", Inter, sans-serif;
+    font-size: 16px; font-weight: 600; margin-bottom: 12px;
+  }
+  .closing .block { margin-bottom: 18px; }
+  .closing .block .h { font-size: 12px; font-weight: 600; color: #6B6B6B; letter-spacing: 0.02em;
+    margin-bottom: 6px; }
+  .closing ul { list-style: none; }
+  .closing li { font-size: 13.5px; line-height: 1.5; color: #3F3F46; padding: 6px 0 6px 18px;
+    position: relative; }
+  .closing li::before { content: "\2022"; position: absolute; left: 2px; color: #9CA3AF; }
+  .closing li b { color: #0A0A0A; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="lede">
+    <span class="eyebrow">WHY SOLEN COMPARISON</span>
+    <h1>Five ways to fix this page</h1>
+    <p>Right now the "Why Solen" page has three real problems. The headline is a hair too small
+       to count as the one big thing on the screen. There are too many different text sizes
+       fighting for attention right under it. And there is not a single real photo anywhere on
+       the page, no salons, no faces, nothing, just icons and boxes explaining features.</p>
+    <p>Below are five different fixes, from smallest to most ambitious. Every panel is your real
+       page, running live, not a drawing. Scroll down and compare them directly.</p>
+    <span class="opt-line"><b>A.</b> the smallest possible change, three lines of CSS, nothing else touched.</span>
+    <span class="opt-line"><b>B.</b> same idea as A, but pushes the headline to your house size and makes it the clear anchor.</span>
+    <span class="opt-line"><b>C.</b> leaves the type alone and instead pulls real salon cards up under the headline.</span>
+    <span class="opt-line"><b>D.</b> touches only how bold the text is, the Airbnb-style restraint move.</span>
+    <span class="opt-line"><b>E.</b> tries to do all of it at once: fixed type plus a real row of salons stitched in.</span>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ============================================================ -->
+  <!-- NOW: baseline, untouched -->
+  <!-- ============================================================ -->
+  <div class="panel">
+    <div class="cap">
+      <span class="tag baseline">TODAY</span>
+      <h2>Now</h2>
+      <p>What every visitor sees today. Nothing touched.</p>
+    </div>
+    <div class="device">
+      <div class="badges">
+        <span class="badge fail nums">27.3px headline, needs 28</span>
+        <span class="badge fail nums">7 sizes crowded</span>
+        <span class="badge fail nums">0% real photo</span>
+      </div>
+      <div class="frame" style="height: 640px;">
+        <iframe src="/de/warum-solen" scrolling="no" height="640" title="Why Solen as it is today"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- A: floor-fix-why-solen, smallest CSS change -->
+  <!-- ============================================================ -->
+  <div class="panel">
+    <div class="cap">
+      <span class="tag easy">SMALLEST CHANGE</span>
+      <h2>A. Smallest possible fix</h2>
+      <p>Three CSS rules. The headline gets a hair bigger, the line under it and three bullet
+         lines drop to sizes your page already uses elsewhere. Nothing moves, nothing is added.</p>
+    </div>
+    <div class="device">
+      <div class="badges">
+        <span class="badge pass nums">28.1px headline, passes</span>
+        <span class="badge pass nums">4 sizes in the tight cluster, passes</span>
+        <span class="badge fail nums">0% photo, still open</span>
+      </div>
+      <div class="frame" style="height: 640px;">
+        <iframe id="vA" src="/de/warum-solen" scrolling="no" height="640" title="Why Solen, variant A"></iframe>
+      </div>
+    </div>
+    <div class="moves">
+      <div><div class="n">27.3 &rarr; 28.1px</div><div class="l">the one number this option moves: the headline size</div></div>
+    </div>
+    <div class="note">Does not touch the photo problem or the gray background. Those need a
+      bigger call, named at the bottom of this page.</div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- B: b-hierarchy -->
+  <!-- ============================================================ -->
+  <div class="panel">
+    <div class="cap">
+      <span class="tag easy">HIERARCHY FIRST</span>
+      <h2>B. One clear anchor</h2>
+      <p>Same idea as A, pushed further: the headline goes to your house size (30px) and a lighter
+         weight, the same size and weight your liked salon page uses, so it reads as the one clear
+         biggest thing instead of a rounding-distance pass.</p>
+    </div>
+    <div class="device">
+      <div class="badges">
+        <span class="badge pass nums">30px headline, passes with margin</span>
+        <span class="badge pass nums">4 sizes in the tight cluster, passes</span>
+        <span class="badge fail nums">0% photo, still open</span>
+      </div>
+      <div class="frame" style="height: 640px;">
+        <iframe id="vB" src="/de/warum-solen" scrolling="no" height="640" title="Why Solen, variant B"></iframe>
+      </div>
+    </div>
+    <div class="moves">
+      <div><div class="n">27.3 &rarr; 30px</div><div class="l">headline size, matches the salon page you already like</div></div>
+      <div><div class="n">1.11 &rarr; 2.14x</div><div class="l">headline vs. body text, same ratio as that salon page</div></div>
+    </div>
+    <div class="note">Same gap as A on the photo problem and the gray background. This is a type
+      fix only, on purpose.</div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- C: content-forward -->
+  <!-- ============================================================ -->
+  <div class="panel">
+    <div class="cap">
+      <span class="tag decide">NEEDS YOUR CALL</span>
+      <h2>C. Real salons, pushed up and made bigger</h2>
+      <p>Leaves the type alone. Instead: the headline block gets less empty space around it, and
+         two real rows of your real Coiffeur Basel cards, real photos and real names, sit right
+         under it where the icon-only chat demo used to be first.</p>
+    </div>
+    <div class="device">
+      <div class="badges">
+        <span class="badge fail nums">27.3px headline, unchanged</span>
+        <span class="badge pass nums">41.1% real photo, passes</span>
+      </div>
+      <div class="stack">
+        <div class="strip" style="height: 260px;">
+          <iframe id="vC-hero" src="/de/warum-solen" scrolling="no" height="844" title="Why Solen, variant C, tightened hero"></iframe>
+        </div>
+        <div class="seam">your real card grid continues below, same real page it lives on today</div>
+        <div class="strip" style="height: 584px;">
+          <iframe id="vC-cards" src="/de/basel/coiffeur" scrolling="no" height="844" title="Real salon cards, pulled from your Coiffeur Basel page"></iframe>
+        </div>
+      </div>
+    </div>
+    <div class="moves">
+      <div><div class="n">0 &rarr; 41.1%</div><div class="l">real photo on screen, the biggest single move of the five options</div></div>
+      <div><div class="n">321 &rarr; 175px</div><div class="l">height of the empty space above the fold</div></div>
+    </div>
+    <div class="note"><strong>Why this needs your yes.</strong> The salons shown are your Coiffeur
+      Basel results because that's the only real page with cards ready to pull from. On the real
+      page this would need a decision about which salons show here, nearest to the visitor,
+      trending, or something else. It also pushes the chat/photo-quote explainer further down,
+      which is a real trade: proof there are real shops behind Solen, versus explaining what the
+      product does.</div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- D: airbnb-weight -->
+  <!-- ============================================================ -->
+  <div class="panel">
+    <div class="cap">
+      <span class="tag easy">EMPHASIS, THE AIRBNB WAY</span>
+      <h2>D. Less bold text</h2>
+      <p>Touches only how bold text is. Every piece of text that was heavier than normal (the
+         headline, the section titles, a status word, a badge count) drops one notch, from bold
+         to medium. Nothing resizes, nothing moves.</p>
+    </div>
+    <div class="device">
+      <div class="badges">
+        <span class="badge pass nums">25.0% bold, already under the 30% ceiling</span>
+        <span class="badge pass nums">0.0% bold after, further under</span>
+      </div>
+      <div class="frame" style="height: 640px;">
+        <iframe id="vD" src="/de/warum-solen" scrolling="no" height="640" title="Why Solen, variant D"></iframe>
+      </div>
+    </div>
+    <div class="moves">
+      <div><div class="n">25.0% &rarr; 0.0%</div><div class="l">share of visible text at bold weight</div></div>
+    </div>
+    <div class="note"><strong>The catch, found while building this.</strong> This page was already
+      under the 30% bold ceiling before any change (25.0%), unlike the barbershop page this same
+      move was built for. So this option genuinely improves the one thing it targets, but it does
+      not touch the headline size, the crowded sizes, or the missing photo, this page's three real
+      problems were never about boldness. Airbnb's own PDP measures about 3.1% at weight 600+
+      (_design-system/LOCKFILE.md, EMPHASIS BUDGET row), the calibration this move is named after.</div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- E: recompose -->
+  <!-- ============================================================ -->
+  <div class="panel">
+    <div class="cap">
+      <span class="tag decide">CLEARS THE MOST, NEEDS YOUR CALL</span>
+      <h2>E. Fix the type, then add a real row of salons</h2>
+      <p>Combines the type fix from A/B with a second, bigger move: your real "Top Coiffeur" row,
+         the one already live on your homepage today, pulled up and stitched directly under the
+         fixed headline.</p>
+    </div>
+    <div class="device">
+      <div class="badges">
+        <span class="badge pass nums">28.1px headline, passes</span>
+        <span class="badge fail nums">21.0% real photo, short of 33%</span>
+      </div>
+      <div class="stack">
+        <div class="strip" style="height: 260px;">
+          <iframe id="vE-hero" src="/de/warum-solen" scrolling="no" height="420" title="Why Solen, variant E, type-fixed hero"></iframe>
+        </div>
+        <div class="seam">your homepage's real "Top Coiffeur" row continues here, scrolled into place, nothing redrawn</div>
+        <div class="strip" style="height: 380px;">
+          <iframe id="vE-rail" src="/de" scrolling="no" height="424" title="Your real homepage, scrolled to the Top Coiffeur row"></iframe>
+        </div>
+      </div>
+    </div>
+    <div class="moves">
+      <div><div class="n">27.3 &rarr; 28.1px</div><div class="l">headline size, same fix as A</div></div>
+      <div><div class="n">0 &rarr; 21.0%</div><div class="l">real photo, best of the type-plus-content combo, still short of the 33% target</div></div>
+    </div>
+    <div class="note"><strong>Why this needs your yes.</strong> Adding a real browse row here
+      means this page starts doing double duty: explaining what Solen does AND letting you browse
+      salons, when today its whole job is the explanation. It's also not a full fix on its own,
+      one row of cards only gets the photo share to about a fifth of the screen, a taller row or a
+      second one would still be needed to fully clear the 33% target.</div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- CLOSING: his call vs. just matching the salon page -->
+  <!-- ============================================================ -->
+  <div class="closing">
+    <h2>What's your call, and what's just matching the page you already like</h2>
+
+    <div class="block">
+      <div class="h">JUST MATCHING THE SALON PAGE (CUTS &amp; CULTURE) YOU ALREADY APPROVED</div>
+      <ul>
+        <li>The headline size and weight in <b>B</b> and <b>E</b>, 30px at weight 500, is the exact
+          number already live on the salon page you like. Not a new opinion, just applying a
+          number you've already signed off on.</li>
+        <li>Trimming the crowded text sizes in <b>A</b>, <b>B</b>, and <b>E</b> is folding sizes
+          that were never real decisions (an unset 16px default, an unlocked 20px subtitle) into
+          sizes your product already locks elsewhere on this same screen.</li>
+        <li>Softening bold text in <b>D</b> follows the same "size and colour carry emphasis, not
+          weight" rule the salon page already passes at (this page happened to already be under
+          the ceiling too, so the improvement here is smaller than it was on other screens).</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <div class="h">YOURS TO DECIDE</div>
+      <ul>
+        <li><b>Whether this page shows real salons at all.</b> Options C and E both need real
+          content pulled onto a page whose whole job today is explaining the product, not
+          browsing it. That's a decision about what the page is FOR, not a style tweak.</li>
+        <li><b>Which salons show, if you say yes to C or E.</b> Neither option has a real answer
+          yet, both borrow from the nearest populated route (Coiffeur Basel, or the homepage's
+          own rail) rather than a real "what should show on Why Solen" query.</li>
+        <li><b>The gray background.</b> This page is the grayest screen measured anywhere in the
+          product, about three quarters of it is sunken gray across two stacked full-width
+          sections. None of the five options above touch it. It's a bigger call than anything
+          shown here and it's on the record, not decided.</li>
+        <li><b>Whether the photo target should even apply here.</b> Every other option except C
+          and E leaves the photo floor open on purpose because a type fix cannot add a photo. If
+          this page's job stays "explain the product," missing the 33% imagery floor may simply
+          be the right call for this specific screen.</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Panel A: the 3-rule minimal fix, verbatim from floor-fix-why-solen/index.html.
+  var vA = document.getElementById("vA");
+  vA.addEventListener("load", function () {
+    try {
+      var doc = vA.contentDocument;
+      if (!doc) { return; }
+      var style = doc.createElement("style");
+      style.textContent =
+        "h1 { font-size: clamp(28px, 7vw, 30px) !important; }" +
+        "section:first-of-type p { font-size: clamp(18px, 2vw, 20px) !important; }" +
+        "p.flex.items-start.gap-2 { font-size: 14px !important; }";
+      doc.head.appendChild(style);
+    } catch (err) {
+      console.error("[compare-why-solen] could not restyle panel A:", err);
+    }
+  });
+
+  // Panel B: the 30px / weight-500 house-anchor fix, verbatim from
+  // fix-why-solen--b-hierarchy/index.html.
+  var vB = document.getElementById("vB");
+  vB.addEventListener("load", function () {
+    try {
+      var doc = vB.contentDocument;
+      if (!doc) { return; }
+      var style = doc.createElement("style");
+      style.textContent =
+        "h1 { font-size: 30px !important; font-weight: 500 !important; line-height: 1.15 !important; letter-spacing: -0.02em !important; }" +
+        "section:first-of-type p { font-size: clamp(18px, 2vw, 20px) !important; }" +
+        "p.flex.items-start.gap-2 { font-size: 14px !important; }";
+      doc.head.appendChild(style);
+    } catch (err) {
+      console.error("[compare-why-solen] could not restyle panel B:", err);
+    }
+  });
+
+  // Panel C top strip: hero padding tightened, verbatim mechanism from
+  // fix-why-solen--c-content-forward/index.html.
+  var vCHero = document.getElementById("vC-hero");
+  vCHero.addEventListener("load", function () {
+    try {
+      var doc = vCHero.contentDocument;
+      if (!doc) { return; }
+      var h1 = doc.querySelector("h1");
+      var section = h1 ? h1.closest("section") : null;
+      if (!section) { return; }
+      var style = doc.createElement("style");
+      style.textContent =
+        "section.herotight-target{padding-top:20px !important;padding-bottom:16px !important}" +
+        "section.herotight-target p{margin-top:10px !important}" +
+        "section.herotight-target button{margin-top:16px !important}";
+      doc.head.appendChild(style);
+      section.classList.add("herotight-target");
+    } catch (err) {
+      console.error("[compare-why-solen] could not tighten panel C hero:", err);
+    }
+  });
+
+  // Panel C bottom strip: crop the real Coiffeur Basel page to its own "Top Coiffeur" heading via
+  // a CSS offset, the same fallback fix-why-solen--c-content-forward/index.html landed on after
+  // confirming scrollTo does not work on that route.
+  var vCCards = document.getElementById("vC-cards");
+  vCCards.addEventListener("load", function () {
+    try {
+      vCCards.style.marginTop = "-171px";
+    } catch (err) {
+      console.error("[compare-why-solen] could not crop panel C cards:", err);
+    }
+  });
+
+  // Panel D: weight-600+ demoted to weight-500 on every leaf-text element, verbatim mechanism
+  // from fix-why-solen--d-airbnb-weight/index.html.
+  var vD = document.getElementById("vD");
+  vD.addEventListener("load", function () {
+    try {
+      var doc = vD.contentDocument;
+      var win = vD.contentWindow;
+      if (!doc || !win) { return; }
+      setTimeout(function () {
+        function isLeafText(el) {
+          for (var i = 0; i < el.childNodes.length; i++) {
+            var n = el.childNodes[i];
+            if (n.nodeType === 3 && n.textContent.trim().length > 0) return true;
+          }
+          return false;
+        }
+        var all = doc.querySelectorAll("body *");
+        all.forEach(function (el) {
+          if (!isLeafText(el)) return;
+          var cs = win.getComputedStyle(el);
+          var w = parseInt(cs.fontWeight, 10) || 400;
+          if (w >= 600) {
+            el.style.setProperty("font-weight", "500", "important");
+          }
+        });
+      }, 400);
+    } catch (err) {
+      console.error("[compare-why-solen] could not demote weight in panel D:", err);
+    }
+  });
+
+  // Panel E top strip: the same type fix as panel A/B, verbatim from
+  // fix-why-solen--e-recompose/index.html's own panel 2/3 hero treatment.
+  var vEHero = document.getElementById("vE-hero");
+  vEHero.addEventListener("load", function () {
+    try {
+      var doc = vEHero.contentDocument;
+      if (!doc) { return; }
+      var style = doc.createElement("style");
+      style.textContent =
+        "h1 { font-size: clamp(28px, 7vw, 30px) !important; }" +
+        "section:first-of-type p { font-size: clamp(18px, 2vw, 20px) !important; }" +
+        "p.flex.items-start.gap-2 { font-size: 14px !important; }";
+      doc.head.appendChild(style);
+    } catch (err) {
+      console.error("[compare-why-solen] could not restyle panel E hero:", err);
+    }
+  });
+
+  // Panel E bottom strip: scroll the real homepage to its own real "Top Coiffeur" rail, finding
+  // the heading by its own text and re-asserting the scroll position on a short poll, the same
+  // fix fix-why-solen--e-recompose/index.html landed on after a one-time scrollTo drifted as the
+  // homepage's own images finished loading and reflowed the page.
+  var vERail = document.getElementById("vE-rail");
+  vERail.addEventListener("load", function () {
+    try {
+      var win = vERail.contentWindow;
+      var doc = vERail.contentDocument;
+      if (!win || !doc) { return; }
+      function findRailTop() {
+        var heads = doc.querySelectorAll("h2");
+        for (var i = 0; i < heads.length; i++) {
+          if (/coiffeur/i.test(heads[i].textContent || "")) {
+            return heads[i].getBoundingClientRect().top + win.scrollY - 20;
+          }
+        }
+        return 1029;
+      }
+      var tries = 0;
+      (function tick() {
+        try {
+          win.scrollTo(0, findRailTop());
+        } catch (err) {
+          console.error("[compare-why-solen] could not scroll panel E rail:", err);
+        }
+        tries++;
+        if (tries < 10) { setTimeout(tick, 300); }
+      })();
+    } catch (err) {
+      console.error("[compare-why-solen] could not scroll panel E rail:", err);
+    }
+  });
+</script>
+</body>
+</html>

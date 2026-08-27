@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Home page: weight the Airbnb way</title>
+<!-- Base: capture -->
+<!-- Scale: full-page -->
+<!-- Scale-note: the task brief for this mockup asked for "Scale: section" (the 2026-08-15
+     CLAUDE.md amendment on mockup scope, matching the scope of what is being decided), but
+     the armed mockup-real-base-gate.py only accepts the literal values "full-page" or
+     "component". Neither is exactly right: the floor being tested (F7a weight share) is a
+     whole-viewport measurement by definition, so an isolated single element could not show
+     the percentage changing, but this is not a whole-PAGE structural decision either, it is
+     one screen's worth of a single treatment. "full-page" is used because it is the value
+     that does not truncate what the gate requires to see (the full 390x844 first viewport),
+     and the header + note below make the actual scope explicit. Named per rule 18 (surface
+     contradictions) rather than silently picking one without saying so. -->
+<!-- Reference-checked: _design-system/LOCKFILE.md (line ~2044, EMPHASIS BUDGET row: "Airbnb's
+     PDP measures 3.1% (7 of 388), so the honest target is far below 30 rather than just under
+     it"). This is the file the owner's own dated 2026-08-12 decision ("airbnb te is source of
+     truth") already ties the Airbnb weight-share number to; the 3.1% figure cited in this
+     mockup's Diagnosis lines is quoted from there, not re-derived from memory. -->
+<!--
+  Grounded-in: app/[locale]/page.tsx (real /de route, both panels are live iframes of it).
+  Depicts:
+    BEFORE panel -> app/[locale]/page.tsx (real /de route, live iframe, untouched).
+    AFTER panel -> app/[locale]/page.tsx (same real /de route, live iframe) with ONE CSS
+      rule injected after load: every element carrying Tailwind's .font-semibold utility
+      (font-weight:600) is forced to font-weight:500. Nothing else changes. This is the arm
+      named "emphasis the Airbnb way": demote weight, let size and colour carry hierarchy.
+
+  Diagnosis: F7a weight share | measured 37.14% (13/35 leaf-text elements at weight>=600) | violates LOCKFILE EMPHASIS BUDGET / CLAUDE.md FLOORS LAW 7a ceiling | target 30% (house reference Airbnb PDP 3.1%)
+  Diagnosis: F7a weight share after the fix | measured 0.00% (0/35, re-run same script post-injection) | violates nothing, PASS | target 30%
+  Diagnosis: F6 display anchor (untouched by this mechanism) | measured 18px ("Top auf Solen") | violates CLAUDE.md NEVER-AGAIN floor 6 / LOCKFILE EMPHASIS BUDGET | target 28px
+  Diagnosis: F7b anchor ratio (untouched by this mechanism) | measured 1.5x (18px/12px median) | violates LOCKFILE EMPHASIS BUDGET anchor-ratio row | target 1.8x
+  Diagnosis: F2 imagery (untouched by this mechanism) | measured 28.56% of the first viewport | violates FLOORS LAW 2 / LOCKFILE imagery row | target 33%
+
+  Diagnosis detail (context, not re-parsed by the gate, the five lines above are what it
+  checks): the F7a "before" number was measured live on http://localhost:3457/de at 390x844
+  by running scripts/check-geometry.mjs --floors-only /de directly against the running dev
+  server (not eyeballed): "F7a weight share | 37.14% (13/35) | ceiling <= 30% | FAIL". A
+  scratch Playwright script reproducing the same leaf definition (own text node, visible, at
+  least partly inside the first viewport) identified exactly which 13 elements they are: the
+  two section titles ("Top auf Solen", "Top Coiffeur" H2s, 18px), two salon-card names
+  ("Cuts & Culture", "Haarsalon Margot", 14px), one price ("15 CHF", 12px), six rating values
+  ("4.6" / "4.8" / "4.3" / "4.4" / "4.5" / "4.5", 12px, each a <b class="font-semibold">), one
+  city label ("Basel", 12px, inherited from a font-semibold ancestor), and the bottom-nav
+  "Suchen" label (12px). All 13 carry Tailwind's .font-semibold utility, nothing else on the
+  visible screen sits at weight 600 or above. The "after" number was re-measured with the
+  same scratch script, on the same live DOM, after injecting
+  `.font-semibold{font-weight:500 !important}`, matching the house reference's approach
+  (weight demoted, size/colour left to carry the hierarchy) rather than its exact 3.1% figure.
+
+  Exists-check: `npm run exists "font-semibold weight demote"`, `npm run exists "emphasis
+    budget weight"`, and `npm run exists "fix-home--d-airbnb-weight"` all ran this turn (the
+    last one re-run four times, immediately before each write attempt), all returned 0 hits.
+    This mockup directory is genuinely new. The .font-semibold utility itself is Tailwind's
+    own, used sitewide, not a Solen-authored component, so there is nothing to extend, only a
+    stylesheet override to test.
+
+  Treatment-only: ONE injected stylesheet rule on the AFTER iframe only,
+    `.font-semibold{font-weight:500 !important}`. No element is added, removed, resized, or
+    recoloured. No DOM structure, copy, spacing, or image changes. No hero photo added (the
+    owner has rejected a baked-in hero photo three times: "no other company has just image
+    hard coded baked into a random area").
+
+  Honesty notes:
+    - This mechanism can only ever move F7a. It cannot move F2, F6, or F7b, because none of
+      those three floors are about weight. Reporting this plainly rather than shipping a
+      panel that looks different but leaves the other three failures exactly where they were.
+    - The "Basel" and rating-value elements inherit font-weight:600 from a .font-semibold
+      ancestor rather than carrying the class directly on every render; the injected rule
+      still reaches them because font-weight is CSS-inherited, confirmed by the 0.00%
+      re-measurement, not assumed.
+    - This is a global utility-class override for the purpose of this test panel. Shipping it
+      for real would need scoping (a `.home-emphasis-500` wrapper class or similar), since
+      .font-semibold is used across the whole product, not just this screen; that scoping
+      question is not this mockup's decision to make silently, so it is named here rather than
+      solved.
+-->
+<style>
+  :root{
+    --ink:#0A0A0A; --ink2:#52525B; --line:#E4E4E7; --sunken:#F4F4F5;
+    --accent:#276EF1;
+    --font:'Inter Tight',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#fff}
+  body{
+    font-family:var(--font); color:var(--ink); -webkit-font-smoothing:antialiased;
+    -webkit-text-size-adjust:100%; text-size-adjust:100%;
+    max-width:402px; margin:0 auto; padding:20px 16px calc(28px + env(safe-area-inset-bottom));
+  }
+  h1{font-size:19px; font-weight:600; letter-spacing:-0.01em; line-height:1.3}
+  .sub{font-size:13px; color:var(--ink2); margin-top:6px; line-height:1.5}
+  .row{display:flex; align-items:center; justify-content:space-between; margin-top:22px; margin-bottom:8px}
+  .tag{font-size:12px; font-weight:600; color:var(--ink2)}
+  .tag.after{color:var(--ink)}
+  .badge{font-size:11px; font-weight:600; color:var(--ink2); background:var(--sunken); border-radius:999px; padding:3px 9px}
+  .badge.ok{color:#16A34A; background:#F0FDF4}
+  .frame{border:1px solid var(--line); border-radius:16px; overflow:hidden; background:#fff}
+  iframe{display:block; width:100%; height:844px; border:0}
+  .stat-row{display:flex; gap:8px; margin-top:10px}
+  .stat{flex:1; background:var(--sunken); border-radius:12px; padding:10px 12px}
+  .stat .num{font-size:20px; font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums}
+  .stat .num.good{color:#16A34A}
+  .stat .lbl{font-size:11px; color:var(--ink2); margin-top:2px}
+  .note{margin-top:24px; background:var(--sunken); border-radius:16px; padding:16px; font-size:13px; line-height:1.55; color:var(--ink2)}
+  .note b{color:var(--ink); font-weight:600}
+  .note .call{margin-top:12px; padding-top:12px; border-top:1px solid var(--line)}
+  .foot{margin-top:20px; font-size:11px; color:var(--ink2); line-height:1.5; border-top:1px solid var(--line); padding-top:12px}
+</style>
+</head>
+<body>
+  <h1>Making text weight do less work on the home page</h1>
+  <p class="sub">Same page, twice. In the second one, every bold-ish text on the screen (section titles, card names, prices, star ratings) gets a little lighter. Nothing moves, nothing resizes, nothing changes colour. Scroll inside each box to compare.</p>
+
+  <div class="stat-row">
+    <div class="stat"><div class="num">37.14%</div><div class="lbl">text at heavy weight, before</div></div>
+    <div class="stat"><div class="num good">0.00%</div><div class="lbl">text at heavy weight, after</div></div>
+  </div>
+
+  <div class="row"><span class="tag">BEFORE (live, untouched)</span></div>
+  <div class="frame"><iframe id="beforeFrame" src="/de" title="real home page, before"></iframe></div>
+
+  <div class="row"><span class="tag after">AFTER (bold text lightened)</span><span class="badge" id="afterStatus">loading</span></div>
+  <div class="frame"><iframe id="afterFrame" src="/de" title="real home page, after (weight demoted)"></iframe></div>
+
+  <div class="note">
+    <b>What changed:</b> right now, more than a third of the text on the home page's first screen is bold. When most things are bold, bold stops meaning anything, it just reads busy. This test makes that same text a touch lighter (medium instead of semibold) everywhere on the screen: the "Top auf Solen" and "Top Coiffeur" titles, the salon names, the prices, and the star ratings. The size of everything stays exactly the same, so you can still tell what is a title and what is a price, that job just moves from weight to size and position, which is already how the layout is built.
+    <div class="call">
+      <b>What this does not fix:</b> two other things are still off on this screen and this change cannot touch them, because they are about SIZE, not weight: the biggest text on the page is still only 18px (we want at least 28px so there is a real headline-sized moment), and the size difference between the biggest and smallest text is still smaller than it should be. Those need a separate fix. This test also does not add any photo, the page's photo coverage is unchanged.
+    </div>
+  </div>
+
+  <div class="foot">Both panels are the same live route, not a redraw. The lightened weight is applied here as a test overlay on Tailwind's shared "semibold" utility, which is used across the whole product, so shipping it for real would need it scoped to just the home page first.</div>
+
+<script>
+  function applyChange(doc){
+    if (doc.getElementById('weight-500-style')) return 1;
+    if (!doc.querySelector('.font-semibold')) return 0;
+    var st = doc.createElement('style');
+    st.id = 'weight-500-style';
+    st.textContent = '.font-semibold{font-weight:500 !important}';
+    doc.head.appendChild(st);
+    return 1;
+  }
+  var tries = 0;
+  var MAX_POLLS = 150; // poll cap, never a displayed count
+  var iv = setInterval(function () {
+    tries++;
+    var f = document.getElementById('afterFrame');
+    var status = document.getElementById('afterStatus');
+    try {
+      var doc = f.contentDocument;
+      if (doc && doc.readyState === 'complete' && applyChange(doc) > 0) {
+        clearInterval(iv);
+        if (status) { status.textContent = 'applied'; status.className = 'badge ok'; }
+      }
+    } catch (e) {}
+    if (tries > MAX_POLLS) {
+      clearInterval(iv);
+      if (status && status.textContent === 'loading') { status.textContent = 'could not confirm'; }
+    }
+  }, 200);
+</script>
+</body>
+</html>
