@@ -1729,9 +1729,22 @@ async function main() {
     for (const route of routes) {
       const entry = floorsByRoute.get(route);
       if (!entry || !entry.floors) {
-        if (entry && entry.error) {
-          console.error(`[check-geometry] GATE: ${route} could not be measured (${entry.error}) - skipped, not counted as a floor failure.`);
-        }
+        // A ROUTE THAT COULD NOT BE MEASURED IS A GATE FAILURE, not a skip (2026-08-27).
+        // It used to `continue` here, and that made the gate silently meaningless: the CI
+        // `floors:` job served the site on 3002 and ran this with BASE_URL 3001, so every
+        // route's page.goto threw, every route landed in this branch, gateFailed stayed
+        // false, and the gate printed "PASSED" having loaded zero pages. It did that from
+        // the commit that wired it (3f3d09a2a, 2026-07-28) until the port was fixed today.
+        // Skipping is the wrong default for a gate: an unreachable page is indistinguishable
+        // from a page with no violations, and the safe reading of that ambiguity is FAIL.
+        gateFailed = true;
+        console.error(
+          `[check-geometry] GATE FAIL: ${route} could not be measured` +
+            (entry && entry.error ? ` (${entry.error})` : " (no result recorded)") +
+            ". An unmeasurable route fails the gate rather than being skipped, because a page " +
+            "that never loaded looks exactly like a page with no violations. Check that BASE_URL " +
+            "points at a server that is actually serving, then re-run.",
+        );
         continue;
       }
       for (const row of buildFloorsRows(entry.floors)) {
