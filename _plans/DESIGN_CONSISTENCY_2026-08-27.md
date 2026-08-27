@@ -195,8 +195,61 @@ the direction of the screen he already likes.
   builder would have DELETED the bar on desktop, because this page carries no desktop rules at all,
   and the pinned bar sitting 6px higher than at rest is native sticky behaviour that the untouched
   `/de/coiffeur` shows identically at 8px, not something this change introduced.
-  STILL OPEN: the other two. The sweep still returns four vertical positions and two heights, and
-  which one wins is one word from him.
+  STILL OPEN: the other two. The sweep still returns four vertical positions and two heights.
+  THE FORK IS CLOSED, AND NOT BY ME. I wrote above that which height wins is one word from him.
+  It is not. He answered it three weeks ago and the answer never reached half the site. Traced
+  2026-08-27 by four readers plus my own reading of each file, and every step below is a quote
+  from the code or a commit, not a summary of one:
+    - `SearchTemplate.tsx:1329` records him picking variant C on 2026-08-10 off `/dev/search-bar`
+      with one letter, "c". Variant C is 54 tall, measured off Airbnb at 390 wide. That is where
+      the 54 on the category routes comes from.
+    - Commit `7bc5c23ee`, 2026-08-11, the next day: "Search bar 59 to 64 tall on his call. Their
+      proportion gave 59; he asked for more, so it steps to 64 on the same 4pt scale."
+    - `HomeSearchPill.tsx:230-236`, 2026-08-12, the day after that: he saw the bar shrink on
+      scroll and killed it. "One height, 64, whatever the scroll position."
+  Latest dated owner decision wins, so 64 is settled and 54 is superseded. And `SearchTemplate`'s
+  own comment at :1331 already knew what would happen: the two pills "are the SAME control on two
+  surfaces and changing only the one in front of me is the half-a-sweep failure this project keeps
+  naming". The home one moved to 64 on 08-11. Its sibling never followed. Plan A is therefore not
+  a preference to be confirmed, it is a decision to be finished.
+  WHERE EACH NUMBER ACTUALLY LIVES, so the fix is four small edits and not a rebuild:
+    - `/de` y 12 = `HomeSearchPill.tsx:181` `pt-3`. Height 64 = `HomeSearchPill.tsx:236` `h-[64px]`.
+    - the four category routes y 4 = `SearchTemplate.tsx:906`,
+      `bandPaddingTop = useTransform(scrollProgress, [0, 1], [4, 12])`, which is 4 at rest and
+      already animates to 12 once he scrolls. Height 54 = `SearchTemplate.tsx:1334` `h-[54px]`.
+    - `/de/inspo` y 18 = `inspo/page.tsx:468` `pt-1.5` (6px) plus the shared pill's own `pt-3`.
+      It already imports the real component, so its height is already 64.
+    - `/de/basel/coiffeur` y 88 IS NOT A SEARCH BAR PROBLEM. Its band sits at the same 4 as its
+      siblings. The 84 above it is the global header, which that one route does not fold away.
+  THE 84 IS ONE REGEX, and this is the finding that explains the whole complaint rather than one
+  bar. `Header.tsx:409` matches `^/[a-z]{2}/([^/?#]+)/?$`, which is EXACTLY TWO segments, so
+  `/de/coiffeur` matches and `/de/basel/coiffeur` does not. That drives `showCategoryChrome`
+  (`Header.tsx:446`), which is what collapses the global header to nothing on mobile
+  (`:630` `max-md:!static`, `:662` `max-md:!py-0`). Measured live at 390 wide: header height 0 on
+  `/de`, `/de/coiffeur` and `/de/inspo`, and 84 on `/de/basel/coiffeur`.
+  THREE FILES EACH ANSWER "IS THIS A CATEGORY PAGE" SEPARATELY, and they do not agree:
+    - `Header.tsx:409`, the two-segment regex above.
+    - `CategoryPillRow.tsx:122`, a byte-identical copy, its own comment saying "Reproduced 1:1
+      from Header.tsx's own derivation (not invented)".
+    - `Breadcrumb.tsx:51`, a DIFFERENT strategy: last path segment against a `CATEGORY_SLUGS`
+      list, which DOES match `/de/basel/coiffeur`.
+  So on the city page the breadcrumb thinks it is a category route and the header thinks it is
+  not. Widening only Header's regex would fix the bar and leave two of the three copies behind,
+  so the edit has to name what else `showCategoryChrome` gates before it is made.
+  NOT A SEARCH BAR, FOUND ON THE WAY, PARKED WITH ITS REASON: the city page builds a breadcrumb
+  chain at `[city]/[category]/page.tsx:222` and passes it to `SearchTemplate`, which declares the
+  prop at `:137`, destructures it at `:429`, and renders it nowhere in 2546 lines.
+  `app/[locale]/search/page.tsx:49` passes one too. Measured live at 1280x900 on
+  `/de/basel/coiffeur`: two nav landmarks, zero breadcrumbs. WHY, per the missing-things
+  protocol, and it is the half-landed shape: `Breadcrumb.tsx:51-53` was made to return null on
+  category slugs for a real reason its comment gives, that on the bare `/de/coiffeur` routes the
+  global bar "was stacking a SECOND, redundant back button right under the header home
+  (owner-flagged)". The exclusion tests the LAST segment, so it also swallowed
+  `/{city}/{category}`, where nothing took over. The removal landed and the replacement did not.
+  CLAUDE.md's design contract states the opposite as settled: "the global `Breadcrumb` is excluded
+  on `/{city}/{category}` (SearchTemplate owns it)". The first half is true. The second half has
+  never been true. Parked rather than fixed here because adding a visible trail to a customer page
+  is a visual change and mockup-first binds.
 
 - [ ] **S3. Back arrow becomes one rule.** Standard is the 44x44 at (16,20) that seven pages already
   use. The salon page KEEPS its see-through 40x40, as a named variant, because a solid white circle
