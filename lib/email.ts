@@ -6,7 +6,12 @@
 import { getServerEnv } from "@/lib/env";
 import { EMAIL_COLORS } from "@/lib/email-colors";
 import { buildBookingIcs } from "@/lib/ics";
-import { unsubscribeToken } from "@/lib/unsubscribe-token";
+// unsubscribeToken (lib/unsubscribe-token.ts) is NOT imported here on purpose: it
+// statically imports node's "crypto" module, which the edge bundler cannot resolve,
+// and this file is transitively pulled into 75+ edge routes via lib/ratelimit.ts ->
+// lib/alert-admin.ts -> sendEmail(). The one template that needs it,
+// salonOutreachInvitation, lives in lib/email-outreach.ts instead so this file stays
+// edge-safe. Do not re-add this import.
 
 export type EmailLocale = "de" | "en" | "fr" | "it";
 
@@ -22,7 +27,7 @@ export const EMAIL_FONT_STACK =
   "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif";
 
 /** Escape the few chars that would break out of an HTML text context. */
-function escapeHtml(s: string): string {
+export function escapeHtml(s: string): string {
   return s
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
@@ -532,33 +537,9 @@ export function adminNewSalonNotification(
   };
 }
 
-export function salonOutreachInvitation(
-  to: string,
-  vars: { salonName: string; claimUrl: string }
-): EmailPayload {
-  return {
-    to,
-    subject: `${vars.salonName} ist jetzt auf solen.ch gelistet — kostenlos Buchungen aktivieren`,
-    html: `
-      <p>Guten Tag,</p>
-      <p>Ihr Salon <strong>${escapeHtml(vars.salonName)}</strong> ist ab sofort auf <a href="https://solen.ch">solen.ch</a> gelistet — dem führenden Beauty-Buchungsportal der Region Basel.</p>
-      <p>Kunden können Ihren Salon bereits finden und Ihre Kontaktdaten einsehen. Wenn Sie Online-Buchungen aktivieren möchten, können Sie Ihren Salon kostenlos beanspruchen:</p>
-      <p><a href="${vars.claimUrl}" style="display:inline-block;padding:12px 24px;background:${EMAIL_COLORS.ink};color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Salon jetzt beanspruchen →</a></p>
-      <p>Vorteile:</p>
-      <ul>
-        <li>Online-Buchungen 24/7 entgegennehmen</li>
-        <li>Direktnachrichten von Kunden erhalten</li>
-        <li>Kostenlos — keine Grundgebühr</li>
-      </ul>
-      <p>Bei Fragen: <a href="mailto:support@solen.ch">support@solen.ch</a></p>
-      <p style="font-size:11px;color:${EMAIL_COLORS.ink2};margin-top:32px">
-        solen.ch · Booking platform Basel ·
-        <a href="https://solen.ch/unsubscribe?email=${encodeURIComponent(to)}&t=${unsubscribeToken(to)}" style="color:${EMAIL_COLORS.ink2}">Abmelden</a>
-        · Diese E-Mail wurde an ${to} gesendet, da Ihr Salon öffentlich gelistet ist (nDSG Art. 31).
-      </p>
-    `,
-  };
-}
+// salonOutreachInvitation moved to lib/email-outreach.ts (see the note above the
+// import block at the top of this file): it is the one template that needs
+// unsubscribeToken, and unsubscribeToken statically imports node's "crypto".
 
 export function newMessageNotification(
   to: string,

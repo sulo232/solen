@@ -19,6 +19,7 @@
 
 import type { EmailLocale, EmailPayload } from "@/lib/email";
 import * as E from "@/lib/email";
+import { salonOutreachInvitation } from "@/lib/email-outreach";
 import * as Audit from "@/lib/email-templates/audit-notifications";
 import * as BookingNote from "@/lib/email-templates/booking-notifications";
 import * as Onboarding from "@/lib/email-templates/salon-onboarding";
@@ -572,7 +573,7 @@ export const EMAIL_PREVIEWS: EmailPreviewEntry[] = [
     group: "Lifecycle and marketing",
     audience: "salon",
     // German-only by design: cold outreach to Swiss salons, no locale parameter exists.
-    build: () => E.salonOutreachInvitation(TO, { salonName: S.salon, claimUrl: S.url }),
+    build: () => salonOutreachInvitation(TO, { salonName: S.salon, claimUrl: S.url }),
   },
   {
     id: "directory-claim-code",
