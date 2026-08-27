@@ -22,7 +22,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Spinner from "@/components-legacy/ui/Spinner";
 import {
-  ArrowLeft,
+  ChevronLeft,
   X,
   ArrowRight,
   Check,
@@ -591,9 +591,9 @@ function Shell({
             type="button"
             onClick={onBack}
             aria-label={t("back")}
-            className="flex h-9 w-9 items-center justify-center rounded-pill border border-s-border bg-white text-s-ink"
+            className="flex h-11 w-11 items-center justify-center rounded-pill border border-s-border bg-white text-s-ink"
           >
-            <ArrowLeft size={18} strokeWidth={1.9} aria-hidden />
+            <ChevronLeft size={18} strokeWidth={1.9} aria-hidden />
           </button>
         )}
         {title && (

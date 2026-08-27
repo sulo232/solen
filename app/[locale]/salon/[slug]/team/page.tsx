@@ -32,7 +32,7 @@ export const dynamic = "force-dynamic";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { ArrowLeft, Shuffle, Star } from "lucide-react";
+import { ChevronLeft, Shuffle, Star } from "lucide-react";
 import { loadSalonDetailWithStatus } from "@/lib/salon-detail";
 import type { StaffMember } from "@/app/[locale]/_components/salon/_shared";
 import { MetaDot } from "@/app/[locale]/_components/salon/MetaDot";
@@ -80,7 +80,7 @@ export default async function SalonTeamPage({
           aria-label={tBack("back")}
           className="grid h-11 w-11 place-items-center rounded-full border border-s-border bg-white transition-[colors,transform] hover:bg-s-bg-sunken active:scale-[0.94] active:duration-[80ms] active:ease-glide"
         >
-          <ArrowLeft size={20} strokeWidth={2.2} aria-hidden className="text-s-ink" />
+          <ChevronLeft size={20} strokeWidth={2.2} aria-hidden className="text-s-ink" />
         </Link>
 
         <h1 className="mt-5 font-display text-[28px] font-semibold tracking-[-0.02em] text-s-ink">

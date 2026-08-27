@@ -3,7 +3,7 @@
 import * as React from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Share } from "lucide-react";
+import { ChevronLeft, Share } from "lucide-react";
 import { HeartButton } from "../homepage/HeartButton";
 import { TAB_SECTIONS, type TabKey, type SalonDetail } from "./_shared";
 import { cn } from "@/lib/utils";
@@ -183,9 +183,9 @@ export function SalonStickyTabNav({
             type="button"
             aria-label={tBack("back")}
             onClick={() => router.back()}
-            className="-ml-1 grid h-9 w-9 shrink-0 place-items-center rounded-full text-s-ink transition-transform active:scale-95 active:duration-[80ms] active:ease-glide"
+            className="-ml-1 grid h-11 w-11 shrink-0 place-items-center rounded-full text-s-ink transition-transform active:scale-95 active:duration-[80ms] active:ease-glide"
           >
-            <ArrowLeft size={20} strokeWidth={2.2} aria-hidden />
+            <ChevronLeft size={20} strokeWidth={2.2} aria-hidden />
           </button>
           {/* mockup-ok: RANGE LAW A1/A3 (2026-07-25), owner-approved via /dev/flatness
               ("go apply evrth"). 16/600 -> 14/500: this is a secondary echo of the salon

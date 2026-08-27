@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import MasonryGrid from "@/components-legacy/discovery/MasonryGrid";
 import ItemCard from "@/components-legacy/discovery/ItemCard";
 import VideoCard from "@/components-legacy/discovery/VideoCard";
@@ -66,9 +66,9 @@ export default function SavedPage() {
         <button
           onClick={() => router.push(`/${locale}/inspo`)}
           aria-label={tBack("back")}
-          className="grid h-10 w-10 place-items-center rounded-full border border-s-border text-s-ink transition-transform duration-150 active:scale-95"
+          className="grid h-11 w-11 place-items-center rounded-full border border-s-border text-s-ink transition-transform duration-150 active:scale-95"
         >
-          <ArrowLeft size={18} strokeWidth={1.9} />
+          <ChevronLeft size={18} strokeWidth={1.9} />
         </button>
         <h1 className="font-heading text-[22px] font-bold tracking-[-0.02em] text-s-ink">Gespeichert</h1>
       </div>

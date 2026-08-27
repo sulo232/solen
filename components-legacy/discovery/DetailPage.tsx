@@ -4,7 +4,7 @@ import { useState, useEffect, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, Heart, CalendarDays, Star, ChevronDown, Play, X } from "lucide-react";
+import { ChevronLeft, Heart, CalendarDays, Star, ChevronDown, Play, X } from "lucide-react";
 import type { DiscoveryItem } from "@/lib/types";
 import ItemCard from "./ItemCard";
 import VideoCard from "./VideoCard";
@@ -258,7 +258,7 @@ export default function DetailPage({ item, locale, isAuthenticated, salons, salo
             style={FROST_GLASS}
             className="grid h-11 w-11 place-items-center rounded-full text-s-ink transition-transform duration-150 active:scale-95"
           >
-            <ArrowLeft size={18} strokeWidth={1.9} />
+            <ChevronLeft size={18} strokeWidth={1.9} />
           </button>
           <button
             type="button"

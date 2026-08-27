@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { Share, Star, X, ArrowLeft, Instagram, ChevronLeft, ChevronRight, Check } from "lucide-react";
+import { Share, Star, X, Instagram, ChevronLeft, ChevronRight, Check } from "lucide-react";
 import { Avatar, RatingStars, SeeAllButton } from "@/app/[locale]/_components/primitives";
 import { formatReviewDate } from "@/app/[locale]/_components/salon/_shared";
 import Spinner from "@/components-legacy/ui/Spinner";
@@ -217,8 +217,8 @@ export default function StaffProfilePage({
             <X size={20} strokeWidth={2.2} className="text-s-ink" />
           </button>
         ) : (
-          <button type="button" onClick={handleBack} aria-label={t("back")} className="grid h-9 w-9 shrink-0 place-items-center rounded-full hover:bg-s-bg-sunken">
-            <ArrowLeft size={20} strokeWidth={2.2} className="text-s-ink" />
+          <button type="button" onClick={handleBack} aria-label={t("back")} className="grid h-11 w-11 shrink-0 place-items-center rounded-full hover:bg-s-bg-sunken">{/* content-image-ok: page back nav icon button, not a photo/avatar fallback slot */}
+            <ChevronLeft size={20} strokeWidth={2.2} className="text-s-ink" />
           </button>
         )}
         <div className={`flex min-w-0 items-center gap-2 transition-opacity duration-200 ${condensed ? "opacity-100" : "opacity-0"}`}>

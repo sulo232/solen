@@ -31,7 +31,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import {
-  ArrowLeft,
+  ChevronLeft,
   Check,
   X,
   Clock,
@@ -286,9 +286,9 @@ function Frame({
         <Link
           href={backHref}
           aria-label={t("back")}
-          className="flex h-[36px] w-[36px] flex-shrink-0 items-center justify-center rounded-pill border border-s-border bg-white text-s-ink"
+          className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-pill border border-s-border bg-white text-s-ink"
         >
-          <ArrowLeft size={18} strokeWidth={1.9} aria-hidden />
+          <ChevronLeft size={18} strokeWidth={1.9} aria-hidden />
         </Link>
         <div className="font-heading text-[16px] font-semibold tracking-[-0.01em]">
           {isGuest ? t("caseTitleGuest") : t("caseTitle")}

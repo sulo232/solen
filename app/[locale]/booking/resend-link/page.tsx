@@ -18,7 +18,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import {
-  ArrowLeft,
   ChevronLeft,
   Send,
   Mail,
@@ -167,7 +166,7 @@ export default function ResendAccessLinkPage() {
           // to the locked 44px icon-button floor, fits the 52px header, no redesign.
           className="flex h-11 w-11 items-center justify-center rounded-pill border border-s-border bg-white text-s-ink transition-colors duration-150 ease-snap hover:bg-s-bg-sunken"
         >
-          <ArrowLeft size={18} strokeWidth={1.9} aria-hidden />
+          <ChevronLeft size={18} strokeWidth={1.9} aria-hidden />
         </Link>
         <span className="font-display text-[15px] font-semibold tracking-[-0.01em]">
           {t("appBarTitle")}

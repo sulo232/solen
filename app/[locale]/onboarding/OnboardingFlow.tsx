@@ -8,7 +8,7 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { ArrowLeft, Check } from "lucide-react";
+import { ChevronLeft, Check } from "lucide-react";
 import { SuccessMark } from "@/app/[locale]/_components/primitives/SuccessMark";
 import { toast } from "@/app/[locale]/_components/primitives/Toast";
 import {
@@ -159,8 +159,8 @@ export default function OnboardingFlow({ locale, redirect, customerPreferences }
       {/* topbar: back · progress · skip */}
       <div className="flex items-center gap-3 mb-5">
         <button type="button" onClick={back} disabled={i === 0} aria-label={t("back")}
-          className="grid place-items-center w-8 h-8 rounded-full border border-s-border text-s-ink disabled:opacity-40 hover:bg-s-bg-sunken transition-colors">
-          <ArrowLeft size={16} strokeWidth={1.9} aria-hidden />
+          className="grid place-items-center h-11 w-11 rounded-full border border-s-border text-s-ink disabled:opacity-40 hover:bg-s-bg-sunken transition-colors">{/* content-image-ok: back-button chevron glyph on an icon button, not a photo/avatar fallback slot */}
+          <ChevronLeft size={16} strokeWidth={1.9} aria-hidden />
         </button>
         <div className="flex-1">
           <div className="h-[5px] rounded-pill bg-s-bg-sunken overflow-hidden">

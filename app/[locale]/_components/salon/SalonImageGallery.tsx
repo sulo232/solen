@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { createPortal } from "react-dom";
-import { ArrowLeft } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { useLocale } from "next-intl";
 import { createBrowserSupabaseClient } from "@/lib/supabase-browser";
 import { SalonLightbox } from "./SalonLightbox";
@@ -185,9 +185,9 @@ export function SalonImageGallery({
           type="button"
           aria-label={tBack("back")}
           onClick={onClose}
-          className="-ml-1 grid h-9 w-9 shrink-0 place-items-center rounded-full text-s-ink transition-transform active:scale-95 active:duration-[80ms] active:ease-glide"
+          className="-ml-1 grid h-11 w-11 shrink-0 place-items-center rounded-full text-s-ink transition-transform active:scale-95 active:duration-[80ms] active:ease-glide"
         >
-          <ArrowLeft size={20} strokeWidth={2.2} aria-hidden />
+          <ChevronLeft size={20} strokeWidth={2.2} aria-hidden />
         </button>
         <div className="min-w-0">
           <div className="font-display text-[16px] font-semibold leading-tight tracking-[-0.01em] text-s-ink">

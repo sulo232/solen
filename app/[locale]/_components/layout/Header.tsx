@@ -12,7 +12,7 @@ import * as React from "react";
 import { Link } from "next-view-transitions";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { ChevronDown, Home, Menu, MapPin, X, ArrowLeft } from "lucide-react";
+import { ChevronDown, Home, Menu, MapPin, X, ChevronLeft } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
@@ -819,7 +819,7 @@ export default function Header({ locale }: { locale: string }) {
                 : "border-s-border bg-white text-s-ink hover:border-s-ink",
             )}
           >
-            <ArrowLeft size={22} strokeWidth={2.2} aria-hidden />
+            <ChevronLeft size={22} strokeWidth={2.2} aria-hidden />
           </button>
         )}
 

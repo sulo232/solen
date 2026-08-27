@@ -36,7 +36,7 @@ import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { loadStripe } from "@stripe/stripe-js";
 import {
-  ArrowLeft,
+  ChevronLeft,
   Check,
   X,
   Lock,
@@ -692,9 +692,9 @@ function Frame({
         <Link
           href={backHref}
           aria-label={t("back")}
-          className="flex h-[34px] w-[34px] flex-shrink-0 items-center justify-center rounded-pill bg-s-bg-sunken text-s-ink"
+          className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-pill bg-s-bg-sunken text-s-ink"
         >
-          <ArrowLeft size={18} strokeWidth={1.9} aria-hidden />
+          <ChevronLeft size={18} strokeWidth={1.9} aria-hidden />
         </Link>
         <div className="min-w-0">
           <div className="font-display text-[15px] font-semibold leading-tight tracking-[-0.01em]">

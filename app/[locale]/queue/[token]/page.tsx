@@ -6,7 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import {
   Clock, Check, Scissors, AlertCircle, RefreshCw, Users, Armchair,
-  Star, MapPin, ChevronRight, ArrowLeft, ArrowRight, Navigation, Ticket, TicketX, HelpCircle, Send, X,
+  Star, MapPin, ChevronRight, ChevronLeft, ArrowRight, Navigation, Ticket, TicketX, HelpCircle, Send, X,
 } from "lucide-react";
 import Spinner from "@/components-legacy/ui/Spinner";
 import TipFlow from "@/app/[locale]/_components/tips/TipFlow";
@@ -368,7 +368,7 @@ export default function QueueTrackingPage() {
           aria-label={l.home}
           className="absolute left-3.5 top-3.5 flex h-11 w-11 items-center justify-center rounded-full border border-white/60 bg-white/85 text-s-ink shadow-[0_2px_8px_rgba(10,10,10,.12)] backdrop-blur-md transition-transform duration-150 active:scale-[0.94] active:duration-[80ms] active:ease-glide"
         >
-          <ArrowLeft size={20} strokeWidth={2.2} />
+          <ChevronLeft size={20} strokeWidth={2.2} />
         </Link>
         {/* top-right help — same frosted-circle treatment as the back button */}
         {data.salonSlug && (

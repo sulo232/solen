@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { ArrowLeft } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import MasonryGrid from "@/components-legacy/discovery/MasonryGrid";
 import ItemCard from "@/components-legacy/discovery/ItemCard";
 import VideoCard from "@/components-legacy/discovery/VideoCard";
@@ -68,9 +68,9 @@ export default function BoardDetailPage() {
         <button
           onClick={() => router.back()}
           aria-label={t("back")}
-          className="absolute left-4 top-4 grid h-10 w-10 place-items-center rounded-full bg-black/30 text-white backdrop-blur-sm transition-transform duration-150 active:scale-95 active:duration-[80ms]"
+          className="absolute left-4 top-4 grid h-11 w-11 place-items-center rounded-full bg-black/30 text-white backdrop-blur-sm transition-transform duration-150 active:scale-95 active:duration-[80ms]"
         >
-          <ArrowLeft size={18} strokeWidth={1.9} />
+          <ChevronLeft size={18} strokeWidth={1.9} />
         </button>
         {board && (
           <div className="absolute inset-x-4 bottom-4 text-white">

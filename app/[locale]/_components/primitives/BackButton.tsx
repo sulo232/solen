@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { ArrowLeft } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { FROST_GLASS } from "@/lib/frost-glass";
 
@@ -34,13 +34,13 @@ export const BackButton = React.forwardRef<HTMLButtonElement, BackButtonProps>(
         aria-label={label}
         style={variant === "glass" ? FROST_GLASS : undefined}
         className={cn(
-          "grid h-10 w-10 place-items-center rounded-full transition-[transform,background-color] duration-150 active:scale-[0.94] active:duration-[80ms] active:ease-glide",
-          variant === "flat" && "border border-s-border bg-white hover:bg-s-bg-sunken",
+          "grid h-11 w-11 place-items-center rounded-full transition-[transform,background-color] duration-150 active:scale-[0.94] active:duration-[80ms] active:ease-glide",
+          variant === "flat" && "border border-s-border bg-white hover:bg-s-bg-sunken shadow-elevation-2",
           className,
         )}
         {...props}
       >
-        <ArrowLeft size={18} strokeWidth={1.9} aria-hidden className="text-s-ink" />
+        <ChevronLeft size={18} strokeWidth={1.9} aria-hidden className="text-s-ink" />
       </button>
     );
   },

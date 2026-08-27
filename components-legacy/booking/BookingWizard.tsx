@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'motion/react'; // mockup-ok: applying owner-approved /dev/motion-recipe ENTER RECIPE (2026-07-09)
 import { useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
-import { ArrowLeft } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import { useStepSwapMotion, SectionErrorBoundary } from '@/app/[locale]/_components/primitives';
 import {
   ServicesStaffStep,
@@ -191,7 +191,7 @@ export default function BookingWizard({ services, staffList, salon, staffService
             aria-label={t('back')}
             className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-s-border bg-white shadow-whisper transition-[colors,transform] hover:border-s-ink active:scale-[0.94] active:duration-[80ms] active:ease-glide"
           >
-            <ArrowLeft size={22} strokeWidth={2.2} className="text-s-ink" />
+            <ChevronLeft size={22} strokeWidth={2.2} className="text-s-ink" />
           </button>
         ) : (
           <button
@@ -206,7 +206,7 @@ export default function BookingWizard({ services, staffList, salon, staffService
             aria-label={t('back')}
             className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-s-border bg-white shadow-whisper transition-[colors,transform] hover:border-s-ink active:scale-[0.94] active:duration-[80ms] active:ease-glide"
           >
-            <ArrowLeft size={22} strokeWidth={2.2} className="text-s-ink" />
+            <ChevronLeft size={22} strokeWidth={2.2} className="text-s-ink" />
           </button>
         )}
         {/* Compact header (mockup 26, owner-approved 2026-06-12): the step title sits
