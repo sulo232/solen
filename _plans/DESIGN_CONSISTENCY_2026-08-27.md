@@ -328,6 +328,14 @@ the direction of the screen he already likes.
   is a visual change and mockup-first binds.
 
 - [x] **S3. Back arrow becomes one rule. MY HALF DONE, THE LAST 9 ARE HIS CALL, 2026-08-28.**
+  `f1d504ac4` `ee7b06813` `f155ff747` · verified by opening the file, not from memory:
+  `app/[locale]/_components/primitives/BackButton.tsx:25` declares
+  `export type BackButtonVariant = "glass" | "flat";`, exactly the two variants the close condition
+  allows and nothing else, and `:56` is the single shared
+  `<ChevronLeft size={18} strokeWidth={1.9} aria-hidden className="text-s-ink" />` used by both the
+  Link and the button path. **22 importers**, recounted by grep over `app/ components/
+  components-legacy/` with the primitive itself excluded. The 9 unconverted screens listed below came
+  from a classifier whose own control passed (SalonLightbox had to land in the NOT-back bucket).
   The sweep landed: **22 files now import the shared `BackButton`** where one did before, and the
   primitive defines exactly the two variants the close condition asks for, `"glass" | "flat"`, which
   is on-photo and on-white and nothing else. All three of its changes match his own LOCKFILE row
@@ -535,7 +543,13 @@ the direction of the screen he already likes.
   labelled as such: the populated grid, because no seeded account has a saved look and seeding is a
   database write.
 
-- [x] **S5. Fold the 38 rows. DONE, RE-COUNTED 2026-08-28.** Measured off `ACTIVE.md` itself rather
+- [x] **S5. Fold the 38 rows. DONE, RE-COUNTED 2026-08-28.**
+  `4bc731360` `dba7d7325` `f155ff747` · verified: counted off `_plans/ACTIVE.md` itself this turn,
+  110 lines matching `^\| [0-9]+ \|`, of which 102 are data rows; the `WORKSTREAMS-INDEX` marker at
+  `_plans/ACTIVE.md:1` re-checked present after the edit, and `_plans/ACTIVE.md:8` is row 81, still
+  one line. (I first wrote `:3` for the marker from memory and the grep said `:1`, which is the whole
+  reason a cited line gets opened.) Not inferred from the round notes below, which is how the 33-versus-10 mismatch surfaced.
+  Measured off `ACTIVE.md` itself rather
   than trusting the round-by-round notes below: **102 data rows, 62 now CLOSED or DONE, 33 ACTIVE,
   10 PAUSED, and 22 of the 33 ACTIVE name what they are waiting on.** The design half that this
   step actually owned went from 38 open to folded; what remains ACTIVE is every workstream in the
@@ -675,7 +689,15 @@ the direction of the screen he already likes.
   everybody. The primitive now holds no copy at all.
 
 - [x] **S6. Then and only then, the look. HANDED TO HIM 2026-08-28, which is the only way this box
-  can close.** Gray, the dashboard direction, typography. Those are taste calls and they are his.
+  can close.**
+  `f155ff747` · verified over HTTP, not asserted: all ten `public/_mockups/compare-<screen>/index.html`
+  return their own byte count through the live tunnel (home 34707, inspo 30863, category-pages 27883,
+  search-results 30649, salon-reviews 41775, profile-and-settings 57780, barbershop 38964, city-page
+  28766, notifications 37558, why-solen 47155), each matching `stat` on disk, against a control where
+  a made-up path returns the 350898-byte app shell instead. Airbnb capture written to
+  `_design-system/references/airbnb--fonts-vs-ours.md` (the section added 2026-08-28), extending the
+  existing file rather than adding a second one.
+  Gray, the dashboard direction, typography. Those are taste calls and they are his.
   They are LAST on purpose: fixing them before S1 to S4 means fixing them once per screen forever.
   **The vehicle exists and it is what he asked for on 2026-08-28**, *"I want the home now, denk he,
   everywhere, but I wanna mockup for each one"*: **ten `compare-<screen>` pages, one per screen**,
