@@ -822,7 +822,7 @@ export default function Screen({
         {/* Staff row: full-bleed horizontal scroll of circular avatars. The board's own answer to
             "who is in a chair", so it belongs to the board and not to every view. */}
         {activeNav === "board" && (
-          <div className="overflow-x-auto no-scrollbar">
+          <div className="overflow-x-auto scrollbar-hide">
             {/* Three 104px cells plus two 16px gaps plus the 20px page padding either side comes to
                 392 of 390, so a fourth stylist crops immediately, which is the scroll promise. */}
             <div className="flex gap-4 px-5 pb-1 pt-5">
@@ -1387,7 +1387,7 @@ export default function Screen({
             {/* Regulars are two letters and a tap. Real past customers only, never a suggestion the
                 shop has not actually served. */}
             {phoneName.trim().length >= 2 && (
-              <div className="no-scrollbar mt-2 flex gap-2 overflow-x-auto px-5">
+              <div className="scrollbar-hide mt-2 flex gap-2 overflow-x-auto px-5">
                 {knownCustomers
                   .filter((n) => n.toLowerCase().includes(phoneName.trim().toLowerCase()) && n !== phoneName)
                   .slice(0, 4)
@@ -1412,7 +1412,7 @@ export default function Screen({
               className="font-body mt-3 h-12 w-[calc(100%-40px)] rounded-xl bg-s-bg-sunken px-4 text-[15px] font-normal text-s-ink placeholder:text-s-ink-2 mx-5"
             />
 
-            <div className="no-scrollbar mt-4 flex gap-2 overflow-x-auto px-5">
+            <div className="scrollbar-hide mt-4 flex gap-2 overflow-x-auto px-5">
               {staff.map((m) => (
                 <button
                   key={m.id}
@@ -1431,7 +1431,7 @@ export default function Screen({
               ))}
             </div>
 
-            <div className="no-scrollbar mt-2 flex gap-2 overflow-x-auto px-5">
+            <div className="scrollbar-hide mt-2 flex gap-2 overflow-x-auto px-5">
               {services.slice(0, 8).map((sv) => (
                 <button
                   key={sv.id}
@@ -1450,7 +1450,7 @@ export default function Screen({
             </div>
 
             {/* DAY, today plus the next 13. */}
-            <div className="no-scrollbar mt-2 flex gap-2 overflow-x-auto px-5">
+            <div className="scrollbar-hide mt-2 flex gap-2 overflow-x-auto px-5">
               {dayChoices.map((d) => (
                 <button
                   key={d.value}
@@ -1473,7 +1473,7 @@ export default function Screen({
 
             {/* TIME, quarter hours 08:00 to 19:00. On Today, already-past slots are dropped and the
                 fallback (next quarter hour from now) can render outside that window on purpose. */}
-            <div className="no-scrollbar mt-2 flex gap-2 overflow-x-auto px-5">
+            <div className="scrollbar-hide mt-2 flex gap-2 overflow-x-auto px-5">
               {timeChoices.map((t) => (
                 <button
                   key={`${t.hour}-${t.minute}`}

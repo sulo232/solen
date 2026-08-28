@@ -73,7 +73,7 @@ export default function CategoryTree({ activeSlug }: CategoryTreeProps) {
 
   // ─── Mobile: horizontal scrollable chips (level 1 only) ───
   const mobileChips = (
-    <div className="md:hidden flex gap-2 overflow-x-auto no-scrollbar pb-2">
+    <div className="md:hidden flex gap-2 overflow-x-auto scrollbar-hide pb-2">
       {categories.map((cat) => (
         <Link
           key={cat.id}

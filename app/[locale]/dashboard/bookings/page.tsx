@@ -250,7 +250,7 @@ export default function BookingsPage() {
       </div>
 
       {/* Filters — light-blue active (approved skin) */}
-      <div className="flex gap-2 mb-4 overflow-x-auto no-scrollbar pb-1">
+      <div className="flex gap-2 mb-4 overflow-x-auto scrollbar-hide pb-1">
         {(["all", "confirmed", "completed", "cancelled", "no_show"] as const).map((s) => (
           <button
             key={s}

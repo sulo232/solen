@@ -177,7 +177,7 @@ export default function AllSalonsPage() {
       </div>
 
       {/* Tab filters */}
-      <div className="flex gap-2 mb-5 overflow-x-auto no-scrollbar pb-1">
+      <div className="flex gap-2 mb-5 overflow-x-auto scrollbar-hide pb-1">
         {TAB_VALUES.map((value) => (
           <button
             key={value}

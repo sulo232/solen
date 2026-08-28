@@ -99,7 +99,7 @@ export default function SalonAboutEditor({ salon, onUpdate }: SalonAboutEditorPr
       )}
 
       {/* Language Tabs */}
-      <div className="flex gap-2 mb-4 border-b border-s-ink/5 pb-2 overflow-x-auto no-scrollbar">
+      <div className="flex gap-2 mb-4 border-b border-s-ink/5 pb-2 overflow-x-auto scrollbar-hide">
         {LANGS.map((l) => (
           <button
             key={l.id}

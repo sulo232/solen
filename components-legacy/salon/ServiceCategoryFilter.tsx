@@ -28,7 +28,7 @@ export default function ServiceCategoryFilter({
 
       <div 
         ref={scrollRef}
-        className="flex items-center gap-2 overflow-x-auto no-scrollbar px-6 py-2"
+        className="flex items-center gap-2 overflow-x-auto scrollbar-hide px-6 py-2"
         style={{ scrollBehavior: "smooth" }}
       >
         <button
