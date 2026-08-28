@@ -19,22 +19,35 @@ Both this detector and the PreToolUse gate import the SAME classifier (`scripts/
 - `coiffeur.svg`: 17 paths, 3-tone shaded fill matching the shaded-illustration family of the PNG set, named after a real category. INCLUDED as a 3D-icon asset.
 - `nails-test.svg`: EXCLUDED, test asset (filename '-test' suffix), unreferenced in any .tsx, excluded per the when-unsure rule.
 
-## Violations: 3D icon in a NON-blessed context (0 files, 0 references)
+## Violations: 3D icon in a NON-blessed context (2 files, 7 references)
 
-_none_. The codebase is currently compliant with the owner's enumerated blessed-context rule.
+- **app/[locale]/dev/animated-icons/AnimatedIconRow.tsx**
+  - surface: dev sandbox (not customer-facing)
+  - app/[locale]/dev/animated-icons/AnimatedIconRow.tsx:28 references `/icons/categories/scissors.png` (not inside any blessed context)
+  - app/[locale]/dev/animated-icons/AnimatedIconRow.tsx:34 references `/icons/categories/clippers.png` (not inside any blessed context)
+  - app/[locale]/dev/animated-icons/AnimatedIconRow.tsx:37 references `/icons/categories/nails.png` (not inside any blessed context)
+  - app/[locale]/dev/animated-icons/AnimatedIconRow.tsx:38 references `/icons/categories/spa.png` (not inside any blessed context)
+  - rule: 3D category icons are allowed ONLY in an enumerated set of blessed contexts (owner ruling 2026-07-23, _design-system/QUESTIONS.md line 599): (1) homepage, (2) empty-state trays (<EmptyTray>/<EmptyState> iconSrc), (3) category-navigation pill object literals. Everywhere else is a violation. The core defect the owner was furious about was never a 3D icon existing off the home route, it was MIXING 3D + Lucide as the icon for the SAME kind of list item / picker (the onboarding category-pill grid).
+  - fix: move to a Lucide line icon, or confine the 3D asset to a blessed context (homepage / EmptyTray-EmptyState / a category-pill array).
+- **app/[locale]/dev/menu-placement/page.tsx**
+  - surface: dev sandbox (not customer-facing)
+  - app/[locale]/dev/menu-placement/page.tsx:39 references `/icons/categories/scissors.png` (not inside any blessed context)
+  - app/[locale]/dev/menu-placement/page.tsx:40 references `/icons/categories/clippers.png` (not inside any blessed context)
+  - app/[locale]/dev/menu-placement/page.tsx:41 references `/icons/categories/nails.png` (not inside any blessed context)
+  - rule: 3D category icons are allowed ONLY in an enumerated set of blessed contexts (owner ruling 2026-07-23, _design-system/QUESTIONS.md line 599): (1) homepage, (2) empty-state trays (<EmptyTray>/<EmptyState> iconSrc), (3) category-navigation pill object literals. Everywhere else is a violation. The core defect the owner was furious about was never a 3D icon existing off the home route, it was MIXING 3D + Lucide as the icon for the SAME kind of list item / picker (the onboarding category-pill grid).
+  - fix: move to a Lucide line icon, or confine the 3D asset to a blessed context (homepage / EmptyTray-EmptyState / a category-pill array).
 
-## Soft heuristic: possible same-role 3D + Lucide mixing (6, informational ONLY, not a violation gate)
+## Soft heuristic: possible same-role 3D + Lucide mixing (5, informational ONLY, not a violation gate)
 
 A file that has at least one BLESSED 3D-icon reference AND also imports lucide-react. This does NOT prove same-role mixing (a file can legitimately use Lucide for one role, e.g. nav chevrons, and a blessed 3D icon for an unrelated role, e.g. category pills - Header.tsx is exactly this and is NOT a violation). Reliable same-role/same-picker detection is a semantic judgment a static string/AST signal cannot make; this list is a pointer for a human eyeball, not an enforced rule (the gate never blocks on this).
 
 - **app/[locale]/_components/homepage/MobileCategoriesRow.tsx** (6 blessed 3D-icon references, reasons: homepage)
 - **app/[locale]/_components/homepage/WalkInBand.tsx** (1 blessed 3D-icon reference, reasons: homepage)
-- **app/[locale]/_components/layout/Header.tsx** (4 blessed 3D-icon references, reasons: category-pill)
-- **app/[locale]/_components/profile/ProfileTabs.tsx** (2 blessed 3D-icon references, reasons: empty-state)
+- **app/[locale]/_components/layout/CategoryPillRow.tsx** (5 blessed 3D-icon references, reasons: category-pill)
 - **app/[locale]/_components/search/SearchTemplate.tsx** (4 blessed 3D-icon references, reasons: category-pill)
 - **app/[locale]/dev/search-model-b/page.tsx** (4 blessed 3D-icon references, reasons: category-pill)
 
-## Allowed usage (24 blessed references across 7 clean files, listed for transparency)
+## Allowed usage (23 blessed references across 6 clean files, listed for transparency)
 
 - **app/[locale]/_components/homepage/CategoryPromos.tsx**
   - homepage: line 50 (`/illustrations/categories/coiffeur.png`), line 56 (`/illustrations/categories/barber.png`), line 62 (`/illustrations/categories/nails.png`)
@@ -42,12 +55,10 @@ A file that has at least one BLESSED 3D-icon reference AND also imports lucide-r
   - homepage: line 43 (`/icons/categories/scissors.png`), line 44 (`/icons/categories/clippers.png`), line 45 (`/icons/categories/nails.png`), line 46 (`/icons/categories/map.png`), line 47 (`/icons/categories/walkin.png`), line 48 (`/icons/categories/spa.png`)
 - **app/[locale]/_components/homepage/WalkInBand.tsx**
   - homepage: line 73 (`/icons/categories/walkin.png`)
-- **app/[locale]/_components/layout/Header.tsx** (global layout, renders on every page)
-  - category-pill: line 99 (`/icons/categories/scissors.png`), line 100 (`/icons/categories/clippers.png`), line 101 (`/icons/categories/nails.png`), line 102 (`/icons/categories/spa.png`)
-- **app/[locale]/_components/profile/ProfileTabs.tsx**
-  - empty-state: line 228 (`/icons/categories/spa.png`), line 277 (`/icons/categories/scissors.png`)
+- **app/[locale]/_components/layout/CategoryPillRow.tsx**
+  - category-pill: line 94 (`/icons/categories/v2/coiffeur.png`), line 95 (`/icons/categories/v2/barber.png`), line 96 (`/icons/categories/v2/nails.png`), line 97 (`/icons/categories/v2/spa.png`), line 100 (`/icons/categories/map.png`)
 - **app/[locale]/_components/search/SearchTemplate.tsx**
-  - category-pill: line 304 (`/icons/categories/scissors.png`), line 305 (`/icons/categories/clippers.png`), line 306 (`/icons/categories/nails.png`), line 307 (`/icons/categories/spa.png`)
+  - category-pill: line 318 (`/icons/categories/scissors.png`), line 319 (`/icons/categories/clippers.png`), line 320 (`/icons/categories/nails.png`), line 321 (`/icons/categories/spa.png`)
 - **app/[locale]/dev/search-model-b/page.tsx**
   - category-pill: line 105 (`/icons/categories/scissors.png`), line 106 (`/icons/categories/clippers.png`), line 107 (`/icons/categories/nails.png`), line 108 (`/icons/categories/spa.png`)
 

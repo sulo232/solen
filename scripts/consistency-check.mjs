@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 //
-// Umbrella entry point for the consistency system built this session: 4 report-mode
-// detectors + 2 live PreToolUse gates, previously only reachable as 4 separate npm commands.
-// This file runs the 4 detectors and prints ONE unified dashboard. ORCHESTRATION ONLY:
+// Umbrella entry point for the consistency system built this session: 5 report-mode
+// detectors + 2 live PreToolUse gates, previously only reachable as separate npm commands.
+// This file runs the 5 detectors and prints ONE unified dashboard. ORCHESTRATION ONLY:
 // no new detection logic, no new rule, blocks nothing (always exits 0). Each detector still
 // writes its own full report to _design-system/_*-report.md; this script just runs them and
 // summarizes the headline count each one already prints to stdout.
@@ -25,8 +25,8 @@ import { spawnSync } from "node:child_process";
 import { REPO_ROOT } from "./lib/scan-surface.mjs";
 
 // ---------------------------------------------------------------------------------------
-// Tunables: the 4 detectors. Add a new one here (script path, npm script name, headline
-// regex against that detector's own stdout summary line) when a 5th detector ships; nothing
+// Tunables: the 5 detectors. Add a new one here (script path, npm script name, headline
+// regex against that detector's own stdout summary line) when a 6th detector ships; nothing
 // else in this file needs to change.
 // ---------------------------------------------------------------------------------------
 const DETECTORS = [
@@ -82,6 +82,19 @@ const DETECTORS = [
     parseHeadline: (stdout) => {
       const m = /Hard divergences:\s*(\d+)/.exec(stdout);
       return m ? { count: Number(m[1]), label: "hard divergences" } : null;
+    },
+  },
+  {
+    key: "gap-ladder-check",
+    label: "Gap-ladder drift",
+    catches: "an illegal margin/gap/space utility (over 16px, not exactly 32px) on a file governed by the binary 16-and-32 spacing law, either by its own header claiming TERMINAL_PRINCIPLES.md/Round D1 or by sitting under a real operator path (dashboard, terminal, host-flows)",
+    scriptPath: "scripts/detect-gap-ladder-drift.mjs",
+    npmScript: "gap-ladder-check",
+    gated: false,
+    reportPath: "_design-system/_gap-ladder-report.md",
+    parseHeadline: (stdout) => {
+      const m = /Total illegal gap-ladder utilities:\s*(\d+)/.exec(stdout);
+      return m ? { count: Number(m[1]), label: "illegal gap-ladder utilities" } : null;
     },
   },
 ];
@@ -157,7 +170,7 @@ console.log(RULE);
 console.log("SOLEN CONSISTENCY DASHBOARD  (npm run consistency)");
 console.log(RULE);
 console.log("");
-console.log("Runs the 4 report-mode detectors and prints one unified summary. Orchestration");
+console.log("Runs the 5 report-mode detectors and prints one unified summary. Orchestration");
 console.log("only, no new detection logic, blocks nothing. Full detail always lives in each");
 console.log("detector's own _design-system/_*-report.md, this is a pointer, not a replacement.");
 console.log("");

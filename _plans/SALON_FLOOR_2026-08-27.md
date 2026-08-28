@@ -125,3 +125,23 @@ found two more. All eight fixed and re-measured:
 7. The one chair running over rendered as "8m ov...", so the only chair with a problem was the one
    you could not read. Now measured at 61px of text in a 61px box, untruncated.
 8. The chair buttons in the setup editor carried no accessible name.
+
+## A missing thing found while building the spacing check, named rather than worked around
+`npm run consistency` DOES NOT EXIST on this branch, and neither do the four detector commands the
+dashboard prints as if they do (`dupe-check`, `icon-check`, `type-check-scale`, `selected-check`).
+Verified directly against `package.json` with node, not inferred: all five return MISSING.
+`scripts/consistency-check.mjs`'s own header says "Run: npm run consistency" and its output prints
+"(npm run dupe-check)" beside each detector, so the file documents five commands that are not there.
+
+WHY, per the missing-things protocol, and it is the half-landed case rather than the killed one:
+`git log --all -S'"dupe-check"' -- package.json` returns exactly one commit, `561207041`, an auto
+checkpoint. `git merge-base --is-ancestor 561207041 HEAD` returns false and
+`git branch -a --contains 561207041` returns only `claude/quirky-ellis-ef5559`. So the commands were
+registered on a sibling branch and never merged into `claude/offline-booking-device-266b10`, which
+is the branch this work sits on. The detectors themselves are here and run fine by path; only their
+npm names are stranded.
+
+NOT fixed in this batch, on purpose: it is five one-line additions to `package.json`, outside the
+scope of the floor mockup, and the new gap-ladder detector registers its own commands
+(`gap-ladder-check`, `gate:gap-ladder`) so nothing built this turn depends on the missing four.
+Named here so the next person does not rediscover it as a bug.
