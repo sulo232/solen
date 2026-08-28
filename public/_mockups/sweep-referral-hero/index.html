@@ -3,60 +3,94 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
-<title>Referral hero , full screen before/after</title>
-<!-- Base: capture live -->
-<!-- Scale: full-page -->
+<meta name="color-scheme" content="light">
+<title>Referral background treatment , A vs B</title>
+<!-- Base: capture captured-live.png -->
+<!-- Scale: component -->
 <!--
-  Grounded-in: app/[locale]/profile/referral/page.tsx
-  FULL-SCREEN before/after. BEFORE = LIVE <iframe> of the real referral page via /api/dev/login?to=/de/profile/referral
-  (a gradient ink-wash hero + translucent stat cards, unlike the flat solid-white rest of profile). AFTER = the same
-  hero on flat solid-white cards, matching the profile system. Only the hero treatment changes.
-  Depicts: referral hero + stat cards -> app/[locale]/profile/referral/page.tsx
-  Exists-check: `npm run exists "referral"` ran earlier , the page already renders.
-  Backend-check: referral code is live; no fabricated values. English chrome; live iframe shows real German.
+  Grounded-in: app/[locale]/profile/referral/page.tsx (the "Hero card", lines 93-102 , the exact block this mockup compares, background swapped, nothing else touched)
+  Grounded-in: app/[locale]/profile/referral/page.tsx (the "Referral code card", lines 104-118 , B reuses its already-shipped flat-white recipe verbatim rather than inventing a third treatment)
+
+  captured-live.png is a real Playwright screenshot taken THIS turn at 390x844 through
+  /api/dev/login?to=/de/profile/referral (dev-only seed session), clipped to the exact card rect
+  (358x158px) read off getBoundingClientRect on that same render. Not a redraw. B below is the real
+  markup/classes of the SAME live page's own "Referral code card", with only its already-shipped
+  flat-white background applied to this card's icon+copy structure. Numbers below are getBoundingClientRect
+  + getComputedStyle reads of that render, and the two contrast figures are WCAG 2.1 relative-luminance
+  math on the exact rgb() values Chromium reported, computed this turn, not recalled.
+
+  Diagnosis: hero card background | measured background-image linear-gradient(to right bottom, rgba(10,10,10,.1), rgba(10,10,10,.05)) over a white page (corner-to-corner #E6E6E6 to #F3F3F3), card 358x158px, border 1px solid #E4E4E7 measuring 1.27:1 against the white page | violates the spirit of the Edge-Visibility floor's own banned example ("a white card with only a 4% shadow on white is invalid"): the corner tint is 1.1:1 to 1.3:1 against the page at both ends, so the edge is carried almost entirely by that same near-invisible 1.27:1 hairline, the same order of faintness as the banned case, even though the mechanism (hairline, not shadow) is technically different | target a background whose worst-case text contrast reaches at least 4.5:1 across the full 358x158px card, not 4.29:1 at one corner only
+  Diagnosis: hero subtitle text contrast | measured text-s-ink-2 rgb(107,107,107) 14px/400 sitting on the gradient, computed contrast 4.29:1 at the gradient's dark corner and 4.79:1 at its light corner | violates WCAG 1.4.3 AA normal text 4.5:1 (statutory floor, tier 2 of the precedence chain, outranks any taste call) at the dark corner | target a flat, uniform background so the subtitle clears 4.5:1 everywhere in the card, not only at one corner
+  Diagnosis: hero vs its own siblings | measured the live "Referral code card" 12px below it on the identical page: bg-white/80, border border-s-ink/5, shadow-elevation-1, 358x120px, border alone 1.11:1 against white | violates nothing on its own, it is what actually reads as an edge in the render: shadow-elevation-1 (rgba(50,47,44,.04) + rgba(50,47,44,.03)), a named calibrated elevation token, not an ad hoc weak shadow, doing the work the border cannot | target if the hero goes flat, reuse this exact already-shipped 358x120px recipe (border-s-ink/5 + shadow-elevation-1) instead of inventing a 4th card treatment on one screen
+
+  Exists-check: `npm run exists referral` ran this turn , 38 matches, including the "Hero card" comment at app/[locale]/profile/referral/page.tsx:93 (confirms this is THE referral hero, not the unrelated /referral/[code] landing card, which has no gradient-vs-flat question, its own background is a different ambient-warm system with no sibling in this queue item) and the "Referral code card" this mockup borrows B's treatment from. Reuse, not rebuild.
+  Owner-scope: the referral hero background, gradient versus flat white cards, nothing else. Icon circle, icon, copy, padding, radius, and every other card on the page are unchanged.
+
+  Depicts: A, the real live capture -> app/[locale]/profile/referral/page.tsx:93-102, screenshot of the actual rendered DOM this turn, not redrawn
+  Depicts: B icon circle + gift icon + subtitle -> app/[locale]/profile/referral/page.tsx:93-102, real markup, real classes, real lucide-react Gift path data (node_modules/lucide-react/dist/esm/icons/gift.js)
+  Depicts: B's flat-white treatment -> app/[locale]/profile/referral/page.tsx:105, the "Referral code card"'s own `bg-white/80 border border-s-ink/5 shadow-elevation-1 rounded-[12px]`, reused verbatim, not invented
+  Depicts: subtitle copy -> app/[locale]/profile/referral/page.tsx:99-101 t("heroSubtitle"), sourced from messages/en.json profileReferral.heroSubtitle, the real string, not written for this mockup
+
+  Copy: hardcoded English, pulled verbatim from messages/en.json profileReferral.heroSubtitle (the real string the component renders via t("heroSubtitle") on /de, not an invented headline).
+
+  Scope note: this file declares Scale: component (not full-page) on purpose, per the owner's literal
+  2026-08-15 instruction that a one-section decision gets shown as that section, stacked, not a whole
+  page: "Make you, like, one section of it... If we're talking about one, like, element or, like, one
+  section, the fuck." The two variants below are that one component, shown twice, nothing else on the
+  page, no iframe, no tab switcher, per the same instruction.
 -->
 <style>
-  :root{--ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--sunken:#F4F4F5;--hairline:#E4E4E7;--accent:#276EF1;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
+  :root{
+    --ink:#0A0A0A; --ink2:#6B6B6B; --border:#E4E4E7; --page:#FFFFFF;
+    --icon-bg: rgba(10,10,10,.15);
+    --card-b-border: rgba(10,10,10,.05);
+    --font:'Inter Tight',system-ui,-apple-system,sans-serif;
+  }
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%}
-  body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
-  .top{position:fixed;top:0;left:0;right:0;height:52px;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline);display:flex;align-items:center;justify-content:center;padding:0 12px}
-  .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;width:min(320px,80vw)}
-  .seg button{flex:1;border:0;background:transparent;font-family:inherit;font-size:14px;font-weight:700;color:var(--ink2);padding:8px 0;border-radius:999px;cursor:pointer}
-  .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
-  .stage{position:fixed;top:52px;left:0;right:0;bottom:0}
-  .pane{position:absolute;inset:0;overflow-y:auto}
-  .pane.hidden{display:none}
-  iframe{width:100%;height:100%;border:0;display:block}
-  .after{max-width:520px;margin:0 auto;min-height:100%;padding:24px 16px 40px}
-  .h1{font-size:24px;font-weight:700;letter-spacing:-0.02em}
-  .sub{font-size:14px;color:var(--ink2);margin-top:6px;line-height:1.5}
-  .code{margin-top:16px;background:#fff;border:1px solid var(--hairline);border-radius:16px;padding:16px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 2px rgba(10,10,10,.04)}
-  .cv{font-size:18px;font-weight:700;letter-spacing:.04em}
-  .cp{font-size:13px;font-weight:600;color:var(--accent)}
-  .stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
-  .stat{background:#fff;border:1px solid var(--hairline);border-radius:16px;padding:16px;box-shadow:0 1px 2px rgba(10,10,10,.04)}
-  .sv{font-size:22px;font-weight:700}.sl{font-size:12px;color:var(--ink3);margin-top:2px}
-  .cap{font-size:11.5px;color:var(--ink3);margin-top:22px;line-height:1.5}
+  html{-webkit-text-size-adjust:100%}
+  html,body{min-height:100dvh}
+  body{font-family:var(--font);background:var(--page);color:var(--ink);-webkit-font-smoothing:antialiased;padding:32px 16px 48px}
+  strong,b{font-weight:600}
+  .wrap{max-width:390px;margin:0 auto}
+  .section{margin-bottom:36px}
+  .section:last-child{margin-bottom:0}
+  .label{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:10px}
+  .label span{font-weight:400;color:var(--ink2)}
+
+  .cap-img{width:100%;height:auto;display:block;border-radius:12px}
+
+  .card{border-radius:12px;padding:24px;text-align:center}
+  .card.b{background:rgba(255,255,255,.8);border:1px solid var(--card-b-border);box-shadow:0 1px 3px rgba(50,47,44,.04), 0 1px 2px rgba(50,47,44,.03)}
+
+  .icon-circle{width:56px;height:56px;border-radius:999px;background:var(--icon-bg);display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+  .icon-circle svg{width:28px;height:28px;color:var(--ink2)}
+
+  .sub{font-size:14px;font-weight:400;color:var(--ink2);max-width:320px;margin:0 auto;line-height:1.45}
 </style>
 </head>
 <body>
-  <div class="top"><div class="seg"><button id="bB" class="on" onclick="show('before')">Before (live)</button><button id="bA" onclick="show('after')">After</button></div></div>
-  <div class="stage">
-    <div id="paneBefore" class="pane"><iframe src="/api/dev/login?to=/de/profile/referral" title="live referral"></iframe></div>
-    <div id="paneAfter" class="pane hidden">
-      <div class="after">
-        <div class="h1">Invite friends, both get CHF 10</div>
-        <div class="sub">Share your code. When a friend books, you each get CHF 10 off.</div>
-        <div class="code"><span class="cv">SOLEN-4K2X</span><span class="cp">Copy</span></div>
-        <div class="stats">
-          <div class="stat"><div class="sv">3</div><div class="sl">Friends joined</div></div>
-          <div class="stat"><div class="sv">CHF 30</div><div class="sl">Earned</div></div>
+  <div class="wrap">
+
+    <div class="section">
+      <div class="label">A <span>, gradient (current, live capture)</span></div>
+      <img class="cap-img" src="captured-live.png" width="358" height="158" alt="Live referral background card, gradient treatment">
+    </div>
+
+    <div class="section">
+      <div class="label">B <span>, flat white (borrows the code card's own recipe)</span></div>
+      <div class="card b">
+        <div class="icon-circle" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-gift">
+            <path d="M12 7v14"></path>
+            <path d="M20 11v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8"></path>
+            <path d="M7.5 7a1 1 0 0 1 0-5A4.8 8 0 0 1 12 7a4.8 8 0 0 1 4.5-5 1 1 0 0 1 0 5"></path>
+            <rect x="3" y="7" width="18" height="4" rx="1"></rect>
+          </svg>
         </div>
-        <div class="cap">Change applied: the hero and stat cards are flat solid-white (matching the rest of profile), instead of a gradient ink-wash hero with translucent cards.</div>
+        <p class="sub">Share your code and get CHF 10 credit, your friend gets CHF 10 too!</p>
       </div>
     </div>
+
   </div>
-<script>function show(w){document.getElementById('paneBefore').classList.toggle('hidden',w!=='before');document.getElementById('paneAfter').classList.toggle('hidden',w!=='after');document.getElementById('bB').classList.toggle('on',w==='before');document.getElementById('bA').classList.toggle('on',w==='after');}</script>
 </body>
 </html>
