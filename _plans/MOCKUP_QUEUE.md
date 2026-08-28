@@ -87,9 +87,9 @@ Build order = HIGH impact first. (arch/behavior/copy items are DECISIONS, not A/
 - [x] `verified:` sha 37673276b , the setInterval countdown, secondsLeft/stored state and the redirect notice are removed from app/[locale]/referral/[code]/page.tsx; the user continues via the existing explicit CTA. (BEHAVIOR, not mockup) referral 5-sec auto-redirect [HIGH] , referral/[code]:36 , remove the forced redirect. DONE 2026-07-25: removed the `setInterval` countdown and the `secondsLeft`/`stored`-driven redirect notice; the user now stays on the page and continues only via the existing explicit CTA button (`handleCta`, unchanged). `app/[locale]/referral/[code]/page.tsx`.
 - [x] sweep-notif-grouping [MED] , notifications flat edge-to-edge rows vs grouped card , BUILT
 - [x] (IA DECISION, not visual mockup) sweep-partner-cta [HIGH] , partner 3 CTAs all ink but 3 destinations , unify to one funnel (lead form). Investigated: not a visual A/B (they look identical); a written funnel recommendation, not a mockup. DONE 2026-07-25. Before: (1) hero signup-form submit posts the lead directly, (2) sticky bottom-bar CTA `href="#contact"` scrolls to the hero form, (3) bottom-of-page CTA `Link href="/onboarding/salon?utm_source=partner_page..."` navigated straight into the salon signup wizard, bypassing the lead form entirely. After: CTA (3) now points at `#contact`, the same anchor as the sticky CTA, so all three ink actions funnel to the ONE lead form; the mailto "book a consult" link stays the one secondary text link, unchanged rung. `app/[locale]/partner/page.tsx:494-506` (also dropped the now-unused `Link`/`useLocale` imports this CTA fix orphaned).
-- [x] sweep-rewards-tier-ladder [MED] , ink tiers vs green stepper , BUILT in v2 format. NOT a contradiction with V3-C3 below, which shows the same name unticked: this line records the v2 mockup existing, V3-C3 records it needing a rebuild in section-scope format after the owner banned the iframe-switcher on 2026-08-15. Both are now done.
-- [x] sweep-referral-hero [MED] , gradient vs flat , BUILT in v2 format; rebuilt as V3-C5 below.
-- [x] sweep-partner-cards [MED] , feature vs category card chrome , BUILT in v2 format; rebuilt as V3-C6 below.
+- [x] sweep-rewards-tier-ladder [MED] `33310f594` v2, superseded by V3-C3 `67cd05bee` , ink tiers vs green stepper , BUILT in v2 format. NOT a contradiction with V3-C3 below, which shows the same name unticked: this line records the v2 mockup existing, V3-C3 records it needing a rebuild in section-scope format after the owner banned the iframe-switcher on 2026-08-15. Both are now done.
+- [x] sweep-referral-hero [MED] `68ac713ce` v2, superseded by V3-C5 `aea75ac33` , gradient vs flat , BUILT in v2 format; rebuilt as V3-C5 below.
+- [x] sweep-partner-cards [MED] `fc53aa9be` v2, superseded by V3-C6 `d3dcbbde1` , feature vs category card chrome , BUILT in v2 format; rebuilt as V3-C6 below.
 - [x] sweep-partner-faq [MED] , accordion vs swipe cards , BUILT
 - [x] sweep-warum-badge [MED] , say-once vs badge-on-each , BUILT
 - [x] sweep-help-rows [MED] , grouped card vs flat link list , BUILT
@@ -204,4 +204,30 @@ ProfileTabs and the settings B2 direction are the built result).
   the UI's normal query is a live source. Until then the hero question is decided on a page no
   customer can reach, so the mockup is correct and the seeding is the blocker in front of it.
   Original question: brand directory page: full PDP-scale hero or a lighter section title.
-- [ ] V3-C8 `sweep-ueber-uns` , the About page: nothing pins it beyond the general type scale.
+- [ ] V3-C8 `sweep-ueber-uns` , STILL OPEN, and NOT because the work was not done. 2026-08-28: the
+  diagnosis is finished and the file could not be written, so this stays unticked rather than
+  claiming a mockup that does not exist on disk.
+  **THE DEFECT FOUND, source-certain and needing no render: every non-heading character on the
+  About page, 507 of 507, carries `text-s-ink-2` (#6B6B6B).** Re-verified by me at the element
+  level, which is the sharper cut: the page has exactly 5 `text-s-ink` and 5 `text-s-ink-2`, and
+  they split perfectly by role. Ink is on the three headings only (`page.tsx:16`, `:25`, `:36`);
+  ink-2 is on the subtitle (`:19`), the paragraphs (`:28`) and the promise list (`:39`). Every
+  body element, no exceptions. **CONTROL, and it makes this an outlier rather than a house style:**
+  the two sibling marketing pages go the other way, `warum-solen` at 49 ink against 32 ink-2 and
+  `partner` at 67 against 38. FLOORS LAW 6 says that token is for
+  chevrons, placeholders, timestamps and hints and "stays forbidden on load-bearing copy", and an
+  About page's body IS its load-bearing copy. `app/globals.css:63-64` sets the sitewide body colour
+  to full ink #0A0A0A, and this page opts every paragraph out of that default into the hint grey.
+  Its type is otherwise clean: 3 sizes (36/18/14) and 2 weights (600/400), inside both ceilings.
+  **A LIVE CONTRADICTION INSIDE OUR OWN LOCKED DOCS, surfaced rather than resolved silently:**
+  `LOCKFILE.md` §2.5's Type Role Registry (2026-05-28) locks a "Body" role TO `s-ink-2`/400, which
+  is the exact thing FLOORS LAW 6 (2026-07-21, refined 07-27) forbids on load-bearing prose. By the
+  precedence chain the later dated rule wins, but two locked documents disagree in writing and that
+  is a decision for him, not for a builder.
+  **WHY IT COULD NOT BE WRITTEN, and this is a gate bug, not a missing requirement:**
+  `mockup-preflight-manifest.py`'s exists-check arm refused all five attempts saying `npm run exists`
+  had not run that turn. It had, immediately before each. The builder imported the gate's own
+  `npm_exists_ran()` and called it against its real subagent transcript, which returned True, so the
+  live hook is not resolving `transcript_path` to that file for a Task-spawned subagent. It refused
+  the skip flag, refused a `cp` that would have bypassed PreToolUse entirely, and reverted the repo
+  clean. That is the correct behaviour and the reason this box is honest instead of ticked.

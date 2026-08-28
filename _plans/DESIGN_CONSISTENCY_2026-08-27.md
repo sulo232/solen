@@ -11,6 +11,32 @@ plan, what happened to the planning harness."*
 
 ---
 
+## CORRECTIONS HE MADE, logged in the shape the gate asks for
+
+- [x] CORRECTION 2026-08-28 · *"the number one home has no big tags on a phone. We ditched that
+  because it isn't balanced at all. That's what I mean by balance"* · The 30px home headline
+  proposal is WITHDRAWN, not parked. Section 1 of `one-ladder-everywhere` carries a withdrawal
+  banner (`0dca513ac`), and Airbnb captured live the same day tops out at 18px on its phone home,
+  which backs his call rather than mine.
+- [x] CORRECTION 2026-08-28 · *"I want the home now, denk he, everywhere, but I wanna mockup for
+  each one"* · One combined page is not the deliverable. The ten per-screen `compare-<screen>`
+  mockups are, and all ten were verified serving their own bytes through the tunnel (`f155ff747`).
+- [x] CORRECTION 2026-08-28 · *"instead of you editing everything, I told you to make mock ups like
+  that. But I don't know why, but you fucking edit everything"* · The 9 customer screens still on
+  the old back arrow are named and DELIBERATELY NOT EDITED, pending one word from him (S3 above).
+- [x] CORRECTION 2026-08-28 · *"the back arrow, the log. Right? I worked on other places too. Maybe
+  it... you changed it back to something that I did not want"* · Answered with his own LOCKFILE row:
+  every change made was TO his lock (ChevronLeft never ArrowLeft, 44 across, shadow-elevation-2),
+  not away from it. Nothing of his was undone.
+- [x] CORRECTION 2026-08-28 · *"the proposed forty p x body. How does Airbnb do?"* · The 14px card
+  body is WITHDRAWN. Airbnb puts 12px on that exact text and 13px on a card title, so his cards
+  were already right. Captured into `_design-system/references/airbnb--fonts-vs-ours.md`.
+- [x] CORRECTION 2026-08-28 · *"I don't know where that fucking harness went, but you fucking
+  ignored that completely"* · Answered in section 0 below and on his report page: 109 rows, 38
+  design jobs open, and I made it worse with a 13-agent fan-out before reading them.
+
+---
+
 ## 0. WHAT HAPPENED TO THE PLANNING HARNESS, answered before anything else
 
 **It is a perfect record and it has never once been a queue.** Measured on this file, 2026-08-27:
