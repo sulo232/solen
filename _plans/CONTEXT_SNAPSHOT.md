@@ -2,26 +2,26 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-28T08:06:27 (trigger: auto)
+- taken: 2026-08-28T08:52:58 (trigger: auto)
 - branch: claude/offline-booking-device-266b10
 
 ## git
 ```
+9904020c8 checkpoint(auto): 2 uncommitted file(s) at turn end
+afa4d410d The scroll rows that hid their bars were naming a class that does not exist
 76a547e79 The scrollbars on the phone booking screen are hidden now, really
 e52fcef3d No screen now claims the spacing law and breaks it
 b8b673b4b A check that finds a file breaking the spacing law it claims to follow
-975af7672 The missing consistency commands, and why they are missing
-b254a9f5b The review page follows the gap law it claims, and says five
 ```
 ```
-M app/[locale]/dashboard/all-salons/page.tsx
- M app/[locale]/dashboard/bookings/page.tsx
- M app/[locale]/dashboard/staff/page.tsx
- M app/[locale]/dev/terminal/Screen.tsx
- M components-legacy/dashboard/SalonAboutEditor.tsx
- M components-legacy/salon/ServiceCategoryFilter.tsx
+M app/[locale]/behandlungen/[...slug]/TreatmentsClient.tsx
+ M app/[locale]/behandlungen/[...slug]/page.tsx
  M components-legacy/ui/CategoryTree.tsx
- M components-legacy/ui/ExpandableTabs.tsx
+ M package.json
+ M scripts/consistency-check.mjs
+?? _design-system/_dead-class-report.md
+?? scripts/detect-dead-class.mjs
+?? scripts/verify/dead-class-suite.mjs
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)

@@ -161,7 +161,7 @@ export default function TreatmentResultsPage() {
 
         <div className="flex gap-8">
           {/* Category sidebar (desktop only) */}
-          <CategoryTree activeSlug={categorySlug} />
+          <CategoryTree activeSlug={categorySlug} variant="tree" />
 
           {/* Results */}
           <div className="flex-1 min-w-0">
@@ -179,7 +179,7 @@ export default function TreatmentResultsPage() {
             </div>
 
             {/* Mobile category chips */}
-            <CategoryTree activeSlug={categorySlug} />
+            <CategoryTree activeSlug={categorySlug} variant="chips" />
 
             {loading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
