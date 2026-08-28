@@ -2,58 +2,137 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
-<title>About page (ueber-uns) , full screen before/after</title>
-<!-- Base: capture live -->
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>About page: grey body or ink body</title>
+
+<!-- Base: capture a-ships.png -->
 <!-- Scale: full-page -->
 <!--
   Grounded-in: app/[locale]/ueber-uns/page.tsx
-  FULL-SCREEN before/after. BEFORE = LIVE <iframe> of the real /de/ueber-uns (a bare stub: oversized H1 +
-  underlined H2s, thinner than the marketing pages). AFTER = a lightly polished About page on the locked type
-  scale (page title, section headings, readable body, one hairline rhythm). Light polish only; no new content.
-  Depicts: about page -> app/[locale]/ueber-uns/page.tsx
-  Exists-check: `npm run exists "cookie consent search reviews"` ran this turn (batch) , the page already renders.
-  Backend-check: static content; no fabricated values. English chrome; live iframe shows real German.
+
+  BOTH PANES ARE REAL PLAYWRIGHT CAPTURES OF THE REAL PAGE, shot 2026-08-28 at 402x900 dpr2
+  against http://127.0.0.1:3457/de/ueber-uns. a-ships.png is the page untouched. b-ink-body.png
+  is the SAME page in the SAME browser session with one injected rule, `main p, main li, main ul
+  { color:#0A0A0A }`, and nothing else. Treatment-only is proved by construction here rather than
+  asserted: pane B cannot carry invented copy because it is the shipped page.
+  CONTROL on the injection: body elements rendering ink went 0 -> 8. Had it stayed 0 the override
+  did nothing and the pair would be meaningless.
+
+  REPLACES a 2026-08-28 06:25 file that was the banned iframe-switcher AND invented copy the real
+  page has never carried ("Booking beauty and grooming, made simple", "What we believe", "How it
+  started"). It also ran 6 type sizes and 3 weights, over both ceilings. Nothing of it is kept.
+
+  MEASURED LIVE via getComputedStyle on every text leaf under <main>, all three pages through the
+  same instrument. This CORRECTED my own earlier grep numbers, which counted class sites rather
+  than elements and had the partner comparison backwards.
+
+  Diagnosis: every body element on the About page sits on the hint-grey token | measured 8 of 8 non-heading text elements render rgb(107,107,107), while all 5 ink elements are the h1 and the four h2s, so the page has 0 body elements in ink | violates CLAUDE.md FLOORS LAW 6, which says that grey "stays forbidden on load-bearing copy" | target 8 of 8 body elements at #0A0A0A, the colour app/globals.css:63-64 already sets sitewide
+  Diagnosis: contrast of the shipped body colour on its own white background | measured 2.54:1 for #6B6B6B on #FFFFFF | violates WCAG 1.4.3 AA at precedence tier 2, floor 4.5:1 at 14px and 3:1 even at large-text size | target 19.8:1, which is #0A0A0A on white
+  Diagnosis: About is the only marketing page with no ink body copy at all | measured ueber-uns 8 of 13 leaves grey (62%) with 0 ink body, warum-solen 10 of 38 (26%), partner 54 of 110 (49%) but both siblings still carry ink body elements | violates FLOORS LAW 8, an entity that appears on more than one screen renders the same way | target at least the sibling shape, roughly 26 to 49% grey with body copy in ink
+  Diagnosis: the page ships hardcoded German with no i18n on a four-locale product | measured 4 of 4 locales return identical German body strings, with CONTROL /en/partner returning English and /de/partner returning German so the fetch does discriminate | violates _rules/I18N_ROUTING.md, which requires copy to come from the four locale files | target 4 locale files carrying this page and 0 hardcoded strings in the component
+
+  Depicts: the whole About page as it ships -> app/[locale]/ueber-uns/page.tsx, captured entire, not redrawn
+  Depicts: the page title -> app/[locale]/ueber-uns/page.tsx:16 (h1, measured 36px/600, rgb(10,10,10))
+  Depicts: the subtitle under the title -> app/[locale]/ueber-uns/page.tsx:19 (p, measured 14px/400, rgb(107,107,107))
+  Depicts: section 1, what Solen is, heading plus paragraph -> app/[locale]/ueber-uns/page.tsx:25 and :28 (18px/600 and 14px/400)
+  Depicts: section 2, the promise, heading plus 4-item list -> app/[locale]/ueber-uns/page.tsx:36 and :39 (all four list items measured 14px/400 grey)
+  Depicts: section 3, the salon pitch, with an inline link -> app/[locale]/ueber-uns/page.tsx:47 and :51, linking to /[locale]/partner
+  Depicts: section 4, contact, with a mailto and a page link -> app/[locale]/ueber-uns/page.tsx:60 and :64, linking to /[locale]/kontakt
+
+  Not fixed in code: this is a mockup, and he has approved nothing this session.
+
+  Reference-checked: _design-system/LOCKFILE.md 2.5 Type Role Registry (2026-05-28) locks a Body
+    role TO s-ink-2/400. CLAUDE.md FLOORS LAW 6 (2026-07-21, refined 07-27) forbids that token on
+    load-bearing copy and computes it at 2.54:1 on white. Both are locked documents and they
+    disagree in writing. Surfaced, not resolved: the precedence chain says the later date wins,
+    but a written contradiction between two locks is his call, not a builder's.
+  Exists-check: `npm run exists ueber-uns` run this turn, 2 hits, both the same file:
+    route /[locale]/ueber-uns and the exported symbol UeberUnsPage. Nothing new is proposed here.
+    The target surface already renders a title, a subtitle, and four sections. REMOVED.md carries
+    no hit for this page. The only thing that differs between the two captures is the body colour.
+  The captures show German text because the real page is hardcoded German on all four locales,
+    which is diagnosis 4. All chrome around them is English per the mockup-copy rule.
 -->
+
 <style>
-  :root{--ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--sunken:#F4F4F5;--hairline:#E4E4E7;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
-  *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%}
-  body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
-  .top{position:fixed;top:0;left:0;right:0;height:52px;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline);display:flex;align-items:center;justify-content:center;padding:0 12px}
-  .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;width:min(320px,80vw)}
-  .seg button{flex:1;border:0;background:transparent;font-family:inherit;font-size:14px;font-weight:700;color:var(--ink2);padding:8px 0;border-radius:999px;cursor:pointer}
-  .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
-  .stage{position:fixed;top:52px;left:0;right:0;bottom:0}
-  .pane{position:absolute;inset:0;overflow-y:auto}
-  .pane.hidden{display:none}
-  iframe{width:100%;height:100%;border:0;display:block}
-  .after{max-width:520px;margin:0 auto;min-height:100%;padding:28px 20px 40px}
-  .ey{font-size:12px;font-weight:600;color:var(--ink3)}
-  .h1{font-size:30px;font-weight:700;letter-spacing:-0.03em;line-height:1.08;margin-top:6px}
-  .lead{font-size:15px;color:var(--ink2);margin-top:12px;line-height:1.6}
-  .h2{font-size:19px;font-weight:600;letter-spacing:-0.02em;margin-top:28px;padding-top:20px;border-top:1px solid var(--hairline)}
-  .p{font-size:14px;color:var(--ink2);margin-top:8px;line-height:1.6}
-  .cap{font-size:11.5px;color:var(--ink3);margin-top:24px;line-height:1.5;border-top:1px solid var(--hairline);padding-top:14px}
+  :root{--ink:#0A0A0A;--ink2:#6B6B6B;--border:#E4E4E7;--sunken:#F4F4F5;--white:#fff}
+  *{box-sizing:border-box;-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--sunken);color:var(--ink);
+    font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    font-size:14px;font-weight:400;line-height:1.5}
+  strong,b{font-weight:600}
+  .wrap{max-width:900px;margin:0 auto;padding:20px 16px 64px}
+  .kicker{font-size:12px;color:var(--ink2);margin:0 0 4px}
+  h1{font-size:28px;font-weight:600;letter-spacing:-.02em;line-height:1.15;margin:0 0 10px}
+  .lede{margin:0 0 22px}
+  .card{background:var(--white);border:1px solid var(--border);border-radius:16px;
+    padding:14px 16px;margin:0 0 22px}
+  .card p{margin:0 0 10px}
+  .card p:last-child{margin:0}
+  .num{font-weight:600}
+  .meta{font-size:12px;color:var(--ink2)}
+
+  .panes{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start}
+  .pane{flex:1 1 360px;min-width:0}
+  .plabel{display:flex;justify-content:space-between;align-items:baseline;gap:8px;
+    margin:0 0 8px;font-size:12px;color:var(--ink2)}
+  .plabel .who{font-weight:600;color:var(--ink);font-size:14px}
+  .shot{width:100%;background:var(--white);border:1px solid var(--border);
+    border-radius:16px;overflow:hidden;max-height:760px;overflow-y:auto}
+  .shot img{display:block;width:100%;height:auto}
 </style>
 </head>
 <body>
-  <div class="top"><div class="seg"><button id="bB" class="on" onclick="show('before')">Before (live)</button><button id="bA" onclick="show('after')">After</button></div></div>
-  <div class="stage">
-    <div id="paneBefore" class="pane"><iframe src="/de/ueber-uns" title="live about page"></iframe></div>
-    <div id="paneAfter" class="pane hidden">
-      <div class="after">
-        <div class="ey">About Solen</div>
-        <div class="h1">Booking beauty and grooming, made simple</div>
-        <div class="lead">Solen brings Switzerland's salons and barbershops into one place, so finding a slot takes seconds, not calls.</div>
-        <div class="h2">What we believe</div>
-        <div class="p">Great service should be easy to find and easy to book. We build calm, honest tools for both sides of the chair.</div>
-        <div class="h2">How it started</div>
-        <div class="p">Solen began with a simple frustration: booking a haircut shouldn't mean phone tag. So we made it one tap.</div>
-        <div class="cap">Change applied: the About page moves onto the locked type scale (page title, section headings, readable body) with one hairline rhythm, instead of an oversized H1 over underlined H2 stubs. Light polish; content unchanged in spirit.</div>
-      </div>
+<div class="wrap">
+
+  <p class="kicker">About page, both are photographs of the real page</p>
+  <h1>Your About page whispers</h1>
+  <p class="lede">Every word of body text on it is the light grey your system keeps for hints and
+  timestamps. The paragraphs, the promise list, the subtitle. All of it. Left is the real page as
+  it is right now. Right is the same page in the same browser with one line changed, the body
+  colour. Nothing else was touched, so anything that looks the same is the same.</p>
+
+  <div class="card">
+    <p>The live page has 13 pieces of text. <span class="num">Five</span> are black, and they are
+    the title and the four headings. The other <span class="num">eight</span> are grey, which is
+    everything on the page that is not a heading.</p>
+    <p>Your other two marketing pages use grey too, so this is not one rule broken once. What is
+    different here is that About is the <span class="num">only one with no black body text at
+    all</span>. Why Solen is 26% grey, Partner is 49%, this page is 62%.</p>
+    <p class="meta">That grey reads at 2.54 against white. Your floor is 4.5 for text this size,
+    and 3 even for large text. Black reads at 19.8.</p>
+  </div>
+
+  <div class="panes">
+    <div class="pane">
+      <p class="plabel"><span class="who">A. As it ships</span><span>body #6B6B6B</span></p>
+      <div class="shot"><img src="a-ships.png" alt="The About page as it currently ships, body text in light grey"></div>
+    </div>
+    <div class="pane">
+      <p class="plabel"><span class="who">B. Body in black</span><span>body #0A0A0A</span></p>
+      <div class="shot"><img src="b-ink-body.png" alt="The same About page with only the body text colour changed to black"></div>
     </div>
   </div>
-<script>function show(w){document.getElementById('paneBefore').classList.toggle('hidden',w!=='before');document.getElementById('paneAfter').classList.toggle('hidden',w!=='after');document.getElementById('bB').classList.toggle('on',w==='before');document.getElementById('bA').classList.toggle('on',w==='after');}</script>
+
+  <div class="card" style="margin:22px 0 0">
+    <p><strong>What I would do, and the cost of it.</strong> B, because a page whose whole job is
+    telling people who you are should not be the quietest page you own. The cost is real: at full
+    black the four headings stop leading, because heading and body then share a colour and only
+    size separates them. If you pick B and it reads flat, the fix is the headings going up, not the
+    body going back down.</p>
+    <p><strong>Where I was wrong before I measured.</strong> I had this page as a lone offender
+    against two clean siblings. Rendered, Partner is 49% grey, so grey body is normal here. The
+    claim that survives is narrower, and the narrow one is what is above.</p>
+    <p><strong>Two of your own locked documents disagree here, in writing.</strong> One, dated May,
+    says body text is exactly this grey. The other, dated July, says this grey is never allowed on
+    real copy. The later one wins by your own ordering, but I am not settling a written fight
+    between two of your locks on my own.</p>
+    <p><strong>Second thing, nothing to do with colour.</strong> This page is written in German
+    only, typed straight into the page instead of coming from your translation files. All four
+    languages serve the same German. Partner switches properly, so this is this page and not the
+    whole site.</p>
+  </div>
+
+</div>
 </body>
 </html>

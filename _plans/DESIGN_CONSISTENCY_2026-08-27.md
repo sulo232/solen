@@ -13,25 +13,25 @@ plan, what happened to the planning harness."*
 
 ## CORRECTIONS HE MADE, logged in the shape the gate asks for
 
-- [x] CORRECTION 2026-08-28 · *"the number one home has no big tags on a phone. We ditched that
+- [x] CORRECTION 2026-08-28 · *"the number one home has no big tags on a phone. We ditched that verified: `0dca513ac`
   because it isn't balanced at all. That's what I mean by balance"* · The 30px home headline
   proposal is WITHDRAWN, not parked. Section 1 of `one-ladder-everywhere` carries a withdrawal
   banner (`0dca513ac`), and Airbnb captured live the same day tops out at 18px on its phone home,
   which backs his call rather than mine.
-- [x] CORRECTION 2026-08-28 · *"I want the home now, denk he, everywhere, but I wanna mockup for
+- [x] CORRECTION 2026-08-28 · *"I want the home now, denk he, everywhere, but I wanna mockup for verified: `f155ff747`
   each one"* · One combined page is not the deliverable. The ten per-screen `compare-<screen>`
   mockups are, and all ten were verified serving their own bytes through the tunnel (`f155ff747`).
-- [x] CORRECTION 2026-08-28 · *"instead of you editing everything, I told you to make mock ups like
+- [x] CORRECTION 2026-08-28 · *"instead of you editing everything, I told you to make mock ups like verified: _plans/DESIGN_CONSISTENCY_2026-08-27.md:S3
   that. But I don't know why, but you fucking edit everything"* · The 9 customer screens still on
   the old back arrow are named and DELIBERATELY NOT EDITED, pending one word from him (S3 above).
-- [x] CORRECTION 2026-08-28 · *"the back arrow, the log. Right? I worked on other places too. Maybe
+- [x] CORRECTION 2026-08-28 · *"the back arrow, the log. Right? I worked on other places too. Maybe verified: _design-system/LOCKFILE.md:2098
   it... you changed it back to something that I did not want"* · Answered with his own LOCKFILE row:
   every change made was TO his lock (ChevronLeft never ArrowLeft, 44 across, shadow-elevation-2),
   not away from it. Nothing of his was undone.
-- [x] CORRECTION 2026-08-28 · *"the proposed forty p x body. How does Airbnb do?"* · The 14px card
+- [x] CORRECTION 2026-08-28 · *"the proposed forty p x body. How does Airbnb do?"* · The 14px card verified: _design-system/references/airbnb--fonts-vs-ours.md
   body is WITHDRAWN. Airbnb puts 12px on that exact text and 13px on a card title, so his cards
   were already right. Captured into `_design-system/references/airbnb--fonts-vs-ours.md`.
-- [x] CORRECTION 2026-08-28 · *"I don't know where that fucking harness went, but you fucking
+- [x] CORRECTION 2026-08-28 · *"I don't know where that fucking harness went, but you fucking verified: _plans/ACTIVE.md:1
   ignored that completely"* · Answered in section 0 below and on his report page: 109 rows, 38
   design jobs open, and I made it worse with a 13-agent fan-out before reading them.
 
