@@ -2,16 +2,16 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-28T05:33:23 (trigger: auto)
+- taken: 2026-08-28T06:33:52 (trigger: auto)
 - branch: claude/stress-test-gates-hooks-6dc8e8
 
 ## git
 ```
-21d9fd8b3 Record the mockup delivery, its PASS, and two readings of mine that were wrong
-ebe19c4c8 One mockup that settles all three: the missing headline, the search bar, the body size
-4b581ccdb Point the workstream index at the three questions the mockup will ask him
-b6989aebb Trace the two odd sizes, count the habit at 350, and record one wrong hypothesis
-de086ea0e Name the account screen's seven text sizes, four of them inside 3.5 pixels
+8fb53b36f Rebuild sweep-rewards-hero-gradient as a real-token stacked A/B, not a redraw
+a06642bfd His six corrections logged in his own words, and the About page greys out all its own body text
+c8c3cb718 Five of the seven queued mockups rebuilt, and your brand pages cannot render for anyone
+8db61707a mockup(sweep): brand directory name-title scale, bigger vs lighter
+d3dcbbde1 mockup(sweep): partner feature/category grid chrome (sunken vs white+hairline)
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
@@ -52,9 +52,3 @@ de086ea0e Name the account screen's seven text sizes, four of them inside 3.5 pi
 110 | DESIGN RE-ENGINEER , improve the system we have, measured against live Airbnb | **ACTIVE** (2026-07-28)
 72 | REFUND PROCESS: does it exist, who decides, is it legal (owner 2026-08-19: "Is there even a refund process, and how does it even proceed? Who is gonna decide it? ... with the tax and fix if it's legal or not") | **ACTIVE** (2026-08-19)
 111 | GATE + HOOK STRESS TEST , all 305 hooks driven with real payloads, not read (owner 2026-08-17: "actually evaluate and stress test each one") | **ACTIVE** (2026-08-18)
-
-## DESIGN_CONSISTENCY_2026-08-27.md
-Open boxes:
-- [ ] **S3. Back arrow becomes one rule.** Standard is the 44x44 at (16,20) that seven pages already
-- [ ] **S5. Fold the 38 rows.** Every one of them is either finished, superseded by a spec written in
-- [ ] **S6. Then and only then, the look.** Gray, the dashboard direction, typography. Those are
