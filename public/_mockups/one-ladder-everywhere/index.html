@@ -242,6 +242,15 @@
 
   .cap { padding: 0 17px; font-size: 12px; color: var(--ink-2); margin: 14px 0 0; }
   .cap b { color: var(--ink); font-weight: 600; }
+
+  /* Withdrawal banner. Sunken tray so it reads as a note about the page rather than
+     part of it, no new size or weight beyond the two this page already uses. */
+  .withdrawn { margin: 18px 17px 0; padding: 14px 16px; border-radius: 16px;
+    background: var(--sunken); }
+  .wd-head { margin: 0 0 8px; font-size: 14px; font-weight: 600; color: var(--ink); }
+  .wd-line { margin: 0 0 7px; font-size: 12px; color: var(--ink-2); line-height: 1.5; }
+  .wd-line:last-child { margin-bottom: 0; }
+  .wd-line b { color: var(--ink); font-weight: 600; }
 </style>
 </head>
 <body>
@@ -249,6 +258,21 @@
 
   <p class="intro">Same ladder everywhere</p>
   <p class="intro-sub">Three separate decisions, each one shown at real size, now stacked directly above proposed.</p>
+
+  <div class="withdrawn">
+    <p class="wd-head">All three proposals below are withdrawn. 2026-08-28.</p>
+    <p class="wd-line"><b>1. The big home title:</b> you settled this on 2026-08-01 and ditched it
+      for balance. I should not have re-opened it. Airbnb's phone home agrees with you, nothing on
+      it is bigger than 18px either.</p>
+    <p class="wd-line"><b>2. The one search control:</b> built on a wrong measurement. Home,
+      category and Inspo already put the bar at the same spot and the same size, 358 wide and 64
+      tall at y12. Nothing to move.</p>
+    <p class="wd-line"><b>3. The 14px card body:</b> wrong. Airbnb, measured live the same day, puts
+      12px on exactly that text and 13px on the card title. Your cards were already right.</p>
+    <p class="wd-line">Kept visible on purpose, because you asked to see everything rather than have
+      it reverted. The real per-screen mockups are the ten <b>compare-</b> pages, one per screen,
+      as you asked.</p>
+  </div>
 
   <!-- ============================================================ -->
   <!-- SECTION 1 -->
