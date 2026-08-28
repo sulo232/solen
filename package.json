@@ -30,6 +30,8 @@
     "gate:migrations": "node scripts/check-migrations.mjs --gate",
     "gap-ladder-check": "node scripts/detect-gap-ladder-drift.mjs",
     "gate:gap-ladder": "node scripts/detect-gap-ladder-drift.mjs --gate",
+    "dead-class-check": "node scripts/detect-dead-class.mjs",
+    "gate:dead-class": "node scripts/detect-dead-class.mjs --gate",
     "test:visual": "playwright test",
     "test:visual:update": "playwright test --update-snapshots",
     "removed": "node scripts/removed.mjs",

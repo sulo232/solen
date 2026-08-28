@@ -97,6 +97,19 @@ const DETECTORS = [
       return m ? { count: Number(m[1]), label: "illegal gap-ladder utilities" } : null;
     },
   },
+  {
+    key: "dead-class-check",
+    label: "Dead classes",
+    catches: "a literal class token that Tailwind's JIT compiled with zero matching CSS rule (a plausible-looking utility that produces no CSS, the no-scrollbar shape), bucket A only (a near neighbour to a real class exists)",
+    scriptPath: "scripts/detect-dead-class.mjs",
+    npmScript: "dead-class-check",
+    gated: false,
+    reportPath: "_design-system/_dead-class-report.md",
+    parseHeadline: (stdout) => {
+      const m = /Total dead classes \(bucket A[^)]*\):\s*(\d+)/.exec(stdout);
+      return m ? { count: Number(m[1]), label: "dead classes (bucket A, near-miss)" } : null;
+    },
+  },
 ];
 
 // The 2 live gates, named only (never executed here). Both import their shared classifier
