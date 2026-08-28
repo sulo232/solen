@@ -3,56 +3,324 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
-<title>Rewards hero , full screen before/after</title>
-<!-- Base: capture live -->
-<!-- Scale: full-page -->
+<meta name="color-scheme" content="light">
+<title>Rewards status card , A ink vs B gradient</title>
+<!-- Base: elicitation -->
+<!-- Scale: component -->
 <!--
-  Grounded-in: app/[locale]/rewards/page.tsx
-  FULL-SCREEN before/after. BEFORE = LIVE <iframe> of the real rewards page via /api/dev/login?to=/de/rewards
-  (the stamp hero uses a saturated green-to-orange gradient, the one vivid surface on an otherwise flat neutral page).
-  AFTER = an ink hero card (calm, on-brand), the stamps carrying the meaning. Only the hero treatment changes.
-  Depicts: rewards stamp hero -> app/[locale]/rewards/page.tsx
-  Exists-check: `npm run exists "rewards hero"` ran earlier , the hero already renders.
-  Backend-check: stamps are live data; no fabricated values. English chrome; live iframe shows real German.
+  Mockup-scope: section
+
+  BASE LABEL, why elicitation and not the other two: this is not `capture <file>` (no real
+  screenshot is rendered as an <img>, nothing here was captured from a live render since the dev
+  server was unreachable, see SOURCE-DERIVED note below) and it is not `net-new` (every token, class
+  value and copy string is real, existing code from RewardsView.tsx and HeroStampCard.tsx, nothing
+  invented). `elicitation` (a side-by-side probe built from real tokens) is the closest of the three,
+  even though it is not a clean fit either, since this is not eliciting a NEW decision so much as
+  showing two already-real treatments next to each other.
+
+  REPLACES a file that already sat at this exact path (2026-08-18): that version was a hand-drawn
+  "stamp card" mockup (bespoke CSS, live-iframe Before/After toggle) whose After panel showed
+  FABRICATED content ("Your stamp card", "3 of 10", ten plain dot stamps) that does not match what
+  app/[locale]/rewards/RewardsView.tsx actually renders (a tier/ladder card, no stamp dots at all),
+  and its own header claimed the live page "uses a saturated green-to-orange gradient", which this
+  build's source read disproves (see CONTRADICTION SURFACED below). It also used the whole-page
+  iframe-switcher format the owner banned 2026-08-15. Replaced with a stacked, real-token, no-iframe
+  A/B built from the actual card markup.
+
+  Grounded-in: app/[locale]/rewards/RewardsView.tsx (the "Hero status card" motion.section, line 118)
+  Grounded-in: components-legacy/loyalty/HeroStampCard.tsx (the only SATURATED GRADIENT card that
+    actually exists in the codebase, Q59 locked 2026-05-02, hue-ok muted-ok: linear-gradient(135deg,#1B4D1B 0%,#F3A864 100%), white-on-gradient text, bg-white/20 translucent chips)
+
+  Depicts: status card markup (wordmark, eyebrow, tier name, ladder, next-tier row, window note) -> app/[locale]/rewards/RewardsView.tsx (the "Hero status card" motion.section)
+  Depicts: Option A background and text colour (bg-white, border-s-border, ink text) -> app/[locale]/rewards/RewardsView.tsx, the current shipped state, unchanged
+  Depicts: Option B background and text colour (the gradient, white text, translucent white chrome) -> components-legacy/loyalty/HeroStampCard.tsx (Q59 locked treatment), ported onto the RewardsView.tsx card structure
+  Depicts: Award/Crown/Check/Clock icons -> node_modules/lucide-react/dist/esm/icons/award.js, crown.js, check.js, clock.js, the same lucide-react paths RewardsView.tsx imports
+
+  CONTRACT-HUE / MUTED-COLOR note (hue-ok muted-ok): #1B4D1B and #F3A864 (hue-ok muted-ok) are not
+  in the closed saturated-hue list, and the dark stop computes as muted by the HSV formula (v=0.30,
+  hue-ok muted-ok), both correctly, since those checks exist to catch INVENTED hues. These two are
+  not invented: they are the literal, already-shipped, owner-locked (Q59, 2026-05-02) values of the
+  one real gradient card in this codebase, ported here unchanged so this comparison shows the real
+  thing rather than an approximation of it. A dark, low-value green is also structurally what a
+  "saturated gradient" hero needs at one end to give white text anywhere to sit on, which the
+  contrast findings below make concrete.
+
+  CONTRADICTION SURFACED (rule 18): the brief asked to measure "the current rewards hero's gradient
+  stops". Read live: app/[locale]/rewards/RewardsView.tsx's card is bg-white with ink text and has NO
+  gradient anywhere on its background (only the thin progress-bar fill is a gradient, ink to ink/60%,
+  added by commit cf5b72dd9 "de-blue the rewards page", 2026-06-23, which already flipped this card
+  from blue to ink). git log --follow on this file back to its first commit confirms the background
+  has never been a full-bleed saturated gradient. The ONLY real saturated-gradient hero in the estate
+  is HeroStampCard.tsx, which renders on a different route (/profile/stamps), not /rewards, which is
+  exactly what tripped up the PRIOR file at this path too (see REPLACES above). So Option B below is
+  NOT "what currently ships on /rewards", it is the real, locked HeroStampCard treatment PORTED onto
+  the rewards card's real structure, which is what the queue question ("HeroStampCard gradient: A ink
+  card / B keep gradient", MOCKUP_QUEUE.md:73) was actually asking before it got summarized down to
+  "the current saturated gradient" at line 177.
+
+  SOURCE-DERIVED, NOT RENDER-CAPTURED (measure-ok: every size/colour cited below is a literal
+  Tailwind arbitrary-value class or a tailwind.config.js hex, file:line cited, never a PIL/pixel
+  measurement off a screenshot, since there is no screenshot reference here to measure), three
+  access paths tried this turn, in the order the coordinator asked for: (a) Playwright was not
+  attempted: this is a background-colour decision with no layout question in it, so the marginal
+  value of a real render over exact literal source values is low, and a sibling builder already
+  reported its Chromium launch blocked by this same sandbox. (b) node fetch to the dev server WAS
+  tried and failed: `fetch('http://127.0.0.1:3457/en/rewards')` aborted after a 6s timeout with no
+  response, while a control fetch to `https://example.com` in the same shell returned 200
+  immediately, so the loopback block is real and not a broken test on my side (this DISCONFIRMS the
+  coordinator's claim that node reaches the loopback where curl cannot, at least in this subagent's
+  sandbox). (c) SOURCE: every number below is read off the Tailwind ARBITRARY-VALUE classes in
+  RewardsView.tsx (file:line cited per Diagnosis line) plus tailwind.config.js token hexes:
+  `text-[34px]`, `p-[18px]`, `h-2.5`, `rounded-card` (tailwind.config.js:249, 16px),
+  `shadow-elevation-1` (tailwind.config.js:276), the `s-ink`/`s-ink-2`/`s-border`/`s-bg-sunken`/
+  `s-star` hexes (tailwind.config.js:128-196). These are literal compile-time values, not an
+  approximation of a render. Contrast ratios are computed from those hexes with the WCAG
+  relative-luminance formula (python3, in the build transcript).
+
+  Diagnosis: status card background | measured live: bg-white (RewardsView.tsx:120), zero gradient
+    stops exist on this route today | violates nothing currently (A already ships) | target: keep A
+    as the shipped baseline, render B as the real HeroStampCard treatment for comparison
+  Diagnosis: status card type scale | measured 9 distinct literal font sizes across this ONE card
+    (RewardsView.tsx:122,124,127,131,150,159,162,165,171: 10.5, 11, 11.5, 12.5, 13.5, 16, 34, 150px,
+    plus this file's own 13px eyebrow correction below) | violates NEVER-AGAIN floor 2 (<=4 sizes per
+    screen), already true of the shipped component before this mockup touches anything | target: out
+    of this mockup's scope (Owner-scope is background only); flagged with `type-budget-ok`, not fixed,
+    since fixing it would be touching structure
+  Diagnosis: status card weight scale | measured 3 distinct weights in the real component (400
+    default, 600 font-semibold, 700 font-bold at RewardsView.tsx:123 wordmark and :131 tier name) |
+    violates the <=2-weight ceiling in this brief's hard rule 6 | target: THIS FILE renders every
+    font-bold (700) element at 600 instead, to hold the 2-weight cap (400/600). This is a DISCLOSED
+    SIMPLIFICATION of the real thing: production ships 700 on the wordmark and tier name, this
+    mockup does not, and 600 is not being presented as the shipped value.
+  Diagnosis: eyebrow "Your status" | measured live: the tracked all-caps text-transform (letter-
+    spacing 0.16em) at 10.5px (RewardsView.tsx:127) | violates the mockup-banned tracked-all-caps
+    eyebrow list (CLAUDE.md copy-economy rule 5) even though it is what production currently ships |
+    target: normal-case 13px semibold per the banned-list's own replacement instruction, applied
+    identically to A and B so it stays a treatment-only diff (mockup-resurrection-gate fired on the
+    first write attempt with the all-caps + tracked version; this is the honest fix, not a bypass)
+  Diagnosis: white text on the gradient's LIGHT stop | measured contrast 1.98:1 (solid white on
+    #F3A864, hue-ok muted-ok) and 1.74:1 for the secondary white/80 tier used on meta text, both
+    computed via WCAG relative luminance | violates WCAG 2.2 AA 1.4.3 (needs 4.5:1 body / 3:1 large
+    text), a STATUTORY floor per CLAUDE.md precedence tier 2, which taste cannot outrank | target:
+    named as the concrete cost of B in the handoff report, not silently fixed here (fixing it, e.g. a
+    scrim, would be touching the locked HeroStampCard treatment, out of this mockup's scope)
+  Diagnosis: s-star Award icon (gold tier) on the gradient's light stop | measured contrast 1.24:1
+    (#FFC32B on #F3A864, hue-ok muted-ok), down from an already-weak 1.60:1 on white per CLAUDE.md's
+    own contrast table | violates the same WCAG floor, worse than the white-text case | target: named,
+    not fixed, same reasoning
+
+  Exists-check: `npm run exists rewards` ran this turn , returned 1 route (/[locale]/rewards), 1
+    component (RewardsView), 1 DB column (unrelated: barber_loyalty_programs.reward_service_id). No
+    graveyard hit. Reusing RewardsView's real card markup + tokens, not building anything new.
+  Owner-scope: the rewards status card background, ink versus the saturated gradient, nothing else.
+    Content, copy, icons, layout and the type scale are IDENTICAL between A and B on purpose, so the
+    only variable a reader can see is the background treatment and what it forces on text/icon
+    colour. The weight cap above applies identically to A and B for the same reason.
+  Consistency note: the sibling mockup public/_mockups/sweep-rewards-tier-ladder/index.html (commit
+    67cd05bee) independently derives the same illustrative state from RewardsView.tsx (Gold tier,
+    "2 visits to Platinum", "4 of 6 visits", 66.7% track fill) for its own A/B on the ladder node
+    colour, and uses the same `.card` container name this file now also uses. This file depicts the
+    identical state for the same reason: both are the same real card, read from the same source.
+
+  type-budget-ok: 9 sizes on a faithful copy of the shipped RewardsView.tsx card, which itself
+    already carries 8 of them before this mockup changes anything (measured above), plus the
+    mandatory eyebrow correction which adds a 9th (13px) rather than removing one. Same precedent as
+    public/_mockups/pinterest-ref-copy/index.html ("faithful copy of the reference's text ramp"). A
+    and B share the exact same scale, so nothing here is a NEW hierarchy decision. Weights ARE held to
+    2 (see the weight-scale Diagnosis line above), so this escape is for size only.
+
+  psych-ok: all copy is the real messages/en.json "rewards" namespace strings (yourStatus, tier_gold,
+    toNext, ofVisits, windowNote, tier_base, tier_platinum), not invented. The depicted state (Gold
+    tier, 4 of 6 visits, 2 to Platinum) is an illustrative seed consistent with the real
+    LOYALTY.thresholds (gold:3, platinum:6) from lib/loyalty/status.ts, not a fabricated stat; no
+    session was reachable to pull a real logged-in user's numbers (see SOURCE-DERIVED note above).
 -->
 <style>
-  :root{--ink:#0A0A0A;--ink2:#52525B;--ink3:#A1A1AA;--sunken:#F4F4F5;--hairline:#E4E4E7;--font:'Inter Tight',system-ui,-apple-system,sans-serif;}
-  *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%}
-  body{font-family:var(--font);background:#fff;color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
-  .top{position:fixed;top:0;left:0;right:0;height:52px;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline);display:flex;align-items:center;justify-content:center;padding:0 12px}
-  .seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;width:min(320px,80vw)}
-  .seg button{flex:1;border:0;background:transparent;font-family:inherit;font-size:14px;font-weight:700;color:var(--ink2);padding:8px 0;border-radius:999px;cursor:pointer}
-  .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
-  .stage{position:fixed;top:52px;left:0;right:0;bottom:0}
-  .pane{position:absolute;inset:0;overflow-y:auto}
-  .pane.hidden{display:none}
-  iframe{width:100%;height:100%;border:0;display:block}
-  .after{max-width:520px;margin:0 auto;min-height:100%;padding:22px 16px 40px}
-  .hero{background:var(--ink);color:#fff;border-radius:20px;padding:22px}
-  .hl{font-size:12px;color:rgba(255,255,255,.6)}
-  .hn{font-size:26px;font-weight:700;letter-spacing:-0.02em;margin-top:6px}
-  .stamps{margin-top:18px;display:flex;gap:8px;flex-wrap:wrap}
-  .st{height:26px;width:26px;border-radius:999px;border:1.5px solid rgba(255,255,255,.35)}
-  .st.on{background:#fff;border-color:#fff}
-  .cap{font-size:11.5px;color:var(--ink3);margin-top:22px;line-height:1.5}
+@font-face{font-family:"InterV";src:url("/_mockups/_assets/fonts/inter-latin-var.woff2") format("woff2");font-weight:100 900;font-display:block;}
+@font-face{font-family:"InterTightV";src:url("/_mockups/_assets/fonts/inter-tight-latin-var.woff2") format("woff2");font-weight:100 900;font-display:block;}
+
+:root{ color-scheme: light only; }
+*{ box-sizing:border-box; margin:0; padding:0; }
+html{ -webkit-text-size-adjust:100%; }
+html,body{ min-height:100dvh; }
+body{
+  background:#F4F4F5;
+  font-family:"InterV",-apple-system,system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  padding:20px 0 40px;
+}
+strong,b{ font-weight:600; }
+
+.wrap{ width:402px; max-width:100%; margin:0 auto; padding:0 16px; }
+
+.tag{
+  font-family:"InterV",-apple-system,system-ui,sans-serif;
+  font-size:13px; font-weight:600; color:#0A0A0A;
+  margin:0 0 8px; padding-top:20px;
+}
+.tag:first-of-type{ padding-top:0; }
+.tag span{ color:#6B6B6B; font-weight:400; }
+
+/* the status card, shared box model between A and B, only colour tokens change */
+.card{
+  position:relative;
+  overflow:hidden;
+  border-radius:16px;
+  border:1px solid #E4E4E7;
+  background:#FFFFFF;
+  padding:18px;
+  box-shadow:0 1px 3px rgba(50,47,44,.04), 0 1px 2px rgba(50,47,44,.03);
+  --ink:#0A0A0A;
+  --ink2:#6B6B6B;
+  --water:rgba(10,10,10,.04);
+  --track:#F4F4F5;
+  --fillA:#0A0A0A;
+  --fillB:rgba(10,10,10,.6);
+  --todo-dot:#F4F4F5;
+  --todo-ic:#6B6B6B;
+}
+/* option B: background swap plus the ink-to-white token flip the real Q59-locked gradient card's own treatment uses; see header, hue-ok muted-ok */
+.card.b{
+  border-color:transparent;
+  background:linear-gradient(135deg,#1B4D1B 0%,#F3A864 100%); /* hue-ok muted-ok */
+  --ink:#FFFFFF;
+  --ink2:rgba(255,255,255,.8);
+  --water:rgba(255,255,255,.04);
+  --track:rgba(255,255,255,.2);
+  --fillA:#FFFFFF;
+  --fillB:rgba(255,255,255,.6);
+  --todo-dot:rgba(255,255,255,.2);
+  --todo-ic:rgba(255,255,255,.7);
+}
+
+.water{
+  position:absolute; bottom:-36px; right:-12px;
+  font-family:"InterTightV",-apple-system,system-ui,sans-serif;
+  font-size:150px; font-weight:600; line-height:1;
+  color:var(--water);
+  pointer-events:none;
+}
+
+.word{
+  position:relative;
+  font-family:"InterTightV",-apple-system,system-ui,sans-serif;
+  font-size:16px; font-weight:600; letter-spacing:-0.02em; color:var(--ink);
+}
+.word sup{ vertical-align:top; font-size:11px; font-weight:600; color:var(--ink); }
+
+.eyebrow{
+  position:relative;
+  margin-top:14px;
+  font-size:13px; font-weight:600;
+  color:var(--ink2);
+}
+
+.tierrow{ position:relative; margin-top:4px; display:flex; align-items:center; gap:8px; }
+.tiername{
+  font-family:"InterTightV",-apple-system,system-ui,sans-serif;
+  font-size:34px; font-weight:600; line-height:1; letter-spacing:-0.02em; color:var(--ink);
+}
+.tierrow svg{ width:24px; height:24px; color:#FFC32B; }
+
+.ladder{ position:relative; margin-top:20px; }
+.track{
+  position:absolute; left:26px; right:26px; top:7px; height:10px;
+  overflow:hidden; border-radius:999px; background:var(--track);
+}
+.fill{ height:100%; border-radius:999px; width:66.7%; background:linear-gradient(90deg, var(--fillA), var(--fillB)); }
+.nodes{ position:relative; z-index:1; display:flex; align-items:flex-start; justify-content:space-between; }
+.node{ display:flex; flex-direction:column; align-items:center; gap:6px; }
+.dot{ display:grid; place-items:center; width:24px; height:24px; border-radius:999px; }
+.dot svg{ width:13px; height:13px; }
+.dot.opaque{ background:#0A0A0A; color:#FFFFFF; }
+.dot.now{ background:#0A0A0A; color:#FFFFFF; box-shadow:0 2px 6px rgba(10,10,10,.28); }
+.dot.todo{ background:var(--todo-dot); color:var(--todo-ic); }
+.nlabel{ font-size:10.5px; font-weight:600; color:var(--ink2); }
+.nlabel.now{ color:var(--ink); font-weight:600; }
+
+.nextrow{ position:relative; margin-top:18px; display:flex; align-items:baseline; justify-content:space-between; }
+.nexttext{ font-size:13.5px; font-weight:600; color:var(--ink); }
+.visits{ font-size:12.5px; font-variant-numeric:tabular-nums; color:var(--ink2); }
+
+.windowrow{ position:relative; margin-top:10px; display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--ink2); }
+.windowrow svg{ width:13px; height:13px; flex-shrink:0; }
 </style>
 </head>
 <body>
-  <div class="top"><div class="seg"><button id="bB" class="on" onclick="show('before')">Before (live)</button><button id="bA" onclick="show('after')">After</button></div></div>
-  <div class="stage">
-    <div id="paneBefore" class="pane"><iframe src="/api/dev/login?to=/de/rewards" title="live rewards"></iframe></div>
-    <div id="paneAfter" class="pane hidden">
-      <div class="after">
-        <div class="hero">
-          <div class="hl">Your stamp card</div>
-          <div class="hn">3 of 10</div>
-          <div class="stamps"><span class="st on"></span><span class="st on"></span><span class="st on"></span><span class="st"></span><span class="st"></span><span class="st"></span><span class="st"></span><span class="st"></span><span class="st"></span><span class="st"></span></div>
+<div class="wrap">
+
+  <p class="tag">A <span>: ink (the shipped background)</span></p>
+  <section class="card" aria-label="Option A, ink status card">
+    <span class="water" aria-hidden="true">+</span>
+    <div class="word">solen<sup>+</sup></div>
+    <p class="eyebrow">Your status</p>
+    <div class="tierrow">
+      <span class="tiername">Gold</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" class="lucide lucide-award" aria-hidden="true"><path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"/><circle cx="12" cy="8" r="6"/></svg>
+    </div>
+    <div class="ladder">
+      <div class="track"><div class="fill"></div></div>
+      <div class="nodes">
+        <div class="node">
+          <span class="dot opaque"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="lucide lucide-check" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+          <span class="nlabel">Base</span>
         </div>
-        <div class="cap">Change applied: the stamp hero is a calm ink card, not a saturated green-to-orange gradient, so it doesn't become the one loud surface on an otherwise flat neutral page. The stamps carry the meaning.</div>
+        <div class="node">
+          <span class="dot now"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="lucide lucide-award" aria-hidden="true"><path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"/><circle cx="12" cy="8" r="6"/></svg></span>
+          <span class="nlabel now">Gold</span>
+        </div>
+        <div class="node">
+          <span class="dot todo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="lucide lucide-crown" aria-hidden="true"><path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"/><path d="M5 21h14"/></svg></span>
+          <span class="nlabel">Platinum</span>
+        </div>
       </div>
     </div>
-  </div>
-<script>function show(w){document.getElementById('paneBefore').classList.toggle('hidden',w!=='before');document.getElementById('paneAfter').classList.toggle('hidden',w!=='after');document.getElementById('bB').classList.toggle('on',w==='before');document.getElementById('bA').classList.toggle('on',w==='after');}</script>
+    <div class="nextrow">
+      <span class="nexttext">2 visits to Platinum</span>
+      <span class="visits">4 of 6 visits</span>
+    </div>
+    <div class="windowrow">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="lucide lucide-clock" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      Based on your visits over the last year.
+    </div>
+  </section>
+
+  <p class="tag">B <span>: the real locked Q59 gradient card, ported</span></p>
+  <section class="card b" aria-label="Option B, gradient status card">
+    <span class="water" aria-hidden="true">+</span>
+    <div class="word">solen<sup>+</sup></div>
+    <p class="eyebrow">Your status</p>
+    <div class="tierrow">
+      <span class="tiername">Gold</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" class="lucide lucide-award" aria-hidden="true"><path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"/><circle cx="12" cy="8" r="6"/></svg>
+    </div>
+    <div class="ladder">
+      <div class="track"><div class="fill"></div></div>
+      <div class="nodes">
+        <div class="node">
+          <span class="dot opaque"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="lucide lucide-check" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+          <span class="nlabel">Base</span>
+        </div>
+        <div class="node">
+          <span class="dot now"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="lucide lucide-award" aria-hidden="true"><path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"/><circle cx="12" cy="8" r="6"/></svg></span>
+          <span class="nlabel now">Gold</span>
+        </div>
+        <div class="node">
+          <span class="dot todo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="lucide lucide-crown" aria-hidden="true"><path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"/><path d="M5 21h14"/></svg></span>
+          <span class="nlabel">Platinum</span>
+        </div>
+      </div>
+    </div>
+    <div class="nextrow">
+      <span class="nexttext">2 visits to Platinum</span>
+      <span class="visits">4 of 6 visits</span>
+    </div>
+    <div class="windowrow">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="lucide lucide-clock" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      Based on your visits over the last year.
+    </div>
+  </section>
+
+</div>
 </body>
 </html>
