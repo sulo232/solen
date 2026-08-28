@@ -29,7 +29,7 @@ const PILL_OFF = "border-s-border bg-white font-normal text-s-ink-2";
 const CTA =
   "font-body flex h-12 w-full items-center justify-center rounded-full bg-s-ink text-[15px] font-semibold text-white";
 const ICON_BUTTON = "flex h-11 w-11 items-center justify-center rounded-full bg-s-ink text-white";
-const NO_SCROLLBAR = "no-scrollbar flex gap-2 overflow-x-auto px-5";
+const NO_SCROLLBAR = "scrollbar-hide flex gap-2 overflow-x-auto px-5";
 
 const FIXTURE_TODAY = "2026-08-19";
 const WEEKDAY_FMT = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Zurich", weekday: "short" });
@@ -156,7 +156,7 @@ function DetailsStep() {
           </span>
         ))}
       </div>
-      <div className={NO_SCROLLBAR + " mb-5 mt-2"}>
+      <div className={NO_SCROLLBAR + " mb-4 mt-2"}>
         {TIME_PILLS.slice(8, 14).map((t) => (
           <span
             key={`${t.hour}-${t.minute}`}
