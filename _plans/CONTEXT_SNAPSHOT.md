@@ -2,19 +2,26 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-28T06:17:57 (trigger: auto)
+- taken: 2026-08-28T08:06:27 (trigger: auto)
 - branch: claude/offline-booking-device-266b10
 
 ## git
 ```
-85f79c720 The floor plan he asked for, scoped against what already exists
-52c785a3a A way to catch placeholder text before it reaches his screen
-42fec8e44 M7 is his answer, not my sending, so it goes back to open
-d9f8113df The plan carries what the reviewers found, not just what was built
-f7fb41ed4 The tick-off-as-arrived tap is back, and the review page stopped breaking the real site
+76a547e79 The scrollbars on the phone booking screen are hidden now, really
+e52fcef3d No screen now claims the spacing law and breaks it
+b8b673b4b A check that finds a file breaking the spacing law it claims to follow
+975af7672 The missing consistency commands, and why they are missing
+b254a9f5b The review page follows the gap law it claims, and says five
 ```
 ```
-?? app/[locale]/dev/host-flows/_flow-floor.tsx
+M app/[locale]/dashboard/all-salons/page.tsx
+ M app/[locale]/dashboard/bookings/page.tsx
+ M app/[locale]/dashboard/staff/page.tsx
+ M app/[locale]/dev/terminal/Screen.tsx
+ M components-legacy/dashboard/SalonAboutEditor.tsx
+ M components-legacy/salon/ServiceCategoryFilter.tsx
+ M components-legacy/ui/CategoryTree.tsx
+ M components-legacy/ui/ExpandableTabs.tsx
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
@@ -102,16 +109,6 @@ Open boxes:
 - [ ] R20-7 THE ON-RAMP, and it is the one piece of the integration question that survives his
 - [ ] R20-8 THE FIRST PER-VENDOR DEAL WORTH ASKING FOR, when we want one: Phorest. It is the only
 - [ ] R19-2 Q2, the tolerance rule: HIS DECISION IS MADE, the work is NOT done. "yeah, yeah, build that." A published, priced
-
-## SALON_FLOOR_2026-08-27.md
-Open boxes:
-- [ ] A1 The LIVE floor view: the room drawn, chairs in their real places, who is in each one.
-- [ ] A2 Chairs drawn as rounded SQUARES, not chair pictograms.
-- [ ] A3 The setup step where the number of chairs is chosen.
-- [ ] A4 A few starting TEMPLATES they can pick from.
-- [ ] A5 Moving a chair around themselves after picking a template.
-- [ ] A6 All of it as a mockup on the same review link, stepped frame by frame.
-- [ ] A7 Say in plain words why squares beat chair shapes, since he offered it as a maybe.
 
 ## MOBILE_DASHBOARD_2026-08-21.md
 Open boxes:

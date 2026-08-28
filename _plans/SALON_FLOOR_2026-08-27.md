@@ -145,3 +145,28 @@ NOT fixed in this batch, on purpose: it is five one-line additions to `package.j
 scope of the floor mockup, and the new gap-ladder detector registers its own commands
 (`gap-ladder-check`, `gate:gap-ladder`) so nothing built this turn depends on the missing four.
 Named here so the next person does not rediscover it as a bug.
+
+## A second missing thing, found by rendering rather than by reading: a class that does not exist
+`no-scrollbar` was written in 14 places across 10 files, on customer pages and dashboard pages, to
+hide the grey scrollbar under a horizontally scrolling row. It is not defined anywhere. Proven in
+the browser, not inferred: a scan of every loaded CSS rule for the string `no-scrollbar` returns
+false, and the elements carrying it computed `scrollbar-width: auto`. The real utility is
+`scrollbar-hide` at `app/globals.css:965`, with a byte-identical duplicate named `scrollbar-none`
+at :976.
+
+WHY, per the missing-things protocol: the NEVER-LANDED case, in its quietest form. There is no
+graveyard entry and nothing superseded it. Nobody ever wrote the rule; the name simply reads like a
+real Tailwind utility, so it passed every code review it was ever in, including mine. I copied it
+into a new file this session for the same reason.
+
+FIXED, all 14 sites, commits `76a547e79` and `afa4d410d`. Measured after at a 375 viewport: the
+filter row on `/en/behandlungen/haare` carries 635px of chips in a 343px box, overflows, and
+computes `scrollbar-width: none`; the status pills on `/en/dashboard/bookings` and the chair row on
+`/en/dev/terminal` both compute none; zero elements anywhere still carry the dead name; and
+`grep -rn "no-scrollbar" app components components-legacy` returns nothing.
+
+HARDENED as a script that looks, not a check that scolds, because this was only ever knowable by
+looking at the compiled stylesheet. `scripts/detect-dead-class.mjs` compiles the real stylesheet,
+collects the 3059 class names it actually contains, and reports any literal class in the scanned
+source that produces no CSS. The known-answer control is the incident itself: `no-scrollbar` comes
+back dead and `scrollbar-hide` comes back alive.
