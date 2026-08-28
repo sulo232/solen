@@ -2,31 +2,24 @@
 
 Report-mode only unless run with --gate (scripts/detect-gap-ladder-drift.mjs, npm run gap-ladder-check). Flags an illegal margin/gap/space utility (over 16px, not exactly 32px) on a file governed by the binary 16-and-32 spacing law: the merchant round in _design-system/TASTE_LOG.md 2026-07-15 (Round D1), generalised in _design-system/TERMINAL_PRINCIPLES.md section 3.
 
-Generated: 2026-08-28T05:45:14.356Z
+Generated: 2026-08-28T05:59:21.542Z
 Files scanned (app/ + components/ + components-legacy/, .tsx/.jsx): 706
-Files governed by this law (claim, weak-claim, or path): 118
+Files governed by this law (claim, weak-claim, or path): 117
 
 ## Summary
 
-- Total illegal gap-ladder utilities: **120**
-  - claim-breaking (the file's own header claims this law): 8
+- Total illegal gap-ladder utilities: **112**
+  - claim-breaking (the file's own header claims this law): 0
   - weak-claim (the law named more loosely, own bucket, see below): 0
   - path-governed only (a real operator surface, never claimed the law): 112
 - Review by hand (em/concatenation/broken-template, never a finding, never gates): 1
 - Unreadable files or directories (never counted clean): 0
 
-## Claim-breaking, loudest (8)
+## Claim-breaking, loudest (0)
 
 The file's own header text contains one of the four marker phrases (TERMINAL_PRINCIPLES.md, "binary 16 and 32", Round D1, "SCREEN CLASS: operator screen") while the code carries an illegal gap. A file that states this law and breaks it, worse than one never told.
 
-- **app/[locale]/dev/host-flows/_flow-phone.tsx:159** `mb-5` (20px, illegal: over 16px and not exactly 32px)
-- **app/[locale]/dev/host-flows/_flow-tabs.tsx:624** `mt-6` (24px, illegal: over 16px and not exactly 32px)
-- **app/[locale]/dev/outside-bookings/page.tsx:268** `mt-10` (40px, illegal: over 16px and not exactly 32px)
-- **app/[locale]/dev/outside-bookings/page.tsx:287** `mt-12` (48px, illegal: over 16px and not exactly 32px)
-- **app/[locale]/dev/outside-bookings/page.tsx:299** `mt-12` (48px, illegal: over 16px and not exactly 32px)
-- **app/[locale]/dev/outside-bookings/page.tsx:317** `mt-12` (48px, illegal: over 16px and not exactly 32px)
-- **app/[locale]/dev/outside-bookings/page.tsx:336** `mt-12` (48px, illegal: over 16px and not exactly 32px)
-- **app/[locale]/dev/outside-bookings/page.tsx:352** `mt-12` (48px, illegal: over 16px and not exactly 32px)
+_none_
 
 ## Weak-claim (0)
 
@@ -165,7 +158,7 @@ _none_
 
 ## Tunables
 
-- `CLAIM_MARKER_RE` / `WEAK_CLAIM_MARKER_RE` (top of this file): the claim phrases, strong and weak.
+- `hasStrongClaim` / `WEAK_CLAIM_MARKER_RE` (top of this file): the claim phrases, strong and weak.
 - `OPERATOR_PATH_RE`: the real operator-surface path patterns, verified present on disk before writing.
 - `UTILITY_RE` / `utilityToPx`: the ten scanned prefixes and the px conversion (px/rem/pt fixed, em routed to review).
 - `CONCAT_SUSPECT_RE` / `TEMPLATE_NEWLINE_SUSPECT_RE` / `TEMPLATE_INTERP_SUSPECT_RE`: the three review-by-hand shapes.

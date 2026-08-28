@@ -27,13 +27,25 @@
 //      different words (the exact document, the exact date, no "Round D1") dropped out of
 //      governance entirely.
 //
+// THIRD ROUND, one defect found by the coordinator opening the files directly, same class as
+// the eight above: FIX B2, a bare "TERMINAL_PRINCIPLES.md" filename mention counted as a strong
+// claim even when the surrounding prose was a CITATION disclaiming binding governance, not a
+// claim of being governed. See hasStrongClaim() below.
+//
 // GOVERNED, now in THREE separate classes, reported loudest to quietest (a file that states a
 // law and breaks it is worse than one that names it loosely, which is worse than one never told
 // at all, only sitting under the right path):
 //
-//   1. CLAIM (strong)  - the file's own text contains one of the four marker phrases the two
-//                        real defect files used, grepped verbatim off them: "TERMINAL_PRINCIPLES.md",
-//                        "binary 16 and 32", "Round D1", "SCREEN CLASS: operator screen".
+//   1. CLAIM (strong)  - the file's own text contains "binary 16 and 32", "Round D1", or
+//                        "SCREEN CLASS: operator screen" (self-sufficient on their own), OR a
+//                        "TERMINAL_PRINCIPLES.md" mention sitting on the same line or an adjacent
+//                        line as a self-referential word ("governed", "operator screen", "SCREEN
+//                        CLASS", "follows", "binds"). FIX B2 (round three): a bare
+//                        TERMINAL_PRINCIPLES.md filename used to count on its own, so a CITATION
+//                        that disclaims governance in the same breath ("the nearest things are
+//                        TERMINAL_PRINCIPLES.md (design law, not product options)") fired the same
+//                        loud bucket as a genuine claim ("governed by ... TERMINAL_PRINCIPLES.md").
+//                        See hasStrongClaim() below for the exact co-occurrence check.
 //   2. WEAK-CLAIM      - FIX C6. The file's own text names the law in looser words: "merchant"
 //                        co-occurring with the 2026-07-15 date (this repo's own prose calls the
 //                        law "the 2026-07-15 merchant round"; neither "Round D1" nor
@@ -155,8 +167,35 @@ const { gate: GATE_MODE, root: ROOT_OVERRIDE } = parseArgs(process.argv.slice(2)
 // ---------------------------------------------------------------------------------------
 // Governance markers (tunables, edit here only, never inline below).
 // ---------------------------------------------------------------------------------------
-const CLAIM_MARKER_RE =
-  /TERMINAL_PRINCIPLES\.md|binary 16[\s-]and[\s-]32|Round D1|SCREEN CLASS:\s*operator screen/i;
+// FIX B2 (round three). A bare "TERMINAL_PRINCIPLES.md" mention used to fire the strong claim on
+// its own, so a CITATION ("the nearest things are `_design-system/TERMINAL_PRINCIPLES.md` (design
+// law, not product options)", app/[locale]/dev/outside-bookings/page.tsx:6, explicitly disclaiming
+// binding governance in the same breath) was indistinguishable from a genuine claim of being bound
+// by it (app/[locale]/dev/host-flows/_flow-phone.tsx:10, "governed by _design-system/
+// TERMINAL_PRINCIPLES.md"). Three markers stay self-sufficient because they are already
+// self-referential by construction, no other document can be quoted next to them and mean
+// something else: "binary 16 and 32" and "Round D1" both name THIS law specifically, and
+// "SCREEN CLASS: operator screen" is this file's own governance-declaration header line. The
+// fourth, a bare "TERMINAL_PRINCIPLES.md" filename, is not self-referential on its own, a prose
+// paragraph can cite the file while explaining why it does NOT apply. It now only counts as a
+// strong claim when a self-referential word ("governed", "operator screen", "SCREEN CLASS",
+// "follows", "binds") sits on the same line as the mention or on an adjacent line either side.
+const SELF_SUFFICIENT_CLAIM_RE = /binary 16[\s-]and[\s-]32|Round D1|SCREEN CLASS:\s*operator screen/i;
+const TERMINAL_PRINCIPLES_MENTION_RE = /TERMINAL_PRINCIPLES\.md/i;
+const SELF_REFERENTIAL_WORD_RE = /governed|operator screen|SCREEN CLASS|follows|binds/i;
+
+function hasStrongClaim(text) {
+  if (SELF_SUFFICIENT_CLAIM_RE.test(text)) return true;
+  const lines = text.split("\n");
+  for (let i = 0; i < lines.length; i++) {
+    if (!TERMINAL_PRINCIPLES_MENTION_RE.test(lines[i])) continue;
+    const windowStart = Math.max(0, i - 1);
+    const windowEnd = Math.min(lines.length - 1, i + 1);
+    const window = lines.slice(windowStart, windowEnd + 1).join("\n");
+    if (SELF_REFERENTIAL_WORD_RE.test(window)) return true;
+  }
+  return false;
+}
 
 // FIX C6. A weaker, separately-bucketed signal: "merchant" co-occurring with the 2026-07-15 date
 // (the file's own prose for this law elsewhere in this repo calls it "the 2026-07-15 merchant
@@ -469,7 +508,7 @@ for (const absPath of candidateFiles) {
   }
   filesScanned++;
 
-  const claimsStrong = CLAIM_MARKER_RE.test(text);
+  const claimsStrong = hasStrongClaim(text);
   const claimsWeak = !claimsStrong && WEAK_CLAIM_MARKER_RE.test(text);
   const pathGoverned = OPERATOR_PATH_RE.test(relPath);
   if (!claimsStrong && !claimsWeak && !pathGoverned) continue; // not governed by this law, never flagged.
@@ -637,7 +676,7 @@ reportLines.push("");
 
 reportLines.push("## Tunables");
 reportLines.push("");
-reportLines.push("- `CLAIM_MARKER_RE` / `WEAK_CLAIM_MARKER_RE` (top of this file): the claim phrases, strong and weak.");
+reportLines.push("- `hasStrongClaim` / `WEAK_CLAIM_MARKER_RE` (top of this file): the claim phrases, strong and weak.");
 reportLines.push("- `OPERATOR_PATH_RE`: the real operator-surface path patterns, verified present on disk before writing.");
 reportLines.push("- `UTILITY_RE` / `utilityToPx`: the ten scanned prefixes and the px conversion (px/rem/pt fixed, em routed to review).");
 reportLines.push("- `CONCAT_SUSPECT_RE` / `TEMPLATE_NEWLINE_SUSPECT_RE` / `TEMPLATE_INTERP_SUSPECT_RE`: the three review-by-hand shapes.");

@@ -11,6 +11,10 @@
 // added to the original 15, per the closing instruction: "EVERY case above becomes a NEW CASE...
 // the suite passing 15 of 15 while missing all eight is exactly why it needs them."
 //
+// THIRD ROUND. One more defect (FIX B2, a bare TERMINAL_PRINCIPLES.md mention counted as a claim
+// even when it was a citation disclaiming governance), found by the coordinator opening the real
+// files directly. Two new cases below quote the real files' actual text verbatim.
+//
 //   Run:  node scripts/verify/gap-ladder-suite.mjs
 //   Out:  "ok"/"FAIL" per case, then "N passed, M failed"; exits non-zero on any failure.
 
@@ -201,6 +205,34 @@ write(
     'export function C() { return <div className="mt-6">x</div>; }\n',
 );
 
+// ---------------------------------------------------------------------------------------
+// THIRD ROUND. FIX B2: a bare TERMINAL_PRINCIPLES.md mention is a citation, not a claim, unless a
+// self-referential word sits on the same or an adjacent line. Both cases below quote the ACTUAL
+// text of the two real files the coordinator found this in, verbatim, not paraphrased.
+// ---------------------------------------------------------------------------------------
+
+// B2a. the real line from app/[locale]/dev/host-flows/_flow-phone.tsx:10, verbatim, OUTSIDE any
+//      operator path -> a genuine claim ("governed by" on the same line), must fire as CLAIM, not
+//      weak-claim, not path.
+write(
+  "app/[locale]/misc-b2/b2a-governed-citation.tsx",
+  "// emphasis-ok: operator screen, governed by _design-system/TERMINAL_PRINCIPLES.md, not the\n" +
+    'export function C() { return <div className="mt-6">x</div>; }\n',
+);
+
+// B2b. the real lines from app/[locale]/dev/outside-bookings/page.tsx:4-6, verbatim, OUTSIDE any
+//      operator path -> a bare citation disclaiming governance in the same breath, no
+//      self-referential word nearby, no weak-claim word nearby ("merchant" sits next to
+//      2026-08-15 here, not 2026-07-15, so it does not satisfy WEAK_CLAIM_MARKER_RE either) ->
+//      must NOT fire as claim, weak-claim, or path; must drop out of governance entirely.
+write(
+  "app/[locale]/misc-b2/b2b-citation-only.tsx",
+  " * Exists-check: `npm run exists outside-bookings` returns 0 matches, run 2026-08-17. The nearest\n" +
+    " * things are `_plans/MERCHANT_TERMINAL_2026-08-15.md` (the workstream record, prose, not a page) and\n" +
+    " * `_design-system/TERMINAL_PRINCIPLES.md` (design law, not product options). Net-new: the board he\n" +
+    'export function C() { return <div className="mt-6">x</div>; }\n',
+);
+
 function run(scanRoot, extraArgs = []) {
   return spawnSync(process.execPath, [DETECTOR, "--root", scanRoot, ...extraArgs], { encoding: "utf8" });
 }
@@ -339,6 +371,16 @@ check(
 check(
   "C6b: bare case-insensitive 'operator screen' -> weak-claim, not claim, not path",
   firedAsWeakClaim("c6-weak-operatorscreen.tsx") && !firedAsClaim("c6-weak-operatorscreen.tsx") && !firedAsPath("c6-weak-operatorscreen.tsx"),
+);
+
+// --- new: defect B2, TERMINAL_PRINCIPLES.md citation vs genuine claim ----------------------
+check(
+  "B2a: real _flow-phone.tsx:10 text, 'governed by' co-occurs -> CLAIM, not weak-claim, not path",
+  firedAsClaim("b2a-governed-citation.tsx") && !firedAsWeakClaim("b2a-governed-citation.tsx") && !firedAsPath("b2a-governed-citation.tsx"),
+);
+check(
+  "B2b: real outside-bookings/page.tsx:4-6 text, bare citation -> drops out entirely, no finding at all",
+  !firedFor("b2b-citation-only.tsx"),
 );
 
 // Cleanup. chmod the locked fixtures back before rmSync so removal never depends on directory-

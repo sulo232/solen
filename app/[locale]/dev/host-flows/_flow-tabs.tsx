@@ -621,7 +621,7 @@ function MenuRow({ icon: Icon, label }: MenuItem) {
 function MenuScreen() {
   return (
     <>
-      <div className="mt-6">
+      <div className="mt-8">
         <p className="font-body px-5 pb-2 text-[13px] font-semibold text-s-ink-2">Business</p>
         <div>
           {MENU_BUSINESS.map((item) => (
