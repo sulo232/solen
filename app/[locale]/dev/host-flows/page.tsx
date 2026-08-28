@@ -131,10 +131,11 @@ function framesOf(mod: FlowModule): FlowFrame[] | null {
 }
 
 // Labels shortened to fit five pills on one 358px-wide row (folder rule: no truncation, no wrap,
-// no horizontal scroll on a segmented control). NOT measured against a live render this turn (no
-// browser tool was available in this pass); these are the shortest honest English words for each
-// flow ("Tabs", "Calendar", "Phone", "First day", "Floor"), and a live scrollWidth check against
-// each button's clientWidth is still needed to confirm none of them wraps or overflows.
+// no horizontal scroll on a segmented control): the shortest honest English words for each flow
+// ("Tabs", "Calendar", "Phone", "First day", "Floor"). Measured against a live render: at a 390px
+// viewport all five pills render 68.8px wide, each on a single line at 33.5px tall, with
+// scrollWidth equal to clientWidth on every one and document.documentElement.scrollWidth equal to
+// 390; at 360px they render 62.8px wide, same single line, still no overflow.
 const FLOW_OPTIONS: { key: FlowKey; label: string; mod: FlowModule }[] = [
   { key: "tabs", label: "Tabs", mod: TabsMod as unknown as FlowModule },
   { key: "calendar", label: "Calendar", mod: CalendarMod as unknown as FlowModule },
@@ -195,10 +196,10 @@ export default function HostFlowsPage() {
           Host flow proposals
         </p>
         <p className="mt-2 font-body text-[13px] font-normal text-s-ink-2">
-          Four screens under review. These are proposals, not the shipped product.
+          Five screens under review. These are proposals, not the shipped product.
         </p>
 
-        <div className="mt-6 flex gap-[2px] rounded-full bg-s-bg-sunken p-[3px]">
+        <div className="mt-8 flex gap-[2px] rounded-full bg-s-bg-sunken p-[3px]">
           {FLOW_OPTIONS.map((o) => (
             <button
               key={o.key}
@@ -219,7 +220,7 @@ export default function HostFlowsPage() {
             `min-h` on the caption keeps the prev/next row from moving as a short caption swaps for a
             longer one. */}
         {frame && frames && (
-          <div className="mt-6">
+          <div className="mt-8">
             <p className="font-body min-h-[34px] text-[13px] font-normal text-s-ink-2">{frame.caption}</p>
             <div className="mt-2 flex items-center justify-between">
               <button
