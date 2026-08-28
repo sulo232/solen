@@ -87,9 +87,9 @@ Build order = HIGH impact first. (arch/behavior/copy items are DECISIONS, not A/
 - [x] `verified:` sha 37673276b , the setInterval countdown, secondsLeft/stored state and the redirect notice are removed from app/[locale]/referral/[code]/page.tsx; the user continues via the existing explicit CTA. (BEHAVIOR, not mockup) referral 5-sec auto-redirect [HIGH] , referral/[code]:36 , remove the forced redirect. DONE 2026-07-25: removed the `setInterval` countdown and the `secondsLeft`/`stored`-driven redirect notice; the user now stays on the page and continues only via the existing explicit CTA button (`handleCta`, unchanged). `app/[locale]/referral/[code]/page.tsx`.
 - [x] sweep-notif-grouping [MED] , notifications flat edge-to-edge rows vs grouped card , BUILT
 - [x] (IA DECISION, not visual mockup) sweep-partner-cta [HIGH] , partner 3 CTAs all ink but 3 destinations , unify to one funnel (lead form). Investigated: not a visual A/B (they look identical); a written funnel recommendation, not a mockup. DONE 2026-07-25. Before: (1) hero signup-form submit posts the lead directly, (2) sticky bottom-bar CTA `href="#contact"` scrolls to the hero form, (3) bottom-of-page CTA `Link href="/onboarding/salon?utm_source=partner_page..."` navigated straight into the salon signup wizard, bypassing the lead form entirely. After: CTA (3) now points at `#contact`, the same anchor as the sticky CTA, so all three ink actions funnel to the ONE lead form; the mailto "book a consult" link stays the one secondary text link, unchanged rung. `app/[locale]/partner/page.tsx:494-506` (also dropped the now-unused `Link`/`useLocale` imports this CTA fix orphaned).
-- [x] sweep-rewards-tier-ladder [MED] , ink tiers vs green stepper , BUILT
-- [x] sweep-referral-hero [MED] , gradient vs flat , BUILT
-- [x] sweep-partner-cards [MED] , feature vs category card chrome , BUILT
+- [x] sweep-rewards-tier-ladder [MED] , ink tiers vs green stepper , BUILT in v2 format. NOT a contradiction with V3-C3 below, which shows the same name unticked: this line records the v2 mockup existing, V3-C3 records it needing a rebuild in section-scope format after the owner banned the iframe-switcher on 2026-08-15. Both are now done.
+- [x] sweep-referral-hero [MED] , gradient vs flat , BUILT in v2 format; rebuilt as V3-C5 below.
+- [x] sweep-partner-cards [MED] , feature vs category card chrome , BUILT in v2 format; rebuilt as V3-C6 below.
 - [x] sweep-partner-faq [MED] , accordion vs swipe cards , BUILT
 - [x] sweep-warum-badge [MED] , say-once vs badge-on-each , BUILT
 - [x] sweep-help-rows [MED] , grouped card vs flat link list , BUILT
@@ -169,14 +169,39 @@ ProfileTabs and the settings B2 direction are the built result).
   the name at font-weight 500, a third weight. All three undone in the After pane, verified by a
   dispatched click with the values read back. AWAITING HIS PICK on price ink vs grey; the duplicate
   count is a straight bug, not a taste question.
-- [ ] V3-C2 `sweep-booking-payment-selected` , the payment step's selected state: gray fill like every
+- [x] V3-C2 REBUILT 2026-08-28, `16d27c37d`. Ink border as shipped versus the locked gray fill, stacked at real size. REMOVED.md:41 carries an owner rejection of ink and black selected fills sitewide dated 2026-06-29, LATER than the in-code comment claiming a 2026-06-12 payment approval, and its offender list does not name PayConfirmStep, so payment reads as missed by that sweep rather than carved out as a fifth exception.
+  Original question: `sweep-booking-payment-selected` , the payment step's selected state: gray fill like every
   other pill, or the ink border this mockup says you approved in "mockup 24d". That approval could not
   be found in writing and the four named ink exceptions do not include payment.
-- [ ] V3-C3 `sweep-rewards-tier-ladder` , loyalty rank ladder: ink ladder or green stepper. The stepper
+- [x] V3-C3 REBUILT 2026-08-28, `67cd05bee`. Ink node versus green node at the real 24px dot and 10px track geometry, values read out of RewardsView.tsx. Replaced a 2026-08-18 file that was a hand-drawn redraw behind a live-iframe switcher, the banned format, and which only ever rendered ONE outcome with its recommendation baked into its caption.
+  Original question: `sweep-rewards-tier-ladder` , loyalty rank ladder: ink ladder or green stepper. The stepper
   law covers progress trackers and bans green on a node; a rank ladder is neither side of that.
 - [ ] V3-C4 `sweep-rewards-hero-gradient` , rewards hero: ink or the current saturated gradient.
-- [ ] V3-C5 `sweep-referral-hero` , referral hero: gradient or flat white cards.
-- [ ] V3-C6 `sweep-partner-cards` , partner page: do the feature grid and category grid share sunken
+- [x] V3-C5 REBUILT 2026-08-28, `aea75ac33`. The real gradient captured as a live Playwright screenshot versus the flat recipe the SAME page already ships 12px below it. Measured live: the subtitle reads 4.29:1 at the gradient's dark corner, under the 4.5:1 AA floor, and 5.33:1 uniformly on the flat version. Replaced a file carrying fabricated counts.
+  Original question: `sweep-referral-hero` , referral hero: gradient or flat white cards.
+- [x] V3-C6 REBUILT 2026-08-28, `d3dcbbde1`. THE FINDING OUTRANKED THE QUESTION. The two grids already share 7 of 9 class tokens and differ on exactly two things, the fill (sunken versus white) and one hover behaviour. Each clears the Edge-Visibility floor alone, so the defect is FLOORS LAW 8, they do not match EACH OTHER.
+  Original question: `sweep-partner-cards` , partner page: do the feature grid and category grid share sunken
   chrome or white plus hairline.
-- [ ] V3-C7 `sweep-brand-hero` , brand directory page: full PDP-scale hero or a lighter section title.
+- [x] V3-C7 REBUILT 2026-08-28, `8db61707a`. Replaced a stale 2026-07-19 iframe-toggle version that
+  used an invented name and invented locations. Variant A is the real locked salon-detail H1 at
+  30px/600, ratio 2.14x to the 14px body, which clears the >=28px display anchor and the >=1.8x
+  ratio. Variant B is this page's own section-H2 at 18px/600, ratio 1.29x, which fails both. The
+  page ships 22px/600 at ratio 1.57x today, so it fails both floors right now and there is no
+  photographic focal in that section to exempt it. Section height measured by a real Playwright
+  render through the public tunnel: 241px (28.6% of an 844 viewport) for A against 230px (27.2%)
+  for B, so the floor compliance is the trade, not screen space.
+  **AND A PRODUCT FINDING THAT OUTRANKS THE MOCKUP: `/[locale]/brand/[slug]` CANNOT RENDER FOR
+  ANYONE.** `salon_groups` has ZERO rows, so every brand URL falls through to its not-found branch.
+  Reported by the builder off the admin client, then re-verified by me against the file this
+  project names as column truth: `_inventory/_db-snapshot.json`, captured 2026-08-23, records
+  `{"name": "salon_groups", "rows": 0, "rls": true}` while `salons` in the same list carries 28.
+  (My first reading of that snapshot said the table did not exist at all. That was my traversal
+  being broken, caught by controlling on `bookings` and `salons`, which it also failed to find.
+  The table exists and is empty, which is a different and smaller problem than a missing table.) WHY, per the missing-things protocol: HALF-LANDED. The
+  migration `053_salon_groups.sql` shipped and the route shipped; the seed step was never written.
+  Not a graveyard hit, not superseded, not a design defect. THE FIX FOLLOWS THE REASON: seed it,
+  which taste rule 1 names explicitly as the fix rather than fabrication, since a row read through
+  the UI's normal query is a live source. Until then the hero question is decided on a page no
+  customer can reach, so the mockup is correct and the seeding is the blocker in front of it.
+  Original question: brand directory page: full PDP-scale hero or a lighter section title.
 - [ ] V3-C8 `sweep-ueber-uns` , the About page: nothing pins it beyond the general type scale.

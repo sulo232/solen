@@ -251,10 +251,23 @@ link in an email has **no replay protection at all**: verified on the shipped ro
 no single-use check of any kind. The feature was not cancelled and it was not superseded. It was
 written, reviewed, and stranded on a branch nobody merged. Nothing in this system said so.
 
-**ACTIVE, not a silent default, and CORRECTED 2026-08-24 so the claim matches what runs.** It is
-live as rule 1 of the before-you-write note (`~/.claude/hooks/reply-shape-preflight.py`, verbatim:
-"MISSING NEEDS A REASON. If you call something missing, absent, or never landed, say WHY"), which
-arrives BEFORE the reply is written, so acting on it costs him nothing.
+**ACTIVE, not a silent default. POINTER CORRECTED AGAIN 2026-08-28, and the rule itself never
+moved.** It is live in the output style at `~/.claude/output-styles/plain.md:155`, verbatim:
+*"anything called missing also says WHY (removed on purpose, superseded, never merged, half landed,
+blocked)"*. That file is in context for every message, so acting on it costs him nothing.
+
+~~This line said it was rule 1 of the before-you-write note, `~/.claude/hooks/reply-shape-preflight.py`,
+and quoted "MISSING NEEDS A REASON. If you call something missing, absent, or never landed, say WHY"
+as verbatim from it.~~ **Both halves were false, measured 2026-08-28.** That hook's `main()` prints
+exactly one thing, `decisions_block(...)`, the list of questions he has already answered this
+session. Its `REMINDER` block of twenty numbered rules was retired on 2026-08-26 and has emitted
+nothing since; running the hook and grepping for rules 1, 6, 14, 17 and 20 returns zero for every
+one. And the quoted sentence does not appear in that file at all, at any time, in any form: a grep
+for "MISSING NEEDS A REASON" across it returns 0 hits. So a correction dated 2026-08-24, written to
+make a claim match what runs, was itself wrong within two days and quoted a line that never existed.
+Found by adding a rule to that same dead block as a "harden", running it, and measuring that neither
+the new rule nor any of the twenty above it reached me. The hook now carries a banner saying nothing
+below it is emitted, so the next reader does not add a twenty-second.
 
 ~~This line used to say `~/.claude/hooks/missing-needs-a-reason-gate.py` (Stop) enforced it.~~ That
 file exists, its 11 checks pass, and it is registered in NO settings file and dispatched by no
