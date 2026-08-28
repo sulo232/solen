@@ -2,20 +2,16 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-28T01:22:10 (trigger: auto)
+- taken: 2026-08-28T05:33:23 (trigger: auto)
 - branch: claude/stress-test-gates-hooks-6dc8e8
 
 ## git
 ```
+21d9fd8b3 Record the mockup delivery, its PASS, and two readings of mine that were wrong
+ebe19c4c8 One mockup that settles all three: the missing headline, the search bar, the body size
+4b581ccdb Point the workstream index at the three questions the mockup will ask him
 b6989aebb Trace the two odd sizes, count the habit at 350, and record one wrong hypothesis
 de086ea0e Name the account screen's seven text sizes, four of them inside 3.5 pixels
-b2bf2696b The search bar does not move between categories, it disappears
-35261dde8 Trace the ladder to 10 places, and find that his home page headline is off on phones
-ec9e63eaa Name the cost of the ladder before a builder hits it: 187 headings grow in translation
-```
-```
-M _plans/ACTIVE.md
-?? public/_mockups/one-ladder-everywhere/
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
