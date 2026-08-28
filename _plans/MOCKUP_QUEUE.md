@@ -176,7 +176,24 @@ ProfileTabs and the settings B2 direction are the built result).
 - [x] V3-C3 REBUILT 2026-08-28, `67cd05bee`. Ink node versus green node at the real 24px dot and 10px track geometry, values read out of RewardsView.tsx. Replaced a 2026-08-18 file that was a hand-drawn redraw behind a live-iframe switcher, the banned format, and which only ever rendered ONE outcome with its recommendation baked into its caption.
   Original question: `sweep-rewards-tier-ladder` , loyalty rank ladder: ink ladder or green stepper. The stepper
   law covers progress trackers and bans green on a node; a rank ladder is neither side of that.
-- [ ] V3-C4 `sweep-rewards-hero-gradient` , rewards hero: ink or the current saturated gradient.
+- [x] V3-C4 REBUILT 2026-08-28, `8fb53b36f`. THE PREMISE WAS FALSE, so the question could not be
+  answered as written. There is no gradient on the rewards hero and there never has been one:
+  `app/[locale]/rewards/RewardsView.tsx:117` is `bg-white` with a hairline and `shadow-elevation-1`,
+  and `git log --follow` back to that file's first commit shows no gradient at any point. The
+  gradient the question meant lives on a DIFFERENT route, `components-legacy/loyalty/HeroStampCard.tsx:50`
+  (`linear-gradient(135deg,#1B4D1B,#F3A864)`) on `/profile/stamps`. Verified by the builder with a
+  control and re-verified here.
+  AND THE GRADIENT ARM IS NOT A TASTE CHOICE ANYWAY: white text on that gradient's light stop
+  measures **1.98:1**, under even the 3:1 large-text floor, and the star icon on it is 1.24:1.
+  Ink on white is 19.80:1. WCAG AA is precedence tier 2 and outranks taste, so the mockup shows
+  the comparison and states that only one arm is legal, rather than putting an illegal option to him.
+  SEPARATE DEFECT FOUND IN PASSING, recorded not fixed: the rewards page carries **9 readable text
+  sizes** (10.5 / 11 / 11.5 / 12.5 / 13.5 / 15 / 15.5 / 16 / 34) against a ceiling of 4, plus a
+  decorative 150px `aria-hidden` watermark, and **3 rendered weights** (400 on four unstyled lines,
+  600, 700) against a ceiling of 2. Two independent counts disagreed at first, 10 versus 8-9, and
+  the instrument was changed rather than a side picked: the gap is entirely the watermark and the
+  unstyled-default weight. Not fixed here because it is a real-code change and he has approved none.
+  Original question: rewards hero, ink or the current saturated gradient.
 - [x] V3-C5 REBUILT 2026-08-28, `aea75ac33`. The real gradient captured as a live Playwright screenshot versus the flat recipe the SAME page already ships 12px below it. Measured live: the subtitle reads 4.29:1 at the gradient's dark corner, under the 4.5:1 AA floor, and 5.33:1 uniformly on the flat version. Replaced a file carrying fabricated counts.
   Original question: `sweep-referral-hero` , referral hero: gradient or flat white cards.
 - [x] V3-C6 REBUILT 2026-08-28, `d3dcbbde1`. THE FINDING OUTRANKED THE QUESTION. The two grids already share 7 of 9 class tokens and differ on exactly two things, the fill (sunken versus white) and one hover behaviour. Each clears the Edge-Visibility floor alone, so the defect is FLOORS LAW 8, they do not match EACH OTHER.
