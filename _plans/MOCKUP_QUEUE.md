@@ -221,7 +221,7 @@ ProfileTabs and the settings B2 direction are the built result).
   the UI's normal query is a live source. Until then the hero question is decided on a page no
   customer can reach, so the mockup is correct and the seeding is the blocker in front of it.
   Original question: brand directory page: full PDP-scale hero or a lighter section title.
-- [ ] V3-C8 `sweep-ueber-uns` , STILL OPEN, and NOT because the work was not done. 2026-08-28: the
+- [x] V3-C8 BUILT 2026-08-28, `1fa93fa69`. The blocker was mine to clear, not a real wall: `mockup-preflight-manifest.py` wants `npm run exists` in THIS transcript, which never resolves for a Task-spawned subagent but resolves fine for the main thread. Built here directly. Both panes are real Playwright captures of the live page, the second with one injected colour rule, control 0 -> 8 body elements ink. RENDERING CORRECTED TWO OF MY OWN NUMBERS: 8 grey body elements, not 5 (four list items share one class), and the sibling comparison was BACKWARDS, partner is 49% grey so grey body is normal here. The surviving claim is narrower: About is the only marketing page with zero ink body copy. A stale file was already on disk from an earlier attempt, the banned iframe-switcher with three invented headings, so my note saying nothing was written was also wrong. Original state: STILL OPEN, and NOT because the work was not done. 2026-08-28: the
   diagnosis is finished and the file could not be written, so this stays unticked rather than
   claiming a mockup that does not exist on disk.
   **THE DEFECT FOUND, source-certain and needing no render: every non-heading character on the
