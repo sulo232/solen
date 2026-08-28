@@ -2,20 +2,24 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-26T14:04:53 (trigger: auto)
+- taken: 2026-08-28T06:17:57 (trigger: auto)
 - branch: claude/offline-booking-device-266b10
 
 ## git
 ```
-cd651d2d2 The screen was drawing 111 things and Airbnb draws about eight
-4d8917ad7 He could not see the flows, and the shape was the one he had already refused
-b1a1e042a Cite the two files behind the walk-in problem
-77a6795a4 He said calendar the first time and I built the council's answer instead
-e01266ee7 Four flows, built four at once instead of one after another
+85f79c720 The floor plan he asked for, scoped against what already exists
+52c785a3a A way to catch placeholder text before it reaches his screen
+42fec8e44 M7 is his answer, not my sending, so it goes back to open
+d9f8113df The plan carries what the reviewers found, not just what was built
+f7fb41ed4 The tick-off-as-arrived tap is back, and the review page stopped breaking the real site
+```
+```
+?? app/[locale]/dev/host-flows/_flow-floor.tsx
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
 68 | MERCHANT TERMINAL , the Uber-Eats-style "just receive bookings" screen for salons, browser-only, no device, no app (owner 2026-08-15: "so that the store doesn't need to actually use a dashboard... instead of this complicated thing so that these people can just sign up and then receive it. Bookings. Easy as that" + "I do not want, like, a physical device... subdomain or something") | **ACTIVE** (2026-08-15)
+71 | SALON FLOOR , the shop drawn as a plan with the chairs in their real places, from the aircraft-cargo reference he sent (owner 2026-08-27: "i want ths view too when its open ... when u set up u need to like put placement of chairs ... instead of the airplane like chairs or maybe square ... on onboarding they select how many chairs is there ... there is alrdy few templates but they can select em theymsleves and move arnd abit") | **ACTIVE** (2026-08-27)
 70 | MOBILE DASHBOARD , the salon-facing dashboard rebuilt for a phone in the shape of Airbnb's host app (owner 2026-08-21: "we need that ... make it so mobile dashboards improve and actually like the Airbnb ... use Mobbin a lot a lot") | **ACTIVE** (2026-08-21)
 67 | BRANCH RECONCILIATION , 40 unmerged branches, ~1800 commits, none on main (owner 2026-08-14: "look in deeep theres gnna be alot of conflicts ... merge them or delete but ask me alot") | **ACTIVE** (2026-08-14) , four questions asked
 66 | CATEGORY ROW: circles that morph into pills, flat icons with a glare (owner 2026-08-12: "instead of pills like circle n once u click then it bcms pill all morphism and also the icon i want it like abit glare yk like 3d liquid style icons") | **ACTIVE** (2026-08-12)
@@ -99,16 +103,20 @@ Open boxes:
 - [ ] R20-8 THE FIRST PER-VENDOR DEAL WORTH ASKING FOR, when we want one: Phorest. It is the only
 - [ ] R19-2 Q2, the tolerance rule: HIS DECISION IS MADE, the work is NOT done. "yeah, yeah, build that." A published, priced
 
+## SALON_FLOOR_2026-08-27.md
+Open boxes:
+- [ ] A1 The LIVE floor view: the room drawn, chairs in their real places, who is in each one.
+- [ ] A2 Chairs drawn as rounded SQUARES, not chair pictograms.
+- [ ] A3 The setup step where the number of chairs is chosen.
+- [ ] A4 A few starting TEMPLATES they can pick from.
+- [ ] A5 Moving a chair around themselves after picking a template.
+- [ ] A6 All of it as a mockup on the same review link, stepped frame by frame.
+- [ ] A7 Say in plain words why squares beat chair shapes, since he offered it as a maybe.
+
 ## MOBILE_DASHBOARD_2026-08-21.md
 Open boxes:
-- [ ] M1b was: COUNCIL on the tab shape, because he asked for one by name. What are the tabs for a SALON
-- [ ] M2 MOCKUP, the five tabs and the Menu.
-- [ ] M3 MOCKUP, a day in the calendar, following their month grid with a number under every date.
-- [ ] M4 MOCKUP, taking a booking by phone, end to end.
-- [ ] M5 MOCKUP, the empty first day for a salon that just signed up.
 - [ ] M6b The per-staff visibility picker proper. EXTEND the three existing columns rather than
-- [ ] was PARKED 2026-08-21 · Does the dashboard land on Heute or on the Kalender? · from: he leaned calendar first ("im thinking of 3 but w today too") and the four-lens council landed on Heute first and said so plainly rather than softening it. Only the LANDING tab is in dispute, his shape survives either way, and the mockups are being built Heute first because that is what the council argued for.
-- [ ] M7 Hand over the four mockups on one link and get his read before any real dashboard code
+- [ ] M7 GET HIS READ ON THE FOUR SCREENS. The link went out 2026-08-26 and the four screens are
 
 ## BRANCH_RECONCILIATION_2026-08-14.md
 Open boxes:

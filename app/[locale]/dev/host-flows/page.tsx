@@ -109,8 +109,9 @@ import * as PhoneMod from "./_flow-phone";
 import * as EmptyMod from "./_flow-empty";
 import * as CalendarMod from "./_flow-calendar";
 import * as TabsMod from "./_flow-tabs";
+import * as FloorMod from "./_flow-floor";
 
-type FlowKey = "tabs" | "calendar" | "phone" | "first-day";
+type FlowKey = "tabs" | "calendar" | "phone" | "first-day" | "floor";
 
 /** All four flow modules now expose the stepped API: a FRAMES (or FLOW_TABS_FRAMES) list plus a
  *  default export that takes `{ index }`. The `?` on both fields stays defensive typing only, so a
@@ -129,11 +130,17 @@ function framesOf(mod: FlowModule): FlowFrame[] | null {
   return list && list.length > 0 ? list : null;
 }
 
+// Labels shortened to fit five pills on one 358px-wide row (folder rule: no truncation, no wrap,
+// no horizontal scroll on a segmented control). NOT measured against a live render this turn (no
+// browser tool was available in this pass); these are the shortest honest English words for each
+// flow ("Tabs", "Calendar", "Phone", "First day", "Floor"), and a live scrollWidth check against
+// each button's clientWidth is still needed to confirm none of them wraps or overflows.
 const FLOW_OPTIONS: { key: FlowKey; label: string; mod: FlowModule }[] = [
-  { key: "tabs", label: "Tabs and Menu", mod: TabsMod as unknown as FlowModule },
+  { key: "tabs", label: "Tabs", mod: TabsMod as unknown as FlowModule },
   { key: "calendar", label: "Calendar", mod: CalendarMod as unknown as FlowModule },
-  { key: "phone", label: "Phone booking", mod: PhoneMod as unknown as FlowModule },
+  { key: "phone", label: "Phone", mod: PhoneMod as unknown as FlowModule },
   { key: "first-day", label: "First day", mod: EmptyMod as unknown as FlowModule },
+  { key: "floor", label: "Floor", mod: FloorMod as unknown as FlowModule },
 ];
 
 export default function HostFlowsPage() {

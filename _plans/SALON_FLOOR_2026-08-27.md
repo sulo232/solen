@@ -73,10 +73,55 @@ wiring to real data, no change to the two existing count endpoints. This is a mo
 first, per the mockup-first rule he restated on 2026-08-12.
 
 ## The asks, atomised
-- [ ] A1 The LIVE floor view: the room drawn, chairs in their real places, who is in each one.
-- [ ] A2 Chairs drawn as rounded SQUARES, not chair pictograms.
-- [ ] A3 The setup step where the number of chairs is chosen.
-- [ ] A4 A few starting TEMPLATES they can pick from.
-- [ ] A5 Moving a chair around themselves after picking a template.
-- [ ] A6 All of it as a mockup on the same review link, stepped frame by frame.
-- [ ] A7 Say in plain words why squares beat chair shapes, since he offered it as a maybe.
+Every tick below is a measurement taken on the rendered page at 390x844 and 360x800, not a reading
+of the source. `app/[locale]/dev/host-flows/_flow-floor.tsx`, five frames, reachable as the fifth
+pill on `/en/dev/host-flows`.
+
+- [x] A1 The LIVE floor view `verified:` app/[locale]/dev/host-flows/_flow-floor.tsx:361 `ScreenOpen`, drawing app/[locale]/dev/host-flows/_flow-floor.tsx:311 `RoomFrame`. Frame 1. Room card 324px wide at a 390 viewport, eight
+      chairs at 68.5px each, all eight measured inside the room's own box; at 360 the room is 294
+      and the tiles 61, still zero chairs outside, and `document.documentElement.scrollWidth`
+      equals the viewport at both widths. Reads "5 of 8 chairs are busy", each occupied tile
+      carrying a name and the minutes left, with the door and "3 waiting" on the open floor between
+      the two walls.
+- [x] A2 Rounded SQUARES, not chair pictograms `verified:` app/[locale]/dev/host-flows/_flow-floor.tsx:255 `ChairTile`, tile classes at app/[locale]/dev/host-flows/_flow-floor.tsx:266 and app/[locale]/dev/host-flows/_flow-floor.tsx:279. Every tile is `aspect-square w-full`
+      with a 12px radius and no icon inside it. The argument for it is written out in the file
+      header and repeated in plain words below.
+- [x] A3 The chair-count step `verified:` app/[locale]/dev/host-flows/_flow-floor.tsx:455 `ScreenCount`. Frame 3. Stepper from 1 to 20, the real cap
+      `barberChairsSchema` already enforces. Measured live: taking it 8 to 12 rebuilds the floor in
+      Frame 5 from a 12-cell grid to a 16-cell grid holding 12 chairs.
+- [x] A4 Starting TEMPLATES `verified:` app/[locale]/dev/host-flows/_flow-floor.tsx:591 `TEMPLATES`, driven by app/[locale]/dev/host-flows/_flow-floor.tsx:518 `rowsFor`, app/[locale]/dev/host-flows/_flow-floor.tsx:569 `cellOrder` and app/[locale]/dev/host-flows/_flow-floor.tsx:576 `layoutFor`. Frame 4, four of them. Measured live, all four produce
+      DIFFERENT layouts in Frame 5: two-walls puts 1-4 on the top row and 5-8 on the bottom of a
+      12-cell grid; one-wall puts 1-8 on rows 0 and 1; the island puts 1-8 on rows 1 and 2; the L
+      puts 1-4 along the top then 5-8 down the right-hand wall of a 20-cell, five-row grid. The
+      first version of this file had a picker that changed its own fill and nothing else, the
+      silent-no-op shape this project calls its number one failure mode.
+- [x] A5 Moving a chair `verified:` app/[locale]/dev/host-flows/_flow-floor.tsx:683 `FloorEditor`, pick-up at app/[locale]/dev/host-flows/_flow-floor.tsx:697 `tapChair` and put-down at app/[locale]/dev/host-flows/_flow-floor.tsx:708 `tapEmpty`. Frame 5. Tap to pick up, tap an empty spot to set down, no
+      drag. Measured live: chair 1 went from row 0 column 0 to row 1 column 1, and the hint line
+      changed to "Tap an empty spot to place chair 1" while it was held.
+- [x] A6 On the same review link, stepped frame by frame `verified:` app/[locale]/dev/host-flows/_flow-floor.tsx:809 exports `FRAMES`, and app/[locale]/dev/host-flows/page.tsx:133 lists it as the fifth flow. Wired into
+      `app/[locale]/dev/host-flows/page.tsx` as a fifth flow. All five pills measured 68.8px wide
+      with no text overflow on one line at 390.
+- [x] A7 Why squares beat chair shapes `verified:` app/[locale]/dev/host-flows/_flow-floor.tsx:62 in the file header. Written in the file header and handed over in
+      plain words: at 68px a chair glyph is unreadable, and every chair glyph looks like every
+      other one, so it carries no information. A square in the same footprint holds the customer's
+      name and the minutes left.
+
+## What review caught before he saw it
+Two adversarial reviewers both returned FAIL on the first build, and measuring the live render
+found two more. All eight fixed and re-measured:
+
+1. The flow was never wired into the review page, so it was unreachable in a browser.
+2. The grid hardcoded 352px against a box that is really 324px, because the arithmetic counted one
+   16px padding when there are two. Four chairs sat outside the drawn room at 390 and it clipped
+   outright at 375 and 360. Fixed by removing the fixed width: the grid is now fluid and the tiles
+   are square, so they divide whatever width the room actually has.
+3. The template picker was a silent no-op.
+4. A long customer name spilled into the neighbouring chair instead of truncating. A 35-character
+   name now measures inside its own tile with an ellipsis.
+5. Five 24px section gaps against the binary 16 and 32 the operator law asks for, in a file whose
+   own header claimed compliance.
+6. Frame 2's caption promised "tap any chair" and no chair had a tap handler. Every chair is a real
+   button now, and tapping chair 7 was measured swapping the panel to Tom.
+7. The one chair running over rendered as "8m ov...", so the only chair with a problem was the one
+   you could not read. Now measured at 61px of text in a 61px box, untruncated.
+8. The chair buttons in the setup editor carried no accessible name.
