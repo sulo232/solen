@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Staff access: today vs eight areas</title>
+<!--
+Grounded-in: app/[locale]/dashboard/staff/page.tsx  (the Permissions block, lines 244-261,
+             inside the add/edit staff modal)
+Exists-check: npm run exists staff permissions -> the surface already renders a "Permissions"
+             label plus 3 checkbox rows (Edit calendar / View bookings / Manage portfolio)
+             backed by staff.permissions. REMOVED.md has no entry for staff access.
+             The only net-new piece is the 8-area grant set + the 4 preset chips, and the
+             model behind it already exists at lib/staff-permissions.ts.
+measured: live at localhost:3000/en/dashboard/staff, Add modal, 2026-08-30, getBoundingClientRect
+             + getComputedStyle. Modal card 437px wide, white, radius 16px. Section content
+             389px (24px side padding). Section label 12px / 500 / #6B6B6B, 8px below it.
+             Row: 14x14 checkbox, 8px gap, text 14px / 400 / rgba(10,10,10,0.7), 20px tall,
+             28px pitch. Every value below is one of those or a LOCKFILE literal.
+floors: not a customer screen. This is an owner-facing dashboard control block, so the
+             customer floors (photographic focal, display anchor, imagery) do not apply.
+             Type budget holds: 2 sizes (12, 14), 2 weights (400, 500/600 on the chips only).
+-->
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+  :root{
+    --ink:#0A0A0A; --ink-2:#6B6B6B; --border:#E4E4E7; --sunken:#F4F4F5;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--sunken);font-family:Inter,system-ui,sans-serif;color:var(--ink);padding:28px 16px 64px}
+  .stack{max-width:437px;margin:0 auto}
+  .caption{font-size:12px;font-weight:500;color:var(--ink-2);margin:0 0 8px 2px}
+  .card{width:100%;background:#fff;border-radius:16px;padding:24px;margin:0 0 28px}
+  .sec-label{display:block;font-size:12px;font-weight:500;color:var(--ink-2);margin:0 0 8px}
+  .row{display:flex;align-items:center;gap:8px;height:20px;margin-bottom:8px;cursor:pointer}
+  .row:last-child{margin-bottom:0}
+  .row input{width:14px;height:14px;border-radius:3px;accent-color:var(--ink);margin:0;flex:none}
+  .row span{font-size:14px;font-weight:400;color:rgba(10,10,10,.7)}
+  .row small{font-size:12px;color:var(--ink-2);margin-left:6px}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px}
+  .chip{font-size:14px;line-height:1;padding:10px 14px;border-radius:99px;background:#fff;border:1px solid var(--border);color:var(--ink);font-weight:400}
+  .chip.on{background:var(--sunken);border-color:var(--sunken);font-weight:600}
+  .divider{height:1px;background:var(--border);margin:16px 0}
+  .note{font-size:12px;color:var(--ink-2);margin:8px 0 0;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="stack">
+
+  <p class="caption">TODAY, what the Add / Edit staff modal shows now</p>
+  <div class="card">
+    <label class="sec-label">Permissions</label>
+    <label class="row"><input type="checkbox" checked><span>Edit calendar</span></label>
+    <label class="row"><input type="checkbox" checked><span>View bookings</span></label>
+    <label class="row"><input type="checkbox"><span>Manage portfolio</span></label>
+    <p class="note">Three switches. Nothing on the site reads any of them, so every staff
+      member can reach every part of the dashboard whatever is ticked here.</p>
+  </div>
+
+  <p class="caption">PROPOSED, the eight areas you picked on 14 August</p>
+  <div class="card">
+    <label class="sec-label">Access</label>
+    <div class="chips">
+      <button class="chip">Manager</button>
+      <button class="chip on">Front desk</button>
+      <button class="chip">Staff</button>
+      <button class="chip">Custom</button>
+    </div>
+    <div class="divider"></div>
+    <label class="row"><input type="checkbox" checked><span>Calendar &amp; bookings</span></label>
+    <label class="row"><input type="checkbox" checked><span>Edit rota / schedules</span></label>
+    <label class="row"><input type="checkbox" checked><span>Clients &amp; CRM</span></label>
+    <label class="row"><input type="checkbox"><span>Catalog &amp; services</span></label>
+    <label class="row"><input type="checkbox"><span>Marketing</span></label>
+    <label class="row"><input type="checkbox"><span>Finance &amp; reports</span></label>
+    <label class="row"><input type="checkbox"><span>Team &amp; access</span></label>
+    <label class="row"><input type="checkbox"><span>Settings</span></label>
+    <p class="note">Picking a chip fills the eight boxes for you. Change any box and the chip
+      moves to Custom. Not yet wired: the 42 places that still check "is this the owner"
+      one by one, which is a separate job.</p>
+  </div>
+
+</div>
+</body>
+</html>
