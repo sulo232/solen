@@ -583,8 +583,53 @@ be re-proposed as new work without saying which of these four reasons applies.
 
 ### The remainder of this session, tracked rather than narrated
 
-- [ ] **BUILD THE EIGHT AREAS. It is written, it is stranded, and today proved what it replaces
-      is broken.** `verified:` `git ls-tree -r claude/nice-hugle-c0b706` lists
+- [x] **THE MODEL AND THE GATE ARE BUILT AND ON MAIN. The SCREEN is waiting on him.**
+      `verified:` `bc4f85484` brought `lib/staff-permissions.ts` across and added
+      `requireSalonAccess` to `lib/auth/require.ts`; `b0302a345` is on main and `npx tsc --noEmit`
+      exits 0 on that exact tree. The validator now discriminates, proven through the LIVE
+      `PATCH /api/staff/[id]` route with the dev owner session: `{calendar:true}` 200,
+      `{can_edit_schedule:false}` 200, `{nonsense:true}` 400 Unrecognized key,
+      `{calendar:true, zzz:1}` 400. The two 200s are the known-answer control, so the 400s are
+      the validator refusing junk rather than refusing everything; Emma's row was restored to
+      `{}` afterwards. Original box text kept below.
+
+- [ ] **HIS CALL: the staff screen itself, mockup is out.**
+      `public/_mockups/staff-access-eight-areas.html`, today's three switches stacked above the
+      eight areas he chose on 2026-08-14, at the real 437px modal width. Grounded in
+      `app/[locale]/dashboard/staff/page.tsx:244-261` and measured live this session: section
+      label 12px/500/#6B6B6B, rows 14px checkbox + 8px gap + 14px text at a 28px pitch. Mockup
+      first is law, so the real screen is untouched until he says go.
+
+- [ ] **The 57 places that ask "is this the owner" one by one are NOT converted, on purpose,
+      and until they are, the new gate is called by nothing.**
+      `verified:` `/usr/bin/grep -rn --include='*.ts' 'owner_id !== ' app lib` counts **57
+      sites across 47 files** today, re-counted this session. An earlier note in this plan said
+      42; that number predates the 293-commit merge from main and is corrected here rather than
+      left standing. And `requireSalonAccess` appears in exactly **one** place, its own
+      definition at `lib/auth/require.ts:165`, so **zero routes call it yet**. It is a
+      foundation, not a live gate, and saying otherwise would be the silent-no-op shape this
+      project bans by name.
+      Converting them to `requireSalonAccess` would LOOSEN access, because each one today
+      refuses everyone but the owner and the new gate lets granted staff through. That is the
+      point of the feature, but it is a behaviour change on 42 routes and it belongs in the
+      same approval as the screen, not ahead of it. Nothing regressed in the meantime: every
+      one of those 57 checks still refuses everyone but the owner, exactly as before.
+
+- [ ] **FOUND WHILE MEASURING, not fixed, because it is a look change and those need a mockup:
+      the selected filter pill on his dashboard is blue, and the locked rule says gray.**
+      `verified:` measured live on `/en/dashboard/staff`, the selected "All" pill computes to
+      `rgba(39,110,241,0.1)` fill with `rgb(39,110,241)` text at 13px. The design contract
+      (filter pill row, his call 2026-06-29, reconfirmed 2026-07-01) says selected =
+      `bg-s-bg-sunken` #F4F4F5 + `text-s-ink` + semibold, no blue. 14 selected-state sites
+      across 8 dashboard screens carry it (clients, bookings, barber-ops, marketing, staff,
+      services x3, analytics x2, settings x4). Five other blue sites are the NAMED legal
+      exception (booking calendar date and slot fills, `DateTimePicker`) and must not move.
+      It is also a contrast failure: blue #276EF1 on a 10% blue tint over white computes to
+      **4.02:1**, and AA needs 4.5:1 for 13px text. Control on the same maths: the same blue on
+      pure white gives 4.58:1, which matches the figure already recorded in CLAUDE.md, so the
+      calculation is calibrated rather than invented.
+
+- [ ] **ORIGINAL BOX, kept because its reasoning is still the spec for the build.** `verified:` `git ls-tree -r claude/nice-hugle-c0b706` lists
       `lib/staff-permissions.ts`, 80 lines, and its eight keys are calendar, schedule, clients,
       catalog, marketing, finance, team, settings, with four preset roles over them. It already
       uses `Partial<Record<PermissionKey, boolean>>`, an OBJECT, which is exactly the shape the

@@ -2,19 +2,20 @@
      Do NOT hand-edit; write live state into each workstream's detail file
      under its "## Live context" section instead. -->
 # CONTEXT SNAPSHOT (pre-compaction working state)
-- taken: 2026-08-27T10:17:16 (trigger: auto)
-- branch: claude/stress-test-gates-hooks-6dc8e8
+- taken: 2026-08-30T21:15:08 (trigger: auto)
+- branch: claude/agent-flow-design-overhaul-2af2c2
 
 ## git
 ```
-8378f389c checkpoint(auto): 3 uncommitted file(s) at turn end
-c7b23aa3e Bring main in, and settle all 13 clashes one at a time
-1ebf80abb Bring the corrected plan into main: proof on the ticked lines, leftovers tracked
-ae3fa907f Put the proof on the ticked line, and track the leftovers as boxes not prose
-0c73517e0 Bring today's backend work into main: five fixes, all graded by someone else
+8ec72d9d8 Bring main in so this branch builds again, and stop it drifting further
+bc4f85484 The eight areas you chose in August, brought across and made real underneath
+290af37f5 The calendar's accents were rendering black because the token they use is dead
+780c188c7 The gray he called everywhere, counted: 810 background uses, and a third are on pages no customer opens
+ab7f0f7cb Your login lockout switched itself off during an outage. The fix was written in July and never merged
 ```
 
 ## ACTIVE workstreams (full rows in ACTIVE.md)
+80 | THE SITE DOES NOT BUILD (found 2026-08-27 opening a preview of main for the owner) | **ACTIVE** (2026-08-27)
 74 | OVERNIGHT LOOP: how I work + efficiency (speed/money) + harness + skills (owner 2026-08-24, going to sleep: "finish evrth as a. loop") | **ACTIVE** (2026-08-24)
 75 | HIS OPEN ASKS, the ones I measured instead of doing (owner 2026-08-24: "are you sure you finished everything? What about the one... like, the number three and also about the context and about the price and also the skills") | **ACTIVE** (2026-08-24)
 76 | FIX ALL OF THEM, not report them (owner 2026-08-24: "instead of just telling me? You should fix all of them... stop telling me I fixed it") | **ACTIVE** (2026-08-24)
