@@ -4,27 +4,39 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import { validateBody, scheduleSchema } from "@/lib/validations";
 import { applyRateLimit, generalLimiter } from "@/lib/ratelimit";
+import { hasPermission, type StaffPermissions } from "@/lib/staff-permissions";
 
 // Answers "may this staff member edit their own schedule?" against every shape
-// staff_members.permissions can actually hold. app/[locale]/dashboard/staff/page.tsx
-// (around line 112) is the only writer today and it saves an OBJECT
-// { can_edit_schedule, can_view_own_bookings, can_manage_portfolio }, which
-// lib/validations.ts (staffUpdateSchema) validates as z.record(z.string(), z.unknown()),
-// so the object shape is the only one the API will ever accept going forward. The
-// string-array shape (["edit_own_schedule", "manage_all"]) is kept honoured so nothing
-// regresses if a row ever holds the legacy vocabulary this line was originally written for.
+// staff_members.permissions can actually hold. Reaches its answer through the
+// shared model in lib/staff-permissions.ts (hasPermission against the "schedule"
+// key) instead of a local one-off, so this route and lib/auth/require.ts's
+// requireSalonAccess read the same permission vocabulary rather than two.
+//
+// `can_edit_schedule` is the OLD key name; `schedule` is the NEW one from that
+// shared model. Both are honoured here until the dashboard is rebuilt to write
+// the new key: app/[locale]/dashboard/staff/page.tsx (around line 112) is the
+// only writer today and it still saves the legacy object shape
+// { can_edit_schedule, can_view_own_bookings, can_manage_portfolio }. The
+// string-array shape (["edit_own_schedule", "manage_all"]) is kept honoured too
+// so nothing regresses if a row ever holds the legacy vocabulary this line was
+// originally written for.
 function canEditOwnSchedule(permissions: unknown): boolean {
   if (Array.isArray(permissions)) {
     return permissions.includes("edit_own_schedule") || permissions.includes("manage_all");
   }
   if (permissions && typeof permissions === "object") {
-    const flag = (permissions as Record<string, unknown>).can_edit_schedule;
-    // Absent key defaults to ALLOWED, deliberately. The dashboard's own toggle loads
-    // with `p.can_edit_schedule ?? true` (app/[locale]/dashboard/staff/page.tsx:77),
-    // so the owner's screen already shows this permission as ON when it has never
-    // been set. Refusing here would silently take away what the owner's own screen
-    // says the staff member has. Only an explicit `false` refuses.
-    return flag !== false;
+    const perms = permissions as Record<string, unknown>;
+    // An explicit `false` under either key name refuses.
+    if (perms.can_edit_schedule === false) return false;
+    if (perms.schedule === false) return false;
+    // An explicit grant under the new key name, read through the shared model.
+    if (hasPermission(perms as StaffPermissions, "schedule")) return true;
+    // Absent under both names defaults to ALLOWED, deliberately. The dashboard's own
+    // toggle loads with `p.can_edit_schedule ?? true`
+    // (app/[locale]/dashboard/staff/page.tsx:77), so the owner's screen already shows
+    // this permission as ON when it has never been set. Refusing here would silently
+    // take away what the owner's own screen says the staff member has.
+    return true;
   }
   // null or any other unexpected shape: same default as the missing-key case above.
   return true;

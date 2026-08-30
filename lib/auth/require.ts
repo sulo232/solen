@@ -32,6 +32,7 @@ import { createServerSupabaseClient, createAdminSupabaseClient } from "@/lib/sup
 
 import type { User } from "@supabase/supabase-js";
 import type { Database } from "@/lib/database.types";
+import { hasPermission, type PermissionKey, type StaffPermissions } from "@/lib/staff-permissions";
 
 type SupabaseClient = Awaited<ReturnType<typeof createServerSupabaseClient>>;
 type AdminSupabaseClient = ReturnType<typeof createAdminSupabaseClient>;
@@ -141,6 +142,89 @@ export async function requireSalonOwner(
   }
 
   return { user, supabase, salon: { id: salon.id, owner_id: salon.owner_id! } };
+}
+
+/**
+ * Requires the authenticated user to have access to one area of a salon's staff
+ * dashboard, either as the salon's owner (always full access) or as an active
+ * staff member whose `staff_members.permissions` grants that specific area.
+ *
+ * Returns `{ user, supabase, salon, via }` OR 404/403 NextResponse. `via` says
+ * which case matched ("owner" or "staff"), and carries `staffId` for the staff
+ * case so a caller can scope a query to that specific staff row.
+ *
+ * DEFAULT IS REFUSE: an absent grant for `area` refuses access. This is the
+ * opposite default from `canEditOwnSchedule` in
+ * app/api/staff/my-schedule/route.ts, which defaults an absent
+ * `can_edit_schedule` key to ALLOWED, deliberately, because that route governs
+ * a staff member editing their OWN hours and the owner's dashboard toggle
+ * already shows that switch as on by default. This gate governs access to
+ * someone else's salon data, not the caller's own row, so an absent grant is
+ * refused rather than assumed on. That is a decision, not an inconsistency.
+ */
+export async function requireSalonAccess(
+  salonId: string,
+  area: PermissionKey
+): Promise<
+  | {
+      user: User;
+      supabase: SupabaseClient;
+      salon: { id: string; owner_id: string };
+      via: "owner";
+    }
+  | {
+      user: User;
+      supabase: SupabaseClient;
+      salon: { id: string; owner_id: string };
+      via: "staff";
+      staffId: string;
+    }
+  | NextResponse
+> {
+  const authResult = await requireAuth();
+  if (authResult instanceof NextResponse) return authResult;
+  const { user, supabase } = authResult;
+
+  // Same query shape as requireSalonOwner, reused rather than re-derived.
+  const { data: salon, error: salonError } = await supabase
+    .from("salons")
+    .select("id, owner_id")
+    .eq("id", salonId)
+    .maybeSingle<{ id: string; owner_id: string | null }>();
+
+  if (salonError || !salon) {
+    return NextResponse.json(
+      { error: "Salon not found", code: "SALON_NOT_FOUND" },
+      { status: 404 }
+    );
+  }
+
+  if (salon.owner_id === user.id) {
+    return { user, supabase, salon: { id: salon.id, owner_id: salon.owner_id }, via: "owner" };
+  }
+
+  const { data: staff, error: staffError } = await supabase
+    .from("staff_members")
+    .select("id, permissions")
+    .eq("salon_id", salonId)
+    .eq("user_id", user.id)
+    .eq("is_active", true)
+    .maybeSingle<{ id: string; permissions: StaffPermissions | null }>();
+
+  if (staffError || !staff || !hasPermission(staff.permissions, area)) {
+    return NextResponse.json(
+      { error: "Forbidden", code: "NOT_AUTHORIZED_FOR_AREA" },
+      { status: 403 }
+    );
+  }
+
+  return {
+    user,
+    supabase,
+    salon: { id: salon.id, owner_id: salon.owner_id! },
+    via: "staff",
+    staffId: staff.id,
+  };
 }
 
 /**
