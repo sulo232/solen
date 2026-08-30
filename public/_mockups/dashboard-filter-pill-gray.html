@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dashboard filter pill: blue today, gray as locked</title>
+<!--
+Grounded-in: app/[locale]/dashboard/staff/page.tsx:550  (the All / Active / Inactive filter
+             row, the same markup repeats on clients, bookings, barber-ops, marketing,
+             services and analytics)
+Exists-check: npm run exists filter pill -> the treatment already exists in 11 dashboard
+             files; the locked recipe already exists as the TabPill treatment in the design
+             contract. REMOVED.md has no entry for filter pills. Nothing net-new is proposed,
+             this is the locked recipe applied to a background it was not written for.
+measured: live at localhost:3000/en/dashboard/staff, 2026-08-30, getBoundingClientRect +
+             getComputedStyle. Pill 38px tall, 13px / 600, padding 8px 14px, radius pill,
+             1px border, 8px gap, row 437px wide. Page behind the row is #F4F4F5
+             (bg-s-bg-sunken), NOT white. Selected today: fill rgba(39,110,241,.1),
+             text rgb(39,110,241). Unselected: white, border #E4E4E7, text #6B6B6B.
+floors: owner dashboard control, not a customer screen, so the customer floors do not apply.
+             Type budget holds: 1 size (13px), 1 weight (600).
+-->
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+  :root{--ink:#0A0A0A;--ink-2:#6B6B6B;--border:#E4E4E7;--sunken:#F4F4F5;--blue:#276EF1}
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:#fff;font-family:Inter,system-ui,sans-serif;color:var(--ink);padding:24px 16px 64px}
+  .stack{max-width:437px;margin:0 auto}
+  .cap{font-size:12px;font-weight:500;color:var(--ink-2);margin:0 0 8px 2px;line-height:1.45}
+  .cap b{color:var(--ink);font-weight:600}
+  .page{background:var(--sunken);border-radius:12px;padding:16px;margin:0 0 8px}
+  .row{display:flex;gap:8px}
+  .pill{height:38px;padding:0 14px;border-radius:99px;border:1px solid var(--border);
+        background:#fff;color:var(--ink-2);font-size:13px;font-weight:600;font-family:inherit;
+        display:inline-flex;align-items:center;cursor:pointer}
+  .a .pill.on{background:rgba(39,110,241,.1);border-color:transparent;color:var(--blue)}
+  .b .pill.on{background:var(--sunken);border-color:var(--sunken);color:var(--ink)}
+  .c .pill{height:44px;background:transparent;border-color:transparent;color:var(--ink-2)}
+  .c .pill.on{background:#fff;border-color:var(--border);color:var(--ink)}
+  .note{font-size:12px;color:var(--ink-2);margin:0 0 28px 2px;line-height:1.55}
+  .note.pick{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="stack">
+
+  <p class="cap"><b>A. Today.</b> Chosen = pale blue fill, blue text.</p>
+  <div class="page a">
+    <div class="row">
+      <button class="pill on">All</button>
+      <button class="pill">Active</button>
+      <button class="pill">Inactive</button>
+    </div>
+  </div>
+  <p class="note">Blue was ruled out for filters in June and again in July. The blue text on
+    its own blue tint measures 4.02 where 4.5 is the readable floor. The button is also 38px
+    tall where 44 is the minimum for a thumb.</p>
+
+  <p class="cap"><b>B. The locked recipe, applied word for word.</b> Chosen = gray fill.</p>
+  <div class="page b">
+    <div class="row">
+      <button class="pill on">All</button>
+      <button class="pill">Active</button>
+      <button class="pill">Inactive</button>
+    </div>
+  </div>
+  <p class="note">This is what the rule literally says, and it does not work here. The rule was
+    written for a white page, and your dashboard page is that exact same gray, so the chosen
+    button disappears into the background. Shown so you can see why the rule needs the next
+    one rather than being ignored.</p>
+
+  <p class="cap"><b>C. My pick.</b> Chosen = white fill on the gray page, the same idea flipped.</p>
+  <div class="page c">
+    <div class="row">
+      <button class="pill on">All</button>
+      <button class="pill">Active</button>
+      <button class="pill">Inactive</button>
+    </div>
+  </div>
+  <p class="note pick">Same calm, no blue, and the chosen one is the one that lifts off the page.
+    Raised to 44px so it takes a thumb. This is the treatment your Team, Clients, Bookings,
+    Marketing, Services and Reports screens would all share.</p>
+
+</div>
+</body>
+</html>

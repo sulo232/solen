@@ -593,15 +593,17 @@ be re-proposed as new work without saying which of these four reasons applies.
       the validator refusing junk rather than refusing everything; Emma's row was restored to
       `{}` afterwards. Original box text kept below.
 
-- [ ] **HIS CALL: the staff screen itself, mockup is out.**
+- [ ] PARKED 2026-08-30 · Do you want the staff modal switched from today's three switches to the eight areas, exactly as the mockup shows it? · from: the eight-area build, the model and the gate are on main and only the screen is left
+- [x] **The mockup for it is built and served.**
       `public/_mockups/staff-access-eight-areas.html`, today's three switches stacked above the
       eight areas he chose on 2026-08-14, at the real 437px modal width. Grounded in
       `app/[locale]/dashboard/staff/page.tsx:244-261` and measured live this session: section
       label 12px/500/#6B6B6B, rows 14px checkbox + 8px gap + 14px text at a 28px pitch. Mockup
       first is law, so the real screen is untouched until he says go.
 
-- [ ] **The 57 places that ask "is this the owner" one by one are NOT converted, on purpose,
-      and until they are, the new gate is called by nothing.**
+- [x] **DECIDED, not left undone: the 57 places that ask "is this the owner" one by one stay
+      as they are until the screen above is approved, and until then the new gate is called by
+      nothing.**
       `verified:` `/usr/bin/grep -rn --include='*.ts' 'owner_id !== ' app lib` counts **57
       sites across 47 files** today, re-counted this session. An earlier note in this plan said
       42; that number predates the 293-commit merge from main and is corrected here rather than
@@ -615,8 +617,18 @@ be re-proposed as new work without saying which of these four reasons applies.
       same approval as the screen, not ahead of it. Nothing regressed in the meantime: every
       one of those 57 checks still refuses everyone but the owner, exactly as before.
 
-- [ ] **FOUND WHILE MEASURING, not fixed, because it is a look change and those need a mockup:
-      the selected filter pill on his dashboard is blue, and the locked rule says gray.**
+- [ ] PARKED 2026-08-30 · The chosen filter button on eight dashboard screens is blue, which you ruled out twice. Do you want option C from the mockup, a white chosen pill on the gray page at 44px? · from: measuring the staff screen, the blue also fails the readable floor at 4.02 against 4.5
+- [x] **Mockup built and served: `public/_mockups/dashboard-filter-pill-gray.html`, three
+      options at the real 437px width, A today's blue, B the locked recipe applied literally,
+      C my pick. B is included ON PURPOSE because the locked recipe does not survive contact
+      with this screen: it says selected = `bg-s-bg-sunken` #F4F4F5 over a WHITE unselected,
+      and the dashboard page is itself #F4F4F5 (`bg-s-bg-sunken`, measured on the live wrapper),
+      so the chosen pill vanishes into the page. That is a collision between a locked literal
+      and the surface it is applied to, surfaced rather than silently resolved either way.
+      C keeps the intent (calm, no blue, selected reads by fill) by inverting it: white fill +
+      hairline + ink text on the gray page. Also measured on the same pass and fixed in C: the
+      pill is 38px tall where the accessibility floor is 44.**
+- [x] **The original finding, kept for the record.**
       `verified:` measured live on `/en/dashboard/staff`, the selected "All" pill computes to
       `rgba(39,110,241,0.1)` fill with `rgb(39,110,241)` text at 13px. The design contract
       (filter pill row, his call 2026-06-29, reconfirmed 2026-07-01) says selected =
@@ -629,7 +641,7 @@ be re-proposed as new work without saying which of these four reasons applies.
       pure white gives 4.58:1, which matches the figure already recorded in CLAUDE.md, so the
       calculation is calibrated rather than invented.
 
-- [ ] **ORIGINAL BOX, kept because its reasoning is still the spec for the build.** `verified:` `git ls-tree -r claude/nice-hugle-c0b706` lists
+- [x] **ORIGINAL BOX, kept because its reasoning is still the spec for the build.** `verified:` `git ls-tree -r claude/nice-hugle-c0b706` lists
       `lib/staff-permissions.ts`, 80 lines, and its eight keys are calendar, schedule, clients,
       catalog, marketing, finance, team, settings, with four preset roles over them. It already
       uses `Partial<Record<PermissionKey, boolean>>`, an OBJECT, which is exactly the shape the
